@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static goodgenerator.loader.Loaders.compactFusionCoil;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,18 +27,18 @@ import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.science.gtnl.api.IControllerUpgrade;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.GTNLMui1Textures;
 import com.science.gtnl.common.gui.modularui.GTNLControllerUpgradeGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import goodgenerator.loader.Loaders;
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.ItemList;
@@ -135,9 +134,9 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
     public IStructureDefinition<EngravingLaserPlant> getStructureDefinition() {
         return StructureDefinition.<EngravingLaserPlant>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 8))
-            .addElement('B', StructureUtility.ofBlock(sBlockCasingsTT, 0))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 9))
+            .addElement('A', Casings.NeutroniumStabilizationCasing.asElement())
+            .addElement('B', Casings.HighPowerCasing.asElement())
+            .addElement('C', Casings.HermeticCasing9.asElement())
             .addElement(
                 'D',
                 GTStructureUtility.buildHatchAdder(EngravingLaserPlant.class)
@@ -154,11 +153,11 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 12))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 1))
-            .addElement('G', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
-            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+                            Casings.AdvancedIridiumPlatedMachineCasing.asElement())))
+            .addElement('E', Casings.ReinforcedPhotolithographicFrameworkCasing.asElement())
+            .addElement('F', Casings.AdvancedFilterCasing.asElement())
+            .addElement('G', GTNLCasings.NeutroniumGearbox.asElement())
+            .addElement('H', GTNLCasings.NeutroniumPipeCasing.asElement())
             .addElement('I', StructureUtility.ofBlock(compactFusionCoil, 2))
             .addElement(
                 'J',
@@ -169,7 +168,7 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
                         -2,
                         (t, meta) -> t.mCasingTier = meta,
                         t -> t.mCasingTier)))
-            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
+            .addElement('K', Casings.ExtremeDensitySpaceBendingCasing.asElement())
             .addElement('L', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
             .addElement('M', GTStructureUtility.ofFrame(Materials.Neutronium))
             .build();
@@ -311,7 +310,7 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 7);
+        return Casings.AdvancedIridiumPlatedMachineCasing.getTextureId();
     }
 
     @Override

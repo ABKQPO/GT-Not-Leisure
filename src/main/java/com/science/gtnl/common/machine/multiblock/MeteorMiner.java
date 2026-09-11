@@ -44,6 +44,7 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
@@ -78,7 +79,6 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
-import gtPlusPlus.core.block.ModBlocks;
 import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
@@ -146,11 +146,11 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape_t1))
             .addShape(STRUCTURE_PIECE_TIER2, StructureUtility.transpose(shape_t2))
             .addElement('A', GTStructureUtility.chainAllGlasses())
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 15))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings5, 5))
+            .addElement('B', Casings.SuperconductingCoilBlock.asElement())
+            .addElement('C', Casings.NaquadahCoilBlock.asElement())
             .addElement('D', GTStructureUtility.ofFrame(Materials.StainlessSteel))
-            .addElement('E', StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 6))
-            .addElement('F', StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 8))
+            .addElement('E', Casings.StructuralSolarCasing.asElement())
+            .addElement('F', Casings.ThermallyInsulatedCasing.asElement())
             .addElement('G', StructureUtility.ofBlock(BlockLoader.laserBeacon, 0))
             .addElement(
                 'H',
@@ -158,7 +158,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
                     .atLeast(HatchElement.Maintenance, HatchElement.OutputBus, HatchElement.Energy)
                     .casingIndex(getCasingTextureID())
                     .hint(1)
-                    .buildAndChain(StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 6)))
+                    .buildAndChain(Casings.StructuralSolarCasing.asElement()))
             .addElement(
                 'I',
                 GTStructureUtility.buildHatchAdder(MeteorMiner.class)
@@ -167,7 +167,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
                     .adder(MeteorMiner::addInjector)
                     .casingIndex(getCasingTextureID())
                     .hint(1)
-                    .buildAndChain(StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 6)))
+                    .buildAndChain(Casings.StructuralSolarCasing.asElement()))
             .addElement(
                 'J',
                 GTStructureUtility.buildHatchAdder(MeteorMiner.class)
@@ -177,11 +177,11 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
                         HatchElement.Energy.or(HatchElement.ExoticEnergy))
                     .casingIndex(getCasingTextureID())
                     .hint(1)
-                    .buildAndChain(StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 2)))
-            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 7))
-            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 2))
-            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 3))
-            .addElement('N', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
+                    .buildAndChain(Casings.MiningNeutroniumCasing.asElement()))
+            .addElement('K', Casings.FusionCoilBlock.asElement())
+            .addElement('L', Casings.MiningNeutroniumCasing.asElement())
+            .addElement('M', Casings.MiningBlackPlutoniumCasing.asElement())
+            .addElement('N', Casings.HeatResistantTriniumPlatedCasing.asElement())
             .addElement('O', GTStructureUtility.ofFrame(Materials.Neutronium))
             .addElement('P', GTStructureUtility.ofFrame(Materials.BlackPlutonium))
             .build();

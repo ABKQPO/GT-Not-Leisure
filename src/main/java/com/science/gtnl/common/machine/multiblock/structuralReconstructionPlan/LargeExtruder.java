@@ -2,9 +2,7 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings3Misc;
 
 import java.util.List;
 
@@ -63,7 +61,7 @@ public class LargeExtruder extends GTMMultiMachineBase<LargeExtruder> implements
         return StructureDefinition.<LargeExtruder>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', Casings.ReinforcedGlass.asElement())
-            .addElement('B', StructureUtility.ofBlock(sBlockCasings2, 14))
+            .addElement('B', Casings.TitaniumPipeCasing.asElement())
             .addElement(
                 'C',
                 buildHatchAdder(LargeExtruder.class).casingIndex(getCasingTextureID())
@@ -76,7 +74,7 @@ public class LargeExtruder extends GTMMultiMachineBase<LargeExtruder> implements
                         ParallelCon)
                     .buildAndChain(
                         StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasings3Misc, 1))))
+                            .onElementPass(x -> ++x.mCountCasing, Casings.InconelReinforcedCasing.asElement())))
             .build();
     }
 

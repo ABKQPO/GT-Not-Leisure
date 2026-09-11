@@ -14,13 +14,12 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.enums.HatchElement;
-import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -28,7 +27,6 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
-import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
@@ -61,18 +59,19 @@ public class SteamWoodcutter extends SteamMultiMachineBase<SteamWoodcutter> impl
     public IStructureDefinition<SteamWoodcutter> getStructureDefinition() {
         return StructureDefinition.<SteamWoodcutter>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 23))
+            .addElement('A', GTNLCasings.IronReinforcedWood.asElement())
             .addElement(
                 'B',
                 StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamWoodcutter.class)
-                        .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 24))
+                        .casingIndex(GTNLCasings.BronzeReinforcedWood.getTextureId())
                         .hint(1)
                         .build(),
-                    buildSteamBigInput(SteamWoodcutter.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 24))
+                    buildSteamBigInput(SteamWoodcutter.class)
+                        .casingIndex(GTNLCasings.BronzeReinforcedWood.getTextureId())
                         .hint(1)
                         .build(),
-                    buildSteamInput(SteamWoodcutter.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 24))
+                    buildSteamInput(SteamWoodcutter.class).casingIndex(GTNLCasings.BronzeReinforcedWood.getTextureId())
                         .hint(1)
                         .build(),
                     GTStructureUtility.buildHatchAdder(SteamWoodcutter.class)
@@ -82,11 +81,11 @@ public class SteamWoodcutter extends SteamMultiMachineBase<SteamWoodcutter> impl
                             SteamHatchElement.OutputBus_Steam,
                             HatchElement.OutputBus,
                             HatchElement.Maintenance)
-                        .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 24))
+                        .casingIndex(GTNLCasings.BronzeReinforcedWood.getTextureId())
                         .hint(1)
                         .buildAndChain(),
-                    StructureUtility.ofBlock(BlockLoader.metaCasing, 24)))
-            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 25))
+                    GTNLCasings.BronzeReinforcedWood.asElement()))
+            .addElement('C', GTNLCasings.SteelReinforcedWood.asElement())
             .addElement('D', GTStructureUtility.chainAllGlasses())
             .addElement(
                 'E',
@@ -111,27 +110,22 @@ public class SteamWoodcutter extends SteamMultiMachineBase<SteamWoodcutter> impl
         int aColorIndex, boolean aActive, boolean aRedstone) {
         if (side == facing) {
             if (aActive) {
-                return new ITexture[] {
-                    Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 24)),
-                    TextureFactory.builder()
-                        .addIcon(TexturesGtBlock.oMCATreeFarmActive)
-                        .extFacing()
-                        .build() };
-            }
-            return new ITexture[] {
-                Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 24)),
-                TextureFactory.builder()
-                    .addIcon(TexturesGtBlock.oMCATreeFarm)
+                return new ITexture[] { GTNLCasings.BronzeReinforcedWood.getCasingTexture(), TextureFactory.builder()
+                    .addIcon(TexturesGtBlock.oMCATreeFarmActive)
                     .extFacing()
                     .build() };
+            }
+            return new ITexture[] { GTNLCasings.BronzeReinforcedWood.getCasingTexture(), TextureFactory.builder()
+                .addIcon(TexturesGtBlock.oMCATreeFarm)
+                .extFacing()
+                .build() };
         }
-        return new ITexture[] {
-            Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 24)) };
+        return new ITexture[] { GTNLCasings.BronzeReinforcedWood.getCasingTexture() };
     }
 
     @Override
     public int getCasingTextureID() {
-        return GTUtility.getTextureId((byte) 116, (byte) 24);
+        return GTNLCasings.BronzeReinforcedWood.getTextureId();
     }
 
     @Override

@@ -2,8 +2,6 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
 
 import java.util.List;
 
@@ -22,6 +20,7 @@ import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.TAE;
@@ -69,7 +68,7 @@ public class FishingGround extends GTMMultiMachineBase<FishingGround> implements
     public IStructureDefinition<FishingGround> getStructureDefinition() {
         return StructureDefinition.<FishingGround>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(sBlockCasings2, 13))
+            .addElement('A', Casings.SteelPipeCasing.asElement())
             .addElement('B', GTStructureUtility.ofFrame(Materials.StainlessSteel))
             .addElement(
                 'C',
@@ -86,7 +85,7 @@ public class FishingGround extends GTMMultiMachineBase<FishingGround> implements
                         ParallelCon)
                     .buildAndChain(
                         StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasings2Misc, 2))))
+                            .onElementPass(x -> ++x.mCountCasing, Casings.HastelloyXStructuralBlock.asElement())))
             .addElement(
                 'D',
                 StructureUtility.ofChain(

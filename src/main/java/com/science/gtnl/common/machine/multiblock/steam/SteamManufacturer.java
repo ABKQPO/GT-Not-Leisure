@@ -13,13 +13,14 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
@@ -68,20 +69,20 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
     public IStructureDefinition<SteamManufacturer> getStructureDefinition() {
         return StructureDefinition.<SteamManufacturer>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 26))
-            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 28))
+            .addElement('A', GTNLCasings.BreelPipeCasing.asElement())
+            .addElement('B', GTNLCasings.HydraulicAssemblingCasing.asElement())
             .addElement(
                 'C',
                 StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamManufacturer.class)
-                        .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 30))
+                        .casingIndex(GTNLCasings.BreelPlatedCasing.getTextureId())
                         .hint(1)
                         .build(),
                     buildSteamBigInput(SteamManufacturer.class)
-                        .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 30))
+                        .casingIndex(GTNLCasings.BreelPlatedCasing.getTextureId())
                         .hint(1)
                         .build(),
-                    buildSteamInput(SteamManufacturer.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 30))
+                    buildSteamInput(SteamManufacturer.class).casingIndex(GTNLCasings.BreelPlatedCasing.getTextureId())
                         .hint(1)
                         .build(),
                     GTStructureUtility.buildHatchAdder(SteamManufacturer.class)
@@ -91,11 +92,11 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
                             SteamHatchElement.OutputBus_Steam,
                             HatchElement.OutputBus,
                             HatchElement.Maintenance)
-                        .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 30))
+                        .casingIndex(GTNLCasings.BreelPlatedCasing.getTextureId())
                         .hint(1)
                         .buildAndChain(),
-                    StructureUtility.ofBlock(BlockLoader.metaCasing, 30)))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 3))
+                    GTNLCasings.BreelPlatedCasing.asElement()))
+            .addElement('D', Casings.SteelGearBoxCasing.asElement())
             .addElement('E', GTStructureUtility.ofFrame(Materials.Steel))
             .build();
     }

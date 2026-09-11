@@ -13,9 +13,9 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.enums.HatchElement;
@@ -28,7 +28,6 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
-import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 
@@ -62,28 +61,28 @@ public class HighPressureSteamFusionReactor extends SteamMultiMachineBase<HighPr
     public IStructureDefinition<HighPressureSteamFusionReactor> getStructureDefinition() {
         return StructureDefinition.<HighPressureSteamFusionReactor>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 31))
-            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing02, 0))
+            .addElement('A', GTNLCasings.SteamCompactPipeCasing.asElement())
+            .addElement('B', GTNLCasings.VibrationSafeCasing.asElement())
             .addElement('C', GTStructureUtility.chainAllGlasses())
             .addElement('D', GTStructureUtility.ofFrame(Materials.Steel))
             .addElement(
                 'E',
                 StructureUtility.ofChain(
                     buildSteamWirelessInput(HighPressureSteamFusionReactor.class)
-                        .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 32))
+                        .casingIndex(GTNLCasings.VibrationSafeCasing.getTextureId())
                         .hint(1)
                         .build(),
                     buildSteamBigInput(HighPressureSteamFusionReactor.class)
-                        .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 32))
+                        .casingIndex(GTNLCasings.VibrationSafeCasing.getTextureId())
                         .hint(1)
                         .build(),
                     buildSteamInput(HighPressureSteamFusionReactor.class)
-                        .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 32))
+                        .casingIndex(GTNLCasings.VibrationSafeCasing.getTextureId())
                         .hint(1)
                         .build(),
                     GTStructureUtility.buildHatchAdder(HighPressureSteamFusionReactor.class)
                         .atLeast(HatchElement.Maintenance, HatchElement.InputHatch, HatchElement.OutputHatch)
-                        .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 32))
+                        .casingIndex(GTNLCasings.VibrationSafeCasing.getTextureId())
                         .hint(1)
                         .buildAndChain(),
                     GTStructureUtility.chainAllGlasses()))
@@ -142,23 +141,18 @@ public class HighPressureSteamFusionReactor extends SteamMultiMachineBase<HighPr
         int aColorIndex, boolean aActive, boolean aRedstone) {
         if (side == facing) {
             if (aActive) {
-                return new ITexture[] {
-                    Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 32)),
-                    TextureFactory.builder()
-                        .addIcon(Textures.BlockIcons.OVERLAY_TOP_STEAM_MACERATOR_ACTIVE)
-                        .extFacing()
-                        .build() };
+                return new ITexture[] { GTNLCasings.VibrationSafeCasing.getCasingTexture(), TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_TOP_STEAM_MACERATOR_ACTIVE)
+                    .extFacing()
+                    .build() };
             } else {
-                return new ITexture[] {
-                    Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 32)),
-                    TextureFactory.builder()
-                        .addIcon(Textures.BlockIcons.OVERLAY_TOP_STEAM_MACERATOR)
-                        .extFacing()
-                        .build() };
+                return new ITexture[] { GTNLCasings.VibrationSafeCasing.getCasingTexture(), TextureFactory.builder()
+                    .addIcon(Textures.BlockIcons.OVERLAY_TOP_STEAM_MACERATOR)
+                    .extFacing()
+                    .build() };
             }
         }
-        return new ITexture[] {
-            Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 32)) };
+        return new ITexture[] { GTNLCasings.VibrationSafeCasing.getCasingTexture() };
     }
 
     @Override

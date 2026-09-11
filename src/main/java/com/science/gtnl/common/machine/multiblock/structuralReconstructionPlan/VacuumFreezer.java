@@ -16,13 +16,12 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
-import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
@@ -71,7 +70,7 @@ public class VacuumFreezer extends MultiMachineBase<VacuumFreezer> implements IS
     public IStructureDefinition<VacuumFreezer> getStructureDefinition() {
         return StructureDefinition.<VacuumFreezer>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 2))
+            .addElement('A', GTNLCasings.HeatVent.asElement())
             .addElement('B', Casings.ReinforcedGlass.asElement())
             .addElement(
                 'C',
@@ -86,11 +85,10 @@ public class VacuumFreezer extends MultiMachineBase<VacuumFreezer> implements IS
                         HatchElement.Maintenance,
                         HatchElement.Energy)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 1))))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 14))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.FrostProofMachineCasing.asElement())))
+            .addElement('D', Casings.TitaniumPipeCasing.asElement())
+            .addElement('E', Casings.CleanStainlessSteelMachineCasing.asElement())
             .build();
     }
 
@@ -164,7 +162,7 @@ public class VacuumFreezer extends MultiMachineBase<VacuumFreezer> implements IS
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 1);
+        return Casings.FrostProofMachineCasing.getTextureId();
     }
 
     @Override

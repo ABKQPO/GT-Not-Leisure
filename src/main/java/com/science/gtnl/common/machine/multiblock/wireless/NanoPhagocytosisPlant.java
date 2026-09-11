@@ -2,8 +2,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 import static tectech.util.TTUtility.replaceLetters;
 
 import java.util.Arrays;
@@ -26,6 +24,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.block.blocks.BlockNanoPhagocytosisPlantRender;
 import com.science.gtnl.common.block.blocks.tile.TileEntityNanoPhagocytosisPlant;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
@@ -36,6 +35,7 @@ import com.science.gtnl.utils.StructureUtils;
 
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -52,8 +52,6 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import gtnhlanth.common.register.LanthItemList;
-import tectech.thing.block.BlockQuantumGlass;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -119,7 +117,7 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings9, 12);
+        return Casings.NaquadriaReinforcedWaterPlantCasing.getTextureId();
     }
 
     @Override
@@ -150,29 +148,29 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
             .addShape(STRUCTURE_PIECE_MAIN_RING_ONE_AIR, StructureUtility.transpose(shapeRingOneAir))
             .addShape(STRUCTURE_PIECE_MAIN_RING_TWO_AIR, StructureUtility.transpose(shapeRingTwoAir))
             .addShape(STRUCTURE_PIECE_MAIN_RING_THREE_AIR, StructureUtility.transpose(shapeRingThreeAir))
-            .addElement('A', StructureUtility.ofBlock(BlockQuantumGlass.INSTANCE, 0))
-            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 2))
-            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('D', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
-            .addElement('E', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 15))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
-            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 8))
-            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
-            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 11))
-            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 12))
-            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
-            .addElement('N', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
-            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 11))
-            .addElement('P', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
-            .addElement('Q', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 13))
-            .addElement('R', StructureUtility.ofBlock(sBlockCasingsTT, 0))
-            .addElement('S', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('A', Casings.QuantumGlass.asElement())
+            .addElement('B', GTNLCasings.HeatVent.asElement())
+            .addElement('C', GTNLCasings.NeutroniumPipeCasing.asElement())
+            .addElement('D', GTNLCasings.HyperCore.asElement())
+            .addElement('E', Casings.ShieldedAcceleratorCasing.asElement())
+            .addElement('F', Casings.SuperconductingCoilBlock.asElement())
+            .addElement('G', Casings.PressureContainmentCasing.asElement())
+            .addElement('H', Casings.ActiveNeutroniumCasing.asElement())
+            .addElement('I', Casings.NeutroniumStabilizationCasing.asElement())
+            .addElement('J', Casings.GrateMachineCasing.asElement())
+            .addElement('K', Casings.TitaniumTurbineCasing.asElement())
+            .addElement('L', Casings.TungstensteelTurbineCasing.asElement())
+            .addElement('M', Casings.AdvancedIridiumPlatedMachineCasing.asElement())
+            .addElement('N', Casings.RadiantNaquadahAlloyCasing.asElement())
+            .addElement('O', Casings.BasicPhotolithographicFrameworkCasing.asElement())
+            .addElement('P', Casings.NaquadriaReinforcedWaterPlantCasing.asElement())
+            .addElement('Q', Casings.HighEnergyUltravioletEmitterCasing.asElement())
+            .addElement('R', Casings.HighPowerCasing.asElement())
+            .addElement('S', Casings.ContainmentFieldGenerator.asElement())
             .addElement('T', GTStructureUtility.ofFrame(Materials.EnrichedHolmium))
             .addElement('U', StructureUtility.ofBlock(GregTechAPI.sBlockMetal5, 1))
-            .addElement('V', StructureUtility.ofBlock(blockCasingsMisc, 5))
-            .addElement('W', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 7))
+            .addElement('V', Casings.ElectrolyzerCasing.asElement())
+            .addElement('W', Casings.FusionCoilBlock.asElement())
             .addElement('X', StructureUtility.ofBlock(Loaders.compactFusionCoil, 2))
             .addElement('Y', StructureUtility.ofBlock(Loaders.compactFusionCoil, 0))
             .addElement('Z', StructureUtility.isAir())
@@ -187,12 +185,12 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
                         HatchElement.OutputHatch,
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
-                    .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings9, 12))
+                    .casingIndex(Casings.NaquadriaReinforcedWaterPlantCasing.getTextureId())
                     .hint(1)
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))))
+                            Casings.NaquadriaReinforcedWaterPlantCasing.asElement())))
             .build();
     }
 

@@ -15,11 +15,10 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
-import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
@@ -36,7 +35,6 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import tectech.thing.casing.BlockGTCasingsTT;
-import tectech.thing.casing.TTCasingsContainer;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -69,7 +67,7 @@ public class NeutroniumWireCutting extends WirelessEnergyMultiMachineBase<Neutro
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings9, 12);
+        return Casings.NaquadriaReinforcedWaterPlantCasing.getTextureId();
     }
 
     @Override
@@ -96,16 +94,16 @@ public class NeutroniumWireCutting extends WirelessEnergyMultiMachineBase<Neutro
         return StructureDefinition.<NeutroniumWireCutting>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 2))
+            .addElement('B', GTNLCasings.HeatVent.asElement())
             .addElement('C', Casings.ReinforcedGlass.asElement())
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 6))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 10))
-            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
-            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 3))
-            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 6))
+            .addElement('D', Casings.NeutroniumCasing.asElement())
+            .addElement('E', Casings.ActiveNeutroniumCasing.asElement())
+            .addElement('F', Casings.ExtremeDensitySpaceBendingCasing.asElement())
+            .addElement('G', Casings.FilterMachineCasing.asElement())
+            .addElement('H', Casings.StainlessSteelTurbineCasing.asElement())
+            .addElement('I', Casings.AdvancedIridiumPlatedMachineCasing.asElement())
+            .addElement('J', Casings.SuperplasticizerTreatedHighStrengthConcrete.asElement())
+            .addElement('K', Casings.SlickSterileFlocculationCasing.asElement())
             .addElement(
                 'L',
                 GTStructureUtility.buildHatchAdder(NeutroniumWireCutting.class)
@@ -121,9 +119,9 @@ public class NeutroniumWireCutting extends WirelessEnergyMultiMachineBase<Neutro
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))))
-            .addElement('M', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 0))
-            .addElement('N', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 6))
+                            Casings.NaquadriaReinforcedWaterPlantCasing.asElement())))
+            .addElement('M', Casings.HighPowerCasing.asElement())
+            .addElement('N', Casings.ContainmentFieldGenerator.asElement())
             .addElement('O', GTStructureUtility.ofFrame(Materials.Neutronium))
             .addElement(
                 'P',
@@ -131,8 +129,8 @@ public class NeutroniumWireCutting extends WirelessEnergyMultiMachineBase<Neutro
                     Block.getBlockFromItem(
                         MaterialsAlloy.HASTELLOY_N.getFrameBox(1)
                             .getItem())))
-            .addElement('Q', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('R', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('Q', GTNLCasings.NeutroniumPipeCasing.asElement())
+            .addElement('R', GTNLCasings.NeutroniumGearbox.asElement())
             .build();
     }
 

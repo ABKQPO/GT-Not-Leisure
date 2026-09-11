@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.List;
 
@@ -15,11 +14,12 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -65,10 +65,10 @@ public class SuperconductingMagneticPresser extends WirelessEnergyMultiMachineBa
     public IStructureDefinition<SuperconductingMagneticPresser> getStructureDefinition() {
         return StructureDefinition.<SuperconductingMagneticPresser>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 8))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 15))
+            .addElement('A', Casings.NaquadriaReinforcedWaterPlantCasing.asElement())
+            .addElement('B', Casings.NeutroniumStabilizationCasing.asElement())
+            .addElement('C', Casings.ActiveNeutroniumCasing.asElement())
+            .addElement('D', Casings.SuperconductingCoilBlock.asElement())
             .addElement(
                 'E',
                 GTStructureUtility.buildHatchAdder(SuperconductingMagneticPresser.class)
@@ -84,14 +84,14 @@ public class SuperconductingMagneticPresser extends WirelessEnergyMultiMachineBa
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 13))
-            .addElement('G', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
-            .addElement('H', StructureUtility.ofBlock(sBlockCasingsTT, 6))
-            .addElement('I', StructureUtility.ofBlock(sBlockCasingsTT, 4))
-            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+                            Casings.AdvancedIridiumPlatedMachineCasing.asElement())))
+            .addElement('F', Casings.DimensionalInjectionCasing.asElement())
+            .addElement('G', Casings.ShieldedAcceleratorCasing.asElement())
+            .addElement('H', Casings.ContainmentFieldGenerator.asElement())
+            .addElement('I', Casings.MolecularCasing.asElement())
+            .addElement('J', Casings.RadiantNaquadahAlloyCasing.asElement())
             .addElement('K', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
-            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
+            .addElement('L', Casings.FilterMachineCasing.asElement())
             .addElement('M', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
             .addElement(
                 'N',
@@ -100,7 +100,7 @@ public class SuperconductingMagneticPresser extends WirelessEnergyMultiMachineBa
                         MaterialsElements.STANDALONE.DRAGON_METAL.getFrameBox(1)
                             .getItem())))
             .addElement('O', GTStructureUtility.ofFrame(Materials.Naquadria))
-            .addElement('P', StructureUtility.ofBlock(BlockLoader.metaCasing, 2))
+            .addElement('P', GTNLCasings.HeatVent.asElement())
             .addElement('Q', StructureUtility.ofBlock(GregTechAPI.sBlockMetal5, 2))
             .build();
     }
@@ -156,7 +156,7 @@ public class SuperconductingMagneticPresser extends WirelessEnergyMultiMachineBa
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 7);
+        return Casings.AdvancedIridiumPlatedMachineCasing.getTextureId();
     }
 
     @Override

@@ -25,6 +25,7 @@ import com.science.gtnl.utils.enums.BlockIcons;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.SoundResource;
@@ -96,11 +97,11 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
                             HatchElement.OutputBus,
                             HatchElement.OutputHatch,
                             HatchElement.Maintenance)
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10))
+                        .casingIndex(Casings.BronzePlatedBricks.getTextureId())
                         .hint(1)
                         .buildAndChain(),
-                    StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10)))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 13))
+                    Casings.BronzePlatedBricks.asElement()))
+            .addElement('B', Casings.BronzeFireboxCasing.asElement())
             .addElement(
                 'C',
                 StructureUtility.ofChain(
@@ -113,7 +114,7 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
+        return Casings.BronzePlatedBricks.getTextureId();
     }
 
     @Override

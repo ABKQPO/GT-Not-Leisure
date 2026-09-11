@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.List;
 
@@ -14,11 +13,12 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -31,7 +31,6 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.casing.BlockGTCasingsTT;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -62,16 +61,16 @@ public class VortexMatterCentrifuge extends WirelessEnergyMultiMachineBase<Vorte
     public IStructureDefinition<VortexMatterCentrifuge> getStructureDefinition() {
         return StructureDefinition.<VortexMatterCentrifuge>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('A', GTNLCasings.NeutroniumGearbox.asElement())
             .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 9))
-            .addElement('C', StructureUtility.ofBlock(sBlockCasingsTT, 6))
-            .addElement('D', StructureUtility.ofBlock(sBlockCasingsTT, 0))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 9))
-            .addElement('G', StructureUtility.ofBlock(sBlockCasingsTT, 8))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 8))
-            .addElement('I', StructureUtility.ofBlock(BlockLoader.metaCasing, 7))
-            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
+            .addElement('C', Casings.ContainmentFieldGenerator.asElement())
+            .addElement('D', Casings.HighPowerCasing.asElement())
+            .addElement('E', Casings.PressureContainmentCasing.asElement())
+            .addElement('F', Casings.UHVMachineCasing.asElement())
+            .addElement('G', Casings.HollowCasing.asElement())
+            .addElement('H', Casings.NeutroniumStabilizationCasing.asElement())
+            .addElement('I', GTNLCasings.Antifreeze_Heatproof_Machine_Casing.asElement())
+            .addElement('J', Casings.ActiveNeutroniumCasing.asElement())
             .addElement(
                 'K',
                 GTStructureUtility.buildHatchAdder(VortexMatterCentrifuge.class)
@@ -86,12 +85,11 @@ public class VortexMatterCentrifuge extends WirelessEnergyMultiMachineBase<Vorte
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 4))))
-            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
-            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 13))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.MolecularCasing.asElement())))
+            .addElement('L', Casings.RadiantNaquadahAlloyCasing.asElement())
+            .addElement('M', Casings.DimensionalInjectionCasing.asElement())
             .addElement('N', GTStructureUtility.ofFrame(Materials.EnrichedHolmium))
-            .addElement('O', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
+            .addElement('O', Casings.ShieldedAcceleratorCasing.asElement())
             .build();
     }
 

@@ -36,6 +36,7 @@ import com.science.gtnl.utils.structure.GTNLStructureErrors;
 import bartworks.common.loaders.FluidLoader;
 import bartworks.system.material.WerkstoffLoader;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
@@ -57,7 +58,6 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchTurbine;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -93,16 +93,16 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
         return StructureDefinition.<HighwayToHell>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 2))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 4))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('B', Casings.TungstensteelPipeCasing.asElement())
+            .addElement('C', Casings.CleanStainlessSteelMachineCasing.asElement())
+            .addElement('D', Casings.ChemicallyInertMachineCasing.asElement())
+            .addElement('E', Casings.MiningNeutroniumCasing.asElement())
+            .addElement('F', Casings.ExtremeEngineIntakeCasing.asElement())
+            .addElement('G', Casings.RadiantNaquadahAlloyCasing.asElement())
             .addElement('H', GTStructureUtility.ofFrame(Materials.Neutronium))
-            .addElement('I', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 6))
-            .addElement('J', StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 15))
-            .addElement('K', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 14))
+            .addElement('I', Casings.LargeSieveGrate.asElement())
+            .addElement('J', Casings.ReinforcedSCTurbineCasing.asElement())
+            .addElement('K', Casings.BlastSmelterHeatContainmentCoil.asElement())
             .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 9))
             .addElement(
                 'M',
@@ -123,9 +123,8 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.RadiantNaquadahAlloyCasing.asElement())))
             .addElement('P', StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasingsAdvanced, 31_766 + 129))
             .addElement('Q', CustomHatchElement.ROTOR_ASSEMBLY.newAny(getCasingTextureID(), 2))
             .build();
@@ -394,7 +393,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
+        return Casings.RadiantNaquadahAlloyCasing.getTextureId();
     }
 
     @Override

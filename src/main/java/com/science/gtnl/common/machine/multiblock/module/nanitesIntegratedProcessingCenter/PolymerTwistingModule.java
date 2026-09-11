@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.module.nanitesIntegratedProcessingCenter;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.List;
 
@@ -12,10 +11,10 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.science.gtnl.loader.BlockLoader;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.utils.StructureUtils;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -65,17 +64,16 @@ public class PolymerTwistingModule extends NanitesBaseModule<PolymerTwistingModu
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0))))
-            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.ChemicallyInertMachineCasing.asElement())))
+            .addElement('B', GTNLCasings.NeutroniumPipeCasing.asElement())
             .addElement('C', GTStructureUtility.ofFrame(Materials.CosmicNeutronium))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 10))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 12))
-            .addElement('G', StructureUtility.ofBlock(sBlockCasingsTT, 0))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
-            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockGlass1, 0))
+            .addElement('D', Casings.HermeticCasing10.asElement())
+            .addElement('E', Casings.AssemblyLineCasing.asElement())
+            .addElement('F', Casings.TungstensteelTurbineCasing.asElement())
+            .addElement('G', Casings.HighPowerCasing.asElement())
+            .addElement('H', Casings.PTFEPipeCasing.asElement())
+            .addElement('I', Casings.ChemicalGradeGlass.asElement())
             .build();
     }
 
@@ -114,7 +112,7 @@ public class PolymerTwistingModule extends NanitesBaseModule<PolymerTwistingModu
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 0);
+        return Casings.ChemicallyInertMachineCasing.getTextureId();
     }
 
     @Override

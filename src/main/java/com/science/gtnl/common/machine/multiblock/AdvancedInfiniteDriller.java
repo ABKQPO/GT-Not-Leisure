@@ -28,16 +28,16 @@ import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.AdvancedInfiniteDrillerGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.machine.VMTweakHelper;
 
 import bartworks.system.material.WerkstoffLoader;
-import goodgenerator.loader.Loaders;
 import gregtech.GTMod;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
@@ -188,15 +188,15 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
     public IStructureDefinition<AdvancedInfiniteDriller> getStructureDefinition() {
         return StructureDefinition.<AdvancedInfiniteDriller>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(Loaders.MAR_Casing, 0))
-            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
-            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 16))
-            .addElement('D', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sSolenoidCoilCasings, 5))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
-            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement('A', Casings.FieldRestrictionCasing.asElement())
+            .addElement('B', GTNLCasings.NeutroniumGearbox.asElement())
+            .addElement('C', GTNLCasings.GravitationalFocusingLensBlock.asElement())
+            .addElement('D', GTNLCasings.HyperCore.asElement())
+            .addElement('E', Casings.DimensionalBridge.asElement())
+            .addElement('F', Casings.ZPMSolenoidSuperconductorCoil.asElement())
+            .addElement('G', Casings.FilterMachineCasing.asElement())
+            .addElement('H', Casings.PTFEPipeCasing.asElement())
+            .addElement('I', Casings.AdvancedIridiumPlatedMachineCasing.asElement())
             .addElement(
                 'J',
                 GTStructureUtility.buildHatchAdder(AdvancedInfiniteDriller.class)
@@ -210,9 +210,8 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         SpecialHatchElement.HeatSensor)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.RadiantNaquadahAlloyCasing.asElement())))
             .addElement('K', GTStructureUtility.ofFrame(Materials.Neutronium))
             .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockMetal8, 0))
             .build();
@@ -393,7 +392,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
+        return Casings.RadiantNaquadahAlloyCasing.getTextureId();
     }
 
     @Override

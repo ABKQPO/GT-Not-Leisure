@@ -35,6 +35,7 @@ import bartworks.util.BWUtil;
 import bartworks.util.ResultWrongSievert;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
@@ -58,7 +59,6 @@ import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.recipe.Sievert;
 import gregtech.common.misc.GTStructureChannels;
-import gtnhlanth.common.register.LanthItemList;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -96,9 +96,9 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
         return StructureDefinition.<LargeIncubator>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 1))
+            .addElement('B', Casings.ShieldedAcceleratorCasing.asElement())
+            .addElement('C', Casings.PTFEPipeCasing.asElement())
+            .addElement('D', Casings.AdvancedFilterCasing.asElement())
             .addElement(
                 'E',
                 StructureUtility.ofChain(

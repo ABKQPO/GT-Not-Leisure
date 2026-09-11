@@ -1,14 +1,9 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
 import static gregtech.api.enums.HatchElement.Energy;
 import static gregtech.api.enums.HatchElement.ExoticEnergy;
 import static gregtech.api.enums.HatchElement.InputBus;
@@ -18,7 +13,6 @@ import static gregtech.api.enums.HatchElement.OutputHatch;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static tectech.thing.block.TileEntityEyeOfHarmony.generateRandomFloat;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,11 +67,11 @@ import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.api.mixinHelper.IEyeOfHarmonyControllerLink;
 import com.science.gtnl.api.mixinHelper.LinkedEyeOfHarmonyUnit;
 import com.science.gtnl.common.gui.modularui.EyeOfHarmonyInjectorGui;
 import com.science.gtnl.common.render.tile.EyeOfHarmonyInjectorRenderer;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
 import appeng.api.util.DimensionalCoord;
@@ -85,6 +79,7 @@ import appeng.client.render.highlighter.BlockPosHighlighter;
 import appeng.core.localization.PlayerMessages;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.gui.modularui.GTUITextures;
@@ -272,21 +267,21 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
     public IStructureDefinition<? extends EyeOfHarmonyInjector> getStructure_EM() {
         return StructureDefinition.<EyeOfHarmonyInjector>builder()
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(sBlockCasingsTT, 6))
-            .addElement('B', ofBlock(sBlockCasingsTT, 7))
-            .addElement('C', ofBlock(sBlockCasings1, 13))
-            .addElement('D', ofBlock(sBlockCasings9, 14))
-            .addElement('E', ofBlock(sBlockCasingsTT, 8))
-            .addElement('F', ofBlock(sBlockCasings10, 12))
-            .addElement('G', ofBlock(sBlockCasingsTT, 4))
-            .addElement('H', ofBlock(sBlockCasings10, 8))
-            .addElement('I', ofBlock(sBlockCasings1, 12))
+            .addElement('A', Casings.ContainmentFieldGenerator.asElement())
+            .addElement('B', Casings.MolecularCoil.asElement())
+            .addElement('C', Casings.DimensionalInjectionCasing.asElement())
+            .addElement('D', Casings.ParticleBeamGuidancePipeCasing.asElement())
+            .addElement('E', Casings.HollowCasing.asElement())
+            .addElement('F', Casings.BackgroundRadiationAbsorbentCasing.asElement())
+            .addElement('G', Casings.MolecularCasing.asElement())
+            .addElement('H', Casings.NeutroniumStabilizationCasing.asElement())
+            .addElement('I', Casings.DimensionallyTranscendentCasing.asElement())
             .addElement('J', ofFrame(Materials.CosmicNeutronium))
-            .addElement('K', ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('L', ofBlock(sBlockCasings1, 14))
-            .addElement('M', ofBlock(sBlockCasings10, 7))
-            .addElement('N', ofBlock(sBlockCasings3, 12))
-            .addElement('O', ofBlock(sBlockCasings9, 11))
+            .addElement('K', GTNLCasings.FusionGlass.asElement())
+            .addElement('L', Casings.DimensionalBridge.asElement())
+            .addElement('M', Casings.ActiveNeutroniumCasing.asElement())
+            .addElement('N', Casings.RadiationProofMachineCasing.asElement())
+            .addElement('O', Casings.HeatResistantTriniumPlatedCasing.asElement())
             .addElement(
                 'P',
                 ofChain(
@@ -294,7 +289,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
                         .hint(1)
                         .atLeast(InputHatch, OutputHatch, InputBus, OutputBus, Energy.or(ExoticEnergy))
                         .buildAndChain(),
-                    onElementPass(e -> e.mCountCasing++, ofBlock(sBlockCasingsTT, 0))))
+                    onElementPass(e -> e.mCountCasing++, Casings.HighPowerCasing.asElement())))
             .build();
     }
 

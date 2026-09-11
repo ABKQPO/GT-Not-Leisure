@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static com.science.gtnl.loader.BlockLoader.metaCasing;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static kubatech.loaders.BlockLoader.defcCasingBlock;
 
@@ -23,12 +22,13 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -98,8 +98,8 @@ public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCr
     public IStructureDefinition<DraconicFusionCrafting> getStructureDefinition() {
         return StructureDefinition.<DraconicFusionCrafting>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
-            .addElement('B', StructureUtility.ofBlock(metaCasing, 14))
+            .addElement('A', Casings.HeatResistantTriniumPlatedCasing.asElement())
+            .addElement('B', GTNLCasings.PressureBalancedCasing.asElement())
             .addElement(
                 'C',
                 buildHatchAdder(DraconicFusionCrafting.class).casingIndex(getCasingTextureID())
@@ -115,7 +115,7 @@ public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCr
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 12))))
+                            Casings.BackgroundRadiationAbsorbentCasing.asElement())))
             .addElement(
                 'D',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
@@ -131,7 +131,7 @@ public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCr
                         -1,
                         (t, m) -> t.tierCasing = m,
                         t -> t.tierCasing)))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockGlass1, 1))
+            .addElement('E', Casings.ElectronPermeableNeutroniumCoatedGlass.asElement())
             .build();
     }
 
@@ -171,7 +171,7 @@ public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCr
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 12);
+        return Casings.BackgroundRadiationAbsorbentCasing.getTextureId();
     }
 
     @Override

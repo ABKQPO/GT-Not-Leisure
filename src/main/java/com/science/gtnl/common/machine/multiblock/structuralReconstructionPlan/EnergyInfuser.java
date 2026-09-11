@@ -50,14 +50,15 @@ import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.MultiChildWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.EnergyInfuserGui;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import cofh.api.energy.IEnergyContainerItem;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.SoundResource;
@@ -75,7 +76,6 @@ import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import tectech.thing.casing.TTCasingsContainer;
 import tectech.thing.metaTileEntity.hatch.MTEHatchEnergyMulti;
 import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 
@@ -131,17 +131,16 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
     public IStructureDefinition<EnergyInfuser> getStructure_EM() {
         return StructureDefinition.<EnergyInfuser>builder()
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
-            .addElement('A', ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('B', ofBlock(TTCasingsContainer.sBlockCasingsTT, 0))
+            .addElement('A', GTNLCasings.FusionGlass.asElement())
+            .addElement('B', Casings.HighPowerCasing.asElement())
             .addElement(
                 'C',
                 buildHatchAdder(EnergyInfuser.class)
                     .atLeast(InputHatch, InputBus, OutputBus, Maintenance, Energy.or(ExoticEnergy))
                     .casingIndex(1028)
                     .hint(1)
-                    .buildAndChain(
-                        onElementPass(x -> ++x.mCountCasing, ofBlock(TTCasingsContainer.sBlockCasingsTT, 4))))
-            .addElement('D', ofBlock(TTCasingsContainer.sBlockCasingsTT, 7))
+                    .buildAndChain(onElementPass(x -> ++x.mCountCasing, Casings.MolecularCasing.asElement())))
+            .addElement('D', Casings.MolecularCoil.asElement())
             .addElement('E', ofFrame(Materials.Osmiridium))
             .addElement('F', ofBlock(lscLapotronicEnergyUnit, 6))
             .build();

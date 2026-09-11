@@ -13,11 +13,11 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -59,8 +59,8 @@ public class ChemicalComplex extends WirelessEnergyMultiMachineBase<ChemicalComp
     public IStructureDefinition<ChemicalComplex> getStructureDefinition() {
         return StructureDefinition.<ChemicalComplex>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 19))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
+            .addElement('A', GTNLCasings.ChemicallyResistantCasing.asElement())
+            .addElement('B', Casings.PressureContainmentCasing.asElement())
             .addElement(
                 'C',
                 GTStructureChannels.HEATING_COIL.use(
@@ -80,11 +80,10 @@ public class ChemicalComplex extends WirelessEnergyMultiMachineBase<ChemicalComp
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0))))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockGlass1, 0))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.ChemicallyInertMachineCasing.asElement())))
+            .addElement('E', Casings.NaquadriaReinforcedWaterPlantCasing.asElement())
+            .addElement('F', Casings.ChemicalGradeGlass.asElement())
             .addElement('G', GTStructureUtility.ofFrame(Materials.StainlessSteel))
             .addElement('H', GTStructureUtility.ofFrame(Materials.NaquadahAlloy))
             .addElement('I', GTStructureUtility.ofFrame(Materials.Polytetrafluoroethylene))
@@ -142,7 +141,7 @@ public class ChemicalComplex extends WirelessEnergyMultiMachineBase<ChemicalComp
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 0);
+        return Casings.ChemicallyInertMachineCasing.getTextureId();
     }
 
     @Override

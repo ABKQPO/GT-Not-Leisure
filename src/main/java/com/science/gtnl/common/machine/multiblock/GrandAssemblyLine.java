@@ -2,9 +2,7 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -154,7 +152,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     public IStructureDefinition<GrandAssemblyLine> getStructureDefinition() {
         return StructureDefinition.<GrandAssemblyLine>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(sBlockCasings2, 5))
+            .addElement('A', Casings.AssemblyLineCasing.asElement())
             .addElement(
                 'B',
                 buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
@@ -162,8 +160,8 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                     .atLeast(HatchElement.InputBus)
                     .buildAndChain(
                         StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 3))))
-            .addElement('C', StructureUtility.ofBlock(sBlockCasingsTT, 2))
+                            .onElementPass(x -> ++x.mCountCasing, Casings.AdvancedComputerCasing.asElement())))
+            .addElement('C', Casings.ComputerHeatVent.asElement())
             .addElement(
                 'D',
                 buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
@@ -171,7 +169,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                     .atLeast(HatchElement.OutputBus)
                     .buildAndChain(
                         StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 3))))
+                            .onElementPass(x -> ++x.mCountCasing, Casings.AdvancedComputerCasing.asElement())))
             .addElement(
                 'E',
                 buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
@@ -199,8 +197,8 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                         DataHatchElement.DataAccess)
                     .buildAndChain(
                         StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 3))))
-            .addElement('G', StructureUtility.ofBlock(sBlockCasings2, 9))
+                            .onElementPass(x -> ++x.mCountCasing, Casings.AdvancedComputerCasing.asElement())))
+            .addElement('G', Casings.AssemblerMachineCasing.asElement())
             .build();
     }
 

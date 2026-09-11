@@ -22,6 +22,7 @@ import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachi
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -37,7 +38,6 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
-import tectech.thing.casing.TTCasingsContainer;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -73,12 +73,12 @@ public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> {
         return StructureDefinition.<CrackerHub>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 10))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 12))
+            .addElement('B', Casings.PressureContainmentCasing.asElement())
+            .addElement('C', Casings.TungstensteelPipeCasing.asElement())
+            .addElement('D', Casings.GrateMachineCasing.asElement())
+            .addElement('E', Casings.CleanStainlessSteelMachineCasing.asElement())
+            .addElement('F', Casings.StainlessSteelTurbineCasing.asElement())
+            .addElement('G', Casings.TungstensteelTurbineCasing.asElement())
             .addElement(
                 'H',
                 GTStructureChannels.HEATING_COIL.use(
@@ -98,14 +98,13 @@ public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> {
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
-            .addElement('J', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsBA0, 6))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.RadiantNaquadahAlloyCasing.asElement())))
+            .addElement('J', Casings.ZPMSuperconductorPrimaryTeslaWindings.asElement())
             .addElement('K', GTStructureUtility.ofFrame(Materials.StainlessSteel))
             .addElement('L', GTStructureUtility.ofFrame(Materials.Ultimet))
             .addElement('M', GTStructureUtility.ofFrame(Materials.HSSS))
-            .addElement('N', StructureUtility.ofBlock(GregTechAPI.sBlockReinforced, 10))
+            .addElement('N', Casings.NaquadahReinforcedBlock.asElement())
             .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 9))
             .addElement('P', HatchElement.Muffler.newAny(getCasingTextureID(), 16))
             .build();
@@ -207,7 +206,7 @@ public class CrackerHub extends WirelessEnergyMultiMachineBase<CrackerHub> {
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
+        return Casings.RadiantNaquadahAlloyCasing.getTextureId();
     }
 
     @Override

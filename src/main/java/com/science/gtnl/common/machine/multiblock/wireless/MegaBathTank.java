@@ -18,14 +18,14 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
@@ -43,7 +43,6 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -71,10 +70,10 @@ public class MegaBathTank extends WirelessEnergyMultiMachineBase<MegaBathTank> {
     public IStructureDefinition<MegaBathTank> getStructureDefinition() {
         return StructureDefinition.<MegaBathTank>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 1))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
-            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 12))
-            .addElement('D', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+            .addElement('A', Casings.LaserContainmentCasing.asElement())
+            .addElement('B', Casings.FilterMachineCasing.asElement())
+            .addElement('C', GTNLCasings.TungstensteelGearbox.asElement())
+            .addElement('D', GTNLCasings.NeutroniumPipeCasing.asElement())
             .addElement(
                 'E',
                 GTStructureUtility.buildHatchAdder(MegaBathTank.class)
@@ -91,12 +90,12 @@ public class MegaBathTank extends WirelessEnergyMultiMachineBase<MegaBathTank> {
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 5))))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 9))
-            .addElement('G', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 4))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
-            .addElement('I', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockGlass1, 0))
+                            Casings.ReinforcedSterileWaterPlantCasing.asElement())))
+            .addElement('F', Casings.ReactiveGasContainmentCasing.asElement())
+            .addElement('G', Casings.WashPlantCasing.asElement())
+            .addElement('H', Casings.PTFEPipeCasing.asElement())
+            .addElement('I', GTNLCasings.FusionGlass.asElement())
+            .addElement('J', Casings.ChemicalGradeGlass.asElement())
             .addElement('K', GTStructureUtility.ofFrame(Materials.DarkSteel))
             .addElement('L', GTStructureUtility.ofFrame(Materials.Naquadria))
             .build();
@@ -165,7 +164,7 @@ public class MegaBathTank extends WirelessEnergyMultiMachineBase<MegaBathTank> {
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings9, 5);
+        return Casings.ReinforcedSterileWaterPlantCasing.getTextureId();
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,7 +24,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
@@ -76,12 +75,12 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
     public IStructureDefinition<IndustrialArcaneAssembler> getStructureDefinition() {
         return StructureDefinition.<IndustrialArcaneAssembler>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
-            .addElement('B', StructureUtility.ofBlock(sBlockCasingsTT, 0))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 13))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 6))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 8))
+            .addElement('A', Casings.ActiveNeutroniumCasing.asElement())
+            .addElement('B', Casings.HighPowerCasing.asElement())
+            .addElement('C', Casings.DimensionalInjectionCasing.asElement())
+            .addElement('D', Casings.AdvancedIridiumPlatedMachineCasing.asElement())
+            .addElement('E', Casings.NeutroniumCasing.asElement())
+            .addElement('F', Casings.NeutroniumStabilizationCasing.asElement())
             .addElement(
                 'G',
                 GTStructureUtility.buildHatchAdder(IndustrialArcaneAssembler.class)
@@ -93,14 +92,13 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
                         HatchElement.OutputBus,
                         HatchElement.Energy.or(HatchElement.ExoticEnergy))
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))))
-            .addElement('H', StructureUtility.ofBlock(sBlockCasingsTT, 4))
-            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.PressureContainmentCasing.asElement())))
+            .addElement('H', Casings.MolecularCasing.asElement())
+            .addElement('I', Casings.NaquadriaReinforcedWaterPlantCasing.asElement())
             .addElement('J', GTStructureUtility.ofFrame(Materials.Neutronium))
             .addElement('K', GTStructureUtility.ofFrame(Materials.DarkIron))
-            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockGlass1, 2))
+            .addElement('L', Casings.OmniPurposeInfinityFusedGlass.asElement())
             .build();
     }
 
@@ -202,7 +200,7 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 3);
+        return Casings.PressureContainmentCasing.getTextureId();
     }
 
     @Override

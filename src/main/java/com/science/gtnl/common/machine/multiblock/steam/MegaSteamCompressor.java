@@ -26,6 +26,7 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -79,15 +80,15 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
                 'B',
                 StructureUtility.ofChain(
                     buildSteamWirelessInput(MegaSteamCompressor.class)
-                        .casingIndex(StructureUtils.getTextureIndex(sBlockCasings2, 0))
+                        .casingIndex(Casings.SolidSteelMachineCasing.getTextureId())
                         .hint(1)
                         .build(),
                     buildSteamInput(MegaSteamCompressor.class)
-                        .casingIndex(StructureUtils.getTextureIndex(sBlockCasings2, 0))
+                        .casingIndex(Casings.SolidSteelMachineCasing.getTextureId())
                         .hint(1)
                         .build(),
                     GTStructureUtility.buildHatchAdder(MegaSteamCompressor.class)
-                        .casingIndex(StructureUtils.getTextureIndex(sBlockCasings2, 0))
+                        .casingIndex(Casings.SolidSteelMachineCasing.getTextureId())
                         .hint(1)
                         .atLeast(
                             SteamHatchElement.InputBus_Steam,
@@ -99,8 +100,8 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
                             HatchElement.Maintenance)
                         .buildAndChain(
                             StructureUtility
-                                .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasings2, 0)))))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10))
+                                .onElementPass(x -> ++x.mCountCasing, Casings.SolidSteelMachineCasing.asElement()))))
+            .addElement('C', Casings.BronzePlatedBricks.asElement())
             .addElement('D', GTStructureUtility.ofFrame(Materials.Steel))
             .build();
     }

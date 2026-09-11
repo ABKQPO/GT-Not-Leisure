@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.List;
 
@@ -14,11 +13,11 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -32,7 +31,6 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtnhlanth.common.register.LanthItemList;
-import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.casing.BlockGTCasingsTT;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -62,12 +60,12 @@ public class AetronPressor extends WirelessEnergyMultiMachineBase<AetronPressor>
     public IStructureDefinition<AetronPressor> getStructureDefinition() {
         return StructureDefinition.<AetronPressor>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('A', Casings.ContainmentFieldGenerator.asElement())
             .addElement('B', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
-            .addElement('C', StructureUtility.ofBlock(sBlockCasingsTT, 0))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 14))
-            .addElement('E', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 9))
+            .addElement('C', Casings.HighPowerCasing.asElement())
+            .addElement('D', Casings.ParticleBeamGuidancePipeCasing.asElement())
+            .addElement('E', GTNLCasings.HyperCore.asElement())
+            .addElement('F', Casings.ReactiveGasContainmentCasing.asElement())
             .addElement(
                 'G',
                 GTStructureUtility.buildHatchAdder(AetronPressor.class)
@@ -80,13 +78,12 @@ public class AetronPressor extends WirelessEnergyMultiMachineBase<AetronPressor>
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 4))))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
-            .addElement('I', StructureUtility.ofBlock(BlockQuantumGlass.INSTANCE, 0))
-            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 12))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.MolecularCasing.asElement())))
+            .addElement('H', Casings.RadiantNaquadahAlloyCasing.asElement())
+            .addElement('I', Casings.QuantumGlass.asElement())
+            .addElement('J', Casings.BackgroundRadiationAbsorbentCasing.asElement())
             .addElement('K', GTStructureUtility.ofFrame(Materials.Tritanium))
-            .addElement('L', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
+            .addElement('L', GTNLCasings.FusionGlass.asElement())
             .build();
     }
 

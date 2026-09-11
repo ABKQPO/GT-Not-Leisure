@@ -50,6 +50,7 @@ import bartworks.util.Coords;
 import bartworks.util.ResultWrongSievert;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Mods;
@@ -159,7 +160,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
         return StructureDefinition.<Incubator>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
+            .addElement('B', Casings.FilterMachineCasing.asElement())
             .addElement(
                 'C',
                 StructureUtility.ofChain(

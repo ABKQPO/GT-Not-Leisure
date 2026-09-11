@@ -43,8 +43,8 @@ import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import WayofTime.alchemicalWizardry.common.entity.projectile.EntityMeteor;
 import cpw.mods.fml.common.Optional;
-import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
@@ -208,7 +208,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     public IStructureDefinition<BloodSoulSacrificialArray> getStructureDefinition() {
         return StructureDefinition.<BloodSoulSacrificialArray>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(Loaders.FRF_Casings, 0))
+            .addElement('A', Casings.NaquadahFuelRefineryCasing.asElement())
             .addElement(
                 'B',
                 GTStructureUtility.buildHatchAdder(BloodSoulSacrificialArray.class)
@@ -216,8 +216,8 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
                     .atLeast(HatchElement.Maintenance, HatchElement.InputBus, HatchElement.OutputBus, ParallelCon)
                     .casingIndex(getCasingTextureID())
                     .buildAndChain(GregTechAPI.sBlockCasings8, 10))
-            .addElement('C', StructureUtility.ofBlock(gtPlusPlus.core.block.ModBlocks.blockSpecialMultiCasings, 13))
-            .addElement('D', StructureUtility.ofBlock(gtPlusPlus.core.block.ModBlocks.blockCasingsMisc, 9))
+            .addElement('C', Casings.ParticleContainmentCasing.asElement())
+            .addElement('D', Casings.MatterFabricatorCasing.asElement())
             .addElement('E', StructureUtility.ofBlockAnyMeta(BLOODY_ICHORIUM))
             .addElement('F', StructureUtility.ofBlockAnyMeta(BLOODY_THAUMIUM))
             .addElement('G', StructureUtility.ofBlockAnyMeta(BLOODY_VOID))
@@ -425,7 +425,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
+        return Casings.RadiantNaquadahAlloyCasing.getTextureId();
     }
 
     @Override

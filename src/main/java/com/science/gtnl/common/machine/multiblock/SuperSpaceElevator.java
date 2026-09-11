@@ -6,9 +6,6 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.loader.BlockLoader.metaBlockGlow;
-import static com.science.gtnl.loader.BlockLoader.metaCasing;
-import static gregtech.api.GregTechAPI.sBlockCasings1;
 import static gregtech.api.GregTechAPI.sBlockCasingsDyson;
 import static gregtech.api.GregTechAPI.sBlockCasingsSE;
 import static gregtech.api.enums.HatchElement.Dynamo;
@@ -24,7 +21,6 @@ import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 import static gregtech.common.misc.WirelessNetworkManager.getUserEU;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -65,6 +61,7 @@ import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.SuperSpaceElevatorGui;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.utils.StructureUtils;
@@ -73,6 +70,7 @@ import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
@@ -302,9 +300,9 @@ public class SuperSpaceElevator extends TTMultiblockBase
         return StructureDefinition.<SuperSpaceElevator>builder()
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shapeBase))
             .addShape(STRUCTURE_PIECE_EXTENDED, transpose(shapeExtended))
-            .addElement('A', ofBlock(metaCasing, 18))
+            .addElement('A', GTNLCasings.HyperCore.asElement())
             .addElement('B', ofBlock(sBlockCasingsSE, 2))
-            .addElement('C', ofBlock(sBlockCasingsTT, 0))
+            .addElement('C', Casings.HighPowerCasing.asElement())
             .addElement(
                 'D',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
@@ -323,7 +321,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
                     .buildAndChain(onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasingsSE, 0))))
             .addElement('G', ofBlock(sBlockCasingsDyson, 9))
             .addElement('H', ofBlock(sBlockCasingsSE, 1))
-            .addElement('I', ofBlock(sBlockCasings1, 12))
+            .addElement('I', Casings.DimensionallyTranscendentCasing.asElement())
             .addElement('J', ofBlock(BlockLoader.defcCasingBlock, 7))
             .addElement('K', ofBlock(bw_realglas, 14))
             .addElement(
@@ -369,7 +367,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
             .addElement(
                 'N',
                 ElevatorUtil.ofBlockAdder(SuperSpaceElevator::addCable, GregTechAPI.sSpaceElevatorCable, 0))
-            .addElement('O', ofBlock(metaBlockGlow, 31))
+            .addElement('O', GTNLCasings.WhiteLamp.asElement())
             .build();
     }
 

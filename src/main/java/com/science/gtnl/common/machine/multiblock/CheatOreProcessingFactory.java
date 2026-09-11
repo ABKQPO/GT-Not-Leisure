@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 
 import bartworks.system.material.WerkstoffLoader;
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -128,16 +127,16 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasings, 31_766 + 300))
             .addElement('B', GTStructureUtility.ofFrame(Materials.Bronze))
-            .addElement('C', StructureUtility.ofBlock(blockCasingsMisc, 2))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 2))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 12))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 13))
+            .addElement('C', Casings.HeatResistantCokeOvenCasing.asElement())
+            .addElement('D', Casings.BronzeGearBoxCasing.asElement())
+            .addElement('E', Casings.BronzePipeCasing.asElement())
+            .addElement('F', Casings.BronzeFireboxCasing.asElement())
             .addElement(
                 'G',
                 StructureUtility.ofChain(
                     GTStructureUtility.buildHatchAdder(CheatOreProcessingFactory.class)
                         .atLeast(HatchElement.Maintenance, HatchElement.InputBus, HatchElement.OutputBus)
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10))
+                        .casingIndex(Casings.BronzePlatedBricks.getTextureId())
                         .hint(1)
                         .build(),
                     StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasingsAdvanced, 31_766 + 300)))
@@ -230,7 +229,7 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
+        return Casings.BronzePlatedBricks.getTextureId();
     }
 
     @Override

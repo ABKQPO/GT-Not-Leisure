@@ -21,7 +21,6 @@ import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 
-import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
@@ -38,7 +37,6 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
-import gtPlusPlus.core.block.ModBlocks;
 import kekztech.common.Blocks;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -76,23 +74,23 @@ public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> imp
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', StructureUtility.ofBlockAnyMeta(Blocks.yszUnit))
             .addElement('B', HatchElement.Muffler.newAny(getCasingTextureID(), 8))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 12))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 13))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 14))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 2))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
-            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 9))
-            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 10))
-            .addElement('K', StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 2))
+            .addElement('C', Casings.SolidSteelMachineCasing.asElement())
+            .addElement('D', Casings.BronzePipeCasing.asElement())
+            .addElement('E', Casings.SteelPipeCasing.asElement())
+            .addElement('F', Casings.TitaniumPipeCasing.asElement())
+            .addElement('G', Casings.StableTitaniumMachineCasing.asElement())
+            .addElement('H', Casings.CleanStainlessSteelMachineCasing.asElement())
+            .addElement('I', Casings.TurbineCasing.asElement())
+            .addElement('J', Casings.StainlessSteelTurbineCasing.asElement())
+            .addElement('K', Casings.MultiUseCasing.asElement())
             .addElement(
                 'L',
                 GTStructureChannels.HEATING_COIL.use(
                     GTStructureUtility.activeCoils(
                         GTStructureUtility
                             .ofCoil(PetrochemicalPlant::setMCoilLevel, PetrochemicalPlant::getMCoilLevel))))
-            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
-            .addElement('N', StructureUtility.ofBlock(ModBlocks.blockCasingsTieredGTPP, 4))
+            .addElement('M', Casings.PTFEPipeCasing.asElement())
+            .addElement('N', Casings.IntegralEncasementEV.asElement())
             .addElement(
                 'O',
                 GTStructureUtility.buildHatchAdder(PetrochemicalPlant.class)
@@ -106,20 +104,19 @@ public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> imp
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))))
-            .addElement('P', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 4))
-            .addElement('Q', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 14))
-            .addElement('R', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 0))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.PressureContainmentCasing.asElement())))
+            .addElement('P', Casings.ElectricCompressorCasing.asElement())
+            .addElement('Q', Casings.BlastSmelterHeatContainmentCoil.asElement())
+            .addElement('R', Casings.PBIPipeCasing.asElement())
             .addElement('S', GTStructureUtility.ofFrame(Materials.NiobiumTitanium))
             .addElement('T', GTStructureUtility.ofFrame(Materials.StainlessSteel))
             .addElement('U', GTStructureUtility.ofFrame(Materials.Steel))
             .addElement('V', GTStructureUtility.ofFrame(Materials.RedstoneAlloy))
             .addElement('W', GTStructureUtility.ofFrame(Materials.Vanadium))
-            .addElement('X', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 4))
-            .addElement('Y', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 11))
-            .addElement('Z', StructureUtility.ofBlock(ModBlocks.blockCustomMachineCasings, 1))
+            .addElement('X', Casings.WashPlantCasing.asElement())
+            .addElement('Y', Casings.MultitankExteriorCasing.asElement())
+            .addElement('Z', Casings.SturdyAluminiumMachineCasing.asElement())
             .addElement('0', Casings.ReinforcedGlass.asElement())
             .build();
     }
@@ -254,7 +251,7 @@ public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> imp
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 3);
+        return Casings.PressureContainmentCasing.getTextureId();
     }
 
     @Override

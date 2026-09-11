@@ -65,6 +65,7 @@ import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.AssemblerMatrixGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.config.MainConfig;
@@ -964,29 +965,26 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                     .buildAndChain(BlockLoader.metaCasing02, 4))
             .addElement(
                 'B',
-                StructureUtility.ofChain(
-                    GTStructureUtility.chainAllGlasses(),
-                    StructureUtility.ofBlock(BlockLoader.metaCasing02, 5)))
+                StructureUtility
+                    .ofChain(GTStructureUtility.chainAllGlasses(), GTNLCasings.AssemblerMatrixWall.asElement()))
             .addElement(
                 'C',
                 StructureUtility.ofChain(
-                    StructureUtility
-                        .onElementPass(t -> t.mCountCasing++, StructureUtility.ofBlock(BlockLoader.metaCasing02, 5)),
+                    StructureUtility.onElementPass(t -> t.mCountCasing++, GTNLCasings.AssemblerMatrixWall.asElement()),
                     StructureUtility.onElementPass(
                         t -> t.mCountPatternCasing++,
-                        StructureUtility.ofBlock(BlockLoader.metaCasing02, 6)),
+                        GTNLCasings.AssemblerMatrixPatternCore.asElement()),
                     StructureUtility.onElementPass(
                         t -> t.mCountCrafterCasing++,
-                        StructureUtility.ofBlock(BlockLoader.metaCasing02, 7)),
+                        GTNLCasings.AssemblerMatrixCrafterCore.asElement()),
                     StructureUtility.onElementPass(
                         t -> t.mCountSingularityCrafterCasing++,
-                        StructureUtility.ofBlock(BlockLoader.metaCasing02, 8)),
+                        GTNLCasings.AssemblerMatrixSingularityCrafterCore.asElement()),
                     StructureUtility.onElementPass(
                         t -> t.mCountDebugCrafterCasing++,
-                        StructureUtility.ofBlock(BlockLoader.metaCasing02, 18)),
-                    StructureUtility.onElementPass(
-                        t -> t.mCountSpeedCasing++,
-                        StructureUtility.ofBlock(BlockLoader.metaCasing02, 9))))
+                        GTNLCasings.AssemblerMatrixDebugCrafterCore.asElement()),
+                    StructureUtility
+                        .onElementPass(t -> t.mCountSpeedCasing++, GTNLCasings.AssemblerMatrixSpeedCore.asElement())))
             .build();
     }
 
@@ -1005,7 +1003,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
     @Override
     public int getCasingTextureID() {
-        return GTUtility.getTextureId((byte) 116, (byte) 36);
+        return GTNLCasings.AssemblerMatrixFrame.getTextureId();
     }
 
     @Override

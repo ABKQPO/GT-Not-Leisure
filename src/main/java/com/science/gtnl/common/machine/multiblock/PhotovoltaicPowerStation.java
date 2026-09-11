@@ -24,6 +24,7 @@ import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -269,7 +270,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
 
         @Override
         public int getCasingTextureIndex() {
-            return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0);
+            return Casings.SolidSteelMachineCasing.getTextureId();
         }
 
         @Override
@@ -342,7 +343,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
 
         @Override
         public int getCasingTextureIndex() {
-            return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 2);
+            return Casings.StableTitaniumMachineCasing.getTextureId();
         }
 
         @Override
@@ -415,7 +416,7 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
 
         @Override
         public int getCasingTextureIndex() {
-            return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 0);
+            return Casings.RobustTungstenSteelMachineCasing.getTextureId();
         }
 
         @Override

@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
 
 import java.util.ArrayList;
@@ -29,6 +28,7 @@ import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.TAE;
@@ -130,7 +130,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
                         .hint(1)
                         .build(),
                     StructureUtility
-                        .onElementPass(LargeDistillery::onCasingFound, StructureUtility.ofBlock(blockCasingsMisc, 11))))
+                        .onElementPass(LargeDistillery::onCasingFound, Casings.MultitankExteriorCasing.asElement())))
             .addElement(
                 'B',
                 StructureUtility.ofChain(
@@ -146,15 +146,15 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
                     GTStructureUtility
                         .ofHatchAdder(LargeDistillery::addMaintenanceToMachineList, getCasingTextureID(), 1),
                     StructureUtility
-                        .onElementPass(LargeDistillery::onCasingFound, StructureUtility.ofBlock(blockCasingsMisc, 11))))
-            .addElement('C', StructureUtility.ofBlock(sBlockCasings2, 13))
+                        .onElementPass(LargeDistillery::onCasingFound, Casings.MultitankExteriorCasing.asElement())))
+            .addElement('C', Casings.SteelPipeCasing.asElement())
             .addElement(
                 'D',
                 StructureUtility.ofChain(
                     GTStructureUtility.ofHatchAdder(LargeDistillery::addOutputToMachineList, getCasingTextureID(), 1),
                     GTStructureUtility
                         .ofHatchAdder(LargeDistillery::addMaintenanceToMachineList, getCasingTextureID(), 1),
-                    StructureUtility.ofBlock(blockCasingsMisc, 11),
+                    Casings.MultitankExteriorCasing.asElement(),
                     StructureUtility.isAir()))
             .addElement(
                 'E',
@@ -164,7 +164,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
                     .hint(1)
                     .disallowOnly(ForgeDirection.UP)
                     .buildAndChain(blockCasingsMisc, 11))
-            .addElement('F', StructureUtility.ofBlock(blockCasingsMisc, 11))
+            .addElement('F', Casings.MultitankExteriorCasing.asElement())
             .addElement('G', HatchElement.Muffler.newAny(getCasingTextureID(), 1))
             .build();
     }

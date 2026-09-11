@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings5;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.util.List;
@@ -19,6 +18,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
@@ -30,9 +30,7 @@ import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
-import tectech.thing.casing.TTCasingsContainer;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class AdvancedMassFabricator extends WirelessEnergyMultiMachineBase<AdvancedMassFabricator>
@@ -63,9 +61,9 @@ public class AdvancedMassFabricator extends WirelessEnergyMultiMachineBase<Advan
     public IStructureDefinition<AdvancedMassFabricator> getStructureDefinition() {
         return StructureDefinition.<AdvancedMassFabricator>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(sBlockCasings5, 8))
-            .addElement('B', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 8))
-            .addElement('C', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 8))
+            .addElement('A', Casings.ElectrumFluxCoilBlock.asElement())
+            .addElement('B', Casings.HollowCasing.asElement())
+            .addElement('C', Casings.HarmonicPhononTransmissionConduit.asElement())
             .addElement(
                 'D',
                 buildHatchAdder(AdvancedMassFabricator.class)
@@ -80,10 +78,9 @@ public class AdvancedMassFabricator extends WirelessEnergyMultiMachineBase<Advan
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(ModBlocks.blockCasings5Misc, 3))))
-            .addElement('E', StructureUtility.ofBlock(ModBlocks.blockCasings5Misc, 15))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.ElementalConfinementShell.asElement())))
+            .addElement('E', Casings.ForceFieldGlass.asElement())
             .build();
     }
 

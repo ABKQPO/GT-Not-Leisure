@@ -6,6 +6,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.block.blocks.BlockArtificialStarRender;
 import com.science.gtnl.common.block.blocks.BlockBeamFormer;
 import com.science.gtnl.common.block.blocks.BlockCardboardBox;
@@ -384,194 +385,260 @@ public class BlockLoader {
         GTNLItemList.CompressedStargateCoil8.set(ItemBlockBase.initMetaBlock(44));
         GTNLItemList.CompressedStargateCoil9.set(ItemBlockBase.initMetaBlock(45));
 
-        GTNLItemList.FortifyGlowstone.set(ItemBlockGlow.initMetaBlockGlow(0));
-        GTNLItemList.BlackLamp.set(ItemBlockGlow.initMetaBlockGlow(1));
+        GTNLItemList.FortifyGlowstone.set(ItemBlockGlow.initMetaBlockGlow(GTNLCasings.FortifyGlowstone.getBlockMeta()));
+        GTNLItemList.BlackLamp.set(ItemBlockGlow.initMetaBlockGlow(GTNLCasings.BlackLamp.getBlockMeta()));
         GTNLItemList.BlackLampBorderless.set(
-            ItemBlockGlow
-                .initMetaBlockGlow(2, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
-        GTNLItemList.PinkLamp.set(ItemBlockGlow.initMetaBlockGlow(3));
+            ItemBlockGlow.initMetaBlockGlow(
+                GTNLCasings.BlackLampBorderless.getBlockMeta(),
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
+        GTNLItemList.PinkLamp.set(ItemBlockGlow.initMetaBlockGlow(GTNLCasings.PinkLamp.getBlockMeta()));
         GTNLItemList.PinkLampBorderless.set(
-            ItemBlockGlow
-                .initMetaBlockGlow(4, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
-        GTNLItemList.RedLamp.set(ItemBlockGlow.initMetaBlockGlow(5));
+            ItemBlockGlow.initMetaBlockGlow(
+                GTNLCasings.PinkLampBorderless.getBlockMeta(),
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
+        GTNLItemList.RedLamp.set(ItemBlockGlow.initMetaBlockGlow(GTNLCasings.RedLamp.getBlockMeta()));
         GTNLItemList.RedLampBorderless.set(
-            ItemBlockGlow
-                .initMetaBlockGlow(6, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
-        GTNLItemList.OrangeLamp.set(ItemBlockGlow.initMetaBlockGlow(7));
+            ItemBlockGlow.initMetaBlockGlow(
+                GTNLCasings.RedLampBorderless.getBlockMeta(),
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
+        GTNLItemList.OrangeLamp.set(ItemBlockGlow.initMetaBlockGlow(GTNLCasings.OrangeLamp.getBlockMeta()));
         GTNLItemList.OrangeLampBorderless.set(
-            ItemBlockGlow
-                .initMetaBlockGlow(8, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
-        GTNLItemList.YellowLamp.set(ItemBlockGlow.initMetaBlockGlow(9));
+            ItemBlockGlow.initMetaBlockGlow(
+                GTNLCasings.OrangeLampBorderless.getBlockMeta(),
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
+        GTNLItemList.YellowLamp.set(ItemBlockGlow.initMetaBlockGlow(GTNLCasings.YellowLamp.getBlockMeta()));
         GTNLItemList.YellowLampBorderless.set(
-            ItemBlockGlow
-                .initMetaBlockGlow(10, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
-        GTNLItemList.GreenLamp.set(ItemBlockGlow.initMetaBlockGlow(11));
+            ItemBlockGlow.initMetaBlockGlow(
+                GTNLCasings.YellowLampBorderless.getBlockMeta(),
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
+        GTNLItemList.GreenLamp.set(ItemBlockGlow.initMetaBlockGlow(GTNLCasings.GreenLamp.getBlockMeta()));
         GTNLItemList.GreenLampBorderless.set(
-            ItemBlockGlow
-                .initMetaBlockGlow(12, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
-        GTNLItemList.LimeLamp.set(ItemBlockGlow.initMetaBlockGlow(13));
+            ItemBlockGlow.initMetaBlockGlow(
+                GTNLCasings.GreenLampBorderless.getBlockMeta(),
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
+        GTNLItemList.LimeLamp.set(ItemBlockGlow.initMetaBlockGlow(GTNLCasings.LimeLamp.getBlockMeta()));
         GTNLItemList.LimeLampBorderless.set(
-            ItemBlockGlow
-                .initMetaBlockGlow(14, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
-        GTNLItemList.BlueLamp.set(ItemBlockGlow.initMetaBlockGlow(15));
+            ItemBlockGlow.initMetaBlockGlow(
+                GTNLCasings.LimeLampBorderless.getBlockMeta(),
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
+        GTNLItemList.BlueLamp.set(ItemBlockGlow.initMetaBlockGlow(GTNLCasings.BlueLamp.getBlockMeta()));
         GTNLItemList.BlueLampBorderless.set(
-            ItemBlockGlow
-                .initMetaBlockGlow(16, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
-        GTNLItemList.LightBlueLamp.set(ItemBlockGlow.initMetaBlockGlow(17));
+            ItemBlockGlow.initMetaBlockGlow(
+                GTNLCasings.BlueLampBorderless.getBlockMeta(),
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
+        GTNLItemList.LightBlueLamp.set(ItemBlockGlow.initMetaBlockGlow(GTNLCasings.LightBlueLamp.getBlockMeta()));
         GTNLItemList.LightBlueLampBorderless.set(
-            ItemBlockGlow
-                .initMetaBlockGlow(18, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
-        GTNLItemList.CyanLamp.set(ItemBlockGlow.initMetaBlockGlow(19));
+            ItemBlockGlow.initMetaBlockGlow(
+                GTNLCasings.LightBlueLampBorderless.getBlockMeta(),
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
+        GTNLItemList.CyanLamp.set(ItemBlockGlow.initMetaBlockGlow(GTNLCasings.CyanLamp.getBlockMeta()));
         GTNLItemList.CyanLampBorderless.set(
-            ItemBlockGlow
-                .initMetaBlockGlow(20, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
-        GTNLItemList.BrownLamp.set(ItemBlockGlow.initMetaBlockGlow(21));
+            ItemBlockGlow.initMetaBlockGlow(
+                GTNLCasings.CyanLampBorderless.getBlockMeta(),
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
+        GTNLItemList.BrownLamp.set(ItemBlockGlow.initMetaBlockGlow(GTNLCasings.BrownLamp.getBlockMeta()));
         GTNLItemList.BrownLampBorderless.set(
-            ItemBlockGlow
-                .initMetaBlockGlow(22, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
-        GTNLItemList.MagentaLamp.set(ItemBlockGlow.initMetaBlockGlow(23));
+            ItemBlockGlow.initMetaBlockGlow(
+                GTNLCasings.BrownLampBorderless.getBlockMeta(),
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
+        GTNLItemList.MagentaLamp.set(ItemBlockGlow.initMetaBlockGlow(GTNLCasings.MagentaLamp.getBlockMeta()));
         GTNLItemList.MagentaLampBorderless.set(
-            ItemBlockGlow
-                .initMetaBlockGlow(24, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
-        GTNLItemList.PurpleLamp.set(ItemBlockGlow.initMetaBlockGlow(25));
+            ItemBlockGlow.initMetaBlockGlow(
+                GTNLCasings.MagentaLampBorderless.getBlockMeta(),
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
+        GTNLItemList.PurpleLamp.set(ItemBlockGlow.initMetaBlockGlow(GTNLCasings.PurpleLamp.getBlockMeta()));
         GTNLItemList.PurpleLampBorderless.set(
-            ItemBlockGlow
-                .initMetaBlockGlow(26, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
-        GTNLItemList.GrayLamp.set(ItemBlockGlow.initMetaBlockGlow(27));
+            ItemBlockGlow.initMetaBlockGlow(
+                GTNLCasings.PurpleLampBorderless.getBlockMeta(),
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
+        GTNLItemList.GrayLamp.set(ItemBlockGlow.initMetaBlockGlow(GTNLCasings.GrayLamp.getBlockMeta()));
         GTNLItemList.GrayLampBorderless.set(
-            ItemBlockGlow
-                .initMetaBlockGlow(28, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
-        GTNLItemList.LightGrayLamp.set(ItemBlockGlow.initMetaBlockGlow(29));
+            ItemBlockGlow.initMetaBlockGlow(
+                GTNLCasings.GrayLampBorderless.getBlockMeta(),
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
+        GTNLItemList.LightGrayLamp.set(ItemBlockGlow.initMetaBlockGlow(GTNLCasings.LightGrayLamp.getBlockMeta()));
         GTNLItemList.LightGrayLampBorderless.set(
-            ItemBlockGlow
-                .initMetaBlockGlow(30, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
-        GTNLItemList.WhiteLamp.set(ItemBlockGlow.initMetaBlockGlow(31));
+            ItemBlockGlow.initMetaBlockGlow(
+                GTNLCasings.LightGrayLampBorderless.getBlockMeta(),
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
+        GTNLItemList.WhiteLamp.set(ItemBlockGlow.initMetaBlockGlow(GTNLCasings.WhiteLamp.getBlockMeta()));
         GTNLItemList.WhiteLampBorderless.set(
-            ItemBlockGlow
-                .initMetaBlockGlow(32, new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
+            ItemBlockGlow.initMetaBlockGlow(
+                GTNLCasings.WhiteLampBorderless.getBlockMeta(),
+                new String[] { StatCollector.translateToLocal("gtnl.block.lamp.borderless") }));
 
-        GTNLItemList.GaiaGlass.set(ItemBlockGlass.initMetaBlockGlass(0));
-        GTNLItemList.TerraGlass.set(ItemBlockGlass.initMetaBlockGlass(1));
-        GTNLItemList.FusionGlass.set(ItemBlockGlass.initMetaBlockGlass(2));
-        GTNLItemList.ConcentratingSieveMesh.set(ItemBlockGlass.initMetaBlockGlass(3));
+        GTNLItemList.GaiaGlass.set(ItemBlockGlass.initMetaBlockGlass(GTNLCasings.GaiaGlass.getBlockMeta()));
+        GTNLItemList.TerraGlass.set(ItemBlockGlass.initMetaBlockGlass(GTNLCasings.TerraGlass.getBlockMeta()));
+        GTNLItemList.FusionGlass.set(ItemBlockGlass.initMetaBlockGlass(GTNLCasings.FusionGlass.getBlockMeta()));
+        GTNLItemList.ConcentratingSieveMesh
+            .set(ItemBlockGlass.initMetaBlockGlass(GTNLCasings.ConcentratingSieveMesh.getBlockMeta()));
 
-        GTNLItemList.BronzeBrickCasing.set(ItemBlockColumn.initMetaBlock(0));
-        GTNLItemList.SteelBrickCasing.set(ItemBlockColumn.initMetaBlock(1));
-        GTNLItemList.CrushingWheels.set(ItemBlockColumn.initMetaBlock(2));
-        GTNLItemList.SolarBoilingCell.set(ItemBlockColumn.initMetaBlock(3));
-        GTNLItemList.BronzeMachineFrame.set(ItemBlockColumn.initMetaBlock(4));
-        GTNLItemList.SteelMachineFrame.set(ItemBlockColumn.initMetaBlock(5));
+        GTNLItemList.BronzeBrickCasing.set(ItemBlockColumn.initMetaBlock(GTNLCasings.BronzeBrickCasing.getBlockMeta()));
+        GTNLItemList.SteelBrickCasing.set(ItemBlockColumn.initMetaBlock(GTNLCasings.SteelBrickCasing.getBlockMeta()));
+        GTNLItemList.CrushingWheels.set(ItemBlockColumn.initMetaBlock(GTNLCasings.CrushingWheels.getBlockMeta()));
+        GTNLItemList.SolarBoilingCell.set(ItemBlockColumn.initMetaBlock(GTNLCasings.SolarBoilingCell.getBlockMeta()));
+        GTNLItemList.BronzeMachineFrame
+            .set(ItemBlockColumn.initMetaBlock(GTNLCasings.BronzeMachineFrame.getBlockMeta()));
+        GTNLItemList.SteelMachineFrame.set(ItemBlockColumn.initMetaBlock(GTNLCasings.SteelMachineFrame.getBlockMeta()));
 
-        GTNLItemList.TestCasing.set(MetaItemBlockCasing.initMetaBlockCasing(0, metaCasing));
-        GTNLItemList.SteamAssemblyCasing.set(MetaItemBlockCasing.initMetaBlockCasing(1, metaCasing));
-        GTNLItemList.HeatVent.set(MetaItemBlockCasing.initMetaBlockCasing(2, metaCasing));
-        GTNLItemList.SlicingBlades.set(MetaItemBlockCasing.initMetaBlockCasing(3, metaCasing));
-        GTNLItemList.NeutroniumPipeCasing.set(MetaItemBlockCasing.initMetaBlockCasing(4, metaCasing));
-        GTNLItemList.NeutroniumGearbox.set(MetaItemBlockCasing.initMetaBlockCasing(5, metaCasing));
-        GTNLItemList.Laser_Cooling_Casing.set(MetaItemBlockCasing.initMetaBlockCasing(6, metaCasing));
-        GTNLItemList.Antifreeze_Heatproof_Machine_Casing.set(MetaItemBlockCasing.initMetaBlockCasing(7, metaCasing));
-        GTNLItemList.MolybdenumDisilicideCoil.set(MetaItemBlockCasing.initMetaBlockCasing(8, metaCasing));
-        GTNLItemList.EnergeticPhotovoltaicBlock.set(MetaItemBlockCasing.initMetaBlockCasing(9, metaCasing));
-        GTNLItemList.AdvancedPhotovoltaicBlock.set(MetaItemBlockCasing.initMetaBlockCasing(10, metaCasing));
-        GTNLItemList.VibrantPhotovoltaicBlock.set(MetaItemBlockCasing.initMetaBlockCasing(11, metaCasing));
-        GTNLItemList.TungstensteelGearbox.set(MetaItemBlockCasing.initMetaBlockCasing(12, metaCasing));
-        GTNLItemList.DimensionallyStableCasing.set(MetaItemBlockCasing.initMetaBlockCasing(13, metaCasing));
-        GTNLItemList.PressureBalancedCasing.set(MetaItemBlockCasing.initMetaBlockCasing(14, metaCasing));
-        GTNLItemList.ABSUltraSolidCasing.set(MetaItemBlockCasing.initMetaBlockCasing(15, metaCasing));
-        GTNLItemList.GravitationalFocusingLensBlock.set(MetaItemBlockCasing.initMetaBlockCasing(16, metaCasing));
-        GTNLItemList.GaiaStabilizedForceFieldCasing.set(MetaItemBlockCasing.initMetaBlockCasing(17, metaCasing));
-        GTNLItemList.HyperCore.set(MetaItemBlockCasing.initMetaBlockCasing(18, metaCasing));
-        GTNLItemList.ChemicallyResistantCasing.set(MetaItemBlockCasing.initMetaBlockCasing(19, metaCasing));
-        GTNLItemList.UltraPoweredCasing.set(MetaItemBlockCasing.initMetaBlockCasing(20, metaCasing));
-        GTNLItemList.SteamgateRingBlock.set(MetaItemBlockCasing.initMetaBlockCasing(21, metaCasing));
-        GTNLItemList.SteamgateChevronBlock.set(MetaItemBlockCasing.initMetaBlockCasing(22, metaCasing));
-        GTNLItemList.IronReinforcedWood.set(MetaItemBlockCasing.initMetaBlockCasing(23, metaCasing));
-        GTNLItemList.BronzeReinforcedWood.set(MetaItemBlockCasing.initMetaBlockCasing(24, metaCasing));
-        GTNLItemList.SteelReinforcedWood.set(MetaItemBlockCasing.initMetaBlockCasing(25, metaCasing));
-        GTNLItemList.BreelPipeCasing.set(MetaItemBlockCasing.initMetaBlockCasing(26, metaCasing));
-        GTNLItemList.StronzeWrappedCasing.set(MetaItemBlockCasing.initMetaBlockCasing(27, metaCasing));
-        GTNLItemList.HydraulicAssemblingCasing.set(MetaItemBlockCasing.initMetaBlockCasing(28, metaCasing));
-        GTNLItemList.HyperPressureBreelCasing.set(MetaItemBlockCasing.initMetaBlockCasing(29, metaCasing));
-        GTNLItemList.BreelPlatedCasing.set(MetaItemBlockCasing.initMetaBlockCasing(30, metaCasing));
-        GTNLItemList.SteamCompactPipeCasing.set(MetaItemBlockCasing.initMetaBlockCasing(31, metaCasing));
-        GTNLItemList.VibrationSafeCasing.set(MetaItemBlockCasing.initMetaBlockCasing(0, metaCasing02));
-        GTNLItemList.IndustrialSteamCasing.set(MetaItemBlockCasing.initMetaBlockCasing(1, metaCasing02));
-        GTNLItemList.AdvancedIndustrialSteamCasing.set(MetaItemBlockCasing.initMetaBlockCasing(2, metaCasing02));
-        GTNLItemList.StainlessSteelGearBox.set(MetaItemBlockCasing.initMetaBlockCasing(3, metaCasing02));
+        GTNLItemList.TestCasing
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.TestCasing.getBlockMeta(), metaCasing));
+        GTNLItemList.SteamAssemblyCasing
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.SteamAssemblyCasing.getBlockMeta(), metaCasing));
+        GTNLItemList.HeatVent
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.HeatVent.getBlockMeta(), metaCasing));
+        GTNLItemList.SlicingBlades
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.SlicingBlades.getBlockMeta(), metaCasing));
+        GTNLItemList.NeutroniumPipeCasing
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.NeutroniumPipeCasing.getBlockMeta(), metaCasing));
+        GTNLItemList.NeutroniumGearbox
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.NeutroniumGearbox.getBlockMeta(), metaCasing));
+        GTNLItemList.Laser_Cooling_Casing
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.Laser_Cooling_Casing.getBlockMeta(), metaCasing));
+        GTNLItemList.Antifreeze_Heatproof_Machine_Casing.set(
+            MetaItemBlockCasing
+                .initMetaBlockCasing(GTNLCasings.Antifreeze_Heatproof_Machine_Casing.getBlockMeta(), metaCasing));
+        GTNLItemList.MolybdenumDisilicideCoil.set(
+            MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.MolybdenumDisilicideCoil.getBlockMeta(), metaCasing));
+        GTNLItemList.EnergeticPhotovoltaicBlock.set(
+            MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.EnergeticPhotovoltaicBlock.getBlockMeta(), metaCasing));
+        GTNLItemList.AdvancedPhotovoltaicBlock.set(
+            MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.AdvancedPhotovoltaicBlock.getBlockMeta(), metaCasing));
+        GTNLItemList.VibrantPhotovoltaicBlock.set(
+            MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.VibrantPhotovoltaicBlock.getBlockMeta(), metaCasing));
+        GTNLItemList.TungstensteelGearbox
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.TungstensteelGearbox.getBlockMeta(), metaCasing));
+        GTNLItemList.DimensionallyStableCasing.set(
+            MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.DimensionallyStableCasing.getBlockMeta(), metaCasing));
+        GTNLItemList.PressureBalancedCasing.set(
+            MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.PressureBalancedCasing.getBlockMeta(), metaCasing));
+        GTNLItemList.ABSUltraSolidCasing
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.ABSUltraSolidCasing.getBlockMeta(), metaCasing));
+        GTNLItemList.GravitationalFocusingLensBlock.set(
+            MetaItemBlockCasing
+                .initMetaBlockCasing(GTNLCasings.GravitationalFocusingLensBlock.getBlockMeta(), metaCasing));
+        GTNLItemList.GaiaStabilizedForceFieldCasing.set(
+            MetaItemBlockCasing
+                .initMetaBlockCasing(GTNLCasings.GaiaStabilizedForceFieldCasing.getBlockMeta(), metaCasing));
+        GTNLItemList.HyperCore
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.HyperCore.getBlockMeta(), metaCasing));
+        GTNLItemList.ChemicallyResistantCasing.set(
+            MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.ChemicallyResistantCasing.getBlockMeta(), metaCasing));
+        GTNLItemList.UltraPoweredCasing
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.UltraPoweredCasing.getBlockMeta(), metaCasing));
+        GTNLItemList.SteamgateRingBlock
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.SteamgateRingBlock.getBlockMeta(), metaCasing));
+        GTNLItemList.SteamgateChevronBlock
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.SteamgateChevronBlock.getBlockMeta(), metaCasing));
+        GTNLItemList.IronReinforcedWood
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.IronReinforcedWood.getBlockMeta(), metaCasing));
+        GTNLItemList.BronzeReinforcedWood
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.BronzeReinforcedWood.getBlockMeta(), metaCasing));
+        GTNLItemList.SteelReinforcedWood
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.SteelReinforcedWood.getBlockMeta(), metaCasing));
+        GTNLItemList.BreelPipeCasing
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.BreelPipeCasing.getBlockMeta(), metaCasing));
+        GTNLItemList.StronzeWrappedCasing
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.StronzeWrappedCasing.getBlockMeta(), metaCasing));
+        GTNLItemList.HydraulicAssemblingCasing.set(
+            MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.HydraulicAssemblingCasing.getBlockMeta(), metaCasing));
+        GTNLItemList.HyperPressureBreelCasing.set(
+            MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.HyperPressureBreelCasing.getBlockMeta(), metaCasing));
+        GTNLItemList.BreelPlatedCasing
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.BreelPlatedCasing.getBlockMeta(), metaCasing));
+        GTNLItemList.SteamCompactPipeCasing.set(
+            MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.SteamCompactPipeCasing.getBlockMeta(), metaCasing));
+        GTNLItemList.VibrationSafeCasing
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.VibrationSafeCasing.getBlockMeta(), metaCasing02));
+        GTNLItemList.IndustrialSteamCasing.set(
+            MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.IndustrialSteamCasing.getBlockMeta(), metaCasing02));
+        GTNLItemList.AdvancedIndustrialSteamCasing.set(
+            MetaItemBlockCasing
+                .initMetaBlockCasing(GTNLCasings.AdvancedIndustrialSteamCasing.getBlockMeta(), metaCasing02));
+        GTNLItemList.StainlessSteelGearBox.set(
+            MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.StainlessSteelGearBox.getBlockMeta(), metaCasing02));
 
-        GTNLItemList.AssemblerMatrixFrame.set(MetaItemBlockCasing.initMetaBlockCasing(4, metaCasing02));
-        GTNLItemList.AssemblerMatrixWall.set(MetaItemBlockCasing.initMetaBlockCasing(5, metaCasing02));
+        GTNLItemList.AssemblerMatrixFrame.set(
+            MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.AssemblerMatrixFrame.getBlockMeta(), metaCasing02));
+        GTNLItemList.AssemblerMatrixWall
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.AssemblerMatrixWall.getBlockMeta(), metaCasing02));
 
         GTNLItemList.AssemblerMatrixPatternCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
-                6,
+                GTNLCasings.AssemblerMatrixPatternCore.getBlockMeta(),
                 metaCasing02,
                 new String[] { StatCollector.translateToLocal("gtnl.block.assembler_matrix_pattern_core.tooltip.0") }));
         GTNLItemList.AssemblerMatrixCrafterCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
-                7,
+                GTNLCasings.AssemblerMatrixCrafterCore.getBlockMeta(),
                 metaCasing02,
                 new String[] { StatCollector.translateToLocal("gtnl.block.assembler_matrix_crafter_core.tooltip.0") }));
         GTNLItemList.AssemblerMatrixSingularityCrafterCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
-                8,
+                GTNLCasings.AssemblerMatrixSingularityCrafterCore.getBlockMeta(),
                 metaCasing02,
                 new String[] { StatCollector
                     .translateToLocal("gtnl.block.assembler_matrix_singularity_crafter_core.tooltip.0") }));
         GTNLItemList.AssemblerMatrixSpeedCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
-                9,
+                GTNLCasings.AssemblerMatrixSpeedCore.getBlockMeta(),
                 metaCasing02,
                 new String[] { StatCollector.translateToLocal("gtnl.block.assembler_matrix_speed_core.tooltip.0") }));
         GTNLItemList.QuantumComputerCasing.set(
             MetaItemBlockCasing.initMetaBlockCasing(
-                10,
+                GTNLCasings.QuantumComputerCasing.getBlockMeta(),
                 metaCasing02,
                 new String[] { StatCollector.translateToLocalFormatted(
                     "gtnl.block.quantum_computer_casing.tooltip.0",
                     MainConfig.machine.quantum_computer.maxMultiblockSize,
                     MainConfig.machine.quantum_computer.maxMultiblockSize,
                     MainConfig.machine.quantum_computer.maxMultiblockSize) }));
-        GTNLItemList.QuantumComputerUnit.set(MetaItemBlockCasing.initMetaBlockCasing(11, metaCasing02));
-        GTNLItemList.QuantumComputerCraftingStorage128M.set(MetaItemBlockCasing.initMetaBlockCasing(12, metaCasing02));
-        GTNLItemList.QuantumComputerCraftingStorage256M.set(MetaItemBlockCasing.initMetaBlockCasing(13, metaCasing02));
+        GTNLItemList.QuantumComputerUnit
+            .set(MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.QuantumComputerUnit.getBlockMeta(), metaCasing02));
+        GTNLItemList.QuantumComputerCraftingStorage128M.set(
+            MetaItemBlockCasing
+                .initMetaBlockCasing(GTNLCasings.QuantumComputerCraftingStorage128M.getBlockMeta(), metaCasing02));
+        GTNLItemList.QuantumComputerCraftingStorage256M.set(
+            MetaItemBlockCasing
+                .initMetaBlockCasing(GTNLCasings.QuantumComputerCraftingStorage256M.getBlockMeta(), metaCasing02));
         GTNLItemList.QuantumComputerDataEntangler.set(
             MetaItemBlockCasing.initMetaBlockCasing(
-                14,
+                GTNLCasings.QuantumComputerDataEntangler.getBlockMeta(),
                 metaCasing02,
                 new String[] { StatCollector.translateToLocalFormatted(
                     "gtnl.block.quantum_computer_data_entangler.tooltip.0",
                     MainConfig.machine.quantum_computer.maxDataEntangler) }));
         GTNLItemList.QuantumComputerAccelerator.set(
             MetaItemBlockCasing.initMetaBlockCasing(
-                15,
+                GTNLCasings.QuantumComputerAccelerator.getBlockMeta(),
                 metaCasing02,
                 new String[] { StatCollector.translateToLocal("gtnl.block.quantum_computer_accelerator.tooltip.0") }));
         GTNLItemList.QuantumComputerMultiThreader.set(
             MetaItemBlockCasing.initMetaBlockCasing(
-                16,
+                GTNLCasings.QuantumComputerMultiThreader.getBlockMeta(),
                 metaCasing02,
                 new String[] { StatCollector.translateToLocalFormatted(
                     "gtnl.block.quantum_computer_multi_threader.tooltip.0",
                     MainConfig.machine.quantum_computer.maxMultiThreader) }));
         GTNLItemList.QuantumComputerCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
-                17,
+                GTNLCasings.QuantumComputerCore.getBlockMeta(),
                 metaCasing02,
                 new String[] { StatCollector.translateToLocal("gtnl.block.quantum_computer_core.tooltip.0") }));
         GTNLItemList.AssemblerMatrixDebugCrafterCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
-                18,
+                GTNLCasings.AssemblerMatrixDebugCrafterCore.getBlockMeta(),
                 metaCasing02,
                 new String[] {
                     StatCollector.translateToLocal("gtnl.block.assembler_matrix_debug_crafter_core.tooltip.0") }));
         GTNLItemList.QuantumComputerSingularityCore.set(
             MetaItemBlockCasing.initMetaBlockCasing(
-                19,
+                GTNLCasings.QuantumComputerSingularityCore.getBlockMeta(),
                 metaCasing02,
                 new String[] {
                     StatCollector.translateToLocal("gtnl.block.quantum_computer_singularity_core.tooltip.0") }));
-        GTNLItemList.CompressedFurnaceCasing.set(MetaItemBlockCasing.initMetaBlockCasing(20, metaCasing02));
+        GTNLItemList.CompressedFurnaceCasing.set(
+            MetaItemBlockCasing.initMetaBlockCasing(GTNLCasings.CompressedFurnaceCasing.getBlockMeta(), metaCasing02));
     }
 
     public static void registry() {
