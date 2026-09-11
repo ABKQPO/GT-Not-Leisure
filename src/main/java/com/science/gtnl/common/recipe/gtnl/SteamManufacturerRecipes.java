@@ -41,7 +41,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockAlloyGlass", 3),
+                ItemList.ReinforcedGlass.get(3),
                 GTOreDictUnificator.get(OrePrefixes.pipeSmall, Materials.Steel, 2),
                 GTOreDictUnificator.get(OrePrefixes.plateTriple, Materials.Silver, 3),
                 ItemList.Hull_HP_Bricks.get(1))

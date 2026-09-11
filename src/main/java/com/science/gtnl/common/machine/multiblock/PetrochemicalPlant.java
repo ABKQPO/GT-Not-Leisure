@@ -21,11 +21,10 @@ import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -121,9 +120,7 @@ public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> imp
             .addElement('X', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 4))
             .addElement('Y', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 11))
             .addElement('Z', StructureUtility.ofBlock(ModBlocks.blockCustomMachineCasings, 1))
-            .addElement(
-                '0',
-                StructureUtility.ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
+            .addElement('0', Casings.ReinforcedGlass.asElement())
             .build();
     }
 

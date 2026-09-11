@@ -22,10 +22,9 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -73,9 +72,7 @@ public class VacuumFreezer extends MultiMachineBase<VacuumFreezer> implements IS
         return StructureDefinition.<VacuumFreezer>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 2))
-            .addElement(
-                'B',
-                StructureUtility.ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
+            .addElement('B', Casings.ReinforcedGlass.asElement())
             .addElement(
                 'C',
                 buildHatchAdder(VacuumFreezer.class).casingIndex(getCasingTextureID())

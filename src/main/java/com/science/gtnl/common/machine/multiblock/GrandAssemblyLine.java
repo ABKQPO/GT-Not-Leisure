@@ -59,9 +59,8 @@ import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
-import cpw.mods.fml.common.registry.GameRegistry;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoidingMode;
 import gregtech.api.gui.modularui.GTUITextures;
@@ -185,10 +184,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                         ParallelCon,
                         DataHatchElement.DataAccess)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility
-                                .ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.ReinforcedGlass.asElement())))
             .addElement(
                 'F',
                 buildHatchAdder(GrandAssemblyLine.class).casingIndex(getCasingTextureID())
