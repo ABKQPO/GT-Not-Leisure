@@ -15,7 +15,7 @@
         "Count:3": 1,
         "Damage:2": 0,
         "OreDict:8": "",
-        "id:8": "sciencenotleisure:item.RoyalGel"
+        "id:8": "sciencenotleisure:royal_gel"
       },
       "isMain:1": 0,
       "isSilent:1": 0,
@@ -51,7 +51,7 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:item.RoyalGel"
+          "id:8": "sciencenotleisure:royal_gel"
         }
       },
       "taskID:8": "bq_standard:optional_retrieval"
@@ -68,7 +68,7 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:item.LuckyHorseshoe"
+          "id:8": "sciencenotleisure:lucky_horseshoe"
         }
       },
       "taskID:8": "bq_standard:optional_retrieval"
@@ -85,7 +85,7 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:item.SlimeSaddle"
+          "id:8": "sciencenotleisure:slime_saddle"
         }
       },
       "taskID:8": "bq_standard:optional_retrieval"
@@ -102,7 +102,7 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:tile.WaterCandle"
+          "id:8": "sciencenotleisure:water_candle"
         }
       },
       "taskID:8": "bq_standard:optional_retrieval"

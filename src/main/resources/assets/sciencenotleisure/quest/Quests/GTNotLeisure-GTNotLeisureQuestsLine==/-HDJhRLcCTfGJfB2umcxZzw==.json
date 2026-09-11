@@ -15,7 +15,7 @@
         "Count:3": 1,
         "Damage:2": 0,
         "OreDict:8": "",
-        "id:8": "sciencenotleisure:item.NetherTeleporter",
+        "id:8": "sciencenotleisure:nether_teleporter",
         "tag:10": {
           "lastUse:4": 1911256
         }
@@ -54,7 +54,7 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:item.NetherTeleporter",
+          "id:8": "sciencenotleisure:nether_teleporter",
           "tag:10": {
             "lastUse:4": 1911256
           }

@@ -22,7 +22,7 @@
         "Count:3": 1,
         "Damage:2": 89,
         "OreDict:8": "",
-        "id:8": "sciencenotleisure:MetaItem"
+        "id:8": "sciencenotleisure:meta_item"
       },
       "isMain:1": 1,
       "isSilent:1": 0,
@@ -58,49 +58,49 @@
           "Count:3": 1,
           "Damage:2": 89,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:MetaItem"
+          "id:8": "sciencenotleisure:meta_item"
         },
         "1:10": {
           "Count:3": 1,
           "Damage:2": 90,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:MetaItem"
+          "id:8": "sciencenotleisure:meta_item"
         },
         "2:10": {
           "Count:3": 1,
           "Damage:2": 92,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:MetaItem"
+          "id:8": "sciencenotleisure:meta_item"
         },
         "3:10": {
           "Count:3": 1,
           "Damage:2": 93,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:MetaItem"
+          "id:8": "sciencenotleisure:meta_item"
         },
         "4:10": {
           "Count:3": 1,
           "Damage:2": 91,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:MetaItem"
+          "id:8": "sciencenotleisure:meta_item"
         },
         "5:10": {
           "Count:3": 1,
           "Damage:2": 98,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:MetaItem"
+          "id:8": "sciencenotleisure:meta_item"
         },
         "6:10": {
           "Count:3": 1,
           "Damage:2": 99,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:MetaItem"
+          "id:8": "sciencenotleisure:meta_item"
         },
         "7:10": {
           "Count:3": 1,
           "Damage:2": 94,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:MetaItem"
+          "id:8": "sciencenotleisure:meta_item"
         }
       },
       "taskID:8": "bq_standard:optional_retrieval"

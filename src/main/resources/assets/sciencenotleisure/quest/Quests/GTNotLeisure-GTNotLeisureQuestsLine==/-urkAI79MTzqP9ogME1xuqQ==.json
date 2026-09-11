@@ -15,7 +15,7 @@
         "Count:3": 1,
         "Damage:2": 0,
         "OreDict:8": "",
-        "id:8": "sciencenotleisure:tile.SearedLadder"
+        "id:8": "sciencenotleisure:seared_ladder"
       },
       "isMain:1": 0,
       "isSilent:1": 0,
@@ -51,7 +51,7 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:tile.SearedLadder"
+          "id:8": "sciencenotleisure:seared_ladder"
         }
       },
       "taskID:8": "bq_standard:optional_retrieval"

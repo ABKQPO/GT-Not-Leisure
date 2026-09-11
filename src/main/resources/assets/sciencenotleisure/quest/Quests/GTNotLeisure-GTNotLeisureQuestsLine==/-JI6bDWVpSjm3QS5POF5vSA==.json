@@ -15,7 +15,7 @@
         "Count:3": 1,
         "Damage:2": 0,
         "OreDict:8": "",
-        "id:8": "sciencenotleisure:item.InfinityWaterBucket"
+        "id:8": "sciencenotleisure:infinity_water_bucket"
       },
       "isMain:1": 0,
       "isSilent:1": 0,
@@ -51,25 +51,25 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:item.InfinityWaterBucket"
+          "id:8": "sciencenotleisure:infinity_water_bucket"
         },
         "1:10": {
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:item.InfinityLavaBucket"
+          "id:8": "sciencenotleisure:infinity_lava_bucket"
         },
         "2:10": {
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:item.InfinityHoneyBucket"
+          "id:8": "sciencenotleisure:infinity_honey_bucket"
         },
         "3:10": {
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:item.InfinityShimmerBucket"
+          "id:8": "sciencenotleisure:infinity_shimmer_bucket"
         }
       },
       "taskID:8": "bq_standard:optional_retrieval"
@@ -86,7 +86,7 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:item.SuperstrongSponge"
+          "id:8": "sciencenotleisure:superstrong_sponge"
         }
       },
       "taskID:8": "bq_standard:optional_retrieval"
