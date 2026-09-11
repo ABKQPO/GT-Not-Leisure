@@ -19,11 +19,10 @@ import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachi
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -98,9 +97,7 @@ public class NeutroniumWireCutting extends WirelessEnergyMultiMachineBase<Neutro
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
             .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 2))
-            .addElement(
-                'C',
-                StructureUtility.ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
+            .addElement('C', Casings.ReinforcedGlass.asElement())
             .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 6))
             .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
             .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
