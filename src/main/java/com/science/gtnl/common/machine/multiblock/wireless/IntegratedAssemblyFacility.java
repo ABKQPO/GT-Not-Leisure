@@ -27,9 +27,9 @@ import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.science.gtnl.api.IControllerUpgrade;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.GTNLControllerUpgradeGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
@@ -42,6 +42,7 @@ import goodgenerator.items.GGMaterial;
 import goodgenerator.loader.Loaders;
 import goodgenerator.util.ItemRefer;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.ItemList;
@@ -162,7 +163,7 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
     public IStructureDefinition<IntegratedAssemblyFacility> getStructureDefinition() {
         return StructureDefinition.<IntegratedAssemblyFacility>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+            .addElement('A', GTNLCasings.NeutroniumPipeCasing.asElement())
             .addElement(
                 'B',
                 GTNLStructureChannels.COMPONENT_ASSEMBLY_LINE_CASING.use(
@@ -182,26 +183,26 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
                         HatchElement.InputHatch,
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
-                    .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 7))
+                    .casingIndex(Casings.AdvancedIridiumPlatedMachineCasing.getTextureId())
                     .hint(1)
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 6))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 1))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 12))
+                            Casings.AdvancedIridiumPlatedMachineCasing.asElement())))
+            .addElement('D', Casings.ProcessorMachineCasing.asElement())
+            .addElement('E', Casings.AdvancedFilterCasing.asElement())
+            .addElement('F', Casings.ReinforcedPhotolithographicFrameworkCasing.asElement())
             .addElement('G', GTStructureUtility.ofFrame(Materials.Neutronium))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
-            .addElement('I', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
+            .addElement('H', Casings.ExtremeDensitySpaceBendingCasing.asElement())
+            .addElement('I', Casings.ShieldedAcceleratorCasing.asElement())
             .addElement('J', StructureUtility.ofBlock(LanthItemList.NIOBIUM_CAVITY_CASING, 0))
-            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
+            .addElement('K', Casings.AssemblyLineCasing.asElement())
             .addElement('L', StructureUtility.ofBlock(LanthItemList.COOLANT_DELIVERY_CASING, 0))
             .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsSE, 1))
             .addElement('N', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('O', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 31))
-            .addElement('P', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 9))
-            .addElement('Q', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('O', GTNLCasings.WhiteLamp.asElement())
+            .addElement('P', Casings.HermeticCasing9.asElement())
+            .addElement('Q', GTNLCasings.NeutroniumGearbox.asElement())
             .addElement('R', GTStructureUtility.ofFrame(Materials.CosmicNeutronium))
             .build();
     }
@@ -245,7 +246,7 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 7);
+        return Casings.AdvancedIridiumPlatedMachineCasing.getTextureId();
     }
 
     @Override

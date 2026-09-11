@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings4;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.util.Arrays;
@@ -25,6 +24,7 @@ import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
@@ -83,8 +83,9 @@ public class LargePacker extends GTMMultiMachineBase<LargePacker> implements ISu
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasings4, 0))))
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            Casings.RobustTungstenSteelMachineCasing.asElement())))
             .build();
     }
 
@@ -157,7 +158,7 @@ public class LargePacker extends GTMMultiMachineBase<LargePacker> implements ISu
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings4, 0);
+        return Casings.RobustTungstenSteelMachineCasing.getTextureId();
     }
 
     @Override

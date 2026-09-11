@@ -2,9 +2,7 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
 
 import java.util.List;
 import java.util.Set;
@@ -28,6 +26,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
@@ -76,7 +75,7 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
     public IStructureDefinition<LargeSolidifier> getStructureDefinition() {
         return StructureDefinition.<LargeSolidifier>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(sBlockCasings2, 13))
+            .addElement('A', Casings.SteelPipeCasing.asElement())
             .addElement(
                 'B',
                 buildHatchAdder(LargeSolidifier.class).casingIndex(getCasingTextureID())
@@ -90,8 +89,7 @@ public class LargeSolidifier extends GTMMultiMachineBase<LargeSolidifier> implem
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasings2Misc, 4))))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.WashPlantCasing.asElement())))
             .build();
     }
 

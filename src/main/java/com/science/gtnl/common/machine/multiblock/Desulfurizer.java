@@ -17,7 +17,7 @@ import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -65,10 +65,10 @@ public class Desulfurizer extends MultiMachineBase<Desulfurizer> implements ISur
     public IStructureDefinition<Desulfurizer> getStructureDefinition() {
         return StructureDefinition.<Desulfurizer>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 11))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 12))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 13))
+            .addElement('A', Casings.HeatProofMachineCasing.asElement())
+            .addElement('B', Casings.SolidSteelMachineCasing.asElement())
+            .addElement('C', Casings.BronzePipeCasing.asElement())
+            .addElement('D', Casings.SteelPipeCasing.asElement())
             .addElement(
                 'E',
                 GTStructureUtility.buildHatchAdder(Desulfurizer.class)
@@ -78,18 +78,18 @@ public class Desulfurizer extends MultiMachineBase<Desulfurizer> implements ISur
                         HatchElement.OutputBus,
                         HatchElement.Maintenance,
                         HatchElement.Energy.or(HatchElement.ExoticEnergy))
-                    .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 1))
+                    .casingIndex(Casings.CleanStainlessSteelMachineCasing.getTextureId())
                     .hint(1)
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))))
+                            Casings.CleanStainlessSteelMachineCasing.asElement())))
             .addElement(
                 'F',
                 GTStructureChannels.HEATING_COIL.use(
                     GTStructureUtility.activeCoils(
                         GTStructureUtility.ofCoil(Desulfurizer::setMCoilLevel, Desulfurizer::getMCoilLevel))))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 2))
+            .addElement('G', Casings.HermeticCasing2.asElement())
             .build();
     }
 
@@ -168,7 +168,7 @@ public class Desulfurizer extends MultiMachineBase<Desulfurizer> implements ISur
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 1);
+        return Casings.CleanStainlessSteelMachineCasing.getTextureId();
     }
 
     @Override

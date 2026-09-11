@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,13 +20,13 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -78,22 +77,22 @@ public class CompoundExtremeCoolingUnit extends WirelessEnergyMultiMachineBase<C
         return StructureDefinition.<CompoundExtremeCoolingUnit>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 6))
-            .addElement('D', StructureUtility.ofBlock(BlockLoader.metaCasing, 7))
+            .addElement('B', GTNLCasings.NeutroniumPipeCasing.asElement())
+            .addElement('C', GTNLCasings.Laser_Cooling_Casing.asElement())
+            .addElement('D', GTNLCasings.Antifreeze_Heatproof_Machine_Casing.asElement())
             .addElement(
                 'E',
                 StructureUtility.ofBlockAnyMeta(
                     Block.getBlockFromItem(
                         MaterialsAlloy.AQUATIC_STEEL.getFrameBox(1)
                             .getItem())))
-            .addElement('F', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 1))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 1))
-            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
-            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
-            .addElement('K', StructureUtility.ofBlock(sBlockCasingsTT, 0))
-            .addElement('L', StructureUtility.ofBlock(sBlockCasingsTT, 8))
+            .addElement('F', GTNLCasings.FusionGlass.asElement())
+            .addElement('G', Casings.LaserContainmentCasing.asElement())
+            .addElement('H', Casings.FrostProofMachineCasing.asElement())
+            .addElement('I', Casings.TungstensteelPipeCasing.asElement())
+            .addElement('J', Casings.FilterMachineCasing.asElement())
+            .addElement('K', Casings.HighPowerCasing.asElement())
+            .addElement('L', Casings.HollowCasing.asElement())
             .addElement('M', GTStructureUtility.ofFrame(Materials.Neutronium))
             .addElement(
                 'N',
@@ -109,9 +108,8 @@ public class CompoundExtremeCoolingUnit extends WirelessEnergyMultiMachineBase<C
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 1))))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.FrostProofMachineCasing.asElement())))
             .build();
     }
 
@@ -173,7 +171,7 @@ public class CompoundExtremeCoolingUnit extends WirelessEnergyMultiMachineBase<C
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 1);
+        return Casings.FrostProofMachineCasing.getTextureId();
     }
 
     @Override

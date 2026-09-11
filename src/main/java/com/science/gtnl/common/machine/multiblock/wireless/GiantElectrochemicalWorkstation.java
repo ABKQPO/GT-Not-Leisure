@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
 
 import java.util.List;
 
@@ -19,6 +18,7 @@ import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachi
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -65,12 +65,12 @@ public class GiantElectrochemicalWorkstation extends WirelessEnergyMultiMachineB
     public IStructureDefinition<GiantElectrochemicalWorkstation> getStructureDefinition() {
         return StructureDefinition.<GiantElectrochemicalWorkstation>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 5))
-            .addElement('B', StructureUtility.ofBlock(blockCasingsMisc, 5))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 9))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 8))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement('A', Casings.CompressionPipeCasing.asElement())
+            .addElement('B', Casings.ElectrolyzerCasing.asElement())
+            .addElement('C', Casings.PTFEPipeCasing.asElement())
+            .addElement('D', Casings.HermeticCasing9.asElement())
+            .addElement('E', Casings.NeutroniumStabilizationCasing.asElement())
+            .addElement('F', Casings.AdvancedIridiumPlatedMachineCasing.asElement())
             .addElement(
                 'G',
                 GTStructureChannels.HEATING_COIL.use(
@@ -94,7 +94,7 @@ public class GiantElectrochemicalWorkstation extends WirelessEnergyMultiMachineB
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 7))))
+                            Casings.StabilizedNaquadahWaterPlantCasing.asElement())))
             .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockTintedGlass, 1))
             .addElement('J', GTStructureUtility.ofFrame(Materials.Polytetrafluoroethylene))
             .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsSE, 0))
@@ -159,7 +159,7 @@ public class GiantElectrochemicalWorkstation extends WirelessEnergyMultiMachineB
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings9, 7);
+        return Casings.StabilizedNaquadahWaterPlantCasing.getTextureId();
     }
 
     @Override

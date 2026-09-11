@@ -48,6 +48,7 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import bartworks.common.loaders.ItemRegistry;
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
@@ -65,7 +66,6 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import lombok.Getter;
 import lombok.Setter;
-import tectech.thing.casing.TTCasingsContainer;
 import tectech.thing.gui.TecTechUITextures;
 
 public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<EternalGregTechWorkshopModule> {
@@ -83,14 +83,14 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
         .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
         .addElement('A', StructureUtility.ofBlock(ItemRegistry.bw_realglas2, 0))
         .addElement('B', StructureUtility.ofBlock(Loaders.componentAssemblylineCasing, 12))
-        .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 13))
-        .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14))
-        .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
-        .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 14))
+        .addElement('C', Casings.DimensionalInjectionCasing.asElement())
+        .addElement('D', Casings.DimensionalBridge.asElement())
+        .addElement('E', Casings.ExtremeDensitySpaceBendingCasing.asElement())
+        .addElement('F', Casings.ParticleBeamGuidancePipeCasing.asElement())
         .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsSEMotor, 4))
         .addElement('H', GTStructureUtility.ofFrame(Materials.NaquadahAlloy))
-        .addElement('I', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 0))
-        .addElement('J', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 1))
+        .addElement('I', Casings.SingularityReinforcedStellarShieldingCasing.asElement())
+        .addElement('J', Casings.CelestialMatterGuidanceCasing.asElement())
         .addElement(
             'K',
             StructureUtility.ofChain(
@@ -106,7 +106,7 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 0)))))
+                            Casings.SingularityReinforcedStellarShieldingCasing.asElement()))))
         .build();
 
     public UUID ownerUUID;

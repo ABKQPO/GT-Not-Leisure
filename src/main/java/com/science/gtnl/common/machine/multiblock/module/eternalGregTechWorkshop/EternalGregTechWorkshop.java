@@ -76,6 +76,7 @@ import com.science.gtnl.utils.enums.BlockIcons;
 import bartworks.common.loaders.ItemRegistry;
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
@@ -99,7 +100,6 @@ import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
-import gtPlusPlus.core.block.ModBlocks;
 import lombok.Setter;
 import tectech.TecTech;
 import tectech.thing.casing.TTCasingsContainer;
@@ -178,18 +178,18 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         .addShape(STRUCTURE_PIECE_MAIN_BOTTOM, StructureUtility.transpose(shapeBottom))
         .addShape(STRUCTURE_PIECE_MAIN_EXTRA, StructureUtility.transpose(shapeExtra))
         .addShape(STRUCTURE_PIECE_MAIN_EXTRA_AIR, StructureUtility.transpose(shapeExtraAir))
-        .addElement('A', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 0))
+        .addElement('A', Casings.SingularityReinforcedStellarShieldingCasing.asElement())
         .addElement('B', StructureUtility.ofBlock(Loaders.componentAssemblylineCasing, 12))
-        .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 13))
+        .addElement('C', Casings.DimensionalInjectionCasing.asElement())
         .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsSEMotor, 4))
-        .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
-        .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
-        .addElement('G', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 1))
-        .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14))
-        .addElement('I', StructureUtility.ofBlock(ModBlocks.blockCasings5Misc, 14))
-        .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 14))
+        .addElement('E', Casings.ExtremeDensitySpaceBendingCasing.asElement())
+        .addElement('F', Casings.NaquadriaReinforcedWaterPlantCasing.asElement())
+        .addElement('G', Casings.CelestialMatterGuidanceCasing.asElement())
+        .addElement('H', Casings.DimensionalBridge.asElement())
+        .addElement('I', Casings.SpaceTimeBendingCore.asElement())
+        .addElement('J', Casings.ParticleBeamGuidancePipeCasing.asElement())
         .addElement('K', GTStructureUtility.ofFrame(Materials.NaquadahAlloy))
-        .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockGlass1, 2))
+        .addElement('L', Casings.OmniPurposeInfinityFusedGlass.asElement())
         .addElement('M', StructureUtility.ofBlock(ItemRegistry.bw_realglas2, 0))
         .addElement(
             'N',
@@ -203,19 +203,18 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                 .casingIndex(961)
                 .hint(1)
                 .buildAndChain(
-                    StructureUtility.onElementPass(
-                        x -> ++x.mCountCasing,
-                        StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 1))))
-        .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 2))
-        .addElement('P', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsBA0, 10))
-        .addElement('Q', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 7))
-        .addElement('R', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 4))
-        .addElement('S', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 8))
+                    StructureUtility
+                        .onElementPass(x -> ++x.mCountCasing, Casings.CelestialMatterGuidanceCasing.asElement())))
+        .addElement('O', Casings.QuarkExclusionCasing.asElement())
+        .addElement('P', Casings.ReinforcedTemporalStructureCasing.asElement())
+        .addElement('Q', Casings.CentralGravitonFlowModulator.asElement())
+        .addElement('R', Casings.StellarEnergySiphonCasing.asElement())
+        .addElement('S', Casings.HarmonicPhononTransmissionConduit.asElement())
         .addElement('T', StructureUtility.ofBlock(Loaders.gravityStabilizationCasing, 0))
-        .addElement('U', StructureUtility.ofBlock(TTCasingsContainer.SpacetimeCompressionFieldGenerators, 8))
-        .addElement('V', StructureUtility.ofBlock(TTCasingsContainer.TimeAccelerationFieldGenerator, 8))
-        .addElement('W', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsBA0, 11))
-        .addElement('X', StructureUtility.ofBlock(TTCasingsContainer.StabilisationFieldGenerators, 8))
+        .addElement('U', Casings.GallifreyanSpacetimeCompressionFieldGenerator.asElement())
+        .addElement('V', Casings.GallifreyanTimeDilationFieldGenerator.asElement())
+        .addElement('W', Casings.ReinforcedSpatialStructureCasing.asElement())
+        .addElement('X', Casings.GallifreyanStabilisationFieldGenerator.asElement())
         .addElement(
             'Y',
             HatchElementBuilder.<EternalGregTechWorkshop>builder()
@@ -227,7 +226,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         .addElement(
             'Z',
             StructureUtility.ofChain(
-                StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14),
+                Casings.DimensionalBridge.asElement(),
                 StructureUtility.ofBlock(BlockLoader.eternalGregTechWorkshopRender, 0)))
         .addElement('a', StructureUtility.isAir())
         .build();

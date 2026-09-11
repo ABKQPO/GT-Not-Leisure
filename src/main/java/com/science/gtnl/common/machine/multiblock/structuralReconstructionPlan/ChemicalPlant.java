@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
 
 import java.util.List;
 
@@ -19,6 +18,7 @@ import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -85,8 +85,8 @@ public class ChemicalPlant extends GTMMultiMachineBase<ChemicalPlant> implements
                         ParallelCon)
                     .buildAndChain(
                         StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasings8, 0))))
-            .addElement('C', StructureUtility.ofBlock(sBlockCasings8, 1))
+                            .onElementPass(x -> ++x.mCountCasing, Casings.ChemicallyInertMachineCasing.asElement())))
+            .addElement('C', Casings.PTFEPipeCasing.asElement())
             .build();
     }
 
@@ -163,7 +163,7 @@ public class ChemicalPlant extends GTMMultiMachineBase<ChemicalPlant> implements
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 0);
+        return Casings.ChemicallyInertMachineCasing.getTextureId();
     }
 
     @Override

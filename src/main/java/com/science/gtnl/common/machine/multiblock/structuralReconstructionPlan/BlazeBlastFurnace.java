@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +29,7 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import bartworks.util.BWUtil;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
@@ -58,7 +58,6 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import gregtech.common.misc.GTStructureChannels;
-import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -100,14 +99,14 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
     public IStructureDefinition<BlazeBlastFurnace> getStructureDefinition() {
         return StructureDefinition.<BlazeBlastFurnace>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(sBlockCasings2, 15))
+            .addElement('A', Casings.TungstensteelPipeCasing.asElement())
             .addElement(
                 'B',
                 GTStructureChannels.HEATING_COIL.use(
                     GTStructureUtility.activeCoils(
                         GTStructureUtility.ofCoil(BlazeBlastFurnace::setMCoilLevel, BlazeBlastFurnace::getMCoilLevel))))
-            .addElement('C', StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 11))
-            .addElement('D', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 14))
+            .addElement('C', Casings.VolcanusCasing.asElement())
+            .addElement('D', Casings.BlastSmelterHeatContainmentCoil.asElement())
             .addElement(
                 'E',
                 StructureUtility.ofChain(
@@ -123,8 +122,7 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
                         .casingIndex(getCasingTextureID())
                         .hint(1)
                         .build(),
-                    StructureUtility
-                        .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 15)),
+                    StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.BlastSmelterCasing.asElement()),
                     GTStructureUtility.buildHatchAdder(BlazeBlastFurnace.class)
                         .adder(BlazeBlastFurnace::addFluidBlazeInputHatch)
                         .hatchId(21503)

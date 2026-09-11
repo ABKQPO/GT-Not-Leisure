@@ -2,9 +2,7 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,6 +30,7 @@ import com.science.gtnl.utils.StructureUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.TAE;
@@ -86,7 +85,7 @@ public class LargeChemicalBath extends GTMMultiMachineBase<LargeChemicalBath> im
     public IStructureDefinition<LargeChemicalBath> getStructureDefinition() {
         return StructureDefinition.<LargeChemicalBath>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(sBlockCasings2, 14))
+            .addElement('A', Casings.TitaniumPipeCasing.asElement())
             .addElement(
                 'B',
                 buildHatchAdder(LargeChemicalBath.class).casingIndex(getCasingTextureID())
@@ -100,8 +99,7 @@ public class LargeChemicalBath extends GTMMultiMachineBase<LargeChemicalBath> im
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasings2Misc, 4))))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.WashPlantCasing.asElement())))
             .build();
     }
 

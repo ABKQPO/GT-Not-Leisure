@@ -14,6 +14,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.loader.BlockLoader;
@@ -100,13 +101,14 @@ public class SteamLavaMaker extends SteamMultiMachineBase<SteamLavaMaker> implem
                 'A',
                 StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamLavaMaker.class)
-                        .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 27))
+                        .casingIndex(GTNLCasings.StronzeWrappedCasing.getTextureId())
                         .hint(1)
                         .build(),
-                    buildSteamBigInput(SteamLavaMaker.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 27))
+                    buildSteamBigInput(SteamLavaMaker.class)
+                        .casingIndex(GTNLCasings.StronzeWrappedCasing.getTextureId())
                         .hint(1)
                         .build(),
-                    buildSteamInput(SteamLavaMaker.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 27))
+                    buildSteamInput(SteamLavaMaker.class).casingIndex(GTNLCasings.StronzeWrappedCasing.getTextureId())
                         .hint(1)
                         .build(),
                     GTStructureUtility.buildHatchAdder(SteamLavaMaker.class)
@@ -115,10 +117,10 @@ public class SteamLavaMaker extends SteamMultiMachineBase<SteamLavaMaker> implem
                             HatchElement.InputBus,
                             HatchElement.OutputHatch,
                             HatchElement.Maintenance)
-                        .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 27))
+                        .casingIndex(GTNLCasings.StronzeWrappedCasing.getTextureId())
                         .hint(1)
                         .buildAndChain(),
-                    StructureUtility.ofBlock(BlockLoader.metaCasing, 27)))
+                    GTNLCasings.StronzeWrappedCasing.asElement()))
             .addElement('B', GTStructureUtility.chainAllGlasses())
             .addElement(
                 'C',
@@ -152,19 +154,15 @@ public class SteamLavaMaker extends SteamMultiMachineBase<SteamLavaMaker> implem
         int aColorIndex, boolean aActive, boolean aRedstone) {
         if (side == facing) {
             if (aActive) {
-                return new ITexture[] {
-                    Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 27)),
-                    TextureFactory.builder()
-                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_LAVA_MAKER_ACTIVE)
-                        .extFacing()
-                        .build() };
+                return new ITexture[] { GTNLCasings.StronzeWrappedCasing.getCasingTexture(), TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_LAVA_MAKER_ACTIVE)
+                    .extFacing()
+                    .build() };
             } else {
-                return new ITexture[] {
-                    Textures.BlockIcons.getCasingTextureForId(GTUtility.getTextureId((byte) 116, (byte) 27)),
-                    TextureFactory.builder()
-                        .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_LAVA_MAKER)
-                        .extFacing()
-                        .build() };
+                return new ITexture[] { GTNLCasings.StronzeWrappedCasing.getCasingTexture(), TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_STEAM_LAVA_MAKER)
+                    .extFacing()
+                    .build() };
             }
         }
         return new ITexture[] {

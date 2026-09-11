@@ -17,11 +17,12 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -64,7 +65,7 @@ public class LargeSteamCircuitAssembler extends SteamMultiMachineBase<LargeSteam
     public IStructureDefinition<LargeSteamCircuitAssembler> getStructureDefinition() {
         return StructureDefinition.<LargeSteamCircuitAssembler>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 1))
+            .addElement('A', GTNLCasings.SteamAssemblyCasing.asElement())
             .addElement(
                 'B',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
@@ -175,8 +176,8 @@ public class LargeSteamCircuitAssembler extends SteamMultiMachineBase<LargeSteam
     @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
         int colorIndex, boolean aActive, boolean redstoneLevel) {
-        int id = tierMachine == 2 ? StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0)
-            : StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
+        int id = tierMachine == 2 ? Casings.SolidSteelMachineCasing.getTextureId()
+            : Casings.BronzePlatedBricks.getTextureId();
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
                 .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE)

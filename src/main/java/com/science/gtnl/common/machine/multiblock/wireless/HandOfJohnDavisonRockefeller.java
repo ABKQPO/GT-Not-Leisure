@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gtPlusPlus.core.block.ModBlocks.blockCustomMachineCasings;
 import static gtnhlanth.common.register.LanthItemList.FOCUS_MANIPULATION_CASING;
 
 import java.util.List;
@@ -16,11 +15,11 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -75,7 +74,7 @@ public class HandOfJohnDavisonRockefeller extends WirelessEnergyMultiMachineBase
         return StructureDefinition.<HandOfJohnDavisonRockefeller>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+            .addElement('B', GTNLCasings.NeutroniumPipeCasing.asElement())
             .addElement('C', StructureUtility.ofBlockAnyMeta(FOCUS_MANIPULATION_CASING))
             .addElement(
                 'D',
@@ -91,14 +90,13 @@ public class HandOfJohnDavisonRockefeller extends WirelessEnergyMultiMachineBase
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 8))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 2))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.PressureContainmentCasing.asElement())))
+            .addElement('E', Casings.NeutroniumStabilizationCasing.asElement())
+            .addElement('F', Casings.GrateMachineCasing.asElement())
+            .addElement('G', Casings.MiningNeutroniumCasing.asElement())
             .addElement('H', GTStructureUtility.ofFrame(Materials.Tungsten))
-            .addElement('I', StructureUtility.ofBlock(blockCustomMachineCasings, 3))
+            .addElement('I', Casings.RuggedBotmiumMachineCasing.asElement())
             .build();
     }
 
@@ -171,7 +169,7 @@ public class HandOfJohnDavisonRockefeller extends WirelessEnergyMultiMachineBase
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 3);
+        return Casings.PressureContainmentCasing.getTextureId();
     }
 
     @Override

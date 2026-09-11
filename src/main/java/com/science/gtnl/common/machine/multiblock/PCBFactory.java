@@ -2,8 +2,6 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,6 +42,7 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
@@ -204,13 +203,12 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     @Override
     public void updateHatchTexture() {
         super.updateHatchTexture();
-        for (MTEHatch h : mWaterInputHatches)
-            h.updateTexture(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 3));
+        for (MTEHatch h : mWaterInputHatches) h.updateTexture(Casings.PressureContainmentCasing.getTextureId());
     }
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 7);
+        return Casings.AdvancedIridiumPlatedMachineCasing.getTextureId();
     }
 
     @Override
@@ -382,7 +380,7 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addShape(STRUCTURE_PIECE_MAIN_T2, StructureUtility.transpose(shape_t2))
             .addShape(STRUCTURE_PIECE_MAIN_T3, StructureUtility.transpose(shape_t3))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
+            .addElement('A', Casings.PressureContainmentCasing.asElement())
             .addElement(
                 'B',
                 GTStructureUtility.buildHatchAdder(PCBFactory.class)
@@ -396,10 +394,10 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
                         HatchElement.Maintenance,
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
-                    .buildAndChain(StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7)))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 7))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 0))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+                    .buildAndChain(Casings.AdvancedIridiumPlatedMachineCasing.asElement()))
+            .addElement('C', Casings.HermeticCasing7.asElement())
+            .addElement('D', Casings.MagTechCasing.asElement())
+            .addElement('E', Casings.RadiantNaquadahAlloyCasing.asElement())
             .addElement('F', GTStructureUtility.chainAllGlasses())
             .addElement('G', GTStructureUtility.ofFrame(Materials.Neutronium))
             .addElement(
@@ -411,22 +409,22 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
             .addElement(
                 'I',
                 GTStructureUtility.buildHatchAdder(PCBFactory.class)
-                    .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 3))
+                    .casingIndex(Casings.PressureContainmentCasing.getTextureId())
                     .hint(1)
                     .atLeast(CustomHatchElement.WaterInputHatch)
                     .buildAndChain(GregTechAPI.sBlockCasings10, 3))
-            .addElement('J', StructureUtility.ofBlock(sBlockCasingsTT, 8))
-            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 5))
-            .addElement('L', StructureUtility.ofBlock(blockCasings2Misc, 12))
-            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
-            .addElement('N', StructureUtility.ofBlock(sBlockCasingsTT, 0))
-            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 12))
-            .addElement('P', StructureUtility.ofBlock(sBlockCasingsTT, 7))
-            .addElement('Q', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 13))
-            .addElement('R', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
-            .addElement('S', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
-            .addElement('T', StructureUtility.ofBlock(sBlockCasingsTT, 6))
-            .addElement('U', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement('J', Casings.HollowCasing.asElement())
+            .addElement('K', Casings.IVMachineCasing.asElement())
+            .addElement('L', Casings.BulkProductionFrame.asElement())
+            .addElement('M', Casings.AssemblyLineCasing.asElement())
+            .addElement('N', Casings.HighPowerCasing.asElement())
+            .addElement('O', Casings.BackgroundRadiationAbsorbentCasing.asElement())
+            .addElement('P', Casings.MolecularCoil.asElement())
+            .addElement('Q', Casings.HighEnergyUltravioletEmitterCasing.asElement())
+            .addElement('R', Casings.ActiveNeutroniumCasing.asElement())
+            .addElement('S', Casings.HeatResistantTriniumPlatedCasing.asElement())
+            .addElement('T', Casings.ContainmentFieldGenerator.asElement())
+            .addElement('U', Casings.AdvancedIridiumPlatedMachineCasing.asElement())
             .build();
     }
 

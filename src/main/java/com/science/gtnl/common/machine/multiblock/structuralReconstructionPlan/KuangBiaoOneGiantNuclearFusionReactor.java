@@ -31,10 +31,10 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IWirelessEnergy;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.render.tile.KuangBiaoOneGiantNuclearFusionReactorRenderer;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
@@ -45,6 +45,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
@@ -117,7 +118,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         return StructureDefinition.<KuangBiaoOneGiantNuclearFusionReactor>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('B', Casings.RadiantNaquadahAlloyCasing.asElement())
             .addElement(
                 'C',
                 GTStructureUtility.buildHatchAdder(KuangBiaoOneGiantNuclearFusionReactor.class)
@@ -137,11 +138,11 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
             .addElement('D', StructureUtility.ofBlock(getConcrete(), getConcreteMeta()))
             .addElement('E', GTStructureUtility.ofFrame(Materials.Tungsten))
             .addElement('F', GTStructureUtility.ofFrame(getFrame()))
-            .addElement('G', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('H', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 5))
+            .addElement('G', GTNLCasings.FusionGlass.asElement())
+            .addElement('H', Casings.ElectrolyzerCasing.asElement())
             .addElement('I', StructureUtility.ofBlock(Loaders.compactFusionCoil, getCoilMeta()))
-            .addElement('J', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 15))
-            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
+            .addElement('J', Casings.BlastSmelterCasing.asElement())
+            .addElement('K', Casings.PressureContainmentCasing.asElement())
             .build();
     }
 

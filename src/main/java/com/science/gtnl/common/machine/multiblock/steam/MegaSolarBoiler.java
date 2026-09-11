@@ -24,14 +24,14 @@ import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.MegaSolarBoilerGui;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
@@ -89,11 +89,11 @@ public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> impl
         return StructureDefinition.<MegaSolarBoiler>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', GTStructureUtility.chainAllGlasses())
-            .addElement('B', StructureUtility.ofBlock(sBlockCasings1, 10))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 12))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 13))
-            .addElement('F', StructureUtility.ofBlock(BlockLoader.metaBlockColumn, 3))
+            .addElement('B', Casings.BronzePlatedBricks.asElement())
+            .addElement('C', Casings.SolidSteelMachineCasing.asElement())
+            .addElement('D', Casings.BronzePipeCasing.asElement())
+            .addElement('E', Casings.SteelPipeCasing.asElement())
+            .addElement('F', GTNLCasings.SolarBoilingCell.asElement())
             .addElement(
                 'G',
                 StructureUtility.ofChain(
@@ -106,7 +106,7 @@ public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> impl
                         .casingIndex(10)
                         .hint(1)
                         .buildAndChain(),
-                    StructureUtility.ofBlock(sBlockCasings1, 10)))
+                    Casings.BronzePlatedBricks.asElement()))
             .build();
     }
 
@@ -137,7 +137,7 @@ public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> impl
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings1, 10);
+        return Casings.BronzePlatedBricks.getTextureId();
     }
 
     @Override

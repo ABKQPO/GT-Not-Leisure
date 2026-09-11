@@ -20,6 +20,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -99,19 +100,16 @@ public class SteamGateAssembler extends SteamMultiMachineBase<SteamGateAssembler
                 'A',
                 StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamGateAssembler.class)
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10))
+                        .casingIndex(Casings.BronzePlatedBricks.getTextureId())
                         .hint(1)
                         .build(),
-                    buildSteamBigInput(SteamGateAssembler.class)
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10))
+                    buildSteamBigInput(SteamGateAssembler.class).casingIndex(Casings.BronzePlatedBricks.getTextureId())
                         .hint(1)
                         .build(),
-                    buildSteamInput(SteamGateAssembler.class)
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10))
+                    buildSteamInput(SteamGateAssembler.class).casingIndex(Casings.BronzePlatedBricks.getTextureId())
                         .hint(1)
                         .build(),
-                    buildHatchAdder(SteamGateAssembler.class)
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10))
+                    buildHatchAdder(SteamGateAssembler.class).casingIndex(Casings.BronzePlatedBricks.getTextureId())
                         .hint(1)
                         .atLeast(
                             SteamHatchElement.InputBus_Steam,
@@ -120,26 +118,25 @@ public class SteamGateAssembler extends SteamMultiMachineBase<SteamGateAssembler
                             HatchElement.OutputBus,
                             HatchElement.Maintenance)
                         .buildAndChain(
-                            StructureUtility.onElementPass(
-                                x -> ++x.mCountCasing,
-                                StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10)))))
+                            StructureUtility
+                                .onElementPass(x -> ++x.mCountCasing, Casings.BronzePlatedBricks.asElement()))))
             .addElement(
                 'B',
                 StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamGateAssembler.class)
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0))
+                        .casingIndex(Casings.SolidSteelMachineCasing.getTextureId())
                         .hint(1)
                         .build(),
                     buildSteamBigInput(SteamGateAssembler.class)
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0))
+                        .casingIndex(Casings.SolidSteelMachineCasing.getTextureId())
                         .hint(1)
                         .build(),
                     buildSteamInput(SteamGateAssembler.class)
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0))
+                        .casingIndex(Casings.SolidSteelMachineCasing.getTextureId())
                         .hint(1)
                         .build(),
                     buildHatchAdder(SteamGateAssembler.class)
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0))
+                        .casingIndex(Casings.SolidSteelMachineCasing.getTextureId())
                         .hint(1)
                         .atLeast(
                             SteamHatchElement.InputBus_Steam,
@@ -148,15 +145,14 @@ public class SteamGateAssembler extends SteamMultiMachineBase<SteamGateAssembler
                             HatchElement.OutputBus,
                             HatchElement.Maintenance)
                         .buildAndChain(
-                            StructureUtility.onElementPass(
-                                x -> ++x.mCountCasing,
-                                StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0)))))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 2))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 3))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 12))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 13))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 13))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 14))
+                            StructureUtility
+                                .onElementPass(x -> ++x.mCountCasing, Casings.SolidSteelMachineCasing.asElement()))))
+            .addElement('C', Casings.BronzeGearBoxCasing.asElement())
+            .addElement('D', Casings.SteelGearBoxCasing.asElement())
+            .addElement('E', Casings.BronzePipeCasing.asElement())
+            .addElement('F', Casings.SteelPipeCasing.asElement())
+            .addElement('G', Casings.BronzeFireboxCasing.asElement())
+            .addElement('H', Casings.SteelFireboxCasing.asElement())
             .build();
     }
 

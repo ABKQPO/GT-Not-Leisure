@@ -24,6 +24,7 @@ import com.science.gtnl.utils.enums.GTNLStructureChannels;
 import crazypants.enderio.EnderIO;
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -33,10 +34,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gtPlusPlus.core.block.ModBlocks;
 import kubatech.loaders.BlockLoader;
-import tectech.thing.block.BlockQuantumGlass;
-import tectech.thing.casing.TTCasingsContainer;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -76,15 +74,15 @@ public class GenerationEarthEngine extends MultiMachineBase<GenerationEarthEngin
     public IStructureDefinition<GenerationEarthEngine> getStructureDefinition() {
         return StructureDefinition.<GenerationEarthEngine>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement('A', Casings.AdvancedIridiumPlatedMachineCasing.asElement())
             .addElement('B', StructureUtility.ofBlock(Loaders.compactFusionCoil, 3))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sSolenoidCoilCasings, 8))
-            .addElement('D', StructureUtility.ofBlock(TTCasingsContainer.StabilisationFieldGenerators, 8))
+            .addElement('C', Casings.UEVSolenoidSuperconductorCoil.asElement())
+            .addElement('D', Casings.GallifreyanStabilisationFieldGenerator.asElement())
             .addElement('E', StructureUtility.ofBlock(Loaders.magneticFluxCasing, 0))
-            .addElement('F', StructureUtility.ofBlock(BlockQuantumGlass.INSTANCE, 0))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 13))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 13))
-            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 2))
+            .addElement('F', Casings.QuantumGlass.asElement())
+            .addElement('G', Casings.RadiationProofPhotolithographicFrameworkCasing.asElement())
+            .addElement('H', Casings.DimensionalInjectionCasing.asElement())
+            .addElement('I', Casings.MiningNeutroniumCasing.asElement())
             .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsSE, 1))
             .addElement('K', StructureUtility.ofBlock(BlockLoader.defcCasingBlock, 11))
             .addElement(
@@ -97,12 +95,10 @@ public class GenerationEarthEngine extends MultiMachineBase<GenerationEarthEngin
                         HatchElement.OutputHatch,
                         HatchElement.Maintenance,
                         HatchElement.Energy.or(HatchElement.ExoticEnergy))
-                    .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 5))
+                    .casingIndex(Casings.EuropiumReinforcedRadiationProofMachineCasing.getTextureId())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 12))))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.BulkProductionFrame.asElement())))
             .addElement('M', CommonElements.BlockBeacon.get())
             .addElement('N', StructureUtility.ofBlock(EnderIO.blockIngotStorageEndergy, 3))
             .build();
@@ -156,7 +152,7 @@ public class GenerationEarthEngine extends MultiMachineBase<GenerationEarthEngin
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 12);
+        return Casings.DimensionallyTranscendentCasing.getTextureId();
     }
 
     @Override

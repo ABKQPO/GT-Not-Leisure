@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 
 import bartworks.util.BWUtil;
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
@@ -77,18 +76,18 @@ public class MegaAlloyBlastSmelter extends GTMMultiMachineBase<MegaAlloyBlastSme
         return StructureDefinition.<MegaAlloyBlastSmelter>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 14))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 15))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 3))
+            .addElement('B', Casings.TungstensteelPipeCasing.asElement())
+            .addElement('C', Casings.SteelFireboxCasing.asElement())
+            .addElement('D', Casings.TungstensteelFireboxCasing.asElement())
+            .addElement('E', Casings.TitaniumFireboxCasing.asElement())
             .addElement(
                 'F',
                 GTStructureChannels.HEATING_COIL.use(
                     GTStructureUtility.activeCoils(
                         GTStructureUtility
                             .ofCoil(MegaAlloyBlastSmelter::setMCoilLevel, MegaAlloyBlastSmelter::getMCoilLevel))))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 4))
-            .addElement('H', StructureUtility.ofBlock(blockCasingsMisc, 14))
+            .addElement('G', Casings.ExtremeEngineIntakeCasing.asElement())
+            .addElement('H', Casings.BlastSmelterHeatContainmentCoil.asElement())
             .addElement(
                 'I',
                 GTStructureUtility.buildHatchAdder(MegaAlloyBlastSmelter.class)
@@ -103,8 +102,7 @@ public class MegaAlloyBlastSmelter extends GTMMultiMachineBase<MegaAlloyBlastSme
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasingsMisc, 15))))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.BlastSmelterCasing.asElement())))
             .addElement('J', HatchElement.Muffler.newAny(getCasingTextureID(), 1))
             .build();
     }

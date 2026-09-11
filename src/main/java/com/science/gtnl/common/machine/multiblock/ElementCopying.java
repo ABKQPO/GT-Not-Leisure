@@ -4,7 +4,6 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -49,14 +48,15 @@ import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.DynamicTextWidget;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.ElementCopyingGui;
 import com.science.gtnl.common.machine.monitor.EnergyMonitorCustomWirelessEutProvider;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.recipe.gtnl.ElementCopyingRecipes;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -122,7 +122,7 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
     public IStructureDefinition<ElementCopying> getStructureDefinition() {
         return StructureDefinition.<ElementCopying>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
+            .addElement('A', GTNLCasings.HyperCore.asElement())
             .addElement('B', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .addElement(
                 'C',
@@ -137,11 +137,10 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
                         HatchElement.Maintenance,
                         ParallelCon)
                     .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 4))))
-            .addElement('D', StructureUtility.ofBlock(sBlockCasingsTT, 6))
-            .addElement('E', StructureUtility.ofBlock(sBlockCasingsTT, 7))
-            .addElement('F', StructureUtility.ofBlock(sBlockCasingsTT, 8))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.MolecularCasing.asElement())))
+            .addElement('D', Casings.ContainmentFieldGenerator.asElement())
+            .addElement('E', Casings.MolecularCoil.asElement())
+            .addElement('F', Casings.HollowCasing.asElement())
             .build();
     }
 

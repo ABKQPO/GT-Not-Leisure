@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings3Misc;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
@@ -66,8 +65,8 @@ public class LargeCircuitAssembler extends GTMMultiMachineBase<LargeCircuitAssem
         return StructureDefinition.<LargeCircuitAssembler>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 14))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
+            .addElement('B', Casings.TitaniumPipeCasing.asElement())
+            .addElement('C', Casings.GrateMachineCasing.asElement())
             .addElement(
                 'D',
                 GTStructureUtility.buildHatchAdder(LargeCircuitAssembler.class)
@@ -81,8 +80,7 @@ public class LargeCircuitAssembler extends GTMMultiMachineBase<LargeCircuitAssem
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasings3Misc, 2))))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.MultiUseCasing.asElement())))
             .build();
     }
 

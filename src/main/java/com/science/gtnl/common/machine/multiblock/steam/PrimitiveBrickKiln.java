@@ -22,6 +22,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -81,7 +82,7 @@ public class PrimitiveBrickKiln extends SteamMultiMachineBase<PrimitiveBrickKiln
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 15);
+        return Casings.Firebricks.getTextureId();
     }
 
     @Override
@@ -110,9 +111,7 @@ public class PrimitiveBrickKiln extends SteamMultiMachineBase<PrimitiveBrickKiln
                             HatchElement.InputHatch,
                             HatchElement.Maintenance)
                         .buildAndChain(
-                            StructureUtility.onElementPass(
-                                x -> ++x.mCountCasing,
-                                StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 15)))))
+                            StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.Firebricks.asElement()))))
             .addElement(
                 'B',
                 GTStructureChannels.TIER_MACHINE_CASING.use(

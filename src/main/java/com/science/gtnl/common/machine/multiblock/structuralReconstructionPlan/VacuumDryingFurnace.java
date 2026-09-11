@@ -24,6 +24,7 @@ import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
 import bartworks.util.BWUtil;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
@@ -41,7 +42,6 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
-import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -101,9 +101,7 @@ public class VacuumDryingFurnace extends GTMMultiMachineBase<VacuumDryingFurnace
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(ModBlocks.blockCasings4Misc, 10))))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.VacuumCasing.asElement())))
             .addElement('C', HatchElement.Muffler.newAny(getCasingTextureID(), 1))
             .build();
     }

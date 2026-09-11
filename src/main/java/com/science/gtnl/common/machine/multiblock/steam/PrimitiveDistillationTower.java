@@ -17,10 +17,10 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
-import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
@@ -164,15 +164,15 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
                 'A',
                 StructureUtility.ofChain(
                     buildSteamWirelessInput(PrimitiveDistillationTower.class)
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings3, 14))
+                        .casingIndex(Casings.SteelFireboxCasing.getTextureId())
                         .hint(1)
                         .build(),
                     buildSteamBigInput(PrimitiveDistillationTower.class)
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings3, 14))
+                        .casingIndex(Casings.SteelFireboxCasing.getTextureId())
                         .hint(1)
                         .build(),
                     buildSteamInput(PrimitiveDistillationTower.class)
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings3, 14))
+                        .casingIndex(Casings.SteelFireboxCasing.getTextureId())
                         .hint(1)
                         .build(),
                     GTStructureUtility.buildHatchAdder(PrimitiveDistillationTower.class)
@@ -183,18 +183,18 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
                             HatchElement.InputHatch,
                             HatchElement.InputBus,
                             HatchElement.Maintenance)
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings3, 14))
+                        .casingIndex(Casings.SteelFireboxCasing.getTextureId())
                         .hint(1)
                         .build(),
                     StructureUtility.onElementPass(
                         PrimitiveDistillationTower::onCasingFound,
-                        StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 14))))
+                        Casings.SteelFireboxCasing.asElement())))
             .addElement(
                 'B',
                 StructureUtility.ofChain(
                     StructureUtility.onElementPass(
                         PrimitiveDistillationTower::onCasingFound,
-                        StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0)),
+                        Casings.SolidSteelMachineCasing.asElement()),
                     GTStructureUtility.buildHatchAdder(PrimitiveDistillationTower.class)
                         .atLeast(layeredOutputHatch)
                         .casingIndex(getCasingTextureID())
@@ -210,11 +210,10 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
                         t -> t.onTopLayerFound(false),
                         GTStructureUtility
                             .ofHatchAdder(PrimitiveDistillationTower::addOutputToMachineList, getCasingTextureID(), 1)),
-                    StructureUtility.onElementPass(
-                        t -> t.onTopLayerFound(true),
-                        StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0)),
+                    StructureUtility
+                        .onElementPass(t -> t.onTopLayerFound(true), Casings.SolidSteelMachineCasing.asElement()),
                     StructureUtility.isAir()))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
+            .addElement('D', Casings.SolidSteelMachineCasing.asElement())
             .addElement(
                 'D',
                 GTStructureUtility.buildHatchAdder(PrimitiveDistillationTower.class)
@@ -292,7 +291,7 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0);
+        return Casings.SolidSteelMachineCasing.getTextureId();
     }
 
     @Override

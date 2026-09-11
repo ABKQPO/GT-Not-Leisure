@@ -20,14 +20,15 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
@@ -45,7 +46,6 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtnhlanth.common.register.LanthItemList;
-import tectech.thing.casing.TTCasingsContainer;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class TransliminalOasis extends WirelessEnergyMultiMachineBase<TransliminalOasis> {
@@ -75,11 +75,11 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
     public IStructureDefinition<TransliminalOasis> getStructureDefinition() {
         return StructureDefinition.<TransliminalOasis>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
-            .addElement('D', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
+            .addElement('A', Casings.RadiantNaquadahAlloyCasing.asElement())
+            .addElement('B', Casings.NaquadriaReinforcedWaterPlantCasing.asElement())
+            .addElement('C', Casings.HeatResistantTriniumPlatedCasing.asElement())
+            .addElement('D', GTNLCasings.HyperCore.asElement())
+            .addElement('E', Casings.FilterMachineCasing.asElement())
             .addElement(
                 'F',
                 GTStructureUtility.buildHatchAdder(TransliminalOasis.class)
@@ -93,15 +93,14 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 6))
-            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
-            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0))
-            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 2))
-            .addElement('L', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 0))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.PressureContainmentCasing.asElement())))
+            .addElement('G', Casings.SlickSterileFlocculationCasing.asElement())
+            .addElement('H', GTNLCasings.NeutroniumPipeCasing.asElement())
+            .addElement('I', Casings.CleanStainlessSteelMachineCasing.asElement())
+            .addElement('J', Casings.ChemicallyInertMachineCasing.asElement())
+            .addElement('K', Casings.MiningNeutroniumCasing.asElement())
+            .addElement('L', Casings.HighPowerCasing.asElement())
             .addElement(
                 'M',
                 Mods.RandomThings.isModLoaded()
@@ -112,10 +111,10 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
                     : StructureUtility.ofBlockAnyMeta(Blocks.dirt))
             .addElement('N', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 9))
             .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockTintedGlass, 0))
-            .addElement('P', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 31))
-            .addElement('Q', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 1))
+            .addElement('P', GTNLCasings.WhiteLamp.asElement())
+            .addElement('Q', Casings.AdvancedFilterCasing.asElement())
             .addElement('R', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('S', StructureUtility.ofBlock(GregTechAPI.sBlockGlass1, 0))
+            .addElement('S', Casings.ChemicalGradeGlass.asElement())
             .addElement('T', GTStructureUtility.ofFrame(Materials.Polytetrafluoroethylene))
             .addElement('U', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .build();
@@ -263,7 +262,7 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 3);
+        return Casings.PressureContainmentCasing.getTextureId();
     }
 
     @Override

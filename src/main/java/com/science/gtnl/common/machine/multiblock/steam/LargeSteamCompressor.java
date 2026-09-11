@@ -24,6 +24,7 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -231,8 +232,8 @@ public class LargeSteamCompressor extends SteamMultiMachineBase<LargeSteamCompre
     @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
         int colorIndex, boolean aActive, boolean redstoneLevel) {
-        int id = tierMachine == 2 ? StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0)
-            : StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
+        int id = tierMachine == 2 ? Casings.SolidSteelMachineCasing.getTextureId()
+            : Casings.BronzePlatedBricks.getTextureId();
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
                 .addIcon(Textures.BlockIcons.OVERLAY_FRONT_MULTI_COMPRESSOR_ACTIVE)

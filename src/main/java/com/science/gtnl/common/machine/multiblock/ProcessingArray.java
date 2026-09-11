@@ -30,6 +30,7 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import gregtech.GTMod;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
@@ -117,10 +118,9 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 2))))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 14))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.StableTitaniumMachineCasing.asElement())))
+            .addElement('B', Casings.TitaniumPipeCasing.asElement())
             .addElement(
                 'C',
                 GTStructureChannels.HEATING_COIL.use(
@@ -274,7 +274,7 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 2);
+        return Casings.StableTitaniumMachineCasing.getTextureId();
     }
 
     @Override

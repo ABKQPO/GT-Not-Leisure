@@ -11,10 +11,11 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.science.gtnl.loader.BlockLoader;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -51,7 +52,7 @@ public class BioengineeringModule extends NanitesBaseModule<BioengineeringModule
     public IStructureDefinition<BioengineeringModule> getStructureDefinition() {
         return StructureDefinition.<BioengineeringModule>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+            .addElement('A', GTNLCasings.NeutroniumPipeCasing.asElement())
             .addElement(
                 'B',
                 GTStructureUtility.buildHatchAdder(BioengineeringModule.class)
@@ -67,17 +68,17 @@ public class BioengineeringModule extends NanitesBaseModule<BioengineeringModule
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))))
+                            Casings.AdvancedIridiumPlatedMachineCasing.asElement())))
             .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockReinforced, 2))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 13))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 4))
+            .addElement('D', Casings.HighEnergyUltravioletEmitterCasing.asElement())
+            .addElement('E', Casings.SterileWaterPlantCasing.asElement())
             .addElement('F', GTStructureUtility.ofFrame(Materials.CosmicNeutronium))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 12))
-            .addElement('I', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
+            .addElement('G', Casings.AssemblyLineCasing.asElement())
+            .addElement('H', Casings.TungstensteelTurbineCasing.asElement())
+            .addElement('I', GTNLCasings.FusionGlass.asElement())
+            .addElement('J', Casings.PTFEPipeCasing.asElement())
             .addElement('K', GTStructureUtility.ofFrame(Materials.PulsatingIron))
-            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 1))
+            .addElement('L', Casings.AdvancedFilterCasing.asElement())
             .build();
     }
 
@@ -116,7 +117,7 @@ public class BioengineeringModule extends NanitesBaseModule<BioengineeringModule
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 7);
+        return Casings.AdvancedIridiumPlatedMachineCasing.getTextureId();
     }
 
     @Override

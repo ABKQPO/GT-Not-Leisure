@@ -3,10 +3,8 @@ package com.science.gtnl.common.machine.multiblock;
 import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
 import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,11 +45,11 @@ import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.api.IStackVault;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.SingularityDataHubGui;
 import com.science.gtnl.common.gui.modularui.VaultTypeCountFormatter;
 import com.science.gtnl.common.machine.hatch.VaultPortHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
@@ -64,6 +62,7 @@ import appeng.api.storage.data.IAEStackType;
 import appeng.api.storage.data.IItemList;
 import appeng.util.item.AEFluidStack;
 import appeng.util.item.AEItemStack;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
@@ -84,13 +83,11 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
 import gregtech.common.tileentities.machines.MTEHatchInputBusME;
-import gtPlusPlus.core.block.ModBlocks;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
-import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.casing.BlockGTCasingsTT;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -155,7 +152,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     public IStructureDefinition<SingularityDataHub> getStructureDefinition() {
         return StructureDefinition.<SingularityDataHub>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 18))
+            .addElement('A', GTNLCasings.HyperCore.asElement())
             .addElement(
                 'B',
                 StructureUtility.ofChain(
@@ -173,15 +170,14 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
                         .casingIndex(getCasingTextureID())
                         .hint(1)
                         .build(),
-                    StructureUtility
-                        .onElementPass(x -> x.mCountCasing++, StructureUtility.ofBlock(sBlockCasingsTT, 4))))
-            .addElement('C', StructureUtility.ofBlock(sBlockCasingsTT, 0))
-            .addElement('D', StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 10))
-            .addElement('E', StructureUtility.ofBlock(sBlockCasings10, 7))
-            .addElement('F', StructureUtility.ofBlock(sBlockCasingsTT, 8))
-            .addElement('G', StructureUtility.ofBlock(sBlockCasingsTT, 4))
-            .addElement('H', StructureUtility.ofBlock(sBlockCasingsTT, 6))
-            .addElement('I', StructureUtility.ofBlock(BlockQuantumGlass.INSTANCE, 0))
+                    StructureUtility.onElementPass(x -> x.mCountCasing++, Casings.MolecularCasing.asElement())))
+            .addElement('C', Casings.HighPowerCasing.asElement())
+            .addElement('D', Casings.AdvancedCryogenicCasing.asElement())
+            .addElement('E', Casings.ActiveNeutroniumCasing.asElement())
+            .addElement('F', Casings.HollowCasing.asElement())
+            .addElement('G', Casings.MolecularCasing.asElement())
+            .addElement('H', Casings.ContainmentFieldGenerator.asElement())
+            .addElement('I', Casings.QuantumGlass.asElement())
             .build();
     }
 

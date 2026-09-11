@@ -13,11 +13,11 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.TAE;
@@ -32,7 +32,6 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
-import gtPlusPlus.core.block.ModBlocks;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class HeavyRolling extends WirelessEnergyMultiMachineBase<HeavyRolling> {
@@ -61,17 +60,17 @@ public class HeavyRolling extends WirelessEnergyMultiMachineBase<HeavyRolling> {
     public IStructureDefinition<HeavyRolling> getStructureDefinition() {
         return StructureDefinition.<HeavyRolling>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
-            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement('A', Casings.RadiantNaquadahAlloyCasing.asElement())
+            .addElement('B', Casings.TungstensteelPipeCasing.asElement())
+            .addElement('C', GTNLCasings.NeutroniumGearbox.asElement())
+            .addElement('D', Casings.PressureContainmentCasing.asElement())
+            .addElement('E', Casings.AdvancedIridiumPlatedMachineCasing.asElement())
             .addElement(
                 'F',
                 GTStructureChannels.HEATING_COIL.use(
                     GTStructureUtility.activeCoils(
                         GTStructureUtility.ofCoil(HeavyRolling::setMCoilLevel, HeavyRolling::getMCoilLevel))))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 6))
+            .addElement('G', Casings.NeutroniumCasing.asElement())
             .addElement(
                 'H',
                 GTStructureUtility.buildHatchAdder(HeavyRolling.class)
@@ -84,17 +83,15 @@ public class HeavyRolling extends WirelessEnergyMultiMachineBase<HeavyRolling> {
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 15))))
-            .addElement('I', StructureUtility.ofBlock(BlockLoader.metaCasing, 7))
-            .addElement('J', StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 1))
-            .addElement('K', StructureUtility.ofBlock(BlockLoader.metaCasing, 2))
-            .addElement('L', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.BlastSmelterCasing.asElement())))
+            .addElement('I', GTNLCasings.Antifreeze_Heatproof_Machine_Casing.asElement())
+            .addElement('J', Casings.InconelReinforcedCasing.asElement())
+            .addElement('K', GTNLCasings.HeatVent.asElement())
+            .addElement('L', GTNLCasings.FusionGlass.asElement())
+            .addElement('M', Casings.FilterMachineCasing.asElement())
             .addElement('N', GTStructureUtility.ofFrame(Materials.NaquadahAlloy))
-            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 9))
-            .addElement('P', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+            .addElement('O', Casings.UHVMachineCasing.asElement())
+            .addElement('P', GTNLCasings.NeutroniumPipeCasing.asElement())
             .build();
     }
 

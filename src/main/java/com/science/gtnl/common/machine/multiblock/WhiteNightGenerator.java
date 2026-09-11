@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings9;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
@@ -29,6 +28,7 @@ import com.science.gtnl.utils.Utils;
 
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
@@ -45,12 +45,10 @@ import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 import kubatech.loaders.BlockLoader;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
-import tectech.thing.casing.TTCasingsContainer;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -115,24 +113,22 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
                     .atLeast(HatchElement.Maintenance, HatchElement.Dynamo)
                     .casingIndex(getCasingTextureID())
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 13))))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.SolidifierCasing.asElement())))
             .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 1))
             .addElement('C', StructureUtility.ofBlock(BlockLoader.defcCasingBlock, 12))
-            .addElement('D', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 8))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
+            .addElement('D', Casings.HarmonicPhononTransmissionConduit.asElement())
+            .addElement('E', Casings.ExtremeDensitySpaceBendingCasing.asElement())
             .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsSE, 1))
             .addElement('G', GTStructureUtility.ofFrame(Materials.SixPhasedCopper))
-            .addElement('H', StructureUtility.ofBlock(TTCasingsContainer.GodforgeCasings, 8))
-            .addElement('I', StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 11))
-            .addElement('J', StructureUtility.ofBlock(sBlockCasings9, 5))
+            .addElement('H', Casings.HarmonicPhononTransmissionConduit.asElement())
+            .addElement('I', Casings.VolcanusCasing.asElement())
+            .addElement('J', Casings.ReinforcedSterileWaterPlantCasing.asElement())
             .addElement('K', StructureUtility.ofBlock(Loaders.gravityStabilizationCasing, 0))
             .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 8))
-            .addElement('M', StructureUtility.ofBlock(sBlockCasings9, 5))
-            .addElement('N', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 14))
-            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 14))
-            .addElement('P', StructureUtility.ofBlock(sBlockCasings9, 5))
+            .addElement('M', Casings.ReinforcedSterileWaterPlantCasing.asElement())
+            .addElement('N', Casings.SolidifierRadiator.asElement())
+            .addElement('O', Casings.SolidifierRadiator.asElement())
+            .addElement('P', Casings.ReinforcedSterileWaterPlantCasing.asElement())
             .addElement('Q', GTStructureUtility.ofFrame(Materials.Kevlar))
             .build();
     }
@@ -361,7 +357,7 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings9, 5);
+        return Casings.ReinforcedSterileWaterPlantCasing.getTextureId();
     }
 
     @Override

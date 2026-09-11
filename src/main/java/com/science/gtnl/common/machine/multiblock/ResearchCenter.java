@@ -41,7 +41,7 @@ import com.science.gtnl.mixins.late.tecTech.AccessorMTEResearchStation;
 import com.science.gtnl.utils.StructureUtils;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -82,13 +82,13 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
     private static final int HORIZONTAL_OFF_SET = 28;
     private static final int VERTICAL_OFF_SET = 4;
     private static final int DEPTH_OFF_SET = 4;
-    private static final int CONTROLLER_TEXTURE_ID = StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
+    private static final int CONTROLLER_TEXTURE_ID = Casings.RadiantNaquadahAlloyCasing.getTextureId();
     private static final String[][] shape = StructureUtils.readStructureFromFile(RESEARCH_CENTER_STRUCTURE_FILE_PATH);
     private static final IStructureDefinition<MTEResearchStation> STRUCTURE_DEFINITION = IStructureDefinition
         .<MTEResearchStation>builder()
         .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
         .addElement('A', chainAllGlasses())
-        .addElement('B', ofBlock(GregTechAPI.sBlockCasings8, 7))
+        .addElement('B', Casings.AdvancedIridiumPlatedMachineCasing.asElement())
         .addElement(
             'C',
             buildHatchAdder(MTEResearchStation.class)
@@ -101,8 +101,8 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
                     InputHatch)
                 .casingIndex(CONTROLLER_TEXTURE_ID)
                 .hint(1)
-                .buildAndChain(ofBlock(GregTechAPI.sBlockCasings8, 10)))
-        .addElement('D', ofBlock(GregTechAPI.sBlockCasings9, 7))
+                .buildAndChain(Casings.RadiantNaquadahAlloyCasing.asElement()))
+        .addElement('D', Casings.StabilizedNaquadahWaterPlantCasing.asElement())
         .addElement('E', ofBlock(steelBars(), 0))
         .addElement('F', ofBlock(chiselNeonite(), 3))
         .build();

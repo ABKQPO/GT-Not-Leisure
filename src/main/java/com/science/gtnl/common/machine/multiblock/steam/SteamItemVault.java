@@ -39,11 +39,11 @@ import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.api.IStackVault;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.SteamItemVaultGui;
 import com.science.gtnl.common.gui.modularui.VaultTypeCountFormatter;
 import com.science.gtnl.common.machine.hatch.VaultPortHatch;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
 
@@ -178,7 +178,7 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
     public IStructureDefinition<SteamItemVault> getStructureDefinition() {
         return StructureDefinition.<SteamItemVault>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(SHAPE))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 29))
+            .addElement('A', GTNLCasings.HyperPressureBreelCasing.asElement())
             .addElement('B', GTStructureUtility.ofFrame(Materials.Steel))
             .addElement(
                 'C',
@@ -209,8 +209,7 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
                         .casingIndex(getCasingTextureID())
                         .hint(1)
                         .build(),
-                    StructureUtility
-                        .onElementPass(x -> x.mCountCasing++, StructureUtility.ofBlock(BlockLoader.metaCasing02, 0))))
+                    StructureUtility.onElementPass(x -> x.mCountCasing++, GTNLCasings.VibrationSafeCasing.asElement())))
             .addElement('D', GTStructureUtility.chainAllGlasses())
             .build();
     }
@@ -333,7 +332,7 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
 
     @Override
     public int getCasingTextureID() {
-        return GTUtility.getTextureId((byte) 116, (byte) 32);
+        return GTNLCasings.VibrationSafeCasing.getTextureId();
     }
 
     @Override

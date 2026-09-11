@@ -2,8 +2,6 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
 
 import java.util.List;
 
@@ -63,7 +61,7 @@ public class LargeCanning extends GTMMultiMachineBase<LargeCanning> implements I
         return StructureDefinition.<LargeCanning>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', Casings.ReinforcedGlass.asElement())
-            .addElement('B', StructureUtility.ofBlock(sBlockCasings2, 13))
+            .addElement('B', Casings.SteelPipeCasing.asElement())
             .addElement('C', GTStructureUtility.ofFrame(Materials.StainlessSteel))
             .addElement(
                 'D',
@@ -79,8 +77,7 @@ public class LargeCanning extends GTMMultiMachineBase<LargeCanning> implements I
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasings2Misc, 4))))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.WashPlantCasing.asElement())))
             .build();
     }
 

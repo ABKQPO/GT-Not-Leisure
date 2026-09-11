@@ -18,6 +18,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
@@ -29,7 +30,6 @@ import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -60,7 +60,7 @@ public class LargeSiftingFunnel extends GTMMultiMachineBase<LargeSiftingFunnel> 
     public IStructureDefinition<LargeSiftingFunnel> getStructureDefinition() {
         return StructureDefinition.<LargeSiftingFunnel>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 6))
+            .addElement('A', Casings.LargeSieveGrate.asElement())
             .addElement(
                 'B',
                 buildHatchAdder(LargeSiftingFunnel.class).casingIndex(getCasingTextureID())
@@ -74,9 +74,7 @@ public class LargeSiftingFunnel extends GTMMultiMachineBase<LargeSiftingFunnel> 
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 0))))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.CentrifugeCasing.asElement())))
             .build();
     }
 

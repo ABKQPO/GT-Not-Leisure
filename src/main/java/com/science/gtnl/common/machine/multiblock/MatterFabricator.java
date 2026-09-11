@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,13 +18,13 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.recipe.gtnl.MatterFabricatorRecipes;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
@@ -75,12 +74,12 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
     public IStructureDefinition<MatterFabricator> getStructureDefinition() {
         return StructureDefinition.<MatterFabricator>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+            .addElement('A', GTNLCasings.NeutroniumPipeCasing.asElement())
             .addElement('B', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 7))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 15))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('C', Casings.ZPMMachineCasing.asElement())
+            .addElement('D', Casings.SuperconductingCoilBlock.asElement())
+            .addElement('E', Casings.FilterMachineCasing.asElement())
+            .addElement('F', Casings.RadiantNaquadahAlloyCasing.asElement())
             .addElement(
                 'G',
                 GTStructureUtility.buildHatchAdder(MatterFabricator.class)
@@ -95,8 +94,7 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 0))))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.HighPowerCasing.asElement())))
             .addElement('H', GTStructureUtility.ofFrame(Materials.Naquadria))
             .build();
     }

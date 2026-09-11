@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static gtPlusPlus.core.block.ModBlocks.blockSpecialMultiCasings2;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -55,7 +54,7 @@ public class LargeBioLab extends GTMMultiMachineBase<LargeBioLab> implements ISu
     public IStructureDefinition<LargeBioLab> getStructureDefinition() {
         return StructureDefinition.<LargeBioLab>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
+            .addElement('A', Casings.PressureContainmentCasing.asElement())
             .addElement(
                 'B',
                 GTStructureUtility.buildHatchAdder(LargeBioLab.class)
@@ -72,8 +71,8 @@ public class LargeBioLab extends GTMMultiMachineBase<LargeBioLab> implements ISu
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))))
-            .addElement('C', StructureUtility.ofBlock(sBlockCasingsTT, 0))
+                            Casings.NaquadriaReinforcedWaterPlantCasing.asElement())))
+            .addElement('C', Casings.HighPowerCasing.asElement())
             .addElement('D', GTStructureUtility.ofFrame(Materials.CosmicNeutronium))
             .addElement('E', StructureUtility.ofBlock(blockSpecialMultiCasings2, 2))
             .build();
@@ -135,7 +134,7 @@ public class LargeBioLab extends GTMMultiMachineBase<LargeBioLab> implements ISu
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings9, 12);
+        return Casings.NaquadriaReinforcedWaterPlantCasing.getTextureId();
     }
 
     @Override

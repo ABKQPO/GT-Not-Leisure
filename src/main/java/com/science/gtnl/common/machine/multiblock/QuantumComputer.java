@@ -31,6 +31,7 @@ import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.QuantumComputerGui;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
@@ -74,7 +75,6 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTETooltipMultiBlockBase;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
-import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
@@ -84,7 +84,7 @@ import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 public class QuantumComputer extends MTETooltipMultiBlockBase
     implements IConstructable, ISecondaryDescribable, IActionHost, IGridProxyable, IAddGregtechLogo, ICustomNameObject {
 
-    public static int CASING_INDEX = GTUtility.getTextureId((byte) 116, (byte) 42);
+    public static int CASING_INDEX = GTNLCasings.QuantumComputerCasing.getTextureId();
     public static final EnumSet<ForgeDirection> upDirection = EnumSet.of(ForgeDirection.UP);
     public static final EnumSet<ForgeDirection> emptyDirection = EnumSet.noneOf(ForgeDirection.class);
 

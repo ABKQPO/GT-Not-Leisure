@@ -53,16 +53,16 @@ import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.api.IGreenHouse;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.EdenGardenGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseModes;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseStoredCrop;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseViewMode;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
@@ -81,7 +81,6 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import gtPlusPlus.core.block.ModBlocks;
 import gtnhlanth.common.register.LanthItemList;
 import ic2.core.init.BlocksItems;
 import ic2.core.init.InternalName;
@@ -180,7 +179,7 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     public IStructureDefinition<EdenGarden> getStructureDefinition() {
         return StructureDefinition.<EdenGarden>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
+            .addElement('A', Casings.ShieldedAcceleratorCasing.asElement())
             .addElement(
                 'B',
                 StructureUtility.ofChain(
@@ -192,18 +191,17 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
                             HatchElement.InputHatch,
                             HatchElement.Maintenance,
                             HatchElement.Energy.or(HatchElement.ExoticEnergy))
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 4))
+                        .casingIndex(Casings.ElectricCompressorCasing.getTextureId())
                         .hint(1)
                         .build(),
-                    StructureUtility.onElementPass(
-                        x -> ++x.mCountCasing,
-                        StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 4))))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 5))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
-            .addElement('F', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 3))
+                    StructureUtility
+                        .onElementPass(x -> ++x.mCountCasing, Casings.ElectricCompressorCasing.asElement())))
+            .addElement('C', Casings.CompressionPipeCasing.asElement())
+            .addElement('D', Casings.RadiantNaquadahAlloyCasing.asElement())
+            .addElement('E', Casings.HeatResistantTriniumPlatedCasing.asElement())
+            .addElement('F', Casings.IncoloyDSFluidContainmentBlock.asElement())
             .addElement('G', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_GLASS, 0))
-            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 0))
+            .addElement('H', GTNLCasings.FortifyGlowstone.asElement())
             .addElement('I', StructureUtility.ofBlock(Blocks.farmland, 0))
             .addElement(
                 'J',
@@ -256,7 +254,7 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 5);
+        return Casings.CompressionPipeCasing.getTextureId();
     }
 
     @Override

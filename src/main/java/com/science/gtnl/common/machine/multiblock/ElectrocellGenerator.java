@@ -32,6 +32,7 @@ import com.science.gtnl.utils.recipes.metadata.ElectrocellGeneratorMetadata;
 
 import cpw.mods.fml.common.Optional;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
@@ -141,9 +142,8 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                         .casingIndex(getCasingTextureID())
                         .hint(1)
                         .build(),
-                    StructureUtility
-                        .onElementPass(x -> x.mCountCasing++, StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
+                    StructureUtility.onElementPass(x -> x.mCountCasing++, Casings.SolidSteelMachineCasing.asElement())))
+            .addElement('B', Casings.FilterMachineCasing.asElement())
             .addElement('C', GTStructureUtility.ofFrame(Materials.Steel))
             .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockMetal4, 2))
             .addElement('E', StructureUtility.ofBlock(COMPRESSED_GRAPHITE, 0))
@@ -157,8 +157,7 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                         .casingIndex(getCasingTextureID())
                         .hint(1)
                         .build(),
-                    StructureUtility
-                        .onElementPass(x -> x.mCountCasing++, StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))))
+                    StructureUtility.onElementPass(x -> x.mCountCasing++, Casings.SolidSteelMachineCasing.asElement())))
             .addElement(
                 'G',
                 StructureUtility.ofChain(
@@ -169,8 +168,7 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                         .casingIndex(getCasingTextureID())
                         .hint(1)
                         .build(),
-                    StructureUtility
-                        .onElementPass(x -> x.mCountCasing++, StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))))
+                    StructureUtility.onElementPass(x -> x.mCountCasing++, Casings.SolidSteelMachineCasing.asElement())))
             .addElement(
                 'H',
                 GTStructureUtility.buildHatchAdder(ElectrocellGenerator.class)
@@ -178,9 +176,8 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.SolidSteelMachineCasing.asElement())))
             .build();
     }
 
@@ -288,7 +285,7 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0);
+        return Casings.SolidSteelMachineCasing.getTextureId();
     }
 
     @Override

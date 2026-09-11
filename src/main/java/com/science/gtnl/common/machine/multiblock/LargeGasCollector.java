@@ -26,7 +26,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Textures;
@@ -88,12 +88,11 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
                         HatchElement.Maintenance,
                         HatchElement.Energy.or(HatchElement.ExoticEnergy))
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 5))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.SolidSteelMachineCasing.asElement())))
+            .addElement('B', Casings.TungstensteelPipeCasing.asElement())
+            .addElement('C', Casings.GrateMachineCasing.asElement())
+            .addElement('D', Casings.HermeticCasing5.asElement())
             .build();
     }
 
@@ -221,7 +220,7 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0);
+        return Casings.SolidSteelMachineCasing.getTextureId();
     }
 
     @Override

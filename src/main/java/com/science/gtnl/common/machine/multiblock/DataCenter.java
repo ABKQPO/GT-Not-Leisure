@@ -1,12 +1,8 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAnyMeta;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings10;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gregtech.api.GregTechAPI.sBlockGlass1;
 import static gregtech.api.enums.HatchElement.Dynamo;
 import static gregtech.api.enums.HatchElement.Energy;
 import static gregtech.api.enums.HatchElement.ExoticEnergy;
@@ -33,9 +29,10 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
-import com.science.gtnl.loader.BlockLoader;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
@@ -186,7 +183,7 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(TTCasingsContainer.sBlockCasingsTT, 0))
-            .addElement('B', ofBlock(TTCasingsContainer.sBlockCasingsTT, 3))
+            .addElement('B', Casings.AdvancedComputerCasing.asElement())
             .addElement(
                 'C',
                 buildHatchAdder(DataCenter.class)
@@ -201,13 +198,13 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
                     .casingIndex(getCasingTextureID() + 1)
                     .hint(2)
                     .buildAndChain(TTCasingsContainer.sBlockCasingsTT, 1))
-            .addElement('D', ofBlock(sBlockCasings8, 7))
-            .addElement('E', ofBlock(sBlockCasings10, 9))
+            .addElement('D', Casings.AdvancedIridiumPlatedMachineCasing.asElement())
+            .addElement('E', Casings.CoolantDuct.asElement())
             .addElement('F', ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
-            .addElement('G', ofBlock(TTCasingsContainer.sBlockCasingsTT, 4))
-            .addElement('H', ofBlock(TTCasingsContainer.sBlockCasingsTT, 2))
-            .addElement('I', ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('J', ofBlock(sBlockGlass1, 1))
+            .addElement('G', Casings.MolecularCasing.asElement())
+            .addElement('H', Casings.ComputerHeatVent.asElement())
+            .addElement('I', GTNLCasings.NeutroniumPipeCasing.asElement())
+            .addElement('J', Casings.ElectronPermeableNeutroniumCoatedGlass.asElement())
             .addElement('K', ofFrame(Materials.Naquadria))
             .build();
     }

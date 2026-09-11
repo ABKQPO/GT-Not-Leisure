@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.List;
 
@@ -31,6 +30,7 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.RecipeUtil;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Textures;
@@ -126,9 +126,9 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler>
         return StructureDefinition.<SpaceAssembler>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 13))
+            .addElement('B', Casings.DimensionalInjectionCasing.asElement())
             .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsSEMotor, 2))
-            .addElement('D', StructureUtility.ofBlock(sBlockCasingsTT, 2))
+            .addElement('D', Casings.ComputerHeatVent.asElement())
             .addElement(
                 'E',
                 GTStructureUtility.buildHatchAdder(SpaceAssembler.class)
@@ -143,7 +143,7 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler>
                         ParallelCon)
                     .buildAndChain(
                         StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 3))))
+                            .onElementPass(x -> ++x.mCountCasing, Casings.AdvancedComputerCasing.asElement())))
             .build();
     }
 
@@ -229,7 +229,7 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler>
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 13);
+        return Casings.DimensionalInjectionCasing.getTextureId();
     }
 
     @Override

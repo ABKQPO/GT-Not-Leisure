@@ -21,13 +21,13 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
@@ -90,8 +90,8 @@ public class LapotronChip extends MultiMachineBase<LapotronChip>
                         -1,
                         (t, m) -> t.tierLapisCaelestis = m,
                         t -> t.tierLapisCaelestis)))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 7))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 11))
+            .addElement('C', Casings.StabilizedNaquadahWaterPlantCasing.asElement())
+            .addElement('D', Casings.HeatProofMachineCasing.asElement())
             .addElement(
                 'E',
                 buildHatchAdder(LapotronChip.class)
@@ -103,13 +103,12 @@ public class LapotronChip extends MultiMachineBase<LapotronChip>
                         HatchElement.Maintenance,
                         HatchElement.Energy,
                         HatchElement.Energy.or(HatchElement.ExoticEnergy))
-                    .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10))
+                    .casingIndex(Casings.RadiantNaquadahAlloyCasing.getTextureId())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
-            .addElement('F', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 0))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.RadiantNaquadahAlloyCasing.asElement())))
+            .addElement('F', GTNLCasings.FortifyGlowstone.asElement())
             .addElement(
                 'G',
                 GTStructureChannels.STRUCTURE_HEIGHT.use(
@@ -128,7 +127,7 @@ public class LapotronChip extends MultiMachineBase<LapotronChip>
                         -1,
                         (t, m) -> t.tierGlass2 = m,
                         t -> t.tierGlass2)))
-            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 15))
+            .addElement('I', Casings.SuperconductingCoilBlock.asElement())
             .addElement('K', StructureUtility.ofBlockAnyMeta(Blocks.beacon))
             .build();
     }
@@ -192,7 +191,7 @@ public class LapotronChip extends MultiMachineBase<LapotronChip>
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 11);
+        return Casings.HeatProofMachineCasing.getTextureId();
     }
 
     @Override

@@ -18,7 +18,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.science.gtnl.loader.BlockLoader;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
@@ -63,8 +63,8 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
     public IStructureDefinition<Steamgate> getStructureDefinition() {
         return StructureDefinition.<Steamgate>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 21))
-            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 22))
+            .addElement('A', GTNLCasings.SteamgateRingBlock.asElement())
+            .addElement('B', GTNLCasings.SteamgateChevronBlock.asElement())
             .build();
     }
 

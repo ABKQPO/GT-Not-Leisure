@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.List;
 
@@ -30,6 +29,7 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.ItemList;
@@ -52,7 +52,6 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import lombok.Getter;
 import lombok.Setter;
@@ -103,14 +102,14 @@ public class HorizontalCompressor extends WirelessEnergyMultiMachineBase<Horizon
     public IStructureDefinition<HorizontalCompressor> getStructureDefinition() {
         return StructureDefinition.<HorizontalCompressor>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(sBlockCasingsTT, 0))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
-            .addElement('C', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 11))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 9))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 8))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 10))
+            .addElement('A', Casings.HighPowerCasing.asElement())
+            .addElement('B', Casings.PressureContainmentCasing.asElement())
+            .addElement('C', Casings.MultitankExteriorCasing.asElement())
+            .addElement('D', Casings.AdvancedIridiumPlatedMachineCasing.asElement())
+            .addElement('E', Casings.ReactiveGasContainmentCasing.asElement())
+            .addElement('F', Casings.HermeticCasing8.asElement())
+            .addElement('G', Casings.SolidSteelMachineCasing.asElement())
+            .addElement('H', Casings.StainlessSteelTurbineCasing.asElement())
             .addElement(
                 'I',
                 buildHatchAdder(HorizontalCompressor.class)
@@ -127,8 +126,8 @@ public class HorizontalCompressor extends WirelessEnergyMultiMachineBase<Horizon
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 0))))
-            .addElement('J', StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 0))
+                            Casings.RobustTungstenSteelMachineCasing.asElement())))
+            .addElement('J', Casings.CentrifugeCasing.asElement())
             .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockMetal5, 2))
             .addElement(
                 'L',
@@ -206,7 +205,7 @@ public class HorizontalCompressor extends WirelessEnergyMultiMachineBase<Horizon
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 0);
+        return Casings.RobustTungstenSteelMachineCasing.getTextureId();
     }
 
     @Override

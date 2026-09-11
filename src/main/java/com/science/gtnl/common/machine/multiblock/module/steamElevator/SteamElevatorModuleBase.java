@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.util.List;
@@ -17,6 +16,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -94,7 +94,7 @@ public abstract class SteamElevatorModuleBase extends SteamMultiMachineBase<Stea
                             HatchElement.Maintenance)
                         .buildAndChain(
                             StructureUtility
-                                .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasings2, 0)))))
+                                .onElementPass(x -> ++x.mCountCasing, Casings.SolidSteelMachineCasing.asElement()))))
             .build();
     }
 
@@ -194,7 +194,7 @@ public abstract class SteamElevatorModuleBase extends SteamMultiMachineBase<Stea
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings2, 0);
+        return Casings.SolidSteelMachineCasing.getTextureId();
     }
 
     @Override

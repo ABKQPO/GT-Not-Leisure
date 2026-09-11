@@ -18,6 +18,7 @@ import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoltageIndex;
@@ -76,11 +77,10 @@ public class LargeEngravingLaser extends GTMMultiMachineBase<LargeEngravingLaser
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 1))))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.LaserContainmentCasing.asElement())))
+            .addElement('C', Casings.TungstensteelPipeCasing.asElement())
+            .addElement('D', Casings.GrateMachineCasing.asElement())
             .build();
     }
 
@@ -166,7 +166,7 @@ public class LargeEngravingLaser extends GTMMultiMachineBase<LargeEngravingLaser
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings10, 1);
+        return Casings.LaserContainmentCasing.getTextureId();
     }
 
     @Override

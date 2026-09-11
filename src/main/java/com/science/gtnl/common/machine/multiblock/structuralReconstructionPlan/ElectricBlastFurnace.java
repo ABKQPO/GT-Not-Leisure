@@ -25,7 +25,7 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import bartworks.util.BWUtil;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
@@ -96,12 +96,11 @@ public class ElectricBlastFurnace extends MultiMachineBase<ElectricBlastFurnace>
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 11))))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.HeatProofMachineCasing.asElement())))
+            .addElement('B', Casings.SolidSteelMachineCasing.asElement())
+            .addElement('C', Casings.GrateMachineCasing.asElement())
+            .addElement('D', Casings.CleanStainlessSteelMachineCasing.asElement())
             .addElement(
                 'E',
                 GTStructureChannels.HEATING_COIL.use(
@@ -221,7 +220,7 @@ public class ElectricBlastFurnace extends MultiMachineBase<ElectricBlastFurnace>
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 11);
+        return Casings.HeatProofMachineCasing.getTextureId();
     }
 
     @Override

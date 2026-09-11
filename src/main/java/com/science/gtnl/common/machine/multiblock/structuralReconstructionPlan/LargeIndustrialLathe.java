@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings3Misc;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.TAE;
@@ -61,9 +60,9 @@ public class LargeIndustrialLathe extends GTMMultiMachineBase<LargeIndustrialLat
     public IStructureDefinition<LargeIndustrialLathe> getStructureDefinition() {
         return StructureDefinition.<LargeIndustrialLathe>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
+            .addElement('A', Casings.SolidSteelMachineCasing.asElement())
+            .addElement('B', Casings.AssemblyLineCasing.asElement())
+            .addElement('C', Casings.GrateMachineCasing.asElement())
             .addElement('D', GTStructureUtility.ofFrame(Materials.Tungsten))
             .addElement(
                 'E',
@@ -79,7 +78,7 @@ public class LargeIndustrialLathe extends GTMMultiMachineBase<LargeIndustrialLat
                         ParallelCon)
                     .buildAndChain(
                         StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasings3Misc, 1))))
+                            .onElementPass(x -> ++x.mCountCasing, Casings.InconelReinforcedCasing.asElement())))
             .build();
     }
 

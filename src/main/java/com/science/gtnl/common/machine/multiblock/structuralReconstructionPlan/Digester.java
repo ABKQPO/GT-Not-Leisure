@@ -23,7 +23,7 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import bartworks.util.BWUtil;
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -74,7 +74,7 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
     public IStructureDefinition<Digester> getStructureDefinition() {
         return StructureDefinition.<Digester>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 11))
+            .addElement('A', Casings.HeatProofMachineCasing.asElement())
             .addElement(
                 'B',
                 GTStructureUtility.buildHatchAdder(Digester.class)
@@ -91,8 +91,8 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 0))))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
+                            Casings.RobustTungstenSteelMachineCasing.asElement())))
+            .addElement('C', Casings.CleanStainlessSteelMachineCasing.asElement())
             .addElement(
                 'D',
                 GTStructureChannels.HEATING_COIL.use(
@@ -202,7 +202,7 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 0);
+        return Casings.RobustTungstenSteelMachineCasing.getTextureId();
     }
 
     @Override

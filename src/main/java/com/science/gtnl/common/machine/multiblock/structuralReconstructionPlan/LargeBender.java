@@ -2,9 +2,7 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings3Misc;
 
 import java.util.List;
 
@@ -20,6 +18,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
@@ -61,8 +60,8 @@ public class LargeBender extends GTMMultiMachineBase<LargeBender> implements ISu
     public IStructureDefinition<LargeBender> getStructureDefinition() {
         return StructureDefinition.<LargeBender>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(sBlockCasings2, 5))
-            .addElement('B', StructureUtility.ofBlock(sBlockCasings2, 15))
+            .addElement('A', Casings.AssemblyLineCasing.asElement())
+            .addElement('B', Casings.TungstensteelPipeCasing.asElement())
             .addElement(
                 'C',
                 buildHatchAdder(LargeBender.class).casingIndex(getCasingTextureID())
@@ -75,7 +74,7 @@ public class LargeBender extends GTMMultiMachineBase<LargeBender> implements ISu
                         ParallelCon)
                     .buildAndChain(
                         StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasings3Misc, 1))))
+                            .onElementPass(x -> ++x.mCountCasing, Casings.InconelReinforcedCasing.asElement())))
             .build();
     }
 

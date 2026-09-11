@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
 
 import java.util.List;
 
@@ -19,6 +18,7 @@ import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
 import bartworks.util.BWUtil;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
@@ -72,7 +72,7 @@ public class AlloyBlastSmelter extends GTMMultiMachineBase<AlloyBlastSmelter> im
                 GTStructureChannels.HEATING_COIL.use(
                     GTStructureUtility.activeCoils(
                         GTStructureUtility.ofCoil(AlloyBlastSmelter::setMCoilLevel, AlloyBlastSmelter::getMCoilLevel))))
-            .addElement('B', StructureUtility.ofBlock(blockCasingsMisc, 14))
+            .addElement('B', Casings.BlastSmelterHeatContainmentCoil.asElement())
             .addElement(
                 'C',
                 GTStructureUtility.buildHatchAdder(AlloyBlastSmelter.class)
@@ -87,8 +87,7 @@ public class AlloyBlastSmelter extends GTMMultiMachineBase<AlloyBlastSmelter> im
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasingsMisc, 15))))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.BlastSmelterCasing.asElement())))
             .addElement('D', HatchElement.Muffler.newAny(getCasingTextureID(), 1))
             .build();
     }

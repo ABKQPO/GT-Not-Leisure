@@ -36,6 +36,7 @@ import com.science.gtnl.utils.structure.GTNLStructureErrors;
 import bartworks.system.material.WerkstoffLoader;
 import goodgenerator.items.GGMaterial;
 import goodgenerator.loader.Loaders;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -189,7 +190,7 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
                             "  TCXCT  ", "T  TXT  T" } }))
             .addElement('A', StructureUtility.ofBlock(ConfigBlocks.blockCosmeticOpaque, 1))
             .addElement('T', StructureUtility.ofBlock(ConfigBlocks.blockCosmeticSolid, 7))
-            .addElement('C', StructureUtility.ofBlock(Loaders.magicCasing, 0))
+            .addElement('C', Casings.MagicCasing.asElement())
             .addElement(
                 'E',
                 GTStructureChannels.TIER_MACHINE_CASING.use(
@@ -214,7 +215,7 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
                         .casingIndex(getCasingTextureID())
                         .hint(1)
                         .build(),
-                    StructureUtility.ofBlock(Loaders.magicCasing, 0),
+                    Casings.MagicCasing.asElement(),
                     StructureUtility.ofSpecificTileAdder(
                         LargeEssentiaGenerator::addEssentiaHatch,
                         TileEntityEssentiaHatch.class,

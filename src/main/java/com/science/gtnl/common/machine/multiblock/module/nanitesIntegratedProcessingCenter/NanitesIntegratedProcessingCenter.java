@@ -1,8 +1,6 @@
 package com.science.gtnl.common.machine.multiblock.module.nanitesIntegratedProcessingCenter;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings4Misc;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,9 +17,9 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
@@ -30,6 +28,7 @@ import com.science.gtnl.utils.recipes.metadata.NanitesIntegratedProcessingMetada
 
 import bartworks.util.BWUtil;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
@@ -91,7 +90,7 @@ public class NanitesIntegratedProcessingCenter
     }
 
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
+        return Casings.RadiantNaquadahAlloyCasing.getTextureId();
     }
 
     @Override
@@ -172,14 +171,13 @@ public class NanitesIntegratedProcessingCenter
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
-            .addElement('B', StructureUtility.ofBlock(sBlockCasingsTT, 0))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.RadiantNaquadahAlloyCasing.asElement())))
+            .addElement('B', Casings.HighPowerCasing.asElement())
             .addElement('C', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
+            .addElement('D', Casings.GrateMachineCasing.asElement())
             .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockMetal5, 1))
-            .addElement('F', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('F', GTNLCasings.NeutroniumGearbox.asElement())
             .addElement(
                 'G',
                 GTStructureChannels.HEATING_COIL.use(
@@ -187,14 +185,14 @@ public class NanitesIntegratedProcessingCenter
                         GTStructureUtility.ofCoil(
                             NanitesIntegratedProcessingCenter::setMCoilLevel,
                             NanitesIntegratedProcessingCenter::getMCoilLevel))))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 10))
-            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
+            .addElement('H', Casings.StainlessSteelTurbineCasing.asElement())
+            .addElement('I', Casings.PressureContainmentCasing.asElement())
             .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 9))
-            .addElement('K', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
-            .addElement('L', StructureUtility.ofBlock(blockCasings4Misc, 4))
-            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
+            .addElement('K', Casings.ShieldedAcceleratorCasing.asElement())
+            .addElement('L', Casings.QuantumForceTransformerCoilCasing.asElement())
+            .addElement('M', Casings.AssemblyLineCasing.asElement())
             .addElement('N', GTStructureUtility.ofFrame(Materials.CosmicNeutronium))
-            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
+            .addElement('O', Casings.PTFEPipeCasing.asElement())
             .addElement('P', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
             .addElement(
                 'Q',
@@ -205,10 +203,10 @@ public class NanitesIntegratedProcessingCenter
                         .hint(1)
                         .hint(1)
                         .buildAndChain(GregTechAPI.sBlockCasings8, 10),
-                    StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7),
-                    StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0),
-                    StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 0),
-                    StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 8),
+                    Casings.AdvancedIridiumPlatedMachineCasing.asElement(),
+                    Casings.ChemicallyInertMachineCasing.asElement(),
+                    Casings.RobustTungstenSteelMachineCasing.asElement(),
+                    Casings.NeutroniumStabilizationCasing.asElement(),
                     StructureUtility.ofBlock(GregTechAPI.sBlockReinforced, 2)))
             .build();
     }

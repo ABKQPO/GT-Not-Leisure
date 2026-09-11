@@ -2,8 +2,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.List;
 
@@ -17,10 +15,11 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -33,7 +32,6 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtnhlanth.common.register.LanthItemList;
 
@@ -62,7 +60,7 @@ public class SmartSiftingHub extends WirelessEnergyMultiMachineBase<SmartSifting
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 10);
+        return Casings.RadiantNaquadahAlloyCasing.getTextureId();
     }
 
     @Override
@@ -70,7 +68,7 @@ public class SmartSiftingHub extends WirelessEnergyMultiMachineBase<SmartSifting
         return StructureDefinition.<SmartSiftingHub>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', GTStructureUtility.ofFrame(Materials.TungstenSteel))
-            .addElement('B', StructureUtility.ofBlock(ModBlocks.blockCasings5Misc, 0))
+            .addElement('B', Casings.IsaMillExteriorCasing.asElement())
             .addElement('C', GTStructureUtility.ofFrame(Materials.Quantium))
             .addElement(
                 'D',
@@ -78,11 +76,11 @@ public class SmartSiftingHub extends WirelessEnergyMultiMachineBase<SmartSifting
                     Block.getBlockFromItem(
                         MaterialsAlloy.HASTELLOY_C276.getFrameBox(1)
                             .getItem())))
-            .addElement('E', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 2))
-            .addElement('F', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('E', Casings.HastelloyXStructuralBlock.asElement())
+            .addElement('F', GTNLCasings.NeutroniumGearbox.asElement())
             .addElement('G', GTStructureUtility.ofFrame(Materials.Europium))
-            .addElement('H', StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 8))
-            .addElement('I', StructureUtility.ofBlock(sBlockCasingsTT, 4))
+            .addElement('H', Casings.ThermallyInsulatedCasing.asElement())
+            .addElement('I', Casings.MolecularCasing.asElement())
             .addElement(
                 'J',
                 GTStructureUtility.buildHatchAdder(SmartSiftingHub.class)
@@ -98,9 +96,9 @@ public class SmartSiftingHub extends WirelessEnergyMultiMachineBase<SmartSifting
                     .hint(1)
                     .buildAndChain(
                         StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasings8, 10))))
-            .addElement('K', StructureUtility.ofBlock(sBlockCasingsTT, 6))
-            .addElement('L', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
+                            .onElementPass(x -> ++x.mCountCasing, Casings.RadiantNaquadahAlloyCasing.asElement())))
+            .addElement('K', Casings.ContainmentFieldGenerator.asElement())
+            .addElement('L', GTNLCasings.FusionGlass.asElement())
             .addElement('M', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .build();
     }

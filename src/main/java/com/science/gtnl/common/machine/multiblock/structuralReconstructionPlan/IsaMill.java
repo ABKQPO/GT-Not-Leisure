@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings5Misc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +25,7 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.metadata.IsaMillMetadata;
 
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
@@ -117,10 +117,9 @@ public class IsaMill extends GTMMultiMachineBase<IsaMill> implements ISurvivalCo
                         .casingIndex(getCasingTextureID())
                         .hint(1)
                         .build(),
-                    StructureUtility
-                        .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasings5Misc, 0))))
-            .addElement('C', StructureUtility.ofBlock(blockCasings5Misc, 1))
-            .addElement('D', StructureUtility.ofBlock(blockCasings5Misc, 2))
+                    StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.IsaMillExteriorCasing.asElement())))
+            .addElement('C', Casings.IsaMillPiping.asElement())
+            .addElement('D', Casings.IsaMillGearboxCasing.asElement())
             .build();
     }
 

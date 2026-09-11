@@ -19,6 +19,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -87,8 +88,8 @@ public class SteamCarpenter extends SteamMultiMachineBase<SteamCarpenter> implem
                         .casingIndex(10)
                         .hint(1)
                         .buildAndChain(),
-                    StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10)))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 2))
+                    Casings.BronzePlatedBricks.asElement()))
+            .addElement('B', Casings.BronzeGearBoxCasing.asElement())
             .addElement('C', GTStructureUtility.ofFrame(Materials.Wood))
             .build();
     }

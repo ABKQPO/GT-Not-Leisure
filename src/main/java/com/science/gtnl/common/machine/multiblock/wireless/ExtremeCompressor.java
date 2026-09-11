@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings3Misc;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,13 +20,14 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
 import bartworks.API.recipe.BartWorksRecipeMaps;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
@@ -73,10 +73,10 @@ public class ExtremeCompressor extends WirelessEnergyMultiMachineBase<ExtremeCom
     public IStructureDefinition<ExtremeCompressor> getStructureDefinition() {
         return StructureDefinition.<ExtremeCompressor>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 5))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 9))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
+            .addElement('A', Casings.CompressionPipeCasing.asElement())
+            .addElement('B', Casings.PressureContainmentCasing.asElement())
+            .addElement('C', Casings.HermeticCasing9.asElement())
+            .addElement('D', Casings.TungstensteelPipeCasing.asElement())
             .addElement(
                 'E',
                 StructureUtility.ofBlockAnyMeta(
@@ -99,15 +99,15 @@ public class ExtremeCompressor extends WirelessEnergyMultiMachineBase<ExtremeCom
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))))
-            .addElement('G', StructureUtility.ofBlock(blockCasings3Misc, 1))
-            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
-            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings11, 4))
-            .addElement('J', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+                            Casings.AdvancedIridiumPlatedMachineCasing.asElement())))
+            .addElement('G', Casings.InconelReinforcedCasing.asElement())
+            .addElement('H', GTNLCasings.NeutroniumGearbox.asElement())
+            .addElement('I', Casings.OsmiumItemPipeCasing.asElement())
+            .addElement('J', GTNLCasings.NeutroniumPipeCasing.asElement())
             .addElement('K', HatchElement.Muffler.newAny(getCasingTextureID(), 5))
-            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('L', Casings.RadiantNaquadahAlloyCasing.asElement())
             .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 1))
-            .addElement('N', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 9))
+            .addElement('N', Casings.ReactiveGasContainmentCasing.asElement())
             .addElement(
                 'O',
                 StructureUtility.ofBlockAnyMeta(
@@ -167,7 +167,7 @@ public class ExtremeCompressor extends WirelessEnergyMultiMachineBase<ExtremeCom
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 7);
+        return Casings.AdvancedIridiumPlatedMachineCasing.getTextureId();
     }
 
     @Override

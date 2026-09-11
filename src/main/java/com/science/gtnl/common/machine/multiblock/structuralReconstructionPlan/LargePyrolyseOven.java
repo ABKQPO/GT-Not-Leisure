@@ -17,7 +17,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -60,7 +60,7 @@ public class LargePyrolyseOven extends GTMMultiMachineBase<LargePyrolyseOven> im
     public IStructureDefinition<LargePyrolyseOven> getStructureDefinition() {
         return StructureDefinition.<LargePyrolyseOven>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 11))
+            .addElement('A', Casings.HeatProofMachineCasing.asElement())
             .addElement(
                 'B',
                 GTStructureUtility.buildHatchAdder(LargePyrolyseOven.class)
@@ -77,7 +77,7 @@ public class LargePyrolyseOven extends GTMMultiMachineBase<LargePyrolyseOven> im
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))))
+                            Casings.CleanStainlessSteelMachineCasing.asElement())))
             .addElement(
                 'C',
                 GTStructureChannels.HEATING_COIL.use(
@@ -148,7 +148,7 @@ public class LargePyrolyseOven extends GTMMultiMachineBase<LargePyrolyseOven> im
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 1);
+        return Casings.CleanStainlessSteelMachineCasing.getTextureId();
     }
 
     @Override
