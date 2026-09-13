@@ -339,6 +339,10 @@ public class MainConfig {
             @Comment("Speed multiplier for the clock")
             @DefaultInt(256)
             public int chronarchsClockSpeedMultiplier = 256;
+
+            @Comment("Tile entities the clock must not accelerate. The entries are the names used in GameRegistry.registerTileEntity, for example minecraft:furnace or gregtech:gt.blockmachines. An empty list accelerates everything.")
+            @DefaultStringList({})
+            public String[] chronarchsClockTileEntityBlacklist = {};
         }
     }
 

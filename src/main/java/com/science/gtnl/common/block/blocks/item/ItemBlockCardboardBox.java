@@ -65,10 +65,9 @@ public class ItemBlockCardboardBox extends ItemBlock {
                 StatCollector.translateToLocal("gtnl.waila.cardboard_box.metadata")
                     + (data.metaSpecial != -1 ? data.metaSpecial : data.meta));
 
-            if (data.tileTag != null) {
-                list.add(
-                    StatCollector.translateToLocal("gtnl.waila.cardboard_box.tile_entity")
-                        + data.tileTag.getString("id"));
+            String tileEntityId = data.getTileEntityId();
+            if (tileEntityId != null && !tileEntityId.isEmpty()) {
+                list.add(StatCollector.translateToLocal("gtnl.waila.cardboard_box.tile_entity") + tileEntityId);
             }
         }
     }
@@ -107,6 +106,7 @@ public class ItemBlockCardboardBox extends ItemBlock {
 
                     tile.writeToNBT(tag);
                     data.tileTag = tag;
+                    data.tileEntityId = tag.getString("id");
                 }
 
                 if (!player.capabilities.isCreativeMode) {
@@ -144,6 +144,9 @@ public class ItemBlockCardboardBox extends ItemBlock {
 
             if (tileEntity != null) {
                 tileEntity.storedData = CardboardBoxUtils.getBlockData(stack);
+                if (stack.stackSize <= 1) {
+                    CardboardBoxUtils.discardStoredData(stack);
+                }
             }
         }
 

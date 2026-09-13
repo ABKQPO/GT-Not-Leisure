@@ -3693,7 +3693,7 @@ gtnl.machine.steam.overclocking_count=超频次数
 gtnl.machine.common.gtm.tooltip.0=比相同电压的机器快67%
 gtnl.machine.common.gtm.tooltip.1=只需要使用配方要求功率的80%
 gtnl.machine.common.gtm.tooltip.2=初始并行为8
-gtnl.machine.common.gtm.tooltip.3=在控制器内放入并行控制仓来提升最大并行数和减少耗电！
+gtnl.machine.common.gtm.tooltip.3=安装并行控制仓来提升最大并行数和减少耗电！
 
 gtnl.machine.common.component_assembly_line.tooltip.0=每级玻璃和部件装配线外壳等级额外提供5%的加速和耗电减免(乘算叠加)
 gtnl.machine.common.component_assembly_line.tooltip.1=部件装配线外壳等级决定了能源仓最大等级 + 3，UIV装配线外壳解锁所有等级
@@ -3701,7 +3701,7 @@ gtnl.machine.common.component_assembly_line.tooltip.1=部件装配线外壳等�
 gtnl.machine.common.wireless.tooltip.0=比相同电压的机器快400%
 gtnl.machine.common.wireless.tooltip.1=只需要使用配方要求功率的60%
 gtnl.machine.common.wireless.tooltip.2=初始并行为8
-gtnl.machine.common.wireless.tooltip.3=在控制器内放入并行控制仓来提升最大并行数和减少耗电！
+gtnl.machine.common.wireless.tooltip.3=安装并行控制仓来提升最大并行数和减少耗电！
 gtnl.machine.common.wireless.tooltip.4=并行控制仓将额外提供16倍的并行！
 gtnl.machine.common.wireless.tooltip.5=加速由加算改为乘算，每级提供75%的加速
 gtnl.machine.common.wireless.tooltip.6=无线模式下支持跨配方并行

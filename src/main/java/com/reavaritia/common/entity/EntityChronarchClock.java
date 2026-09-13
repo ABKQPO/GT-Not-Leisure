@@ -1,5 +1,7 @@
 package com.reavaritia.common.entity;
 
+import java.util.Map;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -8,6 +10,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import com.science.gtnl.api.ITileEntityTickAcceleration;
+import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.mixins.early.minecraft.AccessorTileEntity;
 import com.science.gtnl.utils.enums.ModList;
 
 public class EntityChronarchClock extends Entity {
@@ -97,7 +101,21 @@ public class EntityChronarchClock extends Entity {
     }
 
     private boolean shouldAccelerate(TileEntity te) {
-        return te != null && !te.isInvalid() && te.canUpdate();
+        return te != null && !te.isInvalid() && te.canUpdate() && !isBlacklisted(te);
+    }
+
+    private boolean isBlacklisted(TileEntity te) {
+        String[] blacklist = MainConfig.re_avaritia.chronarch_clock.chronarchsClockTileEntityBlacklist;
+        if (blacklist.length == 0) return false;
+
+        String registryName = getRegistryName(te);
+        if (registryName == null) return false;
+
+        for (String entry : blacklist) {
+            if (entry != null && registryName.equals(entry.trim())) return true;
+        }
+
+        return false;
     }
 
     private boolean shouldAccelerate(Block block) {
@@ -129,5 +147,14 @@ public class EntityChronarchClock extends Entity {
     @Override
     public boolean isEntityInvulnerable() {
         return true;
+    }
+
+    public static String getRegistryName(TileEntity tileEntity) {
+        if (tileEntity == null) return null;
+
+        Map<Class<?>, String> classToNameMap = ((AccessorTileEntity) tileEntity).getClassToNameMap();
+        if (classToNameMap == null) return null;
+
+        return classToNameMap.get(tileEntity.getClass());
     }
 }
