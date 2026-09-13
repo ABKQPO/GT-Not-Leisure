@@ -58,10 +58,9 @@ public class CardboardBoxWailaDataProvider implements IWailaDataProvider {
                 StatCollector.translateToLocal("gtnl.waila.cardboard_box.metadata")
                     + (data.metaSpecial != -1 ? data.metaSpecial : data.meta));
 
-            if (data.tileTag != null) {
-                currentTip.add(
-                    StatCollector.translateToLocal("gtnl.waila.cardboard_box.tile_entity")
-                        + data.tileTag.getString("id"));
+            String tileEntityId = data.getTileEntityId();
+            if (tileEntityId != null && !tileEntityId.isEmpty()) {
+                currentTip.add(StatCollector.translateToLocal("gtnl.waila.cardboard_box.tile_entity") + tileEntityId);
             }
         }
 
@@ -79,7 +78,8 @@ public class CardboardBoxWailaDataProvider implements IWailaDataProvider {
         int y, int z) {
         if (te instanceof TileEntityCardboardBox cardboardBox) {
             if (cardboardBox.storedData != null) {
-                tag.setTag("blockData", cardboardBox.storedData.write(new NBTTagCompound()));
+                // waila data only has to be displayed, so oversized tile entity data is dropped instead of stored
+                tag.setTag("blockData", CardboardBoxUtils.createBlockDataTag(cardboardBox.storedData, false));
             }
         }
         return tag;
