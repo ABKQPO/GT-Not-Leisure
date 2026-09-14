@@ -181,7 +181,7 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
             .intValue();
         if (amountToFill <= 0) return;
 
-        FluidStack steamStack = new FluidStack(steamType.fluid, amountToFill);
+        FluidStack steamStack = steamType.fluid.getFluidStack(amountToFill);
         int acceptedAmount = fill(steamStack, false);
         if (acceptedAmount <= 0) return;
 
@@ -217,7 +217,7 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
         }
 
         FluidStack storedSteam = getFillableStack();
-        if (storedSteam == null || storedSteam.amount <= 0 || storedSteam.getFluid() == steamType.fluid) {
+        if (storedSteam == null || storedSteam.amount <= 0 || steamType.fluid.matches(storedSteam.getFluid())) {
             selectedSteam = steamType;
             tryFetchingSteam();
             return;

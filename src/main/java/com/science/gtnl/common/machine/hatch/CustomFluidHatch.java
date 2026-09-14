@@ -21,6 +21,7 @@ import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
 import com.science.gtnl.common.gui.modularui.CustomFluidHatchGui;
 import com.science.gtnl.mixins.early.gregtech.AccessorMTEHatch;
+import com.science.gtnl.utils.FluidIdUtils;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.GTMod;
@@ -35,11 +36,12 @@ import gregtech.api.util.GTUtility;
 
 public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
 
-    public Set<Fluid> mLockedFluids;
+    public Set<GTUtility.FluidId> mLockedFluids;
     public int mFluidCapacity;
     public UITexture uiTexture = ItemUtils.PICTURE_GTNL_LOGO;
 
-    public CustomFluidHatch(Set<Fluid> aFluid, int aAmount, int aID, String aName, String aNameRegional, int aTier) {
+    public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, int aID, String aName, String aNameRegional,
+        int aTier) {
         super(
             aID,
             aName,
@@ -54,8 +56,8 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
         this.mFluidCapacity = aAmount;
     }
 
-    public CustomFluidHatch(Set<Fluid> aFluid, int aAmount, int aID, String aName, String aNameRegional, int aTier,
-        UITexture aUITexture) {
+    public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, int aID, String aName, String aNameRegional,
+        int aTier, UITexture aUITexture) {
         super(
             aID,
             aName,
@@ -71,28 +73,28 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
         this.uiTexture = aUITexture;
     }
 
-    public CustomFluidHatch(Set<Fluid> aFluid, int aAmount, int aID, String aName, String aNameRegional, int aTier,
-        String[] aDescription, ITexture... aTextures) {
+    public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, int aID, String aName, String aNameRegional,
+        int aTier, String[] aDescription, ITexture... aTextures) {
         super(aID, aName, aNameRegional, aTier, 3, aDescription, aTextures);
         this.mLockedFluids = aFluid;
         this.mFluidCapacity = aAmount;
     }
 
-    public CustomFluidHatch(Set<Fluid> aFluid, int aAmount, int aID, String aName, String aNameRegional, int aTier,
-        String[] aDescription) {
+    public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, int aID, String aName, String aNameRegional,
+        int aTier, String[] aDescription) {
         super(aID, aName, aNameRegional, aTier, 3, aDescription);
         this.mLockedFluids = aFluid;
         this.mFluidCapacity = aAmount;
     }
 
-    public CustomFluidHatch(Set<Fluid> aFluid, int aAmount, String aName, int aTier, String[] aDescription,
+    public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, String aName, int aTier, String[] aDescription,
         ITexture[][][] aTextures) {
         super(aName, aTier, 3, aDescription, aTextures);
         this.mLockedFluids = aFluid;
         this.mFluidCapacity = aAmount;
     }
 
-    public CustomFluidHatch(Set<Fluid> aFluid, int aAmount, String aName, int aTier, String[] aDescription,
+    public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, String aName, int aTier, String[] aDescription,
         ITexture[][][] aTextures, UITexture aUITexture) {
         super(aName, aTier, 3, aDescription, aTextures);
         this.mLockedFluids = aFluid;
@@ -170,10 +172,17 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
     public boolean allowPutStack(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, final ForgeDirection side,
         final ItemStack aStack) {
         if (side == aBaseMetaTileEntity.getFrontFacing() && aIndex == 0) {
-            FluidStack fs = GTUtility.getFluidForFilledItem(aStack, true);
-            return fs != null && mLockedFluids.contains(fs.getFluid());
+            return acceptsFluid(GTUtility.getFluidForFilledItem(aStack, true));
         }
         return false;
+    }
+
+    public boolean acceptsFluid(FluidStack fluidStack) {
+        return FluidIdUtils.matchesAny(mLockedFluids, fluidStack);
+    }
+
+    public boolean acceptsFluid(Fluid fluid) {
+        return FluidIdUtils.matchesAny(mLockedFluids, fluid);
     }
 
     @Override
@@ -228,8 +237,10 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
             StatCollector.translateToLocal("gtnl.hatch.custom_fluid.tooltip.capacity") + " " + mFluidCapacity + "L");
         desc.add(StatCollector.translateToLocal("gtnl.hatch.custom_fluid.tooltip.allowed_fluids"));
 
-        for (Fluid allowed : mLockedFluids) {
-            desc.add("-" + (allowed.getLocalizedName(new FluidStack(allowed, 1))));
+        for (GTUtility.FluidId allowed : mLockedFluids) {
+            desc.add(
+                "-" + allowed.getFluidStack()
+                    .getLocalizedName());
         }
 
         return desc.toArray(new String[] {});
@@ -237,14 +248,7 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
 
     @Override
     public boolean isFluidInputAllowed(final FluidStack aFluid) {
-        for (Fluid allowed : mLockedFluids) {
-            if (allowed.getName()
-                .equals(
-                    aFluid.getFluid()
-                        .getName()))
-                return true;
-        }
-        return false;
+        return acceptsFluid(aFluid);
     }
 
     @Override
@@ -275,6 +279,6 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
     @Deprecated
     public FluidSlotWidget createFluidSlot() {
         // TODO: Remove this mui1 fallback after CustomFluidHatch mui2 parity is verified.
-        return super.createFluidSlot().setFilter(mLockedFluids::contains);
+        return super.createFluidSlot().setFilter(this::acceptsFluid);
     }
 }

@@ -5,7 +5,6 @@ import java.util.Set;
 
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
 import com.Nxer.TwistSpaceTechnology.common.GTCMItemList;
@@ -280,6 +279,7 @@ import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GTNLMachineID;
 import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.text.AnimatedText;
 import com.science.gtnl.utils.text.AnimatedTooltipHandler;
@@ -297,7 +297,7 @@ import gregtech.api.metatileentity.implementations.MTEBasicMachineWithRecipe;
 import gregtech.api.metatileentity.implementations.MTEHatchDynamo;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gregtech.api.render.TextureFactory;
-import gregtech.api.util.GTModHandler;
+import gregtech.api.util.GTUtility;
 import gregtech.common.covers.CoverConveyor;
 import gregtech.common.covers.CoverFluidRegulator;
 import gregtech.common.covers.CoverPump;
@@ -1580,13 +1580,14 @@ public class MachineLoader {
     }
 
     public static void registerHatch() {
-        Set<Fluid> acceptedFluids = new HashSet<>();
+        Set<GTUtility.FluidId> acceptedFluids = new HashSet<>();
         acceptedFluids.add(
-            GTNLMaterials.FluidMana.getFluidOrGas(1)
-                .getFluid());
+            GTUtility.FluidId.create(
+                GTNLMaterials.FluidMana.getFluidOrGas(1)
+                    .getFluid()));
 
         if (ModList.TwistSpaceTechnology.isModLoaded()) {
-            acceptedFluids.add(FluidRegistry.getFluid("liquid mana"));
+            acceptedFluids.add(GTUtility.FluidId.create(FluidRegistry.getFluid("liquid mana")));
         }
 
         GTNLItemList.FluidManaInputHatch.set(
@@ -1602,7 +1603,7 @@ public class MachineLoader {
 
         GTNLItemList.FluidIceInputHatch.set(
             new CustomFluidHatch(
-                ImmutableSet.of(Materials.Water.mSolid),
+                ImmutableSet.of(GTUtility.FluidId.create(Materials.Water.mSolid)),
                 256000,
                 GTNLMachineID.FLUID_ICE_INPUT_HATCH.ID,
                 "FluidIceInputHatch",
@@ -1612,7 +1613,7 @@ public class MachineLoader {
 
         GTNLItemList.FluidBlazeInputHatch.set(
             new CustomFluidHatch(
-                ImmutableSet.of(Materials.Blaze.mStandardMoltenFluid),
+                ImmutableSet.of(GTUtility.FluidId.create(Materials.Blaze.mStandardMoltenFluid)),
                 256000,
                 GTNLMachineID.FLUID_BLAZE_INPUT_HATCH.ID,
                 "FluidBlazeInputHatch",
@@ -1905,13 +1906,7 @@ public class MachineLoader {
 
         GTNLItemList.BigSteamInputHatch.set(
             new CustomFluidHatch(
-                ImmutableSet.of(
-                    Materials.Steam.mGas,
-                    GTModHandler.getSuperHeatedSteam(1)
-                        .getFluid(),
-                    Materials.DenseSupercriticalSteam.mGas,
-                    GTNLMaterials.CompressedSteam.getMolten(1)
-                        .getFluid()),
+                SteamTypes.getSupportedFluids(),
                 4096000,
                 GTNLMachineID.BIG_STEAM_INPUT_HATCH.ID,
                 "BigSteamInputHatch",

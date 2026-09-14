@@ -14,6 +14,7 @@ import com.science.gtnl.common.material.GTNLMaterials;
 
 import gregtech.api.enums.Materials;
 import gregtech.api.util.GTModHandler;
+import gregtech.api.util.GTUtility;
 
 public enum SteamTypes {
 
@@ -28,16 +29,20 @@ public enum SteamTypes {
     public static final SteamTypes[] NETWORK_CONVERTIBLE_TYPES = Arrays.stream(VALUES)
         .filter(steamType -> steamType.networkConvertible)
         .toArray(SteamTypes[]::new);
-    public static final Set<Fluid> SUPPORTED_FLUIDS = createSupportedFluids();
-    public static final Map<Fluid, SteamTypes> TYPES_BY_FLUID = createTypesByFluid();
+    public static final Set<GTUtility.FluidId> SUPPORTED_FLUIDS = createSupportedFluids();
+    public static final Map<GTUtility.FluidId, SteamTypes> TYPES_BY_FLUID = createTypesByFluid();
 
     public final String displayName;
-    public final Fluid fluid;
+    public final GTUtility.FluidId fluid;
     public final int efficiencyFactor;
     public final BigInteger networkSteamPerLiter;
     public final boolean networkConvertible;
 
     SteamTypes(String name, Fluid fluid, int efficiency, boolean networkConvertible) {
+        this(name, GTUtility.FluidId.create(fluid), efficiency, networkConvertible);
+    }
+
+    SteamTypes(String name, GTUtility.FluidId fluid, int efficiency, boolean networkConvertible) {
         this.displayName = name;
         this.fluid = fluid;
         this.efficiencyFactor = efficiency;
@@ -49,28 +54,32 @@ public enum SteamTypes {
         return Arrays.asList(VALUES);
     }
 
-    public static Set<Fluid> getSupportedFluids() {
+    public static Set<GTUtility.FluidId> getSupportedFluids() {
         return SUPPORTED_FLUIDS;
     }
 
     public static SteamTypes fromFluid(Fluid fluid) {
-        return fluid == null ? null : TYPES_BY_FLUID.get(fluid);
+        return fluid == null ? null : TYPES_BY_FLUID.get(GTUtility.FluidId.create(fluid));
+    }
+
+    public static SteamTypes fromFluidId(GTUtility.FluidId fluidId) {
+        return fluidId == null ? null : TYPES_BY_FLUID.get(fluidId);
     }
 
     public static SteamTypes fromNetworkTypeId(int id) {
         return id >= 0 && id < NETWORK_CONVERTIBLE_TYPES.length ? NETWORK_CONVERTIBLE_TYPES[id] : STEAM;
     }
 
-    private static Map<Fluid, SteamTypes> createTypesByFluid() {
-        ImmutableMap.Builder<Fluid, SteamTypes> builder = ImmutableMap.builder();
+    private static Map<GTUtility.FluidId, SteamTypes> createTypesByFluid() {
+        ImmutableMap.Builder<GTUtility.FluidId, SteamTypes> builder = ImmutableMap.builder();
         for (SteamTypes steamType : VALUES) {
             if (steamType.fluid != null) builder.put(steamType.fluid, steamType);
         }
         return builder.build();
     }
 
-    private static Set<Fluid> createSupportedFluids() {
-        ImmutableSet.Builder<Fluid> builder = ImmutableSet.builder();
+    private static Set<GTUtility.FluidId> createSupportedFluids() {
+        ImmutableSet.Builder<GTUtility.FluidId> builder = ImmutableSet.builder();
         for (SteamTypes steamType : VALUES) {
             if (steamType.fluid != null) builder.add(steamType.fluid);
         }
