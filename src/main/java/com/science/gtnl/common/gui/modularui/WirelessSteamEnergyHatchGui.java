@@ -1,7 +1,6 @@
 package com.science.gtnl.common.gui.modularui;
 
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.fluids.FluidStack;
 
 import com.cleanroommc.modularui.drawable.FluidDrawable;
 import com.cleanroommc.modularui.screen.ModularPanel;
@@ -40,10 +39,10 @@ public class WirelessSteamEnergyHatchGui extends CustomFluidHatchGui {
                     .background(false, GTGuiTextures.BUTTON_STANDARD)
                     .background(true, GTGuiTextures.BUTTON_STANDARD_PRESSED)
                     .overlay(
-                        new FluidDrawable(new FluidStack(steamType.fluid, 1)).asIcon()
+                        new FluidDrawable(steamType.fluid.getFluidStack(1)).asIcon()
                             .size(16))
                     .tooltipDynamic(tooltip -> {
-                        tooltip.addFromFluid(new FluidStack(steamType.fluid, 1));
+                        tooltip.addFromFluid(steamType.fluid.getFluidStack(1));
                         if (hatch.getSteamMode() == steamType) {
                             tooltip.addLine("§e" + StatCollector.translateToLocal("gtnl.gui.wireless_steam.selected"));
                         }

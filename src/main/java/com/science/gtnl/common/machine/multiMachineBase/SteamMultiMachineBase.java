@@ -929,7 +929,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         for (FluidStack aFluid : this.getStoredSteamFluids()) {
             if (aFluid == null) continue;
             for (SteamTypes type : SteamTypes.VALUES) {
-                if (aFluid.getFluid() == type.fluid) {
+                if (type.fluid.matches(aFluid.getFluid())) {
                     aSteam += aFluid.amount;
                 }
             }
@@ -943,7 +943,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         for (FluidStack aFluid : this.getStoredSteamFluids()) {
             if (aFluid != null) {
                 for (SteamTypes type : SteamTypes.VALUES) {
-                    if (aFluid.getFluid() == type.fluid) {
+                    if (type.fluid.matches(aFluid.getFluid())) {
                         aFluids.add(aFluid);
                         break;
                     }
@@ -1203,7 +1203,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     @Override
     public boolean tryConsumeSteam(int aAmount) {
         for (SteamTypes type : SteamTypes.getSupportedTypes()) {
-            FluidStack steamStack = new FluidStack(type.fluid, Math.max(1, aAmount / type.efficiencyFactor));
+            FluidStack steamStack = type.fluid.getFluidStack(Math.max(1, aAmount / type.efficiencyFactor));
             if (depleteInput(steamStack)) {
                 return true;
             }

@@ -20,7 +20,6 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
@@ -327,26 +326,26 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
         }
     }
 
-    public int getAvailableAmount(Fluid fluid) {
+    public int getAvailableAmount(GTUtility.FluidId fluid) {
         int total = 0;
 
         for (MTEHatchCustomFluidBase tHatch : GTUtility.validMTEList(mSteamInputFluids)) {
             FluidStack stack = tHatch.getFluid();
-            if (stack != null && stack.getFluid() == fluid) {
+            if (stack != null && fluid.matches(stack.getFluid())) {
                 total += stack.amount;
             }
         }
 
         for (CustomFluidHatch tHatch : GTUtility.validMTEList(mSteamBigInputFluids)) {
             FluidStack stack = tHatch.getFluid();
-            if (stack != null && stack.getFluid() == fluid) {
+            if (stack != null && fluid.matches(stack.getFluid())) {
                 total += stack.amount;
             }
         }
 
         for (CustomFluidHatch tHatch : GTUtility.validMTEList(mSteamWirelessInputFluids)) {
             FluidStack stack = tHatch.getFluid();
-            if (stack != null && stack.getFluid() == fluid) {
+            if (stack != null && fluid.matches(stack.getFluid())) {
                 total += stack.amount;
             }
         }
@@ -354,14 +353,14 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
         return total;
     }
 
-    public int depleteInput(Fluid fluid, int maxDrainAmount) {
+    public int depleteInput(GTUtility.FluidId fluid, int maxDrainAmount) {
         int totalDrained = 0;
 
         for (MTEHatchCustomFluidBase tHatch : GTUtility.validMTEList(mSteamInputFluids)) {
             if (totalDrained >= maxDrainAmount) break;
 
             FluidStack tLiquid = tHatch.getFluid();
-            if (tLiquid != null && tLiquid.getFluid() == fluid) {
+            if (tLiquid != null && fluid.matches(tLiquid.getFluid())) {
                 int remaining = maxDrainAmount - totalDrained;
                 FluidStack drained = tHatch.drain(remaining, true);
                 if (drained != null) totalDrained += drained.amount;
@@ -372,7 +371,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
             if (totalDrained >= maxDrainAmount) break;
 
             FluidStack tLiquid = tHatch.getFluid();
-            if (tLiquid != null && tLiquid.getFluid() == fluid) {
+            if (tLiquid != null && fluid.matches(tLiquid.getFluid())) {
                 int remaining = maxDrainAmount - totalDrained;
                 FluidStack drained = tHatch.drain(remaining, true);
                 if (drained != null) totalDrained += drained.amount;
@@ -383,7 +382,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
             if (totalDrained >= maxDrainAmount) break;
 
             FluidStack tLiquid = tHatch.getFluid();
-            if (tLiquid != null && tLiquid.getFluid() == fluid) {
+            if (tLiquid != null && fluid.matches(tLiquid.getFluid())) {
                 int remaining = maxDrainAmount - totalDrained;
                 FluidStack drained = tHatch.drain(remaining, true);
                 if (drained != null) totalDrained += drained.amount;

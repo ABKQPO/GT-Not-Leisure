@@ -32,11 +32,13 @@ import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.gui.modularui.WirelessSteamDynamoHatchGui;
 import com.science.gtnl.mixins.early.gregtech.AccessorMTEHatch;
+import com.science.gtnl.utils.FluidIdUtils;
 import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
+import gregtech.api.enums.OutputHatchType;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.fluid.IFluidStore;
@@ -55,14 +57,15 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
     public UUID teamUUID;
     public boolean isInTeam;
     public BigInteger steamDisplay;
-    public Set<Fluid> mLockedFluids;
+    public Set<GTUtility.FluidId> mLockedFluids;
 
     public WirelessSteamDynamoHatch(final int aID, final String aName, final String aNameRegional, int aTier) {
         super(aID, aName, aNameRegional, aTier);
         this.mLockedFluids = SteamTypes.getSupportedFluids();
     }
 
-    public WirelessSteamDynamoHatch(final String aName, int aTier, final ITexture[][][] aTextures, Set<Fluid> aFluid) {
+    public WirelessSteamDynamoHatch(final String aName, int aTier, final ITexture[][][] aTextures,
+        Set<GTUtility.FluidId> aFluid) {
         super(aName, aTier, 3, new String[] { "" }, aTextures);
         this.mLockedFluids = SteamTypes.getSupportedFluids();
     }
@@ -97,12 +100,6 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
         return true;
     }
 
-    public boolean acceptsFluidLock(String name) {
-        return false;
-    }
-
-    public void setLockedFluidName(String lockedFluidName) {}
-
     @Override
     public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {}
@@ -119,22 +116,32 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
 
     @Override
     public boolean isFluidInputAllowed(final FluidStack aFluid) {
-        for (Fluid allowed : mLockedFluids) {
-            if (allowed.getName()
-                .equals(
-                    aFluid.getFluid()
-                        .getName())) {
-                return true;
-            }
-        }
-        return false;
+        return FluidIdUtils.matchesAny(mLockedFluids, aFluid);
+    }
+
+    @Override
+    public boolean isFiltered() {
+        return isFluidLocked();
+    }
+
+    @Override
+    public boolean isFilteredToFluid(GTUtility.FluidId id) {
+        return id != null && FluidIdUtils.matchesAny(
+            mLockedFluids,
+            id.getFluidStack()
+                .getFluid());
+    }
+
+    @Override
+    public OutputHatchType getHatchType() {
+        return OutputHatchType.StandardFiltered;
     }
 
     @Override
     @Deprecated
     public FluidSlotWidget createFluidSlot() {
         // TODO: Remove this mui1 fallback after WirelessSteamDynamoHatch mui2 parity is verified.
-        return super.createFluidSlot().setFilter(mLockedFluids::contains);
+        return super.createFluidSlot().setFilter(fluid -> FluidIdUtils.matchesAny(mLockedFluids, fluid));
     }
 
     @Override
