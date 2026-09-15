@@ -2,6 +2,7 @@ package com.science.gtnl.common.machine.multiblock.steam;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -26,7 +27,6 @@ import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoidingMode;
 import gregtech.api.interfaces.IHatchElement;
-import gregtech.api.interfaces.IOutputHatch;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.fluid.IFluidStore;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -39,6 +39,7 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.structure.error.StructureErrorRegistry;
 import gregtech.api.structure.error.StructureErrors;
 import gregtech.api.util.GTStructureUtility;
+import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -295,13 +296,18 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
     }
 
     @Override
-    public VoidingMode getVoidingMode() {
+    public VoidingMode getDefaultVoidingMode() {
         return VoidingMode.VOID_FLUID;
     }
 
     @Override
+    public Set<VoidingMode> getAllowedVoidingModes() {
+        return VoidingMode.FLUID_ONLY_MODES;
+    }
+
+    @Override
     public boolean supportsVoidProtection() {
-        return false;
+        return true;
     }
 
     @Override
@@ -321,16 +327,23 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
         return ret;
     }
 
+    @Override
     public boolean addFluidOutputs(@NotNull FluidStack[] outputFluids) {
-        List<IOutputHatch> allHatches = new ArrayList<>();
-        for (List<MTEHatchOutput> layer : mOutputHatchesByLayer) {
-            for (MTEHatchOutput hatch : layer) {
-                if (hatch instanceof IOutputHatch oh && hatch.outputsLiquids()) {
-                    allHatches.add(oh);
-                }
-            }
+        boolean succeed = true;
+        for (int i = 0; i < outputFluids.length && i < mOutputHatchesByLayer.size(); i++) {
+            FluidStack fluidStack = outputFluids[i];
+            if (fluidStack == null) continue;
+
+            FluidStack remaining = fluidStack.copy();
+            addOutputPartial(remaining, mOutputHatchesByLayer.get(i));
+            if (remaining.amount > 0) succeed = false;
         }
-        return addFluidOutputs(outputFluids, allHatches);
+        return succeed;
+    }
+
+    @Override
+    public boolean canDumpFluidToME(List<GTUtility.FluidId> outputs) {
+        return canDumpFluidToMEByLayer(outputs, mOutputHatchesByLayer);
     }
 
     @Override
