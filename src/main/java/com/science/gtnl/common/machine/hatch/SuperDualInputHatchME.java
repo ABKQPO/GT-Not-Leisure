@@ -140,6 +140,7 @@ import gregtech.common.gui.modularui.widget.AESlotWidget;
 import gregtech.common.tileentities.machines.IDualInputHatchWithPattern;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
+import gregtech.common.tileentities.machines.IHatchWatcher;
 import gregtech.common.tileentities.machines.ISmartInputHatch;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
@@ -254,6 +255,21 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new SuperDualInputHatchME(mName, mTier, mDescriptionArray, mTextures, allowAuto);
+    }
+
+    @Override
+    public boolean needsPeriodicChecks() {
+        return true;
+    }
+
+    @Override
+    public void addWatcher(IHatchWatcher watcher) {
+        watchers.add(watcher);
+    }
+
+    @Override
+    public void removeWatcher(IHatchWatcher watcher) {
+        watchers.remove(watcher);
     }
 
     public ItemStack updateInformationSlot(int aIndex, ItemStack aStack) {
