@@ -41,10 +41,6 @@ import gregtech.common.tileentities.machines.IDualInputInventory;
 
 public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, IDualInputHatch, IAddGregtechLogo {
 
-    public static int getCapacityPerTank(int aTier) {
-        return (1 << (aTier - 1)) * 8000;
-    }
-
     public FluidStack[] mStoredFluid;
     public FluidStackTank[] fluidTanks;
     public int mCapacityPer;
@@ -132,6 +128,7 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
         super.onPostTick(aBaseMetaTileEntity, aTimer);
     }
 
+    @Override
     public void updateSlots() {
         super.updateSlots();
         if (mInventory != null) {
@@ -484,6 +481,10 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
                 }
             }
         }
+    }
+
+    public static int getCapacityPerTank(int aTier) {
+        return (1 << (aTier - 1)) * 8000;
     }
 
     public static class Inventory implements IDualInputInventory {

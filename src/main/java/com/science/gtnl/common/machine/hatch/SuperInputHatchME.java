@@ -68,6 +68,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
+import gregtech.common.tileentities.machines.IHatchWatcher;
 import gregtech.common.tileentities.machines.MTEHatchInputME;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -309,6 +310,21 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
     @Override
     public void onFacingChange() {
         updateValidGridProxySides();
+    }
+
+    @Override
+    public boolean needsPeriodicChecks() {
+        return true;
+    }
+
+    @Override
+    public void addWatcher(IHatchWatcher watcher) {
+        watchers.add(watcher);
+    }
+
+    @Override
+    public void removeWatcher(IHatchWatcher watcher) {
+        watchers.remove(watcher);
     }
 
     @Override
