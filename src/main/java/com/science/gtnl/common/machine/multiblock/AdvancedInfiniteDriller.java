@@ -299,8 +299,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
         List<FluidStack> outputFluids = new ArrayList<>();
         for (ItemStack item : getAllStoredInputs()) {
             if (item.getItem() instanceof ItemDimensionDisplay) {
-                Integer dimID = VMTweakHelper.DIM_MAPPING.inverse()
-                    .get(ItemDimensionDisplay.getDimension(item));
+                Integer dimID = VMTweakHelper.DIM_MAPPING.getDimensionId(ItemDimensionDisplay.getDimension(item));
                 if (dimID == null) continue;
 
                 GTUODimension dimension = GTMod.proxy.mUndergroundOil.GetDimension(dimID);

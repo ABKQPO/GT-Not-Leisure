@@ -15,6 +15,7 @@ import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.utils.Color;
 import com.cleanroommc.modularui.value.sync.PanelSyncHandler;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
@@ -51,6 +52,13 @@ public abstract class MixinMTEVoidMinerBaseGui extends MTEMultiBlockBaseGui<MTEV
         super(null);
     }
 
+    @Inject(method = "createRightPanelGapRow", at = @At("HEAD"), require = 1, remap = false)
+    private void gtnl$refreshFilterDropMap(ModularPanel parent, PanelSyncManager syncManager,
+        CallbackInfoReturnable<Flow> cir) {
+        if (!gtnl$enableMixin) return;
+        gtnl$refreshClientDropMap();
+    }
+
     @Override
     protected ListWidget<IWidget, ?> createTerminalTextWidget(PanelSyncManager syncManager, ModularPanel parent) {
         ListWidget<IWidget, ?> list = super.createTerminalTextWidget(syncManager, parent);
@@ -62,15 +70,16 @@ public abstract class MixinMTEVoidMinerBaseGui extends MTEMultiBlockBaseGui<MTEV
 
         list.child(
             IKey.dynamic(() -> gtnl$getOverrideText(overrideTextSyncer.getValue()))
-                .color(Color.WHITE.main)
+                .color(Color.YELLOW.main)
                 .asWidget()
+                .textAlign(Alignment.CenterLeft)
                 .setEnabledIf(widget -> {
+                    if (!baseMetaTileEntity.isActive()) return false;
                     String raw = overrideTextSyncer.getValue();
                     return raw != null && !raw.isEmpty();
                 })
                 .marginBottom(2)
-                .widthRel(1));
-
+                .fullWidth());
         return list;
     }
 
