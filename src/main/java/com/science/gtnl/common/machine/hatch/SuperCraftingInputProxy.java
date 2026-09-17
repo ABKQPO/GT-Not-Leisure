@@ -35,10 +35,11 @@ import gregtech.common.tileentities.machines.IDualInputInventory;
 import gregtech.common.tileentities.machines.IHatchWatcher;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputSlave;
+import gregtech.common.tileentities.machines.RecipeCheckReason;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
-public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualInputHatch, IDataCopyable {
+public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualInputHatch, IDataCopyable, IHatchWatcher {
 
     private SuperCraftingInputHatchME masterSuper;
     private int masterSuperX, masterSuperY, masterSuperZ;
@@ -47,6 +48,7 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
     private MTEHatchCraftingInputME craftingMaster;
     private int craftingMasterX, craftingMasterY, craftingMasterZ;
     private boolean craftingMasterSet = false;
+    private boolean registeredWithMaster = false;
 
     public SuperCraftingInputProxy(int aID, String aName, String aNameRegional) {
         super(
@@ -195,11 +197,22 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
     @Override
     public void addWatcher(IHatchWatcher watcher) {
         watchers.add(watcher);
+        registerWithMaster();
     }
 
     @Override
     public void removeWatcher(IHatchWatcher watcher) {
         watchers.remove(watcher);
+        if (watchers.isEmpty()) {
+            unregisterFromMaster();
+        }
+    }
+
+    @Override
+    public void scheduleRecipeCheck(RecipeCheckReason reason) {
+        for (IHatchWatcher watcher : watchers) {
+            watcher.scheduleRecipeCheck(reason);
+        }
     }
 
     @Override
@@ -245,6 +258,7 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
     }
 
     public SuperCraftingInputHatchME trySetSuperMasterFromCoord(int x, int y, int z) {
+        unregisterFromMaster();
         clearCraftingMaster();
         TileEntity te = getBaseMetaTileEntity().getWorld()
             .getTileEntity(x, y, z);
@@ -255,12 +269,15 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
             masterSuperZ = z;
             masterSuperSet = true;
             masterSuper = mte;
+            registerWithMaster();
             return mte;
         }
+        registerWithMaster();
         return null;
     }
 
     public MTEHatchCraftingInputME trySetCraftingMasterFromCoord(int x, int y, int z) {
+        unregisterFromMaster();
         clearSuperMaster();
         TileEntity te = getBaseMetaTileEntity().getWorld()
             .getTileEntity(x, y, z);
@@ -270,8 +287,10 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
             craftingMasterZ = z;
             craftingMasterSet = true;
             craftingMaster = mte;
+            registerWithMaster();
             return mte;
         }
+        registerWithMaster();
         return null;
     }
 
@@ -453,6 +472,7 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
     public SuperCraftingInputHatchME getMasterSuper() {
         if (masterSuper == null) return null;
         if (masterSuper.getBaseMetaTileEntity() == null) {
+            unregisterFromMaster();
             masterSuper = null;
         }
         return masterSuper;
@@ -461,6 +481,7 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
     public MTEHatchCraftingInputME getCraftingMaster() {
         if (craftingMaster == null) return null;
         if (craftingMaster.getBaseMetaTileEntity() == null) {
+            unregisterFromMaster();
             craftingMaster = null;
         }
         return craftingMaster;
@@ -476,5 +497,26 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
         craftingMaster = null;
         craftingMasterSet = false;
         craftingMasterX = craftingMasterY = craftingMasterZ = 0;
+    }
+
+    private void registerWithMaster() {
+        if (watchers.isEmpty() || registeredWithMaster) return;
+        if (masterSuper != null) {
+            masterSuper.addWatcher(this);
+            registeredWithMaster = true;
+        } else if (craftingMaster != null) {
+            craftingMaster.addWatcher(this);
+            registeredWithMaster = true;
+        }
+    }
+
+    private void unregisterFromMaster() {
+        if (!registeredWithMaster) return;
+        if (masterSuper != null) {
+            masterSuper.removeWatcher(this);
+        } else if (craftingMaster != null) {
+            craftingMaster.removeWatcher(this);
+        }
+        registeredWithMaster = false;
     }
 }

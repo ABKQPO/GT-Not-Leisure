@@ -141,6 +141,11 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     }
 
     @Override
+    public boolean shouldCheckRecipeThisTick(long aTick, IGregTechTileEntity aBaseMetaTileEntity) {
+        return super.shouldCheckRecipeThisTick(aTick, aBaseMetaTileEntity) || hasFinished && aTick % 20 == 0;
+    }
+
+    @Override
     public IStructureDefinition<MeteorMiner> getStructureDefinition() {
         return StructureDefinition.<MeteorMiner>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape_t1))

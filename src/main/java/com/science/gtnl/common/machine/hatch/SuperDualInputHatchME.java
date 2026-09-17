@@ -95,10 +95,15 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.storage.IStackWatcher;
+import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.api.storage.IItemDisplayRegistry.ItemRenderHook;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.client.render.AppEngRenderItem;
@@ -136,12 +141,14 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
+import gregtech.common.config.MachineStats;
 import gregtech.common.gui.modularui.widget.AESlotWidget;
 import gregtech.common.tileentities.machines.IDualInputHatchWithPattern;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
 import gregtech.common.tileentities.machines.IHatchWatcher;
 import gregtech.common.tileentities.machines.ISmartInputHatch;
+import gregtech.common.tileentities.machines.RecipeCheckReason;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -149,7 +156,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 
 public class SuperDualInputHatchME extends MTEHatchInputBus
     implements IDualInputHatchWithPattern, IRecipeProcessingAwareDualHatch, IAddGregtechLogo, IDataCopyable,
-    ISmartInputHatch, IPowerChannelState, IGridProxyable {
+    ISmartInputHatch, IPowerChannelState, IGridProxyable, IStackWatcherHost {
 
     public static int SLOT_COUNT = 100;
     public static final String COPIED_DATA_IDENTIFIER = "superStockingDualHatch";
@@ -198,6 +205,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
 
     public long[] i_client = new long[SLOT_COUNT];
     public long[] f_client = new long[SLOT_COUNT];
+    private IStackWatcher watcher;
 
     public DecimalFormat df2 = new DecimalFormat("#,###.00");
     public DecimalFormat df = new DecimalFormat("#,###");
@@ -259,7 +267,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
 
     @Override
     public boolean needsPeriodicChecks() {
-        return true;
+        return !MachineStats.machines.useStackWatcher;
     }
 
     @Override
@@ -1088,6 +1096,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
             refreshItemListF();
         }
         updateAllInformationSlots();
+        configureWatchers();
     }
 
     public int getDualSlotCountForGui() {
@@ -1104,6 +1113,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
 
     public void setMinAutoPullItemAmountForGui(long amount) {
         minAutoPullItemAmount = Math.max(1L, amount);
+        scheduleRecipeCheck(RecipeCheckReason.THROTTLED);
     }
 
     public long getMinAutoPullFluidAmountForGui() {
@@ -1112,6 +1122,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
 
     public void setMinAutoPullFluidAmountForGui(long amount) {
         minAutoPullFluidAmount = Math.max(1L, amount);
+        scheduleRecipeCheck(RecipeCheckReason.THROTTLED);
     }
 
     public int getAutoPullRefreshTimeForGui() {
@@ -1145,6 +1156,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         i_mark[slot] = stack;
         inventoryHandlerMark.setStackInSlot(slot, stack);
         updateInformationSlot(slot, stack);
+        configureWatchers();
     }
 
     public ItemStack getInformationItemForGui(int slot) {
@@ -1181,6 +1193,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         }
         i_stored[slot] = Math.max(1L, stackSize);
         updateInformationSlot(slot, i_mark[slot]);
+        configureWatchers();
     }
 
     public FluidStack getFilterFluidForGui(int slot) {
@@ -1196,6 +1209,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         }
         f_mark[slot] = fluid;
         updateInformationSlotF(slot);
+        configureWatchers();
     }
 
     public FluidStack getInformationFluidForGui(int slot) {
@@ -1234,6 +1248,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
         }
         f_stored[slot] = Math.max(1L, stackSize);
         updateInformationSlotF(slot);
+        configureWatchers();
     }
 
     public void refreshItemList() {
@@ -1241,6 +1256,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
             clearItemDisplayData();
             return;
         }
+        boolean inputChanged = false;
         AENetworkProxy proxy = getProxy();
         try {
             IMEMonitor<IAEItemStack> sg = proxy.getStorage()
@@ -1254,17 +1270,22 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                     ItemStack itemstack = GTUtility.copyAmount(
                         i_stored[index] == Long.MAX_VALUE ? 1 : (int) Math.min(Integer.MAX_VALUE, i_stored[index]),
                         currItem.getItemStack());
+                    inputChanged |= !areItemStacksEqual(i_mark[index], itemstack);
                     this.i_mark[index] = itemstack;
                     index++;
                 }
             }
             for (int i = index; i < SLOT_COUNT; i++) {
+                inputChanged |= i_mark[i] != null;
                 i_mark[i] = null;
                 i_display[i] = null;
                 i_client[i] = 0;
             }
 
         } catch (GridAccessException ignored) {}
+        if (inputChanged) {
+            scheduleRecipeCheck(RecipeCheckReason.THROTTLED);
+        }
     }
 
     public void refreshItemListF() {
@@ -1272,6 +1293,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
             clearFluidDisplayData();
             return;
         }
+        boolean inputChanged = false;
         AENetworkProxy proxy = getProxy();
         try {
             IMEMonitor<IAEFluidStack> sg = proxy.getStorage()
@@ -1285,17 +1307,22 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
                     FluidStack fluidstack = GTUtility.copyAmount(
                         f_stored[index] == Long.MAX_VALUE ? 1 : (int) Math.min(Integer.MAX_VALUE, f_stored[index]),
                         currItem.getFluidStack());
+                    inputChanged |= !areFluidStacksEqual(f_mark[index], fluidstack);
                     this.f_mark[index] = fluidstack;
                     index++;
                 }
             }
 
             for (int i = index; i < SLOT_COUNT; i++) {
+                inputChanged |= f_mark[i] != null;
                 f_mark[i] = null;
                 f_display[i] = null;
                 f_client[i] = 0;
             }
         } catch (GridAccessException ignored) {}
+        if (inputChanged) {
+            scheduleRecipeCheck(RecipeCheckReason.THROTTLED);
+        }
     }
 
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTimer) {
@@ -1316,6 +1343,53 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     public BaseActionSource getRequestSource() {
         if (requestSource == null) requestSource = new MachineSource((IActionHost) getBaseMetaTileEntity());
         return requestSource;
+    }
+
+    @Override
+    public void updateWatcher(IStackWatcher newWatcher) {
+        watcher = newWatcher;
+        configureWatchers();
+    }
+
+    @Override
+    public void onStackChange(IItemList stacks, IAEStack fullStack, IAEStack diffStack, BaseActionSource source,
+        StorageChannel channel) {
+        if (diffStack.getStackSize() > 0) {
+            scheduleRecipeCheck(RecipeCheckReason.THROTTLED);
+        }
+    }
+
+    private void configureWatchers() {
+        if (watcher != null) {
+            watcher.clear();
+            if (MachineStats.machines.useStackWatcher && !autoPullItemList) {
+                for (ItemStack stack : i_mark) {
+                    if (stack != null) watcher.add(AEItemStack.create(stack));
+                }
+                for (FluidStack fluid : f_mark) {
+                    if (fluid != null) watcher.add(AEFluidStack.create(fluid));
+                }
+            }
+        }
+        scheduleRecipeCheck(RecipeCheckReason.THROTTLED);
+    }
+
+    private boolean areItemStacksEqual(ItemStack first, ItemStack second) {
+        return first == second || first != null && second != null
+            && first.stackSize == second.stackSize
+            && GTUtility.areStacksEqual(first, second, true);
+    }
+
+    private boolean areFluidStacksEqual(FluidStack first, FluidStack second) {
+        return first == second || first != null && second != null
+            && first.amount == second.amount
+            && GTUtility.areFluidsEqual(first, second, true);
+    }
+
+    private void scheduleRecipeCheck(RecipeCheckReason reason) {
+        for (IHatchWatcher hatchWatcher : watchers) {
+            hatchWatcher.scheduleRecipeCheck(reason);
+        }
     }
 
     @Override
