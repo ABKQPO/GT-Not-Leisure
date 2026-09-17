@@ -162,7 +162,8 @@ public enum Mixins implements IMixins {
         .addClientMixins(
             "appliedEnergistics.assembler.MixinGuiMEMonitorable",
             "appliedEnergistics.assembler.MixinGuiPatternTerm",
-            "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable")
+            "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable",
+            "thaumcraft.MixinTileJarRenderer")
         .setPhase(Phase.LATE)),
 
     BARTWORKS(new MixinBuilder("BartWorks compatibility mixins")

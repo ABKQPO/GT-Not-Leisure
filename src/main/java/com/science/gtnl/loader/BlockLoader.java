@@ -18,6 +18,8 @@ import com.science.gtnl.common.block.blocks.BlockEternalGregTechWorkshopRender;
 import com.science.gtnl.common.block.blocks.BlockHoneyFluid;
 import com.science.gtnl.common.block.blocks.BlockLaserBeacon;
 import com.science.gtnl.common.block.blocks.BlockMEChisel;
+import com.science.gtnl.common.block.blocks.BlockMultiEssentiaJar;
+import com.science.gtnl.common.block.blocks.BlockMultiEssentiaTube;
 import com.science.gtnl.common.block.blocks.BlockNanoPhagocytosisPlantRender;
 import com.science.gtnl.common.block.blocks.BlockPlayerDoll;
 import com.science.gtnl.common.block.blocks.BlockPlayerLeash;
@@ -69,6 +71,8 @@ public class BlockLoader {
     public static BlockEternalGregTechWorkshopRender eternalGregTechWorkshopRender;
     public static BlockDimensionRespawnAnchor dimensionRespawnAnchor;
     public static BlockEssentiaHatch essentiaHatch;
+    public static BlockMultiEssentiaJar multiEssentiaJar;
+    public static BlockMultiEssentiaTube multiEssentiaTube;
     public static BlockEnderElevator enderElevatorBlock, enderElevatorSlab, enderElevatorCarpet;
 
     public static BlockHoneyFluid honeyFluidBlock;
@@ -116,7 +120,11 @@ public class BlockLoader {
         waterCandle = new BlockWaterCandle();
         dimensionRespawnAnchor = new BlockDimensionRespawnAnchor();
         essentiaHatch = new BlockEssentiaHatch();
-
+        multiEssentiaJar = new BlockMultiEssentiaJar();
+        multiEssentiaTube = new BlockMultiEssentiaTube();
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EssentiaHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MultiEssentiaJar.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MultiEssentiaTube.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
         enderElevatorBlock = new BlockEnderElevator(0);
         enderElevatorSlab = new BlockEnderElevator(1);
         enderElevatorCarpet = new BlockEnderElevator(2);

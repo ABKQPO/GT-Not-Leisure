@@ -43,6 +43,8 @@ import com.science.gtnl.common.block.blocks.tile.TileEntityEnderElevator;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEternalGregTechWorkshop;
 import com.science.gtnl.common.block.blocks.tile.TileEntityLaserBeacon;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaTube;
 import com.science.gtnl.common.block.blocks.tile.TileEntityNanoPhagocytosisPlant;
 import com.science.gtnl.common.block.blocks.tile.TileEntityPlayerDoll;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperDualInterface;
@@ -72,6 +74,7 @@ import com.science.gtnl.common.render.item.ItemTwilightSwordRender;
 import com.science.gtnl.common.render.tile.EnderElevatorRenderer;
 import com.science.gtnl.common.render.tile.EternalGregTechWorkshopRenderer;
 import com.science.gtnl.common.render.tile.LaserBeconRenderer;
+import com.science.gtnl.common.render.tile.MultiEssentiaJarRenderer;
 import com.science.gtnl.common.render.tile.NanoPhagocytosisPlantRenderer;
 import com.science.gtnl.common.render.tile.PlayerDollRenderer;
 import com.science.gtnl.common.render.tile.RealArtificialStarRenderer;
@@ -108,6 +111,7 @@ import gregtech.api.enums.Mods;
 import micdoodle8.mods.galacticraft.core.GalacticraftCore;
 import micdoodle8.mods.galacticraft.core.client.model.ModelRocketTier1;
 import micdoodle8.mods.galacticraft.core.proxy.ClientProxyCore;
+import thaumcraft.client.renderers.tile.TileTubeBufferRenderer;
 
 public class ClientProxy extends CommonProxy {
 
@@ -132,7 +136,8 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWaterCandle.class, new WaterCandleRenderer());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLaserBeacon.class, new LaserBeconRenderer());
-
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMultiEssentiaJar.class, new MultiEssentiaJarRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMultiEssentiaTube.class, new TileTubeBufferRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(
             TileEntityBeamFormer.class,
             new TESRWrapper(BlockLoader.beamFormer.getRenderer()));
