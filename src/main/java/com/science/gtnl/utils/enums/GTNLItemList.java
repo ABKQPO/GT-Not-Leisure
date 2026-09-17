@@ -486,7 +486,9 @@ public enum GTNLItemList implements IItemContainer {
     LargeSteamMixer,
     LargeSteamWiremill,
     ElectricBlastFurnace,
-
+    StellarIrisController,
+    MultiEssentiaJar,
+    MultiEssentiaTube,
     EternalGregTechWorkshop,
     EGTWFusionModule,
     ETGWEyeOfHarmonyModule,
@@ -1183,7 +1185,6 @@ public enum GTNLItemList implements IItemContainer {
     VaultPortHatch,
     Enchanting,
     EnergyMonitor,
-    StellarIrisController,
     OredictInputBusME,
     SuperOredictInputBusME,
     Replicator,
