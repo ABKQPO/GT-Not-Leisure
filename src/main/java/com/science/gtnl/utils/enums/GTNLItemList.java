@@ -490,6 +490,7 @@ public enum GTNLItemList implements IItemContainer {
     MultiEssentiaJar,
     MultiEssentiaTube,
     MultiEssentiaInputHatch,
+    SmallArcaneAssembler,
     SmallInfusionMatrix,
     EternalGregTechWorkshop,
     EGTWFusionModule,
