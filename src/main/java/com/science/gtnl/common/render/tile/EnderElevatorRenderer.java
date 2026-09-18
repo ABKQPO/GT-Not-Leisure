@@ -86,13 +86,24 @@ public class EnderElevatorRenderer extends TileEntitySpecialRenderer
         this.bindTexture(TextureMap.locationBlocksTexture);
 
         int meta;
-        int brightness = 15 << 20 | 15 << 4;
         boolean hasWorld = te.hasWorldObj();
+        int brightness = hasWorld
+            ? elevator.getMixedBrightnessForBlock(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord)
+            : 15 << 20 | 15 << 4;
+        boolean lightingEnabled = GL11.glIsEnabled(GL11.GL_LIGHTING);
+        boolean light0Enabled = GL11.glIsEnabled(GL11.GL_LIGHT0);
+        boolean light1Enabled = GL11.glIsEnabled(GL11.GL_LIGHT1);
+        boolean colorMaterialEnabled = GL11.glIsEnabled(GL11.GL_COLOR_MATERIAL);
+        boolean rescaleNormalEnabled = GL11.glIsEnabled(GL12.GL_RESCALE_NORMAL);
 
         GL11.glPushMatrix();
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         try {
-            RenderHelper.disableStandardItemLighting();
+            if (hasWorld) {
+                RenderHelper.disableStandardItemLighting();
+            } else {
+                RenderHelper.enableStandardItemLighting();
+            }
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glTranslated(x, y, z);
@@ -117,7 +128,6 @@ public class EnderElevatorRenderer extends TileEntitySpecialRenderer
 
                     tessellator.startDrawingQuads();
                     tessellator.setColorOpaque_F(1.0F, 1.0F, 1.0F);
-                    tessellator.setBrightness(brightness);
 
                     tessellator.setTranslation(-te.xCoord, -te.yCoord, -te.zCoord);
                     rb.renderBlockByRenderType(disguise, te.xCoord, te.yCoord, te.zCoord);
@@ -127,15 +137,13 @@ public class EnderElevatorRenderer extends TileEntitySpecialRenderer
                     return;
                 }
             } else {
-                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
                 int color = BlockEnderElevator.COLOR_TABLE[meta % BlockEnderElevator.COLOR_TABLE.length];
 
+                rb.setRenderBoundsFromBlock(elevator);
                 tessellator.startDrawingQuads();
                 tessellator.setBrightness(brightness);
                 tessellator
                     .setColorOpaque_F((color >> 16 & 255) / 255f, (color >> 8 & 255) / 255f, (color & 255) / 255f);
-
-                rb.setRenderBoundsFromBlock(elevator);
                 renderStandardCube(elevator, meta);
                 tessellator.draw();
             }
@@ -157,8 +165,21 @@ public class EnderElevatorRenderer extends TileEntitySpecialRenderer
                 OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightnessX, lastBrightnessY);
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 GL11.glPopAttrib();
+                restoreCapability(GL11.GL_LIGHTING, lightingEnabled);
+                restoreCapability(GL11.GL_LIGHT0, light0Enabled);
+                restoreCapability(GL11.GL_LIGHT1, light1Enabled);
+                restoreCapability(GL11.GL_COLOR_MATERIAL, colorMaterialEnabled);
+                restoreCapability(GL12.GL_RESCALE_NORMAL, rescaleNormalEnabled);
                 GL11.glPopMatrix();
             }
+        }
+    }
+
+    private static void restoreCapability(int capability, boolean enabled) {
+        if (enabled) {
+            GL11.glEnable(capability);
+        } else {
+            GL11.glDisable(capability);
         }
     }
 
