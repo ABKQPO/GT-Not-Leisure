@@ -447,8 +447,8 @@ public class InfinitySword extends ItemSword implements ICosmicRenderItem, Subti
 
                     } else if (hitEntity instanceof EntityDragonPart dragonPart
                         && dragonPart.entityDragonObj instanceof EntityLivingBase livingPartOwner) {
-                        hitEntity(stack, livingPartOwner, player);
-                    }
+                            hitEntity(stack, livingPartOwner, player);
+                        }
                 }
             }
         }
