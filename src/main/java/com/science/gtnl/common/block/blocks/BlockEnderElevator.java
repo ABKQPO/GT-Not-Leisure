@@ -51,6 +51,7 @@ public class BlockEnderElevator extends BlockContainer {
         };
         this.setBlockName("gtnl.ender_elevator." + suffix.toLowerCase());
         this.setBlockTextureName(RESOURCE_ROOT_ID + ":ender_elevator");
+        this.setLightLevel(1.0f);
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         GameRegistry.registerBlock(this, ItemBlockEnderElevator.class, "ender_elevator_" + suffix.toLowerCase());
         MinecraftForge.EVENT_BUS.register(this);
