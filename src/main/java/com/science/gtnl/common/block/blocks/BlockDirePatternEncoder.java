@@ -23,7 +23,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockDirePatternEncoder extends AEBaseTileBlock {
 
+    @SideOnly(Side.CLIENT)
     private IIcon sideIcon;
+    @SideOnly(Side.CLIENT)
     private IIcon bottomIcon;
 
     public BlockDirePatternEncoder() {
