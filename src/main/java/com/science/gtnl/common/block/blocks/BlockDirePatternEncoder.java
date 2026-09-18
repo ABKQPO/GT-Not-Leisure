@@ -3,8 +3,10 @@ package com.science.gtnl.common.block.blocks;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import com.science.gtnl.CommonProxy;
@@ -16,8 +18,13 @@ import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.block.AEBaseTileBlock;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockDirePatternEncoder extends AEBaseTileBlock {
+
+    private IIcon sideIcon;
+    private IIcon bottomIcon;
 
     public BlockDirePatternEncoder() {
         super(Material.iron);
@@ -36,6 +43,24 @@ public class BlockDirePatternEncoder extends AEBaseTileBlock {
     @Override
     public String getUnlocalizedName() {
         return "gtnl.block.dire_pattern_encoder";
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister register) {
+        super.registerBlockIcons(register);
+        sideIcon = register.registerIcon(RESOURCE_ROOT_ID + ":dire_pattern_encoder_side");
+        bottomIcon = register.registerIcon(RESOURCE_ROOT_ID + ":dire_pattern_encoder_bottom");
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(int side, int metadata) {
+        return switch (side) {
+            case 0 -> bottomIcon;
+            case 1 -> blockIcon;
+            default -> sideIcon;
+        };
     }
 
     @Override

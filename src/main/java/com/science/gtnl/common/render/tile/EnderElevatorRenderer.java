@@ -8,9 +8,11 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
@@ -25,7 +27,8 @@ import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class EnderElevatorRenderer extends TileEntitySpecialRenderer implements ISimpleBlockRenderingHandler {
+public class EnderElevatorRenderer extends TileEntitySpecialRenderer
+    implements ISimpleBlockRenderingHandler, IItemRenderer {
 
     private final RenderBlocks rb = new RenderBlocks();
     private final TileEntityEnderElevator dummyTE = new TileEntityEnderElevator();
@@ -38,6 +41,25 @@ public class EnderElevatorRenderer extends TileEntitySpecialRenderer implements 
     @Override
     public boolean shouldRender3DInInventory(int modelId) {
         return true;
+    }
+
+    @Override
+    public boolean handleRenderType(ItemStack item, ItemRenderType type) {
+        return true;
+    }
+
+    @Override
+    public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
+        return true;
+    }
+
+    @Override
+    public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
+        Block block = Block.getBlockFromItem(item.getItem());
+        if (block == null) return;
+
+        RenderBlocks renderer = data.length > 0 && data[0] instanceof RenderBlocks renderBlocks ? renderBlocks : rb;
+        renderInventoryBlock(block, item.getItemDamage(), getRenderId(), renderer);
     }
 
     @Override
@@ -58,6 +80,9 @@ public class EnderElevatorRenderer extends TileEntitySpecialRenderer implements 
         Block disguise = te.getDisguiseBlock();
         BlockEnderElevator elevator = (BlockEnderElevator) te.getBlockType();
         Tessellator tessellator = Tessellator.instance;
+        IBlockAccess previousBlockAccess = rb.blockAccess;
+        float lastBrightnessX = OpenGlHelper.lastBrightnessX;
+        float lastBrightnessY = OpenGlHelper.lastBrightnessY;
         this.bindTexture(TextureMap.locationBlocksTexture);
 
         int meta;
@@ -65,73 +90,76 @@ public class EnderElevatorRenderer extends TileEntitySpecialRenderer implements 
         boolean hasWorld = te.hasWorldObj();
 
         GL11.glPushMatrix();
-        RenderHelper.disableStandardItemLighting();
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glTranslated(x, y, z);
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        try {
+            RenderHelper.disableStandardItemLighting();
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GL11.glTranslated(x, y, z);
 
-        if (!hasWorld) {
-            meta = 0;
-            GL11.glTranslatef(0.0F, -0.1F, 0.0F);
-        } else {
-            meta = te.getBlockMetadata();
-        }
+            if (!hasWorld) {
+                meta = 0;
+                GL11.glTranslatef(0.0F, -0.1F, 0.0F);
+            } else {
+                meta = te.getBlockMetadata();
+            }
 
-        if (disguise != null) {
-            try {
-                meta = te.getDisguiseMeta();
-                rb.blockAccess = new DisguiseBlockAccess(
-                    te.getWorldObj(),
-                    te.xCoord,
-                    te.yCoord,
-                    te.zCoord,
-                    disguise,
-                    meta);
+            if (disguise != null) {
+                try {
+                    meta = te.getDisguiseMeta();
+                    rb.blockAccess = new DisguiseBlockAccess(
+                        te.getWorldObj(),
+                        te.xCoord,
+                        te.yCoord,
+                        te.zCoord,
+                        disguise,
+                        meta);
+
+                    tessellator.startDrawingQuads();
+                    tessellator.setColorOpaque_F(1.0F, 1.0F, 1.0F);
+                    tessellator.setBrightness(brightness);
+
+                    tessellator.setTranslation(-te.xCoord, -te.yCoord, -te.zCoord);
+                    rb.renderBlockByRenderType(disguise, te.xCoord, te.yCoord, te.zCoord);
+                    tessellator.setTranslation(0, 0, 0);
+                    tessellator.draw();
+                } catch (Exception ignored) {
+                    return;
+                }
+            } else {
+                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
+                int color = BlockEnderElevator.COLOR_TABLE[meta % BlockEnderElevator.COLOR_TABLE.length];
 
                 tessellator.startDrawingQuads();
-                tessellator.setColorOpaque_F(1.0F, 1.0F, 1.0F);
                 tessellator.setBrightness(brightness);
+                tessellator
+                    .setColorOpaque_F((color >> 16 & 255) / 255f, (color >> 8 & 255) / 255f, (color & 255) / 255f);
 
-                tessellator.setTranslation(-te.xCoord, -te.yCoord, -te.zCoord);
-                rb.renderBlockByRenderType(disguise, te.xCoord, te.yCoord, te.zCoord);
-                tessellator.setTranslation(0, 0, 0);
+                rb.setRenderBoundsFromBlock(elevator);
+                renderStandardCube(elevator, meta);
                 tessellator.draw();
+            }
 
-            } catch (Exception ignored) {
+            if (elevator.overlayIcon != null) {
+                tessellator.startDrawingQuads();
+                tessellator.setBrightness(brightness);
+                tessellator.setColorOpaque_F(1.0F, 1.0F, 1.0F);
+                rb.renderFaceYPos(elevator, 0, 0.001, 0, elevator.overlayIcon);
+                tessellator.draw();
+            }
+        } finally {
+            try {
+                tessellator.setTranslation(0, 0, 0);
                 var accessor = (AccessorTessellator) tessellator;
                 if (accessor.getIsDrawing()) tessellator.draw();
-                return;
+            } finally {
+                rb.blockAccess = previousBlockAccess;
+                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightnessX, lastBrightnessY);
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                GL11.glPopAttrib();
+                GL11.glPopMatrix();
             }
-        } else {
-            float lastBrightnessX = OpenGlHelper.lastBrightnessX;
-            float lastBrightnessY = OpenGlHelper.lastBrightnessY;
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 200F, 200F);
-            int color = BlockEnderElevator.COLOR_TABLE[meta % BlockEnderElevator.COLOR_TABLE.length];
-
-            tessellator.startDrawingQuads();
-            tessellator.setBrightness(brightness);
-            tessellator.setColorOpaque_F((color >> 16 & 255) / 255f, (color >> 8 & 255) / 255f, (color & 255) / 255f);
-
-            rb.setRenderBoundsFromBlock(elevator);
-            renderStandardCube(elevator, meta);
-            tessellator.draw();
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightnessX, lastBrightnessY);
         }
-
-        if (elevator.overlayIcon != null) {
-            tessellator.startDrawingQuads();
-            tessellator.setBrightness(brightness);
-            tessellator.setColorOpaque_F(1.0F, 1.0F, 1.0F);
-            rb.renderFaceYPos(elevator, 0, 0.001, 0, elevator.overlayIcon);
-            tessellator.draw();
-        }
-
-        if (!hasWorld) {
-            GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-        }
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-        GL11.glPopMatrix();
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     public void renderStandardCube(Block block, int meta) {
