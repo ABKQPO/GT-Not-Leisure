@@ -75,6 +75,7 @@ import com.science.gtnl.common.render.tile.EnderElevatorRenderer;
 import com.science.gtnl.common.render.tile.EternalGregTechWorkshopRenderer;
 import com.science.gtnl.common.render.tile.LaserBeconRenderer;
 import com.science.gtnl.common.render.tile.MultiEssentiaJarRenderer;
+import com.science.gtnl.common.render.tile.MultiEssentiaTubeRenderer;
 import com.science.gtnl.common.render.tile.NanoPhagocytosisPlantRenderer;
 import com.science.gtnl.common.render.tile.PlayerDollRenderer;
 import com.science.gtnl.common.render.tile.RealArtificialStarRenderer;
@@ -119,6 +120,7 @@ public class ClientProxy extends CommonProxy {
     public static final SpoceRenderHandler SPOCE_RENDER_HANDLER = new SpoceRenderHandler();
     public static int WATER_CANDLE_RENDER_ID;
     public static int ENDER_ELEVATOR_RENDER_ID;
+    public static int MULTI_ESSENTIA_TUBE_RENDER_ID;
 
     @Override
     public void init(FMLInitializationEvent event) {
@@ -128,6 +130,7 @@ public class ClientProxy extends CommonProxy {
 
         WATER_CANDLE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
         ENDER_ELEVATOR_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+        MULTI_ESSENTIA_TUBE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 
         EnderElevatorRenderer enderElevatorRenderer = new EnderElevatorRenderer();
         RenderingRegistry.registerBlockHandler(enderElevatorRenderer);
@@ -141,6 +144,8 @@ public class ClientProxy extends CommonProxy {
 
         RenderingRegistry.registerBlockHandler(new WaterCandleRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWaterCandle.class, new WaterCandleRenderer());
+
+        RenderingRegistry.registerBlockHandler(new MultiEssentiaTubeRenderer());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLaserBeacon.class, new LaserBeconRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMultiEssentiaJar.class, new MultiEssentiaJarRenderer());
