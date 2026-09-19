@@ -9,9 +9,9 @@ gtnl.message.welcome.1=如果你是第一次安装这个模组，请仔细检查
 gtnl.message.welcome.2=本模组添加了大量的机器和新的配方
 gtnl.message.welcome.3=如果你不想看到部分消息，请在配置文件关闭
 gtnl.message.mod_installed= 已安装！
-gtnl.message.recipe_removal_enabled=配方移除已启用，注意部分配方可能与原版不一致
+gtnl.message.recipe_removal_enabled=GTNL配方移除已启用
 gtnl.message.debug_enabled=GTNL Debug模式已启用
-gtnl.message.recipe_output_chance_enabled=GTNL 电压配方概率修改已启用
+gtnl.message.recipe_output_chance_enabled=GTNL电压配方概率修改已启用
 gtnl.message.recipe_output_chance_increase=当前每级增加概率：%s
 gtnl.config.reload=配置文件已重新加载！
 

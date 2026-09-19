@@ -976,6 +976,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
             .insertItemsAndFluids(table)) {
             return false;
         }
+        notifyWatchers();
         return true;
     }
 

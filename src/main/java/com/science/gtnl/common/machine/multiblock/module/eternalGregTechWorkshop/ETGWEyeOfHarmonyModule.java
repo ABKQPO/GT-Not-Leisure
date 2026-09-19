@@ -405,7 +405,7 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
                                 }
                             }
                         }
-                    } else if (CommonValues.RECIPE_AT == Tick || aBaseMetaTileEntity.hasWorkJustBeenEnabled()) {
+                    } else if (shouldCheckRecipeThisTick(aTick, aBaseMetaTileEntity)) {
                         if (aBaseMetaTileEntity.isAllowedToWork()) {
                             if (checkRecipe()) {
                                 mEfficiency = 10000;

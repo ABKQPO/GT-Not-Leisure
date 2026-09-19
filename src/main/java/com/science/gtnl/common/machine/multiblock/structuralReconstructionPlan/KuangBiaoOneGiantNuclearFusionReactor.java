@@ -381,8 +381,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                             }
                         }
                     } else {
-                        if (aTick % 100 == 0 || aBaseMetaTileEntity.hasWorkJustBeenEnabled()
-                            || aBaseMetaTileEntity.hasInventoryBeenModified()) {
+                        if (shouldCheckRecipeThisTick(aTick, aBaseMetaTileEntity)) {
                             if (aBaseMetaTileEntity.isAllowedToWork()) {
                                 this.mEUStore = aBaseMetaTileEntity.getStoredEU();
                                 if (checkRecipe()) {

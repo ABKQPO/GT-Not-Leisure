@@ -340,8 +340,9 @@ public class SteamOreProcessorModule extends SteamElevatorModuleBase {
             GTUtility.sendChatTrans(aPlayer, "GT5U.machines.oreprocessor.void", mVoidStone);
             return;
         }
-        machineMode = getProcessingMode().next()
-            .ordinal();
+        setMachineMode(
+            getProcessingMode().next()
+                .ordinal());
         List<String> des = getDisplayMode(getProcessingMode());
         GTUtility.sendChatTrans(aPlayer, "GT5U.MULTI_MACHINE_CHANGE", String.join("", des));
     }

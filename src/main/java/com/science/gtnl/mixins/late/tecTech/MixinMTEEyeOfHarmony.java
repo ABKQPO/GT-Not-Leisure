@@ -30,6 +30,7 @@ import com.science.gtnl.common.machine.multiblock.EyeOfHarmonyInjector;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.common.tileentities.machines.RecipeCheckReason;
 import lombok.Getter;
 import lombok.Setter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -124,6 +125,14 @@ public abstract class MixinMTEEyeOfHarmony extends TTMultiblockBase implements I
         // Try to re-link to controller periodically, for example on game load.
         if (aTimer % 100 == 5 && gtnl$controllerSet && getGtnl$controller() == null) {
             gtnl$trySetControllerFromCoord(gtnl$controllerX, gtnl$controllerY, gtnl$controllerZ);
+        }
+    }
+
+    @Inject(method = "outputAfterRecipe_EM", at = @At("TAIL"))
+    private void gtnl$notifyControllerOfRecipeCompletion(CallbackInfo ci) {
+        EyeOfHarmonyInjector controller = getGtnl$controller();
+        if (controller != null) {
+            controller.scheduleRecipeCheck(RecipeCheckReason.IMMEDIATE);
         }
     }
 
