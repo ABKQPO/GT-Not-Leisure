@@ -121,6 +121,7 @@ public class BlockLoader {
         laserBeacon = new BlockLaserBeacon();
         waterCandle = new BlockWaterCandle();
         dimensionRespawnAnchor = new BlockDimensionRespawnAnchor();
+
         essentiaHatch = new BlockEssentiaHatch();
         multiEssentiaInputHatch = new BlockMultiEssentiaInputHatch();
         multiEssentiaJar = new BlockMultiEssentiaJar();
@@ -130,6 +131,7 @@ public class BlockLoader {
             .addItemTooltip(GTNLItemList.MultiEssentiaInputHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MultiEssentiaJar.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MultiEssentiaTube.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
         enderElevatorBlock = new BlockEnderElevator(0);
         enderElevatorSlab = new BlockEnderElevator(1);
         enderElevatorCarpet = new BlockEnderElevator(2);
