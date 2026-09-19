@@ -752,9 +752,14 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     @Override
     public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
+        int previousMachineMode = getMachineMode();
         clearRecipeMapForAllInputHatches();
         onModeChangeByScrewdriver(side, aPlayer, aX, aY, aZ, aTool);
         resetRecipeMapForAllInputHatches();
+        if (previousMachineMode != getMachineMode()) {
+            setSingleRecipeCheck(null);
+            scheduleRecipeCheckImmediate();
+        }
     }
 
     public void onModeChangeByScrewdriver(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,

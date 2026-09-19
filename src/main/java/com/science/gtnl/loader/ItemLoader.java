@@ -16,9 +16,9 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.common.item.GTNLItemRecord;
 import com.science.gtnl.common.item.ItemInfinityCell;
 import com.science.gtnl.common.item.ItemInfinityItem;
-import com.science.gtnl.common.item.ItemRecord;
 import com.science.gtnl.common.item.MetaItemAdder;
 import com.science.gtnl.common.item.items.CircuitIntegratedPlus;
 import com.science.gtnl.common.item.items.DebugItem;
@@ -84,7 +84,7 @@ public class ItemLoader {
     public static TwilightSword twilightSword = new TwilightSword();
     public static CircuitIntegratedPlus circuitIntegratedPlus = new CircuitIntegratedPlus();
     public static TimeStopPocketWatch timeStopPocketWatch = new TimeStopPocketWatch();
-    public static Item recordSus = new ItemRecord("sus");
+    public static Item recordSus = new GTNLItemRecord("sus");
 
     public static ItemInfinityItem infinityTorch = new ItemInfinityItem(
         "infinity_torch",
