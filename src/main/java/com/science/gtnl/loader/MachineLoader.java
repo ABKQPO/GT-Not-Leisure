@@ -474,14 +474,6 @@ public class MachineLoader {
         AnimatedTooltipHandler
             .addItemTooltip(GTNLItemList.IndustrialArcaneAssembler.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
-        GTNLItemList.SmallInfusionMatrix.set(
-            new SmallInfusionMatrix(
-                GTNLMachineID.SMALL_INFUSION_MATRIX.ID,
-                "SmallInfusionMatrix",
-                StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SmallInfusionMatrix.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
         GTNLItemList.EnergeticPhotovoltaicPowerStation.set(
             new PhotovoltaicPowerStation.EnergeticPhotovoltaicPowerStation(
                 GTNLMachineID.ENERGETIC_PHOTOVOLTAIC_POWER_STATION.ID,
@@ -2165,6 +2157,14 @@ public class MachineLoader {
                 "SiphonTurbine",
                 StatCollector.translateToLocal("gtnl.machine.siphon_turbine.name")));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SiphonTurbine.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.SmallInfusionMatrix.set(
+            new SmallInfusionMatrix(
+                GTNLMachineID.SMALL_INFUSION_MATRIX.ID,
+                "SmallInfusionMatrix",
+                StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.name")));
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.SmallInfusionMatrix.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.SuperInputBusME.set(
             new SuperInputBusME(
