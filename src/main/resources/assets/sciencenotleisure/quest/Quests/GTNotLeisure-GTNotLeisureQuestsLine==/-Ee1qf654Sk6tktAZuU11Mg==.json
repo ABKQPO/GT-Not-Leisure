@@ -15,7 +15,7 @@
         "Count:3": 1,
         "Damage:2": 0,
         "OreDict:8": "",
-        "id:8": "sciencenotleisure:PortableItem"
+        "id:8": "sciencenotleisure:portable_item"
       },
       "isMain:1": 0,
       "isSilent:1": 0,
@@ -51,13 +51,13 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:PortableItem"
+          "id:8": "sciencenotleisure:portable_item"
         },
         "1:10": {
           "Count:3": 1,
           "Damage:2": 1,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:PortableItem"
+          "id:8": "sciencenotleisure:portable_item"
         }
       },
       "taskID:8": "bq_standard:optional_retrieval"
@@ -74,7 +74,7 @@
           "Count:3": 1,
           "Damage:2": 2,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:PortableItem",
+          "id:8": "sciencenotleisure:portable_item",
           "tag:10": {
             "BurnTime:3": 0,
             "CookTime:3": 0,
@@ -86,19 +86,19 @@
           "Count:3": 1,
           "Damage:2": 3,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:PortableItem"
+          "id:8": "sciencenotleisure:portable_item"
         },
         "2:10": {
           "Count:3": 1,
           "Damage:2": 4,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:PortableItem"
+          "id:8": "sciencenotleisure:portable_item"
         },
         "3:10": {
           "Count:3": 1,
           "Damage:2": 5,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:PortableItem"
+          "id:8": "sciencenotleisure:portable_item"
         }
       },
       "taskID:8": "bq_standard:optional_retrieval"
@@ -115,67 +115,67 @@
           "Count:3": 1,
           "Damage:2": 9,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:PortableItem"
+          "id:8": "sciencenotleisure:portable_item"
         },
         "1:10": {
           "Count:3": 1,
           "Damage:2": 10,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:PortableItem"
+          "id:8": "sciencenotleisure:portable_item"
         },
         "2:10": {
           "Count:3": 1,
           "Damage:2": 12,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:PortableItem"
+          "id:8": "sciencenotleisure:portable_item"
         },
         "3:10": {
           "Count:3": 1,
           "Damage:2": 11,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:PortableItem"
+          "id:8": "sciencenotleisure:portable_item"
         },
         "4:10": {
           "Count:3": 1,
           "Damage:2": 13,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:PortableItem"
+          "id:8": "sciencenotleisure:portable_item"
         },
         "5:10": {
           "Count:3": 1,
           "Damage:2": 14,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:PortableItem"
+          "id:8": "sciencenotleisure:portable_item"
         },
         "6:10": {
           "Count:3": 1,
           "Damage:2": 15,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:PortableItem"
+          "id:8": "sciencenotleisure:portable_item"
         },
         "7:10": {
           "Count:3": 1,
           "Damage:2": 17,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:PortableItem"
+          "id:8": "sciencenotleisure:portable_item"
         },
         "8:10": {
           "Count:3": 1,
           "Damage:2": 16,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:PortableItem"
+          "id:8": "sciencenotleisure:portable_item"
         },
         "9:10": {
           "Count:3": 1,
           "Damage:2": 6,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:PortableItem"
+          "id:8": "sciencenotleisure:portable_item"
         },
         "10:10": {
           "Count:3": 1,
           "Damage:2": 7,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:PortableItem"
+          "id:8": "sciencenotleisure:portable_item"
         }
       },
       "taskID:8": "bq_standard:optional_retrieval"

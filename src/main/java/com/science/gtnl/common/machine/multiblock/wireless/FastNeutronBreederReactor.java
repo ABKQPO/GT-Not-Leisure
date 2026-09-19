@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,15 +18,15 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
 
-import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.TAE;
@@ -78,10 +77,10 @@ public class FastNeutronBreederReactor extends WirelessEnergyMultiMachineBase<Fa
     public IStructureDefinition<FastNeutronBreederReactor> getStructureDefinition() {
         return StructureDefinition.<FastNeutronBreederReactor>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 7))
+            .addElement('A', GTNLCasings.Antifreeze_Heatproof_Machine_Casing.asElement())
             .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsSE, 1))
             .addElement('C', StructureUtility.ofBlockAnyMeta(LanthItemList.COOLANT_DELIVERY_CASING))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 7))
+            .addElement('D', Casings.HermeticCasing7.asElement())
             .addElement(
                 'E',
                 GTStructureUtility.buildHatchAdder(FastNeutronBreederReactor.class)
@@ -96,18 +95,17 @@ public class FastNeutronBreederReactor extends WirelessEnergyMultiMachineBase<Fa
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasings2Misc, 12))))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
-            .addElement('H', StructureUtility.ofBlock(Loaders.MAR_Casing, 0))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.BulkProductionFrame.asElement())))
+            .addElement('F', Casings.PressureContainmentCasing.asElement())
+            .addElement('G', Casings.AdvancedIridiumPlatedMachineCasing.asElement())
+            .addElement('H', Casings.FieldRestrictionCasing.asElement())
             .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 9))
             .addElement('J', StructureUtility.ofBlockAnyMeta(LanthItemList.SHIELDED_ACCELERATOR_CASING))
-            .addElement('K', StructureUtility.ofBlock(blockCasings2Misc, 9))
-            .addElement('L', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 15))
+            .addElement('K', Casings.CyclotronCoil.asElement())
+            .addElement('L', GTNLCasings.FusionGlass.asElement())
+            .addElement('M', Casings.SuperconductingCoilBlock.asElement())
             .addElement('N', GTStructureUtility.ofFrame(Materials.TungstenCarbide))
-            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 7))
+            .addElement('O', Casings.StabilizedNaquadahWaterPlantCasing.asElement())
             .build();
     }
 

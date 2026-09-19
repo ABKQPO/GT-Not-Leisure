@@ -36,6 +36,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -254,7 +255,7 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
                         GTStructureUtility.ofCoil(
                             AtomicEnergyExcitationPlant::setMCoilLevel,
                             AtomicEnergyExcitationPlant::getMCoilLevel))))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
+            .addElement('E', Casings.ActiveNeutroniumCasing.asElement())
             .addElement(
                 'F',
                 GTStructureUtility.buildHatchAdder(AtomicEnergyExcitationPlant.class)
@@ -271,7 +272,7 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))))
+                            Casings.HeatResistantTriniumPlatedCasing.asElement())))
             .addElement('G', GTStructureUtility.ofFrame(Materials.Neutronium))
             .addElement('H', StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasingsAdvanced, 31_766 + 129))
             .addElement('I', StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasings, 31_766 + 129))
@@ -448,7 +449,7 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings9, 11);
+        return Casings.HeatResistantTriniumPlatedCasing.getTextureId();
     }
 
     @Override

@@ -17,7 +17,7 @@ public enum Mixins implements IMixins {
 
     GREGTECH_EARLY(Side.COMMON, "gregtech.AccessorMTETieredMachineBlock", "gregtech.AccessorEyeOfHarmonyRecipe",
         "gregtech.AccessorGTRecipe", "gregtech.AccessorGTRecipeBuilder", "gregtech.AccessorGTRecipeWithAlt",
-        "gregtech.AccessorGTLanguageManager", "gregtech.AccessorCommonMetaTileEntity",
+        "gregtech.MixinGTRecipe", "gregtech.AccessorGTLanguageManager", "gregtech.AccessorCommonMetaTileEntity",
         "gregtech.AccessorMetaTileEntity", "gregtech.AccessorMTEHatch", "gregtech.AccessorProcessingLogic",
         "gregtech.AccessorRecipeDisplayInfo", "gregtech.MixinMTEBasicMachine", "gregtech.MixinBaseMetaTileEntity",
         "gregtech.assLineRemover.MixinGTMod", "gregtech.assLineRemover.MixinGTRecipeBuilder",
@@ -162,7 +162,8 @@ public enum Mixins implements IMixins {
         .addClientMixins(
             "appliedEnergistics.assembler.MixinGuiMEMonitorable",
             "appliedEnergistics.assembler.MixinGuiPatternTerm",
-            "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable")
+            "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable",
+            "thaumcraft.MixinTileJarRenderer")
         .setPhase(Phase.LATE)),
 
     BARTWORKS(new MixinBuilder("BartWorks compatibility mixins")

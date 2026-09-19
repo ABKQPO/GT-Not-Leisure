@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static com.science.gtnl.loader.BlockLoader.metaCasing02;
 
 import java.util.List;
 
@@ -20,6 +19,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.recipe.RocketAssemblerBackend;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
@@ -30,7 +30,7 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -92,18 +92,18 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings4, 1);
+        return Casings.CleanStainlessSteelMachineCasing.getTextureId();
     }
 
     @Override
     public IStructureDefinition<RocketAssembler> getStructureDefinition() {
         return StructureDefinition.<RocketAssembler>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(metaCasing02, 3))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 3))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 13))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
+            .addElement('A', GTNLCasings.StainlessSteelGearBox.asElement())
+            .addElement('B', Casings.SolidSteelMachineCasing.asElement())
+            .addElement('C', Casings.SteelGearBoxCasing.asElement())
+            .addElement('D', Casings.SteelPipeCasing.asElement())
+            .addElement('E', Casings.GrateMachineCasing.asElement())
             .addElement(
                 'F',
                 GTStructureUtility.buildHatchAdder(RocketAssembler.class)
@@ -118,9 +118,9 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 1))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 3))
+                            Casings.CleanStainlessSteelMachineCasing.asElement())))
+            .addElement('G', Casings.HermeticCasing1.asElement())
+            .addElement('H', Casings.HermeticCasing3.asElement())
             .addElement('I', GTStructureUtility.ofFrame(Materials.Steel))
             .addElement('J', GTStructureUtility.ofFrame(Materials.StainlessSteel))
             .addElement(

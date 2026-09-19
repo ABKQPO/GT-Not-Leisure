@@ -5,6 +5,9 @@ import com.science.gtnl.ScienceNotLeisure;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import gregtech.GTMod;
+import gregtech.api.recipe.RecipeMaps;
+import gregtech.loaders.postload.recipes.FakeCuttingRecipes;
 
 public class LoadCompleteRecipeScheduler {
 
@@ -46,5 +49,9 @@ public class LoadCompleteRecipeScheduler {
 
         ScienceNotLeisure.LOG.info("GTNL: Loading complete-init recipes after all mod load-complete handlers.");
         RecipeLoader.loadCompleteInit();
+        RecipeMaps.cutterFakeRecipes.getBackend()
+            .clearRecipes();
+        new FakeCuttingRecipes().run();
+        GTMod.proxy.reloadNEICache();
     }
 }

@@ -2,9 +2,6 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings8;
-import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.List;
 
@@ -18,10 +15,11 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.TAE;
@@ -63,7 +61,7 @@ public class MegaMixer extends GTMMultiMachineBase<MegaMixer> implements ISurviv
     public IStructureDefinition<MegaMixer> getStructureDefinition() {
         return StructureDefinition.<MegaMixer>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(sBlockCasingsTT, 0))
+            .addElement('A', Casings.HighPowerCasing.asElement())
             .addElement(
                 'B',
                 GTStructureUtility.buildHatchAdder(MegaMixer.class)
@@ -78,9 +76,10 @@ public class MegaMixer extends GTMMultiMachineBase<MegaMixer> implements ISurviv
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasings8, 7))))
-            .addElement('C', StructureUtility.ofBlock(sBlockCasingsTT, 4))
+                        StructureUtility.onElementPass(
+                            x -> ++x.mCountCasing,
+                            Casings.AdvancedIridiumPlatedMachineCasing.asElement())))
+            .addElement('C', Casings.MolecularCasing.asElement())
             .addElement(
                 'D',
                 GTStructureUtility.buildHatchAdder(MegaMixer.class)
@@ -96,11 +95,11 @@ public class MegaMixer extends GTMMultiMachineBase<MegaMixer> implements ISurviv
                         ParallelCon)
                     .buildAndChain(
                         StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasingsMisc, 11))))
-            .addElement('E', StructureUtility.ofBlock(sBlockCasings8, 10))
+                            .onElementPass(x -> ++x.mCountCasing, Casings.MultitankExteriorCasing.asElement())))
+            .addElement('E', Casings.RadiantNaquadahAlloyCasing.asElement())
             .addElement('F', GTStructureUtility.ofFrame(Materials.Neutronium))
-            .addElement('G', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('G', GTNLCasings.NeutroniumPipeCasing.asElement())
+            .addElement('H', GTNLCasings.NeutroniumGearbox.asElement())
             .build();
     }
 
@@ -206,7 +205,7 @@ public class MegaMixer extends GTMMultiMachineBase<MegaMixer> implements ISurviv
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings8, 7);
+        return Casings.AdvancedIridiumPlatedMachineCasing.getTextureId();
     }
 
     @Override

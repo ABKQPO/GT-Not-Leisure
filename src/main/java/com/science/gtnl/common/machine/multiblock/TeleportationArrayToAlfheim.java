@@ -27,6 +27,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
@@ -34,7 +35,6 @@ import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.machine.PortalToAlfheimExplosion;
@@ -42,7 +42,7 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
@@ -69,8 +69,6 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
-import gtnhlanth.common.register.LanthItemList;
-import tectech.thing.casing.TTCasingsContainer;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -148,10 +146,10 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
     public IStructureDefinition<TeleportationArrayToAlfheim> getStructureDefinition() {
         return StructureDefinition.<TeleportationArrayToAlfheim>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 7))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement('A', Casings.ShieldedAcceleratorCasing.asElement())
+            .addElement('B', Casings.PressureContainmentCasing.asElement())
+            .addElement('C', Casings.FusionCoilBlock.asElement())
+            .addElement('D', Casings.AdvancedIridiumPlatedMachineCasing.asElement())
             .addElement(
                 'E',
                 StructureUtility.ofChain(
@@ -163,21 +161,21 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
                             HatchElement.OutputHatch,
                             HatchElement.Energy.or(HatchElement.ExoticEnergy),
                             HatchElement.Maintenance)
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10))
+                        .casingIndex(Casings.RadiantNaquadahAlloyCasing.getTextureId())
                         .hint(1)
                         .build(),
                     StructureUtility
-                        .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10)),
+                        .onElementPass(x -> ++x.mCountCasing, Casings.RadiantNaquadahAlloyCasing.asElement()),
                     buildHatchAdder(TeleportationArrayToAlfheim.class)
                         .adder(TeleportationArrayToAlfheim::addFluidManaInputHatch)
                         .hatchId(21501)
                         .shouldReject(x -> !x.mFluidManaInputHatch.isEmpty())
-                        .casingIndex(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10))
+                        .casingIndex(Casings.RadiantNaquadahAlloyCasing.getTextureId())
                         .hint(1)
                         .build()))
-            .addElement('F', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 0))
-            .addElement('G', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 0))
-            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 1))
+            .addElement('F', Casings.HighPowerCasing.asElement())
+            .addElement('G', GTNLCasings.GaiaGlass.asElement())
+            .addElement('H', GTNLCasings.TerraGlass.asElement())
             .build();
     }
 
@@ -482,7 +480,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
+        return Casings.RadiantNaquadahAlloyCasing.getTextureId();
     }
 
     @Override

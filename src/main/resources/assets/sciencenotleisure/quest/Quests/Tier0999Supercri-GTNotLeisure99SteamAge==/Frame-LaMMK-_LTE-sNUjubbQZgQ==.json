@@ -14,7 +14,7 @@
         "Count:3": 1,
         "Damage:2": 87,
         "OreDict:8": "",
-        "id:8": "sciencenotleisure:MetaItem"
+        "id:8": "sciencenotleisure:meta_item"
       },
       "isMain:1": 0,
       "isSilent:1": 0,
@@ -46,7 +46,7 @@
           "Count:3": 1,
           "Damage:2": 87,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:MetaItem"
+          "id:8": "sciencenotleisure:meta_item"
         }
       },
       "taskID:8": "bq_standard:retrieval"

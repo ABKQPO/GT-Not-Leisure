@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.List;
 
@@ -14,11 +13,11 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -32,7 +31,6 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
-import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -60,7 +58,7 @@ public class MegaWiremill extends WirelessEnergyMultiMachineBase<MegaWiremill> {
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 11);
+        return Casings.HeatProofMachineCasing.getTextureId();
     }
 
     @Override
@@ -95,17 +93,17 @@ public class MegaWiremill extends WirelessEnergyMultiMachineBase<MegaWiremill> {
     public IStructureDefinition<MegaWiremill> getStructureDefinition() {
         return StructureDefinition.<MegaWiremill>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(sBlockCasingsTT, 8))
-            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('A', Casings.HollowCasing.asElement())
+            .addElement('B', GTNLCasings.NeutroniumGearbox.asElement())
             .addElement(
                 'C',
                 GTStructureChannels.HEATING_COIL.use(
                     GTStructureUtility.activeCoils(
                         GTStructureUtility.ofCoil(MegaWiremill::setMCoilLevel, MegaWiremill::getMCoilLevel))))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
-            .addElement('E', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 2))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 11))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
+            .addElement('D', Casings.AssemblyLineCasing.asElement())
+            .addElement('E', Casings.HastelloyXStructuralBlock.asElement())
+            .addElement('F', Casings.MotorMachineCasing.asElement())
+            .addElement('G', Casings.GrateMachineCasing.asElement())
             .addElement(
                 'H',
                 GTStructureUtility.buildHatchAdder(MegaWiremill.class)
@@ -120,11 +118,10 @@ public class MegaWiremill extends WirelessEnergyMultiMachineBase<MegaWiremill> {
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 11))))
-            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 9))
-            .addElement('J', StructureUtility.ofBlock(sBlockCasingsTT, 4))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.HeatProofMachineCasing.asElement())))
+            .addElement('I', Casings.AssemblerMachineCasing.asElement())
+            .addElement('J', Casings.MolecularCasing.asElement())
             .addElement('K', GTStructureUtility.ofFrame(Materials.TungstenSteel))
             .build();
     }

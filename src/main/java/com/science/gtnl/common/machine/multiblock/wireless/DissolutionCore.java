@@ -2,9 +2,7 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
 import static kubatech.loaders.BlockLoader.defcCasingBlock;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsBA0;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,12 +19,12 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -75,7 +73,7 @@ public class DissolutionCore extends WirelessEnergyMultiMachineBase<DissolutionC
     public IStructureDefinition<DissolutionCore> getStructureDefinition() {
         return StructureDefinition.<DissolutionCore>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
+            .addElement('A', Casings.ActiveNeutroniumCasing.asElement())
             .addElement(
                 'B',
                 GTStructureUtility.buildHatchAdder(DissolutionCore.class)
@@ -90,29 +88,28 @@ public class DissolutionCore extends WirelessEnergyMultiMachineBase<DissolutionC
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.RadiantNaquadahAlloyCasing.asElement())))
             .addElement(
                 'C',
                 GTStructureChannels.HEATING_COIL.use(
                     GTStructureUtility.activeCoils(
                         GTStructureUtility.ofCoil(DissolutionCore::setMCoilLevel, DissolutionCore::getMCoilLevel))))
-            .addElement('D', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings11, 2))
-            .addElement('H', StructureUtility.ofBlock(sBlockCasingsBA0, 6))
+            .addElement('D', GTNLCasings.NeutroniumPipeCasing.asElement())
+            .addElement('E', Casings.PTFEPipeCasing.asElement())
+            .addElement('F', Casings.HeatResistantTriniumPlatedCasing.asElement())
+            .addElement('G', Casings.ElectrumItemPipeCasing.asElement())
+            .addElement('H', Casings.ZPMSuperconductorPrimaryTeslaWindings.asElement())
             .addElement('I', StructureUtility.ofBlock(defcCasingBlock, 7))
-            .addElement('J', StructureUtility.ofBlock(blockCasings2Misc, 0))
-            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 7))
-            .addElement('L', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
+            .addElement('J', Casings.ThermalProcessingCasing.asElement())
+            .addElement('K', Casings.StabilizedNaquadahWaterPlantCasing.asElement())
+            .addElement('L', GTNLCasings.FusionGlass.asElement())
+            .addElement('M', Casings.ActiveNeutroniumCasing.asElement())
             .addElement('N', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
             .addElement('O', GTStructureUtility.ofFrame(Materials.Polytetrafluoroethylene))
-            .addElement('P', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0))
+            .addElement('P', Casings.ChemicallyInertMachineCasing.asElement())
             .addElement('Q', GTStructureUtility.ofFrame(Materials.BlackSteel))
-            .addElement('R', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
+            .addElement('R', Casings.NaquadriaReinforcedWaterPlantCasing.asElement())
             .build();
     }
 
@@ -174,7 +171,7 @@ public class DissolutionCore extends WirelessEnergyMultiMachineBase<DissolutionC
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
+        return Casings.RadiantNaquadahAlloyCasing.getTextureId();
     }
 
     @Override

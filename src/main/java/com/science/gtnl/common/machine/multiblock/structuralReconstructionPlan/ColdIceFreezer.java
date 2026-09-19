@@ -18,13 +18,11 @@ import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
@@ -43,7 +41,6 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
-import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -116,9 +113,7 @@ public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements 
     public IStructureDefinition<ColdIceFreezer> getStructureDefinition() {
         return StructureDefinition.<ColdIceFreezer>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement(
-                'A',
-                StructureUtility.ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
+            .addElement('A', Casings.ReinforcedGlass.asElement())
             .addElement(
                 'B',
                 StructureUtility.ofChain(
@@ -133,8 +128,7 @@ public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements 
                         .casingIndex(getCasingTextureID())
                         .hint(1)
                         .build(),
-                    StructureUtility
-                        .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 1)),
+                    StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.FrostProofMachineCasing.asElement()),
                     GTStructureUtility.buildHatchAdder(ColdIceFreezer.class)
                         .adder(ColdIceFreezer::addFluidIceInputHatch)
                         .hatchId(21502)
@@ -142,9 +136,9 @@ public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements 
                         .casingIndex(getCasingTextureID())
                         .hint(1)
                         .build()))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
+            .addElement('C', Casings.TungstensteelPipeCasing.asElement())
             .addElement('D', GTStructureUtility.ofFrame(Materials.Aluminium))
-            .addElement('E', StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 10))
+            .addElement('E', Casings.AdvancedCryogenicCasing.asElement())
             .addElement('F', HatchElement.Muffler.newAny(TAE.getIndexFromPage(2, 10), 1))
             .build();
     }
@@ -212,7 +206,7 @@ public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements 
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 1);
+        return Casings.FrostProofMachineCasing.getTextureId();
     }
 
     @Override

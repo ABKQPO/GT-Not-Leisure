@@ -19,15 +19,15 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.common.machine.monitor.EnergyMonitorCustomWirelessEutProvider;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
@@ -103,11 +103,11 @@ public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurn
     public IStructureDefinition<ReactionFurnace> getStructureDefinition() {
         return StructureDefinition.<ReactionFurnace>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
-            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 14))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 7))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('A', Casings.HeatResistantTriniumPlatedCasing.asElement())
+            .addElement('B', GTNLCasings.PressureBalancedCasing.asElement())
+            .addElement('C', Casings.StabilizedNaquadahWaterPlantCasing.asElement())
+            .addElement('D', Casings.PressureContainmentCasing.asElement())
+            .addElement('E', Casings.RadiantNaquadahAlloyCasing.asElement())
             .addElement(
                 'F',
                 buildHatchAdder(ReactionFurnace.class).casingIndex(getCasingTextureID())
@@ -121,7 +121,7 @@ public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurn
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))))
+                            Casings.AdvancedIridiumPlatedMachineCasing.asElement())))
             .build();
     }
 
@@ -332,7 +332,7 @@ public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurn
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 7);
+        return Casings.AdvancedIridiumPlatedMachineCasing.getTextureId();
     }
 
     @Override

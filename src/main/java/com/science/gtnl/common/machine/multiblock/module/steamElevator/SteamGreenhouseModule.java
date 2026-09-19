@@ -562,10 +562,11 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
 
     @Override
     public void setMachineMode(int machineMode) {
-        this.machineMode = switch (machineMode) {
+        int normalizedMachineMode = switch (machineMode) {
             case MODE_INPUT, MODE_FARM, MODE_OUTPUT -> machineMode;
             default -> MODE_INPUT;
         };
+        super.setMachineMode(normalizedMachineMode);
         this.setupPhase = setupPhaseFromMachineMode(this.machineMode);
     }
 

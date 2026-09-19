@@ -28,9 +28,9 @@ import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.FurnaceArrayGui;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.event.SubscribeEventUtils;
 
@@ -58,7 +58,7 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
     private static final int HORIZONTAL_OFF_SET = 1;
     private static final int VERTICAL_OFF_SET = 1;
     private static final int DEPTH_OFF_SET = 0;
-    public static int CASING_INDEX = GTUtility.getTextureId((byte) 116, (byte) 52);
+    public static int CASING_INDEX = GTNLCasings.CompressedFurnaceCasing.getTextureId();
 
     public long furnaceCount = 1;
     public long coalCount = 0;
@@ -116,9 +116,8 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
                         HatchElement.InputBus,
                         HatchElement.OutputBus)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(BlockLoader.metaCasing02, 20))))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, GTNLCasings.CompressedFurnaceCasing.asElement())))
             .build();
     }
 

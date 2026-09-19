@@ -48,8 +48,13 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IItemList;
 import appeng.core.localization.WailaText;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
@@ -70,10 +75,13 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
+import gregtech.common.config.MachineStats;
 import gregtech.common.gui.modularui.widget.AESlotWidget;
+import gregtech.common.tileentities.machines.IHatchWatcher;
 import gregtech.common.tileentities.machines.IRecipeProcessingAwareHatch;
 import gregtech.common.tileentities.machines.ISmartInputHatch;
 import gregtech.common.tileentities.machines.MTEHatchInputBusME;
+import gregtech.common.tileentities.machines.RecipeCheckReason;
 
 public class SuperInputBusME extends MTEHatchInputBusME implements IConfigurationCircuitSupport,
     IRecipeProcessingAwareHatch, IAddGregtechLogo, IAddUIWidgets, IPowerChannelState, ISmartInputHatch, IDataCopyable {
@@ -89,6 +97,7 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
         Arrays.fill(storedStackSizes, Integer.MAX_VALUE);
     }
     public int[] savedStackSizes = new int[SIDE_SLOT_COUNT];
+    private IStackWatcher watcher;
 
     public SuperInputBusME(int aID, boolean autoPullAvailable, String aName, String aNameRegional) {
         super(aID, autoPullAvailable, aName, aNameRegional);
@@ -182,6 +191,7 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
             refreshItemList();
         }
         updateAllInformationSlots();
+        configureWatchers();
     }
 
     @Override
@@ -220,6 +230,21 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
                 mInventory[i] = null;
             }
         }
+    }
+
+    @Override
+    public boolean needsPeriodicChecks() {
+        return !MachineStats.machines.useStackWatcher;
+    }
+
+    @Override
+    public void addWatcher(IHatchWatcher watcher) {
+        watchers.add(watcher);
+    }
+
+    @Override
+    public void removeWatcher(IHatchWatcher watcher) {
+        watchers.remove(watcher);
     }
 
     @Override
@@ -385,6 +410,7 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
         if (!isActive()) {
             return;
         }
+        boolean inputChanged = false;
         AENetworkProxy proxy = getProxy();
         try {
             IMEMonitor<IAEItemStack> sg = proxy.getStorage()
@@ -398,15 +424,20 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
                     ItemStack itemstack = GTUtility.copyAmount(
                         storedStackSizes[index] == Integer.MAX_VALUE ? 1 : storedStackSizes[index],
                         currItem.getItemStack());
+                    inputChanged |= !areItemStacksEqual(mInventory[index], itemstack);
                     this.mInventory[index] = itemstack;
                     index++;
                 }
             }
             for (int i = index; i < SIDE_SLOT_COUNT; i++) {
+                inputChanged |= mInventory[i] != null;
                 mInventory[i] = null;
             }
 
         } catch (final GridAccessException ignored) {}
+        if (inputChanged) {
+            scheduleRecipeCheck(RecipeCheckReason.THROTTLED);
+        }
     }
 
     @Override
@@ -565,7 +596,9 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
     }
 
     public ItemStack updateInformationSlotForGui(int index, ItemStack stack) {
-        return updateInformationSlot(index, stack);
+        ItemStack informationStack = updateInformationSlot(index, stack);
+        configureWatchers();
+        return informationStack;
     }
 
     public boolean containsFilterStackForGui(ItemStack stack) {
@@ -588,6 +621,7 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
         }
         storedStackSizes[slot] = Math.max(1, stackSize);
         updateInformationSlot(slot);
+        configureWatchers();
     }
 
     protected void refreshGuiStateOnOpen() {
@@ -603,6 +637,45 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
     protected void clearInformationSlots() {
         for (int i = 0; i < SIDE_SLOT_COUNT; i++) {
             mInventory[i + SIDE_SLOT_COUNT] = null;
+        }
+    }
+
+    @Override
+    public void updateWatcher(IStackWatcher newWatcher) {
+        watcher = newWatcher;
+        configureWatchers();
+    }
+
+    @Override
+    public void onStackChange(IItemList stacks, IAEStack fullStack, IAEStack diffStack, BaseActionSource source,
+        StorageChannel channel) {
+        if (diffStack.getStackSize() > 0) {
+            scheduleRecipeCheck(RecipeCheckReason.THROTTLED);
+        }
+    }
+
+    private void configureWatchers() {
+        if (watcher != null) {
+            watcher.clear();
+            if (MachineStats.machines.useStackWatcher && !autoPullItemList) {
+                for (int i = 0; i < SIDE_SLOT_COUNT; i++) {
+                    ItemStack stack = mInventory[i];
+                    if (stack != null) watcher.add(AEItemStack.create(stack));
+                }
+            }
+        }
+        scheduleRecipeCheck(RecipeCheckReason.THROTTLED);
+    }
+
+    private boolean areItemStacksEqual(ItemStack first, ItemStack second) {
+        return first == second || first != null && second != null
+            && first.stackSize == second.stackSize
+            && GTUtility.areStacksEqual(first, second, true);
+    }
+
+    private void scheduleRecipeCheck(RecipeCheckReason reason) {
+        for (IHatchWatcher hatchWatcher : watchers) {
+            hatchWatcher.scheduleRecipeCheck(reason);
         }
     }
 

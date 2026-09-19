@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
 
 import java.util.List;
 
@@ -19,6 +18,7 @@ import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
@@ -32,7 +32,6 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
-import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -71,8 +70,8 @@ public class FlotationCellRegulator extends GTMMultiMachineBase<FlotationCellReg
         return StructureDefinition.<FlotationCellRegulator>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', GTStructureUtility.chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
-            .addElement('B', StructureUtility.ofBlock(sBlockCasings2, 15))
-            .addElement('C', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 1))
+            .addElement('B', Casings.TungstensteelPipeCasing.asElement())
+            .addElement('C', Casings.HastelloyNSealantBlock.asElement())
             .addElement(
                 'D',
                 GTStructureUtility.buildHatchAdder(FlotationCellRegulator.class)
@@ -87,11 +86,10 @@ public class FlotationCellRegulator extends GTMMultiMachineBase<FlotationCellReg
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 2))))
-            .addElement('E', StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 1))
-            .addElement('F', StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 9))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.HastelloyXStructuralBlock.asElement())))
+            .addElement('E', Casings.InconelReinforcedCasing.asElement())
+            .addElement('F', Casings.FlotationCellCasings.asElement())
             .build();
     }
 

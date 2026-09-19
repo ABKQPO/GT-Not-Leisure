@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gregtech.api.GregTechAPI.sBlockCasings3;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.util.List;
@@ -15,11 +14,12 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -30,7 +30,6 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -82,7 +81,7 @@ public class RareEarthCentrifugal extends MultiMachineBase<RareEarthCentrifugal>
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings3, 12);
+        return Casings.RadiationProofMachineCasing.getTextureId();
     }
 
     @Override
@@ -112,8 +111,8 @@ public class RareEarthCentrifugal extends MultiMachineBase<RareEarthCentrifugal>
     public IStructureDefinition<RareEarthCentrifugal> getStructureDefinition() {
         return StructureDefinition.<RareEarthCentrifugal>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 12))
+            .addElement('A', GTNLCasings.NeutroniumPipeCasing.asElement())
+            .addElement('B', GTNLCasings.TungstensteelGearbox.asElement())
             .addElement(
                 'C',
                 buildHatchAdder(RareEarthCentrifugal.class).casingIndex(getCasingTextureID())
@@ -126,9 +125,8 @@ public class RareEarthCentrifugal extends MultiMachineBase<RareEarthCentrifugal>
                         HatchElement.Maintenance,
                         HatchElement.Energy.or(HatchElement.ExoticEnergy))
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 11))))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.MolecularContainmentCasing.asElement())))
             .build();
     }
 

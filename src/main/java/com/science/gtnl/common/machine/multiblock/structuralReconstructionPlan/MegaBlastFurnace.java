@@ -29,8 +29,7 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import bartworks.util.BWUtil;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import goodgenerator.loader.Loaders;
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
@@ -55,7 +54,6 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
-import gtPlusPlus.core.block.ModBlocks;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -99,32 +97,28 @@ public class MegaBlastFurnace extends GTMMultiMachineBase<MegaBlastFurnace> impl
                     .casingIndex(TAE.GTPP_INDEX(15))
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(ModBlocks.blockCasingsMisc, 15))))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
-            .addElement(
-                'S',
-                HatchElement.Muffler.newAny(StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10), 2))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 12))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 13))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 14))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 13))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 14))
-            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 15))
-            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 3))
-            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 13))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.BlastSmelterCasing.asElement())))
+            .addElement('B', Casings.SolidSteelMachineCasing.asElement())
+            .addElement('S', HatchElement.Muffler.newAny(Casings.RadiantNaquadahAlloyCasing.getTextureId(), 2))
+            .addElement('C', Casings.BronzePipeCasing.asElement())
+            .addElement('D', Casings.SteelPipeCasing.asElement())
+            .addElement('E', Casings.TitaniumPipeCasing.asElement())
+            .addElement('F', Casings.TungstensteelPipeCasing.asElement())
+            .addElement('G', Casings.BronzeFireboxCasing.asElement())
+            .addElement('H', Casings.SteelFireboxCasing.asElement())
+            .addElement('I', Casings.TungstensteelFireboxCasing.asElement())
+            .addElement('J', Casings.TitaniumFireboxCasing.asElement())
+            .addElement('K', Casings.EngineIntakeCasing.asElement())
             .addElement(
                 'L',
                 GTStructureChannels.HEATING_COIL.use(
                     GTStructureUtility.activeCoils(
                         GTStructureUtility.ofCoil(MegaBlastFurnace::setMCoilLevel, MegaBlastFurnace::getMCoilLevel))))
-            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
-            .addElement('N', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 2))
-            .addElement('O', StructureUtility.ofBlock(Loaders.FRF_Casings, 0))
-            .addElement('P', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 4))
-            .addElement('Q', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('M', Casings.PTFEPipeCasing.asElement())
+            .addElement('N', Casings.MiningNeutroniumCasing.asElement())
+            .addElement('O', Casings.NaquadahFuelRefineryCasing.asElement())
+            .addElement('P', Casings.ExtremeEngineIntakeCasing.asElement())
+            .addElement('Q', Casings.RadiantNaquadahAlloyCasing.asElement())
             .addElement('R', GTStructureUtility.ofFrame(Materials.Naquadah))
             .build();
     }

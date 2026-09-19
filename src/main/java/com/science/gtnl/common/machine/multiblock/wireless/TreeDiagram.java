@@ -28,10 +28,10 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
 import com.reavaritia.utils.item.ToolHelper;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.TreeDiagramGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
@@ -39,7 +39,7 @@ import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
@@ -56,10 +56,8 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.core.material.MaterialsElements;
 import lombok.Getter;
-import tectech.thing.casing.TTCasingsContainer;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -149,13 +147,13 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
                         -1,
                         (t, m) -> {},
                         t -> -1)))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 6))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 8))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 8))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0))
+            .addElement('B', Casings.LuVMachineCasing.asElement())
+            .addElement('C', Casings.DimensionalBridge.asElement())
+            .addElement('D', Casings.ActiveNeutroniumCasing.asElement())
+            .addElement('E', Casings.NeutroniumStabilizationCasing.asElement())
+            .addElement('F', Casings.ExtremeDensitySpaceBendingCasing.asElement())
+            .addElement('G', Casings.ContainmentFieldMachineCasing.asElement())
+            .addElement('H', Casings.ChemicallyInertMachineCasing.asElement())
             .addElement(
                 'I',
                 buildHatchAdder(TreeDiagram.class).casingIndex(getCasingTextureID())
@@ -169,31 +167,30 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 2))))
-            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
-            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
-            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 12))
-            .addElement('M', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 0))
-            .addElement('N', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 1))
-            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
-            .addElement('P', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
-            .addElement('Q', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsBA0, 7))
-            .addElement('R', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsNH, 10))
-            .addElement('S', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 4))
-            .addElement('T', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 6))
-            .addElement('U', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 8))
-            .addElement('V', StructureUtility.ofBlock(ModBlocks.blockSpecialMultiCasings, 15))
-            .addElement('W', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 1))
-            .addElement('X', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 17))
-            .addElement('Y', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 25))
-            .addElement('Z', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 27))
-            .addElement('0', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 29))
-            .addElement('1', StructureUtility.ofBlock(BlockLoader.metaBlockGlow, 31))
-            .addElement('2', StructureUtility.ofBlock(BlockLoader.metaCasing, 7))
-            .addElement('3', StructureUtility.ofBlock(BlockLoader.metaCasing, 19))
-            .addElement('4', StructureUtility.ofBlock(BlockLoader.metaCasing02, 17))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.MiningNeutroniumCasing.asElement())))
+            .addElement('J', Casings.AdvancedIridiumPlatedMachineCasing.asElement())
+            .addElement('K', Casings.RadiantNaquadahAlloyCasing.asElement())
+            .addElement('L', Casings.ReinforcedPhotolithographicFrameworkCasing.asElement())
+            .addElement('M', Casings.PBIPipeCasing.asElement())
+            .addElement('N', Casings.AdvancedFilterCasing.asElement())
+            .addElement('O', Casings.HeatResistantTriniumPlatedCasing.asElement())
+            .addElement('P', Casings.NaquadriaReinforcedWaterPlantCasing.asElement())
+            .addElement('Q', Casings.TeslaBaseCasing.asElement())
+            .addElement('R', Casings.UEVMachineCasing.asElement())
+            .addElement('S', Casings.MolecularCasing.asElement())
+            .addElement('T', Casings.ContainmentFieldGenerator.asElement())
+            .addElement('U', Casings.HollowCasing.asElement())
+            .addElement('V', Casings.ReinforcedSCTurbineCasing.asElement())
+            .addElement('W', GTNLCasings.BlackLamp.asElement())
+            .addElement('X', GTNLCasings.LightBlueLamp.asElement())
+            .addElement('Y', GTNLCasings.PurpleLamp.asElement())
+            .addElement('Z', GTNLCasings.GrayLamp.asElement())
+            .addElement('0', GTNLCasings.LightGrayLamp.asElement())
+            .addElement('1', GTNLCasings.WhiteLamp.asElement())
+            .addElement('2', GTNLCasings.Antifreeze_Heatproof_Machine_Casing.asElement())
+            .addElement('3', GTNLCasings.ChemicallyResistantCasing.asElement())
+            .addElement('4', GTNLCasings.QuantumComputerCore.asElement())
             .build();
     }
 
@@ -360,7 +357,7 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 2);
+        return Casings.MiningNeutroniumCasing.getTextureId();
     }
 
     @Override

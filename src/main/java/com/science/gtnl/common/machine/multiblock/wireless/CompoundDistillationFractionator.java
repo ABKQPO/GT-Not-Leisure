@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,12 +19,12 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -74,9 +73,9 @@ public class CompoundDistillationFractionator extends WirelessEnergyMultiMachine
     public IStructureDefinition<CompoundDistillationFractionator> getStructureDefinition() {
         return StructureDefinition.<CompoundDistillationFractionator>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 9))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 4))
+            .addElement('A', Casings.UHVMachineCasing.asElement())
+            .addElement('B', Casings.CleanStainlessSteelMachineCasing.asElement())
+            .addElement('C', Casings.SterileWaterPlantCasing.asElement())
             .addElement(
                 'D',
                 GTStructureUtility.buildHatchAdder(CompoundDistillationFractionator.class)
@@ -93,12 +92,12 @@ public class CompoundDistillationFractionator extends WirelessEnergyMultiMachine
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 7))))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 6))
-            .addElement('F', StructureUtility.ofBlock(blockCasings2Misc, 4))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
-            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
-            .addElement('I', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
+                            Casings.StabilizedNaquadahWaterPlantCasing.asElement())))
+            .addElement('E', Casings.SlickSterileFlocculationCasing.asElement())
+            .addElement('F', Casings.WashPlantCasing.asElement())
+            .addElement('G', Casings.NaquadriaReinforcedWaterPlantCasing.asElement())
+            .addElement('H', GTNLCasings.FusionGlass.asElement())
+            .addElement('I', GTNLCasings.NeutroniumPipeCasing.asElement())
             .addElement(
                 'J',
                 StructureUtility.ofBlockAnyMeta(
@@ -157,7 +156,7 @@ public class CompoundDistillationFractionator extends WirelessEnergyMultiMachine
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings9, 7);
+        return Casings.StabilizedNaquadahWaterPlantCasing.getTextureId();
     }
 
     @Override

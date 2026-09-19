@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.network;
@@ -45,6 +44,7 @@ import com.science.gtnl.utils.enums.HPCAModifier;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
@@ -582,27 +582,27 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
                         .casingIndex(BlockGTCasingsTT.textureOffset + 1)
                         .hint(1)
                         .buildAndChain(TTCasingsContainer.sBlockCasingsTT, 1)))
-            .addElement('B', ofBlock(TTCasingsContainer.sBlockCasingsTT, 1))
-            .addElement('C', ofBlock(TTCasingsContainer.sBlockCasingsTT, 2))
-            .addElement('D', ofBlock(TTCasingsContainer.sBlockCasingsTT, 3))
+            .addElement('B', Casings.ComputerCasing.asElement())
+            .addElement('C', Casings.ComputerHeatVent.asElement())
+            .addElement('D', Casings.AdvancedComputerCasing.asElement())
             .addElement(
                 'E',
                 buildHatchAdder(HighPerformanceComputationArray.class).atLeast(RackHatchElement.RackHatch_0)
                     .casingIndex(BlockGTCasingsTT.textureOffset + 3)
                     .hint(1)
-                    .buildAndChain(ofBlock(TTCasingsContainer.sBlockCasingsTT, 3)))
+                    .buildAndChain(Casings.AdvancedComputerCasing.asElement()))
             .addElement(
                 'F',
                 buildHatchAdder(HighPerformanceComputationArray.class).atLeast(RackHatchElement.RackHatch_1)
                     .casingIndex(BlockGTCasingsTT.textureOffset + 3)
                     .hint(1)
-                    .buildAndChain(ofBlock(TTCasingsContainer.sBlockCasingsTT, 3)))
+                    .buildAndChain(Casings.AdvancedComputerCasing.asElement()))
             .addElement(
                 'G',
                 buildHatchAdder(HighPerformanceComputationArray.class).atLeast(RackHatchElement.RackHatch_2)
                     .casingIndex(BlockGTCasingsTT.textureOffset + 3)
                     .hint(1)
-                    .buildAndChain(ofBlock(TTCasingsContainer.sBlockCasingsTT, 3)))
+                    .buildAndChain(Casings.AdvancedComputerCasing.asElement()))
             .build();
     }
 

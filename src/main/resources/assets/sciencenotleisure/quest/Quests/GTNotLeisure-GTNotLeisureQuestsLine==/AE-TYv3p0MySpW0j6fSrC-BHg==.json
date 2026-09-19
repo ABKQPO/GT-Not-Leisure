@@ -80,7 +80,7 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:tile.DirePatternEncoder"
+          "id:8": "sciencenotleisure:dire_pattern_encoder"
         }
       },
       "taskID:8": "bq_standard:optional_retrieval"

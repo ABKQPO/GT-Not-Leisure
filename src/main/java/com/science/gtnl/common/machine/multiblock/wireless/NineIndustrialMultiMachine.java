@@ -24,9 +24,9 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.machine.NineIndustrialMultiMachineManager;
@@ -36,7 +36,7 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import bartworks.common.loaders.ItemRegistry;
 import goodgenerator.loader.Loaders;
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -58,7 +58,6 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
-import tectech.thing.casing.TTCasingsContainer;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<NineIndustrialMultiMachine> {
@@ -109,7 +108,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
             .addElement('A', StructureUtility.ofBlock(ItemRegistry.bw_realglas2, 0))
             .addElement('B', StructureUtility.ofBlock(Loaders.FRF_Coil_4, 0))
-            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
+            .addElement('C', GTNLCasings.NeutroniumGearbox.asElement())
             .addElement('D', StructureUtility.ofBlock(kubatech.loaders.BlockLoader.defcCasingBlock, 12))
             .addElement(
                 'E',
@@ -126,18 +125,18 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
                     .buildAndChain(
                         StructureUtility.onElementPass(
                             x -> ++this.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 12))))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 13))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 14))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 6))
-            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
-            .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
-            .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasings5, 13))
-            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsNH, 12))
-            .addElement('M', StructureUtility.ofBlock(TTCasingsContainer.sBlockCasingsTT, 4))
+                            Casings.DimensionallyTranscendentCasing.asElement())))
+            .addElement('F', Casings.DimensionalInjectionCasing.asElement())
+            .addElement('G', Casings.DimensionalBridge.asElement())
+            .addElement('H', Casings.NeutroniumCasing.asElement())
+            .addElement('I', Casings.ActiveNeutroniumCasing.asElement())
+            .addElement('J', Casings.ExtremeDensitySpaceBendingCasing.asElement())
+            .addElement('K', Casings.EternalCoilBlock.asElement())
+            .addElement('L', Casings.UMVMachineCasing.asElement())
+            .addElement('M', Casings.MolecularCasing.asElement())
             .addElement('N', GTStructureUtility.ofFrame(Materials.Neutronium))
-            .addElement('O', StructureUtility.ofBlock(TTCasingsContainer.StabilisationFieldGenerators, 2))
-            .addElement('P', StructureUtility.ofBlock(TTCasingsContainer.TimeAccelerationFieldGenerator, 8))
+            .addElement('O', Casings.StableStabilisationFieldGenerator.asElement())
+            .addElement('P', Casings.GallifreyanTimeDilationFieldGenerator.asElement())
             .build();
     }
 
@@ -171,7 +170,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 12);
+        return Casings.DimensionallyTranscendentCasing.getTextureId();
     }
 
     @Override

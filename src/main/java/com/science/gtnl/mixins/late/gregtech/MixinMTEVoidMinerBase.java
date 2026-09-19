@@ -43,6 +43,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEEnhancedMultiBlockBase;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
+import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.ExoticEnergyInputHelper;
 import gregtech.api.util.GTUtility;
@@ -126,10 +127,9 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
         if ("None".equals(dimensionKey)) return Optional.empty();
 
         return vmTweak$toInternalDimensionName(dimensionKey).or(() -> {
-            Integer dimensionId = VMTweakHelper.DIM_MAPPING.inverse()
-                .get(dimensionKey);
+            Integer dimensionId = VMTweakHelper.DIM_MAPPING.getDimensionId(dimensionKey);
             if (dimensionId == null) return Optional.empty();
-            return vmTweak$toInternalDimensionName(VMTweakHelper.getNameForID(dimensionId));
+            return vmTweak$toInternalDimensionName(VMTweakHelper.DIM_MAPPING.getDimensionName(dimensionId));
         })
             .or(() -> Optional.of(dimensionKey));
     }
@@ -187,6 +187,16 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
         ci.cancel();
     }
 
+    @Inject(method = "checkProcessing", at = @At("HEAD"), require = 1, remap = false)
+    private void vmTweak$refreshDimensionOverride(CallbackInfoReturnable<CheckRecipeResult> cir) {
+        if (!gtnl$enableMixin) return;
+
+        String dimensionKey = vmTweak$resolveDimensionKey();
+        if (!Objects.equals(dimensionKey, this.vmTweak$mLastDimensionOverride)) {
+            vmTweak$recalculateDropMap();
+        }
+    }
+
     @Unique
     private void vmTweak$recalculateDropMap() {
         this.dropMap = null;
@@ -220,6 +230,7 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
             this.extraDropMap = new VoidMinerUtility.DropMap();
             if (!this.vmTweak$activeDropMapDimension.isEmpty()) {
                 this.selected.setSize(0);
+                this.vmTweak$dimChangeVersion++;
             }
             vmTweak$activeDropMapDimension = "";
             vmTweak$resizeSelected();
@@ -247,6 +258,7 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
         this.dropMap.isDistributionCached(this.extraDropMap);
         this.totalWeight = this.dropMap.getTotalWeight() + this.extraDropMap.getTotalWeight();
         if (dimensionChanged) {
+            this.vmTweak$dimChangeVersion++;
             vmTweak$resetSelected();
         }
     }
@@ -305,9 +317,12 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
         return vmTweak$activeDropMapDimension.isEmpty() ? "unknown" : vmTweak$activeDropMapDimension;
     }
 
+    @Deprecated
     @Unique
     private Text vmTweak$getDimensionDisplayName() {
-        if (!gtnl$enableMixin) return Text.EMPTY;
+        if (!gtnl$enableMixin) {
+            return Text.EMPTY;
+        }
         if (!vmTweak$warning.isEmpty()) {
             return new Text(EnumChatFormatting.YELLOW + StatCollector.translateToLocal(vmTweak$warning));
         }
@@ -535,15 +550,16 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
         ci.cancel();
     }
 
-    @Override
-    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        super.drawTexts(screenElements, inventorySlot);
+    @Deprecated
+    @Inject(method = "drawTexts", at = @At("TAIL"), require = 1, remap = false)
+    private void vmTweak$drawDimensionOverride(DynamicPositionedColumn screenElements, SlotWidget inventorySlot,
+        CallbackInfo ci) {
         if (!gtnl$enableMixin) return;
-        screenElements.widget(
+        screenElements.addChild(
             TextWidget.dynamicText(this::vmTweak$getDimensionDisplayName)
                 .setSynced(true)
                 .setDefaultColor(EnumChatFormatting.YELLOW)
-                .setTextAlignment(Alignment.CenterLeft)
+                .setTextAlignment(Alignment.TopLeft)
                 .setEnabled(true));
     }
 

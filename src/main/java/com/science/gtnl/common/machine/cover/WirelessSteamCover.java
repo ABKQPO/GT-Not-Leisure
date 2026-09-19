@@ -56,7 +56,7 @@ public class WirelessSteamCover extends CoverLegacyData {
             && baseTile.getMetaTileEntity() instanceof CommonMetaTileEntity commonMetaTile) {
             FluidStack fluid = commonMetaTile.getFluid();
             SteamTypes steamType = getSteamMode();
-            if (fluid != null && !GTUtility.areFluidsEqual(fluid, new FluidStack(steamType.fluid, 1))) {
+            if (fluid != null && !steamType.fluid.matches(fluid)) {
                 return;
             }
             int capacity = commonMetaTile.getCapacity();
@@ -70,7 +70,7 @@ public class WirelessSteamCover extends CoverLegacyData {
 
             long steamCost = (long) current * steamType.efficiencyFactor;
             if (!SteamWirelessNetworkManager.addSteamToGlobalSteamMap(Utils.getOwner(tileEntity), -steamCost)) return;
-            commonMetaTile.fill(new FluidStack(steamType.fluid, current), true);
+            commonMetaTile.fill(steamType.fluid.getFluidStack(current), true);
         }
     }
 
@@ -96,7 +96,11 @@ public class WirelessSteamCover extends CoverLegacyData {
             coverData = SteamTypes.NETWORK_CONVERTIBLE_TYPES.length - 1;
         }
 
-        GTUtility.sendChatTrans(aPlayer, "gtnl.gui.wireless_steam.switch_to", getSteamMode().fluid.getLocalizedName());
+        GTUtility.sendChatTrans(
+            aPlayer,
+            "gtnl.gui.wireless_steam.switch_to",
+            getSteamMode().fluid.getFluidStack()
+                .getLocalizedName());
     }
 
     @Override

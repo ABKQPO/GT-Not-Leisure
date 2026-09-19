@@ -2,9 +2,7 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gregtech.api.GregTechAPI.sBlockCasings2;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
-import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,11 +20,12 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
@@ -75,8 +74,8 @@ public class LargeBrewer extends GTMMultiMachineBase<LargeBrewer> implements ISu
     public IStructureDefinition<LargeBrewer> getStructureDefinition() {
         return StructureDefinition.<LargeBrewer>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(BlockLoader.metaCasing, 8))
-            .addElement('B', StructureUtility.ofBlock(sBlockCasings2, 13))
+            .addElement('A', GTNLCasings.MolybdenumDisilicideCoil.asElement())
+            .addElement('B', Casings.SteelPipeCasing.asElement())
             .addElement(
                 'C',
                 buildHatchAdder(LargeBrewer.class).casingIndex(getCasingTextureID())
@@ -91,7 +90,7 @@ public class LargeBrewer extends GTMMultiMachineBase<LargeBrewer> implements ISu
                         ParallelCon)
                     .buildAndChain(
                         StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(blockCasingsMisc, 1))))
+                            .onElementPass(x -> ++x.mCountCasing, Casings.StructuralCokeOvenCasing.asElement())))
             .addElement('D', HatchElement.Muffler.newAny(TAE.GTPP_INDEX(1), 1))
             .build();
     }

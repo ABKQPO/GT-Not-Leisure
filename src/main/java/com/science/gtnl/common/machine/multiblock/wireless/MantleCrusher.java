@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings2Misc;
 
 import java.util.List;
 
@@ -17,13 +16,14 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.LargeRockCrusher;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -61,10 +61,10 @@ public class MantleCrusher extends WirelessEnergyMultiMachineBase<MantleCrusher>
     public IStructureDefinition<MantleCrusher> getStructureDefinition() {
         return StructureDefinition.<MantleCrusher>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
-            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 5))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
-            .addElement('D', StructureUtility.ofBlock(BlockLoader.metaCasing, 16))
+            .addElement('A', Casings.AdvancedIridiumPlatedMachineCasing.asElement())
+            .addElement('B', GTNLCasings.NeutroniumGearbox.asElement())
+            .addElement('C', Casings.NaquadriaReinforcedWaterPlantCasing.asElement())
+            .addElement('D', GTNLCasings.GravitationalFocusingLensBlock.asElement())
             .addElement(
                 'E',
                 GTStructureUtility.buildHatchAdder(MantleCrusher.class)
@@ -79,12 +79,11 @@ public class MantleCrusher extends WirelessEnergyMultiMachineBase<MantleCrusher>
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.RadiantNaquadahAlloyCasing.asElement())))
             .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 1))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 13))
-            .addElement('H', StructureUtility.ofBlock(blockCasings2Misc, 12))
+            .addElement('G', Casings.SolidifierCasing.asElement())
+            .addElement('H', Casings.BulkProductionFrame.asElement())
             .addElement('I', GTStructureUtility.ofFrame(Materials.Naquadah))
             .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 9))
             .build();
@@ -156,7 +155,7 @@ public class MantleCrusher extends WirelessEnergyMultiMachineBase<MantleCrusher>
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
+        return Casings.RadiantNaquadahAlloyCasing.getTextureId();
     }
 
     @Override

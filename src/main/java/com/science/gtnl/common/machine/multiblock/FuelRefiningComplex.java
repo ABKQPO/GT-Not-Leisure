@@ -24,7 +24,7 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.metadata.FuelRefiningMetadata;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
@@ -43,7 +43,6 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
-import gtPlusPlus.core.block.ModBlocks;
 import gtnhlanth.common.register.LanthItemList;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -83,20 +82,20 @@ public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex
                 'A',
                 StructureUtility.ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
             .addElement('B', StructureUtility.ofBlockAnyMeta(LanthItemList.ELECTRODE_CASING))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 0))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
+            .addElement('C', Casings.AssemblyLineCasing.asElement())
+            .addElement('D', Casings.RobustTungstenSteelMachineCasing.asElement())
+            .addElement('E', Casings.CleanStainlessSteelMachineCasing.asElement())
             .addElement(
                 'F',
                 GTStructureChannels.HEATING_COIL.use(
                     GTStructureUtility.activeCoils(
                         GTStructureUtility
                             .ofCoil(FuelRefiningComplex::setMCoilLevel, FuelRefiningComplex::getMCoilLevel))))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 6))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0))
-            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 1))
+            .addElement('G', Casings.HermeticCasing6.asElement())
+            .addElement('H', Casings.ChemicallyInertMachineCasing.asElement())
+            .addElement('I', Casings.PTFEPipeCasing.asElement())
             .addElement('J', GTStructureUtility.ofFrame(Materials.TungstenSteel))
-            .addElement('K', StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 4))
+            .addElement('K', Casings.WashPlantCasing.asElement())
             .addElement(
                 'L',
                 GTStructureUtility.buildHatchAdder(FuelRefiningComplex.class)
@@ -111,9 +110,8 @@ public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(ModBlocks.blockCasings3Misc, 1))))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.InconelReinforcedCasing.asElement())))
             .build();
     }
 

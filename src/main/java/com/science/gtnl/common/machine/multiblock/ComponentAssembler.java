@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static gtPlusPlus.core.block.ModBlocks.blockCasings3Misc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,7 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import goodgenerator.api.recipe.GoodGeneratorRecipeMaps;
 import goodgenerator.loader.Loaders;
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
@@ -126,14 +125,13 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 5))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 6))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.SolidSteelMachineCasing.asElement())))
+            .addElement('D', Casings.AssemblyLineCasing.asElement())
+            .addElement('E', Casings.ProcessorMachineCasing.asElement())
+            .addElement('F', Casings.GrateMachineCasing.asElement())
             .addElement('G', GTStructureUtility.ofFrame(Materials.Steel))
-            .addElement('H', StructureUtility.ofBlock(blockCasings3Misc, 2))
+            .addElement('H', Casings.MultiUseCasing.asElement())
             .build();
     }
 
@@ -230,7 +228,7 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0);
+        return Casings.SolidSteelMachineCasing.getTextureId();
     }
 
     @Override

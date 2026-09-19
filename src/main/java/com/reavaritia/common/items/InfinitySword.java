@@ -26,6 +26,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.IIcon;
@@ -125,18 +126,12 @@ public class InfinitySword extends ItemSword implements ICosmicRenderItem, Subti
                 playersWhoAttacked.add(playerName);
             }
             livingTarget.recentlyHit = 100;
-            DamageSource playerSource = DamageSource.causePlayerDamage((EntityPlayer) player);
-            livingTarget.attackEntityFrom(playerSource, Float.POSITIVE_INFINITY);
-            livingTarget.setHealth(0);
-            livingTarget.onDeath(playerSource);
-            livingTarget.setDead();
-            livingTarget.worldObj.removeEntity(livingTarget);
+            applyPlayerLethalDamage(livingTarget, (EntityPlayer) player);
             return true;
         }
 
         if (victim instanceof EntityDragon) {
-            victim.attackEntityFrom(INFINITY_DAMAGE, Float.POSITIVE_INFINITY);
-            victim.setDead();
+            applyPlayerLethalDamage(victim, (EntityPlayer) player);
             return true;
         }
 
@@ -158,8 +153,8 @@ public class InfinitySword extends ItemSword implements ICosmicRenderItem, Subti
     public void applyInfinityDamage(EntityLivingBase target, EntityLivingBase attacker) {
         if (target instanceof EntitySaddleSlime) return;
         if (target instanceof EntityDragon) {
-            target.attackEntityFrom(INFINITY_DAMAGE, Float.POSITIVE_INFINITY);
-            target.setDead();
+            applyPlayerLethalDamage(target, (EntityPlayer) attacker);
+            return;
         } else if (target instanceof EntityPlayer playerTarget && attacker.isSneaking()) {
             for (int i = 0; i < playerTarget.inventory.armorInventory.length; i++) {
                 ItemStack armorStack = playerTarget.inventory.armorInventory[i];
@@ -181,32 +176,22 @@ public class InfinitySword extends ItemSword implements ICosmicRenderItem, Subti
             target.attackEntityFrom(AccessorCustomArmorHandler.getAdminKill(), Float.POSITIVE_INFINITY);
         }
 
-        DamageSource playerSource = DamageSource.causePlayerDamage((EntityPlayer) attacker);
-        target.attackEntityFrom(playerSource, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(INFINITY_DAMAGE, Float.POSITIVE_INFINITY);
-        if (Mods.Avaritia.isModLoaded()) attackEntityInfinity(target, attacker);
+        applyPlayerLethalDamage(target, (EntityPlayer) attacker);
+    }
 
-        target.attackEntityFrom(DamageSource.anvil, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.fallingBlock, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.wither, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.magic, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.generic, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.fall, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.cactus, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.starve, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.drown, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.inWall, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.lava, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.inFire, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.onFire, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.outOfWorld, Float.POSITIVE_INFINITY);
+    private void applyPlayerLethalDamage(EntityLivingBase target, EntityPlayer attacker) {
+        target.hurtResistantTime = 0;
+        target.attackEntityFrom(createPlayerInfinityDamage(attacker), Float.POSITIVE_INFINITY);
+    }
 
-        if (!(target instanceof EntityPlayer || (Mods.GalaxySpace.isModLoaded() && isGalaxyBoss(target)))) {
-            target.setHealth(0);
-            target.onDeath(INFINITY_DAMAGE);
-            target.setDead();
-            target.worldObj.removeEntity(target);
-        }
+    private DamageSource createPlayerInfinityDamage(EntityPlayer attacker) {
+        return new EntityDamageSource(INFINITY_DAMAGE.damageType, attacker).setExplosion()
+            .setDamageBypassesArmor()
+            .setDamageIsAbsolute()
+            .setFireDamage()
+            .setProjectile()
+            .setDamageAllowedInCreativeMode()
+            .setMagicDamage();
     }
 
     @Optional.Method(modid = "GalaxySpace")
@@ -294,18 +279,11 @@ public class InfinitySword extends ItemSword implements ICosmicRenderItem, Subti
                 }
 
                 livingTarget.recentlyHit = 100;
-                DamageSource playerSource = DamageSource.causePlayerDamage(player);
-
-                livingTarget.attackEntityFrom(playerSource, Float.POSITIVE_INFINITY);
-                livingTarget.setHealth(0);
-                livingTarget.onDeath(playerSource);
-                livingTarget.setDead();
-                livingTarget.worldObj.removeEntity(livingTarget);
+                applyPlayerLethalDamage(livingTarget, player);
 
                 shouldRemove = true;
             } else if (target instanceof EntityDragon) {
-                target.attackEntityFrom(INFINITY_DAMAGE, Float.POSITIVE_INFINITY);
-                target.setDead();
+                applyPlayerLethalDamage((EntityLivingBase) target, player);
                 shouldRemove = true;
             } else if (target instanceof EntityPlayer targetPlayer) {
                 if (player.isSneaking()) {
@@ -362,33 +340,7 @@ public class InfinitySword extends ItemSword implements ICosmicRenderItem, Subti
             return;
         }
 
-        DamageSource playerSource = DamageSource.causePlayerDamage(attacker);
-        target.attackEntityFrom(playerSource, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(INFINITY_DAMAGE, Float.POSITIVE_INFINITY);
-        if (Mods.Avaritia.isModLoaded()) attackEntityInfinity(target, attacker);
-
-        target.attackEntityFrom(DamageSource.anvil, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.fallingBlock, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.wither, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.magic, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.generic, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.fall, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.cactus, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.starve, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.drown, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.inWall, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.lava, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.inFire, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.onFire, Float.POSITIVE_INFINITY);
-        target.attackEntityFrom(DamageSource.outOfWorld, Float.POSITIVE_INFINITY);
-
-        target.onDeath(INFINITY_DAMAGE);
-        if (!(target instanceof EntityPlayer || isGalaxyBoss(target))) {
-            target.setHealth(0);
-            target.onDeath(INFINITY_DAMAGE);
-            target.setDead();
-            target.worldObj.removeEntity(target);
-        }
+        applyPlayerLethalDamage(target, attacker);
     }
 
     public void tickMagnetEffect(World world, EntityPlayer player) {
@@ -450,18 +402,12 @@ public class InfinitySword extends ItemSword implements ICosmicRenderItem, Subti
                     playersWhoAttacked.add(playerName);
                 }
                 livingTarget.recentlyHit = 100;
-                DamageSource playerSource = DamageSource.causePlayerDamage(player);
-                livingTarget.attackEntityFrom(playerSource, Float.POSITIVE_INFINITY);
-                livingTarget.setHealth(0);
-                livingTarget.onDeath(playerSource);
-                livingTarget.setDead();
-                livingTarget.worldObj.removeEntity(livingTarget);
+                applyPlayerLethalDamage(livingTarget, player);
                 return true;
             }
 
             if (entity instanceof EntityDragon) {
-                entity.attackEntityFrom(INFINITY_DAMAGE, Float.POSITIVE_INFINITY);
-                entity.setDead();
+                applyPlayerLethalDamage((EntityLivingBase) entity, player);
                 return true;
             }
 
@@ -499,10 +445,10 @@ public class InfinitySword extends ItemSword implements ICosmicRenderItem, Subti
                     if (hitEntity instanceof EntityLivingBase livingEntity) {
                         hitEntity(stack, livingEntity, player);
 
-                    } else if (hitEntity instanceof EntityDragonPart dragonPart) {
-                        EntityDragon dragon = (EntityDragon) dragonPart.entityDragonObj;
-                        hitEntity(stack, dragon, player);
-                    }
+                    } else if (hitEntity instanceof EntityDragonPart dragonPart
+                        && dragonPart.entityDragonObj instanceof EntityLivingBase livingPartOwner) {
+                            hitEntity(stack, livingPartOwner, player);
+                        }
                 }
             }
         }

@@ -24,9 +24,9 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
@@ -35,6 +35,7 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
@@ -93,7 +94,7 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implemen
                         -1,
                         (t, m) -> {},
                         t -> -1)))
-            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 13))
+            .addElement('B', GTNLCasings.DimensionallyStableCasing.asElement())
             .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsSE, 1))
             .addElement(
                 'D',
@@ -112,10 +113,10 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implemen
                         StructureUtility.onElementPass(
                             x -> ++x.mCountCasing,
                             StructureUtility.ofBlockAnyMeta(LanthItemList.SHIELDED_ACCELERATOR_CASING))))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 4))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 11))
-            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
+            .addElement('E', Casings.ElectricCompressorCasing.asElement())
+            .addElement('F', Casings.ExtremeDensitySpaceBendingCasing.asElement())
+            .addElement('G', Casings.HeatResistantTriniumPlatedCasing.asElement())
+            .addElement('H', GTNLCasings.FusionGlass.asElement())
             .addElement(
                 'I',
                 StructureUtility.ofChain(

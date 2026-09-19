@@ -19,7 +19,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -65,10 +65,10 @@ public class DecayHastener extends GTMMultiMachineBase<DecayHastener> implements
     public IStructureDefinition<DecayHastener> getStructureDefinition() {
         return StructureDefinition.<DecayHastener>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 15))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 6))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 8))
+            .addElement('A', Casings.SuperconductingCoilBlock.asElement())
+            .addElement('B', Casings.PressureContainmentCasing.asElement())
+            .addElement('C', Casings.FusionMachineCasing.asElement())
+            .addElement('D', Casings.HermeticCasing8.asElement())
             .addElement(
                 'E',
                 GTStructureUtility.buildHatchAdder(DecayHastener.class)
@@ -83,9 +83,8 @@ public class DecayHastener extends GTMMultiMachineBase<DecayHastener> implements
                         HatchElement.Energy.or(HatchElement.ExoticEnergy),
                         ParallelCon)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.RadiantNaquadahAlloyCasing.asElement())))
             .addElement('F', GTStructureUtility.ofFrame(Materials.BlackSteel))
             .build();
     }
@@ -125,7 +124,7 @@ public class DecayHastener extends GTMMultiMachineBase<DecayHastener> implements
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings8, 10);
+        return Casings.RadiantNaquadahAlloyCasing.getTextureId();
     }
 
     @Override

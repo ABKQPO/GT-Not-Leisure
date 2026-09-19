@@ -26,6 +26,7 @@ import com.science.gtnl.utils.StructureUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
@@ -126,7 +127,7 @@ public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> im
                         -1,
                         (t, m) -> t.tierPipeCasing = m,
                         t -> t.tierPipeCasing)))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 15))
+            .addElement('C', Casings.Firebricks.asElement())
             .addElement('D', StructureUtility.ofBlock(Blocks.iron_block, 0))
             .addElement(
                 'E',
@@ -208,8 +209,8 @@ public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> im
     @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
         int colorIndex, boolean aActive, boolean redstoneLevel) {
-        int id = tierMachine == 2 ? StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0)
-            : StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
+        int id = tierMachine == 2 ? Casings.SolidSteelMachineCasing.getTextureId()
+            : Casings.BronzePlatedBricks.getTextureId();
         if (side == aFacing) {
             if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(id), TextureFactory.builder()
                 .addIcon(Textures.BlockIcons.OVERLAY_TOP_STEAM_MACERATOR_ACTIVE)

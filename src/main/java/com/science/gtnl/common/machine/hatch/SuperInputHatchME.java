@@ -49,8 +49,12 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IItemList;
 import appeng.core.localization.WailaText;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
@@ -68,7 +72,10 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
+import gregtech.common.config.MachineStats;
+import gregtech.common.tileentities.machines.IHatchWatcher;
 import gregtech.common.tileentities.machines.MTEHatchInputME;
+import gregtech.common.tileentities.machines.RecipeCheckReason;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class SuperInputHatchME extends MTEHatchInputME implements IConfigurationCircuitSupport {
@@ -89,6 +96,7 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
     // a desync of these two fields can lead to catastrophe
     public FluidStack[] shadowStoredFluids = new FluidStack[SLOT_COUNT];
     public int[] savedStackSizes = new int[SLOT_COUNT];
+    private IStackWatcher watcher;
 
     public boolean additionalConnection = false;
 
@@ -151,10 +159,16 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
     public void refreshFluidList() {
         AENetworkProxy proxy = getProxy();
         if (proxy == null || !proxy.isActive()) {
+            boolean inputChanged = containsStoredFluid();
+            Arrays.fill(storedFluids, null);
             clearInformationFluids();
+            if (inputChanged) {
+                scheduleRecipeCheck(RecipeCheckReason.THROTTLED);
+            }
             return;
         }
 
+        boolean inputChanged = false;
         try {
             IMEMonitor<IAEFluidStack> sg = proxy.getStorage()
                 .getFluidInventory();
@@ -168,16 +182,21 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
                     FluidStack fluidStack = GTUtility.copyAmount(
                         storedStackSizes[index] == Integer.MAX_VALUE ? 1 : storedStackSizes[index],
                         currItem.getFluidStack());
+                    inputChanged |= !areFluidStacksEqual(storedFluids[index], fluidStack);
                     storedFluids[index] = fluidStack;
                     index++;
                 }
             }
 
             for (int i = index; i < SLOT_COUNT; i++) {
+                inputChanged |= storedFluids[i] != null;
                 storedFluids[i] = null;
                 storedInformationFluids[i] = null;
             }
         } catch (final GridAccessException ignored) {}
+        if (inputChanged) {
+            scheduleRecipeCheck(RecipeCheckReason.THROTTLED);
+        }
     }
 
     public void setSavedFluid(int i, FluidStack stack) {
@@ -312,6 +331,21 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
     }
 
     @Override
+    public boolean needsPeriodicChecks() {
+        return !MachineStats.machines.useStackWatcher;
+    }
+
+    @Override
+    public void addWatcher(IHatchWatcher watcher) {
+        watchers.add(watcher);
+    }
+
+    @Override
+    public void removeWatcher(IHatchWatcher watcher) {
+        watchers.remove(watcher);
+    }
+
+    @Override
     public boolean onWireCutterRightClick(ForgeDirection side, ForgeDirection wrenchingSide, EntityPlayer aPlayer,
         float aX, float aY, float aZ, ItemStack aTool) {
         additionalConnection = !additionalConnection;
@@ -374,6 +408,7 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
             refreshFluidList();
         }
         updateAllInformationSlots();
+        configureWatchers();
     }
 
     public void updateAllInformationSlots() {
@@ -755,6 +790,7 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
         }
         storedFluids[slot] = fluid;
         updateInformationSlot(slot);
+        configureWatchers();
     }
 
     public FluidStack getInformationFluidForGui(int slot) {
@@ -781,6 +817,7 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
         }
         storedStackSizes[slot] = Math.max(1, stackSize);
         updateInformationSlot(slot);
+        configureWatchers();
     }
 
     protected void refreshGuiStateOnOpen() {
@@ -795,6 +832,53 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
 
     protected void clearInformationFluids() {
         Arrays.fill(storedInformationFluids, null);
+    }
+
+    @Override
+    public void updateWatcher(IStackWatcher newWatcher) {
+        watcher = newWatcher;
+        configureWatchers();
+    }
+
+    @Override
+    public void onStackChange(IItemList stacks, IAEStack fullStack, IAEStack diffStack, BaseActionSource source,
+        StorageChannel channel) {
+        if (diffStack.getStackSize() > 0) {
+            scheduleRecipeCheck(RecipeCheckReason.THROTTLED);
+        }
+    }
+
+    private void configureWatchers() {
+        if (watcher != null) {
+            watcher.clear();
+            if (MachineStats.machines.useStackWatcher && !autoPullFluidList) {
+                for (FluidStack fluid : storedFluids) {
+                    if (fluid != null) watcher.add(AEFluidStack.create(fluid));
+                }
+            }
+        }
+        scheduleRecipeCheck(RecipeCheckReason.THROTTLED);
+    }
+
+    private boolean containsStoredFluid() {
+        for (FluidStack fluid : storedFluids) {
+            if (fluid != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean areFluidStacksEqual(FluidStack first, FluidStack second) {
+        return first == second || first != null && second != null
+            && first.amount == second.amount
+            && GTUtility.areFluidsEqual(first, second, true);
+    }
+
+    private void scheduleRecipeCheck(RecipeCheckReason reason) {
+        for (IHatchWatcher hatchWatcher : watchers) {
+            hatchWatcher.scheduleRecipeCheck(reason);
+        }
     }
 
     @Override
@@ -834,6 +918,7 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
                     }
                     if (gtTE.isServerSide()) {
                         updateInformationSlot(slotIndex);
+                        configureWatchers();
                         detectAndSendChanges(false);
                     }
                 }

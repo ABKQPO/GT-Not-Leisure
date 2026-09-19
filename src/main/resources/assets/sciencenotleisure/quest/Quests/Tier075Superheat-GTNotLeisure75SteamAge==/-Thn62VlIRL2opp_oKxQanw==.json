@@ -87,7 +87,7 @@
           "Count:3": 40,
           "Damage:2": 1,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:tile.MetaCasing02"
+          "id:8": "sciencenotleisure:meta_casing_02"
         },
         "5:10": {
           "Count:3": 40,
@@ -110,7 +110,7 @@
           "Count:3": 40,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "sciencenotleisure:tile.PlayerDoll"
+          "id:8": "sciencenotleisure:player_doll"
         }
       },
       "taskID:8": "bq_standard:optional_retrieval"

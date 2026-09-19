@@ -43,6 +43,7 @@ import com.science.gtnl.utils.enums.ModList;
 
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -60,10 +61,8 @@ import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
-import gtnhlanth.common.register.LanthItemList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
-import tectech.thing.block.BlockQuantumGlass;
 import tectech.thing.casing.TTCasingsContainer;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -174,7 +173,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
                         -1,
                         (t, m) -> t.tierTimeField = m,
                         t -> t.tierTimeField)))
-            .addElement('B', StructureUtility.ofBlock(LanthItemList.SHIELDED_ACCELERATOR_CASING, 0))
+            .addElement('B', Casings.ShieldedAcceleratorCasing.asElement())
             .addElement('C', StructureUtility.ofBlock(Loaders.compactFusionCoil, 4))
             .addElement(
                 'D',
@@ -203,8 +202,8 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
                         -1,
                         (t, m) -> t.tierDimensionField = m,
                         t -> t.tierDimensionField)))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 11))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 10))
+            .addElement('F', Casings.ExtremeDensitySpaceBendingCasing.asElement())
+            .addElement('G', Casings.RadiantNaquadahAlloyCasing.asElement())
             .addElement(
                 'H',
                 GTStructureChannels.EOH_STABILISATION.use(
@@ -227,7 +226,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
             .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 0))
             .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 5))
             .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockCasingsDyson, 8))
-            .addElement('L', StructureUtility.ofBlock(BlockQuantumGlass.INSTANCE, 0))
+            .addElement('L', Casings.QuantumGlass.asElement())
             .build();
     }
 

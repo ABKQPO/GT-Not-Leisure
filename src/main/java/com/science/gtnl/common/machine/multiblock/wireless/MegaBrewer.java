@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,12 +18,12 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.TAE;
@@ -43,7 +42,6 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
-import gtPlusPlus.core.block.ModBlocks;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class MegaBrewer extends WirelessEnergyMultiMachineBase<MegaBrewer> {
@@ -69,17 +67,17 @@ public class MegaBrewer extends WirelessEnergyMultiMachineBase<MegaBrewer> {
     public IStructureDefinition<MegaBrewer> getStructureDefinition() {
         return StructureDefinition.<MegaBrewer>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(sBlockCasingsTT, 0))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 10))
-            .addElement('C', StructureUtility.ofBlock(BlockLoader.metaCasing, 4))
-            .addElement('D', StructureUtility.ofBlock(sBlockCasingsTT, 6))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+            .addElement('A', Casings.HighPowerCasing.asElement())
+            .addElement('B', Casings.HermeticCasing10.asElement())
+            .addElement('C', GTNLCasings.NeutroniumPipeCasing.asElement())
+            .addElement('D', Casings.ContainmentFieldGenerator.asElement())
+            .addElement('E', Casings.AdvancedIridiumPlatedMachineCasing.asElement())
             .addElement(
                 'F',
                 GTStructureChannels.HEATING_COIL.use(
                     GTStructureUtility
                         .activeCoils(GTStructureUtility.ofCoil(MegaBrewer::setMCoilLevel, MegaBrewer::getMCoilLevel))))
-            .addElement('G', StructureUtility.ofBlock(BlockLoader.metaCasing, 7))
+            .addElement('G', GTNLCasings.Antifreeze_Heatproof_Machine_Casing.asElement())
             .addElement(
                 'H',
                 GTStructureUtility.buildHatchAdder(MegaBrewer.class)
@@ -94,10 +92,9 @@ public class MegaBrewer extends WirelessEnergyMultiMachineBase<MegaBrewer> {
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility.onElementPass(
-                            x -> ++x.mCountCasing,
-                            StructureUtility.ofBlock(ModBlocks.blockCasings2Misc, 11))))
-            .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 0))
+                        StructureUtility
+                            .onElementPass(x -> ++x.mCountCasing, Casings.ThermalContainmentCasing.asElement())))
+            .addElement('I', Casings.ChemicallyInertMachineCasing.asElement())
             .addElement('J', GTStructureUtility.ofFrame(Materials.Neutronium))
             .build();
     }

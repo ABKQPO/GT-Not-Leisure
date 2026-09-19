@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,13 +18,14 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 
 import bartworks.util.BWUtil;
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
@@ -43,7 +43,6 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
-import gtPlusPlus.core.block.ModBlocks;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 import tectech.thing.casing.BlockGTCasingsTT;
 
@@ -116,27 +115,26 @@ public class MegaVacuumDryingFurnace extends WirelessEnergyMultiMachineBase<Mega
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 0))))
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings6, 6))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings4, 1))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings8, 7))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.HighPowerCasing.asElement())))
+            .addElement('B', Casings.HermeticCasing6.asElement())
+            .addElement('C', Casings.CleanStainlessSteelMachineCasing.asElement())
+            .addElement('D', Casings.AdvancedIridiumPlatedMachineCasing.asElement())
             .addElement(
                 'E',
                 GTStructureChannels.HEATING_COIL.use(
                     GTStructureUtility.activeCoils(
                         GTStructureUtility
                             .ofCoil(MegaVacuumDryingFurnace::setMCoilLevel, MegaVacuumDryingFurnace::getMCoilLevel))))
-            .addElement('F', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 15))
-            .addElement('G', StructureUtility.ofBlock(sBlockCasingsTT, 1))
-            .addElement('H', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 3))
+            .addElement('F', Casings.TungstensteelPipeCasing.asElement())
+            .addElement('G', Casings.ComputerCasing.asElement())
+            .addElement('H', Casings.PressureContainmentCasing.asElement())
             .addElement('I', StructureUtility.ofBlock(GregTechAPI.sBlockMetal4, 12))
-            .addElement('J', StructureUtility.ofBlock(sBlockCasingsTT, 2))
-            .addElement('K', StructureUtility.ofBlock(ModBlocks.blockCasings4Misc, 10))
-            .addElement('L', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 11))
-            .addElement('M', StructureUtility.ofBlock(BlockLoader.metaCasing, 12))
+            .addElement('J', Casings.ComputerHeatVent.asElement())
+            .addElement('K', Casings.VacuumCasing.asElement())
+            .addElement('L', Casings.FilterMachineCasing.asElement())
+            .addElement('M', GTNLCasings.TungstensteelGearbox.asElement())
             .addElement('N', GTStructureUtility.ofFrame(Materials.Tungsten))
-            .addElement('O', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 10))
+            .addElement('O', Casings.GrateMachineCasing.asElement())
             .build();
     }
 

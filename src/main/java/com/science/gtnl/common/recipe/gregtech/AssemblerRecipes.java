@@ -2742,12 +2742,11 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTNLItemList.ShimmerBucket.get(1),
-                GTModHandler.getModItem(Mods.OpenComputers.ID, "disassembler", 64))
+                GTNLItemList.InfinityWaterBucket.get(1),
+                GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Infinity, 10))
             .itemOutputs(GTNLItemList.InfinityShimmerBucket.get(1))
-            .fluidInputs(new FluidStack(BlockLoader.shimmerFluid, 100000))
             .duration(10 * SECONDS)
-            .eut(TierEU.RECIPE_HV)
+            .eut(TierEU.RECIPE_UHV)
             .addTo(As);
 
         RecipeBuilder.builder()

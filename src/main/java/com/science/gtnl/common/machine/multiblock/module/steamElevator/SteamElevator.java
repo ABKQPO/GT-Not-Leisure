@@ -20,7 +20,6 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
@@ -46,6 +45,7 @@ import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.SteamElevatorGui;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
@@ -59,6 +59,7 @@ import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
@@ -208,19 +209,19 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
                 'A',
                 StructureUtility.ofChain(
                     buildSteamWirelessInput(SteamElevator.class)
-                        .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 25))
+                        .casingIndex(GTNLCasings.SteelReinforcedWood.getTextureId())
                         .hint(1)
                         .build(),
-                    buildSteamBigInput(SteamElevator.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 25))
+                    buildSteamBigInput(SteamElevator.class).casingIndex(GTNLCasings.SteelReinforcedWood.getTextureId())
                         .hint(1)
                         .build(),
-                    buildSteamInput(SteamElevator.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 25))
+                    buildSteamInput(SteamElevator.class).casingIndex(GTNLCasings.SteelReinforcedWood.getTextureId())
                         .hint(1)
                         .buildAndChain(BlockLoader.metaCasing, 25)))
-            .addElement('B', StructureUtility.ofBlock(BlockLoader.metaCasing, 31))
-            .addElement('C', StructureUtility.ofBlock(GregTechAPI.sBlockCasings1, 10))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 0))
-            .addElement('E', StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 14))
+            .addElement('B', GTNLCasings.SteamCompactPipeCasing.asElement())
+            .addElement('C', Casings.BronzePlatedBricks.asElement())
+            .addElement('D', Casings.SolidSteelMachineCasing.asElement())
+            .addElement('E', Casings.SteelFireboxCasing.asElement())
             .addElement('F', GTStructureUtility.ofFrame(Materials.Steel))
             .addElement('G', StructureUtility.ofBlock(Blocks.brick_block, 0))
             .addElement(
@@ -238,13 +239,13 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
                             HatchElement.OutputBus)
                         .buildAndChain(GregTechAPI.sBlockCasings2, 0),
                     buildSteamWirelessInput(SteamElevator.class)
-                        .casingIndex(GTUtility.getTextureId((byte) 116, (byte) 25))
+                        .casingIndex(GTNLCasings.SteelReinforcedWood.getTextureId())
                         .hint(1)
                         .build(),
-                    buildSteamBigInput(SteamElevator.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 25))
+                    buildSteamBigInput(SteamElevator.class).casingIndex(GTNLCasings.SteelReinforcedWood.getTextureId())
                         .hint(1)
                         .build(),
-                    buildSteamInput(SteamElevator.class).casingIndex(GTUtility.getTextureId((byte) 116, (byte) 25))
+                    buildSteamInput(SteamElevator.class).casingIndex(GTNLCasings.SteelReinforcedWood.getTextureId())
                         .hint(1)
                         .buildAndChain(BlockLoader.metaCasing, 25)))
             .addElement(
@@ -325,26 +326,26 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
         }
     }
 
-    public int getAvailableAmount(Fluid fluid) {
+    public int getAvailableAmount(GTUtility.FluidId fluid) {
         int total = 0;
 
         for (MTEHatchCustomFluidBase tHatch : GTUtility.validMTEList(mSteamInputFluids)) {
             FluidStack stack = tHatch.getFluid();
-            if (stack != null && stack.getFluid() == fluid) {
+            if (stack != null && fluid.matches(stack.getFluid())) {
                 total += stack.amount;
             }
         }
 
         for (CustomFluidHatch tHatch : GTUtility.validMTEList(mSteamBigInputFluids)) {
             FluidStack stack = tHatch.getFluid();
-            if (stack != null && stack.getFluid() == fluid) {
+            if (stack != null && fluid.matches(stack.getFluid())) {
                 total += stack.amount;
             }
         }
 
         for (CustomFluidHatch tHatch : GTUtility.validMTEList(mSteamWirelessInputFluids)) {
             FluidStack stack = tHatch.getFluid();
-            if (stack != null && stack.getFluid() == fluid) {
+            if (stack != null && fluid.matches(stack.getFluid())) {
                 total += stack.amount;
             }
         }
@@ -352,14 +353,14 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
         return total;
     }
 
-    public int depleteInput(Fluid fluid, int maxDrainAmount) {
+    public int depleteInput(GTUtility.FluidId fluid, int maxDrainAmount) {
         int totalDrained = 0;
 
         for (MTEHatchCustomFluidBase tHatch : GTUtility.validMTEList(mSteamInputFluids)) {
             if (totalDrained >= maxDrainAmount) break;
 
             FluidStack tLiquid = tHatch.getFluid();
-            if (tLiquid != null && tLiquid.getFluid() == fluid) {
+            if (tLiquid != null && fluid.matches(tLiquid.getFluid())) {
                 int remaining = maxDrainAmount - totalDrained;
                 FluidStack drained = tHatch.drain(remaining, true);
                 if (drained != null) totalDrained += drained.amount;
@@ -370,7 +371,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
             if (totalDrained >= maxDrainAmount) break;
 
             FluidStack tLiquid = tHatch.getFluid();
-            if (tLiquid != null && tLiquid.getFluid() == fluid) {
+            if (tLiquid != null && fluid.matches(tLiquid.getFluid())) {
                 int remaining = maxDrainAmount - totalDrained;
                 FluidStack drained = tHatch.drain(remaining, true);
                 if (drained != null) totalDrained += drained.amount;
@@ -381,7 +382,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
             if (totalDrained >= maxDrainAmount) break;
 
             FluidStack tLiquid = tHatch.getFluid();
-            if (tLiquid != null && tLiquid.getFluid() == fluid) {
+            if (tLiquid != null && fluid.matches(tLiquid.getFluid())) {
                 int remaining = maxDrainAmount - totalDrained;
                 FluidStack drained = tHatch.drain(remaining, true);
                 if (drained != null) totalDrained += drained.amount;
@@ -450,7 +451,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0);
+        return Casings.SolidSteelMachineCasing.getTextureId();
     }
 
     @Override

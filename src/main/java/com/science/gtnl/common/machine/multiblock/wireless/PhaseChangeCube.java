@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
-import static tectech.thing.casing.TTCasingsContainer.sBlockCasingsTT;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,15 +21,15 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.hatch.HumongousSolidifierHatch;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
-import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
@@ -89,7 +88,7 @@ public class PhaseChangeCube extends WirelessEnergyMultiMachineBase<PhaseChangeC
     public IStructureDefinition<PhaseChangeCube> getStructureDefinition() {
         return StructureDefinition.<PhaseChangeCube>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(sBlockCasingsTT, 6))
+            .addElement('A', Casings.ContainmentFieldGenerator.asElement())
             .addElement(
                 'B',
                 GTStructureUtility.buildHatchAdder(PhaseChangeCube.class)
@@ -104,18 +103,17 @@ public class PhaseChangeCube extends WirelessEnergyMultiMachineBase<PhaseChangeC
                     .casingIndex(getCasingTextureID())
                     .hint(1)
                     .buildAndChain(
-                        StructureUtility
-                            .onElementPass(x -> ++x.mCountCasing, StructureUtility.ofBlock(sBlockCasingsTT, 0))))
+                        StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.HighPowerCasing.asElement())))
             .addElement(
                 'C',
                 GTStructureChannels.HEATING_COIL.use(
                     GTStructureUtility.activeCoils(
                         GTStructureUtility.ofCoil(PhaseChangeCube::setMCoilLevel, PhaseChangeCube::getMCoilLevel))))
-            .addElement('D', StructureUtility.ofBlock(GregTechAPI.sBlockCasings10, 7))
-            .addElement('E', StructureUtility.ofBlock(sBlockCasingsTT, 4))
+            .addElement('D', Casings.ActiveNeutroniumCasing.asElement())
+            .addElement('E', Casings.MolecularCasing.asElement())
             .addElement('F', GTStructureUtility.ofFrame(Materials.SuperconductorUEVBase))
-            .addElement('G', StructureUtility.ofBlock(GregTechAPI.sBlockCasings9, 12))
-            .addElement('H', StructureUtility.ofBlock(BlockLoader.metaBlockGlass, 2))
+            .addElement('G', Casings.NaquadriaReinforcedWaterPlantCasing.asElement())
+            .addElement('H', GTNLCasings.FusionGlass.asElement())
             .build();
     }
 

@@ -34,7 +34,7 @@ import com.science.gtnl.utils.enums.BlockIcons;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.SoundResource;
@@ -125,7 +125,7 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
                             .toArray(String[]::new))
                     .toArray(String[][]::new))
             .addElement('A', GTStructureUtility.chainAllGlasses())
-            .addElement('B', StructureUtility.ofBlock(GregTechAPI.sBlockCasings2, 12))
+            .addElement('B', Casings.BronzePipeCasing.asElement())
             .addElement(
                 'C',
                 StructureUtility.ofChain(
@@ -134,7 +134,7 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
                         .casingIndex(10)
                         .hint(1)
                         .buildAndChain(),
-                    StructureUtility.ofBlock(GregTechAPI.sBlockCasings3, 13)))
+                    Casings.BronzeFireboxCasing.asElement()))
             .addElement('D', GTStructureUtility.ofFrame(Materials.Steel))
             .addElement('E', StructureUtility.ofBlock(Blocks.cactus, 0))
             .addElement('F', StructureUtility.ofBlock(Blocks.sand, 0))
@@ -217,7 +217,7 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
 
     @Override
     public int getCasingTextureID() {
-        return StructureUtils.getTextureIndex(sBlockCasings1, 10);
+        return Casings.BronzePlatedBricks.getTextureId();
     }
 
     @Override

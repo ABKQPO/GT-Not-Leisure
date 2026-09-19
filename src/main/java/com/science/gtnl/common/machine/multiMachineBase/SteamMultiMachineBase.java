@@ -57,7 +57,6 @@ import com.science.gtnl.common.gui.modularui.GTNLSteamMultiBlockBaseGui;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.hatch.WirelessSteamEnergyHatch;
 import com.science.gtnl.loader.BlockLoader;
-import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GTNLMachineID;
@@ -71,6 +70,7 @@ import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IIconContainer;
@@ -365,9 +365,9 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
             || tierFrameCasing == 2
             || tierMachineCasing == 2
             || tierMachine == 2) {
-            return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings2, 0);
+            return Casings.SolidSteelMachineCasing.getTextureId();
         }
-        return StructureUtils.getTextureIndex(GregTechAPI.sBlockCasings1, 10);
+        return Casings.BronzePlatedBricks.getTextureId();
     }
 
     @Override
@@ -929,7 +929,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         for (FluidStack aFluid : this.getStoredSteamFluids()) {
             if (aFluid == null) continue;
             for (SteamTypes type : SteamTypes.VALUES) {
-                if (aFluid.getFluid() == type.fluid) {
+                if (type.fluid.matches(aFluid.getFluid())) {
                     aSteam += aFluid.amount;
                 }
             }
@@ -943,7 +943,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         for (FluidStack aFluid : this.getStoredSteamFluids()) {
             if (aFluid != null) {
                 for (SteamTypes type : SteamTypes.VALUES) {
-                    if (aFluid.getFluid() == type.fluid) {
+                    if (type.fluid.matches(aFluid.getFluid())) {
                         aFluids.add(aFluid);
                         break;
                     }
@@ -1203,7 +1203,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     @Override
     public boolean tryConsumeSteam(int aAmount) {
         for (SteamTypes type : SteamTypes.getSupportedTypes()) {
-            FluidStack steamStack = new FluidStack(type.fluid, Math.max(1, aAmount / type.efficiencyFactor));
+            FluidStack steamStack = type.fluid.getFluidStack(Math.max(1, aAmount / type.efficiencyFactor));
             if (depleteInput(steamStack)) {
                 return true;
             }

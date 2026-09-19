@@ -50,8 +50,13 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IItemList;
 import appeng.core.localization.WailaText;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
@@ -73,10 +78,13 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
+import gregtech.common.config.MachineStats;
 import gregtech.common.gui.modularui.widget.AESlotWidget;
+import gregtech.common.tileentities.machines.IHatchWatcher;
 import gregtech.common.tileentities.machines.IRecipeProcessingAwareHatch;
 import gregtech.common.tileentities.machines.ISmartInputHatch;
 import gregtech.common.tileentities.machines.MTEHatchInputBusME;
+import gregtech.common.tileentities.machines.RecipeCheckReason;
 
 public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProcessingAwareHatch, IAddGregtechLogo,
     IAddUIWidgets, IPowerChannelState, ISmartInputHatch, IDataCopyable {
@@ -92,6 +100,7 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
     @Nullable
     public String oreDict;
     public boolean isSuper;
+    private IStackWatcher superWatcher;
 
     public OredictInputBusME(int aID, String aName, String aNameRegional, boolean isSuper) {
         super(aID, true, aName, aNameRegional);
@@ -172,6 +181,7 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
             clearSlotConfigs();
         }
         updateAllInformationSlots();
+        configureSuperWatcher();
     }
 
     public String getOreDictForGui() {
@@ -196,6 +206,7 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
                 .iterator();
 
             int index = 0;
+            boolean inputChanged = false;
             int slotLimit = isSuper ? SIDE_SLOT_COUNT : SLOT_COUNT;
             while (iterator.hasNext() && index < slotLimit) {
                 IAEItemStack currItem = iterator.next();
@@ -204,6 +215,7 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
                 if (currItem.getStackSize() >= minAutoPullStackSize) {
                     ItemStack itemstack = GTUtility.copyAmount(1, currItem.getItemStack());
                     if (isSuper) {
+                        inputChanged |= !areItemStacksEqual(mInventory[index], itemstack);
                         this.mInventory[index] = itemstack;
                         this.mInventory[index + SIDE_SLOT_COUNT] = copyInformationStack(currItem);
                     } else {
@@ -219,11 +231,16 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
             }
             if (isSuper) {
                 for (int i = index; i < slotLimit; i++) {
+                    inputChanged |= mInventory[i] != null;
                     mInventory[i] = null;
                     mInventory[i + SIDE_SLOT_COUNT] = null;
                 }
             } else {
                 Arrays.fill(slots, index, slotLimit, null);
+            }
+
+            if (isSuper && inputChanged) {
+                scheduleRecipeCheck(RecipeCheckReason.THROTTLED);
             }
 
         } catch (final GridAccessException ignored) {}
@@ -398,6 +415,7 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
             refreshItemList();
         }
         updateAllInformationSlots();
+        configureSuperWatcher();
     }
 
     @Override
@@ -410,6 +428,33 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
             if (mInventory[i] != null && mInventory[i].stackSize <= 0) {
                 mInventory[i] = null;
             }
+        }
+    }
+
+    @Override
+    public boolean needsPeriodicChecks() {
+        return !MachineStats.machines.useStackWatcher;
+    }
+
+    @Override
+    public void updateWatcher(IStackWatcher newWatcher) {
+        if (!isSuper) {
+            super.updateWatcher(newWatcher);
+            return;
+        }
+        superWatcher = newWatcher;
+        configureSuperWatcher();
+    }
+
+    @Override
+    public void onStackChange(IItemList stacks, IAEStack fullStack, IAEStack diffStack, BaseActionSource source,
+        StorageChannel channel) {
+        if (!isSuper) {
+            super.onStackChange(stacks, fullStack, diffStack, source, channel);
+            return;
+        }
+        if (diffStack.getStackSize() > 0) {
+            scheduleRecipeCheck(RecipeCheckReason.THROTTLED);
         }
     }
 
@@ -548,7 +593,9 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
     }
 
     public ItemStack updateInformationSlotForGui(int index, ItemStack stack) {
-        return updateInformationSlot(index, stack);
+        ItemStack informationStack = updateInformationSlot(index, stack);
+        configureSuperWatcher();
+        return informationStack;
     }
 
     protected int getConfiguredFilterSlotCount() {
@@ -586,6 +633,36 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
     protected void clearSuperInformationSlots() {
         for (int i = 0; i < SIDE_SLOT_COUNT; i++) {
             mInventory[i + SIDE_SLOT_COUNT] = null;
+        }
+    }
+
+    private void configureSuperWatcher() {
+        if (!isSuper) {
+            return;
+        }
+        if (superWatcher != null) {
+            superWatcher.clear();
+            if (MachineStats.machines.useStackWatcher && !autoPullItemList) {
+                for (int i = 0; i < SIDE_SLOT_COUNT; i++) {
+                    ItemStack stack = mInventory[i];
+                    if (stack != null) {
+                        superWatcher.add(AEItemStack.create(stack));
+                    }
+                }
+            }
+        }
+        scheduleRecipeCheck(RecipeCheckReason.THROTTLED);
+    }
+
+    private boolean areItemStacksEqual(ItemStack first, ItemStack second) {
+        return first == second || first != null && second != null
+            && first.stackSize == second.stackSize
+            && GTUtility.areStacksEqual(first, second, true);
+    }
+
+    private void scheduleRecipeCheck(RecipeCheckReason reason) {
+        for (IHatchWatcher watcher : watchers) {
+            watcher.scheduleRecipeCheck(reason);
         }
     }
 
