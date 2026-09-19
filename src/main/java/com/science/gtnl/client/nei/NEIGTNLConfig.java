@@ -1,5 +1,8 @@
 package com.science.gtnl.client.nei;
 
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
 import com.science.gtnl.client.gui.GuiDirePatternEncoder;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableAdvancedWorkbench;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableBasicWorkbench;
@@ -13,9 +16,15 @@ import com.science.gtnl.utils.enums.ModList;
 import bartworks.system.material.Werkstoff;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
+import codechicken.nei.event.NEIRegisterHandlerInfosEvent;
 import codechicken.nei.recipe.DefaultOverlayHandler;
+import codechicken.nei.recipe.HandlerInfo;
+import codechicken.nei.recipe.InformationHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
+
+import net.minecraftforge.common.MinecraftForge;
 
 @SuppressWarnings("unused")
 public class NEIGTNLConfig implements IConfigureNEI {
@@ -96,5 +105,39 @@ public class NEIGTNLConfig implements IConfigureNEI {
         API.hideItem(GTNLItemList.FakeItemSiren.get(1));
         API.hideItem(ModList.ScienceNotLeisure.ID + ":stick");
         API.hideItem(ModList.ScienceNotLeisure.ID + ":player_doll tag.HideNEI=1b");
+
+        addMachineGuidePage(GTNLItemList.SiphonTurbine, "gtnl.nei.siphon_turbine");
+
+        API.registerUsageHandler(new NuclearReactorGuideHandler());
+
+        if (!HANDLER_INFO_REGISTERED) {
+            HANDLER_INFO_REGISTERED = true;
+            MinecraftForge.EVENT_BUS.register(this);
+        }
+    }
+
+    private static boolean HANDLER_INFO_REGISTERED = false;
+
+    @SubscribeEvent
+    public void registerHandlerInfo(NEIRegisterHandlerInfosEvent event) {
+        ItemStack controller = GTNLItemList.NuclearReactor.get(1);
+        if (controller == null || controller.getItem() == null) return;
+        event.registerHandlerInfo(
+            new HandlerInfo.Builder("gtnl_nuclear_reactor_guide", "GTNotLeisure", "sciencenotleisure")
+                .setDisplayStack(controller)
+                .setWidth(166)
+                .setHeight(100)
+                .setMultipleWidgetsAllowed(false)
+                .build());
+    }
+
+    private static void addMachineGuidePage(GTNLItemList item, String infoKey) {
+        ItemStack stack = item.get(1);
+        if (stack == null || stack.getItem() == null) return;
+
+        String registryName = (String) Item.itemRegistry.getNameForObject(stack.getItem());
+        if (registryName == null || registryName.isEmpty()) return;
+
+        InformationHandler.addInformationPage("<" + registryName + ":" + stack.getItemDamage() + ">", infoKey);
     }
 }

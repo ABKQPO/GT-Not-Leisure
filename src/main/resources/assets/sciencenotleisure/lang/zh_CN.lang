@@ -230,6 +230,7 @@ gtnl.gui.super_dual_interface.tooltip.switch=切换到超级ME接口GUI
 
 channels.sciencenotleisure.structure_render=决定是否应该渲染并放置该结构，防止结构过大引起的卡顿。
 channels.sciencenotleisure.component_casing=决定部件装配线外壳等级。最低为§6部件装配线外壳(LV)§r等级1，最高为§6部件装配线外壳(MAX)§r等级14。
+channels.sciencenotleisure.nuclear_tier=核反应堆等级：1 = 3x3 核芯，2 = 5x5 核芯，3 = 7x7 核芯。
 
 death.attack.damage.gtnl.crushing=%1$s 被绞碎了
 death.attack.damage.gtnl.infinity=%1$s 被抹杀了存在
@@ -369,6 +370,30 @@ gtnl.waila.output_me_proxy.unlinked=§c设备未链接§r
 gtnl.waila.output_me_proxy.target=链接到输出仓位置
 
 gtnl.machine.quantum_computer.name=量子计算机
+gtnl.machine.nuclear_reactor.name=核反应堆
+gtnl.machine.nuclear_reactor.tooltip.0=热反应堆
+gtnl.machine.nuclear_reactor.tooltip.quote=§9§l这是一台“现代”反应堆！§r
+gtnl.machine.nuclear_reactor.tooltip.1=§7使用燃料棒产生热量，流体仓吸收热量将水转化为蒸汽，输出的蒸汽从输出仓输出
+gtnl.machine.nuclear_reactor.gui.steam_rate=蒸汽输出速度
+gtnl.machine.nuclear_reactor.tooltip.3=顶部方块可替换为核仓室，样式请参考 NEI
+gtnl.machine.nuclear_reactor.tooltip.4=核燃料物品仓 / 核冷却液输入仓
+gtnl.machine.nuclear_reactor.structure.tiers=全部等级：§65x5x5§7 / §67x5x7§7 / §69x5x9
+gtnl.machine.nuclear_reactor.structure.output_hatch=输出仓至少需要 1 个
+gtnl.machine.nuclear_reactor.casing=反应堆外壳
+gtnl.structure.nuclear_reactor.core_cell=核燃料物品仓 或 核冷却液输入仓
+gtnl.machine.nuclear_reactor_t2.name=核反应堆 II
+gtnl.machine.nuclear_reactor_t2.tooltip.0=升级型热反应堆，拥有更大的 5×5 核芯。
+gtnl.machine.nuclear_reactor_t3.name=核反应堆 III
+gtnl.machine.nuclear_reactor_t3.tooltip.0=升级型热反应堆，拥有圆角 7×7 核芯。
+gtnl.machine.siphon_turbine.name=虹吸涡轮
+gtnl.machine.siphon_turbine.recipe_type=虹吸涡轮
+gtnl.machine.siphon_turbine.casing=隔热机器外壳
+gtnl.machine.siphon_turbine.structure=3×3×3 隔热机器外壳，主机在正面中心
+gtnl.machine.siphon_turbine.tooltip.0=§7开机后每 §e6.4s§7 吸无线蒸汽网余额的 §e70%§7，换算为 EU
+gtnl.machine.siphon_turbine.tooltip.1=§7档位：10M mB 内 §e4 EU/L§7，10M~200M §e2 EU/L§7，200M~2G §e1 EU/L
+gtnl.machine.siphon_turbine.tooltip.2=§7超 2G 的部分每 L 产生 0 EU，但使下一次吸收产出翻倍
+gtnl.machine.siphon_turbine.gui.eu_cache=§f机器缓存 EU：§e%s §fEU
+gtnl.machine.siphon_turbine.gui.output=§f过去 6.4s 输出：§e%s §fEU
 gtnl.machine.quantum_computer.recipe_type=CPU
 gtnl.machine.quantum_computer.tooltip.0=可以像常规的CPU一样执行合成任务
 gtnl.machine.quantum_computer.tooltip.1=只要容量足够，量子计算机可以同时执行的合成任务数量不限
@@ -2717,6 +2742,16 @@ gtnl.hatch.original_output.tooltip.4=被设定过的输出仓在多方块中拥�
 
 gtnl.hatch.super_void_bus.name=超级虚空总线
 
+gtnl.hatch.nuclear_item_bus.name=核燃料物品仓
+gtnl.hatch.nuclear_item_bus.tooltip.0=用于核反应堆，同时输入输出燃料棒。
+gtnl.hatch.nuclear_item_bus.tooltip.1=工作槽里的燃料棒每秒消耗 4 点耐久（停机时 1）
+gtnl.hatch.nuclear_item_bus.tooltip.2=耐久消耗倍数为激发倍数的平方。
+
+gtnl.hatch.nuclear_fluid_hatch.name=核冷却液输入仓
+gtnl.hatch.nuclear_fluid_hatch.tooltip.0=核反应堆冷却液格，用于加水。不用于输出蒸汽。
+gtnl.hatch.nuclear_fluid_hatch.tooltip.1=每吸收 1 HU 热量，就消耗 1L 水、产出 160L 蒸汽。
+gtnl.hatch.nuclear_fluid_hatch.tooltip.capacity=容量：
+
 gtnl.hatch.super_void_hatch.name=超级虚空仓
 
 gtnl.hatch.debug_data_access.name=Debug数据访问仓
@@ -4145,3 +4180,9 @@ gtnl.command.tickrate.period=。
 gtnl.command.tickrate.freeze=Tickrate 已冻结！
 gtnl.command.tickrate.unfreeze=Tickrate 已解除冻结！
 gtnl.command.tickrate.player_not_found=未找到玩家。
+gtnl.nei.siphon_turbine=§6§l虹吸涡轮§r\n§4开机后§0每 §46.4s§0 吸收无线蒸汽网余额的 §470%§0，换算为 EU 进入机器缓存。\n§0每次吸收时清空上一次运行的机器缓存。\n§0转换阶梯：\n§0- 10ML 内：§44 EU/L§0；\n§0- 10M~200M：§42 EU/L§0；\n§0- 200ML~2GL：§41 EU/L§0；\n§0- 超 2GL：§40 EU/L§0，但让下一次吸收产出§4§l翻倍§r§0。
+gtnl.nei.nuclear_reactor=§6§l核反应堆§r\n§0使用燃料棒产生热量，流体仓吸收热量将水转化为蒸汽。\n§0燃料棒向四面产生的热量等于燃料棒基础发电量的十分之一，四角为四面的二分之一。
+gtnl.nei.nuclear_reactor.guide.name=§6§l核反应堆指南§r
+gtnl.nei.nuclear_reactor.guide.fuel_rod=§6§l铀燃料棒§r\n§0相邻燃料棒会产生激发。四面每相邻一个燃料棒就提供一次x1.5激发；四角每相邻一个燃料棒就提供一次x1.2激发；此外，与此燃料棒相隔一个流体仓的燃料棒提供1.1x的激发。激发为乘算。\n§0每秒消耗 4 点耐久（停机时1点），耐久消耗倍率为激发倍率的平方；
+gtnl.nei.nuclear_reactor.guide.reflector=§6§l中子反射板§r\n§0放在核燃料物品仓里，把正四方向相邻燃料棒的激发反弹回去，相当于那一格多一根燃料棒。\n§0自身耐久消耗是燃料棒的八分之一；\n§0铱中子反射板无限耐久。
+gtnl.nei.nuclear_reactor.guide.heat_plate=§6§l致密殷钢板§r\n§0放在核燃料物品仓里，把收到的热量复制给四面相邻的格子。\n§0累计吸收 240,000 HU 后熔化成 1008L 熔融殷钢，从输出仓输出。
