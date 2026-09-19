@@ -1,5 +1,7 @@
 package com.science.gtnl.common.recipe.gtnl;
 
+import static gregtech.api.enums.Mods.IndustrialCraft2;
+
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -17,6 +19,7 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 import appeng.api.AEApi;
 import appeng.api.util.AEColor;
 import cpw.mods.fml.common.Optional;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
@@ -1374,6 +1377,28 @@ public class CraftingTableRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.EnderPearl, 1), 'D',
                 GTModHandler.getModItem(Mods.OpenBlocks.ID, "elevator", 1), 'E',
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Redstone, 1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.NuclearReactor.get(1),
+            new Object[] { "ABA", "BCB", "ABA", 'A', Casings.HastelloyNSealantBlock.toStack(1), 'B',
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.IV, 1), 'C',
+                GTModHandler.getIC2Item("nuclearReactor", 1L) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.NuclearItemBus.get(1),
+            new Object[] { "ABA", "CDE", "FGF", 'A', ItemList.Robot_Arm_EV.get(1), 'B', new ItemStack(Blocks.chest, 1),
+                'C', ItemList.Hatch_Input_Bus_ULV.get(1), 'D',
+                GTModHandler.getModItem(IndustrialCraft2.ID, "blockReactorChamber", 1, 0), 'E',
+                ItemList.Hatch_Output_Bus_ULV.get(1), 'F', OrePrefixes.circuit.get(Materials.EV), 'G',
+                ItemList.Hull_EV.get(1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.NuclearFluidHatch.get(1),
+            new Object[] { "ABA", "CDC", "EFE", 'A', ItemList.Electric_Pump_EV.get(1), 'B',
+                ItemList.Hatch_Input_EV.get(1), 'C',
+                GTOreDictUnificator.get(OrePrefixes.pipeMedium, Materials.Titanium, 1), 'D',
+                GTModHandler.getModItem(IndustrialCraft2.ID, "blockReactorChamber", 1, 0), 'E',
+                OrePrefixes.circuit.get(Materials.EV), 'F', ItemList.Hull_EV.get(1) });
 
         GTModHandler.addShapelessCraftingRecipe(
             GTNLItemList.PartSuperInterface.get(1),

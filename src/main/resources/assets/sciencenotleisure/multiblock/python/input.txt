@@ -1,0 +1,50 @@
+
+
+Structure:
+
+Blocks:
+A-> addElement('A', Casings.InsulatedFluidPipeCasing.asElement()
+B-> addElement('B', Casings.HastelloyNSealantBlock.asElement()
+C-> addElement('C', Casings.HastelloyXStructuralBlock.asElement()
+
+Offsets:
+2, 2, 0
+
+Dimensions (Width, Height, Length)
+5, 5, 5
+
+Normal Scan:
+
+//spotless:off
+new String[][]{
+    {" BBB ",
+    " BBB ",
+    " B~B ",
+    " BBB ",
+    " BBB "
+},{
+    "BBBBB",
+    "BCCCB",
+    "BCCCB",
+    "BCCCB",
+    "BBBBB"
+},{
+    "BBBBB",
+    "BCACB",
+    "BCACB",
+    "BCACB",
+    "BBBBB"
+},{
+    "BBBBB",
+    "BCCCB",
+    "BCCCB",
+    "BCCCB",
+    "BBBBB"
+},{
+    " BBB ",
+    " BBB ",
+    " BBB ",
+    " BBB ",
+    " BBB "
+}}
+//spotless:on
