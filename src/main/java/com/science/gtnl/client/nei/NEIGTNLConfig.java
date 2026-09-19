@@ -2,6 +2,7 @@ package com.science.gtnl.client.nei;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 
 import com.science.gtnl.client.gui.GuiDirePatternEncoder;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableAdvancedWorkbench;
@@ -23,8 +24,6 @@ import codechicken.nei.recipe.InformationHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
-
-import net.minecraftforge.common.MinecraftForge;
 
 @SuppressWarnings("unused")
 public class NEIGTNLConfig implements IConfigureNEI {
