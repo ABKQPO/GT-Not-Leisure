@@ -135,6 +135,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReason;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.WirelessNetworkManager;
+import gregtech.common.tileentities.machines.RecipeCheckReason;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
@@ -1370,7 +1371,11 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
     @Override
     public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table) {
-        return patternState.pushPattern(patternDetails, table);
+        boolean accepted = patternState.pushPattern(patternDetails, table);
+        if (accepted) {
+            scheduleRecipeCheck(RecipeCheckReason.IMMEDIATE);
+        }
+        return accepted;
     }
 
     @Override

@@ -43,6 +43,8 @@ import com.science.gtnl.common.machine.hatch.HumongousSolidifierHatch;
 import com.science.gtnl.common.machine.hatch.ManaDynamoHatch;
 import com.science.gtnl.common.machine.hatch.ManaEnergyHatch;
 import com.science.gtnl.common.machine.hatch.NinefoldInputHatch;
+import com.science.gtnl.common.machine.hatch.NuclearFluidHatch;
+import com.science.gtnl.common.machine.hatch.NuclearItemBus;
 import com.science.gtnl.common.machine.hatch.OredictInputBusME;
 import com.science.gtnl.common.machine.hatch.OriginalInputHatch;
 import com.science.gtnl.common.machine.hatch.OriginalOutputHatch;
@@ -102,6 +104,7 @@ import com.science.gtnl.common.machine.multiblock.MatterFabricator;
 import com.science.gtnl.common.machine.multiblock.MegaMixer;
 import com.science.gtnl.common.machine.multiblock.MeteorMiner;
 import com.science.gtnl.common.machine.multiblock.NaquadahReactor;
+import com.science.gtnl.common.machine.multiblock.NuclearReactor;
 import com.science.gtnl.common.machine.multiblock.PCBFactory;
 import com.science.gtnl.common.machine.multiblock.PetrochemicalPlant;
 import com.science.gtnl.common.machine.multiblock.PhotovoltaicPowerStation;
@@ -115,6 +118,7 @@ import com.science.gtnl.common.machine.multiblock.ResearchCenter;
 import com.science.gtnl.common.machine.multiblock.ResourceCollectionModule;
 import com.science.gtnl.common.machine.multiblock.ShallowChemicalCoupling;
 import com.science.gtnl.common.machine.multiblock.SingularityDataHub;
+import com.science.gtnl.common.machine.multiblock.SiphonTurbine;
 import com.science.gtnl.common.machine.multiblock.SmallArcaneAssembler;
 import com.science.gtnl.common.machine.multiblock.SmallInfusionMatrix;
 import com.science.gtnl.common.machine.multiblock.SpaceAssembler;
@@ -471,22 +475,6 @@ public class MachineLoader {
                 ""));
         AnimatedTooltipHandler
             .addItemTooltip(GTNLItemList.IndustrialArcaneAssembler.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
-        GTNLItemList.SmallArcaneAssembler.set(
-            new SmallArcaneAssembler(
-                GTNLMachineID.SMALL_ARCANE_ASSEMBLER.ID,
-                "SmallArcaneAssembler",
-                StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SmallArcaneAssembler.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-
-        GTNLItemList.SmallInfusionMatrix.set(
-            new SmallInfusionMatrix(
-                GTNLMachineID.SMALL_INFUSION_MATRIX.ID,
-                "SmallInfusionMatrix",
-                StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SmallInfusionMatrix.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.EnergeticPhotovoltaicPowerStation.set(
             new PhotovoltaicPowerStation.EnergeticPhotovoltaicPowerStation(
@@ -2158,6 +2146,36 @@ public class MachineLoader {
             () -> StatCollector.translateToLocal("gtnl.machine.research_station.tooltip.0"));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ResearchCenter.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
+        GTNLItemList.NuclearReactor.set(
+            new NuclearReactor(
+                GTNLMachineID.NUCLEAR_REACTOR.ID,
+                "NuclearReactor",
+                StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.name")));
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NuclearReactor.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.SiphonTurbine.set(
+            new SiphonTurbine(
+                GTNLMachineID.SIPHON_TURBINE.ID,
+                "SiphonTurbine",
+                StatCollector.translateToLocal("gtnl.machine.siphon_turbine.name")));
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SiphonTurbine.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.SmallInfusionMatrix.set(
+            new SmallInfusionMatrix(
+                GTNLMachineID.SMALL_INFUSION_MATRIX.ID,
+                "SmallInfusionMatrix",
+                StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.name")));
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.SmallInfusionMatrix.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.SmallArcaneAssembler.set(
+            new SmallArcaneAssembler(
+                GTNLMachineID.SMALL_ARCANE_ASSEMBLER.ID,
+                "SmallArcaneAssembler",
+                StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.name")));
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.SmallArcaneAssembler.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
         GTNLItemList.SuperInputBusME.set(
             new SuperInputBusME(
                 GTNLMachineID.SUPER_INPUT_BUS_ME.ID,
@@ -2267,6 +2285,23 @@ public class MachineLoader {
                 "SuperVoidHatch",
                 StatCollector.translateToLocal("gtnl.hatch.super_void_hatch.name")));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SuperVoidHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.NuclearItemBus.set(
+            new NuclearItemBus(
+                GTNLMachineID.NUCLEAR_ITEM_BUS.ID,
+                "NuclearItemBus",
+                StatCollector.translateToLocal("gtnl.hatch.nuclear_item_bus.name"),
+                3));
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NuclearItemBus.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+
+        GTNLItemList.NuclearFluidHatch.set(
+            new NuclearFluidHatch(
+                GTNLMachineID.NUCLEAR_FLUID_HATCH.ID,
+                "NuclearFluidHatch",
+                StatCollector.translateToLocal("gtnl.hatch.nuclear_fluid_hatch.name"),
+                3,
+                512000)); // 64000 x 8
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NuclearFluidHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
 
         GTNLItemList.DebugDataAccessHatch.set(
             new DebugDataAccessHatch(

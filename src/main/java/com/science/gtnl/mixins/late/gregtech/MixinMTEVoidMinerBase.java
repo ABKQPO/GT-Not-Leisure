@@ -550,6 +550,7 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
         ci.cancel();
     }
 
+    @Deprecated
     @Inject(method = "drawTexts", at = @At("TAIL"), require = 1, remap = false)
     private void vmTweak$drawDimensionOverride(DynamicPositionedColumn screenElements, SlotWidget inventorySlot,
         CallbackInfo ci) {
