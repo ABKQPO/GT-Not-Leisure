@@ -16,7 +16,7 @@ import lombok.Getter;
 @Getter
 public enum ModList implements IMod, ITargetMod {
 
-    ScienceNotLeisure("sciencenotleisure", "Science Not Leisure", false),
+    ScienceNotLeisure("sciencenotleisure", "GTNotLeisure", false),
     Angelica("angelica", "Angelica", "com.gtnewhorizons.angelica.loading.AngelicaTweaker", false),
     TakoTech("TakoTech", "Tako Tech"),
     EyeOfHarmonyBuffer("eyeofharmonybuffer", "Eye Of Harmony Buffer"),

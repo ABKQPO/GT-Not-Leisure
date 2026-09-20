@@ -9,17 +9,17 @@ import org.apache.commons.lang3.ArrayUtils;
 
 public class AnimatedText {
 
-    public static final Supplier<String> SNL_EDEN_GARDEN = () -> AnimatedText.SCIENCE_NOT_LEISURE.get()
+    public static final Supplier<String> GTNL_EDEN_GARDEN = () -> AnimatedText.GT_NOT_LEISURE.get()
         + AnimatedText.EDEN_GARDEN.get()
         + AnimatedTooltipHandler.RESET;
-    public static final Supplier<String> SNL_SRP = () -> AnimatedText.SCIENCE_NOT_LEISURE.get()
+    public static final Supplier<String> GTNL_SRP = () -> AnimatedText.GT_NOT_LEISURE.get()
         + AnimatedTooltipHandler.RESET
         + ": "
         + AnimatedText.STRUCTURAL_RECONSTRUCTION_PLAN.get()
         + AnimatedTooltipHandler.RESET;
-    public static final Supplier<String> SNL_QYZG = () -> AnimatedText.SCIENCE_NOT_LEISURE
+    public static final Supplier<String> GTNL_QYZG = () -> AnimatedText.GT_NOT_LEISURE
         .get() + AnimatedTooltipHandler.RESET + ": " + AnimatedText.QYZG.get() + AnimatedTooltipHandler.RESET;
-    public static final Supplier<String> SNL_QYZG_SRP = () -> AnimatedText.SCIENCE_NOT_LEISURE.get()
+    public static final Supplier<String> GTNL_QYZG_SRP = () -> AnimatedText.GT_NOT_LEISURE.get()
         + AnimatedTooltipHandler.RESET
         + ": "
         + AnimatedText.QYZG.get()
@@ -27,28 +27,28 @@ public class AnimatedText {
         + " X "
         + AnimatedText.STRUCTURAL_RECONSTRUCTION_PLAN.get()
         + AnimatedTooltipHandler.RESET;
-    public static final Supplier<String> SNL_NLXCJH = () -> AnimatedText.SCIENCE_NOT_LEISURE
+    public static final Supplier<String> GTNL_NLXCJH = () -> AnimatedText.GT_NOT_LEISURE
         .get() + AnimatedTooltipHandler.RESET + ": " + AnimatedText.NLXCJH.get() + AnimatedTooltipHandler.RESET;
-    public static final Supplier<String> SNL_TOTTO = () -> AnimatedText.SCIENCE_NOT_LEISURE
+    public static final Supplier<String> GTNL_TOTTO = () -> AnimatedText.GT_NOT_LEISURE
         .get() + AnimatedTooltipHandler.RESET + ": " + AnimatedText.TOTTO.get() + AnimatedTooltipHandler.RESET;
-    public static final Supplier<String> SNL_PBTR = () -> AnimatedText.SCIENCE_NOT_LEISURE
+    public static final Supplier<String> GTNL_PBTR = () -> AnimatedText.GT_NOT_LEISURE
         .get() + AnimatedTooltipHandler.RESET + ": " + AnimatedText.PBTR.get() + AnimatedTooltipHandler.RESET;
-    public static final Supplier<String> SNL_SCCR = () -> AnimatedText.SCIENCE_NOT_LEISURE
+    public static final Supplier<String> GTNL_SCCR = () -> AnimatedText.GT_NOT_LEISURE
         .get() + AnimatedTooltipHandler.RESET + ": " + AnimatedText.SCCR.get() + AnimatedTooltipHandler.RESET;
-    public static final Supplier<String> SNL_SKYINR = () -> AnimatedText.SCIENCE_NOT_LEISURE.get()
+    public static final Supplier<String> GTNL_SKYINR = () -> AnimatedText.GT_NOT_LEISURE.get()
         + AnimatedTooltipHandler.RESET
         + ": "
         + AnimatedTooltipHandler.AQUA
         + "Created By: Skyinr"
         + AnimatedTooltipHandler.RESET;
 
-    public static final Supplier<String> SNL_LONEI = () -> AnimatedText.SCIENCE_NOT_LEISURE
+    public static final Supplier<String> GTNL_LONEI = () -> AnimatedText.GT_NOT_LEISURE
         .get() + AnimatedTooltipHandler.RESET + ": " + AnimatedText.LONEI.get() + AnimatedTooltipHandler.RESET;
 
-    public static final Supplier<String> SCIENCE_NOT_LEISURE = AnimatedTooltipHandler.chain(
+    public static final Supplier<String> GT_NOT_LEISURE = AnimatedTooltipHandler.chain(
         AnimatedTooltipHandler.text(StatCollector.translateToLocal("gtnl.tooltip.add_mod")),
         AnimatedTooltipHandler.animatedText(
-            "Science Not Leisure",
+            "GT Not Leisure",
             1,
             80,
             AnimatedTooltipHandler.RED,
@@ -59,10 +59,10 @@ public class AnimatedText {
             AnimatedTooltipHandler.BLUE,
             AnimatedTooltipHandler.LIGHT_PURPLE));
 
-    public static final Supplier<String> SCIENCE_NOT_LEISURE_CHANGE = AnimatedTooltipHandler.chain(
+    public static final Supplier<String> GT_NOT_LEISURE_CHANGE = AnimatedTooltipHandler.chain(
         AnimatedTooltipHandler.text(StatCollector.translateToLocal("gtnl.tooltip.change_mod")),
         AnimatedTooltipHandler.animatedText(
-            "Science Not Leisure",
+            "GT Not Leisure",
             1,
             80,
             AnimatedTooltipHandler.RED,

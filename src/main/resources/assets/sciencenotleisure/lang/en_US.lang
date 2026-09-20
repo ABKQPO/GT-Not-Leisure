@@ -4227,3 +4227,6 @@ gtnl.nei.nuclear_reactor.guide.name=§6§lNuclear Reactor Guide§r
 gtnl.nei.nuclear_reactor.guide.fuel_rod=§6§lUranium Fuel Rod§r\n§0Adjacent fuel rods create excitation. Every orthogonally adjacent rod gives x1.5; every diagonally adjacent rod gives x1.2; a rod one fluid hatch away gives x1.1. Excitation is multiplicative.\n§0Consumes 4 durability per second (1 while idle); the consumption is multiplied by the square of the excitation;
 gtnl.nei.nuclear_reactor.guide.reflector=§6§lNeutron Reflector§r\n§0Put it in the Nuclear Fuel Item Bus: it bounces back the excitation of the orthogonally adjacent fuel rods, as if that cell held one more fuel rod.\n§0Its own durability use is one eighth of a fuel rod's;\n§0The Iridium Neutron Reflector has infinite durability.
 gtnl.nei.nuclear_reactor.guide.heat_plate=§6§lDense Invar Plate§r\n§0Put it in the Nuclear Fuel Item Bus: it copies the heat it receives to the four adjacent cells.\n§0After absorbing 240,000 HU in total it melts into 1008L of Molten Invar, which is output through the output hatch.
+gtnl.text_effect.title=Animated text effects
+gtnl.text_effect.palette=Change palette
+gtnl.text_effect.bold=Toggle bold

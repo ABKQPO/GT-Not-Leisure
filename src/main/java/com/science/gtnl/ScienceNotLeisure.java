@@ -55,12 +55,11 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
     acceptedMinecraftVersions = "1.7.10")
 public class ScienceNotLeisure {
 
-    @Mod.Instance("sciencenotleisure")
+    public static final String MODID = "sciencenotleisure";
+    @Mod.Instance(MODID)
     public static ScienceNotLeisure instance;
-    public static final String MODID = ModList.ScienceNotLeisure.ID;
     public static final String MODNAME = "GTNotLeisure";
     public static final String VERSION = Tags.VERSION;
-    public static final String ARTHOR = "HFstudio";
     public static final String RESOURCE_ROOT_ID = ModList.ScienceNotLeisure.ID;
     public static final Logger LOG = LogManager.getLogger(ScienceNotLeisure.MODID);
 

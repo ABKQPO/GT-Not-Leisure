@@ -44,7 +44,7 @@ public class BeamFormerModel {
     public static final BeamFormerModel INSTANCE = new BeamFormerModel();
     private static final Gson GSON = new GsonBuilder().registerTypeAdapter(JSONModel.class, new ModelDeserializer())
         .create();
-    private static final ModelLoc MODEL = ModelLoc.fromStr("sciencenotleisure:block/beam_former");
+    private static final ModelLoc MODEL = ModelLoc.fromStr(ScienceNotLeisure.RESOURCE_ROOT_ID + ":block/beam_former");
     private JsonBlockModel pending;
     private volatile Geometry[] orientations;
     private volatile Map<Position, Geometry> itemModels;

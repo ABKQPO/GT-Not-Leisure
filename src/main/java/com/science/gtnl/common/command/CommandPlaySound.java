@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ResourceLocation;
 
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.SoundPacket;
 
 public class CommandPlaySound extends CommandBase {
@@ -93,7 +94,7 @@ public class CommandPlaySound extends CommandBase {
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args) {
         if (args.length == 1) {
-            return getListOfStringsMatchingLastWord(args, "sciencenotleisure:sus");
+            return getListOfStringsMatchingLastWord(args, ScienceNotLeisure.RESOURCE_ROOT_ID + ":sus");
         }
         if (args.length == 2) {
             return getListOfStringsMatchingLastWord(args, "1.0", "0.5", "0.1");
