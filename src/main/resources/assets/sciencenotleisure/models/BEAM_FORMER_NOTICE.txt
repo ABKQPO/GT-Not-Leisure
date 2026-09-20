@@ -1,0 +1,17 @@
+Beam Former model and texture
+
+Source: ME-Beam-Former
+Original model: assets/me_beam_former/models/block/beam_former_block.json
+Original texture: assets/me_beam_former/textures/block/beam_former_block_model.png
+License: GNU General Public License version 3. See META-INF/licenses/ME-Beam-Former-GPL-3.0.txt.
+Model credit: Made with Blockbench.
+
+The texture and face UV definitions are copied unchanged. The five planar base-light
+overlays are offset outward by 1/1024 block to prevent depth fighting with the shell;
+the remaining model geometry is unchanged. Display poses are adapted for 1.7.10.
+The standalone model removes the modern vanilla block/block parent and remaps
+texture and particle references to the local 1.7.10 block atlas.
+
+JSON baking, face UV rotation, texture-pixel UV insets, orientation caching and reload handling are
+adapted from the approach used by MyCTMLib. Its MIT license and copyright notice
+are included in META-INF/licenses/MyCTMLib-MIT.txt.

@@ -1,9 +1,9 @@
 package com.science.gtnl.common.render.beamformer;
 
 import java.util.EnumSet;
-import java.util.WeakHashMap;
 
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.github.bsideup.jabel.Desugar;
@@ -11,6 +11,7 @@ import com.science.gtnl.api.IBeamFormer;
 import com.science.gtnl.api.IBeamFormerRenderer;
 import com.science.gtnl.utils.RenderUtils;
 
+import appeng.api.util.AEColor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -18,7 +19,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BeamFormerRenderHelper {
 
     public static final double MIN_SCALE = 0.15d;
-    public static final WeakHashMap<IBeamFormer, StaticBloomMetadata> META_CACHE = new WeakHashMap<>();
+    private static final StaticBloomMetadata[] DIRECTIONS = createDirections();
+    private static final float[][] COLORS = createColors();
 
     public static final EnumSet<ForgeDirection> FACINGS_ALONG_Z = EnumSet
         .of(ForgeDirection.UP, ForgeDirection.DOWN, ForgeDirection.EAST, ForgeDirection.WEST);
@@ -40,10 +42,8 @@ public class BeamFormerRenderHelper {
     }
 
     public static float[] getColor(IBeamFormer partBeamFormer) {
-        int color = partBeamFormer.getColor().mediumVariant;
-        float scale = 255f;
-
-        return new float[] { ((color >> 16) & 0xff) / scale, ((color >> 8) & 0xff) / scale, (color & 0xff) / scale };
+        return COLORS[partBeamFormer.getBeamColor()
+            .ordinal()];
     }
 
     public static void drawCube(Tessellator tessellator, double x, double y, double z, double length,
@@ -83,24 +83,46 @@ public class BeamFormerRenderHelper {
     }
 
     public static StaticBloomMetadata getBloomMetadata(IBeamFormer partBeamFormer) {
-        StaticBloomMetadata metadata = META_CACHE.get(partBeamFormer);
-        if (metadata != null) {
-            return metadata;
+        return DIRECTIONS[partBeamFormer.getDirection()
+            .ordinal()];
+    }
+
+    public static AxisAlignedBB getRenderBoundingBox(IBeamFormer former) {
+        var pos = former.getPos();
+        ForgeDirection direction = former.getDirection();
+        int length = former.shouldRenderBeam() ? former.getBeamLength() : 0;
+        return AxisAlignedBB.getBoundingBox(
+            pos.x + Math.min(0, direction.offsetX * length),
+            pos.y + Math.min(0, direction.offsetY * length),
+            pos.z + Math.min(0, direction.offsetZ * length),
+            pos.x + 1 + Math.max(0, direction.offsetX * length),
+            pos.y + 1 + Math.max(0, direction.offsetY * length),
+            pos.z + 1 + Math.max(0, direction.offsetZ * length));
+    }
+
+    private static StaticBloomMetadata[] createDirections() {
+        StaticBloomMetadata[] result = new StaticBloomMetadata[7];
+        for (ForgeDirection facing : ForgeDirection.values()) {
+            int dx = facing.offsetX;
+            int dy = facing.offsetY;
+            int dz = facing.offsetZ;
+            float pitch = (float) Math.toDegrees(Math.atan2(Math.sqrt(dx * dx + dz * dz), dy));
+            float yaw = (float) (90 - Math.toDegrees(Math.atan2(dz, dx)));
+            result[facing.ordinal()] = new StaticBloomMetadata(dx, dy, dz, pitch, yaw);
         }
+        return result;
+    }
 
-        ForgeDirection facing = partBeamFormer.getDirection();
-
-        int dx = facing.offsetX;
-        int dy = facing.offsetY;
-        int dz = facing.offsetZ;
-
-        float pitch = (float) Math.atan2(Math.sqrt(dx * dx + dz * dz), dy) * (180F / (float) Math.PI);
-        float yaw = (float) (180 - Math.atan2(dz, dx) * (180F / (float) Math.PI) - 90.0F);
-
-        StaticBloomMetadata newMetadata = new StaticBloomMetadata(dx, dy, dz, pitch, yaw);
-        META_CACHE.put(partBeamFormer, newMetadata);
-
-        return newMetadata;
+    private static float[][] createColors() {
+        AEColor[] colors = AEColor.values();
+        float[][] result = new float[colors.length][3];
+        for (AEColor color : colors) {
+            int rgb = color.mediumVariant;
+            result[color.ordinal()][0] = (rgb >> 16 & 255) / 255F;
+            result[color.ordinal()][1] = (rgb >> 8 & 255) / 255F;
+            result[color.ordinal()][2] = (rgb & 255) / 255F;
+        }
+        return result;
     }
 
     public static void init(IBeamFormer partBeamFormer) {

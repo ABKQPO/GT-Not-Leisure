@@ -5009,7 +5009,7 @@ public class MachineLoader {
                 GTNLItemList.WIRELESS_ENERGY_COVER_4A[i].get(1),
                 TextureFactory.of(
                     Textures.BlockIcons.MACHINE_CASINGS[1][0],
-                    TextureFactory.of(Textures.BlockIcons.OVERLAYS_ENERGY_ON_WIRELESS_4A[0])),
+                    Textures.BlockIcons.OVERLAYS_ENERGY_ON_WIRELESS_4A[0]),
                 context -> new WirelessMultiEnergyCover(context, (int) GTValues.V[tier], 4),
                 CoverRegistry.INTERCEPTS_RIGHT_CLICK_COVER_PLACER);
         }

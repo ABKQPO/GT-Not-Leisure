@@ -62,6 +62,8 @@ import com.science.gtnl.common.part.PartMECellDock;
 import com.science.gtnl.common.part.PartSuperDualInterface;
 import com.science.gtnl.common.part.PartSuperInterface;
 import com.science.gtnl.common.render.SpoceRenderHandler;
+import com.science.gtnl.common.render.beamformer.BeamFormerItemRenderer;
+import com.science.gtnl.common.render.beamformer.BeamFormerModel;
 import com.science.gtnl.common.render.entity.NullPointerExceptionRender;
 import com.science.gtnl.common.render.entity.SaddleSlimeRender;
 import com.science.gtnl.common.render.entity.SteamRocketRender;
@@ -123,6 +125,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
+        MinecraftForge.EVENT_BUS.register(BeamFormerModel.INSTANCE);
 
         ClientCommandHandler.instance.registerCommand(new CommandSpoce());
 
@@ -148,7 +151,8 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(
             TileEntityBeamFormer.class,
             new TESRWrapper(BlockLoader.beamFormer.getRenderer()));
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockLoader.beamFormer), ItemRenderer.INSTANCE);
+        MinecraftForgeClient
+            .registerItemRenderer(Item.getItemFromBlock(BlockLoader.beamFormer), new BeamFormerItemRenderer());
 
         MinecraftForgeClient
             .registerItemRenderer(Item.getItemFromBlock(BlockLoader.direPatternEncoder), ItemRenderer.INSTANCE);
