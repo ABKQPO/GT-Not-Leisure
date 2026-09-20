@@ -385,6 +385,7 @@ gtnl.machine.nuclear_reactor_t2.name=Nuclear Reactor II
 gtnl.machine.nuclear_reactor_t2.tooltip.0=An upgraded heat reactor with a larger 5×5 core.
 gtnl.machine.nuclear_reactor_t3.name=Nuclear Reactor III
 gtnl.machine.nuclear_reactor_t3.tooltip.0=An upgraded heat reactor with a rounded 7×7 core.
+
 gtnl.machine.siphon_turbine.name=Siphon Turbine
 gtnl.machine.siphon_turbine.recipe_type=Siphon Turbine
 gtnl.machine.siphon_turbine.casing=Heat Proof Machine Casing
@@ -447,13 +448,13 @@ gtnl.machine.atomic_energy_excitation_plant.tooltip.2=Use a wire cutter to turn 
 
 gtnl.machine.eden_garden.name=Eden Garden
 gtnl.machine.eden_garden.recipe_type=Crop Farm
-gtnl.machine.eden_garden.tooltip.0=Advanced agricultural facility.
-gtnl.machine.eden_garden.tooltip.1=100x faster than Industrial Greenhouses!
-gtnl.machine.eden_garden.tooltip.2=All IC2 crops will gain perfect stats
-gtnl.machine.eden_garden.tooltip.3=No longer requires fertilizer or herbicides!
-gtnl.machine.eden_garden.tooltip.4=Each plant consumes 2000L of water.
-gtnl.machine.eden_garden.tooltip.5=
-gtnl.machine.eden_garden.tooltip.6=
+gtnl.machine.eden_garden.tooltip.0=§e§oGod said: "Let the land produce vegetation and various plants."
+gtnl.machine.eden_garden.tooltip.1=§e§oAnd the earth brought forth vegetation, bearing all kinds of fruits and crops.
+gtnl.machine.eden_garden.tooltip.2=§e§oThe earth was filled with abundant seeds, and all the land was full of life.
+gtnl.machine.eden_garden.tooltip.3=100 times faster than the Extreme Industrial Greenhouse!
+gtnl.machine.eden_garden.tooltip.4=All CropNH crops will gain perfect stats.
+gtnl.machine.eden_garden.tooltip.5=No fertilizer or herbicide required!
+gtnl.machine.eden_garden.tooltip.6=Consumes 2000L of water per crop.
 gtnl.machine.eden_garden.tooltip.casing=Any Electric Compressor Machine Block
 gtnl.machine.eden_garden.info.running_input_forbidden=Can't insert while running !
 gtnl.machine.eden_garden.message.running_input_forbidden=§cCan't insert while running !
@@ -4228,6 +4229,8 @@ gtnl.nei.nuclear_reactor.guide.name=§6§lNuclear Reactor Guide§r
 gtnl.nei.nuclear_reactor.guide.fuel_rod=§6§lUranium Fuel Rod§r\n§0Adjacent fuel rods create excitation. Every orthogonally adjacent rod gives x1.5; every diagonally adjacent rod gives x1.2; a rod one fluid hatch away gives x1.1. Excitation is multiplicative.\n§0Consumes 4 durability per second (1 while idle); the consumption is multiplied by the square of the excitation;
 gtnl.nei.nuclear_reactor.guide.reflector=§6§lNeutron Reflector§r\n§0Put it in the Nuclear Fuel Item Bus: it bounces back the excitation of the orthogonally adjacent fuel rods, as if that cell held one more fuel rod.\n§0Its own durability use is one eighth of a fuel rod's;\n§0The Iridium Neutron Reflector has infinite durability.
 gtnl.nei.nuclear_reactor.guide.heat_plate=§6§lDense Invar Plate§r\n§0Put it in the Nuclear Fuel Item Bus: it copies the heat it receives to the four adjacent cells.\n§0After absorbing 240,000 HU in total it melts into 1008L of Molten Invar, which is output through the output hatch.
+
 gtnl.text_effect.title=Animated text effects
 gtnl.text_effect.palette=Change palette
 gtnl.text_effect.bold=Toggle bold
+gtnl.text_effect.italic=Toggle italic

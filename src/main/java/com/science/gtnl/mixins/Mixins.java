@@ -55,12 +55,22 @@ public enum Mixins implements IMixins {
     MINECRAFT_CLIENT(Side.CLIENT, "minecraft.AccessorEntityRenderer", "minecraft.AccessorGuiChat",
         "minecraft.MixinMinecraft", "minecraft.MixinWorldClient",
         // "minecraft.MixinSimpleReloadableResourceManager",
-        "minecraft.MixinGuiContainer", "minecraft.MixinGuiFlatPresets", "minecraft.MixinFontRendererTextEffects"),
+        "minecraft.MixinGuiContainer", "minecraft.MixinGuiFlatPresets"),
 
-    ANGELICA_TEXT_EFFECTS(
-        new MixinBuilder("Optional Angelica text effect batching").addClientMixins("angelica.MixinFontBatchTextEffects")
-            .setPhase(Phase.EARLY)
-            .addRequiredMod(ModList.Angelica)),
+    TEXT_EFFECTS_COMMON(Side.COMMON, "texteffect.MixinEnumChatFormattingTextEffects"),
+
+    TEXT_EFFECTS_CLIENT(Side.CLIENT, "texteffect.MixinFontRendererTextEffects", "texteffect.MixinGuiNewChatTextEffects",
+        "texteffect.MixinGuiTextFieldTextEffects"),
+
+    TEXT_EFFECTS_ANGELICA(new MixinBuilder("Optional Angelica text effect batching")
+        .addClientMixins("texteffect.angelica.MixinFontBatchTextEffects")
+        .setPhase(Phase.EARLY)
+        .addRequiredMod(ModList.Angelica)),
+
+    TEXT_EFFECTS_NEI(
+        new MixinBuilder("Optional NEI text effect input").addClientMixins("texteffect.MixinNEIFormattedTextField")
+            .setPhase(Phase.LATE)
+            .addRequiredMod(ModList.NotEnoughItems)),
 
     SUPER_CREEPER(new MixinBuilder("Mixins for Super Creeper logic")
         .addCommonMixins(

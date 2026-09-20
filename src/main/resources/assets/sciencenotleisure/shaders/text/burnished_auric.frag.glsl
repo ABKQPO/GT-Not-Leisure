@@ -22,7 +22,7 @@ void main() {
     vec3 border = min(mix(floor(palette[0] * brightness * 255.0) / 255.0, palette[3], flash) * 2.0, vec3(1.0));
     vec3 shine = mix(palette[2], palette[4], flash);
     vec4 layer = vec4(0.0);
-    overRarity(layer, border, outline(point, 2.0 * unit));
+    overRarity(layer, border, outline(point, 1.8 * unit));
     overRarity(layer, palette[1], ink);
     float sourceX = (textOrigin.x + glyphStartX(point) + jitter.x) / unit;
     float sweep = pow(0.5 + 0.5 * sin(sourceX * 0.02 - time * 1.5), 120.0);

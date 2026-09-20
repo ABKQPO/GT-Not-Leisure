@@ -3,9 +3,10 @@ package com.science.gtnl.utils.text;
 import java.util.function.Supplier;
 
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 
 import org.apache.commons.lang3.ArrayUtils;
+
+import com.science.gtnl.utils.text.effect.TextEffects;
 
 public class AnimatedText {
 
@@ -46,67 +47,16 @@ public class AnimatedText {
         .get() + AnimatedTooltipHandler.RESET + ": " + AnimatedText.LONEI.get() + AnimatedTooltipHandler.RESET;
 
     public static final Supplier<String> GT_NOT_LEISURE = AnimatedTooltipHandler.chain(
-        AnimatedTooltipHandler.text(StatCollector.translateToLocal("gtnl.tooltip.add_mod")),
-        AnimatedTooltipHandler.animatedText(
-            "GT Not Leisure",
-            1,
-            80,
-            AnimatedTooltipHandler.RED,
-            AnimatedTooltipHandler.GOLD,
-            AnimatedTooltipHandler.YELLOW,
-            AnimatedTooltipHandler.GREEN,
-            AnimatedTooltipHandler.AQUA,
-            AnimatedTooltipHandler.BLUE,
-            AnimatedTooltipHandler.LIGHT_PURPLE));
+        AnimatedTooltipHandler.translatedText("gtnl.tooltip.add_mod"),
+        AnimatedTooltipHandler.renderedText("GT Not Leisure", TextEffects.PULSE_UPWARDS));
 
     public static final Supplier<String> GT_NOT_LEISURE_CHANGE = AnimatedTooltipHandler.chain(
-        AnimatedTooltipHandler.text(StatCollector.translateToLocal("gtnl.tooltip.change_mod")),
-        AnimatedTooltipHandler.animatedText(
-            "GT Not Leisure",
-            1,
-            80,
-            AnimatedTooltipHandler.RED,
-            AnimatedTooltipHandler.GOLD,
-            AnimatedTooltipHandler.YELLOW,
-            AnimatedTooltipHandler.GREEN,
-            AnimatedTooltipHandler.AQUA,
-            AnimatedTooltipHandler.BLUE,
-            AnimatedTooltipHandler.LIGHT_PURPLE));
+        AnimatedTooltipHandler.translatedText("gtnl.tooltip.change_mod"),
+        AnimatedTooltipHandler.renderedText("GT Not Leisure", TextEffects.PULSE_UPWARDS));
 
-    public static final Supplier<String> STRUCTURAL_RECONSTRUCTION_PLAN = AnimatedTooltipHandler.chain(
-        AnimatedTooltipHandler.animatedText(
-            StatCollector.translateToLocal("gtnl.feature.structural_reconstruction_plan"),
-            1,
-            50,
-            AnimatedTooltipHandler.BLUE,
-            AnimatedTooltipHandler.BLUE,
-            AnimatedTooltipHandler.BLUE,
-            AnimatedTooltipHandler.WHITE,
-            AnimatedTooltipHandler.BLUE,
-            AnimatedTooltipHandler.WHITE,
-            AnimatedTooltipHandler.WHITE,
-            AnimatedTooltipHandler.BLUE,
-            AnimatedTooltipHandler.WHITE,
-            AnimatedTooltipHandler.WHITE,
-            AnimatedTooltipHandler.BLUE,
-            AnimatedTooltipHandler.RED,
-            AnimatedTooltipHandler.WHITE,
-            AnimatedTooltipHandler.GRAY,
-            AnimatedTooltipHandler.GRAY,
-            AnimatedTooltipHandler.GRAY,
-            AnimatedTooltipHandler.GRAY,
-            AnimatedTooltipHandler.GRAY,
-            AnimatedTooltipHandler.GRAY,
-            AnimatedTooltipHandler.GRAY,
-            AnimatedTooltipHandler.GRAY,
-            AnimatedTooltipHandler.GRAY,
-            AnimatedTooltipHandler.GRAY,
-            AnimatedTooltipHandler.GRAY,
-            AnimatedTooltipHandler.GRAY,
-            AnimatedTooltipHandler.GRAY,
-            AnimatedTooltipHandler.GRAY,
-            AnimatedTooltipHandler.GRAY,
-            AnimatedTooltipHandler.GRAY));
+    public static final Supplier<String> STRUCTURAL_RECONSTRUCTION_PLAN = AnimatedTooltipHandler.renderedText(
+        AnimatedTooltipHandler.translatedText("gtnl.feature.structural_reconstruction_plan"),
+        TextEffects.EVERCOLD_CYAN);
 
     public static final Supplier<String> TIDAL = AnimatedTooltipHandler.chain(
         AnimatedTooltipHandler.animatedText(
@@ -178,187 +128,15 @@ public class AnimatedText {
             AnimatedTooltipHandler.YELLOW + AnimatedTooltipHandler.BOLD,
             AnimatedTooltipHandler.YELLOW + AnimatedTooltipHandler.BOLD));
 
-    public static final Supplier<String> QYZG = AnimatedTooltipHandler.chain(
-        AnimatedTooltipHandler.animatedText(
-            "犰狳重工 GT-Odyssey",
-            1,
-            80,
-            AnimatedTooltipHandler.YELLOW + AnimatedTooltipHandler.BOLD
-                + AnimatedTooltipHandler.UNDERLINE
-                + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.ITALIC));
+    public static final Supplier<String> QYZG = AnimatedTooltipHandler.renderedText(
+        AnimatedTooltipHandler.ITALIC + "犰狳重工 GT-Odyssey" + AnimatedTooltipHandler.RESET,
+        TextEffects.BURNISHED_AURIC);
 
-    public static final Supplier<String> NLXCJH = AnimatedTooltipHandler.chain(
-        AnimatedTooltipHandler.animatedText(
-            "年",
-            1,
-            100,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.YELLOW + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE),
-        AnimatedTooltipHandler.animatedText(
-            "轮",
-            1,
-            100,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.YELLOW + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE),
-        AnimatedTooltipHandler.animatedText(
-            "新",
-            1,
-            200,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.YELLOW + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE),
-        AnimatedTooltipHandler.animatedText(
-            "城",
-            1,
-            150,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.YELLOW + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE),
-        AnimatedTooltipHandler.animatedText(
-            "计",
-            1,
-            150,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.YELLOW + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE),
-        AnimatedTooltipHandler.animatedText(
-            "划",
-            1,
-            150,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.YELLOW + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE),
-        AnimatedTooltipHandler.animatedText(
-            " b",
-            1,
-            200,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.YELLOW + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE),
-        AnimatedTooltipHandler.animatedText(
-            "y ",
-            1,
-            100,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.YELLOW + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE),
-        AnimatedTooltipHandler.animatedText(
-            "咸",
-            1,
-            150,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.YELLOW + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE),
-        AnimatedTooltipHandler.animatedText(
-            "到",
-            1,
-            100,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.YELLOW + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE),
-        AnimatedTooltipHandler.animatedText(
-            "老",
-            1,
-            150,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.YELLOW + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE),
-        AnimatedTooltipHandler.animatedText(
-            "时",
-            1,
-            100,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.YELLOW + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE),
-        AnimatedTooltipHandler.animatedText(
-            "变",
-            1,
-            150,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.YELLOW + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE),
-        AnimatedTooltipHandler.animatedText(
-            "成",
-            1,
-            100,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.YELLOW + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE),
-        AnimatedTooltipHandler.animatedText(
-            "鱼",
-            1,
-            150,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.GOLD + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE,
-            AnimatedTooltipHandler.YELLOW + AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE));
+    public static final Supplier<String> NLXCJH = AnimatedTooltipHandler.renderedText(
+        AnimatedTooltipHandler.BOLD + AnimatedTooltipHandler.UNDERLINE
+            + "年轮新城计划 by 咸到老时变成鱼"
+            + AnimatedTooltipHandler.RESET,
+        TextEffects.BURNISHED_AURIC);
 
     public static final Supplier<String> TOTTO = AnimatedTooltipHandler.chain(
         AnimatedTooltipHandler.text("Author: "),

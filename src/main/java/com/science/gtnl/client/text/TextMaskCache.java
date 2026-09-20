@@ -92,7 +92,7 @@ public class TextMaskCache {
     private Mask capture(FontRenderer font, String text, float width, float height, float padding, Framebuffer target) {
         try (TextRenderState ignored = new TextRenderState()) {
             target.setFramebufferColor(0, 0, 0, 0);
-            target.setFramebufferFilter(GL11.GL_LINEAR);
+            target.setFramebufferFilter(GL11.GL_NEAREST);
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
             GL11.glColorMask(true, true, true, true);
             target.framebufferClear();

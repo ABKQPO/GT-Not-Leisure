@@ -3,9 +3,8 @@ package com.science.gtnl.utils.text.effect;
 import java.util.List;
 import java.util.Objects;
 
-import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.ScienceNotLeisure;
 
-/** Inserts self-contained effect spans into ordinary strings. */
 public class TextEffects {
 
     public static final TextEffectStyle INFERNUM_RED_RARITY = preset("infernum_red_rarity");
@@ -24,7 +23,39 @@ public class TextEffects {
     private TextEffects() {}
 
     private static TextEffectStyle preset(String name) {
-        return new TextEffectStyle(ModList.ScienceNotLeisure.ID + ":" + name, List.of(), 1);
+        return new TextEffectStyle(ScienceNotLeisure.MODID + ":" + name, List.of(), 1);
+    }
+
+    /**
+     * Opens an inline effect until the next declaration or {@code §r}. Native color codes replace its palette;
+     * native style codes retain their usual meaning. The same codes also accept an ampersand prefix. Example:
+     * {@code §{pulse_upwards;colors=#FFD700;speed=1.2}§oText§r}. Compact input accepts aliases such as
+     * {@code &{pu}}, {@code &{ba;#fc0;2}}, and the parameter names {@code c} and {@code s}.
+     */
+    public static String format(TextEffectStyle style) {
+        Objects.requireNonNull(style, "style");
+        String id = style.rendererId();
+        String namespace = ScienceNotLeisure.MODID + ":";
+        if (id.startsWith(namespace)) id = id.substring(namespace.length());
+        StringBuilder result = new StringBuilder(TextEffectFormat.INLINE_OPEN).append(id);
+        if (!style.colors()
+            .isEmpty()) {
+            result.append(";colors=");
+            for (int i = 0; i < style.colors()
+                .size(); i++) {
+                if (i > 0) result.append(',');
+                String hex = Integer.toHexString(
+                    style.colors()
+                        .get(i));
+                result.append('#')
+                    .append("000000", 0, 6 - hex.length())
+                    .append(hex);
+            }
+        }
+        if (style.speed() != 1) result.append(";speed=")
+            .append(style.speed());
+        return result.append('}')
+            .toString();
     }
 
     public static String apply(String text, TextEffectStyle style) {

@@ -2,9 +2,7 @@ package com.science.gtnl.client.text;
 
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import net.minecraft.client.gui.FontRenderer;
@@ -17,8 +15,9 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
+import com.gtnewhorizon.gtnhlib.util.font.FontRendering;
 import com.gtnewhorizon.gtnhlib.util.font.IFontParameters;
-import com.science.gtnl.client.text.EffectTextLayout.Glyph;
+import com.science.gtnl.client.text.EffectTextLayout.DrawRun;
 import com.science.gtnl.client.text.EffectTextLayout.Layout;
 import com.science.gtnl.client.text.TextMaskCache.Mask;
 import com.science.gtnl.client.text.compat.AngelicaTextAdapter;
@@ -33,6 +32,7 @@ public class EffectTextRenderer implements IResourceManagerReloadListener {
     private static final Logger LOGGER = LogManager.getLogger("GTNLTextEffects");
     private static final long START_TIME = System.nanoTime();
     private static int captureDepth;
+    private static int nativeDepth;
     private final TextMaskCache masks = new TextMaskCache();
     private final Map<LayoutKey, Layout> layouts = new LinkedHashMap<>(32, 0.75f, true);
     private final Set<String> failed = new HashSet<>();
@@ -50,7 +50,11 @@ public class EffectTextRenderer implements IResourceManagerReloadListener {
     }
 
     public static boolean handles(String text) {
-        return !isCapturing() && EffectTextParser.containsMarkers(text);
+        return !isBypassingEffects() && EffectTextParser.containsMarkers(text);
+    }
+
+    public static boolean isBypassingEffects() {
+        return isCapturing() || nativeDepth > 0;
     }
 
     public Layout layout(FontRenderer font, String text) {
@@ -63,7 +67,9 @@ public class EffectTextRenderer implements IResourceManagerReloadListener {
             parameters.getGlyphScaleX(),
             parameters.getGlyphScaleY(),
             parameters.getGlyphSpacing(),
-            parameters.getWhitespaceScale());
+            parameters.getWhitespaceScale(),
+            FontRendering.preprocessText("&q&z&v"),
+            FontRendering.hexColorResetsStyles());
         Layout layout = layouts.get(key);
         if (layout == null) {
             layout = EffectTextLayout.create(font, text);
@@ -82,6 +88,22 @@ public class EffectTextRenderer implements IResourceManagerReloadListener {
         if (text == null) return 0;
         if ((color & 0xFC000000) == 0) color |= 0xFF000000;
         Layout layout = layout(font, text);
+        boolean styled = false;
+        for (DrawRun run : layout.runs()) {
+            if (run.style() != null) {
+                styled = true;
+                break;
+            }
+        }
+        if (!styled) {
+            // Invalid declarations must not flush another renderer's deferred font or model batches.
+            for (DrawRun run : layout.runs()) drawPlain(font, run.text(), x + run.x(), y + run.y(), color, shadow);
+            return endX(font, layout, x, shadow);
+        }
+        if (!DeferredTextEffects.isFlushing() && AngelicaTextAdapter.shouldDeferEffects()) {
+            DeferredTextEffects.enqueue(font, text, x, y, color, shadow);
+            return endX(font, layout, x, shadow);
+        }
         FontBatchBridge bridge = AngelicaTextAdapter.bridge(font);
         int depth = bridge == null ? 0 : bridge.gtnl$suspendBatch();
         try {
@@ -98,42 +120,23 @@ public class EffectTextRenderer implements IResourceManagerReloadListener {
 
     private int drawLayout(FontRenderer font, Layout layout, float x, float y, int color, boolean shadow) {
         try (TextRenderState ignored = new TextRenderState()) {
-            List<Glyph> glyphs = layout.glyphs();
-            float cursor = x;
-            float baseline = y;
-            boolean spaced = false;
-            for (int start = 0; start < glyphs.size();) {
-                Glyph first = glyphs.get(start);
-                if (first.text()
-                    .equals("\n")) {
-                    cursor = x;
-                    baseline += layout.height();
-                    spaced = false;
-                    start++;
-                    continue;
-                }
-                int end = start;
-                float width = 0;
-                StringBuilder run = new StringBuilder(first.formatting());
-                while (end < glyphs.size()) {
-                    Glyph glyph = glyphs.get(end);
-                    if (glyph.text()
-                        .equals("\n") || !Objects.equals(glyph.style(), first.style())
-                        || !glyph.formatting()
-                            .equals(first.formatting()))
-                        break;
-                    if (end > start && glyph.width() > 0) width += layout.spacing();
-                    width += glyph.width();
-                    run.append(glyph.text());
-                    end++;
-                }
-                if (spaced && width > 0) cursor += layout.spacing();
-                drawRun(font, run.toString(), first.style(), cursor, baseline, width, layout.height(), color, shadow);
-                cursor += width;
-                spaced |= width > 0;
-                start = end;
+            for (DrawRun run : layout.runs()) {
+                drawRun(
+                    font,
+                    run.text(),
+                    run.style(),
+                    x + run.x(),
+                    y + run.y(),
+                    run.width(),
+                    layout.height(),
+                    color,
+                    shadow);
             }
         }
+        return endX(font, layout, x, shadow);
+    }
+
+    private static int endX(FontRenderer font, Layout layout, float x, boolean shadow) {
         return (int) Math.ceil(x + layout.width() + (shadow ? ((IFontParameters) font).getShadowOffset() : 0));
     }
 
@@ -179,17 +182,18 @@ public class EffectTextRenderer implements IResourceManagerReloadListener {
     private static void drawPlain(FontRenderer font, String text, float x, float y, int color, boolean shadow) {
         GL11.glPushMatrix();
         GL11.glTranslatef(x, y, 0);
-        beginCapture();
+        nativeDepth++;
         try {
             font.drawString(text, 0, 0, color, shadow);
         } finally {
-            endCapture();
+            nativeDepth--;
             GL11.glPopMatrix();
         }
     }
 
     @Override
     public void onResourceManagerReload(IResourceManager manager) {
+        DeferredTextEffects.clear();
         layouts.clear();
         failed.clear();
         if (GLContext.getCapabilities().OpenGL20) {
@@ -201,5 +205,5 @@ public class EffectTextRenderer implements IResourceManagerReloadListener {
     }
 
     public record LayoutKey(FontRenderer font, String text, boolean unicode, int fontHeight, float scaleX, float scaleY,
-        float spacing, float whitespace) {}
+        float spacing, float whitespace, String preprocessing, boolean hexResetsStyles) {}
 }

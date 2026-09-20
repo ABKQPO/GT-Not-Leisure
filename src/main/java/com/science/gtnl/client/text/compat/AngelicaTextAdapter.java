@@ -7,6 +7,8 @@ import com.gtnewhorizons.angelica.client.font.FontStrategist;
 import com.gtnewhorizons.angelica.config.FontConfig;
 import com.gtnewhorizons.angelica.glsm.GLStateManager;
 import com.gtnewhorizons.angelica.mixins.interfaces.FontRendererAccessor;
+import com.gtnewhorizons.angelica.rendering.tesr.ModelPartBatcher;
+import com.gtnewhorizons.angelica.rendering.tesr.TesrBatchRenderer;
 import com.science.gtnl.client.text.GlyphTextureMetrics;
 import com.science.gtnl.utils.enums.ModList;
 
@@ -14,6 +16,16 @@ import cpw.mods.fml.common.Optional;
 
 /** Optional references live only inside methods removed by Forge when Angelica is absent. */
 public class AngelicaTextAdapter {
+
+    public static boolean shouldDeferEffects() {
+        return ModList.Angelica.isModLoaded() && hasPendingAngelicaGeometry();
+    }
+
+    @Optional.Method(modid = "angelica")
+    private static boolean hasPendingAngelicaGeometry() {
+        return GLStateManager.isMainThread()
+            && (TesrBatchRenderer.INSTANCE.hasPendingGeometry() || ModelPartBatcher.INSTANCE.isActive());
+    }
 
     public static void beginForeignDraw() {
         if (ModList.Angelica.isModLoaded()) beginAngelicaDraw();

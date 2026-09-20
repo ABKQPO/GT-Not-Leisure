@@ -452,7 +452,7 @@ gtnl.machine.eden_garden.tooltip.0=§e§o神说：“陆地上要生出草木和
 gtnl.machine.eden_garden.tooltip.1=§e§o于是大地生出了草木，出现了各种瓜果蔬菜
 gtnl.machine.eden_garden.tooltip.2=§e§o籽实累累，整个大地上一片生机盎然。
 gtnl.machine.eden_garden.tooltip.3=比极限工业温室快100倍！
-gtnl.machine.eden_garden.tooltip.4=所有IC2作物将获得完美属性
+gtnl.machine.eden_garden.tooltip.4=所有CropNH作物将获得完美属性
 gtnl.machine.eden_garden.tooltip.5=不再需要肥料和除草剂！
 gtnl.machine.eden_garden.tooltip.6=每株作物消耗2000L水
 gtnl.machine.eden_garden.tooltip.casing=任意电力压缩机机械方块
@@ -4229,6 +4229,8 @@ gtnl.nei.nuclear_reactor.guide.name=§6§l核反应堆指南§r
 gtnl.nei.nuclear_reactor.guide.fuel_rod=§6§l铀燃料棒§r\n§0相邻燃料棒会产生激发。四面每相邻一个燃料棒就提供一次x1.5激发；四角每相邻一个燃料棒就提供一次x1.2激发；此外，与此燃料棒相隔一个流体仓的燃料棒提供1.1x的激发。激发为乘算。\n§0每秒消耗 4 点耐久（停机时1点），耐久消耗倍率为激发倍率的平方；
 gtnl.nei.nuclear_reactor.guide.reflector=§6§l中子反射板§r\n§0放在核燃料物品仓里，把正四方向相邻燃料棒的激发反弹回去，相当于那一格多一根燃料棒。\n§0自身耐久消耗是燃料棒的八分之一；\n§0铱中子反射板无限耐久。
 gtnl.nei.nuclear_reactor.guide.heat_plate=§6§l致密殷钢板§r\n§0放在核燃料物品仓里，把收到的热量复制给四面相邻的格子。\n§0累计吸收 240,000 HU 后熔化成 1008L 熔融殷钢，从输出仓输出。
+
 gtnl.text_effect.title=动态文字效果
 gtnl.text_effect.palette=切换配色
 gtnl.text_effect.bold=切换粗体
+gtnl.text_effect.italic=切换斜体
