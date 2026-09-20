@@ -19,6 +19,8 @@ import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.gtnewhorizon.gtnhlib.util.map.ItemStackMap;
 import com.science.gtnl.common.item.items.Stick;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.utils.text.effect.TextEffectStyle;
+import com.science.gtnl.utils.text.effect.TextEffects;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -70,6 +72,15 @@ public class AnimatedTooltipHandler {
 
     public static Supplier<String> text(String text) {
         return () -> text;
+    }
+
+    public static Supplier<String> renderedText(String text, TextEffectStyle style) {
+        String rendered = TextEffects.apply(text, style);
+        return () -> rendered;
+    }
+
+    public static Supplier<String> renderedText(Supplier<String> text, TextEffectStyle style) {
+        return () -> TextEffects.apply(text.get(), style);
     }
 
     public static Supplier<String> text(String format, Object... args) {
