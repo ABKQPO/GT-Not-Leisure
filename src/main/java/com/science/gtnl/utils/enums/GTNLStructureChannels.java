@@ -22,7 +22,8 @@ public enum GTNLStructureChannels implements IStructureChannels {
 
     // Order of enum constants does not matter
     STRUCTURE_RENDER("structure_render", "Enable Machine Render"),
-    COMPONENT_ASSEMBLY_LINE_CASING("component_casing", "Component Assembly Line Casing Tier")
+    COMPONENT_ASSEMBLY_LINE_CASING("component_casing", "Component Assembly Line Casing Tier"),
+    NUCLEAR_REACTOR_TIER("nuclear_tier", "Nuclear Reactor Tier")
     //
     ;
 
