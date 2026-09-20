@@ -55,7 +55,12 @@ public enum Mixins implements IMixins {
     MINECRAFT_CLIENT(Side.CLIENT, "minecraft.AccessorEntityRenderer", "minecraft.AccessorGuiChat",
         "minecraft.MixinMinecraft", "minecraft.MixinWorldClient",
         // "minecraft.MixinSimpleReloadableResourceManager",
-        "minecraft.MixinGuiContainer", "minecraft.MixinGuiFlatPresets"),
+        "minecraft.MixinGuiContainer", "minecraft.MixinGuiFlatPresets", "minecraft.MixinFontRendererTextEffects"),
+
+    ANGELICA_TEXT_EFFECTS(
+        new MixinBuilder("Optional Angelica text effect batching").addClientMixins("angelica.MixinFontBatchTextEffects")
+            .setPhase(Phase.EARLY)
+            .addRequiredMod(ModList.Angelica)),
 
     SUPER_CREEPER(new MixinBuilder("Mixins for Super Creeper logic")
         .addCommonMixins(
@@ -164,9 +169,13 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.MixinTESRWrapperBeamRange",
             "appliedEnergistics.assembler.MixinGuiMEMonitorable",
             "appliedEnergistics.assembler.MixinGuiPatternTerm",
-            "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable",
-            "thaumcraft.MixinTileJarRenderer")
+            "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable")
         .setPhase(Phase.LATE)),
+
+    THAUMCRAFT_CLIENT(
+        new MixinBuilder("Thaumcraft client compatibility mixins").addClientMixins("thaumcraft.MixinTileJarRenderer")
+            .setPhase(Phase.LATE)
+            .addExcludedMod(ModList.Angelica)),
 
     BARTWORKS(new MixinBuilder("BartWorks compatibility mixins")
         .addCommonMixins(
