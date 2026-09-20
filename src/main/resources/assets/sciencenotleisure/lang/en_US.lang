@@ -373,6 +373,7 @@ gtnl.machine.nuclear_reactor.name=Nuclear Reactor
 gtnl.machine.nuclear_reactor.tooltip.0=Heat Reactor
 gtnl.machine.nuclear_reactor.tooltip.quote=§9§lThis is a MODERN reactor!§r
 gtnl.machine.nuclear_reactor.tooltip.1=§7Fuel rods generate heat; fluid hatches absorb it and turn water into steam
+gtnl.machine.nuclear_reactor.tooltip.5=§7Startup efficiency §e60% + 50%·sin(X·π/120)§7 (X in minutes), §e110%§7 after 60 min, reset on stop/break
 gtnl.machine.nuclear_reactor.gui.steam_rate=Steam output
 gtnl.machine.nuclear_reactor.tooltip.3=top blocks can be replaced with nuclear hatches, see NEI for the pattern
 gtnl.machine.nuclear_reactor.tooltip.4=Nuclear Fuel Item Bus / Nuclear Cooling Fluid Input Hatch
@@ -4222,7 +4223,7 @@ gtnl.command.tickrate.freeze=Tickrate Freeze!
 gtnl.command.tickrate.unfreeze=Tickrate Unfreeze!
 gtnl.command.tickrate.player_not_found=Player not found.
 gtnl.nei.siphon_turbine=§6§lSiphon Turbine§r\n§4Once started up§0, every §46.4s§0 it siphons §470%§0 of the wireless steam network balance and converts it into EU stored in the machine buffer.\n§0Each siphon clears the machine buffer left over from the previous run.\n§0Conversion tiers:\n§0- up to 10ML: §44 EU/L§0;\n§0- 10M to 200M: §42 EU/L§0;\n§0- 200ML to 2GL: §41 EU/L§0;\n§0- above 2GL: §40 EU/L§0, but §4§ldoubles§r§0 the output of the next siphon.
-gtnl.nei.nuclear_reactor=§6§lNuclear Reactor§r\n§0Fuel rods generate heat; fluid hatches absorb it and turn water into steam.\n§0Heat radiated to the four orthogonal sides equals one tenth of the rod's base power generation, diagonals get half of that.
+gtnl.nei.nuclear_reactor=§6§lNuclear Reactor§r\n§0Fuel rods generate heat; fluid hatches absorb it and turn water into steam.\n§0Heat radiated to the four orthogonal sides equals one tenth of the rod's base power generation, diagonals get half of that.\n§0Startup efficiency = §460% + 50%·sin(X·π/120)§0 (X≤60), X = minutes since startup, §485%§0 at 20 min, §4110%§0 from 60 min on, reset after stopping.
 gtnl.nei.nuclear_reactor.guide.name=§6§lNuclear Reactor Guide§r
 gtnl.nei.nuclear_reactor.guide.fuel_rod=§6§lUranium Fuel Rod§r\n§0Adjacent fuel rods create excitation. Every orthogonally adjacent rod gives x1.5; every diagonally adjacent rod gives x1.2; a rod one fluid hatch away gives x1.1. Excitation is multiplicative.\n§0Consumes 4 durability per second (1 while idle); the consumption is multiplied by the square of the excitation;
 gtnl.nei.nuclear_reactor.guide.reflector=§6§lNeutron Reflector§r\n§0Put it in the Nuclear Fuel Item Bus: it bounces back the excitation of the orthogonally adjacent fuel rods, as if that cell held one more fuel rod.\n§0Its own durability use is one eighth of a fuel rod's;\n§0The Iridium Neutron Reflector has infinite durability.
