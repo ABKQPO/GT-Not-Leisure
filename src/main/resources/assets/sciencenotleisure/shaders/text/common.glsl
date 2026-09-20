@@ -69,6 +69,12 @@ bool drawShadow(vec2 point) {
     return true;
 }
 
+vec3 glyphMetadata(vec2 coord) {
+    vec2 pixels = maskSize * maskResolution;
+    // Metadata is discrete even when custom-font coverage uses linear filtering.
+    return texture2D(textMask, (floor(coord * pixels) + 0.5) / pixels).rgb;
+}
+
 bool drawShadow() {
     return drawShadow(position());
 }

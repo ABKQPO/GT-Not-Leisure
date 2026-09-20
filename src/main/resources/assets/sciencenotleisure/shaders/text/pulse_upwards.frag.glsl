@@ -4,7 +4,7 @@
 // Adapted from Fargo's Souls Text.fx, distributed under the MIT license.
 void main() {
     if (drawShadow()) return;
-    vec2 glyphInterval = texture2D(textMask, uv).rg;
+    vec2 glyphInterval = glyphMetadata(uv).rg;
     // Fargo samples a small glyph rectangle within an atlas, not a full 0..1 ramp per letter.
     float glyphV = glyphInterval.x + clamp(localUV().y, 0.0, 1.0) * glyphInterval.y;
     float wave = fract(time + glyphV);

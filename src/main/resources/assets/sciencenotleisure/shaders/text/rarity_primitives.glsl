@@ -1,12 +1,12 @@
 // Shared sprite-style primitives; colors are accumulated in premultiplied form.
 float glyphCenterX(vec2 point) {
     vec2 coord = (point + padding) / maskSize;
-    return texture2D(textMask, vec2(coord.x, 1.0 - coord.y)).b * textSize.x;
+    return glyphMetadata(vec2(coord.x, 1.0 - coord.y)).b * textSize.x;
 }
 
 float glyphStartX(vec2 point) {
     vec2 coord = vec2((point.x + padding) / maskSize.x, 1.0 - 0.5 / (maskSize.y * maskResolution));
-    return texture2D(textMask, coord).b * textSize.x;
+    return glyphMetadata(coord).b * textSize.x;
 }
 
 vec2 turn(vec2 point, float angle) {

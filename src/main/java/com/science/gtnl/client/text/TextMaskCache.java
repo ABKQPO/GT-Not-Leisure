@@ -15,18 +15,23 @@ import org.lwjgl.opengl.GL20;
 import com.gtnewhorizon.gtnhlib.util.font.IFontParameters;
 import com.science.gtnl.client.text.EffectTextLayout.Glyph;
 import com.science.gtnl.client.text.EffectTextLayout.Layout;
+import com.science.gtnl.client.text.compat.AngelicaTextAdapter;
+import com.science.gtnl.client.text.compat.AngelicaTextAdapter.FontSettings;
 
 /** Render-thread-owned, bounded cache of native font coverage masks. */
 public class TextMaskCache {
 
     private static final int MAX_ENTRIES = 256;
     private static final long MAX_PIXELS = 4L * 1024 * 1024;
-    private static final int RESOLUTION = 2;
+    private static final int BITMAP_RESOLUTION = 2;
+    private static final int CUSTOM_FONT_RESOLUTION = 4;
     private final Map<Key, Mask> masks = new LinkedHashMap<>(32, 0.75f, true);
     private long pixels;
 
     public Mask get(FontRenderer font, String text, float width, float height, float padding) {
         IFontParameters parameters = (IFontParameters) font;
+        boolean smooth = AngelicaTextAdapter.usesCustomFont(font);
+        int resolution = smooth ? CUSTOM_FONT_RESOLUTION : BITMAP_RESOLUTION;
         Key key = new Key(
             font,
             text,
@@ -37,16 +42,18 @@ public class TextMaskCache {
             parameters.getGlyphScaleX(),
             parameters.getGlyphScaleY(),
             parameters.getGlyphSpacing(),
-            parameters.getShadowOffset());
+            parameters.getShadowOffset(),
+            smooth,
+            AngelicaTextAdapter.fontSettings());
         Mask present = masks.get(key);
         if (present != null) {
             if (hasAnimatedGlyphs(text)) {
-                capture(font, text, width, height, padding, present.target());
+                capture(font, text, width, height, padding, present.target(), resolution, smooth);
             }
             return present;
         }
-        int pixelWidth = Math.max(1, (int) Math.ceil((width + padding * 2) * RESOLUTION));
-        int pixelHeight = Math.max(1, (int) Math.ceil((height + padding * 2) * RESOLUTION));
+        int pixelWidth = Math.max(1, (int) Math.ceil((width + padding * 2) * resolution));
+        int pixelHeight = Math.max(1, (int) Math.ceil((height + padding * 2) * resolution));
         int maxTextureSize = GL11.glGetInteger(GL11.GL_MAX_TEXTURE_SIZE);
         if (pixelWidth > maxTextureSize || pixelHeight > maxTextureSize || (long) pixelWidth * pixelHeight > MAX_PIXELS)
             return null;
@@ -54,7 +61,7 @@ public class TextMaskCache {
         try (TextRenderState ignored = new TextRenderState()) {
             Framebuffer target = new Framebuffer(pixelWidth, pixelHeight, false);
             try {
-                mask = capture(font, text, width, height, padding, target);
+                mask = capture(font, text, width, height, padding, target, resolution, smooth);
             } catch (RuntimeException exception) {
                 target.deleteFramebuffer();
                 throw exception;
@@ -89,10 +96,11 @@ public class TextMaskCache {
         return false;
     }
 
-    private Mask capture(FontRenderer font, String text, float width, float height, float padding, Framebuffer target) {
+    private Mask capture(FontRenderer font, String text, float width, float height, float padding, Framebuffer target,
+        int resolution, boolean smooth) {
         try (TextRenderState ignored = new TextRenderState()) {
             target.setFramebufferColor(0, 0, 0, 0);
-            target.setFramebufferFilter(GL11.GL_NEAREST);
+            target.setFramebufferFilter(smooth ? GL11.GL_LINEAR : GL11.GL_NEAREST);
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
             GL11.glColorMask(true, true, true, true);
             target.framebufferClear();
@@ -101,8 +109,8 @@ public class TextMaskCache {
             GL11.glLoadIdentity();
             GL11.glOrtho(
                 0,
-                target.framebufferWidth / (float) RESOLUTION,
-                target.framebufferHeight / (float) RESOLUTION,
+                target.framebufferWidth / (float) resolution,
+                target.framebufferHeight / (float) resolution,
                 0,
                 -100,
                 100);
@@ -125,13 +133,13 @@ public class TextMaskCache {
             } finally {
                 EffectTextRenderer.endCapture();
             }
-            writeGlyphTextureMetrics(font, text, width, height, padding);
-            return new Mask(target, width, height, padding, RESOLUTION);
+            writeGlyphTextureMetrics(font, text, width, height, padding, resolution);
+            return new Mask(target, width, height, padding, resolution);
         }
     }
 
     private static void writeGlyphTextureMetrics(FontRenderer font, String text, float width, float height,
-        float padding) {
+        float padding, int resolution) {
         Layout layout = EffectTextLayout.create(font, text);
         GlyphTextureMetrics[] metrics = new GlyphTextureMetrics[layout.glyphs()
             .size()];
@@ -170,8 +178,8 @@ public class TextMaskCache {
             // The top metadata row also retains glyph starts for source renderers using left-edge phase.
             GL11.glColor3f(metrics[index].vStart(), metrics[index].vSpan(), cursor / Math.max(1, width));
             GL11.glVertex2f(left, -padding);
-            GL11.glVertex2f(left, -padding + 1f / RESOLUTION);
-            GL11.glVertex2f(right, -padding + 1f / RESOLUTION);
+            GL11.glVertex2f(left, -padding + 1f / resolution);
+            GL11.glVertex2f(right, -padding + 1f / resolution);
             GL11.glVertex2f(right, -padding);
             cursor += glyph.width() + (glyph.width() > 0 ? layout.spacing() : 0);
             index++;
@@ -191,7 +199,13 @@ public class TextMaskCache {
     }
 
     public record Key(FontRenderer font, String text, float width, float height, float padding, boolean unicode,
-        float scaleX, float scaleY, float spacing, float shadowOffset) {}
+        float scaleX, float scaleY, float spacing, float shadowOffset, boolean smooth, FontSettings fontSettings) {
+
+        public Key(FontRenderer font, String text, float width, float height, float padding, boolean unicode,
+            float scaleX, float scaleY, float spacing, float shadowOffset) {
+            this(font, text, width, height, padding, unicode, scaleX, scaleY, spacing, shadowOffset, false, null);
+        }
+    }
 
     public record Mask(Framebuffer target, float width, float height, float padding, int resolution) {
 

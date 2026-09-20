@@ -21,6 +21,7 @@ import com.science.gtnl.client.text.EffectTextLayout.DrawRun;
 import com.science.gtnl.client.text.EffectTextLayout.Layout;
 import com.science.gtnl.client.text.TextMaskCache.Mask;
 import com.science.gtnl.client.text.compat.AngelicaTextAdapter;
+import com.science.gtnl.client.text.compat.AngelicaTextAdapter.FontSettings;
 import com.science.gtnl.client.text.compat.FontBatchBridge;
 import com.science.gtnl.utils.text.effect.EffectTextParser;
 import com.science.gtnl.utils.text.effect.TextEffectStyle;
@@ -69,7 +70,8 @@ public class EffectTextRenderer implements IResourceManagerReloadListener {
             parameters.getGlyphSpacing(),
             parameters.getWhitespaceScale(),
             FontRendering.preprocessText("&q&z&v"),
-            FontRendering.hexColorResetsStyles());
+            FontRendering.hexColorResetsStyles(),
+            AngelicaTextAdapter.fontSettings());
         Layout layout = layouts.get(key);
         if (layout == null) {
             layout = EffectTextLayout.create(font, text);
@@ -205,5 +207,22 @@ public class EffectTextRenderer implements IResourceManagerReloadListener {
     }
 
     public record LayoutKey(FontRenderer font, String text, boolean unicode, int fontHeight, float scaleX, float scaleY,
-        float spacing, float whitespace, String preprocessing, boolean hexResetsStyles) {}
+        float spacing, float whitespace, String preprocessing, boolean hexResetsStyles, FontSettings fontSettings) {
+
+        public LayoutKey(FontRenderer font, String text, boolean unicode, int fontHeight, float scaleX, float scaleY,
+            float spacing, float whitespace, String preprocessing, boolean hexResetsStyles) {
+            this(
+                font,
+                text,
+                unicode,
+                fontHeight,
+                scaleX,
+                scaleY,
+                spacing,
+                whitespace,
+                preprocessing,
+                hexResetsStyles,
+                null);
+        }
+    }
 }

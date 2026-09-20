@@ -1,5 +1,7 @@
 package com.science.gtnl.client.text.compat;
 
+import java.util.Objects;
+
 import net.minecraft.client.gui.FontRenderer;
 
 import com.gtnewhorizons.angelica.client.font.FontProvider;
@@ -16,6 +18,59 @@ import cpw.mods.fml.common.Optional;
 
 /** Optional references live only inside methods removed by Forge when Angelica is absent. */
 public class AngelicaTextAdapter {
+
+    private static FontSettings currentSettings;
+
+    /** Reuses an immutable cache discriminator until native font configuration changes. */
+    public static FontSettings fontSettings() {
+        return ModList.Angelica.isModLoaded() ? angelicaFontSettings() : null;
+    }
+
+    @Optional.Method(modid = "angelica")
+    private static FontSettings angelicaFontSettings() {
+        FontSettings state = currentSettings;
+        if (state == null || state.custom() != FontConfig.enableCustomFont
+            || !Objects.equals(state.primary(), FontConfig.customFontNamePrimary)
+            || !Objects.equals(state.fallback(), FontConfig.customFontNameFallback)
+            || state.quality() != FontConfig.customFontQuality
+            || state.scale() != FontConfig.customFontScale
+            || state.boldCopies() != FontConfig.boldCopies
+            || state.shadowCopies() != FontConfig.shadowCopies
+            || state.aaMode() != FontConfig.fontAAMode
+            || state.aaStrength() != FontConfig.fontAAStrength
+            || state.replacements() != FontConfig.enableGlyphReplacements
+            || state.unicodeShadowOffset() != FontConfig.fontShadowOffsetUC) {
+            currentSettings = new FontSettings(
+                FontConfig.enableCustomFont,
+                FontConfig.customFontNamePrimary,
+                FontConfig.customFontNameFallback,
+                FontConfig.customFontQuality,
+                FontConfig.customFontScale,
+                FontConfig.boldCopies,
+                FontConfig.shadowCopies,
+                FontConfig.fontAAMode,
+                FontConfig.fontAAStrength,
+                FontConfig.enableGlyphReplacements,
+                FontConfig.fontShadowOffsetUC);
+        }
+        return currentSettings;
+    }
+
+    public record FontSettings(boolean custom, String primary, String fallback, int quality, float scale,
+        int boldCopies, int shadowCopies, int aaMode, int aaStrength, boolean replacements,
+        float unicodeShadowOffset) {}
+
+    public static boolean usesCustomFont(FontRenderer font) {
+        return ModList.Angelica.isModLoaded() && angelicaUsesCustomFont(font);
+    }
+
+    @Optional.Method(modid = "angelica")
+    private static boolean angelicaUsesCustomFont(FontRenderer font) {
+        return FontConfig.enableCustomFont && font instanceof FontRendererAccessor accessor
+            && accessor.angelica$getBatcher() != null
+            && !accessor.angelica$getBatcher()
+                .forceDefaults();
+    }
 
     public static boolean shouldDeferEffects() {
         return ModList.Angelica.isModLoaded() && hasPendingAngelicaGeometry();
