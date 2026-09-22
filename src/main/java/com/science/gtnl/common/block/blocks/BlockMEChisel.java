@@ -12,6 +12,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.gtnewhorizon.gtnhlib.blockstate.core.BlockPropertyTrait;
 import com.gtnewhorizon.gtnhlib.blockstate.properties.DirectionBlockProperty;
 import com.gtnewhorizon.gtnhlib.blockstate.registry.BlockPropertyRegistry;
+import com.gtnewhorizon.gtnhlib.client.model.ModelISBRH;
 import com.science.gtnl.CommonProxy;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLCreativeTabs;
@@ -23,6 +24,8 @@ import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.block.AEBaseTileBlock;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockMEChisel extends AEBaseTileBlock {
 
@@ -87,6 +90,12 @@ public class BlockMEChisel extends AEBaseTileBlock {
     @Override
     public void breakBlock(World w, int x, int y, int z, Block a, int b) {
         w.removeTileEntity(x, y, z);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public int getRenderType() {
+        return ModelISBRH.JSON_ISBRH_ID;
     }
 
 }

@@ -128,15 +128,43 @@ public class ClientProxy extends CommonProxy {
     public static int ENDER_ELEVATOR_RENDER_ID;
 
     @Override
-    public void init(FMLInitializationEvent event) {
-        super.init(event);
-        MinecraftForge.EVENT_BUS.register(BeamFormerModel.INSTANCE);
+    public void preInit(FMLPreInitializationEvent event) {
+        super.preInit(event);
+        ModelRegistry.registerModid(ScienceNotLeisure.MODID);
 
-        ClientCommandHandler.instance.registerCommand(new CommandSpoce());
+        MinecraftForge.EVENT_BUS.register(SUBSCRIBE_EVENT_CLIENT_UTILS);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(SUBSCRIBE_EVENT_CLIENT_UTILS);
+
+        MinecraftForge.EVENT_BUS.register(GTNLInputHandler.INSTANCE);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(GTNLInputHandler.INSTANCE);
+
+        MinecraftForge.EVENT_BUS.register(SPOCE_RENDER_HANDLER);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(SPOCE_RENDER_HANDLER);
+
+        MinecraftForge.EVENT_BUS.register(BeamFormerModel.INSTANCE);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(BeamFormerModel.INSTANCE);
+
+        GuiContainerManager.addTooltipHandler(new GTNLTooltipManager());
+
         BuiltinTextEffects.register();
         ((IReloadableResourceManager) Minecraft.getMinecraft()
             .getResourceManager()).registerReloadListener(EffectTextRenderer.INSTANCE);
+
         ClientCommandHandler.instance.registerCommand(new TextEffectPreviewCommand());
+        ClientCommandHandler.instance.registerCommand(new CommandSpoce());
+    }
+
+    @Override
+    public void init(FMLInitializationEvent event) {
+        super.init(event);
 
         WATER_CANDLE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
         ENDER_ELEVATOR_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
@@ -233,26 +261,6 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void completeInit(FMLLoadCompleteEvent event) {
         super.completeInit(event);
-    }
-
-    @Override
-    public void preInit(FMLPreInitializationEvent event) {
-        super.preInit(event);
-        ModelRegistry.registerModid(ScienceNotLeisure.MODID);
-        MinecraftForge.EVENT_BUS.register(SUBSCRIBE_EVENT_CLIENT_UTILS);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(SUBSCRIBE_EVENT_CLIENT_UTILS);
-        MinecraftForge.EVENT_BUS.register(GTNLInputHandler.INSTANCE);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(GTNLInputHandler.INSTANCE);
-        GuiContainerManager.addTooltipHandler(new GTNLTooltipManager());
-
-        MinecraftForge.EVENT_BUS.register(SPOCE_RENDER_HANDLER);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(SPOCE_RENDER_HANDLER);
     }
 
     @Override
