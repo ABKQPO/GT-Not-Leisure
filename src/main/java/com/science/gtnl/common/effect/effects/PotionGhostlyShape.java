@@ -69,11 +69,14 @@ public class PotionGhostlyShape extends EffectBase {
         player.hurtResistantTime = 0;
 
         if (!affectedPlayers.contains(player)) {
-            List<EntityLivingBase> nearby = player.worldObj
-                .getEntitiesWithinAABB(EntityLivingBase.class, player.boundingBox.expand(32, 32, 32));
-            for (EntityLivingBase e : nearby) {
-                if (e instanceof EntityCreature creature && creature.getAttackTarget() == player) {
+            List<EntityCreature> nearby = player.worldObj
+                .getEntitiesWithinAABB(EntityCreature.class, player.boundingBox.expand(32, 32, 32));
+            for (EntityCreature creature : nearby) {
+                if (creature.getAttackTarget() == player) {
                     creature.setAttackTarget(null);
+                }
+                if (creature.getEntityToAttack() == player) {
+                    creature.setTarget(null);
                 }
             }
             affectedPlayers.add(player);
