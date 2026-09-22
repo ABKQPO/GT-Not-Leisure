@@ -126,11 +126,10 @@ public class BlockLoader {
         multiEssentiaInputHatch = new BlockMultiEssentiaInputHatch();
         multiEssentiaJar = new BlockMultiEssentiaJar();
         multiEssentiaTube = new BlockMultiEssentiaTube();
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EssentiaHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.MultiEssentiaInputHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MultiEssentiaJar.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MultiEssentiaTube.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EssentiaHatch.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MultiEssentiaInputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MultiEssentiaJar.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MultiEssentiaTube.get(1), AnimatedText.GT_NOT_LEISURE);
 
         enderElevatorBlock = new BlockEnderElevator(0);
         enderElevatorSlab = new BlockEnderElevator(1);
@@ -174,11 +173,11 @@ public class BlockLoader {
         GTNLItemList.ShirabonReinforcedBoronSilicateGlass.set(new ItemStack(ItemRegistry.bw_realglas2, 1, 6));
         AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.ShirabonReinforcedBoronSilicateGlass.get(1),
-            AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
+            AnimatedText.GT_NOT_LEISURE_CHANGE);
         GTNLItemList.QuarkGluonPlasmaReinforcedBoronSilicateGlass.set(new ItemStack(ItemRegistry.bw_realglas2, 1, 7));
         AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.QuarkGluonPlasmaReinforcedBoronSilicateGlass.get(1),
-            AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
+            AnimatedText.GT_NOT_LEISURE_CHANGE);
     }
 
     private static Fluid registerFluid(Fluid fluid) {

@@ -57,6 +57,21 @@ public enum Mixins implements IMixins {
         // "minecraft.MixinSimpleReloadableResourceManager",
         "minecraft.MixinGuiContainer", "minecraft.MixinGuiFlatPresets"),
 
+    TEXT_EFFECTS_COMMON(Side.COMMON, "texteffect.MixinEnumChatFormattingTextEffects"),
+
+    TEXT_EFFECTS_CLIENT(Side.CLIENT, "texteffect.MixinFontRendererTextEffects", "texteffect.MixinGuiNewChatTextEffects",
+        "texteffect.MixinGuiTextFieldTextEffects"),
+
+    TEXT_EFFECTS_ANGELICA(new MixinBuilder("Optional Angelica text effect batching")
+        .addClientMixins("texteffect.angelica.MixinFontBatchTextEffects")
+        .setPhase(Phase.EARLY)
+        .addRequiredMod(ModList.Angelica)),
+
+    TEXT_EFFECTS_NEI(
+        new MixinBuilder("Optional NEI text effect input").addClientMixins("texteffect.MixinNEIFormattedTextField")
+            .setPhase(Phase.LATE)
+            .addRequiredMod(ModList.NotEnoughItems)),
+
     SUPER_CREEPER(new MixinBuilder("Mixins for Super Creeper logic")
         .addCommonMixins(
             "superCreeper.AccessorEntityCreeper",
@@ -160,11 +175,17 @@ public enum Mixins implements IMixins {
             "thaumicTinkerer.MixinItemBloodSword",
             "visualProspecting.AccessorVeinTypeCaching")
         .addClientMixins(
+            "appliedEnergistics.MixinTileCableBusBeamBounds",
+            "appliedEnergistics.MixinTESRWrapperBeamRange",
             "appliedEnergistics.assembler.MixinGuiMEMonitorable",
             "appliedEnergistics.assembler.MixinGuiPatternTerm",
-            "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable",
-            "thaumcraft.MixinTileJarRenderer")
+            "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable")
         .setPhase(Phase.LATE)),
+
+    THAUMCRAFT_CLIENT(
+        new MixinBuilder("Thaumcraft client compatibility mixins").addClientMixins("thaumcraft.MixinTileJarRenderer")
+            .setPhase(Phase.LATE)
+            .addExcludedMod(ModList.Angelica)),
 
     BARTWORKS(new MixinBuilder("BartWorks compatibility mixins")
         .addCommonMixins(

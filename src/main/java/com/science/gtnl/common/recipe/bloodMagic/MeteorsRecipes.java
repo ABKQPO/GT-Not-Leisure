@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.ModList;
 
 import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -28,7 +29,8 @@ public class MeteorsRecipes implements IRecipePool {
             new String[] { "SGCraft:stargateBase:0:10", "SGCraft:stargateRing:0:10", "SGCraft:stargateRing:1:10",
                 "bartworks:bw.werkstoffblocks.01:25201:10", "SGCraft:ocInterface:0:10", "SGCraft:rfPowerUnit:0:10",
                 "gregtech:gt.blockmachines:21113:10", "gregtech:gt.blockmachines:21008:10",
-                "sciencenotleisure:meta_casing:21:10", "sciencenotleisure:meta_casing:22:10", "IC2:blockNuke:0:10" },
+                ModList.ScienceNotLeisure.ID + ":meta_casing:21:10",
+                ModList.ScienceNotLeisure.ID + ":meta_casing:22:10", "IC2:blockNuke:0:10" },
             10,
             Integer.MAX_VALUE);
 

@@ -471,7 +471,7 @@ public class CraftingTableRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 ItemList.Hull_LV.get(1),
-                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockAlloyGlass", 2, 0),
+                ItemList.ReinforcedGlass.get(2),
                 new ItemStack(Items.bucket, 3),
                 Materials.Diamond.getGems(3))
             .itemOutputs(GregtechItemList.Hatch_Reservoir.get(1))

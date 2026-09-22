@@ -3,6 +3,7 @@ package com.science.gtnl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelSlime;
 import net.minecraft.client.renderer.entity.RenderLeashKnot;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -34,6 +35,9 @@ import com.science.gtnl.client.gui.portableWorkbench.GuiPortableEnderChest;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableFurnace;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortablePortableCompressedChest;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortablePortableInfinityChest;
+import com.science.gtnl.client.text.EffectTextRenderer;
+import com.science.gtnl.client.text.effect.BuiltinTextEffects;
+import com.science.gtnl.client.text.preview.TextEffectPreviewCommand;
 import com.science.gtnl.common.block.blocks.item.ItemBlockEternalGregTechWorkshopRender;
 import com.science.gtnl.common.block.blocks.item.ItemBlockNanoPhagocytosisPlantRender;
 import com.science.gtnl.common.block.blocks.tile.TileEntityArtificialStar;
@@ -62,6 +66,8 @@ import com.science.gtnl.common.part.PartMECellDock;
 import com.science.gtnl.common.part.PartSuperDualInterface;
 import com.science.gtnl.common.part.PartSuperInterface;
 import com.science.gtnl.common.render.SpoceRenderHandler;
+import com.science.gtnl.common.render.beamformer.BeamFormerItemRenderer;
+import com.science.gtnl.common.render.beamformer.BeamFormerModel;
 import com.science.gtnl.common.render.entity.NullPointerExceptionRender;
 import com.science.gtnl.common.render.entity.SaddleSlimeRender;
 import com.science.gtnl.common.render.entity.SteamRocketRender;
@@ -123,8 +129,13 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
+        MinecraftForge.EVENT_BUS.register(BeamFormerModel.INSTANCE);
 
         ClientCommandHandler.instance.registerCommand(new CommandSpoce());
+        BuiltinTextEffects.register();
+        ((IReloadableResourceManager) Minecraft.getMinecraft()
+            .getResourceManager()).registerReloadListener(EffectTextRenderer.INSTANCE);
+        ClientCommandHandler.instance.registerCommand(new TextEffectPreviewCommand());
 
         WATER_CANDLE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
         ENDER_ELEVATOR_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
@@ -148,7 +159,8 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(
             TileEntityBeamFormer.class,
             new TESRWrapper(BlockLoader.beamFormer.getRenderer()));
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockLoader.beamFormer), ItemRenderer.INSTANCE);
+        MinecraftForgeClient
+            .registerItemRenderer(Item.getItemFromBlock(BlockLoader.beamFormer), new BeamFormerItemRenderer());
 
         MinecraftForgeClient
             .registerItemRenderer(Item.getItemFromBlock(BlockLoader.direPatternEncoder), ItemRenderer.INSTANCE);
