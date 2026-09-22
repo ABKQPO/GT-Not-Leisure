@@ -2,18 +2,16 @@ package com.science.gtnl.common.render.item;
 
 import static tectech.rendering.EOH.EOHRenderingUtils.renderEOHStar;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-
-import org.joml.Matrix4f;
 
 import com.science.gtnl.loader.BlockLoader;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.GTMod;
+import tectech.rendering.EOH.EOHRenderingUtils;
 
 @SideOnly(Side.CLIENT)
 public class ItemBlockArtificialStarRender implements IItemRenderer {
@@ -37,10 +35,11 @@ public class ItemBlockArtificialStarRender implements IItemRenderer {
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
         if (item.getItem() != Item.getItemFromBlock(BlockLoader.artificialStarRender)) return;
-        Matrix4f modelMatrix = new Matrix4f().translation(0.5F, 0.5F, 0.5F)
-            .scale(0.25F);
-        double renderTime = Minecraft.getMinecraft().theWorld == null ? 0.0D
-            : Minecraft.getMinecraft().theWorld.getTotalWorldTime();
-        renderEOHStar(modelMatrix, type, renderTime, 1.0D);
+        renderEOHStar(
+            EOHRenderingUtils.IDENTITY,
+            type,
+            GTMod.clientProxy()
+                .getAnimationRenderTicks(),
+            0.82D);
     }
 }

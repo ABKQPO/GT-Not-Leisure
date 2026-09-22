@@ -27,8 +27,8 @@
 		}
 	},
 	"textures": {
-		"1": "sciencenotleisure:beam_former/beam_former_block_model",
-		"particle": "sciencenotleisure:beam_former/beam_former_block_model"
+		"1": "sciencenotleisure:blocks/beam_former/beam_former_block_model",
+		"particle": "sciencenotleisure:blocks/beam_former/beam_former_block_model"
 	},
 	"elements": [
 		{

@@ -78,6 +78,7 @@ import com.science.gtnl.common.render.item.ItemNullPointerExceptionRender;
 import com.science.gtnl.common.render.item.ItemPlayerDollRenderer;
 import com.science.gtnl.common.render.item.ItemSteamRocketRenderer;
 import com.science.gtnl.common.render.item.ItemTwilightSwordRender;
+import com.science.gtnl.common.render.model.MEChiselModel;
 import com.science.gtnl.common.render.tile.EnderElevatorRenderer;
 import com.science.gtnl.common.render.tile.EternalGregTechWorkshopRenderer;
 import com.science.gtnl.common.render.tile.LaserBeconRenderer;
@@ -151,6 +152,11 @@ public class ClientProxy extends CommonProxy {
         FMLCommonHandler.instance()
             .bus()
             .register(BeamFormerModel.INSTANCE);
+
+        MinecraftForge.EVENT_BUS.register(MEChiselModel.INSTANCE);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(MEChiselModel.INSTANCE);
 
         GuiContainerManager.addTooltipHandler(new GTNLTooltipManager());
 
