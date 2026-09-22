@@ -10,10 +10,10 @@ import net.minecraft.util.AxisAlignedBB;
 public class TileEntityArtificialStar extends TileEntity {
 
     public double size = 0;
-    public double targetSize = 12;
+    public double targetSize = 30;
     public double initialSize = 0;
     public int ticks = 0;
-    public int duration = 100;
+    public int duration = 150;
 
     private double previousSize = 0;
 
@@ -42,8 +42,8 @@ public class TileEntityArtificialStar extends TileEntity {
         super.readFromNBT(nbt);
         size = nbt.getDouble("size");
         previousSize = size;
-        targetSize = nbt.hasKey("targetSize") ? nbt.getDouble("targetSize") : 12;
-        duration = nbt.hasKey("duration") ? Math.max(0, nbt.getInteger("duration")) : 100;
+        targetSize = nbt.hasKey("targetSize") ? nbt.getDouble("targetSize") : 30;
+        duration = nbt.hasKey("duration") ? Math.max(0, nbt.getInteger("duration")) : 150;
         // Older saves only stored the current size; continue growing from that radius.
         initialSize = nbt.hasKey("initialSize") ? nbt.getDouble("initialSize") : size;
         ticks = nbt.hasKey("ticks") ? Math.max(0, Math.min(duration, nbt.getInteger("ticks")))

@@ -1,7 +1,5 @@
 package com.science.gtnl.utils.event;
 
-import static com.science.gtnl.utils.world.steam.GlobalSteamWorldSavedData.loadInstance;
-
 import java.util.UUID;
 
 import net.minecraft.block.Block;
@@ -55,7 +53,6 @@ import com.science.gtnl.mixins.early.minecraft.AccessorFoodStats;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
-import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -391,10 +388,6 @@ public class SubscribeEventUtils {
         if (!CIRCUIT_NANITES_DATA_LOAD) {
             RecipeLoader.loadCircuitNanitesData(world.getSeed());
             CIRCUIT_NANITES_DATA_LOAD = true;
-        }
-        if (event.world.provider.dimensionId == 0) {
-            TeamNetworkManager.migrateLegacyTeams(event.world);
-            loadInstance(event.world);
         }
     }
 
