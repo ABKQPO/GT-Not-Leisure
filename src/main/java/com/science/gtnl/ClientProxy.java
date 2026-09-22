@@ -14,6 +14,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
+import com.gtnewhorizon.gtnhlib.client.model.loading.ModelRegistry;
 import com.science.gtnl.asm.GTNLEarlyCoreMod;
 import com.science.gtnl.client.GTNLInputHandler;
 import com.science.gtnl.client.GTNLTooltipManager;
@@ -165,7 +166,6 @@ public class ClientProxy extends CommonProxy {
         MinecraftForgeClient
             .registerItemRenderer(Item.getItemFromBlock(BlockLoader.direPatternEncoder), ItemRenderer.INSTANCE);
 
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BlockLoader.meChisel), ItemRenderer.INSTANCE);
         MinecraftForgeClient
             .registerItemRenderer(Item.getItemFromBlock(BlockLoader.superInterface), ItemRenderer.INSTANCE);
         MinecraftForgeClient
@@ -238,6 +238,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
+        ModelRegistry.registerModid(ScienceNotLeisure.MODID);
         MinecraftForge.EVENT_BUS.register(SUBSCRIBE_EVENT_CLIENT_UTILS);
         FMLCommonHandler.instance()
             .bus()

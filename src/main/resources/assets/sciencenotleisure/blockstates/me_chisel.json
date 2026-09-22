@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=north": { "model": "sciencenotleisure:block/me_chisel" },
+    "facing=east": { "model": "sciencenotleisure:block/me_chisel", "y": 90 },
+    "facing=south": { "model": "sciencenotleisure:block/me_chisel", "y": 180 },
+    "facing=west": { "model": "sciencenotleisure:block/me_chisel", "y": 270 },
+    "facing=up": { "model": "sciencenotleisure:block/me_chisel", "x": 90 },
+    "facing=down": { "model": "sciencenotleisure:block/me_chisel", "x": 270 }
+  }
+}

@@ -17,9 +17,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderChronarchClock extends Render {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(
-        RESOURCE_ROOT_ID + ":" + "model/chronarchs_clock.png");
+        RESOURCE_ROOT_ID + ":" + "models/chronarchs_clock.png");
     private static final ResourceLocation MODEL = new ResourceLocation(
-        RESOURCE_ROOT_ID + ":" + "model/chronarchs_clock.obj");
+        RESOURCE_ROOT_ID + ":" + "models/chronarchs_clock.obj");
 
     private static final IModelCustom model = AdvancedModelLoader.loadModel(MODEL);
 

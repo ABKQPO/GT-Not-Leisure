@@ -1,16 +1,17 @@
 package com.science.gtnl.common.block.blocks;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
+import com.gtnewhorizon.gtnhlib.blockstate.core.BlockPropertyTrait;
+import com.gtnewhorizon.gtnhlib.blockstate.properties.DirectionBlockProperty;
+import com.gtnewhorizon.gtnhlib.blockstate.registry.BlockPropertyRegistry;
 import com.science.gtnl.CommonProxy;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLCreativeTabs;
@@ -21,19 +22,36 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.client.texture.FlippableIcon;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockMEChisel extends AEBaseTileBlock {
 
-    @SideOnly(Side.CLIENT)
-    private IIcon topIcon;
-    @SideOnly(Side.CLIENT)
-    private IIcon bottomIcon;
-    @SideOnly(Side.CLIENT)
-    private IIcon sideIcon;
+    private static final DirectionBlockProperty FACING_PROPERTY = new DirectionBlockProperty() {
+
+        @Override
+        public String getName() {
+            return "facing";
+        }
+
+        @Override
+        public boolean hasTrait(BlockPropertyTrait trait) {
+            return trait == BlockPropertyTrait.SupportsWorld || trait == BlockPropertyTrait.SupportsStacks;
+        }
+
+        @Override
+        public ForgeDirection getValue(IBlockAccess world, int x, int y, int z) {
+            if (world.getTileEntity(x, y, z) instanceof TileEntityMEChisel tile) {
+                ForgeDirection facing = tile.getForward();
+                if (facing != null && facing != ForgeDirection.UNKNOWN) return facing;
+            }
+            return ForgeDirection.NORTH;
+        }
+
+        @Override
+        public ForgeDirection getValue(ItemStack stack) {
+            return ForgeDirection.NORTH;
+        }
+    };
 
     public BlockMEChisel() {
         super(Material.iron);
@@ -43,32 +61,10 @@ public class BlockMEChisel extends AEBaseTileBlock {
         setHarvestLevel("pickaxe", 3);
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         GameRegistry.registerBlock(this, ItemBlockMEChisel.class, "me_chisel");
+        BlockPropertyRegistry.registerBlockItemProperty(this, FACING_PROPERTY);
         GameRegistry.registerTileEntity(TileEntityMEChisel.class, "me_chisel_tile_entity");
         GTNLItemList.MEChisel.set(new ItemStack(this, 1));
         setTileEntity(TileEntityMEChisel.class);
-        setBlockTextureName(RESOURCE_ROOT_ID + ":me_chisel");
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister iconRegister) {
-        topIcon = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":me_chisel");
-        bottomIcon = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":me_chisel_bottom");
-        sideIcon = iconRegister.registerIcon(RESOURCE_ROOT_ID + ":me_chisel_side");
-
-        FlippableIcon top = new FlippableIcon(topIcon);
-        FlippableIcon bottom = new FlippableIcon(bottomIcon);
-        FlippableIcon side = new FlippableIcon(sideIcon);
-        blockIcon = topIcon;
-        getRendererInstance().updateIcons(bottom, top, side, side, side, side);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta) {
-        if (side == 1) return topIcon;
-        if (side == 0) return bottomIcon;
-        return sideIcon;
     }
 
     @Override

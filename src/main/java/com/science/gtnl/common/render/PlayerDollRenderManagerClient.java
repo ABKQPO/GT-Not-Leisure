@@ -44,11 +44,11 @@ public class PlayerDollRenderManagerClient {
     public static final Map<String, Boolean> SKIN_MODEL = new ConcurrentHashMap<>();
     public static final Map<String, Integer> UPLOADED_TEXTURE_ID = new ConcurrentHashMap<>();
 
-    public static final ResourceLocation DEFAULT_SKIN = new ResourceLocation(RESOURCE_ROOT_ID + ":model/skin.png");
-    public static final ResourceLocation DEFAULT_CAPE = new ResourceLocation(RESOURCE_ROOT_ID + ":model/cape.png");
+    public static final ResourceLocation DEFAULT_SKIN = new ResourceLocation(RESOURCE_ROOT_ID + ":models/skin.png");
+    public static final ResourceLocation DEFAULT_CAPE = new ResourceLocation(RESOURCE_ROOT_ID + ":models/cape.png");
 
     public static final IModelCustom MODEL = AdvancedModelLoader
-        .loadModel(new ResourceLocation(RESOURCE_ROOT_ID + ":model/player_doll.obj"));
+        .loadModel(new ResourceLocation(RESOURCE_ROOT_ID + ":models/player_doll.obj"));
 
     public static final File SKIN_DIR = new File("config/GTNotLeisure/skin");
     public static final File CAPE_DIR = new File("config/GTNotLeisure/cape");
@@ -60,7 +60,7 @@ public class PlayerDollRenderManagerClient {
         CAPE_DIR.mkdirs();
         CUSTOM_SKIN_DIR.mkdirs();
         CUSTOM_CAPE_DIR.mkdirs();
-        SKIN_MODEL.put("model/skin.png", false);
+        SKIN_MODEL.put("models/skin.png", false);
     }
 
     public static void renderModel(ResourceLocation skin, ResourceLocation cape, byte mode) {

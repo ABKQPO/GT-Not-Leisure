@@ -110,6 +110,11 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
     }
 
     @Override
+    public String[] getDescription() {
+        return mDescriptionArray;
+    }
+
+    @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new DualInputHatch(mName, mTier, mDescriptionArray, mTextures);
     }

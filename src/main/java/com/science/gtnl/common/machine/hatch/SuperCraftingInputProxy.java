@@ -71,6 +71,11 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
     }
 
     @Override
+    public String[] getDescription() {
+        return mDescriptionArray;
+    }
+
+    @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new SuperCraftingInputProxy(mName, mTier, mDescriptionArray, mTextures);
     }

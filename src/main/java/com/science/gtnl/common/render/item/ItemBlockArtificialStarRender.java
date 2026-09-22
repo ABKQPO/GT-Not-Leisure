@@ -1,13 +1,15 @@
 package com.science.gtnl.common.render.item;
 
+import static tectech.rendering.EOH.EOHRenderingUtils.renderEOHStar;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 
-import org.lwjgl.opengl.GL11;
+import org.joml.Matrix4f;
 
-import com.science.gtnl.common.render.tile.RealArtificialStarRenderer;
 import com.science.gtnl.loader.BlockLoader;
 
 import cpw.mods.fml.relauncher.Side;
@@ -35,17 +37,10 @@ public class ItemBlockArtificialStarRender implements IItemRenderer {
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
         if (item.getItem() != Item.getItemFromBlock(BlockLoader.artificialStarRender)) return;
-        GL11.glPushMatrix();
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glTranslated(0.5, 0.5, 0.5);
-        GL11.glScaled(0.25, 0.25, 0.25);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glRotated(5, 1, 1, 1);
-        Minecraft.getMinecraft().renderEngine.bindTexture(RealArtificialStarRenderer.STAR_TEXTURE);
-        RealArtificialStarRenderer.STAR_MODEL.renderAll();
-        GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glPopMatrix();
-
+        Matrix4f modelMatrix = new Matrix4f().translation(0.5F, 0.5F, 0.5F)
+            .scale(0.25F);
+        double renderTime = Minecraft.getMinecraft().theWorld == null ? 0.0D
+            : Minecraft.getMinecraft().theWorld.getTotalWorldTime();
+        renderEOHStar(modelMatrix, type, renderTime, 1.0D);
     }
 }

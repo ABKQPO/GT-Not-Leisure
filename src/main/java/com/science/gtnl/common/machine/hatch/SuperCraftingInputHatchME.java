@@ -194,6 +194,11 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
     }
 
     @Override
+    public String[] getDescription() {
+        return mDescriptionArray;
+    }
+
+    @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new SuperCraftingInputHatchME(mName, mTier, mDescriptionArray, mTextures, supportFluids);
     }

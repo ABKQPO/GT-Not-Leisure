@@ -135,13 +135,8 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
     @Override
     public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
         super.onFirstTick(aBaseMetaTileEntity);
-        ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
-
-        isInTeam = true;
-        teamUUID = TeamNetworkManager.getTeamId(ownerUUID);
-        steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
-
         if (!aBaseMetaTileEntity.isServerSide()) return;
+        refreshSteamNetworkState(aBaseMetaTileEntity);
         tryFetchingSteam();
     }
 
@@ -157,13 +152,23 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
     public void onPostTick(IGregTechTileEntity baseMetaTileEntity, long tick) {
         super.onPostTick(baseMetaTileEntity, tick);
         if (baseMetaTileEntity.isServerSide() && tick % 200 == 0L) {
-            if (ownerUUID == null) {
-                ownerUUID = baseMetaTileEntity.getOwnerUuid();
-            }
-            isInTeam = true;
-            teamUUID = TeamNetworkManager.getTeamId(ownerUUID);
-            steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
+            refreshSteamNetworkState(baseMetaTileEntity);
         }
+    }
+
+    private void refreshSteamNetworkState(IGregTechTileEntity baseMetaTileEntity) {
+        UUID baseOwnerUUID = baseMetaTileEntity.getOwnerUuid();
+        if (baseOwnerUUID != null) ownerUUID = baseOwnerUUID;
+        if (ownerUUID == null) {
+            isInTeam = false;
+            teamUUID = null;
+            steamDisplay = BigInteger.ZERO;
+            return;
+        }
+
+        isInTeam = true;
+        teamUUID = TeamNetworkManager.getTeamId(ownerUUID);
+        steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
     }
 
     private void tryFetchingSteam() {
