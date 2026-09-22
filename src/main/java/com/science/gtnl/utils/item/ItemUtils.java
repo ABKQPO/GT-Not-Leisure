@@ -48,6 +48,7 @@ import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
 import gregtech.common.items.MetaGeneratedItem01;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
+import gtPlusPlus.xmod.gregtech.common.tileentities.machines.multi.production.chemplant.MTEChemicalPlant;
 
 public class ItemUtils {
 
@@ -190,6 +191,7 @@ public class ItemUtils {
 
     public static boolean isExtraItem(ItemStack stack) {
         if (stack == null) return false;
+        if (MTEChemicalPlant.isCatalyst(stack)) return true;
 
         Item item = stack.getItem();
         int meta = stack.getItemDamage();

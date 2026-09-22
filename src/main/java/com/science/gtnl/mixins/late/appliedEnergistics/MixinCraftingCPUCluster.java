@@ -13,8 +13,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Coerce;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -24,11 +22,9 @@ import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
-import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.ChiselPatternDetails;
 import com.science.gtnl.utils.DireCraftingPatternDetails;
 import com.science.gtnl.utils.LargeInventoryCrafting;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.crafting.CraftingBatchPlanner;
 import com.science.gtnl.utils.crafting.CraftingBatchPlanner.BatchPlan;
 import com.science.gtnl.utils.crafting.CraftingBatchPlanner.CommitResult;
@@ -295,13 +291,6 @@ public abstract class MixinCraftingCPUCluster {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private static Deque<SessionSegment<CraftingDiagnosticSessionId>> gtnl$sessionSegments(LinkedList<?> segments) {
         return (Deque) segments;
-    }
-
-    @Inject(method = "translateFromNetwork", at = @At("HEAD"), cancellable = true)
-    private static void injectTranslateFromNetwork(String name, CallbackInfoReturnable<String> cir) {
-        if (!MainConfig.machine.enableHatchInterfaceTerminalEnhance) return;
-        if (name == null) return;
-        cir.setReturnValue(Utils.getExtraInterfaceName(name));
     }
 
     @Unique

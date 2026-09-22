@@ -129,10 +129,6 @@ public class MainConfig {
         @DefaultBoolean(false)
         public boolean allowMainFacingInteraction = false;
 
-        @Comment("Enhance the display of input hatch bus in interface terminal to support the machine current recipe map and virtual programming circuit")
-        @DefaultBoolean(true)
-        public boolean enableHatchInterfaceTerminalEnhance = true;
-
         @Comment("Set Machine Can Use Laser Hatch")
         @Name("enableLaserHatch")
         @DefaultBoolean(false)

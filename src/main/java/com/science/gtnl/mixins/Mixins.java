@@ -19,10 +19,9 @@ public enum Mixins implements IMixins {
         "gregtech.AccessorGTRecipe", "gregtech.AccessorGTRecipeBuilder", "gregtech.AccessorGTRecipeWithAlt",
         "gregtech.MixinGTRecipe", "gregtech.AccessorGTLanguageManager", "gregtech.AccessorCommonMetaTileEntity",
         "gregtech.AccessorMetaTileEntity", "gregtech.AccessorMTEHatch", "gregtech.AccessorProcessingLogic",
-        "gregtech.AccessorRecipeDisplayInfo", "gregtech.MixinMTEBasicMachine", "gregtech.MixinBaseMetaTileEntity",
-        "gregtech.assLineRemover.MixinGTMod", "gregtech.assLineRemover.MixinGTRecipeBuilder",
-        "gregtech.assLineRemover.MixinTTRecipeAdder", "energyMonitor.MixinBaseMetaTileEntityEnergyMonitor",
-        "energyMonitor.MixinCommonMetaTileEntityEnergyMonitor"),
+        "gregtech.AccessorRecipeDisplayInfo", "gregtech.MixinBaseMetaTileEntity", "gregtech.assLineRemover.MixinGTMod",
+        "gregtech.assLineRemover.MixinGTRecipeBuilder", "gregtech.assLineRemover.MixinTTRecipeAdder",
+        "energyMonitor.MixinBaseMetaTileEntityEnergyMonitor", "energyMonitor.MixinCommonMetaTileEntityEnergyMonitor"),
 
     GREGTECH_CLIENT_EARLY(
         new MixinBuilder("Gregtech early client safety mixins").addClientMixins("gregtech.MixinGTLanguageManager")
@@ -109,13 +108,11 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.AccessorTileInterface",
             "appliedEnergistics.MixinAdaptorIInventory",
             "appliedEnergistics.MixinDualityInterface",
-            "appliedEnergistics.MixinInterfaceTerminalEntry",
             "appliedEnergistics.MixinEntityTinyTNTPrimed",
             "appliedEnergistics.MixinTileIOPort",
             "appliedEnergistics.assembler.AccessorContainerPatternTerm",
             "appliedEnergistics.assembler.AccessorInvTracker",
             "appliedEnergistics.assembler.MixinContainerInterfaceTerminal",
-            "appliedEnergistics.MixinCraftingCPUCluster",
             "appliedEnergistics.AccessorTaskProgress",
             "appliedEnergistics.AccessorSessionCraftCount",
             "appliedEnergistics.quamtumComputer.MixinCraftingGridCache",
@@ -147,8 +144,6 @@ public enum Mixins implements IMixins {
             "gregtech.MixinMTEHatchOutputBusME",
             "gregtech.MixinMTEHatchOutputME",
             "gregtech.MixinMTEHatchAirIntake",
-            "gregtech.MixinMTEHatchCraftingInputME",
-            "gregtech.MixinMTEHatchCraftingInputSlave",
             "gregtech.MixinMTEHatchOutputBeamline",
             "gregtech.MixinMTEPurificationUnitBaseGui",
             "gregtech.MixinMTEDigitalTankBase",
@@ -156,13 +151,11 @@ public enum Mixins implements IMixins {
             "gregtech.MixinMTEHatchSteamBusOutput",
             "gregtech.MixinMTELightningRod",
             "gregtech.MixinMTEPlasmaForge",
-            "gregtech.MixinMTEMultiBlockBase",
             "gregtech.MixinMTEMultiBlockBaseRecipeProcessing",
             "gregtech.MixinMTETreeFarm",
             "gregtech.MixinProcessingLogic",
             "gregtech.MixinRecipeGenFluids",
             "gregtech.MixinProcessingDust",
-            "gregtech.MixinTTMultiblockBase",
             "inventoryBogoSorter.MixinShortcutHandler",
             "inventoryBogoSorter.MixinSortHandler",
             "modularUI.MixinFluidSlotWidget",
@@ -170,6 +163,7 @@ public enum Mixins implements IMixins {
             "tecTech.MixinMTEEyeOfHarmony",
             "tecTech.AccessorMTEResearchStation",
             "tecTech.MixinMTEResearchStation",
+            "tecTech.MixinMTEResearchStationGui",
             "tecTech.MixinTTRecipeAdder",
             "thaumicTinkerer.AccessorAspectCropLootManager",
             "thaumicTinkerer.MixinItemBloodSword",
@@ -177,6 +171,8 @@ public enum Mixins implements IMixins {
         .addClientMixins(
             "appliedEnergistics.MixinTileCableBusBeamBounds",
             "appliedEnergistics.MixinTESRWrapperBeamRange",
+            // TODO: Restore display-representation name handling when bundled AE2 exposes the updated translateRawName
+            // method.
             "appliedEnergistics.assembler.MixinGuiMEMonitorable",
             "appliedEnergistics.assembler.MixinGuiPatternTerm",
             "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable")

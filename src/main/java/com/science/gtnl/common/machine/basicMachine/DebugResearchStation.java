@@ -1,19 +1,18 @@
 package com.science.gtnl.common.machine.basicMachine;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.science.gtnl.common.gui.modularui.DebugResearchStationGui;
-import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.GTMod;
 import gregtech.api.enums.ItemList;
@@ -23,15 +22,20 @@ import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEBasicMachine;
-import gregtech.api.recipe.BasicUIProperties;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.AssemblyLineUtils;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
+import gregtech.api.util.item.PhantomSingleSlotItemStackHandler;
 import tectech.recipe.TecTechRecipeMaps;
 
 public class DebugResearchStation extends MTEBasicMachine {
+
+    private final ItemStack[] researchOutputFilter = new ItemStack[1];
+    private final IItemHandlerModifiable researchOutputFilterInventory = new PhantomSingleSlotItemStackHandler(
+        () -> researchOutputFilter[0],
+        this::setResearchOutputFilter);
 
     public DebugResearchStation(int aID, String aName, String aNameRegional, int aTier) {
         super(
@@ -172,8 +176,10 @@ public class DebugResearchStation extends MTEBasicMachine {
         }
 
         GTRecipe.RecipeAssemblyLine realALRecipe = null;
+        ItemStack filteredOutput = researchOutputFilter[0];
         for (GTRecipe.RecipeAssemblyLine assRecipe : TecTechRecipeMaps.researchableALRecipeList) {
-            if (GTUtility.areStacksEqual(assRecipe.mResearchItem, aStack, true)) {
+            if (GTUtility.areStacksEqual(assRecipe.mResearchItem, aStack, true)
+                && (filteredOutput == null || GTUtility.areStacksEqual(assRecipe.mOutput, filteredOutput, true))) {
                 realALRecipe = assRecipe;
                 break;
             }
@@ -201,6 +207,33 @@ public class DebugResearchStation extends MTEBasicMachine {
         return TecTechRecipeMaps.researchStationFakeRecipes;
     }
 
+    public IItemHandlerModifiable getResearchOutputFilterInventory() {
+        return researchOutputFilterInventory;
+    }
+
+    private void setResearchOutputFilter(ItemStack filter) {
+        researchOutputFilter[0] = filter == null ? null : GTUtility.copyAmount(1, filter);
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        if (researchOutputFilter[0] == null) return;
+
+        NBTTagCompound filterTag = new NBTTagCompound();
+        researchOutputFilter[0].writeToNBT(filterTag);
+        aNBT.setTag("researchOutputFilter", filterTag);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        setResearchOutputFilter(
+            aNBT.hasKey("researchOutputFilter", Constants.NBT.TAG_COMPOUND)
+                ? ItemStack.loadItemStackFromNBT(aNBT.getCompoundTag("researchOutputFilter"))
+                : null);
+    }
+
     @Override
     public boolean allowPutStackValidated(IGregTechTileEntity aBaseMetaTileEntity, int aIndex, ForgeDirection side,
         ItemStack aStack) {
@@ -216,28 +249,6 @@ public class DebugResearchStation extends MTEBasicMachine {
     @Override
     protected boolean useMui2() {
         return true;
-    }
-
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after DebugResearchStation mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 62));
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after DebugResearchStation mui2 rollout is complete.
-        BasicUIProperties uiProperties = getUIProperties();
-        addIOSlots(builder, uiProperties);
-        addProgressBar(builder, uiProperties);
-        builder.widget(createChargerSlot(79, 62));
-        builder.widget(createFluidAutoOutputButton());
-        builder.widget(createItemAutoOutputButton());
     }
 
     @Override

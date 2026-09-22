@@ -68,7 +68,6 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.AssemblerMatrixGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
-import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.DireCraftingPatternDetails;
 import com.science.gtnl.utils.StructureUtils;
@@ -1536,9 +1535,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
     @Override
     public String getCustomName() {
-        return customName != null ? customName
-            : MainConfig.machine.enableHatchInterfaceTerminalEnhance ? getName()
-                : getMachineCraftingIcon().getDisplayName();
+        return customName;
     }
 
     @Override
@@ -1557,25 +1554,15 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             return customName;
         }
 
-        StringBuilder name = new StringBuilder();
-        if (MainConfig.machine.enableHatchInterfaceTerminalEnhance) {
+        ItemStack crafterIcon = getCrafterIcon();
+        return crafterIcon != null ? crafterIcon.getDisplayName() : getLocalName();
+    }
 
-            if (getCrafterIcon() != null) {
-                name.append(getCrafterIcon().getUnlocalizedName());
-            } else {
-                name.append("gt.blockmachines.")
-                    .append(mName)
-                    .append(".name");
-            }
-        } else {
-            if (getCrafterIcon() != null) {
-                name.append(getCrafterIcon().getDisplayName());
-            } else {
-                name.append(getLocalName());
-            }
-        }
-
-        return name.toString();
+    @Override
+    public String getRawName() {
+        if (hasCustomName()) return customName;
+        ItemStack crafterIcon = getCrafterIcon();
+        return crafterIcon != null ? crafterIcon.getUnlocalizedName() : getLocalNameKey();
     }
 
     @Override

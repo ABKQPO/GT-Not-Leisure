@@ -162,6 +162,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
     public boolean needPatternSync = true;
     public String customName = "";
     public boolean supportFluids;
+
     public boolean additionalConnection = false;
     public boolean disablePatternOptimization = false;
 

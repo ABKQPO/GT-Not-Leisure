@@ -10,16 +10,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
-import com.cleanroommc.modularui.utils.item.ItemStackHandler;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
-import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.science.gtnl.api.mixinHelper.IResearchStationMarker;
 
-import gregtech.api.gui.widgets.PhantomItemButton;
 import gregtech.api.util.GTUtility;
+import gregtech.api.util.item.PhantomSingleSlotItemStackHandler;
 import tectech.recipe.TecTechRecipeMaps;
 import tectech.thing.metaTileEntity.multi.MTEResearchStation;
 import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
@@ -31,7 +26,9 @@ public abstract class MixinMTEResearchStation extends TTMultiblockBase implement
     public ItemStack[] gtnl$lockedItems = new ItemStack[1];
 
     @Unique
-    public IItemHandlerModifiable gtnl$lockedInventoryHandler = new ItemStackHandler(gtnl$lockedItems);
+    public IItemHandlerModifiable gtnl$lockedInventoryHandler = new PhantomSingleSlotItemStackHandler(
+        () -> gtnl$lockedItems[0],
+        this::gtnl$setLockedItem);
 
     public MixinMTEResearchStation(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -53,28 +50,18 @@ public abstract class MixinMTEResearchStation extends TTMultiblockBase implement
         super.loadNBTData(aNBT);
         if (aNBT.hasKey("lockedItem", Constants.NBT.TAG_COMPOUND)) {
             NBTTagCompound itemTag = aNBT.getCompoundTag("lockedItem");
-            gtnl$lockedItems[0] = ItemStack.loadItemStackFromNBT(itemTag);
+            gtnl$setLockedItem(ItemStack.loadItemStackFromNBT(itemTag));
         }
-    }
-
-    @Override
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        super.addUIWidgets(builder, buildContext);
-        builder.widget(
-            SlotGroup.ofItemHandler(gtnl$lockedInventoryHandler, 1)
-                .startFromSlot(0)
-                .endAtSlot(0)
-                .background(PhantomItemButton.FILTER_BACKGROUND)
-                .phantom(true)
-                .slotCreator(index -> new BaseSlot(gtnl$lockedInventoryHandler, index, true))
-                .build()
-                .setSize(18, 18)
-                .setPos(173, 96));
     }
 
     @Override
     public IItemHandlerModifiable gtnl$getResearchMarkerInventoryHandler() {
         return gtnl$lockedInventoryHandler;
+    }
+
+    @Unique
+    private void gtnl$setLockedItem(ItemStack item) {
+        gtnl$lockedItems[0] = item == null ? null : GTUtility.copyAmount(1, item);
     }
 
     @Redirect(
