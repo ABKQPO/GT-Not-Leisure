@@ -3727,6 +3727,14 @@ item.gtnl.detrav_scanner.teleport_to_vein=Teleport to vein: %s (%s, %s)
 item.gtnl.slime_saddle.name=Slime Saddle
 entity.sciencenotleisure.SaddleSlime.name=Royal Slime
 
+item.gtnl.soul_cardboard_helmet.name=Soul Cardboard Helmet
+item.gtnl.soul_cardboard_chestplate.name=Soul Cardboard Chestplate
+item.gtnl.soul_cardboard_leggings.name=Soul Cardboard Leggings
+item.gtnl.soul_cardboard_boots.name=Soul Cardboard Boots
+item.gtnl.soul_cardboard.tooltip.0=Full set: Jump Boost I and Speed II
+item.gtnl.soul_cardboard.tooltip.1=Taking damage grants 3 seconds of Ghostly Shape
+item.gtnl.soul_cardboard.tooltip.2=Ghostly Shape makes mobs ignore you
+
 item.gtnl.super_reach_ring.name=Super Reach Ring
 item.gtnl.satiety_ring.name=Ring of Satiety
 item.gtnl.rejection_ring.name=Ring of Rejection

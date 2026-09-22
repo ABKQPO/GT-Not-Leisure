@@ -3727,6 +3727,14 @@ item.gtnl.detrav_scanner.teleport_to_vein=传送至矿脉：%s (%s，%s)
 item.gtnl.slime_saddle.name=粘鞍
 entity.sciencenotleisure.SaddleSlime.name=皇家史莱姆
 
+item.gtnl.soul_cardboard_helmet.name=灵魂纸板头盔
+item.gtnl.soul_cardboard_chestplate.name=灵魂纸板胸甲
+item.gtnl.soul_cardboard_leggings.name=灵魂纸板护腿
+item.gtnl.soul_cardboard_boots.name=灵魂纸板靴子
+item.gtnl.soul_cardboard.tooltip.0=穿戴全套时：跳跃提升 I、速度 II
+item.gtnl.soul_cardboard.tooltip.1=受到伤害后获得 3 秒幽灵形态
+item.gtnl.soul_cardboard.tooltip.2=幽灵形态下怪物不会锁定你
+
 item.gtnl.super_reach_ring.name=超级触物指环
 item.gtnl.satiety_ring.name=饱食指环
 item.gtnl.rejection_ring.name=排斥指环

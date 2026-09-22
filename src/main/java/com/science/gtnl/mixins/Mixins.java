@@ -39,7 +39,7 @@ public enum Mixins implements IMixins {
         "minecraft.MixinEntityPlayer", "minecraft.MixinExplosion", "minecraft.MixinInventoryCrafting",
         "minecraft.MixinItemStack", "minecraft.MixinMinecraftServer", "minecraft.MixinNBTTagList",
         "minecraft.MixinPotionEffect", "minecraft.MixinServerConfigurationManager", "minecraft.MixinWorld",
-        "minecraft.MixinWorldServer"),
+        "minecraft.MixinWorldGhostlyShape", "minecraft.MixinWorldServer"),
 
     APRIL_FOOL(new MixinBuilder("April Fool Late Mixins")
         .addSidedMixins(Side.CLIENT, "aprilFool.MixinBaseMetaTileEntityRenderer", "aprilFool.MixinCommonMetaTileEntity")
