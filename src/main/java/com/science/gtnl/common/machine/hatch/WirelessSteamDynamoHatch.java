@@ -42,6 +42,7 @@ import gregtech.api.enums.OutputHatchType;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.fluid.IFluidStore;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
@@ -51,6 +52,7 @@ import gregtech.api.util.GTUtility;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidStore, IAddGregtechLogo {
 
     public UUID ownerUUID;

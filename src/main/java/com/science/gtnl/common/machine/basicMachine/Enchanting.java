@@ -13,6 +13,7 @@ import com.science.gtnl.common.gui.modularui.GTNLBasicMachineGui;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.item.ItemUtils;
 
+import gregtech.api.enums.GTValues;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -30,7 +31,7 @@ public class Enchanting extends MTEBasicMachine {
             aNameRegional,
             aTier,
             1,
-            new String[] {},
+            GTValues.emptyStringArray,
             1,
             1,
             TextureFactory.of(

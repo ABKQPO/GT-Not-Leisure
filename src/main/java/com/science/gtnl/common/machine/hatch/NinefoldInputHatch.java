@@ -27,6 +27,7 @@ import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.interfaces.IConfigurationCircuitSupport;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.modularui.IAddUIWidgets;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -34,6 +35,7 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchMultiInput;
 import gregtech.api.render.TextureFactory;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class NinefoldInputHatch extends MTEHatchMultiInput
     implements IConfigurationCircuitSupport, IAddUIWidgets, IAddGregtechLogo {
 

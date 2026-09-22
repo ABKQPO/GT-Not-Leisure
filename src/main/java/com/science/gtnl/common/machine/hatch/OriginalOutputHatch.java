@@ -5,10 +5,12 @@ import net.minecraft.util.StatCollector;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchOutput;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class OriginalOutputHatch extends MTEHatchOutput {
 
     public OriginalOutputHatch(int aID, String aName, String aNameRegional) {

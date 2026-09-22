@@ -67,6 +67,7 @@ import gregtech.api.enums.GTValues;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IDataCopyable;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.modularui.IAddUIWidgets;
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
@@ -86,6 +87,7 @@ import gregtech.common.tileentities.machines.ISmartInputHatch;
 import gregtech.common.tileentities.machines.MTEHatchInputBusME;
 import gregtech.common.tileentities.machines.RecipeCheckReason;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProcessingAwareHatch, IAddGregtechLogo,
     IAddUIWidgets, IPowerChannelState, ISmartInputHatch, IDataCopyable {
 

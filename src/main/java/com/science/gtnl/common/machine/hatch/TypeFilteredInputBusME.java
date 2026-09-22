@@ -33,11 +33,13 @@ import appeng.me.helpers.IGridProxyable;
 import gregtech.api.enums.GTValues;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTRecipeBuilder;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class TypeFilteredInputBusME extends OredictInputBusME {
 
     @Nullable

@@ -19,6 +19,7 @@ import com.science.gtnl.common.material.GTNLMaterials;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.modularui.IAddUIWidgets;
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -33,6 +34,7 @@ import vazkii.botania.api.subtile.SubTileGenerating;
 import vazkii.botania.common.block.tile.TileSpecialFlower;
 import vazkii.botania.common.block.tile.mana.TilePool;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
 
     private static final int MANA_POOL_RADIUS = 2;

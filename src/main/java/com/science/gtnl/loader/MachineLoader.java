@@ -4678,7 +4678,7 @@ public class MachineLoader {
             new BeamlinePipeMirror(
                 GTNLMachineID.BEAMLINE_PIPE_MIRROR.ID,
                 "BeamlinePipeMirror",
-                StatCollector.translateToLocal("gtnl.hatch.beamline_pipe_mirror.name")));
+                StatCollector.translateToLocal("gtnl.blockmachines.beamlinepipemirror.name")));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.BeamlinePipeMirror.get(1), AnimatedText.GT_NOT_LEISURE);
     }
 

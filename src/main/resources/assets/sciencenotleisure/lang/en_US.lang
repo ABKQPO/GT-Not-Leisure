@@ -3077,9 +3077,9 @@ gtnl.hatch.output_hatch_me_proxy.tooltip.4=Change ME connection behavior by righ
 gtnl.hatch.output_hatch_me_proxy.tooltip.5=Partition the inserted Storage Cell to filter accepted outputs
 gtnl.hatch.output_hatch_me_proxy.tooltip.6=Use data stick to link target Output Hatch (ME)
 
-gtnl.hatch.beamline_pipe_mirror.name=Beamline Pipe Mirror
-gtnl.hatch.beamline_pipe_mirror.tooltip.0=Deflection for particles
-gtnl.hatch.beamline_pipe_mirror.tooltip.1=§bAllows Bending
+gtnl.blockmachines.beamlinepipemirror.name=Beamline Pipe Mirror
+gtnl.blockmachines.beamlinepipemirror.tooltip.0=Deflection for particles
+gtnl.blockmachines.beamlinepipemirror.tooltip.1=§bAllows Bending
 
 gtnl.hatch.configuration_drone_downlink.name=Configuration Drone DownLink Module
 gtnl.hatch.configuration_drone_downlink.tooltip.0=For maintaining Multiblocks with Drone
@@ -3111,8 +3111,8 @@ gtnl.hatch.wireless_vacuum_conveyor.link_failed=Wireless Vacuum Conveyor link fa
 gtnl.hatch.wireless_vacuum_conveyor.data_stick=Wireless Vacuum Conveyor Link Data Configuration
 gtnl.hatch.wireless_vacuum_conveyor.output.info.linked_input=Linked input: %d, %d, %d
 
-BW_GlasBlocks2.1.name=Shirabon Reinforced Borosilicate Glass Block
-BW_GlasBlocks2.2.name=Quark Gluon Plasma Reinforced Borosilicate Glass Block
+BW_ExtraGlass.6.name=Shirabon Reinforced Borosilicate Glass Block
+BW_ExtraGlass.7.name=Quark Gluon Plasma Reinforced Borosilicate Glass Block
 
 gtnl.block.meta_casing.0.name=Test Casing
 gtnl.block.meta_casing.1.name=Steam Assembly Casing

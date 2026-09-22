@@ -19,7 +19,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -27,6 +26,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -57,14 +57,13 @@ import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.api.mixinHelper.IMultiblockRecipeMap;
 import com.science.gtnl.common.gui.modularui.SuperCraftingInputHatchMEGui;
-import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.implementations.IPowerChannelState;
+import appeng.api.interfaces.IInterfaceNameProvider;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -95,7 +94,6 @@ import appeng.util.IWideReadableNumberConverter;
 import appeng.util.PatternMultiplierHelper;
 import appeng.util.Platform;
 import appeng.util.ReadableNumberConverter;
-import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.Dyes;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
@@ -125,6 +123,7 @@ import gregtech.common.tileentities.machines.IDualInputHatchWithPattern;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
 import gregtech.common.tileentities.machines.IHatchWatcher;
+import gregtech.crossmod.ae2.ChatComponentNonConsumedItemsSuffix;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
@@ -132,9 +131,10 @@ import lombok.Setter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
-public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConfigurationCircuitSupport,
-    IAddGregtechLogo, IAddUIWidgets, IPowerChannelState, ICraftingProvider, IGridProxyable, IDualInputHatchWithPattern,
-    ICustomNameObject, IInterfaceViewable, IMEConnectable, IMultiblockRecipeMap {
+@IMetaTileEntity.SkipGenerateDescription
+public class SuperCraftingInputHatchME extends MTEHatchInputBus
+    implements IConfigurationCircuitSupport, IAddGregtechLogo, IAddUIWidgets, IPowerChannelState, ICraftingProvider,
+    IGridProxyable, IDualInputHatchWithPattern, ICustomNameObject, IInterfaceViewable, IMEConnectable {
 
     public static UITexture OVERLAY_BUTTON_X2 = UITexture
         .fullImage(ScienceNotLeisure.RESOURCE_ROOT_ID, "gui/overlay_button/x2");
@@ -351,65 +351,46 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
         }
 
         StringBuilder name = new StringBuilder();
-
-        if (MainConfig.machine.enableHatchInterfaceTerminalEnhance) {
-            if (mInventory[SLOT_CIRCUIT] != null) {
-                name.append("gt_circuit_")
-                    .append(mInventory[SLOT_CIRCUIT].getItemDamage())
-                    .append('_');
-            }
-
-            if (gtnl$getRecipeMapName() != null) {
-                name.append("extra_start_")
-                    .append(gtnl$getRecipeMapName())
-                    .append("_extra_end_");
-            }
-
-            if (mInventory[SLOT_MANUAL_START] != null) {
-                ItemStack stack = mInventory[SLOT_MANUAL_START];
-                Item item = stack.getItem();
-                String registryName = GameRegistry.findUniqueIdentifierFor(item)
-                    .toString();
-
-                name.append("extra_item_start_")
-                    .append(registryName)
-                    .append("@")
-                    .append(stack.getItemDamage());
-
-                if (stack.hasDisplayName()) {
-                    name.append("{")
-                        .append(stack.getDisplayName())
-                        .append("}");
-                }
-
-                name.append("extra_item_end_");
-            }
-
-            if (getCrafterIcon() != null) {
-                name.append(getCrafterIcon().getUnlocalizedName());
-            } else {
-                name.append("gt.blockmachines.")
-                    .append(mName)
-                    .append(".name");
-            }
+        ItemStack crafterIcon = getCrafterIcon();
+        if (crafterIcon != null) {
+            name.append(crafterIcon.getDisplayName());
         } else {
-            if (getCrafterIcon() != null) {
-                name.append(getCrafterIcon().getDisplayName());
-            } else {
-                name.append(getLocalName());
-            }
-
-            if (mInventory[SLOT_CIRCUIT] != null) {
-                name.append(" - ");
-                name.append(mInventory[SLOT_CIRCUIT].getItemDamage());
-            }
-            if (mInventory[SLOT_MANUAL_START] != null) {
-                name.append(" - ");
-                name.append(mInventory[SLOT_MANUAL_START].getDisplayName());
-            }
+            name.append(getLocalName());
         }
 
+        IChatComponent suffix = getNameSuffix();
+        if (suffix != null) name.append(suffix.getUnformattedText());
         return name.toString();
+    }
+
+    @Override
+    public String getRawName() {
+        if (hasCustomName()) return customName;
+        ItemStack crafterIcon = getCrafterIcon();
+        return crafterIcon != null ? crafterIcon.getUnlocalizedName() : getLocalNameKey();
+    }
+
+    @Override
+    public IChatComponent getNameSuffix() {
+        if (hasCustomName()) return null;
+
+        IChatComponent suffix = null;
+        IGregTechTileEntity base = getBaseMetaTileEntity();
+        if (base instanceof IInterfaceNameProvider nameProvider) {
+            suffix = nameProvider.getInterfaceNameSuffix();
+        }
+
+        List<ItemStack> manualSlots = new ArrayList<>();
+        for (int i = SLOT_MANUAL_START; i < SLOT_MANUAL_START + SLOT_MANUAL_SIZE; i++) {
+            ItemStack stack = mInventory[i];
+            if (stack != null) manualSlots.add(stack);
+        }
+        if (!manualSlots.isEmpty()) {
+            IChatComponent manualSuffix = new ChatComponentNonConsumedItemsSuffix(manualSlots);
+            suffix = suffix == null ? manualSuffix : suffix.appendSibling(manualSuffix);
+        }
+
+        return suffix;
     }
 
     @Override
@@ -888,6 +869,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
     public void getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
         IWailaConfigHandler config) {
         NBTTagCompound tag = accessor.getNBTData();
+        gtnl$addWailaName(currenttip, tag);
         currenttip.add(
             StatCollector.translateToLocal(
                 "gtnl.interface.show_pattern." + (tag.getBoolean("showPattern") ? "enabled" : "disabled")));
@@ -895,13 +877,15 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
             NBTTagList inventory = tag.getTagList("inventory", Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < inventory.tagCount(); ++i) {
                 NBTTagCompound item = inventory.getCompoundTagAt(i);
-                String name = item.getString("name");
+                String name = gtnl$getWailaInventoryName(item);
                 long amount = item.getLong("amount");
-                currenttip.add(
-                    name + ": "
-                        + EnumChatFormatting.GOLD
-                        + ReadableNumberConverter.INSTANCE.toWideReadableForm(amount)
-                        + EnumChatFormatting.RESET);
+                if (!name.isEmpty()) {
+                    currenttip.add(
+                        name + ": "
+                            + EnumChatFormatting.GOLD
+                            + ReadableNumberConverter.INSTANCE.toWideReadableForm(amount)
+                            + EnumChatFormatting.RESET);
+                }
             }
         }
         super.getWailaBody(itemStack, currenttip, accessor, config);
@@ -911,36 +895,132 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus implements IConf
     public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
         int z) {
         super.getWailaNBTData(player, tile, tag, world, x, y, z);
+        gtnl$removeGenericWailaName(tag);
+        gtnl$writeWailaName(tag);
         tag.setBoolean("showPattern", showPattern);
         NBTTagList inventory = new NBTTagList();
 
-        Object2LongOpenHashMap<String> nameToAmount = new Object2LongOpenHashMap<>();
+        Object2LongOpenHashMap<String> entryToAmount = new Object2LongOpenHashMap<>();
+        Map<String, NBTTagCompound> entries = new HashMap<>();
 
         Iterator<PatternSlot<SuperCraftingInputHatchME>> it = inventories();
         while (it.hasNext()) {
             PatternSlot<SuperCraftingInputHatchME> i = it.next();
             for (ItemStack item : i.itemInventory) {
                 if (item != null && item.stackSize > 0) {
-                    String name = item.getDisplayName();
-                    nameToAmount.merge(name, item.stackSize, Long::sum);
+                    ItemStack displayStack = item.copy();
+                    displayStack.stackSize = 1;
+                    NBTTagCompound entry = displayStack.writeToNBT(new NBTTagCompound());
+                    String key = "item:" + entry;
+                    entryToAmount.merge(key, (long) item.stackSize, Long::sum);
+                    entries.putIfAbsent(key, entry);
                 }
             }
             for (FluidStack fluid : i.fluidInventory) {
                 if (fluid != null && fluid.amount > 0) {
-                    String name = fluid.getLocalizedName();
-                    nameToAmount.merge(name, fluid.amount, Long::sum);
+                    FluidStack displayFluid = fluid.copy();
+                    displayFluid.amount = 1;
+                    NBTTagCompound entry = displayFluid.writeToNBT(new NBTTagCompound());
+                    String key = "fluid:" + entry;
+                    entryToAmount.merge(key, (long) fluid.amount, Long::sum);
+                    entries.putIfAbsent(key, entry);
                 }
             }
         }
 
-        for (Map.Entry<String, Long> entry : nameToAmount.object2LongEntrySet()) {
-            NBTTagCompound item = new NBTTagCompound();
-            item.setString("name", entry.getKey());
-            item.setLong("amount", entry.getValue());
-            inventory.appendTag(item);
+        for (Map.Entry<String, Long> entry : entryToAmount.object2LongEntrySet()) {
+            NBTTagCompound summary = new NBTTagCompound();
+            summary.setByte(
+                "type",
+                (byte) (entry.getKey()
+                    .startsWith("item:") ? 0 : 1));
+            summary.setTag("entry", entries.get(entry.getKey()));
+            summary.setLong("amount", entry.getValue());
+            inventory.appendTag(summary);
         }
 
         tag.setTag("inventory", inventory);
+    }
+
+    private void gtnl$removeGenericWailaName(NBTTagCompound tag) {
+        tag.removeTag("gtnl$interfaceName");
+        tag.removeTag("gtnl$interfaceIcon");
+        tag.removeTag("gtnl$interfaceCircuit");
+        tag.removeTag("gtnl$interfaceRecipeMap");
+        tag.removeTag("gtnl$interfaceItems");
+    }
+
+    private void gtnl$writeWailaName(NBTTagCompound tag) {
+        ItemStack crafterIcon = getCrafterIcon();
+        ItemStack circuit = mInventory[SLOT_CIRCUIT];
+        NBTTagList manualItems = new NBTTagList();
+        for (int i = SLOT_MANUAL_START; i < SLOT_MANUAL_START + SLOT_MANUAL_SIZE; i++) {
+            ItemStack stack = mInventory[i];
+            if (stack != null) manualItems.appendTag(stack.writeToNBT(new NBTTagCompound()));
+        }
+
+        boolean hasCircuit = allowSelectCircuit() && circuit != null && circuit.getItemDamage() > 0;
+        if (!hasCustomName() && crafterIcon == null && !hasCircuit && manualItems.tagCount() == 0) return;
+
+        tag.setBoolean("gtnl$superCraftingNamePresent", true);
+        if (hasCustomName()) {
+            tag.setString("gtnl$superCraftingCustomName", getCustomName());
+        } else if (crafterIcon != null) {
+            tag.setTag("gtnl$superCraftingIcon", crafterIcon.writeToNBT(new NBTTagCompound()));
+        } else {
+            tag.setString("gtnl$superCraftingFallbackName", getLocalNameKey());
+        }
+        if (hasCircuit) tag.setInteger("gtnl$superCraftingCircuit", circuit.getItemDamage());
+        if (manualItems.tagCount() > 0) tag.setTag("gtnl$superCraftingManualItems", manualItems);
+    }
+
+    private static void gtnl$addWailaName(List<String> currenttip, NBTTagCompound tag) {
+        if (!tag.getBoolean("gtnl$superCraftingNamePresent")) return;
+
+        String name = tag.getString("gtnl$superCraftingCustomName");
+        if (name.isEmpty() && tag.hasKey("gtnl$superCraftingIcon")) {
+            ItemStack icon = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("gtnl$superCraftingIcon"));
+            if (icon != null) name = icon.getDisplayName();
+        }
+        if (name.isEmpty()) name = gtnl$localize(tag.getString("gtnl$superCraftingFallbackName"));
+        if (tag.hasKey("gtnl$superCraftingCircuit")) name += " [" + tag.getInteger("gtnl$superCraftingCircuit") + "]";
+        currenttip.add(EnumChatFormatting.AQUA + name + EnumChatFormatting.RESET);
+
+        NBTTagList manualItems = tag.getTagList("gtnl$superCraftingManualItems", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < manualItems.tagCount(); i++) {
+            ItemStack stack = ItemStack.loadItemStackFromNBT(manualItems.getCompoundTagAt(i));
+            if (stack != null) {
+                currenttip.add(
+                    EnumChatFormatting.AQUA + "  " + gtnl$getShortItemDisplayName(stack) + EnumChatFormatting.RESET);
+            }
+        }
+    }
+
+    private static String gtnl$getWailaInventoryName(NBTTagCompound entry) {
+        NBTTagCompound stackTag = entry.getCompoundTag("entry");
+        if (entry.getByte("type") == 0) {
+            ItemStack stack = ItemStack.loadItemStackFromNBT(stackTag);
+            return stack == null ? "" : stack.getDisplayName();
+        }
+        FluidStack fluid = FluidStack.loadFluidStackFromNBT(stackTag);
+        return fluid == null ? "" : fluid.getLocalizedName();
+    }
+
+    private static String gtnl$getShortItemDisplayName(ItemStack stack) {
+        String name = stack.getDisplayName();
+        if (!name.endsWith(")")) return name;
+        int open = name.lastIndexOf('(');
+        if (open < 0) return name;
+        String inner = name.substring(open + 1, name.length() - 1)
+            .trim();
+        return inner.isEmpty() ? name : inner;
+    }
+
+    private static String gtnl$localize(String key) {
+        if (StatCollector.canTranslate(key)) return StatCollector.translateToLocal(key);
+        String blockName = key + ".name";
+        return StatCollector.canTranslate(blockName) ? StatCollector.translateToLocal(blockName)
+            : StatCollector.translateToFallback(key);
     }
 
     @Override

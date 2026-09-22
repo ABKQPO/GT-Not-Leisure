@@ -30,6 +30,7 @@ import com.science.gtnl.common.gui.modularui.DualInputHatchGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.modularui.IAddUIWidgets;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -39,6 +40,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, IDualInputHatch, IAddGregtechLogo {
 
     public FluidStack[] mStoredFluid;

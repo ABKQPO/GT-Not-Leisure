@@ -31,6 +31,7 @@ import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.render.TextureFactory;
@@ -38,6 +39,7 @@ import gregtech.api.util.GTUtility;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class WirelessSteamEnergyHatch extends CustomFluidHatch {
 
     public UUID ownerUUID;

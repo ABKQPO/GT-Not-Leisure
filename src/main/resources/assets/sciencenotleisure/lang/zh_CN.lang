@@ -3077,9 +3077,9 @@ gtnl.hatch.output_hatch_me_proxy.tooltip.4=手持剪线钳右键以改变仓室�
 gtnl.hatch.output_hatch_me_proxy.tooltip.5=对插入的存储元件进行分区以对可接受的输出进行过滤
 gtnl.hatch.output_hatch_me_proxy.tooltip.6=使用闪存链接到目标输出仓(ME)
 
-gtnl.hatch.beamline_pipe_mirror.name=束流波导管
-gtnl.hatch.beamline_pipe_mirror.tooltip.0=粒子偏转管道
-gtnl.hatch.beamline_pipe_mirror.tooltip.1=§b允许拐弯
+gtnl.blockmachines.beamlinepipemirror.name=束流波导管
+gtnl.blockmachines.beamlinepipemirror.tooltip.0=粒子偏转管道
+gtnl.blockmachines.beamlinepipemirror.tooltip.1=§b允许拐弯
 
 gtnl.hatch.configuration_drone_downlink.name=可配置无人机下行模块
 gtnl.hatch.configuration_drone_downlink.tooltip.0=通过无人机维护多方块机器
@@ -3111,8 +3111,8 @@ gtnl.hatch.wireless_vacuum_conveyor.link_failed=无线真空传送端口连接�
 gtnl.hatch.wireless_vacuum_conveyor.data_stick=无线真空传送端口连接配置
 gtnl.hatch.wireless_vacuum_conveyor.output.info.linked_input=已连接输入端口：%d, %d, %d
 
-BW_GlasBlocks2.1.name=调律源金强化硼玻璃方块
-BW_GlasBlocks2.2.name=简并夸克胶子等离子体强化硼玻璃方块
+BW_ExtraGlass.6.name=调律源金强化硼玻璃方块
+BW_ExtraGlass.7.name=简并夸克胶子等离子体强化硼玻璃方块
 
 gtnl.block.meta_casing.0.name=测试机械方块
 gtnl.block.meta_casing.1.name=蒸汽装配机械方块
