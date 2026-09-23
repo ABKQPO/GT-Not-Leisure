@@ -2135,8 +2135,7 @@ public class MachineLoader {
                 GTNLMachineID.SMALL_ARCANE_ASSEMBLER.ID,
                 "SmallArcaneAssembler",
                 StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SmallArcaneAssembler.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallArcaneAssembler.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SuperInputBusME.set(
             new SuperInputBusME(
