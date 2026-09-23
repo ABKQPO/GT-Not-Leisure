@@ -371,7 +371,7 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 GTUtility.getIntegratedCircuit(17),
                 ItemList.IndustrialCuttingMachine.get(1L),
-                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockAlloyGlass", 4, 0),
+                ItemList.ReinforcedGlass.get(4),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.IV, 2L),
                 GTOreDictUnificator.get(OrePrefixes.cableGt04, Materials.Platinum, 4L),
                 WerkstoffLoader.Ruridit.get(OrePrefixes.plateDouble, 4),
@@ -537,7 +537,7 @@ public class AssemblerRecipes implements IRecipePool {
                 GTUtility.getIntegratedCircuit(17),
                 ItemList.IndustrialElectrolyzer.get(1L),
                 GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.TungstenSteel, 4L),
-                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockAlloyGlass", 4, 0),
+                ItemList.ReinforcedGlass.get(4),
                 ItemList.Electric_Pump_IV.get(2L),
                 MaterialsAlloy.STELLITE.getPlateDouble(4),
                 MaterialsAlloy.STELLITE.getRotor(8),
@@ -589,7 +589,7 @@ public class AssemblerRecipes implements IRecipePool {
                 GTUtility.getIntegratedCircuit(17),
                 ItemList.IndustrialMixer.get(1L),
                 GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.Naquadah, 4L),
-                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockAlloyGlass", 4, 0),
+                ItemList.ReinforcedGlass.get(4),
                 ItemList.Electric_Motor_IV.get(4L),
                 MaterialsAlloy.ZIRCONIUM_CARBIDE.getPlateDouble(4),
                 GTOreDictUnificator.get(OrePrefixes.rotor, Materials.TungstenSteel, 8L),
@@ -1269,7 +1269,7 @@ public class AssemblerRecipes implements IRecipePool {
                 GTNLItemList.NinefoldInputHatchIV.get(1),
                 ItemList.Automation_ChestBuffer_IV.get(4),
                 GTOreDictUnificator.get(OrePrefixes.pipeLarge, Materials.TungstenSteel, 4L),
-                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockAlloyGlass", 1, 0))
+                ItemList.ReinforcedGlass.get(1))
             .itemOutputs(GTNLItemList.HumongousSolidifierHatch.get(1))
             .fluidInputs(SubstituteFluidStack.soldering(576))
             .duration(600)
@@ -1329,7 +1329,7 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.screw, Materials.TungstenCarbide, 2L),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.TungstenCarbide, 2L),
-                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockAlloyGlass", 2, 0),
+                ItemList.ReinforcedGlass.get(2),
                 GTOreDictUnificator.get(OrePrefixes.spring, Materials.Europium, 1L),
                 GTOreDictUnificator.get(OrePrefixes.circuit, Materials.IV, 1L),
                 GTOreDictUnificator.get(OrePrefixes.cableGt01, Materials.Platinum, 1L))
@@ -3744,7 +3744,7 @@ public class AssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 ItemList.Hatch_Dynamo_IV.get(1),
-                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockAlloyGlass", 32, 0),
+                ItemList.ReinforcedGlass.get(32),
                 GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "reactorReflectorThick", 1, 1),
                 BlockList.TungstensteelPlatedReinforcedStone.get(2),
                 NHItemList.ReinforcedTungstenSteelIronPlate.get(2),

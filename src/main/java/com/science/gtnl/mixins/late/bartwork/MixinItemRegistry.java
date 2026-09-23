@@ -27,9 +27,9 @@ public class MixinItemRegistry {
         String[] originalTextures = args.get(1);
         String[] newTextures = Arrays.copyOf(originalTextures, originalTextures.length + 2);
         newTextures[originalTextures.length] = ModList.ScienceNotLeisure.ID
-            + ":ShirabonReinforcedBoronSilicateGlassBlock";
+            + ":ShirabonReinforcedBoronSilicateGlassBlockTransparent";
         newTextures[originalTextures.length + 1] = ModList.ScienceNotLeisure.ID
-            + ":QuarkGluonPlasmaReinforcedBoronSilicateGlassBlock";
+            + ":QuarkGluonReinforcedBoronSilicateGlassBlockTransparent";
         args.set(1, newTextures);
     }
 }

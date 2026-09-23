@@ -122,12 +122,14 @@ public class NEIGTNLConfig implements IConfigureNEI {
         ItemStack controller = GTNLItemList.NuclearReactor.get(1);
         if (controller == null || controller.getItem() == null) return;
         event.registerHandlerInfo(
-            new HandlerInfo.Builder("gtnl_nuclear_reactor_guide", "GTNotLeisure", "sciencenotleisure")
-                .setDisplayStack(controller)
-                .setWidth(166)
-                .setHeight(100)
-                .setMultipleWidgetsAllowed(false)
-                .build());
+            new HandlerInfo.Builder(
+                "gtnl_nuclear_reactor_guide",
+                ModList.ScienceNotLeisure.displayName,
+                ModList.ScienceNotLeisure.ID).setDisplayStack(controller)
+                    .setWidth(166)
+                    .setHeight(100)
+                    .setMultipleWidgetsAllowed(false)
+                    .build());
     }
 
     private static void addMachineGuidePage(GTNLItemList item, String infoKey) {

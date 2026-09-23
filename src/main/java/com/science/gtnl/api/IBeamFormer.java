@@ -13,6 +13,10 @@ public interface IBeamFormer {
 
     AEColor getColor();
 
+    AEColor getBeamColor();
+
+    void setBeamColor(AEColor color);
+
     int getBeamLength();
 
     void setBeamLength(int length);
@@ -39,6 +43,8 @@ public interface IBeamFormer {
 
     void setConnection(IGridConnection conn);
 
+    IGridConnection getConnection();
+
     void setOtherBeamFormer(IBeamFormer other);
 
     IBeamFormer getOtherBeamFormer();
@@ -52,4 +58,6 @@ public interface IBeamFormer {
     void markForUpdate();
 
     void sleepDevice();
+
+    void wakeDevice();
 }

@@ -38,6 +38,7 @@ import com.science.gtnl.utils.item.ItemUtils;
 import gregtech.GTLoggers;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
@@ -46,6 +47,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class HumongousDualInputHatch extends DualInputHatch
     implements ISkipStackSizeCheck, IRecipeProcessingAwareDualHatch {
 

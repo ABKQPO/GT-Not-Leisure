@@ -12,7 +12,7 @@ import thaumcraft.client.renderers.tile.TileJarRenderer;
 public class MixinTileJarRenderer {
 
     @Redirect(
-        method = "renderTileEntityAt",
+        method = "renderTileEntityAt(Lthaumcraft/common/tiles/TileJar;DDDF)V",
         at = @At(
             value = "INVOKE",
             target = "Lthaumcraft/client/lib/UtilsFX;drawTag(IILthaumcraft/api/aspects/Aspect;)V"))

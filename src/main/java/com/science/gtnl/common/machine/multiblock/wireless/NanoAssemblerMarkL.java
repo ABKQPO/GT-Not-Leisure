@@ -23,14 +23,12 @@ import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachi
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import goodgenerator.api.recipe.GoodGeneratorRecipeMaps;
 import goodgenerator.loader.Loaders;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -161,9 +159,7 @@ public class NanoAssemblerMarkL extends WirelessEnergyMultiMachineBase<NanoAssem
                     Block.getBlockFromItem(
                         MaterialsAlloy.TRINIUM_NAQUADAH_CARBON.getFrameBox(1)
                             .getItem())))
-            .addElement(
-                'O',
-                StructureUtility.ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
+            .addElement('O', Casings.ReinforcedGlass.asElement())
             .addElement('P', GTNLCasings.NeutroniumPipeCasing.asElement())
             .addElement('Q', Casings.AdvancedFilterCasing.asElement())
             .build();

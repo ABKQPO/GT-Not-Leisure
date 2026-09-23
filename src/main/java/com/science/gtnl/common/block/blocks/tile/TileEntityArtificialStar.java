@@ -1,29 +1,21 @@
 package com.science.gtnl.common.block.blocks.tile;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
 public class TileEntityArtificialStar extends TileEntity {
 
-    // 当前的旋转角度
-    public double rotation = 0;
-    // 当前的大小
     public double size = 0;
-    // 目标大小
-    public double targetSize = 12;
-    // 初始大小
+    public double targetSize = 30;
     public double initialSize = 0;
-    // 初始旋转速度
-    public double initialRotationSpeed = 0;
-    // 目标旋转速度
-    public double targetRotationSpeed = 0.5;
-    // 记录已更新的tick
     public int ticks = 0;
-    // 变大的时间（以tick为单位）
-    public int duration = 100;
-    // 当前放大到第几个模型
-    public int currentModelIndex = 0;
+    public int duration = 150;
+
+    private double previousSize = 0;
 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
@@ -39,36 +31,59 @@ public class TileEntityArtificialStar extends TileEntity {
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
         nbt.setDouble("size", size);
-        nbt.setDouble("rotation", rotation);
-        nbt.setInteger("currentModelIndex", currentModelIndex);
+        nbt.setDouble("targetSize", targetSize);
+        nbt.setDouble("initialSize", initialSize);
+        nbt.setInteger("ticks", ticks);
+        nbt.setInteger("duration", duration);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         size = nbt.getDouble("size");
-        rotation = nbt.getDouble("rotation");
-        currentModelIndex = nbt.getInteger("currentModelIndex");
+        previousSize = size;
+        targetSize = nbt.hasKey("targetSize") ? nbt.getDouble("targetSize") : 30;
+        duration = nbt.hasKey("duration") ? Math.max(0, nbt.getInteger("duration")) : 150;
+        // Older saves only stored the current size; continue growing from that radius.
+        initialSize = nbt.hasKey("initialSize") ? nbt.getDouble("initialSize") : size;
+        ticks = nbt.hasKey("ticks") ? Math.max(0, Math.min(duration, nbt.getInteger("ticks")))
+            : size == targetSize ? duration : 0;
+    }
+
+    @Override
+    public Packet getDescriptionPacket() {
+        NBTTagCompound nbt = new NBTTagCompound();
+        writeToNBT(nbt);
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, nbt);
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+        readFromNBT(packet.func_148857_g());
     }
 
     @Override
     public void updateEntity() {
         super.updateEntity();
+        previousSize = size;
         if (ticks < duration) {
-            double t = (double) ticks / duration;
+            double t = (double) ++ticks / duration;
             double easedT = cubicEaseOut(t);
             size = initialSize + (targetSize - initialSize) * easedT;
-            rotation += initialRotationSpeed + (targetRotationSpeed - initialRotationSpeed) * easedT;
-            ticks++;
         } else {
             size = targetSize;
-            rotation = (rotation + targetRotationSpeed) % 360d;
-            currentModelIndex++;
-            ticks = 0;
+        }
+        if (ticks >= duration && size != previousSize && worldObj != null && !worldObj.isRemote) {
+            markDirty();
         }
     }
 
+    public double getRenderSize(float partialTicks) {
+        return previousSize + (size - previousSize) * partialTicks;
+    }
+
     public double cubicEaseOut(double t) {
-        return 1 - Math.pow(1 - t, 3);
+        double remaining = 1 - t;
+        return 1 - remaining * remaining * remaining;
     }
 }

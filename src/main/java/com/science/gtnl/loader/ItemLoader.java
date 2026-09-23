@@ -49,6 +49,7 @@ import com.science.gtnl.common.item.items.TimeStopPocketWatch;
 import com.science.gtnl.common.item.items.TwilightSword;
 import com.science.gtnl.common.item.items.VeinMiningPickaxe;
 import com.science.gtnl.common.item.items.WirelessUpgradeChip;
+import com.science.gtnl.common.item.items.armor.SoulCardboardArmor;
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionBauble;
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionType;
 import com.science.gtnl.common.item.items.bauble.LuckyHorseshoe;
@@ -155,6 +156,23 @@ public class ItemLoader {
     public static ElectricProspectorTool electricProspectorTool = new ElectricProspectorTool();
 
     public static SlimeSaddle slimeSaddle = new SlimeSaddle();
+
+    public static SoulCardboardArmor soulCardboardHelmet = new SoulCardboardArmor(
+        "soul_cardboard_helmet",
+        0,
+        GTNLItemList.SoulCardboardHelmet);
+    public static SoulCardboardArmor soulCardboardChestplate = new SoulCardboardArmor(
+        "soul_cardboard_chestplate",
+        1,
+        GTNLItemList.SoulCardboardChestplate);
+    public static SoulCardboardArmor soulCardboardLeggings = new SoulCardboardArmor(
+        "soul_cardboard_leggings",
+        2,
+        GTNLItemList.SoulCardboardLeggings);
+    public static SoulCardboardArmor soulCardboardBoots = new SoulCardboardArmor(
+        "soul_cardboard_boots",
+        3,
+        GTNLItemList.SoulCardboardBoots);
 
     public static SuperReachRing superReachRing = new SuperReachRing();
     public static SatietyRing satietyRing = new SatietyRing();

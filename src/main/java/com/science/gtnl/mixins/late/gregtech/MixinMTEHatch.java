@@ -1,42 +1,38 @@
 package com.science.gtnl.mixins.late.gregtech;
 
 import java.util.List;
-import java.util.Objects;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.science.gtnl.api.mixinHelper.IMultiblockRecipeMap;
-import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.item.ItemUtils;
 
-import appeng.api.util.IInterfaceViewable;
 import appeng.helpers.ICustomNameObject;
-import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.interfaces.IConfigurationCircuitSupport;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.metatileentity.implementations.MTEBasicTank;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchInput;
 import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
+import gregtech.api.recipe.RecipeMap;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
 @Mixin(value = MTEHatch.class, remap = false)
-public abstract class MixinMTEHatch extends MTEBasicTank implements IMultiblockRecipeMap, ICustomNameObject {
-
-    @Unique
-    private String gtnl$multiBlockRecipeMapName = null;
+public abstract class MixinMTEHatch extends MTEBasicTank implements ICustomNameObject {
 
     @Unique
     private String gtnl$customName = "";
@@ -46,14 +42,24 @@ public abstract class MixinMTEHatch extends MTEBasicTank implements IMultiblockR
         super(aID, aName, aNameRegional, aTier, aInvSlotCount, aDescription, aTextures);
     }
 
-    @Override
-    public String gtnl$getRecipeMapName() {
-        return gtnl$multiBlockRecipeMapName;
+    @Inject(method = "loadNBTData", at = @At("TAIL"))
+    private void gtnl$loadCustomName(NBTTagCompound nbt, CallbackInfo callbackInfo) {
+        gtnl$customName = nbt.getString("gtnl$customName");
+    }
+
+    @Inject(method = "saveNBTData", at = @At("TAIL"))
+    private void gtnl$saveCustomName(NBTTagCompound nbt, CallbackInfo callbackInfo) {
+        if (!gtnl$customName.isEmpty()) nbt.setString("gtnl$customName", gtnl$customName);
     }
 
     @Override
-    public void gtnl$setRecipeMapName(String recipeMap) {
-        gtnl$multiBlockRecipeMapName = recipeMap;
+    public String getCustomName() {
+        return gtnl$customName;
+    }
+
+    @Override
+    public boolean hasCustomName() {
+        return !gtnl$customName.isEmpty();
     }
 
     @Override
@@ -62,182 +68,94 @@ public abstract class MixinMTEHatch extends MTEBasicTank implements IMultiblockR
     }
 
     @Override
-    public boolean hasCustomName() {
-        return !gtnl$customName.isEmpty() || MainConfig.machine.enableHatchInterfaceTerminalEnhance;
-    }
-
-    @Unique
-    private String gtnl$getAutoNameKey() {
-        StringBuilder sb = new StringBuilder();
-        MTEHatch hatch = (MTEHatch) (Object) this;
-
-        if (hatch instanceof IConfigurationCircuitSupport circuitHatch) {
-            ItemStack circuit = getStackInSlot(circuitHatch.getCircuitSlot());
-            if (circuit != null) {
-                sb.append("gt_circuit_")
-                    .append(circuit.getItemDamage())
-                    .append('_');
-            }
-        }
-
-        if (hatch instanceof MTEHatchInput inputHatch
-            && (gtnl$multiBlockRecipeMapName != null || inputHatch.mRecipeMap != null)) {
-            sb.append("extra_start_")
-                .append(
-                    gtnl$multiBlockRecipeMapName != null ? gtnl$multiBlockRecipeMapName
-                        : inputHatch.mRecipeMap.unlocalizedName)
-                .append("_extra_end_");
-        }
-        if (hatch instanceof MTEHatchInputBus inputBus
-            && (gtnl$multiBlockRecipeMapName != null || inputBus.mRecipeMap != null)) {
-            sb.append("extra_start_")
-                .append(
-                    gtnl$multiBlockRecipeMapName != null ? gtnl$multiBlockRecipeMapName
-                        : inputBus.mRecipeMap.unlocalizedName)
-                .append("_extra_end_");
-        }
-
-        for (int i = 0; i < 10 && i < mInventory.length; i++) {
-            ItemStack stack = mInventory[i];
-            if (!ItemUtils.isExtraItem(stack)) continue;
-
-            String registryName = GameRegistry.findUniqueIdentifierFor(stack.getItem())
-                .toString();
-
-            sb.append("extra_item_start_")
-                .append(registryName)
-                .append("@")
-                .append(stack.getItemDamage());
-
-            if (stack.hasDisplayName()) {
-                sb.append("{")
-                    .append(stack.getDisplayName())
-                    .append("}");
-            }
-
-            sb.append("extra_item_end_");
-            break;
-        }
-
-        return sb.append(super.getMachineCraftingIcon().getUnlocalizedName())
-            .toString();
-    }
-
-    @Override
-    public String getCustomName() {
-        if (!gtnl$customName.isEmpty()) return gtnl$customName;
-        if (!MainConfig.machine.enableHatchInterfaceTerminalEnhance) return getLocalName();
-        return gtnl$getAutoNameKey();
-    }
-
-    @Override
     public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
         int z) {
         super.getWailaNBTData(player, tile, tag, world, x, y, z);
-        if (!MainConfig.machine.enableHatchInterfaceTerminalEnhance) return;
-        var name = getCustomName();
-        if (name == null || name.isEmpty()) {
-            if (this instanceof IInterfaceViewable viewable) {
-                name = viewable.getName();
-                if (name == null || name.isEmpty()) return;
+        if (hasCustomName()) {
+            tag.setString("gtnl$interfaceName", gtnl$customName);
+            return;
+        }
+
+        ItemStack craftingIcon = getMachineCraftingIcon();
+        if (craftingIcon == null) craftingIcon = getStackForm(1);
+        tag.setTag("gtnl$interfaceIcon", craftingIcon.writeToNBT(new NBTTagCompound()));
+
+        if (this instanceof IConfigurationCircuitSupport circuitSupport && circuitSupport.allowSelectCircuit()) {
+            ItemStack circuit = getStackInSlot(circuitSupport.getCircuitSlot());
+            if (circuit != null && circuit.getItemDamage() > 0) {
+                tag.setInteger("gtnl$interfaceCircuit", circuit.getItemDamage());
             }
         }
-        if (!Objects.equals(name, getLocalName())) {
-            tag.setString("name", name);
+
+        RecipeMap<?> recipeMap = gtnl$getRecipeMap();
+        if (recipeMap != null) tag.setString("gtnl$interfaceRecipeMap", recipeMap.unlocalizedName);
+
+        NBTTagList nonConsumedItems = new NBTTagList();
+        for (ItemStack stack : mInventory) {
+            if (ItemUtils.isExtraItem(stack)) {
+                nonConsumedItems.appendTag(stack.writeToNBT(new NBTTagCompound()));
+                break;
+            }
         }
+        if (nonConsumedItems.tagCount() > 0) tag.setTag("gtnl$interfaceItems", nonConsumedItems);
     }
 
     @Override
     public void getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
         IWailaConfigHandler config) {
         super.getWailaBody(itemStack, currenttip, accessor, config);
-        if (!MainConfig.machine.enableHatchInterfaceTerminalEnhance) return;
         NBTTagCompound tag = accessor.getNBTData();
-        if (tag.hasKey("name")) {
-            currenttip.add(
-                EnumChatFormatting.AQUA
-                    + (MainConfig.machine.enableHatchInterfaceTerminalEnhance
-                        ? Utils.getExtraInterfaceName(tag.getString("name"))
-                        : tag.getString("name"))
-                    + EnumChatFormatting.RESET);
+        StringBuilder name = new StringBuilder(tag.getString("gtnl$interfaceName"));
+        if (!name.isEmpty()) {
+            currenttip.add(EnumChatFormatting.AQUA + name.toString() + EnumChatFormatting.RESET);
+            return;
         }
+        if ((name.isEmpty()) && tag.hasKey("gtnl$interfaceIcon")) {
+            ItemStack icon = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("gtnl$interfaceIcon"));
+            if (icon != null) name = new StringBuilder(icon.getDisplayName());
+        }
+        if (name.isEmpty()) return;
+
+        if (tag.hasKey("gtnl$interfaceCircuit")) {
+            name.append(" - ")
+                .append(tag.getInteger("gtnl$interfaceCircuit"));
+        }
+
+        if (tag.hasKey("gtnl$interfaceRecipeMap")) {
+            name.append(" - ")
+                .append(gtnl$localize(tag.getString("gtnl$interfaceRecipeMap")));
+        }
+
+        NBTTagList nonConsumedItems = tag.getTagList("gtnl$interfaceItems", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < nonConsumedItems.tagCount(); i++) {
+            ItemStack stack = ItemStack.loadItemStackFromNBT(nonConsumedItems.getCompoundTagAt(i));
+            if (stack != null) name.append(" - ")
+                .append(gtnl$getWailaItemName(stack));
+        }
+
+        currenttip.add(EnumChatFormatting.AQUA + name.toString() + EnumChatFormatting.RESET);
     }
 
-    @ModifyVariable(method = "updateCraftingIcon", at = @At("HEAD"), argsOnly = true, index = 1)
-    private ItemStack gtnl$modifyCraftingIcon(ItemStack value) {
-        if (!gtnl$customName.isEmpty()) {
-            var item = value.copy();
-            item.setStackDisplayName(gtnl$customName);
-            return item;
-        }
-        if (!MainConfig.machine.enableHatchInterfaceTerminalEnhance) return value;
-        if (value.hasDisplayName()) return value;
-        MTEHatch hatch = (MTEHatch) (Object) this;
-        StringBuilder sb = null;
-        if (hatch instanceof IConfigurationCircuitSupport circuitHatch) {
-            ItemStack circuit = getStackInSlot(circuitHatch.getCircuitSlot());
-            if (circuit != null) {
-                sb = new StringBuilder();
-                sb.append("gt_circuit_")
-                    .append(circuit.getItemDamage())
-                    .append("_");
-            }
-        }
-        if (hatch instanceof MTEHatchInput inputHatch
-            && (gtnl$multiBlockRecipeMapName != null || inputHatch.mRecipeMap != null)) {
-            if (sb == null) {
-                sb = new StringBuilder();
-            }
-            sb.append("extra_start_")
-                .append(
-                    gtnl$multiBlockRecipeMapName != null ? gtnl$multiBlockRecipeMapName
-                        : inputHatch.mRecipeMap.unlocalizedName)
-                .append("_extra_end_");
-        }
-        if (hatch instanceof MTEHatchInputBus inputBus
-            && (gtnl$multiBlockRecipeMapName != null || inputBus.mRecipeMap != null)) {
-            if (sb == null) {
-                sb = new StringBuilder();
-            }
-            sb.append("extra_start_")
-                .append(
-                    gtnl$multiBlockRecipeMapName != null ? gtnl$multiBlockRecipeMapName
-                        : inputBus.mRecipeMap.unlocalizedName)
-                .append("_extra_end_");
-        }
-
-        for (int i = 0; i < 10 && i < mInventory.length; i++) {
-            ItemStack stack = mInventory[i];
-            if (!ItemUtils.isExtraItem(stack)) continue;
-
-            if (sb == null) {
-                sb = new StringBuilder();
-            }
-
-            String registryName = GameRegistry.findUniqueIdentifierFor(stack.getItem())
-                .toString();
-
-            sb.append("extra_item_start_")
-                .append(registryName)
-                .append("@")
-                .append(stack.getItemDamage());
-
-            if (stack.hasDisplayName()) {
-                sb.append("{")
-                    .append(stack.getDisplayName())
-                    .append("}");
-            }
-
-            sb.append("extra_item_end_");
-            break;
-        }
-
-        if (sb != null && !sb.isEmpty()) {
-            ItemStack modified = value.copy();
-            modified.setStackDisplayName(sb.toString());
-            return modified;
-        }
-        return value;
+    @Unique
+    private static String gtnl$localize(String key) {
+        if (StatCollector.canTranslate(key)) return StatCollector.translateToLocal(key);
+        String blockName = key + ".name";
+        return StatCollector.canTranslate(blockName) ? StatCollector.translateToLocal(blockName)
+            : StatCollector.translateToFallback(key);
     }
 
+    @Unique
+    private static String gtnl$getWailaItemName(ItemStack stack) {
+        ItemStack defaultStack = new ItemStack(stack.getItem(), 1, stack.getItemDamage());
+        String name = defaultStack.getDisplayName();
+        return stack.hasDisplayName() ? name + " (" + stack.getDisplayName() + ")" : name;
+    }
+
+    @Unique
+    private RecipeMap<?> gtnl$getRecipeMap() {
+        Object hatch = this;
+        if (hatch instanceof MTEHatchInput inputHatch) return inputHatch.mRecipeMap;
+        if (hatch instanceof MTEHatchInputBus inputBus) return inputBus.mRecipeMap;
+        return null;
+    }
 }

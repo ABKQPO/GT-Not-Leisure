@@ -33,6 +33,7 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
 
     public static void loadInstance(World world) {
         GLOBAL_STEAM.clear();
+        INSTANCE = null;
 
         MapStorage storage = world.mapStorage;
         INSTANCE = (GlobalSteamWorldSavedData) storage.loadData(GlobalSteamWorldSavedData.class, DATA_NAME);
@@ -55,9 +56,8 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
     @SuppressWarnings("unchecked")
     public void readFromNBT(NBTTagCompound nbtTagCompound) {
         Map<UUID, BigInteger> loadedSteam = readSteam(nbtTagCompound);
-        TeamNetworkManager.mergeLegacyTeams(readLegacyTeams(nbtTagCompound));
-
         if (nbtTagCompound.getInteger(FORMAT_VERSION_TAG) < TEAM_ID_FORMAT_VERSION) {
+            TeamNetworkManager.mergeLegacyTeams(readLegacyTeams(nbtTagCompound));
             loadedSteam.forEach(
                 (legacyLeaderId, steam) -> GLOBAL_STEAM
                     .merge(TeamNetworkManager.getTeamId(legacyLeaderId), steam, BigInteger::add));
@@ -141,6 +141,7 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
 
             nbtTagCompound.setByteArray(GLOBAL_STEAM_NBT_TAG, byteArrayOutputStream.toByteArray());
             nbtTagCompound.setInteger(FORMAT_VERSION_TAG, TEAM_ID_FORMAT_VERSION);
+            nbtTagCompound.removeTag(GLOBAL_STEAM_TEAM_NBT_TAG);
 
         } catch (IOException exception) {
             ScienceNotLeisure.LOG.error("[GlobalSteamWorldSavedData] {} SAVE FAILED", GLOBAL_STEAM_NBT_TAG, exception);

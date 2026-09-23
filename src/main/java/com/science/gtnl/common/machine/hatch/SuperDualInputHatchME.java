@@ -127,6 +127,7 @@ import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IDataCopyable;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
@@ -154,6 +155,7 @@ import lombok.Getter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class SuperDualInputHatchME extends MTEHatchInputBus
     implements IDualInputHatchWithPattern, IRecipeProcessingAwareDualHatch, IAddGregtechLogo, IDataCopyable,
     ISmartInputHatch, IPowerChannelState, IGridProxyable, IStackWatcherHost {

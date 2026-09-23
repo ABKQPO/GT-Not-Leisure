@@ -49,7 +49,7 @@ public class GrandAssemblyLineGui extends GTNLMultiBlockBaseGui<GrandAssemblyLin
             true,
             (panelSyncManager, panelHandler) -> createMinRecipeTimePanel(parent, panelSyncManager));
 
-        return new ButtonWidget<>().size(16, 16)
+        return new ButtonWidget<>().size(18, 18)
             .background(GTGuiTextures.BUTTON_STANDARD)
             .overlay(GTGuiTextures.OVERLAY_BUTTON_BATCH_MODE_ON)
             .onMousePressed(mouseButton -> {
@@ -67,7 +67,8 @@ public class GrandAssemblyLineGui extends GTNLMultiBlockBaseGui<GrandAssemblyLin
     }
 
     private ModularPanel createMinRecipeTimePanel(ModularPanel parent, PanelSyncManager syncManager) {
-        IntSyncValue minRecipeTimeSyncer = syncManager.findSyncHandler(MIN_RECIPE_TIME_SYNC_KEY, IntSyncValue.class);
+        IntSyncValue minRecipeTimeSyncer = syncManager.getHyperVisor()
+            .findSyncHandler(MIN_RECIPE_TIME_SYNC_KEY, IntSyncValue.class);
         Dialog<?> panel = new Dialog<>(MIN_RECIPE_TIME_PANEL_KEY, null);
 
         panel.relative(parent)

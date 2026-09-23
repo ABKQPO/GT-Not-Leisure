@@ -2,23 +2,16 @@ package com.science.gtnl.mixins.late.appliedEnergistics;
 
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Invoker;
-import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import com.science.gtnl.api.mixinHelper.IDualityInterface;
-import com.science.gtnl.config.MainConfig;
 
 import appeng.api.config.YesNo;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -139,22 +132,6 @@ public abstract class MixinDualityInterface implements IDualityInterface {
     @Invoker("updatePlan")
     public abstract void gtnl$updatePlan(int slot);
 
-    @Inject(
-        method = "getRawTermName",
-        at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraft/item/ItemStack;getUnlocalizedName()Ljava/lang/String;",
-            remap = true),
-        cancellable = true)
-    private void gtnl$injectBeforeItemReturn(CallbackInfoReturnable<String> cir,
-        @Local(name = "item") ItemStack itemStack) {
-        if (!MainConfig.machine.enableHatchInterfaceTerminalEnhance) return;
-        if (!itemStack.hasDisplayName()) return;
-        String name = itemStack.getDisplayName();
-        if (!name.startsWith("gt_circuit_") && !name.contains("extra_start_")) return;
-        cir.setReturnValue(name + itemStack.getUnlocalizedName());
-    }
-
     @Unique
     private int configSlots = 9;
     @Unique
@@ -173,5 +150,4 @@ public abstract class MixinDualityInterface implements IDualityInterface {
     private int modifyUpdateStorage(int original) {
         return storageSlots;
     }
-
 }

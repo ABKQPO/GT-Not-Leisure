@@ -19,10 +19,9 @@ public enum Mixins implements IMixins {
         "gregtech.AccessorGTRecipe", "gregtech.AccessorGTRecipeBuilder", "gregtech.AccessorGTRecipeWithAlt",
         "gregtech.MixinGTRecipe", "gregtech.AccessorGTLanguageManager", "gregtech.AccessorCommonMetaTileEntity",
         "gregtech.AccessorMetaTileEntity", "gregtech.AccessorMTEHatch", "gregtech.AccessorProcessingLogic",
-        "gregtech.AccessorRecipeDisplayInfo", "gregtech.MixinMTEBasicMachine", "gregtech.MixinBaseMetaTileEntity",
-        "gregtech.assLineRemover.MixinGTMod", "gregtech.assLineRemover.MixinGTRecipeBuilder",
-        "gregtech.assLineRemover.MixinTTRecipeAdder", "energyMonitor.MixinBaseMetaTileEntityEnergyMonitor",
-        "energyMonitor.MixinCommonMetaTileEntityEnergyMonitor"),
+        "gregtech.AccessorRecipeDisplayInfo", "gregtech.MixinBaseMetaTileEntity", "gregtech.assLineRemover.MixinGTMod",
+        "gregtech.assLineRemover.MixinGTRecipeBuilder", "gregtech.assLineRemover.MixinTTRecipeAdder",
+        "energyMonitor.MixinBaseMetaTileEntityEnergyMonitor", "energyMonitor.MixinCommonMetaTileEntityEnergyMonitor"),
 
     GREGTECH_CLIENT_EARLY(
         new MixinBuilder("Gregtech early client safety mixins").addClientMixins("gregtech.MixinGTLanguageManager")
@@ -40,7 +39,7 @@ public enum Mixins implements IMixins {
         "minecraft.MixinEntityPlayer", "minecraft.MixinExplosion", "minecraft.MixinInventoryCrafting",
         "minecraft.MixinItemStack", "minecraft.MixinMinecraftServer", "minecraft.MixinNBTTagList",
         "minecraft.MixinPotionEffect", "minecraft.MixinServerConfigurationManager", "minecraft.MixinWorld",
-        "minecraft.MixinWorldServer"),
+        "minecraft.MixinWorldGhostlyShape", "minecraft.MixinWorldServer"),
 
     APRIL_FOOL(new MixinBuilder("April Fool Late Mixins")
         .addSidedMixins(Side.CLIENT, "aprilFool.MixinBaseMetaTileEntityRenderer", "aprilFool.MixinCommonMetaTileEntity")
@@ -56,6 +55,21 @@ public enum Mixins implements IMixins {
         "minecraft.MixinMinecraft", "minecraft.MixinWorldClient",
         // "minecraft.MixinSimpleReloadableResourceManager",
         "minecraft.MixinGuiContainer", "minecraft.MixinGuiFlatPresets"),
+
+    TEXT_EFFECTS_COMMON(Side.COMMON, "texteffect.MixinEnumChatFormattingTextEffects"),
+
+    TEXT_EFFECTS_CLIENT(Side.CLIENT, "texteffect.MixinFontRendererTextEffects", "texteffect.MixinGuiNewChatTextEffects",
+        "texteffect.MixinGuiTextFieldTextEffects"),
+
+    TEXT_EFFECTS_ANGELICA(new MixinBuilder("Optional Angelica text effect batching")
+        .addClientMixins("texteffect.angelica.MixinFontBatchTextEffects")
+        .setPhase(Phase.EARLY)
+        .addRequiredMod(ModList.Angelica)),
+
+    TEXT_EFFECTS_NEI(
+        new MixinBuilder("Optional NEI text effect input").addClientMixins("texteffect.MixinNEIFormattedTextField")
+            .setPhase(Phase.LATE)
+            .addRequiredMod(ModList.NotEnoughItems)),
 
     SUPER_CREEPER(new MixinBuilder("Mixins for Super Creeper logic")
         .addCommonMixins(
@@ -94,13 +108,11 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.AccessorTileInterface",
             "appliedEnergistics.MixinAdaptorIInventory",
             "appliedEnergistics.MixinDualityInterface",
-            "appliedEnergistics.MixinInterfaceTerminalEntry",
             "appliedEnergistics.MixinEntityTinyTNTPrimed",
             "appliedEnergistics.MixinTileIOPort",
             "appliedEnergistics.assembler.AccessorContainerPatternTerm",
             "appliedEnergistics.assembler.AccessorInvTracker",
             "appliedEnergistics.assembler.MixinContainerInterfaceTerminal",
-            "appliedEnergistics.MixinCraftingCPUCluster",
             "appliedEnergistics.AccessorTaskProgress",
             "appliedEnergistics.AccessorSessionCraftCount",
             "appliedEnergistics.quamtumComputer.MixinCraftingGridCache",
@@ -132,8 +144,6 @@ public enum Mixins implements IMixins {
             "gregtech.MixinMTEHatchOutputBusME",
             "gregtech.MixinMTEHatchOutputME",
             "gregtech.MixinMTEHatchAirIntake",
-            "gregtech.MixinMTEHatchCraftingInputME",
-            "gregtech.MixinMTEHatchCraftingInputSlave",
             "gregtech.MixinMTEHatchOutputBeamline",
             "gregtech.MixinMTEPurificationUnitBaseGui",
             "gregtech.MixinMTEDigitalTankBase",
@@ -141,13 +151,11 @@ public enum Mixins implements IMixins {
             "gregtech.MixinMTEHatchSteamBusOutput",
             "gregtech.MixinMTELightningRod",
             "gregtech.MixinMTEPlasmaForge",
-            "gregtech.MixinMTEMultiBlockBase",
             "gregtech.MixinMTEMultiBlockBaseRecipeProcessing",
             "gregtech.MixinMTETreeFarm",
             "gregtech.MixinProcessingLogic",
             "gregtech.MixinRecipeGenFluids",
             "gregtech.MixinProcessingDust",
-            "gregtech.MixinTTMultiblockBase",
             "inventoryBogoSorter.MixinShortcutHandler",
             "inventoryBogoSorter.MixinSortHandler",
             "modularUI.MixinFluidSlotWidget",
@@ -155,16 +163,25 @@ public enum Mixins implements IMixins {
             "tecTech.MixinMTEEyeOfHarmony",
             "tecTech.AccessorMTEResearchStation",
             "tecTech.MixinMTEResearchStation",
+            "tecTech.MixinMTEResearchStationGui",
             "tecTech.MixinTTRecipeAdder",
             "thaumicTinkerer.AccessorAspectCropLootManager",
             "thaumicTinkerer.MixinItemBloodSword",
             "visualProspecting.AccessorVeinTypeCaching")
         .addClientMixins(
+            "appliedEnergistics.MixinTileCableBusBeamBounds",
+            "appliedEnergistics.MixinTESRWrapperBeamRange",
+            // TODO: Restore display-representation name handling when bundled AE2 exposes the updated translateRawName
+            // method.
             "appliedEnergistics.assembler.MixinGuiMEMonitorable",
             "appliedEnergistics.assembler.MixinGuiPatternTerm",
-            "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable",
-            "thaumcraft.MixinTileJarRenderer")
+            "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable")
         .setPhase(Phase.LATE)),
+
+    THAUMCRAFT_CLIENT(
+        new MixinBuilder("Thaumcraft client compatibility mixins").addClientMixins("thaumcraft.MixinTileJarRenderer")
+            .setPhase(Phase.LATE)
+            .addExcludedMod(ModList.Angelica)),
 
     BARTWORKS(new MixinBuilder("BartWorks compatibility mixins")
         .addCommonMixins(

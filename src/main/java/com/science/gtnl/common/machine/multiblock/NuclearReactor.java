@@ -73,6 +73,12 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
     public static final double DURABILITY_PER_SECOND_RUNNING = 4.0;
     public static final double DURABILITY_PER_SECOND_IDLE = 1.0;
     public static final double REFLECTOR_DURABILITY_FACTOR = 0.125;
+
+    public static final double STARTUP_RAMP_MINUTES = 60.0;
+
+    public static final double STARTUP_EFFICIENCY_START = 0.60;
+
+    public static final double STARTUP_EFFICIENCY_MAX = 1.10;
     public static final int STRUCTURE_HEIGHT = 5;
     public static final int MAX_CORE = 7;
     public static final int MAX_TIER = 3;
@@ -95,6 +101,8 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
     private int mReactorTier = 0;
     private double[][] mHeatBuffer;
     private double[][] mPlateHeat;
+
+    private long mStartupTicks;
     private double[] mDurabilityBuffer;
     private long mSteamOutputPerSecond = 0;
     private long mSteamAccumulator = 0;
@@ -575,6 +583,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
             probeErrors.clear();
         }
         if (mReactorTier == 0) {
+            mStartupTicks = 0;
             errors.add(StructureErrorRegistry.UNKNOWN_STRUCTURE_ERROR);
             return;
         }
@@ -674,6 +683,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
         tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.tooltip.0"))
             .addInfo(StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.tooltip.quote"))
             .addInfo(StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.tooltip.5"))
             .beginStructureBlock(5, STRUCTURE_HEIGHT, 5, true)
             .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.structure.tiers"))
             .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.structure.output_hatch"))
@@ -732,6 +742,17 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
                 * ConfigUtil.getFloat(MainConfig.get(), "balance/energy/generator/nuclear");
         }
         return sNuclearEnergyMultiplier;
+    }
+
+    public double getStartupEfficiency() {
+        double minutes = mStartupTicks / 1200.0;
+        if (minutes >= STARTUP_RAMP_MINUTES) return STARTUP_EFFICIENCY_MAX;
+        double span = STARTUP_EFFICIENCY_MAX - STARTUP_EFFICIENCY_START;
+        return STARTUP_EFFICIENCY_START + span * Math.sin(minutes * Math.PI / (2.0 * STARTUP_RAMP_MINUTES));
+    }
+
+    public long getStartupTicks() {
+        return mStartupTicks;
     }
 
     public double getRodBaseGeneration(ItemStack rod) {
@@ -870,7 +891,13 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
             tickFuelRods(running);
         }
 
-        if (!running) return;
+        if (!running) {
+            mStartupTicks = 0;
+            return;
+        }
+
+        mStartupTicks++;
+        double efficiency = getStartupEfficiency();
 
         int n = getCoreSize();
         double[][] heat = new double[n][n];
@@ -891,7 +918,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
                         int nc = col + dc;
                         if (!isValidCoreCell(nr, nc)) continue;
                         boolean orthogonal = (dr == 0 || dc == 0);
-                        heat[nr][nc] += getRodHeat(rod, orthogonal) * excitation;
+                        heat[nr][nc] += getRodHeat(rod, orthogonal) * excitation * efficiency;
                     }
                 }
             }

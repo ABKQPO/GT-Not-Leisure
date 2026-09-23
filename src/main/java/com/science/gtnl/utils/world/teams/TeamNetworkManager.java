@@ -3,6 +3,7 @@ package com.science.gtnl.utils.world.teams;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -67,6 +68,13 @@ public class TeamNetworkManager {
         if (memberTeam.getTeamId()
             .equals(targetTeam.getTeamId())) {
             return false;
+        }
+
+        // Match GTNHLib's solo-team join: merge the team and notify all data owners.
+        if (memberTeam.getMembers()
+            .size() == 1) {
+            TeamManager.mergeTeams(targetTeam, memberTeam);
+            return true;
         }
 
         TeamManager.transferTeamData(memberTeam, targetTeam, memberId, TeamDataTransferReason.JoinedExistingTeam);
@@ -156,8 +164,8 @@ public class TeamNetworkManager {
         if (!dataFile.isFile()) {
             return new LegacyTeamReadResult(new HashMap<>(), true);
         }
-        try {
-            NBTTagCompound rootTag = CompressedStreamTools.read(dataFile);
+        try (InputStream input = Files.newInputStream(dataFile.toPath())) {
+            NBTTagCompound rootTag = CompressedStreamTools.readCompressed(input);
             NBTTagCompound dataTag = rootTag.hasKey("data") ? rootTag.getCompoundTag("data") : rootTag;
             return new LegacyTeamReadResult(parseLegacyTeams(dataTag.getString(LEGACY_TEAMS_TAG)), true);
         } catch (IOException | RuntimeException exception) {

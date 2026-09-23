@@ -16,6 +16,7 @@ import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.common.material.GTNLMaterials;
 
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.modularui.IAddUIWidgets;
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -25,6 +26,7 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import vazkii.botania.common.block.tile.mana.TilePool;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
 
     private static final int MANA_POOL_RADIUS = 5;

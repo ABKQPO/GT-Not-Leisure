@@ -25,6 +25,7 @@ import com.science.gtnl.utils.item.ItemUtils;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IDataCopyable;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
@@ -33,6 +34,7 @@ import gregtech.api.render.TextureFactory;
 import lombok.Getter;
 import lombok.Setter;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class CustomMaintenanceHatch extends MTEHatchMaintenance
     implements IConfigurationMaintenance, IAddGregtechLogo, IDataCopyable {
 

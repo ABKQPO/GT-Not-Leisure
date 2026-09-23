@@ -17,10 +17,8 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -73,9 +71,7 @@ public class MegaCanner extends WirelessEnergyMultiMachineBase<MegaCanner> {
                         StructureUtility.onElementPass(x -> ++x.mCountCasing, Casings.WashPlantCasing.asElement())))
             .addElement('D', Casings.UVMachineCasing.asElement())
             .addElement('E', Casings.NaquadriaReinforcedWaterPlantCasing.asElement())
-            .addElement(
-                'F',
-                StructureUtility.ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
+            .addElement('F', Casings.ReinforcedGlass.asElement())
             .build();
     }
 

@@ -42,7 +42,7 @@ public class WailaLoader {
         FMLInterModComms.sendMessage(Mods.Waila.ID, "register", WailaLoader.class.getName() + ".callbackRegister");
     }
 
-    @Optional.Method(modid = ModList.ModIds.FORGE_MULTIPART)
+    @Optional.Method(modid = "McMultipart")
     public static void registerForgeMultipartEnergyCellProvider(IWailaRegistrar registrar) {
         registerEnergyCellProvider(registrar, TileMultipart.class);
     }
