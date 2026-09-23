@@ -3,6 +3,9 @@ package com.science.gtnl.common.machine.multiblock;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.recipe.gtnl.InfusionCraftingRecipes.INFUSION_ASPECTS;
 import static com.science.gtnl.common.recipe.gtnl.InfusionCraftingRecipes.INFUSION_RESEARCH;
+import static thaumcraft.common.config.ConfigBlocks.blockCosmeticOpaque;
+import static thaumcraft.common.config.ConfigBlocks.blockCosmeticSolid;
+import static thaumcraft.common.config.ConfigBlocks.blockStoneDevice;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,7 @@ import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import cpw.mods.fml.common.Optional;
 import goodgenerator.loader.Loaders;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
@@ -61,8 +65,8 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
     private static final String STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":multiblock/small_infusion_matrix";
     private static final String[][] SHAPE = StructureUtils.readStructureFromFile(STRUCTURE_FILE_PATH);
 
-    private static final int HORIZONTAL_OFFSET = 1;
-    private static final int VERTICAL_OFFSET = 1;
+    private static final int HORIZONTAL_OFFSET = 3;
+    private static final int VERTICAL_OFFSET = 3;
     private static final int DEPTH_OFFSET = 0;
     private static final int CASING_TEXTURE_ID = 1536;
 
@@ -96,15 +100,21 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
                         .casingIndex(getCasingTextureID())
                         .hint(1)
                         .build(),
-                    StructureUtility.onElementPass(
-                        machine -> ++machine.mCountCasing,
-                        StructureUtility.ofBlock(Loaders.magicCasing, 0)),
+                    StructureUtility.onElementPass(machine -> ++machine.mCountCasing, Casings.MagicCasing.asElement()),
                     StructureUtility.ofSpecificTileAdder(
                         SmallInfusionMatrix::addEssentiaHatch,
                         TileEntityEssentiaHatch.class,
                         Loaders.magicCasing,
                         0),
                     StructureUtility.ofTileAdder(SmallInfusionMatrix::addInfusionProvider, Loaders.magicCasing, 0)))
+            .addElement('B', StructureUtility.ofBlock(blockCosmeticOpaque, 0))
+            .addElement('C', StructureUtility.ofBlock(blockCosmeticSolid, 6))
+            // D/E 使用 ofBlock 而非 ofSpecificTileAdder：后者返回 IStructureElementNoPlacement，
+            // placeBlock() 恒为 false、survivalPlaceBlock() 恒为 REJECT，自动搭建会跳过这两个方块。
+            // TC 的 meta 与 tile 类一一对应（BlockCosmeticOpaque:2 -> TileOwned，
+            // BlockStoneDevice:1 -> TilePedestal），故按 block+meta 校验与按 tile 类校验等价。
+            .addElement('D', StructureUtility.ofBlock(blockCosmeticOpaque, 2))
+            .addElement('E', StructureUtility.ofBlock(blockStoneDevice, 1))
             .build();
     }
 
@@ -476,7 +486,7 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
         tooltip.addMachineType(StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.recipe_type"))
             .addInfo(StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.tooltip.0"))
             .addInfo(StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.tooltip.1"))
-            .beginStructureBlock(3, 3, 3, true)
+            .beginStructureBlock(7, 5, 7, true)
             .addInputBus(StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
             .addOutputBus(StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
             .addEnergyHatch(StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
