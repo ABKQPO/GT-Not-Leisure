@@ -20,6 +20,7 @@ import org.apache.commons.lang3.tuple.MutablePair;
 
 import gregtech.api.enums.ItemList;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTUtil;
@@ -29,6 +30,7 @@ import gregtech.common.tileentities.machines.multi.nanochip.hatches.MTEHatchVacu
 import gregtech.common.tileentities.machines.multi.nanochip.util.CircuitComponent;
 import gregtech.common.tileentities.machines.multi.nanochip.util.CircuitComponentPacket;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class WirelessVacuumConveyorInputHatch extends MTEHatchVacuumConveyorInput {
 
     public Map<CircuitComponent, List<MutablePair<String, Long>>> persistedContents = Map.of();

@@ -373,6 +373,7 @@ gtnl.machine.nuclear_reactor.name=核反应堆
 gtnl.machine.nuclear_reactor.tooltip.0=热反应堆
 gtnl.machine.nuclear_reactor.tooltip.quote=§9§l这是一台“现代”反应堆！§r
 gtnl.machine.nuclear_reactor.tooltip.1=§7使用燃料棒产生热量，流体仓吸收热量将水转化为蒸汽，输出的蒸汽从输出仓输出
+gtnl.machine.nuclear_reactor.tooltip.5=§7开机效率 §e60% + 50%·sin(X·π/120)§7（X 分钟），60 分钟后 §e110%§7，停机/损坏清零
 gtnl.machine.nuclear_reactor.gui.steam_rate=蒸汽输出速度
 gtnl.machine.nuclear_reactor.tooltip.3=顶部方块可替换为核仓室，样式请参考 NEI
 gtnl.machine.nuclear_reactor.tooltip.4=核燃料物品仓 / 核冷却液输入仓
@@ -460,7 +461,7 @@ gtnl.machine.eden_garden.tooltip.0=§e§o神说：“陆地上要生出草木和
 gtnl.machine.eden_garden.tooltip.1=§e§o于是大地生出了草木，出现了各种瓜果蔬菜
 gtnl.machine.eden_garden.tooltip.2=§e§o籽实累累，整个大地上一片生机盎然。
 gtnl.machine.eden_garden.tooltip.3=比极限工业温室快100倍！
-gtnl.machine.eden_garden.tooltip.4=所有IC2作物将获得完美属性
+gtnl.machine.eden_garden.tooltip.4=所有CropNH作物将获得完美属性
 gtnl.machine.eden_garden.tooltip.5=不再需要肥料和除草剂！
 gtnl.machine.eden_garden.tooltip.6=每株作物消耗2000L水
 gtnl.machine.eden_garden.tooltip.casing=任意电力压缩机机械方块
@@ -3085,9 +3086,9 @@ gtnl.hatch.output_hatch_me_proxy.tooltip.4=手持剪线钳右键以改变仓室�
 gtnl.hatch.output_hatch_me_proxy.tooltip.5=对插入的存储元件进行分区以对可接受的输出进行过滤
 gtnl.hatch.output_hatch_me_proxy.tooltip.6=使用闪存链接到目标输出仓(ME)
 
-gtnl.hatch.beamline_pipe_mirror.name=束流波导管
-gtnl.hatch.beamline_pipe_mirror.tooltip.0=粒子偏转管道
-gtnl.hatch.beamline_pipe_mirror.tooltip.1=§b允许拐弯
+gtnl.blockmachines.beamlinepipemirror.name=束流波导管
+gtnl.blockmachines.beamlinepipemirror.tooltip.0=粒子偏转管道
+gtnl.blockmachines.beamlinepipemirror.tooltip.1=§b允许拐弯
 
 gtnl.hatch.configuration_drone_downlink.name=可配置无人机下行模块
 gtnl.hatch.configuration_drone_downlink.tooltip.0=通过无人机维护多方块机器
@@ -3119,6 +3120,9 @@ gtnl.hatch.wireless_vacuum_conveyor.link_failed=无线真空传送端口连接�
 gtnl.hatch.wireless_vacuum_conveyor.data_stick=无线真空传送端口连接配置
 gtnl.hatch.wireless_vacuum_conveyor.output.info.linked_input=已连接输入端口：%d, %d, %d
 
+BW_ExtraGlass.6.name=调律源金强化硼玻璃方块
+BW_ExtraGlass.7.name=简并夸克胶子等离子体强化硼玻璃方块
+
 gtnl.machine.small_essentia_smeltery.lv.name=基础电力炼金炉
 gtnl.machine.small_essentia_smeltery.mv.name=进阶电力炼金炉
 gtnl.machine.small_essentia_smeltery.hv.name=进阶电力炼金炉 II
@@ -3127,9 +3131,6 @@ gtnl.machine.small_essentia_smeltery.tooltip.1=基础耗能为 30 EU/t，每点�
 gtnl.machine.small_essentia_smeltery.tooltip.2=源质从可配置输出面送入相邻的源质容器或管道
 gtnl.machine.small_essentia_smeltery.tooltip.3=内部源质缓存：%s
 gtnl.gui.small_essentia_smeltery.output=输出源质：
-
-BW_GlasBlocks2.1.name=调律源金强化硼玻璃方块
-BW_GlasBlocks2.2.name=简并夸克胶子等离子体强化硼玻璃方块
 
 gtnl.block.meta_casing.0.name=测试机械方块
 gtnl.block.meta_casing.1.name=蒸汽装配机械方块
@@ -3672,8 +3673,6 @@ item.gtnl.circuit_integrated_plus.name=突破编程电路
 item.gtnl.time_stop_pocket_watch.name=岁月静滞怀表
 
 item.record.sus.desc=AU - Software Update Services
-item.record.new_horizons.desc=Aviators - Sweet Dreams (Bonus Track)
-item.record.lava_chicken.desc=Hyper Potions - Lava Chicken
 
 item.gtnl.infinity_torch.name=无尽火把
 item.gtnl.infinity_water_bucket.name=无底水桶
@@ -3746,6 +3745,14 @@ item.gtnl.detrav_scanner.teleport_to_vein=传送至矿脉：%s (%s，%s)
 
 item.gtnl.slime_saddle.name=粘鞍
 entity.sciencenotleisure.SaddleSlime.name=皇家史莱姆
+
+item.gtnl.soul_cardboard_helmet.name=灵魂纸板头盔
+item.gtnl.soul_cardboard_chestplate.name=灵魂纸板胸甲
+item.gtnl.soul_cardboard_leggings.name=灵魂纸板护腿
+item.gtnl.soul_cardboard_boots.name=灵魂纸板靴子
+item.gtnl.soul_cardboard.tooltip.0=穿戴全套时：跳跃提升 I、速度 II
+item.gtnl.soul_cardboard.tooltip.1=受到伤害后获得 3 秒幽灵形态
+item.gtnl.soul_cardboard.tooltip.2=幽灵形态下怪物不会锁定你
 
 item.gtnl.super_reach_ring.name=超级触物指环
 item.gtnl.satiety_ring.name=饱食指环
@@ -4244,8 +4251,14 @@ gtnl.command.tickrate.freeze=Tickrate 已冻结！
 gtnl.command.tickrate.unfreeze=Tickrate 已解除冻结！
 gtnl.command.tickrate.player_not_found=未找到玩家。
 gtnl.nei.siphon_turbine=§6§l虹吸涡轮§r\n§4开机后§0每 §46.4s§0 吸收无线蒸汽网余额的 §470%§0，换算为 EU 进入机器缓存。\n§0每次吸收时清空上一次运行的机器缓存。\n§0转换阶梯：\n§0- 10ML 内：§44 EU/L§0；\n§0- 10M~200M：§42 EU/L§0；\n§0- 200ML~2GL：§41 EU/L§0；\n§0- 超 2GL：§40 EU/L§0，但让下一次吸收产出§4§l翻倍§r§0。
-gtnl.nei.nuclear_reactor=§6§l核反应堆§r\n§0使用燃料棒产生热量，流体仓吸收热量将水转化为蒸汽。\n§0燃料棒向四面产生的热量等于燃料棒基础发电量的十分之一，四角为四面的二分之一。
+gtnl.nei.nuclear_reactor=§6§l核反应堆§r\n§0使用燃料棒产生热量，流体仓吸收热量将水转化为蒸汽。\n§0燃料棒向四面产生的热量等于燃料棒基础发电量的十分之一，四角为四面的二分之一。\n§0开机效率 = §460% + 50%·sin(X·π/120)§0(X≤60)，X 为开机后时间数(分钟)，20 分钟后为 §485%§0，60 分钟后恒为 §4110%§0，停机后清零。
 gtnl.nei.nuclear_reactor.guide.name=§6§l核反应堆指南§r
 gtnl.nei.nuclear_reactor.guide.fuel_rod=§6§l铀燃料棒§r\n§0相邻燃料棒会产生激发。四面每相邻一个燃料棒就提供一次x1.5激发；四角每相邻一个燃料棒就提供一次x1.2激发；此外，与此燃料棒相隔一个流体仓的燃料棒提供1.1x的激发。激发为乘算。\n§0每秒消耗 4 点耐久（停机时1点），耐久消耗倍率为激发倍率的平方；
 gtnl.nei.nuclear_reactor.guide.reflector=§6§l中子反射板§r\n§0放在核燃料物品仓里，把正四方向相邻燃料棒的激发反弹回去，相当于那一格多一根燃料棒。\n§0自身耐久消耗是燃料棒的八分之一；\n§0铱中子反射板无限耐久。
 gtnl.nei.nuclear_reactor.guide.heat_plate=§6§l致密殷钢板§r\n§0放在核燃料物品仓里，把收到的热量复制给四面相邻的格子。\n§0累计吸收 240,000 HU 后熔化成 1008L 熔融殷钢，从输出仓输出。
+
+gtnl.text_effect.title=动态文字效果
+gtnl.text_effect.palette=切换配色
+gtnl.text_effect.bold=切换粗体
+gtnl.text_effect.italic=切换斜体
+gtnl.author.by=添加者：

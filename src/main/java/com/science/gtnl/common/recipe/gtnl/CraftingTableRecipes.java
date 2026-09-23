@@ -6,6 +6,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import com.dreammaster.item.NHItemList;
 import com.science.gtnl.api.IRecipePool;
@@ -471,7 +472,7 @@ public class CraftingTableRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 ItemList.Hull_LV.get(1),
-                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockAlloyGlass", 2, 0),
+                ItemList.ReinforcedGlass.get(2),
                 new ItemStack(Items.bucket, 3),
                 Materials.Diamond.getGems(3))
             .itemOutputs(GregtechItemList.Hatch_Reservoir.get(1))
@@ -990,8 +991,7 @@ public class CraftingTableRecipes implements IRecipePool {
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.CardboardBox.get(1),
-            new Object[] { "ABA", "A A", "AAA", 'A', new ItemStack(Items.paper, 1), 'B',
-                new ItemStack(Items.slime_ball, 1) });
+            new Object[] { "ABA", "A A", "AAA", 'A', new ItemStack(Items.paper, 1), 'B', "slimeball" });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.CardboardBox.get(1),
@@ -1199,6 +1199,33 @@ public class CraftingTableRecipes implements IRecipePool {
                 new ItemStack(Items.saddle, 1), 'C',
                 GTModHandler.getModItem(Mods.TinkerConstruct.ID, "materials", 1, 1), 'D',
                 GTModHandler.getModItem(Mods.TinkerConstruct.ID, "slime.pad", 1) });
+
+        if (Mods.RandomThings.isModLoaded()) {
+            ItemStack ectoplasm = GTModHandler.getModItem(Mods.RandomThings.ID, "ingredient", 1, 3);
+
+            GTModHandler.addCraftingRecipe(
+                GTNLItemList.SoulCardboardHelmet.get(1),
+                new Object[] { "ABA", "CDC", 'A', ectoplasm, 'B', new ItemStack(Items.leather_helmet, 1), 'C',
+                    GTNLItemList.CardboardBox.get(1), 'D', ToolDictNames.craftingToolHardHammer });
+
+            GTModHandler.addCraftingRecipe(
+                GTNLItemList.SoulCardboardChestplate.get(1),
+                new Object[] { "FBF", "CDC", "AEA", 'A', GTNLItemList.CardboardBox.get(1), 'B',
+                    ToolDictNames.craftingToolHardHammer, 'C',
+                    new ItemStack(Blocks.wool, 1, OreDictionary.WILDCARD_VALUE), 'D',
+                    new ItemStack(Items.leather_chestplate, 1), 'E', ectoplasm, 'F', new ItemStack(Blocks.web, 1) });
+
+            GTModHandler.addCraftingRecipe(
+                GTNLItemList.SoulCardboardLeggings.get(1),
+                new Object[] { "ABA", "CDC", "E E", 'A', new ItemStack(Blocks.web, 1), 'B',
+                    new ItemStack(Items.leather_leggings, 1), 'C', GTNLItemList.CardboardBox.get(1), 'D',
+                    ToolDictNames.craftingToolHardHammer, 'E', ectoplasm });
+
+            GTModHandler.addCraftingRecipe(
+                GTNLItemList.SoulCardboardBoots.get(1),
+                new Object[] { "ABA", "CDC", 'A', ectoplasm, 'B', new ItemStack(Items.leather_boots, 1), 'C',
+                    GTNLItemList.CardboardBox.get(1), 'D', ToolDictNames.craftingToolHardHammer });
+        }
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.SuperstrongSponge.get(1),

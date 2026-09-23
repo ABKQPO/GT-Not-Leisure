@@ -373,6 +373,7 @@ gtnl.machine.nuclear_reactor.name=Nuclear Reactor
 gtnl.machine.nuclear_reactor.tooltip.0=Heat Reactor
 gtnl.machine.nuclear_reactor.tooltip.quote=§9§lThis is a MODERN reactor!§r
 gtnl.machine.nuclear_reactor.tooltip.1=§7Fuel rods generate heat; fluid hatches absorb it and turn water into steam
+gtnl.machine.nuclear_reactor.tooltip.5=§7Startup efficiency §e60% + 50%·sin(X·π/120)§7 (X in minutes), §e110%§7 after 60 min, reset on stop/break
 gtnl.machine.nuclear_reactor.gui.steam_rate=Steam output
 gtnl.machine.nuclear_reactor.tooltip.3=top blocks can be replaced with nuclear hatches, see NEI for the pattern
 gtnl.machine.nuclear_reactor.tooltip.4=Nuclear Fuel Item Bus / Nuclear Cooling Fluid Input Hatch
@@ -384,6 +385,7 @@ gtnl.machine.nuclear_reactor_t2.name=Nuclear Reactor II
 gtnl.machine.nuclear_reactor_t2.tooltip.0=An upgraded heat reactor with a larger 5×5 core.
 gtnl.machine.nuclear_reactor_t3.name=Nuclear Reactor III
 gtnl.machine.nuclear_reactor_t3.tooltip.0=An upgraded heat reactor with a rounded 7×7 core.
+
 gtnl.machine.siphon_turbine.name=Siphon Turbine
 gtnl.machine.siphon_turbine.recipe_type=Siphon Turbine
 gtnl.machine.siphon_turbine.casing=Heat Proof Machine Casing
@@ -455,13 +457,13 @@ gtnl.machine.atomic_energy_excitation_plant.tooltip.2=Use a wire cutter to turn 
 
 gtnl.machine.eden_garden.name=Eden Garden
 gtnl.machine.eden_garden.recipe_type=Crop Farm
-gtnl.machine.eden_garden.tooltip.0=Advanced agricultural facility.
-gtnl.machine.eden_garden.tooltip.1=100x faster than Industrial Greenhouses!
-gtnl.machine.eden_garden.tooltip.2=All IC2 crops will gain perfect stats
-gtnl.machine.eden_garden.tooltip.3=No longer requires fertilizer or herbicides!
-gtnl.machine.eden_garden.tooltip.4=Each plant consumes 2000L of water.
-gtnl.machine.eden_garden.tooltip.5=
-gtnl.machine.eden_garden.tooltip.6=
+gtnl.machine.eden_garden.tooltip.0=§e§oGod said: "Let the land produce vegetation and various plants."
+gtnl.machine.eden_garden.tooltip.1=§e§oAnd the earth brought forth vegetation, bearing all kinds of fruits and crops.
+gtnl.machine.eden_garden.tooltip.2=§e§oThe earth was filled with abundant seeds, and all the land was full of life.
+gtnl.machine.eden_garden.tooltip.3=100 times faster than the Extreme Industrial Greenhouse!
+gtnl.machine.eden_garden.tooltip.4=All CropNH crops will gain perfect stats.
+gtnl.machine.eden_garden.tooltip.5=No fertilizer or herbicide required!
+gtnl.machine.eden_garden.tooltip.6=Consumes 2000L of water per crop.
 gtnl.machine.eden_garden.tooltip.casing=Any Electric Compressor Machine Block
 gtnl.machine.eden_garden.info.running_input_forbidden=Can't insert while running !
 gtnl.machine.eden_garden.message.running_input_forbidden=§cCan't insert while running !
@@ -3084,9 +3086,9 @@ gtnl.hatch.output_hatch_me_proxy.tooltip.4=Change ME connection behavior by righ
 gtnl.hatch.output_hatch_me_proxy.tooltip.5=Partition the inserted Storage Cell to filter accepted outputs
 gtnl.hatch.output_hatch_me_proxy.tooltip.6=Use data stick to link target Output Hatch (ME)
 
-gtnl.hatch.beamline_pipe_mirror.name=Beamline Pipe Mirror
-gtnl.hatch.beamline_pipe_mirror.tooltip.0=Deflection for particles
-gtnl.hatch.beamline_pipe_mirror.tooltip.1=§bAllows Bending
+gtnl.blockmachines.beamlinepipemirror.name=Beamline Pipe Mirror
+gtnl.blockmachines.beamlinepipemirror.tooltip.0=Deflection for particles
+gtnl.blockmachines.beamlinepipemirror.tooltip.1=§bAllows Bending
 
 gtnl.hatch.configuration_drone_downlink.name=Configuration Drone DownLink Module
 gtnl.hatch.configuration_drone_downlink.tooltip.0=For maintaining Multiblocks with Drone
@@ -3118,6 +3120,9 @@ gtnl.hatch.wireless_vacuum_conveyor.link_failed=Wireless Vacuum Conveyor link fa
 gtnl.hatch.wireless_vacuum_conveyor.data_stick=Wireless Vacuum Conveyor Link Data Configuration
 gtnl.hatch.wireless_vacuum_conveyor.output.info.linked_input=Linked input: %d, %d, %d
 
+BW_ExtraGlass.6.name=Shirabon Reinforced Borosilicate Glass Block
+BW_ExtraGlass.7.name=Quark Gluon Plasma Reinforced Borosilicate Glass Block
+
 gtnl.machine.small_essentia_smeltery.lv.name=Basic Electric Alchemical Furnace
 gtnl.machine.small_essentia_smeltery.mv.name=Advanced Electric Alchemical Furnace
 gtnl.machine.small_essentia_smeltery.hv.name=Advanced Electric Alchemical Furnace II
@@ -3126,9 +3131,6 @@ gtnl.machine.small_essentia_smeltery.tooltip.1=Base usage is 30 EU/t and 32 tick
 gtnl.machine.small_essentia_smeltery.tooltip.2=Outputs essentia through the configurable output face into an adjacent transport or container
 gtnl.machine.small_essentia_smeltery.tooltip.3=Internal essentia buffer: %s
 gtnl.gui.small_essentia_smeltery.output=Output Essentia:
-
-BW_GlasBlocks2.1.name=Shirabon Reinforced Borosilicate Glass Block
-BW_GlasBlocks2.2.name=Quark Gluon Plasma Reinforced Borosilicate Glass Block
 
 gtnl.block.meta_casing.0.name=Test Casing
 gtnl.block.meta_casing.1.name=Steam Assembly Casing
@@ -3671,8 +3673,6 @@ item.gtnl.circuit_integrated_plus.name=Circuit Integrated Plus
 item.gtnl.time_stop_pocket_watch.name=Time Stop Pocket Watch
 
 item.record.sus.desc=AU - Software Update Services
-item.record.new_horizons.desc=Aviators - Sweet Dreams (Bonus Track)
-item.record.lava_chicken.desc=Hyper Potions - Lava Chicken
 
 item.gtnl.infinity_torch.name=Infinity Torch
 item.gtnl.infinity_water_bucket.name=Infinity Water Bucket
@@ -3745,6 +3745,14 @@ item.gtnl.detrav_scanner.teleport_to_vein=Teleport to vein: %s (%s, %s)
 
 item.gtnl.slime_saddle.name=Slime Saddle
 entity.sciencenotleisure.SaddleSlime.name=Royal Slime
+
+item.gtnl.soul_cardboard_helmet.name=Soul Cardboard Helmet
+item.gtnl.soul_cardboard_chestplate.name=Soul Cardboard Chestplate
+item.gtnl.soul_cardboard_leggings.name=Soul Cardboard Leggings
+item.gtnl.soul_cardboard_boots.name=Soul Cardboard Boots
+item.gtnl.soul_cardboard.tooltip.0=Full set: Jump Boost I and Speed II
+item.gtnl.soul_cardboard.tooltip.1=Taking damage grants 3 seconds of Ghostly Shape
+item.gtnl.soul_cardboard.tooltip.2=Ghostly Shape makes mobs ignore you
 
 item.gtnl.super_reach_ring.name=Super Reach Ring
 item.gtnl.satiety_ring.name=Ring of Satiety
@@ -4243,8 +4251,14 @@ gtnl.command.tickrate.freeze=Tickrate Freeze!
 gtnl.command.tickrate.unfreeze=Tickrate Unfreeze!
 gtnl.command.tickrate.player_not_found=Player not found.
 gtnl.nei.siphon_turbine=§6§lSiphon Turbine§r\n§4Once started up§0, every §46.4s§0 it siphons §470%§0 of the wireless steam network balance and converts it into EU stored in the machine buffer.\n§0Each siphon clears the machine buffer left over from the previous run.\n§0Conversion tiers:\n§0- up to 10ML: §44 EU/L§0;\n§0- 10M to 200M: §42 EU/L§0;\n§0- 200ML to 2GL: §41 EU/L§0;\n§0- above 2GL: §40 EU/L§0, but §4§ldoubles§r§0 the output of the next siphon.
-gtnl.nei.nuclear_reactor=§6§lNuclear Reactor§r\n§0Fuel rods generate heat; fluid hatches absorb it and turn water into steam.\n§0Heat radiated to the four orthogonal sides equals one tenth of the rod's base power generation, diagonals get half of that.
+gtnl.nei.nuclear_reactor=§6§lNuclear Reactor§r\n§0Fuel rods generate heat; fluid hatches absorb it and turn water into steam.\n§0Heat radiated to the four orthogonal sides equals one tenth of the rod's base power generation, diagonals get half of that.\n§0Startup efficiency = §460% + 50%·sin(X·π/120)§0 (X≤60), X = minutes since startup, §485%§0 at 20 min, §4110%§0 from 60 min on, reset after stopping.
 gtnl.nei.nuclear_reactor.guide.name=§6§lNuclear Reactor Guide§r
 gtnl.nei.nuclear_reactor.guide.fuel_rod=§6§lUranium Fuel Rod§r\n§0Adjacent fuel rods create excitation. Every orthogonally adjacent rod gives x1.5; every diagonally adjacent rod gives x1.2; a rod one fluid hatch away gives x1.1. Excitation is multiplicative.\n§0Consumes 4 durability per second (1 while idle); the consumption is multiplied by the square of the excitation;
 gtnl.nei.nuclear_reactor.guide.reflector=§6§lNeutron Reflector§r\n§0Put it in the Nuclear Fuel Item Bus: it bounces back the excitation of the orthogonally adjacent fuel rods, as if that cell held one more fuel rod.\n§0Its own durability use is one eighth of a fuel rod's;\n§0The Iridium Neutron Reflector has infinite durability.
 gtnl.nei.nuclear_reactor.guide.heat_plate=§6§lDense Invar Plate§r\n§0Put it in the Nuclear Fuel Item Bus: it copies the heat it receives to the four adjacent cells.\n§0After absorbing 240,000 HU in total it melts into 1008L of Molten Invar, which is output through the output hatch.
+
+gtnl.text_effect.title=Animated text effects
+gtnl.text_effect.palette=Change palette
+gtnl.text_effect.bold=Toggle bold
+gtnl.text_effect.italic=Toggle italic
+gtnl.author.by=Added by: 

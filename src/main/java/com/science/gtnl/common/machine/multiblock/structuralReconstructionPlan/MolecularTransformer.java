@@ -19,11 +19,9 @@ import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -96,9 +94,7 @@ public class MolecularTransformer extends GTMMultiMachineBase<MolecularTransform
     public IStructureDefinition<MolecularTransformer> getStructureDefinition() {
         return StructureDefinition.<MolecularTransformer>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement(
-                'A',
-                StructureUtility.ofBlockAnyMeta(GameRegistry.findBlock(Mods.IndustrialCraft2.ID, "blockAlloyGlass")))
+            .addElement('A', Casings.ReinforcedGlass.asElement())
             .addElement('B', GTNLCasings.MolybdenumDisilicideCoil.asElement())
             .addElement('C', Casings.SolidSteelMachineCasing.asElement())
             .addElement('D', Casings.TitaniumPipeCasing.asElement())

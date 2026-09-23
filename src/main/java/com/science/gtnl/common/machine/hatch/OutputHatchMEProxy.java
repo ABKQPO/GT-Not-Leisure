@@ -18,6 +18,7 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.storage.data.IAEFluidStack;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTUtil;
@@ -25,6 +26,7 @@ import gregtech.common.tileentities.machines.outputme.MTEHatchOutputME;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class OutputHatchMEProxy extends MTEHatchOutputME {
 
     public static final String COPIED_DATA_IDENTIFIER = "outputHatchME";

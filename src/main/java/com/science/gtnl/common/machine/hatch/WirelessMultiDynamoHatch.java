@@ -8,11 +8,13 @@ import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import tectech.mechanics.pipe.IConnectsToEnergyTunnel;
 import tectech.thing.metaTileEntity.hatch.MTEHatchWirelessDynamoMulti;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class WirelessMultiDynamoHatch extends MTEHatchWirelessDynamoMulti implements IConnectsToEnergyTunnel {
 
     public WirelessMultiDynamoHatch(int aID, String aName, String aNameRegional, int aTier, int aAmp) {

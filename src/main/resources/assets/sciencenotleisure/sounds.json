@@ -44,24 +44,6 @@
       }
     ]
   },
-  "new_horizons": {
-    "category": "record",
-    "sounds": [
-      {
-        "name": "new_horizons",
-        "stream": "true"
-      }
-    ]
-  },
-  "lava_chicken": {
-    "category": "record",
-    "sounds": [
-      {
-        "name": "lava_chicken",
-        "stream": "true"
-      }
-    ]
-  },
   "respawn_anchor.ambient1": {
     "category": "block",
     "sounds": [

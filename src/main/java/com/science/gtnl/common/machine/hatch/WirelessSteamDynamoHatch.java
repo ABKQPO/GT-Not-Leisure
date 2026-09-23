@@ -42,6 +42,7 @@ import gregtech.api.enums.OutputHatchType;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.fluid.IFluidStore;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
@@ -51,6 +52,7 @@ import gregtech.api.util.GTUtility;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidStore, IAddGregtechLogo {
 
     public UUID ownerUUID;
@@ -225,13 +227,8 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
     @Override
     public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
         super.onFirstTick(aBaseMetaTileEntity);
-        ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
-
-        isInTeam = true;
-        teamUUID = TeamNetworkManager.getTeamId(ownerUUID);
-        steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
-
         if (!aBaseMetaTileEntity.isServerSide()) return;
+        refreshSteamNetworkState(aBaseMetaTileEntity);
         tryFetchingSteam();
     }
 
@@ -247,13 +244,27 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
     public void onPostTick(IGregTechTileEntity baseMetaTileEntity, long tick) {
         super.onPostTick(baseMetaTileEntity, tick);
         if (baseMetaTileEntity.isServerSide() && tick % 200 == 0L) {
-            isInTeam = true;
-            teamUUID = TeamNetworkManager.getTeamId(ownerUUID);
-            steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
+            refreshSteamNetworkState(baseMetaTileEntity);
         }
     }
 
+    private void refreshSteamNetworkState(IGregTechTileEntity baseMetaTileEntity) {
+        UUID baseOwnerUUID = baseMetaTileEntity.getOwnerUuid();
+        if (baseOwnerUUID != null) ownerUUID = baseOwnerUUID;
+        if (ownerUUID == null) {
+            isInTeam = false;
+            teamUUID = null;
+            steamDisplay = BigInteger.ZERO;
+            return;
+        }
+
+        isInTeam = true;
+        teamUUID = TeamNetworkManager.getTeamId(ownerUUID);
+        steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
+    }
+
     private void tryFetchingSteam() {
+        if (ownerUUID == null) return;
         FluidStack currentSteamStack = getFillableStack();
 
         if (currentSteamStack != null && currentSteamStack.amount > 0) {

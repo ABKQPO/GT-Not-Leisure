@@ -35,7 +35,7 @@ import vazkii.botania.api.item.IBaubleRender;
 public class PhysicsCape extends BaubleItem implements IBaubleRender {
 
     private static final ResourceLocation texture = new ResourceLocation(
-        RESOURCE_ROOT_ID + ":" + "textures/model/physics_cape.png");
+        RESOURCE_ROOT_ID + ":" + "textures/models/armor/physics_cape.png");
 
     @SideOnly(Side.CLIENT)
     private static ModelBiped model;
@@ -142,11 +142,6 @@ public class PhysicsCape extends BaubleItem implements IBaubleRender {
 
             world.spawnParticle("largeexplode", clientLastX, clientLastY - 1, clientLastZ, 1.0D, 0.0D, 0.0D);
         }
-    }
-
-    @SideOnly(Side.CLIENT)
-    ResourceLocation getRenderTexture() {
-        return texture;
     }
 
     @Override

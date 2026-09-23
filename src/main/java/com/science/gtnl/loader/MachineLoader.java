@@ -322,10 +322,10 @@ public class MachineLoader {
 
     public static void registerMachines() {
         GTNLItemList.QuantumComputer.set(new QuantumComputer(GTNLMachineID.QUANTUM_COMPUTER.ID, "QuantumComputer", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.QuantumComputer.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.QuantumComputer.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.AssemblerMatrix.set(new AssemblerMatrix(GTNLMachineID.ASSEMBLER_MATRIX.ID, "AssemblerMatrix", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.AssemblerMatrix.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.AssemblerMatrix.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.AtomicEnergyExcitationPlant.set(
             new AtomicEnergyExcitationPlant(
@@ -333,10 +333,10 @@ public class MachineLoader {
                 "AtomicEnergyExcitationPlant",
                 ""));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.AtomicEnergyExcitationPlant.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.AtomicEnergyExcitationPlant.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EdenGarden.set(new EdenGarden(GTNLMachineID.EDEN_GARDEN.ID, "EdenGarden", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EdenGarden.get(1), AnimatedText.SNL_EDEN_GARDEN);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EdenGarden.get(1), AnimatedText.GTNL_EDEN_GARDEN);
 
         GTNLItemList.LargeSteamCircuitAssembler.set(
             new LargeSteamCircuitAssembler(
@@ -344,12 +344,11 @@ public class MachineLoader {
                 "LargeSteamCircuitAssembler",
                 ""));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LargeSteamCircuitAssembler.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LargeSteamCircuitAssembler.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.GenerationEarthEngine
             .set(new GenerationEarthEngine(GTNLMachineID.GENERATION_EARTH_ENGINE.ID, "GenerationEarthEngine", ""));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.GenerationEarthEngine.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.GenerationEarthEngine.get(1), AnimatedText.GT_NOT_LEISURE);
 
         if (Mods.BloodMagic.isModLoaded()) {
             GTNLItemList.BloodSoulSacrificialArray.set(
@@ -358,115 +357,114 @@ public class MachineLoader {
                     "BloodSoulSacrificialArray",
                     ""));
             AnimatedTooltipHandler
-                .addItemTooltip(GTNLItemList.BloodSoulSacrificialArray.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+                .addItemTooltip(GTNLItemList.BloodSoulSacrificialArray.get(1), AnimatedText.GT_NOT_LEISURE);
         }
 
         GTNLItemList.RealArtificialStar
             .set(new RealArtificialStar(GTNLMachineID.REAL_ARTIFICIAL_STAR.ID, "RealArtificialStar", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.RealArtificialStar.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.RealArtificialStar.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.TeleportationArrayToAlfheim.set(
             new TeleportationArrayToAlfheim(
                 GTNLMachineID.TELEPORTATION_ARRAY_TO_ALFHEIM.ID,
                 "TeleportationArrayToAlfheim",
                 ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.TeleportationArrayToAlfheim.get(1), AnimatedText.SNL_NLXCJH);
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.TeleportationArrayToAlfheim.get(1), AnimatedText.GTNL_NLXCJH);
 
         GTNLItemList.LapotronChip.set(new LapotronChip(GTNLMachineID.LAPOTRON_CHIP.ID, "LapotronChip", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LapotronChip.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LapotronChip.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.NeutroniumWireCutting
             .set(new NeutroniumWireCutting(GTNLMachineID.NEUTRONIUM_WIRE_CUTTING.ID, "NeutroniumWireCutting", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NeutroniumWireCutting.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NeutroniumWireCutting.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.LargeSteamCrusher
             .set(new LargeSteamCrusher(GTNLMachineID.LARGE_STEAM_CRUSHER.ID, "LargeSteamCrusher", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamCrusher.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamCrusher.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.ComponentAssembler
             .set(new ComponentAssembler(GTNLMachineID.COMPONENT_ASSEMBLER.ID, "ComponentAssembler", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ComponentAssembler.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ComponentAssembler.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.LargeSteamFurnace
             .set(new LargeSteamFurnace(GTNLMachineID.LARGE_STEAM_FURNACE.ID, "LargeSteamFurnace", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamFurnace.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamFurnace.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.LargeSteamAlloySmelter
             .set(new LargeSteamAlloySmelter(GTNLMachineID.LARGE_STEAM_ALLOY_SMELTER.ID, "LargeSteamAlloySmelter", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamAlloySmelter.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamAlloySmelter.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.LargeSteamThermalCentrifuge.set(
             new LargeSteamThermalCentrifuge(
                 GTNLMachineID.LARGE_STEAM_THERMAL_CENTRIFUGE.ID,
                 "LargeSteamThermalCentrifuge",
                 ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamThermalCentrifuge.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamThermalCentrifuge.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.SteamCracking.set(new SteamCracking(GTNLMachineID.STEAM_CRACKING.ID, "SteamCracking", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamCracking.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamCracking.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.LargeSteamChemicalBath
             .set(new LargeSteamChemicalBath(GTNLMachineID.LARGE_STEAM_CHEMICAL_BATH.ID, "LargeSteamChemicalBath", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamChemicalBath.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamChemicalBath.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.PrimitiveDistillationTower.set(
             new PrimitiveDistillationTower(
                 GTNLMachineID.PRIMITIVE_DISTILLATION_TOWER.ID,
                 "PrimitiveDistillationTower",
                 ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PrimitiveDistillationTower.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PrimitiveDistillationTower.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.MeteorMiner.set(new MeteorMiner(GTNLMachineID.METEOR_MINER.ID, "MeteorMiner", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MeteorMiner.get(1), AnimatedText.SNL_TOTTO);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MeteorMiner.get(1), AnimatedText.GTNL_TOTTO);
 
         GTNLItemList.Desulfurizer.set(new Desulfurizer(GTNLMachineID.DESULFURIZER.ID, "Desulfurizer", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.Desulfurizer.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.Desulfurizer.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.LargeCircuitAssembler
             .set(new LargeCircuitAssembler(GTNLMachineID.LARGE_CIRCUIT_ASSEMBLER.ID, "LargeCircuitAssembler", ""));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LargeCircuitAssembler.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeCircuitAssembler.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.PetrochemicalPlant
             .set(new PetrochemicalPlant(GTNLMachineID.PETROCHEMICAL_PLANT.ID, "PetrochemicalPlant", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PetrochemicalPlant.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PetrochemicalPlant.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.SmeltingMixingFurnace
             .set(new SmeltingMixingFurnace(GTNLMachineID.SMELTING_MIXING_FURNACE.ID, "SmeltingMixingFurnace", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmeltingMixingFurnace.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmeltingMixingFurnace.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.WhiteNightGenerator
             .set(new WhiteNightGenerator(GTNLMachineID.WHITE_NIGHT_GENERATOR.ID, "WhiteNightGenerator", ""));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WhiteNightGenerator.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.WhiteNightGenerator.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ProcessingArray.set(new ProcessingArray(GTNLMachineID.PROCESSING_ARRAY.ID, "ProcessingArray", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ProcessingArray.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ProcessingArray.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.MegaBlastFurnace
             .set(new MegaBlastFurnace(GTNLMachineID.MEGA_BLAST_FURNACE.ID, "MegaBlastFurnace", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaBlastFurnace.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaBlastFurnace.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.BrickedBlastFurnace
             .set(new BrickedBlastFurnace(GTNLMachineID.BRICKED_BLAST_FURNACE.ID, "BrickedBlastFurnace", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.BrickedBlastFurnace.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.BrickedBlastFurnace.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.RareEarthCentrifugal
             .set(new RareEarthCentrifugal(GTNLMachineID.RARE_EARTH_CENTRIFUGAL.ID, "RareEarthCentrifugal", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.RareEarthCentrifugal.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.RareEarthCentrifugal.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.ColdIceFreezer.set(new ColdIceFreezer(GTNLMachineID.COLD_ICE_FREEZER.ID, "ColdIceFreezer", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ColdIceFreezer.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ColdIceFreezer.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.BlazeBlastFurnace
             .set(new BlazeBlastFurnace(GTNLMachineID.BLAZE_BLAST_FURNACE.ID, "BlazeBlastFurnace", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.BlazeBlastFurnace.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.BlazeBlastFurnace.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.ChemicalPlant.set(new ChemicalPlant(GTNLMachineID.CHEMICAL_PLANT.ID, "ChemicalPlant", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ChemicalPlant.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ChemicalPlant.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.VacuumFreezer.set(new VacuumFreezer(GTNLMachineID.VACUUM_FREEZER.ID, "VacuumFreezer", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.VacuumFreezer.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.VacuumFreezer.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.IndustrialArcaneAssembler.set(
             new IndustrialArcaneAssembler(
@@ -474,7 +472,7 @@ public class MachineLoader {
                 "IndustrialArcaneAssembler",
                 ""));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.IndustrialArcaneAssembler.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.IndustrialArcaneAssembler.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergeticPhotovoltaicPowerStation.set(
             new PhotovoltaicPowerStation.EnergeticPhotovoltaicPowerStation(
@@ -482,7 +480,7 @@ public class MachineLoader {
                 "EnergeticPhotovoltaicPowerStation",
                 ""));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.EnergeticPhotovoltaicPowerStation.get(1), AnimatedText.SNL_QYZG);
+            .addItemTooltip(GTNLItemList.EnergeticPhotovoltaicPowerStation.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.AdvancedPhotovoltaicPowerStation.set(
             new PhotovoltaicPowerStation.AdvancedPhotovoltaicPowerStation(
@@ -490,7 +488,7 @@ public class MachineLoader {
                 "AdvancedPhotovoltaicPowerStation",
                 ""));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.AdvancedPhotovoltaicPowerStation.get(1), AnimatedText.SNL_QYZG);
+            .addItemTooltip(GTNLItemList.AdvancedPhotovoltaicPowerStation.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.VibrantPhotovoltaicPowerStation.set(
             new PhotovoltaicPowerStation.VibrantPhotovoltaicPowerStation(
@@ -498,42 +496,42 @@ public class MachineLoader {
                 "VibrantPhotovoltaicPowerStation",
                 ""));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.VibrantPhotovoltaicPowerStation.get(1), AnimatedText.SNL_QYZG);
+            .addItemTooltip(GTNLItemList.VibrantPhotovoltaicPowerStation.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.LargeMacerationTower
             .set(new LargeMacerationTower(GTNLMachineID.LARGE_MACERATION_TOWER.ID, "LargeMacerationTower", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeMacerationTower.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeMacerationTower.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.HandOfJohnDavisonRockefeller.set(
             new HandOfJohnDavisonRockefeller(
                 GTNLMachineID.HAND_OF_JOHN_DAVISON_ROCKEFELLER.ID,
                 "HandOfJohnDavisonRockefeller",
                 ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.HandOfJohnDavisonRockefeller.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.HandOfJohnDavisonRockefeller.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.LargeSiftingFunnel
             .set(new LargeSiftingFunnel(GTNLMachineID.LARGE_SIFTING_FUNNEL.ID, "LargeSiftingFunnel", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSiftingFunnel.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSiftingFunnel.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeCutter.set(new LargeCutter(GTNLMachineID.LARGE_CUTTER.ID, "LargeCutter", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeCutter.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeCutter.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeBrewer.set(new LargeBrewer(GTNLMachineID.LARGE_BREWER.ID, "LargeBrewer", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBrewer.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBrewer.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeIndustrialLathe
             .set(new LargeIndustrialLathe(GTNLMachineID.LARGE_INDUSTRIAL_LATHE.ID, "LargeIndustrialLathe", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeIndustrialLathe.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeIndustrialLathe.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeMaterialPress
             .set(new LargeMaterialPress(GTNLMachineID.LARGE_MATERIAL_PRESS.ID, "LargeMaterialPress", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeMaterialPress.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeMaterialPress.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeWiremill.set(new LargeWiremill(GTNLMachineID.LARGE_WIREMILL.ID, "LargeWiremill", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeWiremill.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeWiremill.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeBender.set(new LargeBender(GTNLMachineID.LARGE_BENDER.ID, "LargeBender", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBender.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBender.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.ElectricImplosionCompressor.set(
             new ElectricImplosionCompressor(
@@ -541,169 +539,169 @@ public class MachineLoader {
                 "ElectricImplosionCompressor",
                 ""));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ElectricImplosionCompressor.get(1), AnimatedText.SNL_QYZG_SRP);
+            .addItemTooltip(GTNLItemList.ElectricImplosionCompressor.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.LargeExtruder.set(new LargeExtruder(GTNLMachineID.LARGE_EXTRUDER.ID, "LargeExtruder", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeExtruder.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeExtruder.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeArcSmelter
             .set(new LargeArcSmelter(GTNLMachineID.LARGE_ARC_SMELTER.ID, "LargeArcSmelter", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeArcSmelter.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeArcSmelter.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeForming.set(new LargeForming(GTNLMachineID.LARGE_FORMING.ID, "LargeForming", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeForming.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeForming.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.MatterFabricator
             .set(new MatterFabricator(GTNLMachineID.MATTER_FABRICATOR.ID, "MatterFabricator", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MatterFabricator.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MatterFabricator.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.LargeElectrolyzer
             .set(new LargeElectrolyzer(GTNLMachineID.LARGE_ELECTROLYZER.ID, "LargeElectrolyzer", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeElectrolyzer.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeElectrolyzer.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeElectromagnet
             .set(new LargeElectromagnet(GTNLMachineID.LARGE_ELECTROMAGNET.ID, "LargeElectromagnet", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeElectromagnet.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeElectromagnet.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeAssembler.set(new LargeAssembler(GTNLMachineID.LARGE_ASSEMBLER.ID, "LargeAssembler", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeAssembler.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeAssembler.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeMixer.set(new LargeMixer(GTNLMachineID.LARGE_MIXER.ID, "LargeMixer", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeMixer.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeMixer.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeCentrifuge.set(new LargeCentrifuge(GTNLMachineID.LARGE_CENTRIFUGE.ID, "LargeCentrifuge", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeCentrifuge.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeCentrifuge.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LibraryOfRuina.set(new LibraryOfRuina(GTNLMachineID.LIBRARY_OF_RUINA.ID, "LibraryOfRuina", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LibraryOfRuina.get(1), AnimatedText.SNL_NLXCJH);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LibraryOfRuina.get(1), AnimatedText.GTNL_NLXCJH);
 
         GTNLItemList.LargeChemicalBath
             .set(new LargeChemicalBath(GTNLMachineID.LARGE_CHEMICAL_BATH.ID, "LargeChemicalBath", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeChemicalBath.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeChemicalBath.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeAutoclave.set(new LargeAutoclave(GTNLMachineID.LARGE_AUTOCLAVE.ID, "LargeAutoclave", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeAutoclave.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeAutoclave.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeSolidifier.set(new LargeSolidifier(GTNLMachineID.LARGE_SOLIDIFIER.ID, "LargeSolidifier", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSolidifier.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSolidifier.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeExtractor.set(new LargeExtractor(GTNLMachineID.LARGE_EXTRACTOR.ID, "LargeExtractor", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeExtractor.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeExtractor.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.ReactionFurnace.set(new ReactionFurnace(GTNLMachineID.REACTION_FURNACE.ID, "ReactionFurnace", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ReactionFurnace.get(1), AnimatedText.SNL_NLXCJH);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ReactionFurnace.get(1), AnimatedText.GTNL_NLXCJH);
 
         GTNLItemList.EnergyInfuser.set(new EnergyInfuser(GTNLMachineID.ENERGY_INFUSER.ID, "EnergyInfuser", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyInfuser.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyInfuser.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.LargeCanning.set(new LargeCanning(GTNLMachineID.LARGE_CANNING.ID, "LargeCanning", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeCanning.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeCanning.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.Digester.set(new Digester(GTNLMachineID.DIGESTER.ID, "Digester", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.Digester.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.Digester.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.AlloyBlastSmelter
             .set(new AlloyBlastSmelter(GTNLMachineID.ALLOY_BLAST_SMELTER.ID, "AlloyBlastSmelter", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.AlloyBlastSmelter.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.AlloyBlastSmelter.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeSteamExtractor
             .set(new LargeSteamExtractor(GTNLMachineID.LARGE_STEAM_EXTRACTOR.ID, "LargeSteamExtractor", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamExtractor.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamExtractor.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.LargeSteamOreWasher
             .set(new LargeSteamOreWasher(GTNLMachineID.LARGE_STEAM_ORE_WASHER.ID, "LargeSteamOreWasher", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamOreWasher.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamOreWasher.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.LargeHammer.set(new LargeHammer(GTNLMachineID.LARGE_HAMMER.ID, "LargeHammer", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeHammer.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeHammer.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.IsaMill.set(new IsaMill(GTNLMachineID.ISA_MILL.ID, "IsaMill", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.IsaMill.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.IsaMill.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.FlotationCellRegulator
             .set(new FlotationCellRegulator(GTNLMachineID.FLOTATION_CELL_REGULATOR.ID, "FlotationCellRegulator", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FlotationCellRegulator.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FlotationCellRegulator.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.VacuumDryingFurnace
             .set(new VacuumDryingFurnace(GTNLMachineID.VACUUM_DRYING_FURNACE.ID, "VacuumDryingFurnace", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.VacuumDryingFurnace.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.VacuumDryingFurnace.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeDistillery.set(new LargeDistillery(GTNLMachineID.LARGE_DISTILLERY.ID, "LargeDistillery", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeDistillery.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeDistillery.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.Incubator.set(new Incubator(GTNLMachineID.INCUBATOR.ID, "Incubator", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.Incubator.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.Incubator.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.LargeIncubator.set(new LargeIncubator(GTNLMachineID.LARGE_INCUBATOR.ID, "LargeIncubator", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeIncubator.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeIncubator.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeEngravingLaser
             .set(new LargeEngravingLaser(GTNLMachineID.LARGE_ENGRAVING_LASER.ID, "LargeEngravingLaser", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeEngravingLaser.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeEngravingLaser.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.FishingGround.set(new FishingGround(GTNLMachineID.FISHING_GROUND.ID, "FishingGround", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FishingGround.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FishingGround.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.ElementCopying.set(new ElementCopying(GTNLMachineID.ELEMENT_COPYING.ID, "ElementCopying", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ElementCopying.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ElementCopying.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.WoodDistillation
             .set(new WoodDistillation(GTNLMachineID.WOOD_DISTILLATION.ID, "WoodDistillation", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.WoodDistillation.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.WoodDistillation.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.LargePacker.set(new LargePacker(GTNLMachineID.LARGE_PACKER.ID, "LargePacker", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargePacker.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargePacker.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeAlloySmelter
             .set(new LargeAlloySmelter(GTNLMachineID.LARGE_ALLOY_SMELTER.ID, "LargeAlloySmelter", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeAlloySmelter.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeAlloySmelter.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.MolecularTransformer
             .set(new MolecularTransformer(GTNLMachineID.MOLECULAR_TRANSFORMER.ID, "MolecularTransformer", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MolecularTransformer.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MolecularTransformer.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.LargePyrolyseOven
             .set(new LargePyrolyseOven(GTNLMachineID.LARGE_PYROLYSE_OVEN.ID, "LargePyrolyseOven", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargePyrolyseOven.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargePyrolyseOven.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.LargeNaquadahReactor.set(
             new NaquadahReactor.LargeNaquadahReactor(
                 GTNLMachineID.LARGE_NAQUADAH_REACTOR.ID,
                 "LargeNaquadahReactor",
                 ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeNaquadahReactor.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeNaquadahReactor.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.DraconicFusionCrafting
             .set(new DraconicFusionCrafting(GTNLMachineID.DRACONIC_FUSION_CRAFTING.ID, "DraconicFusionCrafting", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DraconicFusionCrafting.get(1), AnimatedText.SNL_NLXCJH);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DraconicFusionCrafting.get(1), AnimatedText.GTNL_NLXCJH);
 
         GTNLItemList.LargeSteamExtruder
             .set(new LargeSteamExtruder(GTNLMachineID.LARGE_STEAM_EXTRUDER.ID, "LargeSteamExtruder", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamExtruder.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamExtruder.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.DecayHastener.set(new DecayHastener(GTNLMachineID.DECAY_HASTENER.ID, "DecayHastener", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DecayHastener.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DecayHastener.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.PreciseAssembler
             .set(new PrecisionAssembler(GTNLMachineID.PRECISION_ASSEMBLER.ID, "PrecisionAssembler", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PreciseAssembler.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PreciseAssembler.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.MegaAlloyBlastSmelter
             .set(new MegaAlloyBlastSmelter(GTNLMachineID.MEGA_ALLOY_BLAST_SMELTER.ID, "MegaAlloyBlastSmelter", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaAlloyBlastSmelter.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaAlloyBlastSmelter.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.GrandAssemblyLine
             .set(new GrandAssemblyLine(GTNLMachineID.GRAND_ASSEMBLY_LINE.ID, "GrandAssemblyLine", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.GrandAssemblyLine.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.GrandAssemblyLine.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.FuelRefiningComplex
             .set(new FuelRefiningComplex(GTNLMachineID.FUEL_REFINING_COMPLEX.ID, "FuelRefiningComplex", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FuelRefiningComplex.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FuelRefiningComplex.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.ResourceCollectionModule.set(
             new ResourceCollectionModule(GTNLMachineID.RESOURCE_COLLECTION_MODULE.ID, "ResourceCollectionModule", ""));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ResourceCollectionModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.ResourceCollectionModule.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LuvKuangBiaoOneGiantNuclearFusionReactor.set(
             new KuangBiaoOneGiantNuclearFusionReactor.LuVTier(
@@ -711,7 +709,7 @@ public class MachineLoader {
                 "KuangBiaoOneGiantNuclearFusionReactor",
                 ""));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LuvKuangBiaoOneGiantNuclearFusionReactor.get(1), AnimatedText.SNL_QYZG_SRP);
+            .addItemTooltip(GTNLItemList.LuvKuangBiaoOneGiantNuclearFusionReactor.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.ZpmKuangBiaoTwoGiantNuclearFusionReactor.set(
             new KuangBiaoOneGiantNuclearFusionReactor.ZPMTier(
@@ -719,7 +717,7 @@ public class MachineLoader {
                 "KuangBiaoTwoGiantNuclearFusionReactor",
                 ""));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ZpmKuangBiaoTwoGiantNuclearFusionReactor.get(1), AnimatedText.SNL_QYZG_SRP);
+            .addItemTooltip(GTNLItemList.ZpmKuangBiaoTwoGiantNuclearFusionReactor.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.UvKuangBiaoThreeGiantNuclearFusionReactor.set(
             new KuangBiaoOneGiantNuclearFusionReactor.UVTier(
@@ -727,7 +725,7 @@ public class MachineLoader {
                 "KuangBiaoThreeGiantNuclearFusionReactor",
                 ""));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.UvKuangBiaoThreeGiantNuclearFusionReactor.get(1), AnimatedText.SNL_QYZG_SRP);
+            .addItemTooltip(GTNLItemList.UvKuangBiaoThreeGiantNuclearFusionReactor.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.UhvKuangBiaoFourGiantNuclearFusionReactor.set(
             new KuangBiaoOneGiantNuclearFusionReactor.UHVTier(
@@ -735,7 +733,7 @@ public class MachineLoader {
                 "KuangBiaoFourGiantNuclearFusionReactor",
                 ""));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.UhvKuangBiaoFourGiantNuclearFusionReactor.get(1), AnimatedText.SNL_QYZG_SRP);
+            .addItemTooltip(GTNLItemList.UhvKuangBiaoFourGiantNuclearFusionReactor.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.UevKuangBiaoFiveGiantNuclearFusionReactor.set(
             new KuangBiaoOneGiantNuclearFusionReactor.UEVTier(
@@ -743,116 +741,114 @@ public class MachineLoader {
                 "KuangBiaoFiveGiantNuclearFusionReactor",
                 ""));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.UevKuangBiaoFiveGiantNuclearFusionReactor.get(1), AnimatedText.SNL_QYZG_SRP);
+            .addItemTooltip(GTNLItemList.UevKuangBiaoFiveGiantNuclearFusionReactor.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.LargeSteamCentrifuge
             .set(new LargeSteamCentrifuge(GTNLMachineID.LARGE_STEAM_CENTRIFUGE.ID, "LargeSteamCentrifuge", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamCentrifuge.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamCentrifuge.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeSteamHammer
             .set(new LargeSteamHammer(GTNLMachineID.LARGE_STEAM_HAMMER.ID, "LargeSteamHammer", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamHammer.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamHammer.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeSteamCompressor
             .set(new LargeSteamCompressor(GTNLMachineID.LARGE_STEAM_COMPRESSOR.ID, "LargeSteamCompressor", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamCompressor.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamCompressor.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeSteamSifter
             .set(new LargeSteamSifter(GTNLMachineID.LARGE_STEAM_SIFTER.ID, "LargeSteamSifter", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamSifter.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamSifter.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.LargeBoilerBronze
             .set(new LargeBoiler.LargeBoilerBronze(GTNLMachineID.LARGE_BOILER_BRONZE.ID, "LargeBoilerBronze", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBoilerBronze.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBoilerBronze.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeBoilerSteel
             .set(new LargeBoiler.LargeBoilerSteel(GTNLMachineID.LARGE_BOILER_STEEL.ID, "LargeBoilerSteel", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBoilerSteel.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBoilerSteel.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeBoilerTitanium.set(
             new LargeBoiler.LargeBoilerTitanium(GTNLMachineID.LARGE_BOILER_TITANIUM.ID, "LargeBoilerTitanium", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBoilerTitanium.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBoilerTitanium.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeBoilerTungstenSteel.set(
             new LargeBoiler.LargeBoilerTungstenSteel(
                 GTNLMachineID.LARGE_BOILER_TUNGSTEN_STEEL.ID,
                 "LargeBoilerTungstenSteel",
                 ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBoilerTungstenSteel.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBoilerTungstenSteel.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.LargeSteamFormingPress
             .set(new LargeSteamFormingPress(GTNLMachineID.LARGE_STEAM_FORMING_PRESS.ID, "LargeSteamFormingPress", ""));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LargeSteamFormingPress.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamFormingPress.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LargeSteamMixer
             .set(new LargeSteamMixer(GTNLMachineID.LARGE_STEAM_MIXER.ID, "LargeSteamMixer", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamMixer.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamMixer.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.CrackerHub.set(new CrackerHub(GTNLMachineID.CRACKER_HUB.ID, "CrackerHub", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.CrackerHub.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.CrackerHub.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.AdvancedInfiniteDriller.set(
             new AdvancedInfiniteDriller(GTNLMachineID.ADVANCED_INFINITE_DRILLER.ID, "AdvancedInfiniteDriller", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.AdvancedInfiniteDriller.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.AdvancedInfiniteDriller.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.ElectricBlastFurnace
             .set(new ElectricBlastFurnace(GTNLMachineID.ELECTRIC_BLAST_FURNACE.ID, "ElectricBlastFurnace", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ElectricBlastFurnace.get(1), AnimatedText.SNL_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ElectricBlastFurnace.get(1), AnimatedText.GTNL_SRP);
 
         GTNLItemList.PlatinumBasedTreatment
             .set(new PlatinumBasedTreatment(GTNLMachineID.PLATINUM_BASED_TREATMENT.ID, "PlatinumBasedTreatment", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PlatinumBasedTreatment.get(1), AnimatedText.SNL_PBTR);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PlatinumBasedTreatment.get(1), AnimatedText.GTNL_PBTR);
 
         GTNLItemList.ShallowChemicalCoupling.set(
             new ShallowChemicalCoupling(GTNLMachineID.SHALLOW_CHEMICAL_COUPLING.ID, "ShallowChemicalCoupling", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ShallowChemicalCoupling.get(1), AnimatedText.SNL_SCCR);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ShallowChemicalCoupling.get(1), AnimatedText.GTNL_SCCR);
 
         GTNLItemList.Steamgate.set(new Steamgate(GTNLMachineID.STEAMGATE.ID, "Steamgate", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.Steamgate.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.Steamgate.get(1), AnimatedText.GT_NOT_LEISURE);
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.Steamgate.get(1), AnimatedText.SteamgateCredits);
 
         GTNLItemList.SteamGateAssembler
             .set(new SteamGateAssembler(GTNLMachineID.STEAM_GATE_ASSEMBLER.ID, "SteamGateAssembler", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamGateAssembler.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamGateAssembler.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.MegaSteamCompressor
             .set(new MegaSteamCompressor(GTNLMachineID.MEGA_STEAM_COMPRESSOR.ID, "MegaSteamCompressor", ""));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.MegaSteamCompressor.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaSteamCompressor.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.MegaSolarBoiler
             .set(new MegaSolarBoiler(GTNLMachineID.MEGA_SOLAR_BOILER.ID, "MegaSolarBoiler", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaSolarBoiler.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaSolarBoiler.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamCactusWonder
             .set(new SteamCactusWonder(GTNLMachineID.STEAM_CACTUS_WONDER.ID, "SteamCactusWonder", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamCactusWonder.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamCactusWonder.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamCarpenter.set(new SteamCarpenter(GTNLMachineID.STEAM_CARPENTER.ID, "SteamCarpenter", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamCarpenter.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamCarpenter.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamLavaMaker.set(new SteamLavaMaker(GTNLMachineID.STEAM_LAVA_MAKER.ID, "SteamLavaMaker", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamLavaMaker.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamLavaMaker.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamManufacturer
             .set(new SteamManufacturer(GTNLMachineID.STEAM_MANUFACTURER.ID, "SteamManufacturer", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamManufacturer.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamManufacturer.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamRockBreaker
             .set(new SteamRockBreaker(GTNLMachineID.STEAM_ROCK_BREAKER.ID, "SteamRockBreaker", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamRockBreaker.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamRockBreaker.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamWoodcutter.set(new SteamWoodcutter(GTNLMachineID.STEAM_WOODCUTTER.ID, "SteamWoodcutter", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamWoodcutter.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamWoodcutter.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamExtractinator
             .set(new SteamExtractinator(GTNLMachineID.STEAM_EXTRACTINATOR.ID, "SteamExtractinator", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamExtractinator.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamExtractinator.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamFusionReactor
             .set(new SteamFusionReactor(GTNLMachineID.STEAM_FUSION_REACTOR.ID, "SteamFusionReactor", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamFusionReactor.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamFusionReactor.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HighPressureSteamFusionReactor.set(
             new HighPressureSteamFusionReactor(
@@ -860,33 +856,33 @@ public class MachineLoader {
                 "HighPressureSteamFusionReactor",
                 ""));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HighPressureSteamFusionReactor.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HighPressureSteamFusionReactor.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamInfernalCokeOven
             .set(new SteamInfernalCokeOven(GTNLMachineID.STEAM_INFERNAL_COKE_OVEN.ID, "SteamInfernalCokeOven", ""));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SteamInfernalCokeOven.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamInfernalCokeOven.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.IntegratedAssemblyFacility.set(
             new IntegratedAssemblyFacility(
                 GTNLMachineID.INTEGRATED_ASSEMBLY_FACILITY.ID,
                 "IntegratedAssemblyFacility",
                 ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.IntegratedAssemblyFacility.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.IntegratedAssemblyFacility.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.TreeDiagram.set(new TreeDiagram(GTNLMachineID.TREE_DIAGRAM.ID, "TreeDiagram", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.TreeDiagram.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.TreeDiagram.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.NanoPhagocytosisPlant
             .set(new NanoPhagocytosisPlant(GTNLMachineID.NANO_PHAGOCYTOSIS_PLANT.ID, "NanoPhagocytosisPlant", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NanoPhagocytosisPlant.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NanoPhagocytosisPlant.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.MagneticEnergyReactionFurnace.set(
             new MagneticEnergyReactionFurnace(
                 GTNLMachineID.MAGNETIC_ENERGY_REACTION_FURNACE.ID,
                 "MagneticEnergyReactionFurnace",
                 ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MagneticEnergyReactionFurnace.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.MagneticEnergyReactionFurnace.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.NanitesIntegratedProcessingCenter.set(
             new NanitesIntegratedProcessingCenter(
@@ -894,85 +890,84 @@ public class MachineLoader {
                 "NanitesIntegratedProcessingCenter",
                 ""));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.NanitesIntegratedProcessingCenter.get(1), AnimatedText.SNL_QYZG);
+            .addItemTooltip(GTNLItemList.NanitesIntegratedProcessingCenter.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.BioengineeringModule.set(
             new BioengineeringModule(
                 GTNLMachineID.BIOENGINEERING_MODULE.ID,
                 "BioengineeringModule",
                 StatCollector.translateToLocal("gtnl.machine.bioengineering_module.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.BioengineeringModule.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.BioengineeringModule.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.PolymerTwistingModule.set(
             new PolymerTwistingModule(
                 GTNLMachineID.POLYMER_TWISTING_MODULE.ID,
                 "PolymerTwistingModule",
                 StatCollector.translateToLocal("gtnl.machine.polymer_twisting_module.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PolymerTwistingModule.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PolymerTwistingModule.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.OreExtractionModule.set(
             new OreExtractionModule(
                 GTNLMachineID.ORE_EXTRACTION_MODULE.ID,
                 "OreExtractionModule",
                 StatCollector.translateToLocal("gtnl.machine.ore_extraction_module.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.OreExtractionModule.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.OreExtractionModule.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.SuperSpaceElevator.set(
             new SuperSpaceElevator(
                 GTNLMachineID.SUPER_SPACE_ELEVATOR.ID,
                 "SuperSpaceElevator",
                 StatCollector.translateToLocal("gtnl.machine.super_space_elevator.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SuperSpaceElevator.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SuperSpaceElevator.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.LargeBioLab.set(
             new LargeBioLab(
                 GTNLMachineID.LARGE_BIO_LAB.ID,
                 "LargeBioLab",
                 StatCollector.translateToLocal("gtnl.machine.large_bio_lab.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBioLab.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBioLab.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LargeGasCollector.set(
             new LargeGasCollector(
                 GTNLMachineID.LARGE_GAS_COLLECTOR.ID,
                 "LargeGasCollector",
                 StatCollector.translateToLocal("gtnl.machine.large_gas_collector.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeGasCollector.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeGasCollector.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EternalGregTechWorkshop.set(
             new EternalGregTechWorkshop(
                 GTNLMachineID.ETERNAL_GREG_TECH_WORKSHOP.ID,
                 "EternalGregTechWorkshop",
                 StatCollector.translateToLocal("gtnl.machine.eternal_greg_tech_workshop.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.EternalGregTechWorkshop.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EternalGregTechWorkshop.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EGTWFusionModule.set(
             new EGTWFusionModule(
                 GTNLMachineID.EGTW_FUSION_MODULE.ID,
                 "EGTWFusionModule",
                 StatCollector.translateToLocal("gtnl.machine.etgw_fusion_module.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EGTWFusionModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EGTWFusionModule.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SpaceAssembler.set(
             new SpaceAssembler(
                 GTNLMachineID.SPACE_ASSEMBLER.ID,
                 "SpaceAssembler",
                 StatCollector.translateToLocal("gtnl.machine.space_assembler.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SpaceAssembler.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SpaceAssembler.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EngravingLaserPlant.set(
             new EngravingLaserPlant(
                 GTNLMachineID.ENGRAVING_LASER_PLANT.ID,
                 "EngravingLaserPlant",
                 StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EngravingLaserPlant.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EngravingLaserPlant.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.VortexMatterCentrifuge.set(
             new VortexMatterCentrifuge(
                 GTNLMachineID.VORTEX_MATTER_CENTRIFUGE.ID,
                 "VortexMatterCentrifuge",
                 StatCollector.translateToLocal("gtnl.machine.vortex_matter_centrifuge.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.VortexMatterCentrifuge.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.VortexMatterCentrifuge.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.SuperconductingElectromagnetism.set(
             new SuperconductingElectromagnetism(
@@ -980,14 +975,14 @@ public class MachineLoader {
                 "SuperconductingElectromagnetism",
                 StatCollector.translateToLocal("gtnl.machine.superconducting_electromagnetism.name")));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SuperconductingElectromagnetism.get(1), AnimatedText.SNL_QYZG);
+            .addItemTooltip(GTNLItemList.SuperconductingElectromagnetism.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.FieldForgePress.set(
             new FieldForgePress(
                 GTNLMachineID.FIELD_FORGE_PRESS.ID,
                 "FieldForgePress",
                 StatCollector.translateToLocal("gtnl.machine.field_forge_press.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FieldForgePress.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FieldForgePress.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.SuperconductingMagneticPresser.set(
             new SuperconductingMagneticPresser(
@@ -995,28 +990,28 @@ public class MachineLoader {
                 "SuperconductingMagneticPresser",
                 StatCollector.translateToLocal("gtnl.machine.superconducting_magnetic_presser.name")));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SuperconductingMagneticPresser.get(1), AnimatedText.SNL_QYZG);
+            .addItemTooltip(GTNLItemList.SuperconductingMagneticPresser.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.HeavyRolling.set(
             new HeavyRolling(
                 GTNLMachineID.HEAVY_ROLLING.ID,
                 "HeavyRolling",
                 StatCollector.translateToLocal("gtnl.machine.heavy_rolling.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.HeavyRolling.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.HeavyRolling.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.HighEnergyLaserLathe.set(
             new HighEnergyLaserLathe(
                 GTNLMachineID.HIGH_ENERGY_LASER_LATHE.ID,
                 "HighEnergyLaserLathe",
                 StatCollector.translateToLocal("gtnl.machine.high_energy_laser_lathe.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.HighEnergyLaserLathe.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.HighEnergyLaserLathe.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.MegaMixer.set(
             new MegaMixer(
                 GTNLMachineID.MEGA_MIXER.ID,
                 "MegaMixer",
                 StatCollector.translateToLocal("gtnl.machine.mega_mixer.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaMixer.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaMixer.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.SteamBeaconModuleI.set(
             new SteamBeaconModule(
@@ -1024,7 +1019,7 @@ public class MachineLoader {
                 "SteamBeaconModuleI",
                 StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.1.name"),
                 1));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamBeaconModuleI.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamBeaconModuleI.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamBeaconModuleII.set(
             new SteamBeaconModule(
@@ -1032,8 +1027,7 @@ public class MachineLoader {
                 "SteamBeaconModuleII",
                 StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.2.name"),
                 2));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SteamBeaconModuleII.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamBeaconModuleII.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamBeaconModuleIII.set(
             new SteamBeaconModule(
@@ -1041,37 +1035,36 @@ public class MachineLoader {
                 "SteamBeaconModuleIII",
                 StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.3.name"),
                 3));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SteamBeaconModuleIII.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamBeaconModuleIII.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.NanitesCircuitAssemblyFactory.set(
             new NanitesCircuitAssemblyFactory(
                 GTNLMachineID.NANITES_CIRCUIT_ASSEMBLY_FACTORY.ID,
                 "NanitesCircuitAssemblyFactory",
                 StatCollector.translateToLocal("gtnl.machine.nanites_circuit_assembly_factory.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NanitesCircuitAssemblyFactory.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.NanitesCircuitAssemblyFactory.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.ETGWEyeOfHarmonyModule.set(
             new ETGWEyeOfHarmonyModule(
                 GTNLMachineID.ETGW_EYE_OF_HARMONY_MODULE.ID,
                 "ETGWEyeOfHarmonyModule",
                 StatCollector.translateToLocal("gtnl.machine.etgw_eye_of_harmony_module.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ETGWEyeOfHarmonyModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ETGWEyeOfHarmonyModule.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.AetronPressor.set(
             new AetronPressor(
                 GTNLMachineID.AETRON_PRESSOR.ID,
                 "AetronPressor",
                 StatCollector.translateToLocal("gtnl.machine.aetron_pressor.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.AetronPressor.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.AetronPressor.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.SteamElevator.set(
             new SteamElevator(
                 GTNLMachineID.STEAM_ELEVATOR.ID,
                 "SteamElevator",
                 StatCollector.translateToLocal("gtnl.machine.steam_elevator.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamElevator.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamElevator.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamMonsterRepellentModuleI.set(
             new SteamMonsterRepellentModule(
@@ -1080,7 +1073,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.1.name"),
                 1));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SteamMonsterRepellentModuleI.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.SteamMonsterRepellentModuleI.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamMonsterRepellentModuleII.set(
             new SteamMonsterRepellentModule(
@@ -1089,7 +1082,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.2.name"),
                 2));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SteamMonsterRepellentModuleII.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.SteamMonsterRepellentModuleII.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamMonsterRepellentModuleIII.set(
             new SteamMonsterRepellentModule(
@@ -1098,28 +1091,28 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.3.name"),
                 3));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SteamMonsterRepellentModuleIII.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.SteamMonsterRepellentModuleIII.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamFlightModule.set(
             new SteamFlightModule(
                 GTNLMachineID.STEAM_FLIGHT_MODULE.ID,
                 "SteamFlightModule",
                 StatCollector.translateToLocal("gtnl.machine.steam_flight_module.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamFlightModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamFlightModule.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamWeatherModule.set(
             new SteamWeatherModule(
                 GTNLMachineID.STEAM_WEATHER_MODULE.ID,
                 "SteamWeatherModule",
                 StatCollector.translateToLocal("gtnl.machine.steam_weather_module.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamWeatherModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamWeatherModule.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.NanoAssemblerMarkL.set(
             new NanoAssemblerMarkL(
                 GTNLMachineID.NANO_ASSEMBLER_MARK_L.ID,
                 "NanoAssemblerMarkL",
                 StatCollector.translateToLocal("gtnl.machine.nano_assembler_mark_l.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NanoAssemblerMarkL.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NanoAssemblerMarkL.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.HighPerformanceComputationArray.set(
             new HighPerformanceComputationArray(
@@ -1127,81 +1120,77 @@ public class MachineLoader {
                 "HighPerformanceComputationArray",
                 StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.name")));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HighPerformanceComputationArray.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HighPerformanceComputationArray.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EyeOfHarmonyInjector.set(
             new EyeOfHarmonyInjector(
                 GTNLMachineID.EYE_OF_HARMONY_INJECTOR.ID,
                 "EyeOfHarmonyInjector",
                 StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.EyeOfHarmonyInjector.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EyeOfHarmonyInjector.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.CompoundExtremeCoolingUnit.set(
             new CompoundExtremeCoolingUnit(
                 GTNLMachineID.COMPOUND_EXTREME_COOLING_UNIT.ID,
                 "CompoundExtremeCoolingUnit",
                 StatCollector.translateToLocal("gtnl.machine.compound_extreme_cooling_unit.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.CompoundExtremeCoolingUnit.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.CompoundExtremeCoolingUnit.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.SteamOreProcessorModule.set(
             new SteamOreProcessorModule(
                 GTNLMachineID.STEAM_ORE_PROCESSOR_MODULE.ID,
                 "SteamOreProcessorModule",
                 StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SteamOreProcessorModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamOreProcessorModule.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LargeSteamLathe.set(
             new LargeSteamLathe(
                 GTNLMachineID.LARGE_STEAM_LATHE.ID,
                 "LargeSteamLathe",
                 StatCollector.translateToLocal("gtnl.machine.large_steam_lathe.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamLathe.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamLathe.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.LargeSteamCutting.set(
             new LargeSteamCutting(
                 GTNLMachineID.LARGE_STEAM_CUTTING.ID,
                 "LargeSteamCutting",
                 StatCollector.translateToLocal("gtnl.machine.large_steam_cutting.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamCutting.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamCutting.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.SteamItemVault.set(
             new SteamItemVault(
                 GTNLMachineID.STEAM_ITEM_VAULT.ID,
                 "SteamItemVault",
                 StatCollector.translateToLocal("gtnl.machine.steam_item_vault.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamItemVault.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamItemVault.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.PrimitiveBrickKiln.set(
             new PrimitiveBrickKiln(
                 GTNLMachineID.PRIMITIVE_BRICK_KILN.ID,
                 "PrimitiveBrickKiln",
                 StatCollector.translateToLocal("gtnl.machine.primitive_brick_kiln.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PrimitiveBrickKiln.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PrimitiveBrickKiln.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SingularityDataHub.set(
             new SingularityDataHub(
                 GTNLMachineID.SINGULARITY_DATA_HUB.ID,
                 "SingularityDataHub",
                 StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SingularityDataHub.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SingularityDataHub.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ElectrocellGenerator.set(
             new ElectrocellGenerator(
                 GTNLMachineID.ELECTROCELL_GENERATOR.ID,
                 "ElectrocellGenerator",
                 StatCollector.translateToLocal("gtnl.machine.electrocell_generator.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ElectrocellGenerator.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ElectrocellGenerator.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.FOGAlloySmelterModule.set(
             new FOGAlloySmelterModule(
                 GTNLMachineID.FOG_ALLOY_SMELTER_MODULE.ID,
                 "FOGAlloySmelterModule",
                 StatCollector.translateToLocal("gtnl.machine.fog_alloy_smelter_module.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.FOGAlloySmelterModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FOGAlloySmelterModule.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.FOGAlloyBlastSmelterModule.set(
             new FOGAlloyBlastSmelterModule(
@@ -1209,14 +1198,14 @@ public class MachineLoader {
                 "FOGAlloyBlastSmelterModule",
                 StatCollector.translateToLocal("gtnl.machine.fog_alloy_blast_smelter_module.name")));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.FOGAlloyBlastSmelterModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.FOGAlloyBlastSmelterModule.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.FOGExtractorModule.set(
             new FOGExtractorModule(
                 GTNLMachineID.FOG_EXTRACTOR_MODULE.ID,
                 "FOGExtractorModule",
                 StatCollector.translateToLocal("gtnl.machine.fog_extractor_module.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FOGExtractorModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FOGExtractorModule.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamEntityCrusherModule.set(
             new SteamEntityCrusherModule(
@@ -1224,37 +1213,35 @@ public class MachineLoader {
                 "SteamEntityCrusherModule",
                 StatCollector.translateToLocal("gtnl.machine.steam_entity_crusher_module.name")));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SteamEntityCrusherModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.SteamEntityCrusherModule.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamApiaryModule.set(
             new SteamApiaryModule(
                 GTNLMachineID.STEAM_APIARY_MODULE.ID,
                 "SteamApiaryModule",
                 StatCollector.translateToLocal("gtnl.machine.steam_apiary_module.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamApiaryModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamApiaryModule.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamBeeBreedingModule.set(
             new SteamBeeBreedingModule(
                 GTNLMachineID.STEAM_BEE_BREEDING_MODULE.ID,
                 "SteamBeeBreedingModule",
                 StatCollector.translateToLocal("gtnl.machine.steam_bee_breeding_module.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SteamBeeBreedingModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamBeeBreedingModule.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamGreenhouseModule.set(
             new SteamGreenhouseModule(
                 GTNLMachineID.STEAM_GREENHOUSE_MODULE.ID,
                 "SteamGreenhouseModule",
                 StatCollector.translateToLocal("gtnl.machine.steam_greenhouse_module.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SteamGreenhouseModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamGreenhouseModule.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.RocketAssembler.set(
             new RocketAssembler(
                 GTNLMachineID.ROCKET_ASSEMBLER.ID,
                 "RocketAssembler",
                 StatCollector.translateToLocal("gtnl.machine.rocket_assembler.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.RocketAssembler.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.RocketAssembler.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.SteamOilDrillModuleI.set(
             new SteamOilDrillModule(
@@ -1262,8 +1249,7 @@ public class MachineLoader {
                 "SteamOilDrillModuleI",
                 StatCollector.translateToLocal("gtnl.machine.steam_oil_drill_module.1.name"),
                 2));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SteamOilDrillModuleI.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamOilDrillModuleI.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamOilDrillModuleII.set(
             new SteamOilDrillModule(
@@ -1271,8 +1257,7 @@ public class MachineLoader {
                 "SteamOilDrillModuleII",
                 StatCollector.translateToLocal("gtnl.machine.steam_oil_drill_module.2.name"),
                 3));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SteamOilDrillModuleII.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamOilDrillModuleII.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamOilDrillModuleIII.set(
             new SteamOilDrillModule(
@@ -1280,57 +1265,56 @@ public class MachineLoader {
                 "SteamOilDrillModuleIII",
                 StatCollector.translateToLocal("gtnl.machine.steam_oil_drill_module.3.name"),
                 4));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SteamOilDrillModuleIII.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamOilDrillModuleIII.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.AdvancedRareEarthCentrifugal.set(
             new AdvancedRareEarthCentrifugal(
                 GTNLMachineID.ADVANCED_RARE_EARTH_CENTRIFUGAL.ID,
                 "AdvancedRareEarthCentrifugal",
                 StatCollector.translateToLocal("gtnl.machine.advanced_rare_earth_centrifugal.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.AdvancedRareEarthCentrifugal.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.AdvancedRareEarthCentrifugal.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.MassFabricator.set(
             new MassFabricator(
                 GTNLMachineID.MASS_FABRICATOR.ID,
                 "MassFabricator",
                 StatCollector.translateToLocal("gtnl.machine.mass_fabricator.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MassFabricator.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MassFabricator.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.AdvancedMassFabricator.set(
             new AdvancedMassFabricator(
                 GTNLMachineID.ADVANCED_MASS_FABRICATOR.ID,
                 "AdvancedMassFabricator",
                 StatCollector.translateToLocal("gtnl.machine.advanced_mass_fabricator.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.AdvancedMassFabricator.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.AdvancedMassFabricator.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.HorizontalCompressor.set(
             new HorizontalCompressor(
                 GTNLMachineID.HORIZONTAL_COMPRESSOR.ID,
                 "HorizontalCompressor",
                 StatCollector.translateToLocal("gtnl.machine.horizontal_compressor.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.HorizontalCompressor.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.HorizontalCompressor.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.MegaVacuumDryingFurnace.set(
             new MegaVacuumDryingFurnace(
                 GTNLMachineID.MEGA_VACUUM_DRYING_FURNACE.ID,
                 "MegaVacuumDryingFurnace",
                 StatCollector.translateToLocal("gtnl.machine.mega_vacuum_drying_furnace.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaVacuumDryingFurnace.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaVacuumDryingFurnace.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.MegaBathTank.set(
             new MegaBathTank(
                 GTNLMachineID.MEGA_BATH_TANK.ID,
                 "MegaBathTank",
                 StatCollector.translateToLocal("gtnl.machine.mega_bath_tank.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaBathTank.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaBathTank.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.MegaCanner.set(
             new MegaCanner(
                 GTNLMachineID.MEGA_CANNER.ID,
                 "MegaCanner",
                 StatCollector.translateToLocal("gtnl.machine.mega_canner.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaCanner.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaCanner.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.CompoundDistillationFractionator.set(
             new CompoundDistillationFractionator(
@@ -1338,63 +1322,63 @@ public class MachineLoader {
                 "CompoundDistillationFractionator",
                 StatCollector.translateToLocal("gtnl.machine.compound_distillation_fractionator.name")));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.CompoundDistillationFractionator.get(1), AnimatedText.SNL_QYZG);
+            .addItemTooltip(GTNLItemList.CompoundDistillationFractionator.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.MegaBrewer.set(
             new MegaBrewer(
                 GTNLMachineID.MEGA_BREWER.ID,
                 "MegaBrewer",
                 StatCollector.translateToLocal("gtnl.machine.mega_brewer.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaBrewer.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaBrewer.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.MicroorganismMaster.set(
             new MicroorganismMaster(
                 GTNLMachineID.MICROORGANISM_MASTER.ID,
                 "MicroorganismMaster",
                 StatCollector.translateToLocal("gtnl.machine.microorganism_master.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MicroorganismMaster.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MicroorganismMaster.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.MoltenCore.set(
             new MoltenCore(
                 GTNLMachineID.MOLTEN_CORE.ID,
                 "MoltenCore",
                 StatCollector.translateToLocal("gtnl.machine.molten_core.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MoltenCore.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MoltenCore.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.CrystalBuilder.set(
             new CrystalBuilder(
                 GTNLMachineID.CRYSTAL_BUILDER.ID,
                 "CrystalBuilder",
                 StatCollector.translateToLocal("gtnl.machine.crystal_builder.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.CrystalBuilder.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.CrystalBuilder.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.LargeRockCrusher.set(
             new LargeRockCrusher(
                 GTNLMachineID.LARGE_ROCK_CRUSHER.ID,
                 "LargeRockCrusher",
                 StatCollector.translateToLocal("gtnl.machine.large_rock_crusher.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeRockCrusher.get(1), AnimatedText.SNL_QYZG_SRP);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeRockCrusher.get(1), AnimatedText.GTNL_QYZG_SRP);
 
         GTNLItemList.PhaseChangeCube.set(
             new PhaseChangeCube(
                 GTNLMachineID.PHASE_CHANGE_CUBE.ID,
                 "PhaseChangeCube",
                 StatCollector.translateToLocal("gtnl.machine.phase_change_cube.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PhaseChangeCube.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PhaseChangeCube.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.MantleCrusher.set(
             new MantleCrusher(
                 GTNLMachineID.MANTLE_CRUSHER.ID,
                 "MantleCrusher",
                 StatCollector.translateToLocal("gtnl.machine.mantle_crusher.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MantleCrusher.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MantleCrusher.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.SmartSiftingHub.set(
             new SmartSiftingHub(
                 GTNLMachineID.SMART_SIFTING_HUB.ID,
                 "SmartSiftingHub",
                 StatCollector.translateToLocal("gtnl.machine.smart_sifting_hub.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmartSiftingHub.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmartSiftingHub.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.GiantElectrochemicalWorkstation.set(
             new GiantElectrochemicalWorkstation(
@@ -1402,119 +1386,119 @@ public class MachineLoader {
                 "GiantElectrochemicalWorkstation",
                 StatCollector.translateToLocal("gtnl.machine.giant_electrochemical_workstation.name")));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.GiantElectrochemicalWorkstation.get(1), AnimatedText.SNL_QYZG);
+            .addItemTooltip(GTNLItemList.GiantElectrochemicalWorkstation.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.GeminiContainmentSystem.set(
             new GeminiContainmentSystem(
                 GTNLMachineID.GEMINI_CONTAINMENT_SYSTEM.ID,
                 "GeminiContainmentSystem",
                 StatCollector.translateToLocal("gtnl.machine.gemini_containment_system.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.GeminiContainmentSystem.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.GeminiContainmentSystem.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.ExtremeCompressor.set(
             new ExtremeCompressor(
                 GTNLMachineID.EXTREME_COMPRESSOR.ID,
                 "ExtremeCompressor",
                 StatCollector.translateToLocal("gtnl.machine.extreme_compressor.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ExtremeCompressor.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ExtremeCompressor.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.ExtremeElectricFurnace.set(
             new ExtremeElectricFurnace(
                 GTNLMachineID.EXTREME_ELECTRIC_FURNACE.ID,
                 "ExtremeElectricFurnace",
                 StatCollector.translateToLocal("gtnl.machine.extreme_electric_furnace.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ExtremeElectricFurnace.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ExtremeElectricFurnace.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.DataCenter.set(
             new DataCenter(
                 GTNLMachineID.DATA_CENTER.ID,
                 "DataCenter",
                 StatCollector.translateToLocal("gtnl.machine.data_center.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DataCenter.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DataCenter.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.KerrNewmanHomogenizer.set(
             new KerrNewmanHomogenizer(
                 GTNLMachineID.KERR_NEWMAN_HOMOGENIZER.ID,
                 "KerrNewmanHomogenizer",
                 StatCollector.translateToLocal("gtnl.machine.kerr_newman_homogenizer.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.KerrNewmanHomogenizer.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.KerrNewmanHomogenizer.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.LargeSteamBending.set(
             new LargeSteamBending(
                 GTNLMachineID.LARGE_STEAM_BENDING.ID,
                 "LargeSteamBending",
                 StatCollector.translateToLocal("gtnl.machine.large_steam_bending.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamBending.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamBending.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LargeSteamWiremill.set(
             new LargeSteamWiremill(
                 GTNLMachineID.LARGE_STEAM_WIREMILL.ID,
                 "LargeSteamWiremill",
                 StatCollector.translateToLocal("gtnl.machine.large_steam_wiremill.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamWiremill.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeSteamWiremill.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ChemicalComplex.set(
             new ChemicalComplex(
                 GTNLMachineID.CHEMICAL_COMPLEX.ID,
                 "ChemicalComplex",
                 StatCollector.translateToLocal("gtnl.machine.chemical_complex.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ChemicalComplex.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ChemicalComplex.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.MegaWiremill.set(
             new MegaWiremill(
                 GTNLMachineID.MEGA_WIREMILL.ID,
                 "MegaWiremill",
                 StatCollector.translateToLocal("gtnl.machine.mega_wiremill.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaWiremill.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MegaWiremill.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.GiantFlotationTank.set(
             new GiantFlotationTank(
                 GTNLMachineID.GIANT_FLOTATION_TANK.ID,
                 "GiantFlotationTank",
                 StatCollector.translateToLocal("gtnl.machine.giant_flotation_tank.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.GiantFlotationTank.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.GiantFlotationTank.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.DissolutionCore.set(
             new DissolutionCore(
                 GTNLMachineID.DISSOLUTION_CORE.ID,
                 "DissolutionCore",
                 StatCollector.translateToLocal("gtnl.machine.dissolution_core.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DissolutionCore.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DissolutionCore.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.SwarmCore.set(
             new SwarmCore(
                 GTNLMachineID.SWARM_CORE.ID,
                 "SwarmCore",
                 StatCollector.translateToLocal("gtnl.machine.swarm_core.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SwarmCore.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SwarmCore.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.HyperNaquadahReactor.set(
             new NaquadahReactor.HyperNaquadahReactor(
                 GTNLMachineID.HYPER_NAQUADAH_REACTOR.ID,
                 "HyperNaquadahReactor",
                 StatCollector.translateToLocal("gtnl.machine.hyper_naquadah_reactor.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.HyperNaquadahReactor.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.HyperNaquadahReactor.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.AdvancedHyperNaquadahReactor.set(
             new NaquadahReactor.AdvancedHyperNaquadahReactor(
                 GTNLMachineID.ADVANCED_HYPER_NAQUADAH_REACTOR.ID,
                 "AdvancedHyperNaquadahReactor",
                 StatCollector.translateToLocal("gtnl.machine.advanced_hyper_naquadah_reactor.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.AdvancedHyperNaquadahReactor.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.AdvancedHyperNaquadahReactor.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.TransliminalOasis.set(
             new TransliminalOasis(
                 GTNLMachineID.TRANSLIMINAL_OASIS.ID,
                 "TransliminalOasis",
                 StatCollector.translateToLocal("gtnl.machine.transliminal_oasis.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.TransliminalOasis.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.TransliminalOasis.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.FastNeutronBreederReactor.set(
             new FastNeutronBreederReactor(
                 GTNLMachineID.FAST_NEUTRON_BREEDER_REACTOR.ID,
                 "FastNeutronBreederReactor",
                 StatCollector.translateToLocal("gtnl.machine.fast_neutron_breeder_reactor.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FastNeutronBreederReactor.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FastNeutronBreederReactor.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.MagneticConfinementDimensionalityShockDevice.set(
             new MagneticConfinementDimensionalityShockDevice(
@@ -1522,28 +1506,28 @@ public class MachineLoader {
                 "MagneticConfinementDimensionalityShockDevice",
                 StatCollector.translateToLocal("gtnl.machine.magnetic_confinement_dimensionality_shock_device.name")));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.MagneticConfinementDimensionalityShockDevice.get(1), AnimatedText.SNL_QYZG);
+            .addItemTooltip(GTNLItemList.MagneticConfinementDimensionalityShockDevice.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.SupercomputingCenter.set(
             new SupercomputingCenter(
                 GTNLMachineID.SUPERCOMPUTING_CENTER.ID,
                 "SupercomputingCenter",
                 StatCollector.translateToLocal("gtnl.machine.supercomputing_center.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SupercomputingCenter.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SupercomputingCenter.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.PCBFactory.set(
             new PCBFactory(
                 GTNLMachineID.PCB_FACTORY.ID,
                 "PCBFactory",
                 StatCollector.translateToLocal("gtnl.machine.pcb_factory.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PCBFactory.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PCBFactory.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.FurnaceArray.set(
             new FurnaceArray(
                 GTNLMachineID.FURNACE_ARRAY.ID,
                 "FurnaceArray",
                 StatCollector.translateToLocal("gtnl.machine.furnace_array.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FurnaceArray.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FurnaceArray.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.FOGSolarMuonCatalystModule.set(
             new FOGSolarMuonCatalystModule(
@@ -1553,22 +1537,21 @@ public class MachineLoader {
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FOGSolarMuonCatalystModule.get(1), AnimatedText.TIDAL);
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FOGSolarMuonCatalystModule.get(1), AnimatedText.WAVE);
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.FOGSolarMuonCatalystModule.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.FOGSolarMuonCatalystModule.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LargeEssentiaGenerator.set(
             new LargeEssentiaGenerator(
                 GTNLMachineID.LARGE_ESSENTIA_GENERATOR.ID,
                 "NameLargeEssentiaGenerator",
                 StatCollector.translateToLocal("gtnl.machine.large_essentia_generator.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LargeEssentiaGenerator.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeEssentiaGenerator.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HighwayToHell.set(
             new HighwayToHell(
                 GTNLMachineID.HIGHWAY_TO_HELL.ID,
                 "NameHighwayToHell",
                 StatCollector.translateToLocal("gtnl.machine.highway_to_hell.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.HighwayToHell.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.HighwayToHell.get(1), AnimatedText.GT_NOT_LEISURE);
 
         // Special Machine
         GTNLItemList.CheatOreProcessingFactory.set(
@@ -1576,14 +1559,14 @@ public class MachineLoader {
                 GTNLMachineID.CHEAT_ORE_PROCESSING_FACTORY.ID,
                 "CheatOreProcessingFactory",
                 StatCollector.translateToLocal("gtnl.machine.cheat_ore_processing_factory.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.CheatOreProcessingFactory.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.CheatOreProcessingFactory.get(1), AnimatedText.GTNL_QYZG);
 
         GTNLItemList.NineIndustrialMultiMachine.set(
             new NineIndustrialMultiMachine(
                 GTNLMachineID.NINE_INDUSTRIAL_MULTI_MACHINE.ID,
                 "NineIndustrialMultiMachine",
                 StatCollector.translateToLocal("gtnl.machine.nine_industrial_multi_machine.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NineIndustrialMultiMachine.get(1), AnimatedText.SNL_QYZG);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NineIndustrialMultiMachine.get(1), AnimatedText.GTNL_QYZG);
     }
 
     public static void registerHatch() {
@@ -1605,8 +1588,7 @@ public class MachineLoader {
                 "FluidManaInputHatch",
                 StatCollector.translateToLocal("gtnl.hatch.fluid_mana_input.name"),
                 6));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.FluidManaInputHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FluidManaInputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.FluidIceInputHatch.set(
             new CustomFluidHatch(
@@ -1616,7 +1598,7 @@ public class MachineLoader {
                 "FluidIceInputHatch",
                 StatCollector.translateToLocal("gtnl.hatch.fluid_ice_input.name"),
                 5));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FluidIceInputHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FluidIceInputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.FluidBlazeInputHatch.set(
             new CustomFluidHatch(
@@ -1626,8 +1608,7 @@ public class MachineLoader {
                 "FluidBlazeInputHatch",
                 StatCollector.translateToLocal("gtnl.hatch.fluid_blaze_input.name"),
                 5));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.FluidBlazeInputHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FluidBlazeInputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SuperCraftingInputHatchME.set(
             new SuperCraftingInputHatchME(
@@ -1636,7 +1617,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_me.hatch.name"),
                 true));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SuperCraftingInputHatchME.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.SuperCraftingInputHatchME.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SuperCraftingInputBusME.set(
             new SuperCraftingInputHatchME(
@@ -1644,8 +1625,7 @@ public class MachineLoader {
                 "SuperCraftingInputBus(ME)",
                 StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_me.bus.name"),
                 false));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SuperCraftingInputBusME.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SuperCraftingInputBusME.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousSolidifierHatch.set(
             new HumongousSolidifierHatch(
@@ -1654,14 +1634,14 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.humongous_solidifier.name"),
                 14));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousSolidifierHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HumongousSolidifierHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DebugEnergyHatch.set(
             new DebugEnergyHatch(
                 GTNLMachineID.DEBUG_ENERGY_HATCH.ID,
                 "DebugEnergyHatch",
                 StatCollector.translateToLocal("gtnl.hatch.debug_energy.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DebugEnergyHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DebugEnergyHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.NinefoldInputHatchEV.set(
             new NinefoldInputHatch(
@@ -1670,8 +1650,7 @@ public class MachineLoader {
                 "NinefoldInputHatchEV",
                 StatCollector.translateToLocal("gtnl.hatch.ninefold_input.ev.name"),
                 4));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.NinefoldInputHatchEV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NinefoldInputHatchEV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.NinefoldInputHatchIV.set(
             new NinefoldInputHatch(
@@ -1680,8 +1659,7 @@ public class MachineLoader {
                 "NinefoldInputHatchIV",
                 StatCollector.translateToLocal("gtnl.hatch.ninefold_input.iv.name"),
                 5));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.NinefoldInputHatchIV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NinefoldInputHatchIV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.NinefoldInputHatchLuV.set(
             new NinefoldInputHatch(
@@ -1690,8 +1668,7 @@ public class MachineLoader {
                 "NinefoldInputHatchLuV",
                 StatCollector.translateToLocal("gtnl.hatch.ninefold_input.luv.name"),
                 6));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.NinefoldInputHatchLuV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NinefoldInputHatchLuV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.NinefoldInputHatchZPM.set(
             new NinefoldInputHatch(
@@ -1700,8 +1677,7 @@ public class MachineLoader {
                 "NinefoldInputHatchZPM",
                 StatCollector.translateToLocal("gtnl.hatch.ninefold_input.zpm.name"),
                 7));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.NinefoldInputHatchZPM.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NinefoldInputHatchZPM.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.NinefoldInputHatchUV.set(
             new NinefoldInputHatch(
@@ -1710,8 +1686,7 @@ public class MachineLoader {
                 "NinefoldInputHatchUV",
                 StatCollector.translateToLocal("gtnl.hatch.ninefold_input.uv.name"),
                 8));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.NinefoldInputHatchUV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NinefoldInputHatchUV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.NinefoldInputHatchUHV.set(
             new NinefoldInputHatch(
@@ -1720,8 +1695,7 @@ public class MachineLoader {
                 "NinefoldInputHatchUHV",
                 StatCollector.translateToLocal("gtnl.hatch.ninefold_input.uhv.name"),
                 9));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.NinefoldInputHatchUHV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NinefoldInputHatchUHV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.NinefoldInputHatchUEV.set(
             new NinefoldInputHatch(
@@ -1730,8 +1704,7 @@ public class MachineLoader {
                 "NinefoldInputHatchUEV",
                 StatCollector.translateToLocal("gtnl.hatch.ninefold_input.uev.name"),
                 10));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.NinefoldInputHatchUEV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NinefoldInputHatchUEV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.NinefoldInputHatchUIV.set(
             new NinefoldInputHatch(
@@ -1740,8 +1713,7 @@ public class MachineLoader {
                 "NinefoldInputHatchUIV",
                 StatCollector.translateToLocal("gtnl.hatch.ninefold_input.uiv.name"),
                 11));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.NinefoldInputHatchUIV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NinefoldInputHatchUIV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.NinefoldInputHatchUMV.set(
             new NinefoldInputHatch(
@@ -1750,8 +1722,7 @@ public class MachineLoader {
                 "NinefoldInputHatchUMV",
                 StatCollector.translateToLocal("gtnl.hatch.ninefold_input.umv.name"),
                 12));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.NinefoldInputHatchUMV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NinefoldInputHatchUMV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.NinefoldInputHatchUXV.set(
             new NinefoldInputHatch(
@@ -1760,8 +1731,7 @@ public class MachineLoader {
                 "NinefoldInputHatchUXV",
                 StatCollector.translateToLocal("gtnl.hatch.ninefold_input.uxv.name"),
                 13));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.NinefoldInputHatchUXV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NinefoldInputHatchUXV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.NinefoldInputHatchMAX.set(
             new NinefoldInputHatch(
@@ -1770,8 +1740,7 @@ public class MachineLoader {
                 "NinefoldInputHatchMAX",
                 StatCollector.translateToLocal("gtnl.hatch.ninefold_input.max.name"),
                 14));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.NinefoldInputHatchMAX.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NinefoldInputHatchMAX.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousNinefoldInputHatch.set(
             new HumongousNinefoldInputHatch(
@@ -1780,7 +1749,7 @@ public class MachineLoader {
                 "HumongousNinefoldInputHatch",
                 StatCollector.translateToLocal("gtnl.hatch.humongous_ninefold_input.name")));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousNinefoldInputHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HumongousNinefoldInputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DualInputHatchLV.set(
             new DualInputHatch(
@@ -1788,7 +1757,7 @@ public class MachineLoader {
                 "DualInputHatchLV",
                 StatCollector.translateToLocal("gtnl.hatch.dual_input.lv.name"),
                 1));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchLV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchLV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DualInputHatchMV.set(
             new DualInputHatch(
@@ -1796,7 +1765,7 @@ public class MachineLoader {
                 "DualInputHatchMV",
                 StatCollector.translateToLocal("gtnl.hatch.dual_input.mv.name"),
                 2));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchMV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchMV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DualInputHatchHV.set(
             new DualInputHatch(
@@ -1804,7 +1773,7 @@ public class MachineLoader {
                 "DualInputHatchHV",
                 StatCollector.translateToLocal("gtnl.hatch.dual_input.hv.name"),
                 3));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchHV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchHV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DualInputHatchEV.set(
             new DualInputHatch(
@@ -1812,7 +1781,7 @@ public class MachineLoader {
                 "DualInputHatchEV",
                 StatCollector.translateToLocal("gtnl.hatch.dual_input.ev.name"),
                 4));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchEV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchEV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DualInputHatchIV.set(
             new DualInputHatch(
@@ -1820,7 +1789,7 @@ public class MachineLoader {
                 "DualInputHatchIV",
                 StatCollector.translateToLocal("gtnl.hatch.dual_input.iv.name"),
                 5));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchIV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchIV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DualInputHatchLuV.set(
             new DualInputHatch(
@@ -1828,7 +1797,7 @@ public class MachineLoader {
                 "DualInputHatchLuV",
                 StatCollector.translateToLocal("gtnl.hatch.dual_input.luv.name"),
                 6));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchLuV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchLuV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DualInputHatchZPM.set(
             new DualInputHatch(
@@ -1836,7 +1805,7 @@ public class MachineLoader {
                 "DualInputHatchZPM",
                 StatCollector.translateToLocal("gtnl.hatch.dual_input.zpm.name"),
                 7));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchZPM.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchZPM.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DualInputHatchUV.set(
             new DualInputHatch(
@@ -1844,7 +1813,7 @@ public class MachineLoader {
                 "DualInputHatchUV",
                 StatCollector.translateToLocal("gtnl.hatch.dual_input.uv.name"),
                 8));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchUV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchUV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DualInputHatchUHV.set(
             new DualInputHatch(
@@ -1852,7 +1821,7 @@ public class MachineLoader {
                 "DualInputHatchUHV",
                 StatCollector.translateToLocal("gtnl.hatch.dual_input.uhv.name"),
                 9));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchUHV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchUHV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DualInputHatchUEV.set(
             new DualInputHatch(
@@ -1860,7 +1829,7 @@ public class MachineLoader {
                 "DualInputHatchUEV",
                 StatCollector.translateToLocal("gtnl.hatch.dual_input.uev.name"),
                 10));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchUEV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchUEV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DualInputHatchUIV.set(
             new DualInputHatch(
@@ -1868,7 +1837,7 @@ public class MachineLoader {
                 "DualInputHatchUIV",
                 StatCollector.translateToLocal("gtnl.hatch.dual_input.uiv.name"),
                 11));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchUIV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchUIV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DualInputHatchUMV.set(
             new DualInputHatch(
@@ -1876,7 +1845,7 @@ public class MachineLoader {
                 "DualInputHatchUMV",
                 StatCollector.translateToLocal("gtnl.hatch.dual_input.umv.name"),
                 12));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchUMV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchUMV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DualInputHatchUXV.set(
             new DualInputHatch(
@@ -1884,7 +1853,7 @@ public class MachineLoader {
                 "DualInputHatchUXV",
                 StatCollector.translateToLocal("gtnl.hatch.dual_input.uxv.name"),
                 13));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchUXV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchUXV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DualInputHatchMAX.set(
             new DualInputHatch(
@@ -1892,15 +1861,14 @@ public class MachineLoader {
                 "DualInputHatchMAX",
                 StatCollector.translateToLocal("gtnl.hatch.dual_input.max.name"),
                 14));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchMAX.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DualInputHatchMAX.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SuperCraftingInputProxy.set(
             new SuperCraftingInputProxy(
                 GTNLMachineID.SUPER_CRAFTING_INPUT_PROXY.ID,
                 "SuperCraftingInputProxy",
                 StatCollector.translateToLocal("gtnl.hatch.super_crafting_input_proxy.name")).getStackForm(1L));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SuperCraftingInputProxy.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SuperCraftingInputProxy.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SuperDataAccessHatch.set(
             new SuperDataAccessHatch(
@@ -1908,8 +1876,7 @@ public class MachineLoader {
                 "SuperDataAccessHatch",
                 StatCollector.translateToLocal("gtnl.hatch.super_data_access.name"),
                 14));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SuperDataAccessHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SuperDataAccessHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.BigSteamInputHatch.set(
             new CustomFluidHatch(
@@ -1920,7 +1887,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.big_steam_input.name"),
                 1,
                 ItemUtils.PICTURE_GTNL_STEAM_LOGO));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.BigSteamInputHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.BigSteamInputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ParallelControllerHatchLV.set(
             new ParallelControllerHatch(
@@ -1929,7 +1896,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.parallel_controller.lv.name"),
                 1));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ParallelControllerHatchLV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.ParallelControllerHatchLV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ParallelControllerHatchMV.set(
             new ParallelControllerHatch(
@@ -1938,7 +1905,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.parallel_controller.mv.name"),
                 2));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ParallelControllerHatchMV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.ParallelControllerHatchMV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ParallelControllerHatchHV.set(
             new ParallelControllerHatch(
@@ -1947,7 +1914,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.parallel_controller.hv.name"),
                 3));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ParallelControllerHatchHV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.ParallelControllerHatchHV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ParallelControllerHatchEV.set(
             new ParallelControllerHatch(
@@ -1956,7 +1923,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.parallel_controller.ev.name"),
                 4));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ParallelControllerHatchEV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.ParallelControllerHatchEV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ParallelControllerHatchIV.set(
             new ParallelControllerHatch(
@@ -1965,7 +1932,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.parallel_controller.iv.name"),
                 5));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ParallelControllerHatchIV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.ParallelControllerHatchIV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ParallelControllerHatchLuV.set(
             new ParallelControllerHatch(
@@ -1974,7 +1941,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.parallel_controller.luv.name"),
                 6));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ParallelControllerHatchLuV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.ParallelControllerHatchLuV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ParallelControllerHatchZPM.set(
             new ParallelControllerHatch(
@@ -1983,7 +1950,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.parallel_controller.zpm.name"),
                 7));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ParallelControllerHatchZPM.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.ParallelControllerHatchZPM.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ParallelControllerHatchUV.set(
             new ParallelControllerHatch(
@@ -1992,7 +1959,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.parallel_controller.uv.name"),
                 8));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ParallelControllerHatchUV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.ParallelControllerHatchUV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ParallelControllerHatchUHV.set(
             new ParallelControllerHatch(
@@ -2001,7 +1968,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.parallel_controller.uhv.name"),
                 9));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ParallelControllerHatchUHV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.ParallelControllerHatchUHV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ParallelControllerHatchUEV.set(
             new ParallelControllerHatch(
@@ -2010,7 +1977,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.parallel_controller.uev.name"),
                 10));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ParallelControllerHatchUEV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.ParallelControllerHatchUEV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ParallelControllerHatchUIV.set(
             new ParallelControllerHatch(
@@ -2019,7 +1986,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.parallel_controller.uiv.name"),
                 11));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ParallelControllerHatchUIV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.ParallelControllerHatchUIV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ParallelControllerHatchUMV.set(
             new ParallelControllerHatch(
@@ -2028,7 +1995,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.parallel_controller.umv.name"),
                 12));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ParallelControllerHatchUMV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.ParallelControllerHatchUMV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ParallelControllerHatchUXV.set(
             new ParallelControllerHatch(
@@ -2037,7 +2004,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.parallel_controller.uxv.name"),
                 13));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ParallelControllerHatchUXV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.ParallelControllerHatchUXV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ParallelControllerHatchMAX.set(
             new ParallelControllerHatch(
@@ -2046,7 +2013,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.parallel_controller.max.name"),
                 14));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ParallelControllerHatchMAX.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.ParallelControllerHatchMAX.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.TapDynamoHatchLV.set(
             new TapDynamoHatch(
@@ -2054,7 +2021,7 @@ public class MachineLoader {
                 "TapDynamoHatchLV",
                 StatCollector.translateToLocal("gtnl.hatch.tap_dynamo.lv.name"),
                 1));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.TapDynamoHatchLV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.TapDynamoHatchLV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.PipelessSteamHatch.set(
             new WirelessSteamEnergyHatch(
@@ -2062,7 +2029,7 @@ public class MachineLoader {
                 "PipelessSteamHatch",
                 StatCollector.translateToLocal("gtnl.hatch.pipeless_steam.hatch.name"),
                 0));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PipelessSteamHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PipelessSteamHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.PipelessSteamVent.set(
             new WirelessSteamDynamoHatch(
@@ -2070,7 +2037,7 @@ public class MachineLoader {
                 "PipelessSteamVent",
                 StatCollector.translateToLocal("gtnl.hatch.pipeless_steam.vent.name"),
                 0));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PipelessSteamVent.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PipelessSteamVent.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.PipelessJetstreamHatch.set(
             new WirelessSteamEnergyHatch(
@@ -2078,8 +2045,7 @@ public class MachineLoader {
                 "PipelessJetstreamHatch",
                 StatCollector.translateToLocal("gtnl.hatch.pipeless_jetstream.hatch.name"),
                 1));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.PipelessJetstreamHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PipelessJetstreamHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.PipelessJetstreamVent.set(
             new WirelessSteamDynamoHatch(
@@ -2087,8 +2053,7 @@ public class MachineLoader {
                 "PipelessJetstreamVent",
                 StatCollector.translateToLocal("gtnl.hatch.pipeless_jetstream.vent.name"),
                 1));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.PipelessJetstreamVent.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PipelessJetstreamVent.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.AutoConfigurationMaintenanceHatch.set(
             new CustomMaintenanceHatch(
@@ -2102,7 +2067,7 @@ public class MachineLoader {
                     StatCollector.translateToLocal("gtnl.hatch.auto_configuration_maintenance.tooltip.1"),
                     StatCollector.translateToLocal("gtnl.hatch.auto_configuration_maintenance.tooltip.2"), }));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.AutoConfigurationMaintenanceHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.AutoConfigurationMaintenanceHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ConfigurationDroneDownLinkHatch.set(
             new CustomDroneDownLinkHatch(
@@ -2116,7 +2081,7 @@ public class MachineLoader {
                     StatCollector.translateToLocal("gtnl.hatch.configuration_drone_downlink.tooltip.1"),
                     StatCollector.translateToLocal("gtnl.hatch.configuration_drone_downlink.tooltip.2"), }));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ConfigurationDroneDownLinkHatch.get(1), AnimatedText.SNL_LONEI);
+            .addItemTooltip(GTNLItemList.ConfigurationDroneDownLinkHatch.get(1), AnimatedText.GTNL_LONEI);
 
         GTNLItemList.ExplosionDynamoHatch.set(
             new ExplosionDynamoHatch(
@@ -2124,8 +2089,7 @@ public class MachineLoader {
                 "ExplosionDynamoHatch",
                 StatCollector.translateToLocal("gtnl.hatch.explosion_dynamo.name"),
                 5));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.ExplosionDynamoHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ExplosionDynamoHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DebugResearchStation.set(
             new DebugResearchStation(
@@ -2133,8 +2097,7 @@ public class MachineLoader {
                 "DebugResearchStation",
                 StatCollector.translateToLocal("gtnl.machine.debug_research_station.name"),
                 14));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.DebugResearchStation.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DebugResearchStation.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ResearchCenter.set(
             new ResearchCenter(
@@ -2144,29 +2107,29 @@ public class MachineLoader {
         AnimatedTooltipHandler.addItemTooltip(
             GTNLItemList.ResearchCenter.get(1),
             () -> StatCollector.translateToLocal("gtnl.machine.research_station.tooltip.0"));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ResearchCenter.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ResearchCenter.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.NuclearReactor.set(
             new NuclearReactor(
                 GTNLMachineID.NUCLEAR_REACTOR.ID,
                 "NuclearReactor",
                 StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NuclearReactor.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NuclearReactor.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SiphonTurbine.set(
             new SiphonTurbine(
                 GTNLMachineID.SIPHON_TURBINE.ID,
                 "SiphonTurbine",
                 StatCollector.translateToLocal("gtnl.machine.siphon_turbine.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SiphonTurbine.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SiphonTurbine.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SmallInfusionMatrix.set(
             new SmallInfusionMatrix(
                 GTNLMachineID.SMALL_INFUSION_MATRIX.ID,
                 "SmallInfusionMatrix",
                 StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SmallInfusionMatrix.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallInfusionMatrix.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallInfusionMatrix.get(1), AnimatedText.AUTHOR_LINEBROKE);
 
         GTNLItemList.SmallArcaneAssembler.set(
             new SmallArcaneAssembler(
@@ -2182,7 +2145,7 @@ public class MachineLoader {
                 false,
                 "SuperInputBusME",
                 StatCollector.translateToLocal("gtnl.hatch.super_input_bus_me.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SuperInputBusME.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SuperInputBusME.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.AdvancedSuperInputBusME.set(
             new SuperInputBusME(
@@ -2190,8 +2153,7 @@ public class MachineLoader {
                 true,
                 "AdvancedSuperInputBusME",
                 StatCollector.translateToLocal("gtnl.hatch.super_input_bus_me.advanced.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.AdvancedSuperInputBusME.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.AdvancedSuperInputBusME.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SuperInputHatchME.set(
             new SuperInputHatchME(
@@ -2199,7 +2161,7 @@ public class MachineLoader {
                 false,
                 "SuperInputHatchME",
                 StatCollector.translateToLocal("gtnl.hatch.super_input_hatch_me.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SuperInputHatchME.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SuperInputHatchME.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.AdvancedSuperInputHatchME.set(
             new SuperInputHatchME(
@@ -2208,7 +2170,7 @@ public class MachineLoader {
                 "AdvancedSuperInputHatchME",
                 StatCollector.translateToLocal("gtnl.hatch.super_input_hatch_me.advanced.name")));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.AdvancedSuperInputHatchME.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.AdvancedSuperInputHatchME.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.Replicator.set(
             new Replicator(
@@ -2223,7 +2185,7 @@ public class MachineLoader {
                 "Enchanting",
                 StatCollector.translateToLocal("gtnl.machine.enchanting.name"),
                 7));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.Enchanting.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.Enchanting.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyMonitor.set(
             new EnergyMonitor(
@@ -2231,7 +2193,7 @@ public class MachineLoader {
                 "EnergyMonitor",
                 StatCollector.translateToLocal("gtnl.machine.energy_monitor.name"),
                 1));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyMonitor.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyMonitor.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.StellarIrisController.set(
             new StellarIrisController(
@@ -2239,8 +2201,7 @@ public class MachineLoader {
                 "StellarIrisController",
                 StatCollector.translateToLocal("gtnl.machine.stellar_iris_controller.name"),
                 1));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.StellarIrisController.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.StellarIrisController.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.OredictInputBusME.set(
             new OredictInputBusME(
@@ -2248,43 +2209,42 @@ public class MachineLoader {
                 "OredictInputBusME",
                 StatCollector.translateToLocal("gtnl.hatch.oredict_input_bus_me.name"),
                 false));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.OredictInputBusME.get(1), AnimatedText.SNL_SKYINR);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.OredictInputBusME.get(1), AnimatedText.GTNL_SKYINR);
 
         GTNLItemList.VaultPortHatch.set(
             new VaultPortHatch(
                 GTNLMachineID.VAULT_PORT_HATCH.ID,
                 "VaultPortHatch",
                 StatCollector.translateToLocal("gtnl.hatch.vault_port.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.VaultPortHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.VaultPortHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.OriginalInputHatch.set(
             new OriginalInputHatch(
                 GTNLMachineID.ORIGINAL_INPUT_HATCH.ID,
                 "OriginalInputHatch",
                 StatCollector.translateToLocal("gtnl.hatch.original_input.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.OriginalInputHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.OriginalInputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.OriginalOutputHatch.set(
             new OriginalOutputHatch(
                 GTNLMachineID.ORIGINAL_OUTPUT_HATCH.ID,
                 "OriginalOutputHatch",
                 StatCollector.translateToLocal("gtnl.hatch.original_output.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.OriginalOutputHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.OriginalOutputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SuperVoidBus.set(
             new SuperVoidBus(
                 GTNLMachineID.SUPER_VOID_BUS.ID,
                 "SuperVoidBus",
                 StatCollector.translateToLocal("gtnl.hatch.super_void_bus.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SuperVoidBus.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SuperVoidBus.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SuperVoidHatch.set(
             new SuperVoidHatch(
                 GTNLMachineID.SUPER_VOID_HATCH.ID,
                 "SuperVoidHatch",
                 StatCollector.translateToLocal("gtnl.hatch.super_void_hatch.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SuperVoidHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SuperVoidHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.NuclearItemBus.set(
             new NuclearItemBus(
@@ -2292,7 +2252,7 @@ public class MachineLoader {
                 "NuclearItemBus",
                 StatCollector.translateToLocal("gtnl.hatch.nuclear_item_bus.name"),
                 3));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NuclearItemBus.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NuclearItemBus.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.NuclearFluidHatch.set(
             new NuclearFluidHatch(
@@ -2301,15 +2261,14 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.nuclear_fluid_hatch.name"),
                 3,
                 512000)); // 64000 x 8
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NuclearFluidHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NuclearFluidHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DebugDataAccessHatch.set(
             new DebugDataAccessHatch(
                 GTNLMachineID.DEBUG_DATA_ACCESS_HATCH.ID,
                 "DebugDataAccessHatch",
                 StatCollector.translateToLocal("gtnl.hatch.debug_data_access.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.DebugDataAccessHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DebugDataAccessHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousDualInputHatchLV.set(
             new HumongousDualInputHatch(
@@ -2318,7 +2277,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.humongous_dual_input.lv.name"),
                 1));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousDualInputHatchLV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HumongousDualInputHatchLV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousDualInputHatchMV.set(
             new HumongousDualInputHatch(
@@ -2327,7 +2286,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.humongous_dual_input.mv.name"),
                 2));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousDualInputHatchMV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HumongousDualInputHatchMV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousDualInputHatchHV.set(
             new HumongousDualInputHatch(
@@ -2336,7 +2295,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.humongous_dual_input.hv.name"),
                 3));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousDualInputHatchHV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HumongousDualInputHatchHV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousDualInputHatchEV.set(
             new HumongousDualInputHatch(
@@ -2345,7 +2304,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.humongous_dual_input.ev.name"),
                 4));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousDualInputHatchEV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HumongousDualInputHatchEV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousDualInputHatchIV.set(
             new HumongousDualInputHatch(
@@ -2354,7 +2313,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.humongous_dual_input.iv.name"),
                 5));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousDualInputHatchIV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HumongousDualInputHatchIV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousDualInputHatchLuV.set(
             new HumongousDualInputHatch(
@@ -2363,7 +2322,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.humongous_dual_input.luv.name"),
                 6));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousDualInputHatchLuV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HumongousDualInputHatchLuV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousDualInputHatchZPM.set(
             new HumongousDualInputHatch(
@@ -2372,7 +2331,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.humongous_dual_input.zpm.name"),
                 7));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousDualInputHatchZPM.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HumongousDualInputHatchZPM.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousDualInputHatchUV.set(
             new HumongousDualInputHatch(
@@ -2381,7 +2340,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.humongous_dual_input.uv.name"),
                 8));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousDualInputHatchUV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HumongousDualInputHatchUV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousDualInputHatchUHV.set(
             new HumongousDualInputHatch(
@@ -2390,7 +2349,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.humongous_dual_input.uhv.name"),
                 9));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousDualInputHatchUHV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HumongousDualInputHatchUHV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousDualInputHatchUEV.set(
             new HumongousDualInputHatch(
@@ -2399,7 +2358,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.humongous_dual_input.uev.name"),
                 10));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousDualInputHatchUEV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HumongousDualInputHatchUEV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousDualInputHatchUIV.set(
             new HumongousDualInputHatch(
@@ -2408,7 +2367,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.humongous_dual_input.uiv.name"),
                 11));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousDualInputHatchUIV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HumongousDualInputHatchUIV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousDualInputHatchUMV.set(
             new HumongousDualInputHatch(
@@ -2417,7 +2376,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.humongous_dual_input.umv.name"),
                 12));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousDualInputHatchUMV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HumongousDualInputHatchUMV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousDualInputHatchUXV.set(
             new HumongousDualInputHatch(
@@ -2426,7 +2385,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.humongous_dual_input.uxv.name"),
                 13));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousDualInputHatchUXV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HumongousDualInputHatchUXV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousDualInputHatchMAX.set(
             new HumongousDualInputHatch(
@@ -2435,7 +2394,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.humongous_dual_input.max.name"),
                 14));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousDualInputHatchMAX.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HumongousDualInputHatchMAX.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SterileConfigurationMaintenanceHatch.set(
             new CustomMaintenanceHatch(
@@ -2449,7 +2408,7 @@ public class MachineLoader {
                     StatCollector.translateToLocal("gtnl.hatch.auto_configuration_maintenance.tooltip.1"),
                     StatCollector.translateToLocal("gtnl.hatch.auto_configuration_maintenance.tooltip.2"), }));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SterileConfigurationMaintenanceHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.SterileConfigurationMaintenanceHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousConfigurationMaintenanceHatch.set(
             new CustomMaintenanceHatch(
@@ -2462,9 +2421,8 @@ public class MachineLoader {
                 new String[] { StatCollector.translateToLocal("gtnl.hatch.auto_configuration_maintenance.tooltip.0"),
                     StatCollector.translateToLocal("gtnl.hatch.auto_configuration_maintenance.tooltip.1"),
                     StatCollector.translateToLocal("gtnl.hatch.auto_configuration_maintenance.tooltip.2"), }));
-        AnimatedTooltipHandler.addItemTooltip(
-            GTNLItemList.HumongousConfigurationMaintenanceHatch.get(1),
-            AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.HumongousConfigurationMaintenanceHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ManaDynamoHatchLV.set(
             new ManaDynamoHatch(
@@ -2473,7 +2431,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.mana_dynamo.lv.name"),
                 1,
                 16));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaDynamoHatchLV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaDynamoHatchLV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ManaDynamoHatchHV.set(
             new ManaDynamoHatch(
@@ -2482,7 +2440,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.mana_dynamo.hv.name"),
                 3,
                 16));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaDynamoHatchHV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaDynamoHatchHV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ManaDynamoHatchIV.set(
             new ManaDynamoHatch(
@@ -2491,7 +2449,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.mana_dynamo.iv.name"),
                 5,
                 16));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaDynamoHatchIV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaDynamoHatchIV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ManaDynamoHatchZPM.set(
             new ManaDynamoHatch(
@@ -2500,7 +2458,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.mana_dynamo.zpm.name"),
                 7,
                 16));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaDynamoHatchZPM.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaDynamoHatchZPM.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ManaEnergyHatchLV.set(
             new ManaEnergyHatch(
@@ -2509,7 +2467,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.mana_energy.lv.name"),
                 1,
                 16));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaEnergyHatchLV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaEnergyHatchLV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ManaEnergyHatchHV.set(
             new ManaEnergyHatch(
@@ -2518,7 +2476,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.mana_energy.hv.name"),
                 3,
                 16));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaEnergyHatchHV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaEnergyHatchHV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ManaEnergyHatchIV.set(
             new ManaEnergyHatch(
@@ -2527,7 +2485,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.mana_energy.iv.name"),
                 5,
                 16));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaEnergyHatchIV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaEnergyHatchIV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ManaEnergyHatchZPM.set(
             new ManaEnergyHatch(
@@ -2536,7 +2494,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.mana_energy.zpm.name"),
                 7,
                 16));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaEnergyHatchZPM.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaEnergyHatchZPM.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.TypeFilteredInputBusME.set(
             new TypeFilteredInputBusME(
@@ -2544,8 +2502,7 @@ public class MachineLoader {
                 "TypeFilteredInputBusME",
                 StatCollector.translateToLocal("gtnl.hatch.type_filtered_input_bus_me.name"),
                 false));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.TypeFilteredInputBusME.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.TypeFilteredInputBusME.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SuperDualInputHatchME.set(
             new SuperDualInputHatchME(
@@ -2554,8 +2511,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.name"),
                 9,
                 false));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SuperDualInputHatchME.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SuperDualInputHatchME.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.AdvancedSuperDualInputHatchME.set(
             new SuperDualInputHatchME(
@@ -2565,7 +2521,7 @@ public class MachineLoader {
                 10,
                 true));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.AdvancedSuperDualInputHatchME.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.AdvancedSuperDualInputHatchME.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchLV.set(ItemList.Hatch_Energy_LV.get(1));
 
@@ -2576,7 +2532,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.energy.lv.4.name"),
                 1,
                 4));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchLV4A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchLV4A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchLV16A.set(
             new MTEHatchEnergyMulti(
@@ -2585,7 +2541,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.energy.lv.16.name"),
                 1,
                 16));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchLV16A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchLV16A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchLV64A.set(
             new MTEHatchEnergyMulti(
@@ -2594,7 +2550,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.energy.lv.64.name"),
                 1,
                 64));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchLV64A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchLV64A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchMV.set(ItemList.Hatch_Energy_MV.get(1));
 
@@ -2605,7 +2561,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.energy.mv.4.name"),
                 2,
                 4));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMV4A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMV4A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchMV16A.set(
             new MTEHatchEnergyMulti(
@@ -2614,7 +2570,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.energy.mv.16.name"),
                 2,
                 16));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMV16A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMV16A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchMV64A.set(
             new MTEHatchEnergyMulti(
@@ -2623,7 +2579,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.energy.mv.64.name"),
                 2,
                 64));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMV64A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMV64A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchHV.set(ItemList.Hatch_Energy_HV.get(1));
 
@@ -2634,7 +2590,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.energy.hv.4.name"),
                 3,
                 4));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchHV4A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchHV4A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchHV16A.set(
             new MTEHatchEnergyMulti(
@@ -2643,7 +2599,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.energy.hv.16.name"),
                 3,
                 16));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchHV16A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchHV16A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchHV64A.set(
             new MTEHatchEnergyMulti(
@@ -2652,7 +2608,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.energy.hv.64.name"),
                 3,
                 64));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchHV64A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchHV64A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchEV.set(ItemList.Hatch_Energy_EV.get(1));
 
@@ -2740,7 +2696,7 @@ public class MachineLoader {
                 "EnergyHatchMAX",
                 StatCollector.translateToLocal("gtnl.hatch.energy.max.standard.name"),
                 14));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMAX.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMAX.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchMAX4A.set(
             new MTEHatchEnergyMulti(
@@ -2749,7 +2705,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.energy.max.4.name"),
                 14,
                 4));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMAX4A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMAX4A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchMAX16A.set(
             new MTEHatchEnergyMulti(
@@ -2758,7 +2714,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.energy.max.16.name"),
                 14,
                 16));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMAX16A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMAX16A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchMAX64A.set(
             new MTEHatchEnergyMulti(
@@ -2767,7 +2723,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.energy.max.64.name"),
                 14,
                 64));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMAX64A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMAX64A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DynamoHatchLV.set(ItemList.Hatch_Dynamo_LV.get(1));
 
@@ -2967,8 +2923,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.lv.4.name"),
                 1,
                 4));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLV4A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.WirelessEnergyHatchLV4A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLV16A.set(
             new MTEHatchWirelessMulti(
@@ -2978,7 +2933,7 @@ public class MachineLoader {
                 1,
                 16));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLV16A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLV16A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLV64A.set(
             new MTEHatchWirelessMulti(
@@ -2988,7 +2943,7 @@ public class MachineLoader {
                 1,
                 64));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLV64A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLV64A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMV.set(ItemList.Wireless_Hatch_Energy_MV.get(1));
 
@@ -2999,8 +2954,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.mv.4.name"),
                 2,
                 4));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMV4A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.WirelessEnergyHatchMV4A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMV16A.set(
             new MTEHatchWirelessMulti(
@@ -3010,7 +2964,7 @@ public class MachineLoader {
                 2,
                 16));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMV16A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMV16A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMV64A.set(
             new MTEHatchWirelessMulti(
@@ -3020,7 +2974,7 @@ public class MachineLoader {
                 2,
                 64));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMV64A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMV64A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchHV.set(ItemList.Wireless_Hatch_Energy_HV.get(1));
 
@@ -3031,8 +2985,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.hv.4.name"),
                 3,
                 4));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchHV4A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.WirelessEnergyHatchHV4A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchHV16A.set(
             new MTEHatchWirelessMulti(
@@ -3042,7 +2995,7 @@ public class MachineLoader {
                 3,
                 16));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchHV16A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchHV16A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchHV64A.set(
             new MTEHatchWirelessMulti(
@@ -3052,7 +3005,7 @@ public class MachineLoader {
                 3,
                 64));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchHV64A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchHV64A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchEV.set(ItemList.Wireless_Hatch_Energy_EV.get(1));
 
@@ -3084,7 +3037,7 @@ public class MachineLoader {
                 5,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchIV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchIV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchIV16777216A.set(
             new MTEHatchEnergyTunnel(
@@ -3094,7 +3047,7 @@ public class MachineLoader {
                 5,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchIV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchIV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchLuV256A.set(CustomItemList.eM_energyTunnel1_LuV.get(1));
 
@@ -3118,7 +3071,7 @@ public class MachineLoader {
                 6,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchLuV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchLuV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchLuV16777216A.set(
             new MTEHatchEnergyTunnel(
@@ -3128,7 +3081,7 @@ public class MachineLoader {
                 6,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchLuV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchLuV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchZPM256A.set(CustomItemList.eM_energyTunnel1_ZPM.get(1));
 
@@ -3152,7 +3105,7 @@ public class MachineLoader {
                 7,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchZPM4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchZPM4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchZPM16777216A.set(
             new MTEHatchEnergyTunnel(
@@ -3162,7 +3115,7 @@ public class MachineLoader {
                 7,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchZPM16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchZPM16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchUV256A.set(CustomItemList.eM_energyTunnel1_UV.get(1));
 
@@ -3186,7 +3139,7 @@ public class MachineLoader {
                 8,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchUV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchUV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchUV16777216A.set(
             new MTEHatchEnergyTunnel(
@@ -3196,7 +3149,7 @@ public class MachineLoader {
                 8,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchUV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchUV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchUHV256A.set(CustomItemList.eM_energyTunnel1_UHV.get(1));
 
@@ -3220,7 +3173,7 @@ public class MachineLoader {
                 9,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchUHV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchUHV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchUHV16777216A.set(
             new MTEHatchEnergyTunnel(
@@ -3230,7 +3183,7 @@ public class MachineLoader {
                 9,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchUHV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchUHV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchUEV256A.set(CustomItemList.eM_energyTunnel1_UEV.get(1));
 
@@ -3254,7 +3207,7 @@ public class MachineLoader {
                 10,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchUEV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchUEV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchUEV16777216A.set(
             new MTEHatchEnergyTunnel(
@@ -3264,7 +3217,7 @@ public class MachineLoader {
                 10,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchUEV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchUEV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchUIV256A.set(CustomItemList.eM_energyTunnel1_UIV.get(1));
 
@@ -3288,7 +3241,7 @@ public class MachineLoader {
                 11,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchUIV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchUIV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchUIV16777216A.set(
             new MTEHatchEnergyTunnel(
@@ -3298,7 +3251,7 @@ public class MachineLoader {
                 11,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchUIV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchUIV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchUMV256A.set(CustomItemList.eM_energyTunnel1_UMV.get(1));
 
@@ -3324,7 +3277,7 @@ public class MachineLoader {
                 12,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchUMV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchUMV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchUXV256A.set(CustomItemList.eM_energyTunnel1_UXV.get(1));
 
@@ -3351,8 +3304,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.max.256.name"),
                 14,
                 256));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX256A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LaserEnergyHatchMAX256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchMAX1024A.set(
             new MTEHatchEnergyTunnel(
@@ -3362,7 +3314,7 @@ public class MachineLoader {
                 14,
                 1024));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX1024A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchMAX4096A.set(
             new MTEHatchEnergyTunnel(
@@ -3372,7 +3324,7 @@ public class MachineLoader {
                 14,
                 4096));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX4096A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchMAX16384A.set(
             new MTEHatchEnergyTunnel(
@@ -3382,7 +3334,7 @@ public class MachineLoader {
                 14,
                 16384));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX16384A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchMAX65536A.set(
             new MTEHatchEnergyTunnel(
@@ -3392,7 +3344,7 @@ public class MachineLoader {
                 14,
                 65536));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX65536A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchMAX262144A.set(
             new MTEHatchEnergyTunnel(
@@ -3402,7 +3354,7 @@ public class MachineLoader {
                 14,
                 262144));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX262144A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchMAX1048576A.set(
             new MTEHatchEnergyTunnel(
@@ -3412,7 +3364,7 @@ public class MachineLoader {
                 14,
                 1048576));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX1048576A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchMAX4194304A.set(
             new MTEHatchEnergyTunnel(
@@ -3422,7 +3374,7 @@ public class MachineLoader {
                 14,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchMAX16777216A.set(
             new MTEHatchEnergyTunnel(
@@ -3432,7 +3384,7 @@ public class MachineLoader {
                 14,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchIV256A.set(CustomItemList.eM_dynamoTunnel1_IV.get(1));
 
@@ -3456,7 +3408,7 @@ public class MachineLoader {
                 5,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchIV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchIV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchIV16777216A.set(
             new MTEHatchDynamoTunnel(
@@ -3466,7 +3418,7 @@ public class MachineLoader {
                 5,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchIV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchIV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchLuV256A.set(CustomItemList.eM_dynamoTunnel1_LuV.get(1));
 
@@ -3490,7 +3442,7 @@ public class MachineLoader {
                 6,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchLuV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchLuV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchLuV16777216A.set(
             new MTEHatchDynamoTunnel(
@@ -3500,7 +3452,7 @@ public class MachineLoader {
                 6,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchLuV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchLuV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchZPM256A.set(CustomItemList.eM_dynamoTunnel1_ZPM.get(1));
 
@@ -3524,7 +3476,7 @@ public class MachineLoader {
                 7,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchZPM4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchZPM4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchZPM16777216A.set(
             new MTEHatchDynamoTunnel(
@@ -3534,7 +3486,7 @@ public class MachineLoader {
                 7,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchZPM16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchZPM16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchUV256A.set(CustomItemList.eM_dynamoTunnel1_UV.get(1));
 
@@ -3558,7 +3510,7 @@ public class MachineLoader {
                 8,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchUV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchUV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchUV16777216A.set(
             new MTEHatchDynamoTunnel(
@@ -3568,7 +3520,7 @@ public class MachineLoader {
                 8,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchUV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchUV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchUHV256A.set(CustomItemList.eM_dynamoTunnel1_UHV.get(1));
 
@@ -3592,7 +3544,7 @@ public class MachineLoader {
                 9,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchUHV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchUHV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchUHV16777216A.set(
             new MTEHatchDynamoTunnel(
@@ -3602,7 +3554,7 @@ public class MachineLoader {
                 9,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchUHV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchUHV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchUEV256A.set(CustomItemList.eM_dynamoTunnel1_UEV.get(1));
 
@@ -3626,7 +3578,7 @@ public class MachineLoader {
                 10,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchUEV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchUEV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchUEV16777216A.set(
             new MTEHatchDynamoTunnel(
@@ -3636,7 +3588,7 @@ public class MachineLoader {
                 10,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchUEV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchUEV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchUIV256A.set(CustomItemList.eM_dynamoTunnel1_UIV.get(1));
 
@@ -3660,7 +3612,7 @@ public class MachineLoader {
                 11,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchUIV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchUIV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchUIV16777216A.set(
             new MTEHatchDynamoTunnel(
@@ -3670,7 +3622,7 @@ public class MachineLoader {
                 11,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchUIV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchUIV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchUMV256A.set(CustomItemList.eM_dynamoTunnel1_UMV.get(1));
 
@@ -3696,7 +3648,7 @@ public class MachineLoader {
                 12,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchUMV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchUMV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchUXV256A.set(CustomItemList.eM_dynamoTunnel1_UXV.get(1));
 
@@ -3723,8 +3675,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.max.256.name"),
                 14,
                 256));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX256A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LaserDynamoHatchMAX256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchMAX1024A.set(
             new MTEHatchDynamoTunnel(
@@ -3734,7 +3685,7 @@ public class MachineLoader {
                 14,
                 1024));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX1024A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchMAX4096A.set(
             new MTEHatchDynamoTunnel(
@@ -3744,7 +3695,7 @@ public class MachineLoader {
                 14,
                 4096));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX4096A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchMAX16384A.set(
             new MTEHatchDynamoTunnel(
@@ -3754,7 +3705,7 @@ public class MachineLoader {
                 14,
                 16384));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX16384A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchMAX65536A.set(
             new MTEHatchDynamoTunnel(
@@ -3764,7 +3715,7 @@ public class MachineLoader {
                 14,
                 65536));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX65536A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchMAX262144A.set(
             new MTEHatchDynamoTunnel(
@@ -3774,7 +3725,7 @@ public class MachineLoader {
                 14,
                 262144));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX262144A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchMAX1048576A.set(
             new MTEHatchDynamoTunnel(
@@ -3784,7 +3735,7 @@ public class MachineLoader {
                 14,
                 1048576));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX1048576A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchMAX4194304A.set(
             new MTEHatchDynamoTunnel(
@@ -3794,7 +3745,7 @@ public class MachineLoader {
                 14,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchMAX16777216A.set(
             new MTEHatchDynamoTunnel(
@@ -3804,7 +3755,7 @@ public class MachineLoader {
                 14,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchIV.set(ItemList.Wireless_Hatch_Energy_IV.get(1));
 
@@ -3822,7 +3773,7 @@ public class MachineLoader {
                 5,
                 256));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV256A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchIV1024A.set(
             new MTEHatchWirelessMulti(
@@ -3832,7 +3783,7 @@ public class MachineLoader {
                 5,
                 1024));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV1024A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchIV4096A.set(
             new MTEHatchWirelessMulti(
@@ -3842,7 +3793,7 @@ public class MachineLoader {
                 5,
                 4096));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV4096A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchIV16384A.set(
             new MTEHatchWirelessMulti(
@@ -3852,7 +3803,7 @@ public class MachineLoader {
                 5,
                 16384));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV16384A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchIV65536A.set(
             new MTEHatchWirelessMulti(
@@ -3862,7 +3813,7 @@ public class MachineLoader {
                 5,
                 65536));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV65536A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchIV262144A.set(
             new MTEHatchWirelessMulti(
@@ -3872,7 +3823,7 @@ public class MachineLoader {
                 5,
                 262144));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV262144A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchIV1048576A.set(
             new MTEHatchWirelessMulti(
@@ -3882,7 +3833,7 @@ public class MachineLoader {
                 5,
                 1048576));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV1048576A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchIV4194304A.set(
             new MTEHatchWirelessMulti(
@@ -3892,7 +3843,7 @@ public class MachineLoader {
                 5,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchIV16777216A.set(
             new MTEHatchWirelessMulti(
@@ -3902,7 +3853,7 @@ public class MachineLoader {
                 5,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLuV.set(ItemList.Wireless_Hatch_Energy_LuV.get(1));
 
@@ -3920,7 +3871,7 @@ public class MachineLoader {
                 6,
                 256));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV256A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLuV1024A.set(
             new MTEHatchWirelessMulti(
@@ -3930,7 +3881,7 @@ public class MachineLoader {
                 6,
                 1024));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV1024A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLuV4096A.set(
             new MTEHatchWirelessMulti(
@@ -3940,7 +3891,7 @@ public class MachineLoader {
                 6,
                 4096));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV4096A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLuV16384A.set(
             new MTEHatchWirelessMulti(
@@ -3950,7 +3901,7 @@ public class MachineLoader {
                 6,
                 16384));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV16384A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLuV65536A.set(
             new MTEHatchWirelessMulti(
@@ -3960,7 +3911,7 @@ public class MachineLoader {
                 6,
                 65536));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV65536A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLuV262144A.set(
             new MTEHatchWirelessMulti(
@@ -3970,7 +3921,7 @@ public class MachineLoader {
                 6,
                 262144));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV262144A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLuV1048576A.set(
             new MTEHatchWirelessMulti(
@@ -3980,7 +3931,7 @@ public class MachineLoader {
                 6,
                 1048576));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV1048576A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLuV4194304A.set(
             new MTEHatchWirelessMulti(
@@ -3990,7 +3941,7 @@ public class MachineLoader {
                 6,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLuV16777216A.set(
             new MTEHatchWirelessMulti(
@@ -4000,7 +3951,7 @@ public class MachineLoader {
                 6,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchZPM.set(ItemList.Wireless_Hatch_Energy_ZPM.get(1));
 
@@ -4018,7 +3969,7 @@ public class MachineLoader {
                 7,
                 256));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM256A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchZPM1024A.set(
             new MTEHatchWirelessMulti(
@@ -4028,7 +3979,7 @@ public class MachineLoader {
                 7,
                 1024));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM1024A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchZPM4096A.set(
             new MTEHatchWirelessMulti(
@@ -4038,7 +3989,7 @@ public class MachineLoader {
                 7,
                 4096));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM4096A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchZPM16384A.set(
             new MTEHatchWirelessMulti(
@@ -4048,7 +3999,7 @@ public class MachineLoader {
                 7,
                 16384));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM16384A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchZPM65536A.set(
             new MTEHatchWirelessMulti(
@@ -4058,7 +4009,7 @@ public class MachineLoader {
                 7,
                 65536));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM65536A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchZPM262144A.set(
             new MTEHatchWirelessMulti(
@@ -4068,7 +4019,7 @@ public class MachineLoader {
                 7,
                 262144));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM262144A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchZPM1048576A.set(
             new MTEHatchWirelessMulti(
@@ -4078,7 +4029,7 @@ public class MachineLoader {
                 7,
                 1048576));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM1048576A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchZPM4194304A.set(
             new MTEHatchWirelessMulti(
@@ -4088,7 +4039,7 @@ public class MachineLoader {
                 7,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchZPM16777216A.set(
             new MTEHatchWirelessMulti(
@@ -4098,7 +4049,7 @@ public class MachineLoader {
                 7,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUV.set(ItemList.Wireless_Hatch_Energy_UV.get(1));
 
@@ -4116,7 +4067,7 @@ public class MachineLoader {
                 8,
                 256));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV256A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUV1024A.set(
             new MTEHatchWirelessMulti(
@@ -4126,7 +4077,7 @@ public class MachineLoader {
                 8,
                 1024));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV1024A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUV4096A.set(
             new MTEHatchWirelessMulti(
@@ -4136,7 +4087,7 @@ public class MachineLoader {
                 8,
                 4096));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV4096A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUV16384A.set(
             new MTEHatchWirelessMulti(
@@ -4146,7 +4097,7 @@ public class MachineLoader {
                 8,
                 16384));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV16384A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUV65536A.set(
             new MTEHatchWirelessMulti(
@@ -4156,7 +4107,7 @@ public class MachineLoader {
                 8,
                 65536));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV65536A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUV262144A.set(
             new MTEHatchWirelessMulti(
@@ -4166,7 +4117,7 @@ public class MachineLoader {
                 8,
                 262144));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV262144A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUV1048576A.set(
             new MTEHatchWirelessMulti(
@@ -4176,7 +4127,7 @@ public class MachineLoader {
                 8,
                 1048576));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV1048576A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUV4194304A.set(
             new MTEHatchWirelessMulti(
@@ -4186,7 +4137,7 @@ public class MachineLoader {
                 8,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUV16777216A.set(
             new MTEHatchWirelessMulti(
@@ -4196,7 +4147,7 @@ public class MachineLoader {
                 8,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUHV.set(ItemList.Wireless_Hatch_Energy_UHV.get(1));
 
@@ -4214,7 +4165,7 @@ public class MachineLoader {
                 9,
                 256));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV256A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUHV1024A.set(
             new MTEHatchWirelessMulti(
@@ -4224,7 +4175,7 @@ public class MachineLoader {
                 9,
                 1024));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV1024A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUHV4096A.set(
             new MTEHatchWirelessMulti(
@@ -4234,7 +4185,7 @@ public class MachineLoader {
                 9,
                 4096));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV4096A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUHV16384A.set(
             new MTEHatchWirelessMulti(
@@ -4244,7 +4195,7 @@ public class MachineLoader {
                 9,
                 16384));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV16384A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUHV65536A.set(
             new MTEHatchWirelessMulti(
@@ -4254,7 +4205,7 @@ public class MachineLoader {
                 9,
                 65536));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV65536A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUHV262144A.set(
             new MTEHatchWirelessMulti(
@@ -4264,7 +4215,7 @@ public class MachineLoader {
                 9,
                 262144));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV262144A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUHV1048576A.set(
             new MTEHatchWirelessMulti(
@@ -4274,7 +4225,7 @@ public class MachineLoader {
                 9,
                 1048576));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV1048576A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUHV4194304A.set(
             new MTEHatchWirelessMulti(
@@ -4284,7 +4235,7 @@ public class MachineLoader {
                 9,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUHV16777216A.set(
             new MTEHatchWirelessMulti(
@@ -4294,7 +4245,7 @@ public class MachineLoader {
                 9,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUEV.set(ItemList.Wireless_Hatch_Energy_UEV.get(1));
 
@@ -4312,7 +4263,7 @@ public class MachineLoader {
                 10,
                 256));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV256A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUEV1024A.set(
             new MTEHatchWirelessMulti(
@@ -4322,7 +4273,7 @@ public class MachineLoader {
                 10,
                 1024));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV1024A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUEV4096A.set(
             new MTEHatchWirelessMulti(
@@ -4332,7 +4283,7 @@ public class MachineLoader {
                 10,
                 4096));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV4096A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUEV16384A.set(
             new MTEHatchWirelessMulti(
@@ -4342,7 +4293,7 @@ public class MachineLoader {
                 10,
                 16384));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV16384A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUEV65536A.set(
             new MTEHatchWirelessMulti(
@@ -4352,7 +4303,7 @@ public class MachineLoader {
                 10,
                 65536));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV65536A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUEV262144A.set(
             new MTEHatchWirelessMulti(
@@ -4362,7 +4313,7 @@ public class MachineLoader {
                 10,
                 262144));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV262144A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUEV1048576A.set(
             new MTEHatchWirelessMulti(
@@ -4372,7 +4323,7 @@ public class MachineLoader {
                 10,
                 1048576));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV1048576A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUEV4194304A.set(
             new MTEHatchWirelessMulti(
@@ -4382,7 +4333,7 @@ public class MachineLoader {
                 10,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUEV16777216A.set(
             new MTEHatchWirelessMulti(
@@ -4392,7 +4343,7 @@ public class MachineLoader {
                 10,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUIV.set(ItemList.Wireless_Hatch_Energy_UIV.get(1));
 
@@ -4410,7 +4361,7 @@ public class MachineLoader {
                 11,
                 256));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV256A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUIV1024A.set(
             new MTEHatchWirelessMulti(
@@ -4420,7 +4371,7 @@ public class MachineLoader {
                 11,
                 1024));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV1024A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUIV4096A.set(
             new MTEHatchWirelessMulti(
@@ -4430,7 +4381,7 @@ public class MachineLoader {
                 11,
                 4096));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV4096A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUIV16384A.set(
             new MTEHatchWirelessMulti(
@@ -4440,7 +4391,7 @@ public class MachineLoader {
                 11,
                 16384));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV16384A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUIV65536A.set(
             new MTEHatchWirelessMulti(
@@ -4450,7 +4401,7 @@ public class MachineLoader {
                 11,
                 65536));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV65536A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUIV262144A.set(
             new MTEHatchWirelessMulti(
@@ -4460,7 +4411,7 @@ public class MachineLoader {
                 11,
                 262144));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV262144A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUIV1048576A.set(
             new MTEHatchWirelessMulti(
@@ -4470,7 +4421,7 @@ public class MachineLoader {
                 11,
                 1048576));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV1048576A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUIV4194304A.set(
             new MTEHatchWirelessMulti(
@@ -4480,7 +4431,7 @@ public class MachineLoader {
                 11,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUIV16777216A.set(
             new MTEHatchWirelessMulti(
@@ -4490,7 +4441,7 @@ public class MachineLoader {
                 11,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUMV.set(ItemList.Wireless_Hatch_Energy_UMV.get(1));
 
@@ -4508,7 +4459,7 @@ public class MachineLoader {
                 12,
                 256));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV256A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUMV1024A.set(
             new MTEHatchWirelessMulti(
@@ -4518,7 +4469,7 @@ public class MachineLoader {
                 12,
                 1024));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV1024A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUMV4096A.set(
             new MTEHatchWirelessMulti(
@@ -4528,7 +4479,7 @@ public class MachineLoader {
                 12,
                 4096));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV4096A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUMV16384A.set(
             new MTEHatchWirelessMulti(
@@ -4538,7 +4489,7 @@ public class MachineLoader {
                 12,
                 16384));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV16384A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUMV65536A.set(
             new MTEHatchWirelessMulti(
@@ -4548,7 +4499,7 @@ public class MachineLoader {
                 12,
                 65536));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV65536A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUMV262144A.set(
             new MTEHatchWirelessMulti(
@@ -4558,7 +4509,7 @@ public class MachineLoader {
                 12,
                 262144));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV262144A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUMV1048576A.set(
             new MTEHatchWirelessMulti(
@@ -4568,7 +4519,7 @@ public class MachineLoader {
                 12,
                 1048576));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV1048576A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUMV4194304A.set(
             new MTEHatchWirelessMulti(
@@ -4578,7 +4529,7 @@ public class MachineLoader {
                 12,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUMV16777216A.set(
             new MTEHatchWirelessMulti(
@@ -4588,7 +4539,7 @@ public class MachineLoader {
                 12,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUXV.set(ItemList.Wireless_Hatch_Energy_UXV.get(1));
 
@@ -4632,7 +4583,7 @@ public class MachineLoader {
                 14,
                 256));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX256A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMAX1024A.set(
             new MTEHatchWirelessMulti(
@@ -4642,7 +4593,7 @@ public class MachineLoader {
                 14,
                 1024));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX1024A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMAX4096A.set(
             new MTEHatchWirelessMulti(
@@ -4652,7 +4603,7 @@ public class MachineLoader {
                 14,
                 4096));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX4096A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMAX16384A.set(
             new MTEHatchWirelessMulti(
@@ -4662,7 +4613,7 @@ public class MachineLoader {
                 14,
                 16384));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX16384A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMAX65536A.set(
             new MTEHatchWirelessMulti(
@@ -4672,7 +4623,7 @@ public class MachineLoader {
                 14,
                 65536));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX65536A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMAX262144A.set(
             new MTEHatchWirelessMulti(
@@ -4682,7 +4633,7 @@ public class MachineLoader {
                 14,
                 262144));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX262144A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMAX1048576A.set(
             new MTEHatchWirelessMulti(
@@ -4692,7 +4643,7 @@ public class MachineLoader {
                 14,
                 1048576));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX1048576A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMAX4194304A.set(
             new MTEHatchWirelessMulti(
@@ -4702,7 +4653,7 @@ public class MachineLoader {
                 14,
                 4194304));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX4194304A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMAX16777216A.set(
             new MTEHatchWirelessMulti(
@@ -4712,7 +4663,7 @@ public class MachineLoader {
                 14,
                 16777216));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX16777216A.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousWirelessEnergyHatch.set(
             new MTEHatchWirelessMulti(
@@ -4722,7 +4673,7 @@ public class MachineLoader {
                 14,
                 Integer.MAX_VALUE / 10));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousWirelessEnergyHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HumongousWirelessEnergyHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousWirelessDynamoHatch.set(
             new WirelessMultiDynamoHatch(
@@ -4732,14 +4683,14 @@ public class MachineLoader {
                 14,
                 Integer.MAX_VALUE));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HumongousWirelessDynamoHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.HumongousWirelessDynamoHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.BeamlinePipeMirror.set(
             new BeamlinePipeMirror(
                 GTNLMachineID.BEAMLINE_PIPE_MIRROR.ID,
                 "BeamlinePipeMirror",
-                StatCollector.translateToLocal("gtnl.hatch.beamline_pipe_mirror.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.BeamlinePipeMirror.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+                StatCollector.translateToLocal("gtnl.blockmachines.beamlinepipemirror.name")));
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.BeamlinePipeMirror.get(1), AnimatedText.GT_NOT_LEISURE);
     }
 
     public static void registerBasicMachine() {
@@ -4749,7 +4700,7 @@ public class MachineLoader {
                 "SteamTurbineLV",
                 StatCollector.translateToLocal("gtnl.machine.steam_turbine.lv.name"),
                 1));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamTurbineLV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamTurbineLV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamTurbineMV.set(
             new SteamTurbine(
@@ -4757,7 +4708,7 @@ public class MachineLoader {
                 "SteamTurbineMV",
                 StatCollector.translateToLocal("gtnl.machine.steam_turbine.mv.name"),
                 2));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamTurbineMV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamTurbineMV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamTurbineHV.set(
             new SteamTurbine(
@@ -4765,23 +4716,21 @@ public class MachineLoader {
                 "SteamTurbineHV",
                 StatCollector.translateToLocal("gtnl.machine.steam_turbine.hv.name"),
                 3));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamTurbineHV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamTurbineHV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamAssemblerBronze.set(
             new SteamAssemblerBronze(
                 GTNLMachineID.STEAM_ASSEMBLER_BRONZE.ID,
                 "SteamAssembler",
                 StatCollector.translateToLocal("gtnl.machine.steam_assembler.bronze.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SteamAssemblerBronze.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamAssemblerBronze.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SteamAssemblerSteel.set(
             new SteamAssemblerSteel(
                 GTNLMachineID.STEAM_ASSEMBLER_STEEL.ID,
                 "HighPressureSteamAssembler",
                 StatCollector.translateToLocal("gtnl.machine.steam_assembler.steel.name")));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SteamAssemblerSteel.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SteamAssemblerSteel.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HydraulicSuperBuffer.set(
             new HydraulicSuperBuffer(
@@ -4789,15 +4738,14 @@ public class MachineLoader {
                 "HydraulicSuperBuffer",
                 StatCollector.translateToLocal("gtnl.machine.hydraulic_super_buffer.name"),
                 1));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.HydraulicSuperBuffer.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.HydraulicSuperBuffer.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ManaTank.set(
             new ManaTank(
                 GTNLMachineID.MANA_TANK.ID,
                 "ManaTank",
                 StatCollector.translateToLocal("gtnl.machine.mana_tank.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaTank.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.ManaTank.get(1), AnimatedText.GT_NOT_LEISURE);
 
         for (GasCollectorTier tier : GasCollectorTier.values()) {
             IMetaTileEntity mte = new MTEBasicMachineWithRecipe(
@@ -4823,7 +4771,7 @@ public class MachineLoader {
 
             tier.itemEnum.set(mte);
 
-            AnimatedTooltipHandler.addItemTooltip(tier.itemEnum.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            AnimatedTooltipHandler.addItemTooltip(tier.itemEnum.get(1), AnimatedText.GT_NOT_LEISURE);
         }
 
         GTNLItemList.GasTurbineLV.set(
@@ -4832,7 +4780,7 @@ public class MachineLoader {
                 "GasTurbineLV",
                 StatCollector.translateToLocal("gtnl.machine.gas_turbine.lv.name"),
                 1));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.GasTurbineLV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.GasTurbineLV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.GasTurbineMV.set(
             new GasTurbine(
@@ -4840,7 +4788,7 @@ public class MachineLoader {
                 "GasTurbineMV",
                 StatCollector.translateToLocal("gtnl.machine.gas_turbine.mv.name"),
                 2));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.GasTurbineMV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.GasTurbineMV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.GasTurbineHV.set(
             new GasTurbine(
@@ -4848,7 +4796,7 @@ public class MachineLoader {
                 "GasTurbineHV",
                 StatCollector.translateToLocal("gtnl.machine.gas_turbine.hv.name"),
                 3));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.GasTurbineHV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.GasTurbineHV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DieselGeneratorLV.set(
             new DieselGenerator(
@@ -4856,7 +4804,7 @@ public class MachineLoader {
                 "DieselGeneratorLV",
                 StatCollector.translateToLocal("gtnl.machine.diesel_generator.lv.name"),
                 1));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DieselGeneratorLV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DieselGeneratorLV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DieselGeneratorMV.set(
             new DieselGenerator(
@@ -4864,7 +4812,7 @@ public class MachineLoader {
                 "DieselGeneratorMV",
                 StatCollector.translateToLocal("gtnl.machine.diesel_generator.mv.name"),
                 2));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DieselGeneratorMV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DieselGeneratorMV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.DieselGeneratorHV.set(
             new DieselGenerator(
@@ -4872,7 +4820,7 @@ public class MachineLoader {
                 "DieselGeneratorHV",
                 StatCollector.translateToLocal("gtnl.machine.diesel_generator.hv.name"),
                 3));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DieselGeneratorHV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DieselGeneratorHV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SmallEssentiaSmelteryLV.set(
             new SmallEssentiaSmeltery(
@@ -4904,7 +4852,7 @@ public class MachineLoader {
                 GTNLMachineID.ENERGY_TRANSFER_NODE.ID,
                 "EnergyTransferNode",
                 StatCollector.translateToLocal("gtnl.hatch.energy_transfer_node.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyTransferNode.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyTransferNode.get(1), AnimatedText.GT_NOT_LEISURE);
 
         if (Mods.EnhancedLootBags.isModLoaded()) {
             GTNLItemList.LootBagRedemption.set(
@@ -4913,8 +4861,7 @@ public class MachineLoader {
                     "LootBagRedemption",
                     StatCollector.translateToLocal("gtnl.machine.loot_bag_redemption.name"),
                     14));
-            AnimatedTooltipHandler
-                .addItemTooltip(GTNLItemList.LootBagRedemption.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LootBagRedemption.get(1), AnimatedText.GT_NOT_LEISURE);
         }
 
         GTNLItemList.SuperOredictInputBusME.set(
@@ -4923,8 +4870,7 @@ public class MachineLoader {
                 "SuperOredictInputBusME",
                 StatCollector.translateToLocal("gtnl.hatch.oredict_input_bus_me.advanced.name"),
                 true));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SuperOredictInputBusME.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SuperOredictInputBusME.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SuperTypeFilteredInputBusME.set(
             new TypeFilteredInputBusME(
@@ -4933,21 +4879,21 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.type_filtered_input_bus_me.advanced.name"),
                 true));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SuperTypeFilteredInputBusME.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.SuperTypeFilteredInputBusME.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.OutputBusMEProxy.set(
             new OutputBusMEProxy(
                 GTNLMachineID.OUTPUT_BUS_ME_PROXY.ID,
                 "OutputBusMEProxy",
                 StatCollector.translateToLocal("gtnl.hatch.output_bus_me_proxy.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.OutputBusMEProxy.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.OutputBusMEProxy.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.OutputHatchMEProxy.set(
             new OutputHatchMEProxy(
                 GTNLMachineID.OUTPUT_HATCH_ME_PROXY.ID,
                 "OutputHatchMEProxy",
                 StatCollector.translateToLocal("gtnl.hatch.output_hatch_me_proxy.name")));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.OutputHatchMEProxy.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.OutputHatchMEProxy.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessVacuumConveyorInputHatch.set(
             new WirelessVacuumConveyorInputHatch(
@@ -4956,7 +4902,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.wireless_vacuum_conveyor.input.name"),
                 11));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessVacuumConveyorInputHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessVacuumConveyorInputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessVacuumConveyorOutputHatch.set(
             new WirelessVacuumConveyorOutputHatch(
@@ -4965,7 +4911,7 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.hatch.wireless_vacuum_conveyor.output.name"),
                 11));
         AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.WirelessVacuumConveyorOutputHatch.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+            .addItemTooltip(GTNLItemList.WirelessVacuumConveyorOutputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
     }
 
     public static void registerWireAndPipe() {
@@ -5044,7 +4990,7 @@ public class MachineLoader {
                 GTNLItemList.WIRELESS_ENERGY_COVER_4A[i].get(1),
                 TextureFactory.of(
                     Textures.BlockIcons.MACHINE_CASINGS[1][0],
-                    TextureFactory.of(Textures.BlockIcons.OVERLAYS_ENERGY_ON_WIRELESS_4A[0])),
+                    Textures.BlockIcons.OVERLAYS_ENERGY_ON_WIRELESS_4A[0]),
                 context -> new WirelessMultiEnergyCover(context, (int) GTValues.V[tier], 4),
                 CoverRegistry.INTERCEPTS_RIGHT_CLICK_COVER_PLACER);
         }
@@ -5070,9 +5016,9 @@ public class MachineLoader {
     public static void loadItemTooltip() {
 
         if (MainConfig.machine.enableVoidMinerTweak && !ModList.VMTweak.isModLoaded()) {
-            AnimatedTooltipHandler.addItemTooltip(ItemRegistry.voidminer[0], AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
-            AnimatedTooltipHandler.addItemTooltip(ItemRegistry.voidminer[1], AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
-            AnimatedTooltipHandler.addItemTooltip(ItemRegistry.voidminer[2], AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
+            AnimatedTooltipHandler.addItemTooltip(ItemRegistry.voidminer[0], AnimatedText.GT_NOT_LEISURE_CHANGE);
+            AnimatedTooltipHandler.addItemTooltip(ItemRegistry.voidminer[1], AnimatedText.GT_NOT_LEISURE_CHANGE);
+            AnimatedTooltipHandler.addItemTooltip(ItemRegistry.voidminer[2], AnimatedText.GT_NOT_LEISURE_CHANGE);
         }
 
         if (MainConfig.machine.enablePurificationPlantBuff) {
@@ -5085,9 +5031,8 @@ public class MachineLoader {
             AnimatedTooltipHandler.addItemTooltip(
                 ItemList.Machine_Multi_PurificationPlant.get(1),
                 () -> StatCollector.translateToLocal("gtnl.machine.purification_plant.tooltip.2"));
-            AnimatedTooltipHandler.addItemTooltip(
-                ItemList.Machine_Multi_PurificationPlant.get(1),
-                AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
+            AnimatedTooltipHandler
+                .addItemTooltip(ItemList.Machine_Multi_PurificationPlant.get(1), AnimatedText.GT_NOT_LEISURE_CHANGE);
         }
 
         if (ModList.TwistSpaceTechnology.isModLoaded()) {
@@ -5098,13 +5043,13 @@ public class MachineLoader {
             CustomItemList.Machine_Multi_Research.get(1),
             () -> StatCollector.translateToLocal("gtnl.machine.research_station.tooltip.0"));
         AnimatedTooltipHandler
-            .addItemTooltip(CustomItemList.Machine_Multi_Research.get(1), AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
+            .addItemTooltip(CustomItemList.Machine_Multi_Research.get(1), AnimatedText.GT_NOT_LEISURE_CHANGE);
     }
 
     @Optional.Method(modid = "TwistSpaceTechnology")
     public static void loadTSTItemTooltip() {
         AnimatedTooltipHandler
-            .addItemTooltip(GTCMItemList.OreProcessingFactory.get(1), AnimatedText.SCIENCE_NOT_LEISURE_CHANGE);
+            .addItemTooltip(GTCMItemList.OreProcessingFactory.get(1), AnimatedText.GT_NOT_LEISURE_CHANGE);
     }
 
     public enum GasCollectorTier {

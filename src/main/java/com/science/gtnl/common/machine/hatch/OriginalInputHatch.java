@@ -7,10 +7,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchInput;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class OriginalInputHatch extends MTEHatchInput {
 
     public OriginalInputHatch(int aID, String aName, String aNameRegional) {

@@ -27,12 +27,14 @@ import ggfab.GGItemList;
 import gregtech.api.enums.ItemList;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSolidifier;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class HumongousSolidifierHatch extends MTEHatchSolidifier implements IAddGregtechLogo {
 
     public static final int moldSlot = 2;

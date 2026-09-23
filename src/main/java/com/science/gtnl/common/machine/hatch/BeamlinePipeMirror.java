@@ -18,6 +18,7 @@ import gtnhlanth.common.beamline.IConnectsToBeamline;
 import gtnhlanth.common.beamline.MTEBeamlinePipe;
 import gtnhlanth.common.hatch.MTEHatchInputBeamline;
 
+@IMetaTileEntity.SkipGenerateDescription
 public class BeamlinePipeMirror extends MTEBeamlinePipe {
 
     public ForgeDirection[] connectedSides = { null, null };
@@ -85,8 +86,8 @@ public class BeamlinePipeMirror extends MTEBeamlinePipe {
 
     @Override
     public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("gtnl.hatch.beamline_pipe_mirror.tooltip.0"),
-            StatCollector.translateToLocal("gtnl.hatch.beamline_pipe_mirror.tooltip.1") };
+        return new String[] { StatCollector.translateToLocal("gtnl.blockmachines.beamlinepipemirror.tooltip.0"),
+            StatCollector.translateToLocal("gtnl.blockmachines.beamlinepipemirror.tooltip.1") };
     }
 
     @Override

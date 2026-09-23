@@ -18,6 +18,8 @@ dependencies {
     implementation("com.github.GTNewHorizons:NotEnoughItems:2.8.130-GTNH:dev")
     implementation("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev")
     api("com.github.GTNewHorizons:GTNHLib:0.11.46:dev")
+    compileOnly("com.github.GTNewHorizons:Angelica:2.2.13:dev") { transitive = false }
+    runtimeOnlyNonPublishable("com.github.GTNewHorizons:Angelica:2.2.13:dev")
     api("com.github.GTNewHorizons:Postea:1.2.6:dev")
     implementation("io.github.legacymoddingmc:unimixins:0.3.1:dev")
 
