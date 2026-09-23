@@ -2127,6 +2127,7 @@ public class MachineLoader {
                 "SmallInfusionMatrix",
                 StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.name")));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallInfusionMatrix.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallInfusionMatrix.get(1), AnimatedText.AUTHOR_LINEBROKE);
 
         GTNLItemList.SuperInputBusME.set(
             new SuperInputBusME(
