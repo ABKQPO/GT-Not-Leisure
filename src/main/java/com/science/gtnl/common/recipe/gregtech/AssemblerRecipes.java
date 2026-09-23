@@ -49,6 +49,7 @@ import gtPlusPlus.core.material.MaterialsElements;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.CustomItemList;
+import thaumcraft.common.config.ConfigBlocks;
 
 public class AssemblerRecipes implements IRecipePool {
 
@@ -69,20 +70,6 @@ public class AssemblerRecipes implements IRecipePool {
         var aeBlocks = AEApi.instance()
             .definitions()
             .blocks();
-
-        RecipeBuilder.builder()
-            .itemInputs(
-                GTUtility.getIntegratedCircuit(17),
-                GTModHandler.getModItem(Mods.Thaumcraft.ID, "blockTable", 1, 15),
-                ItemList.Hull_HV.get(1),
-                ItemRefer.Magic_Casing.get(4),
-                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.HV, 4),
-                ItemList.Robot_Arm_HV.get(2))
-            .itemOutputs(GTNLItemList.SmallArcaneAssembler.get(1))
-            .fluidInputs(SubstituteFluidStack.soldering(288))
-            .duration(20 * SECONDS)
-            .eut(TierEU.RECIPE_HV)
-            .addTo(As);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -163,6 +150,45 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.ActivatedGaiaPylon.get(1))
             .duration(200)
             .eut(7680)
+            .addTo(As);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                GTUtility.getIntegratedCircuit(6),
+                GTNLItemList.EssentiaHatch.get(1),
+                GTNLItemList.MultiEssentiaJar.get(1),
+                GTNLItemList.MultiEssentiaTube.get(4),
+                ItemList.Electric_Pump_HV.get(1),
+                new Object[] { OrePrefixes.circuit.get(Materials.HV), 4 })
+            .itemOutputs(GTNLItemList.MultiEssentiaInputHatch.get(1))
+            .fluidInputs(SubstituteFluidStack.soldering(576))
+            .duration(30 * SECONDS)
+            .eut(TierEU.RECIPE_HV)
+            .addTo(As);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                GTUtility.getIntegratedCircuit(5),
+                new ItemStack(ConfigBlocks.blockJar, 1),
+                GTNLItemList.MultiEssentiaTube.get(4),
+                ItemRefer.Magic_Casing.get(4),
+                new Object[] { OrePrefixes.circuit.get(Materials.MV), 2 })
+            .itemOutputs(GTNLItemList.MultiEssentiaJar.get(1))
+            .fluidInputs(SubstituteFluidStack.soldering(288))
+            .duration(20 * SECONDS)
+            .eut(TierEU.RECIPE_MV)
+            .addTo(As);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                GTUtility.getIntegratedCircuit(4),
+                new ItemStack(ConfigBlocks.blockTube, 4, 4),
+                ItemRefer.Magic_Casing.get(1),
+                ItemList.Electric_Pump_MV.get(1))
+            .itemOutputs(GTNLItemList.MultiEssentiaTube.get(4))
+            .fluidInputs(SubstituteFluidStack.soldering(144))
+            .duration(10 * SECONDS)
+            .eut(TierEU.RECIPE_MV)
             .addTo(As);
 
         RecipeBuilder.builder()
@@ -3122,6 +3148,34 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.SteamWeatherModule.get(1))
             .duration(200)
             .eut(TierEU.RECIPE_LV)
+            .addTo(As);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                new ItemStack(ConfigBlocks.blockStoneDevice, 1, 2),
+                ItemList.Hull_HV.get(1),
+                ItemRefer.Magic_Casing.get(4),
+                new Object[] { OrePrefixes.circuit.get(Materials.HV), 4 },
+                ItemList.Field_Generator_HV.get(2),
+                GTNLItemList.MultiEssentiaTube.get(4))
+            .itemOutputs(GTNLItemList.SmallInfusionMatrix.get(1))
+            .fluidInputs(SubstituteFluidStack.soldering(576))
+            .duration(30 * SECONDS)
+            .eut(TierEU.RECIPE_HV)
+            .addTo(As);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                GTUtility.getIntegratedCircuit(17),
+                GTModHandler.getModItem(Mods.Thaumcraft.ID, "blockTable", 1, 15),
+                ItemList.Hull_HV.get(1),
+                ItemRefer.Magic_Casing.get(4),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.HV, 4),
+                ItemList.Robot_Arm_HV.get(2))
+            .itemOutputs(GTNLItemList.SmallArcaneAssembler.get(1))
+            .fluidInputs(SubstituteFluidStack.soldering(288))
+            .duration(20 * SECONDS)
+            .eut(TierEU.RECIPE_HV)
             .addTo(As);
 
         RecipeBuilder.builder()

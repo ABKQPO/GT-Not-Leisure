@@ -1118,30 +1118,6 @@ public class CraftingTableRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.cableGt08, Materials.Gold, 1L) });
 
         GTModHandler.addCraftingRecipe(
-            GTNLItemList.SmallEssentiaSmelteryLV.get(1),
-            recipeFlags,
-            new Object[] { "ABA", "CDC", "EFE", 'A', ItemList.Electric_Pump_LV.get(1), 'B',
-                OrePrefixes.circuit.get(Materials.LV), 'C', new ItemStack(ConfigBlocks.blockCosmeticOpaque, 1, 2), 'D',
-                ItemList.Hull_LV.get(1), 'E', new ItemStack(ConfigBlocks.blockStoneDevice, 1, 0), 'F',
-                GTOreDictUnificator.get(OrePrefixes.cableGt01, Materials.Tin, 1L) });
-
-        GTModHandler.addCraftingRecipe(
-            GTNLItemList.SmallEssentiaSmelteryMV.get(1),
-            recipeFlags,
-            new Object[] { "ABA", "CDC", "EFE", 'A', ItemList.Electric_Pump_MV.get(1), 'B',
-                OrePrefixes.circuit.get(Materials.MV), 'C', new ItemStack(ConfigBlocks.blockCosmeticOpaque, 1, 2), 'D',
-                ItemList.Hull_MV.get(1), 'E', GTNLItemList.SmallEssentiaSmelteryLV.get(1), 'F',
-                GTOreDictUnificator.get(OrePrefixes.cableGt01, Materials.AnyCopper, 1L) });
-
-        GTModHandler.addCraftingRecipe(
-            GTNLItemList.SmallEssentiaSmelteryHV.get(1),
-            recipeFlags,
-            new Object[] { "ABA", "CDC", "EFE", 'A', ItemList.Electric_Pump_HV.get(1), 'B',
-                OrePrefixes.circuit.get(Materials.HV), 'C', new ItemStack(ConfigBlocks.blockCosmeticOpaque, 1, 2), 'D',
-                ItemList.Hull_HV.get(1), 'E', GTNLItemList.SmallEssentiaSmelteryMV.get(1), 'F',
-                GTOreDictUnificator.get(OrePrefixes.cableGt01, Materials.Gold, 1L) });
-
-        GTModHandler.addCraftingRecipe(
             GTNLItemList.GasTurbineLV.get(1),
             new Object[] { "ABA", "CDC", "EFE", 'A', GTOreDictUnificator.get(OrePrefixes.rotor, Materials.Steel, 1L),
                 'B', OrePrefixes.circuit.get(Materials.LV), 'C', ItemList.Large_Fluid_Cell_Steel.get(1), 'D',
@@ -1421,6 +1397,30 @@ public class CraftingTableRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.pipeMedium, Materials.Titanium, 1), 'D',
                 GTModHandler.getModItem(IndustrialCraft2.ID, "blockReactorChamber", 1, 0), 'E',
                 OrePrefixes.circuit.get(Materials.EV), 'F', ItemList.Hull_EV.get(1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.SmallEssentiaSmelteryLV.get(1),
+            recipeFlags,
+            new Object[] { "ABA", "CDC", "EFE", 'A', ItemList.Electric_Pump_LV.get(1), 'B',
+                OrePrefixes.circuit.get(Materials.LV), 'C', new ItemStack(ConfigBlocks.blockCosmeticOpaque, 1, 2), 'D',
+                ItemList.Hull_LV.get(1), 'E', new ItemStack(ConfigBlocks.blockStoneDevice, 1, 0), 'F',
+                GTOreDictUnificator.get(OrePrefixes.cableGt04, Materials.Tin, 1L) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.SmallEssentiaSmelteryMV.get(1),
+            recipeFlags,
+            new Object[] { "ABA", "CDC", "EFE", 'A', ItemList.Electric_Pump_MV.get(1), 'B',
+                OrePrefixes.circuit.get(Materials.MV), 'C', new ItemStack(ConfigBlocks.blockCosmeticOpaque, 1, 2), 'D',
+                ItemList.Hull_MV.get(1), 'E', new ItemStack(ConfigBlocks.blockStoneDevice, 1, 0), 'F',
+                GTOreDictUnificator.get(OrePrefixes.cableGt04, Materials.AnyCopper, 1L) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.SmallEssentiaSmelteryHV.get(1),
+            recipeFlags,
+            new Object[] { "ABA", "CDC", "EFE", 'A', ItemList.Electric_Pump_HV.get(1), 'B',
+                OrePrefixes.circuit.get(Materials.HV), 'C', new ItemStack(ConfigBlocks.blockCosmeticOpaque, 1, 2), 'D',
+                ItemList.Hull_HV.get(1), 'E', new ItemStack(ConfigBlocks.blockStoneDevice, 1, 0), 'F',
+                GTOreDictUnificator.get(OrePrefixes.cableGt04, Materials.Gold, 1L) });
 
         GTModHandler.addShapelessCraftingRecipe(
             GTNLItemList.PartSuperInterface.get(1),
