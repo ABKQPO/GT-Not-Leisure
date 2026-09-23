@@ -64,7 +64,7 @@ import thaumcraft.common.tiles.TileVisRelay;
 public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    private static final String STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":multiblock/small_infusion_matrix";
+    private static final String STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":multiblock/small_arcane_assembler";
     private static final String[][] SHAPE = StructureUtils.readStructureFromFile(STRUCTURE_FILE_PATH);
 
     private static final int HORIZONTAL_OFFSET = 1;
