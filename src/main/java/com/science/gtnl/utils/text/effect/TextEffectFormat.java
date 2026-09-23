@@ -25,15 +25,19 @@ public class TextEffectFormat {
             Map.entry("er", "exotic_rainbow"),
             Map.entry("sb", "superboss_rarity"),
             Map.entry("is", "infernum_spark_rarity"),
+            Map.entry("kcs", "infernum_cyan_spark"),
             Map.entry("ba", "burnished_auric"),
             Map.entry("ec", "evercold_cyan"),
-            Map.entry("ss", "starsilver_rarity")));
+            Map.entry("ss", "starsilver_rarity"),
+            Map.entry("nr", "nebula_rift"),
+            Map.entry("ps", "prismatic_scan"),
+            Map.entry("qg", "quantum_glitch"),
+            Map.entry("mc", "molten_core")));
     private static final int[] VANILLA_COLORS = { 0x000000, 0x0000AA, 0x00AA00, 0x00AAAA, 0xAA0000, 0xAA00AA, 0xFFAA00,
         0xAAAAAA, 0x555555, 0x5555FF, 0x55FF55, 0x55FFFF, 0xFF5555, 0xFF55FF, 0xFFFF55, 0xFFFFFF };
 
     private TextEffectFormat() {}
 
-    /** Registers an additional short name during initialization, before parsing or rendering starts. */
     public static void registerAlias(String alias, String rendererId) {
         if (alias == null || !alias.matches("[a-z][a-z0-9_]{0,15}"))
             throw new IllegalArgumentException("Invalid text effect alias");
@@ -42,7 +46,6 @@ public class TextEffectFormat {
             throw new IllegalArgumentException("Text effect alias already registered: " + alias);
     }
 
-    /** Returns the shortest registered alias, or an empty string when only the full identifier is available. */
     public static String aliasFor(String rendererId) {
         String shortest = "";
         for (Entry<String, String> entry : ALIASES.entrySet()) {
@@ -55,7 +58,6 @@ public class TextEffectFormat {
         return shortest;
     }
 
-    /** Converts standard ampersand formatting when no installed preprocessor handled it. */
     public static String normalizeAmpersand(String token) {
         if (token.length() < 2 || token.charAt(0) != '&') return token;
         char code = Character.toLowerCase(token.charAt(1));
@@ -137,7 +139,6 @@ public class TextEffectFormat {
         return colors;
     }
 
-    /** Returns the length of one native token, including extended RGB payloads. */
     public static int nativeLength(String text, int offset) {
         if (offset + 1 >= text.length() || text.charAt(offset) != '\u00a7') return 0;
         char code = Character.toLowerCase(text.charAt(offset + 1));

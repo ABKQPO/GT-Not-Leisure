@@ -45,13 +45,16 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.reavaritia.client.render.CustomEntityRenderer;
 import com.science.gtnl.common.item.items.TimeStopPocketWatch;
 import com.science.gtnl.utils.ClientUtils;
+import com.science.gtnl.utils.detrav.DetravScannerGUI;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -503,6 +506,23 @@ public abstract class MixinMinecraft {
             .onPostClientTick();
         this.mcProfiler.endSection();
         this.systemTime = Minecraft.getSystemTime();
+    }
+
+    @Redirect(
+        method = "runTick",
+        at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Mouse;getEventDWheel()I", remap = false))
+    private int gtnl$dispatchScannerWheel() {
+        int wheel = Mouse.getEventDWheel();
+        if (wheel != 0 && this.currentScreen instanceof DetravScannerGUI scanner) {
+            scanner.handleMapWheel(wheel);
+            return 0;
+        }
+        return wheel;
+    }
+
+    @ModifyConstant(method = "runTick", constant = @Constant(longValue = 200L))
+    private long gtnl$keepScannerInputAlive(long timeout) {
+        return this.currentScreen instanceof DetravScannerGUI ? Long.MAX_VALUE : timeout;
     }
 
     @SuppressWarnings("DataFlowIssue")

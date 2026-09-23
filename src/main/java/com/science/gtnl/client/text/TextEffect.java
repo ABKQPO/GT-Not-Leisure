@@ -9,6 +9,10 @@ public interface TextEffect extends AutoCloseable {
         return height;
     }
 
+    default float padding(float width, float height) {
+        return padding(height);
+    }
+
     default int fallbackColor() {
         return 0xFFFFFF;
     }

@@ -15,25 +15,31 @@ import com.sinthoras.visualprospecting.database.veintypes.VeinType;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import gregtech.api.enums.Mods;
-import gtneioreplugin.util.GT5OreLayerHelper;
+import gregtech.common.OreMixBuilder;
 
 public class GTNLWorldgenloader {
 
     public static void registry() {
-
-        // GT Veins registration
         for (GTNLOreMixer oreMix : GTNLOreMixer.values()) {
             oreMix.addGTOreLayer();
+        }
 
-            GT5OreLayerHelper.getOreVeinsByName()
-                .put(oreMix.oreMixBuilder.oreMixName, new GT5OreLayerHelper.OreLayerWrapper(oreMix.oreMixBuilder));
-            if (Mods.VisualProspecting.isModLoaded()) {
-                AccessorVeinTypeCaching.getVeinTypes()
-                    .put(oreMix.oreMixBuilder.oreMixName, new VeinType(oreMix.oreMixBuilder));
-            }
+        if (Mods.VisualProspecting.isModLoaded()) {
+            registerVisualProspectingVeins();
         }
 
         ScienceNotLeisure.LOG.info("Started Galactic Greg ore gen code");
+    }
+
+    private static void registerVisualProspectingVeins() {
+        for (GTNLOreMixer oreMix : GTNLOreMixer.values()) {
+            AccessorVeinTypeCaching.getVeinTypes()
+                .put(oreMix.oreMixBuilder.oreMixName, new VeinType(oreMix.oreMixBuilder));
+        }
+        for (OreMixBuilder vein : GTNLVeinCatalog.additionalVeins()) {
+            AccessorVeinTypeCaching.getVeinTypes()
+                .put(vein.oreMixName, new VeinType(vein));
+        }
     }
 
     @SubscribeEvent
@@ -55,7 +61,7 @@ public class GTNLWorldgenloader {
             new WorldGenLakes(BlockLoader.honeyFluidBlock).generate(world, random, xPos, yPos, zPos);
 
         xPos = xChunk + random.nextInt(16) + 8;
-        yPos = random.nextInt(70) + 8;
+        yPos = random.nextInt(62) + 8;
         zPos = zChunk + random.nextInt(16) + 8;
 
         if (random.nextInt(512) == 0)

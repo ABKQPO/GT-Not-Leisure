@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -37,6 +38,14 @@ public class TextShader implements AutoCloseable {
 
     public int uniform(String name) {
         return uniforms.computeIfAbsent(name, key -> GL20.glGetUniformLocation(program, key));
+    }
+
+    public void bindTexture(int unit, ResourceLocation texture) {
+        if (unit < 0) throw new IllegalArgumentException("Texture unit must be nonnegative");
+        OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit + unit);
+        Minecraft.getMinecraft()
+            .getTextureManager()
+            .bindTexture(texture);
     }
 
     private void compile() {

@@ -10,8 +10,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -27,9 +25,6 @@ import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import detrav.utils.FluidColors;
-import gregtech.api.interfaces.IOreMaterial;
-import gregtech.common.ores.OreInfo;
-import gregtech.common.ores.OreManager;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.longs.Long2LongMap;
@@ -59,8 +54,8 @@ public class ProspectingPacket extends ClientboundPacket {
     public int ptype;
     public final Long2ShortOpenHashMap map = new Long2ShortOpenHashMap();
     public final Short2ObjectOpenHashMap<ObjectIntPair<String>> objects = new Short2ObjectOpenHashMap<>();
+    public final Short2ObjectOpenHashMap<String> oreMaterialNames = new Short2ObjectOpenHashMap<>();
     private final Object2ShortOpenHashMap<String> nameLookup = new Object2ShortOpenHashMap<>();
-    private final Long2LongOpenHashMap topOreByColumnAndObject = new Long2LongOpenHashMap();
     private short nextId;
 
     public ProspectingPacket() {}
@@ -129,8 +124,8 @@ public class ProspectingPacket extends ClientboundPacket {
         ptype = buf.readInt();
 
         objects.clear();
+        oreMaterialNames.clear();
         nameLookup.clear();
-        topOreByColumnAndObject.clear();
         nextId = 0;
         int objectCount = buf.readInt();
         objects.ensureCapacity(objectCount);
@@ -138,7 +133,9 @@ public class ProspectingPacket extends ClientboundPacket {
             short objectId = buf.readShort();
             String name = ByteBufUtils.readUTF8String(buf);
             int color = buf.readInt();
+            String oreMaterialName = ByteBufUtils.readUTF8String(buf);
             objects.put(objectId, ObjectIntImmutablePair.of(name, color));
+            oreMaterialNames.put(objectId, oreMaterialName);
             nameLookup.put(name, objectId);
             nextId = (short) Math.max(nextId, objectId + 1);
         }
@@ -194,7 +191,8 @@ public class ProspectingPacket extends ClientboundPacket {
 
         buf.writeInt(objects.size());
         for (Short2ObjectMap.Entry<ObjectIntPair<String>> entry : objects.short2ObjectEntrySet()) {
-            buf.writeShort(entry.getShortKey());
+            short objectId = entry.getShortKey();
+            buf.writeShort(objectId);
             ByteBufUtils.writeUTF8String(
                 buf,
                 entry.getValue()
@@ -202,6 +200,7 @@ public class ProspectingPacket extends ClientboundPacket {
             buf.writeInt(
                 entry.getValue()
                     .rightInt());
+            ByteBufUtils.writeUTF8String(buf, oreMaterialNames.getOrDefault(objectId, ""));
         }
 
         buf.writeInt(map.size());
@@ -212,6 +211,7 @@ public class ProspectingPacket extends ClientboundPacket {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
         DetravScannerGUI.newMap(new DetravMapTexture(this));
         openProspectorGUI();
@@ -231,32 +231,22 @@ public class ProspectingPacket extends ClientboundPacket {
     }
 
     public void addBlock(int worldX, int worldY, int worldZ, Block block, int meta) {
+        int relativeX = worldX - (chunkX - size) * 16;
+        int relativeZ = worldZ - (chunkZ - size) * 16;
         ItemStack stack = new ItemStack(block, 1, meta);
         String name = stack.getDisplayName();
 
-        try (OreInfo<IOreMaterial> info = OreManager.getOreInfo(block, meta)) {
-            short[] rgba = info != null && info.material != null ? info.material.getRGBA() : null;
-            addBlock(worldX, worldY, worldZ, name, rgbaToColor(rgba));
-        }
-    }
-
-    public void addBlock(int worldX, int worldY, int worldZ, String name, int color) {
-        int relativeX = worldX - (chunkX - size) * 16;
-        int relativeZ = worldZ - (chunkZ - size) * 16;
-        short objectId = getOrCreateObjectId(name, color);
-        long packedCoordinate = CoordinatePacker.pack(relativeX, worldY, relativeZ);
-        long columnObjectKey = getColumnObjectKey(relativeX, relativeZ, objectId);
-
-        if (topOreByColumnAndObject.containsKey(columnObjectKey)) {
-            long previousCoordinate = topOreByColumnAndObject.get(columnObjectKey);
-            if (CoordinatePacker.unpackY(previousCoordinate) >= worldY) {
-                return;
-            }
-            map.remove(previousCoordinate);
+        short objectId;
+        if (nameLookup.containsKey(name)) {
+            objectId = nameLookup.getShort(name);
+        } else {
+            objectId = nextId++;
+            nameLookup.put(name, objectId);
+            objects.put(objectId, ObjectIntImmutablePair.of(name, DEFAULT_COLOR));
+            oreMaterialNames.put(objectId, "");
         }
 
-        topOreByColumnAndObject.put(columnObjectKey, packedCoordinate);
-        map.put(packedCoordinate, objectId);
+        map.put(CoordinatePacker.pack(relativeX, worldY, relativeZ), objectId);
     }
 
     public void addFluid(int chunkX, int chunkZ, @Nullable FluidStack fluid) {
@@ -266,7 +256,7 @@ public class ProspectingPacket extends ClientboundPacket {
         int relativeChunkX = chunkX - (this.chunkX - size);
         int relativeChunkZ = chunkZ - (this.chunkZ - size);
         String name = fluid.getLocalizedName();
-        short objectId = getOrCreateObjectId(name, rgbaToColor(FluidColors.getColor(fluid.getFluidID())));
+        short objectId = getOrCreateFluidObject(name, FluidColors.getColor(fluid.getFluidID()));
 
         int lower = fluid.amount & 0xFFFF;
         int upper = fluid.amount >>> 16;
@@ -295,42 +285,24 @@ public class ProspectingPacket extends ClientboundPacket {
         return (size * 2 + 1) * 16;
     }
 
-    public String getObjectName(short objectId) {
-        ObjectIntPair<String> object = objects.get(objectId);
-        if (object != null) {
-            return object.left();
-        }
-        if (ptype == MODE_POLLUTION) {
-            return StatCollector.translateToLocal("gui.detrav.scanner.pollution");
-        }
-        if (ptype == MODE_FLUIDS) {
-            var fluid = FluidRegistry.getFluid(objectId);
-            if (fluid != null) {
-                return fluid.getLocalizedName(new FluidStack(fluid, 0));
-            }
-            return StatCollector.translateToLocal("gui.detrav.scanner.unknown_fluid");
-        }
-        return "";
+    public String getOreMaterialName(short objectId) {
+        return oreMaterialNames.getOrDefault(objectId, "");
     }
 
     public int getObjectColor(short objectId) {
         ObjectIntPair<String> object = objects.get(objectId);
-        return object != null ? object.rightInt() : DEFAULT_COLOR;
+        return object == null ? DEFAULT_COLOR : object.rightInt();
     }
 
-    private short getOrCreateObjectId(String name, int color) {
+    private short getOrCreateFluidObject(String name, short[] fluidColor) {
         if (nameLookup.containsKey(name)) {
             return nameLookup.getShort(name);
         }
         short objectId = nextId++;
         nameLookup.put(name, objectId);
-        objects.put(objectId, ObjectIntImmutablePair.of(name, color));
+        objects.put(objectId, ObjectIntImmutablePair.of(name, rgbaToColor(fluidColor)));
+        oreMaterialNames.put(objectId, "");
         return objectId;
-    }
-
-    private long getColumnObjectKey(int relativeX, int relativeZ, short objectId) {
-        int columnIndex = relativeX + relativeZ * getSize();
-        return (((long) objectId) & 0xFFFFL) << 32 | (columnIndex & 0xFFFFFFFFL);
     }
 
     private void collapseToTopVisibleLayer() {
@@ -351,17 +323,17 @@ public class ProspectingPacket extends ClientboundPacket {
 
         collapsedMap.ensureCapacity(topByColumn.size());
         for (Long2LongMap.Entry entry : topByColumn.long2LongEntrySet()) {
-            long coordinate = entry.getLongValue();
+            long coordinate = entry.getLongKey();
             collapsedMap.put(coordinate, map.get(coordinate));
         }
 
         map.clear();
         map.putAll(collapsedMap);
-        topOreByColumnAndObject.clear();
     }
 
     private void pruneUnusedObjects() {
         Short2ObjectOpenHashMap<ObjectIntPair<String>> usedObjects = new Short2ObjectOpenHashMap<>();
+        Short2ObjectOpenHashMap<String> usedMaterialNames = new Short2ObjectOpenHashMap<>();
         Object2ShortOpenHashMap<String> usedLookup = new Object2ShortOpenHashMap<>();
         short maxObjectId = -1;
 
@@ -372,12 +344,15 @@ public class ProspectingPacket extends ClientboundPacket {
                 continue;
             }
             usedObjects.put(objectId, object);
+            usedMaterialNames.put(objectId, oreMaterialNames.getOrDefault(objectId, ""));
             usedLookup.put(object.left(), objectId);
             maxObjectId = (short) Math.max(maxObjectId, objectId);
         }
 
         objects.clear();
         objects.putAll(usedObjects);
+        oreMaterialNames.clear();
+        oreMaterialNames.putAll(usedMaterialNames);
         nameLookup.clear();
         nameLookup.putAll(usedLookup);
         nextId = (short) (maxObjectId + 1);
@@ -398,7 +373,6 @@ public class ProspectingPacket extends ClientboundPacket {
 
         map.clear();
         map.putAll(sampledMap);
-        topOreByColumnAndObject.clear();
     }
 
     private long getColumnKey(int relativeX, int relativeZ) {

@@ -90,6 +90,7 @@ import com.science.gtnl.common.render.tile.WaterCandleRenderer;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableAdvancedWorkbench;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.loader.ItemLoader;
+import com.science.gtnl.utils.detrav.DetravOreMarkerRenderer;
 import com.science.gtnl.utils.detrav.DetravScannerGUI;
 import com.science.gtnl.utils.enums.GuiType;
 import com.science.gtnl.utils.event.SubscribeEventClientUtils;
@@ -142,6 +143,8 @@ public class ClientProxy extends CommonProxy {
         FMLCommonHandler.instance()
             .bus()
             .register(GTNLInputHandler.INSTANCE);
+
+        MinecraftForge.EVENT_BUS.register(new DetravOreMarkerRenderer());
 
         MinecraftForge.EVENT_BUS.register(SPOCE_RENDER_HANDLER);
         FMLCommonHandler.instance()

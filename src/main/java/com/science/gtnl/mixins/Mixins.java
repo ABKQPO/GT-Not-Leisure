@@ -167,6 +167,7 @@ public enum Mixins implements IMixins {
             "tecTech.MixinTTRecipeAdder",
             "thaumicTinkerer.AccessorAspectCropLootManager",
             "thaumicTinkerer.MixinItemBloodSword",
+            "gtneioreplugin.MixinGT5OreLayerHelper",
             "visualProspecting.AccessorVeinTypeCaching")
         .addClientMixins(
             "appliedEnergistics.MixinTileCableBusBeamBounds",

@@ -154,7 +154,7 @@ public class EffectTextRenderer implements IResourceManagerReloadListener {
             return;
         }
         try (TextRenderState ignored = new TextRenderState()) {
-            float padding = Math.max(height, effect.padding(height));
+            float padding = Math.max(height, effect.padding(width, height));
             Mask mask = masks.get(font, text, width, height, padding);
             if (mask == null) {
                 drawPlain(font, text, x, y, fallbackColor(style, effect, color), shadow);

@@ -18,6 +18,7 @@ import com.science.gtnl.common.item.items.MilledOre;
 import com.science.gtnl.common.item.steamRocket.SchematicSteamRocket;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.recipe.gtnl.RocketAssemblerRecipes;
+import com.science.gtnl.common.world.GTNLWorldgenloader;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableAdvancedWorkbench;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableAvaritiaddonsChest;
@@ -71,6 +72,8 @@ public class MaterialLoader {
         }
 
         registryOreDictionary();
+
+        GTNLWorldgenloader.registry();
     }
 
     public static void loadPostInit() {
@@ -193,10 +196,6 @@ public class MaterialLoader {
 
         GTOreDictUnificator.registerOre("record", GTNLItemList.RecordSus.get(1));
 
-        var shimmerOre = new ItemStack(BlockLoader.shimmerFluidBlock, 1, OreDictionary.WILDCARD_VALUE);
-        var shimmerMaterial = GTNLMaterials.Shimmer.getBridgeMaterial();
-        GTOreDictUnificator.registerOre(OrePrefixes.ore.get(shimmerMaterial), shimmerOre);
-        GTOreDictUnificator.addAssociation(OrePrefixes.ore, shimmerMaterial, shimmerOre, false);
     }
 
     public static void loadCardBoardBoxBlackList() {
