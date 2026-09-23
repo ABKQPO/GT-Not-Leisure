@@ -3170,7 +3170,7 @@ public class AssemblerRecipes implements IRecipePool {
                 GTModHandler.getModItem(Mods.Thaumcraft.ID, "blockTable", 1, 15),
                 ItemList.Hull_HV.get(1),
                 ItemRefer.Magic_Casing.get(4),
-                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.HV, 4),
+                new Object[] { OrePrefixes.circuit.get(Materials.HV), 4 },
                 ItemList.Robot_Arm_HV.get(2))
             .itemOutputs(GTNLItemList.SmallArcaneAssembler.get(1))
             .fluidInputs(SubstituteFluidStack.soldering(288))
