@@ -22,16 +22,16 @@ gtnl.gui.config.general.re_avaritia.chronarch_clock.chronarchsclockspeedmultipli
 gtnl.gui.config.general.re_avaritia.chronarch_clock.chronarchsclockspeedmultiplier.tooltip=时序僭越之钟效果的速度倍率
 
 tile.reavaritia.soul_farmland.name=灵魂耕地
-tile.reavaritia.neutron_collector.name=§b中子素收集器
-tile.reavaritia.dense_neutron_collector.name=§d致密中子素收集器
-tile.reavaritia.denser_neutron_collector.name=§6更致密中子素收集器
-tile.reavaritia.densest_neutron_collector.name=§c终极致密中子素收集器
+tile.reavaritia.neutron_collector.name=§b中子态素收集器
+tile.reavaritia.dense_neutron_collector.name=§d致密态中子态素收集器
+tile.reavaritia.denser_neutron_collector.name=§6精英中子态素收集器
+tile.reavaritia.densest_neutron_collector.name=§c极限致密中子态素收集器
 tile.reavaritia.extreme_anvil.name=§c终极铁砧
 entity.reavaritia.EntityExtremeAnvil.name=§c终焉之砧
-reavaritia.container.neutron_collector=中子素收集器
-reavaritia.container.dense_neutron_collector=致密中子素收集器
-reavaritia.container.denser_neutron_collector=更致密中子素收集器
-reavaritia.container.densest_neutron_collector=终极致密中子素收集器
+reavaritia.container.neutron_collector=中子态素收集器
+reavaritia.container.dense_neutron_collector=致密中子态素收集器
+reavaritia.container.denser_neutron_collector=精英中子态素收集器
+reavaritia.container.densest_neutron_collector=极限致密中子态素收集器
 reavaritia.container.extreme_anvil=终极铁砧
 reavaritia.gui.neutron_collector.progress=进度：
 item.reavaritia.crystal_sword.name=§d水晶剑
