@@ -4287,3 +4287,32 @@ gtnl.text_effect.title=动态文字效果
 gtnl.text_effect.palette=切换配色
 gtnl.text_effect.bold=切换粗体
 gtnl.text_effect.italic=切换斜体
+
+item.gtnl.majo_hat.name=§{infernum_spark_rarity;colors=#FF68C8,#E99BFF,#B978F2,#FFD6F3}魔女的帽子§r
+item.gtnl.majo_robe.name=§{infernum_spark_rarity;colors=#FF68C8,#E99BFF,#B978F2,#FFD6F3}魔女的长袍§r
+item.gtnl.majo_armor.vis_discount=Vis 消耗减免：%s%%
+item.gtnl.majo_hat.lore.0=她把帽檐压低，任风吹过陌生城镇的屋顶。
+item.gtnl.majo_hat.lore.1=晴天时，它替她遮住刺眼的阳光；
+item.gtnl.majo_hat.lore.2=雨夜里，它陪她寻找远方的灯火。
+item.gtnl.majo_hat.lore.3=无论下一站在哪里，只要重新戴好这顶帽子，魔女便又能笑着启程。
+item.gtnl.majo_hat.worn=穿戴时：
+item.gtnl.majo_hat.tooltip.0=盔甲值 +7
+item.gtnl.majo_hat.tooltip.1=夜视
+item.gtnl.majo_hat.tooltip.2=免疫失明与反胃
+item.gtnl.majo_hat.tooltip.3=无法损坏
+item.gtnl.majo_robe.lore.0=衣摆掠过山间小路、集市石阶与无数陌生的地方。
+item.gtnl.majo_robe.lore.1=它沾过旅途的尘埃，也记得每一次相遇和告别。
+item.gtnl.majo_robe.lore.2=夜色降临时，魔女裹紧长袍，把今天的故事留在心里，期待明天又会遇见什么。
+item.gtnl.majo_robe.worn=穿戴时：
+item.gtnl.majo_robe.armor=盔甲值 +10
+item.gtnl.majo_robe.tooltip.0=无法破坏
+item.gtnl.majo_robe.tooltip.1=最大生命值 +20
+item.gtnl.majo_robe.tooltip.2=免疫击退
+item.gtnl.majo_robe.tooltip.3=获得扭曲守护
+item.gtnl.majo_robe.tooltip.4=生命值低于10时：
+item.gtnl.majo_robe.tooltip.5=获得15秒生命恢复V与抗性提升III
+item.gtnl.majo_robe.tooltip.6=冷却时间：60秒
+item.gtnl.majo_broom.name=魔法扫帚
+key.categories.gtnl=GTNL
+key.gtnl.majo_broom.place=放置魔法扫帚
+key.gtnl.majo_broom.ride=放置并骑乘魔法扫帚

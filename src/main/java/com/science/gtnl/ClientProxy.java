@@ -17,6 +17,7 @@ import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.gtnewhorizon.gtnhlib.client.model.loading.ModelRegistry;
 import com.science.gtnl.asm.GTNLEarlyCoreMod;
 import com.science.gtnl.client.GTNLInputHandler;
+import com.science.gtnl.client.MajoBroomInputHandler;
 import com.science.gtnl.client.GTNLTooltipManager;
 import com.science.gtnl.client.gui.GuiActiveFormationPlane;
 import com.science.gtnl.client.gui.GuiCustomPriority;
@@ -56,6 +57,7 @@ import com.science.gtnl.common.block.blocks.tile.TileEntitySuperDualInterface;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperInterface;
 import com.science.gtnl.common.block.blocks.tile.TileEntityWaterCandle;
 import com.science.gtnl.common.command.CommandSpoce;
+import com.science.gtnl.common.entity.EntityMajoBroom;
 import com.science.gtnl.common.entity.EntityParticleBeam;
 import com.science.gtnl.common.entity.EntityPlayerLeashKnot;
 import com.science.gtnl.common.entity.EntitySaddleSlime;
@@ -69,11 +71,13 @@ import com.science.gtnl.common.part.PartSuperInterface;
 import com.science.gtnl.common.render.SpoceRenderHandler;
 import com.science.gtnl.common.render.beamformer.BeamFormerItemRenderer;
 import com.science.gtnl.common.render.beamformer.BeamFormerModel;
+import com.science.gtnl.common.render.entity.MajoBroomRender;
 import com.science.gtnl.common.render.entity.NullPointerExceptionRender;
 import com.science.gtnl.common.render.entity.SaddleSlimeRender;
 import com.science.gtnl.common.render.entity.SteamRocketRender;
 import com.science.gtnl.common.render.item.AprilFoolMachineRender;
 import com.science.gtnl.common.render.item.ItemBlockArtificialStarRender;
+import com.science.gtnl.common.render.item.ItemMajoBroomRender;
 import com.science.gtnl.common.render.item.ItemNullPointerExceptionRender;
 import com.science.gtnl.common.render.item.ItemPlayerDollRenderer;
 import com.science.gtnl.common.render.item.ItemSteamRocketRenderer;
@@ -147,6 +151,7 @@ public class ClientProxy extends CommonProxy {
         FMLCommonHandler.instance()
             .bus()
             .register(GTNLInputHandler.INSTANCE);
+        MajoBroomInputHandler.register();
 
         MinecraftForge.EVENT_BUS.register(new DetravOreMarkerRenderer());
         MinecraftForge.EVENT_BUS.register(DETRAV_SCANNER_INPUT_HANDLER);
@@ -262,6 +267,8 @@ public class ClientProxy extends CommonProxy {
             new SaddleSlimeRender(new ModelSlime(16), new ModelSlime(0), 0.25f));
 
         RenderingRegistry.registerEntityRenderingHandler(EntityPlayerLeashKnot.class, new RenderLeashKnot());
+        RenderingRegistry.registerEntityRenderingHandler(EntityMajoBroom.class, new MajoBroomRender());
+        MinecraftForgeClient.registerItemRenderer(ItemLoader.majoBroom, new ItemMajoBroomRender());
 
         RenderingRegistry.registerEntityRenderingHandler(NullPointerException.class, new NullPointerExceptionRender());
         MinecraftForgeClient
