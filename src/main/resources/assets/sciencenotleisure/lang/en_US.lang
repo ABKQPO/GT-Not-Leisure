@@ -3705,6 +3705,7 @@ gtnl.potion.shimmering=Shimmering
 gtnl.recipe.shimmer=Shimmer Transformation
 
 gtnl.potion.ghostly_shape=Ghostly Shape
+gtnl.potion.miss_broom_blessing=Miss Broom's Blessing
 gtnl.effect.ghostly_shape.cancelled=One of your actions canceled the Ghostly Shape effect
 
 item.gtnl.infinity_cell.name=ME Infinity %s Storage Cell

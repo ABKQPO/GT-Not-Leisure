@@ -5,6 +5,7 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import java.util.List;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -12,6 +13,7 @@ import net.minecraft.world.World;
 
 import com.science.gtnl.common.entity.EntityElainaBroom;
 import com.science.gtnl.common.entity.EntityMajoBroom;
+import com.science.gtnl.loader.EffectLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.text.effect.TextEffects;
 
@@ -22,6 +24,13 @@ public class ItemElainaBroom extends ItemMajoBroom {
 
     public ItemElainaBroom() {
         super("elaina_broom", GTNLItemList.ElainaBroom);
+    }
+
+    @Override
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isSelected) {
+        super.onUpdate(stack, world, entity, slot, isSelected);
+        if (!world.isRemote && entity instanceof EntityPlayer player)
+            EntityElainaBroom.refreshEffect(player, EffectLoader.miss_broom_blessing, 0);
     }
 
     @Override

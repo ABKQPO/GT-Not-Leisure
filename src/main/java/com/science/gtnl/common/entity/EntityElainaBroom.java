@@ -6,6 +6,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 
+import com.science.gtnl.loader.EffectLoader;
 import com.science.gtnl.loader.ItemLoader;
 
 public class EntityElainaBroom extends EntityMajoBroom {
@@ -36,14 +37,15 @@ public class EntityElainaBroom extends EntityMajoBroom {
     public void onUpdate() {
         super.onUpdate();
         if (worldObj.isRemote || !(riddenByEntity instanceof EntityPlayer player)) return;
-        refreshEffect(player, Potion.resistance);
-        refreshEffect(player, Potion.regeneration);
+        refreshEffect(player, Potion.resistance, 1);
+        refreshEffect(player, Potion.regeneration, 1);
+        refreshEffect(player, EffectLoader.miss_broom_blessing, 0);
     }
 
-    public void refreshEffect(EntityPlayer player, Potion potion) {
+    public static void refreshEffect(EntityPlayer player, Potion potion, int amplifier) {
         PotionEffect current = player.getActivePotionEffect(potion);
-        if (current != null && (current.getAmplifier() > 1
-            || (current.getAmplifier() == 1 && current.getDuration() > EFFECT_REFRESH_THRESHOLD_TICKS))) return;
-        player.addPotionEffect(new PotionEffect(potion.id, EFFECT_DURATION_TICKS, 1));
+        if (current != null && (current.getAmplifier() > amplifier
+            || (current.getAmplifier() == amplifier && current.getDuration() > EFFECT_REFRESH_THRESHOLD_TICKS))) return;
+        player.addPotionEffect(new PotionEffect(potion.id, EFFECT_DURATION_TICKS, amplifier));
     }
 }
