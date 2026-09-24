@@ -17,6 +17,7 @@ gtnl.config.reload=Configuration file has been reloaded!
 
 gtnl.tooltip.add_mod=Add Mod: 
 gtnl.tooltip.change_mod=Change Mod: 
+gtnl.tooltip.author_by=Added by:
 gtnl.tooltip.no_mobs_spawn=Mobs cannot Spawn on this Block
 gtnl.tooltip.no_tile_entity_spawn=This is NOT a TileEntity!
 gtnl.tooltip.press_shift=§rHold §6Shift §rfor more information
@@ -4277,4 +4278,3 @@ gtnl.text_effect.title=Animated text effects
 gtnl.text_effect.palette=Change palette
 gtnl.text_effect.bold=Toggle bold
 gtnl.text_effect.italic=Toggle italic
-gtnl.author.by=Added by: 

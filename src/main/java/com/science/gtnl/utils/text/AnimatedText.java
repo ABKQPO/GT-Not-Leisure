@@ -139,7 +139,7 @@ public class AnimatedText {
         TextEffects.BURNISHED_AURIC);
 
     public static final Supplier<String> AUTHOR_LINEBROKE = AnimatedTooltipHandler.chain(
-        AnimatedTooltipHandler.translatedText("gtnl.author.by"),
+        AnimatedTooltipHandler.translatedText("gtnl.tooltip.author_by"),
         AnimatedTooltipHandler.renderedText(
             AnimatedTooltipHandler.BOLD + "LineBroke" + AnimatedTooltipHandler.RESET,
             TextEffects.NAMELESS_BOSS_BAR_SHADER));
