@@ -25,11 +25,12 @@ public final class MajoBroomModel {
     private static final String[] FACE_NAMES = { "north", "east", "south", "west", "up", "down" };
     private static final float[][] NORMALS = { { 0, 0, -1 }, { 1, 0, 0 }, { 0, 0, 1 }, { -1, 0, 0 }, { 0, 1, 0 },
         { 0, -1, 0 } };
-    public static final MajoBroomModel INSTANCE = new MajoBroomModel();
+    public static final MajoBroomModel INSTANCE = new MajoBroomModel("majo_broom.json");
+    public static final MajoBroomModel ELAINA_INSTANCE = new MajoBroomModel("elaina_broom.json");
     private final List<Element> elements = new ArrayList<>();
 
-    private MajoBroomModel() {
-        String path = "/assets/sciencenotleisure/models/entity/majo_broom.json";
+    private MajoBroomModel(String modelFile) {
+        String path = "/assets/sciencenotleisure/models/entity/" + modelFile;
         try (InputStream stream = MajoBroomModel.class.getResourceAsStream(path)) {
             if (stream == null) throw new IllegalStateException("Missing broom model: " + path);
             JsonObject root = new JsonParser().parse(new InputStreamReader(stream, StandardCharsets.UTF_8))

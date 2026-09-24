@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import com.science.gtnl.client.model.MajoBroomModel;
+import com.science.gtnl.common.entity.EntityElainaBroom;
 import com.science.gtnl.common.entity.EntityMajoBroom;
 
 import cpw.mods.fml.relauncher.Side;
@@ -19,6 +20,8 @@ public class MajoBroomRender extends Render {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(RESOURCE_ROOT_ID,
         "textures/entity/majo_broom.png");
+    private static final ResourceLocation ELAINA_TEXTURE = new ResourceLocation(RESOURCE_ROOT_ID,
+        "textures/entity/elaina_broom.png");
 
     public MajoBroomRender() {
         shadowSize = 0.4F;
@@ -35,12 +38,16 @@ public class MajoBroomRender extends Render {
             GL11.glTranslatef(0.0F, -0.2F, 0.0F);
         }
         bindEntityTexture(entity);
-        MajoBroomModel.INSTANCE.render();
+        if (entity instanceof EntityElainaBroom) {
+            MajoBroomModel.ELAINA_INSTANCE.render();
+        } else {
+            MajoBroomModel.INSTANCE.render();
+        }
         GL11.glPopMatrix();
     }
 
     @Override
     protected ResourceLocation getEntityTexture(Entity entity) {
-        return TEXTURE;
+        return entity instanceof EntityElainaBroom ? ELAINA_TEXTURE : TEXTURE;
     }
 }

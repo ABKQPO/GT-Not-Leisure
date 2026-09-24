@@ -4313,6 +4313,7 @@ item.gtnl.majo_robe.tooltip.4=When health falls below 10:
 item.gtnl.majo_robe.tooltip.5=Regeneration V and Resistance III for 15 seconds
 item.gtnl.majo_robe.tooltip.6=Cooldown: 60 seconds
 item.gtnl.majo_broom.name=Magic Broom
+item.gtnl.elaina_broom.name=Elaina's Broom
 key.categories.gtnl=GTNL
 key.gtnl.majo_broom.place=Place Magic Broom
 key.gtnl.majo_broom.ride=Place and Ride Magic Broom

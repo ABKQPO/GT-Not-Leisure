@@ -57,6 +57,7 @@ import com.science.gtnl.common.block.blocks.tile.TileEntitySuperDualInterface;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperInterface;
 import com.science.gtnl.common.block.blocks.tile.TileEntityWaterCandle;
 import com.science.gtnl.common.command.CommandSpoce;
+import com.science.gtnl.common.entity.EntityElainaBroom;
 import com.science.gtnl.common.entity.EntityMajoBroom;
 import com.science.gtnl.common.entity.EntityParticleBeam;
 import com.science.gtnl.common.entity.EntityPlayerLeashKnot;
@@ -268,6 +269,7 @@ public class ClientProxy extends CommonProxy {
 
         RenderingRegistry.registerEntityRenderingHandler(EntityPlayerLeashKnot.class, new RenderLeashKnot());
         RenderingRegistry.registerEntityRenderingHandler(EntityMajoBroom.class, new MajoBroomRender());
+        RenderingRegistry.registerEntityRenderingHandler(EntityElainaBroom.class, new MajoBroomRender());
         MinecraftForgeClient.registerItemRenderer(ItemLoader.majoBroom, new ItemMajoBroomRender());
 
         RenderingRegistry.registerEntityRenderingHandler(NullPointerException.class, new NullPointerExceptionRender());

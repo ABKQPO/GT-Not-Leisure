@@ -4313,6 +4313,7 @@ item.gtnl.majo_robe.tooltip.4=生命值低于10时：
 item.gtnl.majo_robe.tooltip.5=获得15秒生命恢复V与抗性提升III
 item.gtnl.majo_robe.tooltip.6=冷却时间：60秒
 item.gtnl.majo_broom.name=魔法扫帚
+item.gtnl.elaina_broom.name=伊蕾娜的扫帚
 key.categories.gtnl=GTNL
 key.gtnl.majo_broom.place=放置魔法扫帚
 key.gtnl.majo_broom.ride=放置并骑乘魔法扫帚

@@ -17,17 +17,28 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemMajoBroom extends Item {
 
+    private final String broomName;
+
     public ItemMajoBroom() {
-        setUnlocalizedName("gtnl.majo_broom");
+        this("majo_broom", GTNLItemList.MajoBroom);
+    }
+
+    protected ItemMajoBroom(String broomName, GTNLItemList itemList) {
+        this.broomName = broomName;
+        setUnlocalizedName("gtnl." + broomName);
         setMaxStackSize(1);
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "majo_broom");
-        GTNLItemList.MajoBroom.set(new ItemStack(this));
+        GameRegistry.registerItem(this, broomName);
+        itemList.set(new ItemStack(this));
     }
 
     @Override
     public String getUnlocalizedName() {
-        return "item.gtnl.majo_broom";
+        return "item.gtnl." + broomName;
+    }
+
+    protected EntityMajoBroom createBroom(World world) {
+        return new EntityMajoBroom(world);
     }
 
     @Override
@@ -58,7 +69,7 @@ public class ItemMajoBroom extends Item {
     public boolean place(ItemStack stack, EntityPlayer player, World world, double x, double y, double z,
         boolean ride) {
         if (stack == null || stack.getItem() != this || player.ridingEntity != null) return false;
-        EntityMajoBroom broom = new EntityMajoBroom(world);
+        EntityMajoBroom broom = createBroom(world);
         broom.setPosition(x, y, z);
         broom.rotationYaw = player.rotationYaw;
         broom.setBroomStack(stack);

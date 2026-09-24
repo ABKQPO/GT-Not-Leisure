@@ -27,10 +27,6 @@ public class EntityMajoBroom extends Entity {
     private static final double GRAVITY = 0.03D;
     private static final double ASCEND_THRUST = 0.09D;
     private static final double DESCEND_THRUST = 0.03D;
-    private static final double ACTIVE_POSITION_ERROR = 4.0D;
-    private static final double IDLE_HORIZONTAL_ERROR = 1.0D;
-    private static final double IDLE_VERTICAL_ERROR = 0.75D;
-    private static final double POSITION_CORRECTION_RESPONSE = 0.2D;
     private static final int FLIGHT_EXHAUSTED_WATCHER = 20;
     private static final float MAX_TURN_DEGREES_PER_TICK = 3.5F;
     private static final float TURN_ACCELERATION = 0.7F;
@@ -53,13 +49,24 @@ public class EntityMajoBroom extends Entity {
     private double targetZ;
     private float targetYaw;
     private float targetPitch;
-    private boolean hasServerPosition;
 
     public EntityMajoBroom(World world) {
         super(world);
         setSize(0.7F, 0.4F);
         yOffset = 0.0F;
         preventEntitySpawning = true;
+    }
+
+    protected boolean hasUnlimitedFlight() {
+        return false;
+    }
+
+    protected double getMaxHorizontalSpeed() {
+        return MAX_HORIZONTAL_SPEED;
+    }
+
+    protected ItemStack getDefaultBroomStack() {
+        return new ItemStack(ItemLoader.majoBroom);
     }
 
     public void setBroomStack(ItemStack stack) {
@@ -110,15 +117,14 @@ public class EntityMajoBroom extends Entity {
             verticalInput = 0;
             hoverIdleTicks = 0;
             motionX = motionY = motionZ = 0.0D;
-            hasServerPosition = false;
         }
         updateVisualPitch(posX - oldX, posY - oldY, posZ - oldZ);
-        if (localRider != null) reconcileServerPosition(localRider);
     }
 
     private void simulateMotion(Entity rider) {
-        boolean flightAvailable = worldObj.isRemote ? dataWatcher.getWatchableObjectByte(FLIGHT_EXHAUSTED_WATCHER) == 0
-            : flightTicks < MAX_FLIGHT_TICKS;
+        boolean flightAvailable = hasUnlimitedFlight()
+            || (worldObj.isRemote ? dataWatcher.getWatchableObjectByte(FLIGHT_EXHAUSTED_WATCHER) == 0
+                : flightTicks < MAX_FLIGHT_TICKS);
         boolean canFly = rider instanceof EntityPlayer && flightAvailable;
         boolean supported = isSupportedByGround();
         if (canFly && verticalInput == 0) {
@@ -153,7 +159,8 @@ public class EntityMajoBroom extends Entity {
                 flightTicks = 0;
                 dataWatcher.updateObject(FLIGHT_EXHAUSTED_WATCHER, Byte.valueOf((byte) 0));
             }
-        } else if (!worldObj.isRemote && rider instanceof EntityPlayer && flightTicks < MAX_FLIGHT_TICKS) {
+        } else if (!worldObj.isRemote && !hasUnlimitedFlight() && rider instanceof EntityPlayer
+            && flightTicks < MAX_FLIGHT_TICKS) {
             if (++flightTicks == MAX_FLIGHT_TICKS) {
                 dataWatcher.updateObject(FLIGHT_EXHAUSTED_WATCHER, Byte.valueOf((byte) 1));
             }
@@ -162,16 +169,12 @@ public class EntityMajoBroom extends Entity {
 
     @Override
     public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch, int steps) {
+        if (riddenByEntity instanceof EntityPlayer player && player.isClientWorld()) return;
         targetX = x;
         targetY = y;
         targetZ = z;
         targetYaw = yaw;
         targetPitch = pitch;
-        if (riddenByEntity instanceof EntityPlayer player && player.isClientWorld()) {
-            hasServerPosition = true;
-            interpolationSteps = 0;
-            return;
-        }
         interpolationSteps = Math.max(1, steps);
     }
 
@@ -187,26 +190,6 @@ public class EntityMajoBroom extends Entity {
         interpolationSteps--;
     }
 
-    private void reconcileServerPosition(EntityPlayer player) {
-        if (!hasServerPosition) return;
-        hasServerPosition = false;
-
-        double dx = targetX - posX;
-        double dy = targetY - posY;
-        double dz = targetZ - posZ;
-        boolean hasInput = Math.abs(player.moveForward) > 0.01F || Math.abs(player.moveStrafing) > 0.01F
-            || verticalInput != 0;
-        double horizontalThreshold = hasInput ? ACTIVE_POSITION_ERROR : IDLE_HORIZONTAL_ERROR;
-        double verticalThreshold = hasInput ? ACTIVE_POSITION_ERROR : IDLE_VERTICAL_ERROR;
-        boolean correctHorizontal = dx * dx + dz * dz > horizontalThreshold * horizontalThreshold;
-        boolean correctVertical = Math.abs(dy) > verticalThreshold;
-        if (!correctHorizontal && !correctVertical) return;
-
-        setPosition(posX + (correctHorizontal ? dx * POSITION_CORRECTION_RESPONSE : 0.0D),
-            posY + (correctVertical ? dy * POSITION_CORRECTION_RESPONSE : 0.0D),
-            posZ + (correctHorizontal ? dz * POSITION_CORRECTION_RESPONSE : 0.0D));
-    }
-
     private void updateHorizontalMotion(float forward) {
         forward = MathHelper.clamp_float(forward, -1.0F, 1.0F);
         if (Math.abs(forward) < 0.001F) {
@@ -219,8 +202,9 @@ public class EntityMajoBroom extends Entity {
         float yaw = rotationYaw * (float) Math.PI / 180.0F;
         float sin = MathHelper.sin(yaw);
         float cos = MathHelper.cos(yaw);
-        double targetX = -forward * sin * MAX_HORIZONTAL_SPEED;
-        double targetZ = forward * cos * MAX_HORIZONTAL_SPEED;
+        double maxSpeed = getMaxHorizontalSpeed();
+        double targetX = -forward * sin * maxSpeed;
+        double targetZ = forward * cos * maxSpeed;
         motionX += (targetX - motionX) * HORIZONTAL_RESPONSE;
         motionZ += (targetZ - motionZ) * HORIZONTAL_RESPONSE;
     }
@@ -246,7 +230,7 @@ public class EntityMajoBroom extends Entity {
         prevVisualPitch = visualPitch;
         float yaw = rotationYaw * (float) Math.PI / 180.0F;
         double forwardStep = -horizontalX * MathHelper.sin(yaw) + horizontalZ * MathHelper.cos(yaw);
-        float forwardPitch = MathHelper.clamp_float((float) (forwardStep / MAX_HORIZONTAL_SPEED), -1.0F, 1.0F)
+        float forwardPitch = MathHelper.clamp_float((float) (forwardStep / getMaxHorizontalSpeed()), -1.0F, 1.0F)
             * MAX_FORWARD_VISUAL_PITCH;
         float targetPitch = MathHelper.clamp_float(
             (float) verticalStep * VISUAL_PITCH_PER_VERTICAL_SPEED - forwardPitch, -MAX_VISUAL_PITCH,
@@ -260,9 +244,10 @@ public class EntityMajoBroom extends Entity {
 
     private void limitHorizontalSpeed() {
         double speedSquared = motionX * motionX + motionZ * motionZ;
-        double limitSquared = MAX_HORIZONTAL_SPEED * MAX_HORIZONTAL_SPEED;
+        double maxSpeed = getMaxHorizontalSpeed();
+        double limitSquared = maxSpeed * maxSpeed;
         if (speedSquared > limitSquared) {
-            double scale = MAX_HORIZONTAL_SPEED / Math.sqrt(speedSquared);
+            double scale = maxSpeed / Math.sqrt(speedSquared);
             motionX *= scale;
             motionZ *= scale;
         }
@@ -310,7 +295,7 @@ public class EntityMajoBroom extends Entity {
     }
 
     private void recover(EntityPlayer player) {
-        ItemStack result = broomStack == null ? new ItemStack(ItemLoader.majoBroom) : broomStack.copy();
+        ItemStack result = broomStack == null ? getDefaultBroomStack() : broomStack.copy();
         if (!player.inventory.addItemStackToInventory(result)) entityDropItem(result, 0.0F);
         setDead();
     }
