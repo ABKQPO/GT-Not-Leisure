@@ -20,6 +20,7 @@ public class MajoArmorHandler {
 
     private static final UUID HEALTH_BONUS_ID = UUID.fromString("45cb6540-2701-487b-863f-8908d529bf26");
     private static final UUID KNOCKBACK_BONUS_ID = UUID.fromString("29d935ba-3ae3-4300-8cba-b3bb95287792");
+    private static final UUID TRAVELER_HEALTH_BONUS_ID = UUID.fromString("6ab9847c-96a6-4e8a-a109-a65c7d2c7898");
     private static final AttributeModifier HEALTH_BONUS = new AttributeModifier(
         HEALTH_BONUS_ID,
         "Majo robe maximum health",
@@ -30,9 +31,17 @@ public class MajoArmorHandler {
         "Majo robe knockback resistance",
         1.0D,
         0);
+    private static final AttributeModifier TRAVELER_HEALTH_BONUS = new AttributeModifier(
+        TRAVELER_HEALTH_BONUS_ID,
+        "Majo traveler maximum health",
+        80.0D,
+        0);
     private static final String COOLDOWN_TAG = "GTNLMajoRobeCooldown";
+    private static final String TRAVELER_ACTIVE_TAG = "GTNLMajoTravelerActive";
+    private static final String TRAVELER_FLIGHT_TAG = "GTNLMajoTravelerFlight";
     private static final int EMERGENCY_COOLDOWN = 60 * 20;
     private static final int EMERGENCY_DURATION = 15 * 20;
+    private static final int TRAVELER_EFFECT_DURATION = 60;
 
     @SubscribeEvent
     public void onLivingUpdate(LivingUpdateEvent event) {
@@ -46,15 +55,22 @@ public class MajoArmorHandler {
         ItemStack robe = player.getCurrentArmor(2);
         boolean wearingHat = hat != null && hat.getItem() instanceof MajoHat;
         boolean wearingRobe = robe != null && robe.getItem() instanceof MajoRobe;
+        String playerName = player.getGameProfile()
+            .getName();
+        boolean travelerSet = wearingHat && wearingRobe
+            && ("DreamYao520".equals(playerName) || "SereiaWe".equals(playerName));
 
         updateModifier(player.getEntityAttribute(SharedMonsterAttributes.maxHealth), HEALTH_BONUS, wearingRobe);
+        updateModifier(player.getEntityAttribute(SharedMonsterAttributes.maxHealth), TRAVELER_HEALTH_BONUS, travelerSet);
         updateModifier(
             player.getEntityAttribute(SharedMonsterAttributes.knockbackResistance),
             KNOCKBACK_BONUS,
             wearingRobe);
-        if (!wearingRobe && player.getHealth() > player.getMaxHealth()) {
+        if (player.getHealth() > player.getMaxHealth()) {
             player.setHealth(player.getMaxHealth());
         }
+
+        updateTravelerSet(player, data, travelerSet);
 
         if (wearingHat) {
             player.removePotionEffect(Potion.blindness.id);
@@ -79,6 +95,48 @@ public class MajoArmorHandler {
             .getInteger(COOLDOWN_TAG);
         if (cooldown > 0) event.entityPlayer.getEntityData()
             .setInteger(COOLDOWN_TAG, cooldown);
+        if (!event.wasDeath) {
+            NBTTagCompound originalData = event.original.getEntityData();
+            NBTTagCompound newData = event.entityPlayer.getEntityData();
+            if (originalData.getBoolean(TRAVELER_ACTIVE_TAG)) newData.setBoolean(TRAVELER_ACTIVE_TAG, true);
+            if (originalData.getBoolean(TRAVELER_FLIGHT_TAG)) newData.setBoolean(TRAVELER_FLIGHT_TAG, true);
+        }
+    }
+
+    private static void updateTravelerSet(EntityPlayer player, NBTTagCompound data, boolean enabled) {
+        if (enabled) {
+            data.setBoolean(TRAVELER_ACTIVE_TAG, true);
+            if (!player.capabilities.allowFlying) {
+                player.capabilities.allowFlying = true;
+                data.setBoolean(TRAVELER_FLIGHT_TAG, true);
+                player.sendPlayerAbilities();
+            }
+            refreshEffect(player, Potion.resistance, 4, TRAVELER_EFFECT_DURATION);
+            refreshEffect(player, Potion.damageBoost, 19, TRAVELER_EFFECT_DURATION);
+            refreshEffect(player, Potion.waterBreathing, 0, TRAVELER_EFFECT_DURATION);
+            refreshEffect(player, Potion.regeneration, 4, TRAVELER_EFFECT_DURATION);
+            return;
+        }
+        if (!data.getBoolean(TRAVELER_ACTIVE_TAG)) return;
+        data.removeTag(TRAVELER_ACTIVE_TAG);
+        removeTravelerEffect(player, Potion.resistance, 4);
+        removeTravelerEffect(player, Potion.damageBoost, 19);
+        removeTravelerEffect(player, Potion.waterBreathing, 0);
+        removeTravelerEffect(player, Potion.regeneration, 4);
+        if (data.getBoolean(TRAVELER_FLIGHT_TAG)) {
+            data.removeTag(TRAVELER_FLIGHT_TAG);
+            if (!player.capabilities.isCreativeMode) {
+                player.capabilities.allowFlying = false;
+                player.capabilities.isFlying = false;
+                player.sendPlayerAbilities();
+            }
+        }
+    }
+
+    private static void removeTravelerEffect(EntityPlayer player, Potion potion, int amplifier) {
+        PotionEffect current = player.getActivePotionEffect(potion);
+        if (current != null && current.getAmplifier() == amplifier
+            && current.getDuration() <= TRAVELER_EFFECT_DURATION) player.removePotionEffect(potion.id);
     }
 
     private static void updateModifier(IAttributeInstance attribute, AttributeModifier modifier, boolean enabled) {
