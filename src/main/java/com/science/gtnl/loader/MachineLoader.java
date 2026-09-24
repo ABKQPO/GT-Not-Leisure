@@ -4839,12 +4839,9 @@ public class MachineLoader {
                 "SmallEssentiaSmelteryHV",
                 StatCollector.translateToLocal("gtnl.machine.small_essentia_smeltery.hv.name"),
                 3));
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SmallEssentiaSmelteryLV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SmallEssentiaSmelteryMV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
-        AnimatedTooltipHandler
-            .addItemTooltip(GTNLItemList.SmallEssentiaSmelteryHV.get(1), AnimatedText.SCIENCE_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallEssentiaSmelteryLV.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallEssentiaSmelteryMV.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallEssentiaSmelteryHV.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyTransferNode.set(
             new EnergyTransferNode(
