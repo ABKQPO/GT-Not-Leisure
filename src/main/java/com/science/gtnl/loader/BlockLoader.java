@@ -127,7 +127,6 @@ public class BlockLoader {
         multiEssentiaJar = new BlockMultiEssentiaJar();
         multiEssentiaTube = new BlockMultiEssentiaTube();
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EssentiaHatch.get(1), AnimatedText.GT_NOT_LEISURE);
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EssentiaHatch.get(1), AnimatedText.AUTHOR_LINEBROKE);
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.MultiEssentiaInputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
         AnimatedTooltipHandler
             .addItemTooltip(GTNLItemList.MultiEssentiaInputHatch.get(1), AnimatedText.AUTHOR_LINEBROKE);

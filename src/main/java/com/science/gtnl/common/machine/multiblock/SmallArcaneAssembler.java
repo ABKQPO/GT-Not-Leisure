@@ -3,6 +3,8 @@ package com.science.gtnl.common.machine.multiblock;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.recipe.gtnl.ShapedArcaneCraftingRecipes.ARCANE_RESEARCH;
 import static com.science.gtnl.common.recipe.gtnl.ShapedArcaneCraftingRecipes.ARCANE_VIS;
+import static thaumcraft.common.config.ConfigBlocks.blockCosmeticOpaque;
+import static thaumcraft.common.config.ConfigBlocks.blockCosmeticSolid;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +34,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
-import goodgenerator.loader.Loaders;
+import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -67,8 +69,8 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
     private static final String STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":multiblock/small_arcane_assembler";
     private static final String[][] SHAPE = StructureUtils.readStructureFromFile(STRUCTURE_FILE_PATH);
 
-    private static final int HORIZONTAL_OFFSET = 1;
-    private static final int VERTICAL_OFFSET = 1;
+    private static final int HORIZONTAL_OFFSET = 2;
+    private static final int VERTICAL_OFFSET = 3;
     private static final int DEPTH_OFFSET = 0;
     private static final int CASING_TEXTURE_ID = 1536;
     private static final int RESEARCH_REFRESH_INTERVAL = 100;
@@ -120,9 +122,10 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
                         .casingIndex(getCasingTextureID())
                         .hint(1)
                         .build(),
-                    StructureUtility.onElementPass(
-                        machine -> ++machine.mCountCasing,
-                        StructureUtility.ofBlock(Loaders.magicCasing, 0))))
+                    StructureUtility.onElementPass(machine -> ++machine.mCountCasing, Casings.MagicCasing.asElement())))
+            .addElement('B', StructureUtility.ofBlock(blockCosmeticSolid, 7))
+            .addElement('C', Casings.AlchemicalConstructTiered.asElement())
+            .addElement('D', StructureUtility.ofBlock(blockCosmeticOpaque, 2))
             .build();
     }
 
@@ -655,11 +658,11 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
             .addInfo(StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.tooltip.2"))
             .addInfo(StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.tooltip.3"))
             .addInfo(StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.tooltip.4"))
-            .beginStructureBlock(3, 3, 3, true)
-            .addInputBus(StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.casing"), 1)
-            .addMaintenanceHatch(StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.casing"), 1)
+            .beginStructureBlock(5, 5, 7, true)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.casing"), 1)
             .toolTipFinisher();
         return tooltip;
     }

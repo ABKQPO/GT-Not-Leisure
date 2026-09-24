@@ -19,6 +19,7 @@ import com.science.gtnl.common.machine.basicMachine.HydraulicSuperBuffer;
 import com.science.gtnl.common.machine.basicMachine.LootBagRedemption;
 import com.science.gtnl.common.machine.basicMachine.ManaTank;
 import com.science.gtnl.common.machine.basicMachine.Replicator;
+import com.science.gtnl.common.machine.basicMachine.SmallEssentiaSmeltery;
 import com.science.gtnl.common.machine.basicMachine.SteamAssemblerBronze;
 import com.science.gtnl.common.machine.basicMachine.SteamAssemblerSteel;
 import com.science.gtnl.common.machine.basicMachine.SteamTurbine;
@@ -2136,6 +2137,7 @@ public class MachineLoader {
                 "SmallArcaneAssembler",
                 StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.name")));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallArcaneAssembler.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallArcaneAssembler.get(1), AnimatedText.AUTHOR_LINEBROKE);
 
         GTNLItemList.SuperInputBusME.set(
             new SuperInputBusME(
@@ -4819,6 +4821,34 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.machine.diesel_generator.hv.name"),
                 3));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.DieselGeneratorHV.get(1), AnimatedText.GT_NOT_LEISURE);
+
+        GTNLItemList.SmallEssentiaSmelteryLV.set(
+            new SmallEssentiaSmeltery(
+                GTNLMachineID.SMALL_ESSENTIA_SMELTERY_LV.ID,
+                "SmallEssentiaSmelteryLV",
+                StatCollector.translateToLocal("gtnl.machine.small_essentia_smeltery.lv.name"),
+                1));
+        GTNLItemList.SmallEssentiaSmelteryMV.set(
+            new SmallEssentiaSmeltery(
+                GTNLMachineID.SMALL_ESSENTIA_SMELTERY_MV.ID,
+                "SmallEssentiaSmelteryMV",
+                StatCollector.translateToLocal("gtnl.machine.small_essentia_smeltery.mv.name"),
+                2));
+        GTNLItemList.SmallEssentiaSmelteryHV.set(
+            new SmallEssentiaSmeltery(
+                GTNLMachineID.SMALL_ESSENTIA_SMELTERY_HV.ID,
+                "SmallEssentiaSmelteryHV",
+                StatCollector.translateToLocal("gtnl.machine.small_essentia_smeltery.hv.name"),
+                3));
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallEssentiaSmelteryLV.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.SmallEssentiaSmelteryLV.get(1), AnimatedText.AUTHOR_LINEBROKE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallEssentiaSmelteryMV.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.SmallEssentiaSmelteryMV.get(1), AnimatedText.AUTHOR_LINEBROKE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallEssentiaSmelteryHV.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.SmallEssentiaSmelteryHV.get(1), AnimatedText.AUTHOR_LINEBROKE);
 
         GTNLItemList.EnergyTransferNode.set(
             new EnergyTransferNode(

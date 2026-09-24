@@ -27,15 +27,14 @@ public class InfusionCraftingRecipes implements IRecipePool {
     public static final RecipeMetadataKey<String> INFUSION_RESEARCH = SimpleRecipeMetadataKey
         .create(String.class, "gtnl_infusion_research");
 
-    private static ItemStack[] createInputs(TCRecipeTools.InfusionCraftingRecipe recipe) {
+    private static Object[] createInputs(TCRecipeTools.InfusionCraftingRecipe recipe) {
         ItemStack[] inputs = TCRecipeTools.checkInputSpecial(recipe.getInputItem());
-        if (!COSMETIC_SOLID_OUTPUT.equals(ItemId.create(recipe.getOutput()))) {
-            return inputs;
+        if (COSMETIC_SOLID_OUTPUT.equals(ItemId.create(recipe.getOutput()))) {
+            inputs = Arrays.copyOf(inputs, inputs.length + 1);
+            inputs[inputs.length - 1] = GTUtility.getIntegratedCircuit(11);
         }
 
-        ItemStack[] separatedInputs = Arrays.copyOf(inputs, inputs.length + 1);
-        separatedInputs[inputs.length] = GTUtility.getIntegratedCircuit(11);
-        return separatedInputs;
+        return TCRecipeTools.toGTInputs(inputs);
     }
 
     @Override

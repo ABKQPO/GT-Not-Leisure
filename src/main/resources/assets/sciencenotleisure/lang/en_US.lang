@@ -3124,6 +3124,15 @@ gtnl.hatch.wireless_vacuum_conveyor.output.info.linked_input=Linked input: %d, %
 BW_ExtraGlass.6.name=Shirabon Reinforced Borosilicate Glass Block
 BW_ExtraGlass.7.name=Quark Gluon Plasma Reinforced Borosilicate Glass Block
 
+gtnl.machine.small_essentia_smeltery.lv.name=Basic Electric Alchemical Furnace
+gtnl.machine.small_essentia_smeltery.mv.name=Advanced Electric Alchemical Furnace
+gtnl.machine.small_essentia_smeltery.hv.name=Advanced Electric Alchemical Furnace II
+gtnl.machine.small_essentia_smeltery.tooltip.0=Dynamically resolves item aspects using the Large Essentia Smeltery behavior
+gtnl.machine.small_essentia_smeltery.tooltip.1=Base usage is 30 EU/t and 32 ticks per essentia, with standard overclocking
+gtnl.machine.small_essentia_smeltery.tooltip.2=Outputs essentia through the configurable output face into an adjacent transport or container
+gtnl.machine.small_essentia_smeltery.tooltip.3=Internal essentia buffer: %s
+gtnl.gui.small_essentia_smeltery.output=Output Essentia:
+
 gtnl.block.meta_casing.0.name=Test Casing
 gtnl.block.meta_casing.1.name=Steam Assembly Casing
 gtnl.block.meta_casing.2.name=Heat Sink
