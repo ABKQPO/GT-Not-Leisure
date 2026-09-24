@@ -1,5 +1,7 @@
 package com.science.gtnl.common.item.items;
 
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -44,7 +46,7 @@ public class ItemMajoBroom extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register) {
-        itemIcon = register.registerIcon("minecraft:stick");
+        itemIcon = register.registerIcon(RESOURCE_ROOT_ID + ":" + broomName);
     }
 
     @Override
