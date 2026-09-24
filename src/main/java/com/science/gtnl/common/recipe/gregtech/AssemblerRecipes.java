@@ -958,7 +958,7 @@ public class AssemblerRecipes implements IRecipePool {
             .duration(300)
             .eut(7680)
             .addTo(As)
-            .addTo(HOR);;
+            .addTo(HOR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -974,7 +974,7 @@ public class AssemblerRecipes implements IRecipePool {
             .duration(300)
             .eut(7680)
             .addTo(As)
-            .addTo(HOR);;
+            .addTo(HOR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -2138,7 +2138,7 @@ public class AssemblerRecipes implements IRecipePool {
             .duration(300)
             .eut(TierEU.EV)
             .addTo(As)
-            .addTo(HOR);;
+            .addTo(HOR);
 
         RecipeBuilder.builder()
             .itemInputs(

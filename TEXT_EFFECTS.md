@@ -27,11 +27,19 @@ Sign lines in Minecraft 1.7.10 allow only 15 characters, including formatting de
 | `ba` | `burnished_auric` |
 | `ec` | `evercold_cyan` |
 | `ss` | `starsilver_rarity` |
+| `nr` | `nebula_rift` |
+| `ps` | `prismatic_scan` |
+| `qg` | `quantum_glitch` |
+| `mc` | `molten_core` |
 
 ```text
 &{ba}GOLD
 &{pu}&oHello
 &{ba;#fc0;2}Hi
+&{nr}Nebula Rift
+&{ps}Prismatic Scan
+&{qg}Quantum Glitch
+&{mc}Molten Core
 ```
 
 The last example uses `#FFCC00` at twice the normal speed and occupies 14 characters. Positional colors start with `#`; a positional number sets speed. Named options accept `c` for `colors` and `s` for `speed`, for example `&{ba;c=fc0;s=2}Hi`. Colors accept three or six hexadecimal digits, with up to eight comma-separated entries. Speed must be finite and nonnegative; zero freezes animation. Duplicate and unknown options are rejected.

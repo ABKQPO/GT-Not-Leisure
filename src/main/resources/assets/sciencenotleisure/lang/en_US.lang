@@ -3743,6 +3743,31 @@ item.gtnl.electric_prospector_tool.0.name=Mana Teleport Prospector Tool
 item.gtnl.electric_prospector_tool.1.name=Debug Teleport Prospector Tool
 item.gtnl.detrav_scanner.teleport_to_vein=Teleport to vein: %s (%s, %s)
 
+detrav.scanner.mode.0=Set Mode: Ores
+detrav.scanner.mode.1=Set Mode: Ores and Small Ores
+detrav.scanner.mode.2=Set Mode: Underground Fluids
+detrav.scanner.mode.3=Set Mode: Pollution
+detrav.scanner.mode.error=Set Mode: ERROR
+detrav.scanner.found.texts.0=Found nothing of interest
+detrav.scanner.found.texts.1= §8traces§r.
+detrav.scanner.found.texts.2= §7small sample§r.
+detrav.scanner.found.texts.3= §2medium sample§r.
+detrav.scanner.found.texts.4= §elarge sample§r.
+detrav.scanner.found.texts.5= §dvery large sample§r.
+detrav.scanner.found.texts.6=Found %s
+detrav.scanner.prospecting=Prospecting at
+gui.detrav.scanner.pollution=Pollution
+gui.detrav.scanner.gibbl=gibbl
+gui.detrav.scanner.unknown_fluid=Unknown Fluid name!
+gui.detrav.scanner.tooltip.fluid_name=Fluid Name: %s
+gui.detrav.scanner.tooltip.fluid_amount=Fluid Amount: %s L
+gui.detrav.scanner.tooltip.no_fluid=Empty
+gui.detrav.scanner.tooltip.ore_pos=X: %d, Z: %d
+gui.detrav.scanner.tooltip.ore_depth=Y: %d
+gui.detrav.scanner.tooltip.mark_hint=Right-click to mark
+gui.detrav.scanner.search.hint=Search...
+gui.detrav.scanner.hint.invert=Double-click to invert background
+
 item.gtnl.slime_saddle.name=Slime Saddle
 entity.sciencenotleisure.SaddleSlime.name=Royal Slime
 

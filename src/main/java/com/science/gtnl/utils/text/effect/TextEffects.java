@@ -16,9 +16,14 @@ public class TextEffects {
     public static final TextEffectStyle EXOTIC_RAINBOW = preset("exotic_rainbow");
     public static final TextEffectStyle SUPERBOSS_RARITY = preset("superboss_rarity");
     public static final TextEffectStyle INFERNUM_SPARK_RARITY = preset("infernum_spark_rarity");
+    public static final TextEffectStyle INFERNUM_CYAN_SPARK = preset("infernum_cyan_spark");
     public static final TextEffectStyle BURNISHED_AURIC = preset("burnished_auric");
     public static final TextEffectStyle EVERCOLD_CYAN = preset("evercold_cyan");
     public static final TextEffectStyle STARSILVER_RARITY = preset("starsilver_rarity");
+    public static final TextEffectStyle NEBULA_RIFT = preset("nebula_rift");
+    public static final TextEffectStyle PRISMATIC_SCAN = preset("prismatic_scan");
+    public static final TextEffectStyle QUANTUM_GLITCH = preset("quantum_glitch");
+    public static final TextEffectStyle MOLTEN_CORE = preset("molten_core");
 
     private TextEffects() {}
 

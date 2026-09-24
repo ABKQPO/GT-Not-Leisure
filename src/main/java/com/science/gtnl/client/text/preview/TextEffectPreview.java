@@ -114,7 +114,7 @@ public class TextEffectPreview extends GuiScreen {
         for (int i = page * PAGE_SIZE; i < Math.min(entries.size(), (page + 1) * PAGE_SIZE); i++) {
             Entry entry = entries.get(i);
             TextEffectStyle preset = entry.style();
-            TextEffectStyle style = customPalette ? preset.withColors(0x33CCFF, 0xFFAA33, 0xDD77FF) : preset;
+            TextEffectStyle style = customPalette ? customPalette(preset) : preset;
             String name = fontRendererObj.trimStringToWidth(entry.label(), textX - 30);
             fontRendererObj.drawString(name, 18, (int) y, 0xB0B0B0);
             String rendered = TextEffects.format(style) + value;
@@ -133,6 +133,14 @@ public class TextEffectPreview extends GuiScreen {
                 + " + plain";
             fontRendererObj.drawSplitString(mixed, 18, (int) y, width - 36, 0xFFFFFF);
         }
+    }
+
+    private static TextEffectStyle customPalette(TextEffectStyle preset) {
+        if (preset.rendererId()
+            .equals(TextEffects.INFERNUM_CYAN_SPARK.rendererId())) {
+            return preset.withColors(0x33CCFF, 0xFFAA33, 0xDD77FF, 0x66FFCC);
+        }
+        return preset.withColors(0x33CCFF, 0xFFAA33, 0xDD77FF);
     }
 
     private static String effectName(TextEffectStyle style) {

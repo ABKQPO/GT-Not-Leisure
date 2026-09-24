@@ -15,15 +15,23 @@ import org.lwjgl.opengl.GL11;
 import com.gtnewhorizon.gtnhlib.util.CoordinatePacker;
 import com.science.gtnl.common.packet.ProspectingPacket;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.util.GTUtility;
 
+@SideOnly(Side.CLIENT)
 public class DetravMapTexture extends AbstractTexture {
 
+    public static final String ALL_ORES = "All";
+
     public final ProspectingPacket packet;
-    private String selected = "All";
     public int width = -1;
     public int height = -1;
     public boolean invert;
+
+    private String selected = ALL_ORES;
+    private short[] topId;
+    private int[] topY;
 
     public DetravMapTexture(ProspectingPacket packet) {
         this.packet = packet;
@@ -33,6 +41,9 @@ public class DetravMapTexture extends AbstractTexture {
         int backgroundColor = invert ? Color.GRAY.getRGB() : Color.WHITE.getRGB();
         int blockSize = packet.getSize();
         int chunkSize = packet.size * 2 + 1;
+
+        topId = null;
+        topY = null;
 
         BufferedImage image = new BufferedImage(blockSize, blockSize, BufferedImage.TYPE_INT_ARGB);
         WritableRaster raster = image.getRaster();
@@ -74,62 +85,75 @@ public class DetravMapTexture extends AbstractTexture {
 
     private void drawOreTexture(BufferedImage image, int blockSize) {
         short[] depth = new short[blockSize * blockSize];
-        Arrays.fill(depth, (short) 0);
+        Arrays.fill(depth, (short) -1);
 
-        short selectedId = -1;
-        if (!"All".equals(selected)) {
-            for (var entry : packet.objects.short2ObjectEntrySet()) {
-                if (selected.equals(
-                    entry.getValue()
-                        .left())) {
-                    selectedId = entry.getShortKey();
-                    break;
-                }
-            }
-        }
+        topId = new short[blockSize * blockSize];
+        Arrays.fill(topId, (short) -1);
+        topY = new int[blockSize * blockSize];
+
+        short selectedId = findSelectedObjectId();
 
         for (var entry : packet.map.long2ShortEntrySet()) {
             if (selectedId != -1 && selectedId != entry.getShortValue()) {
                 continue;
             }
-            long coord = entry.getLongKey();
-            int x = CoordinatePacker.unpackX(coord);
-            int y = CoordinatePacker.unpackY(coord);
-            int z = CoordinatePacker.unpackZ(coord);
+
+            long coordinate = entry.getLongKey();
+            int x = CoordinatePacker.unpackX(coordinate);
+            int y = CoordinatePacker.unpackY(coordinate);
+            int z = CoordinatePacker.unpackZ(coordinate);
             int index = x + z * blockSize;
             if (y < depth[index]) {
                 continue;
             }
             depth[index] = (short) y;
+
+            topId[index] = entry.getShortValue();
+            topY[index] = y;
             image.setRGB(x, z, packet.getObjectColor(entry.getShortValue()));
         }
     }
 
     private void drawFluidTexture(BufferedImage image, int chunkSize) {
+        int maxAmount = 1;
         for (int chunkZ = 0; chunkZ < chunkSize; chunkZ++) {
             for (int chunkX = 0; chunkX < chunkSize; chunkX++) {
+                if (!matchesFilter(chunkX, chunkZ)) {
+                    continue;
+                }
+                maxAmount = Math.max(maxAmount, packet.getAmount(chunkX, chunkZ));
+            }
+        }
+
+        for (int chunkZ = 0; chunkZ < chunkSize; chunkZ++) {
+            for (int chunkX = 0; chunkX < chunkSize; chunkX++) {
+                if (!matchesFilter(chunkX, chunkZ)) {
+                    continue;
+                }
                 int amount = packet.getAmount(chunkX, chunkZ);
                 if (amount <= 0) {
                     continue;
                 }
-                short objectId = packet.map.get(CoordinatePacker.pack(chunkX, 0, chunkZ));
-                if (!packet.objects.containsKey(objectId)) {
-                    continue;
-                }
-                String name = packet.getObjectName(objectId);
-                if (!"All".equals(selected) && !selected.equals(name)) {
-                    continue;
-                }
-                int color = packet.getObjectColor(objectId);
-                for (int x = 0; x < 16; x++) {
-                    for (int z = 0; z < 16; z++) {
-                        if ((x + z * 16) * 3 < amount + 48) {
-                            image.setRGB(chunkX * 16 + x, chunkZ * 16 + z, color);
-                        }
+
+                int objectId = packet.map.get(CoordinatePacker.pack(chunkX, 0, chunkZ));
+                int fill = Math.max(1, Math.round(16F * amount / maxAmount));
+
+                for (int y = 16 - fill; y < 16; y++) {
+                    for (int x = 0; x < 16; x++) {
+                        image.setRGB(chunkX * 16 + x, chunkZ * 16 + y, packet.getObjectColor((short) objectId));
                     }
                 }
             }
         }
+    }
+
+    private boolean matchesFilter(int chunkX, int chunkZ) {
+        int objectId = packet.map.get(CoordinatePacker.pack(chunkX, 0, chunkZ));
+        var object = packet.objects.get((short) objectId);
+        if (object == null) {
+            return false;
+        }
+        return ALL_ORES.equals(selected) || selected.equals(object.left());
     }
 
     private void drawPollutionTexture(WritableRaster raster, int chunkSize) {
@@ -157,6 +181,55 @@ public class DetravMapTexture extends AbstractTexture {
         }
     }
 
+    private short findSelectedObjectId() {
+        if (ALL_ORES.equals(selected)) {
+            return -1;
+        }
+        for (var entry : packet.objects.short2ObjectEntrySet()) {
+            if (selected.equals(
+                entry.getValue()
+                    .left())) {
+                return entry.getShortKey();
+            }
+        }
+        return -1;
+    }
+
+    public String getTopOreName(int x, int z) {
+        short objectId = getTopOreObjectId(x, z);
+        if (objectId < 0) {
+            return null;
+        }
+        var object = packet.objects.get(objectId);
+        return object == null ? null : object.left();
+    }
+
+    public int getTopOreY(int x, int z) {
+        int blockSize = packet.getSize();
+        if (topY == null || x < 0 || z < 0 || x >= blockSize || z >= blockSize) {
+            return 0;
+        }
+        return topY[x + z * blockSize];
+    }
+
+    public int getTopOreColor(int x, int z) {
+        short objectId = getTopOreObjectId(x, z);
+        return objectId < 0 ? 0 : packet.getObjectColor(objectId);
+    }
+
+    public String getTopOreMaterialName(int x, int z) {
+        short objectId = getTopOreObjectId(x, z);
+        return objectId < 0 ? "" : packet.getOreMaterialName(objectId);
+    }
+
+    private short getTopOreObjectId(int x, int z) {
+        int blockSize = packet.getSize();
+        if (topId == null || x < 0 || z < 0 || x >= blockSize || z >= blockSize) {
+            return -1;
+        }
+        return topId[x + z * blockSize];
+    }
+
     @Override
     public void loadTexture(IResourceManager resourceManager) {
         deleteGlTexture();
@@ -171,14 +244,14 @@ public class DetravMapTexture extends AbstractTexture {
         }
     }
 
-    public void loadTexture(IResourceManager resourceManager, boolean invert) {
-        this.invert = invert;
+    public void loadTexture(IResourceManager resourceManager, boolean inverted) {
+        this.invert = inverted;
         loadTexture(resourceManager);
     }
 
-    public void loadTexture(IResourceManager resourceManager, String selected, boolean invert) {
-        this.selected = selected;
-        loadTexture(resourceManager, invert);
+    public void loadTexture(IResourceManager resourceManager, String selection, boolean inverted) {
+        this.selected = selection;
+        loadTexture(resourceManager, inverted);
     }
 
     public int glBindTexture() {
@@ -190,14 +263,18 @@ public class DetravMapTexture extends AbstractTexture {
     }
 
     public void draw(int x, int y) {
-        float textureWidth = 1F / width;
-        float textureHeight = 1F / height;
+        draw(x, y, 1F);
+    }
+
+    public void draw(float x, float y, float scale) {
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV(x, y + height, 0, 0, height * textureHeight);
-        tessellator.addVertexWithUV(x + width, y + height, 0, width * textureWidth, height * textureHeight);
-        tessellator.addVertexWithUV(x + width, y, 0, width * textureWidth, 0);
-        tessellator.addVertexWithUV(x, y, 0, 0, 0);
+        float scaledWidth = width * scale;
+        float scaledHeight = height * scale;
+        tessellator.addVertexWithUV(x, y + scaledHeight, 0, 0F, 1F);
+        tessellator.addVertexWithUV(x + scaledWidth, y + scaledHeight, 0, 1F, 1F);
+        tessellator.addVertexWithUV(x + scaledWidth, y, 0, 1F, 0F);
+        tessellator.addVertexWithUV(x, y, 0, 0F, 0F);
         tessellator.draw();
     }
 }

@@ -78,6 +78,7 @@ public class ShaderTextEffect implements TextEffect {
         GL20.glUniform1f(shader.uniform("opacity"), (context.color() >>> 24) / 255f);
         GL20.glUniform1i(shader.uniform("shadowPass"), context.shadow() ? 1 : 0);
         configureUniforms(shader, context);
+        configureTextures(shader, context);
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, mask.target().framebufferTexture);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -108,6 +109,9 @@ public class ShaderTextEffect implements TextEffect {
 
     /** Supplies effect-specific uniforms after the shared draw parameters have been bound. */
     protected void configureUniforms(TextShader shader, TextRenderContext context) {}
+
+    /** Binds effect-specific textures after uniforms and before the mask quad is drawn. */
+    protected void configureTextures(TextShader shader, TextRenderContext context) {}
 
     @Override
     public void close() {
