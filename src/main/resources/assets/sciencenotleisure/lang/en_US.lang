@@ -4324,6 +4324,7 @@ item.gtnl.majo_broom.tooltip.0=Place it in the world and ride it through the air
 item.gtnl.majo_broom.tooltip.1=Enchant the broom to make it stronger.
 item.gtnl.majo_broom.view_control_hint=(View based flight control can be disabled in the config.)
 item.gtnl.elaina_broom.name=§{infernum_spark_rarity}Elaina's Broom§r
+item.gtnl.elaina_brooch.name=Elaina's Brooch
 item.gtnl.elaina_broom.lore.0=Miss Broom has traveled with a certain cheeky witch for a long time.
 item.gtnl.elaina_broom.lore.1=Together they crossed seas of clouds and rested on the roofs of unfamiliar towns.
 item.gtnl.elaina_broom.lore.2=Through a long journey of changing sights and stories, she stayed by her side.

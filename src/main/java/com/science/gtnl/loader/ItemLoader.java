@@ -26,6 +26,7 @@ import com.science.gtnl.common.item.items.DireCraftPattern;
 import com.science.gtnl.common.item.items.ElectricProspectorTool;
 import com.science.gtnl.common.item.items.FakeItemSiren;
 import com.science.gtnl.common.item.items.GTNLItemBucket;
+import com.science.gtnl.common.item.items.ItemElainaBrooch;
 import com.science.gtnl.common.item.items.ItemElainaBroom;
 import com.science.gtnl.common.item.items.ItemMajoBroom;
 import com.science.gtnl.common.item.items.ItemPartActiveFormationPlane;
@@ -182,6 +183,7 @@ public class ItemLoader {
     public static MajoRobe majoRobe = new MajoRobe();
     public static ItemMajoBroom majoBroom = new ItemMajoBroom();
     public static ItemElainaBroom elainaBroom = new ItemElainaBroom();
+    public static ItemElainaBrooch elainaBrooch = new ItemElainaBrooch();
 
     public static SuperReachRing superReachRing = new SuperReachRing();
     public static SatietyRing satietyRing = new SatietyRing();

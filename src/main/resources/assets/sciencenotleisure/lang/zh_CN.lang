@@ -4324,6 +4324,7 @@ item.gtnl.majo_broom.tooltip.0=可放置在世界中，骑乘扫帚飞行。
 item.gtnl.majo_broom.tooltip.1=可通过附魔强化扫帚。
 item.gtnl.majo_broom.view_control_hint=（可以在配置文件中关闭视角操控）
 item.gtnl.elaina_broom.name=§{infernum_spark_rarity}伊蕾娜的扫帚§r
+item.gtnl.elaina_brooch.name=伊蕾娜的徽章
 item.gtnl.elaina_broom.lore.0=陪伴了某位屑魔女旅行很久的扫帚小姐。
 item.gtnl.elaina_broom.lore.1=她和她曾越过云海，也曾在陌生城镇的屋檐上停留。
 item.gtnl.elaina_broom.lore.2=漫长的旅途里，风景与故事不断更替，她却始终陪着她。
