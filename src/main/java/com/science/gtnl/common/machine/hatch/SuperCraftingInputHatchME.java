@@ -1,5 +1,8 @@
 package com.science.gtnl.common.machine.hatch;
 
+import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
+import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,6 +80,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IAEStackType;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
@@ -1255,6 +1259,14 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
     @Override
     public boolean supportsFluids() {
         return this.supportFluids;
+    }
+
+    @Override
+    public IAEStackType<?>[] getSupportedStackTypes() {
+        if (supportFluids) {
+            return new IAEStackType<?>[] { ITEM_STACK_TYPE, FLUID_STACK_TYPE };
+        }
+        return new IAEStackType<?>[] { ITEM_STACK_TYPE };
     }
 
     @Override
