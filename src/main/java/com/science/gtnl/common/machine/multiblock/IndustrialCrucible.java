@@ -118,18 +118,6 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
                     StructureUtility.ofTileAdder(IndustrialCrucible::addInfusionProvider, Loaders.magicCasing, 0)))
             .addElement('B', StructureUtility.ofBlock(blockCosmeticSolid, 7))
             .addElement('C', StructureUtility.ofBlock(blockCosmeticOpaque, 2))
-            .addElement(
-                'D',
-                GTStructureUtility.buildHatchAdder(IndustrialCrucible.class)
-                    .anyOf(
-                        HatchElement.InputBus,
-                        HatchElement.OutputBus,
-                        HatchElement.Energy.or(HatchElement.MultiAmpEnergy),
-                        HatchElement.Maintenance)
-                    .casingIndex(getCasingTextureID())
-                    .hint(1)
-                    .exclusive()
-                    .build())
             .build();
         return structureDefinition;
     }
