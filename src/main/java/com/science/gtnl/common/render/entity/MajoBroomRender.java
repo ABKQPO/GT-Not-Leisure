@@ -31,9 +31,11 @@ public class MajoBroomRender extends Render {
 
     @Override
     public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+        float renderYaw = yaw;
+        if (entity instanceof EntityMajoBroom broom) renderYaw = broom.getVisualYaw(partialTicks);
         GL11.glPushMatrix();
         GL11.glTranslated(x, y + EntityMajoBroom.MODEL_LIFT, z);
-        GL11.glRotatef(180.0F - yaw, 0, 1, 0);
+        GL11.glRotatef(180.0F - renderYaw, 0, 1, 0);
         if (entity instanceof EntityMajoBroom broom) {
             GL11.glTranslatef(0.0F, 0.2F, 0.0F);
             GL11.glRotatef(broom.getVisualPitch(partialTicks), 1.0F, 0.0F, 0.0F);

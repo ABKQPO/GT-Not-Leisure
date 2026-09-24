@@ -41,6 +41,7 @@ public class EntityMajoBroom extends Entity {
     public static final float VERTICAL_SPEED_VISUAL_PITCH = 80.0F;
     public static final float MAX_VISUAL_PITCH = 20.0F;
     public static final float VISUAL_PITCH_RESPONSE = 0.2F;
+    private static final float VISUAL_YAW_RESPONSE = 0.58F;
     private static final double CLIENT_POSITION_BLEND = 0.65D;
     private static final float CLIENT_ROTATION_BLEND = 0.65F;
     private static final double CLIENT_SNAP_DISTANCE_SQUARED = 16.0D;
@@ -51,6 +52,9 @@ public class EntityMajoBroom extends Entity {
     public float turnVelocity;
     public float visualPitch;
     public float prevVisualPitch;
+    private float visualYaw;
+    private float prevVisualYaw;
+    private boolean clientVisualInitialized;
     private boolean clientHasTarget;
     private double clientTargetX;
     private double clientTargetY;
@@ -103,7 +107,8 @@ public class EntityMajoBroom extends Entity {
 
     public void updateClient() {
         boolean clientRidden = riddenByEntity instanceof EntityPlayer;
-        if (clientRidden != clientWasRidden) {
+        boolean ridingChanged = clientRidden != clientWasRidden;
+        if (ridingChanged) {
             clientHasTarget = false;
             clientTargetX = posX;
             clientTargetY = posY;
@@ -112,6 +117,13 @@ public class EntityMajoBroom extends Entity {
             clientTargetPitch = rotationPitch;
         }
         clientWasRidden = clientRidden;
+        if (!clientVisualInitialized || ridingChanged) {
+            visualYaw = rotationYaw;
+            prevVisualYaw = rotationYaw;
+            clientVisualInitialized = true;
+        } else {
+            prevVisualYaw = visualYaw;
+        }
         prevRotationYaw = rotationYaw;
         prevRotationPitch = rotationPitch;
         double oldX = posX;
@@ -138,6 +150,11 @@ public class EntityMajoBroom extends Entity {
             }
             setPosition(posX, posY, posZ);
             setRotation(rotationYaw, rotationPitch);
+        }
+        if (clientVisualInitialized) {
+            float yawDelta = MathHelper.wrapAngleTo180_float(rotationYaw - visualYaw);
+            visualYaw += yawDelta * VISUAL_YAW_RESPONSE;
+            if (Math.abs(yawDelta) < 0.01F) visualYaw = rotationYaw;
         }
         // The server owns vehicle movement, just like vanilla horses and pigs. The client only
         // consumes the tracked position and lets Entity.updateRidden place the passenger.
@@ -170,6 +187,9 @@ public class EntityMajoBroom extends Entity {
         lastTickPosZ = z;
         prevRotationYaw = yaw;
         prevRotationPitch = pitch;
+        visualYaw = yaw;
+        prevVisualYaw = yaw;
+        clientVisualInitialized = true;
         clientHasTarget = false;
     }
 
@@ -286,6 +306,11 @@ public class EntityMajoBroom extends Entity {
 
     public float getVisualPitch(float partialTicks) {
         return prevVisualPitch + (visualPitch - prevVisualPitch) * partialTicks;
+    }
+
+    public float getVisualYaw(float partialTicks) {
+        float delta = MathHelper.wrapAngleTo180_float(visualYaw - prevVisualYaw);
+        return prevVisualYaw + delta * partialTicks;
     }
 
     public void limitHorizontalSpeed() {
