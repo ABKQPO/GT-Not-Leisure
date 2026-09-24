@@ -28,6 +28,7 @@ public class MajoBroomModel {
     public static final MajoBroomModel INSTANCE = new MajoBroomModel("majo_broom.json");
     public static final MajoBroomModel ELAINA_INSTANCE = new MajoBroomModel("elaina_broom.json");
     public final List<Element> elements = new ArrayList<>();
+    private int displayList = -1;
 
     public MajoBroomModel(String modelFile) {
         String path = "/assets/sciencenotleisure/models/entity/" + modelFile;
@@ -52,7 +53,16 @@ public class MajoBroomModel {
         boolean normalize = GL11.glIsEnabled(GL11.GL_NORMALIZE);
         GL11.glDisable(GL11.GL_CULL_FACE);
         GL11.glEnable(GL11.GL_NORMALIZE);
-        for (Element element : elements) element.render();
+        if (displayList == -1) {
+            displayList = GL11.glGenLists(1);
+            if (displayList != 0) {
+                GL11.glNewList(displayList, GL11.GL_COMPILE);
+                for (Element element : elements) element.render();
+                GL11.glEndList();
+            }
+        }
+        if (displayList != 0) GL11.glCallList(displayList);
+        else for (Element element : elements) element.render();
         if (culling) GL11.glEnable(GL11.GL_CULL_FACE);
         if (!normalize) GL11.glDisable(GL11.GL_NORMALIZE);
         GL11.glPopMatrix();
