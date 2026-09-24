@@ -17,13 +17,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemMajoBroom extends Item {
 
-    private final String broomName;
+    public final String broomName;
 
     public ItemMajoBroom() {
         this("majo_broom", GTNLItemList.MajoBroom);
     }
 
-    protected ItemMajoBroom(String broomName, GTNLItemList itemList) {
+    public ItemMajoBroom(String broomName, GTNLItemList itemList) {
         this.broomName = broomName;
         setUnlocalizedName("gtnl." + broomName);
         setMaxStackSize(1);

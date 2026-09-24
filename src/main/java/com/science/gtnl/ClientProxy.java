@@ -78,7 +78,6 @@ import com.science.gtnl.common.render.entity.SaddleSlimeRender;
 import com.science.gtnl.common.render.entity.SteamRocketRender;
 import com.science.gtnl.common.render.item.AprilFoolMachineRender;
 import com.science.gtnl.common.render.item.ItemBlockArtificialStarRender;
-import com.science.gtnl.common.render.item.ItemMajoBroomRender;
 import com.science.gtnl.common.render.item.ItemNullPointerExceptionRender;
 import com.science.gtnl.common.render.item.ItemPlayerDollRenderer;
 import com.science.gtnl.common.render.item.ItemSteamRocketRenderer;
@@ -270,7 +269,6 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityPlayerLeashKnot.class, new RenderLeashKnot());
         RenderingRegistry.registerEntityRenderingHandler(EntityMajoBroom.class, new MajoBroomRender());
         RenderingRegistry.registerEntityRenderingHandler(EntityElainaBroom.class, new MajoBroomRender());
-        MinecraftForgeClient.registerItemRenderer(ItemLoader.majoBroom, new ItemMajoBroomRender());
 
         RenderingRegistry.registerEntityRenderingHandler(NullPointerException.class, new NullPointerExceptionRender());
         MinecraftForgeClient

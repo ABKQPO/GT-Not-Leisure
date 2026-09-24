@@ -70,11 +70,11 @@ public class EntityMajoBroom extends Entity {
         preventEntitySpawning = true;
     }
 
-    protected double getMaxHorizontalSpeed() {
+    public double getMaxHorizontalSpeed() {
         return MAX_HORIZONTAL_SPEED;
     }
 
-    protected ItemStack getDefaultBroomStack() {
+    public ItemStack getDefaultBroomStack() {
         return new ItemStack(ItemLoader.majoBroom);
     }
 
@@ -91,7 +91,7 @@ public class EntityMajoBroom extends Entity {
     }
 
     @Override
-    protected void entityInit() {}
+    public void entityInit() {}
 
     @Override
     public void onUpdate() {
@@ -139,8 +139,7 @@ public class EntityMajoBroom extends Entity {
                 posX += dx * CLIENT_POSITION_BLEND;
                 posY += dy * CLIENT_POSITION_BLEND;
                 posZ += dz * CLIENT_POSITION_BLEND;
-                rotationYaw += MathHelper.wrapAngleTo180_float(clientTargetYaw - rotationYaw)
-                    * CLIENT_ROTATION_BLEND;
+                rotationYaw += MathHelper.wrapAngleTo180_float(clientTargetYaw - rotationYaw) * CLIENT_ROTATION_BLEND;
                 rotationPitch += (clientTargetPitch - rotationPitch) * CLIENT_ROTATION_BLEND;
                 if (Math.abs(dx) < 0.0005D && Math.abs(dy) < 0.0005D && Math.abs(dz) < 0.0005D) {
                     posX = clientTargetX;
@@ -298,7 +297,8 @@ public class EntityMajoBroom extends Entity {
             * MAX_FORWARD_VISUAL_PITCH;
         float targetPitch = MathHelper.clamp_float(
             verticalInput * VERTICAL_INPUT_VISUAL_PITCH + (float) verticalStep * VERTICAL_STEP_VISUAL_PITCH
-                + (float) motionY * VERTICAL_SPEED_VISUAL_PITCH - forwardPitch,
+                + (float) motionY * VERTICAL_SPEED_VISUAL_PITCH
+                - forwardPitch,
             -MAX_VISUAL_PITCH,
             MAX_VISUAL_PITCH);
         visualPitch += (targetPitch - visualPitch) * VISUAL_PITCH_RESPONSE;
@@ -309,6 +309,7 @@ public class EntityMajoBroom extends Entity {
     }
 
     public float getVisualYaw(float partialTicks) {
+        if (!clientVisualInitialized) return rotationYaw;
         float delta = MathHelper.wrapAngleTo180_float(visualYaw - prevVisualYaw);
         return prevVisualYaw + delta * partialTicks;
     }
@@ -390,20 +391,20 @@ public class EntityMajoBroom extends Entity {
     }
 
     @Override
-    protected boolean canTriggerWalking() {
+    public boolean canTriggerWalking() {
         return false;
     }
 
     @Override
-    protected void fall(float distance) {}
+    public void fall(float distance) {}
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound tag) {
+    public void readEntityFromNBT(NBTTagCompound tag) {
         if (tag.hasKey("BroomStack", 10)) broomStack = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("BroomStack"));
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound tag) {
+    public void writeEntityToNBT(NBTTagCompound tag) {
         if (broomStack != null) tag.setTag("BroomStack", broomStack.writeToNBT(new NBTTagCompound()));
     }
 }
