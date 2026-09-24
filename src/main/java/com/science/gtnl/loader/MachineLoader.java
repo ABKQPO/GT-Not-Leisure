@@ -2137,6 +2137,7 @@ public class MachineLoader {
                 "SmallArcaneAssembler",
                 StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.name")));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallArcaneAssembler.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallArcaneAssembler.get(1), AnimatedText.AUTHOR_LINEBROKE);
 
         GTNLItemList.SuperInputBusME.set(
             new SuperInputBusME(
@@ -4840,8 +4841,14 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.machine.small_essentia_smeltery.hv.name"),
                 3));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallEssentiaSmelteryLV.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.SmallEssentiaSmelteryLV.get(1), AnimatedText.AUTHOR_LINEBROKE);
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallEssentiaSmelteryMV.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.SmallEssentiaSmelteryMV.get(1), AnimatedText.AUTHOR_LINEBROKE);
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallEssentiaSmelteryHV.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.SmallEssentiaSmelteryHV.get(1), AnimatedText.AUTHOR_LINEBROKE);
 
         GTNLItemList.EnergyTransferNode.set(
             new EnergyTransferNode(
