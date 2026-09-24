@@ -8,6 +8,7 @@ import static thaumcraft.common.config.ConfigBlocks.blockCosmeticSolid;
 import static thaumcraft.common.config.ConfigBlocks.blockStoneDevice;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -24,6 +25,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEssentiaHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
@@ -169,7 +171,8 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
     }
 
     private void refreshResearchCache() {
-        String ownerName = getBaseMetaTileEntity().getOwnerName();
+        IGregTechTileEntity baseMetaTileEntity = getBaseMetaTileEntity();
+        String ownerName = baseMetaTileEntity == null ? null : baseMetaTileEntity.getOwnerName();
         if (ownerName == null || ownerName.isEmpty()) return;
 
         ArrayList<String> list = ResearchManager.getResearchForPlayer(ownerName);
@@ -318,16 +321,24 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
             return true;
         }
 
-        for (Aspect aspect : requiredAspects.getAspects()) {
-            if (aspect == null) {
-                continue;
-            }
+        try {
+            for (Aspect aspect : requiredAspects.getAspects()) {
+                if (aspect == null) {
+                    continue;
+                }
 
-            long required = (long) requiredAspects.getAmount(aspect) * crafts;
-            long storedInHatches = getStoredEssentiaInHatches(aspect, required);
-            if (storedInHatches < required && getMaximumProviderEssentia(aspect) < required - storedInHatches) {
-                return false;
+                long required = (long) requiredAspects.getAmount(aspect) * crafts;
+                long storedInHatches = getStoredEssentiaInHatches(aspect, required);
+                if (storedInHatches < required && getMaximumProviderEssentia(aspect) < required - storedInHatches) {
+                    return false;
+                }
             }
+        } catch (ConcurrentModificationException e) {
+            // AspectList.getAspects() 内部走 keySet().toArray()，配方 AspectList 是跨机器共享的配方数据，
+            // 被并发结构修改时会在那里抛 CME。取不到可信数据时按"源质不足"处理，不放行配方。
+            ScienceNotLeisure.LOG
+                .warn("SmallInfusionMatrix: concurrent modification in recipe aspects, treating as insufficient", e);
+            return false;
         }
 
         return true;
@@ -339,43 +350,53 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
             return true;
         }
 
-        for (Aspect aspect : requiredAspects.getAspects()) {
-            if (aspect == null) {
-                continue;
-            }
-
-            long remaining = (long) requiredAspects.getAmount(aspect) * crafts;
-            long storedInHatches = getStoredEssentiaInHatches(aspect, remaining);
-            long providerAmount = Math.max(0, remaining - storedInHatches);
-
-            if (providerAmount > 0) {
-                TileEntity provider = findInfusionProvider(aspect, providerAmount);
-                if (provider == null || providerAmount > Integer.MAX_VALUE
-                    || !takeFromInfusionProvider(provider, aspect, (int) providerAmount)) {
-                    return false;
-                }
-                remaining -= providerAmount;
-            }
-
-            for (TileEntityEssentiaHatch hatch : mEssentiaHatches) {
-                if (remaining <= 0) {
-                    break;
-                }
-
-                if (hatch == null || hatch.isInvalid()) {
+        try {
+            for (Aspect aspect : requiredAspects.getAspects()) {
+                if (aspect == null) {
                     continue;
                 }
 
-                int available = hatch.containerContains(aspect);
-                int removed = (int) Math.min(remaining, available);
+                long remaining = (long) requiredAspects.getAmount(aspect) * crafts;
+                long storedInHatches = getStoredEssentiaInHatches(aspect, remaining);
+                long providerAmount = Math.max(0, remaining - storedInHatches);
 
-                if (removed > 0 && hatch.reduceStoredEssentia(aspect, removed)) {
-
-                    remaining -= removed;
+                if (providerAmount > 0) {
+                    TileEntity provider = findInfusionProvider(aspect, providerAmount);
+                    if (provider == null || providerAmount > Integer.MAX_VALUE
+                        || !takeFromInfusionProvider(provider, aspect, (int) providerAmount)) {
+                        return false;
+                    }
+                    remaining -= providerAmount;
                 }
-            }
 
-            if (remaining > 0) return false;
+                for (TileEntityEssentiaHatch hatch : mEssentiaHatches) {
+                    if (remaining <= 0) {
+                        break;
+                    }
+
+                    if (hatch == null || hatch.isInvalid()) {
+                        continue;
+                    }
+
+                    int available = hatch.containerContains(aspect);
+                    int removed = (int) Math.min(remaining, available);
+
+                    if (removed > 0 && hatch.reduceStoredEssentia(aspect, removed)) {
+
+                        remaining -= removed;
+                    }
+                }
+
+                if (remaining > 0) return false;
+            }
+        } catch (ConcurrentModificationException e) {
+            // 同 hasRequiredEssentia：CME 来自 getAspects() 的 keySet().toArray()。
+            // 此时可能已经扣掉了前面若干 aspect，但源质无法归还 AE 网络（TileInfusionProvider
+            // 的 addToContainer 是空实现），只能中止并让配方判定为失败。
+            ScienceNotLeisure.LOG.warn(
+                "SmallInfusionMatrix: concurrent modification in recipe aspects, aborting essentia consumption",
+                e);
+            return false;
         }
 
         return true;
@@ -487,10 +508,10 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
             .addInfo(StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.tooltip.0"))
             .addInfo(StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.tooltip.1"))
             .beginStructureBlock(7, 5, 7, true)
-            .addInputBus(StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
-            .addOutputBus(StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
-            .addEnergyHatch(StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
-            .addMaintenanceHatch(StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
             .addOtherStructurePart(
                 StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.essentia_input_hatch"),
                 StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"),
