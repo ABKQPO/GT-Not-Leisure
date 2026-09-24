@@ -2,16 +2,21 @@ package com.science.gtnl.common.item.items;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
+import java.util.List;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.entity.EntityMajoBroom;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.text.effect.TextEffects;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -37,6 +42,26 @@ public class ItemMajoBroom extends Item {
     @Override
     public String getUnlocalizedName() {
         return "item.gtnl." + broomName;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
+        if (!"majo_broom".equals(broomName)) return;
+        for (int line = 0; line < 2; line++) {
+            tooltip.add(
+                TextEffects.apply(
+                    StatCollector.translateToLocal("item.gtnl.majo_broom.lore." + line),
+                    TextEffects.GENESIS_COMPONENT_RARITY_SHADER));
+        }
+        tooltip.add("");
+        for (int line = 0; line < 2; line++) {
+            tooltip.add(
+                TextEffects.apply(
+                    StatCollector.translateToLocal("item.gtnl.majo_broom.tooltip." + line),
+                    TextEffects.EVERCOLD_CYAN));
+        }
+        tooltip.add(EnumChatFormatting.GRAY + StatCollector.translateToLocal("item.gtnl.majo_broom.view_control_hint"));
     }
 
     protected EntityMajoBroom createBroom(World world) {
