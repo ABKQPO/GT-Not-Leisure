@@ -138,6 +138,12 @@ public class AnimatedText {
             + AnimatedTooltipHandler.RESET,
         TextEffects.BURNISHED_AURIC);
 
+    public static final Supplier<String> AUTHOR_LINEBROKE = AnimatedTooltipHandler.chain(
+        AnimatedTooltipHandler.translatedText("gtnl.author.by"),
+        AnimatedTooltipHandler.renderedText(
+            AnimatedTooltipHandler.BOLD + "LineBroke" + AnimatedTooltipHandler.RESET,
+            TextEffects.NAMELESS_BOSS_BAR_SHADER));
+
     public static final Supplier<String> TOTTO = AnimatedTooltipHandler.chain(
         AnimatedTooltipHandler.text("Author: "),
         AnimatedTooltipHandler.animatedText(

@@ -403,6 +403,15 @@ gtnl.machine.small_infusion_matrix.tooltip.1=消耗各注魔配方指定的源�
 gtnl.machine.small_infusion_matrix.casing=任意魔法机械方块
 gtnl.machine.small_infusion_matrix.essentia_input_hatch=源质输入仓或神秘能源注魔供应器
 
+gtnl.machine.small_arcane_assembler.name=小型奥术组装机
+gtnl.machine.small_arcane_assembler.recipe_type=奥术合成
+gtnl.machine.small_arcane_assembler.tooltip.0=处理有序与无序奥术工作台配方，每次运行一个配方
+gtnl.machine.small_arcane_assembler.tooltip.1=机器所有者必须完成配方所需研究
+gtnl.machine.small_arcane_assembler.tooltip.2=在控制器槽放入法杖、权杖或手杖，合成时将消耗其中的魔力
+gtnl.machine.small_arcane_assembler.tooltip.3=消耗 32 EU/t，每 128 ticks 随机为两种基础要素各持续恢复 1-4 点魔力
+gtnl.machine.small_arcane_assembler.tooltip.4=随机充能会消耗对应要素的 0-30 CV；达到 30 CV 时获得 200% 充能加成，溢出转移率由 25% 提升至 75%
+gtnl.machine.small_arcane_assembler.casing=任意魔法机械方块
+
 gtnl.machine.quantum_computer.name=量子计算机
 gtnl.machine.quantum_computer.recipe_type=CPU
 gtnl.machine.quantum_computer.tooltip.0=可以像常规的CPU一样执行合成任务
@@ -3365,6 +3374,9 @@ gtnl.block.multi_essentia_tube.tooltip.1=可同时缓存并输送多种源质
 gtnl.block.multi_essentia_tube.tooltip.2=使用魔杖开关各面连接，潜行使用魔杖调整吸力
 GT5U.gui.text.recipe_result.missing_infusion_research=尚未解锁此注魔研究
 GT5U.gui.text.recipe_result.insufficient_essentia=源质仓内的源质不足
+GT5U.gui.text.recipe_result.missing_arcane_research=尚未解锁此奥术研究
+GT5U.gui.text.recipe_result.missing_arcane_wand=请在控制器槽放入法杖、权杖或手杖
+GT5U.gui.text.recipe_result.insufficient_vis=控制器法杖中的魔力不足
 
 gtnl.block.multi_essentia_input_hatch.name=复合源质输入仓
 gtnl.block.multi_essentia_input_hatch.tooltip.0=共享容量：%s 点源质，可同时缓存多种源质
@@ -4265,3 +4277,4 @@ gtnl.text_effect.title=动态文字效果
 gtnl.text_effect.palette=切换配色
 gtnl.text_effect.bold=切换粗体
 gtnl.text_effect.italic=切换斜体
+gtnl.author.by=添加者：

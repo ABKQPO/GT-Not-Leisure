@@ -403,6 +403,15 @@ gtnl.machine.small_infusion_matrix.tooltip.1=Consumes the essentia specified by 
 gtnl.machine.small_infusion_matrix.casing=Any Magic Mechanical Block
 gtnl.machine.small_infusion_matrix.essentia_input_hatch=Essentia Input Hatch or Thaumic Energistics Infusion Provider
 
+gtnl.machine.small_arcane_assembler.name=Small Arcane Assembler
+gtnl.machine.small_arcane_assembler.recipe_type=Arcane Crafting
+gtnl.machine.small_arcane_assembler.tooltip.0=Processes shaped and shapeless Arcane Workbench recipes at one recipe per operation.
+gtnl.machine.small_arcane_assembler.tooltip.1=Requires the machine owner to have completed the recipe research.
+gtnl.machine.small_arcane_assembler.tooltip.2=Place a wand, sceptre, or staff in the controller slot; crafting vis is consumed from it.
+gtnl.machine.small_arcane_assembler.tooltip.3=Consumes 32 EU/t; two random primal aspects gain 1-4 vis smoothly over every 128 ticks.
+gtnl.machine.small_arcane_assembler.tooltip.4=Each selected aspect uses 0-30 matching CV; at 30 CV it gains a 200% charge bonus and overflow transfer rises from 25% to 75%.
+gtnl.machine.small_arcane_assembler.casing=Any Magic Mechanical Block
+
 gtnl.machine.quantum_computer.name=Quantum Computer
 gtnl.machine.quantum_computer.recipe_type=CPU
 gtnl.machine.quantum_computer.tooltip.0=Can perform crafting tasks like a conventional CPU
@@ -2760,7 +2769,7 @@ gtnl.hatch.nuclear_item_bus.tooltip.2=The durability cost is multiplied by the s
 gtnl.hatch.nuclear_fluid_hatch.name=Nuclear Cooling Fluid Input Hatch
 gtnl.hatch.nuclear_fluid_hatch.tooltip.0=Coolant cell of the Nuclear Reactor. Fill it with water; it does not output steam.
 gtnl.hatch.nuclear_fluid_hatch.tooltip.1=Each 1 HU of heat absorbed consumes 1L of water and produces 160L of steam.
-gtnl.hatch.nuclear_fluid_hatch.tooltip.capacity=Capacity: 
+gtnl.hatch.nuclear_fluid_hatch.tooltip.capacity=Capacity:
 
 gtnl.hatch.super_void_hatch.name=Super Void Hatch
 
@@ -3365,6 +3374,9 @@ gtnl.block.multi_essentia_tube.tooltip.1=Can cache and transport several essenti
 gtnl.block.multi_essentia_tube.tooltip.2=Use a wand to toggle sides; sneak-use it to adjust side suction
 GT5U.gui.text.recipe_result.missing_infusion_research=Required infusion research has not been completed
 GT5U.gui.text.recipe_result.insufficient_essentia=Not enough essentia in the Essentia Hatches
+GT5U.gui.text.recipe_result.missing_arcane_research=Required arcane research has not been completed
+GT5U.gui.text.recipe_result.missing_arcane_wand=Place a wand, sceptre, or staff in the controller slot
+GT5U.gui.text.recipe_result.insufficient_vis=Not enough vis in the controller wand
 
 gtnl.block.multi_essentia_input_hatch.name=Multi-Essentia Input Hatch
 gtnl.block.multi_essentia_input_hatch.tooltip.0=Shared capacity: %s essentia; stores multiple aspect types
@@ -4265,3 +4277,4 @@ gtnl.text_effect.title=Animated text effects
 gtnl.text_effect.palette=Change palette
 gtnl.text_effect.bold=Toggle bold
 gtnl.text_effect.italic=Toggle italic
+gtnl.author.by=Added by: 
