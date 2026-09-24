@@ -72,6 +72,20 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
+                GTUtility.getIntegratedCircuit(17),
+                GTModHandler.getModItem(Mods.Thaumcraft.ID, "blockTable", 1, 15),
+                ItemList.Hull_HV.get(1),
+                ItemRefer.Magic_Casing.get(4),
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.HV, 4),
+                ItemList.Robot_Arm_HV.get(2))
+            .itemOutputs(GTNLItemList.SmallArcaneAssembler.get(1))
+            .fluidInputs(SubstituteFluidStack.soldering(288))
+            .duration(20 * SECONDS)
+            .eut(TierEU.RECIPE_HV)
+            .addTo(As);
+
+        RecipeBuilder.builder()
+            .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.wireFine, Materials.NaquadahAlloy, 8),
                 GTOreDictUnificator.get(OrePrefixes.foil, Materials.Silicon, 8),
                 GTOreDictUnificator.get(OrePrefixes.foil, Materials.Naquadah, 4))

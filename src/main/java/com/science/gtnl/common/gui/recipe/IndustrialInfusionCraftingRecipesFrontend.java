@@ -30,7 +30,7 @@ public class IndustrialInfusionCraftingRecipesFrontend extends GTNLLogoFrontend 
     private static final int yOrigin = 8;
     private final int itemRowCount;
     private static final int ASPECT_COLUMNS = 10;
-    private static final int ASPECT_ROWS = 4;
+    private static final int ASPECT_ROWS = 2;
     private static final int ASPECT_X_ORIGIN = 5;
     private static final int ASPECT_SPACING = 16;
     private static final int ASPECT_TOP_PADDING = 4;
