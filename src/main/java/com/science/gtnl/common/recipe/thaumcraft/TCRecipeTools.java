@@ -20,10 +20,13 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
 import fox.spiteful.avaritia.items.LudicrousItems;
 import gregtech.api.enums.Mods;
+import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.IRecipeMap;
+import gregtech.api.objects.ItemData;
 import gregtech.api.recipe.RecipeMetadataKey;
 import gregtech.api.util.GTModHandler;
+import gregtech.api.util.GTOreDictUnificator;
 import lombok.Getter;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
@@ -141,6 +144,40 @@ public class TCRecipeTools {
         return copy;
     }
 
+    // TC 组件 → GT 配方输入元素。
+    // GT 电路板按其档位矿辞整体展开，使同档位任意电路板都能满足配方（例如 HV 档位任选一种高级电路板）；
+    // 其余组件保持单一物品语义。数量为 0 的组件是“不消耗”标记，不做展开。
+    public static Object toGTInput(ItemStack stack) {
+        if (stack == null || stack.stackSize <= 0) return stack;
+
+        ItemData data = GTOreDictUnificator.getAssociation(stack);
+        if (data == null || data.mPrefix != OrePrefixes.circuit
+            || data.mMaterial == null
+            || data.mMaterial.mMaterial == null) {
+            return stack;
+        }
+
+        // ItemData.toString() 就是该档位电路板注册时使用的矿辞名，两者必然一致。
+        // 矿辞为空时退回单一物品，否则 GT 会因“矿辞条目为空”直接丢弃整张配方。
+        Object oreName = OrePrefixes.circuit.get(data.mMaterial.mMaterial);
+        if (oreName == null || GTOreDictUnificator.getOres(oreName)
+            .isEmpty()) {
+            return stack;
+        }
+
+        return new Object[] { oreName, stack.stackSize };
+    }
+
+    public static Object[] toGTInputs(ItemStack... stacks) {
+        Object[] converted = new Object[stacks.length];
+
+        for (int i = 0; i < stacks.length; i++) {
+            converted[i] = toGTInput(stacks[i]);
+        }
+
+        return converted;
+    }
+
     // 将源质列表构建为 NEI special 槽的展示 ItemStack 数组。
     public static ItemStack[] createAspectDisplayStacks(AspectList aspectList) {
         if (aspectList == null || aspectList.size() == 0) {
@@ -212,6 +249,24 @@ public class TCRecipeTools {
             .ignoreCollision()
             .clearInvalid()
             .itemInputsUnified(inputs)
+            .itemOutputs(output)
+            .special(createAspectDisplayStacks(aspects))
+            .metadata(aspectKey, aspects.copy())
+            .metadata(researchKey, research)
+            .duration(duration)
+            .eut(eut)
+            .addTo(map);
+    }
+
+    // 同上，但输入允许携带矿辞展开项（见 toGTInput），用于需要接受同档位多种物品的配方。
+    public static void addArcaneRecipe(IRecipeMap map, Object[] inputs, ItemStack[] output, AspectList aspects,
+        String research, RecipeMetadataKey<AspectList> aspectKey, RecipeMetadataKey<String> researchKey, int duration,
+        long eut) {
+
+        RecipeBuilder.builder()
+            .ignoreCollision()
+            .clearInvalid()
+            .itemInputs(inputs)
             .itemOutputs(output)
             .special(createAspectDisplayStacks(aspects))
             .metadata(aspectKey, aspects.copy())
