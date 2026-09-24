@@ -18,6 +18,11 @@ public class EntityElainaBroom extends EntityMajoBroom {
     }
 
     @Override
+    protected boolean hasUnlimitedFlight() {
+        return true;
+    }
+
+    @Override
     public double getMaxHorizontalSpeed() {
         return super.getMaxHorizontalSpeed() * 2.0D;
     }

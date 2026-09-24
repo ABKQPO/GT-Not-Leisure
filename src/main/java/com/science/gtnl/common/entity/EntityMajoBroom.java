@@ -16,9 +16,11 @@ import com.science.gtnl.mixins.early.minecraft.AccessorEntityLivingBase;
 public class EntityMajoBroom extends Entity {
 
     public static final double MODEL_LIFT = 0.25D;
+    public static final int MAX_FLIGHT_TICKS = 20 * 30;
     public static final double MAX_HORIZONTAL_SPEED = 15.0D / 20.0D;
     public static final double HORIZONTAL_RESPONSE = 0.42D;
     public static final double FORWARD_ACCELERATION = 0.035D;
+    public static final double COAST_DECELERATION = 0.02D;
     public static final double BRAKE_ACCELERATION = 0.075D;
     public static final double MAX_REVERSE_SPEED = 0.12D;
     public static final double UNMOUNTED_GRAVITY = 0.006D;
@@ -27,7 +29,7 @@ public class EntityMajoBroom extends Entity {
     public static final double VERTICAL_DRAG = 0.9D;
     public static final double HOVER_DRAG = 0.65D;
     public static final double HOVER_BOB_ACCELERATION = 0.0015D;
-    public static final int HOVER_BOB_DELAY_TICKS = 20 * 3;
+    public static final int HOVER_BOB_DELAY_TICKS = 30;
     public static final int HOVER_BOB_PERIOD_TICKS = 72;
     public static final double GRAVITY = 0.03D;
     public static final double ASCEND_THRUST = 0.09D;
@@ -46,6 +48,7 @@ public class EntityMajoBroom extends Entity {
     private static final float CLIENT_ROTATION_BLEND = 0.65F;
     private static final double CLIENT_SNAP_DISTANCE_SQUARED = 16.0D;
     public ItemStack broomStack;
+    private int flightTicks;
     public int hoverIdleTicks;
     public byte verticalInput;
     public double forwardSpeed;
@@ -72,6 +75,10 @@ public class EntityMajoBroom extends Entity {
 
     public double getMaxHorizontalSpeed() {
         return MAX_HORIZONTAL_SPEED;
+    }
+
+    protected boolean hasUnlimitedFlight() {
+        return false;
     }
 
     public ItemStack getDefaultBroomStack() {
@@ -102,6 +109,7 @@ public class EntityMajoBroom extends Entity {
         }
 
         simulateMotion(riddenByEntity);
+        if (onGround) flightTicks = 0;
         pushNearbyEntities();
     }
 
@@ -201,8 +209,11 @@ public class EntityMajoBroom extends Entity {
         float forward = MathHelper.clamp_float(player.moveForward, -1.0F, 1.0F);
         float strafe = MathHelper.clamp_float(player.moveStrafing, -1.0F, 1.0F);
         verticalInput = getVerticalInput(player, forward);
+        boolean canFly = hasUnlimitedFlight() || flightTicks < MAX_FLIGHT_TICKS;
         boolean supported = isSupportedByGround();
-        if (verticalInput == 0) {
+        if (!canFly) {
+            motionY = motionY * VERTICAL_DRAG - GRAVITY;
+        } else if (verticalInput == 0) {
             motionY *= HOVER_DRAG;
             if (Math.abs(motionY) < 0.0001D) motionY = 0.0D;
         } else {
@@ -224,6 +235,8 @@ public class EntityMajoBroom extends Entity {
         moveEntity(motionX, motionY, motionZ);
         if (onGround) {
             motionY = 0;
+        } else if (!hasUnlimitedFlight() && flightTicks < MAX_FLIGHT_TICKS) {
+            flightTicks++;
         }
     }
 
@@ -257,7 +270,8 @@ public class EntityMajoBroom extends Entity {
                 forwardSpeed = Math.max(-MAX_REVERSE_SPEED, forwardSpeed - FORWARD_ACCELERATION * 0.5D);
             }
         } else {
-            if (forwardSpeed < 0.0D) forwardSpeed = Math.min(0.0D, forwardSpeed + BRAKE_ACCELERATION * 0.5D);
+            if (forwardSpeed > 0.0D) forwardSpeed = Math.max(0.0D, forwardSpeed - COAST_DECELERATION);
+            else if (forwardSpeed < 0.0D) forwardSpeed = Math.min(0.0D, forwardSpeed + BRAKE_ACCELERATION * 0.5D);
         }
         float yaw = rotationYaw * (float) Math.PI / 180.0F;
         float sin = MathHelper.sin(yaw);
@@ -266,6 +280,10 @@ public class EntityMajoBroom extends Entity {
         double targetZ = cos * forwardSpeed;
         motionX += (targetX - motionX) * HORIZONTAL_RESPONSE;
         motionZ += (targetZ - motionZ) * HORIZONTAL_RESPONSE;
+        if (forwardSpeed == 0.0D) {
+            if (Math.abs(motionX) < 0.001D) motionX = 0.0D;
+            if (Math.abs(motionZ) < 0.001D) motionZ = 0.0D;
+        }
     }
 
     public void updateHoverBobbing(Entity rider, boolean supported) {
@@ -400,11 +418,13 @@ public class EntityMajoBroom extends Entity {
 
     @Override
     public void readEntityFromNBT(NBTTagCompound tag) {
+        flightTicks = Math.max(0, Math.min(MAX_FLIGHT_TICKS, tag.getInteger("FlightTicks")));
         if (tag.hasKey("BroomStack", 10)) broomStack = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("BroomStack"));
     }
 
     @Override
     public void writeEntityToNBT(NBTTagCompound tag) {
+        tag.setInteger("FlightTicks", flightTicks);
         if (broomStack != null) tag.setTag("BroomStack", broomStack.writeToNBT(new NBTTagCompound()));
     }
 }
