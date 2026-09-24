@@ -48,6 +48,16 @@ public class MainConfig {
     @Comment("Item section")
     public static class Item {
 
+        @Name("broom")
+        public final Broom broom = new Broom();
+
+        @Comment("Broom")
+        public static class Broom {
+            @Comment("Allow looking up or down while moving forward to control broom altitude")
+            @DefaultBoolean(true)
+            public boolean enableViewControl = true;
+        }
+
         @Name("player_doll")
         public final PlayerDoll player_doll = new PlayerDoll();
 

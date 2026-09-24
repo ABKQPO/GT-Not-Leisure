@@ -10,8 +10,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.ItemLoader;
-import com.science.gtnl.mixins.early.minecraft.AccessorEntityLivingBase;
 
 public class EntityMajoBroom extends Entity {
 
@@ -49,6 +49,7 @@ public class EntityMajoBroom extends Entity {
     private static final double CLIENT_SNAP_DISTANCE_SQUARED = 16.0D;
     public ItemStack broomStack;
     private int flightTicks;
+    private byte keyVerticalInput;
     public int hoverIdleTicks;
     public byte verticalInput;
     public double forwardSpeed;
@@ -90,6 +91,10 @@ public class EntityMajoBroom extends Entity {
         broomStack.stackSize = 1;
     }
 
+    public void setVerticalInput(byte input) {
+        keyVerticalInput = (byte) Math.max(-1, Math.min(1, input));
+    }
+
     public boolean isSupportedByGround() {
         return !worldObj.func_147461_a(
             boundingBox.copy()
@@ -115,6 +120,7 @@ public class EntityMajoBroom extends Entity {
 
     public void updateClient() {
         boolean clientRidden = riddenByEntity instanceof EntityPlayer;
+        if (!clientRidden) verticalInput = 0;
         boolean ridingChanged = clientRidden != clientWasRidden;
         if (ridingChanged) {
             clientHasTarget = false;
@@ -208,7 +214,7 @@ public class EntityMajoBroom extends Entity {
         EntityPlayer player = (EntityPlayer) rider;
         float forward = MathHelper.clamp_float(player.moveForward, -1.0F, 1.0F);
         float strafe = MathHelper.clamp_float(player.moveStrafing, -1.0F, 1.0F);
-        verticalInput = getVerticalInput(player, forward);
+        verticalInput = keyVerticalInput != 0 ? keyVerticalInput : getViewVerticalInput(player, forward);
         boolean canFly = hasUnlimitedFlight() || flightTicks < MAX_FLIGHT_TICKS;
         boolean supported = isSupportedByGround();
         if (!canFly) {
@@ -241,6 +247,7 @@ public class EntityMajoBroom extends Entity {
     }
 
     public void simulateUnmountedMotion() {
+        keyVerticalInput = 0;
         verticalInput = 0;
         turnVelocity = 0.0F;
         forwardSpeed = 0.0D;
@@ -251,9 +258,8 @@ public class EntityMajoBroom extends Entity {
         if (onGround) motionY = 0.0D;
     }
 
-    public byte getVerticalInput(EntityPlayer player, float forward) {
-        if (((AccessorEntityLivingBase) player).getJumping()) return 1;
-        if (forward <= 0.01F) return 0;
+    public byte getViewVerticalInput(EntityPlayer player, float forward) {
+        if (!MainConfig.item.broom.enableViewControl || forward <= 0.01F) return 0;
         if (player.rotationPitch <= -30.0F) return 1;
         if (player.rotationPitch >= 30.0F) return -1;
         return 0;

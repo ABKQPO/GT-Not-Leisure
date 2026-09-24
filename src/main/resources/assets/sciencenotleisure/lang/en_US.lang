@@ -62,6 +62,10 @@ gtnl.gui.config.general.debug.enabledebugmode.tooltip=Enable debug print log out
 gtnl.gui.config.general.effect.enableghostlyshape=Enable Ghostly Shape
 gtnl.gui.config.general.effect.enableghostlyshape.tooltip=When the player dies and respawns, give the player the Ghost Shape effect.
 
+gtnl.gui.config.general.item.broom=Broom
+gtnl.gui.config.general.item.broom.enableviewcontrol=Enable Broom View Control
+gtnl.gui.config.general.item.broom.enableviewcontrol.tooltip=Allow looking up or down while moving forward to control broom altitude. Ascend and descend keys still work when disabled.
+
 gtnl.gui.config.general.item.player_doll=Player Doll
 gtnl.gui.config.general.item.player_doll.enablecustomskin=Custom Player Skin
 gtnl.gui.config.general.item.player_doll.enablecustomskin.tooltip=Enable custom player skin for the Player Doll.
@@ -4317,3 +4321,5 @@ item.gtnl.elaina_broom.name=Elaina's Broom
 key.categories.gtnl=GTNL
 key.gtnl.majo_broom.place=Place Magic Broom
 key.gtnl.majo_broom.ride=Place and Ride Magic Broom
+key.gtnl.majo_broom.ascend=Ascend on Broom
+key.gtnl.majo_broom.descend=Descend on Broom

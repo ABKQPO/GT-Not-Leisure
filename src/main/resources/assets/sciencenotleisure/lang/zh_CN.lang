@@ -62,6 +62,10 @@ gtnl.gui.config.general.debug.enabledebugmode.tooltip=启用调试日志输出
 gtnl.gui.config.general.effect.enableghostlyshape=启用幽灵形态
 gtnl.gui.config.general.effect.enableghostlyshape.tooltip=当玩家死亡重生时，给予玩家幽灵形态效果
 
+gtnl.gui.config.general.item.broom=扫帚
+gtnl.gui.config.general.item.broom.enableviewcontrol=启用扫帚视角操控
+gtnl.gui.config.general.item.broom.enableviewcontrol.tooltip=按住前进键时，允许通过抬头或低头控制扫帚升降；关闭后仍可使用上升、下降按键
+
 gtnl.gui.config.general.item.player_doll=玩家玩偶
 gtnl.gui.config.general.item.player_doll.enablecustomskin=自定义玩家皮肤
 gtnl.gui.config.general.item.player_doll.enablecustomskin.tooltip=启用玩偶的自定义皮肤
@@ -4317,3 +4321,5 @@ item.gtnl.elaina_broom.name=伊蕾娜的扫帚
 key.categories.gtnl=GTNL
 key.gtnl.majo_broom.place=放置魔法扫帚
 key.gtnl.majo_broom.ride=放置并骑乘魔法扫帚
+key.gtnl.majo_broom.ascend=扫帚上升
+key.gtnl.majo_broom.descend=扫帚下降
