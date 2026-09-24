@@ -30,7 +30,8 @@ public class MajoRobe extends MajoArmor {
         tooltip.add("");
         tooltip.add(
             TextEffects.apply(StatCollector.translateToLocal("item.gtnl.majo_robe.worn"), TextEffects.EVERCOLD_CYAN));
-        tooltip.add(TextEffects.apply(StatCollector.translateToLocal("item.gtnl.majo_robe.armor"), TextEffects.EVERCOLD_CYAN));
+        tooltip.add(
+            TextEffects.apply(StatCollector.translateToLocal("item.gtnl.majo_robe.armor"), TextEffects.EVERCOLD_CYAN));
         tooltip.add(TextEffects.apply(getVisDiscountTooltipText(), TextEffects.EVERCOLD_CYAN));
         for (int line = 0; line < 7; line++) {
             String text = StatCollector.translateToLocal("item.gtnl.majo_robe.tooltip." + line);

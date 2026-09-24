@@ -1,4 +1,4 @@
-package com.science.gtnl.client.model;
+package com.science.gtnl.common.render.model;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,14 +18,13 @@ import com.google.gson.JsonParser;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-/** Renders the original Majo's Broom armor geometry with Minecraft 1.7.10 model parts. */
 @SideOnly(Side.CLIENT)
-public final class MajoArmorModel extends ModelBiped {
+public class MajoArmorModel extends ModelBiped {
 
     public static final MajoArmorModel HAT = new MajoArmorModel(true);
     public static final MajoArmorModel ROBE = new MajoArmorModel(false);
 
-    private MajoArmorModel(boolean hat) {
+    public MajoArmorModel(boolean hat) {
         super(0.0F);
         textureWidth = 128;
         textureHeight = 128;
@@ -47,7 +46,7 @@ public final class MajoArmorModel extends ModelBiped {
         loadGeometry(hat ? "majo_hat.geo.json" : "majo_cloth.geo.json", hat);
     }
 
-    private void loadGeometry(String fileName, boolean hat) {
+    public void loadGeometry(String fileName, boolean hat) {
         String path = "/assets/sciencenotleisure/geo/" + fileName;
         try (InputStream stream = MajoArmorModel.class.getResourceAsStream(path)) {
             if (stream == null) {
@@ -95,21 +94,26 @@ public final class MajoArmorModel extends ModelBiped {
         }
     }
 
-    private static boolean includeBone(String name, boolean hat) {
+    public static boolean includeBone(String name, boolean hat) {
         if (hat) return name.equals("armorHead") || name.equals("bone19");
-        return name.equals("Body") || name.equals("bone") || name.equals("out") || name.equals("inner")
-            || name.equals("armorRightArm") || name.equals("armorLeftArm");
+        return name.equals("Body") || name.equals("bone")
+            || name.equals("out")
+            || name.equals("inner")
+            || name.equals("armorRightArm")
+            || name.equals("armorLeftArm");
     }
 
-    private ModelRenderer rootRenderer(String name) {
-        if (name.equals("armorHead")) return bipedHead;
-        if (name.equals("Body")) return bipedBody;
-        if (name.equals("armorRightArm")) return bipedRightArm;
-        if (name.equals("armorLeftArm")) return bipedLeftArm;
-        return null;
+    public ModelRenderer rootRenderer(String name) {
+        return switch (name) {
+            case "armorHead" -> bipedHead;
+            case "Body" -> bipedBody;
+            case "armorRightArm" -> bipedRightArm;
+            case "armorLeftArm" -> bipedLeftArm;
+            default -> null;
+        };
     }
 
-    private void addCube(Bone bone, JsonObject definition, boolean hat) {
+    public void addCube(Bone bone, JsonObject definition, boolean hat) {
         float[] origin = coordinates(definition.getAsJsonArray("origin"));
         float[] size = coordinates(definition.getAsJsonArray("size"));
         JsonArray pivotValue = definition.getAsJsonArray("pivot");
@@ -142,27 +146,38 @@ public final class MajoArmorModel extends ModelBiped {
         bone.renderer.addChild(cube);
     }
 
-    private static float[] coordinates(JsonArray values) {
-        return new float[] { values.get(0).getAsFloat(), values.get(1).getAsFloat(), values.get(2).getAsFloat() };
+    public static float[] coordinates(JsonArray values) {
+        return new float[] { values.get(0)
+            .getAsFloat(),
+            values.get(1)
+                .getAsFloat(),
+            values.get(2)
+                .getAsFloat() };
     }
 
-    private static void position(ModelRenderer renderer, float[] pivot, float[] parentPivot) {
+    public static void position(ModelRenderer renderer, float[] pivot, float[] parentPivot) {
         renderer.setRotationPoint(pivot[0] - parentPivot[0], parentPivot[1] - pivot[1], pivot[2] - parentPivot[2]);
     }
 
-    private static void rotate(ModelRenderer renderer, JsonArray degrees) {
+    public static void rotate(ModelRenderer renderer, JsonArray degrees) {
         if (degrees == null) return;
-        renderer.rotateAngleX = (float) Math.toRadians(degrees.get(0).getAsFloat());
-        renderer.rotateAngleY = (float) Math.toRadians(degrees.get(1).getAsFloat());
-        renderer.rotateAngleZ = (float) Math.toRadians(degrees.get(2).getAsFloat());
+        renderer.rotateAngleX = (float) Math.toRadians(
+            degrees.get(0)
+                .getAsFloat());
+        renderer.rotateAngleY = (float) Math.toRadians(
+            degrees.get(1)
+                .getAsFloat());
+        renderer.rotateAngleZ = (float) Math.toRadians(
+            degrees.get(2)
+                .getAsFloat());
     }
 
-    private static final class Bone {
+    public static class Bone {
 
-        private final ModelRenderer renderer;
-        private final float[] pivot;
+        public final ModelRenderer renderer;
+        public final float[] pivot;
 
-        private Bone(ModelRenderer renderer, float[] pivot) {
+        public Bone(ModelRenderer renderer, float[] pivot) {
             this.renderer = renderer;
             this.pivot = pivot;
         }

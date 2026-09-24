@@ -14,7 +14,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.EnumHelper;
 
 import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.client.model.MajoArmorModel;
+import com.science.gtnl.common.render.model.MajoArmorModel;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.common.registry.GameRegistry;

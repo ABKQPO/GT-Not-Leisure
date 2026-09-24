@@ -73,7 +73,8 @@ public class ItemMajoBroom extends Item {
         broom.setPosition(x, y, z);
         broom.rotationYaw = player.rotationYaw;
         broom.setBroomStack(stack);
-        if (!world.getCollidingBoundingBoxes(broom, broom.boundingBox).isEmpty()) return false;
+        if (!world.getCollidingBoundingBoxes(broom, broom.boundingBox)
+            .isEmpty()) return false;
         if (world.isRemote) return true;
         if (!world.spawnEntityInWorld(broom)) return false;
         if (ride) player.mountEntity(broom);

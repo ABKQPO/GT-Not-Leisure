@@ -6,8 +6,8 @@ import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnl.client.model.MajoBroomModel;
 import com.science.gtnl.common.render.entity.MajoBroomRender;
+import com.science.gtnl.common.render.model.MajoBroomModel;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -51,8 +51,7 @@ public class ItemMajoBroomRender implements IItemRenderer {
             }
             default -> {}
         }
-        Minecraft.getMinecraft().renderEngine
-            .bindTexture(MajoBroomRender.TEXTURE);
+        Minecraft.getMinecraft().renderEngine.bindTexture(MajoBroomRender.TEXTURE);
         MajoBroomModel.INSTANCE.render();
         GL11.glPopMatrix();
     }

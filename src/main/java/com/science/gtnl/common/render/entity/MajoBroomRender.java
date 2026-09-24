@@ -8,9 +8,9 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnl.client.model.MajoBroomModel;
 import com.science.gtnl.common.entity.EntityElainaBroom;
 import com.science.gtnl.common.entity.EntityMajoBroom;
+import com.science.gtnl.common.render.model.MajoBroomModel;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -18,9 +18,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class MajoBroomRender extends Render {
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation(RESOURCE_ROOT_ID,
+    public static final ResourceLocation TEXTURE = new ResourceLocation(
+        RESOURCE_ROOT_ID,
         "textures/entity/majo_broom.png");
-    private static final ResourceLocation ELAINA_TEXTURE = new ResourceLocation(RESOURCE_ROOT_ID,
+    private static final ResourceLocation ELAINA_TEXTURE = new ResourceLocation(
+        RESOURCE_ROOT_ID,
         "textures/entity/elaina_broom.png");
 
     public MajoBroomRender() {

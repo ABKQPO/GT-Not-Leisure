@@ -1,4 +1,4 @@
-package com.science.gtnl.client.model;
+package com.science.gtnl.common.render.model;
 
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -6,20 +6,16 @@ import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.model.TexturedQuad;
 import net.minecraft.client.renderer.Tessellator;
 
-/** Matches the original GeckoLib UV orientation on the two flat hat-brim layers. */
-final class MajoHatBrimBox extends ModelBox {
+public class MajoHatBrimBox extends ModelBox {
 
-    private final TexturedQuad top;
-    private final TexturedQuad bottom;
+    public final TexturedQuad top;
+    public final TexturedQuad bottom;
 
-    MajoHatBrimBox(ModelRenderer renderer, int u, int v, float x, float y, float z, int width, int depth) {
+    public MajoHatBrimBox(ModelRenderer renderer, int u, int v, float x, float y, float z, int width, int depth) {
         super(renderer, u, v, x, y, z, width, 0, depth, 0);
 
-        PositionTextureVertex[] corners = new PositionTextureVertex[] {
-            vertex(x + width, y, z),
-            vertex(x + width, y, z + depth),
-            vertex(x, y, z + depth),
-            vertex(x, y, z) };
+        PositionTextureVertex[] corners = new PositionTextureVertex[] { vertex(x + width, y, z),
+            vertex(x + width, y, z + depth), vertex(x, y, z + depth), vertex(x, y, z) };
         top = new TexturedQuad(
             corners.clone(),
             u + depth,
@@ -39,7 +35,7 @@ final class MajoHatBrimBox extends ModelBox {
         bottom.flipFace();
     }
 
-    private static PositionTextureVertex vertex(float x, float y, float z) {
+    public static PositionTextureVertex vertex(float x, float y, float z) {
         return new PositionTextureVertex(x, y, z, 0, 0);
     }
 

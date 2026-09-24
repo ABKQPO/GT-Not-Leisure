@@ -30,7 +30,9 @@ public class EntityLoader {
             64,
             2,
             true);
-        EntityRegistry.registerModEntity(EntityMajoBroom.class, "MajoBroom", 3, ModList.ScienceNotLeisure.ID, 80, 1, false);
-        EntityRegistry.registerModEntity(EntityElainaBroom.class, "ElainaBroom", 4, ModList.ScienceNotLeisure.ID, 80, 1, false);
+        EntityRegistry
+            .registerModEntity(EntityMajoBroom.class, "MajoBroom", 3, ModList.ScienceNotLeisure.ID, 80, 1, false);
+        EntityRegistry
+            .registerModEntity(EntityElainaBroom.class, "ElainaBroom", 4, ModList.ScienceNotLeisure.ID, 80, 1, false);
     }
 }

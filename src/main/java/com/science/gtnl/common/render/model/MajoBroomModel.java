@@ -1,4 +1,4 @@
-package com.science.gtnl.client.model;
+package com.science.gtnl.common.render.model;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,16 +20,16 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public final class MajoBroomModel {
+public class MajoBroomModel {
 
-    private static final String[] FACE_NAMES = { "north", "east", "south", "west", "up", "down" };
-    private static final float[][] NORMALS = { { 0, 0, -1 }, { 1, 0, 0 }, { 0, 0, 1 }, { -1, 0, 0 }, { 0, 1, 0 },
+    public static final String[] FACE_NAMES = { "north", "east", "south", "west", "up", "down" };
+    public static final float[][] NORMALS = { { 0, 0, -1 }, { 1, 0, 0 }, { 0, 0, 1 }, { -1, 0, 0 }, { 0, 1, 0 },
         { 0, -1, 0 } };
     public static final MajoBroomModel INSTANCE = new MajoBroomModel("majo_broom.json");
     public static final MajoBroomModel ELAINA_INSTANCE = new MajoBroomModel("elaina_broom.json");
-    private final List<Element> elements = new ArrayList<>();
+    public final List<Element> elements = new ArrayList<>();
 
-    private MajoBroomModel(String modelFile) {
+    public MajoBroomModel(String modelFile) {
         String path = "/assets/sciencenotleisure/models/entity/" + modelFile;
         try (InputStream stream = MajoBroomModel.class.getResourceAsStream(path)) {
             if (stream == null) throw new IllegalStateException("Missing broom model: " + path);
@@ -58,21 +58,26 @@ public final class MajoBroomModel {
         GL11.glPopMatrix();
     }
 
-    private static float[] vector(JsonArray value) {
-        return new float[] { value.get(0).getAsFloat(), value.get(1).getAsFloat(), value.get(2).getAsFloat() };
+    public static float[] vector(JsonArray value) {
+        return new float[] { value.get(0)
+            .getAsFloat(),
+            value.get(1)
+                .getAsFloat(),
+            value.get(2)
+                .getAsFloat() };
     }
 
-    private static final class Element {
+    public static final class Element {
 
-        private final float[] from;
-        private final float[] to;
-        private final float[] pivot;
-        private final float rotationX;
-        private final float rotationY;
-        private final float rotationZ;
-        private final float[][] uv = new float[6][];
+        public final float[] from;
+        public final float[] to;
+        public final float[] pivot;
+        public final float rotationX;
+        public final float rotationY;
+        public final float rotationZ;
+        public final float[][] uv = new float[6][];
 
-        private Element(JsonObject definition) {
+        public Element(JsonObject definition) {
             from = vector(definition.getAsJsonArray("from"));
             to = vector(definition.getAsJsonArray("to"));
             JsonObject rotation = definition.getAsJsonObject("rotation");
@@ -86,24 +91,33 @@ public final class MajoBroomModel {
                 rotationY = axis.equals("y") ? angle : 0;
                 rotationZ = axis.equals("z") ? angle : 0;
             } else {
-                rotationX = rotation == null ? 0 : rotation.get("x")
-                    .getAsFloat();
-                rotationY = rotation == null ? 0 : rotation.get("y")
-                    .getAsFloat();
-                rotationZ = rotation == null ? 0 : rotation.get("z")
-                    .getAsFloat();
+                rotationX = rotation == null ? 0
+                    : rotation.get("x")
+                        .getAsFloat();
+                rotationY = rotation == null ? 0
+                    : rotation.get("y")
+                        .getAsFloat();
+                rotationZ = rotation == null ? 0
+                    : rotation.get("z")
+                        .getAsFloat();
             }
             JsonObject faces = definition.getAsJsonObject("faces");
             for (int i = 0; i < FACE_NAMES.length; i++) {
                 if (!faces.has(FACE_NAMES[i])) continue;
                 JsonArray coords = faces.getAsJsonObject(FACE_NAMES[i])
                     .getAsJsonArray("uv");
-                uv[i] = new float[] { coords.get(0).getAsFloat() / 16.0F, coords.get(1).getAsFloat() / 16.0F,
-                    coords.get(2).getAsFloat() / 16.0F, coords.get(3).getAsFloat() / 16.0F };
+                uv[i] = new float[] { coords.get(0)
+                    .getAsFloat() / 16.0F,
+                    coords.get(1)
+                        .getAsFloat() / 16.0F,
+                    coords.get(2)
+                        .getAsFloat() / 16.0F,
+                    coords.get(3)
+                        .getAsFloat() / 16.0F };
             }
         }
 
-        private void render() {
+        public void render() {
             GL11.glPushMatrix();
             GL11.glTranslatef(pivot[0], pivot[1], pivot[2]);
             if (rotationZ != 0) GL11.glRotatef(rotationZ, 0, 0, 1);
@@ -122,7 +136,7 @@ public final class MajoBroomModel {
             GL11.glPopMatrix();
         }
 
-        private void drawFace(Tessellator t, int face, float[] tex) {
+        public void drawFace(Tessellator t, int face, float[] tex) {
             float x1 = from[0], y1 = from[1], z1 = from[2];
             float x2 = to[0], y2 = to[1], z2 = to[2];
             float u1 = tex[0], v1 = tex[1], u2 = tex[2], v2 = tex[3];
@@ -167,7 +181,7 @@ public final class MajoBroomModel {
             }
         }
 
-        private static void vertex(Tessellator t, float x, float y, float z, float u, float v) {
+        public static void vertex(Tessellator t, float x, float y, float z, float u, float v) {
             t.addVertexWithUV(x, y, z, u, v);
         }
     }

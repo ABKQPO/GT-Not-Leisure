@@ -10,25 +10,25 @@ import com.science.gtnl.loader.ItemLoader;
 
 public class EntityElainaBroom extends EntityMajoBroom {
 
-    private static final int EFFECT_DURATION_TICKS = 30;
-    private static final int EFFECT_REFRESH_THRESHOLD_TICKS = 5;
+    public static final int EFFECT_DURATION_TICKS = 30;
+    public static final int EFFECT_REFRESH_THRESHOLD_TICKS = 5;
 
     public EntityElainaBroom(World world) {
         super(world);
     }
 
     @Override
-    protected boolean hasUnlimitedFlight() {
+    public boolean hasUnlimitedFlight() {
         return true;
     }
 
     @Override
-    protected double getMaxHorizontalSpeed() {
+    public double getMaxHorizontalSpeed() {
         return super.getMaxHorizontalSpeed() * 2.0D;
     }
 
     @Override
-    protected ItemStack getDefaultBroomStack() {
+    public ItemStack getDefaultBroomStack() {
         return new ItemStack(ItemLoader.elainaBroom);
     }
 
@@ -40,7 +40,7 @@ public class EntityElainaBroom extends EntityMajoBroom {
         refreshEffect(player, Potion.regeneration);
     }
 
-    private void refreshEffect(EntityPlayer player, Potion potion) {
+    public void refreshEffect(EntityPlayer player, Potion potion) {
         PotionEffect current = player.getActivePotionEffect(potion);
         if (current != null && (current.getAmplifier() > 1
             || (current.getAmplifier() == 1 && current.getDuration() > EFFECT_REFRESH_THRESHOLD_TICKS))) return;
