@@ -47,7 +47,6 @@ public enum GTNLItemList implements IItemContainer {
     DirePatternEncoder,
     MEChisel,
     DimensionRespawnAnchor,
-    EssentiaHatch,
     EnderElevatorBlock,
     EnderElevatorSlab,
     EnderElevatorCarpet,
@@ -432,9 +431,10 @@ public enum GTNLItemList implements IItemContainer {
     WhiteLamp,
     WhiteLampBorderless,
 
+    EssentiaHatch,
+    MultiEssentiaInputHatch,
     MultiEssentiaJar,
     MultiEssentiaTube,
-    MultiEssentiaInputHatch,
 
     MegaAlloyBlastSmelter,
     MegaBlastFurnace,
@@ -1208,6 +1208,7 @@ public enum GTNLItemList implements IItemContainer {
     SiphonTurbine,
     SmallInfusionMatrix,
     SmallArcaneAssembler,
+    IndustrialCrucible,
     ExplosionDynamoHatch,
     AutoConfigurationMaintenanceHatch,
     SterileConfigurationMaintenanceHatch,

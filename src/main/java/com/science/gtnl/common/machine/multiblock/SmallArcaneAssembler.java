@@ -117,7 +117,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
                         .atLeast(
                             HatchElement.InputBus,
                             HatchElement.OutputBus,
-                            HatchElement.Energy,
+                            HatchElement.Energy.or(HatchElement.MultiAmpEnergy),
                             HatchElement.Maintenance)
                         .casingIndex(getCasingTextureID())
                         .hint(1)
@@ -650,6 +650,11 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
     }
 
     @Override
+    public boolean getPerfectOC() {
+        return true;
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tooltip = new MultiblockTooltipBuilder();
         tooltip.addMachineType(StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.recipe_type"))
@@ -658,6 +663,8 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
             .addInfo(StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.tooltip.2"))
             .addInfo(StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.tooltip.3"))
             .addInfo(StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.tooltip.4"))
+            .addSupportMultiAmp()
+            .addPerfectOCInfo()
             .beginStructureBlock(5, 5, 7, true)
             .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.casing"), 1)
             .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.casing"), 1)

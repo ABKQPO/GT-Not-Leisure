@@ -413,6 +413,13 @@ gtnl.machine.small_arcane_assembler.tooltip.3=消耗 32 EU/t，每 128 ticks 随
 gtnl.machine.small_arcane_assembler.tooltip.4=随机充能会消耗对应要素的 0-30 CV；达到 30 CV 时获得 200% 充能加成，溢出转移率由 25% 提升至 75%
 gtnl.machine.small_arcane_assembler.casing=任意魔法机械方块
 
+gtnl.machine.industrial_crucible.name=工业坩埚
+gtnl.recipe.industrial_crucible=工业坩埚
+gtnl.machine.industrial_crucible.recipe_type=坩埚炼金
+gtnl.machine.industrial_crucible.tooltip.1=支持源质输入仓、复合源质输入仓与源质供应器。
+gtnl.machine.industrial_crucible.tooltip.2=需要机器所有者解锁对应的神秘研究。
+gtnl.machine.industrial_crucible.casing=任意魔法机械方块
+
 gtnl.machine.quantum_computer.name=量子计算机
 gtnl.machine.quantum_computer.recipe_type=CPU
 gtnl.machine.quantum_computer.tooltip.0=可以像常规的CPU一样执行合成任务
@@ -3386,6 +3393,8 @@ GT5U.gui.text.recipe_result.missing_infusion_research=尚未解锁此注魔研�
 GT5U.gui.text.recipe_result.insufficient_essentia=源质仓内的源质不足
 GT5U.gui.text.recipe_result.missing_arcane_research=尚未解锁此奥术研究
 GT5U.gui.text.recipe_result.missing_arcane_wand=请在控制器槽放入法杖、权杖或手杖
+GT5U.gui.text.recipe_result.missing_crucible_research=机器所有者尚未解锁对应的神秘研究
+GT5U.gui.text.recipe_result.essentia_commit_failed=源质扣减中途失败，机器已短暂暂停
 GT5U.gui.text.recipe_result.insufficient_vis=控制器法杖中的魔力不足
 
 gtnl.block.multi_essentia_input_hatch.name=复合源质输入仓

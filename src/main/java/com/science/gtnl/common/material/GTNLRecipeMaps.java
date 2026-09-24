@@ -204,6 +204,14 @@ public class GTNLRecipeMaps {
                 .setMaxRecipesPerPage(1))
         .build();
 
+    public static RecipeMap<RecipeMapBackend> IndustrialCrucibleRecipes = RecipeMapBuilder
+        .of("gtnl.recipe.industrial_crucible")
+        .maxIO(2, 1, 0, 0)
+        .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
+        .frontend(IndustrialInfusionCraftingRecipesFrontend::new)
+        .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.IndustrialCrucible.get(1)))
+        .build();
+
     public static RecipeMap<RecipeMapBackend> IndustrialShapedArcaneCraftingRecipes = RecipeMapBuilder
         .of("gtnl.recipe.industrial_shaped_arcane_crafting")
         .maxIO(9, 1, 0, 0)
