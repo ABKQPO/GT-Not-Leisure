@@ -92,6 +92,7 @@ import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.loader.ItemLoader;
 import com.science.gtnl.utils.detrav.DetravOreMarkerRenderer;
 import com.science.gtnl.utils.detrav.DetravScannerGUI;
+import com.science.gtnl.utils.detrav.DetravScannerInputHandler;
 import com.science.gtnl.utils.enums.GuiType;
 import com.science.gtnl.utils.event.SubscribeEventClientUtils;
 
@@ -126,6 +127,7 @@ public class ClientProxy extends CommonProxy {
 
     public static final SubscribeEventClientUtils SUBSCRIBE_EVENT_CLIENT_UTILS = new SubscribeEventClientUtils();
     public static final SpoceRenderHandler SPOCE_RENDER_HANDLER = new SpoceRenderHandler();
+    public static final DetravScannerInputHandler DETRAV_SCANNER_INPUT_HANDLER = new DetravScannerInputHandler();
     public static int WATER_CANDLE_RENDER_ID;
     public static int ENDER_ELEVATOR_RENDER_ID;
 
@@ -145,6 +147,7 @@ public class ClientProxy extends CommonProxy {
             .register(GTNLInputHandler.INSTANCE);
 
         MinecraftForge.EVENT_BUS.register(new DetravOreMarkerRenderer());
+        MinecraftForge.EVENT_BUS.register(DETRAV_SCANNER_INPUT_HANDLER);
 
         MinecraftForge.EVENT_BUS.register(SPOCE_RENDER_HANDLER);
         FMLCommonHandler.instance()

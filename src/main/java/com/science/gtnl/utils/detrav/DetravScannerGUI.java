@@ -68,6 +68,11 @@ public class DetravScannerGUI extends GuiScreen {
     private float maxPanY;
     private float zoom = 1F;
     private float targetZoom = 1F;
+    private float zoomAnchorMapX;
+    private float zoomAnchorMapZ;
+    private int zoomAnchorScreenX;
+    private int zoomAnchorScreenY;
+    private boolean zoomAnchorActive;
     private boolean panInitialised;
     private int dragMode;
     private int dragLastX;
@@ -180,23 +185,47 @@ public class DetravScannerGUI extends GuiScreen {
 
     @Override
     public void handleMouseInput() {
+        clearReleasedMapDrag();
+
+        int wheel = Mouse.getEventDWheel();
+        if (wheel != 0) {
+            handleMapWheel(wheel);
+        }
+
         super.handleMouseInput();
+
+        clearReleasedMapDrag();
     }
 
-    public void handleMapWheel(int wheel) {
-        if (map == null || wheel == 0) return;
+    public boolean handleMapWheel(int wheel) {
+        int mouseX = Mouse.getEventX() * width / mc.displayWidth;
+        int mouseY = height - Mouse.getEventY() * height / mc.displayHeight - 1;
+        return handleMapWheel(wheel, mouseX, mouseY);
+    }
 
-        int mouseX = Mouse.getX() * width / mc.displayWidth;
-        int mouseY = height - Mouse.getY() * height / mc.displayHeight - 1;
-        if (!inViewport(mouseX, mouseY)) return;
+    public boolean handleMapWheel(int wheel, int mouseX, int mouseY) {
+        if (map == null || wheel == 0) return false;
 
-        float oldZoom = clampZoom(targetZoom);
-        float mapX = mapCoordinateX(mouseX, oldZoom, targetPanX);
-        float mapZ = mapCoordinateZ(mouseY, oldZoom, targetPanY);
-        targetZoom = clampZoom(oldZoom * (wheel > 0 ? 1.2F : 1F / 1.2F));
+        if (!inViewport(mouseX, mouseY)) {
+            return false;
+        }
+
+        float mapX = mapCoordinateX(mouseX, zoom, panX);
+        float mapZ = mapCoordinateZ(mouseY, zoom, panY);
+        float previousTargetZoom = targetZoom;
+        targetZoom = clampZoom(targetZoom + (wheel > 0 ? 0.15F : -0.15F));
+        if (targetZoom == previousTargetZoom) {
+            return false;
+        }
         targetPanX = mapX - (mouseX - mapOriginX(targetZoom)) / targetZoom;
         targetPanY = mapZ - (mouseY - mapOriginY(targetZoom)) / targetZoom;
+        zoomAnchorMapX = mapX;
+        zoomAnchorMapZ = mapZ;
+        zoomAnchorScreenX = mouseX;
+        zoomAnchorScreenY = mouseY;
+        zoomAnchorActive = true;
         clampTargetPan();
+        return true;
     }
 
     @Override
@@ -222,7 +251,9 @@ public class DetravScannerGUI extends GuiScreen {
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-        if (clickedMouseButton == 0) {
+        // GuiScreen reports wheel events as mouse movement while a button is held. Do not let a scroll event
+        // move the map as a side effect of zooming.
+        if (clickedMouseButton == 0 && Mouse.getEventDWheel() == 0) {
             updateMapDrag(mouseX, mouseY);
         }
     }
@@ -346,16 +377,27 @@ public class DetravScannerGUI extends GuiScreen {
     }
 
     private void beginMapDrag(int mouseX, int mouseY) {
-        if (overVerticalScrollbar(mouseX, mouseY)) {
+        if (map == null) {
+            dragMode = 0;
+            return;
+        }
+
+        boolean overVertical = overVerticalScrollbar(mouseX, mouseY);
+        boolean overHorizontal = overHorizontalScrollbar(mouseX, mouseY);
+        boolean inMapViewport = inViewport(mouseX, mouseY);
+        if (overVertical || overHorizontal || inMapViewport) {
+            cancelZoomAnimation();
+        }
+
+        if (overVertical) {
             dragMode = 3;
-        } else if (overHorizontalScrollbar(mouseX, mouseY)) {
+        } else if (overHorizontal) {
             dragMode = 2;
-        } else if (inViewport(mouseX, mouseY) && (maxPanForZoom(targetZoom, map.width, viewWidth) > 0
-            || maxPanForZoom(targetZoom, map.height, viewHeight) > 0)) {
-                dragMode = 1;
-            } else {
-                dragMode = 0;
-            }
+        } else if (inMapViewport && (maxPanX > 0 || maxPanY > 0)) {
+            dragMode = 1;
+        } else {
+            dragMode = 0;
+        }
         dragLastX = mouseX;
         dragLastY = mouseY;
     }
@@ -370,34 +412,32 @@ public class DetravScannerGUI extends GuiScreen {
             return;
         }
 
+        if (zoomAnchorActive) {
+            cancelZoomAnimation();
+        }
+
         if (dragMode == 1) {
-            targetPanX = clamp(
-                targetPanX - (mouseX - dragLastX) / targetZoom,
-                0,
-                maxPanForZoom(targetZoom, map.width, viewWidth));
-            targetPanY = clamp(
-                targetPanY - (mouseY - dragLastY) / targetZoom,
-                0,
-                maxPanForZoom(targetZoom, map.height, viewHeight));
+            targetPanX = clamp(targetPanX - (mouseX - dragLastX) / zoom, 0, maxPanX);
+            targetPanY = clamp(targetPanY - (mouseY - dragLastY) / zoom, 0, maxPanY);
+            panX = targetPanX;
+            panY = targetPanY;
             dragLastX = mouseX;
             dragLastY = mouseY;
         } else if (dragMode == 2) {
             float trackWidth = viewWidth - (maxPanY > 0 ? SCROLLBAR_THICKNESS : 0);
-            float thumbWidth = Math.max(12, trackWidth * viewWidth / (map.width * targetZoom));
+            float thumbWidth = Math.max(12, trackWidth * viewWidth / (map.width * zoom));
             float trackRange = Math.max(1F, trackWidth - thumbWidth);
-            targetPanX = clamp(
-                (mouseX - viewportX - thumbWidth / 2F) / trackRange * maxPanForZoom(targetZoom, map.width, viewWidth),
-                0,
-                maxPanForZoom(targetZoom, map.width, viewWidth));
+            targetPanX = clamp((mouseX - viewportX - thumbWidth / 2F) / trackRange * maxPanX, 0, maxPanX);
+            panX = targetPanX;
         } else {
             float trackHeight = viewHeight - (maxPanX > 0 ? SCROLLBAR_THICKNESS : 0);
-            float thumbHeight = Math.max(12, trackHeight * viewHeight / (map.height * targetZoom));
+            float thumbHeight = Math.max(12, trackHeight * viewHeight / (map.height * zoom));
             float trackRange = Math.max(1F, trackHeight - thumbHeight);
             targetPanY = clamp(
-                (mouseY - viewportY - thumbHeight / 2F) / trackRange
-                    * maxPanForZoom(targetZoom, map.height, viewHeight),
+                (mouseY - viewportY - thumbHeight / 2F) / trackRange * maxPanForZoom(zoom, map.height, viewHeight),
                 0,
-                maxPanForZoom(targetZoom, map.height, viewHeight));
+                maxPanY);
+            panY = targetPanY;
         }
     }
 
@@ -430,12 +470,43 @@ public class DetravScannerGUI extends GuiScreen {
         maxPanX = maxPanForZoom(zoom, map.width, viewWidth);
         maxPanY = maxPanForZoom(zoom, map.height, viewHeight);
         clampTargetPan();
+
+        if (zoomAnchorActive) {
+            if (zoom == targetZoom) {
+                panX = targetPanX;
+                panY = targetPanY;
+                zoomAnchorActive = false;
+                return;
+            }
+
+            panX = clamp(zoomAnchorMapX - (zoomAnchorScreenX - mapOriginX(zoom)) / zoom, 0, maxPanX);
+            panY = clamp(zoomAnchorMapZ - (zoomAnchorScreenY - mapOriginY(zoom)) / zoom, 0, maxPanY);
+            return;
+        }
+
         panX += (targetPanX - panX) * ZOOM_LERP;
         panY += (targetPanY - panY) * ZOOM_LERP;
         if (Math.abs(targetPanX - panX) < 0.01F) panX = targetPanX;
         if (Math.abs(targetPanY - panY) < 0.01F) panY = targetPanY;
         panX = clamp(panX, 0, maxPanX);
         panY = clamp(panY, 0, maxPanY);
+    }
+
+    private void cancelZoomAnimation() {
+        if (!zoomAnchorActive && zoom == targetZoom) {
+            return;
+        }
+        zoomAnchorActive = false;
+        targetZoom = zoom;
+        targetPanX = panX;
+        targetPanY = panY;
+    }
+
+    private void clearReleasedMapDrag() {
+        if (dragMode != 0 && (!leftMouseDown || !Mouse.isButtonDown(0))) {
+            leftMouseDown = false;
+            dragMode = 0;
+        }
     }
 
     private void clampTargetPan() {
@@ -760,9 +831,17 @@ public class DetravScannerGUI extends GuiScreen {
             if (cellX < 0 || cellZ < 0 || cellX >= map.width || cellZ >= map.height) {
                 continue;
             }
-            drawHollowRect(mapScreenX(cellX) - 2, mapScreenZ(cellZ) - 2, 5, 0xFF000000);
-            drawHollowRect(mapScreenX(cellX) - 1, mapScreenZ(cellZ) - 1, 3, 0xFFFFD700);
+            int centreX = mapScreenX(cellX + 0.5F);
+            int centreZ = mapScreenZ(cellZ + 0.5F);
+            int outerSide = Math.max(2, Math.round(5F * zoom));
+            int innerSide = Math.max(1, Math.round(3F * zoom));
+            drawCenteredHollowRect(centreX, centreZ, outerSide, 0xFF000000);
+            drawCenteredHollowRect(centreX, centreZ, innerSide, 0xFFFFD700);
         }
+    }
+
+    private void drawCenteredHollowRect(int centreX, int centreY, int side, int color) {
+        drawHollowRect(Math.round(centreX - side / 2F), Math.round(centreY - side / 2F), side, color);
     }
 
     private void drawHollowRect(int x, int y, int side, int color) {

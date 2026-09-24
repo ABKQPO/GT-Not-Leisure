@@ -25,6 +25,9 @@ import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import detrav.utils.FluidColors;
+import gregtech.api.interfaces.IOreMaterial;
+import gregtech.common.ores.OreInfo;
+import gregtech.common.ores.OreManager;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.longs.Long2LongMap;
@@ -236,15 +239,16 @@ public class ProspectingPacket extends ClientboundPacket {
         ItemStack stack = new ItemStack(block, 1, meta);
         String name = stack.getDisplayName();
 
-        short objectId;
-        if (nameLookup.containsKey(name)) {
-            objectId = nameLookup.getShort(name);
-        } else {
-            objectId = nextId++;
-            nameLookup.put(name, objectId);
-            objects.put(objectId, ObjectIntImmutablePair.of(name, DEFAULT_COLOR));
-            oreMaterialNames.put(objectId, "");
+        try (OreInfo<IOreMaterial> info = OreManager.getOreInfo(block, meta)) {
+            short[] rgba = info != null && info.material != null ? info.material.getRGBA() : null;
+            addBlock(worldX, worldY, worldZ, name, rgbaToColor(rgba));
         }
+    }
+
+    private void addBlock(int worldX, int worldY, int worldZ, String name, int color) {
+        int relativeX = worldX - (chunkX - size) * 16;
+        int relativeZ = worldZ - (chunkZ - size) * 16;
+        short objectId = getOrCreateObjectId(name, color);
 
         map.put(CoordinatePacker.pack(relativeX, worldY, relativeZ), objectId);
     }
@@ -301,6 +305,17 @@ public class ProspectingPacket extends ClientboundPacket {
         short objectId = nextId++;
         nameLookup.put(name, objectId);
         objects.put(objectId, ObjectIntImmutablePair.of(name, rgbaToColor(fluidColor)));
+        oreMaterialNames.put(objectId, "");
+        return objectId;
+    }
+
+    private short getOrCreateObjectId(String name, int color) {
+        if (nameLookup.containsKey(name)) {
+            return nameLookup.getShort(name);
+        }
+        short objectId = nextId++;
+        nameLookup.put(name, objectId);
+        objects.put(objectId, ObjectIntImmutablePair.of(name, color));
         oreMaterialNames.put(objectId, "");
         return objectId;
     }

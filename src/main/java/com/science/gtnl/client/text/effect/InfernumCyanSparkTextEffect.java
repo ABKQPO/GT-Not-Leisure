@@ -41,12 +41,8 @@ public class InfernumCyanSparkTextEffect extends ShaderTextEffect {
         float glowHalfWidth = width * 0.115f * 6.0f;
         float glowHalfHeight = 66.0f * 0.6f * 0.5f;
         float glowCenterY = height / 3.0f;
-        float glowPadding = Math.max(
-            glowHalfHeight - glowCenterY,
-            glowHalfHeight + glowCenterY - height);
-        return Math.max(
-            height,
-            Math.max(PARTICLE_PADDING, Math.max(glowPadding, glowHalfWidth - width * 0.5f)));
+        float glowPadding = Math.max(glowHalfHeight - glowCenterY, glowHalfHeight + glowCenterY - height);
+        return Math.max(height, Math.max(PARTICLE_PADDING, Math.max(glowPadding, glowHalfWidth - width * 0.5f)));
     }
 
     @Override
