@@ -86,6 +86,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
     public static final int maxRepairedDamagePerOperation = 10000;
     public static final long usedEuPerDurability = 1000;
     public static final int usedUumPerDurability = 1;
+    public static final long EU_TO_RF_RATIO = 100L;
     public static final FluidStack UUM_TEMPLATE = Materials.UUMatter.getFluid(1);
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String EI_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/energy_infuser";
@@ -222,19 +223,22 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
                 ItemStack individualStack = stack.copy();
                 individualStack.stackSize = 1;
                 Item item = individualStack.getItem();
+                long remainingEU = euPerItem;
 
                 if (item != null && item.isRepairable()) {
                     int currentDamage = item.getDamage(individualStack);
                     if (currentDamage > 0) {
                         int maxRepair = Math.min(currentDamage, maxRepairedDamagePerOperation);
-                        long possibleRepair = Math.min(maxRepair, euPerItem / usedEuPerDurability);
+                        long possibleRepair = Math.min(maxRepair, remainingEU / usedEuPerDurability);
                         int uumNeeded = (int) (possibleRepair * usedUumPerDurability);
 
                         if (possibleRepair > 0 && uumNeeded <= remainingUum
                             && depleteInput(new FluidStack(Materials.UUMatter.mFluid, uumNeeded))) {
                             remainingUum -= uumNeeded;
                             item.setDamage(individualStack, currentDamage - (int) possibleRepair);
-                            decreaseEUValue(possibleRepair * usedEuPerDurability);
+                            long repairedEU = possibleRepair * usedEuPerDurability;
+                            decreaseEUValue(repairedEU);
+                            remainingEU -= repairedEU;
                         }
                     }
                 }
@@ -242,19 +246,26 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
                 if (item instanceof IElectricItem electricItem) {
                     double missingItemCharge = electricItem.getMaxCharge(individualStack)
                         - ElectricItem.manager.getCharge(individualStack);
-                    double charge = Math.min(missingItemCharge, euPerItem);
-                    long charged = (long) Math.ceil(
-                        ElectricItem.manager
-                            .charge(individualStack, charge, electricItem.getTier(individualStack), true, false));
+                    double charge = Math.min(Math.max(0, missingItemCharge), remainingEU);
+                    long charged = Math.min(
+                        remainingEU,
+                        (long) Math.ceil(
+                            ElectricItem.manager
+                                .charge(individualStack, charge, electricItem.getTier(individualStack), true, false)));
                     decreaseEUValue(charged);
                 } else if (Mods.COFHCore.isModLoaded() && item instanceof IEnergyContainerItem energyContainerItem) {
-                    long rf = Math.min(
-                        energyContainerItem.getMaxEnergyStored(individualStack)
-                            - energyContainerItem.getEnergyStored(individualStack),
-                        euPerItem * GregTechAPI.mEUtoRF / 10L);
-                    int rfToCharge = (int) rf;
-                    rf = energyContainerItem.receiveEnergy(individualStack, rfToCharge, false);
-                    decreaseEUValue(rf * 10L / GregTechAPI.mEUtoRF);
+                    long missingRF = Math.max(
+                        0L,
+                        (long) energyContainerItem.getMaxEnergyStored(individualStack)
+                            - energyContainerItem.getEnergyStored(individualStack));
+                    long rfBudget = toRfBudget(remainingEU);
+                    int rfToCharge = (int) Math.min(missingRF, rfBudget);
+                    if (rfToCharge > 0) {
+                        int receivedRF = energyContainerItem.receiveEnergy(individualStack, rfToCharge, false);
+                        long acceptedRF = Math.max(0L, Math.min((long) receivedRF, rfToCharge));
+                        long consumedEU = Math.min(remainingEU, toEuCost(acceptedRF));
+                        decreaseEUValue(consumedEU);
+                    }
                 }
 
                 if ((isItemStackFullyCharged(individualStack) && isItemStackFullyRepaired(individualStack))
@@ -343,7 +354,33 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
         return maxStoredEU;
     }
 
+    private long toRfBudget(long availableEU) {
+        if (availableEU <= 0 || GregTechAPI.mEUtoRF <= 0) {
+            return 0;
+        }
+
+        long maxSafeEU = (Integer.MAX_VALUE * EU_TO_RF_RATIO) / GregTechAPI.mEUtoRF;
+        if (availableEU > maxSafeEU) {
+            return Integer.MAX_VALUE;
+        }
+
+        return availableEU * GregTechAPI.mEUtoRF / EU_TO_RF_RATIO;
+    }
+
+    private long toEuCost(long rf) {
+        if (rf <= 0 || GregTechAPI.mEUtoRF <= 0) {
+            return 0;
+        }
+
+        long scaledRF = rf * EU_TO_RF_RATIO;
+        return (scaledRF + GregTechAPI.mEUtoRF - 1L) / GregTechAPI.mEUtoRF;
+    }
+
     public void decreaseEUValue(long energyToRemove) {
+        if (energyToRemove <= 0) {
+            return;
+        }
+
         if (wirelessMode) {
             WirelessNetworkManager.addEUToGlobalEnergyMap(ownerUUID, -energyToRemove);
             return;

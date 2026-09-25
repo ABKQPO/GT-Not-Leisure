@@ -73,7 +73,7 @@ public class MaterialLoader {
 
         registryOreDictionary();
 
-        GTNLWorldgenloader.registry();
+        // GTNLWorldgenloader.registry();
     }
 
     public static void loadPostInit() {
