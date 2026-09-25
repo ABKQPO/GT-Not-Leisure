@@ -4,20 +4,26 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import com.Nxer.TwistSpaceTechnology.common.recipeMap.GTCMRecipe;
 import com.Nxer.TwistSpaceTechnology.loader.RecipeLoader;
+import com.Nxer.TwistSpaceTechnology.recipe.machineRecipe.expanded.CircuitAssemblyLineWithoutImprintRecipePool;
 import com.science.gtnl.ScienceNotLeisure;
 
 @Mixin(value = RecipeLoader.class, remap = false)
 public abstract class MixinRecipeLoader {
 
     @Redirect(
-        method = "loadRecipes",
+        method = "loadRecipesServerStarted",
         at = @At(
             value = "INVOKE",
             target = "Lcom/Nxer/TwistSpaceTechnology/recipe/machineRecipe/expanded/CircuitAssemblyLineWithoutImprintRecipePool;loadRecipes()V"))
     private static void redirectCircuitAssemblyLineWithoutImprintLoadRecipes() {
         ScienceNotLeisure.LOG.info(
             "[GTNL] Detected TwistSpaceTechnology, intercept AdvCircuitAssemblyLine recipe loader to server start");
+        GTCMRecipe.AdvCircuitAssemblyLineRecipeMap.getBackend()
+            .clearRecipes();
+        CircuitAssemblyLineWithoutImprintRecipePool.loadRecipes();
+        System.out.println("[GTNL] Register TwistSpaceTechnology AdvCircuitAssemblyLine recipes");
     }
 
     @Redirect(

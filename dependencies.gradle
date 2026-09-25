@@ -66,7 +66,7 @@ dependencies {
 
     implementation("org.ow2.asm:asm-commons:9.8")
 
-    compileOnlyApi("com.github.Nxer:Twist-Space-Technology-Mod:0.7.15:dev") { transitive = false }
+    compileOnlyApi("com.github.Nxer:Twist-Space-Technology-Mod:0.8.0-beta3.2:dev") { transitive = false }
     compileOnlyApi("com.github.Keriils:NH-Utilities:1.6.4:dev") { transitive = false }
     compileOnlyApi(rfg.deobf("curse.maven:extra-utilities-225561:2264383")) { transitive = false }
 
@@ -97,9 +97,9 @@ configurations.configureEach {
 project.getConfigurations()
     .all(c -> {
         final DependencySubstitutions ds = c.getResolutionStrategy()
-            .getDependencySubstitution();
+            .getDependencySubstitution()
         ds.substitute(ds.module("com.github.GTNewHorizons:Baubles"))
             .using(ds.module("com.github.GTNewHorizons:Baubles-Expanded:2.2.24-GTNH"))
             .withClassifier("dev")
-            .because("Baubles-Expanded replaces Baubles");
-    });
+            .because("Baubles-Expanded replaces Baubles")
+    })
