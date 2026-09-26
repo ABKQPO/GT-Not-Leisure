@@ -36,6 +36,7 @@ public enum ModList implements IMod, ITargetMod {
     GiveCount("givecount", "Give Count", false),
     ChromaticTooltips("chromatictooltips", "Chromatic Tooltips", false),
     ChromaticTooltipsCompat("chromatictooltipscompat", "Chromatic Tooltips Compat", false),
+    AppliedEnergistics("appliedenergistics2", "Applied Energistics 2", false),
 
     NewHorizonsCoreMod("dreamcraft", "GT New Horizons Core Mod", "com.dreammaster.coremod.DreamCoreMod", false),
     GalaxySpace("GalaxySpace", "Galaxy Space", false),

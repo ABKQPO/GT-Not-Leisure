@@ -55,6 +55,8 @@ gtnl.gui.config.general.super_creeper=Super Creeper
 gtnl.gui.config.general.super_creeper.tooltip=Configure behaviors for creepers with enhanced AI.
 gtnl.gui.config.general.tickrate=Tickrate Settings
 gtnl.gui.config.general.tickrate.tooltip=Adjust server tickrate and synchronization.
+gtnl.gui.config.general.minecraft=Minecraft Settings
+gtnl.gui.config.general.minecraft.tooltip=Modifications made to some aspects of minecraft
 
 gtnl.gui.config.general.debug.enabledebugmode=Debug Mode
 gtnl.gui.config.general.debug.enabledebugmode.tooltip=Enable debug print log output.
@@ -152,6 +154,11 @@ gtnl.gui.config.general.other.not_enough_items.enablespecialcheaticon=Special Ch
 gtnl.gui.config.general.other.not_enough_items.enablespecialcheaticon.tooltip=Enable the special rendering for the cheat mode button.
 gtnl.gui.config.general.other.not_enough_items.specialicontype=Special Icon Type
 gtnl.gui.config.general.other.not_enough_items.specialicontype.tooltip=Specify the rendering type for the special cheat button.
+gtnl.gui.config.general.other.applied_energistics=Applied Energistics 2
+gtnl.gui.config.general.other.applied_energistics.enable_processing_pattern_capacity_mixin=Enable Processing Pattern Capacity
+gtnl.gui.config.general.other.applied_energistics.enable_processing_pattern_capacity_mixin.tooltip=Enable configurable capacity for Processing Pattern Terminals. Requires a game restart.
+gtnl.gui.config.general.other.applied_energistics.processing_pattern_capacity_multiplier=Processing Pattern Capacity Multiplier
+gtnl.gui.config.general.other.applied_energistics.processing_pattern_capacity_multiplier.tooltip=Set the Processing Pattern Terminal capacity to 16N input slots and 4N output slots, or the reverse. The default value 2 provides 32:8 capacity. Applies when opening a terminal after configuration reload.
 
 gtnl.gui.config.general.recipe.enableassemblinglinerecipestimechange=Assembly Line Time Adjustment
 gtnl.gui.config.general.recipe.enableassemblinglinerecipestimechange.tooltip=Significantly reduce the time required for certain Assembly Line recipes.

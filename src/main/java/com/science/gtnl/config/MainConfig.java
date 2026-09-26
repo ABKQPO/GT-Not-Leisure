@@ -286,6 +286,25 @@ public class MainConfig {
             @DefaultInt(0)
             public int specialIconType = 0;
         }
+
+        @Name("applied_energistics")
+        public final AppliedEnergistics applied_energistics = new AppliedEnergistics();
+
+        @Comment("Applied Energistics 2")
+        @Sync
+        public static class AppliedEnergistics {
+
+            @Comment("Enable configurable Processing Pattern Terminal capacity behavior")
+            @LangKey("gtnl.gui.config.general.other.applied_energistics.enable_processing_pattern_capacity_mixin")
+            @DefaultBoolean(true)
+            public boolean enableProcessingPatternCapacityMixin = true;
+
+            @Comment("Multiplier for Processing Pattern Terminal capacity. The effective layout is 16N:4N.")
+            @LangKey("gtnl.gui.config.general.other.applied_energistics.processing_pattern_capacity_multiplier")
+            @RangeInt(min = 1, max = 64)
+            @DefaultInt(2)
+            public int processingPatternCapacityMultiplier = 2;
+        }
     }
 
     public static final ReAvaritia re_avaritia = new ReAvaritia();

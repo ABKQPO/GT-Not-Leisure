@@ -55,6 +55,8 @@ gtnl.gui.config.general.super_creeper=超级苦力怕
 gtnl.gui.config.general.super_creeper.tooltip=配置具有增强 AI 的苦力怕行为
 gtnl.gui.config.general.tickrate=刻率设置
 gtnl.gui.config.general.tickrate.tooltip=调整服务器运行速度与同步
+gtnl.gui.config.general.minecraft=Minecraft设置
+gtnl.gui.config.general.minecraft.tooltip=针对Minecraft的一些东西做出的修改
 
 gtnl.gui.config.general.debug.enabledebugmode=调试模式
 gtnl.gui.config.general.debug.enabledebugmode.tooltip=启用调试日志输出
@@ -152,6 +154,11 @@ gtnl.gui.config.general.other.not_enough_items.enablespecialcheaticon=特殊作�
 gtnl.gui.config.general.other.not_enough_items.enablespecialcheaticon.tooltip=启用特殊作弊模式按钮渲染
 gtnl.gui.config.general.other.not_enough_items.specialicontype=特殊图标渲染类型
 gtnl.gui.config.general.other.not_enough_items.specialicontype.tooltip=指定作弊按钮的渲染类型
+gtnl.gui.config.general.other.applied_energistics=应用能源 2
+gtnl.gui.config.general.other.applied_energistics.enable_processing_pattern_capacity_mixin=启用处理样板可配置容量
+gtnl.gui.config.general.other.applied_energistics.enable_processing_pattern_capacity_mixin.tooltip=启用处理样板终端的可配置容量，需要重启游戏
+gtnl.gui.config.general.other.applied_energistics.processing_pattern_capacity_multiplier=处理样板容量倍率
+gtnl.gui.config.general.other.applied_energistics.processing_pattern_capacity_multiplier.tooltip=将处理样板终端容量设置为 16N 输入槽和 4N 输出槽，或反向排列。默认值 2 提供 32:8 容量。配置重载后重新打开终端即可生效
 
 gtnl.gui.config.general.recipe.enableassemblinglinerecipestimechange=装配线配方时间调整
 gtnl.gui.config.general.recipe.enableassemblinglinerecipestimechange.tooltip=大幅减少部分装配线配方所需时间

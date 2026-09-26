@@ -180,6 +180,23 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable")
         .setPhase(Phase.LATE)),
 
+    APPLIED_ENERGISTICS_PROCESSING_PATTERN(new MixinBuilder("Applied Energistics processing pattern capacity mixins")
+        .addCommonMixins(
+            "appliedEnergistics.processingPattern.MixinPartPatternTerminal",
+            "appliedEnergistics.processingPattern.MixinPartPatternTerminalEx",
+            "appliedEnergistics.processingPattern.MixinContainerPatternTerm",
+            "appliedEnergistics.processingPattern.MixinContainerPatternTermEx",
+            "appliedEnergistics.processingPattern.MixinWirelessPatternTerminalGuiObject")
+        .addClientMixins("appliedEnergistics.processingPattern.MixinGuiPatternTermEx")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.AppliedEnergistics)),
+
+    APPLIED_ENERGISTICS_PROCESSING_PATTERN_NEI(new MixinBuilder("Applied Energistics processing pattern NEI layout")
+        .addClientMixins("appliedEnergistics.processingPattern.MixinNEIPatternViewHandler")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.AppliedEnergistics)
+        .addRequiredMod(ModList.NotEnoughItems)),
+
     THAUMCRAFT_CLIENT(
         new MixinBuilder("Thaumcraft client compatibility mixins").addClientMixins("thaumcraft.MixinTileJarRenderer")
             .setPhase(Phase.LATE)
