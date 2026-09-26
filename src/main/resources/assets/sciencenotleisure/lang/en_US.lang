@@ -2548,6 +2548,13 @@ gtnl.machine.hydraulic_super_buffer.tooltip.4=§7Voltage OUT: §e0§7 (§eSteam�
 gtnl.machine.hydraulic_super_buffer.tooltip.5=§7Amperage: §b0§7
 gtnl.machine.hydraulic_super_buffer.tooltip.6=§7Capacity: §9No power transfer function!§7
 
+gt.blockmachines.breel.input_bus.steam.name=Input Bus (Breel)
+gt.blockmachines.breel.input_bus.steam.tooltip=Item Input for Steam Multiblocks\nShift + right click with screwdriver to turn Sort mode on/off\nAutomatically pulls items from the container in front of it\nCapacity: %s slots\nDoes not work with non-steam multiblocks
+gt.blockmachines.breel.output_bus.steam.name=Output Bus (Breel)
+gt.blockmachines.breel.output_bus.steam.tooltip=Item Output for Steam Multiblocks\nAutomatically exports items into the container in front of it\nCapacity: %s slots\nDoes not work with non-steam multiblocks
+gt.blockmachines.stronze.input_hatch.steam.name=Input Hatch (Stronze)
+gt.blockmachines.stronze.input_hatch.steam.tooltip=Fluid Input for Multiblocks\nRight click with screwdriver to toggle input filter\nCapacity: %s L\nAccepts any fluid, and automatically drains the tank in front of it
+
 gt.blockmachines.wire.stargate.01.name=1x Stargate Wire
 gt.blockmachines.wire.stargate.02.name=2x Stargate Wire
 gt.blockmachines.wire.stargate.04.name=4x Stargate Wire

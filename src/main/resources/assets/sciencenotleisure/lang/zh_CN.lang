@@ -2548,6 +2548,13 @@ gtnl.machine.hydraulic_super_buffer.tooltip.4=§7电压输出: §e0§7 (§e蒸�
 gtnl.machine.hydraulic_super_buffer.tooltip.5=§7安培数：§b0§7
 gtnl.machine.hydraulic_super_buffer.tooltip.6=§7容量: §9没有输送电量功能！§7
 
+gt.blockmachines.breel.input_bus.steam.name=输入总线（青铁）
+gt.blockmachines.breel.input_bus.steam.tooltip=为多方块机器输入物品\n手持螺丝刀Shift右键以切换分类模式\n自动从正面相邻容器拉取物品\n容量：%s格\n无法用于非蒸汽多方块
+gt.blockmachines.breel.output_bus.steam.name=输出总线（青铁）
+gt.blockmachines.breel.output_bus.steam.tooltip=为多方块机器输出物品\n自动把产物输出到正面相邻容器\n容量：%s格\n无法用于非蒸汽多方块
+gt.blockmachines.stronze.input_hatch.steam.name=输入仓（青钢）
+gt.blockmachines.stronze.input_hatch.steam.tooltip=为多方块机器输入流体\n手持螺丝刀右键以切换输入过滤\n容量：%s升\n接受任意流体，并自动从正面相邻容器抽取
+
 gt.blockmachines.wire.stargate.01.name=1x%material导线
 gt.blockmachines.wire.stargate.02.name=2x%material导线
 gt.blockmachines.wire.stargate.04.name=4x%material导线

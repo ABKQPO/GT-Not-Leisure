@@ -40,6 +40,9 @@ import com.science.gtnl.common.machine.hatch.ExplosionDynamoHatch;
 import com.science.gtnl.common.machine.hatch.HumongousDualInputHatch;
 import com.science.gtnl.common.machine.hatch.HumongousNinefoldInputHatch;
 import com.science.gtnl.common.machine.hatch.HumongousSolidifierHatch;
+import com.science.gtnl.common.machine.hatch.MTEBreelSteamInputBus;
+import com.science.gtnl.common.machine.hatch.MTEBreelSteamOutputBus;
+import com.science.gtnl.common.machine.hatch.MTEStronzeInputHatch;
 import com.science.gtnl.common.machine.hatch.ManaDynamoHatch;
 import com.science.gtnl.common.machine.hatch.ManaEnergyHatch;
 import com.science.gtnl.common.machine.hatch.NinefoldInputHatch;
@@ -1570,6 +1573,39 @@ public class MachineLoader {
     }
 
     public static void registerHatch() {
+        GTNLItemList.BreelReinforcedSteamInputBus.set(
+            new MTEBreelSteamInputBus(
+                GTNLMachineID.BREEL_STEAM_INPUT_BUS.ID,
+                "breel.input_bus.steam",
+                "gt.blockmachines.breel.input_bus.steam.name",
+                0));
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.BreelReinforcedSteamInputBus.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.BreelReinforcedSteamInputBus.get(1), AnimatedText.AUTHOR_LINEBROKE);
+
+        GTNLItemList.BreelReinforcedSteamOutputBus.set(
+            new MTEBreelSteamOutputBus(
+                GTNLMachineID.BREEL_STEAM_OUTPUT_BUS.ID,
+                "breel.output_bus.steam",
+                "gt.blockmachines.breel.output_bus.steam.name",
+                0));
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.BreelReinforcedSteamOutputBus.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.BreelReinforcedSteamOutputBus.get(1), AnimatedText.AUTHOR_LINEBROKE);
+
+        GTNLItemList.StronzeReinforcedSteamInputHatch.set(
+            new MTEStronzeInputHatch(
+                GTNLMachineID.STRONZE_STEAM_INPUT_HATCH.ID,
+                "stronze.input_hatch.steam",
+                "gt.blockmachines.stronze.input_hatch.steam.name",
+                0));
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.StronzeReinforcedSteamInputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler
+            .addItemTooltip(GTNLItemList.StronzeReinforcedSteamInputHatch.get(1), AnimatedText.AUTHOR_LINEBROKE);
+
         Set<GTUtility.FluidId> acceptedFluids = new HashSet<>();
         acceptedFluids.add(
             GTUtility.FluidId.create(

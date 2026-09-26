@@ -423,6 +423,42 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .eut(16)
             .addTo(SMFR);
 
+        RecipeBuilder.builder()
+            .itemInputs(
+                GregtechItemList.Hatch_Input_Bus_Steam.get(1),
+                GTNLMaterials.Breel.get(OrePrefixes.plate, 1),
+                GTNLMaterials.Stronze.get(OrePrefixes.plate, 1),
+                GTNLMaterials.Breel.get(OrePrefixes.pipeLarge, 1),
+                GTUtility.getIntegratedCircuit(1))
+            .itemOutputs(GTNLItemList.BreelReinforcedSteamInputBus.get(1))
+            .duration(5 * SECONDS)
+            .eut(16)
+            .addTo(SMFR);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                GregtechItemList.Hatch_Output_Bus_Steam.get(1),
+                GTNLMaterials.Breel.get(OrePrefixes.plate, 1),
+                GTNLMaterials.Stronze.get(OrePrefixes.plate, 1),
+                GTNLMaterials.Breel.get(OrePrefixes.pipeLarge, 1),
+                GTUtility.getIntegratedCircuit(2))
+            .itemOutputs(GTNLItemList.BreelReinforcedSteamOutputBus.get(1))
+            .duration(5 * SECONDS)
+            .eut(16)
+            .addTo(SMFR);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                GTNLItemList.OriginalInputHatch.get(1),
+                GTNLMaterials.Breel.get(OrePrefixes.plate, 1),
+                GTNLMaterials.Stronze.get(OrePrefixes.plate, 1),
+                GTNLMaterials.Stronze.get(OrePrefixes.pipeLarge, 1),
+                GTUtility.getIntegratedCircuit(3))
+            .itemOutputs(GTNLItemList.StronzeReinforcedSteamInputHatch.get(1))
+            .duration(5 * SECONDS)
+            .eut(16)
+            .addTo(SMFR);
+
         // Hatches
 
         RecipeBuilder.builder()
@@ -616,7 +652,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
         // Hydraulic Assembling Casing
         RecipeBuilder.builder()
             .itemInputs(
-                GTNLMaterials.Breel .get(OrePrefixes.pipeMedium, 1),
+                GTNLMaterials.Breel.get(OrePrefixes.pipeMedium, 1),
                 GTNLMaterials.Breel.get(OrePrefixes.plate, 2),
                 GTNLItemList.HydraulicArm.get(1))
             .itemOutputs(GTNLItemList.HydraulicAssemblingCasing.get(1))

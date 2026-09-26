@@ -366,6 +366,24 @@ public class CraftingTableRecipes implements IRecipePool {
                 GregtechItemList.Hatch_Input_Bus_Steam.get(1) });
 
         GTModHandler.addCraftingRecipe(
+            GTNLItemList.BreelReinforcedSteamInputBus.get(1),
+            new Object[] { "ABA", "CDC", "ABA", 'A', GTNLMaterials.Breel.get(OrePrefixes.plate, 1), 'B',
+                GTNLMaterials.Stronze.get(OrePrefixes.plate, 1), 'C', GTNLMaterials.Breel.get(OrePrefixes.pipeLarge, 1),
+                'D', GregtechItemList.Hatch_Input_Bus_Steam.get(1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.BreelReinforcedSteamOutputBus.get(1),
+            new Object[] { "ABA", "CDC", "ABA", 'A', GTNLMaterials.Breel.get(OrePrefixes.plate, 1), 'B',
+                GTNLMaterials.Stronze.get(OrePrefixes.plate, 1), 'C', GTNLMaterials.Breel.get(OrePrefixes.pipeLarge, 1),
+                'D', GregtechItemList.Hatch_Output_Bus_Steam.get(1) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.StronzeReinforcedSteamInputHatch.get(1),
+            new Object[] { "ABA", "CDC", "ABA", 'A', GTNLMaterials.Breel.get(OrePrefixes.plate, 1), 'B',
+                GTNLMaterials.Stronze.get(OrePrefixes.plate, 1), 'C',
+                GTNLMaterials.Stronze.get(OrePrefixes.pipeLarge, 1), 'D', GTNLItemList.OriginalInputHatch.get(1) });
+
+        GTModHandler.addCraftingRecipe(
             GTNLItemList.LargeBoilerBronze.get(1),
             new Object[] { "ABA", "CDC", "AEA", 'A', GTOreDictUnificator.get(OrePrefixes.cableGt01, Materials.Tin, 1L),
                 'B', GTOreDictUnificator.get(OrePrefixes.rotor, Materials.Bronze, 1L), 'C',
