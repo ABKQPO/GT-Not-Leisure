@@ -62,6 +62,10 @@ gtnl.gui.config.general.debug.enabledebugmode.tooltip=Enable debug print log out
 gtnl.gui.config.general.effect.enableghostlyshape=Enable Ghostly Shape
 gtnl.gui.config.general.effect.enableghostlyshape.tooltip=When the player dies and respawns, give the player the Ghost Shape effect.
 
+gtnl.gui.config.general.item.broom=Broom
+gtnl.gui.config.general.item.broom.enableviewcontrol=Enable Broom View Control
+gtnl.gui.config.general.item.broom.enableviewcontrol.tooltip=Allow looking up or down while moving forward to control broom altitude. Ascend and descend keys still work when disabled.
+
 gtnl.gui.config.general.item.player_doll=Player Doll
 gtnl.gui.config.general.item.player_doll.enablecustomskin=Custom Player Skin
 gtnl.gui.config.general.item.player_doll.enablecustomskin.tooltip=Enable custom player skin for the Player Doll.
@@ -3702,6 +3706,7 @@ gtnl.potion.shimmering=Shimmering
 gtnl.recipe.shimmer=Shimmer Transformation
 
 gtnl.potion.ghostly_shape=Ghostly Shape
+gtnl.potion.miss_broom_blessing=Miss Broom's Blessing
 gtnl.effect.ghostly_shape.cancelled=One of your actions canceled the Ghostly Shape effect
 
 item.gtnl.infinity_cell.name=ME Infinity %s Storage Cell
@@ -4288,3 +4293,49 @@ gtnl.text_effect.title=Animated text effects
 gtnl.text_effect.palette=Change palette
 gtnl.text_effect.bold=Toggle bold
 gtnl.text_effect.italic=Toggle italic
+
+item.gtnl.majo_hat.name=§{infernum_spark_rarity;colors=#FF68C8,#E99BFF,#B978F2,#FFD6F3}Witch's Hat§r
+item.gtnl.majo_robe.name=§{infernum_spark_rarity;colors=#FF68C8,#E99BFF,#B978F2,#FFD6F3}Witch's Robe§r
+item.gtnl.majo_armor.vis_discount=Vis discount: %s%%
+item.gtnl.majo_hat.lore.0=She lowers her brim as the wind crosses the rooftops of an unfamiliar town.
+item.gtnl.majo_hat.lore.1=On sunny days, it shields her from the glaring light;
+item.gtnl.majo_hat.lore.2=on rainy nights, it helps her find the lights in the distance.
+item.gtnl.majo_hat.lore.3=Wherever the next stop may be, she puts her hat back on and sets off with a smile.
+item.gtnl.majo_hat.worn=While worn:
+item.gtnl.majo_hat.tooltip.0=Armor +7
+item.gtnl.majo_hat.tooltip.1=Night Vision
+item.gtnl.majo_hat.tooltip.2=Immune to Blindness and Nausea
+item.gtnl.majo_hat.tooltip.3=Unbreakable
+item.gtnl.majo_robe.lore.0=The hem brushes past mountain paths, market steps, and countless unfamiliar places.
+item.gtnl.majo_robe.lore.1=It gathers the dust of the road and remembers every meeting and farewell.
+item.gtnl.majo_robe.lore.2=As night falls, the witch wraps herself in her robe, keeping today's stories close and wondering what tomorrow may bring.
+item.gtnl.majo_robe.worn=While worn:
+item.gtnl.majo_robe.armor=Armor +10
+item.gtnl.majo_robe.tooltip.0=Unbreakable
+item.gtnl.majo_robe.tooltip.1=Maximum health +20
+item.gtnl.majo_robe.tooltip.2=Immune to knockback
+item.gtnl.majo_robe.tooltip.3=Grants Warp Ward
+item.gtnl.majo_robe.tooltip.4=When health falls below 10:
+item.gtnl.majo_robe.tooltip.5=Regeneration V and Resistance III for 15 seconds
+item.gtnl.majo_robe.tooltip.6=Cooldown: 60 seconds
+item.gtnl.majo_broom.name=§{starsilver_rarity}Magic Broom§r
+item.gtnl.majo_broom.lore.0=The first step to becoming a witch is to own a broom.
+item.gtnl.majo_broom.lore.1=A true witch takes good care of every broom she calls her own.
+item.gtnl.majo_broom.tooltip.0=Place it in the world and ride it through the air.
+item.gtnl.majo_broom.tooltip.1=Enchant the broom to make it stronger.
+item.gtnl.majo_broom.view_control_hint=(View based flight control can be disabled in the config.)
+item.gtnl.elaina_broom.name=§{infernum_spark_rarity}Elaina's Broom§r
+item.gtnl.elaina_brooch.name=Elaina's Brooch
+item.gtnl.elaina_broom.lore.0=Miss Broom has traveled with a certain cheeky witch for a long time.
+item.gtnl.elaina_broom.lore.1=Together they crossed seas of clouds and rested on the roofs of unfamiliar towns.
+item.gtnl.elaina_broom.lore.2=Through a long journey of changing sights and stories, she stayed by her side.
+item.gtnl.elaina_broom.lore.3=Whenever she wishes, their next journey can begin.
+item.gtnl.elaina_broom.tooltip.0=Unlimited flight time
+item.gtnl.elaina_broom.tooltip.1=Cannot be destroyed
+item.gtnl.elaina_broom.tooltip.2=Grants Regeneration II and Resistance II while riding
+item.gtnl.elaina_broom.tooltip.3=Receive Miss Broom's blessing!
+key.categories.gtnl=GTNL
+key.gtnl.majo_broom.place=Place Magic Broom
+key.gtnl.majo_broom.ride=Place and Ride Magic Broom
+key.gtnl.majo_broom.ascend=Ascend on Broom
+key.gtnl.majo_broom.descend=Descend on Broom
