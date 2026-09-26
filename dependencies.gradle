@@ -19,7 +19,7 @@ dependencies {
     implementation("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev")
     api("com.github.GTNewHorizons:GTNHLib:0.11.51:dev")
     compileOnly("com.github.GTNewHorizons:Angelica:2.2.19:dev") { transitive = false }
-    runtimeOnlyNonPublishable("com.github.GTNewHorizons:Angelica:2.2.19:dev")
+    // runtimeOnlyNonPublishable("com.github.GTNewHorizons:Angelica:2.2.19:dev")
     api("com.github.GTNewHorizons:Postea:1.2.6:dev")
     implementation("io.github.legacymoddingmc:unimixins:0.3.1:dev")
 
@@ -66,7 +66,7 @@ dependencies {
 
     implementation("org.ow2.asm:asm-commons:9.8")
 
-    compileOnlyApi("com.github.Nxer:Twist-Space-Technology-Mod:0.8.0-beta3.2:dev") { transitive = false }
+    compileOnlyApi("com.github.Nxer:Twist-Space-Technology-Mod:0.8.0-RC1.1:dev") { transitive = false }
     compileOnlyApi("com.github.Keriils:NH-Utilities:1.6.4:dev") { transitive = false }
     compileOnlyApi(rfg.deobf("curse.maven:extra-utilities-225561:2264383")) { transitive = false }
 
