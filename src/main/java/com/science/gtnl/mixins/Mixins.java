@@ -104,6 +104,7 @@ public enum Mixins implements IMixins {
             "aeFluidCraft.MixinItemFluidPacket",
             "appliedEnergistics.AccessorAEBaseItemBlock",
             "appliedEnergistics.AccessorContainerUpgradeable",
+            "appliedEnergistics.MixinContainerUpgradeable",
             "appliedEnergistics.AccessorPartInterface",
             "appliedEnergistics.AccessorTileInterface",
             "appliedEnergistics.MixinAdaptorIInventory",

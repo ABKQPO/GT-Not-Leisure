@@ -8,9 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.Nxer.TwistSpaceTechnology.common.recipeMap.GTCMRecipe;
 import com.Nxer.TwistSpaceTechnology.recipe.machineRecipe.expanded.AssemblyLineWithoutResearchRecipePool;
-import com.Nxer.TwistSpaceTechnology.recipe.machineRecipe.expanded.CircuitAssemblyLineWithoutImprintRecipePool;
 import com.reavaritia.utils.enums.ReAvaItemList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.item.items.Stick;
@@ -225,16 +223,7 @@ public class RecipeLoader {
 
         if (ModList.TwistSpaceTechnology.isModLoaded()) {
             loadTSTMegaAssemblyLineRecipes();
-            loadTSTAdvCircuitAssemblyLineRecipes();
         }
-    }
-
-    @Optional.Method(modid = "TwistSpaceTechnology")
-    public static void loadTSTAdvCircuitAssemblyLineRecipes() {
-        GTCMRecipe.advCircuitAssemblyLineRecipes.getBackend()
-            .clearRecipes();
-        CircuitAssemblyLineWithoutImprintRecipePool.loadRecipes();
-        System.out.println("[GTNL] Register TwistSpaceTechnology AdvCircuitAssemblyLine recipes");
     }
 
     public static void loadPlasmaCentrifugeRecipes() {
