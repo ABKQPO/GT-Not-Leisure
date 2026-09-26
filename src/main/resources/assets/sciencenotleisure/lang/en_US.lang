@@ -1522,7 +1522,8 @@ gtnl.recipe.steam_manufacturer=Hydraulic Manufacturing
 gtnl.machine.steam_manufacturer.recipe_type=Assembler
 gtnl.machine.steam_manufacturer.tooltip.0=Has 4 Parallel
 gtnl.machine.steam_manufacturer.tooltip.1=Assembles assemblies assemblically
-gtnl.machine.steam_manufacturer.tooltip.2=§b§oSlave labor? Not in my GTNH!
+gtnl.machine.steam_manufacturer.tooltip.2=100% faster
+gtnl.machine.steam_manufacturer.tooltip.3=§b§oSlave labor? Not in my GTNH!
 
 gtnl.machine.steam_rock_breaker.name=Steam Rock Breaker
 gtnl.recipe.rock_breaker=Rock Breaker

@@ -145,6 +145,11 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
     }
 
     @Override
+    public double getDurationModifier() {
+        return super.getDurationModifier() / 2.0;
+    }
+
+    @Override
     public void setProcessingLogicPower(ProcessingLogic logic) {
         logic.setAvailableVoltage(GTValues.V[9]);
         // We need to trick the GT_ParallelHelper we have enough amps for all recipe parallels.
@@ -190,6 +195,7 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
             .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_manufacturer.tooltip.0"))
             .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_manufacturer.tooltip.1"))
             .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_manufacturer.tooltip.2"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_manufacturer.tooltip.3"))
             .beginStructureBlock(9, 7, 7, true)
             .toolTipFinisher();
         return tt;

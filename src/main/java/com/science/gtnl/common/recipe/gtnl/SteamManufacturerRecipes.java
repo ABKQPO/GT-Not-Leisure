@@ -740,10 +740,10 @@ public class SteamManufacturerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 GTNLItemList.BronzeReinforcedWood.get(4),
-                GTNLMaterials.Stronze.get(OrePrefixes.pipeHuge, 1),
-                GTNLMaterials.Breel.get(OrePrefixes.pipeHuge, 1),
+                GTNLMaterials.Stronze.get(OrePrefixes.pipeMedium, 1),
+                GTNLMaterials.Breel.get(OrePrefixes.pipeMedium, 1),
                 ItemList.Hatch_Input_Bus_LV.get(1),
-                GTNLItemList.HydraulicRegulator.get(2),
+                GTNLItemList.HydraulicRegulator.get(1),
                 GTUtility.getIntegratedCircuit(3))
             .itemOutputs(GTNLItemList.PipelessSteamHatch.get(1))
             .duration(2 * SECONDS)
@@ -754,10 +754,10 @@ public class SteamManufacturerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 GTNLItemList.BronzeReinforcedWood.get(4),
-                GTNLMaterials.Stronze.get(OrePrefixes.pipeHuge, 1),
-                GTNLMaterials.Breel.get(OrePrefixes.pipeHuge, 1),
+                GTNLMaterials.Stronze.get(OrePrefixes.pipeMedium, 1),
+                GTNLMaterials.Breel.get(OrePrefixes.pipeMedium, 1),
                 ItemList.Hatch_Output_Bus_LV.get(1),
-                GTNLItemList.HydraulicRegulator.get(2),
+                GTNLItemList.HydraulicRegulator.get(1),
                 GTUtility.getIntegratedCircuit(3))
             .itemOutputs(GTNLItemList.PipelessSteamVent.get(1))
             .duration(2 * SECONDS)
@@ -768,9 +768,9 @@ public class SteamManufacturerRecipes implements IRecipePool {
         // Jetstream Hatch
         RecipeBuilder.builder()
             .itemInputs(
-                GTNLItemList.PipelessSteamHatch.get(4),
-                GTNLItemList.HydraulicVaporGenerator.get(1),
-                GTNLMaterials.CompressedSteam.get(OrePrefixes.pipeHuge, 2),
+                GTNLItemList.PipelessSteamHatch.get(3),
+                GTNLItemList.HydraulicSteamReceiver.get(2),
+                GTNLMaterials.CompressedSteam.get(OrePrefixes.pipeMedium, 2),
                 GTNLMaterials.Breel.get(OrePrefixes.plateSuperdense, 1))
             .itemOutputs(GTNLItemList.PipelessJetstreamHatch.get(1))
             .duration(20 * SECONDS)
@@ -781,9 +781,9 @@ public class SteamManufacturerRecipes implements IRecipePool {
         // Jetstream Vent
         RecipeBuilder.builder()
             .itemInputs(
-                GTNLItemList.PipelessSteamVent.get(4),
-                GTNLItemList.HydraulicVaporGenerator.get(1),
-                GTNLMaterials.CompressedSteam.get(OrePrefixes.pipeHuge, 2),
+                GTNLItemList.PipelessSteamVent.get(3),
+                GTNLItemList.HydraulicSteamJetSpewer.get(2),
+                GTNLMaterials.CompressedSteam.get(OrePrefixes.pipeMedium, 2),
                 GTNLMaterials.Breel.get(OrePrefixes.plateSuperdense, 1))
             .itemOutputs(GTNLItemList.PipelessJetstreamVent.get(1))
             .duration(20 * SECONDS)
@@ -793,7 +793,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTNLItemList.PipelessSteamHatch.get(4),
+                GTNLItemList.PipelessSteamHatch.get(3),
                 GTNLItemList.HydraulicSteamReceiver.get(2),
                 GTNLMaterials.CompressedSteam.get(OrePrefixes.pipeHuge, 2),
                 GTNLMaterials.Breel.get(OrePrefixes.plateSuperdense, 1))

@@ -1522,7 +1522,8 @@ gtnl.recipe.steam_manufacturer=液压制造
 gtnl.machine.steam_manufacturer.recipe_type=组装机
 gtnl.machine.steam_manufacturer.tooltip.0=拥有4并行
 gtnl.machine.steam_manufacturer.tooltip.1=以组装的方式组装组件
-gtnl.machine.steam_manufacturer.tooltip.2=§b§o奴隶劳动? 在我的 GTNH 里绝不可能！
+gtnl.machine.steam_manufacturer.tooltip.2=运行速度提升100%
+gtnl.machine.steam_manufacturer.tooltip.3=§b§o奴隶劳动? 在我的 GTNH 里绝不可能！
 
 gtnl.machine.steam_rock_breaker.name=蒸汽造石机
 gtnl.recipe.rock_breaker=碎石机
