@@ -107,6 +107,7 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
         super.onPostTick(aBaseMetaTileEntity, aTick);
         if (mStartUpCheck > 0 || !aBaseMetaTileEntity.isServerSide()) return;
         if (mMaxProgresstime > 0 && aTick % 20 == 0) {
+            startRecipeProcessing();
             FluidStack matchedFluidExtra = matchedFluid.copy();
             matchedFluidExtra.amount = (int) (matchedFluidExtra.amount * generatorValue);
             if (depleteInput(matchedFluidExtra)) {
@@ -120,6 +121,7 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
             } else {
                 lEUt -= (long) (1000 / generatorValue);
             }
+            endRecipeProcessing();
         }
         if (mMaxProgresstime > 0 && lEUt <= 0) {
             stopMachine(ShutDownReasonRegistry.NONE);
