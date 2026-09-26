@@ -2,7 +2,6 @@ package com.science.gtnl.mixins.late.notEnoughEnergistics;
 
 import java.util.List;
 
-import com.science.gtnl.config.MainConfig;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
@@ -12,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.github.vfyjxf.nee.nei.NEEPatternTerminalHandler;
+import com.science.gtnl.config.MainConfig;
 
 import gregtech.api.util.GTOreDictUnificator;
 
