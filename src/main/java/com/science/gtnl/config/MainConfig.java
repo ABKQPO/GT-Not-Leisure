@@ -273,6 +273,10 @@ public class MainConfig {
 
         public static class NEI {
 
+            @Comment("Enable automatic conversion of ingotHot to ingot when writing pattern")
+            @DefaultBoolean(true)
+            public boolean enableReplaceHotIngotInPattern = true;
+
             @Comment("Enable a special icon for cheat mode")
             @DefaultBoolean(false)
             @RequiresMcRestart

@@ -2,6 +2,7 @@ package com.science.gtnl.mixins.late.notEnoughEnergistics;
 
 import java.util.List;
 
+import com.science.gtnl.config.MainConfig;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
@@ -25,6 +26,7 @@ public abstract class MixinNEEPatternTerminalHandler {
             remap = true,
             ordinal = 1))
     public ItemStack gtnl$replaceOutputStack(ItemStack instance) {
+        if (!MainConfig.other.not_enough_items.enableReplaceHotIngotInPattern) return instance.copy();
         int[] oreIDs = OreDictionary.getOreIDs(instance);
 
         for (int oreId : oreIDs) {
