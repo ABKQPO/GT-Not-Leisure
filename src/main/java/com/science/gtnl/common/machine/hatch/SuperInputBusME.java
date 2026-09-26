@@ -38,9 +38,9 @@ import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
+import com.science.gtnl.api.mixinHelper.ICommonMetaTileEntityInventory;
+import com.science.gtnl.api.mixinHelper.IMetaTileEntityInventoryHandler;
 import com.science.gtnl.common.gui.modularui.SuperInputBusMEGui;
-import com.science.gtnl.mixins.early.gregtech.AccessorCommonMetaTileEntity;
-import com.science.gtnl.mixins.early.gregtech.AccessorMetaTileEntity;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;
 
@@ -103,8 +103,8 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
 
     public SuperInputBusME(int aID, boolean autoPullAvailable, String aName, String aNameRegional) {
         super(aID, autoPullAvailable, aName, aNameRegional);
-        ((AccessorCommonMetaTileEntity) this).setInventory(new ItemStack[ALL_SLOT_COUNT]);
-        ((AccessorMetaTileEntity) this).setInventoryHandler(new ItemStackHandler(mInventory) {
+        ((ICommonMetaTileEntityInventory) this).setMInventory(new ItemStack[ALL_SLOT_COUNT]);
+        ((IMetaTileEntityInventoryHandler) this).setInventoryHandler(new ItemStackHandler(mInventory) {
 
             @Override
             public void onContentsChanged(int slot) {
@@ -117,8 +117,8 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
     public SuperInputBusME(String aName, boolean autoPullAvailable, int aTier, String[] aDescription,
         ITexture[][][] aTextures) {
         super(aName, autoPullAvailable, aTier, aDescription, aTextures);
-        ((AccessorCommonMetaTileEntity) this).setInventory(new ItemStack[ALL_SLOT_COUNT]);
-        ((AccessorMetaTileEntity) this).setInventoryHandler(new ItemStackHandler(mInventory) {
+        ((ICommonMetaTileEntityInventory) this).setMInventory(new ItemStack[ALL_SLOT_COUNT]);
+        ((IMetaTileEntityInventoryHandler) this).setInventoryHandler(new ItemStackHandler(mInventory) {
 
             @Override
             public void onContentsChanged(int slot) {

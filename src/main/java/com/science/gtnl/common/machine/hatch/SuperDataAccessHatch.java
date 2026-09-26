@@ -13,9 +13,9 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotGroup;
+import com.science.gtnl.api.mixinHelper.ICommonMetaTileEntityInventory;
+import com.science.gtnl.api.mixinHelper.IMetaTileEntityInventoryHandler;
 import com.science.gtnl.common.gui.modularui.SuperDataAccessHatchGui;
-import com.science.gtnl.mixins.early.gregtech.AccessorCommonMetaTileEntity;
-import com.science.gtnl.mixins.early.gregtech.AccessorMetaTileEntity;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.gui.modularui.GTUITextures;
@@ -84,8 +84,8 @@ public class SuperDataAccessHatch extends MTEHatchDataAccess implements IAddGreg
     }
 
     public void initializeInventory() {
-        ((AccessorCommonMetaTileEntity) this).setInventory(new ItemStack[81]);
-        ((AccessorMetaTileEntity) this).setInventoryHandler(new ItemStackHandler(mInventory) {
+        ((ICommonMetaTileEntityInventory) this).setMInventory(new ItemStack[81]);
+        ((IMetaTileEntityInventoryHandler) this).setInventoryHandler(new ItemStackHandler(mInventory) {
 
             @Override
             public void onContentsChanged(int slot) {

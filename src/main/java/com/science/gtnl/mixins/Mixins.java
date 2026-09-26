@@ -17,9 +17,9 @@ public enum Mixins implements IMixins {
 
     GREGTECH_EARLY(Side.COMMON, "gregtech.AccessorMTETieredMachineBlock", "gregtech.AccessorEyeOfHarmonyRecipe",
         "gregtech.AccessorGTRecipe", "gregtech.AccessorGTRecipeBuilder", "gregtech.AccessorGTRecipeWithAlt",
-        "gregtech.MixinGTRecipe", "gregtech.AccessorGTLanguageManager", "gregtech.AccessorCommonMetaTileEntity",
-        "gregtech.AccessorMetaTileEntity", "gregtech.AccessorMTEHatch", "gregtech.AccessorProcessingLogic",
-        "gregtech.AccessorRecipeDisplayInfo", "gregtech.MixinBaseMetaTileEntity", "gregtech.assLineRemover.MixinGTMod",
+        "gregtech.MixinGTRecipe", "gregtech.AccessorGTLanguageManager", "gregtech.AccessorMTEHatch",
+        "gregtech.AccessorProcessingLogic", "gregtech.AccessorRecipeDisplayInfo", "gregtech.MixinBaseMetaTileEntity",
+        "gregtech.MixinCommonMetaTileEntity", "gregtech.MixinMetaTileEntity", "gregtech.assLineRemover.MixinGTMod",
         "gregtech.assLineRemover.MixinGTRecipeBuilder", "gregtech.assLineRemover.MixinTTRecipeAdder",
         "energyMonitor.MixinBaseMetaTileEntityEnergyMonitor", "energyMonitor.MixinCommonMetaTileEntityEnergyMonitor"),
 
