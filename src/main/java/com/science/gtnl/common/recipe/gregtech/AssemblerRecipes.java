@@ -3898,6 +3898,42 @@ public class AssemblerRecipes implements IRecipePool {
             .duration(300)
             .eut(TierEU.RECIPE_ZPM)
             .addTo(As);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                GregtechItemList.Hatch_Input_Bus_Steam.get(1),
+                GTNLMaterials.Breel.get(OrePrefixes.plate, 1),
+                GTNLMaterials.Stronze.get(OrePrefixes.plate, 1),
+                GTNLMaterials.Breel.get(OrePrefixes.pipeLarge, 1),
+                GTUtility.getIntegratedCircuit(1))
+            .itemOutputs(GTNLItemList.BreelReinforcedSteamInputBus.get(1))
+            .duration(100)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(As);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                GregtechItemList.Hatch_Output_Bus_Steam.get(1),
+                GTNLMaterials.Breel.get(OrePrefixes.plate, 1),
+                GTNLMaterials.Stronze.get(OrePrefixes.plate, 1),
+                GTNLMaterials.Breel.get(OrePrefixes.pipeLarge, 1),
+                GTUtility.getIntegratedCircuit(2))
+            .itemOutputs(GTNLItemList.BreelReinforcedSteamOutputBus.get(1))
+            .duration(100)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(As);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                GTNLItemList.OriginalInputHatch.get(1),
+                GTNLMaterials.Breel.get(OrePrefixes.plate, 1),
+                GTNLMaterials.Stronze.get(OrePrefixes.plate, 1),
+                GTNLMaterials.Stronze.get(OrePrefixes.pipeLarge, 1),
+                GTUtility.getIntegratedCircuit(3))
+            .itemOutputs(GTNLItemList.StronzeReinforcedSteamInputHatch.get(1))
+            .duration(100)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(As);
     }
 
 }
