@@ -917,14 +917,14 @@ public class CraftingTableRecipes implements IRecipePool {
         GTModHandler.addCraftingRecipe(
             GTNLItemList.PipelessSteamHatch.get(1),
             new Object[] { "AEA", "CBD", "AEA", 'A', GTNLItemList.BronzeReinforcedWood.get(1), 'B',
-                ItemList.Hatch_Input_Bus_LV.get(1), 'C', GTNLMaterials.Stronze.get(OrePrefixes.pipeHuge, 1), 'D',
+                GTNLItemList.BigSteamInputHatch.get(1), 'C', GTNLMaterials.Stronze.get(OrePrefixes.pipeHuge, 1), 'D',
                 GTNLMaterials.Breel.get(OrePrefixes.pipeHuge, 1), 'E', GTNLItemList.HydraulicRegulator.get(1) });
 
         // Pipeless Vent
         GTModHandler.addCraftingRecipe(
             GTNLItemList.PipelessSteamVent.get(1),
             new Object[] { "AEA", "CBD", "AEA", 'A', GTNLItemList.BronzeReinforcedWood.get(1), 'B',
-                ItemList.Hatch_Output_Bus_LV.get(1), 'C', GTNLMaterials.Stronze.get(OrePrefixes.pipeHuge, 1), 'D',
+                GTNLItemList.OriginalOutputHatch.get(1), 'C', GTNLMaterials.Stronze.get(OrePrefixes.pipeHuge, 1), 'D',
                 GTNLMaterials.Breel.get(OrePrefixes.pipeHuge, 1), 'E', GTNLItemList.HydraulicRegulator.get(1) });
 
         GTModHandler.addCraftingRecipe(
