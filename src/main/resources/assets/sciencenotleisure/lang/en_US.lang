@@ -413,6 +413,13 @@ gtnl.machine.small_arcane_assembler.tooltip.3=Consumes 32 EU/t; two random prima
 gtnl.machine.small_arcane_assembler.tooltip.4=Each selected aspect uses 0-30 matching CV; at 30 CV it gains a 200% charge bonus and overflow transfer rises from 25% to 75%.
 gtnl.machine.small_arcane_assembler.casing=Any Magic Mechanical Block
 
+gtnl.machine.industrial_crucible.name=Industrial Crucible
+gtnl.recipe.industrial_crucible=Industrial Crucible
+gtnl.machine.industrial_crucible.recipe_type=Crucible Alchemy
+gtnl.machine.industrial_crucible.tooltip.1=Accepts normal and multi essentia input hatches and essentia providers.
+gtnl.machine.industrial_crucible.tooltip.2=Requires the owner's Thaumcraft research.
+gtnl.machine.industrial_crucible.casing=Any Magic Casing Block
+
 gtnl.machine.quantum_computer.name=Quantum Computer
 gtnl.machine.quantum_computer.recipe_type=CPU
 gtnl.machine.quantum_computer.tooltip.0=Can perform crafting tasks like a conventional CPU
@@ -3389,6 +3396,8 @@ GT5U.gui.text.recipe_result.missing_infusion_research=Required infusion research
 GT5U.gui.text.recipe_result.insufficient_essentia=Not enough essentia in the Essentia Hatches
 GT5U.gui.text.recipe_result.missing_arcane_research=Required arcane research has not been completed
 GT5U.gui.text.recipe_result.missing_arcane_wand=Place a wand, sceptre, or staff in the controller slot
+GT5U.gui.text.recipe_result.missing_crucible_research=The machine owner has not completed the required Thaumcraft research
+GT5U.gui.text.recipe_result.essentia_commit_failed=Essentia withdrawal failed partway; the machine is paused briefly
 GT5U.gui.text.recipe_result.insufficient_vis=Not enough vis in the controller wand
 
 gtnl.block.multi_essentia_input_hatch.name=Multi-Essentia Input Hatch

@@ -69,6 +69,7 @@ import com.science.gtnl.common.recipe.gtnl.CactusWonderFakeRecipes;
 import com.science.gtnl.common.recipe.gtnl.CellRegulatorRecipes;
 import com.science.gtnl.common.recipe.gtnl.CircuitNanitesDataRecipes;
 import com.science.gtnl.common.recipe.gtnl.CraftingTableRecipes;
+import com.science.gtnl.common.recipe.gtnl.CrucibleCraftingRecipes;
 import com.science.gtnl.common.recipe.gtnl.DecayHastenerRecipes;
 import com.science.gtnl.common.recipe.gtnl.DesulfurizerRecipes;
 import com.science.gtnl.common.recipe.gtnl.ElectricNeutronActivatorRecipes;
@@ -193,7 +194,7 @@ public class RecipeLoader {
             new ElectricNeutronActivatorRecipes(), new ReactorProcessingUnitRecipes(),
             new NuclearSaltProcessingPlantRecipes(), new MaceratorRecipes(), new QuantumForceTransformerRecipes(),
             new MicroorganismMasterRecipes(), new SolarMuonCatalystRecipes(), new CircuitAssemblerRecipes(),
-            new CircuitAssemblyLineRecipes(), new WoodDistillationRecipes() };
+            new CircuitAssemblyLineRecipes(), new WoodDistillationRecipes(), new CrucibleCraftingRecipes() };
 
         for (IRecipePool recipePool : recipePools) {
             recipePool.loadRecipes();

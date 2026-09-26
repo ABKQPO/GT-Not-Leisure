@@ -91,6 +91,7 @@ import com.science.gtnl.common.machine.multiblock.FuelRefiningComplex;
 import com.science.gtnl.common.machine.multiblock.GenerationEarthEngine;
 import com.science.gtnl.common.machine.multiblock.GrandAssemblyLine;
 import com.science.gtnl.common.machine.multiblock.IndustrialArcaneAssembler;
+import com.science.gtnl.common.machine.multiblock.IndustrialCrucible;
 import com.science.gtnl.common.machine.multiblock.LapotronChip;
 import com.science.gtnl.common.machine.multiblock.LargeBioLab;
 import com.science.gtnl.common.machine.multiblock.LargeBrewer;
@@ -2138,6 +2139,14 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.name")));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallArcaneAssembler.get(1), AnimatedText.GT_NOT_LEISURE);
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.SmallArcaneAssembler.get(1), AnimatedText.AUTHOR_LINEBROKE);
+
+        GTNLItemList.IndustrialCrucible.set(
+            new IndustrialCrucible(
+                GTNLMachineID.INDUSTRIAL_CRUCIBLE.ID,
+                "IndustrialCrucible",
+                StatCollector.translateToLocal("gtnl.machine.industrial_crucible.name")));
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.IndustrialCrucible.get(1), AnimatedText.GT_NOT_LEISURE);
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.IndustrialCrucible.get(1), AnimatedText.AUTHOR_LINEBROKE);
 
         GTNLItemList.SuperInputBusME.set(
             new SuperInputBusME(
