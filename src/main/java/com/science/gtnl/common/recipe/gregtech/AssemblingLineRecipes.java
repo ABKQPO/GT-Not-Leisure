@@ -1,6 +1,7 @@
 package com.science.gtnl.common.recipe.gregtech;
 
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -1833,7 +1834,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             (int) TierEU.RECIPE_UIV);
 
         TTRecipeAdder.addResearchableAssemblylineRecipe(
-            ItemRegistry.megaMachines[3],
+            ItemList.MegaChemicalReactor.get(1),
             1280000,
             40000,
             (int) TierEU.RECIPE_UEV,
@@ -2121,7 +2122,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             .blocks();
 
         TTRecipeAdder.addResearchableAssemblylineRecipe(
-            ItemRegistry.eic.copy(),
+            ItemList.ElectricImplosionCompressor.get(1),
             51200000,
             51200,
             (int) TierEU.RECIPE_UEV,
@@ -2368,7 +2369,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             (int) TierEU.RECIPE_UEV);
 
         TTRecipeAdder.addResearchableAssemblylineRecipe(
-            ItemRegistry.megaMachines[4],
+            ItemList.MegaOilCracker.get(1),
             2048000,
             4000,
             (int) TierEU.RECIPE_UEV,
