@@ -742,7 +742,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
                 GTNLItemList.BronzeReinforcedWood.get(4),
                 GTNLMaterials.Stronze.get(OrePrefixes.pipeMedium, 1),
                 GTNLMaterials.Breel.get(OrePrefixes.pipeMedium, 1),
-                ItemList.Hatch_Input_Bus_LV.get(1),
+                GTNLItemList.BigSteamInputHatch.get(1),
                 GTNLItemList.HydraulicRegulator.get(1),
                 GTUtility.getIntegratedCircuit(3))
             .itemOutputs(GTNLItemList.PipelessSteamHatch.get(1))
@@ -756,7 +756,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
                 GTNLItemList.BronzeReinforcedWood.get(4),
                 GTNLMaterials.Stronze.get(OrePrefixes.pipeMedium, 1),
                 GTNLMaterials.Breel.get(OrePrefixes.pipeMedium, 1),
-                ItemList.Hatch_Output_Bus_LV.get(1),
+                GTNLItemList.OriginalOutputHatch.get(1),
                 GTNLItemList.HydraulicRegulator.get(1),
                 GTUtility.getIntegratedCircuit(3))
             .itemOutputs(GTNLItemList.PipelessSteamVent.get(1))
