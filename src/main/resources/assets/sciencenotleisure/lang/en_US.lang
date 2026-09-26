@@ -1519,11 +1519,13 @@ gtnl.machine.steam_lava_maker.tooltip.casing=Any Copper Plated Bricks or Deoxidi
 
 gtnl.machine.steam_manufacturer.name=Steam Manufacturer
 gtnl.recipe.steam_manufacturer=Hydraulic Manufacturing
-gtnl.machine.steam_manufacturer.recipe_type=Assembler
+gtnl.machine.steam_manufacturer.recipe_type=Hydraulic Manufacturing / Assembler
 gtnl.machine.steam_manufacturer.tooltip.0=Has 4 Parallel
 gtnl.machine.steam_manufacturer.tooltip.1=Assembles assemblies assemblically
 gtnl.machine.steam_manufacturer.tooltip.2=100% faster
-gtnl.machine.steam_manufacturer.tooltip.3=§b§oSlave labor? Not in my GTNH!
+gtnl.machine.steam_manufacturer.tooltip.3=Can run MV tier and below assembler recipes
+gtnl.machine.steam_manufacturer.tooltip.4=Put an HV Assembler in the controller to unlock HV assembler recipes
+gtnl.machine.steam_manufacturer.tooltip.5=§b§oSlave labor? Not in my GTNH!
 
 gtnl.machine.steam_rock_breaker.name=Steam Rock Breaker
 gtnl.recipe.rock_breaker=Rock Breaker

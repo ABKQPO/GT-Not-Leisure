@@ -1519,11 +1519,13 @@ gtnl.machine.steam_lava_maker.tooltip.casing=任意镀铜砖块或脱氧钢机�
 
 gtnl.machine.steam_manufacturer.name=蒸汽制造商
 gtnl.recipe.steam_manufacturer=液压制造
-gtnl.machine.steam_manufacturer.recipe_type=组装机
+gtnl.machine.steam_manufacturer.recipe_type=液压制造/组装机
 gtnl.machine.steam_manufacturer.tooltip.0=拥有4并行
 gtnl.machine.steam_manufacturer.tooltip.1=以组装的方式组装组件
 gtnl.machine.steam_manufacturer.tooltip.2=运行速度提升100%
-gtnl.machine.steam_manufacturer.tooltip.3=§b§o奴隶劳动? 在我的 GTNH 里绝不可能！
+gtnl.machine.steam_manufacturer.tooltip.3=可执行MV及以下的组装机配方
+gtnl.machine.steam_manufacturer.tooltip.4=在控制器内放入HV组装机以解锁HV组装机配方
+gtnl.machine.steam_manufacturer.tooltip.5=§b§o奴隶劳动? 在我的 GTNH 里绝不可能！
 
 gtnl.machine.steam_rock_breaker.name=蒸汽造石机
 gtnl.recipe.rock_breaker=碎石机
