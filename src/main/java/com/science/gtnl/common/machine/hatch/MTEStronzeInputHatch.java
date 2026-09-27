@@ -59,19 +59,21 @@ public class MTEStronzeInputHatch extends MTEHatchInput {
         FluidStack probe = source.drain(facing.getOpposite(), offered, false);
         if (probe == null || probe.amount <= 0) return;
 
-        int accepted = fill(probe, true);
+        int accepted = fill(probe, false);
         if (accepted <= 0) return;
 
         FluidStack actual = probe.copy();
         actual.amount = accepted;
-        source.drain(facing.getOpposite(), actual, true);
-        fill(actual, false);
+        FluidStack drained = source.drain(facing.getOpposite(), actual, true);
+        if (drained != null && drained.amount > 0 && fill(drained, true) > 0) {
+            notifyWatchers();
+        }
     }
 
     private static FluidStack availableFluid(IFluidHandler source, ForgeDirection side, Fluid wanted) {
         FluidStack probe = source.drain(side, Integer.MAX_VALUE, false);
         if (probe == null || probe.amount <= 0) return null;
         if (wanted != null && probe.getFluid() != wanted) return null;
-        return probe;
+        return probe.copy();
     }
 }
