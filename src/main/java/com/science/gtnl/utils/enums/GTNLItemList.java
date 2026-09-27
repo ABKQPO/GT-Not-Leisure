@@ -39,6 +39,7 @@ public enum GTNLItemList implements IItemContainer {
     NanoPhagocytosisPlantRender,
     EternalGregTechWorkshopRender,
     PlayerDoll,
+    PigmeeFumo,
     HoneyFluidBlock,
     ShimmerFluidBlock,
     CardboardBox,

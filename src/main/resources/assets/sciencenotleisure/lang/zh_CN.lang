@@ -4306,3 +4306,5 @@ gtnl.text_effect.title=动态文字效果
 gtnl.text_effect.palette=切换配色
 gtnl.text_effect.bold=切换粗体
 gtnl.text_effect.italic=切换斜体
+# Pigmee Fumo（移植自 AE2 Lightning Tech Reborn；模型作者 TedXenon）
+gtnl.block.pigmee_fumo.name=Pigmee Fumo 小猪玩偶

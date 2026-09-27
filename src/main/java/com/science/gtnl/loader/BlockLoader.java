@@ -22,6 +22,7 @@ import com.science.gtnl.common.block.blocks.BlockMultiEssentiaInputHatch;
 import com.science.gtnl.common.block.blocks.BlockMultiEssentiaJar;
 import com.science.gtnl.common.block.blocks.BlockMultiEssentiaTube;
 import com.science.gtnl.common.block.blocks.BlockNanoPhagocytosisPlantRender;
+import com.science.gtnl.common.block.blocks.BlockPigmeeFumo;
 import com.science.gtnl.common.block.blocks.BlockPlayerDoll;
 import com.science.gtnl.common.block.blocks.BlockPlayerLeash;
 import com.science.gtnl.common.block.blocks.BlockSaplingBrickuoia;
@@ -59,6 +60,7 @@ public class BlockLoader {
     public static BlockArtificialStarRender artificialStarRender;
     public static BlockLaserBeacon laserBeacon;
     public static BlockPlayerDoll playerDoll;
+    public static BlockPigmeeFumo pigmeeFumo;
     public static BlockWaterCandle waterCandle;
     public static BlockSearedLadder searedLadder;
     public static BlockPlayerLeash playerLeash;
@@ -118,6 +120,7 @@ public class BlockLoader {
         nanoPhagocytosisPlantRender = new BlockNanoPhagocytosisPlantRender();
         artificialStarRender = new BlockArtificialStarRender();
         playerDoll = new BlockPlayerDoll();
+        pigmeeFumo = new BlockPigmeeFumo();
         laserBeacon = new BlockLaserBeacon();
         waterCandle = new BlockWaterCandle();
         dimensionRespawnAnchor = new BlockDimensionRespawnAnchor();
