@@ -426,9 +426,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 GregtechItemList.Hatch_Input_Bus_Steam.get(1),
-                GTNLMaterials.Breel.get(OrePrefixes.plate, 1),
-                GTNLMaterials.Stronze.get(OrePrefixes.plate, 1),
-                GTNLMaterials.Breel.get(OrePrefixes.pipeLarge, 1),
+                GTNLMaterials.Breel.get(OrePrefixes.plate, 4),
+                GTNLMaterials.Stronze.get(OrePrefixes.plate, 2),
                 GTUtility.getIntegratedCircuit(1))
             .itemOutputs(GTNLItemList.BreelReinforcedSteamInputBus.get(1))
             .duration(5 * SECONDS)
@@ -437,10 +436,9 @@ public class SteamManufacturerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GregtechItemList.Hatch_Output_Bus_Steam.get(1),
-                GTNLMaterials.Breel.get(OrePrefixes.plate, 1),
-                GTNLMaterials.Stronze.get(OrePrefixes.plate, 1),
-                GTNLMaterials.Breel.get(OrePrefixes.pipeLarge, 1),
+                GregtechItemList.Hatch_Input_Bus_Steam.get(1),
+                GTNLMaterials.Stronze.get(OrePrefixes.plate, 4),
+                GTNLMaterials.Breel.get(OrePrefixes.plate, 2),
                 GTUtility.getIntegratedCircuit(2))
             .itemOutputs(GTNLItemList.BreelReinforcedSteamOutputBus.get(1))
             .duration(5 * SECONDS)
