@@ -75,9 +75,9 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
     @Override
     public boolean onRunningTick(ItemStack aStack) {
         runningTickCounter++;
-        if (runningTickCounter % 100 == 0 && speedup < 7) {
+        if (runningTickCounter % 100 == 0 && speedup < 10) {
             runningTickCounter = 0;
-            speedup += 0.1F;
+            speedup += 0.05;
         }
         return super.onRunningTick(aStack);
     }

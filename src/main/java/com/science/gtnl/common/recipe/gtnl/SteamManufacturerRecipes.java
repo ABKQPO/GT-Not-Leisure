@@ -16,6 +16,7 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
+import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTModHandler;
@@ -124,7 +125,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTOreDictUnificator.get(OrePrefixes.ring, Materials.AnyRubber, 2),
+                new OreDictItemStack("ringAnyRubber", 2),
                 GTNLMaterials.Breel.get(OrePrefixes.pipeMedium, 1),
                 GTNLItemList.BronzeTurbine.get(1),
                 GTNLItemList.HydraulicMotor.get(2))
@@ -346,7 +347,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
                 GTModHandler.getModItem(Mods.BuildCraftFactory.ID, "tankBlock", 1L, 0),
                 ItemList.Casing_BronzePlatedBricks.get(1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Rubber, 6),
-                GTOreDictUnificator.get(OrePrefixes.ring, Materials.Rubber, 1),
+                new OreDictItemStack("ringAnyRubber", 1),
                 GTUtility.getIntegratedCircuit(2))
             .itemOutputs(ItemList.Hatch_Output_ULV.get(1L))
             .duration(2 * SECONDS)
