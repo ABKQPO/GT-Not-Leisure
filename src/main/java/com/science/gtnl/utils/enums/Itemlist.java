@@ -8,63 +8,12 @@ import gregtech.api.enums.Mods;
 import gregtech.api.util.GTModHandler;
 import ic2.api.item.IC2Items;
 
-/**
- * Centralizes fixed external item and block registry references used by GT: Not Leisure.
- * <p>
- * Lookups happen when {@link #get(long)} is called, after the owning mod has registered its items. A fresh stack is
- * returned for each call so callers may safely change its size or NBT. Missing optional items return {@code null},
- * matching the previous direct registry lookups.
- */
 public enum Itemlist {
 
-    // 强化玻璃透镜
-    NHCoreModReinforcedGlassLens(Mods.NewHorizonsCoreMod.ID, "ReinforcedGlassLense"),
-    // 神秘水晶透镜
-    NHCoreModMysteriousCrystalLens(Mods.NewHorizonsCoreMod.ID, "MysteriousCrystalLens"),
-    // 拉多克斯聚合物透镜
-    NHCoreModRadoxPolymerLens(Mods.NewHorizonsCoreMod.ID, "RadoxPolymerLens"),
-    // 彩色透镜
-    NHCoreModChromaticLens(Mods.NewHorizonsCoreMod.ID, "ChromaticLens"),
-
-    // 运算压印模板
-    AE2CalculationPress(Mods.AppliedEnergistics2.ID, "item.ItemMultiMaterial", 13),
-    // 工程压印模板
-    AE2EngineeringPress(Mods.AppliedEnergistics2.ID, "item.ItemMultiMaterial", 14),
-    // 逻辑压印模板
-    AE2LogicPress(Mods.AppliedEnergistics2.ID, "item.ItemMultiMaterial", 15),
-    // 硅压印模板
-    AE2SiliconPress(Mods.AppliedEnergistics2.ID, "item.ItemMultiMaterial", 19),
-    // ME 接口
-    AE2MEInterface(Mods.AppliedEnergistics2.ID, "tile.BlockInterface"),
-
-    // 无限增幅卡
-    AE2WCTInfinityBoosterCard(Mods.AE2WCT.ID, "infinityBoosterCard", true),
     // 量子桥接卡
     AE2FluidCraftQuantumBridgeCard(Mods.AE2FluidCraft.ID, "quantum_bridge_card", true),
     // 能量卡
     AE2FluidCraftEnergyCard(Mods.AE2FluidCraft.ID, "energy_card", true),
-
-    // 普通轨道
-    RailcraftTrack(Mods.Railcraft.ID, "track", 0),
-    RailcraftTrackLegacyDamage736(Mods.Railcraft.ID, "track", 736),
-    RailcraftTrackLegacyDamage816(Mods.Railcraft.ID, "track", 816),
-    // 集水器壁板
-    RailcraftWaterTankWall(Mods.Railcraft.ID, "machine.alpha", 14),
-
-    // 低压变压器
-    IC2LVTransformer(Mods.IndustrialCraft2.ID, "blockElectric", 3),
-    // 中压变压器
-    IC2MVTransformer(Mods.IndustrialCraft2.ID, "blockElectric", 4),
-    // 高压变压器
-    IC2HVTransformer(Mods.IndustrialCraft2.ID, "blockElectric", 5),
-    // 超高压变压器
-    IC2EVTransformer(Mods.IndustrialCraft2.ID, "blockElectric", 6),
-    // 防辐射板
-    GoodGeneratorRadiationProtectionPlate(Mods.GoodGenerator.ID, "radiationProtectionPlate"),
-
-    // 合金锭
-    IC2MixedMetalIngot(Mods.IndustrialCraft2.ID, "mixedMetalIngot", false, true),
-
     // ME二合一接口
     AE2FluidCraftFluidInterface(Mods.AE2FluidCraft.ID, "fluid_interface", 0),
     // 256k-ME流体存储组件
@@ -81,6 +30,20 @@ public enum Itemlist {
     AE2FluidCraftPartFluidInterface(Mods.AE2FluidCraft.ID, "part_fluid_interface", 0),
     // ME流体存储总线
     AE2FluidCraftPartFluidStorageBus(Mods.AE2FluidCraft.ID, "part_fluid_storage_bus", 0),
+
+    // 无限增幅卡
+    AE2WCTInfinityBoosterCard(Mods.AE2WCT.ID, "infinityBoosterCard", true),
+
+    // 运算压印模板
+    AE2CalculationPress(Mods.AppliedEnergistics2.ID, "item.ItemMultiMaterial", 13),
+    // 工程压印模板
+    AE2EngineeringPress(Mods.AppliedEnergistics2.ID, "item.ItemMultiMaterial", 14),
+    // 逻辑压印模板
+    AE2LogicPress(Mods.AppliedEnergistics2.ID, "item.ItemMultiMaterial", 15),
+    // 硅压印模板
+    AE2SiliconPress(Mods.AppliedEnergistics2.ID, "item.ItemMultiMaterial", 19),
+    // ME 接口
+    AE2MEInterface(Mods.AppliedEnergistics2.ID, "tile.BlockInterface"),
 
     // 阿卡西记录
     AvaritiaAkashicRecord(Mods.Avaritia.ID, "Akashic_Record", 0),
@@ -261,12 +224,10 @@ public enum Itemlist {
     BotaniaMagnetRing(Mods.Botania.ID, "magnetRing", 0),
     // 不稳定信标
     BotaniaManaBeacon(Mods.Botania.ID, "manaBeacon", 0),
-
     // 盖亚魂锭
     BotaniaGaiaSpiritIngot(Mods.Botania.ID, "manaResource", 14),
     // 瓶装末地空气
     BotaniaEnderAirBottle(Mods.Botania.ID, "manaResource", 15),
-
     // 泰拉钢锭
     BotaniaTerrasteelIngot(Mods.Botania.ID, "manaResource", 4),
     // 盖亚之魂
@@ -394,8 +355,26 @@ public enum Itemlist {
     // 高级错位宝石
     DraconicEvolutionTeleporterMKII(Mods.DraconicEvolution.ID, "teleporterMKII", 0),
 
-    // 琼脂
-    NHCoreModAgar(Mods.NewHorizonsCoreMod.ID, "GTNHBioItems", 2),
+    // 混沌注魔八重压缩太阳能
+    EMTChaosInfusedOctupleSolarPanel(Mods.ElectroMagicTools.ID, "EMTSolars4", 14),
+    // 风注魔八重压缩太阳能
+    EMTAirInfusedOctupleSolarPanel(Mods.ElectroMagicTools.ID, "EMTSolars4", 15),
+    // 水注魔八重压缩太阳能
+    EMTWaterInfusedOctupleSolarPanel(Mods.ElectroMagicTools.ID, "EMTSolars5", 1),
+    // 火注魔八重压缩太阳能
+    EMTFireInfusedOctupleSolarPanel(Mods.ElectroMagicTools.ID, "EMTSolars5", 2),
+    // 能量源质发电机
+    ElectroMagicToolsEssentiaGenerators(Mods.ElectroMagicTools.ID, "EssentiaGenerators", 0),
+    // 火之源质发电机
+    EMTFireEssentiaGenerator(Mods.ElectroMagicTools.ID, "EssentiaGenerators", 1),
+    // 灵气源质发电机
+    EMTVitalEssentiaGenerator(Mods.ElectroMagicTools.ID, "EssentiaGenerators", 2),
+    // 木之源质发电机
+    EMTWoodEssentiaGenerator(Mods.ElectroMagicTools.ID, "EssentiaGenerators", 3),
+    // 风之源质发电机
+    EMTAirEssentiaGenerator(Mods.ElectroMagicTools.ID, "EssentiaGenerators", 4),
+    // 贪婪源质发电机
+    EMTGreedEssentiaGenerator(Mods.ElectroMagicTools.ID, "EssentiaGenerators", 5),
 
     // 电容库
     EnderIOBlockCapBank(Mods.EnderIO.ID, "blockCapBank", 0),
@@ -450,31 +429,29 @@ public enum Itemlist {
     // 能量导管
     EnderIOItemPowerConduit(Mods.EnderIO.ID, "itemPowerConduit", 0),
 
-    // 混沌注魔八重压缩太阳能
-    EMTChaosInfusedOctupleSolarPanel(Mods.ElectroMagicTools.ID, "EMTSolars4", 14),
-    // 风注魔八重压缩太阳能
-    EMTAirInfusedOctupleSolarPanel(Mods.ElectroMagicTools.ID, "EMTSolars4", 15),
-    // 水注魔八重压缩太阳能
-    EMTWaterInfusedOctupleSolarPanel(Mods.ElectroMagicTools.ID, "EMTSolars5", 1),
-    // 火注魔八重压缩太阳能
-    EMTFireInfusedOctupleSolarPanel(Mods.ElectroMagicTools.ID, "EMTSolars5", 2),
-    // 能量源质发电机
-    ElectroMagicToolsEssentiaGenerators(Mods.ElectroMagicTools.ID, "EssentiaGenerators", 0),
-    // 火之源质发电机
-    EMTFireEssentiaGenerator(Mods.ElectroMagicTools.ID, "EssentiaGenerators", 1),
-    // 灵气源质发电机
-    EMTVitalEssentiaGenerator(Mods.ElectroMagicTools.ID, "EssentiaGenerators", 2),
-    // 木之源质发电机
-    EMTWoodEssentiaGenerator(Mods.ElectroMagicTools.ID, "EssentiaGenerators", 3),
-    // 风之源质发电机
-    EMTAirEssentiaGenerator(Mods.ElectroMagicTools.ID, "EssentiaGenerators", 4),
-    // 贪婪源质发电机
-    EMTGreedEssentiaGenerator(Mods.ElectroMagicTools.ID, "EssentiaGenerators", 5),
-
     // 末影箱子
     EnderStorageEnderChest(Mods.EnderStorage.ID, "enderChest", 0),
     // 末影蓄水槽（末影储罐）
     EnderStorageEnderTank(Mods.EnderStorage.ID, "enderChest", 1),
+
+    // 闪瞬奇点
+    EternalSingularityCombined(Mods.EternalSingularity.ID, "combined_singularity", 0),
+    // 圣灵奇点
+    HolySingularity(Mods.EternalSingularity.ID, "combined_singularity", 1),
+    // 静空奇点
+    VoidSingularity(Mods.EternalSingularity.ID, "combined_singularity", 15),
+    // 意面奇点
+    SpaghettiSingularity(Mods.EternalSingularity.ID, "combined_singularity", 2),
+    // 大气奇点
+    AtmosphericSingularity(Mods.EternalSingularity.ID, "combined_singularity", 3),
+    // 神秘奇点
+    MysticSingularity(Mods.EternalSingularity.ID, "combined_singularity", 4),
+    // 史诗奇点
+    EpicSingularity(Mods.EternalSingularity.ID, "combined_singularity", 5),
+    // 星耀奇点
+    AstralSingularity(Mods.EternalSingularity.ID, "combined_singularity", 6),
+    // 永恒奇点
+    EternalSingularity(Mods.EternalSingularity.ID, "eternal_singularity", 0),
 
     // 黑石
     EtFuturumRequiemBlackstone(Mods.EtFuturumRequiem.ID, "blackstone", 0),
@@ -521,25 +498,6 @@ public enum Itemlist {
     // 不死图腾
     EtFuturumRequiemTotemOfUndying(Mods.EtFuturumRequiem.ID, "totem_of_undying", 0),
 
-    // 闪瞬奇点
-    EternalSingularityCombined(Mods.EternalSingularity.ID, "combined_singularity", 0),
-    // 圣灵奇点
-    HolySingularity(Mods.EternalSingularity.ID, "combined_singularity", 1),
-    // 静空奇点
-    VoidSingularity(Mods.EternalSingularity.ID, "combined_singularity", 15),
-    // 意面奇点
-    SpaghettiSingularity(Mods.EternalSingularity.ID, "combined_singularity", 2),
-    // 大气奇点
-    AtmosphericSingularity(Mods.EternalSingularity.ID, "combined_singularity", 3),
-    // 神秘奇点
-    MysticSingularity(Mods.EternalSingularity.ID, "combined_singularity", 4),
-    // 史诗奇点
-    EpicSingularity(Mods.EternalSingularity.ID, "combined_singularity", 5),
-    // 星耀奇点
-    AstralSingularity(Mods.EternalSingularity.ID, "combined_singularity", 6),
-    // 永恒奇点
-    EternalSingularity(Mods.EternalSingularity.ID, "eternal_singularity", 0),
-
     // 七重压缩圆石
     ExtraUtilitiesCompressedCobbleSeven(Mods.ExtraUtilities.ID, "cobblestone_compressed", 6),
     // 八重压缩圆石
@@ -582,11 +540,6 @@ public enum Itemlist {
     ForestryPollen(Mods.Forestry.ID, "pollen", 0),
     // 蜂王浆
     ForestryRoyalJelly(Mods.Forestry.ID, "royalJelly", 0),
-
-    // 脱水线圈 []
-    GTPlusPlusDehydratorCoil(Mods.GTPlusPlus.ID, "itemDehydratorCoil", 3),
-    // 能量核心 [UHV]
-    GTPlusPlusItemItemBufferCore10(Mods.GTPlusPlus.ID, "item.itemBufferCore10", 0),
 
     // 天域使魔
     GadomancyItemEtherealFamiliar(Mods.Gadomancy.ID, "ItemEtherealFamiliar", 0),
@@ -657,17 +610,32 @@ public enum Itemlist {
     // 鲸鱼座T星E藻类（形态六）
     GalaxySpaceCetiESeaweedFormVI(Mods.GalaxySpace.ID, "tcetiedandelions", 5),
 
+    // 防辐射板
+    GoodGeneratorRadiationProtectionPlate(Mods.GoodGenerator.ID, "radiationProtectionPlate"),
+
     // 喷射引擎
     GraviSuiteJetEngine(Mods.GraviSuite.ID, "itemSimpleItem", 6),
+
+    // 脱水线圈 []
+    GTPlusPlusDehydratorCoil(Mods.GTPlusPlus.ID, "itemDehydratorCoil", 3),
+    // 能量核心 [UHV]
+    GTPlusPlusItemItemBufferCore10(Mods.GTPlusPlus.ID, "item.itemBufferCore10", 0),
 
     // 末影粉末
     HardcoreEnderExpansionEndPowder(Mods.HardcoreEnderExpansion.ID, "end_powder", 0),
     // 末影粉末矿石
     HardcoreEnderExpansionEndPowderOre(Mods.HardcoreEnderExpansion.ID, "end_powder_ore", 0),
 
-    // 寻矿魔杖
-    IWillFindYouIfuBuildingKit(Mods.IWillFindYou.ID, "ifu_buildingKit", 0),
-
+    // 低压变压器
+    IC2LVTransformer(Mods.IndustrialCraft2.ID, "blockElectric", 3),
+    // 中压变压器
+    IC2MVTransformer(Mods.IndustrialCraft2.ID, "blockElectric", 4),
+    // 高压变压器
+    IC2HVTransformer(Mods.IndustrialCraft2.ID, "blockElectric", 5),
+    // 超高压变压器
+    IC2EVTransformer(Mods.IndustrialCraft2.ID, "blockElectric", 6),
+    // 合金锭
+    IC2MixedMetalIngot(Mods.IndustrialCraft2.ID, "mixedMetalIngot", false, true),
     // 核反应堆
     IC2NuclearReactor(Mods.IndustrialCraft2.ID, "blockGenerator", 5),
     // 工业TNT
@@ -719,16 +687,14 @@ public enum Itemlist {
     // 钻石储罐
     IronTanksDiamondTank(Mods.IronTanks.ID, "diamondTank", 0),
 
+    // 寻矿魔杖
+    IWillFindYouIfuBuildingKit(Mods.IWillFindYou.ID, "ifu_buildingKit", 0),
+
     // 兰波顿机械方块/电容
     KekzTechLapotronicEnergyUnitBlock(Mods.KekzTech.ID, "kekztech_lapotronicenergyunit_block", 0),
 
     // 穿刺箭
     BattleGearPiercingArrow(Mods.MineAndBladeBattleGear2.ID, "mb.arrow", 3),
-
-    // 纸
-    MinecraftPaper(Mods.Minecraft.ID, "paper", 0),
-    // 红石粉
-    MinecraftRedstone(Mods.Minecraft.ID, "redstone", 0),
 
     // 黑云
     NaturaBlackCloud(Mods.Natura.ID, "Cloud", 1),
@@ -736,6 +702,17 @@ public enum Itemlist {
     NaturaGrayCloud(Mods.Natura.ID, "Cloud", 2),
     // 硫云
     NaturaSulfurCloud(Mods.Natura.ID, "Cloud", 3),
+
+    // 强化玻璃透镜
+    NHCoreModReinforcedGlassLens(Mods.NewHorizonsCoreMod.ID, "ReinforcedGlassLense"),
+    // 神秘水晶透镜
+    NHCoreModMysteriousCrystalLens(Mods.NewHorizonsCoreMod.ID, "MysteriousCrystalLens"),
+    // 拉多克斯聚合物透镜
+    NHCoreModRadoxPolymerLens(Mods.NewHorizonsCoreMod.ID, "RadoxPolymerLens"),
+    // 彩色透镜
+    NHCoreModChromaticLens(Mods.NewHorizonsCoreMod.ID, "ChromaticLens"),
+    // 琼脂
+    NHCoreModAgar(Mods.NewHorizonsCoreMod.ID, "GTNHBioItems", 2),
 
     // 电梯
     OpenBlocksElevator(Mods.OpenBlocks.ID, "elevator", 0),
@@ -825,6 +802,12 @@ public enum Itemlist {
     // 创造模式IC芯片
     ProjectRedCreativeICChip(Mods.ProjectRedFabrication.ID, "projectred.fabrication.icchip", 1),
 
+    // 普通轨道
+    RailcraftTrack(Mods.Railcraft.ID, "track", 0),
+    RailcraftTrackLegacyDamage736(Mods.Railcraft.ID, "track", 736),
+    RailcraftTrackLegacyDamage816(Mods.Railcraft.ID, "track", 816),
+    // 集水器壁板
+    RailcraftWaterTankWall(Mods.Railcraft.ID, "machine.alpha", 14),
     // 高级焦炉砖块
     RailcraftAdvancedCokeOvenBrick(Mods.Railcraft.ID, "machine.alpha", 12),
     // 民科蒸汽引擎
@@ -1056,105 +1039,105 @@ public enum Itemlist {
     TwilightForestTileWispyCloud(Mods.TwilightForest.ID, "tile.WispyCloud", 0),
 
     // 导电铁奇点
-    ConductiveIronSingularity(Mods.UniversalSingularities.ID, "universal.enderIO.singularity", 0),
+    USConductiveIronSingularity(Mods.UniversalSingularities.ID, "universal.enderIO.singularity", 0),
     // 磁钢奇点
-    ElectricalSteelSingularity(Mods.UniversalSingularities.ID, "universal.enderIO.singularity", 1),
+    USElectricalSteelSingularity(Mods.UniversalSingularities.ID, "universal.enderIO.singularity", 1),
     // 充能合金奇点
-    EnergeticAlloySingularity(Mods.UniversalSingularities.ID, "universal.enderIO.singularity", 2),
+    USEnergeticAlloySingularity(Mods.UniversalSingularities.ID, "universal.enderIO.singularity", 2),
     // 玄钢奇点
-    DarkSteelSingularity(Mods.UniversalSingularities.ID, "universal.enderIO.singularity", 3),
+    USDarkSteelSingularity(Mods.UniversalSingularities.ID, "universal.enderIO.singularity", 3),
     // 脉动铁奇点
-    PulsatingIronSingularity(Mods.UniversalSingularities.ID, "universal.enderIO.singularity", 4),
+    USPulsatingIronSingularity(Mods.UniversalSingularities.ID, "universal.enderIO.singularity", 4),
     // 红石合金奇点
-    RedstoneAlloySingularity(Mods.UniversalSingularities.ID, "universal.enderIO.singularity", 5),
+    USRedstoneAlloySingularity(Mods.UniversalSingularities.ID, "universal.enderIO.singularity", 5),
     // 魂金奇点
-    SoulariumSingularity(Mods.UniversalSingularities.ID, "universal.enderIO.singularity", 6),
+    USSoulariumSingularity(Mods.UniversalSingularities.ID, "universal.enderIO.singularity", 6),
     // 脉冲合金奇点
-    VibrantAlloySingularity(Mods.UniversalSingularities.ID, "universal.enderIO.singularity", 7),
+    USVibrantAlloySingularity(Mods.UniversalSingularities.ID, "universal.enderIO.singularity", 7),
     // 不稳定金属奇点
-    UnstableSingularity(Mods.UniversalSingularities.ID, "universal.extraUtilities.singularity", 0),
+    USUnstableSingularity(Mods.UniversalSingularities.ID, "universal.extraUtilities.singularity", 0),
     // 铝奇点
-    AluminumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 0),
+    USAluminumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 0),
     // 黄铜奇点
-    BrassSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 1),
+    USBrassSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 1),
     // 蓝宝石奇点
-    SapphireSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 10),
+    USSapphireSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 10),
     // 钢奇点
-    SteelSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 11),
+    USSteelSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 11),
     // 钛奇点
-    TitaniumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 12),
+    USTitaniumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 12),
     // 钨奇点
-    TungstenSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 13),
+    USTungstenSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 13),
     // 铀奇点
-    UraniumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 14),
+    USUraniumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 14),
     // 锌奇点
-    ZincSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 15),
+    USZincSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 15),
     // 磷酸三钙奇点
-    TricalciumPhosphateSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 16),
+    USTricalciumPhosphateSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 16),
     // 钯奇点
-    PalladiumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 17),
+    USPalladiumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 17),
     // 大马士革钢奇点
-    DamascusSteelSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 18),
+    USDamascusSteelSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 18),
     // 黑钢奇点
-    BlackSteelSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 19),
+    USBlackSteelSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 19),
     // 青铜奇点
-    BronzeSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 2),
+    USBronzeSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 2),
     // 流体琥珀金奇点
-    ElectrumFluxSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 20),
+    USElectrumFluxSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 20),
     // 水银奇点
-    QuicksilverSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 21),
+    USQuicksilverSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 21),
     // 暗影钢奇点
-    ShadowSteelSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 22),
+    USShadowSteelSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 22),
     // 铱奇点
-    IridiumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 23),
+    USIridiumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 23),
     // 下界之星奇点
-    NetherStarSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 24),
+    USNetherStarSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 24),
     // 铂奇点
-    PlatinumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 25),
+    USPlatinumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 25),
     // 超能硅岩奇点
-    NaquadriaSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 26),
+    USNaquadriaSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 26),
     // 钚奇点
-    PlutoniumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 27),
+    USPlutoniumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 27),
     // 陨铁奇点
-    MeteoricIronSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 28),
+    USMeteoricIronSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 28),
     // 戴斯奇点
-    DeshSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 29),
+    USDeshSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 29),
     // 木炭奇点
-    CharcoalSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 3),
+    USCharcoalSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 3),
     // 铕奇点
-    EuropiumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 30),
+    USEuropiumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 30),
     // 脉石奇点
-    GangueSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 31),
+    USGangueSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 31),
     // 琥珀金奇点
-    ElectrumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 4),
+    USElectrumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 4),
     // 殷钢奇点
-    InvarSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 5),
+    USInvarSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 5),
     // 镁奇点
-    MagnesiumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 6),
+    USMagnesiumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 6),
     // 锇奇点
-    OsmiumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 7),
+    USOsmiumSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 7),
     // 橄榄石奇点
-    PeridotSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 8),
+    USPeridotSingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 8),
     // 红宝石奇点
-    RubySingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 9),
+    USRubySingularity(Mods.UniversalSingularities.ID, "universal.general.singularity", 9),
     // 蓝石奇点
-    ElectrotineSingularity(Mods.UniversalSingularities.ID, "universal.projectRed.singularity", 0),
+    USElectrotineSingularity(Mods.UniversalSingularities.ID, "universal.projectRed.singularity", 0),
     // 耐酸铝奇点
-    AlumiteSingularity(Mods.UniversalSingularities.ID, "universal.tinkersConstruct.singularity", 1),
+    USAlumiteSingularity(Mods.UniversalSingularities.ID, "universal.tinkersConstruct.singularity", 1),
     // 阿迪特奇点
-    ArditeSingularity(Mods.UniversalSingularities.ID, "universal.tinkersConstruct.singularity", 2),
+    USArditeSingularity(Mods.UniversalSingularities.ID, "universal.tinkersConstruct.singularity", 2),
     // 钴奇点
-    CobaltSingularity(Mods.UniversalSingularities.ID, "universal.tinkersConstruct.singularity", 3),
+    USCobaltSingularity(Mods.UniversalSingularities.ID, "universal.tinkersConstruct.singularity", 3),
     // 末影奇点
-    EnderSingularity(Mods.UniversalSingularities.ID, "universal.tinkersConstruct.singularity", 4),
+    USEnderSingularity(Mods.UniversalSingularities.ID, "universal.tinkersConstruct.singularity", 4),
     // 玛玉灵奇点
-    ManyullynSingularity(Mods.UniversalSingularities.ID, "universal.tinkersConstruct.singularity", 6),
+    USManyullynSingularity(Mods.UniversalSingularities.ID, "universal.tinkersConstruct.singularity", 6),
     // 煤炭奇点
-    CoalSingularity(Mods.UniversalSingularities.ID, "universal.vanilla.singularity", 0),
+    USCoalSingularity(Mods.UniversalSingularities.ID, "universal.vanilla.singularity", 0),
     // 绿宝石奇点
-    EmeraldSingularity(Mods.UniversalSingularities.ID, "universal.vanilla.singularity", 1),
+    USEmeraldSingularity(Mods.UniversalSingularities.ID, "universal.vanilla.singularity", 1),
     // 钻石奇点
-    DiamondSingularity(Mods.UniversalSingularities.ID, "universal.vanilla.singularity", 2),
+    USDiamondSingularity(Mods.UniversalSingularities.ID, "universal.vanilla.singularity", 2),
 
     // 无限之蛋
     WitcheryInfinityegg(Mods.Witchery.ID, "infinityegg", 0),
