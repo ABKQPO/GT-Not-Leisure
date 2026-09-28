@@ -70,6 +70,9 @@ gtnl.gui.config.general.item.player_doll.enablecustomskin.tooltip=Enable custom 
 gtnl.gui.config.general.item.player_doll.enableregistermaxtierglass=Register Player Doll Glass
 gtnl.gui.config.general.item.player_doll.enableregistermaxtierglass.tooltip=Make the Player Doll usable as MAX Tier Glass.
 
+# Pigmee Fumo (ported from AE2 Lightning Tech Reborn; model by TedXenon)
+gtnl.block.pigmee_fumo.name=Pigmee Fumo
+
 gtnl.gui.config.general.item.vein_miner_pickaxe=Vein Mining Pickaxe
 gtnl.gui.config.general.item.vein_miner_pickaxe.maxamount=Max Amount
 gtnl.gui.config.general.item.vein_miner_pickaxe.maxamount.tooltip=Set the maximum number of chained blocks for the Vein Mining Pickaxe.
@@ -4306,5 +4309,3 @@ gtnl.text_effect.title=Animated text effects
 gtnl.text_effect.palette=Change palette
 gtnl.text_effect.bold=Toggle bold
 gtnl.text_effect.italic=Toggle italic
-# Pigmee Fumo (ported from AE2 Lightning Tech Reborn; model by TedXenon)
-gtnl.block.pigmee_fumo.name=Pigmee Fumo
