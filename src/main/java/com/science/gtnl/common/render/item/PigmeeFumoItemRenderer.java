@@ -49,8 +49,16 @@ public class PigmeeFumoItemRenderer implements IItemRenderer {
             // Forge's equipped path only translates by (-0.5, -0.5, -0.5) when this is true, which is exactly the
             // centring a doll drawn inside its 0..1 cell needs; the item path would apply the flat-item pose instead.
             case INVENTORY_BLOCK -> false;
+            // RenderItem already lifted the item by the bob before calling Forge, and Forge's -bobing translate is
+            // what cancels it again. Reporting true keeps that lift, which is the bob every dropped item has;
+            // reporting false would drop the doll by up to 0.2 blocks and leave it static.
+            case ENTITY_BOBBING -> true;
+            // EntityItem's spin, which Forge applies about the origin; applyFrame recentres the model to match.
+            case ENTITY_ROTATION -> true;
+            // Leaving BLOCK_3D false for ENTITY keeps the dropped doll on Forge's flat-path 0.5 scale; the 3D path
+            // would apply the 0.25 that this block's -1 render type implies.
             case BLOCK_3D -> type == ItemRenderType.EQUIPPED;
-            case EQUIPPED_BLOCK, ENTITY_ROTATION, ENTITY_BOBBING -> true;
+            case EQUIPPED_BLOCK -> true;
         };
     }
 
@@ -101,7 +109,13 @@ public class PigmeeFumoItemRenderer implements IItemRenderer {
                 PigmeeFumoModel.applyIconDisplay();
             }
             case EQUIPPED, EQUIPPED_FIRST_PERSON -> PigmeeFumoModel.applyHandDisplay();
-            case ENTITY -> GL11.glScalef(2, 2, 2);
+            case ENTITY -> {
+                // Forge rotates a dropped item about the origin before calling us, so the model has to be centred
+                // there or it orbits that corner instead of spinning in place. Only X and Z are recentred: the spin
+                // is about Y, and shifting Y would sink the model below the ground it sits on.
+                GL11.glScalef(2, 2, 2);
+                GL11.glTranslatef(-0.5F, 0.0F, -0.5F);
+            }
             default -> {}
         }
     }

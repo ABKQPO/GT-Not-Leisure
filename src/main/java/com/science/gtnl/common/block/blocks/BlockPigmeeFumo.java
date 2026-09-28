@@ -87,7 +87,12 @@ public class BlockPigmeeFumo extends BlockContainer implements IBlockModelProvid
         super(Material.cloth);
         setHardness(0.5F);
         setStepSound(Block.soundTypeCloth);
-        setLightOpacity(2);
+        // Zero, so the dolls never write themselves into the chunk height map. Any non-zero opacity does, which
+        // makes Chunk.canBlockSeeTheSky report false for that block and sends its sky light through the
+        // per-block propagation path, where the engine charges max(1, opacity) for every doll the light has to
+        // pass: a stack then gets a level or two darker per layer it is buried under. At zero every doll in a
+        // pile is treated as sky-exposed and they all read the same value.
+        setLightOpacity(0);
         setBlockName("gtnl.pigmee_fumo");
         setBlockTextureName(RESOURCE_ROOT_ID + ":blocks/pigmee_fumo");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);

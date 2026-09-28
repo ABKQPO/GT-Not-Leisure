@@ -9,6 +9,7 @@ import java.util.List;
 
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -17,13 +18,13 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import org.lwjgl.opengl.GL11;
 
 import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
-import com.science.gtnl.common.block.blocks.BlockPigmeeFumo;
 import com.science.gtnl.common.block.blocks.item.ItemBlockPigmeeFumo;
 import com.science.gtnl.common.block.blocks.tile.TileEntityPigmeeFumo;
 import com.science.gtnl.common.render.model.PigmeeFumoModel;
 import com.science.gtnl.common.render.model.PigmeeFumoRenderHelper;
 import com.science.gtnl.common.render.model.PigmeeFumoRenderHelper.FacedQuad;
 
+import baubles.api.BaublesApi;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -81,10 +82,15 @@ public class PigmeeFumoHeadRenderer {
             + MathHelper.wrapAngleTo180_float(player.rotationYawHead - player.prevRotationYawHead) * partialTick;
         float bodyYaw = headYaw - head.rotateAngleY * (180.0F / (float) Math.PI);
 
-        int light = player.getBrightnessForRender(partialTick);
-        for (int i = 0; i < brightness.length; i++) {
-            brightness[i] = light;
-        }
+        // Sample light exactly the way a placed doll does, at the head block the doll actually sits on.
+        // Entity.getBrightnessForRender would be a single sample at chest height instead, which reads dimmer
+        // whenever a neighbouring block is brighter and so made a worn doll look unlike a placed one.
+        PigmeeFumoRenderHelper.fillBrightness(
+            world,
+            MathHelper.floor_double(player.posX),
+            MathHelper.floor_double(player.posY + player.getEyeHeight()),
+            MathHelper.floor_double(player.posZ),
+            brightness);
 
         GL11.glPushMatrix();
         try {
@@ -112,11 +118,20 @@ public class PigmeeFumoHeadRenderer {
         }
     }
 
-    // Returns true when the player's helmet slot holds this mod's Pigmee Fumo block item.
+    // Returns true when the doll is worn, either in the helmet slot or in any Baubles slot.
     private static boolean isWearingFumo(EntityPlayer player) {
         if (player == null) return false;
-        ItemStack helmet = player.inventory.armorItemInSlot(3);
-        return helmet != null && helmet.getItem() instanceof ItemBlockPigmeeFumo
-            && ((ItemBlockPigmeeFumo) helmet.getItem()).field_150939_a instanceof BlockPigmeeFumo;
+        if (isFumo(player.inventory.armorItemInSlot(3))) return true;
+        IInventory baubles = BaublesApi.getBaubles(player);
+        if (baubles == null) return false;
+        for (int slot = 0; slot < baubles.getSizeInventory(); slot++) {
+            if (isFumo(baubles.getStackInSlot(slot))) return true;
+        }
+        return false;
+    }
+
+    // Returns true when the stack is this mod's Pigmee Fumo block item.
+    private static boolean isFumo(ItemStack stack) {
+        return stack != null && stack.getItem() instanceof ItemBlockPigmeeFumo;
     }
 }

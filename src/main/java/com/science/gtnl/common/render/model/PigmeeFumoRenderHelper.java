@@ -101,13 +101,12 @@ public final class PigmeeFumoRenderHelper {
     }
 
     // Samples the seven lightmap values a world-space draw needs.
-    // Light comes straight from getLightBrightnessForSkyBlocks, which already applies the day/night
-    // sky subtraction. Block#getMixedBrightnessForBlock must not be used here: it can hand back a stale zero
-    // while the propagation pass is still running, which paints a face black.
-    // The block and its six neighbours are sampled and the brightest wins. The block declares lightOpacity = 2,
-    // which costs its own tile two sky levels (13 against 15 directly above), and a small model only occupies the
-    // middle
-    // of its block anyway.
+    // Light comes straight from getLightBrightnessForSkyBlocks, which already applies the day/night sky
+    // subtraction. Block#getMixedBrightnessForBlock must not be used here: it can hand back a stale zero while
+    // the propagation pass is still running, which paints a face black.
+    // The block and its six neighbours are sampled and the brightest wins. Since the block's lightOpacity is zero
+    // every doll in a pile is sky-exposed and reads the same value, so the neighbourhood only matters at the edge
+    // of a lit area, where it lets a nearby light source reach the model.
     // world: non-null access
     // x: block X
     // y: block Y
