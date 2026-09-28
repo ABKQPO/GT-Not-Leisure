@@ -111,7 +111,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTUtility.getIntegratedCircuit(1),
+                GTUtility.getIntegratedCircuit(5),
                 GTOreDictUnificator.get(OrePrefixes.stick, Materials.Iron, 2),
                 GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Bronze, 2),
                 GTNLMaterials.Breel.get(OrePrefixes.pipeMedium, 1),
