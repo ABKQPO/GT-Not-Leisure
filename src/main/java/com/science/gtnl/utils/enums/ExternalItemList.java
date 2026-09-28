@@ -14,8 +14,8 @@ public enum ExternalItemList {
     AE2FluidCraftQuantumBridgeCard(Mods.AE2FluidCraft.ID, "quantum_bridge_card", true),
     // 能量卡
     AE2FluidCraftEnergyCard(Mods.AE2FluidCraft.ID, "energy_card", true),
-    // ME二合一接口
-    AE2FluidCraftFluidInterface(Mods.AE2FluidCraft.ID, "fluid_interface", 0),
+    // ME二合一接口（方块）
+    AE2FluidCraftBlockFluidInterface(Mods.AE2FluidCraft.ID, "fluid_interface", 0),
     // 256k-ME流体存储组件
     AE2FluidCraft256kFluidStorageComponent(Mods.AE2FluidCraft.ID, "fluid_part", 4),
     // 4096k-ME流体存储组件
@@ -26,7 +26,7 @@ public enum ExternalItemList {
     AE2FluidCraftFluidStorageUniverse(Mods.AE2FluidCraft.ID, "fluid_storage.Universe", 0),
     // ME高级多流体存储外壳
     AE2FluidCraftAdvancedFluidStorageHousing(Mods.AE2FluidCraft.ID, "fluid_storage_housing", 3),
-    // ME二合一接口
+    // ME二合一接口（线缆部件）
     AE2FluidCraftPartFluidInterface(Mods.AE2FluidCraft.ID, "part_fluid_interface", 0),
     // ME流体存储总线
     AE2FluidCraftPartFluidStorageBus(Mods.AE2FluidCraft.ID, "part_fluid_storage_bus", 0),
