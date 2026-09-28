@@ -1190,10 +1190,6 @@ public enum ModsItemlist {
         this.ic2NamedItem = ic2NamedItem;
     }
 
-    /**
-     * @param amount requested stack size
-     * @return a fresh stack, or {@code null} if unavailable
-     */
     public ItemStack get(long amount) {
         if (ic2NamedItem) {
             ItemStack stack = IC2Items.getItem(registryName);
