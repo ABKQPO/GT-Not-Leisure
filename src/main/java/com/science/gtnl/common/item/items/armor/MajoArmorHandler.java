@@ -13,6 +13,8 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
+import com.science.gtnl.common.item.items.ItemElainaBrooch;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import thaumcraft.common.lib.potions.PotionWarpWard;
 
@@ -61,7 +63,10 @@ public class MajoArmorHandler {
             && ("DreamYao520".equals(playerName) || "SereiaWe".equals(playerName));
 
         updateModifier(player.getEntityAttribute(SharedMonsterAttributes.maxHealth), HEALTH_BONUS, wearingRobe);
-        updateModifier(player.getEntityAttribute(SharedMonsterAttributes.maxHealth), TRAVELER_HEALTH_BONUS, travelerSet);
+        updateModifier(
+            player.getEntityAttribute(SharedMonsterAttributes.maxHealth),
+            TRAVELER_HEALTH_BONUS,
+            travelerSet);
         updateModifier(
             player.getEntityAttribute(SharedMonsterAttributes.knockbackResistance),
             KNOCKBACK_BONUS,
@@ -110,6 +115,8 @@ public class MajoArmorHandler {
                 player.capabilities.allowFlying = true;
                 data.setBoolean(TRAVELER_FLIGHT_TAG, true);
                 player.sendPlayerAbilities();
+            } else if (ItemElainaBrooch.hasGrantedFlight(player)) {
+                data.setBoolean(TRAVELER_FLIGHT_TAG, true);
             }
             refreshEffect(player, Potion.resistance, 4, TRAVELER_EFFECT_DURATION);
             refreshEffect(player, Potion.damageBoost, 19, TRAVELER_EFFECT_DURATION);
@@ -125,7 +132,7 @@ public class MajoArmorHandler {
         removeTravelerEffect(player, Potion.regeneration, 4);
         if (data.getBoolean(TRAVELER_FLIGHT_TAG)) {
             data.removeTag(TRAVELER_FLIGHT_TAG);
-            if (!player.capabilities.isCreativeMode) {
+            if (!player.capabilities.isCreativeMode && !ItemElainaBrooch.isEquipped(player)) {
                 player.capabilities.allowFlying = false;
                 player.capabilities.isFlying = false;
                 player.sendPlayerAbilities();
@@ -135,8 +142,8 @@ public class MajoArmorHandler {
 
     private static void removeTravelerEffect(EntityPlayer player, Potion potion, int amplifier) {
         PotionEffect current = player.getActivePotionEffect(potion);
-        if (current != null && current.getAmplifier() == amplifier
-            && current.getDuration() <= TRAVELER_EFFECT_DURATION) player.removePotionEffect(potion.id);
+        if (current != null && current.getAmplifier() == amplifier && current.getDuration() <= TRAVELER_EFFECT_DURATION)
+            player.removePotionEffect(potion.id);
     }
 
     private static void updateModifier(IAttributeInstance attribute, AttributeModifier modifier, boolean enabled) {

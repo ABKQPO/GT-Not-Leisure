@@ -53,6 +53,7 @@ public class MainConfig {
 
         @Comment("Broom")
         public static class Broom {
+
             @Comment("Allow looking up or down while moving forward to control broom altitude")
             @DefaultBoolean(true)
             public boolean enableViewControl = true;
