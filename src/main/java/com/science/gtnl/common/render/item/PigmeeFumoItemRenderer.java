@@ -113,7 +113,7 @@ public class PigmeeFumoItemRenderer implements IItemRenderer {
                 // Forge rotates a dropped item about the origin before calling us, so the model has to be centred
                 // there or it orbits that corner instead of spinning in place. Only X and Z are recentred: the spin
                 // is about Y, and shifting Y would sink the model below the ground it sits on.
-                GL11.glScalef(2, 2, 2);
+                GL11.glScalef(1.2F, 1.2F, 1.2F);
                 GL11.glTranslatef(-0.5F, 0.0F, -0.5F);
             }
             default -> {}
