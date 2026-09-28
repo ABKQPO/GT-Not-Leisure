@@ -15,6 +15,7 @@ import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaTube;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperDualInterface;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperInterface;
 import com.science.gtnl.common.entity.EntityParticleBeam;
+import com.science.gtnl.common.entity.MajoBroomUpdateHandler;
 import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchContainer;
 import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchGuiFactory;
 import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchHost;
@@ -86,6 +87,7 @@ public class CommonProxy implements IGuiHandler {
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(SUBSCRIBE_EVENT_UTILS);
         MinecraftForge.EVENT_BUS.register(new MajoArmorHandler());
+        MinecraftForge.EVENT_BUS.register(new MajoBroomUpdateHandler());
         FMLCommonHandler.instance()
             .bus()
             .register(SUBSCRIBE_EVENT_UTILS);

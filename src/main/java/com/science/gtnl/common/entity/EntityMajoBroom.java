@@ -44,9 +44,10 @@ public class EntityMajoBroom extends Entity {
     public static final float MAX_VISUAL_PITCH = 20.0F;
     public static final float VISUAL_PITCH_RESPONSE = 0.2F;
     private static final float VISUAL_YAW_RESPONSE = 0.58F;
-    private static final double CLIENT_POSITION_BLEND = 0.65D;
+    private static final double CLIENT_POSITION_BLEND = 0.75D;
+    private static final double CLIENT_MAX_CATCHUP_MULTIPLIER = 1.5D;
     private static final float CLIENT_ROTATION_BLEND = 0.65F;
-    private static final double CLIENT_SNAP_DISTANCE_SQUARED = 16.0D;
+    private static final double CLIENT_SNAP_DISTANCE_SQUARED = 256.0D;
     public ItemStack broomStack;
     private int flightTicks;
     private byte keyVerticalInput;
@@ -114,6 +115,7 @@ public class EntityMajoBroom extends Entity {
         }
 
         simulateMotion(riddenByEntity);
+        if (riddenByEntity != null) updateRiderPosition();
         if (onGround) flightTicks = 0;
         pushNearbyEntities();
     }
@@ -122,14 +124,6 @@ public class EntityMajoBroom extends Entity {
         boolean clientRidden = riddenByEntity instanceof EntityPlayer;
         if (!clientRidden) verticalInput = 0;
         boolean ridingChanged = clientRidden != clientWasRidden;
-        if (ridingChanged) {
-            clientHasTarget = false;
-            clientTargetX = posX;
-            clientTargetY = posY;
-            clientTargetZ = posZ;
-            clientTargetYaw = rotationYaw;
-            clientTargetPitch = rotationPitch;
-        }
         clientWasRidden = clientRidden;
         if (!clientVisualInitialized || ridingChanged) {
             visualYaw = rotationYaw;
@@ -150,27 +144,30 @@ public class EntityMajoBroom extends Entity {
             if (dx * dx + dy * dy + dz * dz > CLIENT_SNAP_DISTANCE_SQUARED) {
                 snapClientTransform(clientTargetX, clientTargetY, clientTargetZ, clientTargetYaw, clientTargetPitch);
             } else {
-                posX += dx * CLIENT_POSITION_BLEND;
-                posY += dy * CLIENT_POSITION_BLEND;
-                posZ += dz * CLIENT_POSITION_BLEND;
-                rotationYaw += MathHelper.wrapAngleTo180_float(clientTargetYaw - rotationYaw) * CLIENT_ROTATION_BLEND;
-                rotationPitch += (clientTargetPitch - rotationPitch) * CLIENT_ROTATION_BLEND;
-                if (Math.abs(dx) < 0.0005D && Math.abs(dy) < 0.0005D && Math.abs(dz) < 0.0005D) {
-                    posX = clientTargetX;
-                    posY = clientTargetY;
-                    posZ = clientTargetZ;
+                double stepX = dx * CLIENT_POSITION_BLEND;
+                double stepY = dy * CLIENT_POSITION_BLEND;
+                double stepZ = dz * CLIENT_POSITION_BLEND;
+                double stepSquared = stepX * stepX + stepY * stepY + stepZ * stepZ;
+                double maxStep = getMaxHorizontalSpeed() * CLIENT_MAX_CATCHUP_MULTIPLIER;
+                if (stepSquared > maxStep * maxStep) {
+                    double scale = maxStep / Math.sqrt(stepSquared);
+                    stepX *= scale;
+                    stepY *= scale;
+                    stepZ *= scale;
                 }
+                setPosition(posX + stepX, posY + stepY, posZ + stepZ);
+                setRotation(
+                    rotationYaw
+                        + MathHelper.wrapAngleTo180_float(clientTargetYaw - rotationYaw) * CLIENT_ROTATION_BLEND,
+                    rotationPitch + (clientTargetPitch - rotationPitch) * CLIENT_ROTATION_BLEND);
             }
-            setPosition(posX, posY, posZ);
-            setRotation(rotationYaw, rotationPitch);
         }
+        if (riddenByEntity != null) updateRiderPosition();
         if (clientVisualInitialized) {
             float yawDelta = MathHelper.wrapAngleTo180_float(rotationYaw - visualYaw);
             visualYaw += yawDelta * VISUAL_YAW_RESPONSE;
             if (Math.abs(yawDelta) < 0.01F) visualYaw = rotationYaw;
         }
-        // The server owns vehicle movement, just like vanilla horses and pigs. The client only
-        // consumes the tracked position and lets Entity.updateRidden place the passenger.
         motionX = motionY = motionZ = 0.0D;
         updateVisualPitch(posX - oldX, posY - oldY, posZ - oldZ);
     }

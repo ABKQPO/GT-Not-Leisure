@@ -37,6 +37,8 @@ public final class MajoBroomInputHandler {
         Keyboard.KEY_LCONTROL,
         "key.categories.gtnl");
     private int lastBroomId = -1;
+    private int lastVisualBroomId = -1;
+    private int lastVisualBroomTick = -1;
     private byte lastVerticalInput;
     private int ticksSinceSend;
 
@@ -66,9 +68,27 @@ public final class MajoBroomInputHandler {
         Minecraft minecraft = Minecraft.getMinecraft();
         if (minecraft.thePlayer == null || !(minecraft.thePlayer.ridingEntity instanceof EntityMajoBroom broom)) {
             lastBroomId = -1;
+            lastVisualBroomId = -1;
+            lastVisualBroomTick = -1;
             lastVerticalInput = 0;
             ticksSinceSend = 0;
             return;
+        }
+
+        if (broom.riddenByEntity == minecraft.thePlayer) {
+            if (broom.getEntityId() == lastVisualBroomId && broom.ticksExisted == lastVisualBroomTick) {
+                broom.lastTickPosX = broom.posX;
+                broom.lastTickPosY = broom.posY;
+                broom.lastTickPosZ = broom.posZ;
+                broom.updateClient();
+            }
+            lastVisualBroomId = broom.getEntityId();
+            lastVisualBroomTick = broom.ticksExisted;
+            broom.updateRiderPosition();
+            double riderOffset = broom.getMountedYOffset() + minecraft.thePlayer.getYOffset();
+            minecraft.thePlayer.prevPosX = minecraft.thePlayer.lastTickPosX = broom.lastTickPosX;
+            minecraft.thePlayer.prevPosY = minecraft.thePlayer.lastTickPosY = broom.lastTickPosY + riderOffset;
+            minecraft.thePlayer.prevPosZ = minecraft.thePlayer.lastTickPosZ = broom.lastTickPosZ;
         }
 
         byte verticalInput = 0;
