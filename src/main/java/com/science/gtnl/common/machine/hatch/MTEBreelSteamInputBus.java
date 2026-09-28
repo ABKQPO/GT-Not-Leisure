@@ -71,7 +71,10 @@ public class MTEBreelSteamInputBus extends MTEHatchSteamBusInput {
         transfer.pull(baseMetaTileEntity, baseMetaTileEntity.getFrontFacing());
         transfer.setStacksToTransfer(25);
         transfer.setMaxItemsPerTransfer(getStackSizeLimit(-1, null));
-        transfer.transfer();
+        if (transfer.transfer() > 0) {
+            updateSlots();
+            notifyWatchers();
+        }
     }
 
     @Override

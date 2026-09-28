@@ -165,6 +165,13 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
 
         ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
 
+        if (ownerUUID == null) {
+            isInTeam = false;
+            teamUUID = null;
+            steamDisplay = BigInteger.ZERO;
+            return;
+        }
+
         isInTeam = true;
         teamUUID = TeamNetworkManager.getTeamId(ownerUUID);
         steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
@@ -174,9 +181,18 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         if (aBaseMetaTileEntity.isServerSide()) {
             if (aTick % 200 == 0L) {
-                isInTeam = true;
-                teamUUID = TeamNetworkManager.getTeamId(ownerUUID);
-                steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
+                if (ownerUUID == null) {
+                    ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
+                }
+                if (ownerUUID == null) {
+                    isInTeam = false;
+                    teamUUID = null;
+                    steamDisplay = BigInteger.ZERO;
+                } else {
+                    isInTeam = true;
+                    teamUUID = TeamNetworkManager.getTeamId(ownerUUID);
+                    steamDisplay = SteamWirelessNetworkManager.getUserSteam(ownerUUID);
+                }
             }
         }
         super.onPostTick(aBaseMetaTileEntity, aTick);
@@ -509,6 +525,9 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         super.getWailaNBTData(player, tile, tag, world, x, y, z);
         tag.setInteger("tierMachine", tierMachine);
         tag.setInteger("parallel", getTrueParallel());
+        if (ownerUUID == null) {
+            return;
+        }
 
         tag.setString("SteamNetworkOwner", TeamNetworkManager.getPlayerName(ownerUUID));
         tag.setBoolean("isInSteamNetwork", isInTeam);
