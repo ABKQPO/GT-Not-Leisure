@@ -6,6 +6,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
@@ -15,7 +16,6 @@ import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.core.fluids.GTPPFluids;
@@ -51,7 +51,7 @@ public class DistilleryRecipes implements IRecipePool {
             .addTo(DR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Mods.Forestry.ID, "logs", 1, 20))
+            .itemInputs(ModsItemlist.ForestryPineLog.get(1))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dustTiny, Materials.Ash, 1L))
             .fluidInputs(FluidRegistry.getFluidStack("steam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 500))
@@ -61,7 +61,7 @@ public class DistilleryRecipes implements IRecipePool {
             .addTo(DR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Mods.Forestry.ID, "logs", 1, 20))
+            .itemInputs(ModsItemlist.ForestryPineLog.get(1))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dustTiny, Materials.Ash, 1L))
             .fluidInputs(FluidRegistry.getFluidStack("ic2superheatedsteam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 1000))
@@ -80,7 +80,7 @@ public class DistilleryRecipes implements IRecipePool {
             .addTo(DR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Mods.BiomesOPlenty.ID, "logs4", 1, 0))
+            .itemInputs(ModsItemlist.BiomesOPlentyLogs4.get(1))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dustTiny, Materials.Ash, 1L))
             .fluidInputs(FluidRegistry.getFluidStack("steam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 500))
@@ -98,7 +98,7 @@ public class DistilleryRecipes implements IRecipePool {
             .addTo(DR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Mods.BiomesOPlenty.ID, "logs4", 1, 0))
+            .itemInputs(ModsItemlist.BiomesOPlentyLogs4.get(1))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dustTiny, Materials.Ash, 1L))
             .fluidInputs(FluidRegistry.getFluidStack("ic2superheatedsteam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 1000))
@@ -116,7 +116,7 @@ public class DistilleryRecipes implements IRecipePool {
             .addTo(DR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Mods.BiomesOPlenty.ID, "colorizedLeaves2", 1, 1))
+            .itemInputs(ModsItemlist.BiomesOPlentyPineLeaves.get(1))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dustTiny, Materials.Ash, 1L))
             .fluidInputs(FluidRegistry.getFluidStack("steam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 250))
@@ -134,7 +134,7 @@ public class DistilleryRecipes implements IRecipePool {
             .addTo(DR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Mods.BiomesOPlenty.ID, "colorizedLeaves2", 1, 1))
+            .itemInputs(ModsItemlist.BiomesOPlentyPineLeaves.get(1))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dustTiny, Materials.Ash, 1L))
             .fluidInputs(FluidRegistry.getFluidStack("ic2superheatedsteam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 500))
@@ -152,7 +152,7 @@ public class DistilleryRecipes implements IRecipePool {
             .addTo(DR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Mods.BiomesOPlenty.ID, "colorizedSaplings", 1, 5))
+            .itemInputs(ModsItemlist.BiomesOPlentyPineSapling.get(1))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dustTiny, Materials.Ash, 1L))
             .fluidInputs(FluidRegistry.getFluidStack("steam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 100))
@@ -170,7 +170,7 @@ public class DistilleryRecipes implements IRecipePool {
             .addTo(DR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Mods.BiomesOPlenty.ID, "colorizedSaplings", 1, 5))
+            .itemInputs(ModsItemlist.BiomesOPlentyPineSapling.get(1))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dustTiny, Materials.Ash, 1L))
             .fluidInputs(FluidRegistry.getFluidStack("ic2superheatedsteam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 200))
@@ -188,7 +188,7 @@ public class DistilleryRecipes implements IRecipePool {
             .addTo(DR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Mods.BiomesOPlenty.ID, "misc", 1, 13))
+            .itemInputs(ModsItemlist.BiomesOPlentyPineCone.get(1))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dustTiny, Materials.Ash, 1L))
             .fluidInputs(FluidRegistry.getFluidStack("steam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 50))
@@ -206,7 +206,7 @@ public class DistilleryRecipes implements IRecipePool {
             .addTo(DR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Mods.BiomesOPlenty.ID, "misc", 1, 13))
+            .itemInputs(ModsItemlist.BiomesOPlentyPineCone.get(1))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dustTiny, Materials.Ash, 1L))
             .fluidInputs(FluidRegistry.getFluidStack("ic2superheatedsteam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 100))

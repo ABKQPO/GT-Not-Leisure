@@ -6,6 +6,7 @@ import com.dreammaster.gthandler.DTPFCalculator;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import appeng.api.AEApi;
@@ -13,11 +14,9 @@ import goodgenerator.util.ItemRefer;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.core.material.MaterialsElements;
@@ -40,7 +39,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 aeMaterials.cell128SpatialPart()
                     .maybeStack(16)
                     .orNull(),
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Singularity", 2, 0),
+                ModsItemlist.IronSingularity.get(2),
                 ItemRefer.Fluid_Storage_Core_T8.get(2))
             .fluidInputs(GTNLMaterials.ExcitedNaquadahFuel.getFluidOrGas(1000))
             .itemOutputs(GTNLItemList.DepletedExcitedNaquadahFuelRod.get(1))

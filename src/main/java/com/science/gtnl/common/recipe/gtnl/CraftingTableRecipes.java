@@ -1,7 +1,5 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import static gregtech.api.enums.Mods.IndustrialCraft2;
-
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -16,6 +14,7 @@ import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
@@ -186,20 +185,20 @@ public class CraftingTableRecipes implements IRecipePool {
         GTModHandler.addCraftingRecipe(
             GTNLItemList.AdvancedPhotovoltaicPowerStation.get(1),
             new Object[] { "ABA", "BCB", "ADA", 'A', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Titanium, 1L),
-                'B', GTModHandler.getModItem(Mods.EnderIO.ID, "blockIngotStorage", 1, 3), 'C',
+                'B', ModsItemlist.EnderIORedstoneAlloyBlock.get(1), 'C',
                 GTNLItemList.AdvancedPhotovoltaicBlock.get(1), 'D', OrePrefixes.circuit.get(Materials.HV) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.VibrantPhotovoltaicPowerStation.get(1),
             new Object[] { "ABA", "BCB", "ADA", 'A',
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.TungstenSteel, 1L), 'B',
-                GTModHandler.getModItem(Mods.EnderIO.ID, "blockIngotStorage", 1, 6), 'C',
+                ModsItemlist.EnderIODarkSteelBlock.get(1), 'C',
                 GTNLItemList.VibrantPhotovoltaicBlock.get(1), 'D', OrePrefixes.circuit.get(Materials.EV) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.TestItem.get(1),
             new Object[] { "ABA", "BCB", "ABA", 'A', new ItemStack(Items.golden_apple, 1, 1), 'B',
-                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 1, 9), 'C',
+                ModsItemlist.BotaniaDragonstone.get(1), 'C',
                 new ItemStack(Blocks.dragon_egg, 1) });
 
         GTModHandler.addCraftingRecipe(
@@ -318,12 +317,12 @@ public class CraftingTableRecipes implements IRecipePool {
         GTModHandler.addCraftingRecipe(
             GTNLItemList.SatietyRing.get(1),
             new Object[] { "AAA", "ABA", "AAA", 'A', new ItemStack(Items.golden_apple, 1, 1), 'B',
-                GTModHandler.getModItem(Mods.Thaumcraft.ID, "ItemBaubleBlanks", 1, 1) });
+                ModsItemlist.ThaumcraftMundaneRing.get(1) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.KFCFamily.get(1),
             new Object[] { "AAA", "BCB", "AAA", 'A',
-                GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "hotwingsItem", 1), 'B',
+                ModsItemlist.PamsHarvestCraftHotwingsItem.get(1), 'B',
                 new ItemStack(Items.cooked_chicken, 1), 'C',
                 GTOreDictUnificator.get(OrePrefixes.plateQuintuple, Materials.Paper, 1L) });
 
@@ -508,9 +507,9 @@ public class CraftingTableRecipes implements IRecipePool {
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.SuperReachRing.get(1),
-            new Object[] { "CB ", "BAB", " B ", 'A', GTModHandler.getModItem(Mods.Botania.ID, "reachRing", 1), 'B',
+            new Object[] { "CB ", "BAB", " B ", 'A', ModsItemlist.BotaniaReachRing.get(1), 'B',
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.GaiaSpirit, 1L), 'C',
-                GTModHandler.getModItem(Mods.Botania.ID, "lens", 1, 18) });
+                ModsItemlist.BotaniaWarpLens.get(1) });
 
         GTModHandler.addCraftingRecipe(
             GregtechItemList.Hatch_Reservoir.get(1),
@@ -630,7 +629,7 @@ public class CraftingTableRecipes implements IRecipePool {
         GTModHandler.addCraftingRecipe(
             GTNLItemList.PortableAdvancedWorkBench.get(1),
             new Object[] { " AB", "CDA", "EF ", 'A', GTOreDictUnificator.get(OrePrefixes.screw, Materials.Steel, 1),
-                'B', GTModHandler.getModItem(Mods.TinkerConstruct.ID, "CraftingStation", 1), 'C',
+                'B', ModsItemlist.TinkerConstructCraftingStation.get(1), 'C',
                 ToolDictNames.craftingToolFile, 'D', GTOreDictUnificator.get(OrePrefixes.plate, Materials.CastIron, 1),
                 'E', GTOreDictUnificator.get(OrePrefixes.stickLong, Materials.CastIron, 1), 'F',
                 ToolDictNames.craftingToolHardHammer });
@@ -655,7 +654,7 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.PortableEnderChest.get(1),
             new Object[] { " AB", "CDA", "EF ", 'A',
                 GTOreDictUnificator.get(OrePrefixes.plateDouble, Materials.EndSteel, 1), 'B',
-                GTModHandler.getModItem(Mods.EnderStorage.ID, "enderChest", 1, 0), 'C',
+                ModsItemlist.EnderStorageEnderChest.get(1), 'C',
                 ToolDictNames.craftingToolWrench, 'D', new ItemStack(Items.ender_eye, 1), 'E',
                 GTOreDictUnificator.get(OrePrefixes.stickLong, Materials.StainlessSteel, 1), 'F',
                 ToolDictNames.craftingToolHardHammer });
@@ -674,7 +673,7 @@ public class CraftingTableRecipes implements IRecipePool {
             new Object[] { "ABC", "DEB", "FGA", 'A',
                 GTOreDictUnificator.get(OrePrefixes.screw, Materials.StainlessSteel, 1), 'B',
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.StainlessSteel, 1), 'C',
-                GTModHandler.getModItem(Mods.AvaritiaAddons.ID, "CompressedChest", 1), 'D',
+                ModsItemlist.AvaritiaAddonsCompressedChest.get(1), 'D',
                 ToolDictNames.craftingToolWrench, 'E',
                 GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.StainlessSteel, 1), 'F',
                 GTOreDictUnificator.get(OrePrefixes.stickLong, Materials.Obsidian, 1), 'G',
@@ -684,9 +683,9 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.PortableInfinityChest.get(1),
             new Object[] { "ABC", "DEB", "FDG", 'A', ToolDictNames.craftingToolWrench, 'B',
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Infinity, 1), 'C',
-                GTModHandler.getModItem(Mods.AvaritiaAddons.ID, "InfinityChest", 1), 'D',
+                ModsItemlist.AvaritiaAddonsInfinityChest.get(1), 'D',
                 GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.CosmicNeutronium, 1), 'E',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 5), 'F',
+                ModsItemlist.AvaritiaInfinityCatalyst.get(1), 'F',
                 GTOreDictUnificator.get(OrePrefixes.stickLong, Materials.Infinity, 1), 'G',
                 ToolDictNames.craftingToolHardHammer });
 
@@ -694,7 +693,7 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.PortableCopperChest.get(1),
             new Object[] { "ABC", "DEB", "FGA", 'A', GTOreDictUnificator.get(OrePrefixes.screw, Materials.Copper, 1),
                 'B', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Copper, 1), 'C',
-                GTModHandler.getModItem(Mods.IronChests.ID, "BlockIronChest", 1, 3), 'D',
+                ModsItemlist.IronChestsCopperChest.get(1), 'D',
                 ToolDictNames.craftingToolWrench, 'E', GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Copper, 1),
                 'F', GTOreDictUnificator.get(OrePrefixes.stickLong, Materials.Copper, 1), 'G',
                 ToolDictNames.craftingToolHardHammer });
@@ -703,7 +702,7 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.PortableIronChest.get(1),
             new Object[] { "ABC", "DEB", "FGA", 'A', GTOreDictUnificator.get(OrePrefixes.screw, Materials.Iron, 1), 'B',
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Iron, 1), 'C',
-                GTModHandler.getModItem(Mods.IronChests.ID, "BlockIronChest", 1, 0), 'D',
+                ModsItemlist.IronChestsBlockIronChest.get(1), 'D',
                 ToolDictNames.craftingToolWrench, 'E', GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Iron, 1),
                 'F', GTOreDictUnificator.get(OrePrefixes.stickLong, Materials.Iron, 1), 'G',
                 ToolDictNames.craftingToolHardHammer });
@@ -719,7 +718,7 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.PortableSteelChest.get(1),
             new Object[] { "ABC", "DEB", "FGA", 'A', GTOreDictUnificator.get(OrePrefixes.screw, Materials.Steel, 1),
                 'B', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 1), 'C',
-                GTModHandler.getModItem(Mods.IronChests.ID, "BlockIronChest", 1, 4), 'D',
+                ModsItemlist.IronChestsSteelChest.get(1), 'D',
                 ToolDictNames.craftingToolWrench, 'E', GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Steel, 1),
                 'F', GTOreDictUnificator.get(OrePrefixes.stickLong, Materials.Steel, 1), 'G',
                 ToolDictNames.craftingToolHardHammer });
@@ -728,7 +727,7 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.PortableGoldenChest.get(1),
             new Object[] { "ABC", "DEB", "FGA", 'A', GTOreDictUnificator.get(OrePrefixes.screw, Materials.Gold, 1), 'B',
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Gold, 1), 'C',
-                GTModHandler.getModItem(Mods.IronChests.ID, "BlockIronChest", 1, 1), 'D',
+                ModsItemlist.IronChestsGoldChest.get(1), 'D',
                 ToolDictNames.craftingToolWrench, 'E', GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Gold, 1),
                 'F', GTOreDictUnificator.get(OrePrefixes.stickLong, Materials.Gold, 1), 'G',
                 ToolDictNames.craftingToolHardHammer });
@@ -737,7 +736,7 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.PortableDiamondChest.get(1),
             new Object[] { "ABC", "DEB", "FGA", 'A', GTOreDictUnificator.get(OrePrefixes.screw, Materials.Diamond, 1),
                 'B', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Diamond, 1), 'C',
-                GTModHandler.getModItem(Mods.IronChests.ID, "BlockIronChest", 1, 2), 'D',
+                ModsItemlist.IronChestsDiamondChest.get(1), 'D',
                 ToolDictNames.craftingToolWrench, 'E', GTOreDictUnificator.get(OrePrefixes.stick, Materials.Diamond, 1),
                 'F', GTOreDictUnificator.get(OrePrefixes.stickLong, Materials.Diamond, 1), 'G',
                 ToolDictNames.craftingToolHardHammer });
@@ -746,7 +745,7 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.PortableCrystalChest.get(1),
             new Object[] { "ABC", "DEB", "FGA", 'A', GTOreDictUnificator.get(OrePrefixes.screw, Materials.Glass, 1),
                 'B', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Glass, 1), 'C',
-                GTModHandler.getModItem(Mods.IronChests.ID, "BlockIronChest", 1, 5), 'D',
+                ModsItemlist.IronChestsCrystalChest.get(1), 'D',
                 ToolDictNames.craftingToolWrench, 'E', GTOreDictUnificator.get(OrePrefixes.stick, Materials.Glass, 1),
                 'F', GTOreDictUnificator.get(OrePrefixes.stickLong, Materials.Glass, 1), 'G',
                 ToolDictNames.craftingToolHardHammer });
@@ -755,7 +754,7 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.PortableObsidianChest.get(1),
             new Object[] { "ABC", "DEB", "FGA", 'A', GTOreDictUnificator.get(OrePrefixes.screw, Materials.Obsidian, 1),
                 'B', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Obsidian, 1), 'C',
-                GTModHandler.getModItem(Mods.IronChests.ID, "BlockIronChest", 1, 6), 'D',
+                ModsItemlist.IronChestsObsidianChest.get(1), 'D',
                 ToolDictNames.craftingToolWrench, 'E',
                 GTOreDictUnificator.get(OrePrefixes.stick, Materials.Obsidian, 1), 'F',
                 GTOreDictUnificator.get(OrePrefixes.stickLong, Materials.Obsidian, 1), 'G',
@@ -765,7 +764,7 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.PortableNetheriteChest.get(1),
             new Object[] { "ABC", "DEB", "FGA", 'A', GTOreDictUnificator.get(OrePrefixes.screw, Materials.Netherite, 1),
                 'B', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Netherite, 1), 'C',
-                GTModHandler.getModItem(Mods.IronChests.ID, "BlockIronChest", 1, 8), 'D',
+                ModsItemlist.IronChestsNetheriteChest.get(1), 'D',
                 ToolDictNames.craftingToolWrench, 'E',
                 GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Netherite, 1), 'F',
                 GTOreDictUnificator.get(OrePrefixes.stickLong, Materials.Netherite, 1), 'G',
@@ -775,7 +774,7 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.PortableDarkSteelChest.get(1),
             new Object[] { "ABC", "DEB", "FGA", 'A', GTOreDictUnificator.get(OrePrefixes.screw, Materials.DarkSteel, 1),
                 'B', GTOreDictUnificator.get(OrePrefixes.plate, Materials.DarkSteel, 1), 'C',
-                GTModHandler.getModItem(Mods.IronChests.ID, "BlockIronChest", 1, 9), 'D',
+                ModsItemlist.IronChestsDarkSteelChest.get(1), 'D',
                 ToolDictNames.craftingToolWrench, 'E',
                 GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.DarkSteel, 1), 'F',
                 GTOreDictUnificator.get(OrePrefixes.stickLong, Materials.DarkSteel, 1), 'G',
@@ -789,7 +788,7 @@ public class CraftingTableRecipes implements IRecipePool {
 
         GTModHandler.addShapelessCraftingRecipe(
             new ItemStack(Blocks.planks, 2),
-            new Object[] { GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockRubWood", 1) });
+            new Object[] { ModsItemlist.IC2BlockRubWood.get(1) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.VibrationSafeCasing.get(1),
@@ -1045,7 +1044,7 @@ public class CraftingTableRecipes implements IRecipePool {
         GTModHandler.addCraftingRecipe(
             GTNLItemList.CardboardBox.get(1),
             new Object[] { "ABA", "A A", "AAA", 'A', new ItemStack(Items.paper, 1), 'B',
-                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "itemHarz", 1) });
+                ModsItemlist.IC2ItemHarz.get(1) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.PrimitiveBrickKiln.get(1),
@@ -1064,74 +1063,74 @@ public class CraftingTableRecipes implements IRecipePool {
                 ToolDictNames.craftingToolWrench });
 
         GTModHandler.addCraftingRecipe(
-            GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_helmet", 1),
+            ModsItemlist.EtFuturumRequiemNetheriteHelmet.get(1),
             recipeFlags,
             new Object[] { "AAA", "ABC", "CCC", 'A',
-                GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_scrap", 1), 'B',
+                ModsItemlist.EtFuturumRequiemNetheriteScrap.get(1), 'B',
                 new ItemStack(Items.diamond_helmet, 1), 'C',
                 GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Gold, 1L) });
 
         GTModHandler.addCraftingRecipe(
-            GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_chestplate", 1),
+            ModsItemlist.EtFuturumRequiemNetheriteChestplate.get(1),
             recipeFlags,
             new Object[] { "AAA", "ABC", "CCC", 'A',
-                GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_scrap", 1), 'B',
+                ModsItemlist.EtFuturumRequiemNetheriteScrap.get(1), 'B',
                 new ItemStack(Items.diamond_chestplate, 1), 'C',
                 GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Gold, 1L) });
 
         GTModHandler.addCraftingRecipe(
-            GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_leggings", 1),
+            ModsItemlist.EtFuturumRequiemNetheriteLeggings.get(1),
             recipeFlags,
             new Object[] { "AAA", "ABC", "CCC", 'A',
-                GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_scrap", 1), 'B',
+                ModsItemlist.EtFuturumRequiemNetheriteScrap.get(1), 'B',
                 new ItemStack(Items.diamond_leggings, 1), 'C',
                 GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Gold, 1L) });
 
         GTModHandler.addCraftingRecipe(
-            GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_boots", 1),
+            ModsItemlist.EtFuturumRequiemNetheriteBoots.get(1),
             recipeFlags,
             new Object[] { "AAA", "ABC", "CCC", 'A',
-                GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_scrap", 1), 'B',
+                ModsItemlist.EtFuturumRequiemNetheriteScrap.get(1), 'B',
                 new ItemStack(Items.diamond_boots, 1), 'C',
                 GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Gold, 1L) });
 
         GTModHandler.addCraftingRecipe(
-            GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_sword", 1),
+            ModsItemlist.EtFuturumRequiemNetheriteSword.get(1),
             recipeFlags,
             new Object[] { "AAA", "ABC", "CCC", 'A',
-                GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_scrap", 1), 'B',
+                ModsItemlist.EtFuturumRequiemNetheriteScrap.get(1), 'B',
                 new ItemStack(Items.diamond_sword, 1), 'C',
                 GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Gold, 1L) });
 
         GTModHandler.addCraftingRecipe(
-            GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_pickaxe", 1),
+            ModsItemlist.EtFuturumRequiemNetheritePickaxe.get(1),
             recipeFlags,
             new Object[] { "AAA", "ABC", "CCC", 'A',
-                GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_scrap", 1), 'B',
+                ModsItemlist.EtFuturumRequiemNetheriteScrap.get(1), 'B',
                 new ItemStack(Items.diamond_pickaxe, 1), 'C',
                 GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Gold, 1L) });
 
         GTModHandler.addCraftingRecipe(
-            GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_axe", 1),
+            ModsItemlist.EtFuturumRequiemNetheriteAxe.get(1),
             recipeFlags,
             new Object[] { "AAA", "ABC", "CCC", 'A',
-                GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_scrap", 1), 'B',
+                ModsItemlist.EtFuturumRequiemNetheriteScrap.get(1), 'B',
                 new ItemStack(Items.diamond_axe, 1), 'C',
                 GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Gold, 1L) });
 
         GTModHandler.addCraftingRecipe(
-            GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_spade", 1),
+            ModsItemlist.EtFuturumRequiemNetheriteSpade.get(1),
             recipeFlags,
             new Object[] { "AAA", "ABC", "CCC", 'A',
-                GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_scrap", 1), 'B',
+                ModsItemlist.EtFuturumRequiemNetheriteScrap.get(1), 'B',
                 new ItemStack(Items.diamond_shovel, 1), 'C',
                 GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Gold, 1L) });
 
         GTModHandler.addCraftingRecipe(
-            GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_hoe", 1),
+            ModsItemlist.EtFuturumRequiemNetheriteHoe.get(1),
             recipeFlags,
             new Object[] { "AAA", "ABC", "CCC", 'A',
-                GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "netherite_scrap", 1), 'B',
+                ModsItemlist.EtFuturumRequiemNetheriteScrap.get(1), 'B',
                 new ItemStack(Items.diamond_hoe, 1), 'C',
                 GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Gold, 1L) });
 
@@ -1142,7 +1141,7 @@ public class CraftingTableRecipes implements IRecipePool {
                     GTOreDictUnificator.get(OrePrefixes.screw, Materials.Steel, 1L), 'B',
                     ItemUtils.getEnchantedBook(Enchantment.fortune, 3), 'C', OrePrefixes.circuit.get(Materials.LV), 'D',
                     ItemList.Hull_LV.get(1), 'E', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 1L), 'F',
-                    GTModHandler.getModItem(Mods.IronChests.ID, "BlockIronChest", 1) });
+                    ModsItemlist.IronChestsBlockIronChest.get(1) });
         }
 
         GTModHandler.addCraftingRecipe(
@@ -1190,13 +1189,13 @@ public class CraftingTableRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.cableGt08, Materials.Gold, 1L) });
 
         GTModHandler.addCraftingRecipe(
-            GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "elytra", 1),
+            ModsItemlist.EtFuturumRequiemElytra.get(1),
             new Object[] { "ABA", "ACA", "A A", 'A', new ItemStack(Items.leather, 1), 'B',
-                GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "shulker_shell", 1), 'C',
+                ModsItemlist.EtFuturumRequiemShulkerShell.get(1), 'C',
                 new ItemStack(Items.ender_pearl, 1) });
 
         GTModHandler.addCraftingRecipe(
-            GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "totem_of_undying", 1),
+            ModsItemlist.EtFuturumRequiemTotemOfUndying.get(1),
             new Object[] { "ABA", "BCB", " B ", 'A', new ItemStack(Items.emerald, 1), 'B',
                 GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Gold, 1L), 'C',
                 new ItemStack(Items.golden_apple, 1, 1) });
@@ -1214,43 +1213,43 @@ public class CraftingTableRecipes implements IRecipePool {
             new Object[] { "ABA", "CDC", "ABA", 'A', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Bronze, 1L),
                 'B', MaterialsAlloy.TUMBAGA.getPlate(1), 'C',
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Tin, 1L), 'D',
-                GTModHandler.getModItem(Mods.BuildCraftFactory.ID, "tankBlock", 1) });
+                ModsItemlist.BuildCraftFactoryTankBlock.get(1) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.OriginalOutputHatch.get(1),
             new Object[] { "ABA", "CDC", "ABA", 'A', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Bronze, 1L),
                 'B', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Tin, 1L), 'C',
                 MaterialsAlloy.TUMBAGA.getPlate(1), 'D',
-                GTModHandler.getModItem(Mods.BuildCraftFactory.ID, "tankBlock", 1) });
+                ModsItemlist.BuildCraftFactoryTankBlock.get(1) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.PhysicsCape.get(1),
             new Object[] { "ABA", "CDC", "EDE", 'A', OrePrefixes.plate.get(Materials.AnyRubber), 'B',
                 ItemList.Circuit_Parts_Coil.get(1), 'C',
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Manasteel, 1L), 'D', ItemList.HV_Coil.get(1), 'E',
-                GTModHandler.getModItem(Mods.DraconicEvolution.ID, "magnet", 1) });
+                ModsItemlist.DraconicEvolutionWyvernItemDislocator.get(1) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.RecordSus.get(1),
-            new Object[] { "AAA", "ABA", "AAA", 'A', GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 7), 'B',
+            new Object[] { "AAA", "ABA", "AAA", 'A', ModsItemlist.AvaritiaRecordFragment.get(1), 'B',
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Thaumium, 1L) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.RejectionRing.get(1),
             new Object[] { " A ", "BCB", " A ", 'A',
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.DarkSteel, 1L), 'B',
-                GTModHandler.getModItem(Mods.Botania.ID, "lens", 1, 5), 'C',
-                GTModHandler.getModItem(Mods.Botania.ID, "magnetRing", 1) });
+                ModsItemlist.BotaniaBounceLens.get(1), 'C',
+                ModsItemlist.BotaniaMagnetRing.get(1) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.SlimeSaddle.get(1),
-            new Object[] { "ABA", "ACA", "ADA", 'A', GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "slime", 1), 'B',
+            new Object[] { "ABA", "ACA", "ADA", 'A', ModsItemlist.EtFuturumRequiemSlime.get(1), 'B',
                 new ItemStack(Items.saddle, 1), 'C',
-                GTModHandler.getModItem(Mods.TinkerConstruct.ID, "materials", 1, 1), 'D',
-                GTModHandler.getModItem(Mods.TinkerConstruct.ID, "slime.pad", 1) });
+                ModsItemlist.TinkerConstructSlimeCrystal.get(1), 'D',
+                ModsItemlist.TinkerConstructSlimePad.get(1) });
 
         if (Mods.RandomThings.isModLoaded()) {
-            ItemStack ectoplasm = GTModHandler.getModItem(Mods.RandomThings.ID, "ingredient", 1, 3);
+            ItemStack ectoplasm = ModsItemlist.RandomThingsSpirit.get(1);
 
             GTModHandler.addCraftingRecipe(
                 GTNLItemList.SoulCardboardHelmet.get(1),
@@ -1278,9 +1277,9 @@ public class CraftingTableRecipes implements IRecipePool {
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.SuperstrongSponge.get(1),
-            new Object[] { "AAA", "BCD", "EEE", 'A', GTModHandler.getModItem(Mods.OpenBlocks.ID, "sponge", 1), 'B',
+            new Object[] { "AAA", "BCD", "EEE", 'A', ModsItemlist.OpenBlocksSponge.get(1), 'B',
                 ItemList.Hatch_Void.get(1), 'C', ItemList.Pump_LV.get(1), 'D',
-                GTModHandler.getModItem(Mods.ExtraUtilities.ID, "trashcan", 1, 1), 'E',
+                ModsItemlist.ExtraUtilitiesFluidTrashCan.get(1), 'E',
                 new ItemStack(Blocks.sponge, 1) });
 
         GTModHandler.addCraftingRecipe(
@@ -1291,8 +1290,8 @@ public class CraftingTableRecipes implements IRecipePool {
         GTModHandler.addCraftingRecipe(
             GTNLItemList.NetherTeleporter.get(1),
             new Object[] { "ABA", "CDC", "ABA", 'A',
-                GTModHandler.getModItem(Mods.MineAndBladeBattleGear2.ID, "mb.arrow", 1, 3), 'B',
-                GTModHandler.getModItem(Mods.ThaumicBases.ID, "eldritchArk", 1), 'C',
+                ModsItemlist.BattleGearPiercingArrow.get(1), 'B',
+                ModsItemlist.ThaumicBasesEldritchArk.get(1), 'C',
                 GregtechItemList.CompressedObsidian.get(1), 'D', new ItemStack(Items.flint_and_steel, 1) });
 
         GTModHandler.addCraftingRecipe(
@@ -1303,9 +1302,9 @@ public class CraftingTableRecipes implements IRecipePool {
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.RoyalGel.get(1),
-            new Object[] { "ABA", "CDC", "ACA", 'A', GTModHandler.getModItem(Mods.TinkerConstruct.ID, "slime.gel", 1),
+            new Object[] { "ABA", "CDC", "ACA", 'A', ModsItemlist.TinkerConstructSlimeGel.get(1),
                 'B', new ItemStack(Blocks.gold_block, 1), 'C',
-                GTModHandler.getModItem(Mods.TinkerConstruct.ID, "materials", 1, 17), 'D',
+                ModsItemlist.TinkerConstructBlueSlimeCrystal.get(1), 'D',
                 GTOreDictUnificator.get(OrePrefixes.gemExquisite, Materials.Ruby, 1) });
 
         GTModHandler.addCraftingRecipe(
@@ -1319,7 +1318,7 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.WaterCandle.get(1),
             new Object[] { "ABA", "ACA", "ABA", 'A', new ItemStack(Items.potionitem, 1, 8201), 'B',
                 new ItemStack(Items.water_bucket, 1), 'C',
-                GTModHandler.getModItem(Mods.Thaumcraft.ID, "blockCandle", 1) });
+                ModsItemlist.ThaumcraftBlockCandle.get(1) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.VeinMiningPickaxe.get(1),
@@ -1332,7 +1331,7 @@ public class CraftingTableRecipes implements IRecipePool {
         GTModHandler.addCraftingRecipe(
             GTNLItemList.RocketAssembler.get(1),
             new Object[] { "ABA", "CDC", "AEA", 'A', OrePrefixes.circuit.get(Materials.IV), 'B',
-                GTModHandler.getModItem(Mods.GalacticraftCore.ID, "tile.rocketWorkbench", 1), 'C',
+                ModsItemlist.GalacticraftCoreTileRocketWorkbench.get(1), 'C',
                 ItemList.Robot_Arm_EV.get(1), 'D', ItemList.Casing_Gearbox_Titanium.get(1), 'E',
                 ItemList.Machine_EV_Assembler.get(1) });
 
@@ -1378,7 +1377,7 @@ public class CraftingTableRecipes implements IRecipePool {
                 'C', aeMaterials.engProcessor()
                     .maybeStack(1)
                     .orNull(),
-                'D', GTModHandler.getModItem(Mods.AvaritiaAddons.ID, "ExtremeAutoCrafter", 1), 'E',
+                'D', ModsItemlist.AvaritiaAddonsExtremeAutoCrafter.get(1), 'E',
                 aeBlocks.cellWorkbench()
                     .maybeStack(1)
                     .orNull() });
@@ -1420,7 +1419,7 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.SuperDualInterface.get(1),
             recipeFlags,
             new Object[] { "ABC", "BAB", "CBA", 'A',
-                GTModHandler.getModItem(Mods.AE2FluidCraft.ID, "fluid_interface", 1), 'B',
+                ModsItemlist.AE2FluidCraftBlockFluidInterface.get(1), 'B',
                 aeMaterials.cardPatternCapacity()
                     .maybeStack(1)
                     .orNull(),
@@ -1449,7 +1448,7 @@ public class CraftingTableRecipes implements IRecipePool {
             new Object[] { "ABA", "CDC", "CEC", 'A', new ItemStack(Blocks.wool, 1), 'B',
                 new ItemStack(Blocks.stone_pressure_plate, 1), 'C',
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.EnderPearl, 1), 'D',
-                GTModHandler.getModItem(Mods.OpenBlocks.ID, "elevator", 1), 'E',
+                ModsItemlist.OpenBlocksElevator.get(1), 'E',
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Redstone, 1) });
 
         GTModHandler.addCraftingRecipe(
@@ -1462,7 +1461,7 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.NuclearItemBus.get(1),
             new Object[] { "ABA", "CDE", "FGF", 'A', ItemList.Robot_Arm_EV.get(1), 'B', new ItemStack(Blocks.chest, 1),
                 'C', ItemList.Hatch_Input_Bus_ULV.get(1), 'D',
-                GTModHandler.getModItem(IndustrialCraft2.ID, "blockReactorChamber", 1, 0), 'E',
+                ModsItemlist.IC2ReactorChamber.get(1), 'E',
                 ItemList.Hatch_Output_Bus_ULV.get(1), 'F', OrePrefixes.circuit.get(Materials.EV), 'G',
                 ItemList.Hull_EV.get(1) });
 
@@ -1471,7 +1470,7 @@ public class CraftingTableRecipes implements IRecipePool {
             new Object[] { "ABA", "CDC", "EFE", 'A', ItemList.Electric_Pump_EV.get(1), 'B',
                 ItemList.Hatch_Input_EV.get(1), 'C',
                 GTOreDictUnificator.get(OrePrefixes.pipeMedium, Materials.Titanium, 1), 'D',
-                GTModHandler.getModItem(IndustrialCraft2.ID, "blockReactorChamber", 1, 0), 'E',
+                ModsItemlist.IC2ReactorChamber.get(1), 'E',
                 OrePrefixes.circuit.get(Materials.EV), 'F', ItemList.Hull_EV.get(1) });
 
         GTModHandler.addCraftingRecipe(
@@ -1592,7 +1591,7 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.MEChisel.get(1),
             new Object[] { "ABA", "CDC", "EFE", 'A', aeMaterials.cell128SpatialPart()
                 .maybeStack(1)
-                .orNull(), 'B', GTModHandler.getModItem(Mods.Chisel.ID, "diamondChisel", 1), 'C',
+                .orNull(), 'B', ModsItemlist.ChiselDiamondChisel.get(1), 'C',
                 aeBlocks.iface()
                     .maybeStack(1)
                     .orNull(),
@@ -1608,13 +1607,13 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.WyvernProjectionNecklace.get(1),
             new Object[] { "ABA", "BCB", "ABA", 'A', new ItemStack(Items.dye, 1, 5), 'B',
                 new ItemStack(Items.string, 1), 'C',
-                GTModHandler.getModItem(Mods.Thaumcraft.ID, "ItemBaubleBlanks", 1, 0) });
+                ModsItemlist.ThaumcraftItemBaubleBlanks.get(1) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.DraconicProjectionNecklace.get(1),
             new Object[] { "ABA", "BCB", "ABA", 'A', new ItemStack(Items.dye, 1, 14), 'B',
                 new ItemStack(Items.string, 1), 'C',
-                GTModHandler.getModItem(Mods.Thaumcraft.ID, "ItemBaubleBlanks", 1, 0) });
+                ModsItemlist.ThaumcraftItemBaubleBlanks.get(1) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.PortableCellWorkbench.get(1),

@@ -2,11 +2,10 @@ package com.science.gtnl.common.recipe.gtnl;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
-import gregtech.api.enums.Mods;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTModHandler;
 
 public class SteamWeatherModuleRecipes implements IRecipePool {
 
@@ -17,8 +16,8 @@ public class SteamWeatherModuleRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Mods.Natura.ID, "Cloud", 16, 3),
-                GTModHandler.getModItem(Mods.Thaumcraft.ID, "blockCrystal", 1, 1))
+                ModsItemlist.NaturaSulfurCloud.get(16),
+                ModsItemlist.ThaumcraftFireCrystal.get(1))
             .specialValue(1)
             .duration(36000)
             .eut(0)
@@ -26,8 +25,8 @@ public class SteamWeatherModuleRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Mods.Natura.ID, "Cloud", 16, 2),
-                GTModHandler.getModItem(Mods.Thaumcraft.ID, "blockCrystal", 1, 2))
+                ModsItemlist.NaturaGrayCloud.get(16),
+                ModsItemlist.ThaumcraftWaterCrystal.get(1))
             .specialValue(2)
             .duration(36000)
             .eut(0)
@@ -35,9 +34,9 @@ public class SteamWeatherModuleRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Mods.Natura.ID, "Cloud", 16, 1),
-                GTModHandler.getModItem(Mods.Thaumcraft.ID, "blockCrystal", 1, 2),
-                GTModHandler.getModItem(Mods.Thaumcraft.ID, "blockCrystal", 1))
+                ModsItemlist.NaturaBlackCloud.get(16),
+                ModsItemlist.ThaumcraftWaterCrystal.get(1),
+                ModsItemlist.ThaumcraftBlockCrystal.get(1))
             .specialValue(3)
             .duration(36000)
             .eut(0)

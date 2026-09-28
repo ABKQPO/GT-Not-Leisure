@@ -25,6 +25,7 @@ import com.science.gtnl.container.portableWorkbench.ContainerPortableChest;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
 import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseBucket;
 
 import bartworks.API.WerkstoffAdderRegistry;
@@ -35,7 +36,6 @@ import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GlassTier;
 import gregtech.common.misc.WirelessNetworkManager;
@@ -203,8 +203,8 @@ public class MaterialLoader {
         addBoxBlacklist(BlockLoader.cardboardBox, OreDictionary.WILDCARD_VALUE);
         addBoxBlacklist(ModBlocks.reactorCore, OreDictionary.WILDCARD_VALUE);
         addBoxBlacklist(ModBlocks.chaosCrystal, OreDictionary.WILDCARD_VALUE);
-        addBoxBlacklist(GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockGenerator", 1, 5));
+        addBoxBlacklist(ModsItemlist.IC2NuclearReactor.get(1));
         addBoxBlacklist(
-            GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockReactorChamber", 1, OreDictionary.WILDCARD_VALUE));
+            ModsItemlist.IC2ReactorChamberAnyDamage.get(1));
     }
 }

@@ -6,15 +6,14 @@ import net.minecraft.item.ItemStack;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import appeng.api.AEApi;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 
@@ -30,14 +29,14 @@ public class MolecularTransformerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.gemExquisite, Materials.Sapphire, 1L))
-            .itemOutputs(GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "itemBatLamaCrystal", 1, 26))
+            .itemOutputs(ModsItemlist.IC2LapotronCrystal.get(1))
             .duration(800)
             .eut(524288)
             .addTo(MTR);
 
         RecipeBuilder.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.gemExquisite, Materials.Ruby, 1L))
-            .itemOutputs(GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "itemBatCrystal", 2, 26))
+            .itemOutputs(ModsItemlist.IC2EnergyCrystal.get(2))
             .duration(200)
             .eut(524288)
             .addTo(MTR);

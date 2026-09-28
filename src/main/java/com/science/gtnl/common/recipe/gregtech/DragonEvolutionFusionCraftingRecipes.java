@@ -4,15 +4,14 @@ import static gregtech.api.util.GTRecipeConstants.DEFC_CASING_TIER;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gtPlusPlus.core.material.MaterialMisc;
 import gtPlusPlus.core.material.MaterialsElements;
@@ -44,12 +43,12 @@ public class DragonEvolutionFusionCraftingRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Mods.DraconicEvolution.ID, "draconicCore", 0),
-                GTModHandler.getModItem(Mods.GalacticraftAmunRa.ID, "item.baseItem", 4, 26),
+                ModsItemlist.DraconicEvolutionDraconicCore.get(0),
+                ModsItemlist.AmunRaDarkMatterFragment.get(4),
                 GTOreDictUnificator.get(OrePrefixes.gem, Materials.InfusedEntropy, 512),
                 GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.Draconium, 16),
-                GTModHandler.getModItem(Mods.DraconicEvolution.ID, "awakenedCore", 8))
-            .itemOutputs(GTModHandler.getModItem(Mods.DraconicEvolution.ID, "chaosShard", 2))
+                ModsItemlist.DraconicEvolutionAwakenedCore.get(8))
+            .itemOutputs(ModsItemlist.DraconicEvolutionChaosShard.get(2))
             .fluidInputs(Materials.DraconiumAwakened.getMolten(576))
             .eut(TierEU.RECIPE_UHV)
             .duration(300)
@@ -58,7 +57,7 @@ public class DragonEvolutionFusionCraftingRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Mods.DraconicEvolution.ID, "chaosFragment", 1, 1),
+                ModsItemlist.DraconicEvolutionSmallChaosFragment.get(1),
                 GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.Draconium, 1),
                 ItemList.NuclearStar.get(1))
             .fluidInputs(Materials.Void.getMolten(1440))

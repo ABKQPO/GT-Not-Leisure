@@ -645,7 +645,9 @@ public enum ModsItemlist {
     // 核弹
     IC2BlockNuke(Mods.IndustrialCraft2.ID, "blockNuke", 0),
     // 核反应仓
-    IC2ReactorChamber(Mods.IndustrialCraft2.ID, "blockReactorChamber", OreDictionary.WILDCARD_VALUE),
+    IC2ReactorChamber(Mods.IndustrialCraft2.ID, "blockReactorChamber", 0),
+    // 任意损伤值的核反应仓
+    IC2ReactorChamberAnyDamage(Mods.IndustrialCraft2.ID, "blockReactorChamber", OreDictionary.WILDCARD_VALUE),
     // 橡胶树原木
     IC2BlockRubWood(Mods.IndustrialCraft2.ID, "blockRubWood", 0),
     // 能量水晶
@@ -1037,6 +1039,15 @@ public enum ModsItemlist {
     TwilightForestVanishingBlock(Mods.TwilightForest.ID, "tile.TFTowerDevice", 2),
     // 飘渺的云
     TwilightForestTileWispyCloud(Mods.TwilightForest.ID, "tile.WispyCloud", 0),
+
+    // 反物质
+    TwistSpaceAntimatter(ModList.TwistSpaceTechnology.ID, "MetaItem01", 14),
+    // 反物质燃料棒
+    TwistSpaceAntimatterFuelRod(ModList.TwistSpaceTechnology.ID, "MetaItem01", 16),
+    // 星体结构框架材料
+    TwistSpaceStellarStructuralFrameMaterial(ModList.TwistSpaceTechnology.ID, "MetaItem01", 17),
+    // 奇异湮灭燃料棒
+    TwistSpaceStrangeAnnihilationFuelRod(ModList.TwistSpaceTechnology.ID, "MetaItem01", 29),
 
     // 导电铁奇点
     USConductiveIronSingularity(Mods.UniversalSingularities.ID, "universal.enderIO.singularity", 0),
