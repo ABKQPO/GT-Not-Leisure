@@ -436,6 +436,10 @@ public class CraftingTableRecipes implements IRecipePool {
                 new ItemStack(Blocks.wool, 1, 9), 'I', new ItemStack(Blocks.wool, 1, 11) });
 
         GTModHandler.addCraftingRecipe(
+            GTNLItemList.PigmeeFumo.get(1),
+            new Object[] { "AAA", "A A", "AAA", 'A', new ItemStack(Blocks.wool, 1, 6) });
+
+        GTModHandler.addCraftingRecipe(
             GTNLItemList.SteamAssemblerBronze.get(1),
             new Object[] { "ABA", "BCB", "ABA", 'A',
                 GTOreDictUnificator.get(OrePrefixes.pipeSmall, Materials.Bronze, 1L), 'B',
