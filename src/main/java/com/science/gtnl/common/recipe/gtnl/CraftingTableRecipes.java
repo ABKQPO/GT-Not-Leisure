@@ -383,15 +383,6 @@ public class CraftingTableRecipes implements IRecipePool {
         toolboxTag.setBoolean(ItemGTToolbox.DISPLAY_CRAFTING_MESSAGE_KEY, true);
         toolbox.setTagCompound(toolboxTag);
         for (Object tool : ImmutableList.of(ToolDictNames.craftingToolScrewdriver, toolbox)) {
-            GTModHandler.addShapelessCraftingRecipe(
-                GregtechItemList.Hatch_Output_Bus_Steam.get(1),
-                GTModHandler.RecipeBits.BITS | GTModHandler.RecipeBits.DO_NOT_CHECK_FOR_COLLISIONS,
-                new Object[] { GregtechItemList.Hatch_Input_Bus_Steam.get(1), tool, });
-
-            GTModHandler.addShapelessCraftingRecipe(
-                GregtechItemList.Hatch_Input_Bus_Steam.get(1),
-                GTModHandler.RecipeBits.BITS | GTModHandler.RecipeBits.DO_NOT_CHECK_FOR_COLLISIONS,
-                new Object[] { GregtechItemList.Hatch_Output_Bus_Steam.get(1), tool, });
 
             GTModHandler.addShapelessCraftingRecipe(
                 GTNLItemList.BreelReinforcedSteamOutputBus.get(1),
