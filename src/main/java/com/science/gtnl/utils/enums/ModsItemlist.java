@@ -8,7 +8,7 @@ import gregtech.api.enums.Mods;
 import gregtech.api.util.GTModHandler;
 import ic2.api.item.IC2Items;
 
-public enum ExternalItemList {
+public enum ModsItemlist {
 
     // 量子桥接卡
     AE2FluidCraftQuantumBridgeCard(Mods.AE2FluidCraft.ID, "quantum_bridge_card", true),
@@ -1155,23 +1155,23 @@ public enum ExternalItemList {
     private final boolean forgeRegistry;
     private final boolean ic2NamedItem;
 
-    ExternalItemList(String modId, String registryName) {
+    ModsItemlist(String modId, String registryName) {
         this(modId, registryName, 0);
     }
 
-    ExternalItemList(String modId, String registryName, int metadata) {
+    ModsItemlist(String modId, String registryName, int metadata) {
         this(modId, registryName, metadata, false, false);
     }
 
-    ExternalItemList(String modId, String registryName, boolean forgeRegistry) {
+    ModsItemlist(String modId, String registryName, boolean forgeRegistry) {
         this(modId, registryName, 0, forgeRegistry, false);
     }
 
-    ExternalItemList(String modId, String registryName, boolean forgeRegistry, boolean ic2NamedItem) {
+    ModsItemlist(String modId, String registryName, boolean forgeRegistry, boolean ic2NamedItem) {
         this(modId, registryName, 0, forgeRegistry, ic2NamedItem);
     }
 
-    ExternalItemList(String modId, String registryName, int metadata, boolean forgeRegistry, boolean ic2NamedItem) {
+    ModsItemlist(String modId, String registryName, int metadata, boolean forgeRegistry, boolean ic2NamedItem) {
         this.modId = modId;
         this.registryName = registryName;
         this.metadata = metadata;
