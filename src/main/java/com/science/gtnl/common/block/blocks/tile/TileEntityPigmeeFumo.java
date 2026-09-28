@@ -24,6 +24,9 @@ import net.minecraft.tileentity.TileEntity;
  * <p>
  * This class is intentionally not {@code @SideOnly(Side.CLIENT)}. Both sides share the same tile type, and
  * the client-only rendering reads these fields directly.
+ *
+ * <p>
+ * The doll stands still until it is right-clicked, matching upstream's default of a stationary doll.
  */
 public class TileEntityPigmeeFumo extends TileEntity {
 
@@ -32,21 +35,39 @@ public class TileEntityPigmeeFumo extends TileEntity {
 
     private static final String TAG_SPINNING = "Spinning";
 
-    private boolean spinning = true;
+    /**
+     * Whether the doll is turning. Defaults to false, matching upstream: a freshly placed doll stands still until it
+     * is right-clicked.
+     */
+    private boolean spinning;
     private float yRot = 0.0F;
     private float prevYRot = 0.0F;
+    /** Client-side memory of the last observed flag, used to restart the turn from the resting orientation. */
+    private boolean wasSpinning;
 
     /** @return the currently synchronised spin flag; does not tick or trigger synchronisation. */
     public boolean isSpinning() {
         return spinning;
     }
 
-    /** Advances the client-side animation by one tick; a no-op on the server or without a world. */
+    /**
+     * Advances the client-side animation by one tick; a no-op on the server or without a world.
+     *
+     * <p>
+     * The angle is rewound whenever the flag goes from off to on, so each start begins from the model's resting
+     * orientation rather than resuming wherever the previous turn stopped. The flag itself arrives from the server
+     * through the description packet, so the transition has to be detected here rather than where it is toggled.
+     */
     @Override
     public void updateEntity() {
         if (worldObj == null || !worldObj.isRemote) {
             return;
         }
+        if (spinning && !wasSpinning) {
+            yRot = 0.0F;
+            prevYRot = 0.0F;
+        }
+        wasSpinning = spinning;
         prevYRot = yRot;
         if (spinning) {
             yRot += SPIN_DEGREES_PER_TICK;
@@ -82,13 +103,13 @@ public class TileEntityPigmeeFumo extends TileEntity {
     }
 
     /**
-     * @param tag non-null input tag; {@code super} runs first, then {@code Spinning} is read and defaults to
-     *            true when absent. The client animation floats are deliberately left untouched.
+     * @param tag non-null input tag; {@code super} runs first, then {@code Spinning} is read and is treated as false
+     *            when absent, matching upstream. The client animation floats are deliberately left untouched.
      */
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
-        spinning = !tag.hasKey(TAG_SPINNING) || tag.getBoolean(TAG_SPINNING);
+        spinning = tag.getBoolean(TAG_SPINNING);
     }
 
     /** @return a non-null S35 packet carrying the full description NBT; created lazily as needed. */

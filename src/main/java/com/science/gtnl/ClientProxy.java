@@ -76,11 +76,11 @@ import com.science.gtnl.common.render.entity.SteamRocketRender;
 import com.science.gtnl.common.render.item.AprilFoolMachineRender;
 import com.science.gtnl.common.render.item.ItemBlockArtificialStarRender;
 import com.science.gtnl.common.render.item.ItemNullPointerExceptionRender;
-import com.science.gtnl.common.render.item.ItemPigmeeFumoRenderer;
 import com.science.gtnl.common.render.item.ItemPlayerDollRenderer;
 import com.science.gtnl.common.render.item.ItemSteamRocketRenderer;
 import com.science.gtnl.common.render.item.ItemTwilightSwordRender;
 import com.science.gtnl.common.render.item.PigmeeFumoHeadRenderer;
+import com.science.gtnl.common.render.item.PigmeeFumoItemRenderer;
 import com.science.gtnl.common.render.model.MEChiselModel;
 import com.science.gtnl.common.render.model.PigmeeFumoModel;
 import com.science.gtnl.common.render.tile.EnderElevatorRenderer;
@@ -234,8 +234,9 @@ public class ClientProxy extends CommonProxy {
             .registerItemRenderer(Item.getItemFromBlock(BlockLoader.playerDoll), new ItemPlayerDollRenderer());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPigmeeFumo.class, new PigmeeFumoRenderer());
+        // GTNHLib draws and transforms the model; the wrapper only binds the block atlas it expects already bound.
         MinecraftForgeClient
-            .registerItemRenderer(Item.getItemFromBlock(BlockLoader.pigmeeFumo), new ItemPigmeeFumoRenderer());
+            .registerItemRenderer(Item.getItemFromBlock(BlockLoader.pigmeeFumo), new PigmeeFumoItemRenderer());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityArtificialStar.class, new RealArtificialStarRenderer());
         MinecraftForgeClient.registerItemRenderer(

@@ -7,21 +7,23 @@
  */
 package com.science.gtnl.common.render.item;
 
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
 
-import com.gtnewhorizon.gtnhlib.client.model.loading.ModelDeserializer.Position;
+import com.gtnewhorizon.gtnhlib.client.model.ModelISBRH;
+import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
 import com.gtnewhorizon.gtnhlib.client.renderer.TessellatorManager;
-import com.gtnewhorizon.gtnhlib.client.renderer.cel.api.util.NormI8;
 import com.gtnewhorizon.gtnhlib.client.renderer.cel.model.quad.ModelQuadView;
-import com.science.gtnl.common.render.model.JsonBlockModel.Geometry;
 import com.science.gtnl.common.render.model.PigmeeFumoModel;
+import com.science.gtnl.common.render.model.PigmeeFumoRenderHelper;
+import com.science.gtnl.common.render.model.PigmeeFumoRenderHelper.FacedQuad;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -30,21 +32,22 @@ import cpw.mods.fml.relauncher.SideOnly;
  * Inventory, hand, dropped and item-frame rendering for the Pigmee Fumo.
  *
  * <p>
- * There is deliberately no head branch: the worn doll is drawn by {@link PigmeeFumoHeadRenderer} in head-bone
- * space. Items never animate, so this renderer holds no per-frame state.
+ * Vertex emission and the per-face shade come from GTNHLib's {@link ModelISBRH}. The frame transforms and the
+ * {@code gui} display application are local: GTNHLib applies the display itself inside its own item renderer, but that
+ * only lines up when its identity-matrix assumption about the caller's frame holds, and a Forge {@link IItemRenderer}
+ * is handed an already-positioned frame instead. Applying the display here reproduces the same {@code M * D * V} order.
  *
  * <p>
- * The display position mapping and the frame compensation are a local copy of the verified 1.7 block-item
- * recipe in {@code BeamFormerItemRenderer}. Kept as a copy so this renderer stays self-contained and the
- * Beam Former path is not touched. Deliberately no alpha test is enabled here so the icon blends against the
- * GUI background, matching that reference.
+ * There is deliberately no head branch: the worn doll is drawn by {@link PigmeeFumoHeadRenderer} in head-bone space.
  */
 @SideOnly(Side.CLIENT)
-public class ItemPigmeeFumoRenderer implements IItemRenderer {
+public class PigmeeFumoItemRenderer implements IItemRenderer {
+
+    private final ModelISBRH isbrh = ModelISBRH.INSTANCE.get();
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-        return PigmeeFumoModel.INSTANCE.getItem(position(type)) != null;
+        return PigmeeFumoModel.INSTANCE.get(PigmeeFumoModel.DEFAULT_ORIENTATION) != null;
     }
 
     @Override
@@ -58,8 +61,9 @@ public class ItemPigmeeFumoRenderer implements IItemRenderer {
 
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
-        Geometry model = PigmeeFumoModel.INSTANCE.getItem(position(type));
+        BakedModel model = PigmeeFumoModel.INSTANCE.get(PigmeeFumoModel.DEFAULT_ORIENTATION);
         if (model == null) return;
+        List<FacedQuad> quads = PigmeeFumoRenderHelper.getAllQuads(model);
         boolean inventory = type == ItemRenderType.INVENTORY;
         GL11.glPushAttrib(
             GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT
@@ -83,40 +87,23 @@ public class ItemPigmeeFumoRenderer implements IItemRenderer {
             }
             GL11.glColor4f(1, 1, 1, 1);
             applyFrame(type);
+            if (inventory) {
+                // The GUI slot carries no display transform of its own, unlike the equip frames applyFrame handles.
+                PigmeeFumoModel.applyIconDisplay(model);
+            }
             Tessellator tessellator = TessellatorManager.get();
             tessellator.startDrawingQuads();
-            for (int i = 0; i < model.quads().length; i++) {
-                ModelQuadView quad = model.quads()[i];
-                float shade = inventory ? model.shades()[i] : 1;
+            for (FacedQuad entry : quads) {
+                ModelQuadView quad = entry.quad();
+                float shade = inventory ? PigmeeFumoRenderHelper.shadeOf(entry.lightFace()) : 1;
                 tessellator.setColorOpaque_F(shade, shade, shade);
-                if (!inventory) {
-                    int normal = quad.getComputedFaceNormal();
-                    tessellator.setNormal(NormI8.unpackX(normal), NormI8.unpackY(normal), NormI8.unpackZ(normal));
-                }
-                for (int vertex = 0; vertex < 4; vertex++) {
-                    tessellator.addVertexWithUV(
-                        quad.getX(vertex),
-                        quad.getY(vertex),
-                        quad.getZ(vertex),
-                        quad.getTexU(vertex),
-                        quad.getTexV(vertex));
-                }
+                isbrh.renderQuad(quad, 0.0F, 0.0F, 0.0F, tessellator, null);
             }
             tessellator.draw();
         } finally {
             GL11.glPopMatrix();
             GL11.glPopAttrib();
         }
-    }
-
-    private static Position position(ItemRenderType type) {
-        return switch (type) {
-            case INVENTORY -> Position.GUI;
-            case EQUIPPED -> Position.THIRDPERSON_RIGHTHAND;
-            case EQUIPPED_FIRST_PERSON -> Position.FIRSTPERSON_RIGHTHAND;
-            case ENTITY -> RenderItem.renderInFrame ? Position.FIXED : Position.GROUND;
-            default -> Position.FIXED;
-        };
     }
 
     private static void applyFrame(ItemRenderType type) {

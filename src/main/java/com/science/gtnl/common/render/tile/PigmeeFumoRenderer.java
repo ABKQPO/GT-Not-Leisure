@@ -7,19 +7,20 @@
  */
 package com.science.gtnl.common.render.tile;
 
-import net.minecraft.block.Block;
+import java.util.List;
+
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
 import com.science.gtnl.common.block.blocks.BlockPigmeeFumo;
 import com.science.gtnl.common.block.blocks.tile.TileEntityPigmeeFumo;
-import com.science.gtnl.common.render.model.JsonBlockModel.Geometry;
 import com.science.gtnl.common.render.model.PigmeeFumoModel;
 import com.science.gtnl.common.render.model.PigmeeFumoRenderHelper;
+import com.science.gtnl.common.render.model.PigmeeFumoRenderHelper.FacedQuad;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -28,9 +29,13 @@ import cpw.mods.fml.relauncher.SideOnly;
  * The only world-geometry entry point for a placed Pigmee Fumo.
  *
  * <p>
- * When spinning, the model is always taken in its NORTH orientation and the accumulated spin angle is applied
- * as a Y rotation about the block centre, so the doll turns in place regardless of its placed facing. When
- * stopped, the persisted facing is used as-is and no spin rotation is applied.
+ * The model is taken in the doll's <em>placed</em> orientation in both states, so a spin begins from exactly the pose
+ * the player was already looking at. Using a fixed {@code NORTH_UP} while spinning snapped the doll to that bearing on
+ * the first tick, which read as the doll presenting its back the moment it was clicked.
+ *
+ * <p>
+ * While spinning, the accumulated angle is applied as a Y rotation about the block centre, so the doll turns in place
+ * regardless of its placed facing.
  */
 @SideOnly(Side.CLIENT)
 public class PigmeeFumoRenderer extends TileEntitySpecialRenderer {
@@ -44,25 +49,11 @@ public class PigmeeFumoRenderer extends TileEntitySpecialRenderer {
         IBlockAccess world = fumo.getWorldObj();
         if (world == null) return;
 
-        int metadata = fumo.getBlockMetadata();
         boolean spinning = fumo.isSpinning();
-        ForgeDirection front = spinning ? ForgeDirection.NORTH : BlockPigmeeFumo.facingFromMetadata(metadata);
-        Geometry model = PigmeeFumoModel.INSTANCE.get(front);
+        BakedModel model = PigmeeFumoModel.INSTANCE.get(BlockPigmeeFumo.orientationOf(fumo.getBlockMetadata()));
         if (model == null) return;
 
-        brightness[6] = tile.getBlockType()
-            .getMixedBrightnessForBlock(world, tile.xCoord, tile.yCoord, tile.zCoord);
-        for (ForgeDirection face : ForgeDirection.VALID_DIRECTIONS) {
-            Block block = world
-                .getBlock(tile.xCoord + face.offsetX, tile.yCoord + face.offsetY, tile.zCoord + face.offsetZ);
-            if (block != null) {
-                brightness[face.ordinal()] = block.getMixedBrightnessForBlock(
-                    world,
-                    tile.xCoord + face.offsetX,
-                    tile.yCoord + face.offsetY,
-                    tile.zCoord + face.offsetZ);
-            }
-        }
+        PigmeeFumoRenderHelper.fillBrightness(world, tile.xCoord, tile.yCoord, tile.zCoord, brightness);
 
         GL11.glPushMatrix();
         try {
@@ -72,7 +63,8 @@ public class PigmeeFumoRenderer extends TileEntitySpecialRenderer {
                 GL11.glRotatef(fumo.getRenderYRot(partialTick), 0.0F, 1.0F, 0.0F);
                 GL11.glTranslatef(-0.5F, 0.0F, -0.5F);
             }
-            PigmeeFumoRenderHelper.drawWorld(model, brightness);
+            List<FacedQuad> quads = PigmeeFumoRenderHelper.getAllQuads(model);
+            PigmeeFumoRenderHelper.drawWorld(quads, brightness);
         } finally {
             GL11.glPopMatrix();
         }

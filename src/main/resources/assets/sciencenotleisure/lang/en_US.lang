@@ -4307,4 +4307,4 @@ gtnl.text_effect.palette=Change palette
 gtnl.text_effect.bold=Toggle bold
 gtnl.text_effect.italic=Toggle italic
 # Pigmee Fumo (ported from AE2 Lightning Tech Reborn; model by TedXenon)
-gtnl.block.pigmee_fumo.name=Pigmee Fumo
+gtnl.block.pigmee_fumo.name=Pigmee

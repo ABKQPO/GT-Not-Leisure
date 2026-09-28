@@ -7,6 +7,8 @@
  */
 package com.science.gtnl.common.render.item;
 
+import java.util.List;
+
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -17,12 +19,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
 import com.science.gtnl.common.block.blocks.BlockPigmeeFumo;
 import com.science.gtnl.common.block.blocks.item.ItemBlockPigmeeFumo;
 import com.science.gtnl.common.block.blocks.tile.TileEntityPigmeeFumo;
-import com.science.gtnl.common.render.model.JsonBlockModel.Geometry;
 import com.science.gtnl.common.render.model.PigmeeFumoModel;
 import com.science.gtnl.common.render.model.PigmeeFumoRenderHelper;
+import com.science.gtnl.common.render.model.PigmeeFumoRenderHelper.FacedQuad;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -64,7 +67,7 @@ public class PigmeeFumoHeadRenderer {
     @SubscribeEvent
     public void onSpecialsPre(RenderPlayerEvent.Specials.Pre event) {
         if (!isWearingFumo(event.entityPlayer)) return;
-        if (PigmeeFumoModel.INSTANCE.get(ForgeDirection.NORTH) == null) return;
+        if (PigmeeFumoModel.INSTANCE.get(PigmeeFumoModel.DEFAULT_ORIENTATION) == null) return;
         event.renderHelmet = false;
     }
 
@@ -86,7 +89,7 @@ public class PigmeeFumoHeadRenderer {
         ModelRenderer head = event.renderer.modelBipedMain.bipedHead;
         if (head.isHidden || !head.showModel) return;
 
-        Geometry model = PigmeeFumoModel.INSTANCE.get(ForgeDirection.NORTH);
+        BakedModel model = PigmeeFumoModel.INSTANCE.get(PigmeeFumoModel.DEFAULT_ORIENTATION);
         if (model == null) return;
 
         float partialTick = event.partialRenderTick;
@@ -121,7 +124,8 @@ public class PigmeeFumoHeadRenderer {
                 1.0F,
                 0.0F);
             GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
-            PigmeeFumoRenderHelper.drawWorld(model, brightness);
+            List<FacedQuad> quads = PigmeeFumoRenderHelper.getAllQuads(model);
+            PigmeeFumoRenderHelper.drawWorld(quads, brightness);
         } finally {
             GL11.glPopMatrix();
         }

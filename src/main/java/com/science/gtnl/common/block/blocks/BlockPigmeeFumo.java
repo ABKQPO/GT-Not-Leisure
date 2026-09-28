@@ -22,34 +22,77 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.gtnewhorizon.gtnhlib.api.IBlockModelProvider;
+import com.gtnewhorizon.gtnhlib.blockstate.core.BlockPropertyTrait;
+import com.gtnewhorizon.gtnhlib.blockstate.properties.OrientationBlockProperty;
+import com.gtnewhorizon.gtnhlib.blockstate.registry.BlockPropertyRegistry;
+import com.gtnewhorizon.gtnhlib.client.model.BakedModelQuadContext;
+import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
+import com.gtnewhorizon.gtnhlib.geometry.Orientation;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.blocks.item.ItemBlockPigmeeFumo;
 import com.science.gtnl.common.block.blocks.tile.TileEntityPigmeeFumo;
+import com.science.gtnl.common.render.model.PigmeeFumoModel;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Decorative placeable rotating pig doll ("Pigmee Fumo").
  *
  * <p>
- * The world geometry is drawn exclusively by the bound TileEntitySpecialRenderer; the block itself reports
- * {@code -1} from {@link #getRenderType()} so the chunk renderer never emits a duplicate full cube.
- * Four horizontal facings are persisted in block metadata, and the spin toggle lives on
+ * World geometry is drawn by the bound TileEntitySpecialRenderer, which owns the per-frame spin and so cannot be
+ * replaced by a static ISBRH model. The block reports {@code -1} from {@link #getRenderType()} so the chunk renderer
+ * never emits a duplicate full cube. The four horizontal facings are persisted in block metadata and mirrored into
+ * GTNHLib's block property registry, so the model can be resolved by orientation. The spin toggle lives on
  * {@link TileEntityPigmeeFumo}.
  */
-public class BlockPigmeeFumo extends BlockContainer {
+public class BlockPigmeeFumo extends BlockContainer implements IBlockModelProvider {
 
-    /** Local bounding boxes per metadata, in 1/16 units: minX, minY, minZ, maxX, maxY, maxZ. */
+    /**
+     * Local bounding boxes per metadata, in 1/16 units: minX, minY, minZ, maxX, maxY, maxZ.
+     *
+     * <p>
+     * Derived from the model's own extents rather than copied from the upstream block: the upstream {@code VoxelShape}
+     * constants describe a 8.3 x 13.6 x 10.7 box, which is the model's depth and height swapped (the model measures
+     * 8 x 10 x 14), so the outline stood far taller than the doll and did not reach its snout.
+     *
+     * <p>
+     * Only two entries are distinct. The model spans {@code X 4..12} and {@code Z 1..15}, both symmetric about the
+     * block centre, so a 180 degree turn in Y leaves the box unchanged and the two perpendicular facings simply swap
+     * the X and Z extents.
+     */
     private static final double[][] BOUNDS = {
-        // NORTH (metadata 2)
-        { 3.9, 0, 4.0, 12.2, 13.6, 14.7 },
-        // SOUTH (metadata 3)
-        { 3.8, 0, 1.3, 12.1, 13.6, 12.0 },
-        // WEST (metadata 4)
-        { 4.0, 0, 3.8, 14.7, 13.6, 12.2 },
-        // EAST (metadata 5)
-        { 1.3, 0, 3.8, 12.0, 13.6, 12.2 } };
+        // metadata 2 and 3, snout along Z
+        { 4.0, 0, 1.0, 12.0, 10.0, 15.0 },
+        { 4.0, 0, 1.0, 12.0, 10.0, 15.0 },
+        // metadata 4 and 5, snout along X
+        { 1.0, 0, 4.0, 15.0, 10.0, 12.0 },
+        { 1.0, 0, 4.0, 15.0, 10.0, 12.0 } };
+
+    /**
+     * Mirrors the persisted metadata facing into GTNHLib's block state, so {@code ModelRegistry} and
+     * {@code ModelISBRH} can select the matching baked orientation without a blockstate JSON file.
+     */
+    private static final OrientationBlockProperty FACING_PROPERTY = new OrientationBlockProperty() {
+
+        @Override
+        public boolean hasTrait(BlockPropertyTrait trait) {
+            return trait == BlockPropertyTrait.SupportsWorld || trait == BlockPropertyTrait.SupportsStacks;
+        }
+
+        @Override
+        public Orientation getValue(IBlockAccess world, int x, int y, int z) {
+            return orientationOf(world.getBlockMetadata(x, y, z));
+        }
+
+        @Override
+        public Orientation getValue(ItemStack stack) {
+            return PigmeeFumoModel.DEFAULT_ORIENTATION;
+        }
+    };
 
     public BlockPigmeeFumo() {
         super(Material.cloth);
@@ -60,6 +103,7 @@ public class BlockPigmeeFumo extends BlockContainer {
         setBlockTextureName(RESOURCE_ROOT_ID + ":blocks/pigmee_fumo");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
         GameRegistry.registerBlock(this, ItemBlockPigmeeFumo.class, "pigmee_fumo");
+        BlockPropertyRegistry.registerBlockItemProperty(this, FACING_PROPERTY);
         GameRegistry.registerTileEntity(TileEntityPigmeeFumo.class, "pigmee_fumo_tile_entity");
         GTNLItemList.PigmeeFumo.set(new ItemStack(this, 1));
     }
@@ -91,6 +135,42 @@ public class BlockPigmeeFumo extends BlockContainer {
     @Override
     public TileEntity createNewTileEntity(World world, int meta) {
         return new TileEntityPigmeeFumo();
+    }
+
+    /**
+     * Serves the baked model to GTNHLib.
+     *
+     * <p>
+     * Implementing {@link IBlockModelProvider} is what makes this method reachable: {@code ModelRegistry.getBakedModel}
+     * prefers the provider and only falls back to a model {@code blockstates/<name>.json} when the block does not
+     * implement it. That fallback logged a {@code FileNotFoundException} and rendered a missing-texture square for
+     * this block's inventory icon before the interface was declared.
+     *
+     * @param context GTNHLib's quad context for the block being drawn
+     * @return the baked model for the block's persisted facing, or null while unloaded
+     */
+    @SideOnly(Side.CLIENT)
+    @Override
+    public BakedModel getModel(BakedModelQuadContext context) {
+        Orientation orientation = context.getBlockState()
+            .getPropertyValue(FACING_PROPERTY);
+        return PigmeeFumoModel.INSTANCE.get(orientation);
+    }
+
+    /**
+     * Maps persisted metadata onto a GTNHLib orientation.
+     *
+     * @param metadata persisted facing value
+     * @return {@code NORTH_UP} for metadata 2, {@code SOUTH_UP} for 3, {@code WEST_UP} for 4, {@code EAST_UP} for 5
+     *         and {@code NORTH_UP} for anything else; never null
+     */
+    public static Orientation orientationOf(int metadata) {
+        return switch (metadata) {
+            case 3 -> Orientation.SOUTH_UP;
+            case 4 -> Orientation.WEST_UP;
+            case 5 -> Orientation.EAST_UP;
+            default -> Orientation.NORTH_UP;
+        };
     }
 
     /**
