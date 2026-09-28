@@ -1,10 +1,8 @@
-/*
- * Pigmee Fumo port from AE2 Lightning Tech Reborn.
- * Upstream: https://github.com/AE2-Lightning-Tech-Reborn/AE2-Lightning-Tech-Reborn
- * License: LGPL-3.0. Model author: TedXenon.
- * Original model credit: "Made with Blockbench, made by TedXenon".
- * Adapted for GT-Not-Leisure, Forge 1.7.10.
- */
+// Pigmee Fumo port from AE2 Lightning Tech Reborn.
+// Upstream: https://github.com/AE2-Lightning-Tech-Reborn/AE2-Lightning-Tech-Reborn
+// License: LGPL-3.0. Model author: TedXenon.
+// Original model credit: "Made with Blockbench, made by TedXenon".
+// Adapted for GT-Not-Leisure, Forge 1.7.10.
 package com.science.gtnl.common.render.tile;
 
 import java.util.List;
@@ -25,22 +23,15 @@ import com.science.gtnl.common.render.model.PigmeeFumoRenderHelper.FacedQuad;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-/**
- * The only world-geometry entry point for a placed Pigmee Fumo.
- *
- * <p>
- * The model is taken in the doll's <em>placed</em> orientation in both states, so a spin begins from exactly the pose
- * the player was already looking at. Using a fixed {@code NORTH_UP} while spinning snapped the doll to that bearing on
- * the first tick, which read as the doll presenting its back the moment it was clicked.
- *
- * <p>
- * While spinning, the accumulated angle is applied as a Y rotation about the block centre, so the doll turns in place
- * regardless of its placed facing.
- */
+// The only world-geometry entry point for a placed Pigmee Fumo.
+// The model is taken in the doll's placed orientation whether or not it is spinning, so a spin begins from
+// exactly the pose the player was already looking at.
+// While spinning, the accumulated angle is applied as a Y rotation about the block centre, so the doll turns in place
+// regardless of its placed facing.
 @SideOnly(Side.CLIENT)
 public class PigmeeFumoRenderer extends TileEntitySpecialRenderer {
 
-    /** Reused lightmap scratch; only ever touched on the render thread. */
+    // Reused lightmap scratch; only ever touched on the render thread.
     private final int[] brightness = new int[7];
 
     @Override
