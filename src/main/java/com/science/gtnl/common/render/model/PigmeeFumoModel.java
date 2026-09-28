@@ -5,10 +5,10 @@
 // Adapted for GT-Not-Leisure, Forge 1.7.10.
 package com.science.gtnl.common.render.model;
 
+import net.minecraftforge.client.event.TextureStitchEvent;
+
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
-
-import net.minecraftforge.client.event.TextureStitchEvent;
 
 import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
 import com.gtnewhorizon.gtnhlib.client.model.loading.ModelRegistry;
@@ -47,7 +47,8 @@ public class PigmeeFumoModel {
     public BakedModel get(Orientation orientation) {
         BakedModel[] models = orientations;
         if (models == null) return null;
-        if (orientation == null || orientation == Orientation.UNKNOWN || orientation.a == orientation.b
+        if (orientation == null || orientation == Orientation.UNKNOWN
+            || orientation.a == orientation.b
             || orientation.a == orientation.b.getOpposite()) {
             return models[DEFAULT_ORIENTATION.ordinal()];
         }
@@ -109,15 +110,16 @@ public class PigmeeFumoModel {
             BakedModel[] models = new BakedModel[values.length];
             for (Orientation orientation : values) {
                 if (orientation == Orientation.UNKNOWN) continue;
-                models[orientation.ordinal()] = source.bake(() -> new Matrix4f().translation(0.5F, 0.5F, 0.5F)
-                    .rotateTowards(
-                        -orientation.a.offsetX,
-                        -orientation.a.offsetY,
-                        -orientation.a.offsetZ,
-                        orientation.b.offsetX,
-                        orientation.b.offsetY,
-                        orientation.b.offsetZ)
-                    .translate(-0.5F, -0.5F, -0.5F));
+                models[orientation.ordinal()] = source.bake(
+                    () -> new Matrix4f().translation(0.5F, 0.5F, 0.5F)
+                        .rotateTowards(
+                            -orientation.a.offsetX,
+                            -orientation.a.offsetY,
+                            -orientation.a.offsetZ,
+                            orientation.b.offsetX,
+                            orientation.b.offsetY,
+                            orientation.b.offsetZ)
+                        .translate(-0.5F, -0.5F, -0.5F));
             }
             orientations = models;
         } catch (RuntimeException exception) {

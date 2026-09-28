@@ -105,7 +105,8 @@ public final class PigmeeFumoRenderHelper {
     // sky subtraction. Block#getMixedBrightnessForBlock must not be used here: it can hand back a stale zero
     // while the propagation pass is still running, which paints a face black.
     // The block and its six neighbours are sampled and the brightest wins. The block declares lightOpacity = 2,
-    // which costs its own tile two sky levels (13 against 15 directly above), and a small model only occupies the middle
+    // which costs its own tile two sky levels (13 against 15 directly above), and a small model only occupies the
+    // middle
     // of its block anyway.
     // world: non-null access
     // x: block X
@@ -153,7 +154,8 @@ public final class PigmeeFumoRenderHelper {
             tessellator.startDrawingQuads();
             for (FacedQuad entry : quads) {
                 ModelQuadView quad = entry.quad();
-                int light = brightness[entry.lightFace().ordinal()];
+                int light = brightness[entry.lightFace()
+                    .ordinal()];
                 int emission = quad.getEmissiveness();
                 tessellator
                     .setBrightness(Math.max(light & 0xF00000, emission << 20) | Math.max(light & 0xF0, emission << 4));

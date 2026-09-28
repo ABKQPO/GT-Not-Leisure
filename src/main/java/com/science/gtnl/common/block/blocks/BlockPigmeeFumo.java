@@ -55,11 +55,9 @@ public class BlockPigmeeFumo extends BlockContainer implements IBlockModelProvid
     // extents.
     private static final double[][] BOUNDS = {
         // metadata 2 and 3, snout along Z
-        { 4.0, 0, 1.0, 12.0, 10.0, 15.0 },
-        { 4.0, 0, 1.0, 12.0, 10.0, 15.0 },
+        { 4.0, 0, 1.0, 12.0, 10.0, 15.0 }, { 4.0, 0, 1.0, 12.0, 10.0, 15.0 },
         // metadata 4 and 5, snout along X
-        { 1.0, 0, 4.0, 15.0, 10.0, 12.0 },
-        { 1.0, 0, 4.0, 15.0, 10.0, 12.0 } };
+        { 1.0, 0, 4.0, 15.0, 10.0, 12.0 }, { 1.0, 0, 4.0, 15.0, 10.0, 12.0 } };
 
     // Sprite handed to the particle engine. Null until registerBlockIcons runs.
     @SideOnly(Side.CLIENT)
@@ -157,7 +155,8 @@ public class BlockPigmeeFumo extends BlockContainer implements IBlockModelProvid
     @SideOnly(Side.CLIENT)
     @Override
     public BakedModel getModel(BakedModelQuadContext context) {
-        Orientation orientation = context.getBlockState().getPropertyValue(FACING_PROPERTY);
+        Orientation orientation = context.getBlockState()
+            .getPropertyValue(FACING_PROPERTY);
         return PigmeeFumoModel.INSTANCE.get(orientation);
     }
 
