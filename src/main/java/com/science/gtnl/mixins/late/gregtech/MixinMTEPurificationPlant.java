@@ -68,6 +68,11 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
     }
 
     @Override
+    public void checkHasAnyEnergy(List<StructureError> errors) {
+        super.checkExoticAndNormalEnergyHatches(errors);
+    }
+
+    @Override
     public void checkExoticAndNormalEnergyHatches(List<StructureError> errors) {
         boolean t8water = false;
 
