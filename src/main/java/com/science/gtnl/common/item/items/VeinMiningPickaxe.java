@@ -2,6 +2,7 @@ package com.science.gtnl.common.item.items;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -56,10 +57,10 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.items.MetaGeneratedTool;
 import gregtech.api.modularui2.GTGuiThemes;
 import gregtech.api.modularui2.GTModularScreen;
+import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayFIFOQueue;
+import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, IGuiHolder<PlayerInventoryGuiData> {
@@ -303,25 +304,32 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
             && player.getFoodStats()
                 .getSaturationLevel() <= 0f
             && !player.capabilities.isCreativeMode) {
+            isEnable = false;
             return;
         }
         World world = player.worldObj;
         LongArrayFIFOQueue positionQueue = new LongArrayFIFOQueue(256);
         IntArrayFIFOQueue gapQueue = new IntArrayFIFOQueue(256);
-        LongSet visited = new LongOpenHashSet();
+        Long2IntOpenHashMap queuedGap = new Long2IntOpenHashMap(256);
+        queuedGap.defaultReturnValue(Integer.MAX_VALUE);
         int cleared = 0;
         int blocksSinceHunger = 0;
         int toolMaxDamage = Math.toIntExact(MetaGeneratedTool.getToolMaxDamage(stack));
+        boolean silkTouch = EnchantmentHelper.getSilkTouchModifier(player);
+        int fortune = EnchantmentHelper.getFortuneModifier(player);
         Object2IntOpenHashMap<ItemStackWrapper> mergedDrops = new Object2IntOpenHashMap<>();
         Set<String> targetOreNames = collectOreNames(targetBlock, targetMeta);
+        IdentityHashMap<Block, Int2BooleanOpenHashMap> oreMatches = new IdentityHashMap<>();
         int cachedChunkX = Integer.MIN_VALUE;
         int cachedChunkZ = Integer.MIN_VALUE;
         int cachedSectionY = Integer.MIN_VALUE;
         Chunk cachedChunk = null;
         ExtendedBlockStorage cachedStorage = null;
 
-        positionQueue.enqueue(encodePosition(x, y, z));
+        long origin = encodePosition(x, y, z);
+        positionQueue.enqueue(origin);
         gapQueue.enqueue(0);
+        queuedGap.put(origin, 0);
 
         while (positionQueue.size() > 0 && cleared < amount) {
             if (!player.isSneaking()) {
@@ -335,8 +343,8 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
             int pz = decodeZ(position);
             int gap = gapQueue.dequeueInt();
 
-            long key = position;
-            if (!visited.add(key)) continue;
+            if (queuedGap.get(position) != gap) continue;
+            queuedGap.put(position, -1);
             if (!world.blockExists(px, py, pz)) continue;
 
             int chunkX = px >> 4;
@@ -359,14 +367,14 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
             TileEntity tileEntity = block.hasTileEntity(meta) ? world.getTileEntity(px, py, pz) : null;
 
             boolean matches = false;
-            if (block.getBlockHardness(world, px, py, pz) >= 0) {
+            if (block != Blocks.air && block.getBlockHardness(world, px, py, pz) >= 0) {
                 if (tileEntity instanceof IGregTechTileEntity gtTE) {
                     meta = gtTE.getMetaTileID();
                 }
                 if (block == targetBlock && (!preciseMode || meta == targetMeta)) {
                     matches = true;
                 } else {
-                    matches = matchesOreDictionary(block, meta, targetOreNames, preciseMode);
+                    matches = matchesOreDictionary(block, meta, targetOreNames, preciseMode, oreMatches);
                 }
             }
 
@@ -379,8 +387,8 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
                     py,
                     pz,
                     block,
-                    EnchantmentHelper.getSilkTouchModifier(player),
-                    EnchantmentHelper.getFortuneModifier(player));
+                    silkTouch,
+                    fortune);
                 if (!player.capabilities.isCreativeMode) {
                     for (ItemStack drop : drops) {
                         if (drop == null) continue;
@@ -417,16 +425,12 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
                 gap++;
             }
 
-            for (int dx = -1; dx <= 1; dx++) {
-                for (int dy = -1; dy <= 1; dy++) {
-                    for (int dz = -1; dz <= 1; dz++) {
-                        if (Math.abs(dx) + Math.abs(dy) + Math.abs(dz) == 1) {
-                            positionQueue.enqueue(encodePosition(px + dx, py + dy, pz + dz));
-                            gapQueue.enqueue(gap);
-                        }
-                    }
-                }
-            }
+            enqueuePosition(positionQueue, gapQueue, queuedGap, px + 1, py, pz, gap);
+            enqueuePosition(positionQueue, gapQueue, queuedGap, px - 1, py, pz, gap);
+            enqueuePosition(positionQueue, gapQueue, queuedGap, px, py + 1, pz, gap);
+            enqueuePosition(positionQueue, gapQueue, queuedGap, px, py - 1, pz, gap);
+            enqueuePosition(positionQueue, gapQueue, queuedGap, px, py, pz + 1, gap);
+            enqueuePosition(positionQueue, gapQueue, queuedGap, px, py, pz - 1, gap);
         }
 
         if (blocksSinceHunger > 0) {
@@ -444,6 +448,17 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
         return (((long) x) & 0x3FFFFFFL) << 38 | (((long) y) & 0xFFFL) << 26 | (((long) z) & 0x3FFFFFFL);
     }
 
+    private static void enqueuePosition(LongArrayFIFOQueue positions, IntArrayFIFOQueue gaps,
+        Long2IntOpenHashMap queuedGap, int x, int y, int z, int gap) {
+        if (y < 0 || y >= 256) return;
+        long position = encodePosition(x, y, z);
+        int previousGap = queuedGap.get(position);
+        if (previousGap == -1 || gap >= previousGap) return;
+        queuedGap.put(position, gap);
+        positions.enqueue(position);
+        gaps.enqueue(gap);
+    }
+
     private static int decodeX(long position) {
         return ((int) (position >> 38) << 6) >> 6;
     }
@@ -453,7 +468,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
     }
 
     private static int decodeZ(long position) {
-        return (int) (position << 26 >> 38);
+        return (int) (position << 38 >> 38);
     }
 
     private static Set<String> collectOreNames(Block block, int meta) {
@@ -464,21 +479,35 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
         return names;
     }
 
-    private static boolean matchesOreDictionary(Block block, int meta, Set<String> targetNames, boolean preciseMode) {
+    private static boolean matchesOreDictionary(Block block, int meta, Set<String> targetNames, boolean preciseMode,
+        IdentityHashMap<Block, Int2BooleanOpenHashMap> cache) {
         if (targetNames.isEmpty()) return false;
+        Int2BooleanOpenHashMap blockMatches = cache.get(block);
+        if (blockMatches == null) {
+            blockMatches = new Int2BooleanOpenHashMap();
+            cache.put(block, blockMatches);
+        }
+        if (blockMatches.containsKey(meta)) return blockMatches.get(meta);
+        boolean matches = false;
         for (int id : OreDictionary.getOreIDs(new ItemStack(block, 1, meta))) {
             String candidateName = OreDictionary.getOreName(id);
-            if (preciseMode && targetNames.contains(candidateName)) return true;
+            if (preciseMode && targetNames.contains(candidateName)) {
+                matches = true;
+                break;
+            }
             if (!preciseMode) {
                 for (String targetName : targetNames) {
                     if ((candidateName.startsWith("ore") && targetName.startsWith("ore"))
                         || targetName.startsWith(candidateName)) {
-                        return true;
+                        matches = true;
+                        break;
                     }
                 }
             }
+            if (matches) break;
         }
-        return false;
+        blockMatches.put(meta, matches);
+        return matches;
     }
 
     public List<ItemStack> removeBlockAndGetDrops(EntityPlayerMP player, ItemStack stack, World world, int x, int y,
