@@ -51,6 +51,7 @@ import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaTube;
 import com.science.gtnl.common.block.blocks.tile.TileEntityNanoPhagocytosisPlant;
+import com.science.gtnl.common.block.blocks.tile.TileEntityPigmeeFumo;
 import com.science.gtnl.common.block.blocks.tile.TileEntityPlayerDoll;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperDualInterface;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperInterface;
@@ -78,13 +79,17 @@ import com.science.gtnl.common.render.item.ItemNullPointerExceptionRender;
 import com.science.gtnl.common.render.item.ItemPlayerDollRenderer;
 import com.science.gtnl.common.render.item.ItemSteamRocketRenderer;
 import com.science.gtnl.common.render.item.ItemTwilightSwordRender;
+import com.science.gtnl.common.render.item.PigmeeFumoHeadRenderer;
+import com.science.gtnl.common.render.item.PigmeeFumoItemRenderer;
 import com.science.gtnl.common.render.model.MEChiselModel;
+import com.science.gtnl.common.render.model.pigmeeModel.PigmeeFumoModel;
 import com.science.gtnl.common.render.tile.EnderElevatorRenderer;
 import com.science.gtnl.common.render.tile.EternalGregTechWorkshopRenderer;
 import com.science.gtnl.common.render.tile.LaserBeconRenderer;
 import com.science.gtnl.common.render.tile.MultiEssentiaJarRenderer;
 import com.science.gtnl.common.render.tile.MultiEssentiaTubeRenderer;
 import com.science.gtnl.common.render.tile.NanoPhagocytosisPlantRenderer;
+import com.science.gtnl.common.render.tile.PigmeeFumoRenderer;
 import com.science.gtnl.common.render.tile.PlayerDollRenderer;
 import com.science.gtnl.common.render.tile.RealArtificialStarRenderer;
 import com.science.gtnl.common.render.tile.WaterCandleRenderer;
@@ -129,6 +134,7 @@ public class ClientProxy extends CommonProxy {
     public static final SubscribeEventClientUtils SUBSCRIBE_EVENT_CLIENT_UTILS = new SubscribeEventClientUtils();
     public static final SpoceRenderHandler SPOCE_RENDER_HANDLER = new SpoceRenderHandler();
     public static final DetravScannerInputHandler DETRAV_SCANNER_INPUT_HANDLER = new DetravScannerInputHandler();
+    public static final PigmeeFumoHeadRenderer PIGMEE_FUMO_HEAD_RENDERER = new PigmeeFumoHeadRenderer();
     public static int WATER_CANDLE_RENDER_ID;
     public static int ENDER_ELEVATOR_RENDER_ID;
     public static int MULTI_ESSENTIA_TUBE_RENDER_ID;
@@ -165,6 +171,13 @@ public class ClientProxy extends CommonProxy {
         FMLCommonHandler.instance()
             .bus()
             .register(MEChiselModel.INSTANCE);
+
+        MinecraftForge.EVENT_BUS.register(PigmeeFumoModel.INSTANCE);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(PigmeeFumoModel.INSTANCE);
+
+        MinecraftForge.EVENT_BUS.register(PIGMEE_FUMO_HEAD_RENDERER);
 
         GuiContainerManager.addTooltipHandler(new GTNLTooltipManager());
 
@@ -219,6 +232,11 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPlayerDoll.class, new PlayerDollRenderer());
         MinecraftForgeClient
             .registerItemRenderer(Item.getItemFromBlock(BlockLoader.playerDoll), new ItemPlayerDollRenderer());
+
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPigmeeFumo.class, new PigmeeFumoRenderer());
+        // GTNHLib draws and transforms the model; the wrapper only binds the block atlas it expects already bound.
+        MinecraftForgeClient
+            .registerItemRenderer(Item.getItemFromBlock(BlockLoader.pigmeeFumo), new PigmeeFumoItemRenderer());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityArtificialStar.class, new RealArtificialStarRenderer());
         MinecraftForgeClient.registerItemRenderer(
