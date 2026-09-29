@@ -1,24 +1,25 @@
 package com.science.gtnl.common.recipe.gregtech;
 
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import bartworks.system.material.CircuitGeneration.CircuitPartsItem;
 import bartworks.system.material.WerkstoffLoader;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.objects.SubstituteFluidStack;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipeBuilder;
 import gregtech.api.util.GTRecipeConstants;
@@ -231,7 +232,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
             .itemInputs(
                 ItemList.Circuit_Primitive.get(0),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 1),
-                GTModHandler.getModItem(Mods.Minecraft.ID, "redstone", 1, 0))
+                new ItemStack(Items.redstone))
             .fluidInputs(Materials.Glue.getFluid(20))
             .itemOutputs(GTNLItemList.VerySimpleCircuit.get(2))
             .duration(40)
@@ -240,7 +241,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "itemPartCircuit", 0),
+                ModsItemlist.IC2ItemPartCircuit.get(0),
                 GTNLItemList.VerySimpleCircuit.get(1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Iron, 1),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.RedAlloy, 1))
@@ -253,7 +254,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 GTUtility.copyAmount(0, ItemList.Circuit_Good.get(1L)),
-                GTModHandler.getModItem(Mods.Minecraft.ID, "paper", 1, 0),
+                new ItemStack(Items.paper),
                 GTNLItemList.SimpleCircuit.get(2),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.CastIron, 1),
                 GTOreDictUnificator.get(OrePrefixes.dustSmall, Materials.Diamond, 1))
@@ -265,7 +266,7 @@ public class CircuitAssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "itemPartCircuitAdv", 0),
+                ModsItemlist.IC2ItemPartCircuitAdv.get(0),
                 ItemList.Circuit_Board_Coated_Basic.get(1L),
                 GTNLItemList.BasicCircuit.get(1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 1),

@@ -3,12 +3,11 @@ package com.science.gtnl.common.recipe.gtnl;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
-import gregtech.api.enums.Mods;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTModHandler;
 
 public class NatureSpiritArrayRecipes implements IRecipePool {
 
@@ -24,28 +23,28 @@ public class NatureSpiritArrayRecipes implements IRecipePool {
             .addTo(NSAR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem("Botania", "manaResource", 1, 0))
+            .itemInputs(ModsItemlist.BotaniaManasteelIngot.get(1))
             .fluidOutputs(GTNLMaterials.FluidMana.getFluidOrGas(3300))
             .duration(20)
             .eut(2048)
             .addTo(NSAR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem("Botania", "manaResource", 1, 1))
+            .itemInputs(ModsItemlist.BotaniaManaPearl.get(1))
             .fluidOutputs(GTNLMaterials.FluidMana.getFluidOrGas(6500))
             .duration(20)
             .eut(2048)
             .addTo(NSAR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem("Botania", "manaResource", 1, 2))
+            .itemInputs(ModsItemlist.BotaniaManaDiamond.get(1))
             .fluidOutputs(GTNLMaterials.FluidMana.getFluidOrGas(44000))
             .duration(20)
             .eut(2048)
             .addTo(NSAR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Mods.Botania.ID, "pool", 0, 1))
+            .itemInputs(ModsItemlist.BotaniaEverlastingManaPool.get(0))
             .fluidOutputs(GTNLMaterials.FluidMana.getFluidOrGas(2147483647))
             .duration(20)
             .eut(7864320)

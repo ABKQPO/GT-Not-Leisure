@@ -37,6 +37,7 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.WirelessPickBlock;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 
 import baubles.api.BaublesApi;
 import cpw.mods.fml.common.Optional;
@@ -301,7 +302,7 @@ public class ItemUtils {
     }
 
     public static ItemStack getSpecialFlower(String typeName, int amount) {
-        ItemStack stack = GTModHandler.getModItem(Mods.Botania.ID, "specialFlower", amount);
+        ItemStack stack = ModsItemlist.BotaniaSpecialFlower.get(amount);
         if (stack == null) return null;
 
         NBTTagCompound tag = stack.getTagCompound();
@@ -315,7 +316,7 @@ public class ItemUtils {
     }
 
     public static ItemStack getSpecialFlower(String typeName) {
-        ItemStack stack = GTModHandler.getModItem(Mods.Botania.ID, "specialFlower", 1);
+        ItemStack stack = ModsItemlist.BotaniaSpecialFlower.get(1);
         if (stack == null) return null;
 
         NBTTagCompound tag = stack.getTagCompound();

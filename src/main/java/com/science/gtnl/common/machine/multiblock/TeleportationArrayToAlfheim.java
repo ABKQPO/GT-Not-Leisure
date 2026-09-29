@@ -36,6 +36,7 @@ import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.machine.PortalToAlfheimExplosion;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
@@ -60,7 +61,6 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.structure.error.TranslatableText;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -217,7 +217,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
     @Override
     public void setupParameters() {
         super.setupParameters();
-        if (GTUtility.areStacksEqual(getControllerSlot(), GTModHandler.getModItem(Mods.Botania.ID, "pool", 1, 1), true)
+        if (GTUtility.areStacksEqual(getControllerSlot(), ModsItemlist.BotaniaEverlastingManaPool.get(1), true)
             || GTUtility.areStacksEqual(getControllerSlot(), asgardandelion, true)) {
             enableInfinityMana = true;
         }

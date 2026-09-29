@@ -4,17 +4,16 @@ import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import goodgenerator.util.ItemRefer;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.core.material.MaterialsElements;
@@ -91,8 +90,8 @@ public class SpaceAssemblerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 ItemList.Emitter_UXV.get(1),
-                GTModHandler.getModItem(Mods.DraconicEvolution.ID, "reactorCore", 16),
-                GTModHandler.getModItem(Mods.DraconicEvolution.ID, "reactorCore", 16),
+                ModsItemlist.DraconicEvolutionReactorCore.get(16),
+                ModsItemlist.DraconicEvolutionReactorCore.get(16),
                 ItemList.Emitter_UXV.get(1),
                 GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.Eternity, 8),
                 ItemList.Black_Hole_Opener.get(1),
@@ -103,8 +102,8 @@ public class SpaceAssemblerRecipes implements IRecipePool {
                 ItemList.Black_Hole_Opener.get(1),
                 GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.Eternity, 8),
                 ItemList.Emitter_UXV.get(1),
-                GTModHandler.getModItem(Mods.DraconicEvolution.ID, "reactorCore", 16),
-                GTModHandler.getModItem(Mods.DraconicEvolution.ID, "reactorCore", 16),
+                ModsItemlist.DraconicEvolutionReactorCore.get(16),
+                ModsItemlist.DraconicEvolutionReactorCore.get(16),
                 ItemList.Emitter_UXV.get(1))
             .fluidInputs(
                 Materials.Universium.getMolten(9216),

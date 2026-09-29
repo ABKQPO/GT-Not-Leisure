@@ -61,6 +61,7 @@ import com.science.gtnl.common.item.items.bauble.SuperReachRing;
 import com.science.gtnl.common.item.items.fuelRod.FuelRod;
 import com.science.gtnl.common.item.items.fuelRod.FuelRodDepleted;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.text.AnimatedTooltipHandler;
 
 import appeng.api.storage.StorageChannel;
@@ -69,7 +70,6 @@ import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Mods;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.common.render.items.InfinityMetaItemRenderer;
 
@@ -254,24 +254,24 @@ public class ItemLoader {
         if (Mods.EtFuturumRequiem.isModLoaded()) {
             infinityStoneCell.add(
                 ItemInfinityCell.SubItem
-                    .getInstance(GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "deepslate", 1)));
+                    .getInstance(ModsItemlist.EtFuturumRequiemDeepslate.get(1)));
             infinityStoneCell.add(
                 ItemInfinityCell.SubItem
-                    .getInstance(GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "cobbled_deepslate", 1)));
+                    .getInstance(ModsItemlist.EtFuturumRequiemCobbledDeepslate.get(1)));
             infinityStoneCell.add(
                 ItemInfinityCell.SubItem
-                    .getInstance(GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "blackstone", 1)));
+                    .getInstance(ModsItemlist.EtFuturumRequiemBlackstone.get(1)));
         }
 
         if (Mods.Botania.isModLoaded()) {
             infinityStoneCell
-                .add(ItemInfinityCell.SubItem.getInstance(GTModHandler.getModItem(Mods.Botania.ID, "stone", 1, 0)));
+                .add(ItemInfinityCell.SubItem.getInstance(ModsItemlist.BotaniaAndesite.get(1)));
             infinityStoneCell
-                .add(ItemInfinityCell.SubItem.getInstance(GTModHandler.getModItem(Mods.Botania.ID, "stone", 1, 1)));
+                .add(ItemInfinityCell.SubItem.getInstance(ModsItemlist.BotaniaBasalt.get(1)));
             infinityStoneCell
-                .add(ItemInfinityCell.SubItem.getInstance(GTModHandler.getModItem(Mods.Botania.ID, "stone", 1, 2)));
+                .add(ItemInfinityCell.SubItem.getInstance(ModsItemlist.BotaniaDiorite.get(1)));
             infinityStoneCell
-                .add(ItemInfinityCell.SubItem.getInstance(GTModHandler.getModItem(Mods.Botania.ID, "stone", 1, 3)));
+                .add(ItemInfinityCell.SubItem.getInstance(ModsItemlist.BotaniaGranite.get(1)));
         }
 
         ItemLoader.infinityStoneCell = ItemInfinityCell.getSubItem(

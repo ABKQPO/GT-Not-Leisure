@@ -31,6 +31,7 @@ import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.ItemLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -39,7 +40,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.Mods;
-import gregtech.api.util.GTModHandler;
 import lombok.val;
 import tectech.thing.CustomItemList;
 
@@ -270,9 +270,9 @@ public class Stick extends Item implements IItemStackExtra, IKeyHandler {
         list.add(setDisguisedStack(GTNLItemList.VeinMiningPickaxe.get(1)));
 
         if (Mods.SGCraft.isModLoaded()) {
-            list.add(setDisguisedStack(GTModHandler.getModItem(Mods.SGCraft.ID, "stargateRing", 1, 0)));
-            list.add(setDisguisedStack(GTModHandler.getModItem(Mods.SGCraft.ID, "stargateRing", 1, 1)));
-            list.add(setDisguisedStack(GTModHandler.getModItem(Mods.SGCraft.ID, "stargateBase", 1)));
+            list.add(setDisguisedStack(ModsItemlist.SGCraftStargateRing.get(1)));
+            list.add(setDisguisedStack(ModsItemlist.SGCraftStargateChevronBlock.get(1)));
+            list.add(setDisguisedStack(ModsItemlist.SGCraftStargateBase.get(1)));
         }
     }
 

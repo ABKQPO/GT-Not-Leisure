@@ -12,6 +12,7 @@ import com.google.common.collect.Sets;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import bartworks.system.material.WerkstoffLoader;
@@ -187,14 +188,14 @@ public class CheatOreProcessingRecipes implements IRecipePool {
         // Tinker Construct
         // Cobalt ore
         processOreRecipe(
-            GTModHandler.getModItem("TConstruct","SearedBrick", 1, 1),
+            ModsItemlist.TinkerConstructCobaltOre.get(1),
             Materials.Cobalt,
             true
         );
 
         // Ardite ore
         processOreRecipe(
-            GTModHandler.getModItem("TConstruct","SearedBrick", 1, 2),
+            ModsItemlist.TinkerConstructArditeOre.get(1),
             Materials.Ardite,
             true
         );
@@ -208,8 +209,8 @@ public class CheatOreProcessingRecipes implements IRecipePool {
 
         // HEE end powder
         registryOreProcessRecipe(
-            GTModHandler.getModItem(Mods.HardcoreEnderExpansion.ID,"end_powder_ore",1),
-            new ItemStack[]{GTModHandler.getModItem(Mods.HardcoreEnderExpansion.ID, "end_powder", 24)}
+            ModsItemlist.HardcoreEnderExpansionEndPowderOre.get(1),
+            new ItemStack[]{ModsItemlist.HardcoreEnderExpansionEndPowder.get(24)}
         );
 
         // spotless:on

@@ -40,6 +40,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
@@ -57,7 +58,6 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.structure.error.StructureErrorRegistry;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
@@ -82,18 +82,17 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     public static long MaxOfAntimatterFuelRod = 1024;
     public static long MaxOfStrangeAnnihilationFuelRod = 32768;
     public static boolean configEnableDefaultRender = MainConfig.machine.artificial_star.enableRenderDefaultArtificialStar;
-    public static final ItemStack TST_PROTO = GTModHandler
-        .getModItem(ModList.TwistSpaceTechnology.ID, "MetaItem01", 1, 17);
+    public static final ItemStack TST_PROTO = ModsItemlist.TwistSpaceStellarStructuralFrameMaterial.get(1);
     private static final ItemStack DEPLETED_ROD = GTNLItemList.DepletedExcitedNaquadahFuelRod.get(1);
     private static final ItemStack ENHANCEMENT_CORE = GTNLItemList.EnhancementCore.get(1);
     private static final ItemStack TST_ANTIMATTER = ModList.TwistSpaceTechnology.isModLoaded()
-        ? GTModHandler.getModItem(ModList.TwistSpaceTechnology.ID, "MetaItem01", 1, 14)
+        ? ModsItemlist.TwistSpaceAntimatter.get(1)
         : null;
     private static final ItemStack TST_FUEL_ROD = ModList.TwistSpaceTechnology.isModLoaded()
-        ? GTModHandler.getModItem(ModList.TwistSpaceTechnology.ID, "MetaItem01", 1, 16)
+        ? ModsItemlist.TwistSpaceAntimatterFuelRod.get(1)
         : null;
     private static final ItemStack TST_STRANGE_ROD = ModList.TwistSpaceTechnology.isModLoaded()
-        ? GTModHandler.getModItem(ModList.TwistSpaceTechnology.ID, "MetaItem01", 1, 29)
+        ? ModsItemlist.TwistSpaceStrangeAnnihilationFuelRod.get(1)
         : null;
 
     public String ownerName;

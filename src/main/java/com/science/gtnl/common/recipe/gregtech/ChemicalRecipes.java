@@ -8,19 +8,18 @@ import net.minecraftforge.fluids.FluidStack;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import appeng.api.AEApi;
 import bartworks.system.material.WerkstoffLoader;
 import goodgenerator.items.GGMaterial;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.IRecipeMap;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipeConstants;
 import gregtech.api.util.GTUtility;
@@ -516,7 +515,7 @@ public class ChemicalRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.plate, Materials.Polyethylene, 4))
-            .itemOutputs(GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockITNT", 32))
+            .itemOutputs(ModsItemlist.IC2BlockITNT.get(32))
             .fluidInputs(GTNLMaterials.SmallBaka.getFluidOrGas(2000))
             .duration(100)
             .eut(TierEU.RECIPE_HV)

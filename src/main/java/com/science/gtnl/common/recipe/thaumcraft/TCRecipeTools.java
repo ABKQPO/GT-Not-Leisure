@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import com.science.gtnl.utils.AspectTooltipUtils;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import cpw.mods.fml.common.Optional;
@@ -43,7 +44,7 @@ public class TCRecipeTools {
 
     public TCRecipeTools() {}
 
-    public static final ItemStack IC2_MACHINE = GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockMachine", 1, 1);
+    public static final ItemStack IC2_MACHINE = ModsItemlist.IC2IronFurnace.get(1);
     public static final ItemStack BLAST_FURNACE_TEMPLATE = GTModHandler
         .getModItem(Mods.EtFuturumRequiem.ID, "blast_furnace", 1);
     public static final Set<ItemId> UNCONSUMED_ITEMS = new HashSet<>();
@@ -62,20 +63,20 @@ public class TCRecipeTools {
         if (Mods.Avaritia.isModLoaded()) addAvaritia();
 
         if (Mods.BloodMagic.isModLoaded()) {
-            UNCONSUMED_ITEMS.add(ItemId.create(GTModHandler.getModItem(Mods.BloodMagic.ID, "weakBloodOrb", 1)));
-            UNCONSUMED_ITEMS.add(ItemId.create(GTModHandler.getModItem(Mods.BloodMagic.ID, "apprenticeBloodOrb", 1)));
-            UNCONSUMED_ITEMS.add(ItemId.create(GTModHandler.getModItem(Mods.BloodMagic.ID, "magicianBloodOrb", 1)));
-            UNCONSUMED_ITEMS.add(ItemId.create(GTModHandler.getModItem(Mods.BloodMagic.ID, "masterBloodOrb", 1)));
-            UNCONSUMED_ITEMS.add(ItemId.create(GTModHandler.getModItem(Mods.BloodMagic.ID, "archmageBloodOrb", 1)));
-            UNCONSUMED_ITEMS.add(ItemId.create(GTModHandler.getModItem(Mods.BloodMagic.ID, "transcendentBloodOrb", 1)));
-            UNCONSUMED_ITEMS.add(ItemId.create(GTModHandler.getModItem(Mods.BloodMagic.ID, "creativeFiller", 1)));
+            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicWeakBloodOrb.get(1)));
+            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicApprenticeBloodOrb.get(1)));
+            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicMagicianBloodOrb.get(1)));
+            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicMasterBloodOrb.get(1)));
+            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicArchmageBloodOrb.get(1)));
+            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicTranscendentBloodOrb.get(1)));
+            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicCreativeFiller.get(1)));
         }
 
         if (Mods.ForbiddenMagic.isModLoaded()) {
-            UNCONSUMED_ITEMS.add(ItemId.create(GTModHandler.getModItem(Mods.ForbiddenMagic.ID, "EldritchOrb", 1)));
+            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.ForbiddenMagicEldritchOrb.get(1)));
         }
 
-        UNCONSUMED_ITEMS.add(ItemId.create(GTModHandler.getModItem(Mods.Thaumcraft.ID, "FocusWarding", 1)));
+        UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.ThaumcraftFocusWarding.get(1)));
     }
 
     @Optional.Method(modid = "Avaritia")

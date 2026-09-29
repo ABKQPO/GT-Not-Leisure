@@ -12,10 +12,10 @@ import org.jetbrains.annotations.Nullable;
 import com.gtnewhorizon.structurelib.StructureLibAPI;
 import com.gtnewhorizon.structurelib.structure.AutoPlaceEnvironment;
 import com.gtnewhorizon.structurelib.structure.IStructureElement;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.enums.Mods;
-import gregtech.api.util.GTModHandler;
 
 public enum CommonElements {
 
@@ -67,7 +67,7 @@ public enum CommonElements {
 
             if (!isSponge && Mods.EtFuturumRequiem.isModLoaded()) {
                 isSponge = world.getBlock(x, y, z)
-                    == ItemUtils.getBlockFromItemStack(GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "sponge", 1));
+                    == ItemUtils.getBlockFromItemStack(ModsItemlist.EtFuturumRequiemSponge.get(1));
             }
 
             return isSponge;

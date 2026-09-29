@@ -28,6 +28,7 @@ import com.science.gtnl.common.gui.modularui.SwarmCoreGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
@@ -38,7 +39,6 @@ import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -51,7 +51,6 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
@@ -82,7 +81,7 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
             GTUtility.copyAmountUnsafe(64, MaterialsElements.STANDALONE.HYPOGEN.getFrameBox(1)),
             ItemList.Electric_Motor_UEV.get(32), ItemList.Emitter_UEV.get(8), ItemList.Sensor_UEV.get(8),
             GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.TengamAttuned, 32),
-            GTModHandler.getModItem(Mods.EternalSingularity.ID, "eternal_singularity", 16),
+            ModsItemlist.EternalSingularity.get(16),
             GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUEV, 64),
             GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Glowstone, 16),
             GTUtility.copyAmountUnsafe(16, GGMaterial.extremelyUnstableNaquadah.get(OrePrefixes.nanite, 1)),
@@ -90,14 +89,14 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
         { GTUtility.copyAmountUnsafe(128, ItemRefer.MagneticFluxCasing.get(1)),
             GTUtility.copyAmountUnsafe(128, GregtechItemList.InfinityInfusedManipulator.get(1)),
             GTUtility.copyAmountUnsafe(128, GregtechItemList.InfinityInfusedShieldingCore.get(1)),
-            GTModHandler.getModItem(Mods.GalacticraftAmunRa.ID, "tile.baseBlockRock", 48, 14),
+            ModsItemlist.AmunRaDarkMatter.get(48),
             GTUtility.copyAmountUnsafe(128, ItemRefer.GravityStabilizationCasing.get(1)),
             GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.SpaceTime, 32),
             GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.Creon, 64),
             GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.Mellion, 64),
             GTOreDictUnificator.get(OrePrefixes.circuit, Materials.UMV, 64),
             GTUtility.copyAmountUnsafe(64, ItemList.Field_Generator_UIV.get(1)),
-            GTModHandler.getModItem(Mods.DraconicEvolution.ID, "chaoticCore", 32),
+            ModsItemlist.DraconicEvolutionChaoticCore.get(32),
             GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUIV, 64),
             GTOreDictUnificator.get(OrePrefixes.nanite, Materials.SixPhasedCopper, 64),
             GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Gold, 64) },

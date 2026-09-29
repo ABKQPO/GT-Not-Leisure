@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import com.dreammaster.item.NHItemList;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.recipe.gtnl.RocketAssemblerRecipes;
+import com.science.gtnl.utils.enums.ModsItemlist;
 
 import cpw.mods.fml.common.Optional;
 import galaxyspace.core.inventory.InventorySchematic;
@@ -18,7 +19,6 @@ import galaxyspace.core.inventory.slot.SlotSchematicChest;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import micdoodle8.mods.galacticraft.core.inventory.SlotRocketBenchResult;
 
@@ -43,7 +43,7 @@ public class ContainerSchematicSteamRocket extends ContainerSchematic {
                 y,
                 z,
                 inventory.player,
-                GTModHandler.getModItem(Mods.StevesCarts2.ID, "CartModule", 1, 38)
+                ModsItemlist.StevesCartsStandardHull.get(1)
                     .getItem(),
                 38));
         // Control Computer
@@ -69,7 +69,7 @@ public class ContainerSchematicSteamRocket extends ContainerSchematic {
                 y,
                 z,
                 inventory.player,
-                GTModHandler.getModItem(Mods.IronTanks.ID, "diamondTank", 1)
+                ModsItemlist.IronTanksDiamondTank.get(1)
                     .getItem()));
         this.addSlotToContainer(
             new SlotSchematic(
@@ -81,7 +81,7 @@ public class ContainerSchematicSteamRocket extends ContainerSchematic {
                 y,
                 z,
                 inventory.player,
-                GTModHandler.getModItem(Mods.IronTanks.ID, "diamondTank", 1)
+                ModsItemlist.IronTanksDiamondTank.get(1)
                     .getItem()));
         // Fuel Canisters (unused)
         this.addSlotToContainer(new SlotSchematic(this.craftMatrix, 5, 116, 37, x, y, z, inventory.player, null, -1));
@@ -133,7 +133,7 @@ public class ContainerSchematicSteamRocket extends ContainerSchematic {
                 y,
                 z,
                 inventory.player,
-                GTModHandler.getModItem(Mods.GraviSuite.ID, "itemSimpleItem", 1, 6)
+                ModsItemlist.GraviSuiteJetEngine.get(1)
                     .getItem(),
                 6));
         // fins
@@ -149,7 +149,7 @@ public class ContainerSchematicSteamRocket extends ContainerSchematic {
                         y,
                         z,
                         inventory.player,
-                        GTModHandler.getModItem(Mods.Railcraft.ID, "machine.beta", 1, 7)
+                        ModsItemlist.RailcraftHobbyistSteamEngine.get(1)
                             .getItem(),
                         7));
             }
