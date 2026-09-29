@@ -2323,7 +2323,7 @@ gtnl.machine.furnace_array.coal_count=Current coal count: %s
 
 gtnl.machine.fog_solar_muon_catalyst_module.name=Solar Muon Catalyst
 gtnl.recipe.solar_muon_catalyst=Solar Muon Catalyst
-gtnl.recipe.metadata.solar_muon_catalyst.0=Requires three Godforge Rings and all upgrade
+gtnl.recipe.metadata.solar_muon_catalyst.0=Requires 3 rings and all upgrade
 GT5U.gui.text.not_enough_upgrade=Insufficient requirements
 gtnl.machine.fog_solar_muon_catalyst_module.recipe_type=Matter Catalyst
 gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.0=This is a module of the Godforge
