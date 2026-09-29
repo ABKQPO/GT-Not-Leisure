@@ -1,8 +1,6 @@
-// Pigmee Fumo port from AE2 Lightning Tech Reborn.
-// Upstream: https://github.com/AE2-Lightning-Tech-Reborn/AE2-Lightning-Tech-Reborn
-// License: LGPL-3.0. Model author: TedXenon.
-// Original model credit: "Made with Blockbench, made by TedXenon".
-// Adapted for GT-Not-Leisure, Forge 1.7.10.
+// Pigmee Fumo port from AE2 Lightning Tech Reborn
+// (https://github.com/AE2-Lightning-Tech-Reborn/AE2-Lightning-Tech-Reborn).
+// LGPL-3.0, model by TedXenon. Adapted for GT-Not-Leisure, Forge 1.7.10.
 package com.science.gtnl.common.block.blocks.item;
 
 import net.minecraft.block.Block;
@@ -17,33 +15,23 @@ import baubles.api.BaubleType;
 import baubles.api.expanded.BaubleExpandedSlots;
 import baubles.api.expanded.IBaubleExpanded;
 
-// Standard placeable form of BlockPigmeeFumo, additionally allowed into the helmet slot and into any
-// Baubles slot.
-// This is deliberately not an ItemArmor: it grants no armour points and no damage reduction. The
-// head-worn geometry is drawn by the client-only player render event handler, so only the slot admission
-// check is needed here.
+// Placeable BlockPigmeeFumo, wearable in the helmet slot and any Baubles slot; deliberately not an ItemArmor.
 public class ItemBlockPigmeeFumo extends ItemBlock implements IBaubleExpanded {
 
-    // "universal" is admitted by every Baubles slot, including the ones other mods register, so the doll
-    // is not limited to the ring, amulet and belt slots. Baubles-Expanded supplies the string.
+    // Baubles-Expanded's "universal" type is admitted by every slot, including ones other mods register.
     private static final String[] BAUBLE_TYPES = { BaubleExpandedSlots.universalType };
 
-    // block: the unique BlockPigmeeFumo instance passed by GameRegistry; the item is not registered twice
     public ItemBlockPigmeeFumo(Block block) {
         super(block);
     }
 
-    // stack: the stack being validated
-    // armorType: Forge armour index where 0 is the helmet; not the inventory slot index
-    // entity: the equipping entity
-    // Returns true only for armorType == 0; provides no armour protection
+    // Provides no armour protection.
     @Override
     public boolean isValidArmor(ItemStack stack, int armorType, Entity entity) {
         return armorType == 0;
     }
 
-    // The legacy single-type accessor. ItemUtils resolves UNIVERSAL reflectively and only falls back to
-    // RING if the installed Baubles lacks that constant.
+    // Legacy accessor: ItemUtils resolves UNIVERSAL reflectively, falling back to RING when that constant is missing.
     @Override
     public BaubleType getBaubleType(ItemStack stack) {
         return ItemUtils.UNIVERSAL_TYPE;

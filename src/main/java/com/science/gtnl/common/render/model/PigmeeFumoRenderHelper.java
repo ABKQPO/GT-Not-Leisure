@@ -1,8 +1,6 @@
-// Pigmee Fumo port from AE2 Lightning Tech Reborn.
-// Upstream: https://github.com/AE2-Lightning-Tech-Reborn/AE2-Lightning-Tech-Reborn
-// License: LGPL-3.0. Model author: TedXenon.
-// Original model credit: "Made with Blockbench, made by TedXenon".
-// Adapted for GT-Not-Leisure, Forge 1.7.10.
+// Pigmee Fumo port from AE2 Lightning Tech Reborn
+// (https://github.com/AE2-Lightning-Tech-Reborn/AE2-Lightning-Tech-Reborn).
+// LGPL-3.0, model by TedXenon. Adapted for GT-Not-Leisure, Forge 1.7.10.
 package com.science.gtnl.common.render.model;
 
 import java.util.ArrayList;
@@ -31,24 +29,13 @@ import com.gtnewhorizon.gtnhlib.client.renderer.cel.model.quad.properties.ModelQ
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-// Draws a baked BakedModel into the current local coordinate frame.
-// The caller owns the matrix stack: push a matrix, position the frame, then call drawWorld. This helper owns
-// one tessellator batch and restores every GL setting it changes, so callers cannot leak alpha, blend or lighting into
-// the rest of the frame.
-// Quad enumeration and vertex emission are delegated to GTNHLib: getQuads is called once per
-// ModelQuadFacing exactly as ModelQuadFacing does, and the vertices go through ModelQuadFacing.
-// Only the brightness sampling is local, because GTNHLib's ISBRH derives its lightmap from a RenderBlocks pass
-// that a special renderer does not have.
-// Item rendering must not use this: items keep the caller's lightmap and light directions.
+// Draws a baked model into the caller's matrix and restores every GL setting it changes; not for item rendering.
 @SideOnly(Side.CLIENT)
 public final class PigmeeFumoRenderHelper {
 
     private PigmeeFumoRenderHelper() {}
 
-    // A quad context for callers that only need the model's geometry.
-    // Only getQuadFacing is read by the models this helper serves; the block state is deliberately left null
-    // because a head-worn doll has no world block to build one from, and PileOfQuads never consults it.
-    // facing: the facing of the quads being requested
+    // The block state stays null because a head-worn doll has no world block, and only getQuadFacing is ever read.
     private record PlainQuadContext(ModelQuadFacing facing) implements BakedModelQuadContext {
 
         @Override
@@ -72,14 +59,10 @@ public final class PigmeeFumoRenderHelper {
         }
     }
 
-    // A quad from a baked model, paired with the face it actually belongs to.
-    // That face is not the bucket the quad was found in: GTNHLib buckets quads by cull face, and a model that
-    // never declares cullface puts every one of them in a single bucket. The bake sets getLightFace()
-    // from the face name, so that is the authoritative facing.
+    // The authoritative face is the quad's own getLightFace(), not the cull-face bucket GTNHLib filed it under.
     public record FacedQuad(ModelQuadFacing lightFace, ModelQuadView quad) {}
 
-    // model: a non-null baked model
-    // Returns every quad of the model, in the same per-facing order ModelISBRH uses. Never null.
+    // Returns every quad of the model in the per-facing order ModelISBRH uses.
     public static List<FacedQuad> getAllQuads(BakedModel model) {
         List<FacedQuad> quads = new ArrayList<>();
         for (ModelQuadFacing bucket : ModelQuadFacing.VALUES) {
@@ -92,26 +75,14 @@ public final class PigmeeFumoRenderHelper {
         return quads;
     }
 
-    // facing: the quad's light face
-    // Returns the directional shade for that face, or 1 when the face is not a real direction
+    // Returns the directional shade for that face, or 1 when the face is not a real direction.
     public static float shadeOf(ModelQuadFacing facing) {
         ForgeDirection direction = facing == null ? ForgeDirection.UNKNOWN : facing.toForgeDir();
         if (direction == ForgeDirection.UNKNOWN) return 1.0F;
         return ModelISBRH.diffuseLight(NormI8.pack(direction.offsetX, direction.offsetY, direction.offsetZ));
     }
 
-    // Samples the seven lightmap values a world-space draw needs.
-    // Light comes straight from getLightBrightnessForSkyBlocks, which already applies the day/night sky
-    // subtraction. Block#getMixedBrightnessForBlock must not be used here: it can hand back a stale zero while
-    // the propagation pass is still running, which paints a face black.
-    // The block and its six neighbours are sampled and the brightest wins. Since the block's lightOpacity is zero
-    // every doll in a pile is sky-exposed and reads the same value, so the neighbourhood only matters at the edge
-    // of a lit area, where it lets a nearby light source reach the model.
-    // world: non-null access
-    // x: block X
-    // y: block Y
-    // z: block Z
-    // out: a seven element array: the six faces in ForgeDirection order plus the block itself
+    // Use getLightBrightnessForSkyBlocks; getMixedBrightnessForBlock can return a stale zero and paint a face black.
     public static void fillBrightness(IBlockAccess world, int x, int y, int z, int[] out) {
         int light = world.getLightBrightnessForSkyBlocks(x, y, z, 0);
         for (ForgeDirection face : ForgeDirection.VALID_DIRECTIONS) {
@@ -126,10 +97,7 @@ public final class PigmeeFumoRenderHelper {
         }
     }
 
-    // Emits every quad of the model using the pre-baked shades and per-quad emission.
-    // quads: quads from getAllQuads
-    // brightness: the seven element array filled by
-    // fillBrightness(IBlockAccess, int, int, int, int[])
+    // The brightness argument is the seven element array filled by fillBrightness(IBlockAccess, int, int, int, int[]).
     public static void drawWorld(List<FacedQuad> quads, int[] brightness) {
         GL11.glPushAttrib(
             GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT

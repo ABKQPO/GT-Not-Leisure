@@ -1,8 +1,6 @@
-// Pigmee Fumo port from AE2 Lightning Tech Reborn.
-// Upstream: https://github.com/AE2-Lightning-Tech-Reborn/AE2-Lightning-Tech-Reborn
-// License: LGPL-3.0. Model author: TedXenon.
-// Original model credit: "Made with Blockbench, made by TedXenon".
-// Adapted for GT-Not-Leisure, Forge 1.7.10.
+// Pigmee Fumo port from AE2 Lightning Tech Reborn
+// (https://github.com/AE2-Lightning-Tech-Reborn/AE2-Lightning-Tech-Reborn).
+// LGPL-3.0, model by TedXenon. Adapted for GT-Not-Leisure, Forge 1.7.10.
 package com.science.gtnl.common.render.item;
 
 import java.util.List;
@@ -29,14 +27,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-// Draws the spinning Pigmee Fumo on the head of every player wearing one.
-// 1.7.10 has no ItemRenderType.HEAD and no display.head baked transform, and a head-worn
-// ItemBlock in third person is drawn as an EQUIPPED block sharing the hand's transform. There is
-// therefore no item-renderer hook for this, so it uses the pair of player render events below.
-// onSpecialsPre suppresses the vanilla helmet pass for our item only. Items are not ItemArmor, so
-// nothing would be drawn anyway; suppressing it keeps that assumption explicit.
-// The doll spins from the world clock rather than from tile state, so it turns for every player regardless of whether
-// any placed block is spinning: one revolution per 60 ticks, exactly as upstream.
+// Head-worn dolls have no item-renderer hook in 1.7.10 (no ItemRenderType.HEAD), so they use the player render events.
 @SideOnly(Side.CLIENT)
 public class PigmeeFumoHeadRenderer {
 
@@ -46,9 +37,7 @@ public class PigmeeFumoHeadRenderer {
     // Reused lightmap scratch; only ever touched on the render thread.
     private final int[] brightness = new int[7];
 
-    // Suppresses the vanilla helmet pass for our own head item only.
-    // event: the Specials pre event; the event is never cancelled, no other decoration is touched and
-    // the player inventory is only read
+    // Suppresses the vanilla helmet pass for our own head item only, and never cancels the event.
     @SubscribeEvent
     public void onSpecialsPre(RenderPlayerEvent.Specials.Pre event) {
         if (!isWearingFumo(event.entityPlayer)) return;
@@ -57,9 +46,6 @@ public class PigmeeFumoHeadRenderer {
     }
 
     // Draws the doll in head-bone space for every visible player wearing one.
-    // event: the Specials post event; uses entityPlayer, renderer and
-    // partialRenderTick. Players without a world, invisible players, hidden head bones and an
-    // unloaded model are skipped. The GL matrix is restored in a finally block.
     @SubscribeEvent
     public void onSpecialsPost(RenderPlayerEvent.Specials.Post event) {
         EntityPlayer player = event.entityPlayer;
@@ -75,16 +61,12 @@ public class PigmeeFumoHeadRenderer {
         if (model == null) return;
 
         float partialTick = event.partialRenderTick;
-        // The head bone's rotateAngleY is already body-relative, so reconstruct the absolute head yaw and
-        // subtract it back out. This keeps the model's body yaw clamp and riding corrections authoritative
-        // instead of re-deriving body yaw from rotationYaw, which double-counts across +/-180.
+        // rotateAngleY is body-relative, so the absolute head yaw is reconstructed, then subtracted out for body yaw.
         float headYaw = player.prevRotationYawHead
             + MathHelper.wrapAngleTo180_float(player.rotationYawHead - player.prevRotationYawHead) * partialTick;
         float bodyYaw = headYaw - head.rotateAngleY * (180.0F / (float) Math.PI);
 
-        // Sample light exactly the way a placed doll does, at the head block the doll actually sits on.
-        // Entity.getBrightnessForRender would be a single sample at chest height instead, which reads dimmer
-        // whenever a neighbouring block is brighter and so made a worn doll look unlike a placed one.
+        // Lights the head block like a placed doll; Entity.getBrightnessForRender would sample chest height only.
         PigmeeFumoRenderHelper.fillBrightness(
             world,
             MathHelper.floor_double(player.posX),
@@ -130,7 +112,6 @@ public class PigmeeFumoHeadRenderer {
         return false;
     }
 
-    // Returns true when the stack is this mod's Pigmee Fumo block item.
     private static boolean isFumo(ItemStack stack) {
         return stack != null && stack.getItem() instanceof ItemBlockPigmeeFumo;
     }
