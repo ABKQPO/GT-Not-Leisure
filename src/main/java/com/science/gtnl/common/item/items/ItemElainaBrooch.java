@@ -3,6 +3,7 @@ package com.science.gtnl.common.item.items;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -16,6 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.FoodStats;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -27,6 +29,7 @@ import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.item.BaubleItem;
 import com.science.gtnl.mixins.early.minecraft.AccessorFoodStats;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.text.effect.TextEffects;
 
 import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
@@ -35,6 +38,8 @@ import baubles.api.expanded.IBaubleExpanded;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemElainaBrooch extends BaubleItem implements IBaubleExpanded {
 
@@ -71,6 +76,26 @@ public class ItemElainaBrooch extends BaubleItem implements IBaubleExpanded {
     @Override
     public String[] getBaubleTypes(ItemStack stack) {
         return BAUBLE_TYPES;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
+        for (int line = 0; line < 4; line++) {
+            tooltip.add(
+                TextEffects.apply(
+                    StatCollector.translateToLocal("item.gtnl.elaina_brooch.lore." + line),
+                    TextEffects.GENESIS_COMPONENT_RARITY_SHADER));
+        }
+        tooltip.add("");
+        String worn = StatCollector.translateToLocal("item.gtnl.elaina_brooch.worn");
+        tooltip.add(TextEffects.apply(worn, TextEffects.EVERCOLD_CYAN));
+        for (int line = 0; line < 3; line++) {
+            tooltip.add(
+                TextEffects.apply(
+                    StatCollector.translateToLocal("item.gtnl.elaina_brooch.tooltip." + line),
+                    TextEffects.EVERCOLD_CYAN));
+        }
     }
 
     @Override
