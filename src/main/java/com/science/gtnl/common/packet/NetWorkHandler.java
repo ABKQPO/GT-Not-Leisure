@@ -31,6 +31,7 @@ public class NetWorkHandler {
         registerServerbound(WirelessPickBlock.class);
         registerClientbound(SudoPacket.class);
         registerServerbound(NBTUpdatePacket.class);
+        registerServerbound(OpenVeinMiningPickaxeGuiPacket.class);
         registerServerbound(PktPatternTermUploadPattern.class);
         registerServerbound(DirePatternHandler.class);
         registerServerbound(MEChiselSyncParallel.class);

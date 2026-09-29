@@ -164,9 +164,7 @@ public class PortalToAlfheimRecipes implements IRecipePool {
             .addTo(PTAR);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                ModsItemlist.AvaritiaInfinitySword.get(0),
-                ModsItemlist.BotaniaGaiaSpiritIngot.get(1))
+            .itemInputs(ModsItemlist.AvaritiaInfinitySword.get(0), ModsItemlist.BotaniaGaiaSpiritIngot.get(1))
             .itemOutputs(
                 ModsItemlist.BotaniaGaiaSpirit.get(16),
                 ModsItemlist.BotaniaDice.get(1),

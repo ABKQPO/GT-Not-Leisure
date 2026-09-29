@@ -2790,9 +2790,7 @@ public class AssemblerRecipes implements IRecipePool {
             .addTo(As);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GTNLItemList.HoneyBucket.get(1),
-                ModsItemlist.PamsHarvestCraftRoyaljellyItem.get(64))
+            .itemInputs(GTNLItemList.HoneyBucket.get(1), ModsItemlist.PamsHarvestCraftRoyaljellyItem.get(64))
             .itemOutputs(GTNLItemList.InfinityHoneyBucket.get(1))
             .fluidInputs(new FluidStack(BlockLoader.honeyFluid, 100000))
             .duration(10 * SECONDS)
@@ -2807,9 +2805,7 @@ public class AssemblerRecipes implements IRecipePool {
             .addTo(As);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                new ItemStack(Items.lava_bucket, 1),
-                ModsItemlist.ThaumicExplorationEverburnUrn.get(1))
+            .itemInputs(new ItemStack(Items.lava_bucket, 1), ModsItemlist.ThaumicExplorationEverburnUrn.get(1))
             .itemOutputs(GTNLItemList.InfinityLavaBucket.get(1))
             .duration(10 * SECONDS)
             .eut(TierEU.RECIPE_LV)

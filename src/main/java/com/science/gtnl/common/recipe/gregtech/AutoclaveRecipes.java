@@ -96,9 +96,7 @@ public class AutoclaveRecipes implements IRecipePool {
             .setNEIDesc("Remove Change by GTNotLeisure")
             .itemInputs(ItemList.Hot_Netherite_Scrap.get(2))
             .fluidInputs(Materials.RichNetherWaste.getFluid(2_000))
-            .itemOutputs(
-                ItemList.Netherite_Scrap_Seed.get(1),
-                ModsItemlist.EtFuturumRequiemNetheriteScrap.get(2))
+            .itemOutputs(ItemList.Netherite_Scrap_Seed.get(1), ModsItemlist.EtFuturumRequiemNetheriteScrap.get(2))
             .duration(300)
             .eut(TierEU.RECIPE_IV)
             .addTo(AR);

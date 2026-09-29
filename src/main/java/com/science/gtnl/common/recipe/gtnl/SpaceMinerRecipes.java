@@ -302,9 +302,7 @@ public class SpaceMinerRecipes implements IRecipePool {
                         GTOreDictUnificator.get(OrePrefixes.ore, Materials.VanadiumMagnetite, 1)),
                     GTUtility.copyAmountUnsafe(80, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Gold, 1)),
                     GTUtility.copyAmountUnsafe(60, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Endium, 1)),
-                    GTUtility.copyAmountUnsafe(
-                        60,
-                        ModsItemlist.HardcoreEnderExpansionEndPowderOre.get(1)),
+                    GTUtility.copyAmountUnsafe(60, ModsItemlist.HardcoreEnderExpansionEndPowderOre.get(1)),
                     GTUtility.copyAmountUnsafe(240, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Cheese, 1)))),
             new OreGroup(
                 1,

@@ -129,13 +129,11 @@ public class TCResearches {
                                 0,
                                 "{storedEnergyRF:2500000,type:\"CREATIVE\"}",
                                 null),
-                            Mods.TaintedMagic.isModLoaded()
-                                ? ModsItemlist.TaintedMagicItemFocusTime.get(1)
+                            Mods.TaintedMagic.isModLoaded() ? ModsItemlist.TaintedMagicItemFocusTime.get(1)
                                 : ModsItemlist.ThaumcraftFocusPrimal.get(1),
                             GregtechItemList.CrystalColorizationCatalyst.get(1),
                             GTNLItemList.ParallelControllerHatchUMV.get(1),
-                            ModsItemlist.AE2FluidCraftFluidStorageUniverse.get(1),
-                            AEApi.instance()
+                            ModsItemlist.AE2FluidCraftFluidStorageUniverse.get(1), AEApi.instance()
                                 .definitions()
                                 .items()
                                 .cellUniverse()
@@ -143,8 +141,7 @@ public class TCResearches {
                                 .orNull(),
                             Mods.SGCraft.isModLoaded() ? ModsItemlist.SGCraftIc2Capacitor.get(1)
                                 : new ItemStack(Blocks.dirt),
-                            Mods.Computronics.isModLoaded()
-                                ? ModsItemlist.ComputronicsOCSpecialParts.get(1)
+                            Mods.Computronics.isModLoaded() ? ModsItemlist.ComputronicsOCSpecialParts.get(1)
                                 : new ItemStack(Items.feather) })))
                 .setParents(existingParentOrRoot("gtnl.welcome"))
                 .registerResearchItem();
@@ -318,8 +315,7 @@ public class TCResearches {
                                 .add(Aspect.FLESH, 128)
                                 .add(Aspect.MAN, 128),
                             GTNLItemList.EssentiaUpgradeEmpty.get(1),
-                            new ItemStack[] { ModsItemlist.NHCoreModAgar.get(1),
-                                ItemList.Food_Dough_Sugar.get(1),
+                            new ItemStack[] { ModsItemlist.NHCoreModAgar.get(1), ItemList.Food_Dough_Sugar.get(1),
                                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Calcium, 1),
                                 new ItemStack(Items.rotten_flesh, 1), new ItemStack(ConfigItems.itemResource, 1, 4),
                                 new ItemStack(ConfigBlocks.blockMetalDevice, 1, 8) })),

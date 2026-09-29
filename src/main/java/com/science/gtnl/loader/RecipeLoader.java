@@ -335,8 +335,7 @@ public class RecipeLoader {
                     new MerchantRecipe(
                         new ItemStack(Items.iron_ingot, 1),
                         ModsItemlist.BotaniaBifrostPermPane.get(1),
-                        Stick.setDisguisedStack(
-                            GTOreDictUnificator.get(ModsItemlist.AvaritiaInfinityIngot.get(1)))));
+                        Stick.setDisguisedStack(GTOreDictUnificator.get(ModsItemlist.AvaritiaInfinityIngot.get(1)))));
                 recipeList.add(
                     new MerchantRecipe(
                         new ItemStack(Blocks.dispenser, 1),

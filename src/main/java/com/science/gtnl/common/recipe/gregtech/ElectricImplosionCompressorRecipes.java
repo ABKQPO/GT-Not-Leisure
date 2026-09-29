@@ -24,9 +24,7 @@ public class ElectricImplosionCompressorRecipes implements IRecipePool {
             .materials();
 
         RecipeBuilder.builder()
-            .itemInputs(
-                ModsItemlist.EternalSingularity.get(1),
-                ItemList.EnergisedTesseract.get(1))
+            .itemInputs(ModsItemlist.EternalSingularity.get(1), ItemList.EnergisedTesseract.get(1))
             .fluidInputs(Materials.Protomatter.getFluid(1000))
             .itemOutputs(
                 aeMaterials.singularity()

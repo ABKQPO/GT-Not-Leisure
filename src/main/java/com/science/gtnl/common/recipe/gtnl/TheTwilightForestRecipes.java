@@ -58,9 +58,7 @@ public class TheTwilightForestRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(GTNLItemList.KnightPhantomBook.get(0))
-            .itemOutputs(
-                ModsItemlist.KnightPhantomTrophy.get(1),
-                ModsItemlist.TwilightForestItemKnightMetal.get(24))
+            .itemOutputs(ModsItemlist.KnightPhantomTrophy.get(1), ModsItemlist.TwilightForestItemKnightMetal.get(24))
             .outputChances(1000, 7500)
             .duration(600)
             .eut(1966080)
@@ -111,8 +109,7 @@ public class TheTwilightForestRecipes implements IRecipePool {
                     .copyAmountUnsafe(262144, GTOreDictUnificator.get(OrePrefixes.ingot, Materials.FierySteel, 1L)),
                 GTUtility.copyAmountUnsafe(262144, GTOreDictUnificator.get(OrePrefixes.ingot, Materials.IronWood, 1L)),
                 GTUtility.copyAmountUnsafe(262144, GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Steeleaf, 1L)),
-                GTUtility
-                    .copyAmountUnsafe(65536, ModsItemlist.TwilightForestItemFieryBlood.get(1)),
+                GTUtility.copyAmountUnsafe(65536, ModsItemlist.TwilightForestItemFieryBlood.get(1)),
                 GTUtility.copyAmountUnsafe(65536, ModsItemlist.TwilightForestItemNagaScale.get(0)))
             .duration(200)
             .eut(TierEU.RECIPE_UHV)

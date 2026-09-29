@@ -37,7 +37,6 @@ import net.minecraftforge.client.model.IModelCustom;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
@@ -52,13 +51,12 @@ import com.science.gtnl.common.item.items.TimeStopPocketWatch;
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionHitEffectState;
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionState;
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionType;
-import com.science.gtnl.common.packet.NBTUpdatePacket;
+import com.science.gtnl.common.packet.OpenVeinMiningPickaxeGuiPacket;
 import com.science.gtnl.common.render.item.ItemNullPointerExceptionRender;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.EffectLoader;
 import com.science.gtnl.loader.ItemLoader;
 import com.science.gtnl.mixins.early.minecraft.AccessorGuiChat;
-import com.science.gtnl.utils.ClientUtils;
 import com.science.gtnl.utils.enums.ModList;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -130,62 +128,14 @@ public class SubscribeEventClientUtils {
         if (handlePreviousMultiEssentiaJarAspect(minecraft, player, event)) return;
 
         ItemStack held = player.getCurrentEquippedItem();
-        if (held == null) return;
+        ItemStack offHand = Backhand.getOffhandItem(player);
+        boolean mainHandPickaxe = held != null && held.getItem() == ItemLoader.veinMiningPickaxe;
+        boolean offHandPickaxe = offHand != null && offHand.getItem() == ItemLoader.veinMiningPickaxe;
+        if (!mainHandPickaxe && !offHandPickaxe) return;
 
-        if (held.getItem() != ItemLoader.veinMiningPickaxe) return;
-
-        NBTTagCompound nbt = held.getTagCompound();
-        if (nbt == null) {
-            nbt = new NBTTagCompound();
-            held.setTagCompound(nbt);
-        }
-
-        boolean rightClickHeld = Mouse.isButtonDown(1);
-
-        if (player.isSneaking() && !rightClickHeld) {
-            if (event.dwheel == 0) return;
-            int oldRange = nbt.hasKey("range") ? nbt.getInteger("range") : 0;
-            int newRange = oldRange;
-
-            if (event.dwheel > 0) {
-                newRange++;
-            } else {
-                newRange--;
-            }
-
-            if (newRange < -1) newRange = -1;
-            if (newRange > MainConfig.item.vein_miner_pickaxe.maxRange)
-                newRange = MainConfig.item.vein_miner_pickaxe.maxRange;
-
-            if (newRange != oldRange) {
-                nbt.setInteger("range", newRange);
-                ClientUtils.showSubtitle("item.gtnl.vein_mining_pickaxe.max_block_gap", newRange);
-                network.sendToServer(new NBTUpdatePacket(player.inventory.currentItem, held));
-                event.setCanceled(true);
-            }
-        }
-
-        if (!player.isSneaking() && rightClickHeld) {
-            if (event.dwheel == 0) return;
-            int oldAmount = nbt.hasKey("amount") ? nbt.getInteger("amount") : 0;
-            int newAmount = oldAmount;
-
-            if (event.dwheel > 0) {
-                newAmount += 10000;
-            } else {
-                newAmount -= 10000;
-            }
-
-            if (newAmount < 0) newAmount = 0;
-            if (newAmount > MainConfig.item.vein_miner_pickaxe.maxAmount)
-                newAmount = MainConfig.item.vein_miner_pickaxe.maxAmount;
-
-            if (newAmount != oldAmount) {
-                nbt.setInteger("amount", newAmount);
-                ClientUtils.showSubtitle("item.gtnl.vein_mining_pickaxe.max_vein_count", newAmount);
-                network.sendToServer(new NBTUpdatePacket(player.inventory.currentItem, held));
-                event.setCanceled(true);
-            }
+        if (minecraft.currentScreen == null && event.button == 2 && event.buttonstate) {
+            network.sendToServer(new OpenVeinMiningPickaxeGuiPacket(offHandPickaxe));
+            event.setCanceled(true);
         }
     }
 

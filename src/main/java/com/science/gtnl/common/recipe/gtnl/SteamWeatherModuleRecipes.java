@@ -15,18 +15,14 @@ public class SteamWeatherModuleRecipes implements IRecipePool {
     public void loadRecipes() {
 
         RecipeBuilder.builder()
-            .itemInputs(
-                ModsItemlist.NaturaSulfurCloud.get(16),
-                ModsItemlist.ThaumcraftFireCrystal.get(1))
+            .itemInputs(ModsItemlist.NaturaSulfurCloud.get(16), ModsItemlist.ThaumcraftFireCrystal.get(1))
             .specialValue(1)
             .duration(36000)
             .eut(0)
             .addTo(SWMR);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                ModsItemlist.NaturaGrayCloud.get(16),
-                ModsItemlist.ThaumcraftWaterCrystal.get(1))
+            .itemInputs(ModsItemlist.NaturaGrayCloud.get(16), ModsItemlist.ThaumcraftWaterCrystal.get(1))
             .specialValue(2)
             .duration(36000)
             .eut(0)

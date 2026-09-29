@@ -204,7 +204,6 @@ public class MaterialLoader {
         addBoxBlacklist(ModBlocks.reactorCore, OreDictionary.WILDCARD_VALUE);
         addBoxBlacklist(ModBlocks.chaosCrystal, OreDictionary.WILDCARD_VALUE);
         addBoxBlacklist(ModsItemlist.IC2NuclearReactor.get(1));
-        addBoxBlacklist(
-            ModsItemlist.IC2ReactorChamberAnyDamage.get(1));
+        addBoxBlacklist(ModsItemlist.IC2ReactorChamberAnyDamage.get(1));
     }
 }

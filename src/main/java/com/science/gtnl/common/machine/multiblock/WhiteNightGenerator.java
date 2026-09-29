@@ -201,14 +201,10 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
     }
 
     public int getMultiTier() {
-        if (GTUtility.areStacksEqual(
-            getControllerSlot(),
-            ModsItemlist.USGangueSingularity.get(1))) {
+        if (GTUtility.areStacksEqual(getControllerSlot(), ModsItemlist.USGangueSingularity.get(1))) {
             return 2;
         }
-        if (GTUtility.areStacksEqual(
-            getControllerSlot(),
-            ModsItemlist.EternalSingularity.get(1))) {
+        if (GTUtility.areStacksEqual(getControllerSlot(), ModsItemlist.EternalSingularity.get(1))) {
             return 1;
         }
         return 0;

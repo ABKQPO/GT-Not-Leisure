@@ -56,8 +56,7 @@ public class NEIGTNLGalaxySpaceConfig implements IConfigureNEI {
         int y = 4 - recipeHandler.y;
 
         List<PositionedStack> input = new ArrayList<>();
-        input.add(
-            new PositionedStack(ModsItemlist.StevesCartsStandardHull.get(1), 134 - x, 10 - y));
+        input.add(new PositionedStack(ModsItemlist.StevesCartsStandardHull.get(1), 134 - x, 10 - y));
         input.add(
             new PositionedStack(
                 Mods.NewHorizonsCoreMod.isModLoaded() ? getEngineCore() : new ItemStack(Items.arrow),
@@ -81,16 +80,11 @@ public class NEIGTNLGalaxySpaceConfig implements IConfigureNEI {
             }
         }
 
-        input.add(
-            new PositionedStack(ModsItemlist.GraviSuiteJetEngine.get(1), 53 - x, 109 - y));
-        input
-            .add(new PositionedStack(ModsItemlist.RailcraftHobbyistSteamEngine.get(1), 26 - x, 91 - y));
-        input
-            .add(new PositionedStack(ModsItemlist.RailcraftHobbyistSteamEngine.get(1), 80 - x, 91 - y));
-        input.add(
-            new PositionedStack(ModsItemlist.RailcraftHobbyistSteamEngine.get(1), 26 - x, 109 - y));
-        input.add(
-            new PositionedStack(ModsItemlist.RailcraftHobbyistSteamEngine.get(1), 80 - x, 109 - y));
+        input.add(new PositionedStack(ModsItemlist.GraviSuiteJetEngine.get(1), 53 - x, 109 - y));
+        input.add(new PositionedStack(ModsItemlist.RailcraftHobbyistSteamEngine.get(1), 26 - x, 91 - y));
+        input.add(new PositionedStack(ModsItemlist.RailcraftHobbyistSteamEngine.get(1), 80 - x, 91 - y));
+        input.add(new PositionedStack(ModsItemlist.RailcraftHobbyistSteamEngine.get(1), 26 - x, 109 - y));
+        input.add(new PositionedStack(ModsItemlist.RailcraftHobbyistSteamEngine.get(1), 80 - x, 109 - y));
 
         recipeHandler.addRecipe(input, new PositionedStack(GTNLItemList.SteamRocket.get(1), 134 - x, 73 - y));
 

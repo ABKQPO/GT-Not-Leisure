@@ -118,9 +118,7 @@ public class ChemicalBathRecipes implements IRecipePool {
             .setNEIDesc("Remove Change by GTNotLeisure")
             .itemInputs(ItemList.Hot_Netherite_Scrap.get(16), ItemList.Heavy_Hellish_Mud.get(16))
             .fluidInputs(Materials.PoorNetherWaste.getFluid(8_000))
-            .itemOutputs(
-                ItemList.Brittle_Netherite_Scrap.get(48),
-                ModsItemlist.EtFuturumRequiemNetheriteScrap.get(16))
+            .itemOutputs(ItemList.Brittle_Netherite_Scrap.get(48), ModsItemlist.EtFuturumRequiemNetheriteScrap.get(16))
             .duration(10 * SECONDS)
             .eut(TierEU.RECIPE_UHV)
             .addTo(cBR);

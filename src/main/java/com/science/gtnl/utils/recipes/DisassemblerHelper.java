@@ -96,8 +96,7 @@ public class DisassemblerHelper {
                     .stack(AEColor.Transparent, 1)));
 
         // Radiation Proof Plate
-        inputBlacklist
-            .add(new GTItemStack(ModsItemlist.GoodGeneratorRadiationProtectionPlate.get(1L)));
+        inputBlacklist.add(new GTItemStack(ModsItemlist.GoodGeneratorRadiationProtectionPlate.get(1L)));
     }
 
     public interface GeneratedRecipeInfo<T> {

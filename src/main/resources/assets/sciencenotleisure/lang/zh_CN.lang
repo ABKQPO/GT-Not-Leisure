@@ -3823,6 +3823,19 @@ item.gtnl.vein_mining_pickaxe.max_block_gap=最大方块间隔：%s
 item.gtnl.vein_mining_pickaxe.max_vein_count=最大连锁数量：%s
 item.gtnl.vein_mining_pickaxe.precise_mode.enabled=§a精确模式已开启
 item.gtnl.vein_mining_pickaxe.precise_mode.disabled=§r精确模式已关闭
+item.gtnl.vein_mining_pickaxe.chain.enabled=§a连锁挖掘已开启
+item.gtnl.vein_mining_pickaxe.chain.disabled=§c连锁挖掘已关闭
+gtnl.gui.vein_mining_pickaxe.title=矿脉挖掘镐设置
+gtnl.gui.vein_mining_pickaxe.range=最大方块间隔
+gtnl.gui.vein_mining_pickaxe.range.tooltip=匹配方块之间允许的最大距离。
+gtnl.gui.vein_mining_pickaxe.amount=最大连锁数量
+gtnl.gui.vein_mining_pickaxe.amount.tooltip=一次操作最多挖掘的方块数量。
+gtnl.gui.vein_mining_pickaxe.precise=精确匹配
+gtnl.gui.vein_mining_pickaxe.precise.tooltip=只挖掘元数据或矿辞名称完全相同的方块。
+gtnl.gui.vein_mining_pickaxe.enabled=已开启
+gtnl.gui.vein_mining_pickaxe.disabled=已关闭
+gtnl.gui.vein_mining_pickaxe.chain=连锁挖掘
+gtnl.gui.vein_mining_pickaxe.chain.tooltip=开启或关闭矿脉连锁挖掘。在空中右键可快速切换。
 
 item.milledNaquadahEnriched.name=研磨富集硅岩矿
 item.FrothNaquadahenrichedflotation=富集硅岩浮选泡沫单元
@@ -4309,4 +4322,3 @@ gtnl.text_effect.title=动态文字效果
 gtnl.text_effect.palette=切换配色
 gtnl.text_effect.bold=切换粗体
 gtnl.text_effect.italic=切换斜体
-

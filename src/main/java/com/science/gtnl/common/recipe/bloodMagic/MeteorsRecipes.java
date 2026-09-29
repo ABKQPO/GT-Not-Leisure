@@ -36,11 +36,8 @@ public class MeteorsRecipes implements IRecipePool {
 
         List<String> meteorDrops = getTNTMeteor();
 
-        MeteorRegistry.registerMeteor(
-            ModsItemlist.IC2BlockNuke.get(1),
-            meteorDrops.toArray(new String[0]),
-            100,
-            114514);
+        MeteorRegistry
+            .registerMeteor(ModsItemlist.IC2BlockNuke.get(1), meteorDrops.toArray(new String[0]), 100, 114514);
 
         MeteorRegistry.registerMeteor(
             GTNLItemList.StargateSingularity.get(1),

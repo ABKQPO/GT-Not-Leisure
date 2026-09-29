@@ -46,10 +46,7 @@ public class WirelessSteamCoverUIFactory extends CoverLegacyDataUIFactory {
                         .addToggleButton(
                             1,
                             CoverDataFollowerToggleButtonWidget.ofDisableable(),
-                            widget -> widget
-                                .setStaticTexture(
-                                    new ItemDrawable(
-                                        ModsItemlist.IC2EmptyCell.get(1)))
+                            widget -> widget.setStaticTexture(new ItemDrawable(ModsItemlist.IC2EmptyCell.get(1)))
                                 .addTooltip(SteamTypes.SH_STEAM.displayName)
                                 .setPos(SPACE_X * 1, SPACE_Y * 0))
                         .addToggleButton(

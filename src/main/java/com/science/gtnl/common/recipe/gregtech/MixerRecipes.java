@@ -181,9 +181,7 @@ public class MixerRecipes implements IRecipePool {
             .addTo(MNCR);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GTUtility.getIntegratedCircuit(1),
-                ModsItemlist.TwilightForestLog.get(16))
+            .itemInputs(GTUtility.getIntegratedCircuit(1), ModsItemlist.TwilightForestLog.get(16))
             .fluidInputs(Materials.Water.getFluid(1000))
             .fluidOutputs(GTNLMaterials.TwilightSluice.getFluidOrGas(4000))
             .duration(5 * SECONDS)
@@ -302,9 +300,7 @@ public class MixerRecipes implements IRecipePool {
             .addTo(MNCR);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GTUtility.getIntegratedCircuit(4),
-                ModsItemlist.EnderIOVibrantCrystalPowder.get(1))
+            .itemInputs(GTUtility.getIntegratedCircuit(4), ModsItemlist.EnderIOVibrantCrystalPowder.get(1))
             .itemOutputs(ModsItemlist.EnderIOEnderCrystalPowder.get(1))
             .fluidInputs(FluidRegistry.getFluidStack(Fluids.NUTRIENT_DISTILLATION, 4000))
             .fluidOutputs(FluidRegistry.getFluidStack(Fluids.ENDER_DISTILLATION, 4000))
@@ -314,9 +310,7 @@ public class MixerRecipes implements IRecipePool {
             .addTo(MNCR);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GTUtility.getIntegratedCircuit(4),
-                ModsItemlist.EnderIOVibrantCrystalPowder.get(1))
+            .itemInputs(GTUtility.getIntegratedCircuit(4), ModsItemlist.EnderIOVibrantCrystalPowder.get(1))
             .itemOutputs(ModsItemlist.EnderIOPrescientCrystalPowder.get(1))
             .fluidInputs(FluidRegistry.getFluidStack(Fluids.ENDER_DISTILLATION, 1000))
             .fluidOutputs(FluidRegistry.getFluidStack(Fluids.VAPOR_OF_LEVITY, 1000))

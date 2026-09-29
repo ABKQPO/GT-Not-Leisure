@@ -27,12 +27,19 @@ import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
+import com.cleanroommc.modularui.api.IGuiHolder;
+import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
+import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.ModularScreen;
+import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.github.bsideup.jabel.Desugar;
 import com.reavaritia.utils.item.ItemStackWrapper;
 import com.reavaritia.utils.item.SubtitleDisplay;
 import com.reavaritia.utils.item.ToolHelper;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.common.gui.VeinMiningPickaxeGui;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.ItemLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -45,11 +52,13 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.items.MetaGeneratedTool;
+import gregtech.api.modularui2.GTGuiThemes;
+import gregtech.api.modularui2.GTModularScreen;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
-public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
+public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, IGuiHolder<PlayerInventoryGuiData> {
 
     public boolean isEnable;
     private final List<ItemStack> capturedHarvestDrops = new ArrayList<>();
@@ -84,6 +93,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
         NBTTagCompound tags = itemStack.getTagCompound();
         int range = 3;
         int amount = 32767;
+        boolean chainEnabled = true;
         boolean preciseMode = false;
 
         if (tags != null) {
@@ -96,10 +106,17 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
             if (tags.hasKey("preciseMode")) {
                 preciseMode = tags.getBoolean("preciseMode");
             }
+            if (tags.hasKey("chainEnabled")) {
+                chainEnabled = tags.getBoolean("chainEnabled");
+            }
         }
 
         toolTip.add(StatCollector.translateToLocalFormatted("item.gtnl.vein_mining_pickaxe.max_block_gap", range));
         toolTip.add(StatCollector.translateToLocalFormatted("item.gtnl.vein_mining_pickaxe.max_vein_count", amount));
+        toolTip.add(
+            StatCollector.translateToLocal(
+                chainEnabled ? "item.gtnl.vein_mining_pickaxe.chain.enabled"
+                    : "item.gtnl.vein_mining_pickaxe.chain.disabled"));
         toolTip.add(
             StatCollector.translateToLocal(
                 preciseMode ? "item.gtnl.vein_mining_pickaxe.precise_mode.enabled"
@@ -111,6 +128,19 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
     public boolean hasEffect(ItemStack stack, int pass) {
         NBTTagCompound nbt = stack.getTagCompound();
         return nbt != null && nbt.getBoolean("preciseMode");
+    }
+
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        boolean enabled = !isChainEnabled(stack);
+        setChainEnabled(stack, enabled);
+        if (world.isRemote) {
+            player.swingItem();
+            showSubtitle(
+                enabled ? "item.gtnl.vein_mining_pickaxe.chain.enabled"
+                    : "item.gtnl.vein_mining_pickaxe.chain.disabled");
+        }
+        return stack;
     }
 
     @Override
@@ -152,26 +182,63 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if (player.isSneaking()) {
-            NBTTagCompound tags = stack.getTagCompound();
-            if (tags == null) {
-                tags = new NBTTagCompound();
-                stack.setTagCompound(tags);
-            }
+    @SideOnly(Side.CLIENT)
+    public ModularScreen createScreen(PlayerInventoryGuiData data, ModularPanel mainPanel) {
+        return new GTModularScreen(mainPanel, GTGuiThemes.STANDARD);
+    }
 
-            boolean isPreciseMode = !tags.getBoolean("preciseMode");
-            tags.setBoolean("preciseMode", isPreciseMode);
-            player.swingItem();
+    @Override
+    public ModularPanel buildUI(PlayerInventoryGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return new VeinMiningPickaxeGui(data, syncManager).build();
+    }
 
-            if (world.isRemote) {
-                String key = isPreciseMode
-                    ? StatCollector.translateToLocal("item.gtnl.vein_mining_pickaxe.precise_mode.enabled")
-                    : StatCollector.translateToLocal("item.gtnl.vein_mining_pickaxe.precise_mode.disabled");
-                showSubtitle(key);
-            }
+    public static int getRange(ItemStack stack) {
+        NBTTagCompound tag = stack.getTagCompound();
+        return tag != null && tag.hasKey("range") ? tag.getInteger("range") : 3;
+    }
+
+    public static int getAmount(ItemStack stack) {
+        NBTTagCompound tag = stack.getTagCompound();
+        return tag != null && tag.hasKey("amount") ? tag.getInteger("amount") : 32767;
+    }
+
+    public static boolean isPreciseMode(ItemStack stack) {
+        NBTTagCompound tag = stack.getTagCompound();
+        return tag != null && tag.getBoolean("preciseMode");
+    }
+
+    public static boolean isChainEnabled(ItemStack stack) {
+        NBTTagCompound tag = stack.getTagCompound();
+        return tag == null || !tag.hasKey("chainEnabled") || tag.getBoolean("chainEnabled");
+    }
+
+    public static void setRange(ItemStack stack, int range) {
+        getOrCreateTag(stack).setInteger(
+            "range",
+            Math.max(-1, Math.min(range, Math.max(-1, MainConfig.item.vein_miner_pickaxe.maxRange))));
+    }
+
+    public static void setAmount(ItemStack stack, int amount) {
+        getOrCreateTag(stack).setInteger(
+            "amount",
+            Math.max(0, Math.min(amount, Math.max(0, MainConfig.item.vein_miner_pickaxe.maxAmount))));
+    }
+
+    public static void setPreciseMode(ItemStack stack, boolean preciseMode) {
+        getOrCreateTag(stack).setBoolean("preciseMode", preciseMode);
+    }
+
+    public static void setChainEnabled(ItemStack stack, boolean enabled) {
+        getOrCreateTag(stack).setBoolean("chainEnabled", enabled);
+    }
+
+    private static NBTTagCompound getOrCreateTag(ItemStack stack) {
+        NBTTagCompound tag = stack.getTagCompound();
+        if (tag == null) {
+            tag = new NBTTagCompound();
+            stack.setTagCompound(tag);
         }
-        return stack;
+        return tag;
     }
 
     @SubscribeEvent
@@ -191,6 +258,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay {
 
             NBTTagCompound tags = stack.getTagCompound();
             if (tags != null) {
+                if (!isChainEnabled(stack)) return;
                 if (tags.hasKey("range")) {
                     range = Math
                         .max(-1, Math.min(MainConfig.item.vein_miner_pickaxe.maxRange, tags.getInteger("range")));

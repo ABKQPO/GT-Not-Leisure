@@ -252,26 +252,17 @@ public class ItemLoader {
         infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(new ItemStack(GregTechAPI.sBlockStones, 1, 9)));
 
         if (Mods.EtFuturumRequiem.isModLoaded()) {
-            infinityStoneCell.add(
-                ItemInfinityCell.SubItem
-                    .getInstance(ModsItemlist.EtFuturumRequiemDeepslate.get(1)));
-            infinityStoneCell.add(
-                ItemInfinityCell.SubItem
-                    .getInstance(ModsItemlist.EtFuturumRequiemCobbledDeepslate.get(1)));
-            infinityStoneCell.add(
-                ItemInfinityCell.SubItem
-                    .getInstance(ModsItemlist.EtFuturumRequiemBlackstone.get(1)));
+            infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(ModsItemlist.EtFuturumRequiemDeepslate.get(1)));
+            infinityStoneCell
+                .add(ItemInfinityCell.SubItem.getInstance(ModsItemlist.EtFuturumRequiemCobbledDeepslate.get(1)));
+            infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(ModsItemlist.EtFuturumRequiemBlackstone.get(1)));
         }
 
         if (Mods.Botania.isModLoaded()) {
-            infinityStoneCell
-                .add(ItemInfinityCell.SubItem.getInstance(ModsItemlist.BotaniaAndesite.get(1)));
-            infinityStoneCell
-                .add(ItemInfinityCell.SubItem.getInstance(ModsItemlist.BotaniaBasalt.get(1)));
-            infinityStoneCell
-                .add(ItemInfinityCell.SubItem.getInstance(ModsItemlist.BotaniaDiorite.get(1)));
-            infinityStoneCell
-                .add(ItemInfinityCell.SubItem.getInstance(ModsItemlist.BotaniaGranite.get(1)));
+            infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(ModsItemlist.BotaniaAndesite.get(1)));
+            infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(ModsItemlist.BotaniaBasalt.get(1)));
+            infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(ModsItemlist.BotaniaDiorite.get(1)));
+            infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(ModsItemlist.BotaniaGranite.get(1)));
         }
 
         ItemLoader.infinityStoneCell = ItemInfinityCell.getSubItem(

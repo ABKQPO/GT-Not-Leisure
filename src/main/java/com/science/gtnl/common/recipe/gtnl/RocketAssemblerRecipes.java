@@ -35,14 +35,10 @@ public class RocketAssemblerRecipes implements IRecipePool {
     public static List<INasaWorkbenchRecipe> RECIPES_ROCKET_STEAM = new ArrayList<>();
     public RecipeMap<?> RAR = GTNLRecipeMaps.RocketAssemblerRecipes;
 
-    public ItemStack[] itemStacks = new ItemStack[] {
-        ModsItemlist.GalacticraftTier2RocketSchematic.get(1),
-        ModsItemlist.GalacticraftMarsItemSchematic.get(1),
-        ModsItemlist.GalaxySpaceTier4RocketSchematic.get(1),
-        ModsItemlist.GalaxySpaceTier5RocketSchematic.get(1),
-        ModsItemlist.GalaxySpaceTier6RocketSchematic.get(1),
-        ModsItemlist.GalaxySpaceTier7RocketSchematic.get(1),
-        ModsItemlist.GalaxySpaceTier8RocketSchematic.get(1) };
+    public ItemStack[] itemStacks = new ItemStack[] { ModsItemlist.GalacticraftTier2RocketSchematic.get(1),
+        ModsItemlist.GalacticraftMarsItemSchematic.get(1), ModsItemlist.GalaxySpaceTier4RocketSchematic.get(1),
+        ModsItemlist.GalaxySpaceTier5RocketSchematic.get(1), ModsItemlist.GalaxySpaceTier6RocketSchematic.get(1),
+        ModsItemlist.GalaxySpaceTier7RocketSchematic.get(1), ModsItemlist.GalaxySpaceTier8RocketSchematic.get(1) };
 
     public static void loadSteamRocketRecipe() {
         HashMap<Integer, ItemStack> input = new HashMap<>();
