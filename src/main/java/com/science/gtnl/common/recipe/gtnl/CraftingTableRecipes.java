@@ -6,9 +6,11 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
 import com.dreammaster.item.NHItemList;
+import com.google.common.collect.ImmutableList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
@@ -30,6 +32,7 @@ import gregtech.api.metatileentity.implementations.MTEBasicMachineWithRecipe;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
+import gregtech.common.items.ItemGTToolbox;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.xmod.bop.blocks.BOPBlockRegistrator;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
@@ -356,16 +359,6 @@ public class CraftingTableRecipes implements IRecipePool {
                 ItemList.Hull_Bronze.get(1), 'E', GTNLItemList.PrecisionSteamMechanism.get(1) });
 
         GTModHandler.addCraftingRecipe(
-            GregtechItemList.Hatch_Input_Bus_Steam.get(1),
-            new Object[] { " A ", " B ", "   ", 'A', ToolDictNames.craftingToolScrewdriver, 'B',
-                GregtechItemList.Hatch_Output_Bus_Steam.get(1) });
-
-        GTModHandler.addCraftingRecipe(
-            GregtechItemList.Hatch_Output_Bus_Steam.get(1),
-            new Object[] { " A ", " B ", "   ", 'A', ToolDictNames.craftingToolScrewdriver, 'B',
-                GregtechItemList.Hatch_Input_Bus_Steam.get(1) });
-
-        GTModHandler.addCraftingRecipe(
             GTNLItemList.BreelReinforcedSteamInputBus.get(1),
             new Object[] { "ABA", "CDC", "ABA", 'A', GTNLMaterials.Breel.get(OrePrefixes.plate, 1), 'B',
                 GTNLMaterials.Stronze.get(OrePrefixes.plate, 1), 'C', GTNLMaterials.Breel.get(OrePrefixes.pipeLarge, 1),
@@ -382,6 +375,35 @@ public class CraftingTableRecipes implements IRecipePool {
             new Object[] { "ABA", "CDC", "ABA", 'A', GTNLMaterials.Breel.get(OrePrefixes.plate, 1), 'B',
                 GTNLMaterials.Stronze.get(OrePrefixes.plate, 1), 'C',
                 GTNLMaterials.Stronze.get(OrePrefixes.pipeLarge, 1), 'D', GTNLItemList.OriginalInputHatch.get(1) });
+
+        // Bus and hatch conversion, copied from NewHorizonsCoreMod GT_CraftingRecipeLoader.java bus and hatch
+        // conversion recipes.
+        final ItemStack toolbox = ItemList.ToolBox.get(1);
+        final NBTTagCompound toolboxTag = new NBTTagCompound();
+        toolboxTag.setBoolean(ItemGTToolbox.DISPLAY_CRAFTING_MESSAGE_KEY, true);
+        toolbox.setTagCompound(toolboxTag);
+        for (Object tool : ImmutableList.of(ToolDictNames.craftingToolScrewdriver, toolbox)) {
+
+            GTModHandler.addShapelessCraftingRecipe(
+                GTNLItemList.BreelReinforcedSteamOutputBus.get(1),
+                GTModHandler.RecipeBits.BITS | GTModHandler.RecipeBits.DO_NOT_CHECK_FOR_COLLISIONS,
+                new Object[] { GTNLItemList.BreelReinforcedSteamInputBus.get(1), tool, });
+
+            GTModHandler.addShapelessCraftingRecipe(
+                GTNLItemList.BreelReinforcedSteamInputBus.get(1),
+                GTModHandler.RecipeBits.BITS | GTModHandler.RecipeBits.DO_NOT_CHECK_FOR_COLLISIONS,
+                new Object[] { GTNLItemList.BreelReinforcedSteamOutputBus.get(1), tool, });
+
+            GTModHandler.addShapelessCraftingRecipe(
+                GTNLItemList.OriginalOutputHatch.get(1),
+                GTModHandler.RecipeBits.BITS | GTModHandler.RecipeBits.DO_NOT_CHECK_FOR_COLLISIONS,
+                new Object[] { GTNLItemList.OriginalInputHatch.get(1), tool, });
+
+            GTModHandler.addShapelessCraftingRecipe(
+                GTNLItemList.OriginalInputHatch.get(1),
+                GTModHandler.RecipeBits.BITS | GTModHandler.RecipeBits.DO_NOT_CHECK_FOR_COLLISIONS,
+                new Object[] { GTNLItemList.OriginalOutputHatch.get(1), tool, });
+        }
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.LargeBoilerBronze.get(1),

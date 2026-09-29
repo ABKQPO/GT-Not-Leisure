@@ -11,16 +11,12 @@ import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.item.BaubleItem;
 import com.science.gtnl.common.packet.DraconicArmorProjectionSyncPacket;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.item.ItemUtils;
 
 import baubles.api.BaubleType;
-import baubles.api.expanded.BaubleExpandedSlots;
 import baubles.api.expanded.IBaubleExpanded;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class DraconicArmorProjectionBauble extends BaubleItem implements IBaubleExpanded {
-
-    public static final String[] UNIVERSAL_BAUBLE_TYPE = { BaubleExpandedSlots.universalType };
 
     private final String displayNameKey;
     private final DraconicArmorProjectionType projectionType;
@@ -44,7 +40,7 @@ public class DraconicArmorProjectionBauble extends BaubleItem implements IBauble
 
     @Override
     public BaubleType getBaubleType(ItemStack itemStack) {
-        return ItemUtils.UNIVERSAL_TYPE;
+        return UNIVERSAL_TYPE;
     }
 
     @Override
