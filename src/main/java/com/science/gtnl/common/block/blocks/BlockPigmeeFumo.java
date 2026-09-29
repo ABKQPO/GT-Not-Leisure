@@ -29,29 +29,25 @@ import com.gtnewhorizon.gtnhlib.geometry.Orientation;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.blocks.item.ItemBlockPigmeeFumo;
 import com.science.gtnl.common.block.blocks.tile.TileEntityPigmeeFumo;
-import com.science.gtnl.common.render.model.PigmeeFumoModel;
+import com.science.gtnl.common.render.model.pigmeeModel.PigmeeFumoModel;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-// Decorative rotating pig doll; the bound TileEntitySpecialRenderer owns world geometry and the per-frame spin.
 public class BlockPigmeeFumo extends BlockContainer implements IBlockModelProvider {
 
-    // Local 1/16-unit boxes from the model's own 8 x 10 x 14 extents; upstream's VoxelShape swaps depth and height.
-    private static final double[][] BOUNDS = {
+    public static final double[][] BOUNDS = {
         // metadata 2 and 3, snout along Z
         { 4.0, 0, 1.0, 12.0, 10.0, 15.0 }, { 4.0, 0, 1.0, 12.0, 10.0, 15.0 },
         // metadata 4 and 5, snout along X
         { 1.0, 0, 4.0, 15.0, 10.0, 12.0 }, { 1.0, 0, 4.0, 15.0, 10.0, 12.0 } };
 
-    // Particle sprite, null until registerBlockIcons runs.
     @SideOnly(Side.CLIENT)
-    private IIcon particleIcon;
+    public IIcon particleIcon;
 
-    // Mirrors persisted metadata facing into GTNHLib's block state, replacing a blockstate JSON file.
-    private static final OrientationBlockProperty FACING_PROPERTY = new OrientationBlockProperty() {
+    public static final OrientationBlockProperty FACING_PROPERTY = new OrientationBlockProperty() {
 
         @Override
         public boolean hasTrait(BlockPropertyTrait trait) {
@@ -73,7 +69,6 @@ public class BlockPigmeeFumo extends BlockContainer implements IBlockModelProvid
         super(Material.cloth);
         setHardness(0.5F);
         setStepSound(Block.soundTypeCloth);
-        // Zero keeps dolls out of the chunk height map; non-zero opacity dims a stack by max(1, opacity) per layer.
         setLightOpacity(0);
         setBlockName("gtnl.pigmee_fumo");
         setBlockTextureName(RESOURCE_ROOT_ID + ":blocks/pigmee_fumo");
@@ -84,13 +79,11 @@ public class BlockPigmeeFumo extends BlockContainer implements IBlockModelProvid
         GTNLItemList.PigmeeFumo.set(new ItemStack(this, 1));
     }
 
-    // Language prefix gtnl.block.pigmee_fumo, with no .name suffix.
     @Override
     public String getUnlocalizedName() {
         return "gtnl.block.pigmee_fumo";
     }
 
-    // The model must not hide complete neighbour faces.
     @Override
     public boolean isOpaqueCube() {
         return false;
@@ -101,13 +94,11 @@ public class BlockPigmeeFumo extends BlockContainer implements IBlockModelProvid
         return false;
     }
 
-    // World geometry is emitted only by the bound TileEntitySpecialRenderer.
     @Override
     public int getRenderType() {
         return -1;
     }
 
-    // Break and hit particles: otherwise the engine samples the doll's mostly empty 32x32 atlas and they barely show.
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister register) {
@@ -115,7 +106,6 @@ public class BlockPigmeeFumo extends BlockContainer implements IBlockModelProvid
         particleIcon = register.registerIcon(RESOURCE_ROOT_ID + ":blocks/pigmee_fumo_particle");
     }
 
-    // Only the particle engine reads this: the block is drawn by its tile renderer and the item by a custom renderer.
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
@@ -127,7 +117,6 @@ public class BlockPigmeeFumo extends BlockContainer implements IBlockModelProvid
         return new TileEntityPigmeeFumo();
     }
 
-    // ModelRegistry.getBakedModel prefers this provider, falling back to blockstates/<name>.json when unimplemented.
     @SideOnly(Side.CLIENT)
     @Override
     public BakedModel getModel(BakedModelQuadContext context) {
@@ -136,7 +125,6 @@ public class BlockPigmeeFumo extends BlockContainer implements IBlockModelProvid
         return PigmeeFumoModel.INSTANCE.get(orientation);
     }
 
-    // Maps persisted metadata onto a GTNHLib orientation.
     public static Orientation orientationOf(int metadata) {
         return switch (metadata) {
             case 3 -> Orientation.SOUTH_UP;
@@ -146,8 +134,7 @@ public class BlockPigmeeFumo extends BlockContainer implements IBlockModelProvid
         };
     }
 
-    // Per-facing bounding box in 1/16 units; the clone means callers never share a mutable array.
-    private static double[] boundsFor(int metadata) {
+    public static double[] boundsFor(int metadata) {
         int index = switch (metadata) {
             case 3 -> 1;
             case 4 -> 2;
@@ -157,7 +144,6 @@ public class BlockPigmeeFumo extends BlockContainer implements IBlockModelProvid
         return BOUNDS[index].clone();
     }
 
-    // Faces the doll away from the placer; no item NBT is copied onto the block.
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase placer, ItemStack stack) {
         super.onBlockPlacedBy(world, x, y, z, placer, stack);
@@ -174,7 +160,6 @@ public class BlockPigmeeFumo extends BlockContainer implements IBlockModelProvid
         world.setBlockMetadataWithNotify(x, y, z, metadata, 2);
     }
 
-    // Hands the right-click to the tile's server-authoritative toggle, which flips state exactly once on the server.
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
         float hitY, float hitZ) {
@@ -188,7 +173,6 @@ public class BlockPigmeeFumo extends BlockContainer implements IBlockModelProvid
         return true;
     }
 
-    // Refreshes the queried block's bounds so successive queries cannot inherit stale singleton bounds.
     @Override
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
         double[] b = boundsFor(world.getBlockMetadata(x, y, z));
@@ -201,7 +185,6 @@ public class BlockPigmeeFumo extends BlockContainer implements IBlockModelProvid
             (float) b[5] / 16.0F);
     }
 
-    // Metadata bounding box in world space, independent of the spin angle.
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
         double[] b = boundsFor(world.getBlockMetadata(x, y, z));

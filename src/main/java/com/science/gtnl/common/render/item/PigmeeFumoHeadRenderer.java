@@ -17,27 +17,23 @@ import org.lwjgl.opengl.GL11;
 
 import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
 import com.science.gtnl.common.block.blocks.item.ItemBlockPigmeeFumo;
-import com.science.gtnl.common.block.blocks.tile.TileEntityPigmeeFumo;
-import com.science.gtnl.common.render.model.PigmeeFumoModel;
-import com.science.gtnl.common.render.model.PigmeeFumoRenderHelper;
-import com.science.gtnl.common.render.model.PigmeeFumoRenderHelper.FacedQuad;
+import com.science.gtnl.common.render.model.pigmeeModel.PigmeeFumoAnimation;
+import com.science.gtnl.common.render.model.pigmeeModel.PigmeeFumoModel;
+import com.science.gtnl.common.render.model.pigmeeModel.PigmeeFumoRenderHelper;
+import com.science.gtnl.common.render.model.pigmeeModel.PigmeeFumoRenderHelper.FacedQuad;
 
 import baubles.api.BaublesApi;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-// Head-worn dolls have no item-renderer hook in 1.7.10 (no ItemRenderType.HEAD), so they use the player render events.
 @SideOnly(Side.CLIENT)
 public class PigmeeFumoHeadRenderer {
 
-    // Head bone space offset that seats the model so its base rests on the head top. Model pixels.
-    private static final float HEAD_SEAT_OFFSET = 2.0F / 16.0F;
+    public static final float HEAD_SEAT_OFFSET = 2.0F / 16.0F;
 
-    // Reused lightmap scratch; only ever touched on the render thread.
-    private final int[] brightness = new int[7];
+    public final int[] brightness = new int[7];
 
-    // Suppresses the vanilla helmet pass for our own head item only, and never cancels the event.
     @SubscribeEvent
     public void onSpecialsPre(RenderPlayerEvent.Specials.Pre event) {
         if (!isWearingFumo(event.entityPlayer)) return;
@@ -45,7 +41,6 @@ public class PigmeeFumoHeadRenderer {
         event.renderHelmet = false;
     }
 
-    // Draws the doll in head-bone space for every visible player wearing one.
     @SubscribeEvent
     public void onSpecialsPost(RenderPlayerEvent.Specials.Post event) {
         EntityPlayer player = event.entityPlayer;
@@ -87,11 +82,7 @@ public class PigmeeFumoHeadRenderer {
             GL11.glScalef(1.0F, -1.0F, -1.0F);
             // Upstream's display.head translation of fourteen pixels, plus the centred model origin.
             GL11.glTranslatef(0.0F, 14.0F / 16.0F, 0.0F);
-            GL11.glRotatef(
-                (world.getTotalWorldTime() % 60L + partialTick) * TileEntityPigmeeFumo.SPIN_DEGREES_PER_TICK,
-                0.0F,
-                1.0F,
-                0.0F);
+            GL11.glRotatef(PigmeeFumoAnimation.currentDegrees(), 0.0F, 1.0F, 0.0F);
             GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
             List<FacedQuad> quads = PigmeeFumoRenderHelper.getAllQuads(model);
             PigmeeFumoRenderHelper.drawWorld(quads, brightness);
@@ -100,8 +91,7 @@ public class PigmeeFumoHeadRenderer {
         }
     }
 
-    // Returns true when the doll is worn, either in the helmet slot or in any Baubles slot.
-    private static boolean isWearingFumo(EntityPlayer player) {
+    public static boolean isWearingFumo(EntityPlayer player) {
         if (player == null) return false;
         if (isFumo(player.inventory.armorItemInSlot(3))) return true;
         IInventory baubles = BaublesApi.getBaubles(player);
@@ -112,7 +102,7 @@ public class PigmeeFumoHeadRenderer {
         return false;
     }
 
-    private static boolean isFumo(ItemStack stack) {
+    public static boolean isFumo(ItemStack stack) {
         return stack != null && stack.getItem() instanceof ItemBlockPigmeeFumo;
     }
 }

@@ -82,7 +82,7 @@ import com.science.gtnl.common.render.item.ItemTwilightSwordRender;
 import com.science.gtnl.common.render.item.PigmeeFumoHeadRenderer;
 import com.science.gtnl.common.render.item.PigmeeFumoItemRenderer;
 import com.science.gtnl.common.render.model.MEChiselModel;
-import com.science.gtnl.common.render.model.PigmeeFumoModel;
+import com.science.gtnl.common.render.model.pigmeeModel.PigmeeFumoModel;
 import com.science.gtnl.common.render.tile.EnderElevatorRenderer;
 import com.science.gtnl.common.render.tile.EternalGregTechWorkshopRenderer;
 import com.science.gtnl.common.render.tile.LaserBeconRenderer;

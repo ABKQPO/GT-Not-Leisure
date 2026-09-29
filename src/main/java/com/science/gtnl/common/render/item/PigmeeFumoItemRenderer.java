@@ -17,18 +17,18 @@ import com.gtnewhorizon.gtnhlib.client.model.ModelISBRH;
 import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
 import com.gtnewhorizon.gtnhlib.client.renderer.TessellatorManager;
 import com.gtnewhorizon.gtnhlib.client.renderer.cel.model.quad.ModelQuadView;
-import com.science.gtnl.common.render.model.PigmeeFumoModel;
-import com.science.gtnl.common.render.model.PigmeeFumoRenderHelper;
-import com.science.gtnl.common.render.model.PigmeeFumoRenderHelper.FacedQuad;
+import com.science.gtnl.common.render.model.pigmeeModel.PigmeeFumoAnimation;
+import com.science.gtnl.common.render.model.pigmeeModel.PigmeeFumoModel;
+import com.science.gtnl.common.render.model.pigmeeModel.PigmeeFumoRenderHelper;
+import com.science.gtnl.common.render.model.pigmeeModel.PigmeeFumoRenderHelper.FacedQuad;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-// Inventory, hand, dropped and item-frame rendering; the worn doll is drawn by PigmeeFumoHeadRenderer, not here.
 @SideOnly(Side.CLIENT)
 public class PigmeeFumoItemRenderer implements IItemRenderer {
 
-    private final ModelISBRH isbrh = ModelISBRH.INSTANCE.get();
+    public final ModelISBRH isbrh = ModelISBRH.INSTANCE.get();
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
@@ -71,6 +71,11 @@ public class PigmeeFumoItemRenderer implements IItemRenderer {
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glColor4f(1, 1, 1, 1);
             applyFrame(type);
+            if (type == ItemRenderType.INVENTORY) {
+                GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+                GL11.glRotatef(PigmeeFumoAnimation.currentDegrees(), 0.0F, 1.0F, 0.0F);
+                GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+            }
             Tessellator tessellator = TessellatorManager.get();
             tessellator.startDrawingQuads();
             for (FacedQuad entry : quads) {
@@ -86,7 +91,7 @@ public class PigmeeFumoItemRenderer implements IItemRenderer {
         }
     }
 
-    private static void applyFrame(ItemRenderType type) {
+    public static void applyFrame(ItemRenderType type) {
         switch (type) {
             case INVENTORY -> {
                 GL11.glTranslatef(8, 8, 0);

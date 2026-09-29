@@ -1,9 +1,10 @@
 // Pigmee Fumo port from AE2 Lightning Tech Reborn
 // (https://github.com/AE2-Lightning-Tech-Reborn/AE2-Lightning-Tech-Reborn).
 // LGPL-3.0, model by TedXenon. Adapted for GT-Not-Leisure, Forge 1.7.10.
-package com.science.gtnl.common.render.model;
+package com.science.gtnl.common.render.model.pigmeeModel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
@@ -29,14 +30,10 @@ import com.gtnewhorizon.gtnhlib.client.renderer.cel.model.quad.properties.ModelQ
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-// Draws a baked model into the caller's matrix and restores every GL setting it changes; not for item rendering.
 @SideOnly(Side.CLIENT)
 public final class PigmeeFumoRenderHelper {
 
-    private PigmeeFumoRenderHelper() {}
-
-    // The block state stays null because a head-worn doll has no world block, and only getQuadFacing is ever read.
-    private record PlainQuadContext(ModelQuadFacing facing) implements BakedModelQuadContext {
+    public record PlainQuadContext(ModelQuadFacing facing) implements BakedModelQuadContext {
 
         @Override
         public BlockState getBlockState() {
@@ -59,10 +56,8 @@ public final class PigmeeFumoRenderHelper {
         }
     }
 
-    // The authoritative face is the quad's own getLightFace(), not the cull-face bucket GTNHLib filed it under.
     public record FacedQuad(ModelQuadFacing lightFace, ModelQuadView quad) {}
 
-    // Returns every quad of the model in the per-facing order ModelISBRH uses.
     public static List<FacedQuad> getAllQuads(BakedModel model) {
         List<FacedQuad> quads = new ArrayList<>();
         for (ModelQuadFacing bucket : ModelQuadFacing.VALUES) {
@@ -75,14 +70,12 @@ public final class PigmeeFumoRenderHelper {
         return quads;
     }
 
-    // Returns the directional shade for that face, or 1 when the face is not a real direction.
     public static float shadeOf(ModelQuadFacing facing) {
         ForgeDirection direction = facing == null ? ForgeDirection.UNKNOWN : facing.toForgeDir();
         if (direction == ForgeDirection.UNKNOWN) return 1.0F;
         return ModelISBRH.diffuseLight(NormI8.pack(direction.offsetX, direction.offsetY, direction.offsetZ));
     }
 
-    // Use getLightBrightnessForSkyBlocks; getMixedBrightnessForBlock can return a stale zero and paint a face black.
     public static void fillBrightness(IBlockAccess world, int x, int y, int z, int[] out) {
         int light = world.getLightBrightnessForSkyBlocks(x, y, z, 0);
         for (ForgeDirection face : ForgeDirection.VALID_DIRECTIONS) {
@@ -92,12 +85,9 @@ public final class PigmeeFumoRenderHelper {
                 light = neighbour;
             }
         }
-        for (int i = 0; i < out.length; i++) {
-            out[i] = light;
-        }
+        Arrays.fill(out, light);
     }
 
-    // The brightness argument is the seven element array filled by fillBrightness(IBlockAccess, int, int, int, int[]).
     public static void drawWorld(List<FacedQuad> quads, int[] brightness) {
         GL11.glPushAttrib(
             GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT

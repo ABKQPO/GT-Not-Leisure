@@ -9,41 +9,32 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-import com.science.gtnl.utils.item.ItemUtils;
+import com.science.gtnl.common.item.BaubleItem;
 
 import baubles.api.BaubleType;
-import baubles.api.expanded.BaubleExpandedSlots;
 import baubles.api.expanded.IBaubleExpanded;
 
-// Placeable BlockPigmeeFumo, wearable in the helmet slot and any Baubles slot; deliberately not an ItemArmor.
 public class ItemBlockPigmeeFumo extends ItemBlock implements IBaubleExpanded {
-
-    // Baubles-Expanded's "universal" type is admitted by every slot, including ones other mods register.
-    private static final String[] BAUBLE_TYPES = { BaubleExpandedSlots.universalType };
 
     public ItemBlockPigmeeFumo(Block block) {
         super(block);
     }
 
-    // Provides no armour protection.
     @Override
     public boolean isValidArmor(ItemStack stack, int armorType, Entity entity) {
         return armorType == 0;
     }
 
-    // Legacy accessor: ItemUtils resolves UNIVERSAL reflectively, falling back to RING when that constant is missing.
     @Override
     public BaubleType getBaubleType(ItemStack stack) {
-        return ItemUtils.UNIVERSAL_TYPE;
+        return BaubleItem.UNIVERSAL_TYPE;
     }
 
-    // The expanded accessor, which is what a Baubles-Expanded slot actually consults.
     @Override
     public String[] getBaubleTypes(ItemStack stack) {
-        return BAUBLE_TYPES;
+        return BaubleItem.UNIVERSAL_BAUBLE_TYPE;
     }
 
-    // The doll has no per-tick behaviour; Baubles requires the method but there is nothing to do.
     @Override
     public void onWornTick(ItemStack stack, EntityLivingBase player) {}
 

@@ -1,7 +1,7 @@
 // Pigmee Fumo port from AE2 Lightning Tech Reborn
 // (https://github.com/AE2-Lightning-Tech-Reborn/AE2-Lightning-Tech-Reborn).
 // LGPL-3.0, model by TedXenon. Adapted for GT-Not-Leisure, Forge 1.7.10.
-package com.science.gtnl.common.render.model;
+package com.science.gtnl.common.render.model.pigmeeModel;
 
 import net.minecraftforge.client.event.TextureStitchEvent;
 
@@ -19,22 +19,17 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-// One baked model per Orientation, published whole; GTNHLib's ModelRegistry injects their textures into the atlas.
 @SideOnly(Side.CLIENT)
 public class PigmeeFumoModel {
 
     public static final PigmeeFumoModel INSTANCE = new PigmeeFumoModel();
 
-    private static final ModelLoc MODEL = ModelLoc.fromStr(ScienceNotLeisure.RESOURCE_ROOT_ID + ":block/pigmee_fumo");
+    public static final ModelLoc MODEL = ModelLoc.fromStr(ScienceNotLeisure.RESOURCE_ROOT_ID + ":block/pigmee_fumo");
 
-    // The orientation a freshly placed or head-worn doll uses.
     public static final Orientation DEFAULT_ORIENTATION = Orientation.NORTH_UP;
 
-    private volatile BakedModel[] orientations;
+    public volatile BakedModel[] orientations;
 
-    private PigmeeFumoModel() {}
-
-    // Returns that orientation's baked model, null while unloaded, and the default for an unknown or invalid one.
     public BakedModel get(Orientation orientation) {
         BakedModel[] models = orientations;
         if (models == null) return null;
@@ -47,7 +42,6 @@ public class PigmeeFumoModel {
         return model == null ? models[DEFAULT_ORIENTATION.ordinal()] : model;
     }
 
-    // Inventory icon pose; the model's gui display entry is ignored because Forge hands us a positioned frame.
     public static void applyIconDisplay() {
         GL11.glScalef(0.85F, 0.85F, 0.85F);
         GL11.glRotatef(45.0F, 1.0F, 0.0F, 0.0F);
@@ -55,7 +49,6 @@ public class PigmeeFumoModel {
         GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
     }
 
-    // Held pose, snout toward the holder; the +0.5/-0.5 bracket acts about the model's centre, not the cell corner.
     public static void applyHandDisplay() {
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
         GL11.glScalef(1.2F, 1.2F, 1.2F);

@@ -14,19 +14,17 @@ import org.lwjgl.opengl.GL11;
 import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
 import com.science.gtnl.common.block.blocks.BlockPigmeeFumo;
 import com.science.gtnl.common.block.blocks.tile.TileEntityPigmeeFumo;
-import com.science.gtnl.common.render.model.PigmeeFumoModel;
-import com.science.gtnl.common.render.model.PigmeeFumoRenderHelper;
-import com.science.gtnl.common.render.model.PigmeeFumoRenderHelper.FacedQuad;
+import com.science.gtnl.common.render.model.pigmeeModel.PigmeeFumoModel;
+import com.science.gtnl.common.render.model.pigmeeModel.PigmeeFumoRenderHelper;
+import com.science.gtnl.common.render.model.pigmeeModel.PigmeeFumoRenderHelper.FacedQuad;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-// The placed doll's only world-geometry entry point; it spins about the block centre from its placed orientation.
 @SideOnly(Side.CLIENT)
 public class PigmeeFumoRenderer extends TileEntitySpecialRenderer {
 
-    // Reused lightmap scratch; only ever touched on the render thread.
-    private final int[] brightness = new int[7];
+    public final int[] brightness = new int[7];
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTick) {
@@ -45,7 +43,7 @@ public class PigmeeFumoRenderer extends TileEntitySpecialRenderer {
             GL11.glTranslated(x, y, z);
             if (spinning) {
                 GL11.glTranslatef(0.5F, 0.0F, 0.5F);
-                GL11.glRotatef(fumo.getRenderYRot(partialTick), 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(fumo.getRenderYRot(), 0.0F, 1.0F, 0.0F);
                 GL11.glTranslatef(-0.5F, 0.0F, -0.5F);
             }
             List<FacedQuad> quads = PigmeeFumoRenderHelper.getAllQuads(model);
