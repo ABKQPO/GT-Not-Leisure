@@ -382,15 +382,6 @@ public class CraftingTableRecipes implements IRecipePool {
         toolboxTag.setBoolean(ItemGTToolbox.DISPLAY_CRAFTING_MESSAGE_KEY, true);
         toolbox.setTagCompound(toolboxTag);
         for (Object tool : ImmutableList.of(ToolDictNames.craftingToolScrewdriver, toolbox)) {
-            GTModHandler.addShapelessCraftingRecipe(
-                GregtechItemList.Hatch_Output_Bus_Steam.get(1),
-                GTModHandler.RecipeBits.BITS | GTModHandler.RecipeBits.DO_NOT_CHECK_FOR_COLLISIONS,
-                new Object[] { GregtechItemList.Hatch_Input_Bus_Steam.get(1), tool, });
-
-            GTModHandler.addShapelessCraftingRecipe(
-                GregtechItemList.Hatch_Input_Bus_Steam.get(1),
-                GTModHandler.RecipeBits.BITS | GTModHandler.RecipeBits.DO_NOT_CHECK_FOR_COLLISIONS,
-                new Object[] { GregtechItemList.Hatch_Output_Bus_Steam.get(1), tool, });
 
             GTModHandler.addShapelessCraftingRecipe(
                 GTNLItemList.BreelReinforcedSteamOutputBus.get(1),
@@ -464,6 +455,10 @@ public class CraftingTableRecipes implements IRecipePool {
                 new ItemStack(Blocks.wool, 1, 0), 'E', new ItemStack(Blocks.iron_block, 1), 'F',
                 new ItemStack(Blocks.wool, 1, 5), 'G', new ItemStack(Blocks.wool, 1, 10), 'H',
                 new ItemStack(Blocks.wool, 1, 9), 'I', new ItemStack(Blocks.wool, 1, 11) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.PigmeeFumo.get(1),
+            new Object[] { "AAA", "A A", "AAA", 'A', new ItemStack(Blocks.wool, 1, 6) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.SteamAssemblerBronze.get(1),

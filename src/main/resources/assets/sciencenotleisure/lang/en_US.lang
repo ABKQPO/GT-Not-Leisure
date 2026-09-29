@@ -70,6 +70,9 @@ gtnl.gui.config.general.item.player_doll.enablecustomskin.tooltip=Enable custom 
 gtnl.gui.config.general.item.player_doll.enableregistermaxtierglass=Register Player Doll Glass
 gtnl.gui.config.general.item.player_doll.enableregistermaxtierglass.tooltip=Make the Player Doll usable as MAX Tier Glass.
 
+# Pigmee Fumo (ported from AE2 Lightning Tech Reborn; model by TedXenon)
+gtnl.block.pigmee_fumo.name=Pigmee Fumo
+
 gtnl.gui.config.general.item.vein_miner_pickaxe=Vein Mining Pickaxe
 gtnl.gui.config.general.item.vein_miner_pickaxe.maxamount=Max Amount
 gtnl.gui.config.general.item.vein_miner_pickaxe.maxamount.tooltip=Set the maximum number of chained blocks for the Vein Mining Pickaxe.
@@ -1585,7 +1588,7 @@ gtnl.machine.steam_infernal_coke_oven.name=Infernal Coke Oven
 gtnl.recipe.infernal_coke_oven=High-Efficiency Coke Oven
 gtnl.machine.steam_infernal_coke_oven.recipe_type=Coke Oven
 gtnl.machine.steam_infernal_coke_oven.tooltip.0=Works more efficiently than a clay oven
-gtnl.machine.steam_infernal_coke_oven.tooltip.1=Every 5 seconds of continuous working it gets 1% faster, up to 600%
+gtnl.machine.steam_infernal_coke_oven.tooltip.1=Every 5 seconds of continuous working it gets 5% faster, up to 1000%
 gtnl.machine.steam_infernal_coke_oven.tooltip.2=§b§oPoggers
 
 gtnl.machine.integrated_assembly_facility.name=Integrated Assembly Facility
@@ -2323,7 +2326,7 @@ gtnl.machine.furnace_array.coal_count=Current coal count: %s
 
 gtnl.machine.fog_solar_muon_catalyst_module.name=Solar Muon Catalyst
 gtnl.recipe.solar_muon_catalyst=Solar Muon Catalyst
-gtnl.recipe.metadata.solar_muon_catalyst.0=Requires three Godforge Rings and all upgrade
+gtnl.recipe.metadata.solar_muon_catalyst.0=Requires 3 rings and all upgrade
 GT5U.gui.text.not_enough_upgrade=Insufficient requirements
 gtnl.machine.fog_solar_muon_catalyst_module.recipe_type=Matter Catalyst
 gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.0=This is a module of the Godforge

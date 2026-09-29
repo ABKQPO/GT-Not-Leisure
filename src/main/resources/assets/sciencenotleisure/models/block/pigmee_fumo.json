@@ -1,0 +1,99 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made with Blockbench, made by TedXenon. Ported from AE2 Lightning Tech Reborn (LGPL-3.0).",
+	"render_type": "cutout",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "sciencenotleisure:blocks/pigmee_fumo",
+		"particle": "sciencenotleisure:blocks/pigmee_fumo_particle"
+	},
+	"elements": [
+		{
+			"name": "leg",
+			"from": [4.5, 0, 4],
+			"to": [6.5, 2, 6],
+			"faces": {
+				"north": {"uv": [10.5, 4, 11.5, 5], "texture": "#0"},
+				"east": {"uv": [12.5, 4, 11.5, 5], "texture": "#0"},
+				"south": {"uv": [10.5, 4, 11.5, 5], "texture": "#0"},
+				"west": {"uv": [11.5, 4, 12.5, 5], "texture": "#0"},
+				"down": {"uv": [12.5, 4, 13.5, 5], "texture": "#0"}
+			}
+		},
+		{
+			"name": "leg",
+			"from": [9.5, 0, 4],
+			"to": [11.5, 2, 6],
+			"faces": {
+				"north": {"uv": [11.5, 4, 10.5, 5], "texture": "#0"},
+				"east": {"uv": [12.5, 4, 11.5, 5], "texture": "#0"},
+				"south": {"uv": [11.5, 4, 10.5, 5], "texture": "#0"},
+				"west": {"uv": [11.5, 4, 12.5, 5], "texture": "#0"},
+				"down": {"uv": [13.5, 4, 12.5, 5], "texture": "#0"}
+			}
+		},
+		{
+			"name": "leg",
+			"from": [4.5, 0, 11],
+			"to": [6.5, 2, 13],
+			"faces": {
+				"north": {"uv": [11.5, 4, 10.5, 5], "texture": "#0"},
+				"east": {"uv": [11.5, 4, 12.5, 5], "texture": "#0"},
+				"south": {"uv": [11.5, 4, 10.5, 5], "texture": "#0"},
+				"west": {"uv": [12.5, 4, 11.5, 5], "texture": "#0"},
+				"down": {"uv": [12.5, 5, 13.5, 4], "texture": "#0"}
+			}
+		},
+		{
+			"name": "leg",
+			"from": [9.5, 0, 11],
+			"to": [11.5, 2, 13],
+			"faces": {
+				"north": {"uv": [10.5, 4, 11.5, 5], "texture": "#0"},
+				"east": {"uv": [11.5, 4, 12.5, 5], "texture": "#0"},
+				"south": {"uv": [10.5, 4, 11.5, 5], "texture": "#0"},
+				"west": {"uv": [12.5, 4, 11.5, 5], "texture": "#0"},
+				"down": {"uv": [13.5, 5, 12.5, 4], "texture": "#0"}
+			}
+		},
+		{
+			"name": "body",
+			"from": [4, 2, 2],
+			"to": [12, 10, 15],
+			"faces": {
+				"north": {"uv": [0, 6.5, 4, 10.5], "texture": "#0"},
+				"east": {"uv": [8, 0, 14.5, 4], "texture": "#0"},
+				"south": {"uv": [4, 6.5, 8, 10.5], "texture": "#0"},
+				"west": {"uv": [14.5, 0, 8, 4], "texture": "#0"},
+				"up": {"uv": [0, 0, 4, 6.5], "texture": "#0"},
+				"down": {"uv": [4, 0, 8, 6.5], "texture": "#0"}
+			}
+		},
+		{
+			"name": "nose",
+			"from": [6, 3, 1],
+			"to": [10, 6, 2],
+			"faces": {
+				"north": {"uv": [8, 4, 10, 5.5], "texture": "#0"},
+				"east": {"uv": [10, 4, 10.5, 5.5], "texture": "#0"},
+				"west": {"uv": [10, 4, 10.5, 5.5], "texture": "#0"},
+				"up": {"uv": [8, 5.5, 10, 6], "texture": "#0"},
+				"down": {"uv": [8, 6, 10, 6.5], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"ground": {
+			"translation": [0, 2, 0],
+			"scale": [0.6, 0.6, 0.6]
+		},
+		"gui": {
+			"rotation": [30, -135, 0],
+			"translation": [0, 2, 0]
+		},
+		"fixed": {
+			"rotation": [-90, 0, 0],
+			"translation": [0, 0, -7]
+		}
+	}
+}

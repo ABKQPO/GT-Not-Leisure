@@ -70,6 +70,9 @@ gtnl.gui.config.general.item.player_doll.enablecustomskin.tooltip=启用玩偶�
 gtnl.gui.config.general.item.player_doll.enableregistermaxtierglass=注册玩偶为MAX玻璃
 gtnl.gui.config.general.item.player_doll.enableregistermaxtierglass.tooltip=使玩偶可作为MAX等级玻璃使用
 
+# Pigmee Fumo（移植自 AE2 Lightning Tech Reborn；模型作者 TedXenon）
+gtnl.block.pigmee_fumo.name=猪咪
+
 gtnl.gui.config.general.item.vein_miner_pickaxe=矿脉挖掘镐
 gtnl.gui.config.general.item.vein_miner_pickaxe.maxamount=最大数量
 gtnl.gui.config.general.item.vein_miner_pickaxe.maxamount.tooltip=设置矿脉挖掘镐的最大连锁方块数量
@@ -1585,7 +1588,7 @@ gtnl.machine.steam_infernal_coke_oven.name=炼狱焦炉
 gtnl.recipe.infernal_coke_oven=焦炉但是超模
 gtnl.machine.steam_infernal_coke_oven.recipe_type=焦炉
 gtnl.machine.steam_infernal_coke_oven.tooltip.0=比粘土高炉更高效运作
-gtnl.machine.steam_infernal_coke_oven.tooltip.1=每连续工作5秒，速度提升1%，最高可达600%
+gtnl.machine.steam_infernal_coke_oven.tooltip.1=每连续工作5秒，速度提升5%，最高可达1000%
 gtnl.machine.steam_infernal_coke_oven.tooltip.2=§b§o太棒了！
 
 gtnl.machine.integrated_assembly_facility.name=综合组装车间
@@ -4306,3 +4309,4 @@ gtnl.text_effect.title=动态文字效果
 gtnl.text_effect.palette=切换配色
 gtnl.text_effect.bold=切换粗体
 gtnl.text_effect.italic=切换斜体
+
