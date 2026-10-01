@@ -21,7 +21,6 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.enums.GTNLStructureChannels;
 
 import goodgenerator.api.recipe.GoodGeneratorRecipeMaps;
 import goodgenerator.loader.Loaders;
@@ -40,6 +39,7 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.structure.error.StructureErrorRegistry;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.material.MaterialsAlloy;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -121,7 +121,7 @@ public class NanoAssemblerMarkL extends WirelessEnergyMultiMachineBase<NanoAssem
             .addElement('B', Casings.RadiantNaquadahAlloyCasing.asElement())
             .addElement(
                 'C',
-                GTNLStructureChannels.COMPONENT_ASSEMBLY_LINE_CASING.use(
+                GTStructureChannels.COMPONENT_ASSEMBLYLINE_CASING.use(
                     StructureUtility.ofBlocksTiered(
                         (block, meta) -> block == Loaders.componentAssemblylineCasing ? meta : -1,
                         COMPONENT_CASING_VARIANTS,
@@ -216,7 +216,7 @@ public class NanoAssemblerMarkL extends WirelessEnergyMultiMachineBase<NanoAssem
             .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.nano_assembler_mark_l.casing"), 1)
             .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.nano_assembler_mark_l.casing"), 1)
             .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.nano_assembler_mark_l.casing"), 1)
-            .addSubChannelUsage(GTNLStructureChannels.COMPONENT_ASSEMBLY_LINE_CASING)
+            .addSubChannelUsage(GTStructureChannels.COMPONENT_ASSEMBLYLINE_CASING)
             .toolTipFinisher();
         return tt;
     }

@@ -241,6 +241,8 @@ gtnl.gui.super_interface.tooltip.previous_page=上一页
 gtnl.gui.super_interface.tooltip.next_page=下一页
 gtnl.gui.super_dual_interface.tooltip.switch=切换到超级ME接口GUI
 
+channels.gtnl.subchannel.structure_render=结构渲染
+
 channels.sciencenotleisure.structure_render=决定是否应该渲染并放置该结构，防止结构过大引起的卡顿。
 channels.sciencenotleisure.component_casing=决定部件装配线外壳等级。最低为§6部件装配线外壳(LV)§r等级1，最高为§6部件装配线外壳(MAX)§r等级14。
 channels.sciencenotleisure.nuclear_tier=核反应堆等级：1 = 3x3 核芯，2 = 5x5 核芯，3 = 7x7 核芯。

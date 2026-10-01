@@ -31,7 +31,6 @@ import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseBucket;
 import bartworks.API.WerkstoffAdderRegistry;
 import bartworks.common.loaders.ItemRegistry;
 import cpw.mods.fml.common.Optional;
-import goodgenerator.loader.Loaders;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
@@ -64,11 +63,6 @@ public class MaterialLoader {
         TickrateAPI.changeTickrate(MainConfig.tickrate.defaultTickrate);
 
         GTNLStructureChannels.register();
-
-        for (int i = 0; i < 14; i++) {
-            GTNLStructureChannels.COMPONENT_ASSEMBLY_LINE_CASING
-                .registerAsIndicator(new ItemStack(Loaders.componentAssemblylineCasing, 1, i), i + 1);
-        }
 
         registryOreDictionary();
 

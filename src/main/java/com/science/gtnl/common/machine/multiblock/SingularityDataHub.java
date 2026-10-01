@@ -440,6 +440,11 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
                 TextureFactory.builder()
                     .addIcon(BlockIcons.OVERLAY_FRONT_SINGULARITY_DATA_HUB)
                     .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_SINGULARITY_DATA_HUB_GLOW)
+                    .extFacing()
+                    .glow()
                     .build() };
         }
         return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };

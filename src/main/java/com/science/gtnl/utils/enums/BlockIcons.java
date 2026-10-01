@@ -9,7 +9,7 @@ import gregtech.api.interfaces.IIconContainer;
 public class BlockIcons {
 
     private static final String BASE_REPLICATOR = "basicmachines/replicator/";
-    private static final String BASE_NINE_HATCH = "iconsets/OVERLAY_NINE_HATCH/";
+    private static final String BASE_NINE_HATCH = "iconsets/overlay_nine_hatch/";
     private static final String BASE = "iconsets/";
 
     public static IIconContainer OVERLAY_ENERGY_TRANSFER_NODE = Textures.BlockIcons
@@ -78,13 +78,13 @@ public class BlockIcons {
         OVERLAY_FRONT_NINE_HATCH_WHITE, };
 
     public static IIconContainer OVERLAY_FRONT_INDICATOR = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "Indicator/OVERLAY_FRONT");
+        .custom(RESOURCE_ROOT_ID, BASE + "indicator/OVERLAY_FRONT");
     public static IIconContainer OVERLAY_FRONT_INDICATOR_RED = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "Indicator/OVERLAY_FRONT_RED");
+        .custom(RESOURCE_ROOT_ID, BASE + "indicator/OVERLAY_FRONT_RED");
     public static IIconContainer OVERLAY_FRONT_INDICATOR_YELLOW = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "Indicator/OVERLAY_FRONT_YELLOW");
+        .custom(RESOURCE_ROOT_ID, BASE + "indicator/OVERLAY_FRONT_YELLOW");
     public static IIconContainer OVERLAY_FRONT_INDICATOR_GREEN = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "Indicator/OVERLAY_FRONT_GREEN");
+        .custom(RESOURCE_ROOT_ID, BASE + "indicator/OVERLAY_FRONT_GREEN");
 
     public static final IIconContainer OVERLAY_SIDE_REPLICATOR_ACTIVE = Textures.BlockIcons
         .customOptional(Mods.GregTech.resourceDomain, BASE_REPLICATOR + "OVERLAY_SIDE_REPLICATOR_ACTIVE");
@@ -133,82 +133,93 @@ public class BlockIcons {
         .custom(Mods.GregTech.resourceDomain, "icons/NeutronActivator_On");
 
     public static IIconContainer OVERLAY_FRONT_LARGE_GAS_COLLECTOR = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "LargeGasCollector/OVERLAY_FRONT");
+        .custom(RESOURCE_ROOT_ID, BASE + "large_gas_collector/OVERLAY_FRONT");
     public static IIconContainer OVERLAY_FRONT_LARGE_GAS_COLLECTOR_ACTIVE = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "LargeGasCollector/OVERLAY_FRONT_ACTIVE");
+        .custom(RESOURCE_ROOT_ID, BASE + "large_gas_collector/OVERLAY_FRONT_ACTIVE");
 
     public static IIconContainer OVERLAY_FRONT_CACTUS_WONDER = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "CactusWonder/OVERLAY_FRONT");
+        .custom(RESOURCE_ROOT_ID, BASE + "cactus_wonder/OVERLAY_FRONT");
     public static IIconContainer OVERLAY_FRONT_CACTUS_WONDER_ACTIVE = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "CactusWonder/OVERLAY_FRONT_ACTIVE");
+        .custom(RESOURCE_ROOT_ID, BASE + "cactus_wonder/OVERLAY_FRONT_ACTIVE");
 
     public static IIconContainer OVERLAY_FRONT_STEAM_CARPENTER = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SteamCarpenter/OVERLAY_FRONT");
+        .custom(RESOURCE_ROOT_ID, BASE + "steam_carpenter/OVERLAY_FRONT");
     public static IIconContainer OVERLAY_FRONT_STEAM_CARPENTER_ACTIVE = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SteamCarpenter/OVERLAY_FRONT_ACTIVE");
+        .custom(RESOURCE_ROOT_ID, BASE + "steam_carpenter/OVERLAY_FRONT_ACTIVE");
 
     public static IIconContainer OVERLAY_FRONT_STEAM_EXTRACTINATOR = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SteamExtractinator/OVERLAY_FRONT");
+        .custom(RESOURCE_ROOT_ID, BASE + "steam_extractinator/OVERLAY_FRONT");
     public static IIconContainer OVERLAY_FRONT_STEAM_EXTRACTINATOR_ACTIVE = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SteamExtractinator/OVERLAY_FRONT_ACTIVE");
+        .custom(RESOURCE_ROOT_ID, BASE + "steam_extractinator/OVERLAY_FRONT_ACTIVE");
 
     public static IIconContainer OVERLAY_FRONT_STEAM_GATE = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SteamGate/OVERLAY_FRONT");
+        .custom(RESOURCE_ROOT_ID, BASE + "steam_gate/OVERLAY_FRONT");
 
     public static IIconContainer OVERLAY_FRONT_STEAM_GATE_ASSEMBLER = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SteamGateAssembler/OVERLAY_FRONT");
+        .custom(RESOURCE_ROOT_ID, BASE + "steam_gate_assembler/OVERLAY_FRONT");
 
     public static IIconContainer OVERLAY_FRONT_STEAM_INFERNAL_COKE_OVEN = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SteamInfernalCokeOven/OVERLAY_FRONT");
+        .custom(RESOURCE_ROOT_ID, BASE + "steam_infernal_coke_oven/OVERLAY_FRONT");
     public static IIconContainer OVERLAY_FRONT_STEAM_INFERNAL_COKE_OVEN_ACTIVE = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SteamInfernalCokeOven/OVERLAY_FRONT_ACTIVE");
+        .custom(RESOURCE_ROOT_ID, BASE + "steam_infernal_coke_oven/OVERLAY_FRONT_ACTIVE");
     public static IIconContainer OVERLAY_FRONT_STEAM_INFERNAL_COKE_OVEN_ACTIVE_GLOW = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SteamInfernalCokeOven/OVERLAY_FRONT_ACTIVE_GLOW");
+        .custom(RESOURCE_ROOT_ID, BASE + "steam_infernal_coke_oven/OVERLAY_FRONT_ACTIVE_GLOW");
 
     public static IIconContainer OVERLAY_FRONT_STEAM_LAVA_MAKER = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SteamLavaMaker/OVERLAY_FRONT");
+        .custom(RESOURCE_ROOT_ID, BASE + "steam_lava_maker/OVERLAY_FRONT");
     public static IIconContainer OVERLAY_FRONT_STEAM_LAVA_MAKER_ACTIVE = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SteamLavaMaker/OVERLAY_FRONT_ACTIVE");
+        .custom(RESOURCE_ROOT_ID, BASE + "steam_lava_maker/OVERLAY_FRONT_ACTIVE");
 
     public static IIconContainer OVERLAY_FRONT_STEAM_MANUFACTURER = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SteamManufacturer/OVERLAY_FRONT");
+        .custom(RESOURCE_ROOT_ID, BASE + "steam_manufacturer/OVERLAY_FRONT");
     public static IIconContainer OVERLAY_FRONT_STEAM_MANUFACTURER_ACTIVE = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SteamManufacturer/OVERLAY_FRONT_ACTIVE");
+        .custom(RESOURCE_ROOT_ID, BASE + "steam_manufacturer/OVERLAY_FRONT_ACTIVE");
 
     public static IIconContainer OVERLAY_FRONT_METEOR_MINER = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "MeteorMiner/OVERLAY_FRONT");
+        .custom(RESOURCE_ROOT_ID, BASE + "meteor_miner/OVERLAY_FRONT");
     public static IIconContainer OVERLAY_FRONT_METEOR_MINER_GLOW = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "MeteorMiner/OVERLAY_FRONT_GLOW");
+        .custom(RESOURCE_ROOT_ID, BASE + "meteor_miner/OVERLAY_FRONT_GLOW");
     public static IIconContainer OVERLAY_FRONT_METEOR_MINER_ACTIVE = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "MeteorMiner/OVERLAY_FRONT_ACTIVE");
+        .custom(RESOURCE_ROOT_ID, BASE + "meteor_miner/OVERLAY_FRONT_ACTIVE");
     public static IIconContainer OVERLAY_FRONT_METEOR_MINER_ACTIVE_GLOW = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "MeteorMiner/OVERLAY_FRONT_ACTIVE_GLOW");
+        .custom(RESOURCE_ROOT_ID, BASE + "meteor_miner/OVERLAY_FRONT_ACTIVE_GLOW");
 
     public static IIconContainer OVERLAY_FRONT_MEGA_SOLAR_BOILER = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "MegaSolarBoiler/OVERLAY_FRONT");
+        .custom(RESOURCE_ROOT_ID, BASE + "mega_solar_boiler/OVERLAY_FRONT");
 
     public static IIconContainer OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "MegaSteamCompressor/OVERLAY_FRONT");
+        .custom(RESOURCE_ROOT_ID, BASE + "mega_steam_compressor/OVERLAY_FRONT");
     public static IIconContainer OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR_GLOW = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "MegaSteamCompressor/OVERLAY_FRONT_GLOW");
+        .custom(RESOURCE_ROOT_ID, BASE + "mega_steam_compressor/OVERLAY_FRONT_GLOW");
     public static IIconContainer OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR_ACTIVE = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "MegaSteamCompressor/OVERLAY_FRONT_ACTIVE");
+        .custom(RESOURCE_ROOT_ID, BASE + "mega_steam_compressor/OVERLAY_FRONT_ACTIVE");
     public static IIconContainer OVERLAY_FRONT_MEGA_STEAM_COMPRESSOR_ACTIVE_GLOW = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "MegaSteamCompressor/OVERLAY_FRONT_ACTIVE_GLOW");
+        .custom(RESOURCE_ROOT_ID, BASE + "mega_steam_compressor/OVERLAY_FRONT_ACTIVE_GLOW");
 
     public static IIconContainer OVERLAY_FRONT_STEAM_ITEM_VAULT = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SteamItemVault/OVERLAY_FRONT");
+        .custom(RESOURCE_ROOT_ID, BASE + "steam_item_vault/OVERLAY_FRONT");
     public static IIconContainer OVERLAY_FRONT_STEAM_ITEM_VAULT_ACTIVE = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SteamItemVault/OVERLAY_FRONT_ACTIVE");
+        .custom(RESOURCE_ROOT_ID, BASE + "steam_item_vault/OVERLAY_FRONT_ACTIVE");
     public static IIconContainer OVERLAY_FRONT_STEAM_ITEM_VAULT_ACTIVE_GLOW = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SteamItemVault/OVERLAY_FRONT_ACTIVE_GLOW");
+        .custom(RESOURCE_ROOT_ID, BASE + "steam_item_vault/OVERLAY_FRONT_ACTIVE_GLOW");
 
     public static IIconContainer OVERLAY_FRONT_SINGULARITY_DATA_HUB = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SingularityDataHub/OVERLAY_FRONT");
+        .custom(RESOURCE_ROOT_ID, BASE + "singularity_data_hub/OVERLAY_FRONT");
+    public static IIconContainer OVERLAY_FRONT_SINGULARITY_DATA_HUB_GLOW = Textures.BlockIcons
+        .custom(RESOURCE_ROOT_ID, BASE + "singularity_data_hub/OVERLAY_FRONT_GLOW");
     public static IIconContainer OVERLAY_FRONT_SINGULARITY_DATA_HUB_ACTIVE = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SingularityDataHub/OVERLAY_FRONT_ACTIVE");
+        .custom(RESOURCE_ROOT_ID, BASE + "singularity_data_hub/OVERLAY_FRONT_ACTIVE");
     public static IIconContainer OVERLAY_FRONT_SINGULARITY_DATA_HUB_ACTIVE_GLOW = Textures.BlockIcons
-        .custom(RESOURCE_ROOT_ID, BASE + "SingularityDataHub/OVERLAY_FRONT_ACTIVE_GLOW");
+        .custom(RESOURCE_ROOT_ID, BASE + "singularity_data_hub/OVERLAY_FRONT_ACTIVE_GLOW");
+
+    public static IIconContainer OVERLAY_FRONT_NUCLEAR_REACTOR = Textures.BlockIcons
+        .custom(RESOURCE_ROOT_ID, BASE + "nuclear_reactor/OVERLAY_FRONT");
+    public static IIconContainer OVERLAY_FRONT_NUCLEAR_REACTOR_GLOW = Textures.BlockIcons
+        .custom(RESOURCE_ROOT_ID, BASE + "nuclear_reactor/OVERLAY_FRONT_GLOW");
+    public static IIconContainer OVERLAY_FRONT_NUCLEAR_REACTOR_ACTIVE = Textures.BlockIcons
+        .custom(RESOURCE_ROOT_ID, BASE + "nuclear_reactor/OVERLAY_FRONT_ACTIVE");
+    public static IIconContainer OVERLAY_FRONT_NUCLEAR_REACTOR_ACTIVE_GLOW = Textures.BlockIcons
+        .custom(RESOURCE_ROOT_ID, BASE + "nuclear_reactor/OVERLAY_FRONT_ACTIVE_GLOW");
 
     public static IIconContainer OVERLAY_FRONT_NEUTRON_ACTIVATOR = Textures.BlockIcons
         .custom(Mods.GregTech.resourceDomain, "icons/NeutronActivator_Off");

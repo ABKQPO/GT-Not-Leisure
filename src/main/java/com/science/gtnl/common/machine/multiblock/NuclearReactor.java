@@ -29,12 +29,11 @@ import com.science.gtnl.common.gui.modularui.NuclearReactorGui;
 import com.science.gtnl.common.machine.hatch.NuclearFluidHatch;
 import com.science.gtnl.common.machine.hatch.NuclearItemBus;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
-import com.science.gtnl.utils.enums.GTNLStructureChannels;
+import com.science.gtnl.utils.enums.BlockIcons;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.INEIPreviewModifier;
 import gregtech.api.interfaces.ITexture;
@@ -43,7 +42,6 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.items.ItemRadioactiveCell;
 import gregtech.api.items.ItemRadioactiveCellIC;
 import gregtech.api.metatileentity.implementations.MTEHatch;
-import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
@@ -53,6 +51,7 @@ import gregtech.api.structure.error.StructureErrorRegistry;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
+import gregtech.common.misc.GTStructureChannels;
 import ic2.api.item.ICustomDamageItem;
 import ic2.core.init.MainConfig;
 import ic2.core.util.ConfigUtil;
@@ -74,6 +73,8 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
     public static final double DURABILITY_PER_SECOND_IDLE = 1.0;
     public static final double REFLECTOR_DURABILITY_FACTOR = 0.125;
 
+    public static float sNuclearEnergyMultiplier = -1;
+
     public static final double STARTUP_RAMP_MINUTES = 60.0;
 
     public static final double STARTUP_EFFICIENCY_START = 0.60;
@@ -82,13 +83,14 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
     public static final int STRUCTURE_HEIGHT = 5;
     public static final int MAX_CORE = 7;
     public static final int MAX_TIER = 3;
-    private static final int[] TIER_CORE = { 3, 5, 7 };
-    private static final int[] TIER_FOOTPRINT = { 5, 7, 9 };
-    private static final int[] TIER_CUT = { 0, 1, 2 };
-    private static final int[][] ORTHOGONAL_DIRECTIONS = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
-    private static final String CELL_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzDEFGHIJKLMNOPQRSTUVWYZ";
+    public static final int[] TIER_CORE = { 3, 5, 7 };
+    public static final int[] TIER_FOOTPRINT = { 5, 7, 9 };
+    public static final int[] TIER_CUT = { 0, 1, 2 };
+    public static final int[][] ORTHOGONAL_DIRECTIONS = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+    public static final int[][] PLATE_TRANSFER_DIRECTIONS = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+    public static final String CELL_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzDEFGHIJKLMNOPQRSTUVWYZ";
 
-    private static List<String> coreCellBlocks() {
+    public static List<String> coreCellBlocks() {
         return Arrays.asList(
             "gtnl.hatch.nuclear_item_bus.name",
             "gtnl.hatch.nuclear_fluid_hatch.name",
@@ -96,16 +98,16 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
                 .getUnlocalizedName() + ".name");
     }
 
-    private final IMetaTileEntity[][] mCoreCells = new IMetaTileEntity[MAX_CORE][MAX_CORE];
-    private final int[][] mCoreCellPos = new int[MAX_CORE * MAX_CORE][];
-    private int mReactorTier = 0;
-    private double[][] mHeatBuffer;
-    private double[][] mPlateHeat;
+    public final IMetaTileEntity[][] mCoreCells = new IMetaTileEntity[MAX_CORE][MAX_CORE];
+    public final int[][] mCoreCellPos = new int[MAX_CORE * MAX_CORE][];
+    public int mReactorTier = 0;
+    public double[][] mHeatBuffer;
+    public double[][] mPlateHeat;
 
-    private long mStartupTicks;
-    private double[] mDurabilityBuffer;
-    private long mSteamOutputPerSecond = 0;
-    private long mSteamAccumulator = 0;
+    public long mStartupTicks;
+    public double[] mDurabilityBuffer;
+    public long mSteamOutputPerSecond = 0;
+    public long mSteamAccumulator = 0;
 
     public NuclearReactor(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -124,7 +126,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
         return mReactorTier;
     }
 
-    private static int clampTier(int tier) {
+    public static int clampTier(int tier) {
         return Math.max(1, Math.min(MAX_TIER, tier));
     }
 
@@ -158,16 +160,12 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
         return TIER_FOOTPRINT[getEffectiveTier() - 1];
     }
 
-    public int getStructureHeight() {
-        return STRUCTURE_HEIGHT;
-    }
-
     public int getHorizontalOffset() {
         return getStructureFootprint() / 2;
     }
 
     public int getVerticalOffset() {
-        return getStructureHeight() / 2;
+        return STRUCTURE_HEIGHT / 2;
     }
 
     public int getDepthOffset() {
@@ -296,11 +294,11 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
         }
     }
 
-    private static String pieceName(int tier) {
+    public static String pieceName(int tier) {
         return tier <= 1 ? "main" : "tier" + tier;
     }
 
-    private static int footprintOf(int tier) {
+    public static int footprintOf(int tier) {
         return TIER_FOOTPRINT[Math.max(0, Math.min(MAX_TIER, tier) - 1)];
     }
 
@@ -327,11 +325,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
             coreRows[r] = sb.toString();
         }
 
-        StringBuilder emptyTop = new StringBuilder(w);
-        emptyTop.append('X');
-        for (int i = 0; i < interior; i++) emptyTop.append('X');
-        emptyTop.append('X');
-        String fixedTopRow = emptyTop.toString();
+        String fixedTopRow = 'X' + "X".repeat(Math.max(0, interior)) + 'X';
         String[][] shape = new String[w][h];
         for (int d = 0; d < w; d++) {
             boolean front = d == 0;
@@ -339,11 +333,8 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
             for (int row = 0; row < h; row++) {
                 String line;
                 if (front || back) {
-                    StringBuilder sb = new StringBuilder(w);
-                    sb.append(' ');
-                    for (int i = 0; i < interior; i++) sb.append(row == 0 ? 'X' : 'B');
-                    sb.append(' ');
-                    line = sb.toString();
+                    line = ' ' + String.valueOf(row == 0 ? 'X' : 'B')
+                        .repeat(Math.max(0, interior)) + ' ';
                     if (front && row == centerRow) {
                         line = line.substring(0, centerCol) + '~' + line.substring(centerCol + 1);
                     }
@@ -351,9 +342,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
                     int r = (d - 1) - coreOffset;
                     line = (r >= 0 && r < core) ? coreRows[r] : fixedTopRow;
                 } else if (row == h - 1) {
-                    StringBuilder sb = new StringBuilder(w);
-                    for (int i = 0; i < w; i++) sb.append('B');
-                    line = sb.toString();
+                    line = "B".repeat(w);
                 } else {
                     StringBuilder sb = new StringBuilder(w);
                     sb.append('B');
@@ -370,21 +359,17 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
         return shape;
     }
 
-    private static boolean isCoreCellFor(int core, int cut, int row, int col) {
+    public static boolean isCoreCellFor(int core, int cut, int row, int col) {
         int last = core - 1;
-        if (cut > 0
-            && (row + col < cut || last - row + col < cut || row + last - col < cut || last - row + last - col < cut)) {
-            return false;
-        }
-        return true;
+        return cut <= 0 || (row + col >= cut && last - row + col >= cut
+            && row + last - col >= cut
+            && last - row + last - col >= cut);
     }
 
     @Override
     public IStructureDefinition<NuclearReactor> getStructureDefinition() {
         StructureDefinition.Builder<NuclearReactor> builder = StructureDefinition.<NuclearReactor>builder()
-
             .addElement('X', Casings.HastelloyNSealantBlock.asElement())
-
             .addElement('A', replaceableCasing(Casings.InsulatedFluidPipeCasing.asElement()))
             .addElement('B', replaceableCasing(Casings.HastelloyNSealantBlock.asElement()))
             .addElement('C', replaceableCasing(Casings.HastelloyXStructuralBlock.asElement()));
@@ -415,13 +400,13 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
         return StructureUtility.ofChain(coreCell(row, col), coreCellHintElement());
     }
 
-    private IStructureElement<NuclearReactor> coreCellHintElement() {
+    public IStructureElement<NuclearReactor> coreCellHintElement() {
         return GTStructureUtility.buildHatchAdder(NuclearReactor.class)
             .hatchClasses(NuclearItemBus.class, NuclearFluidHatch.class)
             .casingIndex(Casings.HastelloyNSealantBlock.textureId)
             .hint(2)
             .hint(() -> StatCollector.translateToLocal("gtnl.structure.nuclear_reactor.core_cell"))
-            .adder((t, te, casingIndex) -> t.registerCoreCellByCoords(te, casingIndex))
+            .adder(NuclearReactor::registerCoreCellByCoords)
             .build();
     }
 
@@ -441,7 +426,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
     }
 
     protected IStructureElement<NuclearReactor> coreCell(int row, int col) {
-        return new IStructureElement<NuclearReactor>() {
+        return new IStructureElement<>() {
 
             @Override
             public boolean check(NuclearReactor t, World world, int x, int y, int z) {
@@ -603,7 +588,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
         if (fluidHatchCount == 0) addMissingCoreChamberError(errors, "gtnl.hatch.nuclear_fluid_hatch.name");
     }
 
-    private void addMissingCoreChamberError(List<StructureError> errors, String langKey) {
+    public void addMissingCoreChamberError(List<StructureError> errors, String langKey) {
         for (int slot = 0; slot < getCoreCellCount(); slot++) {
             int[] pos = mCoreCellPos[slot];
             if (pos == null) continue;
@@ -616,16 +601,16 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
     protected int resolvePreviewTier(ItemStack trigger) {
         if (trigger == null) return 1;
 
-        if (GTNLStructureChannels.NUCLEAR_REACTOR_TIER.hasValue(trigger)) {
-            int channelTier = GTNLStructureChannels.NUCLEAR_REACTOR_TIER.getValue(trigger);
+        if (GTStructureChannels.TIER_CASING.hasValue(trigger)) {
+            int channelTier = GTStructureChannels.TIER_CASING.getValue(trigger);
             return Math.max(1, Math.min(MAX_TIER, channelTier));
         }
         return Math.max(1, Math.min(MAX_TIER, trigger.stackSize));
     }
 
     @Override
-    public void onPreviewConstruct(ItemStack trigger) {
-        if (!GTNLStructureChannels.NUCLEAR_REACTOR_TIER.hasValue(trigger)) {
+    public void onPreviewConstruct(@NotNull ItemStack trigger) {
+        if (!GTStructureChannels.TIER_CASING.hasValue(trigger)) {
             trigger.stackSize = 1;
         }
     }
@@ -654,32 +639,36 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
     }
 
     @Override
-    public RecipeMap<?> getRecipeMap() {
-        return null;
-    }
-
-    @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
         int colorIndex, boolean aActive, boolean redstoneLevel) {
-        ITexture casing = Textures.BlockIcons.getCasingTextureForId(getCasingTextureID());
-        if (side != aFacing) {
-            return new ITexture[] { casing };
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_NUCLEAR_REACTOR_ACTIVE)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_NUCLEAR_REACTOR_ACTIVE_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_NUCLEAR_REACTOR)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(BlockIcons.OVERLAY_FRONT_NUCLEAR_REACTOR_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
         }
-
-        String path = "basicmachines/assembler/OVERLAY_FRONT" + (aActive ? "_ACTIVE" : "");
-        return new ITexture[] { casing,
-            TextureFactory
-                .of(TextureFactory.of(Textures.BlockIcons.customOptional(Mods.GregTech.resourceDomain, path))),
-            TextureFactory.builder()
-                .addIcon(Textures.BlockIcons.customOptional(Mods.GregTech.resourceDomain, path + "_GLOW"))
-                .glow()
-                .build() };
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-
         tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.tooltip.0"))
             .addInfo(StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.tooltip.quote"))
             .addInfo(StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.tooltip.1"))
@@ -688,12 +677,11 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
             .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.structure.tiers"))
             .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.structure.output_hatch"))
             .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.casing"))
-
             .addOtherStructurePart(
                 StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.tooltip.4"),
                 StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.tooltip.3"),
                 2)
-            .addSubChannelUsage(GTNLStructureChannels.NUCLEAR_REACTOR_TIER)
+            .addSubChannelUsage(GTStructureChannels.TIER_CASING)
             .toolTipFinisher();
         return tt;
     }
@@ -721,6 +709,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
         return 0;
     }
 
+    @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
         return CheckRecipeResultRegistry.NONE;
@@ -734,9 +723,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
         runReactorTick(aBaseMetaTileEntity.isAllowedToWork(), aTick);
     }
 
-    private static float sNuclearEnergyMultiplier = -1;
-
-    private static float nuclearEnergyMultiplier() {
+    public static float nuclearEnergyMultiplier() {
         if (sNuclearEnergyMultiplier < 0) {
             sNuclearEnergyMultiplier = 25.0f
                 * ConfigUtil.getFloat(MainConfig.get(), "balance/energy/generator/nuclear");
@@ -781,7 +768,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
             * Math.pow(EXCITATION_THROUGH_FLUID, Math.max(0, throughFluidRods));
     }
 
-    private boolean[][] buildFuelRodGrid() {
+    public boolean[][] buildFuelRodGrid() {
         int n = getCoreSize();
         boolean[][] hasRod = new boolean[n][n];
         for (int row = 0; row < n; row++) {
@@ -793,7 +780,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
         return hasRod;
     }
 
-    private boolean[][] buildReflectorGrid() {
+    public boolean[][] buildReflectorGrid() {
         int n = getCoreSize();
         boolean[][] hasReflector = new boolean[n][n];
         for (int row = 0; row < n; row++) {
@@ -805,7 +792,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
         return hasReflector;
     }
 
-    private double getExcitationAt(boolean[][] hasRod, boolean[][] hasReflector, int row, int col) {
+    public double getExcitationAt(boolean[][] hasRod, boolean[][] hasReflector, int row, int col) {
         int n = getCoreSize();
         int orthogonalRods = 0;
         int diagonalRods = 0;
@@ -837,9 +824,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
         return getExcitationMultiplier(orthogonalRods, diagonalRods, throughFluidRods);
     }
 
-    private static final int[][] PLATE_TRANSFER_DIRECTIONS = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
-
-    private void transferWithHeatPlates(double[][] heat) {
+    public void transferWithHeatPlates(double[][] heat) {
         int n = getCoreSize();
         if (mPlateHeat == null || mPlateHeat.length != n) mPlateHeat = new double[n][n];
         double[][] transfer = new double[n][n];
@@ -1023,7 +1008,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
         }
     }
 
-    private boolean hasOrthogonalRod(boolean[][] hasRod, int row, int col) {
+    public boolean hasOrthogonalRod(boolean[][] hasRod, int row, int col) {
         int n = getCoreSize();
         for (int[] dir : ORTHOGONAL_DIRECTIONS) {
             int r = row + dir[0];
@@ -1035,17 +1020,17 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
         return false;
     }
 
-    private static int getReflectorDamage(ItemStack stack) {
+    public static int getReflectorDamage(ItemStack stack) {
         if (stack.getItem() instanceof ICustomDamageItem custom) return custom.getCustomDamage(stack);
         return stack.getItemDamage();
     }
 
-    private static int getReflectorMaxDamage(ItemStack stack) {
+    public static int getReflectorMaxDamage(ItemStack stack) {
         if (stack.getItem() instanceof ICustomDamageItem custom) return custom.getMaxCustomDamage(stack);
         return stack.getMaxDamage();
     }
 
-    private static void setReflectorDamage(ItemStack stack, int damage) {
+    public static void setReflectorDamage(ItemStack stack, int damage) {
         if (stack.getItem() instanceof ICustomDamageItem custom) {
             custom.setCustomDamage(stack, damage);
         } else {
@@ -1053,7 +1038,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
         }
     }
 
-    private void moveDepletedToOutput(NuclearItemBus bus, ItemStack depleted) {
+    public void moveDepletedToOutput(NuclearItemBus bus, ItemStack depleted) {
         ItemStack out = bus.getStackInSlot(NuclearItemBus.SLOT_OUTPUT);
         if (out == null) {
             bus.setInventorySlotContents(NuclearItemBus.SLOT_OUTPUT, depleted);

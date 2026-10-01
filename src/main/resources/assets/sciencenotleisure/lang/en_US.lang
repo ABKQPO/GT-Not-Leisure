@@ -241,6 +241,8 @@ gtnl.gui.super_interface.tooltip.previous_page=Prev Page
 gtnl.gui.super_interface.tooltip.next_page=Next Page
 gtnl.gui.super_dual_interface.tooltip.switch=Switch to Super ME Interface
 
+channels.gtnl.subchannel.structure_render=Structure Render
+
 channels.sciencenotleisure.structure_render=Decides whether the structure should be rendered and placed, preventing lag caused by excessively large structures.
 channels.sciencenotleisure.component_casing=Decides the tier of component assemblyline casing. Starts at §6LV§r at value 1 and ends at §6MAX§r at value 14.
 channels.sciencenotleisure.nuclear_tier=Nuclear Reactor tier: 1 = 3x3 core, 2 = 5x5 core, 3 = 7x7 core.

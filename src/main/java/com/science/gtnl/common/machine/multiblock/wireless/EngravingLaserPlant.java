@@ -33,7 +33,6 @@ import com.science.gtnl.common.gui.modularui.GTNLControllerUpgradeGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.enums.GTNLStructureChannels;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
@@ -161,7 +160,7 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
             .addElement('I', StructureUtility.ofBlock(compactFusionCoil, 2))
             .addElement(
                 'J',
-                GTNLStructureChannels.COMPONENT_ASSEMBLY_LINE_CASING.use(
+                GTStructureChannels.COMPONENT_ASSEMBLYLINE_CASING.use(
                     StructureUtility.ofBlocksTiered(
                         (block, meta) -> block == Loaders.componentAssemblylineCasing ? meta : -1,
                         COMPONENT_CASING_VARIANTS,
@@ -303,7 +302,7 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
             .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.casing"), 1)
             .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.casing"), 1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
-            .addSubChannelUsage(GTNLStructureChannels.COMPONENT_ASSEMBLY_LINE_CASING)
+            .addSubChannelUsage(GTStructureChannels.COMPONENT_ASSEMBLYLINE_CASING)
             .toolTipFinisher();
         return tt;
     }
