@@ -269,8 +269,8 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
                     .setDurationDecreasePerOC(2)
                     .setEUtIncreasePerOC(4)
                     .setAmperage(availableAmperage)
-                    .setEUtDiscount(1 - (mParallelTier / 50.0))
-                    .setDurationModifier(1 - (Math.max(0, mParallelTier - 1) / 50.0));
+                    .setEUtDiscount(1.0D - (mParallelTier / 50.0D))
+                    .setDurationModifier(1.0D - (Math.max(0, mParallelTier - 1) / 50.0D));
             }
         }.setMaxParallelSupplier(() -> Math.min((int) parallelSetting.get(), getMaxParallelRecipes()));
     }

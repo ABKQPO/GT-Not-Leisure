@@ -701,8 +701,8 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
                             EternalGregTechWorkshopModule.queryMilestoneStats(module, this);
                         } else {
                             module.disconnect();
-                            module.setEUtDiscount(1);
-                            module.setDurationModifier(1);
+                            module.setEUtDiscount(1.0D);
+                            module.setDurationModifier(1.0D);
                             module.setMaxParallel(0);
                             module.setMaxUseEUt(0);
                         }
@@ -800,8 +800,8 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     public @NotNull CheckRecipeResult checkProcessing() {
         if (getBaseMetaTileEntity().isAllowedToWork()) {
             if (addEUToGlobalEnergyMap(ownerUUID, -moduleHatches.size() * Integer.MAX_VALUE)) {
-                setEUtDiscount(Math.pow(0.95, mModuleTier));
-                setDurationModifier(Math.pow(0.9, mModuleTier));
+                setEUtDiscount(Math.pow(0.95D, mModuleTier));
+                setDurationModifier(Math.pow(0.9D, mModuleTier));
                 setMaxUseEUt((1L << Math.min(mModuleTier, 28)) * (Integer.MAX_VALUE * 10L));
 
                 mEfficiencyIncrease = 10000;
