@@ -2255,6 +2255,7 @@ gtnl.machine.hyper_naquadah_reactor.tooltip.0=固定并行为%s
 gtnl.machine.hyper_naquadah_reactor.tooltip.1=可以在配方开始的时候输入硅岩气
 gtnl.machine.hyper_naquadah_reactor.tooltip.2=这会让时间减少%s倍，功率翻%s倍
 gtnl.machine.hyper_naquadah_reactor.tooltip.3=代价是每秒会消耗%sL的硅岩气
+gtnl.machine.hyper_naquadah_reactor.tooltip.4=不安装动力仓将自动进入无线模式
 gtnl.machine.hyper_naquadah_reactor.casing=任意硅岩合金聚合机械方块
 
 gtnl.machine.advanced_hyper_naquadah_reactor.name=进阶超能硅岩反应堆

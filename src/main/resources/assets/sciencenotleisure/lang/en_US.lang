@@ -2255,6 +2255,7 @@ gtnl.machine.hyper_naquadah_reactor.tooltip.0=Fixed parallel of %s
 gtnl.machine.hyper_naquadah_reactor.tooltip.1=Can input naquadah gas at the start of the recipe
 gtnl.machine.hyper_naquadah_reactor.tooltip.2=This will make time %s times shorter and power %s times greater
 gtnl.machine.hyper_naquadah_reactor.tooltip.3=The cost is %sL of naquadah gas consumed per second
+gtnl.machine.hyper_naquadah_reactor.tooltip.4=If no dynamo hatch is installed, it will automatically enter §bWireless Mode§7
 gtnl.machine.hyper_naquadah_reactor.casing=Any Naquadah Alloy Fusion Casing
 
 gtnl.machine.advanced_hyper_naquadah_reactor.name=Advanced Hyper Naquadah Reactor

@@ -559,7 +559,7 @@ public class GTNLOverclockCalculator extends OverclockCalculator {
     /**
      * Returns the number of power tiers above the comparison base.
      *
-     * @param power available machine power
+     * @param power       available machine power
      * @param compareBase power required by the recipe
      * @return tiers above the comparison base, or -1 when power is insufficient
      */
