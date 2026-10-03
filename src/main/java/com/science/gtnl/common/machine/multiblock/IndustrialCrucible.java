@@ -1,27 +1,22 @@
 package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-import static com.science.gtnl.common.recipe.gtnl.InfusionCraftingRecipes.INFUSION_ASPECTS;
-import static com.science.gtnl.common.recipe.gtnl.InfusionCraftingRecipes.INFUSION_RESEARCH;
 import static thaumcraft.common.config.ConfigBlocks.blockCosmeticOpaque;
 import static thaumcraft.common.config.ConfigBlocks.blockCosmeticSolid;
-import static thaumcraft.common.config.ConfigBlocks.blockStoneDevice;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
+import com.gtnewhorizon.structurelib.structure.IStructureElement;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
@@ -29,9 +24,10 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEssentiaHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.common.recipe.thaumcraft.TCRecipeTools;
+import com.science.gtnl.common.recipe.gtnl.CrucibleCraftingRecipes;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
+import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
@@ -61,63 +57,69 @@ import thaumcraft.common.lib.research.ResearchManager;
 import thaumicenergistics.common.tiles.TileInfusionProvider;
 
 @IMetaTileEntity.SkipGenerateDescription
-public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> implements ISurvivalConstructable {
+public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
-    private static final String STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":multiblock/small_infusion_matrix";
-    private static final String[][] SHAPE = StructureUtils.readStructureFromFile(STRUCTURE_FILE_PATH);
+    private static final String STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":multiblock/industrial_crucible";
+    private static IStructureDefinition<IndustrialCrucible> structureDefinition;
 
-    private static final int HORIZONTAL_OFFSET = 3;
-    private static final int VERTICAL_OFFSET = 3;
+    private static final int HORIZONTAL_OFFSET = 2;
+    private static final int VERTICAL_OFFSET = 4;
     private static final int DEPTH_OFFSET = 0;
     private static final int CASING_TEXTURE_ID = 1536;
+
+    private static final int ESSENTIA_COMMIT_COOLDOWN_TICKS = 200;
+
+    private static final int MAX_PARALLEL_RECIPES = 1;
 
     public final List<TileEntityEssentiaHatch> mEssentiaHatches = new ArrayList<>();
     private final List<TileEntity> mInfusionProviders = new ArrayList<>();
 
-    private static final int RESEARCH_REFRESH_INTERVAL = 100;
-    private ArrayList<String> cachedResearch = new ArrayList<>();
+    private long essentiaCommitBlockedUntil;
 
-    public SmallInfusionMatrix(int id, String name, String nameRegional) {
+    private int craftsCeiling = 1;
+
+    public IndustrialCrucible(int id, String name, String nameRegional) {
         super(id, name, nameRegional);
     }
 
-    public SmallInfusionMatrix(String name) {
+    public IndustrialCrucible(String name) {
         super(name);
     }
 
     @Override
-    public IStructureDefinition<SmallInfusionMatrix> getStructureDefinition() {
-        return StructureDefinition.<SmallInfusionMatrix>builder()
-            .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(SHAPE))
+    public IStructureDefinition<IndustrialCrucible> getStructureDefinition() {
+        if (structureDefinition != null) return structureDefinition;
+
+        IStructureElement<IndustrialCrucible> hatchAdder = GTStructureUtility.buildHatchAdder(IndustrialCrucible.class)
+            .atLeast(
+                HatchElement.InputBus,
+                HatchElement.OutputBus,
+                HatchElement.Energy.or(HatchElement.MultiAmpEnergy),
+                HatchElement.Maintenance)
+            .casingIndex(getCasingTextureID())
+            .hint(1)
+            .build();
+
+        structureDefinition = StructureDefinition.<IndustrialCrucible>builder()
+            .addShape(
+                STRUCTURE_PIECE_MAIN,
+                StructureUtility.transpose(StructureUtils.readStructureFromFile(STRUCTURE_FILE_PATH)))
             .addElement(
                 'A',
                 StructureUtility.ofChain(
-                    GTStructureUtility.buildHatchAdder(SmallInfusionMatrix.class)
-                        .atLeast(
-                            HatchElement.InputBus,
-                            HatchElement.OutputBus,
-                            HatchElement.Energy.or(HatchElement.MultiAmpEnergy),
-                            HatchElement.Maintenance)
-                        .casingIndex(getCasingTextureID())
-                        .hint(1)
-                        .build(),
+                    hatchAdder,
                     StructureUtility.onElementPass(machine -> ++machine.mCountCasing, Casings.MagicCasing.asElement()),
                     StructureUtility.ofSpecificTileAdder(
-                        SmallInfusionMatrix::addEssentiaHatch,
+                        IndustrialCrucible::addEssentiaHatch,
                         TileEntityEssentiaHatch.class,
                         Loaders.magicCasing,
                         0),
-                    StructureUtility.ofTileAdder(SmallInfusionMatrix::addInfusionProvider, Loaders.magicCasing, 0)))
-            .addElement('B', StructureUtility.ofBlock(blockCosmeticOpaque, 0))
-            .addElement('C', StructureUtility.ofBlock(blockCosmeticSolid, 6))
-            // D/E 使用 ofBlock 而非 ofSpecificTileAdder：后者返回 IStructureElementNoPlacement，
-            // placeBlock() 恒为 false、survivalPlaceBlock() 恒为 REJECT，自动搭建会跳过这两个方块。
-            // TC 的 meta 与 tile 类一一对应（BlockCosmeticOpaque:2 -> TileOwned，
-            // BlockStoneDevice:1 -> TilePedestal），故按 block+meta 校验与按 tile 类校验等价。
-            .addElement('D', StructureUtility.ofBlock(blockCosmeticOpaque, 2))
-            .addElement('E', StructureUtility.ofBlock(blockStoneDevice, 1))
+                    StructureUtility.ofTileAdder(IndustrialCrucible::addInfusionProvider, Loaders.magicCasing, 0)))
+            .addElement('B', StructureUtility.ofBlock(blockCosmeticSolid, 7))
+            .addElement('C', StructureUtility.ofBlock(blockCosmeticOpaque, 2))
             .build();
+        return structureDefinition;
     }
 
     @Override
@@ -130,61 +132,12 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
     }
 
     @Override
-    public void saveNBTData(NBTTagCompound nbt) {
-        NBTTagList list = new NBTTagList();
-        for (String research : cachedResearch) {
-            NBTTagCompound tag = new NBTTagCompound();
-            tag.setString("ResearchName", research);
-            list.appendTag(tag);
-        }
-        nbt.setTag("Research", list);
-        super.saveNBTData(nbt);
-    }
-
-    @Override
-    public void loadNBTData(NBTTagCompound nbt) {
-        cachedResearch.clear();
-        NBTTagList list = nbt.getTagList("Research", 10);
-        for (int i = 0; i < list.tagCount(); i++) {
-            NBTTagCompound tag = list.getCompoundTagAt(i);
-            if (tag.hasKey("ResearchName")) {
-                cachedResearch.add(tag.getString("ResearchName"));
-            }
-        }
-        super.loadNBTData(nbt);
-    }
-
-    @Override
-    public void onPreTick(IGregTechTileEntity baseMetaTileEntity, long tick) {
-        super.onPreTick(baseMetaTileEntity, tick);
-
-        if (baseMetaTileEntity.isServerSide() && tick % RESEARCH_REFRESH_INTERVAL == 0) {
-            refreshResearchCache();
-        }
-    }
-
-    private boolean isResearchCached(String research) {
-        if (!research.startsWith("@") && ResearchCategories.getResearch(research) == null) {
-            return false;
-        }
-        return cachedResearch.contains(research);
-    }
-
-    private void refreshResearchCache() {
-        IGregTechTileEntity baseMetaTileEntity = getBaseMetaTileEntity();
-        String ownerName = baseMetaTileEntity == null ? null : baseMetaTileEntity.getOwnerName();
-        if (ownerName == null || ownerName.isEmpty()) return;
-
-        ArrayList<String> list = ResearchManager.getResearchForPlayer(ownerName);
-        if ((cachedResearch == null && list != null)
-            || (list != null && !list.isEmpty() && cachedResearch.size() != list.size())) {
-            cachedResearch = list;
-        }
-    }
-
-    @Override
     public void checkHatch(List<StructureError> errors) {
         super.checkHatch(errors);
+        checkHasInputBus(errors);
+        checkHasOutputBus(errors);
+        checkHatchMin(errors, HatchElement.Energy.or(HatchElement.MultiAmpEnergy), 1);
+        checkHasMaintenanceHatch(errors);
         if (mEssentiaHatches.isEmpty() && mInfusionProviders.isEmpty()) {
             errors.add(GTNLStructureErrors.invalidHatchConfiguration());
         }
@@ -198,16 +151,20 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
     }
 
     public boolean addEssentiaHatch(TileEntityEssentiaHatch tileEntity) {
+        if (tileEntity == null || tileEntity.isInvalid()) return false;
+        if (mEssentiaHatches.contains(tileEntity)) return false;
         return mEssentiaHatches.add(tileEntity);
     }
 
     public boolean addInfusionProvider(TileEntity tileEntity) {
+        if (tileEntity == null || tileEntity.isInvalid()) return false;
         return Mods.ThaumicEnergistics.isModLoaded() && addInfusionProviderCompat(tileEntity);
     }
 
     @Optional.Method(modid = "thaumicenergistics")
     private boolean addInfusionProviderCompat(TileEntity tileEntity) {
         if (!(tileEntity instanceof TileInfusionProvider)) return false;
+        if (mInfusionProviders.contains(tileEntity)) return false;
         return mInfusionProviders.add(tileEntity);
     }
 
@@ -231,19 +188,10 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
             true);
     }
 
-    @Override
-    public RecipeMap<?> getRecipeMap() {
-        return GTNLRecipeMaps.IndustrialInfusionCraftingRecipes;
-    }
-
     @NotNull
     @Override
     public CheckRecipeResult checkProcessing() {
-        CheckRecipeResult result = super.checkProcessing();
-        if (result.wasSuccessful()) {
-            mOutputItems = TCRecipeTools.appendPrimordialPearlReturns(mOutputItems);
-        }
-        return result;
+        return super.checkProcessing();
     }
 
     @Override
@@ -258,18 +206,23 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
                     return baseResult;
                 }
 
-                String research = recipe.getMetadata(INFUSION_RESEARCH);
-                AspectList requiredAspects = recipe.getMetadata(INFUSION_ASPECTS);
+                String research = recipe.getMetadata(CrucibleCraftingRecipes.CRUCIBLE_RESEARCH);
+                AspectList requiredAspects = recipe.getMetadata(CrucibleCraftingRecipes.CRUCIBLE_ASPECTS);
 
                 if (research == null || requiredAspects == null) {
                     return CheckRecipeResultRegistry.NO_RECIPE;
                 }
 
-                if (!isResearchCached(research)) {
-                    return SimpleCheckRecipeResult.ofFailure("missing_infusion_research");
+                if (!isResearchAvailable(research)) {
+                    return SimpleCheckRecipeResult.ofFailure("missing_crucible_research");
                 }
 
-                if (!hasRequiredEssentia(requiredAspects, 1)) {
+                if (isEssentiaCommitBlocked()) {
+                    return SimpleCheckRecipeResult.ofFailure("essentia_commit_failed");
+                }
+
+                int affordable = affordableCrafts(requiredAspects);
+                if (affordable <= 0) {
                     return SimpleCheckRecipeResult.ofFailure("insufficient_essentia");
                 }
 
@@ -279,13 +232,13 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
             @NotNull
             @Override
             public CheckRecipeResult onRecipeStart(@NotNull GTRecipe recipe) {
-                AspectList requiredAspects = recipe.getMetadata(INFUSION_ASPECTS);
+                AspectList requiredAspects = recipe.getMetadata(CrucibleCraftingRecipes.CRUCIBLE_ASPECTS);
 
                 if (requiredAspects == null) {
                     return CheckRecipeResultRegistry.NO_RECIPE;
                 }
 
-                int crafts = Math.max(1, calculatedParallels);
+                int crafts = clampCrafts(calculatedParallels, craftsCeiling);
 
                 if (!hasRequiredEssentia(requiredAspects, crafts)) {
                     return SimpleCheckRecipeResult.ofFailure("insufficient_essentia");
@@ -294,13 +247,26 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
                 if (!consumeEssentia(requiredAspects, crafts)) {
                     return SimpleCheckRecipeResult.ofFailure("insufficient_essentia");
                 }
+
                 return CheckRecipeResultRegistry.SUCCESSFUL;
             }
 
             @NotNull
             @Override
-            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+            public GTNLParallelHelper createParallelHelper(@NotNull GTRecipe recipe) {
+                int affordable = affordableCrafts(recipe.getMetadata(CrucibleCraftingRecipes.CRUCIBLE_ASPECTS));
+                int batchFactor = isBatchModeEnabled() ? Math.max(1, Math.min(getMaxBatchSize(), affordable)) : 1;
+                int base = Math.max(1, Math.min(affordable / batchFactor, getMaxParallelRecipes()));
 
+                craftsCeiling = base * batchFactor;
+                setMaxParallel(base);
+
+                return super.createParallelHelper(recipe).enableBatchMode(batchFactor);
+            }
+
+            @NotNull
+            @Override
+            public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setHeatOC(getHeatOC())
                     .setMachineHeat(getMachineHeat())
@@ -315,16 +281,42 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
         }.setMaxParallelSupplier(this::getTrueParallel);
     }
 
+    private int affordableCrafts(AspectList requiredAspects) {
+        if (requiredAspects == null) return 0;
+
+        int affordable = Integer.MAX_VALUE;
+
+        try {
+            for (Aspect aspect : requiredAspects.getAspects()) {
+                if (aspect == null) continue;
+
+                int amount = requiredAspects.getAmount(aspect);
+                if (amount <= 0) continue;
+
+                long available = getStoredEssentiaInHatches(aspect, Long.MAX_VALUE)
+                    + getMaximumProviderEssentia(aspect);
+                affordable = (int) Math.min(affordable, available / amount);
+                if (affordable <= 0) return 0;
+            }
+        } catch (ConcurrentModificationException e) {
+            ScienceNotLeisure.LOG
+                .warn("IndustrialCrucible: concurrent modification in recipe aspects, treating as insufficient", e);
+            return 0;
+        }
+
+        return affordable == Integer.MAX_VALUE ? getMaxParallelRecipes() : affordable;
+    }
+
     private boolean hasRequiredEssentia(AspectList requiredAspects, int crafts) {
 
         if (requiredAspects == null || crafts <= 0) {
-            return true;
+            return false;
         }
 
         try {
             for (Aspect aspect : requiredAspects.getAspects()) {
-                if (aspect == null) {
-                    continue;
+                if (aspect == null || requiredAspects.getAmount(aspect) < 0) {
+                    return false;
                 }
 
                 long required = (long) requiredAspects.getAmount(aspect) * crafts;
@@ -334,10 +326,8 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
                 }
             }
         } catch (ConcurrentModificationException e) {
-            // AspectList.getAspects() 内部走 keySet().toArray()，配方 AspectList 是跨机器共享的配方数据，
-            // 被并发结构修改时会在那里抛 CME。取不到可信数据时按"源质不足"处理，不放行配方。
             ScienceNotLeisure.LOG
-                .warn("SmallInfusionMatrix: concurrent modification in recipe aspects, treating as insufficient", e);
+                .warn("IndustrialCrucible: concurrent modification in recipe aspects, treating as insufficient", e);
             return false;
         }
 
@@ -347,13 +337,15 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
     private boolean consumeEssentia(AspectList requiredAspects, int crafts) {
 
         if (requiredAspects == null || crafts <= 0) {
-            return true;
+            return false;
         }
+
+        boolean withdrawn = false;
 
         try {
             for (Aspect aspect : requiredAspects.getAspects()) {
-                if (aspect == null) {
-                    continue;
+                if (aspect == null || requiredAspects.getAmount(aspect) < 0) {
+                    return abortPartialConsumption(withdrawn, aspect);
                 }
 
                 long remaining = (long) requiredAspects.getAmount(aspect) * crafts;
@@ -364,8 +356,9 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
                     TileEntity provider = findInfusionProvider(aspect, providerAmount);
                     if (provider == null || providerAmount > Integer.MAX_VALUE
                         || !takeFromInfusionProvider(provider, aspect, (int) providerAmount)) {
-                        return false;
+                        return abortPartialConsumption(withdrawn, aspect);
                     }
+                    withdrawn = true;
                     remaining -= providerAmount;
                 }
 
@@ -382,27 +375,53 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
                     int removed = (int) Math.min(remaining, available);
 
                     if (removed > 0 && hatch.reduceStoredEssentia(aspect, removed)) {
-
+                        withdrawn = true;
                         remaining -= removed;
                     }
                 }
 
-                if (remaining > 0) return false;
+                if (remaining > 0) return abortPartialConsumption(withdrawn, aspect);
             }
         } catch (ConcurrentModificationException e) {
-            // 同 hasRequiredEssentia：CME 来自 getAspects() 的 keySet().toArray()。
-            // 此时可能已经扣掉了前面若干 aspect，但源质无法归还 AE 网络（TileInfusionProvider
-            // 的 addToContainer 是空实现），只能中止并让配方判定为失败。
-            ScienceNotLeisure.LOG.warn(
-                "SmallInfusionMatrix: concurrent modification in recipe aspects, aborting essentia consumption",
-                e);
+            essentiaCommitBlockedUntil = currentWorldTime() + ESSENTIA_COMMIT_COOLDOWN_TICKS;
+            ScienceNotLeisure.LOG
+                .warn("IndustrialCrucible: concurrent modification in recipe aspects, aborting consumption", e);
             return false;
         }
 
         return true;
     }
 
+    private boolean abortPartialConsumption(boolean withdrawn, Aspect aspect) {
+        if (withdrawn) {
+            essentiaCommitBlockedUntil = currentWorldTime() + ESSENTIA_COMMIT_COOLDOWN_TICKS;
+            ScienceNotLeisure.LOG.warn(
+                "IndustrialCrucible: partial essentia withdrawal failed on {}, pausing crafts for {} ticks",
+                aspect == null ? "unknown aspect" : aspect.getTag(),
+                ESSENTIA_COMMIT_COOLDOWN_TICKS);
+        }
+        return false;
+    }
+
+    private boolean isEssentiaCommitBlocked() {
+        return currentWorldTime() < essentiaCommitBlockedUntil;
+    }
+
+    private long currentWorldTime() {
+        IGregTechTileEntity baseMetaTileEntity = getBaseMetaTileEntity();
+        if (baseMetaTileEntity == null || baseMetaTileEntity.getWorld() == null) return 0;
+        return baseMetaTileEntity.getWorld()
+            .getTotalWorldTime();
+    }
+
+    private static int clampCrafts(int calculatedParallels, int maxParallelRecipes) {
+        if (calculatedParallels <= 0 || maxParallelRecipes <= 0) return 1;
+        return Math.min(calculatedParallels, maxParallelRecipes);
+    }
+
     private long getStoredEssentiaInHatches(Aspect aspect, long required) {
+        if (aspect == null || required <= 0) return 0;
+
         long stored = 0;
         for (TileEntityEssentiaHatch hatch : mEssentiaHatches) {
             if (hatch == null || hatch.isInvalid()) continue;
@@ -410,7 +429,7 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
             stored += hatch.containerContains(aspect);
             if (stored >= required) break;
         }
-        return stored;
+        return Math.min(stored, required);
     }
 
     private long getMaximumProviderEssentia(Aspect aspect) {
@@ -444,8 +463,8 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
 
     @Optional.Method(modid = "thaumicenergistics")
     private long getProviderAspectAmountCompat(TileEntity provider, Aspect aspect) {
-        return provider instanceof TileInfusionProvider infusionProvider
-            ? infusionProvider.getAspectAmountInNetwork(aspect)
+        return provider instanceof TileInfusionProvider
+            ? ((TileInfusionProvider) provider).getAspectAmountInNetwork(aspect)
             : 0;
     }
 
@@ -455,17 +474,37 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
 
     @Optional.Method(modid = "thaumicenergistics")
     private boolean takeFromInfusionProviderCompat(TileEntity provider, Aspect aspect, int amount) {
-        return provider instanceof TileInfusionProvider infusionProvider
-            && infusionProvider.takeFromContainer(aspect, amount);
+        return provider instanceof TileInfusionProvider
+            && ((TileInfusionProvider) provider).takeFromContainer(aspect, amount);
+    }
+
+    private boolean isResearchAvailable(String research) {
+        if (research == null) return false;
+        if (research.isEmpty()) return true;
+
+        if (!research.startsWith("@") && ResearchCategories.getResearch(research) == null) {
+            return false;
+        }
+
+        IGregTechTileEntity baseMetaTileEntity = getBaseMetaTileEntity();
+        String ownerName = baseMetaTileEntity == null ? null : baseMetaTileEntity.getOwnerName();
+        if (ownerName == null || ownerName.isEmpty()) return false;
+
+        return ResearchManager.isResearchComplete(ownerName, research);
     }
 
     @Override
     public int getMaxParallelRecipes() {
-        return 1;
+        return MAX_PARALLEL_RECIPES;
     }
 
     @Override
     public boolean getPerfectOC() {
+        return true;
+    }
+
+    @Override
+    public boolean supportsBatchMode() {
         return true;
     }
 
@@ -481,11 +520,11 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
             if (active) {
                 return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                     TextureFactory.builder()
-                        .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE)
+                        .addIcon(Textures.BlockIcons.OVERLAY_FRONT_LARGE_BOILER_ACTIVE)
                         .extFacing()
                         .build(),
                     TextureFactory.builder()
-                        .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_ACTIVE_GLOW)
+                        .addIcon(Textures.BlockIcons.OVERLAY_FRONT_LARGE_BOILER_ACTIVE_GLOW)
                         .extFacing()
                         .glow()
                         .build() };
@@ -493,11 +532,11 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
 
             return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
                 TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_LARGE_BOILER)
                     .extFacing()
                     .build(),
                 TextureFactory.builder()
-                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_ASSEMBLY_LINE_GLOW)
+                    .addIcon(Textures.BlockIcons.OVERLAY_FRONT_LARGE_BOILER_GLOW)
                     .extFacing()
                     .glow()
                     .build() };
@@ -509,26 +548,27 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tooltip = new MultiblockTooltipBuilder();
-        tooltip.addMachineType(StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.tooltip.1"))
+        tooltip.addMachineType(StatCollector.translateToLocal("gtnl.machine.industrial_crucible.recipe_type"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.industrial_crucible.tooltip.1"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.industrial_crucible.tooltip.2"))
             .addSupportMultiAmp()
             .addPerfectOCInfo()
-            .beginStructureBlock(7, 5, 7, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
-            .addOtherStructurePart(
-                StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.essentia_input_hatch"),
-                StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"),
-                1)
+            .beginStructureBlock(5, 5, 5, true)
+            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.industrial_crucible.casing"), 1)
+            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.industrial_crucible.casing"), 1)
+            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.industrial_crucible.casing"), 1)
+            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.industrial_crucible.casing"), 1)
             .toolTipFinisher();
         return tooltip;
     }
 
     @Override
+    public RecipeMap<?> getRecipeMap() {
+        return GTNLRecipeMaps.IndustrialCrucibleRecipes;
+    }
+
+    @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity tileEntity) {
-        return new SmallInfusionMatrix(mName);
+        return new IndustrialCrucible(mName);
     }
 }
