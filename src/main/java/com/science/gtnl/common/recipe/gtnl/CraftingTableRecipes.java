@@ -1297,8 +1297,7 @@ public class CraftingTableRecipes implements IRecipePool {
             new Object[] { "ABA", "CDC", "EFE", 'A', ItemList.Robot_Arm_LV.get(1), 'B',
                 OrePrefixes.circuit.get(Materials.LV), 'C', new ItemStack(Blocks.redstone_block, 1), 'D',
                 new ItemStack(Items.diamond_pickaxe, 1), 'E',
-                GTOreDictUnificator.get(OrePrefixes.screw, Materials.Steel, 1), 'F',
-                GregtechItemList.TransmissionComponent_LV.get(1) });
+                GTOreDictUnificator.get(OrePrefixes.screw, Materials.Steel, 1), 'F', ItemList.Emitter_LV.get(1) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.RocketAssembler.get(1),

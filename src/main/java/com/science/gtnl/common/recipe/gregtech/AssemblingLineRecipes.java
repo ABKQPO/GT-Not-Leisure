@@ -829,7 +829,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             (int) TierEU.RECIPE_UV);
 
         RecipeBuilder.builder()
-            .metadata(GTRecipeConstants.RESEARCH_ITEM, ItemRegistry.megaMachines[4])
+            .metadata(GTRecipeConstants.RESEARCH_ITEM, ItemList.MegaOilCracker.get(1))
             .metadata(GTRecipeConstants.SCANNING, new Scanning(30 * GTRecipeBuilder.MINUTES, TierEU.RECIPE_IV))
             .itemInputs(
                 ItemList.MixerLuV.get(4),
@@ -876,8 +876,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             12800,
             (int) TierEU.RECIPE_UEV,
             1,
-            new Object[] { GGItemList.AdvAssLine.get(4), GGItemList.AdvAssLine.get(4), GGItemList.AdvAssLine.get(4),
-                GGItemList.AdvAssLine.get(4), GregtechItemList.TransmissionComponent_UHV.get(32),
+            new Object[] { GGItemList.AdvAssLine.get(64), ItemList.Machine_Multi_Assemblyline.get(64),
                 ItemList.Robot_Arm_UHV.get(32), ItemList.Conveyor_Module_UHV.get(32),
                 ItemList.Field_Generator_UHV.get(32), new Object[] { OrePrefixes.circuit.get(Materials.UV), 64 },
                 new Object[] { OrePrefixes.circuit.get(Materials.UHV), 32 },
@@ -960,7 +959,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             16,
             (int) TierEU.RECIPE_ZPM,
             1,
-            new Object[] { GTNLItemList.ChemicalPlant.get(16), ItemList.MegaChemicalReactor.get(1),
+            new Object[] { GTNLItemList.ChemicalPlant.get(16), ItemList.MegaChemicalReactor.get(4),
                 new Object[] { OrePrefixes.circuit.get(Materials.ZPM), 32 },
                 GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorZPM, 64),
                 GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.Naquadah, 16),
@@ -1823,7 +1822,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             40000,
             (int) TierEU.RECIPE_UEV,
             1,
-            new Object[] { ItemList.MegaChemicalReactor.get(1), ItemList.Electric_Motor_UHV.get(16),
+            new Object[] { ItemList.MegaChemicalReactor.get(64), ItemList.Electric_Motor_UHV.get(16),
                 ItemList.Electric_Pump_UHV.get(16), ItemRefer.HiC_T5.get(64),
                 new Object[] { OrePrefixes.circuit.get(Materials.UEV), 16 }, GTNLItemList.EnhancementCore.get(1),
                 GregtechItemList.Laser_Lens_Special.get(16), GGMaterial.preciousMetalAlloy.get(OrePrefixes.nanite, 4),
@@ -2349,11 +2348,11 @@ public class AssemblingLineRecipes implements IRecipePool {
             4000,
             (int) TierEU.RECIPE_UEV,
             1,
-            new Object[] { GTUtility.copyAmountUnsafe(16, ItemRegistry.megaMachines[4]),
-                CustomItemList.tM_TeslaBase.get(64), GregtechItemList.Casing_Fusion_Internal.get(16),
-                ItemList.Casing_Coil_AwakenedDraconium.get(64), ItemList.Electric_Pump_UHV.get(32),
-                ItemList.Sensor_UHV.get(16), ItemList.Emitter_UHV.get(16), ItemRefer.HiC_T5.get(16),
-                new Object[] { OrePrefixes.circuit.get(Materials.UEV), 32 }, NHItemList.HighEnergyFlowCircuit.get(64),
+            new Object[] { ItemList.MegaOilCracker.get(16), CustomItemList.tM_TeslaBase.get(64),
+                GregtechItemList.Casing_Fusion_Internal.get(16), ItemList.Casing_Coil_AwakenedDraconium.get(64),
+                ItemList.Electric_Pump_UHV.get(32), ItemList.Sensor_UHV.get(16), ItemList.Emitter_UHV.get(16),
+                ItemRefer.HiC_T5.get(16), new Object[] { OrePrefixes.circuit.get(Materials.UEV), 32 },
+                NHItemList.HighEnergyFlowCircuit.get(64),
                 GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUHV, 16),
                 GTNLMaterials.Polyetheretherketone.get(OrePrefixes.plateSuperdense, 8),
                 GregtechItemList.Laser_Lens_Special.get(16),

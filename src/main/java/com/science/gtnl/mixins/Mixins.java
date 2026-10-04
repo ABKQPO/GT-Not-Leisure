@@ -141,6 +141,7 @@ public enum Mixins implements IMixins {
             "gregtech.MixinMTEBetterJukebox",
             "gregtech.MixinMTEForgeOfGods",
             "gregtech.MixinMTEHatch",
+            "gregtech.MixinMTEHatchCraftingInputME",
             "gregtech.MixinMTEHatchOutputMEBase",
             "gregtech.MixinMTEHatchOutputBusME",
             "gregtech.MixinMTEHatchOutputME",
@@ -152,6 +153,7 @@ public enum Mixins implements IMixins {
             "gregtech.MixinMTEHatchSteamBusOutput",
             "gregtech.MixinMTELightningRod",
             "gregtech.MixinMTEPlasmaForge",
+            "gregtech.MixinMTEMultiBlockBaseInterfaceName",
             "gregtech.MixinMTEMultiBlockBaseRecipeProcessing",
             "gregtech.MixinMTETreeFarm",
             "gregtech.MixinProcessingLogic",
@@ -173,7 +175,6 @@ public enum Mixins implements IMixins {
         .addClientMixins(
             "appliedEnergistics.MixinTileCableBusBeamBounds",
             "appliedEnergistics.MixinTESRWrapperBeamRange",
-            // TODO: Restore display-representation name handling when bundled AE2 exposes the updated translateRawName
             "appliedEnergistics.assembler.MixinGuiMEMonitorable",
             "appliedEnergistics.assembler.MixinGuiPatternTerm",
             "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable")

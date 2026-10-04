@@ -596,14 +596,13 @@ public class AssemblerRecipes implements IRecipePool {
             .itemInputs(
                 GTUtility.getIntegratedCircuit(17),
                 GregtechItemList.GT4_Multi_Crafter.get(1L),
-                GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.TungstenSteel, 4L),
+                GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.TungstenSteel, 16L),
                 GregtechItemList.LFTRControlCircuit.get(1),
-                GregtechItemList.TransmissionComponent_IV.get(4),
                 ItemList.Electric_Motor_IV.get(8L),
                 ItemList.Conveyor_Module_IV.get(8L),
                 ItemList.Robot_Arm_IV.get(8L),
                 GregtechItemList.Gregtech_Computer_Cube.get(2),
-                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.IV, 4L))
+                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.IV, 8L))
             .itemOutputs(GTNLItemList.LargeAssembler.get(1))
             .fluidInputs(Materials.Polybenzimidazole.getMolten(1152))
             .duration(300)
@@ -1444,12 +1443,11 @@ public class AssemblerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                CustomItemList.Machine_Multi_Infuser.get(1),
-                GregtechItemList.TransmissionComponent_UV.get(4),
+                CustomItemList.Machine_Multi_Infuser.get(4),
                 ItemList.Field_Generator_UV.get(2),
                 CustomItemList.eM_Coil.get(8),
                 GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.Osmiridium, 16L),
-                GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUV, 8L))
+                GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUV, 16L))
             .itemOutputs(GTNLItemList.EnergyInfuser.get(1))
             .fluidInputs(Materials.CosmicNeutronium.getMolten(2304))
             .duration(200)
@@ -2958,7 +2956,7 @@ public class AssemblerRecipes implements IRecipePool {
                 new ItemStack(Blocks.redstone_block, 2),
                 new ItemStack(Items.diamond_pickaxe, 1),
                 GTOreDictUnificator.get(OrePrefixes.screw, Materials.Steel, 2),
-                GregtechItemList.TransmissionComponent_LV.get(1))
+                ItemList.Emitter_LV.get(1))
             .itemOutputs(GTNLItemList.VeinMiningPickaxe.get(1))
             .duration(100)
             .eut(TierEU.RECIPE_LV)
