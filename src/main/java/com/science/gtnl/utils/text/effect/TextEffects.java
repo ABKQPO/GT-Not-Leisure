@@ -24,6 +24,13 @@ public class TextEffects {
     public static final TextEffectStyle PRISMATIC_SCAN = preset("prismatic_scan");
     public static final TextEffectStyle QUANTUM_GLITCH = preset("quantum_glitch");
     public static final TextEffectStyle MOLTEN_CORE = preset("molten_core");
+    public static final TextEffectStyle PIXEL_REASSEMBLY = preset("pixel_reassembly");
+    public static final TextEffectStyle REFRACTED_PRISM = preset("refracted_prism");
+    public static final TextEffectStyle RUNE_ETCHING = preset("rune_etching");
+    public static final TextEffectStyle CIRCUIT_AWAKENING = preset("circuit_awakening");
+    public static final TextEffectStyle GHOST_ECHO = preset("ghost_echo");
+    public static final TextEffectStyle PAPER_FOLD = preset("paper_fold");
+    public static final TextEffectStyle FROST_CRYSTAL = preset("frost_crystal");
 
     private TextEffects() {}
 

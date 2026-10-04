@@ -39,10 +39,17 @@ public class BuiltinTextEffects {
                 0x5ACFFF));
         registerRarity(TextEffects.EVERCOLD_CYAN, 1.5f, 0x44678B, 0x26435F);
         registerRarity(TextEffects.STARSILVER_RARITY, 1, 0xDEE6F4, 0x282C5A, 0xFFFFFF);
-        register(TextEffects.NEBULA_RIFT, 0x20123F, 0x18D2F0, 0xD95FFF, 0xFFFFFF);
+        register(TextEffects.NEBULA_RIFT, 0x7455A9, 0x18D2F0, 0xD95FFF, 0xFFFFFF);
         register(TextEffects.PRISMATIC_SCAN, 0xFF3B6B, 0x35E5FF, 0xF8F55A, 0xFFFFFF);
         register(TextEffects.QUANTUM_GLITCH, 0x00F0FF, 0xFF2C8A, 0xF6FF65);
-        register(TextEffects.MOLTEN_CORE, 0x5A1307, 0xFF3B12, 0xFFB11A, 0xFFF4A3);
+        register(TextEffects.MOLTEN_CORE, 0xBA3A16, 0xFF3B12, 0xFFB11A, 0xFFF4A3);
+        register(TextEffects.PIXEL_REASSEMBLY, 0x192C39, 0x35E6D0, 0xE8FF96);
+        register(TextEffects.REFRACTED_PRISM, 0x23384C, 0x67D6E6, 0xF6C6ED, 0xFFFFFF);
+        register(TextEffects.RUNE_ETCHING, 0x315A54, 0x68CFA7, 0xE8F7D4);
+        register(TextEffects.CIRCUIT_AWAKENING, 0x4B777B, 0x31B7AD, 0xF4DD83);
+        register(TextEffects.GHOST_ECHO, 0xA8DAEF, 0x51B4D2, 0xDABDF7);
+        register(TextEffects.PAPER_FOLD, 0x30323B, 0xBBC1C9, 0xF5E1C0);
+        register(TextEffects.FROST_CRYSTAL, 0x24455B, 0x73CDE0, 0xF3FBFF);
     }
 
     private static void register(TextEffectStyle style, int... colors) {

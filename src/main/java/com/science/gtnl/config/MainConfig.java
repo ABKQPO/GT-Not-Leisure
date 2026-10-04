@@ -31,6 +31,17 @@ public class MainConfig {
         public boolean enableDebugMode = false;
     }
 
+    public static final Client client = new Client();
+
+    @Comment("Client section")
+    public static class Client {
+
+        @Comment("Enable animated text effects on this client")
+        @LangKey("gtnl.gui.config.general.client.enable_text_effects")
+        @DefaultBoolean(true)
+        public boolean enableTextEffects = true;
+    }
+
     public static final Effect effect = new Effect();
 
     @Sync

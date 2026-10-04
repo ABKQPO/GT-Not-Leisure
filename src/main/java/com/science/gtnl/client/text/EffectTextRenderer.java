@@ -23,6 +23,7 @@ import com.science.gtnl.client.text.TextMaskCache.Mask;
 import com.science.gtnl.client.text.compat.AngelicaTextAdapter;
 import com.science.gtnl.client.text.compat.AngelicaTextAdapter.FontSettings;
 import com.science.gtnl.client.text.compat.FontBatchBridge;
+import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.text.effect.EffectTextParser;
 import com.science.gtnl.utils.text.effect.TextEffectStyle;
 
@@ -97,8 +98,8 @@ public class EffectTextRenderer implements IResourceManagerReloadListener {
                 break;
             }
         }
-        if (!styled) {
-            // Invalid declarations must not flush another renderer's deferred font or model batches.
+        if (!styled || !MainConfig.client.enableTextEffects) {
+            // Plain rendering keeps parsed text visible without touching deferred font or model batches.
             for (DrawRun run : layout.runs()) drawPlain(font, run.text(), x + run.x(), y + run.y(), color, shadow);
             return endX(font, layout, x, shadow);
         }

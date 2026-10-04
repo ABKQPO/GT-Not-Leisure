@@ -37,6 +37,8 @@ GT5U.gui.text.recipe_result.parallel_zero=§4Insufficient parallel, check whethe
 GT5U.gui.text.recipe_result.crash=§4Machine turned off due to crash. Refer to the log for more info.
 
 gtnl.gui.config.general=GTNL General Config
+gtnl.gui.config.general.client=Client Settings
+gtnl.gui.config.general.client.tooltip=Client-side display options.
 gtnl.gui.config.general.debug=Debug Settings
 gtnl.gui.config.general.debug.tooltip=Options for GTNL development and debugging.
 gtnl.gui.config.general.effect=Effect Settings
@@ -60,6 +62,9 @@ gtnl.gui.config.general.minecraft.tooltip=Modifications made to some aspects of 
 
 gtnl.gui.config.general.debug.enabledebugmode=Debug Mode
 gtnl.gui.config.general.debug.enabledebugmode.tooltip=Enable debug print log output.
+
+gtnl.gui.config.general.client.enable_text_effects=Animated Text Effects
+gtnl.gui.config.general.client.enable_text_effects.tooltip=Render animated text effects. When disabled, styled text is shown as ordinary text.
 
 gtnl.gui.config.general.effect.enableghostlyshape=Enable Ghostly Shape
 gtnl.gui.config.general.effect.enableghostlyshape.tooltip=When the player dies and respawns, give the player the Ghost Shape effect.

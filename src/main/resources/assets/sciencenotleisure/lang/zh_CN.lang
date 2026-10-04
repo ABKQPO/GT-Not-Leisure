@@ -37,6 +37,8 @@ GT5U.gui.text.recipe_result.parallel_zero=§4并行不足，检查你的输入�
 GT5U.gui.text.recipe_result.crash=§4很抱歉，你的机器出现了一些问题……        如果要寻求帮助，请把错误报告和日志文件发给对方，而不是发送这个窗口的照片或者截图或者文本。
 
 gtnl.gui.config.general=GTNL 总览配置
+gtnl.gui.config.general.client=客户端设置
+gtnl.gui.config.general.client.tooltip=调整仅在客户端生效的内容
 gtnl.gui.config.general.debug=调试设置
 gtnl.gui.config.general.debug.tooltip=GTNL 开发与调试相关选项
 gtnl.gui.config.general.effect=效果设置
@@ -60,6 +62,9 @@ gtnl.gui.config.general.minecraft.tooltip=针对Minecraft的一些东西做出�
 
 gtnl.gui.config.general.debug.enabledebugmode=调试模式
 gtnl.gui.config.general.debug.enabledebugmode.tooltip=启用调试日志输出
+
+gtnl.gui.config.general.client.enable_text_effects=动态文字特效
+gtnl.gui.config.general.client.enable_text_effects.tooltip=启用动态文字特效。关闭后，含特效的文字以普通文字显示
 
 gtnl.gui.config.general.effect.enableghostlyshape=启用幽灵形态
 gtnl.gui.config.general.effect.enableghostlyshape.tooltip=当玩家死亡重生时，给予玩家幽灵形态效果
