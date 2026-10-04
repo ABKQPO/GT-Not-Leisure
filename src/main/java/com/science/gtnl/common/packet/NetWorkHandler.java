@@ -28,6 +28,7 @@ public class NetWorkHandler {
         registerServerbound(GetTileEntityNBTRequestPacket.class);
         registerServerbound(TeleportRequestPacket.class);
         registerServerbound(KeyBindingHandler.class);
+        registerServerbound(MajoBroomActionPacket.class);
         registerServerbound(WirelessPickBlock.class);
         registerClientbound(SudoPacket.class);
         registerServerbound(NBTUpdatePacket.class);

@@ -26,6 +26,9 @@ import com.science.gtnl.common.item.items.DireCraftPattern;
 import com.science.gtnl.common.item.items.ElectricProspectorTool;
 import com.science.gtnl.common.item.items.FakeItemSiren;
 import com.science.gtnl.common.item.items.GTNLItemBucket;
+import com.science.gtnl.common.item.items.ItemElainaBrooch;
+import com.science.gtnl.common.item.items.ItemElainaBroom;
+import com.science.gtnl.common.item.items.ItemMajoBroom;
 import com.science.gtnl.common.item.items.ItemPartActiveFormationPlane;
 import com.science.gtnl.common.item.items.ItemPartBeamFormer;
 import com.science.gtnl.common.item.items.ItemPartDenseEnergyCell;
@@ -49,6 +52,8 @@ import com.science.gtnl.common.item.items.TimeStopPocketWatch;
 import com.science.gtnl.common.item.items.TwilightSword;
 import com.science.gtnl.common.item.items.VeinMiningPickaxe;
 import com.science.gtnl.common.item.items.WirelessUpgradeChip;
+import com.science.gtnl.common.item.items.armor.MajoHat;
+import com.science.gtnl.common.item.items.armor.MajoRobe;
 import com.science.gtnl.common.item.items.armor.SoulCardboardArmor;
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionBauble;
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionType;
@@ -173,6 +178,12 @@ public class ItemLoader {
         "soul_cardboard_boots",
         3,
         GTNLItemList.SoulCardboardBoots);
+
+    public static MajoHat majoHat = new MajoHat();
+    public static MajoRobe majoRobe = new MajoRobe();
+    public static ItemMajoBroom majoBroom = new ItemMajoBroom();
+    public static ItemElainaBroom elainaBroom = new ItemElainaBroom();
+    public static ItemElainaBrooch elainaBrooch = new ItemElainaBrooch();
 
     public static SuperReachRing superReachRing = new SuperReachRing();
     public static SatietyRing satietyRing = new SatietyRing();
