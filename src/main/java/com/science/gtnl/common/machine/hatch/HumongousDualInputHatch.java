@@ -90,6 +90,7 @@ public class HumongousDualInputHatch extends DualInputHatch
                 fluid -> mStoredFluid[index] = fluid,
                 mCapacityPer);
         }
+        this.inventory = new HumongousInventory(mStoredFluid);
         this.disableSort = true;
     }
 
@@ -584,5 +585,50 @@ public class HumongousDualInputHatch extends DualInputHatch
     private ItemStack getArrayStack(ItemStack[] array, int index) {
         if (array == null || index < 0 || index >= array.length) return null;
         return array[index];
+    }
+
+    private class HumongousInventory extends Inventory {
+
+        private HumongousInventory(FluidStack[] fluid) {
+            super(new ItemStack[0], fluid);
+        }
+
+        @Override
+        public ItemStack[] getItemInputs() {
+            if (isEmpty()) return new ItemStack[0];
+
+            ItemStack[] visibleStacks = processing > 0 && containedStacks != null ? containedStacks : mInventory;
+            int itemCount = 0;
+            for (int i = 0; i < getItemStorageSlotCount(); i++) {
+                ItemStack stack = visibleStacks[i];
+                if (stack != null && stack.stackSize > 0) itemCount++;
+            }
+
+            ItemStack circuit = mInventory[getCircuitSlot()];
+            ItemStack[] inputs = new ItemStack[itemCount + (circuit == null ? 0 : 1)];
+            int index = 0;
+            for (int i = 0; i < getItemStorageSlotCount(); i++) {
+                ItemStack stack = visibleStacks[i];
+                if (stack != null && stack.stackSize > 0) inputs[index++] = stack;
+            }
+            if (circuit != null) inputs[index] = circuit;
+            return inputs;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            ItemStack[] visibleStacks = processing > 0 && containedStacks != null ? containedStacks : mInventory;
+            for (int i = 0; i < getItemStorageSlotCount(); i++) {
+                ItemStack stack = visibleStacks[i];
+                if (stack != null && stack.stackSize > 0) return false;
+            }
+            if (mInventory[getCircuitSlot()] != null) return false;
+            if (fluidInventory != null) {
+                for (FluidStack fluid : fluidInventory) {
+                    if (fluid != null && fluid.amount > 0) return false;
+                }
+            }
+            return true;
+        }
     }
 }
