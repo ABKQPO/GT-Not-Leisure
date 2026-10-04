@@ -5,7 +5,6 @@ import static com.science.gtnl.common.item.items.SuspiciousStew.registerFlower;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -124,7 +123,7 @@ public class ItemLoader {
     public static ItemInfinityItem superstrongSponge = new ItemInfinityItem(
         "superstrong_sponge",
         "gtnl.superstrong_sponge",
-        (Block) null,
+        null,
         null,
         false,
         GTNLItemList.SuperstrongSponge);

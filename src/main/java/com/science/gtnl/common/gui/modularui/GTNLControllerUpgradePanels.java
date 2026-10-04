@@ -181,11 +181,13 @@ public class GTNLControllerUpgradePanels {
         int rows) {
         NBTTagSyncHandler paidCostsSyncer = getPaidCostsSyncer(syncManager, currentPanel, displayPage);
         return new Grid().coverChildren()
-            .gridOfWidthHeight(columns, rows, (x, y, index) -> {
-                return createCostWidget(
-                    () -> getUpgradeItem(currentPanel, displayPage, index),
-                    () -> getPaidCost(paidCostsSyncer, index)).size(COST_CELL_WIDTH, ItemSlot.SIZE);
-            });
+            .gridOfWidthHeight(
+                columns,
+                rows,
+                (x, y,
+                    index) -> createCostWidget(
+                        () -> getUpgradeItem(currentPanel, displayPage, index),
+                        () -> getPaidCost(paidCostsSyncer, index)).size(COST_CELL_WIDTH, ItemSlot.SIZE));
     }
 
     private Flow createCostWidget(Supplier<ItemStack> stackSupplier, IntSupplier paidCostSupplier) {

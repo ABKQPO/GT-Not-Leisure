@@ -18,7 +18,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class MixinItemStack {
 
     @Shadow
-    private Item field_151002_e;
+    public Item field_151002_e;
 
     @SideOnly(Side.CLIENT)
     @Inject(method = "getItemSpriteNumber", at = @At("HEAD"), cancellable = true)

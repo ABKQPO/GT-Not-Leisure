@@ -1,6 +1,7 @@
 package com.science.gtnl.mixins.early.aprilFool;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -17,6 +18,7 @@ import lombok.Setter;
 @Mixin(value = CommonMetaTileEntity.class, remap = false)
 public class MixinCommonMetaTileEntity implements IRenderAngle {
 
+    @Unique
     @Getter
     @Setter
     public double renderAngle = 0f;

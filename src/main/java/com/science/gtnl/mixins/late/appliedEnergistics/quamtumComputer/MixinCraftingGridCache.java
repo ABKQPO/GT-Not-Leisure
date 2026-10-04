@@ -22,11 +22,11 @@ public abstract class MixinCraftingGridCache {
 
     @Shadow
     @Final
-    private IGrid grid;
+    protected IGrid grid;
 
     @Shadow
     @Final
-    private Set<CraftingCPUCluster> craftingCPUClusters;
+    protected Set<CraftingCPUCluster> craftingCPUClusters;
 
     @Shadow
     public abstract void addLink(final CraftingLink link);

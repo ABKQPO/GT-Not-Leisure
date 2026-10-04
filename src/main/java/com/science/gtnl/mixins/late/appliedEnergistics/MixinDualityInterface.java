@@ -112,7 +112,6 @@ public abstract class MixinDualityInterface implements IDualityInterface {
     @Shadow
     private ScheduledReason scheduledReason;
     @Shadow
-    @Final
     @Mutable
     private boolean isFluidInterface;
 

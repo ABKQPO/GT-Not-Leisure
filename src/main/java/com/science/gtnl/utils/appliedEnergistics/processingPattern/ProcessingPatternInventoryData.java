@@ -60,8 +60,7 @@ public class ProcessingPatternInventoryData {
 
         NBTTagCompound stored = previous.getCompoundTag(name);
         NBTTagCompound current = destination.getCompoundTag(name);
-        for (Object keyObject : stored.func_150296_c()) {
-            String key = (String) keyObject;
+        for (String key : stored.func_150296_c()) {
             if (!key.startsWith("#")) {
                 continue;
             }
@@ -88,8 +87,7 @@ public class ProcessingPatternInventoryData {
         NBTTagCompound saved = root.getCompoundTag(OVERFLOW_TAG)
             .getCompoundTag(name);
         NBTTagCompound current = inventory.getCompoundTag(name);
-        for (Object keyObject : saved.func_150296_c()) {
-            String key = (String) keyObject;
+        for (String key : saved.func_150296_c()) {
             if (!current.hasKey(key)) {
                 current.setTag(
                     key,
@@ -105,8 +103,7 @@ public class ProcessingPatternInventoryData {
     public static void saveOverflow(NBTTagCompound root, NBTTagCompound inventory, String name, int nativeCapacity) {
         NBTTagCompound current = inventory.getCompoundTag(name);
         NBTTagCompound saved = new NBTTagCompound();
-        for (Object keyObject : current.func_150296_c()) {
-            String key = (String) keyObject;
+        for (String key : current.func_150296_c()) {
             if (!key.startsWith("#")) {
                 continue;
             }

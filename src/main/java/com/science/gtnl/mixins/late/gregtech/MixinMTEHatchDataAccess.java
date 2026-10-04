@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -23,7 +24,9 @@ public abstract class MixinMTEHatchDataAccess extends MTEHatch implements IAddUI
     @Shadow
     private List<GTRecipe.RecipeAssemblyLine> cachedRecipes;
 
+    @Unique
     private int science$cachedAssemblyLineRecipeCount = -1;
+    @Unique
     private int science$cachedTecTechRecipeCount = -1;
 
     public MixinMTEHatchDataAccess(int aID, String aName, String aNameRegional, int aTier, int aInvSlotCount,

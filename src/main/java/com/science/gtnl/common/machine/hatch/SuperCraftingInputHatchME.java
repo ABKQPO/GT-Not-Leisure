@@ -922,7 +922,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
                     displayStack.stackSize = 1;
                     NBTTagCompound entry = displayStack.writeToNBT(new NBTTagCompound());
                     String key = "item:" + entry;
-                    entryToAmount.merge(key, (long) item.stackSize, Long::sum);
+                    entryToAmount.merge(key, item.stackSize, Long::sum);
                     entries.putIfAbsent(key, entry);
                 }
             }
@@ -932,7 +932,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
                     displayFluid.amount = 1;
                     NBTTagCompound entry = displayFluid.writeToNBT(new NBTTagCompound());
                     String key = "fluid:" + entry;
-                    entryToAmount.merge(key, (long) fluid.amount, Long::sum);
+                    entryToAmount.merge(key, fluid.amount, Long::sum);
                     entries.putIfAbsent(key, entry);
                 }
             }

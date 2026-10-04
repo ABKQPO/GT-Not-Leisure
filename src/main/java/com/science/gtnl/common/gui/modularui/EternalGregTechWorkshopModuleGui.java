@@ -157,7 +157,7 @@ public class EternalGregTechWorkshopModuleGui extends GTNLMultiBlockBaseGui<Eter
 
     @Override
     protected ToggleButton createBatchModeButton(PanelSyncManager syncManager) {
-        return ((ToggleButton) super.createBatchModeButton(syncManager)).size(16)
+        return super.createBatchModeButton(syncManager).size(16)
             .background(GTGuiTextures.TT_BUTTON_CELESTIAL_32x32)
             .selectedBackground(GTGuiTextures.TT_BUTTON_CELESTIAL_32x32)
             .overlay(
@@ -170,7 +170,7 @@ public class EternalGregTechWorkshopModuleGui extends GTNLMultiBlockBaseGui<Eter
 
     @Override
     protected ToggleButton createLockToSingleRecipeButton(PanelSyncManager syncManager) {
-        return ((ToggleButton) super.createLockToSingleRecipeButton(syncManager)).size(16)
+        return super.createLockToSingleRecipeButton(syncManager).size(16)
             .background(GTGuiTextures.TT_BUTTON_CELESTIAL_32x32)
             .selectedBackground(GTGuiTextures.TT_BUTTON_CELESTIAL_32x32)
             .overlay(

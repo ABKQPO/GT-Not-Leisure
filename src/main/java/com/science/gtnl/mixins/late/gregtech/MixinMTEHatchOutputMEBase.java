@@ -1,5 +1,6 @@
 package com.science.gtnl.mixins.late.gregtech;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -12,6 +13,7 @@ import gregtech.common.tileentities.machines.outputme.util.AECacheCounter;
 @Mixin(value = MTEHatchOutputMEBase.class, remap = false)
 public abstract class MixinMTEHatchOutputMEBase<T extends IAEStack<T>> implements IOutputMEProviderTransfer<T> {
 
+    @Final
     @Shadow
     protected AECacheCounter<T> cache;
 

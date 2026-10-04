@@ -271,6 +271,7 @@ public abstract class MixinWirelessPatternTerminalGuiObject
             : page;
     }
 
+    @Unique
     private static int countNonNull(IAEStack<?>[] stacks) {
         int count = 0;
         for (IAEStack<?> stack : stacks) {

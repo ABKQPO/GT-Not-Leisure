@@ -30,6 +30,7 @@ public abstract class MixinGuiCraftingCPUTable {
         ScienceNotLeisure.MODID,
         "textures/gui/ecalculator_gui_2.png");
 
+    @Unique
     private static final int CPU_CRAFTING_ICON_SIZE = 16;
 
     @WrapOperation(

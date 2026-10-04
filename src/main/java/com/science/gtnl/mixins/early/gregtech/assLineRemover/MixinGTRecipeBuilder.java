@@ -43,7 +43,7 @@ public class MixinGTRecipeBuilder {
     @Shadow
     protected int eut;
 
-    @Inject(method = "addTo", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "addTo*", at = @At("HEAD"), cancellable = true)
     private void science$assLineRecipeHook(IRecipeMap recipeMap, CallbackInfoReturnable<Collection<GTRecipe>> cir) {
         if (recipeMap == GTRecipeConstants.AssemblyLine) {
             if (this.metadataStorage != null) {

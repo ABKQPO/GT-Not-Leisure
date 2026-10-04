@@ -5,6 +5,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -69,6 +70,7 @@ public abstract class MixinGuiPatternTermEx extends GuiPatternTerm {
         callbackInfo.cancel();
     }
 
+    @Unique
     private void gtnl$layoutSlots(VirtualMEPhantomSlot[] slots, boolean largeSide, int pages, int activePage,
         int offsetX, int offsetY) {
         int slotsPerPage = largeSide ? ProcessingPatternCapacity.SLOTS_PER_PAGE

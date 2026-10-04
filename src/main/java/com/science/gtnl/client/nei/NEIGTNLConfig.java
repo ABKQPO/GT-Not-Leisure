@@ -136,7 +136,7 @@ public class NEIGTNLConfig implements IConfigureNEI {
         ItemStack stack = item.get(1);
         if (stack == null || stack.getItem() == null) return;
 
-        String registryName = (String) Item.itemRegistry.getNameForObject(stack.getItem());
+        String registryName = Item.itemRegistry.getNameForObject(stack.getItem());
         if (registryName == null || registryName.isEmpty()) return;
 
         InformationHandler.addInformationPage("<" + registryName + ":" + stack.getItemDamage() + ">", infoKey);

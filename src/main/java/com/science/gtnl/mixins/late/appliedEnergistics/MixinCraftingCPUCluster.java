@@ -52,10 +52,10 @@ public abstract class MixinCraftingCPUCluster {
     private static final CraftingBatchPlanner GTNL$BATCH_PLANNER = new CraftingBatchPlannerImpl();
 
     @Shadow
-    private int remainingOperations;
+    protected int remainingOperations;
 
     @Shadow
-    private MECraftingInventory inventory;
+    protected MECraftingInventory inventory;
 
     /**
      * Starts one dispatch context after AE resolves every medium registered for the pattern.

@@ -36,7 +36,7 @@ public class MultiEssentiaJarRenderer extends TileJarRenderer {
 
     @Override
     public void renderTileEntityAt(TileJar tile, double x, double y, double z, float partialTicks) {
-        if (!(tile instanceof TileEntityMultiEssentiaJar)) {
+        if (!(tile instanceof TileEntityMultiEssentiaJar fillable)) {
             super.renderTileEntityAt(tile, x, y, z, partialTicks);
             return;
         }
@@ -47,7 +47,6 @@ public class MultiEssentiaJarRenderer extends TileJarRenderer {
         GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        TileJarFillable fillable = (TileJarFillable) tile;
         if (fillable.amount > 0) {
             renderLiquid(fillable, x, y, z, partialTicks);
         }
