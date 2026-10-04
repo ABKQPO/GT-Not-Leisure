@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.github.vfyjxf.nee.nei.NEEPatternTerminalHandler;
+import com.science.gtnl.config.MainConfig;
 
 import gregtech.api.util.GTOreDictUnificator;
 
@@ -25,6 +26,7 @@ public abstract class MixinNEEPatternTerminalHandler {
             remap = true,
             ordinal = 1))
     public ItemStack gtnl$replaceOutputStack(ItemStack instance) {
+        if (!MainConfig.other.not_enough_items.enableReplaceHotIngotInPattern) return instance.copy();
         int[] oreIDs = OreDictionary.getOreIDs(instance);
 
         for (int oreId : oreIDs) {

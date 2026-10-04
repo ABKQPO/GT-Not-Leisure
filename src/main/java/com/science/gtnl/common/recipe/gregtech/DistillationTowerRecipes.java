@@ -5,12 +5,12 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import bartworks.system.material.WerkstoffLoader;
 import goodgenerator.items.GGMaterial;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
@@ -93,7 +93,7 @@ public class DistillationTowerRecipes implements IRecipePool {
             .itemInputs(
                 new ItemStack(BOPBlockRegistrator.leaves_Pine, 64),
                 new ItemStack(BOPBlockRegistrator.leaves_Pine, 64))
-            .itemOutputs(GTModHandler.getModItem(Mods.Witchery.ID, "ingredient", 8, 18))
+            .itemOutputs(ModsItemlist.WitcheryWoodAsh.get(8))
             .fluidInputs(GTModHandler.getDistilledWater(128000))
             .fluidOutputs(
                 Materials.Steam.getGas(64000),

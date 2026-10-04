@@ -17,6 +17,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
 import com.science.gtnl.utils.selector.EntitySelector;
 
@@ -125,6 +126,7 @@ public abstract class MixinCommandKill extends CommandBase {
         return null;
     }
 
+    @Unique
     private static String[] getEntityTypes() {
         Set<String> set = EntityList.stringToClassMapping.keySet();
 

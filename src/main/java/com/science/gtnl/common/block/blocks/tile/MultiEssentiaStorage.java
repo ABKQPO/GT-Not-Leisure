@@ -1,6 +1,7 @@
 package com.science.gtnl.common.block.blocks.tile;
 
 import java.util.Comparator;
+import java.util.Map;
 
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -194,7 +195,7 @@ public class MultiEssentiaStorage {
         return aspectList.aspects.entrySet()
             .stream()
             .filter(entry -> entry.getKey() != null && entry.getValue() != null && entry.getValue() > 0)
-            .map(entry -> entry.getKey())
+            .map(Map.Entry::getKey)
             .sorted(Comparator.comparing(Aspect::getTag))
             .toArray(Aspect[]::new);
     }

@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: dev-release-build
+  group: dev-release-build-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -19,8 +19,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     env:
-      VERSION: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
-      RELEASE_VERSION: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
+      SOURCE_REF: ${{ github.head_ref || github.ref_name }}
       SNAPSHOT: ${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '[snapshot]')) || endsWith(github.event_name == 'pull_request' && github.head_ref || github.ref_name, '-snapshot') }}
       MAVEN_PUBLISHING_URL: ${{ vars.MAVEN_PUBLISHING_URL || 'https://nexus.gtnewhorizons.com/repository/releases/' }}
 
@@ -51,6 +50,14 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Set artifact version
+        run: |
+          version=$(printf '%s' "$SOURCE_REF" | LC_ALL=C sed -E 's/[^A-Za-z0-9._-]+/-/g; s/^-+//; s/-+$//')
+          if [[ -z "$version" ]]; then
+            version="${GITHUB_SHA:0:12}"
+          fi
+          printf 'VERSION=%s\nRELEASE_VERSION=%s\n' "$version" "$version" >> "$GITHUB_ENV"
+
       - name: Setup the workspace
         run: ./gradlew --build-cache --info --stacktrace setupCIWorkspace
 
@@ -66,7 +73,7 @@ jobs:
           if-no-files-found: error
 
       - name: Release
-        if: github.event_name != 'pull_request'
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         uses: softprops/action-gh-release@v2
         with:
           name: Dev Build

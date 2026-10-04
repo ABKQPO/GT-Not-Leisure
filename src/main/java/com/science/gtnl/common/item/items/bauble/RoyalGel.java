@@ -12,7 +12,6 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.item.BaubleItem;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.item.ItemUtils;
 
 import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
@@ -40,7 +39,7 @@ public class RoyalGel extends BaubleItem {
 
     @Override
     public BaubleType getBaubleType(ItemStack stack) {
-        return ItemUtils.UNIVERSAL_TYPE;
+        return UNIVERSAL_TYPE;
     }
 
     @Override

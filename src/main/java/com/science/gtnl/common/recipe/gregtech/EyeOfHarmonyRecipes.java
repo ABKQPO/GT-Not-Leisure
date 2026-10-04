@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import com.dreammaster.item.NHItemList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.EyeOfHarmonyRecipeFactory;
 
 import bartworks.system.material.WerkstoffLoader;
@@ -12,7 +13,6 @@ import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
-import gregtech.api.util.GTModHandler;
 import gtPlusPlus.core.material.MaterialsElements;
 import gtnhlanth.common.register.WerkstoffMaterialPool;
 import tectech.util.FluidStackLong;
@@ -23,7 +23,7 @@ public class EyeOfHarmonyRecipes implements IRecipePool {
     @Override
     public void loadRecipes() {
         EyeOfHarmonyRecipeFactory.addCustomRecipeEntry(
-            GTModHandler.getModItem(Mods.EternalSingularity.ID, "combined_singularity", 1, 15),
+            ModsItemlist.VoidSingularity.get(1),
             new ItemStackLong[] { new ItemStackLong(WerkstoffMaterialPool.Gangue.get(OrePrefixes.dust, 1), 1519274962L),
                 new ItemStackLong(WerkstoffLoader.Bismutite.get(OrePrefixes.dust, 1), 161842735L),
                 new ItemStackLong(WerkstoffLoader.VanadioOxyDravit.get(OrePrefixes.dust, 1), 154923846L),

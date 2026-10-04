@@ -10,6 +10,7 @@ import net.minecraftforge.fluids.FluidStack;
 import com.github.bsideup.jabel.Desugar;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 import com.science.gtnl.utils.recipes.metadata.ResourceCollectionModuleMetadata;
@@ -19,11 +20,9 @@ import bartworks.system.material.WerkstoffLoader;
 import goodgenerator.items.GGMaterial;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.core.fluids.GTPPFluids;
@@ -303,9 +302,7 @@ public class SpaceMinerRecipes implements IRecipePool {
                         GTOreDictUnificator.get(OrePrefixes.ore, Materials.VanadiumMagnetite, 1)),
                     GTUtility.copyAmountUnsafe(80, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Gold, 1)),
                     GTUtility.copyAmountUnsafe(60, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Endium, 1)),
-                    GTUtility.copyAmountUnsafe(
-                        60,
-                        GTModHandler.getModItem(Mods.HardcoreEnderExpansion.ID, "end_powder_ore", 1)),
+                    GTUtility.copyAmountUnsafe(60, ModsItemlist.HardcoreEnderExpansionEndPowderOre.get(1)),
                     GTUtility.copyAmountUnsafe(240, GTOreDictUnificator.get(OrePrefixes.ore, Materials.Cheese, 1)))),
             new OreGroup(
                 1,

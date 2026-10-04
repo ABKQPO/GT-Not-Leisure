@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 import com.science.gtnl.api.ITileEntityTickAcceleration;
+import com.science.gtnl.api.mixinHelper.IInterfaceNameHatch;
 import com.science.gtnl.asm.GTNLEarlyCoreMod;
 import com.science.gtnl.utils.item.ItemUtils;
 
@@ -25,8 +26,7 @@ import gregtech.api.interfaces.INonConsumedItemDisplay;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.metatileentity.CommonBaseMetaTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
-import gregtech.api.metatileentity.implementations.MTEHatchInput;
-import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
+import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.common.render.IMTERenderer;
 import gregtech.crossmod.ae2.ChatComponentNonConsumedItemsSuffix;
@@ -60,7 +60,9 @@ public abstract class MixinBaseMetaTileEntity extends CommonBaseMetaTileEntity i
             return nameSuffix;
         }
 
-        RecipeMap<?> recipeMap = gtnl$getHatchRecipeMap();
+        RecipeMap<?> recipeMap = mMetaTileEntity instanceof IInterfaceNameHatch hatch
+            ? hatch.getInterfaceNameRecipeMap()
+            : null;
         if (recipeMap != null) {
             IChatComponent recipeMapSuffix = new ChatComponentText(" - ")
                 .appendSibling(new ChatComponentTranslation(recipeMap.unlocalizedName));
@@ -75,15 +77,9 @@ public abstract class MixinBaseMetaTileEntity extends CommonBaseMetaTileEntity i
     }
 
     @Unique
-    private RecipeMap<?> gtnl$getHatchRecipeMap() {
-        if (mMetaTileEntity instanceof MTEHatchInput inputHatch) return inputHatch.mRecipeMap;
-        if (mMetaTileEntity instanceof MTEHatchInputBus inputBus) return inputBus.mRecipeMap;
-        return null;
-    }
-
-    @Unique
     private List<ItemStack> gtnl$getExtraItems(RecipeMap<?> recipeMap) {
-        if (!(mMetaTileEntity instanceof MTEHatchInput) && !(mMetaTileEntity instanceof MTEHatchInputBus)) {
+        if (!(mMetaTileEntity instanceof MTEHatch)
+            || mMetaTileEntity instanceof IInterfaceNameHatch hatch && hatch.handlesOwnInterfaceName()) {
             return Collections.emptyList();
         }
 

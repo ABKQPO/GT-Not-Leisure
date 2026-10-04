@@ -407,7 +407,7 @@ public class InfinitySword extends ItemSword implements ICosmicRenderItem, Subti
             }
 
             if (entity instanceof EntityDragon) {
-                applyPlayerLethalDamage((EntityLivingBase) entity, player);
+                applyPlayerLethalDamage(entity, player);
                 return true;
             }
 

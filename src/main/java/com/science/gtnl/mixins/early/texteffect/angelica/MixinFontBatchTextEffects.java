@@ -4,6 +4,7 @@ import net.minecraft.client.gui.FontRenderer;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -126,7 +127,10 @@ public abstract class MixinFontBatchTextEffects implements FontBatchBridge {
 
     @Redirect(
         method = { "flushBatchInner", "setupFontDrawState" },
-        at = @At(value = "FIELD", target = "Lcom/gtnewhorizons/angelica/config/FontConfig;fontAAMode:I"),
+        at = @At(
+            value = "FIELD",
+            target = "Lcom/gtnewhorizons/angelica/config/FontConfig;fontAAMode:I",
+            opcode = Opcodes.GETSTATIC),
         remap = false,
         require = 3)
     private int gtnl$sharpMaskCoverage() {

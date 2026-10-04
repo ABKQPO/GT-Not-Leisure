@@ -8,6 +8,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import com.dreammaster.item.NHItemList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
@@ -18,7 +19,6 @@ import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
@@ -155,18 +155,18 @@ public class FishingGroundRecipes implements IRecipePool {
             .itemOutputs(
                 new ItemStack(Blocks.waterlily, 32),
                 new ItemStack(Blocks.vine, 32),
-                GTModHandler.getModItem(Mods.TwilightForest.ID, "tile.HugeLilyPad", 32),
-                GTModHandler.getModItem(Mods.BiomesOPlenty.ID, "lilyBop", 32, 0),
-                GTModHandler.getModItem(Mods.BiomesOPlenty.ID, "lilyBop", 32, 1),
-                GTModHandler.getModItem(Mods.BiomesOPlenty.ID, "lilyBop", 32, 2),
-                GTModHandler.getModItem(Mods.BiomesOPlenty.ID, "coral1", 16, 12),
-                GTModHandler.getModItem(Mods.BiomesOPlenty.ID, "coral1", 16, 13),
-                GTModHandler.getModItem(Mods.BiomesOPlenty.ID, "coral1", 16, 14),
-                GTModHandler.getModItem(Mods.BiomesOPlenty.ID, "coral1", 16, 15),
-                GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "seaweedItem", 64),
-                GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "waterchestnutItem", 16),
-                GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "riceItem", 16),
-                GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "cranberryItem", 16))
+                ModsItemlist.TwilightForestTileHugeLilyPad.get(32),
+                ModsItemlist.BiomesOPlentyLilyBop.get(32),
+                ModsItemlist.BiomesOPlentyMediumLilyPad.get(32),
+                ModsItemlist.BiomesOPlentySmallLilyPad.get(32),
+                ModsItemlist.BiomesOPlentyPinkCoral.get(16),
+                ModsItemlist.BiomesOPlentyOrangeCoral.get(16),
+                ModsItemlist.BiomesOPlentyBlueCoral.get(16),
+                ModsItemlist.BiomesOPlentyGlowingCoral.get(16),
+                ModsItemlist.PamsHarvestCraftSeaweedItem.get(64),
+                ModsItemlist.PamsHarvestCraftWaterchestnutItem.get(16),
+                ModsItemlist.PamsHarvestCraftRiceItem.get(16),
+                ModsItemlist.PamsHarvestCraftCranberryItem.get(16))
             .fluidInputs(FluidRegistry.getFluidStack("water", 10000))
             .outputChances(6000, 6000, 3000, 4000, 4000, 4000, 2500, 2500, 2500, 2500, 7500, 5000, 5000, 5000)
             .duration(500)
@@ -177,14 +177,14 @@ public class FishingGroundRecipes implements IRecipePool {
             .itemInputs(
                 GTUtility.getIntegratedCircuit(10),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Mytryl, 32L),
-                GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "seaweedItem", 64))
+                ModsItemlist.PamsHarvestCraftSeaweedItem.get(64))
             .itemOutputs(
-                GTModHandler.getModItem(Mods.GalaxySpace.ID, "tcetiedandelions", 64, 0),
-                GTModHandler.getModItem(Mods.GalaxySpace.ID, "tcetiedandelions", 64, 1),
-                GTModHandler.getModItem(Mods.GalaxySpace.ID, "tcetiedandelions", 64, 2),
-                GTModHandler.getModItem(Mods.GalaxySpace.ID, "tcetiedandelions", 64, 3),
-                GTModHandler.getModItem(Mods.GalaxySpace.ID, "tcetiedandelions", 64, 4),
-                GTModHandler.getModItem(Mods.GalaxySpace.ID, "tcetiedandelions", 64, 5))
+                ModsItemlist.GalaxySpaceCetiESeaweedFormI.get(64),
+                ModsItemlist.GalaxySpaceCetiESeaweedFormII.get(64),
+                ModsItemlist.GalaxySpaceCetiESeaweedFormIII.get(64),
+                ModsItemlist.GalaxySpaceCetiESeaweedFormIV.get(64),
+                ModsItemlist.GalaxySpaceCetiESeaweedFormV.get(64),
+                ModsItemlist.GalaxySpaceCetiESeaweedFormVI.get(64))
             .fluidInputs(FluidRegistry.getFluidStack("unknownnutrientagar", 1000))
             .duration(1000)
             .eut(TierEU.RECIPE_LuV)
@@ -195,33 +195,33 @@ public class FishingGroundRecipes implements IRecipePool {
             RecipeBuilder.builder()
                 .itemInputs(GTUtility.getIntegratedCircuit(4), new ItemStack(Items.fishing_rod, 0))
                 .itemOutputs(
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "anchovyrawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "bassrawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "calamarirawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "carprawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "catfishrawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "charrrawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "clamrawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "crabrawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "crayfishrawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "eelrawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "frograwItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "greenheartfishItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "grouperrawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "herringrawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "jellyfishrawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "mudfishrawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "octopusrawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "perchrawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "scalloprawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "shrimprawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "snailrawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "snapperrawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "tilapiarawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "troutrawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "tunarawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "turtlerawItem", 16),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "walleyerawItem", 16))
+                    ModsItemlist.PamsHarvestCraftAnchovyrawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftBassrawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftCalamarirawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftCarprawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftCatfishrawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftCharrrawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftClamrawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftCrabrawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftCrayfishrawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftEelrawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftFrograwItem.get(16),
+                    ModsItemlist.PamsHarvestCraftGreenheartfishItem.get(16),
+                    ModsItemlist.PamsHarvestCraftGrouperrawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftHerringrawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftJellyfishrawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftMudfishrawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftOctopusrawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftPerchrawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftScalloprawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftShrimprawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftSnailrawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftSnapperrawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftTilapiarawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftTroutrawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftTunarawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftTurtlerawItem.get(16),
+                    ModsItemlist.PamsHarvestCraftWalleyerawItem.get(16))
                 .fluidInputs(FluidRegistry.getFluidStack("water", 10000))
                 .outputChances(
                     2500,
@@ -261,33 +261,33 @@ public class FishingGroundRecipes implements IRecipePool {
                     new ItemStack(Items.fishing_rod, 0),
                     GTOreDictUnificator.get(OrePrefixes.dust, Materials.MeatRaw, 16L))
                 .itemOutputs(
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "anchovyrawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "bassrawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "calamarirawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "carprawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "catfishrawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "charrrawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "clamrawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "crabrawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "crayfishrawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "eelrawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "frograwItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "greenheartfishItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "grouperrawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "herringrawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "jellyfishrawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "mudfishrawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "octopusrawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "perchrawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "scalloprawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "shrimprawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "snailrawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "snapperrawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "tilapiarawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "troutrawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "tunarawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "turtlerawItem", 32),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "walleyerawItem", 32))
+                    ModsItemlist.PamsHarvestCraftAnchovyrawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftBassrawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftCalamarirawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftCarprawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftCatfishrawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftCharrrawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftClamrawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftCrabrawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftCrayfishrawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftEelrawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftFrograwItem.get(32),
+                    ModsItemlist.PamsHarvestCraftGreenheartfishItem.get(32),
+                    ModsItemlist.PamsHarvestCraftGrouperrawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftHerringrawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftJellyfishrawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftMudfishrawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftOctopusrawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftPerchrawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftScalloprawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftShrimprawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftSnailrawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftSnapperrawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftTilapiarawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftTroutrawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftTunarawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftTurtlerawItem.get(32),
+                    ModsItemlist.PamsHarvestCraftWalleyerawItem.get(32))
                 .fluidInputs(FluidRegistry.getFluidStack("water", 10000))
                 .outputChances(
                     7500,
@@ -327,33 +327,33 @@ public class FishingGroundRecipes implements IRecipePool {
                     new ItemStack(Items.fishing_rod, 0),
                     GTOreDictUnificator.get(OrePrefixes.dust, Materials.MeatCooked, 16L))
                 .itemOutputs(
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "anchovyrawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "bassrawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "calamarirawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "carprawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "catfishrawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "charrrawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "clamrawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "crabrawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "crayfishrawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "eelrawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "frograwItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "greenheartfishItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "grouperrawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "herringrawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "jellyfishrawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "mudfishrawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "octopusrawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "perchrawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "scalloprawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "shrimprawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "snailrawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "snapperrawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "tilapiarawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "troutrawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "tunarawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "turtlerawItem", 64),
-                    GTModHandler.getModItem(Mods.PamsHarvestCraft.ID, "walleyerawItem", 64))
+                    ModsItemlist.PamsHarvestCraftAnchovyrawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftBassrawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftCalamarirawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftCarprawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftCatfishrawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftCharrrawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftClamrawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftCrabrawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftCrayfishrawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftEelrawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftFrograwItem.get(64),
+                    ModsItemlist.PamsHarvestCraftGreenheartfishItem.get(64),
+                    ModsItemlist.PamsHarvestCraftGrouperrawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftHerringrawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftJellyfishrawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftMudfishrawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftOctopusrawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftPerchrawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftScalloprawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftShrimprawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftSnailrawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftSnapperrawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftTilapiarawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftTroutrawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftTunarawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftTurtlerawItem.get(64),
+                    ModsItemlist.PamsHarvestCraftWalleyerawItem.get(64))
                 .fluidInputs(FluidRegistry.getFluidStack("water", 10000))
                 .outputChances(
                     9000,

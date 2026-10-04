@@ -8,6 +8,7 @@ import com.dreammaster.item.NHItemList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import cpw.mods.fml.common.Optional;
@@ -16,7 +17,6 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 
@@ -155,7 +155,7 @@ public class PrimitiveBrickKilnRecipes implements IRecipePool {
             .addTo(PBKR);
         RecipeBuilder.builder()
             .itemInputs(NHItemList.AdvancedCokeOvenBrick.get(4))
-            .itemOutputs(GTModHandler.getModItem(Mods.Railcraft.ID, "machine.alpha", 1, 12))
+            .itemOutputs(ModsItemlist.RailcraftAdvancedCokeOvenBrick.get(1))
             .duration(200)
             .eut(16)
             .addTo(PBKR);

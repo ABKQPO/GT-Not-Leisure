@@ -43,7 +43,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
 
     public UUID ownerUUID;
     @Getter
-    public boolean wirelessMode = getDefaultWirelessMode();
+    public boolean wirelessMode;
     @Getter
     @Setter
     public boolean wirelessUpgrade = false;
@@ -333,10 +333,6 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
 
     @Override
     public boolean getDefaultHasMaintenanceChecks() {
-        return false;
-    }
-
-    public boolean getDefaultWirelessMode() {
         return false;
     }
 

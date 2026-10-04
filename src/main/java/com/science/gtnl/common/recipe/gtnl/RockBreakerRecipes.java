@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import appeng.api.AEApi;
@@ -13,7 +14,6 @@ import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipeBuilder;
 import gregtech.api.util.GTUtility;
@@ -55,7 +55,7 @@ public class RockBreakerRecipes implements IRecipePool {
             RecipeBuilder.builder()
                 .itemInputs(
                     GTUtility.getIntegratedCircuit(4),
-                    GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "blue_ice", 0, 0),
+                    ModsItemlist.EtFuturumRequiemBlueIce.get(0),
                     new ItemStack(Blocks.soul_sand, 0))
                 .itemOutputs(GTOreDictUnificator.get(OrePrefixes.stone, Materials.Basalt, 1L))
                 .duration(16 * GTRecipeBuilder.TICKS)
@@ -65,9 +65,9 @@ public class RockBreakerRecipes implements IRecipePool {
             RecipeBuilder.builder()
                 .itemInputs(
                     GTUtility.getIntegratedCircuit(5),
-                    GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "magma", 0, 0),
+                    ModsItemlist.EtFuturumRequiemMagma.get(0),
                     new ItemStack(Blocks.soul_sand, 0))
-                .itemOutputs(GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "cobbled_deepslate", 1, 0))
+                .itemOutputs(ModsItemlist.EtFuturumRequiemCobbledDeepslate.get(1))
                 .duration(16 * GTRecipeBuilder.TICKS)
                 .eut(TierEU.RECIPE_LV)
                 .addTo(RBR);

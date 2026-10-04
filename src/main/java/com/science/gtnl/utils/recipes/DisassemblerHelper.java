@@ -20,6 +20,7 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.recipe.gtnl.ShimmerRecipes;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.utils.enums.ModsItemlist;
 
 import appeng.api.AEApi;
 import appeng.api.util.AEColor;
@@ -32,12 +33,10 @@ import gregtech.api.items.MetaGeneratedTool;
 import gregtech.api.objects.GTItemStack;
 import gregtech.api.objects.ItemData;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gtnhintergalactic.recipe.IGRecipeMaps;
-import ic2.api.item.IC2Items;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
@@ -63,23 +62,23 @@ public class DisassemblerHelper {
         inputBlacklist.add(new GTItemStack(CustomItemList.hatch_CreativeMaintenance.get(1)));
 
         if (Mods.Railcraft.isModLoaded()) {
-            inputBlacklist.add(new GTItemStack(GTModHandler.getModItem(Mods.Railcraft.ID, "track", 1L, 0)));
-            inputBlacklist.add(new GTItemStack(GTModHandler.getModItem(Mods.Railcraft.ID, "track", 1L, 736)));
-            inputBlacklist.add(new GTItemStack(GTModHandler.getModItem(Mods.Railcraft.ID, "track", 1L, 816)));
+            inputBlacklist.add(new GTItemStack(ModsItemlist.RailcraftTrack.get(1L)));
+            inputBlacklist.add(new GTItemStack(ModsItemlist.RailcraftTrackLegacyDamage736.get(1L)));
+            inputBlacklist.add(new GTItemStack(ModsItemlist.RailcraftTrackLegacyDamage816.get(1L)));
         }
 
-        inputBlacklist.add(new GTItemStack(IC2Items.getItem("mixedMetalIngot")));
-        inputBlacklist.add(new GTItemStack(GTModHandler.getModItem(Mods.Railcraft.ID, "machine.alpha", 1, 14)));
+        inputBlacklist.add(new GTItemStack(ModsItemlist.IC2MixedMetalIngot.get(1)));
+        inputBlacklist.add(new GTItemStack(ModsItemlist.RailcraftWaterTankWall.get(1)));
 
         // region transformer
         inputBlacklist.add(new GTItemStack(ItemList.Transformer_MV_LV.get(1L)));
-        inputBlacklist.add(new GTItemStack(GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockElectric", 1L, 3)));
+        inputBlacklist.add(new GTItemStack(ModsItemlist.IC2LVTransformer.get(1L)));
         inputBlacklist.add(new GTItemStack(ItemList.Transformer_HV_MV.get(1L)));
-        inputBlacklist.add(new GTItemStack(GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockElectric", 1L, 4)));
+        inputBlacklist.add(new GTItemStack(ModsItemlist.IC2MVTransformer.get(1L)));
         inputBlacklist.add(new GTItemStack(ItemList.Transformer_EV_HV.get(1L)));
-        inputBlacklist.add(new GTItemStack(GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockElectric", 1L, 5)));
+        inputBlacklist.add(new GTItemStack(ModsItemlist.IC2HVTransformer.get(1L)));
         inputBlacklist.add(new GTItemStack(ItemList.Transformer_IV_EV.get(1L)));
-        inputBlacklist.add(new GTItemStack(GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockElectric", 1L, 6)));
+        inputBlacklist.add(new GTItemStack(ModsItemlist.IC2EVTransformer.get(1L)));
         // endregion
 
         var aeParts = AEApi.instance()
@@ -97,8 +96,7 @@ public class DisassemblerHelper {
                     .stack(AEColor.Transparent, 1)));
 
         // Radiation Proof Plate
-        inputBlacklist
-            .add(new GTItemStack(GTModHandler.getModItem(Mods.GoodGenerator.ID, "radiationProtectionPlate", 1L, 0)));
+        inputBlacklist.add(new GTItemStack(ModsItemlist.GoodGeneratorRadiationProtectionPlate.get(1L)));
     }
 
     public interface GeneratedRecipeInfo<T> {

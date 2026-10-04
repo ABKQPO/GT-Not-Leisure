@@ -14,6 +14,7 @@ import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import cpw.mods.fml.common.Optional;
@@ -25,7 +26,6 @@ import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import micdoodle8.mods.galacticraft.api.recipe.INasaWorkbenchRecipe;
 import micdoodle8.mods.galacticraft.core.recipe.NasaWorkbenchRecipe;
@@ -35,22 +35,18 @@ public class RocketAssemblerRecipes implements IRecipePool {
     public static List<INasaWorkbenchRecipe> RECIPES_ROCKET_STEAM = new ArrayList<>();
     public RecipeMap<?> RAR = GTNLRecipeMaps.RocketAssemblerRecipes;
 
-    public ItemStack[] itemStacks = new ItemStack[] {
-        GTModHandler.getModItem(Mods.GalacticraftCore.ID, "item.schematic", 1, 1),
-        GTModHandler.getModItem(Mods.GalacticraftMars.ID, "item.schematic", 1, 0),
-        GTModHandler.getModItem(Mods.GalaxySpace.ID, "item.SchematicTier4", 1, 0),
-        GTModHandler.getModItem(Mods.GalaxySpace.ID, "item.SchematicTier5", 1, 0),
-        GTModHandler.getModItem(Mods.GalaxySpace.ID, "item.SchematicTier6", 1, 0),
-        GTModHandler.getModItem(Mods.GalaxySpace.ID, "item.SchematicTier7", 1, 0),
-        GTModHandler.getModItem(Mods.GalaxySpace.ID, "item.SchematicTier8", 1, 0) };
+    public ItemStack[] itemStacks = new ItemStack[] { ModsItemlist.GalacticraftTier2RocketSchematic.get(1),
+        ModsItemlist.GalacticraftMarsItemSchematic.get(1), ModsItemlist.GalaxySpaceTier4RocketSchematic.get(1),
+        ModsItemlist.GalaxySpaceTier5RocketSchematic.get(1), ModsItemlist.GalaxySpaceTier6RocketSchematic.get(1),
+        ModsItemlist.GalaxySpaceTier7RocketSchematic.get(1), ModsItemlist.GalaxySpaceTier8RocketSchematic.get(1) };
 
     public static void loadSteamRocketRecipe() {
         HashMap<Integer, ItemStack> input = new HashMap<>();
         HashMap<Integer, ItemStack> inputChest;
-        input.put(1, GTModHandler.getModItem(Mods.StevesCarts2.ID, "CartModule", 1, 38));
+        input.put(1, ModsItemlist.StevesCartsStandardHull.get(1));
         input.put(2, Mods.NewHorizonsCoreMod.isModLoaded() ? getEngineCore() : new ItemStack(Items.arrow));
-        input.put(3, GTModHandler.getModItem(Mods.IronTanks.ID, "diamondTank", 1));
-        input.put(4, GTModHandler.getModItem(Mods.IronTanks.ID, "diamondTank", 1));
+        input.put(3, ModsItemlist.IronTanksDiamondTank.get(1));
+        input.put(4, ModsItemlist.IronTanksDiamondTank.get(1));
 
         input.put(7, GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.BlackSteel, 1));
 
@@ -58,10 +54,10 @@ public class RocketAssemblerRecipes implements IRecipePool {
             input.put(i, GTNLMaterials.CompressedSteam.get(OrePrefixes.plateSuperdense, 1));
         }
 
-        input.put(16, GTModHandler.getModItem(Mods.GraviSuite.ID, "itemSimpleItem", 1, 6));
+        input.put(16, ModsItemlist.GraviSuiteJetEngine.get(1));
 
         for (int i = 17; i <= 20; i++) {
-            input.put(i, GTModHandler.getModItem(Mods.Railcraft.ID, "machine.beta", 1, 7));
+            input.put(i, ModsItemlist.RailcraftHobbyistSteamEngine.get(1));
         }
 
         inputChest = new HashMap<>(input);

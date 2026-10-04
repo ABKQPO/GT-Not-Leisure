@@ -126,6 +126,7 @@ import com.science.gtnl.common.recipe.gtnl.TreeDiagramRecipes;
 import com.science.gtnl.common.recipe.gtnl.WoodDistillationRecipes;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.machine.ProcessingArrayRecipeLoader;
 import com.science.gtnl.utils.machine.oreProcessing.CheatOreProcessingRecipes;
 import com.science.gtnl.utils.recipes.RecipeUtil;
@@ -139,7 +140,6 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Mods;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
@@ -232,7 +232,7 @@ public class RecipeLoader {
 
     @Optional.Method(modid = "TwistSpaceTechnology")
     public static void loadTSTAdvCircuitAssemblyLineRecipes() {
-        GTCMRecipe.advCircuitAssemblyLineRecipes.getBackend()
+        GTCMRecipe.AdvCircuitAssemblyLineRecipeMap.getBackend()
             .clearRecipes();
         CircuitAssemblyLineWithoutImprintRecipePool.loadRecipes();
         System.out.println("[GTNL] Register TwistSpaceTechnology AdvCircuitAssemblyLine recipes");
@@ -335,9 +335,8 @@ public class RecipeLoader {
                 recipeList.add(
                     new MerchantRecipe(
                         new ItemStack(Items.iron_ingot, 1),
-                        GTModHandler.getModItem(Mods.Botania.ID, "bifrostPermPane", 1),
-                        Stick.setDisguisedStack(
-                            GTOreDictUnificator.get(GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 6)))));
+                        ModsItemlist.BotaniaBifrostPermPane.get(1),
+                        Stick.setDisguisedStack(GTOreDictUnificator.get(ModsItemlist.AvaritiaInfinityIngot.get(1)))));
                 recipeList.add(
                     new MerchantRecipe(
                         new ItemStack(Blocks.dispenser, 1),
@@ -349,19 +348,19 @@ public class RecipeLoader {
                 recipeList.add(
                     new MerchantRecipe(
                         new ItemStack(Items.leather_helmet, 1),
-                        Stick.setDisguisedStack(GTModHandler.getModItem(Mods.Avaritia.ID, "Infinity_Helm", 1))));
+                        Stick.setDisguisedStack(ModsItemlist.AvaritiaInfinityHelm.get(1))));
                 recipeList.add(
                     new MerchantRecipe(
                         new ItemStack(Items.leather_chestplate, 1),
-                        Stick.setDisguisedStack(GTModHandler.getModItem(Mods.Avaritia.ID, "Infinity_Chest", 1))));
+                        Stick.setDisguisedStack(ModsItemlist.AvaritiaInfinityChest.get(1))));
                 recipeList.add(
                     new MerchantRecipe(
                         new ItemStack(Items.leather_leggings, 1),
-                        Stick.setDisguisedStack(GTModHandler.getModItem(Mods.Avaritia.ID, "Infinity_Pants", 1))));
+                        Stick.setDisguisedStack(ModsItemlist.AvaritiaInfinityPants.get(1))));
                 recipeList.add(
                     new MerchantRecipe(
                         new ItemStack(Items.leather_boots, 1),
-                        Stick.setDisguisedStack(GTModHandler.getModItem(Mods.Avaritia.ID, "Infinity_Shoes", 1))));
+                        Stick.setDisguisedStack(ModsItemlist.AvaritiaInfinityShoes.get(1))));
             });
     }
 }

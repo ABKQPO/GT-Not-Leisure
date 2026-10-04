@@ -2,18 +2,22 @@
 #include "common.glsl"
 
 void main() {
-    if (drawShadow()) return;
+    if (shadowPass) {
+        outputColor(vec3(0.015), coverage(position()) * 0.28);
+        return;
+    }
     vec2 point = position();
-    vec2 local = localUV();
+    float unit = max(1.0, textSize.y);
+    vec2 field = point / unit;
     float ink = coverage(point);
-    float edge = outline(point, textSize.y * 0.07);
-    float heat = noise(local * vec2(6.0, 3.0) + vec2(0.0, -time * 0.18));
-    float veins = smoothstep(0.34, 0.72, noise(local * vec2(10.0, 2.8) + vec2(time * 0.12, 0.0)));
-    float flow = clamp(heat * 0.58 + veins * 0.42 + local.y * 0.16, 0.0, 0.999);
-    vec3 color = gradient(flow);
-    float ember = step(0.86, noise(local * vec2(16.0, 7.0) + time * 0.25));
-    color += palette[min(paletteCount - 1, 3)] * ember * ink * 0.5;
-    vec3 hotEdge = mix(palette[0], palette[min(paletteCount - 1, 2)], 0.7);
-    color = mix(hotEdge, color, ink);
-    outputColor(clamp(color, 0.0, 1.0), max(ink, edge * 0.82));
+    float flow = noise(field * vec2(0.75, 2.8) + vec2(time * 0.22, -time * 1.1));
+    float fissure = 1.0 - smoothstep(
+        0.04, 0.26, abs(sin(field.x * 2.4 + field.y * 2.1 + sin(field.x * 0.75 - time * 0.9) * 0.6)));
+    float heat = smoothstep(0.28, 0.72, flow + fissure * 0.18);
+    vec2 emberField = field * vec2(1.4, 3.1) - vec2(0.0, time * 0.85);
+    vec2 emberPoint = fract(emberField) - 0.5;
+    float ember = step(0.9, hash(floor(emberField))) * exp(-dot(emberPoint, emberPoint) * 36.0);
+    vec3 color = mix(palette[1], palette[2], heat);
+    color = mix(color, palette[3], max(fissure * 0.84, ember * 0.9));
+    outputColor(color, ink);
 }

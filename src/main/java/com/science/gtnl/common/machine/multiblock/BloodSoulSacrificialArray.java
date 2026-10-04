@@ -34,6 +34,7 @@ import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.CommonElements;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
@@ -63,7 +64,6 @@ import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.recipe.check.SingleRecipeCheck;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
@@ -157,7 +157,7 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     public CheckRecipeResult checkProcessing() {
         isCreativeOrb = false;
 
-        ItemStack requiredItem = GTModHandler.getModItem(Mods.Avaritia.ID, "Orb_Armok", 1);
+        ItemStack requiredItem = ModsItemlist.AvaritiaOrbArmok.get(1);
 
         for (ItemStack item : getAllStoredInputs()) {
             if (item != null && item.isItemEqual(requiredItem)) {

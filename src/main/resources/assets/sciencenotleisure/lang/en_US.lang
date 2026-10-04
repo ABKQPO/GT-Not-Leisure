@@ -37,6 +37,8 @@ GT5U.gui.text.recipe_result.parallel_zero=§4Insufficient parallel, check whethe
 GT5U.gui.text.recipe_result.crash=§4Machine turned off due to crash. Refer to the log for more info.
 
 gtnl.gui.config.general=GTNL General Config
+gtnl.gui.config.general.client=Client Settings
+gtnl.gui.config.general.client.tooltip=Client-side display options.
 gtnl.gui.config.general.debug=Debug Settings
 gtnl.gui.config.general.debug.tooltip=Options for GTNL development and debugging.
 gtnl.gui.config.general.effect=Effect Settings
@@ -55,9 +57,14 @@ gtnl.gui.config.general.super_creeper=Super Creeper
 gtnl.gui.config.general.super_creeper.tooltip=Configure behaviors for creepers with enhanced AI.
 gtnl.gui.config.general.tickrate=Tickrate Settings
 gtnl.gui.config.general.tickrate.tooltip=Adjust server tickrate and synchronization.
+gtnl.gui.config.general.minecraft=Minecraft Settings
+gtnl.gui.config.general.minecraft.tooltip=Modifications made to some aspects of minecraft
 
 gtnl.gui.config.general.debug.enabledebugmode=Debug Mode
 gtnl.gui.config.general.debug.enabledebugmode.tooltip=Enable debug print log output.
+
+gtnl.gui.config.general.client.enable_text_effects=Animated Text Effects
+gtnl.gui.config.general.client.enable_text_effects.tooltip=Render animated text effects. When disabled, styled text is shown as ordinary text.
 
 gtnl.gui.config.general.effect.enableghostlyshape=Enable Ghostly Shape
 gtnl.gui.config.general.effect.enableghostlyshape.tooltip=When the player dies and respawns, give the player the Ghost Shape effect.
@@ -67,6 +74,9 @@ gtnl.gui.config.general.item.player_doll.enablecustomskin=Custom Player Skin
 gtnl.gui.config.general.item.player_doll.enablecustomskin.tooltip=Enable custom player skin for the Player Doll.
 gtnl.gui.config.general.item.player_doll.enableregistermaxtierglass=Register Player Doll Glass
 gtnl.gui.config.general.item.player_doll.enableregistermaxtierglass.tooltip=Make the Player Doll usable as MAX Tier Glass.
+
+# Pigmee Fumo (ported from AE2 Lightning Tech Reborn; model by TedXenon)
+gtnl.block.pigmee_fumo.name=Pigmee Fumo
 
 gtnl.gui.config.general.item.vein_miner_pickaxe=Vein Mining Pickaxe
 gtnl.gui.config.general.item.vein_miner_pickaxe.maxamount=Max Amount
@@ -146,10 +156,17 @@ gtnl.gui.config.general.other.enabledeathincompletemessage.tooltip=Enable sendin
 gtnl.gui.config.general.other.enablesaturationheal=Saturation Heal
 gtnl.gui.config.general.other.enablesaturationheal.tooltip=Enable saturation-based healing tweaks (consuming saturation to heal quickly).
 gtnl.gui.config.general.other.not_enough_items=NEI Manager
+gtnl.gui.config.general.other.not_enough_items.enableReplaceHotIngotInPattern=NEI recipe hot ingot conversion
+gtnl.gui.config.general.other.not_enough_items.enableReplaceHotIngotInPattern.tooltip=Enable automatic conversion of ingotHot to ingot when writing pattern
 gtnl.gui.config.general.other.not_enough_items.enablespecialcheaticon=Special Cheat Icon
 gtnl.gui.config.general.other.not_enough_items.enablespecialcheaticon.tooltip=Enable the special rendering for the cheat mode button.
 gtnl.gui.config.general.other.not_enough_items.specialicontype=Special Icon Type
 gtnl.gui.config.general.other.not_enough_items.specialicontype.tooltip=Specify the rendering type for the special cheat button.
+gtnl.gui.config.general.other.applied_energistics=Applied Energistics 2
+gtnl.gui.config.general.other.applied_energistics.enable_processing_pattern_capacity_mixin=Enable Processing Pattern Capacity
+gtnl.gui.config.general.other.applied_energistics.enable_processing_pattern_capacity_mixin.tooltip=Enable configurable capacity for Processing Pattern Terminals. Requires a game restart.
+gtnl.gui.config.general.other.applied_energistics.processing_pattern_capacity_multiplier=Processing Pattern Capacity Multiplier
+gtnl.gui.config.general.other.applied_energistics.processing_pattern_capacity_multiplier.tooltip=Set the Processing Pattern Terminal capacity to 16N input slots and 4N output slots, or the reverse. The default value 2 provides 32:8 capacity. Applies when opening a terminal after configuration reload.
 
 gtnl.gui.config.general.recipe.enableassemblinglinerecipestimechange=Assembly Line Time Adjustment
 gtnl.gui.config.general.recipe.enableassemblinglinerecipestimechange.tooltip=Significantly reduce the time required for certain Assembly Line recipes.
@@ -228,6 +245,8 @@ gtnl.gui.super_interface.tooltip.switch=Switch to Super Dual ME Interface
 gtnl.gui.super_interface.tooltip.previous_page=Prev Page
 gtnl.gui.super_interface.tooltip.next_page=Next Page
 gtnl.gui.super_dual_interface.tooltip.switch=Switch to Super ME Interface
+
+channels.gtnl.subchannel.structure_render=Structure Render
 
 channels.sciencenotleisure.structure_render=Decides whether the structure should be rendered and placed, preventing lag caused by excessively large structures.
 channels.sciencenotleisure.component_casing=Decides the tier of component assemblyline casing. Starts at §6LV§r at value 1 and ends at §6MAX§r at value 14.
@@ -1526,10 +1545,13 @@ gtnl.machine.steam_lava_maker.tooltip.casing=Any Copper Plated Bricks or Deoxidi
 
 gtnl.machine.steam_manufacturer.name=Steam Manufacturer
 gtnl.recipe.steam_manufacturer=Hydraulic Manufacturing
-gtnl.machine.steam_manufacturer.recipe_type=Assembler
+gtnl.machine.steam_manufacturer.recipe_type=Hydraulic Manufacturing / Assembler
 gtnl.machine.steam_manufacturer.tooltip.0=Has 4 Parallel
 gtnl.machine.steam_manufacturer.tooltip.1=Assembles assemblies assemblically
-gtnl.machine.steam_manufacturer.tooltip.2=§b§oSlave labor? Not in my GTNH!
+gtnl.machine.steam_manufacturer.tooltip.2=100% faster
+gtnl.machine.steam_manufacturer.tooltip.3=Can run MV tier and below assembler recipes
+gtnl.machine.steam_manufacturer.tooltip.4=Put an HV Assembler in the controller to unlock HV assembler recipes
+gtnl.machine.steam_manufacturer.tooltip.5=§b§oSlave labor? Not in my GTNH!
 
 gtnl.machine.steam_rock_breaker.name=Steam Rock Breaker
 gtnl.recipe.rock_breaker=Rock Breaker
@@ -1580,7 +1602,7 @@ gtnl.machine.steam_infernal_coke_oven.name=Infernal Coke Oven
 gtnl.recipe.infernal_coke_oven=High-Efficiency Coke Oven
 gtnl.machine.steam_infernal_coke_oven.recipe_type=Coke Oven
 gtnl.machine.steam_infernal_coke_oven.tooltip.0=Works more efficiently than a clay oven
-gtnl.machine.steam_infernal_coke_oven.tooltip.1=Every 5 seconds of continuous working it gets 1% faster, up to 600%
+gtnl.machine.steam_infernal_coke_oven.tooltip.1=Every 5 seconds of continuous working it gets 5% faster, up to 1000%
 gtnl.machine.steam_infernal_coke_oven.tooltip.2=§b§oPoggers
 
 gtnl.machine.integrated_assembly_facility.name=Integrated Assembly Facility
@@ -2245,6 +2267,7 @@ gtnl.machine.hyper_naquadah_reactor.tooltip.0=Fixed parallel of %s
 gtnl.machine.hyper_naquadah_reactor.tooltip.1=Can input naquadah gas at the start of the recipe
 gtnl.machine.hyper_naquadah_reactor.tooltip.2=This will make time %s times shorter and power %s times greater
 gtnl.machine.hyper_naquadah_reactor.tooltip.3=The cost is %sL of naquadah gas consumed per second
+gtnl.machine.hyper_naquadah_reactor.tooltip.4=If no dynamo hatch is installed, it will automatically enter §bWireless Mode§7
 gtnl.machine.hyper_naquadah_reactor.casing=Any Naquadah Alloy Fusion Casing
 
 gtnl.machine.advanced_hyper_naquadah_reactor.name=Advanced Hyper Naquadah Reactor
@@ -2318,7 +2341,7 @@ gtnl.machine.furnace_array.coal_count=Current coal count: %s
 
 gtnl.machine.fog_solar_muon_catalyst_module.name=Solar Muon Catalyst
 gtnl.recipe.solar_muon_catalyst=Solar Muon Catalyst
-gtnl.recipe.metadata.solar_muon_catalyst.0=Requires three Godforge Rings and all upgrade
+gtnl.recipe.metadata.solar_muon_catalyst.0=Requires 3 rings and all upgrade
 GT5U.gui.text.not_enough_upgrade=Insufficient requirements
 gtnl.machine.fog_solar_muon_catalyst_module.recipe_type=Matter Catalyst
 gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.0=This is a module of the Godforge
@@ -2551,6 +2574,13 @@ gtnl.machine.hydraulic_super_buffer.tooltip.3=§7Voltage IN: §e0§7 (§eSteam§
 gtnl.machine.hydraulic_super_buffer.tooltip.4=§7Voltage OUT: §e0§7 (§eSteam§7)
 gtnl.machine.hydraulic_super_buffer.tooltip.5=§7Amperage: §b0§7
 gtnl.machine.hydraulic_super_buffer.tooltip.6=§7Capacity: §9No power transfer function!§7
+
+gt.blockmachines.breel.input_bus.steam.name=Input Bus (Breel)
+gt.blockmachines.breel.input_bus.steam.tooltip=Item Input for Steam Multiblocks\nShift + right click with screwdriver to turn Sort mode on/off\nAutomatically pulls items from the container in front of it\nCapacity: %s slots\nDoes not work with non-steam multiblocks
+gt.blockmachines.breel.output_bus.steam.name=Output Bus (Breel)
+gt.blockmachines.breel.output_bus.steam.tooltip=Item Output for Steam Multiblocks\nAutomatically exports items into the container in front of it\nCapacity: %s slots\nDoes not work with non-steam multiblocks
+gt.blockmachines.stronze.input_hatch.steam.name=Input Hatch (Stronze)
+gt.blockmachines.stronze.input_hatch.steam.tooltip=Fluid Input for Multiblocks\nRight click with screwdriver to toggle input filter\nCapacity: %s L\nAccepts any fluid, and automatically drains the tank in front of it
 
 gt.blockmachines.wire.stargate.01.name=1x Stargate Wire
 gt.blockmachines.wire.stargate.02.name=2x Stargate Wire
@@ -3810,6 +3840,19 @@ item.gtnl.vein_mining_pickaxe.max_block_gap=Max Block Gap: %s
 item.gtnl.vein_mining_pickaxe.max_vein_count=Max Vein Count: %s
 item.gtnl.vein_mining_pickaxe.precise_mode.enabled=§aPrecise Mode Enabled
 item.gtnl.vein_mining_pickaxe.precise_mode.disabled=§rPrecise Mode Disabled
+item.gtnl.vein_mining_pickaxe.chain.enabled=§aChain Mining Enabled
+item.gtnl.vein_mining_pickaxe.chain.disabled=§cChain Mining Disabled
+gtnl.gui.vein_mining_pickaxe.title=Vein Mining Pickaxe Settings
+gtnl.gui.vein_mining_pickaxe.range=Block Gap
+gtnl.gui.vein_mining_pickaxe.range.tooltip=Maximum distance between matching blocks.
+gtnl.gui.vein_mining_pickaxe.amount=Vein Count
+gtnl.gui.vein_mining_pickaxe.amount.tooltip=Maximum number of blocks mined in one operation.
+gtnl.gui.vein_mining_pickaxe.precise=Precise Matching
+gtnl.gui.vein_mining_pickaxe.precise.tooltip=Only mine blocks with the exact same metadata or ore name.
+gtnl.gui.vein_mining_pickaxe.enabled=Enabled
+gtnl.gui.vein_mining_pickaxe.disabled=Disabled
+gtnl.gui.vein_mining_pickaxe.chain=Chain Mining
+gtnl.gui.vein_mining_pickaxe.chain.tooltip=Enable or disable vein chain mining. Right-click in the air to switch quickly.
 
 item.milledNaquadahEnriched.name=Milled Enriched Naquadah
 item.FrothNaquadahenrichedflotation=Enriched Naquadah Flotation Froth Cell

@@ -25,13 +25,13 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
+import com.science.gtnl.utils.enums.ModsItemlist;
 
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -41,7 +41,6 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.structure.error.StructureErrorRegistry;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -202,14 +201,10 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
     }
 
     public int getMultiTier() {
-        if (GTUtility.areStacksEqual(
-            getControllerSlot(),
-            GTModHandler.getModItem(Mods.UniversalSingularities.ID, "universal.general.singularity", 1, 31))) {
+        if (GTUtility.areStacksEqual(getControllerSlot(), ModsItemlist.USGangueSingularity.get(1))) {
             return 2;
         }
-        if (GTUtility.areStacksEqual(
-            getControllerSlot(),
-            GTModHandler.getModItem(Mods.EternalSingularity.ID, "eternal_singularity", 1, 0))) {
+        if (GTUtility.areStacksEqual(getControllerSlot(), ModsItemlist.EternalSingularity.get(1))) {
             return 1;
         }
         return 0;

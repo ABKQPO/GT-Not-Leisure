@@ -5,12 +5,11 @@ import net.minecraft.util.StatCollector;
 import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.enums.SteamTypes;
 
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.gui.modularui.CoverUIBuildContext;
-import gregtech.api.util.GTModHandler;
 import gregtech.common.gui.modularui.widget.CoverDataControllerWidget;
 import gregtech.common.gui.modularui.widget.CoverDataFollowerToggleButtonWidget;
 import gregtech.common.gui.mui1.cover.CoverLegacyDataUIFactory;
@@ -47,10 +46,7 @@ public class WirelessSteamCoverUIFactory extends CoverLegacyDataUIFactory {
                         .addToggleButton(
                             1,
                             CoverDataFollowerToggleButtonWidget.ofDisableable(),
-                            widget -> widget
-                                .setStaticTexture(
-                                    new ItemDrawable(
-                                        GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "itemCellEmpty", 1, 13)))
+                            widget -> widget.setStaticTexture(new ItemDrawable(ModsItemlist.IC2EmptyCell.get(1)))
                                 .addTooltip(SteamTypes.SH_STEAM.displayName)
                                 .setPos(SPACE_X * 1, SPACE_Y * 0))
                         .addToggleButton(

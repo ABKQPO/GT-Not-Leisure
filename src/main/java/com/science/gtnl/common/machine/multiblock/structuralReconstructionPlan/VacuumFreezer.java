@@ -147,7 +147,7 @@ public class VacuumFreezer extends MultiMachineBase<VacuumFreezer> implements IS
                     .setRecipeHeat(0)
                     .setHeatOC(true)
                     .setHeatDiscount(false)
-                    .setDurationModifier(1 / 1.33);
+                    .setDurationModifier(1.0D / 1.33D);
             }
         }.setMaxParallelSupplier(this::getTrueParallel);
     }

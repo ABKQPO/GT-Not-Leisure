@@ -36,23 +36,26 @@ void addGleam(inout vec4 layer, vec2 point, vec2 center, float scale, float rota
 }
 
 void main() {
-    if (drawShadow()) {
-        gl_FragColor.rgb *= gl_FragColor.a;
+    if (shadowPass) {
+        float shadowAlpha = coverage(position()) * opacity * 0.28;
+        if (shadowAlpha <= 0.001) discard;
+        gl_FragColor = vec4(vec3(0.015) * shadowAlpha, shadowAlpha);
         return;
     }
 
     vec2 point = position();
     float sine = 0.5 + 0.5 * sin(time * 2.5);
     float sineOffset = mix(0.5, 1.0, sine);
-    vec4 layer = vec4(palette[0] * baseGlow(point) * 0.85, 0.0);
+    float ink = coverage(point);
+    vec4 layer = vec4(palette[0] * baseGlow(point) * mix(0.2, 0.85, ink), 0.0);
 
     for (int i = 0; i < 12; i++) {
         float angle = TWO_PI * float(i) / 12.0;
         vec2 offset = vec2(cos(angle), sin(angle)) * (2.0 * sineOffset);
-        overRarity(layer, palette[1] * 0.9, coverage(point - offset));
+        overRarity(layer, palette[1] * 0.9, coverage(point - offset) * 0.28);
     }
 
-    overRarity(layer, mix(palette[0], vec3(0.0), 0.9), coverage(point) * 0.9);
+    overRarity(layer, mix(palette[0], vec3(0.0), 0.9), ink * 0.9);
 
     for (int i = 0; i < 32; i++) {
         if (i >= particleCount) break;

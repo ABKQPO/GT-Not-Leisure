@@ -12,6 +12,7 @@ import net.minecraft.util.ResourceLocation;
 
 import com.dreammaster.item.NHItemList;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import appeng.api.AEApi;
@@ -24,7 +25,6 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TCAspects;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 import ic2.core.Ic2Items;
@@ -129,22 +129,19 @@ public class TCResearches {
                                 0,
                                 "{storedEnergyRF:2500000,type:\"CREATIVE\"}",
                                 null),
-                            Mods.TaintedMagic.isModLoaded()
-                                ? GTModHandler.getModItem(Mods.TaintedMagic.ID, "ItemFocusTime", 1)
-                                : GTModHandler.getModItem(Mods.Thaumcraft.ID, "FocusPrimal", 1),
+                            Mods.TaintedMagic.isModLoaded() ? ModsItemlist.TaintedMagicItemFocusTime.get(1)
+                                : ModsItemlist.ThaumcraftFocusPrimal.get(1),
                             GregtechItemList.CrystalColorizationCatalyst.get(1),
                             GTNLItemList.ParallelControllerHatchUMV.get(1),
-                            GTModHandler.getModItem(Mods.AE2FluidCraft.ID, "fluid_storage.Universe", 1),
-                            AEApi.instance()
+                            ModsItemlist.AE2FluidCraftFluidStorageUniverse.get(1), AEApi.instance()
                                 .definitions()
                                 .items()
                                 .cellUniverse()
                                 .maybeStack(1)
                                 .orNull(),
-                            Mods.SGCraft.isModLoaded() ? GTModHandler.getModItem(Mods.SGCraft.ID, "ic2Capacitor", 1)
+                            Mods.SGCraft.isModLoaded() ? ModsItemlist.SGCraftIc2Capacitor.get(1)
                                 : new ItemStack(Blocks.dirt),
-                            Mods.Computronics.isModLoaded()
-                                ? GTModHandler.getModItem(Mods.Computronics.ID, "computronics.ocSpecialParts", 1)
+                            Mods.Computronics.isModLoaded() ? ModsItemlist.ComputronicsOCSpecialParts.get(1)
                                 : new ItemStack(Items.feather) })))
                 .setParents(existingParentOrRoot("gtnl.welcome"))
                 .registerResearchItem();
@@ -318,8 +315,7 @@ public class TCResearches {
                                 .add(Aspect.FLESH, 128)
                                 .add(Aspect.MAN, 128),
                             GTNLItemList.EssentiaUpgradeEmpty.get(1),
-                            new ItemStack[] { GTModHandler.getModItem(Mods.NewHorizonsCoreMod.ID, "GTNHBioItems", 1, 2),
-                                ItemList.Food_Dough_Sugar.get(1),
+                            new ItemStack[] { ModsItemlist.NHCoreModAgar.get(1), ItemList.Food_Dough_Sugar.get(1),
                                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Calcium, 1),
                                 new ItemStack(Items.rotten_flesh, 1), new ItemStack(ConfigItems.itemResource, 1, 4),
                                 new ItemStack(ConfigBlocks.blockMetalDevice, 1, 8) })),

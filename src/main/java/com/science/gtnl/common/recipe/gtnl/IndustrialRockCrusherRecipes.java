@@ -8,14 +8,13 @@ import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import appeng.api.AEApi;
 import gregtech.api.GregTechAPI;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
 
 public class IndustrialRockCrusherRecipes implements IRecipePool {
@@ -113,50 +112,50 @@ public class IndustrialRockCrusherRecipes implements IRecipePool {
             .addTo(IRCR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "deepslate", 0))
-            .itemOutputs(GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "deepslate", 1))
+            .itemInputs(ModsItemlist.EtFuturumRequiemDeepslate.get(0))
+            .itemOutputs(ModsItemlist.EtFuturumRequiemDeepslate.get(1))
             .duration(16)
             .eut(TierEU.RECIPE_EV)
             .addTo(IRCR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "cobbled_deepslate", 0))
-            .itemOutputs(GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "cobbled_deepslate", 1))
+            .itemInputs(ModsItemlist.EtFuturumRequiemCobbledDeepslate.get(0))
+            .itemOutputs(ModsItemlist.EtFuturumRequiemCobbledDeepslate.get(1))
             .duration(16)
             .eut(TierEU.RECIPE_EV)
             .addTo(IRCR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "blackstone", 0))
-            .itemOutputs(GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "blackstone", 1))
+            .itemInputs(ModsItemlist.EtFuturumRequiemBlackstone.get(0))
+            .itemOutputs(ModsItemlist.EtFuturumRequiemBlackstone.get(1))
             .duration(16)
             .eut(TierEU.RECIPE_HV)
             .addTo(IRCR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Mods.Botania.ID, "stone", 0, 0))
-            .itemOutputs(GTModHandler.getModItem(Mods.Botania.ID, "stone", 1, 0))
+            .itemInputs(ModsItemlist.BotaniaAndesite.get(0))
+            .itemOutputs(ModsItemlist.BotaniaAndesite.get(1))
             .duration(16)
             .eut(TierEU.RECIPE_MV)
             .addTo(IRCR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Mods.Botania.ID, "stone", 0, 1))
-            .itemOutputs(GTModHandler.getModItem(Mods.Botania.ID, "stone", 1, 1))
+            .itemInputs(ModsItemlist.BotaniaBasalt.get(0))
+            .itemOutputs(ModsItemlist.BotaniaBasalt.get(1))
             .duration(16)
             .eut(TierEU.RECIPE_MV)
             .addTo(IRCR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Mods.Botania.ID, "stone", 0, 2))
-            .itemOutputs(GTModHandler.getModItem(Mods.Botania.ID, "stone", 1, 2))
+            .itemInputs(ModsItemlist.BotaniaDiorite.get(0))
+            .itemOutputs(ModsItemlist.BotaniaDiorite.get(1))
             .duration(16)
             .eut(TierEU.RECIPE_MV)
             .addTo(IRCR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTModHandler.getModItem(Mods.Botania.ID, "stone", 0, 3))
-            .itemOutputs(GTModHandler.getModItem(Mods.Botania.ID, "stone", 1, 3))
+            .itemInputs(ModsItemlist.BotaniaGranite.get(0))
+            .itemOutputs(ModsItemlist.BotaniaGranite.get(1))
             .duration(16)
             .eut(TierEU.RECIPE_MV)
             .addTo(IRCR);

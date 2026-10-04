@@ -11,7 +11,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import baubles.api.expanded.BaubleExpandedSlots;
 import baubles.common.container.InventoryBaubles;
 import baubles.common.lib.PlayerHandler;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -24,10 +26,23 @@ public abstract class BaubleItem extends Item implements IBauble {
 
     public static final String TAG_BAUBLE_UUID_MOST = "baubleUUIDMost";
     public static final String TAG_BAUBLE_UUID_LEAST = "baubleUUIDLeast";
+    public static final String[] UNIVERSAL_BAUBLE_TYPE = { BaubleExpandedSlots.universalType };
 
     public static final Map<UUID, UUID> ITEM_TO_PLAYER_REMOTE = new Object2ObjectOpenHashMap<>();
     public static final Map<UUID, UUID> ITEM_TO_PLAYER = new Object2ObjectOpenHashMap<>();
     public static final Set<UUID> TO_REMOVE_ITEMS = new ObjectOpenHashSet<>();
+
+    public static BaubleType UNIVERSAL_TYPE;
+
+    static {
+        BaubleType type;
+        try {
+            type = Enum.valueOf(BaubleType.class, "UNIVERSAL");
+        } catch (Throwable ignored) {
+            type = BaubleType.RING;
+        }
+        UNIVERSAL_TYPE = type;
+    }
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {

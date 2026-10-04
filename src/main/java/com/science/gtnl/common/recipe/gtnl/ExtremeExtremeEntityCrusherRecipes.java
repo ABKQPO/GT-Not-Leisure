@@ -13,13 +13,12 @@ import com.kuba6000.mobsinfo.api.MobDrop;
 import com.kuba6000.mobsinfo.api.MobRecipe;
 import com.kuba6000.mobsinfo.api.event.PostMobRegistrationEvent;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import gregtech.api.enums.Mods;
 import gregtech.api.objects.XSTR;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -49,7 +48,7 @@ public class ExtremeExtremeEntityCrusherRecipes {
 
         MobHandlerLoader.MobEECRecipe eecRecipe = new MobHandlerLoader.MobEECRecipe(drops, mobRecipe);
 
-        ItemStack spawner = GTModHandler.getModItem(Mods.EnderIO.ID, "blockPoweredSpawner", 1);
+        ItemStack spawner = ModsItemlist.EnderIOBlockPoweredSpawner.get(1);
         if (spawner == null) return;
 
         NBTTagCompound nbt = new NBTTagCompound();

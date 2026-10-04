@@ -32,7 +32,6 @@ import com.science.gtnl.common.gui.modularui.GTNLControllerUpgradeGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.enums.GTNLStructureChannels;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
@@ -166,7 +165,7 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
             .addElement('A', GTNLCasings.NeutroniumPipeCasing.asElement())
             .addElement(
                 'B',
-                GTNLStructureChannels.COMPONENT_ASSEMBLY_LINE_CASING.use(
+                GTStructureChannels.COMPONENT_ASSEMBLYLINE_CASING.use(
                     StructureUtility.ofBlocksTiered(
                         (block, meta) -> block == Loaders.componentAssemblylineCasing ? meta : -1,
                         COMPONENT_CASING_VARIANTS,
@@ -382,7 +381,7 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
                 StatCollector.translateToLocal("gtnl.machine.integrated_assembly_facility.tooltip.casing"),
                 1)
             .addSubChannelUsage(GTStructureChannels.BOROGLASS)
-            .addSubChannelUsage(GTNLStructureChannels.COMPONENT_ASSEMBLY_LINE_CASING)
+            .addSubChannelUsage(GTStructureChannels.COMPONENT_ASSEMBLYLINE_CASING)
             .toolTipFinisher();
         return tt;
     }

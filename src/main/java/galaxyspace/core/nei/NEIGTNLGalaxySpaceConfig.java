@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import com.dreammaster.item.NHItemList;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 
 import codechicken.nei.PositionedStack;
 import codechicken.nei.api.API;
@@ -18,7 +19,6 @@ import galaxyspace.core.register.GSBlocks;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 
 @SuppressWarnings("unused")
@@ -56,15 +56,14 @@ public class NEIGTNLGalaxySpaceConfig implements IConfigureNEI {
         int y = 4 - recipeHandler.y;
 
         List<PositionedStack> input = new ArrayList<>();
-        input.add(
-            new PositionedStack(GTModHandler.getModItem(Mods.StevesCarts2.ID, "CartModule", 1, 38), 134 - x, 10 - y));
+        input.add(new PositionedStack(ModsItemlist.StevesCartsStandardHull.get(1), 134 - x, 10 - y));
         input.add(
             new PositionedStack(
                 Mods.NewHorizonsCoreMod.isModLoaded() ? getEngineCore() : new ItemStack(Items.arrow),
                 134 - x,
                 28 - y));
-        input.add(new PositionedStack(GTModHandler.getModItem(Mods.IronTanks.ID, "diamondTank", 1), 117 - x, 19 - y));
-        input.add(new PositionedStack(GTModHandler.getModItem(Mods.IronTanks.ID, "diamondTank", 1), 152 - x, 19 - y));
+        input.add(new PositionedStack(ModsItemlist.IronTanksDiamondTank.get(1), 117 - x, 19 - y));
+        input.add(new PositionedStack(ModsItemlist.IronTanksDiamondTank.get(1), 152 - x, 19 - y));
         input.add(
             new PositionedStack(
                 GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.BlackSteel, 1),
@@ -81,16 +80,11 @@ public class NEIGTNLGalaxySpaceConfig implements IConfigureNEI {
             }
         }
 
-        input.add(
-            new PositionedStack(GTModHandler.getModItem(Mods.GraviSuite.ID, "itemSimpleItem", 1, 6), 53 - x, 109 - y));
-        input
-            .add(new PositionedStack(GTModHandler.getModItem(Mods.Railcraft.ID, "machine.beta", 1, 7), 26 - x, 91 - y));
-        input
-            .add(new PositionedStack(GTModHandler.getModItem(Mods.Railcraft.ID, "machine.beta", 1, 7), 80 - x, 91 - y));
-        input.add(
-            new PositionedStack(GTModHandler.getModItem(Mods.Railcraft.ID, "machine.beta", 1, 7), 26 - x, 109 - y));
-        input.add(
-            new PositionedStack(GTModHandler.getModItem(Mods.Railcraft.ID, "machine.beta", 1, 7), 80 - x, 109 - y));
+        input.add(new PositionedStack(ModsItemlist.GraviSuiteJetEngine.get(1), 53 - x, 109 - y));
+        input.add(new PositionedStack(ModsItemlist.RailcraftHobbyistSteamEngine.get(1), 26 - x, 91 - y));
+        input.add(new PositionedStack(ModsItemlist.RailcraftHobbyistSteamEngine.get(1), 80 - x, 91 - y));
+        input.add(new PositionedStack(ModsItemlist.RailcraftHobbyistSteamEngine.get(1), 26 - x, 109 - y));
+        input.add(new PositionedStack(ModsItemlist.RailcraftHobbyistSteamEngine.get(1), 80 - x, 109 - y));
 
         recipeHandler.addRecipe(input, new PositionedStack(GTNLItemList.SteamRocket.get(1), 134 - x, 73 - y));
 

@@ -51,7 +51,7 @@ public class GTNLEarlyCoreMod implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] { GregTechFinalFieldTransformer.class.getName() };
+        return null;
     }
 
     @Override

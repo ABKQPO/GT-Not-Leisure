@@ -1,7 +1,5 @@
 package com.science.gtnl.mixins.early.minecraft;
 
-import java.util.concurrent.Callable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MusicTicker;
 import net.minecraft.client.audio.SoundHandler;
@@ -189,13 +187,10 @@ public abstract class MixinMinecraft {
             } catch (Throwable throwable1) {
                 crashreport = CrashReport.makeCrashReport(throwable1, "Updating screen events");
                 crashreportcategory = crashreport.makeCategory("Affected screen");
-                crashreportcategory.addCrashSectionCallable("Screen name", new Callable<>() {
-
-                    public String call() {
-                        return MixinMinecraft.this.currentScreen.getClass()
-                            .getCanonicalName();
-                    }
-                });
+                crashreportcategory.addCrashSectionCallable(
+                    "Screen name",
+                    () -> MixinMinecraft.this.currentScreen.getClass()
+                        .getCanonicalName());
                 throw new ReportedException(crashreport);
             }
 
@@ -205,13 +200,10 @@ public abstract class MixinMinecraft {
                 } catch (Throwable throwable) {
                     crashreport = CrashReport.makeCrashReport(throwable, "Ticking screen");
                     crashreportcategory = crashreport.makeCategory("Affected screen");
-                    crashreportcategory.addCrashSectionCallable("Screen name", new Callable<>() {
-
-                        public String call() {
-                            return MixinMinecraft.this.currentScreen.getClass()
-                                .getCanonicalName();
-                        }
-                    });
+                    crashreportcategory.addCrashSectionCallable(
+                        "Screen name",
+                        () -> MixinMinecraft.this.currentScreen.getClass()
+                            .getCanonicalName());
                     throw new ReportedException(crashreport);
                 }
             }

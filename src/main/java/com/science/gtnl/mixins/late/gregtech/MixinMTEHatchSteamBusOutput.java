@@ -1,6 +1,7 @@
 package com.science.gtnl.mixins.late.gregtech;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
 import gregtech.api.metatileentity.implementations.MTEHatchOutputBus;
 import gregtech.api.util.GTUtility;
@@ -23,6 +24,7 @@ public abstract class MixinMTEHatchSteamBusOutput extends MTEHatchOutputBus {
         return isLocked();
     }
 
+    @Unique
     @Override
     public boolean isFilteredToItem(GTUtility.ItemId id) {
         if (lockedItem == null) return false;

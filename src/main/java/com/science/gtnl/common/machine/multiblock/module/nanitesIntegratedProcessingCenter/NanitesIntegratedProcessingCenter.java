@@ -124,8 +124,8 @@ public class NanitesIntegratedProcessingCenter
                         module.setHeatingCapacity(mHeatingCapacity);
                     } else {
                         module.disconnect();
-                        module.setEUtDiscount(1);
-                        module.setDurationModifier(1);
+                        module.setEUtDiscount(1.0D);
+                        module.setDurationModifier(1.0D);
                         module.setMaxParallel(0);
                         module.setHeatingCapacity(0);
                     }

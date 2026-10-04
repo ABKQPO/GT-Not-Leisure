@@ -1000,8 +1000,8 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
                     var calculator = super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                         .setAmperageOC(true)
                         .setPerfectOC(getPerfectOC())
-                        .setEUtDiscount(0.4 - (mParallelTier / 50.0))
-                        .setDurationModifier(1.0 / 10.0 * Math.pow(0.75, mParallelTier));
+                        .setEUtDiscount(0.4D - (mParallelTier / 50.0D))
+                        .setDurationModifier(1.0D / 10.0D * Math.pow(0.75D, mParallelTier));
                     if (wirelessMode) {
                         calculator = calculator.setAmperage((8L << (2 * mParallelTier)) - 2L)
                             .setEUt(GTValues.V[Math.min(mParallelTier + 1, 14)]);

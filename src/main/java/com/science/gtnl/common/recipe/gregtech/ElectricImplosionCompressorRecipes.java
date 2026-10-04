@@ -3,16 +3,15 @@ package com.science.gtnl.common.recipe.gregtech;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import com.science.gtnl.api.IRecipePool;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import appeng.api.AEApi;
 import bartworks.API.recipe.BartWorksRecipeMaps;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTModHandler;
 
 public class ElectricImplosionCompressorRecipes implements IRecipePool {
 
@@ -25,9 +24,7 @@ public class ElectricImplosionCompressorRecipes implements IRecipePool {
             .materials();
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GTModHandler.getModItem(Mods.EternalSingularity.ID, "eternal_singularity", 1, 0),
-                ItemList.EnergisedTesseract.get(1))
+            .itemInputs(ModsItemlist.EternalSingularity.get(1), ItemList.EnergisedTesseract.get(1))
             .fluidInputs(Materials.Protomatter.getFluid(1000))
             .itemOutputs(
                 aeMaterials.singularity()

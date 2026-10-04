@@ -91,6 +91,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
     private static final int HORIZONTAL_OFF_SET = 2;
     private static final int VERTICAL_OFF_SET = 4;
     private static final int DEPTH_OFF_SET = 0;
+    private static final int DEFAULT_CULTURE_COLOR = Color.DARK_GRAY.getRGB() & 0x00FFFFFF;
 
     public Sievert defaultSievertData = new Sievert(0, false);
     public HashSet<EntityPlayerMP> playerMPHashSet = new HashSet<>();
@@ -515,7 +516,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                         .getZCoord(),
                 this.getBaseMetaTileEntity()
                     .getWorld().provider.dimensionId),
-            lCulture == null ? Color.DARK_GRAY.getRGB() : lCulture.getColorRGB());
+            lCulture == null ? DEFAULT_CULTURE_COLOR : lCulture.getColorRGB());
 
         if (SideReference.Side.Server) {
             GTValues.NW.sendPacketToAllPlayersInRange(
@@ -534,7 +535,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                                 .getZCoord(),
                         this.getBaseMetaTileEntity()
                             .getWorld().provider.dimensionId),
-                    lCulture == null ? Color.DARK_GRAY.getRGB() : lCulture.getColorRGB(),
+                    lCulture == null ? DEFAULT_CULTURE_COLOR : lCulture.getColorRGB(),
                     true),
                 this.getBaseMetaTileEntity()
                     .getXCoord(),
@@ -557,7 +558,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                                 .getZCoord(),
                         this.getBaseMetaTileEntity()
                             .getWorld().provider.dimensionId),
-                    lCulture == null ? Color.DARK_GRAY.getRGB() : lCulture.getColorRGB(),
+                    lCulture == null ? DEFAULT_CULTURE_COLOR : lCulture.getColorRGB(),
                     false),
                 this.getBaseMetaTileEntity()
                     .getXCoord(),
@@ -707,7 +708,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                                             .getZCoord(),
                                     this.getBaseMetaTileEntity()
                                         .getWorld().provider.dimensionId),
-                                this.mCulture == null ? Color.DARK_GRAY.getRGB() : this.mCulture.getColorRGB(),
+                                this.mCulture == null ? DEFAULT_CULTURE_COLOR : this.mCulture.getColorRGB(),
                                 true),
                             this.getBaseMetaTileEntity()
                                 .getXCoord(),

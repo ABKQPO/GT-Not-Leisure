@@ -10,6 +10,7 @@ import com.dreammaster.item.NHItemList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import bartworks.system.material.WerkstoffLoader;
@@ -23,7 +24,6 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
@@ -201,7 +201,7 @@ public class LaserEngraverRecipes implements IRecipePool {
                 GregtechItemList.Laser_Lens_Special.get(0),
                 new ItemStack(Items.iron_ingot, 1),
                 new ItemStack(Items.diamond, 1))
-            .itemOutputs(GTModHandler.getModItem(Mods.ExtraUtilities.ID, "unstableingot", 1))
+            .itemOutputs(ModsItemlist.ExtraUtilitiesUnstableingot.get(1))
             .duration(100)
             .eut(TierEU.RECIPE_LuV)
             .addTo(lER);
@@ -211,7 +211,7 @@ public class LaserEngraverRecipes implements IRecipePool {
                 GregtechItemList.Laser_Lens_Special.get(0),
                 new ItemStack(Blocks.iron_block, 1),
                 new ItemStack(Blocks.diamond_block, 1))
-            .itemOutputs(GTModHandler.getModItem(Mods.ExtraUtilities.ID, "decorativeBlock1", 1, 5))
+            .itemOutputs(ModsItemlist.ExtraUtilitiesUnstableIngotBlock.get(1))
             .duration(900)
             .eut(TierEU.RECIPE_LuV)
             .addTo(lER);

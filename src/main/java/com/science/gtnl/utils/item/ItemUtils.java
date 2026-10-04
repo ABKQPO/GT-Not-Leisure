@@ -37,8 +37,8 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.WirelessPickBlock;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 
-import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.ItemList;
@@ -163,17 +163,7 @@ public class ItemUtils {
     public static ItemStack MOLD_MARSHMALLOW;
     public static ItemStack EXTRUDER_SHAPE_BOAT;
 
-    public static BaubleType UNIVERSAL_TYPE;
-
     static {
-        BaubleType type;
-        try {
-            type = Enum.valueOf(BaubleType.class, "UNIVERSAL");
-        } catch (Throwable ignored) {
-            type = BaubleType.RING;
-        }
-        UNIVERSAL_TYPE = type;
-
         if (WINDMILL_SHAFT == null) WINDMILL_SHAFT = GregtechItemList.Shape_Extruder_WindmillShaft.get(1);
         if (MOLD_PELLET == null) MOLD_PELLET = GregtechItemList.Pellet_Mold.get(1);
         if (Mods.NewHorizonsCoreMod.isModLoaded()) initNHItems();
@@ -312,7 +302,7 @@ public class ItemUtils {
     }
 
     public static ItemStack getSpecialFlower(String typeName, int amount) {
-        ItemStack stack = GTModHandler.getModItem(Mods.Botania.ID, "specialFlower", amount);
+        ItemStack stack = ModsItemlist.BotaniaSpecialFlower.get(amount);
         if (stack == null) return null;
 
         NBTTagCompound tag = stack.getTagCompound();
@@ -326,7 +316,7 @@ public class ItemUtils {
     }
 
     public static ItemStack getSpecialFlower(String typeName) {
-        ItemStack stack = GTModHandler.getModItem(Mods.Botania.ID, "specialFlower", 1);
+        ItemStack stack = ModsItemlist.BotaniaSpecialFlower.get(1);
         if (stack == null) return null;
 
         NBTTagCompound tag = stack.getTagCompound();

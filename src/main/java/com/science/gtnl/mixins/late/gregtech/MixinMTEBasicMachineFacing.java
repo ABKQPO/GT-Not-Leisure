@@ -55,6 +55,11 @@ public abstract class MixinMTEBasicMachineFacing extends MTEBasicTank {
     }
 
     @Override
+    public boolean isLiquidOutput(ForgeDirection side) {
+        return true;
+    }
+
+    @Override
     public boolean allowCoverOnSide(ForgeDirection side, ItemStack coverItem) {
         return CoverRegistry.getCoverPlacer(coverItem)
             .isGuiClickable();

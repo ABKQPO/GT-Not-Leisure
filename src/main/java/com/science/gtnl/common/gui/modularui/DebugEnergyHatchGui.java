@@ -3,6 +3,7 @@ package com.science.gtnl.common.gui.modularui;
 import net.minecraft.util.EnumChatFormatting;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
+import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.utils.Alignment;
@@ -67,32 +68,133 @@ public class DebugEnergyHatchGui extends MTEHatchBaseGui<DebugEnergyHatch> {
             .child(createLabelledField("EUT: ", eutSyncer, 8))
             .child(createLabelledField("AMP: ", ampSyncer, 34))
             .child(
-                createChangeButton(GTNLMui2Textures.OVERLAY_BUTTON_MINUS_LARGE, eutSyncer, value -> value - 512, 7, 4))
+                createChangeButton(
+                    GTNLMui2Textures.OVERLAY_BUTTON_MINUS_LARGE,
+                    eutSyncer,
+                    value -> value - 512,
+                    value -> value - 64,
+                    7,
+                    4))
             .child(
-                createChangeButton(GTNLMui2Textures.OVERLAY_BUTTON_MINUS_LARGE, eutSyncer, value -> value / 512, 7, 22))
+                createChangeButton(
+                    GTNLMui2Textures.OVERLAY_BUTTON_MINUS_LARGE,
+                    eutSyncer,
+                    value -> value / 512,
+                    value -> value / 64,
+                    7,
+                    22))
             .child(
-                createChangeButton(GTNLMui2Textures.OVERLAY_BUTTON_MINUS_LARGE, ampSyncer, value -> value - 512, 7, 40))
+                createChangeButton(
+                    GTNLMui2Textures.OVERLAY_BUTTON_MINUS_LARGE,
+                    ampSyncer,
+                    value -> value - 512,
+                    value -> value - 64,
+                    7,
+                    40))
             .child(
-                createChangeButton(GTNLMui2Textures.OVERLAY_BUTTON_MINUS_LARGE, ampSyncer, value -> value / 512, 7, 58))
+                createChangeButton(
+                    GTNLMui2Textures.OVERLAY_BUTTON_MINUS_LARGE,
+                    ampSyncer,
+                    value -> value / 512,
+                    value -> value / 64,
+                    7,
+                    58))
             .child(
-                createChangeButton(GTNLMui2Textures.OVERLAY_BUTTON_MINUS_SMALL, eutSyncer, value -> value - 16, 25, 4))
+                createChangeButton(
+                    GTNLMui2Textures.OVERLAY_BUTTON_MINUS_SMALL,
+                    eutSyncer,
+                    value -> value - 16,
+                    value -> value - 1,
+                    25,
+                    4))
             .child(
-                createChangeButton(GTNLMui2Textures.OVERLAY_BUTTON_MINUS_SMALL, eutSyncer, value -> value / 16, 25, 22))
+                createChangeButton(
+                    GTNLMui2Textures.OVERLAY_BUTTON_MINUS_SMALL,
+                    eutSyncer,
+                    value -> value / 16,
+                    value -> value / 2,
+                    25,
+                    22))
             .child(
-                createChangeButton(GTNLMui2Textures.OVERLAY_BUTTON_MINUS_SMALL, ampSyncer, value -> value - 16, 25, 40))
+                createChangeButton(
+                    GTNLMui2Textures.OVERLAY_BUTTON_MINUS_SMALL,
+                    ampSyncer,
+                    value -> value - 16,
+                    value -> value - 1,
+                    25,
+                    40))
             .child(
-                createChangeButton(GTNLMui2Textures.OVERLAY_BUTTON_MINUS_SMALL, ampSyncer, value -> value / 16, 25, 58))
-            .child(createChangeButton(GTGuiTextures.OVERLAY_BUTTON_PLUS_SMALL, eutSyncer, value -> value + 16, 133, 4))
-            .child(createChangeButton(GTGuiTextures.OVERLAY_BUTTON_PLUS_SMALL, eutSyncer, value -> value * 16, 133, 22))
-            .child(createChangeButton(GTGuiTextures.OVERLAY_BUTTON_PLUS_SMALL, ampSyncer, value -> value + 16, 133, 40))
-            .child(createChangeButton(GTGuiTextures.OVERLAY_BUTTON_PLUS_SMALL, ampSyncer, value -> value * 16, 133, 58))
-            .child(createChangeButton(GTGuiTextures.OVERLAY_BUTTON_PLUS_LARGE, eutSyncer, value -> value + 512, 151, 4))
+                createChangeButton(
+                    GTNLMui2Textures.OVERLAY_BUTTON_MINUS_SMALL,
+                    ampSyncer,
+                    value -> value / 16,
+                    value -> value / 2,
+                    25,
+                    58))
             .child(
-                createChangeButton(GTGuiTextures.OVERLAY_BUTTON_PLUS_LARGE, eutSyncer, value -> value * 512, 151, 22))
+                createChangeButton(
+                    GTGuiTextures.OVERLAY_BUTTON_PLUS_SMALL,
+                    eutSyncer,
+                    value -> value + 16,
+                    value -> value + 1,
+                    133,
+                    4))
             .child(
-                createChangeButton(GTGuiTextures.OVERLAY_BUTTON_PLUS_LARGE, ampSyncer, value -> value + 512, 151, 40))
+                createChangeButton(
+                    GTGuiTextures.OVERLAY_BUTTON_PLUS_SMALL,
+                    eutSyncer,
+                    value -> value * 16,
+                    value -> value * 2,
+                    133,
+                    22))
             .child(
-                createChangeButton(GTGuiTextures.OVERLAY_BUTTON_PLUS_LARGE, ampSyncer, value -> value * 512, 151, 58));
+                createChangeButton(
+                    GTGuiTextures.OVERLAY_BUTTON_PLUS_SMALL,
+                    ampSyncer,
+                    value -> value + 16,
+                    value -> value + 1,
+                    133,
+                    40))
+            .child(
+                createChangeButton(
+                    GTGuiTextures.OVERLAY_BUTTON_PLUS_SMALL,
+                    ampSyncer,
+                    value -> value * 16,
+                    value -> value * 2,
+                    133,
+                    58))
+            .child(
+                createChangeButton(
+                    GTGuiTextures.OVERLAY_BUTTON_PLUS_LARGE,
+                    eutSyncer,
+                    value -> value + 512,
+                    value -> value + 64,
+                    151,
+                    4))
+            .child(
+                createChangeButton(
+                    GTGuiTextures.OVERLAY_BUTTON_PLUS_LARGE,
+                    eutSyncer,
+                    value -> value * 512,
+                    value -> value * 64,
+                    151,
+                    22))
+            .child(
+                createChangeButton(
+                    GTGuiTextures.OVERLAY_BUTTON_PLUS_LARGE,
+                    ampSyncer,
+                    value -> value + 512,
+                    value -> value + 64,
+                    151,
+                    40))
+            .child(
+                createChangeButton(
+                    GTGuiTextures.OVERLAY_BUTTON_PLUS_LARGE,
+                    ampSyncer,
+                    value -> value * 512,
+                    value -> value * 64,
+                    151,
+                    58));
     }
 
     private String getTierName(LongSyncValue eutSyncer) {
@@ -116,7 +218,7 @@ public class DebugEnergyHatchGui extends MTEHatchBaseGui<DebugEnergyHatch> {
                     .pos(0, 1)
                     .size(24, 12))
             .child(
-                createNumberField(syncer).pos(24, 0)
+                createNumberField(syncer).pos(24, 2)
                     .size(56, 10));
     }
 
@@ -130,16 +232,25 @@ public class DebugEnergyHatchGui extends MTEHatchBaseGui<DebugEnergyHatch> {
     }
 
     private ButtonWidget<?> createChangeButton(UITexture overlay, LongSyncValue syncer, LongTransform transform,
-        int xPos, int yPos) {
+        LongTransform shiftTransform, int xPos, int yPos) {
         return new ButtonWidget<>().background(GTGuiTextures.BUTTON_STANDARD)
             .overlay(overlay)
             .onMousePressed(mouseButton -> {
-                long changedValue = transform.apply(syncer.getLongValue());
+                if (mouseButton != 0 && mouseButton != 1) {
+                    return false;
+                }
+                LongTransform activeTransform = Interactable.hasShiftDown() ? shiftTransform : transform;
+                long changedValue = activeTransform.apply(syncer.getLongValue());
                 syncer.setLongValue(changedValue, true, true);
                 return true;
             })
             .pos(xPos, yPos)
             .size(18, 18);
+    }
+
+    @Override
+    protected boolean doesAddGregTechLogo() {
+        return false;
     }
 
     @Override

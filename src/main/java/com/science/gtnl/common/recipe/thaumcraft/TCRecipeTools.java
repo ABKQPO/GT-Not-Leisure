@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import com.science.gtnl.utils.AspectTooltipUtils;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import cpw.mods.fml.common.Optional;
@@ -43,7 +44,7 @@ public class TCRecipeTools {
 
     public TCRecipeTools() {}
 
-    public static final ItemStack IC2_MACHINE = GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockMachine", 1, 1);
+    public static final ItemStack IC2_MACHINE = ModsItemlist.IC2IronFurnace.get(1);
     public static final ItemStack BLAST_FURNACE_TEMPLATE = GTModHandler
         .getModItem(Mods.EtFuturumRequiem.ID, "blast_furnace", 1);
     public static final Set<ItemId> UNCONSUMED_ITEMS = new HashSet<>();
@@ -62,20 +63,20 @@ public class TCRecipeTools {
         if (Mods.Avaritia.isModLoaded()) addAvaritia();
 
         if (Mods.BloodMagic.isModLoaded()) {
-            UNCONSUMED_ITEMS.add(ItemId.create(GTModHandler.getModItem(Mods.BloodMagic.ID, "weakBloodOrb", 1)));
-            UNCONSUMED_ITEMS.add(ItemId.create(GTModHandler.getModItem(Mods.BloodMagic.ID, "apprenticeBloodOrb", 1)));
-            UNCONSUMED_ITEMS.add(ItemId.create(GTModHandler.getModItem(Mods.BloodMagic.ID, "magicianBloodOrb", 1)));
-            UNCONSUMED_ITEMS.add(ItemId.create(GTModHandler.getModItem(Mods.BloodMagic.ID, "masterBloodOrb", 1)));
-            UNCONSUMED_ITEMS.add(ItemId.create(GTModHandler.getModItem(Mods.BloodMagic.ID, "archmageBloodOrb", 1)));
-            UNCONSUMED_ITEMS.add(ItemId.create(GTModHandler.getModItem(Mods.BloodMagic.ID, "transcendentBloodOrb", 1)));
-            UNCONSUMED_ITEMS.add(ItemId.create(GTModHandler.getModItem(Mods.BloodMagic.ID, "creativeFiller", 1)));
+            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicWeakBloodOrb.get(1)));
+            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicApprenticeBloodOrb.get(1)));
+            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicMagicianBloodOrb.get(1)));
+            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicMasterBloodOrb.get(1)));
+            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicArchmageBloodOrb.get(1)));
+            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicTranscendentBloodOrb.get(1)));
+            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicCreativeFiller.get(1)));
         }
 
         if (Mods.ForbiddenMagic.isModLoaded()) {
-            UNCONSUMED_ITEMS.add(ItemId.create(GTModHandler.getModItem(Mods.ForbiddenMagic.ID, "EldritchOrb", 1)));
+            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.ForbiddenMagicEldritchOrb.get(1)));
         }
 
-        UNCONSUMED_ITEMS.add(ItemId.create(GTModHandler.getModItem(Mods.Thaumcraft.ID, "FocusWarding", 1)));
+        UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.ThaumcraftFocusWarding.get(1)));
     }
 
     @Optional.Method(modid = "Avaritia")
@@ -180,7 +181,11 @@ public class TCRecipeTools {
 
     // 将源质列表构建为 NEI special 槽的展示 ItemStack 数组。
     public static ItemStack[] createAspectDisplayStacks(AspectList aspectList) {
-        if (aspectList == null || aspectList.size() == 0) {
+        return createAspectDisplayStacksFromCopy(copyAspectList(aspectList));
+    }
+
+    private static ItemStack[] createAspectDisplayStacksFromCopy(AspectList aspectList) {
+        if (aspectList.size() == 0) {
             return new ItemStack[0];
         }
 
@@ -222,21 +227,31 @@ public class TCRecipeTools {
     public static void addArcaneRecipe(IRecipeMap map, ItemStack[] inputs, ItemStack[] output, AspectList aspects,
         String research, RecipeMetadataKey<AspectList> aspectKey, RecipeMetadataKey<String> researchKey) {
 
-        addArcaneRecipe(
+        AspectList snapshot = copyAspectList(aspects);
+        addArcaneRecipeWithSnapshot(
             map,
             inputs,
             output,
-            aspects,
+            snapshot,
             research,
             aspectKey,
             researchKey,
-            computeAspectDuration(aspects, ARCANE_DURATION_TICKS_PER_ASPECT),
+            computeAspectDurationFromCopy(snapshot, ARCANE_DURATION_TICKS_PER_ASPECT),
             TierEU.RECIPE_LV);
     }
 
     // 根据源质总量与每点源质系数生成处理时长（tick）：基础时长 + 每点源质 × 总量。
     public static int computeAspectDuration(AspectList aspects, int ticksPerAspect) {
-        int totalAmount = aspects == null ? 0 : aspects.visSize();
+        if (aspects == null) {
+            return ARCANE_DURATION_BASE_TICKS;
+        }
+
+        int totalAmount = 0;
+        for (Aspect aspect : aspects.getAspects()) {
+            if (aspect != null) {
+                totalAmount += aspects.getAmount(aspect);
+            }
+        }
         return ARCANE_DURATION_BASE_TICKS + totalAmount * ticksPerAspect;
     }
 
@@ -245,13 +260,29 @@ public class TCRecipeTools {
         String research, RecipeMetadataKey<AspectList> aspectKey, RecipeMetadataKey<String> researchKey, int duration,
         long eut) {
 
+        addArcaneRecipeWithSnapshot(
+            map,
+            inputs,
+            output,
+            copyAspectList(aspects),
+            research,
+            aspectKey,
+            researchKey,
+            duration,
+            eut);
+    }
+
+    private static void addArcaneRecipeWithSnapshot(IRecipeMap map, ItemStack[] inputs, ItemStack[] output,
+        AspectList snapshot, String research, RecipeMetadataKey<AspectList> aspectKey,
+        RecipeMetadataKey<String> researchKey, int duration, long eut) {
+
         RecipeBuilder.builder()
             .ignoreCollision()
             .clearInvalid()
             .itemInputsUnified(inputs)
             .itemOutputs(output)
-            .special(createAspectDisplayStacks(aspects))
-            .metadata(aspectKey, aspects.copy())
+            .special(createAspectDisplayStacksFromCopy(snapshot))
+            .metadata(aspectKey, snapshot)
             .metadata(researchKey, research)
             .duration(duration)
             .eut(eut)
@@ -263,13 +294,15 @@ public class TCRecipeTools {
         String research, RecipeMetadataKey<AspectList> aspectKey, RecipeMetadataKey<String> researchKey, int duration,
         long eut) {
 
+        AspectList snapshot = copyAspectList(aspects);
+
         RecipeBuilder.builder()
             .ignoreCollision()
             .clearInvalid()
             .itemInputs(inputs)
             .itemOutputs(output)
-            .special(createAspectDisplayStacks(aspects))
-            .metadata(aspectKey, aspects.copy())
+            .special(createAspectDisplayStacksFromCopy(snapshot))
+            .metadata(aspectKey, snapshot)
             .metadata(researchKey, research)
             .duration(duration)
             .eut(eut)
@@ -335,7 +368,29 @@ public class TCRecipeTools {
                 ICR.add(y);
             }
         }
+    }
 
+    public static AspectList copyAspectList(AspectList source) {
+        if (source == null) {
+            return new AspectList();
+        }
+
+        AspectList copy = new AspectList();
+        if (source.size() == 0) {
+            return copy;
+        }
+
+        Aspect[] aspects = source.getAspects();
+        for (Aspect aspect : aspects) {
+            if (aspect != null) {
+                copy.add(aspect, source.getAmount(aspect));
+            }
+        }
+        return copy;
+    }
+
+    public static int computeAspectDurationFromCopy(AspectList aspects, int ticksPerAspect) {
+        return ARCANE_DURATION_BASE_TICKS + aspects.visSize() * ticksPerAspect;
     }
 
     public static class ShapedArcaneCraftingRecipe {
@@ -350,7 +405,7 @@ public class TCRecipeTools {
             String research) {
             this.InputItems = InputItems;
             this.OutputItem = OutputItem;
-            this.InputAspects = inputAspects == null ? new AspectList() : inputAspects;
+            this.InputAspects = copyAspectList(inputAspects);
             this.Research = research == null ? "" : research;
         }
 
@@ -379,7 +434,7 @@ public class TCRecipeTools {
             String research) {
             this.InputItems = InputItems;
             this.OutputItem = OutputItem;
-            this.InputAspects = inputAspects == null ? new AspectList() : inputAspects;
+            this.InputAspects = copyAspectList(inputAspects);
             this.Research = research == null ? "" : research;
         }
 
@@ -410,7 +465,7 @@ public class TCRecipeTools {
             this.InputItem = inputItem;
             this.OutputItem = (ItemStack) outputItem;
             this.Components = components;
-            this.InputAspects = inputAspects == null ? new AspectList() : inputAspects;
+            this.InputAspects = copyAspectList(inputAspects);
             this.Research = research == null ? "" : research;
         }
 

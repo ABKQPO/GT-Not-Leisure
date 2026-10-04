@@ -245,7 +245,7 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
 
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
-        return new GTNLBasicMachineGui<SmallEssentiaSmeltery>(this, getUIProperties()) {
+        return new GTNLBasicMachineGui<>(this, getUIProperties()) {
 
             private StringSyncValue inProcessSync;
 

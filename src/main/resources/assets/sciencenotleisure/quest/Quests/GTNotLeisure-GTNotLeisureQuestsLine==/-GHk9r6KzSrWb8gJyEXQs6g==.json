@@ -14,7 +14,7 @@
         "Count:3": 1,
         "Damage:2": 0,
         "OreDict:8": "",
-        "id:8": "reavaritia:tile.NeutronCollector"
+        "id:8": "reavaritia:neutron_collector"
       },
       "isMain:1": 0,
       "isSilent:1": 0,
@@ -46,7 +46,7 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "reavaritia:tile.NeutronCollector"
+          "id:8": "reavaritia:neutron_collector"
         }
       },
       "taskID:8": "bq_standard:retrieval"
@@ -63,7 +63,7 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "reavaritia:tile.DenseNeutronCollector"
+          "id:8": "reavaritia:tile.dense_neutron_collector"
         }
       },
       "taskID:8": "bq_standard:optional_retrieval"
@@ -80,7 +80,7 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "reavaritia:tile.DenserNeutronCollector"
+          "id:8": "reavaritia:tile.denser_neutron_collector"
         }
       },
       "taskID:8": "bq_standard:optional_retrieval"
@@ -97,7 +97,7 @@
           "Count:3": 1,
           "Damage:2": 0,
           "OreDict:8": "",
-          "id:8": "reavaritia:tile.DensestNeutronCollector"
+          "id:8": "reavaritia:tile.densest_neutron_collector"
         }
       },
       "taskID:8": "bq_standard:optional_retrieval"

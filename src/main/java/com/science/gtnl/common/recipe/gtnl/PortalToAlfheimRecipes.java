@@ -11,12 +11,11 @@ import net.minecraft.util.StatCollector;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
-import gregtech.api.enums.Mods;
 import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.recipe.RecipeElvenTrade;
@@ -32,7 +31,7 @@ public class PortalToAlfheimRecipes implements IRecipePool {
             .itemOutputs(
                 GTUtility.copyAmountUnsafe(
                     Integer.MAX_VALUE,
-                    GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockNuke", 1)
+                    ModsItemlist.IC2BlockNuke.get(1)
                         .setStackDisplayName(
                             StatCollector.translateToLocal("gtnl.recipe.portal_to_alfheim.invalid_input"))))
             .duration(1200)
@@ -84,46 +83,46 @@ public class PortalToAlfheimRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTUtility.copyAmountUnsafe(256, GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockITNT", 1)),
+                GTUtility.copyAmountUnsafe(256, ModsItemlist.IC2BlockITNT.get(1)),
                 new ItemStack(Blocks.beacon, 0),
                 GTNLItemList.ActivatedGaiaPylon.get(0),
-                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 1, 14))
+                ModsItemlist.BotaniaGaiaSpiritIngot.get(1))
             .itemOutputs(
-                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 16, 5),
-                GTModHandler.getModItem(Mods.Botania.ID, "dice", 1, 0),
-                GTModHandler.getModItem(Mods.Botania.ID, "blackLotus", 1, 0),
-                GTModHandler.getModItem(Mods.Botania.ID, "blackLotus", 1, 1),
-                GTModHandler.getModItem(Mods.Botania.ID, "ancientWill", 1, 0),
-                GTModHandler.getModItem(Mods.Botania.ID, "ancientWill", 1, 1),
-                GTModHandler.getModItem(Mods.Botania.ID, "ancientWill", 1, 2),
-                GTModHandler.getModItem(Mods.Botania.ID, "ancientWill", 1, 3),
-                GTModHandler.getModItem(Mods.Botania.ID, "ancientWill", 1, 4),
-                GTModHandler.getModItem(Mods.Botania.ID, "ancientWill", 1, 5),
-                GTModHandler.getModItem(Mods.Botania.ID, "overgrowthSeed", 1, 3),
-                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 16, 0),
-                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 8, 1),
-                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 4, 2),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 0),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 1),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 2),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 3),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 4),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 5),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 6),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 7),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 8),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 9),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 10),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 11),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 12),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 13),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 14),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 15),
-                GTModHandler.getModItem(Mods.Botania.ID, "pinkinator", 1, 0),
-                GTModHandler.getModItem(Mods.Botania.ID, "recordGaia2", 1, 0),
+                ModsItemlist.BotaniaGaiaSpirit.get(16),
+                ModsItemlist.BotaniaDice.get(1),
+                ModsItemlist.BotaniaBlackLotus.get(1),
+                ModsItemlist.BotaniaBlackestLotus.get(1),
+                ModsItemlist.BotaniaAncientWill.get(1),
+                ModsItemlist.BotaniaWillOfDharok.get(1),
+                ModsItemlist.BotaniaWillOfGuthan.get(1),
+                ModsItemlist.BotaniaWillOfTorag.get(1),
+                ModsItemlist.BotaniaWillOfVerac.get(1),
+                ModsItemlist.BotaniaWillOfKaril.get(1),
+                ModsItemlist.BotaniaOvergrowthSeedDamage3.get(1),
+                ModsItemlist.BotaniaManasteelIngot.get(16),
+                ModsItemlist.BotaniaManaPearl.get(8),
+                ModsItemlist.BotaniaManaDiamond.get(4),
+                ModsItemlist.BotaniaWaterRune.get(2),
+                ModsItemlist.BotaniaFireRune.get(2),
+                ModsItemlist.BotaniaEarthRune.get(2),
+                ModsItemlist.BotaniaAirRune.get(2),
+                ModsItemlist.BotaniaSpringRune.get(2),
+                ModsItemlist.BotaniaSummerRune.get(2),
+                ModsItemlist.BotaniaAutumnRune.get(2),
+                ModsItemlist.BotaniaWinterRune.get(2),
+                ModsItemlist.BotaniaManaRune.get(2),
+                ModsItemlist.BotaniaLustRune.get(2),
+                ModsItemlist.BotaniaGluttonyRune.get(2),
+                ModsItemlist.BotaniaGreedRune.get(2),
+                ModsItemlist.BotaniaSlothRune.get(2),
+                ModsItemlist.BotaniaWrathRune.get(2),
+                ModsItemlist.BotaniaEnvyRune.get(2),
+                ModsItemlist.BotaniaPrideRune.get(2),
+                ModsItemlist.BotaniaPinkinator.get(1),
+                ModsItemlist.BotaniaRecordGaia2.get(1),
                 new ItemStack(Items.record_13, 1),
                 new ItemStack(Items.record_wait, 1),
-                GTModHandler.getModItem(Mods.Botania.ID, "gaiaHead", 1, 0))
+                ModsItemlist.BotaniaGaiaHead.get(1))
             .outputChances(
                 10000,
                 10000,
@@ -165,45 +164,43 @@ public class PortalToAlfheimRecipes implements IRecipePool {
             .addTo(PTAR);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Infinity_Sword", 0, 0),
-                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 1, 14))
+            .itemInputs(ModsItemlist.AvaritiaInfinitySword.get(0), ModsItemlist.BotaniaGaiaSpiritIngot.get(1))
             .itemOutputs(
-                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 16, 5),
-                GTModHandler.getModItem(Mods.Botania.ID, "dice", 1, 0),
-                GTModHandler.getModItem(Mods.Botania.ID, "blackLotus", 1, 0),
-                GTModHandler.getModItem(Mods.Botania.ID, "blackLotus", 1, 1),
-                GTModHandler.getModItem(Mods.Botania.ID, "ancientWill", 1, 0),
-                GTModHandler.getModItem(Mods.Botania.ID, "ancientWill", 1, 1),
-                GTModHandler.getModItem(Mods.Botania.ID, "ancientWill", 1, 2),
-                GTModHandler.getModItem(Mods.Botania.ID, "ancientWill", 1, 3),
-                GTModHandler.getModItem(Mods.Botania.ID, "ancientWill", 1, 4),
-                GTModHandler.getModItem(Mods.Botania.ID, "ancientWill", 1, 5),
-                GTModHandler.getModItem(Mods.Botania.ID, "overgrowthSeed", 1, 3),
-                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 16, 0),
-                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 8, 1),
-                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 4, 2),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 0),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 1),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 2),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 3),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 4),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 5),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 6),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 7),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 8),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 9),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 10),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 11),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 12),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 13),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 14),
-                GTModHandler.getModItem(Mods.Botania.ID, "rune", 2, 15),
-                GTModHandler.getModItem(Mods.Botania.ID, "pinkinator", 1, 0),
-                GTModHandler.getModItem(Mods.Botania.ID, "recordGaia2", 1, 0),
+                ModsItemlist.BotaniaGaiaSpirit.get(16),
+                ModsItemlist.BotaniaDice.get(1),
+                ModsItemlist.BotaniaBlackLotus.get(1),
+                ModsItemlist.BotaniaBlackestLotus.get(1),
+                ModsItemlist.BotaniaAncientWill.get(1),
+                ModsItemlist.BotaniaWillOfDharok.get(1),
+                ModsItemlist.BotaniaWillOfGuthan.get(1),
+                ModsItemlist.BotaniaWillOfTorag.get(1),
+                ModsItemlist.BotaniaWillOfVerac.get(1),
+                ModsItemlist.BotaniaWillOfKaril.get(1),
+                ModsItemlist.BotaniaOvergrowthSeedDamage3.get(1),
+                ModsItemlist.BotaniaManasteelIngot.get(16),
+                ModsItemlist.BotaniaManaPearl.get(8),
+                ModsItemlist.BotaniaManaDiamond.get(4),
+                ModsItemlist.BotaniaWaterRune.get(2),
+                ModsItemlist.BotaniaFireRune.get(2),
+                ModsItemlist.BotaniaEarthRune.get(2),
+                ModsItemlist.BotaniaAirRune.get(2),
+                ModsItemlist.BotaniaSpringRune.get(2),
+                ModsItemlist.BotaniaSummerRune.get(2),
+                ModsItemlist.BotaniaAutumnRune.get(2),
+                ModsItemlist.BotaniaWinterRune.get(2),
+                ModsItemlist.BotaniaManaRune.get(2),
+                ModsItemlist.BotaniaLustRune.get(2),
+                ModsItemlist.BotaniaGluttonyRune.get(2),
+                ModsItemlist.BotaniaGreedRune.get(2),
+                ModsItemlist.BotaniaSlothRune.get(2),
+                ModsItemlist.BotaniaWrathRune.get(2),
+                ModsItemlist.BotaniaEnvyRune.get(2),
+                ModsItemlist.BotaniaPrideRune.get(2),
+                ModsItemlist.BotaniaPinkinator.get(1),
+                ModsItemlist.BotaniaRecordGaia2.get(1),
                 new ItemStack(Items.record_13, 1),
                 new ItemStack(Items.record_wait, 1),
-                GTModHandler.getModItem(Mods.Botania.ID, "gaiaHead", 1, 0))
+                ModsItemlist.BotaniaGaiaHead.get(1))
             .outputChances(
                 10000,
                 10000,

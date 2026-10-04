@@ -37,6 +37,8 @@ GT5U.gui.text.recipe_result.parallel_zero=§4并行不足，检查你的输入�
 GT5U.gui.text.recipe_result.crash=§4很抱歉，你的机器出现了一些问题……        如果要寻求帮助，请把错误报告和日志文件发给对方，而不是发送这个窗口的照片或者截图或者文本。
 
 gtnl.gui.config.general=GTNL 总览配置
+gtnl.gui.config.general.client=客户端设置
+gtnl.gui.config.general.client.tooltip=调整仅在客户端生效的内容
 gtnl.gui.config.general.debug=调试设置
 gtnl.gui.config.general.debug.tooltip=GTNL 开发与调试相关选项
 gtnl.gui.config.general.effect=效果设置
@@ -55,9 +57,14 @@ gtnl.gui.config.general.super_creeper=超级苦力怕
 gtnl.gui.config.general.super_creeper.tooltip=配置具有增强 AI 的苦力怕行为
 gtnl.gui.config.general.tickrate=刻率设置
 gtnl.gui.config.general.tickrate.tooltip=调整服务器运行速度与同步
+gtnl.gui.config.general.minecraft=Minecraft设置
+gtnl.gui.config.general.minecraft.tooltip=针对Minecraft的一些东西做出的修改
 
 gtnl.gui.config.general.debug.enabledebugmode=调试模式
 gtnl.gui.config.general.debug.enabledebugmode.tooltip=启用调试日志输出
+
+gtnl.gui.config.general.client.enable_text_effects=动态文字特效
+gtnl.gui.config.general.client.enable_text_effects.tooltip=启用动态文字特效。关闭后，含特效的文字以普通文字显示
 
 gtnl.gui.config.general.effect.enableghostlyshape=启用幽灵形态
 gtnl.gui.config.general.effect.enableghostlyshape.tooltip=当玩家死亡重生时，给予玩家幽灵形态效果
@@ -67,6 +74,9 @@ gtnl.gui.config.general.item.player_doll.enablecustomskin=自定义玩家皮肤
 gtnl.gui.config.general.item.player_doll.enablecustomskin.tooltip=启用玩偶的自定义皮肤
 gtnl.gui.config.general.item.player_doll.enableregistermaxtierglass=注册玩偶为MAX玻璃
 gtnl.gui.config.general.item.player_doll.enableregistermaxtierglass.tooltip=使玩偶可作为MAX等级玻璃使用
+
+# Pigmee Fumo（移植自 AE2 Lightning Tech Reborn；模型作者 TedXenon）
+gtnl.block.pigmee_fumo.name=猪咪
 
 gtnl.gui.config.general.item.vein_miner_pickaxe=矿脉挖掘镐
 gtnl.gui.config.general.item.vein_miner_pickaxe.maxamount=最大数量
@@ -146,10 +156,17 @@ gtnl.gui.config.general.other.enabledeathincompletemessage.tooltip=玩家死亡�
 gtnl.gui.config.general.other.enablesaturationheal=饱食度治疗
 gtnl.gui.config.general.other.enablesaturationheal.tooltip=启用饱食度治疗调整，在不满血时消耗饱食度快速回血
 gtnl.gui.config.general.other.not_enough_items=NEI 物品管理器
+gtnl.gui.config.general.other.not_enough_items.enableReplaceHotIngotInPattern=NEI配方拉取热锭转换
+gtnl.gui.config.general.other.not_enough_items.enableReplaceHotIngotInPattern.tooltip=启用编写样板时自动将热锭转换为锭
 gtnl.gui.config.general.other.not_enough_items.enablespecialcheaticon=特殊作弊图标
 gtnl.gui.config.general.other.not_enough_items.enablespecialcheaticon.tooltip=启用特殊作弊模式按钮渲染
 gtnl.gui.config.general.other.not_enough_items.specialicontype=特殊图标渲染类型
 gtnl.gui.config.general.other.not_enough_items.specialicontype.tooltip=指定作弊按钮的渲染类型
+gtnl.gui.config.general.other.applied_energistics=应用能源 2
+gtnl.gui.config.general.other.applied_energistics.enable_processing_pattern_capacity_mixin=启用处理样板可配置容量
+gtnl.gui.config.general.other.applied_energistics.enable_processing_pattern_capacity_mixin.tooltip=启用处理样板终端的可配置容量，需要重启游戏
+gtnl.gui.config.general.other.applied_energistics.processing_pattern_capacity_multiplier=处理样板容量倍率
+gtnl.gui.config.general.other.applied_energistics.processing_pattern_capacity_multiplier.tooltip=将处理样板终端容量设置为 16N 输入槽和 4N 输出槽，或反向排列。默认值 2 提供 32:8 容量。配置重载后重新打开终端即可生效
 
 gtnl.gui.config.general.recipe.enableassemblinglinerecipestimechange=装配线配方时间调整
 gtnl.gui.config.general.recipe.enableassemblinglinerecipestimechange.tooltip=大幅减少部分装配线配方所需时间
@@ -228,6 +245,8 @@ gtnl.gui.super_interface.tooltip.switch=切换到超级二合一ME接口GUI
 gtnl.gui.super_interface.tooltip.previous_page=上一页
 gtnl.gui.super_interface.tooltip.next_page=下一页
 gtnl.gui.super_dual_interface.tooltip.switch=切换到超级ME接口GUI
+
+channels.gtnl.subchannel.structure_render=结构渲染
 
 channels.sciencenotleisure.structure_render=决定是否应该渲染并放置该结构，防止结构过大引起的卡顿。
 channels.sciencenotleisure.component_casing=决定部件装配线外壳等级。最低为§6部件装配线外壳(LV)§r等级1，最高为§6部件装配线外壳(MAX)§r等级14。
@@ -1526,10 +1545,13 @@ gtnl.machine.steam_lava_maker.tooltip.casing=任意镀铜砖块或脱氧钢机�
 
 gtnl.machine.steam_manufacturer.name=蒸汽制造商
 gtnl.recipe.steam_manufacturer=液压制造
-gtnl.machine.steam_manufacturer.recipe_type=组装机
+gtnl.machine.steam_manufacturer.recipe_type=液压制造/组装机
 gtnl.machine.steam_manufacturer.tooltip.0=拥有4并行
 gtnl.machine.steam_manufacturer.tooltip.1=以组装的方式组装组件
-gtnl.machine.steam_manufacturer.tooltip.2=§b§o奴隶劳动? 在我的 GTNH 里绝不可能！
+gtnl.machine.steam_manufacturer.tooltip.2=运行速度提升100%
+gtnl.machine.steam_manufacturer.tooltip.3=可执行MV及以下的组装机配方
+gtnl.machine.steam_manufacturer.tooltip.4=在控制器内放入HV组装机以解锁HV组装机配方
+gtnl.machine.steam_manufacturer.tooltip.5=§b§o奴隶劳动? 在我的 GTNH 里绝不可能！
 
 gtnl.machine.steam_rock_breaker.name=蒸汽造石机
 gtnl.recipe.rock_breaker=碎石机
@@ -1580,7 +1602,7 @@ gtnl.machine.steam_infernal_coke_oven.name=炼狱焦炉
 gtnl.recipe.infernal_coke_oven=焦炉但是超模
 gtnl.machine.steam_infernal_coke_oven.recipe_type=焦炉
 gtnl.machine.steam_infernal_coke_oven.tooltip.0=比粘土高炉更高效运作
-gtnl.machine.steam_infernal_coke_oven.tooltip.1=每连续工作5秒，速度提升1%，最高可达600%
+gtnl.machine.steam_infernal_coke_oven.tooltip.1=每连续工作5秒，速度提升5%，最高可达1000%
 gtnl.machine.steam_infernal_coke_oven.tooltip.2=§b§o太棒了！
 
 gtnl.machine.integrated_assembly_facility.name=综合组装车间
@@ -2245,6 +2267,7 @@ gtnl.machine.hyper_naquadah_reactor.tooltip.0=固定并行为%s
 gtnl.machine.hyper_naquadah_reactor.tooltip.1=可以在配方开始的时候输入硅岩气
 gtnl.machine.hyper_naquadah_reactor.tooltip.2=这会让时间减少%s倍，功率翻%s倍
 gtnl.machine.hyper_naquadah_reactor.tooltip.3=代价是每秒会消耗%sL的硅岩气
+gtnl.machine.hyper_naquadah_reactor.tooltip.4=不安装动力仓将自动进入无线模式
 gtnl.machine.hyper_naquadah_reactor.casing=任意硅岩合金聚合机械方块
 
 gtnl.machine.advanced_hyper_naquadah_reactor.name=进阶超能硅岩反应堆
@@ -2551,6 +2574,13 @@ gtnl.machine.hydraulic_super_buffer.tooltip.3=§7电压输入: §e0§7 (§e蒸�
 gtnl.machine.hydraulic_super_buffer.tooltip.4=§7电压输出: §e0§7 (§e蒸汽§7)
 gtnl.machine.hydraulic_super_buffer.tooltip.5=§7安培数：§b0§7
 gtnl.machine.hydraulic_super_buffer.tooltip.6=§7容量: §9没有输送电量功能！§7
+
+gt.blockmachines.breel.input_bus.steam.name=输入总线（青铁）
+gt.blockmachines.breel.input_bus.steam.tooltip=为多方块机器输入物品\n手持螺丝刀Shift右键以切换分类模式\n自动从正面相邻容器拉取物品\n容量：%s格\n无法用于非蒸汽多方块
+gt.blockmachines.breel.output_bus.steam.name=输出总线（青铁）
+gt.blockmachines.breel.output_bus.steam.tooltip=为多方块机器输出物品\n自动把产物输出到正面相邻容器\n容量：%s格\n无法用于非蒸汽多方块
+gt.blockmachines.stronze.input_hatch.steam.name=输入仓（青钢）
+gt.blockmachines.stronze.input_hatch.steam.tooltip=为多方块机器输入流体\n手持螺丝刀右键以切换输入过滤\n容量：%s升\n接受任意流体，并自动从正面相邻容器抽取
 
 gt.blockmachines.wire.stargate.01.name=1x%material导线
 gt.blockmachines.wire.stargate.02.name=2x%material导线
@@ -3810,6 +3840,19 @@ item.gtnl.vein_mining_pickaxe.max_block_gap=最大方块间隔：%s
 item.gtnl.vein_mining_pickaxe.max_vein_count=最大连锁数量：%s
 item.gtnl.vein_mining_pickaxe.precise_mode.enabled=§a精确模式已开启
 item.gtnl.vein_mining_pickaxe.precise_mode.disabled=§r精确模式已关闭
+item.gtnl.vein_mining_pickaxe.chain.enabled=§a连锁挖掘已开启
+item.gtnl.vein_mining_pickaxe.chain.disabled=§c连锁挖掘已关闭
+gtnl.gui.vein_mining_pickaxe.title=矿脉挖掘镐设置
+gtnl.gui.vein_mining_pickaxe.range=最大方块间隔
+gtnl.gui.vein_mining_pickaxe.range.tooltip=匹配方块之间允许的最大距离。
+gtnl.gui.vein_mining_pickaxe.amount=最大连锁数量
+gtnl.gui.vein_mining_pickaxe.amount.tooltip=一次操作最多挖掘的方块数量。
+gtnl.gui.vein_mining_pickaxe.precise=精确匹配
+gtnl.gui.vein_mining_pickaxe.precise.tooltip=只挖掘元数据或矿辞名称完全相同的方块。
+gtnl.gui.vein_mining_pickaxe.enabled=已开启
+gtnl.gui.vein_mining_pickaxe.disabled=已关闭
+gtnl.gui.vein_mining_pickaxe.chain=连锁挖掘
+gtnl.gui.vein_mining_pickaxe.chain.tooltip=开启或关闭矿脉连锁挖掘。在空中右键可快速切换。
 
 item.milledNaquadahEnriched.name=研磨富集硅岩矿
 item.FrothNaquadahenrichedflotation=富集硅岩浮选泡沫单元

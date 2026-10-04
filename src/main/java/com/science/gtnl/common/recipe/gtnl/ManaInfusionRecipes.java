@@ -9,12 +9,11 @@ import net.minecraftforge.fluids.FluidStack;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
-import gregtech.api.enums.Mods;
 import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.recipe.RecipeManaInfusion;
@@ -39,9 +38,9 @@ public class ManaInfusionRecipes implements IRecipePool {
             List<Object> finalInputs = new ArrayList<>(2);
 
             if (isAlchemy) {
-                finalInputs.add(GTModHandler.getModItem(Mods.Botania.ID, "alchemyCatalyst", 0));
+                finalInputs.add(ModsItemlist.BotaniaAlchemyCatalyst.get(0));
             } else if (isConjuration) {
-                finalInputs.add(GTModHandler.getModItem(Mods.Botania.ID, "conjurationCatalyst", 0));
+                finalInputs.add(ModsItemlist.BotaniaConjurationCatalyst.get(0));
             } else {
                 finalInputs.add(GTUtility.getIntegratedCircuit(1));
             }
@@ -75,11 +74,11 @@ public class ManaInfusionRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTModHandler.getModItem(Mods.Botania.ID, "terraPlate", 0),
-                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 1, 0),
-                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 1, 1),
-                GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 1, 2))
-            .itemOutputs(GTModHandler.getModItem(Mods.Botania.ID, "manaResource", 1, 4))
+                ModsItemlist.BotaniaTerraPlate.get(0),
+                ModsItemlist.BotaniaManasteelIngot.get(1),
+                ModsItemlist.BotaniaManaPearl.get(1),
+                ModsItemlist.BotaniaManaDiamond.get(1))
+            .itemOutputs(ModsItemlist.BotaniaTerrasteelIngot.get(1))
             .fluidInputs(GTNLMaterials.FluidMana.getFluidOrGas(500000))
             .duration(20)
             .eut(2048)

@@ -14,11 +14,11 @@ import org.jetbrains.annotations.NotNull;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 
 import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.Mods;
-import gregtech.api.util.GTModHandler;
 
 public class MeteorsRecipes implements IRecipePool {
 
@@ -36,11 +36,8 @@ public class MeteorsRecipes implements IRecipePool {
 
         List<String> meteorDrops = getTNTMeteor();
 
-        MeteorRegistry.registerMeteor(
-            GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockNuke", 1),
-            meteorDrops.toArray(new String[0]),
-            100,
-            114514);
+        MeteorRegistry
+            .registerMeteor(ModsItemlist.IC2BlockNuke.get(1), meteorDrops.toArray(new String[0]), 100, 114514);
 
         MeteorRegistry.registerMeteor(
             GTNLItemList.StargateSingularity.get(1),

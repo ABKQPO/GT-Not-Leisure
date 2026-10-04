@@ -13,6 +13,7 @@ import com.dreammaster.scripts.IScriptLoader;
 import com.glodblock.github.common.item.ItemFluidPacket;
 import com.reavaritia.utils.enums.ReAvaItemList;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 
 import appeng.api.AEApi;
 import cpw.mods.fml.common.Optional;
@@ -22,7 +23,6 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gtPlusPlus.core.material.MaterialsElements;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
@@ -1624,7 +1624,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'C',
                 GTNLItemList.EnhancementCore.get(1),
                 'D',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Crystal_Matrix", 1, 0),
+                ModsItemlist.AvaritiaCrystalMatrix.get(1),
                 'E',
                 ReAvaItemList.BlazeSword.get(1),
                 'F',
@@ -1649,7 +1649,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'C',
                 GTNLItemList.EnhancementCore.get(1),
                 'D',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Crystal_Matrix", 1, 0),
+                ModsItemlist.AvaritiaCrystalMatrix.get(1),
                 'E',
                 ReAvaItemList.BlazeAxe.get(1),
                 'F',
@@ -1674,7 +1674,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'C',
                 GTNLItemList.EnhancementCore.get(1),
                 'D',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Crystal_Matrix", 1, 0),
+                ModsItemlist.AvaritiaCrystalMatrix.get(1),
                 'E',
                 ReAvaItemList.BlazePickaxe.get(1),
                 'F',
@@ -1699,7 +1699,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'C',
                 GTNLItemList.EnhancementCore.get(1),
                 'D',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Crystal_Matrix", 1, 0),
+                ModsItemlist.AvaritiaCrystalMatrix.get(1),
                 'E',
                 ReAvaItemList.BlazeShovel.get(1),
                 'F',
@@ -1724,7 +1724,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'C',
                 GTNLItemList.EnhancementCore.get(1),
                 'D',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Crystal_Matrix", 1, 0),
+                ModsItemlist.AvaritiaCrystalMatrix.get(1),
                 'E',
                 ReAvaItemList.BlazeHoe.get(1),
                 'F',
@@ -1749,7 +1749,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'C',
                 new ItemStack(Items.bucket, 1),
                 'D',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Crystal_Matrix", 1, 0));
+                ModsItemlist.AvaritiaCrystalMatrix.get(1));
 
         ExtremeCraftingManager.getInstance()
             .addExtremeShapedOreRecipe(
@@ -1770,7 +1770,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'C',
                 new ItemStack(Blocks.lapis_block, 1),
                 'D',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Crystal_Matrix", 1, 0),
+                ModsItemlist.AvaritiaCrystalMatrix.get(1),
                 'E',
                 GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Infinity, 1),
                 'F',
@@ -1793,7 +1793,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'B',
                 NHItemList.LichBone.get(1),
                 'C',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 1),
+                ModsItemlist.AvaritiaCrystalMatrixIngot.get(1),
                 'D',
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.FierySteel, 1),
                 'E',
@@ -1818,7 +1818,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'B',
                 NHItemList.LichBone.get(1),
                 'C',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 1),
+                ModsItemlist.AvaritiaCrystalMatrixIngot.get(1),
                 'D',
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.FierySteel, 1),
                 'E',
@@ -1841,7 +1841,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'B',
                 NHItemList.LichBone.get(1),
                 'C',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 1),
+                ModsItemlist.AvaritiaCrystalMatrixIngot.get(1),
                 'D',
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.FierySteel, 1),
                 'E',
@@ -1866,7 +1866,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'B',
                 NHItemList.LichBone.get(1),
                 'C',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 1),
+                ModsItemlist.AvaritiaCrystalMatrixIngot.get(1),
                 'D',
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.FierySteel, 1),
                 'E',
@@ -1889,7 +1889,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'B',
                 NHItemList.LichBone.get(1),
                 'C',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 1),
+                ModsItemlist.AvaritiaCrystalMatrixIngot.get(1),
                 'D',
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.FierySteel, 1),
                 'E',
@@ -1912,15 +1912,15 @@ public class ScriptAvaritia implements IScriptLoader {
                 'B',
                 GTOreDictUnificator.get(OrePrefixes.ingot, Materials.CosmicNeutronium, 1),
                 'C',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 1),
+                ModsItemlist.AvaritiaCrystalMatrixIngot.get(1),
                 'D',
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.CosmicNeutronium, 1),
                 'E',
                 GTOreDictUnificator.get(OrePrefixes.dustSmall, Materials.Infinity, 1),
                 'F',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 5),
+                ModsItemlist.AvaritiaInfinityCatalyst.get(1),
                 'G',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Endest_Pearl", 1, 0));
+                ModsItemlist.AvaritiaEndestPearl.get(1));
 
         ExtremeCraftingManager.getInstance()
             .addExtremeShapedOreRecipe(
@@ -1935,11 +1935,11 @@ public class ScriptAvaritia implements IScriptLoader {
                 "BD-BBBB--",
                 "BB--B----",
                 'A',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 0),
+                ModsItemlist.AvaritiaDiamondLattice.get(1),
                 'B',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Crystal_Matrix", 1, 0),
+                ModsItemlist.AvaritiaCrystalMatrix.get(1),
                 'C',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 1),
+                ModsItemlist.AvaritiaCrystalMatrixIngot.get(1),
                 'D',
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.CosmicNeutronium, 1));
 
@@ -1956,11 +1956,11 @@ public class ScriptAvaritia implements IScriptLoader {
                 "BD------B",
                 "BB-------",
                 'A',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 0),
+                ModsItemlist.AvaritiaDiamondLattice.get(1),
                 'B',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Crystal_Matrix", 1, 0),
+                ModsItemlist.AvaritiaCrystalMatrix.get(1),
                 'C',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 1),
+                ModsItemlist.AvaritiaCrystalMatrixIngot.get(1),
                 'D',
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.CosmicNeutronium, 1));
 
@@ -1977,9 +1977,9 @@ public class ScriptAvaritia implements IScriptLoader {
                 "BC-------",
                 "BB-------",
                 'A',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 1),
+                ModsItemlist.AvaritiaCrystalMatrixIngot.get(1),
                 'B',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Crystal_Matrix", 1, 0),
+                ModsItemlist.AvaritiaCrystalMatrix.get(1),
                 'C',
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.CosmicNeutronium, 1));
 
@@ -1996,11 +1996,11 @@ public class ScriptAvaritia implements IScriptLoader {
                 "BD-------",
                 "BB-------",
                 'A',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 0),
+                ModsItemlist.AvaritiaDiamondLattice.get(1),
                 'B',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Crystal_Matrix", 1, 0),
+                ModsItemlist.AvaritiaCrystalMatrix.get(1),
                 'C',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 1),
+                ModsItemlist.AvaritiaCrystalMatrixIngot.get(1),
                 'D',
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.CosmicNeutronium, 1));
 
@@ -2017,11 +2017,11 @@ public class ScriptAvaritia implements IScriptLoader {
                 "BD-------",
                 "BB-------",
                 'A',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 0),
+                ModsItemlist.AvaritiaDiamondLattice.get(1),
                 'B',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Crystal_Matrix", 1, 0),
+                ModsItemlist.AvaritiaCrystalMatrix.get(1),
                 'C',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 1),
+                ModsItemlist.AvaritiaCrystalMatrixIngot.get(1),
                 'D',
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.CosmicNeutronium, 1));
 
@@ -2044,7 +2044,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'C',
                 new ItemStack(Items.clock, 1),
                 'D',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Crystal_Matrix", 1, 0));
+                ModsItemlist.AvaritiaCrystalMatrix.get(1));
 
         ExtremeCraftingManager.getInstance()
             .addExtremeShapedOreRecipe(
@@ -2065,7 +2065,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'C',
                 new ItemStack(Items.dye, 1, 12),
                 'D',
-                GTModHandler.getModItem(Mods.ThaumicBases.ID, "rainbowCactus", 1, 0),
+                ModsItemlist.ThaumicBasesRainbowCactus.get(1),
                 'E',
                 new ItemStack(Items.dye, 1, 8),
                 'F',
@@ -2116,7 +2116,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 "--45678--",
                 "--AB9BA--",
                 'A',
-                GTModHandler.getModItem(Mods.Botania.ID, "bifrostPerm", 1, 0),
+                ModsItemlist.BotaniaBifrostPerm.get(1),
                 'B',
                 ItemList.Field_Generator_EV.get(1),
                 'C',
@@ -2154,7 +2154,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'S',
                 new ItemStack(Items.dye, 1, 3),
                 'T',
-                GTModHandler.getModItem(Mods.AE2FluidCraft.ID, "fluid_storage_housing", 1, 3),
+                ModsItemlist.AE2FluidCraftAdvancedFluidStorageHousing.get(1),
                 'U',
                 new ItemStack(Items.dye, 1, 1),
                 'V',
@@ -2203,7 +2203,7 @@ public class ScriptAvaritia implements IScriptLoader {
                 'A',
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.CosmicNeutronium, 1),
                 'B',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Crystal_Matrix", 1),
+                ModsItemlist.AvaritiaCrystalMatrix.get(1),
                 'C',
                 new ItemStack(Blocks.anvil, 1),
                 'D',
@@ -2234,13 +2234,13 @@ public class ScriptAvaritia implements IScriptLoader {
                 'E',
                 GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.Bedrockium, 1),
                 'F',
-                GTModHandler.getModItem(Mods.ExtraUtilities.ID, "cobblestone_compressed", 1, 6),
+                ModsItemlist.ExtraUtilitiesCompressedCobbleSeven.get(1),
                 'G',
                 ItemList.Field_Generator_UV.get(1),
                 'H',
                 GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.Tungsten, 1),
                 'I',
-                GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 5),
+                ModsItemlist.AvaritiaInfinityCatalyst.get(1),
                 'J',
                 GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.NiobiumTitanium, 1),
                 'K',
@@ -2273,13 +2273,13 @@ public class ScriptAvaritia implements IScriptLoader {
                     'A',
                     GTOreDictUnificator.get(OrePrefixes.ingot, Materials.CosmicNeutronium, 1),
                     'B',
-                    GTModHandler.getModItem(Mods.Avaritia.ID, "Crystal_Matrix", 1),
+                    ModsItemlist.AvaritiaCrystalMatrix.get(1),
                     'C',
-                    GTModHandler.getModItem(Mods.Avaritia.ID, "Endest_Pearl", 1),
+                    ModsItemlist.AvaritiaEndestPearl.get(1),
                     'D',
-                    GTModHandler.getModItem(Mods.Avaritia.ID, "Resource", 1, 1),
+                    ModsItemlist.AvaritiaCrystalMatrixIngot.get(1),
                     'E',
-                    GTModHandler.getModItem(Mods.EtFuturumRequiem.ID, "elytra", 1));
+                    ModsItemlist.EtFuturumRequiemElytra.get(1));
         }
     }
 }

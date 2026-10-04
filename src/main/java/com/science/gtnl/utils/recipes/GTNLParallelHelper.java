@@ -661,7 +661,7 @@ public class GTNLParallelHelper extends ParallelHelper {
                     .calculate(recipe, maxExtraParallels, fluidInputs, itemInputs);
                 inputConsumer.consume(recipe, tExtraParallels, fluidInputs, itemInputs);
             }
-            durationMultiplier = 1.0f + (float) tExtraParallels / currentParallel;
+            durationMultiplier = 1.0D + (double) tExtraParallels / currentParallel;
             currentParallel += tExtraParallels;
         }
 

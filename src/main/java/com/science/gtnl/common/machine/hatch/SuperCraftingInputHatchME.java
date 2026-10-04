@@ -1,5 +1,8 @@
 package com.science.gtnl.common.machine.hatch;
 
+import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
+import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,6 +61,7 @@ import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.gui.modularui.SuperCraftingInputHatchMEGui;
+import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.AEApi;
@@ -77,6 +81,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IAEStackType;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
@@ -110,6 +115,7 @@ import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.metatileentity.BaseTileEntity;
+import gregtech.api.metatileentity.CommonBaseMetaTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
 import gregtech.api.objects.GTDualInputPattern;
@@ -239,6 +245,20 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
     @Override
     public ItemStack getSelfRep() {
         return this.getStackForm(1);
+    }
+
+    public boolean handlesOwnInterfaceName() {
+        return true;
+    }
+
+    @Override
+    public ItemStack getDisplayRep() {
+        ItemStack crafterIcon = getCrafterIcon();
+        ItemStack display = crafterIcon != null ? crafterIcon : getSelfRep();
+        if (display == null || !hasCustomName()) return display;
+        ItemStack namedDisplay = display.copy();
+        namedDisplay.setStackDisplayName(getCustomName());
+        return namedDisplay;
     }
 
     @Override
@@ -901,7 +921,6 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
     public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
         int z) {
         super.getWailaNBTData(player, tile, tag, world, x, y, z);
-        gtnl$removeGenericWailaName(tag);
         gtnl$writeWailaName(tag);
         tag.setBoolean("showPattern", showPattern);
         NBTTagList inventory = new NBTTagList();
@@ -918,7 +937,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
                     displayStack.stackSize = 1;
                     NBTTagCompound entry = displayStack.writeToNBT(new NBTTagCompound());
                     String key = "item:" + entry;
-                    entryToAmount.merge(key, (long) item.stackSize, Long::sum);
+                    entryToAmount.merge(key, item.stackSize, Long::sum);
                     entries.putIfAbsent(key, entry);
                 }
             }
@@ -928,7 +947,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
                     displayFluid.amount = 1;
                     NBTTagCompound entry = displayFluid.writeToNBT(new NBTTagCompound());
                     String key = "fluid:" + entry;
-                    entryToAmount.merge(key, (long) fluid.amount, Long::sum);
+                    entryToAmount.merge(key, fluid.amount, Long::sum);
                     entries.putIfAbsent(key, entry);
                 }
             }
@@ -948,56 +967,37 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
         tag.setTag("inventory", inventory);
     }
 
-    private void gtnl$removeGenericWailaName(NBTTagCompound tag) {
-        tag.removeTag("gtnl$interfaceName");
-        tag.removeTag("gtnl$interfaceIcon");
-        tag.removeTag("gtnl$interfaceCircuit");
-        tag.removeTag("gtnl$interfaceRecipeMap");
-        tag.removeTag("gtnl$interfaceItems");
-    }
-
     private void gtnl$writeWailaName(NBTTagCompound tag) {
         ItemStack crafterIcon = getCrafterIcon();
-        ItemStack circuit = mInventory[SLOT_CIRCUIT];
+        IGregTechTileEntity base = getBaseMetaTileEntity();
+        IChatComponent suffix = !hasCustomName() && base instanceof IInterfaceNameProvider provider
+            ? provider.getInterfaceNameSuffix()
+            : null;
         NBTTagList manualItems = new NBTTagList();
-        for (int i = SLOT_MANUAL_START; i < SLOT_MANUAL_START + SLOT_MANUAL_SIZE; i++) {
-            ItemStack stack = mInventory[i];
-            if (stack != null) manualItems.appendTag(stack.writeToNBT(new NBTTagCompound()));
+        if (!hasCustomName()) {
+            for (int i = SLOT_MANUAL_START; i < SLOT_MANUAL_START + SLOT_MANUAL_SIZE; i++) {
+                ItemStack stack = mInventory[i];
+                if (stack != null) manualItems.appendTag(stack.writeToNBT(new NBTTagCompound()));
+            }
         }
+        if (!hasCustomName() && crafterIcon == null && suffix == null && manualItems.tagCount() == 0) return;
 
-        boolean hasCircuit = allowSelectCircuit() && circuit != null && circuit.getItemDamage() > 0;
-        if (!hasCustomName() && crafterIcon == null && !hasCircuit && manualItems.tagCount() == 0) return;
-
-        tag.setBoolean("gtnl$superCraftingNamePresent", true);
-        if (hasCustomName()) {
-            tag.setString("gtnl$superCraftingCustomName", getCustomName());
-        } else if (crafterIcon != null) {
-            tag.setTag("gtnl$superCraftingIcon", crafterIcon.writeToNBT(new NBTTagCompound()));
-        } else {
-            tag.setString("gtnl$superCraftingFallbackName", getLocalNameKey());
-        }
-        if (hasCircuit) tag.setInteger("gtnl$superCraftingCircuit", circuit.getItemDamage());
+        InterfaceNameLocalization.writeName(tag, "gtnl$superCrafting", getRawName(), suffix, getDisplayRep());
         if (manualItems.tagCount() > 0) tag.setTag("gtnl$superCraftingManualItems", manualItems);
     }
 
     private static void gtnl$addWailaName(List<String> currenttip, NBTTagCompound tag) {
-        if (!tag.getBoolean("gtnl$superCraftingNamePresent")) return;
-
-        String name = tag.getString("gtnl$superCraftingCustomName");
-        if (name.isEmpty() && tag.hasKey("gtnl$superCraftingIcon")) {
-            ItemStack icon = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("gtnl$superCraftingIcon"));
-            if (icon != null) name = icon.getDisplayName();
-        }
-        if (name.isEmpty()) name = gtnl$localize(tag.getString("gtnl$superCraftingFallbackName"));
-        if (tag.hasKey("gtnl$superCraftingCircuit")) name += " [" + tag.getInteger("gtnl$superCraftingCircuit") + "]";
-        currenttip.add(EnumChatFormatting.AQUA + name + EnumChatFormatting.RESET);
+        String name = InterfaceNameLocalization.localizeName(tag, "gtnl$superCrafting");
+        if (!name.isEmpty()) currenttip.add(EnumChatFormatting.AQUA + name + EnumChatFormatting.RESET);
 
         NBTTagList manualItems = tag.getTagList("gtnl$superCraftingManualItems", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < manualItems.tagCount(); i++) {
             ItemStack stack = ItemStack.loadItemStackFromNBT(manualItems.getCompoundTagAt(i));
             if (stack != null) {
                 currenttip.add(
-                    EnumChatFormatting.AQUA + "  " + gtnl$getShortItemDisplayName(stack) + EnumChatFormatting.RESET);
+                    EnumChatFormatting.AQUA + "  "
+                        + CommonBaseMetaTileEntity.getShortItemDisplayName(stack)
+                        + EnumChatFormatting.RESET);
             }
         }
     }
@@ -1010,23 +1010,6 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
         }
         FluidStack fluid = FluidStack.loadFluidStackFromNBT(stackTag);
         return fluid == null ? "" : fluid.getLocalizedName();
-    }
-
-    private static String gtnl$getShortItemDisplayName(ItemStack stack) {
-        String name = stack.getDisplayName();
-        if (!name.endsWith(")")) return name;
-        int open = name.lastIndexOf('(');
-        if (open < 0) return name;
-        String inner = name.substring(open + 1, name.length() - 1)
-            .trim();
-        return inner.isEmpty() ? name : inner;
-    }
-
-    private static String gtnl$localize(String key) {
-        if (StatCollector.canTranslate(key)) return StatCollector.translateToLocal(key);
-        String blockName = key + ".name";
-        return StatCollector.canTranslate(blockName) ? StatCollector.translateToLocal(blockName)
-            : StatCollector.translateToFallback(key);
     }
 
     @Override
@@ -1255,6 +1238,14 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
     @Override
     public boolean supportsFluids() {
         return this.supportFluids;
+    }
+
+    @Override
+    public IAEStackType<?>[] getSupportedStackTypes() {
+        if (supportFluids) {
+            return new IAEStackType<?>[] { ITEM_STACK_TYPE, FLUID_STACK_TYPE };
+        }
+        return new IAEStackType<?>[] { ITEM_STACK_TYPE };
     }
 
     @Override

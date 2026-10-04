@@ -18,7 +18,6 @@ import com.science.gtnl.common.item.items.MilledOre;
 import com.science.gtnl.common.item.steamRocket.SchematicSteamRocket;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.recipe.gtnl.RocketAssemblerRecipes;
-import com.science.gtnl.common.world.GTNLWorldgenloader;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableAdvancedWorkbench;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableAvaritiaddonsChest;
@@ -26,17 +25,16 @@ import com.science.gtnl.container.portableWorkbench.ContainerPortableChest;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
 import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseBucket;
 
 import bartworks.API.WerkstoffAdderRegistry;
 import bartworks.common.loaders.ItemRegistry;
 import cpw.mods.fml.common.Optional;
-import goodgenerator.loader.Loaders;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
-import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GlassTier;
 import gregtech.common.misc.WirelessNetworkManager;
@@ -66,14 +64,9 @@ public class MaterialLoader {
 
         GTNLStructureChannels.register();
 
-        for (int i = 0; i < 14; i++) {
-            GTNLStructureChannels.COMPONENT_ASSEMBLY_LINE_CASING
-                .registerAsIndicator(new ItemStack(Loaders.componentAssemblylineCasing, 1, i), i + 1);
-        }
-
         registryOreDictionary();
 
-        GTNLWorldgenloader.registry();
+        // GTNLWorldgenloader.registry();
     }
 
     public static void loadPostInit() {
@@ -204,8 +197,7 @@ public class MaterialLoader {
         addBoxBlacklist(BlockLoader.cardboardBox, OreDictionary.WILDCARD_VALUE);
         addBoxBlacklist(ModBlocks.reactorCore, OreDictionary.WILDCARD_VALUE);
         addBoxBlacklist(ModBlocks.chaosCrystal, OreDictionary.WILDCARD_VALUE);
-        addBoxBlacklist(GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockGenerator", 1, 5));
-        addBoxBlacklist(
-            GTModHandler.getModItem(Mods.IndustrialCraft2.ID, "blockReactorChamber", 1, OreDictionary.WILDCARD_VALUE));
+        addBoxBlacklist(ModsItemlist.IC2NuclearReactor.get(1));
+        addBoxBlacklist(ModsItemlist.IC2ReactorChamberAnyDamage.get(1));
     }
 }
