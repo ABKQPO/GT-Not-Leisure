@@ -174,7 +174,6 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.MixinTileCableBusBeamBounds",
             "appliedEnergistics.MixinTESRWrapperBeamRange",
             // TODO: Restore display-representation name handling when bundled AE2 exposes the updated translateRawName
-            // method.
             "appliedEnergistics.assembler.MixinGuiMEMonitorable",
             "appliedEnergistics.assembler.MixinGuiPatternTerm",
             "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable")

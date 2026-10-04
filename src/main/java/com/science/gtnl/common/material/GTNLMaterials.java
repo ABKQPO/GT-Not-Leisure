@@ -17,17 +17,16 @@ public class GTNLMaterials implements Runnable {
         .addPrefix(OrePrefixes.blockCasing)
         .addPrefix(OrePrefixes.blockCasingAdvanced);
 
-    // TODO: Enable in 2.9.0-beta2
-    // public static Werkstoff Bronze = new Werkstoff(
-    // Materials.Bronze,
-    // ADD_CASINGS_ONLY,
-    // Werkstoff.Types.MIXTURE,
-    // 31_766 + 300);
-    // public static Werkstoff Neutronium = new Werkstoff(
-    // Materials.Neutronium,
-    // ADD_CASINGS_ONLY,
-    // Werkstoff.Types.ELEMENT,
-    // 31_766 + 129);
+    public static Werkstoff Bronze = new Werkstoff(
+        Materials.Bronze,
+        ADD_CASINGS_ONLY,
+        Werkstoff.Types.MIXTURE,
+        31_766 + 300);
+    public static Werkstoff Neutronium = new Werkstoff(
+        Materials.Neutronium,
+        ADD_CASINGS_ONLY,
+        Werkstoff.Types.ELEMENT,
+        31_766 + 129);
 
     public static Werkstoff Hexanitrohexaazaisowurtzitane;
     public static Werkstoff CrudeHexanitrohexaazaisowurtzitane;
