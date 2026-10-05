@@ -1,7 +1,10 @@
 package com.reavaritia.common;
 
 import net.minecraft.block.BlockDispenser;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.common.util.EnumHelper;
 
 import com.reavaritia.ReAvaritia;
 import com.reavaritia.common.items.BlazeAxe;
@@ -32,6 +35,8 @@ import gregtech.api.enums.Mods;
 
 public class ItemLoader {
 
+    public static final EnumRarity COSMIC;
+
     public static Item CrystalSword = new CrystalSword();
     public static Item CrystalAxe = new CrystalAxe();
     public static Item CrystalPickaxe = new CrystalPickaxe();
@@ -52,6 +57,16 @@ public class ItemLoader {
     public static Item MatterCluster = new MatterCluster();
     public static Item ChronarchsClock = new ChronarchsClock();
     public static Item InfinityElytra;
+
+    static {
+        EnumRarity rarity;
+        try {
+            rarity = EnumRarity.valueOf("COSMIC");
+        } catch (IllegalArgumentException ignored) {
+            rarity = EnumHelper.addRarity("COSMIC", EnumChatFormatting.RED, "Cosmic");
+        }
+        COSMIC = rarity;
+    }
 
     public static void registerItems() {
         IRegistry(CrystalPickaxe, "crystal_pickaxe");
