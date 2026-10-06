@@ -56,11 +56,11 @@ public abstract class MixinMTEHatchCraftingInputME extends MTEHatchInputBus impl
         return namedDisplay;
     }
 
-    @Inject(method = "getRawName", at = @At("HEAD"), cancellable = true)
-    private void gtnl$useRawNameWithoutIcon(CallbackInfoReturnable<String> callbackInfo) {
+    @Inject(method = "getRawName", at = @At("RETURN"), cancellable = true)
+    private void gtnl$useUntranslatedMachineName(CallbackInfoReturnable<String> callbackInfo) {
         MTEHatchCraftingInputME hatch = (MTEHatchCraftingInputME) (Object) this;
         if (!hatch.hasCustomName() && hatch.getCrafterIcon() == null) {
-            callbackInfo.setReturnValue(getLocalNameKey());
+            callbackInfo.setReturnValue(hatch.getLocalNameKey());
         }
     }
 
@@ -82,11 +82,9 @@ public abstract class MixinMTEHatchCraftingInputME extends MTEHatchInputBus impl
                 if (stack != null) manualItems.appendTag(stack.writeToNBT(new NBTTagCompound()));
             }
         }
-        if (hatch.hasCustomName() || hatch.getCrafterIcon() != null || suffix != null || manualItems.tagCount() > 0) {
-            String rawName = hatch.getRawName();
-            InterfaceNameLocalization.writeName(tag, "gtnl$crafting", rawName, suffix, display);
-            if (manualItems.tagCount() > 0) tag.setTag("gtnl$craftingManualItems", manualItems);
-        }
+        InterfaceNameLocalization.writeName(tag, "gtnl$crafting", hatch.getRawName(), suffix, display);
+        tag.removeTag("gtnl$craftingManualItems");
+        if (manualItems.tagCount() > 0) tag.setTag("gtnl$craftingManualItems", manualItems);
 
         Map<String, NBTTagCompound> entries = new HashMap<>();
         Map<String, Long> amounts = new HashMap<>();

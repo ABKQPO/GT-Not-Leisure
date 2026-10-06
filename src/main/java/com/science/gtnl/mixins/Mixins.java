@@ -56,7 +56,7 @@ public enum Mixins implements IMixins {
         // "minecraft.MixinSimpleReloadableResourceManager",
         "minecraft.MixinGuiContainer", "minecraft.MixinGuiFlatPresets"),
 
-    TEXT_EFFECTS_COMMON(Side.COMMON, "texteffect.MixinEnumChatFormattingTextEffects"),
+    TEXT_EFFECTS_COMMON(Side.CLIENT, "texteffect.MixinEnumChatFormattingTextEffects"),
 
     TEXT_EFFECTS_CLIENT(Side.CLIENT, "texteffect.MixinFontRendererTextEffects", "texteffect.MixinGuiNewChatTextEffects",
         "texteffect.MixinGuiTextFieldTextEffects"),

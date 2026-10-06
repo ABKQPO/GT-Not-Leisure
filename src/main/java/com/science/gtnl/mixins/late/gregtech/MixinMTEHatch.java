@@ -73,12 +73,13 @@ public abstract class MixinMTEHatch extends MTEBasicTank implements ICustomNameO
 
     @Override
     public void setCustomName(String name) {
-        gtnl$customName = name;
+        gtnl$customName = name == null ? "" : name;
     }
 
     @Override
     public void setInterfaceNameController(MTEMultiBlockBase controller) {
-        long version = ((IInterfaceNameController) controller).getInterfaceNameStructureVersion();
+        if (!(controller instanceof IInterfaceNameController controllerInfo)) return;
+        long version = controllerInfo.getInterfaceNameStructureVersion();
         if (gtnl$interfaceNameController != null && gtnl$interfaceNameController.get() == controller
             && gtnl$interfaceNameStructureVersion == version) {
             return;
@@ -91,9 +92,8 @@ public abstract class MixinMTEHatch extends MTEBasicTank implements ICustomNameO
     public RecipeMap<?> getInterfaceNameRecipeMap() {
         if (gtnl$interfaceNameController != null) {
             MTEMultiBlockBase controller = gtnl$interfaceNameController.get();
-            if (controller != null && controller.isValid()
-                && gtnl$interfaceNameStructureVersion
-                    == ((IInterfaceNameController) controller).getInterfaceNameStructureVersion()) {
+            if (controller instanceof IInterfaceNameController controllerInfo && controller.isValid()
+                && gtnl$interfaceNameStructureVersion == controllerInfo.getInterfaceNameStructureVersion()) {
                 RecipeMap<?> recipeMap = controller.getRecipeMap();
                 if (recipeMap != null) return recipeMap;
             }
@@ -106,6 +106,16 @@ public abstract class MixinMTEHatch extends MTEBasicTank implements ICustomNameO
 
     @Inject(method = "updateCraftingIcon", at = @At("TAIL"))
     private void gtnl$bindInterfaceNameController(ItemStack icon, CallbackInfo callbackInfo) {
+        gtnl$bindInterfaceNameController();
+    }
+
+    @Inject(method = "updateTexture", at = @At("HEAD"))
+    private void gtnl$bindInterfaceNameController(int textureId, CallbackInfo callbackInfo) {
+        gtnl$bindInterfaceNameController();
+    }
+
+    @Unique
+    private void gtnl$bindInterfaceNameController() {
         MTEMultiBlockBase controller = InterfaceNameControllerContext.current();
         if (controller != null) setInterfaceNameController(controller);
     }
@@ -114,8 +124,7 @@ public abstract class MixinMTEHatch extends MTEBasicTank implements ICustomNameO
     public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
         int z) {
         super.getWailaNBTData(player, tile, tag, world, x, y, z);
-        Object hatch = this;
-        if (hatch instanceof IInterfaceNameHatch nameHatch && nameHatch.handlesOwnInterfaceName()) {
+        if (handlesOwnInterfaceName()) {
             return;
         }
         if (hasCustomName()) {
@@ -137,6 +146,7 @@ public abstract class MixinMTEHatch extends MTEBasicTank implements ICustomNameO
     public void getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
         IWailaConfigHandler config) {
         super.getWailaBody(itemStack, currenttip, accessor, config);
+        if (handlesOwnInterfaceName()) return;
         NBTTagCompound tag = accessor.getNBTData();
         String name = InterfaceNameLocalization.localizeName(tag, "gtnl$interface");
         if (!name.isEmpty()) currenttip.add(EnumChatFormatting.AQUA + name + EnumChatFormatting.RESET);
