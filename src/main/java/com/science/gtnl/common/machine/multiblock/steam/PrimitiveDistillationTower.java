@@ -27,8 +27,8 @@ import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoidingMode;
 import gregtech.api.interfaces.IHatchElement;
+import gregtech.api.interfaces.IOutputHatch;
 import gregtech.api.interfaces.ITexture;
-import gregtech.api.interfaces.fluid.IFluidStore;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchOutput;
@@ -315,16 +315,9 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
         return StatCollector.translateToLocal("gtnl.machine.primitive_distillation_tower.recipe_type");
     }
 
-    public List<? extends IFluidStore> getFluidOutputSlots(FluidStack[] toOutput) {
-        List<IFluidStore> ret = new ArrayList<>();
-        for (List<MTEHatchOutput> layer : mOutputHatchesByLayer) {
-            for (MTEHatchOutput hatch : layer) {
-                if (hatch.outputsLiquids() && hatch instanceof IFluidStore fs) {
-                    ret.add(fs);
-                }
-            }
-        }
-        return ret;
+    @Override
+    public List<IOutputHatch> getOutputHatches(FluidStack[] toOutput) {
+        return getOutputHatchesByLayers(toOutput, mOutputHatchesByLayer);
     }
 
     @Override
