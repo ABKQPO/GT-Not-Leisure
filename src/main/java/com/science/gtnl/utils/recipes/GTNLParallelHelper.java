@@ -66,6 +66,8 @@ public class GTNLParallelHelper extends ParallelHelper {
      * The maximum possible parallel possible for the multiblock
      */
     public int maxParallel = 1;
+    /** Total recipe runs allowed, including sub-tick overclocking and batch mode. */
+    private int maxTotalParallel = Integer.MAX_VALUE;
     /**
      * The Batch Modifier applied when batch mode is enabled. 1 does nothing. 2 doubles max possible
      * parallel, but also duration
@@ -260,6 +262,11 @@ public class GTNLParallelHelper extends ParallelHelper {
     @Override
     public GTNLParallelHelper setMaxParallel(int maxParallel) {
         this.maxParallel = maxParallel;
+        return this;
+    }
+
+    public GTNLParallelHelper setMaxTotalParallel(int maxTotalParallel) {
+        this.maxTotalParallel = Math.max(0, maxTotalParallel);
         return this;
     }
 
@@ -470,6 +477,8 @@ public class GTNLParallelHelper extends ParallelHelper {
         if (batchMode) {
             maxParallel = GTUtility.safeInt((long) maxParallel * batchModifier, 0);
         }
+        // Apply external resource budgets before either locked or ordinary recipes consume inputs.
+        maxParallel = Math.min(maxParallel, maxTotalParallel);
 
         final ItemStack[] truncatedItemOutputs = recipe.mOutputs != null
             ? Arrays.copyOfRange(recipe.mOutputs, 0, Math.min(machine.getItemOutputLimit(), recipe.mOutputs.length))

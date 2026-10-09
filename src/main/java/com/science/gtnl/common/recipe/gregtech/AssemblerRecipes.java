@@ -41,6 +41,7 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.objects.SubstituteFluidStack;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
+import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.core.item.crafting.ItemDummyResearch;
@@ -3169,6 +3170,20 @@ public class AssemblerRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.SmallArcaneAssembler.get(1))
             .fluidInputs(SubstituteFluidStack.soldering(288))
             .duration(20 * SECONDS)
+            .eut(TierEU.RECIPE_HV)
+            .addTo(As);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                GTUtility.getIntegratedCircuit(13),
+                ItemList.Machine_Multi_BlastFurnace.get(1),
+                ItemList.Hull_HV.get(1),
+                ItemRefer.Magic_Casing.get(4),
+                new Object[] { OrePrefixes.circuit.get(Materials.HV), 2 },
+                GTModHandler.getModItem(Mods.Thaumcraft.ID, "blockMetalDevice", 4, 0))
+            .itemOutputs(GTNLItemList.IndustrialCrucible.get(1))
+            .fluidInputs(SubstituteFluidStack.soldering(576))
+            .duration(30 * SECONDS)
             .eut(TierEU.RECIPE_HV)
             .addTo(As);
 
