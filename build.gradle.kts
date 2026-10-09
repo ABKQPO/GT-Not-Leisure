@@ -124,6 +124,16 @@ val wirelessViewFilterTest = tasks.register<JavaExec>("wirelessViewFilterTest") 
 
 tasks.named("check") { dependsOn(wirelessViewFilterTest) }
 
+val wirelessTeleportTest = tasks.register<JavaExec>("wirelessTeleportTest") {
+    group = "verification"
+    description = "Checks bounded teleport landing search and rejection of unavailable landing space."
+    dependsOn(tasks.named("testClasses"))
+    classpath = sourceSets["test"].runtimeClasspath
+    mainClass.set("com.science.gtnl.common.wireless.WirelessTeleportLandingTest")
+}
+
+tasks.named("check") { dependsOn(wirelessTeleportTest) }
+
 val runConfigs = listOf(
     "runClient" to "run/client",
     "runClient17" to "run/client_new",

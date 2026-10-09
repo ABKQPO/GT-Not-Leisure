@@ -5,6 +5,7 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import java.util.List;
 import java.util.Locale;
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -299,12 +300,9 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
-        for (int i = 0; i < 5; i++) tooltip.add(StatCollector.translateToLocal(LANG + "tooltip." + i));
         tooltip.add(
             StatCollector.translateToLocal(
                 LANG + (WirelessCardBinding.automatic(stack.getTagCompound()) ? "auto_on" : "auto_off")));
-        tooltip.add(StatCollector.translateToLocal(LANG + "auto_hint"));
-        tooltip.add(StatCollector.translateToLocal(LANG + "bauble_hint"));
         if (!MainConfig.debug.enableWirelessChannelPrototype)
             tooltip.add(StatCollector.translateToLocal(LANG + "disabled"));
         WirelessCardBinding binding = WirelessCardBinding.read(stack.getTagCompound());
@@ -317,5 +315,11 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
                     .translateToLocalFormatted(LANG + "bound", source.dimension(), source.x(), source.y(), source.z()));
             tooltip.add(StatCollector.translateToLocalFormatted(LANG + "owner", binding.ownerName()));
         }
+        tooltip.add(StatCollector.translateToLocal(LANG + "manage_hint"));
+        if (GuiScreen.isShiftKeyDown()) {
+            for (int i = 0; i < 3; i++) tooltip.add(StatCollector.translateToLocal(LANG + "tooltip." + i));
+            tooltip.add(StatCollector.translateToLocal(LANG + "auto_hint"));
+            tooltip.add(StatCollector.translateToLocal(LANG + "bauble_hint"));
+        } else tooltip.add(StatCollector.translateToLocal(LANG + "more_hint"));
     }
 }

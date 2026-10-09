@@ -1,6 +1,5 @@
 package com.science.gtnl.client;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
@@ -67,7 +66,8 @@ public final class WirelessCardGui extends AEBaseGui {
         for (int row = 0; row < visibleRows; row++) {
             int y = guiTop + ROW_TOP + 2 + row * ROW_HEIGHT;
             buttonList.add(toggleButton(10 + row, 292 + dx, ROW_TOP + 4 + row * ROW_HEIGHT));
-            buttonList.add(new GuiButton(30 + row, guiLeft + actionX(), y, 30, 20, tr("copy")));
+            buttonList.add(new GuiButton(50 + row, guiLeft + actionX(), y, 30, 20, tr("teleport")));
+            buttonList.add(new GuiButton(30 + row, guiLeft + xSize - 96, y, 30, 20, tr("copy")));
             buttonList.add(new GuiButton(40 + row, guiLeft + 258 + dx, y, 30, 20, tr("highlight")));
         }
         search = textField(search, 10, 62, 124 + dx, 64);
@@ -84,11 +84,11 @@ public final class WirelessCardGui extends AEBaseGui {
     }
 
     private int actionX() {
-        return xSize - 96;
+        return xSize - 130;
     }
 
     private int contentWidth() {
-        return xSize - 198;
+        return xSize - 212;
     }
 
     private boolean layoutReady() {
@@ -104,13 +104,7 @@ public final class WirelessCardGui extends AEBaseGui {
     }
 
     private GuiToggleButton toggleButton(int id, int x, int y) {
-        GuiToggleButton button = new GuiToggleButton(guiLeft + x, guiTop + y, 129, 128, null, null) {
-
-            @Override
-            public String getMessage() {
-                return displayString + (id >= 10 ? "\n" + tr("toggle_hint") : "");
-            }
-        };
+        GuiToggleButton button = new GuiToggleButton(guiLeft + x, guiTop + y, 129, 128, null, null);
         button.id = id;
         return button;
     }
@@ -238,53 +232,6 @@ public final class WirelessCardGui extends AEBaseGui {
             if (button.id == 1) button.enabled &= data.getInteger("page") + 1 < data.getInteger("pages");
         }
         super.drawScreen(mouseX, mouseY, partialTicks);
-        int localX = mouseX - guiLeft, localY = mouseY - guiTop;
-        if (localX >= 10 && localX < actionX() - 2
-            && localY >= ROW_TOP
-            && localY < ROW_TOP + visibleRows * ROW_HEIGHT) {
-            int index = (localY - ROW_TOP) / ROW_HEIGHT;
-            if (index < rows.tagCount()) {
-                NBTTagCompound row = rows.getCompoundTagAt(index);
-                ItemStack icon = ItemStack.loadItemStackFromNBT(row.getCompoundTag("icon"));
-                List<String> lines = new ArrayList<>();
-                if (!row.getString("name")
-                    .isEmpty()) lines.add(row.getString("name"));
-                if (row.getBoolean("multipleNames")) lines.add(tr("multiple_names"));
-                lines.add(icon == null ? tr("unknown") : icon.getDisplayName());
-                lines.add(row.getString("position") + " / " + row.getString("side"));
-                lines.add(tr("counts", row.getInteger("entrances"), row.getInteger("nodes")));
-                lines.add(deviceStatus(row));
-                if (!detail && row.getInteger("devices") > 0) lines.add(tr("online_bar_hint"));
-                lines.add(tr("consumer_hint"));
-                if (row.getBoolean("runtime")) lines.add(entranceUsage(data, row));
-                if (!row.getBoolean("stable")) lines.add(tr("stats_unstable"));
-                lines.add(tr("state." + row.getString("state")));
-                if (row.getBoolean("paused") && row.getBoolean("conflicted")) lines.add(tr("state.conflict"));
-                lines.add(tr(row.getBoolean("runtime") ? "runtime_hint" : "cluster_hint"));
-                if (!data.getBoolean("detail")) lines.add(tr("detail_hint"));
-                tooltip(lines, mouseX, mouseY);
-            }
-        }
-        if (localY >= 59 && localY < 79
-            && localX >= 8
-            && localX < xSize - 10
-            && (detail ? !name.isFocused() : !search.isFocused() && !dimension.isFocused())) {
-            tooltip(List.of(tr(detail ? "name_hint" : "search_hint")), mouseX, mouseY);
-        }
-        if (localY >= ROW_TOP && localY < ROW_TOP + ROW_HEIGHT * Math.min(visibleRows, rows.tagCount())
-            && localX >= xSize - 62
-            && localX < xSize - 32
-            && (localY - ROW_TOP) % ROW_HEIGHT >= 2
-            && (localY - ROW_TOP) % ROW_HEIGHT < 22) tooltip(List.of(tr("highlight_hint")), mouseX, mouseY);
-        if (localX >= 10 && localX < xSize - 12 && localY >= 35 && localY < 45)
-            tooltip(List.of(budgetText(data, false), tr("budget_bar_hint")), mouseX, mouseY);
-    }
-
-    private void tooltip(List<String> lines, int mouseX, int mouseY) {
-        List<String> wrapped = new ArrayList<>();
-        for (String line : lines)
-            wrapped.addAll(fontRendererObj.listFormattedStringToWidth(line, Math.min(300, width - 24)));
-        drawHoveringText(wrapped, mouseX, mouseY, fontRendererObj);
     }
 
     @Override
@@ -304,14 +251,6 @@ public final class WirelessCardGui extends AEBaseGui {
             search.drawTextBox();
             dimension.drawTextBox();
         }
-    }
-
-    private static String deviceStatus(NBTTagCompound data) {
-        return tr(
-            "device_status",
-            data.getInteger("online"),
-            data.getInteger("devices"),
-            data.getBoolean("stable") ? data.getInteger("missing") : "?");
     }
 
     private static String entranceUsage(NBTTagCompound data, NBTTagCompound row) {
@@ -342,12 +281,12 @@ public final class WirelessCardGui extends AEBaseGui {
             : ColorUtils.guiTextColorGray.getColor();
     }
 
-    private static String budgetText(NBTTagCompound data, boolean compact) {
+    private static String budgetText(NBTTagCompound data) {
         return !data.getBoolean("bound") ? tr("bind_hint")
             : !data.getBoolean("sourceLoaded") ? tr("source_waiting")
                 : !data.getBoolean("channels") ? tr("unlimited")
                     : tr(
-                        compact ? "budget_compact" : "budget",
+                        "budget_compact",
                         data.getInteger("used") < 0 ? "?" : data.getInteger("used"),
                         data.getInteger("capacity"));
     }
@@ -455,9 +394,9 @@ public final class WirelessCardGui extends AEBaseGui {
         int budgetColor = !budgetKnown ? textColor
             : data.getInteger("used") >= data.getInteger("capacity") ? badColor() : goodColor();
         fontRendererObj
-            .drawString(fontRendererObj.trimStringToWidth(budgetText(data, true), xSize - 116), 10, 36, budgetColor);
+            .drawString(fontRendererObj.trimStringToWidth(budgetText(data), xSize - 116), 10, 36, budgetColor);
         ratioBar(
-            actionX(),
+            xSize - 96,
             37,
             84,
             6,
@@ -489,8 +428,8 @@ public final class WirelessCardGui extends AEBaseGui {
                 ColorUtils.guiTextColorBlack.getColor());
             String state = tr("short_state." + row.getString("state"));
             fontRendererObj.drawString(
-                fontRendererObj.trimStringToWidth(state, 56),
-                xSize - 158,
+                fontRendererObj.trimStringToWidth(state, 36),
+                xSize - 172,
                 y + (ROW_HEIGHT - fontRendererObj.FONT_HEIGHT) / 2,
                 stateColor(row));
             if (data.getBoolean("detail")) {
@@ -504,9 +443,9 @@ public final class WirelessCardGui extends AEBaseGui {
                 int missingColor = row.getBoolean("stable") && row.getInteger("missing") > 0 ? badColor()
                     : ColorUtils.craftingTreeTask.getColor();
                 ratioBar(
-                    xSize - 158,
+                    xSize - 172,
                     y + 19,
-                    56,
+                    36,
                     2,
                     row.getBoolean("stable") ? row.getInteger("online") : -1,
                     row.getInteger("devices"),

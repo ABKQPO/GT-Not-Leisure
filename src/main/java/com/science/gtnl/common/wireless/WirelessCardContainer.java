@@ -289,9 +289,12 @@ public final class WirelessCardContainer extends Container {
 
     public void action(long session, long revision, int action, String text, String dimension, int filterState) {
         if (!canInteractWith(player) || this.session != session) return;
+        boolean teleport = action >= 50 && action < 50 + rows.size();
         long now = player.worldObj.getTotalWorldTime();
-        if (now < actionAfter) return;
-        actionAfter = now + 4;
+        if (!teleport) {
+            if (now < actionAfter) return;
+            actionAfter = now + 4;
+        }
         if (this.revision != revision && action != 6 && action != 8) {
             update(true);
             return;
@@ -321,6 +324,23 @@ public final class WirelessCardContainer extends Container {
                 } catch (IllegalStateException stale) {
                     player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.stale"));
                 }
+            }
+        } else if (teleport && binding != null && player instanceof EntityPlayerMP serverPlayer) {
+            var row = rows.get(action - 50);
+            try {
+                if (!WirelessClusterManager.isCurrentLink(binding.source(), row)) {
+                    player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.stale"));
+                } else {
+                    IGridNode source = binding.source()
+                        .node();
+                    if (source == null) {
+                        player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.teleport_unavailable"));
+                    } else if (!canBuild(source) || !canBuild(row.node())) {
+                        player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.denied"));
+                    } else if (WirelessCardTeleport.teleport(serverPlayer, row.target())) return;
+                }
+            } catch (PhysicalClusterTracker.ScanLimitException limit) {
+                player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.stale"));
             }
         } else if (action >= 40 && action < 40 + rows.size()) {
             var row = rows.get(action - 40);

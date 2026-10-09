@@ -413,6 +413,17 @@ public final class WirelessClusterManager {
             .contains(source);
     }
 
+    static boolean isCurrentLink(Address source, LinkView view) {
+        if (view.target()
+            .node() != view.node()) return false;
+        refreshTarget(view.node());
+        var cluster = TRACKER.clusterOf(view.node());
+        return cluster != null && cluster.frequencies()
+            .contains(source)
+            && cluster.nodes()
+                .equals(view.members());
+    }
+
     public static void rename(Address source, LinkView view, String name) {
         refreshTarget(view.node());
         var cluster = TRACKER.clusterOf(view.node());

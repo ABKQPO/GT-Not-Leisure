@@ -1,6 +1,7 @@
 package com.science.gtnl.client;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -8,6 +9,7 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -44,6 +46,31 @@ public final class WirelessWorldHighlight {
                 .distinct()
                 .toList(),
             Minecraft.getSystemTime() + 30_000);
+        if (!targets.isEmpty() && mc.thePlayer != null && mc.currentScreen instanceof WirelessCardGui) {
+            // Use the same eye position as vanilla ray tracing (including the 1.7.10 client player offset).
+            var player = mc.thePlayer;
+            var eyes = player.getPosition(1.0F);
+            Position target = targets.stream()
+                .min(
+                    Comparator
+                        .comparingDouble(pos -> eyes.squareDistanceTo(pos.x() + 0.5, pos.y() + 0.5, pos.z() + 0.5)))
+                .orElseThrow();
+            double dx = target.x() + 0.5 - eyes.xCoord;
+            double dy = target.y() + 0.5 - eyes.yCoord;
+            double dz = target.z() + 0.5 - eyes.zCoord;
+            double horizontal = Math.sqrt(dx * dx + dz * dz);
+            if (horizontal > 1.0E-6) {
+                float yaw = (float) Math.toDegrees(Math.atan2(dz, dx)) - 90.0F;
+                player.rotationYaw += MathHelper.wrapAngleTo180_float(yaw - player.rotationYaw);
+            }
+            if (horizontal > 1.0E-6 || Math.abs(dy) > 1.0E-6)
+                player.rotationPitch = (float) -Math.toDegrees(Math.atan2(dy, horizontal));
+            player.prevRotationYaw = player.rotationYaw;
+            player.prevRotationPitch = player.rotationPitch;
+            player.rotationYawHead = player.prevRotationYawHead = player.rotationYaw;
+            // Notify the server too, releasing the card container's locked inventory slot.
+            player.closeScreen();
+        }
     }
 
     @SubscribeEvent
