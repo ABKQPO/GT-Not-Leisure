@@ -55,19 +55,19 @@ public final class WirelessCardInput {
     }
 
     private void keys() {
-        if (OPEN.isPressed()) sendOpen();
+        if (OPEN.isPressed() && acceptInput()) ScienceNotLeisure.network.sendToServer(new OpenWirelessCardPacket());
         if (TOGGLE.isPressed()) send(false);
     }
 
-    private void sendOpen() {
+    private boolean acceptInput() {
         Minecraft mc = Minecraft.getMinecraft();
         if (!MainConfig.debug.enableWirelessChannelPrototype || mc.currentScreen != null
             || mc.thePlayer == null
-            || mc.theWorld == null) return;
+            || mc.theWorld == null) return false;
         long now = System.nanoTime();
-        if (now < nextInput) return;
+        if (now < nextInput) return false;
         nextInput = now + 300_000_000L;
-        ScienceNotLeisure.network.sendToServer(new OpenWirelessCardPacket());
+        return true;
     }
 
     @SubscribeEvent
@@ -84,13 +84,8 @@ public final class WirelessCardInput {
     }
 
     private void send(boolean heldOnly) {
+        if (!acceptInput()) return;
         Minecraft mc = Minecraft.getMinecraft();
-        if (!MainConfig.debug.enableWirelessChannelPrototype || mc.currentScreen != null
-            || mc.thePlayer == null
-            || mc.theWorld == null) return;
-        long now = System.nanoTime();
-        if (now < nextInput) return;
-        nextInput = now + 300_000_000L;
         ScienceNotLeisure.network
             .sendToServer(new ToggleWirelessCardPacket(heldOnly, mc.thePlayer.inventory.currentItem));
     }

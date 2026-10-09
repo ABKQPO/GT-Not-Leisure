@@ -1,5 +1,7 @@
 package com.science.gtnl.common.wireless;
 
+import static com.science.gtnl.common.wireless.WirelessChannelPrototype.canBuild;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,11 +24,9 @@ import com.science.gtnl.common.wireless.WirelessCardSelection.Candidate;
 import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
 import com.science.gtnl.config.MainConfig;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.tile.networking.TileController;
@@ -275,12 +275,6 @@ public final class WirelessAutoConnect {
             notice(player, "auto_failed");
             return true;
         }
-    }
-
-    private static boolean canBuild(IGridNode node, EntityPlayer player) {
-        return node.getGrid()
-            .<ISecurityGrid>getCache(ISecurityGrid.class)
-            .hasPermission(player, SecurityPermissions.BUILD);
     }
 
     private static void notice(EntityPlayer player, String key) {

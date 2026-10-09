@@ -15,6 +15,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.science.gtnl.common.wireless.ChannelBudget.Position;
 import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
 
+import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -90,7 +91,7 @@ final class PhysicalMeTopology implements PhysicalClusterTracker.Topology<IGridN
             if (WirelessChannelPrototype.isOwned(connection)) continue;
             IGridNode other = connection.getOtherSide(node);
             if (!isLive(other)) continue;
-            if (PhysicalConnectionRules.isPhysical(
+            if (isPhysical(
                 false,
                 connection.hasDirection(),
                 references.get(node)
@@ -105,6 +106,20 @@ final class PhysicalMeTopology implements PhysicalClusterTracker.Topology<IGridN
     @Override
     public boolean blocksWireless(IGridNode node) {
         return (Object) node.getMachine() instanceof TileController;
+    }
+
+    /** Geometry filters an existing AE connection; adjacency alone never creates a physical connection. */
+    static boolean isPhysical(boolean ownedWireless, boolean directed, Position a, Position b) {
+        if (ownedWireless || a == null || b == null || a.dimension() != b.dimension()) return false;
+        long distance = Math.abs((long) a.x() - b.x()) + Math.abs((long) a.y() - b.y())
+            + Math.abs((long) a.z() - b.z());
+        // UNKNOWN connections within a host include AE cable-to-part connections. Remote UNKNOWN edges are bridges.
+        return distance == 0 || directed && distance == 1;
+    }
+
+    static int entranceRank(IGridNode node) {
+        if (node.hasFlag(GridFlags.DENSE_CAPACITY)) return 0;
+        return node.hasFlag(GridFlags.REQUIRE_CHANNEL) ? 2 : 1;
     }
 
     Address entranceAddress(IGridNode node) {

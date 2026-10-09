@@ -1,5 +1,9 @@
 package com.science.gtnl.common.wireless;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.function.Predicate;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -11,8 +15,8 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.science.gtnl.common.wireless.WirelessCardTeleport.Landing.Position;
 import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
-import com.science.gtnl.common.wireless.WirelessTeleportLanding.Position;
 
 import appeng.api.util.IOrientable;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -22,6 +26,35 @@ import gregtech.api.util.GTUtility;
 final class WirelessCardTeleport {
 
     private WirelessCardTeleport() {}
+
+    /** Bounded search; remains independent of world access so its policy can be tested on its own. */
+    static final class Landing {
+
+        record Position(int x, int y, int z) {}
+
+        private Landing() {}
+
+        static Position find(int x, int y, int z, ForgeDirection front, Predicate<Position> safe) {
+            Set<Position> candidates = new LinkedHashSet<>();
+            if (front != null && front != ForgeDirection.UNKNOWN && front.offsetY == 0)
+                candidates.add(new Position(x + front.offsetX, y, z + front.offsetZ));
+            for (int dy : new int[] { 0, 1, -1, 2, -2 }) {
+                if (dy > 0) candidates.add(new Position(x, y + dy, z));
+                for (int radius = 1; radius <= 3; radius++) {
+                    for (int dx = -radius; dx <= radius; dx++) {
+                        for (int dz = -radius; dz <= radius; dz++) {
+                            if (Math.max(Math.abs(dx), Math.abs(dz)) == radius)
+                                candidates.add(new Position(x + dx, y + dy, z + dz));
+                        }
+                    }
+                }
+            }
+            return candidates.stream()
+                .filter(safe)
+                .findFirst()
+                .orElse(null);
+        }
+    }
 
     static boolean teleport(EntityPlayerMP player, Address target) {
         WorldServer world = DimensionManager.getWorld(target.dimension());
@@ -33,7 +66,7 @@ final class WirelessCardTeleport {
             if (tile instanceof IGregTechTileEntity machine) front = machine.getFrontFacing();
             else if (tile instanceof IOrientable orientable) front = orientable.getForward();
         }
-        Position landing = WirelessTeleportLanding
+        Position landing = Landing
             .find(target.x(), target.y(), target.z(), front, position -> safe(world, player, position));
         if (landing == null) return fail(player, "teleport_no_space");
         double x = landing.x() + 0.5, y = landing.y(), z = landing.z() + 0.5;

@@ -5,7 +5,7 @@ import com.science.gtnl.common.world.WorldListenerTest;
 public final class WirelessEventTest {
 
     public static void main(String[] args) throws Exception {
-        WirelessScanSchedule schedule = new WirelessScanSchedule();
+        var schedule = new WirelessClusterManager.ScanSchedule();
         check(schedule.tick(), "Startup must discover saved targets immediately");
         schedule.beginScan();
         for (int i = 0; i < 19; i++) check(!schedule.tick(), "Quiet ticks do not scan the full graph");

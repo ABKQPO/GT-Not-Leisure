@@ -37,7 +37,7 @@ public final class WirelessClusterManager {
     private static final Map<Cluster<IGridNode, Address>, Set<IGridNode>> SAVED_ENTRANCES = new IdentityHashMap<>();
     private static final VerifiedEntranceRecovery<IGridNode, Address> RECOVERY = new VerifiedEntranceRecovery<>();
     private static boolean scanLimited;
-    private static final WirelessScanSchedule SCANS = new WirelessScanSchedule();
+    private static final ScanSchedule SCANS = new ScanSchedule();
     private static final WirelessTopologyWatch WATCH = new WirelessTopologyWatch();
 
     private enum State {
@@ -50,6 +50,32 @@ public final class WirelessClusterManager {
     public record Summary(int clusters, int active, int conflicted, int waiting, boolean scanLimited) {}
 
     private WirelessClusterManager() {}
+
+    /** Coalesces notifications; callbacks during a scan remain pending for the next tick. */
+    static final class ScanSchedule {
+
+        private boolean dirty = true;
+        private int remaining;
+
+        void invalidate() {
+            dirty = true;
+        }
+
+        boolean tick() {
+            if (remaining > 0) remaining--;
+            return dirty || remaining == 0;
+        }
+
+        void beginScan() {
+            dirty = false;
+            remaining = 20;
+        }
+
+        void clear() {
+            dirty = true;
+            remaining = 0;
+        }
+    }
 
     public static void invalidateTopology() {
         SCANS.invalidate();
@@ -256,7 +282,7 @@ public final class WirelessClusterManager {
             .stream()
             .filter(node -> TOPOLOGY.entranceAddress(node) != null)
             .min(
-                Comparator.comparingInt(WirelessClusterManager::anchorRank)
+                Comparator.comparingInt(PhysicalMeTopology::entranceRank)
                     .thenComparingInt(
                         node -> TOPOLOGY.entranceAddress(node)
                             .x())
@@ -284,11 +310,6 @@ public final class WirelessClusterManager {
             // Retain the claim and retry in one second; do not throw security exceptions on every server tick.
             RETRY_AFTER.put(anchor, now + 20);
         }
-    }
-
-    private static int anchorRank(IGridNode node) {
-        if (node.hasFlag(GridFlags.DENSE_CAPACITY)) return 0;
-        return node.hasFlag(GridFlags.REQUIRE_CHANNEL) ? 2 : 1;
     }
 
     private static boolean paused(Cluster<IGridNode, Address> cluster, Address source) {
@@ -361,10 +382,8 @@ public final class WirelessClusterManager {
 
     public static boolean setPaused(Address source, LinkView view, boolean paused) {
         IGridNode target = view.node();
-        refreshTarget(target);
-        var cluster = TRACKER.clusterOf(target);
-        if (cluster == null || !cluster.frequencies()
-            .contains(source)) return false;
+        var cluster = linkedCluster(source, view);
+        if (cluster == null) return false;
         if (!cluster.nodes()
             .equals(view.members()) || paused(cluster, source) != view.paused())
             throw new IllegalStateException("The displayed cluster changed; refresh before editing.");
@@ -416,23 +435,23 @@ public final class WirelessClusterManager {
     static boolean isCurrentLink(Address source, LinkView view) {
         if (view.target()
             .node() != view.node()) return false;
-        refreshTarget(view.node());
-        var cluster = TRACKER.clusterOf(view.node());
-        return cluster != null && cluster.frequencies()
-            .contains(source)
-            && cluster.nodes()
-                .equals(view.members());
+        var cluster = linkedCluster(source, view);
+        return cluster != null && cluster.nodes()
+            .equals(view.members());
     }
 
     public static void rename(Address source, LinkView view, String name) {
+        var cluster = linkedCluster(source, view);
+        if (cluster == null || !cluster.nodes()
+            .equals(view.members())) throw new IllegalStateException("The displayed cluster changed");
+        WirelessLinkPersistence.rename(cluster.nodes(), source, name, TOPOLOGY);
+    }
+
+    private static Cluster<IGridNode, Address> linkedCluster(Address source, LinkView view) {
         refreshTarget(view.node());
         var cluster = TRACKER.clusterOf(view.node());
-        if (cluster == null || !cluster.frequencies()
-            .contains(source)
-            || !cluster.nodes()
-                .equals(view.members()))
-            throw new IllegalStateException("The displayed cluster changed");
-        WirelessLinkPersistence.rename(cluster.nodes(), source, name, TOPOLOGY);
+        return cluster != null && cluster.frequencies()
+            .contains(source) ? cluster : null;
     }
 
     public static List<Address> highlight(LinkView view) {

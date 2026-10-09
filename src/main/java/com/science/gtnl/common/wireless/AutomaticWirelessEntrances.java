@@ -159,7 +159,7 @@ public final class AutomaticWirelessEntrances {
                         && topology.entranceAddress(node) != null
                         && !node.hasFlag(GridFlags.CANNOT_CARRY)
                         && !hasSourceConnection(node, work.sourceByTarget.get(node)),
-                    AutomaticWirelessEntrances::rank,
+                    PhysicalMeTopology::entranceRank,
                     order);
                 if (candidate != null) return candidate;
             }
@@ -199,11 +199,6 @@ public final class AutomaticWirelessEntrances {
             if (connection.getOtherSide(target) == sourceNode) return true;
         }
         return false;
-    }
-
-    private static int rank(IGridNode node) {
-        if (node.hasFlag(GridFlags.DENSE_CAPACITY)) return 0;
-        return node.hasFlag(GridFlags.REQUIRE_CHANNEL) ? 2 : 1;
     }
 
     private static Comparator<IGridNode> addressOrder(PhysicalMeTopology topology) {

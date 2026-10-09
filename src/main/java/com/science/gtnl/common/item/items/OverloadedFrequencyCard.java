@@ -29,12 +29,10 @@ import com.science.gtnl.common.wireless.WirelessClusterManager;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingGrid;
-import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
 import appeng.tile.networking.TileController;
@@ -220,9 +218,7 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
     }
 
     private static boolean canBuild(IGridNode node, EntityPlayer player) {
-        ISecurityGrid security = node.getGrid()
-            .getCache(ISecurityGrid.class);
-        if (security.hasPermission(player, SecurityPermissions.BUILD)) return true;
+        if (WirelessChannelPrototype.canBuild(node, player)) return true;
         message(player, "denied");
         return false;
     }

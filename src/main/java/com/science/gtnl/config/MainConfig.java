@@ -30,7 +30,7 @@ public class MainConfig {
         @RequiresMcRestart
         public boolean enableDebugMode = false;
 
-        @Comment("Enable the experimental ME frequency card, command and pathing hooks. Links are not saved.")
+        @Comment("Enable the experimental ME frequency card, command and pathing hooks. Links are saved with target tiles.")
         @DefaultBoolean(false)
         @RequiresMcRestart
         public boolean enableWirelessChannelPrototype = false;

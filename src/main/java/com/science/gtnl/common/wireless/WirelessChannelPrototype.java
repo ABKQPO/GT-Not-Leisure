@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -16,6 +17,7 @@ import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
 import appeng.api.AEApi;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridConnection;
@@ -23,6 +25,7 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.core.AEConfig;
@@ -196,6 +199,13 @@ public final class WirelessChannelPrototype {
 
     public static boolean channelsEnabled() {
         return AEConfig.instance.isFeatureEnabled(AEFeature.Channels);
+    }
+
+    public static boolean canBuild(IGridNode node, EntityPlayer player) {
+        return node != null && node.getGrid() != null
+            && node.getGrid()
+                .<ISecurityGrid>getCache(ISecurityGrid.class)
+                .hasPermission(player, SecurityPermissions.BUILD);
     }
 
     @SubscribeEvent

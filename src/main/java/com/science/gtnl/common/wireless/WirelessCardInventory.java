@@ -20,7 +20,7 @@ public final class WirelessCardInventory {
 
     // GUI address: 0 = held, positive = main slot + 1, negative = -(Baubles slot + 1).
     public static CardSlot resolve(EntityPlayer player, int location) {
-        return resolve(player.inventory, baubles(player), player.inventory.currentItem, location);
+        return resolve(player.inventory, BaublesCompat.getBaubles(player), player.inventory.currentItem, location);
     }
 
     static CardSlot resolve(IInventory main, IInventory worn, int selected, int location) {
@@ -36,7 +36,7 @@ public final class WirelessCardInventory {
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
             if (player.inventory.mainInventory[slot] == card) return slot + 1;
         }
-        IInventory worn = baubles(player);
+        IInventory worn = BaublesCompat.getBaubles(player);
         if (worn != null) {
             for (int slot = 0; slot < worn.getSizeInventory(); slot++) {
                 if (worn.getStackInSlot(slot) == card) return -slot - 1;
@@ -46,7 +46,7 @@ public final class WirelessCardInventory {
     }
 
     public static List<ItemStack> carried(EntityPlayer player) {
-        return collect(player.inventory.mainInventory, baubles(player));
+        return collect(player.inventory.mainInventory, BaublesCompat.getBaubles(player));
     }
 
     static List<ItemStack> collect(ItemStack[] main, IInventory worn) {
@@ -67,7 +67,7 @@ public final class WirelessCardInventory {
     }
 
     public static void sync(EntityPlayer player, ItemStack card) {
-        IInventory worn = baubles(player);
+        IInventory worn = BaublesCompat.getBaubles(player);
         if (worn != null) {
             for (int slot = 0; slot < worn.getSizeInventory(); slot++) {
                 if (worn.getStackInSlot(slot) != card) continue;
@@ -81,7 +81,4 @@ public final class WirelessCardInventory {
         if (player.openContainer != player.inventoryContainer) player.openContainer.detectAndSendChanges();
     }
 
-    private static IInventory baubles(EntityPlayer player) {
-        return BaublesCompat.getBaubles(player);
-    }
 }

@@ -1,5 +1,7 @@
 package com.science.gtnl.common.wireless;
 
+import static com.science.gtnl.common.wireless.WirelessChannelPrototype.canBuild;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
@@ -19,9 +21,7 @@ import com.science.gtnl.common.item.items.OverloadedFrequencyCard;
 import com.science.gtnl.common.packet.WirelessCardGuiPacket;
 import com.science.gtnl.config.MainConfig;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.security.ISecurityGrid;
 
 /** A slotless, server-authoritative view. Clients send only a session/revision and a displayed button. */
 public final class WirelessCardContainer extends Container {
@@ -45,10 +45,6 @@ public final class WirelessCardContainer extends Container {
     private NBTTagCompound sent;
     private long actionAfter = Long.MIN_VALUE;
     public volatile NBTTagCompound display = new NBTTagCompound();
-
-    public WirelessCardContainer(EntityPlayer player) {
-        this(player, 0);
-    }
 
     public WirelessCardContainer(EntityPlayer player, int location) {
         this.player = player;
@@ -197,26 +193,6 @@ public final class WirelessCardContainer extends Container {
             NBTTagCompound entry = new NBTTagCompound();
             entry.setString("position", coordinates(row.target()));
             entry.setString("name", row.name());
-            entry.setBoolean(
-                "multipleNames",
-                row.names()
-                    .size() > 1);
-            entry.setInteger(
-                "dimension",
-                row.target()
-                    .dimension());
-            entry.setInteger(
-                "x",
-                row.target()
-                    .x());
-            entry.setInteger(
-                "y",
-                row.target()
-                    .y());
-            entry.setInteger(
-                "z",
-                row.target()
-                    .z());
             entry.setString(
                 "side",
                 row.target()
@@ -226,10 +202,6 @@ public final class WirelessCardContainer extends Container {
             entry.setBoolean("paused", row.paused());
             entry.setBoolean("conflicted", row.conflicted());
             entry.setInteger("entrances", row.entrances());
-            entry.setInteger(
-                "nodes",
-                row.statistics()
-                    .nodes());
             entry.setInteger(
                 "devices",
                 row.statistics()
@@ -316,7 +288,7 @@ public final class WirelessCardContainer extends Container {
             var row = rows.get(0);
             IGridNode source = binding.source()
                 .node();
-            if (!canBuild(row.node()) || source == null || !canBuild(source)) {
+            if (!canBuild(row.node(), player) || !canBuild(source, player)) {
                 player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.denied"));
             } else {
                 try {
@@ -335,7 +307,7 @@ public final class WirelessCardContainer extends Container {
                         .node();
                     if (source == null) {
                         player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.teleport_unavailable"));
-                    } else if (!canBuild(source) || !canBuild(row.node())) {
+                    } else if (!canBuild(source, player) || !canBuild(row.node(), player)) {
                         player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.denied"));
                     } else if (WirelessCardTeleport.teleport(serverPlayer, row.target())) return;
                 }
@@ -391,8 +363,8 @@ public final class WirelessCardContainer extends Container {
                 .node();
             // Never act on a replacement device or guess an unloaded source's permission when resuming.
             if (row.target()
-                .node() != row.node() || !canBuild(row.node())
-                || source != null && !canBuild(source)
+                .node() != row.node() || !canBuild(row.node(), player)
+                || source != null && !canBuild(source, player)
                 || row.paused() && source == null) {
                 player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.denied"));
             } else {
@@ -430,13 +402,6 @@ public final class WirelessCardContainer extends Container {
                                 state));
             })
             .toList();
-    }
-
-    private boolean canBuild(IGridNode node) {
-        return node != null && node.getGrid() != null
-            && node.getGrid()
-                .<ISecurityGrid>getCache(ISecurityGrid.class)
-                .hasPermission(player, SecurityPermissions.BUILD);
     }
 
     private static String coordinates(WirelessChannelPrototype.Address address) {

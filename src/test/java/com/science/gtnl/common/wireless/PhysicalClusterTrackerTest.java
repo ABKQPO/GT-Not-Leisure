@@ -285,21 +285,19 @@ public final class PhysicalClusterTrackerTest {
         Position adjacent = new Position(0, 11, 64, 10);
         Position remote = new Position(0, 500, 64, 10);
         Position otherDimension = new Position(1, 10, 64, 10);
+        check(PhysicalMeTopology.isPhysical(false, true, a, adjacent), "Native neighbouring cable edge is physical");
+        check(PhysicalMeTopology.isPhysical(false, false, a, a), "Internal cable-to-part edge is physical");
         check(
-            PhysicalConnectionRules.isPhysical(false, true, a, adjacent),
-            "Native neighbouring cable edge is physical");
-        check(PhysicalConnectionRules.isPhysical(false, false, a, a), "Internal cable-to-part edge is physical");
-        check(
-            !PhysicalConnectionRules.isPhysical(true, false, a, adjacent),
+            !PhysicalMeTopology.isPhysical(true, false, a, adjacent),
             "Owned wireless is excluded even when endpoints touch");
         check(
-            !PhysicalConnectionRules.isPhysical(false, false, a, adjacent),
+            !PhysicalMeTopology.isPhysical(false, false, a, adjacent),
             "A foreign UNKNOWN bridge is not a cable just because endpoints touch");
         check(
-            !PhysicalConnectionRules.isPhysical(false, false, a, remote),
+            !PhysicalMeTopology.isPhysical(false, false, a, remote),
             "Quantum and P2P remote edges are not physical clusters");
         check(
-            !PhysicalConnectionRules.isPhysical(false, true, a, otherDimension),
+            !PhysicalMeTopology.isPhysical(false, true, a, otherDimension),
             "Coordinates across dimensions never merge physical clusters");
     }
 

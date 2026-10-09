@@ -22,117 +22,41 @@ tasks.withType<Test>().configureEach {
     failOnNoDiscoveredTests.set(false)
 }
 
-val wirelessChannelPolicyTest = tasks.register<JavaExec>("wirelessChannelPolicyTest") {
-    group = "verification"
-    description = "Checks wireless controller geometry and shared channel budget policy."
-    dependsOn(tasks.named("testClasses"))
-    classpath = sourceSets["test"].runtimeClasspath
-    mainClass.set("com.science.gtnl.common.wireless.ChannelBudgetTest")
+fun registerWirelessTest(name: String, testClass: String): TaskProvider<JavaExec> {
+    val task = tasks.register<JavaExec>(name) {
+        group = "verification"
+        description = "Runs $testClass regression checks."
+        dependsOn(tasks.named("testClasses"))
+        classpath = sourceSets["test"].runtimeClasspath
+        mainClass.set(testClass)
+    }
+    tasks.named("check") { dependsOn(task) }
+    return task
 }
 
-val wirelessMixinBootstrapTest = tasks.register<JavaExec>("wirelessMixinBootstrapTest") {
-    group = "verification"
-    description = "Applies the wireless mixin to the pinned AE2 class without launching Minecraft."
-    dependsOn(tasks.named("testClasses"), tasks.named("downgradeMainClasses"))
+mapOf(
+    "wirelessChannelPolicyTest" to "ChannelBudgetTest",
+    "wirelessCardBindingTest" to "WirelessCardBindingTest",
+    "wirelessClusterTopologyTest" to "PhysicalClusterTrackerTest",
+    "wirelessEntrancePlannerTest" to "AutomaticEntrancePlannerTest",
+    "wirelessLinkPersistenceTest" to "WirelessLinkPersistenceTest",
+    "wirelessCardSelectionTest" to "WirelessCardSelectionTest",
+    "wirelessCardInventoryTest" to "WirelessCardInventoryTest",
+    "wirelessEventTest" to "WirelessEventTest",
+    "wirelessNetworkStatisticsTest" to "WirelessNetworkStatisticsTest",
+    "wirelessViewFilterTest" to "WirelessViewFilterTest",
+    "wirelessTeleportTest" to "WirelessTeleportLandingTest"
+).forEach { (name, testClass) ->
+    registerWirelessTest(name, "com.science.gtnl.common.wireless.$testClass")
+}
+
+registerWirelessTest("wirelessMixinBootstrapTest", "com.science.gtnl.wirelesstest.WirelessMixinBootstrapTest").configure {
+    description = "Applies the wireless mixins to the pinned AE2 and Minecraft classes without launching the game."
+    dependsOn(tasks.named("downgradeMainClasses"))
     classpath = files(layout.buildDirectory.dir("tmp/downgradeMainClasses/main")) + sourceSets["test"].runtimeClasspath
-    mainClass.set("com.science.gtnl.wirelesstest.WirelessMixinBootstrapTest")
     workingDir = layout.buildDirectory.dir("wireless-mixin-test").get().asFile
     doFirst { workingDir.mkdirs() }
 }
-
-val wirelessCardBindingTest = tasks.register<JavaExec>("wirelessCardBindingTest") {
-    group = "verification"
-    description = "Checks frequency card saved NBT and owner identity."
-    dependsOn(tasks.named("testClasses"))
-    classpath = sourceSets["test"].runtimeClasspath
-    mainClass.set("com.science.gtnl.common.wireless.WirelessCardBindingTest")
-}
-
-val wirelessClusterTopologyTest = tasks.register<JavaExec>("wirelessClusterTopologyTest") {
-    group = "verification"
-    description = "Checks physical cluster split, merge, conflicting provenance and recovery."
-    dependsOn(tasks.named("testClasses"))
-    classpath = sourceSets["test"].runtimeClasspath
-    mainClass.set("com.science.gtnl.common.wireless.PhysicalClusterTrackerTest")
-}
-
-val wirelessEntrancePlannerTest = tasks.register<JavaExec>("wirelessEntrancePlannerTest") {
-    group = "verification"
-    description = "Checks automatic entrance feedback, queued pathing, budget gates and rollback."
-    dependsOn(tasks.named("testClasses"))
-    classpath = sourceSets["test"].runtimeClasspath
-    mainClass.set("com.science.gtnl.common.wireless.AutomaticEntrancePlannerTest")
-}
-
-val wirelessLinkPersistenceTest = tasks.register<JavaExec>("wirelessLinkPersistenceTest") {
-    group = "verification"
-    description = "Checks saved wireless node provenance, chunk reload, conflicts and unlink."
-    dependsOn(tasks.named("testClasses"))
-    classpath = sourceSets["test"].runtimeClasspath
-    mainClass.set("com.science.gtnl.common.wireless.WirelessLinkPersistenceTest")
-}
-
-tasks.named("check") {
-    dependsOn(wirelessChannelPolicyTest, wirelessMixinBootstrapTest, wirelessCardBindingTest, wirelessClusterTopologyTest, wirelessEntrancePlannerTest, wirelessLinkPersistenceTest, "wirelessCardSelectionTest")
-}
-
-tasks.register<JavaExec>("wirelessCardSelectionTest") {
-    group = "verification"
-    description = "Checks automatic placement and toggle card selection and owner restrictions."
-    dependsOn(tasks.named("testClasses"))
-    classpath = sourceSets["test"].runtimeClasspath
-    mainClass.set("com.science.gtnl.common.wireless.WirelessCardSelectionTest")
-}
-
-val wirelessCardInventoryTest = tasks.register<JavaExec>("wirelessCardInventoryTest") {
-    group = "verification"
-    description = "Checks main and Baubles inventory stack identity for frequency cards."
-    dependsOn(tasks.named("testClasses"))
-    classpath = sourceSets["test"].runtimeClasspath
-    mainClass.set("com.science.gtnl.common.wireless.WirelessCardInventoryTest")
-}
-
-tasks.named("check") { dependsOn(wirelessCardInventoryTest) }
-
-val wirelessEventTest = tasks.register<JavaExec>("wirelessEventTest") {
-    group = "verification"
-    description = "Checks event-driven topology scheduling and arbitrary-coordinate listener cleanup."
-    dependsOn(tasks.named("testClasses"))
-    classpath = sourceSets["test"].runtimeClasspath
-    mainClass.set("com.science.gtnl.common.wireless.WirelessEventTest")
-}
-
-tasks.named("check") { dependsOn(wirelessEventTest) }
-
-val wirelessNetworkStatisticsTest = tasks.register<JavaExec>("wirelessNetworkStatisticsTest") {
-    group = "verification"
-    description = "Checks GUI device counts, power versus channel status and unsettled pathing."
-    dependsOn(tasks.named("testClasses"))
-    classpath = sourceSets["test"].runtimeClasspath
-    mainClass.set("com.science.gtnl.common.wireless.WirelessNetworkStatisticsTest")
-}
-
-tasks.named("check") { dependsOn(wirelessNetworkStatisticsTest) }
-
-val wirelessViewFilterTest = tasks.register<JavaExec>("wirelessViewFilterTest") {
-    group = "verification"
-    description = "Checks combined name, coordinate, dimension and state filters."
-    dependsOn(tasks.named("testClasses"))
-    classpath = sourceSets["test"].runtimeClasspath
-    mainClass.set("com.science.gtnl.common.wireless.WirelessViewFilterTest")
-}
-
-tasks.named("check") { dependsOn(wirelessViewFilterTest) }
-
-val wirelessTeleportTest = tasks.register<JavaExec>("wirelessTeleportTest") {
-    group = "verification"
-    description = "Checks bounded teleport landing search and rejection of unavailable landing space."
-    dependsOn(tasks.named("testClasses"))
-    classpath = sourceSets["test"].runtimeClasspath
-    mainClass.set("com.science.gtnl.common.wireless.WirelessTeleportLandingTest")
-}
-
-tasks.named("check") { dependsOn(wirelessTeleportTest) }
 
 val runConfigs = listOf(
     "runClient" to "run/client",
