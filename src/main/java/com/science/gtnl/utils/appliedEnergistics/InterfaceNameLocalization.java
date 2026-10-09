@@ -9,6 +9,9 @@ public class InterfaceNameLocalization {
 
     public static void writeName(NBTTagCompound tag, String prefix, String rawName, IChatComponent suffix,
         ItemStack displayRepresentation) {
+        tag.removeTag(prefix + "RawName");
+        tag.removeTag(prefix + "Suffix");
+        tag.removeTag(prefix + "Display");
         tag.setString(prefix + "RawName", rawName == null ? "" : rawName);
         if (suffix != null) tag.setString(prefix + "Suffix", IChatComponent.Serializer.func_150696_a(suffix));
         if (displayRepresentation != null) {
@@ -21,17 +24,17 @@ public class InterfaceNameLocalization {
         ItemStack display = tag.hasKey(prefix + "Display")
             ? ItemStack.loadItemStackFromNBT(tag.getCompoundTag(prefix + "Display"))
             : null;
-        return localize(tag.getString(prefix + "RawName"), tag.getString(prefix + "Suffix"), display);
+        return localizeName(tag.getString(prefix + "RawName"), tag.getString(prefix + "Suffix"), display);
     }
 
-    private static String localize(String rawName, String serializedSuffix, ItemStack displayRepresentation) {
+    public static String localizeName(String rawName, String serializedSuffix, ItemStack displayRepresentation) {
         if (rawName == null || rawName.isEmpty()) return "";
         String name = localizeRawName(rawName, displayRepresentation);
         if (serializedSuffix == null || serializedSuffix.isEmpty()) return name;
         return name + resolveSuffix(serializedSuffix);
     }
 
-    private static String localizeRawName(String rawName, ItemStack displayRepresentation) {
+    public static String localizeRawName(String rawName, ItemStack displayRepresentation) {
         if (rawName == null || rawName.isEmpty()) return "";
         if (StatCollector.canTranslate(rawName)) return StatCollector.translateToLocal(rawName);
 
@@ -41,7 +44,7 @@ public class InterfaceNameLocalization {
         return StatCollector.translateToFallback(rawName);
     }
 
-    private static String resolveSuffix(String serializedSuffix) {
+    public static String resolveSuffix(String serializedSuffix) {
         if (serializedSuffix == null || serializedSuffix.isEmpty()) return "";
         try {
             IChatComponent component = IChatComponent.Serializer.func_150699_a(serializedSuffix);

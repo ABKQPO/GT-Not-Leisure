@@ -16,12 +16,11 @@ import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.EnumHelper;
 
 import com.reavaritia.client.ReAvaCreativeTabs;
+import com.reavaritia.common.ItemLoader;
 import com.reavaritia.utils.enums.ReAvaItemList;
 import com.reavaritia.utils.item.ItemStackWrapper;
 import com.reavaritia.utils.item.ToolHelper;
@@ -152,7 +151,7 @@ public class InfinityHoe extends ItemHoe {
 
     @Override
     public EnumRarity getRarity(ItemStack stack) {
-        return EnumHelper.addRarity("COSMIC", EnumChatFormatting.RED, "Cosmic");
+        return ItemLoader.COSMIC;
     }
 
     public boolean isHarvestable(Block block, int meta) {

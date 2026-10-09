@@ -9,17 +9,13 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.science.gtnl.api.mixinHelper.IInterfaceNameController;
-import com.science.gtnl.api.mixinHelper.IInterfaceNameHatch;
 import com.science.gtnl.utils.appliedEnergistics.InterfaceNameControllerContext;
 
-import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 import gregtech.api.structure.error.StructureError;
 
@@ -54,19 +50,4 @@ public abstract class MixinMTEMultiBlockBaseInterfaceName implements IInterfaceN
         }
     }
 
-    @Inject(
-        method = { "addToMachineList", "addMaintenanceToMachineList", "addEnergyInputToMachineList",
-            "addMultiAmpEnergyInputToMachineList", "addExoticEnergyInputToMachineList", "addDynamoToMachineList",
-            "addExoticDynamoToMachineList", "addLaserSourceToMachineList", "addCryotheumHatchToMachineList",
-            "addPyrotheumHatchToMachineList", "addMufflerToMachineList", "addInputBusToMachineList",
-            "addOutputBusToMachineList", "addInputHatchToMachineList", "addOutputHatchToMachineList" },
-        at = @At("RETURN"))
-    private void gtnl$bindRegisteredHatch(IGregTechTileEntity tile, int casingIndex,
-        CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (!callbackInfo.getReturnValueZ() || tile == null) return;
-        IMetaTileEntity metaTileEntity = tile.getMetaTileEntity();
-        if (metaTileEntity instanceof MTEHatch hatch && hatch instanceof IInterfaceNameHatch provider) {
-            provider.setInterfaceNameController((MTEMultiBlockBase) (Object) this);
-        }
-    }
 }

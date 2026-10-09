@@ -24,10 +24,10 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.reavaritia.client.ReAvaCreativeTabs;
+import com.reavaritia.common.ItemLoader;
 import com.reavaritia.utils.enums.ReAvaItemList;
 import com.reavaritia.utils.item.SubtitleDisplay;
 import com.reavaritia.utils.item.ToolHelper;
@@ -66,7 +66,7 @@ public class InfinityShovel extends ItemSpade implements SubtitleDisplay {
 
     @Override
     public EnumRarity getRarity(ItemStack stack) {
-        return EnumHelper.addRarity("COSMIC", EnumChatFormatting.RED, "Cosmic");
+        return ItemLoader.COSMIC;
     }
 
     @Override
