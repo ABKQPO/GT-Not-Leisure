@@ -1315,7 +1315,13 @@ public enum GTNLItemList implements IItemContainer {
     GasCollectorUEV,
     GasCollectorUIV,
     GasCollectorUMV,
-    GasCollectorUXV;
+    GasCollectorUXV,
+
+    MajoHat,
+    MajoRobe,
+    MajoBroom,
+    ElainaBroom,
+    ElainaBrooch;
 
     public static final GTNLItemList[] ENERGY_HATCH_LV = { EnergyHatchLV, EnergyHatchLV4A, EnergyHatchLV16A,
         EnergyHatchLV64A };

@@ -19,9 +19,11 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.science.gtnl.api.mixinHelper.IAnchorRespawn;
 import com.science.gtnl.api.mixinHelper.ILeashedToEntity;
+import com.science.gtnl.common.item.items.ItemElainaBrooch;
 
 @Mixin(value = EntityPlayer.class, remap = true)
 public abstract class MixinEntityPlayer extends EntityLivingBase implements ILeashedToEntity, IAnchorRespawn {
@@ -42,6 +44,13 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements ILea
 
     public MixinEntityPlayer(World p_i1594_1_) {
         super(p_i1594_1_);
+    }
+
+    @Inject(method = "getTotalArmorValue", at = @At("HEAD"), cancellable = true)
+    private void gtnl$elainaBroochArmorValue(CallbackInfoReturnable<Integer> cir) {
+        if (ItemElainaBrooch.isEquipped((EntityPlayer) (Object) this)) {
+            cir.setReturnValue(ItemElainaBrooch.getArmorValue());
+        }
     }
 
     @Override

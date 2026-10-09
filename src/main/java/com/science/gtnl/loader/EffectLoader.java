@@ -4,6 +4,7 @@ import net.minecraft.potion.Potion;
 
 import com.science.gtnl.common.effect.effects.AweEffect;
 import com.science.gtnl.common.effect.effects.BattleEffect;
+import com.science.gtnl.common.effect.effects.MissBroomBlessingEffect;
 import com.science.gtnl.common.effect.effects.PerfectPhysiqueEffect;
 import com.science.gtnl.common.effect.effects.PotionGhostlyShape;
 import com.science.gtnl.common.effect.effects.ShimmeringEffect;
@@ -18,6 +19,7 @@ public class EffectLoader {
     public static Potion shimmering;
     public static Potion ghostly_shape;
     public static Potion battle;
+    public static Potion miss_broom_blessing;
 
     public static void registry() {
         awe = new AweEffect(findNextFreePotionId());
@@ -25,6 +27,7 @@ public class EffectLoader {
         shimmering = new ShimmeringEffect(findNextFreePotionId());
         ghostly_shape = new PotionGhostlyShape(findNextFreePotionId());
         battle = new BattleEffect(findNextFreePotionId());
+        miss_broom_blessing = new MissBroomBlessingEffect(findNextFreePotionId());
     }
 
     public static int findNextFreePotionId() {
