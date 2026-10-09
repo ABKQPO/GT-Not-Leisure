@@ -15,6 +15,8 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.packet.WirelessCardGuiPacket;
 import com.science.gtnl.common.wireless.WirelessCardTeleport.Landing.Position;
 import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
 
@@ -87,6 +89,9 @@ final class WirelessCardTeleport {
         player.fallDistance = 0;
         player.velocityChanged = true;
         player.playerNetServerHandler.setPlayerLocation(x, y, z, yaw, pitch);
+        ScienceNotLeisure.network.sendTo(
+            new WirelessCardGuiPacket.TeleportHighlight(target.dimension(), target.x(), target.y(), target.z()),
+            player);
         player.addChatMessage(
             new ChatComponentTranslation(
                 "gtnl.wireless.gui.teleport_done",

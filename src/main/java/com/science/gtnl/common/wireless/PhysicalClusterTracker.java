@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /** Server-thread topology policy. Node identity, rather than a reusable block coordinate, owns a claim. */
 public final class PhysicalClusterTracker<N, F> {
@@ -66,6 +67,12 @@ public final class PhysicalClusterTracker<N, F> {
 
     /** Saved provenance is imported before merging, including nodes first discovered through a physical edge. */
     public void refresh(Topology<N> topology, Collection<N> extraSeeds, Function<N, Set<F>> savedClaims) {
+        refresh(topology, extraSeeds, savedClaims, UnaryOperator.identity());
+    }
+
+    /** Resolve loaded aliases for runtime identity while retaining the saved source of each claim. */
+    public void refresh(Topology<N> topology, Collection<N> extraSeeds, Function<N, Set<F>> savedClaims,
+        UnaryOperator<F> frequencyIdentity) {
         Set<N> seen = identitySet();
         List<N> seeds = new ArrayList<>(claims.keySet());
         seeds.addAll(extraSeeds);
@@ -98,13 +105,20 @@ public final class PhysicalClusterTracker<N, F> {
             }
             Cluster<N, F> cluster = new Cluster<>(
                 Collections.unmodifiableSet(members),
-                Set.copyOf(frequencies),
+                frequencies.stream()
+                    .map(frequencyIdentity)
+                    .collect(java.util.stream.Collectors.toUnmodifiableSet()),
                 blocked);
+            Set<F> sharedClaim = frequencies.size() == 1 && !blocked ? Set.copyOf(frequencies) : null;
             nextClusters.add(cluster);
             for (N node : members) {
                 nextByNode.put(node, cluster);
                 // Never spread competing frequencies across a conflict. Preserve each side's original provenance.
-                Set<F> labels = frequencies.size() == 1 && !blocked ? cluster.frequencies() : provenance.get(node);
+                Set<F> labels = sharedClaim != null ? sharedClaim : provenance.get(node);
+                if ((labels == null || labels.isEmpty()) && !blocked
+                    && cluster.frequencies()
+                        .size() == 1)
+                    labels = cluster.frequencies();
                 if (labels != null && !labels.isEmpty()) nextClaims.put(node, labels);
             }
         }
@@ -125,11 +139,17 @@ public final class PhysicalClusterTracker<N, F> {
     }
 
     public void unlink(Cluster<N, F> cluster, F frequency) {
+        unlink(cluster, frequency, UnaryOperator.identity());
+    }
+
+    public void unlink(Cluster<N, F> cluster, F frequency, UnaryOperator<F> frequencyIdentity) {
         for (N node : cluster.nodes()) {
             Set<F> previous = claims.get(node);
-            if (previous == null || !previous.contains(frequency)) continue;
+            if (previous == null) continue;
             Set<F> remaining = new HashSet<>(previous);
-            remaining.remove(frequency);
+            remaining.removeIf(
+                label -> frequencyIdentity.apply(label)
+                    .equals(frequency));
             if (remaining.isEmpty()) claims.remove(node);
             else claims.put(node, Set.copyOf(remaining));
         }

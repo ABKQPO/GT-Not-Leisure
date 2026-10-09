@@ -64,11 +64,8 @@ public final class AutomaticWirelessEntrances {
             if (sourceNode == null) continue;
             List<IGridNode> occupied = new ArrayList<>();
             for (Entrance entrance : entrances) {
-                if (entrance.source()
-                    .equals(source)
-                    && cluster.nodes()
-                        .contains(entrance.targetNode())
-                    && entrance.isLive()) {
+                if (WirelessChannelPrototype.sameSource(entrance.source(), source) && cluster.nodes()
+                    .contains(entrance.targetNode()) && entrance.isLive()) {
                     occupied.add(entrance.targetNode());
                 }
             }

@@ -175,7 +175,7 @@ public final class WirelessCardContainer extends Container {
         data.setInteger("entrances", entrances);
         data.setBoolean("stable", stable);
         if (binding != null) {
-            data.setString("source", coordinates(binding.source()));
+            data.setString("source", coordinates(WirelessChannelPrototype.controllerSource(binding.source())));
             IGridNode source = binding.source()
                 .node();
             data.setBoolean("sourceLoaded", source != null);

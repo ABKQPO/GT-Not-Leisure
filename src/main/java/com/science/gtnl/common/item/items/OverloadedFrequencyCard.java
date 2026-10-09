@@ -81,8 +81,7 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
 
     public OverloadedFrequencyCard() {
         setUnlocalizedName("gtnl.overloaded_frequency_card");
-        // Reuse the wireless upgrade chip artwork.
-        setTextureName(RESOURCE_ROOT_ID + ":wireless_upgrade_chip");
+        setTextureName(RESOURCE_ROOT_ID + ":wireless_frequency_card");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         setMaxStackSize(1);
         GameRegistry.registerItem(this, "overloaded_frequency_card");
@@ -176,6 +175,7 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
             message(player, "unstable");
             return;
         }
+        source = WirelessChannelPrototype.controllerSource(source);
         if (stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
         new WirelessCardBinding(source, player.getUniqueID(), player.getCommandSenderName())
             .write(stack.getTagCompound());

@@ -52,6 +52,7 @@ public class NetWorkHandler {
         registerServerbound(WirelessCardGuiPacket.class);
         registerClientbound(WirelessCardGuiPacket.Snapshot.class);
         registerServerbound(OpenWirelessCardPacket.class);
+        registerClientbound(WirelessCardGuiPacket.TeleportHighlight.class);
     }
 
     public static <T extends ClientboundPacket> void registerClientbound(Class<T> packet) {

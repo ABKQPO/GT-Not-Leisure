@@ -48,6 +48,7 @@ public final class PhysicalClusterTrackerTest {
     public static void main(String[] args) {
         splitAndGrowth();
         sameFrequencyMerge();
+        controllerAliases();
         conflictingMergeAndRecovery();
         removeOnlyOneFrequency();
         controllerMergeDoesNotClaimBase();
@@ -56,6 +57,89 @@ public final class PhysicalClusterTrackerTest {
         physicalEdgeClassification();
         System.out
             .println("PhysicalClusterTrackerTest: split, merge, conflict, recovery and scan-boundary checks passed.");
+    }
+
+    private static void controllerAliases() {
+        Graph graph = new Graph();
+        var tracker = new PhysicalClusterTracker<Node, String>(100);
+        Node a = new Node(), b = new Node(), c = new Node();
+        graph.join(a, b);
+        graph.join(b, c);
+        java.util.function.UnaryOperator<String> joinedControllers = source -> source.equals("controller-b")
+            ? "controller-a"
+            : source;
+        tracker.refresh(
+            graph,
+            List.of(a),
+            node -> node == a ? Set.of("controller-a") : node == c ? Set.of("controller-b") : Set.of(),
+            joinedControllers);
+        check(
+            !tracker.clusterOf(a)
+                .conflicted(),
+            "Old cards bound to different blocks of one controller do not conflict");
+        check(
+            tracker.clusterOf(a)
+                .frequencies()
+                .equals(Set.of("controller-a")),
+            "One multiblock has one runtime frequency");
+        check(
+            tracker.claimsOf(c)
+                .equals(Set.of("controller-b")),
+            "Original saved controller address survives resolution");
+        check(
+            tracker.claimsOf(b)
+                .equals(Set.of("controller-a")),
+            "New members inherit the resolved frequency");
+
+        // Reload from the unchanged per-node provenance, then detach the controller blocks.
+        var saved = new java.util.IdentityHashMap<Node, Set<String>>();
+        for (Node node : List.of(a, b, c)) saved.put(node, tracker.claimsOf(node));
+        tracker.clear();
+        tracker.refresh(graph, List.of(a), node -> saved.getOrDefault(node, Set.of()), joinedControllers);
+        check(
+            !tracker.clusterOf(a)
+                .conflicted(),
+            "Reloading old aliases still produces one frequency");
+        tracker.refresh(graph, List.of());
+        check(
+            tracker.clusterOf(a)
+                .conflicted(),
+            "Separating source controllers restores genuinely different identities");
+        graph.cut(b, c);
+        tracker.refresh(graph, List.of());
+        check(
+            tracker.clusterOf(c)
+                .frequencies()
+                .equals(Set.of("controller-b")),
+            "Split targets retain original source provenance");
+
+        graph.join(b, c);
+        tracker.refresh(graph, List.of(), node -> Set.of(), joinedControllers);
+        tracker.unlink(tracker.clusterOf(a), "controller-a", joinedControllers);
+        tracker.refresh(graph, List.of(a), node -> Set.of(), joinedControllers);
+        check(
+            tracker.clusterOf(a)
+                .frequencies()
+                .isEmpty(),
+            "Disconnect removes every alias in the physical cluster");
+
+        tracker.clear();
+        tracker.refresh(
+            graph,
+            List.of(a),
+            node -> node == a ? Set.of("controller-a") : node == c ? Set.of("other-controller") : Set.of(),
+            joinedControllers);
+        check(
+            tracker.clusterOf(a)
+                .conflicted(),
+            "Unrelated controller groups still conflict");
+        tracker.unlink(tracker.clusterOf(a), "controller-a", joinedControllers);
+        tracker.refresh(graph, List.of(a), node -> Set.of(), joinedControllers);
+        check(
+            tracker.clusterOf(c)
+                .frequencies()
+                .equals(Set.of("other-controller")),
+            "Unlink does not erase the other group");
     }
 
     private static void splitAndGrowth() {

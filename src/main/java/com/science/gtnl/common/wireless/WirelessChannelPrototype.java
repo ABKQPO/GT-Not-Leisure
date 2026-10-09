@@ -1,6 +1,9 @@
 package com.science.gtnl.common.wireless;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
@@ -48,6 +51,66 @@ public final class WirelessChannelPrototype {
     private static final Map<IGrid, Allocation> ALLOCATIONS = new WeakHashMap<>();
     private static int nextId = 1;
     private static long allocationRevision;
+    private static final Map<Address, Address> CONTROLLER_SOURCES = new HashMap<>();
+
+    /** A physically connected controller multiblock is one frequency, regardless of the clicked block. */
+    public static Address controllerSource(Address source) {
+        Address cached = CONTROLLER_SOURCES.get(source);
+        if (cached != null) return cached;
+        TileEntity tile = source.tile();
+        IGridNode start = tile != null && tile.getClass() == TileController.class ? source.node() : null;
+        if (start == null) return source;
+        Set<IGridNode> seen = java.util.Collections.newSetFromMap(new IdentityHashMap<>());
+        Set<Address> addresses = new HashSet<>();
+        ArrayDeque<IGridNode> pending = new ArrayDeque<>();
+        pending.add(start);
+        seen.add(start);
+        while (!pending.isEmpty()) {
+            if (seen.size() > 4096) return source;
+            IGridNode node = pending.removeFirst();
+            TileEntity controller = (TileEntity) node.getMachine();
+            addresses.add(
+                new Address(
+                    source.dimension(),
+                    controller.xCoord,
+                    controller.yCoord,
+                    controller.zCoord,
+                    ForgeDirection.UNKNOWN));
+            for (IGridConnection connection : node.getConnections()) {
+                if (isOwned(connection) || !connection.hasDirection()) continue;
+                IGridNode other = connection.getOtherSide(node);
+                if (!((Object) other.getMachine() instanceof TileEntity next) || next.getClass() != TileController.class
+                    || next.isInvalid()
+                    || next.getWorldObj() != tile.getWorldObj()
+                    || Math.abs(controller.xCoord - next.xCoord) + Math.abs(controller.yCoord - next.yCoord)
+                        + Math.abs(controller.zCoord - next.zCoord) != 1)
+                    continue;
+                Address address = new Address(
+                    source.dimension(),
+                    next.xCoord,
+                    next.yCoord,
+                    next.zCoord,
+                    ForgeDirection.UNKNOWN);
+                if (address.node() == other && seen.add(other)) pending.addLast(other);
+            }
+        }
+        Address representative = addresses.stream()
+            .min(
+                Comparator.comparingInt(Address::x)
+                    .thenComparingInt(Address::y)
+                    .thenComparingInt(Address::z))
+            .orElse(source);
+        for (Address address : addresses) CONTROLLER_SOURCES.put(address, representative);
+        return representative;
+    }
+
+    static void invalidateControllerSources() {
+        CONTROLLER_SOURCES.clear();
+    }
+
+    static boolean sameSource(Address first, Address second) {
+        return first.equals(second) || controllerSource(first).equals(controllerSource(second));
+    }
 
     private WirelessChannelPrototype() {}
 
@@ -176,6 +239,7 @@ public final class WirelessChannelPrototype {
     }
 
     public static void clear() {
+        invalidateControllerSources();
         for (int id : new ArrayList<>(ENTRANCES.keySet())) disconnect(id);
         OWNED_CONNECTIONS.clear();
         ALLOCATIONS.clear();
@@ -211,6 +275,7 @@ public final class WirelessChannelPrototype {
     @SubscribeEvent
     public void tick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
+        invalidateControllerSources();
         for (Entrance entrance : new ArrayList<>(ENTRANCES.values())) {
             if (!entrance.isLive() || entrance.source()
                 .node() != entrance.sourceNode()

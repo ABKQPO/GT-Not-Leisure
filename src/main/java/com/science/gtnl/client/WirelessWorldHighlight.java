@@ -1,10 +1,12 @@
 package com.science.gtnl.client;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagList;
@@ -25,15 +27,21 @@ import cpw.mods.fml.relauncher.SideOnly;
 public final class WirelessWorldHighlight {
 
     public static final WirelessWorldHighlight INSTANCE = new WirelessWorldHighlight();
+    private static final long DURATION_MS = 5_000;
 
     private record Position(int x, int y, int z) {}
 
     private record Selection(World world, List<Position> positions, long expires) {}
 
+    private record Arrival(WeakReference<NetHandlerPlayClient> connection, int dimension, Position position,
+        long expires) {}
+
     private static volatile Selection selection;
+    private static Arrival arrival;
 
     public static void show(Minecraft mc, NBTTagList positions) {
         if (mc.theWorld == null) return;
+        arrival = null;
         List<Position> targets = new ArrayList<>();
         for (int i = 0; i < Math.min(512, positions.tagCount()); i++) {
             var pos = positions.getCompoundTagAt(i);
@@ -45,7 +53,7 @@ public final class WirelessWorldHighlight {
             targets.stream()
                 .distinct()
                 .toList(),
-            Minecraft.getSystemTime() + 30_000);
+            Minecraft.getSystemTime() + DURATION_MS);
         if (!targets.isEmpty() && mc.thePlayer != null && mc.currentScreen instanceof WirelessCardGui) {
             // Use the same eye position as vanilla ray tracing (including the 1.7.10 client player offset).
             var player = mc.thePlayer;
@@ -73,6 +81,34 @@ public final class WirelessWorldHighlight {
         }
     }
 
+    public static void afterTeleport(Minecraft mc, int dimension, int x, int y, int z) {
+        selection = null;
+        // Respawn and chunk packets may still be queued. Start the visible duration only after arrival.
+        arrival = new Arrival(
+            new WeakReference<>(mc.getNetHandler()),
+            dimension,
+            new Position(x, y, z),
+            Minecraft.getSystemTime() + 10_000);
+    }
+
+    private static void showArrival(Minecraft mc) {
+        Arrival pending = arrival;
+        if (pending == null) return;
+        long now = Minecraft.getSystemTime();
+        if (mc.getNetHandler() == null || mc.getNetHandler() != pending.connection()
+            .get() || now >= pending.expires()) {
+            arrival = null;
+            return;
+        }
+        Position pos = pending.position();
+        if (mc.theWorld != null && mc.theWorld.provider.dimensionId == pending.dimension()
+            && mc.theWorld.blockExists(pos.x(), pos.y(), pos.z())
+            && !mc.theWorld.isAirBlock(pos.x(), pos.y(), pos.z())) {
+            selection = new Selection(mc.theWorld, List.of(pos), now + DURATION_MS);
+            arrival = null;
+        }
+    }
+
     @SubscribeEvent
     public void unload(WorldEvent.Unload event) {
         Selection current = selection;
@@ -82,6 +118,7 @@ public final class WirelessWorldHighlight {
     @SubscribeEvent
     public void render(RenderWorldLastEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
+        showArrival(mc);
         Selection current = selection;
         if (current == null) return;
         if (current.world() != mc.theWorld || Minecraft.getSystemTime() >= current.expires()) {

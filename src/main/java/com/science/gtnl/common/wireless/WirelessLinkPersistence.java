@@ -1,5 +1,7 @@
 package com.science.gtnl.common.wireless;
 
+import static com.science.gtnl.common.wireless.WirelessChannelPrototype.sameSource;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -156,9 +158,13 @@ public final class WirelessLinkPersistence {
                 else {
                     Claim old = claims.get(endpoint.slot());
                     Map<Address, String> labels = new java.util.HashMap<>();
+                    Set<Address> sourcePauses = new java.util.HashSet<>();
                     for (Address source : frequencies) {
-                        var choices = names.get(source);
-                        if (choices == null || choices.isEmpty()) continue;
+                        if (paused.stream()
+                            .anyMatch(label -> sameSource(label, source))) sourcePauses.add(source);
+                        java.util.SortedSet<String> choices = new java.util.TreeSet<>();
+                        names.forEach((label, values) -> { if (sameSource(label, source)) choices.addAll(values); });
+                        if (choices.isEmpty()) continue;
                         // Keep distinct names on their original nodes after a merge; split can recover them.
                         String previous = old == null ? null
                             : old.names()
@@ -171,7 +177,7 @@ public final class WirelessLinkPersistence {
                         new Claim(
                             endpoint.kind(),
                             frequencies,
-                            paused,
+                            sourcePauses,
                             labels,
                             old == null ? Set.of() : old.entrances()));
                 }
@@ -199,7 +205,10 @@ public final class WirelessLinkPersistence {
         Set<Address> paused = new java.util.HashSet<>();
         for (IGridNode node : nodes) {
             Claim saved = claim(node, topology);
-            if (saved != null) paused.addAll(saved.paused());
+            if (saved != null) saved.paused()
+                .stream()
+                .map(WirelessChannelPrototype::controllerSource)
+                .forEach(paused::add);
         }
         return paused;
     }
@@ -209,7 +218,8 @@ public final class WirelessLinkPersistence {
         for (IGridNode node : nodes) {
             Claim saved = claim(node, topology);
             if (saved != null && saved.entrances()
-                .contains(source)) result.add(node);
+                .stream()
+                .anyMatch(label -> sameSource(label, source))) result.add(node);
         }
         return result;
     }
@@ -225,13 +235,16 @@ public final class WirelessLinkPersistence {
         Claim saved = claims.get(endpoint.slot());
         if (saved == null || !saved.kind()
             .equals(endpoint.kind())
-            || !saved.frequencies()
-                .contains(source)
-            || saved.entrances()
-                .contains(source))
+            || saved.frequencies()
+                .stream()
+                .noneMatch(label -> sameSource(label, source)))
             return;
         Set<Address> entrances = new java.util.HashSet<>(saved.entrances());
-        entrances.add(source);
+        saved.frequencies()
+            .stream()
+            .filter(label -> sameSource(label, source))
+            .forEach(entrances::add);
+        if (entrances.equals(saved.entrances())) return;
         claims.put(
             endpoint.slot(),
             new Claim(saved.kind(), saved.frequencies(), saved.paused(), saved.names(), entrances));
@@ -252,8 +265,9 @@ public final class WirelessLinkPersistence {
     }
 
     static Set<String> names(Collection<IGridNode> nodes, Address source, PhysicalMeTopology topology) {
-        var names = names(nodes, topology).get(source);
-        return names == null ? Set.of() : Set.copyOf(names);
+        Set<String> result = new java.util.HashSet<>();
+        names(nodes, topology).forEach((label, names) -> { if (sameSource(label, source)) result.addAll(names); });
+        return Set.copyOf(result);
     }
 
     static void rename(Collection<IGridNode> nodes, Address source, String name, PhysicalMeTopology topology) {
@@ -263,11 +277,13 @@ public final class WirelessLinkPersistence {
             if (endpoint == null) continue;
             Map<Slot, Claim> claims = WirelessLinkData.read(WirelessTileData.of(endpoint.tile()));
             Claim saved = claims.get(endpoint.slot());
-            if (saved == null || !saved.frequencies()
-                .contains(source)) continue;
+            if (saved == null) continue;
             Map<Address, String> names = new java.util.HashMap<>(saved.names());
-            if (name.isEmpty()) names.remove(source);
-            else names.put(source, name);
+            for (Address label : saved.frequencies()) {
+                if (!sameSource(label, source)) continue;
+                if (name.isEmpty()) names.remove(label);
+                else names.put(label, name);
+            }
             claims.put(
                 endpoint.slot(),
                 new Claim(saved.kind(), saved.frequencies(), saved.paused(), names, saved.entrances()));
@@ -281,11 +297,13 @@ public final class WirelessLinkPersistence {
             if (endpoint == null) continue;
             Map<Slot, Claim> claims = WirelessLinkData.read(WirelessTileData.of(endpoint.tile()));
             Claim saved = claims.get(endpoint.slot());
-            if (saved == null || !saved.frequencies()
-                .contains(source)) continue;
+            if (saved == null) continue;
             Set<Address> next = new java.util.HashSet<>(saved.paused());
-            if (paused) next.add(source);
-            else next.remove(source);
+            for (Address label : saved.frequencies()) {
+                if (!sameSource(label, source)) continue;
+                if (paused) next.add(label);
+                else next.remove(label);
+            }
             claims.put(
                 endpoint.slot(),
                 new Claim(saved.kind(), saved.frequencies(), next, saved.names(), saved.entrances()));
