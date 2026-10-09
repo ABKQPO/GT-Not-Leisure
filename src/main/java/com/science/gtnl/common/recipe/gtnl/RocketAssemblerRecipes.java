@@ -3,6 +3,7 @@ package com.science.gtnl.common.recipe.gtnl;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,27 +16,30 @@ import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
-import com.science.gtnl.utils.recipes.RecipeBuilder;
+import com.science.gtnl.utils.recipes.metadata.RocketAssemblerInputSlotsMetadata;
 
 import cpw.mods.fml.common.Optional;
 import galaxyspace.core.inventory.InventorySchematic;
 import galaxyspace.core.recipe.RocketRecipes;
 import galaxyspace.core.register.GSBlocks;
+import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.util.GTRecipeBuilder;
+import gregtech.api.util.GTUtility;
 import micdoodle8.mods.galacticraft.api.recipe.INasaWorkbenchRecipe;
 import micdoodle8.mods.galacticraft.core.recipe.NasaWorkbenchRecipe;
 
 public class RocketAssemblerRecipes implements IRecipePool {
 
     public static List<INasaWorkbenchRecipe> RECIPES_ROCKET_STEAM = new ArrayList<>();
-    public RecipeMap<?> RAR = GTNLRecipeMaps.RocketAssemblerRecipes;
+    public static final RecipeMap<?> RAR = GTNLRecipeMaps.RocketAssemblerRecipes;
 
-    public ItemStack[] itemStacks = new ItemStack[] { ModsItemlist.GalacticraftTier2RocketSchematic.get(1),
+    private final ItemStack[] schematics = new ItemStack[] { ModsItemlist.GalacticraftTier2RocketSchematic.get(1),
         ModsItemlist.GalacticraftMarsItemSchematic.get(1), ModsItemlist.GalaxySpaceTier4RocketSchematic.get(1),
         ModsItemlist.GalaxySpaceTier5RocketSchematic.get(1), ModsItemlist.GalaxySpaceTier6RocketSchematic.get(1),
         ModsItemlist.GalaxySpaceTier7RocketSchematic.get(1), ModsItemlist.GalaxySpaceTier8RocketSchematic.get(1) };
@@ -106,26 +110,32 @@ public class RocketAssemblerRecipes implements IRecipePool {
     }
 
     public void registerRocketRecipes(List<INasaWorkbenchRecipe> recipes, int specialValue) {
+        if (specialValue < 1 || specialValue > schematics.length + 1) {
+            throw new IllegalArgumentException("Unsupported rocket tier: " + specialValue);
+        }
         for (INasaWorkbenchRecipe recipe : recipes) {
             HashMap<Integer, ItemStack> inputs = recipe.getRecipeInput();
-
-            int maxSlot = inputs.keySet()
+            int[] inputSlots = inputs.entrySet()
                 .stream()
-                .max(Integer::compareTo)
-                .orElse(0);
-            ItemStack[] orderedInputs = new ItemStack[maxSlot];
+                .filter(entry -> entry.getKey() > 0 && GTUtility.isStackValid(entry.getValue()))
+                .mapToInt(entry -> entry.getKey() - 1)
+                .sorted()
+                .toArray();
+            ItemStack[] orderedInputs = Arrays.stream(inputSlots)
+                .mapToObj(
+                    slot -> inputs.get(slot + 1)
+                        .copy())
+                .toArray(ItemStack[]::new);
 
-            for (int slot = 1; slot <= maxSlot; slot++) {
-                orderedInputs[slot - 1] = inputs.getOrDefault(slot, null);
-            }
-
-            RecipeBuilder recipeBuilder = new RecipeBuilder().itemInputsAllowNulls(orderedInputs)
+            GTRecipeBuilder recipeBuilder = GTValues.RA.stdBuilder()
+                .itemInputs(orderedInputs)
                 .itemOutputs(recipe.getRecipeOutput())
+                .metadata(RocketAssemblerInputSlotsMetadata.INSTANCE, inputSlots)
                 .duration(recipe.getRecipeSize() * SECONDS)
                 .specialValue(specialValue)
                 .eut((int) TierEU.RECIPE_HV);
 
-            if (specialValue - 2 >= 0) recipeBuilder.special(itemStacks[specialValue - 2]);
+            if (specialValue >= 2) recipeBuilder.special(GTUtility.copyAmount(0, schematics[specialValue - 2]));
 
             recipeBuilder.addTo(RAR);
         }

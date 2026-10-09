@@ -34,8 +34,6 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.TickrateAPI;
 import com.science.gtnl.common.block.blocks.BlockMultiEssentiaJar;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
-import com.science.gtnl.common.gui.recipe.ElectrocellGeneratorFrontend;
-import com.science.gtnl.common.gui.recipe.RocketAssemblerFrontend;
 import com.science.gtnl.common.item.BaubleItem;
 import com.science.gtnl.common.item.items.TimeStopPocketWatch;
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionHitEffectState;
@@ -401,8 +399,6 @@ public class SubscribeEventUtils {
         PlayerDollRenderManager.BLACKLISTED_SKIN_URLS.clear();
         PlayerDollRenderManager.BLACKLISTED_CAPE_URLS.clear();
         PlayerDollRenderManager.UUID_CACHE.clear();
-        ElectrocellGeneratorFrontend.initializedRecipes.clear();
-        RocketAssemblerFrontend.initializedRecipes.clear();
         CircuitNanitesRecipeData.recipeDataMap.clear();
         GTNLRecipeMaps.CircuitNanitesDataRecipes.getBackend()
             .clearRecipes();

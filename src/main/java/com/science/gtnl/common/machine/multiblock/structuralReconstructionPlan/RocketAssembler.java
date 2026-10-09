@@ -20,7 +20,6 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.api.casing.GTNLCasings;
-import com.science.gtnl.common.gui.recipe.RocketAssemblerBackend;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.render.tile.RocketAssemblerRenderer;
@@ -40,6 +39,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.metatileentity.GregTechTileClientEvents;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
@@ -199,10 +199,16 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
 
             @NotNull
             @Override
-            public CalculationResult validateAndCalculateRecipe(@NotNull GTRecipe recipe) {
-                if (recipe == RocketAssemblerBackend.notFoundRecipe)
-                    return CalculationResult.ofFailure(SimpleCheckRecipeResult.ofFailure("missing_schematic"));
-                return super.validateAndCalculateRecipe(recipe);
+            public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
+                if (recipe.mSpecialItems instanceof ItemStack schematic) {
+                    for (ItemStack input : inputItems) {
+                        if (input != null && GTUtility.areStacksEqual(schematic, input, true)) {
+                            return super.validateRecipe(recipe);
+                        }
+                    }
+                    return SimpleCheckRecipeResult.ofFailure("missing_schematic");
+                }
+                return super.validateRecipe(recipe);
             }
 
         }.setMaxParallelSupplier(this::getTrueParallel);

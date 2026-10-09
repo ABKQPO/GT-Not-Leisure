@@ -8,7 +8,6 @@ import com.science.gtnl.client.gui.GuiDirePatternEncoder;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableAdvancedWorkbench;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableBasicWorkbench;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableFurnace;
-import com.science.gtnl.common.gui.recipe.RocketAssemblerHandler;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -28,8 +27,6 @@ import gregtech.api.enums.OrePrefixes;
 @SuppressWarnings("unused")
 public class NEIGTNLConfig implements IConfigureNEI {
 
-    public static boolean IS_ADDED = true;
-
     @Override
     public String getName() {
         return "GTNL NEI Plugin";
@@ -42,10 +39,6 @@ public class NEIGTNLConfig implements IConfigureNEI {
 
     @Override
     public void loadConfig() {
-
-        IS_ADDED = false;
-        new RocketAssemblerHandler(GTNLRecipeMaps.RocketAssemblerRecipes.getDefaultRecipeCategory());
-        IS_ADDED = true;
 
         API.registerGuiOverlay(GuiPortableAdvancedWorkbench.class, "crafting");
         API.registerGuiOverlay(GuiPortableBasicWorkbench.class, "crafting");

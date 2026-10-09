@@ -1,13 +1,11 @@
 package com.science.gtnl.common.gui.recipe;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import net.minecraft.item.ItemStack;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
@@ -18,23 +16,22 @@ import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.format.RocketAssemblerFormat;
+import com.science.gtnl.utils.recipes.metadata.RocketAssemblerInputSlotsMetadata;
 
 import codechicken.nei.PositionedStack;
-import gregtech.api.enums.TieredVariant;
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
 import gregtech.api.recipe.NEIRecipePropertiesBuilder;
 import gregtech.api.recipe.RecipeMapFrontend;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTUtility;
 import gregtech.api.util.MethodsReturnNonnullByDefault;
-import gregtech.common.gui.modularui.UIHelper;
-import gregtech.nei.GTNEIDefaultHandler;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import gregtech.nei.GTNEIDefaultHandler.CachedDefaultRecipe;
+import gregtech.nei.GTNEIDefaultHandler.FixedPositionedStack;
+import gregtech.nei.GTNEIDefaultHandler.NEITemplateContext;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RocketAssemblerFrontend extends RecipeMapFrontend {
-
-    public static Object2IntOpenHashMap<GTRecipe> initializedRecipes = new Object2IntOpenHashMap<>();
 
     public RocketAssemblerFrontend(BasicUIPropertiesBuilder uiPropertiesBuilder,
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {
@@ -59,15 +56,15 @@ public class RocketAssemblerFrontend extends RecipeMapFrontend {
 
     @Override
     public List<Pos2d> getItemInputPositions(int itemInputCount) {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     @Override
     public List<Pos2d> getItemOutputPositions(int itemOutputCount) {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
-    public static final int[][] rocketT1Inputs = new int[][] { { 121, 3 }, // 1 Lander
+    private static final int[][] rocketT1Inputs = new int[][] { { 121, 3 }, // 1 Lander
         { 121, 21 }, // 2 Control Computer
         { 103, 12 }, // 3 Fuel Canister
         { 139, 12 }, // 4 Fuel Canister
@@ -90,7 +87,7 @@ public class RocketAssemblerFrontend extends RecipeMapFrontend {
         { 121, 39 } // 21 Chest
     };
 
-    public static final int[][] rocketT2Inputs = new int[][] { { 121, 3 }, // 1 Lander
+    private static final int[][] rocketT2Inputs = new int[][] { { 121, 3 }, // 1 Lander
         { 121, 21 }, // 2 Control Computer
         { 103, 12 }, // 3 Fuel Canister
         { 139, 12 }, // 4 Fuel Canister
@@ -118,7 +115,7 @@ public class RocketAssemblerFrontend extends RecipeMapFrontend {
         { 121, 39 } // 26 Chest
     };
 
-    public static final int[][] rocketT3Inputs = new int[][] { { 121, 3 }, // 1 Lander
+    private static final int[][] rocketT3Inputs = new int[][] { { 121, 3 }, // 1 Lander
         { 121, 21 }, // 2 Control Computer
         { 103, 12 }, // 3 Fuel Canister
         { 139, 12 }, // 4 Fuel Canister
@@ -149,7 +146,7 @@ public class RocketAssemblerFrontend extends RecipeMapFrontend {
         { 121, 39 } // 29 Chest
     };
 
-    public static final int[][] rocketT4Inputs = new int[][] { { 121, 3 }, // 1 Lander
+    private static final int[][] rocketT4Inputs = new int[][] { { 121, 3 }, // 1 Lander
         { 121, 21 }, // 2 Control Computer
         { 103, 12 }, // 3 Fuel Canister
         { 139, 12 }, // 4 Fuel Canister
@@ -183,7 +180,7 @@ public class RocketAssemblerFrontend extends RecipeMapFrontend {
         { 121, 39 } // 32 Chest
     };
 
-    public static final int[][] rocketT5Inputs = new int[][] { { 121, 3 }, // 1 Lander
+    private static final int[][] rocketT5Inputs = new int[][] { { 121, 3 }, // 1 Lander
         { 121, 21 }, // 2 Control Computer
         { 103, 12 }, // 3 Fuel Canister
         { 139, 12 }, // 4 Fuel Canister
@@ -219,7 +216,7 @@ public class RocketAssemblerFrontend extends RecipeMapFrontend {
         { 121, 39 } // 32 Chest
     };
 
-    public static final int[][] rocketT6Inputs = new int[][] { { 121, 3 }, // 1 Lander
+    private static final int[][] rocketT6Inputs = new int[][] { { 121, 3 }, // 1 Lander
         { 121, 21 }, // 2 Control Computer
         { 103, 12 }, // 3 Fuel Canister
         { 139, 12 }, // 4 Fuel Canister
@@ -260,7 +257,7 @@ public class RocketAssemblerFrontend extends RecipeMapFrontend {
         { 121, 39 } // 39 Chest
     };
 
-    public static final int[][] rocketT7Inputs = new int[][] { { 121, 3 }, // 1 Lander
+    private static final int[][] rocketT7Inputs = new int[][] { { 121, 3 }, // 1 Lander
         { 121, 21 }, // 2 Control Computer
         { 103, 12 }, // 3 Fuel Canister
         { 139, 12 }, // 4 Fuel Canister
@@ -304,7 +301,7 @@ public class RocketAssemblerFrontend extends RecipeMapFrontend {
         { 121, 39 } // 42 Chest
     };
 
-    public static final int[][] rocketT8Inputs = new int[][] { { 121, 3 }, // 1 Lander
+    private static final int[][] rocketT8Inputs = new int[][] { { 121, 3 }, // 1 Lander
         { 121, 21 }, // 2 Control Computer
         { 103, 12 }, // 3 Fuel Canister
         { 139, 12 }, // 4 Fuel Canister
@@ -359,145 +356,115 @@ public class RocketAssemblerFrontend extends RecipeMapFrontend {
         { 121, 39 } // 53 Chest
     };
 
-    public static final int[] rocketT1Output = new int[] { 121, 62 };
-    public static final int[] rocketT2Output = new int[] { 121, 62 };
-    public static final int[] rocketT3Output = new int[] { 121, 62 };
-    public static final int[] rocketT4Output = new int[] { 121, 62 };
-    public static final int[] rocketT5Output = new int[] { 121, 62 };
-    public static final int[] rocketT6Output = new int[] { 121, 62 };
-    public static final int[] rocketT7Output = new int[] { 121, 62 };
-    public static final int[] rocketT8Output = new int[] { 130, 62 };
-
     @Override
-    public void drawNEIOverlays(GTNEIDefaultHandler.CachedDefaultRecipe neiCachedRecipe) {
-        final GTRecipe recipe = neiCachedRecipe.mRecipe;
-        ItemStack[] inputs = recipe.mInputs;
-        ItemStack output = recipe.mOutputs[0];
-        if (inputs == null || output == null) return;
-
-        int[][] selectedInputs = null;
-        int[] selectedOutput = null;
-        int tier = recipe.mSpecialValue;
-
-        switch (recipe.mSpecialValue) {
-            case 1 -> {
-                selectedInputs = rocketT1Inputs;
-                selectedOutput = rocketT1Output;
-            }
-            case 2 -> {
-                selectedInputs = rocketT2Inputs;
-                selectedOutput = rocketT2Output;
-            }
-            case 3 -> {
-                selectedInputs = rocketT3Inputs;
-                selectedOutput = rocketT3Output;
-            }
-            case 4 -> {
-                selectedInputs = rocketT4Inputs;
-                selectedOutput = rocketT4Output;
-            }
-            case 5 -> {
-                selectedInputs = rocketT5Inputs;
-                selectedOutput = rocketT5Output;
-            }
-            case 6 -> {
-                selectedInputs = rocketT6Inputs;
-                selectedOutput = rocketT6Output;
-            }
-            case 7 -> {
-                selectedInputs = rocketT7Inputs;
-                selectedOutput = rocketT7Output;
-            }
-            case 8 -> {
-                selectedInputs = rocketT8Inputs;
-                selectedOutput = rocketT8Output;
-            }
-            default -> {}
+    public void prepareRecipe(CachedDefaultRecipe cachedRecipe) {
+        GTRecipe recipe = cachedRecipe.mRecipe;
+        int[][] positions = getInputLayout(recipe.mSpecialValue);
+        int[] inputSlots = recipe.getMetadataOrDefault(RocketAssemblerInputSlotsMetadata.INSTANCE, null);
+        if (inputSlots != null && inputSlots.length != recipe.mInputs.length) {
+            throw new IllegalArgumentException("Rocket input slot metadata does not match recipe inputs");
         }
 
-        if (selectedInputs == null || selectedOutput == null) {
-            super.drawNEIOverlays(neiCachedRecipe);
-            return;
-        }
-
-        if (!initializedRecipes.containsKey(recipe)) {
-
-            for (int i = 0; i < inputs.length; i++) {
-                ItemStack stack = inputs[i];
-                if (stack == null) continue;
-                neiCachedRecipe.mInputs
-                    .add(new PositionedStack(stack, selectedInputs[i][0], selectedInputs[i][1], false));
+        PositionedStack specialStack = null;
+        if (recipe.mSpecialItems instanceof ItemStack schematic) {
+            for (PositionedStack stack : cachedRecipe.mInputs) {
+                if (GTUtility.areStacksEqual(schematic, stack.item, true)) {
+                    specialStack = stack;
+                    break;
+                }
             }
-
-            neiCachedRecipe.mOutputs.add(new PositionedStack(output, selectedOutput[0], selectedOutput[1], false));
-
-            initializedRecipes.put(recipe, tier);
         }
+        cachedRecipe.mInputs.clear();
+        cachedRecipe.mOutputs.clear();
+        for (int i = 0; i < recipe.mInputs.length; i++) {
+            if (recipe.mInputs[i] == null) continue;
+            int slot = inputSlots == null ? i : inputSlots[i];
+            if (slot < 0 || slot >= positions.length) {
+                throw new IllegalArgumentException("Unsupported rocket input slot: " + slot);
+            }
+            cachedRecipe.mInputs.add(
+                new FixedPositionedStack(
+                    cachedRecipe,
+                    recipe.mInputs[i],
+                    neiProperties.renderRealStackSizes,
+                    positions[slot][0],
+                    positions[slot][1],
+                    recipe.getInputChance(i),
+                    true,
+                    true));
+        }
+        if (recipe.mSpecialItems instanceof ItemStack schematic && specialStack != null) {
+            cachedRecipe.mInputs.add(
+                new FixedPositionedStack(
+                    cachedRecipe,
+                    schematic,
+                    neiProperties.renderRealStackSizes,
+                    specialStack.relx,
+                    specialStack.rely,
+                    PositionedStack.CHANCE_FULL,
+                    false,
+                    true));
+        }
+        Pos2d outputPosition = getOutputPosition(recipe.mSpecialValue);
+        for (int i = 0; i < recipe.mOutputs.length; i++) {
+            cachedRecipe.mOutputs.add(
+                new FixedPositionedStack(
+                    cachedRecipe,
+                    recipe.mOutputs[i],
+                    neiProperties.renderRealStackSizes,
+                    outputPosition.x,
+                    outputPosition.y,
+                    recipe.getOutputChance(i),
+                    neiProperties.unificateOutput,
+                    false));
+        }
+    }
 
-        super.drawNEIOverlays(neiCachedRecipe);
+    private static int[][] getInputLayout(int tier) {
+        return switch (tier) {
+            case 1 -> rocketT1Inputs;
+            case 2 -> rocketT2Inputs;
+            case 3 -> rocketT3Inputs;
+            case 4 -> rocketT4Inputs;
+            case 5 -> rocketT5Inputs;
+            case 6 -> rocketT6Inputs;
+            case 7 -> rocketT7Inputs;
+            case 8 -> rocketT8Inputs;
+            default -> throw new IllegalArgumentException("Unsupported rocket tier: " + tier);
+        };
+    }
+
+    private static Pos2d getOutputPosition(int tier) {
+        return new Pos2d(tier == 8 ? 130 : 121, 62);
     }
 
     @Override
-    public ModularWindow.Builder createNEITemplate(GTNEIDefaultHandler.NEITemplateContext ctx) {
-        // Remove the regular background texture with the border.
+    public ModularWindow.Builder createNEITemplate(NEITemplateContext ctx) {
         ModularWindow.Builder builder = ModularWindow.builder(neiProperties.recipeBackgroundSize);
-
-        if (uiProperties.useProgressBar) {
-            addProgressBar(builder, ctx);
-        }
-
-        UIHelper.forEachSlots(
-            (i, backgrounds, pos) -> builder.widget(
-                SlotWidget.phantom(ctx.itemInputsInventory, i)
-                    .setBackground(backgrounds)
-                    .setPos(pos)
-                    .setSize(18, 18)),
-            (i, backgrounds, pos) -> builder.widget(
-                SlotWidget.phantom(ctx.itemOutputsInventory, i)
-                    .setBackground(backgrounds)
-                    .setPos(pos)
-                    .setSize(18, 18)),
-            (i, backgrounds, pos) -> {
-                if (uiProperties.useSpecialSlot) builder.widget(
-                    SlotWidget.phantom(ctx.specialSlotInventory, 0)
-                        .setBackground(backgrounds)
-                        .setPos(pos)
-                        .setSize(18, 18));
-            },
-            (i, backgrounds, pos) -> builder.widget(
-                SlotWidget.phantom(ctx.fluidInputsInventory, i)
-                    .setBackground(backgrounds)
-                    .setPos(pos)
-                    .setSize(18, 18)),
-            (i, backgrounds, pos) -> builder.widget(
-                SlotWidget.phantom(ctx.fluidOutputsInventory, i)
-                    .setBackground(backgrounds)
-                    .setPos(pos)
-                    .setSize(18, 18)),
-            ModularUITextures.ITEM_SLOT,
-            ModularUITextures.FLUID_SLOT,
-            uiProperties,
-            uiProperties.maxItemInputs,
-            uiProperties.maxItemOutputs,
-            uiProperties.maxFluidInputs,
-            uiProperties.maxFluidOutputs,
-            TieredVariant.STANDARD,
-            ctx.windowOffset);
-
+        builder.widget(
+            SlotWidget.phantom(ctx.specialSlotInventory, 0)
+                .setBackground(IDrawable.EMPTY)
+                .setPos(getSpecialItemPosition().add(ctx.windowOffset))
+                .setSize(18, 18));
+        // Preserve the NASA layout, including empty fuel and cargo slots.
+        IDrawable slots = (x, y, width, height, partialTicks) -> {
+            CachedDefaultRecipe recipe = ctx.recipeSupplier.get();
+            if (recipe == null) return;
+            for (int[] position : getInputLayout(recipe.mRecipe.mSpecialValue)) {
+                ModularUITextures.ITEM_SLOT.draw(x + position[0] - 1, y + position[1] - 1, 18, 18, partialTicks);
+            }
+            if (recipe.mRecipe.mSpecialItems != null) {
+                Pos2d position = getSpecialItemPosition().add(ctx.windowOffset);
+                ModularUITextures.ITEM_SLOT.draw(x + position.x, y + position.y, 18, 18, partialTicks);
+            }
+            for (PositionedStack output : recipe.mOutputs) {
+                ModularUITextures.ITEM_SLOT.draw(x + output.relx - 1, y + output.rely - 1, 18, 18, partialTicks);
+            }
+        };
+        builder.widget(
+            new DrawableWidget().setDrawable(slots)
+                .setSize(neiProperties.recipeBackgroundSize));
         addGregTechLogo(builder, ctx.windowOffset);
-
-        for (Pair<IDrawable, Pair<Size, Pos2d>> specialTexture : uiProperties.specialTextures) {
-            builder.widget(
-                new DrawableWidget().setDrawable(specialTexture.getLeft())
-                    .setSize(
-                        specialTexture.getRight()
-                            .getLeft())
-                    .setPos(
-                        specialTexture.getRight()
-                            .getRight()
-                            .add(ctx.windowOffset)));
-        }
-
         return builder;
     }
 }
