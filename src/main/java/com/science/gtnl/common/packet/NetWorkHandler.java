@@ -48,6 +48,10 @@ public class NetWorkHandler {
         registerServerbound(OpenPortableCellWorkbenchSubGuiPacket.class);
         registerClientbound(SuperDualInterfaceFluidSyncPacket.class);
         if (Mods.EtFuturumRequiem.isModLoaded()) registerServerbound(ElytraBoostPacket.class);
+        registerServerbound(ToggleWirelessCardPacket.class);
+        registerServerbound(WirelessCardGuiPacket.class);
+        registerClientbound(WirelessCardGuiPacket.Snapshot.class);
+        registerServerbound(OpenWirelessCardPacket.class);
     }
 
     public static <T extends ClientboundPacket> void registerClientbound(Class<T> packet) {

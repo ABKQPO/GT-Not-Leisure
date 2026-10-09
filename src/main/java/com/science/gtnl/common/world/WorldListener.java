@@ -18,8 +18,8 @@ import com.science.gtnl.api.IBlockStateListener;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongList;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 public class WorldListener implements IWorldAccess {
@@ -29,7 +29,7 @@ public class WorldListener implements IWorldAccess {
     private final Map<World, WorldListener> worlds = new IdentityHashMap<>();
     private final Long2ObjectOpenHashMap<Set<IBlockStateListener>> blockStateListeners = new Long2ObjectOpenHashMap<>();
     private final Long2ObjectOpenHashMap<Set<IBlockStateListener>> chunkListeners = new Long2ObjectOpenHashMap<>();
-    private final Map<IBlockStateListener, LongList> listenerPositions = new IdentityHashMap<>();
+    private final Map<IBlockStateListener, LongSet> listenerPositions = new IdentityHashMap<>();
 
     public WorldListener() {
         INSTANCE = this;
@@ -43,9 +43,7 @@ public class WorldListener implements IWorldAccess {
         ForgeDirection direction, int distance) {
         if (world.isRemote) return;
         WorldListener access = worlds.computeIfAbsent(world, WorldListener::new);
-        access.removeListener(listener);
-        LongList positions = new LongArrayList(distance);
-        long previousChunk = Long.MIN_VALUE;
+        LongSet positions = new LongOpenHashSet();
         int x = origin.x;
         int y = origin.y;
         int z = origin.z;
@@ -53,18 +51,34 @@ public class WorldListener implements IWorldAccess {
             x += direction.offsetX;
             y += direction.offsetY;
             z += direction.offsetZ;
-            long position = CoordinatePacker.pack(x, y, z);
-            positions.add(position);
-            access.blockStateListeners.computeIfAbsent(position, key -> new ReferenceOpenHashSet<>(2))
-                .add(listener);
-            long chunk = CoordinatePacker.pack(x >> 4, 0, z >> 4);
-            if (chunk != previousChunk) {
-                access.chunkListeners.computeIfAbsent(chunk, key -> new ReferenceOpenHashSet<>(2))
-                    .add(listener);
-                previousChunk = chunk;
-            }
+            positions.add(CoordinatePacker.pack(x, y, z));
         }
-        access.listenerPositions.put(listener, positions);
+        access.replacePositions(listener, positions);
+    }
+
+    /** Replaces one listener's arbitrary coordinate set in this world. Duplicate coordinates are harmless. */
+    public void registerBlockStateListener(World world, IBlockStateListener listener, Iterable<BlockPos> coordinates) {
+        if (world.isRemote) return;
+        LongSet positions = new LongOpenHashSet();
+        for (BlockPos pos : coordinates) positions.add(CoordinatePacker.pack(pos.x, pos.y, pos.z));
+        worlds.computeIfAbsent(world, WorldListener::new)
+            .replacePositions(listener, positions);
+    }
+
+    void replacePositions(IBlockStateListener listener, LongSet positions) {
+        if (positions.equals(listenerPositions.get(listener))) return;
+        removeListener(listener);
+        if (positions.isEmpty()) return;
+        positions = new LongOpenHashSet(positions);
+        for (long position : positions) {
+            blockStateListeners.computeIfAbsent(position, key -> new ReferenceOpenHashSet<>(2))
+                .add(listener);
+            long chunk = CoordinatePacker
+                .pack(CoordinatePacker.unpackX(position) >> 4, 0, CoordinatePacker.unpackZ(position) >> 4);
+            chunkListeners.computeIfAbsent(chunk, key -> new ReferenceOpenHashSet<>(2))
+                .add(listener);
+        }
+        listenerPositions.put(listener, positions);
     }
 
     public void unregisterBlockStateListener(World world, IBlockStateListener listener) {
@@ -73,20 +87,19 @@ public class WorldListener implements IWorldAccess {
     }
 
     private void removeListener(IBlockStateListener listener) {
-        LongList positions = listenerPositions.remove(listener);
+        LongSet positions = listenerPositions.remove(listener);
         if (positions == null) return;
-        long previousChunk = Long.MIN_VALUE;
+        LongSet removedChunks = new LongOpenHashSet();
         for (long position : positions) {
             Set<IBlockStateListener> listeners = blockStateListeners.get(position);
             listeners.remove(listener);
             if (listeners.isEmpty()) blockStateListeners.remove(position);
             long chunk = CoordinatePacker
                 .pack(CoordinatePacker.unpackX(position) >> 4, 0, CoordinatePacker.unpackZ(position) >> 4);
-            if (chunk != previousChunk) {
+            if (removedChunks.add(chunk)) {
                 Set<IBlockStateListener> chunkSet = chunkListeners.get(chunk);
                 chunkSet.remove(listener);
                 if (chunkSet.isEmpty()) chunkListeners.remove(chunk);
-                previousChunk = chunk;
             }
         }
     }

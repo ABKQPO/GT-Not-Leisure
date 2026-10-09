@@ -18,6 +18,7 @@ import com.gtnewhorizon.gtnhlib.client.model.loading.ModelRegistry;
 import com.science.gtnl.asm.GTNLEarlyCoreMod;
 import com.science.gtnl.client.GTNLInputHandler;
 import com.science.gtnl.client.GTNLTooltipManager;
+import com.science.gtnl.client.WirelessCardInput;
 import com.science.gtnl.client.gui.GuiActiveFormationPlane;
 import com.science.gtnl.client.gui.GuiCustomPriority;
 import com.science.gtnl.client.gui.GuiDirePatternEncoder;
@@ -142,6 +143,8 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
+        WirelessCardInput.register();
+        MinecraftForge.EVENT_BUS.register(com.science.gtnl.client.WirelessWorldHighlight.INSTANCE);
         ModelRegistry.registerModid(ScienceNotLeisure.MODID);
 
         MinecraftForge.EVENT_BUS.register(SUBSCRIBE_EVENT_CLIENT_UTILS);
@@ -303,6 +306,7 @@ public class ClientProxy extends CommonProxy {
         ForgeDirection side = ForgeDirection.getOrientation(ID & 7);
         int guiID = ID >> 3;
         return switch (GuiType.getGuiType(guiID)) {
+            case WirelessCardGUI -> new com.science.gtnl.client.WirelessCardGui(player, x);
             case DetravScannerGUI -> new DetravScannerGUI();
             case PortableBasicWorkBenchGUI -> new GuiPortableBasicWorkbench(player.inventory, world);
             case PortableAdvancedWorkBenchGUI -> new GuiPortableAdvancedWorkbench(

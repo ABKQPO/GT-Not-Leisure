@@ -29,6 +29,11 @@ public class MainConfig {
         @DefaultBoolean(false)
         @RequiresMcRestart
         public boolean enableDebugMode = false;
+
+        @Comment("Enable the experimental ME frequency card, command and pathing hooks. Links are not saved.")
+        @DefaultBoolean(false)
+        @RequiresMcRestart
+        public boolean enableWirelessChannelPrototype = false;
     }
 
     public static final Client client = new Client();
