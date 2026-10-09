@@ -24,6 +24,7 @@ import com.science.gtnl.common.recipe.thaumcraft.TCRecipeTools;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMetadataKey;
 import gregtech.api.recipe.metadata.SimpleRecipeMetadataKey;
+import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -37,11 +38,10 @@ public class CrucibleCraftingRecipes implements IRecipePool {
 
     private static final int MAX_SELECTOR_CIRCUIT = 24;
 
-    private static final Set<String> REGISTERED = new HashSet<>();
+    private static final Map<String, Pending> REGISTERED = new LinkedHashMap<>();
 
     @Override
     public void loadRecipes() {
-        Map<String, List<Pending>> grouped = new LinkedHashMap<>();
         Set<String> seen = new HashSet<>();
 
         for (CrucibleRecipeData recipe : CrucibleRecipeConverter.scanRecipes()) {
@@ -54,42 +54,24 @@ public class CrucibleCraftingRecipes implements IRecipePool {
                 continue;
             }
 
-            if (identity == null || !seen.add(identity)) {
+            if (identity == null || !seen.add(identity) || REGISTERED.containsKey(identity)) {
                 continue;
             }
 
-            String inputKey = primaryCatalystKey(recipe);
-            if (inputKey == null) {
-                continue;
-            }
-
-            grouped.computeIfAbsent(inputKey, key -> new ArrayList<>())
-                .add(new Pending(recipe, identity));
-        }
-
-        for (Map.Entry<String, List<Pending>> entry : grouped.entrySet()) {
-            List<Pending> group = entry.getValue();
-            int limit = Math.min(group.size(), MAX_SELECTOR_CIRCUIT);
-            if (group.size() > MAX_SELECTOR_CIRCUIT) {
+            int circuit = findSelectorCircuit(recipe);
+            if (circuit == 0) {
                 ScienceNotLeisure.LOG.warn(
-                    "CrucibleCraftingRecipes: {} crucible recipes share input {}, only the first {} are registered",
-                    group.size(),
-                    entry.getKey(),
-                    MAX_SELECTOR_CIRCUIT);
+                    "CrucibleCraftingRecipes: no free selector circuit for {}, skipping recipe with overlapping catalysts",
+                    recipe.output);
+                continue;
             }
 
-            for (int i = 0; i < limit; i++) {
-                registerRecipe(group.get(i), i + 1);
-            }
+            registerRecipe(new Pending(recipe, identity, circuit));
         }
     }
 
-    private void registerRecipe(Pending pending, int circuit) {
-        if (REGISTERED.contains(pending.identity)) {
-            return;
-        }
-
-        Object[] inputs = createInputs(pending.recipe, circuit);
+    private void registerRecipe(Pending pending) {
+        Object[] inputs = createInputs(pending.recipe, pending.circuit);
         if (inputs.length == 0) {
             return;
         }
@@ -113,7 +95,7 @@ public class CrucibleCraftingRecipes implements IRecipePool {
             return;
         }
 
-        REGISTERED.add(pending.identity);
+        REGISTERED.put(pending.identity, pending);
     }
 
     private Object[] createInputs(CrucibleRecipeData recipe, int circuit) {
@@ -136,17 +118,32 @@ public class CrucibleCraftingRecipes implements IRecipePool {
         return new Object[] { alternatives.toArray(new ItemStack[0]), GTUtility.getIntegratedCircuit(circuit) };
     }
 
-    private static String primaryCatalystKey(CrucibleRecipeData recipe) {
-        if (recipe == null || recipe.catalysts == null || recipe.catalysts.length == 0) {
-            return null;
+    private static int findSelectorCircuit(CrucibleRecipeData recipe) {
+        boolean[] used = new boolean[MAX_SELECTOR_CIRCUIT + 1];
+        for (Pending registered : REGISTERED.values()) {
+            if (catalystsOverlap(recipe.catalysts, registered.recipe.catalysts)) {
+                used[registered.circuit] = true;
+            }
         }
-
-        ItemStack primary = recipe.catalysts[0];
-        if (primary == null || primary.getItem() == null) {
-            return null;
+        for (int circuit = 1; circuit <= MAX_SELECTOR_CIRCUIT; circuit++) {
+            if (!used[circuit]) return circuit;
         }
+        return 0;
+    }
 
-        return stackIdentity(primary);
+    private static boolean catalystsOverlap(ItemStack[] left, ItemStack[] right) {
+        for (ItemStack leftStack : left) {
+            for (ItemStack rightStack : right) {
+                // Matching ignores count/NBT and accepts wildcard damage and ore-unified equivalents.
+                if (GTUtility.areStacksEqual(leftStack, rightStack, true) || GTUtility.areStacksEqual(
+                    GTOreDictUnificator.get_nocopy(true, leftStack),
+                    GTOreDictUnificator.get_nocopy(true, rightStack),
+                    true)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private static String identityOf(CrucibleRecipeData recipe) {
@@ -207,10 +204,12 @@ public class CrucibleCraftingRecipes implements IRecipePool {
 
         private final CrucibleRecipeData recipe;
         private final String identity;
+        private final int circuit;
 
-        private Pending(CrucibleRecipeData recipe, String identity) {
+        private Pending(CrucibleRecipeData recipe, String identity, int circuit) {
             this.recipe = recipe;
             this.identity = identity;
+            this.circuit = circuit;
         }
     }
 }

@@ -77,8 +77,6 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
 
     private long essentiaCommitBlockedUntil;
 
-    private int craftsCeiling = 1;
-
     public IndustrialCrucible(int id, String name, String nameRegional) {
         super(id, name, nameRegional);
     }
@@ -238,7 +236,7 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
                     return CheckRecipeResultRegistry.NO_RECIPE;
                 }
 
-                int crafts = clampCrafts(calculatedParallels, craftsCeiling);
+                int crafts = calculatedParallels;
 
                 if (!hasRequiredEssentia(requiredAspects, crafts)) {
                     return SimpleCheckRecipeResult.ofFailure("insufficient_essentia");
@@ -256,12 +254,10 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
             public GTNLParallelHelper createParallelHelper(@NotNull GTRecipe recipe) {
                 int affordable = affordableCrafts(recipe.getMetadata(CrucibleCraftingRecipes.CRUCIBLE_ASPECTS));
                 int batchFactor = isBatchModeEnabled() ? Math.max(1, Math.min(getMaxBatchSize(), affordable)) : 1;
-                int base = Math.max(1, Math.min(affordable / batchFactor, getMaxParallelRecipes()));
+                setMaxParallel(getMaxParallelRecipes());
 
-                craftsCeiling = base * batchFactor;
-                setMaxParallel(base);
-
-                return super.createParallelHelper(recipe).enableBatchMode(batchFactor);
+                return super.createParallelHelper(recipe).enableBatchMode(batchFactor)
+                    .setMaxTotalParallel(affordable);
             }
 
             @NotNull
@@ -412,11 +408,6 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
         if (baseMetaTileEntity == null || baseMetaTileEntity.getWorld() == null) return 0;
         return baseMetaTileEntity.getWorld()
             .getTotalWorldTime();
-    }
-
-    private static int clampCrafts(int calculatedParallels, int maxParallelRecipes) {
-        if (calculatedParallels <= 0 || maxParallelRecipes <= 0) return 1;
-        return Math.min(calculatedParallels, maxParallelRecipes);
     }
 
     private long getStoredEssentiaInHatches(Aspect aspect, long required) {
