@@ -45,8 +45,8 @@ public class SlimeSaddle extends Item {
         slime.setSaddle(true);
         slime.getEntityData()
             .setBoolean("PersistenceRequired", true);
-        world.spawnEntityInWorld(slime);
         player.mountEntity(slime);
+        world.spawnEntityInWorld(slime);
         world.playSoundAtEntity(player, "mob.slime.big", 1.0f, 1.0f);
         return stack;
     }

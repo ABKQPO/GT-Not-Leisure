@@ -22,6 +22,9 @@ import com.science.gtnl.mixins.early.minecraft.AccessorEntityLivingBase;
 
 public class EntitySaddleSlime extends EntitySlime {
 
+    private int mountGraceTicks = 20;
+    private boolean hasBeenMounted;
+
     public EntitySaddleSlime(World world) {
         super(world);
         this.setSlimeSize(4);
@@ -53,6 +56,7 @@ public class EntitySaddleSlime extends EntitySlime {
     public void onUpdate() {
         if (!this.worldObj.isRemote) {
             if (getSaddle() && riddenByEntity instanceof EntityPlayer player) {
+                hasBeenMounted = true;
                 this.rotationYaw = player.rotationYaw;
                 this.renderYawOffset = player.renderYawOffset;
                 this.rotationYawHead = player.rotationYawHead;
@@ -99,7 +103,7 @@ public class EntitySaddleSlime extends EntitySlime {
                         }
                     }
                 }
-            } else {
+            } else if (!getSaddle() || hasBeenMounted || --mountGraceTicks <= 0) {
                 worldObj.removeEntity(this);
             }
         }
