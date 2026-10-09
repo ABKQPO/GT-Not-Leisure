@@ -19,7 +19,6 @@ import net.minecraft.util.ChatComponentTranslation;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.OverloadedFrequencyCard;
 import com.science.gtnl.common.packet.WirelessCardGuiPacket;
-import com.science.gtnl.config.MainConfig;
 
 import appeng.api.networking.IGridNode;
 
@@ -73,7 +72,6 @@ public final class WirelessCardContainer extends Container {
     public boolean canInteractWith(EntityPlayer user) {
         ItemStack held = cardInventory == null ? null : cardInventory.getStackInSlot(cardSlot);
         boolean valid = user == player && !user.isDead
-            && MainConfig.debug.enableWirelessChannelPrototype
             && card != null
             && card.getItem() instanceof OverloadedFrequencyCard
             && matchesHeldCard(cardSlot, heldOnly ? user.inventory.currentItem : cardSlot, card, held)

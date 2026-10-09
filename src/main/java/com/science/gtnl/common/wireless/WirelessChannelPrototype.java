@@ -112,7 +112,7 @@ public final class WirelessChannelPrototype {
             for (IGridNode node : grid.getMachines(machine)) {
                 // Keep the expression typed as TileEntity: AE2's controller superclass exposes optional mod APIs.
                 TileEntity controller = (TileEntity) node.getMachine();
-                // Stage A supports only ordinary controllers. Unknown controller subclasses fail closed.
+                // Wireless links support only ordinary controllers. Unknown controller subclasses fail closed.
                 if (controller.getClass() != TileController.class || controller.getWorldObj() == null) return 0;
                 controllers.add(
                     new ChannelBudget.Position(
@@ -129,7 +129,7 @@ public final class WirelessChannelPrototype {
         if (!WirelessPathingAccess.class.isAssignableFrom(PathingCalculation.class)) {
             throw new IllegalArgumentException("Wireless pathing hooks are unavailable; no connection was created.");
         }
-        if (ENTRANCES.size() >= MAX_ENTRANCES) throw new IllegalArgumentException("Prototype entrance limit reached.");
+        if (ENTRANCES.size() >= MAX_ENTRANCES) throw new IllegalArgumentException("Wireless entrance limit reached.");
         TileEntity controller = source.tile();
         if (controller == null || controller.getClass() != TileController.class) {
             throw new IllegalArgumentException("Source must be a loaded ordinary ME controller.");

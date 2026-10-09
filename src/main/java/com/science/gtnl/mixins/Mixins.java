@@ -99,15 +99,14 @@ public enum Mixins implements IMixins {
         .setPhase(Phase.EARLY)
         .setApplyIf(() -> MainConfig.item.stick.enableStickItem)),
 
-    WIRELESS_CHANNEL_PROTOTYPE(new MixinBuilder("Experimental ME wireless channel allocation")
+    WIRELESS_CHANNEL_PROTOTYPE(new MixinBuilder("ME wireless channel allocation")
         .addCommonMixins(
             "appliedEnergistics.wireless.MixinWirelessPathingCalculation",
             "appliedEnergistics.wireless.MixinWirelessPathGridCache",
             "appliedEnergistics.wireless.MixinWirelessPartPlacement",
             "appliedEnergistics.wireless.MixinWirelessGridNode")
         .setPhase(Phase.LATE)
-        .addRequiredMod(ModList.AppliedEnergistics)
-        .setApplyIf(() -> MainConfig.debug.enableWirelessChannelPrototype)),
+        .addRequiredMod(ModList.AppliedEnergistics)),
 
     LATE_COMMON(new MixinBuilder("General Late Mixins")
         .addCommonMixins(

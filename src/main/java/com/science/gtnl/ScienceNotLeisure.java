@@ -13,7 +13,6 @@ import com.science.gtnl.common.command.CommandSuicide;
 import com.science.gtnl.common.command.CommandTickrate;
 import com.science.gtnl.common.command.CommandWirelessPrototype;
 import com.science.gtnl.common.wireless.WirelessChannelPrototype;
-import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.MaterialLoader;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.item.MissingMappingsHandler;
@@ -106,15 +105,13 @@ public class ScienceNotLeisure {
     @Mod.EventHandler
     public void serverAboutToStart(FMLServerAboutToStartEvent event) {
         // Spawn chunks load before ServerStarting. Do not erase their restored-link discoveries afterwards.
-        if (MainConfig.debug.enableWirelessChannelPrototype) WirelessChannelPrototype.clear();
+        WirelessChannelPrototype.clear();
     }
 
     // register server commands in this event handler (Remove if not needed)
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
-        if (MainConfig.debug.enableWirelessChannelPrototype) {
-            event.registerServerCommand(new CommandWirelessPrototype());
-        }
+        event.registerServerCommand(new CommandWirelessPrototype());
         event.registerServerCommand(new CommandTickrate());
         event.registerServerCommand(new CommandSteamNetwork());
         event.registerServerCommand(new CommandStellarIris());
@@ -127,7 +124,7 @@ public class ScienceNotLeisure {
 
     @Mod.EventHandler
     public void serverStopping(FMLServerStoppingEvent event) {
-        if (MainConfig.debug.enableWirelessChannelPrototype) WirelessChannelPrototype.clear();
+        WirelessChannelPrototype.clear();
     }
 
     @Mod.EventHandler

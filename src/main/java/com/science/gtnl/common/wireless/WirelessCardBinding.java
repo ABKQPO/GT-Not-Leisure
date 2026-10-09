@@ -7,7 +7,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
 
-/** Item data only. Stage A stores a controller address, not a persistent wireless network identity. */
+/** Item data only. Stores the source controller address and bound owner. */
 public record WirelessCardBinding(Address source, UUID owner, String ownerName) {
 
     private static final String KEY = "GTNLWirelessCard";

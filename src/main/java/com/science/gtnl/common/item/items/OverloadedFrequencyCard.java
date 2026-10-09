@@ -26,7 +26,6 @@ import com.science.gtnl.common.wireless.WirelessChannelPrototype;
 import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
 import com.science.gtnl.common.wireless.WirelessChannelPrototype.Entrance;
 import com.science.gtnl.common.wireless.WirelessClusterManager;
-import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.exceptions.FailedConnection;
@@ -82,7 +81,7 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
 
     public OverloadedFrequencyCard() {
         setUnlocalizedName("gtnl.overloaded_frequency_card");
-        // Reuse the existing chip artwork while the card is a prototype.
+        // Reuse the wireless upgrade chip artwork.
         setTextureName(RESOURCE_ROOT_ID + ":wireless_upgrade_chip");
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         setMaxStackSize(1);
@@ -95,7 +94,6 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
         float hitX, float hitY, float hitZ) {
         // Returning true on the client here would prevent vanilla's block-use packet from being sent.
         if (world.isRemote) return false;
-        if (!enabled(player)) return true;
         WirelessCardBinding binding = WirelessCardBinding.read(stack.getTagCompound());
         if (!ownerAllowed(binding, player)) return true;
         if (!player.canPlayerEdit(x, y, z, side, stack)) {
@@ -191,7 +189,6 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
         // Defensive guard: block interactions must never clear a binding via vanilla's air-use fallback.
         MovingObjectPosition hit = getMovingObjectPositionFromPlayer(world, player, false);
         if (hit != null && hit.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) return stack;
-        if (!enabled(player)) return stack;
         WirelessCardBinding binding = WirelessCardBinding.read(stack.getTagCompound());
         if (!ownerAllowed(binding, player)) return stack;
         if (player.isSneaking()) {
@@ -203,12 +200,6 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
                 .openGui(player, com.science.gtnl.utils.enums.GuiType.WirelessCardGUI, null, world, 0, 0, 0);
         }
         return stack;
-    }
-
-    private static boolean enabled(EntityPlayer player) {
-        if (MainConfig.debug.enableWirelessChannelPrototype) return true;
-        message(player, "disabled");
-        return false;
     }
 
     private static boolean ownerAllowed(WirelessCardBinding binding, EntityPlayer player) {
@@ -299,8 +290,6 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
         tooltip.add(
             StatCollector.translateToLocal(
                 LANG + (WirelessCardBinding.automatic(stack.getTagCompound()) ? "auto_on" : "auto_off")));
-        if (!MainConfig.debug.enableWirelessChannelPrototype)
-            tooltip.add(StatCollector.translateToLocal(LANG + "disabled"));
         WirelessCardBinding binding = WirelessCardBinding.read(stack.getTagCompound());
         if (binding == null) {
             tooltip.add(StatCollector.translateToLocal(LANG + "unbound"));

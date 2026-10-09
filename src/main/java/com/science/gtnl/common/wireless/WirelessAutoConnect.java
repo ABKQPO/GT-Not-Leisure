@@ -22,7 +22,6 @@ import net.minecraftforge.event.world.BlockEvent;
 import com.science.gtnl.common.item.items.OverloadedFrequencyCard;
 import com.science.gtnl.common.wireless.WirelessCardSelection.Candidate;
 import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
-import com.science.gtnl.config.MainConfig;
 
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.IGridHost;
@@ -97,7 +96,7 @@ public final class WirelessAutoConnect {
     }
 
     public static void toggle(EntityPlayer player, boolean heldOnly, int expectedSlot) {
-        if (!MainConfig.debug.enableWirelessChannelPrototype || player.isDead || player.worldObj.isRemote) return;
+        if (player.isDead || player.worldObj.isRemote) return;
         if (ticks < TOGGLES.getOrDefault(player.getUniqueID(), Long.MIN_VALUE)) return;
         ItemStack card;
         if (heldOnly) {
@@ -126,9 +125,7 @@ public final class WirelessAutoConnect {
     }
 
     public static void openGui(EntityPlayer player) {
-        if (!MainConfig.debug.enableWirelessChannelPrototype || player.isDead
-            || player.worldObj.isRemote
-            || player.openContainer != player.inventoryContainer) return;
+        if (player.isDead || player.worldObj.isRemote || player.openContainer != player.inventoryContainer) return;
         if (ticks < TOGGLES.getOrDefault(player.getUniqueID(), Long.MIN_VALUE)) return;
         TOGGLES.put(player.getUniqueID(), ticks + 5);
         var selection = WirelessCardSelection.select(cards(player), false);
@@ -171,8 +168,7 @@ public final class WirelessAutoConnect {
 
     private static void enqueue(EntityPlayer player, TileEntity tile, ForgeDirection side, IPart part,
         BooleanSupplier canceled) {
-        if (!MainConfig.debug.enableWirelessChannelPrototype || player == null
-            || player instanceof FakePlayer
+        if (player == null || player instanceof FakePlayer
             || player.worldObj.isRemote
             || tile == null
             || tile instanceof TileController

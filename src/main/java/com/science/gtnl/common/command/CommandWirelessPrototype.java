@@ -59,7 +59,7 @@ public final class CommandWirelessPrototype extends CommandBase {
                         throw new IllegalArgumentException("Source must be a loaded ordinary ME controller.");
                     }
                     sources.put(player.getUniqueID(), source);
-                    message(sender, "Bound prototype source: " + source);
+                    message(sender, "Bound wireless source: " + source);
                 }
                 case "link" -> {
                     if (args.length != 5 && args.length != 6)
@@ -91,7 +91,7 @@ public final class CommandWirelessPrototype extends CommandBase {
                     sources.clear();
                     message(
                         sender,
-                        "Loaded prototype links, entrances and command bindings cleared; unloaded chunks are unchanged.");
+                        "Loaded wireless links, entrances and command bindings cleared; unloaded chunks are unchanged.");
                 }
                 case "status" -> {
                     if (args.length != 1) throw new IllegalArgumentException(getCommandUsage(sender));
@@ -136,7 +136,7 @@ public final class CommandWirelessPrototype extends CommandBase {
             }
         } catch (IllegalArgumentException | IllegalStateException | FailedConnection failure) {
             throw new CommandException(
-                "Prototype: " + failure.getClass()
+                "Wireless network: " + failure.getClass()
                     .getSimpleName() + ": " + failure.getMessage());
         }
     }

@@ -33,7 +33,6 @@ import com.science.gtnl.common.wireless.WirelessChannelPrototype;
 import com.science.gtnl.common.world.GTNLWorldgenloader;
 import com.science.gtnl.common.world.VoidWorldHandler;
 import com.science.gtnl.common.world.WorldListener;
-import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.container.ContainerActiveFormationPlane;
 import com.science.gtnl.container.ContainerCustomPriority;
 import com.science.gtnl.container.ContainerDirePatternEncoder;
@@ -101,13 +100,11 @@ public class CommonProxy implements IGuiHandler {
 
     // load "Do your mod setup. Build whatever data structures you care about. Register recipes." (Remove if not needed)
     public void init(FMLInitializationEvent event) {
-        if (MainConfig.debug.enableWirelessChannelPrototype) {
-            MinecraftForge.EVENT_BUS.register(WirelessChannelPrototype.INSTANCE);
-            MinecraftForge.EVENT_BUS.register(WirelessAutoConnect.INSTANCE);
-            FMLCommonHandler.instance()
-                .bus()
-                .register(WirelessChannelPrototype.INSTANCE);
-        }
+        MinecraftForge.EVENT_BUS.register(WirelessChannelPrototype.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(WirelessAutoConnect.INSTANCE);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(WirelessChannelPrototype.INSTANCE);
         MinecraftForge.EVENT_BUS.register(VM_TWEAK_HELPER);
         FMLCommonHandler.instance()
             .bus()
