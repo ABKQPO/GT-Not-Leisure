@@ -226,16 +226,7 @@ public class RecipeLoader {
 
         if (ModList.TwistSpaceTechnology.isModLoaded()) {
             loadTSTMegaAssemblyLineRecipes();
-            loadTSTAdvCircuitAssemblyLineRecipes();
         }
-    }
-
-    @Optional.Method(modid = "TwistSpaceTechnology")
-    public static void loadTSTAdvCircuitAssemblyLineRecipes() {
-        GTCMRecipe.AdvCircuitAssemblyLineRecipeMap.getBackend()
-            .clearRecipes();
-        CircuitAssemblyLineWithoutImprintRecipePool.loadRecipes();
-        System.out.println("[GTNL] Register TwistSpaceTechnology AdvCircuitAssemblyLine recipes");
     }
 
     public static void loadPlasmaCentrifugeRecipes() {

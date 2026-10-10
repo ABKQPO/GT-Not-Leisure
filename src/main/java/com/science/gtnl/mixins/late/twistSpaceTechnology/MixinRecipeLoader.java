@@ -14,16 +14,6 @@ public abstract class MixinRecipeLoader {
         method = "loadRecipes",
         at = @At(
             value = "INVOKE",
-            target = "Lcom/Nxer/TwistSpaceTechnology/recipe/machineRecipe/expanded/CircuitAssemblyLineWithoutImprintRecipePool;loadRecipes()V"))
-    private static void redirectCircuitAssemblyLineWithoutImprintLoadRecipes() {
-        ScienceNotLeisure.LOG.info(
-            "[GTNL] Detected TwistSpaceTechnology, intercept AdvCircuitAssemblyLine recipe loader to server start");
-    }
-
-    @Redirect(
-        method = "loadRecipes",
-        at = @At(
-            value = "INVOKE",
             target = "Lcom/Nxer/TwistSpaceTechnology/recipe/machineRecipe/expanded/AssemblyLineWithoutResearchRecipePool;loadRecipes()V"))
     private static void redirectAssemblyLineWithoutResearchLoadRecipes() {
         ScienceNotLeisure.LOG.info(
