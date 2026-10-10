@@ -11,6 +11,8 @@ import com.science.gtnl.common.command.CommandStellarIris;
 import com.science.gtnl.common.command.CommandSudo;
 import com.science.gtnl.common.command.CommandSuicide;
 import com.science.gtnl.common.command.CommandTickrate;
+import com.science.gtnl.common.command.CommandWirelessPrototype;
+import com.science.gtnl.common.wireless.WirelessChannelPrototype;
 import com.science.gtnl.loader.MaterialLoader;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.item.MissingMappingsHandler;
@@ -24,7 +26,9 @@ import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
@@ -98,9 +102,16 @@ public class ScienceNotLeisure {
         LanguageLoader.registry();
     }
 
+    @Mod.EventHandler
+    public void serverAboutToStart(FMLServerAboutToStartEvent event) {
+        // Spawn chunks load before ServerStarting. Do not erase their restored-link discoveries afterwards.
+        WirelessChannelPrototype.clear();
+    }
+
     // register server commands in this event handler (Remove if not needed)
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandWirelessPrototype());
         event.registerServerCommand(new CommandTickrate());
         event.registerServerCommand(new CommandSteamNetwork());
         event.registerServerCommand(new CommandStellarIris());
@@ -109,6 +120,11 @@ public class ScienceNotLeisure {
         event.registerServerCommand(new CommandItemInfo());
         event.registerServerCommand(new CommandSudo());
         event.registerServerCommand(new CommandSuicide());
+    }
+
+    @Mod.EventHandler
+    public void serverStopping(FMLServerStoppingEvent event) {
+        WirelessChannelPrototype.clear();
     }
 
     @Mod.EventHandler

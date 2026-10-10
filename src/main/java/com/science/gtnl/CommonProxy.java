@@ -28,6 +28,8 @@ import com.science.gtnl.common.part.PartSuperDualInterface;
 import com.science.gtnl.common.part.PartSuperInterface;
 import com.science.gtnl.common.recipe.gtnl.ExtremeExtremeEntityCrusherRecipes;
 import com.science.gtnl.common.recipe.thaumcraft.TCResearches;
+import com.science.gtnl.common.wireless.WirelessAutoConnect;
+import com.science.gtnl.common.wireless.WirelessChannelPrototype;
 import com.science.gtnl.common.world.GTNLWorldgenloader;
 import com.science.gtnl.common.world.VoidWorldHandler;
 import com.science.gtnl.common.world.WorldListener;
@@ -98,6 +100,11 @@ public class CommonProxy implements IGuiHandler {
 
     // load "Do your mod setup. Build whatever data structures you care about. Register recipes." (Remove if not needed)
     public void init(FMLInitializationEvent event) {
+        MinecraftForge.EVENT_BUS.register(WirelessChannelPrototype.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(WirelessAutoConnect.INSTANCE);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(WirelessChannelPrototype.INSTANCE);
         MinecraftForge.EVENT_BUS.register(VM_TWEAK_HELPER);
         FMLCommonHandler.instance()
             .bus()
