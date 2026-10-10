@@ -27,7 +27,9 @@ public abstract class MixinProcessingDust {
         ItemStack aStack, CallbackInfo ci) {
         if (aPrefix != OrePrefixes.dust) return;
         if (aMaterial.mStandardMoltenFluid == null) return;
-        if (aMaterial == Materials.Rubber || aMaterial == Materials.BorosilicateGlass) return;
+        if (aMaterial == Materials.Rubber) return;
+        if (aMaterial == Materials.BorosilicateGlass) return;
+        if (aMaterial == Materials.Glass) return;
 
         RecipeBuilder.builder()
             .itemInputs(ItemList.Shape_Mold_Ball.get(0))
