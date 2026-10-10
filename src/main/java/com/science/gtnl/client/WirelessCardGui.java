@@ -60,8 +60,9 @@ public final class WirelessCardGui extends ModularPanel {
     private final TextFieldWidget search, dimension, name;
     private int xSize = 320, ySize = 232;
     private int visibleRows = WirelessCardLayout.MIN_ROWS;
-    private int layoutRetry, filterState;
-    private String editTarget = "", serverName = "";
+    private int layoutRetry;
+    private String editTarget = "";
+    private long nameRevision;
 
     public WirelessCardGui(WirelessCardContainer container) {
         super("wireless_card");
@@ -286,27 +287,28 @@ public final class WirelessCardGui extends ModularPanel {
             mc.thePlayer.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.copied"));
             return;
         }
+        int filterState = container.display.getInteger("filterState");
         if (id == 7) filterState = (filterState + 1) % 5;
         String text = id == 5 ? name.getText() : search.getText();
         if (id == 5) getContext().removeFocus();
-        container.sync.request(id == 7 ? 6 : id, text, dimension.getText(), filterState);
+        container.sync.request(id == 7 ? 6 : id, text, dimension.getText(), filterState, nameRevision);
     }
 
     @Override
     public void onUpdate() {
         super.onUpdate();
         if (!layoutReady() && container.display.hasKey("session") && layoutRetry-- <= 0) {
-            container.sync.request(8, "", "", visibleRows);
+            container.sync.request(8, "", "", visibleRows, 0);
             layoutRetry = 10;
         }
         NBTTagCompound data = container.display;
         boolean detail = data.getBoolean("detail");
         if (detail ? search.isFocused() || dimension.isFocused() : name.isFocused()) getContext().removeFocus();
         if (detail && (!editTarget.equals(data.getString("detailTarget"))
-            || !name.isFocused() && !serverName.equals(data.getString("name")))) {
+            || !name.isFocused() && nameRevision != data.getLong("nameRevision"))) {
             editTarget = data.getString("detailTarget");
-            serverName = data.getString("name");
-            String text = data.getBoolean("multipleNames") ? "" : serverName;
+            nameRevision = data.getLong("nameRevision");
+            String text = data.getBoolean("multipleNames") ? "" : data.getString("name");
             name.getStringValue()
                 .setStringValue(text);
             name.setText(text);
@@ -335,7 +337,7 @@ public final class WirelessCardGui extends ModularPanel {
                 case 4 -> tr("back_compact");
                 case 5 -> tr("save_name");
                 case 6 -> tr("search");
-                case 7 -> tr("filter." + filterState);
+                case 7 -> tr("filter." + data.getInteger("filterState"));
                 default -> id >= 50 ? tr("teleport") : id >= 40 ? tr("highlight") : id >= 30 ? tr("copy") : "";
             };
             if (id == 9) {

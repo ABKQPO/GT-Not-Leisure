@@ -447,7 +447,10 @@ public final class WirelessClusterManager {
     public static void rename(Address source, LinkView view, String name) {
         var cluster = linkedCluster(source, view);
         if (cluster == null || !cluster.nodes()
-            .equals(view.members())) throw new IllegalStateException("The displayed cluster changed");
+            .equals(view.members())
+            || !WirelessLinkPersistence.names(cluster.nodes(), source, TOPOLOGY)
+                .equals(view.names()))
+            throw new IllegalStateException("The displayed cluster changed");
         WirelessLinkPersistence.rename(cluster.nodes(), source, name, TOPOLOGY);
     }
 

@@ -5,6 +5,7 @@ import static com.science.gtnl.common.wireless.WirelessChannelPrototype.canBuild
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import net.minecraft.client.Minecraft;
@@ -43,6 +44,8 @@ public final class WirelessCardContainer extends ModularContainer {
     private final WirelessCardBinding binding;
     private final long session = SESSIONS.incrementAndGet();
     private long revision;
+    private long nameRevision;
+    private RenameState renameState;
     private int page;
     private int pageSize = WirelessCardLayout.MIN_ROWS;
     private int ticks;
@@ -118,6 +121,7 @@ public final class WirelessCardContainer extends ModularContainer {
         String detailName = "";
         String detailTarget = "";
         boolean multipleNames = false;
+        RenameState nextRenameState = null;
         if (detailNode != null) {
             var focus = all.stream()
                 .filter(
@@ -131,6 +135,7 @@ public final class WirelessCardContainer extends ModularContainer {
                 all = filter(all);
                 summary = all;
             } else {
+                nextRenameState = new RenameState(focus.members(), focus.names());
                 detailName = focus.name();
                 detailTarget = focus.target()
                     .toString();
@@ -140,6 +145,8 @@ public final class WirelessCardContainer extends ModularContainer {
                 all = WirelessClusterManager.entranceLinks(binding.source(), focus);
             }
         }
+        if (!Objects.equals(renameState, nextRenameState)) nameRevision++;
+        renameState = nextRenameState;
         int pages = Math.max(1, (all.size() + pageSize - 1) / pageSize);
         page = Math.max(0, Math.min(page, pages - 1));
         List<WirelessClusterManager.LinkView> next = all
@@ -151,8 +158,10 @@ public final class WirelessCardContainer extends ModularContainer {
         data.setInteger("total", all.size());
         data.setBoolean("detail", detailNode != null);
         data.setString("name", detailName);
+        data.setLong("nameRevision", nameRevision);
         data.setString("detailTarget", detailTarget);
         data.setBoolean("multipleNames", multipleNames);
+        data.setInteger("filterState", filter.state());
         data.setBoolean(
             "filtered",
             !filter.query()
@@ -256,7 +265,7 @@ public final class WirelessCardContainer extends ModularContainer {
         }
 
         @SideOnly(Side.CLIENT)
-        public void request(int action, String text, String dimension, int filter) {
+        public void request(int action, String text, String dimension, int filter, long nameRevision) {
             if (!isValid() || !display.hasKey("session")) return;
             var request = new Action(
                 display.getLong("session"),
@@ -264,7 +273,8 @@ public final class WirelessCardContainer extends ModularContainer {
                 action,
                 text,
                 dimension,
-                filter);
+                filter,
+                nameRevision);
             syncToServer(1, request::write);
         }
 
@@ -285,7 +295,8 @@ public final class WirelessCardContainer extends ModularContainer {
                         request.action(),
                         request.text(),
                         request.dimension(),
-                        request.filter());
+                        request.filter(),
+                        request.nameRevision());
                 }
             });
         }
@@ -307,7 +318,10 @@ public final class WirelessCardContainer extends ModularContainer {
         }
     }
 
-    record Action(long session, long revision, int action, String text, String dimension, int filter) {
+    private record RenameState(Set<IGridNode> members, Set<String> names) {}
+
+    record Action(long session, long revision, int action, String text, String dimension, int filter,
+        long nameRevision) {
 
         static Action read(ByteBuf buf) {
             return new Action(
@@ -316,7 +330,8 @@ public final class WirelessCardContainer extends ModularContainer {
                 buf.readInt(),
                 readText(buf),
                 readText(buf),
-                buf.readUnsignedByte());
+                buf.readUnsignedByte(),
+                buf.readLong());
         }
 
         void write(ByteBuf buf) {
@@ -326,6 +341,7 @@ public final class WirelessCardContainer extends ModularContainer {
             writeText(buf, text);
             writeText(buf, dimension);
             buf.writeByte(filter);
+            buf.writeLong(nameRevision);
         }
 
         private static String readText(ByteBuf buf) {
@@ -358,7 +374,8 @@ public final class WirelessCardContainer extends ModularContainer {
         return true;
     }
 
-    public void action(long session, long revision, int action, String text, String dimension, int filterState) {
+    public void action(long session, long revision, int action, String text, String dimension, int filterState,
+        long nameRevision) {
         if (!canInteractWith(player) || this.session != session) return;
         boolean teleport = action >= 50 && action < 50 + rows.size();
         long now = player.worldObj.getTotalWorldTime();
@@ -389,7 +406,9 @@ public final class WirelessCardContainer extends ModularContainer {
             var row = rows.get(0);
             IGridNode source = binding.source()
                 .node();
-            if (!canBuild(row.node(), player) || !canBuild(source, player)) {
+            if (this.nameRevision != nameRevision) {
+                player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.stale"));
+            } else if (!canBuild(row.node(), player) || !canBuild(source, player)) {
                 player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.denied"));
             } else {
                 try {
