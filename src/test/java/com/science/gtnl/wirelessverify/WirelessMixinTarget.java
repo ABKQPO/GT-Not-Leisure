@@ -2,6 +2,7 @@ package com.science.gtnl.wirelessverify;
 
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.science.gtnl.common.wireless.ChannelBudgetTest;
 import com.science.gtnl.common.wireless.WirelessDiscoveryTest;
 import com.science.gtnl.common.wireless.WirelessPathingAccess;
 import com.science.gtnl.common.wireless.WirelessPathingState;
@@ -18,6 +19,7 @@ public final class WirelessMixinTarget {
         }
         verifyTileSave(tile);
         WirelessDiscoveryTest.run();
+        ChannelBudgetTest.retainedMachineClasses();
         verifyVisualiserHooks();
         Class<?> node = Class.forName("appeng.me.GridNode", false, WirelessMixinTarget.class.getClassLoader());
         for (String hook : new String[] { "gtnl$nodeUpdated", "gtnl$nodeDestroyed" }) {

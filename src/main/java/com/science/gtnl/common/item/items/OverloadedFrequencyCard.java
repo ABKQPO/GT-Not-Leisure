@@ -147,7 +147,7 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
         }
         TileEntity tile = world.getTileEntity(x, y, z);
         if (player.isSneaking()) {
-            if (tile != null && tile.getClass() == TileController.class) {
+            if (WirelessChannelPrototype.isSupportedController(tile)) {
                 bind(stack, player, new Address(world.provider.dimensionId, x, y, z, ForgeDirection.UNKNOWN));
             } else {
                 message(player, "bind_hint");
@@ -263,7 +263,7 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
     private static IGridNode sourceNode(WirelessCardBinding binding, EntityPlayer player) {
         TileEntity tile = binding.source()
             .tile();
-        IGridNode node = tile != null && tile.getClass() == TileController.class ? binding.source()
+        IGridNode node = WirelessChannelPrototype.isSupportedController(tile) ? binding.source()
             .node() : null;
         if (node == null) {
             message(player, "unavailable");

@@ -20,7 +20,6 @@ import com.science.gtnl.common.wireless.WirelessClusterManager;
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.pathing.IPathingGrid;
-import appeng.tile.networking.TileController;
 
 /** Operator-only debug controls. Explicit link can add entrances; unlink removes the associated cluster binding. */
 public final class CommandWirelessPrototype extends CommandBase {
@@ -54,9 +53,9 @@ public final class CommandWirelessPrototype extends CommandBase {
                 case "bind" -> {
                     if (args.length != 5) throw new IllegalArgumentException(getCommandUsage(sender));
                     Address source = address(args);
-                    if (source.tile() == null || source.tile()
-                        .getClass() != TileController.class) {
-                        throw new IllegalArgumentException("Source must be a loaded ordinary ME controller.");
+                    if (!WirelessChannelPrototype.isSupportedController(source.tile())) {
+                        throw new IllegalArgumentException(
+                            "Source must be a loaded ME Controller or Creative Energy Controller.");
                     }
                     sources.put(player.getUniqueID(), source);
                     message(sender, "Bound wireless source: " + source);

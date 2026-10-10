@@ -18,6 +18,8 @@ public final class WirelessTestTweaker implements ITweaker {
 
     @Override
     public void injectIntoClassLoader(LaunchClassLoader classLoader) {
+        // Real controllers inherit optional energy APIs. Use AE's own transformer, as FML does in game.
+        classLoader.registerTransformer("appeng.transformer.asm.ASMIntegration");
         MixinExtrasBootstrap.init();
         MixinEnvironment.getDefaultEnvironment()
             .setSide(MixinEnvironment.Side.SERVER);

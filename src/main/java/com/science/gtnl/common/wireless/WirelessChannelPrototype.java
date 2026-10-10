@@ -36,6 +36,7 @@ import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.me.pathfinding.PathingCalculation;
 import appeng.tile.networking.TileController;
+import appeng.tile.networking.TileCreativeEnergyController;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
@@ -54,12 +55,18 @@ public final class WirelessChannelPrototype {
     private static long allocationRevision;
     private static final Map<Address, Address> CONTROLLER_SOURCES = new HashMap<>();
 
+    /** These are the two controller types handled by AE's native pathing calculation. */
+    public static boolean isSupportedController(TileEntity tile) {
+        return tile != null
+            && (tile.getClass() == TileController.class || tile.getClass() == TileCreativeEnergyController.class);
+    }
+
     /** A physically connected controller multiblock is one frequency, regardless of the clicked block. */
     public static Address controllerSource(Address source) {
         Address cached = CONTROLLER_SOURCES.get(source);
         if (cached != null) return cached;
         TileEntity tile = source.tile();
-        IGridNode start = tile != null && tile.getClass() == TileController.class ? source.node() : null;
+        IGridNode start = isSupportedController(tile) ? source.node() : null;
         if (start == null) return source;
         Set<IGridNode> seen = java.util.Collections.newSetFromMap(new IdentityHashMap<>());
         Set<Address> addresses = new HashSet<>();
@@ -80,7 +87,7 @@ public final class WirelessChannelPrototype {
             for (IGridConnection connection : node.getConnections()) {
                 if (isOwned(connection) || !connection.hasDirection()) continue;
                 IGridNode other = connection.getOtherSide(node);
-                if (!((Object) other.getMachine() instanceof TileEntity next) || next.getClass() != TileController.class
+                if (!((Object) other.getMachine() instanceof TileEntity next) || !isSupportedController(next)
                     || next.isInvalid()
                     || next.getWorldObj() != tile.getWorldObj()
                     || Math.abs(controller.xCoord - next.xCoord) + Math.abs(controller.yCoord - next.yCoord)
@@ -172,12 +179,12 @@ public final class WirelessChannelPrototype {
         Class<?> controllerType = TileController.class;
         for (Class<? extends IGridHost> machine : grid.getMachinesClasses()) {
             if (!controllerType.isAssignableFrom(machine)) continue;
-            if (machine != controllerType) return 0;
             for (IGridNode node : grid.getMachines(machine)) {
+                // AE retains empty machine-class buckets after removal. Only a controller that is
+                // still present can make this structure unsupported, not its historical class key.
                 // Keep the expression typed as TileEntity: AE2's controller superclass exposes optional mod APIs.
                 TileEntity controller = (TileEntity) node.getMachine();
-                // Wireless links support only ordinary controllers. Unknown controller subclasses fail closed.
-                if (controller.getClass() != TileController.class || controller.getWorldObj() == null) return 0;
+                if (!isSupportedController(controller) || controller.getWorldObj() == null) return 0;
                 controllers.add(
                     new ChannelBudget.Position(
                         controller.getWorldObj().provider.dimensionId,
@@ -195,8 +202,8 @@ public final class WirelessChannelPrototype {
         }
         if (ENTRANCES.size() >= MAX_ENTRANCES) throw new IllegalArgumentException("Wireless entrance limit reached.");
         TileEntity controller = source.tile();
-        if (controller == null || controller.getClass() != TileController.class) {
-            throw new IllegalArgumentException("Source must be a loaded ordinary ME controller.");
+        if (!isSupportedController(controller)) {
+            throw new IllegalArgumentException("Source must be a loaded ME Controller or Creative Energy Controller.");
         }
         IGridNode from = source.node();
         IGridNode to = target.node();

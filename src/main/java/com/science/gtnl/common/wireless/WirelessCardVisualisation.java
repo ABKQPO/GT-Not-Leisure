@@ -16,7 +16,6 @@ import appeng.api.config.Settings;
 import appeng.api.util.DimensionalCoord;
 import appeng.items.tools.ToolNetworkVisualiser;
 import appeng.items.tools.ToolNetworkVisualiser.VisualisationModes;
-import appeng.tile.networking.TileController;
 
 /** Adapts a bound card to AE's existing collector; it never creates or removes network links. */
 public final class WirelessCardVisualisation {
@@ -127,7 +126,7 @@ public final class WirelessCardVisualisation {
         // Address.node() only visits already loaded chunks. Never let the native collector load its target.
         var tile = binding.source()
             .tile();
-        if (tile == null || tile.getClass() != TileController.class || tile.isInvalid()) return;
+        if (!WirelessChannelPrototype.isSupportedController(tile) || tile.isInvalid()) return;
         ItemStack tool = tool(
             binding,
             binding.source()

@@ -256,7 +256,7 @@ public final class WirelessClusterManager {
 
     private static boolean sourceReady(Address source) {
         TileEntity tile = source.tile();
-        if (tile == null || tile.getClass() != TileController.class) return false;
+        if (!WirelessChannelPrototype.isSupportedController(tile)) return false;
         IGridNode node = source.node();
         return node != null && !AutomaticWirelessEntrances.hasPendingTrial(node.getGrid())
             && AutomaticWirelessEntrances.isSettled(
@@ -278,7 +278,7 @@ public final class WirelessClusterManager {
         STATES.put(cluster, State.WAITING);
         if (pendingRecovery.contains(source)) return;
         TileEntity tile = source.tile();
-        if (tile == null || tile.getClass() != TileController.class) return;
+        if (!WirelessChannelPrototype.isSupportedController(tile)) return;
         IGridNode sourceNode = source.node();
         if (sourceNode == null) return;
         IPathingGrid path = sourceNode.getGrid()

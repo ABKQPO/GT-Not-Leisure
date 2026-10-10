@@ -27,6 +27,7 @@ public final class WirelessMixinBootstrapTest {
                 || path.contains("/authlib/")
                 || path.contains("/commons-lang3/")
                 || path.contains("/commons-io/")
+                || path.contains("/jvmdowngrader-java-api/")
                 || path.toLowerCase(java.util.Locale.ROOT)
                     .contains("/gtnhlib/")
                 || path.contains("/Applied-Energistics-2-Unofficial/")) {

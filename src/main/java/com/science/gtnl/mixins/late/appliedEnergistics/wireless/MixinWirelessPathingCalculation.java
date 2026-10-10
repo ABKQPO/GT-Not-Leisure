@@ -36,12 +36,13 @@ public abstract class MixinWirelessPathingCalculation implements WirelessPathing
         method = "<init>",
         at = @At(
             value = "INVOKE",
-            target = "Ljava/util/Map;computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;",
-            ordinal = 0),
-        require = 1)
+            target = "Ljava/util/Map;computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;"),
+        require = 2,
+        allow = 2)
     private Object gtnl$independentEntrance(Map<Object, Object> faces, Object direction,
         Function<Object, Object> factory, Operation<Object> original, @Local(name = "gc") GridConnection connection) {
-        // The factory supplies AE2's native 32-channel face (or its unlimited-mode capacity).
+        // Cover both ordinary and creative-energy controller loops. The factory supplies AE2's native
+        // 32-channel face (or its unlimited-mode capacity); infinite energy does not imply infinite channels.
         // Do not change unowned UNKNOWN connections, part internals, P2P or quantum bridges.
         return WirelessChannelPrototype.isOwned(connection) ? factory.apply(direction)
             : original.call(faces, direction, factory);
