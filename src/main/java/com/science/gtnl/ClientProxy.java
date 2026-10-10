@@ -306,7 +306,6 @@ public class ClientProxy extends CommonProxy {
         ForgeDirection side = ForgeDirection.getOrientation(ID & 7);
         int guiID = ID >> 3;
         return switch (GuiType.getGuiType(guiID)) {
-            case WirelessCardGUI -> new com.science.gtnl.client.WirelessCardGui(player, x);
             case DetravScannerGUI -> new DetravScannerGUI();
             case PortableBasicWorkBenchGUI -> new GuiPortableBasicWorkbench(player.inventory, world);
             case PortableAdvancedWorkBenchGUI -> new GuiPortableAdvancedWorkbench(

@@ -2,28 +2,37 @@ package com.science.gtnl.common.wireless;
 
 import static com.science.gtnl.common.wireless.WirelessChannelPrototype.canBuild;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ChatComponentTranslation;
 
-import com.science.gtnl.ScienceNotLeisure;
+import com.cleanroommc.modularui.screen.ModularContainer;
+import com.cleanroommc.modularui.value.sync.SyncHandler;
+import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.science.gtnl.common.item.items.OverloadedFrequencyCard;
-import com.science.gtnl.common.packet.WirelessCardGuiPacket;
 
 import appeng.api.networking.IGridNode;
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 
 /** A slotless, server-authoritative view. Clients send only a session/revision and a displayed button. */
-public final class WirelessCardContainer extends Container {
+public final class WirelessCardContainer extends ModularContainer {
+
+    public final ViewSync sync = new ViewSync().allowC2S();
 
     private static final AtomicLong SESSIONS = new AtomicLong();
     private final EntityPlayer player;
@@ -100,14 +109,8 @@ public final class WirelessCardContainer extends Container {
         return null;
     }
 
-    @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
-        if (!player.worldObj.isRemote && ++ticks % 20 == 1 && canInteractWith(player)) update(false);
-    }
-
     private void update(boolean force) {
-        if (!(player instanceof EntityPlayerMP serverPlayer)) return;
+        if (!(player instanceof EntityPlayerMP)) return;
         List<WirelessClusterManager.LinkView> all = binding == null ? List.of()
             : WirelessClusterManager.links(binding.source());
         if (detailNode == null) all = filter(all);
@@ -155,6 +158,7 @@ public final class WirelessCardContainer extends Container {
             !filter.query()
                 .isEmpty() || filter.dimension() != null || filter.state() != 0);
         data.setBoolean("auto", WirelessCardBinding.automatic(card.getTagCompound()));
+        data.setInteger("visualMode", WirelessCardVisualisation.mode(card.getTagCompound()));
         data.setBoolean("bound", binding != null);
         int devices = 0, online = 0, missing = 0, entrances = 0;
         boolean stable = true;
@@ -240,7 +244,104 @@ public final class WirelessCardContainer extends Container {
             data.setTag("highlight", pendingHighlight);
             pendingHighlight = null;
         }
-        ScienceNotLeisure.network.sendTo(new WirelessCardGuiPacket.Snapshot(windowId, data), serverPlayer);
+        if (changed || data.hasKey("highlight")) sync.syncToClient(0, buf -> ByteBufUtils.writeTag(buf, data));
+    }
+
+    /** MUI owns transport and screen lifetime; application revisions still protect changing physical clusters. */
+    public final class ViewSync extends SyncHandler<ViewSync> {
+
+        @Override
+        public void detectAndSendChanges(boolean init) {
+            if ((init || ++ticks % 20 == 0) && canInteractWith(player)) update(init);
+        }
+
+        @SideOnly(Side.CLIENT)
+        public void request(int action, String text, String dimension, int filter) {
+            if (!isValid() || !display.hasKey("session")) return;
+            var request = new Action(
+                display.getLong("session"),
+                display.getLong("revision"),
+                action,
+                text,
+                dimension,
+                filter);
+            syncToServer(1, request::write);
+        }
+
+        @Override
+        public void readOnServer(int id, PacketBuffer buf) {
+            if (id != 1) return;
+            final Action request;
+            try {
+                request = Action.read(buf);
+            } catch (IllegalArgumentException | IndexOutOfBoundsException malformed) {
+                return;
+            }
+            ServerThreadUtil.addScheduledTask(() -> {
+                if (isValid() && player.openContainer == WirelessCardContainer.this) {
+                    action(
+                        request.session(),
+                        request.revision(),
+                        request.action(),
+                        request.text(),
+                        request.dimension(),
+                        request.filter());
+                }
+            });
+        }
+
+        @Override
+        @SideOnly(Side.CLIENT)
+        public void readOnClient(int id, PacketBuffer buf) {
+            if (id != 0) return;
+            NBTTagCompound data = ByteBufUtils.readTag(buf);
+            Minecraft minecraft = Minecraft.getMinecraft();
+            minecraft.func_152344_a(() -> {
+                if (data == null || !isValid()
+                    || minecraft.thePlayer != player
+                    || player.openContainer != WirelessCardContainer.this) return;
+                display = data;
+                if (data.hasKey("highlight", 9))
+                    com.science.gtnl.client.WirelessWorldHighlight.show(minecraft, data.getTagList("highlight", 10));
+            });
+        }
+    }
+
+    record Action(long session, long revision, int action, String text, String dimension, int filter) {
+
+        static Action read(ByteBuf buf) {
+            return new Action(
+                buf.readLong(),
+                buf.readLong(),
+                buf.readInt(),
+                readText(buf),
+                readText(buf),
+                buf.readUnsignedByte());
+        }
+
+        void write(ByteBuf buf) {
+            buf.writeLong(session);
+            buf.writeLong(revision);
+            buf.writeInt(action);
+            writeText(buf, text);
+            writeText(buf, dimension);
+            buf.writeByte(filter);
+        }
+
+        private static String readText(ByteBuf buf) {
+            int length = buf.readUnsignedShort();
+            if (length > 256 || length > buf.readableBytes()) throw new IllegalArgumentException("Oversized GUI text");
+            byte[] bytes = new byte[length];
+            buf.readBytes(bytes);
+            return new String(bytes, StandardCharsets.UTF_8);
+        }
+
+        private static void writeText(ByteBuf buf, String value) {
+            byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
+            if (bytes.length > 256) throw new IllegalArgumentException("Oversized GUI text");
+            buf.writeShort(bytes.length);
+            buf.writeBytes(bytes);
+        }
     }
 
     static boolean sameTargets(List<WirelessClusterManager.LinkView> next,
@@ -269,7 +370,9 @@ public final class WirelessCardContainer extends Container {
             update(true);
             return;
         }
-        if (action == 8) {
+        if (action == 9) {
+            WirelessCardVisualisation.cycle(card, player);
+        } else if (action == 8) {
             // View-only layout negotiation reuses the bounded integer payload; never accept arbitrary row IDs.
             if (!WirelessCardLayout.validRows(filterState)) return;
             page = page * pageSize / filterState;

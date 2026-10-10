@@ -104,7 +104,9 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.wireless.MixinWirelessPathingCalculation",
             "appliedEnergistics.wireless.MixinWirelessPathGridCache",
             "appliedEnergistics.wireless.MixinWirelessPartPlacement",
-            "appliedEnergistics.wireless.MixinWirelessGridNode")
+            "appliedEnergistics.wireless.MixinWirelessGridNode",
+            "appliedEnergistics.wireless.MixinWirelessVisualiserTool")
+        .addClientMixins("appliedEnergistics.wireless.MixinWirelessVisualiserRender")
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.AppliedEnergistics)),
 

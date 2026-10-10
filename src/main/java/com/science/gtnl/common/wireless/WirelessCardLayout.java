@@ -11,6 +11,18 @@ public record WirelessCardLayout(int width, int height, int rows) {
         return new WirelessCardLayout(Math.max(320, Math.min(440, width - 12)), 112 + rows * 24, rows);
     }
 
+    public int visualisationWidth() {
+        return Math.min(120, width - 254);
+    }
+
+    public int visualisationX() {
+        return width - 80 - visualisationWidth();
+    }
+
+    public int footerInfoX() {
+        return Math.min(142, visualisationX() - 76);
+    }
+
     public static boolean validRows(int rows) {
         return rows >= MIN_ROWS && rows <= MAX_ROWS;
     }

@@ -39,6 +39,15 @@ public final class WirelessCardInventoryTest {
                 .isEmpty(),
             "An unavailable Baubles inventory is harmless");
         main[5] = card;
+        ItemStack hand = new ItemStack(item);
+        var displayCards = WirelessCardInventory.collect(new ItemStack[] { hand }, worn);
+        check(
+            displayCards.size() == 2 && displayCards.get(0) == hand && displayCards.get(1) == card,
+            "Visualisation candidates include the actual hand and worn stacks");
+        check(
+            WirelessCardInventory.collect(new ItemStack[] { null }, null)
+                .isEmpty(),
+            "An empty hand without Baubles yields no visualisation candidates");
         check(
             WirelessCardInventory.collect(main, worn)
                 .size() == 1,

@@ -135,14 +135,28 @@ public final class WirelessAutoConnect {
         }
         int location = WirelessCardInventory.location(player, selection.card());
         if (location == Integer.MIN_VALUE) return;
-        com.science.gtnl.CommonProxy.openGui(
-            player,
-            com.science.gtnl.utils.enums.GuiType.WirelessCardGUI,
-            null,
-            player.worldObj,
-            location,
-            0,
-            0);
+        var factory = com.cleanroommc.modularui.factory.GuiFactories.playerInventory();
+        if (location < 0) factory.openFromBaubles(player, -location - 1);
+        else if (location == 0) factory.openFromMainHand(player);
+        else factory.openFromPlayerInventory(player, location - 1);
+    }
+
+    public static void cycleVisualisation(EntityPlayer player) {
+        if (player.isDead || player.worldObj.isRemote || player.openContainer != player.inventoryContainer) return;
+        if (ticks < TOGGLES.getOrDefault(player.getUniqueID(), Long.MIN_VALUE)) return;
+        TOGGLES.put(player.getUniqueID(), ticks + 5);
+        var selection = WirelessCardSelection.select(cards(player), false);
+        if (selection.card() == null) {
+            message(player, selection.ambiguous() ? "gui_ambiguous" : "auto_no_card");
+            return;
+        }
+        ItemStack card = selection.card();
+        WirelessCardVisualisation.cycle(card, player);
+        player.addChatMessage(
+            new ChatComponentTranslation(
+                "gtnl.wireless.gui.visualisation",
+                new ChatComponentTranslation(
+                    WirelessCardVisualisation.modeKey(WirelessCardVisualisation.mode(card.getTagCompound())))));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

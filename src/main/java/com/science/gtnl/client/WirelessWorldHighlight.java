@@ -54,7 +54,8 @@ public final class WirelessWorldHighlight {
                 .distinct()
                 .toList(),
             Minecraft.getSystemTime() + DURATION_MS);
-        if (!targets.isEmpty() && mc.thePlayer != null && mc.currentScreen instanceof WirelessCardGui) {
+        if (!targets.isEmpty() && mc.thePlayer != null
+            && mc.thePlayer.openContainer instanceof com.science.gtnl.common.wireless.WirelessCardContainer) {
             // Use the same eye position as vanilla ray tracing (including the 1.7.10 client player offset).
             var player = mc.thePlayer;
             var eyes = player.getPosition(1.0F);

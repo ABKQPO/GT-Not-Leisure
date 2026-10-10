@@ -205,7 +205,6 @@ public class CommonProxy implements IGuiHandler {
         ForgeDirection side = ForgeDirection.getOrientation(ID & 7);
         int guiID = ID >> 3;
         return switch (GuiType.getGuiType(guiID)) {
-            case WirelessCardGUI -> new com.science.gtnl.common.wireless.WirelessCardContainer(player, x);
             case DetravScannerGUI -> null;
             case PortableBasicWorkBenchGUI -> new ContainerPortableBasicWorkbench(player, world, player.getHeldItem());
             case PortableAdvancedWorkBenchGUI -> new ContainerPortableAdvancedWorkbench(

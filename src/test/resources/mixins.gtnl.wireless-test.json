@@ -3,7 +3,7 @@
   "minVersion": "0.8.5",
   "package": "com.science.gtnl.mixins",
   "compatibilityLevel": "JAVA_8",
-  "mixins": ["late.appliedEnergistics.wireless.MixinWirelessPathingCalculation", "late.appliedEnergistics.wireless.MixinWirelessPathGridCache", "late.appliedEnergistics.wireless.MixinWirelessPartPlacement", "late.appliedEnergistics.wireless.MixinWirelessGridNode", "early.minecraft.MixinWirelessTileData"],
+  "mixins": ["late.appliedEnergistics.wireless.MixinWirelessPathingCalculation", "late.appliedEnergistics.wireless.MixinWirelessPathGridCache", "late.appliedEnergistics.wireless.MixinWirelessPartPlacement", "late.appliedEnergistics.wireless.MixinWirelessGridNode", "late.appliedEnergistics.wireless.MixinWirelessVisualiserTool", "late.appliedEnergistics.wireless.MixinWirelessVisualiserRender", "early.minecraft.MixinWirelessTileData"],
   "injectors": {
     "defaultRequire": 1
   }

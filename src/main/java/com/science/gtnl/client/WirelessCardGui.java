@@ -1,90 +1,269 @@
 package com.science.gtnl.client;
 
+import static net.minecraft.client.gui.Gui.drawRect;
+
+import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import com.cleanroommc.modularui.api.drawable.IDrawable;
+import com.cleanroommc.modularui.core.mixins.early.minecraft.GuiScreenAccessor;
+import com.cleanroommc.modularui.drawable.GuiDraw;
+import com.cleanroommc.modularui.drawable.UITexture;
+import com.cleanroommc.modularui.drawable.text.TextRenderer;
+import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.ModularScreen;
+import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
+import com.cleanroommc.modularui.theme.WidgetThemeEntry;
+import com.cleanroommc.modularui.utils.Alignment;
+import com.cleanroommc.modularui.utils.Platform;
+import com.cleanroommc.modularui.value.StringValue;
+import com.cleanroommc.modularui.widgets.ButtonWidget;
+import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.packet.WirelessCardGuiPacket;
 import com.science.gtnl.common.wireless.WirelessCardContainer;
 import com.science.gtnl.common.wireless.WirelessCardLayout;
+import com.science.gtnl.common.wireless.WirelessCardVisualisation;
 
-import appeng.client.gui.AEBaseGui;
-import appeng.client.gui.widgets.GuiToggleButton;
+import appeng.client.gui.ScreenColor;
 import appeng.core.localization.ColorUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/** MUI owns input, widgets and screen lifetime; AE textures and diagnostic colours remain shared. */
 @SideOnly(Side.CLIENT)
-public final class WirelessCardGui extends AEBaseGui {
+public final class WirelessCardGui extends ModularPanel {
 
     private static final int ROW_TOP = 82;
     private static final int ROW_HEIGHT = 24;
     private static final int CONTENT_X = 34;
-    private int visibleRows = WirelessCardLayout.MIN_ROWS;
-    private int layoutRetry;
+    private static final UITexture[] BUTTON_TEXTURES = { buttonTexture(0), buttonTexture(1), buttonTexture(2) };
+    private static final UITexture TOGGLE_BACKGROUND = toggleTexture(255);
+    private static final UITexture TOGGLE_ON = toggleTexture(129);
+    private static final UITexture TOGGLE_OFF = toggleTexture(128);
+    private final Minecraft mc = Minecraft.getMinecraft();
+    private final FontRenderer fontRendererObj = mc.fontRenderer;
     private final WirelessCardContainer container;
-    private GuiTextField search, dimension, name;
-    private int filterState;
+    private final List<CardButton> buttons = new ArrayList<>();
+    private final TextFieldWidget search, dimension, name;
+    private int xSize = 320, ySize = 232;
+    private int visibleRows = WirelessCardLayout.MIN_ROWS;
+    private int layoutRetry, filterState;
     private String editTarget = "", serverName = "";
 
-    public WirelessCardGui(EntityPlayer player, int location) {
-        super(new WirelessCardContainer(player, location));
-        container = (WirelessCardContainer) inventorySlots;
-        xSize = 320;
-        ySize = 232;
+    public WirelessCardGui(WirelessCardContainer container) {
+        super("wireless_card");
+        this.container = container;
+        background(
+            UITexture.builder()
+                .location(new ResourceLocation("appliedenergistics2", "textures/guis/wireless_network_manager.png"))
+                .imageSize(256, 256)
+                .subAreaXYWH(0, 0, 106, 232)
+                .adaptable(4)
+                .build());
+        search = textField(64).hintText(tr("search_placeholder"))
+            .hintColor(ColorUtils.craftingTreeRequest.getColor());
+        dimension = textField(12);
+        name = textField(32);
+        child(search).child(dimension)
+            .child(name);
+        for (int id = 0; id < 10; id++) if (id != 8) addButton(id);
+        for (int row = 0; row < WirelessCardLayout.MAX_ROWS; row++) {
+            for (int base : new int[] { 10, 20, 30, 40, 50 }) addButton(base + row);
+        }
+    }
+
+    public ModularScreen screen() {
+        return new ModularScreen(ScienceNotLeisure.MODID, this) {
+
+            @Override
+            public void onResize(int width, int height) {
+                resizeLayout(width, height);
+                super.onResize(width, height);
+            }
+
+            @Override
+            public boolean onKeyPressed(char character, int key) {
+                if (WirelessCardInput.visualisationKey(key) && !editingText()) {
+                    action(9);
+                    return true;
+                }
+                if (key == Keyboard.KEY_RETURN || key == Keyboard.KEY_NUMPADENTER) {
+                    action(container.display.getBoolean("detail") ? 5 : 6);
+                    return true;
+                }
+                return super.onKeyPressed(character, key);
+            }
+
+            @Override
+            public boolean onMousePressed(int button) {
+                if (button > 1 && WirelessCardInput.visualisationKey(button - 100) && !editingText()) {
+                    action(9);
+                    return true;
+                }
+                return super.onMousePressed(button);
+            }
+        };
     }
 
     private static String tr(String key, Object... args) {
         return StatCollector.translateToLocalFormatted("gtnl.wireless.gui." + key, args);
     }
 
-    @Override
-    public void initGui() {
+    private static UITexture buttonTexture(int state) {
+        return UITexture.builder()
+            .location(new ResourceLocation("minecraft", "textures/gui/widgets.png"))
+            .imageSize(256, 256)
+            .subAreaXYWH(0, 46 + state * 20, 200, 20)
+            .adaptable(2)
+            .build();
+    }
+
+    private static UITexture toggleTexture(int icon) {
+        return UITexture.builder()
+            .location(new ResourceLocation("appliedenergistics2", "textures/guis/states.png"))
+            .imageSize(256, 256)
+            .subAreaXYWH(icon % 16 * 16, icon / 16 * 16, 16, 16)
+            .build();
+    }
+
+    private void resizeLayout(int width, int height) {
         var layout = WirelessCardLayout.forScreen(width, height);
         xSize = layout.width();
         ySize = layout.height();
         visibleRows = layout.rows();
         layoutRetry = 0;
-        super.initGui();
-        buttonList.clear();
+        size(xSize, ySize);
         int dx = xSize - 320;
-        buttonList.add(toggleButton(2, 292 + dx, 10));
-        for (int row = 0; row < visibleRows; row++) {
-            int y = guiTop + ROW_TOP + 2 + row * ROW_HEIGHT;
-            buttonList.add(toggleButton(10 + row, 292 + dx, ROW_TOP + 4 + row * ROW_HEIGHT));
-            buttonList.add(new GuiButton(50 + row, guiLeft + actionX(), y, 30, 20, tr("teleport")));
-            buttonList.add(new GuiButton(30 + row, guiLeft + xSize - 96, y, 30, 20, tr("copy")));
-            buttonList.add(new GuiButton(40 + row, guiLeft + 258 + dx, y, 30, 20, tr("highlight")));
+        search.pos(10, 62)
+            .size(124 + dx, 12);
+        dimension.pos(148 + dx, 62)
+            .size(34, 12);
+        name.pos(44, 62)
+            .size(192 + dx, 12);
+        for (var button : buttons) {
+            int id = button.id;
+            if (id >= 10) {
+                int y = ROW_TOP + id % 10 * ROW_HEIGHT;
+                switch (id / 10) {
+                    case 1 -> button.pos(xSize - 28, y + 4)
+                        .size(16, 16);
+                    case 2 -> button.pos(10, y)
+                        .size(20, ROW_HEIGHT);
+                    case 3 -> button.pos(xSize - 96, y + 2)
+                        .size(30, 20);
+                    case 4 -> button.pos(xSize - 62, y + 2)
+                        .size(30, 20);
+                    case 5 -> button.pos(xSize - 130, y + 2)
+                        .size(30, 20);
+                }
+            } else switch (id) {
+                case 0 -> button.pos(10, ySize - 27)
+                    .size(18, 20);
+                case 1 -> button.pos(76, ySize - 27)
+                    .size(18, 20);
+                case 2 -> button.pos(xSize - 28, 10)
+                    .size(16, 16);
+                case 3 -> button.pos(xSize - 76, ySize - 27)
+                    .size(64, 20);
+                case 4 -> button.pos(layout.footerInfoX(), ySize - 27)
+                    .size(36, 20);
+                case 5 -> button.pos(244 + dx, 59)
+                    .size(64, 20);
+                case 6 -> button.pos(264 + dx, 59)
+                    .size(44, 20);
+                case 7 -> button.pos(188 + dx, 59)
+                    .size(72, 20);
+                case 9 -> button.pos(layout.visualisationX(), ySize - 27)
+                    .size(layout.visualisationWidth(), 20);
+            }
         }
-        search = textField(search, 10, 62, 124 + dx, 64);
-        dimension = textField(dimension, 148 + dx, 62, 34, 12);
-        name = textField(name, 44, 62, 192 + dx, 32);
-        buttonList.add(new GuiButton(5, guiLeft + 244 + dx, guiTop + 59, 64, 20, tr("save_name")));
-        buttonList.add(new GuiButton(6, guiLeft + 264 + dx, guiTop + 59, 44, 20, tr("search")));
-        buttonList.add(new GuiButton(7, guiLeft + 188 + dx, guiTop + 59, 72, 20, ""));
-        int footer = guiTop + ySize - 27;
-        buttonList.add(new GuiButton(0, guiLeft + 10, footer, 30, 20, "<"));
-        buttonList.add(new GuiButton(1, guiLeft + 100, footer, 30, 20, ">"));
-        buttonList.add(new GuiButton(3, guiLeft + 244 + dx, footer, 64, 20, tr("refresh")));
-        buttonList.add(new GuiButton(4, guiLeft + 142, footer, 90, 20, tr("back")));
     }
 
-    private int actionX() {
-        return xSize - 130;
+    private TextFieldWidget textField(int max) {
+        return new TextFieldWidget() {
+
+            @Override
+            public void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> theme) {
+                GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+                try {
+                    drawRect(0, 0, getArea().width, getArea().height, 0xffa0a0a0);
+                    drawRect(1, 1, getArea().width - 1, getArea().height - 1, 0xff000000);
+                } finally {
+                    GL11.glPopAttrib();
+                }
+            }
+
+            @Override
+            public void drawForeground(ModularGuiContext context) {}
+        }.value(new StringValue(""))
+            .setMaxLength(max)
+            .setTextColor(ColorUtils.searchboxText.getColor())
+            .padding(2, 0);
+    }
+
+    private void addButton(int id) {
+        CardButton button = new CardButton(id);
+        buttons.add(button);
+        child(button);
+    }
+
+    private final class CardButton extends ButtonWidget<CardButton> {
+
+        private final int id;
+        private final TextRenderer text = new TextRenderer();
+        private boolean available, on;
+        private String label = "";
+
+        CardButton(int id) {
+            this.id = id;
+            text.setShadow(true);
+            background(IDrawable.EMPTY).hoverBackground(IDrawable.EMPTY);
+            onMousePressed(button -> {
+                if (button != 0 || !available) return false;
+                action(id);
+                return true;
+            });
+        }
+
+        @Override
+        public void draw(ModularGuiContext context, WidgetThemeEntry<?> theme) {
+            if (id >= 20 && id < 30) return;
+            int width = getArea().width, height = getArea().height;
+            GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+            try {
+                // MUI's text-field stencil leaves texturing disabled. Its drawables establish their own
+                // render state, whereas GuiButton.drawButton assumes the vanilla GUI has already done so.
+                GL11.glDisable(GL11.GL_LIGHTING);
+                GL11.glDisable(GL11.GL_DEPTH_TEST);
+                ScreenColor.setGuiColor();
+                if (id == 2 || id >= 10 && id < 20) {
+                    TOGGLE_BACKGROUND.draw(0, 0, width, height);
+                    ScreenColor.resetGuiColor();
+                    (on ? TOGGLE_ON : TOGGLE_OFF).draw(0, 0, width, height);
+                } else {
+                    BUTTON_TEXTURES[!available ? 0 : isHovering() ? 2 : 1].draw(0, 0, width, height);
+                    text.setColor(!available ? 0xffa0a0a0 : isHovering() ? 0xffffffA0 : 0xffe0e0e0);
+                    text.setAlignment(Alignment.Center, width, height);
+                    text.drawSimple(fontRendererObj.trimStringToWidth(label, Math.max(0, width - 4)));
+                }
+            } finally {
+                GL11.glPopAttrib();
+            }
+        }
     }
 
     private int contentWidth() {
@@ -95,161 +274,99 @@ public final class WirelessCardGui extends AEBaseGui {
         return container.display.hasKey("session") && container.display.getInteger("pageSize") == visibleRows;
     }
 
-    private GuiTextField textField(GuiTextField previous, int x, int y, int width, int max) {
-        GuiTextField field = new GuiTextField(fontRendererObj, guiLeft + x, guiTop + y, width, 12);
-        field.setMaxStringLength(max);
-        field.setTextColor(ColorUtils.searchboxText.getColor());
-        if (previous != null) field.setText(previous.getText());
-        return field;
+    private boolean editingText() {
+        return container.display.getBoolean("detail") ? name.isFocused() : search.isFocused() || dimension.isFocused();
     }
 
-    private GuiToggleButton toggleButton(int id, int x, int y) {
-        GuiToggleButton button = new GuiToggleButton(guiLeft + x, guiTop + y, 129, 128, null, null);
-        button.id = id;
-        return button;
-    }
-
-    // This management screen retains its locked card container and has no interactive inventory slots.
-    // Do not route inventory shortcuts through AEBaseGui's AEBaseContainer-specific packet handlers.
-    @Override
-    protected boolean enableSpaceClicking() {
-        return false;
-    }
-
-    @Override
-    protected boolean checkHotbarKeys(int keyCode) {
-        return false;
-    }
-
-    @Override
-    protected void handleMouseClick(Slot slot, int slotIdx, int clickedButton, int clickType) {}
-
-    @Override
-    protected void actionPerformed(GuiButton button) {
+    private void action(int id) {
         if (!layoutReady()) return;
-        if (button.id >= 30 && button.id < 30 + visibleRows) {
+        if (id >= 30 && id < 30 + visibleRows) {
             var row = container.display.getTagList("rows", 10)
-                .getCompoundTagAt(button.id - 30);
-            setClipboardString(row.getString("position") + " / " + row.getString("side"));
+                .getCompoundTagAt(id - 30);
+            GuiScreen.setClipboardString(row.getString("position") + " / " + row.getString("side"));
             mc.thePlayer.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.copied"));
             return;
         }
-        if (button.id == 7) filterState = (filterState + 1) % 5;
-        if (button.id == 5) name.setFocused(false);
-        ScienceNotLeisure.network.sendToServer(
-            new WirelessCardGuiPacket(
-                container.windowId,
-                container.display,
-                button.id == 7 ? 6 : button.id,
-                button.id == 5 ? name.getText() : search.getText(),
-                dimension.getText(),
-                filterState));
+        if (id == 7) filterState = (filterState + 1) % 5;
+        String text = id == 5 ? name.getText() : search.getText();
+        if (id == 5) getContext().removeFocus();
+        container.sync.request(id == 7 ? 6 : id, text, dimension.getText(), filterState);
     }
 
     @Override
-    public void updateScreen() {
-        super.updateScreen();
-        search.updateCursorCounter();
-        dimension.updateCursorCounter();
-        name.updateCursorCounter();
+    public void onUpdate() {
+        super.onUpdate();
         if (!layoutReady() && container.display.hasKey("session") && layoutRetry-- <= 0) {
-            ScienceNotLeisure.network
-                .sendToServer(new WirelessCardGuiPacket(container.windowId, container.display, 8, "", "", visibleRows));
+            container.sync.request(8, "", "", visibleRows);
             layoutRetry = 10;
         }
-    }
-
-    @Override
-    protected void keyTyped(char character, int key) {
-        boolean detail = container.display.getBoolean("detail");
-        if (key == Keyboard.KEY_RETURN || key == Keyboard.KEY_NUMPADENTER) {
-            actionPerformed(new GuiButton(detail ? 5 : 6, 0, 0, ""));
-            return;
-        }
-        if (key != Keyboard.KEY_ESCAPE && (detail ? name.textboxKeyTyped(character, key)
-            : search.textboxKeyTyped(character, key) || dimension.textboxKeyTyped(character, key))) return;
-        super.keyTyped(character, key);
-    }
-
-    @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) {
-        if (container.display.getBoolean("detail")) name.mouseClicked(mouseX, mouseY, button);
-        else {
-            search.mouseClicked(mouseX, mouseY, button);
-            dimension.mouseClicked(mouseX, mouseY, button);
-        }
-        super.mouseClicked(mouseX, mouseY, button);
-        int x = mouseX - guiLeft, y = mouseY - guiTop;
-        if (button == 0 && layoutReady()
-            && !container.display.getBoolean("detail")
-            && x >= 10
-            && x < 30
-            && y >= ROW_TOP
-            && y < ROW_TOP + visibleRows * ROW_HEIGHT) {
-            int row = (y - ROW_TOP) / ROW_HEIGHT;
-            if (row < container.display.getTagList("rows", 10)
-                .tagCount())
-                ScienceNotLeisure.network
-                    .sendToServer(new WirelessCardGuiPacket(container.windowId, container.display, 20 + row));
-        }
-    }
-
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         NBTTagCompound data = container.display;
-        NBTTagList rows = data.getTagList("rows", 10);
         boolean detail = data.getBoolean("detail");
+        if (detail ? search.isFocused() || dimension.isFocused() : name.isFocused()) getContext().removeFocus();
         if (detail && (!editTarget.equals(data.getString("detailTarget"))
             || !name.isFocused() && !serverName.equals(data.getString("name")))) {
             editTarget = data.getString("detailTarget");
             serverName = data.getString("name");
-            name.setText(data.getBoolean("multipleNames") ? "" : serverName);
+            String text = data.getBoolean("multipleNames") ? "" : serverName;
+            name.getStringValue()
+                .setStringValue(text);
+            name.setText(text);
         }
         if (!detail) editTarget = "";
-        for (Object object : buttonList) {
-            GuiButton button = (GuiButton) object;
-            button.enabled = layoutReady();
-            if (button.id == 2) {
-                button.displayString = tr(data.getBoolean("auto") ? "auto_on" : "auto_off");
-                ((GuiToggleButton) button).setState(data.getBoolean("auto"));
+        search.setEnabled(!detail);
+        dimension.setEnabled(!detail);
+        name.setEnabled(detail);
+        NBTTagList rows = data.getTagList("rows", 10);
+        for (var widget : buttons) {
+            var button = widget;
+            int id = button.id;
+            boolean visible = id < 10 || id % 10 < Math.min(visibleRows, rows.tagCount());
+            button.available = layoutReady();
+            if (id == 2) button.on = data.getBoolean("auto");
+            if (id == 4 || id == 5) visible = detail;
+            if (id == 6 || id == 7) visible = !detail;
+            if (id >= 20 && id < 30) visible &= !detail;
+            if (id >= 10 && id < 20) button.on = !rows.getCompoundTagAt(id - 10)
+                .getBoolean("paused");
+            if (id == 0) button.available &= data.getInteger("page") > 0;
+            if (id == 1) button.available &= data.getInteger("page") + 1 < data.getInteger("pages");
+            button.label = switch (id) {
+                case 0 -> "<";
+                case 1 -> ">";
+                case 3 -> tr("refresh");
+                case 4 -> tr("back_compact");
+                case 5 -> tr("save_name");
+                case 6 -> tr("search");
+                case 7 -> tr("filter." + filterState);
+                default -> id >= 50 ? tr("teleport") : id >= 40 ? tr("highlight") : id >= 30 ? tr("copy") : "";
+            };
+            if (id == 9) {
+                int mode = data.getInteger("visualMode");
+                String label = StatCollector
+                    .translateToLocal(WirelessCardVisualisation.modeKey(mode) + (mode > 0 ? ".short" : ""));
+                button.label = fontRendererObj.trimStringToWidth(
+                    widget.getArea().width < 102 ? label : tr("visualisation_button", label),
+                    widget.getArea().width - 8);
             }
-            if (button.id == 4) button.visible = data.getBoolean("detail");
-            if (button.id == 5) button.visible = detail;
-            if (button.id == 6 || button.id == 7) button.visible = !detail;
-            if (button.id == 7) button.displayString = tr("filter." + filterState);
-            if (button.id >= 30) button.visible = button.id % 10 < rows.tagCount();
-            if (button.id >= 10 && button.id < 20) {
-                int row = button.id - 10;
-                button.visible = row < rows.tagCount();
-                button.displayString = tr(
-                    rows.getCompoundTagAt(row)
-                        .getBoolean("paused") ? "resume" : "pause");
-                ((GuiToggleButton) button).setState(
-                    !rows.getCompoundTagAt(row)
-                        .getBoolean("paused"));
-            }
-            if (button.id == 0) button.enabled &= data.getInteger("page") > 0;
-            if (button.id == 1) button.enabled &= data.getInteger("page") + 1 < data.getInteger("pages");
+            widget.setEnabled(visible);
         }
-        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY) {
-        bindTexture("guis/wireless_network_manager.png");
-        drawTextured9PatchRect(offsetX, offsetY, xSize, ySize, 0, 0, 106, 232);
-        int count = Math.min(
-            visibleRows,
-            container.display.getTagList("rows", 10)
-                .tagCount());
-        for (int row = 0; row < count; row++) {
-            int y = offsetY + ROW_TOP + ROW_HEIGHT - 1 + row * ROW_HEIGHT;
-            drawRect(offsetX + 8, y, offsetX + xSize - 8, y + 1, ColorUtils.craftingDiagnosticTerminalLine.getColor());
-        }
-        if (container.display.getBoolean("detail")) name.drawTextBox();
-        else {
-            search.drawTextBox();
-            dimension.drawTextBox();
+    public void draw(ModularGuiContext context, WidgetThemeEntry<?> theme) {
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        try {
+            int count = Math.min(
+                visibleRows,
+                container.display.getTagList("rows", 10)
+                    .tagCount());
+            for (int row = 0; row < count; row++) {
+                int y = ROW_TOP + ROW_HEIGHT - 1 + row * ROW_HEIGHT;
+                drawRect(8, y, xSize - 8, y + 1, ColorUtils.craftingDiagnosticTerminalLine.getColor());
+            }
+            drawForeground();
+        } finally {
+            GL11.glPopAttrib();
         }
     }
 
@@ -330,30 +447,19 @@ public final class WirelessCardGui extends AEBaseGui {
         if (filled > 0) drawRect(x, y, x + filled, y + height, fill | 0xFF000000);
     }
 
-    @Override
-    public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY) {
-        // GuiContainer and NEI continue rendering after this hook; preserve their incoming GL state.
-        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-        try {
-            drawForeground();
-        } finally {
-            GL11.glPopAttrib();
-        }
-    }
-
     private void drawDeviceIcon(ItemStack icon, int x, int y) {
         float brightnessX = OpenGlHelper.lastBrightnessX;
         float brightnessY = OpenGlHelper.lastBrightnessY;
+        var itemRender = GuiScreenAccessor.getItemRender();
         float renderZ = itemRender.zLevel;
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-        GL11.glPushMatrix();
         try {
             GL11.glColor4f(1, 1, 1, 1);
-            RenderHelper.enableGUIStandardItemLighting();
-            itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), icon, x, y);
+            // Use MUI's item layer and Forge glint cleanup, while isolating custom item renderers
+            // from the following text, rows and NEI. The icon remains 16x16 GUI pixels.
+            GuiDraw.drawItem(icon, x, y, 16, 16, getContext().getCurrentDrawingZ());
         } finally {
             itemRender.zLevel = renderZ;
-            GL11.glPopMatrix();
             GL11.glPopAttrib();
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, brightnessX, brightnessY);
         }
@@ -372,6 +478,9 @@ public final class WirelessCardGui extends AEBaseGui {
     }
 
     private void drawForeground() {
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        Platform.setupDrawFont();
         NBTTagCompound data = container.display;
         int textColor = ColorUtils.guiTextColorGray.getColor();
         fontRendererObj.drawString(
@@ -410,9 +519,6 @@ public final class WirelessCardGui extends AEBaseGui {
             data.getBoolean("detail") ? 10 : xSize - 182,
             64,
             textColor);
-        if (!data.getBoolean("detail") && search.getText()
-            .isEmpty() && !search.isFocused())
-            fontRendererObj.drawString(tr("search_placeholder"), 12, 64, ColorUtils.craftingTreeRequest.getColor());
         NBTTagList rows = data.getTagList("rows", 10);
         for (int index = 0; index < Math.min(visibleRows, rows.tagCount()); index++) {
             NBTTagCompound row = rows.getCompoundTagAt(index);
@@ -454,15 +560,18 @@ public final class WirelessCardGui extends AEBaseGui {
             }
         }
         if (rows.tagCount() == 0) drawEmptyMessage(data, textColor);
-        fontRendererObj.drawString(
-            (data.getInteger("page") + 1) + " / " + Math.max(1, data.getInteger("pages")),
-            48,
-            ySize - 20,
-            textColor);
-        if (!data.getBoolean("detail")) fontRendererObj.drawString(
-            tr(data.getBoolean("filtered") ? "matched" : "loaded", data.getInteger("total")),
-            142,
-            ySize - 20,
-            textColor);
+        String page = fontRendererObj
+            .trimStringToWidth((data.getInteger("page") + 1) + "/" + Math.max(1, data.getInteger("pages")), 40);
+        fontRendererObj.drawString(page, 52 - fontRendererObj.getStringWidth(page) / 2, ySize - 20, textColor);
+        if (!data.getBoolean("detail")) {
+            var layout = new WirelessCardLayout(xSize, ySize, visibleRows);
+            fontRendererObj.drawString(
+                fontRendererObj.trimStringToWidth(
+                    tr(data.getBoolean("filtered") ? "matched" : "loaded", data.getInteger("total")),
+                    layout.visualisationX() - layout.footerInfoX() - 4),
+                layout.footerInfoX(),
+                ySize - 20,
+                textColor);
+        }
     }
 }

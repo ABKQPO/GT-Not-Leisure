@@ -18,6 +18,7 @@ public final class WirelessMixinTarget {
         }
         verifyTileSave(tile);
         WirelessDiscoveryTest.run();
+        verifyVisualiserHooks();
         Class<?> node = Class.forName("appeng.me.GridNode", false, WirelessMixinTarget.class.getClassLoader());
         for (String hook : new String[] { "gtnl$nodeUpdated", "gtnl$nodeDestroyed" }) {
             if (java.util.Arrays.stream(node.getDeclaredMethods())
@@ -69,6 +70,23 @@ public final class WirelessMixinTarget {
             throw new AssertionError("repath must immediately invalidate a settled result");
         System.out
             .println("WirelessMixinBootstrapTest: AE2 pathing and Minecraft tile NBT hooks transformed successfully.");
+    }
+
+    private static void verifyVisualiserHooks() throws Exception {
+        for (String[] target : new String[][] {
+            { "appeng.items.tools.ToolNetworkVisualiser", "gtnl$viewerDimension", "gtnl$cardSnapshot",
+                "gtnl$refreshCadence" },
+            { "appeng.client.render.NetworkVisualiserRender", "gtnl$cardVisualiser", "gtnl$invalidateSnapshot" } }) {
+            Class<?> type = Class.forName(target[0], false, WirelessMixinTarget.class.getClassLoader());
+            for (int i = 1; i < target.length; i++) {
+                String hook = target[i];
+                if (java.util.Arrays.stream(type.getDeclaredMethods())
+                    .noneMatch(
+                        method -> method.getName()
+                            .contains(hook)))
+                    throw new AssertionError("Missing visualiser hook: " + hook);
+            }
+        }
     }
 
     private static void verifyTileSave(Class<?> tile) throws Exception {

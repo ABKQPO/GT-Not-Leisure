@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Locale;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,9 +21,19 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.cleanroommc.modularui.api.IGuiHolder;
+import com.cleanroommc.modularui.factory.GuiFactories;
+import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
+import com.cleanroommc.modularui.factory.inventory.InventoryTypes;
+import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.ModularScreen;
+import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.wireless.AutomaticWirelessEntrances;
 import com.science.gtnl.common.wireless.WirelessCardBinding;
+import com.science.gtnl.common.wireless.WirelessCardContainer;
+import com.science.gtnl.common.wireless.WirelessCardVisualisation;
 import com.science.gtnl.common.wireless.WirelessChannelPrototype;
 import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
 import com.science.gtnl.common.wireless.WirelessChannelPrototype.Entrance;
@@ -43,9 +55,33 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /** A card toggles its source's entire physical cluster, including a suspended conflicting claim. */
-public final class OverloadedFrequencyCard extends Item implements IBaubleExpanded {
+public final class OverloadedFrequencyCard extends Item implements IBaubleExpanded, IGuiHolder<PlayerInventoryGuiData> {
 
     private static final String LANG = "item.gtnl.overloaded_frequency_card.";
+
+    @Override
+    public ModularPanel buildUI(PlayerInventoryGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        int index = data.getSlotIndex();
+        int location = data.getInventoryType() == InventoryTypes.BAUBLES ? -index - 1
+            : index == data.getPlayer().inventory.currentItem ? 0 : index + 1;
+        var container = new WirelessCardContainer(data.getPlayer(), location);
+        settings.customContainer(() -> container);
+        settings.canInteractWith(container::canInteractWith);
+        syncManager.syncValue("wireless", container.sync);
+        // All synchronization is explicitly registered above on both sides. Rendering widgets are client-only.
+        return syncManager.isClient() ? createPanel(container) : new ModularPanel("wireless_card").size(320, 232);
+    }
+
+    @SideOnly(Side.CLIENT)
+    private ModularPanel createPanel(WirelessCardContainer container) {
+        return new com.science.gtnl.client.WirelessCardGui(container);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public ModularScreen createScreen(PlayerInventoryGuiData data, ModularPanel panel) {
+        return ((com.science.gtnl.client.WirelessCardGui) panel).screen();
+    }
 
     @Override
     public BaubleType getBaubleType(ItemStack stack) {
@@ -59,7 +95,10 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
     }
 
     @Override
-    public void onWornTick(ItemStack stack, EntityLivingBase player) {}
+    public void onWornTick(ItemStack stack, EntityLivingBase player) {
+        if (player instanceof EntityPlayerMP serverPlayer && !player.worldObj.isRemote)
+            WirelessCardVisualisation.update(stack, serverPlayer, 0);
+    }
 
     @Override
     public void onEquipped(ItemStack stack, EntityLivingBase player) {}
@@ -86,6 +125,12 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
         setMaxStackSize(1);
         GameRegistry.registerItem(this, "overloaded_frequency_card");
         GTNLItemList.OverloadedFrequencyCard.set(new ItemStack(this));
+    }
+
+    @Override
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean active) {
+        if (!world.isRemote && active && entity instanceof EntityPlayerMP player)
+            WirelessCardVisualisation.update(stack, player, slot);
     }
 
     @Override
@@ -196,8 +241,8 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
             syncInventory(player);
             message(player, "cleared");
         } else {
-            com.science.gtnl.CommonProxy
-                .openGui(player, com.science.gtnl.utils.enums.GuiType.WirelessCardGUI, null, world, 0, 0, 0);
+            GuiFactories.playerInventory()
+                .openFromMainHand(player);
         }
         return stack;
     }
@@ -302,6 +347,12 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
         }
         tooltip.add(StatCollector.translateToLocal(LANG + "manage_hint"));
         if (GuiScreen.isShiftKeyDown()) {
+            tooltip.add(
+                StatCollector.translateToLocalFormatted(
+                    "gtnl.wireless.gui.visualisation",
+                    StatCollector.translateToLocal(
+                        WirelessCardVisualisation.modeKey(WirelessCardVisualisation.mode(stack.getTagCompound())))));
+            tooltip.add(StatCollector.translateToLocal("gtnl.wireless.gui.visualisation_hint"));
             for (int i = 0; i < 3; i++) tooltip.add(StatCollector.translateToLocal(LANG + "tooltip." + i));
             tooltip.add(StatCollector.translateToLocal(LANG + "auto_hint"));
             tooltip.add(StatCollector.translateToLocal(LANG + "bauble_hint"));
