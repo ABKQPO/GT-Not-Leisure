@@ -22,7 +22,6 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-/** Temporary, client-only markers; never requests chunk loads or retains markers across worlds. */
 @SideOnly(Side.CLIENT)
 public final class WirelessWorldHighlight {
 

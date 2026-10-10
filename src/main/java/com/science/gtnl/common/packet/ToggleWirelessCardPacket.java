@@ -8,7 +8,6 @@ import com.science.gtnl.common.wireless.WirelessAutoConnect;
 
 import io.netty.buffer.ByteBuf;
 
-/** Contains an input request only: inventory and owner checks happen on the server thread. */
 public final class ToggleWirelessCardPacket extends ServerboundPacket {
 
     private boolean heldOnly;

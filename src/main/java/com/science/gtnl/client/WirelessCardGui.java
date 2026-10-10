@@ -43,7 +43,6 @@ import appeng.core.localization.ColorUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-/** MUI owns input, widgets and screen lifetime; AE textures and diagnostic colours remain shared. */
 @SideOnly(Side.CLIENT)
 public final class WirelessCardGui extends ModularPanel {
 
@@ -438,7 +437,6 @@ public final class WirelessCardGui extends ModularPanel {
             textColor);
     }
 
-    /** A bounded ratio, never an inferred per-entrance capacity. Unknown and empty values show only the track. */
     private void ratioBar(int x, int y, int width, int height, int value, int total, int fill, int remainder) {
         drawRect(x, y, x + width, y + height, remainder | 0xFF000000);
         if (value < 0 || total <= 0) return;
