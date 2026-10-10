@@ -66,7 +66,7 @@ dependencies {
 
     implementation("org.ow2.asm:asm-commons:9.8")
 
-    compileOnlyApi("com.github.Nxer:Twist-Space-Technology-Mod:0.8.0-RC1.1:dev") { transitive = false }
+    compileOnlyApi("com.github.Nxer:Twist-Space-Technology-Mod:0.8.0-RC2.3:dev") { transitive = false }
     compileOnlyApi("com.github.Keriils:NH-Utilities:1.6.4:dev") { transitive = false }
     compileOnlyApi(rfg.deobf("curse.maven:extra-utilities-225561:2264383")) { transitive = false }
 
