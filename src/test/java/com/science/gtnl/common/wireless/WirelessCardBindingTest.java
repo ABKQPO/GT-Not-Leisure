@@ -41,18 +41,31 @@ public final class WirelessCardBindingTest {
         binding.write(itemTag);
         check(WirelessCardVisualisation.mode(itemTag) == 0, "Old cards default to no visualisation");
         for (int i = 1; i <= 8; i++) {
-            check(WirelessCardVisualisation.cycle(itemTag) == i, "Cycle every native AE display mode");
+            check(WirelessCardVisualisation.cycle(itemTag, false) == i, "Cycle every native AE display mode");
             check(
                 binding.equals(WirelessCardBinding.read(itemTag)),
                 "Changing display mode preserves frequency ownership");
             check(WirelessCardBinding.automatic(itemTag), "Changing display mode preserves automatic connection");
         }
-        check(WirelessCardVisualisation.cycle(itemTag) == 0, "Display cycle returns to Off");
+        check(WirelessCardVisualisation.cycle(itemTag, false) == 0, "Display cycle returns to Off");
+        for (int i = 8; i >= 0; i--) {
+            check(
+                WirelessCardVisualisation.cycle(itemTag, true) == i,
+                "Reverse cycle wraps from Off through every mode");
+            check(
+                WirelessCardVisualisation.cycle(itemTag, false) == (i + 1) % 9,
+                "Scrolling down selects the next mode");
+            check(WirelessCardVisualisation.cycle(itemTag, true) == i, "Scrolling up reverses scrolling down");
+            check(binding.equals(WirelessCardBinding.read(itemTag)), "Reverse cycling preserves frequency ownership");
+            check(WirelessCardBinding.automatic(itemTag), "Reverse cycling preserves automatic connection");
+        }
         for (int invalidMode : new int[] { -1, 9, Integer.MAX_VALUE }) {
             itemTag.setInteger("GTNLWirelessVisualisationMode", invalidMode);
             check(WirelessCardVisualisation.mode(itemTag) == 0, "Malformed mode is safely disabled");
+            check(WirelessCardVisualisation.cycle(itemTag, true) == 8, "Reverse cycling normalizes a malformed mode");
+            itemTag.setInteger("GTNLWirelessVisualisationMode", invalidMode);
         }
-        WirelessCardVisualisation.cycle(itemTag);
+        WirelessCardVisualisation.cycle(itemTag, false);
         check(WirelessCardBinding.automatic(itemTag), "Binding preserves the selected automatic mode");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         CompressedStreamTools.writeCompressed(itemTag, bytes);

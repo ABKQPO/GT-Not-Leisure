@@ -1,6 +1,10 @@
 package com.science.gtnl.common.item.items;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+import static net.minecraft.util.EnumChatFormatting.AQUA;
+import static net.minecraft.util.EnumChatFormatting.GRAY;
+import static net.minecraft.util.EnumChatFormatting.GREEN;
+import static net.minecraft.util.EnumChatFormatting.YELLOW;
 
 import java.util.List;
 import java.util.Locale;
@@ -328,30 +332,35 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
+        boolean automatic = WirelessCardBinding.automatic(stack.getTagCompound());
         tooltip.add(
-            StatCollector.translateToLocal(
-                LANG + (WirelessCardBinding.automatic(stack.getTagCompound()) ? "auto_on" : "auto_off")));
+            (automatic ? GREEN : GRAY) + StatCollector.translateToLocal(LANG + (automatic ? "auto_on" : "auto_off")));
         WirelessCardBinding binding = WirelessCardBinding.read(stack.getTagCompound());
         if (binding == null) {
-            tooltip.add(StatCollector.translateToLocal(LANG + "unbound"));
+            tooltip.add(YELLOW + StatCollector.translateToLocal(LANG + "source_unbound"));
         } else {
             Address source = binding.source();
             tooltip.add(
-                StatCollector
+                AQUA + StatCollector
                     .translateToLocalFormatted(LANG + "bound", source.dimension(), source.x(), source.y(), source.z()));
-            tooltip.add(StatCollector.translateToLocalFormatted(LANG + "owner", binding.ownerName()));
         }
-        tooltip.add(StatCollector.translateToLocal(LANG + "manage_hint"));
+        tooltip.add(
+            GRAY + StatCollector.translateToLocalFormatted(
+                LANG + "owner",
+                binding == null ? StatCollector.translateToLocal(LANG + "owner_none") : binding.ownerName()));
+        int mode = WirelessCardVisualisation.mode(stack.getTagCompound());
+        tooltip.add(
+            (mode == 0 ? GRAY : AQUA) + StatCollector.translateToLocalFormatted(
+                "gtnl.wireless.gui.visualisation",
+                StatCollector.translateToLocal(WirelessCardVisualisation.modeKey(mode))));
+        tooltip.add(GRAY + StatCollector.translateToLocal(LANG + "bauble_hint"));
         if (GuiScreen.isShiftKeyDown()) {
-            tooltip.add(
-                StatCollector.translateToLocalFormatted(
-                    "gtnl.wireless.gui.visualisation",
-                    StatCollector.translateToLocal(
-                        WirelessCardVisualisation.modeKey(WirelessCardVisualisation.mode(stack.getTagCompound())))));
-            tooltip.add(StatCollector.translateToLocal("gtnl.wireless.gui.visualisation_hint"));
-            for (int i = 0; i < 3; i++) tooltip.add(StatCollector.translateToLocal(LANG + "tooltip." + i));
-            tooltip.add(StatCollector.translateToLocal(LANG + "auto_hint"));
-            tooltip.add(StatCollector.translateToLocal(LANG + "bauble_hint"));
-        } else tooltip.add(StatCollector.translateToLocal(LANG + "more_hint"));
+            tooltip.add(GRAY + StatCollector.translateToLocal(LANG + "manage_hint"));
+            tooltip.add(GRAY + StatCollector.translateToLocal(LANG + "tooltip.1"));
+            tooltip.add(GRAY + StatCollector.translateToLocal(LANG + "tooltip.0"));
+            tooltip.add(GRAY + StatCollector.translateToLocal(LANG + "tooltip.2"));
+            tooltip.add(GRAY + StatCollector.translateToLocal(LANG + "visualisation_scroll_hint"));
+            tooltip.add(GRAY + StatCollector.translateToLocal("gtnl.wireless.gui.visualisation_hint"));
+        } else tooltip.add(YELLOW + StatCollector.translateToLocal(LANG + "more_hint"));
     }
 }

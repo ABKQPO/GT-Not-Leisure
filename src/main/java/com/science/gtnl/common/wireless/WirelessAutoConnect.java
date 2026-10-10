@@ -77,29 +77,16 @@ public final class WirelessAutoConnect {
 
     private WirelessAutoConnect() {}
 
-    public static void toggle(EntityPlayer player, boolean heldOnly, int expectedSlot) {
+    public static void toggle(EntityPlayer player) {
         if (player.isDead || player.worldObj.isRemote) return;
         if (ticks < TOGGLES.getOrDefault(player.getUniqueID(), Long.MIN_VALUE)) return;
-        ItemStack card;
-        if (heldOnly) {
-            if (!player.isSneaking() || player.inventory.currentItem != expectedSlot) return;
-            card = player.getCurrentEquippedItem();
-            if (card == null || !(card.getItem() instanceof OverloadedFrequencyCard)) return;
-            WirelessCardBinding binding = WirelessCardBinding.read(card.getTagCompound());
-            if (binding != null && !binding.belongsTo(player.getUniqueID())) {
-                message(player, "wrong_owner", binding.ownerName());
-                return;
-            }
-        } else {
-            var selection = WirelessCardInventory.select(player, false);
-            if (selection.card() == null) {
-                message(player, selection.ambiguous() ? "auto_ambiguous" : "auto_no_card");
-                return;
-            }
-            card = selection.card();
+        var selection = WirelessCardInventory.select(player, false);
+        if (selection.card() == null) {
+            message(player, selection.ambiguous() ? "auto_ambiguous" : "auto_no_card");
+            return;
         }
         TOGGLES.put(player.getUniqueID(), ticks + 5);
-        boolean enabled = toggleAutomatic(player, card);
+        boolean enabled = toggleAutomatic(player, selection.card());
         message(player, enabled ? "auto_on" : "auto_off");
     }
 
@@ -110,10 +97,21 @@ public final class WirelessAutoConnect {
         return enabled;
     }
 
-    private static ItemStack shortcutCard(EntityPlayer player) {
+    private static ItemStack shortcutCard(EntityPlayer player, boolean heldOnly, int expectedSlot) {
         if (player.isDead || player.worldObj.isRemote || player.openContainer != player.inventoryContainer) return null;
         if (ticks < TOGGLES.getOrDefault(player.getUniqueID(), Long.MIN_VALUE)) return null;
         TOGGLES.put(player.getUniqueID(), ticks + 5);
+        if (heldOnly) {
+            if (!player.isSneaking() || player.inventory.currentItem != expectedSlot) return null;
+            ItemStack card = player.getCurrentEquippedItem();
+            if (card == null || !(card.getItem() instanceof OverloadedFrequencyCard)) return null;
+            WirelessCardBinding binding = WirelessCardBinding.read(card.getTagCompound());
+            if (binding != null && !binding.belongsTo(player.getUniqueID())) {
+                message(player, "wrong_owner", binding.ownerName());
+                return null;
+            }
+            return card;
+        }
         var selection = WirelessCardInventory.select(player, false);
         if (selection.card() == null) {
             message(player, selection.ambiguous() ? "gui_ambiguous" : "auto_no_card");
@@ -122,7 +120,7 @@ public final class WirelessAutoConnect {
     }
 
     public static void openGui(EntityPlayer player) {
-        ItemStack card = shortcutCard(player);
+        ItemStack card = shortcutCard(player, false, 0);
         if (card == null) return;
         int location = WirelessCardInventory.location(player, card);
         if (location == Integer.MIN_VALUE) return;
@@ -132,10 +130,10 @@ public final class WirelessAutoConnect {
         else factory.openFromPlayerInventory(player, location - 1);
     }
 
-    public static void cycleVisualisation(EntityPlayer player) {
-        ItemStack card = shortcutCard(player);
+    public static void cycleVisualisation(EntityPlayer player, boolean heldOnly, int expectedSlot, boolean backwards) {
+        ItemStack card = shortcutCard(player, heldOnly, expectedSlot);
         if (card == null) return;
-        WirelessCardVisualisation.cycle(card, player);
+        WirelessCardVisualisation.cycle(card, player, backwards);
         player.addChatMessage(
             new ChatComponentTranslation(
                 "gtnl.wireless.gui.visualisation",

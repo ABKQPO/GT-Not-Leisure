@@ -141,14 +141,25 @@ public final class WirelessViewFilterTest {
         var encoded = Unpooled.buffer();
         try {
             for (boolean visualisation : new boolean[] { false, true }) {
+                for (boolean backwards : new boolean[] { false, true }) {
+                    for (boolean heldOnly : new boolean[] { false, true }) {
+                        wire.clear();
+                        encoded.clear();
+                        new ToggleWirelessCardPacket(heldOnly, 8, visualisation, backwards).toBytes(wire);
+                        var decoded = new ToggleWirelessCardPacket();
+                        decoded.fromBytes(wire.duplicate());
+                        check(!decoded.isInvalid(), "Both auto-connect and visualisation requests are accepted");
+                        decoded.toBytes(encoded);
+                        check(wire.equals(encoded), "Action, direction and held slot must survive serialization");
+                    }
+                }
+            }
+            for (int slot : new int[] { -1, 9 }) {
                 wire.clear();
-                encoded.clear();
-                new ToggleWirelessCardPacket(false, 0, visualisation).toBytes(wire);
+                new ToggleWirelessCardPacket(true, slot, true, true).toBytes(wire);
                 var decoded = new ToggleWirelessCardPacket();
-                decoded.fromBytes(wire.duplicate());
-                check(!decoded.isInvalid(), "Both auto-connect and visualisation requests are accepted");
-                decoded.toBytes(encoded);
-                check(wire.equals(encoded), "Hotkey actions must remain distinguishable after serialization");
+                decoded.fromBytes(wire);
+                check(decoded.isInvalid(), "Wheel requests reject invalid hotbar slots");
             }
             NBTTagCompound tag = new NBTTagCompound();
             new WirelessCardBinding(

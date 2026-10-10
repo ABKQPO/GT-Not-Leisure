@@ -74,9 +74,10 @@ public final class WirelessCardInput {
 
     private void keys() {
         if (OPEN.isPressed() && acceptInput()) ScienceNotLeisure.network.sendToServer(new OpenWirelessCardPacket());
-        if (TOGGLE.isPressed()) send(false);
+        if (TOGGLE.isPressed() && acceptInput())
+            ScienceNotLeisure.network.sendToServer(new ToggleWirelessCardPacket(false, 0, false, false));
         if (VISUALISATION.isPressed() && acceptInput())
-            ScienceNotLeisure.network.sendToServer(new ToggleWirelessCardPacket(false, 0, true));
+            ScienceNotLeisure.network.sendToServer(new ToggleWirelessCardPacket(false, 0, true, false));
     }
 
     public static boolean visualisationKey(int key) {
@@ -168,13 +169,8 @@ public final class WirelessCardInput {
         ItemStack held = mc.thePlayer.getCurrentEquippedItem();
         if (held == null || !(held.getItem() instanceof OverloadedFrequencyCard)) return;
         event.setCanceled(true); // Consume wheel input before vanilla changes the selected hotbar slot.
-        send(true);
-    }
-
-    private void send(boolean heldOnly) {
         if (!acceptInput()) return;
-        Minecraft mc = Minecraft.getMinecraft();
-        ScienceNotLeisure.network
-            .sendToServer(new ToggleWirelessCardPacket(heldOnly, mc.thePlayer.inventory.currentItem));
+        ScienceNotLeisure.network.sendToServer(
+            new ToggleWirelessCardPacket(true, mc.thePlayer.inventory.currentItem, true, event.dwheel > 0));
     }
 }

@@ -14,17 +14,15 @@ public final class ToggleWirelessCardPacket extends ServerboundPacket {
     private boolean heldOnly;
     private int slot;
     private boolean visualisation;
+    private boolean backwards;
 
     public ToggleWirelessCardPacket() {}
 
-    public ToggleWirelessCardPacket(boolean heldOnly, int slot) {
-        this(heldOnly, slot, false);
-    }
-
-    public ToggleWirelessCardPacket(boolean heldOnly, int slot, boolean visualisation) {
+    public ToggleWirelessCardPacket(boolean heldOnly, int slot, boolean visualisation, boolean backwards) {
         this.heldOnly = heldOnly;
         this.slot = slot;
         this.visualisation = visualisation;
+        this.backwards = backwards;
     }
 
     @Override
@@ -32,6 +30,7 @@ public final class ToggleWirelessCardPacket extends ServerboundPacket {
         heldOnly = buf.readBoolean();
         slot = buf.readByte();
         visualisation = buf.readBoolean();
+        backwards = buf.readBoolean();
         if (heldOnly && (slot < 0 || slot > 8)) throw new IllegalArgumentException("Invalid hotbar slot");
     }
 
@@ -40,13 +39,14 @@ public final class ToggleWirelessCardPacket extends ServerboundPacket {
         buf.writeBoolean(heldOnly);
         buf.writeByte(slot);
         buf.writeBoolean(visualisation);
+        buf.writeBoolean(backwards);
     }
 
     @Override
     public void handleServer(EntityPlayerMP player) {
         ServerThreadUtil.addScheduledTask(() -> {
-            if (visualisation) WirelessAutoConnect.cycleVisualisation(player);
-            else WirelessAutoConnect.toggle(player, heldOnly, slot);
+            if (visualisation) WirelessAutoConnect.cycleVisualisation(player, heldOnly, slot, backwards);
+            else WirelessAutoConnect.toggle(player);
         });
     }
 }

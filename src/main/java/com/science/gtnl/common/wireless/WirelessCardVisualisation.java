@@ -43,8 +43,9 @@ public final class WirelessCardVisualisation {
         return value >= 0 && value <= VisualisationModes.values().length;
     }
 
-    public static int cycle(NBTTagCompound tag) {
-        int next = (mode(tag) + 1) % (VisualisationModes.values().length + 1);
+    public static int cycle(NBTTagCompound tag, boolean backwards) {
+        int count = VisualisationModes.values().length + 1;
+        int next = (mode(tag) + (backwards ? count - 1 : 1)) % count;
         tag.setInteger(MODE, next);
         return next;
     }
@@ -56,8 +57,13 @@ public final class WirelessCardVisualisation {
     }
 
     public static void cycle(ItemStack card, EntityPlayer player) {
+        cycle(card, player, false);
+    }
+
+    public static void cycle(ItemStack card, EntityPlayer player, boolean backwards) {
         if (card.getTagCompound() == null) card.setTagCompound(new NBTTagCompound());
-        if (cycle(card.getTagCompound()) == 1) LAST_UPDATES.remove(player);
+        if (mode(card.getTagCompound()) == 0) LAST_UPDATES.remove(player);
+        cycle(card.getTagCompound(), backwards);
         WirelessCardInventory.sync(player, card);
     }
 
