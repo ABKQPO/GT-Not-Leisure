@@ -2,9 +2,11 @@ package com.science.gtnl.common.wireless;
 
 import java.util.UUID;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.gtnewhorizon.gtnhlib.item.ItemStackNBT;
 import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
 
 /** Item data only. Stores the source controller address and bound owner. */
@@ -18,8 +20,8 @@ public record WirelessCardBinding(Address source, UUID owner, String ownerName) 
         return itemTag != null && itemTag.getBoolean(AUTO_KEY);
     }
 
-    public static void automatic(NBTTagCompound itemTag, boolean enabled) {
-        itemTag.setBoolean(AUTO_KEY, enabled);
+    public static boolean toggleAutomatic(ItemStack card) {
+        return ItemStackNBT.invertBoolean(card, AUTO_KEY);
     }
 
     public static WirelessCardBinding read(NBTTagCompound itemTag) {

@@ -2,12 +2,16 @@ package com.science.gtnl.common.wireless;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 import com.gtnewhorizon.gtnhlib.compat.BaublesCompat;
+import com.science.gtnl.common.item.items.OverloadedFrequencyCard;
+import com.science.gtnl.common.wireless.WirelessCardSelection.Candidate;
 
 import baubles.common.container.InventoryBaubles;
 
@@ -47,6 +51,30 @@ public final class WirelessCardInventory {
 
     public static List<ItemStack> carried(EntityPlayer player) {
         return collect(player.inventory.mainInventory, BaublesCompat.getBaubles(player));
+    }
+
+    static WirelessCardSelection.Selection<ItemStack> select(EntityPlayer player, boolean connecting) {
+        return WirelessCardSelection
+            .select(candidates(player, carried(player), WirelessCardBinding::automatic), connecting);
+    }
+
+    /** Callers choose the carried slots and enabled setting; ownership and held-card priority stay shared. */
+    static List<Candidate<ItemStack>> candidates(EntityPlayer player, List<ItemStack> stacks,
+        Predicate<NBTTagCompound> enabled) {
+        List<Candidate<ItemStack>> candidates = new ArrayList<>();
+        for (ItemStack stack : stacks) {
+            if (!(stack.getItem() instanceof OverloadedFrequencyCard)) continue;
+            NBTTagCompound tag = stack.getTagCompound();
+            WirelessCardBinding binding = WirelessCardBinding.read(tag);
+            candidates.add(
+                new Candidate<>(
+                    stack,
+                    stack == player.getCurrentEquippedItem(),
+                    binding == null || binding.belongsTo(player.getUniqueID()),
+                    binding != null,
+                    enabled.test(tag)));
+        }
+        return candidates;
     }
 
     static List<ItemStack> collect(ItemStack[] main, IInventory worn) {

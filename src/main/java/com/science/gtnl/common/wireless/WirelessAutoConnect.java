@@ -11,7 +11,6 @@ import java.util.function.BooleanSupplier;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
@@ -20,7 +19,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.BlockEvent;
 
 import com.science.gtnl.common.item.items.OverloadedFrequencyCard;
-import com.science.gtnl.common.wireless.WirelessCardSelection.Candidate;
 import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
 
 import appeng.api.exceptions.FailedConnection;
@@ -79,22 +77,6 @@ public final class WirelessAutoConnect {
 
     private WirelessAutoConnect() {}
 
-    private static List<Candidate<ItemStack>> cards(EntityPlayer player) {
-        List<Candidate<ItemStack>> candidates = new ArrayList<>();
-        for (ItemStack stack : WirelessCardInventory.carried(player)) {
-            if (stack == null || !(stack.getItem() instanceof OverloadedFrequencyCard)) continue;
-            WirelessCardBinding binding = WirelessCardBinding.read(stack.getTagCompound());
-            candidates.add(
-                new Candidate<>(
-                    stack,
-                    stack == player.getCurrentEquippedItem(),
-                    binding == null || binding.belongsTo(player.getUniqueID()),
-                    binding != null,
-                    WirelessCardBinding.automatic(stack.getTagCompound())));
-        }
-        return candidates;
-    }
-
     public static void toggle(EntityPlayer player, boolean heldOnly, int expectedSlot) {
         if (player.isDead || player.worldObj.isRemote) return;
         if (ticks < TOGGLES.getOrDefault(player.getUniqueID(), Long.MIN_VALUE)) return;
@@ -109,7 +91,7 @@ public final class WirelessAutoConnect {
                 return;
             }
         } else {
-            var selection = WirelessCardSelection.select(cards(player), false);
+            var selection = WirelessCardInventory.select(player, false);
             if (selection.card() == null) {
                 message(player, selection.ambiguous() ? "auto_ambiguous" : "auto_no_card");
                 return;
@@ -117,23 +99,32 @@ public final class WirelessAutoConnect {
             card = selection.card();
         }
         TOGGLES.put(player.getUniqueID(), ticks + 5);
-        if (card.getTagCompound() == null) card.setTagCompound(new NBTTagCompound());
-        boolean enabled = !WirelessCardBinding.automatic(card.getTagCompound());
-        WirelessCardBinding.automatic(card.getTagCompound(), enabled);
-        WirelessCardInventory.sync(player, card);
+        boolean enabled = toggleAutomatic(player, card);
         message(player, enabled ? "auto_on" : "auto_off");
     }
 
-    public static void openGui(EntityPlayer player) {
-        if (player.isDead || player.worldObj.isRemote || player.openContainer != player.inventoryContainer) return;
-        if (ticks < TOGGLES.getOrDefault(player.getUniqueID(), Long.MIN_VALUE)) return;
+    /** The caller has already selected and authorized this card. */
+    static boolean toggleAutomatic(EntityPlayer player, ItemStack card) {
+        boolean enabled = WirelessCardBinding.toggleAutomatic(card);
+        WirelessCardInventory.sync(player, card);
+        return enabled;
+    }
+
+    private static ItemStack shortcutCard(EntityPlayer player) {
+        if (player.isDead || player.worldObj.isRemote || player.openContainer != player.inventoryContainer) return null;
+        if (ticks < TOGGLES.getOrDefault(player.getUniqueID(), Long.MIN_VALUE)) return null;
         TOGGLES.put(player.getUniqueID(), ticks + 5);
-        var selection = WirelessCardSelection.select(cards(player), false);
+        var selection = WirelessCardInventory.select(player, false);
         if (selection.card() == null) {
             message(player, selection.ambiguous() ? "gui_ambiguous" : "auto_no_card");
-            return;
         }
-        int location = WirelessCardInventory.location(player, selection.card());
+        return selection.card();
+    }
+
+    public static void openGui(EntityPlayer player) {
+        ItemStack card = shortcutCard(player);
+        if (card == null) return;
+        int location = WirelessCardInventory.location(player, card);
         if (location == Integer.MIN_VALUE) return;
         var factory = com.cleanroommc.modularui.factory.GuiFactories.playerInventory();
         if (location < 0) factory.openFromBaubles(player, -location - 1);
@@ -142,15 +133,8 @@ public final class WirelessAutoConnect {
     }
 
     public static void cycleVisualisation(EntityPlayer player) {
-        if (player.isDead || player.worldObj.isRemote || player.openContainer != player.inventoryContainer) return;
-        if (ticks < TOGGLES.getOrDefault(player.getUniqueID(), Long.MIN_VALUE)) return;
-        TOGGLES.put(player.getUniqueID(), ticks + 5);
-        var selection = WirelessCardSelection.select(cards(player), false);
-        if (selection.card() == null) {
-            message(player, selection.ambiguous() ? "gui_ambiguous" : "auto_no_card");
-            return;
-        }
-        ItemStack card = selection.card();
+        ItemStack card = shortcutCard(player);
+        if (card == null) return;
         WirelessCardVisualisation.cycle(card, player);
         player.addChatMessage(
             new ChatComponentTranslation(
@@ -189,7 +173,7 @@ public final class WirelessAutoConnect {
             || !(tile instanceof IGridHost || tile instanceof IPartHost)) return;
         // Native cable/part placement is reported with an exact side and part identity by the AE hook.
         if (part == null && tile instanceof IPartHost) return;
-        var selection = WirelessCardSelection.select(cards(player), true);
+        var selection = WirelessCardInventory.select(player, true);
         if (selection.card() == null) {
             if (selection.ambiguous()) notice(player, "auto_ambiguous");
             return;
@@ -240,8 +224,9 @@ public final class WirelessAutoConnect {
             || pending.tile.isInvalid()) return true;
         if (pending.part != null
             && (!(pending.tile instanceof IPartHost host) || host.getPart(pending.side) != pending.part)) return true;
-        boolean hasCard = false;
-        for (ItemStack stack : WirelessCardInventory.carried(player)) if (stack == pending.card) hasCard = true;
+        boolean hasCard = WirelessCardInventory.carried(player)
+            .stream()
+            .anyMatch(stack -> stack == pending.card);
         if (!hasCard || !pending.binding.equals(WirelessCardBinding.read(pending.card.getTagCompound()))
             || !WirelessCardBinding.automatic(pending.card.getTagCompound())) return true;
         ForgeDirection side = pending.side == null ? ForgeDirection.UNKNOWN : pending.side;

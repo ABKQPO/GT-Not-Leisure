@@ -448,9 +448,7 @@ public final class WirelessCardContainer extends ModularContainer {
         } else if (action == 0) page--;
         else if (action == 1) page++;
         else if (action == 2) {
-            if (card.getTagCompound() == null) card.setTagCompound(new NBTTagCompound());
-            WirelessCardBinding.automatic(card.getTagCompound(), !WirelessCardBinding.automatic(card.getTagCompound()));
-            WirelessCardInventory.sync(player, card);
+            WirelessAutoConnect.toggleAutomatic(player, card);
         } else if (action == 4) {
             detailNode = null;
             page = 0;

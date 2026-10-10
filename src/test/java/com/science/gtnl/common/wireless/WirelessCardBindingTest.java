@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -31,7 +33,11 @@ public final class WirelessCardBindingTest {
         itemTag.setString("unrelated", "keep");
         check(!WirelessCardBinding.automatic(null), "New cards default to manual mode");
         check(!WirelessCardBinding.automatic(itemTag), "Old cards without an auto tag default to manual mode");
-        WirelessCardBinding.automatic(itemTag, true);
+        ItemStack card = new ItemStack(new Item());
+        check(WirelessCardBinding.toggleAutomatic(card), "An untagged card can enable automatic connection");
+        check(WirelessCardBinding.automatic(card.getTagCompound()), "Toggling initializes the actual stack's NBT");
+        card.setTagCompound(itemTag);
+        check(WirelessCardBinding.toggleAutomatic(card), "Existing unrelated NBT can enable automatic connection");
         binding.write(itemTag);
         check(WirelessCardVisualisation.mode(itemTag) == 0, "Old cards default to no visualisation");
         for (int i = 1; i <= 8; i++) {
@@ -64,7 +70,8 @@ public final class WirelessCardBindingTest {
         check(WirelessCardBinding.automatic(restored), "Automatic mode survives saving and clearing a binding");
         binding.write(restored);
         check(WirelessCardBinding.automatic(restored), "Rebinding preserves automatic mode");
-        WirelessCardBinding.automatic(restored, false);
+        card.setTagCompound(restored);
+        check(!WirelessCardBinding.toggleAutomatic(card), "A restored card can disable automatic connection");
         check(
             binding.equals(WirelessCardBinding.read(restored)),
             "Switching auto mode never changes frequency or owner");

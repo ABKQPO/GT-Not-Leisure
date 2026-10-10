@@ -127,12 +127,8 @@ public final class WirelessLinkPersistence {
 
     static Set<Address> restore(IGridNode node, PhysicalMeTopology topology) {
         if (IMPORTED.containsKey(node)) return Set.of();
-        Endpoint endpoint = endpoint(node, topology);
-        if (endpoint == null) return Set.of();
-        Claim saved = WirelessLinkData.read(WirelessTileData.of(endpoint.tile()))
-            .get(endpoint.slot());
-        return saved != null && saved.kind()
-            .equals(endpoint.kind()) ? saved.frequencies() : Set.of();
+        Claim saved = claim(node, topology);
+        return saved == null ? Set.of() : saved.frequencies();
     }
 
     /** Called only after a complete topology scan, so a scan limit never commits a partial provenance snapshot. */

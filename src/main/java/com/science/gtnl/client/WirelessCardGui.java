@@ -317,8 +317,7 @@ public final class WirelessCardGui extends ModularPanel {
         dimension.setEnabled(!detail);
         name.setEnabled(detail);
         NBTTagList rows = data.getTagList("rows", 10);
-        for (var widget : buttons) {
-            var button = widget;
+        for (var button : buttons) {
             int id = button.id;
             boolean visible = id < 10 || id % 10 < Math.min(visibleRows, rows.tagCount());
             button.available = layoutReady();
@@ -345,10 +344,10 @@ public final class WirelessCardGui extends ModularPanel {
                 String label = StatCollector
                     .translateToLocal(WirelessCardVisualisation.modeKey(mode) + (mode > 0 ? ".short" : ""));
                 button.label = fontRendererObj.trimStringToWidth(
-                    widget.getArea().width < 102 ? label : tr("visualisation_button", label),
-                    widget.getArea().width - 8);
+                    button.getArea().width < 102 ? label : tr("visualisation_button", label),
+                    button.getArea().width - 8);
             }
-            widget.setEnabled(visible);
+            button.setEnabled(visible);
         }
     }
 

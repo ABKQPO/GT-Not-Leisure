@@ -33,6 +33,7 @@ import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.wireless.AutomaticWirelessEntrances;
 import com.science.gtnl.common.wireless.WirelessCardBinding;
 import com.science.gtnl.common.wireless.WirelessCardContainer;
+import com.science.gtnl.common.wireless.WirelessCardInventory;
 import com.science.gtnl.common.wireless.WirelessCardVisualisation;
 import com.science.gtnl.common.wireless.WirelessChannelPrototype;
 import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
@@ -224,7 +225,7 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
         if (stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
         new WirelessCardBinding(source, player.getUniqueID(), player.getCommandSenderName())
             .write(stack.getTagCompound());
-        syncInventory(player);
+        WirelessCardInventory.sync(player, stack);
         message(player, "bound", source.dimension(), source.x(), source.y(), source.z());
     }
 
@@ -238,7 +239,7 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
         if (!ownerAllowed(binding, player)) return stack;
         if (player.isSneaking()) {
             WirelessCardBinding.clear(stack.getTagCompound());
-            syncInventory(player);
+            WirelessCardInventory.sync(player, stack);
             message(player, "cleared");
         } else {
             GuiFactories.playerInventory()
@@ -312,11 +313,6 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
                 message(player, "no_allocation");
             }
         }
-    }
-
-    private static void syncInventory(EntityPlayer player) {
-        player.inventory.markDirty();
-        player.inventoryContainer.detectAndSendChanges();
     }
 
     private static void message(EntityPlayer player, String key, Object... args) {

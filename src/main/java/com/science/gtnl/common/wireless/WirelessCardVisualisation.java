@@ -1,6 +1,5 @@
 package com.science.gtnl.common.wireless;
 
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -11,8 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.gtnewhorizon.gtnhlib.compat.BaublesCompat;
-import com.science.gtnl.common.item.items.OverloadedFrequencyCard;
-import com.science.gtnl.common.wireless.WirelessCardSelection.Candidate;
 
 import appeng.api.AEApi;
 import appeng.api.config.Settings;
@@ -110,19 +107,10 @@ public final class WirelessCardVisualisation {
         if (player == null || player.isDead) return null;
         ItemStack held = player.getCurrentEquippedItem();
         if (held != null && held.getItem() instanceof ToolNetworkVisualiser) return null;
-        var candidates = new ArrayList<Candidate<ItemStack>>();
-        for (ItemStack stack : WirelessCardInventory
-            .collect(new ItemStack[] { held }, BaublesCompat.getBaubles(player))) {
-            if (!(stack.getItem() instanceof OverloadedFrequencyCard)) continue;
-            var binding = WirelessCardBinding.read(stack.getTagCompound());
-            candidates.add(
-                new Candidate<>(
-                    stack,
-                    stack == held,
-                    binding != null && binding.belongsTo(player.getUniqueID()),
-                    binding != null,
-                    mode(stack.getTagCompound()) != 0));
-        }
+        var candidates = WirelessCardInventory.candidates(
+            player,
+            WirelessCardInventory.collect(new ItemStack[] { held }, BaublesCompat.getBaubles(player)),
+            tag -> mode(tag) != 0);
         return WirelessCardSelection.select(candidates, true)
             .card();
     }

@@ -51,9 +51,7 @@ public final class AutomaticWirelessEntrances {
 
     static void refresh(Collection<Cluster<IGridNode, Address>> clusters, PhysicalMeTopology topology) {
         Map<IGrid, Work> workByGrid = new IdentityHashMap<>();
-        List<Entrance> entrances = new ArrayList<>();
-        WirelessChannelPrototype.entrances()
-            .forEach(entrances::add);
+        List<Entrance> entrances = WirelessChannelPrototype.entrances();
         for (Cluster<IGridNode, Address> cluster : clusters) {
             if (cluster.blocked() || cluster.frequencies()
                 .size() != 1) continue;

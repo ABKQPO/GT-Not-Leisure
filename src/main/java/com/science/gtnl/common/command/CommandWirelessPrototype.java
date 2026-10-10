@@ -72,14 +72,9 @@ public final class CommandWirelessPrototype extends CommandBase {
                 case "unlink" -> {
                     if (args.length != 2) throw new IllegalArgumentException(getCommandUsage(sender));
                     int id = Integer.parseInt(args[1]);
-                    boolean removed = false;
-                    for (Entrance entrance : WirelessChannelPrototype.entrances()) {
-                        if (entrance.id() == id) {
-                            removed = WirelessClusterManager
-                                .disconnectCluster(entrance.source(), entrance.targetNode());
-                            break;
-                        }
-                    }
+                    Entrance entrance = WirelessChannelPrototype.entrance(id);
+                    boolean removed = entrance != null
+                        && WirelessClusterManager.disconnectCluster(entrance.source(), entrance.targetNode());
                     message(
                         sender,
                         removed ? "Frequency disconnected from the entire physical cluster." : "Unknown entrance ID.");

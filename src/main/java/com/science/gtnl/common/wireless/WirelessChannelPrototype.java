@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -249,7 +250,8 @@ public final class WirelessChannelPrototype {
         allocationRevision = 0;
     }
 
-    public static Iterable<Entrance> entrances() {
+    /** A snapshot, so callers may disconnect entries while iterating. */
+    public static List<Entrance> entrances() {
         return new ArrayList<>(ENTRANCES.values());
     }
 
@@ -276,7 +278,7 @@ public final class WirelessChannelPrototype {
     public void tick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         invalidateControllerSources();
-        for (Entrance entrance : new ArrayList<>(ENTRANCES.values())) {
+        for (Entrance entrance : entrances()) {
             if (!entrance.isLive() || entrance.source()
                 .node() != entrance.sourceNode()
                 || entrance.target()
@@ -300,7 +302,7 @@ public final class WirelessChannelPrototype {
     public void unloadChunk(ChunkEvent.Unload event) {
         if (event.world.isRemote) return;
         WirelessClusterManager.forgetTargets(address -> inChunk(address, event));
-        for (Entrance entrance : new ArrayList<>(ENTRANCES.values())) {
+        for (Entrance entrance : entrances()) {
             if (inChunk(entrance.source(), event) || inChunk(entrance.target(), event)) disconnect(entrance.id());
         }
     }
@@ -315,7 +317,7 @@ public final class WirelessChannelPrototype {
     public void unloadWorld(WorldEvent.Unload event) {
         if (event.world.isRemote) return;
         WirelessClusterManager.forgetTargets(address -> address.dimension() == event.world.provider.dimensionId);
-        for (Entrance entrance : new ArrayList<>(ENTRANCES.values())) {
+        for (Entrance entrance : entrances()) {
             if (entrance.source()
                 .dimension() == event.world.provider.dimensionId
                 || entrance.target()
