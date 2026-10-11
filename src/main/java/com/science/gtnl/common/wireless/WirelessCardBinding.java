@@ -15,6 +15,7 @@ public record WirelessCardBinding(Address source, UUID owner, String ownerName) 
     private static final String KEY = "GTNLWirelessCard";
     private static final int VERSION = 1;
     private static final String AUTO_KEY = "GTNLWirelessAutoConnect";
+    private static final String GROUP_KEY = "GTNLWirelessCollapseTypes";
 
     public static boolean automatic(NBTTagCompound itemTag) {
         return itemTag != null && itemTag.getBoolean(AUTO_KEY);
@@ -22,6 +23,16 @@ public record WirelessCardBinding(Address source, UUID owner, String ownerName) 
 
     public static boolean toggleAutomatic(ItemStack card) {
         return ItemStackNBT.invertBoolean(card, AUTO_KEY);
+    }
+
+    static boolean collapseTypes(NBTTagCompound itemTag) {
+        return itemTag == null || !itemTag.hasKey(GROUP_KEY, 1) || itemTag.getBoolean(GROUP_KEY);
+    }
+
+    static boolean toggleGrouping(ItemStack card) {
+        boolean collapse = !collapseTypes(card.getTagCompound());
+        ItemStackNBT.setBoolean(card, GROUP_KEY, collapse);
+        return collapse;
     }
 
     public static WirelessCardBinding read(NBTTagCompound itemTag) {

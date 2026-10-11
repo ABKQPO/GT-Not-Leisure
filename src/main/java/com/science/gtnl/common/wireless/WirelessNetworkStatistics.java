@@ -11,7 +11,7 @@ import appeng.api.networking.pathing.IPathingGrid;
 public record WirelessNetworkStatistics(int nodes, int devices, int online, int missing, boolean stable) {
 
     static final Comparator<WirelessNetworkStatistics> DISPLAY_ORDER = Comparator
-        .comparingInt((WirelessNetworkStatistics stats) -> stats.missing() > 0 ? 0 : 1)
+        .comparingInt((WirelessNetworkStatistics stats) -> stats.stable() && stats.missing() > 0 ? 0 : 1)
         .thenComparing(
             Comparator.comparingInt(WirelessNetworkStatistics::online)
                 .reversed());

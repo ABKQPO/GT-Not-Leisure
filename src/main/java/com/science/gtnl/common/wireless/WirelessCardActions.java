@@ -19,12 +19,14 @@ public final class WirelessCardActions {
     public static final int COPY_POSITION = 30;
     public static final int HIGHLIGHT = 40;
     public static final int TELEPORT = 50;
+    public static final int CLOSE_DETAILS = 60;
+    public static final int TOGGLE_GROUPING = 61;
     private static final int ROW_STRIDE = 10;
 
     private WirelessCardActions() {}
 
     public static int type(int id) {
-        return id < ROW_STRIDE ? id : id - rowIndex(id);
+        return isRowAction(id) ? id - rowIndex(id) : id;
     }
 
     public static int rowIndex(int id) {

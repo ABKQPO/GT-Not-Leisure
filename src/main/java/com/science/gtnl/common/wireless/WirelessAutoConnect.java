@@ -29,6 +29,7 @@ import appeng.api.parts.IPartHost;
 import appeng.tile.networking.TileController;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import gregtech.api.metatileentity.BaseMetaTileEntity;
 
 /** Server-thread placement work, delayed until both Forge placement and AE node initialization have finished. */
 public final class WirelessAutoConnect {
@@ -235,7 +236,12 @@ public final class WirelessAutoConnect {
                 if (node != null) break;
             }
         }
-        if (node == null || node.getGrid() == null) return false;
+        if (node == null) {
+            // GT exposes IGridHost on ordinary machines too; no proxy means there is no AE node to await.
+            return pending.tile instanceof BaseMetaTileEntity base && base.getMetaTileEntity() != null
+                && base.getProxy() == null;
+        }
+        if (node.getGrid() == null) return false;
         if (!world.canMineBlock(player, pending.x, pending.y, pending.z) || !player.canPlayerEdit(
             pending.x,
             pending.y,

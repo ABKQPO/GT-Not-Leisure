@@ -1,6 +1,7 @@
 package com.science.gtnl.api.mixinHelper;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import appeng.api.config.YesNo;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -20,6 +21,8 @@ import appeng.util.ScheduledReason;
 import appeng.util.inv.WrapperInvSlot;
 
 public interface IDualityInterface {
+
+    <T> T gtnl$withoutCustomName(Supplier<T> reader);
 
     int getConfigSlots();
 

@@ -2,6 +2,7 @@ package com.science.gtnl.client;
 
 import static com.science.gtnl.common.wireless.WirelessCardActions.APPLY_FILTER;
 import static com.science.gtnl.common.wireless.WirelessCardActions.BACK;
+import static com.science.gtnl.common.wireless.WirelessCardActions.CLOSE_DETAILS;
 import static com.science.gtnl.common.wireless.WirelessCardActions.COPY_POSITION;
 import static com.science.gtnl.common.wireless.WirelessCardActions.CYCLE_FILTER;
 import static com.science.gtnl.common.wireless.WirelessCardActions.CYCLE_VISUALISATION;
@@ -14,6 +15,7 @@ import static com.science.gtnl.common.wireless.WirelessCardActions.RENAME;
 import static com.science.gtnl.common.wireless.WirelessCardActions.SET_PAGE_SIZE;
 import static com.science.gtnl.common.wireless.WirelessCardActions.TELEPORT;
 import static com.science.gtnl.common.wireless.WirelessCardActions.TOGGLE_AUTO;
+import static com.science.gtnl.common.wireless.WirelessCardActions.TOGGLE_GROUPING;
 import static com.science.gtnl.common.wireless.WirelessCardActions.TOGGLE_PAUSE;
 import static com.science.gtnl.common.wireless.WirelessCardActions.isRowAction;
 import static com.science.gtnl.common.wireless.WirelessCardActions.rowIndex;
@@ -37,9 +39,12 @@ import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.api.drawable.IDrawable;
+import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.core.mixins.early.minecraft.GuiScreenAccessor;
 import com.cleanroommc.modularui.drawable.GuiDraw;
+import com.cleanroommc.modularui.drawable.Rectangle;
 import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.drawable.text.TextRenderer;
 import com.cleanroommc.modularui.screen.ModularPanel;
@@ -50,6 +55,7 @@ import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.utils.Platform;
 import com.cleanroommc.modularui.value.StringValue;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
+import com.cleanroommc.modularui.widgets.Dialog;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.wireless.WirelessCardContainer;
@@ -65,7 +71,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public final class WirelessCardGui extends ModularPanel {
 
-    private static final int ROW_TOP = 82;
     private static final int ROW_HEIGHT = 24;
     private static final int CONTENT_X = 34;
     private static final UITexture[] BUTTON_TEXTURES = { buttonTexture(0), buttonTexture(1), buttonTexture(2) };
@@ -75,17 +80,25 @@ public final class WirelessCardGui extends ModularPanel {
     private final Minecraft mc = Minecraft.getMinecraft();
     private final FontRenderer fontRendererObj = mc.fontRenderer;
     private final WirelessCardContainer container;
+    private final boolean detailView;
     private final List<CardButton> buttons = new ArrayList<>();
-    private final TextFieldWidget search, dimension, name;
+    private final TextFieldWidget search, dimension;
+    private final IPanelHandler renamePanel;
+    private final IPanelHandler detailsPanel;
+    private NBTTagCompound snapshot = new NBTTagCompound();
+    private boolean showingDetails, closingDetails;
     private int xSize = 320, ySize = 232;
     private int visibleRows = WirelessCardLayout.MIN_ROWS;
     private int layoutRetry;
-    private String editTarget = "";
-    private long nameRevision;
 
     public WirelessCardGui(WirelessCardContainer container) {
-        super("wireless_card");
+        this(container, false);
+    }
+
+    private WirelessCardGui(WirelessCardContainer container, boolean detailView) {
+        super(detailView ? "wireless_card_details" : "wireless_card");
         this.container = container;
+        this.detailView = detailView;
         background(
             UITexture.builder()
                 .location(new ResourceLocation("appliedenergistics2", "textures/guis/wireless_network_manager.png"))
@@ -96,11 +109,13 @@ public final class WirelessCardGui extends ModularPanel {
         search = textField(64).hintText(tr("search_placeholder"))
             .hintColor(ColorUtils.craftingTreeRequest.getColor());
         dimension = textField(12);
-        name = textField(32).hintText(GuiText.Renamer.getLocal());
-        child(search).child(dimension)
-            .child(name);
+        child(search).child(dimension);
+        renamePanel = IPanelHandler.simple(this, (parent, player) -> new RenameDialog(), true);
+        detailsPanel = detailView ? null
+            : IPanelHandler.simple(this, (parent, player) -> new WirelessCardGui(container, true), true);
+        if (detailView) child(ButtonWidget.panelCloseButton());
         for (int id : new int[] { PREVIOUS_PAGE, NEXT_PAGE, TOGGLE_AUTO, REFRESH, BACK, RENAME, APPLY_FILTER,
-            CYCLE_FILTER, CYCLE_VISUALISATION }) addButton(id);
+            CYCLE_FILTER, CYCLE_VISUALISATION, TOGGLE_GROUPING }) addButton(id);
         for (int row = 0; row < WirelessCardLayout.MAX_ROWS; row++) {
             for (int base : new int[] { TOGGLE_PAUSE, OPEN_DETAILS, COPY_POSITION, HIGHLIGHT, TELEPORT })
                 addButton(base + row);
@@ -113,31 +128,93 @@ public final class WirelessCardGui extends ModularPanel {
             @Override
             public void onResize(int width, int height) {
                 resizeLayout(width, height);
+                for (ModularPanel panel : getPanelManager().getOpenPanels()) {
+                    if (panel instanceof WirelessCardGui cardPanel && cardPanel.detailView)
+                        cardPanel.resizeLayout(width, height);
+                }
                 super.onResize(width, height);
             }
 
             @Override
-            public boolean onKeyPressed(char character, int key) {
-                if (WirelessCardInput.visualisationKey(key) && !editingText()) {
-                    action(CYCLE_VISUALISATION);
+            public boolean onMousePressed(int button) {
+                ModularPanel previous = getPanelManager().getTopMostPanel();
+                if (button == 1) {
+                    if (previous instanceof RenameDialog dialog) dialog.closeIfOpen();
+                    else if (previous instanceof WirelessCardGui panel && (panel.detailView || panel.view()
+                        .getBoolean("group"))) panel.action(BACK);
                     return true;
                 }
-                if (key == Keyboard.KEY_RETURN || key == Keyboard.KEY_NUMPADENTER) {
-                    action(container.display.getBoolean("detail") ? RENAME : APPLY_FILTER);
+                if (previous instanceof WirelessCardGui panel && button > 1
+                    && WirelessCardInput.visualisationKey(button - 100)
+                    && !panel.editingText()) {
+                    panel.action(CYCLE_VISUALISATION);
                     return true;
                 }
-                return super.onKeyPressed(character, key);
+                boolean handled = super.onMousePressed(button);
+                // The opening button clears focus after its callback returns.
+                if (getPanelManager().getTopMostPanel() instanceof RenameDialog dialog && previous != dialog)
+                    getContext().focus(dialog.name);
+                return handled;
             }
 
             @Override
-            public boolean onMousePressed(int button) {
-                if (button > 1 && WirelessCardInput.visualisationKey(button - 100) && !editingText()) {
-                    action(CYCLE_VISUALISATION);
-                    return true;
-                }
-                return super.onMousePressed(button);
+            public boolean onMouseRelease(int button) {
+                return button == 1 || super.onMouseRelease(button);
             }
         };
+    }
+
+    @Override
+    public void onOpen(ModularScreen screen) {
+        closingDetails = false;
+        if (detailView) resizeLayout(screen.getScreenArea().width, screen.getScreenArea().height);
+        super.onOpen(screen);
+        if (detailView) getContext().removeFocus();
+    }
+
+    @Override
+    public boolean disablePanelsBelow() {
+        return detailView;
+    }
+
+    @Override
+    public boolean isDraggable() {
+        return false;
+    }
+
+    @Override
+    public boolean onKeyPressed(char character, int key) {
+        if (detailView && key == Keyboard.KEY_ESCAPE) {
+            closeIfOpen();
+            return true;
+        }
+        if (WirelessCardInput.visualisationKey(key) && !editingText()) {
+            action(CYCLE_VISUALISATION);
+            return true;
+        }
+        if (key == Keyboard.KEY_RETURN || key == Keyboard.KEY_NUMPADENTER) {
+            action(detailView ? RENAME : APPLY_FILTER);
+            return true;
+        }
+        return super.onKeyPressed(character, key);
+    }
+
+    @Override
+    public void closeIfOpen() {
+        if (detailView && !closingDetails) {
+            closingDetails = true;
+            if (container.display.getBoolean("detail")) container.sync.request(CLOSE_DETAILS, "", "", 0, 0);
+        }
+        super.closeIfOpen();
+    }
+
+    private NBTTagCompound view() {
+        // Only the active view is synced. Keep the other panel's last page behind the modal window.
+        return container.display.getBoolean("detail") == detailView ? container.display : snapshot;
+    }
+
+    private int rowTop() {
+        return detailView ? 60 : 82;
     }
 
     private static String tr(String key, Object... args) {
@@ -163,27 +240,25 @@ public final class WirelessCardGui extends ModularPanel {
 
     private void resizeLayout(int width, int height) {
         var layout = WirelessCardLayout.forScreen(width, height);
-        xSize = layout.width();
-        ySize = layout.height();
+        xSize = detailView ? Math.max(320, layout.width() - 24) : layout.width();
+        ySize = detailView ? layout.height() - 22 : layout.height();
         visibleRows = layout.rows();
         layoutRetry = 0;
         size(xSize, ySize);
         int dx = xSize - 320;
-        search.pos(10, 62)
-            .size(124 + dx, 12);
+        search.pos(38, 62)
+            .size(96 + dx, 12);
         dimension.pos(148 + dx, 62)
             .size(34, 12);
-        name.pos(10, 62)
-            .size(226 + dx, 12);
         for (var button : buttons) {
             int id = button.id;
             if (isRowAction(id)) {
-                int y = ROW_TOP + rowIndex(id) * ROW_HEIGHT;
+                int y = rowTop() + rowIndex(id) * ROW_HEIGHT;
                 switch (type(id)) {
                     case TOGGLE_PAUSE -> button.pos(xSize - 28, y + 4)
                         .size(16, 16);
                     case OPEN_DETAILS -> button.pos(10, y)
-                        .size(20, ROW_HEIGHT);
+                        .size(rowStateX() - 10, ROW_HEIGHT);
                     case COPY_POSITION -> button.pos(xSize - 96, y + 2)
                         .size(30, 20);
                     case HIGHLIGHT -> button.pos(xSize - 62, y + 2)
@@ -202,10 +277,12 @@ public final class WirelessCardGui extends ModularPanel {
                     .size(64, 20);
                 case BACK -> button.pos(layout.footerInfoX(), ySize - 27)
                     .size(36, 20);
-                case RENAME -> button.pos(244 + dx, 59)
+                case RENAME -> button.pos(244 + dx, detailView ? 24 : 59)
                     .size(64, 20);
                 case APPLY_FILTER -> button.pos(264 + dx, 59)
                     .size(44, 20);
+                case TOGGLE_GROUPING -> button.pos(10, 59)
+                    .size(24, 20);
                 case CYCLE_FILTER -> button.pos(188 + dx, 59)
                     .size(72, 20);
                 case CYCLE_VISUALISATION -> button.pos(layout.visualisationX(), ySize - 27)
@@ -215,22 +292,12 @@ public final class WirelessCardGui extends ModularPanel {
     }
 
     private TextFieldWidget textField(int max) {
-        return new TextFieldWidget() {
-
-            @Override
-            public void drawBackground(ModularGuiContext context, WidgetThemeEntry<?> theme) {
-                GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-                try {
-                    drawRect(0, 0, getArea().width, getArea().height, 0xffa0a0a0);
-                    drawRect(1, 1, getArea().width - 1, getArea().height - 1, 0xff000000);
-                } finally {
-                    GL11.glPopAttrib();
-                }
-            }
-
-            @Override
-            public void drawForeground(ModularGuiContext context) {}
-        }.value(new StringValue(""))
+        return new TextFieldWidget().background(
+            new Rectangle().color(0xff000000),
+            new Rectangle().color(0xffa0a0a0)
+                .hollow(1))
+            .setTooltipOverride(true)
+            .value(new StringValue(""))
             .setMaxLength(max)
             .setTextColor(ColorUtils.searchboxText.getColor())
             .padding(2, 0);
@@ -254,12 +321,20 @@ public final class WirelessCardGui extends ModularPanel {
             text.setShadow(true);
             background(IDrawable.EMPTY).hoverBackground(IDrawable.EMPTY);
             if (type(id) == OPEN_DETAILS) tooltipBuilder(tooltip -> {
-                NBTTagCompound row = container.display.getTagList("rows", 10)
+                NBTTagCompound row = view().getTagList("rows", 10)
                     .getCompoundTagAt(rowIndex(id));
-                tooltip.addLine(rowName(row, ItemStack.loadItemStackFromNBT(row.getCompoundTag("icon"))));
-                tooltip.addLine(row.getString("position"));
+                String name = rowName(row, ItemStack.loadItemStackFromNBT(row.getCompoundTag("icon")));
+                String targetName = row.getString("targetName");
+                tooltip.addLine(targetName.isEmpty() || targetName.equals(name) ? name : name + " - " + targetName);
+                tooltip.addLine(row.getString("positionLabel"));
                 if (row.getBoolean("group")) tooltip.addLine(tr("loaded", row.getInteger("clusters")));
             }).tooltipAutoUpdate(true);
+            if (id == TOGGLE_GROUPING) tooltipBuilder(
+                tooltip -> tooltip.addLine(
+                    GuiText.Types.getLocal() + ": "
+                        + StatCollector
+                            .translateToLocal(view().getBoolean("collapseTypes") ? "options.on" : "options.off")))
+                                .tooltipAutoUpdate(true);
             onMousePressed(button -> {
                 if (button != 0 || !available) return false;
                 action(id);
@@ -299,15 +374,27 @@ public final class WirelessCardGui extends ModularPanel {
     }
 
     private boolean layoutReady() {
-        return container.display.hasKey("session") && container.display.getInteger("pageSize") == visibleRows;
+        return !closingDetails && container.display.getBoolean("detail") == detailView
+            && container.display.hasKey("session")
+            && container.display.getInteger("pageSize") == visibleRows;
     }
 
     private boolean editingText() {
-        return container.display.getBoolean("detail") ? name.isFocused() : search.isFocused() || dimension.isFocused();
+        return search.isFocused() || dimension.isFocused();
     }
 
     private void action(int id) {
+        if (detailView && id == BACK) {
+            closeIfOpen();
+            return;
+        }
         if (!layoutReady()) return;
+        snapshot = container.display;
+        if (id == RENAME) {
+            if (container.display.getBoolean("detail") && container.display.getBoolean("renameable"))
+                renamePanel.openPanel();
+            return;
+        }
         if (type(id) == COPY_POSITION && rowIndex(id) < visibleRows) {
             var row = container.display.getTagList("rows", 10)
                 .getCompoundTagAt(rowIndex(id));
@@ -318,55 +405,174 @@ public final class WirelessCardGui extends ModularPanel {
         }
         int filterState = container.display.getInteger("filterState");
         if (id == CYCLE_FILTER) filterState = (filterState + 1) % 5;
-        String text = id == RENAME ? name.getText() : search.getText();
-        if (id == RENAME) getContext().removeFocus();
         container.sync
-            .request(id == CYCLE_FILTER ? APPLY_FILTER : id, text, dimension.getText(), filterState, nameRevision);
+            .request(id == CYCLE_FILTER ? APPLY_FILTER : id, search.getText(), dimension.getText(), filterState, 0);
+    }
+
+    private final class RenameDialog extends Dialog<Void> {
+
+        private final TextFieldWidget name = textField(32);
+        private String target;
+        private long nameRevision;
+        private boolean finished;
+
+        RenameDialog() {
+            super("wireless_card_rename");
+            size(260, 96);
+            background(WirelessCardGui.this.getBackground());
+            child(ButtonWidget.panelCloseButton());
+            child(
+                IKey.str(GuiText.Renamer.getLocal())
+                    .asWidget()
+                    .color(ColorUtils.guiTextColorGray.getColor())
+                    .pos(10, 10)
+                    .size(220, 18));
+            child(
+                name.pos(10, 34)
+                    .size(240, 16));
+            child(dialogButton("gui.cancel", this::closeIfOpen).pos(10, 64));
+            child(dialogButton("gui.done", this::submit).pos(134, 64));
+        }
+
+        private ButtonWidget<?> dialogButton(String key, Runnable action) {
+            return new ButtonWidget<>().size(116, 20)
+                .background(BUTTON_TEXTURES[1])
+                .hoverBackground(BUTTON_TEXTURES[2])
+                .overlay(
+                    IKey.lang(key)
+                        .color(0xffe0e0e0)
+                        .shadow(true))
+                .onMousePressed(button -> {
+                    if (button != 0 || finished) return false;
+                    action.run();
+                    return true;
+                });
+        }
+
+        @Override
+        public void onOpen(ModularScreen screen) {
+            NBTTagCompound data = container.display;
+            target = data.getString("detailTarget");
+            nameRevision = data.getLong("nameRevision");
+            finished = false;
+            String text = data.getBoolean("multipleNames") ? "" : data.getString("name");
+            name.getStringValue()
+                .setStringValue(text);
+            name.setText(text);
+            super.onOpen(screen);
+            getContext().focus(name);
+        }
+
+        @Override
+        public void onUpdate() {
+            super.onUpdate();
+            if (!isOpen() || isClosing()) return;
+            if (finished) closeIfOpen();
+            else validateTarget();
+        }
+
+        private boolean validateTarget() {
+            NBTTagCompound data = container.display;
+            if (data.getBoolean("detail") && data.getBoolean("renameable")
+                && target.equals(data.getString("detailTarget"))
+                && nameRevision == data.getLong("nameRevision")) return true;
+            closeIfOpen();
+            mc.thePlayer.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.stale"));
+            return false;
+        }
+
+        private void submit() {
+            if (finished || !layoutReady() || !validateTarget()) return;
+            container.sync.request(RENAME, name.getText(), "", 0, nameRevision);
+            closeIfOpen();
+        }
+
+        @Override
+        public boolean onKeyPressed(char character, int key) {
+            if (finished) return true;
+            if (key == Keyboard.KEY_ESCAPE) {
+                closeIfOpen();
+                return true;
+            }
+            if (key == Keyboard.KEY_RETURN || key == Keyboard.KEY_NUMPADENTER) {
+                submit();
+                return true;
+            }
+            return super.onKeyPressed(character, key);
+        }
+
+        @Override
+        public void closeIfOpen() {
+            // Retry closing after the opening animation, without allowing another submission.
+            finished = true;
+            super.closeIfOpen();
+        }
+
+        @Override
+        public void onClose() {
+            if (name.isFocused()) getContext().removeFocus();
+            super.onClose();
+        }
     }
 
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!layoutReady() && container.display.hasKey("session") && layoutRetry-- <= 0) {
+        boolean detail = container.display.getBoolean("detail");
+        if (detail == detailView) snapshot = container.display;
+        if (!detailView && detail != showingDetails) {
+            showingDetails = detail;
+            if (detail) detailsPanel.openPanel();
+            else detailsPanel.closePanel();
+        } else if (detailView && (closingDetails || !detail)) {
+            closeIfOpen();
+            return;
+        }
+        if (!detailView && container.display.getInteger("pageSize") != visibleRows
+            && container.display.hasKey("session")
+            && layoutRetry-- <= 0) {
             container.sync.request(SET_PAGE_SIZE, "", "", visibleRows, 0);
             layoutRetry = 10;
         }
-        NBTTagCompound data = container.display;
-        boolean detail = data.getBoolean("detail");
-        if (detail ? search.isFocused() || dimension.isFocused() : name.isFocused()) getContext().removeFocus();
-        if (detail && (!editTarget.equals(data.getString("detailTarget"))
-            || !name.isFocused() && nameRevision != data.getLong("nameRevision"))) {
-            editTarget = data.getString("detailTarget");
-            nameRevision = data.getLong("nameRevision");
-            String text = data.getBoolean("multipleNames") ? "" : data.getString("name");
-            name.getStringValue()
-                .setStringValue(text);
-            name.setText(text);
-        }
-        if (!detail) editTarget = "";
-        search.setEnabled(!detail);
-        dimension.setEnabled(!detail);
-        name.setEnabled(detail && data.getBoolean("renameable"));
+        NBTTagCompound data = view();
+        boolean showFilters = !detailView && !detail && !detailsPanel.isPanelOpen();
+        if (!showFilters && editingText()) getContext().removeFocus();
+        search.setEnabled(showFilters);
+        dimension.setEnabled(showFilters);
         NBTTagList rows = data.getTagList("rows", 10);
+        int rowCount = Math.min(visibleRows, rows.tagCount());
+        boolean ready = layoutReady();
         for (var button : buttons) {
             int id = button.id;
             int actionType = type(id);
-            boolean visible = !isRowAction(id) || rowIndex(id) < Math.min(visibleRows, rows.tagCount());
-            button.available = layoutReady();
-            if (id == TOGGLE_AUTO) button.on = data.getBoolean("auto");
-            if (id == BACK) visible = detail || data.getBoolean("group");
-            if (id == RENAME) visible = detail;
-            if (id == RENAME) button.available &= data.getBoolean("renameable");
-            if (id == APPLY_FILTER || id == CYCLE_FILTER) visible = !detail;
-            if (actionType == OPEN_DETAILS) visible &= !detail;
-            if (actionType == TOGGLE_PAUSE) button.on = !rows.getCompoundTagAt(rowIndex(id))
-                .getBoolean("paused");
+            boolean visible = true;
             if (isRowAction(id)) {
-                boolean group = rows.getCompoundTagAt(rowIndex(id))
-                    .getBoolean("group");
-                if (actionType == TOGGLE_PAUSE || actionType == HIGHLIGHT || actionType == TELEPORT) visible &= !group;
-                if (actionType == OPEN_DETAILS) button.size(group ? xSize - 112 : 20, ROW_HEIGHT);
+                int index = rowIndex(id);
+                if (index >= rowCount) {
+                    button.setEnabled(false);
+                    continue;
+                }
+                NBTTagCompound row = rows.getCompoundTagAt(index);
+                if (actionType == TOGGLE_PAUSE) button.on = !row.getBoolean("paused");
+                if (actionType == TOGGLE_PAUSE || actionType == HIGHLIGHT || actionType == TELEPORT)
+                    visible = !row.getBoolean("group");
+                if (actionType == COPY_POSITION) visible = !row.getBoolean("category");
             }
+            button.available = ready;
+            if (id == TOGGLE_AUTO) button.on = data.getBoolean("auto");
+            if (id == BACK) visible = detailView || data.getBoolean("group");
+            if (id == RENAME) {
+                visible = detailView;
+                button.available &= data.getBoolean("renameable");
+            }
+            if (id == APPLY_FILTER || id == CYCLE_FILTER
+                || id == TOGGLE_AUTO
+                || id == CYCLE_VISUALISATION
+                || id == TOGGLE_GROUPING) visible = !detailView;
+            if (id == TOGGLE_GROUPING) visible &= !data.getBoolean("typeGroup");
+            if (actionType == OPEN_DETAILS) visible &= !detailView;
+            button.setEnabled(visible);
+            if (!visible) continue;
             if (id == PREVIOUS_PAGE) button.available &= data.getInteger("page") > 0;
             if (id == NEXT_PAGE) button.available &= data.getInteger("page") + 1 < data.getInteger("pages");
             button.label = switch (actionType) {
@@ -374,9 +580,10 @@ public final class WirelessCardGui extends ModularPanel {
                 case NEXT_PAGE -> ">";
                 case REFRESH -> tr("refresh");
                 case BACK -> tr("back_compact");
-                case RENAME -> StatCollector.translateToLocal("gui.done");
+                case RENAME -> StatCollector.translateToLocal("selectWorld.rename");
                 case APPLY_FILTER -> tr("search");
                 case CYCLE_FILTER -> tr("filter." + data.getInteger("filterState"));
+                case TOGGLE_GROUPING -> data.getBoolean("collapseTypes") ? "+" : "-";
                 case TELEPORT -> tr("teleport");
                 case HIGHLIGHT -> tr("highlight");
                 case COPY_POSITION -> tr("copy");
@@ -390,7 +597,6 @@ public final class WirelessCardGui extends ModularPanel {
                     button.getArea().width < 102 ? label : tr("visualisation_button", label),
                     button.getArea().width - 8);
             }
-            button.setEnabled(visible);
         }
     }
 
@@ -400,10 +606,10 @@ public final class WirelessCardGui extends ModularPanel {
         try {
             int count = Math.min(
                 visibleRows,
-                container.display.getTagList("rows", 10)
+                view().getTagList("rows", 10)
                     .tagCount());
             for (int row = 0; row < count; row++) {
-                int y = ROW_TOP + ROW_HEIGHT - 1 + row * ROW_HEIGHT;
+                int y = rowTop() + ROW_HEIGHT - 1 + row * ROW_HEIGHT;
                 drawRect(8, y, xSize - 8, y + 1, ColorUtils.craftingDiagnosticTerminalLine.getColor());
             }
             drawForeground();
@@ -513,10 +719,10 @@ public final class WirelessCardGui extends ModularPanel {
 
     private void drawEmptyMessage(NBTTagCompound data, int color) {
         List<String> lines = fontRendererObj.listFormattedStringToWidth(
-            tr(data.getBoolean("filtered") ? "no_matches" : "empty"),
+            tr(data.getBoolean("initializing") ? "initializing" : data.getBoolean("filtered") ? "no_matches" : "empty"),
             Math.min(300, xSize - 48));
         int lineHeight = fontRendererObj.FONT_HEIGHT + 3;
-        int y = ROW_TOP + (visibleRows * ROW_HEIGHT - lines.size() * lineHeight) / 2;
+        int y = rowTop() + (visibleRows * ROW_HEIGHT - lines.size() * lineHeight) / 2;
         for (String line : lines) {
             fontRendererObj.drawString(line, (xSize - fontRendererObj.getStringWidth(line)) / 2, y, color);
             y += lineHeight;
@@ -525,18 +731,20 @@ public final class WirelessCardGui extends ModularPanel {
 
     private static String rowName(NBTTagCompound row, ItemStack icon) {
         String name = row.getString("name");
-        if (!name.isEmpty()) return name;
-        return icon == null ? "" : icon.getDisplayName();
+        if (name.isEmpty()) name = icon == null ? "" : icon.getDisplayName();
+        return row.getBoolean("shared") ? tr("shared", name) : name;
     }
 
-    private int rowContentWidth(NBTTagCompound row) {
-        return row.getBoolean("group") ? xSize - 140 : contentWidth();
+    private int rowStateX() {
+        return xSize - 172;
     }
 
     private void drawRowTitle(NBTTagCompound data, NBTTagCompound row, ItemStack icon, int y) {
         String name = (row.getBoolean("group") ? "> " : "") + rowName(row, icon);
-        String position = row.getString("position");
-        int width = rowContentWidth(row);
+        String position = row.getString("positionLabel");
+        String count = row.getBoolean("category") ? " ×" + row.getInteger("items")
+            : row.getBoolean("group") ? " [" + row.getInteger("clusters") + "]" : "";
+        int width = contentWidth() - fontRendererObj.getStringWidth(count);
         int nameColor = ColorUtils.guiTextColorBlack.getColor();
         if (data.getBoolean("detail") || name.isEmpty()) {
             fontRendererObj.drawString(fontRendererObj.trimStringToWidth(position, width), CONTENT_X, y, nameColor);
@@ -555,58 +763,73 @@ public final class WirelessCardGui extends ModularPanel {
             CONTENT_X + fontRendererObj.getStringWidth(title),
             y,
             ColorUtils.craftingTreeTask.getColor());
+        if (!count.isEmpty()) fontRendererObj.drawString(
+            count,
+            CONTENT_X + fontRendererObj.getStringWidth(title) + fontRendererObj.getStringWidth(suffix),
+            y,
+            stateColor(row));
     }
 
     private void drawForeground() {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         Platform.setupDrawFont();
-        NBTTagCompound data = container.display;
+        NBTTagCompound data = view();
         int textColor = ColorUtils.guiTextColorGray.getColor();
         ItemStack groupIcon = ItemStack.loadItemStackFromNBT(data.getCompoundTag("groupIcon"));
         String title = data.getBoolean("detail") ? tr("detail_title")
             : groupIcon == null ? tr("title")
-                : groupIcon.getDisplayName() + " (" + data.getString("groupPosition") + ")";
-        fontRendererObj.drawString(fontRendererObj.trimStringToWidth(title, xSize - 140), 10, 11, textColor);
-        String autoLabel = fontRendererObj.trimStringToWidth(tr(data.getBoolean("auto") ? "auto_on" : "auto_off"), 94);
-        fontRendererObj.drawString(
-            autoLabel,
-            xSize - 32 - fontRendererObj.getStringWidth(autoLabel),
-            10 + (16 - fontRendererObj.FONT_HEIGHT) / 2,
-            textColor);
-        String source = data.getBoolean("bound") ? tr("source", data.getString("source")) : tr("unbound");
-        fontRendererObj.drawString(fontRendererObj.trimStringToWidth(source, xSize - 20), 10, 25, textColor);
-        boolean budgetKnown = data.getBoolean("sourceLoaded") && data.getBoolean("channels")
-            && data.getBoolean("stable")
-            && data.getInteger("used") >= 0
-            && data.getInteger("capacity") > 0;
-        int budgetColor = !budgetKnown ? textColor
-            : data.getInteger("used") >= data.getInteger("capacity") ? badColor() : goodColor();
+                : groupIcon.getDisplayName() + " (" + data.getString("groupPositionLabel") + ")";
+        if (!detailView && data.getBoolean("typeGroup")) {
+            if (data.getBoolean("sharedGroup")) title = tr("shared", title);
+            title = GuiText.Types.getLocal() + " > " + title;
+        }
         fontRendererObj
-            .drawString(fontRendererObj.trimStringToWidth(budgetText(data), xSize - 116), 10, 36, budgetColor);
-        ratioBar(
-            xSize - 96,
-            37,
-            84,
-            6,
-            budgetKnown ? data.getInteger("used") : -1,
-            data.getInteger("capacity"),
-            budgetColor,
-            ColorUtils.craftingTreeTask.getColor());
+            .drawString(fontRendererObj.trimStringToWidth(title, xSize - (detailView ? 40 : 140)), 10, 11, textColor);
+        if (detailView) {
+            fontRendererObj
+                .drawString(fontRendererObj.trimStringToWidth(data.getString("name"), xSize - 94), 10, 29, textColor);
+        } else {
+            String autoLabel = fontRendererObj
+                .trimStringToWidth(tr(data.getBoolean("auto") ? "auto_on" : "auto_off"), 94);
+            fontRendererObj.drawString(
+                autoLabel,
+                xSize - 32 - fontRendererObj.getStringWidth(autoLabel),
+                10 + (16 - fontRendererObj.FONT_HEIGHT) / 2,
+                textColor);
+            String source = data.getBoolean("bound") ? tr("source", data.getString("sourceLabel")) : tr("unbound");
+            fontRendererObj.drawString(fontRendererObj.trimStringToWidth(source, xSize - 20), 10, 25, textColor);
+            boolean budgetKnown = data.getBoolean("sourceLoaded") && data.getBoolean("channels")
+                && data.getBoolean("stable")
+                && data.getInteger("used") >= 0
+                && data.getInteger("capacity") > 0;
+            int budgetColor = !budgetKnown ? textColor
+                : data.getInteger("used") >= data.getInteger("capacity") ? badColor() : goodColor();
+            fontRendererObj
+                .drawString(fontRendererObj.trimStringToWidth(budgetText(data), xSize - 116), 10, 36, budgetColor);
+            ratioBar(
+                xSize - 96,
+                37,
+                84,
+                6,
+                budgetKnown ? data.getInteger("used") : -1,
+                data.getInteger("capacity"),
+                budgetColor,
+                ColorUtils.craftingTreeTask.getColor());
+            fontRendererObj.drawString("D", xSize - 182, 64, textColor);
+        }
         drawMetrics(data, 10, 47, xSize - 20, false);
-        if (!data.getBoolean("detail")) fontRendererObj.drawString("D", xSize - 182, 64, textColor);
         NBTTagList rows = data.getTagList("rows", 10);
         for (int index = 0; index < Math.min(visibleRows, rows.tagCount()); index++) {
             NBTTagCompound row = rows.getCompoundTagAt(index);
-            int y = ROW_TOP + index * ROW_HEIGHT;
+            int y = rowTop() + index * ROW_HEIGHT;
             ItemStack icon = ItemStack.loadItemStackFromNBT(row.getCompoundTag("icon"));
             if (icon != null) drawDeviceIcon(icon, 12, y + 4);
             drawRowTitle(data, row, icon, y + 2);
-            String state = row.getBoolean("group") ? "[" + row.getInteger("clusters") + "]"
-                : tr("short_state." + row.getString("state"));
+            String state = tr("short_state." + row.getString("state"));
             fontRendererObj.drawString(
                 fontRendererObj.trimStringToWidth(state, 36),
-                xSize - (row.getBoolean("group") ? 62 : 172),
+                rowStateX(),
                 y + (ROW_HEIGHT - fontRendererObj.FONT_HEIGHT) / 2,
                 stateColor(row));
             if (data.getBoolean("detail")) {
@@ -616,11 +839,11 @@ public final class WirelessCardGui extends ModularPanel {
                     y + 13,
                     stateColor(row));
             } else {
-                drawMetrics(row, CONTENT_X, y + 13, rowContentWidth(row), true);
+                drawMetrics(row, CONTENT_X, y + 13, contentWidth(), true);
                 int missingColor = row.getBoolean("stable") && row.getInteger("missing") > 0 ? badColor()
                     : ColorUtils.craftingTreeTask.getColor();
-                if (!row.getBoolean("group")) ratioBar(
-                    xSize - 172,
+                ratioBar(
+                    rowStateX(),
                     y + 19,
                     36,
                     2,
