@@ -55,14 +55,6 @@ public final class WirelessLinkData {
 
     public record Claim(String kind, Set<Address> frequencies, Set<Address> paused, Set<Address> entrances) {
 
-        public Claim(String kind, Set<Address> frequencies) {
-            this(kind, frequencies, Set.of());
-        }
-
-        public Claim(String kind, Set<Address> frequencies, Set<Address> paused) {
-            this(kind, frequencies, paused, Set.of());
-        }
-
         public Claim {
             frequencies = Set.copyOf(frequencies);
             entrances = entrances.isEmpty() ? Set.of()

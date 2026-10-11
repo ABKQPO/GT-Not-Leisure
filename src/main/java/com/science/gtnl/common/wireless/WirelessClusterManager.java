@@ -39,7 +39,6 @@ public final class WirelessClusterManager {
     private static final Map<Cluster<IGridNode, Address>, Set<Address>> PAUSES = new IdentityHashMap<>();
     private static final Map<Cluster<IGridNode, Address>, Set<IGridNode>> SAVED_ENTRANCES = new IdentityHashMap<>();
     private static final VerifiedEntranceRecovery<IGridNode, Address> RECOVERY = new VerifiedEntranceRecovery<>();
-    private static boolean scanLimited;
     private static final ScanSchedule SCANS = new ScanSchedule();
     private static final WirelessTopologyWatch WATCH = new WirelessTopologyWatch();
 
@@ -94,7 +93,7 @@ public final class WirelessClusterManager {
     public static void tick() {
         RECOVERY.nextTick();
         if (SCANS.tick()) refresh();
-        else if (!scanLimited) {
+        else {
             TOPOLOGY.beginScan();
             reconcile();
         }
@@ -105,43 +104,37 @@ public final class WirelessClusterManager {
     }
 
     public static void refreshTarget(IGridNode target) {
-        if (!refresh(List.of(target))) throw new PhysicalClusterTracker.ScanLimitException();
+        refresh(List.of(target));
+        var cluster = TRACKER.clusterOf(target);
+        if (cluster != null && cluster.limited()) throw new PhysicalClusterTracker.ScanLimitException();
     }
 
-    private static boolean refresh(List<IGridNode> extraSeeds) {
+    private static void refresh(List<IGridNode> extraSeeds) {
         try (var ignored = WirelessLinkData.readBatch()) {
             SCANS.beginScan();
             TOPOLOGY.beginScan();
-            try {
-                List<IGridNode> seeds = new ArrayList<>(WirelessLinkPersistence.seeds());
-                seeds.addAll(extraSeeds);
-                TRACKER.refresh(
-                    TOPOLOGY,
-                    seeds,
-                    node -> WirelessLinkPersistence.restore(node, TOPOLOGY),
-                    WirelessChannelManager::controllerSource);
-                WirelessLinkPersistence.synchronize(TRACKER, TOPOLOGY);
-                scanLimited = false;
-            } catch (PhysicalClusterTracker.ScanLimitException limit) {
-                scanLimited = true;
-                // Never apply a partial scan. Keep all provenance so reducing the network can recover it.
-                for (Entrance entrance : WirelessChannelManager.entrances())
-                    WirelessChannelManager.disconnect(entrance.id());
-                TOPOLOGY.clear();
-                AutomaticWirelessEntrances.clear();
-                return false;
-            }
-            PAUSES.clear();
-            SAVED_ENTRANCES.clear();
-            for (var cluster : TRACKER.clusters()) updateSavedState(cluster);
-            WATCH.update(TRACKER.clusters(), TOPOLOGY);
-            reconcile();
-            Set<IGridNode> retained = TRACKER.nodes();
-            TOPOLOGY.retain(retained);
-            RETRY_AFTER.keySet()
-                .retainAll(retained);
-            return true;
+            List<IGridNode> seeds = new ArrayList<>(WirelessLinkPersistence.seeds());
+            seeds.addAll(extraSeeds);
+            TRACKER.refresh(
+                TOPOLOGY,
+                seeds,
+                node -> WirelessLinkPersistence.restore(node, TOPOLOGY),
+                WirelessChannelManager::controllerSource);
+            publishClusters();
         }
+    }
+
+    private static void publishClusters() {
+        WirelessLinkPersistence.synchronize(TRACKER, TOPOLOGY);
+        PAUSES.clear();
+        SAVED_ENTRANCES.clear();
+        for (var cluster : TRACKER.clusters()) updateSavedState(cluster);
+        WATCH.update(TRACKER.clusters(), TOPOLOGY);
+        reconcile();
+        Set<IGridNode> retained = TRACKER.nodes();
+        TOPOLOGY.retain(retained);
+        RETRY_AFTER.keySet()
+            .retainAll(retained);
     }
 
     private static void updateSavedState(Cluster<IGridNode, Address> cluster) {
@@ -166,7 +159,8 @@ public final class WirelessClusterManager {
         // Tear down every conflicting entrance before trying to reconnect any source.
         for (Entrance entrance : WirelessChannelManager.entrances()) {
             Cluster<IGridNode, Address> cluster = TRACKER.clusterOf(entrance.targetNode());
-            if (cluster == null || cluster.blocked()
+            if (cluster == null || cluster.limited()
+                || cluster.blocked()
                 || cluster.conflicted()
                 || paused(cluster, entrance.source())
                 || !cluster.frequencies()
@@ -184,7 +178,9 @@ public final class WirelessClusterManager {
         for (Cluster<IGridNode, Address> cluster : TRACKER.clusters()) {
             if (cluster.frequencies()
                 .isEmpty()) continue;
-            if (cluster.conflicted()) {
+            if (cluster.limited()) {
+                STATES.put(cluster, State.WAITING);
+            } else if (cluster.conflicted()) {
                 STATES.put(cluster, State.CONFLICT);
             } else if (cluster.blocked()) {
                 STATES.put(cluster, State.WAITING);
@@ -201,6 +197,7 @@ public final class WirelessClusterManager {
         AutomaticWirelessEntrances.refresh(
             TRACKER.clusters()
                 .stream()
+                .filter(cluster -> !cluster.limited())
                 .filter(cluster -> STATES.get(cluster) != State.PAUSED)
                 .filter(cluster -> Collections.disjoint(cluster.frequencies(), pendingRecovery))
                 .toList(),
@@ -218,8 +215,10 @@ public final class WirelessClusterManager {
         }
         List<Candidate<IGridNode, Address>> candidates = new ArrayList<>();
         for (var cluster : TRACKER.clusters()) {
-            if (cluster.blocked() || cluster.frequencies()
-                .size() != 1) continue;
+            if (cluster.limited() || cluster.blocked()
+                || cluster.frequencies()
+                    .size() != 1)
+                continue;
             Address source = cluster.frequencies()
                 .iterator()
                 .next();
@@ -373,7 +372,7 @@ public final class WirelessClusterManager {
                     if (sameSource(entrance.source(), source) && entrance.isLive()) entrances++;
                 }
                 boolean paused = paused(cluster, source);
-                String state = scanLimited ? "limited"
+                String state = cluster.limited() ? "limited"
                     : paused ? "paused"
                         : STATES.getOrDefault(cluster, State.WAITING)
                             .name()
@@ -548,12 +547,14 @@ public final class WirelessClusterManager {
 
     public static Summary summary(Address source) {
         source = controllerSource(source);
+        boolean scanLimited = false;
         int clusters = 0, active = 0, conflicted = 0, waiting = 0;
         for (Cluster<IGridNode, Address> cluster : TRACKER.clusters()) {
             if (!cluster.frequencies()
                 .contains(source)) continue;
             clusters++;
-            State state = scanLimited ? State.WAITING : STATES.getOrDefault(cluster, State.WAITING);
+            scanLimited |= cluster.limited();
+            State state = STATES.getOrDefault(cluster, State.WAITING);
             switch (state) {
                 case ACTIVE -> active++;
                 case CONFLICT -> conflicted++;
@@ -581,6 +582,5 @@ public final class WirelessClusterManager {
         RECOVERY.clear();
         AutomaticWirelessEntrances.clear();
         WirelessLinkPersistence.clear();
-        scanLimited = false;
     }
 }

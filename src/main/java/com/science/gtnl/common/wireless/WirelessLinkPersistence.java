@@ -145,15 +145,14 @@ public final class WirelessLinkPersistence {
         return saved == null ? Set.of() : saved.frequencies();
     }
 
-    /** Called only after a complete topology scan, so a scan limit never commits a partial provenance snapshot. */
+    /** Only complete components may change saved provenance; unfinished scans retain their original bindings. */
     static void synchronize(PhysicalClusterTracker<IGridNode, Address> tracker, PhysicalMeTopology topology) {
-        // Revalidate provenance after each full scan, including controller aliases and multipart changes.
         REMEMBERED_ENTRANCES.clear();
         Map<TileEntity, Map<Slot, Claim>> updates = new IdentityHashMap<>();
         Set<IGridNode> retained = Collections.newSetFromMap(new IdentityHashMap<>());
         for (var cluster : tracker.clusters()) {
             Set<Address> paused = new java.util.HashSet<>();
-            for (IGridNode node : cluster.nodes()) {
+            if (!cluster.limited()) for (IGridNode node : cluster.nodes()) {
                 Claim saved = claim(node, topology);
                 if (saved != null) paused.addAll(saved.paused());
             }
@@ -162,6 +161,9 @@ public final class WirelessLinkPersistence {
                 if (endpoint == null) continue;
                 retained.add(node);
                 IMPORTED.put(node, endpoint);
+                // Even a quarantined component needs node/slot identity tracking: replacing a part of the same
+                // class must not import its predecessor's saved claim. Its payload stays untouched until recovery.
+                if (cluster.limited()) continue;
                 Map<Slot, Claim> claims = updates
                     .computeIfAbsent(endpoint.tile(), tile -> WirelessLinkData.read(WirelessTileData.of(tile)));
                 Set<Address> frequencies = tracker.claimsOf(node);

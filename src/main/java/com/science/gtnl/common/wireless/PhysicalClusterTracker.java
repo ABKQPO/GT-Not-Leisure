@@ -25,7 +25,7 @@ public final class PhysicalClusterTracker<N, F> {
         boolean blocksWireless(N node);
     }
 
-    public record Cluster<N, F> (Set<N> nodes, Set<F> frequencies, boolean blocked) {
+    public record Cluster<N, F> (Set<N> nodes, Set<F> frequencies, boolean blocked, boolean limited) {
 
         public boolean conflicted() {
             return frequencies.size() > 1;
@@ -35,7 +35,7 @@ public final class PhysicalClusterTracker<N, F> {
     public static final class ScanLimitException extends IllegalStateException {
 
         public ScanLimitException() {
-            super("Physical cluster scan limit exceeded; wireless entrances paused without deleting bindings.");
+            super("Physical cluster scan limit exceeded; this cluster's entrances paused without deleting bindings.");
         }
     }
 
@@ -64,62 +64,93 @@ public final class PhysicalClusterTracker<N, F> {
         return claims.getOrDefault(node, Set.of());
     }
 
-    /** No claims or snapshots change until the whole bounded scan succeeds. */
-    public void refresh(Topology<N> topology, Collection<N> extraSeeds) {
-        refresh(topology, extraSeeds, node -> Set.of());
-    }
-
-    /** Saved provenance is imported before merging, including nodes first discovered through a physical edge. */
-    public void refresh(Topology<N> topology, Collection<N> extraSeeds, Function<N, Set<F>> savedClaims) {
-        refresh(topology, extraSeeds, savedClaims, UnaryOperator.identity());
-    }
-
-    /** Resolve loaded aliases for runtime identity while retaining the saved source of each claim. */
+    /**
+     * Bound each physical component independently. An unfinished frontier quarantines every scan that reaches it,
+     * including scans started at other saved nodes in the same component. Only complete components spread claims.
+     */
     public void refresh(Topology<N> topology, Collection<N> extraSeeds, Function<N, Set<F>> savedClaims,
         UnaryOperator<F> frequencyIdentity) {
-        Set<N> seen = identitySet();
+        Map<N, Scan> owners = new IdentityHashMap<>();
         List<N> seeds = new ArrayList<>(claims.keySet());
         seeds.addAll(extraSeeds);
+        for (N seed : seeds) {
+            if (owners.containsKey(seed) || !topology.isLive(seed)) continue;
+            Scan scan = new Scan();
+            int discovered = 1;
+            ArrayDeque<N> pending = new ArrayDeque<>();
+            pending.add(seed);
+            owners.put(seed, scan);
+            while (!pending.isEmpty() && !scan.root().limited) {
+                N node = pending.removeFirst();
+                for (N neighbour : topology.neighbours(node)) {
+                    if (!topology.isLive(neighbour)) continue;
+                    Scan owner = owners.get(neighbour);
+                    if (owner == null) {
+                        owners.put(neighbour, scan);
+                        pending.addLast(neighbour);
+                        if (++discovered > maxNodes) scan.root().limited = true;
+                    } else if (owner.root() != scan.root()) {
+                        // A complete component cannot meet a different scan in an undirected physical graph.
+                        Scan root = scan.root();
+                        root.parent = owner.root();
+                        root.parent.limited = true;
+                    }
+                    if (scan.root().limited) break;
+                }
+            }
+        }
+        Map<Scan, Set<N>> components = new IdentityHashMap<>();
+        owners.forEach(
+            (node, owner) -> components.computeIfAbsent(owner.root(), ignored -> identitySet())
+                .add(node));
+        List<Cluster<N, F>> scanned = new ArrayList<>();
+        components.forEach(
+            (scan, members) -> scanned.add(
+                new Cluster<>(
+                    Collections.unmodifiableSet(members),
+                    Set.of(),
+                    members.stream()
+                        .anyMatch(topology::blocksWireless),
+                    scan.limited)));
+        rebuildClaims(scanned, savedClaims, frequencyIdentity);
+    }
+
+    /** Commit label changes on the just-validated physical membership without traversing the graph again. */
+    void commitClaims(UnaryOperator<F> frequencyIdentity) {
+        rebuildClaims(clusters, node -> Set.of(), frequencyIdentity);
+    }
+
+    private void rebuildClaims(List<Cluster<N, F>> scanned, Function<N, Set<F>> savedClaims,
+        UnaryOperator<F> frequencyIdentity) {
         List<Cluster<N, F>> nextClusters = new ArrayList<>();
         Map<N, Set<F>> nextClaims = new IdentityHashMap<>();
         Map<N, Cluster<N, F>> nextByNode = new IdentityHashMap<>();
-        for (N seed : seeds) {
-            if (seen.contains(seed) || !topology.isLive(seed)) continue;
-            Set<N> members = identitySet();
+        for (var component : scanned) {
+            Set<N> members = component.nodes();
+            boolean limited = component.limited();
             Map<N, Set<F>> provenance = new IdentityHashMap<>();
             Set<F> frequencies = new HashSet<>();
-            ArrayDeque<N> pending = new ArrayDeque<>();
-            pending.add(seed);
-            seen.add(seed);
-            boolean blocked = false;
-            while (!pending.isEmpty()) {
-                if (seen.size() > maxNodes) throw new ScanLimitException();
-                N node = pending.removeFirst();
-                members.add(node);
+            boolean blocked = component.blocked();
+            for (N node : members) {
                 Set<F> labels = claims.containsKey(node) ? claims.get(node) : savedClaims.apply(node);
                 provenance.put(node, labels);
                 frequencies.addAll(labels);
-                blocked |= topology.blocksWireless(node);
-                for (N neighbour : topology.neighbours(node)) {
-                    if (!seen.contains(neighbour) && topology.isLive(neighbour)) {
-                        seen.add(neighbour);
-                        pending.addLast(neighbour);
-                    }
-                }
             }
             Cluster<N, F> cluster = new Cluster<>(
                 Collections.unmodifiableSet(members),
                 frequencies.stream()
                     .map(frequencyIdentity)
                     .collect(java.util.stream.Collectors.toUnmodifiableSet()),
-                blocked);
-            Set<F> sharedClaim = frequencies.size() == 1 && !blocked ? Set.copyOf(frequencies) : null;
+                blocked,
+                limited);
+            Set<F> sharedClaim = frequencies.size() == 1 && !blocked && !limited ? Set.copyOf(frequencies) : null;
             nextClusters.add(cluster);
             for (N node : members) {
                 nextByNode.put(node, cluster);
                 // Never spread competing frequencies across a conflict. Preserve each side's original provenance.
                 Set<F> labels = sharedClaim != null ? sharedClaim : provenance.get(node);
                 if ((labels == null || labels.isEmpty()) && !blocked
+                    && !limited
                     && cluster.frequencies()
                         .size() == 1)
                     labels = cluster.frequencies();
@@ -131,8 +162,27 @@ public final class PhysicalClusterTracker<N, F> {
         clusters = List.copyOf(nextClusters);
     }
 
+    private static final class Scan {
+
+        private Scan parent = this;
+        private boolean limited;
+
+        private Scan root() {
+            Scan root = this;
+            while (root.parent != root) root = root.parent;
+            Scan current = this;
+            while (current.parent != current) {
+                Scan next = current.parent;
+                current.parent = root;
+                current = next;
+            }
+            return root;
+        }
+    }
+
     public void link(Cluster<N, F> cluster, F frequency) {
-        if (cluster.blocked() || cluster.conflicted()
+        if (cluster.limited() || cluster.blocked()
+            || cluster.conflicted()
             || !cluster.frequencies()
                 .isEmpty()
                 && !cluster.frequencies()
@@ -141,10 +191,6 @@ public final class PhysicalClusterTracker<N, F> {
         }
         Set<F> sharedClaim = Set.of(frequency);
         for (N node : cluster.nodes()) claims.put(node, sharedClaim);
-    }
-
-    public void unlink(Cluster<N, F> cluster, F frequency) {
-        unlink(cluster, frequency, UnaryOperator.identity());
     }
 
     public void unlink(Cluster<N, F> cluster, F frequency, UnaryOperator<F> frequencyIdentity) {
