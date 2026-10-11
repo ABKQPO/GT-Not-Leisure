@@ -23,9 +23,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.item.items.ItemElainaBrooch;
 
 @Mixin(value = ForgeHooks.class, remap = false)
 public class MixinForgeHook {
+
+    @Inject(method = "getTotalArmorValue", at = @At("HEAD"), cancellable = true, remap = false)
+    private static void gtnl$elainaBroochArmorValue(EntityPlayer player, CallbackInfoReturnable<Integer> cir) {
+        if (ItemElainaBrooch.isEquipped(player)) cir.setReturnValue(ItemElainaBrooch.getArmorValue());
+    }
 
     @Inject(method = "onPlaceItemIntoWorld", at = @At("HEAD"), cancellable = true, remap = false)
     private static void preOnPlaceItemIntoWorldRewrite(ItemStack itemstack, EntityPlayer player, World world, int x,
