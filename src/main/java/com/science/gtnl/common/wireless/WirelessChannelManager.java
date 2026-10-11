@@ -127,12 +127,16 @@ public final class WirelessChannelManager {
 
     public record Allocation(int capacity, int used, long revision) {}
 
-    public static void recordAllocation(IGrid grid, ChannelBudget budget) {
-        ALLOCATIONS.put(grid, new Allocation(budget.capacity(), budget.allocated(), ++allocationRevision));
+    public static void recordAllocation(IGrid grid, int capacity, int used) {
+        ALLOCATIONS.put(grid, new Allocation(capacity, used, ++allocationRevision));
+    }
+
+    public static void invalidateAllocation(IGrid grid) {
+        ALLOCATIONS.remove(grid);
     }
 
     public static Allocation allocation(IGrid grid) {
-        return ALLOCATIONS.get(grid);
+        return AutomaticWirelessEntrances.isSettled(grid.getCache(IPathingGrid.class)) ? ALLOCATIONS.get(grid) : null;
     }
 
     public record Address(int dimension, int x, int y, int z, ForgeDirection side) {
@@ -255,15 +259,21 @@ public final class WirelessChannelManager {
         ENTRANCES.put(id, entrance);
         entranceCountChanged(source, 1);
         OWNED_CONNECTIONS.put(connection, entrance);
-        from.getGrid()
-            .<IPathingGrid>getCache(IPathingGrid.class)
-            .repath();
+        // createGridConnection already schedules AE2's repath.
+        invalidateAllocation(grid);
+        invalidateAllocation(from.getGrid());
         return id;
     }
 
     public static boolean disconnect(int id) {
         Entrance entrance = ENTRANCES.remove(id);
         if (entrance == null) return false;
+        invalidateAllocation(
+            entrance.sourceNode()
+                .getGrid());
+        invalidateAllocation(
+            entrance.targetNode()
+                .getGrid());
         entranceCountChanged(entrance.source(), -1);
         WirelessLinkPersistence.forgetEntrance(entrance);
         OWNED_CONNECTIONS.remove(entrance.connection());

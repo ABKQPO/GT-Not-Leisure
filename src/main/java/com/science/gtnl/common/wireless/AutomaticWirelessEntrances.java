@@ -130,11 +130,12 @@ public final class AutomaticWirelessEntrances {
         if (planner.pendingEntrance() >= 0 && WirelessChannelManager.entrance(planner.pendingEntrance()) == null) {
             planner.entranceLost();
         }
-        IPathingGrid path = grid.getCache(IPathingGrid.class);
         IEnergyGrid energy = grid.getCache(IEnergyGrid.class);
         var allocation = WirelessChannelManager.allocation(grid);
-        int capacity = allocation == null ? 0 : allocation.capacity();
-        boolean settled = allocation != null && isSettled(path);
+        // An invalidated allocation is temporarily unknown, not a change to the controller geometry.
+        // Keep the trial's context stable until a fresh pathing pass can confirm or roll it back.
+        int capacity = allocation == null ? WirelessChannelManager.capacity(grid) : allocation.capacity();
+        boolean settled = allocation != null;
         if (settled && energy.isNetworkPowered()) {
             for (Entrance entrance : WirelessChannelManager.entrances()) {
                 if (entrance.sourceNode()

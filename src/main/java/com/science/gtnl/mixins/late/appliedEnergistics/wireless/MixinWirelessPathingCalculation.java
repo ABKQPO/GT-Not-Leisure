@@ -50,8 +50,9 @@ public abstract class MixinWirelessPathingCalculation implements WirelessPathing
 
     @Inject(method = "<init>", at = @At("RETURN"), require = 1)
     private void gtnl$initializeBudget(IGrid grid, CallbackInfo ci) {
+        gtnl$wirelessGrid = grid;
+        WirelessChannelManager.invalidateAllocation(grid);
         if (WirelessChannelManager.channelsEnabled() && WirelessChannelManager.manages(grid)) {
-            gtnl$wirelessGrid = grid;
             gtnl$wirelessBudget = new ChannelBudget(WirelessChannelManager.capacity(grid));
         }
     }
@@ -70,8 +71,11 @@ public abstract class MixinWirelessPathingCalculation implements WirelessPathing
 
     @Inject(method = "compute", at = @At("RETURN"), require = 1)
     private void gtnl$publishAllocation(CallbackInfo ci) {
-        if (gtnl$wirelessBudget != null) {
-            WirelessChannelManager.recordAllocation(gtnl$wirelessGrid, gtnl$wirelessBudget);
-        }
+        WirelessChannelManager.recordAllocation(
+            gtnl$wirelessGrid,
+            gtnl$wirelessBudget == null ? WirelessChannelManager.capacity(gtnl$wirelessGrid)
+                : gtnl$wirelessBudget.capacity(),
+            gtnl$wirelessBudget == null ? ((PathingCalculation) (Object) this).getChannelsInUse()
+                : gtnl$wirelessBudget.allocated());
     }
 }

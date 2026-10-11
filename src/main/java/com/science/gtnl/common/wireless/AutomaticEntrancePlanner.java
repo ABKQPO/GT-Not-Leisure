@@ -25,17 +25,17 @@ public final class AutomaticEntrancePlanner<N> {
         NO_CANDIDATE
     }
 
-    public enum Action {
+    enum Action {
         NONE,
         ADD,
         KEEP,
         REMOVE
     }
 
-    public record Observation(long context, long revision, long tick, boolean channelsEnabled, boolean powered,
+    record Observation(long context, long revision, long tick, boolean channelsEnabled, boolean powered,
         boolean settled, int capacity, int used, int served, int missing, boolean entranceLimit) {}
 
-    public record Decision<N> (Action action, N target, int entranceId) {}
+    record Decision<N> (Action action, N target, int entranceId) {}
 
     private record Trial<N> (N target, int id, long revision, int served, int used) {}
 
@@ -48,22 +48,22 @@ public final class AutomaticEntrancePlanner<N> {
     private long nextActionTick;
     private Status status = Status.WAITING;
 
-    public Status status() {
+    Status status() {
         return status;
     }
 
-    public int pendingEntrance() {
+    int pendingEntrance() {
         return trial == null ? -1 : trial.id();
     }
 
     /** A removed/unloaded entrance must never be evaluated against an unrelated replacement. */
-    public void entranceLost() {
+    void entranceLost() {
         trial = null;
         waitForRevision = -1;
         status = Status.WAITING;
     }
 
-    public Decision<N> decide(Observation observation, Function<Predicate<N>, N> selectCandidate) {
+    Decision<N> decide(Observation observation, Function<Predicate<N>, N> selectCandidate) {
         if (!initialized || context != observation.context()) {
             context = observation.context();
             initialized = true;
@@ -108,12 +108,12 @@ public final class AutomaticEntrancePlanner<N> {
         return new Decision<>(Action.ADD, candidate, -1);
     }
 
-    public void created(N target, int entranceId, Observation before) {
+    void created(N target, int entranceId, Observation before) {
         trial = new Trial<>(target, entranceId, before.revision(), before.served(), before.used());
         status = Status.EXPANDING;
     }
 
-    public void failed(N target, long tick) {
+    void failed(N target, long tick) {
         rejected.add(target);
         nextActionTick = tick + FAILED_CONNECTION_DELAY;
         status = Status.WAITING;
