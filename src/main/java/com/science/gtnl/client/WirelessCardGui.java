@@ -40,6 +40,7 @@ import com.science.gtnl.common.wireless.WirelessCardVisualisation;
 
 import appeng.client.gui.ScreenColor;
 import appeng.core.localization.ColorUtils;
+import appeng.core.localization.GuiText;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -77,7 +78,7 @@ public final class WirelessCardGui extends ModularPanel {
         search = textField(64).hintText(tr("search_placeholder"))
             .hintColor(ColorUtils.craftingTreeRequest.getColor());
         dimension = textField(12);
-        name = textField(32);
+        name = textField(32).hintText(GuiText.Renamer.getLocal());
         child(search).child(dimension)
             .child(name);
         for (int id = 0; id < 10; id++) if (id != 8) addButton(id);
@@ -152,8 +153,8 @@ public final class WirelessCardGui extends ModularPanel {
             .size(124 + dx, 12);
         dimension.pos(148 + dx, 62)
             .size(34, 12);
-        name.pos(44, 62)
-            .size(192 + dx, 12);
+        name.pos(10, 62)
+            .size(226 + dx, 12);
         for (var button : buttons) {
             int id = button.id;
             if (id >= 10) {
@@ -316,7 +317,7 @@ public final class WirelessCardGui extends ModularPanel {
         if (!detail) editTarget = "";
         search.setEnabled(!detail);
         dimension.setEnabled(!detail);
-        name.setEnabled(detail);
+        name.setEnabled(detail && data.getBoolean("renameable"));
         NBTTagList rows = data.getTagList("rows", 10);
         for (var button : buttons) {
             int id = button.id;
@@ -324,6 +325,7 @@ public final class WirelessCardGui extends ModularPanel {
             button.available = layoutReady();
             if (id == 2) button.on = data.getBoolean("auto");
             if (id == 4 || id == 5) visible = detail;
+            if (id == 5) button.available &= data.getBoolean("renameable");
             if (id == 6 || id == 7) visible = !detail;
             if (id >= 20 && id < 30) visible &= !detail;
             if (id >= 10 && id < 20) button.on = !rows.getCompoundTagAt(id - 10)
@@ -335,7 +337,7 @@ public final class WirelessCardGui extends ModularPanel {
                 case 1 -> ">";
                 case 3 -> tr("refresh");
                 case 4 -> tr("back_compact");
-                case 5 -> tr("save_name");
+                case 5 -> StatCollector.translateToLocal("gui.done");
                 case 6 -> tr("search");
                 case 7 -> tr("filter." + data.getInteger("filterState"));
                 default -> id >= 50 ? tr("teleport") : id >= 40 ? tr("highlight") : id >= 30 ? tr("copy") : "";
@@ -476,6 +478,30 @@ public final class WirelessCardGui extends ModularPanel {
         }
     }
 
+    private void drawRowTitle(NBTTagCompound data, NBTTagCompound row, int y) {
+        String name = row.getString("name");
+        String position = row.getString("position");
+        int width = contentWidth();
+        int nameColor = ColorUtils.guiTextColorBlack.getColor();
+        if (data.getBoolean("detail") || name.isEmpty()) {
+            fontRendererObj.drawString(fontRendererObj.trimStringToWidth(position, width), CONTENT_X, y, nameColor);
+            return;
+        }
+        int nameReserve = Math.min(24, fontRendererObj.getStringWidth(name));
+        String suffix = " ("
+            + fontRendererObj
+                .trimStringToWidth(position, Math.max(0, width - nameReserve - fontRendererObj.getStringWidth(" ()")))
+            + ")";
+        String title = fontRendererObj
+            .trimStringToWidth(name, Math.max(0, width - fontRendererObj.getStringWidth(suffix)));
+        fontRendererObj.drawString(title, CONTENT_X, y, nameColor);
+        fontRendererObj.drawString(
+            suffix,
+            CONTENT_X + fontRendererObj.getStringWidth(title),
+            y,
+            ColorUtils.craftingTreeTask.getColor());
+    }
+
     private void drawForeground() {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -513,24 +539,14 @@ public final class WirelessCardGui extends ModularPanel {
             budgetColor,
             ColorUtils.craftingTreeTask.getColor());
         drawMetrics(data, 10, 47, xSize - 20, false);
-        fontRendererObj.drawString(
-            data.getBoolean("detail") ? tr("name_label") : "D",
-            data.getBoolean("detail") ? 10 : xSize - 182,
-            64,
-            textColor);
+        if (!data.getBoolean("detail")) fontRendererObj.drawString("D", xSize - 182, 64, textColor);
         NBTTagList rows = data.getTagList("rows", 10);
         for (int index = 0; index < Math.min(visibleRows, rows.tagCount()); index++) {
             NBTTagCompound row = rows.getCompoundTagAt(index);
             int y = ROW_TOP + index * ROW_HEIGHT;
             ItemStack icon = ItemStack.loadItemStackFromNBT(row.getCompoundTag("icon"));
             if (icon != null) drawDeviceIcon(icon, 12, y + 4);
-            String title = data.getBoolean("detail") || row.getString("name")
-                .isEmpty() ? row.getString("position") : row.getString("name");
-            fontRendererObj.drawString(
-                fontRendererObj.trimStringToWidth(title, contentWidth()),
-                CONTENT_X,
-                y + 2,
-                ColorUtils.guiTextColorBlack.getColor());
+            drawRowTitle(data, row, y + 2);
             String state = tr("short_state." + row.getString("state"));
             fontRendererObj.drawString(
                 fontRendererObj.trimStringToWidth(state, 36),

@@ -53,19 +53,14 @@ public final class WirelessLinkData {
 
     public record Slot(ForgeDirection side, boolean external) {}
 
-    public record Claim(String kind, Set<Address> frequencies, Set<Address> paused, Map<Address, String> names,
-        Set<Address> entrances) {
+    public record Claim(String kind, Set<Address> frequencies, Set<Address> paused, Set<Address> entrances) {
 
         public Claim(String kind, Set<Address> frequencies) {
             this(kind, frequencies, Set.of());
         }
 
         public Claim(String kind, Set<Address> frequencies, Set<Address> paused) {
-            this(kind, frequencies, paused, Map.of());
-        }
-
-        public Claim(String kind, Set<Address> frequencies, Set<Address> paused, Map<Address, String> names) {
-            this(kind, frequencies, paused, names, Set.of());
+            this(kind, frequencies, paused, Set.of());
         }
 
         public Claim {
@@ -76,23 +71,7 @@ public final class WirelessLinkData {
             paused = paused.stream()
                 .filter(frequencies::contains)
                 .collect(java.util.stream.Collectors.toUnmodifiableSet());
-            Map<Address, String> clean = new HashMap<>();
-            for (var entry : names.entrySet()) {
-                String name = cleanName(entry.getValue());
-                if (frequencies.contains(entry.getKey()) && !name.isEmpty()) clean.put(entry.getKey(), name);
-            }
-            names = Map.copyOf(clean);
         }
-    }
-
-    public static String cleanName(String value) {
-        if (value == null) return "";
-        return value.codePoints()
-            .filter(c -> !Character.isISOControl(c) && c != 0xA7 && !(c >= 0xD800 && c <= 0xDFFF))
-            .limit(32)
-            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-            .toString()
-            .strip();
     }
 
     private WirelessLinkData() {}
@@ -136,7 +115,6 @@ public final class WirelessLinkData {
             Set<Address> frequencies = new HashSet<>();
             Set<Address> paused = new HashSet<>();
             Set<Address> entrances = new HashSet<>();
-            Map<Address, String> names = new HashMap<>();
             NBTTagList sources = entry.getTagList("frequencies", 10);
             for (int j = 0; j < sources.tagCount(); j++) {
                 NBTTagCompound source = sources.getCompoundTagAt(j);
@@ -155,11 +133,10 @@ public final class WirelessLinkData {
                 frequencies.add(address);
                 if (source.getBoolean("paused")) paused.add(address);
                 if (source.getBoolean("entrance")) entrances.add(address);
-                names.put(address, source.getString("name"));
             }
             Slot slot = new Slot(ForgeDirection.values()[side], entry.getBoolean("external"));
             if (!frequencies.isEmpty())
-                result.put(slot, new Claim(entry.getString("kind"), frequencies, paused, names, entrances));
+                result.put(slot, new Claim(entry.getString("kind"), frequencies, paused, entrances));
         }
         return result;
     }
@@ -202,10 +179,6 @@ public final class WirelessLinkData {
                 source.setInteger("x", address.x());
                 source.setInteger("y", address.y());
                 source.setInteger("z", address.z());
-                String name = entry.getValue()
-                    .names()
-                    .get(address);
-                if (name != null) source.setString("name", name);
                 if (entry.getValue()
                     .paused()
                     .contains(address)) source.setBoolean("paused", true);

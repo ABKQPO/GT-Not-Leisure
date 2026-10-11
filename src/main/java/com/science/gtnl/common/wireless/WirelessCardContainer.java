@@ -4,6 +4,7 @@ import static com.science.gtnl.common.wireless.WirelessChannelManager.canBuild;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
@@ -135,7 +136,7 @@ public final class WirelessCardContainer extends ModularContainer {
                 all = filter(all);
                 summary = all;
             } else {
-                nextRenameState = new RenameState(focus.members(), focus.names());
+                nextRenameState = new RenameState(focus.members(), focus.deviceNames());
                 detailName = focus.name();
                 detailTarget = focus.target()
                     .toString();
@@ -161,6 +162,10 @@ public final class WirelessCardContainer extends ModularContainer {
         data.setLong("nameRevision", nameRevision);
         data.setString("detailTarget", detailTarget);
         data.setBoolean("multipleNames", multipleNames);
+        data.setBoolean(
+            "renameable",
+            nextRenameState != null && !nextRenameState.names()
+                .isEmpty());
         data.setInteger("filterState", filter.state());
         data.setBoolean(
             "filtered",
@@ -318,7 +323,7 @@ public final class WirelessCardContainer extends ModularContainer {
         }
     }
 
-    private record RenameState(Set<IGridNode> members, Set<String> names) {}
+    private record RenameState(Set<IGridNode> members, Map<IGridNode, String> names) {}
 
     record Action(long session, long revision, int action, String text, String dimension, int filter,
         long nameRevision) {
@@ -412,7 +417,8 @@ public final class WirelessCardContainer extends ModularContainer {
                 player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.denied"));
             } else {
                 try {
-                    WirelessClusterManager.rename(binding.source(), row, text);
+                    if (!WirelessClusterManager.rename(binding.source(), row, text, node -> canBuild(node, player)))
+                        player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.denied"));
                 } catch (IllegalStateException stale) {
                     player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.stale"));
                 }

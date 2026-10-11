@@ -28,6 +28,7 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
+import appeng.helpers.ICustomNameObject;
 
 /**
  * Claims live in tile-owned NBT, which is saved even after an AE proxy has invalidated its grid node.
@@ -152,7 +153,6 @@ public final class WirelessLinkPersistence {
         Set<IGridNode> retained = Collections.newSetFromMap(new IdentityHashMap<>());
         for (var cluster : tracker.clusters()) {
             Set<Address> paused = new java.util.HashSet<>();
-            Map<Address, java.util.SortedSet<String>> names = names(cluster.nodes(), topology);
             for (IGridNode node : cluster.nodes()) {
                 Claim saved = claim(node, topology);
                 if (saved != null) paused.addAll(saved.paused());
@@ -168,19 +168,10 @@ public final class WirelessLinkPersistence {
                 if (frequencies.isEmpty()) claims.remove(endpoint.slot());
                 else {
                     Claim old = claims.get(endpoint.slot());
-                    Map<Address, String> labels = new java.util.HashMap<>();
                     Set<Address> sourcePauses = new java.util.HashSet<>();
                     for (Address source : frequencies) {
                         if (paused.stream()
                             .anyMatch(label -> sameSource(label, source))) sourcePauses.add(source);
-                        java.util.SortedSet<String> choices = new java.util.TreeSet<>();
-                        names.forEach((label, values) -> { if (sameSource(label, source)) choices.addAll(values); });
-                        if (choices.isEmpty()) continue;
-                        // Keep distinct names on their original nodes after a merge; split can recover them.
-                        String previous = old == null ? null
-                            : old.names()
-                                .get(source);
-                        labels.put(source, previous == null ? choices.first() : previous);
                     }
                     // Entrance locations belong to the original node, never to every member of the cluster.
                     claims.put(
@@ -189,7 +180,6 @@ public final class WirelessLinkPersistence {
                             endpoint.kind(),
                             frequencies,
                             sourcePauses,
-                            labels,
                             old == null ? Set.of() : old.entrances()));
                 }
             }
@@ -263,9 +253,7 @@ public final class WirelessLinkPersistence {
         if (!matched) return;
         if (entrances != null) {
             Map<Slot, Claim> claims = WirelessLinkData.read(tileData);
-            claims.put(
-                endpoint.slot(),
-                new Claim(saved.kind(), saved.frequencies(), saved.paused(), saved.names(), entrances));
+            claims.put(endpoint.slot(), new Claim(saved.kind(), saved.frequencies(), saved.paused(), entrances));
             save(endpoint.tile(), claims);
         }
         REMEMBERED_ENTRANCES.put(entrance, new RememberedEntrance(endpoint, tileData.getTag(WirelessLinkData.KEY)));
@@ -275,44 +263,56 @@ public final class WirelessLinkPersistence {
         REMEMBERED_ENTRANCES.remove(entrance);
     }
 
-    private static Map<Address, java.util.SortedSet<String>> names(Collection<IGridNode> nodes,
-        PhysicalMeTopology topology) {
-        Map<Address, java.util.SortedSet<String>> names = new java.util.HashMap<>();
+    static Map<IGridNode, String> names(Collection<IGridNode> nodes) {
+        Map<IGridNode, String> names = new IdentityHashMap<>();
         for (IGridNode node : nodes) {
-            Claim saved = claim(node, topology);
-            if (saved != null) saved.names()
-                .forEach(
-                    (source, name) -> names.computeIfAbsent(source, ignored -> new java.util.TreeSet<>())
-                        .add(name));
+            if (node.getMachine() instanceof ICustomNameObject named) names.put(node, customName(named));
         }
-        return names;
+        return Map.copyOf(names);
     }
 
-    static Set<String> names(Collection<IGridNode> nodes, Address source, PhysicalMeTopology topology) {
-        Set<String> result = new java.util.HashSet<>();
-        names(nodes, topology).forEach((label, names) -> { if (sameSource(label, source)) result.addAll(names); });
-        return Set.copyOf(result);
+    private static String customName(ICustomNameObject named) {
+        return named.hasCustomName() ? java.util.Objects.toString(named.getCustomName(), "") : "";
     }
 
-    static void rename(Collection<IGridNode> nodes, Address source, String name, PhysicalMeTopology topology) {
-        name = WirelessLinkData.cleanName(name);
-        for (IGridNode node : nodes) {
+    static String cleanName(String value) {
+        if (value == null) return "";
+        return value.codePoints()
+            .filter(c -> !Character.isISOControl(c) && c != 0xA7 && !(c >= 0xD800 && c <= 0xDFFF))
+            .limit(32)
+            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+            .toString()
+            .strip();
+    }
+
+    static boolean rename(Map<IGridNode, String> names, String name, PhysicalMeTopology topology,
+        Predicate<IGridNode> canRename) {
+        Map<ICustomNameObject, TileEntity> targets = new IdentityHashMap<>();
+        // Validate every member before any setter runs; internal and external nodes may share the same owner.
+        for (IGridNode node : names.keySet()) {
+            if (!canRename.test(node)) return false;
             Endpoint endpoint = endpoint(node, topology);
-            if (endpoint == null) continue;
-            Map<Slot, Claim> claims = WirelessLinkData.read(WirelessTileData.of(endpoint.tile()));
-            Claim saved = claims.get(endpoint.slot());
-            if (saved == null) continue;
-            Map<Address, String> names = new java.util.HashMap<>(saved.names());
-            for (Address label : saved.frequencies()) {
-                if (!sameSource(label, source)) continue;
-                if (name.isEmpty()) names.remove(label);
-                else names.put(label, name);
-            }
-            claims.put(
-                endpoint.slot(),
-                new Claim(saved.kind(), saved.frequencies(), saved.paused(), names, saved.entrances()));
-            save(endpoint.tile(), claims);
+            if (endpoint == null || !endpoint.loaded()
+                || endpoint.node() != node
+                || !(node.getMachine() instanceof ICustomNameObject named)
+                || !customName(named).equals(names.get(node)))
+                throw new IllegalStateException("The displayed device changed");
+            targets.put(named, endpoint.tile());
         }
+        name = cleanName(name);
+        for (var target : targets.entrySet()) {
+            if (customName(target.getKey()).equals(name)) continue;
+            target.getKey()
+                .setCustomName(name);
+            if (target.getValue() instanceof IPartHost host) {
+                host.markForSave();
+                host.markForUpdate();
+            } else {
+                target.getValue()
+                    .markDirty();
+            }
+        }
+        return !targets.isEmpty();
     }
 
     static void setPaused(Collection<IGridNode> nodes, Address source, boolean paused, PhysicalMeTopology topology) {
@@ -328,9 +328,7 @@ public final class WirelessLinkPersistence {
                 if (paused) next.add(label);
                 else next.remove(label);
             }
-            claims.put(
-                endpoint.slot(),
-                new Claim(saved.kind(), saved.frequencies(), next, saved.names(), saved.entrances()));
+            claims.put(endpoint.slot(), new Claim(saved.kind(), saved.frequencies(), next, saved.entrances()));
             save(endpoint.tile(), claims);
         }
     }

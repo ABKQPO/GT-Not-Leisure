@@ -338,11 +338,20 @@ public final class WirelessClusterManager {
             .contains(controllerSource(source));
     }
 
-    public record LinkView(Address target, IGridNode node, Set<String> names, boolean conflicted, boolean paused,
-        String state, int entrances, WirelessNetworkStatistics statistics, boolean runtimeEntrance, int usedChannels,
-        Set<IGridNode> members) {
+    public record LinkView(Address target, IGridNode node, Map<IGridNode, String> deviceNames, boolean conflicted,
+        boolean paused, String state, int entrances, WirelessNetworkStatistics statistics, boolean runtimeEntrance,
+        int usedChannels, Set<IGridNode> members) {
+
+        public Set<String> names() {
+            return deviceNames.values()
+                .stream()
+                .map(WirelessLinkPersistence::cleanName)
+                .filter(name -> !name.isEmpty())
+                .collect(java.util.stream.Collectors.toUnmodifiableSet());
+        }
 
         public String name() {
+            Set<String> names = names();
             return names.stream()
                 .sorted()
                 .limit(4)
@@ -383,7 +392,7 @@ public final class WirelessClusterManager {
                     new LinkView(
                         TOPOLOGY.entranceAddress(anchor),
                         anchor,
-                        WirelessLinkPersistence.names(cluster.nodes(), source, TOPOLOGY),
+                        WirelessLinkPersistence.names(cluster.nodes()),
                         cluster.conflicted(),
                         paused,
                         state,
@@ -440,7 +449,7 @@ public final class WirelessClusterManager {
                     new LinkView(
                         entrance.target(),
                         entrance.targetNode(),
-                        cluster.names(),
+                        cluster.deviceNames(),
                         cluster.conflicted(),
                         cluster.paused(),
                         cluster.state(),
@@ -477,15 +486,17 @@ public final class WirelessClusterManager {
             .equals(view.members());
     }
 
-    public static void rename(Address source, LinkView view, String name) {
+    public static boolean rename(Address source, LinkView view, String name, Predicate<IGridNode> canRename) {
         try (var ignored = WirelessLinkData.readBatch()) {
+            if (view.target()
+                .node() != view.node()) throw new IllegalStateException("The displayed device changed");
             var cluster = linkedCluster(source, view);
             if (cluster == null || !cluster.nodes()
                 .equals(view.members())
-                || !WirelessLinkPersistence.names(cluster.nodes(), source, TOPOLOGY)
-                    .equals(view.names()))
+                || !WirelessLinkPersistence.names(cluster.nodes())
+                    .equals(view.deviceNames()))
                 throw new IllegalStateException("The displayed cluster changed");
-            WirelessLinkPersistence.rename(cluster.nodes(), source, name, TOPOLOGY);
+            return WirelessLinkPersistence.rename(view.deviceNames(), name, TOPOLOGY, canRename);
         }
     }
 
