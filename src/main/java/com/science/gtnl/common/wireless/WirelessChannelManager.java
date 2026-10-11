@@ -34,6 +34,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
+import appeng.me.GridNode;
 import appeng.me.pathfinding.PathingCalculation;
 import appeng.tile.networking.TileController;
 import appeng.tile.networking.TileCreativeEnergyController;
@@ -54,6 +55,7 @@ public final class WirelessChannelManager {
     private static int nextId = 1;
     private static long allocationRevision;
     private static final Map<Address, Address> CONTROLLER_SOURCES = new HashMap<>();
+    private static Map<IGridNode, Set<IGridConnection>> connectionSnapshot;
 
     /** These are the two controller types handled by AE's native pathing calculation. */
     public static boolean isSupportedController(TileEntity tile) {
@@ -153,11 +155,24 @@ public final class WirelessChannelManager {
         IGridConnection connection) {
 
         public boolean isLive() {
-            return sourceNode.getConnections()
-                .contains(connection)
-                && targetNode.getConnections()
-                    .contains(connection);
+            return hasConnection(sourceNode, connection) && hasConnection(targetNode, connection);
         }
+    }
+
+    private static boolean hasConnection(IGridNode node, IGridConnection connection) {
+        // Only native GridNode mutations are covered by our invalidation hook.
+        if (connectionSnapshot == null || node.getClass() != GridNode.class) return node.getConnections()
+            .contains(connection);
+        return connectionSnapshot.computeIfAbsent(node, key -> {
+            Set<IGridConnection> connections = java.util.Collections.newSetFromMap(new IdentityHashMap<>());
+            for (IGridConnection current : key.getConnections()) connections.add(current);
+            return connections;
+        })
+            .contains(connection);
+    }
+
+    public static void connectionsChanged(IGridNode node) {
+        if (connectionSnapshot != null) connectionSnapshot.remove(node);
     }
 
     public static boolean isOwned(IGridConnection connection) {
@@ -284,6 +299,17 @@ public final class WirelessChannelManager {
     @SubscribeEvent
     public void tick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
+        connectionSnapshot = new IdentityHashMap<>();
+        WirelessLinkData.beginReadBatch();
+        try {
+            maintain();
+        } finally {
+            connectionSnapshot = null;
+            WirelessLinkData.endReadBatch();
+        }
+    }
+
+    private static void maintain() {
         invalidateControllerSources();
         for (Entrance entrance : entrances()) {
             if (!entrance.isLive() || entrance.source()

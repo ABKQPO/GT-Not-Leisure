@@ -2,6 +2,7 @@ package com.science.gtnl.common.wireless;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,6 +17,17 @@ public final class WirelessLinkData {
 
     public static final String KEY = WirelessTileData.KEY;
     private static final int VERSION = 1;
+    private static Map<NBTTagCompound, Decoded> readBatch;
+
+    private record Decoded(NBTTagCompound payload, Map<Slot, Claim> claims) {}
+
+    static void beginReadBatch() {
+        readBatch = new IdentityHashMap<>();
+    }
+
+    static void endReadBatch() {
+        readBatch = null;
+    }
 
     public record Slot(ForgeDirection side, boolean external) {}
 
@@ -64,6 +76,18 @@ public final class WirelessLinkData {
     private WirelessLinkData() {}
 
     public static Map<Slot, Claim> read(NBTTagCompound tileData) {
+        if (readBatch == null) return decode(tileData);
+        NBTTagCompound payload = tileData.hasKey(KEY, 10) ? tileData.getCompoundTag(KEY) : null;
+        Decoded saved = readBatch.get(tileData);
+        if (saved == null || saved.payload() != payload) {
+            saved = new Decoded(payload, Map.copyOf(decode(tileData)));
+            readBatch.put(tileData, saved);
+        }
+        // Callers edit their own slot map; Claim and its contents are immutable.
+        return new HashMap<>(saved.claims());
+    }
+
+    private static Map<Slot, Claim> decode(NBTTagCompound tileData) {
         Map<Slot, Claim> result = new HashMap<>();
         if (!tileData.hasKey(KEY, 10)) return result;
         NBTTagCompound data = tileData.getCompoundTag(KEY);

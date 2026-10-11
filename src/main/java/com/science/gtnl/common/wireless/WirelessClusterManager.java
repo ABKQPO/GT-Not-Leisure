@@ -203,6 +203,12 @@ public final class WirelessClusterManager {
     }
 
     private static Set<Address> restoreSavedEntrances() {
+        Map<IGridNode, Set<Address>> connected = new IdentityHashMap<>();
+        for (Entrance entrance : WirelessChannelManager.entrances()) {
+            if (entrance.isLive())
+                connected.computeIfAbsent(entrance.targetNode(), ignored -> new java.util.HashSet<>())
+                    .add(controllerSource(entrance.source()));
+        }
         List<Candidate<IGridNode, Address>> candidates = new ArrayList<>();
         for (var cluster : TRACKER.clusters()) {
             if (cluster.blocked() || cluster.frequencies()
@@ -212,6 +218,8 @@ public final class WirelessClusterManager {
                 .next();
             if (paused(cluster, source)) continue;
             for (IGridNode node : SAVED_ENTRANCES.getOrDefault(cluster, Set.of())) {
+                if (connected.getOrDefault(node, Set.of())
+                    .contains(controllerSource(source))) continue;
                 candidates.add(new Candidate<>(node, source));
             }
         }
