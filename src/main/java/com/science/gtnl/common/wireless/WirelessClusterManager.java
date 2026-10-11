@@ -109,46 +109,51 @@ public final class WirelessClusterManager {
     }
 
     private static boolean refresh(List<IGridNode> extraSeeds) {
-        SCANS.beginScan();
-        TOPOLOGY.beginScan();
-        try {
-            List<IGridNode> seeds = new ArrayList<>(WirelessLinkPersistence.seeds());
-            seeds.addAll(extraSeeds);
-            TRACKER.refresh(
-                TOPOLOGY,
-                seeds,
-                node -> WirelessLinkPersistence.restore(node, TOPOLOGY),
-                WirelessChannelManager::controllerSource);
-            WirelessLinkPersistence.synchronize(TRACKER, TOPOLOGY);
-            scanLimited = false;
-        } catch (PhysicalClusterTracker.ScanLimitException limit) {
-            scanLimited = true;
-            // Never apply a partial scan. Keep all provenance so reducing the network can recover it.
-            for (Entrance entrance : WirelessChannelManager.entrances())
-                WirelessChannelManager.disconnect(entrance.id());
-            TOPOLOGY.clear();
-            AutomaticWirelessEntrances.clear();
-            return false;
-        }
-        PAUSES.clear();
-        SAVED_ENTRANCES.clear();
-        for (var cluster : TRACKER.clusters()) {
-            PAUSES.put(cluster, WirelessLinkPersistence.pausedSources(cluster.nodes(), TOPOLOGY));
-            if (cluster.frequencies()
-                .size() == 1) {
-                SAVED_ENTRANCES.put(
-                    cluster,
-                    WirelessLinkPersistence.savedEntrances(
-                        cluster.nodes(),
-                        cluster.frequencies()
-                            .iterator()
-                            .next(),
-                        TOPOLOGY));
+        try (var ignored = WirelessLinkData.readBatch()) {
+            SCANS.beginScan();
+            TOPOLOGY.beginScan();
+            try {
+                List<IGridNode> seeds = new ArrayList<>(WirelessLinkPersistence.seeds());
+                seeds.addAll(extraSeeds);
+                TRACKER.refresh(
+                    TOPOLOGY,
+                    seeds,
+                    node -> WirelessLinkPersistence.restore(node, TOPOLOGY),
+                    WirelessChannelManager::controllerSource);
+                WirelessLinkPersistence.synchronize(TRACKER, TOPOLOGY);
+                scanLimited = false;
+            } catch (PhysicalClusterTracker.ScanLimitException limit) {
+                scanLimited = true;
+                // Never apply a partial scan. Keep all provenance so reducing the network can recover it.
+                for (Entrance entrance : WirelessChannelManager.entrances())
+                    WirelessChannelManager.disconnect(entrance.id());
+                TOPOLOGY.clear();
+                AutomaticWirelessEntrances.clear();
+                return false;
             }
+            PAUSES.clear();
+            SAVED_ENTRANCES.clear();
+            for (var cluster : TRACKER.clusters()) updateSavedState(cluster);
+            WATCH.update(TRACKER.clusters(), TOPOLOGY);
+            reconcile();
+            return true;
         }
-        WATCH.update(TRACKER.clusters(), TOPOLOGY);
-        reconcile();
-        return true;
+    }
+
+    private static void updateSavedState(Cluster<IGridNode, Address> cluster) {
+        PAUSES.put(cluster, WirelessLinkPersistence.pausedSources(cluster.nodes(), TOPOLOGY));
+        SAVED_ENTRANCES.remove(cluster);
+        if (cluster.frequencies()
+            .size() == 1) {
+            SAVED_ENTRANCES.put(
+                cluster,
+                WirelessLinkPersistence.savedEntrances(
+                    cluster.nodes(),
+                    cluster.frequencies()
+                        .iterator()
+                        .next(),
+                    TOPOLOGY));
+        }
     }
 
     /** Power, source availability and native allocation feedback must remain responsive between topology scans. */
@@ -348,62 +353,73 @@ public final class WirelessClusterManager {
 
     /** Loaded physical clusters only; viewing never loads remote chunks. */
     public static List<LinkView> links(Address source) {
-        source = controllerSource(source);
-        List<LinkView> result = new ArrayList<>();
-        for (var cluster : TRACKER.clusters()) {
-            if (!cluster.frequencies()
-                .contains(source)) continue;
-            IGridNode anchor = cluster.nodes()
-                .stream()
-                .filter(node -> TOPOLOGY.entranceAddress(node) != null)
-                .min(
-                    Comparator.comparing(
-                        node -> TOPOLOGY.entranceAddress(node)
-                            .toString()))
-                .orElse(null);
-            if (anchor == null) continue;
-            int entrances = 0;
-            for (Entrance entrance : WirelessChannelManager.entrances()) {
-                if (sameSource(entrance.source(), source) && cluster.nodes()
-                    .contains(entrance.targetNode()) && entrance.isLive()) entrances++;
+        try (var ignored = WirelessLinkData.readBatch()) {
+            source = controllerSource(source);
+            List<LinkView> result = new ArrayList<>();
+            for (var cluster : TRACKER.clusters()) {
+                if (!cluster.frequencies()
+                    .contains(source)) continue;
+                IGridNode anchor = cluster.nodes()
+                    .stream()
+                    .filter(node -> TOPOLOGY.entranceAddress(node) != null)
+                    .min(
+                        Comparator.comparing(
+                            node -> TOPOLOGY.entranceAddress(node)
+                                .toString()))
+                    .orElse(null);
+                if (anchor == null) continue;
+                int entrances = 0;
+                for (Entrance entrance : WirelessChannelManager.entrances()) {
+                    if (sameSource(entrance.source(), source) && cluster.nodes()
+                        .contains(entrance.targetNode()) && entrance.isLive()) entrances++;
+                }
+                boolean paused = paused(cluster, source);
+                String state = scanLimited ? "limited"
+                    : paused ? "paused"
+                        : STATES.getOrDefault(cluster, State.WAITING)
+                            .name()
+                            .toLowerCase(java.util.Locale.ROOT);
+                result.add(
+                    new LinkView(
+                        TOPOLOGY.entranceAddress(anchor),
+                        anchor,
+                        WirelessLinkPersistence.names(cluster.nodes(), source, TOPOLOGY),
+                        cluster.conflicted(),
+                        paused,
+                        state,
+                        entrances,
+                        WirelessNetworkStatistics.measure(cluster.nodes(), WirelessChannelManager.channelsEnabled()),
+                        false,
+                        -1,
+                        Set.copyOf(cluster.nodes())));
             }
-            boolean paused = paused(cluster, source);
-            String state = scanLimited ? "limited"
-                : paused ? "paused"
-                    : STATES.getOrDefault(cluster, State.WAITING)
-                        .name()
-                        .toLowerCase(java.util.Locale.ROOT);
-            result.add(
-                new LinkView(
-                    TOPOLOGY.entranceAddress(anchor),
-                    anchor,
-                    WirelessLinkPersistence.names(cluster.nodes(), source, TOPOLOGY),
-                    cluster.conflicted(),
-                    paused,
-                    state,
-                    entrances,
-                    WirelessNetworkStatistics.measure(cluster.nodes(), WirelessChannelManager.channelsEnabled()),
-                    false,
-                    -1,
-                    Set.copyOf(cluster.nodes())));
+            result.sort(
+                Comparator.comparing(
+                    view -> view.target()
+                        .toString()));
+            return result;
         }
-        result.sort(
-            Comparator.comparing(
-                view -> view.target()
-                    .toString()));
-        return result;
     }
 
     public static boolean setPaused(Address source, LinkView view, boolean paused) {
-        IGridNode target = view.node();
-        var cluster = linkedCluster(source, view);
-        if (cluster == null) return false;
-        if (!cluster.nodes()
-            .equals(view.members()) || paused(cluster, source) != view.paused())
-            throw new IllegalStateException("The displayed cluster changed; refresh before editing.");
-        WirelessLinkPersistence.setPaused(cluster.nodes(), source, paused, TOPOLOGY);
-        refreshTarget(target);
-        return true;
+        try (var ignored = WirelessLinkData.readBatch()) {
+            IGridNode target = view.node();
+            var cluster = linkedCluster(source, view);
+            if (cluster == null) return false;
+            if (!cluster.nodes()
+                .equals(view.members()) || paused(cluster, source) != view.paused())
+                throw new IllegalStateException("The displayed cluster changed; refresh before editing.");
+            WirelessLinkPersistence.setPaused(cluster.nodes(), source, paused, TOPOLOGY);
+            if (SCANS.dirty || TRACKER.clusterOf(target) != cluster) {
+                refreshTarget(target);
+            } else {
+                // Pause flags do not change physical membership. Keep the freshly validated topology.
+                updateSavedState(cluster);
+                TOPOLOGY.beginScan();
+                reconcile();
+            }
+            return true;
+        }
     }
 
     public static List<LinkView> entranceLinks(Address source, LinkView cluster) {
@@ -454,13 +470,15 @@ public final class WirelessClusterManager {
     }
 
     public static void rename(Address source, LinkView view, String name) {
-        var cluster = linkedCluster(source, view);
-        if (cluster == null || !cluster.nodes()
-            .equals(view.members())
-            || !WirelessLinkPersistence.names(cluster.nodes(), source, TOPOLOGY)
-                .equals(view.names()))
-            throw new IllegalStateException("The displayed cluster changed");
-        WirelessLinkPersistence.rename(cluster.nodes(), source, name, TOPOLOGY);
+        try (var ignored = WirelessLinkData.readBatch()) {
+            var cluster = linkedCluster(source, view);
+            if (cluster == null || !cluster.nodes()
+                .equals(view.members())
+                || !WirelessLinkPersistence.names(cluster.nodes(), source, TOPOLOGY)
+                    .equals(view.names()))
+                throw new IllegalStateException("The displayed cluster changed");
+            WirelessLinkPersistence.rename(cluster.nodes(), source, name, TOPOLOGY);
+        }
     }
 
     private static Cluster<IGridNode, Address> linkedCluster(Address source, LinkView view) {
@@ -488,44 +506,48 @@ public final class WirelessClusterManager {
 
     /** Explicit debug calls may add an additional entrance to an already linked, same-frequency cluster. */
     public static int connectCluster(Address source, Address target) throws FailedConnection {
-        source = controllerSource(source);
-        IGridNode node = target.node();
-        if (node == null) throw new IllegalArgumentException("Target ME node is unavailable.");
-        refreshTarget(node);
-        Cluster<IGridNode, Address> cluster = TRACKER.clusterOf(node);
-        if (cluster == null || cluster.blocked())
-            throw new IllegalArgumentException("A physical cluster containing a controller cannot be linked.");
-        if (cluster.conflicted() || !cluster.frequencies()
-            .isEmpty()
-            && !cluster.frequencies()
-                .contains(source)) {
-            throw new IllegalArgumentException(
-                "This cluster belongs to another frequency. Disconnect that frequency first.");
+        try (var ignored = WirelessLinkData.readBatch()) {
+            source = controllerSource(source);
+            IGridNode node = target.node();
+            if (node == null) throw new IllegalArgumentException("Target ME node is unavailable.");
+            refreshTarget(node);
+            Cluster<IGridNode, Address> cluster = TRACKER.clusterOf(node);
+            if (cluster == null || cluster.blocked())
+                throw new IllegalArgumentException("A physical cluster containing a controller cannot be linked.");
+            if (cluster.conflicted() || !cluster.frequencies()
+                .isEmpty()
+                && !cluster.frequencies()
+                    .contains(source)) {
+                throw new IllegalArgumentException(
+                    "This cluster belongs to another frequency. Disconnect that frequency first.");
+            }
+            if (paused(cluster, source))
+                throw new IllegalStateException("This cluster is paused in the frequency card GUI.");
+            // Do not commit a new claim if AE2 refuses the first connection.
+            int id = WirelessChannelManager.connect(source, target);
+            TRACKER.link(cluster, source);
+            refreshTarget(node);
+            return id;
         }
-        if (paused(cluster, source))
-            throw new IllegalStateException("This cluster is paused in the frequency card GUI.");
-        // Do not commit a new claim if AE2 refuses the first connection.
-        int id = WirelessChannelManager.connect(source, target);
-        TRACKER.link(cluster, source);
-        refreshTarget(node);
-        return id;
     }
 
     public static boolean disconnectCluster(Address source, IGridNode target) {
-        refreshTarget(target);
-        source = controllerSource(source);
-        Cluster<IGridNode, Address> cluster = TRACKER.clusterOf(target);
-        if (cluster == null || !cluster.frequencies()
-            .contains(source)) return false;
-        TRACKER.unlink(cluster, source, WirelessChannelManager::controllerSource);
-        for (Entrance entrance : WirelessChannelManager.entrances()) {
-            if (sameSource(entrance.source(), source) && cluster.nodes()
-                .contains(entrance.targetNode())) {
-                WirelessChannelManager.disconnect(entrance.id());
+        try (var ignored = WirelessLinkData.readBatch()) {
+            refreshTarget(target);
+            source = controllerSource(source);
+            Cluster<IGridNode, Address> cluster = TRACKER.clusterOf(target);
+            if (cluster == null || !cluster.frequencies()
+                .contains(source)) return false;
+            TRACKER.unlink(cluster, source, WirelessChannelManager::controllerSource);
+            for (Entrance entrance : WirelessChannelManager.entrances()) {
+                if (sameSource(entrance.source(), source) && cluster.nodes()
+                    .contains(entrance.targetNode())) {
+                    WirelessChannelManager.disconnect(entrance.id());
+                }
             }
+            refreshTarget(target);
+            return true;
         }
-        refreshTarget(target);
-        return true;
     }
 
     public static Summary summary(Address source) {

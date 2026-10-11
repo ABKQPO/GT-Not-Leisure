@@ -18,15 +18,37 @@ public final class WirelessLinkData {
     public static final String KEY = WirelessTileData.KEY;
     private static final int VERSION = 1;
     private static Map<NBTTagCompound, Decoded> readBatch;
+    private static int readBatchDepth;
 
     private record Decoded(NBTTagCompound payload, Map<Slot, Claim> claims) {}
 
     static void beginReadBatch() {
-        readBatch = new IdentityHashMap<>();
+        if (readBatchDepth++ == 0) readBatch = new IdentityHashMap<>();
     }
 
     static void endReadBatch() {
-        readBatch = null;
+        if (--readBatchDepth == 0) readBatch = null;
+    }
+
+    /** Server-thread scope shared by nested scans and edits, released when the outer operation finishes. */
+    static ReadBatch readBatch() {
+        return new ReadBatch();
+    }
+
+    static final class ReadBatch implements AutoCloseable {
+
+        private boolean closed;
+
+        private ReadBatch() {
+            beginReadBatch();
+        }
+
+        @Override
+        public void close() {
+            if (closed) return;
+            closed = true;
+            endReadBatch();
+        }
     }
 
     public record Slot(ForgeDirection side, boolean external) {}
