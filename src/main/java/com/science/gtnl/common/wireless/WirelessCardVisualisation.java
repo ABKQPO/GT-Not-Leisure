@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.gtnewhorizon.gtnhlib.compat.BaublesCompat;
+import com.gtnewhorizon.gtnhlib.item.ItemStackNBT;
 
 import appeng.api.AEApi;
 import appeng.api.config.Settings;
@@ -61,9 +62,9 @@ public final class WirelessCardVisualisation {
     }
 
     public static void cycle(ItemStack card, EntityPlayer player, boolean backwards) {
-        if (card.getTagCompound() == null) card.setTagCompound(new NBTTagCompound());
-        if (mode(card.getTagCompound()) == 0) LAST_UPDATES.remove(player);
-        cycle(card.getTagCompound(), backwards);
+        NBTTagCompound tag = ItemStackNBT.get(card);
+        if (mode(tag) == 0) LAST_UPDATES.remove(player);
+        cycle(tag, backwards);
         WirelessCardInventory.sync(player, card);
     }
 

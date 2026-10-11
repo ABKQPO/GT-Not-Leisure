@@ -16,7 +16,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MovingObjectPosition;
@@ -33,6 +32,7 @@ import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.gtnewhorizon.gtnhlib.item.ItemStackNBT;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.wireless.AutomaticWirelessEntrances;
 import com.science.gtnl.common.wireless.WirelessCardBinding;
@@ -225,9 +225,8 @@ public final class WirelessFrequencyCard extends Item implements IBaubleExpanded
             return;
         }
         source = WirelessChannelManager.controllerSource(source);
-        if (stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
         new WirelessCardBinding(source, player.getUniqueID(), player.getCommandSenderName())
-            .write(stack.getTagCompound());
+            .write(ItemStackNBT.get(stack));
         WirelessCardInventory.sync(player, stack);
         message(player, "bound", source.dimension(), source.x(), source.y(), source.z());
     }
