@@ -2,8 +2,12 @@ package com.science.gtnl.common.wireless;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import net.minecraft.item.Item;
@@ -18,7 +22,7 @@ import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
 /** Share display identities for every page; localize with the same client code used to render the rows. */
 final class WirelessSearchNames {
 
-    private final WirelessSearchIndex<Key> index = new WirelessSearchIndex<>();
+    private final Index<Key> index = new Index<>();
 
     String name(ItemStack icon) {
         // Retain the original server-language keywords as well as the label visible to this player.
@@ -55,10 +59,9 @@ final class WirelessSearchNames {
             data.setLong("revision", index.revision());
             data.setInteger("start", start);
             NBTTagList entries = new NBTTagList();
-            for (int i = start; i < Math.min(keys.size(), start + WirelessSearchIndex.BATCH_SIZE); i++)
-                entries.appendTag(
-                    keys.get(i)
-                        .write());
+            for (int i = start; i < Math.min(keys.size(), start + Index.BATCH_SIZE); i++) entries.appendTag(
+                keys.get(i)
+                    .write());
             data.setTag("names", entries);
             send.accept(data);
         }
@@ -96,10 +99,9 @@ final class WirelessSearchNames {
         static Reply read(PacketBuffer buf) throws IOException {
             long session = buf.readLong(), revision = buf.readLong();
             int start = buf.readInt(), count = buf.readUnsignedByte();
-            if (count == 0 || count > WirelessSearchIndex.BATCH_SIZE)
-                throw new IllegalArgumentException("Invalid batch");
+            if (count == 0 || count > Index.BATCH_SIZE) throw new IllegalArgumentException("Invalid batch");
             List<String> names = new ArrayList<>(count);
-            for (int i = 0; i < count; i++) names.add(buf.readStringFromBuffer(WirelessSearchIndex.MAX_NAME_LENGTH));
+            for (int i = 0; i < count; i++) names.add(buf.readStringFromBuffer(Index.MAX_NAME_LENGTH));
             return new Reply(session, revision, start, names);
         }
 
@@ -121,8 +123,69 @@ final class WirelessSearchNames {
             String rawName = entry.getString("rawName");
             String text = rawName.isEmpty() ? icon == null ? "" : icon.getDisplayName()
                 : InterfaceNameLocalization.localizeName(rawName, entry.getString("suffix"), icon);
-            names.add(text.substring(0, Math.min(text.length(), WirelessSearchIndex.MAX_NAME_LENGTH)));
+            names.add(text.substring(0, Math.min(text.length(), Index.MAX_NAME_LENGTH)));
         }
         return new Reply(data.getLong("session"), data.getLong("revision"), data.getInteger("start"), names);
+    }
+
+    /** Per-view translations supplied by its client. They affect text matching only, never network authority. */
+    private static final class Index<K> {
+
+        static final int BATCH_SIZE = 32;
+        static final int MAX_NAME_LENGTH = 512;
+        private List<K> keys = List.of();
+        private final Map<K, String> names = new HashMap<>();
+        private final BitSet received = new BitSet();
+        private long revision;
+
+        boolean update(Collection<K> candidates) {
+            var unique = new LinkedHashSet<>(candidates);
+            if (unique.size() == keys.size() && unique.containsAll(keys)) return false;
+            keys = List.copyOf(unique);
+            names.keySet()
+                .retainAll(unique);
+            received.clear();
+            for (int start = 0; start < keys.size(); start += BATCH_SIZE) {
+                if (keys.subList(start, Math.min(keys.size(), start + BATCH_SIZE))
+                    .stream()
+                    .allMatch(names::containsKey)) received.set(start / BATCH_SIZE);
+            }
+            revision++;
+            return true;
+        }
+
+        List<Integer> pendingBatches() {
+            List<Integer> pending = new ArrayList<>();
+            for (int start = 0; start < keys.size(); start += BATCH_SIZE) {
+                if (!received.get(start / BATCH_SIZE)) pending.add(start);
+            }
+            return pending;
+        }
+
+        List<K> keys() {
+            return keys;
+        }
+
+        long revision() {
+            return revision;
+        }
+
+        String name(K key) {
+            return names.getOrDefault(key, "");
+        }
+
+        boolean accept(long revision, int start, List<String> translations) {
+            if (revision != this.revision || start < 0
+                || start % BATCH_SIZE != 0
+                || start >= keys.size()
+                || translations.size() != Math.min(BATCH_SIZE, keys.size() - start)
+                || received.get(start / BATCH_SIZE)
+                || translations.stream()
+                    .anyMatch(name -> name == null || name.length() > MAX_NAME_LENGTH))
+                return false;
+            for (int i = 0; i < translations.size(); i++) names.put(keys.get(start + i), translations.get(i));
+            received.set(start / BATCH_SIZE);
+            return true;
+        }
     }
 }

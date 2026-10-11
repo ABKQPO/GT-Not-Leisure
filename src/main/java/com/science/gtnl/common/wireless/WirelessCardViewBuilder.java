@@ -18,15 +18,17 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
+import com.science.gtnl.common.wireless.WirelessMachineGroups.Filter;
 import com.science.gtnl.common.wireless.WirelessMachineGroups.Row;
 import com.science.gtnl.common.wireless.WirelessMachineGroups.RowOrder;
 import com.science.gtnl.common.wireless.WirelessMachineGroups.TypeKey;
 
 import appeng.api.networking.IGridNode;
+import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 
 final class WirelessCardViewBuilder {
 
-    final WirelessCardNavigation navigation = new WirelessCardNavigation();
+    final Navigation navigation = new Navigation();
     final WirelessSearchNames searchNames = new WirelessSearchNames();
     private final WirelessMachineGroups.Startup startup = new WirelessMachineGroups.Startup();
     private final Map<SortView, List<RowOrder>> rowOrders = new LinkedHashMap<>(16, 0.75f, true);
@@ -264,6 +266,72 @@ final class WirelessCardViewBuilder {
 
     private record RenameState(Set<IGridNode> members, Map<IGridNode, String> names) {}
 
-    private record SortView(Address machine, TypeKey type, boolean collapseTypes, WirelessViewFilter filter) {}
+    private record SortView(Address machine, TypeKey type, boolean collapseTypes, Filter filter) {}
+
+    static final class Navigation {
+
+        int page, overviewPage, typeParentPage, machineParentPage;
+        int pageSize = WirelessCardLayout.MIN_ROWS;
+        IGridNode detailNode;
+        MTEMultiBlockBase groupMachine;
+        TypeKey groupType;
+        boolean collapseTypes = true;
+        Filter filter = Filter.parse("", "", 0);
+
+        boolean resize(int rows) {
+            if (!WirelessCardLayout.validRows(rows)) return false;
+            page = page * pageSize / rows;
+            overviewPage = overviewPage * pageSize / rows;
+            typeParentPage = typeParentPage * pageSize / rows;
+            machineParentPage = machineParentPage * pageSize / rows;
+            pageSize = rows;
+            return true;
+        }
+
+        void filter(String text, String dimension, int state) {
+            filter = Filter.parse(text, dimension, state);
+            detailNode = null;
+            resetGroups();
+        }
+
+        void resetGroups() {
+            groupMachine = null;
+            groupType = null;
+            page = 0;
+        }
+
+        boolean closeDetails() {
+            if (detailNode == null) return false;
+            detailNode = null;
+            page = overviewPage;
+            return true;
+        }
+
+        void back() {
+            if (closeDetails()) return;
+            if (groupMachine != null) {
+                groupMachine = null;
+                page = machineParentPage;
+            } else if (groupType != null) {
+                groupType = null;
+                page = typeParentPage;
+            }
+        }
+
+        void open(Row row) {
+            if (row.category()) {
+                typeParentPage = page;
+                groupType = row.type();
+            } else if (row.machine() != null) {
+                machineParentPage = page;
+                groupMachine = row.machine();
+            } else {
+                overviewPage = page;
+                detailNode = row.link()
+                    .node();
+            }
+            page = 0;
+        }
+    }
 
 }

@@ -82,7 +82,7 @@ public final class WirelessCardContainer extends ModularContainer {
         return valid;
     }
 
-    static boolean matchesHeldCard(int expectedSlot, int selectedSlot, ItemStack expected, ItemStack current) {
+    private static boolean matchesHeldCard(int expectedSlot, int selectedSlot, ItemStack expected, ItemStack current) {
         return expectedSlot == selectedSlot && expected != null
             && current != null
             && current.stackSize == 1

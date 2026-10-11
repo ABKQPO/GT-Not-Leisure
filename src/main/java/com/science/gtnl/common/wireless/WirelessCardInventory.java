@@ -27,7 +27,7 @@ public final class WirelessCardInventory {
         return resolve(player.inventory, BaublesCompat.getBaubles(player), player.inventory.currentItem, location);
     }
 
-    static CardSlot resolve(IInventory main, IInventory worn, int selected, int location) {
+    private static CardSlot resolve(IInventory main, IInventory worn, int selected, int location) {
         IInventory inventory = location < 0 ? worn : main;
         long index = location == 0 ? selected : location > 0 ? (long) location - 1 : -(long) location - 1;
         return inventory != null && index >= 0 && index < inventory.getSizeInventory()

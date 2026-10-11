@@ -28,12 +28,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentTranslation;
 
+import com.science.gtnl.common.wireless.WirelessCardViewBuilder.Navigation;
 import com.science.gtnl.common.wireless.WirelessMachineGroups.Row;
 
 final class WirelessCardActionHandler {
 
     private final WirelessCardContainer session;
-    private final WirelessCardActions.RequestGate requests = new WirelessCardActions.RequestGate();
+    private long nextRequestTick = Long.MIN_VALUE;
 
     WirelessCardActionHandler(WirelessCardContainer session) {
         this.session = session;
@@ -43,7 +44,7 @@ final class WirelessCardActionHandler {
         EntityPlayer player = session.player;
         ItemStack card = session.card;
         WirelessCardBinding binding = session.binding;
-        WirelessCardNavigation navigation = session.view.navigation;
+        Navigation navigation = session.view.navigation;
         List<Row> rows = session.snapshot == null ? List.of() : session.snapshot.rows();
         // Closing a client panel must not be lost to throttling or a changing row revision.
         if (action == CLOSE_DETAILS) {
@@ -53,7 +54,7 @@ final class WirelessCardActionHandler {
         int actionType = type(action);
         int index = rowIndex(action);
         boolean teleport = actionType == TELEPORT && index < rows.size();
-        if (!requests.accept(player.worldObj.getTotalWorldTime())) return;
+        if (!acceptRequest(player.worldObj.getTotalWorldTime())) return;
         if (actionType == OPEN_DETAILS) {
             session.update(false);
             rows = session.snapshot.rows();
@@ -160,6 +161,13 @@ final class WirelessCardActionHandler {
             }
         } else if (action != REFRESH) return;
         session.update(true);
+    }
+
+    /** Per-open-container request limit, independent of action type or snapshot revision. */
+    private boolean acceptRequest(long tick) {
+        if (tick < nextRequestTick) return false;
+        nextRequestTick = tick + 4;
+        return true;
     }
 
     private void message(String key, Object... args) {

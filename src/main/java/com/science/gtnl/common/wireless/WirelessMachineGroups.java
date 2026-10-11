@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -84,6 +85,33 @@ final class WirelessMachineGroups {
 
         String sortKey() {
             return kind + ":" + Item.itemRegistry.getNameForObject(item) + ":" + damage + ":" + dimension;
+        }
+    }
+
+    /** Validated view-only filters, applied on the server before pagination. */
+    record Filter(String query, Integer dimension, int state) {
+
+        static Filter parse(String query, String dimension, int state) {
+            if (query.length() > 64 || dimension.length() > 12 || state < 0 || state > 4)
+                throw new IllegalArgumentException("Invalid filter");
+            return new Filter(
+                query.strip()
+                    .toLowerCase(Locale.ROOT),
+                dimension.isBlank() ? null : Integer.valueOf(dimension.strip()),
+                state);
+        }
+
+        boolean matches(String name, int dimension, String position, boolean paused, String state) {
+            return (this.dimension == null || this.dimension == dimension)
+                && (query.isEmpty() || (name + " " + position).toLowerCase(Locale.ROOT)
+                    .contains(query))
+                && switch (this.state) {
+                case 1 -> paused;
+                case 2 -> state.equals("conflict");
+                case 3 -> !paused && state.equals("active");
+                case 4 -> !paused && state.equals("waiting");
+                default -> true;
+                };
         }
     }
 
@@ -190,7 +218,7 @@ final class WirelessMachineGroups {
                         .equals("active")) ? "active" : "waiting";
         }
 
-        Row filtered(WirelessViewFilter filter, WirelessInterfaceView interfaces, WirelessSearchNames searchNames) {
+        Row filtered(Filter filter, WirelessInterfaceView interfaces, WirelessSearchNames searchNames) {
             boolean searching = !filter.query()
                 .isEmpty();
             if (!searching && filter.dimension() == null && filter.state() == 0) return this;
