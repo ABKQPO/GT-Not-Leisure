@@ -27,6 +27,7 @@ import com.cleanroommc.modularui.value.sync.SyncHandler;
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.science.gtnl.common.item.items.WirelessFrequencyCard;
 import com.science.gtnl.common.wireless.WirelessMachineGroups.Row;
+import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
 
 import appeng.api.networking.IGridNode;
 import cpw.mods.fml.common.network.ByteBufUtils;
@@ -120,9 +121,11 @@ public final class WirelessCardContainer extends ModularContainer {
 
     private void update(boolean force) {
         if (!(player instanceof EntityPlayerMP)) return;
+        var interfaces = new WirelessInterfaceView();
         List<WirelessClusterManager.LinkView> all = binding == null ? List.of()
             : WirelessClusterManager.links(binding.source());
-        List<Row> groups = detailNode == null || groupMachine != null ? WirelessMachineGroups.group(all) : List.of();
+        List<Row> groups = detailNode == null || groupMachine != null ? WirelessMachineGroups.group(all, interfaces)
+            : List.of();
         Row selectedGroup = groups.stream()
             .filter(row -> row.machine() == groupMachine && row.group())
             .findFirst()
@@ -146,7 +149,7 @@ public final class WirelessCardContainer extends ModularContainer {
             if (focus == null) {
                 detailNode = null;
                 page = 0;
-                groups = WirelessMachineGroups.group(all);
+                groups = WirelessMachineGroups.group(all, interfaces);
             } else {
                 nextRenameState = new RenameState(focus.members(), focus.deviceNames());
                 detailName = focus.name();
@@ -171,7 +174,7 @@ public final class WirelessCardContainer extends ModularContainer {
             for (var link : all) visible.add(Row.cluster(link));
         } else {
             for (Row row : selectedGroup == null ? groups : List.of(selectedGroup)) {
-                Row filtered = row.filtered(filter);
+                Row filtered = row.filtered(filter, interfaces);
                 if (filtered == null) continue;
                 if (selectedGroup == null) visible.add(filtered);
                 else for (var link : filtered.links()) visible.add(Row.cluster(link));
@@ -294,6 +297,10 @@ public final class WirelessCardContainer extends ModularContainer {
                     : row.link()
                         .usedChannels());
             writeIcon(entry, "icon", row.icon());
+            if (detailNode == null && !row.group()
+                && entry.getString("name")
+                    .isEmpty())
+                writeInterfaceNames(entry, interfaces.names(row.link()));
             entries.appendTag(entry);
         }
         data.setTag("rows", entries);
@@ -318,6 +325,25 @@ public final class WirelessCardContainer extends ModularContainer {
         data.setTag(key, clean.writeToNBT(new NBTTagCompound()));
     }
 
+    static void writeInterfaceNames(NBTTagCompound data, List<WirelessInterfaceView.Name> names) {
+        if (names.isEmpty()) return;
+        NBTTagList entries = new NBTTagList();
+        for (var name : names.subList(0, Math.min(4, names.size()))) {
+            NBTTagCompound entry = new NBTTagCompound();
+            entry.setString("rawName", name.rawName());
+            entry.setString("suffix", name.suffix());
+            writeIcon(entry, "icon", name.icon());
+            entries.appendTag(entry);
+        }
+        data.setTag("interfaceNames", entries);
+        data.setInteger("interfaceNameCount", names.size());
+        writeIcon(
+            data,
+            "icon",
+            names.get(0)
+                .icon());
+    }
+
     static boolean sameRows(List<Row> next, List<Row> previous) {
         if (next.size() != previous.size()) return false;
         for (int i = 0; i < next.size(); i++) {
@@ -333,6 +359,27 @@ public final class WirelessCardContainer extends ModularContainer {
                 return false;
         }
         return true;
+    }
+
+    static void localizeInterfaceNames(NBTTagCompound data) {
+        NBTTagList rows = data.getTagList("rows", 10);
+        for (int rowIndex = 0; rowIndex < rows.tagCount(); rowIndex++) {
+            NBTTagCompound row = rows.getCompoundTagAt(rowIndex);
+            NBTTagList entries = row.getTagList("interfaceNames", 10);
+            if (!row.getString("name")
+                .isEmpty() || entries.tagCount() == 0) continue;
+            List<String> names = new ArrayList<>();
+            for (int i = 0; i < entries.tagCount(); i++) {
+                NBTTagCompound entry = entries.getCompoundTagAt(i);
+                names.add(
+                    InterfaceNameLocalization.localizeName(
+                        entry.getString("rawName"),
+                        entry.getString("suffix"),
+                        ItemStack.loadItemStackFromNBT(entry.getCompoundTag("icon"))));
+            }
+            int count = row.getInteger("interfaceNameCount");
+            row.setString("name", String.join(" / ", names) + (count > entries.tagCount() ? " … (" + count + ")" : ""));
+        }
     }
 
     /** MUI owns transport and screen lifetime; application revisions still protect changing physical clusters. */
@@ -390,6 +437,7 @@ public final class WirelessCardContainer extends ModularContainer {
                 if (data == null || !isValid()
                     || minecraft.thePlayer != player
                     || player.openContainer != WirelessCardContainer.this) return;
+                localizeInterfaceNames(data);
                 display = data;
                 if (data.hasKey("highlight", 9))
                     com.science.gtnl.client.WirelessWorldHighlight.show(minecraft, data.getTagList("highlight", 10));

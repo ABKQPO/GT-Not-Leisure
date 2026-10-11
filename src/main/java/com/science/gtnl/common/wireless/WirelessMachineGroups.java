@@ -13,6 +13,7 @@ import com.science.gtnl.api.mixinHelper.IInterfaceNameHatch;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 import com.science.gtnl.common.wireless.WirelessClusterManager.LinkView;
 
+import appeng.helpers.IInterfaceHost;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
@@ -90,7 +91,7 @@ final class WirelessMachineGroups {
                         .equals("active")) ? "active" : "waiting";
         }
 
-        Row filtered(WirelessViewFilter filter) {
+        Row filtered(WirelessViewFilter filter, WirelessInterfaceView interfaces) {
             if (filter.query()
                 .isEmpty() && filter.dimension() == null
                 && filter.state() == 0) return this;
@@ -102,12 +103,17 @@ final class WirelessMachineGroups {
                     ItemStack device = link.node()
                         .getGridBlock()
                         .getMachineRepresentation();
-                    String names = machineName + " "
-                        + String.join(" ", link.names())
-                        + " "
-                        + (device == null ? "" : device.getDisplayName());
+                    StringBuilder names = new StringBuilder(machineName).append(' ')
+                        .append(String.join(" ", link.names()))
+                        .append(' ')
+                        .append(device == null ? "" : device.getDisplayName());
+                    if (!filter.query()
+                        .isEmpty()) {
+                        for (var name : interfaces.names(link)) names.append(' ')
+                            .append(name.text());
+                    }
                     return filter.matches(
-                        names,
+                        names.toString(),
                         link.target()
                             .dimension(),
                         position + " " + coordinates(link.target()),
@@ -119,12 +125,12 @@ final class WirelessMachineGroups {
         }
     }
 
-    static List<Row> group(List<LinkView> links) {
+    static List<Row> group(List<LinkView> links, WirelessInterfaceView interfaces) {
         List<Row> rows = new ArrayList<>();
         Map<MTEMultiBlockBase, List<LinkView>> machines = new IdentityHashMap<>();
         Map<MTEMultiBlockBase, Boolean> validControllers = new IdentityHashMap<>();
         for (LinkView link : links) {
-            MTEMultiBlockBase machine = owner(link, validControllers);
+            MTEMultiBlockBase machine = owner(link, validControllers, interfaces);
             if (machine == null) rows.add(Row.cluster(link));
             else machines.computeIfAbsent(machine, ignored -> new ArrayList<>())
                 .add(link);
@@ -148,21 +154,30 @@ final class WirelessMachineGroups {
                         .toString()));
     }
 
-    static MTEMultiBlockBase owner(LinkView link, Map<MTEMultiBlockBase, Boolean> validControllers) {
+    static MTEMultiBlockBase owner(LinkView link, Map<MTEMultiBlockBase, Boolean> validControllers,
+        WirelessInterfaceView interfaces) {
         MTEMultiBlockBase owner = null;
         for (var node : link.members()) {
             Object host = node.getMachine();
-            if (host instanceof IGregTechTileEntity base) host = base.getMetaTileEntity();
-            if (!(host instanceof MTEHatch)) continue;
-            if (!(host instanceof IInterfaceNameHatch hatch)) return null;
-            var controllers = hatch.getInterfaceNameControllers();
-            // An unknown/shared hatch disqualifies its entire physical cluster from automatic grouping.
-            if (controllers.size() != 1) return null;
-            MTEMultiBlockBase controller = controllers.iterator()
-                .next();
-            if (owner != null && owner != controller
-                || !validControllers.computeIfAbsent(controller, WirelessMachineGroups::validController)) return null;
-            owner = controller;
+            Object machine = host instanceof IGregTechTileEntity base ? base.getMetaTileEntity() : host;
+            List<MTEHatch> hatches;
+            if (machine instanceof MTEHatch hatch) hatches = List.of(hatch);
+            else if (host instanceof IInterfaceHost iface) {
+                hatches = interfaces.hatches(iface);
+                if (hatches == null) return null;
+            } else continue;
+            for (MTEHatch target : hatches) {
+                if (!(target instanceof IInterfaceNameHatch hatch)) return null;
+                var controllers = hatch.getInterfaceNameControllers();
+                // An unknown/shared hatch disqualifies its entire physical cluster from automatic grouping.
+                if (controllers.size() != 1) return null;
+                MTEMultiBlockBase controller = controllers.iterator()
+                    .next();
+                if (owner != null && owner != controller
+                    || !validControllers.computeIfAbsent(controller, WirelessMachineGroups::validController))
+                    return null;
+                owner = controller;
+            }
         }
         return owner;
     }
