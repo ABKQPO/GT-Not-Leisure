@@ -591,16 +591,6 @@ public class ChemicalRecipes implements IRecipePool {
             .addTo(MCRR);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GTOreDictUnificator.get(OrePrefixes.gem, Materials.NetherStar, 2),
-                GTUtility.getIntegratedCircuit(20))
-            .fluidInputs(FluidRegistry.getFluidStack("mobessence", 5_000))
-            .fluidOutputs(new FluidStack(GTPPFluids.GeneticMutagen, 8_000))
-            .duration(30 * SECONDS)
-            .eut(TierEU.RECIPE_HV)
-            .addTo(MCRR);
-
-        RecipeBuilder.builder()
             .fluidInputs(Materials.Ammonia.getGas(1000), Materials.SulfuricAcid.getFluid(1000))
             .fluidOutputs(GTNLMaterials.AmmoniumBisulfate.getFluidOrGas(1000))
             .duration(15 * SECONDS)
