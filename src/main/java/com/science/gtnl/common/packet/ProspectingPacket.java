@@ -10,6 +10,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +27,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import detrav.utils.FluidColors;
 import gregtech.api.interfaces.IOreMaterial;
-import gregtech.common.ores.OreInfo;
 import gregtech.common.ores.OreManager;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -58,6 +58,8 @@ public class ProspectingPacket extends ClientboundPacket {
     public final Long2ShortOpenHashMap map = new Long2ShortOpenHashMap();
     public final Short2ObjectOpenHashMap<ObjectIntPair<String>> objects = new Short2ObjectOpenHashMap<>();
     public final Short2ObjectOpenHashMap<String> oreMaterialNames = new Short2ObjectOpenHashMap<>();
+    private final Short2ObjectOpenHashMap<ItemStack> itemStacks = new Short2ObjectOpenHashMap<>();
+    private final Short2ObjectOpenHashMap<FluidStack> fluidStacks = new Short2ObjectOpenHashMap<>();
     private final Object2ShortOpenHashMap<String> nameLookup = new Object2ShortOpenHashMap<>();
     private short nextId;
 
@@ -128,18 +130,33 @@ public class ProspectingPacket extends ClientboundPacket {
 
         objects.clear();
         oreMaterialNames.clear();
+        itemStacks.clear();
+        fluidStacks.clear();
         nameLookup.clear();
         nextId = 0;
-        int objectCount = buf.readInt();
-        objects.ensureCapacity(objectCount);
-        for (int i = 0; i < objectCount; i++) {
+        int itemCount = buf.readInt();
+        itemStacks.ensureCapacity(itemCount);
+        objects.ensureCapacity(itemCount);
+        for (int i = 0; i < itemCount; i++) {
             short objectId = buf.readShort();
-            String name = ByteBufUtils.readUTF8String(buf);
-            int color = buf.readInt();
-            String oreMaterialName = ByteBufUtils.readUTF8String(buf);
-            objects.put(objectId, ObjectIntImmutablePair.of(name, color));
-            oreMaterialNames.put(objectId, oreMaterialName);
-            nameLookup.put(name, objectId);
+            ItemStack stack = ByteBufUtils.readItemStack(buf);
+            if (stack != null) {
+                itemStacks.put(objectId, stack);
+                addClientItemObject(objectId, stack);
+            }
+            nextId = (short) Math.max(nextId, objectId + 1);
+        }
+
+        int fluidCount = buf.readInt();
+        fluidStacks.ensureCapacity(fluidCount);
+        for (int i = 0; i < fluidCount; i++) {
+            short objectId = buf.readShort();
+            NBTTagCompound tag = ByteBufUtils.readTag(buf);
+            FluidStack fluid = tag == null ? null : FluidStack.loadFluidStackFromNBT(tag);
+            if (fluid != null && fluid.getFluid() != null) {
+                fluidStacks.put(objectId, fluid);
+                addClientFluidObject(objectId, fluid);
+            }
             nextId = (short) Math.max(nextId, objectId + 1);
         }
 
@@ -192,18 +209,20 @@ public class ProspectingPacket extends ClientboundPacket {
         buf.writeInt(size);
         buf.writeInt(ptype);
 
-        buf.writeInt(objects.size());
-        for (Short2ObjectMap.Entry<ObjectIntPair<String>> entry : objects.short2ObjectEntrySet()) {
+        buf.writeInt(itemStacks.size());
+        for (Short2ObjectMap.Entry<ItemStack> entry : itemStacks.short2ObjectEntrySet()) {
             short objectId = entry.getShortKey();
             buf.writeShort(objectId);
-            ByteBufUtils.writeUTF8String(
+            ByteBufUtils.writeItemStack(buf, entry.getValue());
+        }
+
+        buf.writeInt(fluidStacks.size());
+        for (Short2ObjectMap.Entry<FluidStack> entry : fluidStacks.short2ObjectEntrySet()) {
+            buf.writeShort(entry.getShortKey());
+            ByteBufUtils.writeTag(
                 buf,
                 entry.getValue()
-                    .left());
-            buf.writeInt(
-                entry.getValue()
-                    .rightInt());
-            ByteBufUtils.writeUTF8String(buf, oreMaterialNames.getOrDefault(objectId, ""));
+                    .writeToNBT(new NBTTagCompound()));
         }
 
         buf.writeInt(map.size());
@@ -234,21 +253,16 @@ public class ProspectingPacket extends ClientboundPacket {
     }
 
     public void addBlock(int worldX, int worldY, int worldZ, Block block, int meta) {
-        int relativeX = worldX - (chunkX - size) * 16;
-        int relativeZ = worldZ - (chunkZ - size) * 16;
         ItemStack stack = new ItemStack(block, 1, meta);
-        String name = stack.getDisplayName();
+        String objectKey = "block:" + Block.blockRegistry.getNameForObject(block) + ':' + meta;
 
-        try (OreInfo<IOreMaterial> info = OreManager.getOreInfo(block, meta)) {
-            short[] rgba = info != null && info.material != null ? info.material.getRGBA() : null;
-            addBlock(worldX, worldY, worldZ, name, rgbaToColor(rgba));
-        }
+        addBlock(worldX, worldY, worldZ, objectKey, stack);
     }
 
-    private void addBlock(int worldX, int worldY, int worldZ, String name, int color) {
+    private void addBlock(int worldX, int worldY, int worldZ, String objectKey, ItemStack stack) {
         int relativeX = worldX - (chunkX - size) * 16;
         int relativeZ = worldZ - (chunkZ - size) * 16;
-        short objectId = getOrCreateObjectId(name, color);
+        short objectId = getOrCreateItemObjectId(objectKey, stack);
 
         map.put(CoordinatePacker.pack(relativeX, worldY, relativeZ), objectId);
     }
@@ -259,8 +273,8 @@ public class ProspectingPacket extends ClientboundPacket {
         }
         int relativeChunkX = chunkX - (this.chunkX - size);
         int relativeChunkZ = chunkZ - (this.chunkZ - size);
-        String name = fluid.getLocalizedName();
-        short objectId = getOrCreateFluidObject(name, FluidColors.getColor(fluid.getFluidID()));
+        String objectKey = "fluid:" + fluid.getFluidID();
+        short objectId = getOrCreateFluidObject(objectKey, fluid);
 
         int lower = fluid.amount & 0xFFFF;
         int upper = fluid.amount >>> 16;
@@ -298,26 +312,44 @@ public class ProspectingPacket extends ClientboundPacket {
         return object == null ? DEFAULT_COLOR : object.rightInt();
     }
 
-    private short getOrCreateFluidObject(String name, short[] fluidColor) {
-        if (nameLookup.containsKey(name)) {
-            return nameLookup.getShort(name);
+    private short getOrCreateFluidObject(String objectKey, FluidStack fluid) {
+        if (nameLookup.containsKey(objectKey)) {
+            return nameLookup.getShort(objectKey);
         }
         short objectId = nextId++;
-        nameLookup.put(name, objectId);
-        objects.put(objectId, ObjectIntImmutablePair.of(name, rgbaToColor(fluidColor)));
+        nameLookup.put(objectKey, objectId);
+        fluidStacks.put(objectId, fluid.copy());
+        objects.put(objectId, ObjectIntImmutablePair.of(objectKey, DEFAULT_COLOR));
         oreMaterialNames.put(objectId, "");
         return objectId;
     }
 
-    private short getOrCreateObjectId(String name, int color) {
-        if (nameLookup.containsKey(name)) {
-            return nameLookup.getShort(name);
+    private short getOrCreateItemObjectId(String objectKey, ItemStack stack) {
+        if (nameLookup.containsKey(objectKey)) {
+            return nameLookup.getShort(objectKey);
         }
         short objectId = nextId++;
-        nameLookup.put(name, objectId);
-        objects.put(objectId, ObjectIntImmutablePair.of(name, color));
+        nameLookup.put(objectKey, objectId);
+        itemStacks.put(objectId, stack.copy());
+        objects.put(objectId, ObjectIntImmutablePair.of(objectKey, DEFAULT_COLOR));
         oreMaterialNames.put(objectId, "");
         return objectId;
+    }
+
+    private void addClientItemObject(short objectId, ItemStack stack) {
+        String name = stack.getDisplayName();
+        IOreMaterial material = OreManager.getMaterial(stack);
+        short[] rgba = material == null ? null : material.getRGBA();
+        objects.put(objectId, ObjectIntImmutablePair.of(name, rgbaToColor(rgba)));
+        oreMaterialNames.put(objectId, material == null ? "" : material.getInternalName());
+        nameLookup.put(name, objectId);
+    }
+
+    private void addClientFluidObject(short objectId, FluidStack fluid) {
+        String name = fluid.getLocalizedName();
+        objects.put(objectId, ObjectIntImmutablePair.of(name, rgbaToColor(FluidColors.getColor(fluid.getFluidID()))));
+        oreMaterialNames.put(objectId, "");
+        nameLookup.put(name, objectId);
     }
 
     private void collapseToTopVisibleLayer() {
@@ -349,6 +381,8 @@ public class ProspectingPacket extends ClientboundPacket {
     private void pruneUnusedObjects() {
         Short2ObjectOpenHashMap<ObjectIntPair<String>> usedObjects = new Short2ObjectOpenHashMap<>();
         Short2ObjectOpenHashMap<String> usedMaterialNames = new Short2ObjectOpenHashMap<>();
+        Short2ObjectOpenHashMap<ItemStack> usedItemStacks = new Short2ObjectOpenHashMap<>();
+        Short2ObjectOpenHashMap<FluidStack> usedFluidStacks = new Short2ObjectOpenHashMap<>();
         Object2ShortOpenHashMap<String> usedLookup = new Object2ShortOpenHashMap<>();
         short maxObjectId = -1;
 
@@ -360,6 +394,14 @@ public class ProspectingPacket extends ClientboundPacket {
             }
             usedObjects.put(objectId, object);
             usedMaterialNames.put(objectId, oreMaterialNames.getOrDefault(objectId, ""));
+            ItemStack itemStack = itemStacks.get(objectId);
+            if (itemStack != null) {
+                usedItemStacks.put(objectId, itemStack);
+            }
+            FluidStack fluidStack = fluidStacks.get(objectId);
+            if (fluidStack != null) {
+                usedFluidStacks.put(objectId, fluidStack);
+            }
             usedLookup.put(object.left(), objectId);
             maxObjectId = (short) Math.max(maxObjectId, objectId);
         }
@@ -368,6 +410,10 @@ public class ProspectingPacket extends ClientboundPacket {
         objects.putAll(usedObjects);
         oreMaterialNames.clear();
         oreMaterialNames.putAll(usedMaterialNames);
+        itemStacks.clear();
+        itemStacks.putAll(usedItemStacks);
+        fluidStacks.clear();
+        fluidStacks.putAll(usedFluidStacks);
         nameLookup.clear();
         nameLookup.putAll(usedLookup);
         nextId = (short) (maxObjectId + 1);
