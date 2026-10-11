@@ -76,6 +76,15 @@ public final class WirelessLinkData {
     private WirelessLinkData() {}
 
     public static Map<Slot, Claim> read(NBTTagCompound tileData) {
+        // Callers edit their own slot map; Claim and its contents are immutable.
+        return readBatch == null ? decode(tileData) : new HashMap<>(readView(tileData));
+    }
+
+    static Claim claim(NBTTagCompound tileData, Slot slot) {
+        return readView(tileData).get(slot);
+    }
+
+    private static Map<Slot, Claim> readView(NBTTagCompound tileData) {
         if (readBatch == null) return decode(tileData);
         NBTTagCompound payload = tileData.hasKey(KEY, 10) ? tileData.getCompoundTag(KEY) : null;
         Decoded saved = readBatch.get(tileData);
@@ -83,8 +92,7 @@ public final class WirelessLinkData {
             saved = new Decoded(payload, Map.copyOf(decode(tileData)));
             readBatch.put(tileData, saved);
         }
-        // Callers edit their own slot map; Claim and its contents are immutable.
-        return new HashMap<>(saved.claims());
+        return saved.claims();
     }
 
     private static Map<Slot, Claim> decode(NBTTagCompound tileData) {
@@ -138,7 +146,7 @@ public final class WirelessLinkData {
     public static boolean write(NBTTagCompound tileData, Map<Slot, Claim> claims) {
         if (tileData.hasKey(KEY, 10) && tileData.getCompoundTag(KEY)
             .getInteger("version") != VERSION) return false;
-        if (read(tileData).equals(claims)) return false;
+        if (readView(tileData).equals(claims)) return false;
         if (claims.isEmpty()) {
             tileData.removeTag(KEY);
             return true;

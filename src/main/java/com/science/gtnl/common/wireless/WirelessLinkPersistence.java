@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -18,6 +20,7 @@ import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.common.DimensionManager;
 
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
+import com.science.gtnl.common.wireless.WirelessChannelManager.Entrance;
 import com.science.gtnl.common.wireless.WirelessLinkData.Claim;
 import com.science.gtnl.common.wireless.WirelessLinkData.Slot;
 
@@ -34,7 +37,17 @@ public final class WirelessLinkPersistence {
 
     private static final Set<TileEntity> TILES = Collections.newSetFromMap(new IdentityHashMap<>());
     private static final Map<IGridNode, Endpoint> IMPORTED = new IdentityHashMap<>();
+    private static final Map<Entrance, RememberedEntrance> REMEMBERED_ENTRANCES = new IdentityHashMap<>();
     private static boolean initialized;
+
+    private record RememberedEntrance(Endpoint endpoint, NBTBase payload) {
+
+        boolean matches(IGridNode node) {
+            return endpoint.loaded() && endpoint.node() == node
+                && WirelessTileData.of(endpoint.tile())
+                    .getTag(WirelessLinkData.KEY) == payload;
+        }
+    }
 
     private record Endpoint(TileEntity tile, Address address, Slot slot, String kind) {
 
@@ -133,6 +146,8 @@ public final class WirelessLinkPersistence {
 
     /** Called only after a complete topology scan, so a scan limit never commits a partial provenance snapshot. */
     static void synchronize(PhysicalClusterTracker<IGridNode, Address> tracker, PhysicalMeTopology topology) {
+        // Revalidate provenance after each full scan, including controller aliases and multipart changes.
+        REMEMBERED_ENTRANCES.clear();
         Map<TileEntity, Map<Slot, Claim>> updates = new IdentityHashMap<>();
         Set<IGridNode> retained = Collections.newSetFromMap(new IdentityHashMap<>());
         for (var cluster : tracker.clusters()) {
@@ -191,8 +206,7 @@ public final class WirelessLinkPersistence {
     private static Claim claim(IGridNode node, PhysicalMeTopology topology) {
         Endpoint endpoint = endpoint(node, topology);
         if (endpoint == null) return null;
-        Claim saved = WirelessLinkData.read(WirelessTileData.of(endpoint.tile()))
-            .get(endpoint.slot());
+        Claim saved = WirelessLinkData.claim(WirelessTileData.of(endpoint.tile()), endpoint.slot());
         return saved != null && saved.kind()
             .equals(endpoint.kind()) ? saved : null;
     }
@@ -221,30 +235,44 @@ public final class WirelessLinkPersistence {
     }
 
     /** Only call after native pathing has confirmed the entry, never when creating a speculative connection. */
-    static void rememberEntrance(IGridNode node, Address source, PhysicalMeTopology topology) {
+    static void rememberEntrance(Entrance entrance, PhysicalMeTopology topology) {
+        if (entrance == null) return;
+        IGridNode node = entrance.targetNode();
+        RememberedEntrance remembered = REMEMBERED_ENTRANCES.get(entrance);
+        if (remembered != null && remembered.matches(node)) return;
+        REMEMBERED_ENTRANCES.remove(entrance);
         Endpoint endpoint = endpoint(node, topology);
         if (endpoint == null || endpoint.node() != node
             || endpoint.slot()
                 .external())
             return;
-        Map<Slot, Claim> claims = WirelessLinkData.read(WirelessTileData.of(endpoint.tile()));
-        Claim saved = claims.get(endpoint.slot());
+        NBTTagCompound tileData = WirelessTileData.of(endpoint.tile());
+        Claim saved = WirelessLinkData.claim(tileData, endpoint.slot());
         if (saved == null || !saved.kind()
-            .equals(endpoint.kind())
-            || saved.frequencies()
-                .stream()
-                .noneMatch(label -> sameSource(label, source)))
-            return;
-        Set<Address> entrances = new java.util.HashSet<>(saved.entrances());
-        saved.frequencies()
-            .stream()
-            .filter(label -> sameSource(label, source))
-            .forEach(entrances::add);
-        if (entrances.equals(saved.entrances())) return;
-        claims.put(
-            endpoint.slot(),
-            new Claim(saved.kind(), saved.frequencies(), saved.paused(), saved.names(), entrances));
-        save(endpoint.tile(), claims);
+            .equals(endpoint.kind())) return;
+        boolean matched = false;
+        Set<Address> entrances = null;
+        for (Address label : saved.frequencies()) {
+            if (!sameSource(label, entrance.source())) continue;
+            matched = true;
+            if (saved.entrances()
+                .contains(label)) continue;
+            if (entrances == null) entrances = new java.util.HashSet<>(saved.entrances());
+            entrances.add(label);
+        }
+        if (!matched) return;
+        if (entrances != null) {
+            Map<Slot, Claim> claims = WirelessLinkData.read(tileData);
+            claims.put(
+                endpoint.slot(),
+                new Claim(saved.kind(), saved.frequencies(), saved.paused(), saved.names(), entrances));
+            save(endpoint.tile(), claims);
+        }
+        REMEMBERED_ENTRANCES.put(entrance, new RememberedEntrance(endpoint, tileData.getTag(WirelessLinkData.KEY)));
+    }
+
+    static void forgetEntrance(Entrance entrance) {
+        REMEMBERED_ENTRANCES.remove(entrance);
     }
 
     private static Map<Address, java.util.SortedSet<String>> names(Collection<IGridNode> nodes,
@@ -351,6 +379,8 @@ public final class WirelessLinkPersistence {
 
     /** Unloading forgets object identities only. The tile's saved claims remain intact. */
     static void forget(Predicate<Address> removed) {
+        REMEMBERED_ENTRANCES.keySet()
+            .removeIf(entrance -> removed.test(entrance.source()) || removed.test(entrance.target()));
         IMPORTED.values()
             .removeIf(endpoint -> removed.test(endpoint.address()));
         TILES.removeIf(
@@ -366,6 +396,7 @@ public final class WirelessLinkPersistence {
     static void clear() {
         TILES.clear();
         IMPORTED.clear();
+        REMEMBERED_ENTRANCES.clear();
         initialized = false;
     }
 

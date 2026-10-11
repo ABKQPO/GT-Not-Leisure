@@ -110,7 +110,7 @@ public final class AutomaticWirelessEntrances {
                     entrance.connection()
                         .getUsedChannels(),
                     work.served + work.missing.size())) {
-                    WirelessLinkPersistence.rememberEntrance(entrance.targetNode(), entrance.source(), topology);
+                    WirelessLinkPersistence.rememberEntrance(entrance, topology);
                 }
             }
         }
@@ -163,8 +163,7 @@ public final class AutomaticWirelessEntrances {
         if (decision.action() == Action.REMOVE) {
             WirelessChannelManager.disconnect(decision.entranceId());
         } else if (decision.action() == Action.KEEP) {
-            WirelessLinkPersistence
-                .rememberEntrance(decision.target(), work.sourceByTarget.get(decision.target()), topology);
+            WirelessLinkPersistence.rememberEntrance(WirelessChannelManager.entrance(decision.entranceId()), topology);
         } else if (decision.action() == Action.ADD) {
             IGridNode target = decision.target();
             try {

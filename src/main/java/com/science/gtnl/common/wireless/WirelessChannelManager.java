@@ -255,6 +255,7 @@ public final class WirelessChannelManager {
     public static boolean disconnect(int id) {
         Entrance entrance = ENTRANCES.remove(id);
         if (entrance == null) return false;
+        WirelessLinkPersistence.forgetEntrance(entrance);
         OWNED_CONNECTIONS.remove(entrance.connection());
         if (entrance.isLive()) entrance.connection()
             .destroy();
