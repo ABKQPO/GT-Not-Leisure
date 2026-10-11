@@ -658,8 +658,8 @@ public class DisassemblerHelper {
             return;
         }
 
-        ItemStack input = getFirstValidStack(builder.inputItems);
-        ItemStack[] outputs = getValidStacks(builder.outputItems);
+        ItemStack input = getFirstValidStack(builder.inputsBasic);
+        ItemStack[] outputs = getValidStacks(builder.outputs);
         if (input == null || outputs.length == 0) {
             return;
         }

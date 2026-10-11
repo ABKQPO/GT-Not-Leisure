@@ -16,20 +16,19 @@ import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
+import com.science.gtnl.utils.recipes.RecipeBuilder;
 import com.science.gtnl.utils.recipes.metadata.RocketAssemblerInputSlotsMetadata;
 
 import cpw.mods.fml.common.Optional;
 import galaxyspace.core.inventory.InventorySchematic;
 import galaxyspace.core.recipe.RocketRecipes;
 import galaxyspace.core.register.GSBlocks;
-import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
-import gregtech.api.util.GTRecipeBuilder;
 import gregtech.api.util.GTUtility;
 import micdoodle8.mods.galacticraft.api.recipe.INasaWorkbenchRecipe;
 import micdoodle8.mods.galacticraft.core.recipe.NasaWorkbenchRecipe;
@@ -127,7 +126,7 @@ public class RocketAssemblerRecipes implements IRecipePool {
                         .copy())
                 .toArray(ItemStack[]::new);
 
-            GTRecipeBuilder recipeBuilder = GTValues.RA.stdBuilder()
+            RecipeBuilder recipeBuilder = RecipeBuilder.builder()
                 .itemInputs(orderedInputs)
                 .itemOutputs(recipe.getRecipeOutput())
                 .metadata(RocketAssemblerInputSlotsMetadata.INSTANCE, inputSlots)

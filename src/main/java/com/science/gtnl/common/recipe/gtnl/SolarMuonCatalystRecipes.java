@@ -4,9 +4,9 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.utils.recipes.RecipeBuilder;
 import com.science.gtnl.utils.recipes.metadata.SolorMuonCatalystMetadata;
 
-import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTUtility;
@@ -19,7 +19,7 @@ public class SolarMuonCatalystRecipes implements IRecipePool {
 
     @Override
     public void loadRecipes() {
-        GTValues.RA.stdBuilder()
+        RecipeBuilder.builder()
             .itemInputs(GTUtility.copyAmount(0, Particle.getBaseParticle(Particle.MUON)))
             .fluidInputs(
                 Materials.Lutetium.getPlasma(2304),
@@ -35,7 +35,7 @@ public class SolarMuonCatalystRecipes implements IRecipePool {
             .duration(200)
             .addTo(SMCR);
 
-        GTValues.RA.stdBuilder()
+        RecipeBuilder.builder()
             .metadata(SolorMuonCatalystMetadata.INSTANCE, true)
             .itemInputs(GTUtility.copyAmount(0, Particle.getBaseParticle(Particle.MUON)))
             .fluidInputs(

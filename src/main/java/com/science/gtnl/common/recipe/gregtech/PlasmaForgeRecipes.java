@@ -11,7 +11,6 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import appeng.api.AEApi;
 import goodgenerator.util.ItemRefer;
-import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.TierEU;
@@ -69,7 +68,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .calculateNonEBFRecipe(TierEU.RECIPE_ZPM, 1600);
 
             // Tier 5 - Normal
-            GTValues.RA.stdBuilder()
+            RecipeBuilder.builder()
                 .itemInputs(GTUtility.getIntegratedCircuit(4))
                 .fluidInputs(
                     Materials.ExcitedDTSC.getFluid(astral_titanium.getCatalystAmount(4)),
@@ -83,7 +82,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .addTo(PFR);
 
             // Tier 4 - Normal
-            GTValues.RA.stdBuilder()
+            RecipeBuilder.builder()
                 .itemInputs(GTUtility.getIntegratedCircuit(4))
                 .fluidInputs(
                     Materials.ExcitedDTEC.getFluid(astral_titanium.getCatalystAmount(3)),
@@ -97,7 +96,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .addTo(PFR);
 
             // Tier 3 - Normal
-            GTValues.RA.stdBuilder()
+            RecipeBuilder.builder()
                 .itemInputs(GTUtility.getIntegratedCircuit(4))
                 .fluidInputs(
                     Materials.ExcitedDTRC.getFluid(astral_titanium.getCatalystAmount(2)),
@@ -111,7 +110,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .addTo(PFR);
 
             // Tier 2 - Normal
-            GTValues.RA.stdBuilder()
+            RecipeBuilder.builder()
                 .itemInputs(GTUtility.getIntegratedCircuit(4))
                 .fluidInputs(
                     Materials.ExcitedDTPC.getFluid(astral_titanium.getCatalystAmount(1)),
@@ -125,7 +124,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .addTo(PFR);
 
             // Tier 1 - Normal
-            GTValues.RA.stdBuilder()
+            RecipeBuilder.builder()
                 .itemInputs(GTUtility.getIntegratedCircuit(4))
                 .fluidInputs(
                     Materials.ExcitedDTCC.getFluid(astral_titanium.getCatalystAmount(0)),
@@ -155,7 +154,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .calculateNonEBFRecipe(TierEU.RECIPE_UV, 800);
 
             // Tier 5 - Normal
-            GTValues.RA.stdBuilder()
+            RecipeBuilder.builder()
                 .itemInputs(GTUtility.getIntegratedCircuit(4))
                 .fluidInputs(
                     Materials.ExcitedDTSC.getFluid(celestial_tungsten.getCatalystAmount(4)),
@@ -169,7 +168,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .addTo(PFR);
 
             // Tier 4 - Normal
-            GTValues.RA.stdBuilder()
+            RecipeBuilder.builder()
                 .itemInputs(GTUtility.getIntegratedCircuit(4))
                 .fluidInputs(
                     Materials.ExcitedDTEC.getFluid(celestial_tungsten.getCatalystAmount(3)),
@@ -183,7 +182,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .addTo(PFR);
 
             // Tier 3 - Normal
-            GTValues.RA.stdBuilder()
+            RecipeBuilder.builder()
                 .itemInputs(GTUtility.getIntegratedCircuit(4))
                 .fluidInputs(
                     Materials.ExcitedDTRC.getFluid(celestial_tungsten.getCatalystAmount(2)),
@@ -197,7 +196,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .addTo(PFR);
 
             // Tier 2 - Normal
-            GTValues.RA.stdBuilder()
+            RecipeBuilder.builder()
                 .itemInputs(GTUtility.getIntegratedCircuit(4))
                 .fluidInputs(
                     Materials.ExcitedDTPC.getFluid(celestial_tungsten.getCatalystAmount(1)),
@@ -211,7 +210,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .addTo(PFR);
 
             // Tier 1 - Normal
-            GTValues.RA.stdBuilder()
+            RecipeBuilder.builder()
                 .itemInputs(GTUtility.getIntegratedCircuit(4))
                 .fluidInputs(
                     Materials.ExcitedDTCC.getFluid(celestial_tungsten.getCatalystAmount(0)),
@@ -241,7 +240,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .calculateNonEBFRecipe(TierEU.RECIPE_UV, 1600);
 
             // Tier 5 - Normal
-            GTValues.RA.stdBuilder()
+            RecipeBuilder.builder()
                 .itemInputs(GTUtility.getIntegratedCircuit(4))
                 .fluidInputs(
                     Materials.ExcitedDTSC.getFluid(advanced_nitinol.getCatalystAmount(4)),
@@ -255,7 +254,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .addTo(PFR);
 
             // Tier 4 - Normal
-            GTValues.RA.stdBuilder()
+            RecipeBuilder.builder()
                 .itemInputs(GTUtility.getIntegratedCircuit(4))
                 .fluidInputs(
                     Materials.ExcitedDTEC.getFluid(advanced_nitinol.getCatalystAmount(3)),
@@ -269,7 +268,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .addTo(PFR);
 
             // Tier 3 - Normal
-            GTValues.RA.stdBuilder()
+            RecipeBuilder.builder()
                 .itemInputs(GTUtility.getIntegratedCircuit(4))
                 .fluidInputs(
                     Materials.ExcitedDTRC.getFluid(advanced_nitinol.getCatalystAmount(2)),
@@ -283,7 +282,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .addTo(PFR);
 
             // Tier 2 - Normal
-            GTValues.RA.stdBuilder()
+            RecipeBuilder.builder()
                 .itemInputs(GTUtility.getIntegratedCircuit(4))
                 .fluidInputs(
                     Materials.ExcitedDTPC.getFluid(advanced_nitinol.getCatalystAmount(1)),
@@ -297,7 +296,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
                 .addTo(PFR);
 
             // Tier 1 - Normal
-            GTValues.RA.stdBuilder()
+            RecipeBuilder.builder()
                 .itemInputs(GTUtility.getIntegratedCircuit(4))
                 .fluidInputs(
                     Materials.ExcitedDTCC.getFluid(advanced_nitinol.getCatalystAmount(0)),
