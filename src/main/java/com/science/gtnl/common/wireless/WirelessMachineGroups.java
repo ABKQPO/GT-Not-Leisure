@@ -141,14 +141,7 @@ final class WirelessMachineGroups {
 
     static void sort(List<Row> rows) {
         rows.sort(
-            Comparator.comparingInt(
-                (Row row) -> row.statistics()
-                    .missing() > 0 ? 0 : 1)
-                .thenComparing(
-                    Comparator.comparingInt(
-                        (Row row) -> row.statistics()
-                            .online())
-                        .reversed())
+            Comparator.comparing(Row::statistics, WirelessNetworkStatistics.DISPLAY_ORDER)
                 .thenComparing(
                     row -> row.target()
                         .toString()));

@@ -108,10 +108,7 @@ public final class WirelessChannelManager {
             }
         }
         Address representative = addresses.stream()
-            .min(
-                Comparator.comparingInt(Address::x)
-                    .thenComparingInt(Address::y)
-                    .thenComparingInt(Address::z))
+            .min(Address.POSITION_ORDER)
             .orElse(source);
         for (Address address : addresses) CONTROLLER_SOURCES.put(address, representative);
         return representative;
@@ -139,6 +136,12 @@ public final class WirelessChannelManager {
     }
 
     public record Address(int dimension, int x, int y, int z, ForgeDirection side) {
+
+        /** Within one dimension, including multiple parts at the same block. */
+        static final Comparator<Address> POSITION_ORDER = Comparator.comparingInt(Address::x)
+            .thenComparingInt(Address::y)
+            .thenComparingInt(Address::z)
+            .thenComparing(Address::side);
 
         public TileEntity tile() {
             World world = DimensionManager.getWorld(dimension);

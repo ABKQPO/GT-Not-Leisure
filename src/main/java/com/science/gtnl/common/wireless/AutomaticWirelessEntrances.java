@@ -167,7 +167,10 @@ public final class AutomaticWirelessEntrances {
             work.missing.size(),
             WirelessChannelManager.entranceLimitReached(work.frequency));
         var decision = planner.decide(observation, accepted -> {
-            Comparator<IGridNode> order = addressOrder(topology);
+            Comparator<IGridNode> order = Comparator.comparing(
+                topology::nodeAddress,
+                Comparator.comparingInt(Address::dimension)
+                    .thenComparing(Address.POSITION_ORDER));
             // Prefer the cluster with the earliest unresolved device for deterministic, bounded work per allocation.
             List<Cluster<IGridNode, Address>> ordered = new ArrayList<>(work.clusters);
             Map<Cluster<IGridNode, Address>, IGridNode> anchors = new IdentityHashMap<>();
@@ -239,25 +242,6 @@ public final class AutomaticWirelessEntrances {
             if (connection.getOtherSide(target) == sourceNode) return true;
         }
         return false;
-    }
-
-    private static Comparator<IGridNode> addressOrder(PhysicalMeTopology topology) {
-        return Comparator.comparingInt(
-            (IGridNode node) -> topology.nodeAddress(node)
-                .dimension())
-            .thenComparingInt(
-                node -> topology.nodeAddress(node)
-                    .x())
-            .thenComparingInt(
-                node -> topology.nodeAddress(node)
-                    .y())
-            .thenComparingInt(
-                node -> topology.nodeAddress(node)
-                    .z())
-            .thenComparingInt(
-                node -> topology.nodeAddress(node)
-                    .side()
-                    .ordinal());
     }
 
     /** Excludes our own trial edges: rolling back a failed trial must not erase the failed-candidate memory. */

@@ -304,19 +304,7 @@ public final class WirelessClusterManager {
             .filter(node -> TOPOLOGY.entranceAddress(node) != null)
             .min(
                 Comparator.comparingInt(PhysicalMeTopology::entranceRank)
-                    .thenComparingInt(
-                        node -> TOPOLOGY.entranceAddress(node)
-                            .x())
-                    .thenComparingInt(
-                        node -> TOPOLOGY.entranceAddress(node)
-                            .y())
-                    .thenComparingInt(
-                        node -> TOPOLOGY.entranceAddress(node)
-                            .z())
-                    .thenComparingInt(
-                        node -> TOPOLOGY.entranceAddress(node)
-                            .side()
-                            .ordinal()))
+                    .thenComparing(TOPOLOGY::entranceAddress, Address.POSITION_ORDER))
             .orElse(null);
         if (anchor == null) return;
         long now = sourceNode.getWorld()
@@ -405,14 +393,7 @@ public final class WirelessClusterManager {
                         Set.copyOf(cluster.nodes())));
             }
             result.sort(
-                Comparator.comparingInt(
-                    (LinkView view) -> view.statistics()
-                        .missing() > 0 ? 0 : 1)
-                    .thenComparing(
-                        Comparator.comparingInt(
-                            (LinkView view) -> view.statistics()
-                                .online())
-                            .reversed())
+                Comparator.comparing(LinkView::statistics, WirelessNetworkStatistics.DISPLAY_ORDER)
                     .thenComparing(
                         view -> view.target()
                             .toString()));

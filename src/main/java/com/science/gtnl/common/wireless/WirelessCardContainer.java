@@ -218,24 +218,9 @@ public final class WirelessCardContainer extends ModularContainer {
         data.setBoolean("auto", WirelessCardBinding.automatic(card.getTagCompound()));
         data.setInteger("visualMode", WirelessCardVisualisation.mode(card.getTagCompound()));
         data.setBoolean("bound", binding != null);
-        int devices = 0, online = 0, missing = 0;
-        boolean stable = true;
-        for (var cluster : summary) {
-            devices += cluster.statistics()
-                .devices();
-            online += cluster.statistics()
-                .online();
-            missing += cluster.statistics()
-                .missing();
-            stable &= cluster.statistics()
-                .stable();
-        }
-        data.setInteger("devices", devices);
-        data.setInteger("online", online);
-        data.setInteger("missing", missing);
+        writeStatistics(data, WirelessMachineGroups.summarize(summary));
         data.setInteger("entrances", binding == null ? 0 : WirelessChannelManager.entranceCount(binding.source()));
         data.setInteger("entranceLimit", WirelessChannelManager.entranceLimit());
-        data.setBoolean("stable", stable);
         if (binding != null) {
             data.setString("source", coordinates(WirelessChannelManager.controllerSource(binding.source())));
             IGridNode source = binding.source()
@@ -271,22 +256,7 @@ public final class WirelessCardContainer extends ModularContainer {
             entry.setBoolean("paused", row.paused());
             entry.setBoolean("conflicted", row.conflicted());
             entry.setInteger("entrances", row.entrances());
-            entry.setInteger(
-                "devices",
-                row.statistics()
-                    .devices());
-            entry.setInteger(
-                "online",
-                row.statistics()
-                    .online());
-            entry.setInteger(
-                "missing",
-                row.statistics()
-                    .missing());
-            entry.setBoolean(
-                "stable",
-                row.statistics()
-                    .stable());
+            writeStatistics(entry, row.statistics());
             entry.setBoolean(
                 "runtime",
                 !row.group() && row.link()
@@ -318,6 +288,13 @@ public final class WirelessCardContainer extends ModularContainer {
         if (changed || data.hasKey("highlight")) sync.syncToClient(0, buf -> ByteBufUtils.writeTag(buf, data));
     }
 
+    private static void writeStatistics(NBTTagCompound data, WirelessNetworkStatistics statistics) {
+        data.setInteger("devices", statistics.devices());
+        data.setInteger("online", statistics.online());
+        data.setInteger("missing", statistics.missing());
+        data.setBoolean("stable", statistics.stable());
+    }
+
     private static void writeIcon(NBTTagCompound data, String key, ItemStack icon) {
         if (icon == null || icon.getItem() == null) return;
         // Display-only identity, never ship inventories or other machine NBT as an icon.
@@ -347,16 +324,8 @@ public final class WirelessCardContainer extends ModularContainer {
     static boolean sameRows(List<Row> next, List<Row> previous) {
         if (next.size() != previous.size()) return false;
         for (int i = 0; i < next.size(); i++) {
-            if (next.get(i)
-                .machine()
-                != previous.get(i)
-                    .machine()
-                || !sameTargets(
-                    next.get(i)
-                        .links(),
-                    previous.get(i)
-                        .links()))
-                return false;
+            Row a = next.get(i), b = previous.get(i);
+            if (a.machine() != b.machine() || !sameTargets(a.links(), b.links())) return false;
         }
         return true;
     }
@@ -534,7 +503,7 @@ public final class WirelessCardContainer extends ModularContainer {
                 detailNode = null;
                 page = 0;
             } catch (IllegalArgumentException invalid) {
-                player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.filter_invalid"));
+                message("filter_invalid");
             }
         } else if (action == 5 && detailNode != null && !rows.isEmpty() && binding != null) {
             var row = rows.get(0)
@@ -542,15 +511,15 @@ public final class WirelessCardContainer extends ModularContainer {
             IGridNode source = binding.source()
                 .node();
             if (this.nameRevision != nameRevision) {
-                player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.stale"));
+                message("stale");
             } else if (!canBuild(row.node(), player) || !canBuild(source, player)) {
-                player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.denied"));
+                message("denied");
             } else {
                 try {
                     if (!WirelessClusterManager.rename(binding.source(), row, text, node -> canBuild(node, player)))
-                        player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.denied"));
+                        message("denied");
                 } catch (IllegalStateException stale) {
-                    player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.stale"));
+                    message("stale");
                 }
             }
         } else if (teleport && binding != null && player instanceof EntityPlayerMP serverPlayer) {
@@ -558,29 +527,28 @@ public final class WirelessCardContainer extends ModularContainer {
                 .link();
             try {
                 if (!WirelessClusterManager.isCurrentLink(binding.source(), row)) {
-                    player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.stale"));
+                    message("stale");
                 } else {
                     IGridNode source = binding.source()
                         .node();
                     if (source == null) {
-                        player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.teleport_unavailable"));
+                        message("teleport_unavailable");
                     } else if (!canBuild(source, player) || !canBuild(row.node(), player)) {
-                        player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.denied"));
+                        message("denied");
                     } else if (WirelessCardTeleport.teleport(serverPlayer, row.target())) return;
                 }
             } catch (PhysicalClusterTracker.ScanLimitException limit) {
-                player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.stale"));
+                message("stale");
             }
         } else if (action >= 40 && action < 40 + rows.size()) {
             var row = rows.get(action - 40)
                 .link();
             if (row.target()
                 .dimension() != player.dimension) {
-                player.addChatMessage(
-                    new ChatComponentTranslation(
-                        "gtnl.wireless.gui.highlight_dimension",
-                        row.target()
-                            .dimension()));
+                message(
+                    "highlight_dimension",
+                    row.target()
+                        .dimension());
             } else {
                 pendingHighlight = new NBTTagList();
                 var targets = WirelessClusterManager.highlight(row)
@@ -599,8 +567,7 @@ public final class WirelessCardContainer extends ModularContainer {
                     pos.setInteger("z", target.z());
                     pendingHighlight.appendTag(pos);
                 }
-                player.addChatMessage(
-                    new ChatComponentTranslation("gtnl.wireless.gui.highlight_started", targets.size()));
+                message("highlight_started", targets.size());
             }
         } else if (action == 0) page--;
         else if (action == 1) page++;
@@ -626,16 +593,20 @@ public final class WirelessCardContainer extends ModularContainer {
                 .node() != row.node() || !canBuild(row.node(), player)
                 || source != null && !canBuild(source, player)
                 || row.paused() && source == null) {
-                player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.denied"));
+                message("denied");
             } else {
                 try {
                     WirelessClusterManager.setPaused(binding.source(), row, !row.paused());
                 } catch (IllegalStateException failure) {
-                    player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.stale"));
+                    message("stale");
                 }
             }
         } else if (action != 3) return;
         update(true);
+    }
+
+    private void message(String key, Object... args) {
+        player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui." + key, args));
     }
 
 }
