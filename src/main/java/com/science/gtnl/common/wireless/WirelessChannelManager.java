@@ -20,6 +20,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.science.gtnl.config.MainConfig;
+
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.exceptions.FailedConnection;
@@ -48,9 +50,9 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 public final class WirelessChannelManager {
 
     public static final WirelessChannelManager INSTANCE = new WirelessChannelManager();
-    private static final int MAX_ENTRANCES = 256;
     private static final Map<Integer, Entrance> ENTRANCES = new LinkedHashMap<>();
     private static List<Entrance> entranceSnapshot = List.of();
+    private static Map<Address, Integer> entranceCounts;
     private static final Map<IGridConnection, Entrance> OWNED_CONNECTIONS = new IdentityHashMap<>();
     private static final Map<IGrid, Allocation> ALLOCATIONS = new WeakHashMap<>();
     private static int nextId = 1;
@@ -117,6 +119,7 @@ public final class WirelessChannelManager {
 
     static void invalidateControllerSources() {
         CONTROLLER_SOURCES.clear();
+        entranceCounts = null;
     }
 
     static boolean sameSource(Address first, Address second) {
@@ -216,7 +219,8 @@ public final class WirelessChannelManager {
         if (!WirelessPathingAccess.class.isAssignableFrom(PathingCalculation.class)) {
             throw new IllegalArgumentException("Wireless pathing hooks are unavailable; no connection was created.");
         }
-        if (ENTRANCES.size() >= MAX_ENTRANCES) throw new IllegalArgumentException("Wireless entrance limit reached.");
+        if (entranceLimitReached(source))
+            throw new IllegalArgumentException("Wireless entrance limit reached for this frequency.");
         TileEntity controller = source.tile();
         if (!isSupportedController(controller)) {
             throw new IllegalArgumentException("Source must be a loaded ME Controller or Creative Energy Controller.");
@@ -246,7 +250,7 @@ public final class WirelessChannelManager {
         int id = nextId++;
         Entrance entrance = new Entrance(id, source, target, from, to, connection);
         ENTRANCES.put(id, entrance);
-        entranceSnapshot = null;
+        entranceCountChanged(source, 1);
         OWNED_CONNECTIONS.put(connection, entrance);
         from.getGrid()
             .<IPathingGrid>getCache(IPathingGrid.class)
@@ -257,7 +261,7 @@ public final class WirelessChannelManager {
     public static boolean disconnect(int id) {
         Entrance entrance = ENTRANCES.remove(id);
         if (entrance == null) return false;
-        entranceSnapshot = null;
+        entranceCountChanged(entrance.source(), -1);
         WirelessLinkPersistence.forgetEntrance(entrance);
         OWNED_CONNECTIONS.remove(entrance.connection());
         if (entrance.isLive()) entrance.connection()
@@ -287,8 +291,31 @@ public final class WirelessChannelManager {
         return ENTRANCES.get(id);
     }
 
-    public static boolean entranceLimitReached() {
-        return ENTRANCES.size() >= MAX_ENTRANCES;
+    public static int entranceLimit() {
+        return Math.max(1, MainConfig.wireless.maxEntrancesPerFrequency);
+    }
+
+    public static int entranceCount(Address source) {
+        if (entranceCounts == null) {
+            entranceCounts = new HashMap<>();
+            for (Entrance entrance : ENTRANCES.values()) {
+                entranceCounts.merge(controllerSource(entrance.source()), 1, Integer::sum);
+            }
+        }
+        return entranceCounts.getOrDefault(controllerSource(source), 0);
+    }
+
+    private static void entranceCountChanged(Address source, int change) {
+        entranceSnapshot = null;
+        if (entranceCounts == null) return;
+        Address frequency = controllerSource(source);
+        int count = entranceCounts.getOrDefault(frequency, 0) + change;
+        if (count == 0) entranceCounts.remove(frequency);
+        else entranceCounts.put(frequency, count);
+    }
+
+    public static boolean entranceLimitReached(Address source) {
+        return entranceCount(source) >= entranceLimit();
     }
 
     public static boolean channelsEnabled() {

@@ -53,6 +53,17 @@ public class MainConfig {
         public boolean enableGhostlyShape = true;
     }
 
+    public static final Wireless wireless = new Wireless();
+
+    @Comment("Wireless frequency card")
+    public static class Wireless {
+
+        @Comment("Maximum runtime entrances per frequency. Lowering this only prevents new entrances.")
+        @DefaultInt(256)
+        @RangeInt(min = 1)
+        public int maxEntrancesPerFrequency = 256;
+    }
+
     public static final Item item = new Item();
 
     @Sync

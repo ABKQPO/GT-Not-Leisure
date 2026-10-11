@@ -1,8 +1,10 @@
 package com.science.gtnl.common.wireless;
 
 import static com.science.gtnl.common.wireless.WirelessChannelManager.canBuild;
+import static com.science.gtnl.common.wireless.WirelessMachineGroups.coordinates;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -24,11 +26,13 @@ import com.cleanroommc.modularui.screen.ModularContainer;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.science.gtnl.common.item.items.WirelessFrequencyCard;
+import com.science.gtnl.common.wireless.WirelessMachineGroups.Row;
 
 import appeng.api.networking.IGridNode;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 import io.netty.buffer.ByteBuf;
 
 /** A slotless, server-authoritative view. Clients send only a session/revision and a displayed button. */
@@ -51,9 +55,10 @@ public final class WirelessCardContainer extends ModularContainer {
     private int pageSize = WirelessCardLayout.MIN_ROWS;
     private int ticks;
     private IGridNode detailNode;
+    private MTEMultiBlockBase groupMachine;
     private WirelessViewFilter filter = WirelessViewFilter.parse("", "", 0);
     private NBTTagList pendingHighlight;
-    private List<WirelessClusterManager.LinkView> rows = List.of();
+    private List<Row> rows = List.of();
     private NBTTagCompound sent;
     private long actionAfter = Long.MIN_VALUE;
     public volatile NBTTagCompound display = new NBTTagCompound();
@@ -117,8 +122,16 @@ public final class WirelessCardContainer extends ModularContainer {
         if (!(player instanceof EntityPlayerMP)) return;
         List<WirelessClusterManager.LinkView> all = binding == null ? List.of()
             : WirelessClusterManager.links(binding.source());
-        if (detailNode == null) all = filter(all);
-        List<WirelessClusterManager.LinkView> summary = all;
+        List<Row> groups = detailNode == null || groupMachine != null ? WirelessMachineGroups.group(all) : List.of();
+        Row selectedGroup = groups.stream()
+            .filter(row -> row.machine() == groupMachine && row.group())
+            .findFirst()
+            .orElse(null);
+        if (groupMachine != null && selectedGroup == null) {
+            groupMachine = null;
+            page = 0;
+        }
+        List<WirelessClusterManager.LinkView> summary = List.of();
         String detailName = "";
         String detailTarget = "";
         boolean multipleNames = false;
@@ -133,8 +146,7 @@ public final class WirelessCardContainer extends ModularContainer {
             if (focus == null) {
                 detailNode = null;
                 page = 0;
-                all = filter(all);
-                summary = all;
+                groups = WirelessMachineGroups.group(all);
             } else {
                 nextRenameState = new RenameState(focus.members(), focus.deviceNames());
                 detailName = focus.name();
@@ -144,20 +156,49 @@ public final class WirelessCardContainer extends ModularContainer {
                     .size() > 1;
                 summary = List.of(focus);
                 all = WirelessClusterManager.entranceLinks(binding.source(), focus);
+                if (selectedGroup != null && selectedGroup.links()
+                    .stream()
+                    .noneMatch(
+                        link -> link.members()
+                            .contains(detailNode))) {
+                    groupMachine = null;
+                    selectedGroup = null;
+                }
             }
+        }
+        List<Row> visible = new ArrayList<>();
+        if (detailNode != null) {
+            for (var link : all) visible.add(Row.cluster(link));
+        } else {
+            for (Row row : selectedGroup == null ? groups : List.of(selectedGroup)) {
+                Row filtered = row.filtered(filter);
+                if (filtered == null) continue;
+                if (selectedGroup == null) visible.add(filtered);
+                else for (var link : filtered.links()) visible.add(Row.cluster(link));
+            }
+            WirelessMachineGroups.sort(visible);
+            summary = visible.stream()
+                .flatMap(
+                    row -> row.links()
+                        .stream())
+                .toList();
         }
         if (!Objects.equals(renameState, nextRenameState)) nameRevision++;
         renameState = nextRenameState;
-        int pages = Math.max(1, (all.size() + pageSize - 1) / pageSize);
+        int pages = Math.max(1, (visible.size() + pageSize - 1) / pageSize);
         page = Math.max(0, Math.min(page, pages - 1));
-        List<WirelessClusterManager.LinkView> next = all
-            .subList(page * pageSize, Math.min(all.size(), (page + 1) * pageSize));
+        List<Row> next = visible.subList(page * pageSize, Math.min(visible.size(), (page + 1) * pageSize));
         NBTTagCompound data = new NBTTagCompound();
         data.setInteger("page", page);
         data.setInteger("pageSize", pageSize);
         data.setInteger("pages", pages);
-        data.setInteger("total", all.size());
+        data.setInteger("total", summary.size());
         data.setBoolean("detail", detailNode != null);
+        data.setBoolean("group", groupMachine != null);
+        if (selectedGroup != null) {
+            writeIcon(data, "groupIcon", selectedGroup.icon());
+            data.setString("groupPosition", coordinates(selectedGroup.target()));
+        }
         data.setString("name", detailName);
         data.setLong("nameRevision", nameRevision);
         data.setString("detailTarget", detailTarget);
@@ -174,7 +215,7 @@ public final class WirelessCardContainer extends ModularContainer {
         data.setBoolean("auto", WirelessCardBinding.automatic(card.getTagCompound()));
         data.setInteger("visualMode", WirelessCardVisualisation.mode(card.getTagCompound()));
         data.setBoolean("bound", binding != null);
-        int devices = 0, online = 0, missing = 0, entrances = 0;
+        int devices = 0, online = 0, missing = 0;
         boolean stable = true;
         for (var cluster : summary) {
             devices += cluster.statistics()
@@ -185,12 +226,12 @@ public final class WirelessCardContainer extends ModularContainer {
                 .missing();
             stable &= cluster.statistics()
                 .stable();
-            entrances += cluster.entrances();
         }
         data.setInteger("devices", devices);
         data.setInteger("online", online);
         data.setInteger("missing", missing);
-        data.setInteger("entrances", entrances);
+        data.setInteger("entrances", binding == null ? 0 : WirelessChannelManager.entranceCount(binding.source()));
+        data.setInteger("entranceLimit", WirelessChannelManager.entranceLimit());
         data.setBoolean("stable", stable);
         if (binding != null) {
             data.setString("source", coordinates(WirelessChannelManager.controllerSource(binding.source())));
@@ -208,7 +249,16 @@ public final class WirelessCardContainer extends ModularContainer {
         for (var row : next) {
             NBTTagCompound entry = new NBTTagCompound();
             entry.setString("position", coordinates(row.target()));
-            entry.setString("name", detailNode == null ? row.name() : detailName);
+            entry.setBoolean("group", row.group());
+            entry.setInteger(
+                "clusters",
+                row.links()
+                    .size());
+            entry.setString(
+                "name",
+                row.group() ? ""
+                    : detailNode == null ? row.link()
+                        .name() : detailName);
             entry.setString(
                 "side",
                 row.target()
@@ -234,20 +284,20 @@ public final class WirelessCardContainer extends ModularContainer {
                 "stable",
                 row.statistics()
                     .stable());
-            entry.setBoolean("runtime", row.runtimeEntrance());
-            entry.setInteger("usedChannels", row.usedChannels());
-            ItemStack icon = row.node()
-                .getGridBlock()
-                .getMachineRepresentation();
-            if (icon != null && icon.getItem() != null) {
-                // Display-only identity, never ship inventories or other machine NBT as an icon.
-                ItemStack clean = new ItemStack(icon.getItem(), 1, icon.getItemDamage());
-                entry.setTag("icon", clean.writeToNBT(new NBTTagCompound()));
-            }
+            entry.setBoolean(
+                "runtime",
+                !row.group() && row.link()
+                    .runtimeEntrance());
+            entry.setInteger(
+                "usedChannels",
+                row.group() ? -1
+                    : row.link()
+                        .usedChannels());
+            writeIcon(entry, "icon", row.icon());
             entries.appendTag(entry);
         }
         data.setTag("rows", entries);
-        boolean sameNodes = sameTargets(next, rows);
+        boolean sameNodes = sameRows(next, rows);
         boolean changed = force || !sameNodes || !data.equals(sent);
         rows = List.copyOf(next);
         sent = (NBTTagCompound) data.copy();
@@ -259,6 +309,30 @@ public final class WirelessCardContainer extends ModularContainer {
             pendingHighlight = null;
         }
         if (changed || data.hasKey("highlight")) sync.syncToClient(0, buf -> ByteBufUtils.writeTag(buf, data));
+    }
+
+    private static void writeIcon(NBTTagCompound data, String key, ItemStack icon) {
+        if (icon == null || icon.getItem() == null) return;
+        // Display-only identity, never ship inventories or other machine NBT as an icon.
+        ItemStack clean = new ItemStack(icon.getItem(), 1, icon.getItemDamage());
+        data.setTag(key, clean.writeToNBT(new NBTTagCompound()));
+    }
+
+    static boolean sameRows(List<Row> next, List<Row> previous) {
+        if (next.size() != previous.size()) return false;
+        for (int i = 0; i < next.size(); i++) {
+            if (next.get(i)
+                .machine()
+                != previous.get(i)
+                    .machine()
+                || !sameTargets(
+                    next.get(i)
+                        .links(),
+                    previous.get(i)
+                        .links()))
+                return false;
+        }
+        return true;
     }
 
     /** MUI owns transport and screen lifetime; application revisions still protect changing physical clusters. */
@@ -388,10 +462,17 @@ public final class WirelessCardContainer extends ModularContainer {
             if (now < actionAfter) return;
             actionAfter = now + 4;
         }
+        if (action >= 20 && action < 30) update(false);
         if (this.revision != revision && action != 6 && action != 8) {
             update(true);
             return;
         }
+        // Group rows are navigation only, even if a client submits a hidden mutation button.
+        if (action >= 10 && action < 60
+            && action % 10 < rows.size()
+            && rows.get(action % 10)
+                .group()
+            && !(action >= 20 && action < 30)) return;
         if (action == 9) {
             WirelessCardVisualisation.cycle(card, player);
         } else if (action == 8) {
@@ -408,7 +489,8 @@ public final class WirelessCardContainer extends ModularContainer {
                 player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.filter_invalid"));
             }
         } else if (action == 5 && detailNode != null && !rows.isEmpty() && binding != null) {
-            var row = rows.get(0);
+            var row = rows.get(0)
+                .link();
             IGridNode source = binding.source()
                 .node();
             if (this.nameRevision != nameRevision) {
@@ -424,7 +506,8 @@ public final class WirelessCardContainer extends ModularContainer {
                 }
             }
         } else if (teleport && binding != null && player instanceof EntityPlayerMP serverPlayer) {
-            var row = rows.get(action - 50);
+            var row = rows.get(action - 50)
+                .link();
             try {
                 if (!WirelessClusterManager.isCurrentLink(binding.source(), row)) {
                     player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.stale"));
@@ -441,7 +524,8 @@ public final class WirelessCardContainer extends ModularContainer {
                 player.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.stale"));
             }
         } else if (action >= 40 && action < 40 + rows.size()) {
-            var row = rows.get(action - 40);
+            var row = rows.get(action - 40)
+                .link();
             if (row.target()
                 .dimension() != player.dimension) {
                 player.addChatMessage(
@@ -475,14 +559,18 @@ public final class WirelessCardContainer extends ModularContainer {
         else if (action == 2) {
             WirelessAutoConnect.toggleAutomatic(player, card);
         } else if (action == 4) {
-            detailNode = null;
+            if (detailNode != null) detailNode = null;
+            else groupMachine = null;
             page = 0;
         } else if (action >= 20 && action < 20 + rows.size() && detailNode == null) {
-            detailNode = rows.get(action - 20)
+            Row row = rows.get(action - 20);
+            if (row.group()) groupMachine = row.machine();
+            else detailNode = row.link()
                 .node();
             page = 0;
         } else if (action >= 10 && action < 10 + rows.size() && binding != null) {
-            var row = rows.get(action - 10);
+            var row = rows.get(action - 10)
+                .link();
             IGridNode source = binding.source()
                 .node();
             // Never act on a replacement device or guess an unloaded source's permission when resuming.
@@ -502,33 +590,4 @@ public final class WirelessCardContainer extends ModularContainer {
         update(true);
     }
 
-    private List<WirelessClusterManager.LinkView> filter(List<WirelessClusterManager.LinkView> links) {
-        return links.stream()
-            .filter(link -> {
-                String position = coordinates(link.target());
-                String state = link.conflicted() ? "conflict" : link.state();
-                return filter.matches(
-                    "",
-                    link.target()
-                        .dimension(),
-                    position,
-                    link.paused(),
-                    state)
-                    || link.names()
-                        .stream()
-                        .anyMatch(
-                            name -> filter.matches(
-                                name,
-                                link.target()
-                                    .dimension(),
-                                position,
-                                link.paused(),
-                                state));
-            })
-            .toList();
-    }
-
-    private static String coordinates(WirelessChannelManager.Address address) {
-        return "D" + address.dimension() + "  " + address.x() + ", " + address.y() + ", " + address.z();
-    }
 }

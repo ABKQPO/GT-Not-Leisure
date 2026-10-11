@@ -136,6 +136,10 @@ public final class WirelessClusterManager {
             for (var cluster : TRACKER.clusters()) updateSavedState(cluster);
             WATCH.update(TRACKER.clusters(), TOPOLOGY);
             reconcile();
+            Set<IGridNode> retained = TRACKER.nodes();
+            TOPOLOGY.retain(retained);
+            RETRY_AFTER.keySet()
+                .retainAll(retained);
             return true;
         }
     }
@@ -177,9 +181,7 @@ public final class WirelessClusterManager {
         }
         WirelessEntranceIndex entrances = new WirelessEntranceIndex(TRACKER);
         Set<Address> pendingRecovery = restoreSavedEntrances(entrances);
-        Set<IGridNode> retained = Collections.newSetFromMap(new IdentityHashMap<>());
         for (Cluster<IGridNode, Address> cluster : TRACKER.clusters()) {
-            retained.addAll(cluster.nodes());
             if (cluster.frequencies()
                 .isEmpty()) continue;
             if (cluster.conflicted()) {
@@ -204,9 +206,7 @@ public final class WirelessClusterManager {
                 .toList(),
             TOPOLOGY,
             entrances);
-        TOPOLOGY.retain(retained);
-        RETRY_AFTER.keySet()
-            .retainAll(retained);
+        TOPOLOGY.beginScan();
     }
 
     private static Set<Address> restoreSavedEntrances(WirelessEntranceIndex entrances) {

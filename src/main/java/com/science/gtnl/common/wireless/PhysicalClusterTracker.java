@@ -52,6 +52,10 @@ public final class PhysicalClusterTracker<N, F> {
         return clusters;
     }
 
+    public Set<N> nodes() {
+        return Collections.unmodifiableSet(byNode.keySet());
+    }
+
     public Cluster<N, F> clusterOf(N node) {
         return byNode.get(node);
     }

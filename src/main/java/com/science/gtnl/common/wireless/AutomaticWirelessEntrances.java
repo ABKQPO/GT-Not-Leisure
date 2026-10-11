@@ -30,19 +30,24 @@ public final class AutomaticWirelessEntrances {
 
     private static final Map<IGrid, AutomaticEntrancePlanner<IGridNode>> PLANNERS = new IdentityHashMap<>();
     private static final Map<IGrid, GridShape> SHAPES = new IdentityHashMap<>();
+    private static final Map<IGrid, GridTargets> TARGETS = new IdentityHashMap<>();
 
     private record GridShape(long revision, long fingerprint) {}
+
+    private record GridTargets(List<Cluster<IGridNode, Address>> clusters, Map<IGridNode, Address> sources,
+        List<IGridNode> nodes, long fingerprint) {}
 
     private static final class Work {
 
         final List<Cluster<IGridNode, Address>> clusters = new ArrayList<>();
-        final Map<IGridNode, Address> sourceByTarget = new IdentityHashMap<>();
         final Set<IGridNode> occupied = Collections.newSetFromMap(new IdentityHashMap<>());
         final List<IGridNode> missing = new ArrayList<>();
+        final Address frequency;
         final IGridNode source;
         int served;
 
-        Work(IGridNode source) {
+        Work(Address frequency, IGridNode source) {
+            this.frequency = frequency;
             this.source = source;
         }
     }
@@ -68,24 +73,58 @@ public final class AutomaticWirelessEntrances {
             }
             if (occupied.isEmpty()) continue; // The cluster manager restores its first entrance before planning extra
                                               // ones.
-            Work work = workByGrid.computeIfAbsent(sourceNode.getGrid(), grid -> new Work(sourceNode));
+            Work work = workByGrid.computeIfAbsent(sourceNode.getGrid(), grid -> new Work(source, sourceNode));
             work.clusters.add(cluster);
             work.occupied.addAll(occupied);
-            for (IGridNode node : cluster.nodes()) {
-                work.sourceByTarget.put(node, source);
-                if (!node.hasFlag(GridFlags.REQUIRE_CHANNEL) || node.hasFlag(GridFlags.CANNOT_CARRY)) continue;
-                if (node.meetsChannelRequirements()) work.served++;
-                else work.missing.add(node);
-            }
         }
         PLANNERS.keySet()
             .retainAll(workByGrid.keySet());
         SHAPES.keySet()
             .retainAll(workByGrid.keySet());
+        TARGETS.keySet()
+            .retainAll(workByGrid.keySet());
         for (var entry : workByGrid.entrySet()) run(entry.getKey(), entry.getValue(), topology);
     }
 
+    private static GridTargets targets(IGrid grid, List<Cluster<IGridNode, Address>> clusters) {
+        GridTargets cached = TARGETS.get(grid);
+        if (cached != null && cached.clusters()
+            .size() == clusters.size()) {
+            int index = 0;
+            while (index < clusters.size() && cached.clusters()
+                .get(index) == clusters.get(index)) index++;
+            if (index == clusters.size()) return cached;
+        }
+        Map<IGridNode, Address> sources = new IdentityHashMap<>();
+        for (var cluster : clusters) {
+            Address source = cluster.frequencies()
+                .iterator()
+                .next();
+            for (IGridNode node : cluster.nodes()) sources.put(node, source);
+        }
+        long fingerprint = 0;
+        for (var entry : sources.entrySet()) {
+            fingerprint += mix(
+                ((long) System.identityHashCode(entry.getKey()) << 32) ^ entry.getValue()
+                    .hashCode());
+        }
+        GridTargets targets = new GridTargets(
+            List.copyOf(clusters),
+            sources,
+            List.copyOf(sources.keySet()),
+            fingerprint);
+        TARGETS.put(grid, targets);
+        return targets;
+    }
+
     private static void run(IGrid grid, Work work, PhysicalMeTopology topology) {
+        GridTargets targets = targets(grid, work.clusters);
+        // Membership is immutable between scans; flags and channel allocation remain live on every pass.
+        for (IGridNode node : targets.nodes()) {
+            if (!node.hasFlag(GridFlags.REQUIRE_CHANNEL) || node.hasFlag(GridFlags.CANNOT_CARRY)) continue;
+            if (node.meetsChannelRequirements()) work.served++;
+            else work.missing.add(node);
+        }
         AutomaticEntrancePlanner<IGridNode> planner = PLANNERS
             .computeIfAbsent(grid, ignored -> new AutomaticEntrancePlanner<>());
         if (planner.pendingEntrance() >= 0 && WirelessChannelManager.entrance(planner.pendingEntrance()) == null) {
@@ -115,7 +154,7 @@ public final class AutomaticWirelessEntrances {
         }
         long revision = allocation == null ? -1 : allocation.revision();
         Observation observation = new Observation(
-            context(grid, work, capacity, revision),
+            context(grid, targets, capacity, revision),
             revision,
             work.source.getWorld()
                 .getTotalWorldTime(),
@@ -126,7 +165,7 @@ public final class AutomaticWirelessEntrances {
             allocation == null ? 0 : allocation.used(),
             work.served,
             work.missing.size(),
-            WirelessChannelManager.entranceLimitReached());
+            WirelessChannelManager.entranceLimitReached(work.frequency));
         var decision = planner.decide(observation, accepted -> {
             Comparator<IGridNode> order = addressOrder(topology);
             // Prefer the cluster with the earliest unresolved device for deterministic, bounded work per allocation.
@@ -155,7 +194,10 @@ public final class AutomaticWirelessEntrances {
                     node -> accepted.test(node) && !work.occupied.contains(node)
                         && topology.entranceAddress(node) != null
                         && !node.hasFlag(GridFlags.CANNOT_CARRY)
-                        && !hasSourceConnection(node, work.sourceByTarget.get(node)),
+                        && !hasSourceConnection(
+                            node,
+                            targets.sources()
+                                .get(node)),
                     PhysicalMeTopology::entranceRank,
                     order);
                 if (candidate != null) return candidate;
@@ -169,8 +211,10 @@ public final class AutomaticWirelessEntrances {
         } else if (decision.action() == Action.ADD) {
             IGridNode target = decision.target();
             try {
-                int id = WirelessChannelManager
-                    .connect(work.sourceByTarget.get(target), topology.entranceAddress(target));
+                int id = WirelessChannelManager.connect(
+                    targets.sources()
+                        .get(target),
+                    topology.entranceAddress(target));
                 planner.created(target, id, observation);
             } catch (IllegalArgumentException | FailedConnection failure) {
                 planner.failed(target, observation.tick());
@@ -217,7 +261,7 @@ public final class AutomaticWirelessEntrances {
     }
 
     /** Excludes our own trial edges: rolling back a failed trial must not erase the failed-candidate memory. */
-    private static long context(IGrid grid, Work work, int capacity, long revision) {
+    private static long context(IGrid grid, GridTargets targets, int capacity, long revision) {
         GridShape shape = SHAPES.get(grid);
         if (shape == null || shape.revision() != revision) {
             long fingerprint = mix(capacity);
@@ -234,13 +278,7 @@ public final class AutomaticWirelessEntrances {
             shape = new GridShape(revision, fingerprint);
             SHAPES.put(grid, shape);
         }
-        long result = shape.fingerprint();
-        for (var entry : work.sourceByTarget.entrySet()) {
-            result += mix(
-                ((long) System.identityHashCode(entry.getKey()) << 32) ^ entry.getValue()
-                    .hashCode());
-        }
-        return result;
+        return shape.fingerprint() + targets.fingerprint();
     }
 
     private static long mix(long value) {
@@ -258,5 +296,6 @@ public final class AutomaticWirelessEntrances {
     public static void clear() {
         PLANNERS.clear();
         SHAPES.clear();
+        TARGETS.clear();
     }
 }

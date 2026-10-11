@@ -12,10 +12,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.science.gtnl.common.wireless.WirelessChannelManager;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Entrance;
 import com.science.gtnl.common.wireless.WirelessClusterManager;
+import com.science.gtnl.config.MainConfig;
 
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.IGridNode;
@@ -32,7 +34,7 @@ public final class CommandWirelessME extends CommandBase {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/gtnl_wireless_me bind <dim> <x> <y> <z> | link <dim> <x> <y> <z> [side] | unlink <id> | status | clear";
+        return "/gtnl_wireless_me bind <dim> <x> <y> <z> | link <dim> <x> <y> <z> [side] | unlink <id> | status | clear | limit [count]";
     }
 
     @Override
@@ -42,11 +44,22 @@ public final class CommandWirelessME extends CommandBase {
 
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
-        if (!(sender instanceof EntityPlayerMP player)) throw new CommandException("Player command only.");
         if (args.length == 0) {
             message(sender, getCommandUsage(sender));
             return;
         }
+        if ("limit".equals(args[0])) {
+            if (args.length > 2) throw new CommandException("Usage: /gtnl_wireless_me limit [count]");
+            if (args.length == 2) {
+                MainConfig.wireless.maxEntrancesPerFrequency = parseIntWithMin(sender, args[1], 1);
+                ConfigurationManager.save(MainConfig.class);
+            }
+            message(sender, "Per-frequency entrance limit: " + WirelessChannelManager.entranceLimit());
+            if (args.length == 2)
+                message(sender, "Existing entrances are preserved; the limit applies to new entrances.");
+            return;
+        }
+        if (!(sender instanceof EntityPlayerMP player)) throw new CommandException("Player command only.");
         try {
             switch (args[0]) {
                 case "bind" -> {
