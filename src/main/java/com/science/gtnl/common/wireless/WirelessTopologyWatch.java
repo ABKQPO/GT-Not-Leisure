@@ -11,7 +11,7 @@ import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import com.gtnewhorizon.gtnhlib.util.CoordinatePacker;
 import com.science.gtnl.api.IBlockStateListener;
 import com.science.gtnl.common.wireless.PhysicalClusterTracker.Cluster;
-import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
+import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 import com.science.gtnl.common.world.WorldListener;
 
 import appeng.api.networking.IGridNode;

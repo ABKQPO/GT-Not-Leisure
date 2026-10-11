@@ -39,9 +39,9 @@ import com.science.gtnl.common.wireless.WirelessCardBinding;
 import com.science.gtnl.common.wireless.WirelessCardContainer;
 import com.science.gtnl.common.wireless.WirelessCardInventory;
 import com.science.gtnl.common.wireless.WirelessCardVisualisation;
-import com.science.gtnl.common.wireless.WirelessChannelPrototype;
-import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
-import com.science.gtnl.common.wireless.WirelessChannelPrototype.Entrance;
+import com.science.gtnl.common.wireless.WirelessChannelManager;
+import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
+import com.science.gtnl.common.wireless.WirelessChannelManager.Entrance;
 import com.science.gtnl.common.wireless.WirelessClusterManager;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
@@ -150,7 +150,7 @@ public final class WirelessFrequencyCard extends Item implements IBaubleExpanded
         }
         TileEntity tile = world.getTileEntity(x, y, z);
         if (player.isSneaking()) {
-            if (WirelessChannelPrototype.isSupportedController(tile)) {
+            if (WirelessChannelManager.isSupportedController(tile)) {
                 bind(stack, player, new Address(world.provider.dimensionId, x, y, z, ForgeDirection.UNKNOWN));
             } else {
                 message(player, "bind_hint");
@@ -224,7 +224,7 @@ public final class WirelessFrequencyCard extends Item implements IBaubleExpanded
             message(player, "unstable");
             return;
         }
-        source = WirelessChannelPrototype.controllerSource(source);
+        source = WirelessChannelManager.controllerSource(source);
         if (stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
         new WirelessCardBinding(source, player.getUniqueID(), player.getCommandSenderName())
             .write(stack.getTagCompound());
@@ -258,7 +258,7 @@ public final class WirelessFrequencyCard extends Item implements IBaubleExpanded
     }
 
     private static boolean canBuild(IGridNode node, EntityPlayer player) {
-        if (WirelessChannelPrototype.canBuild(node, player)) return true;
+        if (WirelessChannelManager.canBuild(node, player)) return true;
         message(player, "denied");
         return false;
     }
@@ -266,7 +266,7 @@ public final class WirelessFrequencyCard extends Item implements IBaubleExpanded
     private static IGridNode sourceNode(WirelessCardBinding binding, EntityPlayer player) {
         TileEntity tile = binding.source()
             .tile();
-        IGridNode node = WirelessChannelPrototype.isSupportedController(tile) ? binding.source()
+        IGridNode node = WirelessChannelManager.isSupportedController(tile) ? binding.source()
             .node() : null;
         if (node == null) {
             message(player, "unavailable");
@@ -299,17 +299,17 @@ public final class WirelessFrequencyCard extends Item implements IBaubleExpanded
         var grid = node.getGrid();
         IPathingGrid path = grid.getCache(IPathingGrid.class);
         int entrances = 0;
-        for (Entrance entrance : WirelessChannelPrototype.entrances()) {
+        for (Entrance entrance : WirelessChannelManager.entrances()) {
             if (entrance.isLive() && entrance.sourceNode()
                 .getGrid() == grid) entrances++;
         }
-        message(player, "status", WirelessChannelPrototype.capacity(grid), entrances);
-        if (!WirelessChannelPrototype.channelsEnabled()) {
+        message(player, "status", WirelessChannelManager.capacity(grid), entrances);
+        if (!WirelessChannelManager.channelsEnabled()) {
             message(player, "channels_disabled");
         } else if (!AutomaticWirelessEntrances.isSettled(path)) {
             message(player, "unstable");
         } else {
-            var allocation = WirelessChannelPrototype.allocation(grid);
+            var allocation = WirelessChannelManager.allocation(grid);
             if (entrances > 0 && allocation != null) {
                 message(player, "allocation", allocation.used(), allocation.capacity());
             } else {

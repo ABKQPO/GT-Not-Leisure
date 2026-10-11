@@ -13,7 +13,7 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.science.gtnl.common.wireless.ChannelBudget.Position;
-import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
+import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
@@ -88,7 +88,7 @@ final class PhysicalMeTopology implements PhysicalClusterTracker.Topology<IGridN
     public Iterable<IGridNode> neighbours(IGridNode node) {
         List<IGridNode> result = new ArrayList<>();
         for (IGridConnection connection : node.getConnections()) {
-            if (WirelessChannelPrototype.isOwned(connection)) continue;
+            if (WirelessChannelManager.isOwned(connection)) continue;
             IGridNode other = connection.getOtherSide(node);
             if (!isLive(other)) continue;
             if (isPhysical(

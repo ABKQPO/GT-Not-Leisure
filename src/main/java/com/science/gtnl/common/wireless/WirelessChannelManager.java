@@ -44,9 +44,9 @@ import cpw.mods.fml.common.gameevent.TickEvent;
  * Low-level owned entrance registry. Cluster lifetime and recovery are handled by WirelessClusterManager.
  * All mutations happen on the server thread. No world lookup here may load a chunk or dimension.
  */
-public final class WirelessChannelPrototype {
+public final class WirelessChannelManager {
 
-    public static final WirelessChannelPrototype INSTANCE = new WirelessChannelPrototype();
+    public static final WirelessChannelManager INSTANCE = new WirelessChannelManager();
     private static final int MAX_ENTRANCES = 256;
     private static final Map<Integer, Entrance> ENTRANCES = new LinkedHashMap<>();
     private static final Map<IGridConnection, Entrance> OWNED_CONNECTIONS = new IdentityHashMap<>();
@@ -120,7 +120,7 @@ public final class WirelessChannelPrototype {
         return first.equals(second) || controllerSource(first).equals(controllerSource(second));
     }
 
-    private WirelessChannelPrototype() {}
+    private WirelessChannelManager() {}
 
     public record Allocation(int capacity, int used, long revision) {}
 

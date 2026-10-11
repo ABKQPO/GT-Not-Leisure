@@ -1,6 +1,6 @@
 package com.science.gtnl.common.wireless;
 
-import static com.science.gtnl.common.wireless.WirelessChannelPrototype.canBuild;
+import static com.science.gtnl.common.wireless.WirelessChannelManager.canBuild;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -188,14 +188,14 @@ public final class WirelessCardContainer extends ModularContainer {
         data.setInteger("entrances", entrances);
         data.setBoolean("stable", stable);
         if (binding != null) {
-            data.setString("source", coordinates(WirelessChannelPrototype.controllerSource(binding.source())));
+            data.setString("source", coordinates(WirelessChannelManager.controllerSource(binding.source())));
             IGridNode source = binding.source()
                 .node();
             data.setBoolean("sourceLoaded", source != null);
-            data.setBoolean("channels", WirelessChannelPrototype.channelsEnabled());
+            data.setBoolean("channels", WirelessChannelManager.channelsEnabled());
             if (source != null && source.getGrid() != null) {
-                var allocation = WirelessChannelPrototype.allocation(source.getGrid());
-                data.setInteger("capacity", WirelessChannelPrototype.capacity(source.getGrid()));
+                var allocation = WirelessChannelManager.allocation(source.getGrid());
+                data.setInteger("capacity", WirelessChannelManager.capacity(source.getGrid()));
                 data.setInteger("used", allocation == null ? -1 : allocation.used());
             }
         }
@@ -522,7 +522,7 @@ public final class WirelessCardContainer extends ModularContainer {
             .toList();
     }
 
-    private static String coordinates(WirelessChannelPrototype.Address address) {
+    private static String coordinates(WirelessChannelManager.Address address) {
         return "D" + address.dimension() + "  " + address.x() + ", " + address.y() + ", " + address.z();
     }
 }

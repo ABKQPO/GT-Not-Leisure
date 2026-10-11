@@ -1,6 +1,6 @@
 package com.science.gtnl.common.wireless;
 
-import static com.science.gtnl.common.wireless.WirelessChannelPrototype.canBuild;
+import static com.science.gtnl.common.wireless.WirelessChannelManager.canBuild;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.BlockEvent;
 
 import com.science.gtnl.common.item.items.WirelessFrequencyCard;
-import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
+import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.IGridHost;

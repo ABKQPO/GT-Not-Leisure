@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
+import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 
 /** Tile-owned data: cable, mounted parts and external nodes each retain their own frequency provenance. */
 public final class WirelessLinkData {

@@ -1,7 +1,7 @@
 package com.science.gtnl.common.wireless;
 
-import static com.science.gtnl.common.wireless.WirelessChannelPrototype.controllerSource;
-import static com.science.gtnl.common.wireless.WirelessChannelPrototype.sameSource;
+import static com.science.gtnl.common.wireless.WirelessChannelManager.controllerSource;
+import static com.science.gtnl.common.wireless.WirelessChannelManager.sameSource;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,8 +17,8 @@ import net.minecraft.tileentity.TileEntity;
 import com.science.gtnl.common.wireless.PhysicalClusterTracker.Cluster;
 import com.science.gtnl.common.wireless.VerifiedEntranceRecovery.Candidate;
 import com.science.gtnl.common.wireless.VerifiedEntranceRecovery.Result;
-import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
-import com.science.gtnl.common.wireless.WirelessChannelPrototype.Entrance;
+import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
+import com.science.gtnl.common.wireless.WirelessChannelManager.Entrance;
 
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.GridFlags;
@@ -81,7 +81,7 @@ public final class WirelessClusterManager {
     }
 
     public static void invalidateTopology() {
-        WirelessChannelPrototype.invalidateControllerSources();
+        WirelessChannelManager.invalidateControllerSources();
         SCANS.invalidate();
     }
 
@@ -118,14 +118,14 @@ public final class WirelessClusterManager {
                 TOPOLOGY,
                 seeds,
                 node -> WirelessLinkPersistence.restore(node, TOPOLOGY),
-                WirelessChannelPrototype::controllerSource);
+                WirelessChannelManager::controllerSource);
             WirelessLinkPersistence.synchronize(TRACKER, TOPOLOGY);
             scanLimited = false;
         } catch (PhysicalClusterTracker.ScanLimitException limit) {
             scanLimited = true;
             // Never apply a partial scan. Keep all provenance so reducing the network can recover it.
-            for (Entrance entrance : WirelessChannelPrototype.entrances())
-                WirelessChannelPrototype.disconnect(entrance.id());
+            for (Entrance entrance : WirelessChannelManager.entrances())
+                WirelessChannelManager.disconnect(entrance.id());
             TOPOLOGY.clear();
             AutomaticWirelessEntrances.clear();
             return false;
@@ -155,7 +155,7 @@ public final class WirelessClusterManager {
     private static void reconcile() {
         STATES.clear();
         // Tear down every conflicting entrance before trying to reconnect any source.
-        for (Entrance entrance : WirelessChannelPrototype.entrances()) {
+        for (Entrance entrance : WirelessChannelManager.entrances()) {
             Cluster<IGridNode, Address> cluster = TRACKER.clusterOf(entrance.targetNode());
             if (cluster == null || cluster.blocked()
                 || cluster.conflicted()
@@ -167,7 +167,7 @@ public final class WirelessClusterManager {
                     .node() != entrance.sourceNode()
                 || entrance.target()
                     .node() != entrance.targetNode()) {
-                WirelessChannelPrototype.disconnect(entrance.id());
+                WirelessChannelManager.disconnect(entrance.id());
             }
         }
         Set<Address> pendingRecovery = restoreSavedEntrances();
@@ -237,7 +237,7 @@ public final class WirelessClusterManager {
                 if (path.isNetworkBooting() || path.getControllerState() != ControllerState.CONTROLLER_ONLINE)
                     return Result.WAITING;
                 try {
-                    WirelessChannelPrototype.connect(candidate.source(), target);
+                    WirelessChannelManager.connect(candidate.source(), target);
                     return Result.CONNECTED;
                 } catch (IllegalArgumentException | FailedConnection unavailable) {
                     // Keep saved hints through temporary source/security failures; other entries can still recover.
@@ -247,7 +247,7 @@ public final class WirelessClusterManager {
     }
 
     private static boolean hasEntrance(IGridNode node, Address source) {
-        for (Entrance entrance : WirelessChannelPrototype.entrances()) {
+        for (Entrance entrance : WirelessChannelManager.entrances()) {
             if (entrance.targetNode() == node && sameSource(entrance.source(), source) && entrance.isLive())
                 return true;
         }
@@ -256,7 +256,7 @@ public final class WirelessClusterManager {
 
     private static boolean sourceReady(Address source) {
         TileEntity tile = source.tile();
-        if (!WirelessChannelPrototype.isSupportedController(tile)) return false;
+        if (!WirelessChannelManager.isSupportedController(tile)) return false;
         IGridNode node = source.node();
         return node != null && !AutomaticWirelessEntrances.hasPendingTrial(node.getGrid())
             && AutomaticWirelessEntrances.isSettled(
@@ -268,7 +268,7 @@ public final class WirelessClusterManager {
         Address source = cluster.frequencies()
             .iterator()
             .next();
-        for (Entrance entrance : WirelessChannelPrototype.entrances()) {
+        for (Entrance entrance : WirelessChannelManager.entrances()) {
             if (sameSource(entrance.source(), source) && cluster.nodes()
                 .contains(entrance.targetNode()) && entrance.isLive()) {
                 STATES.put(cluster, State.ACTIVE);
@@ -278,7 +278,7 @@ public final class WirelessClusterManager {
         STATES.put(cluster, State.WAITING);
         if (pendingRecovery.contains(source)) return;
         TileEntity tile = source.tile();
-        if (!WirelessChannelPrototype.isSupportedController(tile)) return;
+        if (!WirelessChannelManager.isSupportedController(tile)) return;
         IGridNode sourceNode = source.node();
         if (sourceNode == null) return;
         IPathingGrid path = sourceNode.getGrid()
@@ -309,7 +309,7 @@ public final class WirelessClusterManager {
             .getTotalWorldTime();
         if (now < RETRY_AFTER.getOrDefault(anchor, Long.MIN_VALUE)) return;
         try {
-            WirelessChannelPrototype.connect(source, TOPOLOGY.entranceAddress(anchor));
+            WirelessChannelManager.connect(source, TOPOLOGY.entranceAddress(anchor));
             RETRY_AFTER.remove(anchor);
             STATES.put(cluster, State.ACTIVE);
         } catch (IllegalArgumentException | FailedConnection unavailable) {
@@ -354,7 +354,7 @@ public final class WirelessClusterManager {
                 .orElse(null);
             if (anchor == null) continue;
             int entrances = 0;
-            for (Entrance entrance : WirelessChannelPrototype.entrances()) {
+            for (Entrance entrance : WirelessChannelManager.entrances()) {
                 if (sameSource(entrance.source(), source) && cluster.nodes()
                     .contains(entrance.targetNode()) && entrance.isLive()) entrances++;
             }
@@ -373,7 +373,7 @@ public final class WirelessClusterManager {
                     paused,
                     state,
                     entrances,
-                    WirelessNetworkStatistics.measure(cluster.nodes(), WirelessChannelPrototype.channelsEnabled()),
+                    WirelessNetworkStatistics.measure(cluster.nodes(), WirelessChannelManager.channelsEnabled()),
                     false,
                     -1,
                     Set.copyOf(cluster.nodes())));
@@ -399,7 +399,7 @@ public final class WirelessClusterManager {
 
     public static List<LinkView> entranceLinks(Address source, LinkView cluster) {
         List<LinkView> result = new ArrayList<>();
-        for (Entrance entrance : WirelessChannelPrototype.entrances()) {
+        for (Entrance entrance : WirelessChannelManager.entrances()) {
             if (sameSource(entrance.source(), source) && entrance.isLive()
                 && cluster.members()
                     .contains(entrance.targetNode())) {
@@ -496,7 +496,7 @@ public final class WirelessClusterManager {
         if (paused(cluster, source))
             throw new IllegalStateException("This cluster is paused in the frequency card GUI.");
         // Do not commit a new claim if AE2 refuses the first connection.
-        int id = WirelessChannelPrototype.connect(source, target);
+        int id = WirelessChannelManager.connect(source, target);
         TRACKER.link(cluster, source);
         refreshTarget(node);
         return id;
@@ -508,11 +508,11 @@ public final class WirelessClusterManager {
         Cluster<IGridNode, Address> cluster = TRACKER.clusterOf(target);
         if (cluster == null || !cluster.frequencies()
             .contains(source)) return false;
-        TRACKER.unlink(cluster, source, WirelessChannelPrototype::controllerSource);
-        for (Entrance entrance : WirelessChannelPrototype.entrances()) {
+        TRACKER.unlink(cluster, source, WirelessChannelManager::controllerSource);
+        for (Entrance entrance : WirelessChannelManager.entrances()) {
             if (sameSource(entrance.source(), source) && cluster.nodes()
                 .contains(entrance.targetNode())) {
-                WirelessChannelPrototype.disconnect(entrance.id());
+                WirelessChannelManager.disconnect(entrance.id());
             }
         }
         refreshTarget(target);

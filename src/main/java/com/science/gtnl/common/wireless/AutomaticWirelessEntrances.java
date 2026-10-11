@@ -13,8 +13,8 @@ import com.science.gtnl.common.wireless.AutomaticEntrancePlanner.Action;
 import com.science.gtnl.common.wireless.AutomaticEntrancePlanner.Observation;
 import com.science.gtnl.common.wireless.AutomaticEntrancePlanner.Status;
 import com.science.gtnl.common.wireless.PhysicalClusterTracker.Cluster;
-import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
-import com.science.gtnl.common.wireless.WirelessChannelPrototype.Entrance;
+import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
+import com.science.gtnl.common.wireless.WirelessChannelManager.Entrance;
 
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.GridFlags;
@@ -51,7 +51,7 @@ public final class AutomaticWirelessEntrances {
 
     static void refresh(Collection<Cluster<IGridNode, Address>> clusters, PhysicalMeTopology topology) {
         Map<IGrid, Work> workByGrid = new IdentityHashMap<>();
-        List<Entrance> entrances = WirelessChannelPrototype.entrances();
+        List<Entrance> entrances = WirelessChannelManager.entrances();
         for (Cluster<IGridNode, Address> cluster : clusters) {
             if (cluster.blocked() || cluster.frequencies()
                 .size() != 1) continue;
@@ -62,7 +62,7 @@ public final class AutomaticWirelessEntrances {
             if (sourceNode == null) continue;
             List<IGridNode> occupied = new ArrayList<>();
             for (Entrance entrance : entrances) {
-                if (WirelessChannelPrototype.sameSource(entrance.source(), source) && cluster.nodes()
+                if (WirelessChannelManager.sameSource(entrance.source(), source) && cluster.nodes()
                     .contains(entrance.targetNode()) && entrance.isLive()) {
                     occupied.add(entrance.targetNode());
                 }
@@ -89,16 +89,16 @@ public final class AutomaticWirelessEntrances {
     private static void run(IGrid grid, Work work, PhysicalMeTopology topology) {
         AutomaticEntrancePlanner<IGridNode> planner = PLANNERS
             .computeIfAbsent(grid, ignored -> new AutomaticEntrancePlanner<>());
-        if (planner.pendingEntrance() >= 0 && WirelessChannelPrototype.entrance(planner.pendingEntrance()) == null) {
+        if (planner.pendingEntrance() >= 0 && WirelessChannelManager.entrance(planner.pendingEntrance()) == null) {
             planner.entranceLost();
         }
         IPathingGrid path = grid.getCache(IPathingGrid.class);
         IEnergyGrid energy = grid.getCache(IEnergyGrid.class);
-        var allocation = WirelessChannelPrototype.allocation(grid);
+        var allocation = WirelessChannelManager.allocation(grid);
         int capacity = allocation == null ? 0 : allocation.capacity();
         boolean settled = allocation != null && isSettled(path);
         if (settled && energy.isNetworkPowered()) {
-            for (Entrance entrance : WirelessChannelPrototype.entrances()) {
+            for (Entrance entrance : WirelessChannelManager.entrances()) {
                 if (entrance.sourceNode()
                     .getGrid() != grid || !entrance.isLive()
                     || !work.occupied.contains(entrance.targetNode())) continue;
@@ -106,7 +106,7 @@ public final class AutomaticWirelessEntrances {
                     settled,
                     energy.isNetworkPowered(),
                     entrance.id() == planner.pendingEntrance(),
-                    WirelessChannelPrototype.channelsEnabled(),
+                    WirelessChannelManager.channelsEnabled(),
                     entrance.connection()
                         .getUsedChannels(),
                     work.served + work.missing.size())) {
@@ -120,14 +120,14 @@ public final class AutomaticWirelessEntrances {
             revision,
             work.source.getWorld()
                 .getTotalWorldTime(),
-            WirelessChannelPrototype.channelsEnabled(),
+            WirelessChannelManager.channelsEnabled(),
             energy.isNetworkPowered(),
             settled,
             capacity,
             allocation == null ? 0 : allocation.used(),
             work.served,
             work.missing.size(),
-            WirelessChannelPrototype.entranceLimitReached());
+            WirelessChannelManager.entranceLimitReached());
         var decision = planner.decide(observation, accepted -> {
             Comparator<IGridNode> order = addressOrder(topology);
             // Prefer the cluster with the earliest unresolved device for deterministic, bounded work per allocation.
@@ -161,14 +161,14 @@ public final class AutomaticWirelessEntrances {
             return null;
         });
         if (decision.action() == Action.REMOVE) {
-            WirelessChannelPrototype.disconnect(decision.entranceId());
+            WirelessChannelManager.disconnect(decision.entranceId());
         } else if (decision.action() == Action.KEEP) {
             WirelessLinkPersistence
                 .rememberEntrance(decision.target(), work.sourceByTarget.get(decision.target()), topology);
         } else if (decision.action() == Action.ADD) {
             IGridNode target = decision.target();
             try {
-                int id = WirelessChannelPrototype
+                int id = WirelessChannelManager
                     .connect(work.sourceByTarget.get(target), topology.entranceAddress(target));
                 planner.created(target, id, observation);
             } catch (IllegalArgumentException | FailedConnection failure) {
@@ -226,7 +226,7 @@ public final class AutomaticWirelessEntrances {
                     .getFlags()) flags |= 1 << flag.ordinal();
                 fingerprint += mix(((long) System.identityHashCode(node) << 32) ^ flags);
                 for (IGridConnection connection : node.getConnections()) {
-                    if (connection.a() == node && !WirelessChannelPrototype.isOwned(connection))
+                    if (connection.a() == node && !WirelessChannelManager.isOwned(connection))
                         fingerprint += mix(System.identityHashCode(connection));
                 }
             }

@@ -14,7 +14,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.science.gtnl.common.wireless.ChannelBudget;
-import com.science.gtnl.common.wireless.WirelessChannelPrototype;
+import com.science.gtnl.common.wireless.WirelessChannelManager;
 import com.science.gtnl.common.wireless.WirelessPathingAccess;
 
 import appeng.api.networking.IGrid;
@@ -44,15 +44,15 @@ public abstract class MixinWirelessPathingCalculation implements WirelessPathing
         // Cover both ordinary and creative-energy controller loops. The factory supplies AE2's native
         // 32-channel face (or its unlimited-mode capacity); infinite energy does not imply infinite channels.
         // Do not change unowned UNKNOWN connections, part internals, P2P or quantum bridges.
-        return WirelessChannelPrototype.isOwned(connection) ? factory.apply(direction)
+        return WirelessChannelManager.isOwned(connection) ? factory.apply(direction)
             : original.call(faces, direction, factory);
     }
 
     @Inject(method = "<init>", at = @At("RETURN"), require = 1)
     private void gtnl$initializeBudget(IGrid grid, CallbackInfo ci) {
-        if (WirelessChannelPrototype.channelsEnabled() && WirelessChannelPrototype.manages(grid)) {
+        if (WirelessChannelManager.channelsEnabled() && WirelessChannelManager.manages(grid)) {
             gtnl$wirelessGrid = grid;
-            gtnl$wirelessBudget = new ChannelBudget(WirelessChannelPrototype.capacity(grid));
+            gtnl$wirelessBudget = new ChannelBudget(WirelessChannelManager.capacity(grid));
         }
     }
 
@@ -71,7 +71,7 @@ public abstract class MixinWirelessPathingCalculation implements WirelessPathing
     @Inject(method = "compute", at = @At("RETURN"), require = 1)
     private void gtnl$publishAllocation(CallbackInfo ci) {
         if (gtnl$wirelessBudget != null) {
-            WirelessChannelPrototype.recordAllocation(gtnl$wirelessGrid, gtnl$wirelessBudget);
+            WirelessChannelManager.recordAllocation(gtnl$wirelessGrid, gtnl$wirelessBudget);
         }
     }
 }

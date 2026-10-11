@@ -1,6 +1,6 @@
 package com.science.gtnl.common.wireless;
 
-import static com.science.gtnl.common.wireless.WirelessChannelPrototype.sameSource;
+import static com.science.gtnl.common.wireless.WirelessChannelManager.sameSource;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +17,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.common.DimensionManager;
 
-import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
+import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 import com.science.gtnl.common.wireless.WirelessLinkData.Claim;
 import com.science.gtnl.common.wireless.WirelessLinkData.Slot;
 
@@ -203,7 +203,7 @@ public final class WirelessLinkPersistence {
             Claim saved = claim(node, topology);
             if (saved != null) saved.paused()
                 .stream()
-                .map(WirelessChannelPrototype::controllerSource)
+                .map(WirelessChannelManager::controllerSource)
                 .forEach(paused::add);
         }
         return paused;

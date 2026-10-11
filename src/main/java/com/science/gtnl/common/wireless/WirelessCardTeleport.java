@@ -18,7 +18,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.WirelessHighlightPacket;
 import com.science.gtnl.common.wireless.WirelessCardTeleport.Landing.Position;
-import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
+import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 
 import appeng.api.util.IOrientable;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;

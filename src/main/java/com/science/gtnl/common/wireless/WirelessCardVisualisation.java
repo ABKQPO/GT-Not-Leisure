@@ -128,11 +128,11 @@ public final class WirelessCardVisualisation {
         if (binding == null || !binding.belongsTo(player.getUniqueID())) return;
         var source = binding.source()
             .node();
-        if (!WirelessChannelPrototype.canBuild(source, player)) return;
+        if (!WirelessChannelManager.canBuild(source, player)) return;
         // Address.node() only visits already loaded chunks. Never let the native collector load its target.
         var tile = binding.source()
             .tile();
-        if (!WirelessChannelPrototype.isSupportedController(tile) || tile.isInvalid()) return;
+        if (!WirelessChannelManager.isSupportedController(tile) || tile.isInvalid()) return;
         ItemStack tool = tool(
             binding,
             binding.source()

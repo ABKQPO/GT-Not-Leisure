@@ -104,7 +104,7 @@ public enum Mixins implements IMixins {
         .setPhase(Phase.EARLY)
         .addRequiredMod(ModList.AppliedEnergistics)),
 
-    WIRELESS_CHANNEL_PROTOTYPE(new MixinBuilder("ME wireless channel allocation")
+    WIRELESS_CHANNEL(new MixinBuilder("ME wireless channel allocation")
         .addCommonMixins(
             "appliedEnergistics.wireless.MixinWirelessPathingCalculation",
             "appliedEnergistics.wireless.MixinWirelessPathGridCache",

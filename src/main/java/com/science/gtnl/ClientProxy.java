@@ -19,6 +19,7 @@ import com.science.gtnl.asm.GTNLEarlyCoreMod;
 import com.science.gtnl.client.GTNLInputHandler;
 import com.science.gtnl.client.GTNLTooltipManager;
 import com.science.gtnl.client.WirelessCardInput;
+import com.science.gtnl.client.WirelessWorldHighlight;
 import com.science.gtnl.client.gui.GuiActiveFormationPlane;
 import com.science.gtnl.client.gui.GuiCustomPriority;
 import com.science.gtnl.client.gui.GuiDirePatternEncoder;
@@ -144,7 +145,7 @@ public class ClientProxy extends CommonProxy {
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
         WirelessCardInput.register();
-        MinecraftForge.EVENT_BUS.register(com.science.gtnl.client.WirelessWorldHighlight.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(WirelessWorldHighlight.INSTANCE);
         ModelRegistry.registerModid(ScienceNotLeisure.MODID);
 
         MinecraftForge.EVENT_BUS.register(SUBSCRIBE_EVENT_CLIENT_UTILS);

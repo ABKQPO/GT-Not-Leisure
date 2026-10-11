@@ -7,7 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.gtnhlib.item.ItemStackNBT;
-import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
+import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 
 /** Item data only. Stores the source controller address and bound owner. */
 public record WirelessCardBinding(Address source, UUID owner, String ownerName) {

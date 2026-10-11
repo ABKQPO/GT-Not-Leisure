@@ -12,28 +12,27 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.science.gtnl.common.wireless.WirelessChannelPrototype;
-import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
-import com.science.gtnl.common.wireless.WirelessChannelPrototype.Entrance;
+import com.science.gtnl.common.wireless.WirelessChannelManager;
+import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
+import com.science.gtnl.common.wireless.WirelessChannelManager.Entrance;
 import com.science.gtnl.common.wireless.WirelessClusterManager;
 
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.pathing.IPathingGrid;
 
-/** Operator-only debug controls. Explicit link can add entrances; unlink removes the associated cluster binding. */
-public final class CommandWirelessPrototype extends CommandBase {
+public final class CommandWirelessME extends CommandBase {
 
     private final Map<UUID, Address> sources = new HashMap<>();
 
     @Override
     public String getCommandName() {
-        return "gtnlwireless";
+        return "gtnl_wireless_me";
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/gtnlwireless bind <dim> <x> <y> <z> | link <dim> <x> <y> <z> [side] | unlink <id> | status | clear";
+        return "/gtnl_wireless_me bind <dim> <x> <y> <z> | link <dim> <x> <y> <z> [side] | unlink <id> | status | clear";
     }
 
     @Override
@@ -53,7 +52,7 @@ public final class CommandWirelessPrototype extends CommandBase {
                 case "bind" -> {
                     if (args.length != 5) throw new IllegalArgumentException(getCommandUsage(sender));
                     Address source = address(args);
-                    if (!WirelessChannelPrototype.isSupportedController(source.tile())) {
+                    if (!WirelessChannelManager.isSupportedController(source.tile())) {
                         throw new IllegalArgumentException(
                             "Source must be a loaded ME Controller or Creative Energy Controller.");
                     }
@@ -71,7 +70,7 @@ public final class CommandWirelessPrototype extends CommandBase {
                 case "unlink" -> {
                     if (args.length != 2) throw new IllegalArgumentException(getCommandUsage(sender));
                     int id = Integer.parseInt(args[1]);
-                    Entrance entrance = WirelessChannelPrototype.entrance(id);
+                    Entrance entrance = WirelessChannelManager.entrance(id);
                     boolean removed = entrance != null
                         && WirelessClusterManager.disconnectCluster(entrance.source(), entrance.targetNode());
                     message(
@@ -81,7 +80,7 @@ public final class CommandWirelessPrototype extends CommandBase {
                 case "clear" -> {
                     if (args.length != 1) throw new IllegalArgumentException(getCommandUsage(sender));
                     com.science.gtnl.common.wireless.WirelessLinkPersistence.clearLoadedClaims();
-                    WirelessChannelPrototype.clear();
+                    WirelessChannelManager.clear();
                     sources.clear();
                     message(
                         sender,
@@ -92,9 +91,9 @@ public final class CommandWirelessPrototype extends CommandBase {
                     WirelessClusterManager.refresh();
                     message(
                         sender,
-                        "Channels enabled: " + WirelessChannelPrototype.channelsEnabled()
+                        "Channels enabled: " + WirelessChannelManager.channelsEnabled()
                             + "; runtime-only entrances (lost on unload/restart):");
-                    for (Entrance entrance : WirelessChannelPrototype.entrances()) {
+                    for (Entrance entrance : WirelessChannelManager.entrances()) {
                         message(
                             sender,
                             "#" + entrance.id()
@@ -112,16 +111,16 @@ public final class CommandWirelessPrototype extends CommandBase {
                     if (node != null) {
                         IPathingGrid path = node.getGrid()
                             .getCache(IPathingGrid.class);
-                        var allocation = WirelessChannelPrototype.allocation(node.getGrid());
+                        var allocation = WirelessChannelManager.allocation(node.getGrid());
                         message(
                             sender,
                             "controller=" + path.getControllerState()
                                 + " booting="
                                 + path.isNetworkBooting()
                                 + " managed="
-                                + WirelessChannelPrototype.manages(node.getGrid())
+                                + WirelessChannelManager.manages(node.getGrid())
                                 + " geometricCapacity="
-                                + WirelessChannelPrototype.capacity(node.getGrid())
+                                + WirelessChannelManager.capacity(node.getGrid())
                                 + " lastPathingAllocation="
                                 + allocation);
                     }
