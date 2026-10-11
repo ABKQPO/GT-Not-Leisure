@@ -1,4 +1,4 @@
-package com.science.gtnl.mixins.early.minecraft;
+package com.science.gtnl.mixins.early.appliedEnergistics.wireless;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

@@ -49,6 +49,11 @@ public enum ModList implements IMod, ITargetMod {
     EtFuturumRequiem("etfuturum", "Et Futurum Requiem", false),
     ForgeMultipart("McMultipart", "Forge Multipart", false);
 
+    static {
+        // GTNHMixins identifies coremods via toString(); AE's DummyModContainer does not return its class name.
+        AppliedEnergistics.targetBuilder.setTargetClass("appeng.transformer.AppEngCore");
+    }
+
     public static final ModList[] VALUES = values();
 
     public final String ID;

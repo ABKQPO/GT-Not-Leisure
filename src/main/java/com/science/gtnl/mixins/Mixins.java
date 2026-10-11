@@ -39,7 +39,7 @@ public enum Mixins implements IMixins {
         "minecraft.MixinEntityPlayer", "minecraft.MixinExplosion", "minecraft.MixinInventoryCrafting",
         "minecraft.MixinItemStack", "minecraft.MixinMinecraftServer", "minecraft.MixinNBTTagList",
         "minecraft.MixinPotionEffect", "minecraft.MixinServerConfigurationManager", "minecraft.MixinWorld",
-        "minecraft.MixinWorldGhostlyShape", "minecraft.MixinWorldServer", "minecraft.MixinWirelessTileData"),
+        "minecraft.MixinWorldGhostlyShape", "minecraft.MixinWorldServer"),
 
     APRIL_FOOL(new MixinBuilder("April Fool Late Mixins")
         .addSidedMixins(Side.CLIENT, "aprilFool.MixinBaseMetaTileEntityRenderer", "aprilFool.MixinCommonMetaTileEntity")
@@ -98,6 +98,11 @@ public enum Mixins implements IMixins {
             "stick.MixinRenderItem")
         .setPhase(Phase.EARLY)
         .setApplyIf(() -> MainConfig.item.stick.enableStickItem)),
+
+    WIRELESS_TILE_DATA(new MixinBuilder("ME wireless link persistence")
+        .addCommonMixins("appliedEnergistics.wireless.MixinWirelessTileData")
+        .setPhase(Phase.EARLY)
+        .addRequiredMod(ModList.AppliedEnergistics)),
 
     WIRELESS_CHANNEL_PROTOTYPE(new MixinBuilder("ME wireless channel allocation")
         .addCommonMixins(
