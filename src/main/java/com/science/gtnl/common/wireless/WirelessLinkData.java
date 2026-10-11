@@ -65,12 +65,14 @@ public final class WirelessLinkData {
 
         public Claim {
             frequencies = Set.copyOf(frequencies);
-            entrances = entrances.stream()
-                .filter(frequencies::contains)
-                .collect(java.util.stream.Collectors.toUnmodifiableSet());
-            paused = paused.stream()
-                .filter(frequencies::contains)
-                .collect(java.util.stream.Collectors.toUnmodifiableSet());
+            entrances = entrances.isEmpty() ? Set.of()
+                : entrances.stream()
+                    .filter(frequencies::contains)
+                    .collect(java.util.stream.Collectors.toUnmodifiableSet());
+            paused = paused.isEmpty() ? Set.of()
+                : paused.stream()
+                    .filter(frequencies::contains)
+                    .collect(java.util.stream.Collectors.toUnmodifiableSet());
         }
     }
 
@@ -101,12 +103,13 @@ public final class WirelessLinkData {
         if (!tileData.hasKey(KEY, 10)) return result;
         NBTTagCompound data = tileData.getCompoundTag(KEY);
         if (!data.hasKey("version", 3) || data.getInteger("version") != VERSION) return result;
+        ForgeDirection[] directions = ForgeDirection.values();
         NBTTagList entries = data.getTagList("nodes", 10);
         for (int i = 0; i < entries.tagCount(); i++) {
             NBTTagCompound entry = entries.getCompoundTagAt(i);
             int side = entry.getInteger("side");
             if (!entry.hasKey("side", 3) || side < 0
-                || side >= ForgeDirection.values().length
+                || side >= directions.length
                 || !entry.hasKey("external", 1)
                 || !entry.hasKey("kind", 8)
                 || entry.getString("kind")
@@ -123,18 +126,18 @@ public final class WirelessLinkData {
                     || !source.hasKey("z", 3)
                     || !source.hasKey("side", 3)) continue;
                 int sourceSide = source.getInteger("side");
-                if (sourceSide < 0 || sourceSide >= ForgeDirection.values().length) continue;
+                if (sourceSide < 0 || sourceSide >= directions.length) continue;
                 Address address = new Address(
                     source.getInteger("dimension"),
                     source.getInteger("x"),
                     source.getInteger("y"),
                     source.getInteger("z"),
-                    ForgeDirection.values()[sourceSide]);
+                    directions[sourceSide]);
                 frequencies.add(address);
                 if (source.getBoolean("paused")) paused.add(address);
                 if (source.getBoolean("entrance")) entrances.add(address);
             }
-            Slot slot = new Slot(ForgeDirection.values()[side], entry.getBoolean("external"));
+            Slot slot = new Slot(directions[side], entry.getBoolean("external"));
             if (!frequencies.isEmpty())
                 result.put(slot, new Claim(entry.getString("kind"), frequencies, paused, entrances));
         }

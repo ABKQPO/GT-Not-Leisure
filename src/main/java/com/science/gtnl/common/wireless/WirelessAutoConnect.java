@@ -222,10 +222,8 @@ public final class WirelessAutoConnect {
             || pending.tile.isInvalid()) return true;
         if (pending.part != null
             && (!(pending.tile instanceof IPartHost host) || host.getPart(pending.side) != pending.part)) return true;
-        boolean hasCard = WirelessCardInventory.carried(player)
-            .stream()
-            .anyMatch(stack -> stack == pending.card);
-        if (!hasCard || !pending.binding.equals(WirelessCardBinding.read(pending.card.getTagCompound()))
+        if (pending.card.stackSize <= 0 || WirelessCardInventory.location(player, pending.card) == Integer.MIN_VALUE
+            || !pending.binding.equals(WirelessCardBinding.read(pending.card.getTagCompound()))
             || !WirelessCardBinding.automatic(pending.card.getTagCompound())) return true;
         ForgeDirection side = pending.side == null ? ForgeDirection.UNKNOWN : pending.side;
         Address target = new Address(world.provider.dimensionId, pending.x, pending.y, pending.z, side);

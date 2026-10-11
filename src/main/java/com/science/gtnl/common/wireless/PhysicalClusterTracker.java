@@ -135,7 +135,8 @@ public final class PhysicalClusterTracker<N, F> {
                     .contains(frequency)) {
             throw new IllegalArgumentException("This physical cluster is blocked or belongs to another frequency.");
         }
-        for (N node : cluster.nodes()) claims.put(node, Set.of(frequency));
+        Set<F> sharedClaim = Set.of(frequency);
+        for (N node : cluster.nodes()) claims.put(node, sharedClaim);
     }
 
     public void unlink(Cluster<N, F> cluster, F frequency) {

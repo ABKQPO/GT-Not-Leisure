@@ -131,14 +131,17 @@ public final class AutomaticWirelessEntrances {
             Comparator<IGridNode> order = addressOrder(topology);
             // Prefer the cluster with the earliest unresolved device for deterministic, bounded work per allocation.
             List<Cluster<IGridNode, Address>> ordered = new ArrayList<>(work.clusters);
-            ordered.sort(
-                Comparator.comparing(
-                    cluster -> cluster.nodes()
+            Map<Cluster<IGridNode, Address>, IGridNode> anchors = new IdentityHashMap<>();
+            for (var cluster : ordered) {
+                anchors.put(
+                    cluster,
+                    cluster.nodes()
                         .stream()
                         .filter(node -> topology.entranceAddress(node) != null)
                         .min(order)
-                        .orElse(null),
-                    Comparator.nullsLast(order)));
+                        .orElse(null));
+            }
+            ordered.sort(Comparator.comparing(anchors::get, Comparator.nullsLast(order)));
             for (Cluster<IGridNode, Address> cluster : ordered) {
                 List<IGridNode> missing = work.missing.stream()
                     .filter(cluster.nodes()::contains)

@@ -345,6 +345,8 @@ public final class WirelessClusterManager {
         public Set<String> names() {
             return deviceNames.values()
                 .stream()
+                .filter(name -> !name.isEmpty())
+                .distinct()
                 .map(WirelessLinkPersistence::cleanName)
                 .filter(name -> !name.isEmpty())
                 .collect(java.util.stream.Collectors.toUnmodifiableSet());
@@ -365,6 +367,7 @@ public final class WirelessClusterManager {
         try (var ignored = WirelessLinkData.readBatch()) {
             source = controllerSource(source);
             List<LinkView> result = new ArrayList<>();
+            WirelessEntranceIndex entranceIndex = new WirelessEntranceIndex(TRACKER);
             for (var cluster : TRACKER.clusters()) {
                 if (!cluster.frequencies()
                     .contains(source)) continue;
@@ -378,9 +381,8 @@ public final class WirelessClusterManager {
                     .orElse(null);
                 if (anchor == null) continue;
                 int entrances = 0;
-                for (Entrance entrance : WirelessChannelManager.entrances()) {
-                    if (sameSource(entrance.source(), source) && cluster.nodes()
-                        .contains(entrance.targetNode()) && entrance.isLive()) entrances++;
+                for (Entrance entrance : entranceIndex.forCluster(cluster)) {
+                    if (sameSource(entrance.source(), source) && entrance.isLive()) entrances++;
                 }
                 boolean paused = paused(cluster, source);
                 String state = scanLimited ? "limited"
@@ -488,14 +490,8 @@ public final class WirelessClusterManager {
 
     public static boolean rename(Address source, LinkView view, String name, Predicate<IGridNode> canRename) {
         try (var ignored = WirelessLinkData.readBatch()) {
-            if (view.target()
-                .node() != view.node()) throw new IllegalStateException("The displayed device changed");
-            var cluster = linkedCluster(source, view);
-            if (cluster == null || !cluster.nodes()
-                .equals(view.members())
-                || !WirelessLinkPersistence.names(cluster.nodes())
-                    .equals(view.deviceNames()))
-                throw new IllegalStateException("The displayed cluster changed");
+            if (!isCurrentLink(source, view) || !WirelessLinkPersistence.names(view.members())
+                .equals(view.deviceNames())) throw new IllegalStateException("The displayed cluster changed");
             return WirelessLinkPersistence.rename(view.deviceNames(), name, TOPOLOGY, canRename);
         }
     }

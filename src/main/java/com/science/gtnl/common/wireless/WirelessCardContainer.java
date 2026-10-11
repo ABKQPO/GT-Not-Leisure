@@ -208,7 +208,7 @@ public final class WirelessCardContainer extends ModularContainer {
         for (var row : next) {
             NBTTagCompound entry = new NBTTagCompound();
             entry.setString("position", coordinates(row.target()));
-            entry.setString("name", row.name());
+            entry.setString("name", detailNode == null ? row.name() : detailName);
             entry.setString(
                 "side",
                 row.target()

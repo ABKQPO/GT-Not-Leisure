@@ -121,9 +121,8 @@ public final class WirelessCardVisualisation {
     }
 
     public static void update(ItemStack card, EntityPlayerMP player, int slot) {
-        if (activeCard(player) != card) return;
         int mode = mode(card.getTagCompound());
-        if (mode == 0) return;
+        if (mode == 0 || activeCard(player) != card) return;
         WirelessCardBinding binding = WirelessCardBinding.read(card.getTagCompound());
         if (binding == null || !binding.belongsTo(player.getUniqueID())) return;
         var source = binding.source()

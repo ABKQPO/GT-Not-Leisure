@@ -306,28 +306,22 @@ public final class WirelessChannelManager {
     public void tick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         connectionSnapshot = new IdentityHashMap<>();
-        WirelessLinkData.beginReadBatch();
-        try {
-            maintain();
+        try (var ignored = WirelessLinkData.readBatch()) {
+            invalidateControllerSources();
+            for (Entrance entrance : entrances()) {
+                if (!entrance.isLive() || entrance.source()
+                    .node() != entrance.sourceNode()
+                    || entrance.target()
+                        .node() != entrance.targetNode()) {
+                    disconnect(entrance.id());
+                    WirelessClusterManager.invalidateTopology();
+                }
+            }
+            WirelessClusterManager.tick();
+            WirelessAutoConnect.tick();
         } finally {
             connectionSnapshot = null;
-            WirelessLinkData.endReadBatch();
         }
-    }
-
-    private static void maintain() {
-        invalidateControllerSources();
-        for (Entrance entrance : entrances()) {
-            if (!entrance.isLive() || entrance.source()
-                .node() != entrance.sourceNode()
-                || entrance.target()
-                    .node() != entrance.targetNode()) {
-                disconnect(entrance.id());
-                WirelessClusterManager.invalidateTopology();
-            }
-        }
-        WirelessClusterManager.tick();
-        WirelessAutoConnect.tick();
     }
 
     @SubscribeEvent
