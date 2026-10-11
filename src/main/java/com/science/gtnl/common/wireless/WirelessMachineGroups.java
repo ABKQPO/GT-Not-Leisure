@@ -19,7 +19,6 @@ import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 import com.science.gtnl.common.wireless.WirelessClusterManager.LinkView;
 
 import appeng.api.implementations.parts.IPartCable;
-import appeng.api.parts.IStorageBus;
 import appeng.helpers.IInterfaceHost;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatch;
@@ -65,8 +64,7 @@ final class WirelessMachineGroups {
 
     enum TypeKind {
         MACHINE,
-        INTERFACE,
-        STORAGE_BUS,
+        DEVICE,
         SHARED_HATCH
     }
 
@@ -316,25 +314,25 @@ final class WirelessMachineGroups {
         TypeKey type = null;
         TypeKey sharedType = null;
         boolean pureDevices = true;
-        boolean hasStorageBus = false;
+        boolean machineDevices = true;
         boolean pureSharedHatches = true;
         for (var node : link.members()) {
             Object host = node.getMachine();
+            if (host instanceof IPartCable) continue;
             Object machine = host instanceof IGregTechTileEntity base ? base.getMetaTileEntity() : host;
-            boolean storageBus = host instanceof IStorageBus;
-            hasStorageBus |= storageBus;
-            if (storageBus || host instanceof IInterfaceHost) {
+            machineDevices &= machine instanceof MTEHatch || host instanceof IInterfaceHost;
+            if (pureDevices) {
                 TypeKey next = TypeKey.of(
-                    storageBus ? TypeKind.STORAGE_BUS : TypeKind.INTERFACE,
+                    TypeKind.DEVICE,
                     node.getGridBlock()
                         .getMachineRepresentation(),
                     link.target()
                         .dimension());
                 if (next == null || type != null && !type.equals(next)) pureDevices = false;
                 if (type == null) type = next;
-            } else if (!(host instanceof IPartCable)) pureDevices = false;
-            if (hasStorageBus && !pureDevices) return Classification.UNGROUPED;
-            if (!(machine instanceof MTEHatch) && !(host instanceof IPartCable)) pureSharedHatches = false;
+            }
+            if (!machineDevices && !pureDevices) return Classification.UNGROUPED;
+            if (!(machine instanceof MTEHatch)) pureSharedHatches = false;
             List<MTEHatch> hatches;
             if (machine instanceof MTEHatch hatch) hatches = List.of(hatch);
             else if (host instanceof IInterfaceHost iface) {
@@ -345,8 +343,7 @@ final class WirelessMachineGroups {
                 if (!(target instanceof IInterfaceNameHatch hatch)) return Classification.UNGROUPED;
                 var controllers = hatch.getInterfaceNameControllers();
                 // Different owner sets make this a cross-machine cluster, including shared/exclusive mixtures.
-                if (controllers.isEmpty() || owners != null && !owners.equals(controllers))
-                    return Classification.UNGROUPED;
+                if (owners != null && !owners.equals(controllers)) return Classification.UNGROUPED;
                 for (var controller : controllers) {
                     if (!validControllers.computeIfAbsent(controller, WirelessMachineGroups::validController))
                         return Classification.UNGROUPED;
@@ -364,11 +361,14 @@ final class WirelessMachineGroups {
                 }
             }
         }
-        if (owners != null && owners.size() == 1) return new Classification(
+        if (owners == null || owners.isEmpty())
+            return pureDevices && type != null ? new Classification(null, type) : Classification.UNGROUPED;
+        if (!machineDevices) return Classification.UNGROUPED;
+        if (owners.size() == 1) return new Classification(
             owners.iterator()
                 .next(),
             null);
-        TypeKey result = owners == null ? pureDevices ? type : null : pureSharedHatches ? sharedType : null;
+        TypeKey result = pureSharedHatches ? sharedType : null;
         return result == null ? Classification.UNGROUPED : new Classification(null, result);
     }
 
