@@ -4,6 +4,8 @@ import static gregtech.api.util.GTRecipeMapUtil.SPECIAL_VALUE_ALIASES;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,12 +17,12 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
+import com.LazyFlesh.variablehorizons.variants.VariantNames;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.mixins.early.gregtech.AccessorGTRecipe;
 import com.science.gtnl.mixins.early.gregtech.AccessorGTRecipeBuilder;
 import com.science.gtnl.mixins.early.gregtech.AccessorGTRecipeWithAlt;
 
-import com.LazyFlesh.variablehorizons.variants.VariantNames;
 import gregtech.GTLoggers;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Mods;
@@ -57,6 +59,21 @@ public class RecipeBuilder {
     // This should only be enabled in non stable instances only with -Dgt.recipebuilder.recipe_collision_check=true
     public static final boolean ENABLE_COLLISION_CHECK;
 
+    public static final int WILDCARD = 32767;
+
+    public static final int HOURS = 20 * 60 * 60;
+    public static final int MINUTES = 20 * 60;
+    public static final int SECONDS = 20;
+    public static final int TICKS = 1;
+
+    public static final int INGOTS = 144;
+    public static final int HALF_INGOTS = INGOTS / 2;
+    public static final int QUARTER_INGOTS = INGOTS / 4;
+    public static final int EIGHTH_INGOTS = INGOTS / 8;
+    public static final int NUGGETS = INGOTS / 9;
+    public static final int STACKS = 64 * INGOTS;
+    public static final int BUCKETS = 1_000;
+
     static {
         boolean debugAll;
         if (System.getProperties()
@@ -80,6 +97,11 @@ public class RecipeBuilder {
 
     public static RecipeBuilder builder() {
         return new RecipeBuilder();
+    }
+
+    public static RecipeBuilder empty() {
+        return builder().duration(0)
+            .eut(0);
     }
 
     public ItemStack[] inputsBasic = GTValues.emptyItemStackArray;
@@ -142,7 +164,24 @@ public class RecipeBuilder {
     public RecipeBuilder circuit(int integratedCircuitNumber) {
         ItemStack circuit = GTUtility.getIntegratedCircuit(integratedCircuitNumber);
 
-        if (inputsBasic != null && inputsBasic.length > 0) {
+        if (inputsOreDict != null) {
+            Object[] newInputs = Arrays.copyOf(inputsOreDict, inputsOreDict.length + 1);
+            newInputs[inputsOreDict.length] = circuit;
+            inputsOreDict = newInputs;
+
+            ItemStack[][] newAlternatives = alts == null ? new ItemStack[1][] : Arrays.copyOf(alts, alts.length + 1);
+            newAlternatives[newAlternatives.length - 1] = new ItemStack[] { circuit };
+            alts = newAlternatives;
+
+            int[] newOreIds = altOreIds == null ? new int[1] : Arrays.copyOf(altOreIds, altOreIds.length + 1);
+            newOreIds[newOreIds.length - 1] = -1;
+            altOreIds = newOreIds;
+        }
+
+        if (inputsOreDict != null && (inputsBasic == null || inputsBasic.length == 0)) {
+            inputsBasic = new ItemStack[] { circuit };
+            pendingIntegratedCircuit = null;
+        } else if (inputsBasic != null && inputsBasic.length > 0) {
             // Input condition
             pendingIntegratedCircuit = circuit;
             inputsBasic = applyPendingCircuit(inputsBasic);
@@ -151,6 +190,8 @@ public class RecipeBuilder {
             inputsBasic = new ItemStack[] { circuit };
             pendingIntegratedCircuit = circuit;
         }
+
+        inputItemCount = countValidItemStacks(inputsBasic);
 
         return this;
     }
@@ -748,6 +789,11 @@ public class RecipeBuilder {
             return this;
         }
 
+        recipeMap.doAdd(createUpstreamBuilder());
+        return this;
+    }
+
+    private GTRecipeBuilder createUpstreamBuilder() {
         GTRecipeBuilder builder = GTValues.RA.stdBuilder();
         if (inputsOreDict != null) {
             builder = builder.itemInputs(inputsOreDict);
@@ -798,6 +844,18 @@ public class RecipeBuilder {
             .eut(eut)
             .specialValue(specialValue);
 
+        if (!enabled) {
+            builder = builder.disabled();
+        }
+        if (!mCanBeBuffered) {
+            builder = builder.noBuffer();
+        }
+        if (mNeedsEmptyOutput) {
+            builder = builder.needsEmptyOutput();
+        }
+        if (recipeCategory != null) {
+            builder = builder.recipeCategory(recipeCategory);
+        }
         if (neiDesc != null) {
             builder = builder.setNEIDesc(neiDesc);
         }
@@ -813,8 +871,7 @@ public class RecipeBuilder {
             ((AccessorGTRecipeBuilder) builder).setMetadataStorage(metadataStorage);
         }
 
-        recipeMap.doAdd(builder);
-        return this;
+        return builder;
     }
 
     public RecipeBuilder addTo(RecipeMap<?> recipeMap) {
@@ -822,6 +879,25 @@ public class RecipeBuilder {
             return this;
         }
         return addTo((IRecipeMap) recipeMap);
+    }
+
+    public Collection<GTRecipe> addTo(IRecipeMap... recipeMaps) {
+        if (skip || recipeMaps == null || recipeMaps.length == 0) {
+            return Collections.emptyList();
+        }
+        List<GTRecipe> addedRecipes = new ArrayList<>();
+        normalizeChanceArrays();
+        for (IRecipeMap recipeMap : recipeMaps) {
+            if (recipeMap == null) {
+                continue;
+            }
+            if (shouldUseDirectRecipePath()) {
+                addDirectRecipe(recipeMap);
+            } else {
+                addedRecipes.addAll(recipeMap.doAdd(createUpstreamBuilder()));
+            }
+        }
+        return addedRecipes;
     }
 
     public RecipeBuilder reset() {
@@ -1097,6 +1173,26 @@ public class RecipeBuilder {
             throw new IllegalArgumentException("invalid recipe");
         }
     }
+
+    public static void handleInvalidRecipeLowFluids() {
+        handleInvalidRecipe();
+    }
+
+    public static void handleInvalidRecipeLowItems() {
+        handleInvalidRecipe();
+    }
+
+    public static void handleRecipeCollision(String details) {
+        if (!DEBUG_MODE_COLLISION && !PANIC_MODE_COLLISION) {
+            return;
+        }
+        ScienceNotLeisure.LOG.error("Recipe collision detected: {}", details);
+        if (PANIC_MODE_COLLISION) {
+            throw new IllegalArgumentException("Recipe collision");
+        }
+    }
+
+    public static void onConfigLoad() {}
 
     public static ItemStack[] fix(ItemStack[] inputs, boolean aUnsafe) {
         return GTOreDictUnificator

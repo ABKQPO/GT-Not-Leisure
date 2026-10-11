@@ -14,7 +14,6 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTUtility;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.recipe.RecipeManaInfusion;
 
@@ -41,8 +40,6 @@ public class ManaInfusionRecipes implements IRecipePool {
                 finalInputs.add(ModsItemlist.BotaniaAlchemyCatalyst.get(0));
             } else if (isConjuration) {
                 finalInputs.add(ModsItemlist.BotaniaConjurationCatalyst.get(0));
-            } else {
-                finalInputs.add(GTUtility.getIntegratedCircuit(1));
             }
 
             if (input instanceof ItemStack itemStack) {
@@ -68,6 +65,9 @@ public class ManaInfusionRecipes implements IRecipePool {
                 builder.itemInputs(finalInputs.toArray(new Object[0]));
             } else {
                 builder.itemInputs(finalInputs.toArray(new ItemStack[0]));
+            }
+            if (!isAlchemy && !isConjuration) {
+                builder.circuit(1);
             }
             builder.addTo(MIR);
         }

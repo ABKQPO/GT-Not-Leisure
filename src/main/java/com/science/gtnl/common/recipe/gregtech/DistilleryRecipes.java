@@ -17,7 +17,6 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
-import gregtech.api.util.GTUtility;
 import gtPlusPlus.core.fluids.GTPPFluids;
 import gtPlusPlus.xmod.bop.blocks.BOPBlockRegistrator;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
@@ -215,7 +214,8 @@ public class DistilleryRecipes implements IRecipePool {
             .addTo(DR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(1))
+            .itemInputs()
+            .circuit(1)
             .fluidInputs(GTNLMaterials.BenzenediazoniumTetrafluoroborate.getFluidOrGas(1000))
             .fluidOutputs(GTNLMaterials.FluoroBenzene.getFluidOrGas(1000))
             .duration(100)

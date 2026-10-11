@@ -11,10 +11,10 @@ import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.recipe.thaumcraft.TCRecipeTools;
 
+import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.IRecipeMap;
 import gregtech.api.recipe.RecipeMetadataKey;
 import gregtech.api.recipe.metadata.SimpleRecipeMetadataKey;
-import gregtech.api.util.GTUtility;
 import thaumcraft.api.aspects.AspectList;
 
 public class ShapedArcaneCraftingRecipes implements IRecipePool {
@@ -67,20 +67,37 @@ public class ShapedArcaneCraftingRecipes implements IRecipePool {
                 }
             }
 
-            if (inputItems.size() == 1) inputItems.add(GTUtility.getIntegratedCircuit(1));
+            boolean needsCircuit = inputItems.size() == 1;
 
             ItemStack output = recipe.getOutput()
                 .copy();
             output.stackSize = 1;
 
-            TCRecipeTools.addArcaneRecipe(
-                IAA,
-                TCRecipeTools.checkInputSpecial(inputItems.toArray(new ItemStack[0])),
-                new ItemStack[] { output },
-                recipe.getInputAspects(),
-                recipe.getResearch(),
-                ARCANE_VIS,
-                ARCANE_RESEARCH);
+            ItemStack[] inputs = TCRecipeTools.checkInputSpecial(inputItems.toArray(new ItemStack[0]));
+            if (needsCircuit) {
+                TCRecipeTools.addArcaneRecipeWithCircuit(
+                    IAA,
+                    inputs,
+                    new ItemStack[] { output },
+                    recipe.getInputAspects(),
+                    recipe.getResearch(),
+                    ARCANE_VIS,
+                    ARCANE_RESEARCH,
+                    TCRecipeTools.computeAspectDurationFromCopy(
+                        recipe.getInputAspects(),
+                        TCRecipeTools.ARCANE_DURATION_TICKS_PER_ASPECT),
+                    TierEU.RECIPE_LV,
+                    1);
+            } else {
+                TCRecipeTools.addArcaneRecipe(
+                    IAA,
+                    inputs,
+                    new ItemStack[] { output },
+                    recipe.getInputAspects(),
+                    recipe.getResearch(),
+                    ARCANE_VIS,
+                    ARCANE_RESEARCH);
+            }
         }
 
         // Shapeless

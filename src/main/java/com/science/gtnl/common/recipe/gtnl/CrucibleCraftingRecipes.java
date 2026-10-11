@@ -71,13 +71,13 @@ public class CrucibleCraftingRecipes implements IRecipePool {
     }
 
     private void registerRecipe(Pending pending) {
-        Object[] inputs = createInputs(pending.recipe, pending.circuit);
+        Object[] inputs = createInputs(pending.recipe);
         if (inputs.length == 0) {
             return;
         }
 
         try {
-            TCRecipeTools.addArcaneRecipe(
+            TCRecipeTools.addArcaneRecipeWithCircuit(
                 GTNLRecipeMaps.IndustrialCrucibleRecipes,
                 inputs,
                 new ItemStack[] { pending.recipe.output },
@@ -87,7 +87,8 @@ public class CrucibleCraftingRecipes implements IRecipePool {
                 CRUCIBLE_RESEARCH,
                 TCRecipeTools
                     .computeAspectDuration(pending.recipe.aspects, TCRecipeTools.ARCANE_DURATION_TICKS_PER_ASPECT),
-                TierEU.RECIPE_LV);
+                TierEU.RECIPE_LV,
+                pending.circuit);
         } catch (RuntimeException e) {
             ScienceNotLeisure.LOG.warn(
                 "CrucibleCraftingRecipes: failed to register a crucible recipe, it will be retried on the next load",
@@ -98,7 +99,7 @@ public class CrucibleCraftingRecipes implements IRecipePool {
         REGISTERED.put(pending.identity, pending);
     }
 
-    private Object[] createInputs(CrucibleRecipeData recipe, int circuit) {
+    private Object[] createInputs(CrucibleRecipeData recipe) {
         if (recipe == null || recipe.catalysts == null || recipe.catalysts.length == 0) {
             return new Object[0];
         }
@@ -115,7 +116,7 @@ public class CrucibleCraftingRecipes implements IRecipePool {
             return new Object[0];
         }
 
-        return new Object[] { alternatives.toArray(new ItemStack[0]), GTUtility.getIntegratedCircuit(circuit) };
+        return new Object[] { alternatives.toArray(new ItemStack[0]) };
     }
 
     private static int findSelectorCircuit(CrucibleRecipeData recipe) {

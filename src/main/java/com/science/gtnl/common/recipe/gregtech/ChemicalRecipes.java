@@ -2,7 +2,6 @@ package com.science.gtnl.common.recipe.gregtech;
 
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.science.gtnl.api.IRecipePool;
@@ -99,9 +98,8 @@ public class ChemicalRecipes implements IRecipePool {
             .addTo(UC);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GTUtility.getIntegratedCircuit(2),
-                GTNLMaterials.SodiumTetrafluoroborate.get(OrePrefixes.dust, 6))
+            .itemInputs(GTNLMaterials.SodiumTetrafluoroborate.get(OrePrefixes.dust, 6))
+            .circuit(2)
             .itemOutputs(MaterialsFluorides.SODIUM_FLUORIDE.getDust(2))
             .fluidOutputs(GTNLMaterials.BoronFluoride.getFluidOrGas(1000))
             .duration(120)
@@ -322,7 +320,8 @@ public class ChemicalRecipes implements IRecipePool {
             .addTo(MCRR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(1))
+            .itemInputs()
+            .circuit(1)
             .fluidInputs(new FluidStack(GTPPFluids.Formaldehyde, 4000), Materials.Ammonia.getGas(6000))
             .itemOutputs(GTNLMaterials.Hexamethylenetetramine.get(OrePrefixes.dust, 22))
             .fluidOutputs(Materials.Water.getFluid(6000))
@@ -442,7 +441,8 @@ public class ChemicalRecipes implements IRecipePool {
             .addTo(MCRR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(2))
+            .itemInputs()
+            .circuit(2)
             .fluidInputs(
                 Materials.Benzene.getFluid(2000),
                 Materials.Oxygen.getGas(5000),
@@ -483,9 +483,8 @@ public class ChemicalRecipes implements IRecipePool {
             .addTo(MCRR);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GTUtility.getIntegratedCircuit(2),
-                GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumHydroxide, 6))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumHydroxide, 6))
+            .circuit(2)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodaAsh, 6))
             .fluidInputs(Materials.CarbonDioxide.getGas(1000))
             .fluidOutputs(Materials.Water.getFluid(1000))
@@ -573,7 +572,8 @@ public class ChemicalRecipes implements IRecipePool {
             .addTo(MCRR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(2))
+            .itemInputs()
+            .circuit(2)
             .fluidInputs(Materials.Hydrogen.getGas(2000), Materials.Oxygen.getGas(2000))
             .fluidOutputs(new FluidStack(GTPPFluids.HydrogenPeroxide, 1000))
             .duration(40)
@@ -581,9 +581,8 @@ public class ChemicalRecipes implements IRecipePool {
             .addTo(MCRR);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GTUtility.getIntegratedCircuit(2),
-                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 6))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 6))
+            .circuit(2)
             .fluidInputs(Materials.Hydrogen.getGas(6000))
             .fluidOutputs(Materials.Benzene.getFluid(1000))
             .duration(10)
@@ -607,9 +606,8 @@ public class ChemicalRecipes implements IRecipePool {
             .addTo(MCRR);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GTUtility.getIntegratedCircuit(1),
-                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sodium, 2))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sodium, 2))
+            .circuit(1)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumOxide, 3))
             .fluidInputs(Materials.Oxygen.getGas(1000))
             .duration(3)

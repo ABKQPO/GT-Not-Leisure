@@ -9,7 +9,6 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.util.GTUtility;
 
 public class CrackingRecipes implements IRecipePool {
 
@@ -18,7 +17,8 @@ public class CrackingRecipes implements IRecipePool {
     @Override
     public void loadRecipes() {
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(1))
+            .itemInputs()
+            .circuit(1)
             .fluidInputs(GGMaterial.naquadahSolution.getFluidOrGas(1000), Materials.Fluorine.getGas(1000))
             .fluidOutputs(GTNLMaterials.FluorineCrackedNaquadah.getFluidOrGas(1000))
             .duration(120)
@@ -26,7 +26,8 @@ public class CrackingRecipes implements IRecipePool {
             .addTo(CR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(1))
+            .itemInputs()
+            .circuit(1)
             .fluidInputs(GGMaterial.enrichedNaquadahRichSolution.getFluidOrGas(1000), Materials.Radon.getGas(1000))
             .fluidOutputs(GTNLMaterials.RadonCrackedEnrichedNaquadah.getFluidOrGas(1000))
             .duration(160)

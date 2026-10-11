@@ -17,7 +17,6 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
-import gregtech.api.util.GTUtility;
 import gtPlusPlus.core.fluids.GTPPFluids;
 import gtPlusPlus.core.material.MaterialsElements;
 
@@ -28,7 +27,8 @@ public class VacuumFurnaceRecipes implements IRecipePool {
     @Override
     public void loadRecipes() {
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(1))
+            .itemInputs()
+            .circuit(1)
             .itemOutputs(
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.NaquadahEnriched, 64),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.NaquadahEnriched, 64),
@@ -51,7 +51,8 @@ public class VacuumFurnaceRecipes implements IRecipePool {
     public void loadDeleteRecipe() {
         RecipeBuilder.builder()
             .setNEIDesc("Remove Change by GTNotLeisure")
-            .itemInputs(GTUtility.getIntegratedCircuit(1))
+            .itemInputs()
+            .circuit(1)
             .itemOutputs(
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Platinum, 64),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Palladium, 32),
@@ -70,7 +71,8 @@ public class VacuumFurnaceRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .setNEIDesc("Remove Change by GTNotLeisure")
-            .itemInputs(GTUtility.getIntegratedCircuit(1))
+            .itemInputs()
+            .circuit(1)
             .itemOutputs(
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Erbium, 64),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Neodymium, 64),
@@ -87,7 +89,8 @@ public class VacuumFurnaceRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .setNEIDesc("Remove Change by GTNotLeisure")
-            .itemInputs(GTUtility.getIntegratedCircuit(1))
+            .itemInputs()
+            .circuit(1)
             .itemOutputs(
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Iron, 64),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Iron, 64),

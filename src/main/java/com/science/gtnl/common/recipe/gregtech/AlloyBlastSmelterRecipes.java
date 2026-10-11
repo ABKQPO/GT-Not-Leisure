@@ -14,7 +14,6 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
-import gregtech.api.util.GTUtility;
 import gtPlusPlus.core.material.MaterialsElements;
 
 public class AlloyBlastSmelterRecipes implements IRecipePool {
@@ -25,9 +24,9 @@ public class AlloyBlastSmelterRecipes implements IRecipePool {
     public void loadRecipes() {
         RecipeBuilder.builder()
             .itemInputs(
-                GTUtility.getIntegratedCircuit(3),
                 GTOreDictUnificator.get(MaterialsElements.getInstance().GERMANIUM.getDust(3)),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Tungsten, 3))
+            .circuit(3)
             .fluidInputs(Materials.Nitrogen.getGas(10000))
             .fluidOutputs(GTNLMaterials.Germaniumtungstennitride.getMolten(2304))
             .duration(9600)
@@ -36,11 +35,11 @@ public class AlloyBlastSmelterRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTUtility.getIntegratedCircuit(4),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Invar, 2),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Vanadium, 1),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Titanium, 1),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Molybdenum, 1))
+            .circuit(4)
             .fluidOutputs(GTNLMaterials.HSLASteel.getMolten(720))
             .duration(3750)
             .eut(480)
@@ -48,9 +47,9 @@ public class AlloyBlastSmelterRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTUtility.getIntegratedCircuit(2),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Molybdenum, 1),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Silicon, 2))
+            .circuit(2)
             .fluidOutputs(GTNLMaterials.MolybdenumDisilicide.getMolten(432))
             .duration(1800)
             .eut(1920)
@@ -69,9 +68,8 @@ public class AlloyBlastSmelterRecipes implements IRecipePool {
     public void loadDeleteRecipe() {
         RecipeBuilder.builder()
             .setNEIDesc("Remove Change by GTNotLeisure")
-            .itemInputs(
-                GTUtility.getIntegratedCircuit(1),
-                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Europium, 1))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Europium, 1))
+            .circuit(1)
             .fluidOutputs(Materials.Europium.getMolten(144))
             .duration(120)
             .eut(TierEU.RECIPE_LuV)

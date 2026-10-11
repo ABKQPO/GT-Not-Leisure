@@ -18,7 +18,6 @@ import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
-import gregtech.api.util.GTUtility;
 
 public class PrimitiveBrickKilnRecipes implements IRecipePool {
 
@@ -30,9 +29,9 @@ public class PrimitiveBrickKilnRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTUtility.getIntegratedCircuit(1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Bronze, 4),
                 new ItemStack(Blocks.brick_block, 1))
+            .circuit(1)
             .itemOutputs(ItemList.Casing_BronzePlatedBricks.get(1))
             .duration(200)
             .eut(16)
@@ -41,9 +40,9 @@ public class PrimitiveBrickKilnRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTUtility.getIntegratedCircuit(2),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Bronze, 3),
                 new ItemStack(Blocks.brick_block, 2))
+            .circuit(2)
             .itemOutputs(ItemList.Hull_Bronze_Bricks.get(1))
             .duration(200)
             .eut(16)

@@ -112,26 +112,30 @@ public class SteamCarpenterRecipe implements IRecipePool {
 
     public void registerPlankRecipe(ItemStack plankStack) {
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.copyAmount(1, plankStack), GTUtility.getIntegratedCircuit(1))
+            .itemInputs(GTUtility.copyAmount(1, plankStack))
+            .circuit(1)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.stick, Materials.Wood, 2L))
             .duration(10 * GTRecipeBuilder.TICKS)
             .eut(8)
             .addTo(LR);
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.copyAmount(1, plankStack), GTUtility.getIntegratedCircuit(1))
+            .itemInputs(GTUtility.copyAmount(1, plankStack))
+            .circuit(1)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.stick, Materials.Wood, 2L))
             .duration(2 * GTRecipeBuilder.SECONDS)
             .eut(8)
             .addTo(SCR);
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.copyAmount(1, plankStack), GTUtility.getIntegratedCircuit(2))
+            .itemInputs(GTUtility.copyAmount(1, plankStack))
+            .circuit(2)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.slab, Materials.Wood, 2L))
             .duration(2 * GTRecipeBuilder.SECONDS)
             .eut(8)
             .addTo(SCR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.copyAmount(8, plankStack), GTUtility.getIntegratedCircuit(8))
+            .itemInputs(GTUtility.copyAmount(8, plankStack))
+            .circuit(8)
             .itemOutputs(new ItemStack(Blocks.chest, 1))
             .duration(2 * GTRecipeBuilder.SECONDS)
             .eut(4)

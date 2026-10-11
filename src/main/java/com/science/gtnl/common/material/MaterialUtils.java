@@ -15,7 +15,6 @@ import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTLanguageManager;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipeBuilder;
-import gregtech.api.util.GTUtility;
 
 public class MaterialUtils {
 
@@ -452,77 +451,88 @@ public class MaterialUtils {
         }
 
         RecipeBuilder.builder()
-            .itemInputs(GTOreDictUnificator.get(OrePrefixes.ingot, material, 1), GTUtility.getIntegratedCircuit(1))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.ingot, material, 1))
+            .circuit(1)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.wireGt01, material, 2))
             .duration(5 * GTRecipeBuilder.SECONDS)
             .eut(4)
             .addTo(RecipeMaps.wiremillRecipes);
 
         RecipeBuilder.builder()
-            .itemInputs(GTOreDictUnificator.get(OrePrefixes.ingot, material, 1), GTUtility.getIntegratedCircuit(2))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.ingot, material, 1))
+            .circuit(2)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.wireGt02, material, 1))
             .duration(7 * GTRecipeBuilder.SECONDS + 10 * GTRecipeBuilder.TICKS)
             .eut(4)
             .addTo(RecipeMaps.wiremillRecipes);
 
         RecipeBuilder.builder()
-            .itemInputs(GTOreDictUnificator.get(OrePrefixes.ingot, material, 2), GTUtility.getIntegratedCircuit(4))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.ingot, material, 2))
+            .circuit(4)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.wireGt04, material, 1))
             .duration(10 * GTRecipeBuilder.SECONDS)
             .eut(4)
             .addTo(RecipeMaps.wiremillRecipes);
 
         RecipeBuilder.builder()
-            .itemInputs(GTOreDictUnificator.get(OrePrefixes.ingot, material, 4), GTUtility.getIntegratedCircuit(8))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.ingot, material, 4))
+            .circuit(8)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.wireGt08, material, 1))
             .duration(12 * GTRecipeBuilder.SECONDS + 10 * GTRecipeBuilder.TICKS)
             .eut(4)
             .addTo(RecipeMaps.wiremillRecipes);
 
         RecipeBuilder.builder()
-            .itemInputs(GTOreDictUnificator.get(OrePrefixes.ingot, material, 6), GTUtility.getIntegratedCircuit(12))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.ingot, material, 6))
+            .circuit(12)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.wireGt12, material, 1))
             .duration(15 * GTRecipeBuilder.SECONDS)
             .eut(4)
             .addTo(RecipeMaps.wiremillRecipes);
 
         RecipeBuilder.builder()
-            .itemInputs(GTOreDictUnificator.get(OrePrefixes.ingot, material, 8), GTUtility.getIntegratedCircuit(16))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.ingot, material, 8))
+            .circuit(16)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.wireGt16, material, 1))
             .duration(17 * GTRecipeBuilder.SECONDS + 10 * GTRecipeBuilder.TICKS)
             .eut(4)
             .addTo(RecipeMaps.wiremillRecipes);
 
         RecipeBuilder.builder()
-            .itemInputs(GTOreDictUnificator.get(OrePrefixes.stick, material, 1), GTUtility.getIntegratedCircuit(1))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.stick, material, 1))
+            .circuit(1)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.wireGt01, material, 1))
             .duration(2 * GTRecipeBuilder.SECONDS + 10 * GTRecipeBuilder.TICKS)
             .eut(4)
             .addTo(RecipeMaps.wiremillRecipes);
 
         RecipeBuilder.builder()
-            .itemInputs(GTOreDictUnificator.get(OrePrefixes.stick, material, 2), GTUtility.getIntegratedCircuit(2))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.stick, material, 2))
+            .circuit(2)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.wireGt02, material, 1))
             .duration(5 * GTRecipeBuilder.SECONDS)
             .eut(4)
             .addTo(RecipeMaps.wiremillRecipes);
 
         RecipeBuilder.builder()
-            .itemInputs(GTOreDictUnificator.get(OrePrefixes.stick, material, 4), GTUtility.getIntegratedCircuit(4))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.stick, material, 4))
+            .circuit(4)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.wireGt04, material, 1))
             .duration(7 * GTRecipeBuilder.SECONDS + 10 * GTRecipeBuilder.TICKS)
             .eut(4)
             .addTo(RecipeMaps.wiremillRecipes);
 
         RecipeBuilder.builder()
-            .itemInputs(GTOreDictUnificator.get(OrePrefixes.stick, material, 8), GTUtility.getIntegratedCircuit(8))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.stick, material, 8))
+            .circuit(8)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.wireGt08, material, 1))
             .duration(10 * GTRecipeBuilder.SECONDS)
             .eut(4)
             .addTo(RecipeMaps.wiremillRecipes);
 
         RecipeBuilder.builder()
-            .itemInputs(GTOreDictUnificator.get(OrePrefixes.stick, material, 12), GTUtility.getIntegratedCircuit(12))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.stick, material, 12))
+            .circuit(12)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.wireGt12, material, 1))
             .duration(12 * GTRecipeBuilder.SECONDS + 10 * GTRecipeBuilder.TICKS)
             .eut(4)

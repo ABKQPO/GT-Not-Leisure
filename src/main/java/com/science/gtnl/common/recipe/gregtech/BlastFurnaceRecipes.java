@@ -34,8 +34,8 @@ public class BlastFurnaceRecipes implements IRecipePool {
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.block, Materials.SiliconSG, 96),
                 ItemList.GalliumArsenideCrystal.get(8),
-                GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Neutronium, 4),
-                GTUtility.getIntegratedCircuit(3))
+                GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Neutronium, 4))
+            .circuit(3)
             .itemOutputs(GTNLItemList.NeutroniumBoule.get(1))
             .duration(18000)
             .eut(TierEU.RECIPE_LuV)
@@ -45,9 +45,8 @@ public class BlastFurnaceRecipes implements IRecipePool {
             .addTo(BFWG);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Europium, 1),
-                GTUtility.getIntegratedCircuit(11))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Europium, 1))
+            .circuit(11)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Europium, 1))
             .duration(400)
             .eut(TierEU.RECIPE_IV)
@@ -71,7 +70,8 @@ public class BlastFurnaceRecipes implements IRecipePool {
             .addTo(BFR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(1), ItemList.Brittle_Netherite_Scrap.get(1))
+            .itemInputs(ItemList.Brittle_Netherite_Scrap.get(1))
+            .circuit(1)
             .fluidInputs(Materials.HellishMetal.getMolten(1 * GTRecipeBuilder.INGOTS))
             .itemOutputs(ItemList.Intensely_Bonded_Netherite_Nanoparticles.get(1))
             .fluidOutputs(Materials.Thaumium.getMolten(2 * GTRecipeBuilder.NUGGETS))
@@ -83,9 +83,9 @@ public class BlastFurnaceRecipes implements IRecipePool {
         if (Mods.Forestry.isModLoaded()) {
             RecipeBuilder.builder()
                 .itemInputs(
-                    GTUtility.getIntegratedCircuit(2),
                     ItemList.Brittle_Netherite_Scrap.get(1),
                     GTBees.combs.getStackForType(CombType.NETHERITE, 32))
+                .circuit(2)
                 .fluidInputs(Materials.HellishMetal.getMolten(1 * GTRecipeBuilder.INGOTS))
                 .itemOutputs(ItemList.Intensely_Bonded_Netherite_Nanoparticles.get(2))
                 .fluidOutputs(Materials.Thaumium.getMolten(2 * GTRecipeBuilder.NUGGETS))

@@ -33,12 +33,14 @@ public class SpaceDrillRecipes implements IRecipePool {
 
     public void addSpaceDrillOutputRecipe(int circuit, ItemStack drone, FluidStack fuel, FluidStack output,
         int minerTier, int duration, long eut) {
-        RecipeBuilder.builder()
-            .itemInputs(
-                (circuit < 25) ? GTUtility.getIntegratedCircuit(circuit)
-                    : ItemUtils.getIntegratedCircuitPlus(circuit - 25),
-                GTUtility.copyAmountUnsafe(0, drone))
-            .fluidInputs(fuel)
+        RecipeBuilder builder = RecipeBuilder.builder();
+        if (circuit < 25) {
+            builder.itemInputs(GTUtility.copyAmountUnsafe(0, drone))
+                .circuit(circuit);
+        } else {
+            builder.itemInputs(ItemUtils.getIntegratedCircuitPlus(circuit - 25), GTUtility.copyAmountUnsafe(0, drone));
+        }
+        builder.fluidInputs(fuel)
             .fluidOutputs(output)
             .specialValue(1)
             .metadata(MINER_TIER, minerTier)
