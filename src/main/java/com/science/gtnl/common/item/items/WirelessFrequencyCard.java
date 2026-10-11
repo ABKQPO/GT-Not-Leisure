@@ -43,6 +43,7 @@ import com.science.gtnl.common.wireless.WirelessChannelManager;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Entrance;
 import com.science.gtnl.common.wireless.WirelessClusterManager;
+import com.science.gtnl.common.wireless.WirelessOperations;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.exceptions.FailedConnection;
@@ -171,20 +172,13 @@ public final class WirelessFrequencyCard extends Item implements IBaubleExpanded
             message(player, "invalid_target");
             return true;
         }
-        if (!canBuild(targetNode, player)) return true;
         try {
-            WirelessClusterManager.refreshTarget(targetNode);
-            if (WirelessClusterManager.isLinked(binding.source(), targetNode)) {
-                // A suspended binding can be removed even while its source chunk is unavailable.
-                IGridNode source = binding.source()
-                    .node();
-                if (source != null && !canBuild(source, player)) return true;
-                WirelessClusterManager.disconnectCluster(binding.source(), targetNode);
-                message(player, "cluster_disconnected");
-            } else {
-                if (sourceNode(binding, player) == null) return true;
-                WirelessClusterManager.connectCluster(binding.source(), target);
-                message(player, "cluster_connected");
+            switch (WirelessOperations.toggle(player, binding, target)) {
+                case CONNECTED -> message(player, "cluster_connected");
+                case DISCONNECTED -> message(player, "cluster_disconnected");
+                case DENIED -> message(player, "denied");
+                case UNAVAILABLE -> message(player, "unavailable");
+                default -> {}
             }
         } catch (IllegalArgumentException | IllegalStateException | FailedConnection failure) {
             message(player, "failed", failure.getMessage());

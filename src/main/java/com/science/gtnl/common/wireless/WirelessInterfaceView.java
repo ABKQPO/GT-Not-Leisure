@@ -16,8 +16,6 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.science.gtnl.api.mixinHelper.IDualityInterface;
-import com.science.gtnl.common.wireless.WirelessClusterManager.LinkView;
-import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
 
 import appeng.api.AEApi;
 import appeng.api.crafting.ICraftingIconProvider;
@@ -34,7 +32,7 @@ import gregtech.api.metatileentity.implementations.MTEHatch;
 final class WirelessInterfaceView {
 
     private final Map<IInterfaceHost, List<MTEHatch>> targets = new IdentityHashMap<>();
-    private final Map<LinkView, List<Name>> names = new IdentityHashMap<>();
+    private final Map<WirelessLinkView, List<Name>> names = new IdentityHashMap<>();
 
     record Name(String rawName, String suffix, ItemStack icon) {
 
@@ -42,9 +40,6 @@ final class WirelessInterfaceView {
             this(rawName, suffix == null ? "" : IChatComponent.Serializer.func_150696_a(suffix), icon);
         }
 
-        String text() {
-            return InterfaceNameLocalization.localizeName(rawName, suffix, icon);
-        }
     }
 
     /** Null means an output cannot be inspected safely, so machine ownership is unknown. */
@@ -73,11 +68,11 @@ final class WirelessInterfaceView {
         return hatches;
     }
 
-    List<Name> names(LinkView link) {
+    List<Name> names(WirelessLinkView link) {
         return names.computeIfAbsent(link, this::readNames);
     }
 
-    private List<Name> readNames(LinkView link) {
+    private List<Name> readNames(WirelessLinkView link) {
         Set<Object> seen = Collections.newSetFromMap(new IdentityHashMap<>());
         var names = new TreeMap<String, Name>();
         for (var node : link.members()) {

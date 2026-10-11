@@ -17,6 +17,7 @@ import com.science.gtnl.common.wireless.WirelessChannelManager;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Entrance;
 import com.science.gtnl.common.wireless.WirelessClusterManager;
+import com.science.gtnl.common.wireless.WirelessOperations;
 import com.science.gtnl.config.MainConfig;
 
 import appeng.api.exceptions.FailedConnection;
@@ -77,15 +78,14 @@ public final class CommandWirelessME extends CommandBase {
                         throw new IllegalArgumentException(getCommandUsage(sender));
                     Address source = sources.get(player.getUniqueID());
                     if (source == null) throw new IllegalArgumentException("Bind a source first.");
-                    int id = WirelessClusterManager.connectCluster(source, address(args));
+                    int id = WirelessOperations.debugConnect(source, address(args));
                     message(sender, "Created entrance " + id + ". Wait for AE2 pathing, then run status.");
                 }
                 case "unlink" -> {
                     if (args.length != 2) throw new IllegalArgumentException(getCommandUsage(sender));
                     int id = Integer.parseInt(args[1]);
                     Entrance entrance = WirelessChannelManager.entrance(id);
-                    boolean removed = entrance != null
-                        && WirelessClusterManager.disconnectCluster(entrance.source(), entrance.targetNode());
+                    boolean removed = entrance != null && WirelessOperations.debugDisconnect(entrance);
                     message(
                         sender,
                         removed ? "Frequency disconnected from the entire physical cluster." : "Unknown entrance ID.");

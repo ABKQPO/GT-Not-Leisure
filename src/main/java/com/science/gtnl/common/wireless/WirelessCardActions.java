@@ -25,6 +25,18 @@ public final class WirelessCardActions {
 
     private WirelessCardActions() {}
 
+    /** Per-open-container request limit, independent of action type or snapshot revision. */
+    static final class RequestGate {
+
+        private long after = Long.MIN_VALUE;
+
+        boolean accept(long tick) {
+            if (tick < after) return false;
+            after = tick + 4;
+            return true;
+        }
+    }
+
     public static int type(int id) {
         return isRowAction(id) ? id - rowIndex(id) : id;
     }

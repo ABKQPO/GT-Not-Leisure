@@ -16,7 +16,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import com.science.gtnl.api.mixinHelper.IInterfaceNameHatch;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
-import com.science.gtnl.common.wireless.WirelessClusterManager.LinkView;
 
 import appeng.api.implementations.parts.IPartCable;
 import appeng.helpers.IInterfaceHost;
@@ -35,9 +34,9 @@ final class WirelessMachineGroups {
         private final List<MTEMultiBlockBase> pending = new ArrayList<>();
         private boolean finished;
 
-        boolean waiting(List<LinkView> links) {
+        boolean waiting(List<WirelessLinkView> links) {
             if (finished) return false;
-            for (LinkView link : links) {
+            for (WirelessLinkView link : links) {
                 World world = link.node()
                     .getWorld();
                 if (world == null || !inspected.add(world)) continue;
@@ -88,10 +87,10 @@ final class WirelessMachineGroups {
         }
     }
 
-    record Row(MTEMultiBlockBase machine, TypeKey type, List<Row> children, List<LinkView> links,
+    record Row(MTEMultiBlockBase machine, TypeKey type, List<Row> children, List<WirelessLinkView> links,
         WirelessNetworkStatistics statistics) {
 
-        Row(MTEMultiBlockBase machine, List<LinkView> links) {
+        Row(MTEMultiBlockBase machine, List<WirelessLinkView> links) {
             this(
                 machine,
                 machine == null ? null
@@ -106,16 +105,16 @@ final class WirelessMachineGroups {
                 summarize(links));
         }
 
-        static Row cluster(LinkView link) {
+        static Row cluster(WirelessLinkView link) {
             return cluster(link, null);
         }
 
-        static Row cluster(LinkView link, TypeKey type) {
+        static Row cluster(WirelessLinkView link, TypeKey type) {
             return new Row(null, type, List.of(), List.of(link), link.statistics());
         }
 
         static Row category(TypeKey type, List<Row> children) {
-            List<LinkView> links = children.stream()
+            List<WirelessLinkView> links = children.stream()
                 .flatMap(
                     row -> row.links()
                         .stream())
@@ -135,7 +134,7 @@ final class WirelessMachineGroups {
             return new RowKey(category() ? type : null, category() ? null : target(), group());
         }
 
-        LinkView link() {
+        WirelessLinkView link() {
             if (group()) throw new IllegalStateException("A presentation group is not an actionable physical cluster");
             return links.get(0);
         }
@@ -162,17 +161,17 @@ final class WirelessMachineGroups {
 
         boolean paused() {
             return links.stream()
-                .allMatch(LinkView::paused);
+                .allMatch(WirelessLinkView::paused);
         }
 
         boolean conflicted() {
             return links.stream()
-                .anyMatch(LinkView::conflicted);
+                .anyMatch(WirelessLinkView::conflicted);
         }
 
         int entrances() {
             return links.stream()
-                .mapToInt(LinkView::entrances)
+                .mapToInt(WirelessLinkView::entrances)
                 .sum();
         }
 
@@ -191,14 +190,14 @@ final class WirelessMachineGroups {
                         .equals("active")) ? "active" : "waiting";
         }
 
-        Row filtered(WirelessViewFilter filter, WirelessInterfaceView interfaces) {
+        Row filtered(WirelessViewFilter filter, WirelessInterfaceView interfaces, WirelessSearchNames searchNames) {
             boolean searching = !filter.query()
                 .isEmpty();
             if (!searching && filter.dimension() == null && filter.state() == 0) return this;
             ItemStack icon = searching ? icon() : null;
-            String machineName = (group() || type != null) && icon != null ? icon.getDisplayName() : "";
+            String machineName = (group() || type != null) && icon != null ? searchNames.name(icon) : "";
             String position = searching ? coordinates(target()) : "";
-            List<LinkView> matches = links.stream()
+            List<WirelessLinkView> matches = links.stream()
                 .filter(link -> {
                     String text = "", positions = "";
                     if (searching) {
@@ -208,9 +207,9 @@ final class WirelessMachineGroups {
                         StringBuilder names = new StringBuilder(machineName).append(' ')
                             .append(String.join(" ", link.names()))
                             .append(' ')
-                            .append(device == null ? "" : device.getDisplayName());
+                            .append(searchNames.name(device));
                         for (var name : interfaces.names(link)) names.append(' ')
-                            .append(name.text());
+                            .append(searchNames.name(name));
                         text = names.toString();
                         positions = position + " " + coordinates(link.target());
                     }
@@ -229,11 +228,11 @@ final class WirelessMachineGroups {
         }
     }
 
-    static List<Row> group(List<LinkView> links, WirelessInterfaceView interfaces) {
+    static List<Row> group(List<WirelessLinkView> links, WirelessInterfaceView interfaces) {
         List<Row> rows = new ArrayList<>();
-        Map<MTEMultiBlockBase, List<LinkView>> machines = new IdentityHashMap<>();
+        Map<MTEMultiBlockBase, List<WirelessLinkView>> machines = new IdentityHashMap<>();
         Map<MTEMultiBlockBase, Boolean> validControllers = new IdentityHashMap<>();
-        for (LinkView link : links) {
+        for (WirelessLinkView link : links) {
             Classification classification = classify(link, validControllers, interfaces);
             if (classification.machine() == null) rows.add(Row.cluster(link, classification.type()));
             else machines.computeIfAbsent(classification.machine(), ignored -> new ArrayList<>())
@@ -308,7 +307,7 @@ final class WirelessMachineGroups {
         return order;
     }
 
-    static Classification classify(LinkView link, Map<MTEMultiBlockBase, Boolean> validControllers,
+    static Classification classify(WirelessLinkView link, Map<MTEMultiBlockBase, Boolean> validControllers,
         WirelessInterfaceView interfaces) {
         Set<MTEMultiBlockBase> owners = null;
         TypeKey type = null;
@@ -386,10 +385,10 @@ final class WirelessMachineGroups {
                 .getTileEntity(base.getXCoord(), base.getYCoord(), base.getZCoord()) == base;
     }
 
-    static WirelessNetworkStatistics summarize(List<LinkView> links) {
+    static WirelessNetworkStatistics summarize(List<WirelessLinkView> links) {
         int nodes = 0, devices = 0, online = 0, missing = 0;
         boolean stable = true;
-        for (LinkView link : links) {
+        for (WirelessLinkView link : links) {
             var stats = link.statistics();
             nodes += stats.nodes();
             devices += stats.devices();

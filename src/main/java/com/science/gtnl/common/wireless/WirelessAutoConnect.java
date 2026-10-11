@@ -1,7 +1,5 @@
 package com.science.gtnl.common.wireless;
 
-import static com.science.gtnl.common.wireless.WirelessChannelManager.canBuild;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -248,26 +246,15 @@ public final class WirelessAutoConnect {
             pending.z,
             target.side()
                 .ordinal(),
-            pending.placedItem) || !canBuild(node, player)) {
+            pending.placedItem)) {
             notice(player, "denied");
             return true;
         }
         try {
-            IGridNode source = pending.binding.source()
-                .node();
-            if (source == null || source.getGrid() == null) return false;
-            if (!canBuild(source, player)) {
-                notice(player, "denied");
-                return true;
-            }
-            if (!AutomaticWirelessEntrances.isSettled(
-                source.getGrid()
-                    .getCache(appeng.api.networking.pathing.IPathingGrid.class)))
-                return false;
-            WirelessClusterManager.refreshTarget(node);
-            if (WirelessClusterManager.isLinked(pending.binding.source(), node)) return true; // Never toggle/unlink.
-            WirelessClusterManager.connectCluster(pending.binding.source(), target);
-            return true;
+            var result = WirelessOperations.ensureConnected(player, pending.binding, target);
+            if (result == WirelessOperations.Result.DENIED) notice(player, "denied");
+            else if (result == WirelessOperations.Result.UNAVAILABLE) notice(player, "auto_failed");
+            return result != WirelessOperations.Result.WAITING;
         } catch (IllegalArgumentException | IllegalStateException | FailedConnection failure) {
             notice(player, "auto_failed");
             return true;

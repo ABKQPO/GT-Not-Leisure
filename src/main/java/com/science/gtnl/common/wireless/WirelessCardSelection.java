@@ -3,15 +3,15 @@ package com.science.gtnl.common.wireless;
 import java.util.List;
 
 /** Selection never silently picks an arbitrary inventory slot, even when two cards share a frequency. */
-public final class WirelessCardSelection {
+final class WirelessCardSelection {
 
-    public record Candidate<T> (T card, boolean held, boolean owned, boolean bound, boolean automatic) {}
+    record Candidate<T> (T card, boolean held, boolean owned, boolean bound, boolean automatic) {}
 
-    public record Selection<T> (T card, boolean ambiguous) {}
+    record Selection<T> (T card, boolean ambiguous) {}
 
     private WirelessCardSelection() {}
 
-    public static <T> Selection<T> select(List<Candidate<T>> cards, boolean connecting) {
+    static <T> Selection<T> select(List<Candidate<T>> cards, boolean connecting) {
         T selected = null;
         int count = 0;
         for (Candidate<T> candidate : cards) {
