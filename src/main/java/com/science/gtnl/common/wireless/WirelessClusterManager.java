@@ -394,9 +394,17 @@ public final class WirelessClusterManager {
                         Set.copyOf(cluster.nodes())));
             }
             result.sort(
-                Comparator.comparing(
-                    view -> view.target()
-                        .toString()));
+                Comparator.comparingInt(
+                    (LinkView view) -> view.statistics()
+                        .missing() > 0 ? 0 : 1)
+                    .thenComparing(
+                        Comparator.comparingInt(
+                            (LinkView view) -> view.statistics()
+                                .online())
+                            .reversed())
+                    .thenComparing(
+                        view -> view.target()
+                            .toString()));
             return result;
         }
     }
