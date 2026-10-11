@@ -1,5 +1,23 @@
 package com.science.gtnl.client;
 
+import static com.science.gtnl.common.wireless.WirelessCardActions.APPLY_FILTER;
+import static com.science.gtnl.common.wireless.WirelessCardActions.BACK;
+import static com.science.gtnl.common.wireless.WirelessCardActions.COPY_POSITION;
+import static com.science.gtnl.common.wireless.WirelessCardActions.CYCLE_FILTER;
+import static com.science.gtnl.common.wireless.WirelessCardActions.CYCLE_VISUALISATION;
+import static com.science.gtnl.common.wireless.WirelessCardActions.HIGHLIGHT;
+import static com.science.gtnl.common.wireless.WirelessCardActions.NEXT_PAGE;
+import static com.science.gtnl.common.wireless.WirelessCardActions.OPEN_DETAILS;
+import static com.science.gtnl.common.wireless.WirelessCardActions.PREVIOUS_PAGE;
+import static com.science.gtnl.common.wireless.WirelessCardActions.REFRESH;
+import static com.science.gtnl.common.wireless.WirelessCardActions.RENAME;
+import static com.science.gtnl.common.wireless.WirelessCardActions.SET_PAGE_SIZE;
+import static com.science.gtnl.common.wireless.WirelessCardActions.TELEPORT;
+import static com.science.gtnl.common.wireless.WirelessCardActions.TOGGLE_AUTO;
+import static com.science.gtnl.common.wireless.WirelessCardActions.TOGGLE_PAUSE;
+import static com.science.gtnl.common.wireless.WirelessCardActions.isRowAction;
+import static com.science.gtnl.common.wireless.WirelessCardActions.rowIndex;
+import static com.science.gtnl.common.wireless.WirelessCardActions.type;
 import static net.minecraft.client.gui.Gui.drawRect;
 
 import java.util.ArrayList;
@@ -81,9 +99,11 @@ public final class WirelessCardGui extends ModularPanel {
         name = textField(32).hintText(GuiText.Renamer.getLocal());
         child(search).child(dimension)
             .child(name);
-        for (int id = 0; id < 10; id++) if (id != 8) addButton(id);
+        for (int id : new int[] { PREVIOUS_PAGE, NEXT_PAGE, TOGGLE_AUTO, REFRESH, BACK, RENAME, APPLY_FILTER,
+            CYCLE_FILTER, CYCLE_VISUALISATION }) addButton(id);
         for (int row = 0; row < WirelessCardLayout.MAX_ROWS; row++) {
-            for (int base : new int[] { 10, 20, 30, 40, 50 }) addButton(base + row);
+            for (int base : new int[] { TOGGLE_PAUSE, OPEN_DETAILS, COPY_POSITION, HIGHLIGHT, TELEPORT })
+                addButton(base + row);
         }
     }
 
@@ -99,11 +119,11 @@ public final class WirelessCardGui extends ModularPanel {
             @Override
             public boolean onKeyPressed(char character, int key) {
                 if (WirelessCardInput.visualisationKey(key) && !editingText()) {
-                    action(9);
+                    action(CYCLE_VISUALISATION);
                     return true;
                 }
                 if (key == Keyboard.KEY_RETURN || key == Keyboard.KEY_NUMPADENTER) {
-                    action(container.display.getBoolean("detail") ? 5 : 6);
+                    action(container.display.getBoolean("detail") ? RENAME : APPLY_FILTER);
                     return true;
                 }
                 return super.onKeyPressed(character, key);
@@ -112,7 +132,7 @@ public final class WirelessCardGui extends ModularPanel {
             @Override
             public boolean onMousePressed(int button) {
                 if (button > 1 && WirelessCardInput.visualisationKey(button - 100) && !editingText()) {
-                    action(9);
+                    action(CYCLE_VISUALISATION);
                     return true;
                 }
                 return super.onMousePressed(button);
@@ -157,38 +177,38 @@ public final class WirelessCardGui extends ModularPanel {
             .size(226 + dx, 12);
         for (var button : buttons) {
             int id = button.id;
-            if (id >= 10) {
-                int y = ROW_TOP + id % 10 * ROW_HEIGHT;
-                switch (id / 10) {
-                    case 1 -> button.pos(xSize - 28, y + 4)
+            if (isRowAction(id)) {
+                int y = ROW_TOP + rowIndex(id) * ROW_HEIGHT;
+                switch (type(id)) {
+                    case TOGGLE_PAUSE -> button.pos(xSize - 28, y + 4)
                         .size(16, 16);
-                    case 2 -> button.pos(10, y)
+                    case OPEN_DETAILS -> button.pos(10, y)
                         .size(20, ROW_HEIGHT);
-                    case 3 -> button.pos(xSize - 96, y + 2)
+                    case COPY_POSITION -> button.pos(xSize - 96, y + 2)
                         .size(30, 20);
-                    case 4 -> button.pos(xSize - 62, y + 2)
+                    case HIGHLIGHT -> button.pos(xSize - 62, y + 2)
                         .size(30, 20);
-                    case 5 -> button.pos(xSize - 130, y + 2)
+                    case TELEPORT -> button.pos(xSize - 130, y + 2)
                         .size(30, 20);
                 }
             } else switch (id) {
-                case 0 -> button.pos(10, ySize - 27)
+                case PREVIOUS_PAGE -> button.pos(10, ySize - 27)
                     .size(18, 20);
-                case 1 -> button.pos(76, ySize - 27)
+                case NEXT_PAGE -> button.pos(76, ySize - 27)
                     .size(18, 20);
-                case 2 -> button.pos(xSize - 28, 10)
+                case TOGGLE_AUTO -> button.pos(xSize - 28, 10)
                     .size(16, 16);
-                case 3 -> button.pos(xSize - 76, ySize - 27)
+                case REFRESH -> button.pos(xSize - 76, ySize - 27)
                     .size(64, 20);
-                case 4 -> button.pos(layout.footerInfoX(), ySize - 27)
+                case BACK -> button.pos(layout.footerInfoX(), ySize - 27)
                     .size(36, 20);
-                case 5 -> button.pos(244 + dx, 59)
+                case RENAME -> button.pos(244 + dx, 59)
                     .size(64, 20);
-                case 6 -> button.pos(264 + dx, 59)
+                case APPLY_FILTER -> button.pos(264 + dx, 59)
                     .size(44, 20);
-                case 7 -> button.pos(188 + dx, 59)
+                case CYCLE_FILTER -> button.pos(188 + dx, 59)
                     .size(72, 20);
-                case 9 -> button.pos(layout.visualisationX(), ySize - 27)
+                case CYCLE_VISUALISATION -> button.pos(layout.visualisationX(), ySize - 27)
                     .size(layout.visualisationWidth(), 20);
             }
         }
@@ -233,9 +253,9 @@ public final class WirelessCardGui extends ModularPanel {
             this.id = id;
             text.setShadow(true);
             background(IDrawable.EMPTY).hoverBackground(IDrawable.EMPTY);
-            if (id >= 20 && id < 30) tooltipBuilder(tooltip -> {
+            if (type(id) == OPEN_DETAILS) tooltipBuilder(tooltip -> {
                 NBTTagCompound row = container.display.getTagList("rows", 10)
-                    .getCompoundTagAt(id - 20);
+                    .getCompoundTagAt(rowIndex(id));
                 tooltip.addLine(rowName(row, ItemStack.loadItemStackFromNBT(row.getCompoundTag("icon"))));
                 tooltip.addLine(row.getString("position"));
                 if (row.getBoolean("group")) tooltip.addLine(tr("loaded", row.getInteger("clusters")));
@@ -249,7 +269,7 @@ public final class WirelessCardGui extends ModularPanel {
 
         @Override
         public void draw(ModularGuiContext context, WidgetThemeEntry<?> theme) {
-            if (id >= 20 && id < 30) return;
+            if (type(id) == OPEN_DETAILS) return;
             int width = getArea().width, height = getArea().height;
             GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
             try {
@@ -258,7 +278,7 @@ public final class WirelessCardGui extends ModularPanel {
                 GL11.glDisable(GL11.GL_LIGHTING);
                 GL11.glDisable(GL11.GL_DEPTH_TEST);
                 ScreenColor.setGuiColor();
-                if (id == 2 || id >= 10 && id < 20) {
+                if (id == TOGGLE_AUTO || type(id) == TOGGLE_PAUSE) {
                     TOGGLE_BACKGROUND.draw(0, 0, width, height);
                     ScreenColor.resetGuiColor();
                     (on ? TOGGLE_ON : TOGGLE_OFF).draw(0, 0, width, height);
@@ -288,26 +308,27 @@ public final class WirelessCardGui extends ModularPanel {
 
     private void action(int id) {
         if (!layoutReady()) return;
-        if (id >= 30 && id < 30 + visibleRows) {
+        if (type(id) == COPY_POSITION && rowIndex(id) < visibleRows) {
             var row = container.display.getTagList("rows", 10)
-                .getCompoundTagAt(id - 30);
+                .getCompoundTagAt(rowIndex(id));
             GuiScreen.setClipboardString(
                 row.getString("position") + (row.getBoolean("group") ? "" : " / " + row.getString("side")));
             mc.thePlayer.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.copied"));
             return;
         }
         int filterState = container.display.getInteger("filterState");
-        if (id == 7) filterState = (filterState + 1) % 5;
-        String text = id == 5 ? name.getText() : search.getText();
-        if (id == 5) getContext().removeFocus();
-        container.sync.request(id == 7 ? 6 : id, text, dimension.getText(), filterState, nameRevision);
+        if (id == CYCLE_FILTER) filterState = (filterState + 1) % 5;
+        String text = id == RENAME ? name.getText() : search.getText();
+        if (id == RENAME) getContext().removeFocus();
+        container.sync
+            .request(id == CYCLE_FILTER ? APPLY_FILTER : id, text, dimension.getText(), filterState, nameRevision);
     }
 
     @Override
     public void onUpdate() {
         super.onUpdate();
         if (!layoutReady() && container.display.hasKey("session") && layoutRetry-- <= 0) {
-            container.sync.request(8, "", "", visibleRows, 0);
+            container.sync.request(SET_PAGE_SIZE, "", "", visibleRows, 0);
             layoutRetry = 10;
         }
         NBTTagCompound data = container.display;
@@ -329,35 +350,39 @@ public final class WirelessCardGui extends ModularPanel {
         NBTTagList rows = data.getTagList("rows", 10);
         for (var button : buttons) {
             int id = button.id;
-            boolean visible = id < 10 || id % 10 < Math.min(visibleRows, rows.tagCount());
+            int actionType = type(id);
+            boolean visible = !isRowAction(id) || rowIndex(id) < Math.min(visibleRows, rows.tagCount());
             button.available = layoutReady();
-            if (id == 2) button.on = data.getBoolean("auto");
-            if (id == 4) visible = detail || data.getBoolean("group");
-            if (id == 5) visible = detail;
-            if (id == 5) button.available &= data.getBoolean("renameable");
-            if (id == 6 || id == 7) visible = !detail;
-            if (id >= 20 && id < 30) visible &= !detail;
-            if (id >= 10 && id < 20) button.on = !rows.getCompoundTagAt(id - 10)
+            if (id == TOGGLE_AUTO) button.on = data.getBoolean("auto");
+            if (id == BACK) visible = detail || data.getBoolean("group");
+            if (id == RENAME) visible = detail;
+            if (id == RENAME) button.available &= data.getBoolean("renameable");
+            if (id == APPLY_FILTER || id == CYCLE_FILTER) visible = !detail;
+            if (actionType == OPEN_DETAILS) visible &= !detail;
+            if (actionType == TOGGLE_PAUSE) button.on = !rows.getCompoundTagAt(rowIndex(id))
                 .getBoolean("paused");
-            if (id >= 10) {
-                boolean group = rows.getCompoundTagAt(id % 10)
+            if (isRowAction(id)) {
+                boolean group = rows.getCompoundTagAt(rowIndex(id))
                     .getBoolean("group");
-                if (id < 20 || id >= 40) visible &= !group;
-                if (id >= 20 && id < 30) button.size(group ? xSize - 112 : 20, ROW_HEIGHT);
+                if (actionType == TOGGLE_PAUSE || actionType == HIGHLIGHT || actionType == TELEPORT) visible &= !group;
+                if (actionType == OPEN_DETAILS) button.size(group ? xSize - 112 : 20, ROW_HEIGHT);
             }
-            if (id == 0) button.available &= data.getInteger("page") > 0;
-            if (id == 1) button.available &= data.getInteger("page") + 1 < data.getInteger("pages");
-            button.label = switch (id) {
-                case 0 -> "<";
-                case 1 -> ">";
-                case 3 -> tr("refresh");
-                case 4 -> tr("back_compact");
-                case 5 -> StatCollector.translateToLocal("gui.done");
-                case 6 -> tr("search");
-                case 7 -> tr("filter." + data.getInteger("filterState"));
-                default -> id >= 50 ? tr("teleport") : id >= 40 ? tr("highlight") : id >= 30 ? tr("copy") : "";
+            if (id == PREVIOUS_PAGE) button.available &= data.getInteger("page") > 0;
+            if (id == NEXT_PAGE) button.available &= data.getInteger("page") + 1 < data.getInteger("pages");
+            button.label = switch (actionType) {
+                case PREVIOUS_PAGE -> "<";
+                case NEXT_PAGE -> ">";
+                case REFRESH -> tr("refresh");
+                case BACK -> tr("back_compact");
+                case RENAME -> StatCollector.translateToLocal("gui.done");
+                case APPLY_FILTER -> tr("search");
+                case CYCLE_FILTER -> tr("filter." + data.getInteger("filterState"));
+                case TELEPORT -> tr("teleport");
+                case HIGHLIGHT -> tr("highlight");
+                case COPY_POSITION -> tr("copy");
+                default -> "";
             };
-            if (id == 9) {
+            if (id == CYCLE_VISUALISATION) {
                 int mode = data.getInteger("visualMode");
                 String label = StatCollector
                     .translateToLocal(WirelessCardVisualisation.modeKey(mode) + (mode > 0 ? ".short" : ""));

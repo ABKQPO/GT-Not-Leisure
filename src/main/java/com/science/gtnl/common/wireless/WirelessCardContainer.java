@@ -1,5 +1,21 @@
 package com.science.gtnl.common.wireless;
 
+import static com.science.gtnl.common.wireless.WirelessCardActions.APPLY_FILTER;
+import static com.science.gtnl.common.wireless.WirelessCardActions.BACK;
+import static com.science.gtnl.common.wireless.WirelessCardActions.CYCLE_VISUALISATION;
+import static com.science.gtnl.common.wireless.WirelessCardActions.HIGHLIGHT;
+import static com.science.gtnl.common.wireless.WirelessCardActions.NEXT_PAGE;
+import static com.science.gtnl.common.wireless.WirelessCardActions.OPEN_DETAILS;
+import static com.science.gtnl.common.wireless.WirelessCardActions.PREVIOUS_PAGE;
+import static com.science.gtnl.common.wireless.WirelessCardActions.REFRESH;
+import static com.science.gtnl.common.wireless.WirelessCardActions.RENAME;
+import static com.science.gtnl.common.wireless.WirelessCardActions.SET_PAGE_SIZE;
+import static com.science.gtnl.common.wireless.WirelessCardActions.TELEPORT;
+import static com.science.gtnl.common.wireless.WirelessCardActions.TOGGLE_AUTO;
+import static com.science.gtnl.common.wireless.WirelessCardActions.TOGGLE_PAUSE;
+import static com.science.gtnl.common.wireless.WirelessCardActions.isRowAction;
+import static com.science.gtnl.common.wireless.WirelessCardActions.rowIndex;
+import static com.science.gtnl.common.wireless.WirelessCardActions.type;
 import static com.science.gtnl.common.wireless.WirelessChannelManager.canBuild;
 import static com.science.gtnl.common.wireless.WirelessMachineGroups.coordinates;
 
@@ -473,31 +489,32 @@ public final class WirelessCardContainer extends ModularContainer {
     public void action(long session, long revision, int action, String text, String dimension, int filterState,
         long nameRevision) {
         if (!canInteractWith(player) || this.session != session) return;
-        boolean teleport = action >= 50 && action < 50 + rows.size();
+        int actionType = type(action);
+        int index = rowIndex(action);
+        boolean teleport = actionType == TELEPORT && index < rows.size();
         long now = player.worldObj.getTotalWorldTime();
         if (!teleport) {
             if (now < actionAfter) return;
             actionAfter = now + 4;
         }
-        if (action >= 20 && action < 30) update(false);
-        if (this.revision != revision && action != 6 && action != 8) {
+        if (actionType == OPEN_DETAILS) update(false);
+        if (this.revision != revision && action != APPLY_FILTER && action != SET_PAGE_SIZE) {
             update(true);
             return;
         }
         // Group rows are navigation only, even if a client submits a hidden mutation button.
-        if (action >= 10 && action < 60
-            && action % 10 < rows.size()
-            && rows.get(action % 10)
+        if (isRowAction(action) && index < rows.size()
+            && rows.get(index)
                 .group()
-            && !(action >= 20 && action < 30)) return;
-        if (action == 9) {
+            && actionType != OPEN_DETAILS) return;
+        if (action == CYCLE_VISUALISATION) {
             WirelessCardVisualisation.cycle(card, player);
-        } else if (action == 8) {
+        } else if (action == SET_PAGE_SIZE) {
             // View-only layout negotiation reuses the bounded integer payload; never accept arbitrary row IDs.
             if (!WirelessCardLayout.validRows(filterState)) return;
             page = page * pageSize / filterState;
             pageSize = filterState;
-        } else if (action == 6) {
+        } else if (action == APPLY_FILTER) {
             try {
                 filter = WirelessViewFilter.parse(text, dimension, filterState);
                 detailNode = null;
@@ -505,7 +522,7 @@ public final class WirelessCardContainer extends ModularContainer {
             } catch (IllegalArgumentException invalid) {
                 message("filter_invalid");
             }
-        } else if (action == 5 && detailNode != null && !rows.isEmpty() && binding != null) {
+        } else if (action == RENAME && detailNode != null && !rows.isEmpty() && binding != null) {
             var row = rows.get(0)
                 .link();
             IGridNode source = binding.source()
@@ -523,7 +540,7 @@ public final class WirelessCardContainer extends ModularContainer {
                 }
             }
         } else if (teleport && binding != null && player instanceof EntityPlayerMP serverPlayer) {
-            var row = rows.get(action - 50)
+            var row = rows.get(index)
                 .link();
             try {
                 if (!WirelessClusterManager.isCurrentLink(binding.source(), row)) {
@@ -540,8 +557,8 @@ public final class WirelessCardContainer extends ModularContainer {
             } catch (PhysicalClusterTracker.ScanLimitException limit) {
                 message("stale");
             }
-        } else if (action >= 40 && action < 40 + rows.size()) {
-            var row = rows.get(action - 40)
+        } else if (actionType == HIGHLIGHT && index < rows.size()) {
+            var row = rows.get(index)
                 .link();
             if (row.target()
                 .dimension() != player.dimension) {
@@ -569,22 +586,22 @@ public final class WirelessCardContainer extends ModularContainer {
                 }
                 message("highlight_started", targets.size());
             }
-        } else if (action == 0) page--;
-        else if (action == 1) page++;
-        else if (action == 2) {
+        } else if (action == PREVIOUS_PAGE) page--;
+        else if (action == NEXT_PAGE) page++;
+        else if (action == TOGGLE_AUTO) {
             WirelessAutoConnect.toggleAutomatic(player, card);
-        } else if (action == 4) {
+        } else if (action == BACK) {
             if (detailNode != null) detailNode = null;
             else groupMachine = null;
             page = 0;
-        } else if (action >= 20 && action < 20 + rows.size() && detailNode == null) {
-            Row row = rows.get(action - 20);
+        } else if (actionType == OPEN_DETAILS && index < rows.size() && detailNode == null) {
+            Row row = rows.get(index);
             if (row.group()) groupMachine = row.machine();
             else detailNode = row.link()
                 .node();
             page = 0;
-        } else if (action >= 10 && action < 10 + rows.size() && binding != null) {
-            var row = rows.get(action - 10)
+        } else if (actionType == TOGGLE_PAUSE && index < rows.size() && binding != null) {
+            var row = rows.get(index)
                 .link();
             IGridNode source = binding.source()
                 .node();
@@ -601,7 +618,7 @@ public final class WirelessCardContainer extends ModularContainer {
                     message("stale");
                 }
             }
-        } else if (action != 3) return;
+        } else if (action != REFRESH) return;
         update(true);
     }
 
