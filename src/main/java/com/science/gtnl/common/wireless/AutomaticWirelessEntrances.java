@@ -49,9 +49,9 @@ public final class AutomaticWirelessEntrances {
 
     private AutomaticWirelessEntrances() {}
 
-    static void refresh(Collection<Cluster<IGridNode, Address>> clusters, PhysicalMeTopology topology) {
+    static void refresh(Collection<Cluster<IGridNode, Address>> clusters, PhysicalMeTopology topology,
+        WirelessEntranceIndex entrances) {
         Map<IGrid, Work> workByGrid = new IdentityHashMap<>();
-        List<Entrance> entrances = WirelessChannelManager.entrances();
         for (Cluster<IGridNode, Address> cluster : clusters) {
             if (cluster.blocked() || cluster.frequencies()
                 .size() != 1) continue;
@@ -61,9 +61,8 @@ public final class AutomaticWirelessEntrances {
             IGridNode sourceNode = source.node();
             if (sourceNode == null) continue;
             List<IGridNode> occupied = new ArrayList<>();
-            for (Entrance entrance : entrances) {
-                if (WirelessChannelManager.sameSource(entrance.source(), source) && cluster.nodes()
-                    .contains(entrance.targetNode()) && entrance.isLive()) {
+            for (Entrance entrance : entrances.forCluster(cluster)) {
+                if (WirelessChannelManager.sameSource(entrance.source(), source) && entrance.isLive()) {
                     occupied.add(entrance.targetNode());
                 }
             }

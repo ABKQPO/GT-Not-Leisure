@@ -50,6 +50,7 @@ public final class WirelessChannelManager {
     public static final WirelessChannelManager INSTANCE = new WirelessChannelManager();
     private static final int MAX_ENTRANCES = 256;
     private static final Map<Integer, Entrance> ENTRANCES = new LinkedHashMap<>();
+    private static List<Entrance> entranceSnapshot = List.of();
     private static final Map<IGridConnection, Entrance> OWNED_CONNECTIONS = new IdentityHashMap<>();
     private static final Map<IGrid, Allocation> ALLOCATIONS = new WeakHashMap<>();
     private static int nextId = 1;
@@ -245,6 +246,7 @@ public final class WirelessChannelManager {
         int id = nextId++;
         Entrance entrance = new Entrance(id, source, target, from, to, connection);
         ENTRANCES.put(id, entrance);
+        entranceSnapshot = null;
         OWNED_CONNECTIONS.put(connection, entrance);
         from.getGrid()
             .<IPathingGrid>getCache(IPathingGrid.class)
@@ -255,6 +257,7 @@ public final class WirelessChannelManager {
     public static boolean disconnect(int id) {
         Entrance entrance = ENTRANCES.remove(id);
         if (entrance == null) return false;
+        entranceSnapshot = null;
         WirelessLinkPersistence.forgetEntrance(entrance);
         OWNED_CONNECTIONS.remove(entrance.connection());
         if (entrance.isLive()) entrance.connection()
@@ -265,6 +268,7 @@ public final class WirelessChannelManager {
     public static void clear() {
         invalidateControllerSources();
         for (int id : new ArrayList<>(ENTRANCES.keySet())) disconnect(id);
+        entranceSnapshot = List.of();
         OWNED_CONNECTIONS.clear();
         ALLOCATIONS.clear();
         WirelessClusterManager.clear();
@@ -273,9 +277,10 @@ public final class WirelessChannelManager {
         allocationRevision = 0;
     }
 
-    /** A snapshot, so callers may disconnect entries while iterating. */
+    /** Immutable snapshot reused until the registry changes; safe to disconnect entries while iterating. */
     public static List<Entrance> entrances() {
-        return new ArrayList<>(ENTRANCES.values());
+        if (entranceSnapshot == null) entranceSnapshot = List.copyOf(ENTRANCES.values());
+        return entranceSnapshot;
     }
 
     public static Entrance entrance(int id) {

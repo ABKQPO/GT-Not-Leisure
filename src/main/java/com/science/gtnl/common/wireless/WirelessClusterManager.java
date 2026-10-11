@@ -170,7 +170,8 @@ public final class WirelessClusterManager {
                 WirelessChannelManager.disconnect(entrance.id());
             }
         }
-        Set<Address> pendingRecovery = restoreSavedEntrances();
+        WirelessEntranceIndex entrances = new WirelessEntranceIndex(TRACKER);
+        Set<Address> pendingRecovery = restoreSavedEntrances(entrances);
         Set<IGridNode> retained = Collections.newSetFromMap(new IdentityHashMap<>());
         for (Cluster<IGridNode, Address> cluster : TRACKER.clusters()) {
             retained.addAll(cluster.nodes());
@@ -187,7 +188,7 @@ public final class WirelessClusterManager {
                     .next())) {
                         STATES.put(cluster, State.PAUSED);
                     } else {
-                        restoreEntrance(cluster, pendingRecovery);
+                        restoreEntrance(cluster, pendingRecovery, entrances);
                     }
         }
         AutomaticWirelessEntrances.refresh(
@@ -196,13 +197,14 @@ public final class WirelessClusterManager {
                 .filter(cluster -> STATES.get(cluster) != State.PAUSED)
                 .filter(cluster -> Collections.disjoint(cluster.frequencies(), pendingRecovery))
                 .toList(),
-            TOPOLOGY);
+            TOPOLOGY,
+            entrances);
         TOPOLOGY.retain(retained);
         RETRY_AFTER.keySet()
             .retainAll(retained);
     }
 
-    private static Set<Address> restoreSavedEntrances() {
+    private static Set<Address> restoreSavedEntrances(WirelessEntranceIndex entrances) {
         Map<IGridNode, Set<Address>> connected = new IdentityHashMap<>();
         for (Entrance entrance : WirelessChannelManager.entrances()) {
             if (entrance.isLive())
@@ -232,7 +234,7 @@ public final class WirelessClusterManager {
             candidate -> TOPOLOGY.isLive(candidate.node()) && TOPOLOGY.entranceAddress(candidate.node()) != null
                 && !candidate.node()
                     .hasFlag(GridFlags.CANNOT_CARRY),
-            candidate -> hasEntrance(candidate.node(), candidate.source()),
+            candidate -> hasEntrance(candidate.node(), candidate.source(), entrances),
             WirelessClusterManager::sourceReady,
             candidate -> {
                 Address target = TOPOLOGY.entranceAddress(candidate.node());
@@ -254,10 +256,9 @@ public final class WirelessClusterManager {
             });
     }
 
-    private static boolean hasEntrance(IGridNode node, Address source) {
-        for (Entrance entrance : WirelessChannelManager.entrances()) {
-            if (entrance.targetNode() == node && sameSource(entrance.source(), source) && entrance.isLive())
-                return true;
+    private static boolean hasEntrance(IGridNode node, Address source, WirelessEntranceIndex entrances) {
+        for (Entrance entrance : entrances.atNode(node)) {
+            if (sameSource(entrance.source(), source) && entrance.isLive()) return true;
         }
         return false;
     }
@@ -272,13 +273,13 @@ public final class WirelessClusterManager {
                     .getCache(IPathingGrid.class));
     }
 
-    private static void restoreEntrance(Cluster<IGridNode, Address> cluster, Set<Address> pendingRecovery) {
+    private static void restoreEntrance(Cluster<IGridNode, Address> cluster, Set<Address> pendingRecovery,
+        WirelessEntranceIndex entrances) {
         Address source = cluster.frequencies()
             .iterator()
             .next();
-        for (Entrance entrance : WirelessChannelManager.entrances()) {
-            if (sameSource(entrance.source(), source) && cluster.nodes()
-                .contains(entrance.targetNode()) && entrance.isLive()) {
+        for (Entrance entrance : entrances.forCluster(cluster)) {
+            if (sameSource(entrance.source(), source) && entrance.isLive()) {
                 STATES.put(cluster, State.ACTIVE);
                 return; // Preserve all existing entrances; merging records must not discard proven channel capacity.
             }
