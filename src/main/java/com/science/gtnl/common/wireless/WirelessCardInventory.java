@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.gtnewhorizon.gtnhlib.compat.BaublesCompat;
-import com.science.gtnl.common.item.items.OverloadedFrequencyCard;
+import com.science.gtnl.common.item.items.WirelessFrequencyCard;
 import com.science.gtnl.common.wireless.WirelessCardSelection.Candidate;
 
 import baubles.common.container.InventoryBaubles;
@@ -63,7 +63,7 @@ public final class WirelessCardInventory {
         Predicate<NBTTagCompound> enabled) {
         List<Candidate<ItemStack>> candidates = new ArrayList<>();
         for (ItemStack stack : stacks) {
-            if (!(stack.getItem() instanceof OverloadedFrequencyCard)) continue;
+            if (!(stack.getItem() instanceof WirelessFrequencyCard)) continue;
             NBTTagCompound tag = stack.getTagCompound();
             WirelessCardBinding binding = WirelessCardBinding.read(tag);
             candidates.add(

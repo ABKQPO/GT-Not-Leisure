@@ -37,7 +37,6 @@ import com.science.gtnl.common.item.items.ItemPartSuperInterface;
 import com.science.gtnl.common.item.items.KFCFamily;
 import com.science.gtnl.common.item.items.NetherTeleporter;
 import com.science.gtnl.common.item.items.NullPointerException;
-import com.science.gtnl.common.item.items.OverloadedFrequencyCard;
 import com.science.gtnl.common.item.items.PortableCellWorkbenchItem;
 import com.science.gtnl.common.item.items.PortableItem;
 import com.science.gtnl.common.item.items.SlimeSaddle;
@@ -48,6 +47,7 @@ import com.science.gtnl.common.item.items.TestItem;
 import com.science.gtnl.common.item.items.TimeStopPocketWatch;
 import com.science.gtnl.common.item.items.TwilightSword;
 import com.science.gtnl.common.item.items.VeinMiningPickaxe;
+import com.science.gtnl.common.item.items.WirelessFrequencyCard;
 import com.science.gtnl.common.item.items.WirelessUpgradeChip;
 import com.science.gtnl.common.item.items.armor.SoulCardboardArmor;
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionBauble;
@@ -150,7 +150,7 @@ public class ItemLoader {
     public static DireCraftPattern direCraftPattern = new DireCraftPattern();
 
     public static WirelessUpgradeChip wirelessUpgradeChip = new WirelessUpgradeChip();
-    public static OverloadedFrequencyCard overloadedFrequencyCard = new OverloadedFrequencyCard();
+    public static WirelessFrequencyCard wirelessFrequencyCard = new WirelessFrequencyCard();
     public static SuspiciousStew suspiciousStew = new SuspiciousStew();
     public static PortableItem portableItem = new PortableItem();
     public static PortableCellWorkbenchItem portableCellWorkbenchItem = new PortableCellWorkbenchItem();

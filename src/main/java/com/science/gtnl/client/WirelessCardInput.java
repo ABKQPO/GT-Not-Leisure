@@ -13,7 +13,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import org.lwjgl.input.Keyboard;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.item.items.OverloadedFrequencyCard;
+import com.science.gtnl.common.item.items.WirelessFrequencyCard;
 import com.science.gtnl.common.packet.OpenWirelessCardPacket;
 import com.science.gtnl.common.packet.ToggleWirelessCardPacket;
 import com.science.gtnl.common.wireless.WirelessCardBinding;
@@ -167,7 +167,7 @@ public final class WirelessCardInput {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.currentScreen != null || mc.thePlayer == null || event.dwheel == 0 || !mc.thePlayer.isSneaking()) return;
         ItemStack held = mc.thePlayer.getCurrentEquippedItem();
-        if (held == null || !(held.getItem() instanceof OverloadedFrequencyCard)) return;
+        if (held == null || !(held.getItem() instanceof WirelessFrequencyCard)) return;
         event.setCanceled(true); // Consume wheel input before vanilla changes the selected hotbar slot.
         if (!acceptInput()) return;
         ScienceNotLeisure.network.sendToServer(

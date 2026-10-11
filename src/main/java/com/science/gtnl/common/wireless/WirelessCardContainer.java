@@ -22,7 +22,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import com.cleanroommc.modularui.screen.ModularContainer;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
-import com.science.gtnl.common.item.items.OverloadedFrequencyCard;
+import com.science.gtnl.common.item.items.WirelessFrequencyCard;
 
 import appeng.api.networking.IGridNode;
 import cpw.mods.fml.common.network.ByteBufUtils;
@@ -85,7 +85,7 @@ public final class WirelessCardContainer extends ModularContainer {
         ItemStack held = cardInventory == null ? null : cardInventory.getStackInSlot(cardSlot);
         boolean valid = user == player && !user.isDead
             && card != null
-            && card.getItem() instanceof OverloadedFrequencyCard
+            && card.getItem() instanceof WirelessFrequencyCard
             && matchesHeldCard(cardSlot, heldOnly ? user.inventory.currentItem : cardSlot, card, held)
             && Objects.equals(binding, WirelessCardBinding.read(held.getTagCompound()))
             && (binding == null || binding.belongsTo(user.getUniqueID()));

@@ -59,10 +59,18 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-/** A card toggles its source's entire physical cluster, including a suspended conflicting claim. */
-public final class OverloadedFrequencyCard extends Item implements IBaubleExpanded, IGuiHolder<PlayerInventoryGuiData> {
+public final class WirelessFrequencyCard extends Item implements IBaubleExpanded, IGuiHolder<PlayerInventoryGuiData> {
 
-    private static final String LANG = "item.gtnl.overloaded_frequency_card.";
+    private static final String LANG = "item.gtnl.wireless_frequency_card.";
+
+    public WirelessFrequencyCard() {
+        setUnlocalizedName("gtnl.wireless_frequency_card");
+        setTextureName(RESOURCE_ROOT_ID + ":wireless_frequency_card");
+        setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
+        setMaxStackSize(1);
+        GameRegistry.registerItem(this, "wireless_frequency_card");
+        GTNLItemList.WirelessFrequencyCard.set(new ItemStack(this));
+    }
 
     @Override
     public ModularPanel buildUI(PlayerInventoryGuiData data, PanelSyncManager syncManager, UISettings settings) {
@@ -121,15 +129,6 @@ public final class OverloadedFrequencyCard extends Item implements IBaubleExpand
     @Override
     public boolean canUnequip(ItemStack stack, EntityLivingBase player) {
         return true;
-    }
-
-    public OverloadedFrequencyCard() {
-        setUnlocalizedName("gtnl.overloaded_frequency_card");
-        setTextureName(RESOURCE_ROOT_ID + ":wireless_frequency_card");
-        setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        setMaxStackSize(1);
-        GameRegistry.registerItem(this, "overloaded_frequency_card");
-        GTNLItemList.OverloadedFrequencyCard.set(new ItemStack(this));
     }
 
     @Override

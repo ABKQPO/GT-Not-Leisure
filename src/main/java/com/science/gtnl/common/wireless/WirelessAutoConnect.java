@@ -18,7 +18,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.BlockEvent;
 
-import com.science.gtnl.common.item.items.OverloadedFrequencyCard;
+import com.science.gtnl.common.item.items.WirelessFrequencyCard;
 import com.science.gtnl.common.wireless.WirelessChannelPrototype.Address;
 
 import appeng.api.exceptions.FailedConnection;
@@ -34,7 +34,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public final class WirelessAutoConnect {
 
     public static final WirelessAutoConnect INSTANCE = new WirelessAutoConnect();
-    private static final String LANG = "item.gtnl.overloaded_frequency_card.";
+    private static final String LANG = "item.gtnl.wireless_frequency_card.";
     private static final List<Pending> PENDING = new ArrayList<>();
     private static final Map<UUID, Long> NOTICES = new HashMap<>();
     private static final Map<UUID, Long> TOGGLES = new HashMap<>();
@@ -104,7 +104,7 @@ public final class WirelessAutoConnect {
         if (heldOnly) {
             if (!player.isSneaking() || player.inventory.currentItem != expectedSlot) return null;
             ItemStack card = player.getCurrentEquippedItem();
-            if (card == null || !(card.getItem() instanceof OverloadedFrequencyCard)) return null;
+            if (card == null || !(card.getItem() instanceof WirelessFrequencyCard)) return null;
             WirelessCardBinding binding = WirelessCardBinding.read(card.getTagCompound());
             if (binding != null && !binding.belongsTo(player.getUniqueID())) {
                 message(player, "wrong_owner", binding.ownerName());
