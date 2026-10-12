@@ -12,6 +12,7 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.util.GTUtility;
 import gtPlusPlus.core.fluids.GTPPFluids;
 
 public class PetrochemicalPlantRecipes implements IRecipePool {
@@ -121,7 +122,7 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                BioCultureEnum.getPetriDish(BioCultureEnum.XenoxeneXenoxsis.bioCulture),
+                GTUtility.copyAmountUnsafe(0, BioCultureEnum.getPetriDish(BioCultureEnum.XenoxeneXenoxsis.bioCulture)),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.AntimonyTrioxide, 16),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Osmium, 16))
             .fluidInputs(
