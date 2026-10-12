@@ -74,11 +74,23 @@ jobs:
         run: |
           rm -rf build/release-assets
           mkdir -p build/release-assets
-          find build/libs -maxdepth 1 -type f -name '*.jar' -print0 | while IFS= read -r -d '' file; do
+          shopt -s nullglob
+          files=(build/libs/*.jar)
+          if (( ${#files[@]} == 0 )); then
+            echo 'No build jars found.' >&2
+            exit 1
+          fi
+          for file in "${files[@]}"; do
             filename=$(basename "$file")
-            cp "$file" "build/release-assets/${filename%.jar}-${BRANCH_KEY}-${COMMIT_SHORT}.jar"
+            base_name=${filename%.jar}
+            if [[ "$base_name" =~ ^(.*)-[[:xdigit:]]{7,40}$ ]]; then
+              base_name=${BASH_REMATCH[1]}
+            fi
+            asset_name="${base_name}-${BRANCH_KEY}-${COMMIT_SHORT}.jar"
+            cp "$file" "build/release-assets/$asset_name"
+            printf '%s\n' "$asset_name" >> build/release-assets/asset-names.txt
+            printf '%s\n' "$base_name" >> build/release-assets/legacy-asset-bases.txt
           done
-          find build/release-assets -maxdepth 1 -type f -name '*.jar' -printf '%f\n' > build/release-assets/asset-names.txt
 
       - name: Upload build artifacts
         if: github.event_name == 'pull_request'
@@ -112,14 +124,26 @@ jobs:
         run: |
           asset_list=$(mktemp)
           trap 'rm -f "$asset_list"' EXIT
-          if ! gh api --paginate "repos/${GITHUB_REPOSITORY}/releases/tags/dev-build/assets?per_page=100" \
-            --jq '.[] | [.id, .name] | @tsv' > "$asset_list"; then
-            echo 'No existing dev-build release assets to remove.'
-            exit 0
-          fi
+          release_id=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/dev-build" --jq '.id')
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/releases/${release_id}/assets?per_page=100" \
+            --jq '.[] | [.id, .name] | @tsv' > "$asset_list"
           while IFS=$'\t' read -r asset_id asset_name; do
+            [[ "$asset_name" == *.jar ]] || continue
+            if grep -Fqx -- "$asset_name" build/release-assets/asset-names.txt; then
+              continue
+            fi
+
+            legacy_base=${asset_name%.jar}
+            while [[ "$legacy_base" =~ ^(.*)-[[:xdigit:]]{7,40}$ ]]; do
+              legacy_base=${BASH_REMATCH[1]}
+            done
+            same_branch_asset=false
             if [[ "$asset_name" == *-"$BRANCH_KEY"-*.jar ]] \
-              && ! grep -Fqx -- "$asset_name" build/release-assets/asset-names.txt; then
+              || grep -Fqx -- "$legacy_base" build/release-assets/legacy-asset-bases.txt; then
+              same_branch_asset=true
+            fi
+
+            if [[ "$same_branch_asset" == true ]]; then
               gh api --method DELETE "repos/${GITHUB_REPOSITORY}/releases/assets/${asset_id}"
             fi
           done < "$asset_list"
