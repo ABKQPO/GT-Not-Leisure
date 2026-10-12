@@ -2,8 +2,11 @@ package com.science.gtnl.utils.appliedEnergistics;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
+
+import gregtech.crossmod.ae2.ChatComponentGhostCircuitSuffix;
 
 public class InterfaceNameLocalization {
 
@@ -28,10 +31,15 @@ public class InterfaceNameLocalization {
     }
 
     public static String localizeName(String rawName, String serializedSuffix, ItemStack displayRepresentation) {
+        return localizeName(rawName, serializedSuffix, displayRepresentation, null);
+    }
+
+    public static String localizeName(String rawName, String serializedSuffix, ItemStack displayRepresentation,
+        EnumChatFormatting circuitColor) {
         if (rawName == null || rawName.isEmpty()) return "";
         String name = localizeRawName(rawName, displayRepresentation);
         if (serializedSuffix == null || serializedSuffix.isEmpty()) return name;
-        return name + resolveSuffix(serializedSuffix);
+        return name + resolveSuffix(serializedSuffix, circuitColor);
     }
 
     public static String localizeRawName(String rawName, ItemStack displayRepresentation) {
@@ -45,10 +53,26 @@ public class InterfaceNameLocalization {
     }
 
     public static String resolveSuffix(String serializedSuffix) {
+        return resolveSuffix(serializedSuffix, null);
+    }
+
+    private static String resolveSuffix(String serializedSuffix, EnumChatFormatting circuitColor) {
         if (serializedSuffix == null || serializedSuffix.isEmpty()) return "";
         try {
             IChatComponent component = IChatComponent.Serializer.func_150699_a(serializedSuffix);
-            return component == null ? serializedSuffix : component.getUnformattedText();
+            if (component == null) return serializedSuffix;
+            if (circuitColor == null) return component.getUnformattedText();
+            StringBuilder suffix = new StringBuilder();
+            for (Object entry : component) {
+                IChatComponent part = (IChatComponent) entry;
+                String text = part.getUnformattedTextForChat();
+                if (part instanceof ChatComponentGhostCircuitSuffix && !text.isEmpty()) {
+                    suffix.append(circuitColor)
+                        .append(text)
+                        .append(EnumChatFormatting.RESET);
+                } else suffix.append(text);
+            }
+            return suffix.toString();
         } catch (Exception ignored) {
             return serializedSuffix;
         }

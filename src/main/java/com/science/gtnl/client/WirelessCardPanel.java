@@ -1,5 +1,6 @@
 package com.science.gtnl.client;
 
+import static codechicken.nei.NEIClientUtils.cropText;
 import static com.science.gtnl.common.wireless.WirelessCardActions.BACK;
 import static com.science.gtnl.common.wireless.WirelessCardActions.COPY_POSITION;
 import static com.science.gtnl.common.wireless.WirelessCardActions.CYCLE_VISUALISATION;
@@ -26,7 +27,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -371,10 +371,10 @@ public abstract class WirelessCardPanel extends ModularPanel {
             return;
         }
         // Keep the device identifiable first; the row tooltip retains the full name and coordinates.
-        String title = ellipsize(name, width);
+        String title = cropText(fontRendererObj, name, width);
         int positionWidth = width - fontRendererObj.getStringWidth(title) - fontRendererObj.getStringWidth(" ()");
         String suffix = !position.isEmpty() && positionWidth >= fontRendererObj.getStringWidth("...")
-            ? " (" + ellipsize(position, positionWidth) + ")"
+            ? " (" + cropText(fontRendererObj, position, positionWidth) + ")"
             : "";
         fontRendererObj.drawString(title, CONTENT_X, y, nameColor);
         int nextX = CONTENT_X + fontRendererObj.getStringWidth(title);
@@ -383,13 +383,6 @@ public abstract class WirelessCardPanel extends ModularPanel {
             nextX += fontRendererObj.getStringWidth(count);
         }
         fontRendererObj.drawString(suffix, nextX, y, ColorUtils.craftingTreeTask.getColor());
-    }
-
-    private String ellipsize(String text, int width) {
-        if (fontRendererObj.getStringWidth(text) <= width) return text;
-        int ellipsisWidth = fontRendererObj.getStringWidth("...");
-        if (width < ellipsisWidth) return "";
-        return fontRendererObj.trimStringToWidth(text, width - ellipsisWidth) + EnumChatFormatting.RESET + "...";
     }
 
     @Override

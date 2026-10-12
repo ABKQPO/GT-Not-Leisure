@@ -7,6 +7,7 @@ import java.util.Objects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.DimensionManager;
 
 import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
@@ -92,7 +93,8 @@ public class WirelessCardViewCodec {
                 InterfaceNameLocalization.localizeName(
                     entry.getString("rawName"),
                     entry.getString("suffix"),
-                    ItemStack.loadItemStackFromNBT(entry.getCompoundTag("icon"))));
+                    ItemStack.loadItemStackFromNBT(entry.getCompoundTag("icon")),
+                    EnumChatFormatting.AQUA));
         }
         int count = row.getInteger("interfaceNameCount");
         String targetName = String.join(" / ", names) + (count > entries.tagCount() ? " … [" + count + "]" : "");
