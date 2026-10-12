@@ -3524,7 +3524,7 @@ gtnl.wireless.gui.usage_disabled=Channel limits disabled
 gtnl.wireless.gui.no_runtime=No runtime entrance
 gtnl.wireless.gui.denied=Cannot change: device changed, AE build permission denied, or source unloaded while resuming.
 gtnl.wireless.gui.stale=Physical cluster changed. Retry after refreshing.
-gtnop.world.personalworld=Personal World
+gtnop.world.personalworld=PS
 
 item.gtnl.part_active_formation_plane.name=ME Active Formation Plane
 

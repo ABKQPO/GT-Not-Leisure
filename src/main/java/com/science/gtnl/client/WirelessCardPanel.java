@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -369,24 +370,26 @@ public abstract class WirelessCardPanel extends ModularPanel {
             fontRendererObj.drawString(fontRendererObj.trimStringToWidth(position, width), CONTENT_X, y, nameColor);
             return;
         }
-        int nameReserve = Math.min(24, fontRendererObj.getStringWidth(name));
-        String suffix = " ("
-            + fontRendererObj
-                .trimStringToWidth(position, Math.max(0, width - nameReserve - fontRendererObj.getStringWidth(" ()")))
-            + ")";
-        String title = fontRendererObj
-            .trimStringToWidth(name, Math.max(0, width - fontRendererObj.getStringWidth(suffix)));
+        // Keep the device identifiable first; the row tooltip retains the full name and coordinates.
+        String title = ellipsize(name, width);
+        int positionWidth = width - fontRendererObj.getStringWidth(title) - fontRendererObj.getStringWidth(" ()");
+        String suffix = !position.isEmpty() && positionWidth >= fontRendererObj.getStringWidth("...")
+            ? " (" + ellipsize(position, positionWidth) + ")"
+            : "";
         fontRendererObj.drawString(title, CONTENT_X, y, nameColor);
-        fontRendererObj.drawString(
-            suffix,
-            CONTENT_X + fontRendererObj.getStringWidth(title),
-            y,
-            ColorUtils.craftingTreeTask.getColor());
-        if (!count.isEmpty()) fontRendererObj.drawString(
-            count,
-            CONTENT_X + fontRendererObj.getStringWidth(title) + fontRendererObj.getStringWidth(suffix),
-            y,
-            stateColor(row));
+        int nextX = CONTENT_X + fontRendererObj.getStringWidth(title);
+        if (!count.isEmpty()) {
+            fontRendererObj.drawString(count, nextX, y, stateColor(row));
+            nextX += fontRendererObj.getStringWidth(count);
+        }
+        fontRendererObj.drawString(suffix, nextX, y, ColorUtils.craftingTreeTask.getColor());
+    }
+
+    private String ellipsize(String text, int width) {
+        if (fontRendererObj.getStringWidth(text) <= width) return text;
+        int ellipsisWidth = fontRendererObj.getStringWidth("...");
+        if (width < ellipsisWidth) return "";
+        return fontRendererObj.trimStringToWidth(text, width - ellipsisWidth) + EnumChatFormatting.RESET + "...";
     }
 
     @Override

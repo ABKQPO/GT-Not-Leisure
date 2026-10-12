@@ -7,7 +7,7 @@ public record WirelessCardLayout(int width, int height, int rows) {
 
     public static WirelessCardLayout forScreen(int width, int height) {
         int rows = Math.max(MIN_ROWS, Math.min(MAX_ROWS, (height - 8 - 112) / 24));
-        return new WirelessCardLayout(Math.max(320, Math.min(440, width - 12)), 112 + rows * 24, rows);
+        return new WirelessCardLayout(Math.max(320, Math.min(520, width - 12)), 112 + rows * 24, rows);
     }
 
     public int visualisationWidth() {
