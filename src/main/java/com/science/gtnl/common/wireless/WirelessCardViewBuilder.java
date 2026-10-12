@@ -78,17 +78,6 @@ final class WirelessCardViewBuilder {
             "renameable",
             focus != null && !focus.deviceNames()
                 .isEmpty());
-        if (focus != null) {
-            var classification = WirelessMachineGroups.classify(focus, new java.util.IdentityHashMap<>(), interfaces);
-            Row context = classification.machine() == null ? Row.cluster(focus, classification.type())
-                : new Row(classification.machine(), List.of(focus));
-            data.setString("detailMachineKey", context.group() ? "machine:" + context.target() : "");
-            data.setString(
-                "detailTypeKey",
-                context.type() == null ? ""
-                    : context.type()
-                        .sortKey());
-        }
         data.setBoolean("auto", WirelessCardBinding.automatic(card.getTagCompound()));
         data.setInteger("visualMode", WirelessCardVisualisation.mode(card.getTagCompound()));
         data.setBoolean("bound", binding != null);

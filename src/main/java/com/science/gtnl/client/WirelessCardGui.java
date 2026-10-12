@@ -8,7 +8,6 @@ import static com.science.gtnl.common.wireless.WirelessCardActions.OPEN_DETAILS;
 import static com.science.gtnl.common.wireless.WirelessCardActions.TOGGLE_AUTO;
 import static com.science.gtnl.common.wireless.WirelessCardActions.TOGGLE_GROUPING;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 
@@ -22,7 +21,6 @@ import com.science.gtnl.common.wireless.WirelessCardContainer;
 import com.science.gtnl.common.wireless.WirelessCardLayout;
 
 import appeng.core.localization.ColorUtils;
-import appeng.core.localization.GuiText;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -30,7 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public final class WirelessCardGui extends WirelessCardPanel {
 
     private final TextFieldWidget search, dimension;
-    private final IPanelHandler detailsPanel;
+    private final IPanelHandler detailsPanel, groupPanel;
     private boolean showingDetails;
     private String searchText = "", dimensionText = "";
 
@@ -52,6 +50,7 @@ public final class WirelessCardGui extends WirelessCardPanel {
                 applyFilters(false, false);
             }));
         child(search).child(dimension);
+        groupPanel = IPanelHandler.simple(this, (parent, player) -> new WirelessCardGroupPanel(container), true);
         detailsPanel = IPanelHandler.simple(this, (parent, player) -> new WirelessCardDetailsPanel(container), true);
         for (int id : new int[] { TOGGLE_AUTO, CYCLE_FILTER, CYCLE_VISUALISATION, TOGGLE_GROUPING }) addButton(id);
         addRowButtons(OPEN_DETAILS);
@@ -84,7 +83,8 @@ public final class WirelessCardGui extends WirelessCardPanel {
             public void onResize(int width, int height) {
                 resizeLayout(width, height);
                 for (ModularPanel panel : getPanelManager().getOpenPanels()) {
-                    if (panel instanceof WirelessCardDetailsPanel cardPanel) cardPanel.resizeLayout(width, height);
+                    if (panel instanceof WirelessCardPanel cardPanel && panel != WirelessCardGui.this)
+                        cardPanel.resizeLayout(width, height);
                 }
                 super.onResize(width, height);
             }
@@ -92,17 +92,19 @@ public final class WirelessCardGui extends WirelessCardPanel {
             @Override
             public boolean onMousePressed(int button) {
                 ModularPanel previous = getPanelManager().getTopMostPanel();
+                ModularPanel hovered = hoveredPanel();
                 if (button == 1) {
-                    if (previous == null || !previous.isBelowMouse()) return true;
-                    if (previous.getTopHovering() instanceof TextFieldWidget) super.onMousePressed(button);
-                    else if (previous instanceof WirelessCardRenameDialog dialog) dialog.closeIfOpen();
-                    else if (previous instanceof WirelessCardPanel panel && (panel.isDetailView() || panel.view()
+                    if (hovered == null) return true;
+                    if (hovered.getTopHovering() instanceof TextFieldWidget) super.onMousePressed(button);
+                    else if (hovered instanceof WirelessCardRenameDialog dialog) dialog.closeIfOpen();
+                    else if (hovered instanceof WirelessCardPanel panel && (panel.isDetailView() || panel.view()
                         .getBoolean("group"))) panel.action(BACK);
                     return true;
                 }
-                if (previous instanceof WirelessCardPanel panel && button > 1
+                if (hovered instanceof WirelessCardPanel panel && button > 1
                     && WirelessCardInput.visualisationKey(button - 100)
-                    && !panel.editingText()) {
+                    && !(getContext().getFocusedWidget()
+                        .getElement() instanceof TextFieldWidget)) {
                     panel.action(CYCLE_VISUALISATION);
                     return true;
                 }
@@ -111,6 +113,14 @@ public final class WirelessCardGui extends WirelessCardPanel {
                 if (getPanelManager().getTopMostPanel() instanceof WirelessCardRenameDialog dialog
                     && previous != dialog) getContext().focus(dialog.name);
                 return handled;
+            }
+
+            private ModularPanel hoveredPanel() {
+                for (ModularPanel panel : getPanelManager().getOpenPanels()) {
+                    if (panel.isBelowMouse()) return panel;
+                    if (panel.disablePanelsBelow()) break;
+                }
+                return null;
             }
 
             @Override
@@ -152,6 +162,12 @@ public final class WirelessCardGui extends WirelessCardPanel {
     @Override
     boolean updatePanel() {
         boolean detail = container.display.getBoolean("detail");
+        if (!detail) {
+            if (container.clientView()
+                .groupDisplay()
+                .getBoolean("group")) groupPanel.openPanel();
+            else groupPanel.closePanel();
+        }
         if (detail != showingDetails) {
             showingDetails = detail;
             if (detail) detailsPanel.openPanel();
@@ -183,14 +199,7 @@ public final class WirelessCardGui extends WirelessCardPanel {
 
     @Override
     void drawHeader(NBTTagCompound data, int textColor) {
-        ItemStack groupIcon = ItemStack.loadItemStackFromNBT(data.getCompoundTag("groupIcon"));
-        String title = groupIcon == null ? tr("title")
-            : groupIcon.getDisplayName() + " (" + data.getString("groupPositionLabel") + ")";
-        if (data.getBoolean("typeGroup")) {
-            if (data.getBoolean("sharedGroup")) title = tr("shared", title);
-            title = GuiText.Types.getLocal() + " > " + title;
-        }
-        fontRendererObj.drawString(fontRendererObj.trimStringToWidth(title, xSize - 140), 10, 11, textColor);
+        fontRendererObj.drawString(fontRendererObj.trimStringToWidth(tr("title"), xSize - 140), 10, 11, textColor);
         String autoLabel = fontRendererObj.trimStringToWidth(tr(data.getBoolean("auto") ? "auto_on" : "auto_off"), 94);
         fontRendererObj.drawString(
             autoLabel,
@@ -217,22 +226,6 @@ public final class WirelessCardGui extends WirelessCardPanel {
             budgetColor,
             ColorUtils.craftingTreeTask.getColor());
         fontRendererObj.drawString("D", xSize - 182, 64, textColor);
-    }
-
-    @Override
-    void drawRowMetrics(NBTTagCompound data, NBTTagCompound row, int y) {
-        drawMetrics(row, CONTENT_X, y + 13, contentWidth(), true);
-        int missingColor = row.getBoolean("stable") && row.getInteger("missing") > 0 ? badColor()
-            : ColorUtils.craftingTreeTask.getColor();
-        ratioBar(
-            rowStateX(),
-            y + 19,
-            36,
-            2,
-            row.getBoolean("stable") ? row.getInteger("online") : -1,
-            row.getInteger("devices"),
-            goodColor(),
-            missingColor);
     }
 
     @Override

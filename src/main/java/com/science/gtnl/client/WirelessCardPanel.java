@@ -86,9 +86,11 @@ abstract class WirelessCardPanel extends ModularPanel {
 
     abstract void drawHeader(NBTTagCompound data, int color);
 
-    abstract void drawRowMetrics(NBTTagCompound data, NBTTagCompound row, int y);
-
     abstract void confirm();
+
+    boolean isGroupView() {
+        return false;
+    }
 
     boolean editingText() {
         return false;
@@ -121,7 +123,7 @@ abstract class WirelessCardPanel extends ModularPanel {
 
     boolean layoutReady() {
         return container.display.getBoolean("detail") == isDetailView() && container.display.hasKey("session")
-            && container.display.getInteger("pageSize") == visibleRows;
+            && view().getInteger("pageSize") == visibleRows;
     }
 
     final void resizeLayout(int width, int height) {
@@ -172,9 +174,9 @@ abstract class WirelessCardPanel extends ModularPanel {
 
     void action(int id) {
         if (!layoutReady()) return;
-        snapshot = container.display;
+        snapshot = view();
         if (type(id) == COPY_POSITION && rowIndex(id) < visibleRows) {
-            var row = container.display.getTagList("rows", 10)
+            var row = view().getTagList("rows", 10)
                 .getCompoundTagAt(rowIndex(id));
             GuiScreen.setClipboardString(
                 row.getString("position") + (row.getBoolean("group") ? "" : " / " + row.getString("side")));
@@ -186,8 +188,8 @@ abstract class WirelessCardPanel extends ModularPanel {
 
     void sendAction(int id) {
         if (container.clientView()
-            .navigate(id)) return;
-        long target = isRowAction(id) ? container.display.getTagList("rows", 10)
+            .navigate(id, isGroupView())) return;
+        long target = isRowAction(id) ? view().getTagList("rows", 10)
             .getCompoundTagAt(rowIndex(id))
             .getLong("targetId") : 0;
         container.sync.request(type(id), target, "", 0);
@@ -196,7 +198,7 @@ abstract class WirelessCardPanel extends ModularPanel {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (container.display.getBoolean("detail") == isDetailView()) snapshot = container.display;
+        if (container.display.getBoolean("detail") == isDetailView()) snapshot = view();
         if (!updatePanel()) return;
         for (var button : buttons) button.update(view(), layoutReady(), visibleRows);
     }
@@ -219,6 +221,21 @@ abstract class WirelessCardPanel extends ModularPanel {
 
     int contentWidth() {
         return xSize - 212;
+    }
+
+    void drawRowMetrics(NBTTagCompound data, NBTTagCompound row, int y) {
+        drawMetrics(row, CONTENT_X, y + 13, contentWidth(), true);
+        int missingColor = row.getBoolean("stable") && row.getInteger("missing") > 0 ? badColor()
+            : ColorUtils.craftingTreeTask.getColor();
+        ratioBar(
+            rowStateX(),
+            y + 19,
+            36,
+            2,
+            row.getBoolean("stable") ? row.getInteger("online") : -1,
+            row.getInteger("devices"),
+            goodColor(),
+            missingColor);
     }
 
     static String entranceUsage(NBTTagCompound data, NBTTagCompound row) {

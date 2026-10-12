@@ -40,10 +40,11 @@ public final class WirelessCardClientView {
     private final SearchMatcher matcher = new SearchMatcher();
     private final Map<SortView, List<RowOrder>> orders = new LinkedHashMap<>(16, 0.75f, true);
     private NBTTagCompound source = new NBTTagCompound();
-    private List<Row> roots = List.of(), visible = List.of();
+    private List<Row> roots = List.of();
+    private NBTTagCompound groupDisplay = new NBTTagCompound();
     private String query = "", machineKey = "", typeKey = "";
     private Integer dimension;
-    private int state, page, detailPage, typeParentPage, machineParentPage;
+    private int state, page, groupPage, detailPage, machineParentPage;
     private int pageSize = WirelessCardLayout.MIN_ROWS;
     private byte[] incoming;
     private long incomingRevision = -1;
@@ -74,14 +75,10 @@ public final class WirelessCardClientView {
     }
 
     private void accept(NBTTagCompound data) {
-        if (data.getBoolean("detail")
-            && (!machineKey.isEmpty() && !machineKey.equals(data.getString("detailMachineKey"))
-                || !typeKey.isEmpty() && !typeKey.equals(data.getString("detailTypeKey"))))
-            resetGroups();
         if (data.getBoolean("detail") && (!source.getBoolean("detail") || !data.getString("detailTarget")
             .equals(source.getString("detailTarget")))) detailPage = 0;
         if (source.hasKey("session") && data.getBoolean("collapseTypes") != source.getBoolean("collapseTypes"))
-            resetGroups();
+            page = 0;
         WirelessCardViewCodec.localizeDimensions(data);
         source = data;
         List<Row> next = new ArrayList<>();
@@ -156,58 +153,59 @@ public final class WirelessCardClientView {
         query = nextQuery;
         dimension = nextDimension;
         this.state = state;
-        resetGroups();
+        page = groupPage = machineParentPage = 0;
         rebuild();
         return true;
     }
 
-    private void resetGroups() {
+    public NBTTagCompound groupDisplay() {
+        return groupDisplay;
+    }
+
+    public void closeGroup() {
         machineKey = "";
         typeKey = "";
-        page = 0;
+        groupPage = machineParentPage = 0;
+        groupDisplay = new NBTTagCompound();
     }
 
     public void resize(int rows) {
         if (!WirelessCardLayout.validRows(rows) || rows == pageSize) return;
         page = page * pageSize / rows;
         detailPage = detailPage * pageSize / rows;
-        typeParentPage = typeParentPage * pageSize / rows;
+        groupPage = groupPage * pageSize / rows;
         machineParentPage = machineParentPage * pageSize / rows;
         pageSize = rows;
         rebuild();
     }
 
-    public boolean navigate(int action) {
+    public boolean navigate(int action, boolean groupWindow) {
         boolean detail = source.getBoolean("detail");
+        if (groupWindow && (detail || !groupDisplay.getBoolean("group"))) return true;
         if (action == PREVIOUS_PAGE || action == NEXT_PAGE) {
             int change = action == NEXT_PAGE ? 1 : -1;
             if (detail) detailPage += change;
+            else if (groupWindow) groupPage += change;
             else page += change;
         } else if (action == BACK && !detail) {
-            if (!machineKey.isEmpty()) {
+            if (groupWindow && !machineKey.isEmpty() && !typeKey.isEmpty()) {
                 machineKey = "";
-                page = machineParentPage;
-            } else if (!typeKey.isEmpty()) {
-                typeKey = "";
-                page = typeParentPage;
-            }
+                groupPage = machineParentPage;
+            } else if (groupWindow) closeGroup();
         } else if (type(action) == OPEN_DETAILS && !detail) {
-            int index = page * pageSize + rowIndex(action);
-            if (index < 0 || index >= visible.size()) return true;
-            Row row = visible.get(index);
-            if (!row.data()
-                .getBoolean("group")) return false;
-            if (row.data()
-                .getBoolean("category")) {
-                typeParentPage = page;
-                typeKey = row.data()
-                    .getString("typeKey");
+            NBTTagList rows = (groupWindow ? groupDisplay : container.display).getTagList("rows", 10);
+            int index = rowIndex(action);
+            if (index < 0 || index >= rows.tagCount()) return true;
+            NBTTagCompound row = rows.getCompoundTagAt(index);
+            if (!row.getBoolean("group")) return false;
+            if (!groupWindow) closeGroup();
+            if (row.getBoolean("category")) {
+                typeKey = row.getString("typeKey");
             } else {
-                machineParentPage = page;
-                machineKey = row.data()
-                    .getString("key");
+                machineParentPage = groupPage;
+                machineKey = row.getString("key");
             }
-            page = 0;
+            groupPage = 0;
         } else return false;
         rebuild();
         return true;
@@ -215,36 +213,50 @@ public final class WirelessCardClientView {
 
     public void rebuild() {
         if (!source.hasKey("session")) return;
+        if (source.getBoolean("detail")) {
+            container.display = buildListing(null, "", detailPage);
+            detailPage = container.display.getInteger("page");
+            return;
+        }
+        if (!typeKey.isEmpty() && roots.stream()
+            .noneMatch(
+                row -> typeKey.equals(
+                    row.data()
+                        .getString("typeKey"))))
+            closeGroup();
+        Row machine = machineKey.isEmpty() ? null
+            : roots.stream()
+                .filter(
+                    row -> row.data()
+                        .getBoolean("group")
+                        && machineKey.equals(
+                            row.data()
+                                .getString("key"))
+                        && (typeKey.isEmpty() || typeKey.equals(
+                            row.data()
+                                .getString("typeKey"))))
+                .findFirst()
+                .orElse(null);
+        if (!machineKey.isEmpty() && machine == null) {
+            machineKey = "";
+            groupPage = machineParentPage;
+            if (typeKey.isEmpty()) closeGroup();
+        }
+        container.display = buildListing(null, "", page);
+        page = container.display.getInteger("page");
+        if (machine != null || !typeKey.isEmpty()) {
+            groupDisplay = buildListing(machine, typeKey, groupPage);
+            groupPage = groupDisplay.getInteger("page");
+        }
+    }
+
+    private NBTTagCompound buildListing(Row machine, String typeKey, int requestedPage) {
         boolean detail = source.getBoolean("detail");
         NBTTagCompound data = copy(source);
         List<Row> rows = new ArrayList<>();
         if (detail) {
             rows.addAll(roots);
         } else {
-            if (!typeKey.isEmpty() && roots.stream()
-                .noneMatch(
-                    row -> typeKey.equals(
-                        row.data()
-                            .getString("typeKey")))) {
-                typeKey = "";
-                machineKey = "";
-                page = typeParentPage;
-            }
-            Row machine = machineKey.isEmpty() ? null
-                : roots.stream()
-                    .filter(
-                        row -> machineKey.equals(
-                            row.data()
-                                .getString("key"))
-                            && (typeKey.isEmpty() || typeKey.equals(
-                                row.data()
-                                    .getString("typeKey"))))
-                    .findFirst()
-                    .orElse(null);
-            if (!machineKey.isEmpty() && machine == null) {
-                machineKey = "";
-                page = machineParentPage;
-            }
             for (Row row : machine == null ? roots : List.of(machine)) {
                 if (!typeKey.isEmpty() && !typeKey.equals(
                     row.data()
@@ -268,7 +280,15 @@ public final class WirelessCardClientView {
                         .sum());
             }
             if (data.getBoolean("collapseTypes") && typeKey.isEmpty() && machine == null) rows = collapse(rows);
-            var sortView = new SortView(machineKey, typeKey, data.getBoolean("collapseTypes"), query, dimension, state);
+            var sortView = new SortView(
+                machine == null ? ""
+                    : machine.data()
+                        .getString("key"),
+                typeKey,
+                data.getBoolean("collapseTypes"),
+                query,
+                dimension,
+                state);
             orders.put(sortView, sort(rows, orders.getOrDefault(sortView, List.of())));
             if (orders.size() > 16) orders.remove(
                 orders.keySet()
@@ -313,11 +333,8 @@ public final class WirelessCardClientView {
                                 .getBoolean("shared")));
             WirelessCardViewCodec.localizePosition(data, "groupPosition", data.getCompoundTag("dimensions"));
         }
-        visible = rows;
         int pages = Math.max(1, (rows.size() + pageSize - 1) / pageSize);
-        int currentPage = Math.max(0, Math.min(detail ? detailPage : page, pages - 1));
-        if (detail) detailPage = currentPage;
-        else page = currentPage;
+        int currentPage = Math.max(0, Math.min(requestedPage, pages - 1));
         data.setInteger("page", currentPage);
         data.setInteger("pageSize", pageSize);
         data.setInteger("pages", pages);
@@ -331,7 +348,7 @@ public final class WirelessCardClientView {
             entries.appendTag(row.data());
         }
         data.setTag("rows", entries);
-        container.display = data;
+        return data;
     }
 
     private Row filtered(Row row) {
