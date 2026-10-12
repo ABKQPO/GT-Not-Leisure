@@ -35,7 +35,6 @@ public class CircuitAssemblerRecipes implements IRecipePool {
 
     @Override
     public void loadRecipes() {
-
         RecipeBuilder.builder()
             .itemInputs(
                 ItemList.Battery_RE_ULV_Tantalum.get(4L),
