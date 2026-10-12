@@ -1,5 +1,6 @@
 package com.reavaritia.common.entity;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 
 import net.minecraft.block.Block;
@@ -15,6 +16,10 @@ import com.science.gtnl.mixins.early.minecraft.AccessorTileEntity;
 import com.science.gtnl.utils.enums.ModList;
 
 public class EntityChronarchClock extends Entity {
+
+    private static Class<?> nhUtilitiesAccelerationType;
+    private static Method nhUtilitiesAccelerationMethod;
+    private static boolean nhUtilitiesAccelerationResolved;
 
     public int radius;
     public int speedMultiplier;
@@ -80,9 +85,7 @@ public class EntityChronarchClock extends Entity {
                                 if (accelerated.tickAcceleration(speedMultiplier)) continue;
                             }
                         } else {
-                            if (te instanceof com.xir.NHUtilities.common.api.interfaces.ITileEntityTickAcceleration accelerated) {
-                                if (accelerated.tickAcceleration(speedMultiplier)) continue;
-                            }
+                            if (tryNhUtilitiesAcceleration(te)) continue;
                         }
                         safeAccelerateTileEntity(te, tMaxTime);
                     }
@@ -97,6 +100,28 @@ public class EntityChronarchClock extends Entity {
 
         if (++age >= maxTicks) {
             setDead();
+        }
+    }
+
+    private boolean tryNhUtilitiesAcceleration(TileEntity tile) {
+        if (!nhUtilitiesAccelerationResolved) {
+            nhUtilitiesAccelerationResolved = true;
+            try {
+                nhUtilitiesAccelerationType = Class
+                    .forName("com.xir.NHUtilities.common.api.interfaces.ITileEntityTickAcceleration");
+                nhUtilitiesAccelerationMethod = nhUtilitiesAccelerationType.getMethod("tickAcceleration", int.class);
+            } catch (ClassNotFoundException ignored) {
+                return false;
+            } catch (NoSuchMethodException ignored) {
+                nhUtilitiesAccelerationType = null;
+                return false;
+            }
+        }
+        if (nhUtilitiesAccelerationType == null || !nhUtilitiesAccelerationType.isInstance(tile)) return false;
+        try {
+            return Boolean.TRUE.equals(nhUtilitiesAccelerationMethod.invoke(tile, speedMultiplier));
+        } catch (ReflectiveOperationException ignored) {
+            return false;
         }
     }
 

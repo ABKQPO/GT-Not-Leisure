@@ -49,8 +49,8 @@ public abstract class MixinPartPatternTerminal extends AbstractPartTerminal
     }
 
     @Inject(method = "onChangeInventory", at = @At("TAIL"))
-    private void gtnl$normalizeLoadedPattern(IInventory inventory, int slot, InvOperation operation,
-        ItemStack removedStack, ItemStack newStack, CallbackInfo callbackInfo) {
+    private void gtnl$normalizeLoadedPattern(IInventory inv, int slot, InvOperation mc, ItemStack removedStack,
+        ItemStack newStack, CallbackInfo callbackInfo) {
         if (!ProcessingPatternCapacity.isEnabled()) {
             return;
         }

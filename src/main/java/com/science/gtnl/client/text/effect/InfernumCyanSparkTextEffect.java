@@ -118,7 +118,7 @@ public class InfernumCyanSparkTextEffect extends ShaderTextEffect {
         sparkles.removeIf(sparkle -> sparkle.time >= sparkle.lifetime);
     }
 
-    private static final class CyanSparkle {
+    private static class CyanSparkle {
 
         private final int lifetime;
         private final float maxScale;

@@ -580,12 +580,11 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
     }
 
     @Inject(method = "getExtraWailaBody", at = @At("HEAD"))
-    public void getExtraWailaBody(ItemStack itemStack, List<String> currenttip, NBTTagCompound tag,
+    public void getExtraWailaBody(ItemStack itemStack, List<String> list, NBTTagCompound tag,
         IWailaDataAccessor accessor, IWailaConfigHandler config, CallbackInfo ci) {
         if (tag.getBoolean("wirelessMode")) {
-            currenttip
-                .add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("gtnl.waila.wireless.mode"));
-            currenttip.add(
+            list.add(EnumChatFormatting.LIGHT_PURPLE + StatCollector.translateToLocal("gtnl.waila.wireless.mode"));
+            list.add(
                 EnumChatFormatting.AQUA + StatCollector.translateToLocal("gtnl.waila.wireless.current_eu_cost")
                     + EnumChatFormatting.RESET
                     + ": "

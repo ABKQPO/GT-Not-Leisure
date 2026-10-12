@@ -500,7 +500,7 @@ public class InfinitySword extends ItemSword implements ICosmicRenderItem, Subti
 
     @SideOnly(Side.CLIENT)
     public boolean isBadEffectClient(PotionEffect effect) {
-        return net.minecraft.potion.Potion.potionTypes[effect.getPotionID()].isBadEffect();
+        return Potion.potionTypes[effect.getPotionID()].isBadEffect();
     }
 
     public boolean isBadEffectServer(PotionEffect effect) {

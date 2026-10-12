@@ -25,7 +25,7 @@ import com.science.gtnl.utils.Utils;
 public abstract class MixinEntityAICreeperSwell {
 
     @Shadow
-    EntityCreeper swellingCreeper;
+    public EntityCreeper swellingCreeper;
 
     @Unique
     private EntitySpider gtnl$targetSpider;

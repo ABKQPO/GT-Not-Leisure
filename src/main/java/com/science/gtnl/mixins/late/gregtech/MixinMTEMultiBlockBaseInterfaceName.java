@@ -40,11 +40,12 @@ public abstract class MixinMTEMultiBlockBaseInterfaceName implements IInterfaceN
         at = @At(
             value = "INVOKE",
             target = "Lgregtech/api/metatileentity/implementations/MTEMultiBlockBase;checkMachine(Lgregtech/api/interfaces/tileentity/IGregTechTileEntity;Lnet/minecraft/item/ItemStack;Ljava/util/List;)V"))
-    private void gtnl$trackControllerDuringStructureCheck(MTEMultiBlockBase controller, IGregTechTileEntity base,
-        ItemStack stack, List<StructureError> errors, Operation<Void> original) {
+    private void gtnl$trackControllerDuringStructureCheck(MTEMultiBlockBase controller,
+        IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors,
+        Operation<Void> original) {
         MTEMultiBlockBase previous = InterfaceNameControllerContext.enter(controller);
         try {
-            original.call(controller, base, stack, errors);
+            original.call(controller, aBaseMetaTileEntity, aStack, errors);
         } finally {
             InterfaceNameControllerContext.restore(previous);
         }

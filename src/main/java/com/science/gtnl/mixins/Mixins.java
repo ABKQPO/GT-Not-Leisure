@@ -99,6 +99,22 @@ public enum Mixins implements IMixins {
         .setPhase(Phase.EARLY)
         .setApplyIf(() -> MainConfig.item.stick.enableStickItem)),
 
+    WIRELESS_TILE_DATA(new MixinBuilder("ME wireless link persistence")
+        .addCommonMixins("appliedEnergistics.wireless.MixinWirelessTileData")
+        .setPhase(Phase.EARLY)),
+
+    WIRELESS_CHANNEL(new MixinBuilder("ME wireless channel allocation")
+        .addCommonMixins(
+            "appliedEnergistics.wireless.MixinWirelessPathingCalculation",
+            "appliedEnergistics.wireless.MixinWirelessPathGridCache",
+            "appliedEnergistics.wireless.MixinWirelessPartPlacement",
+            "appliedEnergistics.wireless.MixinWirelessGridNode",
+            "appliedEnergistics.wireless.MixinWirelessVisualiserTool",
+            "appliedEnergistics.wireless.AccessorTileController")
+        .addClientMixins("appliedEnergistics.wireless.MixinWirelessVisualiserRender")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.AppliedEnergistics)),
+
     LATE_COMMON(new MixinBuilder("General Late Mixins")
         .addCommonMixins(
             "aeFluidCraft.MixinItemFluidPacket",

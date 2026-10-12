@@ -201,7 +201,7 @@ public class CrucibleCraftingRecipes implements IRecipePool {
         }
     }
 
-    private static final class Pending {
+    private static class Pending {
 
         private final CrucibleRecipeData recipe;
         private final String identity;

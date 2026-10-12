@@ -14,7 +14,7 @@ import appeng.container.AEBaseContainer;
 import appeng.container.PrimaryGui;
 import appeng.container.interfaces.IContainerSubGui;
 
-public final class PreviousContainerPrimaryGui extends PrimaryGui {
+public class PreviousContainerPrimaryGui extends PrimaryGui {
 
     private final Container previousContainer;
 

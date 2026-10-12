@@ -34,6 +34,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
+import kubatech.loaders.BlockLoader;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class MoltenCore extends WirelessEnergyMultiMachineBase<MoltenCore> {
@@ -121,7 +122,7 @@ public class MoltenCore extends WirelessEnergyMultiMachineBase<MoltenCore> {
                 GTStructureChannels.HEATING_COIL.use(
                     GTStructureUtility
                         .activeCoils(GTStructureUtility.ofCoil(MoltenCore::setMCoilLevel, MoltenCore::getMCoilLevel))))
-            .addElement('G', StructureUtility.ofBlock(kubatech.loaders.BlockLoader.defcCasingBlock, 7))
+            .addElement('G', StructureUtility.ofBlock(BlockLoader.defcCasingBlock, 7))
             .addElement('H', GTNLCasings.FusionGlass.asElement())
             .addElement(
                 'I',

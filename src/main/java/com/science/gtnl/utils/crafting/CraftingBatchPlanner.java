@@ -101,7 +101,7 @@ public interface CraftingBatchPlanner {
     /**
      * Immutable result of planning one dispatch.
      */
-    final class BatchPlan {
+    class BatchPlan {
 
         /** Exact number of crafts represented by this dispatch. */
         private final long crafts;
@@ -147,7 +147,7 @@ public interface CraftingBatchPlanner {
     /**
      * Describes one expanded input slot for the core quantity planner.
      */
-    final class BatchRequirement {
+    class BatchRequirement {
 
         /** Stable identity used to aggregate repeated input slots. */
         private final Object materialKey;
@@ -215,7 +215,7 @@ public interface CraftingBatchPlanner {
     /**
      * Immutable state to apply immediately after a medium accepts a pattern and before AE performs native decrements.
      */
-    final class CommitResult {
+    class CommitResult {
 
         /** Whether the accepted push represents a batched commit. */
         private final boolean committed;
@@ -266,7 +266,7 @@ public interface CraftingBatchPlanner {
      *
      * @param <S> diagnostics session identifier type
      */
-    final class SessionAllocation<S> {
+    class SessionAllocation<S> {
 
         /** Session receiving expected outputs. */
         private final S sessionId;
@@ -305,7 +305,7 @@ public interface CraftingBatchPlanner {
      *
      * @param <S> diagnostics session identifier type
      */
-    final class SessionConsumption<S> {
+    class SessionConsumption<S> {
 
         /** Session allocations in original task order. */
         private final List<SessionAllocation<S>> allocations;

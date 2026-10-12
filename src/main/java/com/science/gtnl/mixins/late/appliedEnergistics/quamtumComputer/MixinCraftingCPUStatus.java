@@ -37,19 +37,19 @@ public class MixinCraftingCPUStatus implements EQuantumComputerCPUStatus {
     }
 
     @Inject(method = "<init>(Lnet/minecraft/nbt/NBTTagCompound;)V", at = @At("RETURN"), require = 1)
-    private void injectInit(final NBTTagCompound tag, final CallbackInfo ci) {
-        final byte cpuType = tag.getByte("gtnlQuantumComputerCPU");
+    private void injectInit(final NBTTagCompound i, final CallbackInfo ci) {
+        final byte cpuType = i.getByte("gtnlQuantumComputerCPU");
         this.gtnl$cpuType = cpuType == EQuantumComputerCPUStatus.VIRTUAL_CPU
             || cpuType == EQuantumComputerCPUStatus.SPLIT_CPU ? cpuType : EQuantumComputerCPUStatus.NORMAL_CPU;
     }
 
     @Inject(method = "writeToNBT", at = @At("RETURN"), require = 1)
-    private void injectWriteToNBT(final NBTTagCompound tag, final CallbackInfo ci) {
+    private void injectWriteToNBT(final NBTTagCompound i, final CallbackInfo ci) {
         if (this.gtnl$cpuType == EQuantumComputerCPUStatus.NORMAL_CPU) {
             return;
         }
 
-        tag.setByte("gtnlQuantumComputerCPU", this.gtnl$cpuType);
+        i.setByte("gtnlQuantumComputerCPU", this.gtnl$cpuType);
     }
 
     @Override

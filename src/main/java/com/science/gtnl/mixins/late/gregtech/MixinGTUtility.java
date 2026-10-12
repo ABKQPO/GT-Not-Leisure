@@ -18,15 +18,15 @@ import gregtech.api.util.GTUtility;
 public class MixinGTUtility {
 
     @Inject(method = "getFluidFromContainerOrFluidDisplay", at = @At("HEAD"), cancellable = true)
-    private static void injectGetFluidFromContainerOrFluidDisplay(ItemStack itemStack,
+    private static void injectGetFluidFromContainerOrFluidDisplay(ItemStack stack,
         CallbackInfoReturnable<FluidStack> cir) {
         if (!Mods.AE2FluidCraft.isModLoaded()) return;
-        if (itemStack == null) return;
-        if (itemStack.getItem() instanceof ItemFluidPacket) {
-            cir.setReturnValue(ItemFluidPacket.getFluidStack(itemStack));
+        if (stack == null) return;
+        if (stack.getItem() instanceof ItemFluidPacket) {
+            cir.setReturnValue(ItemFluidPacket.getFluidStack(stack));
         }
-        if (itemStack.getItem() instanceof ItemFluidDrop) {
-            cir.setReturnValue(ItemFluidDrop.getFluidStack(itemStack));
+        if (stack.getItem() instanceof ItemFluidDrop) {
+            cir.setReturnValue(ItemFluidDrop.getFluidStack(stack));
         }
     }
 }

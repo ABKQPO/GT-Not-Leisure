@@ -22,8 +22,8 @@ public class MixinMTEPurificationUnitDegasser {
             value = "INVOKE",
             target = "Lgregtech/api/util/HatchElementBuilder;atLeastList(Ljava/util/List;)Lgregtech/api/util/HatchElementBuilder;"))
     private static HatchElementBuilder<?> redirectAtLeastList(HatchElementBuilder<MTEPurificationUnitDegasser> builder,
-        List<IHatchElement<? super MTEPurificationUnitDegasser>> originalList) {
-        List<IHatchElement<? super MTEPurificationUnitDegasser>> newList = new ArrayList<>(originalList);
+        List<IHatchElement<? super MTEPurificationUnitDegasser>> elements) {
+        List<IHatchElement<? super MTEPurificationUnitDegasser>> newList = new ArrayList<>(elements);
         newList.add(InputBus);
         return builder.atLeastList(newList);
     }

@@ -1,0 +1,394 @@
+package com.science.gtnl.common.wireless;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.event.world.WorldEvent;
+
+import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.mixins.late.appliedEnergistics.wireless.AccessorTileController;
+
+import appeng.api.AEApi;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.exceptions.FailedConnection;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridConnection;
+import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.pathing.ControllerState;
+import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.networking.security.ISecurityGrid;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHost;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
+import appeng.me.GridNode;
+import appeng.me.pathfinding.PathingCalculation;
+import appeng.tile.networking.TileController;
+import appeng.tile.networking.TileCreativeEnergyController;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+
+public class WirelessChannelManager {
+
+    public static final WirelessChannelManager INSTANCE = new WirelessChannelManager();
+    private static final Map<Integer, Entrance> ENTRANCES = new LinkedHashMap<>();
+    private static List<Entrance> entranceSnapshot = List.of();
+    private static Map<Address, Integer> entranceCounts;
+    private static final Map<IGridConnection, Entrance> OWNED_CONNECTIONS = new IdentityHashMap<>();
+    private static final Map<IGrid, Allocation> ALLOCATIONS = new WeakHashMap<>();
+    private static int nextId = 1;
+    private static long allocationRevision;
+    private static final Map<Address, Address> CONTROLLER_SOURCES = new HashMap<>();
+    private static Map<IGridNode, Set<IGridConnection>> connectionSnapshot;
+
+    public static boolean isSupportedController(TileEntity tile) {
+        return tile != null
+            && (tile.getClass() == TileController.class || tile.getClass() == TileCreativeEnergyController.class);
+    }
+
+    public static Address controllerSource(Address source) {
+        Address cached = CONTROLLER_SOURCES.get(source);
+        if (cached != null) return cached;
+        TileEntity tile = source.tile();
+        IGridNode start = isSupportedController(tile) ? source.node() : null;
+        if (start == null) return source;
+        Set<IGridNode> seen = Collections.newSetFromMap(new IdentityHashMap<>());
+        Set<Address> addresses = new HashSet<>();
+        ArrayDeque<IGridNode> pending = new ArrayDeque<>();
+        pending.add(start);
+        seen.add(start);
+        while (!pending.isEmpty()) {
+            if (seen.size() > 4096) return source;
+            IGridNode node = pending.removeFirst();
+            TileEntity controller = (TileEntity) node.getMachine();
+            addresses.add(
+                new Address(
+                    source.dimension(),
+                    controller.xCoord,
+                    controller.yCoord,
+                    controller.zCoord,
+                    ForgeDirection.UNKNOWN));
+            for (IGridConnection connection : node.getConnections()) {
+                if (isOwned(connection) || !connection.hasDirection()) continue;
+                IGridNode other = connection.getOtherSide(node);
+                if (!((Object) other.getMachine() instanceof TileEntity next) || !isSupportedController(next)
+                    || next.isInvalid()
+                    || next.getWorldObj() != tile.getWorldObj()
+                    || Math.abs(controller.xCoord - next.xCoord) + Math.abs(controller.yCoord - next.yCoord)
+                        + Math.abs(controller.zCoord - next.zCoord) != 1)
+                    continue;
+                Address address = new Address(
+                    source.dimension(),
+                    next.xCoord,
+                    next.yCoord,
+                    next.zCoord,
+                    ForgeDirection.UNKNOWN);
+                if (address.node() == other && seen.add(other)) pending.addLast(other);
+            }
+        }
+        Address representative = addresses.stream()
+            .min(Address.POSITION_ORDER)
+            .orElse(source);
+        for (Address address : addresses) CONTROLLER_SOURCES.put(address, representative);
+        return representative;
+    }
+
+    static void invalidateControllerSources() {
+        CONTROLLER_SOURCES.clear();
+        entranceCounts = null;
+    }
+
+    static boolean sameSource(Address first, Address second) {
+        return first.equals(second) || controllerSource(first).equals(controllerSource(second));
+    }
+
+    private WirelessChannelManager() {}
+
+    public record Allocation(int capacity, int used, long revision) {}
+
+    public static void recordAllocation(IGrid grid, int capacity, int used) {
+        ALLOCATIONS.put(grid, new Allocation(capacity, used, ++allocationRevision));
+    }
+
+    public static void invalidateAllocation(IGrid grid) {
+        ALLOCATIONS.remove(grid);
+    }
+
+    public static Allocation allocation(IGrid grid) {
+        return AutomaticWirelessEntrances.isSettled(grid.getCache(IPathingGrid.class)) ? ALLOCATIONS.get(grid) : null;
+    }
+
+    public record Address(int dimension, int x, int y, int z, ForgeDirection side) {
+
+        public static final Comparator<Address> POSITION_ORDER = Comparator.comparingInt(Address::x)
+            .thenComparingInt(Address::y)
+            .thenComparingInt(Address::z)
+            .thenComparing(Address::side);
+
+        public TileEntity tile() {
+            World world = DimensionManager.getWorld(dimension);
+            return world != null && world.blockExists(x, y, z) ? world.getTileEntity(x, y, z) : null;
+        }
+
+        public IGridNode node() {
+            TileEntity tile = tile();
+            if (tile instanceof IPartHost host) {
+                IPart part = host.getPart(side);
+                return part == null ? null : part.getGridNode();
+            }
+            return tile instanceof IGridHost host ? host.getGridNode(side) : null;
+        }
+    }
+
+    public record Entrance(int id, Address source, Address target, IGridNode sourceNode, IGridNode targetNode,
+        IGridConnection connection) {
+
+        public boolean isLive() {
+            return hasConnection(sourceNode, connection) && hasConnection(targetNode, connection);
+        }
+    }
+
+    private static boolean hasConnection(IGridNode node, IGridConnection connection) {
+        // Only native GridNode mutations are covered by our invalidation hook.
+        if (connectionSnapshot == null || node.getClass() != GridNode.class) return node.getConnections()
+            .contains(connection);
+        return connectionSnapshot.computeIfAbsent(node, key -> {
+            Set<IGridConnection> connections = Collections.newSetFromMap(new IdentityHashMap<>());
+            for (IGridConnection current : key.getConnections()) connections.add(current);
+            return connections;
+        })
+            .contains(connection);
+    }
+
+    public static void connectionsChanged(IGridNode node) {
+        if (connectionSnapshot != null) connectionSnapshot.remove(node);
+    }
+
+    public static boolean isOwned(IGridConnection connection) {
+        return OWNED_CONNECTIONS.containsKey(connection);
+    }
+
+    public static boolean manages(IGrid grid) {
+        for (Entrance entrance : ENTRANCES.values()) {
+            if (entrance.isLive() && entrance.sourceNode()
+                .getGrid() == grid) return true;
+        }
+        return false;
+    }
+
+    public static int capacity(IGrid grid) {
+        Set<ChannelBudget.Position> controllers = new HashSet<>();
+        // AE already indexes hosts by their concrete class; avoid scanning every cable and device for each GUI update.
+        Class<?> controllerType = TileController.class;
+        for (Class<? extends IGridHost> machine : grid.getMachinesClasses()) {
+            if (!controllerType.isAssignableFrom(machine)) continue;
+            for (IGridNode node : grid.getMachines(machine)) {
+                // AE retains empty machine-class buckets after removal. Only a controller that is
+                // still present can make this structure unsupported, not its historical class key.
+                // Keep the expression typed as TileEntity: AE2's controller superclass exposes optional mod APIs.
+                TileEntity controller = (TileEntity) node.getMachine();
+                if (!isSupportedController(controller) || controller.getWorldObj() == null) return 0;
+                controllers.add(
+                    new ChannelBudget.Position(
+                        controller.getWorldObj().provider.dimensionId,
+                        controller.xCoord,
+                        controller.yCoord,
+                        controller.zCoord));
+            }
+        }
+        return ChannelBudget.capacityOf(controllers);
+    }
+
+    public static int connect(Address source, Address target) throws FailedConnection {
+        if (!IWirelessPathingAccess.class.isAssignableFrom(PathingCalculation.class)) {
+            throw new IllegalArgumentException("Wireless pathing hooks are unavailable; no connection was created.");
+        }
+        if (entranceLimitReached(source))
+            throw new IllegalArgumentException("Wireless entrance limit reached for this frequency.");
+        TileEntity controller = source.tile();
+        if (!isSupportedController(controller)) {
+            throw new IllegalArgumentException("Source must be a loaded ME Controller or Creative Energy Controller.");
+        }
+        IGridNode from = source.node();
+        IGridNode to = target.node();
+        if (from == null || to == null) throw new IllegalArgumentException("Both ME nodes must be loaded and ready.");
+        if (to.getMachine() instanceof AccessorTileController)
+            throw new IllegalArgumentException("Cannot target a controller.");
+        IGrid grid = from.getGrid();
+        IPathingGrid path = grid.getCache(IPathingGrid.class);
+        if (path.isNetworkBooting() || path.getControllerState() != ControllerState.CONTROLLER_ONLINE) {
+            throw new IllegalArgumentException("Wait for the source controller network to become valid and stable.");
+        }
+        if (capacity(grid) == 0) throw new IllegalArgumentException("Unsupported controller structure.");
+        if (to.getGrid() != grid) {
+            for (IGridNode node : to.getGrid()
+                .getNodes()) {
+                if (node.getMachine() instanceof AccessorTileController) {
+                    throw new IllegalArgumentException("Cannot merge a second controller network.");
+                }
+            }
+        }
+        // AE2 performs its own security, self-link and duplicate-connection checks.
+        IGridConnection connection = AEApi.instance()
+            .createGridConnection(from, to);
+        int id = nextId++;
+        Entrance entrance = new Entrance(id, source, target, from, to, connection);
+        ENTRANCES.put(id, entrance);
+        entranceCountChanged(source, 1);
+        OWNED_CONNECTIONS.put(connection, entrance);
+        // createGridConnection already schedules AE2's repath.
+        invalidateAllocation(grid);
+        invalidateAllocation(from.getGrid());
+        return id;
+    }
+
+    public static boolean disconnect(int id) {
+        Entrance entrance = ENTRANCES.remove(id);
+        if (entrance == null) return false;
+        invalidateAllocation(
+            entrance.sourceNode()
+                .getGrid());
+        invalidateAllocation(
+            entrance.targetNode()
+                .getGrid());
+        entranceCountChanged(entrance.source(), -1);
+        WirelessLinkPersistence.forgetEntrance(entrance);
+        OWNED_CONNECTIONS.remove(entrance.connection());
+        if (entrance.isLive()) entrance.connection()
+            .destroy();
+        return true;
+    }
+
+    public static void clear() {
+        invalidateControllerSources();
+        for (int id : new ArrayList<>(ENTRANCES.keySet())) disconnect(id);
+        entranceSnapshot = List.of();
+        OWNED_CONNECTIONS.clear();
+        ALLOCATIONS.clear();
+        WirelessClusterManager.clear();
+        WirelessAutoConnect.clear();
+        nextId = 1;
+        allocationRevision = 0;
+    }
+
+    public static List<Entrance> entrances() {
+        if (entranceSnapshot == null) entranceSnapshot = List.copyOf(ENTRANCES.values());
+        return entranceSnapshot;
+    }
+
+    public static Entrance entrance(int id) {
+        return ENTRANCES.get(id);
+    }
+
+    public static int entranceLimit() {
+        return Math.max(1, MainConfig.wireless.maxEntrancesPerFrequency);
+    }
+
+    public static int entranceCount(Address source) {
+        if (entranceCounts == null) {
+            entranceCounts = new HashMap<>();
+            for (Entrance entrance : ENTRANCES.values()) {
+                entranceCounts.merge(controllerSource(entrance.source()), 1, Integer::sum);
+            }
+        }
+        return entranceCounts.getOrDefault(controllerSource(source), 0);
+    }
+
+    private static void entranceCountChanged(Address source, int change) {
+        entranceSnapshot = null;
+        if (entranceCounts == null) return;
+        Address frequency = controllerSource(source);
+        int count = entranceCounts.getOrDefault(frequency, 0) + change;
+        if (count == 0) entranceCounts.remove(frequency);
+        else entranceCounts.put(frequency, count);
+    }
+
+    public static boolean entranceLimitReached(Address source) {
+        return entranceCount(source) >= entranceLimit();
+    }
+
+    public static boolean channelsEnabled() {
+        return AEConfig.instance.isFeatureEnabled(AEFeature.Channels);
+    }
+
+    public static boolean canBuild(IGridNode node, EntityPlayer player) {
+        return node != null && node.getGrid() != null
+            && node.getGrid()
+                .<ISecurityGrid>getCache(ISecurityGrid.class)
+                .hasPermission(player, SecurityPermissions.BUILD);
+    }
+
+    @SubscribeEvent
+    public void tick(TickEvent.ServerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+        connectionSnapshot = new IdentityHashMap<>();
+        try (var ignored = WirelessLinkData.readBatch()) {
+            invalidateControllerSources();
+            for (Entrance entrance : entrances()) {
+                if (!entrance.isLive() || entrance.source()
+                    .node() != entrance.sourceNode()
+                    || entrance.target()
+                        .node() != entrance.targetNode()) {
+                    disconnect(entrance.id());
+                    WirelessClusterManager.invalidateTopology();
+                }
+            }
+            WirelessClusterManager.tick();
+            WirelessAutoConnect.tick();
+        } finally {
+            connectionSnapshot = null;
+        }
+    }
+
+    @SubscribeEvent
+    public void loadChunk(ChunkEvent.Load event) {
+        if (event.world.isRemote) return;
+        WirelessLinkPersistence.discover(event.getChunk());
+        WirelessClusterManager.invalidateTopology();
+    }
+
+    @SubscribeEvent
+    public void unloadChunk(ChunkEvent.Unload event) {
+        if (event.world.isRemote) return;
+        WirelessClusterManager.forgetTargets(address -> inChunk(address, event));
+        for (Entrance entrance : entrances()) {
+            if (inChunk(entrance.source(), event) || inChunk(entrance.target(), event)) disconnect(entrance.id());
+        }
+    }
+
+    private static boolean inChunk(Address address, ChunkEvent event) {
+        return address.dimension() == event.world.provider.dimensionId
+            && (address.x() >> 4) == event.getChunk().xPosition
+            && (address.z() >> 4) == event.getChunk().zPosition;
+    }
+
+    @SubscribeEvent
+    public void unloadWorld(WorldEvent.Unload event) {
+        if (event.world.isRemote) return;
+        WirelessClusterManager.forgetTargets(address -> address.dimension() == event.world.provider.dimensionId);
+        for (Entrance entrance : entrances()) {
+            if (entrance.source()
+                .dimension() == event.world.provider.dimensionId
+                || entrance.target()
+                    .dimension() == event.world.provider.dimensionId)
+                disconnect(entrance.id());
+        }
+    }
+}

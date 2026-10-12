@@ -21,17 +21,18 @@ import tectech.thing.metaTileEntity.multi.godforge.util.GodforgeMath;
 public abstract class MixinGodForgeMath {
 
     @Inject(method = "allowModuleConnection", at = @At("HEAD"), cancellable = true)
-    private static void recipesLoader(MTEBaseModule module, ForgeOfGodsData data, CallbackInfoReturnable<Boolean> cir) {
-        if (module instanceof FOGAlloySmelterModule) {
+    private static void recipesLoader(MTEBaseModule _module, ForgeOfGodsData data,
+        CallbackInfoReturnable<Boolean> cir) {
+        if (_module instanceof FOGAlloySmelterModule) {
             cir.setReturnValue(true);
             return;
         }
-        if ((module instanceof FOGAlloyBlastSmelterModule || module instanceof FOGExtractorModule)
+        if ((_module instanceof FOGAlloyBlastSmelterModule || _module instanceof FOGExtractorModule)
             && data.isUpgradeActive(ForgeOfGodsUpgrade.FDIM)) {
             cir.setReturnValue(true);
             return;
         }
-        if (module instanceof FOGSolarMuonCatalystModule && data.isUpgradeActive(ForgeOfGodsUpgrade.QGPIU)) {
+        if (_module instanceof FOGSolarMuonCatalystModule && data.isUpgradeActive(ForgeOfGodsUpgrade.QGPIU)) {
             cir.setReturnValue(true);
         }
     }
@@ -39,15 +40,15 @@ public abstract class MixinGodForgeMath {
     @ModifyConstant(
         method = "calculateMaxParallelForModules(Ltectech/thing/metaTileEntity/multi/godforge/MTEBaseModule;Ltectech/thing/metaTileEntity/multi/godforge/util/ForgeOfGodsData;I)V",
         constant = @Constant(intValue = 0, ordinal = 0))
-    private static int onCalculateMaxParallelForModules(int constant, MTEBaseModule module, ForgeOfGodsData data,
+    private static int onCalculateMaxParallelForModules(int constant, MTEBaseModule _module, ForgeOfGodsData data,
         int fuelFactor) {
-        if (module instanceof FOGAlloySmelterModule) {
+        if (_module instanceof FOGAlloySmelterModule) {
             return 4096;
-        } else if (module instanceof FOGExtractorModule) {
+        } else if (_module instanceof FOGExtractorModule) {
             return 2048;
-        } else if (module instanceof FOGAlloyBlastSmelterModule) {
+        } else if (_module instanceof FOGAlloyBlastSmelterModule) {
             return 512;
-        } else if (module instanceof FOGSolarMuonCatalystModule) {
+        } else if (_module instanceof FOGSolarMuonCatalystModule) {
             return 256;
         }
         return constant;

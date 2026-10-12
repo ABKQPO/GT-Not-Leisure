@@ -1,6 +1,7 @@
 package com.science.gtnl.mixins.late.appliedEnergistics;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -8,9 +9,12 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Invoker;
+import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.science.gtnl.api.mixinHelper.IDualityInterface;
 
 import appeng.api.config.YesNo;
@@ -20,6 +24,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.helpers.DualityInterface;
+import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.MultiCraftingTracker;
 import appeng.helpers.UnlockCraftingEvent;
@@ -30,6 +35,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
 import appeng.util.ScheduledReason;
 import appeng.util.inv.WrapperInvSlot;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,6 +43,29 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class MixinDualityInterface implements IDualityInterface {
+
+    @Unique
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private boolean gtnl$readingTargetName;
+
+    @Override
+    public <T> T gtnl$withoutCustomName(Supplier<T> reader) {
+        boolean previous = gtnl$readingTargetName;
+        gtnl$readingTargetName = true;
+        try {
+            return reader.get();
+        } finally {
+            gtnl$readingTargetName = previous;
+        }
+    }
+
+    @WrapOperation(
+        method = { "getCrafterIcon", "getRawTermName", "getAdjacentNameSuffix" },
+        at = @At(value = "INVOKE", target = "Lappeng/helpers/ICustomNameObject;hasCustomName()Z"))
+    private boolean gtnl$keepTargetMetadata(ICustomNameObject host, Operation<Boolean> original) {
+        return !gtnl$readingTargetName && original.call(host);
+    }
 
     @Shadow
     @Final

@@ -11,7 +11,7 @@ import gregtech.api.interfaces.IOreMaterial;
 import gregtech.common.OreMixBuilder;
 import gtneioreplugin.util.GT5OreLayerHelper;
 
-public final class GTNLVeinCatalog {
+public class GTNLVeinCatalog {
 
     public static final String SHIMMER_VEIN_NAME = "ore.mix.gtnl.shimmer";
     private static final int SHIMMER_VEIN_BLOCK_SIZE = 16;

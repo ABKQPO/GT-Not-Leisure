@@ -2,6 +2,10 @@ package com.science.gtnl.mixins.late.gregtech;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -25,6 +29,7 @@ import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
 import appeng.api.interfaces.IInterfaceNameProvider;
 import appeng.helpers.ICustomNameObject;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEBasicTank;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchInput;
@@ -46,19 +51,22 @@ public abstract class MixinMTEHatch extends MTEBasicTank implements ICustomNameO
     @Unique
     private long gtnl$interfaceNameStructureVersion;
 
+    @Unique
+    private Map<MTEMultiBlockBase, Long> gtnl$interfaceNameControllers;
+
     public MixinMTEHatch(int aID, String aName, String aNameRegional, int aTier, int aInvSlotCount, String aDescription,
         ITexture... aTextures) {
         super(aID, aName, aNameRegional, aTier, aInvSlotCount, aDescription, aTextures);
     }
 
     @Inject(method = "loadNBTData", at = @At("TAIL"))
-    private void gtnl$loadCustomName(NBTTagCompound nbt, CallbackInfo callbackInfo) {
-        gtnl$customName = nbt.getString("gtnl$customName");
+    private void gtnl$loadCustomName(NBTTagCompound aNBT, CallbackInfo callbackInfo) {
+        gtnl$customName = aNBT.getString("gtnl$customName");
     }
 
     @Inject(method = "saveNBTData", at = @At("TAIL"))
-    private void gtnl$saveCustomName(NBTTagCompound nbt, CallbackInfo callbackInfo) {
-        if (!gtnl$customName.isEmpty()) nbt.setString("gtnl$customName", gtnl$customName);
+    private void gtnl$saveCustomName(NBTTagCompound aNBT, CallbackInfo callbackInfo) {
+        if (!gtnl$customName.isEmpty()) aNBT.setString("gtnl$customName", gtnl$customName);
     }
 
     @Override
@@ -80,12 +88,28 @@ public abstract class MixinMTEHatch extends MTEBasicTank implements ICustomNameO
     public void setInterfaceNameController(MTEMultiBlockBase controller) {
         if (!(controller instanceof IInterfaceNameController controllerInfo)) return;
         long version = controllerInfo.getInterfaceNameStructureVersion();
+        if (gtnl$interfaceNameControllers == null) gtnl$interfaceNameControllers = new WeakHashMap<>();
+        gtnl$interfaceNameControllers.put(controller, version);
         if (gtnl$interfaceNameController != null && gtnl$interfaceNameController.get() == controller
             && gtnl$interfaceNameStructureVersion == version) {
             return;
         }
         gtnl$interfaceNameController = new WeakReference<>(controller);
         gtnl$interfaceNameStructureVersion = version;
+    }
+
+    @Override
+    public Set<MTEMultiBlockBase> getInterfaceNameControllers() {
+        if (gtnl$interfaceNameControllers == null) return Set.of();
+        gtnl$interfaceNameControllers.entrySet()
+            .removeIf(
+                entry -> !entry.getKey()
+                    .isValid() || !(entry.getKey() instanceof IInterfaceNameController info)
+                    || entry.getValue() != info.getInterfaceNameStructureVersion());
+        return gtnl$interfaceNameControllers.keySet()
+            .stream()
+            .filter(controller -> controller.mMachine)
+            .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
@@ -104,13 +128,19 @@ public abstract class MixinMTEHatch extends MTEBasicTank implements ICustomNameO
         return null;
     }
 
-    @Inject(method = "updateCraftingIcon", at = @At("TAIL"))
-    private void gtnl$bindInterfaceNameController(ItemStack icon, CallbackInfo callbackInfo) {
-        gtnl$bindInterfaceNameController();
+    @Inject(
+        method = "updateCraftingIcon(Lnet/minecraft/item/ItemStack;Lgregtech/api/interfaces/tileentity/IGregTechTileEntity;)V",
+        at = @At("TAIL"))
+    private void gtnl$bindInterfaceNameController(ItemStack icon, IGregTechTileEntity owner,
+        CallbackInfo callbackInfo) {
+        if (icon == null) return;
+        if (owner != null && owner.getMetaTileEntity() instanceof MTEMultiBlockBase controller) {
+            setInterfaceNameController(controller);
+        } else gtnl$bindInterfaceNameController();
     }
 
     @Inject(method = "updateTexture", at = @At("HEAD"))
-    private void gtnl$bindInterfaceNameController(int textureId, CallbackInfo callbackInfo) {
+    private void gtnl$bindInterfaceNameController(int id, CallbackInfo callbackInfo) {
         gtnl$bindInterfaceNameController();
     }
 

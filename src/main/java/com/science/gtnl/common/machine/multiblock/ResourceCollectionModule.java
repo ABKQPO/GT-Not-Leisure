@@ -93,7 +93,7 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     private long processingLogicEU;
     private int mParallelTier;
 
-    Parameters.Group.ParameterIn parallelSetting;
+    public Parameters.Group.ParameterIn parallelSetting;
     public ArrayList<ParallelControllerHatch> mParallelControllerHatches = new ArrayList<>();
 
     public ResourceCollectionModule(int aID, String aName, String aNameRegional) {

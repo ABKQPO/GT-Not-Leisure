@@ -54,6 +54,7 @@ import appeng.me.cache.CraftingGridCache;
 import appeng.tile.misc.TileSecurity;
 import appeng.util.Platform;
 import baubles.api.BaublesApi;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import gregtech.api.enums.Mods;
 import io.netty.buffer.ByteBuf;
@@ -416,7 +417,7 @@ public class KeyBindingHandler extends ServerboundPacket {
         }
     }
 
-    @cpw.mods.fml.common.Optional.Method(modid = "ae2fc")
+    @Optional.Method(modid = "ae2fc")
     private void ae2fcCraft(IActionHost host, EntityPlayerMP player, AEBaseContainer c) {
         if (host instanceof IWirelessTerminal wt) {
             InventoryHandler.openGui(
@@ -436,7 +437,7 @@ public class KeyBindingHandler extends ServerboundPacket {
         }
     }
 
-    @cpw.mods.fml.common.Optional.Method(modid = "Baubles")
+    @Optional.Method(modid = "Baubles")
     private void readBaublesS(EntityPlayerMP player, IAEStack<?> requestedStack) {
         for (int i = 0; i < BaublesApi.getBaubles(player)
             .getSizeInventory(); i++) {
@@ -484,7 +485,7 @@ public class KeyBindingHandler extends ServerboundPacket {
         }
     }
 
-    @cpw.mods.fml.common.Optional.Method(modid = "Baubles")
+    @Optional.Method(modid = "Baubles")
     private void readBaublesR(EntityPlayerMP player, IAEStack<?> requestedStack, long targetCount) {
         var inv = BaublesApi.getBaubles(player);
         if (inv == null) return;

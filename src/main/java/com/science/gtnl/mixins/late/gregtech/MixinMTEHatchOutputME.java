@@ -31,7 +31,7 @@ import gregtech.common.tileentities.machines.outputme.base.MTEHatchOutputMEBase;
 public abstract class MixinMTEHatchOutputME extends MTEHatchOutput implements IOutputME, IDataCopyable {
 
     @Shadow
-    EntityPlayer lastClickedPlayer;
+    public EntityPlayer lastClickedPlayer;
 
     @Shadow
     public abstract MTEHatchOutputMEBase<?> getProvider();

@@ -13,11 +13,11 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public final class PayloadHandler {
+public class PayloadHandler {
 
     private PayloadHandler() {}
 
-    public static final class Client<T extends ClientboundPacket> implements IMessageHandler<T, IMessage> {
+    public static class Client<T extends ClientboundPacket> implements IMessageHandler<T, IMessage> {
 
         @Override
         public @Nullable IMessage onMessage(T message, MessageContext ctx) {
@@ -40,7 +40,7 @@ public final class PayloadHandler {
         }
     }
 
-    public static final class Server<T extends ServerboundPacket> implements IMessageHandler<T, IMessage> {
+    public static class Server<T extends ServerboundPacket> implements IMessageHandler<T, IMessage> {
 
         @Override
         public @Nullable IMessage onMessage(T message, MessageContext ctx) {

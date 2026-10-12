@@ -13,7 +13,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 
-public final class AspectTooltipUtils {
+public class AspectTooltipUtils {
 
     private AspectTooltipUtils() {}
 

@@ -24,7 +24,7 @@ public class MixinFMLProxyPacket {
 
     @Final
     @Shadow
-    String channel;
+    public String channel;
 
     @Inject(
         method = "processPacket",

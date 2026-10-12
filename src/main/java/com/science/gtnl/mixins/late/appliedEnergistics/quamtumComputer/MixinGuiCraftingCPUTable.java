@@ -77,7 +77,7 @@ public abstract class MixinGuiCraftingCPUTable {
         method = "drawFG",
         at = @At(value = "INVOKE", target = "Lappeng/client/gui/AEBaseGui;drawItem(IILnet/minecraft/item/ItemStack;)V"),
         require = 1)
-    private void gtnl$drawIdleQuantumComputerIcon(final AEBaseGui gui, final int x, final int y, final ItemStack stack,
+    private void gtnl$drawIdleQuantumComputerIcon(final AEBaseGui gui, final int x, final int y, final ItemStack is,
         final Operation<Void> original, @Local(name = "cpu") final CraftingCPUStatus cpu) {
         final byte cpuType = cpu instanceof EQuantumComputerCPUStatus status ? status.ec$getCPUType()
             : EQuantumComputerCPUStatus.NORMAL_CPU;
@@ -92,7 +92,7 @@ public abstract class MixinGuiCraftingCPUTable {
             return;
         }
 
-        original.call(gui, x, y, stack);
+        original.call(gui, x, y, is);
     }
 
     @Unique

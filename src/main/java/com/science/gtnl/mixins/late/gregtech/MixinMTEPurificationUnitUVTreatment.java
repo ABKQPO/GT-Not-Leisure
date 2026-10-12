@@ -23,8 +23,8 @@ public class MixinMTEPurificationUnitUVTreatment {
             target = "Lgregtech/api/util/HatchElementBuilder;atLeastList(Ljava/util/List;)Lgregtech/api/util/HatchElementBuilder;"))
     private static HatchElementBuilder<?> injectExtraHatches(
         HatchElementBuilder<MTEPurificationUnitUVTreatment> builder,
-        List<IHatchElement<? super MTEPurificationUnitUVTreatment>> originalList) {
-        List<IHatchElement<? super MTEPurificationUnitUVTreatment>> newList = new ArrayList<>(originalList);
+        List<IHatchElement<? super MTEPurificationUnitUVTreatment>> elements) {
+        List<IHatchElement<? super MTEPurificationUnitUVTreatment>> newList = new ArrayList<>(elements);
         newList.add(InputBus);
         return builder.atLeastList(newList);
     }

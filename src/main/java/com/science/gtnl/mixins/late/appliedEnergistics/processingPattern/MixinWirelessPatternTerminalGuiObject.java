@@ -28,16 +28,16 @@ public abstract class MixinWirelessPatternTerminalGuiObject
     implements IProcessingPatternOverflowAccess, IProcessingPatternInventoryBatchAccess {
 
     @Shadow
-    int craftingInvSize;
+    public int craftingInvSize;
 
     @Shadow
-    int outputInvSize;
+    public int outputInvSize;
 
     @Shadow
-    IAEStackInventory crafting;
+    public IAEStackInventory crafting;
 
     @Shadow
-    IAEStackInventory output;
+    public IAEStackInventory output;
 
     @Shadow
     private boolean inverted;
@@ -89,7 +89,7 @@ public abstract class MixinWirelessPatternTerminalGuiObject
     }
 
     @Inject(method = "onChangeInventory", at = @At("HEAD"))
-    private void gtnl$beginPatternChange(IInventory inventory, int slot, InvOperation operation, ItemStack removedStack,
+    private void gtnl$beginPatternChange(IInventory inv, int slot, InvOperation mc, ItemStack removedStack,
         ItemStack newStack, CallbackInfo callbackInfo) {
         if (!ProcessingPatternCapacity.isEnabled()) {
             return;
@@ -98,8 +98,8 @@ public abstract class MixinWirelessPatternTerminalGuiObject
     }
 
     @Inject(method = "onChangeInventory", at = @At("TAIL"))
-    private void gtnl$finishPatternChange(IInventory inventory, int slot, InvOperation operation,
-        ItemStack removedStack, ItemStack newStack, CallbackInfo callbackInfo) {
+    private void gtnl$finishPatternChange(IInventory inv, int slot, InvOperation mc, ItemStack removedStack,
+        ItemStack newStack, CallbackInfo callbackInfo) {
         if (!ProcessingPatternCapacity.isEnabled()) {
             return;
         }
@@ -218,7 +218,7 @@ public abstract class MixinWirelessPatternTerminalGuiObject
     }
 
     @Inject(method = "exPatternTerminalCall", at = @At("HEAD"), cancellable = true)
-    private void gtnl$selectOrientation(IAEStack<?>[] inputs, IAEStack<?>[] outputs, CallbackInfo callbackInfo) {
+    private void gtnl$selectOrientation(IAEStack<?>[] in, IAEStack<?>[] out, CallbackInfo callbackInfo) {
         if (!ProcessingPatternCapacity.isEnabled()) {
             return;
         }
@@ -226,8 +226,8 @@ public abstract class MixinWirelessPatternTerminalGuiObject
             return;
         }
         this.gtnl$clearProcessingPatternOverflow();
-        int inputCount = countNonNull(inputs);
-        int outputCount = countNonNull(outputs);
+        int inputCount = countNonNull(in);
+        int outputCount = countNonNull(out);
         int smallSideCapacity = this.craftingInvSize / 4;
         this.setInverted(inputCount <= smallSideCapacity && outputCount >= smallSideCapacity);
         this.setActivePage(0);
@@ -262,13 +262,15 @@ public abstract class MixinWirelessPatternTerminalGuiObject
     }
 
     @ModifyVariable(method = "setActivePage", at = @At("HEAD"), argsOnly = true, ordinal = 0)
-    private int gtnl$clampActivePage(int page) {
+    private int gtnl$clampActivePage(int activePage) {
         if (!ProcessingPatternCapacity.isEnabled()) {
-            return page;
+            return activePage;
         }
-        return this.mode == 2 ? Math
-            .max(0, Math.min(Math.max(0, this.craftingInvSize / ProcessingPatternCapacity.SLOTS_PER_PAGE - 1), page))
-            : page;
+        return this.mode == 2
+            ? Math.max(
+                0,
+                Math.min(Math.max(0, this.craftingInvSize / ProcessingPatternCapacity.SLOTS_PER_PAGE - 1), activePage))
+            : activePage;
     }
 
     @Unique

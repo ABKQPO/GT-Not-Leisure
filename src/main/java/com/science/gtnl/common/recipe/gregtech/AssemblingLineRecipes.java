@@ -1,5 +1,10 @@
 package com.science.gtnl.common.recipe.gregtech;
 
+import static kubatech.api.enums.ItemList.DEFCCasingBase;
+import static kubatech.api.enums.ItemList.DEFCCasingT3;
+import static kubatech.api.enums.ItemList.DraconicEvolutionFusionCrafter;
+import static kubatech.api.enums.ItemList.ExtremeEntityCrusher;
+
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -151,8 +156,7 @@ public class AssemblingLineRecipes implements IRecipePool {
             (int) TierEU.RECIPE_UXV,
             1,
             new Object[] { GregtechItemList.Mega_AlloyBlastSmelter.get(64),
-                MaterialsElements.STANDALONE.HYPOGEN.getFrameBox(64),
-                kubatech.api.enums.ItemList.DEFCCasingBase.get(32), kubatech.api.enums.ItemList.DEFCCasingT3.get(32),
+                MaterialsElements.STANDALONE.HYPOGEN.getFrameBox(64), DEFCCasingBase.get(32), DEFCCasingT3.get(32),
                 ItemList.Casing_Dim_Injector.get(32),
                 Mods.EternalSingularity.isModLoaded() ? ModsItemlist.EternalSingularity.get(4)
                     : new ItemStack(Items.feather),
@@ -639,14 +643,14 @@ public class AssemblingLineRecipes implements IRecipePool {
             (int) TierEU.RECIPE_UMV);
 
         TTRecipeAdder.addResearchableAssemblylineRecipe(
-            Mods.DraconicEvolution.isModLoaded() ? kubatech.api.enums.ItemList.DraconicEvolutionFusionCrafter.get(1)
+            Mods.DraconicEvolution.isModLoaded() ? DraconicEvolutionFusionCrafter.get(1)
                 : GTNLItemList.BlazeCubeBlock.get(1),
             25600000,
             51200,
             (int) TierEU.RECIPE_UMV,
             1,
             new Object[] {
-                Mods.DraconicEvolution.isModLoaded() ? kubatech.api.enums.ItemList.DraconicEvolutionFusionCrafter.get(1)
+                Mods.DraconicEvolution.isModLoaded() ? DraconicEvolutionFusionCrafter.get(1)
                     : GTNLItemList.BlazeCubeBlock.get(1),
                 GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.Draconium, 4),
                 ItemList.Emitter_UHV.get(16), ItemList.Field_Generator_UHV.get(16),
@@ -2041,13 +2045,13 @@ public class AssemblingLineRecipes implements IRecipePool {
 
         if (Mods.MobsInfo.isModLoaded()) {
             TTRecipeAdder.addResearchableAssemblylineRecipe(
-                kubatech.api.enums.ItemList.ExtremeEntityCrusher.get(1),
+                ExtremeEntityCrusher.get(1),
                 6660000,
                 666,
                 (int) TierEU.RECIPE_UEV,
                 1,
-                new Object[] { kubatech.api.enums.ItemList.ExtremeEntityCrusher.get(64),
-                    ModsItemlist.EnderIOBlockPoweredSpawner.get(64), ItemList.UltraHighStrengthConcrete.get(64),
+                new Object[] { ExtremeEntityCrusher.get(64), ModsItemlist.EnderIOBlockPoweredSpawner.get(64),
+                    ItemList.UltraHighStrengthConcrete.get(64),
                     GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.StellarAlloy, 64),
                     ModsItemlist.BloodMagicDaggerOfSacrifice.get(1), ItemList.Electric_Motor_UEV.get(64),
                     ItemList.Robot_Arm_UEV.get(16), ItemList.Conveyor_Module_UEV.get(32),

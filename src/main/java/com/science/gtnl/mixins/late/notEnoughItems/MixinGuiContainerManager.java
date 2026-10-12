@@ -29,19 +29,19 @@ public class MixinGuiContainerManager {
             remap = true),
         cancellable = true,
         remap = false)
-    public void onBeforeWindowClick(int slotId, int clickedButton, int clickType, CallbackInfo ci) {
+    public void onBeforeWindowClick(int slotIndex, int button, int modifiers, CallbackInfo ci) {
         if (!(this instanceof IInfinityChestGui)) return;
         short nextTransactionID = window.mc.thePlayer.openContainer.getNextTransactionID(window.mc.thePlayer.inventory);
 
         ItemStack itemStack = window.mc.thePlayer.openContainer
-            .slotClick(slotId, clickedButton, clickType, window.mc.thePlayer);
+            .slotClick(slotIndex, button, modifiers, window.mc.thePlayer);
 
         Avaritiaddons.networkWrapper.sendToServer(
             new InfinityChestClick(
                 window.inventorySlots.windowId,
-                slotId,
-                clickedButton,
-                clickType,
+                slotIndex,
+                button,
+                modifiers,
                 itemStack,
                 nextTransactionID));
 

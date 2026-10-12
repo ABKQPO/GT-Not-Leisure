@@ -1,0 +1,21 @@
+Wireless Frequency Card texture
+
+Local asset: assets/sciencenotleisure/textures/items/wireless_frequency_card.png
+Original asset: assets/ae2lt/textures/item/overloaded_frequency_card.png
+Source project: AE2 Lightning Tech Reborn
+Project: https://github.com/AE2-Lightning-Tech-Reborn/AE2-Lightning-Tech-Reborn
+Source revision: 2d8369e1e8b952300ec7ee73837e75cb61c7fc8d
+Source asset: https://github.com/AE2-Lightning-Tech-Reborn/AE2-Lightning-Tech-Reborn/blob/2d8369e1e8b952300ec7ee73837e75cb61c7fc8d/src/main/resources/assets/ae2lt/textures/item/overloaded_frequency_card.png
+Credit: AE2 Lightning Tech Reborn contributors. The upstream README credits
+MOAKIEE, CystrySU, gjmhmm8, _leng, TedXenon, and MHanHanBing.
+
+The PNG is copied unchanged; only the resource path and filename are adapted
+for Minecraft 1.7.10. No endorsement by the original authors is implied.
+
+This asset is licensed separately from this project's source code under the
+Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
+(CC BY-NC-SA 3.0). Attribution and noncommercial use are required; adaptations
+must follow the license's ShareAlike conditions.
+License: https://creativecommons.org/licenses/by-nc-sa/3.0/
+Legal code: https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode
+Upstream asset license: https://github.com/AE2-Lightning-Tech-Reborn/AE2-Lightning-Tech-Reborn/blob/2d8369e1e8b952300ec7ee73837e75cb61c7fc8d/LICENSE_ASSETS.md

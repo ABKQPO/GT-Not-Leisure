@@ -22,9 +22,9 @@ public abstract class MixinGT5OreLayerHelper {
             value = "INVOKE",
             target = "Lcom/google/common/collect/ImmutableMap;copyOf(Ljava/util/Map;)Lcom/google/common/collect/ImmutableMap;",
             ordinal = 0))
-    private static ImmutableMap<String, ?> gtnl$addVeins(Map<String, ?> byName,
+    private static ImmutableMap<String, ?> gtnl$addVeins(Map<String, ?> map,
         Operation<ImmutableMap<String, ?>> operation) {
-        Map<String, Object> copied = new HashMap<>(byName);
+        Map<String, Object> copied = new HashMap<>(map);
         GTNLVeinCatalog.fillOreLayerWrappers(copied);
         return operation.call(copied);
     }

@@ -74,6 +74,7 @@ public class MissingMappingsHandler {
         .remapBlock("sciencenotleisure:tile.NanoPhagocytosisPlantRenderer", BlockLoader.nanoPhagocytosisPlantRender)
 
          // Item remappings
+        .remapItem("sciencenotleisure:overloaded_frequency_card", ItemLoader.wirelessFrequencyCard)
         .remapItem("sciencenotleisure:SteamRocket", ItemLoader.steamRocket)
         .remapItem("sciencenotleisure:InfinityLavaBucket", ItemLoader.infinityLavaBucket)
         .remapItem("sciencenotleisure:InfinityWaterBucket", ItemLoader.infinityWaterBucket)

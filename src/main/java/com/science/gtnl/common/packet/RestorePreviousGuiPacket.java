@@ -7,7 +7,7 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLInputHandler;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
 
-public final class RestorePreviousGuiPacket extends ClientboundPacket {
+public class RestorePreviousGuiPacket extends ClientboundPacket {
 
     @Override
     public void handleClient(Minecraft minecraft) {

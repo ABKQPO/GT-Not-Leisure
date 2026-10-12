@@ -205,7 +205,7 @@ public abstract class GreenHouseMode {
     public static class MUIContainer_Greenhouse extends ModularUIContainer {
         // TODO: Remove this MUI1 greenhouse container after all startup paths open MUI2 panels directly.
 
-        final WeakReference<? extends IGreenHouse> parent;
+        public final WeakReference<? extends IGreenHouse> parent;
 
         public MUIContainer_Greenhouse(ModularUIContext context, ModularWindow mainWindow, IGreenHouse mte) {
             super(context, mainWindow);

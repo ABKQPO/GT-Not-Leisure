@@ -13,9 +13,9 @@ import gregtech.api.util.GTRecipeConstants;
 public abstract class MixinGTRecipeConstants {
 
     @ModifyVariable(method = "lambda$static$3", at = @At(value = "STORE"), ordinal = 0)
-    private static GTRecipe.GTRecipe_WithAlt modifyAssemblyLineRecipe(GTRecipe.GTRecipe_WithAlt original) {
-        int assDuration = original.mDuration;
-        if (!MainConfig.recipe.enableAssemblingLineRecipesTimeChange) return original;
+    private static GTRecipe.GTRecipe_WithAlt modifyAssemblyLineRecipe(GTRecipe.GTRecipe_WithAlt r) {
+        int assDuration = r.mDuration;
+        if (!MainConfig.recipe.enableAssemblingLineRecipesTimeChange) return r;
         int modified = assDuration;
 
         if (assDuration >= 200000) {
@@ -28,8 +28,8 @@ public abstract class MixinGTRecipeConstants {
             modified /= 2;
         }
 
-        original.mDuration = modified;
+        r.mDuration = modified;
 
-        return original;
+        return r;
     }
 }

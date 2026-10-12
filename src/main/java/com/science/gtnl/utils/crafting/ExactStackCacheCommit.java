@@ -56,7 +56,7 @@ public interface ExactStackCacheCommit {
     /**
      * Immutable outcome of one cache commit attempt.
      */
-    final class Result {
+    class Result {
 
         /** Failure status, or {@link Failure#NONE} after commit. */
         private final Failure failure;

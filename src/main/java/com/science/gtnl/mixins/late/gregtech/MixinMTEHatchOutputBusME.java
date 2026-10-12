@@ -30,7 +30,7 @@ import gregtech.common.tileentities.machines.outputme.base.MTEHatchOutputMEBase;
 public abstract class MixinMTEHatchOutputBusME extends MTEHatchOutputBus implements IOutputME {
 
     @Shadow
-    EntityPlayer lastClickedPlayer;
+    public EntityPlayer lastClickedPlayer;
 
     @Shadow
     public abstract MTEHatchOutputMEBase<?> getProvider();

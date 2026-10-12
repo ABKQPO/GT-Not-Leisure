@@ -55,22 +55,23 @@ public abstract class MixinFontBatchTextEffects implements FontBatchBridge {
     public static void flushDeferredText() {}
 
     @Inject(method = "drawString", at = @At("HEAD"), cancellable = true)
-    private void gtnl$directEffectText(float x, float y, int color, boolean shadow, boolean unicode,
-        CharSequence source, int offset, int length, CallbackInfoReturnable<Float> cir) {
-        if (EffectTextRenderer.isBypassingEffects() || source == null) return;
-        int start = Math.max(0, Math.min(offset, source.length()));
-        int end = start + Math.max(0, Math.min(length, source.length() - start));
-        if (!EffectTextParser.containsMarkers(source, start, end)) return;
-        String text = start == 0 && end == source.length() ? source.toString()
-            : source.subSequence(start, end)
+    private void gtnl$directEffectText(float anchorX, float anchorY, int inputColor, boolean enableShadow,
+        boolean unicodeFlag, CharSequence string, int stringOffset, int stringLength,
+        CallbackInfoReturnable<Float> cir) {
+        if (EffectTextRenderer.isBypassingEffects() || string == null) return;
+        int start = Math.max(0, Math.min(stringOffset, string.length()));
+        int end = start + Math.max(0, Math.min(stringLength, string.length() - start));
+        if (!EffectTextParser.containsMarkers(string, start, end)) return;
+        String text = start == 0 && end == string.length() ? string.toString()
+            : string.subSequence(start, end)
                 .toString();
         boolean previousUnicode = underlying.getUnicodeFlag();
-        underlying.setUnicodeFlag(unicode);
+        underlying.setUnicodeFlag(unicodeFlag);
         try {
-            EffectTextRenderer.INSTANCE.draw(underlying, text, x, y, color, shadow);
+            EffectTextRenderer.INSTANCE.draw(underlying, text, anchorX, anchorY, inputColor, enableShadow);
             cir.setReturnValue(
-                x + EffectTextRenderer.INSTANCE.layout(underlying, text)
-                    .width() + (shadow ? ((BatchingFontRenderer) (Object) this).getShadowOffset() : 0));
+                anchorX + EffectTextRenderer.INSTANCE.layout(underlying, text)
+                    .width() + (enableShadow ? ((BatchingFontRenderer) (Object) this).getShadowOffset() : 0));
         } finally {
             underlying.setUnicodeFlag(previousUnicode);
         }
