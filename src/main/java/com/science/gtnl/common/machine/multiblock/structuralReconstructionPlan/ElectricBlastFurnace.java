@@ -324,7 +324,7 @@ public class ElectricBlastFurnace extends MultiMachineBase<ElectricBlastFurnace>
     @SideOnly(Side.CLIENT)
     @Override
     public SoundResource getActivitySoundLoop() {
-        return SoundResource.GT_MACHINES_MEGA_BLAST_FURNACE_LOOP;
+        return SoundResource.GT_MACHINES_EBF_LOOP;
     }
 
 }
