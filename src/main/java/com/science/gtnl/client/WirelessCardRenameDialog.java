@@ -101,7 +101,7 @@ final class WirelessCardRenameDialog extends Dialog<Void> {
 
     private void submit() {
         if (finished || !owner.layoutReady() || !validateTarget()) return;
-        container.sync.request(RENAME, name.getText(), "", 0, nameRevision);
+        container.sync.request(RENAME, container.display.getLong("detailId"), name.getText(), nameRevision);
         closeIfOpen();
     }
 

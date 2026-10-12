@@ -5,16 +5,17 @@ import static com.science.gtnl.common.wireless.WirelessCardActions.BACK;
 import static com.science.gtnl.common.wireless.WirelessCardActions.CYCLE_FILTER;
 import static com.science.gtnl.common.wireless.WirelessCardActions.CYCLE_VISUALISATION;
 import static com.science.gtnl.common.wireless.WirelessCardActions.OPEN_DETAILS;
-import static com.science.gtnl.common.wireless.WirelessCardActions.SET_PAGE_SIZE;
 import static com.science.gtnl.common.wireless.WirelessCardActions.TOGGLE_AUTO;
 import static com.science.gtnl.common.wireless.WirelessCardActions.TOGGLE_GROUPING;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentTranslation;
 
 import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.ModularScreen;
+import com.cleanroommc.modularui.value.StringValue;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.wireless.WirelessCardContainer;
@@ -31,13 +32,25 @@ public final class WirelessCardGui extends WirelessCardPanel {
     private final TextFieldWidget search, dimension;
     private final IPanelHandler detailsPanel;
     private boolean showingDetails;
-    private int layoutRetry;
+    private String searchText = "", dimensionText = "";
 
     public WirelessCardGui(WirelessCardContainer container) {
         super("wireless_card", container);
         search = textField(64).hintText(tr("search_placeholder"))
             .hintColor(ColorUtils.craftingTreeRequest.getColor());
         dimension = textField(12);
+        search.autoUpdateOnChange(true)
+            .value(new StringValue.Dynamic(() -> searchText, text -> {
+                if (searchText.equals(text)) return;
+                searchText = text;
+                applyFilters(false, false);
+            }));
+        dimension.autoUpdateOnChange(true)
+            .value(new StringValue.Dynamic(() -> dimensionText, text -> {
+                if (dimensionText.equals(text)) return;
+                dimensionText = text;
+                applyFilters(false, false);
+            }));
         child(search).child(dimension);
         detailsPanel = IPanelHandler.simple(this, (parent, player) -> new WirelessCardDetailsPanel(container), true);
         for (int id : new int[] { TOGGLE_AUTO, APPLY_FILTER, CYCLE_FILTER, CYCLE_VISUALISATION, TOGGLE_GROUPING })
@@ -110,7 +123,8 @@ public final class WirelessCardGui extends WirelessCardPanel {
     void resizePanel(WirelessCardLayout layout) {
         xSize = layout.width();
         ySize = layout.height();
-        layoutRetry = 0;
+        container.clientView()
+            .resize(layout.rows());
         int dx = xSize - 320;
         search.pos(38, 62)
             .size(96 + dx, 12);
@@ -144,11 +158,6 @@ public final class WirelessCardGui extends WirelessCardPanel {
             if (detail) detailsPanel.openPanel();
             else detailsPanel.closePanel();
         }
-        if (container.display.getInteger("pageSize") != visibleRows && container.display.hasKey("session")
-            && layoutRetry-- <= 0) {
-            container.sync.request(SET_PAGE_SIZE, "", "", visibleRows, 0);
-            layoutRetry = 10;
-        }
         boolean showFilters = !detail && !detailsPanel.isPanelOpen();
         if (!showFilters && editingText()) getContext().removeFocus();
         search.setEnabled(showFilters);
@@ -158,10 +167,19 @@ public final class WirelessCardGui extends WirelessCardPanel {
 
     @Override
     void sendAction(int id) {
-        int filter = container.display.getInteger("filterState");
-        if (id == CYCLE_FILTER) filter = (filter + 1) % 5;
-        container.sync
-            .request(id == CYCLE_FILTER ? APPLY_FILTER : id, search.getText(), dimension.getText(), filter, 0);
+        if (id == APPLY_FILTER || id == CYCLE_FILTER) {
+            applyFilters(true, id == CYCLE_FILTER);
+            return;
+        }
+        super.sendAction(id);
+    }
+
+    private void applyFilters(boolean reportInvalid, boolean cycle) {
+        int state = container.display.getInteger("filterState");
+        if (cycle) state = (state + 1) % 5;
+        if (!container.clientView()
+            .filter(searchText, dimensionText, state) && reportInvalid)
+            mc.thePlayer.addChatMessage(new ChatComponentTranslation("gtnl.wireless.gui.filter_invalid"));
     }
 
     @Override

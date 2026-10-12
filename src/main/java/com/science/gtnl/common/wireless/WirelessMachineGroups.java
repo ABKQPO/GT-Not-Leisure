@@ -2,11 +2,8 @@ package com.science.gtnl.common.wireless;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.IdentityHashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -88,34 +85,7 @@ final class WirelessMachineGroups {
         }
     }
 
-    /** Validated view-only filters, applied on the server before pagination. */
-    record Filter(String query, Integer dimension, int state) {
-
-        static Filter parse(String query, String dimension, int state) {
-            if (query.length() > 64 || dimension.length() > 12 || state < 0 || state > 4)
-                throw new IllegalArgumentException("Invalid filter");
-            return new Filter(
-                query.strip()
-                    .toLowerCase(Locale.ROOT),
-                dimension.isBlank() ? null : Integer.valueOf(dimension.strip()),
-                state);
-        }
-
-        boolean matches(String name, int dimension, String position, boolean paused, String state) {
-            return (this.dimension == null || this.dimension == dimension)
-                && (query.isEmpty() || (name + " " + position).toLowerCase(Locale.ROOT)
-                    .contains(query))
-                && switch (this.state) {
-                case 1 -> paused;
-                case 2 -> state.equals("conflict");
-                case 3 -> !paused && state.equals("active");
-                case 4 -> !paused && state.equals("waiting");
-                default -> true;
-                };
-        }
-    }
-
-    record Row(MTEMultiBlockBase machine, TypeKey type, List<Row> children, List<WirelessLinkView> links,
+    record Row(MTEMultiBlockBase machine, TypeKey type, List<WirelessLinkView> links,
         WirelessNetworkStatistics statistics) {
 
         Row(MTEMultiBlockBase machine, List<WirelessLinkView> links) {
@@ -128,7 +98,6 @@ final class WirelessMachineGroups {
                         links.get(0)
                             .target()
                             .dimension()),
-                List.of(),
                 List.copyOf(links),
                 summarize(links));
         }
@@ -138,28 +107,11 @@ final class WirelessMachineGroups {
         }
 
         static Row cluster(WirelessLinkView link, TypeKey type) {
-            return new Row(null, type, List.of(), List.of(link), link.statistics());
-        }
-
-        static Row category(TypeKey type, List<Row> children) {
-            List<WirelessLinkView> links = children.stream()
-                .flatMap(
-                    row -> row.links()
-                        .stream())
-                .toList();
-            return new Row(null, type, List.copyOf(children), links, summarize(links));
-        }
-
-        boolean category() {
-            return !children.isEmpty();
+            return new Row(null, type, List.of(link), link.statistics());
         }
 
         boolean group() {
-            return machine != null || category();
-        }
-
-        private RowKey orderKey() {
-            return new RowKey(category() ? type : null, category() ? null : target(), group());
+            return machine != null;
         }
 
         WirelessLinkView link() {
@@ -218,42 +170,6 @@ final class WirelessMachineGroups {
                         .equals("active")) ? "active" : "waiting";
         }
 
-        Row filtered(Filter filter, WirelessInterfaceView interfaces, WirelessSearchNames searchNames) {
-            boolean searching = !filter.query()
-                .isEmpty();
-            if (!searching && filter.dimension() == null && filter.state() == 0) return this;
-            ItemStack icon = searching ? icon() : null;
-            String machineName = (group() || type != null) && icon != null ? searchNames.name(icon) : "";
-            String position = searching ? coordinates(target()) : "";
-            List<WirelessLinkView> matches = links.stream()
-                .filter(link -> {
-                    String text = "", positions = "";
-                    if (searching) {
-                        ItemStack device = link.node()
-                            .getGridBlock()
-                            .getMachineRepresentation();
-                        StringBuilder names = new StringBuilder(machineName).append(' ')
-                            .append(String.join(" ", link.names()))
-                            .append(' ')
-                            .append(searchNames.name(device));
-                        for (var name : interfaces.names(link)) names.append(' ')
-                            .append(searchNames.name(name));
-                        text = names.toString();
-                        positions = position + " " + coordinates(link.target());
-                    }
-                    return filter.matches(
-                        text,
-                        link.target()
-                            .dimension(),
-                        positions,
-                        link.paused(),
-                        link.conflicted() ? "conflict" : link.state());
-                })
-                .toList();
-            return matches.isEmpty() ? null
-                : matches.size() == links.size() ? this
-                    : new Row(machine, type, List.of(), matches, summarize(matches));
-        }
     }
 
     static List<Row> group(List<WirelessLinkView> links, WirelessInterfaceView interfaces) {
@@ -268,71 +184,6 @@ final class WirelessMachineGroups {
         }
         machines.forEach((machine, members) -> rows.add(new Row(machine, members)));
         return rows;
-    }
-
-    static List<Row> collapse(List<Row> rows) {
-        List<Row> result = new ArrayList<>();
-        Map<TypeKey, List<Row>> types = new LinkedHashMap<>();
-        for (Row row : rows) {
-            if (row.type() == null) result.add(row);
-            else types.computeIfAbsent(row.type(), ignored -> new ArrayList<>())
-                .add(row);
-        }
-        types.forEach((type, children) -> {
-            // Membership order must not change just because one machine's online count changes.
-            children.sort(
-                Comparator.comparing(
-                    row -> row.target()
-                        .toString()));
-            result.add(children.size() == 1 ? children.get(0) : Row.category(type, children));
-        });
-        return result;
-    }
-
-    static void sort(List<Row> rows) {
-        rows.sort(
-            Comparator.comparing(Row::paused)
-                .thenComparing(Row::statistics, WirelessNetworkStatistics.DISPLAY_ORDER)
-                .thenComparing(
-                    row -> row.category() ? row.type()
-                        .sortKey()
-                        : row.target()
-                            .toString()));
-    }
-
-    private record RowKey(TypeKey type, Address target, boolean group) {}
-
-    record RowOrder(RowKey key, boolean paused, boolean pinned) {}
-
-    static List<RowOrder> sort(List<Row> rows, List<RowOrder> previous) {
-        sort(rows);
-        boolean[] pinned = new boolean[rows.size()];
-        if (!previous.isEmpty()) {
-            Map<RowKey, Row> remaining = new LinkedHashMap<>();
-            for (Row row : rows) remaining.put(row.orderKey(), row);
-            Row[] ordered = new Row[rows.size()];
-            int lastSlot = ordered.length - 1;
-            // Only a pause observed in this view pins a row; already-paused arrivals stay at the end.
-            for (int i = previous.size() - 1; i >= 0; i--) {
-                RowOrder old = previous.get(i);
-                Row row = remaining.get(old.key());
-                if (row == null || !row.paused() || old.paused() && !old.pinned()) continue;
-                int slot = Math.min(i, lastSlot);
-                ordered[slot] = row;
-                pinned[slot] = true;
-                lastSlot = slot - 1;
-                remaining.remove(old.key());
-            }
-            var moving = remaining.values()
-                .iterator();
-            for (int i = 0; i < ordered.length; i++) rows.set(i, ordered[i] == null ? moving.next() : ordered[i]);
-        }
-        List<RowOrder> order = new ArrayList<>(rows.size());
-        for (int i = 0; i < rows.size(); i++) {
-            Row row = rows.get(i);
-            order.add(new RowOrder(row.orderKey(), row.paused(), pinned[i]));
-        }
-        return order;
     }
 
     static Classification classify(WirelessLinkView link, Map<MTEMultiBlockBase, Boolean> validControllers,

@@ -1,6 +1,6 @@
 package com.science.gtnl.common.wireless;
 
-/** Shared GUI action IDs. Row actions encode their zero-based row as an offset from the action ID. */
+/** GUI row buttons encode a local row offset; network requests send the action type and an opaque target ID. */
 public final class WirelessCardActions {
 
     public static final int PREVIOUS_PAGE = 0;
@@ -11,7 +11,6 @@ public final class WirelessCardActions {
     public static final int RENAME = 5;
     public static final int APPLY_FILTER = 6;
     public static final int CYCLE_FILTER = 7;
-    public static final int SET_PAGE_SIZE = 8;
     public static final int CYCLE_VISUALISATION = 9;
 
     public static final int TOGGLE_PAUSE = 10;

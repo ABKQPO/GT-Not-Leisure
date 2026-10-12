@@ -1,30 +1,29 @@
 package com.science.gtnl.common.wireless;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-import com.science.gtnl.common.wireless.WirelessMachineGroups.Row;
-
-/** A frozen payload plus server-only member identities. Callers receive copies of mutable wire data. */
+/** A frozen payload and server-issued operation targets, independent of client sorting and pagination. */
 final class WirelessCardSnapshot {
 
-    private final NBTTagCompound payload;
-    private final List<Row> rows;
+    static final int CHUNK_BYTES = 24 * 1024;
 
-    WirelessCardSnapshot(NBTTagCompound payload, List<Row> rows) {
+    private final NBTTagCompound payload;
+    private final Map<Long, WirelessLinkView> targets;
+
+    WirelessCardSnapshot(NBTTagCompound payload, Map<Long, WirelessLinkView> targets) {
         this.payload = (NBTTagCompound) payload.copy();
-        this.rows = List.copyOf(rows);
+        this.targets = Map.copyOf(targets);
     }
 
-    List<Row> rows() {
-        return rows;
+    WirelessLinkView target(long id) {
+        return targets.get(id);
     }
 
     boolean sameView(WirelessCardSnapshot previous) {
-        return previous != null && payload.equals(previous.payload) && sameRows(rows, previous.rows);
+        return previous != null && payload.equals(previous.payload);
     }
 
     NBTTagCompound packet(long session, long revision, NBTTagList highlight) {
@@ -34,30 +33,4 @@ final class WirelessCardSnapshot {
         if (highlight != null) data.setTag("highlight", highlight.copy());
         return data;
     }
-
-    static boolean sameRows(List<Row> next, List<Row> previous) {
-        if (next.size() != previous.size()) return false;
-        for (int i = 0; i < next.size(); i++) {
-            Row a = next.get(i), b = previous.get(i);
-            if (a.machine() != b.machine() || !Objects.equals(a.type(), b.type())
-                || a.category() != b.category()
-                || (a.category() ? !sameRows(a.children(), b.children()) : !sameTargets(a.links(), b.links())))
-                return false;
-        }
-        return true;
-    }
-
-    static boolean sameTargets(List<WirelessLinkView> next, List<WirelessLinkView> previous) {
-        if (next.size() != previous.size()) return false;
-        for (int i = 0; i < next.size(); i++) {
-            var a = next.get(i);
-            var b = previous.get(i);
-            // Replacing a non-anchor node can leave every displayed metric unchanged.
-            // Its membership must still invalidate clicks issued against the older cluster.
-            if (a.node() != b.node() || !a.members()
-                .equals(b.members())) return false;
-        }
-        return true;
-    }
-
 }

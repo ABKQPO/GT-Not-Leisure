@@ -185,7 +185,12 @@ abstract class WirelessCardPanel extends ModularPanel {
     }
 
     void sendAction(int id) {
-        container.sync.request(id, "", "", container.display.getInteger("filterState"), 0);
+        if (container.clientView()
+            .navigate(id)) return;
+        long target = isRowAction(id) ? container.display.getTagList("rows", 10)
+            .getCompoundTagAt(rowIndex(id))
+            .getLong("targetId") : 0;
+        container.sync.request(type(id), target, "", 0);
     }
 
     @Override

@@ -67,7 +67,7 @@ final class WirelessCardDetailsPanel extends WirelessCardPanel {
     public void closeIfOpen() {
         if (!closing) {
             closing = true;
-            if (container.display.getBoolean("detail")) container.sync.request(CLOSE_DETAILS, "", "", 0, 0);
+            if (container.display.getBoolean("detail")) container.sync.request(CLOSE_DETAILS, 0, "", 0);
         }
         super.closeIfOpen();
     }

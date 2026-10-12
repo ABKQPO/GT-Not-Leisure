@@ -58,7 +58,7 @@ final class WirelessCardViewCodec {
         String name = position.startsWith("D")
             ? dimensions.getString(position.substring(1, end < 0 ? position.length() : end))
             : "";
-        // Keep the numeric form for coordinate copying and server-side filtering.
+        // Keep the numeric form for coordinate copying and client-side filtering.
         data.setString(key + "Label", name.isEmpty() ? position : name + " " + position);
     }
 
@@ -81,27 +81,22 @@ final class WirelessCardViewCodec {
                 .icon());
     }
 
-    static void localizeInterfaceNames(NBTTagCompound data) {
-        NBTTagList rows = data.getTagList("rows", 10);
-        for (int rowIndex = 0; rowIndex < rows.tagCount(); rowIndex++) {
-            NBTTagCompound row = rows.getCompoundTagAt(rowIndex);
-            NBTTagList entries = row.getTagList("interfaceNames", 10);
-            if (entries.tagCount() == 0) continue;
-            List<String> names = new ArrayList<>();
-            for (int i = 0; i < entries.tagCount(); i++) {
-                NBTTagCompound entry = entries.getCompoundTagAt(i);
-                names.add(
-                    InterfaceNameLocalization.localizeName(
-                        entry.getString("rawName"),
-                        entry.getString("suffix"),
-                        ItemStack.loadItemStackFromNBT(entry.getCompoundTag("icon"))));
-            }
-            int count = row.getInteger("interfaceNameCount");
-            String targetName = String.join(" / ", names) + (count > entries.tagCount() ? " … (" + count + ")" : "");
-            row.setString("targetName", targetName);
-            if (row.getString("name")
-                .isEmpty()) row.setString("name", targetName);
+    static void localizeInterfaceNames(NBTTagCompound row) {
+        NBTTagList entries = row.getTagList("interfaceNames", 10);
+        if (entries.tagCount() == 0) return;
+        List<String> names = new ArrayList<>();
+        for (int i = 0; i < entries.tagCount(); i++) {
+            NBTTagCompound entry = entries.getCompoundTagAt(i);
+            names.add(
+                InterfaceNameLocalization.localizeName(
+                    entry.getString("rawName"),
+                    entry.getString("suffix"),
+                    ItemStack.loadItemStackFromNBT(entry.getCompoundTag("icon"))));
         }
+        int count = row.getInteger("interfaceNameCount");
+        String targetName = String.join(" / ", names) + (count > entries.tagCount() ? " … (" + count + ")" : "");
+        row.setString("targetName", targetName);
+        if (row.getString("name")
+            .isEmpty()) row.setString("name", targetName);
     }
-
 }

@@ -1,5 +1,7 @@
 package com.science.gtnl.common.wireless;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -9,17 +11,17 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
 
-import com.cleanroommc.modularui.network.NetworkUtils;
 import com.cleanroommc.modularui.screen.ModularContainer;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.WirelessFrequencyCard;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -42,6 +44,14 @@ public final class WirelessCardContainer extends ModularContainer {
     WirelessCardSnapshot snapshot;
     NBTTagList pendingHighlight;
     public volatile NBTTagCompound display = new NBTTagCompound();
+    @SideOnly(Side.CLIENT)
+    private WirelessCardClientView clientView;
+
+    @SideOnly(Side.CLIENT)
+    public WirelessCardClientView clientView() {
+        if (clientView == null) clientView = new WirelessCardClientView(this);
+        return clientView;
+    }
 
     public WirelessCardContainer(EntityPlayer player, int location) {
         this.player = player;
@@ -51,7 +61,6 @@ public final class WirelessCardContainer extends ModularContainer {
         cardSlot = slot == null ? -1 : slot.index();
         card = slot == null ? null : cardInventory.getStackInSlot(cardSlot);
         binding = card == null ? null : WirelessCardBinding.read(card.getTagCompound());
-        view.navigation.collapseTypes = WirelessCardBinding.collapseTypes(card == null ? null : card.getTagCompound());
         // NetHandlerPlayServer queries this slot after onItemRightClick returns, even for an item GUI.
         if (slot != null) addSlotToContainer(new Slot(cardInventory, cardSlot, -10000, -10000) {
 
@@ -101,15 +110,37 @@ public final class WirelessCardContainer extends ModularContainer {
 
     void update(boolean force) {
         if (!(player instanceof EntityPlayerMP)) return;
-        var next = view
-            .build(binding, card, session, data -> sync.syncToClient(2, buf -> ByteBufUtils.writeTag(buf, data)));
+        var next = view.build(binding, card);
         boolean changed = force || !next.sameView(snapshot);
         snapshot = next;
         if (changed) revision++;
         if (changed || pendingHighlight != null) {
             NBTTagCompound data = next.packet(session, revision, pendingHighlight);
             pendingHighlight = null;
-            sync.syncToClient(0, buf -> ByteBufUtils.writeTag(buf, data));
+            sendSnapshot(data);
+        }
+    }
+
+    private void sendSnapshot(NBTTagCompound data) {
+        try {
+            byte[] compressed = CompressedStreamTools.compress(data);
+            long sequence = revision;
+            for (int offset = 0; offset < compressed.length; offset += WirelessCardSnapshot.CHUNK_BYTES) {
+                int start = offset;
+                byte[] chunk = Arrays.copyOfRange(
+                    compressed,
+                    start,
+                    Math.min(compressed.length, start + WirelessCardSnapshot.CHUNK_BYTES));
+                sync.syncToClient(0, buf -> {
+                    buf.writeLong(sequence);
+                    buf.writeInt(compressed.length);
+                    buf.writeInt(start);
+                    buf.writeShort(chunk.length);
+                    buf.writeBytes(chunk);
+                });
+            }
+        } catch (IOException failure) {
+            ScienceNotLeisure.LOG.error("Cannot encode wireless card view", failure);
         }
     }
 
@@ -121,42 +152,38 @@ public final class WirelessCardContainer extends ModularContainer {
         }
 
         @SideOnly(Side.CLIENT)
-        public void request(int action, String text, String dimension, int filter, long nameRevision) {
+        public void request(int action, long target, String text, long nameRevision) {
             if (!isValid() || !display.hasKey("session")) return;
             var request = new Action(
                 display.getLong("session"),
                 display.getLong("revision"),
                 action,
+                target,
                 text,
-                dimension,
-                filter,
                 nameRevision);
             syncToServer(1, request::write);
         }
 
         @Override
         public void readOnServer(int id, PacketBuffer buf) {
-            if (id == 2) {
-                readSearchNames(buf);
-                return;
-            }
             if (id != 1) return;
             final Action request;
             try {
                 request = Action.read(buf);
-            } catch (RuntimeException malformed) {
+            } catch (IOException | RuntimeException malformed) {
                 return;
             }
-            if (request.text() == null || request.dimension() == null) return;
+            if (request.text() == null || request.text()
+                .length() > 32) return;
             ServerThreadUtil.addScheduledTask(() -> {
-                if (isValid() && player.openContainer == WirelessCardContainer.this) {
-                    action(
-                        request.session(),
+                if (isValid() && player.openContainer == WirelessCardContainer.this
+                    && canInteractWith(player)
+                    && session == request.session()) {
+                    actions.execute(
                         request.revision(),
                         request.action(),
+                        request.target(),
                         request.text(),
-                        request.dimension(),
-                        request.filter(),
                         request.nameRevision());
                 }
             });
@@ -165,69 +192,46 @@ public final class WirelessCardContainer extends ModularContainer {
         @Override
         @SideOnly(Side.CLIENT)
         public void readOnClient(int id, PacketBuffer buf) {
-            if (id != 0 && id != 2) return;
-            NBTTagCompound data = ByteBufUtils.readTag(buf);
+            if (id != 0) return;
+            long sequence = buf.readLong();
+            int total = buf.readInt(), offset = buf.readInt(), length = buf.readUnsignedShort();
+            if (total <= 0 || total > 64 * 1024 * 1024
+                || offset < 0
+                || offset > total
+                || length == 0
+                || length > WirelessCardSnapshot.CHUNK_BYTES
+                || length > total - offset
+                || length > buf.readableBytes()) return;
+            byte[] chunk = new byte[length];
+            buf.readBytes(chunk);
             Minecraft minecraft = Minecraft.getMinecraft();
             minecraft.func_152344_a(() -> {
-                if (data == null || !isValid()
-                    || minecraft.thePlayer != player
-                    || player.openContainer != WirelessCardContainer.this) return;
-                if (id == 2) {
-                    syncToServer(2, WirelessSearchNames.localize(data)::write);
+                if (!isValid() || minecraft.thePlayer != player || player.openContainer != WirelessCardContainer.this)
                     return;
-                }
-                WirelessCardViewCodec.localizeInterfaceNames(data);
-                WirelessCardViewCodec.localizeDimensions(data);
-                display = data;
-                if (data.hasKey("highlight", 9))
-                    com.science.gtnl.client.WirelessWorldHighlight.show(minecraft, data.getTagList("highlight", 10));
+                clientView().acceptChunk(sequence, total, offset, chunk);
             });
-        }
-
-        private void readSearchNames(PacketBuffer buf) {
-            try {
-                var reply = WirelessSearchNames.Reply.read(buf);
-                ServerThreadUtil.addScheduledTask(() -> {
-                    if (isValid() && player.openContainer == WirelessCardContainer.this
-                        && session == reply.session()
-                        && canInteractWith(player)) {
-                        view.searchNames.accept(reply);
-                    }
-                });
-            } catch (java.io.IOException | RuntimeException malformed) {
-                // Ignore malformed display-only replies.
-            }
         }
     }
 
-    record Action(long session, long revision, int action, String text, String dimension, int filter,
-        long nameRevision) {
+    record Action(long session, long revision, int action, long target, String text, long nameRevision) {
 
-        static Action read(PacketBuffer buf) {
+        static Action read(PacketBuffer buf) throws IOException {
             return new Action(
                 buf.readLong(),
                 buf.readLong(),
                 buf.readInt(),
-                NetworkUtils.readStringSafe(buf),
-                NetworkUtils.readStringSafe(buf),
-                buf.readUnsignedByte(),
+                buf.readLong(),
+                buf.readStringFromBuffer(32),
                 buf.readLong());
         }
 
-        void write(PacketBuffer buf) {
+        void write(PacketBuffer buf) throws IOException {
             buf.writeLong(session);
             buf.writeLong(revision);
             buf.writeInt(action);
-            NetworkUtils.writeStringSafe(buf, text);
-            NetworkUtils.writeStringSafe(buf, dimension);
-            buf.writeByte(filter);
+            buf.writeLong(target);
+            buf.writeStringToBuffer(text);
             buf.writeLong(nameRevision);
         }
-    }
-
-    public void action(long session, long revision, int action, String text, String dimension, int filterState,
-        long nameRevision) {
-        if (!canInteractWith(player) || this.session != session) return;
-        actions.execute(revision, action, text, dimension, filterState, nameRevision);
     }
 }

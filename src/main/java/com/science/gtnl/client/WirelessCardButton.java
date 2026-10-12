@@ -71,7 +71,6 @@ final class WirelessCardButton {
                 .overlay(false, TOGGLE_OFF)
                 .overlay(true, TOGGLE_ON);
         } else if (id == CYCLE_FILTER) {
-            // Read the acknowledged state; the setter sends an action and cannot mutate authoritative state locally.
             widget = new com.cleanroommc.modularui.widgets.CycleButtonWidget() {
 
                 @Override
