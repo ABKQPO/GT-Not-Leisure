@@ -30,6 +30,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
+import com.cleanroommc.modularui.api.layout.IViewportStack;
 import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.science.gtnl.common.wireless.WirelessCardVisualisation;
@@ -59,6 +60,12 @@ final class WirelessCardButton {
             widget = new com.cleanroommc.modularui.widgets.ToggleButton() {
 
                 @Override
+                public boolean canBeSeen(IViewportStack stack) {
+                    // MUI2's drag preview otherwise draws disabled child backgrounds.
+                    return isEnabled() && super.canBeSeen(stack);
+                }
+
+                @Override
                 public Result onMousePressed(int button) {
                     return button == 0 && available ? super.onMousePressed(button) : Result.ACCEPT;
                 }
@@ -73,6 +80,11 @@ final class WirelessCardButton {
             widget = new com.cleanroommc.modularui.widgets.CycleButtonWidget() {
 
                 @Override
+                public boolean canBeSeen(IViewportStack stack) {
+                    return isEnabled() && super.canBeSeen(stack);
+                }
+
+                @Override
                 public Result onMousePressed(int button) {
                     return button == 0 && available ? super.onMousePressed(button) : Result.ACCEPT;
                 }
@@ -84,7 +96,7 @@ final class WirelessCardButton {
                         ignored -> panel.action(id)));
             styleTextButton();
         } else {
-            widget = new ButtonWidget<>().onMousePressed(button -> {
+            widget = new ActionButton().onMousePressed(button -> {
                 if (button != 0 || !available) return false;
                 panel.action(id);
                 return true;
@@ -112,6 +124,14 @@ final class WirelessCardButton {
                             panel.view()
                                 .getBoolean("collapseTypes") ? "options.on" : "options.off")))
             .tooltipAutoUpdate(true);
+    }
+
+    private static final class ActionButton extends ButtonWidget<ActionButton> {
+
+        @Override
+        public boolean canBeSeen(IViewportStack stack) {
+            return isEnabled() && super.canBeSeen(stack);
+        }
     }
 
     private void styleTextButton() {
