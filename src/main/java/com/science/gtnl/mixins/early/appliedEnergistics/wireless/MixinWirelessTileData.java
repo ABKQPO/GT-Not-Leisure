@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.science.gtnl.common.wireless.WirelessTileData;
 
-/** Owns saved wireless data independently of AE node lifecycle; this hook alone never creates a connection. */
 @Mixin(TileEntity.class)
 public class MixinWirelessTileData implements WirelessTileData {
 

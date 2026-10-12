@@ -56,7 +56,6 @@ public class WorldListener implements IWorldAccess {
         access.replacePositions(listener, positions);
     }
 
-    /** Replaces one listener's arbitrary coordinate set in this world. Duplicate coordinates are harmless. */
     public void registerBlockStateListener(World world, IBlockStateListener listener, Iterable<BlockPos> coordinates) {
         if (world.isRemote) return;
         LongSet positions = new LongOpenHashSet();
@@ -65,7 +64,7 @@ public class WorldListener implements IWorldAccess {
             .replacePositions(listener, positions);
     }
 
-    void replacePositions(IBlockStateListener listener, LongSet positions) {
+    public void replacePositions(IBlockStateListener listener, LongSet positions) {
         if (positions.equals(listenerPositions.get(listener))) return;
         removeListener(listener);
         if (positions.isEmpty()) return;
@@ -86,7 +85,7 @@ public class WorldListener implements IWorldAccess {
         if (access != null) access.removeListener(listener);
     }
 
-    private void removeListener(IBlockStateListener listener) {
+    public void removeListener(IBlockStateListener listener) {
         LongSet positions = listenerPositions.remove(listener);
         if (positions == null) return;
         LongSet removedChunks = new LongOpenHashSet();
@@ -174,7 +173,7 @@ public class WorldListener implements IWorldAccess {
         notifyChunk(event);
     }
 
-    private void notifyChunk(ChunkEvent event) {
+    public void notifyChunk(ChunkEvent event) {
         WorldListener access = worlds.get(event.world);
         if (access == null) return;
         int chunkX = event.getChunk().xPosition;

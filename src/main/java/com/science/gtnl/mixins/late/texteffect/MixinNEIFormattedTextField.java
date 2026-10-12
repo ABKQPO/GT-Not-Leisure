@@ -29,8 +29,8 @@ public abstract class MixinNEIFormattedTextField extends GuiTextField {
             value = "INVOKE",
             target = "Lnet/minecraft/util/EnumChatFormatting;getTextWithoutFormattingCodes(Ljava/lang/String;)Ljava/lang/String;",
             remap = true))
-    private String gtnl$preserveEditableEffects(String value, Operation<String> original) {
-        return EffectTextParser.containsMarkers(value) ? value : original.call(value);
+    private String gtnl$preserveEditableEffects(String p_110646_0_, Operation<String> original) {
+        return EffectTextParser.containsMarkers(p_110646_0_) ? p_110646_0_ : original.call(p_110646_0_);
     }
 
     @Inject(method = "drawTextBox", remap = true, at = @At("HEAD"), cancellable = true)

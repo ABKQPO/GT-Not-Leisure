@@ -57,13 +57,13 @@ public abstract class MixinContainerPatternTerm extends ContainerMEMonitorable {
         at = @At(
             value = "INVOKE",
             target = "Lappeng/api/parts/IPatternTerminal;getInventoryByName(Ljava/lang/String;)Lnet/minecraft/inventory/IInventory;"))
-    private void gtnl$prepareProcessingPatternInventory(InventoryPlayer inventoryPlayer, ITerminalHost terminalHost,
+    private void gtnl$prepareProcessingPatternInventory(InventoryPlayer ip, ITerminalHost monitorable,
         boolean craftingModeSupport, CallbackInfo callbackInfo) {
         if (!ProcessingPatternCapacity.isEnabled()) {
             return;
         }
-        if (terminalHost instanceof PartPatternTerminalEx) {
-            ((IProcessingPatternInventoryAccess) terminalHost).gtnl$resizeProcessingPatternInventory();
+        if (monitorable instanceof PartPatternTerminalEx) {
+            ((IProcessingPatternInventoryAccess) monitorable).gtnl$resizeProcessingPatternInventory();
         }
     }
 }

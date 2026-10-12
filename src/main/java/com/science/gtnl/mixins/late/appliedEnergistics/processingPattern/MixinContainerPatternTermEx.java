@@ -28,8 +28,7 @@ public abstract class MixinContainerPatternTermEx extends ContainerPatternTerm {
     }
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void gtnl$rememberPageCount(InventoryPlayer inventoryPlayer, ITerminalHost terminalHost,
-        CallbackInfo callbackInfo) {
+    private void gtnl$rememberPageCount(InventoryPlayer ip, ITerminalHost monitorable, CallbackInfo callbackInfo) {
         if (!ProcessingPatternCapacity.isEnabled()) {
             return;
         }

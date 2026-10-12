@@ -64,10 +64,6 @@ public class PhysicalClusterTracker<N, F> {
         return claims.getOrDefault(node, Set.of());
     }
 
-    /**
-     * Bound each physical component independently. An unfinished frontier quarantines every scan that reaches it,
-     * including scans started at other saved nodes in the same component. Only complete components spread claims.
-     */
     public void refresh(Topology<N> topology, Collection<N> extraSeeds, Function<N, Set<F>> savedClaims,
         UnaryOperator<F> frequencyIdentity) {
         Map<N, Scan> owners = new IdentityHashMap<>();

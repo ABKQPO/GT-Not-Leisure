@@ -70,13 +70,13 @@ public abstract class MixinMTEResearchStation extends TTMultiblockBase implement
             ordinal = 0,
             value = "INVOKE",
             target = "Lgregtech/api/util/GTUtility;areStacksEqual(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;Z)Z"))
-    private boolean gtnl$filterLockedResearchRecipe(ItemStack stack1, ItemStack stack2, boolean matchNBT,
+    private boolean gtnl$filterLockedResearchRecipe(ItemStack aStack1, ItemStack aStack2, boolean aIgnoreNBT,
         @Local(name = "assRecipe") TecTechRecipeMaps.TTResearchStationALRecipe assRecipe) {
         if (gtnl$lockedItems[0] != null
-            && !GTUtility.areStacksEqual(assRecipe.mOutput, gtnl$lockedItems[0], matchNBT)) {
+            && !GTUtility.areStacksEqual(assRecipe.mOutput, gtnl$lockedItems[0], aIgnoreNBT)) {
             return false;
         }
 
-        return GTUtility.areStacksEqual(stack1, stack2, matchNBT);
+        return GTUtility.areStacksEqual(aStack1, aStack2, aIgnoreNBT);
     }
 }

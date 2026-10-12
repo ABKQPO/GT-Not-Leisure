@@ -30,14 +30,14 @@ public class MixinLayerBetterElytra {
             value = "INVOKE",
             target = "Lnet/minecraft/client/renderer/texture/TextureManager;bindTexture(Lnet/minecraft/util/ResourceLocation;)V",
             ordinal = 0))
-    private static void gtnl$redirectInfinityElytraTexture(TextureManager textureManager, ResourceLocation location,
+    private static void gtnl$redirectInfinityElytraTexture(TextureManager textureManager, ResourceLocation resource,
         EntityLivingBase entityIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks,
         float scale) {
         ItemStack itemstack = ItemArmorElytra.getElytra(entityIn);
         if (itemstack != null && itemstack.getItem() instanceof InfinityElytra) {
             textureManager.bindTexture(TEXTURE_INFINITY_ELYTRA);
         } else {
-            textureManager.bindTexture(location);
+            textureManager.bindTexture(resource);
         }
     }
 }

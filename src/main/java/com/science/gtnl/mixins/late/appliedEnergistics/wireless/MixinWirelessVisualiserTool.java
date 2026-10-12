@@ -20,7 +20,6 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.items.tools.ToolNetworkVisualiser;
 
-/** Keep AE's collector and refresh policy, including GT proxy links, for frequency-card requests. */
 @Mixin(value = ToolNetworkVisualiser.class, remap = false)
 public abstract class MixinWirelessVisualiserTool {
 
@@ -31,10 +30,10 @@ public abstract class MixinWirelessVisualiserTool {
             value = "INVOKE",
             target = "Lappeng/items/tools/ToolNetworkVisualiser;needToUpdate(Lnet/minecraft/entity/player/EntityPlayerMP;Lappeng/api/util/DimensionalCoord;)Z",
             remap = false))
-    private boolean gtnl$refreshCadence(EntityPlayerMP player, DimensionalCoord position, Operation<Boolean> original,
-        ItemStack stack, World world, Entity entity, int slot, boolean active) {
-        return WirelessCardVisualisation.delegated(stack) ? WirelessCardVisualisation.needsUpdate(player, stack)
-            : original.call(player, position);
+    private boolean gtnl$refreshCadence(EntityPlayerMP player, DimensionalCoord pos, Operation<Boolean> original,
+        ItemStack is, World w, Entity entity, int slot, boolean active) {
+        return WirelessCardVisualisation.delegated(is) ? WirelessCardVisualisation.needsUpdate(player, is)
+            : original.call(player, pos);
     }
 
     @Redirect(
@@ -44,9 +43,9 @@ public abstract class MixinWirelessVisualiserTool {
             value = "INVOKE",
             target = "Lappeng/api/util/DimensionalCoord;isInWorld(Lnet/minecraft/world/World;)Z",
             remap = false))
-    private boolean gtnl$viewerDimension(DimensionalCoord position, World original, ItemStack stack, World world,
-        Entity entity, int slot, boolean active) {
-        return position.isInWorld(WirelessCardVisualisation.delegated(stack) ? entity.worldObj : original);
+    private boolean gtnl$viewerDimension(DimensionalCoord position, World world, ItemStack is, World w, Entity entity,
+        int slot, boolean active) {
+        return position.isInWorld(WirelessCardVisualisation.delegated(is) ? entity.worldObj : world);
     }
 
     @Redirect(
@@ -56,11 +55,11 @@ public abstract class MixinWirelessVisualiserTool {
             value = "INVOKE",
             target = "Lappeng/core/sync/network/NetworkHandler;sendTo(Lappeng/core/sync/AppEngPacket;Lnet/minecraft/entity/player/EntityPlayerMP;)V",
             remap = false))
-    private void gtnl$cardSnapshot(NetworkHandler network, AppEngPacket packet, EntityPlayerMP player, ItemStack stack,
-        World world, Entity entity, int slot, boolean active) {
-        if (WirelessCardVisualisation.delegated(stack)) {
+    private void gtnl$cardSnapshot(NetworkHandler network, AppEngPacket message, EntityPlayerMP player, ItemStack is,
+        World w, Entity entity, int slot, boolean active) {
+        if (WirelessCardVisualisation.delegated(is)) {
             ScienceNotLeisure.network
-                .sendTo(new WirelessVisualisationPacket(stack.getTagCompound(), player.dimension, packet), player);
-        } else network.sendTo(packet, player);
+                .sendTo(new WirelessVisualisationPacket(is.getTagCompound(), player.dimension, message), player);
+        } else network.sendTo(message, player);
     }
 }

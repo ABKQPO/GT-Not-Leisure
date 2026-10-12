@@ -26,7 +26,7 @@ public abstract class MixinWirelessPartPlacement {
     public abstract IPart getPart(ForgeDirection side);
 
     @Inject(method = "addPart", at = @At("RETURN"))
-    private void gtnl$placedPart(ItemStack stack, ForgeDirection side, EntityPlayer player,
+    private void gtnl$placedPart(ItemStack is, ForgeDirection side, EntityPlayer player,
         CallbackInfoReturnable<ForgeDirection> cir) {
         ForgeDirection added = cir.getReturnValue();
         if (player != null && !player.worldObj.isRemote && added != null) {

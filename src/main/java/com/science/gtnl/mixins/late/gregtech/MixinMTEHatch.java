@@ -60,13 +60,13 @@ public abstract class MixinMTEHatch extends MTEBasicTank implements ICustomNameO
     }
 
     @Inject(method = "loadNBTData", at = @At("TAIL"))
-    private void gtnl$loadCustomName(NBTTagCompound nbt, CallbackInfo callbackInfo) {
-        gtnl$customName = nbt.getString("gtnl$customName");
+    private void gtnl$loadCustomName(NBTTagCompound aNBT, CallbackInfo callbackInfo) {
+        gtnl$customName = aNBT.getString("gtnl$customName");
     }
 
     @Inject(method = "saveNBTData", at = @At("TAIL"))
-    private void gtnl$saveCustomName(NBTTagCompound nbt, CallbackInfo callbackInfo) {
-        if (!gtnl$customName.isEmpty()) nbt.setString("gtnl$customName", gtnl$customName);
+    private void gtnl$saveCustomName(NBTTagCompound aNBT, CallbackInfo callbackInfo) {
+        if (!gtnl$customName.isEmpty()) aNBT.setString("gtnl$customName", gtnl$customName);
     }
 
     @Override
@@ -140,7 +140,7 @@ public abstract class MixinMTEHatch extends MTEBasicTank implements ICustomNameO
     }
 
     @Inject(method = "updateTexture", at = @At("HEAD"))
-    private void gtnl$bindInterfaceNameController(int textureId, CallbackInfo callbackInfo) {
+    private void gtnl$bindInterfaceNameController(int id, CallbackInfo callbackInfo) {
         gtnl$bindInterfaceNameController();
     }
 

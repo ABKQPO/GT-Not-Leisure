@@ -25,7 +25,6 @@ public abstract class MixinMTEHatchSteamBusOutput extends MTEHatchOutputBus {
     }
 
     @Unique
-    @Override
     public boolean isFilteredToItem(GTUtility.ItemId id) {
         if (lockedItem == null) return false;
 

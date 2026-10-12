@@ -12,25 +12,23 @@ import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.me.GridNode;
 
-/** Node initialization, side/color changes and part removal can occur without a vanilla block notification. */
 @Mixin(value = GridNode.class, remap = false)
 public abstract class MixinWirelessGridNode {
 
-    // The list has changed here, but AE has not notified the host yet.
     @Inject(
         method = { "addConnection", "removeConnection" },
         at = @At(value = "INVOKE", target = "Lappeng/api/networking/IGridConnection;hasDirection()Z"))
-    private void gtnl$connectionsChanged(IGridConnection connection, CallbackInfo ci) {
-        WirelessChannelManager.connectionsChanged((IGridNode) (Object) this);
+    private void gtnl$connectionsChanged(IGridConnection gridConnection, CallbackInfo ci) {
+        WirelessChannelManager.connectionsChanged((IGridNode) this);
     }
 
     @Inject(method = "updateState", at = @At("RETURN"))
     private void gtnl$nodeUpdated(CallbackInfo ci) {
-        WirelessClusterManager.nodeChanged((IGridNode) (Object) this);
+        WirelessClusterManager.nodeChanged((IGridNode) this);
     }
 
     @Inject(method = "destroy", at = @At("HEAD"))
     private void gtnl$nodeDestroyed(CallbackInfo ci) {
-        WirelessClusterManager.nodeChanged((IGridNode) (Object) this);
+        WirelessClusterManager.nodeChanged((IGridNode) this);
     }
 }

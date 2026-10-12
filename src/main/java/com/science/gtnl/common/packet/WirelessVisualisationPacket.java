@@ -14,7 +14,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 
-/** Native AE visualisation payload, qualified by source/owner and viewer dimension to reject stale replies. */
 public class WirelessVisualisationPacket extends ClientboundPacket {
 
     private NBTTagCompound bindingTag;

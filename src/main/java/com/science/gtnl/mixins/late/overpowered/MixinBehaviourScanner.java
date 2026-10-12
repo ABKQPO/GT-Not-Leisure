@@ -39,7 +39,7 @@ public class MixinBehaviourScanner {
             shift = At.Shift.BEFORE))
     private void GTNotLeisure$addScanInfo(MetaBaseItem aItem, ItemStack aStack, EntityPlayer aPlayer, World aWorld,
         int aX, int aY, int aZ, ForgeDirection side, float hitX, float hitY, float hitZ,
-        CallbackInfoReturnable<Boolean> cir, @Local List<String> tList) {
+        CallbackInfoReturnable<Boolean> cir, @Local List<String> list) {
         if (ModList.Overpowered.isModLoaded() || !MainConfig.machine.enableRecipeOutputChance) return;
         TileEntity tile = aWorld.getTileEntity(aX, aY, aZ);
         if (!(tile instanceof BaseMetaTileEntity baseMetaTileEntity)) {
@@ -66,6 +66,6 @@ public class MixinBehaviourScanner {
             StringUtils.voltageTooltipFormatted(tier),
             StringUtils.voltageTooltipFormatted(baseTier));
 
-        tList.add(debugMessage);
+        list.add(debugMessage);
     }
 }

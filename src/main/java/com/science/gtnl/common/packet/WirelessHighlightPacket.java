@@ -9,7 +9,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 
-/** Sent after successful movement; it remains valid after the card container closes. */
 public class WirelessHighlightPacket extends ClientboundPacket {
 
     private int dimension, x, y, z;

@@ -20,8 +20,8 @@ public class MixinGTShapedRecipe {
     @Inject(
         method = "<init>(Lnet/minecraft/item/ItemStack;ZZ[Lnet/minecraft/enchantment/Enchantment;[I[Ljava/lang/Object;)V",
         at = @At("RETURN"))
-    private void init(ItemStack aResult, boolean aRemovableByGT, boolean aKeepingNBT, Enchantment[] aEnchantmentsAdded,
-        int[] aEnchantmentLevelsAdded, Object[] aRecipe, CallbackInfo ci) {
+    private void init(ItemStack aResult, boolean aRemovableByGT, boolean aKeepingNBT, Enchantment[] enchants,
+        int[] enchantLevels, Object[] aRecipe, CallbackInfo ci) {
         if (aResult.getItem() instanceof ItemMachines) {
             ObjectArrayList<Object> filteredRecipe = new ObjectArrayList<>();
             for (Object obj : aRecipe) {

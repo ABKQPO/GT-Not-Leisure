@@ -66,26 +66,25 @@ public abstract class MixinCraftingCPUCluster {
             value = "INVOKE",
             target = "Lappeng/me/cache/CraftingGridCache;getMediums(Lappeng/api/networking/crafting/ICraftingPatternDetails;)Ljava/util/List;"),
         require = 1)
-    private List<ICraftingMedium> gtnl$beginDispatch(CraftingGridCache cache, ICraftingPatternDetails details,
+    private List<ICraftingMedium> gtnl$beginDispatch(CraftingGridCache cache, ICraftingPatternDetails key,
         Operation<List<ICraftingMedium>> original,
         @Local(name = "craftingEntry") Map.Entry<ICraftingPatternDetails, ?> craftingEntry,
         @Share("gtnl$batchDispatch") LocalRef<BatchDispatchContext> contextRef) {
-        List<ICraftingMedium> media = original.call(cache, details);
+        List<ICraftingMedium> media = original.call(cache, key);
         List<Boolean> compatibility = new ArrayList<>(media.size());
         for (ICraftingMedium medium : media) {
-            compatibility.add(gtnl$isCompatiblePair(details, medium));
+            compatibility.add(gtnl$isCompatiblePair(key, medium));
         }
 
         Object progress = craftingEntry.getValue();
         if (!(progress instanceof AccessorTaskProgress taskProgress)) {
-            ScienceNotLeisure.LOG
-                .error("AE crafting task progress is missing the GTNL accessor for pattern {}", details);
-            contextRef.set(new BatchDispatchContext(details, null, MediumStrategy.NATIVE));
+            ScienceNotLeisure.LOG.error("AE crafting task progress is missing the GTNL accessor for pattern {}", key);
+            contextRef.set(new BatchDispatchContext(key, null, MediumStrategy.NATIVE));
             return media;
         }
 
-        contextRef.set(
-            new BatchDispatchContext(details, taskProgress, GTNL$BATCH_PLANNER.resolveMediumStrategy(compatibility)));
+        contextRef
+            .set(new BatchDispatchContext(key, taskProgress, GTNL$BATCH_PLANNER.resolveMediumStrategy(compatibility)));
         return media;
     }
 
@@ -254,28 +253,28 @@ public abstract class MixinCraftingCPUCluster {
             value = "INVOKE",
             target = "Lappeng/me/cluster/implementations/CraftingCpuDiagnostics;recordExpectedOutput(Lappeng/api/storage/data/IAEStack;JLappeng/me/diagnostics/CraftingDiagnosticSessionId;)V"),
         require = 1)
-    private void gtnl$recordBatchExpectedOutput(@Coerce Object diagnostics, IAEStack<?> scaledOutput,
-        long outputObservedAtTick, CraftingDiagnosticSessionId nativeSession, Operation<Void> original,
+    private void gtnl$recordBatchExpectedOutput(@Coerce Object diagnostics, IAEStack<?> output,
+        long outputObservedAtTick, CraftingDiagnosticSessionId diagnosticSessionId, Operation<Void> original,
         @Share("gtnl$batchDispatch") LocalRef<BatchDispatchContext> contextRef) {
         BatchDispatchContext context = contextRef.get();
         if (context == null || !context.committed || context.sessionConsumption == null) {
-            original.call(diagnostics, scaledOutput, outputObservedAtTick, nativeSession);
+            original.call(diagnostics, output, outputObservedAtTick, diagnosticSessionId);
             return;
         }
 
         long crafts = context.plan.getCrafts();
-        if (scaledOutput.getStackSize() % crafts != 0) {
+        if (output.getStackSize() % crafts != 0) {
             ScienceNotLeisure.LOG.error(
                 "AE batch diagnostics received a non-divisible output for pattern {}: amount {}, crafts {}",
                 context.details,
-                scaledOutput.getStackSize(),
+                output.getStackSize(),
                 crafts);
             return;
         }
 
-        long baseOutput = scaledOutput.getStackSize() / crafts;
+        long baseOutput = output.getStackSize() / crafts;
         for (SessionAllocation<CraftingDiagnosticSessionId> allocation : context.sessionConsumption.getAllocations()) {
-            IAEStack<?> sessionOutput = scaledOutput.copy();
+            IAEStack<?> sessionOutput = output.copy();
             sessionOutput.setStackSize(GTNL$BATCH_PLANNER.checkedMultiply(baseOutput, allocation.getCrafts()));
             original.call(diagnostics, sessionOutput, outputObservedAtTick, allocation.getSessionId());
         }

@@ -21,7 +21,7 @@ public class MixinGTShapelessRecipe {
         method = "<init>(Lnet/minecraft/item/ItemStack;ZZZ[Lnet/minecraft/enchantment/Enchantment;[I[Ljava/lang/Object;)V",
         at = @At("RETURN"))
     private void init(ItemStack aResult, boolean aRemovableByGT, boolean aKeepingNBT, boolean overwriteNBT,
-        Enchantment[] aEnchantmentsAdded, int[] aEnchantmentLevelsAdded, Object[] aRecipe, CallbackInfo ci) {
+        Enchantment[] enchants, int[] enchantLevels, Object[] aRecipe, CallbackInfo ci) {
         if (aResult.getItem() instanceof ItemMachines) {
             ObjectArrayList<Object> filteredRecipe = new ObjectArrayList<>();
             for (Object obj : aRecipe) {

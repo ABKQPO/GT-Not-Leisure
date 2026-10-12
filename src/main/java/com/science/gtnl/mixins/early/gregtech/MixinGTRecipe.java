@@ -21,8 +21,8 @@ public abstract class MixinGTRecipe {
     private IRecipeMetadataStorage metadataStorage;
 
     @Inject(method = "<init>(Lgregtech/api/util/GTRecipe;Z)V", at = @At("TAIL"), remap = false)
-    private void science$preserveCopiedMetadata(GTRecipe source, boolean shallow, CallbackInfo ci) {
-        IRecipeMetadataStorage sourceMetadata = source.getMetadataStorage();
+    private void science$preserveCopiedMetadata(GTRecipe aRecipe, boolean shallow, CallbackInfo ci) {
+        IRecipeMetadataStorage sourceMetadata = aRecipe.getMetadataStorage();
         metadataStorage = sourceMetadata == EmptyRecipeMetadataStorage.INSTANCE ? sourceMetadata
             : sourceMetadata.copy();
     }

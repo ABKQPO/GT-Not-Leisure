@@ -16,12 +16,12 @@ import appeng.client.render.NetworkVisualiserRender;
 import appeng.items.tools.ToolNetworkVisualiser.VLink;
 import appeng.items.tools.ToolNetworkVisualiser.VNode;
 
-/** Let the native renderer consume a validated card snapshot without swapping the player's inventory item. */
 @Mixin(value = NetworkVisualiserRender.class, remap = false)
 public abstract class MixinWirelessVisualiserRender {
 
     @Inject(method = "networkVisualiser", at = @At("HEAD"))
-    private static void gtnl$invalidateSnapshot(ArrayList<VNode> nodes, ArrayList<VLink> links, CallbackInfo ci) {
+    private static void gtnl$invalidateSnapshot(ArrayList<VNode> vNodeSetNew, ArrayList<VLink> vLinkSetNew,
+        CallbackInfo ci) {
         // A late native-tool reply must not be mistaken for the card's bound network. The qualified
         // card handler restores its cache only after it has applied its own snapshot to AE's renderer.
         WirelessCardInput.clearVisualisation();

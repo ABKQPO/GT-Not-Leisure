@@ -44,10 +44,6 @@ import appeng.tile.networking.TileCreativeEnergyController;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-/**
- * Low-level owned entrance registry. Cluster lifetime and recovery are handled by WirelessClusterManager.
- * All mutations happen on the server thread. No world lookup here may load a chunk or dimension.
- */
 public class WirelessChannelManager {
 
     public static final WirelessChannelManager INSTANCE = new WirelessChannelManager();
@@ -232,7 +228,7 @@ public class WirelessChannelManager {
         IGridNode from = source.node();
         IGridNode to = target.node();
         if (from == null || to == null) throw new IllegalArgumentException("Both ME nodes must be loaded and ready.");
-        if ((Object) to.getMachine() instanceof TileController)
+        if (to.getMachine() instanceof TileController)
             throw new IllegalArgumentException("Cannot target a controller.");
         IGrid grid = from.getGrid();
         IPathingGrid path = grid.getCache(IPathingGrid.class);
@@ -243,7 +239,7 @@ public class WirelessChannelManager {
         if (to.getGrid() != grid) {
             for (IGridNode node : to.getGrid()
                 .getNodes()) {
-                if ((Object) node.getMachine() instanceof TileController) {
+                if (node.getMachine() instanceof TileController) {
                     throw new IllegalArgumentException("Cannot merge a second controller network.");
                 }
             }

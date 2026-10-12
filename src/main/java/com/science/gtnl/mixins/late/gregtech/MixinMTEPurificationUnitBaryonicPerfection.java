@@ -38,9 +38,9 @@ public abstract class MixinMTEPurificationUnitBaryonicPerfection
     }
 
     @ModifyVariable(method = "runMachine", at = @At(value = "LOAD", ordinal = 0), name = "drained")
-    private boolean syncDrainedStatus(boolean original,
+    private boolean syncDrainedStatus(boolean drained,
         @Share("sharedInputCost") LocalRef<FluidStack> sharedInputCostRef) {
-        if (original) return true;
+        if (drained) return true;
 
         FluidStack inputCost = sharedInputCostRef.get();
         if (inputCost == null) return false;
