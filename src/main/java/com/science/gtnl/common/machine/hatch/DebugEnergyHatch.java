@@ -41,7 +41,6 @@ import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gregtech.api.util.GTUtility;
 import it.unimi.dsi.fastutil.ints.IntConsumer;
 import lombok.Getter;
-import lombok.Setter;
 import tectech.thing.metaTileEntity.hatch.MTEHatchEnergyTunnel;
 import tectech.thing.metaTileEntity.pipe.MTEPipeLaser;
 import tectech.thing.metaTileEntity.pipe.MTEPipeLaserMirror;
@@ -52,7 +51,6 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
 
     private static final NumberFormatMUI numberFormat = new NumberFormatMUI();
 
-    @Setter
     @Getter
     public long mEUT = 0, mAMP = 0;
     public boolean producing = true;
@@ -65,6 +63,16 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
         super(aName, 14, aDescription, aTextures);
     }
 
+    public void setMEUT(long eut) {
+        mEUT = Math.max(0L, eut);
+        updateProducingState();
+    }
+
+    public void setMAMP(long amp) {
+        mAMP = Math.max(0L, amp);
+        updateProducingState();
+    }
+
     public static String formatPowerSum(long eut, long amp) {
         return numberFormat.format(amp * eut);
     }
@@ -75,13 +83,11 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
     }
 
     public void setMEUTFromGui(long eut) {
-        mEUT = eut;
-        updateProducingState();
+        setMEUT(eut);
     }
 
     public void setMAMPFromGui(long amp) {
-        mAMP = amp;
-        updateProducingState();
+        setMAMP(amp);
     }
 
     @Override
@@ -265,14 +271,14 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
         super.loadNBTData(aNBT);
-        mEUT = aNBT.getLong("mEUT");
-        mAMP = aNBT.getLong("mAMP");
+        mEUT = Math.max(0L, aNBT.getLong("mEUT"));
+        mAMP = Math.max(0L, aNBT.getLong("mAMP"));
         updateProducingState();
         getBaseMetaTileEntity().setActive(producing);
     }
 
     private void updateProducingState() {
-        producing = mAMP * mEUT >= 0;
+        producing = mAMP >= 0 && mEUT >= 0;
     }
 
     private void moveAround(IGregTechTileEntity aBaseMetaTileEntity) {
