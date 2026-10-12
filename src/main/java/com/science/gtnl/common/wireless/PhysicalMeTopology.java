@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.science.gtnl.api.mixinHelper.ITileController;
 import com.science.gtnl.common.wireless.ChannelBudget.Position;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 
@@ -22,7 +23,6 @@ import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.DimensionalCoord;
-import appeng.tile.networking.TileController;
 
 public class PhysicalMeTopology implements PhysicalClusterTracker.Topology<IGridNode> {
 
@@ -104,7 +104,7 @@ public class PhysicalMeTopology implements PhysicalClusterTracker.Topology<IGrid
 
     @Override
     public boolean blocksWireless(IGridNode node) {
-        return node.getMachine() instanceof TileController;
+        return node.getMachine() instanceof ITileController;
     }
 
     static boolean isPhysical(boolean ownedWireless, boolean directed, Position a, Position b) {

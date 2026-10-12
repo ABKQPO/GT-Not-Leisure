@@ -21,6 +21,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.science.gtnl.api.mixinHelper.ITileController;
 import com.science.gtnl.config.MainConfig;
 
 import appeng.api.AEApi;
@@ -228,7 +229,7 @@ public class WirelessChannelManager {
         IGridNode from = source.node();
         IGridNode to = target.node();
         if (from == null || to == null) throw new IllegalArgumentException("Both ME nodes must be loaded and ready.");
-        if (to.getMachine() instanceof TileController)
+        if (to.getMachine() instanceof ITileController)
             throw new IllegalArgumentException("Cannot target a controller.");
         IGrid grid = from.getGrid();
         IPathingGrid path = grid.getCache(IPathingGrid.class);
@@ -239,7 +240,7 @@ public class WirelessChannelManager {
         if (to.getGrid() != grid) {
             for (IGridNode node : to.getGrid()
                 .getNodes()) {
-                if (node.getMachine() instanceof TileController) {
+                if (node.getMachine() instanceof ITileController) {
                     throw new IllegalArgumentException("Cannot merge a second controller network.");
                 }
             }

@@ -33,6 +33,7 @@ import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizon.gtnhlib.item.ItemStackNBT;
+import com.science.gtnl.api.mixinHelper.ITileController;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.client.WirelessCardGui;
 import com.science.gtnl.common.wireless.AutomaticWirelessEntrances;
@@ -53,7 +54,6 @@ import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
-import appeng.tile.networking.TileController;
 import baubles.api.BaubleType;
 import baubles.api.expanded.BaubleExpandedSlots;
 import baubles.api.expanded.IBaubleExpanded;
@@ -163,7 +163,7 @@ public class WirelessFrequencyCard extends Item implements IBaubleExpanded, IGui
             message(player, "unbound");
             return true;
         }
-        if (tile instanceof TileController) {
+        if (tile instanceof ITileController) {
             showStatus(binding, player);
             return true;
         }

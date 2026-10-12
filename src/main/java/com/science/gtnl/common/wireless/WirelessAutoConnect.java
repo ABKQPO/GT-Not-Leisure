@@ -17,6 +17,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.BlockEvent;
 
 import com.cleanroommc.modularui.factory.GuiFactories;
+import com.science.gtnl.api.mixinHelper.ITileController;
 import com.science.gtnl.common.item.items.WirelessFrequencyCard;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 
@@ -25,7 +26,6 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
-import appeng.tile.networking.TileController;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
@@ -164,7 +164,7 @@ public class WirelessAutoConnect {
         BooleanSupplier canceled) {
         if (player == null || player instanceof FakePlayer
             || player.worldObj.isRemote
-            || tile instanceof TileController
+            || tile instanceof ITileController
             || !(tile instanceof IGridHost || tile instanceof IPartHost)) return;
         // Native cable/part placement is reported with an exact side and part identity by the AE hook.
         if (part == null && tile instanceof IPartHost) return;

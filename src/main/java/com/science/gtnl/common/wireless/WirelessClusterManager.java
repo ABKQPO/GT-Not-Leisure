@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.science.gtnl.api.mixinHelper.ITileController;
 import com.science.gtnl.common.wireless.PhysicalClusterTracker.Cluster;
 import com.science.gtnl.common.wireless.VerifiedEntranceRecovery.Candidate;
 import com.science.gtnl.common.wireless.VerifiedEntranceRecovery.Result;
@@ -33,7 +34,6 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingGrid;
-import appeng.tile.networking.TileController;
 
 public class WirelessClusterManager {
 
@@ -91,7 +91,7 @@ public class WirelessClusterManager {
     }
 
     public static void nodeChanged(IGridNode node) {
-        if (node.getWorld() != null && !node.getWorld().isRemote && node.getMachine() instanceof TileController)
+        if (node.getWorld() != null && !node.getWorld().isRemote && node.getMachine() instanceof ITileController)
             invalidateTopology();
         WATCH.nodeChanged(node);
     }
