@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: dev-release-build-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.event_name == 'pull_request' && format('dev-release-build-pr-{0}', github.event.pull_request.number) || 'dev-release-build-release' }}
   cancel-in-progress: true
 
 permissions:
@@ -51,12 +51,15 @@ jobs:
         run: chmod +x gradlew
 
       - name: Set artifact version
+        id: version
         run: |
+          commit_short=$(git rev-parse --short=12 HEAD)
           version=$(printf '%s' "$SOURCE_REF" | LC_ALL=C sed -E 's/[^A-Za-z0-9._-]+/-/g; s/^-+//; s/-+$//')
           if [[ -z "$version" ]]; then
-            version="${GITHUB_SHA:0:12}"
+            version="$commit_short"
           fi
-          printf 'VERSION=%s\nRELEASE_VERSION=%s\n' "$version" "$version" >> "$GITHUB_ENV"
+          printf 'VERSION=%s\nRELEASE_VERSION=%s\nCOMMIT_SHORT=%s\n' "$version" "$version" "$commit_short" >> "$GITHUB_ENV"
+          printf 'commit_short=%s\n' "$commit_short" >> "$GITHUB_OUTPUT"
 
       - name: Setup the workspace
         run: ./gradlew --build-cache --info --stacktrace setupCIWorkspace
@@ -64,22 +67,56 @@ jobs:
       - name: Build the mod
         run: ./gradlew --build-cache --info --stacktrace assemble
 
+      - name: Prepare release assets
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: |
+          rm -rf build/release-assets
+          mkdir -p build/release-assets
+          find build/libs -maxdepth 1 -type f -name '*.jar' -print0 | while IFS= read -r -d '' file; do
+            filename=$(basename "$file")
+            cp "$file" "build/release-assets/${filename%.jar}-${COMMIT_SHORT}.jar"
+          done
+          find build/release-assets -maxdepth 1 -type f -name '*.jar' -printf '%f\n' > build/release-assets/asset-names.txt
+
       - name: Upload build artifacts
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
-          name: dev-build-${{ github.event.pull_request.number }}
+          name: dev-build-${{ github.event.pull_request.number }}-${{ steps.version.outputs.commit_short }}
           path: build/libs/*.jar
           if-no-files-found: error
+          overwrite: true
 
       - name: Release
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         uses: softprops/action-gh-release@v2
         with:
           name: Dev Build
-          body: Dynamic action build of branch ${{ github.ref_name }}
+          body: |
+            Dynamic action build of branch ${{ github.ref_name }}.
+            Commit: `${{ steps.version.outputs.commit_short }}`
           tag_name: dev-build
+          target_commitish: ${{ github.sha }}
           prerelease: false
           make_latest: true
+          overwrite_files: true
           files: |
-            build/libs/*.jar
+            build/release-assets/*.jar
+
+      - name: Remove previous release builds
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          asset_list=$(mktemp)
+          trap 'rm -f "$asset_list"' EXIT
+          if ! gh api --paginate "repos/${GITHUB_REPOSITORY}/releases/tags/dev-build/assets?per_page=100" \
+            --jq '.[] | [.id, .name] | @tsv' > "$asset_list"; then
+            echo 'No existing dev-build release assets to remove.'
+            exit 0
+          fi
+          while IFS=$'\t' read -r asset_id asset_name; do
+            if [[ "$asset_name" == *.jar ]] && ! grep -Fqx -- "$asset_name" build/release-assets/asset-names.txt; then
+              gh api --method DELETE "repos/${GITHUB_REPOSITORY}/releases/assets/${asset_id}"
+            fi
+          done < "$asset_list"
