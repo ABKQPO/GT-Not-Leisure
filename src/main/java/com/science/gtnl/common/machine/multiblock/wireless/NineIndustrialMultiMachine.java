@@ -58,6 +58,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
+import kubatech.loaders.BlockLoader;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<NineIndustrialMultiMachine> {
@@ -109,7 +110,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
             .addElement('A', StructureUtility.ofBlock(ItemRegistry.bw_realglas2, 0))
             .addElement('B', StructureUtility.ofBlock(Loaders.FRF_Coil_4, 0))
             .addElement('C', GTNLCasings.NeutroniumGearbox.asElement())
-            .addElement('D', StructureUtility.ofBlock(kubatech.loaders.BlockLoader.defcCasingBlock, 12))
+            .addElement('D', StructureUtility.ofBlock(BlockLoader.defcCasingBlock, 12))
             .addElement(
                 'E',
                 GTStructureUtility.buildHatchAdder(NineIndustrialMultiMachine.class)

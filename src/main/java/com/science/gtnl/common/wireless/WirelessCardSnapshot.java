@@ -5,10 +5,9 @@ import java.util.Map;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-/** A frozen payload and server-issued operation targets, independent of client sorting and pagination. */
-final class WirelessCardSnapshot {
+public class WirelessCardSnapshot {
 
-    static final int CHUNK_BYTES = 24 * 1024;
+    public static final int CHUNK_BYTES = 24 * 1024;
 
     private final NBTTagCompound payload;
     private final Map<Long, WirelessLinkView> targets;

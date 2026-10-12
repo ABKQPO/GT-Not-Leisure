@@ -18,8 +18,7 @@ import appeng.api.networking.IGridNode;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 
-/** One listener per world, deduplicating multipart hosts and overlapping neighbour positions. */
-final class WirelessTopologyWatch implements IBlockStateListener {
+public class WirelessTopologyWatch implements IBlockStateListener {
 
     private final Map<World, LongSet> watched = new IdentityHashMap<>();
 

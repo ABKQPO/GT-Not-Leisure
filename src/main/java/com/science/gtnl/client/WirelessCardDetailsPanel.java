@@ -18,12 +18,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-final class WirelessCardDetailsPanel extends WirelessCardPanel {
+public class WirelessCardDetailsPanel extends WirelessCardPanel {
 
     private final IPanelHandler renamePanel;
     private boolean closing;
 
-    WirelessCardDetailsPanel(WirelessCardContainer container) {
+    public WirelessCardDetailsPanel(WirelessCardContainer container) {
         super("wireless_card_details", container);
         child(ButtonWidget.panelCloseButton());
         addButton(RENAME);
@@ -46,7 +46,7 @@ final class WirelessCardDetailsPanel extends WirelessCardPanel {
     }
 
     @Override
-    boolean layoutReady() {
+    public boolean layoutReady() {
         return !closing && super.layoutReady();
     }
 
@@ -103,7 +103,7 @@ final class WirelessCardDetailsPanel extends WirelessCardPanel {
     }
 
     @Override
-    void action(int id) {
+    public void action(int id) {
         if (id == BACK) {
             closeIfOpen();
             return;

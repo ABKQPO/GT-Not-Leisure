@@ -27,7 +27,7 @@ import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 public class AutoclaveRecipes implements IRecipePool {
 
     public RecipeMap<?> AR = RecipeMaps.autoclaveRecipes;
-    static ItemStack missing = new ItemStack(Blocks.fire);
+    public static ItemStack missing = new ItemStack(Blocks.fire);
 
     @Override
     public void loadRecipes() {

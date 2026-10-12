@@ -25,24 +25,24 @@ import com.science.gtnl.common.item.items.WirelessFrequencyCard;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public final class WirelessCardContainer extends ModularContainer {
+public class WirelessCardContainer extends ModularContainer {
 
     public final ViewSync sync = new ViewSync().allowC2S();
 
     private static final AtomicLong SESSIONS = new AtomicLong();
-    final EntityPlayer player;
-    ItemStack card;
+    public final EntityPlayer player;
+    public ItemStack card;
     private final int cardSlot;
     private final IInventory cardInventory;
     private final boolean heldOnly;
-    final WirelessCardBinding binding;
+    public final WirelessCardBinding binding;
     private final long session = SESSIONS.incrementAndGet();
-    long revision;
-    final WirelessCardViewBuilder view = new WirelessCardViewBuilder();
+    public long revision;
+    public final WirelessCardViewBuilder view = new WirelessCardViewBuilder();
     private final WirelessCardActionHandler actions = new WirelessCardActionHandler(this);
     private int ticks;
-    WirelessCardSnapshot snapshot;
-    NBTTagList pendingHighlight;
+    public WirelessCardSnapshot snapshot;
+    public NBTTagList pendingHighlight;
     public volatile NBTTagCompound display = new NBTTagCompound();
     @SideOnly(Side.CLIENT)
     private WirelessCardClientView clientView;
@@ -144,7 +144,7 @@ public final class WirelessCardContainer extends ModularContainer {
         }
     }
 
-    public final class ViewSync extends SyncHandler<ViewSync> {
+    public class ViewSync extends SyncHandler<ViewSync> {
 
         @Override
         public void detectAndSendChanges(boolean init) {

@@ -30,6 +30,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import fox.spiteful.avaritia.tile.TileEntityDireCrafting;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Mods;
+import gregtech.api.interfaces.IItemContainer;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 import it.unimi.dsi.fastutil.objects.Object2CharLinkedOpenHashMap;
@@ -46,9 +47,15 @@ public class DebugItem extends Item {
         list.add(ItemList.class);
         list.add(CustomItemList.class);
         list.add(GregtechItemList.class);
-        list.add(kubatech.api.enums.ItemList.class);
+        addOptionalItemList(list, "kubatech.api.enums.ItemList");
         if (Mods.NewHorizonsCoreMod.isModLoaded()) addNHItemList(list);
         ITEMLIST = list.toArray(new Class<?>[0]);
+    }
+
+    private static void addOptionalItemList(List<Class<?>> itemLists, String className) {
+        try {
+            itemLists.add(Class.forName(className));
+        } catch (ClassNotFoundException ignored) {}
     }
 
     @Optional.Method(modid = "dreamcraft")
@@ -159,32 +166,7 @@ public class DebugItem extends Item {
                 for (var field : clazz.getFields()) {
                     Object obj = field.get(null);
                     String s = clazz.getSimpleName() + "." + field.getName() + ".get(1)";
-                    if (obj instanceof ItemList itemList && itemList.hasBeenSet()) {
-                        ItemStack target = itemList.get(1);
-                        if (GTUtility.areStacksEqual(stack, target, true)) {
-                            return s;
-                        }
-                    } else if (obj instanceof GTNLItemList itemList && itemList.hasBeenSet()) {
-                        ItemStack target = itemList.get(1);
-                        if (GTUtility.areStacksEqual(stack, target, true)) {
-                            return s;
-                        }
-                    } else if (obj instanceof CustomItemList itemList && itemList.hasBeenSet()) {
-                        ItemStack target = itemList.get(1);
-                        if (GTUtility.areStacksEqual(stack, target, true)) {
-                            return s;
-                        }
-                    } else if (obj instanceof CustomItemList itemList && itemList.hasBeenSet()) {
-                        ItemStack target = itemList.get(1);
-                        if (GTUtility.areStacksEqual(stack, target, true)) {
-                            return s;
-                        }
-                    } else if (obj instanceof GregtechItemList itemList && itemList.hasBeenSet()) {
-                        ItemStack target = itemList.get(1);
-                        if (GTUtility.areStacksEqual(stack, target, true)) {
-                            return s;
-                        }
-                    } else if (obj instanceof kubatech.api.enums.ItemList itemList && itemList.hasBeenSet()) {
+                    if (obj instanceof IItemContainer itemList && itemList.hasBeenSet()) {
                         ItemStack target = itemList.get(1);
                         if (GTUtility.areStacksEqual(stack, target, true)) {
                             return s;

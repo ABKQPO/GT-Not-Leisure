@@ -24,13 +24,11 @@ import appeng.api.util.IOrientable;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.util.GTUtility;
 
-/** Server-side movement to an already loaded and permission-checked device. Free, with no cooldown. */
-final class WirelessCardTeleport {
+public class WirelessCardTeleport {
 
     private WirelessCardTeleport() {}
 
-    /** Bounded search; remains independent of world access so its policy can be tested on its own. */
-    static final class Landing {
+    public static class Landing {
 
         record Position(int x, int y, int z) {}
 

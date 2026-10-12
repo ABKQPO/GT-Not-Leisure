@@ -59,7 +59,7 @@ public enum EternalGregTechWorkshopUpgrade {
 
     public static final EternalGregTechWorkshopUpgrade[] VALUES = values();
 
-    static final Set<EternalGregTechWorkshopUpgrade> SPLIT_UPGRADES;
+    public static final Set<EternalGregTechWorkshopUpgrade> SPLIT_UPGRADES;
 
     static {
         // Build upgrade data. Done here due to potential forward references

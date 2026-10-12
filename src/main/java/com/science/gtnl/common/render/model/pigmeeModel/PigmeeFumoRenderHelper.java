@@ -31,7 +31,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public final class PigmeeFumoRenderHelper {
+public class PigmeeFumoRenderHelper {
 
     public record PlainQuadContext(ModelQuadFacing facing) implements BakedModelQuadContext {
 

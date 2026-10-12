@@ -34,6 +34,7 @@ import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizon.gtnhlib.item.ItemStackNBT;
 import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.client.WirelessCardGui;
 import com.science.gtnl.common.wireless.AutomaticWirelessEntrances;
 import com.science.gtnl.common.wireless.WirelessCardBinding;
 import com.science.gtnl.common.wireless.WirelessCardContainer;
@@ -60,7 +61,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public final class WirelessFrequencyCard extends Item implements IBaubleExpanded, IGuiHolder<PlayerInventoryGuiData> {
+public class WirelessFrequencyCard extends Item implements IBaubleExpanded, IGuiHolder<PlayerInventoryGuiData> {
 
     private static final String LANG = "item.gtnl.wireless_frequency_card.";
 
@@ -88,13 +89,13 @@ public final class WirelessFrequencyCard extends Item implements IBaubleExpanded
 
     @SideOnly(Side.CLIENT)
     private ModularPanel createPanel(WirelessCardContainer container) {
-        return new com.science.gtnl.client.WirelessCardGui(container);
+        return new WirelessCardGui(container);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public ModularScreen createScreen(PlayerInventoryGuiData data, ModularPanel panel) {
-        return ((com.science.gtnl.client.WirelessCardGui) panel).screen();
+        return ((WirelessCardGui) panel).screen();
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.science.gtnl.common.wireless;
 
-/** GUI row buttons encode a local row offset; network requests send the action type and an opaque target ID. */
-public final class WirelessCardActions {
+public class WirelessCardActions {
 
     public static final int PREVIOUS_PAGE = 0;
     public static final int NEXT_PAGE = 1;

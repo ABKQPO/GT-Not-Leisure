@@ -279,7 +279,7 @@ public class IsaMill extends GTMMultiMachineBase<IsaMill> implements ISurvivalCo
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 
-            ItemStack millingBall;
+            public ItemStack millingBall;
 
             @NotNull
             @Override

@@ -11,8 +11,7 @@ import com.science.gtnl.common.wireless.WirelessChannelManager.Entrance;
 
 import appeng.api.networking.IGridNode;
 
-/** One maintenance pass's entrance groups. Native connection liveness is still checked by callers. */
-final class WirelessEntranceIndex {
+public class WirelessEntranceIndex {
 
     private final PhysicalClusterTracker<IGridNode, Address> tracker;
     private final Map<Cluster<IGridNode, Address>, List<Entrance>> byCluster = new IdentityHashMap<>();

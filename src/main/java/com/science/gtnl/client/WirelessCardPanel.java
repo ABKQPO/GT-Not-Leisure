@@ -50,15 +50,15 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-abstract class WirelessCardPanel extends ModularPanel {
+public abstract class WirelessCardPanel extends ModularPanel {
 
-    static final int ROW_HEIGHT = 24, CONTENT_X = 34;
-    final Minecraft mc = Minecraft.getMinecraft();
-    final FontRenderer fontRendererObj = mc.fontRenderer;
-    final WirelessCardContainer container;
-    final List<WirelessCardButton> buttons = new ArrayList<>();
-    NBTTagCompound snapshot = new NBTTagCompound();
-    int xSize = 320, ySize = 232, visibleRows = WirelessCardLayout.MIN_ROWS;
+    public static final int ROW_HEIGHT = 24, CONTENT_X = 34;
+    public final Minecraft mc = Minecraft.getMinecraft();
+    public final FontRenderer fontRendererObj = mc.fontRenderer;
+    public final WirelessCardContainer container;
+    public final List<WirelessCardButton> buttons = new ArrayList<>();
+    public NBTTagCompound snapshot = new NBTTagCompound();
+    public int xSize = 320, ySize = 232, visibleRows = WirelessCardLayout.MIN_ROWS;
 
     WirelessCardPanel(String name, WirelessCardContainer container) {
         super(name);
@@ -116,17 +116,17 @@ abstract class WirelessCardPanel extends ModularPanel {
         return super.onKeyPressed(character, key);
     }
 
-    NBTTagCompound view() {
+    public NBTTagCompound view() {
         // Freeze the overview behind a modal detail panel while only the active view is synchronized.
         return container.display.getBoolean("detail") == isDetailView() ? container.display : snapshot;
     }
 
-    boolean layoutReady() {
+    public boolean layoutReady() {
         return container.display.getBoolean("detail") == isDetailView() && container.display.hasKey("session")
             && view().getInteger("pageSize") == visibleRows;
     }
 
-    final void resizeLayout(int width, int height) {
+    public void resizeLayout(int width, int height) {
         var layout = WirelessCardLayout.forScreen(width, height);
         visibleRows = layout.rows();
         resizePanel(layout);
@@ -162,17 +162,17 @@ abstract class WirelessCardPanel extends ModularPanel {
         }
     }
 
-    final void addButton(int id) {
+    public final void addButton(int id) {
         var button = new WirelessCardButton(id, this);
         buttons.add(button);
         child(button.widget);
     }
 
-    final void addRowButtons(int... actions) {
+    public final void addRowButtons(int... actions) {
         for (int row = 0; row < WirelessCardLayout.MAX_ROWS; row++) for (int action : actions) addButton(action + row);
     }
 
-    void action(int id) {
+    public void action(int id) {
         if (!layoutReady()) return;
         snapshot = view();
         if (type(id) == COPY_POSITION && rowIndex(id) < visibleRows) {
@@ -186,7 +186,7 @@ abstract class WirelessCardPanel extends ModularPanel {
         sendAction(id);
     }
 
-    void sendAction(int id) {
+    public void sendAction(int id) {
         if (container.clientView()
             .navigate(id, isGroupView())) return;
         long target = isRowAction(id) ? view().getTagList("rows", 10)
@@ -203,11 +203,11 @@ abstract class WirelessCardPanel extends ModularPanel {
         for (var button : buttons) button.update(view(), layoutReady(), visibleRows);
     }
 
-    static String tr(String key, Object... args) {
+    public static String tr(String key, Object... args) {
         return StatCollector.translateToLocalFormatted("gtnl.wireless.gui." + key, args);
     }
 
-    TextFieldWidget textField(int max) {
+    public TextFieldWidget textField(int max) {
         return new TextFieldWidget().background(
             new Rectangle().color(0xff000000),
             new Rectangle().color(0xffa0a0a0)

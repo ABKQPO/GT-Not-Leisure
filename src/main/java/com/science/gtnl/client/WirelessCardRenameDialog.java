@@ -21,9 +21,9 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-final class WirelessCardRenameDialog extends Dialog<Void> {
+public class WirelessCardRenameDialog extends Dialog<Void> {
 
-    final TextFieldWidget name;
+    public final TextFieldWidget name;
     private final WirelessCardDetailsPanel owner;
     private final WirelessCardContainer container;
     private final Minecraft mc = Minecraft.getMinecraft();

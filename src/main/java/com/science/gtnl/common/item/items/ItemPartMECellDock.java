@@ -213,7 +213,7 @@ public class ItemPartMECellDock extends Item implements IPartItem {
     }
 
     @SideOnly(Side.CLIENT)
-    public static final class FaceUV {
+    public static class FaceUV {
 
         private final IIcon source;
         private final int axisU;
@@ -271,7 +271,7 @@ public class ItemPartMECellDock extends Item implements IPartItem {
     }
 
     @SideOnly(Side.CLIENT)
-    public static final class MappedIcon implements IIcon {
+    public static class MappedIcon implements IIcon {
 
         private final IIcon source;
         @Getter

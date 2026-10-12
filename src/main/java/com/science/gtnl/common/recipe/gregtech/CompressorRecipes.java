@@ -21,7 +21,7 @@ import gregtech.api.recipe.metadata.CompressionTierKey;
 
 public class CompressorRecipes implements IRecipePool {
 
-    final CompressionTierKey COMPRESSION_TIER = CompressionTierKey.INSTANCE;
+    public final CompressionTierKey COMPRESSION_TIER = CompressionTierKey.INSTANCE;
     public RecipeMap<?> NCR = RecipeMaps.neutroniumCompressorRecipes;
     public RecipeMap<?> CR = RecipeMaps.compressorRecipes;
 

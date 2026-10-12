@@ -25,8 +25,7 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingGrid;
 
-/** Adapts the feedback planner to real AE2 allocations. Never changes native cable capacities or channel flags. */
-public final class AutomaticWirelessEntrances {
+public class AutomaticWirelessEntrances {
 
     private static final Map<IGrid, AutomaticEntrancePlanner<IGridNode>> PLANNERS = new IdentityHashMap<>();
     private static final Map<IGrid, GridShape> SHAPES = new IdentityHashMap<>();
@@ -37,14 +36,14 @@ public final class AutomaticWirelessEntrances {
     private record GridTargets(List<Cluster<IGridNode, Address>> clusters, Map<IGridNode, Address> sources,
         List<IGridNode> nodes, long fingerprint) {}
 
-    private static final class Work {
+    private static class Work {
 
-        final List<Cluster<IGridNode, Address>> clusters = new ArrayList<>();
-        final Set<IGridNode> occupied = Collections.newSetFromMap(new IdentityHashMap<>());
-        final List<IGridNode> missing = new ArrayList<>();
-        final Address frequency;
-        final IGridNode source;
-        int served;
+        public final List<Cluster<IGridNode, Address>> clusters = new ArrayList<>();
+        public final Set<IGridNode> occupied = Collections.newSetFromMap(new IdentityHashMap<>());
+        public final List<IGridNode> missing = new ArrayList<>();
+        public final Address frequency;
+        public final IGridNode source;
+        public int served;
 
         Work(Address frequency, IGridNode source) {
             this.frequency = frequency;
@@ -245,7 +244,6 @@ public final class AutomaticWirelessEntrances {
         return false;
     }
 
-    /** Excludes our own trial edges: rolling back a failed trial must not erase the failed-candidate memory. */
     private static long context(IGrid grid, GridTargets targets, int capacity, long revision) {
         GridShape shape = SHAPES.get(grid);
         if (shape == null || shape.revision() != revision) {

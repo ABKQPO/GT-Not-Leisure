@@ -27,6 +27,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
 import com.gtnewhorizon.gtnhlib.network.TitlePacketHandler;
@@ -405,7 +406,7 @@ public class SubscribeEventUtils {
     }
 
     @SubscribeEvent
-    public void onExplosionEvent(net.minecraftforge.event.world.ExplosionEvent event) {
+    public void onExplosionEvent(ExplosionEvent event) {
         if (tryAbsorbExplosion(
             event.world,
             event.explosion.explosionX,

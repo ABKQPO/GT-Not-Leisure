@@ -16,7 +16,7 @@ import gregtech.api.interfaces.IStoneType;
 import gregtech.api.interfaces.ISubTagContainer;
 import gregtech.api.util.GTOreDictUnificator;
 
-public final class ShimmerOreMaterial implements IOreMaterial {
+public class ShimmerOreMaterial implements IOreMaterial {
 
     public static final String INTERNAL_NAME = "Shimmer";
 

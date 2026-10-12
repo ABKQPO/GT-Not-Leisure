@@ -183,7 +183,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     public boolean autoPullItemList;
     public boolean recipe;
     public boolean off;
-    boolean additionalConnection;
+    public boolean additionalConnection;
 
     public long minAutoPullItemAmount = 1;
     public long minAutoPullFluidAmount = 1;
@@ -2036,7 +2036,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
 
     public static class HookHolder {
 
-        static ItemRenderHook SKIP_ITEM_STACK_SIZE_HOOK = new ItemRenderHook() {
+        public static ItemRenderHook SKIP_ITEM_STACK_SIZE_HOOK = new ItemRenderHook() {
 
             @Override
             public boolean renderOverlay(FontRenderer fr, TextureManager tm, ItemStack is, int x, int y) {

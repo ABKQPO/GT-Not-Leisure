@@ -15,7 +15,7 @@ import appeng.crafting.MECraftingInventory;
 /**
  * Exact AE crafting batch planner used by the CPU cluster mixin.
  */
-public final class CraftingBatchPlannerImpl implements CraftingBatchPlanner {
+public class CraftingBatchPlannerImpl implements CraftingBatchPlanner {
 
     private static final double AE_POWER_TOLERANCE = 0.01D;
 
@@ -298,7 +298,7 @@ public final class CraftingBatchPlannerImpl implements CraftingBatchPlanner {
         return aggregated;
     }
 
-    private static final class AggregatedDemand {
+    private static class AggregatedDemand {
 
         private long amountPerCraft;
         private long availableAmount;

@@ -137,8 +137,8 @@ public class NuclearReactorGuideHandler extends TemplateRecipeHandler {
 
     private static class GuidePageData {
 
-        final ItemStack stack;
-        final String infoKey;
+        public final ItemStack stack;
+        public final String infoKey;
 
         GuidePageData(ItemStack stack, String infoKey) {
             this.stack = stack;

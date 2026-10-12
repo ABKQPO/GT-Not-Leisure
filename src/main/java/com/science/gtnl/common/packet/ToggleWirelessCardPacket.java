@@ -8,7 +8,7 @@ import com.science.gtnl.common.wireless.WirelessAutoConnect;
 
 import io.netty.buffer.ByteBuf;
 
-public final class ToggleWirelessCardPacket extends ServerboundPacket {
+public class ToggleWirelessCardPacket extends ServerboundPacket {
 
     private boolean heldOnly;
     private int slot;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -65,8 +66,7 @@ public class BlockMultiEssentiaJar extends BlockJar {
     }
 
     @Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, net.minecraft.entity.EntityLivingBase entity,
-        ItemStack stack) {
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack stack) {
         super.onBlockPlacedBy(world, x, y, z, entity, stack);
         TileEntity tile = world.getTileEntity(x, y, z);
         if (tile instanceof TileEntityMultiEssentiaJar jar) {

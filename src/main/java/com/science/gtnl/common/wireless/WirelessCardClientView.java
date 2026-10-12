@@ -32,9 +32,8 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-/** Client-only presentation. No network operation may use these filtered rows as authority. */
 @SideOnly(Side.CLIENT)
-public final class WirelessCardClientView {
+public class WirelessCardClientView {
 
     private final WirelessCardContainer container;
     private final SearchMatcher matcher = new SearchMatcher();
@@ -514,7 +513,7 @@ public final class WirelessCardClientView {
     private record SortView(String machine, String type, boolean collapse, String query, Integer dimension,
         int state) {}
 
-    private static final class SearchMatcher {
+    private static class SearchMatcher {
 
         private Object api;
         private Method contains;

@@ -12,6 +12,8 @@ import static com.science.gtnl.common.wireless.WirelessCardActions.TOGGLE_GROUPI
 import static com.science.gtnl.common.wireless.WirelessCardActions.TOGGLE_PAUSE;
 import static com.science.gtnl.common.wireless.WirelessCardActions.isRowAction;
 
+import java.util.Comparator;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -19,7 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentTranslation;
 
-final class WirelessCardActionHandler {
+public class WirelessCardActionHandler {
 
     private final WirelessCardContainer session;
     private long nextRequestTick = Long.MIN_VALUE;
@@ -110,8 +112,7 @@ final class WirelessCardActionHandler {
                     .stream()
                     .filter(target -> target.dimension() == player.dimension)
                     .sorted(
-                        java.util.Comparator
-                            .comparingDouble(target -> player.getDistanceSq(target.x(), target.y(), target.z())))
+                        Comparator.comparingDouble(target -> player.getDistanceSq(target.x(), target.y(), target.z())))
                     .limit(512)
                     .toList();
                 for (var target : targets) {
@@ -144,7 +145,6 @@ final class WirelessCardActionHandler {
         session.update(true);
     }
 
-    /** Per-open-container request limit, independent of action type or snapshot revision. */
     private boolean acceptRequest(long tick) {
         if (tick < nextRequestTick) return false;
         nextRequestTick = tick + 4;

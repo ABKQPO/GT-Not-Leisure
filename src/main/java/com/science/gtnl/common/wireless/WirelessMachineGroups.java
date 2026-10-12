@@ -21,12 +21,11 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 
-/** Presentation groups only; physical clusters remain the unit of every network operation. */
-final class WirelessMachineGroups {
+public class WirelessMachineGroups {
 
     private WirelessMachineGroups() {}
 
-    static final class Startup {
+    public static class Startup {
 
         private final Set<World> inspected = Collections.newSetFromMap(new IdentityHashMap<>());
         private final List<MTEMultiBlockBase> pending = new ArrayList<>();
@@ -59,7 +58,7 @@ final class WirelessMachineGroups {
         private static final Classification UNGROUPED = new Classification(null, null);
     }
 
-    enum TypeKind {
+    public enum TypeKind {
         MACHINE,
         DEVICE,
         SHARED_HATCH

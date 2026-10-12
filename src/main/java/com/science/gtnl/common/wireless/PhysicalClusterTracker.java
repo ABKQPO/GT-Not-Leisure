@@ -12,9 +12,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
-/** Server-thread topology policy. Node identity, rather than a reusable block coordinate, owns a claim. */
-public final class PhysicalClusterTracker<N, F> {
+public class PhysicalClusterTracker<N, F> {
 
     public interface Topology<N> {
 
@@ -32,7 +32,7 @@ public final class PhysicalClusterTracker<N, F> {
         }
     }
 
-    public static final class ScanLimitException extends IllegalStateException {
+    public static class ScanLimitException extends IllegalStateException {
 
         public ScanLimitException() {
             super("Physical cluster scan limit exceeded; this cluster's entrances paused without deleting bindings.");
@@ -115,7 +115,6 @@ public final class PhysicalClusterTracker<N, F> {
         rebuildClaims(scanned, savedClaims, frequencyIdentity);
     }
 
-    /** Commit label changes on the just-validated physical membership without traversing the graph again. */
     void commitClaims(UnaryOperator<F> frequencyIdentity) {
         rebuildClaims(clusters, node -> Set.of(), frequencyIdentity);
     }
@@ -140,7 +139,7 @@ public final class PhysicalClusterTracker<N, F> {
                 Collections.unmodifiableSet(members),
                 frequencies.stream()
                     .map(frequencyIdentity)
-                    .collect(java.util.stream.Collectors.toUnmodifiableSet()),
+                    .collect(Collectors.toUnmodifiableSet()),
                 blocked,
                 limited);
             Set<F> sharedClaim = frequencies.size() == 1 && !blocked && !limited ? Set.copyOf(frequencies) : null;
@@ -162,7 +161,7 @@ public final class PhysicalClusterTracker<N, F> {
         clusters = List.copyOf(nextClusters);
     }
 
-    private static final class Scan {
+    private static class Scan {
 
         private Scan parent = this;
         private boolean limited;

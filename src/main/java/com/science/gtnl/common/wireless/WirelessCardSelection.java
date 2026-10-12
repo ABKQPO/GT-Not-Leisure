@@ -2,8 +2,7 @@ package com.science.gtnl.common.wireless;
 
 import java.util.List;
 
-/** Selection never silently picks an arbitrary inventory slot, even when two cards share a frequency. */
-final class WirelessCardSelection {
+public class WirelessCardSelection {
 
     record Candidate<T> (T card, boolean held, boolean owned, boolean bound, boolean automatic) {}
 

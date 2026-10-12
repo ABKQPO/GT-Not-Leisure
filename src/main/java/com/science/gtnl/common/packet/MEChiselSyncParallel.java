@@ -56,7 +56,7 @@ public class MEChiselSyncParallel extends ServerboundPacket {
         });
     }
 
-    public static final class Clientbound extends ClientboundPacket {
+    public static class Clientbound extends ClientboundPacket {
 
         private int x;
         private int y;

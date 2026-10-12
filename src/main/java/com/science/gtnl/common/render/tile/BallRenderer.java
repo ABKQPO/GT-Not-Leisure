@@ -270,9 +270,9 @@ public class BallRenderer {
 
     public static class VisualState {
 
-        double offsetX, offsetY, offsetZ;
-        double velocityX, velocityY, velocityZ;
-        double rotation;
-        double angularVelocity;
+        public double offsetX, offsetY, offsetZ;
+        public double velocityX, velocityY, velocityZ;
+        public double rotation;
+        public double angularVelocity;
     }
 }

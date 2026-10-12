@@ -24,9 +24,9 @@ import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
 
 import appeng.api.networking.IGridNode;
 
-final class WirelessCardViewBuilder {
+public class WirelessCardViewBuilder {
 
-    IGridNode detailNode;
+    public IGridNode detailNode;
     private final WirelessMachineGroups.Startup startup = new WirelessMachineGroups.Startup();
     private Map<Target, Long> targetIds = new HashMap<>();
     private long nextTargetId, nameRevision;

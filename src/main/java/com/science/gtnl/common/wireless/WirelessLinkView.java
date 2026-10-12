@@ -3,12 +3,13 @@ package com.science.gtnl.common.wireless;
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 
 import appeng.api.networking.IGridNode;
 
-interface WirelessLinkView {
+public interface WirelessLinkView {
 
     ClusterView cluster();
 
@@ -51,7 +52,7 @@ interface WirelessLinkView {
             .distinct()
             .map(WirelessLinkPersistence::cleanName)
             .filter(name -> !name.isEmpty())
-            .collect(java.util.stream.Collectors.toUnmodifiableSet());
+            .collect(Collectors.toUnmodifiableSet());
     }
 
     default String name() {
@@ -59,8 +60,7 @@ interface WirelessLinkView {
         return names.stream()
             .sorted()
             .limit(4)
-            .collect(java.util.stream.Collectors.joining(" / "))
-            + (names.size() > 4 ? " … (" + names.size() + ")" : "");
+            .collect(Collectors.joining(" / ")) + (names.size() > 4 ? " … (" + names.size() + ")" : "");
     }
 
     record ClusterView(Address target, IGridNode node, Map<IGridNode, String> deviceNames, boolean conflicted,

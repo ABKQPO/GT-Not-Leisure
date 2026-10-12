@@ -17,11 +17,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-final class WirelessCardGroupPanel extends WirelessCardPanel {
+public class WirelessCardGroupPanel extends WirelessCardPanel {
 
     private boolean closing;
 
-    WirelessCardGroupPanel(WirelessCardContainer container) {
+    public WirelessCardGroupPanel(WirelessCardContainer container) {
         super("wireless_card_group", container);
         child(ButtonWidget.panelCloseButton());
         addRowButtons(OPEN_DETAILS);
@@ -48,14 +48,14 @@ final class WirelessCardGroupPanel extends WirelessCardPanel {
     }
 
     @Override
-    NBTTagCompound view() {
+    public NBTTagCompound view() {
         NBTTagCompound data = container.clientView()
             .groupDisplay();
         return data.getBoolean("group") ? data : snapshot;
     }
 
     @Override
-    boolean layoutReady() {
+    public boolean layoutReady() {
         return !closing && container.clientView()
             .groupDisplay()
             .getBoolean("group") && super.layoutReady();

@@ -6,14 +6,19 @@ import static com.science.gtnl.common.wireless.WirelessChannelManager.sameSource
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import com.science.gtnl.common.wireless.PhysicalClusterTracker.Cluster;
 import com.science.gtnl.common.wireless.VerifiedEntranceRecovery.Candidate;
@@ -30,8 +35,7 @@ import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.tile.networking.TileController;
 
-/** Loaded cluster records backed by tile-owned provenance. One component is one link even with several entrances. */
-public final class WirelessClusterManager {
+public class WirelessClusterManager {
 
     private static final int MAX_SCANNED_NODES = 32768;
     private static final PhysicalClusterTracker<IGridNode, Address> TRACKER = new PhysicalClusterTracker<>(
@@ -56,8 +60,7 @@ public final class WirelessClusterManager {
 
     private WirelessClusterManager() {}
 
-    /** Coalesces notifications; callbacks during a scan remain pending for the next tick. */
-    static final class ScanSchedule {
+    public static class ScanSchedule {
 
         private boolean dirty = true;
         private int remaining;
@@ -156,7 +159,6 @@ public final class WirelessClusterManager {
         }
     }
 
-    /** Power, source availability and native allocation feedback must remain responsive between topology scans. */
     private static void reconcile() {
         STATES.clear();
         // Tear down every conflicting entrance before trying to reconnect any source.
@@ -212,9 +214,8 @@ public final class WirelessClusterManager {
     private static Set<Address> restoreSavedEntrances(WirelessEntranceIndex entrances) {
         Map<IGridNode, Set<Address>> connected = new IdentityHashMap<>();
         for (Entrance entrance : WirelessChannelManager.entrances()) {
-            if (entrance.isLive())
-                connected.computeIfAbsent(entrance.targetNode(), ignored -> new java.util.HashSet<>())
-                    .add(controllerSource(entrance.source()));
+            if (entrance.isLive()) connected.computeIfAbsent(entrance.targetNode(), ignored -> new HashSet<>())
+                .add(controllerSource(entrance.source()));
         }
         List<Candidate<IGridNode, Address>> candidates = new ArrayList<>();
         for (var cluster : TRACKER.clusters()) {
@@ -328,7 +329,6 @@ public final class WirelessClusterManager {
             .contains(controllerSource(source));
     }
 
-    /** Loaded physical clusters only; viewing never loads remote chunks. */
     public static List<ClusterView> links(Address source) {
         try (var ignored = WirelessLinkData.readBatch()) {
             source = controllerSource(source);
@@ -355,7 +355,7 @@ public final class WirelessClusterManager {
                     : paused ? "paused"
                         : STATES.getOrDefault(cluster, State.WAITING)
                             .name()
-                            .toLowerCase(java.util.Locale.ROOT);
+                            .toLowerCase(Locale.ROOT);
                 result.add(
                     new ClusterView(
                         TOPOLOGY.entranceAddress(anchor),
@@ -450,17 +450,17 @@ public final class WirelessClusterManager {
     }
 
     public static List<Address> highlight(WirelessLinkView view) {
-        return (view instanceof EntranceView ? java.util.stream.Stream.of(view.target())
+        return (view instanceof EntranceView ? Stream.of(view.target())
             : view.members()
                 .stream()
-                .map(TOPOLOGY::nodeAddress)).filter(java.util.Objects::nonNull)
+                .map(TOPOLOGY::nodeAddress)).filter(Objects::nonNull)
                     .map(
                         address -> new Address(
                             address.dimension(),
                             address.x(),
                             address.y(),
                             address.z(),
-                            net.minecraftforge.common.util.ForgeDirection.UNKNOWN))
+                            ForgeDirection.UNKNOWN))
                     .distinct()
                     .toList();
     }
@@ -472,7 +472,7 @@ public final class WirelessClusterManager {
         return new PreparedLink(controllerSource(source), target, node, TRACKER.clusterOf(node));
     }
 
-    static final class PreparedLink {
+    public static class PreparedLink {
 
         private final Address source, target;
         private final IGridNode node;

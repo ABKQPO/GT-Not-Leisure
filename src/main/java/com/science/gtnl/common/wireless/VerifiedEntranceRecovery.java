@@ -9,12 +9,11 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-/** Restores validated saved locations in bounded batches, without serial speculative allocation trials. */
-final class VerifiedEntranceRecovery<N, S> {
+public class VerifiedEntranceRecovery<N, S> {
 
     record Candidate<N, S> (N node, S source) {}
 
-    enum Result {
+    public enum Result {
         CONNECTED,
         WAITING,
         REJECTED
@@ -36,7 +35,6 @@ final class VerifiedEntranceRecovery<N, S> {
         remaining = BATCH_SIZE;
     }
 
-    /** Returns sources whose saved entries must take priority over speculative expansion on the next tick. */
     Set<S> restore(List<Candidate<N, S>> candidates, Predicate<Candidate<N, S>> valid,
         Predicate<Candidate<N, S>> connected, Predicate<S> ready, Function<Candidate<N, S>, Result> connect) {
         retryAfter.keySet()

@@ -36,7 +36,7 @@ public enum ModList implements IMod, ITargetMod {
     GiveCount("givecount", "Give Count", false),
     ChromaticTooltips("chromatictooltips", "Chromatic Tooltips", false),
     ChromaticTooltipsCompat("chromatictooltipscompat", "Chromatic Tooltips Compat", false),
-    AppliedEnergistics("appliedenergistics2", "Applied Energistics 2", false),
+    AppliedEnergistics("appliedenergistics2", "Applied Energistics 2", "appeng.transformer.AppEngCore", false),
 
     NewHorizonsCoreMod("dreamcraft", "GT New Horizons Core Mod", "com.dreammaster.coremod.DreamCoreMod", false),
     GalaxySpace("GalaxySpace", "Galaxy Space", false),
@@ -48,11 +48,6 @@ public enum ModList implements IMod, ITargetMod {
     AvaritiaAddons("avaritiaddons", "Avaritia Addons", false),
     EtFuturumRequiem("etfuturum", "Et Futurum Requiem", false),
     ForgeMultipart("McMultipart", "Forge Multipart", false);
-
-    static {
-        // GTNHMixins identifies coremods via toString(); AE's DummyModContainer does not return its class name.
-        AppliedEnergistics.targetBuilder.setTargetClass("appeng.transformer.AppEngCore");
-    }
 
     public static final ModList[] VALUES = values();
 

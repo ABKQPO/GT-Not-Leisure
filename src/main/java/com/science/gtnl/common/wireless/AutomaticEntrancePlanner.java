@@ -6,8 +6,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-/** One speculative entrance per source grid; only a fresh, successful AE2 allocation can justify keeping it. */
-public final class AutomaticEntrancePlanner<N> {
+public class AutomaticEntrancePlanner<N> {
 
     private static final int TOPOLOGY_DELAY = 10;
     private static final int NEXT_TRIAL_DELAY = 1;
@@ -25,7 +24,7 @@ public final class AutomaticEntrancePlanner<N> {
         NO_CANDIDATE
     }
 
-    enum Action {
+    public enum Action {
         NONE,
         ADD,
         KEEP,
@@ -56,7 +55,6 @@ public final class AutomaticEntrancePlanner<N> {
         return trial == null ? -1 : trial.id();
     }
 
-    /** A removed/unloaded entrance must never be evaluated against an unrelated replacement. */
     void entranceLost() {
         trial = null;
         waitForRevision = -1;

@@ -12,8 +12,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
-/** Bounded local search near unserved consumers, starting with the part furthest from existing entrances. */
-public final class EntranceCandidates {
+public class EntranceCandidates {
 
     private EntranceCandidates() {}
 

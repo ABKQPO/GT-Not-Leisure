@@ -25,7 +25,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public final class WirelessCardGui extends WirelessCardPanel {
+public class WirelessCardGui extends WirelessCardPanel {
 
     private final TextFieldWidget search, dimension;
     private final IPanelHandler detailsPanel, groupPanel;
@@ -181,7 +181,7 @@ public final class WirelessCardGui extends WirelessCardPanel {
     }
 
     @Override
-    void sendAction(int id) {
+    public void sendAction(int id) {
         if (id == APPLY_FILTER || id == CYCLE_FILTER) {
             applyFilters(true, id == CYCLE_FILTER);
             return;

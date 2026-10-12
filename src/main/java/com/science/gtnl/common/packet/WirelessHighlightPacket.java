@@ -2,6 +2,7 @@ package com.science.gtnl.common.packet;
 
 import net.minecraft.client.Minecraft;
 
+import com.science.gtnl.client.WirelessWorldHighlight;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import cpw.mods.fml.relauncher.Side;
@@ -9,7 +10,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 
 /** Sent after successful movement; it remains valid after the card container closes. */
-public final class WirelessHighlightPacket extends ClientboundPacket {
+public class WirelessHighlightPacket extends ClientboundPacket {
 
     private int dimension, x, y, z;
 
@@ -42,9 +43,10 @@ public final class WirelessHighlightPacket extends ClientboundPacket {
     @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
         var connection = minecraft.getNetHandler();
-        minecraft.func_152344_a(() -> {
-            if (minecraft.getNetHandler() == connection)
-                com.science.gtnl.client.WirelessWorldHighlight.afterTeleport(minecraft, dimension, x, y, z);
-        });
+        minecraft.func_152344_a(
+            () -> {
+                if (minecraft.getNetHandler() == connection)
+                    WirelessWorldHighlight.afterTeleport(minecraft, dimension, x, y, z);
+            });
     }
 }

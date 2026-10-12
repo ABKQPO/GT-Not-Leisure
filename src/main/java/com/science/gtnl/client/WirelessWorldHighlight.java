@@ -18,12 +18,14 @@ import net.minecraftforge.event.world.WorldEvent;
 
 import org.lwjgl.opengl.GL11;
 
+import com.science.gtnl.common.wireless.WirelessCardContainer;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public final class WirelessWorldHighlight {
+public class WirelessWorldHighlight {
 
     public static final WirelessWorldHighlight INSTANCE = new WirelessWorldHighlight();
     private static final long DURATION_MS = 5_000;
@@ -53,8 +55,7 @@ public final class WirelessWorldHighlight {
                 .distinct()
                 .toList(),
             Minecraft.getSystemTime() + DURATION_MS);
-        if (!targets.isEmpty() && mc.thePlayer != null
-            && mc.thePlayer.openContainer instanceof com.science.gtnl.common.wireless.WirelessCardContainer) {
+        if (!targets.isEmpty() && mc.thePlayer != null && mc.thePlayer.openContainer instanceof WirelessCardContainer) {
             // Use the same eye position as vanilla ray tracing (including the 1.7.10 client player offset).
             var player = mc.thePlayer;
             var eyes = player.getPosition(1.0F);

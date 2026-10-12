@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * Checked two-phase implementation for long-sized stack cache additions.
  */
-public final class ExactStackCacheCommitImpl implements ExactStackCacheCommit {
+public class ExactStackCacheCommitImpl implements ExactStackCacheCommit {
 
     @Override
     public <S> Result commit(S candidate, StackCache<S> cache) {

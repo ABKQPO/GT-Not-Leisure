@@ -2,6 +2,7 @@ package com.science.gtnl.common.wireless;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,7 +48,7 @@ import cpw.mods.fml.common.gameevent.TickEvent;
  * Low-level owned entrance registry. Cluster lifetime and recovery are handled by WirelessClusterManager.
  * All mutations happen on the server thread. No world lookup here may load a chunk or dimension.
  */
-public final class WirelessChannelManager {
+public class WirelessChannelManager {
 
     public static final WirelessChannelManager INSTANCE = new WirelessChannelManager();
     private static final Map<Integer, Entrance> ENTRANCES = new LinkedHashMap<>();
@@ -60,20 +61,18 @@ public final class WirelessChannelManager {
     private static final Map<Address, Address> CONTROLLER_SOURCES = new HashMap<>();
     private static Map<IGridNode, Set<IGridConnection>> connectionSnapshot;
 
-    /** These are the two controller types handled by AE's native pathing calculation. */
     public static boolean isSupportedController(TileEntity tile) {
         return tile != null
             && (tile.getClass() == TileController.class || tile.getClass() == TileCreativeEnergyController.class);
     }
 
-    /** A physically connected controller multiblock is one frequency, regardless of the clicked block. */
     public static Address controllerSource(Address source) {
         Address cached = CONTROLLER_SOURCES.get(source);
         if (cached != null) return cached;
         TileEntity tile = source.tile();
         IGridNode start = isSupportedController(tile) ? source.node() : null;
         if (start == null) return source;
-        Set<IGridNode> seen = java.util.Collections.newSetFromMap(new IdentityHashMap<>());
+        Set<IGridNode> seen = Collections.newSetFromMap(new IdentityHashMap<>());
         Set<Address> addresses = new HashSet<>();
         ArrayDeque<IGridNode> pending = new ArrayDeque<>();
         pending.add(start);
@@ -141,8 +140,7 @@ public final class WirelessChannelManager {
 
     public record Address(int dimension, int x, int y, int z, ForgeDirection side) {
 
-        /** Within one dimension, including multiple parts at the same block. */
-        static final Comparator<Address> POSITION_ORDER = Comparator.comparingInt(Address::x)
+        public static final Comparator<Address> POSITION_ORDER = Comparator.comparingInt(Address::x)
             .thenComparingInt(Address::y)
             .thenComparingInt(Address::z)
             .thenComparing(Address::side);
@@ -175,7 +173,7 @@ public final class WirelessChannelManager {
         if (connectionSnapshot == null || node.getClass() != GridNode.class) return node.getConnections()
             .contains(connection);
         return connectionSnapshot.computeIfAbsent(node, key -> {
-            Set<IGridConnection> connections = java.util.Collections.newSetFromMap(new IdentityHashMap<>());
+            Set<IGridConnection> connections = Collections.newSetFromMap(new IdentityHashMap<>());
             for (IGridConnection current : key.getConnections()) connections.add(current);
             return connections;
         })
@@ -198,7 +196,6 @@ public final class WirelessChannelManager {
         return false;
     }
 
-    /** Snapshot recomputed for each pathing pass, so adding/removing controllers changes the budget. */
     public static int capacity(IGrid grid) {
         Set<ChannelBudget.Position> controllers = new HashSet<>();
         // AE already indexes hosts by their concrete class; avoid scanning every cable and device for each GUI update.
@@ -294,7 +291,6 @@ public final class WirelessChannelManager {
         allocationRevision = 0;
     }
 
-    /** Immutable snapshot reused until the registry changes; safe to disconnect entries while iterating. */
     public static List<Entrance> entrances() {
         if (entranceSnapshot == null) entranceSnapshot = List.copyOf(ENTRANCES.values());
         return entranceSnapshot;

@@ -28,8 +28,7 @@ import appeng.parts.AEBasePart;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 
-/** Shared only within one GUI refresh, so changing inventories and output directions cannot leave stale names. */
-final class WirelessInterfaceView {
+public class WirelessInterfaceView {
 
     private final Map<IInterfaceHost, List<MTEHatch>> targets = new IdentityHashMap<>();
     private final Map<WirelessLinkView, List<Name>> names = new IdentityHashMap<>();
@@ -42,7 +41,6 @@ final class WirelessInterfaceView {
 
     }
 
-    /** Null means an output cannot be inspected safely, so machine ownership is unknown. */
     List<MTEHatch> hatches(IInterfaceHost host) {
         if (!targets.containsKey(host)) targets.put(host, readHatches(host));
         return targets.get(host);

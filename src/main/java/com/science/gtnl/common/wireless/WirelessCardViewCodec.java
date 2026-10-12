@@ -14,7 +14,7 @@ import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
 import galacticgreg.api.enums.DimensionDef;
 import gtneioreplugin.util.DimensionHelper;
 
-final class WirelessCardViewCodec {
+public class WirelessCardViewCodec {
 
     private WirelessCardViewCodec() {}
 

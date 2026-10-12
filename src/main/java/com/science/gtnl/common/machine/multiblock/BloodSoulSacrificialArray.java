@@ -1,5 +1,7 @@
 package com.science.gtnl.common.machine.multiblock;
 
+import static com.arc.bloodarsenal.common.block.ModBlocks.blood_lamp;
+import static com.arc.bloodarsenal.common.block.ModBlocks.lp_materializer;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 
@@ -608,11 +610,11 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
 
     @Optional.Method(modid = "BloodArsenal")
     public static Block getBloodLamp() {
-        return com.arc.bloodarsenal.common.block.ModBlocks.blood_lamp;
+        return blood_lamp;
     }
 
     @Optional.Method(modid = "BloodArsenal")
     public static Block getLpMaterializer() {
-        return com.arc.bloodarsenal.common.block.ModBlocks.lp_materializer;
+        return lp_materializer;
     }
 }

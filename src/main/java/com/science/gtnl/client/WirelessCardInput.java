@@ -29,7 +29,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.Unpooled;
 
 @SideOnly(Side.CLIENT)
-public final class WirelessCardInput {
+public class WirelessCardInput {
 
     private static final KeyBinding TOGGLE = new KeyBinding(
         "key.gtnl.wireless_card_auto",

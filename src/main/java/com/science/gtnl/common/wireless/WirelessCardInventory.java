@@ -15,8 +15,7 @@ import com.science.gtnl.common.wireless.WirelessCardSelection.Candidate;
 
 import baubles.common.container.InventoryBaubles;
 
-/** The same carried-item view is used for selection and delayed placement validation. */
-public final class WirelessCardInventory {
+public class WirelessCardInventory {
 
     private WirelessCardInventory() {}
 
@@ -58,7 +57,6 @@ public final class WirelessCardInventory {
             .select(candidates(player, carried(player), WirelessCardBinding::automatic), connecting);
     }
 
-    /** Callers choose the carried slots and enabled setting; ownership and held-card priority stay shared. */
     static List<Candidate<ItemStack>> candidates(EntityPlayer player, List<ItemStack> stacks,
         Predicate<NBTTagCompound> enabled) {
         List<Candidate<ItemStack>> candidates = new ArrayList<>();

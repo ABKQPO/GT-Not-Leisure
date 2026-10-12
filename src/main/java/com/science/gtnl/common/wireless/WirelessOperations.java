@@ -12,8 +12,7 @@ import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.pathing.IPathingGrid;
 
-/** Must be called on the server thread. */
-public final class WirelessOperations {
+public class WirelessOperations {
 
     public enum Result {
         CONNECTED,
@@ -26,7 +25,7 @@ public final class WirelessOperations {
         APPLIED
     }
 
-    static final class Denied extends IllegalStateException {
+    public static class Denied extends IllegalStateException {
     }
 
     private WirelessOperations() {}
@@ -76,7 +75,6 @@ public final class WirelessOperations {
         }
     }
 
-    /** The operator command deliberately retains its administrator override and ability to add another entrance. */
     public static int debugConnect(Address source, Address target) throws FailedConnection {
         try (var ignored = WirelessLinkData.readBatch()) {
             return WirelessClusterManager.prepareLink(source, target)

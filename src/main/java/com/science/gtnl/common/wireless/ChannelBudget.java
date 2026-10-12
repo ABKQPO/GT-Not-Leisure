@@ -2,8 +2,7 @@ package com.science.gtnl.common.wireless;
 
 import java.util.Set;
 
-/** A budget for one AE2 pathing pass, counting successful channel allocations, not traversed edges. */
-public final class ChannelBudget {
+public class ChannelBudget {
 
     public static final int CHANNELS_PER_FACE = 32;
     private final int capacity;
@@ -31,7 +30,6 @@ public final class ChannelBudget {
         return allocated;
     }
 
-    /** Geometric faces, including unwired faces; internal controller faces contribute no capacity. */
     public static int capacityOf(Set<Position> controllers) {
         long faces = 0;
         for (Position p : controllers) {

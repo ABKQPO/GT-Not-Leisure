@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -12,8 +13,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 
-/** Tile-owned data: cable, mounted parts and external nodes each retain their own frequency provenance. */
-public final class WirelessLinkData {
+public class WirelessLinkData {
 
     public static final String KEY = WirelessTileData.KEY;
     private static final int VERSION = 1;
@@ -30,12 +30,11 @@ public final class WirelessLinkData {
         if (--readBatchDepth == 0) readBatch = null;
     }
 
-    /** Server-thread scope shared by nested scans and edits, released when the outer operation finishes. */
     static ReadBatch readBatch() {
         return new ReadBatch();
     }
 
-    static final class ReadBatch implements AutoCloseable {
+    public static class ReadBatch implements AutoCloseable {
 
         private boolean closed;
 
@@ -60,11 +59,11 @@ public final class WirelessLinkData {
             entrances = entrances.isEmpty() ? Set.of()
                 : entrances.stream()
                     .filter(frequencies::contains)
-                    .collect(java.util.stream.Collectors.toUnmodifiableSet());
+                    .collect(Collectors.toUnmodifiableSet());
             paused = paused.isEmpty() ? Set.of()
                 : paused.stream()
                     .filter(frequencies::contains)
-                    .collect(java.util.stream.Collectors.toUnmodifiableSet());
+                    .collect(Collectors.toUnmodifiableSet());
         }
     }
 
@@ -136,7 +135,6 @@ public final class WirelessLinkData {
         return result;
     }
 
-    /** Returns whether the tile needs saving. Unknown versions are preserved, never silently rewritten. */
     public static boolean write(NBTTagCompound tileData, Map<Slot, Claim> claims) {
         if (tileData.hasKey(KEY, 10) && tileData.getCompoundTag(KEY)
             .getInteger("version") != VERSION) return false;

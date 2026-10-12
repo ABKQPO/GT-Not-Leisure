@@ -18,8 +18,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.items.tools.ToolNetworkVisualiser;
 import appeng.items.tools.ToolNetworkVisualiser.VisualisationModes;
 
-/** Adapts a bound card to AE's existing collector; it never creates or removes network links. */
-public final class WirelessCardVisualisation {
+public class WirelessCardVisualisation {
 
     private static final String MODE = "GTNLWirelessVisualisationMode";
     public static final String DELEGATE = "GTNLWirelessVisualiserDelegate";
@@ -68,7 +67,6 @@ public final class WirelessCardVisualisation {
         WirelessCardInventory.sync(player, card);
     }
 
-    /** Separate card cadence from the native tool; enabling must not inherit an old cooldown. */
     public static boolean needsUpdate(EntityPlayerMP player, ItemStack tool) {
         var binding = WirelessCardBinding.read(tool.getTagCompound());
         if (binding == null) return false;
@@ -108,7 +106,6 @@ public final class WirelessCardVisualisation {
                 .getBoolean(DELEGATE);
     }
 
-    /** Share selection between worn ticks, held-item ticks and the client renderer. */
     public static ItemStack activeCard(EntityPlayer player) {
         if (player == null || player.isDead) return null;
         ItemStack held = player.getCurrentEquippedItem();

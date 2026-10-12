@@ -7,10 +7,9 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.pathing.IPathingGrid;
 
-/** Read-only observations; channel consumers and physical nodes are deliberately counted separately. */
 public record WirelessNetworkStatistics(int nodes, int devices, int online, int missing, boolean stable) {
 
-    static final Comparator<WirelessNetworkStatistics> DISPLAY_ORDER = Comparator
+    public static final Comparator<WirelessNetworkStatistics> DISPLAY_ORDER = Comparator
         .comparingInt((WirelessNetworkStatistics stats) -> stats.stable() && stats.missing() > 0 ? 0 : 1)
         .thenComparing(
             Comparator.comparingInt(WirelessNetworkStatistics::online)

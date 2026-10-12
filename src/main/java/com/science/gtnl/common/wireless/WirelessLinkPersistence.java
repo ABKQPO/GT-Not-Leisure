@@ -5,9 +5,11 @@ import static com.science.gtnl.common.wireless.WirelessChannelManager.sameSource
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -18,6 +20,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Entrance;
@@ -34,7 +37,7 @@ import appeng.helpers.ICustomNameObject;
  * Claims live in tile-owned NBT, which is saved even after an AE proxy has invalidated its grid node.
  * No coordinate registry outlives a removed tile. Only loaded tiles are inspected; wireless links never load chunks.
  */
-public final class WirelessLinkPersistence {
+public class WirelessLinkPersistence {
 
     private static final Set<TileEntity> TILES = Collections.newSetFromMap(new IdentityHashMap<>());
     private static final Map<IGridNode, Endpoint> IMPORTED = new IdentityHashMap<>();
@@ -145,13 +148,12 @@ public final class WirelessLinkPersistence {
         return saved == null ? Set.of() : saved.frequencies();
     }
 
-    /** Only complete components may change saved provenance; unfinished scans retain their original bindings. */
     static void synchronize(PhysicalClusterTracker<IGridNode, Address> tracker, PhysicalMeTopology topology) {
         REMEMBERED_ENTRANCES.clear();
         Map<TileEntity, Map<Slot, Claim>> updates = new IdentityHashMap<>();
         Set<IGridNode> retained = Collections.newSetFromMap(new IdentityHashMap<>());
         for (var cluster : tracker.clusters()) {
-            Set<Address> paused = new java.util.HashSet<>();
+            Set<Address> paused = new HashSet<>();
             if (!cluster.limited()) for (IGridNode node : cluster.nodes()) {
                 Claim saved = claim(node, topology);
                 if (saved != null) paused.addAll(saved.paused());
@@ -170,7 +172,7 @@ public final class WirelessLinkPersistence {
                 if (frequencies.isEmpty()) claims.remove(endpoint.slot());
                 else {
                     Claim old = claims.get(endpoint.slot());
-                    Set<Address> sourcePauses = new java.util.HashSet<>();
+                    Set<Address> sourcePauses = new HashSet<>();
                     for (Address source : frequencies) {
                         if (paused.stream()
                             .anyMatch(label -> sameSource(label, source))) sourcePauses.add(source);
@@ -204,7 +206,7 @@ public final class WirelessLinkPersistence {
     }
 
     static Set<Address> pausedSources(Collection<IGridNode> nodes, PhysicalMeTopology topology) {
-        Set<Address> paused = new java.util.HashSet<>();
+        Set<Address> paused = new HashSet<>();
         for (IGridNode node : nodes) {
             Claim saved = claim(node, topology);
             if (saved != null) saved.paused()
@@ -226,7 +228,6 @@ public final class WirelessLinkPersistence {
         return result;
     }
 
-    /** Only call after native pathing has confirmed the entry, never when creating a speculative connection. */
     static void rememberEntrance(Entrance entrance, PhysicalMeTopology topology) {
         if (entrance == null) return;
         IGridNode node = entrance.targetNode();
@@ -249,7 +250,7 @@ public final class WirelessLinkPersistence {
             matched = true;
             if (saved.entrances()
                 .contains(label)) continue;
-            if (entrances == null) entrances = new java.util.HashSet<>(saved.entrances());
+            if (entrances == null) entrances = new HashSet<>(saved.entrances());
             entrances.add(label);
         }
         if (!matched) return;
@@ -274,7 +275,7 @@ public final class WirelessLinkPersistence {
     }
 
     private static String customName(ICustomNameObject named) {
-        return named.hasCustomName() ? java.util.Objects.toString(named.getCustomName(), "") : "";
+        return named.hasCustomName() ? Objects.toString(named.getCustomName(), "") : "";
     }
 
     static String cleanName(String value) {
@@ -324,7 +325,7 @@ public final class WirelessLinkPersistence {
             Map<Slot, Claim> claims = WirelessLinkData.read(WirelessTileData.of(endpoint.tile()));
             Claim saved = claims.get(endpoint.slot());
             if (saved == null) continue;
-            Set<Address> next = new java.util.HashSet<>(saved.paused());
+            Set<Address> next = new HashSet<>(saved.paused());
             for (Address label : saved.frequencies()) {
                 if (!sameSource(label, source)) continue;
                 if (paused) next.add(label);
@@ -377,7 +378,6 @@ public final class WirelessLinkPersistence {
         if (WirelessLinkData.write(WirelessTileData.of(tile), claims)) tile.markDirty();
     }
 
-    /** Unloading forgets object identities only. The tile's saved claims remain intact. */
     static void forget(Predicate<Address> removed) {
         REMEMBERED_ENTRANCES.keySet()
             .removeIf(entrance -> removed.test(entrance.source()) || removed.test(entrance.target()));
@@ -390,7 +390,7 @@ public final class WirelessLinkPersistence {
                     tile.xCoord,
                     tile.yCoord,
                     tile.zCoord,
-                    net.minecraftforge.common.util.ForgeDirection.UNKNOWN)));
+                    ForgeDirection.UNKNOWN)));
     }
 
     static void clear() {

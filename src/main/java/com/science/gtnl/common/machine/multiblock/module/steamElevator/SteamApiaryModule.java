@@ -1003,7 +1003,7 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
     @Deprecated
     public static class MUIContainer extends ModularUIContainer {
 
-        final WeakReference<SteamApiaryModule> parent;
+        public final WeakReference<SteamApiaryModule> parent;
 
         public MUIContainer(ModularUIContext context, ModularWindow mainWindow, SteamApiaryModule mte) {
             super(context, mainWindow);

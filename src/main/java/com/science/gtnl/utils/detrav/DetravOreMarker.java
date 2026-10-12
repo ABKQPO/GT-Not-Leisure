@@ -7,7 +7,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.interfaces.IIconContainer;
 
 @SideOnly(Side.CLIENT)
-public final class DetravOreMarker {
+public class DetravOreMarker {
 
     public final int dimensionId;
     public final int x;

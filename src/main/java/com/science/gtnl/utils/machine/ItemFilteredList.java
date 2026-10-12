@@ -128,8 +128,8 @@ public class ItemFilteredList implements IPartitionList<IAEItemStack> {
 
     public static class ItemListMatcher implements Predicate<IAEItemStack> {
 
-        final Map<ItemRef, Boolean> cache = new ConcurrentHashMap<>();
-        final Predicate<ItemStack> matcher;
+        public final Map<ItemRef, Boolean> cache = new ConcurrentHashMap<>();
+        public final Predicate<ItemStack> matcher;
 
         public ItemListMatcher(Predicate<ItemStack> matcher) {
             this.matcher = matcher;

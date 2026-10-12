@@ -17,6 +17,7 @@ import com.science.gtnl.common.wireless.WirelessChannelManager;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Entrance;
 import com.science.gtnl.common.wireless.WirelessClusterManager;
+import com.science.gtnl.common.wireless.WirelessLinkPersistence;
 import com.science.gtnl.common.wireless.WirelessOperations;
 import com.science.gtnl.config.MainConfig;
 
@@ -24,7 +25,7 @@ import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.pathing.IPathingGrid;
 
-public final class CommandWirelessME extends CommandBase {
+public class CommandWirelessME extends CommandBase {
 
     private final Map<UUID, Address> sources = new HashMap<>();
 
@@ -92,7 +93,7 @@ public final class CommandWirelessME extends CommandBase {
                 }
                 case "clear" -> {
                     if (args.length != 1) throw new IllegalArgumentException(getCommandUsage(sender));
-                    com.science.gtnl.common.wireless.WirelessLinkPersistence.clearLoadedClaims();
+                    WirelessLinkPersistence.clearLoadedClaims();
                     WirelessChannelManager.clear();
                     sources.clear();
                     message(

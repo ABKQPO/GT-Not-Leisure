@@ -1,6 +1,5 @@
 package com.science.gtnl.common.wireless;
 
-/** Dimensions are scaled GUI pixels, not physical display pixels. Row IDs reserve ten values per action. */
 public record WirelessCardLayout(int width, int height, int rows) {
 
     public static final int MIN_ROWS = 5;

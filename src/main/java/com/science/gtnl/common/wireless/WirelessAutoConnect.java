@@ -16,6 +16,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.BlockEvent;
 
+import com.cleanroommc.modularui.factory.GuiFactories;
 import com.science.gtnl.common.item.items.WirelessFrequencyCard;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 
@@ -29,8 +30,7 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
 
-/** Server-thread placement work, delayed until both Forge placement and AE node initialization have finished. */
-public final class WirelessAutoConnect {
+public class WirelessAutoConnect {
 
     public static final WirelessAutoConnect INSTANCE = new WirelessAutoConnect();
     private static final String LANG = "item.gtnl.wireless_frequency_card.";
@@ -39,20 +39,20 @@ public final class WirelessAutoConnect {
     private static final Map<UUID, Long> TOGGLES = new HashMap<>();
     private static long ticks;
 
-    private static final class Pending {
+    private static class Pending {
 
-        final EntityPlayer player;
-        final TileEntity tile;
-        final World world;
-        final int x, y, z;
-        final ForgeDirection side;
-        final IPart part;
-        final ItemStack card;
-        final WirelessCardBinding binding;
-        final ItemStack placedItem;
-        final BooleanSupplier canceled;
-        final long expires;
-        long next;
+        public final EntityPlayer player;
+        public final TileEntity tile;
+        public final World world;
+        public final int x, y, z;
+        public final ForgeDirection side;
+        public final IPart part;
+        public final ItemStack card;
+        public final WirelessCardBinding binding;
+        public final ItemStack placedItem;
+        public final BooleanSupplier canceled;
+        public final long expires;
+        public long next;
 
         Pending(EntityPlayer player, TileEntity tile, ForgeDirection side, IPart part, ItemStack card,
             WirelessCardBinding binding, BooleanSupplier canceled) {
@@ -89,7 +89,6 @@ public final class WirelessAutoConnect {
         message(player, enabled ? "auto_on" : "auto_off");
     }
 
-    /** The caller has already selected and authorized this card. */
     static boolean toggleAutomatic(EntityPlayer player, ItemStack card) {
         boolean enabled = WirelessCardBinding.toggleAutomatic(card);
         WirelessCardInventory.sync(player, card);
@@ -123,7 +122,7 @@ public final class WirelessAutoConnect {
         if (card == null) return;
         int location = WirelessCardInventory.location(player, card);
         if (location == Integer.MIN_VALUE) return;
-        var factory = com.cleanroommc.modularui.factory.GuiFactories.playerInventory();
+        var factory = GuiFactories.playerInventory();
         if (location < 0) factory.openFromBaubles(player, -location - 1);
         else if (location == 0) factory.openFromMainHand(player);
         else factory.openFromPlayerInventory(player, location - 1);
@@ -209,7 +208,6 @@ public final class WirelessAutoConnect {
         }
     }
 
-    /** True finishes the request; false retries only temporary node/source initialization. */
     private static boolean attempt(Pending pending) {
         EntityPlayer player = pending.player;
         World world = pending.world;

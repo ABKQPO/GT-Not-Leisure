@@ -24,8 +24,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.util.DimensionalCoord;
 import appeng.tile.networking.TileController;
 
-/** Adapts loaded, still-published AE nodes to a physical graph without querying or loading entire worlds. */
-final class PhysicalMeTopology implements PhysicalClusterTracker.Topology<IGridNode> {
+public class PhysicalMeTopology implements PhysicalClusterTracker.Topology<IGridNode> {
 
     private record NodeRef(Address address, boolean external) {
 
@@ -108,7 +107,6 @@ final class PhysicalMeTopology implements PhysicalClusterTracker.Topology<IGridN
         return (Object) node.getMachine() instanceof TileController;
     }
 
-    /** Geometry filters an existing AE connection; adjacency alone never creates a physical connection. */
     static boolean isPhysical(boolean ownedWireless, boolean directed, Position a, Position b) {
         if (ownedWireless || a == null || b == null || a.dimension() != b.dimension()) return false;
         long distance = Math.abs((long) a.x() - b.x()) + Math.abs((long) a.y() - b.y())

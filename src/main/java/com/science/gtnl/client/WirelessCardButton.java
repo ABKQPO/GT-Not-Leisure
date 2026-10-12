@@ -26,13 +26,19 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.layout.IViewportStack;
 import com.cleanroommc.modularui.drawable.UITexture;
+import com.cleanroommc.modularui.value.BoolValue;
+import com.cleanroommc.modularui.value.IntValue;
+import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
+import com.cleanroommc.modularui.widgets.CycleButtonWidget;
+import com.cleanroommc.modularui.widgets.ToggleButton;
 import com.science.gtnl.common.wireless.WirelessCardVisualisation;
 
 import appeng.client.gui.ScreenColor;
@@ -41,15 +47,15 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-final class WirelessCardButton {
+public class WirelessCardButton {
 
-    static final UITexture[] BUTTON_TEXTURES = { buttonTexture(0), buttonTexture(1), buttonTexture(2) };
+    public static final UITexture[] BUTTON_TEXTURES = { buttonTexture(0), buttonTexture(1), buttonTexture(2) };
     private static final UITexture TOGGLE_BACKGROUND = toggleTexture(255), TOGGLE_ON = toggleTexture(129),
         TOGGLE_OFF = toggleTexture(128);
     private static final IDrawable[] TINTED_BUTTONS = { tinted(BUTTON_TEXTURES[0]), tinted(BUTTON_TEXTURES[1]),
         tinted(BUTTON_TEXTURES[2]) };
-    final int id;
-    final com.cleanroommc.modularui.widget.Widget<?> widget;
+    public final int id;
+    public final Widget<?> widget;
     private final FontRenderer fontRendererObj = Minecraft.getMinecraft().fontRenderer;
     private boolean available, on;
     private String label = "";
@@ -57,19 +63,18 @@ final class WirelessCardButton {
     WirelessCardButton(int id, WirelessCardPanel panel) {
         this.id = id;
         if (id == TOGGLE_AUTO || type(id) == TOGGLE_PAUSE) {
-            widget = new com.cleanroommc.modularui.widgets.ToggleButton() {
+            widget = new ToggleButton() {
 
                 @Override
                 public boolean canBeSeen(IViewportStack stack) {
-                    // MUI2's drag preview otherwise draws disabled child backgrounds.
                     return isEnabled() && super.canBeSeen(stack);
                 }
 
                 @Override
-                public Result onMousePressed(int button) {
+                public @NotNull Result onMousePressed(int button) {
                     return button == 0 && available ? super.onMousePressed(button) : Result.ACCEPT;
                 }
-            }.value(new com.cleanroommc.modularui.value.BoolValue.Dynamic(() -> on, ignored -> panel.action(id)))
+            }.value(new BoolValue.Dynamic(() -> on, ignored -> panel.action(id)))
                 .background(false, tinted(TOGGLE_BACKGROUND))
                 .background(true, tinted(TOGGLE_BACKGROUND))
                 .hoverBackground(false, tinted(TOGGLE_BACKGROUND))
@@ -77,7 +82,7 @@ final class WirelessCardButton {
                 .overlay(false, TOGGLE_OFF)
                 .overlay(true, TOGGLE_ON);
         } else if (id == CYCLE_FILTER) {
-            widget = new com.cleanroommc.modularui.widgets.CycleButtonWidget() {
+            widget = new CycleButtonWidget() {
 
                 @Override
                 public boolean canBeSeen(IViewportStack stack) {
@@ -85,12 +90,12 @@ final class WirelessCardButton {
                 }
 
                 @Override
-                public Result onMousePressed(int button) {
+                public @NotNull Result onMousePressed(int button) {
                     return button == 0 && available ? super.onMousePressed(button) : Result.ACCEPT;
                 }
             }.stateCount(5)
                 .value(
-                    new com.cleanroommc.modularui.value.IntValue.Dynamic(
+                    new IntValue.Dynamic(
                         () -> panel.view()
                             .getInteger("filterState"),
                         ignored -> panel.action(id)));
@@ -126,7 +131,7 @@ final class WirelessCardButton {
             .tooltipAutoUpdate(true);
     }
 
-    private static final class ActionButton extends ButtonWidget<ActionButton> {
+    private static class ActionButton extends ButtonWidget<ActionButton> {
 
         @Override
         public boolean canBeSeen(IViewportStack stack) {

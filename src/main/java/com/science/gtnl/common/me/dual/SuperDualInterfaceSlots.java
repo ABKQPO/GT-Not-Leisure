@@ -1,6 +1,6 @@
 package com.science.gtnl.common.me.dual;
 
-public final class SuperDualInterfaceSlots {
+public class SuperDualInterfaceSlots {
 
     public static final int FLUID_SLOTS_PER_PAGE = 6;
     public static final int FLUID_PAGE_COUNT = 3;

@@ -22,7 +22,6 @@ import appeng.me.GridConnection;
 import appeng.me.GridNode;
 import appeng.me.pathfinding.PathingCalculation;
 
-/** AE2 rv3-beta-1080: preserve native routing and only extend explicitly registered wireless edges. */
 @Mixin(value = PathingCalculation.class, remap = false)
 public abstract class MixinWirelessPathingCalculation implements WirelessPathingAccess {
 
