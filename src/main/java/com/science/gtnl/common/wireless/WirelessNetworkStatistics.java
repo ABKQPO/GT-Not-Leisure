@@ -33,6 +33,6 @@ public record WirelessNetworkStatistics(int nodes, int devices, int online, int 
         IPathingGrid path = node.getGrid()
             .getCache(IPathingGrid.class);
         return path != null && !path.isNetworkBooting()
-            && (!(path instanceof WirelessPathingState state) || !state.gtnl$isRepathPending());
+            && (!(path instanceof IWirelessPathingState state) || !state.gtnl$isRepathPending());
     }
 }

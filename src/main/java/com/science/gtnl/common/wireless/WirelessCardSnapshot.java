@@ -10,14 +10,14 @@ public class WirelessCardSnapshot {
     public static final int CHUNK_BYTES = 24 * 1024;
 
     private final NBTTagCompound payload;
-    private final Map<Long, WirelessLinkView> targets;
+    private final Map<Long, IWirelessLinkView> targets;
 
-    WirelessCardSnapshot(NBTTagCompound payload, Map<Long, WirelessLinkView> targets) {
+    WirelessCardSnapshot(NBTTagCompound payload, Map<Long, IWirelessLinkView> targets) {
         this.payload = (NBTTagCompound) payload.copy();
         this.targets = Map.copyOf(targets);
     }
 
-    WirelessLinkView target(long id) {
+    IWirelessLinkView target(long id) {
         return targets.get(id);
     }
 

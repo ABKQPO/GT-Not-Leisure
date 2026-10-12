@@ -21,8 +21,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
-import com.science.gtnl.api.mixinHelper.ITileController;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.mixins.late.appliedEnergistics.wireless.AccessorTileController;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
@@ -217,7 +217,7 @@ public class WirelessChannelManager {
     }
 
     public static int connect(Address source, Address target) throws FailedConnection {
-        if (!WirelessPathingAccess.class.isAssignableFrom(PathingCalculation.class)) {
+        if (!IWirelessPathingAccess.class.isAssignableFrom(PathingCalculation.class)) {
             throw new IllegalArgumentException("Wireless pathing hooks are unavailable; no connection was created.");
         }
         if (entranceLimitReached(source))
@@ -229,7 +229,7 @@ public class WirelessChannelManager {
         IGridNode from = source.node();
         IGridNode to = target.node();
         if (from == null || to == null) throw new IllegalArgumentException("Both ME nodes must be loaded and ready.");
-        if (to.getMachine() instanceof ITileController)
+        if (to.getMachine() instanceof AccessorTileController)
             throw new IllegalArgumentException("Cannot target a controller.");
         IGrid grid = from.getGrid();
         IPathingGrid path = grid.getCache(IPathingGrid.class);
@@ -240,7 +240,7 @@ public class WirelessChannelManager {
         if (to.getGrid() != grid) {
             for (IGridNode node : to.getGrid()
                 .getNodes()) {
-                if (node.getMachine() instanceof ITileController) {
+                if (node.getMachine() instanceof AccessorTileController) {
                     throw new IllegalArgumentException("Cannot merge a second controller network.");
                 }
             }

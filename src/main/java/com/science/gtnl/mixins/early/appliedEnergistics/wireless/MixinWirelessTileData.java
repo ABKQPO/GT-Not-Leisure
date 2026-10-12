@@ -9,10 +9,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.science.gtnl.common.wireless.WirelessTileData;
+import com.science.gtnl.common.wireless.IWirelessTileData;
 
 @Mixin(TileEntity.class)
-public class MixinWirelessTileData implements WirelessTileData {
+public class MixinWirelessTileData implements IWirelessTileData {
 
     @Unique
     private NBTTagCompound gtnl$wirelessData;

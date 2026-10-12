@@ -15,7 +15,7 @@ import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 
 public class WirelessLinkData {
 
-    public static final String KEY = WirelessTileData.KEY;
+    public static final String KEY = IWirelessTileData.KEY;
     private static final int VERSION = 1;
     private static Map<NBTTagCompound, Decoded> readBatch;
     private static int readBatchDepth;

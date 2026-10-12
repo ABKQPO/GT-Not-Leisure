@@ -38,7 +38,7 @@ public class WirelessCardViewBuilder {
 
     WirelessCardSnapshot build(WirelessCardBinding binding, ItemStack card) {
         var interfaces = new WirelessInterfaceView();
-        List<WirelessLinkView> all = binding == null ? List.of()
+        List<IWirelessLinkView> all = binding == null ? List.of()
             : new ArrayList<>(WirelessClusterManager.links(binding.source()));
         boolean initializing = startup.waiting(all);
         var focus = detailNode == null ? null
@@ -100,7 +100,7 @@ public class WirelessCardViewBuilder {
             }
         }
         Map<Target, Long> nextIds = new HashMap<>();
-        Map<Long, WirelessLinkView> targets = new LinkedHashMap<>();
+        Map<Long, IWirelessLinkView> targets = new LinkedHashMap<>();
         if (focus != null) data.setLong("detailId", identify(focus, nextIds, targets));
         NBTTagList entries = new NBTTagList();
         for (Row row : rows) entries.appendTag(writeRow(row, interfaces, dimensions, nextIds, targets, focus != null));
@@ -110,8 +110,8 @@ public class WirelessCardViewBuilder {
         return new WirelessCardSnapshot(data, targets);
     }
 
-    private long identify(WirelessLinkView link, Map<Target, Long> nextIds, Map<Long, WirelessLinkView> targets) {
-        Target key = new Target(link.node(), link.members(), link instanceof WirelessLinkView.EntranceView);
+    private long identify(IWirelessLinkView link, Map<Target, Long> nextIds, Map<Long, IWirelessLinkView> targets) {
+        Target key = new Target(link.node(), link.members(), link instanceof IWirelessLinkView.EntranceView);
         long id = nextIds.computeIfAbsent(key, ignored -> {
             Long previous = targetIds.get(key);
             return previous == null ? ++nextTargetId : previous;
@@ -121,7 +121,7 @@ public class WirelessCardViewBuilder {
     }
 
     private NBTTagCompound writeRow(Row row, WirelessInterfaceView interfaces, NBTTagCompound dimensions,
-        Map<Target, Long> nextIds, Map<Long, WirelessLinkView> targets, boolean detail) {
+        Map<Target, Long> nextIds, Map<Long, IWirelessLinkView> targets, boolean detail) {
         var target = row.target();
         NBTTagCompound entry = new NBTTagCompound();
         writeDimensionName(dimensions, target.dimension());
@@ -157,7 +157,7 @@ public class WirelessCardViewBuilder {
         entry.setBoolean("conflicted", row.conflicted());
         entry.setInteger("entrances", row.entrances());
         writeStatistics(entry, row.statistics());
-        var entrance = !row.group() && row.link() instanceof WirelessLinkView.EntranceView runtime ? runtime : null;
+        var entrance = !row.group() && row.link() instanceof IWirelessLinkView.EntranceView runtime ? runtime : null;
         entry.setBoolean("runtime", entrance != null);
         entry.setInteger(
             "usedChannels",

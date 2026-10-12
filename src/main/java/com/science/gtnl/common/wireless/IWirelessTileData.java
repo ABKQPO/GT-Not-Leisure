@@ -3,7 +3,7 @@ package com.science.gtnl.common.wireless;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
-public interface WirelessTileData {
+public interface IWirelessTileData {
 
     String KEY = "GTNLWirelessLinks";
 
@@ -12,6 +12,6 @@ public interface WirelessTileData {
     boolean gtnl$hasWirelessData();
 
     static NBTTagCompound of(TileEntity tile) {
-        return ((WirelessTileData) tile).gtnl$wirelessData();
+        return ((IWirelessTileData) tile).gtnl$wirelessData();
     }
 }

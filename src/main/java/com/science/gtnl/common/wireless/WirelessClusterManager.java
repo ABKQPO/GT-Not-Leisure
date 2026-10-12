@@ -20,14 +20,14 @@ import java.util.stream.Stream;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.science.gtnl.api.mixinHelper.ITileController;
+import com.science.gtnl.common.wireless.IWirelessLinkView.ClusterView;
+import com.science.gtnl.common.wireless.IWirelessLinkView.EntranceView;
 import com.science.gtnl.common.wireless.PhysicalClusterTracker.Cluster;
 import com.science.gtnl.common.wireless.VerifiedEntranceRecovery.Candidate;
 import com.science.gtnl.common.wireless.VerifiedEntranceRecovery.Result;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Entrance;
-import com.science.gtnl.common.wireless.WirelessLinkView.ClusterView;
-import com.science.gtnl.common.wireless.WirelessLinkView.EntranceView;
+import com.science.gtnl.mixins.late.appliedEnergistics.wireless.AccessorTileController;
 
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.GridFlags;
@@ -91,7 +91,7 @@ public class WirelessClusterManager {
     }
 
     public static void nodeChanged(IGridNode node) {
-        if (node.getWorld() != null && !node.getWorld().isRemote && node.getMachine() instanceof ITileController)
+        if (node.getWorld() != null && !node.getWorld().isRemote && node.getMachine() instanceof AccessorTileController)
             invalidateTopology();
         WATCH.nodeChanged(node);
     }
@@ -377,7 +377,7 @@ public class WirelessClusterManager {
         }
     }
 
-    public static boolean setPaused(Address source, WirelessLinkView view, boolean paused) {
+    public static boolean setPaused(Address source, IWirelessLinkView view, boolean paused) {
         try (var ignored = WirelessLinkData.readBatch()) {
             var cluster = linkedCluster(source, view);
             if (cluster == null) return false;
@@ -393,8 +393,8 @@ public class WirelessClusterManager {
         }
     }
 
-    static List<WirelessLinkView> entranceLinks(Address source, ClusterView cluster) {
-        List<WirelessLinkView> result = new ArrayList<>();
+    static List<IWirelessLinkView> entranceLinks(Address source, ClusterView cluster) {
+        List<IWirelessLinkView> result = new ArrayList<>();
         for (Entrance entrance : WirelessChannelManager.entrances()) {
             if (sameSource(entrance.source(), source) && entrance.isLive()
                 && cluster.members()
@@ -426,7 +426,7 @@ public class WirelessClusterManager {
             .contains(controllerSource(source));
     }
 
-    static boolean isCurrentLink(Address source, WirelessLinkView view) {
+    static boolean isCurrentLink(Address source, IWirelessLinkView view) {
         if (view.target()
             .node() != view.node()) return false;
         var cluster = linkedCluster(source, view);
@@ -434,7 +434,7 @@ public class WirelessClusterManager {
             .equals(view.members());
     }
 
-    public static boolean rename(Address source, WirelessLinkView view, String name, Predicate<IGridNode> canRename) {
+    public static boolean rename(Address source, IWirelessLinkView view, String name, Predicate<IGridNode> canRename) {
         try (var ignored = WirelessLinkData.readBatch()) {
             if (!isCurrentLink(source, view) || !WirelessLinkPersistence.names(view.members())
                 .equals(view.deviceNames())) throw new IllegalStateException("The displayed cluster changed");
@@ -442,14 +442,14 @@ public class WirelessClusterManager {
         }
     }
 
-    private static Cluster<IGridNode, Address> linkedCluster(Address source, WirelessLinkView view) {
+    private static Cluster<IGridNode, Address> linkedCluster(Address source, IWirelessLinkView view) {
         refreshTarget(view.node());
         var cluster = TRACKER.clusterOf(view.node());
         return cluster != null && cluster.frequencies()
             .contains(controllerSource(source)) ? cluster : null;
     }
 
-    public static List<Address> highlight(WirelessLinkView view) {
+    public static List<Address> highlight(IWirelessLinkView view) {
         return (view instanceof EntranceView ? Stream.of(view.target())
             : view.members()
                 .stream()

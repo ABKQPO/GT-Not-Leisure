@@ -14,8 +14,8 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.science.gtnl.common.wireless.ChannelBudget;
+import com.science.gtnl.common.wireless.IWirelessPathingAccess;
 import com.science.gtnl.common.wireless.WirelessChannelManager;
-import com.science.gtnl.common.wireless.WirelessPathingAccess;
 
 import appeng.api.networking.IGrid;
 import appeng.me.GridConnection;
@@ -23,7 +23,7 @@ import appeng.me.GridNode;
 import appeng.me.pathfinding.PathingCalculation;
 
 @Mixin(value = PathingCalculation.class, remap = false)
-public abstract class MixinWirelessPathingCalculation implements WirelessPathingAccess {
+public abstract class MixinWirelessPathingCalculation implements IWirelessPathingAccess {
 
     @Unique
     private ChannelBudget gtnl$wirelessBudget;

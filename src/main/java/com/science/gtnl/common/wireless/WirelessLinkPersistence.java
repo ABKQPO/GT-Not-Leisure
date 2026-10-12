@@ -48,7 +48,7 @@ public class WirelessLinkPersistence {
 
         boolean matches(IGridNode node) {
             return endpoint.loaded() && endpoint.node() == node
-                && WirelessTileData.of(endpoint.tile())
+                && IWirelessTileData.of(endpoint.tile())
                     .getTag(WirelessLinkData.KEY) == payload;
         }
     }
@@ -71,7 +71,7 @@ public class WirelessLinkPersistence {
     private WirelessLinkPersistence() {}
 
     public static void discover(TileEntity tile) {
-        if (((WirelessTileData) tile).gtnl$hasWirelessData()) TILES.add(tile);
+        if (((IWirelessTileData) tile).gtnl$hasWirelessData()) TILES.add(tile);
     }
 
     public static void discover(Chunk chunk) {
@@ -104,7 +104,7 @@ public class WirelessLinkPersistence {
             if (!endpoint.loaded()) {
                 previous.remove();
             } else if (endpoint.node() != entry.getKey()) {
-                Map<Slot, Claim> saved = WirelessLinkData.read(WirelessTileData.of(endpoint.tile()));
+                Map<Slot, Claim> saved = WirelessLinkData.read(IWirelessTileData.of(endpoint.tile()));
                 saved.remove(endpoint.slot());
                 save(endpoint.tile(), saved);
                 previous.remove();
@@ -118,7 +118,7 @@ public class WirelessLinkPersistence {
                 tiles.remove();
                 continue;
             }
-            Map<Slot, Claim> claims = WirelessLinkData.read(WirelessTileData.of(tile));
+            Map<Slot, Claim> claims = WirelessLinkData.read(IWirelessTileData.of(tile));
             boolean changed = false;
             var entries = claims.entrySet()
                 .iterator();
@@ -167,7 +167,7 @@ public class WirelessLinkPersistence {
                 // class must not import its predecessor's saved claim. Its payload stays untouched until recovery.
                 if (cluster.limited()) continue;
                 Map<Slot, Claim> claims = updates
-                    .computeIfAbsent(endpoint.tile(), tile -> WirelessLinkData.read(WirelessTileData.of(tile)));
+                    .computeIfAbsent(endpoint.tile(), tile -> WirelessLinkData.read(IWirelessTileData.of(tile)));
                 Set<Address> frequencies = tracker.claimsOf(node);
                 if (frequencies.isEmpty()) claims.remove(endpoint.slot());
                 else {
@@ -200,7 +200,7 @@ public class WirelessLinkPersistence {
     private static Claim claim(IGridNode node, PhysicalMeTopology topology) {
         Endpoint endpoint = endpoint(node, topology);
         if (endpoint == null) return null;
-        Claim saved = WirelessLinkData.claim(WirelessTileData.of(endpoint.tile()), endpoint.slot());
+        Claim saved = WirelessLinkData.claim(IWirelessTileData.of(endpoint.tile()), endpoint.slot());
         return saved != null && saved.kind()
             .equals(endpoint.kind()) ? saved : null;
     }
@@ -239,7 +239,7 @@ public class WirelessLinkPersistence {
             || endpoint.slot()
                 .external())
             return;
-        NBTTagCompound tileData = WirelessTileData.of(endpoint.tile());
+        NBTTagCompound tileData = IWirelessTileData.of(endpoint.tile());
         Claim saved = WirelessLinkData.claim(tileData, endpoint.slot());
         if (saved == null || !saved.kind()
             .equals(endpoint.kind())) return;
@@ -322,7 +322,7 @@ public class WirelessLinkPersistence {
         for (IGridNode node : nodes) {
             Endpoint endpoint = endpoint(node, topology);
             if (endpoint == null) continue;
-            Map<Slot, Claim> claims = WirelessLinkData.read(WirelessTileData.of(endpoint.tile()));
+            Map<Slot, Claim> claims = WirelessLinkData.read(IWirelessTileData.of(endpoint.tile()));
             Claim saved = claims.get(endpoint.slot());
             if (saved == null) continue;
             Set<Address> next = new HashSet<>(saved.paused());
@@ -375,7 +375,7 @@ public class WirelessLinkPersistence {
     }
 
     private static void save(TileEntity tile, Map<Slot, Claim> claims) {
-        if (WirelessLinkData.write(WirelessTileData.of(tile), claims)) tile.markDirty();
+        if (WirelessLinkData.write(IWirelessTileData.of(tile), claims)) tile.markDirty();
     }
 
     static void forget(Predicate<Address> removed) {

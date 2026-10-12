@@ -1,4 +1,4 @@
 package com.science.gtnl.common.wireless;
 
-public interface WirelessPathingAccess {
+public interface IWirelessPathingAccess {
 }

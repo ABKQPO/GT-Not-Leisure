@@ -31,9 +31,9 @@ public class WirelessMachineGroups {
         private final List<MTEMultiBlockBase> pending = new ArrayList<>();
         private boolean finished;
 
-        boolean waiting(List<WirelessLinkView> links) {
+        boolean waiting(List<IWirelessLinkView> links) {
             if (finished) return false;
-            for (WirelessLinkView link : links) {
+            for (IWirelessLinkView link : links) {
                 World world = link.node()
                     .getWorld();
                 if (world == null || !inspected.add(world)) continue;
@@ -84,10 +84,10 @@ public class WirelessMachineGroups {
         }
     }
 
-    record Row(MTEMultiBlockBase machine, TypeKey type, List<WirelessLinkView> links,
+    record Row(MTEMultiBlockBase machine, TypeKey type, List<IWirelessLinkView> links,
         WirelessNetworkStatistics statistics) {
 
-        Row(MTEMultiBlockBase machine, List<WirelessLinkView> links) {
+        Row(MTEMultiBlockBase machine, List<IWirelessLinkView> links) {
             this(
                 machine,
                 machine == null ? null
@@ -101,11 +101,11 @@ public class WirelessMachineGroups {
                 summarize(links));
         }
 
-        static Row cluster(WirelessLinkView link) {
+        static Row cluster(IWirelessLinkView link) {
             return cluster(link, null);
         }
 
-        static Row cluster(WirelessLinkView link, TypeKey type) {
+        static Row cluster(IWirelessLinkView link, TypeKey type) {
             return new Row(null, type, List.of(link), link.statistics());
         }
 
@@ -113,7 +113,7 @@ public class WirelessMachineGroups {
             return machine != null;
         }
 
-        WirelessLinkView link() {
+        IWirelessLinkView link() {
             if (group()) throw new IllegalStateException("A presentation group is not an actionable physical cluster");
             return links.get(0);
         }
@@ -140,17 +140,17 @@ public class WirelessMachineGroups {
 
         boolean paused() {
             return links.stream()
-                .allMatch(WirelessLinkView::paused);
+                .allMatch(IWirelessLinkView::paused);
         }
 
         boolean conflicted() {
             return links.stream()
-                .anyMatch(WirelessLinkView::conflicted);
+                .anyMatch(IWirelessLinkView::conflicted);
         }
 
         int entrances() {
             return links.stream()
-                .mapToInt(WirelessLinkView::entrances)
+                .mapToInt(IWirelessLinkView::entrances)
                 .sum();
         }
 
@@ -171,11 +171,11 @@ public class WirelessMachineGroups {
 
     }
 
-    static List<Row> group(List<WirelessLinkView> links, WirelessInterfaceView interfaces) {
+    static List<Row> group(List<IWirelessLinkView> links, WirelessInterfaceView interfaces) {
         List<Row> rows = new ArrayList<>();
-        Map<MTEMultiBlockBase, List<WirelessLinkView>> machines = new IdentityHashMap<>();
+        Map<MTEMultiBlockBase, List<IWirelessLinkView>> machines = new IdentityHashMap<>();
         Map<MTEMultiBlockBase, Boolean> validControllers = new IdentityHashMap<>();
-        for (WirelessLinkView link : links) {
+        for (IWirelessLinkView link : links) {
             Classification classification = classify(link, validControllers, interfaces);
             if (classification.machine() == null) rows.add(Row.cluster(link, classification.type()));
             else machines.computeIfAbsent(classification.machine(), ignored -> new ArrayList<>())
@@ -185,7 +185,7 @@ public class WirelessMachineGroups {
         return rows;
     }
 
-    static Classification classify(WirelessLinkView link, Map<MTEMultiBlockBase, Boolean> validControllers,
+    static Classification classify(IWirelessLinkView link, Map<MTEMultiBlockBase, Boolean> validControllers,
         WirelessInterfaceView interfaces) {
         Set<MTEMultiBlockBase> owners = null;
         TypeKey type = null;
@@ -263,10 +263,10 @@ public class WirelessMachineGroups {
                 .getTileEntity(base.getXCoord(), base.getYCoord(), base.getZCoord()) == base;
     }
 
-    static WirelessNetworkStatistics summarize(List<WirelessLinkView> links) {
+    static WirelessNetworkStatistics summarize(List<IWirelessLinkView> links) {
         int nodes = 0, devices = 0, online = 0, missing = 0;
         boolean stable = true;
-        for (WirelessLinkView link : links) {
+        for (IWirelessLinkView link : links) {
             var stats = link.statistics();
             nodes += stats.nodes();
             devices += stats.devices();

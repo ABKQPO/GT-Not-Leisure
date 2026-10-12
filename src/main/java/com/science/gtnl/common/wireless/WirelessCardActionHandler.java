@@ -131,7 +131,7 @@ public class WirelessCardActionHandler {
             WirelessCardBinding.toggleGrouping(card);
             WirelessCardInventory.sync(player, card);
         } else if (action == OPEN_DETAILS) {
-            if (session.view.detailNode == null && row instanceof WirelessLinkView.ClusterView)
+            if (session.view.detailNode == null && row instanceof IWirelessLinkView.ClusterView)
                 session.view.detailNode = row.node();
         } else if (action == TOGGLE_PAUSE) {
             try {

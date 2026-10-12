@@ -31,7 +31,7 @@ import gregtech.api.metatileentity.implementations.MTEHatch;
 public class WirelessInterfaceView {
 
     private final Map<IInterfaceHost, List<MTEHatch>> targets = new IdentityHashMap<>();
-    private final Map<WirelessLinkView, List<Name>> names = new IdentityHashMap<>();
+    private final Map<IWirelessLinkView, List<Name>> names = new IdentityHashMap<>();
 
     record Name(String rawName, String suffix, ItemStack icon) {
 
@@ -66,11 +66,11 @@ public class WirelessInterfaceView {
         return hatches;
     }
 
-    List<Name> names(WirelessLinkView link) {
+    List<Name> names(IWirelessLinkView link) {
         return names.computeIfAbsent(link, this::readNames);
     }
 
-    private List<Name> readNames(WirelessLinkView link) {
+    private List<Name> readNames(IWirelessLinkView link) {
         Set<Object> seen = Collections.newSetFromMap(new IdentityHashMap<>());
         var names = new TreeMap<String, Name>();
         for (var node : link.members()) {

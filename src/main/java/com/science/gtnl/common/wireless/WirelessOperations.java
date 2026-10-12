@@ -91,12 +91,12 @@ public class WirelessOperations {
         }
     }
 
-    static boolean rename(EntityPlayer player, Address source, WirelessLinkView view, String name) {
+    static boolean rename(EntityPlayer player, Address source, IWirelessLinkView view, String name) {
         if (!canBuild(view.node(), player) || !canBuild(source.node(), player)) throw new Denied();
         return WirelessClusterManager.rename(source, view, name, node -> canBuild(node, player));
     }
 
-    static void setPaused(EntityPlayer player, Address source, WirelessLinkView view) {
+    static void setPaused(EntityPlayer player, Address source, IWirelessLinkView view) {
         IGridNode controller = source.node();
         if (view.target()
             .node() != view.node() || !canBuild(view.node(), player)
@@ -105,7 +105,7 @@ public class WirelessOperations {
         WirelessClusterManager.setPaused(source, view, !view.paused());
     }
 
-    static Result teleport(EntityPlayerMP player, Address source, WirelessLinkView view) {
+    static Result teleport(EntityPlayerMP player, Address source, IWirelessLinkView view) {
         if (!WirelessClusterManager.isCurrentLink(source, view)) return Result.STALE;
         IGridNode controller = source.node();
         if (controller == null) return Result.UNAVAILABLE;

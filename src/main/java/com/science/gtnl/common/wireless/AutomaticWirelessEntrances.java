@@ -227,7 +227,7 @@ public class AutomaticWirelessEntrances {
 
     public static boolean isSettled(IPathingGrid path) {
         return path.getControllerState() == ControllerState.CONTROLLER_ONLINE && !path.isNetworkBooting()
-            && path instanceof WirelessPathingState state
+            && path instanceof IWirelessPathingState state
             && !state.gtnl$isRepathPending();
     }
 

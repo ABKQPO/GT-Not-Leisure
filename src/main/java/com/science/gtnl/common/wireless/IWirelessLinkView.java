@@ -9,7 +9,7 @@ import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 
 import appeng.api.networking.IGridNode;
 
-public interface WirelessLinkView {
+public interface IWirelessLinkView {
 
     ClusterView cluster();
 
@@ -65,7 +65,7 @@ public interface WirelessLinkView {
 
     record ClusterView(Address target, IGridNode node, Map<IGridNode, String> deviceNames, boolean conflicted,
         boolean paused, String state, int entrances, WirelessNetworkStatistics statistics, Set<IGridNode> members)
-        implements WirelessLinkView {
+        implements IWirelessLinkView {
 
         public ClusterView {
             deviceNames = Map.copyOf(deviceNames);
@@ -79,7 +79,7 @@ public interface WirelessLinkView {
     }
 
     record EntranceView(ClusterView cluster, Address target, IGridNode node, OptionalInt usedChannels)
-        implements WirelessLinkView {
+        implements IWirelessLinkView {
 
         public EntranceView {
             if (!cluster.members()
