@@ -59,9 +59,9 @@ public class MainConfig {
     public static class Wireless {
 
         @Comment("Maximum runtime entrances per frequency. Lowering this only prevents new entrances.")
-        @DefaultInt(256)
+        @DefaultInt(4096)
         @RangeInt(min = 1)
-        public int maxEntrancesPerFrequency = 256;
+        public int maxEntrancesPerFrequency = 4096;
     }
 
     public static final Item item = new Item();
