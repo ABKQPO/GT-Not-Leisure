@@ -164,7 +164,6 @@ public class WirelessAutoConnect {
         BooleanSupplier canceled) {
         if (player == null || player instanceof FakePlayer
             || player.worldObj.isRemote
-            || tile == null
             || tile instanceof TileController
             || !(tile instanceof IGridHost || tile instanceof IPartHost)) return;
         // Native cable/part placement is reported with an exact side and part identity by the AE hook.

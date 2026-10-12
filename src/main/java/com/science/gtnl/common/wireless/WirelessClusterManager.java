@@ -91,8 +91,8 @@ public class WirelessClusterManager {
     }
 
     public static void nodeChanged(IGridNode node) {
-        if (node.getWorld() != null && !node.getWorld().isRemote
-            && (Object) node.getMachine() instanceof TileController) invalidateTopology();
+        if (node.getWorld() != null && !node.getWorld().isRemote && node.getMachine() instanceof TileController)
+            invalidateTopology();
         WATCH.nodeChanged(node);
     }
 

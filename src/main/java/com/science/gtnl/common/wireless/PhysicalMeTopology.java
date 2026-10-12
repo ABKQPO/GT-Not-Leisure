@@ -104,7 +104,7 @@ public class PhysicalMeTopology implements PhysicalClusterTracker.Topology<IGrid
 
     @Override
     public boolean blocksWireless(IGridNode node) {
-        return (Object) node.getMachine() instanceof TileController;
+        return node.getMachine() instanceof TileController;
     }
 
     static boolean isPhysical(boolean ownedWireless, boolean directed, Position a, Position b) {
