@@ -94,7 +94,9 @@ public final class WirelessCardGui extends WirelessCardPanel {
             public boolean onMousePressed(int button) {
                 ModularPanel previous = getPanelManager().getTopMostPanel();
                 if (button == 1) {
-                    if (previous instanceof WirelessCardRenameDialog dialog) dialog.closeIfOpen();
+                    if (previous == null || !previous.isBelowMouse()) return true;
+                    if (previous.getTopHovering() instanceof TextFieldWidget) super.onMousePressed(button);
+                    else if (previous instanceof WirelessCardRenameDialog dialog) dialog.closeIfOpen();
                     else if (previous instanceof WirelessCardPanel panel && (panel.isDetailView() || panel.view()
                         .getBoolean("group"))) panel.action(BACK);
                     return true;
@@ -114,7 +116,7 @@ public final class WirelessCardGui extends WirelessCardPanel {
 
             @Override
             public boolean onMouseRelease(int button) {
-                return button == 1 || super.onMouseRelease(button);
+                return super.onMouseRelease(button) || button == 1;
             }
         };
     }
