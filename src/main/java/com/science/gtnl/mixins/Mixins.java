@@ -101,8 +101,7 @@ public enum Mixins implements IMixins {
 
     WIRELESS_TILE_DATA(new MixinBuilder("ME wireless link persistence")
         .addCommonMixins("appliedEnergistics.wireless.MixinWirelessTileData")
-        .setPhase(Phase.EARLY)
-        .addRequiredMod(ModList.AppliedEnergistics)),
+        .setPhase(Phase.EARLY)),
 
     WIRELESS_CHANNEL(new MixinBuilder("ME wireless channel allocation")
         .addCommonMixins(

@@ -71,7 +71,7 @@ public class WirelessLinkPersistence {
     private WirelessLinkPersistence() {}
 
     public static void discover(TileEntity tile) {
-        if (((IWirelessTileData) tile).gtnl$hasWirelessData()) TILES.add(tile);
+        if (tile instanceof IWirelessTileData data && data.gtnl$hasWirelessData()) TILES.add(tile);
     }
 
     public static void discover(Chunk chunk) {

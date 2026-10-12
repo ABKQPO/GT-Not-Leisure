@@ -44,6 +44,7 @@ public class WirelessCardViewCodec {
         for (Object key : dimensions.func_150296_c()) {
             String id = (String) key;
             String name = dimensions.getString(id);
+            if (name.equals("Personal World " + id)) name = "personalworld";
             if (!name.isEmpty()) dimensions.setString(id, DimensionHelper.getDimLocalizedName(name));
         }
         localizePosition(data, "source", dimensions);
@@ -94,7 +95,7 @@ public class WirelessCardViewCodec {
                     ItemStack.loadItemStackFromNBT(entry.getCompoundTag("icon"))));
         }
         int count = row.getInteger("interfaceNameCount");
-        String targetName = String.join(" / ", names) + (count > entries.tagCount() ? " … (" + count + ")" : "");
+        String targetName = String.join(" / ", names) + (count > entries.tagCount() ? " … [" + count + "]" : "");
         row.setString("targetName", targetName);
         if (row.getString("name")
             .isEmpty()) row.setString("name", targetName);

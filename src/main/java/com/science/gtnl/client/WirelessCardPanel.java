@@ -361,7 +361,7 @@ public abstract class WirelessCardPanel extends ModularPanel {
     void drawRowTitle(NBTTagCompound data, NBTTagCompound row, ItemStack icon, int y) {
         String name = (row.getBoolean("group") ? "> " : "") + rowName(row, icon);
         String position = row.getString("positionLabel");
-        String count = row.getBoolean("category") ? " ×" + row.getInteger("items")
+        String count = row.getBoolean("category") ? " [" + row.getInteger("items") + "]"
             : row.getBoolean("group") ? " [" + row.getInteger("clusters") + "]" : "";
         int width = contentWidth() - fontRendererObj.getStringWidth(count);
         int nameColor = ColorUtils.guiTextColorBlack.getColor();
