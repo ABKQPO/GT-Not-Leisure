@@ -6,7 +6,6 @@ import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
-import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
@@ -260,7 +259,7 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_HV)
             .addTo(ENCR);
 
-        GTValues.RA.stdBuilder()
+        RecipeBuilder.builder()
             .fluidInputs(GTNLMaterials.AmmoniumBisulfate.getFluidOrGas(2000))
             .fluidOutputs(GTNLMaterials.AmmoniumPersulfate.getFluidOrGas(1000), Materials.Hydrogen.getGas(1000))
             .duration(80 * SECONDS)

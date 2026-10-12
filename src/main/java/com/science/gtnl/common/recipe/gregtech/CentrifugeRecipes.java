@@ -15,7 +15,6 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
-import gregtech.api.util.GTUtility;
 import gtPlusPlus.core.fluids.GTPPFluids;
 
 public class CentrifugeRecipes implements IRecipePool {
@@ -80,7 +79,8 @@ public class CentrifugeRecipes implements IRecipePool {
             .addTo(CNCR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(1))
+            .itemInputs()
+            .circuit(1)
             .fluidInputs(FluidRegistry.getFluidStack("for.honey", 1000))
             .fluidOutputs(new FluidStack(BlockLoader.honeyFluid, 1000))
             .duration(300)

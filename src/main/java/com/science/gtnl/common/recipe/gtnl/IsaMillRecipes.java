@@ -60,9 +60,8 @@ public class IsaMillRecipes implements IRecipePool {
     public void addIsaMillRecipe(Materials material, OrePrefixes prefix, int circuitNumber, int outputAmount,
         int fluidAmount, int tier, int duration) {
         RecipeBuilder.builder()
-            .itemInputs(
-                GTUtility.getIntegratedCircuit(circuitNumber),
-                GTOreDictUnificator.get(prefix, material, prefix == OrePrefixes.rawOre ? 16L : 1L))
+            .itemInputs(GTOreDictUnificator.get(prefix, material, prefix == OrePrefixes.rawOre ? 16L : 1L))
+            .circuit(circuitNumber)
             .itemOutputs(
                 GTUtility.copyAmountUnsafe(
                     outputAmount,
@@ -78,7 +77,8 @@ public class IsaMillRecipes implements IRecipePool {
     public void addIsaMillRecipeCustom(Materials material, ItemStack custom, int circuitNumber, int outputAmount,
         int fluidAmount, int tier, int duration) {
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(circuitNumber), custom)
+            .itemInputs(custom)
+            .circuit(circuitNumber)
             .itemOutputs(
                 GTUtility.copyAmountUnsafe(
                     outputAmount,

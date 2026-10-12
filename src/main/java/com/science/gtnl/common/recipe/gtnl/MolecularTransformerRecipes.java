@@ -15,7 +15,6 @@ import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
-import gregtech.api.util.GTUtility;
 
 public class MolecularTransformerRecipes implements IRecipePool {
 
@@ -63,18 +62,16 @@ public class MolecularTransformerRecipes implements IRecipePool {
             .addTo(MTR);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GTUtility.getIntegratedCircuit(1),
-                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 1L))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 1L))
+            .circuit(1)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Graphene, 1L))
             .duration(100)
             .eut(TierEU.RECIPE_IV)
             .addTo(MTR);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GTUtility.getIntegratedCircuit(2),
-                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 2L))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 2L))
+            .circuit(2)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Coal, 1L))
             .duration(200)
             .eut(120)

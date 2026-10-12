@@ -9,7 +9,6 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.util.GTUtility;
 
 public class TranscendentPlasmaMixerRecipes implements IRecipePool {
 
@@ -18,7 +17,8 @@ public class TranscendentPlasmaMixerRecipes implements IRecipePool {
     @Override
     public void loadRecipes() {
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(6))
+            .itemInputs()
+            .circuit(6)
             .fluidInputs(
                 Materials.Time.getMolten(710),
                 Materials.Space.getMolten(710),

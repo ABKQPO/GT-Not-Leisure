@@ -31,7 +31,8 @@ public class FishingGroundRecipes implements IRecipePool {
     public void loadRecipes() {
 
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(1), new ItemStack(Items.fishing_rod, 0))
+            .itemInputs(new ItemStack(Items.fishing_rod, 0))
+            .circuit(1)
             .itemOutputs(
                 new ItemStack(Items.fish, 16, 0),
                 new ItemStack(Items.fish, 16, 1),
@@ -45,9 +46,9 @@ public class FishingGroundRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTUtility.getIntegratedCircuit(2),
                 new ItemStack(Items.fishing_rod, 0),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.MeatRaw, 16L))
+            .circuit(2)
             .itemOutputs(
                 new ItemStack(Items.fish, 32, 0),
                 new ItemStack(Items.fish, 32, 1),
@@ -61,9 +62,9 @@ public class FishingGroundRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTUtility.getIntegratedCircuit(3),
                 new ItemStack(Items.fishing_rod, 0),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.MeatCooked, 16L))
+            .circuit(3)
             .itemOutputs(
                 new ItemStack(Items.fish, 64, 0),
                 new ItemStack(Items.fish, 64, 1),
@@ -76,7 +77,8 @@ public class FishingGroundRecipes implements IRecipePool {
             .addTo(FGR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(7), ItemList.ActivatedCarbonFilterMesh.get(1))
+            .itemInputs(ItemList.ActivatedCarbonFilterMesh.get(1))
+            .circuit(7)
             .itemOutputs(
                 new ItemStack(Items.rotten_flesh, 16),
                 new ItemStack(Items.bone, 16),
@@ -149,9 +151,8 @@ public class FishingGroundRecipes implements IRecipePool {
             .addTo(FGR);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GTUtility.getIntegratedCircuit(8),
-                GTUtility.copyAmount(0, ItemList.ActivatedCarbonFilterMesh.get(1)))
+            .itemInputs(GTUtility.copyAmount(0, ItemList.ActivatedCarbonFilterMesh.get(1)))
+            .circuit(8)
             .itemOutputs(
                 new ItemStack(Blocks.waterlily, 32),
                 new ItemStack(Blocks.vine, 32),
@@ -175,9 +176,9 @@ public class FishingGroundRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTUtility.getIntegratedCircuit(10),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Mytryl, 32L),
                 ModsItemlist.PamsHarvestCraftSeaweedItem.get(64))
+            .circuit(10)
             .itemOutputs(
                 ModsItemlist.GalaxySpaceCetiESeaweedFormI.get(64),
                 ModsItemlist.GalaxySpaceCetiESeaweedFormII.get(64),
@@ -193,7 +194,8 @@ public class FishingGroundRecipes implements IRecipePool {
         if (Mods.PamsHarvestCraft.isModLoaded()) {
 
             RecipeBuilder.builder()
-                .itemInputs(GTUtility.getIntegratedCircuit(4), new ItemStack(Items.fishing_rod, 0))
+                .itemInputs(new ItemStack(Items.fishing_rod, 0))
+                .circuit(4)
                 .itemOutputs(
                     ModsItemlist.PamsHarvestCraftAnchovyrawItem.get(16),
                     ModsItemlist.PamsHarvestCraftBassrawItem.get(16),
@@ -257,9 +259,9 @@ public class FishingGroundRecipes implements IRecipePool {
 
             RecipeBuilder.builder()
                 .itemInputs(
-                    GTUtility.getIntegratedCircuit(5),
                     new ItemStack(Items.fishing_rod, 0),
                     GTOreDictUnificator.get(OrePrefixes.dust, Materials.MeatRaw, 16L))
+                .circuit(5)
                 .itemOutputs(
                     ModsItemlist.PamsHarvestCraftAnchovyrawItem.get(32),
                     ModsItemlist.PamsHarvestCraftBassrawItem.get(32),
@@ -323,9 +325,9 @@ public class FishingGroundRecipes implements IRecipePool {
 
             RecipeBuilder.builder()
                 .itemInputs(
-                    GTUtility.getIntegratedCircuit(6),
                     new ItemStack(Items.fishing_rod, 0),
                     GTOreDictUnificator.get(OrePrefixes.dust, Materials.MeatCooked, 16L))
+                .circuit(6)
                 .itemOutputs(
                     ModsItemlist.PamsHarvestCraftAnchovyrawItem.get(64),
                     ModsItemlist.PamsHarvestCraftBassrawItem.get(64),
@@ -394,7 +396,8 @@ public class FishingGroundRecipes implements IRecipePool {
     @Optional.Method(modid = "dreamcraft")
     public void loadNHRecipe() {
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(9), NHItemList.MaceratedPlantmass.get(16))
+            .itemInputs(NHItemList.MaceratedPlantmass.get(16))
+            .circuit(9)
             .itemOutputs(
                 GregtechItemList.AlgaeBiomass.get(64),
                 GregtechItemList.GreenAlgaeBiomass.get(64),

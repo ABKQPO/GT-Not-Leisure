@@ -10,7 +10,6 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.ItemList;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTUtility;
 import gtnhlanth.common.register.LanthItemList;
 import tectech.thing.CustomItemList;
 
@@ -61,7 +60,8 @@ public class GrandAssemblyLineSpecialRecipes implements IRecipePool {
         if (output == null || circuit < 0) return;
 
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(circuit))
+            .itemInputs()
+            .circuit(circuit)
             .itemOutputs(output)
             .fake()
             .duration(0)

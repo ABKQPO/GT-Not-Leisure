@@ -162,12 +162,12 @@ public class IndustrialRockCrusherRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTUtility.getIntegratedCircuit(7),
                 GTUtility.copyAmountUnsafe(
                     0,
                     aeBlocks.skyStone()
                         .maybeStack(1)
                         .orNull()))
+            .circuit(7)
             .itemOutputs(
                 aeBlocks.skyStone()
                     .maybeStack(1)

@@ -8,7 +8,6 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.Materials;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTUtility;
 
 public class SteamCrackerRecipes implements IRecipePool {
 
@@ -26,7 +25,8 @@ public class SteamCrackerRecipes implements IRecipePool {
 
             for (int circuit = 1; circuit <= 3; circuit++) {
                 RecipeBuilder.builder()
-                    .itemInputs(GTUtility.getIntegratedCircuit(circuit))
+                    .itemInputs()
+                    .circuit(circuit)
                     .fluidInputs(inputMat.getFluid(1000))
                     .fluidOutputs(getSteamCrackedFluid(outputMat, circuit, 400))
                     .duration(200)
@@ -37,7 +37,8 @@ public class SteamCrackerRecipes implements IRecipePool {
 
         for (int circuit = 1; circuit <= 3; circuit++) {
             RecipeBuilder.builder()
-                .itemInputs(GTUtility.getIntegratedCircuit(circuit))
+                .itemInputs()
+                .circuit(circuit)
                 .fluidInputs(Materials.SulfuricGas.getGas(1000))
                 .fluidOutputs(getSteamCrackedFluid(Materials.Gas, circuit, 400))
                 .duration(200)

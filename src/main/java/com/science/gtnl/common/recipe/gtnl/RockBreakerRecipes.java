@@ -29,23 +29,24 @@ public class RockBreakerRecipes implements IRecipePool {
             .blocks();
 
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(1))
+            .itemInputs()
+            .circuit(1)
             .itemOutputs(new ItemStack(Blocks.cobblestone, 1))
             .duration(16 * GTRecipeBuilder.TICKS)
             .eut(TierEU.RECIPE_LV)
             .addTo(RBR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(2))
+            .itemInputs()
+            .circuit(2)
             .itemOutputs(new ItemStack(Blocks.stone, 1))
             .duration(16 * GTRecipeBuilder.TICKS)
             .eut(TierEU.RECIPE_LV)
             .addTo(RBR);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GTUtility.getIntegratedCircuit(3),
-                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Redstone, 1L))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Redstone, 1L))
+            .circuit(3)
             .itemOutputs(new ItemStack(Blocks.obsidian, 1))
             .duration(6 * GTRecipeBuilder.SECONDS + 8 * GTRecipeBuilder.TICKS)
             .eut(TierEU.RECIPE_LV)
@@ -53,20 +54,16 @@ public class RockBreakerRecipes implements IRecipePool {
 
         if (Mods.EtFuturumRequiem.isModLoaded()) {
             RecipeBuilder.builder()
-                .itemInputs(
-                    GTUtility.getIntegratedCircuit(4),
-                    ModsItemlist.EtFuturumRequiemBlueIce.get(0),
-                    new ItemStack(Blocks.soul_sand, 0))
+                .itemInputs(ModsItemlist.EtFuturumRequiemBlueIce.get(0), new ItemStack(Blocks.soul_sand, 0))
+                .circuit(4)
                 .itemOutputs(GTOreDictUnificator.get(OrePrefixes.stone, Materials.Basalt, 1L))
                 .duration(16 * GTRecipeBuilder.TICKS)
                 .eut(TierEU.RECIPE_LV)
                 .addTo(RBR);
 
             RecipeBuilder.builder()
-                .itemInputs(
-                    GTUtility.getIntegratedCircuit(5),
-                    ModsItemlist.EtFuturumRequiemMagma.get(0),
-                    new ItemStack(Blocks.soul_sand, 0))
+                .itemInputs(ModsItemlist.EtFuturumRequiemMagma.get(0), new ItemStack(Blocks.soul_sand, 0))
+                .circuit(5)
                 .itemOutputs(ModsItemlist.EtFuturumRequiemCobbledDeepslate.get(1))
                 .duration(16 * GTRecipeBuilder.TICKS)
                 .eut(TierEU.RECIPE_LV)
@@ -74,9 +71,8 @@ public class RockBreakerRecipes implements IRecipePool {
         }
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GTUtility.getIntegratedCircuit(6),
-                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Glowstone, 1L))
+            .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Glowstone, 1L))
+            .circuit(6)
             .itemOutputs(new ItemStack(Blocks.netherrack, 1))
             .duration(16 * GTRecipeBuilder.TICKS)
             .eut(TierEU.RECIPE_LV)
@@ -84,12 +80,12 @@ public class RockBreakerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTUtility.getIntegratedCircuit(7),
                 GTUtility.copyAmountUnsafe(
                     0,
                     aeBlocks.skyStone()
                         .maybeStack(1)
                         .orNull()))
+            .circuit(7)
             .itemOutputs(
                 aeBlocks.skyStone()
                     .maybeStack(1)
@@ -99,7 +95,8 @@ public class RockBreakerRecipes implements IRecipePool {
             .addTo(RBR);
 
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(8), new ItemStack(Blocks.end_stone, 0))
+            .itemInputs(new ItemStack(Blocks.end_stone, 0))
+            .circuit(8)
             .itemOutputs(new ItemStack(Blocks.end_stone, 1))
             .duration(16 * GTRecipeBuilder.TICKS)
             .eut(TierEU.RECIPE_MV)

@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: dev-release-build-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.event_name == 'pull_request' && format('dev-release-build-pr-{0}', github.event.pull_request.number) || 'dev-release-build-release' }}
   cancel-in-progress: true
 
 permissions:
@@ -51,12 +51,17 @@ jobs:
         run: chmod +x gradlew
 
       - name: Set artifact version
+        id: version
         run: |
+          commit_short=$(git rev-parse --short=12 HEAD)
+          branch_key=$(printf '%s' "$SOURCE_REF" | sha256sum | cut -c1-12)
           version=$(printf '%s' "$SOURCE_REF" | LC_ALL=C sed -E 's/[^A-Za-z0-9._-]+/-/g; s/^-+//; s/-+$//')
           if [[ -z "$version" ]]; then
-            version="${GITHUB_SHA:0:12}"
+            version="$commit_short"
           fi
-          printf 'VERSION=%s\nRELEASE_VERSION=%s\n' "$version" "$version" >> "$GITHUB_ENV"
+          printf 'VERSION=%s\nRELEASE_VERSION=%s\nCOMMIT_SHORT=%s\nBRANCH_KEY=%s\n' \
+            "$version" "$version" "$commit_short" "$branch_key" >> "$GITHUB_ENV"
+          printf 'commit_short=%s\n' "$commit_short" >> "$GITHUB_OUTPUT"
 
       - name: Setup the workspace
         run: ./gradlew --build-cache --info --stacktrace setupCIWorkspace
@@ -64,22 +69,81 @@ jobs:
       - name: Build the mod
         run: ./gradlew --build-cache --info --stacktrace assemble
 
+      - name: Prepare release assets
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: |
+          rm -rf build/release-assets
+          mkdir -p build/release-assets
+          shopt -s nullglob
+          files=(build/libs/*.jar)
+          if (( ${#files[@]} == 0 )); then
+            echo 'No build jars found.' >&2
+            exit 1
+          fi
+          for file in "${files[@]}"; do
+            filename=$(basename "$file")
+            base_name=${filename%.jar}
+            if [[ "$base_name" =~ ^(.*)-[[:xdigit:]]{7,40}$ ]]; then
+              base_name=${BASH_REMATCH[1]}
+            fi
+            asset_name="${base_name}-${BRANCH_KEY}-${COMMIT_SHORT}.jar"
+            cp "$file" "build/release-assets/$asset_name"
+            printf '%s\n' "$asset_name" >> build/release-assets/asset-names.txt
+            printf '%s\n' "$base_name" >> build/release-assets/legacy-asset-bases.txt
+          done
+
       - name: Upload build artifacts
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
-          name: dev-build-${{ github.event.pull_request.number }}
+          name: dev-build-${{ github.event.pull_request.number }}-${{ steps.version.outputs.commit_short }}
           path: build/libs/*.jar
           if-no-files-found: error
+          overwrite: true
 
       - name: Release
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         uses: softprops/action-gh-release@v2
         with:
           name: Dev Build
-          body: Dynamic action build of branch ${{ github.ref_name }}
+          body: |
+            Dynamic action build of branch ${{ github.ref_name }}.
+            Commit: `${{ steps.version.outputs.commit_short }}`
           tag_name: dev-build
+          target_commitish: ${{ github.sha }}
           prerelease: false
           make_latest: true
+          overwrite_files: true
           files: |
-            build/libs/*.jar
+            build/release-assets/*.jar
+
+      - name: Remove previous release builds
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          asset_list=$(mktemp)
+          trap 'rm -f "$asset_list"' EXIT
+          release_id=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/dev-build" --jq '.id')
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/releases/${release_id}/assets?per_page=100" \
+            --jq '.[] | [.id, .name] | @tsv' > "$asset_list"
+          while IFS=$'\t' read -r asset_id asset_name; do
+            [[ "$asset_name" == *.jar ]] || continue
+            if grep -Fqx -- "$asset_name" build/release-assets/asset-names.txt; then
+              continue
+            fi
+
+            legacy_base=${asset_name%.jar}
+            while [[ "$legacy_base" =~ ^(.*)-[[:xdigit:]]{7,40}$ ]]; do
+              legacy_base=${BASH_REMATCH[1]}
+            done
+            same_branch_asset=false
+            if [[ "$asset_name" == *-"$BRANCH_KEY"-*.jar ]] \
+              || grep -Fqx -- "$legacy_base" build/release-assets/legacy-asset-bases.txt; then
+              same_branch_asset=true
+            fi
+
+            if [[ "$same_branch_asset" == true ]]; then
+              gh api --method DELETE "repos/${GITHUB_REPOSITORY}/releases/assets/${asset_id}"
+            fi
+          done < "$asset_list"

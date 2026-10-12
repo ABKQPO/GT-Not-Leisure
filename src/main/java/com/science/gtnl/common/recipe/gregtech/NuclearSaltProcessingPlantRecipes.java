@@ -13,7 +13,6 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
-import gregtech.api.util.GTUtility;
 import gtPlusPlus.core.material.MaterialsElements;
 
 public class NuclearSaltProcessingPlantRecipes implements IRecipePool {
@@ -23,7 +22,8 @@ public class NuclearSaltProcessingPlantRecipes implements IRecipePool {
     @Override
     public void loadRecipes() {
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.getIntegratedCircuit(4))
+            .itemInputs()
+            .circuit(4)
             .itemOutputs(
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Cerium, 1),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Cerium, 1),

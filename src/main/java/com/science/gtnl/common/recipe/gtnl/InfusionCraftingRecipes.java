@@ -2,8 +2,6 @@ package com.science.gtnl.common.recipe.gtnl;
 
 import static thaumcraft.common.config.ConfigBlocks.blockCosmeticSolid;
 
-import java.util.Arrays;
-
 import net.minecraft.item.ItemStack;
 
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
@@ -15,7 +13,6 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.IRecipeMap;
 import gregtech.api.recipe.RecipeMetadataKey;
 import gregtech.api.recipe.metadata.SimpleRecipeMetadataKey;
-import gregtech.api.util.GTUtility;
 import thaumcraft.api.aspects.AspectList;
 
 public class InfusionCraftingRecipes implements IRecipePool {
@@ -29,11 +26,6 @@ public class InfusionCraftingRecipes implements IRecipePool {
 
     private static Object[] createInputs(TCRecipeTools.InfusionCraftingRecipe recipe) {
         ItemStack[] inputs = TCRecipeTools.checkInputSpecial(recipe.getInputItem());
-        if (COSMETIC_SOLID_OUTPUT.equals(ItemId.create(recipe.getOutput()))) {
-            inputs = Arrays.copyOf(inputs, inputs.length + 1);
-            inputs[inputs.length - 1] = GTUtility.getIntegratedCircuit(11);
-        }
-
         return TCRecipeTools.toGTInputs(inputs);
     }
 
@@ -47,6 +39,24 @@ public class InfusionCraftingRecipes implements IRecipePool {
             if (TCRecipeTools.shouldSkipThaumcraftItem(
                 Recipe.getOutput()
                     .getItem())) {
+                continue;
+            }
+
+            boolean needsCircuit = COSMETIC_SOLID_OUTPUT.equals(ItemId.create(Recipe.getOutput()));
+            if (needsCircuit) {
+                TCRecipeTools.addArcaneRecipeWithCircuit(
+                    IIC,
+                    createInputs(Recipe),
+                    new ItemStack[] { Recipe.getOutput() },
+                    Recipe.getInputAspects(),
+                    Recipe.getResearch(),
+                    INFUSION_ASPECTS,
+                    INFUSION_RESEARCH,
+                    TCRecipeTools.computeAspectDuration(
+                        Recipe.getInputAspects(),
+                        TCRecipeTools.INFUSION_DURATION_TICKS_PER_ASPECT),
+                    TierEU.RECIPE_LV,
+                    11);
                 continue;
             }
 

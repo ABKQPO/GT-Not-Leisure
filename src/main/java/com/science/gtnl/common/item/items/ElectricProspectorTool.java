@@ -16,6 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -168,7 +169,7 @@ public class ElectricProspectorTool extends Item {
             Future<?> pendingScan = pendingScans.remove(aPlayer);
             if (pendingScan != null && !pendingScan.isDone()) {
                 pendingScan.cancel(true);
-                aPlayer.addChatMessage(new ChatComponentText("Cancelled pending scan"));
+                aPlayer.addChatMessage(new ChatComponentTranslation("gui.detrav.scanner.chat.cancel"));
             }
 
             int data = getDetravData(aStack);
@@ -177,8 +178,7 @@ public class ElectricProspectorTool extends Item {
                 if (data > 3) {
                     data = 0;
                 }
-                aPlayer.addChatMessage(
-                    new ChatComponentText(StatCollector.translateToLocal("detrav.scanner.mode." + data)));
+                aPlayer.addChatMessage(new ChatComponentTranslation("detrav.scanner.mode." + data));
                 setDetravData(aStack, data);
                 return aStack;
             }
@@ -188,7 +188,7 @@ public class ElectricProspectorTool extends Item {
             final int chunkZ = ((int) aPlayer.posZ) >> 4;
             final int radius = Math.max(0, rangeMap.leftInt() - 1);
             final List<Chunk> chunks = collectScannableChunks(aWorld, chunkX, chunkZ, radius);
-            aPlayer.addChatMessage(new ChatComponentText("Scanning..."));
+            aPlayer.addChatMessage(new ChatComponentTranslation("gui.detrav.scanner.chat.scanning"));
 
             ProspectingPacket packet = new ProspectingPacket(
                 chunkX,

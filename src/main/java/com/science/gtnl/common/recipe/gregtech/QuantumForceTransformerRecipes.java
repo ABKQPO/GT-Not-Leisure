@@ -7,7 +7,6 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import bartworks.system.material.WerkstoffLoader;
 import goodgenerator.items.GGMaterial;
-import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
@@ -82,7 +81,7 @@ public class QuantumForceTransformerRecipes implements IRecipePool {
             .metadata(GTRecipeConstants.QFT_FOCUS_TIER, 2)
             .addTo(QFT);
 
-        GTValues.RA.stdBuilder()
+        RecipeBuilder.builder()
             .itemInputs(GGMaterial.naquadriaEarth.get(OrePrefixes.dust, 32), Materials.Magnesium.getDust(64))
             .itemOutputs(
                 GTUtility.copyAmountUnsafe(96, Materials.Naquadria.getDust(1)),

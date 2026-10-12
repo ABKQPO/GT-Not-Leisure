@@ -12,7 +12,6 @@ import WayofTime.alchemicalWizardry.api.altarRecipeRegistry.AltarRecipeRegistry;
 import WayofTime.alchemicalWizardry.api.bindingRegistry.BindingRecipe;
 import WayofTime.alchemicalWizardry.api.bindingRegistry.BindingRegistry;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTUtility;
 
 public class BloodDemonInjectionRecipes implements IRecipePool {
 
@@ -35,10 +34,8 @@ public class BloodDemonInjectionRecipes implements IRecipePool {
 
         for (BindingRecipe recipe : BindingRegistry.bindingRecipes) {
             RecipeBuilder.builder()
-                .itemInputs(
-                    recipe.requiredItem,
-                    new ItemStack(ModItems.weakBloodShard, 1),
-                    GTUtility.getIntegratedCircuit(11))
+                .itemInputs(recipe.requiredItem, new ItemStack(ModItems.weakBloodShard, 1))
+                .circuit(11)
                 .itemOutputs(recipe.outputItem)
                 .eut(0)
                 .specialValue(30000)

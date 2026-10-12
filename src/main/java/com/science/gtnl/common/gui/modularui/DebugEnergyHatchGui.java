@@ -224,23 +224,23 @@ public class DebugEnergyHatchGui extends MTEHatchBaseGui<DebugEnergyHatch> {
 
     private TextFieldWidget createNumberField(LongSyncValue syncer) {
         return new TextFieldWidget().value(syncer)
-            .setNumbersLong(value -> value)
+            .numbersLong(0L, Long.MAX_VALUE)
             .setFormatAsInteger(true)
             .setTextColor(0xFFFFFFFF)
             .setTextAlignment(Alignment.Center)
             .background(GTGuiTextures.BACKGROUND_TEXT_FIELD);
     }
 
-    private ButtonWidget<?> createChangeButton(UITexture overlay, LongSyncValue syncer, LongTransform transform,
-        LongTransform shiftTransform, int xPos, int yPos) {
+    private ButtonWidget<?> createChangeButton(UITexture overlay, LongSyncValue syncer, LongTransform shiftTransform,
+        LongTransform normalTransform, int xPos, int yPos) {
         return new ButtonWidget<>().background(GTGuiTextures.BUTTON_STANDARD)
             .overlay(overlay)
             .onMousePressed(mouseButton -> {
                 if (mouseButton != 0 && mouseButton != 1) {
                     return false;
                 }
-                LongTransform activeTransform = Interactable.hasShiftDown() ? shiftTransform : transform;
-                long changedValue = activeTransform.apply(syncer.getLongValue());
+                LongTransform activeTransform = Interactable.hasShiftDown() ? shiftTransform : normalTransform;
+                long changedValue = Math.max(0L, activeTransform.apply(syncer.getLongValue()));
                 syncer.setLongValue(changedValue, true, true);
                 return true;
             })

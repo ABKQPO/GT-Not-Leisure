@@ -21,7 +21,6 @@ import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
-import gregtech.api.util.GTUtility;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 
@@ -34,7 +33,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
     public void loadRecipes() {
 
         RecipeBuilder.builder()
-            .itemInputs(new ItemStack(Blocks.cobblestone, 8), GTUtility.getIntegratedCircuit(8))
+            .itemInputs(new ItemStack(Blocks.cobblestone, 8))
+            .circuit(8)
             .itemOutputs(new ItemStack(Blocks.furnace, 8))
             .duration(1 * SECONDS)
             .eut(8)
@@ -65,7 +65,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
 
         for (Materials aMat : Tier1Materials) {
             RecipeBuilder.builder()
-                .itemInputs(GTOreDictUnificator.get(OrePrefixes.stick, aMat, 4), GTUtility.getIntegratedCircuit(24))
+                .itemInputs(GTOreDictUnificator.get(OrePrefixes.stick, aMat, 4))
+                .circuit(24)
                 .itemOutputs(GTOreDictUnificator.get(OrePrefixes.frameGt, aMat, 1))
                 .duration(5 * SECONDS)
                 .eut(16)
@@ -76,14 +77,16 @@ public class SteamManufacturerRecipes implements IRecipePool {
 
         for (Materials aMat : pipeMaterials) {
             RecipeBuilder.builder()
-                .itemInputs(GTOreDictUnificator.get(OrePrefixes.pipeMedium, aMat, 4), GTUtility.getIntegratedCircuit(9))
+                .itemInputs(GTOreDictUnificator.get(OrePrefixes.pipeMedium, aMat, 4))
+                .circuit(9)
                 .itemOutputs(GTOreDictUnificator.get(OrePrefixes.pipeQuadruple, aMat, 1))
                 .duration(3 * SECONDS)
                 .eut(4)
                 .addTo(SMFR);
 
             RecipeBuilder.builder()
-                .itemInputs(GTOreDictUnificator.get(OrePrefixes.pipeSmall, aMat, 9), GTUtility.getIntegratedCircuit(9))
+                .itemInputs(GTOreDictUnificator.get(OrePrefixes.pipeSmall, aMat, 9))
+                .circuit(9)
                 .itemOutputs(GTOreDictUnificator.get(OrePrefixes.pipeNonuple, aMat, 1))
                 .duration(3 * SECONDS)
                 .eut(4)
@@ -91,7 +94,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
         }
 
         RecipeBuilder.builder()
-            .itemInputs(MaterialsAlloy.TUMBAGA.getRod(4), GTUtility.getIntegratedCircuit(24))
+            .itemInputs(MaterialsAlloy.TUMBAGA.getRod(4))
+            .circuit(24)
             .itemOutputs(MaterialsAlloy.TUMBAGA.getFrameBox(1))
             .duration(5 * SECONDS)
             .eut(16)
@@ -111,12 +115,12 @@ public class SteamManufacturerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTUtility.getIntegratedCircuit(5),
                 GTOreDictUnificator.get(OrePrefixes.stick, Materials.Iron, 2),
                 GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Bronze, 2),
                 GTNLMaterials.Breel.get(OrePrefixes.pipeMedium, 1),
                 GTNLItemList.IronTurbine.get(2),
                 GTNLItemList.HydraulicMotor.get(2))
+            .circuit(5)
             .itemOutputs(GTNLItemList.HydraulicPiston.get(2))
             .duration(1 * SECONDS)
             .eut(16)
@@ -297,18 +301,16 @@ public class SteamManufacturerRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Iron, 4),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Tin, 2),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 1),
-                GTOreDictUnificator.get(OrePrefixes.pipeLarge, Materials.Clay, 1),
-                GTUtility.getIntegratedCircuit(4))
+                GTOreDictUnificator.get(OrePrefixes.pipeLarge, Materials.Clay, 1))
+            .circuit(4)
             .itemOutputs(GregtechItemList.GTFluidTank_ULV.get(1))
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                new ItemStack(Blocks.chest, 1),
-                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Iron, 5),
-                GTUtility.getIntegratedCircuit(5))
+            .itemInputs(new ItemStack(Blocks.chest, 1), GTOreDictUnificator.get(OrePrefixes.plate, Materials.Iron, 5))
+            .circuit(5)
             .itemOutputs(new ItemStack(Blocks.hopper, 1))
             .duration(2 * SECONDS)
             .eut(16)
@@ -322,8 +324,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .itemInputs(
                 GregtechItemList.GTFluidTank_ULV.get(1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Bronze, 6),
-                GTNLMaterials.Stronze.get(OrePrefixes.pipeMedium, 2),
-                GTUtility.getIntegratedCircuit(3))
+                GTNLMaterials.Stronze.get(OrePrefixes.pipeMedium, 2))
+            .circuit(3)
             .itemOutputs(GregtechItemList.Hatch_Input_Steam.get(1))
             .duration(2 * SECONDS)
             .eut(16)
@@ -336,8 +338,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
                 ModsItemlist.BuildCraftFactoryTankBlock.get(1L),
                 ItemList.Casing_BronzePlatedBricks.get(1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Rubber, 6),
-                GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Rubber, 1),
-                GTUtility.getIntegratedCircuit(1))
+                GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Rubber, 1))
+            .circuit(1)
             .itemOutputs(ItemList.Hatch_Input_ULV.get(1L))
             .duration(2 * SECONDS)
             .eut(16)
@@ -347,8 +349,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
                 ModsItemlist.BuildCraftFactoryTankBlock.get(1L),
                 ItemList.Casing_BronzePlatedBricks.get(1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Rubber, 6),
-                new OreDictItemStack("ringAnyRubber", 1),
-                GTUtility.getIntegratedCircuit(2))
+                new OreDictItemStack("ringAnyRubber", 1))
+            .circuit(2)
             .itemOutputs(ItemList.Hatch_Output_ULV.get(1L))
             .duration(2 * SECONDS)
             .eut(16)
@@ -359,8 +361,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
                 ItemList.Hatch_Input_ULV.get(1L),
                 GTNLMaterials.Stronze.get(OrePrefixes.pipeLarge, 1),
                 GTNLMaterials.Stronze.get(OrePrefixes.plate, 6),
-                GTNLMaterials.Stronze.get(OrePrefixes.gearGt, 1),
-                GTUtility.getIntegratedCircuit(1))
+                GTNLMaterials.Stronze.get(OrePrefixes.gearGt, 1))
+            .circuit(1)
             .itemOutputs(ItemList.Hatch_Input_LV.get(1L))
             .duration(2 * SECONDS)
             .eut(16)
@@ -370,8 +372,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
                 ItemList.Hatch_Output_ULV.get(1L),
                 GTNLMaterials.Stronze.get(OrePrefixes.pipeLarge, 1),
                 GTNLMaterials.Stronze.get(OrePrefixes.plate, 6),
-                GTNLMaterials.Stronze.get(OrePrefixes.gearGt, 1),
-                GTUtility.getIntegratedCircuit(2))
+                GTNLMaterials.Stronze.get(OrePrefixes.gearGt, 1))
+            .circuit(2)
             .itemOutputs(ItemList.Hatch_Output_LV.get(1L))
             .duration(2 * SECONDS)
             .eut(16)
@@ -382,8 +384,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
                 ItemList.Hatch_Input_LV.get(1L),
                 GTNLMaterials.CompressedSteam.get(OrePrefixes.pipeLarge, 1),
                 GTNLMaterials.CompressedSteam.get(OrePrefixes.plate, 6),
-                GTNLMaterials.CompressedSteam.get(OrePrefixes.gearGt, 1),
-                GTUtility.getIntegratedCircuit(1))
+                GTNLMaterials.CompressedSteam.get(OrePrefixes.gearGt, 1))
+            .circuit(1)
             .itemOutputs(ItemList.Hatch_Input_MV.get(1L))
             .duration(2 * SECONDS)
             .eut(16)
@@ -393,8 +395,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
                 ItemList.Hatch_Output_LV.get(1L),
                 GTNLMaterials.CompressedSteam.get(OrePrefixes.pipeLarge, 1),
                 GTNLMaterials.CompressedSteam.get(OrePrefixes.plate, 6),
-                GTNLMaterials.CompressedSteam.get(OrePrefixes.gearGt, 1),
-                GTUtility.getIntegratedCircuit(2))
+                GTNLMaterials.CompressedSteam.get(OrePrefixes.gearGt, 1))
+            .circuit(2)
             .itemOutputs(ItemList.Hatch_Output_MV.get(1L))
             .duration(2 * SECONDS)
             .eut(16)
@@ -406,8 +408,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .itemInputs(
                 new ItemStack(Blocks.hopper, 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Bronze, 4),
-                MaterialsAlloy.TUMBAGA.getPlate(4),
-                GTUtility.getIntegratedCircuit(1))
+                MaterialsAlloy.TUMBAGA.getPlate(4))
+            .circuit(1)
             .itemOutputs(GregtechItemList.Hatch_Input_Bus_Steam.get(1L))
             .duration(2 * SECONDS)
             .eut(16)
@@ -417,38 +419,32 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .itemInputs(
                 new ItemStack(Blocks.hopper, 1),
                 MaterialsAlloy.TUMBAGA.getPlate(4),
-                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Bronze, 4),
-                GTUtility.getIntegratedCircuit(2))
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Bronze, 4))
+            .circuit(2)
             .itemOutputs(GregtechItemList.Hatch_Output_Bus_Steam.get(1L))
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GregtechItemList.Hatch_Input_Bus_Steam.get(1),
-                GTNLMaterials.Breel.get(OrePrefixes.plate, 4),
-                GTUtility.getIntegratedCircuit(1))
+            .itemInputs(GregtechItemList.Hatch_Input_Bus_Steam.get(1), GTNLMaterials.Breel.get(OrePrefixes.plate, 4))
+            .circuit(1)
             .itemOutputs(GTNLItemList.BreelReinforcedSteamInputBus.get(1))
             .duration(5 * SECONDS)
             .eut(16)
             .addTo(SMFR);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GregtechItemList.Hatch_Output_Bus_Steam.get(1),
-                GTNLMaterials.Breel.get(OrePrefixes.plate, 4),
-                GTUtility.getIntegratedCircuit(2))
+            .itemInputs(GregtechItemList.Hatch_Output_Bus_Steam.get(1), GTNLMaterials.Breel.get(OrePrefixes.plate, 4))
+            .circuit(2)
             .itemOutputs(GTNLItemList.BreelReinforcedSteamOutputBus.get(1))
             .duration(5 * SECONDS)
             .eut(16)
             .addTo(SMFR);
 
         RecipeBuilder.builder()
-            .itemInputs(
-                GTNLItemList.OriginalInputHatch.get(1),
-                GTNLMaterials.Stronze.get(OrePrefixes.plate, 4),
-                GTUtility.getIntegratedCircuit(3))
+            .itemInputs(GTNLItemList.OriginalInputHatch.get(1), GTNLMaterials.Stronze.get(OrePrefixes.plate, 4))
+            .circuit(3)
             .itemOutputs(GTNLItemList.StronzeReinforcedSteamInputHatch.get(1))
             .duration(5 * SECONDS)
             .eut(16)
@@ -460,8 +456,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .itemInputs(
                 ModsItemlist.BuildCraftFactoryTankBlock.get(1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Bronze, 4),
-                MaterialsAlloy.TUMBAGA.getPlate(4),
-                GTUtility.getIntegratedCircuit(1))
+                MaterialsAlloy.TUMBAGA.getPlate(4))
+            .circuit(1)
             .itemOutputs(GTNLItemList.OriginalInputHatch.get(1))
             .duration(2 * SECONDS)
             .eut(16)
@@ -472,8 +468,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .itemInputs(
                 ModsItemlist.BuildCraftFactoryTankBlock.get(1),
                 MaterialsAlloy.TUMBAGA.getPlate(4),
-                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Bronze, 4),
-                GTUtility.getIntegratedCircuit(2))
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Bronze, 4))
+            .circuit(2)
             .itemOutputs(GTNLItemList.OriginalOutputHatch.get(1))
             .duration(2 * SECONDS)
             .eut(16)
@@ -525,9 +521,9 @@ public class SteamManufacturerRecipes implements IRecipePool {
         // Steel
         RecipeBuilder.builder()
             .itemInputs(
-                GTUtility.getIntegratedCircuit(1),
                 GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.Steel, 1),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 6))
+            .circuit(1)
             .itemOutputs(ItemList.Casing_SolidSteel.get(1))
             .duration(2 * SECONDS)
             .eut(16)
@@ -545,10 +541,10 @@ public class SteamManufacturerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTUtility.getIntegratedCircuit(12),
                 GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.Steel, 1),
                 GTOreDictUnificator.get(OrePrefixes.pipeMedium, Materials.Steel, 4),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 4))
+            .circuit(12)
             .itemOutputs(ItemList.Casing_Pipe_Steel.get(1))
             .duration(2 * SECONDS)
             .eut(16)
@@ -774,8 +770,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
                 GTNLMaterials.Stronze.get(OrePrefixes.pipeMedium, 1),
                 GTNLMaterials.Breel.get(OrePrefixes.pipeMedium, 1),
                 GTNLItemList.BigSteamInputHatch.get(1),
-                GTNLItemList.HydraulicRegulator.get(1),
-                GTUtility.getIntegratedCircuit(3))
+                GTNLItemList.HydraulicRegulator.get(1))
+            .circuit(3)
             .itemOutputs(GTNLItemList.PipelessSteamHatch.get(1))
             .duration(2 * SECONDS)
             .eut(16)
@@ -788,8 +784,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
                 GTNLMaterials.Stronze.get(OrePrefixes.pipeMedium, 1),
                 GTNLMaterials.Breel.get(OrePrefixes.pipeMedium, 1),
                 GTNLItemList.OriginalOutputHatch.get(1),
-                GTNLItemList.HydraulicRegulator.get(1),
-                GTUtility.getIntegratedCircuit(3))
+                GTNLItemList.HydraulicRegulator.get(1))
+            .circuit(3)
             .itemOutputs(GTNLItemList.PipelessSteamVent.get(1))
             .duration(2 * SECONDS)
             .eut(16)
@@ -837,8 +833,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Brass, 6),
-                GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.Bronze, 1),
-                GTUtility.getIntegratedCircuit(1))
+                GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.Bronze, 1))
+            .circuit(1)
             .itemOutputs(GTNLItemList.IndustrialSteamCasing.get(1))
             .duration(2 * SECONDS)
             .eut(16)
@@ -848,8 +844,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
         RecipeBuilder.builder()
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.CastIron, 6),
-                GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.Steel, 1),
-                GTUtility.getIntegratedCircuit(1))
+                GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.Steel, 1))
+            .circuit(1)
             .itemOutputs(GTNLItemList.AdvancedIndustrialSteamCasing.get(1))
             .duration(2 * SECONDS)
             .eut(16)
@@ -858,9 +854,9 @@ public class SteamManufacturerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTUtility.getIntegratedCircuit(7),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Bronze, 4),
                 GTOreDictUnificator.get(OrePrefixes.stick, Materials.Bronze, 4))
+            .circuit(7)
             .itemOutputs(GTNLItemList.BronzeMachineFrame.get(1))
             .duration(2 * SECONDS)
             .eut(16)
@@ -869,9 +865,9 @@ public class SteamManufacturerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTUtility.getIntegratedCircuit(7),
                 GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 4),
                 GTOreDictUnificator.get(OrePrefixes.stick, Materials.Steel, 4))
+            .circuit(7)
             .itemOutputs(GTNLItemList.SteelMachineFrame.get(1))
             .duration(2 * SECONDS)
             .eut(16)
