@@ -53,8 +53,7 @@ public final class WirelessCardGui extends WirelessCardPanel {
             }));
         child(search).child(dimension);
         detailsPanel = IPanelHandler.simple(this, (parent, player) -> new WirelessCardDetailsPanel(container), true);
-        for (int id : new int[] { TOGGLE_AUTO, APPLY_FILTER, CYCLE_FILTER, CYCLE_VISUALISATION, TOGGLE_GROUPING })
-            addButton(id);
+        for (int id : new int[] { TOGGLE_AUTO, CYCLE_FILTER, CYCLE_VISUALISATION, TOGGLE_GROUPING }) addButton(id);
         addRowButtons(OPEN_DETAILS);
     }
 
@@ -128,8 +127,8 @@ public final class WirelessCardGui extends WirelessCardPanel {
         container.clientView()
             .resize(layout.rows());
         int dx = xSize - 320;
-        search.pos(38, 62)
-            .size(96 + dx, 12);
+        search.pos(10, 62)
+            .size(124 + dx, 12);
         dimension.pos(148 + dx, 62)
             .size(34, 12);
     }
@@ -141,10 +140,8 @@ public final class WirelessCardGui extends WirelessCardPanel {
         switch (control.id) {
             case TOGGLE_AUTO -> button.pos(xSize - 28, 10)
                 .size(16, 16);
-            case APPLY_FILTER -> button.pos(264 + dx, 59)
+            case TOGGLE_GROUPING -> button.pos(264 + dx, 59)
                 .size(44, 20);
-            case TOGGLE_GROUPING -> button.pos(10, 59)
-                .size(24, 20);
             case CYCLE_FILTER -> button.pos(188 + dx, 59)
                 .size(72, 20);
             case CYCLE_VISUALISATION -> button.pos(layout.visualisationX(), ySize - 27)

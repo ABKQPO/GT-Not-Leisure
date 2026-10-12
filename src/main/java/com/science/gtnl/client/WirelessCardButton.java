@@ -1,6 +1,5 @@
 package com.science.gtnl.client;
 
-import static com.science.gtnl.common.wireless.WirelessCardActions.APPLY_FILTER;
 import static com.science.gtnl.common.wireless.WirelessCardActions.BACK;
 import static com.science.gtnl.common.wireless.WirelessCardActions.COPY_POSITION;
 import static com.science.gtnl.common.wireless.WirelessCardActions.CYCLE_FILTER;
@@ -165,10 +164,8 @@ final class WirelessCardButton {
             visible = data.getBoolean("detail");
             available &= data.getBoolean("renameable");
         }
-        if (id == APPLY_FILTER || id == CYCLE_FILTER
-            || id == TOGGLE_AUTO
-            || id == CYCLE_VISUALISATION
-            || id == TOGGLE_GROUPING) visible = !data.getBoolean("detail");
+        if (id == CYCLE_FILTER || id == TOGGLE_AUTO || id == CYCLE_VISUALISATION || id == TOGGLE_GROUPING)
+            visible = !data.getBoolean("detail");
         if (id == TOGGLE_GROUPING) visible &= !data.getBoolean("typeGroup");
         if (actionType == OPEN_DETAILS) visible &= !data.getBoolean("detail");
         widget.setEnabled(visible);
@@ -181,9 +178,8 @@ final class WirelessCardButton {
             case REFRESH -> tr("refresh");
             case BACK -> tr("back_compact");
             case RENAME -> StatCollector.translateToLocal("selectWorld.rename");
-            case APPLY_FILTER -> tr("search");
             case CYCLE_FILTER -> tr("filter." + data.getInteger("filterState"));
-            case TOGGLE_GROUPING -> data.getBoolean("collapseTypes") ? "+" : "-";
+            case TOGGLE_GROUPING -> GuiText.Types.getLocal() + (data.getBoolean("collapseTypes") ? " +" : " −");
             case TELEPORT -> tr("teleport");
             case HIGHLIGHT -> tr("highlight");
             case COPY_POSITION -> tr("copy");
