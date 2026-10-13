@@ -2,6 +2,8 @@ package com.science.gtnl.common.packet;
 
 import static com.science.gtnl.ScienceNotLeisure.network;
 
+import com.science.gtnl.common.metoolbox.ToolboxRequestPacket;
+import com.science.gtnl.common.metoolbox.ToolboxUpdatePacket;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
 import com.science.gtnl.common.packet.base.PayloadHandler;
 import com.science.gtnl.common.packet.base.ServerboundPacket;
@@ -52,6 +54,8 @@ public class NetWorkHandler {
         registerServerbound(OpenWirelessCardPacket.class);
         registerClientbound(WirelessHighlightPacket.class);
         registerClientbound(WirelessVisualisationPacket.class);
+        registerServerbound(ToolboxRequestPacket.class);
+        registerClientbound(ToolboxUpdatePacket.class);
     }
 
     public static <T extends ClientboundPacket> void registerClientbound(Class<T> packet) {

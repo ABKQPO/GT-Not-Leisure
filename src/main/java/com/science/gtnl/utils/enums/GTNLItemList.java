@@ -365,6 +365,7 @@ public enum GTNLItemList implements IItemContainer {
     Stick,
     WirelessUpgradeChip,
     WirelessFrequencyCard,
+    METoolbox,
 
     SoulCardboardHelmet,
     SoulCardboardChestplate,

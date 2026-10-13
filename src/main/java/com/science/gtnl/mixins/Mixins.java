@@ -115,6 +115,31 @@ public enum Mixins implements IMixins {
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.AppliedEnergistics)),
 
+    ME_TOOLBOX_TERMINAL(new MixinBuilder("ME toolbox native terminal adapter")
+        .addCommonMixins("appliedEnergistics.metoolbox.MixinToolboxMonitorableDestination")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.AppliedEnergistics)),
+
+    ME_TOOLBOX_NEI(
+        new MixinBuilder("ME toolbox native tooltip foreground").addClientMixins("notEnoughItems.MixinToolboxTooltips")
+            .setPhase(Phase.LATE)
+            .addRequiredMod(ModList.NotEnoughItems)),
+
+    ME_TOOLBOX_CHROMATIC_TOOLTIPS(new MixinBuilder("ME toolbox Chromatic Tooltips foreground")
+        .addClientMixins("chromaticTooltips.MixinToolboxTooltipRendering")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.ChromaticTooltips)),
+
+    ME_TOOLBOX_BOGO(new MixinBuilder("ME toolbox native Bogo shortcut destinations")
+        .addClientMixins("inventoryBogoSorter.MixinToolboxShortcuts")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.InventoryBogoSorter)),
+
+    ME_TOOLBOX_MOUSE_TWEAKS(new MixinBuilder("ME toolbox Mouse Tweaks shortcut destinations")
+        .addClientMixins("mouseTweaks.MixinToolboxMouseTweaks")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.MouseTweaks)),
+
     LATE_COMMON(new MixinBuilder("General Late Mixins")
         .addCommonMixins(
             "aeFluidCraft.MixinItemFluidPacket",

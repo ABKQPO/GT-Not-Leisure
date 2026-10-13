@@ -85,7 +85,8 @@ public class MaterialLoader {
         }
         RocketFuels.addFuel(EntitySteamRocket.class, GTNLMaterials.CompressedSteam.getMolten(1));
 
-        if (Mods.InventoryBogoSorter.isModLoaded()) loadCraftTweak();
+        if (ModList.CraftingTweaks.isModLoaded()) loadCraftTweak();
+        if (Mods.InventoryBogoSorter.isModLoaded()) loadBogoSortCompat();
 
         OrePrefixes.nugget.addFamiliarPrefix(OrePrefixes.ingotHot);
         OrePrefixes.ingot.addFamiliarPrefix(OrePrefixes.ingotHot);
@@ -109,7 +110,7 @@ public class MaterialLoader {
         LoadCompleteRecipeScheduler.schedule();
     }
 
-    @Optional.Method(modid = "bogosorter")
+    @Optional.Method(modid = "craftingtweaks")
     public static void loadCraftTweak() {
         SimpleTweakProvider provider = CraftingTweaksAPI
             .registerSimpleProvider(ModList.ScienceNotLeisure.ID, ContainerPortableAdvancedWorkbench.class);
@@ -117,6 +118,10 @@ public class MaterialLoader {
         provider.setTweakBalance(true, true, 0, 0);
         provider.setTweakClear(true, true, 0, 0);
         provider.setAlignToGrid(EnumFacing.WEST);
+    }
+
+    @Optional.Method(modid = "bogosorter")
+    public static void loadBogoSortCompat() {
         BogoSortAPI.INSTANCE.addGenericCompat(ContainerPortableChest.class);
         BogoSortAPI.INSTANCE.addGenericCompat(ContainerPortableAvaritiaddonsChest.class);
     }
