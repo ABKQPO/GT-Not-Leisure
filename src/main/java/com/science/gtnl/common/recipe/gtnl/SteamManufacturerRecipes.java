@@ -103,7 +103,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTOreDictUnificator.get(OrePrefixes.stick, Materials.IronMagnetic, 2),
+                GTOreDictUnificator.get(OrePrefixes.stick, Materials.ClayCompound, 2),
                 GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Bronze, 2),
                 GTNLMaterials.Breel.get(OrePrefixes.pipeMedium, 1),
                 GTNLItemList.IronTurbine.get(1))
