@@ -30,7 +30,7 @@ public class AlloyBlastSmelterRecipes implements IRecipePool {
             .fluidInputs(Materials.Nitrogen.getGas(10000))
             .fluidOutputs(GTNLMaterials.Germaniumtungstennitride.getMolten(2304))
             .duration(9600)
-            .eut(30720)
+            .eut(TierEU.RECIPE_LuV)
             .addTo(aBS);
 
         RecipeBuilder.builder()
@@ -42,7 +42,7 @@ public class AlloyBlastSmelterRecipes implements IRecipePool {
             .circuit(4)
             .fluidOutputs(GTNLMaterials.HSLASteel.getMolten(720))
             .duration(3750)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(aBS);
 
         RecipeBuilder.builder()
@@ -52,7 +52,7 @@ public class AlloyBlastSmelterRecipes implements IRecipePool {
             .circuit(2)
             .fluidOutputs(GTNLMaterials.MolybdenumDisilicide.getMolten(432))
             .duration(1800)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(aBS);
 
         RecipeBuilder.builder()

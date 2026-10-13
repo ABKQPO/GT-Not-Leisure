@@ -8,6 +8,7 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
+import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
 import gtnhlanth.api.recipe.LanthanidesRecipeMaps;
@@ -25,7 +26,7 @@ public class DigesterRecipes implements IRecipePool {
             .fluidOutputs(Materials.Water.getFluid(500))
             .metadata(COIL_HEAT, 800)
             .duration(400)
-            .eut(7680)
+            .eut(TierEU.RECIPE_IV)
             .addTo(dR);
 
         RecipeBuilder.builder()
@@ -35,7 +36,7 @@ public class DigesterRecipes implements IRecipePool {
             .fluidOutputs(Materials.SaltWater.getFluid(1000))
             .metadata(COIL_HEAT, 2580)
             .duration(800)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(dR);
     }
 }

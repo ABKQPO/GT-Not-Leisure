@@ -43,7 +43,7 @@ public class PlasmaForgeRecipes implements IRecipePool {
             .itemOutputs(GTNLItemList.DepletedExcitedNaquadahFuelRod.get(1))
             .duration(20)
             .metadata(COIL_HEAT, 13501)
-            .eut(31457280)
+            .eut(TierEU.RECIPE_UIV)
             .addTo(PFR);
 
         int awakened_heat = 10800;

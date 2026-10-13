@@ -32,7 +32,7 @@ public class ChemicalBathRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("molten.gaiaspirit", 288))
             .itemOutputs(GTNLItemList.GaiaGlass.get(1))
             .duration(200)
-            .eut(30720)
+            .eut(TierEU.RECIPE_LuV)
             .addTo(cBR);
 
         RecipeBuilder.builder()
@@ -40,7 +40,7 @@ public class ChemicalBathRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("molten.terrasteel", 576))
             .itemOutputs(GTNLItemList.TerraGlass.get(1))
             .duration(200)
-            .eut(7680)
+            .eut(TierEU.RECIPE_IV)
             .addTo(cBR);
 
         RecipeBuilder.builder()
@@ -56,7 +56,7 @@ public class ChemicalBathRecipes implements IRecipePool {
             .fluidInputs(Materials.DraconiumAwakened.getMolten(576))
             .itemOutputs(ModsItemlist.DraconicEvolutionDragonHeart.get(1))
             .duration(100)
-            .eut(1966080)
+            .eut(TierEU.RECIPE_UHV)
             .addTo(cBR);
 
         RecipeBuilder.builder()

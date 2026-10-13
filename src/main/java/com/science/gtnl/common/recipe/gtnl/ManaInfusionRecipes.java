@@ -12,6 +12,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
+import gregtech.api.enums.TierEU;
 import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMap;
 import vazkii.botania.api.BotaniaAPI;
@@ -59,7 +60,7 @@ public class ManaInfusionRecipes implements IRecipePool {
                 .itemOutputs(output)
                 .fluidInputs(mana)
                 .duration(20)
-                .eut(2048);
+                .eut(TierEU.RECIPE_EV);
 
             if (hasOreDict) {
                 builder.itemInputs(finalInputs.toArray(new Object[0]));
@@ -81,7 +82,7 @@ public class ManaInfusionRecipes implements IRecipePool {
             .itemOutputs(ModsItemlist.BotaniaTerrasteelIngot.get(1))
             .fluidInputs(GTNLMaterials.FluidMana.getFluidOrGas(500000))
             .duration(20)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .addTo(MIR);
     }
 }

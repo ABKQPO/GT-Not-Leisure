@@ -7,6 +7,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.TierEU;
 import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMap;
 import gtPlusPlus.core.fluids.GTPPFluids;
@@ -39,7 +40,7 @@ public class WoodDistillationRecipes implements IRecipePool {
                 new FluidStack(GTPPFluids.CoalGas, 8),
                 Materials.Ethanol.getFluid(8))
             .duration(200)
-            .eut(120)
+            .eut(TierEU.RECIPE_MV)
             .addTo(WDR);
     }
 }

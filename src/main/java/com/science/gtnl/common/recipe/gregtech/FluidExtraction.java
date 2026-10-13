@@ -7,6 +7,7 @@ import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
+import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gtPlusPlus.core.material.MaterialsElements;
@@ -28,7 +29,7 @@ public class FluidExtraction implements IRecipePool {
             .itemInputs(ModsItemlist.GalaxySpaceBarnardaClog.get(64))
             .fluidOutputs(GTNLMaterials.BarnardaCSappy.getFluidOrGas(500))
             .duration(4)
-            .eut(491520)
+            .eut(TierEU.RECIPE_UV)
             .addTo(fER);
     }
 }

@@ -30,7 +30,7 @@ public class CentrifugeRecipes implements IRecipePool {
                 GTNLMaterials.FerricReeChloride.getFluidOrGas(1000),
                 Materials.Hydrogen.getGas(4000))
             .duration(100)
-            .eut(120)
+            .eut(TierEU.RECIPE_MV)
             .addTo(CNCR);
 
         RecipeBuilder.builder()
@@ -40,7 +40,7 @@ public class CentrifugeRecipes implements IRecipePool {
                 Materials.IronIIIChloride.getFluid(1000),
                 Materials.Water.getFluid(3000))
             .duration(320)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(CNCR);
 
         RecipeBuilder.builder()
@@ -53,7 +53,7 @@ public class CentrifugeRecipes implements IRecipePool {
                 GTNLMaterials.ErLuOxidesSolution.getFluidOrGas(250),
                 Materials.HydrochloricAcid.getFluid(1000))
             .duration(200)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(CNCR);
 
         RecipeBuilder.builder()

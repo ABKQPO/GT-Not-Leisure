@@ -47,7 +47,7 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Boron, 1))
             .fluidOutputs(Materials.Fluorine.getGas(3000))
             .duration(640)
-            .eut(30)
+            .eut(TierEU.RECIPE_LV)
             .addTo(ENCR);
 
         RecipeBuilder.builder()
@@ -63,7 +63,7 @@ public class ElectrolyzerRecipes implements IRecipePool {
             .itemOutputs()
             .fluidOutputs(MaterialsElements.getInstance().BROMINE.getFluidStack(1000), Materials.Hydrogen.getGas(1000))
             .duration(72)
-            .eut(30)
+            .eut(TierEU.RECIPE_LV)
             .addTo(ENCR);
 
         RecipeBuilder.builder()
