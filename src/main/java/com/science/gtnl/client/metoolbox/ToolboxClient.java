@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -17,11 +16,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
+import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
+import com.cleanroommc.modularui.overlay.OverlayStack;
 import com.cleanroommc.modularui.screen.OpenScreenEvent;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.ItemMEToolbox;
@@ -124,13 +125,18 @@ public final class ToolboxClient {
             && gui.inventorySlots instanceof AEBaseContainer nativeContainer
             && nativeContainer.getTarget() instanceof IPortableCell portable
             && selected.equals(ItemMEToolbox.getToolboxId(portable.getItemStack()))) model().handOffSettings();
-        closeSession();
+        if (session != 0 || waiting || sessionPrepared) closeSession();
         overlay = null;
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void initGui(InitGuiEvent.Post event) {
+        checkConnection();
         Minecraft mc = Minecraft.getMinecraft();
-        if (!(event.getScreen() instanceof GuiContainer inventory) || mc.thePlayer == null
+        if (mc.currentScreen != event.gui || overlay != null
+            || !(event.gui instanceof GuiContainer inventory)
+            || mc.thePlayer == null
             || mc.playerController == null
-            || inventory instanceof GuiInventory && mc.playerController.isInCreativeMode()
-            || inventory instanceof GuiContainerCreative && !mc.playerController.isInCreativeMode()
             || isAEInterface(inventory)
             || inventory instanceof IGuiContainerOverlay recipe && isAEInterface(recipe.getFirstScreen())
             || ToolboxBogoCompat.isTerminalScreen(inventory)) return;
@@ -144,9 +150,20 @@ public final class ToolboxClient {
         if (slot >= 0) model.readSettings(ItemMEToolbox.getToolboxStack(mc.thePlayer, slot));
         model.beginSession();
         overlay = new ToolboxInventoryOverlay(inventory, model);
-        event.addOverlay(overlay);
+        overlay.constructOverlay(inventory);
+        OverlayStack.open(overlay);
         sessionPrepared = true;
         retryTicks = 0;
+    }
+
+    static void closeOverlay(ToolboxInventoryOverlay closing) {
+        checkConnection();
+        if (overlay != closing) return;
+        deferredTooltipEvent = null;
+        deferredTooltipRender = null;
+        ToolboxClientConfig.saveWindow(LAYOUT);
+        closeSession();
+        overlay = null;
     }
 
     private static boolean isAEInterface(GuiContainer gui) {
@@ -255,6 +272,7 @@ public final class ToolboxClient {
         Minecraft mc = Minecraft.getMinecraft();
         if (waiting || mc.thePlayer == null
             || overlay == null
+            || !overlay.getPanelManager().isOpen()
             || mc.currentScreen != overlay.inventory()
             || mc.thePlayer.openContainer == null) return;
         closeSession();

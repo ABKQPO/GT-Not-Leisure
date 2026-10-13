@@ -159,6 +159,12 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
             .child(controls);
     }
 
+    @Override
+    public void onClose() {
+        super.onClose();
+        ToolboxClient.closeOverlay(this);
+    }
+
     public GuiContainer inventory() {
         return inventory;
     }
