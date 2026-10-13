@@ -893,7 +893,7 @@ public class CraftingTableRecipes implements IRecipePool {
             GTNLItemList.HydraulicMotor.get(1),
             new Object[] { "ABC", "BDB", "CBA", 'A', GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Bronze, 1),
                 'B', GTOreDictUnificator.get(OrePrefixes.pipeTiny, Materials.Bronze, 1), 'C',
-                GTOreDictUnificator.get(OrePrefixes.stick, Materials.Iron, 1), 'D', GTNLItemList.IronTurbine.get(1) });
+                GTOreDictUnificator.get(OrePrefixes.stick, Materials.IronMagnetic, 1), 'D', GTNLItemList.IronTurbine.get(1) });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.HydraulicPiston.get(1),
