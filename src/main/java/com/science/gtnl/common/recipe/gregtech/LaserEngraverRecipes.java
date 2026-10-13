@@ -153,7 +153,7 @@ public class LaserEngraverRecipes implements IRecipePool {
             .itemInputs(GTNLItemList.NinefoldInputHatchUHV.get(1), ItemList.Quantum_Tank_IV.get(1))
             .itemOutputs(GTNLItemList.HumongousNinefoldInputHatch.get(1))
             .duration(200)
-            .eut(7864320)
+            .eut(TierEU.RECIPE_UEV)
             .addTo(lER);
 
         RecipeBuilder.builder()

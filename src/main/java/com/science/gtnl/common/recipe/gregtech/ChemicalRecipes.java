@@ -46,7 +46,7 @@ public class ChemicalRecipes implements IRecipePool {
             .fluidInputs(GTNLMaterials.Ethylenediamine.getFluidOrGas(1000))
             .itemOutputs(GTNLMaterials.Hexanitrohexaazaisowurtzitane.get(OrePrefixes.dust, 36))
             .duration(100)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(UC);
 
         RecipeBuilder.builder()
@@ -56,14 +56,14 @@ public class ChemicalRecipes implements IRecipePool {
             .fluidInputs(Materials.Ammonia.getGas(1000), GTNLMaterials.Ethanolamine.getFluidOrGas(1000))
             .fluidOutputs(GTNLMaterials.Ethylenediamine.getFluidOrGas(1000), Materials.Water.getFluid(1000))
             .duration(180)
-            .eut(120)
+            .eut(TierEU.RECIPE_MV)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
             .fluidInputs(Materials.EthyleneOxide.getGas(1000), Materials.Ammonia.getGas(1000))
             .fluidOutputs(GTNLMaterials.Ethanolamine.getFluidOrGas(1000))
             .duration(60)
-            .eut(7680)
+            .eut(TierEU.RECIPE_IV)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
@@ -76,14 +76,14 @@ public class ChemicalRecipes implements IRecipePool {
                 GTNLMaterials.NitronsoniumTetrafluoroborate.get(OrePrefixes.dust, 14))
             .fluidOutputs(GTNLMaterials.FluoroboricAcide.getFluidOrGas(4000), Materials.AceticAcid.getFluid(4000))
             .duration(200)
-            .eut(491520)
+            .eut(TierEU.RECIPE_UV)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
             .fluidInputs(new FluidStack(GTPPFluids.BoricAcid, 1000), Materials.HydrofluoricAcid.getFluid(4000))
             .fluidOutputs(GTNLMaterials.FluoroboricAcide.getFluidOrGas(1000), Materials.Water.getFluid(13000))
             .duration(150)
-            .eut(120)
+            .eut(TierEU.RECIPE_MV)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
@@ -94,7 +94,7 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTNLMaterials.NitroniumTetrafluoroborate.get(OrePrefixes.dust, 8))
             .fluidOutputs(Materials.Water.getFluid(1000))
             .duration(40)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(UC);
 
         RecipeBuilder.builder()
@@ -111,7 +111,7 @@ public class ChemicalRecipes implements IRecipePool {
             .fluidInputs(Materials.HydrofluoricAcid.getFluid(6000))
             .fluidOutputs(GTNLMaterials.BoronFluoride.getFluidOrGas(2000))
             .duration(200)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(UC);
 
         RecipeBuilder.builder()
@@ -128,7 +128,7 @@ public class ChemicalRecipes implements IRecipePool {
                 Materials.NitricOxide.getGas(4000),
                 GTNLMaterials.Benzaldehyde.getFluidOrGas(2000))
             .duration(140)
-            .eut(7680)
+            .eut(TierEU.RECIPE_IV)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
@@ -146,7 +146,7 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTNLMaterials.NitronsoniumTetrafluoroborate.get(OrePrefixes.dust, 7))
             .fluidOutputs(Materials.NitricAcid.getFluid(1000))
             .duration(120)
-            .eut(120)
+            .eut(TierEU.RECIPE_MV)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
@@ -161,7 +161,7 @@ public class ChemicalRecipes implements IRecipePool {
                     GTNLMaterials.Dibenzyltetraacetylhexaazaisowurtzitane.get(OrePrefixes.dust, 1)))
             .fluidOutputs(Materials.Toluene.getFluid(6000))
             .duration(120)
-            .eut(122880)
+            .eut(TierEU.RECIPE_ZPM)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
@@ -170,7 +170,7 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTNLMaterials.SuccinimidylAcetate.get(OrePrefixes.dust, 18))
             .fluidOutputs(Materials.AceticAcid.getFluid(1000))
             .duration(80)
-            .eut(7680)
+            .eut(TierEU.RECIPE_IV)
             .addTo(UC);
 
         RecipeBuilder.builder()
@@ -186,7 +186,7 @@ public class ChemicalRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Salt, 12))
             .fluidOutputs(Materials.Water.getFluid(6000), Materials.Hydrogen.getGas(6000))
             .duration(220)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
@@ -196,7 +196,7 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Barite, 6))
             .fluidOutputs(GTNLMaterials.HydroxylamineHydrochloride.getFluidOrGas(2000), Materials.Water.getFluid(1000))
             .duration(100)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
@@ -205,7 +205,7 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTNLMaterials.BariumChloride.get(OrePrefixes.dust, 3))
             .fluidOutputs(Materials.Hydrogen.getGas(2000))
             .duration(60)
-            .eut(120)
+            .eut(TierEU.RECIPE_MV)
             .addTo(UC);
 
         RecipeBuilder.builder()
@@ -214,7 +214,7 @@ public class ChemicalRecipes implements IRecipePool {
                 Materials.Hydrogen.getGas(1000))
             .fluidOutputs(GTNLMaterials.HydrobromicAcid.getFluidOrGas(1000))
             .duration(300)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
@@ -225,7 +225,7 @@ public class ChemicalRecipes implements IRecipePool {
                 GTNLMaterials.PotassiumSulfate.get(OrePrefixes.dust, 14))
             .fluidOutputs(Materials.SulfuricAcid.getFluid(1000))
             .duration(200)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(UC);
 
         RecipeBuilder.builder()
@@ -234,7 +234,7 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTNLMaterials.PotassiumHydroxylaminedisulfonate.get(OrePrefixes.dust, 13))
             .fluidOutputs(Materials.Water.getFluid(1000))
             .duration(200)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(UC);
 
         RecipeBuilder.builder()
@@ -243,7 +243,7 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumBisulfate, 7))
             .fluidOutputs(GTNLMaterials.NitrousAcid.getFluidOrGas(1000))
             .duration(80)
-            .eut(30)
+            .eut(TierEU.RECIPE_LV)
             .addTo(UC);
 
         RecipeBuilder.builder()
@@ -252,7 +252,7 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTNLMaterials.SodiumNitrite.get(OrePrefixes.dust, 4))
             .fluidOutputs(Materials.Oxygen.getGas(1000), Materials.Water.getFluid(1000))
             .duration(300)
-            .eut(30)
+            .eut(TierEU.RECIPE_LV)
             .addTo(UC);
 
         RecipeBuilder.builder()
@@ -264,7 +264,7 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTNLMaterials.CoAcAbCatalyst.get(OrePrefixes.dust, 1))
             .fluidOutputs(Materials.Hydrogen.getGas(4000), Materials.CarbonMonoxide.getGas(1000))
             .duration(20)
-            .eut(1966080)
+            .eut(TierEU.RECIPE_UHV)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
@@ -273,7 +273,7 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTNLMaterials.PotassiumBisulfite.get(OrePrefixes.dust, 12))
             .fluidOutputs(Materials.CarbonDioxide.getGas(1000))
             .duration(160)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
@@ -283,7 +283,7 @@ public class ChemicalRecipes implements IRecipePool {
                 GTUtility
                     .copyAmountUnsafe(64 + 38, GTNLMaterials.Hexabenzylhexaazaisowurtzitane.get(OrePrefixes.dust, 1)))
             .duration(100)
-            .eut(7680)
+            .eut(TierEU.RECIPE_IV)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
@@ -304,7 +304,7 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTNLMaterials.Acetonitrile.get(OrePrefixes.dust, 6))
             .fluidOutputs(Materials.Water.getFluid(2000))
             .duration(200)
-            .eut(1966080)
+            .eut(TierEU.RECIPE_UHV)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
@@ -316,7 +316,7 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTNLMaterials.AmmoniumChloride.get(OrePrefixes.dust, 18))
             .fluidOutputs(GTNLMaterials.Benzylamine.getFluidOrGas(1000), new FluidStack(GTPPFluids.Formaldehyde, 6000))
             .duration(200)
-            .eut(7680)
+            .eut(TierEU.RECIPE_IV)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
@@ -326,7 +326,7 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTNLMaterials.Hexamethylenetetramine.get(OrePrefixes.dust, 22))
             .fluidOutputs(Materials.Water.getFluid(6000))
             .duration(160)
-            .eut(30)
+            .eut(TierEU.RECIPE_LV)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
@@ -335,7 +335,7 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTNLMaterials.SuccinicAnhydride.get(OrePrefixes.dust, 11))
             .fluidOutputs(Materials.AceticAcid.getFluid(2000))
             .duration(20)
-            .eut(7680)
+            .eut(TierEU.RECIPE_IV)
             .addTo(UC);
 
         RecipeBuilder.builder()
@@ -346,7 +346,7 @@ public class ChemicalRecipes implements IRecipePool {
                 GTNLMaterials.MaleicAnhydride.getFluidOrGas(2000))
             .itemOutputs(GTNLMaterials.SuccinicAcid.get(OrePrefixes.dust, 14))
             .duration(200)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(UC);
 
         RecipeBuilder.builder()
@@ -354,7 +354,7 @@ public class ChemicalRecipes implements IRecipePool {
             .fluidInputs(Materials.Oxygen.getGas(7000), Materials.Butane.getGas(1000))
             .fluidOutputs(Materials.Water.getFluid(4000), GTNLMaterials.MaleicAnhydride.getFluidOrGas(1000))
             .duration(280)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
@@ -362,7 +362,7 @@ public class ChemicalRecipes implements IRecipePool {
             .fluidInputs(GTNLMaterials.Oxydianiline.getFluidOrGas(1000))
             .fluidOutputs(GTNLMaterials.PloyamicAcid.getFluidOrGas(1000))
             .duration(400)
-            .eut(122880)
+            .eut(TierEU.RECIPE_ZPM)
             .addTo(UC);
 
         RecipeBuilder.builder()
@@ -370,7 +370,7 @@ public class ChemicalRecipes implements IRecipePool {
             .fluidInputs(new FluidStack(GTPPFluids.Aniline, 2000), Materials.Phenol.getFluid(1000))
             .fluidOutputs(GTNLMaterials.Oxydianiline.getFluidOrGas(1000), Materials.Methane.getGas(2000))
             .duration(150)
-            .eut(120)
+            .eut(TierEU.RECIPE_MV)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
@@ -379,7 +379,7 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTNLMaterials.PyromelliticDianhydride.get(OrePrefixes.dust, 18))
             .fluidOutputs(Materials.Water.getFluid(6000))
             .duration(150)
-            .eut(120)
+            .eut(TierEU.RECIPE_MV)
             .addTo(UC);
 
         RecipeBuilder.builder()
@@ -387,7 +387,7 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTNLMaterials.Durene.get(OrePrefixes.dust, 24))
             .fluidOutputs(Materials.HydrochloricAcid.getFluid(2000))
             .duration(150)
-            .eut(120)
+            .eut(TierEU.RECIPE_MV)
             .addTo(MCRR);
 
         RecipeBuilder.builder()
@@ -397,7 +397,7 @@ public class ChemicalRecipes implements IRecipePool {
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumHydroxide, 3))
             .fluidOutputs(GTNLMaterials.RareEarthChlorides.getFluidOrGas(1000))
             .duration(120)
-            .eut(30)
+            .eut(TierEU.RECIPE_LV)
             .addTo(UC);
 
         RecipeBuilder.builder()

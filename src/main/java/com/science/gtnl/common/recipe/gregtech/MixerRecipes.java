@@ -48,7 +48,7 @@ public class MixerRecipes implements IRecipePool {
             .fluidInputs(GTModHandler.getDistilledWater(1000))
             .fluidOutputs(GTNLMaterials.SilicaGelBase.getFluidOrGas(1000))
             .duration(130)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(MCR)
             .addTo(MNCR);
 
@@ -57,7 +57,7 @@ public class MixerRecipes implements IRecipePool {
             .fluidInputs(Materials.Water.getFluid(1000))
             .fluidOutputs(GTNLMaterials.SodiumNitrateSolution.getFluidOrGas(1000))
             .duration(80)
-            .eut(120)
+            .eut(TierEU.RECIPE_MV)
             .addTo(MCR)
             .addTo(MNCR);
 

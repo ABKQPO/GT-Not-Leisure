@@ -110,7 +110,7 @@ public class SmeltingMixingFurnaceRecipes implements IRecipePool {
                 Materials.Arsenic.getMolten(144))
             .fluidOutputs(MaterialsAlloy.BABBIT_ALLOY.getFluidStack(7200))
             .duration(200)
-            .eut(30)
+            .eut(TierEU.RECIPE_LV)
             .addTo(SMFR);
 
         RecipeBuilder.builder()

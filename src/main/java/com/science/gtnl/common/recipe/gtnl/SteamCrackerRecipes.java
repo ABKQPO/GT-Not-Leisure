@@ -7,6 +7,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 
 public class SteamCrackerRecipes implements IRecipePool {
@@ -30,7 +31,7 @@ public class SteamCrackerRecipes implements IRecipePool {
                     .fluidInputs(inputMat.getFluid(1000))
                     .fluidOutputs(getSteamCrackedFluid(outputMat, circuit, 400))
                     .duration(200)
-                    .eut(30)
+                    .eut(TierEU.RECIPE_LV)
                     .addTo(SCR);
             }
         }
@@ -42,7 +43,7 @@ public class SteamCrackerRecipes implements IRecipePool {
                 .fluidInputs(Materials.SulfuricGas.getGas(1000))
                 .fluidOutputs(getSteamCrackedFluid(Materials.Gas, circuit, 400))
                 .duration(200)
-                .eut(30)
+                .eut(TierEU.RECIPE_LV)
                 .addTo(SCR);
         }
     }

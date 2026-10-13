@@ -9,6 +9,7 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 import bartworks.system.material.WerkstoffLoader;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
+import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
@@ -28,7 +29,7 @@ public class ChemicalDehydratorRecipes implements IRecipePool {
                 GTNLMaterials.SilicaGel.get(OrePrefixes.dust, 3),
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Salt, 2))
             .duration(130)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(CDNCR)
             .addTo(CDR);
 
@@ -36,7 +37,7 @@ public class ChemicalDehydratorRecipes implements IRecipePool {
             .fluidInputs(new FluidStack(GTPPFluids.BoricAcid, 2000))
             .itemOutputs(GTNLMaterials.BoronTrioxide.get(OrePrefixes.dust, 5))
             .duration(200)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(CDNCR)
             .addTo(CDR);
 
@@ -45,7 +46,7 @@ public class ChemicalDehydratorRecipes implements IRecipePool {
             .itemOutputs()
             .fluidOutputs(GTNLMaterials.Polyimide.getMolten(144))
             .duration(270)
-            .eut(30)
+            .eut(TierEU.RECIPE_LV)
             .addTo(CDNCR)
             .addTo(CDR);
 
@@ -58,7 +59,7 @@ public class ChemicalDehydratorRecipes implements IRecipePool {
                 WerkstoffMaterialPool.NeodymiumOxide.get(OrePrefixes.dust, 5))
             .outputChances(5000, 5000, 5000, 5000)
             .duration(220)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(CDNCR)
             .addTo(CDR);
 
@@ -71,7 +72,7 @@ public class ChemicalDehydratorRecipes implements IRecipePool {
                 GTNLMaterials.GadoliniumOxide.get(OrePrefixes.dust, 5))
             .outputChances(5000, 5000, 5000, 5000)
             .duration(220)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(CDNCR)
             .addTo(CDR);
 
@@ -84,7 +85,7 @@ public class ChemicalDehydratorRecipes implements IRecipePool {
                 GTNLMaterials.HolmiumOxide.get(OrePrefixes.dust, 5))
             .outputChances(5000, 5000, 5000, 5000)
             .duration(220)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(CDNCR)
             .addTo(CDR);
 
@@ -97,7 +98,7 @@ public class ChemicalDehydratorRecipes implements IRecipePool {
                 GTNLMaterials.LutetiumOxide.get(OrePrefixes.dust, 5))
             .outputChances(5000, 5000, 5000, 5000)
             .duration(220)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(CDNCR)
             .addTo(CDR);
 
@@ -110,7 +111,7 @@ public class ChemicalDehydratorRecipes implements IRecipePool {
                 GTNLMaterials.LutetiumOxide.get(OrePrefixes.dust, 5))
             .outputChances(5000, 5000, 5000, 5000)
             .duration(220)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(CDNCR)
             .addTo(CDR);
 
@@ -123,7 +124,7 @@ public class ChemicalDehydratorRecipes implements IRecipePool {
             .fluidOutputs(Materials.SulfuricAcid.getFluid(400))
             .outputChances(5000, 5000, 5000)
             .duration(200)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(CDNCR)
             .addTo(CDR);
     }

@@ -10,6 +10,7 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 import bartworks.API.enums.BioCultureEnum;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
+import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
@@ -40,7 +41,7 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.Benzene.getFluid(600),
                 Materials.Octane.getFluid(20))
             .duration(120)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(PPR);
 
         RecipeBuilder.builder()
@@ -61,7 +62,7 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.Benzene.getFluid(50),
                 Materials.Octane.getFluid(20))
             .duration(120)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(PPR);
 
         RecipeBuilder.builder()
@@ -82,7 +83,7 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.Benzene.getFluid(100),
                 Materials.Octane.getFluid(40))
             .duration(120)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(PPR);
 
         RecipeBuilder.builder()
@@ -103,7 +104,7 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.Benzene.getFluid(100),
                 Materials.Octane.getFluid(20))
             .duration(120)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(PPR);
 
         RecipeBuilder.builder()
@@ -117,7 +118,7 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.IIIDimethylbenzene.getFluid(150),
                 Materials.IVDimethylbenzene.getFluid(150))
             .duration(100)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(PPR);
 
         RecipeBuilder.builder()
@@ -141,7 +142,7 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.RadoxLight.getGas(50),
                 Materials.RadoxGas.getGas(20))
             .duration(1600)
-            .eut(1966080)
+            .eut(TierEU.RECIPE_UHV)
             .addTo(PPR);
 
         RecipeBuilder.builder()
@@ -154,7 +155,7 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 new FluidStack(GTPPFluids.Kerosene, 300),
                 new FluidStack(GTPPFluids.Naphthalene, 180))
             .duration(200)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(PPR);
 
         RecipeBuilder.builder()
@@ -169,7 +170,7 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.LightFuel.getFluid(300),
                 Materials.Lubricant.getFluid(400))
             .duration(150)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(PPR);
 
         RecipeBuilder.builder()
@@ -184,7 +185,7 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.LightFuel.getFluid(70),
                 Materials.Lubricant.getFluid(120))
             .duration(150)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(PPR);
 
         RecipeBuilder.builder()
@@ -198,7 +199,7 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.HeavyFuel.getFluid(150),
                 Materials.LightFuel.getFluid(400))
             .duration(100)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(PPR);
 
         RecipeBuilder.builder()
@@ -213,7 +214,7 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.LightFuel.getFluid(300),
                 Materials.Lubricant.getFluid(300))
             .duration(100)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(PPR);
 
         RecipeBuilder.builder()
@@ -228,7 +229,7 @@ public class PetrochemicalPlantRecipes implements IRecipePool {
                 Materials.LightFuel.getFluid(350),
                 Materials.Lubricant.getFluid(600))
             .duration(200)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(PPR);
     }
 }
