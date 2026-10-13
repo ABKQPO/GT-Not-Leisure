@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -127,6 +128,9 @@ public final class ToolboxClient {
         overlay = null;
         Minecraft mc = Minecraft.getMinecraft();
         if (!(event.getScreen() instanceof GuiContainer inventory) || mc.thePlayer == null
+            || mc.playerController == null
+            || inventory instanceof GuiInventory && mc.playerController.isInCreativeMode()
+            || inventory instanceof GuiContainerCreative && !mc.playerController.isInCreativeMode()
             || isAEInterface(inventory)
             || inventory instanceof IGuiContainerOverlay recipe && isAEInterface(recipe.getFirstScreen())
             || ToolboxBogoCompat.isTerminalScreen(inventory)) return;
