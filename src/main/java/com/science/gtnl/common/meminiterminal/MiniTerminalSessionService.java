@@ -22,6 +22,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 
+import com.cleanroommc.bogosorter.api.IBogoSortAPI;
+import com.cleanroommc.bogosorter.api.ISlotGroup;
+import com.cleanroommc.bogosorter.common.sort.GuiSortingContext;
+import com.cleanroommc.bogosorter.mixins.early.minecraft.SlotAccessor;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket.DepositMode;
@@ -220,7 +224,6 @@ public final class MiniTerminalSessionService {
         }
     }
 
-    /** Network, range, battery and security checks shared by sessions and pickup insertion. */
     static MiniTerminalStatus networkStatus(EntityPlayer player, IGrid grid, WirelessTerminalGuiObject host,
         SecurityPermissions permission) {
         if (grid == null) return MiniTerminalStatus.OFFLINE;
@@ -238,12 +241,11 @@ public final class MiniTerminalSessionService {
     private static final class BogoInventory {
 
         static List<Slot> sources(EntityPlayerMP player, Container container, Slot source) {
-            com.cleanroommc.bogosorter.api.ISlotGroup group = com.cleanroommc.bogosorter.common.sort.GuiSortingContext
-                .getOrCreate(container)
+            ISlotGroup group = GuiSortingContext.getOrCreate(container)
                 .getSlotGroup(source.slotNumber);
             if (group == null) return List.of();
             List<Slot> slots = new ArrayList<>();
-            for (com.cleanroommc.bogosorter.mixins.early.minecraft.SlotAccessor entry : group.getSlots()) {
+            for (SlotAccessor entry : group.getSlots()) {
                 int index = entry.getSlotNumber();
                 if (index < 0 || index >= container.inventorySlots.size()) continue;
                 Slot slot = container.getSlot(index);
@@ -255,7 +257,7 @@ public final class MiniTerminalSessionService {
         }
 
         static boolean pinned(EntityPlayerMP player, Container container, Slot slot) {
-            return com.cleanroommc.bogosorter.api.IBogoSortAPI.getInstance()
+            return IBogoSortAPI.getInstance()
                 .isPinned(player, container, slot);
         }
     }
