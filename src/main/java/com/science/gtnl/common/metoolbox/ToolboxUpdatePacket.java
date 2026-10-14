@@ -59,6 +59,7 @@ public class ToolboxUpdatePacket extends ClientboundPacket {
         List<NBTTagList> parts = new ArrayList<>();
         UpdateBudget budget = new UpdateBudget();
         NBTTagList part = new NBTTagList();
+        EncodedSize singleEntrySize = null;
         int compressedBytes = 0;
         long trackedBytes = 0;
         for (NBTTagCompound entry : entries) {
@@ -68,23 +69,26 @@ public class ToolboxUpdatePacket extends ClientboundPacket {
             EncodedSize size = measure(singleton);
             if (part.tagCount() >= MAX_ENTRIES || compressedBytes + size.compressedBytes() > MAX_COMPRESSED_BYTES
                 || trackedBytes + size.trackedBytes() > MAX_TRACKED_BYTES) {
-                addPart(parts, part, budget);
+                addPart(parts, part, singleEntrySize, budget);
                 part = new NBTTagList();
                 compressedBytes = 0;
                 trackedBytes = 0;
             }
             part.appendTag(entry);
+            if (part.tagCount() == 1) singleEntrySize = size;
             compressedBytes += size.compressedBytes();
 
             trackedBytes += size.trackedBytes();
         }
-        addPart(parts, part, budget);
+        addPart(parts, part, singleEntrySize, budget);
         return parts;
     }
 
-    private static void addPart(List<NBTTagList> parts, NBTTagList part, UpdateBudget budget) throws IOException {
+    private static void addPart(List<NBTTagList> parts, NBTTagList part, EncodedSize singleEntrySize,
+        UpdateBudget budget) throws IOException {
         if (parts.size() >= MAX_UPDATE_PARTS) throw new IOException("Too many ME toolbox update packets");
-        EncodedSize size = measure(part);
+        // A one-entry part is identical to the singleton envelope already validated by the native decoder.
+        EncodedSize size = part.tagCount() == 1 ? singleEntrySize : measure(part);
         budget.compressedBytes += size.compressedBytes();
         budget.trackedBytes += size.trackedBytes();
         if (budget.compressedBytes > MAX_UPDATE_COMPRESSED_BYTES || budget.trackedBytes > MAX_UPDATE_TRACKED_BYTES) {

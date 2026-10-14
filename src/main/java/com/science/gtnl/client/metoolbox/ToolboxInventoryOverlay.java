@@ -770,6 +770,12 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
                 if (pin.isHovered(x + 1, y + 1)) return pin;
             }
             if (model.isDisplayOnline()) {
+                int column = Math.floorDiv(x - ToolboxLayout.GRID_X, ToolboxLayout.CELL);
+                int row = Math.floorDiv(y - layout.catalogY(), ToolboxLayout.CELL);
+                if (column >= 0 && column < previousColumns && row >= 0 && row < previousRows) {
+                    VirtualMEMonitorableSlot candidate = directory[row * previousColumns + column];
+                    if (candidate.isHovered(x + 1, y + 1)) return candidate;
+                }
                 for (VirtualMEMonitorableSlot entry : directory) {
                     if (entry.isHovered(x + 1, y + 1)) return entry;
                 }

@@ -185,6 +185,7 @@ final class ToolboxCatalog {
 
     void changed(IAEStack<?> stack) {
         if (!active || !(stack instanceof IAEItemStack || stack instanceof IAEFluidStack)) return;
+        if (dirty.contains(stack)) return;
         if (dirty.size() >= ToolboxUpdatePacket.MAX_UPDATE_ENTRIES) {
             // A bounded scan covers discarded notifications, including identities already removed from storage.
             dirty.clear();

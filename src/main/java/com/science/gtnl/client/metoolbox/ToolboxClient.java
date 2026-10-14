@@ -272,16 +272,14 @@ public final class ToolboxClient {
 
     private static boolean hasToolbox() {
         Minecraft mc = Minecraft.getMinecraft();
-        return !ItemMEToolbox.getToolboxSlots(mc.thePlayer)
-            .isEmpty();
+        return ItemMEToolbox.findFirstToolboxSlot(mc.thePlayer) >= 0;
     }
 
     private static int findSelectedSlot() {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.thePlayer == null) return -1;
         if (selected != null) return ItemMEToolbox.findToolboxSlot(mc.thePlayer, selected);
-        List<Integer> slots = ItemMEToolbox.getToolboxSlots(mc.thePlayer);
-        return slots.isEmpty() ? -1 : slots.get(0);
+        return ItemMEToolbox.findFirstToolboxSlot(mc.thePlayer);
     }
 
     public static void begin() {
@@ -520,7 +518,7 @@ public final class ToolboxClient {
             || overlay.inventory().inventorySlots != mc.thePlayer.openContainer
             || !overlay.layout()
                 .expanded()
-            || !overlay.inventory().inventorySlots.inventorySlots.contains(slot)
+            || !containsSlot(mc.thePlayer.openContainer, slot)
             || ItemMEToolbox.isToolbox(slot.getStack())) return false;
 
         int inventorySlot = ToolboxSessionService.playerInventoryIndex(mc.thePlayer, slot);
@@ -532,6 +530,12 @@ public final class ToolboxClient {
                 .sendToServer(ToolboxRequestPacket.inventoryDeposit(session, ++action, inventorySlot, mode));
         }
         return true;
+    }
+
+    private static boolean containsSlot(Container container, Slot slot) {
+        int index = slot.slotNumber;
+        return index >= 0 && index < container.inventorySlots.size() && container.inventorySlots.get(index) == slot
+            || container.inventorySlots.contains(slot);
     }
 
     public static void sendBogoExtract(IAEStack<?> stack, int nativePin, boolean emptyOnly, boolean single) {

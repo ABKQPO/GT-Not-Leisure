@@ -44,6 +44,7 @@ public final class ToolboxTerminalModel implements ISortSource {
     private int visiblePlayerCount = PinsRows.TWO.getSlotCount();
     private ItemRepo repo = createRepo();
     private Map<Integer, IAEStack<?>> entries = new HashMap<>();
+    private int lastEntryId = -1;
     private Map<Integer, IAEStack<?>> pending;
     private long pendingRevision;
     private Map<Integer, IAEStack<?>> pendingDelta;
@@ -499,9 +500,15 @@ public final class ToolboxTerminalModel implements ISortSource {
 
     public int entryId(IAEStack<?> target) {
         if (!isOnline() || target == null) return -1;
+        // Repeated wheel actions can reuse an ID only while it still matches the current catalog.
+        IAEStack<?> previous = entries.get(lastEntryId);
+        if (previous != null && previous.isSameType((Object) target)) return lastEntryId;
         for (Map.Entry<Integer, IAEStack<?>> entry : entries.entrySet()) {
             if (entry.getValue()
-                .isSameType((Object) target)) return entry.getKey();
+                .isSameType((Object) target)) {
+                lastEntryId = entry.getKey();
+                return lastEntryId;
+            }
         }
         return -1;
     }

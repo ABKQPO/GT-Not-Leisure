@@ -111,12 +111,33 @@ public class ItemMEToolbox extends ToolWirelessTerminal {
     public static int findToolboxSlot(EntityPlayer player, UUID id) {
         if (id == null || id.equals(getToolboxId(player.inventory.getItemStack()))) return -1;
         int found = -1;
-        for (int slot : getToolboxSlots(player)) {
-            if (!id.equals(getToolboxId(getToolboxStack(player, slot)))) continue;
+        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
+            if (!id.equals(getToolboxId(player.inventory.mainInventory[slot]))) continue;
             if (found >= 0) return -1;
             found = slot;
         }
+        IInventory worn = Platform.isBaublesLoaded ? BaublesCompat.getBaubles(player) : null;
+        if (worn != null) {
+            for (int slot = 0; slot < worn.getSizeInventory(); slot++) {
+                if (!id.equals(getToolboxId(worn.getStackInSlot(slot)))) continue;
+                if (found >= 0) return -1;
+                found = Platform.baublesSlotsOffset + slot;
+            }
+        }
         return found;
+    }
+
+    public static int findFirstToolboxSlot(EntityPlayer player) {
+        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
+            if (isToolbox(player.inventory.mainInventory[slot])) return slot;
+        }
+        IInventory worn = Platform.isBaublesLoaded ? BaublesCompat.getBaubles(player) : null;
+        if (worn != null) {
+            for (int slot = 0; slot < worn.getSizeInventory(); slot++) {
+                if (isToolbox(worn.getStackInSlot(slot))) return Platform.baublesSlotsOffset + slot;
+            }
+        }
+        return -1;
     }
 
     public static List<Integer> getToolboxSlots(EntityPlayer player) {
@@ -134,13 +155,15 @@ public class ItemMEToolbox extends ToolWirelessTerminal {
     }
 
     public static ItemStack getToolboxStack(EntityPlayer player, int slot) {
+        ItemStack stack;
         if (slot >= Platform.baublesSlotsOffset) {
             IInventory worn = Platform.isBaublesLoaded ? BaublesCompat.getBaubles(player) : null;
             if (worn == null || slot - Platform.baublesSlotsOffset >= worn.getSizeInventory()) return null;
-        } else if (slot < 0 || slot >= player.inventory.mainInventory.length) {
-            return null;
+            stack = worn.getStackInSlot(slot - Platform.baublesSlotsOffset);
+        } else {
+            if (slot < 0 || slot >= player.inventory.mainInventory.length) return null;
+            stack = player.inventory.getStackInSlot(slot);
         }
-        ItemStack stack = Platform.getItemFromPlayerInventoryBySlotIndex(player, slot);
         return isToolbox(stack) ? stack : null;
     }
 

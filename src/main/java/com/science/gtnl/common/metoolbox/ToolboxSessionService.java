@@ -94,7 +94,11 @@ public final class ToolboxSessionService {
     /** Returns the real main-inventory index, including wrapped slots, or -1 for other inventories. */
     public static int playerInventoryIndex(EntityPlayer player, Slot slot) {
         if (player == null || slot == null) return -1;
-        for (int index = 0; index < Math.min(36, player.inventory.mainInventory.length); index++) {
+        int inventorySize = Math.min(36, player.inventory.mainInventory.length);
+        int slotIndex = slot.getSlotIndex();
+        if (slotIndex >= 0 && slotIndex < inventorySize && slot.isSlotInInventory(player.inventory, slotIndex))
+            return slotIndex;
+        for (int index = 0; index < inventorySize; index++) {
             if (slot.isSlotInInventory(player.inventory, index)) return index;
         }
         return -1;
@@ -307,13 +311,9 @@ public final class ToolboxSessionService {
         }
         if (preferred == null) preferred = SELECTED.get(player.getUniqueID());
         if (preferred == null) {
-            for (int candidate : ItemMEToolbox.getToolboxSlots(player)) {
-                ItemStack stack = ItemMEToolbox.getToolboxStack(player, candidate);
-                if (ItemMEToolbox.isToolbox(stack)) {
-                    preferred = ItemMEToolbox.ensureIdentity(stack, player);
-                    break;
-                }
-            }
+            int candidate = ItemMEToolbox.findFirstToolboxSlot(player);
+            if (candidate >= 0)
+                preferred = ItemMEToolbox.ensureIdentity(ItemMEToolbox.getToolboxStack(player, candidate), player);
         }
         long id = ++nextSession;
         int slot = ItemMEToolbox.findToolboxSlot(player, preferred);
