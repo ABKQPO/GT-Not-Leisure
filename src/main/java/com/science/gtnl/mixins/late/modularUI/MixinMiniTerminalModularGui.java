@@ -13,7 +13,6 @@ import com.science.gtnl.client.meminiterminal.MiniTerminalHostLayer;
 @Mixin(value = ModularGui.class, remap = false)
 public abstract class MixinMiniTerminalModularGui {
 
-    // Widgets under the terminal must neither show their tooltip nor suppress the terminal's NEI tooltip.
     @Inject(method = "shouldRenderOurTooltip", at = @At("HEAD"), cancellable = true)
     private void gtnl$ignoreHoverUnderMiniTerminal(CallbackInfoReturnable<Boolean> cir) {
         if (MiniTerminalHostLayer.mouseOverTerminal((GuiScreen) (Object) this)) cir.setReturnValue(false);
