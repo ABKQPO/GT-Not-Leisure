@@ -1,5 +1,7 @@
 package com.science.gtnl.common.item.items;
 
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +53,7 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
 
     public ItemMEMiniPortableTerminal() {
         setUnlocalizedName("gtnl.me_mini_portable_terminal");
-        setTextureName("appliedenergistics2:ToolWirelessTerminal");
+        setTextureName(RESOURCE_ROOT_ID + ":" + "me_mini_portable_terminal");
         setMaxStackSize(1);
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         GameRegistry.registerItem(this, "me_toolbox");
