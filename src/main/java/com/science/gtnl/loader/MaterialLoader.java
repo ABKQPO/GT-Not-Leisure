@@ -85,7 +85,7 @@ public class MaterialLoader {
         }
         RocketFuels.addFuel(EntitySteamRocket.class, GTNLMaterials.CompressedSteam.getMolten(1));
 
-        if (ModList.CraftingTweaks.isModLoaded()) CraftTweakCompact();
+        if (ModList.CraftingTweaks.isModLoaded()) loadCraftTweakCompat();
         if (Mods.InventoryBogoSorter.isModLoaded()) loadBogoSortCompat();
 
         OrePrefixes.nugget.addFamiliarPrefix(OrePrefixes.ingotHot);
@@ -111,7 +111,7 @@ public class MaterialLoader {
     }
 
     @Optional.Method(modid = "craftingtweaks")
-    public static void CraftTweakCompact() {
+    public static void loadCraftTweakCompat() {
         SimpleTweakProvider provider = CraftingTweaksAPI
             .registerSimpleProvider(ModList.ScienceNotLeisure.ID, ContainerPortableAdvancedWorkbench.class);
         provider.setTweakRotate(true, true, 0, 0);
