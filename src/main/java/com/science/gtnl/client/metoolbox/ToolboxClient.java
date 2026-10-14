@@ -71,8 +71,6 @@ public final class ToolboxClient {
     private static final Set<Long> RETIRED_SESSIONS = new LinkedHashSet<>();
     private static NetHandlerPlayClient connection;
     private static ToolboxInventoryOverlay overlay;
-    private static DrawScreenEvent.Post deferredTooltipEvent;
-    private static Runnable deferredTooltipRender;
     private static UUID selected;
     private static int selectedSlot = -1;
     private static long session;
@@ -114,26 +112,18 @@ public final class ToolboxClient {
     }
 
     public static boolean deferChromaticTooltip(DrawScreenEvent.Post event, Runnable renderTooltip) {
-        if (overlay == null || event.gui != overlay.inventory() || Minecraft.getMinecraft().currentScreen != event.gui)
-            return false;
-        deferredTooltipEvent = event;
-        deferredTooltipRender = renderTooltip;
-        return true;
+        return overlay != null && overlay.foreground()
+            .deferChromaticTooltip(event, renderTooltip);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void drawDeferredTooltip(DrawScreenEvent.Post event) {
-        if (deferredTooltipEvent != event) return;
-        Runnable renderTooltip = deferredTooltipRender;
-        deferredTooltipEvent = null;
-        deferredTooltipRender = null;
-        if (renderTooltip != null && Minecraft.getMinecraft().currentScreen == event.gui) renderTooltip.run();
+        if (overlay != null) overlay.foreground()
+            .drawChromaticTooltip(event);
     }
 
     @SubscribeEvent
     public void open(OpenScreenEvent event) {
-        deferredTooltipEvent = null;
-        deferredTooltipRender = null;
         ToolboxClientConfig.saveWindow(LAYOUT);
         checkConnection();
         if (selected != null && event.getScreen() instanceof GuiContainer gui
@@ -176,8 +166,6 @@ public final class ToolboxClient {
     static void closeOverlay(ToolboxInventoryOverlay closing) {
         checkConnection();
         if (overlay != closing) return;
-        deferredTooltipEvent = null;
-        deferredTooltipRender = null;
         ToolboxClientConfig.saveWindow(LAYOUT);
         closeSession();
         overlay = null;

@@ -23,6 +23,6 @@ public abstract class MixinToolboxTooltips {
     private void gtnl$deferToolboxTooltips(int mouseX, int mouseY, CallbackInfo ci) {
         ToolboxInventoryOverlay overlay = ToolboxClient.overlay();
         if (overlay != null && window == overlay.inventory()
-            && overlay.deferNativeTooltip((GuiContainerManager) (Object) this, mouseX, mouseY)) ci.cancel();
+            && overlay.deferNativeTooltip()) ci.cancel();
     }
 }

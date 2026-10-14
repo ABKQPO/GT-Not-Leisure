@@ -14,7 +14,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -65,8 +64,6 @@ import appeng.core.localization.ColorUtils;
 import appeng.helpers.MonitorableAction;
 import appeng.items.contents.PinList;
 import appeng.util.Platform;
-import codechicken.nei.NEIClientUtils;
-import codechicken.nei.guihook.GuiContainerManager;
 import cpw.mods.fml.common.Loader;
 
 public final class ToolboxInventoryOverlay extends ModularScreen {
@@ -119,6 +116,7 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
         .build();
 
     private final GuiContainer inventory;
+    private final ToolboxForeground foreground = new ToolboxForeground(this);
     private final ToolboxLayout layout = ToolboxClient.layoutState();
     private final ToolboxPanel panel;
     private ToolboxTerminalModel model;
@@ -128,8 +126,6 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
     private final Flow controls;
     private final Set<Integer> consumedMouseButtons = new HashSet<>();
     private boolean resizing;
-    private boolean drawingNativeTooltip;
-    private boolean nativeTooltipQueued;
 
     public ToolboxInventoryOverlay(GuiContainer inventory, ToolboxTerminalModel model) {
         super(ScienceNotLeisure.MODID, new ToolboxPanel(ToolboxClient.layoutState()));
@@ -207,27 +203,12 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
         return model.isOnline();
     }
 
-    public boolean deferNativeTooltip(GuiContainerManager manager, int mouseX, int mouseY) {
-        if (drawingNativeTooltip) return false;
-        if (bounds().contains(mouseX, mouseY)) {
-            VirtualMESlot slot = hoveredSlot(mouseX, mouseY);
+    ToolboxForeground foreground() {
+        return foreground;
+    }
 
-            if (slot == null || slot.getAEStack() == null
-                && Minecraft.getMinecraft().thePlayer.inventory.getItemStack() == null) return true;
-        }
-        if (nativeTooltipQueued) return true;
-        nativeTooltipQueued = true;
-        getContext().queueForegroundRender(() -> {
-            try {
-                if (ToolboxClient.overlay() != this || Minecraft.getMinecraft().currentScreen != inventory) return;
-                drawingNativeTooltip = true;
-                NEIClientUtils.gl2DRenderContext(() -> manager.renderToolTips(mouseX, mouseY));
-            } finally {
-                drawingNativeTooltip = false;
-                nativeTooltipQueued = false;
-            }
-        });
-        return true;
+    public boolean deferNativeTooltip() {
+        return foreground.deferNativeTooltip();
     }
 
     MEGuiTextField nativeSearchField() {
@@ -307,29 +288,14 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
     public void drawScreen() {
         syncLayout();
         ToolboxClient.ensureSession();
+        foreground.queueCursor();
         super.drawScreen();
     }
 
     @Override
     public void drawForeground() {
         super.drawForeground();
-        Minecraft mc = Minecraft.getMinecraft();
-        ItemStack held = mc.thePlayer.inventory.getItemStack();
-        int x = getContext().getAbsMouseX();
-        int y = getContext().getAbsMouseY();
-
-        if (bounds().contains(x, y)) deferNativeTooltip(GuiContainerManager.getManager(inventory), x, y);
-        if (held != null && bounds().contains(x, y)) {
-
-            GL11.glPushMatrix();
-            GL11.glTranslatef(0, 0, 200);
-            RenderHelper.enableGUIStandardItemLighting();
-            RenderItem renderer = RenderItem.getInstance();
-            renderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), held, x - 8, y - 8);
-            renderer.renderItemOverlayIntoGUI(mc.fontRenderer, mc.getTextureManager(), held, x - 8, y - 8);
-            RenderHelper.disableStandardItemLighting();
-            GL11.glPopMatrix();
-        }
+        foreground.queueTooltip();
     }
 
     @Override
