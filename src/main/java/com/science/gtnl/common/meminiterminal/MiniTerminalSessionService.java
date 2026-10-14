@@ -209,7 +209,6 @@ public final class MiniTerminalSessionService {
             && player.openContainer.canInteractWith(player);
     }
 
-    /** The open session's host for this exact terminal stack, so pickups reuse its cached access point. */
     static WirelessTerminalGuiObject activeHost(EntityPlayerMP player, ItemStack stack) {
         Session session = SESSIONS.get(player.getUniqueID());
         return session != null && session.player == player && session.stack == stack ? session.host : null;
@@ -304,7 +303,6 @@ public final class MiniTerminalSessionService {
             Reference2BooleanMap<IAEStackType<?>> filters = new Reference2BooleanOpenHashMap<>();
             filters.put(ITEM_STACK_TYPE, true);
             filters.put(FLUID_STACK_TYPE, request.showFluids);
-            // AE writes the host's live TerminalSettings back to the stack, so the reply below reads it.
             session.terminal.updateTypeFilters(filters);
             if (session.catalog != null) session.catalog.showFluids(request.showFluids);
         } else {
@@ -526,7 +524,6 @@ public final class MiniTerminalSessionService {
         }
 
         boolean requestBegin(int now, MiniTerminalRequestPacket request) {
-            // Coalesce rapid terminal switches without turning the connection cooldown into a failure.
             pendingBegin = request;
             if (!acceptBegin(now)) return false;
             pendingBegin = null;
@@ -608,7 +605,6 @@ public final class MiniTerminalSessionService {
                 return MiniTerminalStatus.INVALID_CONTAINER;
             if (terminalId.equals(ItemMEMiniPortableTerminal.getTerminalId(player.inventory.getItemStack())))
                 return MiniTerminalStatus.ON_CURSOR;
-            // Common case each tick: the captured stack still sits in its slot, so skip scanning the inventory.
             ItemStack currentStack = ItemMEMiniPortableTerminal.getTerminalStack(player, slot);
             if (currentStack != stack) {
                 int current = ItemMEMiniPortableTerminal.findTerminalSlot(player, terminalId);
@@ -616,9 +612,6 @@ public final class MiniTerminalSessionService {
                     ? MiniTerminalStatus.AMBIGUOUS
                     : MiniTerminalStatus.MISSING;
                 if (current != slot) return MiniTerminalStatus.STALE;
-                // C10PacketCreativeInventoryAction replaces the slot object on every creative click. Treat an
-                // equivalent copy as the same terminal and restore the object captured by the AE host; otherwise
-                // actions would mutate a detached stack and the next tick would report a false STALE session.
                 if (!ItemStack.areItemStacksEqual(stack, currentStack)
                     || !ItemMEMiniPortableTerminal.restoreTerminalStack(player, current, stack))
                     return MiniTerminalStatus.STALE;
@@ -845,16 +838,11 @@ public final class MiniTerminalSessionService {
         void creativeAction(MiniTerminalRequestPacket request) {
             if (!player.theItemInWorldManager.isCreative() || container != player.inventoryContainer) return;
 
-            // Creative inventory clicks are client-authoritative. Adopt the snapshot for the action and keep the
-            // resulting cursor on the server, otherwise the finally block would restore a stale/empty cursor and a
-            // later reconnect would overwrite the item shown in the client's creative GUI.
             player.inventory.setItemStack(ItemStack.copyItemStack(request.creativeCursor));
             creativeActionSynchronized = false;
             try {
                 action(request);
             } finally {
-                // Successful transfer actions already synchronize the complete container. Invalid/metadata-only
-                // actions still need the cursor packet, but do not need another full inventory diff.
                 if (!creativeActionSynchronized) player.updateHeldItem();
             }
         }
@@ -901,13 +889,11 @@ public final class MiniTerminalSessionService {
                 || request.action == MonitorableAction.DRAIN_CONTAINERS;
             boolean fill = request.action == MonitorableAction.FILL_SINGLE_CONTAINER
                 || request.action == MonitorableAction.FILL_CONTAINERS;
-            // Container actions need a held fluid container, and filling needs a fluid target.
             if ((drain || fill) && (hand == null || !FLUID_STACK_TYPE.isContainerItemForType(hand))) return;
             if (fill && !(target instanceof IAEFluidStack)) return;
             boolean inject = drain || MiniTerminalTransferService.depositsCursor(hand, request.action);
             if (inject && !permission(SecurityPermissions.INJECT)) return;
             if (fill) {
-                // Pins store zero-sized templates; AE's container filling uses the target quantity as its limit.
                 target = catalog.current(target);
                 if (target == null || target.getStackSize() <= 0) return;
             }

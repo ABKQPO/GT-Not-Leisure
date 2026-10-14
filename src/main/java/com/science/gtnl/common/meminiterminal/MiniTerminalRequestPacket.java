@@ -242,7 +242,6 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
                 }
                 if (kind == Kind.CREATIVE_ACTION) {
                     creativeCursor = ByteBufUtils.readItemStack(buf);
-                    // Match vanilla creative slot bounds, including stacks larger than the item's normal limit.
                     if (creativeCursor != null
                         && (creativeCursor.getItem() == null || creativeCursor.getItemDamage() < 0
                             || creativeCursor.stackSize <= 0
@@ -264,7 +263,6 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
                     || nativePin < PinList.PLAYER_OFFSET
                     || nativePin >= PinList.TOTAL_SLOTS)
                     throw new IllegalArgumentException("Mini terminal pin drop target");
-                // Same codec as AE's own stack packets; the request size limit above bounds its NBT.
                 pinTarget = Platform.readStackByte(buf);
                 if (!(pinTarget instanceof IAEItemStack || pinTarget instanceof IAEFluidStack))
                     throw new IllegalArgumentException("Unsupported mini terminal pin type");

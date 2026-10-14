@@ -10,7 +10,6 @@ import appeng.core.AEConfig;
 import appeng.items.contents.PinList;
 import appeng.util.Platform;
 
-/** Exact mini-terminal slot counts backed by AE's fixed nine-slot rows. */
 public record MiniTerminalPinSettings(int craftingCount, int playerCount) {
 
     public static final MiniTerminalPinSettings DISABLED = new MiniTerminalPinSettings(0, 0);
@@ -56,16 +55,13 @@ public record MiniTerminalPinSettings(int craftingCount, int playerCount) {
             player.getPersistentID()
                 .toString(),
             saved);
-        // Keep this outside AE's pins list, which PinsHolder rewrites when a pin changes.
         tag.setTag(TAG, settings);
     }
 
-    /** AE's configured crafting row limit, as a slot count. */
     public static int maxCraftingCount() {
         return Math.min(PinList.CRAFTING_SLOTS, AEConfig.instance.maxCraftingPinRows * ROW_SLOTS);
     }
 
-    /** AE's configured player row limit, as a slot count. */
     public static int maxPlayerCount() {
         return Math.min(PinList.PLAYER_SLOTS, AEConfig.instance.maxPlayerPinRows * ROW_SLOTS);
     }

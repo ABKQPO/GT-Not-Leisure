@@ -170,8 +170,6 @@ final class MiniTerminalTransferService {
         open.detectAndSendChanges();
         if (open != player.inventoryContainer) {
             player.inventoryContainer.detectAndSendChanges();
-            // With another window open the client applies window 0 updates to hotbar slots only. Resend the whole
-            // inventory just for containers whose own slots do not carry the main inventory.
             if (!coversMainInventory(player, open)) {
                 player.sendContainerToPlayer(player.inventoryContainer);
                 return;
@@ -236,10 +234,6 @@ final class MiniTerminalTransferService {
         if (remaining == 0) event.setResult(Event.Result.ALLOW);
     }
 
-    /**
-     * Building a host reads the terminal NBT and, without a cached access point, scans every wireless access point.
-     * Reuse the open session's host, or one cached per player until the stack, binding or grid changes.
-     */
     private static WirelessTerminalGuiObject pickupHost(EntityPlayerMP player, ItemStack terminalStack, int slot) {
         WirelessTerminalGuiObject active = MiniTerminalSessionService.activeHost(player, terminalStack);
         if (active != null) return active;

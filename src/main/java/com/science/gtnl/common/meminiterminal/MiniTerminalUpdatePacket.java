@@ -23,10 +23,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.Unpooled;
 
-/** A small NBT header plus entries framed like AE's PacketMEInventoryUpdate: gzip over writeStackByte records. */
 public class MiniTerminalUpdatePacket extends ClientboundPacket {
 
-    // Retain the existing wire key while Java fields use terminal terminology.
     public static final String TERMINAL_ID_KEY = "toolbox";
 
     private static final int PART_BYTES = 512 * 1024;
@@ -80,12 +78,10 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
         minecraft.func_152344_a(() -> MiniTerminalClient.receive(data, entries));
     }
 
-    /** Splits entries into compressed parts; always returns at least one part, possibly empty. */
     static List<byte[]> encode(List<Entry> entries) throws IOException {
         List<byte[]> parts = new ArrayList<>();
         ByteBuf part = Unpooled.buffer(Math.min(PART_BYTES, 64 + entries.size() * 64));
         for (Entry entry : entries) {
-            // Write in place; a record that overflows a non-empty part moves to the next one.
             int start = part.writerIndex();
             part.writeInt(entry.key());
             Platform.writeStackByte(entry.stack(), part);

@@ -64,10 +64,8 @@ public final class MiniTerminalMonitorableAdapter extends ContainerMEMonitorable
 
     public boolean setPinSettings(MiniTerminalPinSettings settings, BooleanSupplier valid) {
         return run(valid, null, () -> {
-            // Same guard as setPinsRows, so the session only saves counts that AE actually accepted.
             if (!isOperationValid()) return false;
             setPinsRows(settings.craftingRows(), settings.playerRows());
-            // An exact count can change without crossing the boundary of an AE row.
             pinsChanged = true;
             return true;
         }, false);

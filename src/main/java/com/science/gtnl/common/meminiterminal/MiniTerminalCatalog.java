@@ -89,7 +89,6 @@ final class MiniTerminalCatalog {
         List<Entry> entries = new ArrayList<>();
 
         if (fullUpdate || listUpdate && elapsed(tick, lastScan, MIN_SCAN_TICKS)) {
-            // IDs are allocated densely, so a bit set marks survivors without hashing every stack a second time.
             BitSet seen = new BitSet((int) Math.min(nextId, Integer.MAX_VALUE));
             for (IAEItemStack stack : itemMonitor.getStorageList()) scan(entries, stack, seen);
             if (fluidsVisible && fluidMonitor != null) {
@@ -140,7 +139,6 @@ final class MiniTerminalCatalog {
         if (id >= 0) seen.set(id);
     }
 
-    /** Returns the stack's catalog ID, or -1 once it is no longer visible. */
     private int update(List<Entry> entries, IAEStack<?> stack) throws IOException {
         int id = ids.getInt(stack);
         if (!visible(stack)) {
@@ -155,12 +153,10 @@ final class MiniTerminalCatalog {
             }
             return -1;
         }
-        // One copy serves as the ID key, the remembered state and the outgoing entry; none of them mutate it.
         IAEStack<?> copy;
         if (id < 0) {
             if (nextId > Integer.MAX_VALUE)
                 throw new IOException("ME mini portable terminal catalog exceeds the identity limit");
-            // Never reuse an ID during a session, including after a snapshot: queued older clicks stay safe.
             id = (int) nextId++;
             copy = stack.copy();
             ids.put(copy, id);
@@ -193,7 +189,6 @@ final class MiniTerminalCatalog {
         if (!active || !(stack instanceof IAEItemStack || fluidsVisible && stack instanceof IAEFluidStack)) return;
         if (dirty.contains(stack)) return;
         if (dirty.size() >= MAX_DIRTY) {
-            // A bounded scan covers discarded notifications, including identities already removed from storage.
             dirty.clear();
             listUpdate = true;
         }
