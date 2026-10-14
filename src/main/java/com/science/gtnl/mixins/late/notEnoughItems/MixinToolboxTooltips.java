@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.science.gtnl.client.metoolbox.ToolboxClient;
-import com.science.gtnl.client.metoolbox.ToolboxInventoryOverlay;
+import com.science.gtnl.client.metoolbox.ToolboxInventoryPanel;
 
 import codechicken.nei.guihook.GuiContainerManager;
 
@@ -21,7 +21,7 @@ public abstract class MixinToolboxTooltips {
 
     @Inject(method = "renderToolTips", at = @At("HEAD"), cancellable = true)
     private void gtnl$deferToolboxTooltips(int mouseX, int mouseY, CallbackInfo ci) {
-        ToolboxInventoryOverlay overlay = ToolboxClient.overlay();
+        ToolboxInventoryPanel overlay = ToolboxClient.overlay();
         if (overlay != null && window == overlay.inventory()
             && overlay.deferNativeTooltip()) ci.cancel();
     }

@@ -71,7 +71,7 @@ public final class ToolboxClient {
     private static final ToolboxLayout LAYOUT = new ToolboxLayout();
     private static final Set<Long> RETIRED_SESSIONS = new LinkedHashSet<>();
     private static NetHandlerPlayClient connection;
-    private static ToolboxInventoryOverlay overlay;
+    private static ToolboxInventoryPanel overlay;
     private static UUID selected;
     private static int selectedSlot = -1;
     private static long session;
@@ -175,14 +175,13 @@ public final class ToolboxClient {
         ToolboxTerminalModel model = model();
         if (slot >= 0) model.readSettings(ItemMEToolbox.getToolboxStack(mc.thePlayer, slot));
         model.beginSession();
-        overlay = new ToolboxInventoryOverlay(inventory, model);
-        overlay.constructOverlay(inventory);
-        OverlayStack.open(overlay);
+        overlay = new ToolboxInventoryPanel(inventory, model);
+        OverlayStack.open(new ToolboxInventoryOverlay(overlay));
         sessionPrepared = true;
         retryTicks = 0;
     }
 
-    static void closeOverlay(ToolboxInventoryOverlay closing) {
+    static void closeOverlay(ToolboxInventoryPanel closing) {
         checkConnection();
         if (overlay != closing) return;
         ToolboxClientConfig.saveWindow(LAYOUT);
@@ -294,8 +293,7 @@ public final class ToolboxClient {
         Minecraft mc = Minecraft.getMinecraft();
         if (waiting || mc.thePlayer == null
             || overlay == null
-            || !overlay.getPanelManager()
-                .isOpen()
+            || !overlay.isOpen()
             || mc.currentScreen != overlay.inventory()
             || mc.thePlayer.openContainer == null) return;
         closeSession();
@@ -603,7 +601,7 @@ public final class ToolboxClient {
         return VIEWS.computeIfAbsent(selected, key -> new ToolboxTerminalModel());
     }
 
-    public static ToolboxInventoryOverlay overlay() {
+    public static ToolboxInventoryPanel overlay() {
         return overlay;
     }
 

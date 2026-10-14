@@ -28,7 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 final class ToolboxForeground {
 
-    private final ToolboxInventoryOverlay overlay;
+    private final ToolboxInventoryPanel overlay;
     private boolean drawingNativeTooltip;
     private boolean nativeTooltipRequested;
     private boolean collectingHostTooltips;
@@ -37,7 +37,7 @@ final class ToolboxForeground {
     private DrawScreenEvent.Post chromaticEvent;
     private Runnable chromaticTooltip;
 
-    ToolboxForeground(ToolboxInventoryOverlay overlay) {
+    ToolboxForeground(ToolboxInventoryPanel overlay) {
         this.overlay = overlay;
     }
 

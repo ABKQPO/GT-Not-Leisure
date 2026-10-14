@@ -48,8 +48,8 @@ public final class ToolboxBogoCompat {
         return ModList.InventoryBogoSorter.isModLoaded() && Native.isTerminalScreen(gui);
     }
 
-    private static ToolboxInventoryOverlay searchTarget(GuiContainer gui) {
-        ToolboxInventoryOverlay overlay = ToolboxClient.overlay();
+    private static ToolboxInventoryPanel searchTarget(GuiContainer gui) {
+        ToolboxInventoryPanel overlay = ToolboxClient.overlay();
         if (overlay == null || gui != overlay.inventory()
             || Minecraft.getMinecraft().currentScreen != gui
             || !overlay.layout()
@@ -60,7 +60,7 @@ public final class ToolboxBogoCompat {
 
     public static boolean handleSearchKey(GuiContainer gui) {
         if (!ModList.InventoryBogoSorter.isModLoaded()) return false;
-        ToolboxInventoryOverlay overlay = searchTarget(gui);
+        ToolboxInventoryPanel overlay = searchTarget(gui);
         return overlay != null && Native.handleSearchKey(gui, overlay);
     }
 
@@ -70,11 +70,11 @@ public final class ToolboxBogoCompat {
     }
 
     public static boolean shouldPrioritizeContainerInteraction(GuiContainer gui) {
-        ToolboxInventoryOverlay overlay = searchTarget(gui);
+        ToolboxInventoryPanel overlay = searchTarget(gui);
         Minecraft mc = Minecraft.getMinecraft();
         if (overlay == null || mc.thePlayer == null) return false;
         ItemStack held = mc.thePlayer.inventory.getItemStack();
-        if (!ToolboxInventoryOverlay.Input.preferContainerInteraction(
+        if (!ToolboxInventoryPanel.Input.preferContainerInteraction(
             AEBaseGui.isCtrlKeyDown(),
             held != null && FLUID_STACK_TYPE.isContainerItemForType(held),
             Keyboard.isKeyDown(Keyboard.KEY_SPACE))) return false;
@@ -83,7 +83,7 @@ public final class ToolboxBogoCompat {
     }
 
     public static boolean isOverMini(GuiScreen gui) {
-        ToolboxInventoryOverlay overlay = ToolboxClient.overlay();
+        ToolboxInventoryPanel overlay = ToolboxClient.overlay();
         Minecraft mc = Minecraft.getMinecraft();
         if (overlay == null || gui != overlay.inventory()
             || mc.currentScreen != gui
@@ -131,7 +131,7 @@ public final class ToolboxBogoCompat {
             return Ae2TerminalGuiDetector.resolveSearchTarget(gui) != null;
         }
 
-        private static boolean handleSearchKey(GuiContainer gui, ToolboxInventoryOverlay overlay) {
+        private static boolean handleSearchKey(GuiContainer gui, ToolboxInventoryPanel overlay) {
             if (!TooltipFeatureConfig.isTerminalHoverSearchEnabled() || !Keyboard.getEventKeyState()
                 || Keyboard.getEventKey() != BSKeybinds.ae2TerminalSearchKey.getKeyCode()
                 || overlay.nativeSearchField()
@@ -189,7 +189,7 @@ public final class ToolboxBogoCompat {
         }
 
         private static void updateKeys(GuiScreen gui) {
-            ToolboxInventoryOverlay overlay = ToolboxClient.overlay();
+            ToolboxInventoryPanel overlay = ToolboxClient.overlay();
 
             if (overlay != null && gui == overlay.inventory()) {
                 ToolboxNEIAdapter.refreshHoveredSlot(overlay.inventory());

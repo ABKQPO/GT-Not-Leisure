@@ -15,7 +15,7 @@ import com.cleanroommc.modularui.screen.viewport.LocatedWidget;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.widget.sizer.Area;
 
-final class ToolboxPanel extends ModularPanel implements IDraggable {
+class ToolboxPanel extends ModularPanel implements IDraggable {
 
     private final ToolboxLayout layout;
     private final Matrix4f dragTransformInverse = new Matrix4f();
