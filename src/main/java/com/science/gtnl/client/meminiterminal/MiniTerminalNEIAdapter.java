@@ -103,8 +103,8 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
         overlay.syncLayout();
         if (!overlay.layout()
             .expanded() || overlay.getContext()
-                .hasDraggable() || !overlay.isMouseOver(mouseX, mouseY))
-            return false;
+                .hasDraggable()
+            || !overlay.isMouseOver(mouseX, mouseY)) return false;
         Rectangle bounds = overlay.bounds();
         if (!overlay.nativeSearchField()
             .isMouseIn(
@@ -122,14 +122,17 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
         if (overlay == null) return;
         if (overlay.getScreen() instanceof MiniTerminalInventoryOverlay screen) screen.drawInContainer(mouseX, mouseY);
         else overlay.syncLayout();
+        MiniTerminalHostLayer.flushTooltips(gui);
     }
 
     static void drawMuiSlotTooltip(MiniTerminalInventoryPanel panel) {
         if (MiniTerminalClient.overlay() != panel || !panel.isValid()
             || !panel.isOpen()
             || Minecraft.getMinecraft().currentScreen != panel.inventory()) return;
-        int mouseX = panel.getContext().getAbsMouseX();
-        int mouseY = panel.getContext().getAbsMouseY();
+        int mouseX = panel.getContext()
+            .getAbsMouseX();
+        int mouseY = panel.getContext()
+            .getAbsMouseY();
         VirtualMESlot slot = panel.hoveredSlot(mouseX, mouseY);
         if (slot == null
             || slot.getAEStack() == null && Minecraft.getMinecraft().thePlayer.inventory.getItemStack() == null) return;
@@ -138,7 +141,9 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
     }
 
     @Override
-    public void onPreDraw(GuiContainer gui) {}
+    public void onPreDraw(GuiContainer gui) {
+        MiniTerminalHostLayer.openHostPass(gui);
+    }
 
     @Override
     public void postRenderObjects(GuiContainer gui, int mouseX, int mouseY) {}

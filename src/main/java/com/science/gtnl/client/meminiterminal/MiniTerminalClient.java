@@ -114,8 +114,14 @@ public final class MiniTerminalClient {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void prepareNativePanel(DrawScreenEvent.Pre event) {
+        MiniTerminalHostLayer.beginFrame(event.gui);
         if (overlay != null && event.gui == overlay.inventory() && event.gui instanceof IMuiScreen)
             overlay.prepareFrame();
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void finishHostFrame(DrawScreenEvent.Post event) {
+        MiniTerminalHostLayer.endFrame(event.gui);
     }
 
     @SubscribeEvent
@@ -499,7 +505,8 @@ public final class MiniTerminalClient {
                 .sendToServer(MiniTerminalRequestPacket.pinDrop(session, ++action, model.pinRevision(), pin, target));
         } catch (IOException exception) {
             ScienceNotLeisure.LOG.warn("Unable to pin NEI stack in ME mini portable terminal", exception);
-            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("gtnl.meminiterminal.pin_failed"));
+            Minecraft.getMinecraft().thePlayer
+                .addChatMessage(new ChatComponentTranslation("gtnl.meminiterminal.pin_failed"));
         }
     }
 
@@ -612,11 +619,9 @@ public final class MiniTerminalClient {
     }
 
     public static String description() {
-        String location = selectedSlot >= Platform.baublesSlotsOffset ? StatCollector
-            .translateToLocalFormatted(
-                "gtnl.meminiterminal.location.bauble",
-                selectedSlot - Platform.baublesSlotsOffset + 1)
-            : Integer.toString(selectedSlot + 1);
+        String location = selectedSlot >= Platform.baublesSlotsOffset ? StatCollector.translateToLocalFormatted(
+            "gtnl.meminiterminal.location.bauble",
+            selectedSlot - Platform.baublesSlotsOffset + 1) : Integer.toString(selectedSlot + 1);
         return name + " [" + location + "] " + network;
     }
 }
