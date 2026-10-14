@@ -503,14 +503,15 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
         @Override
         public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
             button.setEnabled(model.showFluids());
-            float scale = ToolboxLayout.BUTTON_WIDTH / 16.0F;
+            float scale = 0.5F;
             GL11.glPushMatrix();
             try {
+                GL11.glTranslatef(1, 1, 0);
                 GL11.glScalef(scale, scale, 1);
                 button.drawButton(
                     Minecraft.getMinecraft(),
-                    (int) (context.getMouseX() / scale),
-                    (int) (context.getMouseY() / scale));
+                    (int) ((context.getMouseX() - 1) / scale),
+                    (int) ((context.getMouseY() - 1) / scale));
             } finally {
                 GL11.glPopMatrix();
             }
