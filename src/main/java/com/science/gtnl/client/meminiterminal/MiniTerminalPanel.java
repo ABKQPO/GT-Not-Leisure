@@ -23,8 +23,11 @@ class MiniTerminalPanel extends ModularPanel implements IDraggable {
     private boolean nativeGeometryPending;
     private ResizeDragArea resizeEdge;
     private Rectangle resizeStart;
+    private int resizeMouseX;
+    private int resizeMouseY;
     private ResizeDragArea pendingResizeEdge;
     private Rectangle pendingResizeStart;
+    private Rectangle pendingResizeBounds;
     private boolean pendingCentered;
 
     MiniTerminalPanel(MiniTerminalLayout layout) {
@@ -75,6 +78,8 @@ class MiniTerminalPanel extends ModularPanel implements IDraggable {
 
             resizeEdge = edge;
             resizeStart = new Rectangle(getArea());
+            resizeMouseX = getContext().getAbsMouseX();
+            resizeMouseY = getContext().getAbsMouseY();
         }
         return super.onMousePressed(button);
     }
@@ -86,6 +91,16 @@ class MiniTerminalPanel extends ModularPanel implements IDraggable {
         pendingResizeEdge = resizeEdge;
         pendingResizeStart = resizeStart;
         pendingCentered = keepPosOnDragResize() || GuiScreen.isShiftKeyDown();
+        pendingResizeBounds = null;
+        if (resizeEdge != null && resizeStart != null) {
+            // MUI skips dimensions below its minimum. Pass the requested size to our layout so it clamps instead.
+            int factor = pendingCentered ? 2 : 1;
+            int dx = (getContext().getAbsMouseX() - resizeMouseX) * factor;
+            int dy = (getContext().getAbsMouseY() - resizeMouseY) * factor;
+            pendingResizeBounds = new Rectangle(resizeStart);
+            if (resizeEdge.left || resizeEdge.right) pendingResizeBounds.width += resizeEdge.left ? -dx : dx;
+            if (resizeEdge.top || resizeEdge.bottom) pendingResizeBounds.height += resizeEdge.top ? -dy : dy;
+        }
         scheduleResize();
     }
 
@@ -95,11 +110,13 @@ class MiniTerminalPanel extends ModularPanel implements IDraggable {
         if (!nativeGeometryPending) return;
         nativeGeometryPending = false;
         Area area = getArea();
-        Rectangle next = new Rectangle(area.x, area.y, area.width, area.height);
+        Rectangle next = pendingResizeBounds == null ? new Rectangle(area.x, area.y, area.width, area.height)
+            : pendingResizeBounds;
         ResizeDragArea edge = pendingResizeEdge;
         Rectangle start = pendingResizeStart;
         pendingResizeEdge = null;
         pendingResizeStart = null;
+        pendingResizeBounds = null;
 
         if (edge != null && start != null) layout.acceptResizedBounds(next, start, edge, pendingCentered);
         else layout.acceptPanelBounds(next);
@@ -118,18 +135,30 @@ class MiniTerminalPanel extends ModularPanel implements IDraggable {
 
     @Override
     public void onDragEnd(boolean successful) {
-        if (drag == null) return;
-        drag.onDragEnd(successful);
-        if (successful) {
-            nativeGeometryPending = true;
-            pendingResizeEdge = null;
-            pendingResizeStart = null;
-        }
+        if (drag == null || !successful) return;
+        onDrag(0, 0);
+        Area next = drag.getMovingArea();
+        // Persist the constrained preview directly, including positions outside the screen.
+        resizer().resetPosition();
+        resizer().relativeToScreen();
+        pos(next.x, next.y);
+        nativeGeometryPending = true;
+        pendingResizeEdge = null;
+        pendingResizeStart = null;
+        pendingResizeBounds = null;
+        scheduleResize();
     }
 
     @Override
     public void onDrag(int mouseButton, long timeSinceLastClick) {
-        if (drag != null) drag.onDrag(mouseButton, timeSinceLastClick);
+        if (drag == null) return;
+        drag.onDrag(mouseButton, timeSinceLastClick);
+        Area screen = getScreen().getScreenArea();
+        MiniTerminalLayout.keepDragHandleVisible(
+            drag.getMovingArea(),
+            layout.expanded(),
+            screen.width,
+            screen.height);
     }
 
     @Override

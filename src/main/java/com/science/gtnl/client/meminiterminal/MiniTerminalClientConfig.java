@@ -17,11 +17,9 @@ public final class MiniTerminalClientConfig {
     public static boolean customWindow;
 
     @Config.DefaultInt(0)
-    @Config.RangeInt(min = 0)
     public static int x;
 
     @Config.DefaultInt(0)
-    @Config.RangeInt(min = 0)
     public static int y;
 
     @Config.DefaultInt(MiniTerminalLayout.WIDTH)

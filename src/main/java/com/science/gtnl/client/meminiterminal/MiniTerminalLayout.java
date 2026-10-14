@@ -13,13 +13,15 @@ import appeng.items.contents.PinList;
 public final class MiniTerminalLayout {
 
     public static final int COLUMNS = 5;
+    public static final int MIN_COLUMNS = 2;
     public static final int ROWS = 6;
+    public static final int CELL = 18;
     public static final int WIDTH = 111;
-    public static final int MIN_WIDTH = WIDTH;
+    // Two columns leave room for the search field and all three header buttons.
+    public static final int MIN_WIDTH = WIDTH - (COLUMNS - MIN_COLUMNS) * CELL;
 
     public static final int MIN_HEIGHT = 94;
     public static final int COMPACT_SIZE = 18;
-    public static final int CELL = 18;
     public static final int GRID_X = 4;
     public static final int HEADER_Y = 3;
     public static final int HEADER_SIZE = 12;
@@ -82,14 +84,22 @@ public final class MiniTerminalLayout {
             width = Math.max(0, Math.min(COMPACT_SIZE, Math.min(screenWidth, screenHeight)));
             panelHeight = width;
         }
-        x = Math.max(0, Math.min(x, screenWidth - width));
-        y = Math.max(0, Math.min(y, screenHeight - panelHeight));
         Rectangle next = new Rectangle(x, y, width, panelHeight);
+        keepDragHandleVisible(next, nextExpanded, screenWidth, screenHeight);
         boolean changed = !bounds.equals(next) || expanded != nextExpanded || geometryDirty;
         expanded = nextExpanded;
         bounds.setBounds(next);
         geometryDirty = false;
         return changed;
+    }
+
+    static void keepDragHandleVisible(Rectangle area, boolean expanded, int screenWidth, int screenHeight) {
+        int handleX = expanded ? area.width - BUTTON_WIDTH - 4 : 0;
+        int handleY = expanded ? HEADER_Y : 0;
+        int handleWidth = expanded ? BUTTON_WIDTH : area.width;
+        int handleHeight = expanded ? BUTTON_HEIGHT : area.height;
+        area.x = Math.max(-handleX, Math.min(area.x, Math.max(0, screenWidth - handleWidth) - handleX));
+        area.y = Math.max(-handleY, Math.min(area.y, Math.max(0, screenHeight - handleHeight) - handleY));
     }
 
     public void reset() {
@@ -112,8 +122,8 @@ public final class MiniTerminalLayout {
     void restorePreference(WindowPreference preference) {
         preferredBounds = preference == null ? null
             : new Rectangle(
-                Math.max(0, preference.x()),
-                Math.max(0, preference.y()),
+                preference.x(),
+                preference.y(),
                 Math.max(MIN_WIDTH, preference.width()),
                 Math.max(MIN_HEIGHT, preference.height()));
         snappedWidth = preference != null && preference.snappedWidth();
@@ -149,10 +159,10 @@ public final class MiniTerminalLayout {
         boolean horizontal = edge.left || edge.right;
         boolean vertical = edge.top || edge.bottom;
         int width = horizontal
-            ? snapSize(next.width, MIN_WIDTH, resizeLimit(screenWidth, start.x, start.width, edge.left, centered))
+            ? snapSize(next.width, MIN_WIDTH, screenWidth - 2)
             : preferredBounds == null ? start.width : preferredBounds.width;
         int height = vertical
-            ? snapSize(next.height, MIN_HEIGHT, resizeLimit(screenHeight, start.y, start.height, edge.top, centered))
+            ? snapSize(next.height, MIN_HEIGHT, screenHeight - 2)
             : preferredBounds == null ? start.height : preferredBounds.height;
 
         int x = horizontal ? start.x + anchorOffset(start.width, width, edge.left, centered)
@@ -166,12 +176,6 @@ public final class MiniTerminalLayout {
 
     private static int anchorOffset(int previous, int next, boolean fromStart, boolean centered) {
         return centered ? Math.floorDiv(previous - next, 2) : fromStart ? previous - next : 0;
-    }
-
-    private static int resizeLimit(int screenSize, int position, int size, boolean fromStart, boolean centered) {
-        int space = centered ? Math.min(position * 2 + size, (screenSize - position) * 2 - size)
-            : fromStart ? position + size : screenSize - position;
-        return Math.min(screenSize - 2, space);
     }
 
     private static int snapSize(int requested, int minimum, int maximum) {
@@ -197,7 +201,7 @@ public final class MiniTerminalLayout {
     }
 
     public int columns() {
-        return Math.max(COLUMNS, (bounds.width - 21) / CELL);
+        return Math.max(MIN_COLUMNS, (bounds.width - 21) / CELL);
     }
 
     public int pinRows() {
