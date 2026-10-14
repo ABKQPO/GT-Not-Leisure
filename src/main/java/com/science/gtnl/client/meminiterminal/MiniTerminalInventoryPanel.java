@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -173,7 +174,7 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             tooltip.addLine(
                 EnumChatFormatting.GRAY + tr(
                     "status." + MiniTerminalClient.status()
-                        .toLowerCase(java.util.Locale.ROOT))
+                        .toLowerCase(Locale.ROOT))
                     + EnumChatFormatting.RESET);
             addKeybindTooltip(tooltip, "select", "full", "reconnect");
         }).syncState(button -> button.setEnabled(model.isDisplayOnline()))
@@ -472,7 +473,7 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
         return tr(
             key + "."
                 + value.name()
-                    .toLowerCase(java.util.Locale.ROOT));
+                    .toLowerCase(Locale.ROOT));
     }
 
     private static GuiImgButton nativeButton(Enum<?> setting, Enum<?> value) {
@@ -481,7 +482,7 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
         return button;
     }
 
-    private final class TerminalButton extends ButtonWidget<TerminalButton> {
+    private static final class TerminalButton extends ButtonWidget<TerminalButton> {
 
         private final GuiImgButton button;
         private Consumer<GuiImgButton> syncState = button -> {};
@@ -725,7 +726,7 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
                 ScreenColor.resetGuiColor();
                 String state = tr(
                     "status." + MiniTerminalClient.status()
-                        .toLowerCase(java.util.Locale.ROOT));
+                        .toLowerCase(Locale.ROOT));
                 List<?> lines = mc.fontRenderer
                     .listFormattedStringToWidth(state, layout.columns() * MiniTerminalLayout.CELL - 12);
                 lines = lines

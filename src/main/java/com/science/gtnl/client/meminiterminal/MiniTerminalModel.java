@@ -495,10 +495,10 @@ public final class MiniTerminalModel implements ISortSource {
         if (!isOnline() || target == null) return -1;
         // Repeated wheel actions can reuse an ID only while it still matches the current catalog.
         IAEStack<?> previous = entries.get(lastEntryId);
-        if (previous != null && previous.isSameType((Object) target)) return lastEntryId;
+        if (previous != null && previous.isSameType(target)) return lastEntryId;
         for (Map.Entry<Integer, IAEStack<?>> entry : entries.entrySet()) {
             if (entry.getValue()
-                .isSameType((Object) target)) {
+                .isSameType(target)) {
                 lastEntryId = entry.getKey();
                 return lastEntryId;
             }

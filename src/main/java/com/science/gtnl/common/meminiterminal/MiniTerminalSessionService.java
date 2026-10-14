@@ -715,7 +715,7 @@ public final class MiniTerminalSessionService {
             IAEStack<?> offered = request.pinTarget.copy()
                 .reset();
             IAEStack<?> previous = terminal.getPin(nativePin);
-            if (previous != null && previous.isSameType((Object) offered)) return;
+            if (previous != null && previous.isSameType(offered)) return;
             try {
                 terminal.pin(offered, nativePin, () -> operationValid(SecurityPermissions.EXTRACT));
             } finally {
@@ -909,10 +909,10 @@ public final class MiniTerminalSessionService {
                 @Override
                 public void open(EntityPlayer owner) {
                     if (!(owner instanceof EntityPlayerMP serverPlayer) || returned
-                        || !(serverPlayer.openContainer instanceof AEBaseContainer container)
-                        || !(container instanceof IContainerSubGui)
-                        || container.getInventoryPlayer().player != serverPlayer
-                        || container.getPrimaryGui() != this) return;
+                        || !(serverPlayer.openContainer instanceof AEBaseContainer aeBaseContainer)
+                        || !(aeBaseContainer instanceof IContainerSubGui)
+                        || aeBaseContainer.getInventoryPlayer().player != serverPlayer
+                        || aeBaseContainer.getPrimaryGui() != this) return;
                     returned = true;
 
                     serverPlayer.closeContainer();
