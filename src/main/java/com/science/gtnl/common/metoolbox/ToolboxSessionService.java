@@ -165,11 +165,7 @@ public final class ToolboxSessionService {
             return;
         }
         if (request.kind == ToolboxRequestPacket.Kind.RESYNC) {
-            if (player.ticksExisted - session.lastResync < 10) return;
-            session.lastResync = player.ticksExisted;
-            session.catalog.requestSnapshot();
-            session.sendCatalog();
-            session.sendPins();
+            session.resync();
         } else if (request.kind == ToolboxRequestPacket.Kind.ACTION) {
             session.action(request);
         } else if (request.kind == ToolboxRequestPacket.Kind.PIN_ROWS) {
@@ -372,7 +368,7 @@ public final class ToolboxSessionService {
         if (status != ToolboxStatus.ONLINE) {
             session.status(status);
             end(player);
-        } else if (player.ticksExisted % 2 == 0 && session.catalog.hasChanges()) {
+        } else {
             session.sendCatalog();
         }
     }
@@ -433,11 +429,7 @@ public final class ToolboxSessionService {
         try {
             parts = ToolboxUpdatePacket.split(entries);
         } catch (IOException exception) {
-            ScienceNotLeisure.LOG.warn("Cannot encode ME toolbox snapshot", exception);
-            end(player);
-            NBTTagCompound failed = message("STATUS", header.getLong("session"));
-            failed.setString("status", ToolboxStatus.STALE.name());
-            send(player, failed);
+            failUpdate(player, header.getLong("session"), exception);
             return;
         }
         for (int index = 0; index < parts.size(); index++) {
@@ -450,6 +442,15 @@ public final class ToolboxSessionService {
             tag.setTag(key, parts.get(index));
             send(player, tag);
         }
+    }
+
+    private static void failUpdate(EntityPlayerMP player, long session, IOException exception) {
+        ScienceNotLeisure.LOG.warn("Cannot encode ME toolbox update", exception);
+        end(player);
+        NBTTagCompound failed = message("STATUS", session);
+        failed.setString("status", ToolboxStatus.STALE.name());
+        failed.setInteger("retryTicks", 200);
+        send(player, failed);
     }
 
     private static final class RequestBudget {
@@ -577,13 +578,30 @@ public final class ToolboxSessionService {
         }
 
         void sendCatalog() {
+            if (!catalog.canCollect(player.ticksExisted)) return;
             boolean snapshot = catalog.needsSnapshot();
             long base = catalog.revision;
-            List<NBTTagCompound> entries = catalog.collect();
+            List<NBTTagCompound> entries;
+            try {
+                entries = catalog.collect(player.ticksExisted);
+            } catch (IOException exception) {
+                failUpdate(player, id, exception);
+                return;
+            }
+            if (!snapshot && entries.isEmpty()) return;
             NBTTagCompound header = message("CATALOG", id);
             header.setLong("baseRevision", base);
             header.setLong("revision", catalog.revision);
             sendParts(player, header, "entries", entries, snapshot);
+        }
+
+        void resync() {
+            catalog.requestSnapshot();
+            int tick = player.ticksExisted;
+            if (tick >= lastResync && tick - lastResync < 20) return;
+            lastResync = tick;
+            sendCatalog();
+            if (SESSIONS.get(player.getUniqueID()) == this) sendPins();
         }
 
         void sendPins() {
@@ -694,9 +712,7 @@ public final class ToolboxSessionService {
         void inventoryExtract(ToolboxRequestPacket request) {
             if (!acceptAction(request) || !permission(SecurityPermissions.EXTRACT)) return;
             if (!isTargetRevisionValid(request, catalog.revision, pinRevision)) {
-                catalog.requestSnapshot();
-                sendCatalog();
-                sendPins();
+                resync();
                 return;
             }
             if (request.nativePin >= 0
@@ -734,9 +750,7 @@ public final class ToolboxSessionService {
         void action(ToolboxRequestPacket request) {
             if (!acceptAction(request)) return;
             if (!isTargetRevisionValid(request, catalog.revision, pinRevision)) {
-                catalog.requestSnapshot();
-                sendCatalog();
-                sendPins();
+                resync();
                 return;
             }
             ItemStack hand = player.inventory.getItemStack();

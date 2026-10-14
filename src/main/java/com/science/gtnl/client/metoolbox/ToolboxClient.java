@@ -394,6 +394,7 @@ public final class ToolboxClient {
             waiting = false;
             selectedSlot = data.getInteger("slot");
             status = data.getString("status");
+            retryTicks = Math.max(retryTicks, data.getInteger("retryTicks"));
             name = data.getString("name");
             network = data.getString("network");
             if (data.hasKey("config", 10)) model().readSettings(data.getCompoundTag("config"));
