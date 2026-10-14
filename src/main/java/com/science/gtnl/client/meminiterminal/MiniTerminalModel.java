@@ -5,13 +5,15 @@ import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
 
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+
+import com.science.gtnl.common.meminiterminal.MiniTerminalUpdatePacket.Entry;
 
 import appeng.api.config.PinsRows;
 import appeng.api.config.Settings;
@@ -182,7 +184,7 @@ public final class MiniTerminalModel implements ISortSource {
 
     }
 
-    public boolean catalog(NBTTagCompound data) {
+    public boolean catalog(NBTTagCompound data, List<Entry> changes) {
         long revision = data.getLong("revision");
         if (revision < catalogRevision) return true;
         if (!data.getBoolean("snapshot") && revision == catalogRevision) return true;
@@ -212,7 +214,7 @@ public final class MiniTerminalModel implements ISortSource {
                 pending = null;
                 return false;
             }
-            readEntries(data.getTagList("entries", 10), pending);
+            readEntries(changes, pending);
             if (data.getBoolean("last")) {
                 Map<Integer, IAEStack<?>> complete = pending;
                 pending = null;
@@ -240,13 +242,7 @@ public final class MiniTerminalModel implements ISortSource {
             pendingDelta = null;
             return false;
         }
-        NBTTagList changes = data.getTagList("entries", 10);
-        for (int i = 0; i < changes.tagCount(); i++) {
-            NBTTagCompound change = changes.getCompoundTagAt(i);
-            IAEStack<?> stack = Platform.readStackNBT(change.getCompoundTag("stack"));
-            if (stack == null) continue;
-            pendingDelta.put(change.getInteger("id"), stack);
-        }
+        for (Entry change : changes) pendingDelta.put(change.key(), change.stack());
         if (!data.getBoolean("last")) return true;
         for (Map.Entry<Integer, IAEStack<?>> change : pendingDelta.entrySet()) {
             IAEStack<?> stack = change.getValue();
@@ -261,19 +257,15 @@ public final class MiniTerminalModel implements ISortSource {
         return true;
     }
 
-    private static void readEntries(NBTTagList data, Map<Integer, IAEStack<?>> destination) {
-        for (int i = 0; i < data.tagCount(); i++) {
-            NBTTagCompound entry = data.getCompoundTagAt(i);
-            IAEStack<?> stack = Platform.readStackNBT(entry.getCompoundTag("stack"));
-            if (stack == null || stack.getStackSize() == 0 && !stack.isCraftable()) {
-                destination.remove(entry.getInteger("id"));
-            } else {
-                destination.put(entry.getInteger("id"), stack);
-            }
+    private static void readEntries(List<Entry> entries, Map<Integer, IAEStack<?>> destination) {
+        for (Entry entry : entries) {
+            IAEStack<?> stack = entry.stack();
+            if (stack == null || stack.getStackSize() == 0 && !stack.isCraftable()) destination.remove(entry.key());
+            else destination.put(entry.key(), stack);
         }
     }
 
-    public boolean pins(NBTTagCompound data) {
+    public boolean pins(NBTTagCompound data, List<Entry> slots) {
         if (data.getLong("revision") < pinRevision) return true;
         long revision = data.getLong("revision");
         int craftingRows = data.getInteger("craftingRows");
@@ -311,13 +303,8 @@ public final class MiniTerminalModel implements ISortSource {
             pendingPins = null;
             return false;
         }
-        NBTTagList slots = data.getTagList("slots", 10);
-        for (int i = 0; i < slots.tagCount(); i++) {
-            NBTTagCompound slot = slots.getCompoundTagAt(i);
-            int index = slot.getInteger("index");
-            if (index >= 0 && index < pins.length) {
-                pendingPins[index] = Platform.readStackNBT(slot.getCompoundTag("stack"));
-            }
+        for (Entry slot : slots) {
+            if (slot.key() >= 0 && slot.key() < pins.length) pendingPins[slot.key()] = slot.stack();
         }
         if (!data.getBoolean("last")) return true;
         if (sessionState.isLoading()) {

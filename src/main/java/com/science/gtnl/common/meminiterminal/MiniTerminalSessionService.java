@@ -25,6 +25,7 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket.DepositMode;
+import com.science.gtnl.utils.enums.ModList;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -68,7 +69,7 @@ import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
 
 public final class MiniTerminalSessionService {
 
-    private enum MiniTerminalStatus {
+    enum MiniTerminalStatus {
         ONLINE,
         UNBOUND,
         OFFLINE,
@@ -214,6 +215,21 @@ public final class MiniTerminalSessionService {
         }
     }
 
+    /** Network, range, battery and security checks shared by sessions and pickup insertion. */
+    static MiniTerminalStatus networkStatus(EntityPlayer player, IGrid grid, WirelessTerminalGuiObject host,
+        SecurityPermissions permission) {
+        if (grid == null) return MiniTerminalStatus.OFFLINE;
+        IEnergyGrid energy = grid.getCache(IEnergyGrid.class);
+        if (energy == null || !energy.isNetworkPowered()) return MiniTerminalStatus.OFFLINE;
+        if (!host.rangeCheck()) return MiniTerminalStatus.OUT_OF_RANGE;
+        IGridNode actionableNode = host.getActionableNode();
+        if (actionableNode == null || actionableNode.getGrid() != grid) return MiniTerminalStatus.OUT_OF_RANGE;
+        if (host.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) < 1) return MiniTerminalStatus.NO_POWER;
+        ISecurityGrid security = grid.getCache(ISecurityGrid.class);
+        return security != null && security.hasPermission(player, permission) ? MiniTerminalStatus.ONLINE
+            : MiniTerminalStatus.NO_PERMISSION;
+    }
+
     private static final class BogoInventory {
 
         static List<Slot> sources(EntityPlayerMP player, Container container, Slot source) {
@@ -273,7 +289,9 @@ public final class MiniTerminalSessionService {
             Reference2BooleanMap<IAEStackType<?>> filters = new Reference2BooleanOpenHashMap<>();
             filters.put(ITEM_STACK_TYPE, true);
             filters.put(FLUID_STACK_TYPE, request.showFluids);
+            // AE writes the host's live TerminalSettings back to the stack, so the reply below reads it.
             session.terminal.updateTypeFilters(filters);
+            if (session.catalog != null) session.catalog.showFluids(request.showFluids);
         } else {
             TerminalSettings terminalSettings = new TerminalSettings();
             terminalSettings.readFromNBT(stack.getTagCompound());
@@ -321,9 +339,11 @@ public final class MiniTerminalSessionService {
         long id = ++nextSession;
         int slot = ItemMEMiniPortableTerminal.findTerminalSlot(player, preferred);
         if (slot < 0) {
-            MiniTerminalStatus state = Objects
-                .equals(preferred, ItemMEMiniPortableTerminal.getTerminalId(player.inventory.getItemStack()))
-                && preferred != null ? MiniTerminalStatus.ON_CURSOR : MiniTerminalStatus.MISSING;
+            MiniTerminalStatus state = preferred != null
+                && preferred.equals(ItemMEMiniPortableTerminal.getTerminalId(player.inventory.getItemStack()))
+                    ? MiniTerminalStatus.ON_CURSOR
+                    : ItemMEMiniPortableTerminal.isTerminalDuplicated(player, preferred) ? MiniTerminalStatus.AMBIGUOUS
+                        : MiniTerminalStatus.MISSING;
             sendStatus(player, id, request.requestId, slot, preferred, null, state);
             return;
         }
@@ -341,7 +361,11 @@ public final class MiniTerminalSessionService {
         try {
             MiniTerminalStatus status = session.validate();
             if (status == MiniTerminalStatus.ONLINE) {
-                session.catalog = new MiniTerminalCatalog(session.monitor, session.fluidMonitor);
+                session.catalog = new MiniTerminalCatalog(
+                    session.monitor,
+                    session.fluidMonitor,
+                    session.host.getTypeFilter(player)
+                        .getBoolean(FLUID_STACK_TYPE));
                 session.terminal.observeCatalog(session.catalog);
                 SESSIONS.put(player.getUniqueID(), session);
             }
@@ -427,12 +451,12 @@ public final class MiniTerminalSessionService {
         return settings.getFilters(player);
     }
 
-    private static void sendParts(EntityPlayerMP player, NBTTagCompound header, String key,
-        List<NBTTagCompound> entries, boolean snapshot) {
-        List<NBTTagList> parts;
+    private static void sendParts(EntityPlayerMP player, NBTTagCompound header,
+        List<MiniTerminalUpdatePacket.Entry> entries, boolean snapshot) {
+        List<byte[]> parts;
         try {
-            parts = MiniTerminalUpdatePacket.split(entries);
-        } catch (IOException exception) {
+            parts = MiniTerminalUpdatePacket.encode(entries);
+        } catch (IOException | RuntimeException exception) {
             failUpdate(player, header.getLong("session"), exception);
             return;
         }
@@ -443,12 +467,11 @@ public final class MiniTerminalSessionService {
             tag.setBoolean("last", index == parts.size() - 1);
             tag.setInteger("part", index);
             tag.setInteger("parts", parts.size());
-            tag.setTag(key, parts.get(index));
-            send(player, tag);
+            ScienceNotLeisure.network.sendTo(new MiniTerminalUpdatePacket(tag, parts.get(index)), player);
         }
     }
 
-    private static void failUpdate(EntityPlayerMP player, long session, IOException exception) {
+    private static void failUpdate(EntityPlayerMP player, long session, Exception exception) {
         ScienceNotLeisure.LOG.warn("Cannot encode ME mini portable terminal update", exception);
         end(player);
         NBTTagCompound failed = message("STATUS", session);
@@ -532,7 +555,9 @@ public final class MiniTerminalSessionService {
             if (terminalId.equals(ItemMEMiniPortableTerminal.getTerminalId(player.inventory.getItemStack())))
                 return MiniTerminalStatus.ON_CURSOR;
             int current = ItemMEMiniPortableTerminal.findTerminalSlot(player, terminalId);
-            if (current < 0) return MiniTerminalStatus.MISSING;
+            if (current < 0) return ItemMEMiniPortableTerminal.isTerminalDuplicated(player, terminalId)
+                ? MiniTerminalStatus.AMBIGUOUS
+                : MiniTerminalStatus.MISSING;
 
             if (current != slot || ItemMEMiniPortableTerminal.getTerminalStack(player, current) != stack)
                 return MiniTerminalStatus.STALE;
@@ -547,16 +572,7 @@ public final class MiniTerminalSessionService {
             if (storage == null || storage.getItemInventory() != monitor || monitor == null)
                 return MiniTerminalStatus.STALE;
             if (storage.getFluidInventory() != fluidMonitor) return MiniTerminalStatus.STALE;
-            IEnergyGrid energy = grid.getCache(IEnergyGrid.class);
-            if (energy == null || !energy.isNetworkPowered()) return MiniTerminalStatus.OFFLINE;
-
-            if (!host.rangeCheck()) return MiniTerminalStatus.OUT_OF_RANGE;
-            IGridNode actionableNode = host.getActionableNode();
-            if (actionableNode == null || actionableNode.getGrid() != grid) return MiniTerminalStatus.OUT_OF_RANGE;
-            if (host.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) < 1)
-                return MiniTerminalStatus.NO_POWER;
-            return permission(SecurityPermissions.EXTRACT) ? MiniTerminalStatus.ONLINE
-                : MiniTerminalStatus.NO_PERMISSION;
+            return networkStatus(player, grid, host, SecurityPermissions.EXTRACT);
         }
 
         boolean permission(SecurityPermissions permission) {
@@ -589,7 +605,7 @@ public final class MiniTerminalSessionService {
             if (!catalog.canCollect(player.ticksExisted)) return;
             boolean snapshot = catalog.needsSnapshot();
             long base = catalog.revision;
-            List<NBTTagCompound> entries;
+            List<MiniTerminalUpdatePacket.Entry> entries;
             try {
                 entries = catalog.collect(player.ticksExisted);
             } catch (IOException exception) {
@@ -600,7 +616,7 @@ public final class MiniTerminalSessionService {
             NBTTagCompound header = message("CATALOG", id);
             header.setLong("baseRevision", base);
             header.setLong("revision", catalog.revision);
-            sendParts(player, header, "entries", entries, snapshot);
+            sendParts(player, header, entries, snapshot);
         }
 
         void resync() {
@@ -613,17 +629,10 @@ public final class MiniTerminalSessionService {
         }
 
         void sendPins() {
-            List<NBTTagCompound> entries = new ArrayList<>();
+            List<MiniTerminalUpdatePacket.Entry> entries = new ArrayList<>();
             for (int index = 0; index < PinList.TOTAL_SLOTS; index++) {
                 IAEStack<?> pin = terminal.getPin(index);
-                if (pin == null) continue;
-                NBTTagCompound entry = new NBTTagCompound();
-                entry.setInteger("index", index);
-                entry.setTag(
-                    "stack",
-                    pin.copy()
-                        .toNBTGeneric());
-                entries.add(entry);
+                if (pin != null) entries.add(new MiniTerminalUpdatePacket.Entry(index, pin.copy()));
             }
             NBTTagCompound header = message("PINS", id);
             header.setLong("revision", pinRevision);
@@ -635,7 +644,7 @@ public final class MiniTerminalSessionService {
                 "playerRows",
                 terminal.getPlayerPinsRows()
                     .ordinal());
-            sendParts(player, header, "slots", entries, true);
+            sendParts(player, header, entries, true);
         }
 
         boolean acceptAction(MiniTerminalRequestPacket request) {
@@ -670,15 +679,9 @@ public final class MiniTerminalSessionService {
             }
             int nativePin = request.nativePin;
             if (nativePin < PinList.PLAYER_OFFSET || nativePin >= PinList.PLAYER_OFFSET + terminal.getPlayerPinsRows()
-                .getSlotCount() || request.pinTarget == null) return;
-            IAEStack<?> offered;
-            try {
-                offered = IAEStack.fromNBTGeneric(request.pinTarget);
-            } catch (RuntimeException exception) {
-                return;
-            }
-            if (!(offered instanceof IAEItemStack || offered instanceof IAEFluidStack)) return;
-            offered.reset();
+                .getSlotCount()) return;
+            IAEStack<?> offered = request.pinTarget.copy()
+                .reset();
             IAEStack<?> previous = terminal.getPin(nativePin);
             if (previous != null && previous.isSameType((Object) offered)) return;
             try {
@@ -704,7 +707,8 @@ public final class MiniTerminalSessionService {
 
             List<Slot> sources = switch (request.depositMode) {
                 case STACK, ONE -> List.of(source);
-                case MATCHING, REGION -> Platform.isBogoLoaded ? BogoInventory.sources(player, container, source)
+                case MATCHING, REGION -> ModList.InventoryBogoSorter.isModLoaded()
+                    ? BogoInventory.sources(player, container, source)
                     : List.of();
                 case NATIVE_REGION -> nativeRegionSources(source);
             };
@@ -739,7 +743,8 @@ public final class MiniTerminalSessionService {
             for (Object entry : container.inventorySlots) {
                 Slot candidate = (Slot) entry;
                 if (candidate.getClass() != source.getClass()) continue;
-                if (Platform.isBogoLoaded && BogoInventory.pinned(player, container, candidate)) continue;
+                if (ModList.InventoryBogoSorter.isModLoaded() && BogoInventory.pinned(player, container, candidate))
+                    continue;
                 slots.add(candidate);
             }
             return slots;
@@ -767,7 +772,8 @@ public final class MiniTerminalSessionService {
                 Slot destination = hostSlot == null ? playerSlot : hostSlot;
                 if (!destination.isItemValid(target.getItemStack())) continue;
                 Container destinationContainer = hostSlot == null ? player.inventoryContainer : container;
-                if (Platform.isBogoLoaded && BogoInventory.pinned(player, destinationContainer, destination)) continue;
+                if (ModList.InventoryBogoSorter.isModLoaded()
+                    && BogoInventory.pinned(player, destinationContainer, destination)) continue;
                 destinations.add(inventorySlot);
             }
             MiniTerminalTransferService.extractInventory(
@@ -821,12 +827,16 @@ public final class MiniTerminalSessionService {
                     return;
                 }
             }
-            boolean inject = request.action == MonitorableAction.DRAIN_SINGLE_CONTAINER
-                || request.action == MonitorableAction.DRAIN_CONTAINERS
-                || MiniTerminalTransferService.depositsCursor(hand, request.action);
+            boolean drain = request.action == MonitorableAction.DRAIN_SINGLE_CONTAINER
+                || request.action == MonitorableAction.DRAIN_CONTAINERS;
+            boolean fill = request.action == MonitorableAction.FILL_SINGLE_CONTAINER
+                || request.action == MonitorableAction.FILL_CONTAINERS;
+            // Container actions need a held fluid container, and filling needs a fluid target.
+            if ((drain || fill) && (hand == null || !FLUID_STACK_TYPE.isContainerItemForType(hand))) return;
+            if (fill && !(target instanceof IAEFluidStack)) return;
+            boolean inject = drain || MiniTerminalTransferService.depositsCursor(hand, request.action);
             if (inject && !permission(SecurityPermissions.INJECT)) return;
-            if (request.action == MonitorableAction.FILL_SINGLE_CONTAINER
-                || request.action == MonitorableAction.FILL_CONTAINERS) {
+            if (fill) {
                 // Pins store zero-sized templates; AE's container filling uses the target quantity as its limit.
                 target = catalog.current(target);
                 if (target == null || target.getStackSize() <= 0) return;

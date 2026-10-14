@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.nbt.NBTTagCompound;
+import com.science.gtnl.common.meminiterminal.MiniTerminalUpdatePacket.Entry;
 
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
@@ -23,6 +23,8 @@ final class MiniTerminalCatalog {
 
     private static final int MIN_UPDATE_TICKS = 5;
     private static final int MIN_SCAN_TICKS = 20;
+    // Beyond this many pending notifications a bounded rescan is cheaper than tracking each one.
+    private static final int MAX_DIRTY = 4096;
 
     private final IMEMonitor<IAEItemStack> itemMonitor;
     private final IMEMonitor<IAEFluidStack> fluidMonitor;
@@ -31,16 +33,26 @@ final class MiniTerminalCatalog {
     private final Set<IAEStack<?>> dirty = new ObjectOpenHashSet<>();
     private long nextId;
     private boolean active = true;
+    private boolean fluidsVisible;
     private boolean fullUpdate = true;
     private boolean listUpdate;
     private int lastUpdate;
     private int lastScan;
     long revision;
 
-    MiniTerminalCatalog(IMEMonitor<IAEItemStack> itemMonitor, IMEMonitor<IAEFluidStack> fluidMonitor) {
+    MiniTerminalCatalog(IMEMonitor<IAEItemStack> itemMonitor, IMEMonitor<IAEFluidStack> fluidMonitor,
+        boolean fluidsVisible) {
         this.itemMonitor = itemMonitor;
         this.fluidMonitor = fluidMonitor;
+        this.fluidsVisible = fluidsVisible;
         ids.defaultReturnValue(-1);
+    }
+
+    /** Hidden fluids are neither scanned nor sent; a snapshot replaces the client view when this changes. */
+    void showFluids(boolean visible) {
+        if (fluidsVisible == visible) return;
+        fluidsVisible = visible;
+        requestSnapshot();
     }
 
     IAEStack<?> target(int id) {
@@ -76,13 +88,13 @@ final class MiniTerminalCatalog {
         return tick < previous || tick - previous >= interval;
     }
 
-    List<NBTTagCompound> collect(int tick) throws IOException {
-        List<NBTTagCompound> entries = new ArrayList<>();
+    List<Entry> collect(int tick) throws IOException {
+        List<Entry> entries = new ArrayList<>();
 
         if (fullUpdate || listUpdate && elapsed(tick, lastScan, MIN_SCAN_TICKS)) {
             Map<IAEStack<?>, IAEStack<?>> available = new Object2ObjectOpenHashMap<>();
             for (IAEItemStack stack : itemMonitor.getStorageList()) addAvailable(available, stack);
-            if (fluidMonitor != null) {
+            if (fluidsVisible && fluidMonitor != null) {
                 for (IAEFluidStack stack : fluidMonitor.getStorageList()) addAvailable(available, stack);
             }
             Iterator<Int2ObjectMap.Entry<IAEStack<?>>> previous = identities.int2ObjectEntrySet()
@@ -90,12 +102,12 @@ final class MiniTerminalCatalog {
             while (previous.hasNext()) {
                 Int2ObjectMap.Entry<IAEStack<?>> entry = previous.next();
                 if (available.containsKey(entry.getValue())) continue;
-                if (!fullUpdate) addEntry(
-                    entries,
-                    entry.getIntKey(),
-                    entry.getValue()
-                        .copy()
-                        .reset());
+                if (!fullUpdate) entries.add(
+                    new Entry(
+                        entry.getIntKey(),
+                        entry.getValue()
+                            .copy()
+                            .reset()));
                 ids.removeInt(entry.getValue());
                 previous.remove();
             }
@@ -125,29 +137,26 @@ final class MiniTerminalCatalog {
         return stack.getStackSize() != 0 || stack.isCraftable();
     }
 
-    private static void addAvailable(Map<IAEStack<?>, IAEStack<?>> available, IAEStack<?> stack) throws IOException {
-        if (!visible(stack)) return;
-        if (available.size() >= MiniTerminalUpdatePacket.MAX_UPDATE_ENTRIES && !available.containsKey(stack))
-            throw new IOException("ME mini portable terminal catalog exceeds the entry limit");
-        available.put(stack, stack);
+    private static void addAvailable(Map<IAEStack<?>, IAEStack<?>> available, IAEStack<?> stack) {
+        if (visible(stack)) available.put(stack, stack);
     }
 
-    private void update(List<NBTTagCompound> entries, IAEStack<?> stack) throws IOException {
+    private void update(List<Entry> entries, IAEStack<?> stack) throws IOException {
         int id = ids.getInt(stack);
         if (!visible(stack)) {
             if (id >= 0) {
-                addEntry(
-                    entries,
-                    id,
-                    stack.copy()
-                        .reset());
+                entries.add(
+                    new Entry(
+                        id,
+                        stack.copy()
+                            .reset()));
                 ids.removeInt(stack);
                 identities.remove(id);
             }
             return;
         }
         if (id < 0) {
-            if (ids.size() >= MiniTerminalUpdatePacket.MAX_UPDATE_ENTRIES || nextId > Integer.MAX_VALUE)
+            if (nextId > Integer.MAX_VALUE)
                 throw new IOException("ME mini portable terminal catalog exceeds the identity limit");
             // Never reuse an ID during a session, including after a snapshot: queued older clicks stay safe.
             id = (int) nextId++;
@@ -155,7 +164,7 @@ final class MiniTerminalCatalog {
         } else if (!fullUpdate && sameState(identities.get(id), stack)) {
             return;
         }
-        addEntry(entries, id, stack);
+        entries.add(new Entry(id, stack.copy()));
         identities.put(id, stack.copy());
     }
 
@@ -164,15 +173,6 @@ final class MiniTerminalCatalog {
             && previous.getCountRequestable() == current.getCountRequestable()
             && previous.getCountRequestableCrafts() == current.getCountRequestableCrafts()
             && Float.compare(previous.getUsedPercent(), current.getUsedPercent()) == 0;
-    }
-
-    private static void addEntry(List<NBTTagCompound> entries, int id, IAEStack<?> stack) throws IOException {
-        if (entries.size() >= MiniTerminalUpdatePacket.MAX_UPDATE_ENTRIES)
-            throw new IOException("ME mini portable terminal update exceeds the entry limit");
-        NBTTagCompound tag = new NBTTagCompound();
-        tag.setInteger("id", id);
-        tag.setTag("stack", stack.toNBTGeneric());
-        entries.add(tag);
     }
 
     void close() {
@@ -184,9 +184,9 @@ final class MiniTerminalCatalog {
     }
 
     void changed(IAEStack<?> stack) {
-        if (!active || !(stack instanceof IAEItemStack || stack instanceof IAEFluidStack)) return;
+        if (!active || !(stack instanceof IAEItemStack || fluidsVisible && stack instanceof IAEFluidStack)) return;
         if (dirty.contains(stack)) return;
-        if (dirty.size() >= MiniTerminalUpdatePacket.MAX_UPDATE_ENTRIES) {
+        if (dirty.size() >= MAX_DIRTY) {
             // A bounded scan covers discarded notifications, including identities already removed from storage.
             dirty.clear();
             listUpdate = true;

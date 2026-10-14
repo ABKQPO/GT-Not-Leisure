@@ -1,15 +1,9 @@
 package com.science.gtnl.common.meminiterminal;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.UUID;
-import java.util.zip.GZIPInputStream;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTSizeTracker;
-import net.minecraft.nbt.NBTTagCompound;
 
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.science.gtnl.common.packet.base.ServerboundPacket;
@@ -25,12 +19,12 @@ import appeng.helpers.MonitorableAction;
 import appeng.items.contents.PinList;
 import appeng.util.Platform;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class MiniTerminalRequestPacket extends ServerboundPacket {
 
-    private static final int MAX_PIN_COMPRESSED_BYTES = 24_000;
-    private static final int MAX_PIN_NBT_BYTES = 128 * 1024;
-    private static final int PIN_DROP_HEADER_BYTES = 33;
+    private static final int MAX_PIN_BYTES = 24_000;
+    private static final int PIN_DROP_HEADER_BYTES = 29;
 
     enum Kind {
         BEGIN,
@@ -75,8 +69,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
     boolean emptyOnly;
     boolean single;
     boolean showFluids;
-    NBTTagCompound pinTarget;
-    private byte[] pinData;
+    IAEStack<?> pinTarget;
 
     public MiniTerminalRequestPacket() {}
 
@@ -131,17 +124,16 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
         packet.actionId = actionId;
         packet.pinRevision = pinRevision;
         packet.nativePin = nativePin;
+        packet.pinTarget = target.copy()
+            .reset()
+            .setStackSize(1);
+        ByteBuf encoded = Unpooled.buffer();
         try {
-            packet.pinData = CompressedStreamTools.compress(
-                target.copy()
-                    .reset()
-                    .setStackSize(1)
-                    .toNBTGeneric());
-            if (packet.pinData.length > MAX_PIN_COMPRESSED_BYTES) throw new IOException("Mini terminal pin too large");
-            packet.pinTarget = readPinTarget(packet.pinData);
+            Platform.writeStackByte(packet.pinTarget, encoded);
         } catch (RuntimeException exception) {
             throw new IOException("Invalid mini terminal pin", exception);
         }
+        if (encoded.readableBytes() > MAX_PIN_BYTES) throw new IOException("Mini terminal pin too large");
         return packet;
     }
 
@@ -212,7 +204,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
     protected void read(ByteBuf buf) {
         int requestBytes = buf.readableBytes();
         kind = readEnum(buf, Kind.values());
-        int limit = kind == Kind.PIN_DROP ? PIN_DROP_HEADER_BYTES + MAX_PIN_COMPRESSED_BYTES : 80;
+        int limit = kind == Kind.PIN_DROP ? PIN_DROP_HEADER_BYTES + MAX_PIN_BYTES : 80;
         if (requestBytes > limit) throw new IllegalArgumentException("Mini terminal request too large");
         sessionId = buf.readLong();
         switch (kind) {
@@ -247,21 +239,14 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
                 actionId = buf.readLong();
                 pinRevision = buf.readLong();
                 nativePin = buf.readInt();
-                int length = buf.readInt();
                 if (actionId <= 0 || pinRevision <= 0
                     || nativePin < PinList.PLAYER_OFFSET
-                    || nativePin >= PinList.TOTAL_SLOTS
-                    || length <= 0
-                    || length > MAX_PIN_COMPRESSED_BYTES
-                    || length != buf.readableBytes())
+                    || nativePin >= PinList.TOTAL_SLOTS)
                     throw new IllegalArgumentException("Mini terminal pin drop target");
-                pinData = new byte[length];
-                buf.readBytes(pinData);
-                try {
-                    pinTarget = readPinTarget(pinData);
-                } catch (IOException exception) {
-                    throw new IllegalArgumentException("Invalid mini terminal pin NBT", exception);
-                }
+                // Same codec as AE's own stack packets; the request size limit above bounds its NBT.
+                pinTarget = Platform.readStackByte(buf);
+                if (!(pinTarget instanceof IAEItemStack || pinTarget instanceof IAEFluidStack))
+                    throw new IllegalArgumentException("Unsupported mini terminal pin type");
             }
             case SETTINGS, PICKUP_TOGGLE -> {
                 actionId = buf.readLong();
@@ -340,8 +325,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
                 buf.writeLong(actionId);
                 buf.writeLong(pinRevision);
                 buf.writeInt(nativePin);
-                buf.writeInt(pinData.length);
-                buf.writeBytes(pinData);
+                Platform.writeStackByte(pinTarget, buf);
             }
             case SETTINGS, PICKUP_TOGGLE -> {
                 buf.writeLong(actionId);
@@ -372,64 +356,6 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
             }
             default -> {}
         }
-    }
-
-    private static NBTTagCompound readPinTarget(byte[] compressed) throws IOException {
-        byte[] raw;
-        try (GZIPInputStream input = new GZIPInputStream(new ByteArrayInputStream(compressed))) {
-            raw = input.readNBytes(MAX_PIN_NBT_BYTES + 1);
-        }
-        if (raw.length > MAX_PIN_NBT_BYTES) throw new IOException("Mini terminal pin NBT too large");
-        try (DataInputStream input = new DataInputStream(new ByteArrayInputStream(raw))) {
-            if (input.readUnsignedByte() != 10) throw new IOException("Mini terminal pin must be a compound");
-            skipPinBytes(input, input.readUnsignedShort());
-            validatePinTag(input, 10, 0);
-            if (input.available() != 0) throw new IOException("Trailing mini terminal pin NBT");
-        }
-        NBTTagCompound target = CompressedStreamTools
-            .func_152456_a(new DataInputStream(new ByteArrayInputStream(raw)), new NBTSizeTracker(MAX_PIN_NBT_BYTES));
-        String type = target.getString("StackType");
-        if (!type.equals("item") && !type.equals("fluid")) throw new IOException("Unsupported mini terminal pin type");
-        return target;
-    }
-
-    // Vanilla's array-size accounting multiplies ints before widening; validate lengths before it allocates.
-    private static void validatePinTag(DataInputStream input, int type, int depth) throws IOException {
-        if (depth > 64) throw new IOException("Mini terminal pin NBT too deep");
-        switch (type) {
-            case 1 -> skipPinBytes(input, 1);
-            case 2 -> skipPinBytes(input, 2);
-            case 3, 5 -> skipPinBytes(input, 4);
-            case 4, 6 -> skipPinBytes(input, 8);
-            case 7, 11 -> {
-                int length = input.readInt();
-                int width = type == 7 ? 1 : 4;
-                if (length < 0 || length > input.available() / width)
-                    throw new IOException("Mini terminal pin NBT array");
-                skipPinBytes(input, length * width);
-            }
-            case 8 -> skipPinBytes(input, input.readUnsignedShort());
-            case 9 -> {
-                int elementType = input.readUnsignedByte();
-                int length = input.readInt();
-                if (elementType > 11 || length < 0 || length > input.available() || elementType == 0 && length != 0)
-                    throw new IOException("Mini terminal pin NBT list");
-                for (int index = 0; index < length; index++) validatePinTag(input, elementType, depth + 1);
-            }
-            case 10 -> {
-                int childType;
-                while ((childType = input.readUnsignedByte()) != 0) {
-                    skipPinBytes(input, input.readUnsignedShort());
-                    validatePinTag(input, childType, depth + 1);
-                }
-            }
-            default -> throw new IOException("Mini terminal pin NBT tag type");
-        }
-    }
-
-    private static void skipPinBytes(DataInputStream input, int length) throws IOException {
-        if (length > input.available() || input.skipBytes(length) != length)
-            throw new IOException("Truncated mini terminal pin NBT");
     }
 
     private static <E extends Enum<E>> E readEnum(ByteBuf buf, E[] values) {

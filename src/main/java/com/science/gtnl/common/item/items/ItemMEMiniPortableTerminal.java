@@ -110,36 +110,31 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
         return id;
     }
 
+    /** Returns the only slot holding this terminal; -1 when it is missing, on the cursor or duplicated. */
     public static int findTerminalSlot(EntityPlayer player, UUID id) {
         if (id == null || id.equals(getTerminalId(player.inventory.getItemStack()))) return -1;
         int found = -1;
-        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
-            if (!id.equals(getTerminalId(player.inventory.mainInventory[slot]))) continue;
+        for (int slot : getTerminalSlots(player)) {
+            if (!id.equals(getTerminalId(getTerminalStack(player, slot)))) continue;
             if (found >= 0) return -1;
             found = slot;
-        }
-        IInventory worn = Platform.isBaublesLoaded ? BaublesCompat.getBaubles(player) : null;
-        if (worn != null) {
-            for (int slot = 0; slot < worn.getSizeInventory(); slot++) {
-                if (!id.equals(getTerminalId(worn.getStackInSlot(slot)))) continue;
-                if (found >= 0) return -1;
-                found = Platform.baublesSlotsOffset + slot;
-            }
         }
         return found;
     }
 
+    /** Copied stacks (creative pick, NEI cheat) share an identity, which makes both unusable. */
+    public static boolean isTerminalDuplicated(EntityPlayer player, UUID id) {
+        if (id == null) return false;
+        int count = 0;
+        for (int slot : getTerminalSlots(player)) {
+            if (id.equals(getTerminalId(getTerminalStack(player, slot))) && ++count > 1) return true;
+        }
+        return false;
+    }
+
     public static int findFirstTerminalSlot(EntityPlayer player) {
-        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
-            if (isMiniTerminal(player.inventory.mainInventory[slot])) return slot;
-        }
-        IInventory worn = Platform.isBaublesLoaded ? BaublesCompat.getBaubles(player) : null;
-        if (worn != null) {
-            for (int slot = 0; slot < worn.getSizeInventory(); slot++) {
-                if (isMiniTerminal(worn.getStackInSlot(slot))) return Platform.baublesSlotsOffset + slot;
-            }
-        }
-        return -1;
+        List<Integer> slots = getTerminalSlots(player);
+        return slots.isEmpty() ? -1 : slots.get(0);
     }
 
     public static List<Integer> getTerminalSlots(EntityPlayer player) {

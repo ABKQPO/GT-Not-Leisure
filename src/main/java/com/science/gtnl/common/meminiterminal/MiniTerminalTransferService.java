@@ -15,10 +15,6 @@ import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import appeng.api.config.InsertionMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IWirelessTermHandler;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
@@ -201,15 +197,8 @@ final class MiniTerminalTransferService {
             slot,
             0,
             0);
-        IGrid grid = host.getGrid();
-        if (grid == null || !host.rangeCheck()) return;
-        IGridNode node = host.getActionableNode();
-        if (node == null || node.getGrid() != grid) return;
-        IEnergyGrid energy = grid.getCache(IEnergyGrid.class);
-        ISecurityGrid security = grid.getCache(ISecurityGrid.class);
-        if (energy == null || !energy.isNetworkPowered()
-            || security == null
-            || !security.hasPermission(player, SecurityPermissions.INJECT)) return;
+        if (MiniTerminalSessionService.networkStatus(player, host.getGrid(), host, SecurityPermissions.INJECT)
+            != MiniTerminalSessionService.MiniTerminalStatus.ONLINE) return;
         IMEMonitor<IAEItemStack> monitor = host.getItemInventory();
         if (monitor == null) return;
 

@@ -1,39 +1,42 @@
 package com.science.gtnl.common.meminiterminal;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 
 import com.science.gtnl.client.meminiterminal.MiniTerminalClient;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
 
+import appeng.api.storage.data.IAEStack;
+import appeng.util.Platform;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.Unpooled;
 
+/** A small NBT header plus entries framed like AE's PacketMEInventoryUpdate: gzip over writeStackByte records. */
 public class MiniTerminalUpdatePacket extends ClientboundPacket {
 
     // Retain the existing wire key while Java fields use terminal terminology.
     public static final String TERMINAL_ID_KEY = "toolbox";
 
-    private static final int MAX_ENTRIES = 64;
-    private static final int MAX_COMPRESSED_BYTES = 24_000;
-    // Bound the whole update before sending any parts; per-packet limits alone still allow bursts.
-    private static final int MAX_UPDATE_PARTS = 128;
-    static final int MAX_UPDATE_ENTRIES = MAX_ENTRIES * MAX_UPDATE_PARTS;
-    private static final long MAX_UPDATE_COMPRESSED_BYTES = 1024 * 1024;
-    private static final long MAX_UPDATE_TRACKED_BYTES = 16L * 1024 * 1024;
+    private static final int PART_BYTES = 512 * 1024;
+    private static final int MAX_PART_BYTES = 16 * 1024 * 1024;
 
-    private static final long MAX_TRACKED_BYTES = 2L * 1024 * 1024 - 8 * 1024;
+    public record Entry(int key, IAEStack<?> stack) {}
 
     private NBTTagCompound data;
+    private byte[] compressed = new byte[0];
+    private List<Entry> entries = List.of();
 
     public MiniTerminalUpdatePacket() {}
 
@@ -41,105 +44,67 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
         this.data = data;
     }
 
+    MiniTerminalUpdatePacket(NBTTagCompound data, byte[] compressed) {
+        this.data = data;
+        this.compressed = compressed;
+    }
+
     @Override
     protected void read(ByteBuf buf) {
         data = ByteBufUtils.readTag(buf);
+        int length = buf.readInt();
+        if (length < 0 || length > buf.readableBytes()) throw new IllegalArgumentException("Mini terminal entries");
+        if (length == 0) return;
+        ByteBuf raw = Unpooled.buffer();
+        try (InputStream input = new GZIPInputStream(new ByteBufInputStream(buf.readSlice(length)))) {
+            raw.writeBytes(input.readNBytes(MAX_PART_BYTES + 1));
+        } catch (IOException exception) {
+            throw new IllegalArgumentException("Mini terminal entries", exception);
+        }
+        if (raw.readableBytes() > MAX_PART_BYTES) throw new IllegalArgumentException("Mini terminal entries");
+        List<Entry> decoded = new ArrayList<>();
+        while (raw.isReadable()) decoded.add(new Entry(raw.readInt(), Platform.readStackByte(raw)));
+        entries = decoded;
     }
 
     @Override
     protected void write(ByteBuf buf) {
         ByteBufUtils.writeTag(buf, data);
+        buf.writeInt(compressed.length);
+        buf.writeBytes(compressed);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
-        minecraft.func_152344_a(() -> MiniTerminalClient.receive(data));
+        minecraft.func_152344_a(() -> MiniTerminalClient.receive(data, entries));
     }
 
-    static List<NBTTagList> split(List<NBTTagCompound> entries) throws IOException {
-        if (entries.size() > MAX_UPDATE_ENTRIES)
-            throw new IOException("Too many ME mini portable terminal update entries");
-        List<NBTTagList> parts = new ArrayList<>();
-        UpdateBudget budget = new UpdateBudget();
-        NBTTagList part = new NBTTagList();
-        EncodedSize singleEntrySize = null;
-        int compressedBytes = 0;
-        long trackedBytes = 0;
-        for (NBTTagCompound entry : entries) {
-            if (entry == null) throw new IOException("Null ME mini portable terminal entry");
-            NBTTagList singleton = new NBTTagList();
-            singleton.appendTag(entry);
-            EncodedSize size = measure(singleton);
-            if (part.tagCount() >= MAX_ENTRIES || compressedBytes + size.compressedBytes() > MAX_COMPRESSED_BYTES
-                || trackedBytes + size.trackedBytes() > MAX_TRACKED_BYTES) {
-                addPart(parts, part, singleEntrySize, budget);
-                part = new NBTTagList();
-                compressedBytes = 0;
-                trackedBytes = 0;
+    /** Splits entries into compressed parts; always returns at least one part, possibly empty. */
+    static List<byte[]> encode(List<Entry> entries) throws IOException {
+        List<byte[]> parts = new ArrayList<>();
+        ByteBuf part = Unpooled.buffer();
+        for (Entry entry : entries) {
+            ByteBuf record = Unpooled.buffer();
+            record.writeInt(entry.key());
+            Platform.writeStackByte(entry.stack(), record);
+            if (part.isReadable() && part.readableBytes() + record.readableBytes() > PART_BYTES) {
+                parts.add(compress(part));
+                part = Unpooled.buffer();
             }
-            part.appendTag(entry);
-            if (part.tagCount() == 1) singleEntrySize = size;
-            compressedBytes += size.compressedBytes();
-
-            trackedBytes += size.trackedBytes();
+            part.writeBytes(record);
         }
-        addPart(parts, part, singleEntrySize, budget);
+        parts.add(compress(part));
         return parts;
     }
 
-    private static void addPart(List<NBTTagList> parts, NBTTagList part, EncodedSize singleEntrySize,
-        UpdateBudget budget) throws IOException {
-        if (parts.size() >= MAX_UPDATE_PARTS)
-            throw new IOException("Too many ME mini portable terminal update packets");
-        // A one-entry part is identical to the singleton envelope already validated by the native decoder.
-        EncodedSize size = part.tagCount() == 1 ? singleEntrySize : measure(part);
-        budget.compressedBytes += size.compressedBytes();
-        budget.trackedBytes += size.trackedBytes();
-        if (budget.compressedBytes > MAX_UPDATE_COMPRESSED_BYTES || budget.trackedBytes > MAX_UPDATE_TRACKED_BYTES) {
-            throw new IOException("ME mini portable terminal update exceeds the total NBT budget");
+    private static byte[] compress(ByteBuf raw) throws IOException {
+        if (!raw.isReadable()) return new byte[0];
+        if (raw.readableBytes() > MAX_PART_BYTES) throw new IOException("Oversize ME mini portable terminal entry");
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try (GZIPOutputStream gzip = new GZIPOutputStream(output)) {
+            raw.readBytes(gzip, raw.readableBytes());
         }
-        parts.add(part);
-    }
-
-    private static final class UpdateBudget {
-
-        private long compressedBytes;
-        private long trackedBytes;
-    }
-
-    private static EncodedSize measure(NBTTagList entries) throws IOException {
-        NBTTagCompound envelope = new NBTTagCompound();
-
-        envelope.setTag("entries", entries);
-        byte[] compressed = CompressedStreamTools.compress(envelope);
-        if (compressed.length > MAX_COMPRESSED_BYTES)
-            throw new IOException("Oversize ME mini portable terminal compressed NBT");
-        MeasuringTracker tracker = new MeasuringTracker();
-        try {
-            CompressedStreamTools.func_152457_a(compressed, tracker);
-        } catch (RuntimeException exception) {
-            throw new IOException(
-                "ME mini portable terminal NBT exceeds the native decoder budget or nesting limit",
-                exception);
-        }
-        return new EncodedSize(compressed.length, tracker.bytes);
-    }
-
-    private record EncodedSize(int compressedBytes, long trackedBytes) {}
-
-    private static final class MeasuringTracker extends NBTSizeTracker {
-
-        private long bytes;
-
-        private MeasuringTracker() {
-            super(MAX_TRACKED_BYTES);
-        }
-
-        @Override
-        public void func_152450_a(long bits) {
-            super.func_152450_a(bits);
-            bytes += bits / 8L;
-        }
+        return output.toByteArray();
     }
 }

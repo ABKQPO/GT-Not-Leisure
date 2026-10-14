@@ -338,7 +338,7 @@ public final class MiniTerminalClient {
         model().closeSession();
     }
 
-    public static void receive(NBTTagCompound data) {
+    public static void receive(NBTTagCompound data, List<MiniTerminalUpdatePacket.Entry> entries) {
         checkConnection();
         Minecraft mc = Minecraft.getMinecraft();
         if ("RETURN".equals(data.getString("kind"))) {
@@ -407,10 +407,10 @@ public final class MiniTerminalClient {
             return;
         }
         if (incoming != session || session == 0) return;
-        if ("CATALOG".equals(kind) && !model().catalog(data)) {
+        if ("CATALOG".equals(kind) && !model().catalog(data, entries)) {
             ScienceNotLeisure.network.sendToServer(MiniTerminalRequestPacket.resync(session));
         } else if ("PINS".equals(kind)) {
-            if (!model().pins(data)) {
+            if (!model().pins(data, entries)) {
                 ScienceNotLeisure.network.sendToServer(MiniTerminalRequestPacket.resync(session));
             } else if (pinRowsPending && data.getBoolean("last")) {
                 if (model().craftingPinsRows() == requestedCraftingPins
@@ -542,11 +542,11 @@ public final class MiniTerminalClient {
         int inventorySlot = MiniTerminalSessionService.playerInventoryIndex(mc.thePlayer, slot);
         if (inventorySlot < 0) return false;
 
+        // Without a live session the click belongs to the host GUI; swallowing it would move nothing.
+        if (!model().isOnline() || session == 0 || !hasCurrentContainer()) return false;
         if (!slot.getHasStack() && mode != MiniTerminalRequestPacket.DepositMode.NATIVE_REGION) return true;
-        if (model().isOnline() && session != 0 && hasCurrentContainer()) {
-            ScienceNotLeisure.network
-                .sendToServer(MiniTerminalRequestPacket.inventoryDeposit(session, ++action, inventorySlot, mode));
-        }
+        ScienceNotLeisure.network
+            .sendToServer(MiniTerminalRequestPacket.inventoryDeposit(session, ++action, inventorySlot, mode));
         return true;
     }
 
