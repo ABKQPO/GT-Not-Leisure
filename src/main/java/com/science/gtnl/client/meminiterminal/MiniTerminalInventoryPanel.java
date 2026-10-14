@@ -256,8 +256,15 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
         return moving == null ? layout.bounds() : moving;
     }
 
+    boolean intersects(int x, int y, int width, int height) {
+        Rectangle moving = movingBounds();
+        return moving == null ? layout.intersects(x, y, width, height) : moving.intersects(x, y, width, height);
+    }
+
     boolean isMouseOver(int mouseX, int mouseY) {
-        if (!isValid() || !isOpen() || !isEnabled() || !bounds().contains(mouseX, mouseY)) return false;
+        if (!isValid() || !isOpen() || !isEnabled()) return false;
+        Rectangle moving = movingBounds();
+        if (moving == null ? !layout.contains(mouseX, mouseY) : !moving.contains(mouseX, mouseY)) return false;
         for (ModularPanel panel : getScreen().getPanelManager()
             .getOpenPanels()) {
             if (panel == this) return true;
@@ -267,7 +274,6 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
     }
 
     public VirtualMESlot hoveredSlot(int mouseX, int mouseY) {
-        syncLayout();
         if (!isMouseOver(mouseX, mouseY) || getContext().hasDraggable() || !layout.expanded()) return null;
         Rectangle bounds = layout.bounds();
         int x = mouseX - bounds.x;

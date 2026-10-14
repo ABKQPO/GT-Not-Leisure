@@ -186,6 +186,11 @@ public final class MiniTerminalLayout {
         return new Rectangle(bounds);
     }
 
+    // Allocation-free check for per-slot NEI queries.
+    boolean intersects(int x, int y, int width, int height) {
+        return bounds.intersects(x, y, width, height);
+    }
+
     public boolean contains(int x, int y) {
         return bounds.contains(x, y);
     }

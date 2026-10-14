@@ -114,8 +114,8 @@ public final class MiniTerminalClient {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void prepareNativePanel(DrawScreenEvent.Pre event) {
         MiniTerminalHostLayer.beginFrame(event.gui);
-        if (overlay != null && event.gui == overlay.inventory() && event.gui instanceof IMuiScreen)
-            overlay.prepareFrame();
+        // One layout pass per frame, before NEI queries the panel bounds for every item panel slot.
+        if (overlay != null && event.gui == overlay.inventory()) overlay.prepareFrame();
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

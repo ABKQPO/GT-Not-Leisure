@@ -100,7 +100,6 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
     private static boolean fillSearch(GuiContainer gui, int mouseX, int mouseY, ItemStack stack) {
         MiniTerminalInventoryPanel overlay = overlay(gui);
         if (overlay == null || stack == null || stack.getItem() == null) return false;
-        overlay.syncLayout();
         if (!overlay.layout()
             .expanded() || overlay.getContext()
                 .hasDraggable()
@@ -121,7 +120,6 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
         MiniTerminalInventoryPanel overlay = overlay(gui);
         if (overlay == null) return;
         if (overlay.getScreen() instanceof MiniTerminalInventoryOverlay screen) screen.drawInContainer(mouseX, mouseY);
-        else overlay.syncLayout();
         MiniTerminalHostLayer.flushTooltips(gui);
     }
 
@@ -157,10 +155,8 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
     @Override
     public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int width, int height) {
         MiniTerminalInventoryPanel overlay = overlay(gui);
-        if (overlay == null) return false;
-        overlay.syncLayout();
-        return overlay.bounds()
-            .intersects(x, y, width, height);
+        // Called for every NEI item panel slot; the layout was already synchronized for this frame.
+        return overlay != null && overlay.intersects(x, y, width, height);
     }
 
     @Override
@@ -175,9 +171,7 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
     @Override
     public boolean objectUnderMouse(GuiContainer gui, int mouseX, int mouseY) {
         MiniTerminalInventoryPanel overlay = overlay(gui);
-        if (overlay == null) return false;
-        overlay.syncLayout();
-        return overlay.isMouseOver(mouseX, mouseY);
+        return overlay != null && overlay.isMouseOver(mouseX, mouseY);
     }
 
     @Override
