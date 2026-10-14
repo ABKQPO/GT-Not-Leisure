@@ -6,13 +6,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import appeng.api.config.PinsRows;
+import appeng.core.AEConfig;
 import appeng.items.contents.PinList;
+import appeng.util.Platform;
 
 /** Exact mini-terminal slot counts backed by AE's fixed nine-slot rows. */
 public record MiniTerminalPinSettings(int craftingCount, int playerCount) {
 
     public static final MiniTerminalPinSettings DISABLED = new MiniTerminalPinSettings(0, 0);
     private static final String TAG = "gtnlMiniTerminalPins";
+    private static final int ROW_SLOTS = PinsRows.ONE.getSlotCount();
 
     public MiniTerminalPinSettings {
         if (!validCounts(craftingCount, playerCount)) throw new IllegalArgumentException("Mini terminal pin counts");
@@ -57,11 +60,31 @@ public record MiniTerminalPinSettings(int craftingCount, int playerCount) {
         tag.setTag(TAG, settings);
     }
 
+    /** AE's configured crafting row limit, as a slot count. */
+    public static int maxCraftingCount() {
+        return Math.min(PinList.CRAFTING_SLOTS, AEConfig.instance.maxCraftingPinRows * ROW_SLOTS);
+    }
+
+    /** AE's configured player row limit, as a slot count. */
+    public static int maxPlayerCount() {
+        return Math.min(PinList.PLAYER_SLOTS, AEConfig.instance.maxPlayerPinRows * ROW_SLOTS);
+    }
+
+    public MiniTerminalPinSettings clampToConfig() {
+        return new MiniTerminalPinSettings(
+            Math.min(craftingCount, maxCraftingCount()),
+            Math.min(playerCount, maxPlayerCount()));
+    }
+
     public PinsRows craftingRows() {
-        return PinsRows.fromOrdinal((craftingCount + 8) / 9);
+        return rows(craftingCount);
     }
 
     public PinsRows playerRows() {
-        return PinsRows.fromOrdinal((playerCount + 8) / 9);
+        return rows(playerCount);
+    }
+
+    private static PinsRows rows(int count) {
+        return PinsRows.fromOrdinal((int) Platform.ceilDiv(count, ROW_SLOTS));
     }
 }

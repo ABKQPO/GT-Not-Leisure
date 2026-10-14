@@ -180,7 +180,7 @@ public final class MiniTerminalSessionService {
             session.action(request);
         } else if (request.kind == MiniTerminalRequestPacket.Kind.CREATIVE_ACTION) {
             session.creativeAction(request);
-        } else if (request.kind == MiniTerminalRequestPacket.Kind.PIN_ROWS) {
+        } else if (request.kind == MiniTerminalRequestPacket.Kind.PIN_SETTINGS) {
             session.updatePinSettings(request);
         } else if (request.kind == MiniTerminalRequestPacket.Kind.PIN_DROP) {
             session.pinDrop(request);

@@ -84,8 +84,8 @@ public final class MiniTerminalClient {
     private static boolean sessionPrepared;
     private static boolean collapsed;
     private static boolean waiting;
-    private static boolean pinRowsPending;
-    private static int pinRowsPendingTicks;
+    private static boolean pinSettingsPending;
+    private static int pinSettingsPendingTicks;
     private static MiniTerminalPinSettings requestedPins;
     private static long requestedPinRevision;
     private static int settingsRetryTicks;
@@ -215,8 +215,8 @@ public final class MiniTerminalClient {
         if (model().hasPendingSettings()) {
             if (++settingsRetryTicks >= 40) submitSettings(false);
         } else settingsRetryTicks = 0;
-        if (pinRowsPending && ++pinRowsPendingTicks >= 40) {
-            submitPinRows();
+        if (pinSettingsPending && ++pinSettingsPendingTicks >= 40) {
+            submitPinSettings();
         }
         if (!overlay.layout()
             .expanded()) {
@@ -251,7 +251,7 @@ public final class MiniTerminalClient {
         waiting = false;
         sessionPrepared = false;
         sessionTicks = 0;
-        pinRowsPending = false;
+        pinSettingsPending = false;
         settingsRetryTicks = 0;
         overlay = null;
         selected = null;
@@ -333,7 +333,7 @@ public final class MiniTerminalClient {
         waiting = false;
         sessionPrepared = false;
         sessionTicks = 0;
-        pinRowsPending = false;
+        pinSettingsPending = false;
         model().closeSession();
     }
 
@@ -411,10 +411,10 @@ public final class MiniTerminalClient {
         } else if ("PINS".equals(kind)) {
             if (!model().pins(data, entries)) {
                 ScienceNotLeisure.network.sendToServer(MiniTerminalRequestPacket.resync(session));
-            } else if (pinRowsPending && data.getBoolean("last")) {
+            } else if (pinSettingsPending && data.getBoolean("last")) {
                 if (model().pinSettings()
-                    .equals(requestedPins)) pinRowsPending = false;
-                else if (model().pinRevision() != requestedPinRevision) submitPinRows();
+                    .equals(requestedPins)) pinSettingsPending = false;
+                else if (model().pinRevision() != requestedPinRevision) submitPinSettings();
             }
         }
     }
@@ -466,15 +466,15 @@ public final class MiniTerminalClient {
     }
 
     public static void setPinSettings(MiniTerminalPinSettings settings) {
-        if (pinRowsPending || !model().isOnline() || session == 0 || !hasCurrentContainer()) return;
-        pinRowsPending = true;
+        if (pinSettingsPending || !model().isOnline() || session == 0 || !hasCurrentContainer()) return;
+        pinSettingsPending = true;
         requestedPins = settings;
-        submitPinRows();
+        submitPinSettings();
     }
 
-    private static void submitPinRows() {
-        if (!pinRowsPending || !model().isOnline() || session == 0 || !hasCurrentContainer()) return;
-        pinRowsPendingTicks = 0;
+    private static void submitPinSettings() {
+        if (!pinSettingsPending || !model().isOnline() || session == 0 || !hasCurrentContainer()) return;
+        pinSettingsPendingTicks = 0;
         requestedPinRevision = model().pinRevision();
         ScienceNotLeisure.network.sendToServer(
             MiniTerminalRequestPacket.pinSettings(session, ++action, requestedPinRevision, requestedPins));

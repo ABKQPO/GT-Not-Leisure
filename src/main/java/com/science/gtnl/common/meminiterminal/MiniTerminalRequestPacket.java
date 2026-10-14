@@ -34,7 +34,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
         ACTION,
         RESYNC,
         FULL,
-        PIN_ROWS,
+        PIN_SETTINGS,
         SETTINGS,
         INVENTORY_DEPOSIT,
         INVENTORY_EXTRACT,
@@ -150,7 +150,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
     public static MiniTerminalRequestPacket pinSettings(long sessionId, long actionId, long pinRevision,
         MiniTerminalPinSettings settings) {
         MiniTerminalRequestPacket packet = end(sessionId);
-        packet.kind = Kind.PIN_ROWS;
+        packet.kind = Kind.PIN_SETTINGS;
         packet.actionId = actionId;
         packet.pinRevision = pinRevision;
         packet.pinSettings = settings;
@@ -250,11 +250,11 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
                         throw new IllegalArgumentException("Creative terminal cursor");
                 }
             }
-            case PIN_ROWS -> {
+            case PIN_SETTINGS -> {
                 actionId = buf.readLong();
                 pinRevision = buf.readLong();
                 pinSettings = new MiniTerminalPinSettings(buf.readUnsignedByte(), buf.readUnsignedByte());
-                if (actionId <= 0) throw new IllegalArgumentException("Mini terminal pin rows action");
+                if (actionId <= 0) throw new IllegalArgumentException("Mini terminal pin settings action");
             }
             case PIN_DROP -> {
                 actionId = buf.readLong();
@@ -337,7 +337,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
                 buf.writeByte(action.ordinal());
                 if (kind == Kind.CREATIVE_ACTION) ByteBufUtils.writeItemStack(buf, creativeCursor);
             }
-            case PIN_ROWS -> {
+            case PIN_SETTINGS -> {
                 buf.writeLong(actionId);
                 buf.writeLong(pinRevision);
                 buf.writeByte(pinSettings.craftingCount());

@@ -203,7 +203,7 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
                 new TerminalButton(
                     Settings.ACTIONS,
                     ActionItems.PINS,
-                    terminal::changePinRows,
+                    terminal::changePinCount,
                     (tooltip, button) -> {
                         for (String line : button.getMessage()
                             .split("\n")) tooltip.addLine(line);
@@ -311,10 +311,11 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
 
             boolean changed = requiresResize();
             if (changed) WidgetTree.resizeInternal(resizer(), false);
-            MiniTerminalPinSettings pins = model.pinSettings();
+            MiniTerminalPinSettings pins = model.pinSettings()
+                .clampToConfig();
             layout.configurePins(
-                Math.min(pins.craftingCount(), AEConfig.instance.maxCraftingPinRows * 9),
-                Math.min(pins.playerCount(), AEConfig.instance.maxPlayerPinRows * 9),
+                pins.craftingCount(),
+                pins.playerCount(),
                 AEConfig.instance.pinSectionOrder == PinSectionOrder.PLAYER_FIRST);
             changed |= layout.update(inventory, MiniTerminalClient.collapsed());
             Rectangle bounds = layout.bounds();
@@ -788,21 +789,23 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             return Result.SUCCESS;
         }
 
-        private void changePinRows(int button) {
+        private void changePinCount(int button) {
             if (button != 0 && button != 1) return;
 
-            MiniTerminalPinSettings current = model.pinSettings();
-            int maxCrafting = Math.min(PinList.CRAFTING_SLOTS, AEConfig.instance.maxCraftingPinRows * 9);
-            int maxPlayer = Math.min(PinList.PLAYER_SLOTS, AEConfig.instance.maxPlayerPinRows * 9);
-            int craft = Math.min(current.craftingCount(), maxCrafting);
-            int player = Math.min(current.playerCount(), maxPlayer);
-            int delta = (button == 1 ? -1 : 1) * layout.columns();
-            if (GuiScreen.isCtrlKeyDown()) craft = Math.max(0, Math.min(maxCrafting, craft + delta));
-            else player = Math.max(0, Math.min(maxPlayer, player + delta));
-            if (button == 0 && !layout.fitsPins(craft, player)) return;
-            MiniTerminalPinSettings next = new MiniTerminalPinSettings(craft, player);
-            if (next.equals(current)) return;
-            MiniTerminalClient.setPinSettings(next);
+            MiniTerminalPinSettings current = model.pinSettings()
+                .clampToConfig();
+            boolean crafting = GuiScreen.isCtrlKeyDown();
+            int count = crafting ? current.craftingCount() : current.playerCount();
+            int max = crafting ? MiniTerminalPinSettings.maxCraftingCount() : MiniTerminalPinSettings.maxPlayerCount();
+            // Step to the end of the next or previous visual row, so a width change never leaves a partial row.
+            int columns = layout.columns();
+            int next = button == 1 ? (count - 1) / columns * columns : (count / columns + 1) * columns;
+            next = Math.max(0, Math.min(max, next));
+            MiniTerminalPinSettings target = crafting ? new MiniTerminalPinSettings(next, current.playerCount())
+                : new MiniTerminalPinSettings(current.craftingCount(), next);
+            if (button == 0 && !layout.fitsPins(target.craftingCount(), target.playerCount())) return;
+            if (target.equals(model.pinSettings())) return;
+            MiniTerminalClient.setPinSettings(target);
         }
 
         private VirtualMESlot slotAt(int x, int y) {
