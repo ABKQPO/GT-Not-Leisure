@@ -1,10 +1,17 @@
 package com.science.gtnl.common.meminiterminal;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.WeakHashMap;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -15,6 +22,8 @@ import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import appeng.api.config.InsertionMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IWirelessTermHandler;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
@@ -32,6 +41,9 @@ import appeng.util.item.AEItemStack;
 import cpw.mods.fml.common.eventhandler.Event;
 
 final class MiniTerminalTransferService {
+
+    private static final Map<UUID, PickupHost> PICKUP_HOSTS = new HashMap<>();
+    private static final Map<Container, Boolean> COVERS_MAIN_INVENTORY = new WeakHashMap<>();
 
     private MiniTerminalTransferService() {}
 
@@ -154,14 +166,33 @@ final class MiniTerminalTransferService {
 
     static void synchronize(EntityPlayerMP player) {
         player.inventory.markDirty();
-        player.openContainer.detectAndSendChanges();
-        if (player.openContainer != player.inventoryContainer) {
-
+        Container open = player.openContainer;
+        open.detectAndSendChanges();
+        if (open != player.inventoryContainer) {
             player.inventoryContainer.detectAndSendChanges();
-            player.sendContainerToPlayer(player.inventoryContainer);
-        } else {
-            player.updateHeldItem();
+            // With another window open the client applies window 0 updates to hotbar slots only. Resend the whole
+            // inventory just for containers whose own slots do not carry the main inventory.
+            if (!coversMainInventory(player, open)) {
+                player.sendContainerToPlayer(player.inventoryContainer);
+                return;
+            }
         }
+        player.updateHeldItem();
+    }
+
+    private static boolean coversMainInventory(EntityPlayer player, Container container) {
+        return COVERS_MAIN_INVENTORY.computeIfAbsent(container, key -> {
+            boolean[] covered = new boolean[36];
+            for (Object entry : key.inventorySlots) {
+                Slot slot = (Slot) entry;
+                int index = slot.getSlotIndex();
+                if (slot.inventory == player.inventory && index >= 0 && index < covered.length) covered[index] = true;
+            }
+            for (int index = 9; index < covered.length; index++) {
+                if (!covered[index]) return false;
+            }
+            return true;
+        });
     }
 
     static void pickup(EntityItemPickupEvent event) {
@@ -188,15 +219,7 @@ final class MiniTerminalTransferService {
 
     private static void insertPickup(EntityItemPickupEvent event, EntityPlayerMP player, ItemStack terminalStack,
         int slot, ItemStack picked) {
-        IWirelessTermHandler handler = (IWirelessTermHandler) terminalStack.getItem();
-        WirelessTerminalGuiObject host = new WirelessTerminalGuiObject(
-            handler,
-            terminalStack,
-            player,
-            player.worldObj,
-            slot,
-            0,
-            0);
+        WirelessTerminalGuiObject host = pickupHost(player, terminalStack, slot);
         if (MiniTerminalSessionService.networkStatus(player, host.getGrid(), host, SecurityPermissions.INJECT)
             != MiniTerminalSessionService.MiniTerminalStatus.ONLINE) return;
         IMEMonitor<IAEItemStack> monitor = host.getItemInventory();
@@ -212,6 +235,42 @@ final class MiniTerminalTransferService {
 
         if (remaining == 0) event.setResult(Event.Result.ALLOW);
     }
+
+    /**
+     * Building a host reads the terminal NBT and, without a cached access point, scans every wireless access point.
+     * Reuse the open session's host, or one cached per player until the stack, binding or grid changes.
+     */
+    private static WirelessTerminalGuiObject pickupHost(EntityPlayerMP player, ItemStack terminalStack, int slot) {
+        WirelessTerminalGuiObject active = MiniTerminalSessionService.activeHost(player, terminalStack);
+        if (active != null) return active;
+        IWirelessTermHandler handler = (IWirelessTermHandler) terminalStack.getItem();
+        String binding = handler.getEncryptionKey(terminalStack);
+        IGridNode node = MiniTerminalSessionService.resolveBindingNode(binding);
+        IGrid grid = node == null ? null : node.getGrid();
+        PickupHost cached = PICKUP_HOSTS.get(player.getUniqueID());
+        if (cached != null && cached.player() == player
+            && cached.stack() == terminalStack
+            && Objects.equals(cached.binding(), binding)
+            && cached.host()
+                .getGrid() == grid)
+            return cached.host();
+        WirelessTerminalGuiObject host = new WirelessTerminalGuiObject(
+            handler,
+            terminalStack,
+            player,
+            player.worldObj,
+            slot,
+            0,
+            0);
+        PICKUP_HOSTS.put(player.getUniqueID(), new PickupHost(player, terminalStack, binding, host));
+        return host;
+    }
+
+    static void forget(EntityPlayer player) {
+        PICKUP_HOSTS.remove(player.getUniqueID());
+    }
+
+    private record PickupHost(EntityPlayerMP player, ItemStack stack, String binding, WirelessTerminalGuiObject host) {}
 
     static final class InventoryDestination extends AdaptorIInventory {
 

@@ -209,7 +209,13 @@ public final class MiniTerminalSessionService {
             && player.openContainer.canInteractWith(player);
     }
 
-    private static IGridNode resolveBindingNode(String binding) {
+    /** The open session's host for this exact terminal stack, so pickups reuse its cached access point. */
+    static WirelessTerminalGuiObject activeHost(EntityPlayerMP player, ItemStack stack) {
+        Session session = SESSIONS.get(player.getUniqueID());
+        return session != null && session.player == player && session.stack == stack ? session.host : null;
+    }
+
+    static IGridNode resolveBindingNode(String binding) {
         if (binding == null || binding.isEmpty()) return null;
         try {
             ILocatable locatable = AEApi.instance()
@@ -429,6 +435,7 @@ public final class MiniTerminalSessionService {
         if (event.player instanceof EntityPlayerMP player) end(player);
         SELECTED.remove(event.player.getUniqueID());
         BUDGETS.remove(event.player.getUniqueID());
+        MiniTerminalTransferService.forget(event.player);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -591,11 +598,8 @@ public final class MiniTerminalSessionService {
             this.terminal = new MiniTerminalMonitorableAdapter(player, host);
             this.monitor = terminal.getItemMonitor();
             this.fluidMonitor = host.getFluidInventory();
-            this.pinSettings = MiniTerminalPinSettings.read(
-                stack,
-                player,
-                terminal.getCraftingPinsRows(),
-                terminal.getPlayerPinsRows());
+            this.pinSettings = MiniTerminalPinSettings
+                .read(stack, player, terminal.getCraftingPinsRows(), terminal.getPlayerPinsRows());
             this.observedPins = (NBTTagList) pinData().copy();
         }
 
@@ -604,14 +608,14 @@ public final class MiniTerminalSessionService {
                 return MiniTerminalStatus.INVALID_CONTAINER;
             if (terminalId.equals(ItemMEMiniPortableTerminal.getTerminalId(player.inventory.getItemStack())))
                 return MiniTerminalStatus.ON_CURSOR;
-            int current = ItemMEMiniPortableTerminal.findTerminalSlot(player, terminalId);
-            if (current < 0) return ItemMEMiniPortableTerminal.isTerminalDuplicated(player, terminalId)
-                ? MiniTerminalStatus.AMBIGUOUS
-                : MiniTerminalStatus.MISSING;
-
-            if (current != slot) return MiniTerminalStatus.STALE;
-            ItemStack currentStack = ItemMEMiniPortableTerminal.getTerminalStack(player, current);
+            // Common case each tick: the captured stack still sits in its slot, so skip scanning the inventory.
+            ItemStack currentStack = ItemMEMiniPortableTerminal.getTerminalStack(player, slot);
             if (currentStack != stack) {
+                int current = ItemMEMiniPortableTerminal.findTerminalSlot(player, terminalId);
+                if (current < 0) return ItemMEMiniPortableTerminal.isTerminalDuplicated(player, terminalId)
+                    ? MiniTerminalStatus.AMBIGUOUS
+                    : MiniTerminalStatus.MISSING;
+                if (current != slot) return MiniTerminalStatus.STALE;
                 // C10PacketCreativeInventoryAction replaces the slot object on every creative click. Treat an
                 // equivalent copy as the same terminal and restore the object captured by the AE host; otherwise
                 // actions would mutate a detached stack and the next tick would report a false STALE session.
