@@ -48,6 +48,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
+import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.ScreenColor;
 import appeng.client.gui.slots.VirtualMEMonitorableSlot;
 import appeng.client.gui.slots.VirtualMEPinSlot;
@@ -789,7 +790,7 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
             int pin = slot instanceof VirtualMEPinSlot ? slot.getSlotIndex() : -1;
             IAEStack<?> stack = slot.getAEStack();
             ItemStack held = Minecraft.getMinecraft().thePlayer.inventory.getItemStack();
-            boolean nonItemInteraction = GuiScreen.isCtrlKeyDown();
+            boolean nonItemInteraction = AEBaseGui.isCtrlKeyDown();
             IAEStack<?> heldFluid = nonItemInteraction && held != null
                 ? FLUID_STACK_TYPE.getStackFromContainerItem(held)
                 : null;
@@ -806,21 +807,11 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
                 pin >= 0,
                 held != null,
                 matchesPin,
+                nonItemInteraction,
                 stack);
             if (intent == null) return null;
             if (nonItemInteraction && intent == MonitorableAction.SET_PIN && heldFluid == null) return slot;
             boolean editPin = intent == MonitorableAction.SET_PIN || intent == MonitorableAction.UNSET_PIN;
-            if (nonItemInteraction && !editPin
-                && !Keyboard.isKeyDown(Keyboard.KEY_SPACE)
-                && (button == 0 || button == 1)) {
-                if (button == 0) {
-                    intent = GuiScreen.isShiftKeyDown() ? MonitorableAction.FILL_CONTAINERS
-                        : MonitorableAction.FILL_SINGLE_CONTAINER;
-                } else {
-                    intent = GuiScreen.isShiftKeyDown() ? MonitorableAction.DRAIN_CONTAINERS
-                        : MonitorableAction.DRAIN_SINGLE_CONTAINER;
-                }
-            }
             ToolboxClient.send(intent, editPin ? null : stack, pin);
             return slot;
         }
@@ -916,7 +907,7 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
         }
 
         static MonitorableAction click(int button, boolean space, boolean shift, boolean pin, boolean holding,
-            boolean matchesPin, IAEStack<?> stack) {
+            boolean matchesPin, boolean nonItemInteraction, IAEStack<?> stack) {
 
             if (space) return stack instanceof IAEItemStack ? MonitorableAction.MOVE_REGION : null;
             if (button == keyBindPickBlockAction) {
@@ -927,10 +918,20 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
                 if (button == 1 && shift && !holding) return MonitorableAction.UNSET_PIN;
                 if (holding && !matchesPin) return MonitorableAction.SET_PIN;
             }
+            if (nonItemInteraction) {
+                if (button == 0)
+                    return shift ? MonitorableAction.FILL_CONTAINERS : MonitorableAction.FILL_SINGLE_CONTAINER;
+                return shift ? MonitorableAction.DRAIN_CONTAINERS : MonitorableAction.DRAIN_SINGLE_CONTAINER;
+            }
             if (button == 1) return shift ? MonitorableAction.PICKUP_SINGLE : MonitorableAction.SPLIT_OR_PLACE_SINGLE;
             if (shift) return MonitorableAction.SHIFT_CLICK;
             if (!holding && stack != null && stack.getStackSize() == 0) return MonitorableAction.AUTO_CRAFT;
             return MonitorableAction.PICKUP_OR_SET_DOWN;
+        }
+
+        static boolean preferContainerInteraction(boolean interactionKeyDown, boolean holdingFluidContainer,
+            boolean spaceDown) {
+            return interactionKeyDown && holdingFluidContainer && !spaceDown;
         }
 
         static MonitorableAction wheel(int direction, boolean shift, boolean holding, boolean item) {

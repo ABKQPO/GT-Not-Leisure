@@ -800,6 +800,12 @@ public final class ToolboxSessionService {
                 || request.action == MonitorableAction.DRAIN_CONTAINERS
                 || ToolboxTransferService.depositsCursor(hand, request.action);
             if (inject && !permission(SecurityPermissions.INJECT)) return;
+            if (request.action == MonitorableAction.FILL_SINGLE_CONTAINER
+                || request.action == MonitorableAction.FILL_CONTAINERS) {
+                // Pins store zero-sized templates; AE's container filling uses the target quantity as its limit.
+                target = catalog.current(target);
+                if (target == null || target.getStackSize() <= 0) return;
+            }
             if (target == null && !inject) return;
             ToolboxTransferService.execute(
                 player,

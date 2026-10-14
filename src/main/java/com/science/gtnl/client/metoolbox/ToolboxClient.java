@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -489,7 +488,7 @@ public final class ToolboxClient {
                 model.entryId(target),
                 pin,
                 intent,
-                intent == MonitorableAction.SET_PIN && GuiScreen.isCtrlKeyDown()));
+                intent == MonitorableAction.SET_PIN && AEBaseGui.isCtrlKeyDown()));
     }
 
     public static void toggleCollapsed() {

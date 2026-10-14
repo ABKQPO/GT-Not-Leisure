@@ -1,5 +1,7 @@
 package com.science.gtnl.client.metoolbox;
 
+import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
+
 import java.awt.Point;
 
 import net.minecraft.client.Minecraft;
@@ -24,6 +26,7 @@ import com.science.gtnl.utils.enums.ModList;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
+import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.slots.VirtualMEPinSlot;
 import appeng.client.gui.slots.VirtualMESlot;
 import appeng.integration.modules.NEI;
@@ -62,7 +65,21 @@ public final class ToolboxBogoCompat {
     }
 
     public static boolean handleMiniInput(GuiContainer gui, boolean fromMouse) {
-        return ModList.InventoryBogoSorter.isModLoaded() && Native.handleInput(gui, fromMouse);
+        return ModList.InventoryBogoSorter.isModLoaded() && !shouldPrioritizeContainerInteraction(gui)
+            && Native.handleInput(gui, fromMouse);
+    }
+
+    public static boolean shouldPrioritizeContainerInteraction(GuiContainer gui) {
+        ToolboxInventoryOverlay overlay = searchTarget(gui);
+        Minecraft mc = Minecraft.getMinecraft();
+        if (overlay == null || mc.thePlayer == null) return false;
+        ItemStack held = mc.thePlayer.inventory.getItemStack();
+        if (!ToolboxInventoryOverlay.Input.preferContainerInteraction(
+            AEBaseGui.isCtrlKeyDown(),
+            held != null && FLUID_STACK_TYPE.isContainerItemForType(held),
+            Keyboard.isKeyDown(Keyboard.KEY_SPACE))) return false;
+        Point mouse = GuiDraw.getMousePosition();
+        return overlay.hoveredSlot(mouse.x, mouse.y) != null;
     }
 
     public static boolean isOverMini(GuiScreen gui) {

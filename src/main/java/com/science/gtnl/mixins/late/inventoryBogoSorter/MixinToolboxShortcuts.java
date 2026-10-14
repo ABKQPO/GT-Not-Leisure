@@ -19,6 +19,10 @@ public abstract class MixinToolboxShortcuts {
         cancellable = true)
     private static void gtnl$moveSingleToToolbox(GuiContainer gui, boolean emptyOnly,
         CallbackInfoReturnable<Boolean> cir) {
+        if (ToolboxBogoCompat.shouldPrioritizeContainerInteraction(gui)) {
+            cir.setReturnValue(false);
+            return;
+        }
         if (ToolboxBogoCompat.moveSingleItem(gui, emptyOnly)) cir.setReturnValue(true);
     }
 
@@ -28,6 +32,10 @@ public abstract class MixinToolboxShortcuts {
         cancellable = true)
     private static void gtnl$moveAllToToolbox(GuiContainer gui, boolean sameItemOnly,
         CallbackInfoReturnable<Boolean> cir) {
+        if (ToolboxBogoCompat.shouldPrioritizeContainerInteraction(gui)) {
+            cir.setReturnValue(false);
+            return;
+        }
         if (ToolboxBogoCompat.moveAllItems(gui, sameItemOnly)) cir.setReturnValue(true);
     }
 }
