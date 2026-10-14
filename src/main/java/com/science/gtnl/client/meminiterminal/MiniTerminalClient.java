@@ -30,11 +30,11 @@ import com.cleanroommc.modularui.api.IMuiScreen;
 import com.cleanroommc.modularui.screen.OpenScreenEvent;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
+import com.science.gtnl.common.meminiterminal.MiniTerminalPinSettings;
 import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket;
 import com.science.gtnl.common.meminiterminal.MiniTerminalSessionService;
 import com.science.gtnl.common.meminiterminal.MiniTerminalUpdatePacket;
 
-import appeng.api.config.PinsRows;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
@@ -86,8 +86,7 @@ public final class MiniTerminalClient {
     private static boolean waiting;
     private static boolean pinRowsPending;
     private static int pinRowsPendingTicks;
-    private static PinsRows requestedCraftingPins;
-    private static PinsRows requestedPlayerPins;
+    private static MiniTerminalPinSettings requestedPins;
     private static long requestedPinRevision;
     private static int settingsRetryTicks;
     private static String status = "OFFLINE";
@@ -413,8 +412,8 @@ public final class MiniTerminalClient {
             if (!model().pins(data, entries)) {
                 ScienceNotLeisure.network.sendToServer(MiniTerminalRequestPacket.resync(session));
             } else if (pinRowsPending && data.getBoolean("last")) {
-                if (model().craftingPinsRows() == requestedCraftingPins
-                    && model().playerPinsRows() == requestedPlayerPins) pinRowsPending = false;
+                if (model().pinSettings()
+                    .equals(requestedPins)) pinRowsPending = false;
                 else if (model().pinRevision() != requestedPinRevision) submitPinRows();
             }
         }
@@ -466,11 +465,10 @@ public final class MiniTerminalClient {
                 Minecraft.getMinecraft().thePlayer.openContainer.windowId));
     }
 
-    public static void setPinRows(PinsRows crafting, PinsRows player) {
+    public static void setPinSettings(MiniTerminalPinSettings settings) {
         if (pinRowsPending || !model().isOnline() || session == 0 || !hasCurrentContainer()) return;
         pinRowsPending = true;
-        requestedCraftingPins = crafting;
-        requestedPlayerPins = player;
+        requestedPins = settings;
         submitPinRows();
     }
 
@@ -479,8 +477,7 @@ public final class MiniTerminalClient {
         pinRowsPendingTicks = 0;
         requestedPinRevision = model().pinRevision();
         ScienceNotLeisure.network.sendToServer(
-            MiniTerminalRequestPacket
-                .pinsRows(session, ++action, requestedPinRevision, requestedCraftingPins, requestedPlayerPins));
+            MiniTerminalRequestPacket.pinSettings(session, ++action, requestedPinRevision, requestedPins));
     }
 
     public static void send(MonitorableAction intent, IAEStack<?> target, int pin) {

@@ -9,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.science.gtnl.common.packet.base.ServerboundPacket;
 
-import appeng.api.config.PinsRows;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
@@ -64,8 +63,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
     int nativePin = -1;
     UUID terminalId;
     MonitorableAction action;
-    PinsRows craftingRows;
-    PinsRows playerRows;
+    MiniTerminalPinSettings pinSettings;
     SortOrder sortOrder;
     SortDir sortDirection;
     ViewItems viewMode;
@@ -149,14 +147,13 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
         return packet;
     }
 
-    public static MiniTerminalRequestPacket pinsRows(long sessionId, long actionId, long pinRevision,
-        PinsRows craftingRows, PinsRows playerRows) {
+    public static MiniTerminalRequestPacket pinSettings(long sessionId, long actionId, long pinRevision,
+        MiniTerminalPinSettings settings) {
         MiniTerminalRequestPacket packet = end(sessionId);
         packet.kind = Kind.PIN_ROWS;
         packet.actionId = actionId;
         packet.pinRevision = pinRevision;
-        packet.craftingRows = craftingRows;
-        packet.playerRows = playerRows;
+        packet.pinSettings = settings;
         return packet;
     }
 
@@ -256,8 +253,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
             case PIN_ROWS -> {
                 actionId = buf.readLong();
                 pinRevision = buf.readLong();
-                craftingRows = readEnum(buf, PinsRows.values());
-                playerRows = readEnum(buf, PinsRows.values());
+                pinSettings = new MiniTerminalPinSettings(buf.readUnsignedByte(), buf.readUnsignedByte());
                 if (actionId <= 0) throw new IllegalArgumentException("Mini terminal pin rows action");
             }
             case PIN_DROP -> {
@@ -344,8 +340,8 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
             case PIN_ROWS -> {
                 buf.writeLong(actionId);
                 buf.writeLong(pinRevision);
-                buf.writeByte(craftingRows.ordinal());
-                buf.writeByte(playerRows.ordinal());
+                buf.writeByte(pinSettings.craftingCount());
+                buf.writeByte(pinSettings.playerCount());
             }
             case PIN_DROP -> {
                 buf.writeLong(actionId);

@@ -62,11 +62,13 @@ public final class MiniTerminalMonitorableAdapter extends ContainerMEMonitorable
         return run(valid, null, () -> super.shiftStoreItem(reserved), reserved);
     }
 
-    public void setPinsRows(PinsRows crafting, PinsRows player, BooleanSupplier valid) {
-        run(valid, null, () -> {
-            setPinsRows(crafting, player);
-            return null;
-        }, null);
+    public boolean setPinSettings(MiniTerminalPinSettings settings, BooleanSupplier valid) {
+        return run(valid, null, () -> {
+            setPinsRows(settings.craftingRows(), settings.playerRows());
+            // An exact count can change without crossing the boundary of an AE row.
+            pinsChanged = true;
+            return true;
+        }, false);
     }
 
     public void pin(IAEStack<?> target, int index, BooleanSupplier valid) {

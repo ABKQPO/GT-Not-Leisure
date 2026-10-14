@@ -33,7 +33,6 @@ import com.science.gtnl.utils.enums.ModList;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
-import appeng.api.config.PinsRows;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -182,7 +181,7 @@ public final class MiniTerminalSessionService {
         } else if (request.kind == MiniTerminalRequestPacket.Kind.CREATIVE_ACTION) {
             session.creativeAction(request);
         } else if (request.kind == MiniTerminalRequestPacket.Kind.PIN_ROWS) {
-            session.pinsRows(request);
+            session.updatePinSettings(request);
         } else if (request.kind == MiniTerminalRequestPacket.Kind.PIN_DROP) {
             session.pinDrop(request);
         } else if (request.kind == MiniTerminalRequestPacket.Kind.INVENTORY_DEPOSIT) {
@@ -192,9 +191,9 @@ public final class MiniTerminalSessionService {
         }
     }
 
-    static boolean isEnabledPin(int index, PinsRows craftingRows, PinsRows playerRows) {
-        return index >= 0 && index < craftingRows.getSlotCount()
-            || index >= PinList.PLAYER_OFFSET && index < PinList.PLAYER_OFFSET + playerRows.getSlotCount();
+    static boolean isEnabledPin(int index, MiniTerminalPinSettings settings) {
+        return index >= 0 && index < settings.craftingCount()
+            || index >= PinList.PLAYER_OFFSET && index < PinList.PLAYER_OFFSET + settings.playerCount();
     }
 
     static boolean isTargetRevisionValid(MiniTerminalRequestPacket request, long catalogRevision, long pinRevision) {
@@ -550,6 +549,7 @@ public final class MiniTerminalSessionService {
         final IMEMonitor<IAEItemStack> monitor;
         final IMEMonitor<IAEFluidStack> fluidMonitor;
         final MiniTerminalMonitorableAdapter terminal;
+        MiniTerminalPinSettings pinSettings;
         NBTTagList observedPins;
         MiniTerminalCatalog catalog;
         long pinRevision = 1;
@@ -577,6 +577,11 @@ public final class MiniTerminalSessionService {
             this.terminal = new MiniTerminalMonitorableAdapter(player, host);
             this.monitor = terminal.getItemMonitor();
             this.fluidMonitor = host.getFluidInventory();
+            this.pinSettings = MiniTerminalPinSettings.read(
+                stack,
+                player,
+                terminal.getCraftingPinsRows(),
+                terminal.getPlayerPinsRows());
             this.observedPins = (NBTTagList) pinData().copy();
         }
 
@@ -667,14 +672,8 @@ public final class MiniTerminalSessionService {
             }
             NBTTagCompound header = message("PINS", id);
             header.setLong("revision", pinRevision);
-            header.setInteger(
-                "craftingRows",
-                terminal.getCraftingPinsRows()
-                    .ordinal());
-            header.setInteger(
-                "playerRows",
-                terminal.getPlayerPinsRows()
-                    .ordinal());
+            header.setInteger("craftingCount", pinSettings.craftingCount());
+            header.setInteger("playerCount", pinSettings.playerCount());
             sendParts(player, header, entries, true);
         }
 
@@ -684,17 +683,17 @@ public final class MiniTerminalSessionService {
             return true;
         }
 
-        void pinsRows(MiniTerminalRequestPacket request) {
+        void updatePinSettings(MiniTerminalRequestPacket request) {
             if (!acceptAction(request)) return;
             if (request.pinRevision != pinRevision) {
                 sendPins();
                 return;
             }
             try {
-                terminal.setPinsRows(
-                    request.craftingRows,
-                    request.playerRows,
-                    () -> operationValid(SecurityPermissions.EXTRACT));
+                if (terminal.setPinSettings(request.pinSettings, () -> operationValid(SecurityPermissions.EXTRACT))) {
+                    pinSettings = request.pinSettings;
+                    pinSettings.save(stack, player);
+                }
             } finally {
                 recordPinChanges();
                 MiniTerminalTransferService.synchronize(player);
@@ -709,8 +708,7 @@ public final class MiniTerminalSessionService {
                 return;
             }
             int nativePin = request.nativePin;
-            if (nativePin < PinList.PLAYER_OFFSET || nativePin >= PinList.PLAYER_OFFSET + terminal.getPlayerPinsRows()
-                .getSlotCount()) return;
+            if (nativePin < PinList.PLAYER_OFFSET || !isEnabledPin(nativePin, pinSettings)) return;
             IAEStack<?> offered = request.pinTarget.copy()
                 .reset();
             IAEStack<?> previous = terminal.getPin(nativePin);
@@ -787,9 +785,7 @@ public final class MiniTerminalSessionService {
                 resync();
                 return;
             }
-            if (request.nativePin >= 0
-                && !isEnabledPin(request.nativePin, terminal.getCraftingPinsRows(), terminal.getPlayerPinsRows()))
-                return;
+            if (request.nativePin >= 0 && !isEnabledPin(request.nativePin, pinSettings)) return;
             IAEStack<?> selected = request.nativePin >= 0 ? terminal.getPin(request.nativePin)
                 : catalog.target(request.entryId);
             if (!(selected instanceof IAEItemStack target)) return;
@@ -843,8 +839,7 @@ public final class MiniTerminalSessionService {
             }
             ItemStack hand = player.inventory.getItemStack();
             int nativePin = request.nativePin;
-            if (nativePin >= 0
-                && !isEnabledPin(nativePin, terminal.getCraftingPinsRows(), terminal.getPlayerPinsRows())) return;
+            if (nativePin >= 0 && !isEnabledPin(nativePin, pinSettings)) return;
             IAEStack<?> pin = nativePin < 0 ? null : terminal.getPin(nativePin);
 
             if (request.action == MonitorableAction.UNSET_PIN) {

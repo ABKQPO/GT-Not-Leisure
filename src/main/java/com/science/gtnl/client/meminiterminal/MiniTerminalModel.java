@@ -13,9 +13,9 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.science.gtnl.common.meminiterminal.MiniTerminalPinSettings;
 import com.science.gtnl.common.meminiterminal.MiniTerminalUpdatePacket.Entry;
 
-import appeng.api.config.PinsRows;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -54,14 +54,12 @@ public final class MiniTerminalModel implements ISortSource {
     private long pendingDeltaRevision;
     private IAEStack<?>[] pendingPins;
     private long pendingPinRevision;
-    private PinsRows pendingCraftingPinsRows;
-    private PinsRows pendingPlayerPinsRows;
+    private MiniTerminalPinSettings pendingPinSettings;
     private Map<Integer, IAEStack<?>> stagedCatalog;
     private long stagedCatalogRevision;
     private IAEStack<?>[] stagedPins;
     private long stagedPinRevision;
-    private PinsRows stagedCraftingPinsRows;
-    private PinsRows stagedPlayerPinsRows;
+    private MiniTerminalPinSettings stagedPinSettings;
     private int savedScroll = -1;
     private int catalogPart;
     private int catalogParts;
@@ -69,8 +67,7 @@ public final class MiniTerminalModel implements ISortSource {
     private int pinParts;
     private IAEStack<?>[] pins = new IAEStack<?>[PinList.TOTAL_SLOTS];
     // Missing saved pin settings stay hidden until the server supplies them.
-    private PinsRows craftingPinsRows = PinsRows.DISABLED;
-    private PinsRows playerPinsRows = PinsRows.DISABLED;
+    private MiniTerminalPinSettings pinSettings = MiniTerminalPinSettings.DISABLED;
     private SortOrder sort = SortOrder.NAME;
     private SortDir direction = SortDir.ASCENDING;
     private ViewItems display = ViewItems.ALL;
@@ -93,8 +90,11 @@ public final class MiniTerminalModel implements ISortSource {
         if (terminal != null && terminal.getItem() instanceof ToolWirelessTerminal wireless) {
             // Restore the per-player layout before opening the panel; the server snapshot will confirm it.
             PinsHolder savedPins = new PinsHolder(terminal.copy());
-            craftingPinsRows = savedPins.getCraftingPinsRows(Minecraft.getMinecraft().thePlayer);
-            playerPinsRows = savedPins.getPlayerPinsRows(Minecraft.getMinecraft().thePlayer);
+            pinSettings = MiniTerminalPinSettings.read(
+                terminal,
+                Minecraft.getMinecraft().thePlayer,
+                savedPins.getCraftingPinsRows(Minecraft.getMinecraft().thePlayer),
+                savedPins.getPlayerPinsRows(Minecraft.getMinecraft().thePlayer));
             sessionState.observeNetwork(wireless.getEncryptionKey(terminal));
             repo.setPowered(sessionState.isDisplayOnline());
 
@@ -274,14 +274,13 @@ public final class MiniTerminalModel implements ISortSource {
     public boolean pins(NBTTagCompound data, List<Entry> slots) {
         if (data.getLong("revision") < pinRevision) return true;
         long revision = data.getLong("revision");
-        int craftingRows = data.getInteger("craftingRows");
-        int playerRows = data.getInteger("playerRows");
-        if (craftingRows < 0 || craftingRows >= PinsRows.values().length
-            || playerRows < 0
-            || playerRows >= PinsRows.values().length) {
+        int craftingCount = data.getInteger("craftingCount");
+        int playerCount = data.getInteger("playerCount");
+        if (!MiniTerminalPinSettings.validCounts(craftingCount, playerCount)) {
             pendingPins = null;
             return false;
         }
+        MiniTerminalPinSettings settings = new MiniTerminalPinSettings(craftingCount, playerCount);
         int part = data.getInteger("part");
         int parts = data.getInteger("parts");
         if (part == 0) {
@@ -300,12 +299,9 @@ public final class MiniTerminalModel implements ISortSource {
         if (data.getBoolean("reset")) {
             pendingPins = new IAEStack<?>[PinList.TOTAL_SLOTS];
             pendingPinRevision = revision;
-            pendingCraftingPinsRows = PinsRows.fromOrdinal(craftingRows);
-            pendingPlayerPinsRows = PinsRows.fromOrdinal(playerRows);
+            pendingPinSettings = settings;
         }
-        if (pendingPins == null || revision != pendingPinRevision
-            || pendingCraftingPinsRows.ordinal() != craftingRows
-            || pendingPlayerPinsRows.ordinal() != playerRows) {
+        if (pendingPins == null || revision != pendingPinRevision || !settings.equals(pendingPinSettings)) {
             pendingPins = null;
             return false;
         }
@@ -316,16 +312,14 @@ public final class MiniTerminalModel implements ISortSource {
         if (sessionState.isLoading()) {
             stagedPins = pendingPins;
             stagedPinRevision = revision;
-            stagedCraftingPinsRows = pendingCraftingPinsRows;
-            stagedPlayerPinsRows = pendingPlayerPinsRows;
+            stagedPinSettings = pendingPinSettings;
             pendingPins = null;
             commitSessionSnapshots();
             return true;
         }
         pinRevision = revision;
         pins = pendingPins;
-        craftingPinsRows = pendingCraftingPinsRows;
-        playerPinsRows = pendingPlayerPinsRows;
+        pinSettings = pendingPinSettings;
         pendingPins = null;
         projectPins();
         updateScroll();
@@ -338,8 +332,7 @@ public final class MiniTerminalModel implements ISortSource {
         catalogRevision = stagedCatalogRevision;
         pins = stagedPins;
         pinRevision = stagedPinRevision;
-        craftingPinsRows = stagedCraftingPinsRows;
-        playerPinsRows = stagedPlayerPinsRows;
+        pinSettings = stagedPinSettings;
         stagedCatalog = null;
         stagedPins = null;
         sessionState.snapshotsCommitted();
@@ -381,12 +374,8 @@ public final class MiniTerminalModel implements ISortSource {
         }
     }
 
-    public PinsRows craftingPinsRows() {
-        return craftingPinsRows;
-    }
-
-    public PinsRows playerPinsRows() {
-        return playerPinsRows;
+    public MiniTerminalPinSettings pinSettings() {
+        return pinSettings;
     }
 
     public void visibility(int craftingCount, int playerCount) {

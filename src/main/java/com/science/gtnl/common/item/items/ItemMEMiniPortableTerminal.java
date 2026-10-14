@@ -180,7 +180,7 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
         }
         PinsHolder holder = new PinsHolder(stack);
         holder.getPinsInv(player);
-        holder.setPinsRows(player, holder.getCraftingPinsRows(player), PinsRows.TWO);
+        holder.setPinsRows(player, PinsRows.DISABLED, PinsRows.DISABLED);
         player.inventory.markDirty();
     }
 

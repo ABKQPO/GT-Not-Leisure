@@ -43,11 +43,11 @@ import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widget.WidgetTree;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
+import com.science.gtnl.common.meminiterminal.MiniTerminalPinSettings;
 
 import appeng.api.config.ActionItems;
 import appeng.api.config.OperationMode;
 import appeng.api.config.PinSectionOrder;
-import appeng.api.config.PinsRows;
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
 import appeng.api.storage.data.IAEItemStack;
@@ -305,19 +305,10 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
 
             boolean changed = requiresResize();
             if (changed) WidgetTree.resizeInternal(resizer(), false);
-            PinsRows craftingRows = PinsRows.fromOrdinal(
-                Math.min(
-                    model.craftingPinsRows()
-                        .ordinal(),
-                    AEConfig.instance.maxCraftingPinRows));
-            PinsRows playerRows = PinsRows.fromOrdinal(
-                Math.min(
-                    model.playerPinsRows()
-                        .ordinal(),
-                    AEConfig.instance.maxPlayerPinRows));
+            MiniTerminalPinSettings pins = model.pinSettings();
             layout.configurePins(
-                craftingRows.getSlotCount(),
-                playerRows.getSlotCount(),
+                Math.min(pins.craftingCount(), AEConfig.instance.maxCraftingPinRows * 9),
+                Math.min(pins.playerCount(), AEConfig.instance.maxPlayerPinRows * 9),
                 AEConfig.instance.pinSectionOrder == PinSectionOrder.PLAYER_FIRST);
             changed |= layout.update(inventory, MiniTerminalClient.collapsed());
             Rectangle bounds = layout.bounds();
@@ -794,23 +785,18 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
         private void changePinRows(int button) {
             if (button != 0 && button != 1) return;
 
-            int craft = Math.min(
-                model.craftingPinsRows()
-                    .ordinal(),
-                AEConfig.instance.maxCraftingPinRows);
-            int player = Math.min(
-                model.playerPinsRows()
-                    .ordinal(),
-                AEConfig.instance.maxPlayerPinRows);
-            int delta = button == 1 ? -1 : 1;
-            if (GuiScreen.isCtrlKeyDown())
-                craft = Math.max(0, Math.min(AEConfig.instance.maxCraftingPinRows, craft + delta));
-            else player = Math.max(0, Math.min(AEConfig.instance.maxPlayerPinRows, player + delta));
-            PinsRows craftingRows = PinsRows.fromOrdinal(craft);
-            PinsRows playerRows = PinsRows.fromOrdinal(player);
-            if (button == 0 && !layout.fitsPins(craftingRows.getSlotCount(), playerRows.getSlotCount())) return;
-            if (craftingRows == model.craftingPinsRows() && playerRows == model.playerPinsRows()) return;
-            MiniTerminalClient.setPinRows(craftingRows, playerRows);
+            MiniTerminalPinSettings current = model.pinSettings();
+            int maxCrafting = Math.min(PinList.CRAFTING_SLOTS, AEConfig.instance.maxCraftingPinRows * 9);
+            int maxPlayer = Math.min(PinList.PLAYER_SLOTS, AEConfig.instance.maxPlayerPinRows * 9);
+            int craft = Math.min(current.craftingCount(), maxCrafting);
+            int player = Math.min(current.playerCount(), maxPlayer);
+            int delta = (button == 1 ? -1 : 1) * layout.columns();
+            if (GuiScreen.isCtrlKeyDown()) craft = Math.max(0, Math.min(maxCrafting, craft + delta));
+            else player = Math.max(0, Math.min(maxPlayer, player + delta));
+            if (button == 0 && !layout.fitsPins(craft, player)) return;
+            MiniTerminalPinSettings next = new MiniTerminalPinSettings(craft, player);
+            if (next.equals(current)) return;
+            MiniTerminalClient.setPinSettings(next);
         }
 
         private VirtualMESlot slotAt(int x, int y) {
