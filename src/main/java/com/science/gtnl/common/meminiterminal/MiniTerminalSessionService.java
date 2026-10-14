@@ -323,7 +323,8 @@ public final class MiniTerminalSessionService {
 
     private static ItemStack authoritativeSessionStack(EntityPlayerMP player, MiniTerminalRequestPacket request,
         Session session, ItemStack current) {
-        if (session == null || session.id != request.sessionId || session.slot != request.slot
+        if (session == null || session.id != request.sessionId
+            || session.slot != request.slot
             || !session.terminalId.equals(request.terminalId)) return current;
         if (!ItemMEMiniPortableTerminal.restoreTerminalStack(player, request.slot, session.stack)) return null;
         return session.stack;
