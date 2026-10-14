@@ -127,8 +127,7 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
 
     public MiniTerminalInventoryPanel(GuiContainer inventory, MiniTerminalModel model) {
         super(MiniTerminalClient.layoutState());
-        pos(0, 0)
-            .size(MiniTerminalLayout.WIDTH, 166);
+        pos(0, 0).size(MiniTerminalLayout.WIDTH, 166);
         tooltipBuilder(tooltip -> {
             tooltip.addLine(tr("move"));
             if (layout.expanded()) tooltip.addLine(tr("resize"));
@@ -162,8 +161,7 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             .child(new TerminalButton(3, Settings.OPERATION_MODE, OperationMode.EMPTY))
             .child(new TerminalButton(6, null, null))
             .child(new TerminalButton(5, Settings.TERMINAL_STYLE, TerminalStyle.SMALL));
-        child(terminal)
-            .child(search)
+        child(terminal).child(search)
             .child(header)
             .child(controls);
     }
@@ -190,7 +188,8 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
 
     boolean isMouseOver(int mouseX, int mouseY) {
         if (!isValid() || !isOpen() || !isEnabled() || !bounds().contains(mouseX, mouseY)) return false;
-        for (ModularPanel panel : getScreen().getPanelManager().getOpenPanels()) {
+        for (ModularPanel panel : getScreen().getPanelManager()
+            .getOpenPanels()) {
             if (panel == this) return true;
             if (panel.disablePanelsBelow() || panel.isAnyHovered()) return false;
         }
@@ -255,10 +254,8 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             if (getArea().x != bounds.x || getArea().y != bounds.y
                 || getArea().width != bounds.width
                 || getArea().height != bounds.height) {
-                resizer()
-                    .resetPosition();
-                pos(bounds.x, bounds.y)
-                    .size(bounds.width, bounds.height);
+                resizer().resetPosition();
+                pos(bounds.x, bounds.y).size(bounds.width, bounds.height);
                 changed = true;
             }
             resizeableOnDrag(layout.expanded());
@@ -310,7 +307,8 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
     }
 
     private boolean hasForeignFocus() {
-        IWidget focused = getContext().getFocusedWidget().getElement();
+        IWidget focused = getContext().getFocusedWidget()
+            .getElement();
         return focused != null && focused.isValid() && focused.getPanel() != this;
     }
 
@@ -351,11 +349,14 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             || keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode();
         if (!inside && !search.isFocused() && !closeKey) return false;
         boolean handled = super.onKeyPressed(character, keyCode);
-        if (!handled && closeKey && !getScreen().isOverlay()
-            && getScreen().getPanelManager().getTopMostPanel() == this
+        if (!handled && closeKey
+            && !getScreen().isOverlay()
+            && getScreen().getPanelManager()
+                .getTopMostPanel() == this
             && !getContext().hasDraggable()) {
             // The mini terminal is part of the host GUI; E must not close just this auxiliary panel.
-            getScreen().getMainPanel().closeIfOpen();
+            getScreen().getMainPanel()
+                .closeIfOpen();
             return true;
         }
         boolean block = inside && !closeKey;

@@ -39,8 +39,8 @@ final class MiniTerminalTransferService {
 
     private MiniTerminalTransferService() {}
 
-    static void depositInventory(EntityPlayerMP player, MiniTerminalMonitorableAdapter terminal, Slot sourceSlot, int amount,
-        BooleanSupplier valid) {
+    static void depositInventory(EntityPlayerMP player, MiniTerminalMonitorableAdapter terminal, Slot sourceSlot,
+        int amount, BooleanSupplier valid) {
         int inventorySlot = MiniTerminalSessionService.playerInventoryIndex(player, sourceSlot);
         if (inventorySlot < 0) return;
         ItemStack original = player.inventory.mainInventory[inventorySlot];
@@ -54,8 +54,8 @@ final class MiniTerminalTransferService {
         }
     }
 
-    private static void depositFrom(EntityPlayerMP player, MiniTerminalMonitorableAdapter terminal, InventoryAdaptor source,
-        ItemStack original, int amount, BooleanSupplier valid) {
+    private static void depositFrom(EntityPlayerMP player, MiniTerminalMonitorableAdapter terminal,
+        InventoryAdaptor source, ItemStack original, int amount, BooleanSupplier valid) {
         deposit(amount, valid, new IDepositAccess() {
 
             @Override
@@ -190,8 +190,8 @@ final class MiniTerminalTransferService {
         }
     }
 
-    private static void insertPickup(EntityItemPickupEvent event, EntityPlayerMP player, ItemStack terminalStack, int slot,
-        ItemStack picked) {
+    private static void insertPickup(EntityItemPickupEvent event, EntityPlayerMP player, ItemStack terminalStack,
+        int slot, ItemStack picked) {
         IWirelessTermHandler handler = (IWirelessTermHandler) terminalStack.getItem();
         WirelessTerminalGuiObject host = new WirelessTerminalGuiObject(
             handler,

@@ -148,7 +148,8 @@ public final class MiniTerminalSessionService {
                 return;
             }
         } else if (!accepted) return;
-        if (request.kind == MiniTerminalRequestPacket.Kind.BEGIN || request.kind == MiniTerminalRequestPacket.Kind.FULL) {
+        if (request.kind == MiniTerminalRequestPacket.Kind.BEGIN
+            || request.kind == MiniTerminalRequestPacket.Kind.FULL) {
             begin(player, request);
             return;
         }
@@ -314,9 +315,8 @@ public final class MiniTerminalSessionService {
         if (preferred == null) preferred = SELECTED.get(player.getUniqueID());
         if (preferred == null) {
             int candidate = ItemMEMiniPortableTerminal.findFirstTerminalSlot(player);
-            if (candidate >= 0)
-                preferred = ItemMEMiniPortableTerminal
-                    .ensureIdentity(ItemMEMiniPortableTerminal.getTerminalStack(player, candidate), player);
+            if (candidate >= 0) preferred = ItemMEMiniPortableTerminal
+                .ensureIdentity(ItemMEMiniPortableTerminal.getTerminalStack(player, candidate), player);
         }
         long id = ++nextSession;
         int slot = ItemMEMiniPortableTerminal.findTerminalSlot(player, preferred);
@@ -555,7 +555,8 @@ public final class MiniTerminalSessionService {
             if (actionableNode == null || actionableNode.getGrid() != grid) return MiniTerminalStatus.OUT_OF_RANGE;
             if (host.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) < 1)
                 return MiniTerminalStatus.NO_POWER;
-            return permission(SecurityPermissions.EXTRACT) ? MiniTerminalStatus.ONLINE : MiniTerminalStatus.NO_PERMISSION;
+            return permission(SecurityPermissions.EXTRACT) ? MiniTerminalStatus.ONLINE
+                : MiniTerminalStatus.NO_PERMISSION;
         }
 
         boolean permission(SecurityPermissions permission) {
@@ -668,10 +669,8 @@ public final class MiniTerminalSessionService {
                 return;
             }
             int nativePin = request.nativePin;
-            if (nativePin < PinList.PLAYER_OFFSET
-                || nativePin >= PinList.PLAYER_OFFSET + terminal.getPlayerPinsRows()
-                    .getSlotCount()
-                || request.pinTarget == null) return;
+            if (nativePin < PinList.PLAYER_OFFSET || nativePin >= PinList.PLAYER_OFFSET + terminal.getPlayerPinsRows()
+                .getSlotCount() || request.pinTarget == null) return;
             IAEStack<?> offered;
             try {
                 offered = IAEStack.fromNBTGeneric(request.pinTarget);
@@ -843,8 +842,7 @@ public final class MiniTerminalSessionService {
 
         private void openCrafting(IAEStack<?> target) {
             if (target == null || !allowedContainer(player)
-                || ItemMEMiniPortableTerminal.findTerminalSlot(player, terminalId) != slot)
-                return;
+                || ItemMEMiniPortableTerminal.findTerminalSlot(player, terminalId) != slot) return;
             ItemStack current = ItemMEMiniPortableTerminal.getTerminalStack(player, slot);
             if (current != stack) return;
 

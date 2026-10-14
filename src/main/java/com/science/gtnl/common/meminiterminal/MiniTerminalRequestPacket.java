@@ -109,8 +109,8 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
         return packet;
     }
 
-    public static MiniTerminalRequestPacket action(long sessionId, long actionId, long catalogRevision, long pinRevision,
-        int entryId, int nativePin, MonitorableAction action) {
+    public static MiniTerminalRequestPacket action(long sessionId, long actionId, long catalogRevision,
+        long pinRevision, int entryId, int nativePin, MonitorableAction action) {
         MiniTerminalRequestPacket packet = end(sessionId);
         packet.kind = Kind.ACTION;
         packet.actionId = actionId;
@@ -145,8 +145,8 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
         return packet;
     }
 
-    public static MiniTerminalRequestPacket pinsRows(long sessionId, long actionId, long pinRevision, PinsRows craftingRows,
-        PinsRows playerRows) {
+    public static MiniTerminalRequestPacket pinsRows(long sessionId, long actionId, long pinRevision,
+        PinsRows craftingRows, PinsRows playerRows) {
         MiniTerminalRequestPacket packet = end(sessionId);
         packet.kind = Kind.PIN_ROWS;
         packet.actionId = actionId;
@@ -230,7 +230,8 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
                 entryId = buf.readInt();
                 nativePin = buf.readInt();
                 action = readEnum(buf, MonitorableAction.values());
-                if (action == MonitorableAction.SET_PIN) throw new IllegalArgumentException("Use mini terminal pin drop");
+                if (action == MonitorableAction.SET_PIN)
+                    throw new IllegalArgumentException("Use mini terminal pin drop");
                 if (actionId <= 0 || nativePin < -1 || nativePin >= PinList.TOTAL_SLOTS || entryId < -1) {
                     throw new IllegalArgumentException("Mini terminal action target");
                 }
@@ -252,7 +253,8 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
                     || nativePin >= PinList.TOTAL_SLOTS
                     || length <= 0
                     || length > MAX_PIN_COMPRESSED_BYTES
-                    || length != buf.readableBytes()) throw new IllegalArgumentException("Mini terminal pin drop target");
+                    || length != buf.readableBytes())
+                    throw new IllegalArgumentException("Mini terminal pin drop target");
                 pinData = new byte[length];
                 buf.readBytes(pinData);
                 try {
@@ -384,9 +386,8 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
             validatePinTag(input, 10, 0);
             if (input.available() != 0) throw new IOException("Trailing mini terminal pin NBT");
         }
-        NBTTagCompound target = CompressedStreamTools.func_152456_a(
-            new DataInputStream(new ByteArrayInputStream(raw)),
-            new NBTSizeTracker(MAX_PIN_NBT_BYTES));
+        NBTTagCompound target = CompressedStreamTools
+            .func_152456_a(new DataInputStream(new ByteArrayInputStream(raw)), new NBTSizeTracker(MAX_PIN_NBT_BYTES));
         String type = target.getString("StackType");
         if (!type.equals("item") && !type.equals("fluid")) throw new IOException("Unsupported mini terminal pin type");
         return target;
@@ -403,7 +404,8 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
             case 7, 11 -> {
                 int length = input.readInt();
                 int width = type == 7 ? 1 : 4;
-                if (length < 0 || length > input.available() / width) throw new IOException("Mini terminal pin NBT array");
+                if (length < 0 || length > input.available() / width)
+                    throw new IOException("Mini terminal pin NBT array");
                 skipPinBytes(input, length * width);
             }
             case 8 -> skipPinBytes(input, input.readUnsignedShort());

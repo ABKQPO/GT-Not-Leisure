@@ -58,7 +58,8 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
     }
 
     static List<NBTTagList> split(List<NBTTagCompound> entries) throws IOException {
-        if (entries.size() > MAX_UPDATE_ENTRIES) throw new IOException("Too many ME mini portable terminal update entries");
+        if (entries.size() > MAX_UPDATE_ENTRIES)
+            throw new IOException("Too many ME mini portable terminal update entries");
         List<NBTTagList> parts = new ArrayList<>();
         UpdateBudget budget = new UpdateBudget();
         NBTTagList part = new NBTTagList();
@@ -89,7 +90,8 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
 
     private static void addPart(List<NBTTagList> parts, NBTTagList part, EncodedSize singleEntrySize,
         UpdateBudget budget) throws IOException {
-        if (parts.size() >= MAX_UPDATE_PARTS) throw new IOException("Too many ME mini portable terminal update packets");
+        if (parts.size() >= MAX_UPDATE_PARTS)
+            throw new IOException("Too many ME mini portable terminal update packets");
         // A one-entry part is identical to the singleton envelope already validated by the native decoder.
         EncodedSize size = part.tagCount() == 1 ? singleEntrySize : measure(part);
         budget.compressedBytes += size.compressedBytes();
@@ -111,12 +113,15 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
 
         envelope.setTag("entries", entries);
         byte[] compressed = CompressedStreamTools.compress(envelope);
-        if (compressed.length > MAX_COMPRESSED_BYTES) throw new IOException("Oversize ME mini portable terminal compressed NBT");
+        if (compressed.length > MAX_COMPRESSED_BYTES)
+            throw new IOException("Oversize ME mini portable terminal compressed NBT");
         MeasuringTracker tracker = new MeasuringTracker();
         try {
             CompressedStreamTools.func_152457_a(compressed, tracker);
         } catch (RuntimeException exception) {
-            throw new IOException("ME mini portable terminal NBT exceeds the native decoder budget or nesting limit", exception);
+            throw new IOException(
+                "ME mini portable terminal NBT exceeds the native decoder budget or nesting limit",
+                exception);
         }
         return new EncodedSize(compressed.length, tracker.bytes);
     }

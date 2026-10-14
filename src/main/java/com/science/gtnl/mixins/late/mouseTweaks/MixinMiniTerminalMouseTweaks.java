@@ -26,6 +26,7 @@ public abstract class MixinMiniTerminalMouseTweaks {
             || gui.inventorySlots.windowId != windowId
             || slotNumber < 0
             || slotNumber >= gui.inventorySlots.inventorySlots.size()) return;
-        if (MiniTerminalClient.shiftClickToME(gui.inventorySlots.getSlot(slotNumber), mouseButton, clickMode)) ci.cancel();
+        if (MiniTerminalClient.shiftClickToME(gui.inventorySlots.getSlot(slotNumber), mouseButton, clickMode))
+            ci.cancel();
     }
 }
