@@ -118,9 +118,10 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
 
     @Override
     public void renderObjects(GuiContainer gui, int mouseX, int mouseY) {
-
         MiniTerminalInventoryPanel overlay = overlay(gui);
-        if (overlay != null) overlay.syncLayout();
+        if (overlay == null) return;
+        if (overlay.getScreen() instanceof MiniTerminalInventoryOverlay screen) screen.drawInContainer(mouseX, mouseY);
+        else overlay.syncLayout();
     }
 
     @Override

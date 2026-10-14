@@ -1,18 +1,9 @@
 package com.science.gtnl.client.meminiterminal;
 
-import java.awt.Rectangle;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
 
-import org.lwjgl.opengl.GL11;
-
 import appeng.client.gui.slots.VirtualMESlot;
-import appeng.integration.modules.NEI;
-import codechicken.nei.NEIClientConfig;
 import codechicken.nei.NEIClientUtils;
 import codechicken.nei.guihook.GuiContainerManager;
 import cpw.mods.fml.relauncher.Side;
@@ -36,11 +27,6 @@ final class MiniTerminalForeground {
         nativeTooltipRequested = false;
         chromaticEvent = null;
         chromaticTooltip = null;
-    }
-
-    void queueCursor() {
-        // Queue before MUI widgets add their tooltips; the queue runs after all overlay panels are drawn.
-        overlay.getContext().queueForegroundRender(this::drawCursor);
     }
 
     void queueTooltip() {
@@ -71,51 +57,6 @@ final class MiniTerminalForeground {
     private boolean active() {
         return MiniTerminalClient.overlay() == overlay && overlay.isValid() && overlay.isOpen()
             && Minecraft.getMinecraft().currentScreen == overlay.inventory();
-    }
-
-    private void drawCursor() {
-        if (!active()) return;
-        int x = overlay.getContext().getAbsMouseX();
-        int y = overlay.getContext().getAbsMouseY();
-        Rectangle bounds = overlay.bounds();
-        // Include icons whose centre is outside the panel but whose edge is covered by it.
-        if (!bounds.intersects(x - 8, y - 8, 16, 16)) return;
-        Minecraft mc = Minecraft.getMinecraft();
-        ItemStack cursor = NEI.instance != null && NEIClientConfig.isEnabled() && !NEIClientConfig.isHidden()
-            ? NEI.instance.getDraggingPhantomItem()
-            : null;
-        if (cursor == null) cursor = mc.thePlayer.inventory.getItemStack();
-        if (cursor == null) return;
-
-        ItemStack renderedCursor = cursor;
-        drawOverPanel(() -> {
-            GL11.glTranslatef(0, 0, 200);
-            RenderHelper.enableGUIStandardItemLighting();
-            GuiContainerManager.drawItem(x - 8, y - 8, renderedCursor);
-        });
-    }
-
-    private void drawOverPanel(Runnable render) {
-        Minecraft mc = Minecraft.getMinecraft();
-        Rectangle bounds = overlay.bounds();
-        int scale = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight).getScaleFactor();
-        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-        GL11.glPushMatrix();
-        try {
-            // Redraw only the covered portion, leaving existing text, transparency and glint outside unchanged.
-            GL11.glEnable(GL11.GL_SCISSOR_TEST);
-            GL11.glScissor(
-                bounds.x * scale,
-                mc.displayHeight - (bounds.y + bounds.height) * scale,
-                bounds.width * scale,
-                bounds.height * scale);
-            GL11.glColor4f(1, 1, 1, 1);
-            GL11.glEnable(GL11.GL_ALPHA_TEST);
-            render.run();
-        } finally {
-            GL11.glPopMatrix();
-            GL11.glPopAttrib();
-        }
     }
 
     private void drawNativeTooltip() {
