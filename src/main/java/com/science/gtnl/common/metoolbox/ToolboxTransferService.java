@@ -40,10 +40,12 @@ final class ToolboxTransferService {
 
     static void depositInventory(EntityPlayerMP player, ToolboxMonitorableAdapter terminal, Slot sourceSlot, int amount,
         BooleanSupplier valid) {
-        ItemStack original = sourceSlot.getStack();
+        int inventorySlot = ToolboxSessionService.playerInventoryIndex(player, sourceSlot);
+        if (inventorySlot < 0) return;
+        ItemStack original = player.inventory.mainInventory[inventorySlot];
         if (original == null || original.stackSize <= 0 || amount <= 0 || !sourceSlot.canTakeStack(player)) return;
         InventoryAdaptor source = new AdaptorIInventory(
-            new WrapperInventoryRange(sourceSlot.inventory, sourceSlot.getSlotIndex(), 1, false));
+            new WrapperInventoryRange(player.inventory, inventorySlot, 1, false));
         try {
             depositFrom(player, terminal, source, original, amount, valid);
         } finally {

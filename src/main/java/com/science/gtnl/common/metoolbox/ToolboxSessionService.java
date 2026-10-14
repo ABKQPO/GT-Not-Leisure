@@ -84,6 +84,15 @@ public final class ToolboxSessionService {
 
     private ToolboxSessionService() {}
 
+    /** Returns the real main-inventory index, including wrapped slots, or -1 for other inventories. */
+    public static int playerInventoryIndex(EntityPlayer player, Slot slot) {
+        if (player == null || slot == null) return -1;
+        for (int index = 0; index < Math.min(36, player.inventory.mainInventory.length); index++) {
+            if (slot.isSlotInInventory(player.inventory, index)) return index;
+        }
+        return -1;
+    }
+
     public static void end(EntityPlayerMP player) {
         Session session = SESSIONS.remove(player.getUniqueID());
         if (session != null) session.close();
@@ -619,10 +628,9 @@ public final class ToolboxSessionService {
             try {
                 for (Slot candidate : sources) {
                     if (!valid.getAsBoolean()) return;
-                    if (candidate.inventory != player.inventory || candidate.getSlotIndex() < 0
-                        || candidate.getSlotIndex() >= 36
-                        || !candidate.canTakeStack(player)) continue;
-                    ItemStack stackInSlot = candidate.getStack();
+                    int inventorySlot = playerInventoryIndex(player, candidate);
+                    if (inventorySlot < 0 || !candidate.canTakeStack(player)) continue;
+                    ItemStack stackInSlot = player.inventory.mainInventory[inventorySlot];
                     if (stackInSlot == null || stackInSlot.stackSize <= 0
                         || stackInSlot.getItem() instanceof ItemMEToolbox) continue;
 
@@ -670,14 +678,14 @@ public final class ToolboxSessionService {
 
             for (Object entry : player.inventoryContainer.inventorySlots) {
                 Slot playerSlot = (Slot) entry;
-                if (playerSlot.inventory != player.inventory || playerSlot.getSlotIndex() < 0
-                    || playerSlot.getSlotIndex() >= 36) continue;
-                Slot hostSlot = container.getSlotFromInventory(player.inventory, playerSlot.getSlotIndex());
+                int inventorySlot = playerInventoryIndex(player, playerSlot);
+                if (inventorySlot < 0) continue;
+                Slot hostSlot = container.getSlotFromInventory(player.inventory, inventorySlot);
                 Slot destination = hostSlot == null ? playerSlot : hostSlot;
                 if (!destination.isItemValid(target.getItemStack())) continue;
                 Container destinationContainer = hostSlot == null ? player.inventoryContainer : container;
                 if (Platform.isBogoLoaded && BogoInventory.pinned(player, destinationContainer, destination)) continue;
-                destinations.add(destination.getSlotIndex());
+                destinations.add(inventorySlot);
             }
             ToolboxTransferService.extractInventory(
                 player,

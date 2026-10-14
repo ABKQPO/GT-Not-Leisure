@@ -27,6 +27,7 @@ import com.cleanroommc.modularui.screen.OpenScreenEvent;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.ItemMEToolbox;
 import com.science.gtnl.common.metoolbox.ToolboxRequestPacket;
+import com.science.gtnl.common.metoolbox.ToolboxSessionService;
 
 import appeng.api.config.PinsRows;
 import appeng.api.config.SortDir;
@@ -272,7 +273,8 @@ public final class ToolboxClient {
         Minecraft mc = Minecraft.getMinecraft();
         if (waiting || mc.thePlayer == null
             || overlay == null
-            || !overlay.getPanelManager().isOpen()
+            || !overlay.getPanelManager()
+                .isOpen()
             || mc.currentScreen != overlay.inventory()
             || mc.thePlayer.openContainer == null) return;
         closeSession();
@@ -495,15 +497,16 @@ public final class ToolboxClient {
             || overlay.inventory().inventorySlots != mc.thePlayer.openContainer
             || !overlay.layout()
                 .expanded()
-            || slot.inventory != mc.thePlayer.inventory
-            || slot.getSlotIndex() < 0
-            || slot.getSlotIndex() >= 36
+            || !overlay.inventory().inventorySlots.inventorySlots.contains(slot)
             || ItemMEToolbox.isToolbox(slot.getStack())) return false;
+
+        int inventorySlot = ToolboxSessionService.playerInventoryIndex(mc.thePlayer, slot);
+        if (inventorySlot < 0) return false;
 
         if (!slot.getHasStack() && mode != ToolboxRequestPacket.DepositMode.NATIVE_REGION) return true;
         if (model().isOnline() && session != 0 && hasCurrentContainer()) {
             ScienceNotLeisure.network
-                .sendToServer(ToolboxRequestPacket.inventoryDeposit(session, ++action, slot.getSlotIndex(), mode));
+                .sendToServer(ToolboxRequestPacket.inventoryDeposit(session, ++action, inventorySlot, mode));
         }
         return true;
     }
