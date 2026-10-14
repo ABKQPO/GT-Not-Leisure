@@ -1,18 +1,30 @@
 package com.science.gtnl.common.recipe.gtnl;
 
+import java.util.function.Predicate;
+
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.RecipeSorter;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import com.dreammaster.item.NHItemList;
+import com.glodblock.github.loader.recipe.WirelessTerminalEnergyRecipe;
+import com.glodblock.github.loader.recipe.WirelessTerminalQuantumBridgeRecipe;
+import com.glodblock.github.loader.recipe.WirelessTerminalRecipe;
 import com.google.common.collect.ImmutableList;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IRecipePool;
+import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.common.meminiterminal.MiniTerminalUpgradeRecipe;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
@@ -20,8 +32,12 @@ import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import appeng.api.AEApi;
+import appeng.api.config.Settings;
+import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.util.AEColor;
+import appeng.container.ContainerNull;
 import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
@@ -52,7 +68,56 @@ public class CraftingTableRecipes implements IRecipePool {
 
     @Override
     public void loadRecipes() {
-        MiniTerminalUpgradeRecipe.register();
+        // Keep sorter IDs stable for integrations that order their recipes relative to these entries.
+        RecipeSorter.register(
+            ScienceNotLeisure.MODID + ":me_toolbox_upgrade",
+            MiniTerminalUpgradeRecipe.class,
+            RecipeSorter.Category.SHAPED,
+            "after:forge:shapedore");
+        GameRegistry.addRecipe(
+            new MiniTerminalUpgradeRecipe(
+                GTNLItemList.MEMiniPortableTerminal.get(1),
+                "PEP",
+                "CWC",
+                "PEP",
+                'P',
+                "plateAluminium",
+                'E',
+                AEApi.instance()
+                    .definitions()
+                    .materials()
+                    .engProcessor()
+                    .maybeStack(1)
+                    .get(),
+                'C',
+                AEApi.instance()
+                    .definitions()
+                    .parts()
+                    .cableGlass()
+                    .stack(AEColor.Transparent, 1),
+                'W',
+                AEApi.instance()
+                    .definitions()
+                    .items()
+                    .wirelessTerminal()
+                    .maybeStack(1)
+                    .get()));
+
+        RecipeSorter.register(
+            ScienceNotLeisure.MODID + ":me_toolbox_card",
+            MiniTerminalCardRecipe.class,
+            RecipeSorter.Category.SHAPELESS,
+            "after:forge:shapelessore");
+        ItemStack terminal = GTNLItemList.MEMiniPortableTerminal.get(1);
+        ItemMEMiniPortableTerminal item = (ItemMEMiniPortableTerminal) terminal.getItem();
+        GameRegistry
+            .addRecipe(new MiniTerminalCardRecipe(new WirelessTerminalEnergyRecipe(terminal), item::hasInfinityPower));
+        GameRegistry.addRecipe(
+            new MiniTerminalCardRecipe(new WirelessTerminalQuantumBridgeRecipe(terminal), item::hasInfinityRange));
+        if (WirelessTerminalRecipe.getInfinityBoosterCard() != null) {
+            GameRegistry.addRecipe(new MiniTerminalCardRecipe(new WirelessTerminalRecipe(terminal), item::hasInfinityRange));
+        }
+
         var aeMaterials = AEApi.instance()
             .definitions()
             .materials();
@@ -1657,5 +1722,102 @@ public class CraftingTableRecipes implements IRecipePool {
             new Object[] { "ABA", "CDC", "ABA", 'A', OrePrefixes.circuit.get(Materials.HV), 'B',
                 ItemList.Hatch_Maintenance.get(1L), 'C', ItemList.Robot_Arm_HV.get(1L), 'D',
                 ItemList.Hull_HV.get(1L) });
+    }
+
+    private static final class MiniTerminalUpgradeRecipe extends ShapedOreRecipe {
+
+        private static final String[] TERMINAL_TAGS = { "encryptionKey", "encryptionKeys", "name", "pins", "viewCell",
+            "terminalSettings", "searchString", "display" };
+
+        private MiniTerminalUpgradeRecipe(ItemStack result, Object... recipe) {
+            super(result, recipe);
+        }
+
+        @Override
+        public ItemStack getCraftingResult(InventoryCrafting inventory) {
+            for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
+                ItemStack source = inventory.getStackInSlot(slot);
+                if (AEApi.instance()
+                    .definitions()
+                    .items()
+                    .wirelessTerminal()
+                    .isSameAs(source)) {
+                    return upgrade(source, super.getCraftingResult(inventory));
+                }
+            }
+            return null;
+        }
+
+        public static ItemStack upgrade(ItemStack source, ItemStack result) {
+            if (!(result.getItem() instanceof ItemMEMiniPortableTerminal terminal)) {
+                throw new IllegalArgumentException("The upgrade output must be an ME Mini Portable Terminal");
+            }
+            result.setTagCompound(copyTerminalData(source.getTagCompound()));
+            if (source.getItem() instanceof IAEItemPowerStorage power) {
+                double stored = power.getAECurrentPower(source);
+                if (Double.isFinite(stored) && stored > 0) {
+                    terminal.injectAEPower(result, stored);
+                }
+            }
+
+            return result;
+        }
+
+        static NBTTagCompound copyTerminalData(NBTTagCompound original) {
+            NBTTagCompound tag = new NBTTagCompound();
+            if (original != null) {
+                for (String key : TERMINAL_TAGS) {
+                    if (original.hasKey(key)) tag.setTag(
+                        key,
+                        original.getTag(key)
+                            .copy());
+                }
+
+                for (Settings setting : new Settings[] { Settings.SORT_BY, Settings.VIEW_MODE, Settings.SORT_DIRECTION }) {
+                    String key = setting.name();
+                    if (original.hasKey(key)) tag.setTag(
+                        key,
+                        original.getTag(key)
+                            .copy());
+                }
+            }
+            return tag;
+        }
+    }
+
+    private static final class MiniTerminalCardRecipe extends ShapelessOreRecipe {
+
+        private final ShapelessRecipes nativeRecipe;
+        private final Predicate<ItemStack> installed;
+
+        private MiniTerminalCardRecipe(ShapelessRecipes nativeRecipe, Predicate<ItemStack> installed) {
+            super(nativeRecipe.getRecipeOutput(), nativeRecipe.recipeItems.toArray());
+            this.nativeRecipe = nativeRecipe;
+            this.installed = installed;
+        }
+
+        @Override
+        public boolean matches(InventoryCrafting inventory, World world) {
+            if (!super.matches(inventory, world)) return false;
+            ItemStack terminal = findTerminal(inventory);
+            return terminal != null && !installed.test(terminal);
+        }
+
+        @Override
+        public ItemStack getCraftingResult(InventoryCrafting inventory) {
+            if (!matches(inventory, null)) return null;
+
+            InventoryCrafting nativeInput = new InventoryCrafting(new ContainerNull(), 2, 1);
+            nativeInput.setInventorySlotContents(0, findTerminal(inventory));
+            return nativeRecipe.getCraftingResult(nativeInput);
+        }
+
+        private static ItemStack findTerminal(InventoryCrafting inventory) {
+            for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
+                ItemStack stack = inventory.getStackInSlot(slot);
+                if (ItemMEMiniPortableTerminal.isMiniTerminal(stack)) return stack;
+            }
+            return null;
+        }
     }
 }
