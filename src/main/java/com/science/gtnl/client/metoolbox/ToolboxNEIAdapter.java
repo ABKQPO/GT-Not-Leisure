@@ -50,8 +50,7 @@ public final class ToolboxNEIAdapter extends NEIGuiHandler
         ToolboxInventoryPanel overlay = overlay(gui);
         if (overlay == null || Minecraft.getMinecraft().currentScreen != gui) return false;
         Point mouse = GuiDraw.getMousePosition();
-        if (overlay.bounds()
-            .contains(mouse.x, mouse.y)) {
+        if (overlay.isMouseOver(mouse.x, mouse.y)) {
             VirtualMESlot slot = overlay.hoveredSlot(mouse.x, mouse.y);
 
             if (slot == null || slot.getAEStack() == null) return false;
@@ -104,7 +103,7 @@ public final class ToolboxNEIAdapter extends NEIGuiHandler
         overlay.syncLayout();
         if (!overlay.layout()
             .expanded() || overlay.getContext()
-                .hasDraggable())
+                .hasDraggable() || !overlay.isMouseOver(mouseX, mouseY))
             return false;
         Rectangle bounds = overlay.bounds();
         if (!overlay.nativeSearchField()
@@ -157,8 +156,7 @@ public final class ToolboxNEIAdapter extends NEIGuiHandler
         ToolboxInventoryPanel overlay = overlay(gui);
         if (overlay == null) return false;
         overlay.syncLayout();
-        return overlay.bounds()
-            .contains(mouseX, mouseY);
+        return overlay.isMouseOver(mouseX, mouseY);
     }
 
     @Override

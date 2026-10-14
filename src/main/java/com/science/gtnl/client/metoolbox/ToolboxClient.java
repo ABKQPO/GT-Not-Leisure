@@ -26,9 +26,8 @@ import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import com.cleanroommc.modularui.overlay.OverlayStack;
+import com.cleanroommc.modularui.api.IMuiScreen;
 import com.cleanroommc.modularui.screen.OpenScreenEvent;
-import com.cleanroommc.modularui.screen.RichTooltipEvent;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.ItemMEToolbox;
 import com.science.gtnl.common.metoolbox.ToolboxRequestPacket;
@@ -118,21 +117,9 @@ public final class ToolboxClient {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void beginForegroundFrame(DrawScreenEvent.Pre event) {
-        if (overlay != null && event.gui == overlay.inventory()) overlay.foreground()
-            .beginFrame();
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void captureHostTooltip(RichTooltipEvent.Color event) {
-        if (overlay != null) overlay.foreground()
-            .captureHostTooltip(event);
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void captureHostTooltipBounds(RichTooltipEvent.PostText event) {
-        if (overlay != null) overlay.foreground()
-            .captureHostTooltipBounds(event);
+    public void prepareNativePanel(DrawScreenEvent.Pre event) {
+        if (overlay != null && event.gui == overlay.inventory() && event.gui instanceof IMuiScreen)
+            overlay.prepareFrame();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -150,11 +137,23 @@ public final class ToolboxClient {
             && nativeContainer.getTarget() instanceof IPortableCell portable
             && selected.equals(ItemMEToolbox.getToolboxId(portable.getItemStack()))) model().handOffSettings();
         if (session != 0 || waiting || sessionPrepared) closeSession();
+        if (overlay != null) overlay.detach();
         overlay = null;
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void initGui(InitGuiEvent.Post event) {
+        // OverlayStack must contain the fallback screen before MUI's NORMAL-priority resize handler.
+        if (!(event.gui instanceof IMuiScreen)) attachPanel(event);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void initNativePanel(InitGuiEvent.Post event) {
+        // A native secondary panel needs the host main panel to have been initialized first.
+        if (event.gui instanceof IMuiScreen) attachPanel(event);
+    }
+
+    private static void attachPanel(InitGuiEvent.Post event) {
         checkConnection();
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.currentScreen != event.gui || overlay != null
@@ -175,8 +174,9 @@ public final class ToolboxClient {
         ToolboxTerminalModel model = model();
         if (slot >= 0) model.readSettings(ItemMEToolbox.getToolboxStack(mc.thePlayer, slot));
         model.beginSession();
-        overlay = new ToolboxInventoryPanel(inventory, model);
-        OverlayStack.open(new ToolboxInventoryOverlay(overlay));
+        ToolboxPanelHost host = ToolboxPanelHost.create(inventory, model);
+        overlay = host.panel();
+        host.open();
         sessionPrepared = true;
         retryTicks = 0;
     }
@@ -202,6 +202,7 @@ public final class ToolboxClient {
         if (overlay == null || mc.currentScreen != overlay.inventory()) {
             ToolboxClientConfig.saveWindow(LAYOUT);
             if (session != 0 || waiting || sessionPrepared) closeSession();
+            if (overlay != null) overlay.detach();
             overlay = null;
             return;
         }

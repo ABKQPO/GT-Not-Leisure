@@ -1,8 +1,6 @@
 package com.science.gtnl.client.metoolbox;
 
 import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -12,10 +10,6 @@ import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
 
 import org.lwjgl.opengl.GL11;
 
-import com.cleanroommc.modularui.api.IMuiScreen;
-import com.cleanroommc.modularui.screen.RichTooltip;
-import com.cleanroommc.modularui.screen.RichTooltipEvent;
-
 import appeng.client.gui.slots.VirtualMESlot;
 import appeng.integration.modules.NEI;
 import codechicken.nei.NEIClientConfig;
@@ -24,16 +18,13 @@ import codechicken.nei.guihook.GuiContainerManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-/** Keeps cursor items and tooltips above the toolbox, in the same order as a normal container GUI. */
+/** Supplies AE slot tooltips, plus foreground compatibility for non-MUI overlay hosts. */
 @SideOnly(Side.CLIENT)
 final class ToolboxForeground {
 
     private final ToolboxInventoryPanel overlay;
     private boolean drawingNativeTooltip;
     private boolean nativeTooltipRequested;
-    private boolean collectingHostTooltips;
-    private MuiTooltip pendingHostTooltip;
-    private final List<MuiTooltip> hostTooltips = new ArrayList<>();
     private DrawScreenEvent.Post chromaticEvent;
     private Runnable chromaticTooltip;
 
@@ -41,56 +32,29 @@ final class ToolboxForeground {
         this.overlay = overlay;
     }
 
-    void beginFrame() {
-        pendingHostTooltip = null;
-        hostTooltips.clear();
-        collectingHostTooltips = active() && overlay.inventory() instanceof IMuiScreen;
-    }
-
-    void captureHostTooltip(RichTooltipEvent.Color event) {
-        if (!collectingHostTooltips || !active() || !(event.getTooltip() instanceof RichTooltip tooltip)) return;
-        // Color exposes the original RichTooltip; PostText supplies its final bounds after wrapping/positioning.
-        pendingHostTooltip = new MuiTooltip(tooltip, event.getItemStack(), event.getX(), event.getY(), 0, 0);
-    }
-
-    void captureHostTooltipBounds(RichTooltipEvent.PostText event) {
-        MuiTooltip pending = pendingHostTooltip;
-        pendingHostTooltip = null;
-        if (!collectingHostTooltips || !active() || pending == null
-            || pending.stack() != event.getItemStack()
-            || pending.x() != event.getX()
-            || pending.y() != event.getY()) return;
-        hostTooltips.add(
-            new MuiTooltip(
-                pending.tooltip(),
-                pending.stack(),
-                pending.x(),
-                pending.y(),
-                event.getWidth(),
-                event.getHeight()));
+    void reset() {
+        nativeTooltipRequested = false;
+        chromaticEvent = null;
+        chromaticTooltip = null;
     }
 
     void queueCursor() {
-        // Host RichTooltips were drawn before this overlay; don't collect our own or replayed tooltips.
-        collectingHostTooltips = false;
-        pendingHostTooltip = null;
         // Queue before MUI widgets add their tooltips; the queue runs after all overlay panels are drawn.
         overlay.getContext().queueForegroundRender(this::drawCursor);
     }
 
     void queueTooltip() {
-        overlay.getContext().queueForegroundRender(this::drawHostTooltips);
         overlay.getContext().queueForegroundRender(this::drawNativeTooltip);
     }
 
     boolean deferNativeTooltip() {
-        if (!active() || drawingNativeTooltip) return false;
+        if (!active() || !overlay.getScreen().isOverlay() || drawingNativeTooltip) return false;
         nativeTooltipRequested = true;
         return true;
     }
 
     boolean deferChromaticTooltip(DrawScreenEvent.Post event, Runnable renderTooltip) {
-        if (!active() || event.gui != overlay.inventory()) return false;
+        if (!active() || !overlay.getScreen().isOverlay() || event.gui != overlay.inventory()) return false;
         chromaticEvent = event;
         chromaticTooltip = renderTooltip;
         return true;
@@ -105,7 +69,8 @@ final class ToolboxForeground {
     }
 
     private boolean active() {
-        return ToolboxClient.overlay() == overlay && Minecraft.getMinecraft().currentScreen == overlay.inventory();
+        return ToolboxClient.overlay() == overlay && overlay.isValid() && overlay.isOpen()
+            && Minecraft.getMinecraft().currentScreen == overlay.inventory();
     }
 
     private void drawCursor() {
@@ -128,27 +93,6 @@ final class ToolboxForeground {
             RenderHelper.enableGUIStandardItemLighting();
             GuiContainerManager.drawItem(x - 8, y - 8, renderedCursor);
         });
-    }
-
-    private void drawHostTooltips() {
-        try {
-            if (!active() || hostTooltips.isEmpty() || !(overlay.inventory() instanceof IMuiScreen host)) return;
-            Rectangle bounds = overlay.bounds();
-            if (bounds.contains(overlay.getContext().getAbsMouseX(), overlay.getContext().getAbsMouseY())) return;
-            for (MuiTooltip tooltip : hostTooltips) {
-                // Include MUI's four-pixel background/border around the text bounds.
-                if (!bounds.intersects(tooltip.x() - 4, tooltip.y() - 4, tooltip.width() + 8, tooltip.height() + 8))
-                    continue;
-                drawOverPanel(
-                    () -> tooltip.tooltip()
-                        .draw(
-                            host.getScreen()
-                                .getContext(),
-                            tooltip.stack()));
-            }
-        } finally {
-            hostTooltips.clear();
-        }
     }
 
     private void drawOverPanel(Runnable render) {
@@ -180,7 +124,7 @@ final class ToolboxForeground {
         if (!active()) return;
         int x = overlay.getContext().getAbsMouseX();
         int y = overlay.getContext().getAbsMouseY();
-        if (overlay.bounds().contains(x, y)) {
+        if (overlay.isMouseOver(x, y)) {
             VirtualMESlot slot = overlay.hoveredSlot(x, y);
             if (slot == null
                 || slot.getAEStack() == null && Minecraft.getMinecraft().thePlayer.inventory.getItemStack() == null)
@@ -197,6 +141,4 @@ final class ToolboxForeground {
             drawingNativeTooltip = false;
         }
     }
-
-    private record MuiTooltip(RichTooltip tooltip, ItemStack stack, int x, int y, int width, int height) {}
 }

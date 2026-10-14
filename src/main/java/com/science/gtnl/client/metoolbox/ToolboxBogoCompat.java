@@ -90,8 +90,7 @@ public final class ToolboxBogoCompat {
             || mc.displayWidth <= 0
             || mc.displayHeight <= 0) return false;
         Point mouse = GuiDraw.getMousePosition();
-        return overlay.bounds()
-            .contains(mouse.x, mouse.y);
+        return overlay.isMouseOver(mouse.x, mouse.y);
     }
 
     public static boolean moveSingleItem(GuiContainer gui, boolean emptyOnly) {
@@ -141,8 +140,7 @@ public final class ToolboxBogoCompat {
 
             Point mouse = GuiDraw.getMousePosition();
             ItemStack hovered;
-            if (overlay.bounds()
-                .contains(mouse.x, mouse.y)) {
+            if (overlay.isMouseOver(mouse.x, mouse.y)) {
                 VirtualMESlot slot = overlay.hoveredSlot(mouse.x, mouse.y);
 
                 if (slot == null || slot.getAEStack() == null) return true;

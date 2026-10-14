@@ -21,14 +21,15 @@ import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import com.cleanroommc.modularui.api.IMuiScreen;
 import com.cleanroommc.modularui.api.UpOrDown;
 import com.cleanroommc.modularui.api.layout.IViewport;
 import com.cleanroommc.modularui.api.layout.IViewportStack;
 import com.cleanroommc.modularui.api.widget.IDragResizeable;
+import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.drawable.GuiTextures;
 import com.cleanroommc.modularui.drawable.UITexture;
+import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
@@ -170,6 +171,7 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
 
     @Override
     public void onClose() {
+        resetInteraction();
         super.onClose();
         ToolboxClient.closeOverlay(this);
     }
@@ -187,9 +189,18 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
         return moving == null ? layout.bounds() : moving;
     }
 
+    boolean isMouseOver(int mouseX, int mouseY) {
+        if (!isValid() || !isOpen() || !isEnabled() || !bounds().contains(mouseX, mouseY)) return false;
+        for (ModularPanel panel : getScreen().getPanelManager().getOpenPanels()) {
+            if (panel == this) return true;
+            if (panel.disablePanelsBelow() || panel.isAnyHovered()) return false;
+        }
+        return false;
+    }
+
     public VirtualMESlot hoveredSlot(int mouseX, int mouseY) {
         syncLayout();
-        if (getContext().hasDraggable() || !layout.expanded() || !layout.contains(mouseX, mouseY)) return null;
+        if (!isMouseOver(mouseX, mouseY) || getContext().hasDraggable() || !layout.expanded()) return null;
         Rectangle bounds = layout.bounds();
         int x = mouseX - bounds.x;
         int y = mouseY - bounds.y;
@@ -285,25 +296,50 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
         ToolboxClient.ensureSession();
     }
 
+    void resetInteraction() {
+        if (isValid() && isMoving() && getContext().hasDraggable()) getContext().dropDraggable(true);
+        consumedMouseButtons.clear();
+        terminal.releaseButton(terminal.pressedButton);
+        if (search.isFocused()) getContext().removeFocus();
+        foreground.reset();
+    }
+
+    void detach() {
+        resetInteraction();
+        // MUI retains host screens when opening NEI recipes. Don't leave an inactive toolbox panel in that stack.
+        if (isValid() && !getScreen().isOverlay()) closeIfOpen();
+    }
+
+    @Override
+    public void drawForeground(ModularGuiContext context) {
+        super.drawForeground(context);
+        foreground.queueTooltip();
+    }
+
+    private boolean hasForeignFocus() {
+        IWidget focused = getContext().getFocusedWidget().getElement();
+        return focused != null && focused.isValid() && focused.getPanel() != this;
+    }
+
     @Override
     public boolean onMousePressed(int button) {
         consumedMouseButtons.remove(button);
         syncLayout();
-        boolean inside = bounds().contains(getContext().getAbsMouseX(), getContext().getAbsMouseY());
-        if (inside && inventory instanceof IMuiScreen host) {
-
-            host.getScreen()
-                .getContext()
-                .removeFocus();
+        boolean inside = isMouseOver(getContext().getAbsMouseX(), getContext().getAbsMouseY());
+        if (!inside) {
+            if (getScreen().isOverlay() && search.isFocused()) getContext().removeFocus();
+            return false;
         }
         boolean handled = ToolboxNEIAdapter.handleDrop(inventory, button);
+        if (handled) getContext().removeFocus();
         if (!handled) {
-            if (inside && !layout.expanded() && button == 1) {
+            if (!layout.expanded() && button == 1) {
                 ToolboxClient.openFull();
                 handled = true;
             } else {
 
-                handled = super.onMousePressed(button) || inside;
+                super.onMousePressed(button);
+                handled = true;
             }
         }
         if (handled) consumedMouseButtons.add(button);
@@ -313,12 +349,23 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
     @Override
     public boolean onKeyPressed(char character, int keyCode) {
         syncLayout();
+        // ModularPanel dispatches to the screen's focused widget, even if another panel owns it.
+        // Leave foreign focus to the host panel, instead of dispatching the same key twice.
+        if (hasForeignFocus()) return false;
         if (ToolboxBogoCompat.handleSearchKey(inventory)) return true;
+        boolean inside = isMouseOver(getContext().getAbsMouseX(), getContext().getAbsMouseY());
+        boolean closeKey = keyCode == Keyboard.KEY_ESCAPE
+            || keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode();
+        if (!inside && !search.isFocused() && !closeKey) return false;
         boolean handled = super.onKeyPressed(character, keyCode);
-
-        boolean block = bounds().contains(getContext().getAbsMouseX(), getContext().getAbsMouseY())
-            && keyCode != Keyboard.KEY_ESCAPE
-            && keyCode != Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode();
+        if (!handled && closeKey && !getScreen().isOverlay()
+            && getScreen().getPanelManager().getTopMostPanel() == this
+            && !getContext().hasDraggable()) {
+            // The mini terminal is part of the host GUI; E must not close just this auxiliary panel.
+            getScreen().getMainPanel().closeIfOpen();
+            return true;
+        }
+        boolean block = inside && !closeKey;
         if (!handled && block) ToolboxNEIAdapter.handleKeyTyped(inventory, character, keyCode);
         return handled || block;
     }
@@ -326,7 +373,7 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
     @Override
     public boolean onMouseRelease(int button) {
         boolean consumedPress = consumedMouseButtons.remove(button);
-        boolean handled = super.onMouseRelease(button);
+        boolean handled = !hasForeignFocus() && super.onMouseRelease(button);
         syncLayout();
         ToolboxClientConfig.saveWindow(layout);
 
@@ -336,7 +383,13 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
     @Override
     public boolean onMouseScroll(UpOrDown direction, int amount) {
         syncLayout();
-        return super.onMouseScroll(direction, amount);
+        return !hasForeignFocus() && isMouseOver(getContext().getAbsMouseX(), getContext().getAbsMouseY())
+            && super.onMouseScroll(direction, amount);
+    }
+
+    @Override
+    public boolean onKeyRelease(char character, int keyCode) {
+        return !hasForeignFocus() && super.onKeyRelease(character, keyCode);
     }
 
     private static String tr(String key) {

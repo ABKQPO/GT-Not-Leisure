@@ -3,7 +3,7 @@ package com.science.gtnl.client.metoolbox;
 import com.cleanroommc.modularui.screen.ModularScreen;
 import com.science.gtnl.ScienceNotLeisure;
 
-/** Mounts the terminal in an independent MUI screen for container GUIs. */
+/** Fallback host for container GUIs that do not implement MUI's screen interface. */
 final class ToolboxInventoryOverlay extends ModularScreen {
 
     private final ToolboxInventoryPanel panel;
@@ -19,11 +19,5 @@ final class ToolboxInventoryOverlay extends ModularScreen {
         panel.prepareFrame();
         panel.foreground().queueCursor();
         super.drawScreen();
-    }
-
-    @Override
-    public void drawForeground() {
-        super.drawForeground();
-        panel.foreground().queueTooltip();
     }
 }
