@@ -50,6 +50,7 @@ import appeng.api.config.OperationMode;
 import appeng.api.config.PinSectionOrder;
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.client.gui.AEBaseGui;
@@ -68,6 +69,7 @@ import appeng.core.localization.ColorUtils;
 import appeng.helpers.MonitorableAction;
 import appeng.items.contents.PinList;
 import appeng.util.Platform;
+import appeng.util.item.AEItemStack;
 import cpw.mods.fml.common.Loader;
 
 public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
@@ -840,6 +842,8 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
                 AEBaseGui.isCtrlKeyDown(),
                 held != null && FLUID_STACK_TYPE.isContainerItemForType(held),
                 Keyboard.isKeyDown(Keyboard.KEY_SPACE));
+            if ((button == 0 || button == 1) && !Keyboard.isKeyDown(Keyboard.KEY_SPACE)
+                && setPinFromHand(slot, held, nonItemInteraction)) return slot;
             MonitorableAction intent = Input.click(
                 button,
                 Keyboard.isKeyDown(Keyboard.KEY_SPACE),
@@ -851,6 +855,29 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             if (intent == null) return null;
             MiniTerminalClient.send(intent, intent == MonitorableAction.UNSET_PIN ? null : stack, pin);
             return slot;
+        }
+
+        /**
+         * Mirrors GuiMEMonitorable#handleSetPinAction: a held stack pins itself unless the pin already shows it, in
+         * which case the click falls through to the normal slot action. AE's PinsHandler#setPin rejects stacks in
+         * crafting-history pins, so those clicks are consumed without a request, the same outcome as AE's SET_PIN.
+         */
+        private boolean setPinFromHand(VirtualMESlot slot, ItemStack held, boolean nonItemInteraction) {
+            if (!(slot instanceof VirtualMEPinSlot) || held == null) return false;
+            IAEStack<?> pinned = slot.getAEStack();
+            IAEStack<?> target;
+            if (nonItemInteraction) {
+                target = FLUID_STACK_TYPE.getStackFromContainerItem(held);
+                if (pinned instanceof IAEFluidStack && (target == null || pinned.equals(target))) return false;
+                // An empty container has nothing to pin, but must not fall through to a fill or drain either.
+                if (target == null) return true;
+            } else {
+                if (pinned instanceof IAEItemStack item && item.getItemStack()
+                    .isItemEqual(held)) return false;
+                target = AEItemStack.create(held);
+            }
+            if (slot.getSlotIndex() >= PinList.PLAYER_OFFSET) MiniTerminalClient.sendPin(slot.getSlotIndex(), target);
+            return true;
         }
 
         private boolean handleBogoInput(boolean fromMouse) {
