@@ -173,6 +173,8 @@ public final class MiniTerminalSessionService {
             session.resync();
         } else if (request.kind == MiniTerminalRequestPacket.Kind.ACTION) {
             session.action(request);
+        } else if (request.kind == MiniTerminalRequestPacket.Kind.CREATIVE_CONTAINER_ACTION) {
+            session.creativeContainerAction(request);
         } else if (request.kind == MiniTerminalRequestPacket.Kind.PIN_ROWS) {
             session.pinsRows(request);
         } else if (request.kind == MiniTerminalRequestPacket.Kind.PIN_DROP) {
@@ -787,6 +789,23 @@ public final class MiniTerminalSessionService {
                 request.emptyOnly,
                 request.single,
                 () -> operationValid(SecurityPermissions.EXTRACT));
+        }
+
+        void creativeContainerAction(MiniTerminalRequestPacket request) {
+            if (!player.theItemInWorldManager.isCreative() || container != player.inventoryContainer
+                || !MiniTerminalRequestPacket.isContainerAction(request.action)
+                || request.creativeCursor == null
+                || !FLUID_STACK_TYPE.isContainerItemForType(request.creativeCursor)) return;
+
+            // The creative GUI owns its cursor. Borrow its snapshot only while AE operates on the container;
+            // execute() synchronizes the resulting cursor before the server's previous state is restored.
+            ItemStack previous = player.inventory.getItemStack();
+            player.inventory.setItemStack(request.creativeCursor.copy());
+            try {
+                action(request);
+            } finally {
+                player.inventory.setItemStack(previous);
+            }
         }
 
         void action(MiniTerminalRequestPacket request) {

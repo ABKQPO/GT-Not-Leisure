@@ -486,15 +486,21 @@ public final class MiniTerminalClient {
     public static void send(MonitorableAction intent, IAEStack<?> target, int pin) {
         MiniTerminalModel model = model();
         if (!model.isOnline() || session == 0 || !hasCurrentContainer()) return;
-        ScienceNotLeisure.network.sendToServer(
-            MiniTerminalRequestPacket.action(
-                session,
-                ++action,
-                model.catalogRevision(),
-                model.pinRevision(),
-                model.entryId(target),
-                pin,
-                intent));
+        MiniTerminalRequestPacket packet = MiniTerminalRequestPacket.action(
+            session,
+            ++action,
+            model.catalogRevision(),
+            model.pinRevision(),
+            model.entryId(target),
+            pin,
+            intent);
+        Minecraft mc = Minecraft.getMinecraft();
+        if (mc.currentScreen instanceof GuiContainerCreative && mc.playerController.isInCreativeMode()
+            && MiniTerminalRequestPacket.isContainerAction(intent)) {
+            // Creative inventory clicks do not synchronize the cursor stack to the server.
+            packet.withCreativeCursor(mc.thePlayer.inventory.getItemStack());
+        }
+        ScienceNotLeisure.network.sendToServer(packet);
     }
 
     static void sendPin(int pin, IAEStack<?> target) {
