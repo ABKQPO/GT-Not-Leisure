@@ -49,9 +49,8 @@ public final class MiniTerminalBogoCompat {
     }
 
     private static MiniTerminalInventoryPanel searchTarget(GuiContainer gui) {
-        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay();
-        if (overlay == null || gui != overlay.inventory()
-            || Minecraft.getMinecraft().currentScreen != gui
+        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
+        if (overlay == null || Minecraft.getMinecraft().currentScreen != gui
             || !overlay.layout()
                 .expanded())
             return null;
@@ -83,12 +82,9 @@ public final class MiniTerminalBogoCompat {
     }
 
     public static boolean isOverMini(GuiScreen gui) {
-        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay();
+        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
         Minecraft mc = Minecraft.getMinecraft();
-        if (overlay == null || gui != overlay.inventory()
-            || mc.currentScreen != gui
-            || mc.displayWidth <= 0
-            || mc.displayHeight <= 0) return false;
+        if (overlay == null || mc.currentScreen != gui || mc.displayWidth <= 0 || mc.displayHeight <= 0) return false;
         Point mouse = GuiDraw.getMousePosition();
         return overlay.isMouseOver(mouse.x, mouse.y);
     }
@@ -188,9 +184,8 @@ public final class MiniTerminalBogoCompat {
         }
 
         private static void updateKeys(GuiScreen gui) {
-            MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay();
-
-            if (overlay != null && gui == overlay.inventory()) {
+            MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
+            if (overlay != null) {
                 MiniTerminalNEIAdapter.refreshHoveredSlot(overlay.inventory());
                 KeyBind.checkKeys(ClientEventHandler.getTicks());
             }

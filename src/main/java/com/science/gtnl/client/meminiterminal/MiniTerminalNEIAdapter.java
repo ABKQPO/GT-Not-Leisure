@@ -34,20 +34,15 @@ import codechicken.nei.guihook.IContainerTooltipHandler;
 public final class MiniTerminalNEIAdapter extends NEIGuiHandler
     implements IContainerObjectHandler, IContainerTooltipHandler, IContainerSlotClickHandler, IContainerDrawHandler {
 
-    private static MiniTerminalInventoryPanel overlay(GuiContainer gui) {
-        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay();
-        return overlay != null && gui == overlay.inventory() ? overlay : null;
-    }
-
     static void refreshHoveredSlot(GuiContainer gui) {
-        if (overlay(gui) != null) {
+        if (MiniTerminalClient.overlay(gui) != null) {
 
             gui.theSlot = GuiContainerManager.getSlotMouseOver(gui);
         }
     }
 
     static boolean handleKeyTyped(GuiContainer gui, char character, int keyCode) {
-        MiniTerminalInventoryPanel overlay = overlay(gui);
+        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
         if (overlay == null || Minecraft.getMinecraft().currentScreen != gui) return false;
         Point mouse = GuiDraw.getMousePosition();
         if (overlay.isMouseOver(mouse.x, mouse.y)) {
@@ -79,7 +74,7 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
     }
 
     private static boolean pinDrop(GuiContainer gui, int mouseX, int mouseY, ItemStack stack, int button) {
-        MiniTerminalInventoryPanel overlay = overlay(gui);
+        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
         if (overlay == null || stack == null || stack.getItem() == null || button != 0 && button != 1) return false;
         VirtualMESlot slot = overlay.hoveredSlot(mouseX, mouseY);
         if (!(slot instanceof VirtualMEPinSlot)) return false;
@@ -96,7 +91,7 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
     }
 
     private static boolean fillSearch(GuiContainer gui, int mouseX, int mouseY, ItemStack stack) {
-        MiniTerminalInventoryPanel overlay = overlay(gui);
+        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
         if (overlay == null || stack == null || stack.getItem() == null) return false;
         if (!overlay.layout()
             .expanded() || overlay.getContext()
@@ -115,16 +110,14 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
 
     @Override
     public void renderObjects(GuiContainer gui, int mouseX, int mouseY) {
-        MiniTerminalInventoryPanel overlay = overlay(gui);
+        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
         if (overlay == null) return;
         if (overlay.getScreen() instanceof MiniTerminalInventoryOverlay screen) screen.drawInContainer(mouseX, mouseY);
         MiniTerminalHostLayer.flushTooltips(gui);
     }
 
     static void drawMuiSlotTooltip(MiniTerminalInventoryPanel panel) {
-        if (MiniTerminalClient.overlay() != panel || !panel.isValid()
-            || !panel.isOpen()
-            || Minecraft.getMinecraft().currentScreen != panel.inventory()) return;
+        if (!panel.isActive()) return;
         int mouseX = panel.getContext()
             .getAbsMouseX();
         int mouseY = panel.getContext()
@@ -152,13 +145,13 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
 
     @Override
     public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int width, int height) {
-        MiniTerminalInventoryPanel overlay = overlay(gui);
+        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
         return overlay != null && overlay.intersects(x, y, width, height);
     }
 
     @Override
     public ItemStack getStackUnderMouse(GuiContainer gui, int mouseX, int mouseY) {
-        MiniTerminalInventoryPanel overlay = overlay(gui);
+        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
         VirtualMESlot slot = overlay == null ? null : overlay.hoveredSlot(mouseX, mouseY);
         IAEStack<?> stack = slot == null ? null : slot.getAEStack();
 
@@ -167,13 +160,13 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
 
     @Override
     public boolean objectUnderMouse(GuiContainer gui, int mouseX, int mouseY) {
-        MiniTerminalInventoryPanel overlay = overlay(gui);
+        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
         return overlay != null && overlay.isMouseOver(mouseX, mouseY);
     }
 
     @Override
     public List<String> handleTooltip(GuiContainer gui, int mouseX, int mouseY, List<String> currentTooltip) {
-        MiniTerminalInventoryPanel overlay = overlay(gui);
+        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
         if (overlay == null || !overlay.isOnline()) return currentTooltip;
         VirtualMESlot slot = overlay.hoveredSlot(mouseX, mouseY);
         if (slot != null) slot.addTooltip(currentTooltip);
@@ -183,7 +176,7 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
     @Override
     public List<String> handleItemTooltip(GuiContainer gui, ItemStack stack, int mouseX, int mouseY,
         List<String> currentTooltip) {
-        MiniTerminalInventoryPanel overlay = overlay(gui);
+        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
         if (overlay == null || stack == null) return currentTooltip;
         VirtualMESlot slot = overlay.hoveredSlot(mouseX, mouseY);
         if (slot == null || slot.getAEStack() == null) return currentTooltip;
@@ -212,7 +205,8 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
     public boolean handleSlotClick(GuiContainer gui, int slotIndex, int button, Slot slot, int modifier,
         boolean eventconsumed) {
 
-        return eventconsumed || overlay(gui) != null && MiniTerminalClient.shiftClickToME(slot, button, modifier);
+        return eventconsumed
+            || MiniTerminalClient.overlay(gui) != null && MiniTerminalClient.shiftClickToME(slot, button, modifier);
     }
 
     @Override

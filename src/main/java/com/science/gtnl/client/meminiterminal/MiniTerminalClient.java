@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -83,6 +84,7 @@ public final class MiniTerminalClient {
     private static int sessionTicks;
     private static boolean sessionPrepared;
     private static boolean collapsed;
+    private static boolean cachedPickupToME;
     private static boolean waiting;
     private static boolean pinSettingsPending;
     private static int pinSettingsPendingTicks;
@@ -114,7 +116,8 @@ public final class MiniTerminalClient {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void prepareNativePanel(DrawScreenEvent.Pre event) {
         MiniTerminalHostLayer.beginFrame(event.gui);
-        if (overlay != null && event.gui == overlay.inventory()) overlay.prepareFrame();
+        MiniTerminalInventoryPanel panel = overlay(event.gui);
+        if (panel != null) panel.prepareFrame();
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -171,6 +174,7 @@ public final class MiniTerminalClient {
         MiniTerminalPanelHost host = MiniTerminalPanelHost.create(inventory, model);
         overlay = host.panel();
         host.open();
+        cachedPickupToME = readPickupToME();
         sessionPrepared = true;
         retryTicks = 0;
     }
@@ -206,6 +210,7 @@ public final class MiniTerminalClient {
             retryTicks = 0;
         }
         overlay.syncLayout();
+        cachedPickupToME = readPickupToME();
         ensureSession();
         if (!Mouse.isButtonDown(0) && !Mouse.isButtonDown(1)) MiniTerminalClientConfig.saveWindow(LAYOUT);
         model().update();
@@ -308,6 +313,10 @@ public final class MiniTerminalClient {
         return mc.thePlayer != null && sessionContainer != null
             && mc.thePlayer.openContainer == sessionContainer
             && sessionContainer.windowId == sessionWindowId;
+    }
+
+    private static boolean connected() {
+        return model().isOnline() && session != 0 && hasCurrentContainer();
     }
 
     public static void ensureSession() {
@@ -421,6 +430,10 @@ public final class MiniTerminalClient {
     }
 
     public static boolean pickupToME() {
+        return cachedPickupToME;
+    }
+
+    private static boolean readPickupToME() {
         int slot = findSelectedSlot();
         return slot >= 0 && ItemMEMiniPortableTerminal
             .isPickupToMEEnabled(ItemMEMiniPortableTerminal.getTerminalStack(Minecraft.getMinecraft().thePlayer, slot));
@@ -463,14 +476,14 @@ public final class MiniTerminalClient {
     }
 
     public static void setPinSettings(MiniTerminalPinSettings settings) {
-        if (pinSettingsPending || !model().isOnline() || session == 0 || !hasCurrentContainer()) return;
+        if (pinSettingsPending || !connected()) return;
         pinSettingsPending = true;
         requestedPins = settings;
         submitPinSettings();
     }
 
     private static void submitPinSettings() {
-        if (!pinSettingsPending || !model().isOnline() || session == 0 || !hasCurrentContainer()) return;
+        if (!pinSettingsPending || !connected()) return;
         pinSettingsPendingTicks = 0;
         requestedPinRevision = model().pinRevision();
         ScienceNotLeisure.network.sendToServer(
@@ -478,8 +491,8 @@ public final class MiniTerminalClient {
     }
 
     public static void send(MonitorableAction intent, IAEStack<?> target, int pin) {
+        if (!connected()) return;
         MiniTerminalModel model = model();
-        if (!model.isOnline() || session == 0 || !hasCurrentContainer()) return;
         MiniTerminalRequestPacket packet = MiniTerminalRequestPacket.action(
             session,
             ++action,
@@ -496,8 +509,8 @@ public final class MiniTerminalClient {
     }
 
     static void sendPin(int pin, IAEStack<?> target) {
+        if (!connected()) return;
         MiniTerminalModel model = model();
-        if (!model.isOnline() || session == 0 || !hasCurrentContainer()) return;
         try {
             ScienceNotLeisure.network
                 .sendToServer(MiniTerminalRequestPacket.pinDrop(session, ++action, model.pinRevision(), pin, target));
@@ -540,7 +553,7 @@ public final class MiniTerminalClient {
         int inventorySlot = MiniTerminalSessionService.playerInventoryIndex(mc.thePlayer, slot);
         if (inventorySlot < 0) return false;
 
-        if (!model().isOnline() || session == 0 || !hasCurrentContainer()) return false;
+        if (!connected()) return false;
         if (!slot.getHasStack() && mode != MiniTerminalRequestPacket.DepositMode.NATIVE_REGION) return true;
         ScienceNotLeisure.network
             .sendToServer(MiniTerminalRequestPacket.inventoryDeposit(session, ++action, inventorySlot, mode));
@@ -554,8 +567,8 @@ public final class MiniTerminalClient {
     }
 
     public static void sendBogoExtract(IAEStack<?> stack, int nativePin, boolean emptyOnly, boolean single) {
+        if (!connected()) return;
         MiniTerminalModel view = model();
-        if (!view.isOnline() || session == 0 || !hasCurrentContainer()) return;
         ScienceNotLeisure.network.sendToServer(
             MiniTerminalRequestPacket.inventoryExtract(
                 session,
@@ -581,6 +594,7 @@ public final class MiniTerminalClient {
             selectedSlot = slot;
             model().readSettings(stack);
             overlay.setModel(model());
+            cachedPickupToME = readPickupToME();
             begin();
             retryTicks = 20;
             return;
@@ -601,6 +615,10 @@ public final class MiniTerminalClient {
 
     public static MiniTerminalInventoryPanel overlay() {
         return overlay;
+    }
+
+    public static MiniTerminalInventoryPanel overlay(GuiScreen gui) {
+        return overlay != null && gui == overlay.inventory() ? overlay : null;
     }
 
     static MiniTerminalLayout layoutState() {

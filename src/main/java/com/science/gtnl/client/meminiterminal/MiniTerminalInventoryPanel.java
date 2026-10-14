@@ -249,6 +249,12 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
         return inventory;
     }
 
+    boolean isActive() {
+        return MiniTerminalClient.overlay() == this && isValid()
+            && isOpen()
+            && Minecraft.getMinecraft().currentScreen == inventory;
+    }
+
     public MiniTerminalLayout layout() {
         return layout;
     }

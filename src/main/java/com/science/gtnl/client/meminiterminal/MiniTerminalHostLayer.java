@@ -33,8 +33,7 @@ public final class MiniTerminalHostLayer {
     static void beginFrame(GuiScreen gui) {
         TOOLTIPS.clear();
         capturing = false;
-        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay();
-        frameGui = overlay != null && gui == overlay.inventory() ? gui : null;
+        frameGui = MiniTerminalClient.overlay(gui) != null ? gui : null;
         if (frameGui == null) return;
         BASE_MATRIX.clear();
         GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, BASE_MATRIX);
@@ -104,8 +103,8 @@ public final class MiniTerminalHostLayer {
     }
 
     private static boolean overTerminal(GuiScreen gui, int x, int y) {
-        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay();
-        return overlay != null && gui == overlay.inventory() && overlay.isMouseOver(x, y);
+        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
+        return overlay != null && overlay.isMouseOver(x, y);
     }
 
     private static boolean anchoredInTerminal(GuiScreen gui, float[] m, int x, int y) {

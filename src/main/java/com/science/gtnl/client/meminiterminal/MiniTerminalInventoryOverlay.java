@@ -1,7 +1,5 @@
 package com.science.gtnl.client.meminiterminal;
 
-import net.minecraft.client.Minecraft;
-
 import org.lwjgl.opengl.GL11;
 
 import com.cleanroommc.modularui.screen.ModularScreen;
@@ -19,9 +17,7 @@ final class MiniTerminalInventoryOverlay extends ModularScreen {
     }
 
     void drawInContainer(int mouseX, int mouseY) {
-        if (MiniTerminalClient.overlay() != panel || !panel.isValid()
-            || !panel.isOpen()
-            || Minecraft.getMinecraft().currentScreen != panel.inventory()) return;
+        if (!panel.isActive()) return;
         getContext().updateState(
             mouseX,
             mouseY,
