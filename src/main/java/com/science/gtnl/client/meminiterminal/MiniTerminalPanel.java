@@ -154,11 +154,7 @@ class MiniTerminalPanel extends ModularPanel implements IDraggable {
         if (drag == null) return;
         drag.onDrag(mouseButton, timeSinceLastClick);
         Area screen = getScreen().getScreenArea();
-        MiniTerminalLayout.keepDragHandleVisible(
-            drag.getMovingArea(),
-            layout.expanded(),
-            screen.width,
-            screen.height);
+        MiniTerminalLayout.keepDragHandleVisible(drag.getMovingArea(), layout.expanded(), screen.width, screen.height);
     }
 
     @Override

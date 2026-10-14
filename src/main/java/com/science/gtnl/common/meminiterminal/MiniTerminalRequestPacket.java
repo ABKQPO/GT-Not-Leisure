@@ -246,10 +246,10 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
                 if (kind == Kind.CREATIVE_ACTION) {
                     creativeCursor = ByteBufUtils.readItemStack(buf);
                     // Match vanilla creative slot bounds, including stacks larger than the item's normal limit.
-                    if (creativeCursor != null && (creativeCursor.getItem() == null
-                        || creativeCursor.getItemDamage() < 0
-                        || creativeCursor.stackSize <= 0
-                        || creativeCursor.stackSize > 64))
+                    if (creativeCursor != null
+                        && (creativeCursor.getItem() == null || creativeCursor.getItemDamage() < 0
+                            || creativeCursor.stackSize <= 0
+                            || creativeCursor.stackSize > 64))
                         throw new IllegalArgumentException("Creative terminal cursor");
                 }
             }

@@ -113,7 +113,8 @@ public class CraftingTableRecipes implements IRecipePool {
         GameRegistry.addRecipe(
             new MiniTerminalCardRecipe(new WirelessTerminalQuantumBridgeRecipe(terminal), item::hasInfinityRange));
         if (WirelessTerminalRecipe.getInfinityBoosterCard() != null) {
-            GameRegistry.addRecipe(new MiniTerminalCardRecipe(new WirelessTerminalRecipe(terminal), item::hasInfinityRange));
+            GameRegistry
+                .addRecipe(new MiniTerminalCardRecipe(new WirelessTerminalRecipe(terminal), item::hasInfinityRange));
         }
 
         var aeMaterials = AEApi.instance()
@@ -1738,7 +1739,8 @@ public class CraftingTableRecipes implements IRecipePool {
                     .wirelessTerminal()
                     .isSameAs(source)) {
                     ItemStack result = super.getCraftingResult(inventory);
-                    // Same battery and wireless handler: binding, cards, pins, settings and stored power all carry over.
+                    // Same battery and wireless handler: binding, cards, pins, settings and stored power all carry
+                    // over.
                     if (source.hasTagCompound()) result.setTagCompound(
                         (NBTTagCompound) source.getTagCompound()
                             .copy());

@@ -158,11 +158,9 @@ public final class MiniTerminalLayout {
         if (!expanded) return;
         boolean horizontal = edge.left || edge.right;
         boolean vertical = edge.top || edge.bottom;
-        int width = horizontal
-            ? snapSize(next.width, MIN_WIDTH, screenWidth - 2)
+        int width = horizontal ? snapSize(next.width, MIN_WIDTH, screenWidth - 2)
             : preferredBounds == null ? start.width : preferredBounds.width;
-        int height = vertical
-            ? snapSize(next.height, MIN_HEIGHT, screenHeight - 2)
+        int height = vertical ? snapSize(next.height, MIN_HEIGHT, screenHeight - 2)
             : preferredBounds == null ? start.height : preferredBounds.height;
 
         int x = horizontal ? start.x + anchorOffset(start.width, width, edge.left, centered)
