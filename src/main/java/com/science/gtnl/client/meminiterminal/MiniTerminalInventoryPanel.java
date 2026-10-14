@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -147,23 +150,82 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             .invisible()
             .right(4 + MiniTerminalLayout.BUTTON_WIDTH)
             .top(MiniTerminalLayout.HEADER_Y)
-            .size(2 * MiniTerminalLayout.BUTTON_WIDTH, MiniTerminalLayout.BUTTON_HEIGHT)
-            .child(new TerminalButton(0, null, null))
-            .child(new TerminalButton(4, null, null));
+            .size(2 * MiniTerminalLayout.BUTTON_WIDTH, MiniTerminalLayout.BUTTON_HEIGHT);
         controls = Flow.column()
             .invisible()
             .right(4)
             .top(MiniTerminalLayout.HEADER_Y + MiniTerminalLayout.BUTTON_HEIGHT)
-            .size(MiniTerminalLayout.BUTTON_WIDTH, 6 * MiniTerminalLayout.BUTTON_HEIGHT)
-            .child(new TerminalButton(1, Settings.SORT_BY, model.getSortBy()))
-            .child(new FluidTypeButton())
-            .child(new TerminalButton(2, Settings.ACTIONS, ActionItems.PINS))
-            .child(new TerminalButton(3, Settings.OPERATION_MODE, OperationMode.EMPTY))
-            .child(new TerminalButton(6, null, null))
-            .child(new TerminalButton(5, Settings.TERMINAL_STYLE, TerminalStyle.SMALL));
+            .size(MiniTerminalLayout.BUTTON_WIDTH, 6 * MiniTerminalLayout.BUTTON_HEIGHT);
+        addButtons();
         child(terminal).child(search)
             .child(header)
             .child(controls);
+    }
+
+    private void addButtons() {
+        header.child(new TerminalButton(null, null, button -> {
+            if (button == 1) MiniTerminalClient.openFull();
+            else if (GuiScreen.isShiftKeyDown()) MiniTerminalClient.begin();
+            else MiniTerminalClient.selectNext();
+        }, (tooltip, button) -> {
+            tooltip.addLine(MiniTerminalClient.description());
+            tooltip.addLine(
+                tr(
+                    "status." + MiniTerminalClient.status()
+                        .toLowerCase(java.util.Locale.ROOT)));
+            tooltip.addLine(tr("select"));
+            tooltip.addLine(tr("reconnect"));
+        }).syncState(button -> button.setEnabled(model.isDisplayOnline()))
+            .overlayIcon(TERMINAL_ICON))
+            .child(new TerminalButton(null, null, button -> {
+                layout.reset();
+                MiniTerminalClientConfig.saveWindow(layout);
+            }, (tooltip, button) -> tooltip.addLine(tr("reset_window"))).overlayIcon(RESET_ICON));
+        controls.child(
+            new TerminalButton(
+                Settings.SORT_BY,
+                model.getSortBy(),
+                button -> model.settings(button, GuiScreen.isShiftKeyDown()),
+                (tooltip, button) -> {
+                    tooltip.addLine(tr("settings"));
+                    tooltip.addLine(
+                        settingLabel("sort", model.getSortBy()) + " / "
+                            + settingLabel("direction", model.getSortDir())
+                            + " / "
+                            + settingLabel("view", model.getSortDisplay()));
+                }).syncState(button -> button.set(model.getSortBy())))
+            .child(new FluidTypeButton())
+            .child(
+                new TerminalButton(
+                    Settings.ACTIONS,
+                    ActionItems.PINS,
+                    terminal::changePinRows,
+                    (tooltip, button) -> {
+                        for (String line : button.getMessage()
+                            .split("\n")) tooltip.addLine(line);
+                    }).syncState(button -> button.setEnabled(model.isDisplayOnline())))
+            .child(
+                new TerminalButton(
+                    Settings.OPERATION_MODE,
+                    OperationMode.EMPTY,
+                    button -> MiniTerminalClientConfig.toggleShiftClick(),
+                    (tooltip, button) -> {
+                        tooltip.addLine(tr("shift_click"));
+                        tooltip.addLine(
+                            tr(MiniTerminalClientConfig.shiftClickToME ? "shift_click.me" : "shift_click.vanilla"));
+                    }).syncState(button -> button.setEnabled(MiniTerminalClientConfig.shiftClickToME)))
+            .child(
+                new TerminalButton(null, null, button -> MiniTerminalClient.togglePickupToME(), (tooltip, button) -> {
+                    tooltip.addLine(tr("pickup"));
+                    tooltip.addLine(tr(MiniTerminalClient.pickupToME() ? "pickup.on" : "pickup.off"));
+                }).syncState(button -> button.setEnabled(MiniTerminalClient.pickupToME()))
+                    .overlayIcon(MAGNET_CARD))
+            .child(
+                new TerminalButton(
+                    Settings.TERMINAL_STYLE,
+                    TerminalStyle.SMALL,
+                    button -> MiniTerminalClient.toggleCollapsed(),
+                    (tooltip, button) -> tooltip.addLine(tr("collapse"))));
     }
 
     @Override
@@ -405,75 +467,42 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
 
     private final class TerminalButton extends ButtonWidget<TerminalButton> {
 
-        private final int index;
         private final GuiImgButton button;
+        private Consumer<GuiImgButton> syncState = button -> {};
+        private UITexture overlayIcon;
 
-        TerminalButton(int index, Enum<?> setting, Enum<?> value) {
-            this.index = index;
+        TerminalButton(Enum<?> setting, Enum<?> value, IntConsumer onPress,
+            BiConsumer<RichTooltip, GuiImgButton> describe) {
             button = nativeButton(setting, value);
             size(MiniTerminalLayout.BUTTON_WIDTH, MiniTerminalLayout.BUTTON_HEIGHT).invisible()
                 .playClickSound(false)
                 .onMouseScrolled((direction, amount) -> true)
                 .onMousePressed(mouseButton -> {
-                    if (index == 6) MiniTerminalClient.togglePickupToME();
-                    else if (index == 5) MiniTerminalClient.toggleCollapsed();
-                    else if (index == 4) {
-                        layout.reset();
-                        MiniTerminalClientConfig.saveWindow(layout);
-                    } else if (index == 3) MiniTerminalClientConfig.toggleShiftClick();
-                    else if (index == 2) terminal.changePinRows(mouseButton);
-                    else if (index == 1) model.settings(mouseButton, GuiScreen.isShiftKeyDown());
-                    else if (mouseButton == 1) MiniTerminalClient.openFull();
-                    else if (GuiScreen.isShiftKeyDown()) MiniTerminalClient.begin();
-                    else MiniTerminalClient.selectNext();
+                    onPress.accept(mouseButton);
                     return true;
                 })
                 .tooltipAutoUpdate(true)
-                .tooltipBuilder(tooltip -> {
-                    if (index == 6) {
-                        tooltip.addLine(tr("pickup"));
-                        tooltip.addLine(tr(MiniTerminalClient.pickupToME() ? "pickup.on" : "pickup.off"));
-                    } else if (index == 5) tooltip.addLine(tr("collapse"));
-                    else if (index == 4) tooltip.addLine(tr("reset_window"));
-                    else if (index == 3) {
-                        tooltip.addLine(tr("shift_click"));
-                        tooltip.addLine(
-                            tr(MiniTerminalClientConfig.shiftClickToME ? "shift_click.me" : "shift_click.vanilla"));
-                    } else if (index == 2) {
-                        for (String line : button.getMessage()
-                            .split("\n")) tooltip.addLine(line);
-                    } else if (index == 1) {
-                        tooltip.addLine(tr("settings"));
-                        tooltip.addLine(
-                            settingLabel("sort", model.getSortBy()) + " / "
-                                + settingLabel("direction", model.getSortDir())
-                                + " / "
-                                + settingLabel("view", model.getSortDisplay()));
-                    } else {
-                        tooltip.addLine(MiniTerminalClient.description());
-                        tooltip.addLine(
-                            tr(
-                                "status." + MiniTerminalClient.status()
-                                    .toLowerCase(java.util.Locale.ROOT)));
-                        tooltip.addLine(tr("select"));
-                        tooltip.addLine(tr("reconnect"));
-                    }
-                });
+                .tooltipBuilder(tooltip -> describe.accept(tooltip, button));
+        }
+
+        TerminalButton syncState(Consumer<GuiImgButton> syncState) {
+            this.syncState = syncState;
+            return this;
+        }
+
+        TerminalButton overlayIcon(UITexture overlayIcon) {
+            this.overlayIcon = overlayIcon;
+            return this;
         }
 
         @Override
         public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-            if (index == 0 || index == 2) button.setEnabled(model.isDisplayOnline());
-            else if (index == 1) button.set(model.getSortBy());
-            else if (index == 3) button.setEnabled(MiniTerminalClientConfig.shiftClickToME);
-            else if (index == 6) button.setEnabled(MiniTerminalClient.pickupToME());
+            syncState.accept(button);
             button.drawButton(Minecraft.getMinecraft(), context.getMouseX(), context.getMouseY());
-            if (index == 4) RESET_ICON.draw(2, 2, 6, 6);
-            if (index == 0 || index == 6) {
-                if (!button.enabled) ScreenColor.setDimmedGuiColor();
-                (index == 0 ? TERMINAL_ICON : MAGNET_CARD).draw(2, 2, 6, 6);
-                ScreenColor.resetGuiColor();
-            }
+            if (overlayIcon == null) return;
+            if (!button.enabled) ScreenColor.setDimmedGuiColor();
+            overlayIcon.draw(2, 2, 6, 6);
+            ScreenColor.resetGuiColor();
         }
     }
 
@@ -786,9 +815,6 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
                     VirtualMEMonitorableSlot candidate = directory[row * previousColumns + column];
                     if (candidate.isHovered(x + 1, y + 1)) return candidate;
                 }
-                for (VirtualMEMonitorableSlot entry : directory) {
-                    if (entry.isHovered(x + 1, y + 1)) return entry;
-                }
             }
             return null;
         }
@@ -799,7 +825,10 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             int pin = slot instanceof VirtualMEPinSlot ? slot.getSlotIndex() : -1;
             IAEStack<?> stack = slot.getAEStack();
             ItemStack held = Minecraft.getMinecraft().thePlayer.inventory.getItemStack();
-            boolean nonItemInteraction = AEBaseGui.isCtrlKeyDown();
+            boolean nonItemInteraction = Input.preferContainerInteraction(
+                AEBaseGui.isCtrlKeyDown(),
+                held != null && FLUID_STACK_TYPE.isContainerItemForType(held),
+                Keyboard.isKeyDown(Keyboard.KEY_SPACE));
             MonitorableAction intent = Input.click(
                 button,
                 Keyboard.isKeyDown(Keyboard.KEY_SPACE),
@@ -903,6 +932,10 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             return button == pickKey + 100 ? keyBindPickBlockAction : button;
         }
 
+        /**
+         * Mirrors GuiMEMonitorable#handleMonitorableSlotClick, which is private to AE's GUI. Container interaction is
+         * only chosen while holding a fluid container, so Ctrl alone keeps the normal item actions.
+         */
         static MonitorableAction click(int button, boolean space, boolean shift, boolean pin, boolean holding,
             boolean nonItemInteraction, IAEStack<?> stack) {
 
