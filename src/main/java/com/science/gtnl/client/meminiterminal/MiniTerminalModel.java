@@ -71,7 +71,6 @@ public final class MiniTerminalModel implements ISortSource {
     private int pinPart;
     private int pinParts;
     private IAEStack<?>[] pins = new IAEStack<?>[PinList.TOTAL_SLOTS];
-    // Missing saved pin settings stay hidden until the server supplies them.
     private MiniTerminalPinSettings pinSettings = MiniTerminalPinSettings.DISABLED;
     private SortOrder sort = SortOrder.NAME;
     private SortDir direction = SortDir.ASCENDING;
@@ -93,7 +92,6 @@ public final class MiniTerminalModel implements ISortSource {
 
     public void readSettings(ItemStack terminal) {
         if (terminal != null && terminal.getItem() instanceof ToolWirelessTerminal wireless) {
-            // Restore the per-player layout before opening the panel; the server snapshot will confirm it.
             PinsHolder savedPins = new PinsHolder(terminal.copy());
             pinSettings = MiniTerminalPinSettings.read(
                 terminal,
@@ -488,7 +486,6 @@ public final class MiniTerminalModel implements ISortSource {
     }
 
     public int entryId(IAEStack<?> target) {
-        // AE stacks hash and compare by type, ignoring amount, so the index matches isSameType.
         return isOnline() && target != null ? entryIds.getInt(target) : -1;
     }
 

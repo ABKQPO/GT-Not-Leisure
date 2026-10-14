@@ -31,17 +31,14 @@ final class MiniTerminalInventoryOverlay extends ModularScreen {
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         GL11.glPushMatrix();
         try {
-            // NEI's cursor pass runs after this callback.
             MiniTerminalHostLayer.loadTerminalMatrix(panel.inventory());
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glColor4f(1, 1, 1, 1);
-            // Host items must not depth-cull the terminal's own items.
             GL11.glDepthMask(true);
             GL11.glClearDepth(1);
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
             super.drawScreen();
             super.drawForeground();
-            // Moving panels are drawn in the foreground, after MUI's normal per-panel depth clear.
             GL11.glDepthMask(true);
             GL11.glClearDepth(1);
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);

@@ -73,7 +73,6 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
 
     @Override
     public boolean handleDragNDrop(GuiContainer gui, int mouseX, int mouseY, ItemStack draggedStack, int button) {
-        // NEI also calls this hook with a copy of the real cursor stack; only a phantom drag may set a pin.
         if (NEI.instance != null && NEI.instance.getDraggingPhantomItem() != null
             && pinDrop(gui, mouseX, mouseY, draggedStack, button)) return true;
         return fillSearch(gui, mouseX, mouseY, draggedStack);
@@ -84,7 +83,6 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
         if (overlay == null || stack == null || stack.getItem() == null || button != 0 && button != 1) return false;
         VirtualMESlot slot = overlay.hoveredSlot(mouseX, mouseY);
         if (!(slot instanceof VirtualMEPinSlot)) return false;
-        // Crafting-history pins remain read-only, and offline clicks must not reach the inventory underneath.
         if (!overlay.isOnline() || slot.getSlotIndex() < PinList.PLAYER_OFFSET) return true;
         ItemStack dragged = stack.copy();
         dragged.stackSize = 1;
@@ -155,7 +153,6 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
     @Override
     public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int width, int height) {
         MiniTerminalInventoryPanel overlay = overlay(gui);
-        // Called for every NEI item panel slot; the layout was already synchronized for this frame.
         return overlay != null && overlay.intersects(x, y, width, height);
     }
 
@@ -179,7 +176,6 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
         MiniTerminalInventoryPanel overlay = overlay(gui);
         if (overlay == null || !overlay.isOnline()) return currentTooltip;
         VirtualMESlot slot = overlay.hoveredSlot(mouseX, mouseY);
-        // NEI skips item tooltips while carrying a stack; AE's container interaction hints must still be shown.
         if (slot != null) slot.addTooltip(currentTooltip);
         return currentTooltip;
     }

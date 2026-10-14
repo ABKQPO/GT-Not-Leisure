@@ -50,7 +50,6 @@ final class MiniTerminalPanelHost {
 
     void open() {
         if (handler == null) OverlayStack.open(screen);
-        // The same host/handler can be opened again after a visit to a recipe screen.
         else if (!screen.isPanelOpen(panel)) handler.openPanel();
         panel.resetInteraction();
     }

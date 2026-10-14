@@ -41,7 +41,6 @@ public final class MiniTerminalHostLayer {
     }
 
     static void endFrame(GuiScreen gui) {
-        // Hosts that skipped NEI's object pass still get their tooltips back.
         flushTooltips(gui);
         frameGui = null;
     }
@@ -110,7 +109,6 @@ public final class MiniTerminalHostLayer {
     }
 
     private static boolean anchoredInTerminal(GuiScreen gui, float[] m, int x, int y) {
-        // Column major modelview; the GUI base matrix only shifts z, so this is the screen position.
         return overTerminal(gui, Math.round(m[0] * x + m[4] * y + m[12]), Math.round(m[1] * x + m[5] * y + m[13]));
     }
 

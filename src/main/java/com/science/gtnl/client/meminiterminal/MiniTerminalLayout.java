@@ -17,7 +17,6 @@ public final class MiniTerminalLayout {
     public static final int ROWS = 6;
     public static final int CELL = 18;
     public static final int WIDTH = 111;
-    // Two columns leave room for the search field and all three header buttons.
     public static final int MIN_WIDTH = WIDTH - (COLUMNS - MIN_COLUMNS) * CELL;
 
     public static final int MIN_HEIGHT = 94;
@@ -186,7 +185,6 @@ public final class MiniTerminalLayout {
         return new Rectangle(bounds);
     }
 
-    // Allocation-free check for per-slot NEI queries.
     boolean intersects(int x, int y, int width, int height) {
         return bounds.intersects(x, y, width, height);
     }

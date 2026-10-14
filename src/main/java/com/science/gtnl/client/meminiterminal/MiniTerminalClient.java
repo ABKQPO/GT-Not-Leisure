@@ -114,7 +114,6 @@ public final class MiniTerminalClient {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void prepareNativePanel(DrawScreenEvent.Pre event) {
         MiniTerminalHostLayer.beginFrame(event.gui);
-        // One layout pass per frame, before NEI queries the panel bounds for every item panel slot.
         if (overlay != null && event.gui == overlay.inventory()) overlay.prepareFrame();
     }
 
@@ -139,13 +138,11 @@ public final class MiniTerminalClient {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void initGui(InitGuiEvent.Post event) {
-        // OverlayStack must contain the fallback screen before MUI's NORMAL-priority resize handler.
         if (!(event.gui instanceof IMuiScreen)) attachPanel(event);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void initNativePanel(InitGuiEvent.Post event) {
-        // A native secondary panel needs the host main panel to have been initialized first.
         if (event.gui instanceof IMuiScreen) attachPanel(event);
     }
 
@@ -493,7 +490,6 @@ public final class MiniTerminalClient {
             intent);
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.currentScreen instanceof GuiContainerCreative && mc.playerController.isInCreativeMode()) {
-            // Creative inventory clicks do not synchronize the cursor stack to the server.
             packet.withCreativeCursor(mc.thePlayer.inventory.getItemStack());
         }
         ScienceNotLeisure.network.sendToServer(packet);
@@ -544,7 +540,6 @@ public final class MiniTerminalClient {
         int inventorySlot = MiniTerminalSessionService.playerInventoryIndex(mc.thePlayer, slot);
         if (inventorySlot < 0) return false;
 
-        // Without a live session the click belongs to the host GUI; swallowing it would move nothing.
         if (!model().isOnline() || session == 0 || !hasCurrentContainer()) return false;
         if (!slot.getHasStack() && mode != MiniTerminalRequestPacket.DepositMode.NATIVE_REGION) return true;
         ScienceNotLeisure.network

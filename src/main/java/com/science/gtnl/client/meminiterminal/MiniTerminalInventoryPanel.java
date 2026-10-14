@@ -363,14 +363,12 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
 
     void detach() {
         resetInteraction();
-        // MUI retains host screens when opening NEI recipes. Don't leave an inactive mini terminal panel in that stack.
         if (isValid() && !getScreen().isOverlay()) closeIfOpen();
     }
 
     @Override
     public void drawForeground(ModularGuiContext context) {
         super.drawForeground(context);
-        // MUI suppresses NEI tooltips over its widgets; ordinary containers already render them natively.
         if (!getScreen().isOverlay()) {
             context.queueForegroundRender(() -> MiniTerminalNEIAdapter.drawMuiSlotTooltip(this));
         }
@@ -410,8 +408,6 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
     @Override
     public boolean onKeyPressed(char character, int keyCode) {
         syncLayout();
-        // ModularPanel dispatches to the screen's focused widget, even if another panel owns it.
-        // Leave foreign focus to the host panel, instead of dispatching the same key twice.
         if (hasForeignFocus()) return false;
         if (MiniTerminalBogoCompat.handleSearchKey(inventory)) return true;
         boolean inside = isMouseOver(getContext().getAbsMouseX(), getContext().getAbsMouseY());
@@ -424,7 +420,6 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             && getScreen().getPanelManager()
                 .getTopMostPanel() == this
             && !getContext().hasDraggable()) {
-            // The mini terminal is part of the host GUI; E must not close just this auxiliary panel.
             getScreen().getMainPanel()
                 .closeIfOpen();
             return true;
@@ -799,7 +794,6 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             boolean crafting = GuiScreen.isCtrlKeyDown();
             int count = crafting ? current.craftingCount() : current.playerCount();
             int max = crafting ? MiniTerminalPinSettings.maxCraftingCount() : MiniTerminalPinSettings.maxPlayerCount();
-            // Step to the end of the next or previous visual row, so a width change never leaves a partial row.
             int columns = layout.columns();
             int next = button == 1 ? (count - 1) / columns * columns : (count / columns + 1) * columns;
             next = Math.max(0, Math.min(max, next));
@@ -857,11 +851,6 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             return slot;
         }
 
-        /**
-         * Mirrors GuiMEMonitorable#handleSetPinAction: a held stack pins itself unless the pin already shows it, in
-         * which case the click falls through to the normal slot action. AE's PinsHandler#setPin rejects stacks in
-         * crafting-history pins, so those clicks are consumed without a request, the same outcome as AE's SET_PIN.
-         */
         private boolean setPinFromHand(VirtualMESlot slot, ItemStack held, boolean nonItemInteraction) {
             if (!(slot instanceof VirtualMEPinSlot) || held == null) return false;
             IAEStack<?> pinned = slot.getAEStack();
@@ -869,7 +858,6 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             if (nonItemInteraction) {
                 target = FLUID_STACK_TYPE.getStackFromContainerItem(held);
                 if (pinned instanceof IAEFluidStack && (target == null || pinned.equals(target))) return false;
-                // An empty container has nothing to pin, but must not fall through to a fill or drain either.
                 if (target == null) return true;
             } else {
                 if (pinned instanceof IAEItemStack item && item.getItemStack()
@@ -970,10 +958,6 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             return button == pickKey + 100 ? keyBindPickBlockAction : button;
         }
 
-        /**
-         * Mirrors GuiMEMonitorable#handleMonitorableSlotClick, which is private to AE's GUI. Container interaction is
-         * only chosen while holding a fluid container, so Ctrl alone keeps the normal item actions.
-         */
         static MonitorableAction click(int button, boolean space, boolean shift, boolean pin, boolean holding,
             boolean nonItemInteraction, IAEStack<?> stack) {
 

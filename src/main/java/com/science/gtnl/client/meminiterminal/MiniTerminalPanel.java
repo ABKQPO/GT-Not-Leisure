@@ -93,7 +93,6 @@ class MiniTerminalPanel extends ModularPanel implements IDraggable {
         pendingCentered = keepPosOnDragResize() || GuiScreen.isShiftKeyDown();
         pendingResizeBounds = null;
         if (resizeEdge != null && resizeStart != null) {
-            // MUI skips dimensions below its minimum. Pass the requested size to our layout so it clamps instead.
             int factor = pendingCentered ? 2 : 1;
             int dx = (getContext().getAbsMouseX() - resizeMouseX) * factor;
             int dy = (getContext().getAbsMouseY() - resizeMouseY) * factor;
@@ -138,7 +137,6 @@ class MiniTerminalPanel extends ModularPanel implements IDraggable {
         if (drag == null || !successful) return;
         onDrag(0, 0);
         Area next = drag.getMovingArea();
-        // Persist the constrained preview directly, including positions outside the screen.
         resizer().resetPosition();
         resizer().relativeToScreen();
         pos(next.x, next.y);
