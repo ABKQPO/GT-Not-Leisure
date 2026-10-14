@@ -28,6 +28,7 @@ import org.lwjgl.input.Mouse;
 
 import com.cleanroommc.modularui.overlay.OverlayStack;
 import com.cleanroommc.modularui.screen.OpenScreenEvent;
+import com.cleanroommc.modularui.screen.RichTooltipEvent;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.ItemMEToolbox;
 import com.science.gtnl.common.metoolbox.ToolboxRequestPacket;
@@ -114,6 +115,24 @@ public final class ToolboxClient {
     public static boolean deferChromaticTooltip(DrawScreenEvent.Post event, Runnable renderTooltip) {
         return overlay != null && overlay.foreground()
             .deferChromaticTooltip(event, renderTooltip);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void beginForegroundFrame(DrawScreenEvent.Pre event) {
+        if (overlay != null && event.gui == overlay.inventory()) overlay.foreground()
+            .beginFrame();
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void captureHostTooltip(RichTooltipEvent.Color event) {
+        if (overlay != null) overlay.foreground()
+            .captureHostTooltip(event);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void captureHostTooltipBounds(RichTooltipEvent.PostText event) {
+        if (overlay != null) overlay.foreground()
+            .captureHostTooltipBounds(event);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
