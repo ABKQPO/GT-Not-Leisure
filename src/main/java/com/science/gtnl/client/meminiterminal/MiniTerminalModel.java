@@ -29,6 +29,7 @@ import appeng.client.gui.widgets.ISortSource;
 import appeng.client.me.ItemRepo;
 import appeng.core.AEConfig;
 import appeng.items.contents.PinList;
+import appeng.items.contents.PinsHolder;
 import appeng.items.tools.powered.ToolWirelessTerminal;
 import appeng.util.AEStackTypeFilter;
 import appeng.util.ConfigManager;
@@ -43,7 +44,7 @@ public final class MiniTerminalModel implements ISortSource {
     private int columns = MiniTerminalLayout.COLUMNS;
     private int rows = MiniTerminalLayout.ROWS;
     private int visibleCraftingCount;
-    private int visiblePlayerCount = PinsRows.TWO.getSlotCount();
+    private int visiblePlayerCount;
     private ItemRepo repo = createRepo();
     private Map<Integer, IAEStack<?>> entries = new HashMap<>();
     private int lastEntryId = -1;
@@ -67,8 +68,9 @@ public final class MiniTerminalModel implements ISortSource {
     private int pinPart;
     private int pinParts;
     private IAEStack<?>[] pins = new IAEStack<?>[PinList.TOTAL_SLOTS];
+    // Missing saved pin settings stay hidden until the server supplies them.
     private PinsRows craftingPinsRows = PinsRows.DISABLED;
-    private PinsRows playerPinsRows = PinsRows.TWO;
+    private PinsRows playerPinsRows = PinsRows.DISABLED;
     private SortOrder sort = SortOrder.NAME;
     private SortDir direction = SortDir.ASCENDING;
     private ViewItems display = ViewItems.ALL;
@@ -89,6 +91,10 @@ public final class MiniTerminalModel implements ISortSource {
 
     public void readSettings(ItemStack terminal) {
         if (terminal != null && terminal.getItem() instanceof ToolWirelessTerminal wireless) {
+            // Restore the per-player layout before opening the panel; the server snapshot will confirm it.
+            PinsHolder savedPins = new PinsHolder(terminal.copy());
+            craftingPinsRows = savedPins.getCraftingPinsRows(Minecraft.getMinecraft().thePlayer);
+            playerPinsRows = savedPins.getPlayerPinsRows(Minecraft.getMinecraft().thePlayer);
             sessionState.observeNetwork(wireless.getEncryptionKey(terminal));
             repo.setPowered(sessionState.isDisplayOnline());
 

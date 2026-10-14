@@ -37,7 +37,7 @@ public final class MiniTerminalLayout {
     private Rectangle preferredBounds;
     private int defaultHeight = 166;
     private int craftingPins;
-    private int playerPins = 18;
+    private int playerPins;
     private boolean playerFirst = true;
     private boolean geometryDirty;
     private boolean expanded;
