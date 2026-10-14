@@ -94,18 +94,6 @@ public final class MiniTerminalSessionService {
 
     private MiniTerminalSessionService() {}
 
-    public static int playerInventoryIndex(EntityPlayer player, Slot slot) {
-        if (player == null || slot == null) return -1;
-        int inventorySize = Math.min(36, player.inventory.mainInventory.length);
-        int slotIndex = slot.getSlotIndex();
-        if (slotIndex >= 0 && slotIndex < inventorySize && slot.isSlotInInventory(player.inventory, slotIndex))
-            return slotIndex;
-        for (int index = 0; index < inventorySize; index++) {
-            if (slot.isSlotInInventory(player.inventory, index)) return index;
-        }
-        return -1;
-    }
-
     public static void end(EntityPlayerMP player) {
         Session session = SESSIONS.remove(player.getUniqueID());
         if (session != null) session.close();
@@ -169,6 +157,7 @@ public final class MiniTerminalSessionService {
         }
         if (session == null || session.id != request.sessionId) return;
         MiniTerminalStatus status = session.validate();
+        session.validated = status;
         if (status != MiniTerminalStatus.ONLINE) {
             session.status(status);
             end(player);
@@ -244,7 +233,7 @@ public final class MiniTerminalSessionService {
     private static final class BogoInventory {
 
         static List<Slot> sources(EntityPlayerMP player, Container container, Slot source) {
-            ISlotGroup group = GuiSortingContext.getOrCreate(container)
+            ISlotGroup group = GuiSortingContext.create(container)
                 .getSlotGroup(source.slotNumber);
             if (group == null) return List.of();
             List<Slot> slots = new ArrayList<>();
@@ -266,11 +255,7 @@ public final class MiniTerminalSessionService {
     }
 
     private static void togglePickup(EntityPlayerMP player, MiniTerminalRequestPacket request, Session session) {
-        if (!allowedContainer(player) || request.slot < 0
-            || ItemMEMiniPortableTerminal.findTerminalSlot(player, request.terminalId) != request.slot) return;
-        if (session != null && session.id == request.sessionId && !session.acceptAction(request)) return;
-        ItemStack stack = ItemMEMiniPortableTerminal.getTerminalStack(player, request.slot);
-        stack = authoritativeSessionStack(player, request, session, stack);
+        ItemStack stack = requestedTerminal(player, request, session);
         if (stack == null) return;
         boolean enabled = !ItemMEMiniPortableTerminal.isPickupToMEEnabled(stack);
 
@@ -287,13 +272,8 @@ public final class MiniTerminalSessionService {
     }
 
     private static void settings(EntityPlayerMP player, MiniTerminalRequestPacket request, Session session) {
-        if (!allowedContainer(player) || request.slot < 0
-            || ItemMEMiniPortableTerminal.findTerminalSlot(player, request.terminalId) != request.slot) return;
-        ItemStack stack = ItemMEMiniPortableTerminal.getTerminalStack(player, request.slot);
-        stack = authoritativeSessionStack(player, request, session, stack);
+        ItemStack stack = requestedTerminal(player, request, session);
         if (stack == null) return;
-        if (!ItemMEMiniPortableTerminal.isMiniTerminal(stack)) return;
-        if (session != null && session.id == request.sessionId && !session.acceptAction(request)) return;
         IConfigManager config = ((IWirelessTermHandler) stack.getItem()).getConfigManager(stack);
 
         config.putSetting(Settings.SORT_BY, request.sortOrder);
@@ -313,15 +293,38 @@ public final class MiniTerminalSessionService {
             filters.setEnabled(FLUID_STACK_TYPE, request.showFluids);
             terminalSettings.writeToNBT(stack);
         }
-        NBTTagCompound data = new NBTTagCompound();
-        config.writeToNBT(data);
-        readTypeFilters(stack, player).writeToNBT(data);
         NBTTagCompound response = message("SETTINGS", request.sessionId);
         response.setString(MiniTerminalUpdatePacket.TERMINAL_ID_KEY, request.terminalId.toString());
         response.setLong("actionId", request.actionId);
-        response.setTag("config", data);
+        response.setTag("config", configTag(stack, player, config));
         send(player, response);
         MiniTerminalTransferService.synchronize(player);
+    }
+
+    private static ItemStack requestedTerminal(EntityPlayerMP player, MiniTerminalRequestPacket request,
+        Session session) {
+        if (!allowedContainer(player) || request.slot < 0
+            || ItemMEMiniPortableTerminal.findTerminalSlot(player, request.terminalId) != request.slot) return null;
+        if (session != null && session.id == request.sessionId && !session.acceptAction(request)) return null;
+        return authoritativeSessionStack(
+            player,
+            request,
+            session,
+            ItemMEMiniPortableTerminal.getTerminalStack(player, request.slot));
+    }
+
+    private static MiniTerminalStatus missingStatus(EntityPlayer player, UUID id) {
+        if (id != null && id.equals(ItemMEMiniPortableTerminal.getTerminalId(player.inventory.getItemStack())))
+            return MiniTerminalStatus.ON_CURSOR;
+        return ItemMEMiniPortableTerminal.isTerminalDuplicated(player, id) ? MiniTerminalStatus.AMBIGUOUS
+            : MiniTerminalStatus.MISSING;
+    }
+
+    private static NBTTagCompound configTag(ItemStack stack, EntityPlayer player, IConfigManager config) {
+        NBTTagCompound data = new NBTTagCompound();
+        config.writeToNBT(data);
+        readTypeFilters(stack, player).writeToNBT(data);
+        return data;
     }
 
     private static ItemStack authoritativeSessionStack(EntityPlayerMP player, MiniTerminalRequestPacket request,
@@ -361,12 +364,7 @@ public final class MiniTerminalSessionService {
         long id = ++nextSession;
         int slot = ItemMEMiniPortableTerminal.findTerminalSlot(player, preferred);
         if (slot < 0) {
-            MiniTerminalStatus state = preferred != null
-                && preferred.equals(ItemMEMiniPortableTerminal.getTerminalId(player.inventory.getItemStack()))
-                    ? MiniTerminalStatus.ON_CURSOR
-                    : ItemMEMiniPortableTerminal.isTerminalDuplicated(player, preferred) ? MiniTerminalStatus.AMBIGUOUS
-                        : MiniTerminalStatus.MISSING;
-            sendStatus(player, id, request.requestId, slot, preferred, null, state);
+            sendStatus(player, id, request.requestId, slot, preferred, null, missingStatus(player, preferred));
             return;
         }
         SELECTED.put(player.getUniqueID(), preferred);
@@ -464,11 +462,7 @@ public final class MiniTerminalSessionService {
             IWirelessTermHandler handler = (IWirelessTermHandler) stack.getItem();
             String key = handler.getEncryptionKey(stack);
             tag.setString("network", key == null ? "" : key);
-            NBTTagCompound config = new NBTTagCompound();
-            handler.getConfigManager(stack)
-                .writeToNBT(config);
-            readTypeFilters(stack, player).writeToNBT(config);
-            tag.setTag("config", config);
+            tag.setTag("config", configTag(stack, player, handler.getConfigManager(stack)));
         }
         send(player, tag);
     }
@@ -568,6 +562,8 @@ public final class MiniTerminalSessionService {
         final MiniTerminalMonitorableAdapter terminal;
         MiniTerminalPinSettings pinSettings;
         NBTTagList observedPins;
+        NBTTagList observedPinsSource;
+        MiniTerminalStatus validated;
         MiniTerminalCatalog catalog;
         long pinRevision = 1;
         long lastAction;
@@ -597,20 +593,16 @@ public final class MiniTerminalSessionService {
             this.fluidMonitor = host.getFluidInventory();
             this.pinSettings = MiniTerminalPinSettings
                 .read(stack, player, terminal.getCraftingPinsRows(), terminal.getPlayerPinsRows());
-            this.observedPins = (NBTTagList) pinData().copy();
+            observePins();
         }
 
         MiniTerminalStatus validate() {
             if (!allowedContainer(player) || player.openContainer != container || container.windowId != windowId)
                 return MiniTerminalStatus.INVALID_CONTAINER;
-            if (terminalId.equals(ItemMEMiniPortableTerminal.getTerminalId(player.inventory.getItemStack())))
-                return MiniTerminalStatus.ON_CURSOR;
             ItemStack currentStack = ItemMEMiniPortableTerminal.getTerminalStack(player, slot);
             if (currentStack != stack) {
                 int current = ItemMEMiniPortableTerminal.findTerminalSlot(player, terminalId);
-                if (current < 0) return ItemMEMiniPortableTerminal.isTerminalDuplicated(player, terminalId)
-                    ? MiniTerminalStatus.AMBIGUOUS
-                    : MiniTerminalStatus.MISSING;
+                if (current < 0) return missingStatus(player, terminalId);
                 if (current != slot) return MiniTerminalStatus.STALE;
                 if (!ItemStack.areItemStacksEqual(stack, currentStack)
                     || !ItemMEMiniPortableTerminal.restoreTerminalStack(player, current, stack))
@@ -618,7 +610,11 @@ public final class MiniTerminalSessionService {
             }
             if (!Objects.equals(binding, handler.getEncryptionKey(stack))) return MiniTerminalStatus.STALE;
 
-            if (!observedPins.equals(pinData())) return MiniTerminalStatus.STALE;
+            NBTTagList livePins = pinData();
+            if (livePins != observedPinsSource) {
+                if (!observedPins.equals(livePins)) return MiniTerminalStatus.STALE;
+                observedPinsSource = livePins;
+            }
             if (binding == null || binding.isEmpty()) return MiniTerminalStatus.UNBOUND;
             IGridNode liveNode = resolveBindingNode(binding);
             if (liveNode == null || grid == null) return MiniTerminalStatus.OFFLINE;
@@ -645,14 +641,20 @@ public final class MiniTerminalSessionService {
         }
 
         private boolean operationValid(SecurityPermissions permission) {
-            return SESSIONS.get(player.getUniqueID()) == this && validate() == MiniTerminalStatus.ONLINE
-                && container.isPlayerNotUsingContainer(player)
-                && permission(permission);
+            if (SESSIONS.get(player.getUniqueID()) != this || player.openContainer != container
+                || !container.isPlayerNotUsingContainer(player)) return false;
+            if (validated == null) validated = validate();
+            return validated == MiniTerminalStatus.ONLINE && permission(permission);
+        }
+
+        private void observePins() {
+            observedPinsSource = pinData();
+            observedPins = (NBTTagList) observedPinsSource.copy();
         }
 
         private void recordPinChanges() {
             if (!terminal.consumePinsChanged()) return;
-            observedPins = (NBTTagList) pinData().copy();
+            observePins();
             pinRevision++;
         }
 
@@ -765,7 +767,7 @@ public final class MiniTerminalSessionService {
             try {
                 for (Slot candidate : sources) {
                     if (!valid.getAsBoolean()) return;
-                    int inventorySlot = playerInventoryIndex(player, candidate);
+                    int inventorySlot = ItemMEMiniPortableTerminal.playerInventoryIndex(player, candidate);
                     if (inventorySlot < 0 || !candidate.canTakeStack(player)) continue;
                     ItemStack stackInSlot = player.inventory.mainInventory[inventorySlot];
                     if (stackInSlot == null || stackInSlot.stackSize <= 0
@@ -812,7 +814,7 @@ public final class MiniTerminalSessionService {
 
             for (Object entry : player.inventoryContainer.inventorySlots) {
                 Slot playerSlot = (Slot) entry;
-                int inventorySlot = playerInventoryIndex(player, playerSlot);
+                int inventorySlot = ItemMEMiniPortableTerminal.playerInventoryIndex(player, playerSlot);
                 if (inventorySlot < 0) continue;
                 Slot hostSlot = container.getSlotFromInventory(player.inventory, inventorySlot);
                 Slot destination = hostSlot == null ? playerSlot : hostSlot;

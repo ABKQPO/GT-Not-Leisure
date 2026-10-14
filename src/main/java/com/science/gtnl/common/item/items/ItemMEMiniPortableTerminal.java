@@ -15,6 +15,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -117,6 +118,18 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
         }
     }
 
+    public static int playerInventoryIndex(EntityPlayer player, Slot slot) {
+        if (player == null || slot == null) return -1;
+        int inventorySize = Math.min(36, player.inventory.mainInventory.length);
+        int slotIndex = slot.getSlotIndex();
+        if (slotIndex >= 0 && slotIndex < inventorySize && slot.isSlotInInventory(player.inventory, slotIndex))
+            return slotIndex;
+        for (int index = 0; index < inventorySize; index++) {
+            if (slot.isSlotInInventory(player.inventory, index)) return index;
+        }
+        return -1;
+    }
+
     public static UUID ensureIdentity(ItemStack stack, EntityPlayer player) {
         UUID id = getTerminalId(stack);
         if (id == null && isMiniTerminal(stack) && !player.worldObj.isRemote) {
@@ -145,6 +158,20 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
             if (id.equals(getTerminalId(getTerminalStack(player, slot))) && ++count > 1) return true;
         }
         return false;
+    }
+
+    public static boolean hasUniqueIdentity(EntityPlayer player, ItemStack stack, List<Integer> terminalSlots) {
+        String id = rawIdentity(stack);
+        if (id.isEmpty() || id.equals(rawIdentity(player.inventory.getItemStack()))) return false;
+        int count = 0;
+        for (int slot : terminalSlots) {
+            if (id.equals(rawIdentity(getTerminalStack(player, slot))) && ++count > 1) return false;
+        }
+        return true;
+    }
+
+    private static String rawIdentity(ItemStack stack) {
+        return isMiniTerminal(stack) ? ItemStackNBT.getString(stack, ID_TAG) : "";
     }
 
     public static int findFirstTerminalSlot(EntityPlayer player) {
@@ -216,7 +243,21 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean held) {
         super.onUpdate(stack, world, entity, slot, held);
-        if (!world.isRemote && entity instanceof EntityPlayer player) ensureIdentity(stack, player);
+        if (!world.isRemote && entity instanceof EntityPlayer player) assignMissingIdentity(stack, player);
+    }
+
+    private static void assignMissingIdentity(ItemStack stack, EntityPlayer player) {
+        if (!isCanonicalUuid(ItemStackNBT.getString(stack, ID_TAG))) ensureIdentity(stack, player);
+    }
+
+    private static boolean isCanonicalUuid(String id) {
+        if (id.length() != 36) return false;
+        for (int index = 0; index < 36; index++) {
+            char c = id.charAt(index);
+            boolean dash = index == 8 || index == 13 || index == 18 || index == 23;
+            if (dash ? c != '-' : Character.digit(c, 16) < 0) return false;
+        }
+        return true;
     }
 
     @Override
@@ -256,7 +297,7 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
     @Override
     public void onWornTick(ItemStack stack, EntityLivingBase wearer) {
         if (!(wearer instanceof EntityPlayerMP player)) return;
-        ensureIdentity(stack, player);
+        assignMissingIdentity(stack, player);
         if (!(BaublesCompat.getBaubles(player) instanceof InventoryBaubles worn)) return;
         Map<Integer, ItemStack> snapshots = WORN_SNAPSHOTS.computeIfAbsent(player, key -> new HashMap<>());
 

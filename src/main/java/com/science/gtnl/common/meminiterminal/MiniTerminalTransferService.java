@@ -1,6 +1,7 @@
 package com.science.gtnl.common.meminiterminal;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -49,62 +50,21 @@ final class MiniTerminalTransferService {
 
     static void depositInventory(EntityPlayerMP player, MiniTerminalMonitorableAdapter terminal, Slot sourceSlot,
         int amount, BooleanSupplier valid) {
-        int inventorySlot = MiniTerminalSessionService.playerInventoryIndex(player, sourceSlot);
+        int inventorySlot = ItemMEMiniPortableTerminal.playerInventoryIndex(player, sourceSlot);
         if (inventorySlot < 0) return;
         ItemStack original = player.inventory.mainInventory[inventorySlot];
         if (original == null || original.stackSize <= 0 || amount <= 0 || !sourceSlot.canTakeStack(player)) return;
         InventoryAdaptor source = new AdaptorIInventory(
             new WrapperInventoryRange(player.inventory, inventorySlot, 1, false));
         try {
-            depositFrom(player, terminal, source, original, amount, valid);
+            if (!valid.getAsBoolean()) return;
+            ItemStack reserved = source.removeItems(Math.min(amount, original.stackSize), original, null);
+            if (reserved == null || reserved.stackSize <= 0) return;
+            ItemStack remainder = valid.getAsBoolean() ? terminal.store(reserved, valid) : reserved;
+            if (remainder != null && remainder.stackSize > 0) restoreToPlayer(player, source, remainder);
         } finally {
             sourceSlot.onSlotChanged();
         }
-    }
-
-    private static void depositFrom(EntityPlayerMP player, MiniTerminalMonitorableAdapter terminal,
-        InventoryAdaptor source, ItemStack original, int amount, BooleanSupplier valid) {
-        deposit(amount, valid, new IDepositAccess() {
-
-            @Override
-            public IAEItemStack reserve(int maximum) {
-
-                return AEItemStack.create(source.removeItems(Math.min(maximum, original.stackSize), original, null));
-            }
-
-            @Override
-            public IAEItemStack poweredInsert(IAEItemStack offered) {
-
-                return AEItemStack.create(terminal.store(offered.getItemStack(), valid));
-            }
-
-            @Override
-            public void restore(IAEItemStack remainder) {
-                restoreToPlayer(player, source, remainder.getItemStack());
-            }
-        });
-    }
-
-    interface IDepositAccess {
-
-        IAEItemStack reserve(int maximum);
-
-        IAEItemStack poweredInsert(IAEItemStack offered);
-
-        void restore(IAEItemStack remainder);
-    }
-
-    static void deposit(int maximum, BooleanSupplier valid, IDepositAccess access) {
-        if (maximum <= 0 || !valid.getAsBoolean()) return;
-        IAEItemStack reserved = access.reserve(maximum);
-        if (reserved == null || reserved.getStackSize() <= 0) return;
-        if (!valid.getAsBoolean()) {
-            access.restore(reserved);
-            return;
-        }
-        IAEItemStack remainder = access.poweredInsert(reserved);
-
-        if (remainder != null && remainder.getStackSize() > 0) access.restore(remainder);
     }
 
     static boolean depositsCursor(ItemStack hand, MonitorableAction action) {
@@ -204,13 +164,12 @@ final class MiniTerminalTransferService {
         ItemStack picked = entity.getEntityItem();
         if (picked == null || picked.stackSize <= 0 || ItemMEMiniPortableTerminal.isMiniTerminal(picked)) return;
 
-        for (int slot : ItemMEMiniPortableTerminal.getTerminalSlots(player)) {
+        List<Integer> slots = ItemMEMiniPortableTerminal.getTerminalSlots(player);
+        for (int slot : slots) {
             ItemStack terminalStack = ItemMEMiniPortableTerminal.getTerminalStack(player, slot);
             if (!ItemMEMiniPortableTerminal.isPickupToMEEnabled(terminalStack)) continue;
-
-            if (ItemMEMiniPortableTerminal
-                .findTerminalSlot(player, ItemMEMiniPortableTerminal.getTerminalId(terminalStack)) != slot) return;
-            insertPickup(event, player, terminalStack, slot, picked);
+            if (ItemMEMiniPortableTerminal.hasUniqueIdentity(player, terminalStack, slots))
+                insertPickup(event, player, terminalStack, slot, picked);
             return;
         }
     }
@@ -244,6 +203,7 @@ final class MiniTerminalTransferService {
         PickupHost cached = PICKUP_HOSTS.get(player.getUniqueID());
         if (cached != null && cached.player() == player
             && cached.stack() == terminalStack
+            && cached.slot() == slot
             && Objects.equals(cached.binding(), binding)
             && cached.host()
                 .getGrid() == grid)
@@ -256,7 +216,7 @@ final class MiniTerminalTransferService {
             slot,
             0,
             0);
-        PICKUP_HOSTS.put(player.getUniqueID(), new PickupHost(player, terminalStack, binding, host));
+        PICKUP_HOSTS.put(player.getUniqueID(), new PickupHost(player, terminalStack, slot, binding, host));
         return host;
     }
 
@@ -264,7 +224,8 @@ final class MiniTerminalTransferService {
         PICKUP_HOSTS.remove(player.getUniqueID());
     }
 
-    private record PickupHost(EntityPlayerMP player, ItemStack stack, String binding, WirelessTerminalGuiObject host) {}
+    private record PickupHost(EntityPlayerMP player, ItemStack stack, int slot, String binding,
+        WirelessTerminalGuiObject host) {}
 
     static final class InventoryDestination extends AdaptorIInventory {
 

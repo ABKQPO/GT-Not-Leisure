@@ -33,7 +33,6 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import com.science.gtnl.common.meminiterminal.MiniTerminalPinSettings;
 import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket;
-import com.science.gtnl.common.meminiterminal.MiniTerminalSessionService;
 import com.science.gtnl.common.meminiterminal.MiniTerminalUpdatePacket;
 
 import appeng.api.config.SortDir;
@@ -550,7 +549,7 @@ public final class MiniTerminalClient {
             || !containsSlot(mc.thePlayer.openContainer, slot)
             || ItemMEMiniPortableTerminal.isMiniTerminal(slot.getStack())) return false;
 
-        int inventorySlot = MiniTerminalSessionService.playerInventoryIndex(mc.thePlayer, slot);
+        int inventorySlot = ItemMEMiniPortableTerminal.playerInventoryIndex(mc.thePlayer, slot);
         if (inventorySlot < 0) return false;
 
         if (!connected()) return false;
