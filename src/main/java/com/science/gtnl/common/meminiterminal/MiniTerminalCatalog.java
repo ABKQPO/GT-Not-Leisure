@@ -2,9 +2,9 @@ package com.science.gtnl.common.meminiterminal;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.science.gtnl.common.meminiterminal.MiniTerminalUpdatePacket.Entry;
@@ -16,7 +16,6 @@ import appeng.api.storage.data.IAEStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 final class MiniTerminalCatalog {
@@ -90,16 +89,17 @@ final class MiniTerminalCatalog {
         List<Entry> entries = new ArrayList<>();
 
         if (fullUpdate || listUpdate && elapsed(tick, lastScan, MIN_SCAN_TICKS)) {
-            Map<IAEStack<?>, IAEStack<?>> available = new Object2ObjectOpenHashMap<>();
-            for (IAEItemStack stack : itemMonitor.getStorageList()) addAvailable(available, stack);
+            // IDs are allocated densely, so a bit set marks survivors without hashing every stack a second time.
+            BitSet seen = new BitSet((int) Math.min(nextId, Integer.MAX_VALUE));
+            for (IAEItemStack stack : itemMonitor.getStorageList()) scan(entries, stack, seen);
             if (fluidsVisible && fluidMonitor != null) {
-                for (IAEFluidStack stack : fluidMonitor.getStorageList()) addAvailable(available, stack);
+                for (IAEFluidStack stack : fluidMonitor.getStorageList()) scan(entries, stack, seen);
             }
             Iterator<Int2ObjectMap.Entry<IAEStack<?>>> previous = identities.int2ObjectEntrySet()
                 .iterator();
             while (previous.hasNext()) {
                 Int2ObjectMap.Entry<IAEStack<?>> entry = previous.next();
-                if (available.containsKey(entry.getValue())) continue;
+                if (seen.get(entry.getIntKey())) continue;
                 if (!fullUpdate) entries.add(
                     new Entry(
                         entry.getIntKey(),
@@ -109,7 +109,6 @@ final class MiniTerminalCatalog {
                 ids.removeInt(entry.getValue());
                 previous.remove();
             }
-            for (IAEStack<?> stack : available.values()) update(entries, stack);
             listUpdate = false;
             lastScan = tick;
         } else {
@@ -135,11 +134,14 @@ final class MiniTerminalCatalog {
         return stack.getStackSize() != 0 || stack.isCraftable();
     }
 
-    private static void addAvailable(Map<IAEStack<?>, IAEStack<?>> available, IAEStack<?> stack) {
-        if (visible(stack)) available.put(stack, stack);
+    private void scan(List<Entry> entries, IAEStack<?> stack, BitSet seen) throws IOException {
+        if (!visible(stack)) return;
+        int id = update(entries, stack);
+        if (id >= 0) seen.set(id);
     }
 
-    private void update(List<Entry> entries, IAEStack<?> stack) throws IOException {
+    /** Returns the stack's catalog ID, or -1 once it is no longer visible. */
+    private int update(List<Entry> entries, IAEStack<?> stack) throws IOException {
         int id = ids.getInt(stack);
         if (!visible(stack)) {
             if (id >= 0) {
@@ -151,19 +153,25 @@ final class MiniTerminalCatalog {
                 ids.removeInt(stack);
                 identities.remove(id);
             }
-            return;
+            return -1;
         }
+        // One copy serves as the ID key, the remembered state and the outgoing entry; none of them mutate it.
+        IAEStack<?> copy;
         if (id < 0) {
             if (nextId > Integer.MAX_VALUE)
                 throw new IOException("ME mini portable terminal catalog exceeds the identity limit");
             // Never reuse an ID during a session, including after a snapshot: queued older clicks stay safe.
             id = (int) nextId++;
-            ids.put(stack.copy(), id);
+            copy = stack.copy();
+            ids.put(copy, id);
         } else if (!fullUpdate && sameState(identities.get(id), stack)) {
-            return;
+            return id;
+        } else {
+            copy = stack.copy();
         }
-        entries.add(new Entry(id, stack.copy()));
-        identities.put(id, stack.copy());
+        entries.add(new Entry(id, copy));
+        identities.put(id, copy);
+        return id;
     }
 
     private static boolean sameState(IAEStack<?> previous, IAEStack<?> current) {

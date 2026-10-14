@@ -83,16 +83,19 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
     /** Splits entries into compressed parts; always returns at least one part, possibly empty. */
     static List<byte[]> encode(List<Entry> entries) throws IOException {
         List<byte[]> parts = new ArrayList<>();
-        ByteBuf part = Unpooled.buffer();
+        ByteBuf part = Unpooled.buffer(Math.min(PART_BYTES, 64 + entries.size() * 64));
         for (Entry entry : entries) {
-            ByteBuf record = Unpooled.buffer();
-            record.writeInt(entry.key());
-            Platform.writeStackByte(entry.stack(), record);
-            if (part.isReadable() && part.readableBytes() + record.readableBytes() > PART_BYTES) {
+            // Write in place; a record that overflows a non-empty part moves to the next one.
+            int start = part.writerIndex();
+            part.writeInt(entry.key());
+            Platform.writeStackByte(entry.stack(), part);
+            if (start > 0 && part.readableBytes() > PART_BYTES) {
+                ByteBuf next = Unpooled.buffer(PART_BYTES);
+                next.writeBytes(part, start, part.writerIndex() - start);
+                part.writerIndex(start);
                 parts.add(compress(part));
-                part = Unpooled.buffer();
+                part = next;
             }
-            part.writeBytes(record);
         }
         parts.add(compress(part));
         return parts;
@@ -101,7 +104,7 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
     private static byte[] compress(ByteBuf raw) throws IOException {
         if (!raw.isReadable()) return new byte[0];
         if (raw.readableBytes() > MAX_PART_BYTES) throw new IOException("Oversize ME mini portable terminal entry");
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        ByteArrayOutputStream output = new ByteArrayOutputStream(raw.readableBytes() / 4 + 64);
         try (GZIPOutputStream gzip = new GZIPOutputStream(output)) {
             raw.readBytes(gzip, raw.readableBytes());
         }

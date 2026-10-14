@@ -35,6 +35,7 @@ import appeng.util.AEStackTypeFilter;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
 import appeng.util.TerminalSettings;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
 
 public final class MiniTerminalModel implements ISortSource {
@@ -47,7 +48,11 @@ public final class MiniTerminalModel implements ISortSource {
     private int visiblePlayerCount;
     private ItemRepo repo = createRepo();
     private Map<Integer, IAEStack<?>> entries = new HashMap<>();
-    private int lastEntryId = -1;
+    private final Object2IntOpenHashMap<IAEStack<?>> entryIds = new Object2IntOpenHashMap<>();
+
+    {
+        entryIds.defaultReturnValue(-1);
+    }
     private Map<Integer, IAEStack<?>> pending;
     private long pendingRevision;
     private Map<Integer, IAEStack<?>> pendingDelta;
@@ -229,7 +234,7 @@ public final class MiniTerminalModel implements ISortSource {
                     stagedCatalogRevision = revision;
                     commitSessionSnapshots();
                 } else {
-                    entries = complete;
+                    replaceEntries(complete);
                     catalogRevision = revision;
                     rebuild();
                     restoreScroll();
@@ -253,8 +258,10 @@ public final class MiniTerminalModel implements ISortSource {
         for (Map.Entry<Integer, IAEStack<?>> change : pendingDelta.entrySet()) {
             IAEStack<?> stack = change.getValue();
             repo.postUpdate(stack);
-            if (stack.getStackSize() == 0 && !stack.isCraftable()) entries.remove(change.getKey());
-            else entries.put(change.getKey(), stack);
+            boolean visible = stack.getStackSize() != 0 || stack.isCraftable();
+            IAEStack<?> previous = visible ? entries.put(change.getKey(), stack) : entries.remove(change.getKey());
+            if (previous != null) entryIds.removeInt(previous);
+            if (visible) entryIds.put(stack, (int) change.getKey());
         }
         pendingDelta = null;
         catalogRevision = revision;
@@ -328,7 +335,7 @@ public final class MiniTerminalModel implements ISortSource {
 
     private void commitSessionSnapshots() {
         if (stagedCatalog == null || stagedPins == null || !sessionState.isConnected()) return;
-        entries = stagedCatalog;
+        replaceEntries(stagedCatalog);
         catalogRevision = stagedCatalogRevision;
         pins = stagedPins;
         pinRevision = stagedPinRevision;
@@ -481,18 +488,15 @@ public final class MiniTerminalModel implements ISortSource {
     }
 
     public int entryId(IAEStack<?> target) {
-        if (!isOnline() || target == null) return -1;
-        // Repeated wheel actions can reuse an ID only while it still matches the current catalog.
-        IAEStack<?> previous = entries.get(lastEntryId);
-        if (previous != null && previous.isSameType(target)) return lastEntryId;
-        for (Map.Entry<Integer, IAEStack<?>> entry : entries.entrySet()) {
-            if (entry.getValue()
-                .isSameType(target)) {
-                lastEntryId = entry.getKey();
-                return lastEntryId;
-            }
-        }
-        return -1;
+        // AE stacks hash and compare by type, ignoring amount, so the index matches isSameType.
+        return isOnline() && target != null ? entryIds.getInt(target) : -1;
+    }
+
+    private void replaceEntries(Map<Integer, IAEStack<?>> next) {
+        entries = next;
+        entryIds.clear();
+        for (Map.Entry<Integer, IAEStack<?>> entry : next.entrySet())
+            entryIds.put(entry.getValue(), (int) entry.getKey());
     }
 
     public long catalogRevision() {
