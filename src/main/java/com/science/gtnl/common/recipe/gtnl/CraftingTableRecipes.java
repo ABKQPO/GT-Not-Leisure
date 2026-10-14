@@ -32,8 +32,6 @@ import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import appeng.api.AEApi;
-import appeng.api.config.Settings;
-import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.util.AEColor;
 import appeng.container.ContainerNull;
 import cpw.mods.fml.common.Optional;
@@ -1726,9 +1724,6 @@ public class CraftingTableRecipes implements IRecipePool {
 
     private static final class MiniTerminalUpgradeRecipe extends ShapedOreRecipe {
 
-        private static final String[] TERMINAL_TAGS = { "encryptionKey", "encryptionKeys", "name", "pins", "viewCell",
-            "terminalSettings", "searchString", "display" };
-
         private MiniTerminalUpgradeRecipe(ItemStack result, Object... recipe) {
             super(result, recipe);
         }
@@ -1742,46 +1737,15 @@ public class CraftingTableRecipes implements IRecipePool {
                     .items()
                     .wirelessTerminal()
                     .isSameAs(source)) {
-                    return upgrade(source, super.getCraftingResult(inventory));
+                    ItemStack result = super.getCraftingResult(inventory);
+                    // Same battery and wireless handler: binding, cards, pins, settings and stored power all carry over.
+                    if (source.hasTagCompound()) result.setTagCompound(
+                        (NBTTagCompound) source.getTagCompound()
+                            .copy());
+                    return result;
                 }
             }
             return null;
-        }
-
-        public static ItemStack upgrade(ItemStack source, ItemStack result) {
-            if (!(result.getItem() instanceof ItemMEMiniPortableTerminal terminal)) {
-                throw new IllegalArgumentException("The upgrade output must be an ME Mini Portable Terminal");
-            }
-            result.setTagCompound(copyTerminalData(source.getTagCompound()));
-            if (source.getItem() instanceof IAEItemPowerStorage power) {
-                double stored = power.getAECurrentPower(source);
-                if (Double.isFinite(stored) && stored > 0) {
-                    terminal.injectAEPower(result, stored);
-                }
-            }
-
-            return result;
-        }
-
-        static NBTTagCompound copyTerminalData(NBTTagCompound original) {
-            NBTTagCompound tag = new NBTTagCompound();
-            if (original != null) {
-                for (String key : TERMINAL_TAGS) {
-                    if (original.hasKey(key)) tag.setTag(
-                        key,
-                        original.getTag(key)
-                            .copy());
-                }
-
-                for (Settings setting : new Settings[] { Settings.SORT_BY, Settings.VIEW_MODE, Settings.SORT_DIRECTION }) {
-                    String key = setting.name();
-                    if (original.hasKey(key)) tag.setTag(
-                        key,
-                        original.getTag(key)
-                            .copy());
-                }
-            }
-            return tag;
         }
     }
 
