@@ -112,21 +112,10 @@ public final class MiniTerminalClient {
         GuiContainerManager.addSlotClickHandler(nei);
     }
 
-    public static boolean deferChromaticTooltip(DrawScreenEvent.Post event, Runnable renderTooltip) {
-        return overlay != null && overlay.foreground()
-            .deferChromaticTooltip(event, renderTooltip);
-    }
-
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void prepareNativePanel(DrawScreenEvent.Pre event) {
         if (overlay != null && event.gui == overlay.inventory() && event.gui instanceof IMuiScreen)
             overlay.prepareFrame();
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void drawDeferredTooltip(DrawScreenEvent.Post event) {
-        if (overlay != null) overlay.foreground()
-            .drawChromaticTooltip(event);
     }
 
     @SubscribeEvent

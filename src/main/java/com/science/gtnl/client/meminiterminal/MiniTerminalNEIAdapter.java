@@ -124,6 +124,19 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
         else overlay.syncLayout();
     }
 
+    static void drawMuiSlotTooltip(MiniTerminalInventoryPanel panel) {
+        if (MiniTerminalClient.overlay() != panel || !panel.isValid()
+            || !panel.isOpen()
+            || Minecraft.getMinecraft().currentScreen != panel.inventory()) return;
+        int mouseX = panel.getContext().getAbsMouseX();
+        int mouseY = panel.getContext().getAbsMouseY();
+        VirtualMESlot slot = panel.hoveredSlot(mouseX, mouseY);
+        if (slot == null
+            || slot.getAEStack() == null && Minecraft.getMinecraft().thePlayer.inventory.getItemStack() == null) return;
+        GuiContainerManager manager = GuiContainerManager.getManager(panel.inventory());
+        NEIClientUtils.gl2DRenderContext(() -> manager.renderToolTips(mouseX, mouseY));
+    }
+
     @Override
     public void onPreDraw(GuiContainer gui) {}
 

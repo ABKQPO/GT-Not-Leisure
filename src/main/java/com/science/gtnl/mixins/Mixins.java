@@ -120,16 +120,6 @@ public enum Mixins implements IMixins {
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.AppliedEnergistics)),
 
-    ME_MINI_TERMINAL_NEI(new MixinBuilder("ME mini portable terminal native tooltip foreground")
-        .addClientMixins("notEnoughItems.MixinMiniTerminalTooltips")
-        .setPhase(Phase.LATE)
-        .addRequiredMod(ModList.NotEnoughItems)),
-
-    ME_MINI_TERMINAL_CHROMATIC_TOOLTIPS(new MixinBuilder("ME mini portable terminal Chromatic Tooltips foreground")
-        .addClientMixins("chromaticTooltips.MixinMiniTerminalTooltipRendering")
-        .setPhase(Phase.LATE)
-        .addRequiredMod(ModList.ChromaticTooltips)),
-
     ME_MINI_TERMINAL_BOGO(new MixinBuilder("ME mini portable terminal native Bogo shortcut destinations")
         .addClientMixins("inventoryBogoSorter.MixinMiniTerminalShortcuts")
         .setPhase(Phase.LATE)

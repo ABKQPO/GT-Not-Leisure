@@ -116,7 +116,6 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
         .build();
 
     private final GuiContainer inventory;
-    private final MiniTerminalForeground foreground = new MiniTerminalForeground(this);
     private final MiniTerminalLayout layout = MiniTerminalClient.layoutState();
     private MiniTerminalModel model;
     private final MiniTerminalSearchField search;
@@ -211,14 +210,6 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
         return model.isOnline();
     }
 
-    MiniTerminalForeground foreground() {
-        return foreground;
-    }
-
-    public boolean deferNativeTooltip() {
-        return foreground.deferNativeTooltip();
-    }
-
     MEGuiTextField nativeSearchField() {
         return search.nativeField();
     }
@@ -301,7 +292,6 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
         consumedMouseButtons.clear();
         terminal.releaseButton(terminal.pressedButton);
         if (search.isFocused()) getContext().removeFocus();
-        foreground.reset();
     }
 
     void detach() {
@@ -313,7 +303,10 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
     @Override
     public void drawForeground(ModularGuiContext context) {
         super.drawForeground(context);
-        foreground.queueTooltip();
+        // MUI suppresses NEI tooltips over its widgets; ordinary containers already render them natively.
+        if (!getScreen().isOverlay()) {
+            context.queueForegroundRender(() -> MiniTerminalNEIAdapter.drawMuiSlotTooltip(this));
+        }
     }
 
     private boolean hasForeignFocus() {
