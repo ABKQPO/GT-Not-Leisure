@@ -1,4 +1,4 @@
-package com.science.gtnl.client.metoolbox;
+package com.science.gtnl.client.meminiterminal;
 
 import java.awt.Rectangle;
 
@@ -10,7 +10,7 @@ import com.cleanroommc.modularui.widget.sizer.Area;
 
 import appeng.items.contents.PinList;
 
-public final class ToolboxLayout {
+public final class MiniTerminalLayout {
 
     public static final int COLUMNS = 5;
     public static final int ROWS = 6;

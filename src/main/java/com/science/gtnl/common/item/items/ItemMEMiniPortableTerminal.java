@@ -25,7 +25,7 @@ import com.glodblock.github.loader.recipe.WirelessTerminalQuantumBridgeRecipe;
 import com.gtnewhorizon.gtnhlib.compat.BaublesCompat;
 import com.gtnewhorizon.gtnhlib.item.ItemStackNBT;
 import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.common.metoolbox.ToolboxSessionService;
+import com.science.gtnl.common.meminiterminal.MiniTerminalSessionService;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.AEApi;
@@ -40,41 +40,43 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemMEToolbox extends ToolWirelessTerminal {
+public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
 
+    // Preserve identity and pickup preferences on items already stored in worlds.
     private static final String ID_TAG = "gtnlToolboxId";
     private static final String PICKUP_TAG = "gtnlToolboxPickupToME";
     private static final Map<EntityPlayer, Map<Integer, ItemStack>> WORN_SNAPSHOTS = new WeakHashMap<>();
 
-    public ItemMEToolbox() {
-        setUnlocalizedName("gtnl.me_toolbox");
+    public ItemMEMiniPortableTerminal() {
+        setUnlocalizedName("gtnl.me_mini_portable_terminal");
 
         setTextureName("appliedenergistics2:ToolWirelessTerminal");
         setMaxStackSize(1);
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
+        // The registry ID is persistent; changing the display name must not replace existing items.
         GameRegistry.registerItem(this, "me_toolbox");
-        GTNLItemList.METoolbox.set(new ItemStack(this));
+        GTNLItemList.MEMiniPortableTerminal.set(new ItemStack(this));
         AEApi.instance()
             .registries()
             .wireless()
             .registerWirelessHandler(this);
     }
 
-    public static boolean isToolbox(ItemStack stack) {
-        return stack != null && stack.stackSize == 1 && stack.getItem() instanceof ItemMEToolbox;
+    public static boolean isMiniTerminal(ItemStack stack) {
+        return stack != null && stack.stackSize == 1 && stack.getItem() instanceof ItemMEMiniPortableTerminal;
     }
 
     public static boolean isPickupToMEEnabled(ItemStack stack) {
-        return isToolbox(stack) && ItemStackNBT.getBoolean(stack, PICKUP_TAG);
+        return isMiniTerminal(stack) && ItemStackNBT.getBoolean(stack, PICKUP_TAG);
     }
 
     public static void setPickupToMEEnabled(ItemStack stack, boolean enabled) {
-        if (isToolbox(stack)) ItemStackNBT.setBoolean(stack, PICKUP_TAG, enabled);
+        if (isMiniTerminal(stack)) ItemStackNBT.setBoolean(stack, PICKUP_TAG, enabled);
     }
 
     @Override
     public boolean canHandle(ItemStack stack) {
-        return isToolbox(stack) && stack.getItem() == this;
+        return isMiniTerminal(stack) && stack.getItem() == this;
     }
 
     @Override
@@ -87,8 +89,8 @@ public class ItemMEToolbox extends ToolWirelessTerminal {
         return ItemStackNBT.getBoolean(stack, infinityBoosterCard);
     }
 
-    public static UUID getToolboxId(ItemStack stack) {
-        if (!isToolbox(stack)) return null;
+    public static UUID getTerminalId(ItemStack stack) {
+        if (!isMiniTerminal(stack)) return null;
         String id = ItemStackNBT.getString(stack, ID_TAG);
         if (id.isEmpty()) return null;
         try {
@@ -99,8 +101,8 @@ public class ItemMEToolbox extends ToolWirelessTerminal {
     }
 
     public static UUID ensureIdentity(ItemStack stack, EntityPlayer player) {
-        UUID id = getToolboxId(stack);
-        if (id == null && isToolbox(stack) && !player.worldObj.isRemote) {
+        UUID id = getTerminalId(stack);
+        if (id == null && isMiniTerminal(stack) && !player.worldObj.isRemote) {
             id = UUID.randomUUID();
             ItemStackNBT.setString(stack, ID_TAG, id.toString());
             player.inventory.markDirty();
@@ -108,18 +110,18 @@ public class ItemMEToolbox extends ToolWirelessTerminal {
         return id;
     }
 
-    public static int findToolboxSlot(EntityPlayer player, UUID id) {
-        if (id == null || id.equals(getToolboxId(player.inventory.getItemStack()))) return -1;
+    public static int findTerminalSlot(EntityPlayer player, UUID id) {
+        if (id == null || id.equals(getTerminalId(player.inventory.getItemStack()))) return -1;
         int found = -1;
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
-            if (!id.equals(getToolboxId(player.inventory.mainInventory[slot]))) continue;
+            if (!id.equals(getTerminalId(player.inventory.mainInventory[slot]))) continue;
             if (found >= 0) return -1;
             found = slot;
         }
         IInventory worn = Platform.isBaublesLoaded ? BaublesCompat.getBaubles(player) : null;
         if (worn != null) {
             for (int slot = 0; slot < worn.getSizeInventory(); slot++) {
-                if (!id.equals(getToolboxId(worn.getStackInSlot(slot)))) continue;
+                if (!id.equals(getTerminalId(worn.getStackInSlot(slot)))) continue;
                 if (found >= 0) return -1;
                 found = Platform.baublesSlotsOffset + slot;
             }
@@ -127,34 +129,34 @@ public class ItemMEToolbox extends ToolWirelessTerminal {
         return found;
     }
 
-    public static int findFirstToolboxSlot(EntityPlayer player) {
+    public static int findFirstTerminalSlot(EntityPlayer player) {
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
-            if (isToolbox(player.inventory.mainInventory[slot])) return slot;
+            if (isMiniTerminal(player.inventory.mainInventory[slot])) return slot;
         }
         IInventory worn = Platform.isBaublesLoaded ? BaublesCompat.getBaubles(player) : null;
         if (worn != null) {
             for (int slot = 0; slot < worn.getSizeInventory(); slot++) {
-                if (isToolbox(worn.getStackInSlot(slot))) return Platform.baublesSlotsOffset + slot;
+                if (isMiniTerminal(worn.getStackInSlot(slot))) return Platform.baublesSlotsOffset + slot;
             }
         }
         return -1;
     }
 
-    public static List<Integer> getToolboxSlots(EntityPlayer player) {
+    public static List<Integer> getTerminalSlots(EntityPlayer player) {
         List<Integer> slots = new ArrayList<>();
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
-            if (isToolbox(player.inventory.mainInventory[slot])) slots.add(slot);
+            if (isMiniTerminal(player.inventory.mainInventory[slot])) slots.add(slot);
         }
         IInventory worn = Platform.isBaublesLoaded ? BaublesCompat.getBaubles(player) : null;
         if (worn != null) {
             for (int slot = 0; slot < worn.getSizeInventory(); slot++) {
-                if (isToolbox(worn.getStackInSlot(slot))) slots.add(Platform.baublesSlotsOffset + slot);
+                if (isMiniTerminal(worn.getStackInSlot(slot))) slots.add(Platform.baublesSlotsOffset + slot);
             }
         }
         return slots;
     }
 
-    public static ItemStack getToolboxStack(EntityPlayer player, int slot) {
+    public static ItemStack getTerminalStack(EntityPlayer player, int slot) {
         ItemStack stack;
         if (slot >= Platform.baublesSlotsOffset) {
             IInventory worn = Platform.isBaublesLoaded ? BaublesCompat.getBaubles(player) : null;
@@ -164,11 +166,11 @@ public class ItemMEToolbox extends ToolWirelessTerminal {
             if (slot < 0 || slot >= player.inventory.mainInventory.length) return null;
             stack = player.inventory.getStackInSlot(slot);
         }
-        return isToolbox(stack) ? stack : null;
+        return isMiniTerminal(stack) ? stack : null;
     }
 
     public static void initializePins(ItemStack stack, EntityPlayer player) {
-        if (!isToolbox(stack) || player.worldObj.isRemote) return;
+        if (!isMiniTerminal(stack) || player.worldObj.isRemote) return;
         NBTTagCompound tag = stack.getTagCompound();
         if (tag != null) {
             NBTTagList players = tag.getTagList("pins", NBT.TAG_COMPOUND);
@@ -196,7 +198,7 @@ public class ItemMEToolbox extends ToolWirelessTerminal {
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (player instanceof EntityPlayerMP serverPlayer) {
-            ToolboxSessionService.end(serverPlayer);
+            MiniTerminalSessionService.end(serverPlayer);
             ensureIdentity(stack, player);
             initializePins(stack, player);
         }
@@ -206,9 +208,9 @@ public class ItemMEToolbox extends ToolWirelessTerminal {
     @Override
     public void openGui(ItemStack stack, World world, EntityPlayer player, Object mode) {
         if (!(player instanceof EntityPlayerMP serverPlayer)) return;
-        ToolboxSessionService.end(serverPlayer);
+        MiniTerminalSessionService.end(serverPlayer);
         UUID id = ensureIdentity(stack, player);
-        int slot = findToolboxSlot(player, id);
+        int slot = findTerminalSlot(player, id);
         if (slot < 0) return;
         initializePins(stack, player);
         Platform.openGUI(player, null, ForgeDirection.UNKNOWN, GuiBridge.GUI_ME, slot);
@@ -259,7 +261,7 @@ public class ItemMEToolbox extends ToolWirelessTerminal {
         if (hasInfinityRange(stack)) lines.add(
             WirelessTerminalQuantumBridgeRecipe.getQuantumBridgeCard()
                 .getDisplayName());
-        lines.add(StatCollector.translateToLocal("gtnl.metoolbox.tooltip.inventory"));
-        lines.add(StatCollector.translateToLocal("gtnl.metoolbox.tooltip.full"));
+        lines.add(StatCollector.translateToLocal("gtnl.meminiterminal.tooltip.inventory"));
+        lines.add(StatCollector.translateToLocal("gtnl.meminiterminal.tooltip.full"));
     }
 }

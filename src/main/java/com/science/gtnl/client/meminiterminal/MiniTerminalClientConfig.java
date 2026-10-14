@@ -1,4 +1,4 @@
-package com.science.gtnl.client.metoolbox;
+package com.science.gtnl.client.meminiterminal;
 
 import java.util.Objects;
 
@@ -7,9 +7,10 @@ import com.gtnewhorizon.gtnhlib.config.ConfigException;
 import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.science.gtnl.ScienceNotLeisure;
 
+// Keep the existing file so saved window geometry and transfer preferences survive the rename.
 @Config(modid = ScienceNotLeisure.MODID, configSubDirectory = "GTNotLeisure", filename = "METoolboxClient")
 @Config.ExcludeFromAutoGui
-public final class ToolboxClientConfig {
+public final class MiniTerminalClientConfig {
 
     @Config.Comment("Use the saved mini-terminal rectangle instead of anchoring it beside the inventory.")
     @Config.DefaultBoolean(false)
@@ -23,12 +24,12 @@ public final class ToolboxClientConfig {
     @Config.RangeInt(min = 0)
     public static int y;
 
-    @Config.DefaultInt(ToolboxLayout.WIDTH)
-    @Config.RangeInt(min = ToolboxLayout.MIN_WIDTH)
-    public static int width = ToolboxLayout.WIDTH;
+    @Config.DefaultInt(MiniTerminalLayout.WIDTH)
+    @Config.RangeInt(min = MiniTerminalLayout.MIN_WIDTH)
+    public static int width = MiniTerminalLayout.WIDTH;
 
     @Config.DefaultInt(166)
-    @Config.RangeInt(min = ToolboxLayout.MIN_HEIGHT)
+    @Config.RangeInt(min = MiniTerminalLayout.MIN_HEIGHT)
     public static int height = 166;
 
     @Config.DefaultBoolean(false)
@@ -44,30 +45,30 @@ public final class ToolboxClientConfig {
     @Config.Ignore
     private static boolean registered;
 
-    private ToolboxClientConfig() {}
+    private MiniTerminalClientConfig() {}
 
-    static void load(ToolboxLayout layout) {
+    static void load(MiniTerminalLayout layout) {
         try {
-            ConfigurationManager.registerConfig(ToolboxClientConfig.class);
+            ConfigurationManager.registerConfig(MiniTerminalClientConfig.class);
             registered = true;
             layout.restorePreference(windowPreference());
         } catch (ConfigException e) {
-            ScienceNotLeisure.LOG.error("Failed to load ME toolbox client preferences", e);
+            ScienceNotLeisure.LOG.error("Failed to load ME mini portable terminal client preferences", e);
         }
     }
 
-    private static ToolboxLayout.WindowPreference windowPreference() {
-        return customWindow ? new ToolboxLayout.WindowPreference(x, y, width, height, snappedWidth, snappedHeight)
+    private static MiniTerminalLayout.WindowPreference windowPreference() {
+        return customWindow ? new MiniTerminalLayout.WindowPreference(x, y, width, height, snappedWidth, snappedHeight)
             : null;
     }
 
-    static void saveWindow(ToolboxLayout layout) {
-        ToolboxLayout.WindowPreference preference = layout.preference();
+    static void saveWindow(MiniTerminalLayout layout) {
+        MiniTerminalLayout.WindowPreference preference = layout.preference();
         if (Objects.equals(preference, windowPreference())) return;
         customWindow = preference != null;
         x = customWindow ? preference.x() : 0;
         y = customWindow ? preference.y() : 0;
-        width = customWindow ? preference.width() : ToolboxLayout.WIDTH;
+        width = customWindow ? preference.width() : MiniTerminalLayout.WIDTH;
         height = customWindow ? preference.height() : 166;
         snappedWidth = customWindow && preference.snappedWidth();
         snappedHeight = customWindow && preference.snappedHeight();
@@ -80,6 +81,6 @@ public final class ToolboxClientConfig {
     }
 
     private static void save() {
-        if (registered) ConfigurationManager.save(ToolboxClientConfig.class);
+        if (registered) ConfigurationManager.save(MiniTerminalClientConfig.class);
     }
 }

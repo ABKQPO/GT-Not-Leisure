@@ -1,4 +1,4 @@
-package com.science.gtnl.client.metoolbox;
+package com.science.gtnl.client.meminiterminal;
 
 import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
 
@@ -21,7 +21,7 @@ import com.cleanroommc.bogosorter.common.config.ae2.TooltipFeatureConfig;
 import com.cleanroommc.bogosorter.compat.ae2.Ae2TerminalGuiDetector;
 import com.cleanroommc.modularui.api.event.KeyboardInputEvent;
 import com.cleanroommc.modularui.api.event.MouseInputEvent;
-import com.science.gtnl.common.metoolbox.ToolboxRequestPacket.DepositMode;
+import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket.DepositMode;
 import com.science.gtnl.utils.enums.ModList;
 
 import appeng.api.storage.data.IAEItemStack;
@@ -36,9 +36,9 @@ import codechicken.nei.guihook.GuiContainerManager;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public final class ToolboxBogoCompat {
+public final class MiniTerminalBogoCompat {
 
-    private ToolboxBogoCompat() {}
+    private MiniTerminalBogoCompat() {}
 
     public static void init() {
         if (ModList.InventoryBogoSorter.isModLoaded()) Native.initialize();
@@ -48,8 +48,8 @@ public final class ToolboxBogoCompat {
         return ModList.InventoryBogoSorter.isModLoaded() && Native.isTerminalScreen(gui);
     }
 
-    private static ToolboxInventoryPanel searchTarget(GuiContainer gui) {
-        ToolboxInventoryPanel overlay = ToolboxClient.overlay();
+    private static MiniTerminalInventoryPanel searchTarget(GuiContainer gui) {
+        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay();
         if (overlay == null || gui != overlay.inventory()
             || Minecraft.getMinecraft().currentScreen != gui
             || !overlay.layout()
@@ -60,7 +60,7 @@ public final class ToolboxBogoCompat {
 
     public static boolean handleSearchKey(GuiContainer gui) {
         if (!ModList.InventoryBogoSorter.isModLoaded()) return false;
-        ToolboxInventoryPanel overlay = searchTarget(gui);
+        MiniTerminalInventoryPanel overlay = searchTarget(gui);
         return overlay != null && Native.handleSearchKey(gui, overlay);
     }
 
@@ -70,11 +70,11 @@ public final class ToolboxBogoCompat {
     }
 
     public static boolean shouldPrioritizeContainerInteraction(GuiContainer gui) {
-        ToolboxInventoryPanel overlay = searchTarget(gui);
+        MiniTerminalInventoryPanel overlay = searchTarget(gui);
         Minecraft mc = Minecraft.getMinecraft();
         if (overlay == null || mc.thePlayer == null) return false;
         ItemStack held = mc.thePlayer.inventory.getItemStack();
-        if (!ToolboxInventoryPanel.Input.preferContainerInteraction(
+        if (!MiniTerminalInventoryPanel.Input.preferContainerInteraction(
             AEBaseGui.isCtrlKeyDown(),
             held != null && FLUID_STACK_TYPE.isContainerItemForType(held),
             Keyboard.isKeyDown(Keyboard.KEY_SPACE))) return false;
@@ -83,7 +83,7 @@ public final class ToolboxBogoCompat {
     }
 
     public static boolean isOverMini(GuiScreen gui) {
-        ToolboxInventoryPanel overlay = ToolboxClient.overlay();
+        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay();
         Minecraft mc = Minecraft.getMinecraft();
         if (overlay == null || gui != overlay.inventory()
             || mc.currentScreen != gui
@@ -95,23 +95,24 @@ public final class ToolboxBogoCompat {
 
     public static boolean moveSingleItem(GuiContainer gui, boolean emptyOnly) {
         if (extractFromMini(gui, emptyOnly, true)) return true;
-        return ToolboxClient.sendBogoInventory(gui.theSlot, DepositMode.ONE);
+        return MiniTerminalClient.sendBogoInventory(gui.theSlot, DepositMode.ONE);
     }
 
     public static boolean moveAllItems(GuiContainer gui, boolean sameItemOnly) {
         if (extractFromMini(gui, false, false)) return true;
-        return ToolboxClient.sendBogoInventory(gui.theSlot, sameItemOnly ? DepositMode.MATCHING : DepositMode.REGION);
+        return MiniTerminalClient
+            .sendBogoInventory(gui.theSlot, sameItemOnly ? DepositMode.MATCHING : DepositMode.REGION);
     }
 
     private static boolean extractFromMini(GuiContainer gui, boolean emptyOnly, boolean single) {
         if (!isOverMini(gui)) return false;
         Point mouse = GuiDraw.getMousePosition();
-        VirtualMESlot slot = ToolboxClient.overlay()
+        VirtualMESlot slot = MiniTerminalClient.overlay()
             .hoveredSlot(mouse.x, mouse.y);
         IAEStack<?> stack = slot == null ? null : slot.getAEStack();
         if (stack instanceof IAEItemStack) {
             int nativePin = slot instanceof VirtualMEPinSlot ? slot.getSlotIndex() : -1;
-            ToolboxClient.sendBogoExtract(stack, nativePin, emptyOnly, single);
+            MiniTerminalClient.sendBogoExtract(stack, nativePin, emptyOnly, single);
         }
         return true;
     }
@@ -130,7 +131,7 @@ public final class ToolboxBogoCompat {
             return Ae2TerminalGuiDetector.resolveSearchTarget(gui) != null;
         }
 
-        private static boolean handleSearchKey(GuiContainer gui, ToolboxInventoryPanel overlay) {
+        private static boolean handleSearchKey(GuiContainer gui, MiniTerminalInventoryPanel overlay) {
             if (!TooltipFeatureConfig.isTerminalHoverSearchEnabled() || !Keyboard.getEventKeyState()
                 || Keyboard.getEventKey() != BSKeybinds.ae2TerminalSearchKey.getKeyCode()
                 || overlay.nativeSearchField()
@@ -159,7 +160,7 @@ public final class ToolboxBogoCompat {
         }
 
         private static boolean handleInput(GuiContainer gui, boolean fromMouse) {
-            ToolboxNEIAdapter.refreshHoveredSlot(gui);
+            MiniTerminalNEIAdapter.refreshHoveredSlot(gui);
             KeyBind.checkKeys(ClientEventHandler.getTicks());
             boolean handled = ClientEventHandler.handleInput(gui, fromMouse);
 
@@ -187,10 +188,10 @@ public final class ToolboxBogoCompat {
         }
 
         private static void updateKeys(GuiScreen gui) {
-            ToolboxInventoryPanel overlay = ToolboxClient.overlay();
+            MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay();
 
             if (overlay != null && gui == overlay.inventory()) {
-                ToolboxNEIAdapter.refreshHoveredSlot(overlay.inventory());
+                MiniTerminalNEIAdapter.refreshHoveredSlot(overlay.inventory());
                 KeyBind.checkKeys(ClientEventHandler.getTicks());
             }
         }

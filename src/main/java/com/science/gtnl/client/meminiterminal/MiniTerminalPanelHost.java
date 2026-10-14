@@ -1,4 +1,4 @@
-package com.science.gtnl.client.metoolbox;
+package com.science.gtnl.client.meminiterminal;
 
 import java.lang.ref.WeakReference;
 import java.util.Map;
@@ -12,23 +12,23 @@ import com.cleanroommc.modularui.overlay.OverlayStack;
 import com.cleanroommc.modularui.screen.ModularScreen;
 
 /** Chooses the native panel lifecycle for MUI hosts and an overlay for other containers. */
-final class ToolboxPanelHost {
+final class MiniTerminalPanelHost {
 
     // MUI keeps screens while visiting recipe pages. Reuse their handler, without retaining closed screens here.
     // Values must also be weak: the panel's context refers back to the screen used as the key.
-    private static final Map<ModularScreen, WeakReference<ToolboxPanelHost>> NATIVE_HOSTS = new WeakHashMap<>();
+    private static final Map<ModularScreen, WeakReference<MiniTerminalPanelHost>> NATIVE_HOSTS = new WeakHashMap<>();
 
-    private final ToolboxInventoryPanel panel;
+    private final MiniTerminalInventoryPanel panel;
     private final ModularScreen screen;
     private final IPanelHandler handler;
 
-    static ToolboxPanelHost create(GuiContainer inventory, ToolboxTerminalModel model) {
-        if (!(inventory instanceof IMuiScreen host)) return new ToolboxPanelHost(inventory, model, null);
+    static MiniTerminalPanelHost create(GuiContainer inventory, MiniTerminalModel model) {
+        if (!(inventory instanceof IMuiScreen host)) return new MiniTerminalPanelHost(inventory, model, null);
         ModularScreen screen = host.getScreen();
-        WeakReference<ToolboxPanelHost> reference = NATIVE_HOSTS.get(screen);
-        ToolboxPanelHost attachment = reference == null ? null : reference.get();
+        WeakReference<MiniTerminalPanelHost> reference = NATIVE_HOSTS.get(screen);
+        MiniTerminalPanelHost attachment = reference == null ? null : reference.get();
         if (attachment == null) {
-            attachment = new ToolboxPanelHost(inventory, model, screen);
+            attachment = new MiniTerminalPanelHost(inventory, model, screen);
             NATIVE_HOSTS.put(screen, new WeakReference<>(attachment));
         } else {
             attachment.panel.setModel(model);
@@ -36,10 +36,10 @@ final class ToolboxPanelHost {
         return attachment;
     }
 
-    private ToolboxPanelHost(GuiContainer inventory, ToolboxTerminalModel model, ModularScreen host) {
-        panel = new ToolboxInventoryPanel(inventory, model);
+    private MiniTerminalPanelHost(GuiContainer inventory, MiniTerminalModel model, ModularScreen host) {
+        panel = new MiniTerminalInventoryPanel(inventory, model);
         if (host == null) {
-            screen = new ToolboxInventoryOverlay(panel);
+            screen = new MiniTerminalInventoryOverlay(panel);
             handler = null;
         } else {
             screen = host;
@@ -47,7 +47,7 @@ final class ToolboxPanelHost {
         }
     }
 
-    ToolboxInventoryPanel panel() {
+    MiniTerminalInventoryPanel panel() {
         return panel;
     }
 

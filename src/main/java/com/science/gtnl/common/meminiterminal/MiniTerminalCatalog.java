@@ -1,4 +1,4 @@
-package com.science.gtnl.common.metoolbox;
+package com.science.gtnl.common.meminiterminal;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
-final class ToolboxCatalog {
+final class MiniTerminalCatalog {
 
     private static final int MIN_UPDATE_TICKS = 5;
     private static final int MIN_SCAN_TICKS = 20;
@@ -37,7 +37,7 @@ final class ToolboxCatalog {
     private int lastScan;
     long revision;
 
-    ToolboxCatalog(IMEMonitor<IAEItemStack> itemMonitor, IMEMonitor<IAEFluidStack> fluidMonitor) {
+    MiniTerminalCatalog(IMEMonitor<IAEItemStack> itemMonitor, IMEMonitor<IAEFluidStack> fluidMonitor) {
         this.itemMonitor = itemMonitor;
         this.fluidMonitor = fluidMonitor;
         ids.defaultReturnValue(-1);
@@ -127,8 +127,8 @@ final class ToolboxCatalog {
 
     private static void addAvailable(Map<IAEStack<?>, IAEStack<?>> available, IAEStack<?> stack) throws IOException {
         if (!visible(stack)) return;
-        if (available.size() >= ToolboxUpdatePacket.MAX_UPDATE_ENTRIES && !available.containsKey(stack))
-            throw new IOException("ME toolbox catalog exceeds the entry limit");
+        if (available.size() >= MiniTerminalUpdatePacket.MAX_UPDATE_ENTRIES && !available.containsKey(stack))
+            throw new IOException("ME mini portable terminal catalog exceeds the entry limit");
         available.put(stack, stack);
     }
 
@@ -147,8 +147,8 @@ final class ToolboxCatalog {
             return;
         }
         if (id < 0) {
-            if (ids.size() >= ToolboxUpdatePacket.MAX_UPDATE_ENTRIES || nextId > Integer.MAX_VALUE)
-                throw new IOException("ME toolbox catalog exceeds the identity limit");
+            if (ids.size() >= MiniTerminalUpdatePacket.MAX_UPDATE_ENTRIES || nextId > Integer.MAX_VALUE)
+                throw new IOException("ME mini portable terminal catalog exceeds the identity limit");
             // Never reuse an ID during a session, including after a snapshot: queued older clicks stay safe.
             id = (int) nextId++;
             ids.put(stack.copy(), id);
@@ -167,8 +167,8 @@ final class ToolboxCatalog {
     }
 
     private static void addEntry(List<NBTTagCompound> entries, int id, IAEStack<?> stack) throws IOException {
-        if (entries.size() >= ToolboxUpdatePacket.MAX_UPDATE_ENTRIES)
-            throw new IOException("ME toolbox update exceeds the entry limit");
+        if (entries.size() >= MiniTerminalUpdatePacket.MAX_UPDATE_ENTRIES)
+            throw new IOException("ME mini portable terminal update exceeds the entry limit");
         NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("id", id);
         tag.setTag("stack", stack.toNBTGeneric());
@@ -186,7 +186,7 @@ final class ToolboxCatalog {
     void changed(IAEStack<?> stack) {
         if (!active || !(stack instanceof IAEItemStack || stack instanceof IAEFluidStack)) return;
         if (dirty.contains(stack)) return;
-        if (dirty.size() >= ToolboxUpdatePacket.MAX_UPDATE_ENTRIES) {
+        if (dirty.size() >= MiniTerminalUpdatePacket.MAX_UPDATE_ENTRIES) {
             // A bounded scan covers discarded notifications, including identities already removed from storage.
             dirty.clear();
             listUpdate = true;

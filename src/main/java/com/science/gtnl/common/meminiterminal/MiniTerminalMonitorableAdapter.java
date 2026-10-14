@@ -1,4 +1,4 @@
-package com.science.gtnl.common.metoolbox;
+package com.science.gtnl.common.meminiterminal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,17 +27,17 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
-public final class ToolboxMonitorableAdapter extends ContainerMEMonitorable implements AutoCloseable {
+public final class MiniTerminalMonitorableAdapter extends ContainerMEMonitorable implements AutoCloseable {
 
     private final EntityPlayerMP owner;
     private final List<IMEMonitor<?>> monitors = new ArrayList<>();
     private final IEnergySource guardedPower;
-    private ToolboxCatalog catalog;
+    private MiniTerminalCatalog catalog;
     private OperationContext operation;
     private boolean closed;
     private boolean pinsChanged;
 
-    public ToolboxMonitorableAdapter(EntityPlayerMP player, WirelessTerminalGuiObject host) {
+    public MiniTerminalMonitorableAdapter(EntityPlayerMP player, WirelessTerminalGuiObject host) {
         super(player.inventory, host, false);
         owner = player;
 
@@ -143,7 +143,7 @@ public final class ToolboxMonitorableAdapter extends ContainerMEMonitorable impl
         return changed;
     }
 
-    void observeCatalog(ToolboxCatalog catalog) {
+    void observeCatalog(MiniTerminalCatalog catalog) {
         this.catalog = closed ? null : catalog;
     }
 
@@ -154,7 +154,7 @@ public final class ToolboxMonitorableAdapter extends ContainerMEMonitorable impl
 
     @Override
     public void addCraftingToCrafters(ICrafting crafter) {
-        throw new IllegalStateException("A toolbox operation adapter cannot own a container window");
+        throw new IllegalStateException("A mini terminal operation adapter cannot own a container window");
     }
 
     @Override

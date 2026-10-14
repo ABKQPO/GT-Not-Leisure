@@ -1,4 +1,4 @@
-package com.science.gtnl.client.metoolbox;
+package com.science.gtnl.client.meminiterminal;
 
 import java.awt.Rectangle;
 
@@ -15,9 +15,9 @@ import com.cleanroommc.modularui.screen.viewport.LocatedWidget;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.widget.sizer.Area;
 
-class ToolboxPanel extends ModularPanel implements IDraggable {
+class MiniTerminalPanel extends ModularPanel implements IDraggable {
 
-    private final ToolboxLayout layout;
+    private final MiniTerminalLayout layout;
     private final Matrix4f dragTransformInverse = new Matrix4f();
     private DraggablePanelWrapper drag;
     private boolean nativeGeometryPending;
@@ -27,8 +27,8 @@ class ToolboxPanel extends ModularPanel implements IDraggable {
     private Rectangle pendingResizeStart;
     private boolean pendingCentered;
 
-    ToolboxPanel(ToolboxLayout layout) {
-        super("me_toolbox_mini");
+    MiniTerminalPanel(MiniTerminalLayout layout) {
+        super("me_mini_portable_terminal");
         this.layout = layout;
         invisible();
         resizeableOnDrag(true);
@@ -57,12 +57,12 @@ class ToolboxPanel extends ModularPanel implements IDraggable {
 
     @Override
     public int getMinDragWidth() {
-        return ToolboxLayout.MIN_WIDTH;
+        return MiniTerminalLayout.MIN_WIDTH;
     }
 
     @Override
     public int getMinDragHeight() {
-        return ToolboxLayout.MIN_HEIGHT;
+        return MiniTerminalLayout.MIN_HEIGHT;
     }
 
     @Override

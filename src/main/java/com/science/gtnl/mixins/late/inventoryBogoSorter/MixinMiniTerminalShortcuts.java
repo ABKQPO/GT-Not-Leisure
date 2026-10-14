@@ -8,34 +8,34 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.cleanroommc.bogosorter.ShortcutHandler;
-import com.science.gtnl.client.metoolbox.ToolboxBogoCompat;
+import com.science.gtnl.client.meminiterminal.MiniTerminalBogoCompat;
 
 @Mixin(value = ShortcutHandler.class, remap = false)
-public abstract class MixinToolboxShortcuts {
+public abstract class MixinMiniTerminalShortcuts {
 
     @Inject(
         method = "moveSingleItem(Lnet/minecraft/client/gui/inventory/GuiContainer;Z)Z",
         at = @At("HEAD"),
         cancellable = true)
-    private static void gtnl$moveSingleToToolbox(GuiContainer gui, boolean emptyOnly,
+    private static void gtnl$moveSingleToMiniTerminal(GuiContainer gui, boolean emptyOnly,
         CallbackInfoReturnable<Boolean> cir) {
-        if (ToolboxBogoCompat.shouldPrioritizeContainerInteraction(gui)) {
+        if (MiniTerminalBogoCompat.shouldPrioritizeContainerInteraction(gui)) {
             cir.setReturnValue(false);
             return;
         }
-        if (ToolboxBogoCompat.moveSingleItem(gui, emptyOnly)) cir.setReturnValue(true);
+        if (MiniTerminalBogoCompat.moveSingleItem(gui, emptyOnly)) cir.setReturnValue(true);
     }
 
     @Inject(
         method = "moveAllItems(Lnet/minecraft/client/gui/inventory/GuiContainer;Z)Z",
         at = @At("HEAD"),
         cancellable = true)
-    private static void gtnl$moveAllToToolbox(GuiContainer gui, boolean sameItemOnly,
+    private static void gtnl$moveAllToMiniTerminal(GuiContainer gui, boolean sameItemOnly,
         CallbackInfoReturnable<Boolean> cir) {
-        if (ToolboxBogoCompat.shouldPrioritizeContainerInteraction(gui)) {
+        if (MiniTerminalBogoCompat.shouldPrioritizeContainerInteraction(gui)) {
             cir.setReturnValue(false);
             return;
         }
-        if (ToolboxBogoCompat.moveAllItems(gui, sameItemOnly)) cir.setReturnValue(true);
+        if (MiniTerminalBogoCompat.moveAllItems(gui, sameItemOnly)) cir.setReturnValue(true);
     }
 }

@@ -1,4 +1,4 @@
-package com.science.gtnl.common.metoolbox;
+package com.science.gtnl.common.meminiterminal;
 
 import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
 import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
@@ -23,8 +23,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.item.items.ItemMEToolbox;
-import com.science.gtnl.common.metoolbox.ToolboxRequestPacket.DepositMode;
+import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
+import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket.DepositMode;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -66,9 +66,9 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
 
-public final class ToolboxSessionService {
+public final class MiniTerminalSessionService {
 
-    private enum ToolboxStatus {
+    private enum MiniTerminalStatus {
         ONLINE,
         UNBOUND,
         OFFLINE,
@@ -82,13 +82,13 @@ public final class ToolboxSessionService {
         STALE
     }
 
-    public static final ToolboxSessionService INSTANCE = new ToolboxSessionService();
+    public static final MiniTerminalSessionService INSTANCE = new MiniTerminalSessionService();
     private static final Map<UUID, Session> SESSIONS = new HashMap<>();
     private static final Map<UUID, UUID> SELECTED = new HashMap<>();
     private static final Map<UUID, RequestBudget> BUDGETS = new HashMap<>();
     private static long nextSession;
 
-    private ToolboxSessionService() {}
+    private MiniTerminalSessionService() {}
 
     /** Returns the real main-inventory index, including wrapped slots, or -1 for other inventories. */
     public static int playerInventoryIndex(EntityPlayer player, Slot slot) {
@@ -108,32 +108,32 @@ public final class ToolboxSessionService {
         if (session != null) session.close();
     }
 
-    static void handle(EntityPlayerMP player, ToolboxRequestPacket request) {
+    static void handle(EntityPlayerMP player, MiniTerminalRequestPacket request) {
         Session session = SESSIONS.get(player.getUniqueID());
-        if (request.kind == ToolboxRequestPacket.Kind.END) {
+        if (request.kind == MiniTerminalRequestPacket.Kind.END) {
             if (session != null && session.id == request.sessionId) end(player);
             return;
         }
 
-        if ((request.kind == ToolboxRequestPacket.Kind.BEGIN || request.kind == ToolboxRequestPacket.Kind.FULL
-            || request.kind == ToolboxRequestPacket.Kind.SETTINGS
-            || request.kind == ToolboxRequestPacket.Kind.PICKUP_TOGGLE)
+        if ((request.kind == MiniTerminalRequestPacket.Kind.BEGIN || request.kind == MiniTerminalRequestPacket.Kind.FULL
+            || request.kind == MiniTerminalRequestPacket.Kind.SETTINGS
+            || request.kind == MiniTerminalRequestPacket.Kind.PICKUP_TOGGLE)
             && (player.openContainer == null || player.openContainer.windowId != request.windowId)) {
-            if (request.kind == ToolboxRequestPacket.Kind.BEGIN) {
+            if (request.kind == MiniTerminalRequestPacket.Kind.BEGIN) {
                 sendStatus(
                     player,
                     ++nextSession,
                     request.requestId,
                     request.slot,
-                    request.toolbox,
+                    request.terminalId,
                     null,
-                    ToolboxStatus.INVALID_CONTAINER);
+                    MiniTerminalStatus.INVALID_CONTAINER);
             }
             return;
         }
         RequestBudget budget = BUDGETS.computeIfAbsent(player.getUniqueID(), key -> new RequestBudget());
         boolean accepted = budget.accept(player.ticksExisted);
-        if (request.kind == ToolboxRequestPacket.Kind.BEGIN) {
+        if (request.kind == MiniTerminalRequestPacket.Kind.BEGIN) {
             if (!accepted || !budget.acceptBegin(player.ticksExisted)) {
                 end(player);
 
@@ -142,42 +142,42 @@ public final class ToolboxSessionService {
                     ++nextSession,
                     request.requestId,
                     request.slot,
-                    request.toolbox,
+                    request.terminalId,
                     null,
-                    ToolboxStatus.STALE);
+                    MiniTerminalStatus.STALE);
                 return;
             }
         } else if (!accepted) return;
-        if (request.kind == ToolboxRequestPacket.Kind.BEGIN || request.kind == ToolboxRequestPacket.Kind.FULL) {
+        if (request.kind == MiniTerminalRequestPacket.Kind.BEGIN || request.kind == MiniTerminalRequestPacket.Kind.FULL) {
             begin(player, request);
             return;
         }
-        if (request.kind == ToolboxRequestPacket.Kind.SETTINGS) {
+        if (request.kind == MiniTerminalRequestPacket.Kind.SETTINGS) {
             settings(player, request, session);
             return;
         }
-        if (request.kind == ToolboxRequestPacket.Kind.PICKUP_TOGGLE) {
+        if (request.kind == MiniTerminalRequestPacket.Kind.PICKUP_TOGGLE) {
             togglePickup(player, request, session);
             return;
         }
         if (session == null || session.id != request.sessionId) return;
-        ToolboxStatus status = session.validate();
-        if (status != ToolboxStatus.ONLINE) {
+        MiniTerminalStatus status = session.validate();
+        if (status != MiniTerminalStatus.ONLINE) {
             session.status(status);
             end(player);
             return;
         }
-        if (request.kind == ToolboxRequestPacket.Kind.RESYNC) {
+        if (request.kind == MiniTerminalRequestPacket.Kind.RESYNC) {
             session.resync();
-        } else if (request.kind == ToolboxRequestPacket.Kind.ACTION) {
+        } else if (request.kind == MiniTerminalRequestPacket.Kind.ACTION) {
             session.action(request);
-        } else if (request.kind == ToolboxRequestPacket.Kind.PIN_ROWS) {
+        } else if (request.kind == MiniTerminalRequestPacket.Kind.PIN_ROWS) {
             session.pinsRows(request);
-        } else if (request.kind == ToolboxRequestPacket.Kind.PIN_DROP) {
+        } else if (request.kind == MiniTerminalRequestPacket.Kind.PIN_DROP) {
             session.pinDrop(request);
-        } else if (request.kind == ToolboxRequestPacket.Kind.INVENTORY_DEPOSIT) {
+        } else if (request.kind == MiniTerminalRequestPacket.Kind.INVENTORY_DEPOSIT) {
             session.inventoryDeposit(request);
-        } else if (request.kind == ToolboxRequestPacket.Kind.INVENTORY_EXTRACT) {
+        } else if (request.kind == MiniTerminalRequestPacket.Kind.INVENTORY_EXTRACT) {
             session.inventoryExtract(request);
         }
     }
@@ -187,7 +187,7 @@ public final class ToolboxSessionService {
             || index >= PinList.PLAYER_OFFSET && index < PinList.PLAYER_OFFSET + playerRows.getSlotCount();
     }
 
-    static boolean isTargetRevisionValid(ToolboxRequestPacket request, long catalogRevision, long pinRevision) {
+    static boolean isTargetRevisionValid(MiniTerminalRequestPacket request, long catalogRevision, long pinRevision) {
 
         return request.catalogRevision > 0 && request.catalogRevision <= catalogRevision
             && (request.nativePin < 0 || request.pinRevision == pinRevision);
@@ -238,30 +238,30 @@ public final class ToolboxSessionService {
         }
     }
 
-    private static void togglePickup(EntityPlayerMP player, ToolboxRequestPacket request, Session session) {
+    private static void togglePickup(EntityPlayerMP player, MiniTerminalRequestPacket request, Session session) {
         if (!allowedContainer(player) || request.slot < 0
-            || ItemMEToolbox.findToolboxSlot(player, request.toolbox) != request.slot) return;
+            || ItemMEMiniPortableTerminal.findTerminalSlot(player, request.terminalId) != request.slot) return;
         if (session != null && session.id == request.sessionId && !session.acceptAction(request)) return;
-        ItemStack stack = ItemMEToolbox.getToolboxStack(player, request.slot);
-        boolean enabled = !ItemMEToolbox.isPickupToMEEnabled(stack);
+        ItemStack stack = ItemMEMiniPortableTerminal.getTerminalStack(player, request.slot);
+        boolean enabled = !ItemMEMiniPortableTerminal.isPickupToMEEnabled(stack);
 
         if (enabled) {
-            for (int slot : ItemMEToolbox.getToolboxSlots(player)) {
-                ItemStack other = ItemMEToolbox.getToolboxStack(player, slot);
-                if (other != stack && ItemMEToolbox.isPickupToMEEnabled(other)) {
-                    ItemMEToolbox.setPickupToMEEnabled(other, false);
+            for (int slot : ItemMEMiniPortableTerminal.getTerminalSlots(player)) {
+                ItemStack other = ItemMEMiniPortableTerminal.getTerminalStack(player, slot);
+                if (other != stack && ItemMEMiniPortableTerminal.isPickupToMEEnabled(other)) {
+                    ItemMEMiniPortableTerminal.setPickupToMEEnabled(other, false);
                 }
             }
         }
-        ItemMEToolbox.setPickupToMEEnabled(stack, enabled);
-        ToolboxTransferService.synchronize(player);
+        ItemMEMiniPortableTerminal.setPickupToMEEnabled(stack, enabled);
+        MiniTerminalTransferService.synchronize(player);
     }
 
-    private static void settings(EntityPlayerMP player, ToolboxRequestPacket request, Session session) {
+    private static void settings(EntityPlayerMP player, MiniTerminalRequestPacket request, Session session) {
         if (!allowedContainer(player) || request.slot < 0
-            || ItemMEToolbox.findToolboxSlot(player, request.toolbox) != request.slot) return;
-        ItemStack stack = ItemMEToolbox.getToolboxStack(player, request.slot);
-        if (!ItemMEToolbox.isToolbox(stack)) return;
+            || ItemMEMiniPortableTerminal.findTerminalSlot(player, request.terminalId) != request.slot) return;
+        ItemStack stack = ItemMEMiniPortableTerminal.getTerminalStack(player, request.slot);
+        if (!ItemMEMiniPortableTerminal.isMiniTerminal(stack)) return;
         if (session != null && session.id == request.sessionId && !session.acceptAction(request)) return;
         IConfigManager config = ((IWirelessTermHandler) stack.getItem()).getConfigManager(stack);
 
@@ -285,14 +285,14 @@ public final class ToolboxSessionService {
         config.writeToNBT(data);
         readTypeFilters(stack, player).writeToNBT(data);
         NBTTagCompound response = message("SETTINGS", request.sessionId);
-        response.setString("toolbox", request.toolbox.toString());
+        response.setString(MiniTerminalUpdatePacket.TERMINAL_ID_KEY, request.terminalId.toString());
         response.setLong("actionId", request.actionId);
         response.setTag("config", data);
         send(player, response);
-        ToolboxTransferService.synchronize(player);
+        MiniTerminalTransferService.synchronize(player);
     }
 
-    private static void begin(EntityPlayerMP player, ToolboxRequestPacket request) {
+    private static void begin(EntityPlayerMP player, MiniTerminalRequestPacket request) {
         end(player);
         if (!allowedContainer(player)) {
             sendStatus(
@@ -300,34 +300,37 @@ public final class ToolboxSessionService {
                 ++nextSession,
                 request.requestId,
                 request.slot,
-                request.toolbox,
+                request.terminalId,
                 null,
-                ToolboxStatus.INVALID_CONTAINER);
+                MiniTerminalStatus.INVALID_CONTAINER);
             return;
         }
-        UUID preferred = request.toolbox;
+        UUID preferred = request.terminalId;
 
         if (preferred == null && request.slot >= 0) {
-            preferred = ItemMEToolbox.ensureIdentity(ItemMEToolbox.getToolboxStack(player, request.slot), player);
+            preferred = ItemMEMiniPortableTerminal
+                .ensureIdentity(ItemMEMiniPortableTerminal.getTerminalStack(player, request.slot), player);
         }
         if (preferred == null) preferred = SELECTED.get(player.getUniqueID());
         if (preferred == null) {
-            int candidate = ItemMEToolbox.findFirstToolboxSlot(player);
+            int candidate = ItemMEMiniPortableTerminal.findFirstTerminalSlot(player);
             if (candidate >= 0)
-                preferred = ItemMEToolbox.ensureIdentity(ItemMEToolbox.getToolboxStack(player, candidate), player);
+                preferred = ItemMEMiniPortableTerminal
+                    .ensureIdentity(ItemMEMiniPortableTerminal.getTerminalStack(player, candidate), player);
         }
         long id = ++nextSession;
-        int slot = ItemMEToolbox.findToolboxSlot(player, preferred);
+        int slot = ItemMEMiniPortableTerminal.findTerminalSlot(player, preferred);
         if (slot < 0) {
-            ToolboxStatus state = Objects.equals(preferred, ItemMEToolbox.getToolboxId(player.inventory.getItemStack()))
-                && preferred != null ? ToolboxStatus.ON_CURSOR : ToolboxStatus.MISSING;
+            MiniTerminalStatus state = Objects
+                .equals(preferred, ItemMEMiniPortableTerminal.getTerminalId(player.inventory.getItemStack()))
+                && preferred != null ? MiniTerminalStatus.ON_CURSOR : MiniTerminalStatus.MISSING;
             sendStatus(player, id, request.requestId, slot, preferred, null, state);
             return;
         }
         SELECTED.put(player.getUniqueID(), preferred);
-        ItemStack stack = ItemMEToolbox.getToolboxStack(player, slot);
-        ItemMEToolbox.initializePins(stack, player);
-        if (request.kind == ToolboxRequestPacket.Kind.FULL) {
+        ItemStack stack = ItemMEMiniPortableTerminal.getTerminalStack(player, slot);
+        ItemMEMiniPortableTerminal.initializePins(stack, player);
+        if (request.kind == MiniTerminalRequestPacket.Kind.FULL) {
             AEApi.instance()
                 .registries()
                 .wireless()
@@ -336,16 +339,16 @@ public final class ToolboxSessionService {
         }
         Session session = new Session(player, id, request.requestId, slot, preferred, stack);
         try {
-            ToolboxStatus status = session.validate();
-            if (status == ToolboxStatus.ONLINE) {
-                session.catalog = new ToolboxCatalog(session.monitor, session.fluidMonitor);
+            MiniTerminalStatus status = session.validate();
+            if (status == MiniTerminalStatus.ONLINE) {
+                session.catalog = new MiniTerminalCatalog(session.monitor, session.fluidMonitor);
                 session.terminal.observeCatalog(session.catalog);
                 SESSIONS.put(player.getUniqueID(), session);
             }
             session.status(status);
             session.sendPins();
             if (SESSIONS.get(player.getUniqueID()) == session) session.sendCatalog();
-            ToolboxTransferService.synchronize(player);
+            MiniTerminalTransferService.synchronize(player);
         } finally {
 
             if (SESSIONS.get(player.getUniqueID()) != session) session.close();
@@ -357,16 +360,16 @@ public final class ToolboxSessionService {
         if (event.phase != TickEvent.Phase.END || !(event.player instanceof EntityPlayerMP player)) return;
         Session session = SESSIONS.get(player.getUniqueID());
         if (session == null) return;
-        ToolboxStatus status = session.validate();
-        if (status == ToolboxStatus.ONLINE && ++session.energyTicks >= 11) {
+        MiniTerminalStatus status = session.validate();
+        if (status == MiniTerminalStatus.ONLINE && ++session.energyTicks >= 11) {
             double drain = AEConfig.instance.wireless_getDrainRate(session.host.getRange()) * session.energyTicks;
             session.energyTicks = 0;
             if (session.host.extractAEPower(drain, Actionable.SIMULATE, PowerMultiplier.CONFIG) < drain
                 || session.host.extractAEPower(drain, Actionable.MODULATE, PowerMultiplier.CONFIG) < drain) {
-                status = ToolboxStatus.NO_POWER;
+                status = MiniTerminalStatus.NO_POWER;
             }
         }
-        if (status != ToolboxStatus.ONLINE) {
+        if (status != MiniTerminalStatus.ONLINE) {
             session.status(status);
             end(player);
         } else {
@@ -383,11 +386,11 @@ public final class ToolboxSessionService {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPickup(EntityItemPickupEvent event) {
-        ToolboxTransferService.pickup(event);
+        MiniTerminalTransferService.pickup(event);
     }
 
     private static void send(EntityPlayerMP player, NBTTagCompound data) {
-        ScienceNotLeisure.network.sendTo(new ToolboxUpdatePacket(data), player);
+        ScienceNotLeisure.network.sendTo(new MiniTerminalUpdatePacket(data), player);
     }
 
     private static NBTTagCompound message(String kind, long session) {
@@ -397,13 +400,13 @@ public final class ToolboxSessionService {
         return tag;
     }
 
-    private static void sendStatus(EntityPlayerMP player, long session, long requestId, int slot, UUID toolbox,
-        ItemStack stack, ToolboxStatus status) {
+    private static void sendStatus(EntityPlayerMP player, long session, long requestId, int slot, UUID terminalId,
+        ItemStack stack, MiniTerminalStatus status) {
         NBTTagCompound tag = message("STATUS", session);
         tag.setLong("requestId", requestId);
         tag.setString("status", status.name());
         tag.setInteger("slot", slot);
-        if (toolbox != null) tag.setString("toolbox", toolbox.toString());
+        if (terminalId != null) tag.setString(MiniTerminalUpdatePacket.TERMINAL_ID_KEY, terminalId.toString());
         if (stack != null) {
             tag.setString("name", stack.getDisplayName());
             IWirelessTermHandler handler = (IWirelessTermHandler) stack.getItem();
@@ -428,7 +431,7 @@ public final class ToolboxSessionService {
         List<NBTTagCompound> entries, boolean snapshot) {
         List<NBTTagList> parts;
         try {
-            parts = ToolboxUpdatePacket.split(entries);
+            parts = MiniTerminalUpdatePacket.split(entries);
         } catch (IOException exception) {
             failUpdate(player, header.getLong("session"), exception);
             return;
@@ -446,10 +449,10 @@ public final class ToolboxSessionService {
     }
 
     private static void failUpdate(EntityPlayerMP player, long session, IOException exception) {
-        ScienceNotLeisure.LOG.warn("Cannot encode ME toolbox update", exception);
+        ScienceNotLeisure.LOG.warn("Cannot encode ME mini portable terminal update", exception);
         end(player);
         NBTTagCompound failed = message("STATUS", session);
-        failed.setString("status", ToolboxStatus.STALE.name());
+        failed.setString("status", MiniTerminalStatus.STALE.name());
         failed.setInteger("retryTicks", 200);
         send(player, failed);
     }
@@ -481,7 +484,7 @@ public final class ToolboxSessionService {
         final long id;
         final long requestId;
         final int slot;
-        final UUID toolbox;
+        final UUID terminalId;
         final ItemStack stack;
         final Container container;
         final int windowId;
@@ -492,20 +495,20 @@ public final class ToolboxSessionService {
         final WirelessTerminalGuiObject host;
         final IMEMonitor<IAEItemStack> monitor;
         final IMEMonitor<IAEFluidStack> fluidMonitor;
-        final ToolboxMonitorableAdapter terminal;
+        final MiniTerminalMonitorableAdapter terminal;
         NBTTagList observedPins;
-        ToolboxCatalog catalog;
+        MiniTerminalCatalog catalog;
         long pinRevision = 1;
         long lastAction;
         int energyTicks;
         int lastResync;
 
-        Session(EntityPlayerMP player, long id, long requestId, int slot, UUID toolbox, ItemStack stack) {
+        Session(EntityPlayerMP player, long id, long requestId, int slot, UUID terminalId, ItemStack stack) {
             this.player = player;
             this.id = id;
             this.requestId = requestId;
             this.slot = slot;
-            this.toolbox = toolbox;
+            this.terminalId = terminalId;
             this.stack = stack;
             this.container = player.openContainer;
             this.windowId = container.windowId;
@@ -517,39 +520,42 @@ public final class ToolboxSessionService {
 
             this.host.getTypeFilter(player)
                 .put(ITEM_STACK_TYPE, true);
-            this.terminal = new ToolboxMonitorableAdapter(player, host);
+            this.terminal = new MiniTerminalMonitorableAdapter(player, host);
             this.monitor = terminal.getItemMonitor();
             this.fluidMonitor = host.getFluidInventory();
             this.observedPins = (NBTTagList) pinData().copy();
         }
 
-        ToolboxStatus validate() {
+        MiniTerminalStatus validate() {
             if (!allowedContainer(player) || player.openContainer != container || container.windowId != windowId)
-                return ToolboxStatus.INVALID_CONTAINER;
-            if (toolbox.equals(ItemMEToolbox.getToolboxId(player.inventory.getItemStack())))
-                return ToolboxStatus.ON_CURSOR;
-            int current = ItemMEToolbox.findToolboxSlot(player, toolbox);
-            if (current < 0) return ToolboxStatus.MISSING;
+                return MiniTerminalStatus.INVALID_CONTAINER;
+            if (terminalId.equals(ItemMEMiniPortableTerminal.getTerminalId(player.inventory.getItemStack())))
+                return MiniTerminalStatus.ON_CURSOR;
+            int current = ItemMEMiniPortableTerminal.findTerminalSlot(player, terminalId);
+            if (current < 0) return MiniTerminalStatus.MISSING;
 
-            if (current != slot || ItemMEToolbox.getToolboxStack(player, current) != stack) return ToolboxStatus.STALE;
-            if (!Objects.equals(binding, handler.getEncryptionKey(stack))) return ToolboxStatus.STALE;
+            if (current != slot || ItemMEMiniPortableTerminal.getTerminalStack(player, current) != stack)
+                return MiniTerminalStatus.STALE;
+            if (!Objects.equals(binding, handler.getEncryptionKey(stack))) return MiniTerminalStatus.STALE;
 
-            if (!observedPins.equals(pinData())) return ToolboxStatus.STALE;
-            if (binding == null || binding.isEmpty()) return ToolboxStatus.UNBOUND;
+            if (!observedPins.equals(pinData())) return MiniTerminalStatus.STALE;
+            if (binding == null || binding.isEmpty()) return MiniTerminalStatus.UNBOUND;
             IGridNode liveNode = resolveBindingNode(binding);
-            if (liveNode == null || grid == null) return ToolboxStatus.OFFLINE;
-            if (liveNode != node || liveNode.getGrid() != grid) return ToolboxStatus.STALE;
+            if (liveNode == null || grid == null) return MiniTerminalStatus.OFFLINE;
+            if (liveNode != node || liveNode.getGrid() != grid) return MiniTerminalStatus.STALE;
             IStorageGrid storage = grid.getCache(IStorageGrid.class);
-            if (storage == null || storage.getItemInventory() != monitor || monitor == null) return ToolboxStatus.STALE;
-            if (storage.getFluidInventory() != fluidMonitor) return ToolboxStatus.STALE;
+            if (storage == null || storage.getItemInventory() != monitor || monitor == null)
+                return MiniTerminalStatus.STALE;
+            if (storage.getFluidInventory() != fluidMonitor) return MiniTerminalStatus.STALE;
             IEnergyGrid energy = grid.getCache(IEnergyGrid.class);
-            if (energy == null || !energy.isNetworkPowered()) return ToolboxStatus.OFFLINE;
+            if (energy == null || !energy.isNetworkPowered()) return MiniTerminalStatus.OFFLINE;
 
-            if (!host.rangeCheck()) return ToolboxStatus.OUT_OF_RANGE;
+            if (!host.rangeCheck()) return MiniTerminalStatus.OUT_OF_RANGE;
             IGridNode actionableNode = host.getActionableNode();
-            if (actionableNode == null || actionableNode.getGrid() != grid) return ToolboxStatus.OUT_OF_RANGE;
-            if (host.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) < 1) return ToolboxStatus.NO_POWER;
-            return permission(SecurityPermissions.EXTRACT) ? ToolboxStatus.ONLINE : ToolboxStatus.NO_PERMISSION;
+            if (actionableNode == null || actionableNode.getGrid() != grid) return MiniTerminalStatus.OUT_OF_RANGE;
+            if (host.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) < 1)
+                return MiniTerminalStatus.NO_POWER;
+            return permission(SecurityPermissions.EXTRACT) ? MiniTerminalStatus.ONLINE : MiniTerminalStatus.NO_PERMISSION;
         }
 
         boolean permission(SecurityPermissions permission) {
@@ -557,8 +563,8 @@ public final class ToolboxSessionService {
             return security != null && security.hasPermission(player, permission);
         }
 
-        void status(ToolboxStatus status) {
-            sendStatus(player, id, requestId, slot, toolbox, stack, status);
+        void status(MiniTerminalStatus status) {
+            sendStatus(player, id, requestId, slot, terminalId, stack, status);
         }
 
         private NBTTagList pinData() {
@@ -567,7 +573,7 @@ public final class ToolboxSessionService {
         }
 
         private boolean operationValid(SecurityPermissions permission) {
-            return SESSIONS.get(player.getUniqueID()) == this && validate() == ToolboxStatus.ONLINE
+            return SESSIONS.get(player.getUniqueID()) == this && validate() == MiniTerminalStatus.ONLINE
                 && container.isPlayerNotUsingContainer(player)
                 && permission(permission);
         }
@@ -631,13 +637,13 @@ public final class ToolboxSessionService {
             sendParts(player, header, "slots", entries, true);
         }
 
-        boolean acceptAction(ToolboxRequestPacket request) {
+        boolean acceptAction(MiniTerminalRequestPacket request) {
             if (request.actionId <= lastAction) return false;
             lastAction = request.actionId;
             return true;
         }
 
-        void pinsRows(ToolboxRequestPacket request) {
+        void pinsRows(MiniTerminalRequestPacket request) {
             if (!acceptAction(request)) return;
             if (request.pinRevision != pinRevision) {
                 sendPins();
@@ -650,12 +656,12 @@ public final class ToolboxSessionService {
                     () -> operationValid(SecurityPermissions.EXTRACT));
             } finally {
                 recordPinChanges();
-                ToolboxTransferService.synchronize(player);
+                MiniTerminalTransferService.synchronize(player);
             }
             sendPins();
         }
 
-        void pinDrop(ToolboxRequestPacket request) {
+        void pinDrop(MiniTerminalRequestPacket request) {
             if (!acceptAction(request) || !permission(SecurityPermissions.EXTRACT)) return;
             if (request.pinRevision != pinRevision) {
                 sendPins();
@@ -680,19 +686,19 @@ public final class ToolboxSessionService {
                 terminal.pin(offered, nativePin, () -> operationValid(SecurityPermissions.EXTRACT));
             } finally {
                 recordPinChanges();
-                ToolboxTransferService.synchronize(player);
+                MiniTerminalTransferService.synchronize(player);
             }
             sendPins();
         }
 
-        void inventoryDeposit(ToolboxRequestPacket request) {
+        void inventoryDeposit(MiniTerminalRequestPacket request) {
             if (!acceptAction(request) || request.slot < 0
                 || request.slot >= 36
                 || request.slot == slot
                 || !permission(SecurityPermissions.INJECT)) return;
             ItemStack offered = player.inventory.mainInventory[request.slot];
 
-            if (offered != null && offered.getItem() instanceof ItemMEToolbox) return;
+            if (offered != null && offered.getItem() instanceof ItemMEMiniPortableTerminal) return;
             if (request.depositMode != DepositMode.NATIVE_REGION && (offered == null || offered.stackSize <= 0)) return;
             Slot source = container.getSlotFromInventory(player.inventory, request.slot);
             if (source == null || !source.canTakeStack(player)) return;
@@ -712,10 +718,10 @@ public final class ToolboxSessionService {
                     if (inventorySlot < 0 || !candidate.canTakeStack(player)) continue;
                     ItemStack stackInSlot = player.inventory.mainInventory[inventorySlot];
                     if (stackInSlot == null || stackInSlot.stackSize <= 0
-                        || stackInSlot.getItem() instanceof ItemMEToolbox) continue;
+                        || stackInSlot.getItem() instanceof ItemMEMiniPortableTerminal) continue;
 
                     if (request.depositMode == DepositMode.MATCHING && !stackInSlot.isItemEqual(selected)) continue;
-                    ToolboxTransferService.depositInventory(
+                    MiniTerminalTransferService.depositInventory(
                         player,
                         terminal,
                         candidate,
@@ -724,7 +730,7 @@ public final class ToolboxSessionService {
                 }
             } finally {
 
-                ToolboxTransferService.synchronize(player);
+                MiniTerminalTransferService.synchronize(player);
             }
         }
 
@@ -740,7 +746,7 @@ public final class ToolboxSessionService {
             return slots;
         }
 
-        void inventoryExtract(ToolboxRequestPacket request) {
+        void inventoryExtract(MiniTerminalRequestPacket request) {
             if (!acceptAction(request) || !permission(SecurityPermissions.EXTRACT)) return;
             if (!isTargetRevisionValid(request, catalog.revision, pinRevision)) {
                 resync();
@@ -765,7 +771,7 @@ public final class ToolboxSessionService {
                 if (Platform.isBogoLoaded && BogoInventory.pinned(player, destinationContainer, destination)) continue;
                 destinations.add(inventorySlot);
             }
-            ToolboxTransferService.extractInventory(
+            MiniTerminalTransferService.extractInventory(
                 player,
                 terminal,
                 target,
@@ -778,7 +784,7 @@ public final class ToolboxSessionService {
                 () -> operationValid(SecurityPermissions.EXTRACT));
         }
 
-        void action(ToolboxRequestPacket request) {
+        void action(MiniTerminalRequestPacket request) {
             if (!acceptAction(request)) return;
             if (request.action == MonitorableAction.SET_PIN) return;
             if (!isTargetRevisionValid(request, catalog.revision, pinRevision)) {
@@ -797,7 +803,7 @@ public final class ToolboxSessionService {
                     terminal.pin(null, nativePin, () -> operationValid(SecurityPermissions.EXTRACT));
                 } finally {
                     recordPinChanges();
-                    ToolboxTransferService.synchronize(player);
+                    MiniTerminalTransferService.synchronize(player);
                 }
                 sendPins();
                 return;
@@ -818,7 +824,7 @@ public final class ToolboxSessionService {
             }
             boolean inject = request.action == MonitorableAction.DRAIN_SINGLE_CONTAINER
                 || request.action == MonitorableAction.DRAIN_CONTAINERS
-                || ToolboxTransferService.depositsCursor(hand, request.action);
+                || MiniTerminalTransferService.depositsCursor(hand, request.action);
             if (inject && !permission(SecurityPermissions.INJECT)) return;
             if (request.action == MonitorableAction.FILL_SINGLE_CONTAINER
                 || request.action == MonitorableAction.FILL_CONTAINERS) {
@@ -827,7 +833,7 @@ public final class ToolboxSessionService {
                 if (target == null || target.getStackSize() <= 0) return;
             }
             if (target == null && !inject) return;
-            ToolboxTransferService.execute(
+            MiniTerminalTransferService.execute(
                 player,
                 terminal,
                 target,
@@ -836,9 +842,10 @@ public final class ToolboxSessionService {
         }
 
         private void openCrafting(IAEStack<?> target) {
-            if (target == null || !allowedContainer(player) || ItemMEToolbox.findToolboxSlot(player, toolbox) != slot)
+            if (target == null || !allowedContainer(player)
+                || ItemMEMiniPortableTerminal.findTerminalSlot(player, terminalId) != slot)
                 return;
-            ItemStack current = ItemMEToolbox.getToolboxStack(player, slot);
+            ItemStack current = ItemMEMiniPortableTerminal.getTerminalStack(player, slot);
             if (current != stack) return;
 
             PrimaryGui primary = new PrimaryGui(null, current.copy(), null, ForgeDirection.UNKNOWN) {
@@ -872,8 +879,10 @@ public final class ToolboxSessionService {
                     return;
                 }
             } catch (RuntimeException exception) {
-                ScienceNotLeisure.LOG
-                    .error("Failed to open ME toolbox crafting for {}", player.getCommandSenderName(), exception);
+                ScienceNotLeisure.LOG.error(
+                    "Failed to open ME mini portable terminal crafting for {}",
+                    player.getCommandSenderName(),
+                    exception);
             }
 
             player.closeContainer();
@@ -882,7 +891,7 @@ public final class ToolboxSessionService {
 
         private void returnToInventory(EntityPlayerMP returned) {
             NBTTagCompound tag = message("RETURN", id);
-            tag.setString("toolbox", toolbox.toString());
+            tag.setString(MiniTerminalUpdatePacket.TERMINAL_ID_KEY, terminalId.toString());
             tag.setInteger("slot", slot);
             send(returned, tag);
         }

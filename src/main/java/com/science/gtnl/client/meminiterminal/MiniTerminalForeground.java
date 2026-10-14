@@ -1,4 +1,4 @@
-package com.science.gtnl.client.metoolbox;
+package com.science.gtnl.client.meminiterminal;
 
 import java.awt.Rectangle;
 
@@ -20,15 +20,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 /** Supplies AE slot tooltips, plus foreground compatibility for non-MUI overlay hosts. */
 @SideOnly(Side.CLIENT)
-final class ToolboxForeground {
+final class MiniTerminalForeground {
 
-    private final ToolboxInventoryPanel overlay;
+    private final MiniTerminalInventoryPanel overlay;
     private boolean drawingNativeTooltip;
     private boolean nativeTooltipRequested;
     private DrawScreenEvent.Post chromaticEvent;
     private Runnable chromaticTooltip;
 
-    ToolboxForeground(ToolboxInventoryPanel overlay) {
+    MiniTerminalForeground(MiniTerminalInventoryPanel overlay) {
         this.overlay = overlay;
     }
 
@@ -69,7 +69,7 @@ final class ToolboxForeground {
     }
 
     private boolean active() {
-        return ToolboxClient.overlay() == overlay && overlay.isValid() && overlay.isOpen()
+        return MiniTerminalClient.overlay() == overlay && overlay.isValid() && overlay.isOpen()
             && Minecraft.getMinecraft().currentScreen == overlay.inventory();
     }
 

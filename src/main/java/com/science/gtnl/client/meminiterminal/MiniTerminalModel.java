@@ -1,4 +1,4 @@
-package com.science.gtnl.client.metoolbox;
+package com.science.gtnl.client.meminiterminal;
 
 import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
 import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
@@ -34,12 +34,12 @@ import appeng.util.Platform;
 import appeng.util.TerminalSettings;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
 
-public final class ToolboxTerminalModel implements ISortSource {
+public final class MiniTerminalModel implements ISortSource {
 
     private final GuiScrollbar scrollbar = new GuiScrollbar();
     private final AEStackTypeFilter typeFilters = new AEStackTypeFilter();
-    private int columns = ToolboxLayout.COLUMNS;
-    private int rows = ToolboxLayout.ROWS;
+    private int columns = MiniTerminalLayout.COLUMNS;
+    private int rows = MiniTerminalLayout.ROWS;
     private int visibleCraftingCount;
     private int visiblePlayerCount = PinsRows.TWO.getSlotCount();
     private ItemRepo repo = createRepo();
@@ -85,17 +85,17 @@ public final class ToolboxTerminalModel implements ISortSource {
         return result;
     }
 
-    public void readSettings(ItemStack toolbox) {
-        if (toolbox != null && toolbox.getItem() instanceof ToolWirelessTerminal wireless) {
-            sessionState.observeNetwork(wireless.getEncryptionKey(toolbox));
+    public void readSettings(ItemStack terminal) {
+        if (terminal != null && terminal.getItem() instanceof ToolWirelessTerminal wireless) {
+            sessionState.observeNetwork(wireless.getEncryptionKey(terminal));
             repo.setPowered(sessionState.isDisplayOnline());
 
             if (pendingSettingsAction == 0) {
                 TerminalSettings terminalSettings = new TerminalSettings();
-                terminalSettings.readFromNBT(toolbox.getTagCompound());
+                terminalSettings.readFromNBT(terminal.getTagCompound());
                 readTypeFilters(terminalSettings.getFilters(Minecraft.getMinecraft().thePlayer));
             }
-            readSettings(wireless.getConfigManager(toolbox.copy()));
+            readSettings(wireless.getConfigManager(terminal.copy()));
         }
     }
 
@@ -135,7 +135,7 @@ public final class ToolboxTerminalModel implements ISortSource {
     public void toggleFluids() {
         typeFilters.toggle(FLUID_STACK_TYPE);
         refreshActiveView();
-        ToolboxClient.saveSettings();
+        MiniTerminalClient.saveSettings();
     }
 
     public void readSettings(NBTTagCompound config, long acknowledgedAction) {
@@ -533,7 +533,7 @@ public final class ToolboxTerminalModel implements ISortSource {
             sort = Platform.rotateEnum(sort, false, Settings.SORT_BY.getPossibleValues());
         }
         refreshActiveView();
-        ToolboxClient.saveSettings();
+        MiniTerminalClient.saveSettings();
     }
 
     private void refreshActiveView() {

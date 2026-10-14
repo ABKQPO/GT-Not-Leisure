@@ -115,28 +115,28 @@ public enum Mixins implements IMixins {
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.AppliedEnergistics)),
 
-    ME_TOOLBOX_TERMINAL(new MixinBuilder("ME toolbox native terminal adapter")
-        .addCommonMixins("appliedEnergistics.metoolbox.MixinToolboxMonitorableDestination")
+    ME_MINI_TERMINAL(new MixinBuilder("ME mini portable terminal native terminal adapter")
+        .addCommonMixins("appliedEnergistics.meminiterminal.MixinMiniTerminalMonitorableDestination")
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.AppliedEnergistics)),
 
-    ME_TOOLBOX_NEI(
-        new MixinBuilder("ME toolbox native tooltip foreground").addClientMixins("notEnoughItems.MixinToolboxTooltips")
-            .setPhase(Phase.LATE)
-            .addRequiredMod(ModList.NotEnoughItems)),
+    ME_MINI_TERMINAL_NEI(new MixinBuilder("ME mini portable terminal native tooltip foreground")
+        .addClientMixins("notEnoughItems.MixinMiniTerminalTooltips")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.NotEnoughItems)),
 
-    ME_TOOLBOX_CHROMATIC_TOOLTIPS(new MixinBuilder("ME toolbox Chromatic Tooltips foreground")
-        .addClientMixins("chromaticTooltips.MixinToolboxTooltipRendering")
+    ME_MINI_TERMINAL_CHROMATIC_TOOLTIPS(new MixinBuilder("ME mini portable terminal Chromatic Tooltips foreground")
+        .addClientMixins("chromaticTooltips.MixinMiniTerminalTooltipRendering")
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.ChromaticTooltips)),
 
-    ME_TOOLBOX_BOGO(new MixinBuilder("ME toolbox native Bogo shortcut destinations")
-        .addClientMixins("inventoryBogoSorter.MixinToolboxShortcuts")
+    ME_MINI_TERMINAL_BOGO(new MixinBuilder("ME mini portable terminal native Bogo shortcut destinations")
+        .addClientMixins("inventoryBogoSorter.MixinMiniTerminalShortcuts")
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.InventoryBogoSorter)),
 
-    ME_TOOLBOX_MOUSE_TWEAKS(new MixinBuilder("ME toolbox Mouse Tweaks shortcut destinations")
-        .addClientMixins("mouseTweaks.MixinToolboxMouseTweaks")
+    ME_MINI_TERMINAL_MOUSE_TWEAKS(new MixinBuilder("ME mini portable terminal Mouse Tweaks shortcut destinations")
+        .addClientMixins("mouseTweaks.MixinMiniTerminalMouseTweaks")
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.MouseTweaks)),
 

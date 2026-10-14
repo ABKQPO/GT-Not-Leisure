@@ -9,14 +9,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.science.gtnl.client.metoolbox.ToolboxClient;
+import com.science.gtnl.client.meminiterminal.MiniTerminalClient;
 
 @Pseudo
 @Mixin(targets = "yalter.mousetweaks.DeobfuscationLayer", remap = false)
-public abstract class MixinToolboxMouseTweaks {
+public abstract class MixinMiniTerminalMouseTweaks {
 
     @Inject(method = "windowClick(IIII)V", at = @At("HEAD"), cancellable = true, require = 1)
-    private static void gtnl$shiftClickToToolbox(int windowId, int slotNumber, int mouseButton, int clickMode,
+    private static void gtnl$shiftClickToMiniTerminal(int windowId, int slotNumber, int mouseButton, int clickMode,
         CallbackInfo ci) {
         if (clickMode != 1) return;
         Minecraft mc = Minecraft.getMinecraft();
@@ -26,6 +26,6 @@ public abstract class MixinToolboxMouseTweaks {
             || gui.inventorySlots.windowId != windowId
             || slotNumber < 0
             || slotNumber >= gui.inventorySlots.inventorySlots.size()) return;
-        if (ToolboxClient.shiftClickToME(gui.inventorySlots.getSlot(slotNumber), mouseButton, clickMode)) ci.cancel();
+        if (MiniTerminalClient.shiftClickToME(gui.inventorySlots.getSlot(slotNumber), mouseButton, clickMode)) ci.cancel();
     }
 }

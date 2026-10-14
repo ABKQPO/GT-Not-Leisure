@@ -21,7 +21,7 @@ import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchHost;
 import com.science.gtnl.common.item.items.PortableChestType;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
-import com.science.gtnl.common.metoolbox.ToolboxSessionService;
+import com.science.gtnl.common.meminiterminal.MiniTerminalSessionService;
 import com.science.gtnl.common.packet.NetWorkHandler;
 import com.science.gtnl.common.part.PartActiveFormationPlane;
 import com.science.gtnl.common.part.PartMECellDock;
@@ -101,10 +101,10 @@ public class CommonProxy implements IGuiHandler {
 
     // load "Do your mod setup. Build whatever data structures you care about. Register recipes." (Remove if not needed)
     public void init(FMLInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(ToolboxSessionService.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(MiniTerminalSessionService.INSTANCE);
         FMLCommonHandler.instance()
             .bus()
-            .register(ToolboxSessionService.INSTANCE);
+            .register(MiniTerminalSessionService.INSTANCE);
         MinecraftForge.EVENT_BUS.register(WirelessChannelManager.INSTANCE);
         MinecraftForge.EVENT_BUS.register(WirelessAutoConnect.INSTANCE);
         FMLCommonHandler.instance()

@@ -1,4 +1,4 @@
-package com.science.gtnl.common.metoolbox;
+package com.science.gtnl.common.meminiterminal;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -10,7 +10,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 
-import com.science.gtnl.common.item.items.ItemMEToolbox;
+import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 
 import appeng.api.config.InsertionMode;
 import appeng.api.config.SecurityPermissions;
@@ -35,13 +35,13 @@ import appeng.util.inv.WrapperInventoryRange;
 import appeng.util.item.AEItemStack;
 import cpw.mods.fml.common.eventhandler.Event;
 
-final class ToolboxTransferService {
+final class MiniTerminalTransferService {
 
-    private ToolboxTransferService() {}
+    private MiniTerminalTransferService() {}
 
-    static void depositInventory(EntityPlayerMP player, ToolboxMonitorableAdapter terminal, Slot sourceSlot, int amount,
+    static void depositInventory(EntityPlayerMP player, MiniTerminalMonitorableAdapter terminal, Slot sourceSlot, int amount,
         BooleanSupplier valid) {
-        int inventorySlot = ToolboxSessionService.playerInventoryIndex(player, sourceSlot);
+        int inventorySlot = MiniTerminalSessionService.playerInventoryIndex(player, sourceSlot);
         if (inventorySlot < 0) return;
         ItemStack original = player.inventory.mainInventory[inventorySlot];
         if (original == null || original.stackSize <= 0 || amount <= 0 || !sourceSlot.canTakeStack(player)) return;
@@ -54,7 +54,7 @@ final class ToolboxTransferService {
         }
     }
 
-    private static void depositFrom(EntityPlayerMP player, ToolboxMonitorableAdapter terminal, InventoryAdaptor source,
+    private static void depositFrom(EntityPlayerMP player, MiniTerminalMonitorableAdapter terminal, InventoryAdaptor source,
         ItemStack original, int amount, BooleanSupplier valid) {
         deposit(amount, valid, new IDepositAccess() {
 
@@ -106,7 +106,7 @@ final class ToolboxTransferService {
                 || action == MonitorableAction.ROLL_DOWN);
     }
 
-    static void execute(EntityPlayerMP player, ToolboxMonitorableAdapter terminal, IAEStack<?> target,
+    static void execute(EntityPlayerMP player, MiniTerminalMonitorableAdapter terminal, IAEStack<?> target,
         MonitorableAction action, BooleanSupplier valid) {
         if (!valid.getAsBoolean()) return;
         try {
@@ -126,7 +126,7 @@ final class ToolboxTransferService {
         }
     }
 
-    static void extractInventory(EntityPlayerMP player, ToolboxMonitorableAdapter terminal, IAEItemStack target,
+    static void extractInventory(EntityPlayerMP player, MiniTerminalMonitorableAdapter terminal, IAEItemStack target,
         int[] destinationSlots, boolean emptyOnly, boolean single, BooleanSupplier valid) {
         if (!valid.getAsBoolean()) return;
         InventoryAdaptor destination = new InventoryDestination(
@@ -177,24 +177,25 @@ final class ToolboxTransferService {
         String owner = entity.func_145798_i();
         if (owner != null && entity.lifespan - entity.age > 200 && !owner.equals(player.getCommandSenderName())) return;
         ItemStack picked = entity.getEntityItem();
-        if (picked == null || picked.stackSize <= 0 || ItemMEToolbox.isToolbox(picked)) return;
+        if (picked == null || picked.stackSize <= 0 || ItemMEMiniPortableTerminal.isMiniTerminal(picked)) return;
 
-        for (int slot : ItemMEToolbox.getToolboxSlots(player)) {
-            ItemStack toolbox = ItemMEToolbox.getToolboxStack(player, slot);
-            if (!ItemMEToolbox.isPickupToMEEnabled(toolbox)) continue;
+        for (int slot : ItemMEMiniPortableTerminal.getTerminalSlots(player)) {
+            ItemStack terminalStack = ItemMEMiniPortableTerminal.getTerminalStack(player, slot);
+            if (!ItemMEMiniPortableTerminal.isPickupToMEEnabled(terminalStack)) continue;
 
-            if (ItemMEToolbox.findToolboxSlot(player, ItemMEToolbox.getToolboxId(toolbox)) != slot) return;
-            insertPickup(event, player, toolbox, slot, picked);
+            if (ItemMEMiniPortableTerminal
+                .findTerminalSlot(player, ItemMEMiniPortableTerminal.getTerminalId(terminalStack)) != slot) return;
+            insertPickup(event, player, terminalStack, slot, picked);
             return;
         }
     }
 
-    private static void insertPickup(EntityItemPickupEvent event, EntityPlayerMP player, ItemStack toolbox, int slot,
+    private static void insertPickup(EntityItemPickupEvent event, EntityPlayerMP player, ItemStack terminalStack, int slot,
         ItemStack picked) {
-        IWirelessTermHandler handler = (IWirelessTermHandler) toolbox.getItem();
+        IWirelessTermHandler handler = (IWirelessTermHandler) terminalStack.getItem();
         WirelessTerminalGuiObject host = new WirelessTerminalGuiObject(
             handler,
-            toolbox,
+            terminalStack,
             player,
             player.worldObj,
             slot,

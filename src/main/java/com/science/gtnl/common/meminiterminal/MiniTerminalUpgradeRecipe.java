@@ -1,4 +1,4 @@
-package com.science.gtnl.common.metoolbox;
+package com.science.gtnl.common.meminiterminal;
 
 import java.util.function.Predicate;
 
@@ -15,7 +15,7 @@ import com.glodblock.github.loader.recipe.WirelessTerminalEnergyRecipe;
 import com.glodblock.github.loader.recipe.WirelessTerminalQuantumBridgeRecipe;
 import com.glodblock.github.loader.recipe.WirelessTerminalRecipe;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.item.items.ItemMEToolbox;
+import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.AEApi;
@@ -25,14 +25,14 @@ import appeng.api.util.AEColor;
 import appeng.container.ContainerNull;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class ToolboxUpgradeRecipe extends ShapedOreRecipe {
+public class MiniTerminalUpgradeRecipe extends ShapedOreRecipe {
 
     private static final String[] TERMINAL_TAGS = { "encryptionKey", "encryptionKeys", "name", "pins", "viewCell",
         "terminalSettings", "searchString", "display" };
 
-    private ToolboxUpgradeRecipe() {
+    private MiniTerminalUpgradeRecipe() {
         super(
-            GTNLItemList.METoolbox.get(1),
+            GTNLItemList.MEMiniPortableTerminal.get(1),
             "PEP",
             "CWC",
             "PEP",
@@ -61,25 +61,26 @@ public class ToolboxUpgradeRecipe extends ShapedOreRecipe {
     }
 
     public static void register() {
+        // Keep sorter IDs stable for integrations that order their recipes relative to these entries.
         RecipeSorter.register(
             ScienceNotLeisure.MODID + ":me_toolbox_upgrade",
-            ToolboxUpgradeRecipe.class,
+            MiniTerminalUpgradeRecipe.class,
             RecipeSorter.Category.SHAPED,
             "after:forge:shapedore");
-        GameRegistry.addRecipe(new ToolboxUpgradeRecipe());
+        GameRegistry.addRecipe(new MiniTerminalUpgradeRecipe());
 
         RecipeSorter.register(
             ScienceNotLeisure.MODID + ":me_toolbox_card",
             CardRecipe.class,
             RecipeSorter.Category.SHAPELESS,
             "after:forge:shapelessore");
-        ItemStack toolbox = GTNLItemList.METoolbox.get(1);
-        ItemMEToolbox item = (ItemMEToolbox) toolbox.getItem();
-        GameRegistry.addRecipe(new CardRecipe(new WirelessTerminalEnergyRecipe(toolbox), item::hasInfinityPower));
+        ItemStack terminal = GTNLItemList.MEMiniPortableTerminal.get(1);
+        ItemMEMiniPortableTerminal item = (ItemMEMiniPortableTerminal) terminal.getItem();
+        GameRegistry.addRecipe(new CardRecipe(new WirelessTerminalEnergyRecipe(terminal), item::hasInfinityPower));
         GameRegistry
-            .addRecipe(new CardRecipe(new WirelessTerminalQuantumBridgeRecipe(toolbox), item::hasInfinityRange));
+            .addRecipe(new CardRecipe(new WirelessTerminalQuantumBridgeRecipe(terminal), item::hasInfinityRange));
         if (WirelessTerminalRecipe.getInfinityBoosterCard() != null) {
-            GameRegistry.addRecipe(new CardRecipe(new WirelessTerminalRecipe(toolbox), item::hasInfinityRange));
+            GameRegistry.addRecipe(new CardRecipe(new WirelessTerminalRecipe(terminal), item::hasInfinityRange));
         }
     }
 
@@ -99,14 +100,14 @@ public class ToolboxUpgradeRecipe extends ShapedOreRecipe {
     }
 
     public static ItemStack upgrade(ItemStack source, ItemStack result) {
-        if (!(result.getItem() instanceof ItemMEToolbox toolbox)) {
-            throw new IllegalArgumentException("The upgrade output must be an ME Toolbox");
+        if (!(result.getItem() instanceof ItemMEMiniPortableTerminal terminal)) {
+            throw new IllegalArgumentException("The upgrade output must be an ME Mini Portable Terminal");
         }
         result.setTagCompound(copyTerminalData(source.getTagCompound()));
         if (source.getItem() instanceof IAEItemPowerStorage power) {
             double stored = power.getAECurrentPower(source);
             if (Double.isFinite(stored) && stored > 0) {
-                toolbox.injectAEPower(result, stored);
+                terminal.injectAEPower(result, stored);
             }
         }
 
@@ -148,8 +149,8 @@ public class ToolboxUpgradeRecipe extends ShapedOreRecipe {
         @Override
         public boolean matches(InventoryCrafting inventory, World world) {
             if (!super.matches(inventory, world)) return false;
-            ItemStack toolbox = findToolbox(inventory);
-            return toolbox != null && !installed.test(toolbox);
+            ItemStack terminal = findTerminal(inventory);
+            return terminal != null && !installed.test(terminal);
         }
 
         @Override
@@ -157,14 +158,14 @@ public class ToolboxUpgradeRecipe extends ShapedOreRecipe {
             if (!matches(inventory, null)) return null;
 
             InventoryCrafting nativeInput = new InventoryCrafting(new ContainerNull(), 2, 1);
-            nativeInput.setInventorySlotContents(0, findToolbox(inventory));
+            nativeInput.setInventorySlotContents(0, findTerminal(inventory));
             return nativeRecipe.getCraftingResult(nativeInput);
         }
 
-        private static ItemStack findToolbox(InventoryCrafting inventory) {
+        private static ItemStack findTerminal(InventoryCrafting inventory) {
             for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
                 ItemStack stack = inventory.getStackInSlot(slot);
-                if (ItemMEToolbox.isToolbox(stack)) return stack;
+                if (ItemMEMiniPortableTerminal.isMiniTerminal(stack)) return stack;
             }
             return null;
         }

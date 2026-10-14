@@ -1,4 +1,4 @@
-package com.science.gtnl.common.metoolbox;
+package com.science.gtnl.common.meminiterminal;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-import com.science.gtnl.client.metoolbox.ToolboxClient;
+import com.science.gtnl.client.meminiterminal.MiniTerminalClient;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
@@ -18,7 +18,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 
-public class ToolboxUpdatePacket extends ClientboundPacket {
+public class MiniTerminalUpdatePacket extends ClientboundPacket {
+
+    // Retain the existing wire key while Java fields use terminal terminology.
+    public static final String TERMINAL_ID_KEY = "toolbox";
 
     private static final int MAX_ENTRIES = 64;
     private static final int MAX_COMPRESSED_BYTES = 24_000;
@@ -32,9 +35,9 @@ public class ToolboxUpdatePacket extends ClientboundPacket {
 
     private NBTTagCompound data;
 
-    public ToolboxUpdatePacket() {}
+    public MiniTerminalUpdatePacket() {}
 
-    public ToolboxUpdatePacket(NBTTagCompound data) {
+    public MiniTerminalUpdatePacket(NBTTagCompound data) {
         this.data = data;
     }
 
@@ -51,11 +54,11 @@ public class ToolboxUpdatePacket extends ClientboundPacket {
     @Override
     @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
-        minecraft.func_152344_a(() -> ToolboxClient.receive(data));
+        minecraft.func_152344_a(() -> MiniTerminalClient.receive(data));
     }
 
     static List<NBTTagList> split(List<NBTTagCompound> entries) throws IOException {
-        if (entries.size() > MAX_UPDATE_ENTRIES) throw new IOException("Too many ME toolbox update entries");
+        if (entries.size() > MAX_UPDATE_ENTRIES) throw new IOException("Too many ME mini portable terminal update entries");
         List<NBTTagList> parts = new ArrayList<>();
         UpdateBudget budget = new UpdateBudget();
         NBTTagList part = new NBTTagList();
@@ -63,7 +66,7 @@ public class ToolboxUpdatePacket extends ClientboundPacket {
         int compressedBytes = 0;
         long trackedBytes = 0;
         for (NBTTagCompound entry : entries) {
-            if (entry == null) throw new IOException("Null ME toolbox entry");
+            if (entry == null) throw new IOException("Null ME mini portable terminal entry");
             NBTTagList singleton = new NBTTagList();
             singleton.appendTag(entry);
             EncodedSize size = measure(singleton);
@@ -86,13 +89,13 @@ public class ToolboxUpdatePacket extends ClientboundPacket {
 
     private static void addPart(List<NBTTagList> parts, NBTTagList part, EncodedSize singleEntrySize,
         UpdateBudget budget) throws IOException {
-        if (parts.size() >= MAX_UPDATE_PARTS) throw new IOException("Too many ME toolbox update packets");
+        if (parts.size() >= MAX_UPDATE_PARTS) throw new IOException("Too many ME mini portable terminal update packets");
         // A one-entry part is identical to the singleton envelope already validated by the native decoder.
         EncodedSize size = part.tagCount() == 1 ? singleEntrySize : measure(part);
         budget.compressedBytes += size.compressedBytes();
         budget.trackedBytes += size.trackedBytes();
         if (budget.compressedBytes > MAX_UPDATE_COMPRESSED_BYTES || budget.trackedBytes > MAX_UPDATE_TRACKED_BYTES) {
-            throw new IOException("ME toolbox update exceeds the total NBT budget");
+            throw new IOException("ME mini portable terminal update exceeds the total NBT budget");
         }
         parts.add(part);
     }
@@ -108,12 +111,12 @@ public class ToolboxUpdatePacket extends ClientboundPacket {
 
         envelope.setTag("entries", entries);
         byte[] compressed = CompressedStreamTools.compress(envelope);
-        if (compressed.length > MAX_COMPRESSED_BYTES) throw new IOException("Oversize ME toolbox compressed NBT");
+        if (compressed.length > MAX_COMPRESSED_BYTES) throw new IOException("Oversize ME mini portable terminal compressed NBT");
         MeasuringTracker tracker = new MeasuringTracker();
         try {
             CompressedStreamTools.func_152457_a(compressed, tracker);
         } catch (RuntimeException exception) {
-            throw new IOException("ME toolbox NBT exceeds the native decoder budget or nesting limit", exception);
+            throw new IOException("ME mini portable terminal NBT exceeds the native decoder budget or nesting limit", exception);
         }
         return new EncodedSize(compressed.length, tracker.bytes);
     }

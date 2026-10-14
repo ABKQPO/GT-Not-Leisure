@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.common.metoolbox.ToolboxUpgradeRecipe;
+import com.science.gtnl.common.meminiterminal.MiniTerminalUpgradeRecipe;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
@@ -52,7 +52,7 @@ public class CraftingTableRecipes implements IRecipePool {
 
     @Override
     public void loadRecipes() {
-        ToolboxUpgradeRecipe.register();
+        MiniTerminalUpgradeRecipe.register();
         var aeMaterials = AEApi.instance()
             .definitions()
             .materials();

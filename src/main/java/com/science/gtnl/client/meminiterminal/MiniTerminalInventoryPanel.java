@@ -1,4 +1,4 @@
-package com.science.gtnl.client.metoolbox;
+package com.science.gtnl.client.meminiterminal;
 
 import static appeng.client.gui.implementations.GuiMEMonitorable.keyBindPickBlockAction;
 import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
@@ -66,11 +66,11 @@ import appeng.util.Platform;
 import cpw.mods.fml.common.Loader;
 
 /** Terminal content and input handling, independent of how the panel is attached to a GUI. */
-public final class ToolboxInventoryPanel extends ToolboxPanel {
+public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
 
     private static final UITexture MAGNET_CARD = UITexture.fullImage("ae2wct", "items/magnetCard");
 
-    private static final UITexture TOOLBOX_ICON = UITexture.builder()
+    private static final UITexture TERMINAL_ICON = UITexture.builder()
         .location("appliedenergistics2", "guis/states")
         .imageSize(256, 256)
         .xy(8 * 16, 7 * 16, 16, 16)
@@ -116,20 +116,20 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
         .build();
 
     private final GuiContainer inventory;
-    private final ToolboxForeground foreground = new ToolboxForeground(this);
-    private final ToolboxLayout layout = ToolboxClient.layoutState();
-    private ToolboxTerminalModel model;
-    private final ToolboxSearchField search;
+    private final MiniTerminalForeground foreground = new MiniTerminalForeground(this);
+    private final MiniTerminalLayout layout = MiniTerminalClient.layoutState();
+    private MiniTerminalModel model;
+    private final MiniTerminalSearchField search;
     private final TerminalWidget terminal;
     private final Flow header;
     private final Flow controls;
     private final Set<Integer> consumedMouseButtons = new HashSet<>();
     private boolean resizing;
 
-    public ToolboxInventoryPanel(GuiContainer inventory, ToolboxTerminalModel model) {
-        super(ToolboxClient.layoutState());
+    public MiniTerminalInventoryPanel(GuiContainer inventory, MiniTerminalModel model) {
+        super(MiniTerminalClient.layoutState());
         pos(0, 0)
-            .size(ToolboxLayout.WIDTH, 166);
+            .size(MiniTerminalLayout.WIDTH, 166);
         tooltipBuilder(tooltip -> {
             tooltip.addLine(tr("move"));
             if (layout.expanded()) tooltip.addLine(tr("resize"));
@@ -140,23 +140,23 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
         terminal.full()
             .pos(0, 0)
             .invisible();
-        search = new ToolboxSearchField(text -> this.model.search(text)).left(ToolboxLayout.SEARCH_X)
-            .right(ToolboxLayout.SEARCH_RIGHT)
-            .top(ToolboxLayout.HEADER_Y)
-            .height(ToolboxLayout.HEADER_SIZE);
+        search = new MiniTerminalSearchField(text -> this.model.search(text)).left(MiniTerminalLayout.SEARCH_X)
+            .right(MiniTerminalLayout.SEARCH_RIGHT)
+            .top(MiniTerminalLayout.HEADER_Y)
+            .height(MiniTerminalLayout.HEADER_SIZE);
         search.setText(model.search());
         header = Flow.row()
             .invisible()
-            .right(4 + ToolboxLayout.BUTTON_WIDTH)
-            .top(ToolboxLayout.HEADER_Y)
-            .size(2 * ToolboxLayout.BUTTON_WIDTH, ToolboxLayout.BUTTON_HEIGHT)
+            .right(4 + MiniTerminalLayout.BUTTON_WIDTH)
+            .top(MiniTerminalLayout.HEADER_Y)
+            .size(2 * MiniTerminalLayout.BUTTON_WIDTH, MiniTerminalLayout.BUTTON_HEIGHT)
             .child(new TerminalButton(0, null, null))
             .child(new TerminalButton(4, null, null));
         controls = Flow.column()
             .invisible()
             .right(4)
-            .top(ToolboxLayout.HEADER_Y + ToolboxLayout.BUTTON_HEIGHT)
-            .size(ToolboxLayout.BUTTON_WIDTH, 6 * ToolboxLayout.BUTTON_HEIGHT)
+            .top(MiniTerminalLayout.HEADER_Y + MiniTerminalLayout.BUTTON_HEIGHT)
+            .size(MiniTerminalLayout.BUTTON_WIDTH, 6 * MiniTerminalLayout.BUTTON_HEIGHT)
             .child(new TerminalButton(1, Settings.SORT_BY, model.getSortBy()))
             .child(new FluidTypeButton())
             .child(new TerminalButton(2, Settings.ACTIONS, ActionItems.PINS))
@@ -173,14 +173,14 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
     public void onClose() {
         resetInteraction();
         super.onClose();
-        ToolboxClient.closeOverlay(this);
+        MiniTerminalClient.closeOverlay(this);
     }
 
     public GuiContainer inventory() {
         return inventory;
     }
 
-    public ToolboxLayout layout() {
+    public MiniTerminalLayout layout() {
         return layout;
     }
 
@@ -211,7 +211,7 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
         return model.isOnline();
     }
 
-    ToolboxForeground foreground() {
+    MiniTerminalForeground foreground() {
         return foreground;
     }
 
@@ -228,7 +228,7 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
         search.applySearch(text);
     }
 
-    public void setModel(ToolboxTerminalModel model) {
+    public void setModel(MiniTerminalModel model) {
         this.model = model;
         if (layout.expanded()) {
             model.viewport(layout.columns(), layout.rows());
@@ -259,7 +259,7 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
                 craftingRows.getSlotCount(),
                 playerRows.getSlotCount(),
                 AEConfig.instance.pinSectionOrder == PinSectionOrder.PLAYER_FIRST);
-            changed |= layout.update(inventory, ToolboxClient.collapsed());
+            changed |= layout.update(inventory, MiniTerminalClient.collapsed());
             Rectangle bounds = layout.bounds();
             if (getArea().x != bounds.x || getArea().y != bounds.y
                 || getArea().width != bounds.width
@@ -293,7 +293,7 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
 
     void prepareFrame() {
         syncLayout();
-        ToolboxClient.ensureSession();
+        MiniTerminalClient.ensureSession();
     }
 
     void resetInteraction() {
@@ -306,7 +306,7 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
 
     void detach() {
         resetInteraction();
-        // MUI retains host screens when opening NEI recipes. Don't leave an inactive toolbox panel in that stack.
+        // MUI retains host screens when opening NEI recipes. Don't leave an inactive mini terminal panel in that stack.
         if (isValid() && !getScreen().isOverlay()) closeIfOpen();
     }
 
@@ -330,11 +330,11 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
             if (getScreen().isOverlay() && search.isFocused()) getContext().removeFocus();
             return false;
         }
-        boolean handled = ToolboxNEIAdapter.handleDrop(inventory, button);
+        boolean handled = MiniTerminalNEIAdapter.handleDrop(inventory, button);
         if (handled) getContext().removeFocus();
         if (!handled) {
             if (!layout.expanded() && button == 1) {
-                ToolboxClient.openFull();
+                MiniTerminalClient.openFull();
                 handled = true;
             } else {
 
@@ -352,7 +352,7 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
         // ModularPanel dispatches to the screen's focused widget, even if another panel owns it.
         // Leave foreign focus to the host panel, instead of dispatching the same key twice.
         if (hasForeignFocus()) return false;
-        if (ToolboxBogoCompat.handleSearchKey(inventory)) return true;
+        if (MiniTerminalBogoCompat.handleSearchKey(inventory)) return true;
         boolean inside = isMouseOver(getContext().getAbsMouseX(), getContext().getAbsMouseY());
         boolean closeKey = keyCode == Keyboard.KEY_ESCAPE
             || keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode();
@@ -366,7 +366,7 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
             return true;
         }
         boolean block = inside && !closeKey;
-        if (!handled && block) ToolboxNEIAdapter.handleKeyTyped(inventory, character, keyCode);
+        if (!handled && block) MiniTerminalNEIAdapter.handleKeyTyped(inventory, character, keyCode);
         return handled || block;
     }
 
@@ -375,7 +375,7 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
         boolean consumedPress = consumedMouseButtons.remove(button);
         boolean handled = !hasForeignFocus() && super.onMouseRelease(button);
         syncLayout();
-        ToolboxClientConfig.saveWindow(layout);
+        MiniTerminalClientConfig.saveWindow(layout);
 
         return terminal.releaseButton(button) || handled || consumedPress;
     }
@@ -393,7 +393,7 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
     }
 
     private static String tr(String key) {
-        return StatCollector.translateToLocal("gtnl.metoolbox." + key);
+        return StatCollector.translateToLocal("gtnl.meminiterminal." + key);
     }
 
     private static String settingLabel(String key, Enum<?> value) {
@@ -417,34 +417,34 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
         TerminalButton(int index, Enum<?> setting, Enum<?> value) {
             this.index = index;
             button = nativeButton(setting, value);
-            size(ToolboxLayout.BUTTON_WIDTH, ToolboxLayout.BUTTON_HEIGHT).invisible()
+            size(MiniTerminalLayout.BUTTON_WIDTH, MiniTerminalLayout.BUTTON_HEIGHT).invisible()
                 .playClickSound(false)
                 .onMouseScrolled((direction, amount) -> true)
                 .onMousePressed(mouseButton -> {
-                    if (index == 6) ToolboxClient.togglePickupToME();
-                    else if (index == 5) ToolboxClient.toggleCollapsed();
+                    if (index == 6) MiniTerminalClient.togglePickupToME();
+                    else if (index == 5) MiniTerminalClient.toggleCollapsed();
                     else if (index == 4) {
                         layout.reset();
-                        ToolboxClientConfig.saveWindow(layout);
-                    } else if (index == 3) ToolboxClientConfig.toggleShiftClick();
+                        MiniTerminalClientConfig.saveWindow(layout);
+                    } else if (index == 3) MiniTerminalClientConfig.toggleShiftClick();
                     else if (index == 2) terminal.changePinRows(mouseButton);
                     else if (index == 1) model.settings(mouseButton, GuiScreen.isShiftKeyDown());
-                    else if (mouseButton == 1) ToolboxClient.openFull();
-                    else if (GuiScreen.isShiftKeyDown()) ToolboxClient.begin();
-                    else ToolboxClient.selectNext();
+                    else if (mouseButton == 1) MiniTerminalClient.openFull();
+                    else if (GuiScreen.isShiftKeyDown()) MiniTerminalClient.begin();
+                    else MiniTerminalClient.selectNext();
                     return true;
                 })
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder(tooltip -> {
                     if (index == 6) {
                         tooltip.addLine(tr("pickup"));
-                        tooltip.addLine(tr(ToolboxClient.pickupToME() ? "pickup.on" : "pickup.off"));
+                        tooltip.addLine(tr(MiniTerminalClient.pickupToME() ? "pickup.on" : "pickup.off"));
                     } else if (index == 5) tooltip.addLine(tr("collapse"));
                     else if (index == 4) tooltip.addLine(tr("reset_window"));
                     else if (index == 3) {
                         tooltip.addLine(tr("shift_click"));
-                        tooltip
-                            .addLine(tr(ToolboxClientConfig.shiftClickToME ? "shift_click.me" : "shift_click.vanilla"));
+                        tooltip.addLine(
+                            tr(MiniTerminalClientConfig.shiftClickToME ? "shift_click.me" : "shift_click.vanilla"));
                     } else if (index == 2) {
                         for (String line : button.getMessage()
                             .split("\n")) tooltip.addLine(line);
@@ -456,10 +456,10 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
                                 + " / "
                                 + settingLabel("view", model.getSortDisplay()));
                     } else {
-                        tooltip.addLine(ToolboxClient.description());
+                        tooltip.addLine(MiniTerminalClient.description());
                         tooltip.addLine(
                             tr(
-                                "status." + ToolboxClient.status()
+                                "status." + MiniTerminalClient.status()
                                     .toLowerCase(java.util.Locale.ROOT)));
                         tooltip.addLine(tr("select"));
                         tooltip.addLine(tr("reconnect"));
@@ -471,13 +471,13 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
         public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
             if (index == 0 || index == 2) button.setEnabled(model.isDisplayOnline());
             else if (index == 1) button.set(model.getSortBy());
-            else if (index == 3) button.setEnabled(ToolboxClientConfig.shiftClickToME);
-            else if (index == 6) button.setEnabled(ToolboxClient.pickupToME());
+            else if (index == 3) button.setEnabled(MiniTerminalClientConfig.shiftClickToME);
+            else if (index == 6) button.setEnabled(MiniTerminalClient.pickupToME());
             button.drawButton(Minecraft.getMinecraft(), context.getMouseX(), context.getMouseY());
             if (index == 4) RESET_ICON.draw(2, 2, 6, 6);
             if (index == 0 || index == 6) {
                 if (!button.enabled) ScreenColor.setDimmedGuiColor();
-                (index == 0 ? TOOLBOX_ICON : MAGNET_CARD).draw(2, 2, 6, 6);
+                (index == 0 ? TERMINAL_ICON : MAGNET_CARD).draw(2, 2, 6, 6);
                 ScreenColor.resetGuiColor();
             }
         }
@@ -493,7 +493,7 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
             FLUID_STACK_TYPE.getDisplayName());
 
         FluidTypeButton() {
-            size(ToolboxLayout.BUTTON_WIDTH, ToolboxLayout.BUTTON_HEIGHT).invisible()
+            size(MiniTerminalLayout.BUTTON_WIDTH, MiniTerminalLayout.BUTTON_HEIGHT).invisible()
                 .playClickSound(false)
                 .onMouseScrolled((direction, amount) -> true)
                 .onMousePressed(mouseButton -> {
@@ -605,7 +605,7 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
             model.scrollbar()
                 .setLeft(layout.scrollX())
                 .setTop(layout.scrollY() + 1)
-                .setWidth(ToolboxLayout.SCROLL_WIDTH)
+                .setWidth(MiniTerminalLayout.SCROLL_WIDTH)
                 .setHeight(layout.scrollHeight() - 2);
         }
 
@@ -615,7 +615,8 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
             int localX = stack.unTransformX(x, y);
             int localY = stack.unTransformY(x, y);
             if (layout.dragHandleAt(localX, localY)
-                || IDragResizeable.getDragResizeCorner(ToolboxInventoryPanel.this, getArea(), stack, x, y) != null) return;
+                || IDragResizeable.getDragResizeCorner(MiniTerminalInventoryPanel.this, getArea(), stack, x, y) != null)
+                return;
 
             IViewport.super.getSelfAt(stack, widgets, x, y);
         }
@@ -638,9 +639,9 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
                 return;
             }
             dragButton.xPosition = layout.dragHandleX() + 1;
-            dragButton.yPosition = ToolboxLayout.HEADER_Y + 1;
+            dragButton.yPosition = MiniTerminalLayout.HEADER_Y + 1;
             dragButton.drawButton(mc, context.getMouseX(), context.getMouseY());
-            MOVE_ICON.draw(layout.dragHandleX() + 2, ToolboxLayout.HEADER_Y + 2, 6, 6);
+            MOVE_ICON.draw(layout.dragHandleX() + 2, MiniTerminalLayout.HEADER_Y + 2, 6, 6);
             slots();
             ScreenColor.setGuiColor();
             mc.getTextureManager()
@@ -678,19 +679,20 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
             if (!model.isDisplayOnline()) {
                 ScreenColor.setGuiColor();
                 PANEL_FILL.draw(
-                    ToolboxLayout.GRID_X,
+                    MiniTerminalLayout.GRID_X,
                     layout.catalogY(),
-                    layout.columns() * ToolboxLayout.CELL,
-                    layout.rows() * ToolboxLayout.CELL);
+                    layout.columns() * MiniTerminalLayout.CELL,
+                    layout.rows() * MiniTerminalLayout.CELL);
                 ScreenColor.resetGuiColor();
                 String state = tr(
-                    "status." + ToolboxClient.status()
+                    "status." + MiniTerminalClient.status()
                         .toLowerCase(java.util.Locale.ROOT));
                 List<?> lines = mc.fontRenderer
-                    .listFormattedStringToWidth(state, layout.columns() * ToolboxLayout.CELL - 12);
-                lines = lines.subList(0, Math.min(lines.size(), Math.max(1, layout.rows() * ToolboxLayout.CELL / 10)));
-                int centerX = ToolboxLayout.GRID_X + layout.columns() * ToolboxLayout.CELL / 2;
-                int lineY = layout.catalogY() + (layout.rows() * ToolboxLayout.CELL - lines.size() * 10) / 2;
+                    .listFormattedStringToWidth(state, layout.columns() * MiniTerminalLayout.CELL - 12);
+                lines = lines
+                    .subList(0, Math.min(lines.size(), Math.max(1, layout.rows() * MiniTerminalLayout.CELL / 10)));
+                int centerX = MiniTerminalLayout.GRID_X + layout.columns() * MiniTerminalLayout.CELL / 2;
+                int lineY = layout.catalogY() + (layout.rows() * MiniTerminalLayout.CELL - lines.size() * 10) / 2;
                 for (Object line : lines) {
                     String text = line.toString();
                     mc.fontRenderer.drawString(
@@ -730,11 +732,11 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
             int x = getContext().getMouseX();
             int y = getContext().getMouseY();
             if (!layout.expanded()) {
-                if (button == 1 || !layout.hasRoom()) ToolboxClient.openFull();
-                else ToolboxClient.toggleCollapsed();
+                if (button == 1 || !layout.hasRoom()) MiniTerminalClient.openFull();
+                else MiniTerminalClient.toggleCollapsed();
                 return Result.SUCCESS;
             }
-            if (y < ToolboxLayout.PIN_Y) return Result.SUCCESS;
+            if (y < MiniTerminalLayout.PIN_Y) return Result.SUCCESS;
             if (model.scrollbar()
                 .contains(x, y)) {
                 model.scrollbar()
@@ -769,7 +771,7 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
             PinsRows playerRows = PinsRows.fromOrdinal(player);
             if (button == 0 && !layout.fitsPins(craftingRows.getSlotCount(), playerRows.getSlotCount())) return;
             if (craftingRows == model.craftingPinsRows() && playerRows == model.playerPinsRows()) return;
-            ToolboxClient.setPinRows(craftingRows, playerRows);
+            MiniTerminalClient.setPinRows(craftingRows, playerRows);
         }
 
         private VirtualMESlot slotAt(int x, int y) {
@@ -784,8 +786,8 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
                 if (pin.isHovered(x + 1, y + 1)) return pin;
             }
             if (model.isDisplayOnline()) {
-                int column = Math.floorDiv(x - ToolboxLayout.GRID_X, ToolboxLayout.CELL);
-                int row = Math.floorDiv(y - layout.catalogY(), ToolboxLayout.CELL);
+                int column = Math.floorDiv(x - MiniTerminalLayout.GRID_X, MiniTerminalLayout.CELL);
+                int row = Math.floorDiv(y - layout.catalogY(), MiniTerminalLayout.CELL);
                 if (column >= 0 && column < previousColumns && row >= 0 && row < previousRows) {
                     VirtualMEMonitorableSlot candidate = directory[row * previousColumns + column];
                     if (candidate.isHovered(x + 1, y + 1)) return candidate;
@@ -813,12 +815,12 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
                 nonItemInteraction,
                 stack);
             if (intent == null) return null;
-            ToolboxClient.send(intent, intent == MonitorableAction.UNSET_PIN ? null : stack, pin);
+            MiniTerminalClient.send(intent, intent == MonitorableAction.UNSET_PIN ? null : stack, pin);
             return slot;
         }
 
         private boolean handleBogoInput(boolean fromMouse) {
-            return ToolboxBogoCompat.handleMiniInput(inventory, fromMouse);
+            return MiniTerminalBogoCompat.handleMiniInput(inventory, fromMouse);
         }
 
         @Override
@@ -871,7 +873,7 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
                     stack instanceof IAEItemStack);
                 if (intent != null) {
                     int pin = slot instanceof VirtualMEPinSlot ? slot.getSlotIndex() : -1;
-                    for (int i = 0; i < ticks; i++) ToolboxClient.send(intent, stack, pin);
+                    for (int i = 0; i < ticks; i++) MiniTerminalClient.send(intent, stack, pin);
                     return true;
                 }
             }
@@ -889,7 +891,7 @@ public final class ToolboxInventoryPanel extends ToolboxPanel {
                 return Result.IGNORE;
             }
             if (handleBogoInput(false)) return Result.SUCCESS;
-            if (ToolboxNEIAdapter.handleKeyTyped(inventory, typedChar, keyCode)) return Result.SUCCESS;
+            if (MiniTerminalNEIAdapter.handleKeyTyped(inventory, typedChar, keyCode)) return Result.SUCCESS;
             if (keyCode == mc.gameSettings.keyBindPickBlock.getKeyCode()) {
                 clickSlot(getContext().getMouseX(), getContext().getMouseY(), keyBindPickBlockAction);
             }

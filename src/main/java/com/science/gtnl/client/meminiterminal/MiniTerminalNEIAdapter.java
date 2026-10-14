@@ -1,4 +1,4 @@
-package com.science.gtnl.client.metoolbox;
+package com.science.gtnl.client.meminiterminal;
 
 import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
 
@@ -31,11 +31,11 @@ import codechicken.nei.guihook.IContainerObjectHandler;
 import codechicken.nei.guihook.IContainerSlotClickHandler;
 import codechicken.nei.guihook.IContainerTooltipHandler;
 
-public final class ToolboxNEIAdapter extends NEIGuiHandler
+public final class MiniTerminalNEIAdapter extends NEIGuiHandler
     implements IContainerObjectHandler, IContainerTooltipHandler, IContainerSlotClickHandler, IContainerDrawHandler {
 
-    private static ToolboxInventoryPanel overlay(GuiContainer gui) {
-        ToolboxInventoryPanel overlay = ToolboxClient.overlay();
+    private static MiniTerminalInventoryPanel overlay(GuiContainer gui) {
+        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay();
         return overlay != null && gui == overlay.inventory() ? overlay : null;
     }
 
@@ -47,7 +47,7 @@ public final class ToolboxNEIAdapter extends NEIGuiHandler
     }
 
     static boolean handleKeyTyped(GuiContainer gui, char character, int keyCode) {
-        ToolboxInventoryPanel overlay = overlay(gui);
+        MiniTerminalInventoryPanel overlay = overlay(gui);
         if (overlay == null || Minecraft.getMinecraft().currentScreen != gui) return false;
         Point mouse = GuiDraw.getMousePosition();
         if (overlay.isMouseOver(mouse.x, mouse.y)) {
@@ -80,7 +80,7 @@ public final class ToolboxNEIAdapter extends NEIGuiHandler
     }
 
     private static boolean pinDrop(GuiContainer gui, int mouseX, int mouseY, ItemStack stack, int button) {
-        ToolboxInventoryPanel overlay = overlay(gui);
+        MiniTerminalInventoryPanel overlay = overlay(gui);
         if (overlay == null || stack == null || stack.getItem() == null || button != 0 && button != 1) return false;
         VirtualMESlot slot = overlay.hoveredSlot(mouseX, mouseY);
         if (!(slot instanceof VirtualMEPinSlot)) return false;
@@ -93,12 +93,12 @@ public final class ToolboxNEIAdapter extends NEIGuiHandler
             target = AEBaseGui.isCtrlKeyDown() ? FLUID_STACK_TYPE.getStackFromContainerItem(dragged)
                 : AEItemStack.create(dragged);
         }
-        if (target != null) ToolboxClient.sendPin(slot.getSlotIndex(), target);
+        if (target != null) MiniTerminalClient.sendPin(slot.getSlotIndex(), target);
         return true;
     }
 
     private static boolean fillSearch(GuiContainer gui, int mouseX, int mouseY, ItemStack stack) {
-        ToolboxInventoryPanel overlay = overlay(gui);
+        MiniTerminalInventoryPanel overlay = overlay(gui);
         if (overlay == null || stack == null || stack.getItem() == null) return false;
         overlay.syncLayout();
         if (!overlay.layout()
@@ -107,7 +107,9 @@ public final class ToolboxNEIAdapter extends NEIGuiHandler
             return false;
         Rectangle bounds = overlay.bounds();
         if (!overlay.nativeSearchField()
-            .isMouseIn(mouseX - bounds.x - ToolboxLayout.SEARCH_X, mouseY - bounds.y - ToolboxLayout.HEADER_Y))
+            .isMouseIn(
+                mouseX - bounds.x - MiniTerminalLayout.SEARCH_X,
+                mouseY - bounds.y - MiniTerminalLayout.HEADER_Y))
             return false;
 
         overlay.applySearch(NEI.searchField.getEscapedSearchText(getItemStackText(stack)));
@@ -117,7 +119,7 @@ public final class ToolboxNEIAdapter extends NEIGuiHandler
     @Override
     public void renderObjects(GuiContainer gui, int mouseX, int mouseY) {
 
-        ToolboxInventoryPanel overlay = overlay(gui);
+        MiniTerminalInventoryPanel overlay = overlay(gui);
         if (overlay != null) overlay.syncLayout();
     }
 
@@ -135,7 +137,7 @@ public final class ToolboxNEIAdapter extends NEIGuiHandler
 
     @Override
     public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int width, int height) {
-        ToolboxInventoryPanel overlay = overlay(gui);
+        MiniTerminalInventoryPanel overlay = overlay(gui);
         if (overlay == null) return false;
         overlay.syncLayout();
         return overlay.bounds()
@@ -144,7 +146,7 @@ public final class ToolboxNEIAdapter extends NEIGuiHandler
 
     @Override
     public ItemStack getStackUnderMouse(GuiContainer gui, int mouseX, int mouseY) {
-        ToolboxInventoryPanel overlay = overlay(gui);
+        MiniTerminalInventoryPanel overlay = overlay(gui);
         VirtualMESlot slot = overlay == null ? null : overlay.hoveredSlot(mouseX, mouseY);
         IAEStack<?> stack = slot == null ? null : slot.getAEStack();
 
@@ -153,7 +155,7 @@ public final class ToolboxNEIAdapter extends NEIGuiHandler
 
     @Override
     public boolean objectUnderMouse(GuiContainer gui, int mouseX, int mouseY) {
-        ToolboxInventoryPanel overlay = overlay(gui);
+        MiniTerminalInventoryPanel overlay = overlay(gui);
         if (overlay == null) return false;
         overlay.syncLayout();
         return overlay.isMouseOver(mouseX, mouseY);
@@ -161,7 +163,7 @@ public final class ToolboxNEIAdapter extends NEIGuiHandler
 
     @Override
     public List<String> handleTooltip(GuiContainer gui, int mouseX, int mouseY, List<String> currentTooltip) {
-        ToolboxInventoryPanel overlay = overlay(gui);
+        MiniTerminalInventoryPanel overlay = overlay(gui);
         if (overlay == null || !overlay.isOnline()) return currentTooltip;
         VirtualMESlot slot = overlay.hoveredSlot(mouseX, mouseY);
         // NEI skips item tooltips while carrying a stack; AE's container interaction hints must still be shown.
@@ -172,13 +174,13 @@ public final class ToolboxNEIAdapter extends NEIGuiHandler
     @Override
     public List<String> handleItemTooltip(GuiContainer gui, ItemStack stack, int mouseX, int mouseY,
         List<String> currentTooltip) {
-        ToolboxInventoryPanel overlay = overlay(gui);
+        MiniTerminalInventoryPanel overlay = overlay(gui);
         if (overlay == null || stack == null) return currentTooltip;
         VirtualMESlot slot = overlay.hoveredSlot(mouseX, mouseY);
         if (slot == null || slot.getAEStack() == null) return currentTooltip;
-        if (!overlay.isOnline()) currentTooltip.add(StatCollector.translateToLocal("gtnl.metoolbox.unknown"));
+        if (!overlay.isOnline()) currentTooltip.add(StatCollector.translateToLocal("gtnl.meminiterminal.unknown"));
         if (slot instanceof VirtualMEPinSlot)
-            currentTooltip.add(StatCollector.translateToLocal("gtnl.metoolbox.unpin"));
+            currentTooltip.add(StatCollector.translateToLocal("gtnl.meminiterminal.unpin"));
         return currentTooltip;
     }
 
@@ -201,7 +203,7 @@ public final class ToolboxNEIAdapter extends NEIGuiHandler
     public boolean handleSlotClick(GuiContainer gui, int slotIndex, int button, Slot slot, int modifier,
         boolean eventconsumed) {
 
-        return eventconsumed || overlay(gui) != null && ToolboxClient.shiftClickToME(slot, button, modifier);
+        return eventconsumed || overlay(gui) != null && MiniTerminalClient.shiftClickToME(slot, button, modifier);
     }
 
     @Override

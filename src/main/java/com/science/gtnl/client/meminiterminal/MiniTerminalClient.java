@@ -1,4 +1,4 @@
-package com.science.gtnl.client.metoolbox;
+package com.science.gtnl.client.meminiterminal;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -29,9 +29,10 @@ import org.lwjgl.input.Mouse;
 import com.cleanroommc.modularui.api.IMuiScreen;
 import com.cleanroommc.modularui.screen.OpenScreenEvent;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.item.items.ItemMEToolbox;
-import com.science.gtnl.common.metoolbox.ToolboxRequestPacket;
-import com.science.gtnl.common.metoolbox.ToolboxSessionService;
+import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
+import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket;
+import com.science.gtnl.common.meminiterminal.MiniTerminalSessionService;
+import com.science.gtnl.common.meminiterminal.MiniTerminalUpdatePacket;
 
 import appeng.api.config.PinsRows;
 import appeng.api.config.SortDir;
@@ -55,22 +56,22 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public final class ToolboxClient {
+public final class MiniTerminalClient {
 
     private static final int MAX_CACHED_VIEWS = 8;
-    private static final ToolboxClient INSTANCE = new ToolboxClient();
-    private static final Map<UUID, ToolboxTerminalModel> VIEWS = new LinkedHashMap<>(MAX_CACHED_VIEWS, 0.75f, true) {
+    private static final MiniTerminalClient INSTANCE = new MiniTerminalClient();
+    private static final Map<UUID, MiniTerminalModel> VIEWS = new LinkedHashMap<>(MAX_CACHED_VIEWS, 0.75f, true) {
 
         @Override
-        protected boolean removeEldestEntry(Map.Entry<UUID, ToolboxTerminalModel> eldest) {
+        protected boolean removeEldestEntry(Map.Entry<UUID, MiniTerminalModel> eldest) {
             return size() > MAX_CACHED_VIEWS;
         }
     };
 
-    private static final ToolboxLayout LAYOUT = new ToolboxLayout();
+    private static final MiniTerminalLayout LAYOUT = new MiniTerminalLayout();
     private static final Set<Long> RETIRED_SESSIONS = new LinkedHashSet<>();
     private static NetHandlerPlayClient connection;
-    private static ToolboxInventoryPanel overlay;
+    private static MiniTerminalInventoryPanel overlay;
     private static UUID selected;
     private static int selectedSlot = -1;
     private static long session;
@@ -93,16 +94,16 @@ public final class ToolboxClient {
     private static String name = "ME";
     private static String network = "";
 
-    private ToolboxClient() {}
+    private MiniTerminalClient() {}
 
     public static void init() {
-        ToolboxClientConfig.load(LAYOUT);
-        ToolboxBogoCompat.init();
+        MiniTerminalClientConfig.load(LAYOUT);
+        MiniTerminalBogoCompat.init();
         MinecraftForge.EVENT_BUS.register(INSTANCE);
         FMLCommonHandler.instance()
             .bus()
             .register(INSTANCE);
-        ToolboxNEIAdapter nei = new ToolboxNEIAdapter();
+        MiniTerminalNEIAdapter nei = new MiniTerminalNEIAdapter();
         API.registerNEIGuiHandler(nei);
 
         GuiContainerManager.objectHandlers.addFirst(nei);
@@ -130,12 +131,13 @@ public final class ToolboxClient {
 
     @SubscribeEvent
     public void open(OpenScreenEvent event) {
-        ToolboxClientConfig.saveWindow(LAYOUT);
+        MiniTerminalClientConfig.saveWindow(LAYOUT);
         checkConnection();
         if (selected != null && event.getScreen() instanceof GuiContainer gui
             && gui.inventorySlots instanceof AEBaseContainer nativeContainer
             && nativeContainer.getTarget() instanceof IPortableCell portable
-            && selected.equals(ItemMEToolbox.getToolboxId(portable.getItemStack()))) model().handOffSettings();
+            && selected.equals(ItemMEMiniPortableTerminal.getTerminalId(portable.getItemStack())))
+            model().handOffSettings();
         if (session != 0 || waiting || sessionPrepared) closeSession();
         if (overlay != null) overlay.detach();
         overlay = null;
@@ -164,27 +166,28 @@ public final class ToolboxClient {
             || inventory instanceof GuiContainerCreative && !mc.playerController.isInCreativeMode()
             || isAEInterface(inventory)
             || inventory instanceof IGuiContainerOverlay recipe && isAEInterface(recipe.getFirstScreen())
-            || ToolboxBogoCompat.isTerminalScreen(inventory)) return;
+            || MiniTerminalBogoCompat.isTerminalScreen(inventory)) return;
         int slot = findSelectedSlot();
-        if (slot < 0 && !hasToolbox()) return;
+        if (slot < 0 && !hasMiniTerminal()) return;
         if (selected == null && slot >= 0) {
-            selected = ItemMEToolbox.getToolboxId(ItemMEToolbox.getToolboxStack(mc.thePlayer, slot));
+            selected = ItemMEMiniPortableTerminal
+                .getTerminalId(ItemMEMiniPortableTerminal.getTerminalStack(mc.thePlayer, slot));
         }
         selectedSlot = slot;
-        ToolboxTerminalModel model = model();
-        if (slot >= 0) model.readSettings(ItemMEToolbox.getToolboxStack(mc.thePlayer, slot));
+        MiniTerminalModel model = model();
+        if (slot >= 0) model.readSettings(ItemMEMiniPortableTerminal.getTerminalStack(mc.thePlayer, slot));
         model.beginSession();
-        ToolboxPanelHost host = ToolboxPanelHost.create(inventory, model);
+        MiniTerminalPanelHost host = MiniTerminalPanelHost.create(inventory, model);
         overlay = host.panel();
         host.open();
         sessionPrepared = true;
         retryTicks = 0;
     }
 
-    static void closeOverlay(ToolboxInventoryPanel closing) {
+    static void closeOverlay(MiniTerminalInventoryPanel closing) {
         checkConnection();
         if (overlay != closing) return;
-        ToolboxClientConfig.saveWindow(LAYOUT);
+        MiniTerminalClientConfig.saveWindow(LAYOUT);
         closeSession();
         overlay = null;
     }
@@ -200,7 +203,7 @@ public final class ToolboxClient {
         checkConnection();
         Minecraft mc = Minecraft.getMinecraft();
         if (overlay == null || mc.currentScreen != overlay.inventory()) {
-            ToolboxClientConfig.saveWindow(LAYOUT);
+            MiniTerminalClientConfig.saveWindow(LAYOUT);
             if (session != 0 || waiting || sessionPrepared) closeSession();
             if (overlay != null) overlay.detach();
             overlay = null;
@@ -213,7 +216,7 @@ public final class ToolboxClient {
         }
         overlay.syncLayout();
         ensureSession();
-        if (!Mouse.isButtonDown(0) && !Mouse.isButtonDown(1)) ToolboxClientConfig.saveWindow(LAYOUT);
+        if (!Mouse.isButtonDown(0) && !Mouse.isButtonDown(1)) MiniTerminalClientConfig.saveWindow(LAYOUT);
         model().update();
         if (model().hasPendingSettings()) {
             if (++settingsRetryTicks >= 40) submitSettings(false);
@@ -245,7 +248,7 @@ public final class ToolboxClient {
         NetHandlerPlayClient current = Minecraft.getMinecraft()
             .getNetHandler();
         if (connection == current) return;
-        ToolboxClientConfig.saveWindow(LAYOUT);
+        MiniTerminalClientConfig.saveWindow(LAYOUT);
         connection = current;
         session = 0;
         sessionContainer = null;
@@ -270,7 +273,7 @@ public final class ToolboxClient {
         if (id == 0) return;
         if (Minecraft.getMinecraft()
             .getNetHandler() != null) {
-            ScienceNotLeisure.network.sendToServer(ToolboxRequestPacket.end(id));
+            ScienceNotLeisure.network.sendToServer(MiniTerminalRequestPacket.end(id));
         }
         RETIRED_SESSIONS.add(id);
         if (RETIRED_SESSIONS.size() > 128) RETIRED_SESSIONS.remove(
@@ -278,16 +281,16 @@ public final class ToolboxClient {
                 .next());
     }
 
-    private static boolean hasToolbox() {
+    private static boolean hasMiniTerminal() {
         Minecraft mc = Minecraft.getMinecraft();
-        return ItemMEToolbox.findFirstToolboxSlot(mc.thePlayer) >= 0;
+        return ItemMEMiniPortableTerminal.findFirstTerminalSlot(mc.thePlayer) >= 0;
     }
 
     private static int findSelectedSlot() {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.thePlayer == null) return -1;
-        if (selected != null) return ItemMEToolbox.findToolboxSlot(mc.thePlayer, selected);
-        return ItemMEToolbox.findFirstToolboxSlot(mc.thePlayer);
+        if (selected != null) return ItemMEMiniPortableTerminal.findTerminalSlot(mc.thePlayer, selected);
+        return ItemMEMiniPortableTerminal.findFirstTerminalSlot(mc.thePlayer);
     }
 
     public static void begin() {
@@ -306,7 +309,7 @@ public final class ToolboxClient {
         model().beginSession();
         retryTicks = 20;
         ScienceNotLeisure.network
-            .sendToServer(ToolboxRequestPacket.begin(selectedSlot, selected, ++requestId, sessionWindowId));
+            .sendToServer(MiniTerminalRequestPacket.begin(selectedSlot, selected, ++requestId, sessionWindowId));
     }
 
     private static boolean hasCurrentContainer() {
@@ -356,7 +359,8 @@ public final class ToolboxClient {
         if ("SETTINGS".equals(kind)) {
 
             try {
-                ToolboxTerminalModel view = VIEWS.get(UUID.fromString(data.getString("toolbox")));
+                MiniTerminalModel view = VIEWS
+                    .get(UUID.fromString(data.getString(MiniTerminalUpdatePacket.TERMINAL_ID_KEY)));
                 if (view != null) view.readSettings(data.getCompoundTag("config"), data.getLong("actionId"));
             } catch (IllegalArgumentException ignored) {}
             return;
@@ -376,7 +380,7 @@ public final class ToolboxClient {
         }
         UUID id;
         try {
-            id = UUID.fromString(data.getString("toolbox"));
+            id = UUID.fromString(data.getString(MiniTerminalUpdatePacket.TERMINAL_ID_KEY));
         } catch (IllegalArgumentException ignored) {
             id = selected;
         }
@@ -390,7 +394,7 @@ public final class ToolboxClient {
                 return;
             }
             if (selected == null && id != null) {
-                ToolboxTerminalModel old = model();
+                MiniTerminalModel old = model();
                 VIEWS.remove(null);
                 selected = id;
                 VIEWS.put(id, old);
@@ -409,10 +413,10 @@ public final class ToolboxClient {
         }
         if (incoming != session || session == 0) return;
         if ("CATALOG".equals(kind) && !model().catalog(data)) {
-            ScienceNotLeisure.network.sendToServer(ToolboxRequestPacket.resync(session));
+            ScienceNotLeisure.network.sendToServer(MiniTerminalRequestPacket.resync(session));
         } else if ("PINS".equals(kind)) {
             if (!model().pins(data)) {
-                ScienceNotLeisure.network.sendToServer(ToolboxRequestPacket.resync(session));
+                ScienceNotLeisure.network.sendToServer(MiniTerminalRequestPacket.resync(session));
             } else if (pinRowsPending && data.getBoolean("last")) {
                 if (model().craftingPinsRows() == requestedCraftingPins
                     && model().playerPinsRows() == requestedPlayerPins) pinRowsPending = false;
@@ -427,27 +431,27 @@ public final class ToolboxClient {
 
     public static boolean pickupToME() {
         int slot = findSelectedSlot();
-        return slot >= 0 && ItemMEToolbox
-            .isPickupToMEEnabled(ItemMEToolbox.getToolboxStack(Minecraft.getMinecraft().thePlayer, slot));
+        return slot >= 0 && ItemMEMiniPortableTerminal
+            .isPickupToMEEnabled(ItemMEMiniPortableTerminal.getTerminalStack(Minecraft.getMinecraft().thePlayer, slot));
     }
 
     public static void togglePickupToME() {
         int slot = findSelectedSlot();
         if (slot < 0) return;
-        UUID toolbox = ItemMEToolbox
-            .getToolboxId(ItemMEToolbox.getToolboxStack(Minecraft.getMinecraft().thePlayer, slot));
-        if (toolbox == null) return;
+        UUID terminalId = ItemMEMiniPortableTerminal
+            .getTerminalId(ItemMEMiniPortableTerminal.getTerminalStack(Minecraft.getMinecraft().thePlayer, slot));
+        if (terminalId == null) return;
         ScienceNotLeisure.network.sendToServer(
-            ToolboxRequestPacket.pickupToggle(
+            MiniTerminalRequestPacket.pickupToggle(
                 session,
                 ++action,
                 slot,
-                toolbox,
+                terminalId,
                 Minecraft.getMinecraft().thePlayer.openContainer.windowId));
     }
 
     private static void submitSettings(boolean changed) {
-        ToolboxTerminalModel view = model();
+        MiniTerminalModel view = model();
         long id = ++action;
         settingsRetryTicks = 0;
 
@@ -455,7 +459,7 @@ public final class ToolboxClient {
         int slot = findSelectedSlot();
         if (selected == null || slot < 0) return;
         ScienceNotLeisure.network.sendToServer(
-            ToolboxRequestPacket.settings(
+            MiniTerminalRequestPacket.settings(
                 session,
                 id,
                 slot,
@@ -480,15 +484,15 @@ public final class ToolboxClient {
         pinRowsPendingTicks = 0;
         requestedPinRevision = model().pinRevision();
         ScienceNotLeisure.network.sendToServer(
-            ToolboxRequestPacket
+            MiniTerminalRequestPacket
                 .pinsRows(session, ++action, requestedPinRevision, requestedCraftingPins, requestedPlayerPins));
     }
 
     public static void send(MonitorableAction intent, IAEStack<?> target, int pin) {
-        ToolboxTerminalModel model = model();
+        MiniTerminalModel model = model();
         if (!model.isOnline() || session == 0 || !hasCurrentContainer()) return;
         ScienceNotLeisure.network.sendToServer(
-            ToolboxRequestPacket.action(
+            MiniTerminalRequestPacket.action(
                 session,
                 ++action,
                 model.catalogRevision(),
@@ -499,14 +503,14 @@ public final class ToolboxClient {
     }
 
     static void sendPin(int pin, IAEStack<?> target) {
-        ToolboxTerminalModel model = model();
+        MiniTerminalModel model = model();
         if (!model.isOnline() || session == 0 || !hasCurrentContainer()) return;
         try {
             ScienceNotLeisure.network
-                .sendToServer(ToolboxRequestPacket.pinDrop(session, ++action, model.pinRevision(), pin, target));
+                .sendToServer(MiniTerminalRequestPacket.pinDrop(session, ++action, model.pinRevision(), pin, target));
         } catch (IOException exception) {
-            ScienceNotLeisure.LOG.warn("Unable to pin NEI stack in ME toolbox", exception);
-            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("gtnl.metoolbox.pin_failed"));
+            ScienceNotLeisure.LOG.warn("Unable to pin NEI stack in ME mini portable terminal", exception);
+            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("gtnl.meminiterminal.pin_failed"));
         }
     }
 
@@ -521,15 +525,15 @@ public final class ToolboxClient {
         if (mouseButton != 0 && mouseButton != 1) return false;
 
         if ((clickMode == 0 || clickMode == 1) && Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-            return sendBogoInventory(slot, ToolboxRequestPacket.DepositMode.NATIVE_REGION);
+            return sendBogoInventory(slot, MiniTerminalRequestPacket.DepositMode.NATIVE_REGION);
         }
         if (clickMode != 1) return false;
-        return sendBogoInventory(slot, ToolboxRequestPacket.DepositMode.STACK);
+        return sendBogoInventory(slot, MiniTerminalRequestPacket.DepositMode.STACK);
     }
 
-    public static boolean sendBogoInventory(Slot slot, ToolboxRequestPacket.DepositMode mode) {
+    public static boolean sendBogoInventory(Slot slot, MiniTerminalRequestPacket.DepositMode mode) {
         Minecraft mc = Minecraft.getMinecraft();
-        if (!ToolboxClientConfig.shiftClickToME || slot == null
+        if (!MiniTerminalClientConfig.shiftClickToME || slot == null
             || mc.thePlayer == null
             || overlay == null
             || mc.currentScreen != overlay.inventory()
@@ -537,15 +541,15 @@ public final class ToolboxClient {
             || !overlay.layout()
                 .expanded()
             || !containsSlot(mc.thePlayer.openContainer, slot)
-            || ItemMEToolbox.isToolbox(slot.getStack())) return false;
+            || ItemMEMiniPortableTerminal.isMiniTerminal(slot.getStack())) return false;
 
-        int inventorySlot = ToolboxSessionService.playerInventoryIndex(mc.thePlayer, slot);
+        int inventorySlot = MiniTerminalSessionService.playerInventoryIndex(mc.thePlayer, slot);
         if (inventorySlot < 0) return false;
 
-        if (!slot.getHasStack() && mode != ToolboxRequestPacket.DepositMode.NATIVE_REGION) return true;
+        if (!slot.getHasStack() && mode != MiniTerminalRequestPacket.DepositMode.NATIVE_REGION) return true;
         if (model().isOnline() && session != 0 && hasCurrentContainer()) {
             ScienceNotLeisure.network
-                .sendToServer(ToolboxRequestPacket.inventoryDeposit(session, ++action, inventorySlot, mode));
+                .sendToServer(MiniTerminalRequestPacket.inventoryDeposit(session, ++action, inventorySlot, mode));
         }
         return true;
     }
@@ -557,10 +561,10 @@ public final class ToolboxClient {
     }
 
     public static void sendBogoExtract(IAEStack<?> stack, int nativePin, boolean emptyOnly, boolean single) {
-        ToolboxTerminalModel view = model();
+        MiniTerminalModel view = model();
         if (!view.isOnline() || session == 0 || !hasCurrentContainer()) return;
         ScienceNotLeisure.network.sendToServer(
-            ToolboxRequestPacket.inventoryExtract(
+            MiniTerminalRequestPacket.inventoryExtract(
                 session,
                 ++action,
                 view.catalogRevision(),
@@ -573,14 +577,14 @@ public final class ToolboxClient {
 
     public static void selectNext() {
         Minecraft mc = Minecraft.getMinecraft();
-        List<Integer> slots = ItemMEToolbox.getToolboxSlots(mc.thePlayer);
+        List<Integer> slots = ItemMEMiniPortableTerminal.getTerminalSlots(mc.thePlayer);
         int start = slots.indexOf(findSelectedSlot());
         for (int step = 1; step <= slots.size(); step++) {
             int slot = slots.get((start + step) % slots.size());
-            ItemStack stack = ItemMEToolbox.getToolboxStack(mc.thePlayer, slot);
-            if (!ItemMEToolbox.isToolbox(stack)) continue;
+            ItemStack stack = ItemMEMiniPortableTerminal.getTerminalStack(mc.thePlayer, slot);
+            if (!ItemMEMiniPortableTerminal.isMiniTerminal(stack)) continue;
             closeSession();
-            selected = ItemMEToolbox.getToolboxId(stack);
+            selected = ItemMEMiniPortableTerminal.getTerminalId(stack);
             selectedSlot = slot;
             model().readSettings(stack);
             overlay.setModel(model());
@@ -594,19 +598,19 @@ public final class ToolboxClient {
         if (model().hasPendingSettings()) submitSettings(false);
         closeSession();
         ScienceNotLeisure.network.sendToServer(
-            ToolboxRequestPacket
+            MiniTerminalRequestPacket
                 .openFull(findSelectedSlot(), selected, Minecraft.getMinecraft().thePlayer.openContainer.windowId));
     }
 
-    public static ToolboxTerminalModel model() {
-        return VIEWS.computeIfAbsent(selected, key -> new ToolboxTerminalModel());
+    public static MiniTerminalModel model() {
+        return VIEWS.computeIfAbsent(selected, key -> new MiniTerminalModel());
     }
 
-    public static ToolboxInventoryPanel overlay() {
+    public static MiniTerminalInventoryPanel overlay() {
         return overlay;
     }
 
-    static ToolboxLayout layoutState() {
+    static MiniTerminalLayout layoutState() {
         return LAYOUT;
     }
 
@@ -620,7 +624,9 @@ public final class ToolboxClient {
 
     public static String description() {
         String location = selectedSlot >= Platform.baublesSlotsOffset ? StatCollector
-            .translateToLocalFormatted("gtnl.metoolbox.location.bauble", selectedSlot - Platform.baublesSlotsOffset + 1)
+            .translateToLocalFormatted(
+                "gtnl.meminiterminal.location.bauble",
+                selectedSlot - Platform.baublesSlotsOffset + 1)
             : Integer.toString(selectedSlot + 1);
         return name + " [" + location + "] " + network;
     }

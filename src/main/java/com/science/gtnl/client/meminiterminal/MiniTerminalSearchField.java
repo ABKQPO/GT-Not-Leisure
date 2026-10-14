@@ -1,4 +1,4 @@
-package com.science.gtnl.client.metoolbox;
+package com.science.gtnl.client.meminiterminal;
 
 import java.util.function.Consumer;
 
@@ -18,7 +18,7 @@ import appeng.integration.modules.NEI;
 import cpw.mods.fml.common.Optional;
 import me.eigenraven.lwjgl3ify.api.InputEvents;
 
-final class ToolboxSearchField extends Widget<ToolboxSearchField>
+final class MiniTerminalSearchField extends Widget<MiniTerminalSearchField>
     implements Interactable, IFocusedWidget, ModernInteractable {
 
     private static final UITexture BACKGROUND = UITexture.builder()
@@ -30,7 +30,7 @@ final class ToolboxSearchField extends Widget<ToolboxSearchField>
 
     private final NativeField field;
 
-    ToolboxSearchField(Consumer<String> onChange) {
+    MiniTerminalSearchField(Consumer<String> onChange) {
         field = new NativeField(onChange);
         field.setMaxStringLength(128);
         NEI.searchField.putFormatter(field);
@@ -153,7 +153,10 @@ final class ToolboxSearchField extends Widget<ToolboxSearchField>
         private final Consumer<String> onChange;
 
         NativeField(Consumer<String> onChange) {
-            super(ToolboxLayout.SEARCH_WIDTH, ToolboxLayout.HEADER_SIZE, ButtonToolTips.SearchStringTooltip.getLocal());
+            super(
+                MiniTerminalLayout.SEARCH_WIDTH,
+                MiniTerminalLayout.HEADER_SIZE,
+                ButtonToolTips.SearchStringTooltip.getLocal());
             this.onChange = onChange;
         }
 
