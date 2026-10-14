@@ -266,6 +266,8 @@ public final class MiniTerminalSessionService {
             || ItemMEMiniPortableTerminal.findTerminalSlot(player, request.terminalId) != request.slot) return;
         if (session != null && session.id == request.sessionId && !session.acceptAction(request)) return;
         ItemStack stack = ItemMEMiniPortableTerminal.getTerminalStack(player, request.slot);
+        stack = authoritativeSessionStack(player, request, session, stack);
+        if (stack == null) return;
         boolean enabled = !ItemMEMiniPortableTerminal.isPickupToMEEnabled(stack);
 
         if (enabled) {
@@ -284,6 +286,8 @@ public final class MiniTerminalSessionService {
         if (!allowedContainer(player) || request.slot < 0
             || ItemMEMiniPortableTerminal.findTerminalSlot(player, request.terminalId) != request.slot) return;
         ItemStack stack = ItemMEMiniPortableTerminal.getTerminalStack(player, request.slot);
+        stack = authoritativeSessionStack(player, request, session, stack);
+        if (stack == null) return;
         if (!ItemMEMiniPortableTerminal.isMiniTerminal(stack)) return;
         if (session != null && session.id == request.sessionId && !session.acceptAction(request)) return;
         IConfigManager config = ((IWirelessTermHandler) stack.getItem()).getConfigManager(stack);
@@ -315,6 +319,14 @@ public final class MiniTerminalSessionService {
         response.setTag("config", data);
         send(player, response);
         MiniTerminalTransferService.synchronize(player);
+    }
+
+    private static ItemStack authoritativeSessionStack(EntityPlayerMP player, MiniTerminalRequestPacket request,
+        Session session, ItemStack current) {
+        if (session == null || session.id != request.sessionId || session.slot != request.slot
+            || !session.terminalId.equals(request.terminalId)) return current;
+        if (!ItemMEMiniPortableTerminal.restoreTerminalStack(player, request.slot, session.stack)) return null;
+        return session.stack;
     }
 
     private static void begin(EntityPlayerMP player, MiniTerminalRequestPacket request) {
@@ -556,6 +568,7 @@ public final class MiniTerminalSessionService {
         long lastAction;
         int energyTicks;
         int lastResync;
+        boolean creativeActionSynchronized;
 
         Session(EntityPlayerMP player, long id, long requestId, int slot, UUID terminalId, ItemStack stack) {
             this.player = player;
@@ -590,8 +603,16 @@ public final class MiniTerminalSessionService {
                 ? MiniTerminalStatus.AMBIGUOUS
                 : MiniTerminalStatus.MISSING;
 
-            if (current != slot || ItemMEMiniPortableTerminal.getTerminalStack(player, current) != stack)
-                return MiniTerminalStatus.STALE;
+            if (current != slot) return MiniTerminalStatus.STALE;
+            ItemStack currentStack = ItemMEMiniPortableTerminal.getTerminalStack(player, current);
+            if (currentStack != stack) {
+                // C10PacketCreativeInventoryAction replaces the slot object on every creative click. Treat an
+                // equivalent copy as the same terminal and restore the object captured by the AE host; otherwise
+                // actions would mutate a detached stack and the next tick would report a false STALE session.
+                if (!ItemStack.areItemStacksEqual(stack, currentStack)
+                    || !ItemMEMiniPortableTerminal.restoreTerminalStack(player, current, stack))
+                    return MiniTerminalStatus.STALE;
+            }
             if (!Objects.equals(binding, handler.getEncryptionKey(stack))) return MiniTerminalStatus.STALE;
 
             if (!observedPins.equals(pinData())) return MiniTerminalStatus.STALE;
@@ -823,14 +844,17 @@ public final class MiniTerminalSessionService {
         void creativeAction(MiniTerminalRequestPacket request) {
             if (!player.theItemInWorldManager.isCreative() || container != player.inventoryContainer) return;
 
-            // The creative GUI owns its cursor. Borrow its snapshot, including an empty hand, for this action;
-            // execute() synchronizes the resulting cursor before the server's previous state is restored.
-            ItemStack previous = player.inventory.getItemStack();
+            // Creative inventory clicks are client-authoritative. Adopt the snapshot for the action and keep the
+            // resulting cursor on the server, otherwise the finally block would restore a stale/empty cursor and a
+            // later reconnect would overwrite the item shown in the client's creative GUI.
             player.inventory.setItemStack(ItemStack.copyItemStack(request.creativeCursor));
+            creativeActionSynchronized = false;
             try {
                 action(request);
             } finally {
-                player.inventory.setItemStack(previous);
+                // Successful transfer actions already synchronize the complete container. Invalid/metadata-only
+                // actions still need the cursor packet, but do not need another full inventory diff.
+                if (!creativeActionSynchronized) player.updateHeldItem();
             }
         }
 
@@ -849,6 +873,7 @@ public final class MiniTerminalSessionService {
 
             if (request.action == MonitorableAction.UNSET_PIN) {
                 if (nativePin < 0 || hand != null) return;
+                creativeActionSynchronized = true;
                 try {
                     terminal.pin(null, nativePin, () -> operationValid(SecurityPermissions.EXTRACT));
                 } finally {
@@ -887,6 +912,7 @@ public final class MiniTerminalSessionService {
                 if (target == null || target.getStackSize() <= 0) return;
             }
             if (target == null && !inject) return;
+            creativeActionSynchronized = true;
             MiniTerminalTransferService.execute(
                 player,
                 terminal,

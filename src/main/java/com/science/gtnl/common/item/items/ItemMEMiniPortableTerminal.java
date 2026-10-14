@@ -164,6 +164,20 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
         return isMiniTerminal(stack) ? stack : null;
     }
 
+    public static boolean restoreTerminalStack(EntityPlayer player, int slot, ItemStack stack) {
+        if (!isMiniTerminal(stack)) return false;
+        if (slot >= Platform.baublesSlotsOffset) {
+            IInventory worn = Platform.isBaublesLoaded ? BaublesCompat.getBaubles(player) : null;
+            int wornSlot = slot - Platform.baublesSlotsOffset;
+            if (worn == null || wornSlot < 0 || wornSlot >= worn.getSizeInventory()) return false;
+            if (worn.getStackInSlot(wornSlot) != stack) worn.setInventorySlotContents(wornSlot, stack);
+            return true;
+        }
+        if (slot < 0 || slot >= player.inventory.mainInventory.length) return false;
+        if (player.inventory.mainInventory[slot] != stack) player.inventory.setInventorySlotContents(slot, stack);
+        return true;
+    }
+
     public static void initializePins(ItemStack stack, EntityPlayer player) {
         if (!isMiniTerminal(stack) || player.worldObj.isRemote) return;
         NBTTagCompound tag = stack.getTagCompound();
