@@ -35,6 +35,7 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.AEApi;
 import appeng.api.config.PinsRows;
+import appeng.api.util.AEColor;
 import appeng.core.sync.GuiBridge;
 import appeng.items.contents.PinsHolder;
 import appeng.items.tools.powered.ToolWirelessTerminal;
@@ -89,6 +90,23 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
     @Override
     public boolean hasInfinityRange(ItemStack stack) {
         return ItemStackNBT.getBoolean(stack, infinityBoosterCard);
+    }
+
+    @Override
+    public void setEncryptionKey(ItemStack stack, String encKey, String name) {
+        super.setEncryptionKey(stack, encKey, name);
+        // AE returns early when the network is already among the stored keys, so linking B and then A again keeps B
+        // active while the access point still reports success. Make a stored network current, as AE's network
+        // manager does when switching; a full key list still rejects new networks as before.
+        NBTTagCompound keys = ItemStackNBT.get(stack)
+            .getCompoundTag("encryptionKeys");
+        for (int index = 0; index < 16; index++) {
+            if (encKey.equals(keys.getString(AEColor.VALUES[index].name()))) {
+                ItemStackNBT.of(stack)
+                    .setString("encryptionKey", encKey);
+                return;
+            }
+        }
     }
 
     public static UUID getTerminalId(ItemStack stack) {
