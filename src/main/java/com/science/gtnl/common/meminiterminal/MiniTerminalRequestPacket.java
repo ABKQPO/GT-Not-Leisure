@@ -27,6 +27,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
     private static final int MAX_PIN_BYTES = 24_000;
     private static final int PIN_DROP_HEADER_BYTES = 29;
     private static final int MAX_CREATIVE_ACTION_BYTES = 64 * 1024;
+    private static final int ACTION_HEADER_BYTES = 1 + 8 + 8 + 8 + 8 + 4 + 4 + 1;
 
     enum Kind {
         BEGIN,
@@ -118,11 +119,16 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
         return packet;
     }
 
-    public MiniTerminalRequestPacket withCreativeCursor(ItemStack cursor) {
+    public boolean withCreativeCursor(ItemStack cursor) {
         if (kind != Kind.ACTION) throw new IllegalStateException("Creative cursor requires a terminal action");
+        if (cursor != null && (cursor.getItemDamage() < 0 || cursor.stackSize <= 0 || cursor.stackSize > 64))
+            return false;
+        ByteBuf encoded = Unpooled.buffer();
+        ByteBufUtils.writeItemStack(encoded, cursor);
+        if (ACTION_HEADER_BYTES + encoded.readableBytes() > MAX_CREATIVE_ACTION_BYTES) return false;
         kind = Kind.CREATIVE_ACTION;
         creativeCursor = ItemStack.copyItemStack(cursor);
-        return this;
+        return true;
     }
 
     public static MiniTerminalRequestPacket pinDrop(long sessionId, long actionId, long pinRevision, int nativePin,

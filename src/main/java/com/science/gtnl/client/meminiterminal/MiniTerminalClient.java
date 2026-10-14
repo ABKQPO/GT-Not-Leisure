@@ -502,7 +502,7 @@ public final class MiniTerminalClient {
             intent);
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.currentScreen instanceof GuiContainerCreative && mc.playerController.isInCreativeMode()) {
-            packet.withCreativeCursor(mc.thePlayer.inventory.getItemStack());
+            if (!packet.withCreativeCursor(mc.thePlayer.inventory.getItemStack())) return;
         }
         ScienceNotLeisure.network.sendToServer(packet);
     }
