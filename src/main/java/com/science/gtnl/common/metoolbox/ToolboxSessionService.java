@@ -1,5 +1,6 @@
 package com.science.gtnl.common.metoolbox;
 
+import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
 import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
 
 import java.io.IOException;
@@ -40,8 +41,10 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IAEStackType;
 import appeng.api.util.IConfigManager;
 import appeng.container.AEBaseContainer;
 import appeng.container.PrimaryGui;
@@ -53,12 +56,16 @@ import appeng.helpers.IPinsHandler;
 import appeng.helpers.MonitorableAction;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.items.contents.PinList;
+import appeng.util.AEStackTypeFilter;
 import appeng.util.Platform;
+import appeng.util.TerminalSettings;
 import appeng.util.item.AEItemStack;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
 
 public final class ToolboxSessionService {
 
@@ -260,8 +267,22 @@ public final class ToolboxSessionService {
         config.putSetting(Settings.SORT_BY, request.sortOrder);
         config.putSetting(Settings.SORT_DIRECTION, request.sortDirection);
         config.putSetting(Settings.VIEW_MODE, request.viewMode);
+        if (session != null && session.stack == stack) {
+            Reference2BooleanMap<IAEStackType<?>> filters = new Reference2BooleanOpenHashMap<>();
+            filters.put(ITEM_STACK_TYPE, true);
+            filters.put(FLUID_STACK_TYPE, request.showFluids);
+            session.terminal.updateTypeFilters(filters);
+        } else {
+            TerminalSettings terminalSettings = new TerminalSettings();
+            terminalSettings.readFromNBT(stack.getTagCompound());
+            AEStackTypeFilter filters = terminalSettings.getFilters(player);
+            filters.setEnabled(ITEM_STACK_TYPE, true);
+            filters.setEnabled(FLUID_STACK_TYPE, request.showFluids);
+            terminalSettings.writeToNBT(stack);
+        }
         NBTTagCompound data = new NBTTagCompound();
         config.writeToNBT(data);
+        readTypeFilters(stack, player).writeToNBT(data);
         NBTTagCompound response = message("SETTINGS", request.sessionId);
         response.setString("toolbox", request.toolbox.toString());
         response.setLong("actionId", request.actionId);
@@ -320,7 +341,7 @@ public final class ToolboxSessionService {
         try {
             ToolboxStatus status = session.validate();
             if (status == ToolboxStatus.ONLINE) {
-                session.catalog = new ToolboxCatalog(session.monitor);
+                session.catalog = new ToolboxCatalog(session.monitor, session.fluidMonitor);
                 session.terminal.observeCatalog(session.catalog);
                 SESSIONS.put(player.getUniqueID(), session);
             }
@@ -394,9 +415,16 @@ public final class ToolboxSessionService {
             NBTTagCompound config = new NBTTagCompound();
             handler.getConfigManager(stack)
                 .writeToNBT(config);
+            readTypeFilters(stack, player).writeToNBT(config);
             tag.setTag("config", config);
         }
         send(player, tag);
+    }
+
+    private static AEStackTypeFilter readTypeFilters(ItemStack stack, EntityPlayer player) {
+        TerminalSettings settings = new TerminalSettings();
+        settings.readFromNBT(stack.getTagCompound());
+        return settings.getFilters(player);
     }
 
     private static void sendParts(EntityPlayerMP player, NBTTagCompound header, String key,
@@ -461,6 +489,7 @@ public final class ToolboxSessionService {
         final IWirelessTermHandler handler;
         final WirelessTerminalGuiObject host;
         final IMEMonitor<IAEItemStack> monitor;
+        final IMEMonitor<IAEFluidStack> fluidMonitor;
         final ToolboxMonitorableAdapter terminal;
         NBTTagList observedPins;
         ToolboxCatalog catalog;
@@ -488,6 +517,7 @@ public final class ToolboxSessionService {
                 .put(ITEM_STACK_TYPE, true);
             this.terminal = new ToolboxMonitorableAdapter(player, host);
             this.monitor = terminal.getItemMonitor();
+            this.fluidMonitor = host.getFluidInventory();
             this.observedPins = (NBTTagList) pinData().copy();
         }
 
@@ -509,6 +539,7 @@ public final class ToolboxSessionService {
             if (liveNode != node || liveNode.getGrid() != grid) return ToolboxStatus.STALE;
             IStorageGrid storage = grid.getCache(IStorageGrid.class);
             if (storage == null || storage.getItemInventory() != monitor || monitor == null) return ToolboxStatus.STALE;
+            if (storage.getFluidInventory() != fluidMonitor) return ToolboxStatus.STALE;
             IEnergyGrid energy = grid.getCache(IEnergyGrid.class);
             if (energy == null || !energy.isNetworkPowered()) return ToolboxStatus.OFFLINE;
 
@@ -714,20 +745,20 @@ public final class ToolboxSessionService {
                 && !isEnabledPin(nativePin, terminal.getCraftingPinsRows(), terminal.getPlayerPinsRows())) return;
             IAEStack<?> pin = nativePin < 0 ? null : terminal.getPin(nativePin);
 
-            if (pin != null && !(pin instanceof IAEItemStack)) return;
             if (request.action == MonitorableAction.SET_PIN || request.action == MonitorableAction.UNSET_PIN) {
                 if (nativePin < 0) return;
                 if (request.action == MonitorableAction.UNSET_PIN) {
                     if (hand != null) return;
                 } else {
-                    if (nativePin < PinList.PLAYER_OFFSET || hand == null
-                        || (pin instanceof IAEItemStack item && item.getItemStack()
-                            .isItemEqual(hand)))
-                        return;
+                    if (nativePin < PinList.PLAYER_OFFSET || hand == null) return;
                 }
+                IAEStack<?> offered = hand == null ? null
+                    : request.fluidPin ? FLUID_STACK_TYPE.getStackFromContainerItem(hand) : AEItemStack.create(hand);
+                if (request.action == MonitorableAction.SET_PIN
+                    && (offered == null || pin != null && pin.isSameType((Object) offered))) return;
                 try {
                     terminal.pin(
-                        request.action == MonitorableAction.UNSET_PIN ? null : AEItemStack.create(hand),
+                        request.action == MonitorableAction.UNSET_PIN ? null : offered,
                         nativePin,
                         () -> operationValid(SecurityPermissions.EXTRACT));
                 } finally {
@@ -737,23 +768,23 @@ public final class ToolboxSessionService {
                 sendPins();
                 return;
             }
-            IAEItemStack target = nativePin >= 0 ? (pin instanceof IAEItemStack item ? item.copy() : null)
-                : catalog.target(request.entryId);
+            IAEStack<?> target = nativePin >= 0 ? (pin == null ? null : pin.copy()) : catalog.target(request.entryId);
             if (request.action == MonitorableAction.AUTO_CRAFT) {
                 if (target == null || hand != null || !permission(SecurityPermissions.CRAFT)) return;
-                IAEItemStack live = monitor.getStorageList()
-                    .findPrecise(target);
+                IAEStack<?> live = catalog.current(target);
                 if (live == null || !live.isCraftable()) return;
                 openCrafting(live);
                 return;
             }
             switch (request.action) {
-                case PICKUP_OR_SET_DOWN, SPLIT_OR_PLACE_SINGLE, SHIFT_CLICK, PICKUP_SINGLE, ROLL_UP, ROLL_DOWN, MOVE_REGION -> {}
+                case PICKUP_OR_SET_DOWN, SPLIT_OR_PLACE_SINGLE, SHIFT_CLICK, PICKUP_SINGLE, ROLL_UP, ROLL_DOWN, MOVE_REGION, FILL_SINGLE_CONTAINER, FILL_CONTAINERS, DRAIN_SINGLE_CONTAINER, DRAIN_CONTAINERS -> {}
                 default -> {
                     return;
                 }
             }
-            boolean inject = ToolboxTransferService.depositsCursor(hand, request.action);
+            boolean inject = request.action == MonitorableAction.DRAIN_SINGLE_CONTAINER
+                || request.action == MonitorableAction.DRAIN_CONTAINERS
+                || ToolboxTransferService.depositsCursor(hand, request.action);
             if (inject && !permission(SecurityPermissions.INJECT)) return;
             if (target == null && !inject) return;
             ToolboxTransferService.execute(
@@ -764,7 +795,7 @@ public final class ToolboxSessionService {
                 () -> operationValid(inject ? SecurityPermissions.INJECT : SecurityPermissions.EXTRACT));
         }
 
-        private void openCrafting(IAEItemStack target) {
+        private void openCrafting(IAEStack<?> target) {
             if (target == null || !allowedContainer(player) || ItemMEToolbox.findToolboxSlot(player, toolbox) != slot)
                 return;
             ItemStack current = ItemMEToolbox.getToolboxStack(player, slot);
@@ -787,7 +818,7 @@ public final class ToolboxSessionService {
                     returnToInventory(serverPlayer);
                 }
             };
-            IAEItemStack requested = target.copy();
+            IAEStack<?> requested = target.copy();
             requested.setStackSize(1);
 
             end(player);

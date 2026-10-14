@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.inventory.Container;
@@ -437,6 +438,7 @@ public final class ToolboxClient {
                 (SortOrder) view.getSortBy(),
                 (SortDir) view.getSortDir(),
                 (ViewItems) view.getSortDisplay(),
+                view.showFluids(),
                 Minecraft.getMinecraft().thePlayer.openContainer.windowId));
     }
 
@@ -468,7 +470,8 @@ public final class ToolboxClient {
                 model.pinRevision(),
                 model.entryId(target),
                 pin,
-                intent));
+                intent,
+                intent == MonitorableAction.SET_PIN && GuiScreen.isCtrlKeyDown()));
     }
 
     public static void toggleCollapsed() {

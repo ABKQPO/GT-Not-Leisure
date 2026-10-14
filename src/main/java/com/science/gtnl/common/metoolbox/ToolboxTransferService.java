@@ -22,6 +22,7 @@ import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.helpers.MonitorableAction;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.items.misc.ItemMEStackPacket;
@@ -105,7 +106,7 @@ final class ToolboxTransferService {
                 || action == MonitorableAction.ROLL_DOWN);
     }
 
-    static void execute(EntityPlayerMP player, ToolboxMonitorableAdapter terminal, IAEItemStack target,
+    static void execute(EntityPlayerMP player, ToolboxMonitorableAdapter terminal, IAEStack<?> target,
         MonitorableAction action, BooleanSupplier valid) {
         if (!valid.getAsBoolean()) return;
         try {

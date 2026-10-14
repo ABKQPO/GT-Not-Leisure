@@ -10,27 +10,38 @@ import java.util.Set;
 import net.minecraft.nbt.NBTTagCompound;
 
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStack;
 
 final class ToolboxCatalog {
 
-    private final IMEMonitor<IAEItemStack> monitor;
-    private final Map<IAEItemStack, Integer> ids = new HashMap<>();
-    private final Map<Integer, IAEItemStack> identities = new HashMap<>();
-    private final Set<IAEItemStack> dirty = new HashSet<>();
+    private final IMEMonitor<IAEItemStack> itemMonitor;
+    private final IMEMonitor<IAEFluidStack> fluidMonitor;
+    private final Map<IAEStack<?>, Integer> ids = new HashMap<>();
+    private final Map<Integer, IAEStack<?>> identities = new HashMap<>();
+    private final Set<IAEStack<?>> dirty = new HashSet<>();
     private int nextId;
     private boolean active = true;
     private boolean fullUpdate = true;
     long revision;
 
-    ToolboxCatalog(IMEMonitor<IAEItemStack> monitor) {
-        this.monitor = monitor;
+    ToolboxCatalog(IMEMonitor<IAEItemStack> itemMonitor, IMEMonitor<IAEFluidStack> fluidMonitor) {
+        this.itemMonitor = itemMonitor;
+        this.fluidMonitor = fluidMonitor;
     }
 
-    IAEItemStack target(int id) {
-        IAEItemStack stack = identities.get(id);
+    IAEStack<?> target(int id) {
+        IAEStack<?> stack = identities.get(id);
         return stack == null ? null : stack.copy();
+    }
+
+    IAEStack<?> current(IAEStack<?> identity) {
+        if (identity instanceof IAEItemStack item) return itemMonitor.getStorageList()
+            .findPrecise(item);
+        if (identity instanceof IAEFluidStack fluid && fluidMonitor != null) return fluidMonitor.getStorageList()
+            .findPrecise(fluid);
+        return null;
     }
 
     void requestSnapshot() {
@@ -48,12 +59,14 @@ final class ToolboxCatalog {
     List<NBTTagCompound> collect() {
         List<NBTTagCompound> entries = new ArrayList<>();
 
-        IItemList<IAEItemStack> available = monitor.getStorageList();
         if (fullUpdate) {
-            for (IAEItemStack stack : available) entries.add(entry(stack));
+            for (IAEItemStack stack : itemMonitor.getStorageList()) entries.add(entry(stack));
+            if (fluidMonitor != null) {
+                for (IAEFluidStack stack : fluidMonitor.getStorageList()) entries.add(entry(stack));
+            }
         } else {
-            for (IAEItemStack identity : dirty) {
-                IAEItemStack stack = available.findPrecise(identity);
+            for (IAEStack<?> identity : dirty) {
+                IAEStack<?> stack = current(identity);
                 if (stack == null) {
                     stack = identity.copy();
                     stack.reset();
@@ -67,7 +80,7 @@ final class ToolboxCatalog {
         return entries;
     }
 
-    private NBTTagCompound entry(IAEItemStack stack) {
+    private NBTTagCompound entry(IAEStack<?> stack) {
         int id = ids.computeIfAbsent(stack.copy(), identity -> {
             int value = nextId++;
             identities.put(value, identity);
@@ -85,8 +98,8 @@ final class ToolboxCatalog {
         dirty.clear();
     }
 
-    void changed(IAEItemStack stack) {
-        if (active) dirty.add(stack.copy());
+    void changed(IAEStack<?> stack) {
+        if (active && (stack instanceof IAEItemStack || stack instanceof IAEFluidStack)) dirty.add(stack.copy());
     }
 
     void onListUpdate() {

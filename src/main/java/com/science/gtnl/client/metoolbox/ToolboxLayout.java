@@ -263,7 +263,7 @@ public final class ToolboxLayout {
     }
 
     public int scrollY() {
-        return Math.max(catalogY(), HEADER_Y + 6 * BUTTON_HEIGHT + 2);
+        return Math.max(catalogY(), HEADER_Y + 7 * BUTTON_HEIGHT + 2);
     }
 
     public int scrollHeight() {

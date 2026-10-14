@@ -1,6 +1,7 @@
 package com.science.gtnl.client.metoolbox;
 
 import static appeng.client.gui.implementations.GuiMEMonitorable.keyBindPickBlockAction;
+import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
 
 import java.awt.Rectangle;
 import java.util.HashSet;
@@ -54,6 +55,7 @@ import appeng.client.gui.slots.VirtualMESlot;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.MEGuiTextField;
+import appeng.client.gui.widgets.TypeToggleButton;
 import appeng.client.me.ItemRepo;
 import appeng.client.render.StackSizeRenderer;
 import appeng.core.AEConfig;
@@ -61,7 +63,6 @@ import appeng.core.localization.ColorUtils;
 import appeng.helpers.MonitorableAction;
 import appeng.items.contents.PinList;
 import appeng.util.Platform;
-import appeng.util.item.AEItemStackType;
 import codechicken.nei.NEIClientUtils;
 import codechicken.nei.guihook.GuiContainerManager;
 import cpw.mods.fml.common.Loader;
@@ -73,7 +74,19 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
     private static final UITexture TOOLBOX_ICON = UITexture.builder()
         .location("appliedenergistics2", "guis/states")
         .imageSize(256, 256)
-        .xy(10 * 16, 7 * 16, 16, 16)
+        .xy(8 * 16, 7 * 16, 16, 16)
+        .build();
+
+    private static final UITexture RESET_ICON = UITexture.builder()
+        .location("appliedenergistics2", "guis/states")
+        .imageSize(256, 256)
+        .xy(0, 15 * 16, 16, 16)
+        .build();
+
+    private static final UITexture MOVE_ICON = UITexture.builder()
+        .location("appliedenergistics2", "guis/states")
+        .imageSize(256, 256)
+        .xy(5 * 16, 6 * 16, 16, 16)
         .build();
 
     private static final UITexture PANEL_FILL = UITexture.builder()
@@ -147,8 +160,9 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
             .invisible()
             .right(4)
             .top(ToolboxLayout.HEADER_Y + ToolboxLayout.BUTTON_HEIGHT)
-            .size(ToolboxLayout.BUTTON_WIDTH, 5 * ToolboxLayout.BUTTON_HEIGHT)
+            .size(ToolboxLayout.BUTTON_WIDTH, 6 * ToolboxLayout.BUTTON_HEIGHT)
             .child(new TerminalButton(1, Settings.SORT_BY, model.getSortBy()))
+            .child(new FluidTypeButton())
             .child(new TerminalButton(2, Settings.ACTIONS, ActionItems.PINS))
             .child(new TerminalButton(3, Settings.OPERATION_MODE, OperationMode.EMPTY))
             .child(new TerminalButton(6, null, null))
@@ -451,11 +465,53 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
             else if (index == 3) button.setEnabled(ToolboxClientConfig.shiftClickToME);
             else if (index == 6) button.setEnabled(ToolboxClient.pickupToME());
             button.drawButton(Minecraft.getMinecraft(), context.getMouseX(), context.getMouseY());
-            if (index == 4) GuiTextures.REFRESH.draw(2, 2, 6, 6);
+            if (index == 4) RESET_ICON.draw(2, 2, 6, 6);
             if (index == 0 || index == 6) {
                 if (!button.enabled) ScreenColor.setDimmedGuiColor();
                 (index == 0 ? TOOLBOX_ICON : MAGNET_CARD).draw(2, 2, 6, 6);
                 ScreenColor.resetGuiColor();
+            }
+        }
+    }
+
+    private final class FluidTypeButton extends ButtonWidget<FluidTypeButton> {
+
+        private final TypeToggleButton button = new TypeToggleButton(
+            0,
+            0,
+            FLUID_STACK_TYPE.getButtonTexture(),
+            FLUID_STACK_TYPE.getButtonIcon(),
+            FLUID_STACK_TYPE.getDisplayName());
+
+        FluidTypeButton() {
+            size(ToolboxLayout.BUTTON_WIDTH, ToolboxLayout.BUTTON_HEIGHT).invisible()
+                .playClickSound(false)
+                .onMouseScrolled((direction, amount) -> true)
+                .onMousePressed(mouseButton -> {
+                    if (mouseButton == 0 || mouseButton == 1) model.toggleFluids();
+                    return true;
+                })
+                .tooltipAutoUpdate(true)
+                .tooltipBuilder(tooltip -> {
+                    button.setEnabled(model.showFluids());
+                    for (String line : button.getMessage()
+                        .split("\n")) tooltip.addLine(line);
+                });
+        }
+
+        @Override
+        public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
+            button.setEnabled(model.showFluids());
+            float scale = ToolboxLayout.BUTTON_WIDTH / 16.0F;
+            GL11.glPushMatrix();
+            try {
+                GL11.glScalef(scale, scale, 1);
+                button.drawButton(
+                    Minecraft.getMinecraft(),
+                    (int) (context.getMouseX() / scale),
+                    (int) (context.getMouseY() / scale));
+            } finally {
+                GL11.glPopMatrix();
             }
         }
     }
@@ -518,7 +574,7 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
                     layout.slotY(i, true) + 1,
                     model.repo(),
                     layout.pinIndex(i),
-                    type -> type == AEItemStackType.ITEM_STACK_TYPE,
+                    model::isTypeVisible,
                     layout.pinIndex(i) < PinList.PLAYER_OFFSET);
             }
             for (int i = 0; i < directory.length; i++) {
@@ -527,7 +583,7 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
                     layout.slotY(i, false) + 1,
                     model.repo(),
                     i,
-                    type -> type == AEItemStackType.ITEM_STACK_TYPE);
+                    model::isTypeVisible);
             }
         }
 
@@ -570,7 +626,7 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
             dragButton.xPosition = layout.dragHandleX() + 1;
             dragButton.yPosition = ToolboxLayout.HEADER_Y + 1;
             dragButton.drawButton(mc, context.getMouseX(), context.getMouseY());
-            GuiTextures.ALL_DIRECTIONS.draw(layout.dragHandleX() + 2, ToolboxLayout.HEADER_Y + 2, 6, 6);
+            MOVE_ICON.draw(layout.dragHandleX() + 2, ToolboxLayout.HEADER_Y + 2, 6, 6);
             slots();
             ScreenColor.setGuiColor();
             mc.getTextureManager()
@@ -727,10 +783,16 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
             int pin = slot instanceof VirtualMEPinSlot ? slot.getSlotIndex() : -1;
             IAEStack<?> stack = slot.getAEStack();
             ItemStack held = Minecraft.getMinecraft().thePlayer.inventory.getItemStack();
-
-            boolean matchesPin = held != null && stack instanceof IAEItemStack item
-                && item.getItemStack()
-                    .isItemEqual(held);
+            boolean nonItemInteraction = GuiScreen.isCtrlKeyDown();
+            IAEStack<?> heldFluid = nonItemInteraction && held != null
+                ? FLUID_STACK_TYPE.getStackFromContainerItem(held)
+                : null;
+            boolean matchesPin = nonItemInteraction
+                ? stack != null && stack.getStackType() == FLUID_STACK_TYPE
+                    && (heldFluid == null || stack.isSameType((Object) heldFluid))
+                : held != null && stack instanceof IAEItemStack item
+                    && item.getItemStack()
+                        .isItemEqual(held);
             MonitorableAction intent = Input.click(
                 button,
                 Keyboard.isKeyDown(Keyboard.KEY_SPACE),
@@ -740,7 +802,19 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
                 matchesPin,
                 stack);
             if (intent == null) return null;
+            if (nonItemInteraction && intent == MonitorableAction.SET_PIN && heldFluid == null) return slot;
             boolean editPin = intent == MonitorableAction.SET_PIN || intent == MonitorableAction.UNSET_PIN;
+            if (nonItemInteraction && !editPin
+                && !Keyboard.isKeyDown(Keyboard.KEY_SPACE)
+                && (button == 0 || button == 1)) {
+                if (button == 0) {
+                    intent = GuiScreen.isShiftKeyDown() ? MonitorableAction.FILL_CONTAINERS
+                        : MonitorableAction.FILL_SINGLE_CONTAINER;
+                } else {
+                    intent = GuiScreen.isShiftKeyDown() ? MonitorableAction.DRAIN_CONTAINERS
+                        : MonitorableAction.DRAIN_SINGLE_CONTAINER;
+                }
+            }
             ToolboxClient.send(intent, editPin ? null : stack, pin);
             return slot;
         }

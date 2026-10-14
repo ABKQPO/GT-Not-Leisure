@@ -1,9 +1,13 @@
 package com.science.gtnl.client.metoolbox;
 
+import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
+import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
+
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,6 +20,7 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.config.YesNo;
 import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IAEStackType;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.ISortSource;
@@ -23,12 +28,16 @@ import appeng.client.me.ItemRepo;
 import appeng.core.AEConfig;
 import appeng.items.contents.PinList;
 import appeng.items.tools.powered.ToolWirelessTerminal;
+import appeng.util.AEStackTypeFilter;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
+import appeng.util.TerminalSettings;
+import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
 
 public final class ToolboxTerminalModel implements ISortSource {
 
     private final GuiScrollbar scrollbar = new GuiScrollbar();
+    private final AEStackTypeFilter typeFilters = new AEStackTypeFilter();
     private int columns = ToolboxLayout.COLUMNS;
     private int rows = ToolboxLayout.ROWS;
     private int visibleCraftingCount;
@@ -80,6 +89,11 @@ public final class ToolboxTerminalModel implements ISortSource {
             sessionState.observeNetwork(wireless.getEncryptionKey(toolbox));
             repo.setPowered(sessionState.isDisplayOnline());
 
+            if (pendingSettingsAction == 0) {
+                TerminalSettings terminalSettings = new TerminalSettings();
+                terminalSettings.readFromNBT(toolbox.getTagCompound());
+                readTypeFilters(terminalSettings.getFilters(Minecraft.getMinecraft().thePlayer));
+            }
             readSettings(wireless.getConfigManager(toolbox.copy()));
         }
     }
@@ -96,7 +110,31 @@ public final class ToolboxTerminalModel implements ISortSource {
         settings.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
         settings.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
         settings.readFromNBT(config);
+        AEStackTypeFilter filters = new AEStackTypeFilter();
+        filters.readFromNBT(config);
+        readTypeFilters(filters);
         readSettings(settings);
+    }
+
+    private void readTypeFilters(AEStackTypeFilter filters) {
+        filters.setEnabled(ITEM_STACK_TYPE, true);
+        if (typeFilters.equals(filters)) return;
+        typeFilters.copyFrom(filters);
+        refreshActiveView();
+    }
+
+    public boolean showFluids() {
+        return typeFilters.isEnabled(FLUID_STACK_TYPE);
+    }
+
+    public boolean isTypeVisible(IAEStackType<?> type) {
+        return (type == ITEM_STACK_TYPE || type == FLUID_STACK_TYPE) && typeFilters.isEnabled(type);
+    }
+
+    public void toggleFluids() {
+        typeFilters.toggle(FLUID_STACK_TYPE);
+        refreshActiveView();
+        ToolboxClient.saveSettings();
     }
 
     public void readSettings(NBTTagCompound config, long acknowledgedAction) {
@@ -518,6 +556,11 @@ public final class ToolboxTerminalModel implements ISortSource {
     @Override
     public Enum<?> getSortDisplay() {
         return display;
+    }
+
+    @Override
+    public Reference2BooleanMap<IAEStackType<?>> getTypeFilter() {
+        return typeFilters.getFiltersMap();
     }
 
     static final class SessionViewState {

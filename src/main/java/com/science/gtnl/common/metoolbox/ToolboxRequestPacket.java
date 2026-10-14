@@ -59,6 +59,8 @@ public class ToolboxRequestPacket extends ServerboundPacket {
     DepositMode depositMode = DepositMode.STACK;
     boolean emptyOnly;
     boolean single;
+    boolean showFluids;
+    boolean fluidPin;
 
     public ToolboxRequestPacket() {}
 
@@ -92,7 +94,7 @@ public class ToolboxRequestPacket extends ServerboundPacket {
     }
 
     public static ToolboxRequestPacket action(long sessionId, long actionId, long catalogRevision, long pinRevision,
-        int entryId, int nativePin, MonitorableAction action) {
+        int entryId, int nativePin, MonitorableAction action, boolean fluidPin) {
         ToolboxRequestPacket packet = end(sessionId);
         packet.kind = Kind.ACTION;
         packet.actionId = actionId;
@@ -101,6 +103,7 @@ public class ToolboxRequestPacket extends ServerboundPacket {
         packet.entryId = entryId;
         packet.nativePin = nativePin;
         packet.action = action;
+        packet.fluidPin = fluidPin;
         return packet;
     }
 
@@ -116,7 +119,7 @@ public class ToolboxRequestPacket extends ServerboundPacket {
     }
 
     public static ToolboxRequestPacket settings(long sessionId, long actionId, int slot, UUID toolbox,
-        SortOrder sortOrder, SortDir sortDirection, ViewItems viewMode, int windowId) {
+        SortOrder sortOrder, SortDir sortDirection, ViewItems viewMode, boolean showFluids, int windowId) {
         ToolboxRequestPacket packet = end(sessionId);
         packet.kind = Kind.SETTINGS;
         packet.actionId = actionId;
@@ -125,6 +128,7 @@ public class ToolboxRequestPacket extends ServerboundPacket {
         packet.sortOrder = sortOrder;
         packet.sortDirection = sortDirection;
         packet.viewMode = viewMode;
+        packet.showFluids = showFluids;
         packet.windowId = windowId;
         return packet;
     }
@@ -159,7 +163,8 @@ public class ToolboxRequestPacket extends ServerboundPacket {
             pinRevision,
             entryId,
             nativePin,
-            MonitorableAction.PICKUP_SINGLE);
+            MonitorableAction.PICKUP_SINGLE,
+            false);
         packet.kind = Kind.INVENTORY_EXTRACT;
         packet.emptyOnly = emptyOnly;
         packet.single = single;
@@ -186,6 +191,7 @@ public class ToolboxRequestPacket extends ServerboundPacket {
                 entryId = buf.readInt();
                 nativePin = buf.readInt();
                 action = readEnum(buf, MonitorableAction.values());
+                if (action == MonitorableAction.SET_PIN) fluidPin = readFlag(buf);
                 if (actionId <= 0 || nativePin < -1 || nativePin >= PinList.TOTAL_SLOTS || entryId < -1) {
                     throw new IllegalArgumentException("Toolbox action target");
                 }
@@ -206,6 +212,7 @@ public class ToolboxRequestPacket extends ServerboundPacket {
                     sortOrder = readEnum(buf, SortOrder.values());
                     sortDirection = readEnum(buf, SortDir.values());
                     viewMode = readEnum(buf, ViewItems.values());
+                    showFluids = readFlag(buf);
                 }
                 windowId = buf.readInt();
                 if (actionId <= 0) throw new IllegalArgumentException("Toolbox settings action");
@@ -262,6 +269,7 @@ public class ToolboxRequestPacket extends ServerboundPacket {
                 buf.writeInt(entryId);
                 buf.writeInt(nativePin);
                 buf.writeByte(action.ordinal());
+                if (action == MonitorableAction.SET_PIN) buf.writeBoolean(fluidPin);
             }
             case PIN_ROWS -> {
                 buf.writeLong(actionId);
@@ -278,6 +286,7 @@ public class ToolboxRequestPacket extends ServerboundPacket {
                     buf.writeByte(sortOrder.ordinal());
                     buf.writeByte(sortDirection.ordinal());
                     buf.writeByte(viewMode.ordinal());
+                    buf.writeBoolean(showFluids);
                 }
                 buf.writeInt(windowId);
             }

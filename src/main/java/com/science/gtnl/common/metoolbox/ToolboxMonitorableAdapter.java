@@ -181,7 +181,7 @@ public final class ToolboxMonitorableAdapter extends ContainerMEMonitorable impl
     public void postChange(IBaseMonitor<IAEStack<?>> monitor, Iterable<IAEStack<?>> changes, BaseActionSource source) {
         if (closed || catalog == null) return;
         for (IAEStack<?> changed : changes) {
-            if (changed instanceof IAEItemStack item) catalog.changed(item);
+            catalog.changed(changed);
         }
     }
 
