@@ -1,6 +1,6 @@
 package com.science.gtnl.client.metoolbox;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +10,9 @@ import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -48,15 +50,25 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public final class ToolboxClient {
 
+    private static final int MAX_CACHED_VIEWS = 8;
     private static final ToolboxClient INSTANCE = new ToolboxClient();
-    private static final Map<UUID, ToolboxTerminalModel> VIEWS = new HashMap<>();
+    private static final Map<UUID, ToolboxTerminalModel> VIEWS = new LinkedHashMap<>(MAX_CACHED_VIEWS, 0.75f, true) {
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<UUID, ToolboxTerminalModel> eldest) {
+            return size() > MAX_CACHED_VIEWS;
+        }
+    };
 
     private static final ToolboxLayout LAYOUT = new ToolboxLayout();
     private static final Set<Long> RETIRED_SESSIONS = new LinkedHashSet<>();
-    private static Object connection;
+    private static NetHandlerPlayClient connection;
     private static ToolboxInventoryOverlay overlay;
     private static DrawScreenEvent.Post deferredTooltipEvent;
     private static Runnable deferredTooltipRender;
@@ -139,6 +151,8 @@ public final class ToolboxClient {
             || !(event.gui instanceof GuiContainer inventory)
             || mc.thePlayer == null
             || mc.playerController == null
+            || inventory instanceof GuiInventory && mc.playerController.isInCreativeMode()
+            || inventory instanceof GuiContainerCreative && !mc.playerController.isInCreativeMode()
             || isAEInterface(inventory)
             || inventory instanceof IGuiContainerOverlay recipe && isAEInterface(recipe.getFirstScreen())
             || ToolboxBogoCompat.isTerminalScreen(inventory)) return;
@@ -220,7 +234,7 @@ public final class ToolboxClient {
     }
 
     private static void checkConnection() {
-        Object current = Minecraft.getMinecraft()
+        NetHandlerPlayClient current = Minecraft.getMinecraft()
             .getNetHandler();
         if (connection == current) return;
         ToolboxClientConfig.saveWindow(LAYOUT);
@@ -325,7 +339,11 @@ public final class ToolboxClient {
         checkConnection();
         Minecraft mc = Minecraft.getMinecraft();
         if ("RETURN".equals(data.getString("kind"))) {
-            if (mc.thePlayer != null) mc.displayGuiScreen(new GuiInventory(mc.thePlayer));
+            if (mc.thePlayer != null && mc.playerController != null) {
+                mc.displayGuiScreen(
+                    mc.playerController.isInCreativeMode() ? new GuiContainerCreative(mc.thePlayer)
+                        : new GuiInventory(mc.thePlayer));
+            }
             return;
         }
         long incoming = data.getLong("session");
@@ -368,6 +386,7 @@ public final class ToolboxClient {
             }
             if (selected == null && id != null) {
                 ToolboxTerminalModel old = model();
+                VIEWS.remove(null);
                 selected = id;
                 VIEWS.put(id, old);
             }
