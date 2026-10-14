@@ -41,7 +41,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
         INVENTORY_EXTRACT,
         PICKUP_TOGGLE,
         PIN_DROP,
-        CREATIVE_CONTAINER_ACTION
+        CREATIVE_ACTION
     }
 
     public enum DepositMode {
@@ -120,16 +120,9 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
         return packet;
     }
 
-    public static boolean isContainerAction(MonitorableAction action) {
-        return action == MonitorableAction.FILL_SINGLE_CONTAINER || action == MonitorableAction.FILL_CONTAINERS
-            || action == MonitorableAction.DRAIN_SINGLE_CONTAINER
-            || action == MonitorableAction.DRAIN_CONTAINERS;
-    }
-
     public MiniTerminalRequestPacket withCreativeCursor(ItemStack cursor) {
-        if (kind != Kind.ACTION || !isContainerAction(action))
-            throw new IllegalStateException("Creative cursor requires a container action");
-        kind = Kind.CREATIVE_CONTAINER_ACTION;
+        if (kind != Kind.ACTION) throw new IllegalStateException("Creative cursor requires a terminal action");
+        kind = Kind.CREATIVE_ACTION;
         creativeCursor = ItemStack.copyItemStack(cursor);
         return this;
     }
@@ -225,7 +218,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
         kind = readEnum(buf, Kind.values());
         int limit = switch (kind) {
             case PIN_DROP -> PIN_DROP_HEADER_BYTES + MAX_PIN_BYTES;
-            case CREATIVE_CONTAINER_ACTION -> MAX_CREATIVE_ACTION_BYTES;
+            case CREATIVE_ACTION -> MAX_CREATIVE_ACTION_BYTES;
             default -> 80;
         };
         if (requestBytes > limit) throw new IllegalArgumentException("Mini terminal request too large");
@@ -238,7 +231,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
                 if (slot != -1 && !isTerminalAddress(slot)) throw new IllegalArgumentException("Mini terminal slot");
                 if (buf.readBoolean()) terminalId = new UUID(buf.readLong(), buf.readLong());
             }
-            case ACTION, CREATIVE_CONTAINER_ACTION -> {
+            case ACTION, CREATIVE_ACTION -> {
                 actionId = buf.readLong();
                 catalogRevision = buf.readLong();
                 pinRevision = buf.readLong();
@@ -250,15 +243,14 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
                 if (actionId <= 0 || nativePin < -1 || nativePin >= PinList.TOTAL_SLOTS || entryId < -1) {
                     throw new IllegalArgumentException("Mini terminal action target");
                 }
-                if (kind == Kind.CREATIVE_CONTAINER_ACTION) {
-                    if (!isContainerAction(action)) throw new IllegalArgumentException("Creative container action");
+                if (kind == Kind.CREATIVE_ACTION) {
                     creativeCursor = ByteBufUtils.readItemStack(buf);
                     // Match vanilla creative slot bounds, including stacks larger than the item's normal limit.
-                    if (creativeCursor == null || creativeCursor.getItem() == null
+                    if (creativeCursor != null && (creativeCursor.getItem() == null
                         || creativeCursor.getItemDamage() < 0
                         || creativeCursor.stackSize <= 0
-                        || creativeCursor.stackSize > 64)
-                        throw new IllegalArgumentException("Creative container cursor");
+                        || creativeCursor.stackSize > 64))
+                        throw new IllegalArgumentException("Creative terminal cursor");
                 }
             }
             case PIN_ROWS -> {
@@ -340,14 +332,14 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
                     buf.writeLong(terminalId.getLeastSignificantBits());
                 }
             }
-            case ACTION, CREATIVE_CONTAINER_ACTION -> {
+            case ACTION, CREATIVE_ACTION -> {
                 buf.writeLong(actionId);
                 buf.writeLong(catalogRevision);
                 buf.writeLong(pinRevision);
                 buf.writeInt(entryId);
                 buf.writeInt(nativePin);
                 buf.writeByte(action.ordinal());
-                if (kind == Kind.CREATIVE_CONTAINER_ACTION) ByteBufUtils.writeItemStack(buf, creativeCursor);
+                if (kind == Kind.CREATIVE_ACTION) ByteBufUtils.writeItemStack(buf, creativeCursor);
             }
             case PIN_ROWS -> {
                 buf.writeLong(actionId);

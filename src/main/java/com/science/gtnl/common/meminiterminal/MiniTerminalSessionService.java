@@ -176,8 +176,8 @@ public final class MiniTerminalSessionService {
             session.resync();
         } else if (request.kind == MiniTerminalRequestPacket.Kind.ACTION) {
             session.action(request);
-        } else if (request.kind == MiniTerminalRequestPacket.Kind.CREATIVE_CONTAINER_ACTION) {
-            session.creativeContainerAction(request);
+        } else if (request.kind == MiniTerminalRequestPacket.Kind.CREATIVE_ACTION) {
+            session.creativeAction(request);
         } else if (request.kind == MiniTerminalRequestPacket.Kind.PIN_ROWS) {
             session.pinsRows(request);
         } else if (request.kind == MiniTerminalRequestPacket.Kind.PIN_DROP) {
@@ -819,16 +819,13 @@ public final class MiniTerminalSessionService {
                 () -> operationValid(SecurityPermissions.EXTRACT));
         }
 
-        void creativeContainerAction(MiniTerminalRequestPacket request) {
-            if (!player.theItemInWorldManager.isCreative() || container != player.inventoryContainer
-                || !MiniTerminalRequestPacket.isContainerAction(request.action)
-                || request.creativeCursor == null
-                || !FLUID_STACK_TYPE.isContainerItemForType(request.creativeCursor)) return;
+        void creativeAction(MiniTerminalRequestPacket request) {
+            if (!player.theItemInWorldManager.isCreative() || container != player.inventoryContainer) return;
 
-            // The creative GUI owns its cursor. Borrow its snapshot only while AE operates on the container;
+            // The creative GUI owns its cursor. Borrow its snapshot, including an empty hand, for this action;
             // execute() synchronizes the resulting cursor before the server's previous state is restored.
             ItemStack previous = player.inventory.getItemStack();
-            player.inventory.setItemStack(request.creativeCursor.copy());
+            player.inventory.setItemStack(ItemStack.copyItemStack(request.creativeCursor));
             try {
                 action(request);
             } finally {

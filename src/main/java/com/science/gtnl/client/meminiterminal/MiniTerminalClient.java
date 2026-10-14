@@ -495,8 +495,7 @@ public final class MiniTerminalClient {
             pin,
             intent);
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.currentScreen instanceof GuiContainerCreative && mc.playerController.isInCreativeMode()
-            && MiniTerminalRequestPacket.isContainerAction(intent)) {
+        if (mc.currentScreen instanceof GuiContainerCreative && mc.playerController.isInCreativeMode()) {
             // Creative inventory clicks do not synchronize the cursor stack to the server.
             packet.withCreativeCursor(mc.thePlayer.inventory.getItemStack());
         }
