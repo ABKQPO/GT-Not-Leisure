@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,6 +16,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -22,6 +24,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import com.glodblock.github.loader.recipe.WirelessTerminalEnergyRecipe;
 import com.glodblock.github.loader.recipe.WirelessTerminalQuantumBridgeRecipe;
+import com.glodblock.github.util.NameConst;
 import com.gtnewhorizon.gtnhlib.compat.BaublesCompat;
 import com.gtnewhorizon.gtnhlib.item.ItemStackNBT;
 import com.science.gtnl.client.GTNLCreativeTabs;
@@ -250,13 +253,26 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
     @Override
     public void addCheckedInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean advanced) {
         super.addCheckedInformation(stack, player, lines, advanced);
-        if (hasInfinityPower(stack)) lines.add(
-            WirelessTerminalEnergyRecipe.getEnergyCard()
-                .getDisplayName());
-        if (hasInfinityRange(stack)) lines.add(
-            WirelessTerminalQuantumBridgeRecipe.getQuantumBridgeCard()
-                .getDisplayName());
-        lines.add(StatCollector.translateToLocal("gtnl.meminiterminal.tooltip.inventory"));
-        lines.add(StatCollector.translateToLocal("gtnl.meminiterminal.tooltip.full"));
+        if (GuiScreen.isCtrlKeyDown()) {
+            lines.add(NameConst.i18n(NameConst.TT_WIRELESS_INSTALLED));
+            if (hasInfinityRange(stack)) lines.add(
+                "  " + EnumChatFormatting.GOLD
+                    + WirelessTerminalQuantumBridgeRecipe.getQuantumBridgeCard()
+                        .getDisplayName());
+            if (hasInfinityPower(stack)) lines.add(
+                "  " + EnumChatFormatting.GOLD
+                    + WirelessTerminalEnergyRecipe.getEnergyCard()
+                        .getDisplayName());
+        } else {
+            lines.add(NameConst.i18n(NameConst.TT_CTRL_FOR_MORE));
+        }
+        if (GuiScreen.isShiftKeyDown()) {
+            lines.add(StatCollector.translateToLocal("gtnl.meminiterminal.tooltip.usage"));
+            lines
+                .add(EnumChatFormatting.GRAY + StatCollector.translateToLocal("gtnl.meminiterminal.tooltip.inventory"));
+            lines.add(StatCollector.translateToLocal("gtnl.meminiterminal.tooltip.full"));
+        } else {
+            lines.add(NameConst.i18n(NameConst.TT_SHIFT_FOR_MORE));
+        }
     }
 }

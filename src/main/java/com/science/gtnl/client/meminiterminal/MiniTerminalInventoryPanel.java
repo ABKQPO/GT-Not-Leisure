@@ -18,6 +18,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -170,11 +171,11 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
         }, (tooltip, button) -> {
             tooltip.addLine(MiniTerminalClient.description());
             tooltip.addLine(
-                tr(
+                EnumChatFormatting.GRAY + tr(
                     "status." + MiniTerminalClient.status()
-                        .toLowerCase(java.util.Locale.ROOT)));
-            tooltip.addLine(tr("select"));
-            tooltip.addLine(tr("reconnect"));
+                        .toLowerCase(java.util.Locale.ROOT))
+                    + EnumChatFormatting.RESET);
+            addKeybindTooltip(tooltip, "select", "full", "reconnect");
         }).syncState(button -> button.setEnabled(model.isDisplayOnline()))
             .overlayIcon(TERMINAL_ICON))
             .child(new TerminalButton(null, null, button -> {
@@ -189,10 +190,13 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
                 (tooltip, button) -> {
                     tooltip.addLine(tr("settings"));
                     tooltip.addLine(
-                        settingLabel("sort", model.getSortBy()) + " / "
+                        EnumChatFormatting.GRAY + settingLabel("sort", model.getSortBy())
+                            + " / "
                             + settingLabel("direction", model.getSortDir())
                             + " / "
-                            + settingLabel("view", model.getSortDisplay()));
+                            + settingLabel("view", model.getSortDisplay())
+                            + EnumChatFormatting.RESET);
+                    addKeybindTooltip(tooltip, "settings.sort", "settings.direction", "settings.view");
                 }).syncState(button -> button.set(model.getSortBy())))
             .child(new FluidTypeButton())
             .child(
@@ -212,12 +216,16 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
                     (tooltip, button) -> {
                         tooltip.addLine(tr("shift_click"));
                         tooltip.addLine(
-                            tr(MiniTerminalClientConfig.shiftClickToME ? "shift_click.me" : "shift_click.vanilla"));
+                            EnumChatFormatting.GRAY
+                                + tr(MiniTerminalClientConfig.shiftClickToME ? "shift_click.me" : "shift_click.vanilla")
+                                + EnumChatFormatting.RESET);
                     }).syncState(button -> button.setEnabled(MiniTerminalClientConfig.shiftClickToME)))
             .child(
                 new TerminalButton(null, null, button -> MiniTerminalClient.togglePickupToME(), (tooltip, button) -> {
                     tooltip.addLine(tr("pickup"));
-                    tooltip.addLine(tr(MiniTerminalClient.pickupToME() ? "pickup.on" : "pickup.off"));
+                    tooltip.addLine(
+                        EnumChatFormatting.GRAY + tr(MiniTerminalClient.pickupToME() ? "pickup.on" : "pickup.off")
+                            + EnumChatFormatting.RESET);
                 }).syncState(button -> button.setEnabled(MiniTerminalClient.pickupToME()))
                     .overlayIcon(MAGNET_CARD))
             .child(
@@ -446,6 +454,14 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
     @Override
     public boolean onKeyRelease(char character, int keyCode) {
         return !hasForeignFocus() && super.onKeyRelease(character, keyCode);
+    }
+
+    private static void addKeybindTooltip(RichTooltip tooltip, String... keys) {
+        if (Keyboard.isKeyDown(Keyboard.KEY_LMENU) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)) {
+            for (String key : keys) tooltip.addLine(tr(key));
+        } else {
+            tooltip.addLine(tr("keybinds.hint"));
+        }
     }
 
     private static String tr(String key) {
