@@ -1,5 +1,6 @@
 package com.science.gtnl.client.metoolbox;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -16,6 +17,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
@@ -487,8 +489,19 @@ public final class ToolboxClient {
                 model.pinRevision(),
                 model.entryId(target),
                 pin,
-                intent,
-                intent == MonitorableAction.SET_PIN && AEBaseGui.isCtrlKeyDown()));
+                intent));
+    }
+
+    static void sendPin(int pin, IAEStack<?> target) {
+        ToolboxTerminalModel model = model();
+        if (!model.isOnline() || session == 0 || !hasCurrentContainer()) return;
+        try {
+            ScienceNotLeisure.network
+                .sendToServer(ToolboxRequestPacket.pinDrop(session, ++action, model.pinRevision(), pin, target));
+        } catch (IOException exception) {
+            ScienceNotLeisure.LOG.warn("Unable to pin NEI stack in ME toolbox", exception);
+            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentTranslation("gtnl.metoolbox.pin_failed"));
+        }
     }
 
     public static void toggleCollapsed() {

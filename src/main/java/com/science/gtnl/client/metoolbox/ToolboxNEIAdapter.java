@@ -1,5 +1,7 @@
 package com.science.gtnl.client.metoolbox;
 
+import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
+
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
@@ -12,10 +14,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
 import appeng.api.storage.data.IAEStack;
+import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.slots.VirtualMEPinSlot;
 import appeng.client.gui.slots.VirtualMESlot;
 import appeng.integration.modules.NEI;
 import appeng.integration.modules.NEIHelpers.NEIGuiHandler;
+import appeng.items.contents.PinList;
+import appeng.util.item.AEItemStack;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.NEIClientConfig;
 import codechicken.nei.NEIClientUtils;
@@ -58,17 +63,39 @@ public final class ToolboxNEIAdapter extends NEIGuiHandler
         return handled || Minecraft.getMinecraft().currentScreen != gui;
     }
 
-    static boolean handleSearchDrop(GuiContainer gui) {
+    static boolean handleDrop(GuiContainer gui, int button) {
         if (!NEIClientConfig.isEnabled() || NEIClientConfig.isHidden()) return false;
         Point mouse = GuiDraw.getMousePosition();
         ItemStack stack = NEI.instance == null ? null : NEI.instance.getDraggingPhantomItem();
+        if (stack != null && pinDrop(gui, mouse.x, mouse.y, stack, button)) return true;
         if (stack == null) stack = NEIClientUtils.getHeldItem();
         return fillSearch(gui, mouse.x, mouse.y, stack);
     }
 
     @Override
     public boolean handleDragNDrop(GuiContainer gui, int mouseX, int mouseY, ItemStack draggedStack, int button) {
+        // NEI also calls this hook with a copy of the real cursor stack; only a phantom drag may set a pin.
+        if (NEI.instance != null && NEI.instance.getDraggingPhantomItem() != null
+            && pinDrop(gui, mouseX, mouseY, draggedStack, button)) return true;
         return fillSearch(gui, mouseX, mouseY, draggedStack);
+    }
+
+    private static boolean pinDrop(GuiContainer gui, int mouseX, int mouseY, ItemStack stack, int button) {
+        ToolboxInventoryOverlay overlay = overlay(gui);
+        if (overlay == null || stack == null || stack.getItem() == null || button != 0 && button != 1) return false;
+        VirtualMESlot slot = overlay.hoveredSlot(mouseX, mouseY);
+        if (!(slot instanceof VirtualMEPinSlot)) return false;
+        // Crafting-history pins remain read-only, and offline clicks must not reach the inventory underneath.
+        if (!overlay.isOnline() || slot.getSlotIndex() < PinList.PLAYER_OFFSET) return true;
+        ItemStack dragged = stack.copy();
+        dragged.stackSize = 1;
+        IAEStack<?> target = FLUID_STACK_TYPE.convertStackFromItem(dragged);
+        if (target == null) {
+            target = AEBaseGui.isCtrlKeyDown() ? FLUID_STACK_TYPE.getStackFromContainerItem(dragged)
+                : AEItemStack.create(dragged);
+        }
+        if (target != null) ToolboxClient.sendPin(slot.getSlotIndex(), target);
+        return true;
     }
 
     private static boolean fillSearch(GuiContainer gui, int mouseX, int mouseY, ItemStack stack) {

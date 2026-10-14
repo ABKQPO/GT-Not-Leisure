@@ -343,7 +343,7 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
                 .getContext()
                 .removeFocus();
         }
-        boolean handled = ToolboxNEIAdapter.handleSearchDrop(inventory);
+        boolean handled = ToolboxNEIAdapter.handleDrop(inventory, button);
         if (!handled) {
             if (inside && !layout.expanded() && button == 1) {
                 ToolboxClient.openFull();
@@ -798,28 +798,16 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
             IAEStack<?> stack = slot.getAEStack();
             ItemStack held = Minecraft.getMinecraft().thePlayer.inventory.getItemStack();
             boolean nonItemInteraction = AEBaseGui.isCtrlKeyDown();
-            IAEStack<?> heldFluid = nonItemInteraction && held != null
-                ? FLUID_STACK_TYPE.getStackFromContainerItem(held)
-                : null;
-            boolean matchesPin = nonItemInteraction
-                ? stack != null && stack.getStackType() == FLUID_STACK_TYPE
-                    && (heldFluid == null || stack.isSameType((Object) heldFluid))
-                : held != null && stack instanceof IAEItemStack item
-                    && item.getItemStack()
-                        .isItemEqual(held);
             MonitorableAction intent = Input.click(
                 button,
                 Keyboard.isKeyDown(Keyboard.KEY_SPACE),
                 GuiScreen.isShiftKeyDown(),
                 pin >= 0,
                 held != null,
-                matchesPin,
                 nonItemInteraction,
                 stack);
             if (intent == null) return null;
-            if (nonItemInteraction && intent == MonitorableAction.SET_PIN && heldFluid == null) return slot;
-            boolean editPin = intent == MonitorableAction.SET_PIN || intent == MonitorableAction.UNSET_PIN;
-            ToolboxClient.send(intent, editPin ? null : stack, pin);
+            ToolboxClient.send(intent, intent == MonitorableAction.UNSET_PIN ? null : stack, pin);
             return slot;
         }
 
@@ -914,17 +902,14 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
         }
 
         static MonitorableAction click(int button, boolean space, boolean shift, boolean pin, boolean holding,
-            boolean matchesPin, boolean nonItemInteraction, IAEStack<?> stack) {
+            boolean nonItemInteraction, IAEStack<?> stack) {
 
             if (space) return stack instanceof IAEItemStack ? MonitorableAction.MOVE_REGION : null;
             if (button == keyBindPickBlockAction) {
                 return !holding && stack != null && stack.isCraftable() ? MonitorableAction.AUTO_CRAFT : null;
             }
             if (button != 0 && button != 1) return null;
-            if (pin) {
-                if (button == 1 && shift && !holding) return MonitorableAction.UNSET_PIN;
-                if (holding && !matchesPin) return MonitorableAction.SET_PIN;
-            }
+            if (pin && button == 1 && shift && !holding) return MonitorableAction.UNSET_PIN;
             if (nonItemInteraction) {
                 if (button == 0)
                     return shift ? MonitorableAction.FILL_CONTAINERS : MonitorableAction.FILL_SINGLE_CONTAINER;

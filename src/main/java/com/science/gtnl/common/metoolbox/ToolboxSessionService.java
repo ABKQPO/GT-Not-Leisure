@@ -59,7 +59,6 @@ import appeng.items.contents.PinList;
 import appeng.util.AEStackTypeFilter;
 import appeng.util.Platform;
 import appeng.util.TerminalSettings;
-import appeng.util.item.AEItemStack;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
@@ -174,6 +173,8 @@ public final class ToolboxSessionService {
             session.action(request);
         } else if (request.kind == ToolboxRequestPacket.Kind.PIN_ROWS) {
             session.pinsRows(request);
+        } else if (request.kind == ToolboxRequestPacket.Kind.PIN_DROP) {
+            session.pinDrop(request);
         } else if (request.kind == ToolboxRequestPacket.Kind.INVENTORY_DEPOSIT) {
             session.inventoryDeposit(request);
         } else if (request.kind == ToolboxRequestPacket.Kind.INVENTORY_EXTRACT) {
@@ -654,6 +655,36 @@ public final class ToolboxSessionService {
             sendPins();
         }
 
+        void pinDrop(ToolboxRequestPacket request) {
+            if (!acceptAction(request) || !permission(SecurityPermissions.EXTRACT)) return;
+            if (request.pinRevision != pinRevision) {
+                sendPins();
+                return;
+            }
+            int nativePin = request.nativePin;
+            if (nativePin < PinList.PLAYER_OFFSET
+                || nativePin >= PinList.PLAYER_OFFSET + terminal.getPlayerPinsRows()
+                    .getSlotCount()
+                || request.pinTarget == null) return;
+            IAEStack<?> offered;
+            try {
+                offered = IAEStack.fromNBTGeneric(request.pinTarget);
+            } catch (RuntimeException exception) {
+                return;
+            }
+            if (!(offered instanceof IAEItemStack || offered instanceof IAEFluidStack)) return;
+            offered.reset();
+            IAEStack<?> previous = terminal.getPin(nativePin);
+            if (previous != null && previous.isSameType((Object) offered)) return;
+            try {
+                terminal.pin(offered, nativePin, () -> operationValid(SecurityPermissions.EXTRACT));
+            } finally {
+                recordPinChanges();
+                ToolboxTransferService.synchronize(player);
+            }
+            sendPins();
+        }
+
         void inventoryDeposit(ToolboxRequestPacket request) {
             if (!acceptAction(request) || request.slot < 0
                 || request.slot >= 36
@@ -749,6 +780,7 @@ public final class ToolboxSessionService {
 
         void action(ToolboxRequestPacket request) {
             if (!acceptAction(request)) return;
+            if (request.action == MonitorableAction.SET_PIN) return;
             if (!isTargetRevisionValid(request, catalog.revision, pinRevision)) {
                 resync();
                 return;
@@ -759,22 +791,10 @@ public final class ToolboxSessionService {
                 && !isEnabledPin(nativePin, terminal.getCraftingPinsRows(), terminal.getPlayerPinsRows())) return;
             IAEStack<?> pin = nativePin < 0 ? null : terminal.getPin(nativePin);
 
-            if (request.action == MonitorableAction.SET_PIN || request.action == MonitorableAction.UNSET_PIN) {
-                if (nativePin < 0) return;
-                if (request.action == MonitorableAction.UNSET_PIN) {
-                    if (hand != null) return;
-                } else {
-                    if (nativePin < PinList.PLAYER_OFFSET || hand == null) return;
-                }
-                IAEStack<?> offered = hand == null ? null
-                    : request.fluidPin ? FLUID_STACK_TYPE.getStackFromContainerItem(hand) : AEItemStack.create(hand);
-                if (request.action == MonitorableAction.SET_PIN
-                    && (offered == null || pin != null && pin.isSameType((Object) offered))) return;
+            if (request.action == MonitorableAction.UNSET_PIN) {
+                if (nativePin < 0 || hand != null) return;
                 try {
-                    terminal.pin(
-                        request.action == MonitorableAction.UNSET_PIN ? null : offered,
-                        nativePin,
-                        () -> operationValid(SecurityPermissions.EXTRACT));
+                    terminal.pin(null, nativePin, () -> operationValid(SecurityPermissions.EXTRACT));
                 } finally {
                     recordPinChanges();
                     ToolboxTransferService.synchronize(player);
