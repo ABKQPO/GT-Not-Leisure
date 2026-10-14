@@ -18,7 +18,6 @@ import codechicken.lib.gui.GuiDraw;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-/** Keeps everything a host GUI draws below the terminal, while its tooltips stay above it. */
 @SideOnly(Side.CLIENT)
 public final class MiniTerminalHostLayer {
 
@@ -47,12 +46,10 @@ public final class MiniTerminalHostLayer {
         frameGui = null;
     }
 
-    /** Opens the window between NEI's preDraw and the terminal, in which only the host's own layers draw. */
     static void openHostPass(GuiScreen gui) {
         capturing = gui == frameGui && !(gui instanceof IMuiScreen);
     }
 
-    /** Vanilla reaches the terminal through NEI's +200 shift, MUI1 without one; both end up on the same base. */
     static void loadTerminalMatrix(GuiScreen gui) {
         if (gui != frameGui) return;
         GL11.glLoadMatrix(BASE_MATRIX);
@@ -68,7 +65,6 @@ public final class MiniTerminalHostLayer {
         return true;
     }
 
-    /** Item tooltips that bypass drawHoveringText (Chromatic Tooltips) still must not leak through the terminal. */
     public static boolean dropTooltip(GuiScreen gui, int x, int y) {
         return capturing && !replaying && gui == frameGui && anchoredInTerminal(gui, currentMatrix(), x, y);
     }
@@ -113,9 +109,8 @@ public final class MiniTerminalHostLayer {
         return overlay != null && gui == overlay.inventory() && overlay.isMouseOver(x, y);
     }
 
-    /** A tooltip anchored inside the terminal belongs to a host widget hidden under it. */
     private static boolean anchoredInTerminal(GuiScreen gui, float[] m, int x, int y) {
-        // Column-major modelview; the GUI base matrix only shifts z, so this is the screen position.
+        // Column major modelview; the GUI base matrix only shifts z, so this is the screen position.
         return overTerminal(gui, Math.round(m[0] * x + m[4] * y + m[12]), Math.round(m[1] * x + m[5] * y + m[13]));
     }
 

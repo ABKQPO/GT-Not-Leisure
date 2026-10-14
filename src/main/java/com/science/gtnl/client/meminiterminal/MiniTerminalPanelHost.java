@@ -11,11 +11,8 @@ import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.overlay.OverlayStack;
 import com.cleanroommc.modularui.screen.ModularScreen;
 
-/** Chooses the native panel lifecycle for MUI hosts and an overlay for other containers. */
 final class MiniTerminalPanelHost {
 
-    // MUI keeps screens while visiting recipe pages. Reuse their handler, without retaining closed screens here.
-    // Values must also be weak: the panel's context refers back to the screen used as the key.
     private static final Map<ModularScreen, WeakReference<MiniTerminalPanelHost>> NATIVE_HOSTS = new WeakHashMap<>();
 
     private final MiniTerminalInventoryPanel panel;

@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.science.gtnl.client.meminiterminal.MiniTerminalHostLayer;
 
-// Runs before Chromatic Tooltips (priority 999), which takes over both methods.
+// Runs before Chromatic Tooltips (priority 999), which takes over both methods
 @Mixin(value = GuiScreen.class, priority = 900)
 public abstract class MixinMiniTerminalHostTooltip {
 

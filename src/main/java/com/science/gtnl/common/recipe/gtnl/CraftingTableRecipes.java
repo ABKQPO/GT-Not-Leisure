@@ -66,7 +66,19 @@ public class CraftingTableRecipes implements IRecipePool {
 
     @Override
     public void loadRecipes() {
-        // Keep sorter IDs stable for integrations that order their recipes relative to these entries.
+        var aeMaterials = AEApi.instance()
+            .definitions()
+            .materials();
+        var aeParts = AEApi.instance()
+            .definitions()
+            .parts();
+        var aeBlocks = AEApi.instance()
+            .definitions()
+            .blocks();
+        var aeItems = AEApi.instance()
+            .definitions()
+            .items();
+
         RecipeSorter.register(
             ScienceNotLeisure.MODID + ":me_toolbox_upgrade",
             MiniTerminalUpgradeRecipe.class,
@@ -81,25 +93,16 @@ public class CraftingTableRecipes implements IRecipePool {
                 'P',
                 "plateAluminium",
                 'E',
-                AEApi.instance()
-                    .definitions()
-                    .materials()
-                    .engProcessor()
+                aeMaterials.engProcessor()
                     .maybeStack(1)
-                    .get(),
+                    .orNull(),
                 'C',
-                AEApi.instance()
-                    .definitions()
-                    .parts()
-                    .cableGlass()
+                aeParts.cableGlass()
                     .stack(AEColor.Transparent, 1),
                 'W',
-                AEApi.instance()
-                    .definitions()
-                    .items()
-                    .wirelessTerminal()
+                aeItems.wirelessTerminal()
                     .maybeStack(1)
-                    .get()));
+                    .orNull()));
 
         RecipeSorter.register(
             ScienceNotLeisure.MODID + ":me_toolbox_card",
@@ -116,16 +119,6 @@ public class CraftingTableRecipes implements IRecipePool {
             GameRegistry
                 .addRecipe(new MiniTerminalCardRecipe(new WirelessTerminalRecipe(terminal), item::hasInfinityRange));
         }
-
-        var aeMaterials = AEApi.instance()
-            .definitions()
-            .materials();
-        var aeParts = AEApi.instance()
-            .definitions()
-            .parts();
-        var aeBlocks = AEApi.instance()
-            .definitions()
-            .blocks();
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.LargeSteamCrusher.get(1),

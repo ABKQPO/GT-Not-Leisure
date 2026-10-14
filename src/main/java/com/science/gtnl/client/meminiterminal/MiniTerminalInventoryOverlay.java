@@ -8,7 +8,6 @@ import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.viewport.GuiContext;
 import com.science.gtnl.ScienceNotLeisure;
 
-/** Keeps MUI's overlay lifecycle while drawing inside NEI's container object pass. */
 final class MiniTerminalInventoryOverlay extends ModularScreen {
 
     private final MiniTerminalInventoryPanel panel;
@@ -52,7 +51,6 @@ final class MiniTerminalInventoryOverlay extends ModularScreen {
         }
     }
 
-    // OverlayStack still handles input, updates and queued widget tooltips, but must not draw the panel again.
     @Override
     public void drawScreen() {}
 

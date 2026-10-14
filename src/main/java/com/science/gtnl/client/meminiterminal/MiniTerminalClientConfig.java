@@ -7,12 +7,11 @@ import com.gtnewhorizon.gtnhlib.config.ConfigException;
 import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.science.gtnl.ScienceNotLeisure;
 
-// Keep the existing file so saved window geometry and transfer preferences survive the rename.
 @Config(modid = ScienceNotLeisure.MODID, configSubDirectory = "GTNotLeisure", filename = "METoolboxClient")
 @Config.ExcludeFromAutoGui
 public final class MiniTerminalClientConfig {
 
-    @Config.Comment("Use the saved mini-terminal rectangle instead of anchoring it beside the inventory.")
+    @Config.Comment("Use the saved mini terminal rectangle instead of anchoring it beside the inventory.")
     @Config.DefaultBoolean(false)
     public static boolean customWindow;
 
@@ -36,7 +35,7 @@ public final class MiniTerminalClientConfig {
     @Config.DefaultBoolean(false)
     public static boolean snappedHeight;
 
-    @Config.Comment("Inventory Shift-click, Space-click and Bogo transfer shortcuts insert into ME while the mini terminal is expanded.")
+    @Config.Comment("Inventory Shift click, Space click and Bogo transfer shortcuts insert into ME while the mini terminal is expanded.")
     @Config.DefaultBoolean(false)
     public static boolean shiftClickToME;
 

@@ -95,7 +95,6 @@ public final class MiniTerminalSessionService {
 
     private MiniTerminalSessionService() {}
 
-    /** Returns the real main-inventory index, including wrapped slots, or -1 for other inventories. */
     public static int playerInventoryIndex(EntityPlayer player, Slot slot) {
         if (player == null || slot == null) return -1;
         int inventorySize = Math.min(36, player.inventory.mainInventory.length);

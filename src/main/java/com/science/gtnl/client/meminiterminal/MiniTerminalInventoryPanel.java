@@ -70,7 +70,6 @@ import appeng.items.contents.PinList;
 import appeng.util.Platform;
 import cpw.mods.fml.common.Loader;
 
-/** Terminal content and input handling, independent of how the panel is attached to a GUI. */
 public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
 
     private static final UITexture MAGNET_CARD = UITexture.fullImage("ae2wct", "items/magnetCard");

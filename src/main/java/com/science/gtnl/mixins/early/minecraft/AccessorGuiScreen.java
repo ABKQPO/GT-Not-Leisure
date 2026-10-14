@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(GuiScreen.class)
 public interface AccessorGuiScreen {
 
-    // Forge-added method, not obfuscated.
     @Invoker(value = "drawHoveringText", remap = false)
     void gtnl$drawHoveringText(List<?> lines, int x, int y, FontRenderer font);
 }

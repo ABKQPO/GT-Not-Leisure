@@ -23,7 +23,6 @@ final class MiniTerminalCatalog {
 
     private static final int MIN_UPDATE_TICKS = 5;
     private static final int MIN_SCAN_TICKS = 20;
-    // Beyond this many pending notifications a bounded rescan is cheaper than tracking each one.
     private static final int MAX_DIRTY = 4096;
 
     private final IMEMonitor<IAEItemStack> itemMonitor;
@@ -48,7 +47,6 @@ final class MiniTerminalCatalog {
         ids.defaultReturnValue(-1);
     }
 
-    /** Hidden fluids are neither scanned nor sent; a snapshot replaces the client view when this changes. */
     void showFluids(boolean visible) {
         if (fluidsVisible == visible) return;
         fluidsVisible = visible;

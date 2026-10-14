@@ -45,18 +45,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
 
-    // Preserve identity and pickup preferences on items already stored in worlds.
     private static final String ID_TAG = "gtnlToolboxId";
     private static final String PICKUP_TAG = "gtnlToolboxPickupToME";
     private static final Map<EntityPlayer, Map<Integer, ItemStack>> WORN_SNAPSHOTS = new WeakHashMap<>();
 
     public ItemMEMiniPortableTerminal() {
         setUnlocalizedName("gtnl.me_mini_portable_terminal");
-
         setTextureName("appliedenergistics2:ToolWirelessTerminal");
         setMaxStackSize(1);
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        // The registry ID is persistent; changing the display name must not replace existing items.
         GameRegistry.registerItem(this, "me_toolbox");
         GTNLItemList.MEMiniPortableTerminal.set(new ItemStack(this));
         AEApi.instance()
@@ -113,7 +110,6 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
         return id;
     }
 
-    /** Returns the only slot holding this terminal; -1 when it is missing, on the cursor or duplicated. */
     public static int findTerminalSlot(EntityPlayer player, UUID id) {
         if (id == null || id.equals(getTerminalId(player.inventory.getItemStack()))) return -1;
         int found = -1;
@@ -125,7 +121,6 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
         return found;
     }
 
-    /** Copied stacks (creative pick, NEI cheat) share an identity, which makes both unusable. */
     public static boolean isTerminalDuplicated(EntityPlayer player, UUID id) {
         if (id == null) return false;
         int count = 0;
