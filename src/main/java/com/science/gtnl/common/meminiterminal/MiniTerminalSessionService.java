@@ -135,7 +135,8 @@ public final class MiniTerminalSessionService {
         RequestBudget budget = BUDGETS.computeIfAbsent(player.getUniqueID(), key -> new RequestBudget());
         boolean accepted = budget.accept(player.ticksExisted);
         if (request.kind == MiniTerminalRequestPacket.Kind.BEGIN) {
-            if (!accepted || !budget.acceptBegin(player.ticksExisted)) {
+            if (!accepted) {
+                budget.cancelPendingBegin();
                 end(player);
 
                 sendStatus(
@@ -148,9 +149,11 @@ public final class MiniTerminalSessionService {
                     MiniTerminalStatus.STALE);
                 return;
             }
+            if (!budget.requestBegin(player.ticksExisted, request)) return;
         } else if (!accepted) return;
         if (request.kind == MiniTerminalRequestPacket.Kind.BEGIN
             || request.kind == MiniTerminalRequestPacket.Kind.FULL) {
+            budget.cancelPendingBegin();
             begin(player, request);
             return;
         }
@@ -315,7 +318,7 @@ public final class MiniTerminalSessionService {
 
     private static void begin(EntityPlayerMP player, MiniTerminalRequestPacket request) {
         end(player);
-        if (!allowedContainer(player)) {
+        if (!allowedContainer(player) || player.openContainer.windowId != request.windowId) {
             sendStatus(
                 player,
                 ++nextSession,
@@ -384,6 +387,11 @@ public final class MiniTerminalSessionService {
     @SubscribeEvent
     public void tick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.END || !(event.player instanceof EntityPlayerMP player)) return;
+        RequestBudget budget = BUDGETS.get(player.getUniqueID());
+        if (budget != null) {
+            MiniTerminalRequestPacket pending = budget.pollBegin(player.ticksExisted);
+            if (pending != null) begin(player, pending);
+        }
         Session session = SESSIONS.get(player.getUniqueID());
         if (session == null) return;
         MiniTerminalStatus status = session.validate();
@@ -487,6 +495,7 @@ public final class MiniTerminalSessionService {
         private int tick;
         private int count;
         private int lastBegin = -10;
+        private MiniTerminalRequestPacket pendingBegin;
 
         boolean accept(int now) {
             if (now < tick || now - tick >= 20) {
@@ -496,7 +505,26 @@ public final class MiniTerminalSessionService {
             return ++count <= 64;
         }
 
-        boolean acceptBegin(int now) {
+        boolean requestBegin(int now, MiniTerminalRequestPacket request) {
+            // Coalesce rapid terminal switches without turning the connection cooldown into a failure.
+            pendingBegin = request;
+            if (!acceptBegin(now)) return false;
+            pendingBegin = null;
+            return true;
+        }
+
+        MiniTerminalRequestPacket pollBegin(int now) {
+            if (pendingBegin == null || !acceptBegin(now)) return null;
+            MiniTerminalRequestPacket request = pendingBegin;
+            pendingBegin = null;
+            return request;
+        }
+
+        void cancelPendingBegin() {
+            pendingBegin = null;
+        }
+
+        private boolean acceptBegin(int now) {
             if (now >= lastBegin && now - lastBegin < 10) return false;
             lastBegin = now;
             return true;
