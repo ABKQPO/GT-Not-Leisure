@@ -135,6 +135,16 @@ public final class ToolboxNEIAdapter extends NEIGuiHandler
     }
 
     @Override
+    public List<String> handleTooltip(GuiContainer gui, int mouseX, int mouseY, List<String> currentTooltip) {
+        ToolboxInventoryOverlay overlay = overlay(gui);
+        if (overlay == null || !overlay.isOnline()) return currentTooltip;
+        VirtualMESlot slot = overlay.hoveredSlot(mouseX, mouseY);
+        // NEI skips item tooltips while carrying a stack; AE's container interaction hints must still be shown.
+        if (slot != null) slot.addTooltip(currentTooltip);
+        return currentTooltip;
+    }
+
+    @Override
     public List<String> handleItemTooltip(GuiContainer gui, ItemStack stack, int mouseX, int mouseY,
         List<String> currentTooltip) {
         ToolboxInventoryOverlay overlay = overlay(gui);

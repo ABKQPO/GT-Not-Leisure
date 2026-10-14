@@ -4,6 +4,7 @@ import static appeng.client.gui.implementations.GuiMEMonitorable.keyBindPickBloc
 import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
 
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -211,7 +212,8 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
         if (bounds().contains(mouseX, mouseY)) {
             VirtualMESlot slot = hoveredSlot(mouseX, mouseY);
 
-            if (slot == null || slot.getAEStack() == null) return true;
+            if (slot == null || slot.getAEStack() == null
+                && Minecraft.getMinecraft().thePlayer.inventory.getItemStack() == null) return true;
         }
         if (nativeTooltipQueued) return true;
         nativeTooltipQueued = true;
@@ -550,7 +552,11 @@ public final class ToolboxInventoryOverlay extends ModularScreen {
                         int y = getContext().getAbsMouseY() - getArea().y;
                         VirtualMESlot slot = displayedSlotAt(x, y);
 
-                        if (slot instanceof VirtualMEPinSlot && slot.getAEStack() == null) tooltip.addLine(tr("pin"));
+                        if (slot instanceof VirtualMEPinSlot && slot.getAEStack() == null) {
+                            List<String> interactionTooltip = new ArrayList<>();
+                            if (model.isOnline()) slot.addTooltip(interactionTooltip);
+                            if (interactionTooltip.isEmpty()) tooltip.addLine(tr("pin"));
+                        }
                     }
                 });
         }
