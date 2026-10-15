@@ -30,7 +30,7 @@ public class GuiMEChisel extends AEBaseGui {
     @Override
     public void initGui() {
         super.initGui();
-        this.parallel = new MEGuiTextField(64, 12, I18n.format("gtnl.gui.me_chisel.pattern_parallel")) {
+        this.parallel = new MEGuiTextField(76, 12, I18n.format("gtnl.gui.me_chisel.pattern_parallel")) {
 
             @Override
             public boolean textboxKeyTyped(char keyChar, int keyID) {
@@ -64,7 +64,7 @@ public class GuiMEChisel extends AEBaseGui {
         };
         this.parallel.setMaxStringLength(10);
         this.parallel.setText(te.getParallel() > 0 ? Integer.toString(te.getParallel()) : "1");
-        this.parallel.x = this.guiLeft + 55;
+        this.parallel.x = this.guiLeft + 50;
         this.parallel.y = this.guiTop + 62;
     }
 
@@ -126,7 +126,7 @@ public class GuiMEChisel extends AEBaseGui {
         this.bindTexture("guis/chest.png");
         this.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize);
         this.bindTexture("guis/searchField.png");
-        this.drawTexturedModalRect(offsetX + 55, offsetY + 62, 0, 0, 64, 12);
+        this.drawTexturedModalRect(offsetX + 50, offsetY + 62, 0, 0, 76, 12);
         this.parallel.drawTextBox();
     }
 }
