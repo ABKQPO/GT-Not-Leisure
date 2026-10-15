@@ -125,6 +125,8 @@ public class GuiMEChisel extends AEBaseGui {
     public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY) {
         this.bindTexture("guis/chest.png");
         this.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize);
+        this.bindTexture("guis/searchField.png");
+        this.drawTexturedModalRect(offsetX + 55, offsetY + 62, 0, 0, 64, 12);
         this.parallel.drawTextBox();
     }
 }
