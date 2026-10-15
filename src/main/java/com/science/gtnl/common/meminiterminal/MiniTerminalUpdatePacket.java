@@ -57,12 +57,20 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
         try (InputStream input = new GZIPInputStream(new ByteBufInputStream(buf.readSlice(length)))) {
             raw.writeBytes(input.readNBytes(MAX_PART_BYTES + 1));
         } catch (IOException exception) {
+            raw.release();
             throw new IllegalArgumentException("Mini terminal entries", exception);
+        } catch (RuntimeException exception) {
+            raw.release();
+            throw exception;
         }
-        if (raw.readableBytes() > MAX_PART_BYTES) throw new IllegalArgumentException("Mini terminal entries");
-        List<Entry> decoded = new ArrayList<>();
-        while (raw.isReadable()) decoded.add(new Entry(raw.readInt(), Platform.readStackByte(raw)));
-        entries = decoded;
+        try {
+            if (raw.readableBytes() > MAX_PART_BYTES) throw new IllegalArgumentException("Mini terminal entries");
+            List<Entry> decoded = new ArrayList<>();
+            while (raw.isReadable()) decoded.add(new Entry(raw.readInt(), Platform.readStackByte(raw)));
+            entries = decoded;
+        } finally {
+            raw.release();
+        }
     }
 
     @Override
@@ -81,29 +89,47 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
     static List<byte[]> encode(List<Entry> entries) throws IOException {
         List<byte[]> parts = new ArrayList<>();
         ByteBuf part = Unpooled.buffer(Math.min(PART_BYTES, 64 + entries.size() * 64));
-        for (Entry entry : entries) {
-            int start = part.writerIndex();
-            part.writeInt(entry.key());
-            Platform.writeStackByte(entry.stack(), part);
-            if (start > 0 && part.readableBytes() > PART_BYTES) {
-                ByteBuf next = Unpooled.buffer(PART_BYTES);
-                next.writeBytes(part, start, part.writerIndex() - start);
-                part.writerIndex(start);
-                parts.add(compress(part));
-                part = next;
+        try {
+            for (Entry entry : entries) {
+                int start = part.writerIndex();
+                part.writeInt(entry.key());
+                Platform.writeStackByte(entry.stack(), part);
+                if (part.readableBytes() > PART_BYTES) {
+                    if (start == 0) throw new IOException("Oversize ME mini portable terminal entry");
+                    ByteBuf next = Unpooled.buffer(PART_BYTES);
+                    try {
+                        next.writeBytes(part, start, part.writerIndex() - start);
+                        part.writerIndex(start);
+                        ByteBuf previous = part;
+                        part = null;
+                        parts.add(compress(previous));
+                        part = next;
+                        next = null;
+                    } finally {
+                        if (next != null) next.release();
+                    }
+                }
             }
+            ByteBuf last = part;
+            part = null;
+            parts.add(compress(last));
+            return parts;
+        } finally {
+            if (part != null) part.release();
         }
-        parts.add(compress(part));
-        return parts;
     }
 
     private static byte[] compress(ByteBuf raw) throws IOException {
-        if (!raw.isReadable()) return new byte[0];
-        if (raw.readableBytes() > MAX_PART_BYTES) throw new IOException("Oversize ME mini portable terminal entry");
-        ByteArrayOutputStream output = new ByteArrayOutputStream(raw.readableBytes() / 4 + 64);
-        try (GZIPOutputStream gzip = new GZIPOutputStream(output)) {
-            raw.readBytes(gzip, raw.readableBytes());
+        try {
+            if (!raw.isReadable()) return new byte[0];
+            if (raw.readableBytes() > MAX_PART_BYTES) throw new IOException("Oversize ME mini portable terminal entry");
+            ByteArrayOutputStream output = new ByteArrayOutputStream(raw.readableBytes() / 4 + 64);
+            try (GZIPOutputStream gzip = new GZIPOutputStream(output)) {
+                raw.readBytes(gzip, raw.readableBytes());
+            }
+            return output.toByteArray();
+        } finally {
+            raw.release();
         }
-        return output.toByteArray();
     }
 }

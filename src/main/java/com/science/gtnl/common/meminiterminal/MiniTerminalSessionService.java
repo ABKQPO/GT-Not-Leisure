@@ -155,10 +155,15 @@ public final class MiniTerminalSessionService {
             togglePickup(player, request, session);
             return;
         }
-        if (session == null || session.id != request.sessionId) return;
+        if (session == null || session.id != request.sessionId) {
+            synchronizeCreativeCursor(player, request);
+            return;
+        }
         MiniTerminalStatus status = session.validate();
         session.validated = status;
+        session.validationTick = player.ticksExisted;
         if (status != MiniTerminalStatus.ONLINE) {
+            synchronizeCreativeCursor(player, request);
             session.status(status);
             end(player);
             return;
@@ -198,6 +203,13 @@ public final class MiniTerminalSessionService {
             && player.openContainer.canInteractWith(player);
     }
 
+    private static void synchronizeCreativeCursor(EntityPlayerMP player, MiniTerminalRequestPacket request) {
+        if (request.kind != MiniTerminalRequestPacket.Kind.CREATIVE_ACTION || !player.theItemInWorldManager.isCreative()
+            || player.openContainer != player.inventoryContainer) return;
+        player.inventory.setItemStack(ItemStack.copyItemStack(request.creativeCursor));
+        player.updateHeldItem();
+    }
+
     static WirelessTerminalGuiObject activeHost(EntityPlayerMP player, ItemStack stack) {
         Session session = SESSIONS.get(player.getUniqueID());
         return session != null && session.player == player && session.stack == stack ? session.host : null;
@@ -233,7 +245,7 @@ public final class MiniTerminalSessionService {
     private static final class BogoInventory {
 
         static List<Slot> sources(EntityPlayerMP player, Container container, Slot source) {
-            ISlotGroup group = GuiSortingContext.create(container)
+            ISlotGroup group = GuiSortingContext.getOrCreate(container)
                 .getSlotGroup(source.slotNumber);
             if (group == null) return List.of();
             List<Slot> slots = new ArrayList<>();
@@ -305,7 +317,7 @@ public final class MiniTerminalSessionService {
         Session session) {
         if (!allowedContainer(player) || request.slot < 0
             || ItemMEMiniPortableTerminal.findTerminalSlot(player, request.terminalId) != request.slot) return null;
-        if (session != null && session.id == request.sessionId && !session.acceptAction(request)) return null;
+        if (session == null || session.id != request.sessionId || !session.acceptAction(request)) return null;
         return authoritativeSessionStack(
             player,
             request,
@@ -380,6 +392,8 @@ public final class MiniTerminalSessionService {
         Session session = new Session(player, id, request.requestId, slot, preferred, stack);
         try {
             MiniTerminalStatus status = session.validate();
+            session.validated = status;
+            session.validationTick = player.ticksExisted;
             if (status == MiniTerminalStatus.ONLINE) {
                 session.catalog = new MiniTerminalCatalog(
                     session.monitor,
@@ -409,7 +423,14 @@ public final class MiniTerminalSessionService {
         }
         Session session = SESSIONS.get(player.getUniqueID());
         if (session == null) return;
-        MiniTerminalStatus status = session.validate();
+        MiniTerminalStatus status;
+        if (session.validated == null || player.ticksExisted - session.validationTick >= 5) {
+            status = session.validate();
+            session.validated = status;
+            session.validationTick = player.ticksExisted;
+        } else {
+            status = session.validated;
+        }
         if (status == MiniTerminalStatus.ONLINE && ++session.energyTicks >= 11) {
             double drain = AEConfig.instance.wireless_getDrainRate(session.host.getRange()) * session.energyTicks;
             session.energyTicks = 0;
@@ -564,6 +585,7 @@ public final class MiniTerminalSessionService {
         NBTTagList observedPins;
         NBTTagList observedPinsSource;
         MiniTerminalStatus validated;
+        int validationTick = Integer.MIN_VALUE;
         MiniTerminalCatalog catalog;
         long pinRevision = 1;
         long lastAction;
@@ -643,7 +665,10 @@ public final class MiniTerminalSessionService {
         private boolean operationValid(SecurityPermissions permission) {
             if (SESSIONS.get(player.getUniqueID()) != this || player.openContainer != container
                 || !container.isPlayerNotUsingContainer(player)) return false;
-            if (validated == null) validated = validate();
+            if (validated == null) {
+                validated = validate();
+                validationTick = player.ticksExisted;
+            }
             return validated == MiniTerminalStatus.ONLINE && permission(permission);
         }
 

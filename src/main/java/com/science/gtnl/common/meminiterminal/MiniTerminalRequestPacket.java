@@ -74,6 +74,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
     boolean showFluids;
     IAEStack<?> pinTarget;
     ItemStack creativeCursor;
+    byte[] creativeCursorPayload;
 
     public MiniTerminalRequestPacket() {}
 
@@ -124,8 +125,14 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
         if (cursor != null && (cursor.getItemDamage() < 0 || cursor.stackSize <= 0 || cursor.stackSize > 64))
             return false;
         ByteBuf encoded = Unpooled.buffer();
-        ByteBufUtils.writeItemStack(encoded, cursor);
-        if (ACTION_HEADER_BYTES + encoded.readableBytes() > MAX_CREATIVE_ACTION_BYTES) return false;
+        try {
+            ByteBufUtils.writeItemStack(encoded, cursor);
+            if (ACTION_HEADER_BYTES + encoded.readableBytes() > MAX_CREATIVE_ACTION_BYTES) return false;
+            creativeCursorPayload = new byte[encoded.readableBytes()];
+            encoded.getBytes(encoded.readerIndex(), creativeCursorPayload);
+        } finally {
+            encoded.release();
+        }
         kind = Kind.CREATIVE_ACTION;
         creativeCursor = ItemStack.copyItemStack(cursor);
         return true;
@@ -146,10 +153,12 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
         ByteBuf encoded = Unpooled.buffer();
         try {
             Platform.writeStackByte(packet.pinTarget, encoded);
+            if (encoded.readableBytes() > MAX_PIN_BYTES) throw new IOException("Mini terminal pin too large");
         } catch (RuntimeException exception) {
             throw new IOException("Invalid mini terminal pin", exception);
+        } finally {
+            encoded.release();
         }
-        if (encoded.readableBytes() > MAX_PIN_BYTES) throw new IOException("Mini terminal pin too large");
         return packet;
     }
 
@@ -339,7 +348,10 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
                 buf.writeInt(entryId);
                 buf.writeInt(nativePin);
                 buf.writeByte(action.ordinal());
-                if (kind == Kind.CREATIVE_ACTION) ByteBufUtils.writeItemStack(buf, creativeCursor);
+                if (kind == Kind.CREATIVE_ACTION) {
+                    if (creativeCursorPayload != null) buf.writeBytes(creativeCursorPayload);
+                    else ByteBufUtils.writeItemStack(buf, creativeCursor);
+                }
             }
             case PIN_SETTINGS -> {
                 buf.writeLong(actionId);

@@ -439,6 +439,7 @@ public final class MiniTerminalClient {
     }
 
     public static void togglePickupToME() {
+        if (!connected()) return;
         int slot = findSelectedSlot();
         if (slot < 0) return;
         UUID terminalId = ItemMEMiniPortableTerminal
@@ -454,6 +455,7 @@ public final class MiniTerminalClient {
     }
 
     private static void submitSettings(boolean changed) {
+        if (!connected()) return;
         MiniTerminalModel view = model();
         long id = ++action;
         settingsRetryTicks = 0;

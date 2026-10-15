@@ -146,7 +146,7 @@ final class MiniTerminalTransferService {
                 int index = slot.getSlotIndex();
                 if (slot.inventory == player.inventory && index >= 0 && index < covered.length) covered[index] = true;
             }
-            for (int index = 9; index < covered.length; index++) {
+            for (int index = 0; index < covered.length; index++) {
                 if (!covered[index]) return false;
             }
             return true;
@@ -198,16 +198,25 @@ final class MiniTerminalTransferService {
         if (active != null) return active;
         IWirelessTermHandler handler = (IWirelessTermHandler) terminalStack.getItem();
         String binding = handler.getEncryptionKey(terminalStack);
-        IGridNode node = MiniTerminalSessionService.resolveBindingNode(binding);
-        IGrid grid = node == null ? null : node.getGrid();
         PickupHost cached = PICKUP_HOSTS.get(player.getUniqueID());
         if (cached != null && cached.player() == player
             && cached.stack() == terminalStack
             && cached.slot() == slot
             && Objects.equals(cached.binding(), binding)
+            && player.ticksExisted - cached.gridCheckTick() < 20) return cached.host();
+        IGridNode node = MiniTerminalSessionService.resolveBindingNode(binding);
+        IGrid grid = node == null ? null : node.getGrid();
+        if (cached != null && cached.player() == player
+            && cached.stack() == terminalStack
+            && cached.slot() == slot
+            && Objects.equals(cached.binding(), binding)
             && cached.host()
-                .getGrid() == grid)
+                .getGrid() == grid) {
+            PICKUP_HOSTS.put(
+                player.getUniqueID(),
+                new PickupHost(player, terminalStack, slot, binding, cached.host(), player.ticksExisted));
             return cached.host();
+        }
         WirelessTerminalGuiObject host = new WirelessTerminalGuiObject(
             handler,
             terminalStack,
@@ -216,7 +225,8 @@ final class MiniTerminalTransferService {
             slot,
             0,
             0);
-        PICKUP_HOSTS.put(player.getUniqueID(), new PickupHost(player, terminalStack, slot, binding, host));
+        PICKUP_HOSTS
+            .put(player.getUniqueID(), new PickupHost(player, terminalStack, slot, binding, host, player.ticksExisted));
         return host;
     }
 
@@ -225,7 +235,7 @@ final class MiniTerminalTransferService {
     }
 
     private record PickupHost(EntityPlayerMP player, ItemStack stack, int slot, String binding,
-        WirelessTerminalGuiObject host) {}
+        WirelessTerminalGuiObject host, int gridCheckTick) {}
 
     static final class InventoryDestination extends AdaptorIInventory {
 
