@@ -36,6 +36,7 @@ import com.science.gtnl.common.item.items.ItemPartSuperDualInterface;
 import com.science.gtnl.common.item.items.ItemPartSuperInterface;
 import com.science.gtnl.common.item.items.KFCFamily;
 import com.science.gtnl.common.item.items.NetherTeleporter;
+import com.science.gtnl.common.item.items.NetworkTopologyTool;
 import com.science.gtnl.common.item.items.NullPointerException;
 import com.science.gtnl.common.item.items.PortableCellWorkbenchItem;
 import com.science.gtnl.common.item.items.PortableItem;
@@ -151,6 +152,7 @@ public class ItemLoader {
 
     public static WirelessUpgradeChip wirelessUpgradeChip = new WirelessUpgradeChip();
     public static WirelessFrequencyCard wirelessFrequencyCard = new WirelessFrequencyCard();
+    public static NetworkTopologyTool networkTopologyTool = new NetworkTopologyTool();
     public static SuspiciousStew suspiciousStew = new SuspiciousStew();
     public static PortableItem portableItem = new PortableItem();
     public static PortableCellWorkbenchItem portableCellWorkbenchItem = new PortableCellWorkbenchItem();

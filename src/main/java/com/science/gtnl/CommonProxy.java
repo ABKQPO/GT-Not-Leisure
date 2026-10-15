@@ -28,6 +28,7 @@ import com.science.gtnl.common.part.PartSuperDualInterface;
 import com.science.gtnl.common.part.PartSuperInterface;
 import com.science.gtnl.common.recipe.gtnl.ExtremeExtremeEntityCrusherRecipes;
 import com.science.gtnl.common.recipe.thaumcraft.TCResearches;
+import com.science.gtnl.common.topology.TopologyProbes;
 import com.science.gtnl.common.wireless.WirelessAutoConnect;
 import com.science.gtnl.common.wireless.WirelessChannelManager;
 import com.science.gtnl.common.world.GTNLWorldgenloader;
@@ -116,6 +117,7 @@ public class CommonProxy implements IGuiHandler {
         MinecraftForge.EVENT_BUS.register(WORLD_LISTENER);
 
         CraftingUnitHandler.register();
+        TopologyProbes.registerDefaults();
     }
 
     // postInit "Handle interaction with other mods, complete your setup based on this." (Remove if not needed)

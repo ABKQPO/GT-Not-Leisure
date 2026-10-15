@@ -64,6 +64,37 @@ public class MainConfig {
         public int maxEntrancesPerFrequency = 4096;
     }
 
+    public static final Topology topology = new Topology();
+
+    @Comment("Network topology explorer")
+    public static class Topology {
+
+        @Comment("Maximum networks a single scan may discover. Extra networks are reported as a truncated scan.")
+        @DefaultInt(64)
+        @RangeInt(min = 1, max = 4096)
+        public int maxNetworks = 64;
+
+        @Comment("Maximum boundary candidate nodes a single scan may probe across all discovered networks.")
+        @DefaultInt(8192)
+        @RangeInt(min = 64, max = 1048576)
+        public int maxProbedNodes = 8192;
+
+        @Comment("Maximum devices listed per network. Extra devices are reported as a truncated scan.")
+        @DefaultInt(64)
+        @RangeInt(min = 0, max = 4096)
+        public int maxDevicesPerNetwork = 64;
+
+        @Comment("Maximum devices listed across the whole snapshot.")
+        @DefaultInt(512)
+        @RangeInt(min = 0, max = 65536)
+        public int maxDevicesTotal = 512;
+
+        @Comment("Server ticks between rescans while a viewer is open. Nothing is sent when nothing changed.")
+        @DefaultInt(40)
+        @RangeInt(min = 5, max = 1200)
+        public int rescanIntervalTicks = 40;
+    }
+
     public static final Item item = new Item();
 
     @Sync
