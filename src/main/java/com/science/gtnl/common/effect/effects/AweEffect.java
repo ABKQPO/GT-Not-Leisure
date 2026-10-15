@@ -16,6 +16,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 
 import com.google.common.collect.ImmutableList;
 import com.science.gtnl.common.effect.EffectBase;
+import com.science.gtnl.utils.ColorUtils;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -33,7 +34,7 @@ public class AweEffect extends EffectBase {
     private static final Random random = new Random();
 
     public AweEffect(int id) {
-        super(id, "awe", false, 0xFF00FF, 1);
+        super(id, "awe", false, ColorUtils.rgb(ColorUtils.effectAwe), 1);
         MinecraftForge.EVENT_BUS.register(this);
     }
 

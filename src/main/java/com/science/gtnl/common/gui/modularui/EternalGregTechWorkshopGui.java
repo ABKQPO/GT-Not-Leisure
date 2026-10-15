@@ -57,6 +57,7 @@ import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.MilestoneFormatter;
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.MilestoneIcon;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.utils.ColorUtils;
 
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.GuiUsageRecipe;
@@ -1478,7 +1479,7 @@ public class EternalGregTechWorkshopGui extends GTNLMultiBlockBaseGui<EternalGre
                 .child(
                     IKey.str(upgrade.getLoreText())
                         .style(EnumChatFormatting.ITALIC)
-                        .color(0xFFBBBDBD)
+                        .color(ColorUtils.workshopTextSilver.getColor())
                         .alignment(Alignment.CENTER)
                         .asWidget()
                         .height((int) (height * 0.9) - upgrade.getLoreYPos())
@@ -1500,7 +1501,7 @@ public class EternalGregTechWorkshopGui extends GTNLMultiBlockBaseGui<EternalGre
                         + upgrade.getShardCost())
                     .alignment(Alignment.CENTER)
                     .scale(0.7f)
-                    .color(0xFF9C9C9C)
+                    .color(ColorUtils.workshopTextGray.getColor())
                     .asWidget()
                     .size(70, 15)
                     .leftRel(0))
@@ -1514,7 +1515,7 @@ public class EternalGregTechWorkshopGui extends GTNLMultiBlockBaseGui<EternalGre
             })
                 .alignment(Alignment.CENTER)
                 .scale(0.7f)
-                .color(0xFF9C9C9C)
+                .color(ColorUtils.workshopTextGray.getColor())
                 .asWidget()
                 .size(70, 15)
                 .rightRel(0))

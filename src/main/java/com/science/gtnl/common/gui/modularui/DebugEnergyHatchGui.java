@@ -14,6 +14,7 @@ import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 import com.science.gtnl.common.gui.GTNLMui2Textures;
 import com.science.gtnl.common.machine.hatch.DebugEnergyHatch;
+import com.science.gtnl.utils.ColorUtils;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.modularui2.GTGuiTextures;
@@ -56,13 +57,13 @@ public class DebugEnergyHatchGui extends MTEHatchBaseGui<DebugEnergyHatch> {
             .child(
                 IKey.dynamic(() -> "TIER: " + getTierName(eutSyncer))
                     .asWidget()
-                    .color(0xFFFFFFFF)
+                    .color(ColorUtils.opaqueWhite.getColor())
                     .pos(46, 22)
                     .size(84, 12))
             .child(
                 IKey.dynamic(() -> "SUM: " + getPowerSum(eutSyncer, ampSyncer))
                     .asWidget()
-                    .color(0xFFFFFFFF)
+                    .color(ColorUtils.opaqueWhite.getColor())
                     .pos(46, 46)
                     .size(84, 12))
             .child(createLabelledField("EUT: ", eutSyncer, 8))
@@ -214,7 +215,7 @@ public class DebugEnergyHatchGui extends MTEHatchBaseGui<DebugEnergyHatch> {
             .child(
                 IKey.str(label)
                     .asWidget()
-                    .color(0xFFFFFFFF)
+                    .color(ColorUtils.opaqueWhite.getColor())
                     .pos(0, 1)
                     .size(24, 12))
             .child(
@@ -226,7 +227,7 @@ public class DebugEnergyHatchGui extends MTEHatchBaseGui<DebugEnergyHatch> {
         return new TextFieldWidget().value(syncer)
             .numbersLong(0L, Long.MAX_VALUE)
             .setFormatAsInteger(true)
-            .setTextColor(0xFFFFFFFF)
+            .setTextColor(ColorUtils.opaqueWhite.getColor())
             .setTextAlignment(Alignment.Center)
             .background(GTGuiTextures.BACKGROUND_TEXT_FIELD);
     }

@@ -19,13 +19,14 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.science.gtnl.common.effect.EffectBase;
 import com.science.gtnl.loader.EffectLoader;
+import com.science.gtnl.utils.ColorUtils;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ShimmeringEffect extends EffectBase {
 
     public ShimmeringEffect(int id) {
-        super(id, "shimmering", false, 0x8868C3, 3);
+        super(id, "shimmering", false, ColorUtils.rgb(ColorUtils.effectShimmering), 3);
         MinecraftForge.EVENT_BUS.register(this);
     }
 

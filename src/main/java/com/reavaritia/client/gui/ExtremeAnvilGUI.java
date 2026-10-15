@@ -21,6 +21,7 @@ import org.lwjgl.opengl.GL11;
 import com.reavaritia.ReAvaritia;
 import com.reavaritia.common.packet.ExtremeAnvilPacket;
 import com.reavaritia.container.ContainerExtremeAnvil;
+import com.science.gtnl.utils.ColorUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -174,10 +175,16 @@ public class ExtremeAnvilGUI extends GuiContainer implements ICrafting {
     @Override
     public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String title = this.getLocalizedName();
-        this.fontRendererObj
-            .drawString(title, (this.xSize - this.fontRendererObj.getStringWidth(title)) / 2, 6, 0x404040);
-        this.fontRendererObj
-            .drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 3, 0x404040);
+        this.fontRendererObj.drawString(
+            title,
+            (this.xSize - this.fontRendererObj.getStringWidth(title)) / 2,
+            6,
+            ColorUtils.guiTextColorGray.getColor());
+        this.fontRendererObj.drawString(
+            StatCollector.translateToLocal("container.inventory"),
+            8,
+            this.ySize - 96 + 3,
+            ColorUtils.guiTextColorGray.getColor());
     }
 
     @Override

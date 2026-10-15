@@ -10,6 +10,7 @@ import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.layout.Grid;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.science.gtnl.common.machine.hatch.NuclearItemBus;
+import com.science.gtnl.utils.ColorUtils;
 
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.common.gui.modularui.hatch.base.MTEHatchBaseGui;
@@ -18,8 +19,8 @@ import gregtech.common.modularui2.widget.builder.ItemSlotGridBuilder;
 public class NuclearItemBusGui extends MTEHatchBaseGui<NuclearItemBus> {
 
     public static final String ITEM_SLOT_GROUP = "gtnl_nuclear_item_bus_inv";
-    private static final int COLOR_INPUT_BAR = 0xFF4D7BFF;
-    private static final int COLOR_OUTPUT_BAR = 0xFFFF8A1E;
+    private static final int COLOR_INPUT_BAR = ColorUtils.guiBarInput.getColor();
+    private static final int COLOR_OUTPUT_BAR = ColorUtils.guiBarOutput.getColor();
 
     public NuclearItemBusGui(NuclearItemBus hatch) {
         super(hatch);

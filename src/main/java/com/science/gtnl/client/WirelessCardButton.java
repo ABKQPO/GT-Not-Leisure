@@ -40,6 +40,7 @@ import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.CycleButtonWidget;
 import com.cleanroommc.modularui.widgets.ToggleButton;
 import com.science.gtnl.common.wireless.WirelessCardVisualisation;
+import com.science.gtnl.utils.ColorUtils;
 
 import appeng.client.gui.ScreenColor;
 import appeng.core.localization.GuiText;
@@ -147,7 +148,10 @@ public class WirelessCardButton {
             .hoverBackground(background)
             .overlay(
                 IKey.dynamic(() -> fontRendererObj.trimStringToWidth(label, Math.max(0, widget.getArea().width - 4)))
-                    .color(() -> !available ? 0xffa0a0a0 : widget.isHovering() ? 0xffffffa0 : 0xffe0e0e0)
+                    .color(
+                        () -> !available ? ColorUtils.guiButtonDisabled.getColor()
+                            : widget.isHovering() ? ColorUtils.guiButtonHover.getColor()
+                                : ColorUtils.guiButtonNormal.getColor())
                     .shadow(true));
     }
 

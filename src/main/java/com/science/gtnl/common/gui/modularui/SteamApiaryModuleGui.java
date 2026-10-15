@@ -53,6 +53,7 @@ import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamApiaryModule;
+import com.science.gtnl.utils.ColorUtils;
 
 import codechicken.nei.LayoutManager;
 import codechicken.nei.NEIClientConfig;
@@ -341,7 +342,7 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
                     GuiDraw.drawStandardSlotAmountText(count, format, getArea());
                 }
                 if (machineRunning) {
-                    GuiDraw.drawRect(0, 0, SLOT_SIZE, SLOT_SIZE, 0x80000000);
+                    GuiDraw.drawRect(0, 0, SLOT_SIZE, SLOT_SIZE, ColorUtils.guiOverlayBlack.getColor());
                 }
             }
         };

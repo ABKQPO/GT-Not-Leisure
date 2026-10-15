@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.opengl.GL11;
 
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.science.gtnl.utils.ColorUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -98,7 +99,16 @@ public class EntityParticleBeam extends EntityFX {
         GL11.glPushMatrix();
         GL11.glTranslated(0.0, 0.0, -0.35);
         ResourceHandler.bindResource("textures/particle/reactorBeam.png");
-        drawBeam(tessellator, 1.0, 0.355, 0.8, offsetLength, partialTick, true, false, 0x00ffff);
+        drawBeam(
+            tessellator,
+            1.0,
+            0.355,
+            0.8,
+            offsetLength,
+            partialTick,
+            true,
+            false,
+            ColorUtils.rgb(ColorUtils.effectCyan));
         GL11.glPopMatrix();
 
         GL11.glPushMatrix();
@@ -114,12 +124,21 @@ public class EntityParticleBeam extends EntityFX {
             partialTick,
             false,
             false,
-            0x00ffff);
+            ColorUtils.rgb(ColorUtils.effectCyan));
         GL11.glPopMatrix();
 
         GL11.glPushMatrix();
         GL11.glTranslated(0.0, 0.0, -0.35);
-        drawBeam(tessellator, 1.0, 0.263, 0.8, offsetLength, partialTick, true, true, 0xff6600);
+        drawBeam(
+            tessellator,
+            1.0,
+            0.263,
+            0.8,
+            offsetLength,
+            partialTick,
+            true,
+            true,
+            ColorUtils.rgb(ColorUtils.particleOrange));
         GL11.glPopMatrix();
 
         GL11.glPushMatrix();
@@ -136,7 +155,7 @@ public class EntityParticleBeam extends EntityFX {
             partialTick,
             false,
             true,
-            0xff6600);
+            ColorUtils.rgb(ColorUtils.particleOrange));
         GL11.glPopMatrix();
 
         GL11.glShadeModel(GL11.GL_FLAT);

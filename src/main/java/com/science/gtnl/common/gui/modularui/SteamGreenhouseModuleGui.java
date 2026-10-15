@@ -43,6 +43,7 @@ import com.gtnewhorizon.cropsnh.utility.IFDropTable;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.options.CompactOptions;
 import com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamGreenhouseModule;
+import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseStoredCrop;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseViewMode;
 
@@ -314,7 +315,7 @@ public class SteamGreenhouseModuleGui extends GTNLSteamMultiBlockBaseGui {
                     SLOT_SIZE,
                     Alignment.BottomRight);
                 if (!multiblock.isGreenHouseStorageEditable()) {
-                    GuiDraw.drawRect(0, 0, SLOT_SIZE, SLOT_SIZE, 0x80000000);
+                    GuiDraw.drawRect(0, 0, SLOT_SIZE, SLOT_SIZE, ColorUtils.guiOverlayBlack.getColor());
                 }
             }
         }.size(SLOT_SIZE, SLOT_SIZE);

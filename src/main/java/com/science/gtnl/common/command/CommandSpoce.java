@@ -8,12 +8,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 
+import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.render.SpoceEffect;
 
 public class CommandSpoce extends CommandBase {
 
     private static final double DEF_RADIUS = 4.0;
-    private static final int DEF_COLOR = 0x66CCFF;
+    private static final int DEF_COLOR = ColorUtils.rgb(ColorUtils.sporeDefault);
     private static final float DEF_ALPHA = 0.5f;
     private static final boolean DEF_LINES = true;
 
@@ -62,9 +63,9 @@ public class CommandSpoce extends CommandBase {
                 }
 
                 SpoceEffect testEffect = new SpoceEffect(player.posX, player.posY, player.posZ, 0.8f, 1.0f);
-                testEffect.addLayer(4.0, 0x66CCFF, true);
-                testEffect.addLayer(6.0, 0xFF9933, true);
-                testEffect.addLayer(8.0, 0x66FF66, true);
+                testEffect.addLayer(4.0, ColorUtils.rgb(ColorUtils.sporeDefault), true);
+                testEffect.addLayer(6.0, ColorUtils.rgb(ColorUtils.sporeOrange), true);
+                testEffect.addLayer(8.0, ColorUtils.rgb(ColorUtils.sporeGreen), true);
 
                 SpoceEffect.addEffect(testEffect);
 

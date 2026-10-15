@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.utils.ColorUtils;
 
 /** Client-independent syntax and native formatting rules for effect text. */
 public class TextEffectFormat {
@@ -40,8 +41,6 @@ public class TextEffectFormat {
             Map.entry("ge", "ghost_echo"),
             Map.entry("pf", "paper_fold"),
             Map.entry("fc", "frost_crystal")));
-    private static final int[] VANILLA_COLORS = { 0x000000, 0x0000AA, 0x00AA00, 0x00AAAA, 0xAA0000, 0xAA00AA, 0xFFAA00,
-        0xAAAAAA, 0x555555, 0x5555FF, 0x55FF55, 0x55FFFF, 0xFF5555, 0xFF55FF, 0xFFFF55, 0xFFFFFF };
 
     private TextEffectFormat() {}
 
@@ -172,7 +171,7 @@ public class TextEffectFormat {
         if (code == 'r') return null;
         if (style == null) return null;
         int color = "0123456789abcdef".indexOf(code);
-        if (color >= 0) return style.withColors(VANILLA_COLORS[color]);
+        if (color >= 0) return style.withColors(ColorUtils.vanillaColor(color));
         if (token.length() == 14) return style.withColors(hexColor(token, 0));
         if (token.length() == 30) return style.withColors(hexColor(token, 2), hexColor(token, 16));
         return style;

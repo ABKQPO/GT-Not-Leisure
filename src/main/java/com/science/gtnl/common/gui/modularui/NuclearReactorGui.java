@@ -27,6 +27,7 @@ import com.cleanroommc.modularui.widgets.ListWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.science.gtnl.common.machine.multiblock.NuclearReactor;
 import com.science.gtnl.common.machine.multiblock.NuclearReactor.CoreCellDisplay;
+import com.science.gtnl.utils.ColorUtils;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.modularui2.GTGuiTextures;
@@ -45,9 +46,9 @@ public class NuclearReactorGui extends GTNLMultiBlockBaseGui<NuclearReactor> {
     private static final int EXTRA_TERMINAL_HEIGHT = 34;
     private static final int TITLE_CLEARANCE = 12;
     private static final int PANEL_TOP_OFFSET = 0;
-    private static final int FRAME_BORDER_COLOR = 0xFFC8C8C8;
-    private static final int STRUCTURE_FILL_COLOR = 0xFF2E2E2E;
-    private static final int STRUCTURE_EDGE_COLOR = 0xFF707070;
+    private static final int FRAME_BORDER_COLOR = ColorUtils.guiFrameBorder.getColor();
+    private static final int STRUCTURE_FILL_COLOR = ColorUtils.guiStructureFill.getColor();
+    private static final int STRUCTURE_EDGE_COLOR = ColorUtils.guiStructureEdge.getColor();
     private IntSyncValue steamRateSyncer;
     private IntSyncValue tierSyncer;
 

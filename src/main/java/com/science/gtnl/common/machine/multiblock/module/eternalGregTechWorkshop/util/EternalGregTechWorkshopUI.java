@@ -30,6 +30,7 @@ import com.gtnewhorizons.modularui.common.widget.MultiChildWidget;
 import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.science.gtnl.utils.ColorUtils;
 
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.GuiUsageRecipe;
@@ -212,7 +213,7 @@ public class EternalGregTechWorkshopUI {
                             EnumChatFormatting.BOLD
                                 + StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.fuel"))
                                     .alignment(Alignment.CenterLeft)
-                                    .color(0x55ffff))
+                                    .color(ColorUtils.workshopAccentCyan.getColor()))
                     .setPos(7, 95)
                     .setSize(150, 15))
             .widget(
@@ -222,7 +223,7 @@ public class EternalGregTechWorkshopUI {
                             EnumChatFormatting.BOLD
                                 + StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.modules"))
                                     .alignment(Alignment.CenterLeft)
-                                    .color(0x55ffff))
+                                    .color(ColorUtils.workshopAccentCyan.getColor()))
                     .setPos(7, 110)
                     .setSize(150, 15))
             .widget(
@@ -232,7 +233,7 @@ public class EternalGregTechWorkshopUI {
                             EnumChatFormatting.BOLD
                                 + StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.upgrades"))
                                     .alignment(Alignment.CenterLeft)
-                                    .color(0x55ffff))
+                                    .color(ColorUtils.workshopAccentCyan.getColor()))
                     .setPos(7, 125)
                     .setSize(150, 15))
             .widget(
@@ -242,7 +243,7 @@ public class EternalGregTechWorkshopUI {
                             EnumChatFormatting.BOLD
                                 + StatCollector.translateToLocal("gt.blockmachines.multimachine.FOG.milestones"))
                                     .alignment(Alignment.CenterLeft)
-                                    .color(0x55ffff))
+                                    .color(ColorUtils.workshopAccentCyan.getColor()))
                     .setPos(7, 140)
                     .setSize(150, 15))
             .widget(
@@ -384,7 +385,7 @@ public class EternalGregTechWorkshopUI {
         // Lore Text
         widget.addChild(
             new TextWidget(EnumChatFormatting.ITALIC + upgrade.getLoreText()).setTextAlignment(Alignment.Center)
-                .setDefaultColor(0xbbbdbd)
+                .setDefaultColor(ColorUtils.rgb(ColorUtils.workshopTextSilver))
                 .setSize(w - 15, (int) (h * 0.9) - upgrade.getLoreYPos())
                 .setPos(9, upgrade.getLoreYPos()));
 
@@ -395,7 +396,7 @@ public class EternalGregTechWorkshopUI {
                 .setTextAlignment(Alignment.Center)
                 .setScale(0.7f)
                 .setMaxWidth(70)
-                .setDefaultColor(0x9c9c9c)
+                .setDefaultColor(ColorUtils.rgb(ColorUtils.workshopTextGray))
                 .setPos(11, h - 25));
 
         // Available shards text
@@ -404,7 +405,7 @@ public class EternalGregTechWorkshopUI {
                 .setTextAlignment(Alignment.Center)
                 .setScale(0.7f)
                 .setMaxWidth(90)
-                .setDefaultColor(0x9c9c9c)
+                .setDefaultColor(ColorUtils.rgb(ColorUtils.workshopTextGray))
                 .setPos(w - 87, h - 25));
 
         // Available shards amount
@@ -413,7 +414,7 @@ public class EternalGregTechWorkshopUI {
                 .setTextAlignment(Alignment.Center)
                 .setScale(0.7f)
                 .setMaxWidth(90)
-                .setDefaultColor(0x9c9c9c)
+                .setDefaultColor(ColorUtils.rgb(ColorUtils.workshopTextGray))
                 .setPos(w - 27, h - 18));
 
         // Complete button group

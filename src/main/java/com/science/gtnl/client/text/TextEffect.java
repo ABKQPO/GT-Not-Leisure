@@ -1,5 +1,7 @@
 package com.science.gtnl.client.text;
 
+import com.science.gtnl.utils.ColorUtils;
+
 /** A registered effect shades an existing mask without owning text layout. */
 public interface TextEffect extends AutoCloseable {
 
@@ -14,7 +16,7 @@ public interface TextEffect extends AutoCloseable {
     }
 
     default int fallbackColor() {
-        return 0xFFFFFF;
+        return ColorUtils.rgb(ColorUtils.effectWhite);
     }
 
     @Override

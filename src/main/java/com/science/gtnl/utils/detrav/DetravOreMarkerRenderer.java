@@ -23,6 +23,8 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 import org.lwjgl.opengl.GL11;
 
+import com.science.gtnl.utils.ColorUtils;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -163,14 +165,14 @@ public class DetravOreMarkerRenderer {
 
         minecraft.getTextureManager()
             .bindTexture(TextureMap.locationBlocksTexture);
-        iconQuad(plane, background, half, 0xFFFFFF);
+        iconQuad(plane, background, half, ColorUtils.rgb(ColorUtils.guiTextColorWhite));
 
         minecraft.getTextureManager()
             .bindTexture(textureFile);
         iconQuad(plane, icon, half, color);
         IIcon overlay = ore.getOverlayIcon();
         if (overlay != null) {
-            iconQuad(plane, overlay, half, 0xFFFFFF);
+            iconQuad(plane, overlay, half, ColorUtils.rgb(ColorUtils.guiTextColorWhite));
         }
         return true;
     }
@@ -194,7 +196,7 @@ public class DetravOreMarkerRenderer {
 
     private static void renderDiamond(Plane plane, float half, DetravOreMarker marker) {
         GL11.glDisable(GL11.GL_TEXTURE_2D);
-        diamond(plane, half * 1.3F, 0x000000, 160);
+        diamond(plane, half * 1.3F, ColorUtils.guiTextColorBlack.getColor(), 160);
         diamond(plane, half, marker.color & 0xFFFFFF, 255);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
@@ -212,7 +214,7 @@ public class DetravOreMarkerRenderer {
 
         int width = fontRenderer.getStringWidth(marker.name);
         GL11.glDepthMask(false);
-        fontRenderer.drawString(marker.name, -width / 2, 0, 0xFFFFFFFF);
+        fontRenderer.drawString(marker.name, -width / 2, 0, ColorUtils.opaqueWhite.getColor());
         GL11.glDepthMask(true);
 
         GL11.glColor4f(1F, 1F, 1F, 1F);

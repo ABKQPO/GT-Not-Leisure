@@ -6,13 +6,14 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
 import com.science.gtnl.common.effect.EffectBase;
+import com.science.gtnl.utils.ColorUtils;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class PerfectPhysiqueEffect extends EffectBase {
 
     public PerfectPhysiqueEffect(int id) {
-        super(id, "perfect_physique", false, 0xFFD700, 2);
+        super(id, "perfect_physique", false, ColorUtils.rgb(ColorUtils.effectPerfectPhysique), 2);
         MinecraftForge.EVENT_BUS.register(this);
     }
 

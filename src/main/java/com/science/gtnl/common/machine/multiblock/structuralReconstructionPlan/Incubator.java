@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.util.GTRecipeConstants.GLASS;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,6 +32,7 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.machine.multiblock.LargeIncubator;
+import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
@@ -91,7 +91,7 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
     private static final int HORIZONTAL_OFF_SET = 2;
     private static final int VERTICAL_OFF_SET = 4;
     private static final int DEPTH_OFF_SET = 0;
-    private static final int DEFAULT_CULTURE_COLOR = Color.DARK_GRAY.getRGB() & 0x00FFFFFF;
+    private static final int DEFAULT_CULTURE_COLOR = ColorUtils.rgb(ColorUtils.guiTextColorGray);
 
     public Sievert defaultSievertData = new Sievert(0, false);
     public HashSet<EntityPlayerMP> playerMPHashSet = new HashSet<>();

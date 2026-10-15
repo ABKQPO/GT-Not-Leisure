@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.loader.EffectLoader;
+import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.common.Optional;
@@ -109,7 +110,7 @@ public class TestItem extends Item implements IHaloRenderItem {
     @Override
     @Optional.Method(modid = "Avaritia")
     public int getHaloColour(ItemStack stack) {
-        return 0xE6FFFFFF;
+        return ColorUtils.itemGhostWhite.getColor();
     }
 
 }

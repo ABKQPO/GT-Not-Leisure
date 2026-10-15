@@ -26,6 +26,7 @@ import com.science.gtnl.common.gui.recipe.SpaceMinerFrontend;
 import com.science.gtnl.common.gui.recipe.SteamGateAssemblerBackend;
 import com.science.gtnl.common.gui.recipe.SteamGateAssemblerFrontend;
 import com.science.gtnl.common.gui.recipe.SteamLogoFrontend;
+import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
@@ -623,7 +624,9 @@ public class GTNLRecipeMaps {
                             drawNEIOverlayText(
                                 "+",
                                 stack,
-                                colorOverride.getTextColorOrDefault("nei_overlay_yellow", 0xFDD835),
+                                colorOverride.getTextColorOrDefault(
+                                    "nei_overlay_yellow",
+                                    ColorUtils.rgb(ColorUtils.recipeOverlayYellow)),
                                 0.5f,
                                 true,
                                 Alignment.TopRight);

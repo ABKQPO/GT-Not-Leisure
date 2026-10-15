@@ -23,6 +23,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.science.gtnl.CommonProxy;
 import com.science.gtnl.api.ICustomGui;
 import com.science.gtnl.common.item.items.ItemPartMECellDock;
+import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
 
@@ -556,7 +557,7 @@ public class PartMECellDock extends PartBasicState
         boolean powered = isPowered();
         Tessellator tessellator = Tessellator.instance;
         tessellator.setBrightness(powered ? (15 << 20 | 15 << 4) : 0);
-        tessellator.setColorOpaque_I(powered ? getStatusColor(status) : 0x000000);
+        tessellator.setColorOpaque_I(powered ? getStatusColor(status) : ColorUtils.guiTextColorBlack.getColor());
 
         helper.setBounds(6.194f, 12.995f, 14, 7.398f, 12.995f, 15.01f);
         helper.setFacesToRender(worldFaces(helper, ForgeDirection.UP));
@@ -566,7 +567,7 @@ public class PartMECellDock extends PartBasicState
         helper.setFacesToRender(worldFaces(helper, ForgeDirection.SOUTH));
         helper.renderFace(x, y, z, ExtraBlockTextures.White.getIcon(), ForgeDirection.SOUTH, renderer);
 
-        tessellator.setColorOpaque_I(0xFFFFFF);
+        tessellator.setColorOpaque_I(ColorUtils.guiTextColorWhite.getColor());
     }
 
     @Override
@@ -851,11 +852,11 @@ public class PartMECellDock extends PartBasicState
 
     private int getStatusColor(int status) {
         return switch (status) {
-            case 1 -> 0x00FF00;
-            case 2 -> 0x00AAFF;
-            case 3 -> 0xFFAA00;
-            case 4 -> 0xFF0000;
-            default -> 0xFFFFFF;
+            case 1 -> ColorUtils.statusOnline.getColor();
+            case 2 -> ColorUtils.statusWaiting.getColor();
+            case 3 -> ColorUtils.statusWarning.getColor();
+            case 4 -> ColorUtils.statusError.getColor();
+            default -> ColorUtils.guiTextColorWhite.getColor();
         };
     }
 

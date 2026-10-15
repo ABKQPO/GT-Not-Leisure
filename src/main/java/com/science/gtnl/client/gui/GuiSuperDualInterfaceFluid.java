@@ -17,6 +17,7 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.SwitchSuperDualInterfaceGuiPacket;
 import com.science.gtnl.common.part.PartSuperDualInterface;
 import com.science.gtnl.container.ContainerSuperDualInterfaceFluid;
+import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
 
@@ -78,15 +79,18 @@ public class GuiSuperDualInterfaceFluid extends AEBaseGui {
 
     @Override
     public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY) {
-        fontRendererObj
-            .drawString(getGuiDisplayName(I18n.format("gtnl.gui.super_dual_interface.name")), 8, 6, 0x404040);
-        fontRendererObj.drawString(GuiText.inventory.getLocal(), 8, ySize - 94, 0x404040);
+        fontRendererObj.drawString(
+            getGuiDisplayName(I18n.format("gtnl.gui.super_dual_interface.name")),
+            8,
+            6,
+            ColorUtils.guiTextColorGray.getColor());
+        fontRendererObj.drawString(GuiText.inventory.getLocal(), 8, ySize - 94, ColorUtils.guiTextColorGray.getColor());
         fontRendererObj.drawString(
             StatCollector
                 .translateToLocalFormatted("gtnl.gui.super_interface.page", cont.currentPage + 1, cont.maxPage),
             110,
             6,
-            0x404040);
+            ColorUtils.guiTextColorGray.getColor());
 
         GL11.glColor4f(1F, 1F, 1F, 1F);
         IAEFluidTank fluidInv = cont.getTile()
@@ -100,7 +104,11 @@ public class GuiSuperDualInterfaceFluid extends AEBaseGui {
                 continue;
             }
             if (!(cont.getTile() instanceof PartSuperDualInterface)) {
-                fontRendererObj.drawString(String.valueOf(i + 1), TANK_X + i * TANK_X_OFF + 5, 22, 0x404040);
+                fontRendererObj.drawString(
+                    String.valueOf(i + 1),
+                    TANK_X + i * TANK_X_OFF + 5,
+                    22,
+                    ColorUtils.guiTextColorGray.getColor());
             }
             RenderUtil.renderFluidIntoGui(
                 this,

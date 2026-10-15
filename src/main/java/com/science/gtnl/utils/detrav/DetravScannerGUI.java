@@ -23,6 +23,7 @@ import org.lwjgl.opengl.GL11;
 import com.gtnewhorizon.gtnhlib.util.CoordinatePacker;
 import com.science.gtnl.common.packet.ProspectingPacket;
 import com.science.gtnl.common.packet.TeleportRequestPacket;
+import com.science.gtnl.utils.ColorUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -595,7 +596,7 @@ public class DetravScannerGUI extends GuiScreen {
         updateMapTransform();
         pollMarkerClick(mouseX, mouseY);
 
-        drawRect(panelX, panelY, panelX + mapWidth + listWidth, panelY + mapHeight, 0xFFC6C6C6);
+        drawRect(panelX, panelY, panelX + mapWidth + listWidth, panelY + mapHeight, ColorUtils.detravPanel.getColor());
 
         ScaledResolution resolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
         int scaleFactor = resolution.getScaleFactor();
@@ -615,7 +616,8 @@ public class DetravScannerGUI extends GuiScreen {
 
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
-        fontRendererObj.drawStringWithShadow("N", viewportX + viewWidth / 2 - 2, viewportY + 1, 0xFFFFFFFF);
+        fontRendererObj
+            .drawStringWithShadow("N", viewportX + viewWidth / 2 - 2, viewportY + 1, ColorUtils.opaqueWhite.getColor());
 
         drawMapScrollbars();
 
@@ -626,7 +628,7 @@ public class DetravScannerGUI extends GuiScreen {
                 StatCollector.translateToLocal("gui.detrav.scanner.search.hint"),
                 listX + 4,
                 panelY + 3,
-                0xFF808080);
+                ColorUtils.detravTextMuted.getColor());
         }
 
         // Feed an out-of-bounds Y while dragging so the list does not latch and scroll along with the map.
@@ -644,7 +646,7 @@ public class DetravScannerGUI extends GuiScreen {
             (listWidth - 4) * 2);
         int hintX = (listX + listWidth - 2) * 2 - fontRendererObj.getStringWidth(hint);
         int hintY = (panelY + mapHeight - HINT_HEIGHT) * 2 + (HINT_HEIGHT * 2 - 8) / 2;
-        fontRendererObj.drawString(hint, hintX, hintY, 0xFF5E5E5E);
+        fontRendererObj.drawString(hint, hintX, hintY, ColorUtils.detravHint.getColor());
         GL11.glPopMatrix();
     }
 
@@ -778,23 +780,43 @@ public class DetravScannerGUI extends GuiScreen {
                 viewportY + viewHeight - SCROLLBAR_THICKNESS,
                 viewportX + viewWidth,
                 viewportY + viewHeight,
-                0x80000000);
+                ColorUtils.guiOverlayBlack.getColor());
         }
         if (maxPanX > 0) {
             int trackWidth = viewWidth - (maxPanY > 0 ? SCROLLBAR_THICKNESS : 0);
             int top = viewportY + viewHeight - SCROLLBAR_THICKNESS;
-            drawRect(viewportX, top, viewportX + trackWidth, top + SCROLLBAR_THICKNESS, 0x80000000);
+            drawRect(
+                viewportX,
+                top,
+                viewportX + trackWidth,
+                top + SCROLLBAR_THICKNESS,
+                ColorUtils.guiOverlayBlack.getColor());
             int thumbWidth = Math.max(12, (int) (trackWidth * viewWidth / (map.width * zoom)));
             int thumbX = viewportX + (int) ((trackWidth - thumbWidth) * panX / maxPanX);
-            drawRect(thumbX, top, thumbX + thumbWidth, top + SCROLLBAR_THICKNESS, 0xFFB0B0B0);
+            drawRect(
+                thumbX,
+                top,
+                thumbX + thumbWidth,
+                top + SCROLLBAR_THICKNESS,
+                ColorUtils.detravScrollbar.getColor());
         }
         if (maxPanY > 0) {
             int trackHeight = viewHeight - (maxPanX > 0 ? SCROLLBAR_THICKNESS : 0);
             int left = viewportX + viewWidth - SCROLLBAR_THICKNESS;
-            drawRect(left, viewportY, left + SCROLLBAR_THICKNESS, viewportY + trackHeight, 0x80000000);
+            drawRect(
+                left,
+                viewportY,
+                left + SCROLLBAR_THICKNESS,
+                viewportY + trackHeight,
+                ColorUtils.guiOverlayBlack.getColor());
             int thumbHeight = Math.max(12, (int) (trackHeight * viewHeight / (map.height * zoom)));
             int thumbY = viewportY + (int) ((trackHeight - thumbHeight) * panY / maxPanY);
-            drawRect(left, thumbY, left + SCROLLBAR_THICKNESS, thumbY + thumbHeight, 0xFFB0B0B0);
+            drawRect(
+                left,
+                thumbY,
+                left + SCROLLBAR_THICKNESS,
+                thumbY + thumbHeight,
+                ColorUtils.detravScrollbar.getColor());
         }
     }
 
@@ -835,8 +857,8 @@ public class DetravScannerGUI extends GuiScreen {
             int centreZ = mapScreenZ(cellZ + 0.5F);
             int outerSide = Math.max(2, Math.round(5F * zoom));
             int innerSide = Math.max(1, Math.round(3F * zoom));
-            drawCenteredHollowRect(centreX, centreZ, outerSide, 0xFF000000);
-            drawCenteredHollowRect(centreX, centreZ, innerSide, 0xFFFFD700);
+            drawCenteredHollowRect(centreX, centreZ, outerSide, ColorUtils.opaqueBlack.getColor());
+            drawCenteredHollowRect(centreX, centreZ, innerSide, ColorUtils.detravHighlight.getColor());
         }
     }
 
@@ -866,13 +888,13 @@ public class DetravScannerGUI extends GuiScreen {
         float[][] body = { { 6.06F, -1.5F }, { 7F, 2F }, { 6F, 5F }, { 3F, 8F }, { 0F, 9F }, { -3F, 8F }, { -6F, 5F },
             { -7F, 2F }, { -6.06F, -1.5F }, { 0F, -14F } };
 
-        fanShape(tessellator, body, 0F, 2F, 0.9F, 0xEDD8FF);
-        fanShape(tessellator, body, 0F, 2F, 0.75F, 0xC071FF);
+        fanShape(tessellator, body, 0F, 2F, 0.9F, ColorUtils.rgb(ColorUtils.detravOreFill));
+        fanShape(tessellator, body, 0F, 2F, 0.75F, ColorUtils.rgb(ColorUtils.detravOreOutline));
 
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
         GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
         GL11.glLineWidth(1.5F);
-        strokeShape(tessellator, body, 0F, 2F, 0.9F, 0xEDD8FF);
+        strokeShape(tessellator, body, 0F, 2F, 0.9F, ColorUtils.rgb(ColorUtils.detravOreFill));
 
         GL11.glPopMatrix();
         GL11.glPopAttrib();
