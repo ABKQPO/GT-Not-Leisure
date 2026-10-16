@@ -75,17 +75,8 @@ public class CraftingTableRecipes implements IRecipePool {
         var aeBlocks = AEApi.instance()
             .definitions()
             .blocks();
-        var aeItems = AEApi.instance()
-            .definitions()
-            .items();
-
-        RecipeSorter.register(
-            ScienceNotLeisure.MODID + ":me_mini_terminal_upgrade",
-            MiniTerminalUpgradeRecipe.class,
-            RecipeSorter.Category.SHAPED,
-            "after:forge:shapedore");
         GameRegistry.addRecipe(
-            new MiniTerminalUpgradeRecipe(
+            new ShapedOreRecipe(
                 GTNLItemList.MEMiniPortableTerminal.get(1),
                 "PEP",
                 "CWC",
@@ -100,7 +91,7 @@ public class CraftingTableRecipes implements IRecipePool {
                 aeParts.cableGlass()
                     .stack(AEColor.Transparent, 1),
                 'W',
-                aeItems.wirelessTerminal()
+                aeParts.terminal()
                     .maybeStack(1)
                     .orNull()));
 
@@ -1714,34 +1705,6 @@ public class CraftingTableRecipes implements IRecipePool {
             new Object[] { "ABA", "CDC", "ABA", 'A', OrePrefixes.circuit.get(Materials.HV), 'B',
                 ItemList.Hatch_Maintenance.get(1L), 'C', ItemList.Robot_Arm_HV.get(1L), 'D',
                 ItemList.Hull_HV.get(1L) });
-    }
-
-    private static final class MiniTerminalUpgradeRecipe extends ShapedOreRecipe {
-
-        private MiniTerminalUpgradeRecipe(ItemStack result, Object... recipe) {
-            super(result, recipe);
-        }
-
-        @Override
-        public ItemStack getCraftingResult(InventoryCrafting inventory) {
-            for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
-                ItemStack source = inventory.getStackInSlot(slot);
-                if (AEApi.instance()
-                    .definitions()
-                    .items()
-                    .wirelessTerminal()
-                    .isSameAs(source)) {
-                    ItemStack result = super.getCraftingResult(inventory);
-                    // Same battery and wireless handler: binding, cards, pins, settings and stored power all carry
-                    // over.
-                    if (source.hasTagCompound()) result.setTagCompound(
-                        (NBTTagCompound) source.getTagCompound()
-                            .copy());
-                    return result;
-                }
-            }
-            return null;
-        }
     }
 
     private static final class MiniTerminalCardRecipe extends ShapelessOreRecipe {
