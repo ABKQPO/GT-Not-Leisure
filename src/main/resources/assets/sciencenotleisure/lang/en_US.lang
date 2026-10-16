@@ -3835,6 +3835,7 @@ item.gtnl.wireless_frequency_card.name=Wireless Frequency Card
 item.gtnl.wireless_frequency_card.tooltip.0=Sneak-right-click an ME Controller: bind source
 item.gtnl.wireless_frequency_card.tooltip.1=Right-click an ME device: link / unlink cluster
 item.gtnl.wireless_frequency_card.tooltip.2=Sneak-right-click air: clear binding
+item.gtnl.wireless_frequency_card.tooltip.3=Tip: run a dense cable through piles of ME interfaces so wireless entrances can carry 32 channels instead of 8
 item.gtnl.wireless_frequency_card.manage_hint=Right-click air: open manager
 item.gtnl.wireless_frequency_card.more_hint=Hold Shift for controls
 item.gtnl.wireless_frequency_card.unbound=Unbound. Sneak-right-click an ME Controller.

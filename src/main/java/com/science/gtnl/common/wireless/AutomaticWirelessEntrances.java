@@ -116,6 +116,7 @@ public class AutomaticWirelessEntrances {
                             targets.sources()
                                 .get(node)),
                     PhysicalMeTopology::entranceRank,
+                    PhysicalMeTopology::entranceCapacity,
                     order);
                 if (candidate != null) {
                     work.occupied.add(candidate);

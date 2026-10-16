@@ -3835,6 +3835,7 @@ item.gtnl.wireless_frequency_card.name=无线频率卡
 item.gtnl.wireless_frequency_card.tooltip.0=潜行右键 ME 控制器：绑定发射源
 item.gtnl.wireless_frequency_card.tooltip.1=右键 ME 设备：连接 / 断开整簇
 item.gtnl.wireless_frequency_card.tooltip.2=潜行右键空气：清除绑定
+item.gtnl.wireless_frequency_card.tooltip.3=提示：在成堆的 ME 接口中穿一根致密线缆，无线入口即可承载 32 个频道而不是 8 个
 item.gtnl.wireless_frequency_card.manage_hint=右键空气：打开管理界面
 item.gtnl.wireless_frequency_card.more_hint=按住 Shift 查看操作
 item.gtnl.wireless_frequency_card.unbound=尚未绑定。请潜行右键 ME 控制器。
