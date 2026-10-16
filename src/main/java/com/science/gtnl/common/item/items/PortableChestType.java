@@ -23,7 +23,7 @@ public enum PortableChestType {
     public final int cols;
     public final ResourceLocation guiResource;
 
-    private PortableChestType(int xSize, int ySize, int rows, int cols, String textureName) {
+    PortableChestType(int xSize, int ySize, int rows, int cols, String textureName) {
         this.xSize = xSize;
         this.ySize = ySize;
         this.rows = rows;

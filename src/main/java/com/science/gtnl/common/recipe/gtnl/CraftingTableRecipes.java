@@ -1,15 +1,28 @@
 package com.science.gtnl.common.recipe.gtnl;
 
+import java.util.function.Predicate;
+
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.RecipeSorter;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import com.dreammaster.item.NHItemList;
+import com.glodblock.github.loader.recipe.WirelessTerminalEnergyRecipe;
+import com.glodblock.github.loader.recipe.WirelessTerminalQuantumBridgeRecipe;
+import com.glodblock.github.loader.recipe.WirelessTerminalRecipe;
 import com.google.common.collect.ImmutableList;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IRecipePool;
+import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.config.MainConfig;
@@ -20,7 +33,9 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import appeng.api.AEApi;
 import appeng.api.util.AEColor;
+import appeng.container.ContainerNull;
 import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
@@ -60,6 +75,41 @@ public class CraftingTableRecipes implements IRecipePool {
         var aeBlocks = AEApi.instance()
             .definitions()
             .blocks();
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                GTNLItemList.MEMiniPortableTerminal.get(1),
+                "PEP",
+                "CWC",
+                "PEP",
+                'P',
+                "plateAluminium",
+                'E',
+                aeMaterials.engProcessor()
+                    .maybeStack(1)
+                    .orNull(),
+                'C',
+                aeParts.cableGlass()
+                    .stack(AEColor.Transparent, 1),
+                'W',
+                aeParts.terminal()
+                    .maybeStack(1)
+                    .orNull()));
+
+        RecipeSorter.register(
+            ScienceNotLeisure.MODID + ":me_mini_terminal_card",
+            MiniTerminalCardRecipe.class,
+            RecipeSorter.Category.SHAPELESS,
+            "after:forge:shapelessore");
+        ItemStack terminal = GTNLItemList.MEMiniPortableTerminal.get(1);
+        ItemMEMiniPortableTerminal item = (ItemMEMiniPortableTerminal) terminal.getItem();
+        GameRegistry
+            .addRecipe(new MiniTerminalCardRecipe(new WirelessTerminalEnergyRecipe(terminal), item::hasInfinityPower));
+        GameRegistry.addRecipe(
+            new MiniTerminalCardRecipe(new WirelessTerminalQuantumBridgeRecipe(terminal), item::hasInfinityRange));
+        if (WirelessTerminalRecipe.getInfinityBoosterCard() != null) {
+            GameRegistry
+                .addRecipe(new MiniTerminalCardRecipe(new WirelessTerminalRecipe(terminal), item::hasInfinityRange));
+        }
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.LargeSteamCrusher.get(1),
@@ -1656,5 +1706,41 @@ public class CraftingTableRecipes implements IRecipePool {
             new Object[] { "ABA", "CDC", "ABA", 'A', OrePrefixes.circuit.get(Materials.HV), 'B',
                 ItemList.Hatch_Maintenance.get(1L), 'C', ItemList.Robot_Arm_HV.get(1L), 'D',
                 ItemList.Hull_HV.get(1L) });
+    }
+
+    private static final class MiniTerminalCardRecipe extends ShapelessOreRecipe {
+
+        private final ShapelessRecipes nativeRecipe;
+        private final Predicate<ItemStack> installed;
+
+        private MiniTerminalCardRecipe(ShapelessRecipes nativeRecipe, Predicate<ItemStack> installed) {
+            super(nativeRecipe.getRecipeOutput(), nativeRecipe.recipeItems.toArray());
+            this.nativeRecipe = nativeRecipe;
+            this.installed = installed;
+        }
+
+        @Override
+        public boolean matches(InventoryCrafting inventory, World world) {
+            if (!super.matches(inventory, world)) return false;
+            ItemStack terminal = findTerminal(inventory);
+            return terminal != null && !installed.test(terminal);
+        }
+
+        @Override
+        public ItemStack getCraftingResult(InventoryCrafting inventory) {
+            if (!matches(inventory, null)) return null;
+
+            InventoryCrafting nativeInput = new InventoryCrafting(new ContainerNull(), 2, 1);
+            nativeInput.setInventorySlotContents(0, findTerminal(inventory));
+            return nativeRecipe.getCraftingResult(nativeInput);
+        }
+
+        private static ItemStack findTerminal(InventoryCrafting inventory) {
+            for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
+                ItemStack stack = inventory.getStackInSlot(slot);
+                if (ItemMEMiniPortableTerminal.isMiniTerminal(stack)) return stack;
+            }
+            return null;
+        }
     }
 }

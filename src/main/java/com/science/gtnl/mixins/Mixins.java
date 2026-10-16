@@ -115,6 +115,29 @@ public enum Mixins implements IMixins {
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.AppliedEnergistics)),
 
+    ME_MINI_TERMINAL(new MixinBuilder("ME mini portable terminal native terminal adapter")
+        .addCommonMixins("appliedEnergistics.meminiterminal.MixinMiniTerminalMonitorableDestination")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.AppliedEnergistics)),
+
+    ME_MINI_TERMINAL_HOST_TOOLTIP(new MixinBuilder("ME mini portable terminal host tooltip layering")
+        .addClientMixins("minecraft.AccessorGuiScreen", "minecraft.MixinMiniTerminalHostTooltip")
+        .setPhase(Phase.EARLY)),
+
+    ME_MINI_TERMINAL_MODULAR_UI(new MixinBuilder("ME mini portable terminal ModularUI hover blocking")
+        .addClientMixins("modularUI.MixinMiniTerminalModularGui")
+        .setPhase(Phase.LATE)),
+
+    ME_MINI_TERMINAL_BOGO(new MixinBuilder("ME mini portable terminal native Bogo shortcut destinations")
+        .addClientMixins("inventoryBogoSorter.MixinMiniTerminalShortcuts")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.InventoryBogoSorter)),
+
+    ME_MINI_TERMINAL_MOUSE_TWEAKS(new MixinBuilder("ME mini portable terminal Mouse Tweaks shortcut destinations")
+        .addClientMixins("mouseTweaks.MixinMiniTerminalMouseTweaks")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.MouseTweaks)),
+
     LATE_COMMON(new MixinBuilder("General Late Mixins")
         .addCommonMixins(
             "aeFluidCraft.MixinItemFluidPacket",

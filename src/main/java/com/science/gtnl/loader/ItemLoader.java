@@ -25,6 +25,7 @@ import com.science.gtnl.common.item.items.DireCraftPattern;
 import com.science.gtnl.common.item.items.ElectricProspectorTool;
 import com.science.gtnl.common.item.items.FakeItemSiren;
 import com.science.gtnl.common.item.items.GTNLItemBucket;
+import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import com.science.gtnl.common.item.items.ItemPartActiveFormationPlane;
 import com.science.gtnl.common.item.items.ItemPartBeamFormer;
 import com.science.gtnl.common.item.items.ItemPartDenseEnergyCell;
@@ -151,6 +152,7 @@ public class ItemLoader {
 
     public static WirelessUpgradeChip wirelessUpgradeChip = new WirelessUpgradeChip();
     public static WirelessFrequencyCard wirelessFrequencyCard = new WirelessFrequencyCard();
+    public static ItemMEMiniPortableTerminal meMiniPortableTerminal = new ItemMEMiniPortableTerminal();
     public static SuspiciousStew suspiciousStew = new SuspiciousStew();
     public static PortableItem portableItem = new PortableItem();
     public static PortableCellWorkbenchItem portableCellWorkbenchItem = new PortableCellWorkbenchItem();
