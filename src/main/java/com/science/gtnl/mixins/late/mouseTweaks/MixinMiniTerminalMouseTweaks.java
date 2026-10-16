@@ -15,7 +15,7 @@ import com.science.gtnl.client.meminiterminal.MiniTerminalClient;
 @Mixin(targets = "yalter.mousetweaks.DeobfuscationLayer", remap = false)
 public abstract class MixinMiniTerminalMouseTweaks {
 
-    @Inject(method = "windowClick(IIII)V", at = @At("HEAD"), cancellable = true, require = 1)
+    @Inject(method = "windowClick(IIII)V", at = @At("HEAD"), cancellable = true, require = 0)
     private static void gtnl$shiftClickToMiniTerminal(int windowId, int slotNumber, int mouseButton, int clickMode,
         CallbackInfo ci) {
         if (clickMode != 1) return;
