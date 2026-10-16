@@ -57,6 +57,10 @@ public final class MiniTerminalModel implements ISortSource {
     private long pendingRevision;
     private Map<Integer, IAEStack<?>> pendingDelta;
     private long pendingDeltaRevision;
+    private Map<Integer, IAEStack<?>> trailingDelta;
+    private long trailingDeltaRevision;
+    private int trailingPart;
+    private long catalogEpoch;
     private IAEStack<?>[] pendingPins;
     private long pendingPinRevision;
     private MiniTerminalPinSettings pendingPinSettings;
@@ -181,7 +185,6 @@ public final class MiniTerminalModel implements ISortSource {
     public void beginSession() {
         if (savedScroll < 0) savedScroll = scrollbar.getCurrentScroll();
         sessionState.begin();
-        catalogRevision = 0;
         pinRevision = 0;
         pending = null;
         pendingDelta = null;
@@ -253,7 +256,38 @@ public final class MiniTerminalModel implements ISortSource {
         }
         for (Entry change : changes) pendingDelta.put(change.key(), change.stack());
         if (!data.getBoolean("last")) return true;
-        for (Map.Entry<Integer, IAEStack<?>> change : pendingDelta.entrySet()) {
+        Map<Integer, IAEStack<?>> delta = pendingDelta;
+        pendingDelta = null;
+        applyDelta(delta, revision);
+        return true;
+    }
+
+    public void trailingCatalog(NBTTagCompound data, List<Entry> changes) {
+        long revision = data.getLong("revision");
+        int part = data.getInteger("part");
+        if (part == 0) {
+            trailingDelta = null;
+            if (data.getBoolean("snapshot") || catalogRevision <= 0
+                || data.getLong("baseRevision") != catalogRevision
+                || revision <= catalogRevision) return;
+            trailingDelta = new HashMap<>();
+            trailingDeltaRevision = revision;
+            trailingPart = 0;
+        }
+        if (trailingDelta == null || revision != trailingDeltaRevision || part != trailingPart) {
+            trailingDelta = null;
+            return;
+        }
+        trailingPart++;
+        for (Entry change : changes) trailingDelta.put(change.key(), change.stack());
+        if (!data.getBoolean("last")) return;
+        Map<Integer, IAEStack<?>> delta = trailingDelta;
+        trailingDelta = null;
+        applyDelta(delta, revision);
+    }
+
+    private void applyDelta(Map<Integer, IAEStack<?>> delta, long revision) {
+        for (Map.Entry<Integer, IAEStack<?>> change : delta.entrySet()) {
             IAEStack<?> stack = change.getValue();
             repo.postUpdate(stack);
             boolean visible = stack.getStackSize() != 0 || stack.isCraftable();
@@ -261,11 +295,25 @@ public final class MiniTerminalModel implements ISortSource {
             if (previous != null) entryIds.removeInt(previous);
             if (visible) entryIds.put(stack, (int) change.getKey());
         }
-        pendingDelta = null;
         catalogRevision = revision;
         repo.updateViewIfChanged();
         updateScroll();
-        return true;
+    }
+
+    public boolean sessionCatalog(long epoch, boolean resumed, long revision) {
+        trailingDelta = null;
+        if (resumed && epoch == catalogEpoch && revision > 0 && revision == catalogRevision) {
+            stagedCatalog = entries;
+            stagedCatalogRevision = revision;
+            return true;
+        }
+        catalogEpoch = epoch;
+        catalogRevision = 0;
+        return !resumed;
+    }
+
+    public long catalogEpoch() {
+        return catalogEpoch;
     }
 
     private static void readEntries(List<Entry> entries, Map<Integer, IAEStack<?>> destination) {
@@ -333,7 +381,8 @@ public final class MiniTerminalModel implements ISortSource {
 
     private void commitSessionSnapshots() {
         if (stagedCatalog == null || stagedPins == null || !sessionState.isConnected()) return;
-        replaceEntries(stagedCatalog);
+        boolean resumed = stagedCatalog == entries;
+        if (!resumed) replaceEntries(stagedCatalog);
         catalogRevision = stagedCatalogRevision;
         pins = stagedPins;
         pinRevision = stagedPinRevision;
@@ -341,7 +390,13 @@ public final class MiniTerminalModel implements ISortSource {
         stagedCatalog = null;
         stagedPins = null;
         sessionState.snapshotsCommitted();
-        rebuild();
+        if (resumed) {
+            repo.setPowered(sessionState.isDisplayOnline());
+            projectPins();
+            updateScroll();
+        } else {
+            rebuild();
+        }
         restoreScroll();
     }
 
@@ -358,6 +413,7 @@ public final class MiniTerminalModel implements ISortSource {
         pending = null;
         pendingDelta = null;
         pendingPins = null;
+        trailingDelta = null;
     }
 
     private void projectPins() {

@@ -90,13 +90,49 @@ public final class MiniTerminalSessionService {
     private static final Map<UUID, Session> SESSIONS = new HashMap<>();
     private static final Map<UUID, UUID> SELECTED = new HashMap<>();
     private static final Map<UUID, RequestBudget> BUDGETS = new HashMap<>();
+    private static final Map<UUID, ParkedCatalog> PARKED = new HashMap<>();
+    private static final int PARK_TICKS = 1200;
     private static long nextSession;
 
     private MiniTerminalSessionService() {}
 
     public static void end(EntityPlayerMP player) {
+        end(player, true);
+    }
+
+    private static void end(EntityPlayerMP player, boolean park) {
         Session session = SESSIONS.remove(player.getUniqueID());
-        if (session != null) session.close();
+        if (session == null) return;
+        MiniTerminalCatalog parked = park ? session.detachCatalog() : null;
+        session.close();
+        if (parked == null) return;
+        ParkedCatalog previous = PARKED.put(
+            player.getUniqueID(),
+            new ParkedCatalog(session.terminalId, session.binding, parked, player.ticksExisted));
+        if (previous != null) previous.catalog()
+            .close();
+    }
+
+    private static void discardParked(UUID player) {
+        ParkedCatalog parked = PARKED.remove(player);
+        if (parked != null) parked.catalog()
+            .close();
+    }
+
+    private static MiniTerminalCatalog resumeCatalog(EntityPlayerMP player, MiniTerminalRequestPacket request,
+        Session session, boolean fluidsVisible) {
+        ParkedCatalog parked = PARKED.remove(player.getUniqueID());
+        if (parked == null) return null;
+        MiniTerminalCatalog catalog = parked.catalog();
+        if (!parked.expired(player.ticksExisted) && request.catalogEpoch == catalog.epoch
+            && request.catalogRevision > 0
+            && request.catalogRevision <= catalog.revision
+            && parked.terminalId()
+                .equals(session.terminalId)
+            && Objects.equals(parked.binding(), session.binding)
+            && catalog.resume(session.monitor, session.fluidMonitor, fluidsVisible)) return catalog;
+        catalog.close();
+        return null;
     }
 
     static void handle(EntityPlayerMP player, MiniTerminalRequestPacket request) {
@@ -395,11 +431,12 @@ public final class MiniTerminalSessionService {
             session.validated = status;
             session.validationTick = player.ticksExisted;
             if (status == MiniTerminalStatus.ONLINE) {
-                session.catalog = new MiniTerminalCatalog(
-                    session.monitor,
-                    session.fluidMonitor,
-                    session.host.getTypeFilter(player)
-                        .getBoolean(FLUID_STACK_TYPE));
+                boolean fluidsVisible = session.host.getTypeFilter(player)
+                    .getBoolean(FLUID_STACK_TYPE);
+                session.catalog = resumeCatalog(player, request, session, fluidsVisible);
+                session.resumed = session.catalog != null;
+                if (!session.resumed)
+                    session.catalog = new MiniTerminalCatalog(session.monitor, session.fluidMonitor, fluidsVisible);
                 session.terminal.observeCatalog(session.catalog);
                 SESSIONS.put(player.getUniqueID(), session);
             }
@@ -416,6 +453,8 @@ public final class MiniTerminalSessionService {
     @SubscribeEvent
     public void tick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.END || !(event.player instanceof EntityPlayerMP player)) return;
+        ParkedCatalog parked = PARKED.get(player.getUniqueID());
+        if (parked != null && parked.expired(player.ticksExisted)) discardParked(player.getUniqueID());
         RequestBudget budget = BUDGETS.get(player.getUniqueID());
         if (budget != null) {
             MiniTerminalRequestPacket pending = budget.pollBegin(player.ticksExisted);
@@ -449,7 +488,8 @@ public final class MiniTerminalSessionService {
 
     @SubscribeEvent
     public void logout(PlayerEvent.PlayerLoggedOutEvent event) {
-        if (event.player instanceof EntityPlayerMP player) end(player);
+        if (event.player instanceof EntityPlayerMP player) end(player, false);
+        discardParked(event.player.getUniqueID());
         SELECTED.remove(event.player.getUniqueID());
         BUDGETS.remove(event.player.getUniqueID());
         MiniTerminalTransferService.forget(event.player);
@@ -473,6 +513,11 @@ public final class MiniTerminalSessionService {
 
     private static void sendStatus(EntityPlayerMP player, long session, long requestId, int slot, UUID terminalId,
         ItemStack stack, MiniTerminalStatus status) {
+        send(player, statusTag(player, session, requestId, slot, terminalId, stack, status));
+    }
+
+    private static NBTTagCompound statusTag(EntityPlayerMP player, long session, long requestId, int slot,
+        UUID terminalId, ItemStack stack, MiniTerminalStatus status) {
         NBTTagCompound tag = message("STATUS", session);
         tag.setLong("requestId", requestId);
         tag.setString("status", status.name());
@@ -485,7 +530,7 @@ public final class MiniTerminalSessionService {
             tag.setString("network", key == null ? "" : key);
             tag.setTag("config", configTag(stack, player, handler.getConfigManager(stack)));
         }
-        send(player, tag);
+        return tag;
     }
 
     private static AEStackTypeFilter readTypeFilters(ItemStack stack, EntityPlayer player) {
@@ -516,7 +561,7 @@ public final class MiniTerminalSessionService {
 
     private static void failUpdate(EntityPlayerMP player, long session, Exception exception) {
         ScienceNotLeisure.LOG.warn("Cannot encode ME mini portable terminal update", exception);
-        end(player);
+        end(player, false);
         NBTTagCompound failed = message("STATUS", session);
         failed.setString("status", MiniTerminalStatus.STALE.name());
         failed.setInteger("retryTicks", 200);
@@ -592,6 +637,7 @@ public final class MiniTerminalSessionService {
         int energyTicks;
         int lastResync;
         boolean creativeActionSynchronized;
+        boolean resumed;
 
         Session(EntityPlayerMP player, long id, long requestId, int slot, UUID terminalId, ItemStack stack) {
             this.player = player;
@@ -654,7 +700,13 @@ public final class MiniTerminalSessionService {
         }
 
         void status(MiniTerminalStatus status) {
-            sendStatus(player, id, requestId, slot, terminalId, stack, status);
+            NBTTagCompound tag = statusTag(player, id, requestId, slot, terminalId, stack, status);
+            if (status == MiniTerminalStatus.ONLINE && catalog != null) {
+                tag.setLong("catalogEpoch", catalog.epoch);
+                tag.setLong("catalogRevision", catalog.revision);
+                tag.setBoolean("resumed", resumed);
+            }
+            send(player, tag);
         }
 
         private NBTTagList pinData() {
@@ -988,12 +1040,26 @@ public final class MiniTerminalSessionService {
             send(returned, tag);
         }
 
+        MiniTerminalCatalog detachCatalog() {
+            if (catalog == null || !catalog.suspend()) return null;
+            MiniTerminalCatalog detached = catalog;
+            catalog = null;
+            return detached;
+        }
+
         void close() {
             try {
                 if (catalog != null) catalog.close();
             } finally {
                 terminal.close();
             }
+        }
+    }
+
+    private record ParkedCatalog(UUID terminalId, String binding, MiniTerminalCatalog catalog, int tick) {
+
+        boolean expired(int now) {
+            return now < tick || now - tick > PARK_TICKS;
         }
     }
 }

@@ -6,6 +6,7 @@ import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.science.gtnl.common.meminiterminal.MiniTerminalUpdatePacket.Entry;
 
@@ -31,11 +32,15 @@ final class MiniTerminalCatalog {
     private final Set<IAEStack<?>> dirty = new ObjectOpenHashSet<>();
     private long nextId;
     private boolean active = true;
+    private boolean suspended;
+    private boolean closed;
     private boolean fluidsVisible;
     private boolean fullUpdate = true;
     private boolean listUpdate;
+    private boolean immediateScan;
     private int lastUpdate;
     private int lastScan;
+    final long epoch;
     long revision;
 
     MiniTerminalCatalog(IMEMonitor<IAEItemStack> itemMonitor, IMEMonitor<IAEFluidStack> fluidMonitor,
@@ -44,6 +49,32 @@ final class MiniTerminalCatalog {
         this.fluidMonitor = fluidMonitor;
         this.fluidsVisible = fluidsVisible;
         ids.defaultReturnValue(-1);
+        long next;
+        do next = ThreadLocalRandom.current()
+            .nextLong();
+        while (next == 0);
+        epoch = next;
+    }
+
+    boolean suspend() {
+        if (!active || revision == 0 || fullUpdate) return false;
+        active = false;
+        suspended = true;
+        listUpdate = false;
+        dirty.clear();
+        return true;
+    }
+
+    boolean resume(IMEMonitor<IAEItemStack> itemMonitor, IMEMonitor<IAEFluidStack> fluidMonitor,
+        boolean fluidsVisible) {
+        if (!suspended || this.itemMonitor != itemMonitor
+            || this.fluidMonitor != fluidMonitor
+            || this.fluidsVisible != fluidsVisible) return false;
+        suspended = false;
+        active = true;
+        listUpdate = true;
+        immediateScan = true;
+        return true;
     }
 
     void showFluids(boolean visible) {
@@ -75,7 +106,7 @@ final class MiniTerminalCatalog {
 
     boolean canCollect(int tick) {
         if (!active || !fullUpdate && !listUpdate && dirty.isEmpty()) return false;
-        if (revision == 0) return true;
+        if (revision == 0 || immediateScan) return true;
         if (!elapsed(tick, lastUpdate, MIN_UPDATE_TICKS)) return false;
         if (fullUpdate) return elapsed(tick, lastScan, MIN_SCAN_TICKS);
         return !dirty.isEmpty() || listUpdate && elapsed(tick, lastScan, MIN_SCAN_TICKS);
@@ -88,7 +119,7 @@ final class MiniTerminalCatalog {
     List<Entry> collect(int tick) throws IOException {
         List<Entry> entries = new ArrayList<>();
 
-        if (fullUpdate || listUpdate && elapsed(tick, lastScan, MIN_SCAN_TICKS)) {
+        if (fullUpdate || listUpdate && (immediateScan || elapsed(tick, lastScan, MIN_SCAN_TICKS))) {
             BitSet seen = new BitSet((int) Math.min(nextId, Integer.MAX_VALUE));
             for (IAEItemStack stack : itemMonitor.getStorageList()) scan(entries, stack, seen);
             if (fluidsVisible && fluidMonitor != null) {
@@ -125,6 +156,7 @@ final class MiniTerminalCatalog {
         dirty.clear();
         if (fullUpdate || !entries.isEmpty()) revision++;
         fullUpdate = false;
+        immediateScan = false;
         lastUpdate = tick;
         return entries;
     }
@@ -178,8 +210,10 @@ final class MiniTerminalCatalog {
     }
 
     void close() {
-        if (!active) return;
+        if (closed) return;
+        closed = true;
         active = false;
+        suspended = false;
         dirty.clear();
         ids.clear();
         identities.clear();

@@ -56,6 +56,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
     long sessionId;
     long requestId;
     long actionId;
+    long catalogEpoch;
     long catalogRevision;
     long pinRevision;
     int windowId;
@@ -78,18 +79,21 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
 
     public MiniTerminalRequestPacket() {}
 
-    public static MiniTerminalRequestPacket begin(int slot, UUID preferredId, long requestId, int windowId) {
+    public static MiniTerminalRequestPacket begin(int slot, UUID preferredId, long requestId, int windowId,
+        long catalogEpoch, long catalogRevision) {
         MiniTerminalRequestPacket packet = new MiniTerminalRequestPacket();
         packet.kind = Kind.BEGIN;
         packet.slot = slot;
         packet.terminalId = preferredId;
         packet.requestId = requestId;
         packet.windowId = windowId;
+        packet.catalogEpoch = catalogEpoch;
+        packet.catalogRevision = catalogRevision;
         return packet;
     }
 
     public static MiniTerminalRequestPacket openFull(int slot, UUID id, int windowId) {
-        MiniTerminalRequestPacket packet = begin(slot, id, 0, windowId);
+        MiniTerminalRequestPacket packet = begin(slot, id, 0, windowId, 0, 0);
         packet.kind = Kind.FULL;
         return packet;
     }
@@ -242,6 +246,9 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
                 slot = buf.readInt();
                 if (slot != -1 && !isTerminalAddress(slot)) throw new IllegalArgumentException("Mini terminal slot");
                 if (buf.readBoolean()) terminalId = new UUID(buf.readLong(), buf.readLong());
+                catalogEpoch = buf.readLong();
+                catalogRevision = buf.readLong();
+                if (catalogRevision < 0) throw new IllegalArgumentException("Mini terminal catalog revision");
             }
             case ACTION, CREATIVE_ACTION -> {
                 actionId = buf.readLong();
@@ -340,6 +347,8 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
                     buf.writeLong(terminalId.getMostSignificantBits());
                     buf.writeLong(terminalId.getLeastSignificantBits());
                 }
+                buf.writeLong(catalogEpoch);
+                buf.writeLong(catalogRevision);
             }
             case ACTION, CREATIVE_ACTION -> {
                 buf.writeLong(actionId);

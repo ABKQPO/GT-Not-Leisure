@@ -75,6 +75,8 @@ public final class MiniTerminalClient {
     private static UUID selected;
     private static int selectedSlot = -1;
     private static long session;
+    private static long trailingSession;
+    private static MiniTerminalModel trailingModel;
     private static long action;
     private static long requestId;
     private static Container sessionContainer;
@@ -246,6 +248,8 @@ public final class MiniTerminalClient {
         MiniTerminalClientConfig.saveWindow(LAYOUT);
         connection = current;
         session = 0;
+        trailingSession = 0;
+        trailingModel = null;
         sessionContainer = null;
         action = 0;
         requestId = 0;
@@ -301,10 +305,18 @@ public final class MiniTerminalClient {
         sessionWindowId = sessionContainer.windowId;
         selectedSlot = findSelectedSlot();
         waiting = true;
-        model().beginSession();
+        MiniTerminalModel view = model();
+        view.beginSession();
         retryTicks = 20;
-        ScienceNotLeisure.network
-            .sendToServer(MiniTerminalRequestPacket.begin(selectedSlot, selected, ++requestId, sessionWindowId));
+        boolean resumable = selected != null && view.catalogEpoch() != 0;
+        ScienceNotLeisure.network.sendToServer(
+            MiniTerminalRequestPacket.begin(
+                selectedSlot,
+                selected,
+                ++requestId,
+                sessionWindowId,
+                resumable ? view.catalogEpoch() : 0,
+                resumable ? view.catalogRevision() : 0));
     }
 
     private static boolean hasCurrentContainer() {
@@ -332,6 +344,8 @@ public final class MiniTerminalClient {
     public static void closeSession() {
         if (session != 0) {
             retire(session);
+            trailingSession = session;
+            trailingModel = model();
         }
         session = 0;
         sessionContainer = null;
@@ -362,6 +376,10 @@ public final class MiniTerminalClient {
                     .get(UUID.fromString(data.getString(MiniTerminalUpdatePacket.TERMINAL_ID_KEY)));
                 if (view != null) view.readSettings(data.getCompoundTag("config"), data.getLong("actionId"));
             } catch (IllegalArgumentException ignored) {}
+            return;
+        }
+        if ("CATALOG".equals(kind) && incoming != 0 && incoming == trailingSession && incoming != session) {
+            if (trailingModel != null) trailingModel.trailingCatalog(data, entries);
             return;
         }
         if (overlay == null || mc.currentScreen != overlay.inventory()
@@ -406,7 +424,12 @@ public final class MiniTerminalClient {
             name = data.getString("name");
             network = data.getString("network");
             if (data.hasKey("config", 10)) model().readSettings(data.getCompoundTag("config"));
+            boolean catalogUsable = !data.hasKey("catalogEpoch") || model().sessionCatalog(
+                data.getLong("catalogEpoch"),
+                data.getBoolean("resumed"),
+                data.getLong("catalogRevision"));
             model().status("ONLINE".equals(status), network);
+            if (!catalogUsable) ScienceNotLeisure.network.sendToServer(MiniTerminalRequestPacket.resync(session));
             if (model().hasPendingSettings()) submitSettings(false);
             return;
         }
