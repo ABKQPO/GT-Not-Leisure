@@ -246,6 +246,10 @@ public final class MiniTerminalSessionService {
         player.updateHeldItem();
     }
 
+    public static boolean isSessionStack(EntityPlayerMP player, ItemStack stack) {
+        return activeHost(player, stack) != null;
+    }
+
     static WirelessTerminalGuiObject activeHost(EntityPlayerMP player, ItemStack stack) {
         Session session = SESSIONS.get(player.getUniqueID());
         return session != null && session.player == player && session.stack == stack ? session.host : null;

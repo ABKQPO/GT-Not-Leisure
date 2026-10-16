@@ -248,6 +248,25 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
 
     private static void assignMissingIdentity(ItemStack stack, EntityPlayer player) {
         if (!isCanonicalUuid(ItemStackNBT.getString(stack, ID_TAG))) ensureIdentity(stack, player);
+        else if (player instanceof EntityPlayerMP serverPlayer && serverPlayer.ticksExisted % 20 == 0)
+            separateDuplicateIdentity(stack, serverPlayer);
+    }
+
+    private static void separateDuplicateIdentity(ItemStack stack, EntityPlayerMP player) {
+        String id = rawIdentity(stack);
+        if (id.isEmpty() || MiniTerminalSessionService.isSessionStack(player, stack)) return;
+        for (int slot : getTerminalSlots(player)) {
+            ItemStack other = getTerminalStack(player, slot);
+            if (other == stack || !id.equals(rawIdentity(other))) continue;
+            ItemStackNBT.setString(
+                stack,
+                ID_TAG,
+                UUID.randomUUID()
+                    .toString());
+            setPickupToMEEnabled(stack, false);
+            player.inventory.markDirty();
+            return;
+        }
     }
 
     private static boolean isCanonicalUuid(String id) {
