@@ -3884,7 +3884,6 @@ gtnl.meminiterminal.tooltip.usage=Usage:
 gtnl.meminiterminal.tooltip.inventory=Carry in your inventory or wear in a bauble slot to use the mini ME terminal in container screens
 gtnl.meminiterminal.location.bauble=Bauble slot %s
 gtnl.meminiterminal.tooltip.full=§3Right-click§7 to open the full ME terminal interface§r
-gtnl.meminiterminal.search=Search network
 gtnl.meminiterminal.collapse=Collapse mini terminal
 gtnl.meminiterminal.expand=Left-click: expand mini terminal
 gtnl.meminiterminal.move=Drag this button to reposition

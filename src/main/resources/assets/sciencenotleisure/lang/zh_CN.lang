@@ -3884,7 +3884,6 @@ gtnl.meminiterminal.tooltip.usage=使用说明：
 gtnl.meminiterminal.tooltip.inventory=放入背包或饰品栏，即可在容器界面使用迷你 ME 终端
 gtnl.meminiterminal.location.bauble=饰品槽 %s
 gtnl.meminiterminal.tooltip.full=§3右键§7打开完整 ME 终端界面§r
-gtnl.meminiterminal.search=搜索网络
 gtnl.meminiterminal.collapse=收起迷你终端
 gtnl.meminiterminal.expand=左键：展开迷你终端
 gtnl.meminiterminal.move=拖动此按钮调整位置

@@ -658,6 +658,7 @@ public final class MiniTerminalClient {
     }
 
     public static String description() {
+        if (selectedSlot < 0) return name + " " + network;
         String location = selectedSlot >= Platform.baublesSlotsOffset ? StatCollector.translateToLocalFormatted(
             "gtnl.meminiterminal.location.bauble",
             selectedSlot - Platform.baublesSlotsOffset + 1) : Integer.toString(selectedSlot + 1);

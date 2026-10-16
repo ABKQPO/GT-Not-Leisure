@@ -146,7 +146,9 @@ public final class MiniTerminalSessionService {
             || request.kind == MiniTerminalRequestPacket.Kind.SETTINGS
             || request.kind == MiniTerminalRequestPacket.Kind.PICKUP_TOGGLE)
             && (player.openContainer == null || player.openContainer.windowId != request.windowId)) {
-            if (request.kind == MiniTerminalRequestPacket.Kind.BEGIN) {
+            if (request.kind == MiniTerminalRequestPacket.Kind.BEGIN
+                && BUDGETS.computeIfAbsent(player.getUniqueID(), key -> new RequestBudget())
+                    .accept(player.ticksExisted)) {
                 sendStatus(
                     player,
                     ++nextSession,
@@ -661,11 +663,16 @@ public final class MiniTerminalSessionService {
             this.host.getTypeFilter(player)
                 .put(ITEM_STACK_TYPE, true);
             this.terminal = new MiniTerminalMonitorableAdapter(player, host);
-            this.monitor = terminal.getItemMonitor();
-            this.fluidMonitor = host.getFluidInventory();
-            this.pinSettings = MiniTerminalPinSettings
-                .read(stack, player, terminal.getCraftingPinsRows(), terminal.getPlayerPinsRows());
-            observePins();
+            try {
+                this.monitor = terminal.getItemMonitor();
+                this.fluidMonitor = host.getFluidInventory();
+                this.pinSettings = MiniTerminalPinSettings
+                    .read(stack, player, terminal.getCraftingPinsRows(), terminal.getPlayerPinsRows());
+                observePins();
+            } catch (RuntimeException exception) {
+                terminal.close();
+                throw exception;
+            }
         }
 
         MiniTerminalStatus validate() {
