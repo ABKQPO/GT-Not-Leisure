@@ -43,6 +43,7 @@ public class WirelessLinkPersistence {
     private static final Map<IGridNode, Endpoint> IMPORTED = new IdentityHashMap<>();
     private static final Map<Entrance, RememberedEntrance> REMEMBERED_ENTRANCES = new IdentityHashMap<>();
     private static boolean initialized;
+    private static boolean pendingSeeds;
 
     private record RememberedEntrance(Endpoint endpoint, NBTBase payload) {
 
@@ -115,6 +116,7 @@ public class WirelessLinkPersistence {
             }
         }
         List<IGridNode> seeds = new ArrayList<>();
+        pendingSeeds = false;
         var tiles = TILES.iterator();
         while (tiles.hasNext()) {
             TileEntity tile = tiles.next();
@@ -138,12 +140,17 @@ public class WirelessLinkPersistence {
                 }
                 Endpoint endpoint = endpoint(tile, entry.getKey(), kind);
                 IGridNode node = endpoint.node();
-                if (node != null) seeds.add(node); // Keep a not-yet-ready AE part for a later server tick.
+                if (node != null) seeds.add(node);
+                else pendingSeeds = true;
             }
             if (changed) save(tile, claims);
             if (claims.isEmpty()) tiles.remove();
         }
         return seeds;
+    }
+
+    static boolean hasPendingSeeds() {
+        return pendingSeeds;
     }
 
     static Set<Address> restore(IGridNode node, PhysicalMeTopology topology) {
@@ -403,6 +410,7 @@ public class WirelessLinkPersistence {
         IMPORTED.clear();
         REMEMBERED_ENTRANCES.clear();
         initialized = false;
+        pendingSeeds = false;
     }
 
     public static void clearLoadedClaims() {

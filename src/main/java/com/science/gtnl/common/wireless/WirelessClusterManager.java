@@ -63,6 +63,8 @@ public class WirelessClusterManager {
 
     public static class ScanSchedule {
 
+        private static final int IDLE_INTERVAL = 600;
+        private static final int RETRY_INTERVAL = 20;
         private boolean dirty = true;
         private int remaining;
 
@@ -81,7 +83,11 @@ public class WirelessClusterManager {
 
         void beginScan() {
             dirty = false;
-            remaining = 20;
+            remaining = IDLE_INTERVAL;
+        }
+
+        void retrySoon() {
+            remaining = Math.min(remaining, RETRY_INTERVAL);
         }
 
         void clear() {
@@ -133,6 +139,7 @@ public class WirelessClusterManager {
             SCANS.beginScan();
             TOPOLOGY.beginScan();
             List<IGridNode> seeds = new ArrayList<>(WirelessLinkPersistence.seeds());
+            if (WirelessLinkPersistence.hasPendingSeeds()) SCANS.retrySoon();
             seeds.addAll(extraSeeds);
             TRACKER.refresh(
                 TOPOLOGY,
@@ -174,6 +181,7 @@ public class WirelessClusterManager {
 
     private static void reconcile() {
         STATES.clear();
+        boolean verified = WirelessChannelManager.entrancesVerified();
         // Tear down every conflicting entrance before trying to reconnect any source.
         for (Entrance entrance : WirelessChannelManager.entrances()) {
             Cluster<IGridNode, Address> cluster = TRACKER.clusterOf(entrance.targetNode());
@@ -183,11 +191,10 @@ public class WirelessClusterManager {
                 || paused(cluster, entrance.source())
                 || !cluster.frequencies()
                     .contains(controllerSource(entrance.source()))
-                || !entrance.isLive()
-                || entrance.source()
+                || !verified && (!entrance.isLive() || entrance.source()
                     .node() != entrance.sourceNode()
-                || entrance.target()
-                    .node() != entrance.targetNode()) {
+                    || entrance.target()
+                        .node() != entrance.targetNode())) {
                 WirelessChannelManager.disconnect(entrance.id());
             }
         }
@@ -248,8 +255,10 @@ public class WirelessClusterManager {
         }
         candidates.sort(
             Comparator.comparing(
-                candidate -> TOPOLOGY.nodeAddress(candidate.node())
-                    .toString()));
+                candidate -> TOPOLOGY.nodeAddress(candidate.node()),
+                Comparator.nullsLast(
+                    Comparator.comparingInt(Address::dimension)
+                        .thenComparing(Address.POSITION_ORDER))));
         return RECOVERY.restore(
             candidates,
             candidate -> TOPOLOGY.isLive(candidate.node()) && TOPOLOGY.entranceAddress(candidate.node()) != null

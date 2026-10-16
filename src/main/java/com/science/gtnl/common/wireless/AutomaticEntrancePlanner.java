@@ -1,7 +1,9 @@
 package com.science.gtnl.common.wireless;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -11,6 +13,8 @@ public class AutomaticEntrancePlanner<N> {
     private static final int TOPOLOGY_DELAY = 10;
     private static final int NEXT_TRIAL_DELAY = 1;
     private static final int FAILED_CONNECTION_DELAY = 20;
+    private static final int CHANNELS_PER_ENTRANCE = ChannelBudget.CHANNELS_PER_FACE;
+    private static final int MAX_BATCH = 8;
 
     public enum Status {
         WAITING,
@@ -32,11 +36,11 @@ public class AutomaticEntrancePlanner<N> {
     }
 
     record Observation(long context, long revision, long tick, boolean channelsEnabled, boolean powered,
-        boolean settled, int capacity, int used, int served, int missing, boolean entranceLimit) {}
+        boolean settled, int capacity, int used, int served, int missing, int remainingEntrances) {}
 
-    record Decision<N> (Action action, N target, int entranceId) {}
+    record Decision<N> (Action action, List<N> targets, List<Integer> entranceIds) {}
 
-    private record Trial<N> (N target, int id, long revision, int served, int used) {}
+    private record Trial<N> (List<N> targets, List<Integer> ids, long revision, int served, int used) {}
 
     private final Set<N> rejected = Collections.newSetFromMap(new IdentityHashMap<>());
     private Trial<N> trial;
@@ -51,8 +55,17 @@ public class AutomaticEntrancePlanner<N> {
         return status;
     }
 
-    int pendingEntrance() {
-        return trial == null ? -1 : trial.id();
+    boolean hasTrial() {
+        return trial != null;
+    }
+
+    List<Integer> pendingEntrances() {
+        return trial == null ? List.of() : trial.ids();
+    }
+
+    boolean isPending(int entranceId) {
+        return trial != null && trial.ids()
+            .contains(entranceId);
     }
 
     void entranceLost() {
@@ -67,8 +80,6 @@ public class AutomaticEntrancePlanner<N> {
             initialized = true;
             rejected.clear();
             exhausted = false;
-            // The physical layout/demand changed during the trial. Keep any surviving entry; the old baseline is
-            // invalid.
             trial = null;
             waitForRevision = -1;
             nextActionTick = observation.tick() + TOPOLOGY_DELAY;
@@ -82,9 +93,8 @@ public class AutomaticEntrancePlanner<N> {
         if (trial != null) {
             if (observation.revision() <= trial.revision()) return idle(Status.WAITING);
             if (observation.served() > trial.served() && observation.used() > trial.used()) {
-                Decision<N> result = new Decision<>(Action.KEEP, trial.target(), trial.id());
+                Decision<N> result = new Decision<>(Action.KEEP, trial.targets(), trial.ids());
                 trial = null;
-                // A fresh, settled allocation already confirmed this entrance. Do not wait another half-second.
                 nextActionTick = observation.tick() + NEXT_TRIAL_DELAY;
                 status = Status.EXPANDING;
                 return result;
@@ -94,20 +104,43 @@ public class AutomaticEntrancePlanner<N> {
         if (observation.revision() <= waitForRevision) return idle(Status.WAITING);
         if (observation.missing() == 0) return idle(Status.SATISFIED);
         if (observation.used() >= observation.capacity()) return idle(Status.BUDGET_FULL);
-        if (observation.entranceLimit()) return idle(Status.ENTRANCE_LIMIT);
+        if (observation.remainingEntrances() <= 0) return idle(Status.ENTRANCE_LIMIT);
         if (observation.tick() < nextActionTick) return idle(Status.WAITING);
         if (exhausted) return idle(Status.NO_CANDIDATE);
-        N candidate = selectCandidate.apply(node -> !rejected.contains(node));
-        if (candidate == null) {
+        Set<N> picked = Collections.newSetFromMap(new IdentityHashMap<>());
+        List<N> chosen = new ArrayList<>();
+        for (int index = batchSize(observation); index > 0; index--) {
+            N candidate = selectCandidate.apply(node -> !rejected.contains(node) && !picked.contains(node));
+            if (candidate == null) break;
+            picked.add(candidate);
+            chosen.add(candidate);
+        }
+        if (chosen.isEmpty()) {
             exhausted = true;
             return idle(Status.NO_CANDIDATE);
         }
         status = Status.EXPANDING;
-        return new Decision<>(Action.ADD, candidate, -1);
+        return new Decision<>(Action.ADD, List.copyOf(chosen), List.of());
     }
 
-    void created(N target, int entranceId, Observation before) {
-        trial = new Trial<>(target, entranceId, before.revision(), before.served(), before.used());
+    static int batchSize(Observation observation) {
+        int demand = ceilDiv(observation.missing(), CHANNELS_PER_ENTRANCE);
+        int budget = ceilDiv(observation.capacity() - observation.used(), CHANNELS_PER_ENTRANCE);
+        int batch = Math.min(MAX_BATCH, Math.min(observation.remainingEntrances(), Math.min(demand, budget)));
+        return Math.max(1, batch);
+    }
+
+    private static int ceilDiv(int value, int divisor) {
+        return value <= 0 ? 0 : (value + divisor - 1) / divisor;
+    }
+
+    void created(List<N> targets, List<Integer> entranceIds, Observation before) {
+        trial = new Trial<>(
+            List.copyOf(targets),
+            List.copyOf(entranceIds),
+            before.revision(),
+            before.served(),
+            before.used());
         status = Status.EXPANDING;
     }
 
@@ -117,12 +150,15 @@ public class AutomaticEntrancePlanner<N> {
         status = Status.WAITING;
     }
 
+    void reject(N target) {
+        rejected.add(target);
+    }
+
     private Decision<N> rollback(Observation observation) {
-        Decision<N> result = new Decision<>(Action.REMOVE, trial.target(), trial.id());
-        rejected.add(trial.target());
+        Decision<N> result = new Decision<>(Action.REMOVE, trial.targets(), trial.ids());
+        rejected.addAll(trial.targets());
         trial = null;
         waitForRevision = observation.revision();
-        // waitForRevision still prevents another trial until AE has finished allocating after removal.
         nextActionTick = observation.tick() + NEXT_TRIAL_DELAY;
         status = Status.ROLLING_BACK;
         return result;
@@ -130,6 +166,6 @@ public class AutomaticEntrancePlanner<N> {
 
     private Decision<N> idle(Status newStatus) {
         status = newStatus;
-        return new Decision<>(Action.NONE, null, -1);
+        return new Decision<>(Action.NONE, List.of(), List.of());
     }
 }
