@@ -455,6 +455,7 @@ public final class MiniTerminalSessionService {
     @SubscribeEvent
     public void tick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.END || !(event.player instanceof EntityPlayerMP player)) return;
+        MiniTerminalOutbound.flush(player);
         ParkedCatalog parked = PARKED.get(player.getUniqueID());
         if (parked != null && parked.expired(player.ticksExisted)) discardParked(player.getUniqueID());
         RequestBudget budget = BUDGETS.get(player.getUniqueID());
@@ -494,6 +495,7 @@ public final class MiniTerminalSessionService {
         discardParked(event.player.getUniqueID());
         SELECTED.remove(event.player.getUniqueID());
         BUDGETS.remove(event.player.getUniqueID());
+        MiniTerminalOutbound.forget(event.player.getUniqueID());
         MiniTerminalTransferService.forget(event.player);
     }
 
@@ -503,7 +505,7 @@ public final class MiniTerminalSessionService {
     }
 
     private static void send(EntityPlayerMP player, NBTTagCompound data) {
-        ScienceNotLeisure.network.sendTo(new MiniTerminalUpdatePacket(data), player);
+        MiniTerminalOutbound.send(player, data);
     }
 
     private static NBTTagCompound message(String kind, long session) {
@@ -543,27 +545,13 @@ public final class MiniTerminalSessionService {
 
     private static void sendParts(EntityPlayerMP player, NBTTagCompound header,
         List<MiniTerminalUpdatePacket.Entry> entries, boolean snapshot) {
-        List<byte[]> parts;
-        try {
-            parts = MiniTerminalUpdatePacket.encode(entries);
-        } catch (IOException | RuntimeException exception) {
-            failUpdate(player, header.getLong("session"), exception);
-            return;
-        }
-        for (int index = 0; index < parts.size(); index++) {
-            NBTTagCompound tag = (NBTTagCompound) header.copy();
-            tag.setBoolean("snapshot", snapshot);
-            tag.setBoolean("reset", snapshot && index == 0);
-            tag.setBoolean("last", index == parts.size() - 1);
-            tag.setInteger("part", index);
-            tag.setInteger("parts", parts.size());
-            ScienceNotLeisure.network.sendTo(new MiniTerminalUpdatePacket(tag, parts.get(index)), player);
-        }
+        MiniTerminalOutbound.sendParts(player, header, entries, snapshot, MiniTerminalSessionService::failUpdate);
     }
 
-    private static void failUpdate(EntityPlayerMP player, long session, Exception exception) {
+    private static void failUpdate(EntityPlayerMP player, long session, Throwable exception) {
         ScienceNotLeisure.LOG.warn("Cannot encode ME mini portable terminal update", exception);
-        end(player, false);
+        Session current = SESSIONS.get(player.getUniqueID());
+        if (current != null && current.id == session) end(player, false);
         NBTTagCompound failed = message("STATUS", session);
         failed.setString("status", MiniTerminalStatus.STALE.name());
         failed.setInteger("retryTicks", 200);

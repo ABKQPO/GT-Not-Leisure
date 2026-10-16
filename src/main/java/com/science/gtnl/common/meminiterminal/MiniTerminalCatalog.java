@@ -24,7 +24,7 @@ final class MiniTerminalCatalog {
 
     private static final int MIN_UPDATE_TICKS = 5;
     private static final int MIN_SCAN_TICKS = 20;
-    private static final int MAX_DIRTY = 4096;
+    private static final int MAX_DIRTY = 32768;
 
     private final Map<IAEStackType<?>, IMEMonitor<?>> monitors;
     private final Object2IntOpenHashMap<IAEStack<?>> ids = new Object2IntOpenHashMap<>();

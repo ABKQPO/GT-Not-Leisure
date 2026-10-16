@@ -3,8 +3,10 @@ package com.science.gtnl.common.meminiterminal;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -29,6 +31,7 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
 
     private static final int PART_BYTES = 512 * 1024;
     private static final int MAX_PART_BYTES = 16 * 1024 * 1024;
+    static final int COMPRESSION_LEVEL = Deflater.BEST_SPEED;
 
     public record Entry(int key, IAEStack<?> stack) {}
 
@@ -87,6 +90,10 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
     }
 
     static List<byte[]> encode(List<Entry> entries) throws IOException {
+        return encode(entries, COMPRESSION_LEVEL);
+    }
+
+    static List<byte[]> encode(List<Entry> entries, int level) throws IOException {
         List<byte[]> parts = new ArrayList<>();
         ByteBuf part = Unpooled.buffer(Math.min(PART_BYTES, 64 + entries.size() * 64));
         try {
@@ -102,7 +109,7 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
                         part.writerIndex(start);
                         ByteBuf previous = part;
                         part = null;
-                        parts.add(compress(previous));
+                        parts.add(compress(previous, level));
                         part = next;
                         next = null;
                     } finally {
@@ -112,24 +119,32 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
             }
             ByteBuf last = part;
             part = null;
-            parts.add(compress(last));
+            parts.add(compress(last, level));
             return parts;
         } finally {
             if (part != null) part.release();
         }
     }
 
-    private static byte[] compress(ByteBuf raw) throws IOException {
+    private static byte[] compress(ByteBuf raw, int level) throws IOException {
         try {
             if (!raw.isReadable()) return new byte[0];
             if (raw.readableBytes() > MAX_PART_BYTES) throw new IOException("Oversize ME mini portable terminal entry");
             ByteArrayOutputStream output = new ByteArrayOutputStream(raw.readableBytes() / 4 + 64);
-            try (GZIPOutputStream gzip = new GZIPOutputStream(output)) {
+            try (GZIPOutputStream gzip = new LeveledGZIPOutputStream(output, level)) {
                 raw.readBytes(gzip, raw.readableBytes());
             }
             return output.toByteArray();
         } finally {
             raw.release();
+        }
+    }
+
+    private static final class LeveledGZIPOutputStream extends GZIPOutputStream {
+
+        LeveledGZIPOutputStream(OutputStream output, int level) throws IOException {
+            super(output);
+            def.setLevel(level);
         }
     }
 }
