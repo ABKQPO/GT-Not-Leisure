@@ -46,6 +46,7 @@ public final class RailgunServerEvents {
     public void tick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         RailgunBeamService.tick();
+        RailgunTerrainService.tick();
         RailgunFireService.CHARGING.entrySet()
             .removeIf(entry -> {
                 EntityPlayerMP player = player(entry.getKey());
@@ -72,6 +73,7 @@ public final class RailgunServerEvents {
 
     @SubscribeEvent
     public void unload(WorldEvent.Unload event) {
+        if (!event.world.isRemote) RailgunTerrainService.unload(event.world.provider.dimensionId);
         if (!event.world.isRemote) RailgunBeamService.unload(event.world.provider.dimensionId);
         if (!event.world.isRemote) RailgunFireService.CHARGING.entrySet()
             .removeIf(

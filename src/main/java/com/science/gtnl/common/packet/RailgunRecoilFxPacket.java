@@ -36,7 +36,10 @@ public class RailgunRecoilFxPacket extends ClientboundPacket {
     @Override
     @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
-        if (Float.isFinite(pitchUp) && pitchUp >= 0 && pitchUp <= 30 && tier >= 1 && tier <= 3)
-            minecraft.func_152344_a(() -> RailgunCameraShake.recoil(pitchUp, tier));
+        if (Float.isFinite(pitchUp) && pitchUp >= 0 && pitchUp <= 30 && tier >= 1 && tier <= 3) {
+            var world = minecraft.theWorld;
+            minecraft.func_152344_a(
+                () -> { if (world != null && minecraft.theWorld == world) RailgunCameraShake.recoil(pitchUp, tier); });
+        }
     }
 }

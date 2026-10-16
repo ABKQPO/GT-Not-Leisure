@@ -2,6 +2,8 @@ package com.science.gtnl.common.railgun;
 
 import net.minecraft.item.ItemStack;
 
+import com.science.gtnl.common.item.items.RailgunModuleItem;
+
 public enum RailgunModuleType {
 
     COMPUTE(2),
@@ -23,8 +25,7 @@ public enum RailgunModuleType {
     }
 
     public static RailgunModuleType of(ItemStack stack) {
-        if (stack == null || !(stack.getItem() instanceof com.science.gtnl.common.item.items.RailgunModuleItem))
-            return null;
+        if (stack == null || !(stack.getItem() instanceof RailgunModuleItem)) return null;
         int meta = stack.getItemDamage();
         return meta >= 0 && meta < values().length ? values()[meta] : null;
     }

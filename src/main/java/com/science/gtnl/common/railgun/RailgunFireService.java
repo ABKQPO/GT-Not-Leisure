@@ -13,7 +13,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.WorldServer;
 
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.RailgunFireFxPacket;
+import com.science.gtnl.common.packet.StatusMessage;
 import com.science.gtnl.config.MainConfig;
 
 public final class RailgunFireService {
@@ -43,6 +45,8 @@ public final class RailgunFireService {
         if (RailgunEnergy.read(stack) < chargeCostUpTo(units, session.accelStep)) {
             CHARGING.remove(player.getUniqueID());
             player.clearItemInUse();
+            player.playerNetServerHandler
+                .sendPacket(new net.minecraft.network.play.server.S19PacketEntityStatus(player, (byte) 9));
             noEnergy(player);
         }
     }
@@ -94,9 +98,8 @@ public final class RailgunFireService {
     }
 
     public static void noEnergy(EntityPlayerMP player) {
-        com.science.gtnl.ScienceNotLeisure.network.sendTo(
-            new com.science.gtnl.common.packet.StatusMessage(new ChatComponentTranslation("gtnl.railgun.fail.no_eu")),
-            player);
+        ScienceNotLeisure.network
+            .sendTo(new StatusMessage(new ChatComponentTranslation("gtnl.railgun.fail.no_eu")), player);
     }
 
     public static void fireCharged(WorldServer world, EntityPlayerMP player, ItemStack stack, RailgunChargeTier tier) {
@@ -187,6 +190,18 @@ public final class RailgunFireService {
                 .attackEntityFrom(
                     RailgunDamage.source(player),
                     (float) Math.min(context.firstDamage(), Float.MAX_VALUE));
+        if (MainConfig.item.railgun.terrainEnabled && settings.terrain()) {
+            RailgunTerrainService.queueSphere(world, impact, tier.terrainRadius, tier.terrainHardness, player);
+            if (tier == RailgunChargeTier.EHV3)
+                for (var hit : hits) if (hit.penetration()) RailgunTerrainService.queueSphere(
+                    world,
+                    RailgunVec.pos(hit.target()),
+                    RailgunDefaults.PENETRATION_DESTROY_RADIUS,
+                    RailgunDefaults.PENETRATION_DESTROY_HARDNESS,
+                    player);
+            if (settings.sound())
+                world.playSoundEffect(impact.x(), impact.y(), impact.z(), "sciencenotleisure:railgun.impact", 0.5F, 1);
+        }
         RailgunRecoilService.apply(player, tier);
         RailgunNet.sendAround(
             world,

@@ -26,6 +26,8 @@ public final class RailgunEnergy {
     }
 
     public static double read(ItemStack stack) {
+        if (!stack.hasTagCompound() || !stack.getTagCompound()
+            .hasKey("charge", 99)) return 0;
         double charge = ElectricItem.manager.getCharge(stack);
         return Double.isFinite(charge) ? Math.max(0, charge) : 0;
     }

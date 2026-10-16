@@ -1,24 +1,29 @@
 package com.science.gtnl.client.railgun;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemStack;
+
+import org.lwjgl.input.Keyboard;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.ElectromagneticRailgun;
+import com.science.gtnl.common.packet.OpenRailgunGuiPacket;
 import com.science.gtnl.common.packet.RailgunBeamTogglePacket;
 
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
 public final class RailgunClientInput {
 
-    private static final net.minecraft.client.settings.KeyBinding OPEN = new net.minecraft.client.settings.KeyBinding(
+    private static final KeyBinding OPEN = new KeyBinding(
         "key.gtnl.railgun_config",
-        org.lwjgl.input.Keyboard.KEY_NONE,
+        Keyboard.KEY_NONE,
         "key.categories.gtnl");
 
     public RailgunClientInput() {
-        cpw.mods.fml.client.registry.ClientRegistry.registerKeyBinding(OPEN);
+        ClientRegistry.registerKeyBinding(OPEN);
     }
 
     private boolean firing;
@@ -39,8 +44,7 @@ public final class RailgunClientInput {
         ItemStack stack = player.getHeldItem();
         if (OPEN.isPressed() && stack != null
             && stack.getItem() instanceof ElectromagneticRailgun
-            && mc.currentScreen == null)
-            ScienceNotLeisure.network.sendToServer(new com.science.gtnl.common.packet.OpenRailgunGuiPacket());
+            && mc.currentScreen == null) ScienceNotLeisure.network.sendToServer(new OpenRailgunGuiPacket());
         boolean pressed = stack != null && stack.getItem() instanceof ElectromagneticRailgun
             && mc.currentScreen == null
             && mc.inGameHasFocus

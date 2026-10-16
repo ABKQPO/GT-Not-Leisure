@@ -23,6 +23,8 @@ public final class RailgunRenderHelper {
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glDisable(GL11.GL_CULL_FACE);
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            GL11.glDepthFunc(GL11.GL_LEQUAL);
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
             GL11.glDepthMask(false);
@@ -66,5 +68,30 @@ public final class RailgunRenderHelper {
 
     public static void vertex(RailgunVec vector) {
         Tessellator.instance.addVertex(vector.x(), vector.y(), vector.z());
+    }
+
+    public static void flare(RailgunVec center, double radius, float red, float green, float blue, float alpha) {
+        RailgunVec direction = camera().position.subtract(center)
+            .normalize();
+        RailgunVec reference = Math.abs(direction.y()) > 0.95 ? new RailgunVec(1, 0, 0) : new RailgunVec(0, 1, 0);
+        RailgunVec side = direction.cross(reference)
+            .normalize()
+            .scale(radius);
+        RailgunVec up = direction.cross(side)
+            .normalize()
+            .scale(radius);
+        Tessellator.instance.setColorRGBA_F(red, green, blue, alpha);
+        vertex(
+            center.subtract(side)
+                .subtract(up));
+        vertex(
+            center.add(side)
+                .subtract(up));
+        vertex(
+            center.add(side)
+                .add(up));
+        vertex(
+            center.subtract(side)
+                .add(up));
     }
 }

@@ -52,18 +52,12 @@ public final class RailgunGui {
                 .size(160, 14));
         for (int i = 0; i < RailgunData.MODULE_SLOTS; i++) {
             final int slot = i;
-            panel.child(new ItemSlot().slot(new ModularSlot(modules, i) {
-
-                @Override
-                public boolean canTakeStack(net.minecraft.entity.player.EntityPlayer player) {
-                    RailgunModuleType type = RailgunModuleType.of(getStack());
-                    return super.canTakeStack(player) && (type == null || !type.energy()
-                        || RailgunEnergy.read(stack) <= Math.max(0, MainConfig.item.railgun.baseCapacity));
-                }
-            }.filter(item -> modules.isItemValid(slot, item))
-                .slotGroup("railgun_modules"))
-                .pos(16 + i * 18, 24)
-                .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("gtnl.railgun.module_limits"))));
+            panel.child(
+                new ItemSlot().slot(
+                    new ModularSlot(modules, i).filter(item -> modules.isItemValid(slot, item))
+                        .slotGroup("railgun_modules"))
+                    .pos(16 + i * 18, 24)
+                    .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("gtnl.railgun.module_limits"))));
         }
         LongSyncValue energy = new LongSyncValue(() -> (long) RailgunEnergy.read(stack));
         LongSyncValue capacity = new LongSyncValue(() -> (long) RailgunEnergy.capacity(stack));

@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
@@ -15,7 +16,17 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import com.cleanroommc.modularui.api.IGuiHolder;
+import com.cleanroommc.modularui.factory.GuiFactories;
+import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
+import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.ModularScreen;
+import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.common.gui.RailgunContainer;
+import com.science.gtnl.common.gui.RailgunGui;
+import com.science.gtnl.common.railgun.RailgunBeamService;
 import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunEnergy;
 import com.science.gtnl.common.railgun.RailgunFireService;
@@ -25,10 +36,11 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.modularui2.GTGuiThemes;
+import gregtech.api.modularui2.GTModularScreen;
 import ic2.api.item.IElectricItem;
 
-public class ElectromagneticRailgun extends Item implements IElectricItem,
-    com.cleanroommc.modularui.api.IGuiHolder<com.cleanroommc.modularui.factory.PlayerInventoryGuiData> {
+public class ElectromagneticRailgun extends Item implements IElectricItem, IGuiHolder<PlayerInventoryGuiData> {
 
     public static final String NBT_EXTREME_HIGH_VOLTAGE = "ExtremeHighVoltage";
     public static final int USE_DURATION = 72000;
@@ -87,8 +99,8 @@ public class ElectromagneticRailgun extends Item implements IElectricItem,
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (player.isSneaking()) {
             if (!world.isRemote && player instanceof EntityPlayerMP serverPlayer) {
-                com.science.gtnl.common.railgun.RailgunBeamService.stop(serverPlayer);
-                com.cleanroommc.modularui.factory.GuiFactories.playerInventory()
+                RailgunBeamService.stop(serverPlayer);
+                GuiFactories.playerInventory()
                     .openFromMainHand(player);
             }
             return stack;
@@ -112,7 +124,7 @@ public class ElectromagneticRailgun extends Item implements IElectricItem,
     }
 
     @Override
-    public boolean onEntitySwing(net.minecraft.entity.EntityLivingBase entity, ItemStack stack) {
+    public boolean onEntitySwing(EntityLivingBase entity, ItemStack stack) {
         return true;
     }
 
@@ -168,20 +180,15 @@ public class ElectromagneticRailgun extends Item implements IElectricItem,
 
     @Override
     @SideOnly(Side.CLIENT)
-    public com.cleanroommc.modularui.screen.ModularScreen createScreen(
-        com.cleanroommc.modularui.factory.PlayerInventoryGuiData data,
-        com.cleanroommc.modularui.screen.ModularPanel panel) {
-        return new gregtech.api.modularui2.GTModularScreen(panel, gregtech.api.modularui2.GTGuiThemes.STANDARD);
+    public ModularScreen createScreen(PlayerInventoryGuiData data, ModularPanel panel) {
+        return new GTModularScreen(panel, GTGuiThemes.STANDARD);
     }
 
     @Override
-    public com.cleanroommc.modularui.screen.ModularPanel buildUI(
-        com.cleanroommc.modularui.factory.PlayerInventoryGuiData data,
-        com.cleanroommc.modularui.value.sync.PanelSyncManager sync,
-        com.cleanroommc.modularui.screen.UISettings settings) {
+    public ModularPanel buildUI(PlayerInventoryGuiData data, PanelSyncManager sync, UISettings settings) {
         ItemStack bound = data.getUsedItemStack();
-        settings.customContainer(() -> new com.science.gtnl.common.gui.RailgunContainer(data.getSlotIndex()));
+        settings.customContainer(() -> new RailgunContainer(data.getSlotIndex()));
         settings.canInteractWith(player -> !player.isDead && data.getUsedItemStack() == bound);
-        return new com.science.gtnl.common.gui.RailgunGui(data, sync).build();
+        return new RailgunGui(data, sync).build();
     }
 }

@@ -15,6 +15,8 @@ public final class RailgunClientFx {
     public static void register() {
         MinecraftForge.EVENT_BUS.register(new RailgunClientFx());
         MinecraftForge.EVENT_BUS.register(new RailgunBeamRenderer());
+        MinecraftForge.EVENT_BUS.register(new RailgunArcRenderer());
+        MinecraftForge.EVENT_BUS.register(new RailgunShockwaveRenderer());
         MinecraftForge.EVENT_BUS.register(new RailgunHudRenderer());
         FMLCommonHandler.instance()
             .bus()
@@ -32,7 +34,8 @@ public final class RailgunClientFx {
         if (mc.theWorld == null) return;
         RailgunBeamRenderer.shot(packet.shooterId, packet.from, packet.firstHit, true);
         for (int i = 0; i < packet.chainPath.size(); i += 2)
-            RailgunBeamRenderer.shot(-1, packet.chainPath.get(i), packet.chainPath.get(i + 1), true);
+            RailgunArcRenderer.spawnChain(packet.chainPath.get(i), packet.chainPath.get(i + 1), 8);
+        RailgunShockwaveRenderer.spawn(packet.firstHit, packet.impactRadius);
         for (int i = 0; i < 24; i++) mc.theWorld.spawnParticle(
             "fireworksSpark",
             packet.firstHit.x(),
@@ -55,7 +58,7 @@ public final class RailgunClientFx {
         var world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
         for (int i = 0; i < packet.path.size(); i += 2)
-            RailgunBeamRenderer.shot(-1, packet.path.get(i), packet.path.get(i + 1), packet.ehv);
+            RailgunArcRenderer.spawnChain(packet.path.get(i), packet.path.get(i + 1), 6, packet.ehv);
         if (packet.sound) world.playSound(
             packet.origin.x(),
             packet.origin.y(),
@@ -70,6 +73,8 @@ public final class RailgunClientFx {
     public void unload(WorldEvent.Unload event) {
         if (event.world.isRemote) {
             RailgunBeamRenderer.clear();
+            RailgunArcRenderer.clear();
+            RailgunShockwaveRenderer.clear();
             RailgunCameraShake.clear();
             RailgunSounds.clear();
         }

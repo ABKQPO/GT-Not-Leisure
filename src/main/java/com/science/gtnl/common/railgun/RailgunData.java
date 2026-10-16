@@ -53,6 +53,7 @@ public final class RailgunData {
     }
 
     public static void setModuleStacks(ItemStack stack, ItemStack[] slots) {
+        double charge = RailgunEnergy.read(stack);
         NBTTagList list = new NBTTagList();
         for (int i = 0; i < Math.min(slots.length, MODULE_SLOTS); i++) {
             if (slots[i] == null) continue;
@@ -65,6 +66,8 @@ public final class RailgunData {
         }
         tag(stack).setTag("Modules", list);
         updateMode(stack);
+        double excess = charge - RailgunEnergy.capacity(stack);
+        if (excess > 0) RailgunEnergy.tryConsume(stack, excess);
     }
 
     public static Modules modules(ItemStack stack) {

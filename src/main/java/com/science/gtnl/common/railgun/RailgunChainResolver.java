@@ -57,8 +57,8 @@ public final class RailgunChainResolver {
             : RailgunVec.pos(start)
                 .add(0.0D, start.height / 2.0D, 0.0D);
 
+        seeds.forEach(seed -> visited.add(seed.getEntityId()));
         for (EntityLivingBase seed : seeds) {
-            visited.add(seed.getEntityId());
             out.addAll(walkBranch(level, source, seed, ctx, visited, branchVisualStart));
         }
         return out;
@@ -143,7 +143,7 @@ public final class RailgunChainResolver {
         List<EntityLivingBase> candidates = query(
             level,
             box,
-            e -> e != source && e != firstHit && shouldTarget(e, ctx.pvp()));
+            e -> e != source && e != firstHit && shouldTarget(source, e, ctx.pvp()));
 
         candidates.sort((a, b) -> {
             double da = RailgunVec.pos(a)
@@ -179,7 +179,7 @@ public final class RailgunChainResolver {
         for (EntityLivingBase ent : query(
             level,
             box,
-            e -> e != source && e.getEntityId() != excludeId && shouldTarget(e, ctx.pvp()))) {
+            e -> e != source && e.getEntityId() != excludeId && shouldTarget(source, e, ctx.pvp()))) {
             if (RailgunVec.pos(ent)
                 .distanceToSqr(center) > r2) continue;
             double dmg = ctx.firstDamage() * damageRatio;
@@ -197,7 +197,7 @@ public final class RailgunChainResolver {
         if (radius <= 0 || damageRatio <= 0) return out;
         AxisAlignedBB box = center.boxTo(center, radius);
         double r2 = radius * radius;
-        for (EntityLivingBase ent : query(level, box, e -> e != source && shouldTarget(e, ctx.pvp()))) {
+        for (EntityLivingBase ent : query(level, box, e -> e != source && shouldTarget(source, e, ctx.pvp()))) {
             if (ent.getEntityId() == primaryId) continue;
             double d2 = RailgunVec.pos(ent)
                 .distanceToSqr(center);
@@ -221,7 +221,7 @@ public final class RailgunChainResolver {
         EntityLivingBase best = null;
         double r2 = radius * radius;
         double bestDistSqr = Double.MAX_VALUE;
-        for (EntityLivingBase ent : query(level, box, e -> shouldTarget(e, pvp))) {
+        for (EntityLivingBase ent : query(level, box, e -> shouldTarget(source, e, pvp))) {
             if (ent == source) continue;
             if (visited.contains(ent.getEntityId())) continue;
             double d2 = RailgunVec.pos(ent)
@@ -246,7 +246,7 @@ public final class RailgunChainResolver {
         AxisAlignedBB box = center.boxTo(center, radius);
         double r2 = radius * radius;
         List<EntityLivingBase> all = new ArrayList<>();
-        for (EntityLivingBase ent : query(level, box, e -> shouldTarget(e, pvp))) {
+        for (EntityLivingBase ent : query(level, box, e -> shouldTarget(source, e, pvp))) {
             if (ent == source) continue;
             if (visited.contains(ent.getEntityId())) continue;
             if (RailgunVec.pos(ent)
@@ -265,8 +265,8 @@ public final class RailgunChainResolver {
         return all;
     }
 
-    private static boolean shouldTarget(EntityLivingBase entity, boolean pvp) {
-        return RailgunTargetRules.canAffect(null, entity, pvp);
+    private static boolean shouldTarget(EntityPlayerMP source, EntityLivingBase entity, boolean pvp) {
+        return RailgunTargetRules.canAffect(source, entity, pvp);
     }
 
     private static List<EntityLivingBase> query(WorldServer world, AxisAlignedBB box,

@@ -41,6 +41,7 @@ import com.science.gtnl.common.item.items.NetherTeleporter;
 import com.science.gtnl.common.item.items.NullPointerException;
 import com.science.gtnl.common.item.items.PortableCellWorkbenchItem;
 import com.science.gtnl.common.item.items.PortableItem;
+import com.science.gtnl.common.item.items.RailgunModuleItem;
 import com.science.gtnl.common.item.items.SlimeSaddle;
 import com.science.gtnl.common.item.items.SteamRocket;
 import com.science.gtnl.common.item.items.Stick;
@@ -86,7 +87,7 @@ public class ItemLoader {
     public static KFCFamily KFCFamily = new KFCFamily();
     public static TwilightSword twilightSword = new TwilightSword();
     public static ElectromagneticRailgun electromagneticRailgun = new ElectromagneticRailgun();
-    public static com.science.gtnl.common.item.items.RailgunModuleItem railgunModule = new com.science.gtnl.common.item.items.RailgunModuleItem();
+    public static RailgunModuleItem railgunModule = new RailgunModuleItem();
     public static CircuitIntegratedPlus circuitIntegratedPlus = new CircuitIntegratedPlus();
     public static TimeStopPocketWatch timeStopPocketWatch = new TimeStopPocketWatch();
     public static Item recordSus = new GTNLItemRecord("sus");

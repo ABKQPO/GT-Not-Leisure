@@ -66,6 +66,8 @@ public class RailgunFireFxPacket extends ClientboundPacket {
     @Override
     @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
-        if (valid) minecraft.func_152344_a(() -> RailgunClientFx.playFire(this));
+        var world = minecraft.theWorld;
+        if (valid && world != null)
+            minecraft.func_152344_a(() -> { if (minecraft.theWorld == world) RailgunClientFx.playFire(this); });
     }
 }
