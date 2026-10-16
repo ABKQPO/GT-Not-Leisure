@@ -8,6 +8,7 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
+import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
 import gtPlusPlus.core.fluids.GTPPFluids;
@@ -23,7 +24,7 @@ public class DesulfurizerRecipes implements IRecipePool {
             .fluidInputs(Materials.SulfuricGas.getGas(12000))
             .fluidOutputs(Materials.Gas.getGas(12000))
             .duration(120)
-            .eut(30)
+            .eut(TierEU.RECIPE_LV)
             .addTo(DesR);
 
         RecipeBuilder.builder()
@@ -31,7 +32,7 @@ public class DesulfurizerRecipes implements IRecipePool {
             .fluidInputs(Materials.SulfuricNaphtha.getFluid(12000))
             .fluidOutputs(Materials.Naphtha.getFluid(12000))
             .duration(120)
-            .eut(30)
+            .eut(TierEU.RECIPE_LV)
             .addTo(DesR);
 
         RecipeBuilder.builder()
@@ -39,7 +40,7 @@ public class DesulfurizerRecipes implements IRecipePool {
             .fluidInputs(Materials.SulfuricLightFuel.getFluid(12000))
             .fluidOutputs(Materials.LightFuel.getFluid(12000))
             .duration(120)
-            .eut(30)
+            .eut(TierEU.RECIPE_LV)
             .addTo(DesR);
 
         RecipeBuilder.builder()
@@ -47,7 +48,7 @@ public class DesulfurizerRecipes implements IRecipePool {
             .fluidInputs(Materials.SulfuricHeavyFuel.getFluid(12000))
             .fluidOutputs(Materials.HeavyFuel.getFluid(12000))
             .duration(120)
-            .eut(30)
+            .eut(TierEU.RECIPE_LV)
             .addTo(DesR);
 
         RecipeBuilder.builder()
@@ -55,7 +56,7 @@ public class DesulfurizerRecipes implements IRecipePool {
             .fluidInputs(new FluidStack(GTPPFluids.SulfuricCoalTarOil, 12000))
             .fluidOutputs(new FluidStack(GTPPFluids.Naphthalene, 12000))
             .duration(120)
-            .eut(30)
+            .eut(TierEU.RECIPE_LV)
             .addTo(DesR);
 
         RecipeBuilder.builder()
@@ -63,7 +64,7 @@ public class DesulfurizerRecipes implements IRecipePool {
             .fluidInputs(Materials.NaturalGas.getGas(12000))
             .fluidOutputs(Materials.Gas.getGas(12000))
             .duration(120)
-            .eut(30)
+            .eut(TierEU.RECIPE_LV)
             .addTo(DesR);
     }
 }

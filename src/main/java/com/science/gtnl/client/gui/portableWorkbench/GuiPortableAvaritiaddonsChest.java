@@ -11,6 +11,8 @@ import net.minecraft.util.StatCollector;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
+import com.science.gtnl.utils.ColorUtils;
+
 public abstract class GuiPortableAvaritiaddonsChest extends GuiContainer {
 
     private final static ResourceLocation avaritiaddonsChestGui = new ResourceLocation(
@@ -39,8 +41,16 @@ public abstract class GuiPortableAvaritiaddonsChest extends GuiContainer {
 
     @Override
     public void drawGuiContainerForegroundLayer(final int p_146979_1_, final int p_146979_2_) {
-        fontRendererObj.drawString(StatCollector.translateToLocal(getContainerName()), 7, 7, 0x404040);
-        fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 169, 183, 0x404040);
+        fontRendererObj.drawString(
+            StatCollector.translateToLocal(getContainerName()),
+            7,
+            7,
+            ColorUtils.guiTextColorGray.getColor());
+        fontRendererObj.drawString(
+            StatCollector.translateToLocal("container.inventory"),
+            169,
+            183,
+            ColorUtils.guiTextColorGray.getColor());
     }
 
     @NotNull

@@ -13,6 +13,7 @@ import org.lwjgl.opengl.GL11;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.text.EffectTextLayout;
 import com.science.gtnl.client.text.TextEffectRegistry;
+import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.text.effect.TextEffectFormat;
 import com.science.gtnl.utils.text.effect.TextEffectStyle;
 import com.science.gtnl.utils.text.effect.TextEffects;
@@ -82,9 +83,13 @@ public class TextEffectPreview extends GuiScreen {
             StatCollector.translateToLocal("gtnl.text_effect.title"),
             width / 2,
             10,
-            0xFFFFFF);
+            ColorUtils.rgb(ColorUtils.effectWhite));
         sample.drawTextBox();
-        fontRendererObj.drawString((page + 1) + " / " + pageCount(), width - 112, 56, 0xB0B0B0);
+        fontRendererObj.drawString(
+            (page + 1) + " / " + pageCount(),
+            width - 112,
+            56,
+            ColorUtils.rgb(ColorUtils.guiTextColorMuted));
         float rowHeight = Math.max(20, EffectTextLayout.fontHeight(fontRendererObj) * 2.8f);
         int count = Math.min(PAGE_SIZE, entries.size() - page * PAGE_SIZE);
         float scale = Math.min(1, Math.max(0.2f, (height - 118f) / (rowHeight * Math.max(1, count))));
@@ -116,13 +121,13 @@ public class TextEffectPreview extends GuiScreen {
             TextEffectStyle preset = entry.style();
             TextEffectStyle style = customPalette ? customPalette(preset) : preset;
             String name = fontRendererObj.trimStringToWidth(entry.label(), textX - 30);
-            fontRendererObj.drawString(name, 18, (int) y, 0xB0B0B0);
+            fontRendererObj.drawString(name, 18, (int) y, ColorUtils.rgb(ColorUtils.guiTextColorMuted));
             String rendered = TextEffects.format(style) + value;
             fontRendererObj.drawStringWithShadow(
                 fontRendererObj.trimStringToWidth(rendered, (int) availableWidth - textX - 20),
                 textX,
                 (int) y,
-                0xFFFFFF);
+                ColorUtils.rgb(ColorUtils.effectWhite));
             y += rowHeight;
         }
         if (!entries.isEmpty() && y + 77 + 30 < height - 25) {
@@ -131,16 +136,23 @@ public class TextEffectPreview extends GuiScreen {
                 entries.get(page * PAGE_SIZE)
                     .style())
                 + " + plain";
-            fontRendererObj.drawSplitString(mixed, 18, (int) y, width - 36, 0xFFFFFF);
+            fontRendererObj.drawSplitString(mixed, 18, (int) y, width - 36, ColorUtils.rgb(ColorUtils.effectWhite));
         }
     }
 
     private static TextEffectStyle customPalette(TextEffectStyle preset) {
         if (preset.rendererId()
             .equals(TextEffects.INFERNUM_CYAN_SPARK.rendererId())) {
-            return preset.withColors(0x33CCFF, 0xFFAA33, 0xDD77FF, 0x66FFCC);
+            return preset.withColors(
+                ColorUtils.rgb(ColorUtils.effectPrismaticCyan),
+                ColorUtils.rgb(ColorUtils.effectMoltenGold),
+                ColorUtils.rgb(ColorUtils.effectNebulaPink),
+                ColorUtils.rgb(ColorUtils.effectGhostCyan));
         }
-        return preset.withColors(0x33CCFF, 0xFFAA33, 0xDD77FF);
+        return preset.withColors(
+            ColorUtils.rgb(ColorUtils.effectPrismaticCyan),
+            ColorUtils.rgb(ColorUtils.effectMoltenGold),
+            ColorUtils.rgb(ColorUtils.effectNebulaPink));
     }
 
     private static String effectName(TextEffectStyle style) {

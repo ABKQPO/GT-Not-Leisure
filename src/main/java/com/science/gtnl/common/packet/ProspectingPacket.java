@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import com.gtnewhorizon.gtnhlib.util.CoordinatePacker;
 import com.science.gtnl.CommonProxy;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
+import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.detrav.DetravMapTexture;
 import com.science.gtnl.utils.detrav.DetravScannerGUI;
 import com.science.gtnl.utils.enums.GuiType;
@@ -46,7 +47,7 @@ public class ProspectingPacket extends ClientboundPacket {
     public static final int MODE_ALL_ORES = 1;
     public static final int MODE_FLUIDS = 2;
     public static final int MODE_POLLUTION = 3;
-    private static final int DEFAULT_COLOR = 0xFF7D7D7D;
+    private static final int DEFAULT_COLOR = ColorUtils.prospectorScanGray.getColor();
     public static final int MAX_COMPRESSED_PAYLOAD_SIZE = 2_000_000;
 
     public int chunkX;

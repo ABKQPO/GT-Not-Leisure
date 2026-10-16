@@ -4,6 +4,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.science.gtnl.common.effect.EffectBase;
+import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.ExtraSpawnerAnimals;
 
 public class BattleEffect extends EffectBase {
@@ -13,7 +14,7 @@ public class BattleEffect extends EffectBase {
     public ExtraSpawnerAnimals spawnerAnimals = new ExtraSpawnerAnimals();
 
     public BattleEffect(int id) {
-        super(id, "battle", false, 0x7F60B8, 5);
+        super(id, "battle", false, ColorUtils.rgb(ColorUtils.effectBattle), 5);
     }
 
     @Override

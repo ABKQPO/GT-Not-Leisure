@@ -10,13 +10,14 @@ import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.FluidSlot;
 import com.science.gtnl.common.machine.hatch.NuclearFluidHatch;
+import com.science.gtnl.utils.ColorUtils;
 
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.common.gui.modularui.hatch.base.MTEHatchBaseGui;
 
 public class NuclearFluidHatchGui extends MTEHatchBaseGui<NuclearFluidHatch> {
 
-    private static final int COLOR_INPUT_BAR = 0xFF4D7BFF;
+    private static final int COLOR_INPUT_BAR = ColorUtils.guiBarInput.getColor();
 
     public NuclearFluidHatchGui(NuclearFluidHatch hatch) {
         super(hatch);

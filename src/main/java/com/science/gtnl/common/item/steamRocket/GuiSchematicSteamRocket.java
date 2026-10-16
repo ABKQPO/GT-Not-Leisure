@@ -6,6 +6,8 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import com.science.gtnl.utils.ColorUtils;
+
 import galaxyspace.GalaxySpace;
 import micdoodle8.mods.galacticraft.api.recipe.ISchematicResultPage;
 import micdoodle8.mods.galacticraft.api.recipe.SchematicRegistry;
@@ -66,10 +68,16 @@ public class GuiSchematicSteamRocket extends GuiContainerGC implements ISchemati
 
     @Override
     public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        this.fontRendererObj
-            .drawString(EnumColor.WHITE + GCCoreUtil.translate("schematic.rocketSteam.name"), 7, 7, 0x404040);
-        this.fontRendererObj
-            .drawString(EnumColor.WHITE + GCCoreUtil.translate("container.inventory"), 14, 128, 0x404040);
+        this.fontRendererObj.drawString(
+            EnumColor.WHITE + GCCoreUtil.translate("schematic.rocketSteam.name"),
+            7,
+            7,
+            ColorUtils.guiTextColorGray.getColor());
+        this.fontRendererObj.drawString(
+            EnumColor.WHITE + GCCoreUtil.translate("container.inventory"),
+            14,
+            128,
+            ColorUtils.guiTextColorGray.getColor());
     }
 
     @Override

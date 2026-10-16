@@ -103,7 +103,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .itemInputs(
-                GTOreDictUnificator.get(OrePrefixes.stick, Materials.Iron, 2),
+                GTOreDictUnificator.get(OrePrefixes.stick, Materials.ClayCompound, 2),
                 GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.Bronze, 2),
                 GTNLMaterials.Breel.get(OrePrefixes.pipeMedium, 1),
                 GTNLItemList.IronTurbine.get(1))
@@ -120,7 +120,6 @@ public class SteamManufacturerRecipes implements IRecipePool {
                 GTNLMaterials.Breel.get(OrePrefixes.pipeMedium, 1),
                 GTNLItemList.IronTurbine.get(2),
                 GTNLItemList.HydraulicMotor.get(2))
-            .circuit(5)
             .itemOutputs(GTNLItemList.HydraulicPiston.get(2))
             .duration(1 * SECONDS)
             .eut(16)

@@ -2,6 +2,8 @@ package com.science.gtnl.api.stellar;
 
 import net.minecraft.util.EnumChatFormatting;
 
+import com.science.gtnl.utils.ColorUtils;
+
 import lombok.Getter;
 
 @Getter
@@ -40,22 +42,22 @@ public class StellarIrisUpgradeTree {
             throw new IllegalArgumentException("Tree tooltip color must not be null");
         }
         return switch (formatting) {
-            case BLACK -> 0x000000;
-            case DARK_BLUE -> 0x0000AA;
-            case DARK_GREEN -> 0x00AA00;
-            case DARK_AQUA -> 0x00AAAA;
-            case DARK_RED -> 0xAA0000;
-            case DARK_PURPLE -> 0xAA00AA;
-            case GOLD -> 0xFFAA00;
-            case GRAY -> 0xAAAAAA;
-            case DARK_GRAY -> 0x555555;
-            case BLUE -> 0x5555FF;
-            case GREEN -> 0x55FF55;
-            case AQUA -> 0x55FFFF;
-            case RED -> 0xFF5555;
-            case LIGHT_PURPLE -> 0xFF55FF;
-            case YELLOW -> 0xFFFF55;
-            case WHITE -> 0xFFFFFF;
+            case BLACK -> ColorUtils.vanillaColor(0);
+            case DARK_BLUE -> ColorUtils.vanillaColor(1);
+            case DARK_GREEN -> ColorUtils.vanillaColor(2);
+            case DARK_AQUA -> ColorUtils.vanillaColor(3);
+            case DARK_RED -> ColorUtils.vanillaColor(4);
+            case DARK_PURPLE -> ColorUtils.vanillaColor(5);
+            case GOLD -> ColorUtils.vanillaColor(6);
+            case GRAY -> ColorUtils.vanillaColor(7);
+            case DARK_GRAY -> ColorUtils.vanillaColor(8);
+            case BLUE -> ColorUtils.vanillaColor(9);
+            case GREEN -> ColorUtils.vanillaColor(10);
+            case AQUA -> ColorUtils.vanillaColor(11);
+            case RED -> ColorUtils.vanillaColor(12);
+            case LIGHT_PURPLE -> ColorUtils.vanillaColor(13);
+            case YELLOW -> ColorUtils.vanillaColor(14);
+            case WHITE -> ColorUtils.vanillaColor(15);
             default -> throw new IllegalArgumentException("Tree tooltip formatting must be a color");
         };
     }

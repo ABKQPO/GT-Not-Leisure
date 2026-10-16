@@ -37,7 +37,7 @@ public class TheTwilightForestRecipes implements IRecipePool {
                 new ItemStack(Items.iron_ingot, 32))
             .outputChances(1000, 10000, 10000, 2500, 1000, 7500)
             .duration(600)
-            .eut(1966080)
+            .eut(TierEU.RECIPE_UHV)
             .addTo(TTFR);
 
         RecipeBuilder.builder()
@@ -53,7 +53,7 @@ public class TheTwilightForestRecipes implements IRecipePool {
                 new ItemStack(Blocks.diamond_block, 2))
             .outputChances(1000, 9500, 7500, 7500, 5000, 5000, 2500, 2500)
             .duration(600)
-            .eut(1966080)
+            .eut(TierEU.RECIPE_UHV)
             .addTo(TTFR);
 
         RecipeBuilder.builder()
@@ -61,7 +61,7 @@ public class TheTwilightForestRecipes implements IRecipePool {
             .itemOutputs(ModsItemlist.KnightPhantomTrophy.get(1), ModsItemlist.TwilightForestItemKnightMetal.get(24))
             .outputChances(1000, 7500)
             .duration(600)
-            .eut(1966080)
+            .eut(TierEU.RECIPE_UHV)
             .addTo(TTFR);
 
         RecipeBuilder.builder()
@@ -73,7 +73,7 @@ public class TheTwilightForestRecipes implements IRecipePool {
                 ModsItemlist.TwilightForestItemArcticFur.get(32))
             .outputChances(1000, 8000, 8000, 7500)
             .duration(600)
-            .eut(1966080)
+            .eut(TierEU.RECIPE_UHV)
             .addTo(TTFR);
 
         RecipeBuilder.builder()
@@ -89,7 +89,7 @@ public class TheTwilightForestRecipes implements IRecipePool {
                 ModsItemlist.ExtraUtilitiesCompressedCobbleEight.get(4))
             .outputChances(7500, 7500, 7500, 7500, 7500, 7500, 7500, 2500)
             .duration(600)
-            .eut(1966080)
+            .eut(TierEU.RECIPE_UHV)
             .addTo(TTFR);
 
         RecipeBuilder.builder()
@@ -129,7 +129,7 @@ public class TheTwilightForestRecipes implements IRecipePool {
                 NHItemList.NagaScaleChip.get(64))
             .outputChances(1000, 10000, 5000, 2500)
             .duration(600)
-            .eut(1966080)
+            .eut(TierEU.RECIPE_UHV)
             .addTo(TTFR);
 
         RecipeBuilder.builder()
@@ -144,7 +144,7 @@ public class TheTwilightForestRecipes implements IRecipePool {
                 new ItemStack(Items.paper, 32))
             .outputChances(1000, 10000, 5000, 2500, 5000, 7500, 7500)
             .duration(600)
-            .eut(1966080)
+            .eut(TierEU.RECIPE_UHV)
             .addTo(TTFR);
 
         RecipeBuilder.builder()
@@ -159,7 +159,7 @@ public class TheTwilightForestRecipes implements IRecipePool {
                 new ItemStack(Blocks.redstone_block, 4))
             .outputChances(1000, 10000, 10000, 5000, 2500, 5000, 7500)
             .duration(600)
-            .eut(1966080)
+            .eut(TierEU.RECIPE_UHV)
             .addTo(TTFR);
 
         RecipeBuilder.builder()
@@ -177,7 +177,7 @@ public class TheTwilightForestRecipes implements IRecipePool {
                 ModsItemlist.TwilightForestItemArcticFur.get(32))
             .outputChances(1000, 7500, 5000, 8000, 10000, 7500, 7500, 5000, 5000, 8000)
             .duration(600)
-            .eut(1966080)
+            .eut(TierEU.RECIPE_UHV)
             .addTo(TTFR);
     }
 

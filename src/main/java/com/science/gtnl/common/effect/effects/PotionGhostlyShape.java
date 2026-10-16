@@ -23,6 +23,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import com.science.gtnl.common.effect.EffectBase;
 import com.science.gtnl.loader.EffectLoader;
 import com.science.gtnl.mixins.early.minecraft.AccessorFoodStats;
+import com.science.gtnl.utils.ColorUtils;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -31,7 +32,7 @@ public class PotionGhostlyShape extends EffectBase {
     private static final Set<EntityPlayer> affectedPlayers = new HashSet<>();
 
     public PotionGhostlyShape(int id) {
-        super(id, "ghostly_shape", false, 0x99ccff, 4);
+        super(id, "ghostly_shape", false, ColorUtils.rgb(ColorUtils.effectGhostlyShape), 4);
         MinecraftForge.EVENT_BUS.register(this);
     }
 

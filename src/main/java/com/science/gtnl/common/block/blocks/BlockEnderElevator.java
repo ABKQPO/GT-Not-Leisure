@@ -23,6 +23,7 @@ import com.science.gtnl.ClientProxy;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.blocks.item.ItemBlockEnderElevator;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEnderElevator;
+import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.event.LivingSneakEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -37,8 +38,13 @@ public class BlockEnderElevator extends BlockContainer {
 
     public int type;
 
-    public static final int[] COLOR_TABLE = new int[] { 0xFFFFFF, 0xD87F33, 0xB24CA5, 0x6699D8, 0xE5E533, 0x7FCC19,
-        0xF27FA5, 0x4C4C4C, 0x999999, 0x4C7F99, 0x7F3FB2, 0x334CB2, 0x664C33, 0x667F33, 0x993333, 0x191919 };
+    public static final int[] COLOR_TABLE = new int[ColorUtils.enderElevatorColorCount()];
+
+    static {
+        for (int index = 0; index < COLOR_TABLE.length; index++) {
+            COLOR_TABLE[index] = ColorUtils.enderElevatorColor(index);
+        }
+    }
 
     public BlockEnderElevator(int type) {
         super(Material.iron);
@@ -154,7 +160,7 @@ public class BlockEnderElevator extends BlockContainer {
         if (meta >= 0 && meta < COLOR_TABLE.length) {
             return COLOR_TABLE[meta];
         }
-        return 0xFFFFFF;
+        return ColorUtils.rgb(ColorUtils.guiTextColorWhite);
     }
 
     @SideOnly(Side.CLIENT)
@@ -163,7 +169,7 @@ public class BlockEnderElevator extends BlockContainer {
         if (meta >= 0 && meta < COLOR_TABLE.length) {
             return COLOR_TABLE[meta];
         }
-        return 0xFFFFFF;
+        return ColorUtils.rgb(ColorUtils.guiTextColorWhite);
     }
 
     @SubscribeEvent

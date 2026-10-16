@@ -8,6 +8,7 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
+import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
 import gtnhlanth.api.recipe.LanthanidesRecipeMaps;
@@ -26,7 +27,7 @@ public class DissolutionTankRecipes implements IRecipePool {
             .fluidOutputs(GTNLMaterials.RareEarthHydroxides.getFluidOrGas(10000))
             .metadata(DISSOLUTION_TANK_RATIO, 9)
             .duration(50)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(DTR);
     }
 }

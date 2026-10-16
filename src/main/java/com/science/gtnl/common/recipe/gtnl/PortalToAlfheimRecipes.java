@@ -14,6 +14,7 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
+import gregtech.api.enums.TierEU;
 import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTUtility;
@@ -71,7 +72,7 @@ public class PortalToAlfheimRecipes implements IRecipePool {
             RecipeBuilder builder = RecipeBuilder.builder()
                 .itemOutputs(output)
                 .duration(20)
-                .eut(2048);
+                .eut(TierEU.RECIPE_EV);
 
             if (hasOreDict) {
                 builder.itemInputs(inputs.toArray(new Object[0]));
@@ -160,7 +161,7 @@ public class PortalToAlfheimRecipes implements IRecipePool {
                 139,
                 1)
             .duration(1200)
-            .eut(122880)
+            .eut(TierEU.RECIPE_ZPM)
             .addTo(PTAR);
 
         RecipeBuilder.builder()
@@ -238,7 +239,7 @@ public class PortalToAlfheimRecipes implements IRecipePool {
                 139,
                 1)
             .duration(100)
-            .eut(7864320)
+            .eut(TierEU.RECIPE_UEV)
             .addTo(PTAR);
     }
 }

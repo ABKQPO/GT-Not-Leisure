@@ -17,6 +17,7 @@ import com.science.gtnl.client.text.EffectTextLayout.Glyph;
 import com.science.gtnl.client.text.EffectTextLayout.Layout;
 import com.science.gtnl.client.text.compat.AngelicaTextAdapter;
 import com.science.gtnl.client.text.compat.AngelicaTextAdapter.FontSettings;
+import com.science.gtnl.utils.ColorUtils;
 
 /** Render-thread-owned, bounded cache of native font coverage masks. */
 public class TextMaskCache {
@@ -129,7 +130,7 @@ public class TextMaskCache {
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
             EffectTextRenderer.beginCapture();
             try {
-                font.drawString(text, 0, 0, 0xFFFFFFFF, false);
+                font.drawString(text, 0, 0, ColorUtils.opaqueWhite.getColor(), false);
             } finally {
                 EffectTextRenderer.endCapture();
             }

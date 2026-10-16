@@ -34,7 +34,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("steam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 250))
             .duration(2000)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .requireMods(Mods.Forestry)
             .addTo(DR);
 
@@ -45,7 +45,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("ic2superheatedsteam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 500))
             .duration(1000)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .requireMods(Mods.Forestry)
             .addTo(DR);
 
@@ -55,7 +55,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("steam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 500))
             .duration(4000)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .requireMods(Mods.Forestry)
             .addTo(DR);
 
@@ -65,7 +65,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("ic2superheatedsteam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 1000))
             .duration(3000)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .requireMods(Mods.Forestry)
             .addTo(DR);
 
@@ -75,7 +75,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("steam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 500))
             .duration(4000)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .addTo(DR);
 
         RecipeBuilder.builder()
@@ -84,7 +84,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("steam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 500))
             .duration(4000)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .addTo(DR);
 
         RecipeBuilder.builder()
@@ -93,7 +93,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("ic2superheatedsteam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 1000))
             .duration(3000)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .addTo(DR);
 
         RecipeBuilder.builder()
@@ -102,7 +102,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("ic2superheatedsteam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 1000))
             .duration(3000)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .addTo(DR);
 
         RecipeBuilder.builder()
@@ -111,7 +111,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("steam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 250))
             .duration(2000)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .addTo(DR);
 
         RecipeBuilder.builder()
@@ -120,7 +120,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("steam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 250))
             .duration(2000)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .addTo(DR);
 
         RecipeBuilder.builder()
@@ -129,7 +129,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("ic2superheatedsteam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 500))
             .duration(1000)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .addTo(DR);
 
         RecipeBuilder.builder()
@@ -138,7 +138,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("ic2superheatedsteam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 500))
             .duration(1000)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .addTo(DR);
 
         RecipeBuilder.builder()
@@ -147,7 +147,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("steam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 100))
             .duration(1000)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .addTo(DR);
 
         RecipeBuilder.builder()
@@ -156,7 +156,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("steam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 100))
             .duration(1000)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .addTo(DR);
 
         RecipeBuilder.builder()
@@ -165,7 +165,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("ic2superheatedsteam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 200))
             .duration(500)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .addTo(DR);
 
         RecipeBuilder.builder()
@@ -174,7 +174,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("ic2superheatedsteam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 200))
             .duration(500)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .addTo(DR);
 
         RecipeBuilder.builder()
@@ -183,7 +183,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("steam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 50))
             .duration(1000)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .addTo(DR);
 
         RecipeBuilder.builder()
@@ -192,7 +192,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("steam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 50))
             .duration(1000)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .addTo(DR);
 
         RecipeBuilder.builder()
@@ -201,7 +201,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("ic2superheatedsteam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 100))
             .duration(500)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .addTo(DR);
 
         RecipeBuilder.builder()
@@ -210,7 +210,7 @@ public class DistilleryRecipes implements IRecipePool {
             .fluidInputs(FluidRegistry.getFluidStack("ic2superheatedsteam", 5000))
             .fluidOutputs(new FluidStack(GTPPFluids.PineOil, 100))
             .duration(500)
-            .eut(2048)
+            .eut(TierEU.RECIPE_EV)
             .addTo(DR);
 
         RecipeBuilder.builder()

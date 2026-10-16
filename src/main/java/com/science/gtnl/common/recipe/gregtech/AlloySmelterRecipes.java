@@ -10,6 +10,7 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
+import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
@@ -33,7 +34,7 @@ public class AlloySmelterRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Bronze, 1L))
             .itemOutputs(GTNLMaterials.Stronze.get(OrePrefixes.ingot, 3))
             .duration(150)
-            .eut(128)
+            .eut(TierEU.RECIPE_MV)
             .addTo(aSR);
 
         RecipeBuilder.builder()
@@ -42,7 +43,7 @@ public class AlloySmelterRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Bronze, 1L))
             .itemOutputs(GTNLMaterials.Stronze.get(OrePrefixes.ingot, 3))
             .duration(150)
-            .eut(128)
+            .eut(TierEU.RECIPE_MV)
             .addTo(aSR);
 
         RecipeBuilder.builder()
@@ -51,7 +52,7 @@ public class AlloySmelterRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Bronze, 1L))
             .itemOutputs(GTNLMaterials.Stronze.get(OrePrefixes.ingot, 3))
             .duration(150)
-            .eut(128)
+            .eut(TierEU.RECIPE_MV)
             .addTo(aSR);
 
         RecipeBuilder.builder()
@@ -60,7 +61,7 @@ public class AlloySmelterRecipes implements IRecipePool {
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.Bronze, 1L))
             .itemOutputs(GTNLMaterials.Stronze.get(OrePrefixes.ingot, 3))
             .duration(150)
-            .eut(128)
+            .eut(TierEU.RECIPE_MV)
             .addTo(aSR);
     }
 }

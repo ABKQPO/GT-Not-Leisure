@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.StatCollector;
 
 import com.science.gtnl.common.packet.ProspectingPacket;
+import com.science.gtnl.utils.ColorUtils;
 
 import cpw.mods.fml.client.GuiScrollingList;
 import cpw.mods.fml.relauncher.Side;
@@ -116,9 +117,9 @@ public class OresList extends GuiScrollingList {
         String name = keys.get(slotIdx);
 
         int textLeft = left + 3;
-        int textColor = 0xFFE0E0E0;
+        int textColor = ColorUtils.guiFrameBorder.getColor();
         if (colors.containsKey(name)) {
-            int color = 0xFF000000 | colors.getInt(name);
+            int color = ColorUtils.opaqueBlack.getColor() | colors.getInt(name);
             Gui.drawRect(left + 3, slotTop, left + 11, slotTop + 8, color);
             textLeft = left + 14;
             textColor = readable(color);
@@ -143,6 +144,6 @@ public class OresList extends GuiScrollingList {
             green += (int) ((255 - green) * lift);
             blue += (int) ((255 - blue) * lift);
         }
-        return 0xFF000000 | (red << 16) | (green << 8) | blue;
+        return ColorUtils.opaqueBlack.getColor() | (red << 16) | (green << 8) | blue;
     }
 }

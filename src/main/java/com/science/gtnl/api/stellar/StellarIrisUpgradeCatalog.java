@@ -2,6 +2,8 @@ package com.science.gtnl.api.stellar;
 
 import net.minecraft.util.EnumChatFormatting;
 
+import com.science.gtnl.utils.ColorUtils;
+
 public class StellarIrisUpgradeCatalog {
 
     public static boolean defaultsRegistered;
@@ -26,7 +28,7 @@ public class StellarIrisUpgradeCatalog {
                 "gtnl.stellar_iris.branch.ignition",
                 -2.3561945F,
                 false,
-                0xFF783C,
+                ColorUtils.rgb(ColorUtils.stellarIgnitionBranch),
                 EnumChatFormatting.GOLD));
         StellarIrisUpgradeRegistry.registerBranch(
             new StellarIrisUpgradeBranch(
@@ -34,7 +36,7 @@ public class StellarIrisUpgradeCatalog {
                 "gtnl.stellar_iris.branch.fusion",
                 -0.7853982F,
                 false,
-                0x50B4FF,
+                ColorUtils.rgb(ColorUtils.stellarFusionBranch),
                 EnumChatFormatting.AQUA));
         StellarIrisUpgradeRegistry.registerBranch(
             new StellarIrisUpgradeBranch(
@@ -42,7 +44,7 @@ public class StellarIrisUpgradeCatalog {
                 "gtnl.stellar_iris.branch.collapse",
                 2.3561945F,
                 false,
-                0xB450DC,
+                ColorUtils.rgb(ColorUtils.stellarCollapseBranch),
                 EnumChatFormatting.LIGHT_PURPLE));
         StellarIrisUpgradeRegistry.registerBranch(
             new StellarIrisUpgradeBranch(
@@ -50,7 +52,7 @@ public class StellarIrisUpgradeCatalog {
                 "gtnl.stellar_iris.branch.void",
                 0.7853982F,
                 false,
-                0x50FFB4,
+                ColorUtils.rgb(ColorUtils.stellarVoidBranch),
                 EnumChatFormatting.GREEN));
         StellarIrisUpgradeRegistry.registerBranch(
             new StellarIrisUpgradeBranch(
@@ -58,7 +60,7 @@ public class StellarIrisUpgradeCatalog {
                 "gtnl.stellar_iris.branch.repeatable",
                 -1.5707964F,
                 true,
-                0xDCC878,
+                ColorUtils.rgb(ColorUtils.stellarRepeatableBranch),
                 EnumChatFormatting.YELLOW));
     }
 

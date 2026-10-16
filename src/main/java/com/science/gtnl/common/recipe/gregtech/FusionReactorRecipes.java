@@ -33,7 +33,7 @@ public class FusionReactorRecipes implements IRecipePool {
             .fluidInputs(Materials.DraconiumAwakened.getMolten(432), Materials.Radon.getPlasma(144))
             .fluidOutputs(MaterialsElements.STANDALONE.DRAGON_METAL.getFluidStack(288))
             .duration(10)
-            .eut(491520)
+            .eut(TierEU.RECIPE_UV)
             .metadata(FUSION_THRESHOLD, 1000000000L)
             .addTo(fR);
 

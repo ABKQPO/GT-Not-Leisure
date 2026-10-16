@@ -13,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.event.SubscribeEventClientUtils;
 
 import cpw.mods.fml.common.Optional;
@@ -152,10 +153,11 @@ public class WrenchSpecialRender {
                 break;
 
             case 5:
-                float ca = (float) (0xE6FFFFFF >> 24 & 255) / 255.0F;
-                float cr = (float) (0xE6FFFFFF >> 16 & 255) / 255.0F;
-                float cg = (float) (0xE6FFFFFF >> 8 & 255) / 255.0F;
-                float cb = (float) (0xE6FFFFFF & 255) / 255.0F;
+                int itemColor = ColorUtils.itemGhostWhite.getColor();
+                float ca = (float) (itemColor >> 24 & 255) / 255.0F;
+                float cr = (float) (itemColor >> 16 & 255) / 255.0F;
+                float cg = (float) (itemColor >> 8 & 255) / 255.0F;
+                float cb = (float) (itemColor & 255) / 255.0F;
                 GL11.glColor4f(cr, cg, cb, ca);
 
                 GL11.glEnable(GL11.GL_BLEND);
@@ -340,7 +342,7 @@ public class WrenchSpecialRender {
             .bindTexture(HALO_TEXTURE);
 
         int spread = 10;
-        int haloAlpha = 0xFF000000;
+        int haloAlpha = ColorUtils.opaqueBlack.getColor();
 
         Tessellator tessellator = Tessellator.instance;
 

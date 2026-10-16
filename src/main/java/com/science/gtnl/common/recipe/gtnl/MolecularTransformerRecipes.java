@@ -58,7 +58,7 @@ public class MolecularTransformerRecipes implements IRecipePool {
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.CastIron, 1L))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Steel, 1L))
             .duration(80)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(MTR);
 
         RecipeBuilder.builder()
@@ -74,35 +74,35 @@ public class MolecularTransformerRecipes implements IRecipePool {
             .circuit(2)
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Coal, 1L))
             .duration(200)
-            .eut(120)
+            .eut(TierEU.RECIPE_MV)
             .addTo(MTR);
 
         RecipeBuilder.builder()
             .itemInputs(new ItemStack(Items.coal, 4))
             .itemOutputs(new ItemStack(Items.diamond, 1))
             .duration(120)
-            .eut(7680)
+            .eut(TierEU.RECIPE_IV)
             .addTo(MTR);
 
         RecipeBuilder.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dustSmall, Materials.Calcium, 2L))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dustSmall, Materials.Bone, 1L))
             .duration(20)
-            .eut(30)
+            .eut(TierEU.RECIPE_LV)
             .addTo(MTR);
 
         RecipeBuilder.builder()
             .itemInputs(new ItemStack(Items.dye, 6, 15))
             .itemOutputs(new ItemStack(Items.bone, 1))
             .duration(40)
-            .eut(30)
+            .eut(TierEU.RECIPE_LV)
             .addTo(MTR);
 
         RecipeBuilder.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Iron, 1L))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.CastIron, 1L))
             .duration(20)
-            .eut(120)
+            .eut(TierEU.RECIPE_MV)
             .addTo(MTR);
 
         RecipeBuilder.builder()
@@ -112,42 +112,42 @@ public class MolecularTransformerRecipes implements IRecipePool {
                     .maybeStack(1)
                     .orNull())
             .duration(160)
-            .eut(120)
+            .eut(TierEU.RECIPE_MV)
             .addTo(MTR);
 
         RecipeBuilder.builder()
             .itemInputs(new ItemStack(Items.coal, 1, 1))
             .itemOutputs(new ItemStack(Items.coal, 1))
             .duration(200)
-            .eut(120)
+            .eut(TierEU.RECIPE_MV)
             .addTo(MTR);
 
         RecipeBuilder.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Coal, 1L))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.ActivatedCarbon, 1L))
             .duration(20)
-            .eut(122880)
+            .eut(TierEU.RECIPE_ZPM)
             .addTo(MTR);
 
         RecipeBuilder.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Steel, 1L))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.DamascusSteel, 1L))
             .duration(20)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(MTR);
 
         RecipeBuilder.builder()
             .itemInputs(new ItemStack(Items.skull, 2, 1))
             .itemOutputs(new ItemStack(Items.nether_star, 1))
             .duration(800)
-            .eut(1920)
+            .eut(TierEU.RECIPE_EV)
             .addTo(MTR);
 
         RecipeBuilder.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dustSmall, Materials.Platinum, 1L))
             .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dustSmall, Materials.Iridium, 1L))
             .duration(400)
-            .eut(480)
+            .eut(TierEU.RECIPE_HV)
             .addTo(MTR);
 
         RecipeBuilder.builder()
@@ -157,7 +157,7 @@ public class MolecularTransformerRecipes implements IRecipePool {
                     .maybeStack(1)
                     .orNull())
             .duration(160)
-            .eut(120)
+            .eut(TierEU.RECIPE_MV)
             .addTo(MTR);
 
     }

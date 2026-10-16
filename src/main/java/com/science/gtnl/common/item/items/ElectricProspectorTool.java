@@ -29,6 +29,7 @@ import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.item.ItemStaticDataClientOnly;
 import com.science.gtnl.common.packet.ProspectingPacket;
 import com.science.gtnl.loader.ItemLoader;
+import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.item.MetaItemStackUtils;
 import com.science.gtnl.utils.item.MetaTooltipUtils;
@@ -57,7 +58,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 public class ElectricProspectorTool extends Item {
 
-    private static final int DEFAULT_SCAN_COLOR = 0xFF7D7D7D;
+    private static final int DEFAULT_SCAN_COLOR = ColorUtils.prospectorScanGray.getColor();
     private static final int MODE_FLUIDS = ProspectingPacket.MODE_FLUIDS;
     private static final int MODE_POLLUTION = ProspectingPacket.MODE_POLLUTION;
     private static final ScannerBlockResult UNSCANNABLE_BLOCK = new ScannerBlockResult(

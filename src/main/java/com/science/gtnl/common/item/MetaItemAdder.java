@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
 import com.science.gtnl.loader.ItemLoader;
+import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.item.MetaItemStackUtils;
 import com.science.gtnl.utils.item.MetaTooltipUtils;
 
@@ -146,6 +147,6 @@ public class MetaItemAdder extends ItemAdderBasic implements IHaloRenderItem {
     @Override
     @Optional.Method(modid = "Avaritia")
     public int getHaloColour(ItemStack stack) {
-        return 0xE6FFFFFF;
+        return ColorUtils.itemGhostWhite.getColor();
     }
 }

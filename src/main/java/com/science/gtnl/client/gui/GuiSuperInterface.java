@@ -13,6 +13,7 @@ import org.lwjgl.opengl.GL11;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.SwitchToCustomGuiPacket;
 import com.science.gtnl.container.ContainerSuperInterface;
+import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.api.config.AdvancedBlockingMode;
@@ -281,10 +282,11 @@ public class GuiSuperInterface extends GuiUpgradeable {
             this.drawTexturedModalRect(this.xPosition, this.yPosition, 240, 240, 16, 16);
 
             var fontrenderer = mc.fontRenderer;
-            int color = this.enabled ? 0xE0E0E0 : 0x707070;
+            int color = this.enabled ? ColorUtils.guiTextColorLight.getColor()
+                : ColorUtils.guiTextColorDisabled.getColor();
 
             if (this.field_146123_n && this.enabled) {
-                color = 0xFFFFA0;
+                color = ColorUtils.guiTextColorSoftYellow.getColor();
             }
 
             this.drawCenteredString(
