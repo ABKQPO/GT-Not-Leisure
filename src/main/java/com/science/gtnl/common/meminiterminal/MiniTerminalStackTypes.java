@@ -2,19 +2,14 @@ package com.science.gtnl.common.meminiterminal;
 
 import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
 
-import java.util.Map;
-import java.util.Set;
-
 import net.minecraft.item.ItemStack;
 
-import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.AEStackTypeRegistry;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackType;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 public final class MiniTerminalStackTypes {
 
@@ -43,16 +38,6 @@ public final class MiniTerminalStackTypes {
             if (converted != null) return converted;
         }
         return null;
-    }
-
-    static Set<IAEStackType<?>> visibleTypes(Map<IAEStackType<?>, IMEMonitor<?>> monitors,
-        Reference2BooleanMap<IAEStackType<?>> filters) {
-        Set<IAEStackType<?>> visible = new ReferenceOpenHashSet<>();
-        for (IAEStackType<?> type : monitors.keySet()) {
-            if (type == ITEM_STACK_TYPE || filters == null || !filters.containsKey(type) || filters.getBoolean(type))
-                visible.add(type);
-        }
-        return visible;
     }
 
     static void writeFilters(ByteBuf buf, Reference2BooleanMap<IAEStackType<?>> filters) {

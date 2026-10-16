@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 
@@ -121,7 +120,7 @@ public final class MiniTerminalSessionService {
     }
 
     private static MiniTerminalCatalog resumeCatalog(EntityPlayerMP player, MiniTerminalRequestPacket request,
-        Session session, Set<IAEStackType<?>> visibleTypes) {
+        Session session) {
         ParkedCatalog parked = PARKED.remove(player.getUniqueID());
         if (parked == null) return null;
         MiniTerminalCatalog catalog = parked.catalog();
@@ -131,7 +130,7 @@ public final class MiniTerminalSessionService {
             && parked.terminalId()
                 .equals(session.terminalId)
             && Objects.equals(parked.binding(), session.binding)
-            && catalog.resume(session.monitors, visibleTypes)) return catalog;
+            && catalog.resume(session.monitors)) return catalog;
         catalog.close();
         return null;
     }
@@ -338,8 +337,6 @@ public final class MiniTerminalSessionService {
             Reference2BooleanMap<IAEStackType<?>> filters = new Reference2BooleanOpenHashMap<>(request.typeFilters);
             filters.put(ITEM_STACK_TYPE, true);
             session.terminal.updateTypeFilters(filters);
-            if (session.catalog != null)
-                session.catalog.showTypes(MiniTerminalStackTypes.visibleTypes(session.monitors, filters));
         } else {
             TerminalSettings terminalSettings = new TerminalSettings();
             terminalSettings.readFromNBT(stack.getTagCompound());
@@ -439,11 +436,9 @@ public final class MiniTerminalSessionService {
             session.validated = status;
             session.validationTick = player.ticksExisted;
             if (status == MiniTerminalStatus.ONLINE) {
-                Set<IAEStackType<?>> visibleTypes = MiniTerminalStackTypes
-                    .visibleTypes(session.monitors, session.host.getTypeFilter(player));
-                session.catalog = resumeCatalog(player, request, session, visibleTypes);
+                session.catalog = resumeCatalog(player, request, session);
                 session.resumed = session.catalog != null;
-                if (!session.resumed) session.catalog = new MiniTerminalCatalog(session.monitors, visibleTypes);
+                if (!session.resumed) session.catalog = new MiniTerminalCatalog(session.monitors);
                 session.terminal.observeCatalog(session.catalog);
                 SESSIONS.put(player.getUniqueID(), session);
             }

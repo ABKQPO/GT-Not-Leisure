@@ -30,7 +30,6 @@ final class MiniTerminalCatalog {
     private final Object2IntOpenHashMap<IAEStack<?>> ids = new Object2IntOpenHashMap<>();
     private final Int2ObjectOpenHashMap<IAEStack<?>> identities = new Int2ObjectOpenHashMap<>();
     private final Set<IAEStack<?>> dirty = new ObjectOpenHashSet<>();
-    private Set<IAEStackType<?>> visibleTypes;
     private long nextId;
     private boolean active = true;
     private boolean suspended;
@@ -43,9 +42,8 @@ final class MiniTerminalCatalog {
     final long epoch;
     long revision;
 
-    MiniTerminalCatalog(Map<IAEStackType<?>, IMEMonitor<?>> monitors, Set<IAEStackType<?>> visibleTypes) {
+    MiniTerminalCatalog(Map<IAEStackType<?>, IMEMonitor<?>> monitors) {
         this.monitors = monitors;
-        this.visibleTypes = visibleTypes;
         ids.defaultReturnValue(-1);
         long next;
         do next = ThreadLocalRandom.current()
@@ -63,19 +61,13 @@ final class MiniTerminalCatalog {
         return true;
     }
 
-    boolean resume(Map<IAEStackType<?>, IMEMonitor<?>> monitors, Set<IAEStackType<?>> visibleTypes) {
-        if (!suspended || !this.monitors.equals(monitors) || !this.visibleTypes.equals(visibleTypes)) return false;
+    boolean resume(Map<IAEStackType<?>, IMEMonitor<?>> monitors) {
+        if (!suspended || !this.monitors.equals(monitors)) return false;
         suspended = false;
         active = true;
         listUpdate = true;
         immediateScan = true;
         return true;
-    }
-
-    void showTypes(Set<IAEStackType<?>> visible) {
-        if (visibleTypes.equals(visible)) return;
-        visibleTypes = visible;
-        requestSnapshot();
     }
 
     IAEStack<?> target(int id) {
@@ -117,7 +109,7 @@ final class MiniTerminalCatalog {
         if (fullUpdate || listUpdate && (immediateScan || elapsed(tick, lastScan, MIN_SCAN_TICKS))) {
             BitSet seen = new BitSet((int) Math.min(nextId, Integer.MAX_VALUE));
             for (IAEStackType<?> type : AEStackTypeRegistry.getSortedTypes()) {
-                IMEMonitor<?> monitor = visibleTypes.contains(type) ? monitors.get(type) : null;
+                IMEMonitor<?> monitor = monitors.get(type);
                 if (monitor == null) continue;
                 for (Object stack : monitor.getStorageList()) scan(entries, (IAEStack<?>) stack, seen);
             }
@@ -216,7 +208,7 @@ final class MiniTerminalCatalog {
     }
 
     void changed(IAEStack<?> stack) {
-        if (!active || stack == null || !visibleTypes.contains(stack.getStackType())) return;
+        if (!active || stack == null || !monitors.containsKey(stack.getStackType())) return;
         if (dirty.contains(stack)) return;
         if (dirty.size() >= MAX_DIRTY) {
             dirty.clear();
