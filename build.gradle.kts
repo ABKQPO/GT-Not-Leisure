@@ -10,6 +10,19 @@ tasks.withType<JavaCompile>().configureEach {
     options.annotationProcessorPath = configurations.annotationProcessor.get()
 }
 
+sourceSets.test {
+    compileClasspath += sourceSets.main.get().compileClasspath
+}
+
+tasks.register<JavaExec>("verifyRailgun") {
+    group = "verification"
+    description = "Verify railgun math, settings and packet bounds without starting Minecraft"
+    dependsOn(tasks.testClasses)
+    classpath = sourceSets.test.get().runtimeClasspath + sourceSets.main.get().runtimeClasspath
+    mainClass.set("com.science.gtnl.common.railgun.RailgunContractTest")
+    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+}
+
 val runConfigs = listOf(
     "runClient" to "run/client",
     "runClient17" to "run/client_new",

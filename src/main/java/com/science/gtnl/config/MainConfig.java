@@ -70,6 +70,67 @@ public class MainConfig {
     @Comment("Item section")
     public static class Item {
 
+        public final Railgun railgun = new Railgun();
+
+        public static class Railgun {
+
+            @DefaultDouble(250000)
+            public double baseCapacity = 250000;
+            @DefaultDouble(25000000)
+            public double energyCapacityT1 = 25000000;
+            @DefaultDouble(125000000)
+            public double energyCapacityT2 = 125000000;
+            @DefaultDouble(500000000)
+            public double energyCapacityT3 = 500000000;
+            @DefaultDouble(1600)
+            public double hvLightningEu = 1600;
+            @DefaultDouble(25600)
+            public double ehvLightningEu = 25600;
+            @DefaultDouble(100)
+            public double beamEuPerSettle = 100;
+            @DefaultDouble(1000)
+            public double ehvBeamEuPerSettle = 1000;
+            @DefaultDouble(2000)
+            public double shotEuEhv1 = 2000;
+            @DefaultDouble(10000)
+            public double shotEuEhv2 = 10000;
+            @DefaultDouble(50000)
+            public double shotEuEhv3 = 50000;
+            @DefaultDouble(250)
+            public double chargeEuEhv1 = 250;
+            @DefaultDouble(1000)
+            public double chargeEuEhv2 = 1000;
+            @DefaultDouble(2500)
+            public double chargeEuEhv3 = 2500;
+            @DefaultDouble(20)
+            public double beamDamage = 20;
+            @DefaultDouble(0.4)
+            public double beamBypass = 0.4;
+            @DefaultDouble(200)
+            public double ehvBeamDamage = 200;
+            @DefaultDouble(100)
+            public double baseDamageEhv1 = 100;
+            @DefaultDouble(300)
+            public double baseDamageEhv2 = 300;
+            @DefaultDouble(600)
+            public double baseDamageEhv3 = 600;
+            @DefaultDouble(0.8)
+            public double chargedBypass = 0.8;
+            @DefaultBoolean(true)
+            public boolean damagePlayers = true;
+            @DefaultBoolean(true)
+            public boolean paralysisOnPlayers = true;
+            @DefaultBoolean(false)
+            public boolean terrainEnabled = false;
+            @DefaultBoolean(false)
+            public boolean terrainDropItems = false;
+            @DefaultInt(200)
+            @RangeInt(min = 1, max = 10000)
+            public int terrainBlocksPerTick = 200;
+            @DefaultBoolean(true)
+            public boolean wirelessRefill = true;
+        }
+
         @Name("player_doll")
         public final PlayerDoll player_doll = new PlayerDoll();
 

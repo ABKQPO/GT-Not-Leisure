@@ -1,4 +1,10 @@
 {
+  "railgun.fire": {"category": "player", "sounds": ["railgun/fire"]},
+  "railgun.impact": {"category": "player", "sounds": ["railgun/fire"]},
+  "railgun.beam.chain": {"category": "player", "sounds": ["railgun/fire"]},
+  "railgun.beam.loop": {"category": "player", "sounds": ["railgun/beam_loop"]},
+  "railgun.charge.loop": {"category": "player", "sounds": ["railgun/charge_loop"]},
+  "railgun.charge.ramp": {"category": "player", "sounds": ["railgun/charge_ramp"]},
   "time.stop": {
     "category": "player",
     "sounds": [

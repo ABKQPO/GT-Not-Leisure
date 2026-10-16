@@ -78,6 +78,7 @@ import com.science.gtnl.common.render.entity.SaddleSlimeRender;
 import com.science.gtnl.common.render.entity.SteamRocketRender;
 import com.science.gtnl.common.render.item.AprilFoolMachineRender;
 import com.science.gtnl.common.render.item.ItemBlockArtificialStarRender;
+import com.science.gtnl.common.render.item.ItemElectromagneticRailgunRender;
 import com.science.gtnl.common.render.item.ItemNullPointerExceptionRender;
 import com.science.gtnl.common.render.item.ItemPlayerDollRenderer;
 import com.science.gtnl.common.render.item.ItemSteamRocketRenderer;
@@ -147,6 +148,7 @@ public class ClientProxy extends CommonProxy {
         super.preInit(event);
         MiniTerminalClient.init();
         WirelessCardInput.register();
+        com.science.gtnl.client.railgun.RailgunClientFx.register();
         MinecraftForge.EVENT_BUS.register(WirelessWorldHighlight.INSTANCE);
         ModelRegistry.registerModid(ScienceNotLeisure.MODID);
 
@@ -250,6 +252,8 @@ public class ClientProxy extends CommonProxy {
             new ItemBlockArtificialStarRender());
 
         MinecraftForgeClient.registerItemRenderer(ItemLoader.twilightSword, new ItemTwilightSwordRender());
+        MinecraftForgeClient
+            .registerItemRenderer(ItemLoader.electromagneticRailgun, new ItemElectromagneticRailgunRender());
 
         MinecraftForgeClient.registerItemRenderer(
             Item.getItemFromBlock(BlockLoader.nanoPhagocytosisPlantRender),
