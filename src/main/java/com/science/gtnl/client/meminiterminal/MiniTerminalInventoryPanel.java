@@ -1,7 +1,6 @@
 package com.science.gtnl.client.meminiterminal;
 
 import static appeng.client.gui.implementations.GuiMEMonitorable.keyBindPickBlockAction;
-import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -44,15 +43,16 @@ import com.cleanroommc.modularui.widget.WidgetTree;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.science.gtnl.common.meminiterminal.MiniTerminalPinSettings;
+import com.science.gtnl.common.meminiterminal.MiniTerminalStackTypes;
 
 import appeng.api.config.ActionItems;
 import appeng.api.config.OperationMode;
 import appeng.api.config.PinSectionOrder;
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
-import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IAEStackType;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.ScreenColor;
 import appeng.client.gui.slots.VirtualMEMonitorableSlot;
@@ -158,7 +158,9 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             .invisible()
             .right(4)
             .top(MiniTerminalLayout.HEADER_Y + MiniTerminalLayout.BUTTON_HEIGHT)
-            .size(MiniTerminalLayout.BUTTON_WIDTH, 6 * MiniTerminalLayout.BUTTON_HEIGHT);
+            .size(
+                MiniTerminalLayout.BUTTON_WIDTH,
+                MiniTerminalLayout.controlButtons() * MiniTerminalLayout.BUTTON_HEIGHT);
         addButtons();
         child(terminal).child(search)
             .child(header)
@@ -199,8 +201,9 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
                             + settingLabel("view", model.getSortDisplay())
                             + EnumChatFormatting.RESET);
                     addKeybindTooltip(tooltip, "settings.sort", "settings.direction", "settings.view");
-                }).syncState(button -> button.set(model.getSortBy())))
-            .child(new FluidTypeButton())
+                }).syncState(button -> button.set(model.getSortBy())));
+        for (IAEStackType<?> type : MiniTerminalLayout.toggleTypes()) controls.child(new TypeButton(type));
+        controls
             .child(
                 new TerminalButton(
                     Settings.ACTIONS,
@@ -523,26 +526,24 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
         }
     }
 
-    private final class FluidTypeButton extends ButtonWidget<FluidTypeButton> {
+    private final class TypeButton extends ButtonWidget<TypeButton> {
 
-        private final TypeToggleButton button = new TypeToggleButton(
-            0,
-            0,
-            FLUID_STACK_TYPE.getButtonTexture(),
-            FLUID_STACK_TYPE.getButtonIcon(),
-            FLUID_STACK_TYPE.getDisplayName());
+        private final IAEStackType<?> type;
+        private final TypeToggleButton button;
 
-        FluidTypeButton() {
+        TypeButton(IAEStackType<?> type) {
+            this.type = type;
+            button = new TypeToggleButton(0, 0, type.getButtonTexture(), type.getButtonIcon(), type.getDisplayName());
             size(MiniTerminalLayout.BUTTON_WIDTH, MiniTerminalLayout.BUTTON_HEIGHT).invisible()
                 .playClickSound(false)
                 .onMouseScrolled((direction, amount) -> true)
                 .onMousePressed(mouseButton -> {
-                    if (mouseButton == 0 || mouseButton == 1) model.toggleFluids();
+                    if (mouseButton == 0 || mouseButton == 1) model.toggleType(type);
                     return true;
                 })
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder(tooltip -> {
-                    button.setEnabled(model.showFluids());
+                    button.setEnabled(model.isTypeVisible(type));
                     for (String line : button.getMessage()
                         .split("\n")) tooltip.addLine(line);
                 });
@@ -550,7 +551,7 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
 
         @Override
         public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-            button.setEnabled(model.showFluids());
+            button.setEnabled(model.isTypeVisible(type));
             float scale = 0.5F;
             GL11.glPushMatrix();
             try {
@@ -840,7 +841,7 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             ItemStack held = Minecraft.getMinecraft().thePlayer.inventory.getItemStack();
             boolean nonItemInteraction = Input.preferContainerInteraction(
                 AEBaseGui.isCtrlKeyDown(),
-                held != null && FLUID_STACK_TYPE.isContainerItemForType(held),
+                MiniTerminalStackTypes.containerType(held) != null,
                 Keyboard.isKeyDown(Keyboard.KEY_SPACE));
             if ((button == 0 || button == 1) && !Keyboard.isKeyDown(Keyboard.KEY_SPACE)
                 && setPinFromHand(slot, held, nonItemInteraction)) return slot;
@@ -862,8 +863,10 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             IAEStack<?> pinned = slot.getAEStack();
             IAEStack<?> target;
             if (nonItemInteraction) {
-                target = FLUID_STACK_TYPE.getStackFromContainerItem(held);
-                if (pinned instanceof IAEFluidStack && (target == null || pinned.equals(target))) return false;
+                IAEStackType<?> containerType = MiniTerminalStackTypes.containerType(held);
+                target = containerType == null ? null : containerType.getStackFromContainerItem(held);
+                if (pinned != null && pinned.getStackType() == containerType
+                    && (target == null || pinned.equals(target))) return false;
                 if (target == null) return true;
             } else {
                 if (pinned instanceof IAEItemStack item && item.getItemStack()

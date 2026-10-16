@@ -1,6 +1,11 @@
 package com.science.gtnl.client.meminiterminal;
 
+import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
+
 import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 
@@ -8,6 +13,8 @@ import com.cleanroommc.modularui.api.widget.ResizeDragArea;
 import com.cleanroommc.modularui.core.mixins.early.minecraft.GuiContainerAccessor;
 import com.cleanroommc.modularui.widget.sizer.Area;
 
+import appeng.api.storage.data.AEStackTypeRegistry;
+import appeng.api.storage.data.IAEStackType;
 import appeng.items.contents.PinList;
 
 public final class MiniTerminalLayout {
@@ -32,6 +39,9 @@ public final class MiniTerminalLayout {
     public static final int SEARCH_WIDTH = WIDTH - SEARCH_X - SEARCH_RIGHT;
     public static final int PIN_Y = 16;
     public static final int SCROLL_WIDTH = 8;
+    private static final int FIXED_CONTROL_BUTTONS = 5;
+    private static final int MIN_SCROLL_HEIGHT = 13;
+    private static List<IAEStackType<?>> toggleTypes;
     private final Rectangle bounds = new Rectangle();
     private Rectangle preferredBounds;
     private int defaultHeight = 166;
@@ -45,6 +55,29 @@ public final class MiniTerminalLayout {
     private boolean snappedHeight;
     private int screenWidth;
     private int screenHeight;
+
+    static List<IAEStackType<?>> toggleTypes() {
+        if (toggleTypes == null) {
+            List<IAEStackType<?>> types = new ArrayList<>();
+            for (IAEStackType<?> type : AEStackTypeRegistry.getSortedTypes()) {
+                if (type != ITEM_STACK_TYPE && type.getButtonTexture() != null && type.getButtonIcon() != null)
+                    types.add(type);
+            }
+            toggleTypes = Collections.unmodifiableList(types);
+        }
+        return toggleTypes;
+    }
+
+    static int controlButtons() {
+        return FIXED_CONTROL_BUTTONS + toggleTypes().size();
+    }
+
+    static int minHeight() {
+        int controlsBottom = HEADER_Y + (1 + controlButtons()) * BUTTON_HEIGHT + 2 + MIN_SCROLL_HEIGHT;
+        int height = MIN_HEIGHT;
+        while (PIN_Y + (height - PIN_Y - 4) / CELL * CELL < controlsBottom) height += CELL;
+        return height;
+    }
 
     public boolean update(GuiContainer inventory, boolean collapsed) {
         GuiContainerAccessor gui = (GuiContainerAccessor) inventory;
@@ -62,7 +95,7 @@ public final class MiniTerminalLayout {
         boolean collapsed) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
-        defaultHeight = Math.max(MIN_HEIGHT, height);
+        defaultHeight = Math.max(minHeight(), height);
         int x = preferredBounds == null ? guiLeft + guiWidth + 3 : preferredBounds.x;
         int y = preferredBounds == null ? guiTop : preferredBounds.y;
         int width = preferredBounds == null ? WIDTH : preferredBounds.width;
@@ -70,15 +103,15 @@ public final class MiniTerminalLayout {
 
         int availableWidth = Math.max(0, screenWidth - 2);
         int availableHeight = Math.max(0, screenHeight - 2);
-        hasRoom = availableWidth >= MIN_WIDTH && availableHeight >= MIN_HEIGHT
+        hasRoom = availableWidth >= MIN_WIDTH && availableHeight >= minHeight()
             && (preferredBounds != null
                 || x >= 0 && x + width <= screenWidth && y >= 0 && y + panelHeight <= screenHeight);
         boolean nextExpanded = !collapsed && hasRoom;
         if (nextExpanded) {
             width = snappedWidth ? snapSize(width, MIN_WIDTH, availableWidth)
                 : Math.min(Math.max(MIN_WIDTH, width), availableWidth);
-            panelHeight = snappedHeight ? snapSize(panelHeight, MIN_HEIGHT, availableHeight)
-                : Math.min(Math.max(MIN_HEIGHT, panelHeight), availableHeight);
+            panelHeight = snappedHeight ? snapSize(panelHeight, minHeight(), availableHeight)
+                : Math.min(Math.max(minHeight(), panelHeight), availableHeight);
         } else {
             width = Math.max(0, Math.min(COMPACT_SIZE, Math.min(screenWidth, screenHeight)));
             panelHeight = width;
@@ -143,7 +176,7 @@ public final class MiniTerminalLayout {
     void acceptPanelBounds(Rectangle next) {
         int width = expanded ? Math.max(MIN_WIDTH, next.width)
             : preferredBounds == null ? WIDTH : preferredBounds.width;
-        int height = expanded ? Math.max(MIN_HEIGHT, next.height)
+        int height = expanded ? Math.max(minHeight(), next.height)
             : preferredBounds == null ? defaultHeight : preferredBounds.height;
 
         if (preferredBounds != null) {
@@ -159,7 +192,7 @@ public final class MiniTerminalLayout {
         boolean vertical = edge.top || edge.bottom;
         int width = horizontal ? snapSize(next.width, MIN_WIDTH, screenWidth - 2)
             : preferredBounds == null ? start.width : preferredBounds.width;
-        int height = vertical ? snapSize(next.height, MIN_HEIGHT, screenHeight - 2)
+        int height = vertical ? snapSize(next.height, minHeight(), screenHeight - 2)
             : preferredBounds == null ? start.height : preferredBounds.height;
 
         int x = horizontal ? start.x + anchorOffset(start.width, width, edge.left, centered)
@@ -268,7 +301,7 @@ public final class MiniTerminalLayout {
     }
 
     public int scrollY() {
-        return Math.max(catalogY(), HEADER_Y + 7 * BUTTON_HEIGHT + 2);
+        return Math.max(catalogY(), HEADER_Y + (1 + controlButtons()) * BUTTON_HEIGHT + 2);
     }
 
     public int scrollHeight() {

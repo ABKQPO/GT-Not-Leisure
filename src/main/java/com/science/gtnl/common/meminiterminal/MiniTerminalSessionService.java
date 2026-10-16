@@ -1,6 +1,5 @@
 package com.science.gtnl.common.meminiterminal;
 
-import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
 import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
 
 import java.io.IOException;
@@ -9,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 
@@ -45,7 +45,7 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.AEStackTypeRegistry;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackType;
@@ -69,6 +69,7 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 public final class MiniTerminalSessionService {
 
@@ -120,7 +121,7 @@ public final class MiniTerminalSessionService {
     }
 
     private static MiniTerminalCatalog resumeCatalog(EntityPlayerMP player, MiniTerminalRequestPacket request,
-        Session session, boolean fluidsVisible) {
+        Session session, Set<IAEStackType<?>> visibleTypes) {
         ParkedCatalog parked = PARKED.remove(player.getUniqueID());
         if (parked == null) return null;
         MiniTerminalCatalog catalog = parked.catalog();
@@ -130,7 +131,7 @@ public final class MiniTerminalSessionService {
             && parked.terminalId()
                 .equals(session.terminalId)
             && Objects.equals(parked.binding(), session.binding)
-            && catalog.resume(session.monitor, session.fluidMonitor, fluidsVisible)) return catalog;
+            && catalog.resume(session.monitors, visibleTypes)) return catalog;
         catalog.close();
         return null;
     }
@@ -334,17 +335,18 @@ public final class MiniTerminalSessionService {
         config.putSetting(Settings.SORT_DIRECTION, request.sortDirection);
         config.putSetting(Settings.VIEW_MODE, request.viewMode);
         if (session != null && session.stack == stack) {
-            Reference2BooleanMap<IAEStackType<?>> filters = new Reference2BooleanOpenHashMap<>();
+            Reference2BooleanMap<IAEStackType<?>> filters = new Reference2BooleanOpenHashMap<>(request.typeFilters);
             filters.put(ITEM_STACK_TYPE, true);
-            filters.put(FLUID_STACK_TYPE, request.showFluids);
             session.terminal.updateTypeFilters(filters);
-            if (session.catalog != null) session.catalog.showFluids(request.showFluids);
+            if (session.catalog != null)
+                session.catalog.showTypes(MiniTerminalStackTypes.visibleTypes(session.monitors, filters));
         } else {
             TerminalSettings terminalSettings = new TerminalSettings();
             terminalSettings.readFromNBT(stack.getTagCompound());
             AEStackTypeFilter filters = terminalSettings.getFilters(player);
+            for (Reference2BooleanMap.Entry<IAEStackType<?>> entry : request.typeFilters.reference2BooleanEntrySet())
+                filters.setEnabled(entry.getKey(), entry.getBooleanValue());
             filters.setEnabled(ITEM_STACK_TYPE, true);
-            filters.setEnabled(FLUID_STACK_TYPE, request.showFluids);
             terminalSettings.writeToNBT(stack);
         }
         NBTTagCompound response = message("SETTINGS", request.sessionId);
@@ -437,12 +439,11 @@ public final class MiniTerminalSessionService {
             session.validated = status;
             session.validationTick = player.ticksExisted;
             if (status == MiniTerminalStatus.ONLINE) {
-                boolean fluidsVisible = session.host.getTypeFilter(player)
-                    .getBoolean(FLUID_STACK_TYPE);
-                session.catalog = resumeCatalog(player, request, session, fluidsVisible);
+                Set<IAEStackType<?>> visibleTypes = MiniTerminalStackTypes
+                    .visibleTypes(session.monitors, session.host.getTypeFilter(player));
+                session.catalog = resumeCatalog(player, request, session, visibleTypes);
                 session.resumed = session.catalog != null;
-                if (!session.resumed)
-                    session.catalog = new MiniTerminalCatalog(session.monitor, session.fluidMonitor, fluidsVisible);
+                if (!session.resumed) session.catalog = new MiniTerminalCatalog(session.monitors, visibleTypes);
                 session.terminal.observeCatalog(session.catalog);
                 SESSIONS.put(player.getUniqueID(), session);
             }
@@ -630,7 +631,7 @@ public final class MiniTerminalSessionService {
         final IWirelessTermHandler handler;
         final WirelessTerminalGuiObject host;
         final IMEMonitor<IAEItemStack> monitor;
-        final IMEMonitor<IAEFluidStack> fluidMonitor;
+        final Map<IAEStackType<?>, IMEMonitor<?>> monitors;
         final MiniTerminalMonitorableAdapter terminal;
         MiniTerminalPinSettings pinSettings;
         NBTTagList observedPins;
@@ -665,7 +666,12 @@ public final class MiniTerminalSessionService {
             this.terminal = new MiniTerminalMonitorableAdapter(player, host);
             try {
                 this.monitor = terminal.getItemMonitor();
-                this.fluidMonitor = host.getFluidInventory();
+                Map<IAEStackType<?>, IMEMonitor<?>> available = new Reference2ObjectOpenHashMap<>();
+                for (IAEStackType<?> type : AEStackTypeRegistry.getAllTypes()) {
+                    IMEMonitor<?> typeMonitor = host.getMEMonitor(type);
+                    if (typeMonitor != null) available.put(type, typeMonitor);
+                }
+                this.monitors = available;
                 this.pinSettings = MiniTerminalPinSettings
                     .read(stack, player, terminal.getCraftingPinsRows(), terminal.getPlayerPinsRows());
                 observePins();
@@ -701,7 +707,9 @@ public final class MiniTerminalSessionService {
             IStorageGrid storage = grid.getCache(IStorageGrid.class);
             if (storage == null || storage.getItemInventory() != monitor || monitor == null)
                 return MiniTerminalStatus.STALE;
-            if (storage.getFluidInventory() != fluidMonitor) return MiniTerminalStatus.STALE;
+            for (IAEStackType<?> type : AEStackTypeRegistry.getAllTypes()) {
+                if (storage.getMEMonitor(type) != monitors.get(type)) return MiniTerminalStatus.STALE;
+            }
             return networkStatus(player, grid, host, SecurityPermissions.EXTRACT);
         }
 
@@ -979,8 +987,11 @@ public final class MiniTerminalSessionService {
                 || request.action == MonitorableAction.DRAIN_CONTAINERS;
             boolean fill = request.action == MonitorableAction.FILL_SINGLE_CONTAINER
                 || request.action == MonitorableAction.FILL_CONTAINERS;
-            if ((drain || fill) && (hand == null || !FLUID_STACK_TYPE.isContainerItemForType(hand))) return;
-            if (fill && !(target instanceof IAEFluidStack)) return;
+            if ((drain || fill) && MiniTerminalStackTypes.containerType(hand) == null) return;
+            if (fill && (target == null || target.getStackType() == ITEM_STACK_TYPE
+                || !target.getStackType()
+                    .isContainerItemForType(hand)))
+                return;
             boolean inject = drain || MiniTerminalTransferService.depositsCursor(hand, request.action);
             if (inject && !permission(SecurityPermissions.INJECT)) return;
             if (fill) {

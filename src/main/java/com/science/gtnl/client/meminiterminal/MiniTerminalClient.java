@@ -495,7 +495,7 @@ public final class MiniTerminalClient {
                 (SortOrder) view.getSortBy(),
                 (SortDir) view.getSortDir(),
                 (ViewItems) view.getSortDisplay(),
-                view.showFluids(),
+                view.typeFilterFlags(),
                 Minecraft.getMinecraft().thePlayer.openContainer.windowId));
     }
 

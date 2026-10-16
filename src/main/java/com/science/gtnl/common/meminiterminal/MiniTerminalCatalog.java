@@ -5,15 +5,16 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.science.gtnl.common.meminiterminal.MiniTerminalUpdatePacket.Entry;
 
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.AEStackTypeRegistry;
 import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IAEStackType;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -25,16 +26,15 @@ final class MiniTerminalCatalog {
     private static final int MIN_SCAN_TICKS = 20;
     private static final int MAX_DIRTY = 4096;
 
-    private final IMEMonitor<IAEItemStack> itemMonitor;
-    private final IMEMonitor<IAEFluidStack> fluidMonitor;
+    private final Map<IAEStackType<?>, IMEMonitor<?>> monitors;
     private final Object2IntOpenHashMap<IAEStack<?>> ids = new Object2IntOpenHashMap<>();
     private final Int2ObjectOpenHashMap<IAEStack<?>> identities = new Int2ObjectOpenHashMap<>();
     private final Set<IAEStack<?>> dirty = new ObjectOpenHashSet<>();
+    private Set<IAEStackType<?>> visibleTypes;
     private long nextId;
     private boolean active = true;
     private boolean suspended;
     private boolean closed;
-    private boolean fluidsVisible;
     private boolean fullUpdate = true;
     private boolean listUpdate;
     private boolean immediateScan;
@@ -43,11 +43,9 @@ final class MiniTerminalCatalog {
     final long epoch;
     long revision;
 
-    MiniTerminalCatalog(IMEMonitor<IAEItemStack> itemMonitor, IMEMonitor<IAEFluidStack> fluidMonitor,
-        boolean fluidsVisible) {
-        this.itemMonitor = itemMonitor;
-        this.fluidMonitor = fluidMonitor;
-        this.fluidsVisible = fluidsVisible;
+    MiniTerminalCatalog(Map<IAEStackType<?>, IMEMonitor<?>> monitors, Set<IAEStackType<?>> visibleTypes) {
+        this.monitors = monitors;
+        this.visibleTypes = visibleTypes;
         ids.defaultReturnValue(-1);
         long next;
         do next = ThreadLocalRandom.current()
@@ -65,11 +63,8 @@ final class MiniTerminalCatalog {
         return true;
     }
 
-    boolean resume(IMEMonitor<IAEItemStack> itemMonitor, IMEMonitor<IAEFluidStack> fluidMonitor,
-        boolean fluidsVisible) {
-        if (!suspended || this.itemMonitor != itemMonitor
-            || this.fluidMonitor != fluidMonitor
-            || this.fluidsVisible != fluidsVisible) return false;
+    boolean resume(Map<IAEStackType<?>, IMEMonitor<?>> monitors, Set<IAEStackType<?>> visibleTypes) {
+        if (!suspended || !this.monitors.equals(monitors) || !this.visibleTypes.equals(visibleTypes)) return false;
         suspended = false;
         active = true;
         listUpdate = true;
@@ -77,9 +72,9 @@ final class MiniTerminalCatalog {
         return true;
     }
 
-    void showFluids(boolean visible) {
-        if (fluidsVisible == visible) return;
-        fluidsVisible = visible;
+    void showTypes(Set<IAEStackType<?>> visible) {
+        if (visibleTypes.equals(visible)) return;
+        visibleTypes = visible;
         requestSnapshot();
     }
 
@@ -88,12 +83,12 @@ final class MiniTerminalCatalog {
         return stack == null ? null : stack.copy();
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     IAEStack<?> current(IAEStack<?> identity) {
-        if (identity instanceof IAEItemStack item) return itemMonitor.getStorageList()
-            .findPrecise(item);
-        if (identity instanceof IAEFluidStack fluid && fluidMonitor != null) return fluidMonitor.getStorageList()
-            .findPrecise(fluid);
-        return null;
+        IMEMonitor monitor = identity == null ? null : monitors.get(identity.getStackType());
+        return monitor == null ? null
+            : (IAEStack<?>) monitor.getStorageList()
+                .findPrecise(identity);
     }
 
     void requestSnapshot() {
@@ -121,9 +116,10 @@ final class MiniTerminalCatalog {
 
         if (fullUpdate || listUpdate && (immediateScan || elapsed(tick, lastScan, MIN_SCAN_TICKS))) {
             BitSet seen = new BitSet((int) Math.min(nextId, Integer.MAX_VALUE));
-            for (IAEItemStack stack : itemMonitor.getStorageList()) scan(entries, stack, seen);
-            if (fluidsVisible && fluidMonitor != null) {
-                for (IAEFluidStack stack : fluidMonitor.getStorageList()) scan(entries, stack, seen);
+            for (IAEStackType<?> type : AEStackTypeRegistry.getSortedTypes()) {
+                IMEMonitor<?> monitor = visibleTypes.contains(type) ? monitors.get(type) : null;
+                if (monitor == null) continue;
+                for (Object stack : monitor.getStorageList()) scan(entries, (IAEStack<?>) stack, seen);
             }
             Iterator<Int2ObjectMap.Entry<IAEStack<?>>> previous = identities.int2ObjectEntrySet()
                 .iterator();
@@ -220,7 +216,7 @@ final class MiniTerminalCatalog {
     }
 
     void changed(IAEStack<?> stack) {
-        if (!active || !(stack instanceof IAEItemStack || fluidsVisible && stack instanceof IAEFluidStack)) return;
+        if (!active || stack == null || !visibleTypes.contains(stack.getStackType())) return;
         if (dirty.contains(stack)) return;
         if (dirty.size() >= MAX_DIRTY) {
             dirty.clear();

@@ -65,7 +65,7 @@ class MiniTerminalPanel extends ModularPanel implements IDraggable {
 
     @Override
     public int getMinDragHeight() {
-        return MiniTerminalLayout.MIN_HEIGHT;
+        return MiniTerminalLayout.minHeight();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.science.gtnl.client.meminiterminal;
 
-import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
 import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
 
 import java.util.EnumSet;
@@ -21,6 +20,7 @@ import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.config.YesNo;
+import appeng.api.storage.data.AEStackTypeRegistry;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IAEStackType;
 import appeng.api.util.IConfigManager;
@@ -37,6 +37,7 @@ import appeng.util.Platform;
 import appeng.util.TerminalSettings;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
 
 public final class MiniTerminalModel implements ISortSource {
 
@@ -139,18 +140,23 @@ public final class MiniTerminalModel implements ISortSource {
         refreshActiveView();
     }
 
-    public boolean showFluids() {
-        return typeFilters.isEnabled(FLUID_STACK_TYPE);
-    }
-
     public boolean isTypeVisible(IAEStackType<?> type) {
-        return (type == ITEM_STACK_TYPE || type == FLUID_STACK_TYPE) && typeFilters.isEnabled(type);
+        return typeFilters.isEnabled(type);
     }
 
-    public void toggleFluids() {
-        typeFilters.toggle(FLUID_STACK_TYPE);
+    public void toggleType(IAEStackType<?> type) {
+        if (type == ITEM_STACK_TYPE) return;
+        typeFilters.toggle(type);
         refreshActiveView();
         MiniTerminalClient.saveSettings();
+    }
+
+    public Reference2BooleanMap<IAEStackType<?>> typeFilterFlags() {
+        Reference2BooleanMap<IAEStackType<?>> flags = new Reference2BooleanOpenHashMap<>();
+        for (IAEStackType<?> type : AEStackTypeRegistry.getAllTypes()) {
+            if (type != ITEM_STACK_TYPE) flags.put(type, typeFilters.isEnabled(type));
+        }
+        return flags;
     }
 
     public void readSettings(NBTTagCompound config, long acknowledgedAction) {

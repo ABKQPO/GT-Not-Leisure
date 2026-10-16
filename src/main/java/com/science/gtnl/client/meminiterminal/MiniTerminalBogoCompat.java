@@ -1,7 +1,5 @@
 package com.science.gtnl.client.meminiterminal;
 
-import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
-
 import java.awt.Point;
 
 import net.minecraft.client.Minecraft;
@@ -22,6 +20,7 @@ import com.cleanroommc.bogosorter.compat.ae2.Ae2TerminalGuiDetector;
 import com.cleanroommc.modularui.api.event.KeyboardInputEvent;
 import com.cleanroommc.modularui.api.event.MouseInputEvent;
 import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket.DepositMode;
+import com.science.gtnl.common.meminiterminal.MiniTerminalStackTypes;
 import com.science.gtnl.utils.enums.ModList;
 
 import appeng.api.storage.data.IAEItemStack;
@@ -75,7 +74,7 @@ public final class MiniTerminalBogoCompat {
         ItemStack held = mc.thePlayer.inventory.getItemStack();
         if (!MiniTerminalInventoryPanel.Input.preferContainerInteraction(
             AEBaseGui.isCtrlKeyDown(),
-            held != null && FLUID_STACK_TYPE.isContainerItemForType(held),
+            MiniTerminalStackTypes.containerType(held) != null,
             Keyboard.isKeyDown(Keyboard.KEY_SPACE))) return false;
         Point mouse = GuiDraw.getMousePosition();
         return overlay.hoveredSlot(mouse.x, mouse.y) != null;

@@ -1,7 +1,5 @@
 package com.science.gtnl.client.meminiterminal;
 
-import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
-
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
@@ -12,6 +10,8 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
+
+import com.science.gtnl.common.meminiterminal.MiniTerminalStackTypes;
 
 import appeng.api.storage.data.IAEStack;
 import appeng.client.gui.AEBaseGui;
@@ -81,9 +81,9 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
         if (!overlay.isOnline() || slot.getSlotIndex() < PinList.PLAYER_OFFSET) return true;
         ItemStack dragged = stack.copy();
         dragged.stackSize = 1;
-        IAEStack<?> target = FLUID_STACK_TYPE.convertStackFromItem(dragged);
+        IAEStack<?> target = MiniTerminalStackTypes.convertFromItem(dragged);
         if (target == null) {
-            target = AEBaseGui.isCtrlKeyDown() ? FLUID_STACK_TYPE.getStackFromContainerItem(dragged)
+            target = AEBaseGui.isCtrlKeyDown() ? MiniTerminalStackTypes.containerContents(dragged)
                 : AEItemStack.create(dragged);
         }
         if (target != null) MiniTerminalClient.sendPin(slot.getSlotIndex(), target);

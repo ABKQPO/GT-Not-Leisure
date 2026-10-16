@@ -12,15 +12,15 @@ import com.science.gtnl.common.packet.base.ServerboundPacket;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IAEStackType;
 import appeng.helpers.MonitorableAction;
 import appeng.items.contents.PinList;
 import appeng.util.Platform;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
 
 public class MiniTerminalRequestPacket extends ServerboundPacket {
 
@@ -72,7 +72,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
     DepositMode depositMode = DepositMode.STACK;
     boolean emptyOnly;
     boolean single;
-    boolean showFluids;
+    Reference2BooleanMap<IAEStackType<?>> typeFilters;
     IAEStack<?> pinTarget;
     ItemStack creativeCursor;
     byte[] creativeCursorPayload;
@@ -144,8 +144,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
 
     public static MiniTerminalRequestPacket pinDrop(long sessionId, long actionId, long pinRevision, int nativePin,
         IAEStack<?> target) throws IOException {
-        if (!(target instanceof IAEItemStack || target instanceof IAEFluidStack))
-            throw new IOException("Unsupported mini terminal pin type");
+        if (target == null) throw new IOException("Unsupported mini terminal pin type");
         MiniTerminalRequestPacket packet = end(sessionId);
         packet.kind = Kind.PIN_DROP;
         packet.actionId = actionId;
@@ -177,7 +176,8 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
     }
 
     public static MiniTerminalRequestPacket settings(long sessionId, long actionId, int slot, UUID terminalId,
-        SortOrder sortOrder, SortDir sortDirection, ViewItems viewMode, boolean showFluids, int windowId) {
+        SortOrder sortOrder, SortDir sortDirection, ViewItems viewMode,
+        Reference2BooleanMap<IAEStackType<?>> typeFilters, int windowId) {
         MiniTerminalRequestPacket packet = end(sessionId);
         packet.kind = Kind.SETTINGS;
         packet.actionId = actionId;
@@ -186,7 +186,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
         packet.sortOrder = sortOrder;
         packet.sortDirection = sortDirection;
         packet.viewMode = viewMode;
-        packet.showFluids = showFluids;
+        packet.typeFilters = typeFilters;
         packet.windowId = windowId;
         return packet;
     }
@@ -235,6 +235,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
         int limit = switch (kind) {
             case PIN_DROP -> PIN_DROP_HEADER_BYTES + MAX_PIN_BYTES;
             case CREATIVE_ACTION -> MAX_CREATIVE_ACTION_BYTES;
+            case SETTINGS -> 128;
             default -> 80;
         };
         if (requestBytes > limit) throw new IllegalArgumentException("Mini terminal request too large");
@@ -286,8 +287,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
                     || nativePin >= PinList.TOTAL_SLOTS)
                     throw new IllegalArgumentException("Mini terminal pin drop target");
                 pinTarget = Platform.readStackByte(buf);
-                if (!(pinTarget instanceof IAEItemStack || pinTarget instanceof IAEFluidStack))
-                    throw new IllegalArgumentException("Unsupported mini terminal pin type");
+                if (pinTarget == null) throw new IllegalArgumentException("Unsupported mini terminal pin type");
             }
             case SETTINGS, PICKUP_TOGGLE -> {
                 actionId = buf.readLong();
@@ -298,7 +298,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
                     sortOrder = readEnum(buf, SortOrder.values());
                     sortDirection = readEnum(buf, SortDir.values());
                     viewMode = readEnum(buf, ViewItems.values());
-                    showFluids = readFlag(buf);
+                    typeFilters = MiniTerminalStackTypes.readFilters(buf);
                 }
                 windowId = buf.readInt();
                 if (actionId <= 0) throw new IllegalArgumentException("Mini terminal settings action");
@@ -383,7 +383,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
                     buf.writeByte(sortOrder.ordinal());
                     buf.writeByte(sortDirection.ordinal());
                     buf.writeByte(viewMode.ordinal());
-                    buf.writeBoolean(showFluids);
+                    MiniTerminalStackTypes.writeFilters(buf, typeFilters);
                 }
                 buf.writeInt(windowId);
             }
