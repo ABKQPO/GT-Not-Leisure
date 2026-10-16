@@ -8,6 +8,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import com.science.gtnl.common.wireless.AutomaticEntrancePlanner.Action;
 import com.science.gtnl.common.wireless.AutomaticEntrancePlanner.Observation;
@@ -48,6 +49,81 @@ public class AutomaticWirelessEntrances {
         Work(Address frequency, IGridNode source) {
             this.frequency = frequency;
             this.source = source;
+        }
+    }
+
+    private static class CandidateSearch {
+
+        private final Work work;
+        private final GridTargets targets;
+        private final PhysicalMeTopology topology;
+        private final Comparator<IGridNode> order;
+        private final Map<Cluster<IGridNode, Address>, EntranceCandidates.Batch<IGridNode>> batches = new IdentityHashMap<>();
+        private List<Cluster<IGridNode, Address>> ordered;
+        private Map<Cluster<IGridNode, Address>, List<IGridNode>> missing;
+
+        CandidateSearch(Work work, GridTargets targets, PhysicalMeTopology topology) {
+            this.work = work;
+            this.targets = targets;
+            this.topology = topology;
+            order = Comparator.comparing(
+                topology::nodeAddress,
+                Comparator.comparingInt(Address::dimension)
+                    .thenComparing(Address.POSITION_ORDER));
+        }
+
+        private void prepare() {
+            ordered = new ArrayList<>(work.clusters);
+            Map<Cluster<IGridNode, Address>, IGridNode> anchors = new IdentityHashMap<>();
+            for (var cluster : ordered) {
+                anchors.put(
+                    cluster,
+                    cluster.nodes()
+                        .stream()
+                        .filter(node -> topology.entranceAddress(node) != null)
+                        .min(order)
+                        .orElse(null));
+            }
+            ordered.sort(Comparator.comparing(anchors::get, Comparator.nullsLast(order)));
+            missing = new IdentityHashMap<>();
+            for (IGridNode node : work.missing) {
+                for (var cluster : ordered) {
+                    if (cluster.nodes()
+                        .contains(node)) {
+                        missing.computeIfAbsent(cluster, ignored -> new ArrayList<>())
+                            .add(node);
+                        break;
+                    }
+                }
+            }
+        }
+
+        IGridNode select(Predicate<IGridNode> accepted) {
+            if (ordered == null) prepare();
+            for (Cluster<IGridNode, Address> cluster : ordered) {
+                List<IGridNode> needs = missing.get(cluster);
+                if (needs == null || needs.isEmpty()) continue;
+                var batch = batches.computeIfAbsent(
+                    cluster,
+                    key -> new EntranceCandidates.Batch<>(key.nodes(), work.occupied, topology::neighbours));
+                IGridNode candidate = batch.select(
+                    needs,
+                    node -> accepted.test(node) && !work.occupied.contains(node)
+                        && topology.entranceAddress(node) != null
+                        && !node.hasFlag(GridFlags.CANNOT_CARRY)
+                        && !hasSourceConnection(
+                            node,
+                            targets.sources()
+                                .get(node)),
+                    PhysicalMeTopology::entranceRank,
+                    order);
+                if (candidate != null) {
+                    work.occupied.add(candidate);
+                    batch.occupy(candidate);
+                    return candidate;
+                }
+            }
+            return null;
         }
     }
 
@@ -182,49 +258,7 @@ public class AutomaticWirelessEntrances {
             work.served,
             work.missing.size(),
             WirelessChannelManager.entranceLimit() - WirelessChannelManager.entranceCount(work.frequency));
-        var decision = planner.decide(observation, accepted -> {
-            Comparator<IGridNode> order = Comparator.comparing(
-                topology::nodeAddress,
-                Comparator.comparingInt(Address::dimension)
-                    .thenComparing(Address.POSITION_ORDER));
-            List<Cluster<IGridNode, Address>> ordered = new ArrayList<>(work.clusters);
-            Map<Cluster<IGridNode, Address>, IGridNode> anchors = new IdentityHashMap<>();
-            for (var cluster : ordered) {
-                anchors.put(
-                    cluster,
-                    cluster.nodes()
-                        .stream()
-                        .filter(node -> topology.entranceAddress(node) != null)
-                        .min(order)
-                        .orElse(null));
-            }
-            ordered.sort(Comparator.comparing(anchors::get, Comparator.nullsLast(order)));
-            for (Cluster<IGridNode, Address> cluster : ordered) {
-                List<IGridNode> missing = work.missing.stream()
-                    .filter(cluster.nodes()::contains)
-                    .toList();
-                if (missing.isEmpty()) continue;
-                IGridNode candidate = EntranceCandidates.select(
-                    cluster.nodes(),
-                    missing,
-                    work.occupied,
-                    topology::neighbours,
-                    node -> accepted.test(node) && !work.occupied.contains(node)
-                        && topology.entranceAddress(node) != null
-                        && !node.hasFlag(GridFlags.CANNOT_CARRY)
-                        && !hasSourceConnection(
-                            node,
-                            targets.sources()
-                                .get(node)),
-                    PhysicalMeTopology::entranceRank,
-                    order);
-                if (candidate != null) {
-                    work.occupied.add(candidate);
-                    return candidate;
-                }
-            }
-            return null;
-        });
+        var decision = planner.decide(observation, new CandidateSearch(work, targets, topology)::select);
         if (decision.action() == Action.REMOVE) {
             for (int id : decision.entranceIds()) WirelessChannelManager.disconnect(id);
         } else if (decision.action() == Action.KEEP) {
