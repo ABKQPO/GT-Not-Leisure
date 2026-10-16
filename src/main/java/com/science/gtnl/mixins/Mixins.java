@@ -52,7 +52,8 @@ public enum Mixins implements IMixins {
             .setApplyIf(() -> MainConfig.minecraft.enableKillEnhance)),
 
     MINECRAFT_CLIENT(Side.CLIENT, "minecraft.AccessorEntityRenderer", "minecraft.AccessorGuiChat",
-        "minecraft.MixinMinecraft", "minecraft.MixinModelBiped", "minecraft.MixinWorldClient",
+        "minecraft.MixinMinecraft", "minecraft.MixinModelBiped", "minecraft.MixinMinecraftRailgunClick",
+        "minecraft.MixinWorldClient",
         // "minecraft.MixinSimpleReloadableResourceManager",
         "minecraft.MixinGuiContainer", "minecraft.MixinGuiFlatPresets"),
 

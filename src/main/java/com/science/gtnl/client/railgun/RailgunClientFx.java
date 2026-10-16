@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.science.gtnl.common.packet.RailgunBeamChainFxPacket;
 import com.science.gtnl.common.packet.RailgunFireFxPacket;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -18,6 +19,12 @@ public final class RailgunClientFx {
         FMLCommonHandler.instance()
             .bus()
             .register(new RailgunCameraShake());
+        FMLCommonHandler.instance()
+            .bus()
+            .register(new RailgunClientInput());
+        FMLCommonHandler.instance()
+            .bus()
+            .register(new RailgunSounds());
     }
 
     public static void playFire(RailgunFireFxPacket packet) {
@@ -44,11 +51,27 @@ public final class RailgunClientFx {
             false);
     }
 
+    public static void playChain(RailgunBeamChainFxPacket packet) {
+        var world = Minecraft.getMinecraft().theWorld;
+        if (world == null) return;
+        for (int i = 0; i < packet.path.size(); i += 2)
+            RailgunBeamRenderer.shot(-1, packet.path.get(i), packet.path.get(i + 1), packet.ehv);
+        if (packet.sound) world.playSound(
+            packet.origin.x(),
+            packet.origin.y(),
+            packet.origin.z(),
+            "sciencenotleisure:railgun.beam.chain",
+            0.12F,
+            1.8F,
+            false);
+    }
+
     @SubscribeEvent
     public void unload(WorldEvent.Unload event) {
         if (event.world.isRemote) {
             RailgunBeamRenderer.clear();
             RailgunCameraShake.clear();
+            RailgunSounds.clear();
         }
     }
 }

@@ -2,11 +2,16 @@ package com.science.gtnl.common.railgun;
 
 import java.util.UUID;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
+
+import com.science.gtnl.common.item.items.ElectromagneticRailgun;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -40,6 +45,7 @@ public final class RailgunServerEvents {
     @SubscribeEvent
     public void tick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
+        RailgunBeamService.tick();
         RailgunFireService.CHARGING.entrySet()
             .removeIf(entry -> {
                 EntityPlayerMP player = player(entry.getKey());
@@ -54,16 +60,19 @@ public final class RailgunServerEvents {
 
     @SubscribeEvent
     public void logout(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.player instanceof EntityPlayerMP player) RailgunBeamService.stop(player);
         RailgunFireService.CHARGING.remove(event.player.getUniqueID());
     }
 
     @SubscribeEvent
     public void dimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if (event.player instanceof EntityPlayerMP player) RailgunBeamService.stop(player);
         RailgunFireService.CHARGING.remove(event.player.getUniqueID());
     }
 
     @SubscribeEvent
     public void unload(WorldEvent.Unload event) {
+        if (!event.world.isRemote) RailgunBeamService.unload(event.world.provider.dimensionId);
         if (!event.world.isRemote) RailgunFireService.CHARGING.entrySet()
             .removeIf(
                 entry -> entry.getValue()
@@ -76,6 +85,22 @@ public final class RailgunServerEvents {
             .hasKey(RailgunRecoilService.GRACE)
             && player.getEntityData()
                 .getLong(RailgunRecoilService.GRACE) >= player.worldObj.getTotalWorldTime())
+            event.setCanceled(true);
+    }
+
+    private static boolean holding(EntityPlayer player) {
+        return player.getHeldItem() != null && player.getHeldItem()
+            .getItem() instanceof ElectromagneticRailgun;
+    }
+
+    @SubscribeEvent
+    public void attack(AttackEntityEvent event) {
+        if (holding(event.entityPlayer)) event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void interact(PlayerInteractEvent event) {
+        if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && holding(event.entityPlayer))
             event.setCanceled(true);
     }
 }
