@@ -6,7 +6,6 @@ import static com.science.gtnl.common.wireless.WirelessChannelManager.sameSource
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -49,6 +48,7 @@ public class WirelessClusterManager {
     private static final ScanSchedule SCANS = new ScanSchedule();
     private static final WirelessTopologyWatch WATCH = new WirelessTopologyWatch();
     private static final Map<Cluster<IGridNode, Address>, WirelessNetworkStatistics> STATISTICS = new IdentityHashMap<>();
+    private static WirelessEntranceIndex entranceIndex = new WirelessEntranceIndex(TRACKER);
 
     private enum State {
         ACTIVE,
@@ -107,6 +107,10 @@ public class WirelessClusterManager {
             invalidateTopology();
             return;
         }
+        WATCH.nodeChanged(node);
+    }
+
+    static void connectionChanged(IGridNode node) {
         WATCH.nodeChanged(node);
     }
 
@@ -198,7 +202,7 @@ public class WirelessClusterManager {
                 WirelessChannelManager.disconnect(entrance.id());
             }
         }
-        WirelessEntranceIndex entrances = new WirelessEntranceIndex(TRACKER);
+        WirelessEntranceIndex entrances = entranceIndex;
         Set<Address> pendingRecovery = restoreSavedEntrances(entrances);
         for (Cluster<IGridNode, Address> cluster : TRACKER.clusters()) {
             if (cluster.frequencies()
@@ -232,11 +236,6 @@ public class WirelessClusterManager {
     }
 
     private static Set<Address> restoreSavedEntrances(WirelessEntranceIndex entrances) {
-        Map<IGridNode, Set<Address>> connected = new IdentityHashMap<>();
-        for (Entrance entrance : WirelessChannelManager.entrances()) {
-            if (entrance.isLive()) connected.computeIfAbsent(entrance.targetNode(), ignored -> new HashSet<>())
-                .add(controllerSource(entrance.source()));
-        }
         List<Candidate<IGridNode, Address>> candidates = new ArrayList<>();
         for (var cluster : TRACKER.clusters()) {
             if (cluster.limited() || cluster.blocked()
@@ -248,8 +247,7 @@ public class WirelessClusterManager {
                 .next();
             if (paused(cluster, source)) continue;
             for (IGridNode node : SAVED_ENTRANCES.getOrDefault(cluster, Set.of())) {
-                if (connected.getOrDefault(node, Set.of())
-                    .contains(controllerSource(source))) continue;
+                if (hasEntrance(node, source, entrances)) continue;
                 candidates.add(new Candidate<>(node, source));
             }
         }
@@ -355,7 +353,6 @@ public class WirelessClusterManager {
         try (var ignored = WirelessLinkData.readBatch()) {
             source = controllerSource(source);
             List<ClusterView> result = new ArrayList<>();
-            WirelessEntranceIndex entranceIndex = new WirelessEntranceIndex(TRACKER);
             for (var cluster : TRACKER.clusters()) {
                 if (!cluster.frequencies()
                     .contains(source)) continue;
@@ -591,6 +588,7 @@ public class WirelessClusterManager {
     }
 
     public static void clear() {
+        entranceIndex = new WirelessEntranceIndex(TRACKER);
         STATISTICS.clear();
         WATCH.clear();
         SCANS.clear();

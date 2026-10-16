@@ -158,7 +158,7 @@ public class AutomaticWirelessEntrances {
             .retainAll(workByGrid.keySet());
         COUNTS.keySet()
             .retainAll(workByGrid.keySet());
-        for (var entry : workByGrid.entrySet()) run(entry.getKey(), entry.getValue(), topology);
+        for (var entry : workByGrid.entrySet()) run(entry.getKey(), entry.getValue(), topology, entrances);
     }
 
     private static GridTargets targets(IGrid grid, List<Cluster<IGridNode, Address>> clusters) {
@@ -209,7 +209,7 @@ public class AutomaticWirelessEntrances {
         return count;
     }
 
-    private static void run(IGrid grid, Work work, PhysicalMeTopology topology) {
+    private static void run(IGrid grid, Work work, PhysicalMeTopology topology, WirelessEntranceIndex entrances) {
         GridTargets targets = targets(grid, work.clusters);
         var allocation = WirelessChannelManager.allocation(grid);
         long revision = allocation == null ? -1 : allocation.revision();
@@ -230,19 +230,21 @@ public class AutomaticWirelessEntrances {
         int capacity = allocation == null ? WirelessChannelManager.capacity(grid) : allocation.capacity();
         boolean settled = allocation != null;
         if (settled && energy.isNetworkPowered()) {
-            for (Entrance entrance : WirelessChannelManager.entrances()) {
-                if (entrance.sourceNode()
-                    .getGrid() != grid || !entrance.isLive()
-                    || !work.occupied.contains(entrance.targetNode())) continue;
-                if (VerifiedEntranceRecovery.verified(
-                    settled,
-                    energy.isNetworkPowered(),
-                    planner.isPending(entrance.id()),
-                    WirelessChannelManager.channelsEnabled(),
-                    entrance.connection()
-                        .getUsedChannels(),
-                    work.served + work.missing.size())) {
-                    WirelessLinkPersistence.rememberEntrance(entrance, topology);
+            for (var cluster : work.clusters) {
+                for (Entrance entrance : entrances.forCluster(cluster)) {
+                    if (entrance.sourceNode()
+                        .getGrid() != grid || !entrance.isLive()
+                        || !work.occupied.contains(entrance.targetNode())) continue;
+                    if (VerifiedEntranceRecovery.verified(
+                        settled,
+                        energy.isNetworkPowered(),
+                        planner.isPending(entrance.id()),
+                        WirelessChannelManager.channelsEnabled(),
+                        entrance.connection()
+                            .getUsedChannels(),
+                        work.served + work.missing.size())) {
+                        WirelessLinkPersistence.rememberEntrance(entrance, topology);
+                    }
                 }
             }
         }

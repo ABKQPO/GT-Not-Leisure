@@ -182,6 +182,7 @@ public class WirelessChannelManager {
     public static void connectionsChanged(IGridNode node, IGridConnection connection) {
         if (connectionSnapshot != null) connectionSnapshot.remove(node);
         if (creatingOwnedConnection || isOwned(connection)) return;
+        WirelessClusterManager.connectionChanged(node);
         IGrid grid = node.getGrid();
         if (grid != null && grid.getCache(IPathingGrid.class) instanceof IWirelessPathingState state)
             state.gtnl$topologyChanged();
@@ -193,8 +194,8 @@ public class WirelessChannelManager {
 
     public static boolean manages(IGrid grid) {
         for (Entrance entrance : ENTRANCES.values()) {
-            if (entrance.isLive() && entrance.sourceNode()
-                .getGrid() == grid) return true;
+            if (entrance.sourceNode()
+                .getGrid() == grid && entrance.isLive()) return true;
         }
         return false;
     }
