@@ -46,8 +46,8 @@ import appeng.helpers.IPinsHandler;
 import appeng.helpers.MonitorableAction;
 import appeng.util.Platform;
 import codechicken.nei.api.API;
-import codechicken.nei.api.IGuiContainerOverlay;
 import codechicken.nei.guihook.GuiContainerManager;
+import codechicken.nei.recipe.GuiRecipe;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -160,7 +160,7 @@ public final class MiniTerminalClient {
             || inventory instanceof GuiInventory && mc.playerController.isInCreativeMode()
             || inventory instanceof GuiContainerCreative && !mc.playerController.isInCreativeMode()
             || isAEInterface(inventory)
-            || inventory instanceof IGuiContainerOverlay recipe && isAEInterface(recipe.getFirstScreen())
+            || inventory instanceof GuiRecipe<?>
             || MiniTerminalBogoCompat.isTerminalScreen(inventory)) return;
         int slot = findSelectedSlot();
         if (slot < 0 && !hasMiniTerminal()) return;
