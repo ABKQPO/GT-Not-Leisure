@@ -391,6 +391,7 @@ public enum GTNLItemList implements IItemContainer {
     MilledNaquadahEnriched,
 
     TwilightSword,
+    ElectromagneticRailgun,
 
     GaiaGlass,
     TerraGlass,

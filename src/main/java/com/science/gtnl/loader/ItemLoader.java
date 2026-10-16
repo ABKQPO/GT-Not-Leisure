@@ -23,6 +23,7 @@ import com.science.gtnl.common.item.items.CircuitIntegratedPlus;
 import com.science.gtnl.common.item.items.DebugItem;
 import com.science.gtnl.common.item.items.DireCraftPattern;
 import com.science.gtnl.common.item.items.ElectricProspectorTool;
+import com.science.gtnl.common.item.items.ElectromagneticRailgun;
 import com.science.gtnl.common.item.items.FakeItemSiren;
 import com.science.gtnl.common.item.items.GTNLItemBucket;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
@@ -84,6 +85,7 @@ public class ItemLoader {
     public static DebugItem debugItem = new DebugItem();
     public static KFCFamily KFCFamily = new KFCFamily();
     public static TwilightSword twilightSword = new TwilightSword();
+    public static ElectromagneticRailgun electromagneticRailgun = new ElectromagneticRailgun();
     public static CircuitIntegratedPlus circuitIntegratedPlus = new CircuitIntegratedPlus();
     public static TimeStopPocketWatch timeStopPocketWatch = new TimeStopPocketWatch();
     public static Item recordSus = new GTNLItemRecord("sus");

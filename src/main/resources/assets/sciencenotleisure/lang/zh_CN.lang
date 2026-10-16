@@ -3783,6 +3783,11 @@ item.gtnl.twilight_sword.tooltip.7=§r生命值低于10时基础伤害翻倍
 item.gtnl.twilight_sword.tooltip.8=§r攻击实体轮流使用四种强力的攻击
 item.gtnl.twilight_sword.tooltip.9=§r长按右键触发特殊攻击
 item.gtnl.twilight_sword.tooltip.10=§oModel by IceyArk
+item.gtnl.electromagnetic_railgun.name=电磁炮
+gtnl.railgun.energy=能量：%,.0f / %,.0f EU
+gtnl.railgun.modules=已安装模块：%s / 8
+gtnl.railgun.controls=按住右键蓄力；按住左键发射光束；潜行右键配置
+item.gtnl.electromagnetic_railgun.tooltip.0=§o模型作者：TedXenon（AE2 Lightning Tech）
 entity.sciencenotleisure.ArrowCustom.name=薄暝之箭
 
 item.gtnl.circuit_integrated_plus.name=突破编程电路
