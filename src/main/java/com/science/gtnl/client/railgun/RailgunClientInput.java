@@ -12,6 +12,15 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 
 public final class RailgunClientInput {
 
+    private static final net.minecraft.client.settings.KeyBinding OPEN = new net.minecraft.client.settings.KeyBinding(
+        "key.gtnl.railgun_config",
+        org.lwjgl.input.Keyboard.KEY_NONE,
+        "key.categories.gtnl");
+
+    public RailgunClientInput() {
+        cpw.mods.fml.client.registry.ClientRegistry.registerKeyBinding(OPEN);
+    }
+
     private boolean firing;
     private ItemStack held;
     private int slot = -1;
@@ -28,6 +37,10 @@ public final class RailgunClientInput {
             return;
         }
         ItemStack stack = player.getHeldItem();
+        if (OPEN.isPressed() && stack != null
+            && stack.getItem() instanceof ElectromagneticRailgun
+            && mc.currentScreen == null)
+            ScienceNotLeisure.network.sendToServer(new com.science.gtnl.common.packet.OpenRailgunGuiPacket());
         boolean pressed = stack != null && stack.getItem() instanceof ElectromagneticRailgun
             && mc.currentScreen == null
             && mc.inGameHasFocus

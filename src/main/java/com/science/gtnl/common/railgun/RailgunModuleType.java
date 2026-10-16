@@ -23,9 +23,7 @@ public enum RailgunModuleType {
     }
 
     public static RailgunModuleType of(ItemStack stack) {
-        if (stack == null || !"item.gtnl.railgun_module".equals(
-            stack.getItem()
-                .getUnlocalizedName()))
+        if (stack == null || !(stack.getItem() instanceof com.science.gtnl.common.item.items.RailgunModuleItem))
             return null;
         int meta = stack.getItemDamage();
         return meta >= 0 && meta < values().length ? values()[meta] : null;

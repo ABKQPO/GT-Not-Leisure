@@ -59,6 +59,7 @@ public class AssemblerRecipes implements IRecipePool {
 
     @Override
     public void loadRecipes() {
+        RailgunRecipes.register();
         var aeItems = AEApi.instance()
             .definitions()
             .items();

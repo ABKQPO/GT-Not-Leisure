@@ -210,6 +210,10 @@ We gratefully acknowledge the use of code and assets from the open-source commun
 | **CosmicCore**               | [Ghostipedia](https://github.com/Frontiers-PackForge/CosmicCore) | [LGPLv3](https://www.gnu.org/licenses/lgpl-3.0.html)                  |
 | **MEGACells Textures**       | [62832](https://github.com/62832/MEGACells)                      | [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/) |
 | **AE2 Lightning Tech Assets** | [MOAKIEE, TedXenon, et al.](https://github.com/AE2-Lightning-Tech-Reborn/AE2-Lightning-Tech-Reborn) | [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/) |
+| **AE2 Lightning Tech Railgun Code** | [MOAKIEE, TedXenon, et al.](https://github.com/AE2-Lightning-Tech-Reborn/AE2-Lightning-Tech-Reborn/tree/95801cf1b4bd) | [LGPL-3.0](https://www.gnu.org/licenses/lgpl-3.0.html) |
+
+The railgun port derives combat algorithms from AE2 Lightning Tech Reborn commit `95801cf1b4bd`.
+The derived railgun code retains LGPL-3.0; its model, module textures and railgun audio use the asset license listed above.
 
 Thanks to the following developers for their contributions to GT-Not-Leisure:
 

@@ -86,6 +86,7 @@ public class ItemLoader {
     public static KFCFamily KFCFamily = new KFCFamily();
     public static TwilightSword twilightSword = new TwilightSword();
     public static ElectromagneticRailgun electromagneticRailgun = new ElectromagneticRailgun();
+    public static com.science.gtnl.common.item.items.RailgunModuleItem railgunModule = new com.science.gtnl.common.item.items.RailgunModuleItem();
     public static CircuitIntegratedPlus circuitIntegratedPlus = new CircuitIntegratedPlus();
     public static TimeStopPocketWatch timeStopPocketWatch = new TimeStopPocketWatch();
     public static Item recordSus = new GTNLItemRecord("sus");

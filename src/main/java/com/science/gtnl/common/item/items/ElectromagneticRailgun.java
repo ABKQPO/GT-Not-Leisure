@@ -27,7 +27,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.item.IElectricItem;
 
-public class ElectromagneticRailgun extends Item implements IElectricItem {
+public class ElectromagneticRailgun extends Item implements IElectricItem,
+    com.cleanroommc.modularui.api.IGuiHolder<com.cleanroommc.modularui.factory.PlayerInventoryGuiData> {
 
     public static final String NBT_EXTREME_HIGH_VOLTAGE = "ExtremeHighVoltage";
     public static final int USE_DURATION = 72000;
@@ -84,7 +85,14 @@ public class ElectromagneticRailgun extends Item implements IElectricItem {
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if (player.isSneaking()) return stack;
+        if (player.isSneaking()) {
+            if (!world.isRemote && player instanceof EntityPlayerMP serverPlayer) {
+                com.science.gtnl.common.railgun.RailgunBeamService.stop(serverPlayer);
+                com.cleanroommc.modularui.factory.GuiFactories.playerInventory()
+                    .openFromMainHand(player);
+            }
+            return stack;
+        }
         player.setItemInUse(stack, USE_DURATION);
         if (!world.isRemote && player instanceof EntityPlayerMP serverPlayer)
             RailgunFireService.beginCharge(serverPlayer, stack);
@@ -156,5 +164,24 @@ public class ElectromagneticRailgun extends Item implements IElectricItem {
     public static boolean isExtremeHighVoltage(ItemStack stack) {
         NBTTagCompound tag = stack.getTagCompound();
         return tag != null && tag.getBoolean(NBT_EXTREME_HIGH_VOLTAGE);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public com.cleanroommc.modularui.screen.ModularScreen createScreen(
+        com.cleanroommc.modularui.factory.PlayerInventoryGuiData data,
+        com.cleanroommc.modularui.screen.ModularPanel panel) {
+        return new gregtech.api.modularui2.GTModularScreen(panel, gregtech.api.modularui2.GTGuiThemes.STANDARD);
+    }
+
+    @Override
+    public com.cleanroommc.modularui.screen.ModularPanel buildUI(
+        com.cleanroommc.modularui.factory.PlayerInventoryGuiData data,
+        com.cleanroommc.modularui.value.sync.PanelSyncManager sync,
+        com.cleanroommc.modularui.screen.UISettings settings) {
+        ItemStack bound = data.getUsedItemStack();
+        settings.customContainer(() -> new com.science.gtnl.common.gui.RailgunContainer(data.getSlotIndex()));
+        settings.canInteractWith(player -> !player.isDead && data.getUsedItemStack() == bound);
+        return new com.science.gtnl.common.gui.RailgunGui(data, sync).build();
     }
 }
