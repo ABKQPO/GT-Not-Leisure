@@ -70,15 +70,19 @@ public class WirelessLinkPersistence {
 
     private WirelessLinkPersistence() {}
 
-    public static void discover(TileEntity tile) {
-        if (tile instanceof IWirelessTileData data && data.gtnl$hasWirelessData()) TILES.add(tile);
+    public static boolean discover(TileEntity tile) {
+        if (!(tile instanceof IWirelessTileData data) || !data.gtnl$hasWirelessData()) return false;
+        TILES.add(tile);
+        return true;
     }
 
-    public static void discover(Chunk chunk) {
+    public static boolean discover(Chunk chunk) {
         // World.loadedTileEntityList contains only ticking tiles in Forge 1.7.10; most AE cable hosts are absent.
+        boolean found = false;
         for (Object object : chunk.chunkTileEntityMap.values()) {
-            if (object instanceof TileEntity tile) discover(tile);
+            if (object instanceof TileEntity tile) found |= discover(tile);
         }
+        return found;
     }
 
     static void discoverLoaded(Iterable<Chunk> chunks) {
@@ -378,19 +382,20 @@ public class WirelessLinkPersistence {
         if (WirelessLinkData.write(IWirelessTileData.of(tile), claims)) tile.markDirty();
     }
 
-    static void forget(Predicate<Address> removed) {
+    static boolean forget(Predicate<Address> removed) {
         REMEMBERED_ENTRANCES.keySet()
             .removeIf(entrance -> removed.test(entrance.source()) || removed.test(entrance.target()));
-        IMPORTED.values()
+        boolean forgotten = IMPORTED.values()
             .removeIf(endpoint -> removed.test(endpoint.address()));
-        TILES.removeIf(
+        return TILES.removeIf(
             tile -> tile.getWorldObj() != null && removed.test(
                 new Address(
                     tile.getWorldObj().provider.dimensionId,
                     tile.xCoord,
                     tile.yCoord,
                     tile.zCoord,
-                    ForgeDirection.UNKNOWN)));
+                    ForgeDirection.UNKNOWN)))
+            || forgotten;
     }
 
     static void clear() {

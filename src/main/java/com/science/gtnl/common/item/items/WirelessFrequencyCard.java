@@ -270,7 +270,7 @@ public class WirelessFrequencyCard extends Item implements IBaubleExpanded, IGui
     }
 
     private static void showStatus(WirelessCardBinding binding, EntityPlayer player) {
-        WirelessClusterManager.refresh();
+        WirelessClusterManager.refreshIfStale();
         var summary = WirelessClusterManager.summary(binding.source());
         message(
             player,

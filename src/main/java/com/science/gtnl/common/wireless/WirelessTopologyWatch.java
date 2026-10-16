@@ -64,9 +64,11 @@ public class WirelessTopologyWatch implements IBlockStateListener {
     }
 
     void nodeChanged(IGridNode node) {
+        if (watched.isEmpty()) return;
         var block = node.getGridBlock();
-        if (block == null || block.getLocation() == null) return;
+        if (block == null) return;
         var position = block.getLocation();
+        if (position == null) return;
         World world = position.getWorld();
         if (world == null || world.isRemote) return;
         LongSet positions = watched.get(world);

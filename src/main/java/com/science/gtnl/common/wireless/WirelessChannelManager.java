@@ -360,17 +360,20 @@ public class WirelessChannelManager {
     @SubscribeEvent
     public void loadChunk(ChunkEvent.Load event) {
         if (event.world.isRemote) return;
-        WirelessLinkPersistence.discover(event.getChunk());
-        WirelessClusterManager.invalidateTopology();
+        if (WirelessLinkPersistence.discover(event.getChunk())) WirelessClusterManager.invalidateTopology();
     }
 
     @SubscribeEvent
     public void unloadChunk(ChunkEvent.Unload event) {
         if (event.world.isRemote) return;
-        WirelessClusterManager.forgetTargets(address -> inChunk(address, event));
+        boolean changed = WirelessClusterManager.forgetTargets(address -> inChunk(address, event));
         for (Entrance entrance : entrances()) {
-            if (inChunk(entrance.source(), event) || inChunk(entrance.target(), event)) disconnect(entrance.id());
+            if (inChunk(entrance.source(), event) || inChunk(entrance.target(), event)) {
+                disconnect(entrance.id());
+                changed = true;
+            }
         }
+        if (changed) WirelessClusterManager.invalidateTopology();
     }
 
     private static boolean inChunk(Address address, ChunkEvent event) {
@@ -383,6 +386,7 @@ public class WirelessChannelManager {
     public void unloadWorld(WorldEvent.Unload event) {
         if (event.world.isRemote) return;
         WirelessClusterManager.forgetTargets(address -> address.dimension() == event.world.provider.dimensionId);
+        WirelessClusterManager.invalidateTopology();
         for (Entrance entrance : entrances()) {
             if (entrance.source()
                 .dimension() == event.world.provider.dimensionId

@@ -48,6 +48,7 @@ public class WirelessClusterManager {
     private static final VerifiedEntranceRecovery<IGridNode, Address> RECOVERY = new VerifiedEntranceRecovery<>();
     private static final ScanSchedule SCANS = new ScanSchedule();
     private static final WirelessTopologyWatch WATCH = new WirelessTopologyWatch();
+    private static final Map<Cluster<IGridNode, Address>, WirelessNetworkStatistics> STATISTICS = new IdentityHashMap<>();
 
     private enum State {
         ACTIVE,
@@ -67,6 +68,10 @@ public class WirelessClusterManager {
 
         void invalidate() {
             dirty = true;
+        }
+
+        boolean pending() {
+            return dirty;
         }
 
         boolean tick() {
@@ -91,12 +96,20 @@ public class WirelessClusterManager {
     }
 
     public static void nodeChanged(IGridNode node) {
-        if (node.getWorld() != null && !node.getWorld().isRemote && node.getMachine() instanceof AccessorTileController)
+        if (node.getMachine() instanceof AccessorTileController && node.getGrid() != null
+            && WirelessChannelManager.manages(node.getGrid())) {
             invalidateTopology();
+            return;
+        }
         WATCH.nodeChanged(node);
     }
 
+    public static void refreshIfStale() {
+        if (SCANS.pending()) refresh();
+    }
+
     public static void tick() {
+        STATISTICS.clear();
         RECOVERY.nextTick();
         if (SCANS.tick()) refresh();
         else {
@@ -365,7 +378,10 @@ public class WirelessClusterManager {
                         paused,
                         state,
                         entrances,
-                        WirelessNetworkStatistics.measure(cluster.nodes(), WirelessChannelManager.channelsEnabled()),
+                        STATISTICS.computeIfAbsent(
+                            cluster,
+                            measured -> WirelessNetworkStatistics
+                                .measure(measured.nodes(), WirelessChannelManager.channelsEnabled())),
                         Set.copyOf(cluster.nodes())));
             }
             result.sort(
@@ -552,13 +568,21 @@ public class WirelessClusterManager {
         return new Summary(clusters, active, conflicted, waiting, scanLimited);
     }
 
-    public static void forgetTargets(Predicate<Address> removed) {
-        invalidateTopology();
-        TRACKER.forget(node -> TOPOLOGY.matches(node, removed));
-        WirelessLinkPersistence.forget(removed);
+    public static boolean forgetTargets(Predicate<Address> removed) {
+        boolean tracked = false;
+        for (IGridNode node : TRACKER.nodes()) {
+            if (TOPOLOGY.matches(node, removed)) {
+                tracked = true;
+                break;
+            }
+        }
+        boolean forgotten = TRACKER.forget(node -> TOPOLOGY.matches(node, removed));
+        forgotten |= WirelessLinkPersistence.forget(removed);
+        return tracked || forgotten;
     }
 
     public static void clear() {
+        STATISTICS.clear();
         WATCH.clear();
         SCANS.clear();
         TRACKER.clear();
