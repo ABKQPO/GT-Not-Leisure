@@ -7,7 +7,7 @@ import com.gtnewhorizon.gtnhlib.config.ConfigException;
 import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.science.gtnl.ScienceNotLeisure;
 
-@Config(modid = ScienceNotLeisure.MODID, configSubDirectory = "GTNotLeisure", filename = "METoolboxClient")
+@Config(modid = ScienceNotLeisure.MODID, configSubDirectory = "GTNotLeisure", filename = "MEMiniTerminalClient")
 @Config.ExcludeFromAutoGui
 public final class MiniTerminalClientConfig {
 

@@ -25,7 +25,7 @@ import io.netty.buffer.Unpooled;
 
 public class MiniTerminalUpdatePacket extends ClientboundPacket {
 
-    public static final String TERMINAL_ID_KEY = "toolbox";
+    public static final String TERMINAL_ID_KEY = "terminalId";
 
     private static final int PART_BYTES = 512 * 1024;
     private static final int MAX_PART_BYTES = 16 * 1024 * 1024;

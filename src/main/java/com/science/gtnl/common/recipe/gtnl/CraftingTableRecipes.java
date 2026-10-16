@@ -80,7 +80,7 @@ public class CraftingTableRecipes implements IRecipePool {
             .items();
 
         RecipeSorter.register(
-            ScienceNotLeisure.MODID + ":me_toolbox_upgrade",
+            ScienceNotLeisure.MODID + ":me_mini_terminal_upgrade",
             MiniTerminalUpgradeRecipe.class,
             RecipeSorter.Category.SHAPED,
             "after:forge:shapedore");
@@ -105,7 +105,7 @@ public class CraftingTableRecipes implements IRecipePool {
                     .orNull()));
 
         RecipeSorter.register(
-            ScienceNotLeisure.MODID + ":me_toolbox_card",
+            ScienceNotLeisure.MODID + ":me_mini_terminal_card",
             MiniTerminalCardRecipe.class,
             RecipeSorter.Category.SHAPELESS,
             "after:forge:shapelessore");

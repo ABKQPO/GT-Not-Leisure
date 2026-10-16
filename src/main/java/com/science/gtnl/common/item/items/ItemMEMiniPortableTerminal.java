@@ -49,8 +49,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
 
-    private static final String ID_TAG = "gtnlToolboxId";
-    private static final String PICKUP_TAG = "gtnlToolboxPickupToME";
+    private static final String ID_TAG = "gtnlMiniTerminalId";
+    private static final String PICKUP_TAG = "gtnlMiniTerminalPickupToME";
     private static final Map<EntityPlayer, Map<Integer, ItemStack>> WORN_SNAPSHOTS = new WeakHashMap<>();
 
     public ItemMEMiniPortableTerminal() {
@@ -58,7 +58,7 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
         setTextureName(RESOURCE_ROOT_ID + ":" + "me_mini_portable_terminal");
         setMaxStackSize(1);
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "me_toolbox");
+        GameRegistry.registerItem(this, "me_mini_portable_terminal");
         GTNLItemList.MEMiniPortableTerminal.set(new ItemStack(this));
         AEApi.instance()
             .registries()
