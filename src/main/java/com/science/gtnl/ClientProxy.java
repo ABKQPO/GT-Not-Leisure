@@ -148,6 +148,7 @@ public class ClientProxy extends CommonProxy {
         super.preInit(event);
         MiniTerminalClient.init();
         WirelessCardInput.register();
+        com.science.gtnl.client.railgun.RailgunClientFx.register();
         MinecraftForge.EVENT_BUS.register(WirelessWorldHighlight.INSTANCE);
         ModelRegistry.registerModid(ScienceNotLeisure.MODID);
 

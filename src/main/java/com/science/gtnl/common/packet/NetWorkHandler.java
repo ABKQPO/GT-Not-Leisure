@@ -56,6 +56,8 @@ public class NetWorkHandler {
         registerClientbound(WirelessVisualisationPacket.class);
         registerServerbound(MiniTerminalRequestPacket.class);
         registerClientbound(MiniTerminalUpdatePacket.class);
+        registerClientbound(RailgunFireFxPacket.class);
+        registerClientbound(RailgunRecoilFxPacket.class);
     }
 
     public static <T extends ClientboundPacket> void registerClientbound(Class<T> packet) {
