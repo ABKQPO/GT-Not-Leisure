@@ -97,9 +97,13 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
 
     @Override
     public int getSuctionAmount(ForgeDirection face) {
-        if (!isValidFace(face) || !super.isConnectable(face) || getTotalAmount() >= MAX_CAPACITY) {
-            return 0;
-        }
+        int baseSuction = getBaseSuction(face);
+        if (baseSuction <= 0 || getTotalAmount() < MAX_CAPACITY) return baseSuction;
+        return isUpstream(face, baseSuction) ? baseSuction : 0;
+    }
+
+    private int getBaseSuction(ForgeDirection face) {
+        if (!isValidFace(face) || !super.isConnectable(face)) return 0;
 
         int originalSuction = super.getSuctionAmount(face);
         if (chokedSides[face.ordinal()] != 0) {
@@ -107,6 +111,20 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
         }
 
         return Math.min(MAX_SUCTION, Math.max(BASE_SUCTION, originalSuction));
+    }
+
+    private boolean isUpstream(ForgeDirection face, int baseSuction) {
+        if (worldObj == null) return false;
+
+        TileEntity tile = ThaumcraftApiHelper.getConnectableTile(worldObj, xCoord, yCoord, zCoord, face);
+        if (!(tile instanceof IEssentiaTransport source)) return false;
+
+        ForgeDirection sourceSide = face.getOpposite();
+        if (!source.canOutputTo(sourceSide)) return false;
+
+        int sourceSuction = source instanceof TileEntityMultiEssentiaTube tube ? tube.getBaseSuction(sourceSide)
+            : source.getSuctionAmount(sourceSide);
+        return sourceSuction < baseSuction && baseSuction >= source.getMinimumSuction();
     }
 
     @Override
