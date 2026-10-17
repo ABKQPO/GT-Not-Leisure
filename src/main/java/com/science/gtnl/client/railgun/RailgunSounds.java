@@ -7,18 +7,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-
-import com.science.gtnl.common.item.items.ElectromagneticRailgun;
-import com.science.gtnl.common.railgun.RailgunChargeTier;
-import com.science.gtnl.common.railgun.RailgunData;
-import com.science.gtnl.common.railgun.RailgunModuleType;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-public final class RailgunSounds {
+public class RailgunSounds {
+
+    private static final float BASE_VOLUME = 0.6F;
+    private static final int FADE_IN_TICKS = 8;
 
     private static final Map<Integer, BeamLoopSound> BEAMS = new HashMap<>();
     private static ChargeLoopSound charge;
@@ -26,15 +23,11 @@ public final class RailgunSounds {
     private static int phase;
 
     private static boolean enabled(Entity entity) {
-        if (!(entity instanceof EntityPlayer player) || player.isDead) return false;
-        ItemStack stack = player.getHeldItem();
-        return stack != null && stack.getItem() instanceof ElectromagneticRailgun
-            && RailgunData.settings(stack)
-                .sound();
+        return entity instanceof EntityPlayer player && !player.isDead && RailgunChargeTracker.soundEnabled(player);
     }
 
     private static boolean charging(EntityPlayer player) {
-        return enabled(player) && player.isUsingItem();
+        return enabled(player) && RailgunChargeTracker.charging(player);
     }
 
     @SubscribeEvent
@@ -59,22 +52,8 @@ public final class RailgunSounds {
             }
         }
         if (charging(mc.thePlayer)) {
-            if (charge == null || charge.isDonePlaying()) {
-                charge = new ChargeLoopSound(mc.thePlayer);
-                mc.getSoundHandler()
-                    .playSound(charge);
-            }
-            int units = mc.thePlayer.getItemInUseDuration() * (1 + RailgunData.modules(mc.thePlayer.getHeldItem())
-                .count(RailgunModuleType.ACCELERATION));
-            int next = RailgunChargeTier.fromUnits(units)
-                .ordinal();
-            if (next > phase) {
-                if (ramp != null) ramp.stop();
-                ramp = new ChargeRampSound(mc.thePlayer, next);
-                mc.getSoundHandler()
-                    .playSound(ramp);
-            }
-            phase = next;
+            startChargeLoop(mc);
+            advanceTier(mc.thePlayer);
         } else {
             phase = 0;
             if (charge != null) charge.stop();
@@ -93,6 +72,25 @@ public final class RailgunSounds {
         phase = 0;
     }
 
+    private static void startChargeLoop(Minecraft mc) {
+        if (charge != null && !charge.isDonePlaying()) return;
+        charge = new ChargeLoopSound(mc.thePlayer);
+        mc.getSoundHandler()
+            .playSound(charge);
+    }
+
+    private static void advanceTier(EntityPlayer player) {
+        int next = RailgunChargeTracker.tier(player)
+            .ordinal();
+        if (next <= phase) return;
+        if (ramp != null) ramp.stop();
+        ramp = new ChargeRampSound(player, next);
+        Minecraft.getMinecraft()
+            .getSoundHandler()
+            .playSound(ramp);
+        phase = next;
+    }
+
     public abstract static class FollowSound extends MovingSound {
 
         protected final Entity entity;
@@ -102,7 +100,7 @@ public final class RailgunSounds {
             super(new ResourceLocation("sciencenotleisure", "railgun." + name));
             this.entity = entity;
             repeat = loop;
-            volume = 0.6F;
+            volume = BASE_VOLUME;
             follow();
         }
 
@@ -128,11 +126,11 @@ public final class RailgunSounds {
                 return;
             }
             follow();
-            volume = 0.6F * Math.min(1, age / 8.0F);
+            volume = BASE_VOLUME * Math.min(1, age / (float) FADE_IN_TICKS);
         }
     }
 
-    public static final class ChargeLoopSound extends FollowSound {
+    public static class ChargeLoopSound extends FollowSound {
 
         public ChargeLoopSound(EntityPlayer player) {
             super(player, "charge.loop", true);
@@ -144,7 +142,7 @@ public final class RailgunSounds {
         }
     }
 
-    public static final class ChargeRampSound extends FollowSound {
+    public static class ChargeRampSound extends FollowSound {
 
         public ChargeRampSound(EntityPlayer player, int tier) {
             super(player, "charge.ramp", false);
@@ -157,7 +155,7 @@ public final class RailgunSounds {
         }
     }
 
-    public static final class BeamLoopSound extends FollowSound {
+    public static class BeamLoopSound extends FollowSound {
 
         public BeamLoopSound(Entity entity) {
             super(entity, "beam.loop", true);

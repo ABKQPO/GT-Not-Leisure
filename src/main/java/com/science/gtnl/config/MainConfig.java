@@ -40,6 +40,21 @@ public class MainConfig {
         @LangKey("gtnl.gui.config.general.client.enable_text_effects")
         @DefaultBoolean(true)
         public boolean enableTextEffects = true;
+
+        @Comment("Camera and weapon shake caused by charging and firing the electromagnetic railgun")
+        @LangKey("gtnl.gui.config.general.client.enable_railgun_shake")
+        @DefaultBoolean(true)
+        public boolean enableRailgunShake = true;
+
+        @Comment("Soft glow and charge orb effects of the electromagnetic railgun")
+        @LangKey("gtnl.gui.config.general.client.enable_railgun_bloom")
+        @DefaultBoolean(true)
+        public boolean enableRailgunBloom = true;
+
+        @Comment("GLSL shaders for the railgun beam, charge orb, impact ring and charge overlay")
+        @LangKey("gtnl.gui.config.general.client.enable_railgun_shaders")
+        @DefaultBoolean(true)
+        public boolean enableRailgunShaders = true;
     }
 
     public static final Effect effect = new Effect();
