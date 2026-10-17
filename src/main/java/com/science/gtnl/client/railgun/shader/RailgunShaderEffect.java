@@ -12,7 +12,6 @@ public class RailgunShaderEffect {
 
     public static final RailgunShaderEffect BEAM = new RailgunShaderEffect("beam");
     public static final RailgunShaderEffect ORB = new RailgunShaderEffect("orb");
-    public static final RailgunShaderEffect IMPACT = new RailgunShaderEffect("impact");
     public static final RailgunShaderEffect CHARGE = new RailgunShaderEffect("charge");
 
     private static final String SHADER_ROOT = "shaders/railgun/";

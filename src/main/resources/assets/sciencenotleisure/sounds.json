@@ -1,7 +1,20 @@
 {
-  "railgun.fire": {"category": "player", "sounds": ["railgun/fire"]},
-  "railgun.impact": {"category": "player", "sounds": ["railgun/fire"]},
-  "railgun.beam.chain": {"category": "player", "sounds": ["railgun/fire"]},
+  "railgun.fire.charged": {"category": "player", "sounds": ["railgun/fire"]},
+  "railgun.fire.max": {"category": "player", "sounds": ["railgun/fire"]},
+  "railgun.fire.impact": {
+    "category": "player",
+    "sounds": ["minecraft:random/explode1", "minecraft:random/explode2", "minecraft:random/explode3", "minecraft:random/explode4"]
+  },
+  "railgun.beam.chain": {
+    "category": "player",
+    "sounds": [
+      {"name": "minecraft:note/pling", "volume": 0.75, "pitch": 1.8, "weight": 4},
+      {"name": "minecraft:random/explode1", "volume": 0.25, "pitch": 2.0},
+      {"name": "minecraft:random/explode2", "volume": 0.25, "pitch": 2.0},
+      {"name": "minecraft:random/explode3", "volume": 0.25, "pitch": 2.0},
+      {"name": "minecraft:random/explode4", "volume": 0.25, "pitch": 2.0}
+    ]
+  },
   "railgun.beam.loop": {"category": "player", "sounds": ["railgun/beam_loop"]},
   "railgun.charge.loop": {"category": "player", "sounds": ["railgun/charge_loop"]},
   "railgun.charge.ramp": {"category": "player", "sounds": ["railgun/charge_ramp"]},

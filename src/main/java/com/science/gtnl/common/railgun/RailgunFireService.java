@@ -256,8 +256,13 @@ public final class RailgunFireService {
                     RailgunDefaults.PENETRATION_DESTROY_RADIUS,
                     RailgunDefaults.PENETRATION_DESTROY_HARDNESS,
                     player);
-            if (settings.sound())
-                world.playSoundEffect(impact.x(), impact.y(), impact.z(), "sciencenotleisure:railgun.impact", 0.5F, 1);
+            if (settings.sound()) world.playSoundEffect(
+                impact.x(),
+                impact.y(),
+                impact.z(),
+                "sciencenotleisure:railgun.fire.impact",
+                1.5F + tier.ordinal() * 0.3F,
+                0.5F);
         }
         applyRecoil(player, tier);
         RailgunNet.sendAround(
