@@ -15,6 +15,7 @@ public class RailgunCharge {
     private static long startedTick;
     private static long lastLiveTick;
     private static double rate = 1;
+    private static int cap = Integer.MAX_VALUE;
 
     private RailgunCharge() {}
 
@@ -25,12 +26,12 @@ public class RailgunCharge {
 
     public static int units(EntityPlayer player) {
         refresh(player);
-        return live ? RailgunData.units(tick(player) - startedTick, rate) : 0;
+        return live ? Math.min(cap, RailgunData.units(tick(player) - startedTick, rate)) : 0;
     }
 
     public static float units(EntityPlayer player, float partialTicks) {
         refresh(player);
-        return live ? (float) (Math.max(0F, tick(player) - startedTick + partialTicks) * rate) : 0F;
+        return live ? Math.min(cap, (float) (Math.max(0F, tick(player) - startedTick + partialTicks) * rate)) : 0F;
     }
 
     public static RailgunChargeTier tier(EntityPlayer player) {
@@ -39,6 +40,10 @@ public class RailgunCharge {
 
     public static float progress(EntityPlayer player) {
         return Math.min(1F, units(player) / (float) RailgunData.FULL_CHARGE_UNITS);
+    }
+
+    public static void cap(int units) {
+        cap = Math.max(0, units);
     }
 
     public static void finish(int shooterId) {
@@ -51,6 +56,7 @@ public class RailgunCharge {
         startedTick = 0L;
         lastLiveTick = 0L;
         rate = 1;
+        cap = Integer.MAX_VALUE;
     }
 
     private static void refresh(EntityPlayer player) {
@@ -59,6 +65,7 @@ public class RailgunCharge {
             if (!live || now - lastLiveTick > RailgunDefaults.CHARGE_RESUME_GRACE_TICKS) {
                 startedTick = now;
                 rate = Math.max(1, RailgunData.chargeRate(inUse(player)));
+                cap = Integer.MAX_VALUE;
             }
             live = true;
             lastLiveTick = now;
