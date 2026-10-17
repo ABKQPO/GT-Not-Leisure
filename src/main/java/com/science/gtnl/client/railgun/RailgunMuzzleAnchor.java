@@ -13,8 +13,13 @@ import com.science.gtnl.common.railgun.RailgunVec;
 
 public class RailgunMuzzleAnchor {
 
-    private static final double BARREL_FORWARD = 0.16;
-    private static final long STALE_MILLIS = 250;
+    /**
+     * The muzzle is part of the model, so keep the anchor in model space and
+     * transform it with the exact matrix used to draw the held item. The
+     * bevel at the front of the barrel ends at this point in the OBJ model.
+     */
+    private static final RailgunVec MODEL_MUZZLE = new RailgunVec(0.0, 0.286612, -1.213388);
+    private static final long STALE_MILLIS = 100;
 
     private record Anchor(RailgunVec eyeSpace, long stamp) {}
 
@@ -26,17 +31,22 @@ public class RailgunMuzzleAnchor {
     public static void capture(int entityId) {
         MATRIX.clear();
         GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, MATRIX);
-        ANCHORS.put(
-            entityId,
-            new Anchor(new RailgunVec(MATRIX.get(12), MATRIX.get(13), MATRIX.get(14)), Minecraft.getSystemTime()));
+        RailgunVec eyeSpace = transform(MODEL_MUZZLE);
+        ANCHORS.put(entityId, new Anchor(eyeSpace, Minecraft.getSystemTime()));
     }
 
-    public static RailgunVec muzzle(int entityId, RailgunVec look) {
+    public static RailgunVec muzzle(int entityId) {
         Anchor anchor = ANCHORS.get(entityId);
         if (anchor == null || Minecraft.getSystemTime() - anchor.stamp() > STALE_MILLIS) return null;
-        RailgunCamera.capture();
-        return RailgunCamera.toWorld(anchor.eyeSpace())
-            .add(look.scale(BARREL_FORWARD));
+        return RailgunCamera.toWorld(anchor.eyeSpace());
+    }
+
+    private static RailgunVec transform(RailgunVec point) {
+        double x = point.x(), y = point.y(), z = point.z();
+        return new RailgunVec(
+            MATRIX.get(0) * x + MATRIX.get(4) * y + MATRIX.get(8) * z + MATRIX.get(12),
+            MATRIX.get(1) * x + MATRIX.get(5) * y + MATRIX.get(9) * z + MATRIX.get(13),
+            MATRIX.get(2) * x + MATRIX.get(6) * y + MATRIX.get(10) * z + MATRIX.get(14));
     }
 
     public static void clear() {

@@ -29,7 +29,7 @@ public class RailgunShockwaveRenderer {
 
     public static void spawn(RailgunVec center, double radius) {
         var world = Minecraft.getMinecraft().theWorld;
-        if (world == null || radius <= 0 || radius > 32 || !center.finite()) return;
+        if (world == null || center == null || radius <= 0 || radius > 32 || !center.finite()) return;
         if (ACTIVE.size() >= MAX_ACTIVE) ACTIVE.remove(0);
         ACTIVE.add(new Wave(center, radius, world.getTotalWorldTime()));
     }

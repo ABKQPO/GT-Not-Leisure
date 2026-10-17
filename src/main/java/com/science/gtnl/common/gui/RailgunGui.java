@@ -60,7 +60,7 @@ public final class RailgunGui {
                     new ModularSlot(modules, i).filter(item -> modules.isItemValid(slot, item))
                         .slotGroup("railgun_modules"))
                     .pos(16 + i * 18, 24)
-                    .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("gtnl.railgun.module_limits"))));
+                    .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("item.gtnl.railgun.module_limits"))));
         }
         LongSyncValue energy = new LongSyncValue(() -> (long) RailgunEnergy.read(stack));
         LongSyncValue capacity = new LongSyncValue(() -> (long) RailgunEnergy.capacity(stack));
@@ -115,14 +115,14 @@ public final class RailgunGui {
             .overlay(
                 IKey.dynamic(
                     () -> (allowed.getAsBoolean() ? value.getBoolValue() ? "§a" : "§7" : "§8")
-                        + StatCollector.translateToLocal("gtnl.railgun.setting." + key)))
+                        + StatCollector.translateToLocal("item.gtnl.railgun.setting." + key)))
             .tooltipBuilder(
                 tooltip -> tooltip.addLine(
                     IKey.dynamic(
                         () -> StatCollector.translateToLocal(
                             allowed.getAsBoolean()
-                                ? value.getBoolValue() ? "gtnl.railgun.enabled" : "gtnl.railgun.disabled"
-                                : "gtnl.railgun.unavailable"))))
+                                ? value.getBoolValue() ? "item.gtnl.railgun.enabled" : "item.gtnl.railgun.disabled"
+                                : "item.gtnl.railgun.unavailable"))))
             .onMousePressed(mouse -> {
                 if (mouse != 0 || !allowed.getAsBoolean()) return false;
                 value.setBoolValue(!value.getBoolValue());

@@ -17,6 +17,7 @@ public class RailgunClientFx {
 
     private static final int IMPACT_SPARKS = 24;
     private static final double SPARK_SPREAD = 0.6;
+    private static final float RAILGUN_SOUND_RANGE_VOLUME = 16.0F;
 
     public static void register() {
         MinecraftForge.EVENT_BUS.register(new RailgunClientFx());
@@ -37,8 +38,17 @@ public class RailgunClientFx {
     }
 
     public static void playFire(RailgunFireFxPacket packet) {
-        if (Minecraft.getMinecraft().theWorld == null) return;
+        WorldClient world = Minecraft.getMinecraft().theWorld;
+        if (world == null) return;
         RailgunCharge.finish(packet.shooterId);
+        if (packet.sound && packet.from != null) world.playSound(
+            packet.from.x(),
+            packet.from.y(),
+            packet.from.z(),
+            "sciencenotleisure:railgun.fire",
+            RAILGUN_SOUND_RANGE_VOLUME,
+            packet.tier == 3 ? 0.8F : 1,
+            false);
         RailgunOrbRenderer.launch(packet.shooterId, packet.from, packet.firstHit, packet.tier, () -> impact(packet));
     }
 
@@ -63,7 +73,7 @@ public class RailgunClientFx {
             packet.firstHit.y(),
             packet.firstHit.z(),
             "sciencenotleisure:railgun.fire",
-            1,
+            RAILGUN_SOUND_RANGE_VOLUME,
             packet.tier == 3 ? 0.8F : 1,
             false);
     }
@@ -78,7 +88,7 @@ public class RailgunClientFx {
             packet.origin.y(),
             packet.origin.z(),
             "sciencenotleisure:railgun.beam.chain",
-            0.12F,
+            RAILGUN_SOUND_RANGE_VOLUME,
             1.8F,
             false);
     }

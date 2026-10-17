@@ -154,7 +154,7 @@ public final class RailgunFireService {
 
     public static void noEnergy(EntityPlayerMP player) {
         ScienceNotLeisure.network
-            .sendTo(new StatusMessage(new ChatComponentTranslation("gtnl.railgun.fail.no_eu")), player);
+            .sendTo(new StatusMessage(new ChatComponentTranslation("item.gtnl.railgun.fail.no_eu")), player);
     }
 
     public static void fireCharged(WorldServer world, EntityPlayerMP player, ItemStack stack, RailgunChargeTier tier) {
@@ -256,8 +256,6 @@ public final class RailgunFireService {
                     RailgunDefaults.PENETRATION_DESTROY_RADIUS,
                     RailgunDefaults.PENETRATION_DESTROY_HARDNESS,
                     player);
-            if (settings.sound())
-                world.playSoundEffect(impact.x(), impact.y(), impact.z(), "sciencenotleisure:railgun.impact", 0.5F, 1);
         }
         applyRecoil(player, tier);
         RailgunNet.sendAround(
