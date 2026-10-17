@@ -10,61 +10,112 @@ import java.util.UUID;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.S19PacketEntityStatus;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.WorldServer;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.item.items.ElectromagneticRailgun;
 import com.science.gtnl.common.packet.RailgunFireFxPacket;
+import com.science.gtnl.common.packet.RailgunRecoilFxPacket;
 import com.science.gtnl.common.packet.StatusMessage;
 import com.science.gtnl.config.MainConfig;
 
 public final class RailgunFireService {
 
-    public record ChargeSession(long startTick, int accelStep, ItemStack stack, int slot, int dimension) {}
+    public static final String RECOIL_GRACE = "gtnl.railgunRecoilGrace";
+
+    public static class ChargeSession {
+
+        private final long startTick;
+        private final int accelStep;
+        private final ItemStack stack;
+        private final int slot;
+        private final int dimension;
+        private long lastActiveTick;
+
+        public ChargeSession(long startTick, int accelStep, ItemStack stack, int slot, int dimension) {
+            this.startTick = startTick;
+            this.accelStep = accelStep;
+            this.stack = stack;
+            this.slot = slot;
+            this.dimension = dimension;
+            this.lastActiveTick = startTick;
+        }
+
+        public int accelStep() {
+            return accelStep;
+        }
+
+        public ItemStack stack() {
+            return stack;
+        }
+
+        public int dimension() {
+            return dimension;
+        }
+
+        public boolean matches(EntityPlayerMP player) {
+            return player.getHeldItem() == stack && player.inventory.currentItem == slot
+                && player.dimension == dimension;
+        }
+
+        public boolean live(long now) {
+            return now - lastActiveTick <= RailgunDefaults.CHARGE_RESUME_GRACE_TICKS;
+        }
+
+        public void touch(long now) {
+            lastActiveTick = now;
+        }
+
+        public int units(long now) {
+            int elapsed = (int) Math.max(0, Math.min(ElectromagneticRailgun.USE_DURATION, now - startTick));
+            return elapsed * accelStep;
+        }
+    }
 
     static final Map<UUID, ChargeSession> CHARGING = new HashMap<>();
 
     private RailgunFireService() {}
 
     public static void beginCharge(EntityPlayerMP player, ItemStack stack) {
+        long now = now(player);
+        ChargeSession session = CHARGING.get(player.getUniqueID());
+        if (session != null && session.matches(player) && session.live(now)) {
+            session.touch(now);
+            return;
+        }
         CHARGING.put(
             player.getUniqueID(),
             new ChargeSession(
-                player.worldObj.getTotalWorldTime(),
-                1 + RailgunData.modules(stack)
-                    .count(RailgunModuleType.ACCELERATION),
+                now,
+                RailgunData.chargeStep(stack),
                 stack,
                 player.inventory.currentItem,
                 player.dimension));
     }
 
-    public static void tickCharge(EntityPlayerMP player, ItemStack stack, int usedTicks) {
+    public static void tickCharge(EntityPlayerMP player, ItemStack stack) {
         ChargeSession session = CHARGING.get(player.getUniqueID());
-        if (session == null || session.stack != stack) return;
-        int units = elapsed(player, session, usedTicks) * session.accelStep;
-        if (RailgunEnergy.read(stack) < chargeCostUpTo(units, session.accelStep)) {
+        if (session == null || session.stack() != stack) return;
+        long now = now(player);
+        session.touch(now);
+        int units = session.units(now);
+        if (RailgunEnergy.read(stack) < chargeCostUpTo(units, session.accelStep())) {
             CHARGING.remove(player.getUniqueID());
             player.clearItemInUse();
-            player.playerNetServerHandler
-                .sendPacket(new net.minecraft.network.play.server.S19PacketEntityStatus(player, (byte) 9));
+            player.playerNetServerHandler.sendPacket(new S19PacketEntityStatus(player, (byte) 9));
             noEnergy(player);
         }
     }
 
-    private static int elapsed(EntityPlayerMP player, ChargeSession session, int usedTicks) {
-        return Math.max(
-            0,
-            Math.min(72000, Math.min(usedTicks, (int) (player.worldObj.getTotalWorldTime() - session.startTick))));
-    }
-
-    public static void release(EntityPlayerMP player, ItemStack stack, int usedTicks) {
+    public static void release(EntityPlayerMP player, ItemStack stack) {
         ChargeSession session = CHARGING.remove(player.getUniqueID());
-        if (session == null || session.stack != stack
-            || session.slot != player.inventory.currentItem
-            || session.dimension != player.dimension) return;
-        int units = elapsed(player, session, usedTicks) * session.accelStep;
+        if (session == null || session.stack() != stack || !session.matches(player)) return;
+        int units = session.units(now(player));
         RailgunChargeTier tier = RailgunChargeTier.fromUnits(units);
-        double chargeCost = chargeCostUpTo(units, session.accelStep);
+        double chargeCost = chargeCostUpTo(units, session.accelStep());
         if (tier == RailgunChargeTier.NONE) {
             RailgunEnergy.tryConsume(stack, chargeCost);
             return;
@@ -74,6 +125,10 @@ public final class RailgunFireService {
             return;
         }
         fireCharged((WorldServer) player.worldObj, player, stack, tier);
+    }
+
+    private static long now(EntityPlayerMP player) {
+        return player.worldObj.getTotalWorldTime();
     }
 
     public static double chargeCostUpTo(int units, int step) {
@@ -178,15 +233,17 @@ public final class RailgunFireService {
             hits.addAll(RailgunChainResolver.resolveChainForkedFrom(world, player, anchor, context, visited, impact));
         }
         var path = RailgunNet.path(impact, hits);
-        RailgunDamage.applyAll(player, hits, context, true);
+        RailgunDamage.applyAll(player, hits, context, true, impact);
         if (trace.hit() != null && primary == null
             && RailgunTargetRules.canAffect(
                 player,
                 trace.hit()
                     .entity(),
                 players))
-            trace.hit()
-                .entity()
+            RailgunTargetRules.damageAnchor(
+                trace.hit()
+                    .entity(),
+                impact)
                 .attackEntityFrom(
                     RailgunDamage.source(player),
                     (float) Math.min(context.firstDamage(), Float.MAX_VALUE));
@@ -202,7 +259,7 @@ public final class RailgunFireService {
             if (settings.sound())
                 world.playSoundEffect(impact.x(), impact.y(), impact.z(), "sciencenotleisure:railgun.impact", 0.5F, 1);
         }
-        RailgunRecoilService.apply(player, tier);
+        applyRecoil(player, tier);
         RailgunNet.sendAround(
             world,
             player,
@@ -214,5 +271,28 @@ public final class RailgunFireService {
                 tier.ordinal(),
                 (float) Math.max(splash, pulseRadius),
                 settings.sound()));
+    }
+
+    private static void applyRecoil(EntityPlayerMP player, RailgunChargeTier tier) {
+        boolean crouching = player.isSneaking();
+        double speed = tier.recoilSpeed * (crouching ? RailgunDefaults.RECOIL_CROUCH_MUL : 1)
+            * (player.onGround ? 1 : RailgunDefaults.RECOIL_AIRBORNE_MUL);
+        float pitch = tier.recoilPitch * (crouching ? (float) RailgunDefaults.RECOIL_CROUCH_MUL : 1);
+        RailgunVec back = RailgunVec.look(player)
+            .scale(-1);
+        RailgunVec behind = RailgunVec.pos(player)
+            .add(back);
+        int x = MathHelper.floor_double(behind.x()), y = MathHelper.floor_double(behind.y()),
+            z = MathHelper.floor_double(behind.z());
+        if (player.worldObj.getBlock(x, y, z)
+            .getCollisionBoundingBoxFromPool(player.worldObj, x, y, z) != null) speed = 0;
+        player.motionX += back.x() * speed;
+        player.motionY += back.y() * speed;
+        player.motionZ += back.z() * speed;
+        player.velocityChanged = true;
+        player.fallDistance = 0;
+        player.getEntityData()
+            .setLong(RECOIL_GRACE, player.worldObj.getTotalWorldTime() + 60);
+        ScienceNotLeisure.network.sendTo(new RailgunRecoilFxPacket(pitch, tier.ordinal()), player);
     }
 }

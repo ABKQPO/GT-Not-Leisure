@@ -105,7 +105,7 @@ public class ElectromagneticRailgun extends Item implements IElectricItem, IGuiH
             }
             return stack;
         }
-        player.setItemInUse(stack, USE_DURATION);
+        if (!player.isUsingItem() || player.getItemInUse() != stack) player.setItemInUse(stack, USE_DURATION);
         if (!world.isRemote && player instanceof EntityPlayerMP serverPlayer)
             RailgunFireService.beginCharge(serverPlayer, stack);
         return stack;
@@ -114,13 +114,13 @@ public class ElectromagneticRailgun extends Item implements IElectricItem, IGuiH
     @Override
     public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
         if (!player.worldObj.isRemote && player instanceof EntityPlayerMP serverPlayer)
-            RailgunFireService.tickCharge(serverPlayer, stack, USE_DURATION - count);
+            RailgunFireService.tickCharge(serverPlayer, stack);
     }
 
     @Override
     public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int count) {
         if (!world.isRemote && player instanceof EntityPlayerMP serverPlayer)
-            RailgunFireService.release(serverPlayer, stack, USE_DURATION - count);
+            RailgunFireService.release(serverPlayer, stack);
     }
 
     @Override

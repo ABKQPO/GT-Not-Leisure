@@ -3,6 +3,11 @@ package com.science.gtnl.common.railgun;
 public final class RailgunDefaults {
 
     public static final int BEAM_SETTLE_INTERVAL_TICKS = 2;
+    public static final double BEAM_RESEND_DISTANCE = 0.02;
+    public static final double BEAM_RANGE_LIMIT = 512;
+    public static final double BEAM_RANGE_RESPONSE = 26;
+    public static final double BEAM_RANGE_SNAP = 4;
+    public static final int CHARGE_RESUME_GRACE_TICKS = 6;
     public static final int BEAM_RANGE = 64;
     public static final int BEAM_CHAIN_THROTTLE_TICKS = 5;
     public static final int BEAM_MAX_CONCURRENT = 16;

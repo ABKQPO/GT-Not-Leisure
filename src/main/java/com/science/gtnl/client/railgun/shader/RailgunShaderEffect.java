@@ -10,6 +10,11 @@ import com.science.gtnl.client.shader.GlslProgram;
 
 public class RailgunShaderEffect {
 
+    public static final RailgunShaderEffect BEAM = new RailgunShaderEffect("beam");
+    public static final RailgunShaderEffect ORB = new RailgunShaderEffect("orb");
+    public static final RailgunShaderEffect IMPACT = new RailgunShaderEffect("impact");
+    public static final RailgunShaderEffect CHARGE = new RailgunShaderEffect("charge");
+
     private static final String SHADER_ROOT = "shaders/railgun/";
     private static final ResourceLocation SHARED_VERTEX = new ResourceLocation(
         ScienceNotLeisure.RESOURCE_ROOT_ID,
@@ -44,10 +49,6 @@ public class RailgunShaderEffect {
 
     public void uniform2f(String uniform, float x, float y) {
         if (program != null) program.uniform2f(uniform, x, y);
-    }
-
-    public void uniform3f(String uniform, float x, float y, float z) {
-        if (program != null) program.uniform3f(uniform, x, y, z);
     }
 
     private GlslProgram program() {

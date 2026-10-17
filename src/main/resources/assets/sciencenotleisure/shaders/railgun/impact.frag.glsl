@@ -1,9 +1,6 @@
 #version 120
 #include "noise.glsl"
 
-// Impact ring drawn on a horizontal quad. progress is the normalised wavefront radius inside the quad, so a
-// single quad per impact can run the whole shockwave without rebuilding geometry every frame.
-
 uniform float time;
 uniform float progress;
 
@@ -23,6 +20,6 @@ void main() {
     float fade = 1.0 - progress;
 
     vec3 color = mix(tint.rgb, vec3(1.0), flash * 0.6);
-    float alpha = (ring * 1.15 + flash) * fade;
+    float alpha = (ring * 1.7 + flash * 1.3) * fade;
     gl_FragColor = vec4(color, clamp(alpha, 0.0, 1.0));
 }

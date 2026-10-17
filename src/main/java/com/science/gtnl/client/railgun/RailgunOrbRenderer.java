@@ -7,9 +7,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
-import com.science.gtnl.client.railgun.RailgunGlowSprites.Sprite;
+import com.science.gtnl.client.railgun.RailgunRenderHelper.Sprite;
 import com.science.gtnl.client.railgun.shader.RailgunShaderEffect;
-import com.science.gtnl.client.railgun.shader.RailgunShaders;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
 import com.science.gtnl.common.railgun.RailgunVec;
 import com.science.gtnl.config.MainConfig;
@@ -24,6 +23,12 @@ public class RailgunOrbRenderer {
     private static final int MAX_ORBS = 32;
     private static final int TRAIL_SEGMENTS = 7;
     private static final int FILAMENTS = 3;
+    private static final int FILAMENT_SEGMENTS = 8;
+    private static final int SPHERE_LONGITUDES = 24;
+    private static final int SPHERE_LATITUDES = 12;
+    private static final double SPHERE_RIM = 1.35;
+
+    private static final float[] COLOR = new float[3];
 
     private static final double ORB_MIN_RADIUS = 0.07;
     private static final double ORB_CHARGE_RADIUS = 0.12;
@@ -31,6 +36,10 @@ public class RailgunOrbRenderer {
     private static final double ORB_MUZZLE_GAP = 0.28;
     private static final double FLIGHT_SHRINK = 0.05;
     private static final float LAUNCHED_STRENGTH = 1F;
+
+    private static final double[] SHELL_RADII = { 1, 0.68, 0.42 };
+    private static final double[] SHELL_MIX = { 0.15, 0.55, 1 };
+    private static final float[] SHELL_ALPHA = { 0.62F, 0.85F, 1F };
 
     private static final float[] HIGH_INNER = { 0.35F, 0.86F, 1F };
     private static final float[] HIGH_OUTER = { 0.94F, 1F, 1F };
@@ -89,29 +98,43 @@ public class RailgunOrbRenderer {
                     for (OrbViz orb : orbs) filaments(orb);
                 });
                 RailgunRenderHelper.renderGlow(Sprite.RADIAL, () -> { for (OrbViz orb : orbs) outerHalo(orb); });
-                if (!drawBody(orbs, now + event.partialTicks))
-                    RailgunRenderHelper.renderGlow(Sprite.RADIAL, () -> { for (OrbViz orb : orbs) innerHalo(orb); });
+                drawBody(orbs, now + event.partialTicks);
+                RailgunRenderHelper.renderGlow(Sprite.RADIAL, () -> { for (OrbViz orb : orbs) innerHalo(orb); });
             }
         }
         arrive(now);
     }
 
-    private static boolean drawBody(List<OrbViz> orbs, double time) {
-        if (!MainConfig.client.enableRailgunShaders) return false;
-        RailgunShaderEffect shader = RailgunShaders.ORB;
-        if (!shader.begin()) return false;
-        try {
-            shader.uniform1f("time", (float) (time * 0.05));
-            RailgunRenderHelper.render(() -> { for (OrbViz orb : orbs) body(orb); });
-            return true;
-        } finally {
-            shader.end();
+    private static void drawBody(List<OrbViz> orbs, double time) {
+        if (MainConfig.client.enableRailgunShaders) {
+            RailgunShaderEffect shader = RailgunShaderEffect.ORB;
+            if (shader.begin()) {
+                try {
+                    shader.uniform1f("time", (float) (time * 0.05));
+                    RailgunRenderHelper.render(() -> { for (OrbViz orb : orbs) shells(orb); });
+                } finally {
+                    shader.end();
+                }
+                return;
+            }
         }
+        RailgunRenderHelper.render(() -> { for (OrbViz orb : orbs) shells(orb); });
     }
 
-    private static void body(OrbViz orb) {
-        setColor(orb.tier(), 0.2F, orb.strength());
-        RailgunRenderHelper.glow(orb.center(), orb.radius() * 1.35, (float) (orb.time() * 0.8 + orb.seed()));
+    private static void shells(OrbViz orb) {
+        for (int shell = 0; shell < SHELL_RADII.length; shell++) {
+            float[] rgb = mix(orb.tier(), (float) SHELL_MIX[shell]);
+            RailgunRenderHelper.sphere(
+                orb.center(),
+                orb.radius() * SHELL_RADII[shell],
+                SPHERE_LONGITUDES,
+                SPHERE_LATITUDES,
+                rgb[0],
+                rgb[1],
+                rgb[2],
+                SHELL_ALPHA[shell] * orb.strength(),
+                SPHERE_RIM);
+        }
     }
 
     private static void arrive(long now) {
@@ -136,10 +159,10 @@ public class RailgunOrbRenderer {
 
     private static OrbViz charging(long now, float partialTicks) {
         var player = Minecraft.getMinecraft().thePlayer;
-        if (!RailgunChargeTracker.charging(player)) return null;
-        float progress = RailgunChargeTracker.progress(player);
-        RailgunVec direction = RailgunVec.look(player);
-        RailgunVec muzzle = RailgunVisuals.muzzle(player.getEntityId(), RailgunVec.pos(player), partialTicks)
+        if (!RailgunCharge.charging(player)) return null;
+        float progress = RailgunCharge.progress(player);
+        RailgunVec direction = RailgunVec.look(player, partialTicks);
+        RailgunVec muzzle = RailgunRenderHelper.muzzle(player.getEntityId(), RailgunVec.pos(player), partialTicks)
             .add(direction.scale(ORB_MUZZLE_GAP * (1 - progress)));
         double radius = ORB_MIN_RADIUS + ORB_CHARGE_RADIUS * progress * progress;
         return new OrbViz(
@@ -147,7 +170,7 @@ public class RailgunOrbRenderer {
             direction,
             null,
             radius,
-            RailgunChargeTracker.tier(player)
+            RailgunCharge.tier(player)
                 .ordinal(),
             player.getEntityId(),
             now + partialTicks,
@@ -158,7 +181,7 @@ public class RailgunOrbRenderer {
         double raw = (now - orb.born + partialTicks) / orb.travelTicks;
         if (raw < 0) return null;
         double eased = 1 - (1 - Math.min(1, raw)) * (1 - Math.min(1, raw));
-        RailgunVec from = RailgunVisuals.muzzle(orb.shooterId, orb.fallback, partialTicks);
+        RailgunVec from = RailgunRenderHelper.muzzle(orb.shooterId, orb.fallback, partialTicks);
         RailgunVec delta = orb.target.subtract(from);
         if (delta.length() < 1.0E-4) return null;
         RailgunVec head = from.add(delta.scale(eased));
@@ -175,15 +198,15 @@ public class RailgunOrbRenderer {
     }
 
     private static void outerHalo(OrbViz orb) {
-        setColor(orb.tier(), 0F, 0.32F);
-        RailgunRenderHelper.glow(orb.center(), orb.radius() * 2.8, (float) (orb.time() * 0.8 + orb.seed()));
+        setColor(orb.tier(), 0F, 0.62F);
+        RailgunRenderHelper.glow(orb.center(), orb.radius() * 3.6, (float) (orb.time() * 0.8 + orb.seed()));
     }
 
     private static void innerHalo(OrbViz orb) {
         double radius = orb.radius();
         float radians = (float) (orb.time() * 0.8 + orb.seed());
-        setColor(orb.tier(), 0.5F, 0.6F);
-        RailgunRenderHelper.glow(orb.center(), radius * 1.6, -radians);
+        setColor(orb.tier(), 0.5F, 0.9F);
+        RailgunRenderHelper.glow(orb.center(), radius * 2.1, -radians);
         setColor(orb.tier(), 1F, 1F);
         RailgunRenderHelper.glow(orb.center(), radius, radians);
     }
@@ -195,27 +218,25 @@ public class RailgunOrbRenderer {
             .subtract(tail);
         for (int segment = 0; segment < TRAIL_SEGMENTS; segment++) {
             double start = segment / (double) TRAIL_SEGMENTS, end = (segment + 1) / (double) TRAIL_SEGMENTS;
-            double width = orb.radius() * (0.15 + 1.5 * start * start);
-            double nextWidth = orb.radius() * (0.15 + 1.5 * end * end);
-            setColor(orb.tier(), (float) start, (float) (0.12 + 0.85 * start * start));
+            double width = orb.radius() * (0.02 + 1.6 * start * start);
+            double nextWidth = orb.radius() * (0.02 + 1.6 * end * end);
+            setColor(orb.tier(), (float) start, (float) (0.22 + 0.95 * start * start));
             RailgunRenderHelper.glowRibbon(tail.add(delta.scale(start)), tail.add(delta.scale(end)), width, nextWidth);
         }
     }
 
     private static void filaments(OrbViz orb) {
         RailgunVec direction = orb.direction();
-        RailgunVec reference = Math.abs(direction.y()) > 0.95 ? new RailgunVec(1, 0, 0) : new RailgunVec(0, 1, 0);
-        RailgunVec right = direction.cross(reference)
+        RailgunVec right = RailgunVec.rightOf(direction);
+        RailgunVec up = right.cross(direction)
             .normalize();
-        RailgunVec up = direction.cross(right)
-            .normalize();
-        double reach = orb.radius() * 2.6, width = Math.max(0.015, orb.radius() * 0.12);
-        setColor(orb.tier(), 0.7F, 0.55F);
+        double reach = orb.radius() * 2.6, width = Math.max(0.02, orb.radius() * 0.26);
+        float[] rgb = mix(orb.tier(), 0.7F);
         for (int filament = 0; filament < FILAMENTS; filament++) {
             double angle = orb.time() * 1.9 + filament * (Math.PI * 2 / FILAMENTS) + orb.seed();
             RailgunVec offset = right.scale(Math.cos(angle) * orb.radius())
                 .add(up.scale(Math.sin(angle) * orb.radius()));
-            RailgunRenderHelper.glowRibbon(
+            RailgunRenderHelper.taperedRibbon(
                 orb.center()
                     .subtract(direction.scale(reach))
                     .add(offset),
@@ -223,17 +244,25 @@ public class RailgunOrbRenderer {
                     .add(direction.scale(reach))
                     .subtract(offset),
                 width,
-                width);
+                FILAMENT_SEGMENTS,
+                rgb[0],
+                rgb[1],
+                rgb[2],
+                0.8F);
         }
     }
 
     private static void setColor(int tier, float mix, float alpha) {
+        float[] rgb = mix(tier, mix);
+        Tessellator.instance.setColorRGBA_F(rgb[0], rgb[1], rgb[2], alpha);
+    }
+
+    private static float[] mix(int tier, float mix) {
         float[] inner = tier >= RailgunChargeTier.EHV3.ordinal() ? EXTREME_INNER : HIGH_INNER;
         float[] outer = tier >= RailgunChargeTier.EHV3.ordinal() ? EXTREME_OUTER : HIGH_OUTER;
-        Tessellator.instance.setColorRGBA_F(
-            inner[0] + (outer[0] - inner[0]) * mix,
-            inner[1] + (outer[1] - inner[1]) * mix,
-            inner[2] + (outer[2] - inner[2]) * mix,
-            alpha);
+        COLOR[0] = inner[0] + (outer[0] - inner[0]) * mix;
+        COLOR[1] = inner[1] + (outer[1] - inner[1]) * mix;
+        COLOR[2] = inner[2] + (outer[2] - inner[2]) * mix;
+        return COLOR;
     }
 }

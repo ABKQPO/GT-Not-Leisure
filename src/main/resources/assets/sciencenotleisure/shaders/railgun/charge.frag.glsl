@@ -1,9 +1,6 @@
 #version 120
 #include "noise.glsl"
 
-// Full screen charge overlay: converging rays, a breathing vignette and a drifting haze. progress scales the
-// whole effect with the charge level so an empty charge stays visually silent.
-
 uniform float time;
 uniform float progress;
 uniform vec2 screen;

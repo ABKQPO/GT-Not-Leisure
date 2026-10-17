@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
 import com.science.gtnl.client.railgun.shader.RailgunShaderEffect;
-import com.science.gtnl.client.railgun.shader.RailgunShaders;
 import com.science.gtnl.common.railgun.RailgunVec;
 import com.science.gtnl.config.MainConfig;
 
@@ -52,7 +51,7 @@ public class RailgunShockwaveRenderer {
 
     private static boolean drawShader(long now, float partialTicks) {
         if (!MainConfig.client.enableRailgunShaders) return false;
-        RailgunShaderEffect shader = RailgunShaders.IMPACT;
+        RailgunShaderEffect shader = RailgunShaderEffect.IMPACT;
         if (!shader.begin()) return false;
         try {
             shader.uniform1f("time", (float) ((now + partialTicks) * 0.05));
@@ -75,7 +74,7 @@ public class RailgunShockwaveRenderer {
     private static void fallback(Wave wave, double progress) {
         double radius = wave.radius() * progress;
         double inner = Math.max(0, radius - 0.15 - 0.25 * progress);
-        Tessellator.instance.setColorRGBA_F(RED, GREEN, BLUE, (float) (1 - progress) * 0.8F);
+        Tessellator.instance.setColorRGBA_F(RED, GREEN, BLUE, (float) (1 - progress) * 1F);
         for (int index = 0; index < FALLBACK_SEGMENTS; index++) {
             double start = index * Math.PI * 2 / FALLBACK_SEGMENTS, end = (index + 1) * Math.PI * 2 / FALLBACK_SEGMENTS;
             RailgunRenderHelper.vertex(

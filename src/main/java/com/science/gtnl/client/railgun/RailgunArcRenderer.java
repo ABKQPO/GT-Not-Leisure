@@ -74,27 +74,21 @@ public class RailgunArcRenderer {
                     RailgunRenderHelper.ribbon(
                         from,
                         to,
-                        0.16,
+                        0.24,
                         arc.ehv ? 1 : 0.25F,
                         arc.ehv ? 0.3F : 0.75F,
                         arc.ehv ? 0.6F : 1,
-                        alpha * 0.35F);
+                        alpha * 0.5F);
                     RailgunRenderHelper.ribbon(
                         from,
                         to,
-                        0.09,
+                        0.13,
                         arc.ehv ? 1 : 0.55F,
                         arc.ehv ? 0.55F : 0.88F,
                         arc.ehv ? 0.75F : 1,
-                        alpha * 0.7F);
-                    RailgunRenderHelper.ribbon(
-                        from,
-                        to,
-                        0.035,
-                        arc.ehv ? 1 : 0.85F,
-                        arc.ehv ? 0.8F : 0.97F,
-                        arc.ehv ? 0.9F : 1,
-                        alpha);
+                        alpha * 0.85F);
+                    RailgunRenderHelper
+                        .ribbon(from, to, 0.05, arc.ehv ? 1 : 0.85F, arc.ehv ? 0.8F : 0.97F, arc.ehv ? 0.9F : 1, alpha);
                 }
             }
         });
