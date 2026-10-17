@@ -147,6 +147,7 @@ public class RailgunBeamRenderer {
     public void render(RenderWorldLastEvent event) {
         World world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
+        RailgunCamera.capture();
         long now = world.getTotalWorldTime();
         SHOTS.removeIf(shot -> shot.until <= now);
         drain(now);
@@ -225,10 +226,10 @@ public class RailgunBeamRenderer {
 
     private static RailgunVec aimEnd(Entity shooter, float partialTicks, double range) {
         boolean local = shooter == Minecraft.getMinecraft().thePlayer;
-        RailgunVec origin, direction;
+        RailgunVec origin;
+        RailgunVec direction;
         double reach = range;
         if (local) {
-            RailgunCamera.capture();
             origin = RailgunCamera.position();
             direction = RailgunCamera.forward();
             reach += origin.subtract(RailgunVec.eye(shooter, partialTicks))

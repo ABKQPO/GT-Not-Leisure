@@ -92,8 +92,12 @@ public class ItemElectromagneticRailgunRender implements IItemRenderer {
     }
 
     private static void anchorMuzzle(Object[] data) {
-        if (data.length < 2 || !(data[1] instanceof Entity entity)) return;
-        RailgunMuzzleAnchor.capture(entity.getEntityId());
+        for (Object datum : data) {
+            if (datum instanceof Entity entity) {
+                RailgunMuzzleAnchor.capture(entity.getEntityId());
+                return;
+            }
+        }
     }
 
     private void renderModel(boolean extremeHighVoltage) {

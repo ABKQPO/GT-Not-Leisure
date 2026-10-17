@@ -3,6 +3,7 @@ package com.science.gtnl.client.railgun;
 import java.nio.FloatBuffer;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 
 import org.lwjgl.BufferUtils;
@@ -39,7 +40,12 @@ public class RailgunCamera {
         for (int row = 0; row < 3; row++)
             for (int column = 0; column < 3; column++) ROTATION[row * 3 + column] = MATRIX.get(column * 4 + row);
         RailgunVec fallback = eye();
-        RailgunVec derived = rotate(new RailgunVec(MATRIX.get(12), MATRIX.get(13), MATRIX.get(14))).scale(-1);
+        RailgunVec local = rotate(new RailgunVec(MATRIX.get(12), MATRIX.get(13), MATRIX.get(14))).scale(-1);
+        RailgunVec renderOrigin = new RailgunVec(
+            RenderManager.renderPosX,
+            RenderManager.renderPosY,
+            RenderManager.renderPosZ);
+        RailgunVec derived = renderOrigin.add(local);
         position = derived.finite() && derived.distanceToSqr(fallback) < MAX_TRUSTED_DISTANCE * MAX_TRUSTED_DISTANCE
             ? derived
             : fallback;

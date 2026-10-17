@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.railgun.RailgunModuleType;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -48,7 +49,7 @@ public class RailgunModuleItem extends Item {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
         tooltip.add(StatCollector.translateToLocal(getUnlocalizedName(stack) + ".tooltip.0"));
-        tooltip.add(StatCollector.translateToLocal("gtnl.railgun.module_install"));
+        tooltip.add(StatCollector.translateToLocal("item.gtnl.railgun.module_install"));
     }
 
     @Override
@@ -56,26 +57,15 @@ public class RailgunModuleItem extends Item {
     public void registerIcons(IIconRegister register) {
         icons = new IIcon[RailgunModuleType.values().length];
         for (RailgunModuleType type : RailgunModuleType.values()) icons[type.ordinal()] = register.registerIcon(
-            "sciencenotleisure:" + (type.energy() ? "energy_module"
-                : "railgun_module_" + type.name()
-                    .toLowerCase(Locale.ROOT)));
+            ScienceNotLeisure.RESOURCE_ROOT_ID + ":railgun_module_"
+                + type.name()
+                    .toLowerCase(Locale.ENGLISH));
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int meta) {
         return icons[Math.max(0, Math.min(icons.length - 1, meta))];
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public int getColorFromItemStack(ItemStack stack, int pass) {
-        return switch (stack.getItemDamage()) {
-            case 4 -> 0x70DFFF;
-            case 5 -> 0xCB80FF;
-            case 6 -> 0xFF6090;
-            default -> 0xFFFFFF;
-        };
     }
 
     @Override

@@ -142,6 +142,10 @@ public class RailgunSounds {
             return 1F;
         }
 
+        protected float rangeVolumeMultiplier() {
+            return 1F;
+        }
+
         public void requestStop() {
             if (stopAt == 0L) stopAt = Minecraft.getSystemTime();
         }
@@ -174,7 +178,7 @@ public class RailgunSounds {
                 if (stopAt != 0L) stop();
                 return;
             }
-            volume = BASE_VOLUME * envelope * level();
+            volume = BASE_VOLUME * envelope * level() * rangeVolumeMultiplier();
         }
 
         private float envelope(long now) {
@@ -231,6 +235,11 @@ public class RailgunSounds {
         @Override
         protected boolean alive() {
             return RailgunBeamRenderer.active(entity.getEntityId());
+        }
+
+        @Override
+        protected float rangeVolumeMultiplier() {
+            return 16F / BASE_VOLUME;
         }
     }
 }
