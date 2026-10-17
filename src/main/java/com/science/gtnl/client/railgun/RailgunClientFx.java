@@ -1,22 +1,29 @@
 package com.science.gtnl.client.railgun;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.science.gtnl.client.shader.GlslProgram;
 import com.science.gtnl.common.packet.RailgunBeamChainFxPacket;
 import com.science.gtnl.common.packet.RailgunFireFxPacket;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public final class RailgunClientFx {
+public class RailgunClientFx {
+
+    private static final int IMPACT_SPARKS = 24;
+    private static final double SPARK_SPREAD = 0.6;
 
     public static void register() {
         MinecraftForge.EVENT_BUS.register(new RailgunClientFx());
         MinecraftForge.EVENT_BUS.register(new RailgunBeamRenderer());
         MinecraftForge.EVENT_BUS.register(new RailgunArcRenderer());
         MinecraftForge.EVENT_BUS.register(new RailgunShockwaveRenderer());
+        MinecraftForge.EVENT_BUS.register(new RailgunOrbRenderer());
         MinecraftForge.EVENT_BUS.register(new RailgunHudRenderer());
         FMLCommonHandler.instance()
             .bus()
@@ -30,21 +37,27 @@ public final class RailgunClientFx {
     }
 
     public static void playFire(RailgunFireFxPacket packet) {
-        var mc = Minecraft.getMinecraft();
-        if (mc.theWorld == null) return;
-        RailgunBeamRenderer.shot(packet.shooterId, packet.from, packet.firstHit, true);
-        for (int i = 0; i < packet.chainPath.size(); i += 2)
-            RailgunArcRenderer.spawnChain(packet.chainPath.get(i), packet.chainPath.get(i + 1), 8);
+        if (Minecraft.getMinecraft().theWorld == null) return;
+        RailgunOrbRenderer.launch(packet.shooterId, packet.from, packet.firstHit, packet.tier, () -> impact(packet));
+    }
+
+    private static void impact(RailgunFireFxPacket packet) {
+        WorldClient world = Minecraft.getMinecraft().theWorld;
+        if (world == null) return;
+        float intensity = 1F + 0.22F * Math.max(0, packet.tier - 1);
+        RailgunBeamRenderer.shot(packet.shooterId, packet.from, packet.firstHit, true, intensity);
+        for (int index = 0; index + 1 < packet.chainPath.size(); index += 2)
+            RailgunArcRenderer.spawnChain(packet.chainPath.get(index), packet.chainPath.get(index + 1), 8);
         RailgunShockwaveRenderer.spawn(packet.firstHit, packet.impactRadius);
-        for (int i = 0; i < 24; i++) mc.theWorld.spawnParticle(
+        for (int spark = 0; spark < IMPACT_SPARKS; spark++) world.spawnParticle(
             "fireworksSpark",
             packet.firstHit.x(),
             packet.firstHit.y(),
             packet.firstHit.z(),
-            (mc.theWorld.rand.nextDouble() - 0.5) * 0.6,
-            (mc.theWorld.rand.nextDouble() - 0.5) * 0.6,
-            (mc.theWorld.rand.nextDouble() - 0.5) * 0.6);
-        if (packet.sound) mc.theWorld.playSound(
+            (world.rand.nextDouble() - 0.5) * SPARK_SPREAD,
+            (world.rand.nextDouble() - 0.5) * SPARK_SPREAD,
+            (world.rand.nextDouble() - 0.5) * SPARK_SPREAD);
+        if (packet.sound) world.playSound(
             packet.firstHit.x(),
             packet.firstHit.y(),
             packet.firstHit.z(),
@@ -57,8 +70,8 @@ public final class RailgunClientFx {
     public static void playChain(RailgunBeamChainFxPacket packet) {
         var world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
-        for (int i = 0; i < packet.path.size(); i += 2)
-            RailgunArcRenderer.spawnChain(packet.path.get(i), packet.path.get(i + 1), 6, packet.ehv);
+        for (int index = 0; index + 1 < packet.path.size(); index += 2)
+            RailgunArcRenderer.spawnChain(packet.path.get(index), packet.path.get(index + 1), 6, packet.ehv);
         if (packet.sound) world.playSound(
             packet.origin.x(),
             packet.origin.y(),
@@ -71,12 +84,19 @@ public final class RailgunClientFx {
 
     @SubscribeEvent
     public void unload(WorldEvent.Unload event) {
-        if (event.world.isRemote) {
-            RailgunBeamRenderer.clear();
-            RailgunArcRenderer.clear();
-            RailgunShockwaveRenderer.clear();
-            RailgunCameraShake.clear();
-            RailgunSounds.clear();
-        }
+        if (!event.world.isRemote) return;
+        RailgunBeamRenderer.clear();
+        RailgunArcRenderer.clear();
+        RailgunShockwaveRenderer.clear();
+        RailgunOrbRenderer.clear();
+        RailgunCameraShake.clear();
+        RailgunSounds.clear();
+        GlslProgram.release();
+    }
+
+    @SubscribeEvent
+    public void reload(TextureStitchEvent.Post event) {
+        RailgunGlowSprites.clear();
+        GlslProgram.release();
     }
 }

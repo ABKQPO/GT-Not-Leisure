@@ -5,7 +5,7 @@ import net.minecraft.entity.Entity;
 
 import com.science.gtnl.common.railgun.RailgunVec;
 
-public final class RailgunVisuals {
+public class RailgunVisuals {
 
     private RailgunVisuals() {}
 

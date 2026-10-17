@@ -16,6 +16,8 @@ import net.minecraftforge.client.model.IModelCustom;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.science.gtnl.client.railgun.RailgunCameraShake;
+import com.science.gtnl.client.railgun.RailgunShakeField.Axis;
 import com.science.gtnl.common.item.items.ElectromagneticRailgun;
 
 import cpw.mods.fml.relauncher.Side;
@@ -26,6 +28,9 @@ public class ItemElectromagneticRailgunRender implements IItemRenderer {
 
     private static final String ROOT = RESOURCE_ROOT_ID + ":models/electromagnetic_railgun/";
     private static final float PI = (float) Math.PI;
+    private static final float WEAPON_ROLL_DEGREES = 3.2F;
+    private static final float WEAPON_PITCH_DEGREES = 2.4F;
+    private static final float WEAPON_DRIFT = 0.01F;
 
     private final IModelCustom model = AdvancedModelLoader
         .loadModel(new ResourceLocation(ROOT + "electromagnetic_railgun.obj"));
@@ -118,7 +123,8 @@ public class ItemElectromagneticRailgunRender implements IItemRenderer {
     private static void applyFirstPerson() {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.thePlayer;
-        float swing = player.getSwingProgress(mc.timer.renderPartialTicks);
+        float partialTicks = mc.timer.renderPartialTicks;
+        float swing = player.getSwingProgress(partialTicks);
         float swingSq = MathHelper.sin(swing * swing * PI);
         float swingRoot = MathHelper.sin(MathHelper.sqrt_float(swing) * PI);
 
@@ -140,7 +146,18 @@ public class ItemElectromagneticRailgunRender implements IItemRenderer {
         GL11.glRotatef(-2.0F, 0.0F, 1.0F, 0.0F);
         GL11.glRotatef(-3.0F, 0.0F, 0.0F, 1.0F);
 
+        applyChargingShake(partialTicks);
+
         GL11.glScalef(0.72F, 0.72F, 0.72F);
+    }
+
+    private static void applyChargingShake(float partialTicks) {
+        float roll = RailgunCameraShake.tremor(Axis.ROLL, partialTicks);
+        float pitch = RailgunCameraShake.tremor(Axis.PITCH, partialTicks);
+        if (Math.abs(roll) < 1.0E-4F && Math.abs(pitch) < 1.0E-4F) return;
+        GL11.glRotatef(roll * WEAPON_ROLL_DEGREES, 0.0F, 0.0F, 1.0F);
+        GL11.glRotatef(pitch * WEAPON_PITCH_DEGREES, 1.0F, 0.0F, 0.0F);
+        GL11.glTranslatef(0.0F, pitch * WEAPON_DRIFT, roll * WEAPON_DRIFT);
     }
 
     private static void applyGround() {

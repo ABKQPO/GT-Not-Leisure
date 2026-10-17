@@ -66,6 +66,15 @@ gtnl.gui.config.general.debug.enabledebugmode.tooltip=启用调试日志输出
 gtnl.gui.config.general.client.enable_text_effects=动态文字特效
 gtnl.gui.config.general.client.enable_text_effects.tooltip=启用动态文字特效。关闭后，含特效的文字以普通文字显示
 
+gtnl.gui.config.general.client.enable_railgun_shake=电磁炮镜头震动
+gtnl.gui.config.general.client.enable_railgun_shake.tooltip=蓄力与发射电磁炮时震动镜头和第一人称模型
+
+gtnl.gui.config.general.client.enable_railgun_bloom=电磁炮泛光特效
+gtnl.gui.config.general.client.enable_railgun_bloom.tooltip=启用柔和泛光、蓄力光球与飞行弹道。关闭后仅保留基础光束
+
+gtnl.gui.config.general.client.enable_railgun_shaders=电磁炮着色器特效
+gtnl.gui.config.general.client.enable_railgun_shaders.tooltip=为光束、蓄力光球、命中冲击环与蓄力屏幕效果启用 GLSL 着色器。着色器编译失败时自动回退到贴图特效
+
 gtnl.gui.config.general.effect.enableghostlyshape=启用幽灵形态
 gtnl.gui.config.general.effect.enableghostlyshape.tooltip=当玩家死亡重生时，给予玩家幽灵形态效果
 

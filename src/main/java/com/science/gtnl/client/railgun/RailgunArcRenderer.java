@@ -10,7 +10,7 @@ import com.science.gtnl.common.railgun.RailgunVec;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public final class RailgunArcRenderer {
+public class RailgunArcRenderer {
 
     private static final int MAX_ACTIVE_ARCS = 512;
     private static final int MAX_SEGMENTS = 384;

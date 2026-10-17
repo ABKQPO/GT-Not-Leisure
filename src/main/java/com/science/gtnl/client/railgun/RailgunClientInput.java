@@ -15,7 +15,7 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-public final class RailgunClientInput {
+public class RailgunClientInput {
 
     private static final KeyBinding OPEN = new KeyBinding(
         "key.gtnl.railgun_config",
