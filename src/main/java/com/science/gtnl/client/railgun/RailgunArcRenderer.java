@@ -4,31 +4,57 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
+import com.science.gtnl.client.railgun.RailgunRenderHelper.Sprite;
 import com.science.gtnl.common.railgun.RailgunVec;
+import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class RailgunArcRenderer {
 
-    private static final int MAX_ACTIVE_ARCS = 512;
-    private static final int MAX_SEGMENTS = 384;
-    private static final int MAX_LIFETIME = 80;
+    private static final int MAX_ACTIVE_ARCS = 256;
+    private static final int MAX_SEGMENTS = 32;
+    private static final int MAX_LIFETIME = 40;
     private static final double MAX_ARC_SPAN = 512;
-    private static final float GLOW_ALPHA = 0.45F;
-    private static final float MID_ALPHA = 0.65F;
-    private static final float MID_WIDTH = 0.55F;
-    private static final float CORE_ALPHA = 0.95F;
+    private static final double SWAY_SPEED = 0.18;
+    private static final double SWAY_DISTANCE = 0.055;
+    private static final double GLOW_WIDTH = 0.18;
+    private static final double MID_WIDTH = 0.095;
+    private static final double CORE_WIDTH = 0.035;
+    private static final float GLOW_ALPHA = 0.25F;
+    private static final float MID_ALPHA = 0.62F;
 
-    private record Style(float coreRed, float coreGreen, float coreBlue, float glowRed, float glowGreen, float glowBlue,
-        double coreWidth, double glowWidth) {}
+    private record Color(float red, float green, float blue) {}
 
-    private static final Style PLASMA = new Style(1F, 0.8F, 0.9F, 1F, 0.3F, 0.6F, 0.05, 0.16);
-    private static final Style HIGH_VOLTAGE = new Style(0.95F, 1F, 1F, 0.35F, 0.78F, 1F, 0.05, 0.16);
-    private static final Style IMPACT_SPARK = new Style(1F, 0.82F, 0.88F, 0.9F, 0.25F, 0.55F, 0.04, 0.13);
+    private record Style(Color glow, Color mid, Color core, Color haloOuter, Color haloInner, double widthScale) {}
 
-    private record Arc(List<RailgunVec> points, int lifetime, long born, Style style) {}
+    private static final Style PLASMA = new Style(
+        new Color(1F, 0.3F, 0.6F),
+        new Color(1F, 0.55F, 0.75F),
+        new Color(1F, 0.8F, 0.9F),
+        new Color(1F, 0.38F, 0.68F),
+        new Color(1F, 0.75F, 0.88F),
+        1);
+    private static final Style HIGH_VOLTAGE = new Style(
+        new Color(0.25F, 0.75F, 1F),
+        new Color(0.55F, 0.88F, 1F),
+        new Color(0.85F, 0.97F, 1F),
+        new Color(0.4F, 0.82F, 1F),
+        new Color(0.7F, 0.94F, 1F),
+        1);
+    private static final Style IMPACT_SPARK = new Style(
+        new Color(0.9F, 0.25F, 0.55F),
+        new Color(0.95F, 0.535F, 0.715F),
+        new Color(1F, 0.82F, 0.88F),
+        new Color(0.95F, 0.33F, 0.63F),
+        new Color(1F, 0.76F, 0.86F),
+        0.8125);
+
+    private record Arc(List<RailgunVec> points, RailgunVec side, RailgunVec up, int lifetime, long born, Style style,
+        long seed) {}
 
     private static final List<Arc> ACTIVE = new ArrayList<>();
 
@@ -37,11 +63,11 @@ public class RailgunArcRenderer {
     }
 
     public static void spawnChain(RailgunVec from, RailgunVec to, int lifetime, boolean ehv) {
-        if (!from.finite() || !to.finite()) return;
+        if (from == null || to == null || !from.finite() || !to.finite()) return;
         double length = to.subtract(from)
             .length();
-        int segments = Math.max(6, Math.min(28, (int) Math.round(length * 1.5)));
-        double spread = Math.min(0.55, 0.1 + length * 0.02);
+        int segments = Math.max(6, (int) Math.round(length * 1.5));
+        double spread = Math.min(0.55, 0.08 + length * 0.018);
         spawn(from, to, segments, spread, lifetime, ehv ? PLASMA : HIGH_VOLTAGE);
     }
 
@@ -50,7 +76,7 @@ public class RailgunArcRenderer {
     }
 
     public static void spawnImpactSpark(RailgunVec from, RailgunVec to, int lifetime) {
-        if (!from.finite() || !to.finite()) return;
+        if (from == null || to == null || !from.finite() || !to.finite()) return;
         double length = to.subtract(from)
             .length();
         int segments = Math.max(4, Math.min(14, (int) Math.round(length * 2.5)));
@@ -60,8 +86,13 @@ public class RailgunArcRenderer {
 
     private static void spawn(RailgunVec from, RailgunVec to, int segments, double spread, int lifetime, Style style) {
         var world = Minecraft.getMinecraft().theWorld;
-        if (world == null || !from.finite() || !to.finite() || !Double.isFinite(spread) || spread < 0 || lifetime <= 0)
-            return;
+        if (world == null || from == null
+            || to == null
+            || !from.finite()
+            || !to.finite()
+            || !Double.isFinite(spread)
+            || spread < 0
+            || lifetime <= 0) return;
         RailgunVec delta = to.subtract(from);
         double length = delta.length();
         if (length < 0.001 || length > MAX_ARC_SPAN) return;
@@ -72,13 +103,16 @@ public class RailgunArcRenderer {
             .normalize(),
             up = dir.cross(side)
                 .normalize();
+        long seed = world.rand.nextLong();
         List<RailgunVec> points = new ArrayList<>(segments + 1);
         points.add(from);
         for (int i = 1; i < segments; i++) {
             double t = i / (double) segments;
             double attenuation = 4 * t * (1 - t);
-            double x = (world.rand.nextDouble() - 0.5) * 2 * spread * attenuation;
-            double y = (world.rand.nextDouble() - 0.5) * 2 * spread * attenuation;
+            double phase = seed * 0.000000001 + i * 1.61803398875;
+            double x = (Math.sin(phase * 2.37) * 0.62 + Math.sin(phase * 0.83 + 1.7) * 0.38) * spread * attenuation;
+            double y = (Math.cos(phase * 1.91 + 0.4) * 0.58 + Math.sin(phase * 0.71 + 2.1) * 0.42) * spread
+                * attenuation;
             points.add(
                 from.add(delta.scale(t))
                     .add(side.scale(x))
@@ -86,7 +120,7 @@ public class RailgunArcRenderer {
         }
         points.add(to);
         if (ACTIVE.size() >= MAX_ACTIVE_ARCS) ACTIVE.remove(0);
-        ACTIVE.add(new Arc(points, Math.min(MAX_LIFETIME, lifetime), world.getTotalWorldTime(), style));
+        ACTIVE.add(new Arc(points, side, up, Math.min(MAX_LIFETIME, lifetime), world.getTotalWorldTime(), style, seed));
     }
 
     public static void clear() {
@@ -97,42 +131,71 @@ public class RailgunArcRenderer {
     public void render(RenderWorldLastEvent event) {
         var world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
-        long now = world.getTotalWorldTime();
-        ACTIVE.removeIf(arc -> now - arc.born >= arc.lifetime);
+        ACTIVE.removeIf(arc -> world.getTotalWorldTime() - arc.born >= arc.lifetime);
         if (ACTIVE.isEmpty()) return;
+        double time = world.getTotalWorldTime() + event.partialTicks;
         RailgunRenderHelper.render(() -> {
             for (Arc arc : ACTIVE) {
-                float life = 1 - (now - arc.born + event.partialTicks) / arc.lifetime;
-                float alpha = (float) Math.sqrt(Math.max(0, life));
+                double age = time - arc.born;
+                float alpha = fade(age, arc.lifetime);
+                if (alpha <= 0) continue;
                 Style style = arc.style;
+                double swayPhase = time * SWAY_SPEED + arc.seed * 0.000000001;
                 for (int i = 1; i < arc.points.size(); i++) {
-                    RailgunVec from = arc.points.get(i - 1), to = arc.points.get(i);
-                    RailgunRenderHelper.ribbon(
-                        from,
-                        to,
-                        style.glowWidth,
-                        style.glowRed,
-                        style.glowGreen,
-                        style.glowBlue,
-                        GLOW_ALPHA * alpha);
-                    RailgunRenderHelper.ribbon(
-                        from,
-                        to,
-                        style.glowWidth * MID_WIDTH,
-                        (style.glowRed + style.coreRed) * 0.5F,
-                        (style.glowGreen + style.coreGreen) * 0.5F,
-                        (style.glowBlue + style.coreBlue) * 0.5F,
-                        MID_ALPHA * alpha);
-                    RailgunRenderHelper.ribbon(
-                        from,
-                        to,
-                        style.coreWidth,
-                        style.coreRed,
-                        style.coreGreen,
-                        style.coreBlue,
-                        CORE_ALPHA * alpha);
+                    RailgunVec from = animated(arc, i - 1, swayPhase), to = animated(arc, i, swayPhase);
+                    float pulse = (float) (0.86 + 0.14 * Math.sin(swayPhase * 1.7 + i * 0.73));
+                    float segmentAlpha = alpha * pulse;
+                    ribbon(from, to, GLOW_WIDTH * style.widthScale, style.glow, segmentAlpha * GLOW_ALPHA);
+                    ribbon(from, to, MID_WIDTH * style.widthScale, style.mid, segmentAlpha * MID_ALPHA);
+                    ribbon(from, to, CORE_WIDTH * style.widthScale, style.core, segmentAlpha);
                 }
             }
         });
+        if (MainConfig.client.enableRailgunBloom) {
+            RailgunRenderHelper.renderGlow(Sprite.RADIAL, () -> {
+                for (Arc arc : ACTIVE) {
+                    double age = time - arc.born;
+                    float alpha = fade(age, arc.lifetime);
+                    if (alpha <= 0) continue;
+                    Style style = arc.style;
+                    int step = Math.max(2, arc.points.size() / 6);
+                    double phase = time * SWAY_SPEED + arc.seed * 0.000000001;
+                    for (int index = 1; index < arc.points.size() - 1; index += step) {
+                        RailgunVec node = animated(arc, index, phase);
+                        float pulse = (float) (0.8 + 0.2 * Math.sin(phase * 1.7 + index * 0.73));
+                        setColor(style.haloOuter, alpha * pulse * 0.36F);
+                        RailgunRenderHelper.glow(node, 0.11 * style.widthScale, (float) (phase + index));
+                        setColor(style.haloInner, alpha * pulse * 0.58F);
+                        RailgunRenderHelper.glow(node, 0.045 * style.widthScale, (float) (-phase - index));
+                    }
+                }
+            });
+        }
+    }
+
+    private static void ribbon(RailgunVec from, RailgunVec to, double width, Color color, float alpha) {
+        RailgunRenderHelper.ribbon(from, to, width, color.red, color.green, color.blue, alpha);
+    }
+
+    private static void setColor(Color color, float alpha) {
+        Tessellator.instance.setColorRGBA_F(color.red, color.green, color.blue, alpha);
+    }
+
+    private static float fade(double age, int lifetime) {
+        double progress = Math.max(0, Math.min(1, age / lifetime));
+        double fadeIn = Math.min(1, progress * 5);
+        return (float) (fadeIn * (1 - progress) * (0.9 + 0.1 * Math.sin(progress * Math.PI)));
+    }
+
+    private static RailgunVec animated(Arc arc, int index, double phase) {
+        if (index == 0 || index == arc.points.size() - 1) return arc.points.get(index);
+        double t = index / (double) (arc.points.size() - 1);
+        double attenuation = 4 * t * (1 - t);
+        double pointPhase = phase + index * 0.91 + arc.seed * 0.00000000037;
+        double sideOffset = Math.sin(pointPhase) * SWAY_DISTANCE * attenuation;
+        double upOffset = Math.cos(pointPhase * 0.83 + 1.4) * SWAY_DISTANCE * 0.72 * attenuation;
+        return arc.points.get(index)
+            .add(arc.side.scale(sideOffset))
+            .add(arc.up.scale(upOffset));
     }
 }

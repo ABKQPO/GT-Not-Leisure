@@ -59,22 +59,22 @@ public class ElectromagneticRailgun extends Item implements IElectricItem, IGuiH
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> toolTip,
         boolean advancedToolTips) {
-        toolTip.add(StatCollector.translateToLocal("item.gtnl.electromagnetic_railgun.tooltip.0"));
         toolTip.add(
             StatCollector.translateToLocalFormatted(
-                "gtnl.railgun.energy",
+                "item.gtnl.electromagnetic_railgun.tooltip.0",
                 RailgunEnergy.read(itemStack),
                 RailgunEnergy.capacity(itemStack)));
         toolTip.add(
             StatCollector.translateToLocalFormatted(
-                "gtnl.railgun.modules",
+                "item.gtnl.electromagnetic_railgun.tooltip.1",
                 RailgunData.modules(itemStack)
                     .counts()
                     .values()
                     .stream()
                     .mapToInt(Integer::intValue)
                     .sum()));
-        toolTip.add(StatCollector.translateToLocal("gtnl.railgun.controls"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.electromagnetic_railgun.tooltip.2"));
+        toolTip.add(StatCollector.translateToLocal("item.gtnl.electromagnetic_railgun.tooltip.3"));
     }
 
     @Override

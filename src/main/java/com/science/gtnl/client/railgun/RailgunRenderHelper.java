@@ -45,7 +45,6 @@ public class RailgunRenderHelper {
     private static final double THIRD_PERSON_RIGHT = 0.3;
     private static final double THIRD_PERSON_UP = -0.12;
     private static final double DEGENERATE = 1.0E-6;
-    private static final double MAX_ANCHOR_DRIFT = 1.2;
 
     private RailgunRenderHelper() {}
 
@@ -257,9 +256,8 @@ public class RailgunRenderHelper {
         if (entity == minecraft.thePlayer && minecraft.gameSettings.thirdPersonView == 0)
             return firstPersonMuzzle(minecraft.thePlayer, partialTicks);
         RailgunVec analytic = thirdPersonMuzzle(entity, partialTicks);
-        RailgunVec anchored = RailgunMuzzleAnchor.muzzle(shooterId, RailgunVec.look(entity, partialTicks));
-        if (anchored == null || anchored.distanceToSqr(analytic) > MAX_ANCHOR_DRIFT * MAX_ANCHOR_DRIFT) return analytic;
-        return anchored;
+        RailgunVec anchored = RailgunMuzzleAnchor.muzzle(shooterId);
+        return anchored == null ? analytic : anchored;
     }
 
     public static RailgunVec muzzle(int shooterId, RailgunVec fallback, float partialTicks) {

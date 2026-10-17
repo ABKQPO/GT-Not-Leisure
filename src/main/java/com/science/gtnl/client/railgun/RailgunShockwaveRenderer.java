@@ -50,7 +50,8 @@ public class RailgunShockwaveRenderer {
 
     public static void spawn(RailgunVec center, double radius, int lifetime) {
         var world = Minecraft.getMinecraft().theWorld;
-        if (world == null || !center.finite()
+        if (world == null || center == null
+            || !center.finite()
             || !Double.isFinite(radius)
             || radius <= 0
             || radius > MAX_RADIUS
