@@ -225,11 +225,12 @@ public class RailgunBeamRenderer {
     }
 
     private static RailgunVec aimEnd(Entity shooter, float partialTicks, double range) {
-        boolean local = shooter == Minecraft.getMinecraft().thePlayer;
+        Minecraft minecraft = Minecraft.getMinecraft();
+        boolean firstPerson = shooter == minecraft.thePlayer && minecraft.gameSettings.thirdPersonView == 0;
         RailgunVec origin;
         RailgunVec direction;
         double reach = range;
-        if (local) {
+        if (firstPerson) {
             origin = RailgunCamera.position();
             direction = RailgunCamera.forward();
             reach += origin.subtract(RailgunVec.eye(shooter, partialTicks))
