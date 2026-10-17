@@ -18,6 +18,7 @@ import gtnhlanth.common.beamline.IConnectsToBeamline;
 import gtnhlanth.common.beamline.MTEBeamlinePipe;
 import gtnhlanth.common.hatch.MTEHatchInputBeamline;
 
+@IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class BeamlinePipeMirror extends MTEBeamlinePipe {
 
