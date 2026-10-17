@@ -28,6 +28,11 @@ public class RailgunCharge {
         return live ? (int) Math.max(0, tick(player) - startedTick) * step : 0;
     }
 
+    public static float units(EntityPlayer player, float partialTicks) {
+        refresh(player);
+        return live ? Math.max(0F, tick(player) - startedTick + partialTicks) * step : 0F;
+    }
+
     public static RailgunChargeTier tier(EntityPlayer player) {
         return RailgunChargeTier.fromUnits(units(player));
     }
