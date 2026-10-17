@@ -6,6 +6,8 @@ import net.minecraft.item.ItemStack;
 import com.cleanroommc.modularui.screen.ModularContainer;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.PlayerSlotGroup;
+import com.science.gtnl.common.item.items.ElectromagneticRailgun;
+import com.science.gtnl.common.railgun.RailgunData;
 
 public class RailgunContainer extends ModularContainer {
 
@@ -30,6 +32,14 @@ public class RailgunContainer extends ModularContainer {
         super.onModularContainerOpened();
         for (int i = 0; i < inventorySlots.size(); i++)
             if (bound(i)) ((ModularSlot) getSlot(i)).accessibility(false, false);
+    }
+
+    @Override
+    public void onModularContainerClosed() {
+        super.onModularContainerClosed();
+        if (isClient()) return;
+        ItemStack stack = getPlayer().inventory.getStackInSlot(boundSlot);
+        if (stack != null && stack.getItem() instanceof ElectromagneticRailgun) RailgunData.clampEnergy(stack);
     }
 
     @Override
