@@ -3166,7 +3166,7 @@ gtnl.machine.small_essentia_smeltery.mv.name=进阶电力炼金炉
 gtnl.machine.small_essentia_smeltery.hv.name=进阶电力炼金炉 II
 gtnl.machine.small_essentia_smeltery.tooltip.0=使用大型源质冶炼炉的方式动态解析物品源质
 gtnl.machine.small_essentia_smeltery.tooltip.1=基础耗能为 30 EU/t，每点源质耗时 32 tick，支持标准超频
-gtnl.machine.small_essentia_smeltery.tooltip.2=源质从可配置输出面送入相邻的源质容器或管道
+gtnl.machine.small_essentia_smeltery.tooltip.2=源质从可配置输出面送入相邻的源质容器或管道，推荐连接复合源质管道
 gtnl.machine.small_essentia_smeltery.tooltip.3=内部源质缓存：%s
 gtnl.gui.small_essentia_smeltery.output=输出源质：
 

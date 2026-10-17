@@ -142,6 +142,12 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
         return result;
     }
 
+    public static boolean isOutputFacing(TileEntity tile, ForgeDirection face) {
+        return tile instanceof IGregTechTileEntity gregTechTile
+            && gregTechTile.getMetaTileEntity() instanceof SmallEssentiaSmeltery
+            && gregTechTile.getFrontFacing() == face;
+    }
+
     private static int getEssentiaBufferCapacity(int tier) {
         return BASE_ESSENTIA_BUFFER_CAPACITY << Math.max(0, tier - 1);
     }
@@ -169,11 +175,7 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
 
     private boolean outputEssentia(IGregTechTileEntity baseMetaTileEntity) {
         ForgeDirection outputSide = baseMetaTileEntity.getFrontFacing();
-        TileEntity tileEntity = baseMetaTileEntity.getWorld()
-            .getTileEntity(
-                baseMetaTileEntity.getOffsetX(outputSide, 1),
-                baseMetaTileEntity.getOffsetY(outputSide, 1),
-                baseMetaTileEntity.getOffsetZ(outputSide, 1));
+        TileEntity tileEntity = baseMetaTileEntity.getTileEntityAtSide(outputSide);
         if (!(tileEntity instanceof IEssentiaTransport transport)) return false;
 
         ForgeDirection targetSide = outputSide.getOpposite();

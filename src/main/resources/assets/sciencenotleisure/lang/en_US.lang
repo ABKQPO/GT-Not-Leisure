@@ -3166,7 +3166,7 @@ gtnl.machine.small_essentia_smeltery.mv.name=Advanced Electric Alchemical Furnac
 gtnl.machine.small_essentia_smeltery.hv.name=Advanced Electric Alchemical Furnace II
 gtnl.machine.small_essentia_smeltery.tooltip.0=Dynamically resolves item aspects using the Large Essentia Smeltery behavior
 gtnl.machine.small_essentia_smeltery.tooltip.1=Base usage is 30 EU/t and 32 ticks per essentia, with standard overclocking
-gtnl.machine.small_essentia_smeltery.tooltip.2=Outputs essentia through the configurable output face into an adjacent transport or container
+gtnl.machine.small_essentia_smeltery.tooltip.2=Outputs essentia through the configurable output face into an adjacent transport or container; Multi Essentia Buffer Tube recommended
 gtnl.machine.small_essentia_smeltery.tooltip.3=Internal essentia buffer: %s
 gtnl.gui.small_essentia_smeltery.output=Output Essentia:
 
