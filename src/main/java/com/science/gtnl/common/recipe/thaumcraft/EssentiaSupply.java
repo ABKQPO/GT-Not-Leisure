@@ -8,6 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEssentiaHatch;
+import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaInputHatch;
 
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Mods;
@@ -139,7 +140,17 @@ public class EssentiaSupply {
             if (shortfall <= 0) continue;
 
             int requested = (int) Math.min(Integer.MAX_VALUE, shortfall);
+            requestFromHatches(aspect, requested);
             orderFromProviders(aspect, requested);
+        }
+    }
+
+    private void requestFromHatches(Aspect aspect, int amount) {
+        for (TileEntityEssentiaHatch hatch : hatches) {
+            if (hatch instanceof TileEntityMultiEssentiaInputHatch multiHatch && !hatch.isInvalid()
+                && multiHatch.requestEssentia(aspect, amount)) {
+                return;
+            }
         }
     }
 
