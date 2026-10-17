@@ -10,6 +10,7 @@ import com.gtnewhorizon.gtnhlib.config.Config.DefaultString;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultStringList;
 import com.gtnewhorizon.gtnhlib.config.Config.LangKey;
 import com.gtnewhorizon.gtnhlib.config.Config.Name;
+import com.gtnewhorizon.gtnhlib.config.Config.RangeDouble;
 import com.gtnewhorizon.gtnhlib.config.Config.RangeInt;
 import com.gtnewhorizon.gtnhlib.config.Config.RequiresMcRestart;
 import com.gtnewhorizon.gtnhlib.config.Config.Sync;
@@ -148,6 +149,11 @@ public class MainConfig {
             @Comment("EU consumed per charging tick after reaching EHV3")
             @DefaultDouble(2500)
             public double chargeEuEhv3 = 2500;
+
+            @Comment("Extra charging speed granted by each installed acceleration module, 0.25 means +25%")
+            @DefaultDouble(0.25)
+            @RangeDouble(min = 0, max = 1)
+            public double accelerationBonus = 0.25;
 
             @Comment("Damage of the sustained beam per settlement")
             @DefaultDouble(20)

@@ -29,23 +29,23 @@ public final class RailgunFireService {
     public static class ChargeSession {
 
         private final long startTick;
-        private final int accelStep;
+        private final double rate;
         private final ItemStack stack;
         private final int slot;
         private final int dimension;
         private long lastActiveTick;
 
-        public ChargeSession(long startTick, int accelStep, ItemStack stack, int slot, int dimension) {
+        public ChargeSession(long startTick, double rate, ItemStack stack, int slot, int dimension) {
             this.startTick = startTick;
-            this.accelStep = accelStep;
+            this.rate = rate;
             this.stack = stack;
             this.slot = slot;
             this.dimension = dimension;
             this.lastActiveTick = startTick;
         }
 
-        public int accelStep() {
-            return accelStep;
+        public double rate() {
+            return rate;
         }
 
         public ItemStack stack() {
@@ -70,8 +70,7 @@ public final class RailgunFireService {
         }
 
         public int units(long now) {
-            int elapsed = (int) Math.max(0, Math.min(ElectromagneticRailgun.USE_DURATION, now - startTick));
-            return elapsed * accelStep;
+            return RailgunData.units(Math.min(ElectromagneticRailgun.USE_DURATION, now - startTick), rate);
         }
     }
 
@@ -90,7 +89,7 @@ public final class RailgunFireService {
             player.getUniqueID(),
             new ChargeSession(
                 now,
-                RailgunData.chargeStep(stack),
+                RailgunData.chargeRate(stack),
                 stack,
                 player.inventory.currentItem,
                 player.dimension));
@@ -102,7 +101,7 @@ public final class RailgunFireService {
         long now = now(player);
         session.touch(now);
         int units = session.units(now);
-        if (RailgunEnergy.read(stack) < chargeCostUpTo(units, session.accelStep())) {
+        if (RailgunEnergy.read(stack) < chargeCostUpTo(units, session.rate())) {
             CHARGING.remove(player.getUniqueID());
             player.clearItemInUse();
             player.playerNetServerHandler.sendPacket(new S19PacketEntityStatus(player, (byte) 9));
@@ -115,7 +114,7 @@ public final class RailgunFireService {
         if (session == null || session.stack() != stack || !session.matches(player)) return;
         int units = session.units(now(player));
         RailgunChargeTier tier = RailgunChargeTier.fromUnits(units);
-        double chargeCost = chargeCostUpTo(units, session.accelStep());
+        double chargeCost = chargeCostUpTo(units, session.rate());
         if (tier == RailgunChargeTier.NONE) {
             RailgunEnergy.tryConsume(stack, chargeCost);
             return;
@@ -131,14 +130,18 @@ public final class RailgunFireService {
         return player.worldObj.getTotalWorldTime();
     }
 
-    public static double chargeCostUpTo(int units, int step) {
+    public static double chargeCostUpTo(int units, double rate) {
         var config = MainConfig.item.railgun;
-        step = Math.max(1, Math.min(3, step));
-        int ticks = Math.max(0, Math.min(216000, units) + step - 1) / step;
-        int first = Math.min(ticks, (24 + step - 1) / step);
-        int second = Math.min(ticks - first, (40 + step - 1) / step - first);
+        rate = Math.max(1, Math.min(3, rate));
+        int ticks = ticksFor(Math.max(0, Math.min(216000, units)), rate);
+        int first = Math.min(ticks, ticksFor(RailgunChargeTier.EHV2.chargeTicks, rate));
+        int second = Math.min(ticks - first, ticksFor(RailgunChargeTier.EHV3.chargeTicks, rate) - first);
         return first * Math.max(0, config.chargeEuEhv1) + second * Math.max(0, config.chargeEuEhv2)
             + (ticks - first - second) * Math.max(0, config.chargeEuEhv3);
+    }
+
+    private static int ticksFor(int units, double rate) {
+        return (int) Math.ceil(units / rate - RailgunData.RATE_EPSILON);
     }
 
     public static double shotCost(RailgunChargeTier tier) {
