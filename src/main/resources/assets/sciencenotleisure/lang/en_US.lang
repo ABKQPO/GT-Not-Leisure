@@ -435,7 +435,7 @@ gtnl.machine.small_arcane_assembler.casing=Any Magic Mechanical Block
 gtnl.machine.industrial_crucible.name=Industrial Crucible
 gtnl.recipe.industrial_crucible=Industrial Crucible
 gtnl.machine.industrial_crucible.recipe_type=Crucible Alchemy
-gtnl.machine.industrial_crucible.tooltip.1=Accepts normal and multi essentia input hatches and essentia providers.
+gtnl.machine.industrial_crucible.tooltip.1=Accepts normal and multi essentia input hatches and infusion providers.
 gtnl.machine.industrial_crucible.tooltip.2=Requires the owner's Thaumcraft research.
 gtnl.machine.industrial_crucible.casing=Any Magic Casing Block
 

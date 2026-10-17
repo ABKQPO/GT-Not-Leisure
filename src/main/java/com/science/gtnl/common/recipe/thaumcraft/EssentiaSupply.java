@@ -13,6 +13,7 @@ import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Mods;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
+import thaumicenergistics.common.tiles.TileAdvancedInfusionProvider;
 import thaumicenergistics.common.tiles.TileInfusionProvider;
 
 public class EssentiaSupply {
@@ -122,6 +123,33 @@ public class EssentiaSupply {
         return true;
     }
 
+    public void requestShortfall(AspectList requiredAspects, int crafts) {
+        if (requiredAspects == null || crafts <= 0 || !Mods.ThaumicEnergistics.isModLoaded()) return;
+
+        Aspect[] aspects = snapshotAspects(requiredAspects);
+        if (aspects == null) return;
+
+        for (Aspect aspect : aspects) {
+            if (aspect == null) continue;
+
+            int amount = requiredAspects.getAmount(aspect);
+            if (amount <= 0) continue;
+
+            long shortfall = (long) amount * crafts - getStoredInHatches(aspect) - getMaximumProviderAmount(aspect);
+            if (shortfall <= 0) continue;
+
+            int requested = (int) Math.min(Integer.MAX_VALUE, shortfall);
+            orderFromProviders(aspect, requested);
+        }
+    }
+
+    private void orderFromProviders(Aspect aspect, int amount) {
+        for (TileEntity provider : providers) {
+            if (provider == null || provider.isInvalid()) continue;
+            if (orderFromProviderCompat(provider, aspect, amount)) return;
+        }
+    }
+
     private Aspect[] snapshotAspects(AspectList requiredAspects) {
         try {
             return requiredAspects.getAspects();
@@ -201,10 +229,22 @@ public class EssentiaSupply {
     }
 
     @Optional.Method(modid = "thaumicenergistics")
+    private static boolean isUsableProviderCompat(TileEntity provider) {
+        if (provider instanceof TileAdvancedInfusionProvider advancedProvider) {
+            return advancedProvider.matrices.isEmpty();
+        }
+        return provider instanceof TileInfusionProvider;
+    }
+
+    @Optional.Method(modid = "thaumicenergistics")
     private static long getProviderAmountCompat(TileEntity provider, Aspect aspect) {
-        return provider instanceof TileInfusionProvider infusionProvider
-            ? infusionProvider.getAspectAmountInNetwork(aspect)
+        return isUsableProviderCompat(provider) ? ((TileInfusionProvider) provider).getAspectAmountInNetwork(aspect)
             : 0;
+    }
+
+    @Optional.Method(modid = "thaumicenergistics")
+    private static boolean orderFromProviderCompat(TileEntity provider, Aspect aspect, int amount) {
+        return isUsableProviderCompat(provider) && ((TileInfusionProvider) provider).orderSomeEssentia(aspect, amount);
     }
 
     @Optional.Method(modid = "thaumicenergistics")

@@ -435,7 +435,7 @@ gtnl.machine.small_arcane_assembler.casing=任意魔法机械方块
 gtnl.machine.industrial_crucible.name=工业坩埚
 gtnl.recipe.industrial_crucible=工业坩埚
 gtnl.machine.industrial_crucible.recipe_type=坩埚炼金
-gtnl.machine.industrial_crucible.tooltip.1=支持源质输入仓、复合源质输入仓与源质供应器。
+gtnl.machine.industrial_crucible.tooltip.1=支持源质输入仓、复合源质输入仓与注魔供应器。
 gtnl.machine.industrial_crucible.tooltip.2=需要机器所有者解锁对应的神秘研究。
 gtnl.machine.industrial_crucible.casing=任意魔法机械方块
 

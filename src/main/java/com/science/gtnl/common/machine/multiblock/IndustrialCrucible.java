@@ -201,6 +201,7 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
                 }
 
                 if (essentiaSupply.getAffordableCrafts(requiredAspects, 1) <= 0) {
+                    essentiaSupply.requestShortfall(requiredAspects, 1);
                     return SimpleCheckRecipeResult.ofFailure("insufficient_essentia");
                 }
 
