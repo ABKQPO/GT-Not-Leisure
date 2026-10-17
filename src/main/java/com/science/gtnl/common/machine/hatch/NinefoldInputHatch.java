@@ -35,6 +35,7 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchMultiInput;
 import gregtech.api.render.TextureFactory;
 
+@IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class NinefoldInputHatch extends MTEHatchMultiInput
     implements IConfigurationCircuitSupport, IAddUIWidgets, IAddGregtechLogo {

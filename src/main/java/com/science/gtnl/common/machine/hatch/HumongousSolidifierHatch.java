@@ -34,6 +34,7 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSolidifier;
 
+@IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class HumongousSolidifierHatch extends MTEHatchSolidifier implements IAddGregtechLogo {
 

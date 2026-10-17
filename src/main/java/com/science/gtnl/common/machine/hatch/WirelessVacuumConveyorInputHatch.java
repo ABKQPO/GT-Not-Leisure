@@ -30,6 +30,7 @@ import gregtech.common.tileentities.machines.multi.nanochip.hatches.MTEHatchVacu
 import gregtech.common.tileentities.machines.multi.nanochip.util.CircuitComponent;
 import gregtech.common.tileentities.machines.multi.nanochip.util.CircuitComponentPacket;
 
+@IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class WirelessVacuumConveyorInputHatch extends MTEHatchVacuumConveyorInput {
 

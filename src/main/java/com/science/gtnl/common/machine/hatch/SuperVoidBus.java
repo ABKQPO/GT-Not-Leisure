@@ -24,12 +24,15 @@ import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.gui.widgets.PhantomItemButton;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchVoidBus;
 import lombok.Getter;
 
+@IMetaTileEntity.SkipGenerateName
+@IMetaTileEntity.SkipGenerateDescription
 public class SuperVoidBus extends MTEHatchVoidBus implements IAddGregtechLogo {
 
     public static String DATA_STICK_DATA_TYPE = "superVoidBusFilter";

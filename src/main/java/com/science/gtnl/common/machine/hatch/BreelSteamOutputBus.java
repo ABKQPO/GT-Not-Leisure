@@ -11,19 +11,22 @@ import com.science.gtnl.api.mixinHelper.ICommonMetaTileEntityInventory;
 import com.science.gtnl.api.mixinHelper.IMetaTileEntityInventoryHandler;
 
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.common.gui.modularui.hatch.MTEHatchOutputBusGui;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSteamBusOutput;
 
-public class MTEBreelSteamOutputBus extends MTEHatchSteamBusOutput {
+@IMetaTileEntity.SkipGenerateName
+@IMetaTileEntity.SkipGenerateDescription
+public class BreelSteamOutputBus extends MTEHatchSteamBusOutput {
 
-    public MTEBreelSteamOutputBus(int id, String name, String regionalName, int tier) {
+    public BreelSteamOutputBus(int id, String name, String regionalName, int tier) {
         super(id, name, regionalName, tier);
         initializeInventory();
     }
 
-    public MTEBreelSteamOutputBus(String name, int tier, String[] description, ITexture[][][] textures) {
+    public BreelSteamOutputBus(String name, int tier, String[] description, ITexture[][][] textures) {
         super(name, tier, description, textures);
         initializeInventory();
     }
@@ -34,14 +37,14 @@ public class MTEBreelSteamOutputBus extends MTEHatchSteamBusOutput {
 
             @Override
             public void onContentsChanged(int slot) {
-                MTEBreelSteamOutputBus.this.onContentsChanged(slot);
+                BreelSteamOutputBus.this.onContentsChanged(slot);
             }
         });
     }
 
     @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity tileEntity) {
-        return new MTEBreelSteamOutputBus(mName, mTier, mDescriptionArray, mTextures);
+        return new BreelSteamOutputBus(mName, mTier, mDescriptionArray, mTextures);
     }
 
     @Override

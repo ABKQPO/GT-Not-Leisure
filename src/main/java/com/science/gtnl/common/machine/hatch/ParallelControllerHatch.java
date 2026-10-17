@@ -31,6 +31,8 @@ import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.render.TextureFactory;
 import lombok.Getter;
 
+@IMetaTileEntity.SkipGenerateName
+@IMetaTileEntity.SkipGenerateDescription
 @Getter
 public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLogo {
 
