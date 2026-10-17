@@ -38,6 +38,7 @@ public class RailgunClientFx {
 
     public static void playFire(RailgunFireFxPacket packet) {
         if (Minecraft.getMinecraft().theWorld == null) return;
+        RailgunCharge.finish(packet.shooterId);
         RailgunOrbRenderer.launch(packet.shooterId, packet.from, packet.firstHit, packet.tier, () -> impact(packet));
     }
 
@@ -90,13 +91,15 @@ public class RailgunClientFx {
         RailgunShockwaveRenderer.clear();
         RailgunOrbRenderer.clear();
         RailgunCameraShake.clear();
+        RailgunCharge.reset();
+        RailgunMuzzleAnchor.clear();
         RailgunSounds.clear();
         GlslProgram.release();
     }
 
     @SubscribeEvent
     public void reload(TextureStitchEvent.Post event) {
-        RailgunGlowSprites.clear();
+        RailgunRenderHelper.clearSprites();
         GlslProgram.release();
     }
 }

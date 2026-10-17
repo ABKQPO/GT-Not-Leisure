@@ -1,9 +1,6 @@
 #version 120
 #include "noise.glsl"
 
-// Long beam plasma. uv.x runs across the ribbon, uv.y is the distance along the beam in blocks so the
-// scrolling filaments keep a constant world scale regardless of the shot distance.
-
 uniform float time;
 
 varying vec2 uv;

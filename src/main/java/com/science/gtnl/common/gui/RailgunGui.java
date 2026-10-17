@@ -28,6 +28,9 @@ import gregtech.api.modularui2.GTGuis;
 
 public final class RailgunGui {
 
+    private static final int STORED_EU_TEXTURE_WIDTH = 147;
+    private static final int STORED_EU_BAR_HEIGHT = 5;
+
     private final ItemStack stack;
     private final PanelSyncManager sync;
     private final PlayerInventoryGuiData data;
@@ -80,9 +83,9 @@ public final class RailgunGui {
                 .size(160, 12));
         panel.child(
             new ProgressWidget().progress(() -> energy.getLongValue() / (double) Math.max(1, capacity.getLongValue()))
-                .texture(GTGuiTextures.PROGRESSBAR_ARROW_MULTIPLE, 20)
+                .texture(GTGuiTextures.PROGRESSBAR_STORED_EU, STORED_EU_TEXTURE_WIDTH)
                 .pos(8, 60)
-                .size(160, 6));
+                .size(160, STORED_EU_BAR_HEIGHT));
         addToggle(panel, "terrain", 8, 72, terrainAllowed::getBoolValue);
         addToggle(panel, "pvp", 91, 72, () -> true);
         addToggle(panel, "sound", 8, 92, () -> true);

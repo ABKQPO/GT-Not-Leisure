@@ -23,6 +23,8 @@ public final class RailgunBeamService {
         final ItemStack stack;
         final int slot, dimension;
         int lastSettleTick, lastChainTick, settleCount;
+        RailgunVec lastSentEnd;
+        boolean lastSentEhv;
 
         BeamState(EntityPlayerMP player) {
             stack = player.getHeldItem();
@@ -96,6 +98,7 @@ public final class RailgunBeamService {
     }
 
     private static boolean settle(EntityPlayerMP player, ItemStack stack, BeamState state) {
+        if (player.isUsingItem()) return false;
         var config = MainConfig.item.railgun;
         var modules = RailgunData.modules(stack);
         var settings = RailgunData.settings(stack);
@@ -107,6 +110,7 @@ public final class RailgunBeamService {
             RailgunFireService.noEnergy(player);
             return false;
         }
+        RailgunData.keepInUse(player, stack);
         WorldServer world = (WorldServer) player.worldObj;
         RailgunVec from = RailgunVec.eye(player);
         double range = RailgunRaycast
@@ -125,6 +129,9 @@ public final class RailgunBeamService {
             : RailgunVec.center(
                 trace.hit()
                     .entity());
+        RailgunVec hitPoint = trace.hit() == null ? trace.blockEnd()
+            : trace.hit()
+                .position();
         var context = RailgunDamage
             .buildBeam(player, modules, world, pvp, ehv ? config.ehvBeamDamage : config.beamDamage);
         EntityLivingBase anchor = trace.hit() != null && trace.hit()
@@ -133,9 +140,12 @@ public final class RailgunBeamService {
             player,
             List.of(new RailgunChainResolver.Hit(anchor, context.firstDamage(), false, false)),
             context,
-            ehv);
-        else if (trace.hit() != null) trace.hit()
-            .entity()
+            ehv,
+            hitPoint);
+        else if (trace.hit() != null) RailgunTargetRules.damageAnchor(
+            trace.hit()
+                .entity(),
+            hitPoint)
             .attackEntityFrom(RailgunDamage.source(player), (float) Math.min(context.firstDamage(), Float.MAX_VALUE));
         if (settings.chain()
             && player.ticksExisted - state.lastChainTick >= RailgunDefaults.BEAM_CHAIN_THROTTLE_TICKS) {
@@ -144,20 +154,34 @@ public final class RailgunBeamService {
             var chain = anchor == null ? RailgunChainResolver.resolveChainFromPoint(world, player, origin, context)
                 : RailgunChainResolver.resolveChainFrom(world, player, anchor, context, new HashSet<>(), null);
             var path = RailgunNet.path(origin, chain);
-            RailgunDamage.applyAll(player, chain, context, false);
+            RailgunDamage.applyAll(player, chain, context, false, hitPoint);
             if (!path.isEmpty()) RailgunNet.sendAround(
                 world,
                 player,
                 new RailgunBeamChainFxPacket(player.getEntityId(), origin, path, settings.sound(), ehv));
         }
-        RailgunNet.sendAround(world, player, new RailgunBeamUpdatePacket(player.getEntityId(), from, end, true, ehv));
+        sendUpdate(world, player, state, from, end, ehv);
         return true;
     }
 
-    private static void broadcastStop(EntityPlayerMP player) {
+    private static void sendUpdate(WorldServer world, EntityPlayerMP player, BeamState state, RailgunVec from,
+        RailgunVec end, boolean ehv) {
+        boolean moved = state.lastSentEnd == null || state.lastSentEhv != ehv
+            || state.lastSentEnd.distanceToSqr(end)
+                > RailgunDefaults.BEAM_RESEND_DISTANCE * RailgunDefaults.BEAM_RESEND_DISTANCE;
+        state.lastSentEnd = end;
+        state.lastSentEhv = ehv;
         RailgunNet.sendAround(
-            player.worldObj,
+            world,
             player,
-            new RailgunBeamUpdatePacket(player.getEntityId(), RailgunVec.ZERO, RailgunVec.ZERO, false, false));
+            moved ? RailgunBeamUpdatePacket.move(
+                player.getEntityId(),
+                from.subtract(end)
+                    .length(),
+                ehv) : RailgunBeamUpdatePacket.hold(player.getEntityId(), ehv));
+    }
+
+    private static void broadcastStop(EntityPlayerMP player) {
+        RailgunNet.sendAround(player.worldObj, player, RailgunBeamUpdatePacket.stop(player.getEntityId()));
     }
 }

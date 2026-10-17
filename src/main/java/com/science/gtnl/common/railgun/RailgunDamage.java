@@ -2,6 +2,7 @@ package com.science.gtnl.common.railgun;
 
 import java.util.List;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -81,7 +82,7 @@ public final class RailgunDamage {
     }
 
     public static void applyAll(EntityPlayerMP player, List<RailgunChainResolver.Hit> hits, DamageContext context,
-        boolean resetInvulnerability) {
+        boolean resetInvulnerability, RailgunVec reference) {
         for (var hit : hits) {
             EntityLivingBase target = hit.target();
             if (!RailgunTargetRules.canAffect(player, target, MainConfig.item.railgun.damagePlayers && context.pvp()))
@@ -89,7 +90,8 @@ public final class RailgunDamage {
             double damage = finalDamage(hit.damage(), context.bypassRatio(), target.getTotalArmorValue() / 25.0);
             if (!Double.isFinite(damage) || damage <= 0) continue;
             if (resetInvulnerability) target.hurtResistantTime = 0;
-            boolean applied = target.attackEntityFrom(source(player), (float) Math.min(damage, Float.MAX_VALUE));
+            Entity anchor = RailgunTargetRules.damageAnchor(target, reference);
+            boolean applied = anchor.attackEntityFrom(source(player), (float) Math.min(damage, Float.MAX_VALUE));
             if (applied && target.isEntityAlive()
                 && (!(target instanceof EntityPlayer) || MainConfig.item.railgun.paralysisOnPlayers))
                 target.addPotionEffect(

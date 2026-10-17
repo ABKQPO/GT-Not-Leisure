@@ -50,12 +50,12 @@ public final class RailgunServerEvents {
         RailgunFireService.CHARGING.entrySet()
             .removeIf(entry -> {
                 EntityPlayerMP player = player(entry.getKey());
+                if (player == null || player.isDead) return true;
                 var session = entry.getValue();
-                return player == null || player.isDead
-                    || !player.isUsingItem()
-                    || player.dimension != session.dimension()
-                    || player.inventory.currentItem != session.slot()
-                    || player.getHeldItem() != session.stack();
+                if (!session.matches(player)) return true;
+                long now = player.worldObj.getTotalWorldTime();
+                if (player.isUsingItem()) session.touch(now);
+                return !session.live(now);
             });
     }
 
@@ -84,9 +84,9 @@ public final class RailgunServerEvents {
     @SubscribeEvent
     public void fall(LivingFallEvent event) {
         if (event.entityLiving instanceof EntityPlayerMP player && player.getEntityData()
-            .hasKey(RailgunRecoilService.GRACE)
+            .hasKey(RailgunFireService.RECOIL_GRACE)
             && player.getEntityData()
-                .getLong(RailgunRecoilService.GRACE) >= player.worldObj.getTotalWorldTime())
+                .getLong(RailgunFireService.RECOIL_GRACE) >= player.worldObj.getTotalWorldTime())
             event.setCanceled(true);
     }
 

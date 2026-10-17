@@ -5,6 +5,7 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
@@ -17,7 +18,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import com.science.gtnl.client.railgun.RailgunCameraShake;
-import com.science.gtnl.client.railgun.RailgunShakeField.Axis;
+import com.science.gtnl.client.railgun.RailgunCameraShake.Axis;
+import com.science.gtnl.client.railgun.RailgunMuzzleAnchor;
 import com.science.gtnl.common.item.items.ElectromagneticRailgun;
 
 import cpw.mods.fml.relauncher.Side;
@@ -62,7 +64,10 @@ public class ItemElectromagneticRailgunRender implements IItemRenderer {
         GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_COLOR_BUFFER_BIT);
 
         switch (type) {
-            case EQUIPPED -> applyThirdPerson();
+            case EQUIPPED -> {
+                applyThirdPerson();
+                anchorMuzzle(data);
+            }
             case EQUIPPED_FIRST_PERSON -> applyFirstPerson();
             case ENTITY -> applyGround();
             case INVENTORY -> applyGui();
@@ -84,6 +89,11 @@ public class ItemElectromagneticRailgunRender implements IItemRenderer {
 
         GL11.glPopAttrib();
         GL11.glPopMatrix();
+    }
+
+    private static void anchorMuzzle(Object[] data) {
+        if (data.length < 2 || !(data[1] instanceof Entity entity)) return;
+        RailgunMuzzleAnchor.capture(entity.getEntityId());
     }
 
     private void renderModel(boolean extremeHighVoltage) {

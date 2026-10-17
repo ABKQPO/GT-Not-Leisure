@@ -3,6 +3,7 @@ package com.science.gtnl.common.railgun;
 import java.util.EnumMap;
 import java.util.Map;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -12,8 +13,28 @@ import com.science.gtnl.common.item.items.ElectromagneticRailgun;
 public final class RailgunData {
 
     public static final int MODULE_SLOTS = 8;
+    public static final int FULL_CHARGE_UNITS = RailgunChargeTier.EHV3.chargeTicks;
 
     private RailgunData() {}
+
+    private static boolean railgun(ItemStack stack) {
+        return stack != null && stack.getItem() instanceof ElectromagneticRailgun;
+    }
+
+    public static boolean soundEnabled(EntityPlayer player) {
+        ItemStack stack = player == null ? null : player.getHeldItem();
+        return railgun(stack) && settings(stack).sound();
+    }
+
+    public static void keepInUse(EntityPlayer player, ItemStack stack) {
+        if (player == null || stack == null) return;
+        if (!player.isUsingItem() || player.getItemInUse() != stack) return;
+        player.setItemInUse(stack, player.getItemInUseCount());
+    }
+
+    public static int chargeStep(ItemStack stack) {
+        return 1 + modules(stack).count(RailgunModuleType.ACCELERATION);
+    }
 
     public static NBTTagCompound tag(ItemStack stack) {
         if (stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());

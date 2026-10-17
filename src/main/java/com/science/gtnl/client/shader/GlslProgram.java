@@ -32,10 +32,6 @@ public class GlslProgram implements AutoCloseable {
         this.fragmentSource = fragmentSource;
     }
 
-    /**
-     * Compiles the program without binding it. Callers that must remember the previously bound program have to
-     * use this before {@link #use()}, because binding is the only step that changes GL state.
-     */
     public void ensureCompiled() {
         if (program == 0) compile();
     }
@@ -60,14 +56,6 @@ public class GlslProgram implements AutoCloseable {
 
     public void uniform2f(String name, float x, float y) {
         GL20.glUniform2f(uniform(name), x, y);
-    }
-
-    public void uniform3f(String name, float x, float y, float z) {
-        GL20.glUniform3f(uniform(name), x, y, z);
-    }
-
-    public void uniform1i(String name, int value) {
-        GL20.glUniform1i(uniform(name), value);
     }
 
     public void bindTexture(int unit, ResourceLocation texture) {

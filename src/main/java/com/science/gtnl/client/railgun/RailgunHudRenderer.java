@@ -9,8 +9,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
 
 import com.science.gtnl.client.railgun.shader.RailgunShaderEffect;
-import com.science.gtnl.client.railgun.shader.RailgunShaders;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
+import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -21,7 +21,7 @@ public class RailgunHudRenderer {
     private static final int BAR_HEIGHT = 4;
     private static final int OFFSET_Y = 15;
     private static final int FRAME_BACK = 0xAA101020;
-    private static final float OVERLAY_INTENSITY = 0.55F;
+    private static final float OVERLAY_INTENSITY = 0.75F;
 
     private static final int[] THRESHOLDS = { RailgunChargeTier.EHV1.chargeTicks, RailgunChargeTier.EHV2.chargeTicks,
         RailgunChargeTier.EHV3.chargeTicks };
@@ -31,10 +31,10 @@ public class RailgunHudRenderer {
         if (event.type != RenderGameOverlayEvent.ElementType.CROSSHAIRS) return;
         var mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.thePlayer;
-        if (!RailgunChargeTracker.charging(player)) return;
+        if (!RailgunCharge.charging(player)) return;
         int width = event.resolution.getScaledWidth(), height = event.resolution.getScaledHeight();
-        float progress = RailgunChargeTracker.progress(player);
-        int tier = RailgunChargeTracker.tier(player)
+        float progress = RailgunCharge.progress(player);
+        int tier = RailgunCharge.tier(player)
             .ordinal();
         if (mc.gameSettings.thirdPersonView == 0) drawOverlay(width, height, progress, tier);
         drawMeter(width, height, progress, tier);
@@ -42,7 +42,7 @@ public class RailgunHudRenderer {
 
     private static void drawOverlay(int width, int height, float progress, int tier) {
         if (!MainConfig.client.enableRailgunBloom || !MainConfig.client.enableRailgunShaders) return;
-        RailgunShaderEffect shader = RailgunShaders.CHARGE;
+        RailgunShaderEffect shader = RailgunShaderEffect.CHARGE;
         if (!shader.begin()) return;
         GL11.glPushAttrib(
             GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_CURRENT_BIT);
@@ -80,7 +80,7 @@ public class RailgunHudRenderer {
         Gui.drawRect(x - 1, y - 1, x + BAR_WIDTH + 1, y + BAR_HEIGHT + 1, FRAME_BACK);
         if (filled > 0) Gui.drawRect(x, y, x + filled, y + BAR_HEIGHT, color(tier));
         for (int threshold : THRESHOLDS) {
-            int mark = x + threshold * BAR_WIDTH / RailgunChargeTracker.FULL_CHARGE_UNITS;
+            int mark = x + threshold * BAR_WIDTH / RailgunData.FULL_CHARGE_UNITS;
             Gui.drawRect(mark - 1, y - 2, mark, y + BAR_HEIGHT + 2, 0xFFFFFFFF);
         }
     }

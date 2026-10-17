@@ -1,5 +1,3 @@
-// Value noise shared by the railgun effects. Included after the #version directive of each fragment shader.
-
 float railgunHash(vec2 point) {
     return fract(sin(dot(point, vec2(127.1, 311.7))) * 43758.5453);
 }

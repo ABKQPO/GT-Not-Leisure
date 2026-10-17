@@ -4,8 +4,7 @@ import net.minecraft.client.Minecraft;
 
 import com.science.gtnl.client.railgun.RailgunBeamRenderer;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
-import com.science.gtnl.common.railgun.RailgunNet;
-import com.science.gtnl.common.railgun.RailgunVec;
+import com.science.gtnl.common.railgun.RailgunDefaults;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -13,30 +12,51 @@ import io.netty.buffer.ByteBuf;
 
 public class RailgunBeamUpdatePacket extends ClientboundPacket {
 
+    public static final byte STATE_STOP = 0;
+    public static final byte STATE_HOLD = 1;
+    public static final byte STATE_MOVE = 2;
+
     public int shooterId;
-    public RailgunVec from, to;
-    public boolean active, ehv;
+    public byte state;
+    public boolean ehv;
+    public float range;
     private boolean valid;
 
     public RailgunBeamUpdatePacket() {}
 
-    public RailgunBeamUpdatePacket(int shooterId, RailgunVec from, RailgunVec to, boolean active, boolean ehv) {
+    private RailgunBeamUpdatePacket(int shooterId, byte state, boolean ehv, float range) {
         this.shooterId = shooterId;
-        this.from = from;
-        this.to = to;
-        this.active = active;
+        this.state = state;
         this.ehv = ehv;
+        this.range = range;
+    }
+
+    public static RailgunBeamUpdatePacket stop(int shooterId) {
+        return new RailgunBeamUpdatePacket(shooterId, STATE_STOP, false, 0);
+    }
+
+    public static RailgunBeamUpdatePacket hold(int shooterId, boolean ehv) {
+        return new RailgunBeamUpdatePacket(shooterId, STATE_HOLD, ehv, 0);
+    }
+
+    public static RailgunBeamUpdatePacket move(int shooterId, double range, boolean ehv) {
+        return new RailgunBeamUpdatePacket(shooterId, STATE_MOVE, ehv, (float) range);
+    }
+
+    public double range() {
+        return range;
     }
 
     @Override
     protected void read(ByteBuf buffer) {
         try {
             shooterId = buffer.readInt();
-            from = RailgunNet.readVec(buffer);
-            to = RailgunNet.readVec(buffer);
-            active = buffer.readBoolean();
+            state = buffer.readByte();
             ehv = buffer.readBoolean();
-            valid = from.distanceToSqr(to) <= 512 * 512;
+            valid = state >= STATE_STOP && state <= STATE_MOVE;
+            if (!valid || state != STATE_MOVE) return;
+            range = buffer.readFloat();
+            valid = Float.isFinite(range) && range > 0 && range <= RailgunDefaults.BEAM_RANGE_LIMIT;
         } catch (RuntimeException ignored) {
             valid = false;
         }
@@ -45,17 +65,15 @@ public class RailgunBeamUpdatePacket extends ClientboundPacket {
     @Override
     protected void write(ByteBuf buffer) {
         buffer.writeInt(shooterId);
-        RailgunNet.writeVec(buffer, from);
-        RailgunNet.writeVec(buffer, to);
-        buffer.writeBoolean(active);
+        buffer.writeByte(state);
         buffer.writeBoolean(ehv);
+        if (state != STATE_MOVE) return;
+        buffer.writeFloat(range);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
-        var connection = minecraft.getNetHandler();
-        if (valid) minecraft
-            .func_152344_a(() -> { if (minecraft.getNetHandler() == connection) RailgunBeamRenderer.update(this); });
+        if (valid) RailgunBeamRenderer.submit(this);
     }
 }
