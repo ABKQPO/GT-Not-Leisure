@@ -20,11 +20,14 @@ import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchDataAccess;
 
+@IMetaTileEntity.SkipGenerateName
+@IMetaTileEntity.SkipGenerateDescription
 public class SuperDataAccessHatch extends MTEHatchDataAccess implements IAddGregtechLogo {
 
     public SuperDataAccessHatch(int aID, String aName, String aNameRegional, int aTier) {

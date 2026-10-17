@@ -14,6 +14,7 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import tectech.mechanics.pipe.IConnectsToEnergyTunnel;
 import tectech.thing.metaTileEntity.hatch.MTEHatchWirelessDynamoMulti;
 
+@IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class WirelessMultiDynamoHatch extends MTEHatchWirelessDynamoMulti implements IConnectsToEnergyTunnel {
 

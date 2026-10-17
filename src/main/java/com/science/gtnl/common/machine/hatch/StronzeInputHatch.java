@@ -8,23 +8,26 @@ import net.minecraftforge.fluids.IFluidHandler;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchInput;
 
-public class MTEStronzeInputHatch extends MTEHatchInput {
+@IMetaTileEntity.SkipGenerateName
+@IMetaTileEntity.SkipGenerateDescription
+public class StronzeInputHatch extends MTEHatchInput {
 
-    public MTEStronzeInputHatch(int id, String name, String regionalName, int tier) {
+    public StronzeInputHatch(int id, String name, String regionalName, int tier) {
         super(id, name, regionalName, tier);
     }
 
-    public MTEStronzeInputHatch(String name, int tier, String[] description, ITexture[][][] textures) {
+    public StronzeInputHatch(String name, int tier, String[] description, ITexture[][][] textures) {
         super(name, tier, description, textures);
     }
 
     @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity tileEntity) {
-        return new MTEStronzeInputHatch(mName, mTier, mDescriptionArray, mTextures);
+        return new StronzeInputHatch(mName, mTier, mDescriptionArray, mTextures);
     }
 
     @Override
