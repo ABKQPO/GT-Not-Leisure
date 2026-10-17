@@ -196,7 +196,7 @@ public class CommonProxy implements IGuiHandler {
                 TileEntityMultiEssentiaInputHatch.class,
                 TileEntityMultiEssentiaInputHatch.MAX_CAPACITY);
         api.transportPermissions()
-            .addAspectContainerTileToInjectPermissions(
+            .addAspectContainerTileToBothPermissions(
                 TileEntityMultiEssentiaJar.class,
                 TileEntityMultiEssentiaJar.MAX_CAPACITY);
         api.transportPermissions()

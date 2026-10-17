@@ -236,6 +236,14 @@ public enum Mixins implements IMixins {
         .addRequiredMod(ModList.AppliedEnergistics)
         .addRequiredMod(ModList.NotEnoughItems)),
 
+    THAUMIC_ENERGISTICS(new MixinBuilder("Thaumic Energistics multi essentia container compatibility mixins")
+        .addCommonMixins(
+            "thaumicEnergistics.MixinEssentiaTileContainerHelper",
+            "thaumicEnergistics.MixinMEMonitorEssentiaHandler",
+            "thaumicEnergistics.MixinPartEssentiaImportBus")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.ThaumicEnergistics)),
+
     THAUMCRAFT_CLIENT(
         new MixinBuilder("Thaumcraft client compatibility mixins").addClientMixins("thaumcraft.MixinTileJarRenderer")
             .setPhase(Phase.LATE)

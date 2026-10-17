@@ -16,7 +16,7 @@ import thaumcraft.codechicken.lib.raytracer.IndexedCuboid6;
 import thaumcraft.codechicken.lib.vec.Cuboid6;
 import thaumcraft.common.tiles.TileTubeBuffer;
 
-public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
+public class TileEntityMultiEssentiaTube extends TileTubeBuffer implements IMultiEssentiaContainer {
 
     private static final int TRANSFER_PER_TICK = 16;
     private static final int BELLOWS_CHECK_INTERVAL = 20;
@@ -192,6 +192,12 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
         }
     }
 
+    @Override
+    public int getEssentiaCapacity() {
+        return MAX_CAPACITY;
+    }
+
+    @Override
     public int getTotalAmount() {
         return storage.getTotalAmount();
     }

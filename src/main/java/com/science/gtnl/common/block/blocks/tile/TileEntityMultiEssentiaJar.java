@@ -28,7 +28,8 @@ import thaumcraft.common.tiles.TileJarFillable;
 // 一个使用共享 4096 点容量池、可储存多种源质的罐子。
 // 继承自原版罐子的单一源质字段仅用于与 Thaumcraft 标准罐渲染器保持同步。所有储存、
 // 持久化和传输行为都由本类实现。多源质存储细节委托给共享组件 MultiEssentiaStorage。
-public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiHolder<GuiData> {
+public class TileEntityMultiEssentiaJar extends TileJarFillable
+    implements IGuiHolder<GuiData>, IMultiEssentiaContainer {
 
     private static final String STORED_ASPECTS_KEY = "StoredAspects";
     private static final String ACTIVE_ASPECT_KEY = "ActiveAspect";
@@ -263,6 +264,12 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
         return true;
     }
 
+    @Override
+    public int getEssentiaCapacity() {
+        return MAX_CAPACITY;
+    }
+
+    @Override
     public int getTotalAmount() {
         return storage.getTotalAmount();
     }
