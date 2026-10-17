@@ -86,6 +86,8 @@ public class SubscribeEventUtils {
     public static long SERVER_TICK = 0;
     public static final long MAX_SERVER_SLEEP_MILLIS = 2000L;
 
+    private long suppressWandAirUseTick = -1;
+
     // Player
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
@@ -481,8 +483,6 @@ public class SubscribeEventUtils {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onMultiEssentiaJarWandClear(PlayerInteractEvent event) {
-        if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return;
-
         EntityPlayer player = event.entityPlayer;
         if (player == null || player.worldObj == null || !player.isSneaking()) {
             return;
@@ -492,6 +492,16 @@ public class SubscribeEventUtils {
         if (heldStack == null || !(heldStack.getItem() instanceof ItemWandCasting)) {
             return;
         }
+
+        if (event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR) {
+            if (player.worldObj.isRemote && suppressWandAirUseTick == player.worldObj.getTotalWorldTime()) {
+                suppressWandAirUseTick = -1;
+                event.setCanceled(true);
+            }
+            return;
+        }
+
+        if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return;
 
         TileEntity tile = player.worldObj.getTileEntity(event.x, event.y, event.z);
 
@@ -505,6 +515,7 @@ public class SubscribeEventUtils {
 
         // 声音、清空和聊天消息全部由服务器处理
         if (player.worldObj.isRemote) {
+            suppressWandAirUseTick = player.worldObj.getTotalWorldTime();
             return;
         }
 

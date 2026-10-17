@@ -42,6 +42,7 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
     private final AspectList storedAspects = new AspectList();
     private final MultiEssentiaStorage storage = new MultiEssentiaStorage(storedAspects, MAX_CAPACITY);
+    private final EssentiaSyncThrottle syncThrottle = new EssentiaSyncThrottle();
     private Aspect activeAspect;
 
     public TileEntityMultiEssentiaJar() {
@@ -51,6 +52,17 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
     @Override
     public void readCustomNBT(NBTTagCompound tag) {
+        facing = tag.getByte(FACING_KEY);
+        readEssentiaNBT(tag);
+    }
+
+    @Override
+    public void writeCustomNBT(NBTTagCompound tag) {
+        writeEssentiaNBT(tag);
+        tag.setByte(FACING_KEY, (byte) facing);
+    }
+
+    private void readEssentiaNBT(NBTTagCompound tag) {
         storedAspects.aspects.clear();
         if (tag.hasKey(STORED_ASPECTS_KEY)) {
             storedAspects.readFromNBT(tag.getCompoundTag(STORED_ASPECTS_KEY));
@@ -58,20 +70,17 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
         activeAspect = Aspect.getAspect(tag.getString(ACTIVE_ASPECT_KEY));
         aspectFilter = Aspect.getAspect(tag.getString(FILTER_ASPECT_KEY));
-        facing = tag.getByte(FACING_KEY);
         storage.reload();
         ensureActiveAspect();
         syncRenderState();
     }
 
-    @Override
-    public void writeCustomNBT(NBTTagCompound tag) {
+    private void writeEssentiaNBT(NBTTagCompound tag) {
         NBTTagCompound storedTag = new NBTTagCompound();
         storedAspects.writeToNBT(storedTag);
         tag.setTag(STORED_ASPECTS_KEY, storedTag);
         tag.setString(ACTIVE_ASPECT_KEY, activeAspect == null ? "" : activeAspect.getTag());
         tag.setString(FILTER_ASPECT_KEY, aspectFilter == null ? "" : aspectFilter.getTag());
-        tag.setByte(FACING_KEY, (byte) facing);
     }
 
     public void setFacing(int facing) {
@@ -80,9 +89,10 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
 
     @Override
     public void updateEntity() {
-        if (worldObj == null || worldObj.isRemote || getTotalAmount() >= MAX_CAPACITY) {
-            return;
-        }
+        if (worldObj == null || worldObj.isRemote) return;
+
+        syncThrottle.flush(this);
+        if (getTotalAmount() >= MAX_CAPACITY) return;
 
         TileEntity tile = ThaumcraftApiHelper.getConnectableTile(worldObj, xCoord, yCoord, zCoord, ForgeDirection.UP);
         if (!(tile instanceof IEssentiaTransport source)) return;
@@ -308,11 +318,7 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
         if (activeAspect != null && storage.getAmount(activeAspect) >= requiredAmount) return activeAspect;
 
         for (Aspect storedAspect : storage.getStoredAspectsSorted()) {
-            if (storage.getAmount(storedAspect) >= requiredAmount) {
-                activeAspect = storedAspect;
-                markEssentiaChanged();
-                return activeAspect;
-            }
+            if (storage.getAmount(storedAspect) >= requiredAmount) return storedAspect;
         }
         return null;
     }
@@ -355,14 +361,18 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
         if (stack == null) return;
 
         if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-        writeCustomNBT(stack.getTagCompound());
+        writeEssentiaNBT(stack.getTagCompound());
     }
 
     public void readFromItemStack(ItemStack stack) {
         if (stack == null || !stack.hasTagCompound()) return;
 
-        readCustomNBT(stack.getTagCompound());
+        readEssentiaNBT(stack.getTagCompound());
         markEssentiaChanged();
+    }
+
+    public Aspect[] getStoredAspectsSorted() {
+        return storage.getStoredAspectsSorted();
     }
 
     public static AspectList getStoredAspects(ItemStack stack) {
@@ -463,8 +473,6 @@ public class TileEntityMultiEssentiaJar extends TileJarFillable implements IGuiH
         ensureActiveAspect();
         syncRenderState();
         markDirty();
-        if (worldObj != null) {
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-        }
+        syncThrottle.request(this);
     }
 }

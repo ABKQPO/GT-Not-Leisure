@@ -29,6 +29,7 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
 
     // 复用父类 aspects 字段作为存储，排序缓存与容器操作统一交给共享组件。
     private final MultiEssentiaStorage storage = new MultiEssentiaStorage(aspects, MAX_CAPACITY);
+    private final EssentiaSyncThrottle syncThrottle = new EssentiaSyncThrottle();
 
     private boolean bellowsInitialized;
     private int transferTick;
@@ -183,7 +184,10 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
         }
 
         // 每 tick 尝试补充缓存；transferTick 仅用于风箱检查间隔。
-        if (!worldObj.isRemote && getTotalAmount() < MAX_CAPACITY) {
+        if (worldObj.isRemote) return;
+
+        syncThrottle.flush(this);
+        if (getTotalAmount() < MAX_CAPACITY) {
             fillCache(TRANSFER_PER_TICK);
         }
     }
@@ -272,9 +276,6 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
     private void markEssentiaChanged() {
         storage.markDirty();
         markDirty();
-
-        if (worldObj != null) {
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-        }
+        syncThrottle.request(this);
     }
 }

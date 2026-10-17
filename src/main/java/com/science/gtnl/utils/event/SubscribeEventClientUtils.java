@@ -65,6 +65,7 @@ import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.GTValues;
+import gregtech.api.interfaces.INetworkUpdatableItem;
 import gregtech.api.net.GTPacketUpdateItem;
 import gregtech.client.ElectricJukeboxSound;
 import gregtech.crossmod.backhand.Backhand;
@@ -149,7 +150,10 @@ public class SubscribeEventClientUtils {
 
         ItemStack mainHand = player.getCurrentEquippedItem();
         ItemStack offHand = Backhand.getOffhandItem(player);
-        if (!isMultiEssentiaJar(mainHand) && !isMultiEssentiaJar(offHand)) return false;
+        boolean mainHandJar = isMultiEssentiaJar(mainHand);
+        boolean offHandJar = isMultiEssentiaJar(offHand)
+            && (mainHand == null || !(mainHand.getItem() instanceof INetworkUpdatableItem));
+        if (!mainHandJar && !offHandJar) return false;
 
         // 通过 GT 现有的 GTPacketUpdateItem 请求服务端循环上一个源质
         NBTTagCompound tag = new NBTTagCompound();
@@ -159,7 +163,7 @@ public class SubscribeEventClientUtils {
             player.swingItem();
         };
 
-        if (isMultiEssentiaJar(mainHand)) {
+        if (mainHandJar) {
             cyclePrevious.run();
         } else {
             BackhandUtils.useOffhandItem(player, cyclePrevious);
