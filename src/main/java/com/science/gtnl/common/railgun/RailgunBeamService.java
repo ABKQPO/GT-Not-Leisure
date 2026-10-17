@@ -199,14 +199,13 @@ public final class RailgunBeamService {
                 > RailgunDefaults.BEAM_RESEND_DISTANCE * RailgunDefaults.BEAM_RESEND_DISTANCE;
         state.lastSentEnd = end;
         state.lastSentEhv = ehv;
+        double range = from.subtract(end)
+            .length();
         RailgunNet.sendAround(
             world,
             player,
-            moved ? RailgunBeamUpdatePacket.move(
-                player.getEntityId(),
-                from.subtract(end)
-                    .length(),
-                ehv) : RailgunBeamUpdatePacket.hold(player.getEntityId(), ehv));
+            moved ? RailgunBeamUpdatePacket.move(player.getEntityId(), range, ehv)
+                : RailgunBeamUpdatePacket.hold(player.getEntityId(), range, ehv));
     }
 
     private static void broadcastStop(EntityPlayerMP player) {
