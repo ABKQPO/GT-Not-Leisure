@@ -15,6 +15,8 @@ import com.gtnewhorizon.gtnhlib.config.Config.RequiresMcRestart;
 import com.gtnewhorizon.gtnhlib.config.Config.Sync;
 import com.science.gtnl.ScienceNotLeisure;
 
+import gregtech.api.enums.Mods;
+
 @Config(modid = ScienceNotLeisure.MODID, configSubDirectory = "GTNotLeisure", filename = "GTNotLeisure")
 @Config.LangKeyPattern(pattern = "gtnl.gui.config.%cat.%field", fullyQualified = true)
 @Comment("General section")
@@ -195,6 +197,14 @@ public class MainConfig {
             @DefaultInt(200)
             @RangeInt(min = 1, max = 10000)
             public int terrainBlocksPerTick = 200;
+
+            @Comment("Mod IDs whose blocks are never destroyed by the railgun, case-insensitive")
+            @DefaultStringList({ Mods.ModIDs.GREG_TECH, Mods.ModIDs.BART_WORKS, Mods.ModIDs.TECTECH,
+                Mods.ModIDs.G_T_N_H_LANTHANIDES, Mods.ModIDs.G_T_PLUS_PLUS, Mods.ModIDs.APPLIED_ENERGISTICS2,
+                Mods.ModIDs.A_E2_FLUID_CRAFT, ScienceNotLeisure.MODID })
+            public String[] terrainProtectedMods = { Mods.GregTech.ID, Mods.BartWorks.ID, Mods.TecTech.ID,
+                Mods.GTNHLanthanides.ID, Mods.GTPlusPlus.ID, Mods.AppliedEnergistics2.ID, Mods.AE2FluidCraft.ID,
+                ScienceNotLeisure.MODID };
 
             @Comment("Refill the held railgun from the owner's wireless EU network once per second")
             @DefaultBoolean(true)

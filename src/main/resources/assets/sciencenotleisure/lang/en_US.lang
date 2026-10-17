@@ -131,6 +131,8 @@ gtnl.gui.config.general.item.railgun.terraindropitems=Drop Destroyed Blocks
 gtnl.gui.config.general.item.railgun.terraindropitems.tooltip=Drop items from blocks destroyed by the railgun.
 gtnl.gui.config.general.item.railgun.terrainblockspertick=Blocks Destroyed per Tick
 gtnl.gui.config.general.item.railgun.terrainblockspertick.tooltip=Maximum number of blocks destroyed per tick across all impacts.
+gtnl.gui.config.general.item.railgun.terrainprotectedmods=Protected Mods
+gtnl.gui.config.general.item.railgun.terrainprotectedmods.tooltip=Blocks from these mods are never destroyed by the railgun. Enter mod IDs, case-insensitive.
 gtnl.gui.config.general.item.railgun.wirelessrefill=Wireless Refill
 gtnl.gui.config.general.item.railgun.wirelessrefill.tooltip=Refill the held railgun from the owner's wireless EU network once per second.
 

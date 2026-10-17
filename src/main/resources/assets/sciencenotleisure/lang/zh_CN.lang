@@ -131,6 +131,8 @@ gtnl.gui.config.general.item.railgun.terraindropitems=破坏方块掉落
 gtnl.gui.config.general.item.railgun.terraindropitems.tooltip=被电磁炮破坏的方块是否掉落物品
 gtnl.gui.config.general.item.railgun.terrainblockspertick=每tick破坏方块上限
 gtnl.gui.config.general.item.railgun.terrainblockspertick.tooltip=所有命中点合计每tick最多破坏的方块数
+gtnl.gui.config.general.item.railgun.terrainprotectedmods=受保护模组
+gtnl.gui.config.general.item.railgun.terrainprotectedmods.tooltip=这些模组的方块不会被电磁炮破坏，填写模组ID，不区分大小写
 gtnl.gui.config.general.item.railgun.wirelessrefill=无线网络充能
 gtnl.gui.config.general.item.railgun.wirelessrefill.tooltip=手持电磁炮时每秒从所有者的无线EU网络补充能量
 
