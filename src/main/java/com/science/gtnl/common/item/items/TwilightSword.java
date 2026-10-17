@@ -127,7 +127,6 @@ public class TwilightSword extends ItemSword implements PlaySound {
         }
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
     public void playSoundIfReady(World world, EntityPlayer player) {
         UUID playerId = player.getUniqueID();
