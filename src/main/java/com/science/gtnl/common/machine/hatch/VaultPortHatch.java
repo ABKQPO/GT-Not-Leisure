@@ -55,6 +55,8 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.render.TextureFactory;
 
+@IMetaTileEntity.SkipGenerateName
+@IMetaTileEntity.SkipGenerateDescription
 public class VaultPortHatch extends MTEHatch
     implements ICellContainer, IGridProxyable, IActionHost, IPowerChannelState, IMEConnectable {
 
