@@ -128,6 +128,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import fox.spiteful.avaritia.render.FancyHaloRenderer;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.Mods;
+import gregtech.common.render.RenderInit;
 import micdoodle8.mods.galacticraft.core.GalacticraftCore;
 import micdoodle8.mods.galacticraft.core.client.model.ModelRocketTier1;
 import micdoodle8.mods.galacticraft.core.proxy.ClientProxyCore;
@@ -267,6 +268,8 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(
             TileEntityEternalGregTechWorkshop.class,
             new EternalGregTechWorkshopRenderer());
+        RenderInit.onAtlasStitched(NanoPhagocytosisPlantRenderer::reload);
+        RenderInit.onAtlasStitched(EternalGregTechWorkshopRenderer::reload);
 
         if (Mods.Avaritia.isModLoaded()) registerFancyHaloRenderer();
 

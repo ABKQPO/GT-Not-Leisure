@@ -3,6 +3,7 @@ package com.science.gtnl.common.gui;
 import java.util.function.BooleanSupplier;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.StatCollector;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
@@ -75,7 +76,7 @@ public final class RailgunGui {
         panel.child(
             IKey.dynamic(
                 () -> StatCollector.translateToLocalFormatted(
-                    "gtnl.railgun.energy",
+                    "item.gtnl.electromagnetic_railgun.tooltip.0",
                     (double) energy.getLongValue(),
                     (double) capacity.getLongValue()))
                 .asWidget()
@@ -134,8 +135,47 @@ public final class RailgunGui {
 
     private final class ModuleHandler extends ItemStackHandler {
 
+        private NBTTagList synced;
+
         ModuleHandler() {
-            super(RailgunData.moduleStacks(stack));
+            super(RailgunData.MODULE_SLOTS);
+        }
+
+        private ItemStack railgun() {
+            ItemStack used = data.getUsedItemStack();
+            return used != null && used.getItem() instanceof ElectromagneticRailgun ? used : stack;
+        }
+
+        private NBTTagList modulesTag(ItemStack railgun) {
+            return railgun.hasTagCompound() ? railgun.getTagCompound()
+                .getTagList("Modules", 10) : new NBTTagList();
+        }
+
+        private void reload() {
+            ItemStack railgun = railgun();
+            NBTTagList current = modulesTag(railgun);
+            if (current.equals(synced)) return;
+            synced = (NBTTagList) current.copy();
+            ItemStack[] modules = RailgunData.moduleStacks(railgun);
+            for (int i = 0; i < modules.length; i++) stacks.set(i, modules[i]);
+        }
+
+        @Override
+        public ItemStack getStackInSlot(int slot) {
+            reload();
+            return super.getStackInSlot(slot);
+        }
+
+        @Override
+        public void setStackInSlot(int slot, ItemStack item) {
+            reload();
+            super.setStackInSlot(slot, item);
+        }
+
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            reload();
+            return super.extractItem(slot, amount, simulate);
         }
 
         @Override
@@ -158,12 +198,16 @@ public final class RailgunGui {
 
         @Override
         public ItemStack insertItem(int slot, ItemStack item, boolean simulate) {
-            return item != null && !isItemValid(slot, item) ? item : super.insertItem(slot, item, simulate);
+            if (item != null && !isItemValid(slot, item)) return item;
+            reload();
+            return super.insertItem(slot, item, simulate);
         }
 
         @Override
         protected void onContentsChanged(int slot) {
-            RailgunData.setModuleStacks(stack, stacks.toArray(new ItemStack[0]));
+            ItemStack railgun = railgun();
+            RailgunData.setModuleStacks(railgun, stacks.toArray(new ItemStack[0]));
+            synced = (NBTTagList) modulesTag(railgun).copy();
             data.getPlayer().inventory.markDirty();
         }
     }

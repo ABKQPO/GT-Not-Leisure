@@ -10,10 +10,13 @@ import com.gtnewhorizon.gtnhlib.config.Config.DefaultString;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultStringList;
 import com.gtnewhorizon.gtnhlib.config.Config.LangKey;
 import com.gtnewhorizon.gtnhlib.config.Config.Name;
+import com.gtnewhorizon.gtnhlib.config.Config.RangeDouble;
 import com.gtnewhorizon.gtnhlib.config.Config.RangeInt;
 import com.gtnewhorizon.gtnhlib.config.Config.RequiresMcRestart;
 import com.gtnewhorizon.gtnhlib.config.Config.Sync;
 import com.science.gtnl.ScienceNotLeisure;
+
+import gregtech.api.enums.Mods;
 
 @Config(modid = ScienceNotLeisure.MODID, configSubDirectory = "GTNotLeisure", filename = "GTNotLeisure")
 @Config.LangKeyPattern(pattern = "gtnl.gui.config.%cat.%field", fullyQualified = true)
@@ -85,63 +88,131 @@ public class MainConfig {
     @Comment("Item section")
     public static class Item {
 
+        @Name("railgun")
         public final Railgun railgun = new Railgun();
 
+        @Comment("Electromagnetic Railgun")
         public static class Railgun {
 
+            @Comment("EU capacity of the railgun without an energy module")
             @DefaultDouble(250000)
             public double baseCapacity = 250000;
+
+            @Comment("EU capacity with a T1 energy module installed")
             @DefaultDouble(25000000)
             public double energyCapacityT1 = 25000000;
+
+            @Comment("EU capacity with a T2 energy module installed")
             @DefaultDouble(125000000)
             public double energyCapacityT2 = 125000000;
+
+            @Comment("EU capacity with a T3 energy module installed")
             @DefaultDouble(500000000)
             public double energyCapacityT3 = 500000000;
+
+            @Comment("EU equivalent of one high voltage lightning, used by the sustained beam")
             @DefaultDouble(1600)
             public double hvLightningEu = 1600;
+
+            @Comment("EU equivalent of one extreme high voltage lightning, used by charged shots and the EHV beam")
             @DefaultDouble(25600)
             public double ehvLightningEu = 25600;
+
+            @Comment("Base EU consumed by the sustained beam every damage settlement (2 ticks)")
             @DefaultDouble(100)
             public double beamEuPerSettle = 100;
+
+            @Comment("Base EU consumed by the extreme high voltage beam every damage settlement (2 ticks)")
             @DefaultDouble(1000)
             public double ehvBeamEuPerSettle = 1000;
+
+            @Comment("Base EU consumed when firing an EHV1 charged shot")
             @DefaultDouble(2000)
             public double shotEuEhv1 = 2000;
+
+            @Comment("Base EU consumed when firing an EHV2 charged shot")
             @DefaultDouble(10000)
             public double shotEuEhv2 = 10000;
+
+            @Comment("Base EU consumed when firing an EHV3 charged shot")
             @DefaultDouble(50000)
             public double shotEuEhv3 = 50000;
+
+            @Comment("EU consumed per charging tick before reaching EHV2")
             @DefaultDouble(250)
             public double chargeEuEhv1 = 250;
+
+            @Comment("EU consumed per charging tick between EHV2 and EHV3")
             @DefaultDouble(1000)
             public double chargeEuEhv2 = 1000;
+
+            @Comment("EU consumed per charging tick after reaching EHV3")
             @DefaultDouble(2500)
             public double chargeEuEhv3 = 2500;
+
+            @Comment("Extra charging speed granted by each installed acceleration module, 0.25 means +25%")
+            @DefaultDouble(0.25)
+            @RangeDouble(min = 0, max = 1)
+            public double accelerationBonus = 0.25;
+
+            @Comment("Damage of the sustained beam per settlement")
             @DefaultDouble(20)
             public double beamDamage = 20;
+
+            @Comment("Armor bypass ratio of the sustained beam, from 0 to 1")
             @DefaultDouble(0.4)
             public double beamBypass = 0.4;
+
+            @Comment("Damage of the extreme high voltage beam per settlement")
             @DefaultDouble(200)
             public double ehvBeamDamage = 200;
+
+            @Comment("Base damage of an EHV1 charged shot")
             @DefaultDouble(100)
             public double baseDamageEhv1 = 100;
+
+            @Comment("Base damage of an EHV2 charged shot")
             @DefaultDouble(300)
             public double baseDamageEhv2 = 300;
+
+            @Comment("Base damage of an EHV3 charged shot")
             @DefaultDouble(600)
             public double baseDamageEhv3 = 600;
+
+            @Comment("Armor bypass ratio of charged shots, from 0 to 1")
             @DefaultDouble(0.8)
             public double chargedBypass = 0.8;
+
+            @Comment("Allow the railgun to damage players when the PvP setting of the railgun is enabled")
             @DefaultBoolean(true)
             public boolean damagePlayers = true;
+
+            @Comment("Apply electromagnetic paralysis to players hit by the railgun")
             @DefaultBoolean(true)
             public boolean paralysisOnPlayers = true;
+
+            @Comment("Allow charged shots to destroy terrain when the terrain setting of the railgun is enabled")
             @DefaultBoolean(false)
             public boolean terrainEnabled = false;
+
+            @Comment("Drop items from blocks destroyed by the railgun")
             @DefaultBoolean(false)
             public boolean terrainDropItems = false;
+
+            @Comment("Maximum number of blocks the railgun destroys per tick across all impacts")
             @DefaultInt(200)
             @RangeInt(min = 1, max = 10000)
             public int terrainBlocksPerTick = 200;
+
+            @Comment("Mod IDs whose blocks are never destroyed by the railgun, case-insensitive")
+            @DefaultStringList({ Mods.ModIDs.GREG_TECH, Mods.ModIDs.BART_WORKS, Mods.ModIDs.TECTECH,
+                Mods.ModIDs.G_T_N_H_LANTHANIDES, Mods.ModIDs.G_T_PLUS_PLUS, Mods.ModIDs.APPLIED_ENERGISTICS2,
+                Mods.ModIDs.A_E2_FLUID_CRAFT, ScienceNotLeisure.MODID })
+            public String[] terrainProtectedMods = { Mods.GregTech.ID, Mods.BartWorks.ID, Mods.TecTech.ID,
+                Mods.GTNHLanthanides.ID, Mods.GTPlusPlus.ID, Mods.AppliedEnergistics2.ID, Mods.AE2FluidCraft.ID,
+                ScienceNotLeisure.MODID };
+
+            @Comment("Refill the held railgun from the owner's wireless EU network once per second")
             @DefaultBoolean(true)
             public boolean wirelessRefill = true;
         }

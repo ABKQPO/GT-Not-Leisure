@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -36,25 +37,51 @@ public final class RailgunBeamService {
     }
 
     private static final Map<UUID, BeamState> ACTIVE = new HashMap<>();
+    private static final Map<UUID, Long> USE_CONFLICT = new HashMap<>();
+    private static final Set<UUID> DRAINED = new HashSet<>();
 
     private RailgunBeamService() {}
 
     public static void setFiring(EntityPlayerMP player, boolean firing) {
+        UUID id = player.getUniqueID();
         if (!firing) {
+            DRAINED.remove(id);
+            USE_CONFLICT.remove(id);
             stop(player);
             return;
         }
         ItemStack stack = player.getHeldItem();
         if (player.isDead || stack == null
             || !(stack.getItem() instanceof ElectromagneticRailgun)
-            || player.isUsingItem()
             || player.openContainer != player.inventoryContainer
-            || ACTIVE.containsKey(player.getUniqueID())) return;
+            || DRAINED.contains(id)
+            || ACTIVE.containsKey(id)) return;
+        if (player.isUsingItem() && !resolveUseConflict(player)) return;
+        USE_CONFLICT.remove(id);
         if (ACTIVE.size() >= RailgunDefaults.BEAM_MAX_CONCURRENT) {
             broadcastStop(player);
             return;
         }
         ACTIVE.put(player.getUniqueID(), new BeamState(player));
+    }
+
+    private static boolean resolveUseConflict(EntityPlayerMP player) {
+        long now = player.worldObj.getTotalWorldTime();
+        Long first = USE_CONFLICT.get(player.getUniqueID());
+        if (first == null || now - first > RailgunDefaults.BEAM_USE_CONFLICT_TICKS * 3L) {
+            USE_CONFLICT.put(player.getUniqueID(), now);
+            return false;
+        }
+        if (now - first < RailgunDefaults.BEAM_USE_CONFLICT_TICKS) return false;
+        player.clearItemInUse();
+        RailgunFireService.CHARGING.remove(player.getUniqueID());
+        return true;
+    }
+
+    public static void forget(EntityPlayerMP player) {
+        stop(player);
+        USE_CONFLICT.remove(player.getUniqueID());
+        DRAINED.remove(player.getUniqueID());
     }
 
     public static void stop(EntityPlayerMP player) {
@@ -107,6 +134,7 @@ public final class RailgunBeamService {
         double cost = ehv ? Math.max(0, config.ehvBeamEuPerSettle) + 16 * Math.max(0, config.ehvLightningEu)
             : Math.max(0, config.beamEuPerSettle) + Math.max(0, config.hvLightningEu) / 8;
         if (!RailgunEnergy.tryConsume(stack, cost)) {
+            DRAINED.add(player.getUniqueID());
             RailgunFireService.noEnergy(player);
             return false;
         }
@@ -171,14 +199,13 @@ public final class RailgunBeamService {
                 > RailgunDefaults.BEAM_RESEND_DISTANCE * RailgunDefaults.BEAM_RESEND_DISTANCE;
         state.lastSentEnd = end;
         state.lastSentEhv = ehv;
+        double range = from.subtract(end)
+            .length();
         RailgunNet.sendAround(
             world,
             player,
-            moved ? RailgunBeamUpdatePacket.move(
-                player.getEntityId(),
-                from.subtract(end)
-                    .length(),
-                ehv) : RailgunBeamUpdatePacket.hold(player.getEntityId(), ehv));
+            moved ? RailgunBeamUpdatePacket.move(player.getEntityId(), range, ehv)
+                : RailgunBeamUpdatePacket.hold(player.getEntityId(), range, ehv));
     }
 
     private static void broadcastStop(EntityPlayerMP player) {

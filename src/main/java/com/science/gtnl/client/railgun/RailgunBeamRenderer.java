@@ -198,7 +198,7 @@ public class RailgunBeamRenderer {
             HELD.put(shooterId, held);
         }
         held.ehv = packet.ehv;
-        if (packet.state == RailgunBeamUpdatePacket.STATE_MOVE) held.targetRange = packet.range();
+        held.targetRange = packet.range();
         held.lastUpdateTick = now;
     }
 

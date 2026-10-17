@@ -3,6 +3,8 @@ package com.science.gtnl.common.railgun;
 public final class RailgunDefaults {
 
     public static final int BEAM_SETTLE_INTERVAL_TICKS = 2;
+    public static final int BEAM_RESEND_TICKS = 10;
+    public static final int BEAM_USE_CONFLICT_TICKS = 20;
     public static final double BEAM_RESEND_DISTANCE = 0.02;
     public static final double BEAM_RANGE_LIMIT = 512;
     public static final double BEAM_RANGE_RESPONSE = 26;

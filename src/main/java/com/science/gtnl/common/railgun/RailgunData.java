@@ -9,11 +9,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 import com.science.gtnl.common.item.items.ElectromagneticRailgun;
+import com.science.gtnl.config.MainConfig;
 
 public final class RailgunData {
 
     public static final int MODULE_SLOTS = 8;
     public static final int FULL_CHARGE_UNITS = RailgunChargeTier.EHV3.chargeTicks;
+    public static final double RATE_EPSILON = 1.0E-6;
 
     private RailgunData() {}
 
@@ -32,8 +34,13 @@ public final class RailgunData {
         player.setItemInUse(stack, player.getItemInUseCount());
     }
 
-    public static int chargeStep(ItemStack stack) {
-        return 1 + modules(stack).count(RailgunModuleType.ACCELERATION);
+    public static double chargeRate(ItemStack stack) {
+        double bonus = Math.max(0, Math.min(1, MainConfig.item.railgun.accelerationBonus));
+        return 1 + bonus * modules(stack).count(RailgunModuleType.ACCELERATION);
+    }
+
+    public static int units(long ticks, double rate) {
+        return (int) Math.floor(Math.max(0, ticks) * rate + RATE_EPSILON);
     }
 
     public static NBTTagCompound tag(ItemStack stack) {
@@ -74,7 +81,6 @@ public final class RailgunData {
     }
 
     public static void setModuleStacks(ItemStack stack, ItemStack[] slots) {
-        double charge = RailgunEnergy.read(stack);
         NBTTagList list = new NBTTagList();
         for (int i = 0; i < Math.min(slots.length, MODULE_SLOTS); i++) {
             if (slots[i] == null) continue;
@@ -87,7 +93,10 @@ public final class RailgunData {
         }
         tag(stack).setTag("Modules", list);
         updateMode(stack);
-        double excess = charge - RailgunEnergy.capacity(stack);
+    }
+
+    public static void clampEnergy(ItemStack stack) {
+        double excess = RailgunEnergy.read(stack) - RailgunEnergy.capacity(stack);
         if (excess > 0) RailgunEnergy.tryConsume(stack, excess);
     }
 

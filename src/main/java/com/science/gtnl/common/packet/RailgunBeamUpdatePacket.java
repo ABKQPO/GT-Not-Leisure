@@ -35,8 +35,8 @@ public class RailgunBeamUpdatePacket extends ClientboundPacket {
         return new RailgunBeamUpdatePacket(shooterId, STATE_STOP, false, 0);
     }
 
-    public static RailgunBeamUpdatePacket hold(int shooterId, boolean ehv) {
-        return new RailgunBeamUpdatePacket(shooterId, STATE_HOLD, ehv, 0);
+    public static RailgunBeamUpdatePacket hold(int shooterId, double range, boolean ehv) {
+        return new RailgunBeamUpdatePacket(shooterId, STATE_HOLD, ehv, (float) range);
     }
 
     public static RailgunBeamUpdatePacket move(int shooterId, double range, boolean ehv) {
@@ -54,7 +54,7 @@ public class RailgunBeamUpdatePacket extends ClientboundPacket {
             state = buffer.readByte();
             ehv = buffer.readBoolean();
             valid = state >= STATE_STOP && state <= STATE_MOVE;
-            if (!valid || state != STATE_MOVE) return;
+            if (!valid || state == STATE_STOP) return;
             range = buffer.readFloat();
             valid = Float.isFinite(range) && range > 0 && range <= RailgunDefaults.BEAM_RANGE_LIMIT;
         } catch (RuntimeException ignored) {
@@ -67,7 +67,7 @@ public class RailgunBeamUpdatePacket extends ClientboundPacket {
         buffer.writeInt(shooterId);
         buffer.writeByte(state);
         buffer.writeBoolean(ehv);
-        if (state != STATE_MOVE) return;
+        if (state == STATE_STOP) return;
         buffer.writeFloat(range);
     }
 

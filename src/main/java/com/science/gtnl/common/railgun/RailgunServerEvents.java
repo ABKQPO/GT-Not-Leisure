@@ -61,13 +61,13 @@ public final class RailgunServerEvents {
 
     @SubscribeEvent
     public void logout(PlayerEvent.PlayerLoggedOutEvent event) {
-        if (event.player instanceof EntityPlayerMP player) RailgunBeamService.stop(player);
+        if (event.player instanceof EntityPlayerMP player) RailgunBeamService.forget(player);
         RailgunFireService.CHARGING.remove(event.player.getUniqueID());
     }
 
     @SubscribeEvent
     public void dimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        if (event.player instanceof EntityPlayerMP player) RailgunBeamService.stop(player);
+        if (event.player instanceof EntityPlayerMP player) RailgunBeamService.forget(player);
         RailgunFireService.CHARGING.remove(event.player.getUniqueID());
     }
 

@@ -10,13 +10,13 @@ import java.util.UUID;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.S19PacketEntityStatus;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.WorldServer;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.ElectromagneticRailgun;
+import com.science.gtnl.common.packet.RailgunChargeCapPacket;
 import com.science.gtnl.common.packet.RailgunFireFxPacket;
 import com.science.gtnl.common.packet.RailgunRecoilFxPacket;
 import com.science.gtnl.common.packet.StatusMessage;
@@ -29,23 +29,24 @@ public final class RailgunFireService {
     public static class ChargeSession {
 
         private final long startTick;
-        private final int accelStep;
+        private final double rate;
         private final ItemStack stack;
         private final int slot;
         private final int dimension;
         private long lastActiveTick;
+        private int cap = Integer.MAX_VALUE;
 
-        public ChargeSession(long startTick, int accelStep, ItemStack stack, int slot, int dimension) {
+        public ChargeSession(long startTick, double rate, ItemStack stack, int slot, int dimension) {
             this.startTick = startTick;
-            this.accelStep = accelStep;
+            this.rate = rate;
             this.stack = stack;
             this.slot = slot;
             this.dimension = dimension;
             this.lastActiveTick = startTick;
         }
 
-        public int accelStep() {
-            return accelStep;
+        public double rate() {
+            return rate;
         }
 
         public ItemStack stack() {
@@ -70,8 +71,22 @@ public final class RailgunFireService {
         }
 
         public int units(long now) {
-            int elapsed = (int) Math.max(0, Math.min(ElectromagneticRailgun.USE_DURATION, now - startTick));
-            return elapsed * accelStep;
+            return Math.min(cap, RailgunData.units(elapsed(now), rate));
+        }
+
+        public boolean capped() {
+            return cap != Integer.MAX_VALUE;
+        }
+
+        public int capAtAffordable(long now, double energy) {
+            long ticks = elapsed(now);
+            while (ticks > 0 && energy < chargeCostUpTo(RailgunData.units(ticks, rate), rate)) ticks--;
+            cap = RailgunData.units(ticks, rate);
+            return cap;
+        }
+
+        private long elapsed(long now) {
+            return Math.max(0, Math.min(ElectromagneticRailgun.USE_DURATION, now - startTick));
         }
     }
 
@@ -90,7 +105,7 @@ public final class RailgunFireService {
             player.getUniqueID(),
             new ChargeSession(
                 now,
-                RailgunData.chargeStep(stack),
+                RailgunData.chargeRate(stack),
                 stack,
                 player.inventory.currentItem,
                 player.dimension));
@@ -101,13 +116,11 @@ public final class RailgunFireService {
         if (session == null || session.stack() != stack) return;
         long now = now(player);
         session.touch(now);
-        int units = session.units(now);
-        if (RailgunEnergy.read(stack) < chargeCostUpTo(units, session.accelStep())) {
-            CHARGING.remove(player.getUniqueID());
-            player.clearItemInUse();
-            player.playerNetServerHandler.sendPacket(new S19PacketEntityStatus(player, (byte) 9));
-            noEnergy(player);
-        }
+        if (session.capped()) return;
+        double energy = RailgunEnergy.read(stack);
+        if (energy >= chargeCostUpTo(session.units(now), session.rate())) return;
+        ScienceNotLeisure.network.sendTo(new RailgunChargeCapPacket(session.capAtAffordable(now, energy)), player);
+        noEnergy(player);
     }
 
     public static void release(EntityPlayerMP player, ItemStack stack) {
@@ -115,7 +128,7 @@ public final class RailgunFireService {
         if (session == null || session.stack() != stack || !session.matches(player)) return;
         int units = session.units(now(player));
         RailgunChargeTier tier = RailgunChargeTier.fromUnits(units);
-        double chargeCost = chargeCostUpTo(units, session.accelStep());
+        double chargeCost = chargeCostUpTo(units, session.rate());
         if (tier == RailgunChargeTier.NONE) {
             RailgunEnergy.tryConsume(stack, chargeCost);
             return;
@@ -131,14 +144,18 @@ public final class RailgunFireService {
         return player.worldObj.getTotalWorldTime();
     }
 
-    public static double chargeCostUpTo(int units, int step) {
+    public static double chargeCostUpTo(int units, double rate) {
         var config = MainConfig.item.railgun;
-        step = Math.max(1, Math.min(3, step));
-        int ticks = Math.max(0, Math.min(216000, units) + step - 1) / step;
-        int first = Math.min(ticks, (24 + step - 1) / step);
-        int second = Math.min(ticks - first, (40 + step - 1) / step - first);
+        rate = Math.max(1, Math.min(3, rate));
+        int ticks = ticksFor(Math.max(0, Math.min(216000, units)), rate);
+        int first = Math.min(ticks, ticksFor(RailgunChargeTier.EHV2.chargeTicks, rate));
+        int second = Math.min(ticks - first, ticksFor(RailgunChargeTier.EHV3.chargeTicks, rate) - first);
         return first * Math.max(0, config.chargeEuEhv1) + second * Math.max(0, config.chargeEuEhv2)
             + (ticks - first - second) * Math.max(0, config.chargeEuEhv3);
+    }
+
+    private static int ticksFor(int units, double rate) {
+        return (int) Math.ceil(units / rate - RailgunData.RATE_EPSILON);
     }
 
     public static double shotCost(RailgunChargeTier tier) {
