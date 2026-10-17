@@ -21,6 +21,7 @@ public class RailgunClientFx {
     private static final double SPARK_SPREAD = 0.6;
     private static final int CHAIN_SPARKS = 4;
     private static final double CHAIN_SPARK_SPREAD = 0.4;
+    private static final float RAILGUN_SOUND_RANGE_VOLUME = 16.0F;
 
     public static void register() {
         MinecraftForge.EVENT_BUS.register(new RailgunClientFx());
@@ -44,12 +45,12 @@ public class RailgunClientFx {
         WorldClient world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
         RailgunCharge.finish(packet.shooterId);
-        if (packet.sound) world.playSound(
+        if (packet.sound && packet.from != null) world.playSound(
             packet.from.x(),
             packet.from.y(),
             packet.from.z(),
             max(packet) ? "sciencenotleisure:railgun.fire.max" : "sciencenotleisure:railgun.fire.charged",
-            max(packet) ? 1.7F : 0.9F + 0.15F * packet.tier,
+            RAILGUN_SOUND_RANGE_VOLUME,
             1,
             false);
         RailgunOrbRenderer.launch(packet.shooterId, packet.from, packet.firstHit, packet.tier, () -> impact(packet));
@@ -106,8 +107,14 @@ public class RailgunClientFx {
             }
         }
         sparks(world, hit, IMPACT_SPARKS, SPARK_SPREAD);
-        if (packet.sound && max)
-            world.playSound(hit.x(), hit.y(), hit.z(), "sciencenotleisure:railgun.fire.impact", 1.4F, 0.7F, false);
+        if (packet.sound && max) world.playSound(
+            hit.x(),
+            hit.y(),
+            hit.z(),
+            "sciencenotleisure:railgun.fire.impact",
+            RAILGUN_SOUND_RANGE_VOLUME,
+            0.7F,
+            false);
     }
 
     private static void sparks(WorldClient world, RailgunVec at, int count, double spread) {

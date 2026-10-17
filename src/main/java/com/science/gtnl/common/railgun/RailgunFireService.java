@@ -154,7 +154,7 @@ public final class RailgunFireService {
 
     public static void noEnergy(EntityPlayerMP player) {
         ScienceNotLeisure.network
-            .sendTo(new StatusMessage(new ChatComponentTranslation("gtnl.railgun.fail.no_eu")), player);
+            .sendTo(new StatusMessage(new ChatComponentTranslation("item.gtnl.railgun.fail.no_eu")), player);
     }
 
     public static void fireCharged(WorldServer world, EntityPlayerMP player, ItemStack stack, RailgunChargeTier tier) {

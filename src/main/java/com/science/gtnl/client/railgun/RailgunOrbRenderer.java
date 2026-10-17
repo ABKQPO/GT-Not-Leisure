@@ -24,6 +24,8 @@ public class RailgunOrbRenderer {
     private static final int TRAIL_SEGMENTS = 7;
     private static final int FILAMENTS = 3;
     private static final int FILAMENT_SEGMENTS = 8;
+    private static final double FILAMENT_SPEED = 0.28;
+    private static final double FILAMENT_WOBBLE_SPEED = 0.17;
     private static final int SPHERE_LONGITUDES = 24;
     private static final int SPHERE_LATITUDES = 12;
     private static final double SPHERE_RIM = 1.35;
@@ -91,6 +93,7 @@ public class RailgunOrbRenderer {
         if (world == null) return;
         long now = world.getTotalWorldTime();
         if (MainConfig.client.enableRailgunBloom) {
+            RailgunCamera.capture();
             List<OrbViz> orbs = collect(now, event.partialTicks);
             if (!orbs.isEmpty()) {
                 RailgunRenderHelper.renderGlow(Sprite.STREAK, () -> {
@@ -230,26 +233,41 @@ public class RailgunOrbRenderer {
         RailgunVec right = RailgunVec.rightOf(direction);
         RailgunVec up = right.cross(direction)
             .normalize();
-        double reach = orb.radius() * 2.6, width = Math.max(0.02, orb.radius() * 0.26);
-        float[] rgb = mix(orb.tier(), 0.7F);
+        double reach = orb.radius() * 2.8, width = Math.max(0.018, orb.radius() * 0.2);
         for (int filament = 0; filament < FILAMENTS; filament++) {
-            double angle = orb.time() * 1.9 + filament * (Math.PI * 2 / FILAMENTS) + orb.seed();
-            RailgunVec offset = right.scale(Math.cos(angle) * orb.radius())
-                .add(up.scale(Math.sin(angle) * orb.radius()));
-            RailgunRenderHelper.taperedRibbon(
-                orb.center()
-                    .subtract(direction.scale(reach))
-                    .add(offset),
-                orb.center()
-                    .add(direction.scale(reach))
-                    .subtract(offset),
-                width,
-                FILAMENT_SEGMENTS,
-                rgb[0],
-                rgb[1],
-                rgb[2],
-                0.8F);
+            double phase = orb.time() * FILAMENT_SPEED + filament * (Math.PI * 2 / FILAMENTS) + orb.seed() * 0.37;
+            double wobblePhase = orb.time() * FILAMENT_WOBBLE_SPEED + filament * 1.7 + orb.seed() * 0.11;
+            RailgunVec previous = filamentPoint(orb, direction, right, up, reach, phase, wobblePhase, 0);
+            for (int segment = 1; segment <= FILAMENT_SEGMENTS; segment++) {
+                double start = (segment - 1) / (double) FILAMENT_SEGMENTS;
+                double end = segment / (double) FILAMENT_SEGMENTS;
+                RailgunVec current = filamentPoint(orb, direction, right, up, reach, phase, wobblePhase, end);
+                double middle = (start + end) * 0.5;
+                double taper = 0.6 + 0.4 * Math.sin(Math.PI * middle);
+                float pulse = (float) (0.82 + 0.18 * Math.sin(phase * 1.3 + segment * 0.8));
+                setColor(orb.tier(), 0.52F, 0.24F * pulse);
+                RailgunRenderHelper.uvRibbon(previous, current, width * 1.45 * taper, width * 1.45 * taper, start, end);
+                setColor(orb.tier(), 0.9F, 0.72F * pulse);
+                RailgunRenderHelper.uvRibbon(previous, current, width * 0.42 * taper, width * 0.42 * taper, start, end);
+                previous = current;
+            }
         }
+    }
+
+    private static RailgunVec filamentPoint(OrbViz orb, RailgunVec direction, RailgunVec right, RailgunVec up,
+        double reach, double phase, double wobblePhase, double position) {
+        double along = (position - 0.5) * reach * 2;
+        double radialPhase = phase + position * 2.4;
+        double envelope = 0.55 + 0.45 * Math.sin(Math.PI * position);
+        double wobble = orb.radius() * (0.32 + 0.18 * Math.sin(wobblePhase + position * 5.2));
+        RailgunVec radial = right.scale(Math.cos(radialPhase) * orb.radius() * envelope)
+            .add(up.scale(Math.sin(radialPhase) * orb.radius() * envelope));
+        RailgunVec jitter = right.scale(Math.sin(wobblePhase * 0.9 + position * 8.0) * wobble)
+            .add(up.scale(Math.cos(wobblePhase * 0.73 + position * 6.4) * wobble * 0.72));
+        return orb.center()
+            .add(direction.scale(along))
+            .add(radial)
+            .add(jitter.scale(Math.sin(Math.PI * position)));
     }
 
     private static void setColor(int tier, float mix, float alpha) {
