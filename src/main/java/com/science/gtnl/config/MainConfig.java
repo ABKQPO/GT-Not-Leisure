@@ -51,7 +51,7 @@ public class MainConfig {
         @DefaultBoolean(true)
         public boolean enableRailgunBloom = true;
 
-        @Comment("GLSL shaders for the railgun beam, charge orb, impact ring and charge overlay")
+        @Comment("GLSL shaders for the railgun beam, charge orb and charge overlay")
         @LangKey("gtnl.gui.config.general.client.enable_railgun_shaders")
         @DefaultBoolean(true)
         public boolean enableRailgunShaders = true;

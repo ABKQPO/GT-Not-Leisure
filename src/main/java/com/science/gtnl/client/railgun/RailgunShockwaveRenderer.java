@@ -1,37 +1,62 @@
 package com.science.gtnl.client.railgun;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
-import com.science.gtnl.client.railgun.shader.RailgunShaderEffect;
 import com.science.gtnl.common.railgun.RailgunVec;
-import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class RailgunShockwaveRenderer {
 
-    private static final int LIFETIME = 12;
     private static final int MAX_ACTIVE = 64;
-    private static final int FALLBACK_SEGMENTS = 64;
-    private static final double PLANE_OFFSET = 0.03;
+    private static final int RING_SEGMENTS = 64;
+    private static final double MAX_RADIUS = 32;
+    private static final double PLANE_OFFSET = 0.05;
+    private static final double OCCLUSION_MARGIN = 0.05;
+    private static final float RADIUS_JITTER = 0.095F;
+    private static final float RING_WIDTH = 0.18F;
+    private static final float RING_ALPHA = 0.85F;
+    private static final float RIM_ALPHA = 0.15F;
     private static final float RED = 1F;
-    private static final float GREEN = 0.65F;
-    private static final float BLUE = 0.85F;
+    private static final float GREEN = 0.5F;
+    private static final float BLUE = 0.75F;
 
-    private record Wave(RailgunVec center, double radius, long born) {}
+    private static final class Wave {
+
+        final RailgunVec center;
+        final double maxRadius;
+        final int lifetime;
+        final long born;
+        final boolean[] occluded = new boolean[RING_SEGMENTS];
+        long occlusionTick = Long.MIN_VALUE;
+
+        Wave(RailgunVec center, double maxRadius, int lifetime, long born) {
+            this.center = center;
+            this.maxRadius = maxRadius;
+            this.lifetime = lifetime;
+            this.born = born;
+        }
+    }
 
     private static final List<Wave> ACTIVE = new ArrayList<>();
 
-    public static void spawn(RailgunVec center, double radius) {
+    public static void spawn(RailgunVec center, double radius, int lifetime) {
         var world = Minecraft.getMinecraft().theWorld;
-        if (world == null || radius <= 0 || radius > 32 || !center.finite()) return;
+        if (world == null || !center.finite()
+            || !Double.isFinite(radius)
+            || radius <= 0
+            || radius > MAX_RADIUS
+            || lifetime <= 0) return;
         if (ACTIVE.size() >= MAX_ACTIVE) ACTIVE.remove(0);
-        ACTIVE.add(new Wave(center, radius, world.getTotalWorldTime()));
+        ACTIVE.add(new Wave(center, radius, lifetime, world.getTotalWorldTime()));
     }
 
     public static void clear() {
@@ -43,56 +68,77 @@ public class RailgunShockwaveRenderer {
         var world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
         long now = world.getTotalWorldTime();
-        ACTIVE.removeIf(wave -> now - wave.born() >= LIFETIME);
+        ACTIVE.removeIf(wave -> now - wave.born >= wave.lifetime);
         if (ACTIVE.isEmpty()) return;
-        if (!drawShader(now, event.partialTicks)) RailgunRenderHelper
-            .render(() -> { for (Wave wave : ACTIVE) fallback(wave, progress(wave, now, event.partialTicks)); });
-    }
-
-    private static boolean drawShader(long now, float partialTicks) {
-        if (!MainConfig.client.enableRailgunShaders) return false;
-        RailgunShaderEffect shader = RailgunShaderEffect.IMPACT;
-        if (!shader.begin()) return false;
-        try {
-            shader.uniform1f("time", (float) ((now + partialTicks) * 0.05));
+        for (Wave wave : ACTIVE) {
+            float progress = progress(wave, now, event.partialTicks);
+            if (now != wave.occlusionTick)
+                refreshOcclusion(world, wave, radius(wave, progress), width(wave, progress), progress);
+            wave.occlusionTick = now;
+        }
+        RailgunRenderHelper.render(() -> {
             for (Wave wave : ACTIVE) {
-                shader.uniform1f("progress", (float) progress(wave, now, partialTicks));
-                RailgunRenderHelper.render(() -> {
-                    Tessellator.instance.setColorRGBA_F(RED, GREEN, BLUE, 1F);
-                    RailgunRenderHelper.uvPlane(
-                        wave.center()
-                            .add(0, PLANE_OFFSET, 0),
-                        wave.radius());
-                });
+                float progress = progress(wave, now, event.partialTicks);
+                ring(wave, radius(wave, progress), width(wave, progress), progress, RING_ALPHA * (1 - progress));
             }
-            return true;
-        } finally {
-            shader.end();
+        });
+    }
+
+    private static float progress(Wave wave, long now, float partialTicks) {
+        return Math.min(1F, (now - wave.born + partialTicks) / wave.lifetime);
+    }
+
+    private static double radius(Wave wave, float progress) {
+        return wave.maxRadius * (1 - (1 - progress) * (1 - progress));
+    }
+
+    private static double width(Wave wave, float progress) {
+        return wave.maxRadius * RING_WIDTH * (1 - progress * 0.5);
+    }
+
+    private static void refreshOcclusion(World world, Wave wave, double radius, double width, float progress) {
+        if (radius <= 0 || width <= 0) {
+            Arrays.fill(wave.occluded, false);
+            return;
+        }
+        RailgunVec origin = wave.center.add(0, PLANE_OFFSET, 0);
+        for (int i = 0; i < RING_SEGMENTS; i++) {
+            double middle = (i + 0.5) * Math.PI * 2 / RING_SEGMENTS;
+            double reach = Math.max(
+                jittered(wave, radius, i, progress) + width * 0.5,
+                jittered(wave, radius, i + 1, progress) + width * 0.5) + OCCLUSION_MARGIN;
+            RailgunVec edge = origin.add(Math.cos(middle) * reach, 0, Math.sin(middle) * reach);
+            MovingObjectPosition hit = world.func_147447_a(origin.toMc(), edge.toMc(), false, true, false);
+            wave.occluded[i] = hit != null && hit.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK;
         }
     }
 
-    private static void fallback(Wave wave, double progress) {
-        double radius = wave.radius() * progress;
-        double inner = Math.max(0, radius - 0.15 - 0.25 * progress);
-        Tessellator.instance.setColorRGBA_F(RED, GREEN, BLUE, (float) (1 - progress) * 1F);
-        for (int index = 0; index < FALLBACK_SEGMENTS; index++) {
-            double start = index * Math.PI * 2 / FALLBACK_SEGMENTS, end = (index + 1) * Math.PI * 2 / FALLBACK_SEGMENTS;
-            RailgunRenderHelper.vertex(
-                wave.center()
-                    .add(Math.cos(start) * inner, PLANE_OFFSET, Math.sin(start) * inner));
-            RailgunRenderHelper.vertex(
-                wave.center()
-                    .add(Math.cos(start) * radius, PLANE_OFFSET, Math.sin(start) * radius));
-            RailgunRenderHelper.vertex(
-                wave.center()
-                    .add(Math.cos(end) * radius, PLANE_OFFSET, Math.sin(end) * radius));
-            RailgunRenderHelper.vertex(
-                wave.center()
-                    .add(Math.cos(end) * inner, PLANE_OFFSET, Math.sin(end) * inner));
+    private static void ring(Wave wave, double radius, double width, float progress, float alpha) {
+        if (radius <= 0 || width <= 0 || alpha <= 0) return;
+        Tessellator tessellator = Tessellator.instance;
+        double y = wave.center.y() + PLANE_OFFSET;
+        for (int i = 0; i < RING_SEGMENTS; i++) {
+            if (wave.occluded[i]) continue;
+            double start = i * Math.PI * 2 / RING_SEGMENTS, end = (i + 1) * Math.PI * 2 / RING_SEGMENTS;
+            double radius0 = jittered(wave, radius, i, progress), radius1 = jittered(wave, radius, i + 1, progress);
+            double inner0 = Math.max(0, radius0 - width * 0.5), inner1 = Math.max(0, radius1 - width * 0.5);
+            double outer0 = radius0 + width * 0.5, outer1 = radius1 + width * 0.5;
+            double cos0 = Math.cos(start), sin0 = Math.sin(start), cos1 = Math.cos(end), sin1 = Math.sin(end);
+            tessellator.setColorRGBA_F(RED, GREEN, BLUE, alpha);
+            tessellator.addVertex(wave.center.x() + cos0 * inner0, y, wave.center.z() + sin0 * inner0);
+            tessellator.addVertex(wave.center.x() + cos1 * inner1, y, wave.center.z() + sin1 * inner1);
+            tessellator.setColorRGBA_F(RED, GREEN, BLUE, alpha * RIM_ALPHA);
+            tessellator.addVertex(wave.center.x() + cos1 * outer1, y, wave.center.z() + sin1 * outer1);
+            tessellator.addVertex(wave.center.x() + cos0 * outer0, y, wave.center.z() + sin0 * outer0);
         }
     }
 
-    private static double progress(Wave wave, long now, float partialTicks) {
-        return Math.min(1, (now - wave.born() + partialTicks) / LIFETIME);
+    private static double jittered(Wave wave, double radius, int segment, float progress) {
+        if (radius <= 0) return radius;
+        RailgunVec center = wave.center;
+        double phase = center.x() * 0.17 + center.y() * 0.11 + center.z() * 0.13;
+        double slow = Math.sin(segment * 0.59 + phase + progress * 2.4);
+        double fast = Math.sin(segment * 1.37 + phase * 0.43 - progress * 3.1);
+        return radius * (1 + (slow * 0.68 + fast * 0.32) * RADIUS_JITTER);
     }
 }

@@ -73,7 +73,7 @@ gtnl.gui.config.general.client.enable_railgun_bloom=Railgun Glow Effects
 gtnl.gui.config.general.client.enable_railgun_bloom.tooltip=Render the soft bloom, the charge orb and the travelling shot. Disable to keep the plain beam only.
 
 gtnl.gui.config.general.client.enable_railgun_shaders=Railgun GLSL Shaders
-gtnl.gui.config.general.client.enable_railgun_shaders.tooltip=Procedural shaders for the railgun beam, charge orb, impact ring and charge overlay. Falls back to the textured sprites when a shader fails to compile.
+gtnl.gui.config.general.client.enable_railgun_shaders.tooltip=Procedural shaders for the railgun beam, charge orb and charge overlay. Falls back to the textured sprites when a shader fails to compile.
 
 gtnl.gui.config.general.effect.enableghostlyshape=Enable Ghostly Shape
 gtnl.gui.config.general.effect.enableghostlyshape.tooltip=When the player dies and respawns, give the player the Ghost Shape effect.

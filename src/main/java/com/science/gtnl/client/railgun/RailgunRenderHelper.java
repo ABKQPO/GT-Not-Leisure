@@ -267,6 +267,15 @@ public class RailgunRenderHelper {
         return muzzle == null ? fallback : muzzle;
     }
 
+    public static RailgunVec analyticMuzzle(int shooterId, RailgunVec fallback, float partialTicks) {
+        Minecraft minecraft = Minecraft.getMinecraft();
+        Entity entity = minecraft.theWorld == null ? null : minecraft.theWorld.getEntityByID(shooterId);
+        if (entity == null) return fallback;
+        if (entity == minecraft.thePlayer && minecraft.gameSettings.thirdPersonView == 0)
+            return firstPersonMuzzle(minecraft.thePlayer, partialTicks);
+        return thirdPersonMuzzle(entity, partialTicks);
+    }
+
     public static RailgunVec firstPersonMuzzle(EntityPlayer player, float partialTicks) {
         if (player == null) return null;
         RailgunVec look = RailgunVec.look(player, partialTicks);
