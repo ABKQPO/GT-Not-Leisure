@@ -1,3 +1,11 @@
+> **Unofficial modified fork.** This repository contains an unofficial modified
+> build of GT: Not Leisure, based on upstream commit
+> [`082483e468942eb1949975f08bc900510c91d930`](https://github.com/ABKQPO/GT-Not-Leisure/commit/082483e468942eb1949975f08bc900510c91d930).
+> The list of changes, the modification date, and the license notice are in
+> [`MODIFICATIONS.md`](MODIFICATIONS.md). The project and these modifications are
+> licensed under **LGPL-3.0** (see [`LICENSE.txt`](LICENSE.txt)). This fork is not
+> affiliated with or endorsed by the upstream authors.
+
 <div align="center">
   <img src="./src/main/resources/assets/sciencenotleisure/textures/logo.svg" width="225" height="225" alt="GT-Not-Leisure Logo">
 
