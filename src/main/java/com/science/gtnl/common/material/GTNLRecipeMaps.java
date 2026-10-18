@@ -68,6 +68,7 @@ public class GTNLRecipeMaps {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.GenerationEarthEngine.get(1))
                 .setHeight(172))
+                .setMultipleWidgetsAllowed(false))
         .build();
 
     public static final RecipeMap<RecipeMapBackend> FallingTowerRecipes = Mods.BloodMagic.isModLoaded()
@@ -78,6 +79,7 @@ public class GTNLRecipeMaps {
             .neiHandlerInfo(
                 builder -> builder.setDisplayStack(GTNLItemList.BloodSoulSacrificialArray.get(1))
                     .setHeight(207))
+                    .setMultipleWidgetsAllowed(false))
             .build()
         : null;
 
@@ -116,6 +118,7 @@ public class GTNLRecipeMaps {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.TeleportationArrayToAlfheim.get(1))
                 .setHeight(208))
+                .setMultipleWidgetsAllowed(false))
         .build();
 
     public static final RecipeMap<RecipeMapBackend> RuneAltarRecipes = RecipeMapBuilder
@@ -179,7 +182,9 @@ public class GTNLRecipeMaps {
         .maxIO(4, 4, 4, 12)
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GeneralFrontend::new)
-        .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.PetrochemicalPlant.get(1)))
+        .neiHandlerInfo(
+            builder -> builder.setDisplayStack(GTNLItemList.PetrochemicalPlant.get(1))
+                .setMultipleWidgetsAllowed(false))
         .build();
 
     public static final RecipeMap<RecipeMapBackend> SmeltingMixingFurnaceRecipes = RecipeMapBuilder
@@ -187,7 +192,9 @@ public class GTNLRecipeMaps {
         .maxIO(8, 4, 16, 4)
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GeneralFrontend::new)
-        .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.SmeltingMixingFurnace.get(1)))
+        .neiHandlerInfo(
+            builder -> builder.setDisplayStack(GTNLItemList.SmeltingMixingFurnace.get(1))
+                .setMultipleWidgetsAllowed(false))
         .build();
 
     public static final RecipeMap<RecipeMapBackend> RareEarthCentrifugalRecipes = RecipeMapBuilder
@@ -195,7 +202,9 @@ public class GTNLRecipeMaps {
         .maxIO(1, 17, 1, 1)
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GeneralFrontend::new)
-        .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.RareEarthCentrifugal.get(1)))
+        .neiHandlerInfo(
+            builder -> builder.setDisplayStack(GTNLItemList.RareEarthCentrifugal.get(1))
+                .setMultipleWidgetsAllowed(false))
         .build();
 
     public static RecipeMap<RecipeMapBackend> IndustrialCrucibleRecipes = RecipeMapBuilder
@@ -227,7 +236,9 @@ public class GTNLRecipeMaps {
         .maxIO(4, 16, 0, 0)
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GeneralFrontend::new)
-        .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.LibraryOfRuina.get(1)))
+        .neiHandlerInfo(
+            builder -> builder.setDisplayStack(GTNLItemList.LibraryOfRuina.get(1))
+                .setMultipleWidgetsAllowed(false))
         .build();
 
     public static RecipeMap<RecipeMapBackend> FishingGroundRecipes = RecipeMapBuilder
@@ -238,6 +249,7 @@ public class GTNLRecipeMaps {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.LibraryOfRuina.get(1))
                 .setHeight(190))
+                .setMultipleWidgetsAllowed(false))
         .build();
 
     public static RecipeMap<RecipeMapBackend> IndustrialInfusionCraftingRecipes = RecipeMapBuilder
@@ -246,7 +258,9 @@ public class GTNLRecipeMaps {
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(IndustrialInfusionCraftingRecipesFrontend::new)
         .neiTransferRect(100, 45, 18, 72)
-        .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.IndustrialArcaneAssembler.get(1)))
+        .neiHandlerInfo(
+            builder -> builder.setDisplayStack(GTNLItemList.IndustrialArcaneAssembler.get(1))
+                .setMultipleWidgetsAllowed(false))
         .build();
 
     public static RecipeMap<RecipeMapBackend> IsaMillRecipes = RecipeMapBuilder.of("gtnl.recipe.isa_mill")
@@ -355,6 +369,7 @@ public class GTNLRecipeMaps {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.ShallowChemicalCoupling.get(1))
                 .setHeight(172))
+                .setMultipleWidgetsAllowed(false))
         .neiSpecialInfoFormatter(HeatingCoilSpecialValueFormatter.INSTANCE)
         .build();
 
@@ -384,6 +399,7 @@ public class GTNLRecipeMaps {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.SteamGateAssembler.get(1))
                 .setHeight(SteamGateAssemblerFrontend.NEI_HANDLER_HEIGHT))
+                .setMultipleWidgetsAllowed(false))
         .build();
 
     public static final RecipeMap<RecipeMapBackend> CactusWonderFakeRecipes = RecipeMapBuilder
@@ -464,7 +480,9 @@ public class GTNLRecipeMaps {
         .maxIO(1, 36, 0, 1)
         .progressBar(GTUITextures.PROGRESSBAR_COMPRESS)
         .frontend(ExtremeExtremeEntityCrusherFrontend::new)
-        .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.HighwayToHell.get(1)))
+        .neiHandlerInfo(
+            builder -> builder.setDisplayStack(GTNLItemList.HighwayToHell.get(1))
+                .setMultipleWidgetsAllowed(false))
         .build();
 
     public static RecipeMap<RecipeMapBackend> LargeBioLabRecipes = RecipeMapBuilder.of("gtnl.recipe.large_bio_lab")
@@ -551,6 +569,7 @@ public class GTNLRecipeMaps {
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.RocketAssembler.get(1))
                 .setHeight(196))
+                .setMultipleWidgetsAllowed(false))
         .build();
 
     public static final RecipeMap<RecipeMapBackend> CircuitNanitesDataRecipes = RecipeMapBuilder
@@ -595,7 +614,9 @@ public class GTNLRecipeMaps {
         .maxIO(16, 16, 8, 8)
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GeneralFrontend::new)
-        .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.NanitesIntegratedProcessingCenter.get(1)))
+        .neiHandlerInfo(
+            builder -> builder.setDisplayStack(GTNLItemList.NanitesIntegratedProcessingCenter.get(1))
+                .setMultipleWidgetsAllowed(false))
         .neiRecipeComparator(
             Comparator
                 .<GTRecipe, NanitesIntegratedProcessingRecipesData>comparing(

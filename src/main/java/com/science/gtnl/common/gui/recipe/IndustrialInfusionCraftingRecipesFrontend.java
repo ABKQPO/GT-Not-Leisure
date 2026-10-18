@@ -1,9 +1,6 @@
 package com.science.gtnl.common.gui.recipe;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.WeakHashMap;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -14,6 +11,10 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
+import com.science.gtnl.common.recipe.gtnl.CrucibleCraftingRecipes;
+import com.science.gtnl.common.recipe.gtnl.InfusionCraftingRecipes;
+import com.science.gtnl.common.recipe.gtnl.ShapedArcaneCraftingRecipes;
+import com.science.gtnl.common.recipe.thaumcraft.TCRecipeTools;
 
 import codechicken.nei.PositionedStack;
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
@@ -21,22 +22,29 @@ import gregtech.api.recipe.NEIRecipePropertiesBuilder;
 import gregtech.api.util.MethodsReturnNonnullByDefault;
 import gregtech.common.gui.modularui.UIHelper;
 import gregtech.nei.GTNEIDefaultHandler;
+import thaumcraft.api.aspects.AspectList;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class IndustrialInfusionCraftingRecipesFrontend extends GTNLLogoFrontend {
 
-    private static final int xDirMaxCount = 5;
-    private static final int yOrigin = 8;
-    private final int itemRowCount;
+    private static final int INPUT_X_ORIGIN = 6;
+    private static final int INPUT_Y_ORIGIN = 8;
+    private static final int SHAPED_INPUT_COLUMNS = 3;
+    private static final int INFUSION_INPUT_COLUMNS = 5;
+    private static final int OUTPUT_X_ORIGIN = 125;
+    private static final int PROGRESS_OFFSET_X = 15;
+    private static final int LEGACY_OUTPUT_Y_ORIGIN = 45;
+    private static final int LEGACY_SPECIAL_Y_ORIGIN = 75;
+    private static final int NEI_WINDOW_OFFSET_X = -5;
+    private static final int NEI_WINDOW_OFFSET_Y = -11;
+    private static final int SLOT_INSET = 1;
     private static final int ASPECT_COLUMNS = 10;
     private static final int ASPECT_ROWS = 2;
-    private static final int ASPECT_X_ORIGIN = 5;
     private static final int ASPECT_SPACING = 16;
-    private static final int ASPECT_TOP_PADDING = 4;
+    private static final int LEGACY_ASPECT_TOP_PADDING = 4;
 
-    private final Set<GTNEIDefaultHandler.CachedDefaultRecipe> expandedRecipes = Collections
-        .newSetFromMap(new WeakHashMap<>());
+    private final int itemRowCount;
 
     public IndustrialInfusionCraftingRecipesFrontend(BasicUIPropertiesBuilder uiPropertiesBuilder,
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {
@@ -46,15 +54,14 @@ public class IndustrialInfusionCraftingRecipesFrontend extends GTNLLogoFrontend 
 
     @Override
     protected NEIRecipePropertiesBuilder modifyNEIProperties(NEIRecipePropertiesBuilder neiPropertiesBuilder) {
-        int inputAreaHeight = yOrigin + getItemRowCount() * 18;
-        int aspectAreaHeight = ASPECT_TOP_PADDING + ASPECT_ROWS * ASPECT_SPACING + 4;
+        int inputAreaHeight = INPUT_Y_ORIGIN + getItemRowCount() * 18;
+        int aspectAreaHeight = getAspectTopPadding() + ASPECT_ROWS * ASPECT_SPACING + 4;
 
         return neiPropertiesBuilder.recipeBackgroundSize(new Size(170, inputAreaHeight + aspectAreaHeight));
     }
 
     @Override
-    public void addProgressBar(ModularWindow.@NotNull Builder builder,
-        @NotNull GTNEIDefaultHandler.NEITemplateContext ctx) {
+    public void addProgressBar(ModularWindow.@NotNull Builder builder, GTNEIDefaultHandler.NEITemplateContext ctx) {
         super.addProgressBar(
             builder,
             new GTNEIDefaultHandler.NEITemplateContext(
@@ -65,49 +72,91 @@ public class IndustrialInfusionCraftingRecipesFrontend extends GTNLLogoFrontend 
                 ctx.fluidOutputsInventory,
                 ctx.progressSupplier,
                 ctx.recipeSupplier,
-                new Pos2d(15, 10)));
+                new Pos2d(PROGRESS_OFFSET_X, usesAdjustedLayout() ? getOutputYOrigin() - 35 : 10)));
     }
 
     private int getItemRowCount() {
-        return (Math.max(uiProperties.maxItemInputs, uiProperties.maxItemOutputs) - 1) / xDirMaxCount + 1;
+        int columns = getInputColumnCount();
+        return (Math.max(uiProperties.maxItemInputs, uiProperties.maxItemOutputs) - 1) / columns + 1;
+    }
+
+    private int getInputColumnCount() {
+        return uiProperties.maxItemInputs == 9 ? SHAPED_INPUT_COLUMNS : INFUSION_INPUT_COLUMNS;
+    }
+
+    private boolean usesAdjustedLayout() {
+        return uiProperties.maxItemInputs == 9 || uiProperties.maxItemInputs == 25;
+    }
+
+    private int getAspectTopPadding() {
+        return usesAdjustedLayout() ? 0 : LEGACY_ASPECT_TOP_PADDING;
+    }
+
+    private int getOutputYOrigin() {
+        return usesAdjustedLayout() ? INPUT_Y_ORIGIN + (getItemRowCount() - 1) * 9 : LEGACY_OUTPUT_Y_ORIGIN;
     }
 
     @Override
-    public @NotNull List<Pos2d> getItemInputPositions(int itemInputCount) {
-        return UIHelper.getGridPositions(itemInputCount, 6, yOrigin, xDirMaxCount);
+    public List<Pos2d> getItemInputPositions(int itemInputCount) {
+        return UIHelper.getGridPositions(itemInputCount, INPUT_X_ORIGIN, INPUT_Y_ORIGIN, getInputColumnCount());
     }
 
     @Override
-    public @NotNull List<Pos2d> getItemOutputPositions(int itemOutputCount) {
-        return UIHelper.getGridPositions(itemOutputCount, 125, 45, xDirMaxCount);
+    public List<Pos2d> getItemOutputPositions(int itemOutputCount) {
+        return UIHelper.getGridPositions(itemOutputCount, OUTPUT_X_ORIGIN, getOutputYOrigin(), INFUSION_INPUT_COLUMNS);
     }
 
     @Override
-    public @NotNull Pos2d getSpecialItemPosition() {
-        return new Pos2d(125, 75);
+    public Pos2d getSpecialItemPosition() {
+        int yOrigin = usesAdjustedLayout() ? getOutputYOrigin() + 18 : LEGACY_SPECIAL_Y_ORIGIN;
+        return new Pos2d(OUTPUT_X_ORIGIN, yOrigin);
     }
 
     @Override
-    public void drawNEIOverlays(GTNEIDefaultHandler.CachedDefaultRecipe neiCachedRecipe) {
-        if (expandedRecipes.add(neiCachedRecipe)
-            && neiCachedRecipe.mRecipe.mSpecialItems instanceof ItemStack[]aspectStacks) {
-
-            int aspectYOrigin = yOrigin + itemRowCount * 18 + ASPECT_TOP_PADDING;
-
-            for (int i = 0; i < aspectStacks.length; i++) {
-                ItemStack stack = aspectStacks[i];
-                if (stack == null) continue;
-
-                int column = i % ASPECT_COLUMNS;
-                int row = i / ASPECT_COLUMNS;
-
-                int x = ASPECT_X_ORIGIN + column * ASPECT_SPACING;
-                int y = aspectYOrigin + row * ASPECT_SPACING;
-
-                neiCachedRecipe.mInputs.add(new PositionedStack(stack.copy(), x, y, false));
-            }
+    public void addGregTechLogo(ModularWindow.Builder builder, Pos2d windowOffset) {
+        if (!usesAdjustedLayout()) {
+            super.addGregTechLogo(builder, windowOffset);
+            return;
         }
 
-        super.drawNEIOverlays(neiCachedRecipe);
+        int progressX = uiProperties.progressBarPos.x + PROGRESS_OFFSET_X;
+        int progressY = uiProperties.progressBarPos.y + getOutputYOrigin() - 35;
+        int logoX = progressX + (uiProperties.progressBarSize.width - uiProperties.logoSize.width) / 2;
+        int logoY = progressY + uiProperties.progressBarSize.height;
+        super.addGregTechLogo(builder, new Pos2d(logoX - uiProperties.logoPos.x, logoY - uiProperties.logoPos.y));
+    }
+
+    @Override
+    public void prepareRecipe(GTNEIDefaultHandler.CachedDefaultRecipe neiCachedRecipe) {
+        super.prepareRecipe(neiCachedRecipe);
+
+        AspectList aspects = neiCachedRecipe.mRecipe.getMetadata(ShapedArcaneCraftingRecipes.ARCANE_VIS);
+        if (aspects == null) aspects = neiCachedRecipe.mRecipe.getMetadata(InfusionCraftingRecipes.INFUSION_ASPECTS);
+        if (aspects == null) aspects = neiCachedRecipe.mRecipe.getMetadata(CrucibleCraftingRecipes.CRUCIBLE_ASPECTS);
+        if (aspects == null || aspects.size() == 0) return;
+
+        int aspectXOrigin;
+        int aspectYOrigin;
+        if (usesAdjustedLayout()) {
+            aspectXOrigin = INPUT_X_ORIGIN + NEI_WINDOW_OFFSET_X + SLOT_INSET;
+            aspectYOrigin = INPUT_Y_ORIGIN + itemRowCount * 18 + NEI_WINDOW_OFFSET_Y + SLOT_INSET;
+        } else {
+            aspectXOrigin = 5;
+            aspectYOrigin = INPUT_Y_ORIGIN + itemRowCount * 18 + LEGACY_ASPECT_TOP_PADDING;
+        }
+        ItemStack[] aspectStacks = TCRecipeTools.createAspectDisplayStacks(aspects);
+        for (int i = 0; i < aspectStacks.length; i++) {
+            ItemStack stack = aspectStacks[i];
+            if (stack == null) continue;
+
+            int column = i % ASPECT_COLUMNS;
+            int row = i / ASPECT_COLUMNS;
+            neiCachedRecipe.mInputs.add(
+                new PositionedStack(
+                    stack,
+                    aspectXOrigin + column * ASPECT_SPACING,
+                    aspectYOrigin + row * ASPECT_SPACING,
+                    false));
+        }
     }
 }
