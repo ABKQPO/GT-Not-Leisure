@@ -1,9 +1,6 @@
 package com.science.gtnl.common.gui.recipe;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.WeakHashMap;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -14,6 +11,10 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
+import com.science.gtnl.common.recipe.gtnl.CrucibleCraftingRecipes;
+import com.science.gtnl.common.recipe.gtnl.InfusionCraftingRecipes;
+import com.science.gtnl.common.recipe.gtnl.ShapedArcaneCraftingRecipes;
+import com.science.gtnl.common.recipe.thaumcraft.TCRecipeTools;
 
 import codechicken.nei.PositionedStack;
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
@@ -21,6 +22,7 @@ import gregtech.api.recipe.NEIRecipePropertiesBuilder;
 import gregtech.api.util.MethodsReturnNonnullByDefault;
 import gregtech.common.gui.modularui.UIHelper;
 import gregtech.nei.GTNEIDefaultHandler;
+import thaumcraft.api.aspects.AspectList;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -34,9 +36,6 @@ public class IndustrialInfusionCraftingRecipesFrontend extends GTNLLogoFrontend 
     private static final int ASPECT_X_ORIGIN = 5;
     private static final int ASPECT_SPACING = 16;
     private static final int ASPECT_TOP_PADDING = 4;
-
-    private final Set<GTNEIDefaultHandler.CachedDefaultRecipe> expandedRecipes = Collections
-        .newSetFromMap(new WeakHashMap<>());
 
     public IndustrialInfusionCraftingRecipesFrontend(BasicUIPropertiesBuilder uiPropertiesBuilder,
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {
@@ -88,26 +87,28 @@ public class IndustrialInfusionCraftingRecipesFrontend extends GTNLLogoFrontend 
     }
 
     @Override
-    public void drawNEIOverlays(GTNEIDefaultHandler.CachedDefaultRecipe neiCachedRecipe) {
-        if (expandedRecipes.add(neiCachedRecipe)
-            && neiCachedRecipe.mRecipe.mSpecialItems instanceof ItemStack[]aspectStacks) {
+    public void prepareRecipe(GTNEIDefaultHandler.CachedDefaultRecipe neiCachedRecipe) {
+        super.prepareRecipe(neiCachedRecipe);
 
-            int aspectYOrigin = yOrigin + itemRowCount * 18 + ASPECT_TOP_PADDING;
+        AspectList aspects = neiCachedRecipe.mRecipe.getMetadata(ShapedArcaneCraftingRecipes.ARCANE_VIS);
+        if (aspects == null) aspects = neiCachedRecipe.mRecipe.getMetadata(InfusionCraftingRecipes.INFUSION_ASPECTS);
+        if (aspects == null) aspects = neiCachedRecipe.mRecipe.getMetadata(CrucibleCraftingRecipes.CRUCIBLE_ASPECTS);
+        if (aspects == null || aspects.size() == 0) return;
 
-            for (int i = 0; i < aspectStacks.length; i++) {
-                ItemStack stack = aspectStacks[i];
-                if (stack == null) continue;
+        int aspectYOrigin = yOrigin + itemRowCount * 18 + ASPECT_TOP_PADDING;
+        ItemStack[] aspectStacks = TCRecipeTools.createAspectDisplayStacks(aspects);
+        for (int i = 0; i < aspectStacks.length; i++) {
+            ItemStack stack = aspectStacks[i];
+            if (stack == null) continue;
 
-                int column = i % ASPECT_COLUMNS;
-                int row = i / ASPECT_COLUMNS;
-
-                int x = ASPECT_X_ORIGIN + column * ASPECT_SPACING;
-                int y = aspectYOrigin + row * ASPECT_SPACING;
-
-                neiCachedRecipe.mInputs.add(new PositionedStack(stack.copy(), x, y, false));
-            }
+            int column = i % ASPECT_COLUMNS;
+            int row = i / ASPECT_COLUMNS;
+            neiCachedRecipe.mInputs.add(
+                new PositionedStack(
+                    stack,
+                    ASPECT_X_ORIGIN + column * ASPECT_SPACING,
+                    aspectYOrigin + row * ASPECT_SPACING,
+                    false));
         }
-
-        super.drawNEIOverlays(neiCachedRecipe);
     }
 }
