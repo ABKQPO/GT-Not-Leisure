@@ -28,14 +28,23 @@ import thaumcraft.api.aspects.AspectList;
 @MethodsReturnNonnullByDefault
 public class IndustrialInfusionCraftingRecipesFrontend extends GTNLLogoFrontend {
 
-    private static final int xDirMaxCount = 5;
-    private static final int yOrigin = 8;
-    private final int itemRowCount;
+    private static final int INPUT_X_ORIGIN = 6;
+    private static final int INPUT_Y_ORIGIN = 8;
+    private static final int SHAPED_INPUT_COLUMNS = 3;
+    private static final int INFUSION_INPUT_COLUMNS = 5;
+    private static final int OUTPUT_X_ORIGIN = 125;
+    private static final int PROGRESS_OFFSET_X = 15;
+    private static final int LEGACY_OUTPUT_Y_ORIGIN = 45;
+    private static final int LEGACY_SPECIAL_Y_ORIGIN = 75;
+    private static final int NEI_WINDOW_OFFSET_X = -5;
+    private static final int NEI_WINDOW_OFFSET_Y = -11;
+    private static final int SLOT_INSET = 1;
     private static final int ASPECT_COLUMNS = 10;
     private static final int ASPECT_ROWS = 2;
-    private static final int ASPECT_X_ORIGIN = 5;
     private static final int ASPECT_SPACING = 16;
-    private static final int ASPECT_TOP_PADDING = 4;
+    private static final int LEGACY_ASPECT_TOP_PADDING = 4;
+
+    private final int itemRowCount;
 
     public IndustrialInfusionCraftingRecipesFrontend(BasicUIPropertiesBuilder uiPropertiesBuilder,
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {
@@ -45,15 +54,15 @@ public class IndustrialInfusionCraftingRecipesFrontend extends GTNLLogoFrontend 
 
     @Override
     protected NEIRecipePropertiesBuilder modifyNEIProperties(NEIRecipePropertiesBuilder neiPropertiesBuilder) {
-        int inputAreaHeight = yOrigin + getItemRowCount() * 18;
-        int aspectAreaHeight = ASPECT_TOP_PADDING + ASPECT_ROWS * ASPECT_SPACING + 4;
+        int inputAreaHeight = INPUT_Y_ORIGIN + getItemRowCount() * 18;
+        int aspectAreaHeight = getAspectTopPadding() + ASPECT_ROWS * ASPECT_SPACING + 4;
 
         return neiPropertiesBuilder.recipeBackgroundSize(new Size(170, inputAreaHeight + aspectAreaHeight));
     }
 
     @Override
     public void addProgressBar(ModularWindow.@NotNull Builder builder,
-        @NotNull GTNEIDefaultHandler.NEITemplateContext ctx) {
+        GTNEIDefaultHandler.NEITemplateContext ctx) {
         super.addProgressBar(
             builder,
             new GTNEIDefaultHandler.NEITemplateContext(
@@ -64,26 +73,58 @@ public class IndustrialInfusionCraftingRecipesFrontend extends GTNLLogoFrontend 
                 ctx.fluidOutputsInventory,
                 ctx.progressSupplier,
                 ctx.recipeSupplier,
-                new Pos2d(15, 10)));
+                new Pos2d(PROGRESS_OFFSET_X, usesAdjustedLayout() ? getOutputYOrigin() - 35 : 10)));
     }
 
     private int getItemRowCount() {
-        return (Math.max(uiProperties.maxItemInputs, uiProperties.maxItemOutputs) - 1) / xDirMaxCount + 1;
+        int columns = getInputColumnCount();
+        return (Math.max(uiProperties.maxItemInputs, uiProperties.maxItemOutputs) - 1) / columns + 1;
+    }
+
+    private int getInputColumnCount() {
+        return uiProperties.maxItemInputs == 9 ? SHAPED_INPUT_COLUMNS : INFUSION_INPUT_COLUMNS;
+    }
+
+    private boolean usesAdjustedLayout() {
+        return uiProperties.maxItemInputs == 9 || uiProperties.maxItemInputs == 25;
+    }
+
+    private int getAspectTopPadding() {
+        return usesAdjustedLayout() ? 0 : LEGACY_ASPECT_TOP_PADDING;
+    }
+
+    private int getOutputYOrigin() {
+        return usesAdjustedLayout() ? INPUT_Y_ORIGIN + (getItemRowCount() - 1) * 9 : LEGACY_OUTPUT_Y_ORIGIN;
     }
 
     @Override
-    public @NotNull List<Pos2d> getItemInputPositions(int itemInputCount) {
-        return UIHelper.getGridPositions(itemInputCount, 6, yOrigin, xDirMaxCount);
+    public List<Pos2d> getItemInputPositions(int itemInputCount) {
+        return UIHelper.getGridPositions(itemInputCount, INPUT_X_ORIGIN, INPUT_Y_ORIGIN, getInputColumnCount());
     }
 
     @Override
-    public @NotNull List<Pos2d> getItemOutputPositions(int itemOutputCount) {
-        return UIHelper.getGridPositions(itemOutputCount, 125, 45, xDirMaxCount);
+    public List<Pos2d> getItemOutputPositions(int itemOutputCount) {
+        return UIHelper.getGridPositions(itemOutputCount, OUTPUT_X_ORIGIN, getOutputYOrigin(), INFUSION_INPUT_COLUMNS);
     }
 
     @Override
-    public @NotNull Pos2d getSpecialItemPosition() {
-        return new Pos2d(125, 75);
+    public Pos2d getSpecialItemPosition() {
+        int yOrigin = usesAdjustedLayout() ? getOutputYOrigin() + 18 : LEGACY_SPECIAL_Y_ORIGIN;
+        return new Pos2d(OUTPUT_X_ORIGIN, yOrigin);
+    }
+
+    @Override
+    public void addGregTechLogo(ModularWindow.Builder builder, Pos2d windowOffset) {
+        if (!usesAdjustedLayout()) {
+            super.addGregTechLogo(builder, windowOffset);
+            return;
+        }
+
+        int progressX = uiProperties.progressBarPos.x + PROGRESS_OFFSET_X;
+        int progressY = uiProperties.progressBarPos.y + getOutputYOrigin() - 35;
+        int logoX = progressX + (uiProperties.progressBarSize.width - uiProperties.logoSize.width) / 2;
+        int logoY = progressY + uiProperties.progressBarSize.height;
+        super.addGregTechLogo(builder, new Pos2d(logoX - uiProperties.logoPos.x, logoY - uiProperties.logoPos.y));
     }
 
     @Override
@@ -95,7 +136,15 @@ public class IndustrialInfusionCraftingRecipesFrontend extends GTNLLogoFrontend 
         if (aspects == null) aspects = neiCachedRecipe.mRecipe.getMetadata(CrucibleCraftingRecipes.CRUCIBLE_ASPECTS);
         if (aspects == null || aspects.size() == 0) return;
 
-        int aspectYOrigin = yOrigin + itemRowCount * 18 + ASPECT_TOP_PADDING;
+        int aspectXOrigin;
+        int aspectYOrigin;
+        if (usesAdjustedLayout()) {
+            aspectXOrigin = INPUT_X_ORIGIN + NEI_WINDOW_OFFSET_X + SLOT_INSET;
+            aspectYOrigin = INPUT_Y_ORIGIN + itemRowCount * 18 + NEI_WINDOW_OFFSET_Y + SLOT_INSET;
+        } else {
+            aspectXOrigin = 5;
+            aspectYOrigin = INPUT_Y_ORIGIN + itemRowCount * 18 + LEGACY_ASPECT_TOP_PADDING;
+        }
         ItemStack[] aspectStacks = TCRecipeTools.createAspectDisplayStacks(aspects);
         for (int i = 0; i < aspectStacks.length; i++) {
             ItemStack stack = aspectStacks[i];
@@ -106,7 +155,7 @@ public class IndustrialInfusionCraftingRecipesFrontend extends GTNLLogoFrontend 
             neiCachedRecipe.mInputs.add(
                 new PositionedStack(
                     stack,
-                    ASPECT_X_ORIGIN + column * ASPECT_SPACING,
+                    aspectXOrigin + column * ASPECT_SPACING,
                     aspectYOrigin + row * ASPECT_SPACING,
                     false));
         }
