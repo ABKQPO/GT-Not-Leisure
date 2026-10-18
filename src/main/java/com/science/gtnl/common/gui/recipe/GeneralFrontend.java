@@ -16,6 +16,14 @@ import gregtech.api.recipe.RecipeMapFrontend;
 import gregtech.api.util.MethodsReturnNonnullByDefault;
 import gregtech.common.gui.modularui.UIHelper;
 
+/**
+ * Lays out item and fluid slots in 4 columns and sizes the NEI background from the map's max IO.
+ * <p>
+ * NEI only hit-tests slots inside the height declared by the handler info (GT registers 135 for every recipe map)
+ * and anchors its favorite/overlay buttons 31/18 px above that height. The lowest slot row of this layout ends at
+ * {@code backgroundHeight - 13} in NEI coordinates, so every map using this frontend has to declare a handler height
+ * of {@code backgroundHeight + 18}; otherwise the bottom slot rows are drawn but never respond to the mouse.
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class GeneralFrontend extends RecipeMapFrontend {

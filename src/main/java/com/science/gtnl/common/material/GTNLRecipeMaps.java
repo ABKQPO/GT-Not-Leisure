@@ -65,7 +65,10 @@ public class GTNLRecipeMaps {
         .maxIO(16, 16, 16, 16)
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GeneralFrontend::new)
-        .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.GenerationEarthEngine.get(1)))
+        .neiHandlerInfo(
+            builder -> builder.setDisplayStack(GTNLItemList.GenerationEarthEngine.get(1))
+                // 154-tall layout; NEI hit-tests only inside this height.
+                .setHeight(172))
         .build();
 
     public static final RecipeMap<RecipeMapBackend> FallingTowerRecipes = Mods.BloodMagic.isModLoaded()
@@ -73,7 +76,10 @@ public class GTNLRecipeMaps {
             .maxIO(1, 81, 0, 0)
             .progressBar(GTUITextures.PROGRESSBAR_COMPRESS)
             .frontend(FallingTowerFrontend::new)
-            .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.BloodSoulSacrificialArray.get(1)))
+            .neiHandlerInfo(
+                builder -> builder.setDisplayStack(GTNLItemList.BloodSoulSacrificialArray.get(1))
+                    // The 9x9 output grid ends at NEI y=176; NEI hit-tests only inside this height.
+                    .setHeight(207))
             .build()
         : null;
 
@@ -109,7 +115,10 @@ public class GTNLRecipeMaps {
         .maxIO(4, 36, 1, 0)
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GeneralFrontend::new)
-        .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.TeleportationArrayToAlfheim.get(1)))
+        .neiHandlerInfo(
+            builder -> builder.setDisplayStack(GTNLItemList.TeleportationArrayToAlfheim.get(1))
+                // 190-tall layout; NEI hit-tests only inside this height.
+                .setHeight(208))
         .build();
 
     public static final RecipeMap<RecipeMapBackend> RuneAltarRecipes = RecipeMapBuilder
@@ -229,7 +238,10 @@ public class GTNLRecipeMaps {
         .maxIO(4, 32, 4, 0)
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GeneralFrontend::new)
-        .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.LibraryOfRuina.get(1)))
+        .neiHandlerInfo(
+            builder -> builder.setDisplayStack(GTNLItemList.LibraryOfRuina.get(1))
+                // 172-tall layout; NEI hit-tests only inside this height.
+                .setHeight(190))
         .build();
 
     public static RecipeMap<RecipeMapBackend> IndustrialInfusionCraftingRecipes = RecipeMapBuilder
@@ -344,7 +356,10 @@ public class GTNLRecipeMaps {
         .maxIO(16, 16, 16, 16)
         .progressBar(GTUITextures.PROGRESSBAR_ARROW_MULTIPLE)
         .frontend(GeneralFrontend::new)
-        .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.ShallowChemicalCoupling.get(1)))
+        .neiHandlerInfo(
+            builder -> builder.setDisplayStack(GTNLItemList.ShallowChemicalCoupling.get(1))
+                // 154-tall layout; NEI hit-tests only inside this height.
+                .setHeight(172))
         .neiSpecialInfoFormatter(HeatingCoilSpecialValueFormatter.INSTANCE)
         .build();
 
@@ -371,7 +386,9 @@ public class GTNLRecipeMaps {
             (index, isFluid, isOutput, isSpecial) -> !isFluid && !isOutput ? GTUITextures.OVERLAY_SLOT_COMPRESSOR_STEAM
                 : null)
         .progressBarSteam(GTUITextures.PROGRESSBAR_COMPRESS_STEAM)
-        .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.SteamGateAssembler.get(1)))
+        .neiHandlerInfo(
+            builder -> builder.setDisplayStack(GTNLItemList.SteamGateAssembler.get(1))
+                .setHeight(SteamGateAssemblerFrontend.NEI_HANDLER_HEIGHT))
         .build();
 
     public static final RecipeMap<RecipeMapBackend> CactusWonderFakeRecipes = RecipeMapBuilder
@@ -536,7 +553,10 @@ public class GTNLRecipeMaps {
         .dontUseProgressBar()
         .frontend(RocketAssemblerFrontend::new)
         .useSpecialSlot()
-        .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.RocketAssembler.get(1)))
+        .neiHandlerInfo(
+            builder -> builder.setDisplayStack(GTNLItemList.RocketAssembler.get(1))
+                // The lowest engine slots of the tier 7/8 layouts end at NEI y=165.
+                .setHeight(196))
         .build();
 
     public static final RecipeMap<RecipeMapBackend> CircuitNanitesDataRecipes = RecipeMapBuilder

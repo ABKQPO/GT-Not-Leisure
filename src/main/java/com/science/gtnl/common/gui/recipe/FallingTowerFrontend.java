@@ -30,11 +30,18 @@ import gregtech.nei.GTNEIDefaultHandler;
 @MethodsReturnNonnullByDefault
 public class FallingTowerFrontend extends RecipeMapFrontend {
 
+    /**
+     * The 9x9 output grid starts at y=25 and its last row ends at y=187, so the background has to cover that row.
+     * With the old value of 170 the bottom row was drawn outside the recipe window, right on top of the NEI info lines
+     * that start 3 px below the background.
+     */
+    private static final int RECIPE_BACKGROUND_HEIGHT = 190;
+
     public FallingTowerFrontend(BasicUIPropertiesBuilder uiPropertiesBuilder,
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {
         super(
             uiPropertiesBuilder.progressBarPos(new Pos2d(26, 7)),
-            neiPropertiesBuilder.recipeBackgroundSize(new Size(170, 170))
+            neiPropertiesBuilder.recipeBackgroundSize(new Size(170, RECIPE_BACKGROUND_HEIGHT))
                 .neiSpecialInfoFormatter(new BloodSoulFormat()));
     }
 
