@@ -101,10 +101,6 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
                     StructureUtility.ofTileAdder(SmallInfusionMatrix::addInfusionProvider, Loaders.magicCasing, 0)))
             .addElement('B', StructureUtility.ofBlock(blockCosmeticOpaque, 0))
             .addElement('C', StructureUtility.ofBlock(blockCosmeticSolid, 6))
-            // D/E 使用 ofBlock 而非 ofSpecificTileAdder：后者返回 IStructureElementNoPlacement，
-            // placeBlock() 恒为 false、survivalPlaceBlock() 恒为 REJECT，自动搭建会跳过这两个方块。
-            // TC 的 meta 与 tile 类一一对应（BlockCosmeticOpaque:2 -> TileOwned，
-            // BlockStoneDevice:1 -> TilePedestal），故按 block+meta 校验与按 tile 类校验等价。
             .addElement('D', StructureUtility.ofBlock(blockCosmeticOpaque, 2))
             .addElement('E', StructureUtility.ofBlock(blockStoneDevice, 1))
             .build();
@@ -337,7 +333,8 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
             .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
             .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
             .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
-            .addOtherStructurePart(
+            .addMiscHatch(
+                "0+",
                 StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.essentia_input_hatch"),
                 StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"),
                 1)
