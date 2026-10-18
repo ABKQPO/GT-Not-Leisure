@@ -44,13 +44,7 @@ public class ManaInfusionRecipes implements IRecipePool {
             }
 
             if (input instanceof ItemStack itemStack) {
-                ItemStack inputCopy = itemStack.copy();
-
-                if (inputCopy.getItemDamage() == Short.MAX_VALUE) {
-                    inputCopy.setItemDamage(0);
-                }
-
-                finalInputs.add(inputCopy);
+                finalInputs.add(itemStack.copy());
             } else if (input instanceof String string) {
                 hasOreDict = true;
                 finalInputs.add(new OreDictItemStack(string, 1));

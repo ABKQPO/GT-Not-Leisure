@@ -77,6 +77,7 @@ public class CrucibleRecipeConverter {
         data.sourceHash = recipe.hash;
         data.researchKey = recipe.key == null ? "" : recipe.key;
         data.catalysts = catalysts;
+        data.catalystOreName = ThaumcraftRecipeInputs.findOreDictionaryName(recipe.catalyst);
         data.output = output.copy();
         data.aspects = recipe.aspects.copy();
         return data;

@@ -12,6 +12,8 @@ public class CrucibleRecipeData {
 
     public ItemStack[] catalysts;
 
+    public String catalystOreName;
+
     public ItemStack output;
 
     public AspectList aspects;
