@@ -10,6 +10,7 @@ import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.utils.item.ItemStackHandler;
+import com.cleanroommc.modularui.value.DoubleValue;
 import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
 import com.cleanroommc.modularui.value.sync.LongSyncValue;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
@@ -83,7 +84,11 @@ public final class RailgunGui {
                 .pos(8, 46)
                 .size(160, 12));
         panel.child(
-            new ProgressWidget().progress(() -> energy.getLongValue() / (double) Math.max(1, capacity.getLongValue()))
+            new ProgressWidget()
+                .value(
+                    new DoubleValue.Dynamic(
+                        () -> energy.getLongValue() / (double) Math.max(1, capacity.getLongValue()),
+                        null))
                 .texture(GTGuiTextures.PROGRESSBAR_STORED_EU, STORED_EU_TEXTURE_WIDTH)
                 .pos(8, 60)
                 .size(160, STORED_EU_BAR_HEIGHT));
