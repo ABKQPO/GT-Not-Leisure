@@ -1,5 +1,6 @@
 package com.science.gtnl.loader;
 
+import com.science.gtnl.common.entity.EntityArmorFlightPiece;
 import com.science.gtnl.common.entity.EntityArrowCustom;
 import com.science.gtnl.common.entity.EntityPlayerLeashKnot;
 import com.science.gtnl.common.entity.EntitySaddleSlime;
@@ -28,5 +29,13 @@ public class EntityLoader {
             64,
             2,
             true);
+        EntityRegistry.registerModEntity(
+            EntityArmorFlightPiece.class,
+            "ArmorFlightPiece",
+            3,
+            ModList.ScienceNotLeisure.ID,
+            160,
+            5,
+            false);
     }
 }

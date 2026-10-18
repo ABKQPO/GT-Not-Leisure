@@ -3,6 +3,7 @@ package com.science.gtnl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.science.gtnl.common.command.CommandArmorFlight;
 import com.science.gtnl.common.command.CommandEnergyNetwork;
 import com.science.gtnl.common.command.CommandItemInfo;
 import com.science.gtnl.common.command.CommandPlaySound;
@@ -120,6 +121,7 @@ public class ScienceNotLeisure {
         event.registerServerCommand(new CommandItemInfo());
         event.registerServerCommand(new CommandSudo());
         event.registerServerCommand(new CommandSuicide());
+        event.registerServerCommand(new CommandArmorFlight());
     }
 
     @Mod.EventHandler

@@ -4505,6 +4505,12 @@ gtnl.command.tickrate.period=。
 gtnl.command.tickrate.freeze=Tickrate 已冻结！
 gtnl.command.tickrate.unfreeze=Tickrate 已解除冻结！
 gtnl.command.tickrate.player_not_found=未找到玩家。
+gtnl.command.armor_flight.usage=/armorflight <call|off> [距离] [random|front|behind]
+gtnl.command.armor_flight.busy=上一套护甲仍在飞行中。
+gtnl.command.armor_flight.no_armor=背包中没有可以召唤的护甲。
+gtnl.command.armor_flight.summoned=已召唤 %s 件护甲，约 %s 秒后着装完成。
+gtnl.command.armor_flight.nothing_worn=身上没有可以卸下的护甲。
+gtnl.command.armor_flight.purged=已卸下 %s 件护甲。
 gtnl.nei.siphon_turbine=§6§l虹吸涡轮§r\n§4开机后§0每 §46.4s§0 吸收无线蒸汽网余额的 §470%§0，换算为 EU 进入机器缓存。\n§0每次吸收时清空上一次运行的机器缓存。\n§0转换阶梯：\n§0- 10ML 内：§44 EU/L§0；\n§0- 10M~200M：§42 EU/L§0；\n§0- 200ML~2GL：§41 EU/L§0；\n§0- 超 2GL：§40 EU/L§0，但让下一次吸收产出§4§l翻倍§r§0。
 gtnl.nei.nuclear_reactor=§6§l核反应堆§r\n§0使用燃料棒产生热量，流体仓吸收热量将水转化为蒸汽。\n§0燃料棒向四面产生的热量等于燃料棒基础发电量的十分之一，四角为四面的二分之一。\n§0开机效率 = §460% + 50%·sin(X·π/120)§0(X≤60)，X 为开机后时间数(分钟)，20 分钟后为 §485%§0，60 分钟后恒为 §4110%§0，停机后清零。
 gtnl.nei.nuclear_reactor.guide.name=§6§l核反应堆指南§r

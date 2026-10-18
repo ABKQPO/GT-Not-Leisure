@@ -20,6 +20,7 @@ import com.science.gtnl.client.GTNLInputHandler;
 import com.science.gtnl.client.GTNLTooltipManager;
 import com.science.gtnl.client.WirelessCardInput;
 import com.science.gtnl.client.WirelessWorldHighlight;
+import com.science.gtnl.client.armorflight.ArmorFlightEffects;
 import com.science.gtnl.client.gui.GuiActiveFormationPlane;
 import com.science.gtnl.client.gui.GuiCustomPriority;
 import com.science.gtnl.client.gui.GuiDirePatternEncoder;
@@ -60,6 +61,7 @@ import com.science.gtnl.common.block.blocks.tile.TileEntitySuperDualInterface;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperInterface;
 import com.science.gtnl.common.block.blocks.tile.TileEntityWaterCandle;
 import com.science.gtnl.common.command.CommandSpoce;
+import com.science.gtnl.common.entity.EntityArmorFlightPiece;
 import com.science.gtnl.common.entity.EntityParticleBeam;
 import com.science.gtnl.common.entity.EntityPlayerLeashKnot;
 import com.science.gtnl.common.entity.EntitySaddleSlime;
@@ -73,6 +75,7 @@ import com.science.gtnl.common.part.PartSuperInterface;
 import com.science.gtnl.common.render.SpoceRenderHandler;
 import com.science.gtnl.common.render.beamformer.BeamFormerItemRenderer;
 import com.science.gtnl.common.render.beamformer.BeamFormerModel;
+import com.science.gtnl.common.render.entity.ArmorFlightPieceRender;
 import com.science.gtnl.common.render.entity.NullPointerExceptionRender;
 import com.science.gtnl.common.render.entity.SaddleSlimeRender;
 import com.science.gtnl.common.render.entity.SteamRocketRender;
@@ -286,6 +289,9 @@ public class ClientProxy extends CommonProxy {
             new SaddleSlimeRender(new ModelSlime(16), new ModelSlime(0), 0.25f));
 
         RenderingRegistry.registerEntityRenderingHandler(EntityPlayerLeashKnot.class, new RenderLeashKnot());
+
+        RenderingRegistry.registerEntityRenderingHandler(EntityArmorFlightPiece.class, new ArmorFlightPieceRender());
+        EntityArmorFlightPiece.clientEffects = new ArmorFlightEffects();
 
         RenderingRegistry.registerEntityRenderingHandler(NullPointerException.class, new NullPointerExceptionRender());
         MinecraftForgeClient
