@@ -67,6 +67,7 @@ public class GTNLRecipeMaps {
         .frontend(GeneralFrontend::new)
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.GenerationEarthEngine.get(1))
+                .setHeight(172)
                 .setMultipleWidgetsAllowed(false))
         .build();
 
@@ -77,6 +78,7 @@ public class GTNLRecipeMaps {
             .frontend(FallingTowerFrontend::new)
             .neiHandlerInfo(
                 builder -> builder.setDisplayStack(GTNLItemList.BloodSoulSacrificialArray.get(1))
+                    .setHeight(207)
                     .setMultipleWidgetsAllowed(false))
             .build()
         : null;
@@ -115,6 +117,7 @@ public class GTNLRecipeMaps {
         .frontend(GeneralFrontend::new)
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.TeleportationArrayToAlfheim.get(1))
+                .setHeight(208)
                 .setMultipleWidgetsAllowed(false))
         .build();
 
@@ -245,6 +248,7 @@ public class GTNLRecipeMaps {
         .frontend(GeneralFrontend::new)
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.LibraryOfRuina.get(1))
+                .setHeight(190)
                 .setMultipleWidgetsAllowed(false))
         .build();
 
@@ -364,6 +368,7 @@ public class GTNLRecipeMaps {
         .frontend(GeneralFrontend::new)
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.ShallowChemicalCoupling.get(1))
+                .setHeight(172)
                 .setMultipleWidgetsAllowed(false))
         .neiSpecialInfoFormatter(HeatingCoilSpecialValueFormatter.INSTANCE)
         .build();
@@ -393,6 +398,7 @@ public class GTNLRecipeMaps {
         .progressBarSteam(GTUITextures.PROGRESSBAR_COMPRESS_STEAM)
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.SteamGateAssembler.get(1))
+                .setHeight(213)
                 .setMultipleWidgetsAllowed(false))
         .build();
 
@@ -562,6 +568,7 @@ public class GTNLRecipeMaps {
         .useSpecialSlot()
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.RocketAssembler.get(1))
+                .setHeight(196)
                 .setMultipleWidgetsAllowed(false))
         .build();
 

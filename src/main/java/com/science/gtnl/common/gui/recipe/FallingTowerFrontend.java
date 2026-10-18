@@ -34,7 +34,7 @@ public class FallingTowerFrontend extends RecipeMapFrontend {
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {
         super(
             uiPropertiesBuilder.progressBarPos(new Pos2d(26, 7)),
-            neiPropertiesBuilder.recipeBackgroundSize(new Size(170, 170))
+            neiPropertiesBuilder.recipeBackgroundSize(new Size(170, 190))
                 .neiSpecialInfoFormatter(new BloodSoulFormat()));
     }
 
