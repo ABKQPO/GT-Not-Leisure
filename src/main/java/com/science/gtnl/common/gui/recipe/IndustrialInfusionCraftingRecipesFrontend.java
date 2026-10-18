@@ -61,8 +61,7 @@ public class IndustrialInfusionCraftingRecipesFrontend extends GTNLLogoFrontend 
     }
 
     @Override
-    public void addProgressBar(ModularWindow.@NotNull Builder builder,
-        GTNEIDefaultHandler.NEITemplateContext ctx) {
+    public void addProgressBar(ModularWindow.@NotNull Builder builder, GTNEIDefaultHandler.NEITemplateContext ctx) {
         super.addProgressBar(
             builder,
             new GTNEIDefaultHandler.NEITemplateContext(
