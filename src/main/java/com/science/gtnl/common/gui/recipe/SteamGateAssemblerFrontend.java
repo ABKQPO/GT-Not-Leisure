@@ -29,15 +29,11 @@ import gregtech.nei.GTNEIDefaultHandler;
 @MethodsReturnNonnullByDefault
 public class SteamGateAssemblerFrontend extends RecipeMapFrontend {
 
-    public static final int RECIPE_BACKGROUND_HEIGHT = 196;
-
-    public static final int NEI_HANDLER_HEIGHT = 213;
-
     public SteamGateAssemblerFrontend(BasicUIPropertiesBuilder uiPropertiesBuilder,
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {
         super(
             uiPropertiesBuilder.progressBarPos(new Pos2d(124, 175)),
-            neiPropertiesBuilder.recipeBackgroundSize(new Size(170, RECIPE_BACKGROUND_HEIGHT)));
+            neiPropertiesBuilder.recipeBackgroundSize(new Size(170, 196)));
     }
 
     @Override

@@ -30,13 +30,11 @@ import gregtech.nei.GTNEIDefaultHandler;
 @MethodsReturnNonnullByDefault
 public class FallingTowerFrontend extends RecipeMapFrontend {
 
-    private static final int RECIPE_BACKGROUND_HEIGHT = 190;
-
     public FallingTowerFrontend(BasicUIPropertiesBuilder uiPropertiesBuilder,
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {
         super(
             uiPropertiesBuilder.progressBarPos(new Pos2d(26, 7)),
-            neiPropertiesBuilder.recipeBackgroundSize(new Size(170, RECIPE_BACKGROUND_HEIGHT))
+            neiPropertiesBuilder.recipeBackgroundSize(new Size(170, 190))
                 .neiSpecialInfoFormatter(new BloodSoulFormat()));
     }
 
