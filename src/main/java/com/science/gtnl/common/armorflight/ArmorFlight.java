@@ -16,6 +16,8 @@ public final class ArmorFlight {
     public static final int HOVER_TICKS = 9;
     public static final int SNAP_TICKS = 7;
     public static final double HOLD_DISTANCE = 2.6;
+    public static final float SIDE_ANGLE = 40;
+    public static final int ORBIT_TICKS = 10;
     public static final double BRAKE_AT = 0.76;
     public static final double LOCAL_LAUNCH_RANGE = 64.0;
     public static final int PURGE_TICKS = 12;
@@ -113,8 +115,8 @@ public final class ArmorFlight {
         return v * (t - a / 2);
     }
 
-    public static int arrivalTicks(int flight) {
-        return flight + HOVER_TICKS + SNAP_TICKS + LATCH_TICKS;
+    public static int arrivalTicks(int flight, boolean behind) {
+        return flight + HOVER_TICKS + orbitTicks(behind) + SNAP_TICKS + LATCH_TICKS;
     }
 
     public static double speed(double t) {
@@ -141,13 +143,30 @@ public final class ArmorFlight {
         return new FlightVec(-Math.sin(yaw), 0, Math.cos(yaw));
     }
 
-    public static FlightVec approachDirection(float bodyYaw, boolean behind) {
-        return forward(bodyYaw).scale(behind ? -1 : 1);
+    public static float sideAngle(ArmorFlightPiece piece, boolean behind) {
+        if (!behind) return 0;
+        return piece.ordinal() % 2 == 0 ? SIDE_ANGLE : -SIDE_ANGLE;
+    }
+
+    public static float backAngle(float sideAngle) {
+        return sideAngle < 0 ? -180 : 180;
+    }
+
+    public static int orbitTicks(boolean behind) {
+        return behind ? ORBIT_TICKS : 0;
     }
 
     public static FlightVec holdPoint(FlightVec dock, FlightVec direction) {
         return dock.add(direction.scale(HOLD_DISTANCE))
             .add(0, 0.25, 0);
+    }
+
+    public static FlightVec orbitPoint(FlightVec dock, float bodyYaw, float sideAngle, double u) {
+        double e = ease(u);
+        double swing = Math.sin(Math.PI * clamp(u, 0, 1));
+        float angle = (float) (sideAngle + (backAngle(sideAngle) - sideAngle) * e);
+        return dock.add(forward(bodyYaw + angle).scale(HOLD_DISTANCE * (1 + 0.12 * swing)))
+            .add(0, 0.25 + 0.3 * swing, 0);
     }
 
     private static FlightVec cubic(FlightVec p0, FlightVec c1, FlightVec c2, FlightVec p3, double e) {

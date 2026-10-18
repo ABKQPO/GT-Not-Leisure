@@ -110,7 +110,7 @@ public class ArmorFlightPieceRender extends Render {
             Arrays.fill(open, (float) ArmorFlight.burstSpread(age));
         } else if (age >= flight) {
             float unfold = (float) ArmorFlight.unfold(age - flight);
-            float sinceSnap = age - flight - ArmorFlight.HOVER_TICKS;
+            float sinceSnap = age - entity.snapStart();
             for (int j = 0; j < n; j++) {
                 double close = sinceSnap < 0 ? 0 : ArmorFlight.segmentClose(sinceSnap, j, n);
                 open[j] = unfold * (float) (1 - close);

@@ -50,7 +50,7 @@ public class ArmorFlightService implements IArmorFlightService {
         for (ArmorFlightPiece p : flying) {
             FlightVec dock = ArmorFlight.dockPoint(feet, player.height, p);
             boolean behind = approach.pickBehind(world.rand);
-            FlightVec dir = ArmorFlight.approachDirection(yaw, behind);
+            FlightVec dir = ArmorFlight.forward(yaw + ArmorFlight.sideAngle(p, behind));
             FlightVec hold = ArmorFlight.holdPoint(dock, dir);
             FlightVec start = ArmorFlight.launchPoint(dock, anchorTop, sameDimension, p);
             double length = ArmorFlight.approachLength(start, hold, dir, p);
@@ -58,7 +58,7 @@ public class ArmorFlightService implements IArmorFlightService {
             int delay = ArmorFlight.SEQUENCE_LEAD + order++ * ArmorFlight.STAGGER;
             world.spawnEntityInWorld(
                 EntityArmorFlightPiece.deliver(player, suit.get(p), p, start, anchor, behind, delay, duration));
-            latestArrival = Math.max(latestArrival, delay + ArmorFlight.arrivalTicks(duration));
+            latestArrival = Math.max(latestArrival, delay + ArmorFlight.arrivalTicks(duration, behind));
         }
         purge(player, flying, anchor);
 

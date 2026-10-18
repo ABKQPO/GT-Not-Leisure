@@ -143,8 +143,20 @@ public class EntityArmorFlightPiece extends Entity implements IEntityAdditionalS
         return (float) (worldObj.getTotalWorldTime() - launch) + partialTick;
     }
 
+    public int orbitStart() {
+        return duration + ArmorFlight.HOVER_TICKS;
+    }
+
+    public int snapStart() {
+        return orbitStart() + ArmorFlight.orbitTicks(behind);
+    }
+
     public int snapEnd() {
-        return duration + ArmorFlight.HOVER_TICKS + ArmorFlight.SNAP_TICKS;
+        return snapStart() + ArmorFlight.SNAP_TICKS;
+    }
+
+    public boolean orbiting(float age) {
+        return behind && age >= orbitStart() && age < snapStart();
     }
 
     public float latchAge(float partialTick) {
@@ -157,7 +169,9 @@ public class EntityArmorFlightPiece extends Entity implements IEntityAdditionalS
         if (a <= 0) return hatchPosition(a);
         Entity target = target();
         if (target == null) return start;
-        FlightVec dir = ArmorFlight.approachDirection(wearerYaw(target, partialTick), behind);
+        float yaw = wearerYaw(target, partialTick);
+        float side = ArmorFlight.sideAngle(piece, behind);
+        FlightVec dir = ArmorFlight.forward(yaw + side);
         FlightVec dock = ArmorFlight.dockPoint(target, partialTick, piece);
         FlightVec hold = ArmorFlight.holdPoint(dock, dir);
         if (a < duration) {
@@ -165,10 +179,17 @@ public class EntityArmorFlightPiece extends Entity implements IEntityAdditionalS
         }
         float hover = a - duration;
         if (hover < ArmorFlight.HOVER_TICKS) return hold.add(0, bob(hover), 0);
-        float snap = hover - ArmorFlight.HOVER_TICKS;
+        double settled = bob(ArmorFlight.HOVER_TICKS);
+        float orbit = a - orbitStart();
+        int orbitTicks = ArmorFlight.orbitTicks(behind);
+        if (orbit < orbitTicks) {
+            return ArmorFlight.orbitPoint(dock, yaw, side, orbit / orbitTicks)
+                .add(0, settled, 0);
+        }
+        float snap = a - snapStart();
         if (snap < ArmorFlight.SNAP_TICKS) {
             double u = Math.pow(snap / ArmorFlight.SNAP_TICKS, 2.6);
-            FlightVec from = hold.add(0, bob(ArmorFlight.HOVER_TICKS), 0);
+            FlightVec from = (behind ? ArmorFlight.orbitPoint(dock, yaw, side, 1) : hold).add(0, settled, 0);
             return from.add(
                 dock.subtract(from)
                     .scale(u));

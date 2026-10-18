@@ -21,7 +21,7 @@ public class ArmorFlightEffects implements IArmorFlightEffects {
 
     private static final int JET = 1, FLYBY = 2, LATCH = 4, LOCK = 8, HISS = 16, UNLOCK = 32, PURGE = 64, LAUNCH = 128,
         BRAKE = 256, PULSE_A = 512, PULSE_B = 1024, PULSE_C = 2048, SNAP = 4096, UNFOLD = 8192, SEGMENT = 16384,
-        POOF = 1 << 19;
+        POOF = 1 << 19, ORBIT = 1 << 20;
     private static final String SPARK = "magicCrit", CLOUD = "cloud", POOF_PARTICLE = "explode";
     private static final Random RANDOM = new Random();
 
@@ -109,7 +109,7 @@ public class ArmorFlightEffects implements IArmorFlightEffects {
             return;
         }
         float hover = age - flight;
-        float sinceSnap = hover - ArmorFlight.HOVER_TICKS;
+        float sinceSnap = age - piece.snapStart();
         int n = ArmorFlight.segments(piece.piece());
         for (int j = 0; j < n && n > 1; j++) {
             if (sinceSnap < ArmorFlight.segmentLockTick(j, n)) continue;
@@ -130,7 +130,12 @@ public class ArmorFlightEffects implements IArmorFlightEffects {
             if (hover >= 6) once(piece, PULSE_C, () -> pulse(piece));
             return;
         }
-        float snap = hover - ArmorFlight.HOVER_TICKS;
+        if (piece.orbiting(age)) {
+            once(piece, ORBIT, () -> play(piece, SOUND_FLYBY, 0.6F, 1.25F));
+            exhaust(piece, 1.2);
+            return;
+        }
+        float snap = sinceSnap;
         if (snap < ArmorFlight.SNAP_TICKS) {
             once(piece, SNAP, () -> play(piece, SOUND_PULSE, 0.8F, 0.75F));
             exhaust(piece, 1.0);
