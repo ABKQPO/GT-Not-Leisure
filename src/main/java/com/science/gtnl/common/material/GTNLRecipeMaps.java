@@ -67,7 +67,6 @@ public class GTNLRecipeMaps {
         .frontend(GeneralFrontend::new)
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.GenerationEarthEngine.get(1))
-                // 154-tall layout; NEI hit-tests only inside this height.
                 .setHeight(172))
         .build();
 
@@ -78,7 +77,6 @@ public class GTNLRecipeMaps {
             .frontend(FallingTowerFrontend::new)
             .neiHandlerInfo(
                 builder -> builder.setDisplayStack(GTNLItemList.BloodSoulSacrificialArray.get(1))
-                    // The 9x9 output grid ends at NEI y=176; NEI hit-tests only inside this height.
                     .setHeight(207))
             .build()
         : null;
@@ -117,7 +115,6 @@ public class GTNLRecipeMaps {
         .frontend(GeneralFrontend::new)
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.TeleportationArrayToAlfheim.get(1))
-                // 190-tall layout; NEI hit-tests only inside this height.
                 .setHeight(208))
         .build();
 
@@ -240,7 +237,6 @@ public class GTNLRecipeMaps {
         .frontend(GeneralFrontend::new)
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.LibraryOfRuina.get(1))
-                // 172-tall layout; NEI hit-tests only inside this height.
                 .setHeight(190))
         .build();
 
@@ -358,7 +354,6 @@ public class GTNLRecipeMaps {
         .frontend(GeneralFrontend::new)
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.ShallowChemicalCoupling.get(1))
-                // 154-tall layout; NEI hit-tests only inside this height.
                 .setHeight(172))
         .neiSpecialInfoFormatter(HeatingCoilSpecialValueFormatter.INSTANCE)
         .build();
@@ -555,7 +550,6 @@ public class GTNLRecipeMaps {
         .useSpecialSlot()
         .neiHandlerInfo(
             builder -> builder.setDisplayStack(GTNLItemList.RocketAssembler.get(1))
-                // The lowest engine slots of the tier 7/8 layouts end at NEI y=165.
                 .setHeight(196))
         .build();
 

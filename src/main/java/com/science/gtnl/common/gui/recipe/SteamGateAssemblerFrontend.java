@@ -29,24 +29,8 @@ import gregtech.nei.GTNEIDefaultHandler;
 @MethodsReturnNonnullByDefault
 public class SteamGateAssemblerFrontend extends RecipeMapFrontend {
 
-    /**
-     * The 9x9 item input grid occupies y 7-169. The progress bar, the GTNL logo and the output slot are placed at
-     * y=175 and reach down to y=193, so the recipe background has to cover that row as well. With the old value of
-     * 170 the whole bottom row was drawn outside the recipe window, right on top of the NEI info lines
-     * (total EU / usage / duration) that start below the background.
-     */
     public static final int RECIPE_BACKGROUND_HEIGHT = 196;
 
-    /**
-     * NEI only hit-tests the slots inside the area declared by the NEI handler info, and GT registers every recipe
-     * handler with a height of 135. The last input row and the output slot are drawn below that line, but NEI never
-     * reports them under the mouse, so they cannot be clicked, hovered or shown in tooltips. The map registration has
-     * to override the height with this value.
-     * <p>
-     * The output slot ends at NEI-space y = 175 - 11 (NEI window offset) + 18 = 182. NEI draws its favorite button
-     * 31 px above the handler bottom and the overlay button 18 px above it, so a height of 213 keeps both buttons
-     * clear of the output slot. Otherwise clicking the right half of the product would toggle a NEI button instead.
-     */
     public static final int NEI_HANDLER_HEIGHT = 213;
 
     public SteamGateAssemblerFrontend(BasicUIPropertiesBuilder uiPropertiesBuilder,
