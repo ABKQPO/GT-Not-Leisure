@@ -1,24 +1,21 @@
 package com.science.gtnl.common.render.tile;
 
-import java.nio.FloatBuffer;
-
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
+import org.joml.Matrix4f;
 import org.joml.Matrix4fStack;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 
 import com.gtnewhorizon.gtnhlib.client.renderer.shader.ShaderProgram;
 import com.gtnewhorizon.gtnhlib.client.renderer.vao.IVertexArrayObject;
-import com.gtnewhorizon.gtnhlib.client.renderer.vertex.DefaultVertexFormat;
+import com.gtnewhorizon.gtnhlib.client.renderer.vertex.VertexFormat;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityNanoPhagocytosisPlant;
 import com.science.gtnl.common.machine.multiblock.wireless.NanoPhagocytosisPlant;
@@ -28,53 +25,102 @@ import cpw.mods.fml.relauncher.SideOnly;
 import goodgenerator.loader.Loaders;
 import gregtech.GTMod;
 import gregtech.api.GregTechAPI;
+import gregtech.common.render.shader.ShaderHandle;
+import gregtech.common.render.shader.ShaderRecipe;
+import gregtech.common.render.shader.Uniform;
+import gregtech.common.render.shader.VertexAttribute;
 import tectech.Reference;
+import tectech.rendering.EOH.EOHRenderingUtils;
 import tectech.rendering.EOH.EOHTileEntitySR;
 import tectech.util.StructureVBO;
-import tectech.util.TextureUpdateRequester;
 
 @SideOnly(Side.CLIENT)
 public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
 
-    private static ShaderProgram starProgram;
     private static final float STAR_RADIUS = 0.003f * 20f * 74f;
+    private static final int STAR_TESSELLATION = 128;
+
+    private static final ShaderRecipe STAR = ShaderRecipe.of(Reference.MODID, "star")
+        .required("u_Color", "u_Gamma")
+        .sampler("u_Texture", 0)
+        .modelUniform("u_ModelMatrix")
+        .attribute("a_Position", VertexAttribute.POSITION)
+        .attribute("a_UV", VertexAttribute.UV);
+
+    private static final Uniform STAR_COLOR = STAR.uniform("u_Color");
+    private static final Uniform STAR_GAMMA = STAR.uniform("u_Gamma");
+
+    private static final ShaderRecipe FADE_BYPASS = ShaderRecipe.of(Reference.MODID, "fadebypass")
+        .sampler("u_Texture", 0)
+        .modelUniform("u_ModelMatrix")
+        .attribute("a_Position", VertexAttribute.POSITION)
+        .attribute("a_UV", VertexAttribute.UV);
+
+    private static ShaderHandle starShader;
+    private static ShaderHandle fadeBypassShader;
+    private static IVertexArrayObject starSphere;
+    private static IVertexArrayObject ringOne, ringTwo, ringThree;
 
     private static boolean initialized = false;
-    private static boolean failedInit = false;
-    private static int u_Color = -1, u_ModelMatrix = -1, u_Gamma = -1;
-    private final Matrix4fStack starModelMatrix = new Matrix4fStack(3);
 
-    private final FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
-
-    private IVertexArrayObject ringOne, ringTwo, ringThree;
     // These are nudges/translations for each ring to align with the structure
     private static final Vector3f ringOneNudge = new Vector3f(0, -1, 0);
     private static final Vector3f ringTwoNudge = new Vector3f(0, -1, 0);
     private static final Vector3f ringThreeNudge = new Vector3f(.5f, -1, 0);
 
-    private static ShaderProgram fadeBypassProgram;
+    private final Matrix4fStack starModelMatrix = new Matrix4fStack(3);
+    private final Matrix4f ringMatrix = new Matrix4f();
 
     private final Vector4f reusableStarColor = new Vector4f();
     private final Vector3f reusableRotationAxis = new Vector3f();
 
-    private void init() {
+    public static void reload() {
+        initialized = false;
+        release();
         try {
-            starProgram = new ShaderProgram(Reference.MODID, "shaders/star.vert.glsl", "shaders/star.frag.glsl");
-
-            u_Color = starProgram.getUniformLocation("u_Color");
-            u_Gamma = starProgram.getUniformLocation("u_Gamma");
-            u_ModelMatrix = starProgram.getUniformLocation("u_ModelMatrix");
-
+            init();
+            initialized = true;
         } catch (Exception e) {
-            ScienceNotLeisure.LOG.error("[NanoPhagocytosisPlantRenderer] Shader init failed", e);
-            return;
+            ScienceNotLeisure.LOG.error("[NanoPhagocytosisPlantRenderer] Init failed", e);
+            release();
         }
-
-        ShaderProgram.clear();
-        initialized = true;
     }
 
-    private void initRings() {
+    private static void release() {
+        if (starShader != null) {
+            starShader.release();
+            starShader = null;
+        }
+        if (fadeBypassShader != null) {
+            fadeBypassShader.release();
+            fadeBypassShader = null;
+        }
+        if (starSphere != null) {
+            starSphere.delete();
+            starSphere = null;
+        }
+        if (ringOne != null) {
+            ringOne.delete();
+            ringOne = null;
+        }
+        if (ringTwo != null) {
+            ringTwo.delete();
+            ringTwo = null;
+        }
+        if (ringThree != null) {
+            ringThree.delete();
+            ringThree = null;
+        }
+    }
+
+    private static void init() {
+        starShader = STAR.bake();
+        if (!starShader.isValid()) throw new IllegalStateException("star shader did not bake");
+        starSphere = EOHRenderingUtils.buildSphere(starShader, STAR_TESSELLATION, STAR_TESSELLATION);
+
+        fadeBypassShader = FADE_BYPASS.bake();
+        if (!fadeBypassShader.isValid()) throw new IllegalStateException("fadebypass shader did not bake");
+
         StructureVBO ringStructure = (new StructureVBO()).addMapping('I', GregTechAPI.sBlockCasings10, 8)
             .addMapping('N', GregTechAPI.sBlockCasings8, 10)
             .addMapping('P', GregTechAPI.sBlockCasings9, 12)
@@ -82,20 +128,16 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
             .addMapping('X', Loaders.compactFusionCoil, 2)
             .addMapping('Y', Loaders.compactFusionCoil, 0);
 
+        final VertexFormat format = fadeBypassShader.vertexFormat();
         ringOne = ringStructure.assignStructure(NanoPhagocytosisPlant.shapeRingOne)
-            .build(DefaultVertexFormat.POSITION_TEXTURE);
+            .build(format);
         ringTwo = ringStructure.assignStructure(NanoPhagocytosisPlant.shapeRingTwo)
-            .build(DefaultVertexFormat.POSITION_TEXTURE);
+            .build(format);
         ringThree = ringStructure.assignStructure(NanoPhagocytosisPlant.shapeRingThree)
-            .build(DefaultVertexFormat.POSITION_TEXTURE);
+            .build(format);
 
-        fadeBypassProgram = new ShaderProgram(
-            Reference.MODID,
-            "shaders/fadebypass.vert.glsl",
-            "shaders/fadebypass.frag.glsl");
-
-        TextureUpdateRequester textureUpdater = ringStructure.getTextureUpdateRequestor();
-        textureUpdater.requestUpdate();
+        ringStructure.getTextureUpdateRequestor()
+            .requestUpdate();
     }
 
     public void RenderStarLayer(Vector4f color, ResourceLocation texture, float size, Vector3f rotationAxis,
@@ -106,90 +148,11 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
 
         this.bindTexture(texture);
 
-        matrixBuffer.clear();
-        GL20.glUniformMatrix4(u_ModelMatrix, false, starModelMatrix.get(matrixBuffer));
-        GL20.glUniform4f(u_Color, color.x, color.y, color.z, color.w);
-        renderTessellatedSphere(128, 128, 1);
+        starShader.uploadModel(starModelMatrix);
+        GL20.glUniform4f(starShader.loc(STAR_COLOR), color.x, color.y, color.z, color.w);
+        starSphere.draw();
 
         starModelMatrix.popMatrix();
-    }
-
-    private static void renderTessellatedSphere(int slices, int stacks, float radius) {
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        for (int stack = 0; stack < stacks; stack++) {
-            double v0 = (double) stack / stacks;
-            double v1 = (double) (stack + 1) / stacks;
-            double phi0 = Math.PI * (0.5 - v0);
-            double phi1 = Math.PI * (0.5 - v1);
-            double y0 = Math.sin(phi0) * radius;
-            double y1 = Math.sin(phi1) * radius;
-            double ring0 = Math.cos(phi0) * radius;
-            double ring1 = Math.cos(phi1) * radius;
-            for (int slice = 0; slice < slices; slice++) {
-                double u0 = (double) slice / slices;
-                double u1 = (double) (slice + 1) / slices;
-                double theta0 = Math.PI * 2 * u0;
-                double theta1 = Math.PI * 2 * u1;
-                tessellator.addVertexWithUV(Math.cos(theta0) * ring0, y0, Math.sin(theta0) * ring0, u0, v0);
-                tessellator.addVertexWithUV(Math.cos(theta0) * ring1, y1, Math.sin(theta0) * ring1, u0, v1);
-                tessellator.addVertexWithUV(Math.cos(theta1) * ring1, y1, Math.sin(theta1) * ring1, u1, v1);
-                tessellator.addVertexWithUV(Math.cos(theta1) * ring0, y0, Math.sin(theta1) * ring0, u1, v0);
-            }
-        }
-        tessellator.draw();
-    }
-
-    public void RenderEntireStar(TileEntityNanoPhagocytosisPlant tile, double x, double y, double z, float timer) {
-        GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT);
-
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-
-        starProgram.use();
-
-        float cx = (float) x + .5f;
-        float cy = (float) y + .5f;
-        float cz = (float) z + .5f;
-        starModelMatrix.clear();
-        starModelMatrix.translate(cx, cy, cz);
-
-        timer *= 10;
-
-        float r = tile.getColorR(), g = tile.getColorG(), b = tile.getColorB();
-        GL20.glUniform1f(u_Gamma, tile.getGamma());
-
-        // Render OPAQUE layer
-        RenderStarLayer(
-            new Vector4f(r, g, b, 1f),
-            EOHTileEntitySR.STAR_LAYER_0,
-            STAR_RADIUS,
-            new Vector3f(0F, 1F, 1).normalize(),
-            130 + (timer) % 360000);
-
-        // Setup for TRANSPARENT layers
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDepthMask(false);
-
-        // Render for TRANSPARENT layers
-        RenderStarLayer(
-            reusableStarColor.set(r, g, b, 0.4f),
-            EOHTileEntitySR.STAR_LAYER_1,
-            STAR_RADIUS * 1.02f,
-            reusableRotationAxis.set(1F, 1F, 0F)
-                .normalize(),
-            -49 + (timer) % 360000);
-        RenderStarLayer(
-            new Vector4f(r, g, b, 0.2f),
-            EOHTileEntitySR.STAR_LAYER_2,
-            STAR_RADIUS * 1.04f,
-            new Vector3f(1F, 0F, 1F).normalize(),
-            67 + (timer) % 360000);
-
-        ShaderProgram.clear();
-        GL11.glPopAttrib();
     }
 
     private void renderRings(TileEntityNanoPhagocytosisPlant tile, double x, double y, double z, float timer) {
@@ -205,56 +168,35 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
         bindTexture(TextureMap.locationBlocksTexture);
-        fadeBypassProgram.use();
+        fadeBypassShader.use();
 
-        GL11.glPushMatrix();
-        GL11.glTranslated(x + .5f, y + .5f, z + .5f);
-        GL11.glRotatef(tile.getRotAngle(), tile.getRotAxisX(), tile.getRotAxisY(), tile.getRotAxisZ());
-        GL11.glRotatef(timer / 6 * 7, 1, 0, 0);
-        GL11.glTranslated(ringOneNudge.x, ringOneNudge.y, ringOneNudge.z);
-        ringOne.render();
-        GL11.glPopMatrix();
-
-        GL11.glPushMatrix();
-        GL11.glTranslated(x + .5f, y + .5f, z + .5f);
-        GL11.glRotatef(tile.getRotAngle(), tile.getRotAxisX(), tile.getRotAxisY(), tile.getRotAxisZ());
-        GL11.glRotatef(-timer / 4 * 5, 1, 0, 0);
-        GL11.glTranslated(ringTwoNudge.x, ringTwoNudge.y, ringTwoNudge.z);
-        ringTwo.render();
-        GL11.glPopMatrix();
-
-        GL11.glPushMatrix();
-        GL11.glTranslated(x + .5f, y + .5f, z + .5f);
-        GL11.glRotatef(tile.getRotAngle(), tile.getRotAxisX(), tile.getRotAxisY(), tile.getRotAxisZ());
-        GL11.glRotatef(timer * 3, 1, 0, 0);
-        GL11.glTranslated(ringThreeNudge.x, ringThreeNudge.y, ringThreeNudge.z);
-        ringThree.render();
-        GL11.glPopMatrix();
+        renderRing(tile, ringOne, x, y, z, timer / 6 * 7, ringOneNudge);
+        renderRing(tile, ringTwo, x, y, z, -timer / 4 * 5, ringTwoNudge);
+        renderRing(tile, ringThree, x, y, z, timer * 3, ringThreeNudge);
 
         ShaderProgram.clear();
         GL11.glPopAttrib();
     }
 
+    private void renderRing(TileEntityNanoPhagocytosisPlant tile, IVertexArrayObject ring, double x, double y, double z,
+        float spinDegrees, Vector3f nudge) {
+        ringMatrix.translation((float) x + .5f, (float) y + .5f, (float) z + .5f)
+            .rotate(
+                tile.getRotAngle() / 180f * (float) Math.PI,
+                tile.getRotAxisX(),
+                tile.getRotAxisY(),
+                tile.getRotAxisZ())
+            .rotate(spinDegrees / 180f * (float) Math.PI, 1, 0, 0)
+            .translate(nudge);
+
+        fadeBypassShader.uploadModel(ringMatrix);
+        ring.render();
+    }
+
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float timeSinceLastTick) {
-        if (failedInit) return;
+        if (!initialized) return;
         if (!(tile instanceof TileEntityNanoPhagocytosisPlant nanoTile)) return;
-
-        // If something ever fails, just early return and never try again this session
-        if (!initialized) {
-            init();
-            if (!initialized) {
-                failedInit = true;
-                return;
-            }
-            try {
-                initRings();
-            } catch (Exception e) {
-                ScienceNotLeisure.LOG.error("[NanoPhagocytosisPlantRenderer] Ring init failed", e);
-                failedInit = true;
-                return;
-            }
-        }
 
         nanoTile.incrementColors();
 
@@ -283,17 +225,15 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
 
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
 
-        starProgram.use();
-
-        float cx = (float) x + .5f;
-        float cy = (float) y + .5f;
-        float cz = (float) z + .5f;
+        starShader.use();
+        final long cullWas = EOHRenderingUtils.beginSphereCull(false);
+        starSphere.bind();
 
         starModelMatrix.clear();
-        starModelMatrix.translate(cx, cy, cz);
+        starModelMatrix.translate((float) x + .5f, (float) y + .5f, (float) z + .5f);
 
         float r = tile.getColorR(), g = tile.getColorG(), b = tile.getColorB();
-        GL20.glUniform1f(u_Gamma, tile.getGamma());
+        GL20.glUniform1f(starShader.loc(STAR_GAMMA), tile.getGamma());
 
         // Render OPAQUE layer (writes to depth)
         RenderStarLayer(
@@ -304,6 +244,8 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
                 .normalize(),
             130 + (timer) % 360000);
 
+        starSphere.unbind();
+        EOHRenderingUtils.endSphereCull(cullWas);
         ShaderProgram.clear();
         GL11.glPopAttrib();
     }
@@ -323,17 +265,15 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
 
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
 
-        starProgram.use();
-
-        float cx = (float) x + .5f;
-        float cy = (float) y + .5f;
-        float cz = (float) z + .5f;
+        starShader.use();
+        final long cullWas = EOHRenderingUtils.beginSphereCull(false);
+        starSphere.bind();
 
         starModelMatrix.clear();
-        starModelMatrix.translate(cx, cy, cz);
+        starModelMatrix.translate((float) x + .5f, (float) y + .5f, (float) z + .5f);
 
         float r = tile.getColorR(), g = tile.getColorG(), b = tile.getColorB();
-        GL20.glUniform1f(u_Gamma, tile.getGamma());
+        GL20.glUniform1f(starShader.loc(STAR_GAMMA), tile.getGamma());
 
         // Render TRANSPARENT layers last, so they correctly blend over rings when in front
         RenderStarLayer(
@@ -352,6 +292,8 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
                 .normalize(),
             67 + (timer) % 360000);
 
+        starSphere.unbind();
+        EOHRenderingUtils.endSphereCull(cullWas);
         ShaderProgram.clear();
         GL11.glPopAttrib();
     }
