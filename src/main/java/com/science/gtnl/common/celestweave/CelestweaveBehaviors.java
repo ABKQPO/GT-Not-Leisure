@@ -1,0 +1,285 @@
+package com.science.gtnl.common.celestweave;
+
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.WeakHashMap;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.projectile.EntityFireball;
+import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.FoodStats;
+
+import com.science.gtnl.common.packet.CelestweaveFxPacket;
+import com.science.gtnl.config.MainConfig;
+
+import vazkii.botania.api.internal.IManaBurst;
+import vazkii.botania.api.mana.ManaItemHandler;
+
+public final class CelestweaveBehaviors {
+
+    public static final String SPEED = "Speed", VSPEED = "VSpeed", LEVITATE = "Levitate", INERTIA = "Inertia",
+        JUMP = "Jump", STEP = "Step", OMNI = "Omni", LEVEL = "Level", PROJECTILE = "Projectile", IGNITE = "Ignite",
+        BLIND = "Blind";
+    public static final float STEP_HEIGHT = 1.0031F;
+    private static final UUID SPEED_UUID = UUID.fromString("5d1b6c1e-2f0a-4c3e-9a61-7c2e4b8f1a30");
+    private static final UUID KNOCKBACK_UUID = UUID.fromString("a83f0d52-6e14-4b7c-8d29-3f5e1c9b7a42");
+    private static final CelestweaveBehavior NONE = new CelestweaveBehavior() {};
+    private static final Map<CelestweaveModule, CelestweaveBehavior> BEHAVIORS = new EnumMap<>(CelestweaveModule.class);
+    private static final Map<EntityPlayer, Float> STEP_ORIGINAL = Collections.synchronizedMap(new WeakHashMap<>());
+    private static final Map<Entity, Boolean> REFLECTED = Collections.synchronizedMap(new WeakHashMap<>());
+
+    static {
+        BEHAVIORS.put(CelestweaveModule.NIGHT_VISION, new NightVision());
+        BEHAVIORS.put(CelestweaveModule.SATURATION, new Saturation());
+        BEHAVIORS.put(CelestweaveModule.PURIFICATION, new Purification());
+        BEHAVIORS.put(CelestweaveModule.TERRASTEEL, new Terrasteel());
+        BEHAVIORS.put(CelestweaveModule.REFLECT, new Reflect());
+        BEHAVIORS.put(CelestweaveModule.SHIELD, new Shield());
+        BEHAVIORS.put(CelestweaveModule.FLIGHT, new CelestweaveFlight());
+        BEHAVIORS.put(CelestweaveModule.WALK_ASSIST, new WalkAssist());
+    }
+
+    private CelestweaveBehaviors() {}
+
+    public static CelestweaveBehavior of(CelestweaveModule module) {
+        return BEHAVIORS.getOrDefault(module, NONE);
+    }
+
+    private static MainConfig.Item.Celestweave cfg() {
+        return MainConfig.item.celestweave;
+    }
+
+    public static int walkLevel(CelestweaveContext ctx, String key, int fallback) {
+        return ctx.cfgInt(CelestweaveModule.WALK_ASSIST, key, fallback, 1, cfg().walkMaxLevel);
+    }
+
+    private static void setModifier(EntityLivingBase entity, IAttributeInstance attribute, UUID id, String name,
+        double amount, int operation) {
+        if (attribute == null) return;
+        AttributeModifier current = attribute.getModifier(id);
+        if (current != null && current.getAmount() == amount) return;
+        if (current != null) attribute.removeModifier(current);
+        if (amount != 0) attribute.applyModifier(new AttributeModifier(id, name, amount, operation));
+    }
+
+    private static final class NightVision implements CelestweaveBehavior {
+
+        @Override
+        public void tick(CelestweaveContext ctx) {
+            if (!ctx.server()) return;
+            EntityPlayer player = ctx.player();
+            if (!ctx.drain(cfg().nightVisionEuPerTick)) {
+                clear(player);
+                return;
+            }
+            PotionEffect effect = player.getActivePotionEffect(Potion.nightVision);
+            if (effect == null || effect.getIsAmbient() && effect.getDuration() < 220)
+                player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 300, 0, true));
+            if (player.isPotionActive(Potion.blindness)) player.removePotionEffect(Potion.blindness.id);
+        }
+
+        @Override
+        public void unequip(CelestweaveContext ctx) {
+            if (ctx.server()) clear(ctx.player());
+        }
+
+        private static void clear(EntityPlayer player) {
+            PotionEffect effect = player.getActivePotionEffect(Potion.nightVision);
+            if (effect != null && effect.getIsAmbient() && effect.getDuration() <= 300)
+                player.removePotionEffect(Potion.nightVision.id);
+        }
+    }
+
+    private static final class Saturation implements CelestweaveBehavior {
+
+        @Override
+        public void tick(CelestweaveContext ctx) {
+            EntityPlayer player = ctx.player();
+            if (!ctx.server() || player.worldObj.getTotalWorldTime() % 20 != 0) return;
+            FoodStats food = player.getFoodStats();
+            int missing = 20 - food.getFoodLevel();
+            if ((missing > 0 || food.getSaturationLevel() < 5F) && ctx.drain(cfg().saturationEu * Math.max(1, missing)))
+                food.addStats(20, 1F);
+        }
+    }
+
+    private static final class Purification implements CelestweaveBehavior {
+
+        @Override
+        public void tick(CelestweaveContext ctx) {
+            EntityPlayer player = ctx.player();
+            if (!ctx.server() || player.worldObj.getTotalWorldTime() % 10 != 0) return;
+            for (Object entry : player.getActivePotionEffects()
+                .toArray()) {
+                if (!(entry instanceof PotionEffect effect)) continue;
+                int id = effect.getPotionID();
+                Potion potion = id >= 0 && id < Potion.potionTypes.length ? Potion.potionTypes[id] : null;
+                if (potion != null && potion.isBadEffect && ctx.drain(cfg().purificationEu))
+                    player.removePotionEffect(id);
+            }
+        }
+    }
+
+    private static final class Terrasteel implements CelestweaveBehavior {
+
+        @Override
+        public void tick(CelestweaveContext ctx) {
+            if (ctx.server() && ctx.affords(cfg().manaEu)
+                && ManaItemHandler.dispatchManaExact(ctx.stack(), ctx.player(), 1, true)) ctx.drain(cfg().manaEu);
+        }
+    }
+
+    private static final class Shield implements CelestweaveBehavior {
+
+        @Override
+        public void tick(CelestweaveContext ctx) {
+            if (!ctx.server()) return;
+            EntityPlayer player = ctx.player();
+            boolean powered = CelestweaveShield.powered(player);
+            if (powered && player.isBurning()) player.extinguish();
+            setModifier(
+                player,
+                player.getEntityAttribute(SharedMonsterAttributes.knockbackResistance),
+                KNOCKBACK_UUID,
+                "Celestweave shield",
+                powered ? 1 : 0,
+                0);
+        }
+
+        @Override
+        public void unequip(CelestweaveContext ctx) {
+            if (ctx.server()) setModifier(
+                ctx.player(),
+                ctx.player()
+                    .getEntityAttribute(SharedMonsterAttributes.knockbackResistance),
+                KNOCKBACK_UUID,
+                "Celestweave shield",
+                0,
+                0);
+        }
+    }
+
+    private static final class Reflect implements CelestweaveBehavior {
+
+        @Override
+        public void tick(CelestweaveContext ctx) {
+            if (!ctx.server() || !ctx.cfgBool(CelestweaveModule.REFLECT, PROJECTILE, true)
+                || !ctx.affords(cfg().reflectEu)) return;
+            EntityPlayer player = ctx.player();
+            double cx = (player.boundingBox.minX + player.boundingBox.maxX) / 2,
+                cy = (player.boundingBox.minY + player.boundingBox.maxY) / 2,
+                cz = (player.boundingBox.minZ + player.boundingBox.maxZ) / 2;
+            List<?> nearby = player.worldObj
+                .getEntitiesWithinAABB(IProjectile.class, player.boundingBox.expand(4, 4, 4));
+            for (Object entry : nearby) {
+                if (!(entry instanceof Entity entity) || !(entry instanceof IProjectile)
+                    || entry instanceof IManaBurst
+                    || REFLECTED.containsKey(entity)) continue;
+                Entity shooter = shooter(entity);
+                if (shooter == player) continue;
+                double vx = entity.motionX, vy = entity.motionY, vz = entity.motionZ;
+                double speed = Math.sqrt(vx * vx + vy * vy + vz * vz);
+                double dx = entity.posX - cx, dy = entity.posY - cy, dz = entity.posZ - cz;
+                double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                if (speed < 0.05 || distance < 1.0E-3 || (dx * vx + dy * vy + dz * vz) / (distance * speed) > -0.7071)
+                    continue;
+                if (!ctx.drain(cfg().reflectEu)) return;
+                double tx = -vx, ty = -vy, tz = -vz;
+                if (shooter != null && shooter.worldObj == entity.worldObj) {
+                    tx = shooter.posX - entity.posX;
+                    ty = shooter.posY + shooter.height * 0.5 - entity.posY;
+                    tz = shooter.posZ - entity.posZ;
+                }
+                double length = Math.sqrt(tx * tx + ty * ty + tz * tz);
+                if (length < 1.0E-3) continue;
+                entity.motionX = tx / length * speed;
+                entity.motionY = ty / length * speed;
+                entity.motionZ = tz / length * speed;
+                if (entity instanceof EntityFireball fireball) {
+                    fireball.accelerationX = tx / length * 0.1;
+                    fireball.accelerationY = ty / length * 0.1;
+                    fireball.accelerationZ = tz / length * 0.1;
+                    fireball.shootingEntity = player;
+                } else if (entity instanceof EntityArrow arrow) arrow.shootingEntity = player;
+                entity.velocityChanged = true;
+                REFLECTED.put(entity, Boolean.TRUE);
+                CelestweaveServerEvents
+                    .sendFx(player, CelestweaveFxPacket.REFLECT, entity.posX, entity.posY, entity.posZ);
+            }
+        }
+
+        private static Entity shooter(Entity entity) {
+            if (entity instanceof EntityArrow arrow) return arrow.shootingEntity;
+            if (entity instanceof EntityFireball fireball) return fireball.shootingEntity;
+            if (entity instanceof EntityThrowable throwable) return throwable.getThrower();
+            return null;
+        }
+    }
+
+    private static final class WalkAssist implements CelestweaveBehavior {
+
+        @Override
+        public void tick(CelestweaveContext ctx) {
+            if (!ctx.server()) return;
+            EntityPlayer player = ctx.player();
+            boolean on = ctx.affords(cfg().walkEuPerTick);
+            if (on && player.onGround && ctx.moving()) on = ctx.drain(cfg().walkEuPerTick);
+            int speed = walkLevel(ctx, SPEED, 2);
+            setModifier(
+                player,
+                player.getEntityAttribute(SharedMonsterAttributes.movementSpeed),
+                SPEED_UUID,
+                "Celestweave walk assist",
+                on && speed > 1 ? (speed - 1) * 0.25 : 0,
+                2);
+        }
+
+        @Override
+        public void unequip(CelestweaveContext ctx) {
+            if (!ctx.server()) return;
+            EntityPlayer player = ctx.player();
+            setModifier(
+                player,
+                player.getEntityAttribute(SharedMonsterAttributes.movementSpeed),
+                SPEED_UUID,
+                "Celestweave walk assist",
+                0,
+                2);
+        }
+    }
+
+    public static void updateStep(EntityPlayer player) {
+        ItemStack boots = CelestweaveServerEvents.piece(player, 3);
+        boolean on = boots != null && !player.isDead
+            && !player.isSneaking()
+            && CelestweaveData.active(boots, CelestweaveModule.WALK_ASSIST)
+            && CelestweaveData.cfgBool(boots, CelestweaveModule.WALK_ASSIST, STEP, true)
+            && CelestweaveEnergy.affords(player, 3, boots, cfg().walkEuPerTick);
+        if (on) {
+            if (player.stepHeight < STEP_HEIGHT) {
+                STEP_ORIGINAL.putIfAbsent(player, player.stepHeight);
+                player.stepHeight = STEP_HEIGHT;
+            }
+            return;
+        }
+        Float original = STEP_ORIGINAL.remove(player);
+        if (original != null) player.stepHeight = original;
+    }
+
+    public static void forget(EntityPlayer player) {
+        STEP_ORIGINAL.remove(player);
+    }
+}

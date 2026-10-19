@@ -272,6 +272,8 @@ public class CommonProxy implements IGuiHandler {
             case PortableCellWorkbenchGUI -> createPortableCellWorkbenchContainer(player, x);
             case PortableCellWorkbenchOreFilterGUI -> createPortableCellWorkbenchOreFilter(player, x);
             case PortableCellWorkbenchRestrictionGUI -> createPortableCellWorkbenchRestriction(player, x);
+            case CelestweaveBackpackGUI -> com.science.gtnl.common.celestweave.CelestweaveBackpack
+                .serverContainer(player);
             case DirePatternEncoderGUI -> {
                 var t = world.getTileEntity(x, y, z);
                 if (t instanceof TileEntityDirePatternEncoder d) {

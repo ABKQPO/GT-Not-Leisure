@@ -19,9 +19,13 @@ public final class RailgunNet {
     private RailgunNet() {}
 
     public static void sendAround(World world, Entity entity, ClientboundPacket packet) {
+        sendAround(world, entity, packet, 256);
+    }
+
+    public static void sendAround(World world, Entity entity, ClientboundPacket packet, double range) {
         ScienceNotLeisure.network.sendToAllAround(
             packet,
-            new TargetPoint(world.provider.dimensionId, entity.posX, entity.posY, entity.posZ, 256));
+            new TargetPoint(world.provider.dimensionId, entity.posX, entity.posY, entity.posZ, range));
     }
 
     public static void writeVec(ByteBuf buffer, RailgunVec vector) {

@@ -7,12 +7,20 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import com.science.gtnl.common.celestweave.CelestweaveBackpack;
 import com.science.gtnl.common.item.items.PortableItem;
 
 public class ContainerPortableEnderChest extends ContainerChest {
 
+    public final PortableStorageHost host;
+
     public ContainerPortableEnderChest(InventoryPlayer playerInv, IInventory enderInv) {
+        this(playerInv, enderInv, null);
+    }
+
+    public ContainerPortableEnderChest(InventoryPlayer playerInv, IInventory enderInv, PortableStorageHost host) {
         super(playerInv, enderInv);
+        this.host = host;
 
         for (int i = 0; i < this.inventorySlots.size(); i++) {
             final Slot oldSlot = this.inventorySlots.get(i);
@@ -27,6 +35,7 @@ public class ContainerPortableEnderChest extends ContainerChest {
                     if (stack != null && stack.getItem() instanceof PortableItem && stack.getItemDamage() == 4) {
                         return false;
                     }
+                    if (CelestweaveBackpack.blockedInStorage(stack)) return false;
                     return super.isItemValid(stack);
                 }
             };
@@ -36,7 +45,20 @@ public class ContainerPortableEnderChest extends ContainerChest {
     }
 
     @Override
+    public ItemStack transferStackInSlot(EntityPlayer player, int index) {
+        if (index >= getLowerChestInventory().getSizeInventory() && index < inventorySlots.size()) {
+            Slot slot = inventorySlots.get(index);
+            if (slot != null && slot.getHasStack()
+                && !inventorySlots.get(0)
+                    .isItemValid(slot.getStack()))
+                return null;
+        }
+        return super.transferStackInSlot(player, index);
+    }
+
+    @Override
     public boolean canInteractWith(EntityPlayer player) {
+        if (host != null) return host.valid(player);
         ItemStack held = player.getHeldItem();
         return held != null && held.getItemDamage() == 4 && held.getItem() instanceof PortableItem;
     }

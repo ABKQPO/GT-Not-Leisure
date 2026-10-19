@@ -13,7 +13,6 @@ import net.minecraft.util.MathHelper;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.science.gtnl.common.item.items.PortableItem;
 import com.science.gtnl.common.packet.PortableInfinityChestSyncPacket;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -24,10 +23,14 @@ public class ContainerPortableInfinityChest extends ContainerPortableAvaritiaddo
         super(stack, playerInv, true);
     }
 
+    public ContainerPortableInfinityChest(@NotNull ItemStack stack, InventoryPlayer playerInv,
+        PortableStorageHost host) {
+        super(stack, playerInv, true, host);
+    }
+
     @Override
     public boolean canInteractWith(EntityPlayer player) {
-        ItemStack held = player.getHeldItem();
-        return PortableItem.matchesPortableID(held, portableID);
+        return host.valid(player);
     }
 
     @Override
@@ -97,6 +100,7 @@ public class ContainerPortableInfinityChest extends ContainerPortableAvaritiaddo
             Slot actualSlot = inventorySlots.get(slot);
             final ItemStack slotStack = actualSlot.getStack();
             final ItemStack playerStack = player.inventory.getItemStack();
+            if (playerStack != null && !actualSlot.isItemValid(playerStack)) return null;
             if (mouseButton == 0) {
                 if (slotStack == null && playerStack != null) {
                     actualSlot.putStack(playerStack.copy());
@@ -143,26 +147,14 @@ public class ContainerPortableInfinityChest extends ContainerPortableAvaritiaddo
                 if (slotStack.stackSize == 0) actualSlot.putStack(null);
                 else actualSlot.onSlotChanged();
             }
-            ItemStack held = player.getHeldItem();
-            if (PortableItem.matchesPortableID(held, portableID)) {
-                type.saveInventory(held, this.chestInventory);
-                itemStack = held;
-            }
+            host.save(player, chestInventory);
             return actualSlot.getHasStack() ? actualSlot.getStack()
                 .copy() : null;
         } else if (slot >= 0 && slot < 243 && modifier == 2) {
-            ItemStack held = player.getHeldItem();
-            if (PortableItem.matchesPortableID(held, portableID)) {
-                type.saveInventory(held, this.chestInventory);
-                itemStack = held;
-            }
+            host.save(player, chestInventory);
             return null;
         } else {
-            ItemStack held = player.getHeldItem();
-            if (PortableItem.matchesPortableID(held, portableID)) {
-                type.saveInventory(held, this.chestInventory);
-                itemStack = held;
-            }
+            host.save(player, chestInventory);
             return super.slotClick(slot, mouseButton, modifier, player);
         }
     }
@@ -170,10 +162,7 @@ public class ContainerPortableInfinityChest extends ContainerPortableAvaritiaddo
     @Override
     public void onContainerClosed(EntityPlayer player) {
         super.onContainerClosed(player);
-        ItemStack held = player.getHeldItem();
-        if (PortableItem.matchesPortableID(held, portableID)) {
-            type.saveInventory(held, this.chestInventory);
-        }
+        host.save(player, chestInventory);
     }
 
     @Override

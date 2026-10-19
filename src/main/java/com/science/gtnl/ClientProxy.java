@@ -150,6 +150,7 @@ public class ClientProxy extends CommonProxy {
         MiniTerminalClient.init();
         WirelessCardInput.register();
         com.science.gtnl.client.railgun.RailgunClientFx.register();
+        com.science.gtnl.client.celestweave.CelestweaveClientEvents.register();
         MinecraftForge.EVENT_BUS.register(WirelessWorldHighlight.INSTANCE);
         ModelRegistry.registerModid(ScienceNotLeisure.MODID);
 
@@ -350,6 +351,7 @@ public class ClientProxy extends CommonProxy {
             case PortableCellWorkbenchGUI -> createPortableCellWorkbenchGui(player, x);
             case PortableCellWorkbenchOreFilterGUI -> createPortableCellWorkbenchOreFilterGui(player, x);
             case PortableCellWorkbenchRestrictionGUI -> createPortableCellWorkbenchRestrictionGui(player, x);
+            case CelestweaveBackpackGUI -> com.science.gtnl.client.celestweave.CelestweaveBackpackClient.gui(player);
             case MEChiselGUI -> {
                 var t = world.getTileEntity(x, y, z);
                 if (t instanceof TileEntityMEChisel d) {

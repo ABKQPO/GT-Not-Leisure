@@ -60,9 +60,12 @@ public class NetWorkHandler {
         registerClientbound(RailgunRecoilFxPacket.class);
         registerServerbound(RailgunBeamTogglePacket.class);
         registerServerbound(OpenRailgunGuiPacket.class);
+        registerServerbound(CelestweaveKeyPacket.class);
         registerClientbound(RailgunBeamUpdatePacket.class);
         registerClientbound(RailgunBeamChainFxPacket.class);
         registerClientbound(RailgunChargeCapPacket.class);
+        registerClientbound(CelestweaveFxPacket.class);
+        registerClientbound(CelestweaveFlightPacket.class);
     }
 
     public static <T extends ClientboundPacket> void registerClientbound(Class<T> packet) {

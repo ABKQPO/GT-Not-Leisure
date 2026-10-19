@@ -35,20 +35,32 @@ public class RailgunShockwaveRenderer {
         final double maxRadius;
         final int lifetime;
         final long born;
+        final float red, green, blue;
         final boolean[] occluded = new boolean[RING_SEGMENTS];
         long occlusionTick = Long.MIN_VALUE;
 
-        Wave(RailgunVec center, double maxRadius, int lifetime, long born) {
+        Wave(RailgunVec center, double maxRadius, int lifetime, long born, float red, float green, float blue) {
             this.center = center;
             this.maxRadius = maxRadius;
             this.lifetime = lifetime;
             this.born = born;
+            this.red = red;
+            this.green = green;
+            this.blue = blue;
         }
     }
 
     private static final List<Wave> ACTIVE = new ArrayList<>();
 
     public static void spawn(RailgunVec center, double radius, int lifetime) {
+        spawn(center, radius, lifetime, RED, GREEN, BLUE);
+    }
+
+    public static void spawn(RailgunVec center, double radius, int lifetime, int rgb) {
+        spawn(center, radius, lifetime, (rgb >> 16 & 255) / 255F, (rgb >> 8 & 255) / 255F, (rgb & 255) / 255F);
+    }
+
+    private static void spawn(RailgunVec center, double radius, int lifetime, float red, float green, float blue) {
         var world = Minecraft.getMinecraft().theWorld;
         if (world == null || center == null
             || !center.finite()
@@ -57,7 +69,7 @@ public class RailgunShockwaveRenderer {
             || radius > MAX_RADIUS
             || lifetime <= 0) return;
         if (ACTIVE.size() >= MAX_ACTIVE) ACTIVE.remove(0);
-        ACTIVE.add(new Wave(center, radius, lifetime, world.getTotalWorldTime()));
+        ACTIVE.add(new Wave(center, radius, lifetime, world.getTotalWorldTime(), red, green, blue));
     }
 
     public static void clear() {
@@ -125,10 +137,10 @@ public class RailgunShockwaveRenderer {
             double inner0 = Math.max(0, radius0 - width * 0.5), inner1 = Math.max(0, radius1 - width * 0.5);
             double outer0 = radius0 + width * 0.5, outer1 = radius1 + width * 0.5;
             double cos0 = Math.cos(start), sin0 = Math.sin(start), cos1 = Math.cos(end), sin1 = Math.sin(end);
-            tessellator.setColorRGBA_F(RED, GREEN, BLUE, alpha);
+            tessellator.setColorRGBA_F(wave.red, wave.green, wave.blue, alpha);
             tessellator.addVertex(wave.center.x() + cos0 * inner0, y, wave.center.z() + sin0 * inner0);
             tessellator.addVertex(wave.center.x() + cos1 * inner1, y, wave.center.z() + sin1 * inner1);
-            tessellator.setColorRGBA_F(RED, GREEN, BLUE, alpha * RIM_ALPHA);
+            tessellator.setColorRGBA_F(wave.red, wave.green, wave.blue, alpha * RIM_ALPHA);
             tessellator.addVertex(wave.center.x() + cos1 * outer1, y, wave.center.z() + sin1 * outer1);
             tessellator.addVertex(wave.center.x() + cos0 * outer0, y, wave.center.z() + sin0 * outer0);
         }

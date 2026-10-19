@@ -84,6 +84,35 @@ public class RailgunArcRenderer {
         spawn(from, to, segments, spread, lifetime, IMPACT_SPARK);
     }
 
+    public static void spawnTinted(RailgunVec from, RailgunVec to, int segments, double spread, int lifetime, int rgb) {
+        spawnTinted(from, to, segments, spread, lifetime, rgb, 1);
+    }
+
+    public static void spawnTinted(RailgunVec from, RailgunVec to, int segments, double spread, int lifetime, int rgb,
+        double width) {
+        Color glow = new Color((rgb >> 16 & 255) / 255F, (rgb >> 8 & 255) / 255F, (rgb & 255) / 255F);
+        spawn(
+            from,
+            to,
+            segments,
+            spread,
+            lifetime,
+            new Style(
+                glow,
+                mixWhite(glow, 0.3F),
+                mixWhite(glow, 0.7F),
+                mixWhite(glow, 0.1F),
+                mixWhite(glow, 0.6F),
+                width));
+    }
+
+    private static Color mixWhite(Color color, float k) {
+        return new Color(
+            color.red() + (1 - color.red()) * k,
+            color.green() + (1 - color.green()) * k,
+            color.blue() + (1 - color.blue()) * k);
+    }
+
     private static void spawn(RailgunVec from, RailgunVec to, int segments, double spread, int lifetime, Style style) {
         var world = Minecraft.getMinecraft().theWorld;
         if (world == null || from == null
