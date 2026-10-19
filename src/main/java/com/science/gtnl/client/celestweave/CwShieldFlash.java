@@ -17,10 +17,11 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnl.client.railgun.RailgunArcRenderer;
-import com.science.gtnl.client.railgun.RailgunCamera;
-import com.science.gtnl.client.railgun.RailgunRenderHelper;
-import com.science.gtnl.common.railgun.RailgunVec;
+import com.science.gtnl.client.fx.FxArcRenderer;
+import com.science.gtnl.client.fx.FxCamera;
+import com.science.gtnl.client.fx.FxColor;
+import com.science.gtnl.client.fx.FxRenderHelper;
+import com.science.gtnl.common.equipment.EquipmentVec;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -30,24 +31,30 @@ import cpw.mods.fml.relauncher.SideOnly;
 public final class CwShieldFlash {
 
     private static final int MAX_ACTIVE = 32, LONGITUDES = 24, LATITUDES = 16, U_REPEAT = 10, V_REPEAT = 4;
-    private static final int HIT_LIFE = 420, SAVE_LIFE = 800;
+    private static final int HIT_LIFETIME = 420, SAVE_LIFETIME = 800;
     private static final int HEX_WIDTH = 64, HEX_HEIGHT = 111;
     private static final List<Flash> ACTIVE = new ArrayList<>();
     private static ResourceLocation hex;
 
-    private record Flash(int entityId, RailgunVec dir, long born, int life, int rgb, boolean save) {}
+    private record Flash(int entityId, EquipmentVec direction, long born, int lifetime, int rgb, boolean save) {}
 
-    private record Shell(Flash flash, RailgunVec center, double horizontal, double vertical, float progress,
+    private record Shell(Flash flash, EquipmentVec center, double horizontal, double vertical, float progress,
         float strength) {}
 
     static void spawn(EntityLivingBase entity, float x, float y, float z, int rgb, boolean save, boolean omni) {
-        RailgunVec center = center(entity, 1F);
-        RailgunVec offset = new RailgunVec(x, y, z).subtract(center);
-        RailgunVec dir = omni || offset.length() < 0.4 ? null : offset.normalize();
+        EquipmentVec center = center(entity, 1F);
+        EquipmentVec offset = new EquipmentVec(x, y, z).subtract(center);
+        EquipmentVec direction = omni || offset.length() < 0.4 ? null : offset.normalize();
         if (ACTIVE.size() >= MAX_ACTIVE) ACTIVE.remove(0);
         ACTIVE.add(
-            new Flash(entity.getEntityId(), dir, Minecraft.getSystemTime(), save ? SAVE_LIFE : HIT_LIFE, rgb, save));
-        if (!firstPerson(entity)) sparks(entity, center, dir, rgb, save);
+            new Flash(
+                entity.getEntityId(),
+                direction,
+                Minecraft.getSystemTime(),
+                save ? SAVE_LIFETIME : HIT_LIFETIME,
+                rgb,
+                save));
+        if (!firstPerson(entity)) sparks(entity, center, direction, rgb, save);
     }
 
     static void clear() {
@@ -67,47 +74,48 @@ public final class CwShieldFlash {
         return entity.height * 0.62;
     }
 
-    private static RailgunVec center(Entity entity, float partialTicks) {
+    private static EquipmentVec center(Entity entity, float partialTicks) {
         double back = 1 - partialTicks;
-        return new RailgunVec(
+        return new EquipmentVec(
             (entity.boundingBox.minX + entity.boundingBox.maxX) / 2 - (entity.posX - entity.lastTickPosX) * back,
             (entity.boundingBox.minY + entity.boundingBox.maxY) / 2 - (entity.posY - entity.lastTickPosY) * back,
             (entity.boundingBox.minZ + entity.boundingBox.maxZ) / 2 - (entity.posZ - entity.lastTickPosZ) * back);
     }
 
-    private static RailgunVec surface(RailgunVec center, RailgunVec normal, double horizontal, double vertical) {
+    private static EquipmentVec surface(EquipmentVec center, EquipmentVec normal, double horizontal, double vertical) {
         return center.add(normal.x() * horizontal, normal.y() * vertical, normal.z() * horizontal);
     }
 
-    private static RailgunVec randomUnit() {
-        RailgunVec vector = new RailgunVec(
+    private static EquipmentVec randomUnit() {
+        EquipmentVec vector = new EquipmentVec(
             CwArcs.RNG.nextGaussian(),
             CwArcs.RNG.nextGaussian(),
             CwArcs.RNG.nextGaussian());
-        return vector.length() < 1.0E-3 ? new RailgunVec(0, 1, 0) : vector.normalize();
+        return vector.length() < 1.0E-3 ? new EquipmentVec(0, 1, 0) : vector.normalize();
     }
 
-    private static void sparks(EntityLivingBase entity, RailgunVec center, RailgunVec dir, int rgb, boolean save) {
+    private static void sparks(EntityLivingBase entity, EquipmentVec center, EquipmentVec direction, int rgb,
+        boolean save) {
         double horizontal = horizontal(entity), vertical = vertical(entity);
-        int color = CwLook.mixWhite(rgb, 0.45F);
+        int bright = FxColor.mixWhite(rgb, 0.45F);
         int count = save ? 10 : 6;
         for (int i = 0; i < count; i++) {
-            RailgunVec from = dir != null ? dir : randomUnit();
-            RailgunVec axis = from.cross(randomUnit());
+            EquipmentVec from = direction != null ? direction : randomUnit();
+            EquipmentVec axis = from.cross(randomUnit());
             if (axis.length() < 1.0E-3) continue;
             axis = axis.normalize();
             double angle = CwArcs.rand(0.35F, 0.8F);
-            RailgunVec to = from.scale(Math.cos(angle))
+            EquipmentVec to = from.scale(Math.cos(angle))
                 .add(
                     axis.cross(from)
                         .scale(Math.sin(angle)));
-            RailgunArcRenderer.spawnTinted(
+            FxArcRenderer.spawnColored(
                 surface(center, from, horizontal, vertical),
                 surface(center, to, horizontal, vertical),
                 6,
                 0.05,
                 3 + CwArcs.RNG.nextInt(2),
-                color,
+                bright,
                 0.6);
         }
     }
@@ -117,13 +125,13 @@ public final class CwShieldFlash {
         Minecraft minecraft = Minecraft.getMinecraft();
         World world = minecraft.theWorld;
         long now = Minecraft.getSystemTime();
-        ACTIVE.removeIf(flash -> now - flash.born >= flash.life);
+        ACTIVE.removeIf(flash -> now - flash.born >= flash.lifetime);
         if (world == null || ACTIVE.isEmpty()) return;
         List<Shell> shells = new ArrayList<>();
         for (Flash flash : ACTIVE) {
             Entity entity = world.getEntityByID(flash.entityId);
             if (!(entity instanceof EntityLivingBase) || entity.isDead || firstPerson(entity)) continue;
-            float progress = (now - flash.born) / (float) flash.life;
+            float progress = (now - flash.born) / (float) flash.lifetime;
             float grow = 1 + (flash.save ? 0.45F : 0.1F) * progress;
             float strength = Math.min(1F, progress * 10F) * (float) Math.pow(1 - progress, 1.5)
                 * (flash.save ? 1.4F : 1F);
@@ -137,13 +145,12 @@ public final class CwShieldFlash {
                     strength));
         }
         if (shells.isEmpty()) return;
-        RailgunRenderHelper.render(() -> { for (Shell shell : shells) emit(shell, RailgunCamera.position(), false); });
-        textured(() -> { for (Shell shell : shells) emit(shell, RailgunCamera.position(), true); });
-        RailgunRenderHelper
-            .renderGlow(RailgunRenderHelper.Sprite.RADIAL, () -> { for (Shell shell : shells) impact(shell); });
+        FxRenderHelper.render(() -> { for (Shell shell : shells) emit(shell, FxCamera.position(), false); });
+        textured(() -> { for (Shell shell : shells) emit(shell, FxCamera.position(), true); });
+        FxRenderHelper.renderGlow(FxRenderHelper.Sprite.RADIAL, () -> { for (Shell shell : shells) impact(shell); });
     }
 
-    private static void emit(Shell shell, RailgunVec camera, boolean hexPass) {
+    private static void emit(Shell shell, EquipmentVec camera, boolean hexPass) {
         for (int ring = 0; ring < LATITUDES; ring++) {
             for (int segment = 0; segment < LONGITUDES; segment++) {
                 vertex(shell, ring, segment, camera, hexPass);
@@ -154,25 +161,25 @@ public final class CwShieldFlash {
         }
     }
 
-    private static void vertex(Shell shell, int ring, int segment, RailgunVec camera, boolean hexPass) {
+    private static void vertex(Shell shell, int ring, int segment, EquipmentVec camera, boolean hexPass) {
         Flash flash = shell.flash;
         float progress = shell.progress;
         double latitude = Math.PI * (ring / (double) LATITUDES - 0.5);
         double longitude = Math.PI * 2 * segment / LONGITUDES;
         double nx = Math.cos(latitude) * Math.cos(longitude), ny = Math.sin(latitude),
             nz = Math.cos(latitude) * Math.sin(longitude);
-        RailgunVec point = shell.center.add(nx * shell.horizontal, ny * shell.vertical, nz * shell.horizontal);
-        RailgunVec view = camera.subtract(point)
+        EquipmentVec point = shell.center.add(nx * shell.horizontal, ny * shell.vertical, nz * shell.horizontal);
+        EquipmentVec view = camera.subtract(point)
             .normalize();
         double facing = Math.abs(nx * view.x() + ny * view.y() + nz * view.z());
         double rim = Math.pow(1 - facing, 3) * (flash.save ? 0.6 : 0.35);
         double spot, wave;
-        if (flash.dir == null) {
+        if (flash.direction == null) {
             spot = 0;
             double front = ny * 0.5 + 0.5 - progress;
             wave = Math.exp(-front * front / 0.02) * 0.7 + 0.12;
         } else {
-            double cosine = nx * flash.dir.x() + ny * flash.dir.y() + nz * flash.dir.z();
+            double cosine = nx * flash.direction.x() + ny * flash.direction.y() + nz * flash.direction.z();
             spot = Math.pow(Math.max(0, cosine), 8);
             double front = (Math.acos(Math.max(-1, Math.min(1, cosine))) - progress * 2.4) / 0.22;
             wave = Math.exp(-front * front) * 0.75 + 0.06;
@@ -184,8 +191,7 @@ public final class CwShieldFlash {
             alpha = (rim * 0.8 + spot * 0.55 + wave * 0.35) * shimmer * shell.strength;
         }
         float white = (float) Math.min(1, spot * 0.7 + (flash.save ? 0.25 : 0));
-        float red = (flash.rgb >> 16 & 255) / 255F, green = (flash.rgb >> 8 & 255) / 255F,
-            blue = (flash.rgb & 255) / 255F;
+        float red = FxColor.red(flash.rgb), green = FxColor.green(flash.rgb), blue = FxColor.blue(flash.rgb);
         Tessellator tessellator = Tessellator.instance;
         tessellator.setColorRGBA_F(
             red + (1 - red) * white,
@@ -198,21 +204,20 @@ public final class CwShieldFlash {
             point.z(),
             segment / (double) LONGITUDES * U_REPEAT,
             ring / (double) LATITUDES * V_REPEAT);
-        else RailgunRenderHelper.vertex(point);
+        else FxRenderHelper.vertex(point);
     }
 
     private static void impact(Shell shell) {
         Flash flash = shell.flash;
         float k = Math.max(0F, 1F - shell.progress / 0.35F);
-        if (flash.dir == null || k <= 0F) return;
-        RailgunVec point = surface(shell.center, flash.dir, shell.horizontal, shell.vertical);
-        int light = CwLook.mixWhite(flash.rgb, 0.3F);
+        if (flash.direction == null || k <= 0F) return;
+        EquipmentVec point = surface(shell.center, flash.direction, shell.horizontal, shell.vertical);
+        int light = FxColor.mixWhite(flash.rgb, 0.3F);
         Tessellator tessellator = Tessellator.instance;
-        tessellator
-            .setColorRGBA_F((light >> 16 & 255) / 255F, (light >> 8 & 255) / 255F, (light & 255) / 255F, 0.55F * k);
-        RailgunRenderHelper.glow(point, 0.35 + 0.35 * (1 - k), shell.progress * 6F);
+        tessellator.setColorRGBA_F(FxColor.red(light), FxColor.green(light), FxColor.blue(light), 0.55F * k);
+        FxRenderHelper.glow(point, 0.35 + 0.35 * (1 - k), shell.progress * 6F);
         tessellator.setColorRGBA_F(1F, 1F, 1F, 0.85F * k * k);
-        RailgunRenderHelper.glow(point, 0.18, -shell.progress * 9F);
+        FxRenderHelper.glow(point, 0.18, -shell.progress * 9F);
     }
 
     private static void textured(Runnable draw) {

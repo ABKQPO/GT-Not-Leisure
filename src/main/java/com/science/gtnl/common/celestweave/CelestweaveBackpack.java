@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.science.gtnl.CommonProxy;
+import com.science.gtnl.common.equipment.EquipmentMessages;
 import com.science.gtnl.common.item.items.CelestweaveArmor;
 import com.science.gtnl.common.item.items.PortableChestType;
 import com.science.gtnl.common.item.items.PortableItem;
@@ -48,7 +49,7 @@ public final class CelestweaveBackpack {
 
     public static boolean isBackpackArmor(ItemStack stack) {
         return stack != null && stack.getItem() instanceof CelestweaveArmor armor
-            && armor.armorType == 1
+            && armor.armorType == CelestweaveArmor.CHEST
             && CelestweaveData.installed(stack)
                 .contains(CelestweaveModule.BACKPACK);
     }
@@ -135,7 +136,7 @@ public final class CelestweaveBackpack {
     }
 
     private static ItemStack wornChest(EntityPlayer player) {
-        ItemStack chest = CelestweaveServerEvents.piece(player, 1);
+        ItemStack chest = CelestweaveData.piece(player, CelestweaveArmor.CHEST);
         return isBackpackArmor(chest) ? chest : null;
     }
 
@@ -164,7 +165,7 @@ public final class CelestweaveBackpack {
     public static void open(EntityPlayerMP player) {
         ItemStack held = ensureId(player);
         if (held == null) {
-            CelestweaveMessages.hotbar(player, "item.gtnl.celestweave.message.no_backpack");
+            EquipmentMessages.hotbar(player, "item.gtnl.celestweave.message.no_backpack");
             return;
         }
         if (player.openContainer != player.inventoryContainer) player.closeScreen();

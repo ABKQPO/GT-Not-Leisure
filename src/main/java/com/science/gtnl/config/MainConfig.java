@@ -79,9 +79,9 @@ public class MainConfig {
         public int celestweaveMaxArcsTotal = 128;
 
         @Comment("Show arcs and event effects of other players' Celestweave armor")
-        @LangKey("gtnl.gui.config.general.client.celestweave_show_others_fx")
+        @LangKey("gtnl.gui.config.general.client.enable_celestweave_show_others_fx")
         @DefaultBoolean(true)
-        public boolean celestweaveShowOthersFx = true;
+        public boolean enableCelestweaveShowOthersFx = true;
 
         @Comment("Celestweave arcs are not drawn beyond this distance in blocks")
         @LangKey("gtnl.gui.config.general.client.celestweave_fx_distance")
@@ -96,19 +96,24 @@ public class MainConfig {
         public int celestweaveDetailDistance = 24;
 
         @Comment("Process your own idle Celestweave arcs in first person view")
-        @LangKey("gtnl.gui.config.general.client.celestweave_first_person_fx")
+        @LangKey("gtnl.gui.config.general.client.enable_celestweave_first_person_fx")
         @DefaultBoolean(false)
-        public boolean celestweaveFirstPersonFx = false;
+        public boolean enableCelestweaveFirstPersonFx = false;
+
+        @Comment("Draw the Celestweave chestplate arm over your empty first person hand")
+        @LangKey("gtnl.gui.config.general.client.enable_celestweave_first_person_arm")
+        @DefaultBoolean(true)
+        public boolean enableCelestweaveFirstPersonArm = true;
 
         @Comment("Play Celestweave armor sounds for shield hits, reflects, dashes, landings and wings")
-        @LangKey("gtnl.gui.config.general.client.celestweave_sounds")
+        @LangKey("gtnl.gui.config.general.client.enable_celestweave_sounds")
         @DefaultBoolean(true)
-        public boolean celestweaveSounds = true;
+        public boolean enableCelestweaveSounds = true;
 
         @Comment("Show the Celestweave HUD: energy core, shield hit ring, dash cooldown and flight altimeter")
-        @LangKey("gtnl.gui.config.general.client.celestweave_hud")
+        @LangKey("gtnl.gui.config.general.client.enable_celestweave_hud")
         @DefaultBoolean(true)
-        public boolean celestweaveHud = true;
+        public boolean enableCelestweaveHud = true;
 
         @Comment("Scale of the Celestweave HUD")
         @LangKey("gtnl.gui.config.general.client.celestweave_hud_scale")
@@ -169,6 +174,25 @@ public class MainConfig {
     @Comment("Item section")
     public static class Item {
 
+        @Name("energyModule")
+        public final EnergyModule energyModule = new EnergyModule();
+
+        @Comment("Energy module shared by the railgun and Celestweave armor")
+        public static class EnergyModule {
+
+            @Comment("EU capacity of a railgun or armor piece with a T1 energy module installed")
+            @DefaultDouble(25000000)
+            public double capacityT1 = 25000000;
+
+            @Comment("EU capacity of a railgun or armor piece with a T2 energy module installed")
+            @DefaultDouble(125000000)
+            public double capacityT2 = 125000000;
+
+            @Comment("EU capacity of a railgun or armor piece with a T3 energy module installed")
+            @DefaultDouble(500000000)
+            public double capacityT3 = 500000000;
+        }
+
         @Name("railgun")
         public final Railgun railgun = new Railgun();
 
@@ -178,18 +202,6 @@ public class MainConfig {
             @Comment("EU capacity of the railgun without an energy module")
             @DefaultDouble(250000)
             public double baseCapacity = 250000;
-
-            @Comment("EU capacity with a T1 energy module installed")
-            @DefaultDouble(25000000)
-            public double energyCapacityT1 = 25000000;
-
-            @Comment("EU capacity with a T2 energy module installed")
-            @DefaultDouble(125000000)
-            public double energyCapacityT2 = 125000000;
-
-            @Comment("EU capacity with a T3 energy module installed")
-            @DefaultDouble(500000000)
-            public double energyCapacityT3 = 500000000;
 
             @Comment("EU equivalent of one high voltage lightning, used by the sustained beam")
             @DefaultDouble(1600)
@@ -274,7 +286,7 @@ public class MainConfig {
 
             @Comment("Allow charged shots to destroy terrain when the terrain setting of the railgun is enabled")
             @DefaultBoolean(false)
-            public boolean terrainEnabled = false;
+            public boolean enableTerrain = false;
 
             @Comment("Drop items from blocks destroyed by the railgun")
             @DefaultBoolean(false)
@@ -367,18 +379,6 @@ public class MainConfig {
             @DefaultDouble(2500000)
             public double baseCapacity = 2500000;
 
-            @Comment("EU capacity with a T1 energy module installed")
-            @DefaultDouble(250000000)
-            public double energyCapacityT1 = 250000000;
-
-            @Comment("EU capacity with a T2 energy module installed")
-            @DefaultDouble(1250000000)
-            public double energyCapacityT2 = 1250000000;
-
-            @Comment("EU capacity with a T3 energy module installed")
-            @DefaultDouble(5000000000D)
-            public double energyCapacityT3 = 5000000000D;
-
             @Comment("Refill worn armor from the owner's wireless EU network every second")
             @DefaultBoolean(true)
             public boolean wirelessRefill = true;
@@ -395,7 +395,7 @@ public class MainConfig {
             @Comment("EU paid per point of absorbed damage")
             @DefaultDouble(20000)
             @RangeDouble(min = 0, max = 1.0E12)
-            public double euPerDamage = 20000;
+            public double shieldEuPerDamage = 20000;
 
             @Comment("Upper limit of EU paid for a single hit")
             @DefaultDouble(1.0E9)
@@ -405,12 +405,12 @@ public class MainConfig {
             @Comment("Damage absorbed per hit by the shield")
             @DefaultFloat(1.0E6F)
             @RangeFloat(min = 0, max = 1.0E9F)
-            public float shieldCap = 1.0E6F;
+            public float maxAbsorbPerHit = 1.0E6F;
 
             @Comment("EU paid when the shield prevents a death")
             @DefaultDouble(1.0E8)
             @RangeDouble(min = 0, max = 1.0E15)
-            public double deathFee = 1.0E8;
+            public double deathSaveEu = 1.0E8;
 
             @Comment("Share of the incoming damage dealt by each lightning strike of the reflect module")
             @DefaultFloat(0.5F)
@@ -425,7 +425,7 @@ public class MainConfig {
             @Comment("Most targets struck by lightning per reflected hit, including the attacker")
             @DefaultInt(4)
             @RangeInt(min = 1, max = 16)
-            public int reflectMaxTargets = 4;
+            public int maxReflectTargets = 4;
 
             @Comment("EU paid per reflected hit or projectile")
             @DefaultDouble(50000)
@@ -445,12 +445,12 @@ public class MainConfig {
             @Comment("Upper limit of the walk assist speed and jump multipliers")
             @DefaultInt(4)
             @RangeInt(min = 1, max = 16)
-            public int walkMaxLevel = 4;
+            public int maxWalkLevel = 4;
 
             @Comment("Upper limit of the flight speed multiplier")
             @DefaultInt(8)
             @RangeInt(min = 1, max = 16)
-            public int flightMaxLevel = 8;
+            public int maxFlightLevel = 8;
 
             @Comment("EU paid per dash")
             @DefaultDouble(500000)

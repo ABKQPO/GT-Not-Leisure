@@ -1,20 +1,45 @@
 package com.science.gtnl.common.gui;
 
+import java.util.List;
+import java.util.function.Consumer;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.screen.ModularContainer;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.PlayerSlotGroup;
-import com.science.gtnl.common.item.items.ElectromagneticRailgun;
-import com.science.gtnl.common.railgun.RailgunData;
 
-public class RailgunContainer extends ModularContainer {
+public class EquipmentContainer extends ModularContainer {
 
     private final int boundSlot;
+    private final EquipmentGui gui;
+    private final Consumer<ItemStack> onClose;
 
-    public RailgunContainer(int boundSlot) {
+    public EquipmentContainer(int boundSlot, EquipmentGui gui, Consumer<ItemStack> onClose) {
         this.boundSlot = boundSlot;
+        this.gui = gui;
+        this.onClose = onClose;
+    }
+
+    @Override
+    public void detectAndSendChanges() {
+        gui.syncView(true);
+        try {
+            super.detectAndSendChanges();
+        } finally {
+            gui.syncView(false);
+        }
+    }
+
+    @Override
+    public List<ItemStack> getInventory() {
+        gui.syncView(true);
+        try {
+            return super.getInventory();
+        } finally {
+            gui.syncView(false);
+        }
     }
 
     private boolean bound(int index) {
@@ -39,7 +64,7 @@ public class RailgunContainer extends ModularContainer {
         super.onModularContainerClosed();
         if (isClient()) return;
         ItemStack stack = getPlayer().inventory.getStackInSlot(boundSlot);
-        if (stack != null && stack.getItem() instanceof ElectromagneticRailgun) RailgunData.clampEnergy(stack);
+        if (gui.holds(stack)) onClose.accept(stack);
     }
 
     @Override

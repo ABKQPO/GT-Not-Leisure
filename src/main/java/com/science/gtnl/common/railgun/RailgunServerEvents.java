@@ -42,43 +42,36 @@ public final class RailgunServerEvents {
         return null;
     }
 
+    private static void forget(EntityPlayer player) {
+        if (player instanceof EntityPlayerMP serverPlayer) RailgunBeamService.forget(serverPlayer);
+        RailgunFireService.forget(player);
+    }
+
     @SubscribeEvent
     public void tick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         RailgunBeamService.tick();
         RailgunTerrainService.tick();
-        RailgunFireService.CHARGING.entrySet()
-            .removeIf(entry -> {
-                EntityPlayerMP player = player(entry.getKey());
-                if (player == null || player.isDead) return true;
-                var session = entry.getValue();
-                if (!session.matches(player)) return true;
-                long now = player.worldObj.getTotalWorldTime();
-                if (player.isUsingItem()) session.touch(now);
-                return !session.live(now);
-            });
+        RailgunFireService.tick();
     }
 
     @SubscribeEvent
     public void logout(PlayerEvent.PlayerLoggedOutEvent event) {
-        if (event.player instanceof EntityPlayerMP player) RailgunBeamService.forget(player);
-        RailgunFireService.CHARGING.remove(event.player.getUniqueID());
+        forget(event.player);
     }
 
     @SubscribeEvent
     public void dimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        if (event.player instanceof EntityPlayerMP player) RailgunBeamService.forget(player);
-        RailgunFireService.CHARGING.remove(event.player.getUniqueID());
+        forget(event.player);
     }
 
     @SubscribeEvent
     public void unload(WorldEvent.Unload event) {
-        if (!event.world.isRemote) RailgunTerrainService.unload(event.world.provider.dimensionId);
-        if (!event.world.isRemote) RailgunBeamService.unload(event.world.provider.dimensionId);
-        if (!event.world.isRemote) RailgunFireService.CHARGING.entrySet()
-            .removeIf(
-                entry -> entry.getValue()
-                    .dimension() == event.world.provider.dimensionId);
+        if (event.world.isRemote) return;
+        int dimension = event.world.provider.dimensionId;
+        RailgunTerrainService.unload(dimension);
+        RailgunBeamService.unload(dimension);
+        RailgunFireService.unload(dimension);
     }
 
     @SubscribeEvent
@@ -90,19 +83,14 @@ public final class RailgunServerEvents {
             event.setCanceled(true);
     }
 
-    private static boolean holding(EntityPlayer player) {
-        return player.getHeldItem() != null && player.getHeldItem()
-            .getItem() instanceof ElectromagneticRailgun;
-    }
-
     @SubscribeEvent
     public void attack(AttackEntityEvent event) {
-        if (holding(event.entityPlayer)) event.setCanceled(true);
+        if (!RailgunDamage.striking && ElectromagneticRailgun.isHeld(event.entityPlayer)) event.setCanceled(true);
     }
 
     @SubscribeEvent
     public void interact(PlayerInteractEvent event) {
-        if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && holding(event.entityPlayer))
-            event.setCanceled(true);
+        if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK
+            && ElectromagneticRailgun.isHeld(event.entityPlayer)) event.setCanceled(true);
     }
 }

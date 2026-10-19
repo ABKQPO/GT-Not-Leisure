@@ -53,10 +53,6 @@ public class CelestweaveFxPacket extends ClientboundPacket {
             || !Float.isFinite(x)
             || !Float.isFinite(y)
             || !Float.isFinite(z)) return;
-        var world = minecraft.theWorld;
-        minecraft.func_152344_a(
-            () -> {
-                if (world != null && minecraft.theWorld == world) CelestweaveClientEvents.onFx(entityId, type, x, y, z);
-            });
+        runInWorld(minecraft, () -> CelestweaveClientEvents.onFx(entityId, type, x, y, z));
     }
 }

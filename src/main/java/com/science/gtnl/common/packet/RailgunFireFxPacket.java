@@ -5,9 +5,10 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 
 import com.science.gtnl.client.railgun.RailgunClientFx;
+import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
+import com.science.gtnl.common.railgun.RailgunChargeTier;
 import com.science.gtnl.common.railgun.RailgunNet;
-import com.science.gtnl.common.railgun.RailgunVec;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -16,8 +17,8 @@ import io.netty.buffer.ByteBuf;
 public class RailgunFireFxPacket extends ClientboundPacket {
 
     public int shooterId;
-    public RailgunVec from, firstHit;
-    public List<RailgunVec> chainPath;
+    public EquipmentVec from, firstHit;
+    public List<EquipmentVec> chainPath;
     public byte tier;
     public float impactRadius;
     public boolean sound;
@@ -25,7 +26,7 @@ public class RailgunFireFxPacket extends ClientboundPacket {
 
     public RailgunFireFxPacket() {}
 
-    public RailgunFireFxPacket(int shooterId, RailgunVec from, RailgunVec firstHit, List<RailgunVec> chainPath,
+    public RailgunFireFxPacket(int shooterId, EquipmentVec from, EquipmentVec firstHit, List<EquipmentVec> chainPath,
         int tier, float impactRadius, boolean sound) {
         this.shooterId = shooterId;
         this.from = from;
@@ -46,7 +47,9 @@ public class RailgunFireFxPacket extends ClientboundPacket {
             tier = buffer.readByte();
             impactRadius = buffer.readFloat();
             sound = buffer.readBoolean();
-            valid = tier >= 1 && tier <= 3 && Float.isFinite(impactRadius) && impactRadius >= 0 && impactRadius <= 32;
+            valid = RailgunChargeTier.byOrdinal(tier) != RailgunChargeTier.NONE && Float.isFinite(impactRadius)
+                && impactRadius >= 0
+                && impactRadius <= 32;
         } catch (RuntimeException ignored) {
             valid = false;
         }
@@ -66,8 +69,6 @@ public class RailgunFireFxPacket extends ClientboundPacket {
     @Override
     @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
-        var world = minecraft.theWorld;
-        if (valid && world != null)
-            minecraft.func_152344_a(() -> { if (minecraft.theWorld == world) RailgunClientFx.playFire(this); });
+        if (valid) runInWorld(minecraft, () -> RailgunClientFx.playFire(this));
     }
 }

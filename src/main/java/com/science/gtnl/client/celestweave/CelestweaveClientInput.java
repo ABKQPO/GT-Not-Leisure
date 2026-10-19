@@ -8,13 +8,15 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.celestweave.CelestweaveBehaviors;
 import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.celestweave.CelestweaveEnergy;
 import com.science.gtnl.common.celestweave.CelestweaveFlight;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
-import com.science.gtnl.common.celestweave.CelestweaveServerEvents;
+import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
+import com.science.gtnl.common.item.items.CelestweaveArmor;
+import com.science.gtnl.common.item.items.ElectromagneticRailgun;
 import com.science.gtnl.common.packet.CelestweaveKeyPacket;
+import com.science.gtnl.common.packet.OpenEquipmentGuiPacket;
 import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -29,7 +31,7 @@ public final class CelestweaveClientInput {
 
     static final KeyBinding DASH = new KeyBinding("key.gtnl.celestweave_dash", Keyboard.KEY_V, "key.categories.gtnl");
     static final KeyBinding RADIAL = new KeyBinding(
-        "key.gtnl.celestweave_radial",
+        "key.gtnl.equipment_settings",
         Keyboard.KEY_G,
         "key.categories.gtnl");
     static final KeyBinding BACKPACK = new KeyBinding(
@@ -66,12 +68,19 @@ public final class CelestweaveClientInput {
         while (DASH.isPressed()) dash = true;
         while (BACKPACK.isPressed()) backpack = true;
         while (RADIAL.isPressed()) radial = true;
-        if (dash && CelestweaveServerEvents
-            .activeAndAffords(player, 3, CelestweaveModule.DASH, MainConfig.item.celestweave.dashEu))
+        if (dash && CelestweaveEnergy.activeAndAffords(
+            player,
+            CelestweaveArmor.BOOTS,
+            CelestweaveModule.DASH,
+            MainConfig.item.celestweave.dashEu))
             ScienceNotLeisure.network.sendToServer(new CelestweaveKeyPacket(CelestweaveKeyPacket.DASH));
         if (backpack) ScienceNotLeisure.network.sendToServer(new CelestweaveKeyPacket(CelestweaveKeyPacket.BACKPACK));
-        if (radial && CelestweaveServerEvents.wearsAny(player))
-            minecraft.displayGuiScreen(new CelestweaveRadialScreen(RADIAL));
+        ItemStack held = player.getHeldItem();
+        boolean wearing = CelestweaveData.wearsAny(player);
+        if (radial && held != null
+            && (held.getItem() instanceof ElectromagneticRailgun || held.getItem() instanceof CelestweaveArmor)
+            && !(wearing && player.isSneaking())) ScienceNotLeisure.network.sendToServer(new OpenEquipmentGuiPacket());
+        else if (radial && wearing) minecraft.displayGuiScreen(new CelestweaveRadialScreen(RADIAL));
     }
 
     @SubscribeEvent
@@ -79,22 +88,21 @@ public final class CelestweaveClientInput {
         if (event.phase != TickEvent.Phase.START || !(event.player instanceof EntityPlayerSP player)
             || player != Minecraft.getMinecraft().thePlayer) return;
         var config = MainConfig.item.celestweave;
-        ItemStack legs = CelestweaveServerEvents.piece(player, 2);
-        if (CelestweaveFlight.powered(player, legs)) {
-            int speed = CelestweaveFlight.level(legs, CelestweaveBehaviors.SPEED);
+        ItemStack legs = CelestweaveData.piece(player, CelestweaveArmor.LEGS);
+        if (CelestweaveFlight.canFly(player, legs)) {
+            int speed = CelestweaveModuleSetting.FLIGHT_SPEED.get(legs);
             if (!Minecraft.getMinecraft()
                 .isSingleplayer()) speed = Math.min(speed, REMOTE_MAX_FLY_LEVEL);
             player.capabilities.setFlySpeed(DEFAULT_FLY_SPEED * speed);
             flySpeedSet = true;
             if (player.capabilities.isFlying) {
-                int vertical = CelestweaveFlight.level(legs, CelestweaveBehaviors.VSPEED);
+                int vertical = CelestweaveModuleSetting.FLIGHT_VSPEED.get(legs);
                 if (vertical > 1) {
                     double push = 0.05 * (vertical - 1);
                     if (player.movementInput.jump) player.motionY += push;
                     if (player.movementInput.sneak) player.motionY -= push;
                 }
-                if (CelestweaveData.cfgBool(legs, CelestweaveModule.FLIGHT, CelestweaveBehaviors.INERTIA, false)
-                    && player.movementInput.moveForward == 0
+                if (CelestweaveModuleSetting.FLIGHT_INERTIA.on(legs) && player.movementInput.moveForward == 0
                     && player.movementInput.moveStrafe == 0) {
                     player.motionX *= 0.5;
                     player.motionZ *= 0.5;
@@ -104,10 +112,10 @@ public final class CelestweaveClientInput {
             player.capabilities.setFlySpeed(DEFAULT_FLY_SPEED);
             flySpeedSet = false;
         }
-        ItemStack boots = CelestweaveServerEvents.piece(player, 3);
+        ItemStack boots = CelestweaveData.piece(player, CelestweaveArmor.BOOTS);
         if (boots == null || !CelestweaveData.active(boots, CelestweaveModule.WALK_ASSIST)
-            || !CelestweaveEnergy.affords(player, 3, boots, config.walkEuPerTick)
-            || !CelestweaveData.cfgBool(boots, CelestweaveModule.WALK_ASSIST, CelestweaveBehaviors.OMNI, true)
+            || !CelestweaveEnergy.affords(player, CelestweaveArmor.BOOTS, boots, config.walkEuPerTick)
+            || !CelestweaveModuleSetting.WALK_OMNI.on(boots)
             || !player.onGround
             || player.isSneaking()
             || player.isSprinting()

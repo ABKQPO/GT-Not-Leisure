@@ -7,10 +7,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
-import com.science.gtnl.client.railgun.RailgunRenderHelper.Sprite;
+import com.science.gtnl.client.fx.FxCamera;
+import com.science.gtnl.client.fx.FxRenderHelper;
+import com.science.gtnl.client.fx.FxRenderHelper.Sprite;
 import com.science.gtnl.client.railgun.shader.RailgunShaderEffect;
+import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
-import com.science.gtnl.common.railgun.RailgunVec;
 import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -48,15 +50,16 @@ public class RailgunOrbRenderer {
     private static final float[] EXTREME_INNER = { 1F, 0.42F, 0.68F };
     private static final float[] EXTREME_OUTER = { 1F, 0.94F, 1F };
 
-    private record LaunchedOrb(int shooterId, RailgunVec fallback, RailgunVec target, int tier, long born,
+    private record LaunchedOrb(int shooterId, EquipmentVec fallback, EquipmentVec target, int tier, long born,
         int travelTicks, Runnable onArrive) {}
 
-    private record OrbViz(RailgunVec center, RailgunVec direction, RailgunVec tail, double radius, int tier, int seed,
-        double time, float strength) {}
+    private record OrbViz(EquipmentVec center, EquipmentVec direction, EquipmentVec tail, double radius, int tier,
+        int seed, double time, float strength) {}
 
     private static final List<LaunchedOrb> ORBS = new ArrayList<>();
 
-    public static void launch(int shooterId, RailgunVec fallbackFrom, RailgunVec target, int tier, Runnable onArrive) {
+    public static void launch(int shooterId, EquipmentVec fallbackFrom, EquipmentVec target, int tier,
+        Runnable onArrive) {
         var world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
         if (fallbackFrom == null || !fallbackFrom.finite() || target == null || !target.finite()) return;
@@ -76,7 +79,7 @@ public class RailgunOrbRenderer {
                 onArrive));
     }
 
-    public static int travelTicks(RailgunVec from, RailgunVec to) {
+    public static int travelTicks(EquipmentVec from, EquipmentVec to) {
         double squared = from.distanceToSqr(to);
         if (squared <= 0) return MIN_TRAVEL_TICKS;
         double ticks = Math.sqrt(squared) / BLOCKS_PER_TICK;
@@ -93,16 +96,16 @@ public class RailgunOrbRenderer {
         if (world == null) return;
         long now = world.getTotalWorldTime();
         if (MainConfig.client.enableRailgunBloom) {
-            RailgunCamera.capture();
+            FxCamera.capture();
             List<OrbViz> orbs = collect(now, event.partialTicks);
             if (!orbs.isEmpty()) {
-                RailgunRenderHelper.renderGlow(Sprite.STREAK, () -> {
+                FxRenderHelper.renderGlow(Sprite.STREAK, () -> {
                     for (OrbViz orb : orbs) trail(orb);
                     for (OrbViz orb : orbs) filaments(orb);
                 });
-                RailgunRenderHelper.renderGlow(Sprite.RADIAL, () -> { for (OrbViz orb : orbs) outerHalo(orb); });
+                FxRenderHelper.renderGlow(Sprite.RADIAL, () -> { for (OrbViz orb : orbs) outerHalo(orb); });
                 drawBody(orbs, now + event.partialTicks);
-                RailgunRenderHelper.renderGlow(Sprite.RADIAL, () -> { for (OrbViz orb : orbs) innerHalo(orb); });
+                FxRenderHelper.renderGlow(Sprite.RADIAL, () -> { for (OrbViz orb : orbs) innerHalo(orb); });
             }
         }
         arrive(now);
@@ -114,20 +117,20 @@ public class RailgunOrbRenderer {
             if (shader.begin()) {
                 try {
                     shader.uniform1f("time", (float) (time * 0.05));
-                    RailgunRenderHelper.render(() -> { for (OrbViz orb : orbs) shells(orb); });
+                    FxRenderHelper.render(() -> { for (OrbViz orb : orbs) shells(orb); });
                 } finally {
                     shader.end();
                 }
                 return;
             }
         }
-        RailgunRenderHelper.render(() -> { for (OrbViz orb : orbs) shells(orb); });
+        FxRenderHelper.render(() -> { for (OrbViz orb : orbs) shells(orb); });
     }
 
     private static void shells(OrbViz orb) {
         for (int shell = 0; shell < SHELL_RADII.length; shell++) {
             float[] rgb = mix(orb.tier(), (float) SHELL_MIX[shell]);
-            RailgunRenderHelper.sphere(
+            FxRenderHelper.sphere(
                 orb.center(),
                 orb.radius() * SHELL_RADII[shell],
                 SPHERE_LONGITUDES,
@@ -164,8 +167,8 @@ public class RailgunOrbRenderer {
         var player = Minecraft.getMinecraft().thePlayer;
         if (!RailgunCharge.charging(player)) return null;
         float progress = RailgunCharge.progress(player);
-        RailgunVec direction = RailgunVec.look(player, partialTicks);
-        RailgunVec muzzle = RailgunRenderHelper.muzzle(player.getEntityId(), RailgunVec.pos(player), partialTicks)
+        EquipmentVec direction = EquipmentVec.look(player, partialTicks);
+        EquipmentVec muzzle = RailgunMuzzleAnchor.muzzle(player.getEntityId(), EquipmentVec.pos(player), partialTicks)
             .add(direction.scale(ORB_MUZZLE_GAP * (1 - progress)));
         double radius = ORB_MIN_RADIUS + ORB_CHARGE_RADIUS * progress * progress;
         return new OrbViz(
@@ -184,10 +187,10 @@ public class RailgunOrbRenderer {
         double raw = (now - orb.born + partialTicks) / orb.travelTicks;
         if (raw < 0) return null;
         double eased = 1 - (1 - Math.min(1, raw)) * (1 - Math.min(1, raw));
-        RailgunVec from = RailgunRenderHelper.muzzle(orb.shooterId, orb.fallback, partialTicks);
-        RailgunVec delta = orb.target.subtract(from);
+        EquipmentVec from = RailgunMuzzleAnchor.muzzle(orb.shooterId, orb.fallback, partialTicks);
+        EquipmentVec delta = orb.target.subtract(from);
         if (delta.length() < 1.0E-4) return null;
-        RailgunVec head = from.add(delta.scale(eased));
+        EquipmentVec head = from.add(delta.scale(eased));
         double radius = ORB_MIN_RADIUS + ORB_TIER_RADIUS * orb.tier - FLIGHT_SHRINK * eased;
         return new OrbViz(
             head,
@@ -202,67 +205,67 @@ public class RailgunOrbRenderer {
 
     private static void outerHalo(OrbViz orb) {
         setColor(orb.tier(), 0F, 0.62F);
-        RailgunRenderHelper.glow(orb.center(), orb.radius() * 3.6, (float) (orb.time() * 0.8 + orb.seed()));
+        FxRenderHelper.glow(orb.center(), orb.radius() * 3.6, (float) (orb.time() * 0.8 + orb.seed()));
     }
 
     private static void innerHalo(OrbViz orb) {
         double radius = orb.radius();
         float radians = (float) (orb.time() * 0.8 + orb.seed());
         setColor(orb.tier(), 0.5F, 0.9F);
-        RailgunRenderHelper.glow(orb.center(), radius * 2.1, -radians);
+        FxRenderHelper.glow(orb.center(), radius * 2.1, -radians);
         setColor(orb.tier(), 1F, 1F);
-        RailgunRenderHelper.glow(orb.center(), radius, radians);
+        FxRenderHelper.glow(orb.center(), radius, radians);
     }
 
     private static void trail(OrbViz orb) {
-        RailgunVec tail = orb.tail();
+        EquipmentVec tail = orb.tail();
         if (tail == null) return;
-        RailgunVec delta = orb.center()
+        EquipmentVec delta = orb.center()
             .subtract(tail);
         for (int segment = 0; segment < TRAIL_SEGMENTS; segment++) {
             double start = segment / (double) TRAIL_SEGMENTS, end = (segment + 1) / (double) TRAIL_SEGMENTS;
             double width = orb.radius() * (0.02 + 1.6 * start * start);
             double nextWidth = orb.radius() * (0.02 + 1.6 * end * end);
             setColor(orb.tier(), (float) start, (float) (0.22 + 0.95 * start * start));
-            RailgunRenderHelper.glowRibbon(tail.add(delta.scale(start)), tail.add(delta.scale(end)), width, nextWidth);
+            FxRenderHelper.glowRibbon(tail.add(delta.scale(start)), tail.add(delta.scale(end)), width, nextWidth);
         }
     }
 
     private static void filaments(OrbViz orb) {
-        RailgunVec direction = orb.direction();
-        RailgunVec right = RailgunVec.rightOf(direction);
-        RailgunVec up = right.cross(direction)
+        EquipmentVec direction = orb.direction();
+        EquipmentVec right = EquipmentVec.rightOf(direction);
+        EquipmentVec up = right.cross(direction)
             .normalize();
         double reach = orb.radius() * 2.8, width = Math.max(0.018, orb.radius() * 0.2);
         for (int filament = 0; filament < FILAMENTS; filament++) {
             double phase = orb.time() * FILAMENT_SPEED + filament * (Math.PI * 2 / FILAMENTS) + orb.seed() * 0.37;
             double wobblePhase = orb.time() * FILAMENT_WOBBLE_SPEED + filament * 1.7 + orb.seed() * 0.11;
-            RailgunVec previous = filamentPoint(orb, direction, right, up, reach, phase, wobblePhase, 0);
+            EquipmentVec previous = filamentPoint(orb, direction, right, up, reach, phase, wobblePhase, 0);
             for (int segment = 1; segment <= FILAMENT_SEGMENTS; segment++) {
                 double start = (segment - 1) / (double) FILAMENT_SEGMENTS;
                 double end = segment / (double) FILAMENT_SEGMENTS;
-                RailgunVec current = filamentPoint(orb, direction, right, up, reach, phase, wobblePhase, end);
+                EquipmentVec current = filamentPoint(orb, direction, right, up, reach, phase, wobblePhase, end);
                 double middle = (start + end) * 0.5;
                 double taper = 0.6 + 0.4 * Math.sin(Math.PI * middle);
                 float pulse = (float) (0.82 + 0.18 * Math.sin(phase * 1.3 + segment * 0.8));
                 setColor(orb.tier(), 0.52F, 0.24F * pulse);
-                RailgunRenderHelper.uvRibbon(previous, current, width * 1.45 * taper, width * 1.45 * taper, start, end);
+                FxRenderHelper.uvRibbon(previous, current, width * 1.45 * taper, width * 1.45 * taper, start, end);
                 setColor(orb.tier(), 0.9F, 0.72F * pulse);
-                RailgunRenderHelper.uvRibbon(previous, current, width * 0.42 * taper, width * 0.42 * taper, start, end);
+                FxRenderHelper.uvRibbon(previous, current, width * 0.42 * taper, width * 0.42 * taper, start, end);
                 previous = current;
             }
         }
     }
 
-    private static RailgunVec filamentPoint(OrbViz orb, RailgunVec direction, RailgunVec right, RailgunVec up,
+    private static EquipmentVec filamentPoint(OrbViz orb, EquipmentVec direction, EquipmentVec right, EquipmentVec up,
         double reach, double phase, double wobblePhase, double position) {
         double along = (position - 0.5) * reach * 2;
         double radialPhase = phase + position * 2.4;
         double envelope = 0.55 + 0.45 * Math.sin(Math.PI * position);
         double wobble = orb.radius() * (0.32 + 0.18 * Math.sin(wobblePhase + position * 5.2));
-        RailgunVec radial = right.scale(Math.cos(radialPhase) * orb.radius() * envelope)
+        EquipmentVec radial = right.scale(Math.cos(radialPhase) * orb.radius() * envelope)
             .add(up.scale(Math.sin(radialPhase) * orb.radius() * envelope));
-        RailgunVec jitter = right.scale(Math.sin(wobblePhase * 0.9 + position * 8.0) * wobble)
+        EquipmentVec jitter = right.scale(Math.sin(wobblePhase * 0.9 + position * 8.0) * wobble)
             .add(up.scale(Math.cos(wobblePhase * 0.73 + position * 6.4) * wobble * 0.72));
         return orb.center()
             .add(direction.scale(along))

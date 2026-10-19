@@ -6,6 +6,7 @@ import com.cleanroommc.modularui.factory.GuiFactories;
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.science.gtnl.common.celestweave.CelestweaveBackpack;
 import com.science.gtnl.common.celestweave.CelestweaveDash;
+import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.celestweave.CelestweaveEnergy;
 import com.science.gtnl.common.celestweave.CelestweaveServerEvents;
 import com.science.gtnl.common.packet.base.ServerboundPacket;
@@ -60,10 +61,10 @@ public class CelestweaveKeyPacket extends ServerboundPacket {
     }
 
     private void openPiece(EntityPlayerMP player) {
-        if (piece < 0 || piece > 3 || CelestweaveServerEvents.piece(player, piece) == null) return;
+        if (piece < 0 || piece > 3 || CelestweaveData.piece(player, piece) == null) return;
         CelestweaveEnergy.flush(player);
         if (player.openContainer != player.inventoryContainer) player.closeScreen();
         GuiFactories.playerInventory()
-            .openFromPlayerInventory(player, 39 - piece);
+            .openFromPlayerInventory(player, CelestweaveData.armorSlot(player, piece));
     }
 }

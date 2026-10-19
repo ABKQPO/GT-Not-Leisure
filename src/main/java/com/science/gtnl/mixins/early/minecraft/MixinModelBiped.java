@@ -29,7 +29,7 @@ public class MixinModelBiped {
         float headPitch, float scale, Entity entity, CallbackInfo ci) {
         if (!(entity instanceof EntityLivingBase living)) return;
         ItemStack held = living.getHeldItem();
-        if (held == null || !(held.getItem() instanceof ElectromagneticRailgun)) return;
+        if (!ElectromagneticRailgun.is(held)) return;
 
         bipedRightArm.rotateAngleX = -1.48F + bipedHead.rotateAngleX;
         bipedRightArm.rotateAngleY = bipedHead.rotateAngleY;

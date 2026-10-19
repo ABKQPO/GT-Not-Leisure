@@ -4,29 +4,37 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.WorldServer;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.equipment.EquipmentEnergy;
+import com.science.gtnl.common.equipment.EquipmentMessages;
+import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.item.items.ElectromagneticRailgun;
 import com.science.gtnl.common.packet.RailgunChargeCapPacket;
 import com.science.gtnl.common.packet.RailgunFireFxPacket;
 import com.science.gtnl.common.packet.RailgunRecoilFxPacket;
-import com.science.gtnl.common.packet.StatusMessage;
+import com.science.gtnl.common.railgun.RailgunChainResolver.Hit;
+import com.science.gtnl.common.railgun.RailgunChainResolver.Kind;
 import com.science.gtnl.config.MainConfig;
 
 public final class RailgunFireService {
 
     public static final String RECOIL_GRACE = "gtnl.railgunRecoilGrace";
+    private static final int RECOIL_GRACE_TICKS = 60;
+    private static final double MAX_RATE = 3;
 
-    public static class ChargeSession {
+    private static final class ChargeSession {
 
         private final long startTick;
         private final double rate;
@@ -36,7 +44,7 @@ public final class RailgunFireService {
         private long lastActiveTick;
         private int cap = Integer.MAX_VALUE;
 
-        public ChargeSession(long startTick, double rate, ItemStack stack, int slot, int dimension) {
+        private ChargeSession(long startTick, double rate, ItemStack stack, int slot, int dimension) {
             this.startTick = startTick;
             this.rate = rate;
             this.stack = stack;
@@ -45,42 +53,26 @@ public final class RailgunFireService {
             this.lastActiveTick = startTick;
         }
 
-        public double rate() {
-            return rate;
-        }
-
-        public ItemStack stack() {
-            return stack;
-        }
-
-        public int dimension() {
-            return dimension;
-        }
-
-        public boolean matches(EntityPlayerMP player) {
+        private boolean matches(EntityPlayerMP player) {
             return player.getHeldItem() == stack && player.inventory.currentItem == slot
                 && player.dimension == dimension;
         }
 
-        public boolean live(long now) {
+        private boolean live(long now) {
             return now - lastActiveTick <= RailgunDefaults.CHARGE_RESUME_GRACE_TICKS;
         }
 
-        public void touch(long now) {
-            lastActiveTick = now;
-        }
-
-        public int units(long now) {
+        private int units(long now) {
             return Math.min(cap, RailgunData.units(elapsed(now), rate));
         }
 
-        public boolean capped() {
+        private boolean capped() {
             return cap != Integer.MAX_VALUE;
         }
 
-        public int capAtAffordable(long now, double energy) {
+        private int capAtAffordable(long now, double energy) {
             long ticks = elapsed(now);
-            while (ticks > 0 && energy < chargeCostUpTo(RailgunData.units(ticks, rate), rate)) ticks--;
+            while (ticks > 0 && energy < totalCostUpTo(RailgunData.units(ticks, rate), rate)) ticks--;
             cap = RailgunData.units(ticks, rate);
             return cap;
         }
@@ -90,7 +82,7 @@ public final class RailgunFireService {
         }
     }
 
-    static final Map<UUID, ChargeSession> CHARGING = new HashMap<>();
+    private static final Map<UUID, ChargeSession> CHARGING = new HashMap<>();
 
     private RailgunFireService() {}
 
@@ -98,7 +90,7 @@ public final class RailgunFireService {
         long now = now(player);
         ChargeSession session = CHARGING.get(player.getUniqueID());
         if (session != null && session.matches(player) && session.live(now)) {
-            session.touch(now);
+            session.lastActiveTick = now;
             return;
         }
         CHARGING.put(
@@ -113,41 +105,69 @@ public final class RailgunFireService {
 
     public static void tickCharge(EntityPlayerMP player, ItemStack stack) {
         ChargeSession session = CHARGING.get(player.getUniqueID());
-        if (session == null || session.stack() != stack) return;
+        if (session == null || session.stack != stack) return;
         long now = now(player);
-        session.touch(now);
+        session.lastActiveTick = now;
         if (session.capped()) return;
-        double energy = RailgunEnergy.read(stack);
-        if (energy >= chargeCostUpTo(session.units(now), session.rate())) return;
+        double energy = RailgunEnergy.available(player, stack);
+        if (energy >= totalCostUpTo(session.units(now), session.rate)) return;
         ScienceNotLeisure.network.sendTo(new RailgunChargeCapPacket(session.capAtAffordable(now, energy)), player);
         noEnergy(player);
     }
 
     public static void release(EntityPlayerMP player, ItemStack stack) {
         ChargeSession session = CHARGING.remove(player.getUniqueID());
-        if (session == null || session.stack() != stack || !session.matches(player)) return;
+        if (session == null || session.stack != stack || !session.matches(player)) return;
         int units = session.units(now(player));
         RailgunChargeTier tier = RailgunChargeTier.fromUnits(units);
-        double chargeCost = chargeCostUpTo(units, session.rate());
+        double chargeCost = chargeCostUpTo(units, session.rate);
         if (tier == RailgunChargeTier.NONE) {
-            RailgunEnergy.tryConsume(stack, chargeCost);
+            EquipmentEnergy.drain(player, stack, chargeCost);
             return;
         }
-        if (!RailgunEnergy.tryConsume(stack, chargeCost + shotCost(tier))) {
+        if (!EquipmentEnergy.drain(player, stack, chargeCost + shotCost(tier))) {
             noEnergy(player);
             return;
         }
         fireCharged((WorldServer) player.worldObj, player, stack, tier);
     }
 
+    public static void tick() {
+        CHARGING.entrySet()
+            .removeIf(entry -> {
+                EntityPlayerMP player = RailgunServerEvents.player(entry.getKey());
+                if (player == null || player.isDead) return true;
+                ChargeSession session = entry.getValue();
+                if (!session.matches(player)) return true;
+                long now = now(player);
+                if (player.isUsingItem()) session.lastActiveTick = now;
+                return !session.live(now);
+            });
+    }
+
+    public static void forget(EntityPlayer player) {
+        CHARGING.remove(player.getUniqueID());
+    }
+
+    public static void unload(int dimension) {
+        CHARGING.values()
+            .removeIf(session -> session.dimension == dimension);
+    }
+
     private static long now(EntityPlayerMP player) {
         return player.worldObj.getTotalWorldTime();
     }
 
+    public static double totalCostUpTo(int units, double rate) {
+        return chargeCostUpTo(units, rate) + shotCost(RailgunChargeTier.fromUnits(units));
+    }
+
     public static double chargeCostUpTo(int units, double rate) {
         var config = MainConfig.item.railgun;
-        rate = Math.max(1, Math.min(3, rate));
-        int ticks = ticksFor(Math.max(0, Math.min(216000, units)), rate);
+        rate = Math.max(1, Math.min(MAX_RATE, rate));
+        int ticks = ticksFor(
+            Math.max(0, Math.min((int) (ElectromagneticRailgun.USE_DURATION * MAX_RATE), units)),
+            rate);
         int first = Math.min(ticks, ticksFor(RailgunChargeTier.EHV2.chargeTicks, rate));
         int second = Math.min(ticks - first, ticksFor(RailgunChargeTier.EHV3.chargeTicks, rate) - first);
         return first * Math.max(0, config.chargeEuEhv1) + second * Math.max(0, config.chargeEuEhv2)
@@ -159,26 +179,18 @@ public final class RailgunFireService {
     }
 
     public static double shotCost(RailgunChargeTier tier) {
-        var config = MainConfig.item.railgun;
-        double base = switch (tier) {
-            case EHV1 -> config.shotEuEhv1;
-            case EHV2 -> config.shotEuEhv2;
-            case EHV3 -> config.shotEuEhv3;
-            default -> 0;
-        };
-        return Math.max(0, base) + tier.lightning * Math.max(0, config.ehvLightningEu);
+        return Math.max(0, tier.shotEu()) + tier.lightning * Math.max(0, MainConfig.item.railgun.ehvLightningEu);
     }
 
     public static void noEnergy(EntityPlayerMP player) {
-        ScienceNotLeisure.network
-            .sendTo(new StatusMessage(new ChatComponentTranslation("item.gtnl.railgun.fail.no_eu")), player);
+        EquipmentMessages.hotbar(player, "item.gtnl.railgun.fail.no_eu");
     }
 
     public static void fireCharged(WorldServer world, EntityPlayerMP player, ItemStack stack, RailgunChargeTier tier) {
         var modules = RailgunData.modules(stack);
-        var settings = RailgunData.settings(stack);
-        boolean players = MainConfig.item.railgun.damagePlayers && settings.pvp();
-        RailgunVec from = RailgunVec.eye(player);
+        boolean players = RailgunSetting.PVP.active(stack), chain = RailgunSetting.CHAIN.active(stack);
+        boolean max = tier == RailgunChargeTier.EHV3;
+        EquipmentVec from = EquipmentVec.eye(player);
         double range = RailgunRaycast
             .effectiveRange(RailgunDefaults.CHARGED_RANGE, modules.count(RailgunModuleType.RANGE));
         var trace = RailgunRaycast.traceFirst(
@@ -186,104 +198,86 @@ public final class RailgunFireService {
             player,
             from,
             from.add(
-                RailgunVec.look(player)
+                EquipmentVec.look(player)
                     .scale(range)),
             1,
             0.3,
             entity -> RailgunTargetRules.canAffect(player, entity, players));
         var context = RailgunDamage.buildCharged(player, tier, modules, world, players);
-        RailgunVec impact = trace.hit() == null ? trace.blockEnd()
+        EquipmentVec impact = trace.hit() == null ? trace.blockEnd()
             : trace.hit()
                 .position();
         EntityLivingBase primary = trace.hit() != null && trace.hit()
             .entity() instanceof EntityLivingBase living ? living : null;
-        var hits = new ArrayList<RailgunChainResolver.Hit>();
+        int primaryId = primary == null ? -1 : primary.getEntityId();
+        List<Hit> hits = new ArrayList<>();
         int compute = modules.count(RailgunModuleType.COMPUTE);
-        double pulseRadius = tier == RailgunChargeTier.EHV3 ? RailgunDefaults.PULSE_RADIUS + 1.5 * compute : 0;
-        double pulseRatio = compute == 0 ? 0.6 : compute == 1 ? 0.85 : 1;
+        double pulseRadius = max ? RailgunDefaults.PULSE_RADIUS + 1.5 * compute : 0;
         if (primary != null) {
-            hits.add(new RailgunChainResolver.Hit(primary, context.firstDamage(), false, false));
-            if (settings.chain()) hits.addAll(
-                RailgunChainResolver.resolveChainForkedFrom(world, player, primary, context, new HashSet<>(), null));
-            if (tier == RailgunChargeTier.EHV3) {
+            hits.add(Hit.primary(primary, context.firstDamage()));
+            if (chain) hits.addAll(RailgunChainResolver.chainFrom(world, player, primary, context, Set.of(), null));
+            if (max) {
                 hits.addAll(
                     RailgunChainResolver
-                        .resolvePenetration(world, player, primary, context, RailgunDefaults.PENETRATION_MAX_TARGETS));
+                        .penetration(world, player, primary, context, RailgunDefaults.PENETRATION_MAX_TARGETS));
                 hits.addAll(
-                    RailgunChainResolver.resolvePulse(
+                    RailgunChainResolver.pulse(
                         world,
                         player,
-                        RailgunVec.pos(primary),
+                        EquipmentVec.pos(primary),
                         pulseRadius,
-                        pulseRatio,
+                        RailgunDefaults.PULSE_DAMAGE_RATIOS[Math
+                            .min(compute, RailgunDefaults.PULSE_DAMAGE_RATIOS.length - 1)],
                         context,
-                        primary.getEntityId()));
+                        primaryId));
             }
         }
-        double splash = settings.splash() ? tier.impactRadius : 0;
-        if (splash > 0) hits.addAll(
-            RailgunChainResolver.resolveImpactSplash(
-                world,
-                player,
-                impact,
-                splash,
-                tier.impactRatio,
-                primary == null ? -1 : primary.getEntityId(),
-                context));
+        double splash = RailgunSetting.SPLASH.active(stack) ? tier.impactRadius : 0;
+        hits.addAll(RailgunChainResolver.splash(world, player, impact, splash, tier.impactRatio, context, primaryId));
         EntityLivingBase anchor = hits.stream()
             .filter(
-                hit -> hit.pulse() && hit.target() != primary
+                hit -> hit.kind() == Kind.AREA && hit.target() != primary
                     && hit.target()
                         .isEntityAlive())
-            .map(RailgunChainResolver.Hit::target)
+            .map(Hit::target)
             .min(
                 Comparator.comparingDouble(
-                    target -> RailgunVec.pos(target)
+                    target -> EquipmentVec.pos(target)
                         .distanceToSqr(impact)))
             .orElse(null);
-        if (settings.chain() && anchor != null) {
-            var visited = new HashSet<Integer>();
+        if (chain && anchor != null) {
+            Set<Integer> visited = new HashSet<>();
             hits.forEach(
                 hit -> visited.add(
                     hit.target()
                         .getEntityId()));
-            hits.addAll(RailgunChainResolver.resolveChainForkedFrom(world, player, anchor, context, visited, impact));
+            hits.addAll(RailgunChainResolver.chainFrom(world, player, anchor, context, visited, impact));
         }
         var path = RailgunNet.path(impact, hits);
-        RailgunDamage.applyAll(player, hits, context, true, impact);
+        RailgunDamage.applyAll(player, RailgunChainResolver.strongestPerTarget(hits), context, true, impact);
         if (trace.hit() != null && primary == null
             && RailgunTargetRules.canAffect(
                 player,
                 trace.hit()
                     .entity(),
                 players))
-            RailgunTargetRules.damageAnchor(
+            RailgunDamage.hitObject(
+                player,
                 trace.hit()
                     .entity(),
-                impact)
-                .attackEntityFrom(
-                    RailgunDamage.source(player),
-                    (float) Math.min(context.firstDamage(), Float.MAX_VALUE));
-        if (MainConfig.item.railgun.terrainEnabled && settings.terrain()) {
+                impact,
+                context.firstDamage());
+        if (RailgunSetting.TERRAIN.active(stack)) {
             RailgunTerrainService.queueSphere(world, impact, tier.terrainRadius, tier.terrainHardness, player);
-            if (tier == RailgunChargeTier.EHV3)
-                for (var hit : hits) if (hit.penetration()) RailgunTerrainService.queueSphere(
-                    world,
-                    RailgunVec.pos(hit.target()),
-                    RailgunDefaults.PENETRATION_DESTROY_RADIUS,
-                    RailgunDefaults.PENETRATION_DESTROY_HARDNESS,
-                    player);
-            if (settings.sound()) world.playSoundEffect(
-                impact.x(),
-                impact.y(),
-                impact.z(),
-                "sciencenotleisure:railgun.fire.impact",
-                1.5F + tier.ordinal() * 0.3F,
-                0.5F);
+            for (var hit : hits) if (hit.kind() == Kind.PENETRATION) RailgunTerrainService.queueSphere(
+                world,
+                EquipmentVec.pos(hit.target()),
+                RailgunDefaults.PENETRATION_DESTROY_RADIUS,
+                RailgunDefaults.PENETRATION_DESTROY_HARDNESS,
+                player);
         }
         applyRecoil(player, tier);
         RailgunNet.sendAround(
-            world,
             player,
             new RailgunFireFxPacket(
                 player.getEntityId(),
@@ -292,7 +286,7 @@ public final class RailgunFireService {
                 path,
                 tier.ordinal(),
                 (float) Math.max(splash, pulseRadius),
-                settings.sound()));
+                RailgunSetting.SOUND.active(stack)));
     }
 
     private static void applyRecoil(EntityPlayerMP player, RailgunChargeTier tier) {
@@ -300,9 +294,9 @@ public final class RailgunFireService {
         double speed = tier.recoilSpeed * (crouching ? RailgunDefaults.RECOIL_CROUCH_MUL : 1)
             * (player.onGround ? 1 : RailgunDefaults.RECOIL_AIRBORNE_MUL);
         float pitch = tier.recoilPitch * (crouching ? (float) RailgunDefaults.RECOIL_CROUCH_MUL : 1);
-        RailgunVec back = RailgunVec.look(player)
+        EquipmentVec back = EquipmentVec.look(player)
             .scale(-1);
-        RailgunVec behind = RailgunVec.pos(player)
+        EquipmentVec behind = EquipmentVec.pos(player)
             .add(back);
         int x = MathHelper.floor_double(behind.x()), y = MathHelper.floor_double(behind.y()),
             z = MathHelper.floor_double(behind.z());
@@ -314,7 +308,7 @@ public final class RailgunFireService {
         player.velocityChanged = true;
         player.fallDistance = 0;
         player.getEntityData()
-            .setLong(RECOIL_GRACE, player.worldObj.getTotalWorldTime() + 60);
+            .setLong(RECOIL_GRACE, player.worldObj.getTotalWorldTime() + RECOIL_GRACE_TICKS);
         ScienceNotLeisure.network.sendTo(new RailgunRecoilFxPacket(pitch, tier.ordinal()), player);
     }
 }

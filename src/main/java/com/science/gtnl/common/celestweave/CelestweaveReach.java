@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import com.science.gtnl.common.item.items.CelestweaveArmor;
 import com.science.gtnl.config.MainConfig;
 
 import vazkii.botania.common.Botania;
@@ -23,11 +24,11 @@ public final class CelestweaveReach {
     }
 
     public static float wanted(EntityPlayer player) {
-        ItemStack chest = CelestweaveServerEvents.piece(player, 1);
+        ItemStack chest = CelestweaveData.piece(player, CelestweaveArmor.CHEST);
         if (chest == null || !CelestweaveData.active(chest, CelestweaveModule.REACH)
-            || !CelestweaveEnergy.powered(player, 1, chest)) return 0F;
+            || !CelestweaveEnergy.hasEnergy(player, CelestweaveArmor.CHEST, chest)) return 0F;
         var config = MainConfig.item.celestweave;
-        return switch (CelestweaveData.cfgInt(chest, CelestweaveModule.REACH, CelestweaveBehaviors.LEVEL, 0, 0, 2)) {
+        return switch (CelestweaveModuleSetting.REACH_LEVEL.get(chest)) {
             case 2 -> config.reachLevel3;
             case 1 -> config.reachLevel2;
             default -> config.reachLevel1;
@@ -53,7 +54,7 @@ public final class CelestweaveReach {
         applied(player).remove(player.getUniqueID());
     }
 
-    public static void forgetClient() {
+    public static void clearClient() {
         CLIENT.clear();
     }
 }

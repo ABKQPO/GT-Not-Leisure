@@ -22,6 +22,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.FoodStats;
 
+import com.science.gtnl.common.item.items.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.config.MainConfig;
 
@@ -30,9 +31,6 @@ import vazkii.botania.api.mana.ManaItemHandler;
 
 public final class CelestweaveBehaviors {
 
-    public static final String SPEED = "Speed", VSPEED = "VSpeed", LEVITATE = "Levitate", INERTIA = "Inertia",
-        JUMP = "Jump", STEP = "Step", OMNI = "Omni", LEVEL = "Level", PROJECTILE = "Projectile", IGNITE = "Ignite",
-        BLIND = "Blind";
     public static final float STEP_HEIGHT = 1.0031F;
     private static final UUID SPEED_UUID = UUID.fromString("5d1b6c1e-2f0a-4c3e-9a61-7c2e4b8f1a30");
     private static final UUID KNOCKBACK_UUID = UUID.fromString("a83f0d52-6e14-4b7c-8d29-3f5e1c9b7a42");
@@ -42,14 +40,10 @@ public final class CelestweaveBehaviors {
     private static final Map<Entity, Boolean> REFLECTED = Collections.synchronizedMap(new WeakHashMap<>());
 
     static {
-        BEHAVIORS.put(CelestweaveModule.NIGHT_VISION, new NightVision());
-        BEHAVIORS.put(CelestweaveModule.SATURATION, new Saturation());
-        BEHAVIORS.put(CelestweaveModule.PURIFICATION, new Purification());
-        BEHAVIORS.put(CelestweaveModule.TERRASTEEL, new Terrasteel());
-        BEHAVIORS.put(CelestweaveModule.REFLECT, new Reflect());
-        BEHAVIORS.put(CelestweaveModule.SHIELD, new Shield());
-        BEHAVIORS.put(CelestweaveModule.FLIGHT, new CelestweaveFlight());
-        BEHAVIORS.put(CelestweaveModule.WALK_ASSIST, new WalkAssist());
+        for (CelestweaveModule module : CelestweaveModule.values()) {
+            CelestweaveBehavior behavior = module.newBehavior();
+            if (behavior != null) BEHAVIORS.put(module, behavior);
+        }
     }
 
     private CelestweaveBehaviors() {}
@@ -58,12 +52,8 @@ public final class CelestweaveBehaviors {
         return BEHAVIORS.getOrDefault(module, NONE);
     }
 
-    private static MainConfig.Item.Celestweave cfg() {
+    private static MainConfig.Item.Celestweave config() {
         return MainConfig.item.celestweave;
-    }
-
-    public static int walkLevel(CelestweaveContext ctx, String key, int fallback) {
-        return ctx.cfgInt(CelestweaveModule.WALK_ASSIST, key, fallback, 1, cfg().walkMaxLevel);
     }
 
     private static void setModifier(EntityLivingBase entity, IAttributeInstance attribute, UUID id, String name,
@@ -75,13 +65,13 @@ public final class CelestweaveBehaviors {
         if (amount != 0) attribute.applyModifier(new AttributeModifier(id, name, amount, operation));
     }
 
-    private static final class NightVision implements CelestweaveBehavior {
+    static final class NightVision implements CelestweaveBehavior {
 
         @Override
         public void tick(CelestweaveContext ctx) {
             if (!ctx.server()) return;
             EntityPlayer player = ctx.player();
-            if (!ctx.drain(cfg().nightVisionEuPerTick)) {
+            if (!ctx.drain(config().nightVisionEuPerTick)) {
                 clear(player);
                 return;
             }
@@ -103,7 +93,7 @@ public final class CelestweaveBehaviors {
         }
     }
 
-    private static final class Saturation implements CelestweaveBehavior {
+    static final class Saturation implements CelestweaveBehavior {
 
         @Override
         public void tick(CelestweaveContext ctx) {
@@ -111,12 +101,12 @@ public final class CelestweaveBehaviors {
             if (!ctx.server() || player.worldObj.getTotalWorldTime() % 20 != 0) return;
             FoodStats food = player.getFoodStats();
             int missing = 20 - food.getFoodLevel();
-            if ((missing > 0 || food.getSaturationLevel() < 5F) && ctx.drain(cfg().saturationEu * Math.max(1, missing)))
-                food.addStats(20, 1F);
+            if ((missing > 0 || food.getSaturationLevel() < 5F)
+                && ctx.drain(config().saturationEu * Math.max(1, missing))) food.addStats(20, 1F);
         }
     }
 
-    private static final class Purification implements CelestweaveBehavior {
+    static final class Purification implements CelestweaveBehavior {
 
         @Override
         public void tick(CelestweaveContext ctx) {
@@ -127,35 +117,35 @@ public final class CelestweaveBehaviors {
                 if (!(entry instanceof PotionEffect effect)) continue;
                 int id = effect.getPotionID();
                 Potion potion = id >= 0 && id < Potion.potionTypes.length ? Potion.potionTypes[id] : null;
-                if (potion != null && potion.isBadEffect && ctx.drain(cfg().purificationEu))
+                if (potion != null && potion.isBadEffect && ctx.drain(config().purificationEu))
                     player.removePotionEffect(id);
             }
         }
     }
 
-    private static final class Terrasteel implements CelestweaveBehavior {
+    static final class Terrasteel implements CelestweaveBehavior {
 
         @Override
         public void tick(CelestweaveContext ctx) {
-            if (ctx.server() && ctx.affords(cfg().manaEu)
-                && ManaItemHandler.dispatchManaExact(ctx.stack(), ctx.player(), 1, true)) ctx.drain(cfg().manaEu);
+            if (ctx.server() && ctx.affords(config().manaEu)
+                && ManaItemHandler.dispatchManaExact(ctx.stack(), ctx.player(), 1, true)) ctx.drain(config().manaEu);
         }
     }
 
-    private static final class Shield implements CelestweaveBehavior {
+    static final class Shield implements CelestweaveBehavior {
 
         @Override
         public void tick(CelestweaveContext ctx) {
             if (!ctx.server()) return;
             EntityPlayer player = ctx.player();
-            boolean powered = CelestweaveShield.powered(player);
-            if (powered && player.isBurning()) player.extinguish();
+            boolean canAbsorb = CelestweaveShield.canAbsorb(player);
+            if (canAbsorb && player.isBurning()) player.extinguish();
             setModifier(
                 player,
                 player.getEntityAttribute(SharedMonsterAttributes.knockbackResistance),
                 KNOCKBACK_UUID,
                 "Celestweave shield",
-                powered ? 1 : 0,
+                canAbsorb ? 1 : 0,
                 0);
         }
 
@@ -172,12 +162,12 @@ public final class CelestweaveBehaviors {
         }
     }
 
-    private static final class Reflect implements CelestweaveBehavior {
+    static final class Reflect implements CelestweaveBehavior {
 
         @Override
         public void tick(CelestweaveContext ctx) {
-            if (!ctx.server() || !ctx.cfgBool(CelestweaveModule.REFLECT, PROJECTILE, true)
-                || !ctx.affords(cfg().reflectEu)) return;
+            if (!ctx.server() || !CelestweaveModuleSetting.REFLECT_PROJECTILE.on(ctx.stack())
+                || !ctx.affords(config().reflectEu)) return;
             EntityPlayer player = ctx.player();
             double cx = (player.boundingBox.minX + player.boundingBox.maxX) / 2,
                 cy = (player.boundingBox.minY + player.boundingBox.maxY) / 2,
@@ -196,7 +186,7 @@ public final class CelestweaveBehaviors {
                 double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
                 if (speed < 0.05 || distance < 1.0E-3 || (dx * vx + dy * vy + dz * vz) / (distance * speed) > -0.7071)
                     continue;
-                if (!ctx.drain(cfg().reflectEu)) return;
+                if (!ctx.drain(config().reflectEu)) return;
                 double tx = -vx, ty = -vy, tz = -vz;
                 if (shooter != null && shooter.worldObj == entity.worldObj) {
                     tx = shooter.posX - entity.posX;
@@ -229,15 +219,15 @@ public final class CelestweaveBehaviors {
         }
     }
 
-    private static final class WalkAssist implements CelestweaveBehavior {
+    static final class WalkAssist implements CelestweaveBehavior {
 
         @Override
         public void tick(CelestweaveContext ctx) {
             if (!ctx.server()) return;
             EntityPlayer player = ctx.player();
-            boolean on = ctx.affords(cfg().walkEuPerTick);
-            if (on && player.onGround && ctx.moving()) on = ctx.drain(cfg().walkEuPerTick);
-            int speed = walkLevel(ctx, SPEED, 2);
+            boolean on = ctx.affords(config().walkEuPerTick);
+            if (on && player.onGround && ctx.moving()) on = ctx.drain(config().walkEuPerTick);
+            int speed = CelestweaveModuleSetting.WALK_SPEED.get(ctx.stack());
             setModifier(
                 player,
                 player.getEntityAttribute(SharedMonsterAttributes.movementSpeed),
@@ -262,12 +252,12 @@ public final class CelestweaveBehaviors {
     }
 
     public static void updateStep(EntityPlayer player) {
-        ItemStack boots = CelestweaveServerEvents.piece(player, 3);
+        ItemStack boots = CelestweaveData.piece(player, CelestweaveArmor.BOOTS);
         boolean on = boots != null && !player.isDead
             && !player.isSneaking()
             && CelestweaveData.active(boots, CelestweaveModule.WALK_ASSIST)
-            && CelestweaveData.cfgBool(boots, CelestweaveModule.WALK_ASSIST, STEP, true)
-            && CelestweaveEnergy.affords(player, 3, boots, cfg().walkEuPerTick);
+            && CelestweaveModuleSetting.WALK_STEP.on(boots)
+            && CelestweaveEnergy.affords(player, CelestweaveArmor.BOOTS, boots, config().walkEuPerTick);
         if (on) {
             if (player.stepHeight < STEP_HEIGHT) {
                 STEP_ORIGINAL.putIfAbsent(player, player.stepHeight);

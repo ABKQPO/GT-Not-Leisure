@@ -14,20 +14,15 @@ public abstract class MixinMinecraftRailgunClick {
 
     @Inject(method = "func_147116_af", at = @At("HEAD"), cancellable = true)
     private void gtnl$railgunClick(CallbackInfo ci) {
-        Minecraft mc = (Minecraft) (Object) this;
-        if (mc.thePlayer != null && mc.thePlayer.getHeldItem() != null
-            && mc.thePlayer.getHeldItem()
-                .getItem() instanceof ElectromagneticRailgun)
-            ci.cancel();
+        Minecraft minecraft = (Minecraft) (Object) this;
+        if (ElectromagneticRailgun.isHeld(minecraft.thePlayer)) ci.cancel();
     }
 
     @Inject(method = "func_147115_a", at = @At("HEAD"), cancellable = true)
     private void gtnl$railgunBlock(boolean held, CallbackInfo ci) {
-        Minecraft mc = (Minecraft) (Object) this;
-        if (mc.thePlayer != null && mc.thePlayer.getHeldItem() != null
-            && mc.thePlayer.getHeldItem()
-                .getItem() instanceof ElectromagneticRailgun) {
-            mc.playerController.resetBlockRemoving();
+        Minecraft minecraft = (Minecraft) (Object) this;
+        if (ElectromagneticRailgun.isHeld(minecraft.thePlayer)) {
+            minecraft.playerController.resetBlockRemoving();
             ci.cancel();
         }
     }

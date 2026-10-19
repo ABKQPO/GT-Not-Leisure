@@ -22,7 +22,8 @@ public final class RailgunDefaults {
     public static final int CHAIN_FORK_HARD_CAP = 8;
     public static final int CHARGED_RANGE = 64;
     public static final int PULSE_RADIUS = 10;
-    public static final double PULSE_DAMAGE_RATIO = 0.6;
+    public static final double[] PULSE_DAMAGE_RATIOS = { 0.6, 0.85, 1 };
+    public static final double AREA_PLAYER_RATIO = 0.5;
     public static final int PENETRATION_MAX_TARGETS = 5;
     public static final double STORM_DAMAGE_MUL = 1.25;
     public static final int STORM_CHAIN_BONUS = 2;

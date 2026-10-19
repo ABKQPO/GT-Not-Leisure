@@ -16,12 +16,10 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.util.EnumHelper;
 
 import com.cleanroommc.modularui.api.IGuiHolder;
-import com.cleanroommc.modularui.factory.GuiFactories;
 import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.ModularScreen;
@@ -34,9 +32,10 @@ import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.celestweave.CelestweaveEnergy;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveServerEvents;
-import com.science.gtnl.common.gui.CelestweaveContainer;
+import com.science.gtnl.common.equipment.EquipmentElectricItem;
+import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.gui.CelestweaveGui;
-import com.science.gtnl.loader.ItemLoader;
+import com.science.gtnl.common.gui.EquipmentContainer;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.common.Optional;
@@ -49,7 +48,6 @@ import gregtech.api.hazards.Hazard;
 import gregtech.api.hazards.IHazardProtector;
 import gregtech.api.modularui2.GTGuiThemes;
 import gregtech.api.modularui2.GTModularScreen;
-import ic2.api.item.IElectricItem;
 import thaumcraft.api.IGoggles;
 import thaumcraft.api.IVisDiscountGear;
 import thaumcraft.api.aspects.Aspect;
@@ -61,9 +59,10 @@ import vazkii.botania.api.mana.IManaDiscountArmor;
     @Optional.Interface(iface = "forestry.api.core.IArmorNaturalist", modid = "Forestry"),
     @Optional.Interface(iface = "net.dries007.holoInventory.api.IHoloGlasses", modid = "holoinventory") })
 public class CelestweaveArmor extends ItemArmor
-    implements IElectricItem, ISpecialArmor, IHazardProtector, IGuiHolder<PlayerInventoryGuiData>, IGoggles, IRevealer,
-    IVisDiscountGear, IManaDiscountArmor, IArmorApiaristMulti, IArmorNaturalist, IHoloGlasses {
+    implements EquipmentElectricItem, ISpecialArmor, IHazardProtector, IGuiHolder<PlayerInventoryGuiData>, IGoggles,
+    IRevealer, IVisDiscountGear, IManaDiscountArmor, IArmorApiaristMulti, IArmorNaturalist, IHoloGlasses {
 
+    public static final int HEAD = 0, CHEST = 1, LEGS = 2, BOOTS = 3, PIECES = 4;
     public static final ArmorMaterial MATERIAL = EnumHelper
         .addArmorMaterial("GTNL_CELESTWEAVE", 0, new int[] { 3, 8, 6, 3 }, 0);
     public static final String[] NAMES = { "celestweave_oculus", "celestweave_core", "celestweave_conduit",
@@ -84,17 +83,8 @@ public class CelestweaveArmor extends ItemArmor
         CelestweaveServerEvents.register();
     }
 
-    public ItemStack preset() {
-        ItemStack stack = new ItemStack(this);
-        CelestweaveData.writeModuleStacks(
-            stack,
-            CelestweaveData.stacksOf(CelestweaveData.presetModules(armorType, ItemLoader.celestweaveModule)));
-        CelestweaveEnergy.fill(stack);
-        return stack;
-    }
-
     private boolean on(ItemStack stack, CelestweaveModule module) {
-        return CelestweaveData.active(stack, module) && CelestweaveEnergy.read(stack) > 0;
+        return CelestweaveData.active(stack, module) && EquipmentEnergy.read(stack) > 0;
     }
 
     @Override
@@ -105,7 +95,7 @@ public class CelestweaveArmor extends ItemArmor
     @Override
     @SideOnly(Side.CLIENT)
     public ModelBiped getArmorModel(EntityLivingBase entity, ItemStack stack, int slot) {
-        CelestweaveArmorModel model = CelestweaveArmorModel.forType(armorType);
+        CelestweaveArmorModel model = CelestweaveArmorModel.forPiece(armorType);
         model.isSneak = entity != null && entity.isSneaking();
         model.isRiding = entity != null && entity.isRiding();
         model.isChild = entity != null && entity.isChild();
@@ -124,22 +114,15 @@ public class CelestweaveArmor extends ItemArmor
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if (!player.isSneaking()) return super.onItemRightClick(stack, world, player);
-        if (!world.isRemote) GuiFactories.playerInventory()
-            .openFromMainHand(player);
-        return stack;
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
         tooltip.add(
             StatCollector.translateToLocalFormatted(
                 "item.gtnl.celestweave.tooltip.energy",
-                String.format("%,.0f", CelestweaveEnergy.read(stack)),
-                String.format("%,.0f", CelestweaveEnergy.capacity(stack))));
+                EquipmentEnergy.format(EquipmentEnergy.read(stack)),
+                EquipmentEnergy.format(CelestweaveEnergy.capacity(stack))));
         for (CelestweaveModule module : CelestweaveData.installed(stack)) {
+            if (module.builtIn && CelestweaveData.held(stack, module) == null) continue;
             String line = (CelestweaveData.active(stack, module) ? "§a- " : "§7- ")
                 + StatCollector.translateToLocal("item.gtnl.celestweave_module." + module.id + ".name");
             if (!CelestweaveData.active(stack, module))
@@ -155,7 +138,7 @@ public class CelestweaveArmor extends ItemArmor
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> items) {
         items.add(new ItemStack(this));
-        items.add(preset());
+        items.add(charged());
     }
 
     @Override
@@ -184,33 +167,13 @@ public class CelestweaveArmor extends ItemArmor
     }
 
     @Override
-    public boolean canProvideEnergy(ItemStack stack) {
-        return false;
+    public int energyTier(ItemStack stack) {
+        return CelestweaveData.energyTier(stack);
     }
 
     @Override
-    public Item getChargedItem(ItemStack stack) {
-        return this;
-    }
-
-    @Override
-    public Item getEmptyItem(ItemStack stack) {
-        return this;
-    }
-
-    @Override
-    public double getMaxCharge(ItemStack stack) {
+    public double capacity(ItemStack stack) {
         return CelestweaveEnergy.capacity(stack);
-    }
-
-    @Override
-    public int getTier(ItemStack stack) {
-        return CelestweaveEnergy.voltageTier(stack);
-    }
-
-    @Override
-    public double getTransferLimit(ItemStack stack) {
-        return CelestweaveEnergy.transferLimit(stack);
     }
 
     @Override
@@ -218,10 +181,10 @@ public class CelestweaveArmor extends ItemArmor
         int slot) {
         if (source == DamageSource.outOfWorld) return new ArmorProperties(0, 0, 0);
         int worn = 0;
-        for (int type = 0; type < 4; type++) if (CelestweaveServerEvents.piece(entity, type) != null) worn++;
+        for (int piece = 0; piece < PIECES; piece++) if (CelestweaveData.piece(entity, piece) != null) worn++;
         double ratio = source.isUnblockable() ? 0.3
             : source.isMagicDamage() ? 0.4 : source.isFireDamage() || source.isExplosion() ? 0.7 : 0.6;
-        if (CelestweaveEnergy.read(stack) <= 0) ratio *= 0.25;
+        if (EquipmentEnergy.read(stack) <= 0) ratio *= 0.25;
         int priority = source.isUnblockable() ? 2
             : source.isMagicDamage() || source.isFireDamage() || source.isExplosion() ? 1 : 0;
         return new ArmorProperties(priority, ratio * SHARE[armorType] * (0.875 + 0.125 * worn), Integer.MAX_VALUE);
@@ -242,12 +205,12 @@ public class CelestweaveArmor extends ItemArmor
 
     @Override
     public boolean protectsAgainstFully(EntityLivingBase entity, ItemStack stack, Hazard hazard) {
-        ItemStack chest = entity != null ? CelestweaveServerEvents.piece(entity, 1) : armorType == 1 ? stack : null;
+        ItemStack chest = entity != null ? CelestweaveData.piece(entity, CHEST) : armorType == CHEST ? stack : null;
         return chest != null && on(chest, CelestweaveModule.HAZARD);
     }
 
     private ItemStack revealing(ItemStack stack) {
-        return armorType == 0 && on(stack, CelestweaveModule.REVEALING)
+        return armorType == HEAD && on(stack, CelestweaveModule.REVEALING)
             ? CelestweaveData.held(stack, CelestweaveModule.REVEALING)
             : null;
     }
@@ -274,7 +237,7 @@ public class CelestweaveArmor extends ItemArmor
 
     @Override
     public float getDiscount(ItemStack stack, int slot, EntityPlayer player) {
-        return armorType == 1 && on(stack, CelestweaveModule.TERRASTEEL) ? 0.4F : 0F;
+        return armorType == CHEST && on(stack, CelestweaveModule.TERRASTEEL) ? 0.4F : 0F;
     }
 
     @Override
@@ -298,13 +261,13 @@ public class CelestweaveArmor extends ItemArmor
     @Override
     @Optional.Method(modid = "Forestry")
     public boolean canSeePollination(EntityPlayer player, ItemStack stack, boolean doSee) {
-        return armorType == 0 && on(stack, CelestweaveModule.APIARIST);
+        return armorType == HEAD && on(stack, CelestweaveModule.APIARIST);
     }
 
     @Override
     @Optional.Method(modid = "holoinventory")
     public boolean shouldRender(ItemStack stack) {
-        if (armorType != 0 || !on(stack, CelestweaveModule.HOLO)) return false;
+        if (armorType != HEAD || !on(stack, CelestweaveModule.HOLO)) return false;
         return CelestweaveCompat.holoShouldRender(CelestweaveData.held(stack, CelestweaveModule.HOLO));
     }
 
@@ -317,7 +280,7 @@ public class CelestweaveArmor extends ItemArmor
     @Override
     public ModularPanel buildUI(PlayerInventoryGuiData data, PanelSyncManager sync, UISettings settings) {
         CelestweaveGui gui = new CelestweaveGui(data, sync);
-        settings.customContainer(() -> new CelestweaveContainer(data.getSlotIndex(), gui));
+        settings.customContainer(() -> new EquipmentContainer(data.getSlotIndex(), gui, CelestweaveEnergy::clamp));
         settings.canInteractWith(player -> {
             ItemStack used = data.getUsedItemStack();
             return !player.isDead && used != null && used.getItem() == this;

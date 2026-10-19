@@ -1,13 +1,13 @@
-package com.science.gtnl.common.celestweave;
+package com.science.gtnl.common.equipment;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentTranslation;
 
 import com.gtnewhorizon.gtnhlib.GTNHLib;
 
-public final class CelestweaveMessages {
+public final class EquipmentMessages {
 
-    private CelestweaveMessages() {}
+    private EquipmentMessages() {}
 
     public static void hotbar(EntityPlayerMP player, String key, Object... args) {
         GTNHLib.proxy.sendMessageAboveHotbar(player, new ChatComponentTranslation(key, args), 40, true, true);

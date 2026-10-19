@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.Tessellator;
 
 import org.lwjgl.opengl.GL11;
 
+import com.science.gtnl.client.fx.FxColor;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -14,7 +16,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 final class CwCoreBurst {
 
     private static final int CRACKS = 5, STEPS = 5, EMBERS = 8, SEGMENTS = 24;
-    private static final float LIFE = 620F, Z = -0.06F;
+    private static final float LIFETIME = 620F, Z = -0.06F;
 
     private CwCoreBurst() {}
 
@@ -24,9 +26,9 @@ final class CwCoreBurst {
         if (frame == null || frame.bone < 0) return;
         boolean strong = state.hitPower > 1F;
         float time = (Minecraft.getSystemTime() - state.hitAt) / (strong ? 1.5F : 1F);
-        if (time < 0 || time >= LIFE) return;
+        if (time < 0 || time >= LIFETIME) return;
         float size = strong ? 1.4F : 1F;
-        int theme = look.theme;
+        int glowColor = look.glowColor;
         GL11.glPushMatrix();
         model.enterAnchor(frame.bone, frame, pose, scale);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -35,39 +37,26 @@ final class CwCoreBurst {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        flash(tessellator, time, size, theme);
-        cracks(tessellator, time, size, theme, state);
-        hexagon(tessellator, time, size, theme);
-        embers(tessellator, time, size, theme, state);
+        flash(tessellator, time, size, glowColor);
+        cracks(tessellator, time, size, glowColor, state);
+        hexagon(tessellator, time, size, glowColor);
+        embers(tessellator, time, size, glowColor, state);
         tessellator.draw();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glPopMatrix();
     }
 
-    private static float easeOut(float value) {
-        float inverse = 1F - Math.max(0F, Math.min(1F, value));
-        return 1F - inverse * inverse * inverse;
-    }
-
-    private static void color(Tessellator tessellator, int rgb, float alpha) {
-        tessellator.setColorRGBA_F(
-            (rgb >> 16 & 255) / 255F,
-            (rgb >> 8 & 255) / 255F,
-            (rgb & 255) / 255F,
-            Math.max(0F, Math.min(1F, alpha)));
-    }
-
-    private static void flash(Tessellator tessellator, float time, float size, int theme) {
+    private static void flash(Tessellator tessellator, float time, float size, int glowColor) {
         float fade = 1F - time / 200F;
         if (fade <= 0F) return;
-        float radius = (1.2F + 0.8F * easeOut(time / 90F)) * size;
-        int edge = CwLook.mixWhite(theme, 0.3F);
+        float radius = (1.2F + 0.8F * CwHud.easeOut(time / 90F)) * size;
+        int edge = FxColor.mixWhite(glowColor, 0.3F);
         for (int i = 0; i < SEGMENTS; i++) {
             double a0 = Math.PI * 2 * i / SEGMENTS, a1 = Math.PI * 2 * (i + 1) / SEGMENTS;
-            color(tessellator, 0xFFFFFF, fade);
+            FxColor.tessellate(tessellator, 0xFFFFFF, fade);
             tessellator.addVertex(0, 0, Z);
             tessellator.addVertex(0, 0, Z);
-            color(tessellator, edge, 0F);
+            FxColor.tessellate(tessellator, edge, 0F);
             tessellator.addVertex(Math.cos(a1) * radius, Math.sin(a1) * radius, Z);
             tessellator.addVertex(Math.cos(a0) * radius, Math.sin(a0) * radius, Z);
         }
@@ -75,15 +64,15 @@ final class CwCoreBurst {
 
     private static double baseAngle(CwClientState state, int index, Random random) {
         if (!state.hitDirectional) return Math.PI * 2 * index / CRACKS + random.nextFloat() * 0.6;
-        return Math.atan2(state.hitDirY, state.hitDirX) + (index - CRACKS / 2) * 0.38;
+        return Math.atan2(state.hitDirectionY, state.hitDirectionX) + (index - CRACKS / 2) * 0.38;
     }
 
-    private static void cracks(Tessellator tessellator, float time, float size, int theme, CwClientState state) {
+    private static void cracks(Tessellator tessellator, float time, float size, int glowColor, CwClientState state) {
         float cool = Math.min(1F, time / 520F);
         float alpha = 1F - cool * cool;
         if (alpha <= 0F) return;
-        int rgb = time < 120F ? 0xFFFFFF : CwLook.mixWhite(theme, Math.max(0F, 0.6F - cool));
-        float grow = easeOut(time / 110F);
+        int rgb = time < 120F ? 0xFFFFFF : FxColor.mixWhite(glowColor, Math.max(0F, 0.6F - cool));
+        float grow = CwHud.easeOut(time / 110F);
         Random random = new Random(state.hitAt);
         for (int i = 0; i < CRACKS; i++) {
             double angle = baseAngle(state, i, random);
@@ -132,19 +121,19 @@ final class CwCoreBurst {
         double dx = x1 - x0, dy = y1 - y0, length = Math.sqrt(dx * dx + dy * dy);
         if (length < 1.0E-4) return;
         double px = -dy / length * width * 0.5, py = dx / length * width * 0.5;
-        color(tessellator, rgb, alpha);
+        FxColor.tessellate(tessellator, rgb, alpha);
         tessellator.addVertex(x0 - px, y0 - py, Z);
         tessellator.addVertex(x0 + px, y0 + py, Z);
         tessellator.addVertex(x1 + px, y1 + py, Z);
         tessellator.addVertex(x1 - px, y1 - py, Z);
     }
 
-    private static void hexagon(Tessellator tessellator, float time, float size, int theme) {
+    private static void hexagon(Tessellator tessellator, float time, float size, int glowColor) {
         float progress = time / 260F;
         if (progress >= 1F) return;
-        float radius = (1.5F + 2F * easeOut(progress)) * size;
+        float radius = (1.5F + 2F * CwHud.easeOut(progress)) * size;
         float alpha = (float) Math.pow(1F - progress, 1.5);
-        int rgb = CwLook.mixWhite(theme, 0.6F * (1F - progress));
+        int rgb = FxColor.mixWhite(glowColor, 0.6F * (1F - progress));
         for (int k = 0; k < 6; k++) {
             double a0 = k * Math.PI / 3 + Math.PI / 6, a1 = a0 + Math.PI / 3;
             segment(
@@ -168,19 +157,19 @@ final class CwCoreBurst {
         }
     }
 
-    private static void embers(Tessellator tessellator, float time, float size, int theme, CwClientState state) {
+    private static void embers(Tessellator tessellator, float time, float size, int glowColor, CwClientState state) {
         float progress = time / 500F;
         if (progress >= 1F) return;
         Random random = new Random(state.hitAt ^ 0x5DEECE66DL);
-        double bias = state.hitDirectional ? Math.atan2(state.hitDirY, state.hitDirX) : 0;
-        int rgb = CwLook.mixWhite(theme, 0.5F);
+        double bias = state.hitDirectional ? Math.atan2(state.hitDirectionY, state.hitDirectionX) : 0;
+        int rgb = FxColor.mixWhite(glowColor, 0.5F);
         float radius = 0.18F * (1F - progress) + 0.06F;
         for (int i = 0; i < EMBERS; i++) {
             double angle = state.hitDirectional ? bias + (i - (EMBERS - 1) / 2.0) * 0.3 + random.nextFloat() * 0.2
                 : Math.PI * 2 * i / EMBERS + random.nextFloat() * 0.4;
             double distance = (1.4 + 3.4 * (1 - Math.exp(-progress * 4)) * (0.7 + random.nextFloat() * 0.5)) * size;
             double x = Math.cos(angle) * distance, y = Math.sin(angle) * distance;
-            color(tessellator, rgb, 1F - progress);
+            FxColor.tessellate(tessellator, rgb, 1F - progress);
             tessellator.addVertex(x, y - radius, Z);
             tessellator.addVertex(x + radius, y, Z);
             tessellator.addVertex(x, y + radius, Z);

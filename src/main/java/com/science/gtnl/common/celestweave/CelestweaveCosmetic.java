@@ -1,46 +1,73 @@
 package com.science.gtnl.common.celestweave;
 
+import java.util.Arrays;
+
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.science.gtnl.config.MainConfig;
-
-public record CelestweaveCosmetic(int glowColor, int idleArcs, float arcFreq, float arcSpread, float arcBright,
-    int arcEvents) {
+public final class CelestweaveCosmetic {
 
     public static final int EVENT_HIT = 1, EVENT_DASH = 2, EVENT_LAND = 4, EVENT_REFLECT = 8, EVENT_WING = 16,
         EVENT_ANTENNA = 32, EVENT_LOW = 64, EVENT_ALL = 127;
     public static final int DEFAULT_COLOR = 0xFF3D9A;
-    public static final CelestweaveCosmetic DEFAULT = new CelestweaveCosmetic(DEFAULT_COLOR, -1, 1F, 1F, 1F, EVENT_ALL);
+    public static final CelestweaveCosmetic DEFAULT = new CelestweaveCosmetic(defaults());
+
+    private final float[] values;
+
+    private CelestweaveCosmetic(float[] values) {
+        this.values = values;
+    }
+
+    private static float[] defaults() {
+        CelestweaveCosmeticOption[] options = CelestweaveCosmeticOption.values();
+        float[] values = new float[options.length];
+        for (CelestweaveCosmeticOption option : options) values[option.ordinal()] = option.fallback;
+        return values;
+    }
 
     public static CelestweaveCosmetic read(NBTTagCompound tag) {
         if (tag == null || tag.hasNoTags()) return DEFAULT;
-        return new CelestweaveCosmetic(
-            tag.hasKey("GlowColor") ? tag.getInteger("GlowColor") & 0xFFFFFF : DEFAULT_COLOR,
-            tag.hasKey("IdleArcs")
-                ? Math.max(-1, Math.min(MainConfig.item.celestweave.maxIdleArcs, tag.getInteger("IdleArcs")))
-                : -1,
-            tag.hasKey("ArcFreq") ? clamp(tag.getFloat("ArcFreq"), 0.25F, 3F) : 1F,
-            tag.hasKey("ArcSpread") ? clamp(tag.getFloat("ArcSpread"), 0.3F, 2.5F) : 1F,
-            tag.hasKey("ArcBright") ? clamp(tag.getFloat("ArcBright"), 0.3F, 1.6F) : 1F,
-            tag.hasKey("ArcEvents") ? tag.getInteger("ArcEvents") & EVENT_ALL : EVENT_ALL);
+        float[] values = new float[CelestweaveCosmeticOption.values().length];
+        for (CelestweaveCosmeticOption option : CelestweaveCosmeticOption.values())
+            values[option.ordinal()] = option.read(tag);
+        return new CelestweaveCosmetic(values);
     }
 
     public NBTTagCompound write() {
         NBTTagCompound tag = new NBTTagCompound();
-        tag.setInteger("GlowColor", glowColor);
-        tag.setInteger("IdleArcs", idleArcs);
-        tag.setFloat("ArcFreq", arcFreq);
-        tag.setFloat("ArcSpread", arcSpread);
-        tag.setFloat("ArcBright", arcBright);
-        tag.setInteger("ArcEvents", arcEvents);
+        for (CelestweaveCosmeticOption option : CelestweaveCosmeticOption.values())
+            option.write(tag, values[option.ordinal()]);
         return tag;
     }
 
-    public boolean event(int flag) {
-        return (arcEvents & flag) != 0;
+    public float get(CelestweaveCosmeticOption option) {
+        return values[option.ordinal()];
     }
 
-    private static float clamp(float value, float min, float max) {
-        return Float.isFinite(value) ? Math.max(min, Math.min(max, value)) : min;
+    public int getInt(CelestweaveCosmeticOption option) {
+        return (int) values[option.ordinal()];
+    }
+
+    public CelestweaveCosmetic with(CelestweaveCosmeticOption option, float value) {
+        float[] next = values.clone();
+        next[option.ordinal()] = option.clamp(value);
+        return new CelestweaveCosmetic(next);
+    }
+
+    public CelestweaveStripStyle stripStyle() {
+        return CelestweaveStripStyle.values()[getInt(CelestweaveCosmeticOption.STRIP_STYLE)];
+    }
+
+    public boolean event(int flag) {
+        return (getInt(CelestweaveCosmeticOption.ARC_EVENTS) & flag) != 0;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof CelestweaveCosmetic cosmetic && Arrays.equals(values, cosmetic.values);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(values);
     }
 }

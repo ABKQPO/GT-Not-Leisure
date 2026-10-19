@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 
+import com.science.gtnl.common.item.items.EnergyModuleItem;
 import com.science.gtnl.common.railgun.RailgunModuleType;
 import com.science.gtnl.loader.ItemLoader;
 
@@ -34,27 +35,35 @@ public final class RailgunRecipes {
             .eut(TierEU.RECIPE_UV)
             .addTo(RecipeMaps.assemblerRecipes);
         ItemStack[] parts = { ItemList.Sensor_UV.get(1), ItemList.Electric_Motor_UV.get(1), ItemList.Emitter_UV.get(1),
-            ItemList.Field_Generator_UV.get(2), ItemList.Field_Generator_UV.get(1), ItemList.Field_Generator_UV.get(2),
-            ItemList.Field_Generator_UV.get(4) };
+            ItemList.Field_Generator_UV.get(2) };
         for (RailgunModuleType type : RailgunModuleType.values()) {
-            boolean uhv = type == RailgunModuleType.EHV_BEAM || type == RailgunModuleType.ENERGY_T3;
-            List<ItemStack> inputs = new ArrayList<>();
-            inputs.add(
-                GTOreDictUnificator
-                    .get(OrePrefixes.circuit, uhv ? Materials.UHV : Materials.UV, type.energy() ? 4 : 2));
-            inputs.add(GTOreDictUnificator.get(OrePrefixes.plateDouble, Materials.Neutronium, 2));
-            inputs.add(parts[type.ordinal()]);
-            if (type == RailgunModuleType.ENERGY_T2)
-                inputs.add(ItemLoader.railgunModule.stack(RailgunModuleType.ENERGY_T1));
-            if (type == RailgunModuleType.ENERGY_T3)
-                inputs.add(ItemLoader.railgunModule.stack(RailgunModuleType.ENERGY_T2));
-            var recipe = GTValues.RA.stdBuilder()
-                .itemInputs(inputs.toArray(new ItemStack[0]))
-                .fluidInputs(Materials.SolderingAlloy.getMolten(type.energy() ? 1152 : 576))
+            boolean uhv = type == RailgunModuleType.EHV_BEAM;
+            GTValues.RA.stdBuilder()
+                .itemInputs(
+                    GTOreDictUnificator.get(OrePrefixes.circuit, uhv ? Materials.UHV : Materials.UV, 2),
+                    GTOreDictUnificator.get(OrePrefixes.plateDouble, Materials.Neutronium, 2),
+                    parts[type.ordinal()])
+                .fluidInputs(Materials.SolderingAlloy.getMolten(576))
                 .itemOutputs(ItemLoader.railgunModule.stack(type))
-                .duration(type.energy() ? 800 : 400)
-                .eut(uhv ? TierEU.RECIPE_UHV : TierEU.RECIPE_UV);
-            recipe.addTo(RecipeMaps.assemblerRecipes);
+                .duration(400)
+                .eut(uhv ? TierEU.RECIPE_UHV : TierEU.RECIPE_UV)
+                .addTo(RecipeMaps.assemblerRecipes);
+        }
+        int[] fieldGenerators = { 1, 2, 4 };
+        for (int tier = 1; tier <= EnergyModuleItem.TIERS; tier++) {
+            boolean uhv = tier == EnergyModuleItem.TIERS;
+            List<ItemStack> inputs = new ArrayList<>();
+            inputs.add(GTOreDictUnificator.get(OrePrefixes.circuit, uhv ? Materials.UHV : Materials.UV, 4));
+            inputs.add(GTOreDictUnificator.get(OrePrefixes.plateDouble, Materials.Neutronium, 2));
+            inputs.add(ItemList.Field_Generator_UV.get(fieldGenerators[tier - 1]));
+            if (tier > 1) inputs.add(ItemLoader.energyModule.stack(tier - 1));
+            GTValues.RA.stdBuilder()
+                .itemInputs(inputs.toArray(new ItemStack[0]))
+                .fluidInputs(Materials.SolderingAlloy.getMolten(1152))
+                .itemOutputs(ItemLoader.energyModule.stack(tier))
+                .duration(800)
+                .eut(uhv ? TierEU.RECIPE_UHV : TierEU.RECIPE_UV)
+                .addTo(RecipeMaps.assemblerRecipes);
         }
     }
 }

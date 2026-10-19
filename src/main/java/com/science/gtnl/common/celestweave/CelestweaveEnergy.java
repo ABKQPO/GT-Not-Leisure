@@ -1,6 +1,5 @@
 package com.science.gtnl.common.celestweave;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -8,120 +7,88 @@ import java.util.UUID;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
+import com.science.gtnl.common.equipment.EquipmentEnergy;
+import com.science.gtnl.common.item.items.CelestweaveArmor;
+import com.science.gtnl.common.item.items.EnergyModuleItem;
 import com.science.gtnl.config.MainConfig;
-
-import gregtech.api.enums.GTValues;
-import gregtech.common.misc.WirelessNetworkManager;
-import gregtech.common.misc.spaceprojects.SpaceProjectManager;
-import ic2.api.item.ElectricItem;
 
 public final class CelestweaveEnergy {
 
-    private static final int[] VOLTAGE_TIERS = { 3, 5, 6, 7 };
+    private static final double FLUSH_SHARE = 0.01;
     private static final Map<UUID, double[]> PENDING = new HashMap<>();
 
     private CelestweaveEnergy() {}
 
     public static double capacity(ItemStack stack) {
-        var config = MainConfig.item.celestweave;
-        double capacity = switch (CelestweaveData.energyTier(stack)) {
-            case 3 -> config.energyCapacityT3;
-            case 2 -> config.energyCapacityT2;
-            case 1 -> config.energyCapacityT1;
-            default -> config.baseCapacity;
-        };
-        return Double.isFinite(capacity) ? Math.max(0, capacity) : 0;
+        return EnergyModuleItem.capacity(CelestweaveData.energyTier(stack), MainConfig.item.celestweave.baseCapacity);
     }
 
-    public static int voltageTier(ItemStack stack) {
-        return VOLTAGE_TIERS[CelestweaveData.energyTier(stack)];
-    }
-
-    public static double transferLimit(ItemStack stack) {
-        return GTValues.V[voltageTier(stack)];
-    }
-
-    public static double read(ItemStack stack) {
-        if (stack == null || !stack.hasTagCompound()
-            || !stack.getTagCompound()
-                .hasKey("charge", 99))
-            return 0;
-        double charge = stack.getTagCompound()
-            .getDouble("charge");
-        return Double.isFinite(charge) ? Math.max(0, charge) : 0;
-    }
-
-    public static void write(ItemStack stack, double charge) {
-        if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-        stack.getTagCompound()
-            .setDouble("charge", Math.max(0, Math.min(capacity(stack), charge)));
-    }
-
-    private static void deduct(ItemStack stack, double eu) {
-        if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-        stack.getTagCompound()
-            .setDouble("charge", Math.max(0, read(stack) - eu));
+    public static void write(ItemStack stack, double stored) {
+        EquipmentEnergy.write(stack, stored, capacity(stack));
     }
 
     public static double fraction(ItemStack stack) {
-        double capacity = capacity(stack);
-        return capacity <= 0 ? 0 : Math.min(1, read(stack) / capacity);
-    }
-
-    public static void fill(ItemStack stack) {
-        write(stack, capacity(stack));
+        return EquipmentEnergy.fraction(stack, capacity(stack));
     }
 
     public static void clamp(ItemStack stack) {
-        if (read(stack) > capacity(stack)) write(stack, capacity(stack));
+        EquipmentEnergy.clamp(stack, capacity(stack));
     }
 
-    public static double pending(EntityPlayer player, int type) {
+    public static double pending(EntityPlayer player, int piece) {
         double[] pending = PENDING.get(player.getUniqueID());
-        return pending == null ? 0 : pending[type];
+        return pending == null ? 0 : pending[piece];
     }
 
-    public static double available(EntityPlayer player, int type, ItemStack stack) {
-        if (player.worldObj.isRemote) return read(stack);
-        return Math.max(0, read(stack) - pending(player, type));
+    public static double available(EntityPlayer player, int piece, ItemStack stack) {
+        if (player.worldObj.isRemote) return EquipmentEnergy.read(stack);
+        return Math.max(0, EquipmentEnergy.read(stack) - pending(player, piece));
     }
 
-    public static boolean powered(EntityPlayer player, int type, ItemStack stack) {
-        return player.capabilities.isCreativeMode || available(player, type, stack) > 0;
+    public static boolean hasEnergy(EntityPlayer player, int piece, ItemStack stack) {
+        return EquipmentEnergy.free(player) || available(player, piece, stack) > 0;
     }
 
-    public static boolean affords(EntityPlayer player, int type, ItemStack stack, double eu) {
-        return powered(player, type, stack)
-            && (player.capabilities.isCreativeMode || available(player, type, stack) >= eu);
+    public static boolean affords(EntityPlayer player, int piece, ItemStack stack, double eu) {
+        return hasEnergy(player, piece, stack)
+            && (EquipmentEnergy.free(player) || available(player, piece, stack) >= eu);
     }
 
-    public static boolean drain(EntityPlayer player, int type, ItemStack stack, double eu) {
-        if (eu <= 0 || player.capabilities.isCreativeMode) return true;
-        if (player.worldObj.isRemote) return read(stack) >= eu;
-        if (available(player, type, stack) < eu) return false;
-        add(player, type, stack, eu);
+    public static boolean activeAndHasEnergy(EntityPlayer player, int piece, CelestweaveModule module) {
+        ItemStack stack = CelestweaveData.piece(player, piece);
+        return stack != null && CelestweaveData.active(stack, module) && hasEnergy(player, piece, stack);
+    }
+
+    public static boolean activeAndAffords(EntityPlayer player, int piece, CelestweaveModule module, double eu) {
+        ItemStack stack = CelestweaveData.piece(player, piece);
+        return stack != null && CelestweaveData.active(stack, module) && affords(player, piece, stack, eu);
+    }
+
+    public static boolean drain(EntityPlayer player, int piece, ItemStack stack, double eu) {
+        if (eu <= 0 || EquipmentEnergy.free(player)) return true;
+        if (player.worldObj.isRemote) return EquipmentEnergy.read(stack) >= eu;
+        if (available(player, piece, stack) < eu) return false;
+        add(player, piece, eu);
         return true;
     }
 
-    public static double drainUpTo(EntityPlayer player, int type, ItemStack stack, double eu) {
+    public static double drainUpTo(EntityPlayer player, int piece, ItemStack stack, double eu) {
         if (eu <= 0 || player.worldObj.isRemote) return 0;
-        double paid = Math.min(eu, available(player, type, stack));
-        if (paid > 0) add(player, type, stack, paid);
+        double paid = Math.min(eu, available(player, piece, stack));
+        if (paid > 0) add(player, piece, paid);
         return paid;
     }
 
-    private static void add(EntityPlayer player, int type, ItemStack stack, double eu) {
-        double[] pending = PENDING.computeIfAbsent(player.getUniqueID(), k -> new double[4]);
-        pending[type] += eu;
+    private static void add(EntityPlayer player, int piece, double eu) {
+        PENDING.computeIfAbsent(player.getUniqueID(), k -> new double[CelestweaveArmor.PIECES])[piece] += eu;
     }
 
     public static double availableSet(EntityPlayer player) {
         double total = 0;
-        for (int type = 0; type < 4; type++) {
-            ItemStack stack = CelestweaveServerEvents.piece(player, type);
-            if (stack != null) total += available(player, type, stack);
+        for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++) {
+            ItemStack stack = CelestweaveData.piece(player, piece);
+            if (stack != null) total += available(player, piece, stack);
         }
         return total;
     }
@@ -131,38 +98,36 @@ public final class CelestweaveEnergy {
         double total = availableSet(player);
         if (total <= 0) return 0;
         double share = Math.min(1, eu / total), paid = 0;
-        for (int type = 0; type < 4; type++) {
-            ItemStack stack = CelestweaveServerEvents.piece(player, type);
+        for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++) {
+            ItemStack stack = CelestweaveData.piece(player, piece);
             if (stack == null) continue;
-            paid += drainUpTo(player, type, stack, available(player, type, stack) * share);
+            paid += drainUpTo(player, piece, stack, available(player, piece, stack) * share);
         }
         return paid;
     }
 
-    public static void flush(EntityPlayer player, int type, ItemStack stack) {
+    public static void flush(EntityPlayer player, int piece, ItemStack stack) {
         double[] pending = PENDING.get(player.getUniqueID());
-        if (pending == null || pending[type] <= 0) return;
-        if (stack != null) deduct(stack, pending[type]);
-        pending[type] = 0;
+        if (pending == null || pending[piece] <= 0) return;
+        if (stack != null) EquipmentEnergy.settle(stack, pending[piece]);
+        pending[piece] = 0;
     }
 
     public static void flushLarge(EntityPlayer player) {
         double[] pending = PENDING.get(player.getUniqueID());
         if (pending == null) return;
-        for (int type = 0; type < 4; type++) {
-            if (pending[type] <= 0) continue;
-            ItemStack stack = CelestweaveServerEvents.piece(player, type);
-            if (stack != null && pending[type] > capacity(stack) * 0.01) flush(player, type, stack);
+        for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++) {
+            ItemStack stack = CelestweaveData.piece(player, piece);
+            if (stack != null && pending[piece] > capacity(stack) * FLUSH_SHARE) flush(player, piece, stack);
         }
     }
 
     public static void flush(EntityPlayer player) {
         double[] pending = PENDING.remove(player.getUniqueID());
         if (pending == null) return;
-        for (int type = 0; type < 4; type++) {
-            if (pending[type] <= 0) continue;
-            ItemStack stack = CelestweaveServerEvents.piece(player, type);
-            if (stack != null) deduct(stack, pending[type]);
+        for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++) {
+            ItemStack stack = CelestweaveData.piece(player, piece);
+            if (stack != null && pending[piece] > 0) EquipmentEnergy.settle(stack, pending[piece]);
         }
     }
 
@@ -170,46 +135,18 @@ public final class CelestweaveEnergy {
         PENDING.remove(player.getUniqueID());
     }
 
-    public static UUID wirelessOwner(EntityPlayer player) {
-        return SpaceProjectManager.getLeader(player.getUniqueID());
-    }
-
-    public static double wirelessAvailable(EntityPlayer player) {
-        return WirelessNetworkManager.getUserEU(wirelessOwner(player))
-            .min(BigInteger.valueOf(Long.MAX_VALUE))
-            .doubleValue();
-    }
-
-    public static double takeWireless(EntityPlayer player, double eu) {
-        if (eu < 1 || player.worldObj.isRemote) return 0;
-        UUID owner = wirelessOwner(player);
-        WirelessNetworkManager.strongCheckOrAddUser(owner);
-        long take = (long) Math.min(
-            Math.min(eu, Long.MAX_VALUE),
-            WirelessNetworkManager.getUserEU(owner)
-                .min(BigInteger.valueOf(Long.MAX_VALUE))
-                .longValue());
-        return take > 0 && WirelessNetworkManager.addEUToGlobalEnergyMap(owner, -take) ? take : 0;
-    }
-
-    public static boolean pay(EntityPlayer player, double eu) {
-        if (eu <= 0 || player.capabilities.isCreativeMode) return true;
+    public static boolean drainWithWireless(EntityPlayer player, double eu) {
+        if (eu <= 0 || EquipmentEnergy.free(player)) return true;
         boolean wireless = MainConfig.item.celestweave.wirelessFallback;
         double set = availableSet(player);
-        if (set + (wireless && set < eu ? wirelessAvailable(player) : 0) < eu) return false;
+        if (set + (wireless && set < eu ? EquipmentEnergy.wirelessAvailable(player) : 0) < eu) return false;
         double paid = drainSetUpTo(player, eu);
-        if (paid < eu && wireless) paid += takeWireless(player, eu - paid);
+        if (paid < eu && wireless) paid += EquipmentEnergy.takeWireless(player, eu - paid);
         return eu - paid < 1;
     }
 
     public static void refillFromWireless(ItemStack stack, EntityPlayerMP player) {
-        if (!MainConfig.item.celestweave.wirelessRefill) return;
-        double room = ElectricItem.manager.charge(stack, capacity(stack), Integer.MAX_VALUE, true, true);
-        if (room < Math.max(1, capacity(stack) * 0.01)) return;
-        double taken = takeWireless(player, room);
-        if (taken <= 0) return;
-        double accepted = ElectricItem.manager.charge(stack, taken, Integer.MAX_VALUE, true, false);
-        long refund = (long) (taken - accepted);
-        if (refund > 0) WirelessNetworkManager.addEUToGlobalEnergyMap(wirelessOwner(player), refund);
+        if (MainConfig.item.celestweave.wirelessRefill)
+            EquipmentEnergy.refillFromWireless(stack, player, capacity(stack));
     }
 }

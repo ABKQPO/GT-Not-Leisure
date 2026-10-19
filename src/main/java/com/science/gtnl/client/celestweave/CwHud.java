@@ -14,12 +14,13 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnl.common.celestweave.CelestweaveBehaviors;
+import com.science.gtnl.client.fx.FxColor;
 import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.celestweave.CelestweaveEnergy;
-import com.science.gtnl.common.celestweave.CelestweaveFlight;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
-import com.science.gtnl.common.celestweave.CelestweaveServerEvents;
+import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
+import com.science.gtnl.common.equipment.EquipmentEnergy;
+import com.science.gtnl.common.item.items.CelestweaveArmor;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.Utils;
 
@@ -30,8 +31,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public final class CwHud {
 
-    private static final int HIT_LIFE = 900, SAVE_LIFE = 1400, FADE = 500, READY_FLASH = 350, SAMPLE_MS = 500,
-        SAMPLES = 12, GROUND_SCAN = 96;
+    private static final int HIT_LIFETIME = 900, SAVE_LIFETIME = 1400, FADE = 500, READY_FLASH = 350, WINDOW_MS = 12000,
+        STALE_MS = 7000, SAMPLES = 32, GROUND_SCAN = 96;
     private static final int LOW_RGB = 0xFF3B3B, PANEL_RGB = 0x0C1622, PANEL_HI_RGB = 0x13212F, TRACK_RGB = 0x1C2C3B,
         DIM_RGB = 0x9FB0BE;
     private static final float LOW = 0.15F, SMALL = 0.75F, CORE_RADIUS = 8F, RING_INNER = 13F, RING_OUTER = 16.5F,
@@ -39,18 +40,19 @@ public final class CwHud {
     private static final float[] CORE = polygon(CORE_RADIUS, 0), CORE_INNER = polygon(CORE_RADIUS - 1.2F, 0),
         CORE_DOT = polygon(2.2F, 0), RING = polygon(RING_INNER, Math.PI / 6);
     private static final double[] HISTORY = new double[SAMPLES];
-    private static long hitAt = CwClientState.NEVER, wakeAt = CwClientState.NEVER, landedAt = CwClientState.NEVER,
-        sampleAt = CwClientState.NEVER;
-    private static int hitLife = HIT_LIFE, signature, wornMask = -1, historySize, historyHead;
+    private static final long[] TIMES = new long[SAMPLES];
+    private static long hitAt = CwClientState.NEVER, wakeAt = CwClientState.NEVER, landedAt = CwClientState.NEVER;
+    private static int hitLifetime = HIT_LIFETIME, signature, wornMask = -1, historySize, historyHead;
     private static boolean save, omni, flying, signed;
     private static float hitX, hitZ, climb, rate;
+    private static double lastSeen = Double.NaN;
 
     static void hit(float x, float z, boolean saved, boolean ambient) {
         hitX = x;
         hitZ = z;
         save = saved;
         omni = ambient;
-        hitLife = saved ? SAVE_LIFE : HIT_LIFE;
+        hitLifetime = saved ? SAVE_LIFETIME : HIT_LIFETIME;
         hitAt = wakeAt = Minecraft.getSystemTime();
     }
 
@@ -63,23 +65,23 @@ public final class CwHud {
 
     @SubscribeEvent
     public void overlay(RenderGameOverlayEvent.Post event) {
-        if (event.type != RenderGameOverlayEvent.ElementType.ALL || !MainConfig.client.celestweaveHud) return;
+        if (event.type != RenderGameOverlayEvent.ElementType.ALL || !MainConfig.client.enableCelestweaveHud) return;
         Minecraft minecraft = Minecraft.getMinecraft();
         EntityPlayer player = minecraft.thePlayer;
         if (player == null || minecraft.renderViewEntity != player || minecraft.gameSettings.showDebugInfo) return;
         double stored = 0, capacity = 0;
         float[] pieces = { -1F, -1F, -1F, -1F };
         int status = 1, mask = 0;
-        for (int type = 0; type < 4; type++) {
-            ItemStack stack = CelestweaveServerEvents.piece(player, type);
+        for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++) {
+            ItemStack stack = CelestweaveData.piece(player, piece);
             status *= 31;
             if (stack == null) continue;
-            mask |= 1 << type;
+            mask |= 1 << piece;
             status += 1 + CelestweaveData.activeModules(stack)
                 .hashCode();
-            stored += CelestweaveEnergy.read(stack);
+            stored += EquipmentEnergy.read(stack);
             capacity += CelestweaveEnergy.capacity(stack);
-            pieces[type] = (float) CelestweaveEnergy.fraction(stack);
+            pieces[piece] = (float) CelestweaveEnergy.fraction(stack);
         }
         if (mask == 0) {
             signed = flying = false;
@@ -94,8 +96,8 @@ public final class CwHud {
         sample(stored, now);
         CwClientState state = CwClientState.of(player);
         CwLook look = CelestweaveClientEvents.look(player, state);
-        float charge = capacity <= 0 ? 0F : (float) Math.min(1, stored / capacity);
-        boolean low = charge < LOW && !player.capabilities.isCreativeMode;
+        float fraction = capacity <= 0 ? 0F : (float) Math.min(1, stored / capacity);
+        boolean low = fraction < LOW && !EquipmentEnergy.free(player);
         boolean nowFlying = look.flightActive && player.capabilities.isFlying;
         if (flying && !nowFlying) landedAt = now;
         flying = nowFlying;
@@ -128,24 +130,24 @@ public final class CwHud {
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             GL11.glShadeModel(GL11.GL_SMOOTH);
-            int color = low ? LOW_RGB : look.theme;
+            int rgb = low ? LOW_RGB : look.glowColor;
             float pulse = low ? 0.5F + 0.5F * (float) Math.sin(now * Math.PI * 2 / 600.0) : 0F;
             begin(
                 width / 2F - 97 - CORE_RADIUS * scale + MainConfig.client.celestweaveHudCoreX,
                 height - 3 - CORE_RADIUS * scale + MainConfig.client.celestweaveHudCoreY,
                 scale);
             float alpha = idle + (1 - idle) * awake;
-            if (alpha > 0.01F) core(charge, color, pulse, alpha);
-            if (easeOut(awake) > 0.02F) readout(font, charge, stored, pieces, color, look.theme, easeOut(awake));
+            if (alpha > 0.01F) core(fraction, rgb, pulse, alpha);
+            if (easeOut(awake) > 0.02F) readout(font, fraction, stored, pieces, rgb, look.glowColor, easeOut(awake));
             end();
             begin(centerX, centerY, scale);
-            ring(player, look.theme, now);
-            dash(look.worn[CwLook.BOOTS], look.theme, dashAge, dashLife);
+            ring(player, look.glowColor, now);
+            dash(look.worn[CelestweaveArmor.BOOTS], look.glowColor, dashAge, dashLife);
             end();
             float ladder = flying ? 1F : fade(now - landedAt);
             if (ladder > 0) {
                 begin(centerX + LADDER_OFFSET * scale, centerY, scale);
-                ladder(font, player, look.worn[CwLook.LEGS], look.theme, ladder, event.partialTicks);
+                ladder(font, player, look.worn[CelestweaveArmor.LEGS], look.glowColor, ladder, event.partialTicks);
                 end();
             }
         } finally {
@@ -153,27 +155,27 @@ public final class CwHud {
         }
     }
 
-    private static void core(float charge, int color, float pulse, float alpha) {
+    private static void core(float fraction, int rgb, float pulse, float alpha) {
         Tessellator tessellator = Tessellator.instance;
         fan(tessellator, CORE, 0x000000, 0.45F * alpha);
-        float level = CORE_RADIUS - 2 * CORE_RADIUS * charge;
+        float level = CORE_RADIUS - 2 * CORE_RADIUS * fraction;
         float[] fill = clipBelow(CORE, level);
-        fan(tessellator, fill, color, (0.65F + 0.25F * pulse) * alpha);
+        fan(tessellator, fill, rgb, (0.65F + 0.25F * pulse) * alpha);
         tessellator.startDrawingQuads();
         float[] span = span(fill, level);
-        if (span != null && charge < 0.995F) {
-            color(tessellator, CwLook.mixWhite(color, 0.75F), 0.9F * alpha);
+        if (span != null && fraction < 0.995F) {
+            FxColor.tessellate(tessellator, FxColor.mixWhite(rgb, 0.75F), 0.9F * alpha);
             rect(tessellator, span[0] + 0.6F, level - 0.4F, span[1] - 0.6F, level + 0.4F);
         }
-        color(tessellator, CwLook.mixWhite(color, 0.35F), (0.85F + 0.15F * pulse) * alpha);
+        FxColor.tessellate(tessellator, FxColor.mixWhite(rgb, 0.35F), (0.85F + 0.15F * pulse) * alpha);
         outline(tessellator, CORE, CORE_INNER);
         tessellator.draw();
-        fan(tessellator, CORE_DOT, CwLook.mixWhite(color, 0.7F), 0.9F * alpha);
+        fan(tessellator, CORE_DOT, FxColor.mixWhite(rgb, 0.7F), 0.9F * alpha);
     }
 
-    private static void readout(FontRenderer font, float charge, double stored, float[] pieces, int color, int theme,
-        float slide) {
-        String percent = Math.round(charge * 100) + "%", energy = Utils.shortFormat((long) stored) + " EU";
+    private static void readout(FontRenderer font, float fraction, double stored, float[] pieces, int rgb,
+        int glowColor, float slide) {
+        String percent = Math.round(fraction * 100) + "%", energy = Utils.shortFormat((long) stored) + " EU";
         String flow = Math.abs(rate) < 0.5F ? ""
             : (rate > 0 ? "-" : "+") + Utils.shortFormat(Math.round(Math.abs(rate))) + "/t";
         String eta = rate >= 0.5F ? duration(stored / rate / 20) : "";
@@ -183,43 +185,44 @@ public final class CwHud {
         float right = -CORE_RADIUS - 4 + (1 - slide) * 6, left = right - inner - 7;
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        screen(tessellator, left, -11, right, 9, theme, slide);
-        for (int type = 0; type < 4; type++) cell(tessellator, left + 4 + type * 4, 1.5F, pieces[type], theme, slide);
+        screen(tessellator, left, -11, right, 9, glowColor, slide);
+        for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++)
+            cell(tessellator, left + 4 + piece * 4, 1.5F, pieces[piece], glowColor, slide);
         tessellator.draw();
-        text(font, percent, left + 4, -9, CwLook.mixWhite(color, 0.4F), slide);
+        text(font, percent, left + 4, -9, FxColor.mixWhite(rgb, 0.4F), slide);
         text(font, energy, left + 4 + split, -9, DIM_RGB, slide);
-        small(font, flow, left + 23, 1.5F, rate > 0 ? DIM_RGB : CwLook.mixWhite(theme, 0.4F), slide);
+        small(font, flow, left + 23, 1.5F, rate > 0 ? DIM_RGB : FxColor.mixWhite(glowColor, 0.4F), slide);
         if (!eta.isEmpty()) small(font, eta, left + 23 + (font.getStringWidth(flow) + 6) * SMALL, 1.5F, DIM_RGB, slide);
     }
 
-    private static void cell(Tessellator tessellator, float x, float y, float charge, int theme, float alpha) {
-        color(tessellator, TRACK_RGB, (charge < 0 ? 0.35F : 0.9F) * alpha);
+    private static void cell(Tessellator tessellator, float x, float y, float fraction, int glowColor, float alpha) {
+        FxColor.tessellate(tessellator, TRACK_RGB, (fraction < 0 ? 0.35F : 0.9F) * alpha);
         rect(tessellator, x, y, x + 3, y + 6);
-        if (charge <= 0) return;
-        color(tessellator, charge < LOW ? LOW_RGB : theme, alpha);
-        rect(tessellator, x, y + 6 * (1 - charge), x + 3, y + 6);
+        if (fraction <= 0) return;
+        FxColor.tessellate(tessellator, fraction < LOW ? LOW_RGB : glowColor, alpha);
+        rect(tessellator, x, y + 6 * (1 - fraction), x + 3, y + 6);
     }
 
-    private static void ring(EntityPlayer player, int theme, long now) {
+    private static void ring(EntityPlayer player, int glowColor, long now) {
         long age = now - hitAt;
-        if (age < 0 || age >= hitLife) return;
-        float progress = age / (float) hitLife;
+        if (age < 0 || age >= hitLifetime) return;
+        float progress = age / (float) hitLifetime;
         float envelope = Math.min(1F, age / 60F) * (1 - progress) * (1 - progress);
         double dx = hitX - player.posX, dz = hitZ - player.posZ, yaw = Math.toRadians(player.rotationYaw);
         double forward = dx * -Math.sin(yaw) + dz * Math.cos(yaw), lateral = dx * -Math.cos(yaw) + dz * -Math.sin(yaw);
         boolean directional = !save && !omni && forward * forward + lateral * lateral > 0.16;
         double angle = Math.atan2(lateral, forward);
-        int color = CwLook.mixWhite(theme, save ? 0.55F : 0.25F);
+        int rgb = FxColor.mixWhite(glowColor, save ? 0.55F : 0.25F);
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
         for (int segment = 0; segment < 6; segment++) {
             float weight = save ? 1F : directional ? segmentWeight(angle, segment) : 0.45F;
             float[] outer = polygon(RING_OUTER + 2.5F * weight * (1 - progress), Math.PI / 6);
-            color(tessellator, color, envelope * (0.18F + 0.82F * weight));
+            FxColor.tessellate(tessellator, rgb, envelope * (0.18F + 0.82F * weight));
             edge(tessellator, outer, RING, segment, 0.08F);
         }
         if (save) {
-            color(tessellator, color, 0.6F * (1 - progress));
+            FxColor.tessellate(tessellator, rgb, 0.6F * (1 - progress));
             outline(
                 tessellator,
                 polygon(RING_OUTER + 1 + 14 * progress, Math.PI / 6),
@@ -229,24 +232,24 @@ public final class CwHud {
         if (!directional) return;
         float sin = (float) Math.sin(angle), cos = (float) -Math.cos(angle), base = RING_OUTER + 4.5F + 2 * progress;
         tessellator.startDrawing(GL11.GL_TRIANGLES);
-        color(tessellator, CwLook.mixWhite(theme, 0.6F), envelope);
+        FxColor.tessellate(tessellator, FxColor.mixWhite(glowColor, 0.6F), envelope);
         tessellator.addVertex(sin * (base + 4), cos * (base + 4), 0);
         tessellator.addVertex(sin * base - cos * 3, cos * base + sin * 3, 0);
         tessellator.addVertex(sin * base + cos * 3, cos * base - sin * 3, 0);
         tessellator.draw();
     }
 
-    private static void dash(ItemStack boots, int theme, long age, long life) {
+    private static void dash(ItemStack boots, int glowColor, long age, long lifetime) {
         if (boots == null || !CelestweaveData.active(boots, CelestweaveModule.DASH)) return;
-        if (age < 0 || age >= life + READY_FLASH) return;
-        float progress = life <= 0 ? 1F : Math.min(1F, age / (float) life);
+        if (age < 0 || age >= lifetime + READY_FLASH) return;
+        float progress = lifetime <= 0 ? 1F : Math.min(1F, age / (float) lifetime);
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
         arc(tessellator, 1F, DASH_RADIUS, 1.2F, 0x000000, 0.4F);
         for (int tick = 0; tick <= 4; tick++) {
             double a = Math.toRadians(180 + DASH_SPAN - 2 * DASH_SPAN * tick / 4.0);
             float sin = (float) Math.sin(a), cos = (float) -Math.cos(a), length = tick % 4 == 0 ? 3.2F : 2F;
-            color(tessellator, 0xFFFFFF, progress >= tick / 4F ? 0.7F : 0.3F);
+            FxColor.tessellate(tessellator, 0xFFFFFF, progress >= tick / 4F ? 0.7F : 0.3F);
             tessellator.addVertex(sin * (DASH_RADIUS + 1.4F) - cos * 0.4F, cos * (DASH_RADIUS + 1.4F) + sin * 0.4F, 0);
             tessellator.addVertex(sin * (DASH_RADIUS + 1.4F) + cos * 0.4F, cos * (DASH_RADIUS + 1.4F) - sin * 0.4F, 0);
             tessellator.addVertex(
@@ -258,15 +261,15 @@ public final class CwHud {
                 cos * (DASH_RADIUS + 1.4F + length) + sin * 0.4F,
                 0);
         }
-        if (progress < 1) arc(tessellator, progress, DASH_RADIUS, 1F, theme, 0.85F);
+        if (progress < 1) arc(tessellator, progress, DASH_RADIUS, 1F, glowColor, 0.85F);
         else {
-            float flash = fade((age - life) * FADE / READY_FLASH);
-            arc(tessellator, 1F, DASH_RADIUS, 1.2F + 1.2F * flash, CwLook.mixWhite(theme, 0.6F), flash);
+            float flash = fade((age - lifetime) * FADE / READY_FLASH);
+            arc(tessellator, 1F, DASH_RADIUS, 1.2F + 1.2F * flash, FxColor.mixWhite(glowColor, 0.6F), flash);
         }
         tessellator.draw();
     }
 
-    private static void ladder(FontRenderer font, EntityPlayer player, ItemStack legs, int theme, float alpha,
+    private static void ladder(FontRenderer font, EntityPlayer player, ItemStack legs, int glowColor, float alpha,
         float partialTicks) {
         double feet = player.boundingBox.minY - (player.posY - player.prevPosY) * (1 - partialTicks);
         climb += ((float) player.motionY * 20 - climb) * 0.2F;
@@ -275,35 +278,35 @@ public final class CwHud {
             MathHelper.floor_double(player.posX),
             MathHelper.floor_double(feet),
             MathHelper.floor_double(player.posZ));
-        int bright = CwLook.mixWhite(theme, 0.4F);
+        int bright = FxColor.mixWhite(glowColor, 0.4F);
         String altitude = "Y " + (int) Math.floor(feet);
         float label = -8 - font.getStringWidth(altitude);
         double span = LADDER_HALF / LADDER_SCALE;
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        screen(tessellator, label - 3, -6, -6, 6, theme, alpha);
-        color(tessellator, 0xFFFFFF, 0.35F * alpha);
+        screen(tessellator, label - 3, -6, -6, 6, glowColor, alpha);
+        FxColor.tessellate(tessellator, 0xFFFFFF, 0.35F * alpha);
         rect(tessellator, -0.5F, -LADDER_HALF, 0.5F, LADDER_HALF);
         for (long mark = (long) Math.ceil((feet - span) / 2) * 2; mark <= feet + span; mark += 2) {
             float y = (float) (-(mark - feet) * LADDER_SCALE), edge = Math.abs(y) / LADDER_HALF;
-            color(tessellator, mark % 10 == 0 ? bright : 0xFFFFFF, 0.75F * alpha * (1 - edge * edge));
+            FxColor.tessellate(tessellator, mark % 10 == 0 ? bright : 0xFFFFFF, 0.75F * alpha * (1 - edge * edge));
             rect(tessellator, 0.5F, y - 0.5F, mark % 10 == 0 ? 6.5F : 3.5F, y + 0.5F);
         }
         if (ground != Integer.MIN_VALUE && feet - ground <= span) {
             float y = (float) ((feet - ground) * LADDER_SCALE);
-            color(tessellator, theme, 0.55F * alpha);
+            FxColor.tessellate(tessellator, glowColor, 0.55F * alpha);
             rect(tessellator, -3F, y - 0.75F, 9F, y + 0.75F);
             for (int i = 0; i < 4; i++) rect(tessellator, -2F + i * 3, y + 0.75F, -1F + i * 3, y + 2.5F);
         }
         tessellator.draw();
         tessellator.startDrawing(GL11.GL_TRIANGLES);
-        color(tessellator, bright, 0.95F * alpha);
+        FxColor.tessellate(tessellator, bright, 0.95F * alpha);
         tessellator.addVertex(-1, 0, 0);
         tessellator.addVertex(-5, 3, 0);
         tessellator.addVertex(-5, -3, 0);
         float arrow = Math.abs(climb) < 0.05F ? 0 : Math.signum(climb), below = LADDER_HALF + 7.5F;
         if (arrow != 0) {
-            color(tessellator, 0xFFFFFF, 0.8F * alpha);
+            FxColor.tessellate(tessellator, 0xFFFFFF, 0.8F * alpha);
             tessellator.addVertex(-8, below - arrow * 2, 0);
             tessellator.addVertex(-10.5F, below + arrow * 1.5F, 0);
             tessellator.addVertex(-5.5F, below + arrow * 1.5F, 0);
@@ -318,7 +321,7 @@ public final class CwHud {
                 small(font, String.valueOf(mark), 8, y - 3, DIM_RGB, alpha * (1 - edge));
         }
         if (legs != null) {
-            String level = "Lv" + CelestweaveFlight.level(legs, CelestweaveBehaviors.SPEED);
+            String level = "Lv" + CelestweaveModuleSetting.FLIGHT_SPEED.get(legs);
             text(font, level, -font.getStringWidth(level) / 2F, -LADDER_HALF - 10, bright, alpha);
         }
         String speed = String.format(Locale.ROOT, "%.1f", Math.abs(climb));
@@ -333,23 +336,33 @@ public final class CwHud {
     }
 
     private static void sample(double stored, long now) {
-        if (now - sampleAt < SAMPLE_MS) return;
-        sampleAt = now;
-        HISTORY[historyHead] = stored;
-        historyHead = (historyHead + 1) % SAMPLES;
-        if (historySize < SAMPLES) historySize++;
-        rate = drainRate(HISTORY[(historyHead - historySize + SAMPLES) % SAMPLES], stored, historySize);
+        boolean changed = stored != lastSeen;
+        if (!Double.isNaN(lastSeen) && changed) {
+            TIMES[historyHead] = now;
+            HISTORY[historyHead] = stored;
+            historyHead = (historyHead + 1) % SAMPLES;
+            if (historySize < SAMPLES) historySize++;
+        }
+        lastSeen = stored;
+        while (historySize > 1 && now - TIMES[oldest()] > WINDOW_MS) historySize--;
+        if (historySize > 0 && now - TIMES[(historyHead - 1 + SAMPLES) % SAMPLES] > STALE_MS) historySize = 0;
+        if (historySize < 2) rate = 0F;
+        else if (changed) rate = drainRate(HISTORY[oldest()], stored, now - TIMES[oldest()]);
+    }
+
+    private static int oldest() {
+        return (historyHead - historySize + SAMPLES) % SAMPLES;
     }
 
     private static void resetRate() {
         historySize = historyHead = 0;
-        sampleAt = CwClientState.NEVER;
+        lastSeen = Double.NaN;
         wornMask = -1;
         rate = 0F;
     }
 
-    static float drainRate(double oldest, double newest, int samples) {
-        return samples < 2 ? 0F : (float) ((oldest - newest) / ((samples - 1) * SAMPLE_MS / 50.0));
+    static float drainRate(double oldest, double newest, long elapsedMs) {
+        return elapsedMs <= 0 ? 0F : (float) ((oldest - newest) / (elapsedMs / 50.0));
     }
 
     static String duration(double seconds) {
@@ -426,7 +439,7 @@ public final class CwHud {
     private static void fan(Tessellator tessellator, float[] polygon, int rgb, float alpha) {
         if (polygon.length < 6) return;
         tessellator.startDrawing(GL11.GL_TRIANGLE_FAN);
-        color(tessellator, rgb, alpha);
+        FxColor.tessellate(tessellator, rgb, alpha);
         for (int i = 0; i < polygon.length; i += 2) tessellator.addVertex(polygon[i], polygon[i + 1], 0);
         tessellator.draw();
     }
@@ -451,7 +464,7 @@ public final class CwHud {
     }
 
     private static void arc(Tessellator tessellator, float progress, float radius, float half, int rgb, float alpha) {
-        color(tessellator, rgb, alpha);
+        FxColor.tessellate(tessellator, rgb, alpha);
         int steps = Math.max(1, Math.round(24 * progress));
         double start = Math.toRadians(180 + DASH_SPAN), sweep = -Math.toRadians(2 * DASH_SPAN) * progress;
         for (int i = 0; i < steps; i++) {
@@ -467,11 +480,11 @@ public final class CwHud {
 
     private static void screen(Tessellator tessellator, float x0, float y0, float x1, float y1, int accent,
         float alpha) {
-        color(tessellator, PANEL_RGB, 0.78F * alpha);
+        FxColor.tessellate(tessellator, PANEL_RGB, 0.78F * alpha);
         rect(tessellator, x0, y0, x1, y1);
-        color(tessellator, PANEL_HI_RGB, 0.78F * alpha);
+        FxColor.tessellate(tessellator, PANEL_HI_RGB, 0.78F * alpha);
         rect(tessellator, x0, y0, x1, Math.min(y1, y0 + 3));
-        color(tessellator, accent, 0.9F * alpha);
+        FxColor.tessellate(tessellator, accent, 0.9F * alpha);
         corner(tessellator, x0, y0, 1, 1);
         corner(tessellator, x1, y0, -1, 1);
         corner(tessellator, x0, y1, 1, -1);
@@ -493,14 +506,6 @@ public final class CwHud {
         tessellator.addVertex(x0, y1, 0);
         tessellator.addVertex(x1, y1, 0);
         tessellator.addVertex(x1, y0, 0);
-    }
-
-    private static void color(Tessellator tessellator, int rgb, float alpha) {
-        tessellator.setColorRGBA_F(
-            (rgb >> 16 & 255) / 255F,
-            (rgb >> 8 & 255) / 255F,
-            (rgb & 255) / 255F,
-            Math.max(0F, Math.min(1F, alpha)));
     }
 
     private static void small(FontRenderer font, String text, float x, float y, int rgb, float alpha) {

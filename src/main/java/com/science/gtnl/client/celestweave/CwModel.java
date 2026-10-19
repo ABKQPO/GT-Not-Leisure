@@ -2,25 +2,34 @@ package com.science.gtnl.client.celestweave;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
+import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
+import net.minecraftforge.client.model.obj.Face;
+import net.minecraftforge.client.model.obj.GroupObject;
+import net.minecraftforge.client.model.obj.WavefrontObject;
 
 import org.lwjgl.opengl.GL11;
 
 import com.google.gson.Gson;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.item.items.CelestweaveArmor;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -43,6 +52,8 @@ public final class CwModel implements IResourceManagerReloadListener {
     private final List<Integer> lists = new ArrayList<>();
     private CwFrames frames;
     private IModelCustom[] models;
+    private int[] glowPixels;
+    private int glowWidth, glowHeight;
     private boolean failed;
 
     private CwModel() {}
@@ -64,7 +75,9 @@ public final class CwModel implements IResourceManagerReloadListener {
             id = GLAllocation.generateDisplayLists(1);
             GL11.glNewList(id, GL11.GL_COMPILE);
             try {
-                models[group.type].renderPart(group.name);
+                if (group.layerKind == CwFrames.Layer.GLOW_FACES && glowPixels != null
+                    && models[group.piece] instanceof WavefrontObject obj) renderRaised(obj, group.name);
+                else models[group.piece].renderPart(group.name);
             } finally {
                 GL11.glEndList();
             }
@@ -74,12 +87,24 @@ public final class CwModel implements IResourceManagerReloadListener {
         GL11.glCallList(id);
     }
 
+    private void renderRaised(WavefrontObject obj, String name) {
+        List<Face> faces = new ArrayList<>();
+        for (GroupObject part : obj.groupObjects) if (name.equalsIgnoreCase(part.name)) faces.addAll(part.faces);
+        List<float[]> quads = CwRaise.raise(faces, glowPixels, glowWidth, glowHeight, CwRaise.HEIGHT);
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        for (float[] quad : quads) for (int i = 0; i < 20; i += 5)
+            tessellator.addVertexWithUV(quad[i], quad[i + 1], quad[i + 2], quad[i + 3], quad[i + 4]);
+        tessellator.draw();
+    }
+
     @Override
     public void onResourceManagerReload(IResourceManager manager) {
         for (int id : lists) GLAllocation.deleteDisplayLists(id);
         lists.clear();
         frames = null;
         models = null;
+        glowPixels = null;
         failed = false;
     }
 
@@ -94,9 +119,19 @@ public final class CwModel implements IResourceManagerReloadListener {
                 parsed = new Gson().fromJson(reader, CwFrames.class);
             }
             parsed.resolve();
-            IModelCustom[] loaded = new IModelCustom[4];
-            for (int type = 0; type < 4; type++) loaded[type] = AdvancedModelLoader
-                .loadModel(new ResourceLocation(RESOURCE_ROOT_ID, ROOT + parsed.objFile(type)));
+            IModelCustom[] loaded = new IModelCustom[CelestweaveArmor.PIECES];
+            for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++) loaded[piece] = AdvancedModelLoader
+                .loadModel(new ResourceLocation(RESOURCE_ROOT_ID, ROOT + parsed.objFile(piece)));
+            BufferedImage glow;
+            try (InputStream stream = Minecraft.getMinecraft()
+                .getResourceManager()
+                .getResource(GLOW)
+                .getInputStream()) {
+                glow = ImageIO.read(stream);
+            }
+            glowWidth = glow.getWidth();
+            glowHeight = glow.getHeight();
+            glowPixels = glow.getRGB(0, 0, glowWidth, glowHeight, null, 0, glowWidth);
             models = loaded;
             frames = parsed;
             CwAnimator.bind(parsed);

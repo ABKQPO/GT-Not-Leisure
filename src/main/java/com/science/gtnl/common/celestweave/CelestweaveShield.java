@@ -21,6 +21,8 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 import com.reavaritia.common.items.InfinitySword;
+import com.science.gtnl.common.equipment.EquipmentEnergy;
+import com.science.gtnl.common.item.items.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.config.MainConfig;
 
@@ -51,9 +53,9 @@ public final class CelestweaveShield {
             && source.damageType.contains(InfinitySword.INFINITY_DAMAGE.damageType);
     }
 
-    public static boolean powered(EntityPlayer player) {
-        if (player.capabilities.isCreativeMode || CelestweaveEnergy.availableSet(player) > 0) return true;
-        return MainConfig.item.celestweave.wirelessFallback && CelestweaveEnergy.wirelessAvailable(player) >= 1;
+    public static boolean canAbsorb(EntityPlayer player) {
+        if (EquipmentEnergy.free(player) || CelestweaveEnergy.availableSet(player) > 0) return true;
+        return MainConfig.item.celestweave.wirelessFallback && EquipmentEnergy.wirelessAvailable(player) >= 1;
     }
 
     public static boolean environment(DamageSource source) {
@@ -73,15 +75,15 @@ public final class CelestweaveShield {
     public void attack(LivingAttackEvent event) {
         if (!(event.entityLiving instanceof EntityPlayerMP player)) return;
         DamageSource source = event.source;
-        long tick = player.worldObj.getTotalWorldTime();
+        long now = player.worldObj.getTotalWorldTime();
         Hit seen = HANDLED.remove(player);
-        if (seen != null && seen.source() == source && seen.tick() == tick) return;
-        HANDLED.put(player, new Hit(source, tick));
+        if (seen != null && seen.source() == source && seen.tick() == now) return;
+        HANDLED.put(player, new Hit(source, now));
         PENDING.remove(player);
         float amount = event.ammount;
         if (!Float.isFinite(amount) || amount <= 0 || source == DamageSource.outOfWorld || bypass(source, amount))
             return;
-        ItemStack chest = CelestweaveServerEvents.piece(player, 1);
+        ItemStack chest = CelestweaveData.piece(player, CelestweaveArmor.CHEST);
         if (chest == null) return;
         boolean invulnerable = player.hurtResistantTime > player.maxHurtResistantTime / 2;
         if (!invulnerable && CelestweaveData.active(chest, CelestweaveModule.REFLECT)
@@ -89,22 +91,21 @@ public final class CelestweaveShield {
             cancel(event, player);
             return;
         }
-        if (!shielded(chest) || !powered(player)) return;
+        if (!shielded(chest) || !canAbsorb(player)) return;
         float last = invulnerable ? player.lastDamage : 0F;
         float incoming = amount - last;
         if (incoming <= 0) return;
         var config = MainConfig.item.celestweave;
-        float cap = Math.min(incoming, config.shieldCap);
+        float cap = Math.min(incoming, config.maxAbsorbPerHit);
         if (cap <= 0) return;
-        double cost = Math.min(cap * config.euPerDamage, config.maxEuPerHit);
-        double paid = player.capabilities.isCreativeMode ? cost : CelestweaveEnergy.drainSetUpTo(player, cost);
-        if (paid < cost && config.wirelessFallback) paid += CelestweaveEnergy.takeWireless(player, cost - paid);
+        double cost = Math.min(cap * config.shieldEuPerDamage, config.maxEuPerHit);
+        double paid = EquipmentEnergy.free(player) ? cost : CelestweaveEnergy.drainSetUpTo(player, cost);
+        if (paid < cost && config.wirelessFallback) paid += EquipmentEnergy.takeWireless(player, cost - paid);
         float absorbed = cost <= 0 ? cap : (float) (cap * Math.min(1, paid / cost));
         if (absorbed <= 0) return;
         if (source.isFireDamage()) player.extinguish();
         if (source == DamageSource.fall) {
-            if (player.fallDistance > 3 && CelestweaveServerEvents.piece(player, 3) != null) CelestweaveServerEvents
-                .sendFx(player, CelestweaveFxPacket.LAND, player.posX, player.boundingBox.minY, player.posZ);
+            CelestweaveServerEvents.landFx(player, player.fallDistance);
         } else if (!environment(source)) {
             Entity attacker = source.getEntity();
             if (attacker == null) CelestweaveServerEvents
@@ -136,9 +137,8 @@ public final class CelestweaveShield {
 
     private static boolean reflect(EntityPlayerMP player, ItemStack chest, DamageSource source, float amount) {
         var config = MainConfig.item.celestweave;
-        if (source.isProjectile()
-            && CelestweaveData.cfgBool(chest, CelestweaveModule.REFLECT, CelestweaveBehaviors.PROJECTILE, true)
-            && CelestweaveEnergy.drain(player, 1, chest, config.reflectEu)) {
+        if (source.isProjectile() && CelestweaveModuleSetting.REFLECT_PROJECTILE.on(chest)
+            && CelestweaveEnergy.drain(player, CelestweaveArmor.CHEST, chest, config.reflectEu)) {
             Entity projectile = source.getSourceOfDamage();
             if (projectile != null) CelestweaveServerEvents
                 .sendFx(player, CelestweaveFxPacket.REFLECT, projectile.posX, projectile.posY, projectile.posZ);
@@ -147,7 +147,7 @@ public final class CelestweaveShield {
         if (!(source.getEntity() instanceof EntityLivingBase attacker) || attacker == player
             || "thorns".equals(source.damageType)
             || LIGHTNING.equals(source.damageType)
-            || !CelestweaveEnergy.drain(player, 1, chest, config.reflectEu)) return false;
+            || !CelestweaveEnergy.drain(player, CelestweaveArmor.CHEST, chest, config.reflectEu)) return false;
         strike(player, chest, attacker, amount);
         return false;
     }
@@ -165,13 +165,11 @@ public final class CelestweaveShield {
         }
         targets.sort(Comparator.comparingDouble(living -> living.getDistanceSqToEntity(player)));
         if (!attacker.isDead && attacker.getDistanceSqToEntity(player) <= radius * radius * 4) targets.add(0, attacker);
-        if (targets.size() > config.reflectMaxTargets) targets.subList(config.reflectMaxTargets, targets.size())
+        if (targets.size() > config.maxReflectTargets) targets.subList(config.maxReflectTargets, targets.size())
             .clear();
         float damage = amount * config.reflectRatio;
-        boolean ignite = CelestweaveSettings.option(CelestweaveModule.REFLECT, CelestweaveBehaviors.IGNITE)
-            .get(chest) != 0;
-        boolean blind = CelestweaveSettings.option(CelestweaveModule.REFLECT, CelestweaveBehaviors.BLIND)
-            .get(chest) != 0;
+        boolean ignite = CelestweaveModuleSetting.REFLECT_IGNITE.on(chest);
+        boolean blind = CelestweaveModuleSetting.REFLECT_BLIND.on(chest);
         for (EntityLivingBase target : targets) {
             boolean hurt = damage <= 0
                 || target.attackEntityFrom(new EntityDamageSource(LIGHTNING, player).setMagicDamage(), damage);
@@ -191,8 +189,9 @@ public final class CelestweaveShield {
         if (!(event.entityLiving instanceof EntityPlayerMP player)) return;
         DamageSource source = event.source;
         if (source == DamageSource.outOfWorld || bypass(source, Float.MAX_VALUE)) return;
-        ItemStack chest = CelestweaveServerEvents.piece(player, 1);
-        if (!shielded(chest) || !CelestweaveEnergy.pay(player, MainConfig.item.celestweave.deathFee)) return;
+        ItemStack chest = CelestweaveData.piece(player, CelestweaveArmor.CHEST);
+        if (!shielded(chest) || !CelestweaveEnergy.drainWithWireless(player, MainConfig.item.celestweave.deathSaveEu))
+            return;
         event.setCanceled(true);
         player.setHealth(1F);
         player.extinguish();

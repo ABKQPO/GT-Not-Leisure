@@ -59,7 +59,7 @@ public class NetWorkHandler {
         registerClientbound(RailgunFireFxPacket.class);
         registerClientbound(RailgunRecoilFxPacket.class);
         registerServerbound(RailgunBeamTogglePacket.class);
-        registerServerbound(OpenRailgunGuiPacket.class);
+        registerServerbound(OpenEquipmentGuiPacket.class);
         registerServerbound(CelestweaveKeyPacket.class);
         registerClientbound(RailgunBeamUpdatePacket.class);
         registerClientbound(RailgunBeamChainFxPacket.class);

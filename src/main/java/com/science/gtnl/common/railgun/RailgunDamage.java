@@ -11,14 +11,19 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 
+import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.EffectLoader;
 
 public final class RailgunDamage {
 
     public record DamageContext(double firstDamage, double bypassRatio, double chainDecay, int chainSegments,
-        int chainForkCount, double chainRadius, boolean isMaxCharged, boolean isBeam, boolean pvp) {}
+        int chainForkCount, double chainRadius, boolean isMaxCharged, boolean pvp) {}
+
+    static boolean striking;
 
     private RailgunDamage() {}
 
@@ -29,47 +34,43 @@ public final class RailgunDamage {
             MathHelper.floor_double(player.posZ));
     }
 
+    private static double stormRadius(double radius, boolean storm) {
+        return radius + (storm ? RailgunDefaults.STORM_CHAIN_RADIUS_BONUS : 0);
+    }
+
     public static DamageContext buildBeam(EntityPlayer player, RailgunData.Modules modules, World world, boolean pvp,
         double base) {
         boolean storm = storm(world, player);
         int compute = modules.count(RailgunModuleType.COMPUTE);
-        int chains = compute > 0 ? RailgunDefaults.CHAIN_BASE + (compute - 1) * 2 + (storm ? 2 : 0) : 0;
+        int chains = compute > 0
+            ? RailgunDefaults.CHAIN_BASE + (compute - 1) * 2 + (storm ? RailgunDefaults.STORM_CHAIN_BONUS : 0)
+            : 0;
         return new DamageContext(
             base * (storm ? RailgunDefaults.STORM_DAMAGE_MUL : 1),
             MainConfig.item.railgun.beamBypass,
             RailgunDefaults.CHAIN_DECAY,
-            Math.min(50, chains),
+            Math.min(RailgunDefaults.CHAIN_HARD_CAP, chains),
             compute > 0 ? 1 : 0,
-            16 + (storm ? 4 : 0),
+            stormRadius(RailgunDefaults.CHAIN_RADIUS, storm),
             false,
-            true,
             pvp);
     }
 
     public static DamageContext buildCharged(EntityPlayer player, RailgunChargeTier tier, RailgunData.Modules modules,
         World world, boolean pvp) {
-        var config = MainConfig.item.railgun;
         boolean storm = storm(world, player);
         int compute = modules.count(RailgunModuleType.COMPUTE);
-        double base = switch (tier) {
-            case EHV1 -> config.baseDamageEhv1;
-            case EHV2 -> config.baseDamageEhv2;
-            case EHV3 -> config.baseDamageEhv3;
-            default -> 0;
-        };
-        int index = Math.max(0, tier.ordinal() - 1);
-        int chains = (compute > 0 ? new int[] { 8, 14, 24 }[index] + Math.max(0, compute - 1) * 4 : 0)
-            + (storm ? 2 : 0);
-        int forks = (compute > 0 ? new int[] { 2, 3, 4 }[index] + Math.max(0, compute - 1) : 0) + (storm ? 1 : 0);
+        int chains = (compute > 0 ? tier.chainSegments + (compute - 1) * 4 : 0)
+            + (storm ? RailgunDefaults.STORM_CHAIN_BONUS : 0);
+        int forks = (compute > 0 ? tier.chainForks + compute - 1 : 0) + (storm ? 1 : 0);
         return new DamageContext(
-            base * (storm ? RailgunDefaults.STORM_DAMAGE_MUL : 1),
-            config.chargedBypass,
+            tier.baseDamage() * (storm ? RailgunDefaults.STORM_DAMAGE_MUL : 1),
+            MainConfig.item.railgun.chargedBypass,
             RailgunDefaults.CHAIN_DECAY,
-            Math.min(50, chains),
-            Math.min(8, forks),
-            new int[] { 20, 26, 32 }[index] + (storm ? 4 : 0),
+            Math.min(RailgunDefaults.CHAIN_HARD_CAP, chains),
+            Math.min(RailgunDefaults.CHAIN_FORK_HARD_CAP, forks),
+            stormRadius(tier.chainRadius, storm),
             tier == RailgunChargeTier.EHV3,
-            false,
             pvp);
     }
 
@@ -77,16 +78,26 @@ public final class RailgunDamage {
         return new EntityDamageSource("gtnl.railgun", player).setDamageBypassesArmor();
     }
 
+    public static void hitObject(EntityPlayerMP player, Entity target, EquipmentVec reference, double damage) {
+        striking = true;
+        try {
+            if (MinecraftForge.EVENT_BUS.post(new AttackEntityEvent(player, target))) return;
+        } finally {
+            striking = false;
+        }
+        RailgunTargetRules.damageAnchor(target, reference)
+            .attackEntityFrom(source(player), (float) Math.min(damage, Float.MAX_VALUE));
+    }
+
     public static double finalDamage(double base, double bypass, double armor) {
         return Math.max(0, base) * (1 - Math.max(0, Math.min(0.8, armor)) * (1 - Math.max(0, Math.min(1, bypass))));
     }
 
     public static void applyAll(EntityPlayerMP player, List<RailgunChainResolver.Hit> hits, DamageContext context,
-        boolean resetInvulnerability, RailgunVec reference) {
+        boolean resetInvulnerability, EquipmentVec reference) {
         for (var hit : hits) {
             EntityLivingBase target = hit.target();
-            if (!RailgunTargetRules.canAffect(player, target, MainConfig.item.railgun.damagePlayers && context.pvp()))
-                continue;
+            if (!RailgunTargetRules.canAffect(player, target, context.pvp())) continue;
             double damage = finalDamage(hit.damage(), context.bypassRatio(), target.getTotalArmorValue() / 25.0);
             if (!Double.isFinite(damage) || damage <= 0) continue;
             if (resetInvulnerability) target.hurtResistantTime = 0;

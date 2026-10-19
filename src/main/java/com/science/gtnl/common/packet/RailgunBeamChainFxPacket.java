@@ -5,9 +5,9 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 
 import com.science.gtnl.client.railgun.RailgunClientFx;
+import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
 import com.science.gtnl.common.railgun.RailgunNet;
-import com.science.gtnl.common.railgun.RailgunVec;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -16,14 +16,14 @@ import io.netty.buffer.ByteBuf;
 public class RailgunBeamChainFxPacket extends ClientboundPacket {
 
     public int shooterId;
-    public RailgunVec origin;
-    public List<RailgunVec> path;
+    public EquipmentVec origin;
+    public List<EquipmentVec> path;
     public boolean sound, ehv;
     private boolean valid;
 
     public RailgunBeamChainFxPacket() {}
 
-    public RailgunBeamChainFxPacket(int shooterId, RailgunVec origin, List<RailgunVec> path, boolean sound,
+    public RailgunBeamChainFxPacket(int shooterId, EquipmentVec origin, List<EquipmentVec> path, boolean sound,
         boolean ehv) {
         this.shooterId = shooterId;
         this.origin = origin;
@@ -58,8 +58,6 @@ public class RailgunBeamChainFxPacket extends ClientboundPacket {
     @Override
     @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
-        var connection = minecraft.getNetHandler();
-        if (valid) minecraft
-            .func_152344_a(() -> { if (minecraft.getNetHandler() == connection) RailgunClientFx.playChain(this); });
+        if (valid) runInWorld(minecraft, () -> RailgunClientFx.playChain(this));
     }
 }

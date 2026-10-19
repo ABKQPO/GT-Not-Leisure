@@ -8,6 +8,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public final class CwArc {
 
+    enum Kind {
+        IDLE,
+        ANTENNA,
+        BURST
+    }
+
     private static final long RELAYOUT_MS = 50;
 
     final String anchor;
@@ -15,17 +21,17 @@ public final class CwArc {
     final int segs;
     final float spread, width;
     final long born;
-    final int life;
+    final int lifetime;
     final int rgb;
-    final boolean idle, antenna;
+    final Kind kind;
     final float[] points;
     long nextLayout = Long.MIN_VALUE;
     boolean resolved;
     int bone = -1;
     CwFrames.Frame frame;
 
-    CwArc(String anchor, float[] a, float[] b, int segs, float spread, float width, long born, int life, int rgb,
-        boolean idle, boolean antenna) {
+    CwArc(String anchor, float[] a, float[] b, int segs, float spread, float width, long born, int lifetime, int rgb,
+        Kind kind) {
         this.anchor = anchor;
         this.ax = a[0];
         this.ay = a[1];
@@ -37,23 +43,14 @@ public final class CwArc {
         this.spread = spread;
         this.width = width;
         this.born = born;
-        this.life = Math.max(1, life);
+        this.lifetime = Math.max(1, lifetime);
         this.rgb = rgb;
-        this.idle = idle;
-        this.antenna = antenna;
+        this.kind = kind;
         this.points = new float[(this.segs + 1) * 3];
     }
 
-    boolean idle() {
-        return idle;
-    }
-
-    boolean antenna() {
-        return antenna;
-    }
-
     boolean expired(long now) {
-        return now - born > life;
+        return now - born > lifetime;
     }
 
     boolean resolve(CwFrames frames) {

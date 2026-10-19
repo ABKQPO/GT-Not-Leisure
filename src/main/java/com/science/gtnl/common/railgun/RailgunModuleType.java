@@ -1,32 +1,46 @@
 package com.science.gtnl.common.railgun;
 
+import java.util.Locale;
+
 import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.common.item.items.RailgunModuleItem;
 
 public enum RailgunModuleType {
 
-    COMPUTE(2),
-    ACCELERATION(2),
-    RANGE(2),
-    EHV_BEAM(1),
-    ENERGY_T1(1),
-    ENERGY_T2(1),
-    ENERGY_T3(1);
+    COMPUTE(0, 2),
+    ACCELERATION(1, 2),
+    RANGE(2, 2),
+    EHV_BEAM(3, 1);
 
-    public final int limit;
+    private static final RailgunModuleType[] BY_META;
 
-    RailgunModuleType(int limit) {
-        this.limit = limit;
+    static {
+        int count = 0;
+        for (RailgunModuleType type : values()) count = Math.max(count, type.meta + 1);
+        BY_META = new RailgunModuleType[count];
+        for (RailgunModuleType type : values()) BY_META[type.meta] = type;
     }
 
-    public boolean energy() {
-        return ordinal() >= ENERGY_T1.ordinal();
+    public final String id;
+    public final int meta, limit;
+
+    RailgunModuleType(int meta, int limit) {
+        this.id = name().toLowerCase(Locale.ROOT);
+        this.meta = meta;
+        this.limit = limit;
     }
 
     public static RailgunModuleType of(ItemStack stack) {
         if (stack == null || !(stack.getItem() instanceof RailgunModuleItem)) return null;
-        int meta = stack.getItemDamage();
-        return meta >= 0 && meta < values().length ? values()[meta] : null;
+        return byMeta(stack.getItemDamage());
+    }
+
+    public static RailgunModuleType byMeta(int meta) {
+        return meta >= 0 && meta < BY_META.length ? BY_META[meta] : null;
+    }
+
+    public static int metaCount() {
+        return BY_META.length;
     }
 }

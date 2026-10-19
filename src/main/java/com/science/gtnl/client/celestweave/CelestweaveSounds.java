@@ -17,7 +17,7 @@ final class CelestweaveSounds {
 
     private static void play(double x, double y, double z, String name, float volume, float pitch) {
         World world = Minecraft.getMinecraft().theWorld;
-        if (world == null || !MainConfig.client.celestweaveSounds) return;
+        if (world == null || !MainConfig.client.enableCelestweaveSounds) return;
         world.playSound(
             x,
             y,

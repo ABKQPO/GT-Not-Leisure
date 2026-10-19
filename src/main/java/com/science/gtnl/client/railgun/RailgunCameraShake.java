@@ -149,12 +149,12 @@ public class RailgunCameraShake {
     }
 
     private static void apply(float partialTicks) {
-        var mc = Minecraft.getMinecraft();
-        if (mc.thePlayer == null || mc.theWorld == null || !MainConfig.client.enableRailgunShake) return;
+        var minecraft = Minecraft.getMinecraft();
+        if (minecraft.thePlayer == null || minecraft.theWorld == null || !MainConfig.client.enableRailgunShake) return;
         if (idle()) return;
         float yaw = tremor(Axis.YAW, partialTicks), pitch = tremor(Axis.PITCH, partialTicks);
         if (Math.abs(yaw) < 1.0E-4F && Math.abs(pitch) < 1.0E-4F) return;
-        shaken = mc.thePlayer;
+        shaken = minecraft.thePlayer;
         appliedYaw = yaw;
         appliedPitch = pitch;
         shaken.rotationYaw += yaw;

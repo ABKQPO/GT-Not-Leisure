@@ -36,6 +36,6 @@ public class CelestweaveFlightPacket extends ClientboundPacket {
     @Override
     @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
-        minecraft.func_152344_a(() -> CelestweaveClientEvents.setRemoteFlying(entityId, flying));
+        runInWorld(minecraft, () -> CelestweaveClientEvents.setRemoteFlying(entityId, flying));
     }
 }

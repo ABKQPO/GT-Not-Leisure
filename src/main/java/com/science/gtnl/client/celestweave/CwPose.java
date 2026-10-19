@@ -2,6 +2,8 @@ package com.science.gtnl.client.celestweave;
 
 import java.util.Arrays;
 
+import com.science.gtnl.client.fx.FxColor;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -11,8 +13,8 @@ public final class CwPose {
     final float[] dx, dy, dz, rx, ry, rz, sx, sy, sz, r, g, b, a;
     final boolean[] hidden, colored;
     final int[] texFrame;
-    float brightness;
-    float themeR, themeG, themeB;
+    float brightness, baseBrightness;
+    float glowR, glowG, glowB;
     int holoFrame;
 
     CwPose(int size) {
@@ -56,9 +58,9 @@ public final class CwPose {
 
     void color(int index, int rgb, float k, float alpha) {
         if (index < 0) return;
-        r[index] = Math.min(1F, (rgb >> 16 & 255) / 255F * k);
-        g[index] = Math.min(1F, (rgb >> 8 & 255) / 255F * k);
-        b[index] = Math.min(1F, (rgb & 255) / 255F * k);
+        r[index] = Math.min(1F, FxColor.red(rgb) * k);
+        g[index] = Math.min(1F, FxColor.green(rgb) * k);
+        b[index] = Math.min(1F, FxColor.blue(rgb) * k);
         a[index] = Math.max(0F, Math.min(1F, alpha));
         colored[index] = true;
     }

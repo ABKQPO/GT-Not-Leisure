@@ -14,15 +14,6 @@ sourceSets.test {
     compileClasspath += sourceSets.main.get().compileClasspath
 }
 
-tasks.register<JavaExec>("verifyRailgun") {
-    group = "verification"
-    description = "Verify railgun math, settings and packet bounds without starting Minecraft"
-    dependsOn(tasks.testClasses)
-    classpath = sourceSets.test.get().runtimeClasspath + sourceSets.main.get().runtimeClasspath
-    mainClass.set("com.science.gtnl.common.railgun.RailgunContractTest")
-    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
-}
-
 tasks.register<JavaExec>("verifyCelestweave") {
     group = "verification"
     description = "Verify Celestweave data rules, packets, model, sound and lang resources without starting Minecraft"
@@ -31,6 +22,21 @@ tasks.register<JavaExec>("verifyCelestweave") {
         sourceSets.main.get().compileClasspath
     mainClass.set("com.science.gtnl.client.celestweave.CelestweaveContractTest")
     javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+}
+
+tasks.register<JavaExec>("benchEquipment") {
+    group = "verification"
+    description = "Measure per-call cost and allocation of railgun and Celestweave data access, packet and NBT sizes"
+    dependsOn(tasks.testClasses)
+    classpath = sourceSets.test.get().runtimeClasspath + sourceSets.main.get().runtimeClasspath +
+        sourceSets.main.get().compileClasspath
+    mainClass.set("com.science.gtnl.client.celestweave.EquipmentPerfBench")
+    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+}
+
+tasks.named<Test>("test") {
+    failOnNoDiscoveredTests.set(false)
+    dependsOn("verifyCelestweave")
 }
 
 val runConfigs = listOf(

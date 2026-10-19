@@ -393,6 +393,7 @@ public enum GTNLItemList implements IItemContainer {
     TwilightSword,
     ElectromagneticRailgun,
     RailgunModule,
+    EnergyModule,
     CelestweaveOculus,
     CelestweaveCore,
     CelestweaveConduit,

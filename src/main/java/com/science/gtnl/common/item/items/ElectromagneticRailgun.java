@@ -5,6 +5,7 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,16 +18,16 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import com.cleanroommc.modularui.api.IGuiHolder;
-import com.cleanroommc.modularui.factory.GuiFactories;
 import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.common.gui.RailgunContainer;
+import com.science.gtnl.common.equipment.EquipmentElectricItem;
+import com.science.gtnl.common.equipment.EquipmentEnergy;
+import com.science.gtnl.common.gui.EquipmentContainer;
 import com.science.gtnl.common.gui.RailgunGui;
-import com.science.gtnl.common.railgun.RailgunBeamService;
 import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunEnergy;
 import com.science.gtnl.common.railgun.RailgunFireService;
@@ -38,9 +39,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.modularui2.GTGuiThemes;
 import gregtech.api.modularui2.GTModularScreen;
-import ic2.api.item.IElectricItem;
 
-public class ElectromagneticRailgun extends Item implements IElectricItem, IGuiHolder<PlayerInventoryGuiData> {
+public class ElectromagneticRailgun extends Item implements EquipmentElectricItem, IGuiHolder<PlayerInventoryGuiData> {
 
     public static final String NBT_EXTREME_HIGH_VOLTAGE = "ExtremeHighVoltage";
     public static final int USE_DURATION = 72000;
@@ -57,24 +57,26 @@ public class ElectromagneticRailgun extends Item implements IElectricItem, IGuiH
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> toolTip,
-        boolean advancedToolTips) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> toolTip, boolean advancedToolTips) {
         toolTip.add(
             StatCollector.translateToLocalFormatted(
                 "item.gtnl.electromagnetic_railgun.tooltip.0",
-                RailgunEnergy.read(itemStack),
-                RailgunEnergy.capacity(itemStack)));
+                EquipmentEnergy.format(EquipmentEnergy.read(stack)),
+                EquipmentEnergy.format(RailgunEnergy.capacity(stack))));
         toolTip.add(
             StatCollector.translateToLocalFormatted(
                 "item.gtnl.electromagnetic_railgun.tooltip.1",
-                RailgunData.modules(itemStack)
-                    .counts()
-                    .values()
-                    .stream()
-                    .mapToInt(Integer::intValue)
-                    .sum()));
+                RailgunData.modules(stack)
+                    .total()));
         toolTip.add(StatCollector.translateToLocal("item.gtnl.electromagnetic_railgun.tooltip.2"));
         toolTip.add(StatCollector.translateToLocal("item.gtnl.electromagnetic_railgun.tooltip.3"));
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> items) {
+        items.add(new ItemStack(this));
+        items.add(charged());
     }
 
     @Override
@@ -97,14 +99,6 @@ public class ElectromagneticRailgun extends Item implements IElectricItem, IGuiH
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if (player.isSneaking()) {
-            if (!world.isRemote && player instanceof EntityPlayerMP serverPlayer) {
-                RailgunBeamService.stop(serverPlayer);
-                GuiFactories.playerInventory()
-                    .openFromMainHand(player);
-            }
-            return stack;
-        }
         if (!player.isUsingItem() || player.getItemInUse() != stack) player.setItemInUse(stack, USE_DURATION);
         if (!world.isRemote && player instanceof EntityPlayerMP serverPlayer)
             RailgunFireService.beginCharge(serverPlayer, stack);
@@ -144,33 +138,22 @@ public class ElectromagneticRailgun extends Item implements IElectricItem, IGuiH
     }
 
     @Override
-    public boolean canProvideEnergy(ItemStack stack) {
-        return false;
+    public int energyTier(ItemStack stack) {
+        return RailgunData.modules(stack)
+            .energyTier();
     }
 
     @Override
-    public Item getChargedItem(ItemStack stack) {
-        return this;
-    }
-
-    @Override
-    public Item getEmptyItem(ItemStack stack) {
-        return this;
-    }
-
-    @Override
-    public double getMaxCharge(ItemStack stack) {
+    public double capacity(ItemStack stack) {
         return RailgunEnergy.capacity(stack);
     }
 
-    @Override
-    public int getTier(ItemStack stack) {
-        return 5;
+    public static boolean is(ItemStack stack) {
+        return stack != null && stack.getItem() instanceof ElectromagneticRailgun;
     }
 
-    @Override
-    public double getTransferLimit(ItemStack stack) {
-        return 131072;
+    public static boolean isHeld(EntityPlayer player) {
+        return player != null && is(player.getHeldItem());
     }
 
     public static boolean isExtremeHighVoltage(ItemStack stack) {
@@ -187,8 +170,9 @@ public class ElectromagneticRailgun extends Item implements IElectricItem, IGuiH
     @Override
     public ModularPanel buildUI(PlayerInventoryGuiData data, PanelSyncManager sync, UISettings settings) {
         ItemStack bound = data.getUsedItemStack();
-        settings.customContainer(() -> new RailgunContainer(data.getSlotIndex()));
+        RailgunGui gui = new RailgunGui(data, sync);
+        settings.customContainer(() -> new EquipmentContainer(data.getSlotIndex(), gui, RailgunEnergy::clamp));
         settings.canInteractWith(player -> !player.isDead && data.getUsedItemStack() == bound);
-        return new RailgunGui(data, sync).build();
+        return gui.build();
     }
 }

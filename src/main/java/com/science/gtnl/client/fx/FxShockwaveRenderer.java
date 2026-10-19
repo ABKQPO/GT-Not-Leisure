@@ -1,4 +1,4 @@
-package com.science.gtnl.client.railgun;
+package com.science.gtnl.client.fx;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,11 +10,11 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
-import com.science.gtnl.common.railgun.RailgunVec;
+import com.science.gtnl.common.equipment.EquipmentVec;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class RailgunShockwaveRenderer {
+public class FxShockwaveRenderer {
 
     private static final int MAX_ACTIVE = 64;
     private static final int RING_SEGMENTS = 64;
@@ -25,13 +25,10 @@ public class RailgunShockwaveRenderer {
     private static final float RING_WIDTH = 0.18F;
     private static final float RING_ALPHA = 0.85F;
     private static final float RIM_ALPHA = 0.15F;
-    private static final float RED = 1F;
-    private static final float GREEN = 0.5F;
-    private static final float BLUE = 0.75F;
 
     private static final class Wave {
 
-        final RailgunVec center;
+        final EquipmentVec center;
         final double maxRadius;
         final int lifetime;
         final long born;
@@ -39,7 +36,7 @@ public class RailgunShockwaveRenderer {
         final boolean[] occluded = new boolean[RING_SEGMENTS];
         long occlusionTick = Long.MIN_VALUE;
 
-        Wave(RailgunVec center, double maxRadius, int lifetime, long born, float red, float green, float blue) {
+        Wave(EquipmentVec center, double maxRadius, int lifetime, long born, float red, float green, float blue) {
             this.center = center;
             this.maxRadius = maxRadius;
             this.lifetime = lifetime;
@@ -52,15 +49,11 @@ public class RailgunShockwaveRenderer {
 
     private static final List<Wave> ACTIVE = new ArrayList<>();
 
-    public static void spawn(RailgunVec center, double radius, int lifetime) {
-        spawn(center, radius, lifetime, RED, GREEN, BLUE);
+    public static void spawn(EquipmentVec center, double radius, int lifetime, int rgb) {
+        spawn(center, radius, lifetime, FxColor.red(rgb), FxColor.green(rgb), FxColor.blue(rgb));
     }
 
-    public static void spawn(RailgunVec center, double radius, int lifetime, int rgb) {
-        spawn(center, radius, lifetime, (rgb >> 16 & 255) / 255F, (rgb >> 8 & 255) / 255F, (rgb & 255) / 255F);
-    }
-
-    private static void spawn(RailgunVec center, double radius, int lifetime, float red, float green, float blue) {
+    public static void spawn(EquipmentVec center, double radius, int lifetime, float red, float green, float blue) {
         var world = Minecraft.getMinecraft().theWorld;
         if (world == null || center == null
             || !center.finite()
@@ -89,7 +82,7 @@ public class RailgunShockwaveRenderer {
                 refreshOcclusion(world, wave, radius(wave, progress), width(wave, progress), progress);
             wave.occlusionTick = now;
         }
-        RailgunRenderHelper.render(() -> {
+        FxRenderHelper.render(() -> {
             for (Wave wave : ACTIVE) {
                 float progress = progress(wave, now, event.partialTicks);
                 ring(wave, radius(wave, progress), width(wave, progress), progress, RING_ALPHA * (1 - progress));
@@ -114,13 +107,13 @@ public class RailgunShockwaveRenderer {
             Arrays.fill(wave.occluded, false);
             return;
         }
-        RailgunVec origin = wave.center.add(0, PLANE_OFFSET, 0);
+        EquipmentVec origin = wave.center.add(0, PLANE_OFFSET, 0);
         for (int i = 0; i < RING_SEGMENTS; i++) {
             double middle = (i + 0.5) * Math.PI * 2 / RING_SEGMENTS;
             double reach = Math.max(
                 jittered(wave, radius, i, progress) + width * 0.5,
                 jittered(wave, radius, i + 1, progress) + width * 0.5) + OCCLUSION_MARGIN;
-            RailgunVec edge = origin.add(Math.cos(middle) * reach, 0, Math.sin(middle) * reach);
+            EquipmentVec edge = origin.add(Math.cos(middle) * reach, 0, Math.sin(middle) * reach);
             MovingObjectPosition hit = world.func_147447_a(origin.toMc(), edge.toMc(), false, true, false);
             wave.occluded[i] = hit != null && hit.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK;
         }
@@ -148,7 +141,7 @@ public class RailgunShockwaveRenderer {
 
     private static double jittered(Wave wave, double radius, int segment, float progress) {
         if (radius <= 0) return radius;
-        RailgunVec center = wave.center;
+        EquipmentVec center = wave.center;
         double phase = center.x() * 0.17 + center.y() * 0.11 + center.z() * 0.13;
         double slow = Math.sin(segment * 0.59 + phase + progress * 2.4);
         double fast = Math.sin(segment * 1.37 + phase * 0.43 - progress * 3.1);

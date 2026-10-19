@@ -51,7 +51,7 @@ public class RailgunCharge {
         if (player != null && player.getEntityId() == shooterId) live = false;
     }
 
-    public static void reset() {
+    public static void clear() {
         live = false;
         startedTick = 0L;
         lastLiveTick = 0L;
@@ -71,7 +71,7 @@ public class RailgunCharge {
             lastLiveTick = now;
             return;
         }
-        if (live && (!held(player) || now - lastLiveTick > RailgunDefaults.CHARGE_RESUME_GRACE_TICKS)) live = false;
+        if (live && (!holding(player) || now - lastLiveTick > RailgunDefaults.CHARGE_RESUME_GRACE_TICKS)) live = false;
     }
 
     private static boolean using(EntityPlayer player) {
@@ -79,17 +79,13 @@ public class RailgunCharge {
     }
 
     private static ItemStack inUse(EntityPlayer player) {
-        return railgun(player.getItemInUse()) ? player.getItemInUse() : null;
+        return ElectromagneticRailgun.is(player.getItemInUse()) ? player.getItemInUse() : null;
     }
 
-    private static boolean held(EntityPlayer player) {
+    private static boolean holding(EntityPlayer player) {
         if (player == null || player.isDead) return false;
-        if (!railgun(player.getHeldItem())) return false;
+        if (!ElectromagneticRailgun.is(player.getHeldItem())) return false;
         return Minecraft.getMinecraft().gameSettings.keyBindUseItem.getIsKeyPressed();
-    }
-
-    private static boolean railgun(ItemStack stack) {
-        return stack != null && stack.getItem() instanceof ElectromagneticRailgun;
     }
 
     private static long tick(EntityPlayer player) {

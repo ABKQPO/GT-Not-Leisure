@@ -3,17 +3,17 @@ package com.science.gtnl.common.celestweave;
 public interface CelestweaveBehavior {
 
     /**
-     * 每 tick 调用，两端都会执行，需要时自行判断 isRemote。
+     * Called every tick on both sides; check isRemote where it matters.
      */
     default void tick(CelestweaveContext ctx) {}
 
     /**
-     * 穿上、登录、重生或模块被启用后调用，两端都会执行。
+     * Called on both sides after the piece is put on, the player logs in or respawns, or the module is enabled.
      */
     default void equip(CelestweaveContext ctx) {}
 
     /**
-     * 脱下、模块被停用或移除时调用，两端都会执行。
+     * Called on both sides when the piece is taken off, or the module is disabled or removed.
      */
     default void unequip(CelestweaveContext ctx) {}
 }

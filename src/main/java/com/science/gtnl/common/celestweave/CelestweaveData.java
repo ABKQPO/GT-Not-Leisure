@@ -9,13 +9,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 
 import com.google.common.collect.MapMaker;
-import com.science.gtnl.common.item.items.CelestweaveModuleItem;
+import com.science.gtnl.common.equipment.EquipmentModules;
+import com.science.gtnl.common.item.items.CelestweaveArmor;
 
 public final class CelestweaveData {
 
@@ -25,13 +28,34 @@ public final class CelestweaveData {
     public static final String HIDDEN = "Hidden";
     public static final String COSMETIC = "Cosmetic";
     public static final String HELD = "Held";
-    public static final String CFG = "Cfg";
+    public static final String SETTINGS_TAG = "Settings";
     public static final int MODULE_SLOTS = 8;
 
     private static final Map<NBTTagList, Set<CelestweaveModule>> INSTALLED = new MapMaker().weakKeys()
         .makeMap();
     private static final Map<NBTTagList, Map<CelestweaveModule, ItemStack>> HELD_ITEMS = new MapMaker().weakKeys()
         .makeMap();
+    private static final Map<NBTTagList, Integer> ENERGY_TIERS = new MapMaker().weakKeys()
+        .makeMap();
+    private static final Map<NBTTagList, Set<String>> ID_LISTS = new MapMaker().weakKeys()
+        .makeMap();
+    private static final Map<NBTTagList, Active> ACTIVE = new MapMaker().weakKeys()
+        .makeMap();
+
+    private static final Map<NBTTagCompound, ItemStack> BUILT_IN_HELD = new MapMaker().weakKeys()
+        .makeMap();
+    private static final List<Set<CelestweaveModule>> BUILT_IN = new ArrayList<>();
+
+    static {
+        for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++) {
+            Set<CelestweaveModule> set = EnumSet.noneOf(CelestweaveModule.class);
+            for (CelestweaveModule module : CelestweaveModule.values())
+                if (module.builtIn && module.fits(piece)) set.add(module);
+            BUILT_IN.add(Collections.unmodifiableSet(set));
+        }
+    }
+
+    private record Active(Set<CelestweaveModule> installed, Set<CelestweaveModule> set) {}
 
     private CelestweaveData() {}
 
@@ -48,64 +72,79 @@ public final class CelestweaveData {
         return tag.getCompoundTag(ROOT);
     }
 
+    public static ItemStack piece(EntityLivingBase entity, int piece) {
+        ItemStack stack = entity.getEquipmentInSlot(4 - piece);
+        return stack != null && stack.getItem() instanceof CelestweaveArmor armor && armor.armorType == piece ? stack
+            : null;
+    }
+
+    public static int armorSlot(EntityPlayer player, int piece) {
+        return player.inventory.mainInventory.length + CelestweaveArmor.PIECES - 1 - piece;
+    }
+
+    public static boolean isArmorSlot(EntityPlayer player, int slot) {
+        return slot >= player.inventory.mainInventory.length;
+    }
+
+    public static boolean wearsAny(EntityLivingBase entity) {
+        for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++) if (piece(entity, piece) != null) return true;
+        return false;
+    }
+
     public static ItemStack[] moduleStacks(ItemStack stack) {
-        ItemStack[] stacks = new ItemStack[MODULE_SLOTS];
-        NBTTagList list = root(stack).getTagList(MODULES, 10);
-        for (int i = 0; i < list.tagCount(); i++) {
-            NBTTagCompound entry = list.getCompoundTagAt(i);
-            int slot = entry.getByte("Slot");
-            if (slot >= 0 && slot < MODULE_SLOTS) stacks[slot] = ItemStack.loadItemStackFromNBT(entry);
-        }
-        return stacks;
+        return EquipmentModules.read(root(stack).getTagList(MODULES, 10), MODULE_SLOTS);
     }
 
     public static void writeModuleStacks(ItemStack stack, ItemStack[] stacks) {
-        NBTTagList list = new NBTTagList();
-        for (int slot = 0; slot < Math.min(MODULE_SLOTS, stacks.length); slot++) {
-            if (stacks[slot] == null) continue;
-            NBTTagCompound entry = new NBTTagCompound();
-            stacks[slot].writeToNBT(entry);
-            entry.setByte("Slot", (byte) slot);
-            list.appendTag(entry);
-        }
-        rootForWrite(stack).setTag(MODULES, list);
+        rootForWrite(stack).setTag(MODULES, EquipmentModules.write(stacks, MODULE_SLOTS));
     }
 
     public static Set<CelestweaveModule> installed(ItemStack stack) {
         if (stack == null) return Collections.emptySet();
         NBTTagCompound root = root(stack);
-        if (!root.hasKey(MODULES, 9)) return Collections.emptySet();
+        if (!root.hasKey(MODULES, 9)) return builtIn(stack);
         NBTTagList list = root.getTagList(MODULES, 10);
         Set<CelestweaveModule> cached = INSTALLED.get(list);
         if (cached != null) return cached;
         Set<CelestweaveModule> set = EnumSet.noneOf(CelestweaveModule.class);
-        boolean energy = false;
+        set.addAll(builtIn(stack));
         for (ItemStack module : moduleStacks(stack)) {
             CelestweaveModule type = CelestweaveModule.of(module);
-            if (type == null || set.contains(type)) continue;
-            if (type.group == CelestweaveModule.Group.ENERGY) {
-                if (energy) continue;
-                energy = true;
-            }
-            set.add(type);
+            if (type != null) set.add(type);
         }
         Set<CelestweaveModule> result = Collections.unmodifiableSet(set);
         INSTALLED.put(list, result);
         return result;
     }
 
+    public static Set<CelestweaveModule> builtIn(ItemStack stack) {
+        return stack != null && stack.getItem() instanceof CelestweaveArmor armor ? builtIn(armor.armorType)
+            : Collections.emptySet();
+    }
+
+    public static Set<CelestweaveModule> builtIn(int piece) {
+        return piece >= 0 && piece < BUILT_IN.size() ? BUILT_IN.get(piece) : Collections.emptySet();
+    }
+
     public static Set<CelestweaveModule> activeModules(ItemStack stack) {
         Set<CelestweaveModule> installed = installed(stack);
         if (installed.isEmpty()) return installed;
+        NBTTagCompound root = root(stack);
+        NBTTagList disabledList = root.getTagList(DISABLED, 8);
+        if (disabledList.tagCount() == 0) return installed;
+        Active cached = ACTIVE.get(disabledList);
+        if (cached != null && cached.installed() == installed) return cached.set();
         Set<String> disabled = idList(stack, DISABLED);
-        if (disabled.isEmpty()) return installed;
         Set<CelestweaveModule> set = EnumSet.noneOf(CelestweaveModule.class);
         for (CelestweaveModule module : installed) if (!disabled.contains(module.id)) set.add(module);
-        return set;
+        Set<CelestweaveModule> result = Collections.unmodifiableSet(set);
+        ACTIVE.put(disabledList, new Active(installed, result));
+        return result;
     }
 
     public static ItemStack held(ItemStack stack, CelestweaveModule module) {
         if (stack == null) return null;
+        if (module.builtIn) return builtInHeld(stack, module);
         NBTTagCompound root = root(stack);
         if (!root.hasKey(MODULES, 9)) return null;
         NBTTagList list = root.getTagList(MODULES, 10);
@@ -123,14 +162,39 @@ public final class CelestweaveData {
         return cached.get(module);
     }
 
+    private static ItemStack builtInHeld(ItemStack stack, CelestweaveModule module) {
+        NBTTagCompound root = root(stack);
+        if (!root.hasKey(HELD, 10)) return null;
+        NBTTagCompound all = root.getCompoundTag(HELD);
+        if (!all.hasKey(module.id, 10)) return null;
+        NBTTagCompound tag = all.getCompoundTag(module.id);
+        ItemStack cached = BUILT_IN_HELD.get(tag);
+        if (cached != null) return cached;
+        ItemStack held = ItemStack.loadItemStackFromNBT((NBTTagCompound) tag.copy());
+        if (held != null) BUILT_IN_HELD.put(tag, held);
+        return held;
+    }
+
+    public static void writeHeld(ItemStack stack, CelestweaveModule module, ItemStack held) {
+        NBTTagCompound root = rootForWrite(stack);
+        if (!root.hasKey(HELD, 10)) root.setTag(HELD, new NBTTagCompound());
+        NBTTagCompound all = root.getCompoundTag(HELD);
+        if (held == null) all.removeTag(module.id);
+        else all.setTag(
+            module.id,
+            held.copy()
+                .writeToNBT(new NBTTagCompound()));
+    }
+
     public static ItemStack heldOf(ItemStack moduleStack) {
         if (moduleStack == null || !moduleStack.hasTagCompound()
             || !moduleStack.getTagCompound()
                 .hasKey(HELD, 10))
             return null;
         return ItemStack.loadItemStackFromNBT(
-            moduleStack.getTagCompound()
-                .getCompoundTag(HELD));
+            (NBTTagCompound) moduleStack.getTagCompound()
+                .getCompoundTag(HELD)
+                .copy());
     }
 
     public static ItemStack withHeld(ItemStack moduleStack, ItemStack held) {
@@ -138,39 +202,36 @@ public final class CelestweaveData {
         if (held == null) moduleStack.getTagCompound()
             .removeTag(HELD);
         else moduleStack.getTagCompound()
-            .setTag(HELD, held.writeToNBT(new NBTTagCompound()));
+            .setTag(
+                HELD,
+                held.copy()
+                    .writeToNBT(new NBTTagCompound()));
         return moduleStack;
     }
 
-    public static NBTTagCompound cfg(ItemStack stack, CelestweaveModule module) {
-        return root(stack).getCompoundTag(CFG)
+    public static NBTTagCompound settings(ItemStack stack, CelestweaveModule module) {
+        return root(stack).getCompoundTag(SETTINGS_TAG)
             .getCompoundTag(module.id);
     }
 
-    public static NBTTagCompound cfgForWrite(ItemStack stack, CelestweaveModule module) {
+    public static NBTTagCompound settingsForWrite(ItemStack stack, CelestweaveModule module) {
         NBTTagCompound root = rootForWrite(stack);
-        if (!root.hasKey(CFG, 10)) root.setTag(CFG, new NBTTagCompound());
-        NBTTagCompound all = root.getCompoundTag(CFG);
+        if (!root.hasKey(SETTINGS_TAG, 10)) root.setTag(SETTINGS_TAG, new NBTTagCompound());
+        NBTTagCompound all = root.getCompoundTag(SETTINGS_TAG);
         if (!all.hasKey(module.id, 10)) all.setTag(module.id, new NBTTagCompound());
         return all.getCompoundTag(module.id);
-    }
-
-    public static int cfgInt(ItemStack stack, CelestweaveModule module, String key, int fallback, int min, int max) {
-        NBTTagCompound cfg = cfg(stack, module);
-        return cfg.hasKey(key, 99) ? Math.max(min, Math.min(max, cfg.getInteger(key))) : fallback;
-    }
-
-    public static boolean cfgBool(ItemStack stack, CelestweaveModule module, String key, boolean fallback) {
-        NBTTagCompound cfg = cfg(stack, module);
-        return cfg.hasKey(key, 99) ? cfg.getBoolean(key) : fallback;
     }
 
     public static Set<String> idList(ItemStack stack, String key) {
         NBTTagList list = root(stack).getTagList(key, 8);
         if (list.tagCount() == 0) return Collections.emptySet();
+        Set<String> cached = ID_LISTS.get(list);
+        if (cached != null) return cached;
         Set<String> set = new HashSet<>();
         for (int i = 0; i < list.tagCount(); i++) set.add(list.getStringTagAt(i));
-        return set;
+        Set<String> result = Collections.unmodifiableSet(set);
+        ID_LISTS.put(list, result);
+        return result;
     }
 
     public static void writeIdList(ItemStack stack, String key, Set<String> ids) {
@@ -179,7 +240,7 @@ public final class CelestweaveData {
         rootForWrite(stack).setTag(key, list);
     }
 
-    public static void setFlag(ItemStack stack, String key, CelestweaveModule module, boolean present) {
+    public static void writeFlag(ItemStack stack, String key, CelestweaveModule module, boolean present) {
         Set<String> ids = new HashSet<>(idList(stack, key));
         if (present ? ids.add(module.id) : ids.remove(module.id)) writeIdList(stack, key, ids);
     }
@@ -193,8 +254,14 @@ public final class CelestweaveData {
     }
 
     public static int energyTier(ItemStack stack) {
-        int tier = 0;
-        for (CelestweaveModule module : installed(stack)) tier = Math.max(tier, module.energyTier());
+        if (stack == null) return 0;
+        NBTTagCompound root = root(stack);
+        if (!root.hasKey(MODULES, 9)) return 0;
+        NBTTagList list = root.getTagList(MODULES, 10);
+        Integer cached = ENERGY_TIERS.get(list);
+        if (cached != null) return cached;
+        int tier = EquipmentModules.energyTier(moduleStacks(stack));
+        ENERGY_TIERS.put(list, tier);
         return tier;
     }
 
@@ -206,34 +273,5 @@ public final class CelestweaveData {
 
     public static void writeCosmetic(ItemStack stack, CelestweaveCosmetic cosmetic) {
         rootForWrite(stack).setTag(COSMETIC, cosmetic.write());
-    }
-
-    public static ItemStack[] stacksOf(List<ItemStack> modules) {
-        ItemStack[] stacks = new ItemStack[MODULE_SLOTS];
-        for (int i = 0; i < Math.min(MODULE_SLOTS, modules.size()); i++) stacks[i] = modules.get(i);
-        return stacks;
-    }
-
-    public static List<ItemStack> presetModules(int armorType, CelestweaveModuleItem item) {
-        List<ItemStack> list = new ArrayList<>();
-        list.add(item.stack(CelestweaveModule.ENERGY_T3));
-        switch (armorType) {
-            case 0 -> {
-                list.add(withHeld(item.stack(CelestweaveModule.REVEALING), CelestweavePresets.revealingItem()));
-                list.add(withHeld(item.stack(CelestweaveModule.HOLO), CelestweavePresets.holoItem()));
-                list.add(item.stack(CelestweaveModule.NIGHT_VISION));
-            }
-            case 1 -> {
-                list.add(item.stack(CelestweaveModule.SHIELD));
-                list.add(withHeld(item.stack(CelestweaveModule.BACKPACK), CelestweavePresets.backpackItem()));
-            }
-            case 2 -> list.add(item.stack(CelestweaveModule.FLIGHT));
-            case 3 -> {
-                list.add(item.stack(CelestweaveModule.DASH));
-                list.add(item.stack(CelestweaveModule.WALK_ASSIST));
-            }
-            default -> {}
-        }
-        return list;
     }
 }

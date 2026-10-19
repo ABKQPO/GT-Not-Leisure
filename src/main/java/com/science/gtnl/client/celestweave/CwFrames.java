@@ -11,6 +11,9 @@ import java.util.Map;
 
 import org.lwjgl.BufferUtils;
 
+import com.science.gtnl.common.celestweave.CelestweaveModule;
+import com.science.gtnl.common.item.items.CelestweaveArmor;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -18,6 +21,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public final class CwFrames {
 
     public static final String[] BONES = { "head", "body", "rightArm", "leftArm", "rightLeg", "leftLeg" };
+    public static final int RIGHT_ARM = 2;
     public static final String[] FILE_KEYS = { "helmet", "chest", "legs", "boots" };
 
     public enum Layer {
@@ -28,21 +32,36 @@ public final class CwFrames {
         PANE
     }
 
-    public enum Piece {
-        HELMET,
-        CHEST,
-        LEGS,
-        BOOTS,
-        GOGGLES,
-        HOLO,
-        PACK,
-        COILS,
-        WINGS
+    public enum Part {
+
+        HELMET(CelestweaveArmor.HEAD, null, false),
+        CHEST(CelestweaveArmor.CHEST, null, false),
+        LEGS(CelestweaveArmor.LEGS, null, false),
+        BOOTS(CelestweaveArmor.BOOTS, null, false),
+        GOGGLES(CelestweaveArmor.HEAD, CelestweaveModule.REVEALING, false),
+        HOLO(CelestweaveArmor.HEAD, CelestweaveModule.HOLO, false),
+        PACK(CelestweaveArmor.CHEST, CelestweaveModule.BACKPACK, false),
+        COILS(CelestweaveArmor.CHEST, CelestweaveModule.BACKPACK, true),
+        WINGS(CelestweaveArmor.LEGS, CelestweaveModule.FLIGHT, false);
+
+        public final int piece;
+        public final CelestweaveModule module;
+        public final boolean whenAbsent;
+
+        Part(int piece, CelestweaveModule module, boolean whenAbsent) {
+            this.piece = piece;
+            this.module = module;
+            this.whenAbsent = whenAbsent;
+        }
+
+        public boolean visible(CwLook look) {
+            return module == null || look.visible(module) != whenAbsent;
+        }
     }
 
     public enum Tint {
         NONE,
-        THEME,
+        GLOW,
         FIXED,
         DYNAMIC
     }
@@ -53,12 +72,12 @@ public final class CwFrames {
     public List<Group> groups;
 
     private transient Map<String, Frame> frameByName;
-    private transient String[] objByType;
-    private transient List<Group>[] groupsByType;
+    private transient String[] objByPiece;
+    private transient List<Group>[] groupsByPiece;
 
     public static final class Frame {
 
-        public String name, file, piece, parent;
+        public String name, file, part, parent;
         public float[] chain, pivot, rot;
 
         transient int index;
@@ -77,15 +96,15 @@ public final class CwFrames {
 
     public static final class Group {
 
-        public String obj, name, frame, piece, layer, tint, blend, texture;
+        public String obj, name, frame, part, layer, tint, blend, texture;
         public int[] color;
         public int quads;
 
-        transient int type;
+        transient int piece;
         transient int bone = -1;
         transient Frame frameRef;
         transient Layer layerKind;
-        transient Piece pieceKind;
+        transient Part partKind;
         transient Tint tintKind;
         transient boolean additive;
         transient Strip strip;
@@ -130,17 +149,18 @@ public final class CwFrames {
             frame.parentFrame = frameByName.get(frame.parent);
         }
         for (Frame frame : frames) frame.bone = boneOf(frame);
-        objByType = new String[4];
-        for (int type = 0; type < 4; type++) objByType[type] = objFiles.get(FILE_KEYS[type]);
-        groupsByType = new List[4];
-        for (int type = 0; type < 4; type++) groupsByType[type] = new ArrayList<>();
+        objByPiece = new String[CelestweaveArmor.PIECES];
+        for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++)
+            objByPiece[piece] = objFiles.get(FILE_KEYS[piece]);
+        groupsByPiece = new List[CelestweaveArmor.PIECES];
+        for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++) groupsByPiece[piece] = new ArrayList<>();
         Map<String, Strip> strips = textures != null && textures.fx != null && textures.fx.strips != null
             ? textures.fx.strips
             : Collections.emptyMap();
         for (Group group : groups) {
-            group.type = Arrays.asList(objByType)
+            group.piece = Arrays.asList(objByPiece)
                 .indexOf(group.obj);
-            if (group.type < 0) continue;
+            if (group.piece < 0) continue;
             group.frameRef = frameByName.get(group.frame);
             group.bone = group.frameRef != null ? group.frameRef.bone : boneIndex(group.frame);
             if (group.bone < 0) continue;
@@ -151,9 +171,9 @@ public final class CwFrames {
                 case "pane" -> Layer.PANE;
                 default -> Layer.SOLID;
             };
-            group.pieceKind = Piece.valueOf(group.piece.toUpperCase(Locale.ROOT));
+            group.partKind = Part.valueOf(group.part.toUpperCase(Locale.ROOT));
             group.tintKind = group.tint == null ? Tint.NONE : switch (group.tint) {
-                case "theme" -> Tint.THEME;
+                case "glow" -> Tint.GLOW;
                 case "fixed" -> Tint.FIXED;
                 case "dynamic" -> Tint.DYNAMIC;
                 default -> Tint.NONE;
@@ -166,7 +186,7 @@ public final class CwFrames {
                 group.strip = strips.get(group.texture);
                 if (group.strip == null) group.strip = strips.get(group.texture + "_n");
             }
-            groupsByType[group.type].add(group);
+            groupsByPiece[group.piece].add(group);
         }
     }
 
@@ -174,12 +194,12 @@ public final class CwFrames {
         return frameByName.get(name);
     }
 
-    public List<Group> groups(int type) {
-        return groupsByType[type];
+    public List<Group> groups(int piece) {
+        return groupsByPiece[piece];
     }
 
-    public String objFile(int type) {
-        return objByType[type];
+    public String objFile(int piece) {
+        return objByPiece[piece];
     }
 
     public static int boneIndex(String name) {

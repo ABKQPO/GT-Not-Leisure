@@ -36,13 +36,13 @@ public class CelestweaveModuleItem extends Item {
     }
 
     public ItemStack stack(CelestweaveModule module) {
-        return new ItemStack(this, 1, module.ordinal());
+        return new ItemStack(this, 1, module.meta);
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-        int meta = Math.max(0, Math.min(CelestweaveModule.values().length - 1, stack.getItemDamage()));
-        return "item.gtnl.celestweave_module." + CelestweaveModule.values()[meta].id;
+        CelestweaveModule module = CelestweaveModule.byMeta(stack.getItemDamage());
+        return "item.gtnl.celestweave_module." + (module != null ? module : CelestweaveModule.byMeta(0)).id;
     }
 
     @Override
@@ -61,20 +61,21 @@ public class CelestweaveModuleItem extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register) {
-        icons = new IIcon[CelestweaveModule.values().length];
-        for (CelestweaveModule module : CelestweaveModule.values()) icons[module.ordinal()] = register
+        icons = new IIcon[CelestweaveModule.metaCount()];
+        for (CelestweaveModule module : CelestweaveModule.values()) if (!module.builtIn) icons[module.meta] = register
             .registerIcon(ScienceNotLeisure.RESOURCE_ROOT_ID + ":celestweave_module_" + module.id);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int meta) {
-        return icons[Math.max(0, Math.min(icons.length - 1, meta))];
+        IIcon icon = icons[Math.max(0, Math.min(icons.length - 1, meta))];
+        return icon != null ? icon : icons[0];
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> items) {
-        for (CelestweaveModule module : CelestweaveModule.values()) items.add(stack(module));
+        for (CelestweaveModule module : CelestweaveModule.values()) if (!module.builtIn) items.add(stack(module));
     }
 }

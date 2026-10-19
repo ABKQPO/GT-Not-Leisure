@@ -24,7 +24,7 @@ public final class CwClientState {
     long lastNanos;
     float rotor, inner, crystal, swirl;
     long hitAt = NEVER, dashAt = NEVER;
-    float hitPower = 1F, hitDirX, hitDirY;
+    float hitPower = 1F, hitDirectionX, hitDirectionY;
     boolean hitDirectional;
     boolean flying;
     long wingT0 = NEVER;
@@ -50,7 +50,7 @@ public final class CwClientState {
         STATES.clear();
     }
 
-    boolean hit(long now) {
+    boolean recentlyHit(long now) {
         return now - hitAt < 500;
     }
 
@@ -63,12 +63,12 @@ public final class CwClientState {
 
     int countIdle() {
         int count = 0;
-        for (CwArc arc : arcs) if (arc.idle()) count++;
+        for (CwArc arc : arcs) if (arc.kind == CwArc.Kind.IDLE) count++;
         return count;
     }
 
     boolean hasAntenna() {
-        for (CwArc arc : arcs) if (arc.antenna()) return true;
+        for (CwArc arc : arcs) if (arc.kind == CwArc.Kind.ANTENNA) return true;
         return false;
     }
 }

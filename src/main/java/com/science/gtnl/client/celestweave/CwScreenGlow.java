@@ -7,6 +7,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import org.lwjgl.opengl.GL11;
 
+import com.science.gtnl.client.fx.FxColor;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -14,28 +16,28 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public final class CwScreenGlow {
 
-    private static final int HIT_LIFE = 450, SAVE_LIFE = 900;
+    private static final int HIT_LIFETIME = 450, SAVE_LIFETIME = 900;
     private static final float HIT_ALPHA = 0.32F, SAVE_ALPHA = 0.55F, BASE = 0.35F;
     private static long born = CwClientState.NEVER;
-    private static int life = HIT_LIFE;
+    private static int lifetime = HIT_LIFETIME;
     private static int rgb;
     private static boolean save, directional;
-    private static double dirX, dirY, dirZ;
+    private static double directionX, directionY, directionZ;
 
-    static void trigger(float x, float y, float z, int color, boolean saved, boolean omni) {
+    static void hit(float x, float y, float z, int glowColor, boolean saved, boolean omni) {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         if (player == null) return;
         double dx = x - player.posX, dy = y - (player.boundingBox.minY + player.height * 0.5), dz = z - player.posZ;
         double length = Math.sqrt(dx * dx + dy * dy + dz * dz);
         directional = !omni && length > 0.4;
         if (directional) {
-            dirX = dx / length;
-            dirY = dy / length;
-            dirZ = dz / length;
+            directionX = dx / length;
+            directionY = dy / length;
+            directionZ = dz / length;
         }
         born = Minecraft.getSystemTime();
-        life = saved ? SAVE_LIFE : HIT_LIFE;
-        rgb = CwLook.mixWhite(color, 0.15F);
+        lifetime = saved ? SAVE_LIFETIME : HIT_LIFETIME;
+        rgb = FxColor.mixWhite(glowColor, 0.15F);
         save = saved;
     }
 
@@ -51,21 +53,21 @@ public final class CwScreenGlow {
         if (player == null || minecraft.renderViewEntity != player || minecraft.gameSettings.thirdPersonView != 0)
             return;
         long age = Minecraft.getSystemTime() - born;
-        if (age < 0 || age >= life) return;
-        float progress = age / (float) life;
+        if (age < 0 || age >= lifetime) return;
+        float progress = age / (float) lifetime;
         float alpha = Math.min(1F, age / 50F) * (1 - progress) * (1 - progress) * (save ? SAVE_ALPHA : HIT_ALPHA);
         float top = 1F, bottom = 1F, left = 1F, right = 1F;
         if (directional) {
             double yaw = Math.toRadians(player.rotationYaw);
-            double lateral = dirX * -Math.cos(yaw) + dirZ * -Math.sin(yaw);
-            top = weight(dirY);
-            bottom = weight(-dirY);
+            double lateral = directionX * -Math.cos(yaw) + directionZ * -Math.sin(yaw);
+            top = weight(directionY);
+            bottom = weight(-directionY);
             left = weight(-lateral);
             right = weight(lateral);
         }
         int width = event.resolution.getScaledWidth(), height = event.resolution.getScaledHeight();
         float thickness = Math.min(width, height) * 0.22F;
-        float red = (rgb >> 16 & 255) / 255F, green = (rgb >> 8 & 255) / 255F, blue = (rgb & 255) / 255F;
+        float red = FxColor.red(rgb), green = FxColor.green(rgb), blue = FxColor.blue(rgb);
         GL11.glPushAttrib(
             GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT
                 | GL11.GL_LIGHTING_BIT

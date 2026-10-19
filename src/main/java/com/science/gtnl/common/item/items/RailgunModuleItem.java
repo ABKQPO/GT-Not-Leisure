@@ -1,7 +1,6 @@
 package com.science.gtnl.common.item.items;
 
 import java.util.List;
-import java.util.Locale;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -35,14 +34,13 @@ public class RailgunModuleItem extends Item {
     }
 
     public ItemStack stack(RailgunModuleType type) {
-        return new ItemStack(this, 1, type.ordinal());
+        return new ItemStack(this, 1, type.meta);
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-        int meta = Math.max(0, Math.min(RailgunModuleType.values().length - 1, stack.getItemDamage()));
-        return "item.gtnl.railgun_module." + RailgunModuleType.values()[meta].name()
-            .toLowerCase(Locale.ROOT);
+        RailgunModuleType type = RailgunModuleType.byMeta(stack.getItemDamage());
+        return "item.gtnl.railgun_module." + (type != null ? type : RailgunModuleType.byMeta(0)).id;
     }
 
     @Override
@@ -55,17 +53,16 @@ public class RailgunModuleItem extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register) {
-        icons = new IIcon[RailgunModuleType.values().length];
-        for (RailgunModuleType type : RailgunModuleType.values()) icons[type.ordinal()] = register.registerIcon(
-            ScienceNotLeisure.RESOURCE_ROOT_ID + ":railgun_module_"
-                + type.name()
-                    .toLowerCase(Locale.ENGLISH));
+        icons = new IIcon[RailgunModuleType.metaCount()];
+        for (RailgunModuleType type : RailgunModuleType.values())
+            icons[type.meta] = register.registerIcon(ScienceNotLeisure.RESOURCE_ROOT_ID + ":railgun_module_" + type.id);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int meta) {
-        return icons[Math.max(0, Math.min(icons.length - 1, meta))];
+        IIcon icon = icons[Math.max(0, Math.min(icons.length - 1, meta))];
+        return icon != null ? icon : icons[0];
     }
 
     @Override

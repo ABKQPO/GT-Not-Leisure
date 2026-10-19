@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.celestweave.CelestweaveServerEvents;
+import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.packet.CelestweaveKeyPacket;
 
 import cpw.mods.fml.relauncher.Side;
@@ -38,8 +38,8 @@ public class CelestweaveRadialScreen extends GuiScreen {
         return false;
     }
 
-    private ItemStack piece(int type) {
-        return mc.thePlayer == null ? null : CelestweaveServerEvents.piece(mc.thePlayer, type);
+    private ItemStack piece(int piece) {
+        return mc.thePlayer == null ? null : CelestweaveData.piece(mc.thePlayer, piece);
     }
 
     private static double center(int sector) {
@@ -63,7 +63,7 @@ public class CelestweaveRadialScreen extends GuiScreen {
 
     @Override
     public void updateScreen() {
-        if (mc.thePlayer == null || !CelestweaveServerEvents.wearsAny(mc.thePlayer)) {
+        if (mc.thePlayer == null || !CelestweaveData.wearsAny(mc.thePlayer)) {
             mc.displayGuiScreen(null);
             return;
         }

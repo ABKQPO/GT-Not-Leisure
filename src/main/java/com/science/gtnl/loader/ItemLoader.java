@@ -26,6 +26,7 @@ import com.science.gtnl.common.item.items.DebugItem;
 import com.science.gtnl.common.item.items.DireCraftPattern;
 import com.science.gtnl.common.item.items.ElectricProspectorTool;
 import com.science.gtnl.common.item.items.ElectromagneticRailgun;
+import com.science.gtnl.common.item.items.EnergyModuleItem;
 import com.science.gtnl.common.item.items.FakeItemSiren;
 import com.science.gtnl.common.item.items.GTNLItemBucket;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
@@ -90,6 +91,7 @@ public class ItemLoader {
     public static TwilightSword twilightSword = new TwilightSword();
     public static ElectromagneticRailgun electromagneticRailgun = new ElectromagneticRailgun();
     public static RailgunModuleItem railgunModule = new RailgunModuleItem();
+    public static EnergyModuleItem energyModule = new EnergyModuleItem();
     public static CelestweaveModuleItem celestweaveModule = new CelestweaveModuleItem();
     public static CelestweaveArmor celestweaveOculus = new CelestweaveArmor(0, GTNLItemList.CelestweaveOculus);
     public static CelestweaveArmor celestweaveCore = new CelestweaveArmor(1, GTNLItemList.CelestweaveCore);

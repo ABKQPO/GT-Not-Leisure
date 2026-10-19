@@ -1,22 +1,19 @@
-package com.science.gtnl.client.railgun;
+package com.science.gtnl.client.fx;
 
 import java.awt.image.BufferedImage;
 import java.util.EnumMap;
 import java.util.Map;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnl.common.railgun.RailgunVec;
+import com.science.gtnl.common.equipment.EquipmentVec;
 
-public class RailgunRenderHelper {
+public class FxRenderHelper {
 
     public enum Sprite {
 
@@ -36,17 +33,10 @@ public class RailgunRenderHelper {
 
     private static final Map<Sprite, Integer> TEXTURES = new EnumMap<>(Sprite.class);
 
-    private static final RailgunVec UP = new RailgunVec(0, 1, 0);
-    private static final double FIRST_PERSON_FORWARD = 0.9;
-    private static final double FIRST_PERSON_RIGHT = 0.32;
-    private static final double FIRST_PERSON_UP = -0.22;
-    private static final double THIRD_PERSON_DROP = 0.45;
-    private static final double THIRD_PERSON_FORWARD = 0.75;
-    private static final double THIRD_PERSON_RIGHT = 0.3;
-    private static final double THIRD_PERSON_UP = -0.12;
+    private static final EquipmentVec UP = new EquipmentVec(0, 1, 0);
     private static final double DEGENERATE = 1.0E-6;
 
-    private RailgunRenderHelper() {}
+    private FxRenderHelper() {}
 
     public static void render(Runnable draw) {
         batch(null, draw);
@@ -61,13 +51,13 @@ public class RailgunRenderHelper {
         TEXTURES.clear();
     }
 
-    public static void vertex(RailgunVec vector) {
+    public static void vertex(EquipmentVec vector) {
         Tessellator.instance.addVertex(vector.x(), vector.y(), vector.z());
     }
 
-    public static void ribbon(RailgunVec from, RailgunVec to, double width, float red, float green, float blue,
+    public static void ribbon(EquipmentVec from, EquipmentVec to, double width, float red, float green, float blue,
         float alpha) {
-        RailgunVec side = facingSide(from, to, width);
+        EquipmentVec side = facingSide(from, to, width);
         Tessellator.instance.setColorRGBA_F(red, green, blue, alpha);
         vertex(from.subtract(side));
         vertex(from.add(side));
@@ -75,19 +65,19 @@ public class RailgunRenderHelper {
         vertex(to.subtract(side));
     }
 
-    public static void glow(RailgunVec center, double radius, float radians) {
-        RailgunVec direction = RailgunCamera.position()
+    public static void glow(EquipmentVec center, double radius, float radians) {
+        EquipmentVec direction = FxCamera.position()
             .subtract(center)
             .normalize();
-        RailgunVec right = RailgunVec.rightOf(direction);
-        RailgunVec up = right.cross(direction)
+        EquipmentVec right = EquipmentVec.rightOf(direction);
+        EquipmentVec up = right.cross(direction)
             .normalize();
-        if (up.length() < DEGENERATE) up = new RailgunVec(0, 1, 0);
+        if (up.length() < DEGENERATE) up = new EquipmentVec(0, 1, 0);
         float cosine = (float) Math.cos(radians), sine = (float) Math.sin(radians);
-        RailgunVec sideways = right.scale(cosine)
+        EquipmentVec sideways = right.scale(cosine)
             .add(up.scale(sine))
             .scale(radius);
-        RailgunVec upward = up.scale(cosine)
+        EquipmentVec upward = up.scale(cosine)
             .subtract(right.scale(sine))
             .scale(radius);
         uvVertex(
@@ -112,10 +102,10 @@ public class RailgunRenderHelper {
             1);
     }
 
-    public static void sphere(RailgunVec center, double radius, int longitudes, int latitudes, float red, float green,
+    public static void sphere(EquipmentVec center, double radius, int longitudes, int latitudes, float red, float green,
         float blue, float alpha, double rim) {
         int rings = Math.max(3, latitudes), segments = Math.max(4, longitudes);
-        RailgunVec view = RailgunCamera.position()
+        EquipmentVec view = FxCamera.position()
             .subtract(center)
             .normalize();
         for (int ring = 0; ring < rings; ring++) {
@@ -182,29 +172,29 @@ public class RailgunRenderHelper {
         }
     }
 
-    private static void shade(RailgunVec center, double normalX, double normalY, double normalZ, RailgunVec view,
+    private static void shade(EquipmentVec center, double normalX, double normalY, double normalZ, EquipmentVec view,
         double rim, float red, float green, float blue, float alpha) {
         double facing = (normalX * view.x() + normalY * view.y() + normalZ * view.z());
         double factor = facing <= 0 ? 0 : Math.pow(facing, rim);
         Tessellator.instance.setColorRGBA_F(red, green, blue, (float) (alpha * factor));
     }
 
-    public static void glowRibbon(RailgunVec from, RailgunVec to, double fromWidth, double toWidth) {
+    public static void glowRibbon(EquipmentVec from, EquipmentVec to, double fromWidth, double toWidth) {
         uvRibbon(from, to, fromWidth, toWidth, 0, 1);
     }
 
-    public static void taperedRibbon(RailgunVec from, RailgunVec to, double width, int segments, float red, float green,
-        float blue, float alpha) {
+    public static void taperedRibbon(EquipmentVec from, EquipmentVec to, double width, int segments, float red,
+        float green, float blue, float alpha) {
         int steps = Math.max(2, segments);
-        RailgunVec delta = to.subtract(from);
+        EquipmentVec delta = to.subtract(from);
         for (int segment = 0; segment < steps; segment++) {
             double start = segment / (double) steps, end = (segment + 1) / (double) steps;
             double startShade = taper(start), endShade = taper(end);
             if (startShade <= 0 && endShade <= 0) continue;
-            RailgunVec startPoint = from.add(delta.scale(start)), endPoint = from.add(delta.scale(end));
-            RailgunVec axis = ribbonAxis(startPoint, endPoint);
-            RailgunVec startSide = axis.scale(width * startShade);
-            RailgunVec endSide = axis.scale(width * endShade);
+            EquipmentVec startPoint = from.add(delta.scale(start)), endPoint = from.add(delta.scale(end));
+            EquipmentVec axis = ribbonAxis(startPoint, endPoint);
+            EquipmentVec startSide = axis.scale(width * startShade);
+            EquipmentVec endSide = axis.scale(width * endShade);
             Tessellator.instance.setColorRGBA_F(red, green, blue, (float) (alpha * startShade));
             uvVertex(startPoint.subtract(startSide), 0, 0);
             uvVertex(startPoint.add(startSide), 1, 0);
@@ -218,94 +208,45 @@ public class RailgunRenderHelper {
         return Math.sin(Math.PI * Math.max(0, Math.min(1, position)));
     }
 
-    public static void uvRibbon(RailgunVec from, RailgunVec to, double fromWidth, double toWidth, double startV,
+    public static void uvRibbon(EquipmentVec from, EquipmentVec to, double fromWidth, double toWidth, double startV,
         double endV) {
-        RailgunVec axis = ribbonAxis(from, to);
-        RailgunVec fromSide = axis.scale(fromWidth), toSide = axis.scale(toWidth);
+        EquipmentVec axis = ribbonAxis(from, to);
+        EquipmentVec fromSide = axis.scale(fromWidth), toSide = axis.scale(toWidth);
         uvVertex(from.subtract(fromSide), 0, startV);
         uvVertex(from.add(fromSide), 1, startV);
         uvVertex(to.add(toSide), 1, endV);
         uvVertex(to.subtract(toSide), 0, endV);
     }
 
-    private static RailgunVec ribbonAxis(RailgunVec from, RailgunVec to) {
-        RailgunVec axis = to.subtract(from)
+    private static EquipmentVec ribbonAxis(EquipmentVec from, EquipmentVec to) {
+        EquipmentVec axis = to.subtract(from)
             .cross(
-                RailgunCamera.position()
+                FxCamera.position()
                     .subtract(
                         from.add(to)
                             .scale(0.5)))
             .normalize();
-        return axis.length() < DEGENERATE ? RailgunVec.rightOf(
+        return axis.length() < DEGENERATE ? EquipmentVec.rightOf(
             to.subtract(from)
                 .normalize())
             : axis;
     }
 
-    public static void uvPlane(RailgunVec center, double half) {
+    public static void uvPlane(EquipmentVec center, double half) {
         uvVertex(center.add(-half, 0, -half), 0, 0);
         uvVertex(center.add(half, 0, -half), 1, 0);
         uvVertex(center.add(half, 0, half), 1, 1);
         uvVertex(center.add(-half, 0, half), 0, 1);
     }
 
-    public static RailgunVec muzzle(int shooterId, float partialTicks) {
-        Minecraft minecraft = Minecraft.getMinecraft();
-        Entity entity = minecraft.theWorld == null ? null : minecraft.theWorld.getEntityByID(shooterId);
-        if (entity == null) return null;
-        if (entity == minecraft.thePlayer && minecraft.gameSettings.thirdPersonView == 0)
-            return firstPersonMuzzle(minecraft.thePlayer, partialTicks);
-        RailgunVec analytic = thirdPersonMuzzle(entity, partialTicks);
-        RailgunVec anchored = RailgunMuzzleAnchor.muzzle(shooterId);
-        return anchored == null ? analytic : anchored;
-    }
-
-    public static RailgunVec muzzle(int shooterId, RailgunVec fallback, float partialTicks) {
-        RailgunVec muzzle = muzzle(shooterId, partialTicks);
-        return muzzle == null ? fallback : muzzle;
-    }
-
-    public static RailgunVec analyticMuzzle(int shooterId, RailgunVec fallback, float partialTicks) {
-        Minecraft minecraft = Minecraft.getMinecraft();
-        Entity entity = minecraft.theWorld == null ? null : minecraft.theWorld.getEntityByID(shooterId);
-        if (entity == null) return fallback;
-        if (entity == minecraft.thePlayer && minecraft.gameSettings.thirdPersonView == 0)
-            return firstPersonMuzzle(minecraft.thePlayer, partialTicks);
-        return thirdPersonMuzzle(entity, partialTicks);
-    }
-
-    public static RailgunVec firstPersonMuzzle(EntityPlayer player, float partialTicks) {
-        if (player == null) return null;
-        RailgunVec look = RailgunVec.look(player, partialTicks);
-        RailgunVec right = RailgunVec.rightOf(look);
-        RailgunVec up = right.cross(look)
-            .normalize();
-        return RailgunVec.interpolated(player, partialTicks)
-            .add(look.scale(FIRST_PERSON_FORWARD))
-            .add(right.scale(FIRST_PERSON_RIGHT))
-            .add(up.scale(FIRST_PERSON_UP));
-    }
-
-    public static RailgunVec thirdPersonMuzzle(Entity entity, float partialTicks) {
-        RailgunVec look = RailgunVec.look(entity, partialTicks);
-        RailgunVec right = RailgunVec.rightOf(look);
-        RailgunVec up = right.cross(look)
-            .normalize();
-        return RailgunVec.interpolated(entity, partialTicks)
-            .add(0, entity.getEyeHeight() - THIRD_PERSON_DROP, 0)
-            .add(right.scale(THIRD_PERSON_RIGHT))
-            .add(up.scale(THIRD_PERSON_UP))
-            .add(look.scale(THIRD_PERSON_FORWARD));
-    }
-
-    private static void uvVertex(RailgunVec vector, double u, double v) {
+    private static void uvVertex(EquipmentVec vector, double u, double v) {
         Tessellator.instance.addVertexWithUV(vector.x(), vector.y(), vector.z(), u, v);
     }
 
-    private static RailgunVec facingSide(RailgunVec from, RailgunVec to, double width) {
-        RailgunVec side = to.subtract(from)
+    private static EquipmentVec facingSide(EquipmentVec from, EquipmentVec to, double width) {
+        EquipmentVec side = to.subtract(from)
             .cross(
-                RailgunCamera.position()
+                FxCamera.position()
                     .subtract(
                         from.add(to)
                             .scale(0.5)))
@@ -318,7 +259,7 @@ public class RailgunRenderHelper {
 
     private static void batch(Sprite sprite, Runnable draw) {
         float lightX = OpenGlHelper.lastBrightnessX, lightY = OpenGlHelper.lastBrightnessY;
-        RailgunCamera.capture();
+        FxCamera.capture();
         GL11.glPushMatrix();
         GL11.glPushAttrib(
             GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_CURRENT_BIT);

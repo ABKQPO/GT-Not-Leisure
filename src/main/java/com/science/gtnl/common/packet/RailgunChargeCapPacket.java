@@ -32,8 +32,6 @@ public class RailgunChargeCapPacket extends ClientboundPacket {
     @Override
     @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
-        if (units < 0) return;
-        var world = minecraft.theWorld;
-        minecraft.func_152344_a(() -> { if (world != null && minecraft.theWorld == world) RailgunCharge.cap(units); });
+        if (units >= 0) runInWorld(minecraft, () -> RailgunCharge.cap(units));
     }
 }

@@ -11,7 +11,6 @@ import java.util.function.Predicate;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -23,9 +22,9 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerFlyableFallEvent;
 
+import com.science.gtnl.common.equipment.EquipmentNet;
 import com.science.gtnl.common.item.items.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
-import com.science.gtnl.common.railgun.RailgunNet;
 import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -57,28 +56,6 @@ public final class CelestweaveServerEvents {
             .register(handler);
     }
 
-    public static ItemStack piece(EntityLivingBase entity, int type) {
-        ItemStack stack = entity.getEquipmentInSlot(4 - type);
-        return stack != null && stack.getItem() instanceof CelestweaveArmor armor && armor.armorType == type ? stack
-            : null;
-    }
-
-    public static boolean wearsAny(EntityLivingBase entity) {
-        for (int type = 0; type < 4; type++) if (piece(entity, type) != null) return true;
-        return false;
-    }
-
-    public static boolean activeAndPowered(EntityPlayer player, int type, CelestweaveModule module) {
-        ItemStack stack = piece(player, type);
-        return stack != null && CelestweaveData.active(stack, module) && CelestweaveEnergy.powered(player, type, stack);
-    }
-
-    public static boolean activeAndAffords(EntityPlayer player, int type, CelestweaveModule module, double eu) {
-        ItemStack stack = piece(player, type);
-        return stack != null && CelestweaveData.active(stack, module)
-            && CelestweaveEnergy.affords(player, type, stack, eu);
-    }
-
     public static boolean guiThrottled(EntityPlayer player) {
         long now = player.worldObj.getTotalWorldTime();
         Long last = LAST_GUI.put(player.getUniqueID(), now);
@@ -86,31 +63,34 @@ public final class CelestweaveServerEvents {
     }
 
     public static void sendFx(Entity entity, int type, double x, double y, double z) {
-        RailgunNet.sendAround(
-            entity.worldObj,
-            entity,
-            new CelestweaveFxPacket(entity.getEntityId(), type, x, y, z),
-            FX_RANGE);
+        EquipmentNet.sendAround(entity, new CelestweaveFxPacket(entity.getEntityId(), type, x, y, z), FX_RANGE);
+    }
+
+    static void landFx(EntityPlayer player, float distance) {
+        if (!player.worldObj.isRemote && distance > 3 && CelestweaveData.piece(player, CelestweaveArmor.BOOTS) != null)
+            sendFx(player, CelestweaveFxPacket.LAND, player.posX, player.boundingBox.minY, player.posZ);
     }
 
     private static int jumpLevel(EntityPlayer player) {
-        ItemStack boots = piece(player, 3);
+        ItemStack boots = CelestweaveData.piece(player, CelestweaveArmor.BOOTS);
         if (boots == null || !CelestweaveData.active(boots, CelestweaveModule.WALK_ASSIST)
-            || !CelestweaveEnergy.affords(player, 3, boots, MainConfig.item.celestweave.walkEuPerTick)) return 1;
-        return CelestweaveData.cfgInt(
-            boots,
-            CelestweaveModule.WALK_ASSIST,
-            CelestweaveBehaviors.JUMP,
-            1,
-            1,
-            MainConfig.item.celestweave.walkMaxLevel);
+            || !CelestweaveEnergy
+                .affords(player, CelestweaveArmor.BOOTS, boots, MainConfig.item.celestweave.walkEuPerTick))
+            return 1;
+        return CelestweaveModuleSetting.WALK_JUMP.get(boots);
+    }
+
+    private static boolean samePiece(ItemStack previous, ItemStack stack) {
+        return stack != null && stack.getItem() == previous.getItem()
+            && CelestweaveData.root(stack)
+                .equals(CelestweaveData.root(previous));
     }
 
     private static final class Tracked {
 
         @SuppressWarnings("unchecked")
-        final Set<CelestweaveModule>[] modules = new Set[4];
-        final ItemStack[] stacks = new ItemStack[4];
+        final Set<CelestweaveModule>[] modules = new Set[CelestweaveArmor.PIECES];
+        final ItemStack[] stacks = new ItemStack[CelestweaveArmor.PIECES];
         double x = Double.NaN, y, z;
         long lastTick = Long.MIN_VALUE, lastFlush;
         int checks;
@@ -138,9 +118,9 @@ public final class CelestweaveServerEvents {
         synchronized (TRACKED) {
             tracked = TRACKED.computeIfAbsent(player, k -> new Tracked());
         }
-        long time = player.worldObj.getTotalWorldTime();
-        if (tracked.lastTick == time) return;
-        tracked.lastTick = time;
+        long now = player.worldObj.getTotalWorldTime();
+        if (tracked.lastTick == now) return;
+        tracked.lastTick = now;
         double moved = Double.isNaN(tracked.x) ? 0
             : Math.sqrt(
                 (player.posX - tracked.x) * (player.posX - tracked.x)
@@ -149,32 +129,34 @@ public final class CelestweaveServerEvents {
         tracked.x = player.posX;
         tracked.y = player.posY;
         tracked.z = player.posZ;
-        for (int type = 0; type < 4; type++) {
-            ItemStack stack = player.isDead ? null : piece(player, type);
-            ItemStack previous = tracked.stacks[type];
-            if (server && previous != null && previous != stack) CelestweaveEnergy.flush(player, type, previous);
-            Set<CelestweaveModule> now = stack == null ? Collections.emptySet() : CelestweaveData.activeModules(stack);
-            Set<CelestweaveModule> before = tracked.modules[type];
-            CelestweaveContext ctx = new CelestweaveContext(player, type, stack != null ? stack : previous, moved);
-            for (CelestweaveModule module : before) if (!now.contains(module)) CelestweaveBehaviors.of(module)
+        for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++) {
+            ItemStack stack = player.isDead ? null : CelestweaveData.piece(player, piece);
+            ItemStack previous = tracked.stacks[piece];
+            if (server && previous != null && previous != stack)
+                CelestweaveEnergy.flush(player, piece, samePiece(previous, stack) ? stack : previous);
+            Set<CelestweaveModule> after = stack == null ? Collections.emptySet()
+                : CelestweaveData.activeModules(stack);
+            Set<CelestweaveModule> before = tracked.modules[piece];
+            CelestweaveContext ctx = new CelestweaveContext(player, piece, stack != null ? stack : previous, moved);
+            for (CelestweaveModule module : before) if (!after.contains(module)) CelestweaveBehaviors.of(module)
                 .unequip(ctx);
-            for (CelestweaveModule module : now) if (!before.contains(module)) CelestweaveBehaviors.of(module)
+            for (CelestweaveModule module : after) if (!before.contains(module)) CelestweaveBehaviors.of(module)
                 .equip(ctx);
-            for (CelestweaveModule module : now) CelestweaveBehaviors.of(module)
+            for (CelestweaveModule module : after) CelestweaveBehaviors.of(module)
                 .tick(ctx);
-            tracked.modules[type] = now;
-            tracked.stacks[type] = stack;
+            tracked.modules[piece] = after;
+            tracked.stacks[piece] = stack;
         }
         CelestweaveReach.update(player);
         if (!(player instanceof EntityPlayerMP serverPlayer)) return;
         CelestweaveFlight.update(serverPlayer);
         CelestweaveEnergy.flushLarge(player);
-        if (time - tracked.lastFlush >= 20 || time < tracked.lastFlush) {
-            tracked.lastFlush = time;
+        if (now - tracked.lastFlush >= 20 || now < tracked.lastFlush) {
+            tracked.lastFlush = now;
             if (++tracked.checks % 5 == 0) CelestweaveEnergy.flush(player);
             restoreSoulbound(player);
-            for (int type = 0; type < 4; type++) {
-                ItemStack stack = piece(player, type);
+            for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++) {
+                ItemStack stack = CelestweaveData.piece(player, piece);
                 if (stack != null) CelestweaveEnergy.refillFromWireless(stack, serverPlayer);
             }
         }
@@ -192,16 +174,13 @@ public final class CelestweaveServerEvents {
         int jump = jumpLevel(player);
         if (jump > 1) event.distance = Math.max(0, event.distance - 3F * (jump - 1));
         if (!CelestweaveFlight.cancelsFall(player)) return;
-        if (!player.worldObj.isRemote && event.distance > 3 && piece(player, 3) != null)
-            sendFx(player, CelestweaveFxPacket.LAND, player.posX, player.boundingBox.minY, player.posZ);
+        landFx(player, event.distance);
         event.setCanceled(true);
     }
 
     @SubscribeEvent
     public void flyableFall(PlayerFlyableFallEvent event) {
-        EntityPlayer player = event.entityPlayer;
-        if (player.worldObj.isRemote || event.distance <= 3 || piece(player, 3) == null) return;
-        sendFx(player, CelestweaveFxPacket.LAND, player.posX, player.boundingBox.minY, player.posZ);
+        landFx(event.entityPlayer, event.distance);
     }
 
     @SubscribeEvent
@@ -214,7 +193,8 @@ public final class CelestweaveServerEvents {
     @SubscribeEvent
     public void breakSpeed(net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed event) {
         EntityPlayer player = event.entityPlayer;
-        if (!activeAndPowered(player, 3, CelestweaveModule.DIG_AFFINITY)) return;
+        if (!CelestweaveEnergy.activeAndHasEnergy(player, CelestweaveArmor.BOOTS, CelestweaveModule.DIG_AFFINITY))
+            return;
         float speed = event.newSpeed;
         if (player.isInsideOfMaterial(Material.water) && !EnchantmentHelper.getAquaAffinityModifier(player))
             speed *= 5F;
@@ -227,19 +207,19 @@ public final class CelestweaveServerEvents {
         if (!(event.entityLiving instanceof EntityPlayerMP player)) return;
         CelestweaveEnergy.flush(player);
         CelestweaveReach.reset(player);
-        ItemStack chest = piece(player, 1);
+        ItemStack chest = CelestweaveData.piece(player, CelestweaveArmor.CHEST);
         if (chest == null || !CelestweaveData.active(chest, CelestweaveModule.SOULBOUND)
             || player.worldObj.getGameRules()
                 .getGameRuleBooleanValue("keepInventory"))
             return;
         NBTTagList list = new NBTTagList();
-        for (int type = 0; type < 4; type++) {
-            ItemStack stack = piece(player, type);
+        for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++) {
+            ItemStack stack = CelestweaveData.piece(player, piece);
             if (stack == null) continue;
             NBTTagCompound tag = stack.writeToNBT(new NBTTagCompound());
-            tag.setByte("Type", (byte) type);
+            tag.setByte("Type", (byte) piece);
             list.appendTag(tag);
-            player.inventory.armorInventory[3 - type] = null;
+            player.inventory.armorInventory[3 - piece] = null;
         }
         if (list.tagCount() > 0) persisted(player).setTag(SOULBOUND_TAG, list);
     }

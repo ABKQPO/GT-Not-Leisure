@@ -12,16 +12,21 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 
-import com.science.gtnl.client.railgun.RailgunArcRenderer;
-import com.science.gtnl.client.railgun.RailgunShockwaveRenderer;
+import com.science.gtnl.client.fx.FxArcRenderer;
+import com.science.gtnl.client.fx.FxColor;
+import com.science.gtnl.client.fx.FxShockwaveRenderer;
 import com.science.gtnl.common.celestweave.CelestweaveCosmetic;
+import com.science.gtnl.common.celestweave.CelestweaveData;
+import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveReach;
 import com.science.gtnl.common.celestweave.CelestweaveServerEvents;
+import com.science.gtnl.common.equipment.EquipmentVec;
+import com.science.gtnl.common.item.items.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
-import com.science.gtnl.common.railgun.RailgunVec;
 import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -79,22 +84,33 @@ public final class CelestweaveClientEvents {
 
     static boolean fxVisible(Entity entity, double distance) {
         if (MainConfig.client.celestweaveFxLevel <= 0) return false;
-        if (entity != Minecraft.getMinecraft().thePlayer && !MainConfig.client.celestweaveShowOthersFx) return false;
+        if (entity != Minecraft.getMinecraft().thePlayer && !MainConfig.client.enableCelestweaveShowOthersFx)
+            return false;
         return distance <= MainConfig.client.celestweaveFxDistance;
     }
 
     @SubscribeEvent
-    public void onRenderSpecials(RenderPlayerEvent.Specials.Pre event) {
-        if (CelestweaveServerEvents.piece(event.entityPlayer, CwLook.CHEST) != null) event.renderCape = false;
+    public void renderPlayerPre(RenderPlayerEvent.Pre event) {
+        CwSkinLayers.hide(event.renderer.modelBipedMain, event.entityPlayer);
     }
 
     @SubscribeEvent
-    public void onRenderTick(TickEvent.RenderTickEvent event) {
+    public void renderPlayerPost(RenderPlayerEvent.Post event) {
+        CwSkinLayers.restore();
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void renderSpecials(RenderPlayerEvent.Specials.Pre event) {
+        if (CelestweaveData.piece(event.entityPlayer, CelestweaveArmor.CHEST) != null) event.renderCape = false;
+    }
+
+    @SubscribeEvent
+    public void renderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.START) frame++;
     }
 
     @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
+    public void clientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         Minecraft minecraft = Minecraft.getMinecraft();
         World world = minecraft.theWorld;
@@ -104,10 +120,8 @@ public final class CelestweaveClientEvents {
             CwScreenGlow.clear();
             CwHud.clear();
             SCHEDULED.clear();
-            if (world == null) {
-                CelestweaveReach.forgetClient();
-                REMOTE_FLYING.clear();
-            }
+            REMOTE_FLYING.clear();
+            if (world == null) CelestweaveReach.clearClient();
             lastWorld = world;
         }
         if (world == null || minecraft.isGamePaused()) return;
@@ -119,17 +133,17 @@ public final class CelestweaveClientEvents {
         for (Object object : world.playerEntities) {
             if (!(object instanceof EntityPlayer player)) continue;
             CwClientState state = CwClientState.peek(player.getEntityId());
-            if (state == null && !CelestweaveServerEvents.wearsAny(player)) continue;
+            if (state == null && !CelestweaveData.wearsAny(player)) continue;
             if (state == null) state = CwClientState.of(player);
             CwLook look = look(player, state);
             boolean flying = player == minecraft.thePlayer ? look.flightActive && player.capabilities.isFlying
                 : look.flightInstalled && REMOTE_FLYING.contains(player.getEntityId());
-            if (CwAnimator.wingToggle(state, flying, now) && look.wings && player.ticksExisted > 10)
-                CelestweaveSounds.wings(player, flying);
+            if (CwAnimator.wingToggle(state, flying, now) && look.visible(CelestweaveModule.FLIGHT)
+                && player.ticksExisted > 10) CelestweaveSounds.wings(player, flying);
             boolean self = player == minecraft.thePlayer;
-            boolean process = distanceToViewer(player) <= MainConfig.client.celestweaveFxDistance
-                && (self ? minecraft.gameSettings.thirdPersonView != 0 || MainConfig.client.celestweaveFirstPersonFx
-                    : MainConfig.client.celestweaveShowOthersFx);
+            boolean process = distanceToViewer(player) <= MainConfig.client.celestweaveFxDistance && (self
+                ? minecraft.gameSettings.thirdPersonView != 0 || MainConfig.client.enableCelestweaveFirstPersonFx
+                : MainConfig.client.enableCelestweaveShowOthersFx);
             CwArcs.tick(player, state, look, now, process ? level : 0);
             total += state.arcs.size();
         }
@@ -147,7 +161,7 @@ public final class CelestweaveClientEvents {
             Entity entity = world.getEntityByID(entry.getIntKey());
             if (entity == null || entity.isDead
                 || !(entity instanceof EntityLivingBase living)
-                || !CelestweaveServerEvents.wearsAny(living) && entry.getValue().arcs.isEmpty()) iterator.remove();
+                || !CelestweaveData.wearsAny(living) && entry.getValue().arcs.isEmpty()) iterator.remove();
         }
     }
 
@@ -167,33 +181,33 @@ public final class CelestweaveClientEvents {
         if (SCHEDULED.size() < 256) SCHEDULED.add(new Scheduled(ticks + delay, task));
     }
 
-    private static void dashJet(EntityLivingBase living, int color) {
+    private static void dashJet(EntityLivingBase living, int rgb) {
         double yaw = Math.toRadians(living.rotationYaw);
-        RailgunVec forward = new RailgunVec(-Math.sin(yaw), 0, Math.cos(yaw));
-        RailgunVec right = RailgunVec.rightOf(forward);
+        EquipmentVec forward = new EquipmentVec(-Math.sin(yaw), 0, Math.cos(yaw));
+        EquipmentVec right = EquipmentVec.rightOf(forward);
         for (int tick = 0; tick < 8; tick++) {
             final int step = tick;
             schedule(tick, () -> {
                 if (living.isDead) return;
                 double feet = living.boundingBox.minY;
-                RailgunVec back = new RailgunVec(living.posX, feet + living.height * 0.62, living.posZ)
+                EquipmentVec back = new EquipmentVec(living.posX, feet + living.height * 0.62, living.posZ)
                     .add(forward.scale(-0.35));
                 int bolts = step == 0 ? 4 : 2;
                 double reach = step == 0 ? 5.5 : 4.2 - step * 0.3;
                 for (int i = 0; i < bolts; i++) {
-                    RailgunVec to = back.add(forward.scale(-reach * CwArcs.rand(0.75F, 1F)))
+                    EquipmentVec to = back.add(forward.scale(-reach * CwArcs.rand(0.75F, 1F)))
                         .add(right.scale(CwArcs.rand(-0.7F, 0.7F)))
                         .add(0, CwArcs.rand(-0.9F, 0.25F), 0);
-                    RailgunArcRenderer.spawnTinted(back, to, 12, 0.35, 4 + CwArcs.RNG.nextInt(3), color);
+                    FxArcRenderer.spawnColored(back, to, 12, 0.35, 4 + CwArcs.RNG.nextInt(3), rgb);
                 }
                 if (step > 3) return;
                 for (int side : new int[] { 1, -1 }) {
-                    RailgunVec foot = new RailgunVec(living.posX, feet + 0.05, living.posZ)
+                    EquipmentVec foot = new EquipmentVec(living.posX, feet + 0.05, living.posZ)
                         .add(right.scale(side * 0.15));
-                    RailgunVec trail = foot.add(forward.scale(-CwArcs.rand(1.5F, 2.8F)))
+                    EquipmentVec trail = foot.add(forward.scale(-CwArcs.rand(1.5F, 2.8F)))
                         .add(right.scale(side * CwArcs.rand(0.1F, 0.5F)))
                         .add(0, -0.02, 0);
-                    RailgunArcRenderer.spawnTinted(foot, trail, 8, 0.12, 4 + CwArcs.RNG.nextInt(2), color);
+                    FxArcRenderer.spawnColored(foot, trail, 8, 0.12, 4 + CwArcs.RNG.nextInt(2), rgb);
                 }
             });
         }
@@ -206,30 +220,30 @@ public final class CelestweaveClientEvents {
         double length = Math.sqrt(side * side + down * down), distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
         state.hitDirectional = !omni && length > 0.3 && length > distance * 0.35;
         if (!state.hitDirectional) return;
-        state.hitDirX = (float) (side / length);
-        state.hitDirY = (float) (down / length);
+        state.hitDirectionX = (float) (side / length);
+        state.hitDirectionY = (float) (down / length);
     }
 
-    private static void lightning(float x, float y, float z, int color) {
-        RailgunVec ground = new RailgunVec(x, y + 0.05, z);
-        RailgunVec sky = ground.add(CwArcs.rand(-1.5F, 1.5F), 16, CwArcs.rand(-1.5F, 1.5F));
-        RailgunVec drop = ground.subtract(sky);
-        int bright = CwLook.mixWhite(color, 0.4F);
+    private static void lightning(float x, float y, float z, int rgb) {
+        EquipmentVec ground = new EquipmentVec(x, y + 0.05, z);
+        EquipmentVec sky = ground.add(CwArcs.rand(-1.5F, 1.5F), 16, CwArcs.rand(-1.5F, 1.5F));
+        EquipmentVec drop = ground.subtract(sky);
+        int bright = FxColor.mixWhite(rgb, 0.4F);
         for (int flash = 0; flash < 3; flash++) {
             final int step = flash;
             schedule(step * 2, () -> {
-                RailgunArcRenderer
-                    .spawnTinted(sky, ground, 32, 1.1, 5, step == 0 ? bright : color, step == 0 ? 3.2 : 2.2);
+                FxArcRenderer.spawnColored(sky, ground, 32, 1.1, 5, step == 0 ? bright : rgb, step == 0 ? 3.2 : 2.2);
                 if (step > 0) return;
                 for (int i = 0; i < 3; i++) {
-                    RailgunVec from = sky.add(drop.scale(CwArcs.rand(0.25F, 0.7F)));
+                    EquipmentVec from = sky.add(drop.scale(CwArcs.rand(0.25F, 0.7F)));
                     double angle = CwArcs.rand(0F, (float) (Math.PI * 2)), reach = CwArcs.rand(1.5F, 3.5F);
-                    RailgunVec to = from.add(Math.cos(angle) * reach, -CwArcs.rand(1.5F, 4F), Math.sin(angle) * reach);
-                    RailgunArcRenderer.spawnTinted(from, to, 10, 0.5, 4, color, 1.2);
+                    EquipmentVec to = from
+                        .add(Math.cos(angle) * reach, -CwArcs.rand(1.5F, 4F), Math.sin(angle) * reach);
+                    FxArcRenderer.spawnColored(from, to, 10, 0.5, 4, rgb, 1.2);
                 }
                 for (int i = 0; i < 8; i++) {
                     double angle = CwArcs.rand(0F, (float) (Math.PI * 2)), radius = CwArcs.rand(0.6F, 1.4F);
-                    RailgunArcRenderer.spawnTinted(
+                    FxArcRenderer.spawnColored(
                         ground,
                         ground.add(Math.cos(angle) * radius, 0.02, Math.sin(angle) * radius),
                         8,
@@ -237,7 +251,7 @@ public final class CelestweaveClientEvents {
                         5,
                         bright);
                 }
-                RailgunShockwaveRenderer.spawn(ground, 1.8, 10, color);
+                FxShockwaveRenderer.spawn(ground, 1.8, 10, rgb);
             });
         }
     }
@@ -266,19 +280,19 @@ public final class CelestweaveClientEvents {
                 if (living == Minecraft.getMinecraft().thePlayer) CwHud.hit(x, z, save, omni);
                 if (!allowed || !cosmetic.event(CelestweaveCosmetic.EVENT_HIT)) return;
                 CwArcs.hit(state, look, now);
-                CwShieldFlash.spawn(living, x, y, z, look.theme, save, omni);
-                if (living == Minecraft.getMinecraft().thePlayer) CwScreenGlow.trigger(x, y, z, look.theme, save, omni);
+                CwShieldFlash.spawn(living, x, y, z, look.glowColor, save, omni);
+                if (living == Minecraft.getMinecraft().thePlayer) CwScreenGlow.hit(x, y, z, look.glowColor, save, omni);
             }
             case CelestweaveFxPacket.LIGHTNING -> {
                 CelestweaveSounds.lightning(x, y, z);
-                if (allowed && cosmetic.event(CelestweaveCosmetic.EVENT_REFLECT)) lightning(x, y, z, look.theme);
+                if (allowed && cosmetic.event(CelestweaveCosmetic.EVENT_REFLECT)) lightning(x, y, z, look.glowColor);
             }
             case CelestweaveFxPacket.DASH -> {
                 CelestweaveSounds.dash(living);
                 state.dashAt = now;
-                if (allowed && cosmetic.event(CelestweaveCosmetic.EVENT_DASH) && look.wears(CwLook.BOOTS)) {
+                if (allowed && cosmetic.event(CelestweaveCosmetic.EVENT_DASH) && look.wears(CelestweaveArmor.BOOTS)) {
                     CwArcs.dash(state, look, now);
-                    dashJet(living, CwLook.mixWhite(look.theme, 0.3F));
+                    dashJet(living, FxColor.mixWhite(look.glowColor, 0.3F));
                 }
             }
             case CelestweaveFxPacket.LAND -> {
@@ -286,30 +300,30 @@ public final class CelestweaveClientEvents {
                 if (!allowed || !cosmetic.event(CelestweaveCosmetic.EVENT_LAND)) return;
                 for (int i = 0; i < 9; i++) {
                     float angle = CwArcs.rand(0F, (float) (Math.PI * 2)), radius = CwArcs.rand(0.3F, 0.6F);
-                    RailgunVec from = new RailgunVec(
+                    EquipmentVec from = new EquipmentVec(
                         x + CwArcs.rand(-0.1F, 0.1F),
                         y + 0.03,
                         z + CwArcs.rand(-0.1F, 0.1F));
-                    RailgunVec to = new RailgunVec(
+                    EquipmentVec to = new EquipmentVec(
                         x + Math.cos(angle) * radius,
                         y + 0.03,
                         z + Math.sin(angle) * radius);
                     schedule(
                         CwArcs.RNG.nextInt(2),
-                        () -> RailgunArcRenderer.spawnTinted(from, to, 8, 0.06, 5 + CwArcs.RNG.nextInt(2), look.theme));
+                        () -> FxArcRenderer.spawnColored(from, to, 8, 0.06, 5 + CwArcs.RNG.nextInt(2), look.glowColor));
                 }
             }
             case CelestweaveFxPacket.REFLECT -> {
                 CelestweaveSounds.reflect(x, y, z);
                 if (!allowed || !cosmetic.event(CelestweaveCosmetic.EVENT_REFLECT)) return;
-                RailgunVec target = new RailgunVec(x, y, z);
+                EquipmentVec target = new EquipmentVec(x, y, z);
                 for (int i = 0; i < 3; i++) schedule(i * 3, () -> {
                     if (living.isDead) return;
-                    RailgunVec chest = new RailgunVec(
+                    EquipmentVec chest = new EquipmentVec(
                         living.posX,
                         living.boundingBox.minY + living.height * 0.72,
                         living.posZ);
-                    RailgunArcRenderer.spawnTinted(chest, target, 14, 0.12, 5, look.theme);
+                    FxArcRenderer.spawnColored(chest, target, 14, 0.12, 5, look.glowColor);
                 });
             }
             default -> {}

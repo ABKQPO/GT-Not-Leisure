@@ -10,13 +10,15 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.equipment.EquipmentNet;
+import com.science.gtnl.common.item.items.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFlightPacket;
-import com.science.gtnl.common.railgun.RailgunNet;
 import com.science.gtnl.config.MainConfig;
 
 public final class CelestweaveFlight implements CelestweaveBehavior {
 
     private static final String TAG = "GTNLCelestweaveFlight";
+    private static final double SYNC_RANGE = 256;
     private static final Set<UUID> FLYING = Collections.synchronizedSet(new HashSet<>());
 
     CelestweaveFlight() {}
@@ -25,36 +27,31 @@ public final class CelestweaveFlight implements CelestweaveBehavior {
         return MainConfig.item.celestweave.flightEuPerTick;
     }
 
-    public static boolean powered(EntityPlayer player, ItemStack legs) {
+    public static boolean canFly(EntityPlayer player, ItemStack legs) {
         return legs != null && CelestweaveData.active(legs, CelestweaveModule.FLIGHT)
-            && CelestweaveEnergy.affords(player, 2, legs, cost());
-    }
-
-    public static int level(ItemStack legs, String key) {
-        return CelestweaveData
-            .cfgInt(legs, CelestweaveModule.FLIGHT, key, 1, 1, MainConfig.item.celestweave.flightMaxLevel);
+            && CelestweaveEnergy.affords(player, CelestweaveArmor.LEGS, legs, cost());
     }
 
     public static boolean cancelsFall(EntityPlayer player) {
-        return powered(player, CelestweaveServerEvents.piece(player, 2));
+        return canFly(player, CelestweaveData.piece(player, CelestweaveArmor.LEGS));
     }
 
     @Override
     public void tick(CelestweaveContext ctx) {
         EntityPlayer player = ctx.player();
-        boolean powered = ctx.affords(cost());
-        boolean levitate = ctx.cfgBool(CelestweaveModule.FLIGHT, CelestweaveBehaviors.LEVITATE, false);
-        if (powered && levitate && player.capabilities.allowFlying && !player.isRiding())
+        boolean affordable = ctx.affords(cost());
+        boolean levitate = CelestweaveModuleSetting.FLIGHT_LEVITATE.on(ctx.stack());
+        if (affordable && levitate && player.capabilities.allowFlying && !player.isRiding())
             player.capabilities.isFlying = true;
         if (!ctx.server()) return;
-        if (powered && player.capabilities.isFlying && ctx.moving()) powered = ctx.drain(cost());
+        if (affordable && player.capabilities.isFlying && ctx.moving()) affordable = ctx.drain(cost());
         boolean changed = false;
-        if (powered && !player.capabilities.allowFlying) {
+        if (affordable && !player.capabilities.allowFlying) {
             player.capabilities.allowFlying = true;
             player.getEntityData()
                 .setBoolean(TAG, true);
             changed = true;
-        } else if (!powered && revoke(player)) changed = true;
+        } else if (!affordable && revoke(player)) changed = true;
         if (player.capabilities.isFlying) player.fallDistance = 0;
         if (changed) player.sendPlayerAbilities();
     }
@@ -77,7 +74,7 @@ public final class CelestweaveFlight implements CelestweaveBehavior {
     }
 
     public static void update(EntityPlayerMP player) {
-        ItemStack legs = CelestweaveServerEvents.piece(player, 2);
+        ItemStack legs = CelestweaveData.piece(player, CelestweaveArmor.LEGS);
         boolean active = legs != null && CelestweaveData.active(legs, CelestweaveModule.FLIGHT);
         if (!active && revoke(player)) player.sendPlayerAbilities();
         boolean flying = active && player.capabilities.isFlying;
@@ -85,7 +82,7 @@ public final class CelestweaveFlight implements CelestweaveBehavior {
         if (flying == FLYING.contains(id)) return;
         if (flying) FLYING.add(id);
         else FLYING.remove(id);
-        RailgunNet.sendAround(player.worldObj, player, new CelestweaveFlightPacket(player.getEntityId(), flying));
+        EquipmentNet.sendAround(player, new CelestweaveFlightPacket(player.getEntityId(), flying), SYNC_RANGE);
     }
 
     public static void startTracking(EntityPlayer target, EntityPlayerMP viewer) {

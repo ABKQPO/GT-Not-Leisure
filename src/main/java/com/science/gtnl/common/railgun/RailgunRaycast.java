@@ -6,29 +6,31 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
+import com.science.gtnl.common.equipment.EquipmentVec;
+
 public final class RailgunRaycast {
 
     private RailgunRaycast() {}
 
-    public record EntityHit(Entity entity, RailgunVec position) {}
+    public record EntityHit(Entity entity, EquipmentVec position) {}
 
-    public record Result(RailgunVec blockEnd, MovingObjectPosition block, EntityHit hit) {}
+    public record Result(EquipmentVec blockEnd, MovingObjectPosition block, EntityHit hit) {}
 
     public static double effectiveRange(double base, int rangeModules) {
         return base * Math.min(RailgunDefaults.MAX_RANGE_MULTIPLIER, 1 << Math.max(0, Math.min(2, rangeModules)));
     }
 
-    public static Result traceFirst(World world, Entity shooter, RailgunVec from, RailgunVec to, double padding,
+    public static Result traceFirst(World world, Entity shooter, EquipmentVec from, EquipmentVec to, double padding,
         double inflation, Predicate<Entity> filter) {
         MovingObjectPosition block = world.func_147447_a(from.toMc(), to.toMc(), false, true, false);
-        RailgunVec end = block != null && block.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK
-            ? sanitize(from, to, RailgunVec.of(block.hitVec))
+        EquipmentVec end = block != null && block.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK
+            ? sanitize(from, to, EquipmentVec.of(block.hitVec))
             : to;
         return new Result(end, block, traceEntities(world, shooter, from, end, padding, inflation, filter));
     }
 
-    static RailgunVec sanitize(RailgunVec from, RailgunVec to, RailgunVec raw) {
-        RailgunVec delta = to.subtract(from);
+    static EquipmentVec sanitize(EquipmentVec from, EquipmentVec to, EquipmentVec raw) {
+        EquipmentVec delta = to.subtract(from);
         double lengthSquared = delta.dot(delta);
         if (!raw.finite() || lengthSquared < 1.0E-8) return to;
         double projection = raw.subtract(from)
@@ -37,18 +39,18 @@ public final class RailgunRaycast {
         return raw.distanceToSqr(from.add(delta.scale(projection))) > 1 ? to : raw;
     }
 
-    public static EntityHit traceEntities(World world, Entity shooter, RailgunVec from, RailgunVec end, double padding,
-        double inflation, Predicate<Entity> filter) {
+    public static EntityHit traceEntities(World world, Entity shooter, EquipmentVec from, EquipmentVec end,
+        double padding, double inflation, Predicate<Entity> filter) {
         int segments = Math.max(
             1,
             (int) Math.ceil(
                 end.subtract(from)
                     .length() / RailgunDefaults.ENTITY_QUERY_SEGMENT_LENGTH));
-        RailgunVec step = end.subtract(from)
+        EquipmentVec step = end.subtract(from)
             .scale(1.0 / segments);
-        RailgunVec start = from;
+        EquipmentVec start = from;
         for (int i = 1; i <= segments; i++) {
-            RailgunVec next = i == segments ? end : from.add(step.scale(i));
+            EquipmentVec next = i == segments ? end : from.add(step.scale(i));
             EntityHit best = null;
             double distance = Double.POSITIVE_INFINITY;
             for (Object candidate : world.getEntitiesWithinAABBExcludingEntity(shooter, start.boxTo(next, padding))) {
@@ -58,7 +60,7 @@ public final class RailgunRaycast {
                 MovingObjectPosition hit = box.calculateIntercept(start.toMc(), next.toMc());
                 boolean inside = box.isVecInside(start.toMc());
                 if (hit == null && !inside) continue;
-                RailgunVec position = inside ? start : RailgunVec.of(hit.hitVec);
+                EquipmentVec position = inside ? start : EquipmentVec.of(hit.hitVec);
                 double d = start.distanceToSqr(position);
                 if (d < distance) {
                     distance = d;

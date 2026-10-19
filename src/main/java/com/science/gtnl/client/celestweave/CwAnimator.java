@@ -7,6 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
 
+import com.science.gtnl.client.fx.FxColor;
+import com.science.gtnl.common.celestweave.CelestweaveModule;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -23,8 +26,8 @@ public final class CwAnimator {
 
     private static int rotor, innerRotor, crystal, nucleus, shellA, swirl, swirlPane, halo, holoScreen, packBand,
         visorEyes;
-    private static final int[] ROTOR_SEG = new int[8], INNER_SEG = new int[3], LED = new int[8], PIP = new int[3],
-        BLADE_L = new int[5], BLADE_R = new int[5], NOZZLE = new int[2];
+    private static final int[] ROTOR_SEG = new int[8], INNER_SEG = new int[3], BLADE_L = new int[5],
+        BLADE_R = new int[5], NOZZLE = new int[2];
     private static int sparL, sparR, foreL, foreR, fieldL, fieldR;
     private static CwFrames bound;
 
@@ -45,8 +48,6 @@ public final class CwAnimator {
         visorEyes = idx("visor.eyes");
         fill(ROTOR_SEG, "core.rotorSeg");
         fill(INNER_SEG, "core.innerSeg");
-        fill(LED, "core.led");
-        fill(PIP, "core.pip");
         fill(BLADE_L, "wing.blade.L");
         fill(BLADE_R, "wing.blade.R");
         sparL = idx("wing.spar.L");
@@ -84,97 +85,90 @@ public final class CwAnimator {
         return state.pose;
     }
 
-    private static void apply(CwPose p, CwLook look, CwClientState st, long now, float t, float dt) {
-        p.reset();
-        int tier = look.tier, theme = look.theme;
-        float charge = look.charge;
-        float glow = st.hitGlow(now);
-        float bright = tier == 0 ? 0.3F : 0.4F + 0.6F * charge;
-        if (tier > 0 && charge < 0.1F && RNG.nextFloat() < 0.18F) bright *= 0.25F;
-        float b = bright * (0.8F + 0.2F * MathHelper.sin(t * (1.5F + 1.2F * tier))) * (1F + 1.1F * glow);
-        p.brightness = b;
-        p.themeR = (theme >> 16 & 255) / 255F;
-        p.themeG = (theme >> 8 & 255) / 255F;
-        p.themeB = (theme & 255) / 255F;
+    private static void apply(CwPose pose, CwLook look, CwClientState state, long now, float seconds, float dt) {
+        pose.reset();
+        int tier = look.tier, glowColor = look.glowColor;
+        float fraction = look.fraction;
+        float glow = state.hitGlow(now);
+        float baseBrightness = tier == 0 ? 0.3F : 0.4F + 0.6F * fraction;
+        if (tier > 0 && fraction < 0.1F && RNG.nextFloat() < 0.18F) baseBrightness *= 0.25F;
+        float brightness = baseBrightness * (0.8F + 0.2F * MathHelper.sin(seconds * (1.5F + 1.2F * tier)))
+            * (1F + 1.1F * glow);
+        pose.brightness = brightness;
+        pose.baseBrightness = baseBrightness * (1F + 1.1F * glow);
+        pose.glowR = FxColor.red(glowColor);
+        pose.glowG = FxColor.green(glowColor);
+        pose.glowB = FxColor.blue(glowColor);
         int tierRgb = look.tierColor();
 
-        float spin = tier == 0 ? 0F : (0.35F + 0.45F * tier) * (0.4F + 0.6F * charge) * (1F + 3F * glow);
-        st.rotor = wrap(st.rotor + spin * dt);
-        st.inner = wrap(st.inner - 1.6F * spin * dt);
-        if (tier > 0) st.crystal = wrap(st.crystal + 0.25F * dt);
-        st.swirl = wrap(st.swirl + 1.3F * spin * dt);
-        rotZ(p, rotor, st.rotor);
-        rotZ(p, innerRotor, st.inner);
-        rotZ(p, crystal, st.crystal);
-        rotZ(p, swirl, st.swirl);
+        float spin = tier == 0 ? 0F : (0.35F + 0.45F * tier) * (0.4F + 0.6F * fraction) * (1F + 3F * glow);
+        state.rotor = wrap(state.rotor + spin * dt);
+        state.inner = wrap(state.inner - 1.6F * spin * dt);
+        if (tier > 0) state.crystal = wrap(state.crystal + 0.25F * dt);
+        state.swirl = wrap(state.swirl + 1.3F * spin * dt);
+        rotZ(pose, rotor, state.rotor);
+        rotZ(pose, innerRotor, state.inner);
+        rotZ(pose, crystal, state.crystal);
+        rotZ(pose, swirl, state.swirl);
 
         for (int i = 0; i < ROTOR_SEG.length; i++) {
-            p.color(ROTOR_SEG[i], tierRgb, b, 1F);
-            p.hide(ROTOR_SEG[i], tier == 1 && i % 2 == 1);
+            pose.color(ROTOR_SEG[i], tierRgb, brightness, 1F);
+            pose.hide(ROTOR_SEG[i], tier == 1 && i % 2 == 1);
         }
-        p.hide(innerRotor, tier == 0);
-        for (int index : INNER_SEG) p.color(index, CwLook.mixWhite(theme, Math.min(1F, 0.7F + 0.3F * glow)), b, 1F);
-        p.color(shellA, tierRgb, 0.9F * b, 1F);
-        p.color(nucleus, tier == 3 ? 0xFFFFFF : 0xFFE1F0, Math.min(1.5F, 1.25F * b), 1F);
-        float nucleusScale = (tier == 0 ? 0.75F : 0.88F + 0.14F * MathHelper.sin(t * (3F + 2F * tier)))
+        pose.hide(innerRotor, tier == 0);
+        for (int index : INNER_SEG)
+            pose.color(index, FxColor.mixWhite(glowColor, Math.min(1F, 0.4F + 0.3F * glow)), brightness, 1F);
+        pose.color(shellA, tierRgb, 0.9F * brightness, 1F);
+        pose.color(nucleus, FxColor.mixWhite(glowColor, 0.6F), Math.min(1.2F, 1.25F * brightness), 1F);
+        float nucleusScale = (tier == 0 ? 0.75F : 0.88F + 0.14F * MathHelper.sin(seconds * (3F + 2F * tier)))
             * (1F + 0.3F * glow);
-        scale(p, nucleus, nucleusScale, nucleusScale, nucleusScale);
+        scale(pose, nucleus, nucleusScale, nucleusScale, nucleusScale);
 
-        p.hide(swirl, tier == 0);
-        p.color(swirlPane, theme, 1F, Math.min(1F, 0.35F + 0.65F * b + 0.4F * glow));
+        pose.hide(swirl, tier == 0);
+        pose.color(swirlPane, glowColor, 1F, Math.min(1F, 0.35F + 0.65F * brightness + 0.4F * glow));
 
-        float haloAlpha = (tier == 3 ? 0.55F * charge : 0F) + 0.9F * glow;
-        p.hide(halo, haloAlpha <= 0.01F);
+        float haloAlpha = (tier == 3 ? 0.55F * fraction : 0F) + 0.9F * glow;
+        pose.hide(halo, haloAlpha <= 0.01F);
         float haloScale = 1F + 0.35F * glow;
-        scale(p, halo, haloScale, haloScale, 1F);
-        p.color(
+        scale(pose, halo, haloScale, haloScale, 1F);
+        pose.color(
             halo,
-            CwLook.mixWhite(theme, Math.min(0.6F, 0.4F * glow)),
+            FxColor.mixWhite(glowColor, Math.min(0.6F, 0.4F * glow)),
             1F,
-            Math.min(1F, haloAlpha * (0.85F + 0.15F * MathHelper.sin(t * 4F))));
+            Math.min(1F, haloAlpha * (0.85F + 0.15F * MathHelper.sin(seconds * 4F))));
 
-        int lit = tier == 0 ? 0 : Math.round(charge * 8);
-        for (int i = 0; i < 8; i++) {
-            boolean on = i < lit;
-            boolean low = charge < 0.2F && i == 0 && MathHelper.sin(t * 10F) < 0F;
-            p.color(
-                LED[i],
-                on && !low ? (charge < 0.2F ? 0xFF783C : tierRgb) : 0x3C1428,
-                on ? Math.max(0.6F, b) : 1F,
-                1F);
-        }
-        for (int i = 0; i < 3; i++) p.color(PIP[i], i < tier ? 0xFFFFFF : 0x321E2D, 1F, 1F);
-        p.color(visorEyes, CwLook.mixWhite(theme, 0.25F), Math.min(1.1F, b), 1F);
+        pose.color(visorEyes, FxColor.mixWhite(glowColor, 0.25F), Math.min(1.1F, brightness), 1F);
 
         if (look.packColor == CwLook.PACK_RAINBOW)
-            p.color(packBand, Color.HSBtoRGB(t * 0.25F % 1F, 0.8F, 1F) & 0xFFFFFF, b, 1F);
-        else if (look.packColor >= 0) p.color(packBand, look.packColor, b, 1F);
+            pose.color(packBand, Color.HSBtoRGB(seconds * 0.25F % 1F, 0.8F, 1F) & 0xFFFFFF, brightness, 1F);
+        else if (look.packColor >= 0) pose.color(packBand, look.packColor, brightness, 1F);
 
         if (holoScreen >= 0) {
-            p.texFrame[holoScreen] = MathHelper.floor_float(t * 4F) & 3;
-            p.color(holoScreen, 0xFFFFFF, 1F, RNG.nextFloat() < 0.04F ? 0.45F : 1F);
+            pose.texFrame[holoScreen] = MathHelper.floor_float(seconds * 4F) & 3;
+            pose.color(holoScreen, 0xFFFFFF, 1F, RNG.nextFloat() < 0.04F ? 0.45F : 1F);
         }
 
-        boolean dash = now - st.dashAt < 900;
-        for (int index : NOZZLE) if (dash) p.color(index, 0xFFFFFF, 1F, 1F);
+        boolean dash = now - state.dashAt < 900;
+        for (int index : NOZZLE) if (dash) pose.color(index, 0xFFFFFF, 1F, 1F);
 
-        boolean shown = look.wings && (st.flying || now - st.wingT0 < WING_RETRACT_MS);
-        float[] wing = wingValues(st, now);
+        boolean shown = look.visible(CelestweaveModule.FLIGHT)
+            && (state.flying || now - state.wingT0 < WING_RETRACT_MS);
+        float[] wing = wingValues(state, now);
         float spar = wing[0], fore = wing[1], field = wing[WING_PARTS - 1];
-        float hover = MathHelper.sin(1.6F * t);
-        int flow = MathHelper.floor_float(t * 8F) & 3, scan = MathHelper.floor_float(t * 4F) & 3;
-        int bladeRgb = CwLook.mixWhite(theme, 0.2F), fieldRgb = CwLook.mixWhite(theme, 0.1F);
+        float hover = MathHelper.sin(1.6F * seconds);
+        int flow = MathHelper.floor_float(seconds * 8F) & 3, scan = MathHelper.floor_float(seconds * 4F) & 3;
+        int bladeRgb = FxColor.mixWhite(glowColor, 0.2F), fieldRgb = FxColor.mixWhite(glowColor, 0.1F);
         for (int side : new int[] { 1, -1 }) {
             int sparIndex = side > 0 ? sparL : sparR, foreIndex = side > 0 ? foreL : foreR,
                 fieldIndex = side > 0 ? fieldL : fieldR;
-            p.hide(sparIndex, !shown);
+            pose.hide(sparIndex, !shown);
             if (!shown) continue;
-            if (sparIndex >= 0) p.rz[sparIndex] = side * (1.2F * (1F - spar) - 0.03F * hover * spar);
-            if (foreIndex >= 0) p.rz[foreIndex] = side * 1.9F * (1F - fore);
+            if (sparIndex >= 0) pose.rz[sparIndex] = side * (1.2F * (1F - spar) - 0.03F * hover * spar);
+            if (foreIndex >= 0) pose.rz[foreIndex] = side * 1.9F * (1F - fore);
             if (fieldIndex >= 0) {
-                p.hide(fieldIndex, field <= 0.001F);
-                p.texFrame[fieldIndex] = scan;
-                p.color(fieldIndex, fieldRgb, 1F, field * (0.5F + 0.1F * MathHelper.sin(2F * t)));
+                pose.hide(fieldIndex, field <= 0.001F);
+                pose.texFrame[fieldIndex] = scan;
+                pose.color(fieldIndex, fieldRgb, 1F, field * (0.5F + 0.1F * MathHelper.sin(2F * seconds)));
             }
             int[] blades = side > 0 ? BLADE_L : BLADE_R;
             for (int i = 0; i < blades.length; i++) {
@@ -182,30 +176,30 @@ public final class CwAnimator {
                 if (index < 0) continue;
                 float e = wing[2 + i];
                 if (e <= 0.001F) {
-                    p.hidden[index] = true;
+                    pose.hidden[index] = true;
                     continue;
                 }
-                p.sx[index] = e;
-                p.texFrame[index] = flow;
+                pose.sx[index] = e;
+                pose.texFrame[index] = flow;
                 float flick = RNG.nextFloat() < 0.02F ? 0.4F : 1F;
-                p.color(index, bladeRgb, 1F, flick * (0.82F + 0.15F * MathHelper.sin(4F * t + 0.9F * i)));
+                pose.color(index, bladeRgb, 1F, flick * (0.82F + 0.15F * MathHelper.sin(4F * seconds + 0.9F * i)));
             }
         }
     }
 
-    static boolean wingToggle(CwClientState st, boolean flying, long now) {
-        if (flying == st.flying) return false;
-        st.wingSnap = wingValues(st, now);
-        st.wingT0 = now;
-        st.flying = flying;
+    static boolean wingToggle(CwClientState state, boolean flying, long now) {
+        if (flying == state.flying) return false;
+        state.wingSnap = wingValues(state, now);
+        state.wingT0 = now;
+        state.flying = flying;
         return true;
     }
 
-    static float[] wingValues(CwClientState st, long now) {
-        float x = (now - st.wingT0) / 1000F;
+    static float[] wingValues(CwClientState state, long now) {
+        float x = (now - state.wingT0) / 1000F;
         float[] values = new float[WING_PARTS];
         int last = WING_PARTS - 1, blades = BLADES.length;
-        if (st.flying) {
+        if (state.flying) {
             values[0] = ease(x, 0F, 0.25F);
             values[1] = ease(x, 0.12F, 0.3F);
             for (int i = 0; i < blades; i++) values[2 + i] = ease(x, 0.35F + 0.06F * i, 0.22F);
@@ -216,9 +210,9 @@ public final class CwAnimator {
             for (int i = 0; i < blades; i++) values[2 + i] = 1F - ease(x, 0.05F + 0.04F * (blades - 1 - i), 0.15F);
             values[last] = 1F - ease(x, 0F, 0.15F);
         }
-        float[] snap = st.wingSnap;
+        float[] snap = state.wingSnap;
         if (snap != null && snap.length == WING_PARTS) for (int k = 0; k < WING_PARTS; k++)
-            values[k] = st.flying ? Math.max(snap[k], values[k]) : Math.min(snap[k], values[k]);
+            values[k] = state.flying ? Math.max(snap[k], values[k]) : Math.min(snap[k], values[k]);
         return values;
     }
 
@@ -233,15 +227,15 @@ public final class CwAnimator {
         return 1F - (1F - u) * (1F - u) * (1F - u);
     }
 
-    private static void rotZ(CwPose p, int index, float angle) {
-        if (index >= 0) p.rz[index] = angle;
+    private static void rotZ(CwPose pose, int index, float angle) {
+        if (index >= 0) pose.rz[index] = angle;
     }
 
-    private static void scale(CwPose p, int index, float x, float y, float z) {
+    private static void scale(CwPose pose, int index, float x, float y, float z) {
         if (index < 0) return;
-        p.sx[index] = x;
-        p.sy[index] = y;
-        p.sz[index] = z;
+        pose.sx[index] = x;
+        pose.sy[index] = y;
+        pose.sz[index] = z;
     }
 
     private static float wrap(float angle) {

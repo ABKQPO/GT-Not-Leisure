@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 
 import com.science.gtnl.client.railgun.RailgunCameraShake;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
+import com.science.gtnl.common.railgun.RailgunChargeTier;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -36,10 +37,9 @@ public class RailgunRecoilFxPacket extends ClientboundPacket {
     @Override
     @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
-        if (Float.isFinite(pitchUp) && pitchUp >= 0 && pitchUp <= 30 && tier >= 1 && tier <= 3) {
-            var world = minecraft.theWorld;
-            minecraft.func_152344_a(
-                () -> { if (world != null && minecraft.theWorld == world) RailgunCameraShake.recoil(pitchUp, tier); });
-        }
+        if (Float.isFinite(pitchUp) && pitchUp >= 0
+            && pitchUp <= 30
+            && RailgunChargeTier.byOrdinal(tier) != RailgunChargeTier.NONE)
+            runInWorld(minecraft, () -> RailgunCameraShake.recoil(pitchUp, tier));
     }
 }

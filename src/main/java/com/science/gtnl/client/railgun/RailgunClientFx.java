@@ -6,11 +6,12 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.science.gtnl.client.fx.FxShockwaveRenderer;
 import com.science.gtnl.client.shader.GlslProgram;
+import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.packet.RailgunBeamChainFxPacket;
 import com.science.gtnl.common.packet.RailgunFireFxPacket;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
-import com.science.gtnl.common.railgun.RailgunVec;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -22,12 +23,11 @@ public class RailgunClientFx {
     private static final int CHAIN_SPARKS = 4;
     private static final double CHAIN_SPARK_SPREAD = 0.4;
     private static final float RAILGUN_SOUND_RANGE_VOLUME = 16.0F;
+    private static final float WAVE_RED = 1F, WAVE_GREEN = 0.5F, WAVE_BLUE = 0.75F;
 
     public static void register() {
         MinecraftForge.EVENT_BUS.register(new RailgunClientFx());
         MinecraftForge.EVENT_BUS.register(new RailgunBeamRenderer());
-        MinecraftForge.EVENT_BUS.register(new RailgunArcRenderer());
-        MinecraftForge.EVENT_BUS.register(new RailgunShockwaveRenderer());
         MinecraftForge.EVENT_BUS.register(new RailgunOrbRenderer());
         MinecraftForge.EVENT_BUS.register(new RailgunHudRenderer());
         FMLCommonHandler.instance()
@@ -65,23 +65,23 @@ public class RailgunClientFx {
         WorldClient world = minecraft.theWorld;
         if (world == null) return;
         boolean max = max(packet);
-        RailgunVec hit = packet.firstHit;
+        EquipmentVec hit = packet.firstHit;
         float intensity = 1F + 0.22F * Math.max(0, packet.tier - 1);
         RailgunBeamRenderer.shot(packet.shooterId, packet.from, hit, true, intensity);
         double radius = packet.impactRadius;
         if (radius > 0) {
             int waveLife = max ? 80 : 56 + packet.tier * 6;
-            RailgunShockwaveRenderer.spawn(hit, radius, waveLife);
-            RailgunShockwaveRenderer.spawn(hit, radius * 0.5, Math.max(35, waveLife - 15));
+            FxShockwaveRenderer.spawn(hit, radius, waveLife, WAVE_RED, WAVE_GREEN, WAVE_BLUE);
+            FxShockwaveRenderer.spawn(hit, radius * 0.5, Math.max(35, waveLife - 15), WAVE_RED, WAVE_GREEN, WAVE_BLUE);
         }
         for (int index = 0; index + 1 < packet.chainPath.size(); index += 2) {
-            RailgunVec target = packet.chainPath.get(index + 1);
-            RailgunArcRenderer.spawnChain(packet.chainPath.get(index), target, max ? 40 : 32);
+            EquipmentVec target = packet.chainPath.get(index + 1);
+            RailgunArcs.chain(packet.chainPath.get(index), target, max ? 40 : 32, true);
             sparks(world, target, CHAIN_SPARKS, CHAIN_SPARK_SPREAD);
         }
-        RailgunVec muzzle = RailgunRenderHelper
+        EquipmentVec muzzle = RailgunMuzzleAnchor
             .analyticMuzzle(packet.shooterId, packet.from, minecraft.timer.renderPartialTicks);
-        RailgunArcRenderer.spawnPlasma(
+        RailgunArcs.plasma(
             muzzle,
             hit,
             Math.max(
@@ -97,7 +97,7 @@ public class RailgunClientFx {
                 double yaw = world.rand.nextDouble() * Math.PI * 2;
                 double pitch = (world.rand.nextDouble() - 0.3) * Math.PI;
                 double length = radius * (0.6 + world.rand.nextDouble() * 0.6);
-                RailgunArcRenderer.spawnImpactSpark(
+                RailgunArcs.impactSpark(
                     hit,
                     hit.add(
                         Math.cos(yaw) * Math.cos(pitch) * length,
@@ -107,17 +107,17 @@ public class RailgunClientFx {
             }
         }
         sparks(world, hit, IMPACT_SPARKS, SPARK_SPREAD);
-        if (packet.sound && max) world.playSound(
+        if (packet.sound) world.playSound(
             hit.x(),
             hit.y(),
             hit.z(),
             "sciencenotleisure:railgun.fire.impact",
             RAILGUN_SOUND_RANGE_VOLUME,
-            0.7F,
+            max ? 0.7F : 0.85F,
             false);
     }
 
-    private static void sparks(WorldClient world, RailgunVec at, int count, double spread) {
+    private static void sparks(WorldClient world, EquipmentVec at, int count, double spread) {
         for (int spark = 0; spark < count; spark++) world.spawnParticle(
             "fireworksSpark",
             at.x(),
@@ -132,7 +132,7 @@ public class RailgunClientFx {
         var world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
         for (int index = 0; index + 1 < packet.path.size(); index += 2)
-            RailgunArcRenderer.spawnChain(packet.path.get(index), packet.path.get(index + 1), 6, packet.ehv);
+            RailgunArcs.chain(packet.path.get(index), packet.path.get(index + 1), 6, packet.ehv);
         if (packet.sound) world.playSound(
             packet.origin.x(),
             packet.origin.y(),
@@ -147,11 +147,9 @@ public class RailgunClientFx {
     public void unload(WorldEvent.Unload event) {
         if (!event.world.isRemote) return;
         RailgunBeamRenderer.clear();
-        RailgunArcRenderer.clear();
-        RailgunShockwaveRenderer.clear();
         RailgunOrbRenderer.clear();
         RailgunCameraShake.clear();
-        RailgunCharge.reset();
+        RailgunCharge.clear();
         RailgunMuzzleAnchor.clear();
         RailgunSounds.clear();
         GlslProgram.release();
@@ -159,7 +157,6 @@ public class RailgunClientFx {
 
     @SubscribeEvent
     public void reload(TextureStitchEvent.Post event) {
-        RailgunRenderHelper.clearSprites();
         GlslProgram.release();
     }
 }

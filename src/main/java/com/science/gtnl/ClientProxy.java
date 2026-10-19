@@ -149,6 +149,7 @@ public class ClientProxy extends CommonProxy {
         super.preInit(event);
         MiniTerminalClient.init();
         WirelessCardInput.register();
+        com.science.gtnl.client.fx.FxEffects.register();
         com.science.gtnl.client.railgun.RailgunClientFx.register();
         com.science.gtnl.client.celestweave.CelestweaveClientEvents.register();
         MinecraftForge.EVENT_BUS.register(WirelessWorldHighlight.INSTANCE);

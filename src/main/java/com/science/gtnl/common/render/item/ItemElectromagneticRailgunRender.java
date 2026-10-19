@@ -135,9 +135,9 @@ public class ItemElectromagneticRailgunRender implements IItemRenderer {
     }
 
     private static void applyFirstPerson() {
-        Minecraft mc = Minecraft.getMinecraft();
-        EntityPlayer player = mc.thePlayer;
-        float partialTicks = mc.timer.renderPartialTicks;
+        Minecraft minecraft = Minecraft.getMinecraft();
+        EntityPlayer player = minecraft.thePlayer;
+        float partialTicks = minecraft.timer.renderPartialTicks;
         float swing = player.getSwingProgress(partialTicks);
         float swingSq = MathHelper.sin(swing * swing * PI);
         float swingRoot = MathHelper.sin(MathHelper.sqrt_float(swing) * PI);
