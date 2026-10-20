@@ -25,6 +25,7 @@ import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.client.celestweave.CelestweaveArmorModel;
 import com.science.gtnl.common.celestweave.CelestweaveCompat;
@@ -36,6 +37,7 @@ import com.science.gtnl.common.equipment.IEquipmentElectricItem;
 import com.science.gtnl.common.equipment.IEquipmentItem;
 import com.science.gtnl.common.gui.equipment.CelestweaveGui;
 import com.science.gtnl.common.gui.equipment.EquipmentContainer;
+import com.science.gtnl.common.gui.equipment.EquipmentTheme;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.common.Optional;
@@ -46,8 +48,6 @@ import forestry.api.apiculture.IArmorApiaristMulti;
 import forestry.api.core.IArmorNaturalist;
 import gregtech.api.hazards.Hazard;
 import gregtech.api.hazards.IHazardProtector;
-import gregtech.api.modularui2.GTGuiThemes;
-import gregtech.api.modularui2.GTModularScreen;
 import thaumcraft.api.IGoggles;
 import thaumcraft.api.IVisDiscountGear;
 import thaumcraft.api.aspects.Aspect;
@@ -282,7 +282,7 @@ public class CelestweaveArmor extends ItemArmor implements IEquipmentElectricIte
     @Override
     @SideOnly(Side.CLIENT)
     public ModularScreen createScreen(PlayerInventoryGuiData data, ModularPanel panel) {
-        return new GTModularScreen(panel, GTGuiThemes.STANDARD);
+        return new ModularScreen(ScienceNotLeisure.MODID, panel).useTheme(EquipmentTheme.selected());
     }
 
     @Override

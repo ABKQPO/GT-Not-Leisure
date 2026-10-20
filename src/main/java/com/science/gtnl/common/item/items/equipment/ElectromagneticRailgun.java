@@ -22,11 +22,13 @@ import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.equipment.IEquipmentElectricItem;
 import com.science.gtnl.common.equipment.IEquipmentItem;
 import com.science.gtnl.common.gui.equipment.EquipmentContainer;
+import com.science.gtnl.common.gui.equipment.EquipmentTheme;
 import com.science.gtnl.common.gui.equipment.RailgunGui;
 import com.science.gtnl.common.railgun.RailgunBeamService;
 import com.science.gtnl.common.railgun.RailgunData;
@@ -37,8 +39,6 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.api.modularui2.GTGuiThemes;
-import gregtech.api.modularui2.GTModularScreen;
 
 public class ElectromagneticRailgun extends Item
     implements IEquipmentElectricItem, IEquipmentItem, IGuiHolder<PlayerInventoryGuiData> {
@@ -163,7 +163,7 @@ public class ElectromagneticRailgun extends Item
     @Override
     @SideOnly(Side.CLIENT)
     public ModularScreen createScreen(PlayerInventoryGuiData data, ModularPanel panel) {
-        return new GTModularScreen(panel, GTGuiThemes.STANDARD);
+        return new ModularScreen(ScienceNotLeisure.MODID, panel).useTheme(EquipmentTheme.selected());
     }
 
     @Override

@@ -16,6 +16,7 @@ import com.gtnewhorizon.gtnhlib.config.Config.RangeInt;
 import com.gtnewhorizon.gtnhlib.config.Config.RequiresMcRestart;
 import com.gtnewhorizon.gtnhlib.config.Config.Sync;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.gui.equipment.EquipmentTheme;
 
 import gregtech.api.enums.Mods;
 
@@ -138,6 +139,16 @@ public class MainConfig {
         @DefaultFloat(0.35F)
         @RangeFloat(min = 0F, max = 1F)
         public float celestweaveHudIdleAlpha = 0.35F;
+
+        @Comment("Theme of the equipment screens: sound settings, Celestweave and Celestweave Lance settings and the Celestweave wheel; only registered themes can be chosen, an unknown id falls back to gtnl:equipment")
+        @LangKey("gtnl.gui.config.general.client.equipment_theme")
+        @DefaultString(EquipmentTheme.ID)
+        public String equipmentTheme = EquipmentTheme.ID;
+
+        @Comment("Tint the equipment screens and the HUD editor guides with the glow color of the Celestweave chestplate you wear or are editing; when off they use the colors of the chosen theme")
+        @LangKey("gtnl.gui.config.general.client.enable_equipment_theme_glow_color")
+        @DefaultBoolean(true)
+        public boolean enableEquipmentThemeGlowColor = true;
     }
 
     public static final Effect effect = new Effect();

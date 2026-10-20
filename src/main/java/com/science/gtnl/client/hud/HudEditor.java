@@ -3,6 +3,7 @@ package com.science.gtnl.client.hud;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.IntSupplier;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -23,8 +24,9 @@ public class HudEditor extends GuiScreen {
     private static final String LANG = "gtnl.hud.editor.";
     private static final int RESET = 0, DONE = 1, SHOW_ALL = 2, SNAP = 4, BUTTON_WIDTH = 100, BUTTON_HEIGHT = 20,
         BUTTON_Y = 22, BUTTON_GAP = 4;
-    private static final int SHADE = 0x30000000, GUIDE = 0x80FF3D9A, FRAME = 0x60FFFFFF, ACTIVE = 0xFFFF3D9A,
+    private static final int SHADE = 0x30000000, GUIDE = 0x80FFFFFF, FRAME = 0x60FFFFFF, ACTIVE = 0xFFFFFFFF,
         HIDDEN = 0x80808080;
+    private static IntSupplier guide = () -> GUIDE, active = () -> ACTIVE;
 
     private HudElement dragging;
     private float grabX, grabY;
@@ -36,6 +38,19 @@ public class HudEditor extends GuiScreen {
 
     public static boolean isOpen() {
         return Minecraft.getMinecraft().currentScreen instanceof HudEditor;
+    }
+
+    public static void colors(IntSupplier guide, IntSupplier active) {
+        HudEditor.guide = guide;
+        HudEditor.active = active;
+    }
+
+    public static int guideColor() {
+        return guide.getAsInt();
+    }
+
+    public static int activeColor() {
+        return active.getAsInt();
     }
 
     public static List<HudElement> candidates(boolean showAll) {
@@ -155,14 +170,15 @@ public class HudEditor extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawRect(0, 0, width, height, SHADE);
-        if (snapX) drawRect(width / 2, 0, width / 2 + 1, height, GUIDE);
-        if (snapY) drawRect(0, height / 2, width, height / 2 + 1, GUIDE);
+        int guideColor = guideColor(), activeColor = activeColor();
+        if (snapX) drawRect(width / 2, 0, width / 2 + 1, height, guideColor);
+        if (snapY) drawRect(0, height / 2, width, height / 2 + 1, guideColor);
         HudElement focus = dragging != null ? dragging : elementAt(mouseX, mouseY);
         List<HudElement> candidates = candidates(showAll);
         for (HudElement element : candidates) {
             boolean hidden = HudLayout.hidden(element);
             if (!hidden && mc.thePlayer != null) element.preview(place(element), partialTicks);
-            outline(frame(element), element == focus ? ACTIVE : hidden ? HIDDEN : FRAME);
+            outline(frame(element), element == focus ? activeColor : hidden ? HIDDEN : FRAME);
         }
         if (focus != null) label(focus);
         if (candidates.isEmpty()) drawCenteredString(fontRendererObj, tr("empty"), width / 2, height / 2, 0xFFFFFF);

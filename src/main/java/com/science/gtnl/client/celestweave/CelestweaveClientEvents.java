@@ -83,6 +83,7 @@ public class CelestweaveClientEvents {
         CelestweaveObjModel.register();
         CelestweaveClientInput.register();
         CelestweaveBackpackClient.registerTabs();
+        CelestweaveThemeAccent.register();
     }
 
     static long renderFrame() {

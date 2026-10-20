@@ -71,6 +71,8 @@ import com.science.gtnl.common.entity.EntityParticleBeam;
 import com.science.gtnl.common.entity.EntityPlayerLeashKnot;
 import com.science.gtnl.common.entity.EntitySaddleSlime;
 import com.science.gtnl.common.entity.EntitySteamRocket;
+import com.science.gtnl.common.gui.equipment.EquipmentTheme;
+import com.science.gtnl.common.gui.modularui.theme.PaletteThemes;
 import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchGuiFactory;
 import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchHost;
 import com.science.gtnl.common.part.PartActiveFormationPlane;
@@ -161,6 +163,8 @@ public class ClientProxy extends CommonProxy {
         MinecraftForge.EVENT_BUS.register(new ShaderEffect.Reloader());
         EquipmentClientInput.register();
         EquipmentSoundConfig.register();
+        MinecraftForge.EVENT_BUS.register(new PaletteThemes.Reloader());
+        EquipmentTheme.register();
         RailgunClientFx.register();
         CelestweaveClientEvents.register();
         MinecraftForge.EVENT_BUS.register(WirelessWorldHighlight.INSTANCE);

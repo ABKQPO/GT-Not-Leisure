@@ -10,17 +10,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.StatCollector;
 
+import com.cleanroommc.modularui.api.IThemeApi;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.utils.item.ItemStackHandler;
-import com.cleanroommc.modularui.value.DoubleValue;
 import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
 import com.cleanroommc.modularui.value.sync.LongSyncValue;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
-import com.cleanroommc.modularui.widgets.ProgressWidget;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
@@ -28,17 +28,17 @@ import com.science.gtnl.client.hud.HudEditor;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.equipment.EquipmentModules;
 import com.science.gtnl.common.equipment.IEquipmentVariant;
+import com.science.gtnl.common.gui.modularui.widget.FillBar;
+import com.science.gtnl.common.gui.modularui.widget.SlideSwitch;
 import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.api.modularui2.GTGuiTextures;
-import gregtech.api.modularui2.GTGuis;
 
 public abstract class EquipmentGui {
 
     protected static final int WIDTH = 176, BUTTON_HEIGHT = 14;
-    private static final int STORED_EU_TEXTURE_WIDTH = 147;
+    private static final int CLOSE_SIZE = 10, CLOSE_INSET = 4;
     private static final int INVENTORY_HEIGHT = 76, INVENTORY_BOTTOM = 7, FOOTER_GAP = 4, HUD_BUTTON_WIDTH = 56,
         HUD_BUTTON_SIDE = 8, HUD_BUTTON_BOTTOM = INVENTORY_BOTTOM + INVENTORY_HEIGHT + FOOTER_GAP,
         FOOTER_HEIGHT = HUD_BUTTON_BOTTOM + BUTTON_HEIGHT;
@@ -85,8 +85,11 @@ public abstract class EquipmentGui {
     }
 
     protected static ModularPanel panel(String name, int contentHeight) {
-        return GTGuis.createPopUpPanel(name)
-            .size(WIDTH, contentHeight + FOOTER_HEIGHT);
+        return new ModularPanel(name).size(WIDTH, contentHeight + FOOTER_HEIGHT)
+            .child(
+                closeButton().size(CLOSE_SIZE, CLOSE_SIZE)
+                    .top(CLOSE_INSET)
+                    .right(CLOSE_INSET));
     }
 
     protected static void bindFooter(ModularPanel panel) {
@@ -107,6 +110,18 @@ public abstract class EquipmentGui {
         Minecraft.getMinecraft()
             .displayGuiScreen(null);
         HudEditor.open();
+    }
+
+    public static ButtonWidget<?> closeButton() {
+        ButtonWidget<?> button = new ButtonWidget<>();
+        return button.widgetTheme(IThemeApi.CLOSE_BUTTON)
+            .overlay(IKey.str("×"))
+            .onMousePressed(mouse -> {
+                if (mouse != 0) return false;
+                button.getPanel()
+                    .closeIfOpen();
+                return true;
+            });
     }
 
     protected static void title(ModularPanel panel, String lang, int width) {
@@ -147,9 +162,7 @@ public abstract class EquipmentGui {
                 .pos(8, y)
                 .size(labelWidth, 10));
         panel.child(
-            new ProgressWidget().value(
-                new DoubleValue.Dynamic(() -> stored.getLongValue() / (double) Math.max(1, max.getLongValue()), null))
-                .texture(GTGuiTextures.PROGRESSBAR_STORED_EU, STORED_EU_TEXTURE_WIDTH)
+            new FillBar().value(() -> stored.getLongValue() / (double) Math.max(1, max.getLongValue()))
                 .pos(8, y + 16)
                 .size(160, 5));
     }
@@ -159,37 +172,43 @@ public abstract class EquipmentGui {
     }
 
     private static ButtonWidget<?> standardButton(int width, int height) {
-        return new ButtonWidget<>().size(width, height)
-            .background(GTGuiTextures.BUTTON_STANDARD);
+        return new ButtonWidget<>().size(width, height);
     }
 
-    protected ButtonWidget<?> addToggle(ParentWidget<?> parent, String key, String lang, int x, int y, int width,
-        BooleanSupplier getter, Consumer<Boolean> setter, BooleanSupplier allowed, String hint) {
+    protected BooleanSyncValue syncToggle(String key, BooleanSupplier getter, Consumer<Boolean> setter,
+        BooleanSupplier allowed) {
         BooleanSyncValue value = new BooleanSyncValue(
             getter,
             enabled -> { if (allowed.getAsBoolean()) setter.accept(enabled); }).allowC2S();
         sync.syncValue(key, value);
-        ButtonWidget<?> button = standardButton(x, y, width, BUTTON_HEIGHT)
-            .overlay(
-                IKey.dynamic(() -> (allowed.getAsBoolean() ? value.getBoolValue() ? "§a" : "§7" : "§8") + tr(lang)))
-            .tooltipBuilder(tooltip -> {
-                if (hint != null) tooltip.addLine(IKey.lang(hint));
-                tooltip
-                    .addLine(
-                        IKey.dynamic(
-                            () -> tr(
-                                allowed.getAsBoolean()
-                                    ? value.getBoolValue() ? "item.gtnl.equipment.gui.enabled"
-                                        : "item.gtnl.equipment.gui.disabled"
-                                    : "item.gtnl.equipment.gui.unavailable")));
-            })
-            .onMousePressed(mouse -> {
-                if (mouse != 0 || !allowed.getAsBoolean()) return false;
-                value.setBoolValue(!value.getBoolValue());
-                return true;
-            });
-        parent.child(button);
-        return button;
+        return value;
+    }
+
+    protected static void stateTooltip(RichTooltip tooltip, String hint, BooleanSupplier allowed, BooleanSupplier on) {
+        if (hint != null) tooltip.addLine(IKey.lang(hint));
+        tooltip.addLine(
+            IKey.dynamic(
+                () -> tr(
+                    allowed.getAsBoolean()
+                        ? on.getAsBoolean() ? "item.gtnl.equipment.gui.enabled" : "item.gtnl.equipment.gui.disabled"
+                        : "item.gtnl.equipment.gui.unavailable")));
+    }
+
+    protected void addToggle(ParentWidget<?> parent, String key, String lang, int x, int y, int width,
+        BooleanSupplier getter, Consumer<Boolean> setter, BooleanSupplier allowed, String hint) {
+        BooleanSyncValue value = syncToggle(key, getter, setter, allowed);
+        parent.child(
+            new SlideSwitch().value(value::getBoolValue)
+                .availableWhen(allowed)
+                .label(IKey.dynamic(() -> tr(lang)))
+                .pos(x, y)
+                .size(width, BUTTON_HEIGHT)
+                .tooltipBuilder(tooltip -> stateTooltip(tooltip, hint, allowed, value::getBoolValue))
+                .onMousePressed(mouse -> {
+                    if (mouse != 0 || !allowed.getAsBoolean()) return false;
+                    value.setBoolValue(!value.getBoolValue());
+                    return true;
+                }));
     }
 
     protected class ModuleSlots<T extends IEquipmentVariant> extends ItemStackHandler {

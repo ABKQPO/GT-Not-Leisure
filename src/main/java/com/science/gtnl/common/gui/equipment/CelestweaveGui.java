@@ -13,6 +13,7 @@ import java.util.function.UnaryOperator;
 import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.api.IPanelHandler;
+import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.drawable.GuiDraw;
@@ -20,16 +21,20 @@ import com.cleanroommc.modularui.drawable.Rectangle;
 import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.utils.item.ItemStackHandler;
+import com.cleanroommc.modularui.value.BoolValue;
+import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
 import com.cleanroommc.modularui.value.sync.IntSyncValue;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.ColorPickerDialog;
 import com.cleanroommc.modularui.widgets.ListWidget;
+import com.cleanroommc.modularui.widgets.ToggleButton;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.client.celestweave.CelestweaveThemeAccent;
 import com.science.gtnl.common.celestweave.CelestweaveBackpack;
 import com.science.gtnl.common.celestweave.CelestweaveBackpackData;
 import com.science.gtnl.common.celestweave.CelestweaveCosmeticOption;
@@ -38,14 +43,18 @@ import com.science.gtnl.common.celestweave.CelestweaveEnergy;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
+import com.science.gtnl.common.gui.modularui.widget.SlideSwitch;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveKeyPacket;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class CelestweaveGui extends EquipmentGui {
 
     private static final int CONTENT_Y = 84;
     private static final int[] COLORS = { 0xFF3D9A, 0x3DE8FF, 0xFFC13D, 0xA35CFF, 0x4DFF88, 0xFF4040, 0xEEF0FF };
-    private static final String GUI_LANG = "item.gtnl.celestweave.gui.";
+    private static final String GUI_LANG = "item.gtnl.celestweave.gui.", UNAVAILABLE = "§7";
     private static final int ROW_HEIGHT = 16, PAGE_HEIGHT = 7 * ROW_HEIGHT, FLAGS_PER_ROW = 7;
     private static final int MODULES_PAGE = 0, SETTINGS_PAGE = 1, APPEARANCE_PAGE = 2;
     private static final String[] PAGES = { "modules", "settings", "appearance" };
@@ -74,12 +83,12 @@ public class CelestweaveGui extends EquipmentGui {
         modules = new ModuleHandler();
         boolean backpackButton = piece == CelestweaveArmor.CHEST
             && CelestweaveData.isArmorSlot(data.getPlayer(), data.getSlotIndex());
-        title(panel, stack.getUnlocalizedName() + ".name", backpackButton ? 106 : 160);
+        title(panel, stack.getUnlocalizedName() + ".name", backpackButton ? 98 : 160);
         if (backpackButton) panel.child(
-            standardButton(116, 3, 52, 13)
+            standardButton(108, 3, 52, 13)
                 .overlay(
                     IKey.dynamic(
-                        () -> (installed(CelestweaveModule.BACKPACK) ? "" : "§8")
+                        () -> (installed(CelestweaveModule.BACKPACK) ? "" : UNAVAILABLE)
                             + tr("item.gtnl.celestweave.gui.open_backpack")))
                 .onMousePressed(mouse -> {
                     if (mouse != 0 || !installed(CelestweaveModule.BACKPACK)) return false;
@@ -112,15 +121,11 @@ public class CelestweaveGui extends EquipmentGui {
         for (int i = 0; i < PAGES.length; i++) {
             final int index = i;
             panel.child(
-                standardButton(8 + i * 54, 66, 52, 14)
-                    .overlay(
-                        IKey.dynamic(
-                            () -> (page == index ? "§e" : "§7") + tr("item.gtnl.celestweave.gui.page." + PAGES[index])))
-                    .onMousePressed(mouse -> {
-                        if (mouse != 0) return false;
-                        page = index;
-                        return true;
-                    }));
+                new ToggleButton()
+                    .value(new BoolValue.Dynamic(() -> page == index, selected -> { if (selected) page = index; }))
+                    .overlay(IKey.lang("item.gtnl.celestweave.gui.page." + PAGES[index]))
+                    .pos(8 + i * 54, 66)
+                    .size(52, 14));
         }
         buildModulePage(panel);
         buildSettingsPage(panel);
@@ -179,8 +184,13 @@ public class CelestweaveGui extends EquipmentGui {
             sync.syncValue("module_" + module.id, state);
             states.put(module, state);
             panel.child(
-                standardButton(8 + (row % 2) * 81, CONTENT_Y + (row / 2) * 16, 79, 14)
-                    .overlay(IKey.dynamic(() -> moduleLabel(module, state.getIntValue())))
+                new SlideSwitch().value(() -> (state.getIntValue() & ACTIVE) != 0)
+                    .availableWhen(() -> (state.getIntValue() & INSTALLED) != 0)
+                    .liveWhen(() -> (state.getIntValue() & SHOWN) != 0)
+                    .label(IKey.dynamic(() -> tr("item.gtnl.celestweave.short." + module.id)))
+                    .pos(8 + (row % 2) * 81, CONTENT_Y + (row / 2) * 16)
+                    .size(79, BUTTON_HEIGHT)
+                    .tooltipAutoUpdate(true)
                     .tooltipBuilder(tooltip -> {
                         tooltip.addLine(IKey.lang("item.gtnl.celestweave_module." + module.id + ".name"));
                         tooltip.addLine(IKey.lang("item.gtnl.celestweave_module." + module.id + ".tooltip"));
@@ -188,6 +198,7 @@ public class CelestweaveGui extends EquipmentGui {
                             IKey.lang(
                                 module.hideable() ? "item.gtnl.celestweave.gui.toggle_hint"
                                     : "item.gtnl.celestweave.gui.toggle_hint_enable"));
+                        if (hidden(state.getIntValue())) tooltip.addLine(IKey.lang("item.gtnl.celestweave.gui.hidden"));
                     })
                     .setEnabledIf(widget -> page == MODULES_PAGE)
                     .onMousePressed(mouse -> {
@@ -201,11 +212,8 @@ public class CelestweaveGui extends EquipmentGui {
         }
     }
 
-    private static String moduleLabel(CelestweaveModule module, int state) {
-        String name = tr("item.gtnl.celestweave.short." + module.id);
-        if ((state & INSTALLED) == 0) return "§8" + name;
-        return ((state & ACTIVE) != 0 ? "§a" : "§c") + name
-            + ((state & SHOWN) != 0 ? "" : tr("item.gtnl.celestweave.gui.hidden_mark"));
+    private static boolean hidden(int state) {
+        return (state & INSTALLED) != 0 && (state & SHOWN) == 0;
     }
 
     private ListWidget<IWidget, ?> pageList(int visiblePage) {
@@ -258,7 +266,9 @@ public class CelestweaveGui extends EquipmentGui {
         sync.syncValue(syncKey, value);
         stepper(
             row,
-            () -> (installed(module) ? "" : "§8") + tr(setting.lang()) + ": " + setting.display(value.getIntValue()),
+            () -> (installed(module) ? "" : UNAVAILABLE) + tr(setting.lang())
+                + ": "
+                + setting.display(value.getIntValue()),
             value::getIntValue,
             v -> { if (installed(module)) value.setIntValue(v); },
             setting.min,
@@ -325,6 +335,7 @@ public class CelestweaveGui extends EquipmentGui {
     private ParentWidget<?> colorRow(ModularPanel panel, CelestweaveCosmeticOption option) {
         ParentWidget<?> row = row();
         IntSyncValue color = cosmeticValue(option);
+        if (client && option == CelestweaveCosmeticOption.GLOW_COLOR) followGlow(panel, color);
         row.child(
             IKey.lang(GUI_LANG + option.lang)
                 .asWidget()
@@ -341,7 +352,9 @@ public class CelestweaveGui extends EquipmentGui {
                         false).setDraggable(true)
                             .relative(panel)
                             .top(0)
-                            .leftRel(1f),
+                            .leftRel(1f)
+                            .background(IDrawable.EMPTY)
+                            .disableThemeBackground(false),
                 true);
         row.child(
             new ButtonWidget<>().pos(148, 0)
@@ -350,6 +363,7 @@ public class CelestweaveGui extends EquipmentGui {
                     (context, x, top, width, height, theme) -> GuiDraw
                         .drawRect(x, top, width, height, 0xFF000000 | color.getIntValue()))
                 .disableHoverBackground()
+                .disableHoverThemeBackground(true)
                 .overlay(IKey.str("§0..."))
                 .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("item.gtnl.celestweave.gui.custom_color")))
                 .onMousePressed(mouse -> {
@@ -365,6 +379,7 @@ public class CelestweaveGui extends EquipmentGui {
                 new ButtonWidget<>().pos(50 + i * 14, 1)
                     .size(12, 12)
                     .background(new Rectangle().color(0xFF000000 | rgb))
+                    .disableHoverThemeBackground(true)
                     .overlay(IKey.dynamic(() -> color.getIntValue() == rgb ? "§0✔" : ""))
                     .onMousePressed(mouse -> {
                         if (mouse != 0) return false;
@@ -375,6 +390,11 @@ public class CelestweaveGui extends EquipmentGui {
         return row;
     }
 
+    @SideOnly(Side.CLIENT)
+    private static void followGlow(ModularPanel panel, IntSyncValue color) {
+        CelestweaveThemeAccent.editing(panel, color::getIntValue);
+    }
+
     private ParentWidget<?> stepperRow(CelestweaveCosmeticOption option) {
         ParentWidget<?> row = row();
         float scale = guiScale(option);
@@ -382,7 +402,7 @@ public class CelestweaveGui extends EquipmentGui {
         BooleanSupplier applies = () -> option.appliesTo(CelestweaveData.cosmetic(bound()));
         stepper(
             row,
-            () -> (applies.getAsBoolean() ? "" : "§8") + tr(GUI_LANG + option.lang)
+            () -> (applies.getAsBoolean() ? "" : UNAVAILABLE) + tr(GUI_LANG + option.lang)
                 + ": "
                 + cosmeticText(option, value.getIntValue()),
             value::getIntValue,
@@ -417,13 +437,8 @@ public class CelestweaveGui extends EquipmentGui {
             }
             final int flag = option.flag(i);
             final String key = GUI_LANG + option.lang + "." + names.get(i);
-            addToggle(
-                row,
+            BooleanSyncValue value = syncToggle(
                 "cosmetic_" + option.key + "_" + names.get(i),
-                key,
-                8 + i % perRow * spacing,
-                1,
-                spacing - 1,
                 () -> (CelestweaveData.cosmetic(bound())
                     .getInt(option) & flag) != 0,
                 enabled -> {
@@ -431,8 +446,13 @@ public class CelestweaveGui extends EquipmentGui {
                         .getInt(option);
                     if (CelestweaveData.setCosmetic(bound(), option, enabled ? mask | flag : mask & ~flag)) changed();
                 },
-                () -> true,
-                key + ".tooltip");
+                () -> true);
+            row.child(
+                new ToggleButton().value(value)
+                    .overlay(IKey.lang(key))
+                    .tooltipBuilder(tooltip -> stateTooltip(tooltip, key + ".tooltip", () -> true, value::getBoolValue))
+                    .pos(8 + i % perRow * spacing, 1)
+                    .size(spacing - 1, BUTTON_HEIGHT));
         }
         return rows;
     }

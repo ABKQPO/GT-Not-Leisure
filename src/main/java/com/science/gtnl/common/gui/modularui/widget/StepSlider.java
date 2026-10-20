@@ -11,6 +11,8 @@ import net.minecraft.util.ResourceLocation;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.cleanroommc.modularui.api.ITheme;
+import com.cleanroommc.modularui.api.IThemeApi;
 import com.cleanroommc.modularui.api.UpOrDown;
 import com.cleanroommc.modularui.api.value.IDoubleValue;
 import com.cleanroommc.modularui.api.value.IIntValue;
@@ -18,9 +20,15 @@ import com.cleanroommc.modularui.api.widget.IGuiAction;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.drawable.GuiDraw;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
+import com.cleanroommc.modularui.theme.WidgetTheme;
+import com.cleanroommc.modularui.theme.WidgetThemeBuilder;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
+import com.cleanroommc.modularui.theme.WidgetThemeKey;
 import com.cleanroommc.modularui.utils.Alignment;
+import com.cleanroommc.modularui.utils.Color;
+import com.cleanroommc.modularui.utils.JsonHelper;
 import com.cleanroommc.modularui.widget.Widget;
+import com.google.gson.JsonObject;
 import com.science.gtnl.client.fx.FxColor;
 import com.science.gtnl.utils.RenderUtils;
 
@@ -46,8 +54,7 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
     private Runnable onRelease;
     private double min = 0, max = 1;
     private int steps = 10, milestoneEvery = 5;
-    private int trackColor = 0xFF1E1A22, fillColor = 0xFFB98A3C, cursorColor = 0xFFF4E2B0, cursorTextColor = 0xFF442000,
-        tickColor = 0x55FFFFFF, milestoneColor = 0xB0FFFFFF;
+    private int[] colors, tickColors;
     private int tagWidth;
     private boolean compact, vertical, dragging;
     private long lastSound;
@@ -107,10 +114,7 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
     }
 
     public StepSlider colors(int track, int fill, int cursor, int cursorText) {
-        this.trackColor = track;
-        this.fillColor = fill;
-        this.cursorColor = cursor;
-        this.cursorTextColor = cursorText;
+        this.colors = new int[] { track, fill, cursor, cursorText };
         return this;
     }
 
@@ -125,8 +129,7 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
     }
 
     public StepSlider tickColors(int tick, int milestone) {
-        this.tickColor = tick;
-        this.milestoneColor = milestone;
+        this.tickColors = new int[] { tick, milestone };
         return this;
     }
 
@@ -214,22 +217,37 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
     }
 
     @Override
+    protected WidgetThemeEntry<?> getWidgetThemeInternal(ITheme theme) {
+        WidgetThemeEntry<Theme> entry = theme.getWidgetTheme(Theme.KEY);
+        return entry != null ? entry : theme.getFallback();
+    }
+
+    private Theme resolveColors(WidgetTheme theme) {
+        Theme base = theme instanceof Theme slider ? slider : Theme.KEY.getDefaultValue();
+        if (colors == null && tickColors == null) return base;
+        int[] main = colors != null ? colors : new int[] { base.track, base.fill, base.cursor, base.cursorText };
+        int[] ticks = tickColors != null ? tickColors : new int[] { base.tick, base.milestone };
+        return new Theme(main[0], main[1], main[2], main[3], ticks[0], ticks[1]);
+    }
+
+    @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
+        Theme palette = resolveColors(widgetTheme.getTheme());
         int length = length(), thickness = thickness(), current = step();
         boolean on = active.getAsBoolean();
         float trackStart = Math.round((thickness - TRACK_THICKNESS) / 2F);
         float cursor = notchPosition(current, steps, length, vertical);
         float origin = notchPosition(0, steps, length, vertical);
-        int fill = on ? fillColor : INACTIVE_FILL, light = shade(fill, 1.35F), edge = shade(trackColor, 0.6F);
+        int fill = on ? palette.fill : INACTIVE_FILL, light = shade(fill, 1.35F), edge = shade(palette.track, 0.6F);
         bar(0, trackStart - 1, length, TRACK_THICKNESS + 2, edge, edge);
-        bar(1, trackStart, length - 2, TRACK_THICKNESS, trackColor, trackColor);
+        bar(1, trackStart, length - 2, TRACK_THICKNESS, palette.track, palette.track);
         bar(Math.min(origin, cursor), trackStart, Math.abs(cursor - origin) + 1, TRACK_THICKNESS, light, fill);
         float tickStart = trackStart + TRACK_THICKNESS + TICK_GAP;
         boolean minorTicks = (length - 3F) / steps >= MIN_TICK_SPACING;
         for (int step = 0; step <= steps; step++) {
             boolean major = milestone(step);
             if (!major && !minorTicks) continue;
-            int color = step <= current && on ? light : major ? milestoneColor : tickColor;
+            int color = step <= current && on ? light : major ? palette.milestone : palette.tick;
             bar(
                 notchPosition(step, steps, length, vertical),
                 tickStart,
@@ -240,7 +258,7 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
         }
         if (on && isHovering() && !dragging) {
             int hovered = stepAt(mouse(context));
-            int ghost = shade(cursorColor, 0.9F);
+            int ghost = shade(palette.cursor, 0.9F);
             if (hovered != current) bar(
                 notchPosition(hovered, steps, length, vertical),
                 trackStart - 1,
@@ -249,7 +267,7 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
                 ghost,
                 ghost);
         }
-        drawTag(format.apply(valueAt(current)), cursor, trackStart + TRACK_THICKNESS / 2F, on);
+        drawTag(format.apply(valueAt(current)), cursor, trackStart + TRACK_THICKNESS / 2F, on, palette);
     }
 
     private void bar(float along, float across, float alongSize, float acrossSize, int acrossStart, int acrossEnd) {
@@ -258,7 +276,7 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
         else GuiDraw.drawRect(along, across, alongSize, acrossSize, acrossStart, acrossStart, acrossEnd, acrossEnd);
     }
 
-    private void drawTag(String text, float cursor, float trackCenter, boolean on) {
+    private void drawTag(String text, float cursor, float trackCenter, boolean on, Theme palette) {
         boolean small = compact && compactFits(text);
         int textWidth = small ? compactWidth(text) : Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
         int tagHeight = small ? COMPACT_TAG_HEIGHT : TAG_HEIGHT;
@@ -267,7 +285,7 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
         int along = clamp(Math.round(cursor + 0.5F - alongSize / 2F), length() - alongSize);
         int across = clamp(Math.round(trackCenter - acrossSize / 2F), thickness() - acrossSize);
         int tagX = vertical ? across : along, tagY = vertical ? along : across;
-        int tag = on ? cursorColor : INACTIVE_TAG, textColor = on ? cursorTextColor : INACTIVE_TEXT;
+        int tag = on ? palette.cursor : INACTIVE_TAG, textColor = on ? palette.cursorText : INACTIVE_TEXT;
         GuiDraw.drawRect(tagX, tagY, tagWidth, tagHeight, shade(tag, on && (dragging || isHovering()) ? 0.75F : 0.55F));
         GuiDraw
             .drawRect(tagX + 1, tagY + 1, tagWidth - 2, tagHeight - 2, tag, tag, shade(tag, 0.88F), shade(tag, 0.88F));
@@ -324,5 +342,62 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
 
     private static int shade(int argb, float factor) {
         return argb & 0xFF000000 | FxColor.scale(argb, factor);
+    }
+
+    public static class Theme extends WidgetTheme {
+
+        public static final String TRACK = "trackColor", FILL = "fillColor", CURSOR = "cursorColor",
+            CURSOR_TEXT = "cursorTextColor", TICK = "tickColor", MILESTONE = "milestoneColor";
+        private static final int DEFAULT_SIZE = 18;
+        public static final WidgetThemeKey<Theme> KEY = register(
+            new Theme(0xFF1E1A22, 0xFFB98A3C, 0xFFF4E2B0, 0xFF442000, 0x55FFFFFF, 0xB0FFFFFF));
+
+        public final int track, fill, cursor, cursorText, tick, milestone;
+
+        public Theme(int track, int fill, int cursor, int cursorText, int tick, int milestone) {
+            super(DEFAULT_SIZE, DEFAULT_SIZE, null, Color.WHITE.main, Color.TEXT_COLOR_DARK, false, Color.WHITE.main);
+            this.track = track;
+            this.fill = fill;
+            this.cursor = cursor;
+            this.cursorText = cursorText;
+            this.tick = tick;
+            this.milestone = milestone;
+        }
+
+        public Theme(Theme parent, JsonObject json, JsonObject fallback) {
+            super(parent, json, fallback);
+            track = JsonHelper.getColor(json, parent.track, TRACK);
+            fill = JsonHelper.getColor(json, parent.fill, FILL);
+            cursor = JsonHelper.getColor(json, parent.cursor, CURSOR);
+            cursorText = JsonHelper.getColor(json, parent.cursorText, CURSOR_TEXT);
+            tick = JsonHelper.getColor(json, parent.tick, TICK);
+            milestone = JsonHelper.getColor(json, parent.milestone, MILESTONE);
+        }
+
+        private static WidgetThemeKey<Theme> register(Theme defaults) {
+            return IThemeApi.get()
+                .widgetThemeKeyBuilder("gtnlStepSlider", Theme.class)
+                .defaultTheme(defaults)
+                .defaultHoverTheme(defaults)
+                .parser(Theme::new)
+                .register();
+        }
+
+        public static class Builder extends WidgetThemeBuilder<Theme, Builder> {
+
+            public Builder colors(int track, int fill, int cursor, int cursorText) {
+                add(TRACK, track);
+                add(FILL, fill);
+                add(CURSOR, cursor);
+                add(CURSOR_TEXT, cursorText);
+                return this;
+            }
+
+            public Builder tickColors(int tick, int milestone) {
+                add(TICK, tick);
+                add(MILESTONE, milestone);
+                return this;
+            }
+        }
     }
 }

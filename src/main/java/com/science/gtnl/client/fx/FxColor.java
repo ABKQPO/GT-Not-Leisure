@@ -10,6 +10,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class FxColor {
 
+    private static final double RED_WEIGHT = 0.2126, GREEN_WEIGHT = 0.7152, BLUE_WEIGHT = 0.0722, LINEAR_KNEE = 0.04045,
+        LINEAR_SLOPE = 12.92, GAMMA_OFFSET = 0.055, GAMMA = 2.4, CONTRAST_FLARE = 0.05;
+
     private FxColor() {}
 
     public static float red(int rgb) {
@@ -41,6 +44,53 @@ public class FxColor {
         int g = Math.round((from >> 8 & 255) + ((to >> 8 & 255) - (from >> 8 & 255)) * t);
         int b = Math.round((from & 255) + ((to & 255) - (from & 255)) * t);
         return r << 16 | g << 8 | b;
+    }
+
+    public static int over(int argb, int rgb) {
+        return lerp(rgb, argb & 0xFFFFFF, (argb >>> 24) / 255F);
+    }
+
+    public static double[] hsl(int rgb) {
+        double r = (rgb >> 16 & 255) / 255D, g = (rgb >> 8 & 255) / 255D, b = (rgb & 255) / 255D;
+        double max = Math.max(r, Math.max(g, b)), min = Math.min(r, Math.min(g, b)), lightness = (max + min) / 2;
+        if (max == min) return new double[] { 0, 0, lightness };
+        double delta = max - min, saturation = delta / (1 - Math.abs(2 * lightness - 1));
+        double sector = max == r ? (g - b) / delta % 6 : max == g ? (b - r) / delta + 2 : (r - g) / delta + 4;
+        return new double[] { (sector * 60 + 360) % 360, saturation, lightness };
+    }
+
+    public static int hsl(double hue, double saturation, double lightness) {
+        double h = (hue % 360 + 360) % 360, s = unit(saturation), l = unit(lightness);
+        double chroma = (1 - Math.abs(2 * l - 1)) * s, x = chroma * (1 - Math.abs(h / 60 % 2 - 1)), m = l - chroma / 2;
+        int sector = (int) (h / 60);
+        double r = sector == 0 || sector == 5 ? chroma : sector == 1 || sector == 4 ? x : 0;
+        double g = sector == 1 || sector == 2 ? chroma : sector == 0 || sector == 3 ? x : 0;
+        double b = sector == 3 || sector == 4 ? chroma : sector == 2 || sector == 5 ? x : 0;
+        return channel(r + m) << 16 | channel(g + m) << 8 | channel(b + m);
+    }
+
+    public static double luminance(int rgb) {
+        return RED_WEIGHT * linear(rgb >> 16 & 255) + GREEN_WEIGHT * linear(rgb >> 8 & 255)
+            + BLUE_WEIGHT * linear(rgb & 255);
+    }
+
+    public static double contrast(int rgb, int other) {
+        double first = luminance(rgb) + CONTRAST_FLARE, second = luminance(other) + CONTRAST_FLARE;
+        return Math.max(first, second) / Math.min(first, second);
+    }
+
+    private static double linear(int channel) {
+        double value = channel / 255D;
+        return value <= LINEAR_KNEE ? value / LINEAR_SLOPE
+            : Math.pow((value + GAMMA_OFFSET) / (1 + GAMMA_OFFSET), GAMMA);
+    }
+
+    private static double unit(double value) {
+        return Math.max(0, Math.min(1, value));
+    }
+
+    private static int channel(double value) {
+        return (int) Math.round(unit(value) * 255);
     }
 
     public static void tessellate(Tessellator tessellator, int rgb, float alpha) {

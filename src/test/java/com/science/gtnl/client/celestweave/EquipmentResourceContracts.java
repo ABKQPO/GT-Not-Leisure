@@ -22,6 +22,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -32,12 +33,30 @@ import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.obj.Face;
 import net.minecraftforge.client.model.obj.GroupObject;
 import net.minecraftforge.client.model.obj.TextureCoordinate;
 import net.minecraftforge.client.model.obj.Vertex;
 import net.minecraftforge.client.model.obj.WavefrontObject;
 
+import com.cleanroommc.modularui.api.IJsonSerializable;
+import com.cleanroommc.modularui.api.ITheme;
+import com.cleanroommc.modularui.api.IThemeApi;
+import com.cleanroommc.modularui.api.drawable.IDrawable;
+import com.cleanroommc.modularui.drawable.DrawableSerialization;
+import com.cleanroommc.modularui.drawable.Rectangle;
+import com.cleanroommc.modularui.theme.ReloadThemeEvent;
+import com.cleanroommc.modularui.theme.SelectableTheme;
+import com.cleanroommc.modularui.theme.SlotTheme;
+import com.cleanroommc.modularui.theme.TextFieldTheme;
+import com.cleanroommc.modularui.theme.ThemeAPI;
+import com.cleanroommc.modularui.theme.ThemeManager;
+import com.cleanroommc.modularui.theme.WidgetTheme;
+import com.cleanroommc.modularui.theme.WidgetThemeEntry;
+import com.cleanroommc.modularui.theme.WidgetThemeKey;
+import com.cleanroommc.modularui.utils.JsonBuilder;
 import com.cleanroommc.modularui.value.DoubleValue;
 import com.cleanroommc.modularui.value.IntValue;
 import com.google.gson.Gson;
@@ -45,20 +64,40 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.gtnewhorizon.gtnhlib.config.Config;
+import com.science.gtnl.client.fx.FxColor;
+import com.science.gtnl.client.hud.HudEditor;
 import com.science.gtnl.client.railgun.RailgunHudRenderer;
 import com.science.gtnl.common.celestweave.CelestweaveCosmeticOption;
+import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
 import com.science.gtnl.common.equipment.EquipmentSound;
 import com.science.gtnl.common.gui.equipment.CelestweaveGui;
 import com.science.gtnl.common.gui.equipment.EquipmentSoundScreen;
+import com.science.gtnl.common.gui.equipment.EquipmentTheme;
+import com.science.gtnl.common.gui.equipment.EquipmentTheme.Colors;
+import com.science.gtnl.common.gui.modularui.theme.LivePalette;
+import com.science.gtnl.common.gui.modularui.theme.PaletteThemes;
+import com.science.gtnl.common.gui.modularui.theme.ThemePalette;
+import com.science.gtnl.common.gui.modularui.theme.ThemeStyle;
+import com.science.gtnl.common.gui.modularui.theme.VariantTheme;
+import com.science.gtnl.common.gui.modularui.widget.CardDrawable;
+import com.science.gtnl.common.gui.modularui.widget.FillBar;
+import com.science.gtnl.common.gui.modularui.widget.FrameDrawable;
+import com.science.gtnl.common.gui.modularui.widget.SlideSwitch;
 import com.science.gtnl.common.gui.modularui.widget.StepSlider;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.config.EquipmentSoundConfig;
 import com.science.gtnl.config.EquipmentSoundConfig.Channel;
 import com.science.gtnl.config.MainConfig;
 
+import gregtech.api.modularui2.GTGuiThemes;
+
 public class EquipmentResourceContracts {
+
+    private static final String TEST_THEME = "gtnl:palette_test";
+    private static final int CYAN = 0x3DE8FF;
+    private static final double HUE_TOLERANCE = 6;
 
     private EquipmentResourceContracts() {}
 
@@ -69,6 +108,8 @@ public class EquipmentResourceContracts {
         firstPersonArm();
         sounds();
         soundChannels();
+        equipmentTheme();
+        equipmentScreens();
         lang();
     }
 
@@ -463,6 +504,816 @@ public class EquipmentResourceContracts {
         check(StepSlider.compactWidth("100%") + 4 <= tag.getInt(null), "sound slider tag fits 100%");
     }
 
+    private static void equipmentTheme() throws Exception {
+        check(
+            HudEditor.guideColor() == 0x80FFFFFF && HudEditor.activeColor() == 0xFFFFFFFF,
+            "hud editor framework colors are neutral");
+        DrawableSerialization.init();
+        EquipmentTheme.register();
+        String standard = GTGuiThemes.STANDARD.getId();
+        IThemeApi.get()
+            .registerTheme(standard, new JsonBuilder());
+        reloadThemes();
+        ITheme theme = IThemeApi.get()
+            .getTheme(EquipmentTheme.ID);
+        check(
+            theme.getId()
+                .equals(EquipmentTheme.ID),
+            "equipment theme is registered");
+        check(
+            theme.getParentTheme()
+                .getId()
+                .equals(standard),
+            "equipment theme inherits the GT standard theme");
+        Map<String, Integer> expected = new HashMap<>();
+        expected.put("accent", 0xFFFF3D9A);
+        expected.put("accentDim", 0x80FF3D9A);
+        expected.put("hint", 0xFF8E8796);
+        WidgetThemeEntry<Colors> entry = theme.getWidgetTheme(EquipmentTheme.COLORS);
+        for (Colors colors : new Colors[] { entry.getTheme(), entry.getHoverTheme(), EquipmentTheme.colors(),
+            EquipmentTheme.COLORS.getDefaultValue() }) {
+            int fields = 0;
+            for (Field field : Colors.class.getFields()) {
+                if (field.getType() != int.class || Modifier.isStatic(field.getModifiers())) continue;
+                fields++;
+                Integer color = expected.get(field.getName());
+                check(
+                    color != null && field.getInt(colors) == color,
+                    "equipment color " + field.getName() + " keeps its old value");
+            }
+            check(fields == expected.size(), "equipment palette keeps only the colors code reads");
+        }
+        StepSlider.Theme slider = theme.getWidgetTheme(StepSlider.Theme.KEY)
+            .getTheme();
+        check(
+            slider.track == 0xFF1A1420 && slider.fill == 0xFFFF3D9A
+                && slider.cursor == 0xFFFFE6F1
+                && slider.cursorText == 0xFF4A0A2A
+                && slider.tick == 0x40FFFFFF
+                && slider.milestone == 0x99FFFFFF,
+            "equipment theme keeps the old sound slider colors");
+        StepSlider.Theme defaults = StepSlider.Theme.KEY.getDefaultValue();
+        check(
+            defaults.track == 0xFF1E1A22 && defaults.fill == 0xFFB98A3C
+                && defaults.cursor == 0xFFF4E2B0
+                && defaults.cursorText == 0xFF442000
+                && defaults.tick == 0x55FFFFFF
+                && defaults.milestone == 0xB0FFFFFF,
+            "slider default colors stay the old generic ones");
+        ITheme plain = IThemeApi.get()
+            .getTheme(standard);
+        check(
+            plain.getWidgetTheme(StepSlider.Theme.KEY)
+                .getTheme().fill == defaults.fill,
+            "a theme without slider colors falls back to the slider defaults");
+        StepSlider themed = new StepSlider();
+        check(
+            themed.getWidgetTheme(theme)
+                .getTheme() == slider,
+            "slider takes its widget theme from the screen theme");
+        Class<?>[] resolve = { WidgetTheme.class };
+        check(
+            call(StepSlider.class, "resolveColors", themed, resolve, slider) == slider,
+            "slider without explicit colors draws with the theme colors");
+        check(
+            call(
+                StepSlider.class,
+                "resolveColors",
+                themed,
+                resolve,
+                plain.getFallback()
+                    .getTheme())
+                == defaults,
+            "slider outside a slider theme draws with the default colors");
+        StepSlider.Theme ticks = (StepSlider.Theme) call(
+            StepSlider.class,
+            "resolveColors",
+            new StepSlider().tickColors(1, 2),
+            resolve,
+            slider);
+        check(
+            ticks.track == slider.track && ticks.fill == slider.fill
+                && ticks.cursor == slider.cursor
+                && ticks.cursorText == slider.cursorText
+                && ticks.tick == 1
+                && ticks.milestone == 2,
+            "explicit tick colors override only the ticks");
+        StepSlider.Theme main = (StepSlider.Theme) call(
+            StepSlider.class,
+            "resolveColors",
+            new StepSlider().colors(3, 4, 5, 6),
+            resolve,
+            slider);
+        check(
+            main.track == 3 && main.fill == 4
+                && main.cursor == 5
+                && main.cursorText == 6
+                && main.tick == slider.tick
+                && main.milestone == slider.milestone,
+            "explicit colors override only the track, fill and cursor");
+        check(
+            HudEditor.guideColor() == 0x80FF3D9A && HudEditor.activeColor() == 0xFFFF3D9A,
+            "equipment theme hands its accent to the hud editor");
+        equipmentControls(plain);
+        paletteThemes(standard);
+        liveThemes(standard);
+        themeChoice();
+        Pattern hex = Pattern.compile("0x[0-9A-Fa-f]{6,8}");
+        for (String file : new String[] { "common/gui/equipment/EquipmentSoundScreen.java",
+            "client/celestweave/CelestweaveWheelScreen.java", "client/hud/HudEditor.java",
+            "common/gui/modularui/widget/StepSlider.java", "common/gui/modularui/theme/ThemePalette.java",
+            "common/gui/modularui/widget/FrameDrawable.java", "common/gui/modularui/widget/CardDrawable.java",
+            "common/gui/modularui/widget/SlideSwitch.java", "common/gui/modularui/theme/ThemeStyle.java",
+            "common/gui/modularui/widget/FillBar.java", "common/gui/modularui/theme/PaletteThemes.java" }) {
+            String source = new String(Files.readAllBytes(SOURCES.resolve(file)), StandardCharsets.UTF_8);
+            check(
+                !source.toUpperCase(Locale.ROOT)
+                    .contains("3D9A"),
+                file + " has no hard-coded equipment pink");
+            if (!file.contains("modularui")) check(
+                file.contains("HudEditor") || !hex.matcher(source)
+                    .find(),
+                file + " takes every color from the equipment theme");
+            else check(
+                !source.contains("Equipment") && !source.contains("Celestweave") && !source.contains("Railgun"),
+                file + " names no feature");
+        }
+        reloadThemes(
+            new JsonBuilder().add("gtnlEquipment", new JsonBuilder().add("accentColor", 0xFF00FF00))
+                .add("gtnlStepSlider", new JsonBuilder().add(StepSlider.Theme.FILL, 0xFF00FF00)));
+        Colors overridden = EquipmentTheme.colors();
+        StepSlider.Theme overriddenSlider = IThemeApi.get()
+            .getTheme(EquipmentTheme.ID)
+            .getWidgetTheme(StepSlider.Theme.KEY)
+            .getTheme();
+        check(
+            overridden.accent == 0xFF00FF00 && overridden.hint == expected.get("hint")
+                && HudEditor.activeColor() == 0xFF00FF00,
+            "an override of one equipment color keeps the others");
+        check(
+            overriddenSlider.fill == 0xFF00FF00 && overriddenSlider.track == defaults.track,
+            "an override replaces the whole slider object");
+        reloadThemes();
+        check(EquipmentTheme.colors().accent == expected.get("accent"), "theme reload restores the accent");
+    }
+
+    private static void equipmentScreens() throws IOException {
+        for (String file : new String[] { "common/item/items/armor/CelestweaveArmor.java",
+            "common/item/items/equipment/ElectromagneticRailgun.java", "common/gui/equipment/EquipmentSoundScreen.java",
+            "client/celestweave/CelestweaveWheelScreen.java" }) {
+            String source = new String(Files.readAllBytes(SOURCES.resolve(file)), StandardCharsets.UTF_8);
+            check(
+                source.contains("useTheme(EquipmentTheme.selected())") && !source.contains("EquipmentTheme.ID")
+                    && !source.contains("GTGuiThemes"),
+                file + " opens with the equipment theme chosen in the config");
+        }
+        Map<String, String> sources = new HashMap<>();
+        for (String name : new String[] { "EquipmentGui", "CelestweaveGui", "RailgunGui" }) sources.put(
+            name,
+            new String(
+                Files.readAllBytes(SOURCES.resolve("common/gui/equipment/" + name + ".java")),
+                StandardCharsets.UTF_8));
+        for (Map.Entry<String, String> entry : sources.entrySet()) {
+            String source = entry.getValue();
+            for (String gtTexture : new String[] { "GTGuiTextures", "GTGuis", "PROGRESSBAR", "BUTTON_STANDARD" })
+                check(!source.contains(gtTexture), entry.getKey() + " leaves " + gtTexture + " to the theme");
+            for (String code : new String[] { "§8", "§a", "§c", "§e" })
+                check(!source.contains(code), entry.getKey() + " colors its text through the theme, not " + code);
+        }
+        String base = sources.get("EquipmentGui"), armor = sources.get("CelestweaveGui");
+        check(
+            base.contains("new ModularPanel(name)") && base.contains("closeButton().size("),
+            "settings panels use the theme panel and close button");
+        check(base.contains("new FillBar()"), "settings energy bar is a themed fill bar");
+        check(base.contains("new SlideSwitch()"), "settings switches are slide switches");
+        check(armor.contains("new BoolValue.Dynamic(() -> page == index"), "armor pages are themed tabs");
+        check(
+            armor.contains("new SlideSwitch().value(() -> (state.getIntValue() & ACTIVE) != 0)")
+                && armor.contains(".liveWhen(() -> (state.getIntValue() & SHOWN) != 0)"),
+            "armor modules are slide switches that dim when hidden");
+        check(armor.contains("new ToggleButton().value(value)"), "narrow arc event flags are themed toggle buttons");
+        check(
+            armor.contains(".background(IDrawable.EMPTY)") && armor.contains(".disableThemeBackground(false)"),
+            "color picker uses the theme panel instead of the vanilla background");
+        int swatches = armor.split("disableHoverThemeBackground\\(true\\)", -1).length - 1;
+        check(swatches == 2, "color swatches and the picker button turn off both theme backgrounds");
+        check(!armor.contains("hidden_mark"), "hidden modules show in the tooltip instead of a label mark");
+    }
+
+    private static void equipmentControls(ITheme plain) throws Exception {
+        JsonObject registered = IThemeApi.get()
+            .getJavaDefaultThemes(EquipmentTheme.ID)
+            .get(0)
+            .getJson()
+            .getAsJsonObject(IThemeApi.PANEL.getFullName());
+        check(
+            "none".equals(
+                registered.get(IThemeApi.BACKGROUND)
+                    .getAsString()),
+            "MUI2 overwrites the background of a registered theme when it loads it");
+        String proxy = new String(Files.readAllBytes(SOURCES.resolve("ClientProxy.java")), StandardCharsets.UTF_8);
+        int reloader = proxy.indexOf("EVENT_BUS.register(new PaletteThemes.Reloader())"),
+            equipment = proxy.indexOf("EquipmentTheme.register()");
+        check(reloader >= 0 && equipment > reloader, "palette themes are rebuilt before every theme reload");
+        String soundSource = new String(
+            Files.readAllBytes(SOURCES.resolve("common/gui/equipment/EquipmentSoundScreen.java")),
+            StandardCharsets.UTF_8);
+        check(
+            !soundSource.contains("GuiDraw") && !soundSource.contains("disableThemeBackground")
+                && soundSource.contains("new SlideSwitch()")
+                && soundSource.contains("widgetTheme(CardDrawable.KEY)")
+                && soundSource.contains("EquipmentGui.closeButton()"),
+            "sound screen draws its panel, cards, switches and close button through the theme");
+        reloadThemes();
+        ITheme theme = IThemeApi.get()
+            .getTheme(EquipmentTheme.ID);
+        ThemePalette pink = new ThemePalette(
+            0xFFFF3D9A,
+            0x80FF3D9A,
+            0x26FF3D9A,
+            0xFFFFFFFF,
+            0xFF8E8796,
+            0xF2211A27,
+            0xF20D0A11,
+            0x50000000,
+            0x24FFFFFF,
+            0x9614141E,
+            0xA0FF3D9A,
+            0x50FF3D9A,
+            0x80000000,
+            0xFF3A3640,
+            0x50FF3D9A,
+            0xFF1A1420,
+            0xFF3A3640,
+            0xFFF2EEF4,
+            0xFF8C8794,
+            0xFFF4F0F6,
+            0xFF6E6876,
+            0xFF9A94A2,
+            0xFFFFE6F1,
+            0xFF4A0A2A,
+            0x40FFFFFF,
+            0x99FFFFFF);
+        check(
+            EquipmentTheme.PALETTE.equals(pink),
+            "equipment palette keeps every old color: " + EquipmentTheme.PALETTE);
+        check(
+            ThemeStyle.DEFAULT.equals(new ThemeStyle(6, 2, 3, 2, 10)),
+            "default theme style keeps the old corner and card accent sizes");
+        paletteControls("equipment", theme, pink, ThemeStyle.DEFAULT);
+        SlideSwitch.Theme slide = theme.getWidgetTheme(SlideSwitch.Theme.KEY)
+            .getTheme();
+        check(
+            SlideSwitch.trackColor(slide, false, false) == slide.track
+                && SlideSwitch.trackColor(slide, true, true) == slide.trackOn
+                && SlideSwitch.trackColor(slide, true, false) == slide.trackDim,
+            "switch track shows off, on and on without effect");
+        check(
+            SlideSwitch.textColor(slide, false, false, true) == slide.textOff
+                && SlideSwitch.textColor(slide, false, false, false) == slide.textDim
+                && SlideSwitch.textColor(slide, true, true, true) == slide.textOn
+                && SlideSwitch.textColor(slide, true, false, true) == slide.textDim,
+            "switch label tells off, unavailable, on and on without effect apart");
+        check(
+            FillBar.filledWidth(0.5, 160) == 80 && FillBar.filledWidth(-1, 160) == 0
+                && FillBar.filledWidth(2, 160) == 160
+                && FillBar.filledWidth(Double.NaN, 160) == 0,
+            "fill bar clamps its value");
+        WidgetTheme neutralCard = plain.getWidgetTheme(CardDrawable.KEY)
+            .getTheme();
+        SlideSwitch.Theme neutralSlide = plain.getWidgetTheme(SlideSwitch.Theme.KEY)
+            .getTheme();
+        FillBar.Theme neutralBar = plain.getWidgetTheme(FillBar.Theme.KEY)
+            .getTheme();
+        boolean neutral = neutralCard.getBackground() instanceof CardDrawable && !pink(neutralBar.track)
+            && !pink(neutralBar.fill);
+        for (Field color : SlideSwitch.Theme.class.getFields())
+            if (color.getType() == int.class && !Modifier.isStatic(color.getModifiers()))
+                neutral &= !pink(color.getInt(neutralSlide));
+        for (String color : new String[] { "fill", "edge", "accent" })
+            neutral &= !pink((int) field(neutralCard.getBackground(), color));
+        check(neutral, "generic controls fall back to neutral colors outside the equipment theme");
+    }
+
+    private static void paletteThemes(String standard) throws Exception {
+        JsonElement golden = new JsonParser().parse(
+            new String(
+                Files.readAllBytes(
+                    Paths.get("src/test/resources/com/science/gtnl/client/celestweave/palette_theme.json")),
+                StandardCharsets.UTF_8));
+        check(
+            golden.equals(
+                PaletteThemes.build(EquipmentTheme.ID, standard, EquipmentTheme.PALETTE, ThemeStyle.DEFAULT)
+                    .getJson()),
+            "palette theme builder writes exactly the equipment theme that was written by hand before");
+        ThemePalette inverted = EquipmentTheme.PALETTE.map(color -> color ^ 0x00FFFFFF);
+        List<Integer> before = components(EquipmentTheme.PALETTE), after = components(inverted);
+        check(before.size() == 26 && after.size() == 26, "palette maps every color");
+        for (int i = 0; i < after.size(); i++) check(
+            !after.get(i)
+                .equals(before.get(i)) && !pink(after.get(i)),
+            "test palette color " + i + " differs from the equipment palette and is not pink");
+        ThemeStyle style = new ThemeStyle(4, 1, 2, 3, 8);
+        PaletteThemes.register(TEST_THEME, standard, inverted, style);
+        reloadThemes();
+        ITheme theme = IThemeApi.get()
+            .getTheme(TEST_THEME);
+        check(
+            theme.getId()
+                .equals(TEST_THEME)
+                && PaletteThemes.ids()
+                    .contains(TEST_THEME)
+                && inverted.equals(PaletteThemes.palette(TEST_THEME)),
+            "a palette theme registers under its own id");
+        paletteControls("test palette", theme, inverted, style);
+        reloadThemes();
+        sameFrame(
+            "test palette panel after a second reload",
+            IThemeApi.get()
+                .getTheme(TEST_THEME)
+                .getPanelTheme()
+                .getTheme()
+                .getBackground(),
+            new int[] { inverted.panelTop(), inverted.panelBottom(), inverted.accentDim(), inverted.accent(),
+                style.cornerLength(), style.cornerThickness() });
+    }
+
+    private static void liveThemes(String standard) throws Exception {
+        ThemePalette palette = EquipmentTheme.PALETTE;
+        check(
+            palette.follow(0xFF3D9A)
+                .equals(palette),
+            "the default pink glow gives back every equipment color");
+        check(
+            palette.follow(0x12FF3D9A)
+                .equals(palette),
+            "the glow alpha is ignored");
+        ThemePalette cyan = palette.follow(CYAN);
+        same("cyan accent", cyan.accent(), 0xFF3DE8FF);
+        same("cyan accent dim", cyan.accentDim(), 0x803DE8FF);
+        same("cyan hover", cyan.hover(), 0x263DE8FF);
+        same("cyan button hover", cyan.buttonHover(), 0xA03DE8FF);
+        same("cyan tab hover", cyan.tabHover(), 0x503DE8FF);
+        same("cyan slot hover", cyan.slotHover(), 0x503DE8FF);
+        List<Integer> base = components(palette), tinted = components(cyan);
+        for (int i = 0; i < base.size(); i++) {
+            int from = base.get(i), to = tinted.get(i);
+            double[] before = FxColor.hsl(from & 0xFFFFFF), after = FxColor.hsl(to & 0xFFFFFF);
+            check(!pink(to), "cyan color " + i + " has no pink left");
+            check(from >>> 24 == to >>> 24, "cyan color " + i + " keeps its transparency");
+            if (before[1] < 0.5) check(
+                Math.abs(before[2] - after[2]) < 0.01,
+                "cyan color " + i + " keeps the brightness of the pink one");
+        }
+        check(
+            FxColor.hsl(cyan.cursor() & 0xFFFFFF)[2] > 0.9 && FxColor.hsl(cyan.cursorText() & 0xFFFFFF)[2] < 0.25,
+            "the slider tag stays a pale tint with dark text");
+        check(
+            Math.abs(hueOffset(cyan.cursor(), cyan.accent()) - hueOffset(palette.cursor(), palette.accent()))
+                < HUE_TOLERANCE
+                && Math.abs(hueOffset(cyan.panelTop(), cyan.accent()) - hueOffset(palette.panelTop(), palette.accent()))
+                    < HUE_TOLERANCE,
+            "tints and the dark panel keep their hue next to the new accent");
+        ThemePalette navy = palette.follow(0x2040A0);
+        check(
+            Math.abs(whiteMix(navy.cursor(), navy.accent()) - whiteMix(palette.cursor(), palette.accent())) < 0.02
+                && Math
+                    .abs(blackMix(navy.cursorText(), navy.accent()) - blackMix(palette.cursorText(), palette.accent()))
+                    < 0.02,
+            "pale and dark tints keep their white and black mix toward a darker accent");
+        check(
+            FxColor.hsl(
+                palette.follow(0xFFFFFF)
+                    .panelTop() & 0xFFFFFF)[1]
+                < 0.01,
+            "a grey glow leaves the dark panel untinted");
+        ThemePalette grey = palette.follow(0x808080), greyToCyan = grey.follow(CYAN);
+        same("grey theme accent", grey.accent(), 0xFF808080);
+        same("grey theme following cyan, accent", greyToCyan.accent(), 0xFF3DE8FF);
+        same("grey theme following cyan, accent dim", greyToCyan.accentDim(), 0x803DE8FF);
+        for (int glow : new int[] { 0x000000, 0xFFFFFF, 0x0000FF }) {
+            int accent = palette.readableAccent(glow);
+            check(
+                FxColor.contrast(accent & 0xFFFFFF, palette.panelTop() & 0xFFFFFF) >= 3 && palette.follow(glow)
+                    .accent() == accent,
+                "a " + Integer.toHexString(glow) + " glow becomes an accent readable on the dark panel");
+        }
+        check(palette.readableAccent(0x000000) != 0xFF000000, "a black glow is lifted");
+        check(FxColor.hsl(palette.readableAccent(0xFFFFFF) & 0xFFFFFF)[2] <= 0.851, "a white glow is toned down");
+        same("pink accent after the readability check", palette.readableAccent(0xFF3D9A), 0xFFFF3D9A);
+        check(
+            palette.selectedText() == palette.text() && palette.selectedTextShadow(),
+            "pink tabs keep white text with a shadow");
+        ThemePalette white = palette.follow(0xFFFFFF);
+        int tab = FxColor.over(white.buttonHover(), white.panelTop() & 0xFFFFFF);
+        check(
+            white.selectedText() != white.text() && !white.selectedTextShadow()
+                && FxColor.contrast(white.selectedText() & 0xFFFFFF, tab)
+                    > FxColor.contrast(white.text() & 0xFFFFFF, tab),
+            "bright tabs switch to dark text without a shadow");
+        check(
+            palette.follow(0x000000)
+                .selectedText() == palette.text(),
+            "dark tabs keep light text");
+        reloadThemes();
+        new PaletteThemes.Reloader().onThemeReload(new ReloadThemeEvent.Pre());
+        ITheme registered = IThemeApi.get()
+            .getTheme(EquipmentTheme.ID);
+        ITheme parsed = VariantTheme.parse(
+            EquipmentTheme.ID,
+            IThemeApi.get()
+                .getTheme(standard),
+            IThemeApi.get()
+                .getJavaDefaultThemes(EquipmentTheme.ID)
+                .get(0)
+                .getJson());
+        for (WidgetThemeKey<?> key : IThemeApi.get()
+            .getWidgetThemeKeys()) {
+            WidgetThemeEntry<?> expected = registered.getWidgetTheme(key), actual = parsed.getWidgetTheme(key);
+            check(
+                sameWidgetTheme(expected.getTheme(), actual.getTheme())
+                    && sameWidgetTheme(expected.getHoverTheme(), actual.getHoverTheme()),
+                "a palette variant parses " + key.getFullName() + " the way ModularUI does");
+        }
+        reloadThemes();
+        int[] glow = { LivePalette.NO_ACCENT };
+        EquipmentTheme.LIVE.accentFrom(() -> glow[0]);
+        ITheme theme = IThemeApi.get()
+            .getTheme(EquipmentTheme.ID), view = PaletteThemes.forScreen(theme);
+        check(view == EquipmentTheme.LIVE.theme(), "equipment screens get the live theme");
+        check(
+            PaletteThemes.forScreen(
+                IThemeApi.get()
+                    .getTheme(standard))
+                == IThemeApi.get()
+                    .getTheme(standard),
+            "other screens keep their own theme");
+        check(
+            EquipmentTheme.LIVE.current()
+                .equals(palette) && view.getPanelTheme() == theme.getPanelTheme(),
+            "without a chestplate the live theme is the registered theme");
+        glow[0] = 0xFF000000 | CYAN;
+        EquipmentTheme.LIVE.refresh();
+        check(
+            EquipmentTheme.LIVE.current()
+                .equals(cyan)
+                && EquipmentTheme.LIVE.themed()
+                    .equals(palette),
+            "a chestplate glow tints the live palette");
+        paletteControls("live cyan", view, cyan, ThemeStyle.DEFAULT);
+        check(
+            HudEditor.activeColor() == cyan.accent() && HudEditor.guideColor() == cyan.accentDim()
+                && EquipmentTheme.colors().accent == cyan.accent(),
+            "hud editor guides and code colors follow the glow");
+        WidgetThemeEntry<WidgetTheme> tintedPanel = view.getPanelTheme();
+        check(tintedPanel == view.getPanelTheme(), "a tinted theme is built once per glow");
+        reloadThemes();
+        check(view.getPanelTheme() != tintedPanel, "a theme reload rebuilds the tinted theme on the new parent");
+        LivePalette manual = new LivePalette(() -> EquipmentTheme.ID, () -> false);
+        manual.accentFrom(() -> glow[0]);
+        check(
+            manual.current()
+                .equals(palette)
+                && manual.accented()
+                    .equals(cyan),
+            "a live palette that does not follow the glow keeps the theme colors");
+        glow[0] = LivePalette.NO_ACCENT;
+        EquipmentTheme.LIVE.refresh();
+        check(
+            view.getPanelTheme() == IThemeApi.get()
+                .getTheme(EquipmentTheme.ID)
+                .getPanelTheme(),
+            "taking the chestplate off goes back to the theme colors");
+        EquipmentTheme.LIVE.accentFrom(() -> LivePalette.NO_ACCENT);
+        ItemStack chest = new ItemStack(new Item());
+        check(CelestweaveThemeAccent.accent(null) == LivePalette.NO_ACCENT, "no chestplate gives no accent");
+        check(CelestweaveThemeAccent.accent(chest) == 0xFFFF3D9A, "a chestplate with the default glow gives pink");
+        CelestweaveData.setCosmetic(chest, CelestweaveCosmeticOption.GLOW_COLOR, CYAN);
+        check(CelestweaveThemeAccent.accent(chest) == 0xFF3DE8FF, "the chestplate glow color becomes the accent");
+        check(
+            ThemeAPI.class
+                .getMethod("getThemeForScreen", String.class, String.class, String.class, String.class, String.class)
+                .getReturnType() == ITheme.class,
+            "the live theme hook targets an existing ModularUI method");
+        String mixin = new String(
+            Files.readAllBytes(SOURCES.resolve("mixins/late/modularUI2/MixinThemeAPI.java")),
+            StandardCharsets.UTF_8),
+            mixins = new String(Files.readAllBytes(SOURCES.resolve("mixins/Mixins.java")), StandardCharsets.UTF_8);
+        check(
+            mixin.contains("PaletteThemes.forScreen(cir.getReturnValue())") && mixin.contains(
+                "getThemeForScreen(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/cleanroommc/modularui/api/ITheme;")
+                && mixins.contains("\"modularUI2.MixinThemeAPI\""),
+            "screens get live themes through a registered ModularUI hook");
+        check(
+            new String(
+                Files.readAllBytes(SOURCES.resolve("client/celestweave/CelestweaveClientEvents.java")),
+                StandardCharsets.UTF_8).contains("CelestweaveThemeAccent.register()")
+                && new String(
+                    Files.readAllBytes(SOURCES.resolve("common/gui/equipment/CelestweaveGui.java")),
+                    StandardCharsets.UTF_8).contains("CelestweaveThemeAccent.editing(panel, color::getIntValue)"),
+            "the armor registers its glow and the chestplate settings page shares the color being edited");
+    }
+
+    private static void themeChoice() {
+        MainConfig.Client defaults = new MainConfig.Client();
+        check(
+            EquipmentTheme.ID.equals(defaults.equipmentTheme) && defaults.enableEquipmentThemeGlowColor,
+            "the equipment theme and following the glow are on by default");
+        String savedTheme = MainConfig.client.equipmentTheme;
+        boolean savedFollow = MainConfig.client.enableEquipmentThemeGlowColor;
+        int[] registrations = { 0 };
+        PaletteThemes.onRegister(() -> registrations[0]++);
+        PaletteThemes.register(TEST_THEME, PaletteThemes.palette(TEST_THEME));
+        check(registrations[0] == 2, "registering a palette theme notifies its listeners");
+        List<String> choices = Arrays.asList(EquipmentTheme.choices());
+        check(
+            choices.contains(EquipmentTheme.ID) && choices.contains(TEST_THEME),
+            "every registered palette theme is offered in the config");
+        MainConfig.client.equipmentTheme = "gtnl:missing";
+        EquipmentTheme.LIVE.refresh();
+        check(
+            EquipmentTheme.selected()
+                .equals(EquipmentTheme.ID)
+                && EquipmentTheme.LIVE.themeId()
+                    .equals(EquipmentTheme.ID),
+            "an unknown theme id falls back to the equipment theme");
+        MainConfig.client.equipmentTheme = TEST_THEME;
+        EquipmentTheme.LIVE.refresh();
+        ThemePalette chosen = PaletteThemes.palette(TEST_THEME);
+        ITheme equipment = IThemeApi.get()
+            .getTheme(EquipmentTheme.ID);
+        check(
+            EquipmentTheme.selected()
+                .equals(TEST_THEME)
+                && PaletteThemes.forScreen(
+                    IThemeApi.get()
+                        .getTheme(TEST_THEME))
+                    == EquipmentTheme.LIVE.theme()
+                && PaletteThemes.forScreen(equipment) == equipment,
+            "a second registered theme can be chosen and takes over the equipment screens");
+        check(
+            EquipmentTheme.colors().accent == chosen.accent() && HudEditor.activeColor() == chosen.accent(),
+            "code colors come from the chosen theme");
+        int[] glow = { 0xFF000000 | CYAN };
+        EquipmentTheme.LIVE.accentFrom(() -> glow[0]);
+        check(
+            EquipmentTheme.LIVE.current()
+                .equals(chosen.follow(CYAN)),
+            "the chosen theme follows the glow");
+        MainConfig.client.enableEquipmentThemeGlowColor = false;
+        EquipmentTheme.LIVE.refresh();
+        check(
+            EquipmentTheme.LIVE.current()
+                .equals(chosen) && EquipmentTheme.colors().accent == chosen.accent(),
+            "with following off the chosen theme keeps its own colors");
+        MainConfig.client.equipmentTheme = savedTheme;
+        MainConfig.client.enableEquipmentThemeGlowColor = savedFollow;
+        EquipmentTheme.LIVE.accentFrom(() -> LivePalette.NO_ACCENT);
+    }
+
+    private static double hueOffset(int color, int accent) {
+        return (FxColor.hsl(color & 0xFFFFFF)[0] - FxColor.hsl(accent & 0xFFFFFF)[0] + 360) % 360;
+    }
+
+    private static double whiteMix(int color, int accent) {
+        double lightness = FxColor.hsl(accent & 0xFFFFFF)[2];
+        return (FxColor.hsl(color & 0xFFFFFF)[2] - lightness) / (1 - lightness);
+    }
+
+    private static double blackMix(int color, int accent) {
+        return FxColor.hsl(color & 0xFFFFFF)[2] / FxColor.hsl(accent & 0xFFFFFF)[2];
+    }
+
+    private static boolean sameWidgetTheme(Object expected, Object actual) throws IllegalAccessException {
+        if (expected == actual) return true;
+        if (expected == null || actual == null || expected.getClass() != actual.getClass()) return false;
+        if (expected instanceof IJsonSerializable serializable) {
+            JsonObject first = new JsonObject(), second = new JsonObject();
+            serializable.saveToJson(first);
+            ((IJsonSerializable) actual).saveToJson(second);
+            return first.equals(second);
+        }
+        for (Class<?> type = expected.getClass(); type != Object.class; type = type.getSuperclass())
+            for (Field field : type.getDeclaredFields()) {
+                if (Modifier.isStatic(field.getModifiers())) continue;
+                field.setAccessible(true);
+                Object first = field.get(expected), second = field.get(actual);
+                if (field.getType()
+                    .isPrimitive() ? !first.equals(second) : !sameWidgetTheme(first, second)) return false;
+            }
+        return true;
+    }
+
+    private static List<Integer> components(ThemePalette palette) {
+        List<Integer> colors = new ArrayList<>();
+        palette.map(color -> {
+            colors.add(color);
+            return color;
+        });
+        return colors;
+    }
+
+    private static void paletteControls(String label, ITheme theme, ThemePalette palette, ThemeStyle style)
+        throws ReflectiveOperationException {
+        WidgetTheme fallback = theme.getFallback()
+            .getTheme();
+        check(
+            fallback.getTextColor() == palette.text() && fallback.getTextShadow() && fallback.getColor() == 0xFFFFFFFF,
+            label + " text defaults to the palette text with a shadow");
+        sameFrame(
+            label + " panel",
+            theme.getPanelTheme()
+                .getTheme()
+                .getBackground(),
+            new int[] { palette.panelTop(), palette.panelBottom(), palette.accentDim(), palette.accent(),
+                style.cornerLength(), style.cornerThickness() });
+        WidgetThemeEntry<WidgetTheme> button = theme.getButtonTheme();
+        sameRectangle(
+            label + " button",
+            button.getTheme()
+                .getBackground(),
+            palette.button());
+        sameRectangle(
+            label + " button hover",
+            button.getHoverTheme()
+                .getBackground(),
+            palette.buttonHover());
+        same(
+            label + " button text",
+            button.getTheme()
+                .getTextColor(),
+            palette.text());
+        same(
+            label + " button hover text",
+            button.getHoverTheme()
+                .getTextColor(),
+            palette.selectedText());
+        check(
+            button.getTheme()
+                .getTextShadow()
+                && button.getHoverTheme()
+                    .getTextShadow() == palette.selectedTextShadow(),
+            label + " button text has a shadow, hovered button text follows its background");
+        WidgetThemeEntry<WidgetTheme> close = theme.getWidgetTheme(IThemeApi.CLOSE_BUTTON);
+        check(
+            close.getTheme()
+                .getBackground() == IDrawable.EMPTY,
+            label + " close button has no background until hovered");
+        sameRectangle(
+            label + " close button hover",
+            close.getHoverTheme()
+                .getBackground(),
+            palette.hover());
+        same(
+            label + " close button text",
+            close.getTheme()
+                .getTextColor(),
+            palette.text());
+        check(
+            close.getTheme()
+                .getTextShadow(),
+            label + " close button text has a shadow");
+        sameCard(
+            label,
+            theme.getWidgetTheme(CardDrawable.KEY)
+                .getTheme()
+                .getBackground(),
+            new int[] { palette.card(), palette.cardEdge(), palette.accent(), style.cardAccentTop(),
+                style.cardAccentWidth(), style.cardAccentHeight() });
+        WidgetThemeEntry<SlideSwitch.Theme> slideEntry = theme.getWidgetTheme(SlideSwitch.Theme.KEY);
+        SlideSwitch.Theme slide = slideEntry.getTheme();
+        same(label + " switch track", slide.track, palette.switchOff());
+        same(label + " switch track on", slide.trackOn, palette.accent());
+        same(label + " switch track dim", slide.trackDim, palette.accentDim());
+        same(label + " switch knob", slide.knob, palette.knob());
+        same(label + " switch knob off", slide.knobOff, palette.knobOff());
+        same(label + " switch text on", slide.textOn, palette.textOn());
+        same(label + " switch text dim", slide.textDim, palette.textDim());
+        same(label + " switch text off", slide.textOff, palette.textOff());
+        check(slide.getBackground() == null, label + " switch rows have no background until hovered");
+        sameRectangle(
+            label + " switch hover",
+            slideEntry.getHoverTheme()
+                .getBackground(),
+            palette.hover());
+        FillBar.Theme bar = theme.getWidgetTheme(FillBar.Theme.KEY)
+            .getTheme();
+        same(label + " fill bar track", bar.track, palette.track());
+        same(label + " fill bar fill", bar.fill, palette.accent());
+        StepSlider.Theme slider = theme.getWidgetTheme(StepSlider.Theme.KEY)
+            .getTheme();
+        same(label + " slider track", slider.track, palette.track());
+        same(label + " slider fill", slider.fill, palette.accent());
+        same(label + " slider cursor", slider.cursor, palette.cursor());
+        same(label + " slider cursor text", slider.cursorText, palette.cursorText());
+        same(label + " slider tick", slider.tick, palette.tick());
+        same(label + " slider milestone", slider.milestone, palette.milestone());
+        SlotTheme slot = theme.getItemSlotTheme()
+            .getTheme();
+        sameFrame(
+            label + " item slot",
+            slot.getBackground(),
+            new int[] { palette.well(), palette.well(), palette.wellEdge(), 0, 0, 0 });
+        same(label + " item slot hover", slot.getSlotHoverColor(), palette.slotHover());
+        for (WidgetThemeKey<SlotTheme> key : Arrays.asList(
+            IThemeApi.ITEM_SLOT_PLAYER,
+            IThemeApi.ITEM_SLOT_PLAYER_HOTBAR,
+            IThemeApi.ITEM_SLOT_PLAYER_MAIN_INV,
+            IThemeApi.ITEM_SLOT_PLAYER_ARMOR))
+            check(
+                theme.getWidgetTheme(key)
+                    .getTheme()
+                    .getBackground() == slot.getBackground(),
+                label + " player inventory slot " + key.getFullName() + " uses the item slot");
+        TextFieldTheme field = theme.getTextFieldTheme()
+            .getTheme();
+        sameFrame(
+            label + " text field",
+            field.getBackground(),
+            new int[] { palette.well(), palette.well(), palette.accentDim(), 0, 0, 0 });
+        same(label + " text field text", field.getTextColor(), palette.text());
+        same(label + " text field selection", field.getMarkedColor(), palette.accentDim());
+        same(label + " text field hint", field.getHintColor(), palette.hint());
+        check(!field.getTextShadow(), label + " text field text has no shadow");
+        sameRectangle(
+            label + " scrollbar",
+            theme.getScrollbarTheme()
+                .getTheme()
+                .getBackground(),
+            palette.accentDim());
+        WidgetThemeEntry<SelectableTheme> tabs = theme.getToggleButtonTheme();
+        SelectableTheme tab = tabs.getTheme(), tabHover = tabs.getHoverTheme();
+        sameRectangle(label + " tab", tab.getBackground(), palette.button());
+        same(label + " tab text", tab.getTextColor(), palette.textOff());
+        sameRectangle(
+            label + " selected tab",
+            tab.getSelected()
+                .getBackground(),
+            palette.buttonHover());
+        same(
+            label + " selected tab text",
+            tab.getSelected()
+                .getTextColor(),
+            palette.selectedText());
+        check(
+            !tab.getTextShadow() && tab.getSelected()
+                .getTextShadow() == palette.selectedTextShadow(),
+            label + " unselected tab text has no shadow, selected tab text follows its background");
+        sameRectangle(label + " tab hover", tabHover.getBackground(), palette.tabHover());
+        sameRectangle(
+            label + " selected tab hover",
+            tabHover.getSelected()
+                .getBackground(),
+            palette.buttonHover());
+        WidgetThemeEntry<Colors> colors = theme.getWidgetTheme(EquipmentTheme.COLORS);
+        for (Colors read : new Colors[] { colors.getTheme(), colors.getHoverTheme() }) {
+            same(label + " code accent", read.accent, palette.accent());
+            same(label + " code accent dim", read.accentDim, palette.accentDim());
+            same(label + " code hint", read.hint, palette.hint());
+        }
+    }
+
+    private static boolean pink(int color) {
+        return (color & 0xFFFFFF) == 0xFF3D9A;
+    }
+
+    private static void same(String what, int actual, int expected) {
+        check(
+            actual == expected,
+            what + " color: expected " + Integer.toHexString(expected) + ", got " + Integer.toHexString(actual));
+    }
+
+    private static void sameRectangle(String what, IDrawable drawable, int color) throws ReflectiveOperationException {
+        check(drawable instanceof Rectangle, what + " is a plain rectangle");
+        if (drawable instanceof Rectangle)
+            for (String corner : new String[] { "colorTL", "colorTR", "colorBL", "colorBR" })
+                same(what + " " + corner, (int) field(drawable, corner), color);
+    }
+
+    private static void sameFrame(String what, IDrawable drawable, int[] values) throws ReflectiveOperationException {
+        check(drawable instanceof FrameDrawable, what + " is a frame");
+        if (!(drawable instanceof FrameDrawable)) return;
+        String[] names = { "top", "bottom", "border", "corner", "cornerLength", "cornerThickness" };
+        for (int i = 0; i < names.length; i++) same(what + " " + names[i], (int) field(drawable, names[i]), values[i]);
+    }
+
+    private static void sameCard(String label, IDrawable drawable, int[] values) throws ReflectiveOperationException {
+        check(drawable instanceof CardDrawable, label + " card is a card");
+        if (!(drawable instanceof CardDrawable)) return;
+        String[] names = { "fill", "edge", "accent", "accentTop", "accentWidth", "accentHeight" };
+        for (int i = 0; i < names.length; i++)
+            same(label + " card " + names[i], (int) field(drawable, names[i]), values[i]);
+    }
+
+    private static void reloadThemes(JsonBuilder... overrides) throws ReflectiveOperationException {
+        new PaletteThemes.Reloader().onThemeReload(new ReloadThemeEvent.Pre());
+        for (JsonBuilder override : overrides) IThemeApi.get()
+            .registerTheme(EquipmentTheme.ID, override);
+        call(ThemeAPI.class, "onReload", ThemeAPI.INSTANCE, new Class<?>[0]);
+        ThemeManager.loadThemes(new HashMap<>());
+        new PaletteThemes.Reloader().onThemesLoaded(new ReloadThemeEvent.Post());
+    }
+
     private static void lang() throws Exception {
         Set<String> expected = new TreeSet<>();
         for (CelestweaveModule module : CelestweaveModule.values()) {
@@ -494,7 +1345,8 @@ public class EquipmentResourceContracts {
             Config.LangKey key = field.getAnnotation(Config.LangKey.class);
             String name = field.getName()
                 .toLowerCase();
-            if (key == null || !name.contains("celestweave") && !name.contains("hud")) continue;
+            if (key == null || !name.contains("celestweave") && !name.contains("hud") && !name.contains("equipment"))
+                continue;
             expected.add(key.value());
             expected.add(key.value() + ".tooltip");
         }
