@@ -1,7 +1,6 @@
 package com.science.gtnl.common.gui.equipment;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagList;
 
 import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
@@ -11,7 +10,7 @@ import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunEnergy;
-import com.science.gtnl.common.railgun.RailgunModuleType;
+import com.science.gtnl.common.railgun.RailgunModule;
 import com.science.gtnl.common.railgun.RailgunSetting;
 
 public class RailgunGui extends EquipmentGui {
@@ -29,13 +28,18 @@ public class RailgunGui extends EquipmentGui {
 
     @Override
     public ModularPanel build() {
-        ModularPanel panel = panel("electromagnetic_railgun", 210);
-        title(panel, "item.gtnl.electromagnetic_railgun.name", 160);
-        moduleSlots(panel, new ModuleHandler(), "railgun_modules", 18, "item.gtnl.railgun.module_limits");
-        energyBar(panel, () -> EquipmentEnergy.read(bound()), () -> RailgunEnergy.capacity(bound()), 42, 160);
         RailgunSetting[] settings = RailgunSetting.values();
+        ModularPanel panel = panel("electromagnetic_railgun", SETTINGS_Y + (settings.length + 1) / 2 * SETTING_ROW);
+        title(panel, "item.gtnl.electromagnetic_railgun.name", 160);
+        moduleSlots(
+            panel,
+            new ModuleSlots<>(RailgunData.MODULE_SLOTS, RailgunData.MODULE_STORAGE, RailgunModule::of),
+            "railgun_modules",
+            18,
+            "item.gtnl.railgun.module_limits");
+        energyBar(panel, () -> EquipmentEnergy.read(bound()), () -> RailgunEnergy.capacity(bound()), 42, 160);
         for (int i = 0; i < settings.length; i++) setting(panel, settings[i], i);
-        panel.bindPlayerInventory();
+        bindFooter(panel);
         return panel;
     }
 
@@ -56,37 +60,5 @@ public class RailgunGui extends EquipmentGui {
             },
             available::getBoolValue,
             null);
-    }
-
-    private class ModuleHandler extends ModuleSlots {
-
-        ModuleHandler() {
-            super(RailgunData.MODULE_SLOTS);
-        }
-
-        @Override
-        protected NBTTagList tag(ItemStack host) {
-            return RailgunData.moduleList(host);
-        }
-
-        @Override
-        protected ItemStack[] load(ItemStack host) {
-            return RailgunData.moduleStacks(host);
-        }
-
-        @Override
-        protected void save(ItemStack host, ItemStack[] modules) {
-            RailgunData.writeModuleStacks(host, modules);
-        }
-
-        @Override
-        protected Object type(ItemStack candidate) {
-            return RailgunModuleType.of(candidate);
-        }
-
-        @Override
-        protected int limit(Object type) {
-            return ((RailgunModuleType) type).limit;
-        }
     }
 }

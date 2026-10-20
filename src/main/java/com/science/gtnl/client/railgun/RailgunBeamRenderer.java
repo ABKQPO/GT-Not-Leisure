@@ -24,15 +24,20 @@ import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.packet.RailgunBeamUpdatePacket;
 import com.science.gtnl.common.railgun.RailgunData;
-import com.science.gtnl.common.railgun.RailgunDefaults;
-import com.science.gtnl.common.railgun.RailgunModuleType;
+import com.science.gtnl.common.railgun.RailgunModule;
 import com.science.gtnl.common.railgun.RailgunRaycast;
 import com.science.gtnl.common.railgun.RailgunSetting;
 import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class RailgunBeamRenderer {
+
+    private static final double BEAM_RANGE_RESPONSE = 26;
+    private static final double BEAM_RANGE_SNAP = 4;
 
     private static final int MAX_SHOTS = 64;
     private static final int MAX_BEAMS = 64;
@@ -55,10 +60,7 @@ public class RailgunBeamRenderer {
     private static final double[] BLOOM_WIDTHS = { 1.35, 0.72, 0.32, 0.11 };
     private static final float[] BLOOM_ALPHA = { 0.2F, 0.46F, 0.78F, 1F };
 
-    private static final float[] EHV_INNER = { 1F, 0.3F, 0.62F };
-    private static final float[] EHV_OUTER = { 1F, 0.84F, 0.94F };
-    private static final float[] HV_INNER = { 0.22F, 0.72F, 1F };
-    private static final float[] HV_OUTER = { 0.84F, 0.97F, 1F };
+    private static final float[] COLOR = new float[3];
 
     private record Shot(int shooterId, EquipmentVec from, EquipmentVec to, boolean ehv, float intensity, long until) {}
 
@@ -111,9 +113,9 @@ public class RailgunBeamRenderer {
 
     private static double localRange(EntityPlayer player, ItemStack stack) {
         double range = RailgunRaycast.effectiveRange(
-            RailgunDefaults.BEAM_RANGE,
+            RailgunData.BEAM_RANGE,
             RailgunData.modules(stack)
-                .count(RailgunModuleType.RANGE));
+                .count(RailgunModule.RANGE));
         return clampRange(player, EquipmentVec.eye(player, 1F), EquipmentVec.look(player), range);
     }
 
@@ -195,13 +197,13 @@ public class RailgunBeamRenderer {
         if (held == null) {
             if (HELD.size() >= MAX_BEAMS) return;
             held = new HeldBeam();
-            held.range = packet.range();
+            held.range = packet.range;
             held.targetRange = held.range;
             held.lastFrameMillis = Minecraft.getSystemTime();
             HELD.put(shooterId, held);
         }
         held.ehv = packet.ehv;
-        held.targetRange = packet.range();
+        held.targetRange = packet.range;
         held.lastUpdateTick = now;
     }
 
@@ -250,8 +252,8 @@ public class RailgunBeamRenderer {
         double seconds = Math.min(MAX_FRAME_SECONDS, Math.max(0, (millis - held.lastFrameMillis) / 1000.0));
         held.lastFrameMillis = millis;
         double difference = held.targetRange - held.range;
-        if (Math.abs(difference) > RailgunDefaults.BEAM_RANGE_SNAP) held.range = held.targetRange;
-        else held.range += difference * (1 - Math.exp(-seconds * RailgunDefaults.BEAM_RANGE_RESPONSE));
+        if (Math.abs(difference) > BEAM_RANGE_SNAP) held.range = held.targetRange;
+        else held.range += difference * (1 - Math.exp(-seconds * BEAM_RANGE_RESPONSE));
     }
 
     private static double clampRange(Entity shooter, EquipmentVec origin, EquipmentVec direction, double range) {
@@ -374,12 +376,8 @@ public class RailgunBeamRenderer {
     }
 
     private static void setColor(boolean ehv, float mix, float alpha) {
-        float[] inner = ehv ? EHV_INNER : HV_INNER, outer = ehv ? EHV_OUTER : HV_OUTER;
-        Tessellator.instance.setColorRGBA_F(
-            inner[0] + (outer[0] - inner[0]) * mix,
-            inner[1] + (outer[1] - inner[1]) * mix,
-            inner[2] + (outer[2] - inner[2]) * mix,
-            alpha);
+        float[] rgb = RailgunOrbRenderer.beamColor(ehv, mix, COLOR);
+        Tessellator.instance.setColorRGBA_F(rgb[0], rgb[1], rgb[2], alpha);
     }
 
     private static EquipmentVec corner(EquipmentVec center, EquipmentVec right, EquipmentVec up, double angle,

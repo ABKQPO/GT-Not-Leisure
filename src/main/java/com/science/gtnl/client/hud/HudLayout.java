@@ -13,11 +13,12 @@ import java.util.Properties;
 import net.minecraft.client.Minecraft;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.config.MainConfig;
 
 public class HudLayout {
 
     public static final float MIN_SCALE = 0.5F, MAX_SCALE = 3F, SCALE_STEP = 0.1F;
-    private static final String FILE = "config/GTNotLeisure/celestweave_hud.properties";
+    private static final String FILE = "config/GTNotLeisure/hud.properties";
     private static final Map<String, Entry> ENTRIES = new LinkedHashMap<>();
     private static boolean loaded;
 
@@ -36,14 +37,22 @@ public class HudLayout {
         return ENTRIES.computeIfAbsent(element.id, key -> new Entry());
     }
 
+    public static boolean enabled() {
+        return MainConfig.client.enableHud;
+    }
+
     public static Placement place(HudElement element, int width, int height) {
-        if (!element.isVisible()) return null;
+        if (!enabled() || !element.isInUse() || !element.isVisible()) return null;
         Entry entry = entry(element);
-        return entry.hidden ? null : placement(element, entry, width, height, element.baseScale());
+        return entry.hidden ? null : placement(element, entry, width, height, baseScale(element));
     }
 
     public static Placement preview(HudElement element, int width, int height) {
-        return placement(element, entry(element), width, height, element.baseScale());
+        return placement(element, entry(element), width, height, baseScale(element));
+    }
+
+    private static float baseScale(HudElement element) {
+        return element.baseScale() * HudElement.validScale(MainConfig.client.hudScale);
     }
 
     public static boolean hidden(HudElement element) {

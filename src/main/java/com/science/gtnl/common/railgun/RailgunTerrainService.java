@@ -32,6 +32,11 @@ public class RailgunTerrainService {
     private static Set<String> protectedMods = Set.of();
     private static final double EDGE_JITTER = 1.5;
     private static final int CHECKS_PER_BREAK = 8;
+    private static final double MAX_RADIUS = 10;
+    private static final int MAX_PENDING_JOBS = 128, MAX_BLOCKS_PER_TICK = 10000, MAX_Y = 255;
+    private static final int SPARK_ONE_IN = 12, SPARK_COUNT = 2;
+    private static final double SPARK_SPREAD = 0.3, SPARK_SPEED = 0.05;
+    private static final double OBSIDIAN_HARDNESS = 50;
     private static final ArrayDeque<Job> PENDING = new ArrayDeque<>();
 
     private RailgunTerrainService() {}
@@ -40,12 +45,12 @@ public class RailgunTerrainService {
         EntityPlayerMP player) {
         if (!MainConfig.item.railgun.enableTerrain || !center.finite()
             || radius <= 0
-            || radius > 10
-            || PENDING.size() >= 128) return;
+            || radius > MAX_RADIUS
+            || PENDING.size() >= MAX_PENDING_JOBS) return;
         List<Position> positions = new ArrayList<>();
         int minX = MathHelper.floor_double(center.x() - radius), maxX = MathHelper.floor_double(center.x() + radius);
         int minY = Math.max(0, MathHelper.floor_double(center.y() - radius)),
-            maxY = Math.min(255, MathHelper.floor_double(center.y() + radius));
+            maxY = Math.min(MAX_Y, MathHelper.floor_double(center.y() + radius));
         int minZ = MathHelper.floor_double(center.z() - radius), maxZ = MathHelper.floor_double(center.z() + radius);
         for (int x = minX; x <= maxX; x++) for (int y = minY; y <= maxY; y++) for (int z = minZ; z <= maxZ; z++) {
             double distance = Math.sqrt(new EquipmentVec(x + 0.5, y + 0.5, z + 0.5).distanceToSqr(center));
@@ -66,7 +71,7 @@ public class RailgunTerrainService {
             PENDING.clear();
             return;
         }
-        int budget = Math.max(1, Math.min(10000, config.terrainBlocksPerTick));
+        int budget = Math.max(1, Math.min(MAX_BLOCKS_PER_TICK, config.terrainBlocksPerTick));
         int checks = budget * CHECKS_PER_BREAK;
         var iterator = PENDING.iterator();
         while (iterator.hasNext() && budget > 0 && checks > 0) {
@@ -91,9 +96,17 @@ public class RailgunTerrainService {
                 int metadata = world.getBlockMetadata(x, y, z);
                 if (world.setBlockToAir(x, y, z)) {
                     budget--;
-                    if (config.terrainDropItems) block.dropBlockAsItem(world, x, y, z, metadata, 0);
-                    if (world.rand.nextInt(12) == 0)
-                        world.func_147487_a("fireworksSpark", x + 0.5, y + 0.5, z + 0.5, 2, 0.3, 0.3, 0.3, 0.05);
+                    if (config.enableTerrainDrops) block.dropBlockAsItem(world, x, y, z, metadata, 0);
+                    if (world.rand.nextInt(SPARK_ONE_IN) == 0) world.func_147487_a(
+                        "fireworksSpark",
+                        x + 0.5,
+                        y + 0.5,
+                        z + 0.5,
+                        SPARK_COUNT,
+                        SPARK_SPREAD,
+                        SPARK_SPREAD,
+                        SPARK_SPREAD,
+                        SPARK_SPEED);
                 }
             }
             if (job.queue.isEmpty()) iterator.remove();
@@ -120,6 +133,6 @@ public class RailgunTerrainService {
         var id = GameRegistry.findUniqueIdentifierFor(block);
         if (id == null || protectedMods().contains(id.modId.toLowerCase(Locale.ROOT))) return false;
         return block != Blocks.bedrock && block != Blocks.end_portal_frame
-            && (block != Blocks.obsidian || maxHardness >= 50);
+            && (block != Blocks.obsidian || maxHardness >= OBSIDIAN_HARDNESS);
     }
 }

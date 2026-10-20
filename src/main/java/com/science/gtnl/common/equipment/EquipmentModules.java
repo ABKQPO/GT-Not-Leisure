@@ -1,5 +1,8 @@
 package com.science.gtnl.common.equipment;
 
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -16,7 +19,8 @@ public class EquipmentModules {
         ItemStack[] stacks = new ItemStack[slots];
         for (int i = 0; i < list.tagCount(); i++) {
             NBTTagCompound entry = list.getCompoundTagAt(i);
-            int slot = entry.hasKey(SLOT) ? entry.getByte(SLOT) & 255 : i;
+            if (!entry.hasKey(SLOT)) continue;
+            int slot = entry.getByte(SLOT) & 255;
             if (slot < slots) stacks[slot] = ItemStack.loadItemStackFromNBT((NBTTagCompound) entry.copy());
         }
         return stacks;
@@ -41,5 +45,44 @@ public class EquipmentModules {
             if (tier > 0) return tier;
         }
         return 0;
+    }
+
+    public static Storage storage(Function<ItemStack, NBTTagList> list, Function<ItemStack, ItemStack[]> read,
+        BiConsumer<ItemStack, ItemStack[]> write) {
+        return new Storage() {
+
+            @Override
+            public NBTTagList moduleList(ItemStack host) {
+                return list.apply(host);
+            }
+
+            @Override
+            public ItemStack[] moduleStacks(ItemStack host) {
+                return read.apply(host);
+            }
+
+            @Override
+            public void writeModuleStacks(ItemStack host, ItemStack[] modules) {
+                write.accept(host, modules);
+            }
+        };
+    }
+
+    public interface Storage {
+
+        /**
+         * The NBT list the host keeps its modules in, used to notice changes made outside the GUI.
+         */
+        NBTTagList moduleList(ItemStack host);
+
+        /**
+         * Reads the module stacks of the host, one per slot.
+         */
+        ItemStack[] moduleStacks(ItemStack host);
+
+        /**
+         * Writes the module stacks back to the host.
+         */
+        void writeModuleStacks(ItemStack host, ItemStack[] modules);
     }
 }

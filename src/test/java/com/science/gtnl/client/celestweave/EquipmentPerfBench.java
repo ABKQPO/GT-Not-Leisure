@@ -34,7 +34,7 @@ import com.science.gtnl.common.packet.RailgunBeamUpdatePacket;
 import com.science.gtnl.common.packet.RailgunFireFxPacket;
 import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunEnergy;
-import com.science.gtnl.common.railgun.RailgunModuleType;
+import com.science.gtnl.common.railgun.RailgunModule;
 import com.science.gtnl.common.railgun.RailgunSetting;
 import com.sun.management.ThreadMXBean;
 
@@ -76,9 +76,8 @@ public class EquipmentPerfBench {
         ItemStack railgun = new ItemStack(plain);
         ItemStack[] slots = new ItemStack[RailgunData.MODULE_SLOTS];
         slots[0] = new ItemStack(energyModule, 1, 2);
-        RailgunModuleType[] types = { RailgunModuleType.COMPUTE, RailgunModuleType.COMPUTE,
-            RailgunModuleType.ACCELERATION, RailgunModuleType.ACCELERATION, RailgunModuleType.RANGE,
-            RailgunModuleType.RANGE, RailgunModuleType.EHV_BEAM };
+        RailgunModule[] types = { RailgunModule.COMPUTE, RailgunModule.COMPUTE, RailgunModule.ACCELERATION,
+            RailgunModule.ACCELERATION, RailgunModule.RANGE, RailgunModule.RANGE, RailgunModule.EHV_BEAM };
         for (int i = 0; i < types.length; i++) slots[i + 1] = railgunModule.stack(types[i]);
         RailgunData.writeModuleStacks(railgun, slots);
         EquipmentEnergy.write(railgun, 1.0E8, RailgunEnergy.capacity(railgun));
@@ -90,7 +89,7 @@ public class EquipmentPerfBench {
         check(CelestweaveData.energyTier(chest) == 3, "armor energy tier");
         check(
             RailgunData.modules(railgun)
-                .count(RailgunModuleType.COMPUTE) == 2,
+                .count(RailgunModule.COMPUTE) == 2,
             "railgun modules load");
 
         System.out.println("== 护甲数据访问（胸甲 8 个模块）==");
@@ -123,7 +122,7 @@ public class EquipmentPerfBench {
         bench(
             "RailgunData.modules",
             () -> RailgunData.modules(railgun)
-                .count(RailgunModuleType.RANGE));
+                .count(RailgunModule.RANGE));
         bench("RailgunEnergy.capacity（IC2 getMaxCharge）", () -> RailgunEnergy.capacity(railgun));
         bench(
             "RailgunData.modules().energyTier（IC2 getTier）",
@@ -162,7 +161,7 @@ public class EquipmentPerfBench {
             "RailgunBeamChainFxPacket（14 点路径）",
             new RailgunBeamChainFxPacket(1, EquipmentVec.ZERO, path.subList(0, 14), true, true));
         packet("RailgunBeamUpdatePacket", RailgunBeamUpdatePacket.move(1, 64, true));
-        packet("CelestweaveFxPacket", new CelestweaveFxPacket(1, CelestweaveFxPacket.SHIELD_HIT, 0, 0, 0));
+        packet("CelestweaveFxPacket", new CelestweaveFxPacket(1, CelestweaveFxPacket.Type.SHIELD_HIT, 0, 0, 0));
         if (sink == 42) System.out.println();
     }
 

@@ -91,7 +91,7 @@ public enum CelestweaveCosmeticOption {
         return switch (kind) {
             case COLOR -> tag.getInteger(key) & 0xFFFFFF;
             case FLAGS -> tag.getInteger(key) & (int) max();
-            case CHOICE -> tag.hasKey(key, 8) ? named(tag.getString(key)) : clamp(tag.getInteger(key));
+            case CHOICE -> named(tag.getString(key));
             case INT -> clamp(tag.getInteger(key));
             case DECIMAL -> clamp(tag.getFloat(key));
         };

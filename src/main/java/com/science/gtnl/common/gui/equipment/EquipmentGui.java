@@ -3,7 +3,9 @@ package com.science.gtnl.common.gui.equipment;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
+import java.util.function.Function;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.StatCollector;
@@ -22,9 +24,14 @@ import com.cleanroommc.modularui.widgets.ProgressWidget;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
+import com.science.gtnl.client.hud.HudEditor;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
+import com.science.gtnl.common.equipment.EquipmentModules;
+import com.science.gtnl.common.equipment.IEquipmentVariant;
 import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.modularui2.GTGuis;
 
@@ -32,6 +39,9 @@ public abstract class EquipmentGui {
 
     protected static final int WIDTH = 176, BUTTON_HEIGHT = 14;
     private static final int STORED_EU_TEXTURE_WIDTH = 147;
+    private static final int INVENTORY_HEIGHT = 76, INVENTORY_BOTTOM = 7, FOOTER_GAP = 4, HUD_BUTTON_WIDTH = 56,
+        HUD_BUTTON_SIDE = 8, HUD_BUTTON_BOTTOM = INVENTORY_BOTTOM + INVENTORY_HEIGHT + FOOTER_GAP,
+        FOOTER_HEIGHT = HUD_BUTTON_BOTTOM + BUTTON_HEIGHT;
 
     protected final PlayerInventoryGuiData data;
     protected final PanelSyncManager sync;
@@ -74,9 +84,29 @@ public abstract class EquipmentGui {
         return StatCollector.translateToLocal(key);
     }
 
-    protected static ModularPanel panel(String name, int height) {
+    protected static ModularPanel panel(String name, int contentHeight) {
         return GTGuis.createPopUpPanel(name)
-            .size(WIDTH, height);
+            .size(WIDTH, contentHeight + FOOTER_HEIGHT);
+    }
+
+    protected static void bindFooter(ModularPanel panel) {
+        panel.child(
+            standardButton(HUD_BUTTON_WIDTH, BUTTON_HEIGHT).right(HUD_BUTTON_SIDE)
+                .bottom(HUD_BUTTON_BOTTOM)
+                .overlay(IKey.lang("gtnl.hud.editor.open"))
+                .onMousePressed(mouse -> {
+                    if (mouse != 0) return false;
+                    openHudEditor();
+                    return true;
+                }));
+        panel.bindPlayerInventory();
+    }
+
+    @SideOnly(Side.CLIENT)
+    private static void openHudEditor() {
+        Minecraft.getMinecraft()
+            .displayGuiScreen(null);
+        HudEditor.open();
     }
 
     protected static void title(ModularPanel panel, String lang, int width) {
@@ -87,7 +117,7 @@ public abstract class EquipmentGui {
                 .size(width, 10));
     }
 
-    protected void moduleSlots(ModularPanel panel, ModuleSlots handler, String group, int y, String limits) {
+    protected void moduleSlots(ModularPanel panel, ModuleSlots<?> handler, String group, int y, String limits) {
         sync.registerSlotGroup(new SlotGroup(group, handler.getSlots(), 0, true));
         for (int i = 0; i < handler.getSlots(); i++) {
             final int slot = i;
@@ -124,15 +154,22 @@ public abstract class EquipmentGui {
                 .size(160, 5));
     }
 
+    protected static ButtonWidget<?> standardButton(int x, int y, int width, int height) {
+        return standardButton(width, height).pos(x, y);
+    }
+
+    private static ButtonWidget<?> standardButton(int width, int height) {
+        return new ButtonWidget<>().size(width, height)
+            .background(GTGuiTextures.BUTTON_STANDARD);
+    }
+
     protected ButtonWidget<?> addToggle(ParentWidget<?> parent, String key, String lang, int x, int y, int width,
         BooleanSupplier getter, Consumer<Boolean> setter, BooleanSupplier allowed, String hint) {
         BooleanSyncValue value = new BooleanSyncValue(
             getter,
             enabled -> { if (allowed.getAsBoolean()) setter.accept(enabled); }).allowC2S();
         sync.syncValue(key, value);
-        ButtonWidget<?> button = new ButtonWidget<>().pos(x, y)
-            .size(width, BUTTON_HEIGHT)
-            .background(GTGuiTextures.BUTTON_STANDARD)
+        ButtonWidget<?> button = standardButton(x, y, width, BUTTON_HEIGHT)
             .overlay(
                 IKey.dynamic(() -> (allowed.getAsBoolean() ? value.getBoolValue() ? "§a" : "§7" : "§8") + tr(lang)))
             .tooltipBuilder(tooltip -> {
@@ -155,45 +192,34 @@ public abstract class EquipmentGui {
         return button;
     }
 
-    protected abstract class ModuleSlots extends ItemStackHandler {
+    protected class ModuleSlots<T extends IEquipmentVariant> extends ItemStackHandler {
 
+        private final EquipmentModules.Storage storage;
+        private final Function<ItemStack, T> types;
         private NBTTagList synced, seen;
         protected int version;
 
-        protected ModuleSlots(int size) {
+        protected ModuleSlots(int size, EquipmentModules.Storage storage, Function<ItemStack, T> types) {
             super(size);
+            this.storage = storage;
+            this.types = types;
         }
 
-        /**
-         * The NBT list the modules of the host are stored in, used to notice outside changes.
-         */
-        protected abstract NBTTagList tag(ItemStack host);
+        protected ItemStack[] load(ItemStack host) {
+            return storage.moduleStacks(host);
+        }
 
-        /**
-         * Reads the module stacks of the host, one per slot.
-         */
-        protected abstract ItemStack[] load(ItemStack host);
+        protected void save(ItemStack host, ItemStack[] modules) {
+            storage.writeModuleStacks(host, modules);
+        }
 
-        /**
-         * Writes the module stacks back to the host.
-         */
-        protected abstract void save(ItemStack host, ItemStack[] modules);
-
-        /**
-         * The module type of an item for this host, or null when it can not be installed.
-         */
-        protected abstract Object type(ItemStack candidate);
-
-        /**
-         * How many modules of one type may be installed together.
-         */
-        protected int limit(Object type) {
-            return 1;
+        protected T type(ItemStack candidate) {
+            return types.apply(candidate);
         }
 
         protected void reload() {
             ItemStack host = bound();
-            NBTTagList current = tag(host);
+            NBTTagList current = storage.moduleList(host);
             if (current == seen) return;
             seen = current;
             if (current.equals(synced)) return;
@@ -229,7 +255,7 @@ public abstract class EquipmentGui {
         @Override
         public boolean isItemValid(int slot, ItemStack candidate) {
             boolean energy = EnergyModuleItem.tier(candidate) > 0;
-            Object type = energy ? null : type(candidate);
+            T type = energy ? null : type(candidate);
             if (!energy && type == null) return false;
             int count = 0;
             for (int i = 0; i < getSlots(); i++) {
@@ -237,7 +263,7 @@ public abstract class EquipmentGui {
                 ItemStack other = getStackInSlot(i);
                 if (energy ? EnergyModuleItem.tier(other) > 0 : type.equals(type(other))) count++;
             }
-            return count < (energy ? 1 : limit(type));
+            return count < (energy ? 1 : type.limit());
         }
 
         @Override
@@ -251,7 +277,7 @@ public abstract class EquipmentGui {
         protected void onContentsChanged(int slot) {
             ItemStack host = bound();
             save(host, stacks.toArray(new ItemStack[0]));
-            seen = tag(host);
+            seen = storage.moduleList(host);
             synced = (NBTTagList) seen.copy();
             version++;
             changed();

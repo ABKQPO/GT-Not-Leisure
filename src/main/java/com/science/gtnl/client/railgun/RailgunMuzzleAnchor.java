@@ -15,6 +15,10 @@ import org.lwjgl.opengl.GL11;
 import com.science.gtnl.client.fx.world.FxCamera;
 import com.science.gtnl.common.equipment.EquipmentVec;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class RailgunMuzzleAnchor {
 
     private static final long STALE_MILLIS = 100;

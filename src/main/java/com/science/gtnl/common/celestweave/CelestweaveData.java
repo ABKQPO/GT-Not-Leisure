@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagString;
 
 import com.google.common.collect.MapMaker;
 import com.science.gtnl.common.equipment.EquipmentModules;
+import com.science.gtnl.common.equipment.EquipmentTag;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 
 public class CelestweaveData {
@@ -30,6 +31,8 @@ public class CelestweaveData {
     public static final String HELD = "Held";
     public static final String SETTINGS_TAG = "Settings";
     public static final int MODULE_SLOTS = 8;
+    public static final EquipmentModules.Storage MODULE_STORAGE = EquipmentModules
+        .storage(CelestweaveData::moduleList, CelestweaveData::moduleStacks, CelestweaveData::writeModuleStacks);
 
     private static final Map<NBTTagList, Set<CelestweaveModule>> INSTALLED = new MapMaker().weakKeys()
         .makeMap();
@@ -60,16 +63,11 @@ public class CelestweaveData {
     private CelestweaveData() {}
 
     public static NBTTagCompound root(ItemStack stack) {
-        if (stack == null) return new NBTTagCompound();
-        NBTTagCompound tag = stack.getTagCompound();
-        return tag != null && tag.hasKey(ROOT, 10) ? tag.getCompoundTag(ROOT) : new NBTTagCompound();
+        return EquipmentTag.child(stack, ROOT);
     }
 
     public static NBTTagCompound rootForWrite(ItemStack stack) {
-        if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-        NBTTagCompound tag = stack.getTagCompound();
-        if (!tag.hasKey(ROOT, 10)) tag.setTag(ROOT, new NBTTagCompound());
-        return tag.getCompoundTag(ROOT);
+        return EquipmentTag.childForWrite(stack, ROOT);
     }
 
     public static ItemStack piece(EntityLivingBase entity, int piece) {
@@ -91,8 +89,12 @@ public class CelestweaveData {
         return false;
     }
 
+    public static NBTTagList moduleList(ItemStack stack) {
+        return root(stack).getTagList(MODULES, 10);
+    }
+
     public static ItemStack[] moduleStacks(ItemStack stack) {
-        return EquipmentModules.read(root(stack).getTagList(MODULES, 10), MODULE_SLOTS);
+        return EquipmentModules.read(moduleList(stack), MODULE_SLOTS);
     }
 
     public static void writeModuleStacks(ItemStack stack, ItemStack[] stacks) {
@@ -273,5 +275,33 @@ public class CelestweaveData {
 
     public static void writeCosmetic(ItemStack stack, CelestweaveCosmetic cosmetic) {
         rootForWrite(stack).setTag(COSMETIC, cosmetic.write());
+    }
+
+    public static boolean setEnabled(ItemStack stack, CelestweaveModule module, boolean enabled) {
+        if (!hasInstalled(stack, module)) return false;
+        writeFlag(stack, DISABLED, module, !enabled);
+        return true;
+    }
+
+    public static boolean setShown(ItemStack stack, CelestweaveModule module, boolean shown) {
+        if (!hasInstalled(stack, module) || !module.hideable()) return false;
+        writeFlag(stack, HIDDEN, module, !shown);
+        return true;
+    }
+
+    public static boolean setValue(ItemStack stack, CelestweaveModuleSetting setting, float value) {
+        if (!Float.isFinite(value) || !hasInstalled(stack, setting.module)) return false;
+        setting.write(stack, value);
+        return true;
+    }
+
+    public static boolean setCosmetic(ItemStack stack, CelestweaveCosmeticOption option, float value) {
+        if (stack == null || !Float.isFinite(value)) return false;
+        writeCosmetic(stack, cosmetic(stack).with(option, value));
+        return true;
+    }
+
+    private static boolean hasInstalled(ItemStack stack, CelestweaveModule module) {
+        return stack != null && module != null && installed(stack).contains(module);
     }
 }

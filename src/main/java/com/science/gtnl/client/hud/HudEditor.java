@@ -1,5 +1,7 @@
 package com.science.gtnl.client.hud;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import net.minecraft.client.Minecraft;
@@ -18,14 +20,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class HudEditor extends GuiScreen {
 
-    private static final String LANG = "item.gtnl.celestweave.hud.editor.";
-    private static final int RESET = 0, DONE = 1, SNAP = 4, BUTTON_WIDTH = 100, BUTTON_HEIGHT = 20, BUTTON_Y = 22;
+    private static final String LANG = "gtnl.hud.editor.";
+    private static final int RESET = 0, DONE = 1, SHOW_ALL = 2, SNAP = 4, BUTTON_WIDTH = 100, BUTTON_HEIGHT = 20,
+        BUTTON_Y = 22, BUTTON_GAP = 4;
     private static final int SHADE = 0x30000000, GUIDE = 0x80FF3D9A, FRAME = 0x60FFFFFF, ACTIVE = 0xFFFF3D9A,
         HIDDEN = 0x80808080;
 
     private HudElement dragging;
     private float grabX, grabY;
-    private boolean snapX, snapY;
+    private boolean snapX, snapY, showAll;
 
     public static void open() {
         ClientGUI.open(new HudEditor());
@@ -33,6 +36,12 @@ public class HudEditor extends GuiScreen {
 
     public static boolean isOpen() {
         return Minecraft.getMinecraft().currentScreen instanceof HudEditor;
+    }
+
+    public static List<HudElement> candidates(boolean showAll) {
+        List<HudElement> candidates = new ArrayList<>();
+        for (HudElement element : HudRegistry.elements()) if (showAll || element.isInUse()) candidates.add(element);
+        return candidates;
     }
 
     @Override
@@ -43,15 +52,24 @@ public class HudEditor extends GuiScreen {
     @Override
     public void initGui() {
         buttonList.clear();
-        buttonList.add(
-            new GuiButton(RESET, width / 2 - BUTTON_WIDTH - 2, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT, tr("reset")));
-        buttonList.add(new GuiButton(DONE, width / 2 + 2, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT, tr("done")));
+        int left = width / 2 - (BUTTON_WIDTH * 3 + BUTTON_GAP * 2) / 2, stride = BUTTON_WIDTH + BUTTON_GAP;
+        buttonList.add(new GuiButton(SHOW_ALL, left, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT, showAllLabel()));
+        buttonList.add(new GuiButton(RESET, left + stride, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT, tr("reset")));
+        buttonList.add(new GuiButton(DONE, left + stride * 2, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT, tr("done")));
     }
 
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button.id == RESET) HudLayout.reset();
         else if (button.id == DONE) mc.displayGuiScreen(null);
+        else if (button.id == SHOW_ALL) {
+            showAll = !showAll;
+            button.displayString = showAllLabel();
+        }
+    }
+
+    private String showAllLabel() {
+        return tr(showAll ? "in_use_only" : "show_all");
     }
 
     @Override
@@ -73,7 +91,7 @@ public class HudEditor extends GuiScreen {
     private HudElement elementAt(int mouseX, int mouseY) {
         HudElement best = null;
         float smallest = Float.MAX_VALUE;
-        for (HudElement element : HudRegistry.elements()) {
+        for (HudElement element : candidates(showAll)) {
             float[] frame = frame(element);
             if (mouseX < frame[0] || mouseX > frame[2] || mouseY < frame[1] || mouseY > frame[3]) continue;
             float area = (frame[2] - frame[0]) * (frame[3] - frame[1]);
@@ -140,12 +158,14 @@ public class HudEditor extends GuiScreen {
         if (snapX) drawRect(width / 2, 0, width / 2 + 1, height, GUIDE);
         if (snapY) drawRect(0, height / 2, width, height / 2 + 1, GUIDE);
         HudElement focus = dragging != null ? dragging : elementAt(mouseX, mouseY);
-        for (HudElement element : HudRegistry.elements()) {
+        List<HudElement> candidates = candidates(showAll);
+        for (HudElement element : candidates) {
             boolean hidden = HudLayout.hidden(element);
             if (!hidden && mc.thePlayer != null) element.preview(place(element), partialTicks);
             outline(frame(element), element == focus ? ACTIVE : hidden ? HIDDEN : FRAME);
         }
         if (focus != null) label(focus);
+        if (candidates.isEmpty()) drawCenteredString(fontRendererObj, tr("empty"), width / 2, height / 2, 0xFFFFFF);
         drawCenteredString(fontRendererObj, tr("help"), width / 2, 8, 0xFFFFFF);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }

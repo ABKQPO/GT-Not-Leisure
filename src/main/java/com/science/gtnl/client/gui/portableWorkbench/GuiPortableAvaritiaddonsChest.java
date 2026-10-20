@@ -11,7 +11,7 @@ import net.minecraft.util.StatCollector;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnl.client.celestweave.CelestweaveBackpackTabs;
+import com.science.gtnl.client.celestweave.CelestweaveBackpackClient;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableAvaritiaddonsChest;
 import com.science.gtnl.utils.ColorUtils;
 
@@ -31,7 +31,7 @@ public abstract class GuiPortableAvaritiaddonsChest extends GuiContainer {
     public void initGui() {
         super.initGui();
         if (inventorySlots instanceof ContainerPortableAvaritiaddonsChest chest && chest.host.fromBackpack())
-            CelestweaveBackpackTabs.add(guiLeft, guiTop, buttonList);
+            CelestweaveBackpackClient.addTabs(guiLeft, guiTop, buttonList);
     }
 
     @Override

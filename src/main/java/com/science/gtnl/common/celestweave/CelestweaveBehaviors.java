@@ -22,6 +22,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.FoodStats;
 
+import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.config.MainConfig;
@@ -34,6 +35,7 @@ public class CelestweaveBehaviors {
     public static final float STEP_HEIGHT = 1.0031F;
     private static final UUID SPEED_UUID = UUID.fromString("5d1b6c1e-2f0a-4c3e-9a61-7c2e4b8f1a30");
     private static final UUID KNOCKBACK_UUID = UUID.fromString("a83f0d52-6e14-4b7c-8d29-3f5e1c9b7a42");
+    private static final int ADD_OPERATION = 0, MULTIPLY_OPERATION = 2;
     private static final ICelestweaveBehavior NONE = new ICelestweaveBehavior() {};
     private static final Map<CelestweaveModule, ICelestweaveBehavior> BEHAVIORS = new EnumMap<>(
         CelestweaveModule.class);
@@ -68,6 +70,8 @@ public class CelestweaveBehaviors {
 
     public static class NightVision implements ICelestweaveBehavior {
 
+        private static final int REFRESH_BELOW_TICKS = 220, DURATION_TICKS = 300;
+
         @Override
         public void tick(CelestweaveContext ctx) {
             if (!ctx.server()) return;
@@ -77,8 +81,8 @@ public class CelestweaveBehaviors {
                 return;
             }
             PotionEffect effect = player.getActivePotionEffect(Potion.nightVision);
-            if (effect == null || effect.getIsAmbient() && effect.getDuration() < 220)
-                player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 300, 0, true));
+            if (effect == null || effect.getIsAmbient() && effect.getDuration() < REFRESH_BELOW_TICKS)
+                player.addPotionEffect(new PotionEffect(Potion.nightVision.id, DURATION_TICKS, 0, true));
             if (player.isPotionActive(Potion.blindness)) player.removePotionEffect(Potion.blindness.id);
         }
 
@@ -89,30 +93,36 @@ public class CelestweaveBehaviors {
 
         private static void clear(EntityPlayer player) {
             PotionEffect effect = player.getActivePotionEffect(Potion.nightVision);
-            if (effect != null && effect.getIsAmbient() && effect.getDuration() <= 300)
+            if (effect != null && effect.getIsAmbient() && effect.getDuration() <= DURATION_TICKS)
                 player.removePotionEffect(Potion.nightVision.id);
         }
     }
 
     public static class Saturation implements ICelestweaveBehavior {
 
+        private static final int INTERVAL_TICKS = 20, MAX_FOOD = 20;
+        private static final float LOW_SATURATION = 5F, SATURATION_MODIFIER = 1F;
+
         @Override
         public void tick(CelestweaveContext ctx) {
             EntityPlayer player = ctx.player();
-            if (!ctx.server() || player.worldObj.getTotalWorldTime() % 20 != 0) return;
+            if (!ctx.server() || player.worldObj.getTotalWorldTime() % INTERVAL_TICKS != 0) return;
             FoodStats food = player.getFoodStats();
-            int missing = 20 - food.getFoodLevel();
-            if ((missing > 0 || food.getSaturationLevel() < 5F)
-                && ctx.drain(config().saturationEu * Math.max(1, missing))) food.addStats(20, 1F);
+            int missing = MAX_FOOD - food.getFoodLevel();
+            if ((missing > 0 || food.getSaturationLevel() < LOW_SATURATION)
+                && ctx.drain(config().saturationEu * Math.max(1, missing)))
+                food.addStats(MAX_FOOD, SATURATION_MODIFIER);
         }
     }
 
     public static class Purification implements ICelestweaveBehavior {
 
+        private static final int INTERVAL_TICKS = 10;
+
         @Override
         public void tick(CelestweaveContext ctx) {
             EntityPlayer player = ctx.player();
-            if (!ctx.server() || player.worldObj.getTotalWorldTime() % 10 != 0) return;
+            if (!ctx.server() || player.worldObj.getTotalWorldTime() % INTERVAL_TICKS != 0) return;
             for (Object entry : player.getActivePotionEffects()
                 .toArray()) {
                 if (!(entry instanceof PotionEffect effect)) continue;
@@ -147,7 +157,7 @@ public class CelestweaveBehaviors {
                 KNOCKBACK_UUID,
                 "Celestweave shield",
                 canAbsorb ? 1 : 0,
-                0);
+                ADD_OPERATION);
         }
 
         @Override
@@ -159,22 +169,23 @@ public class CelestweaveBehaviors {
                 KNOCKBACK_UUID,
                 "Celestweave shield",
                 0,
-                0);
+                ADD_OPERATION);
         }
     }
 
     public static class Reflect implements ICelestweaveBehavior {
+
+        private static final double RADIUS = 4, MIN_SPEED = 0.05, INCOMING_COS = -0.7071, EPSILON = 1.0E-3;
+        private static final double FIREBALL_ACCELERATION = 0.1;
 
         @Override
         public void tick(CelestweaveContext ctx) {
             if (!ctx.server() || !CelestweaveModuleSetting.REFLECT_PROJECTILE.on(ctx.stack())
                 || !ctx.affords(config().reflectEu)) return;
             EntityPlayer player = ctx.player();
-            double cx = (player.boundingBox.minX + player.boundingBox.maxX) / 2,
-                cy = (player.boundingBox.minY + player.boundingBox.maxY) / 2,
-                cz = (player.boundingBox.minZ + player.boundingBox.maxZ) / 2;
+            EquipmentVec center = EquipmentVec.center(player);
             List<?> nearby = player.worldObj
-                .getEntitiesWithinAABB(IProjectile.class, player.boundingBox.expand(4, 4, 4));
+                .getEntitiesWithinAABB(IProjectile.class, player.boundingBox.expand(RADIUS, RADIUS, RADIUS));
             for (Object entry : nearby) {
                 if (!(entry instanceof Entity entity) || !(entry instanceof IProjectile)
                     || entry instanceof IManaBurst
@@ -183,10 +194,10 @@ public class CelestweaveBehaviors {
                 if (shooter == player) continue;
                 double vx = entity.motionX, vy = entity.motionY, vz = entity.motionZ;
                 double speed = Math.sqrt(vx * vx + vy * vy + vz * vz);
-                double dx = entity.posX - cx, dy = entity.posY - cy, dz = entity.posZ - cz;
+                double dx = entity.posX - center.x(), dy = entity.posY - center.y(), dz = entity.posZ - center.z();
                 double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-                if (speed < 0.05 || distance < 1.0E-3 || (dx * vx + dy * vy + dz * vz) / (distance * speed) > -0.7071)
-                    continue;
+                if (speed < MIN_SPEED || distance < EPSILON
+                    || (dx * vx + dy * vy + dz * vz) / (distance * speed) > INCOMING_COS) continue;
                 if (!ctx.drain(config().reflectEu)) return;
                 double tx = -vx, ty = -vy, tz = -vz;
                 if (shooter != null && shooter.worldObj == entity.worldObj) {
@@ -195,20 +206,20 @@ public class CelestweaveBehaviors {
                     tz = shooter.posZ - entity.posZ;
                 }
                 double length = Math.sqrt(tx * tx + ty * ty + tz * tz);
-                if (length < 1.0E-3) continue;
+                if (length < EPSILON) continue;
                 entity.motionX = tx / length * speed;
                 entity.motionY = ty / length * speed;
                 entity.motionZ = tz / length * speed;
                 if (entity instanceof EntityFireball fireball) {
-                    fireball.accelerationX = tx / length * 0.1;
-                    fireball.accelerationY = ty / length * 0.1;
-                    fireball.accelerationZ = tz / length * 0.1;
+                    fireball.accelerationX = tx / length * FIREBALL_ACCELERATION;
+                    fireball.accelerationY = ty / length * FIREBALL_ACCELERATION;
+                    fireball.accelerationZ = tz / length * FIREBALL_ACCELERATION;
                     fireball.shootingEntity = player;
                 } else if (entity instanceof EntityArrow arrow) arrow.shootingEntity = player;
                 entity.velocityChanged = true;
                 REFLECTED.put(entity, Boolean.TRUE);
                 CelestweaveServerEvents
-                    .sendFx(player, CelestweaveFxPacket.REFLECT, entity.posX, entity.posY, entity.posZ);
+                    .sendFx(player, CelestweaveFxPacket.Type.REFLECT, entity.posX, entity.posY, entity.posZ);
             }
         }
 
@@ -222,6 +233,8 @@ public class CelestweaveBehaviors {
 
     public static class WalkAssist implements ICelestweaveBehavior {
 
+        private static final double SPEED_PER_LEVEL = 0.25;
+
         @Override
         public void tick(CelestweaveContext ctx) {
             if (!ctx.server()) return;
@@ -234,8 +247,8 @@ public class CelestweaveBehaviors {
                 player.getEntityAttribute(SharedMonsterAttributes.movementSpeed),
                 SPEED_UUID,
                 "Celestweave walk assist",
-                on && speed > 1 ? (speed - 1) * 0.25 : 0,
-                2);
+                on && speed > 1 ? (speed - 1) * SPEED_PER_LEVEL : 0,
+                MULTIPLY_OPERATION);
         }
 
         @Override
@@ -248,7 +261,7 @@ public class CelestweaveBehaviors {
                 SPEED_UUID,
                 "Celestweave walk assist",
                 0,
-                2);
+                MULTIPLY_OPERATION);
         }
     }
 

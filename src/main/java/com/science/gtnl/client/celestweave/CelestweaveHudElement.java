@@ -9,7 +9,6 @@ import com.science.gtnl.client.hud.HudElement;
 import com.science.gtnl.client.hud.HudElement.Offset;
 import com.science.gtnl.client.hud.HudRegistry;
 import com.science.gtnl.common.celestweave.CelestweaveData;
-import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -35,26 +34,19 @@ public enum CelestweaveHudElement {
             .bounds(minX, minY, maxX, maxY)
             .offset(defaultX, defaultY)
             .lang(LANG_PREFIX + id)
-            .visibleWhen(CelestweaveHudElement::enabled)
-            .baseScale(CelestweaveHudElement::baseScale)
+            .inUseWhen(CelestweaveHudElement::worn)
             .preview((place, partialTicks) -> CelestweaveHud.preview(this, place, partialTicks))
             .build();
     }
 
-    private static boolean enabled() {
-        return MainConfig.client.enableCelestweaveHud;
-    }
-
-    private static double baseScale() {
-        return MainConfig.client.celestweaveHudScale;
+    private static boolean worn() {
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        return player != null && CelestweaveData.wearsAny(player);
     }
 
     static void register() {
         for (CelestweaveHudElement element : values()) HudRegistry.register(element.hud);
-        HudRegistry.reserveCrosshair(() -> {
-            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-            return player != null && CelestweaveData.wearsAny(player);
-        });
+        HudRegistry.reserveCrosshair(CelestweaveHudElement::worn);
     }
 
     private static class Gap {

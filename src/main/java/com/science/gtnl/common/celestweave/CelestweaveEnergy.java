@@ -137,7 +137,7 @@ public class CelestweaveEnergy {
 
     public static boolean drainWithWireless(EntityPlayer player, double eu) {
         if (eu <= 0 || EquipmentEnergy.free(player)) return true;
-        boolean wireless = MainConfig.item.celestweave.wirelessFallback;
+        boolean wireless = MainConfig.item.celestweave.enableWirelessFallback;
         double set = availableSet(player);
         if (set + (wireless && set < eu ? EquipmentEnergy.wirelessAvailable(player) : 0) < eu) return false;
         double paid = drainSetUpTo(player, eu);
@@ -146,7 +146,7 @@ public class CelestweaveEnergy {
     }
 
     public static void refillFromWireless(ItemStack stack, EntityPlayerMP player) {
-        if (MainConfig.item.celestweave.wirelessRefill)
+        if (MainConfig.item.celestweave.enableWirelessRefill)
             EquipmentEnergy.refillFromWireless(stack, player, capacity(stack));
     }
 }

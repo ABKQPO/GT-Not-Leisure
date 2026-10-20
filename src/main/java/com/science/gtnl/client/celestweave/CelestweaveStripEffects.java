@@ -11,6 +11,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import com.science.gtnl.client.fx.FxColor;
+import com.science.gtnl.client.fx.FxEasing;
 import com.science.gtnl.common.celestweave.CelestweaveCosmetic;
 import com.science.gtnl.common.celestweave.CelestweaveCosmeticOption;
 import com.science.gtnl.common.celestweave.CelestweaveStripStyle;
@@ -47,14 +48,10 @@ public class CelestweaveStripEffects {
 
     static float breath(float seconds) {
         float phase = seconds / 3.6F % 1F;
-        if (phase < 0.45F) return smooth(phase / 0.45F);
+        if (phase < 0.45F) return FxEasing.smoothStep(phase / 0.45F);
         if (phase < 0.55F) return 1F;
-        if (phase < 0.9F) return 1F - smooth((phase - 0.55F) / 0.35F);
+        if (phase < 0.9F) return 1F - FxEasing.smoothStep((phase - 0.55F) / 0.35F);
         return 0F;
-    }
-
-    private static float smooth(float x) {
-        return x * x * (3F - 2F * x);
     }
 
     static int[] gradientPixels() {

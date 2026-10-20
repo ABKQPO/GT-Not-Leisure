@@ -104,6 +104,7 @@ import com.science.gtnl.common.render.tile.PigmeeFumoRenderer;
 import com.science.gtnl.common.render.tile.PlayerDollRenderer;
 import com.science.gtnl.common.render.tile.RealArtificialStarRenderer;
 import com.science.gtnl.common.render.tile.WaterCandleRenderer;
+import com.science.gtnl.config.EquipmentSoundConfig;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableAdvancedWorkbench;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.loader.ItemLoader;
@@ -160,6 +161,7 @@ public class ClientProxy extends CommonProxy {
         HudOverlay.register();
         MinecraftForge.EVENT_BUS.register(new ShaderEffect.Reloader());
         EquipmentClientInput.register();
+        EquipmentSoundConfig.register();
         RailgunClientFx.register();
         CelestweaveClientEvents.register();
         MinecraftForge.EVENT_BUS.register(WirelessWorldHighlight.INSTANCE);

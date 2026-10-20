@@ -7,7 +7,9 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import org.lwjgl.opengl.GL11;
 
+import com.science.gtnl.client.celestweave.CelestweaveClientEvents.HitOrigin;
 import com.science.gtnl.client.fx.FxColor;
+import com.science.gtnl.common.equipment.EquipmentVec;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -18,23 +20,20 @@ public class CelestweaveScreenGlow {
 
     private static final int HIT_LIFETIME = 450, SAVE_LIFETIME = 900;
     private static final float HIT_ALPHA = 0.32F, SAVE_ALPHA = 0.55F, BASE = 0.35F;
+    private static final double HIT_HEIGHT = 0.5, MIN_DISTANCE = 0.4;
     private static long born = CelestweaveClientState.NEVER;
     private static int lifetime = HIT_LIFETIME;
     private static int rgb;
     private static boolean save, directional;
-    private static double directionX, directionY, directionZ;
+    private static EquipmentVec direction = EquipmentVec.ZERO;
 
-    static void hit(float x, float y, float z, int glowColor, boolean saved, boolean omni) {
+    static void hit(HitOrigin origin, int glowColor, boolean saved, boolean omni) {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         if (player == null) return;
-        double dx = x - player.posX, dy = y - (player.boundingBox.minY + player.height * 0.5), dz = z - player.posZ;
-        double length = Math.sqrt(dx * dx + dy * dy + dz * dz);
-        directional = !omni && length > 0.4;
-        if (directional) {
-            directionX = dx / length;
-            directionY = dy / length;
-            directionZ = dz / length;
-        }
+        EquipmentVec offset = origin.offset(player, HIT_HEIGHT);
+        double length = offset.length();
+        directional = !omni && length > MIN_DISTANCE;
+        if (directional) direction = new EquipmentVec(offset.x() / length, offset.y() / length, offset.z() / length);
         born = Minecraft.getSystemTime();
         lifetime = saved ? SAVE_LIFETIME : HIT_LIFETIME;
         rgb = FxColor.mixWhite(glowColor, 0.15F);
@@ -58,10 +57,9 @@ public class CelestweaveScreenGlow {
         float alpha = Math.min(1F, age / 50F) * (1 - progress) * (1 - progress) * (save ? SAVE_ALPHA : HIT_ALPHA);
         float top = 1F, bottom = 1F, left = 1F, right = 1F;
         if (directional) {
-            double yaw = Math.toRadians(player.rotationYaw);
-            double lateral = directionX * -Math.cos(yaw) + directionZ * -Math.sin(yaw);
-            top = weight(directionY);
-            bottom = weight(-directionY);
+            double lateral = HitOrigin.lateral(direction, player.rotationYaw);
+            top = weight(direction.y());
+            bottom = weight(-direction.y());
             left = weight(-lateral);
             right = weight(lateral);
         }

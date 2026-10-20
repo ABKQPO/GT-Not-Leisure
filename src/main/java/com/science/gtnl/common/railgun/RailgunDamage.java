@@ -20,6 +20,16 @@ import com.science.gtnl.loader.EffectLoader;
 
 public class RailgunDamage {
 
+    private static final int CHAIN_BASE = 3;
+    private static final double CHAIN_DECAY = 0.92;
+    private static final int CHAIN_FORK_HARD_CAP = 8;
+    private static final int CHAIN_HARD_CAP = 50;
+    private static final int CHAIN_RADIUS = 16;
+    private static final int PARALYSIS_DURATION_TICKS = 40;
+    private static final int STORM_CHAIN_BONUS = 2;
+    private static final int STORM_CHAIN_RADIUS_BONUS = 4;
+    private static final double STORM_DAMAGE_MUL = 1.25;
+
     public record DamageContext(double firstDamage, double bypassRatio, double chainDecay, int chainSegments,
         int chainForkCount, double chainRadius, boolean isMaxCharged, boolean pvp) {}
 
@@ -35,23 +45,21 @@ public class RailgunDamage {
     }
 
     private static double stormRadius(double radius, boolean storm) {
-        return radius + (storm ? RailgunDefaults.STORM_CHAIN_RADIUS_BONUS : 0);
+        return radius + (storm ? STORM_CHAIN_RADIUS_BONUS : 0);
     }
 
     public static DamageContext buildBeam(EntityPlayer player, RailgunData.Modules modules, World world, boolean pvp,
         double base) {
         boolean storm = storm(world, player);
-        int compute = modules.count(RailgunModuleType.COMPUTE);
-        int chains = compute > 0
-            ? RailgunDefaults.CHAIN_BASE + (compute - 1) * 2 + (storm ? RailgunDefaults.STORM_CHAIN_BONUS : 0)
-            : 0;
+        int compute = modules.count(RailgunModule.COMPUTE);
+        int chains = compute > 0 ? CHAIN_BASE + (compute - 1) * 2 + (storm ? STORM_CHAIN_BONUS : 0) : 0;
         return new DamageContext(
-            base * (storm ? RailgunDefaults.STORM_DAMAGE_MUL : 1),
+            base * (storm ? STORM_DAMAGE_MUL : 1),
             MainConfig.item.railgun.beamBypass,
-            RailgunDefaults.CHAIN_DECAY,
-            Math.min(RailgunDefaults.CHAIN_HARD_CAP, chains),
+            CHAIN_DECAY,
+            Math.min(CHAIN_HARD_CAP, chains),
             compute > 0 ? 1 : 0,
-            stormRadius(RailgunDefaults.CHAIN_RADIUS, storm),
+            stormRadius(CHAIN_RADIUS, storm),
             false,
             pvp);
     }
@@ -59,16 +67,15 @@ public class RailgunDamage {
     public static DamageContext buildCharged(EntityPlayer player, RailgunChargeTier tier, RailgunData.Modules modules,
         World world, boolean pvp) {
         boolean storm = storm(world, player);
-        int compute = modules.count(RailgunModuleType.COMPUTE);
-        int chains = (compute > 0 ? tier.chainSegments + (compute - 1) * 4 : 0)
-            + (storm ? RailgunDefaults.STORM_CHAIN_BONUS : 0);
+        int compute = modules.count(RailgunModule.COMPUTE);
+        int chains = (compute > 0 ? tier.chainSegments + (compute - 1) * 4 : 0) + (storm ? STORM_CHAIN_BONUS : 0);
         int forks = (compute > 0 ? tier.chainForks + compute - 1 : 0) + (storm ? 1 : 0);
         return new DamageContext(
-            tier.baseDamage() * (storm ? RailgunDefaults.STORM_DAMAGE_MUL : 1),
+            tier.baseDamage() * (storm ? STORM_DAMAGE_MUL : 1),
             MainConfig.item.railgun.chargedBypass,
-            RailgunDefaults.CHAIN_DECAY,
-            Math.min(RailgunDefaults.CHAIN_HARD_CAP, chains),
-            Math.min(RailgunDefaults.CHAIN_FORK_HARD_CAP, forks),
+            CHAIN_DECAY,
+            Math.min(CHAIN_HARD_CAP, chains),
+            Math.min(CHAIN_FORK_HARD_CAP, forks),
             stormRadius(tier.chainRadius, storm),
             tier == RailgunChargeTier.EHV3,
             pvp);
@@ -104,12 +111,9 @@ public class RailgunDamage {
             Entity anchor = RailgunTargetRules.damageAnchor(target, reference);
             boolean applied = anchor.attackEntityFrom(source(player), (float) Math.min(damage, Float.MAX_VALUE));
             if (applied && target.isEntityAlive()
-                && (!(target instanceof EntityPlayer) || MainConfig.item.railgun.paralysisOnPlayers))
+                && (!(target instanceof EntityPlayer) || MainConfig.item.railgun.enablePlayerParalysis))
                 target.addPotionEffect(
-                    new PotionEffect(
-                        EffectLoader.electromagneticParalysis.id,
-                        RailgunDefaults.PARALYSIS_DURATION_TICKS,
-                        0));
+                    new PotionEffect(EffectLoader.electromagneticParalysis.id, PARALYSIS_DURATION_TICKS, 0));
         }
     }
 }

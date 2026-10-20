@@ -15,12 +15,16 @@ import com.science.gtnl.client.hud.HudEditor;
 import com.science.gtnl.client.hud.HudElement;
 import com.science.gtnl.client.hud.HudLayout.Placement;
 import com.science.gtnl.client.hud.HudRegistry;
+import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
 import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class RailgunHudRenderer {
 
     private static final ResourceLocation BOLT_EMPTY = new ResourceLocation(
@@ -35,7 +39,8 @@ public class RailgunHudRenderer {
     private static final int ICON_WIDTH = 13;
     private static final int ICON_HEIGHT = 19;
     private static final float OVERLAY_INTENSITY = 0.75F, PREVIEW_PROGRESS = 0.6F;
-    private static final int[] COLORS = { 0x3C6E8F, 0x50CFFF, 0x8798FF, 0xFF509A };
+    private static final int[] COLORS = { RailgunOrbRenderer.HUD_EMPTY_RGB, RailgunOrbRenderer.HUD_EHV1_RGB,
+        RailgunOrbRenderer.HUD_EHV2_RGB, RailgunOrbRenderer.HUD_EHV3_RGB };
     private static final float[] COLOR_STOPS = { 0, RailgunChargeTier.EHV1.chargeTicks,
         RailgunChargeTier.EHV2.chargeTicks, RailgunChargeTier.EHV3.chargeTicks };
     private static final float BOLT_HALF_WIDTH = 6.5F, BOLT_OFFSET = 10F, BOLT_CLEAR_OFFSET = 26F;
@@ -45,10 +50,9 @@ public class RailgunHudRenderer {
         .offset(
             scale -> (HudRegistry.crosshairReserved() ? BOLT_CLEAR_OFFSET : BOLT_OFFSET) + BOLT_HALF_WIDTH * scale,
             HudElement.Offset.NONE)
-        .lang("item.gtnl.celestweave.hud.element.railgun_charge")
-        .visibleWhen(
-            () -> MainConfig.client.enableCelestweaveHud && RailgunCharge.charging(Minecraft.getMinecraft().thePlayer))
-        .baseScale(() -> MainConfig.client.celestweaveHudScale)
+        .lang("item.gtnl.railgun.hud.element.railgun_charge")
+        .inUseWhen(() -> ElectromagneticRailgun.isHeld(Minecraft.getMinecraft().thePlayer))
+        .visibleWhen(() -> RailgunCharge.charging(Minecraft.getMinecraft().thePlayer))
         .preview((place, partialTicks) -> preview(place))
         .render(RailgunHudRenderer::render)
         .build();

@@ -6,16 +6,22 @@ import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.MovingSound;
+import net.minecraft.client.audio.PositionedSound;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.equipment.EquipmentSound;
+import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.railgun.RailgunData;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class RailgunSounds {
 
     private static final float BEAM_VOLUME = 0.85F;
@@ -37,7 +43,7 @@ public class RailgunSounds {
     }
 
     private static boolean charging(EntityPlayer player) {
-        return enabled(player) && RailgunCharge.charging(player);
+        return enabled(player) && EquipmentSound.CHARGE.on() && RailgunCharge.charging(player);
     }
 
     private static boolean fullyCharged(EntityPlayer player) {
@@ -70,7 +76,7 @@ public class RailgunSounds {
     private static void trackBeams(Minecraft minecraft) {
         for (int id : RailgunBeamRenderer.shooters()) {
             Entity entity = minecraft.theWorld.getEntityByID(id);
-            if (!RailgunBeamRenderer.active(id) || !enabled(entity)) continue;
+            if (!RailgunBeamRenderer.active(id) || !enabled(entity) || !EquipmentSound.BEAM.on()) continue;
             BeamLoopSound existing = BEAMS.get(id);
             if (existing != null && !existing.isDonePlaying()) continue;
             BEAMS.put(id, play(minecraft, new BeamLoopSound(entity)));
@@ -107,6 +113,39 @@ public class RailgunSounds {
         minecraft.getSoundHandler()
             .playSound(sound);
         return sound;
+    }
+
+    public static void playAt(EquipmentSound channel, EquipmentVec at, String name, float volume, float pitch,
+        double range) {
+        Entity listener = listener();
+        if (at == null || listener == null || range <= 0) return;
+        float scaled = distanceFalloff(listener, at.x(), at.y(), at.z(), range) * volume * channel.volume();
+        if (scaled <= 0F) return;
+        Minecraft.getMinecraft()
+            .getSoundHandler()
+            .playSound(new PointSound(name, scaled, pitch, at));
+    }
+
+    private static Entity listener() {
+        Minecraft minecraft = Minecraft.getMinecraft();
+        return minecraft.renderViewEntity != null ? minecraft.renderViewEntity : minecraft.thePlayer;
+    }
+
+    private static float distanceFalloff(Entity listener, double x, double y, double z, double range) {
+        return (float) Math.max(0, 1 - Math.sqrt(listener.getDistanceSq(x, y, z)) / range);
+    }
+
+    public static class PointSound extends PositionedSound {
+
+        public PointSound(String name, float volume, float pitch, EquipmentVec at) {
+            super(new ResourceLocation(ScienceNotLeisure.RESOURCE_ROOT_ID, "railgun." + name));
+            this.volume = volume;
+            this.field_147663_c = pitch;
+            this.xPosF = (float) at.x();
+            this.yPosF = (float) at.y();
+            this.zPosF = (float) at.z();
+            this.field_147666_i = ISound.AttenuationType.NONE;
+        }
     }
 
     private static class ChargeVoice {
@@ -152,15 +191,18 @@ public class RailgunSounds {
     public abstract static class FollowSound extends MovingSound {
 
         protected final Entity entity;
+        private final EquipmentSound channel;
         private final float target;
         private final int fadeTicks;
         private final double range;
         private int fadeIn = 1;
         private int fadeOut = -1;
 
-        protected FollowSound(Entity entity, String name, boolean loop, float target, int fadeTicks, double range) {
+        protected FollowSound(Entity entity, EquipmentSound channel, String name, boolean loop, float target,
+            int fadeTicks, double range) {
             super(new ResourceLocation(ScienceNotLeisure.RESOURCE_ROOT_ID, "railgun." + name));
             this.entity = entity;
+            this.channel = channel;
             this.target = target;
             this.fadeTicks = fadeTicks;
             this.range = range;
@@ -168,7 +210,7 @@ public class RailgunSounds {
             this.field_147665_h = 0;
             if (range > 0) this.field_147666_i = ISound.AttenuationType.NONE;
             follow();
-            this.volume = Math.max(MIN_START_VOLUME, target / fadeTicks * falloff());
+            this.volume = Math.max(MIN_START_VOLUME, target / fadeTicks * falloff() * channel.volume());
         }
 
         protected abstract boolean alive();
@@ -186,7 +228,9 @@ public class RailgunSounds {
         @Override
         public void update() {
             if (donePlaying) return;
-            if (entity.isDead || Minecraft.getMinecraft().theWorld != entity.worldObj || !enabled(entity)) {
+            if (entity.isDead || Minecraft.getMinecraft().theWorld != entity.worldObj
+                || !enabled(entity)
+                || !channel.on()) {
                 stop();
                 return;
             }
@@ -194,20 +238,17 @@ public class RailgunSounds {
             follow();
             if (fadeOut < 0) {
                 if (fadeIn < fadeTicks) fadeIn++;
-                volume = target * fadeIn / fadeTicks * falloff();
+                volume = target * fadeIn / fadeTicks * falloff() * channel.volume();
             } else if (fadeOut > 0) {
                 fadeOut--;
-                volume = target * fadeOut / fadeTicks * falloff();
+                volume = target * fadeOut / fadeTicks * falloff() * channel.volume();
             } else stop();
         }
 
         private float falloff() {
             if (range <= 0) return 1F;
-            Minecraft minecraft = Minecraft.getMinecraft();
-            Entity listener = minecraft.renderViewEntity != null ? minecraft.renderViewEntity : minecraft.thePlayer;
-            if (listener == null) return 1F;
-            double dx = xPosF - listener.posX, dy = yPosF - listener.posY, dz = zPosF - listener.posZ;
-            return (float) Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy + dz * dz) / range);
+            Entity listener = listener();
+            return listener == null ? 1F : distanceFalloff(listener, xPosF, yPosF, zPosF, range);
         }
 
         private void follow() {
@@ -220,7 +261,7 @@ public class RailgunSounds {
     public static class BeamLoopSound extends FollowSound {
 
         public BeamLoopSound(Entity entity) {
-            super(entity, "beam.loop", true, BEAM_VOLUME, BEAM_FADE_TICKS, BEAM_RANGE);
+            super(entity, EquipmentSound.BEAM, "beam.loop", true, BEAM_VOLUME, BEAM_FADE_TICKS, BEAM_RANGE);
         }
 
         @Override
@@ -232,7 +273,7 @@ public class RailgunSounds {
     public static class ChargeRampSound extends FollowSound {
 
         public ChargeRampSound(EntityPlayer player) {
-            super(player, "charge.ramp", false, RAMP_VOLUME, RAMP_FADE_TICKS, 0);
+            super(player, EquipmentSound.CHARGE, "charge.ramp", false, RAMP_VOLUME, RAMP_FADE_TICKS, 0);
         }
 
         @Override
@@ -245,7 +286,7 @@ public class RailgunSounds {
     public static class ChargeSustainSound extends FollowSound {
 
         public ChargeSustainSound(EntityPlayer player) {
-            super(player, "charge.loop", true, SUSTAIN_VOLUME, SUSTAIN_FADE_TICKS, 0);
+            super(player, EquipmentSound.CHARGE, "charge.loop", true, SUSTAIN_VOLUME, SUSTAIN_FADE_TICKS, 0);
         }
 
         @Override

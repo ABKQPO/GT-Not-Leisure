@@ -5,6 +5,7 @@ import java.util.function.IntSupplier;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 
 import com.science.gtnl.config.MainConfig;
 
@@ -82,6 +83,7 @@ public enum CelestweaveModuleSetting {
     }
 
     public String display(int value) {
-        return format == Format.LEVEL ? String.valueOf(value + 1) : "×" + value;
+        return format == Format.LEVEL ? String.valueOf(value + 1)
+            : StatCollector.translateToLocalFormatted("item.gtnl.celestweave.gui.multiplier", value);
     }
 }

@@ -7,13 +7,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
 import com.science.gtnl.common.equipment.MetaLookup;
-import com.science.gtnl.common.railgun.RailgunModuleType;
+import com.science.gtnl.common.railgun.RailgunModule;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class RailgunModuleItem extends EquipmentVariantItem<RailgunModuleType> {
+public class RailgunModuleItem extends EquipmentVariantItem<RailgunModule> {
 
     public RailgunModuleItem() {
         GTNLItemList.RailgunModule.set(new ItemStack(this));
@@ -25,13 +25,13 @@ public class RailgunModuleItem extends EquipmentVariantItem<RailgunModuleType> {
     }
 
     @Override
-    protected RailgunModuleType[] variants() {
-        return RailgunModuleType.values();
+    protected RailgunModule[] variants() {
+        return RailgunModule.values();
     }
 
     @Override
-    protected MetaLookup<RailgunModuleType> lookup() {
-        return RailgunModuleType.LOOKUP;
+    protected MetaLookup<RailgunModule> lookup() {
+        return RailgunModule.LOOKUP;
     }
 
     @Override

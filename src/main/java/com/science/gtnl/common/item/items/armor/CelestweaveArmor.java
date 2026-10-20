@@ -31,7 +31,6 @@ import com.science.gtnl.common.celestweave.CelestweaveCompat;
 import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.celestweave.CelestweaveEnergy;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
-import com.science.gtnl.common.celestweave.CelestweaveServerEvents;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.equipment.IEquipmentElectricItem;
 import com.science.gtnl.common.equipment.IEquipmentItem;
@@ -70,7 +69,11 @@ public class CelestweaveArmor extends ItemArmor implements IEquipmentElectricIte
         "celestweave_stride" };
     private static final String BLANK_TEXTURE = RESOURCE_ROOT_ID + ":textures/models/armor/celestweave_blank.png";
     private static final double[] SHARE = { 0.15, 0.40, 0.30, 0.15 };
-    private static final int[] DISPLAY = { 3, 8, 6, 3 };
+    private static final double UNBLOCKABLE_RATIO = 0.3, MAGIC_RATIO = 0.4, FIRE_OR_EXPLOSION_RATIO = 0.7,
+        PHYSICAL_RATIO = 0.6;
+    private static final double UNPOWERED_FACTOR = 0.25;
+    private static final double SET_BASE = 0.875, SET_BONUS_PER_PIECE = 0.125;
+    private static final int UNBLOCKABLE_PRIORITY = 2, SPECIAL_PRIORITY = 1, PHYSICAL_PRIORITY = 0;
 
     public CelestweaveArmor(int armorType, GTNLItemList entry) {
         super(MATERIAL, 0, armorType);
@@ -81,7 +84,6 @@ public class CelestweaveArmor extends ItemArmor implements IEquipmentElectricIte
         setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         GameRegistry.registerItem(this, NAMES[armorType]);
         entry.set(new ItemStack(this));
-        CelestweaveServerEvents.register();
     }
 
     private boolean on(ItemStack stack, CelestweaveModule module) {
@@ -183,17 +185,22 @@ public class CelestweaveArmor extends ItemArmor implements IEquipmentElectricIte
         if (source == DamageSource.outOfWorld) return new ArmorProperties(0, 0, 0);
         int worn = 0;
         for (int piece = 0; piece < PIECES; piece++) if (CelestweaveData.piece(entity, piece) != null) worn++;
-        double ratio = source.isUnblockable() ? 0.3
-            : source.isMagicDamage() ? 0.4 : source.isFireDamage() || source.isExplosion() ? 0.7 : 0.6;
-        if (EquipmentEnergy.read(stack) <= 0) ratio *= 0.25;
-        int priority = source.isUnblockable() ? 2
-            : source.isMagicDamage() || source.isFireDamage() || source.isExplosion() ? 1 : 0;
-        return new ArmorProperties(priority, ratio * SHARE[armorType] * (0.875 + 0.125 * worn), Integer.MAX_VALUE);
+        double ratio = source.isUnblockable() ? UNBLOCKABLE_RATIO
+            : source.isMagicDamage() ? MAGIC_RATIO
+                : source.isFireDamage() || source.isExplosion() ? FIRE_OR_EXPLOSION_RATIO : PHYSICAL_RATIO;
+        if (EquipmentEnergy.read(stack) <= 0) ratio *= UNPOWERED_FACTOR;
+        int priority = source.isUnblockable() ? UNBLOCKABLE_PRIORITY
+            : source.isMagicDamage() || source.isFireDamage() || source.isExplosion() ? SPECIAL_PRIORITY
+                : PHYSICAL_PRIORITY;
+        return new ArmorProperties(
+            priority,
+            ratio * SHARE[armorType] * (SET_BASE + SET_BONUS_PER_PIECE * worn),
+            Integer.MAX_VALUE);
     }
 
     @Override
     public int getArmorDisplay(EntityPlayer player, ItemStack stack, int slot) {
-        return DISPLAY[armorType];
+        return MATERIAL.getDamageReductionAmount(armorType);
     }
 
     @Override

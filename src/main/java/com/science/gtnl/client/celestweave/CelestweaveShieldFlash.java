@@ -71,11 +71,10 @@ public class CelestweaveShieldFlash {
     }
 
     private static EquipmentVec center(Entity entity, float partialTicks) {
-        double back = 1 - partialTicks;
-        return new EquipmentVec(
-            (entity.boundingBox.minX + entity.boundingBox.maxX) / 2 - (entity.posX - entity.lastTickPosX) * back,
-            (entity.boundingBox.minY + entity.boundingBox.maxY) / 2 - (entity.posY - entity.lastTickPosY) * back,
-            (entity.boundingBox.minZ + entity.boundingBox.maxZ) / 2 - (entity.posZ - entity.lastTickPosZ) * back);
+        return EquipmentVec.interpolated(entity, partialTicks)
+            .add(
+                EquipmentVec.center(entity)
+                    .subtract(EquipmentVec.pos(entity)));
     }
 
     private static EquipmentVec surface(EquipmentVec center, EquipmentVec normal, double horizontal, double vertical) {

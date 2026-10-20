@@ -116,21 +116,16 @@ public class MainConfig {
         @DefaultBoolean(true)
         public boolean enableCelestweaveFirstPersonArm = true;
 
-        @Comment("Play Celestweave armor sounds for shield hits, reflects, dashes, landings and wings")
-        @LangKey("gtnl.gui.config.general.client.enable_celestweave_sounds")
+        @Comment("Show every HUD element, such as the Celestweave energy core, shield hit ring, dash cooldown, flight altimeter and Celestweave Lance charge; arrange them with Edit HUD below the Celestweave wheel or in an equipment settings screen")
+        @LangKey("gtnl.gui.config.general.client.enable_hud")
         @DefaultBoolean(true)
-        public boolean enableCelestweaveSounds = true;
+        public boolean enableHud = true;
 
-        @Comment("Show the Celestweave HUD: energy core, shield hit ring, dash cooldown, flight altimeter and Celestweave Lance charge; drag each element in the HUD editor at the bottom of the Celestweave radial menu")
-        @LangKey("gtnl.gui.config.general.client.enable_celestweave_hud")
-        @DefaultBoolean(true)
-        public boolean enableCelestweaveHud = true;
-
-        @Comment("Base scale of every Celestweave HUD element; each element can be scaled further in the HUD editor")
-        @LangKey("gtnl.gui.config.general.client.celestweave_hud_scale")
+        @Comment("Base scale of every HUD element; each element can be scaled further in the HUD editor")
+        @LangKey("gtnl.gui.config.general.client.hud_scale")
         @DefaultFloat(1F)
         @RangeFloat(min = 0.5F, max = 3F)
-        public float celestweaveHudScale = 1F;
+        public float hudScale = 1F;
 
         @Comment("Seconds without any event before the Celestweave HUD fades out")
         @LangKey("gtnl.gui.config.general.client.celestweave_hud_idle_seconds")
@@ -277,11 +272,11 @@ public class MainConfig {
 
             @Comment("Allow the railgun to damage players when the PvP setting of the railgun is enabled")
             @DefaultBoolean(true)
-            public boolean damagePlayers = true;
+            public boolean enablePlayerDamage = true;
 
             @Comment("Apply electromagnetic paralysis to players hit by the railgun")
             @DefaultBoolean(true)
-            public boolean paralysisOnPlayers = true;
+            public boolean enablePlayerParalysis = true;
 
             @Comment("Allow charged shots to destroy terrain when the terrain setting of the railgun is enabled")
             @DefaultBoolean(false)
@@ -289,7 +284,7 @@ public class MainConfig {
 
             @Comment("Drop items from blocks destroyed by the railgun")
             @DefaultBoolean(false)
-            public boolean terrainDropItems = false;
+            public boolean enableTerrainDrops = false;
 
             @Comment("Maximum number of blocks the railgun destroys per tick across all impacts")
             @DefaultInt(200)
@@ -306,7 +301,7 @@ public class MainConfig {
 
             @Comment("Refill the held railgun from the owner's wireless EU network once per second")
             @DefaultBoolean(true)
-            public boolean wirelessRefill = true;
+            public boolean enableWirelessRefill = true;
         }
 
         @Name("player_doll")
@@ -380,7 +375,7 @@ public class MainConfig {
 
             @Comment("Refill worn armor from the owner's wireless EU network every second")
             @DefaultBoolean(true)
-            public boolean wirelessRefill = true;
+            public boolean enableWirelessRefill = true;
 
             @Comment("Upper limit of the idle arc count a wearer can choose")
             @DefaultInt(8)
@@ -389,7 +384,7 @@ public class MainConfig {
 
             @Comment("Draw from the owner's wireless EU network when the armor charge cannot pay for absorbed damage")
             @DefaultBoolean(true)
-            public boolean wirelessFallback = true;
+            public boolean enableWirelessFallback = true;
 
             @Comment("EU paid per point of absorbed damage")
             @DefaultDouble(20000)

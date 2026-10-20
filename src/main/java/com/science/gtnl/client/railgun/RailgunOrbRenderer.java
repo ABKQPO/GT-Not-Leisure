@@ -10,6 +10,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
 import com.science.gtnl.client.fx.FxEasing;
+import com.science.gtnl.client.fx.world.FxArcRenderer.Color;
+import com.science.gtnl.client.fx.world.FxArcRenderer.Style;
 import com.science.gtnl.client.fx.world.FxCamera;
 import com.science.gtnl.client.fx.world.FxRenderHelper;
 import com.science.gtnl.client.fx.world.FxRenderHelper.Sprite;
@@ -19,7 +21,10 @@ import com.science.gtnl.common.railgun.RailgunChargeTier;
 import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class RailgunOrbRenderer {
 
     private static final int MIN_TRAVEL_TICKS = 3;
@@ -39,6 +44,32 @@ public class RailgunOrbRenderer {
     public static final int FLARE_PERIOD = 6;
     private static final float[] HIGH_INNER = { 0.35F, 0.86F, 1F }, HIGH_OUTER = { 0.94F, 1F, 1F };
     private static final float[] EXTREME_INNER = { 1F, 0.42F, 0.68F }, EXTREME_OUTER = { 1F, 0.94F, 1F };
+    private static final float[] BEAM_EHV_INNER = { 1F, 0.3F, 0.62F }, BEAM_EHV_OUTER = { 1F, 0.84F, 0.94F };
+    private static final float[] BEAM_HV_INNER = { 0.22F, 0.72F, 1F }, BEAM_HV_OUTER = { 0.84F, 0.97F, 1F };
+    public static final Style PLASMA_ARC = new Style(
+        new Color(1F, 0.3F, 0.6F),
+        new Color(1F, 0.55F, 0.75F),
+        new Color(1F, 0.8F, 0.9F),
+        new Color(1F, 0.38F, 0.68F),
+        new Color(1F, 0.75F, 0.88F),
+        1);
+    public static final Style HIGH_VOLTAGE_ARC = new Style(
+        new Color(0.25F, 0.75F, 1F),
+        new Color(0.55F, 0.88F, 1F),
+        new Color(0.85F, 0.97F, 1F),
+        new Color(0.4F, 0.82F, 1F),
+        new Color(0.7F, 0.94F, 1F),
+        1);
+    public static final Style IMPACT_SPARK_ARC = new Style(
+        new Color(0.9F, 0.25F, 0.55F),
+        new Color(0.95F, 0.535F, 0.715F),
+        new Color(1F, 0.82F, 0.88F),
+        new Color(0.95F, 0.33F, 0.63F),
+        new Color(1F, 0.76F, 0.86F),
+        0.8125);
+    public static final int HUD_EMPTY_RGB = 0x3C6E8F, HUD_EHV1_RGB = 0x50CFFF, HUD_EHV2_RGB = 0x8798FF,
+        HUD_EHV3_RGB = 0xFF509A;
+    public static final float SHOCKWAVE_RED = 1F, SHOCKWAVE_GREEN = 0.5F, SHOCKWAVE_BLUE = 0.75F;
 
     private static final double ORB_MIN_RADIUS = 0.07;
     private static final double ORB_CHARGE_RADIUS = 0.12;
@@ -98,7 +129,14 @@ public class RailgunOrbRenderer {
 
     public static float[] color(int tier, float mix, float[] out) {
         boolean extreme = tier >= RailgunChargeTier.EHV3.ordinal();
-        float[] inner = extreme ? EXTREME_INNER : HIGH_INNER, outer = extreme ? EXTREME_OUTER : HIGH_OUTER;
+        return blend(extreme ? EXTREME_INNER : HIGH_INNER, extreme ? EXTREME_OUTER : HIGH_OUTER, mix, out);
+    }
+
+    public static float[] beamColor(boolean ehv, float mix, float[] out) {
+        return blend(ehv ? BEAM_EHV_INNER : BEAM_HV_INNER, ehv ? BEAM_EHV_OUTER : BEAM_HV_OUTER, mix, out);
+    }
+
+    private static float[] blend(float[] inner, float[] outer, float mix, float[] out) {
         out[0] = inner[0] + (outer[0] - inner[0]) * mix;
         out[1] = inner[1] + (outer[1] - inner[1]) * mix;
         out[2] = inner[2] + (outer[2] - inner[2]) * mix;

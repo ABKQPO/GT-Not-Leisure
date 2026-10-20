@@ -6,7 +6,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
-import com.science.gtnl.common.railgun.RailgunModuleType;
+import com.science.gtnl.common.railgun.RailgunModule;
 import com.science.gtnl.loader.ItemLoader;
 
 import gregtech.api.enums.GTValues;
@@ -36,8 +36,8 @@ public class RailgunRecipes {
             .addTo(RecipeMaps.assemblerRecipes);
         ItemStack[] parts = { ItemList.Sensor_UV.get(1), ItemList.Electric_Motor_UV.get(1), ItemList.Emitter_UV.get(1),
             ItemList.Field_Generator_UV.get(2) };
-        for (RailgunModuleType type : RailgunModuleType.values()) {
-            boolean uhv = type == RailgunModuleType.EHV_BEAM;
+        for (RailgunModule type : RailgunModule.values()) {
+            boolean uhv = type == RailgunModule.EHV_BEAM;
             GTValues.RA.stdBuilder()
                 .itemInputs(
                     GTOreDictUnificator.get(OrePrefixes.circuit, uhv ? Materials.UHV : Materials.UV, 2),

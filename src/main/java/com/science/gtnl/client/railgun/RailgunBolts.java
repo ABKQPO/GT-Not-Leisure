@@ -6,6 +6,10 @@ import java.util.Random;
 
 import com.science.gtnl.common.equipment.EquipmentVec;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class RailgunBolts {
 
     public static final float MIN_INTENSITY = 0.05F;

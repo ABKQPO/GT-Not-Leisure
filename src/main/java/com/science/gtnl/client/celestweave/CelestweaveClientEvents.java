@@ -20,7 +20,6 @@ import com.science.gtnl.common.celestweave.CelestweaveCosmetic;
 import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveReach;
-import com.science.gtnl.common.celestweave.CelestweaveServerEvents;
 import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
@@ -43,11 +42,32 @@ public class CelestweaveClientEvents {
     private static final CelestweaveClientEvents INSTANCE = new CelestweaveClientEvents();
     private static final List<Scheduled> SCHEDULED = new ArrayList<>();
     private static final IntSet REMOTE_FLYING = new IntOpenHashSet();
+    private static final double HIT_AIM_HEIGHT = 0.72, HIT_AIM_MIN_OFFSET = 0.3, HIT_AIM_MIN_RATIO = 0.35;
     private static long frame;
     private static long ticks;
     private static World lastWorld;
 
     private record Scheduled(long due, Runnable task) {}
+
+    public record HitOrigin(double x, double y, double z) {
+
+        EquipmentVec offset(EntityLivingBase entity, double heightFraction) {
+            return new EquipmentVec(
+                x - entity.posX,
+                y - (entity.boundingBox.minY + entity.height * heightFraction),
+                z - entity.posZ);
+        }
+
+        static double forward(EquipmentVec offset, float yawDegrees) {
+            double yaw = Math.toRadians(yawDegrees);
+            return offset.x() * -Math.sin(yaw) + offset.z() * Math.cos(yaw);
+        }
+
+        static double lateral(EquipmentVec offset, float yawDegrees) {
+            double yaw = Math.toRadians(yawDegrees);
+            return offset.x() * -Math.cos(yaw) + offset.z() * -Math.sin(yaw);
+        }
+    }
 
     private CelestweaveClientEvents() {}
 
@@ -61,9 +81,8 @@ public class CelestweaveClientEvents {
         MinecraftForge.EVENT_BUS.register(new CelestweaveHud());
         CelestweaveHudElement.register();
         CelestweaveObjModel.register();
-        CelestweaveServerEvents.local = player -> player == Minecraft.getMinecraft().thePlayer;
         CelestweaveClientInput.register();
-        CelestweaveBackpackTabs.register();
+        CelestweaveBackpackClient.registerTabs();
     }
 
     static long renderFrame() {
@@ -216,13 +235,11 @@ public class CelestweaveClientEvents {
         }
     }
 
-    private static void aimHit(CelestweaveClientState state, EntityLivingBase living, float x, float y, float z,
-        boolean omni) {
-        double dx = x - living.posX, dy = y - (living.boundingBox.minY + living.height * 0.72), dz = z - living.posZ;
-        double yaw = Math.toRadians(living.renderYawOffset);
-        double side = dx * Math.cos(yaw) + dz * Math.sin(yaw), down = -dy;
-        double length = Math.sqrt(side * side + down * down), distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-        state.hitDirectional = !omni && length > 0.3 && length > distance * 0.35;
+    private static void aimHit(CelestweaveClientState state, EntityLivingBase living, HitOrigin origin, boolean omni) {
+        EquipmentVec offset = origin.offset(living, HIT_AIM_HEIGHT);
+        double side = -HitOrigin.lateral(offset, living.renderYawOffset), down = -offset.y();
+        double length = Math.sqrt(side * side + down * down);
+        state.hitDirectional = !omni && length > HIT_AIM_MIN_OFFSET && length > offset.length() * HIT_AIM_MIN_RATIO;
         if (!state.hitDirectional) return;
         state.hitDirectionX = (float) (side / length);
         state.hitDirectionY = (float) (down / length);
@@ -267,7 +284,7 @@ public class CelestweaveClientEvents {
         else REMOTE_FLYING.remove(entityId);
     }
 
-    public static void onFx(int entityId, int type, float x, float y, float z) {
+    public static void onFx(int entityId, CelestweaveFxPacket.Type type, float x, float y, float z) {
         World world = Minecraft.getMinecraft().theWorld;
         if (world == null || !(world.getEntityByID(entityId) instanceof EntityLivingBase living)) return;
         CelestweaveClientState state = CelestweaveClientState.of(living);
@@ -276,25 +293,27 @@ public class CelestweaveClientEvents {
         long now = Minecraft.getSystemTime();
         boolean allowed = fxAllowed(living, FxVisibility.distanceToViewer(living));
         switch (type) {
-            case CelestweaveFxPacket.SHIELD_HIT, CelestweaveFxPacket.SHIELD_AMBIENT, CelestweaveFxPacket.SAVE -> {
-                boolean save = type == CelestweaveFxPacket.SAVE, omni = type != CelestweaveFxPacket.SHIELD_HIT;
+            case SHIELD_HIT, SHIELD_AMBIENT, SAVE -> {
+                boolean save = type == CelestweaveFxPacket.Type.SAVE,
+                    omni = type != CelestweaveFxPacket.Type.SHIELD_HIT;
+                HitOrigin origin = new HitOrigin(x, y, z);
                 if (save) CelestweaveSounds.shieldSave(living);
                 else CelestweaveSounds.shieldHit(living);
                 state.hitAt = now;
                 state.hitPower = save ? 1.8F : 1F;
-                aimHit(state, living, x, y, z, omni);
-                if (living == Minecraft.getMinecraft().thePlayer) CelestweaveHud.hit(x, z, save, omni);
+                aimHit(state, living, origin, omni);
+                if (living == Minecraft.getMinecraft().thePlayer) CelestweaveHud.hit(origin, save, omni);
                 if (!allowed || !cosmetic.event(CelestweaveCosmetic.EVENT_HIT)) return;
                 CelestweaveArcs.hit(state, look, now);
                 CelestweaveShieldFlash.spawn(living, x, y, z, look.glowColor, save, omni);
                 if (living == Minecraft.getMinecraft().thePlayer)
-                    CelestweaveScreenGlow.hit(x, y, z, look.glowColor, save, omni);
+                    CelestweaveScreenGlow.hit(origin, look.glowColor, save, omni);
             }
-            case CelestweaveFxPacket.LIGHTNING -> {
+            case LIGHTNING -> {
                 CelestweaveSounds.lightning(x, y, z);
                 if (allowed && cosmetic.event(CelestweaveCosmetic.EVENT_REFLECT)) lightning(x, y, z, look.glowColor);
             }
-            case CelestweaveFxPacket.DASH -> {
+            case DASH -> {
                 CelestweaveSounds.dash(living);
                 state.dashAt = now;
                 if (allowed && cosmetic.event(CelestweaveCosmetic.EVENT_DASH) && look.wears(CelestweaveArmor.BOOTS)) {
@@ -302,7 +321,7 @@ public class CelestweaveClientEvents {
                     dashJet(living, FxColor.mixWhite(look.glowColor, 0.3F));
                 }
             }
-            case CelestweaveFxPacket.LAND -> {
+            case LAND -> {
                 CelestweaveSounds.land(x, y, z);
                 if (!allowed || !cosmetic.event(CelestweaveCosmetic.EVENT_LAND)) return;
                 for (int i = 0; i < 9; i++) {
@@ -322,7 +341,7 @@ public class CelestweaveClientEvents {
                             .spawnColored(from, to, 8, 0.06, 5 + CelestweaveArcs.RNG.nextInt(2), look.glowColor));
                 }
             }
-            case CelestweaveFxPacket.REFLECT -> {
+            case REFLECT -> {
                 CelestweaveSounds.reflect(x, y, z);
                 if (!allowed || !cosmetic.event(CelestweaveCosmetic.EVENT_REFLECT)) return;
                 EquipmentVec target = new EquipmentVec(x, y, z);
@@ -335,7 +354,6 @@ public class CelestweaveClientEvents {
                     FxArcRenderer.spawnColored(chest, target, 14, 0.12, 5, look.glowColor);
                 });
             }
-            default -> {}
         }
     }
 }

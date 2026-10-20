@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
-import java.util.function.Predicate;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -39,7 +38,11 @@ public class CelestweaveServerEvents {
 
     public static final String SOULBOUND_TAG = "GTNLCelestweaveSoulbound";
     private static final double FX_RANGE = 64;
-    public static Predicate<EntityPlayer> local = player -> false;
+    private static final int GUI_THROTTLE_TICKS = 5;
+    private static final float LAND_FX_MIN_FALL = 3F, FALL_REDUCTION_PER_LEVEL = 3F;
+    private static final double JUMP_BOOST = 0.275, JUMP_EXPONENT = 1.08;
+    private static final int FLUSH_INTERVAL_TICKS = 20, FULL_FLUSH_EVERY = 5;
+    private static final float MINING_PENALTY_COMPENSATION = 5F;
     private static final Map<EntityPlayer, Tracked> TRACKED = Collections.synchronizedMap(new WeakHashMap<>());
     private static final Map<UUID, Long> LAST_GUI = new HashMap<>();
     private static boolean registered;
@@ -61,16 +64,17 @@ public class CelestweaveServerEvents {
     public static boolean guiThrottled(EntityPlayer player) {
         long now = player.worldObj.getTotalWorldTime();
         Long last = LAST_GUI.put(player.getUniqueID(), now);
-        return last != null && now - last >= 0 && now - last < 5;
+        return last != null && now - last >= 0 && now - last < GUI_THROTTLE_TICKS;
     }
 
-    public static void sendFx(Entity entity, int type, double x, double y, double z) {
+    public static void sendFx(Entity entity, CelestweaveFxPacket.Type type, double x, double y, double z) {
         EquipmentNet.sendAround(entity, new CelestweaveFxPacket(entity.getEntityId(), type, x, y, z), FX_RANGE);
     }
 
     static void landFx(EntityPlayer player, float distance) {
-        if (!player.worldObj.isRemote && distance > 3 && CelestweaveData.piece(player, CelestweaveArmor.BOOTS) != null)
-            sendFx(player, CelestweaveFxPacket.LAND, player.posX, player.boundingBox.minY, player.posZ);
+        if (!player.worldObj.isRemote && distance > LAND_FX_MIN_FALL
+            && CelestweaveData.piece(player, CelestweaveArmor.BOOTS) != null)
+            sendFx(player, CelestweaveFxPacket.Type.LAND, player.posX, player.boundingBox.minY, player.posZ);
     }
 
     private static int jumpLevel(EntityPlayer player) {
@@ -106,7 +110,7 @@ public class CelestweaveServerEvents {
     public void playerTickStart(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.START) return;
         EntityPlayer player = event.player;
-        if (player.worldObj.isRemote && !local.test(player)) return;
+        if (!player.isClientWorld()) return;
         CelestweaveBehaviors.updateStep(player);
     }
 
@@ -114,8 +118,8 @@ public class CelestweaveServerEvents {
     public void playerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         EntityPlayer player = event.player;
+        if (!player.isClientWorld()) return;
         boolean server = !player.worldObj.isRemote;
-        if (!server && !local.test(player)) return;
         Tracked tracked;
         synchronized (TRACKED) {
             tracked = TRACKED.computeIfAbsent(player, k -> new Tracked());
@@ -153,9 +157,9 @@ public class CelestweaveServerEvents {
         if (!(player instanceof EntityPlayerMP serverPlayer)) return;
         CelestweaveFlight.update(serverPlayer);
         CelestweaveEnergy.flushLarge(player);
-        if (now - tracked.lastFlush >= 20 || now < tracked.lastFlush) {
+        if (now - tracked.lastFlush >= FLUSH_INTERVAL_TICKS || now < tracked.lastFlush) {
             tracked.lastFlush = now;
-            if (++tracked.checks % 5 == 0) CelestweaveEnergy.flush(player);
+            if (++tracked.checks % FULL_FLUSH_EVERY == 0) CelestweaveEnergy.flush(player);
             restoreSoulbound(player);
             for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++) {
                 ItemStack stack = CelestweaveData.piece(player, piece);
@@ -174,7 +178,7 @@ public class CelestweaveServerEvents {
     public void fall(LivingFallEvent event) {
         if (!(event.entityLiving instanceof EntityPlayer player)) return;
         int jump = jumpLevel(player);
-        if (jump > 1) event.distance = Math.max(0, event.distance - 3F * (jump - 1));
+        if (jump > 1) event.distance = Math.max(0, event.distance - FALL_REDUCTION_PER_LEVEL * (jump - 1));
         if (!CelestweaveFlight.cancelsFall(player)) return;
         landFx(player, event.distance);
         event.setCanceled(true);
@@ -189,7 +193,7 @@ public class CelestweaveServerEvents {
     public void jump(LivingEvent.LivingJumpEvent event) {
         if (!(event.entityLiving instanceof EntityPlayer player) || player.isSneaking()) return;
         int jump = jumpLevel(player);
-        if (jump > 1) player.motionY += 0.275 * Math.pow(jump - 1, 1.08);
+        if (jump > 1) player.motionY += JUMP_BOOST * Math.pow(jump - 1, JUMP_EXPONENT);
     }
 
     @SubscribeEvent
@@ -199,8 +203,8 @@ public class CelestweaveServerEvents {
             return;
         float speed = event.newSpeed;
         if (player.isInsideOfMaterial(Material.water) && !EnchantmentHelper.getAquaAffinityModifier(player))
-            speed *= 5F;
-        if (!player.onGround) speed *= 5F;
+            speed *= MINING_PENALTY_COMPENSATION;
+        if (!player.onGround) speed *= MINING_PENALTY_COMPENSATION;
         event.newSpeed = speed;
     }
 

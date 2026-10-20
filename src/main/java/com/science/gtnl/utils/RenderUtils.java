@@ -5,6 +5,9 @@ import java.util.EnumSet;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.cleanroommc.modularui.drawable.text.TextRenderer;
+import com.cleanroommc.modularui.utils.Alignment;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -89,5 +92,16 @@ public class RenderUtils {
             tessellator.addVertex(x2, y2, z2);
             tessellator.addVertex(x2, y1, z2);
         }
+    }
+
+    public static void drawTextLine(String text, int x, int y, int width, int height, Alignment alignment, int color,
+        boolean shadow) {
+        TextRenderer renderer = TextRenderer.SHARED;
+        renderer.setScale(1F);
+        renderer.setShadow(shadow);
+        renderer.setColor(color);
+        renderer.setAlignment(alignment, width, height);
+        renderer.setPos(x, y);
+        renderer.drawSimple(text);
     }
 }

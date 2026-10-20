@@ -55,7 +55,7 @@ public class CelestweaveShield {
 
     public static boolean canAbsorb(EntityPlayer player) {
         if (EquipmentEnergy.free(player) || CelestweaveEnergy.availableSet(player) > 0) return true;
-        return MainConfig.item.celestweave.wirelessFallback && EquipmentEnergy.wirelessAvailable(player) >= 1;
+        return MainConfig.item.celestweave.enableWirelessFallback && EquipmentEnergy.wirelessAvailable(player) >= 1;
     }
 
     public static boolean environment(DamageSource source) {
@@ -100,7 +100,7 @@ public class CelestweaveShield {
         if (cap <= 0) return;
         double cost = Math.min(cap * config.shieldEuPerDamage, config.maxEuPerHit);
         double paid = EquipmentEnergy.free(player) ? cost : CelestweaveEnergy.drainSetUpTo(player, cost);
-        if (paid < cost && config.wirelessFallback) paid += EquipmentEnergy.takeWireless(player, cost - paid);
+        if (paid < cost && config.enableWirelessFallback) paid += EquipmentEnergy.takeWireless(player, cost - paid);
         float absorbed = cost <= 0 ? cap : (float) (cap * Math.min(1, paid / cost));
         if (absorbed <= 0) return;
         if (source.isFireDamage()) player.extinguish();
@@ -109,10 +109,10 @@ public class CelestweaveShield {
         } else if (!environment(source)) {
             Entity attacker = source.getEntity();
             if (attacker == null) CelestweaveServerEvents
-                .sendFx(player, CelestweaveFxPacket.SHIELD_AMBIENT, player.posX, player.posY + 1, player.posZ);
+                .sendFx(player, CelestweaveFxPacket.Type.SHIELD_AMBIENT, player.posX, player.posY + 1, player.posZ);
             else CelestweaveServerEvents.sendFx(
                 player,
-                CelestweaveFxPacket.SHIELD_HIT,
+                CelestweaveFxPacket.Type.SHIELD_HIT,
                 attacker.posX,
                 attacker.posY + attacker.height * 0.5,
                 attacker.posZ);
@@ -141,7 +141,7 @@ public class CelestweaveShield {
             && CelestweaveEnergy.drain(player, CelestweaveArmor.CHEST, chest, config.reflectEu)) {
             Entity projectile = source.getSourceOfDamage();
             if (projectile != null) CelestweaveServerEvents
-                .sendFx(player, CelestweaveFxPacket.REFLECT, projectile.posX, projectile.posY, projectile.posZ);
+                .sendFx(player, CelestweaveFxPacket.Type.REFLECT, projectile.posX, projectile.posY, projectile.posZ);
             return true;
         }
         if (!(source.getEntity() instanceof EntityLivingBase attacker) || attacker == player
@@ -180,7 +180,7 @@ public class CelestweaveShield {
                 target.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 200, 1));
             }
             CelestweaveServerEvents
-                .sendFx(player, CelestweaveFxPacket.LIGHTNING, target.posX, target.boundingBox.minY, target.posZ);
+                .sendFx(player, CelestweaveFxPacket.Type.LIGHTNING, target.posX, target.boundingBox.minY, target.posZ);
         }
     }
 
@@ -196,6 +196,7 @@ public class CelestweaveShield {
         player.setHealth(1F);
         player.extinguish();
         player.hurtResistantTime = player.maxHurtResistantTime * 3;
-        CelestweaveServerEvents.sendFx(player, CelestweaveFxPacket.SAVE, player.posX, player.posY + 1, player.posZ);
+        CelestweaveServerEvents
+            .sendFx(player, CelestweaveFxPacket.Type.SAVE, player.posX, player.posY + 1, player.posZ);
     }
 }

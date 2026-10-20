@@ -12,25 +12,39 @@ import io.netty.buffer.ByteBuf;
 
 public class CelestweaveFxPacket extends ClientboundPacket {
 
-    public static final int SHIELD_HIT = 0, DASH = 1, LAND = 2, REFLECT = 3, SAVE = 4, LIGHTNING = 5,
-        SHIELD_AMBIENT = 6;
+    public enum Type {
+
+        SHIELD_HIT,
+        DASH,
+        LAND,
+        REFLECT,
+        SAVE,
+        LIGHTNING,
+        SHIELD_AMBIENT;
+
+        private static final Type[] VALUES = values();
+
+        public static Type byOrdinal(int ordinal) {
+            return ordinal >= 0 && ordinal < VALUES.length ? VALUES[ordinal] : null;
+        }
+    }
 
     private int entityId;
-    private byte type;
+    private Type type;
     private EquipmentVec position;
 
     public CelestweaveFxPacket() {}
 
-    public CelestweaveFxPacket(int entityId, int type, double x, double y, double z) {
+    public CelestweaveFxPacket(int entityId, Type type, double x, double y, double z) {
         this.entityId = entityId;
-        this.type = (byte) type;
+        this.type = type;
         this.position = new EquipmentVec(x, y, z);
     }
 
     @Override
     protected void read(ByteBuf buffer) {
         entityId = buffer.readInt();
-        type = buffer.readByte();
+        type = Type.byOrdinal(buffer.readByte());
         try {
             position = EquipmentVec.read(buffer);
         } catch (IllegalArgumentException invalid) {
@@ -41,14 +55,14 @@ public class CelestweaveFxPacket extends ClientboundPacket {
     @Override
     protected void write(ByteBuf buffer) {
         buffer.writeInt(entityId);
-        buffer.writeByte(type);
+        buffer.writeByte(type.ordinal());
         position.write(buffer);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
-        if (type < SHIELD_HIT || type > SHIELD_AMBIENT || position == null) return;
+        if (type == null || position == null) return;
         runInWorld(
             minecraft,
             () -> CelestweaveClientEvents

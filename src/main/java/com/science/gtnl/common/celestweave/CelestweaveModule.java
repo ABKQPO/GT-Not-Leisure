@@ -117,13 +117,4 @@ public enum CelestweaveModule implements IEquipmentVariant {
     public static CelestweaveModule byMeta(int meta) {
         return LOOKUP.byMeta(meta);
     }
-
-    public static int metaCount() {
-        return LOOKUP.size();
-    }
-
-    public static CelestweaveModule byId(String id) {
-        for (CelestweaveModule module : values()) if (module.id.equals(id)) return module;
-        return null;
-    }
 }

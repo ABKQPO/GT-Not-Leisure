@@ -4,13 +4,14 @@ import net.minecraft.client.Minecraft;
 
 import com.science.gtnl.client.railgun.RailgunBeamRenderer;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
-import com.science.gtnl.common.railgun.RailgunDefaults;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 
 public class RailgunBeamUpdatePacket extends ClientboundPacket {
+
+    private static final double BEAM_RANGE_LIMIT = 512;
 
     public static final byte STATE_STOP = 0;
     public static final byte STATE_HOLD = 1;
@@ -43,10 +44,6 @@ public class RailgunBeamUpdatePacket extends ClientboundPacket {
         return new RailgunBeamUpdatePacket(shooterId, STATE_MOVE, ehv, (float) range);
     }
 
-    public double range() {
-        return range;
-    }
-
     @Override
     protected void read(ByteBuf buffer) {
         try {
@@ -56,7 +53,7 @@ public class RailgunBeamUpdatePacket extends ClientboundPacket {
             valid = state >= STATE_STOP && state <= STATE_MOVE;
             if (!valid || state == STATE_STOP) return;
             range = buffer.readFloat();
-            valid = Float.isFinite(range) && range > 0 && range <= RailgunDefaults.BEAM_RANGE_LIMIT;
+            valid = Float.isFinite(range) && range > 0 && range <= BEAM_RANGE_LIMIT;
         } catch (RuntimeException ignored) {
             valid = false;
         }

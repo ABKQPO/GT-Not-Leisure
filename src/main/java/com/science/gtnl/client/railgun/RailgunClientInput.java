@@ -7,12 +7,16 @@ import net.minecraft.item.ItemStack;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.packet.RailgunBeamTogglePacket;
-import com.science.gtnl.common.railgun.RailgunDefaults;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class RailgunClientInput {
+
+    private static final int BEAM_RESEND_TICKS = 10;
 
     private boolean firing;
     private ItemStack held;
@@ -45,11 +49,10 @@ public class RailgunClientInput {
             RailgunBeamRenderer.setLocalRequested(firing);
             ScienceNotLeisure.network.sendToServer(new RailgunBeamTogglePacket(firing));
             lastSent = now;
-        } else if (firing && !RailgunBeamRenderer.active(player.getEntityId())
-            && now - lastSent >= RailgunDefaults.BEAM_RESEND_TICKS) {
-                ScienceNotLeisure.network.sendToServer(new RailgunBeamTogglePacket(true));
-                lastSent = now;
-            }
+        } else if (firing && !RailgunBeamRenderer.active(player.getEntityId()) && now - lastSent >= BEAM_RESEND_TICKS) {
+            ScienceNotLeisure.network.sendToServer(new RailgunBeamTogglePacket(true));
+            lastSent = now;
+        }
         held = stack;
         slot = player.inventory.currentItem;
     }

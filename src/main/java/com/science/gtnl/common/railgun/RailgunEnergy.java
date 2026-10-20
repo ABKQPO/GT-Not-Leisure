@@ -1,6 +1,5 @@
 package com.science.gtnl.common.railgun;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 
@@ -19,8 +18,8 @@ public class RailgunEnergy {
             MainConfig.item.railgun.baseCapacity);
     }
 
-    public static double available(EntityPlayer player, ItemStack stack) {
-        return EquipmentEnergy.free(player) ? Double.POSITIVE_INFINITY : EquipmentEnergy.read(stack);
+    public static double available(ItemStack stack) {
+        return EquipmentEnergy.read(stack);
     }
 
     public static void clamp(ItemStack stack) {
@@ -28,7 +27,7 @@ public class RailgunEnergy {
     }
 
     public static void refillFromWireless(ItemStack stack, EntityPlayerMP player) {
-        if (!MainConfig.item.railgun.wirelessRefill || player.isUsingItem()) return;
+        if (!MainConfig.item.railgun.enableWirelessRefill || player.isUsingItem()) return;
         EquipmentEnergy.refillFromWireless(stack, player, capacity(stack));
     }
 }

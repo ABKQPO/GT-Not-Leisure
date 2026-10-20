@@ -10,7 +10,7 @@ import net.minecraftforge.common.DimensionManager;
 
 public class CelestweaveBackpackData extends WorldSavedData {
 
-    public static final String NAME = "gtnl_backpack";
+    public static final String NAME = "gtnl_celestweave_backpack";
 
     private final Map<String, NBTTagCompound> entries = new HashMap<>();
 

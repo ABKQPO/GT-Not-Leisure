@@ -32,7 +32,6 @@ import com.science.gtnl.common.railgun.RailgunBeamService;
 import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunEnergy;
 import com.science.gtnl.common.railgun.RailgunFireService;
-import com.science.gtnl.common.railgun.RailgunServerEvents;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -53,7 +52,6 @@ public class ElectromagneticRailgun extends Item
         this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         GameRegistry.registerItem(this, "electromagnetic_railgun");
         GTNLItemList.ElectromagneticRailgun.set(new ItemStack(this, 1));
-        RailgunServerEvents.register();
     }
 
     @Override

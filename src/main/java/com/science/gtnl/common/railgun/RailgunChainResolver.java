@@ -22,6 +22,8 @@ import com.science.gtnl.common.railgun.RailgunDamage.DamageContext;
 
 public class RailgunChainResolver {
 
+    private static final double AREA_PLAYER_RATIO = 0.5;
+
     private static final double PENETRATION_LENGTH = 32, PENETRATION_WIDTH = 1.5, SPLASH_FALLOFF = 0.6;
 
     public enum Kind {
@@ -156,7 +158,7 @@ public class RailgunChainResolver {
                     .distanceToSqr(center));
             if (distance > radius) continue;
             double damage = ctx.firstDamage() * ratio * (1 - distance / radius * falloff);
-            if (entity instanceof EntityPlayer) damage *= RailgunDefaults.AREA_PLAYER_RATIO;
+            if (entity instanceof EntityPlayer) damage *= AREA_PLAYER_RATIO;
             out.add(new Hit(entity, damage, Kind.AREA, null));
         }
         return out;

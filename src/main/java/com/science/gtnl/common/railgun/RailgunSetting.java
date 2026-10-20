@@ -10,12 +10,12 @@ import com.science.gtnl.config.MainConfig;
 public enum RailgunSetting {
 
     TERRAIN("terrain", false, stack -> MainConfig.item.railgun.enableTerrain),
-    PVP("pvp", false, stack -> MainConfig.item.railgun.damagePlayers),
+    PVP("pvp", false, stack -> MainConfig.item.railgun.enablePlayerDamage),
     SOUND("sound", true, null),
     SPLASH("splash", true, null),
     CHAIN("chain", true, null),
     EHV_BEAM("ehvBeam", false, stack -> RailgunData.modules(stack)
-        .count(RailgunModuleType.EHV_BEAM) > 0);
+        .count(RailgunModule.EHV_BEAM) > 0);
 
     private static final String TAG = "Settings";
 
@@ -30,8 +30,8 @@ public enum RailgunSetting {
     }
 
     public boolean on(ItemStack stack) {
-        NBTTagCompound root = stack == null ? null : stack.getTagCompound();
-        if (root == null || !root.hasKey(TAG, 10)) return fallback;
+        NBTTagCompound root = RailgunData.root(stack);
+        if (!root.hasKey(TAG, 10)) return fallback;
         NBTTagCompound tag = root.getCompoundTag(TAG);
         return tag.hasKey(key) ? tag.getBoolean(key) : fallback;
     }

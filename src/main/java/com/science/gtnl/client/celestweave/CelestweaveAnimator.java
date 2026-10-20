@@ -7,7 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
 
+import com.science.gtnl.client.fx.FxAngle;
 import com.science.gtnl.client.fx.FxColor;
+import com.science.gtnl.client.fx.FxEasing;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
 
 import cpw.mods.fml.relauncher.Side;
@@ -21,7 +23,6 @@ public class CelestweaveAnimator {
     public static final float BLADE_GAP = 1F, FORE_LENGTH = 5F;
     static final int WING_PARTS = BLADES.length + 3;
     static final long WING_RETRACT_MS = 600;
-    private static final float TWO_PI = (float) (Math.PI * 2);
     private static final Random RNG = new Random();
 
     private static int rotor, innerRotor, crystal, nucleus, shellA, swirl, swirlPane, halo, holoScreen, packBand,
@@ -202,15 +203,16 @@ public class CelestweaveAnimator {
         float[] values = new float[WING_PARTS];
         int last = WING_PARTS - 1, blades = BLADES.length;
         if (state.flying) {
-            values[0] = ease(x, 0F, 0.25F);
-            values[1] = ease(x, 0.12F, 0.3F);
-            for (int i = 0; i < blades; i++) values[2 + i] = ease(x, 0.35F + 0.06F * i, 0.22F);
-            values[last] = ease(x, 0.75F, 0.35F);
+            values[0] = FxEasing.easeOutCubic(x / 0.25F);
+            values[1] = FxEasing.easeOutCubic((x - 0.12F) / 0.3F);
+            for (int i = 0; i < blades; i++) values[2 + i] = FxEasing.easeOutCubic((x - (0.35F + 0.06F * i)) / 0.22F);
+            values[last] = FxEasing.easeOutCubic((x - 0.75F) / 0.35F);
         } else {
-            values[0] = 1F - ease(x, 0.38F, 0.2F);
-            values[1] = 1F - ease(x, 0.3F, 0.2F);
-            for (int i = 0; i < blades; i++) values[2 + i] = 1F - ease(x, 0.05F + 0.04F * (blades - 1 - i), 0.15F);
-            values[last] = 1F - ease(x, 0F, 0.15F);
+            values[0] = 1F - FxEasing.easeOutCubic((x - 0.38F) / 0.2F);
+            values[1] = 1F - FxEasing.easeOutCubic((x - 0.3F) / 0.2F);
+            for (int i = 0; i < blades; i++)
+                values[2 + i] = 1F - FxEasing.easeOutCubic((x - (0.05F + 0.04F * (blades - 1 - i))) / 0.15F);
+            values[last] = 1F - FxEasing.easeOutCubic(x / 0.15F);
         }
         float[] snap = state.wingSnap;
         if (snap != null && snap.length == WING_PARTS) for (int k = 0; k < WING_PARTS; k++)
@@ -222,11 +224,6 @@ public class CelestweaveAnimator {
         float[] blade = BLADES[i];
         float r = BLADE_GAP + blade[2] * f;
         return new float[] { blade[0] + r * MathHelper.cos(blade[1]), r * MathHelper.sin(blade[1]) };
-    }
-
-    private static float ease(float since, float delay, float duration) {
-        float u = Math.max(0F, Math.min(1F, (since - delay) / duration));
-        return 1F - (1F - u) * (1F - u) * (1F - u);
     }
 
     private static void rotZ(CelestweavePose pose, int index, float angle) {
@@ -241,6 +238,6 @@ public class CelestweaveAnimator {
     }
 
     private static float wrap(float angle) {
-        return angle % TWO_PI;
+        return angle % FxAngle.TAU;
     }
 }

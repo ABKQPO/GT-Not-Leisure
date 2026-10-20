@@ -10,6 +10,9 @@ import com.science.gtnl.common.equipment.EquipmentVec;
 
 public class RailgunRaycast {
 
+    private static final int ENTITY_QUERY_SEGMENT_LENGTH = 16;
+    private static final int MAX_RANGE_MULTIPLIER = 4;
+
     private RailgunRaycast() {}
 
     public record EntityHit(Entity entity, EquipmentVec position) {}
@@ -17,7 +20,7 @@ public class RailgunRaycast {
     public record Result(EquipmentVec blockEnd, MovingObjectPosition block, EntityHit hit) {}
 
     public static double effectiveRange(double base, int rangeModules) {
-        return base * Math.min(RailgunDefaults.MAX_RANGE_MULTIPLIER, 1 << Math.max(0, Math.min(2, rangeModules)));
+        return base * Math.min(MAX_RANGE_MULTIPLIER, 1 << Math.max(0, Math.min(2, rangeModules)));
     }
 
     public static Result traceFirst(World world, Entity shooter, EquipmentVec from, EquipmentVec to, double padding,
@@ -45,7 +48,7 @@ public class RailgunRaycast {
             1,
             (int) Math.ceil(
                 end.subtract(from)
-                    .length() / RailgunDefaults.ENTITY_QUERY_SEGMENT_LENGTH));
+                    .length() / ENTITY_QUERY_SEGMENT_LENGTH));
         EquipmentVec step = end.subtract(from)
             .scale(1.0 / segments);
         EquipmentVec start = from;

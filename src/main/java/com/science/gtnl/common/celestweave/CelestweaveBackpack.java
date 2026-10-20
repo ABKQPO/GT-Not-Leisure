@@ -1,6 +1,7 @@
 package com.science.gtnl.common.celestweave;
 
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.science.gtnl.CommonProxy;
-import com.science.gtnl.common.equipment.EquipmentMessages;
+import com.science.gtnl.common.equipment.EquipmentNet;
 import com.science.gtnl.common.item.items.PortableChestType;
 import com.science.gtnl.common.item.items.PortableItem;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
@@ -24,6 +25,7 @@ import com.science.gtnl.utils.enums.GuiType;
 
 public class CelestweaveBackpack {
 
+    private static final String PORTABLE_ID = "PortableID";
     private static final String[] CONTENT_KEYS = { "Items", "Contents" };
     private static final Set<PortableItem.PortableType> STORAGE = EnumSet.of(
         PortableItem.PortableType.ENDERCHEST,
@@ -60,11 +62,35 @@ public class CelestweaveBackpack {
 
     private static String portableId(ItemStack chest) {
         return chest != null && chest.hasTagCompound() ? chest.getTagCompound()
-            .getString("PortableID") : "";
+            .getString(PORTABLE_ID) : "";
     }
 
-    public static ItemStack store(ItemStack module) {
-        if (CelestweaveModule.of(module) != CelestweaveModule.BACKPACK) return module;
+    public static ItemStack[] persist(ItemStack[] before, ItemStack[] after, CelestweaveBackpackData data) {
+        Set<String> previous = new HashSet<>();
+        for (ItemStack module : before) previous.add(heldId(module));
+        ItemStack[] stored = new ItemStack[after.length];
+        for (int i = 0; i < after.length; i++) {
+            ItemStack module = after[i];
+            String id = heldId(module);
+            if (data != null && !id.isEmpty() && !previous.contains(id) && data.read(id) != null)
+                module = renew(module);
+            stored[i] = store(module, data);
+        }
+        for (ItemStack module : stored) previous.remove(heldId(module));
+        if (data != null) for (String id : previous) if (!id.isEmpty()) data.remove(id);
+        return stored;
+    }
+
+    private static ItemStack renew(ItemStack module) {
+        ItemStack chest = CelestweaveData.heldOf(module);
+        chest.getTagCompound()
+            .removeTag(PORTABLE_ID);
+        PortableItem.ensurePortableID(chest);
+        return CelestweaveData.withHeld(module.copy(), chest);
+    }
+
+    public static ItemStack store(ItemStack module, CelestweaveBackpackData data) {
+        if (data == null || CelestweaveModule.of(module) != CelestweaveModule.BACKPACK) return module;
         ItemStack chest = CelestweaveData.heldOf(module);
         if (chest == null || !accepts(chest)) return module;
         String id = PortableItem.ensurePortableID(chest);
@@ -74,8 +100,6 @@ public class CelestweaveBackpack {
             contents.setTag(key, tag.getTag(key));
             tag.removeTag(key);
         }
-        CelestweaveBackpackData data = CelestweaveBackpackData.get();
-        if (data == null) return module;
         if (!contents.hasNoTags() || data.read(id) == null) data.write(id, contents);
         return CelestweaveData.withHeld(module.copy(), chest);
     }
@@ -110,17 +134,11 @@ public class CelestweaveBackpack {
             : "";
     }
 
-    public static void discard(String id) {
-        CelestweaveBackpackData data = id.isEmpty() ? null : CelestweaveBackpackData.get();
-        if (data != null) data.remove(id);
-    }
-
-    public static ItemStack restore(ItemStack module) {
-        if (CelestweaveModule.of(module) != CelestweaveModule.BACKPACK) return module;
+    public static ItemStack restore(ItemStack module, CelestweaveBackpackData data) {
+        if (data == null || CelestweaveModule.of(module) != CelestweaveModule.BACKPACK) return module;
         ItemStack chest = CelestweaveData.heldOf(module);
         String id = portableId(chest);
-        CelestweaveBackpackData data = id.isEmpty() ? null : CelestweaveBackpackData.get();
-        NBTTagCompound contents = data != null ? data.read(id) : null;
+        NBTTagCompound contents = id.isEmpty() ? null : data.read(id);
         if (contents == null) return module;
         return CelestweaveData.withHeld(module.copy(), withContents(chest, contents));
     }
@@ -155,7 +173,7 @@ public class CelestweaveBackpack {
             ItemStack held = CelestweaveData.heldOf(modules[i]);
             if (!accepts(held)) return null;
             if (!portableId(held).isEmpty()) return held;
-            modules[i] = store(modules[i]);
+            modules[i] = store(modules[i], CelestweaveBackpackData.get());
             CelestweaveData.writeModuleStacks(chest, modules);
             return CelestweaveData.heldOf(modules[i]);
         }
@@ -165,7 +183,7 @@ public class CelestweaveBackpack {
     public static void open(EntityPlayerMP player) {
         ItemStack held = ensureId(player);
         if (held == null) {
-            EquipmentMessages.hotbar(player, "item.gtnl.celestweave.message.no_backpack");
+            EquipmentNet.hotbar(player, "item.gtnl.celestweave.message.no_backpack");
             return;
         }
         if (player.openContainer != player.inventoryContainer) player.closeScreen();

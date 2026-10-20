@@ -14,7 +14,7 @@ public class HudElement {
     public final float anchorX, anchorY, minX, minY, maxX, maxY;
     private final Offset defaultX, defaultY;
     private final String lang;
-    private final BooleanSupplier visible;
+    private final BooleanSupplier inUse, visible;
     private final DoubleSupplier baseScale;
     private final Drawer preview, renderer;
 
@@ -29,6 +29,7 @@ public class HudElement {
         this.defaultX = builder.defaultX;
         this.defaultY = builder.defaultY;
         this.lang = builder.lang != null ? builder.lang : DEFAULT_LANG_PREFIX + builder.id;
+        this.inUse = builder.inUse;
         this.visible = builder.visible;
         this.baseScale = builder.baseScale;
         this.preview = builder.preview;
@@ -43,12 +44,19 @@ public class HudElement {
         return lang;
     }
 
+    public boolean isInUse() {
+        return inUse.getAsBoolean();
+    }
+
     public boolean isVisible() {
         return visible.getAsBoolean();
     }
 
     public float baseScale() {
-        double scale = baseScale.getAsDouble();
+        return validScale(baseScale.getAsDouble());
+    }
+
+    static float validScale(double scale) {
         return Double.isFinite(scale) && scale > 0 ? (float) scale : 1F;
     }
 
@@ -90,7 +98,7 @@ public class HudElement {
         private float anchorX = 0.5F, anchorY = 0.5F, minX, minY, maxX, maxY;
         private Offset defaultX = Offset.NONE, defaultY = Offset.NONE;
         private String lang;
-        private BooleanSupplier visible = () -> true;
+        private BooleanSupplier inUse = () -> true, visible = () -> true;
         private DoubleSupplier baseScale = () -> 1;
         private Drawer preview, renderer;
 
@@ -121,6 +129,11 @@ public class HudElement {
 
         public Builder lang(String key) {
             this.lang = Objects.requireNonNull(key, "key");
+            return this;
+        }
+
+        public Builder inUseWhen(BooleanSupplier condition) {
+            this.inUse = Objects.requireNonNull(condition, "condition");
             return this;
         }
 

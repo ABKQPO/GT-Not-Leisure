@@ -14,6 +14,7 @@ import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.hud.HudEditor;
 import com.science.gtnl.common.celestweave.CelestweaveData;
+import com.science.gtnl.common.gui.equipment.EquipmentSoundScreen;
 import com.science.gtnl.common.gui.modularui.wheel.WheelEntry;
 import com.science.gtnl.common.gui.modularui.wheel.WheelMenuBuilder;
 import com.science.gtnl.common.gui.modularui.wheel.WheelMenuModel;
@@ -32,34 +33,20 @@ public class CelestweaveWheelScreen extends WheelScreen {
     private static final int HIGHLIGHT_COLOR = 0xFFFF3D9A;
     private static final int TEXT_COLOR = 0xFFFFFFFF;
     private static final int TITLE_GAP = 8;
-    private static final int HUD_WIDTH = 72, HUD_HEIGHT = 14, HUD_GAP = 22;
+    private static final int HUD_WIDTH = 72, HUD_HEIGHT = 14, HUD_GAP = 22, BUTTON_SPACING = 4;
     private static final int HUD_COLOR = 0x9614141E, HUD_HOVER_COLOR = 0xA0FF3D9A;
-
-    private boolean leaving;
 
     public CelestweaveWheelScreen(KeyBinding key) {
         super(menu(), WheelOpenMode.HOLD, key);
         below(
-            IKey.str(StatCollector.translateToLocal("item.gtnl.celestweave.radial.title"))
+            IKey.str(StatCollector.translateToLocal("item.gtnl.celestweave.wheel.title"))
                 .asWidget()
                 .color(TEXT_COLOR)
                 .shadow(true),
             TITLE_GAP);
-        below(
-            new ButtonWidget<>().size(HUD_WIDTH, HUD_HEIGHT)
-                .disableThemeBackground(true)
-                .disableHoverThemeBackground(true)
-                .background(new Rectangle().setColor(HUD_COLOR))
-                .hoverBackground(new Rectangle().setColor(HUD_HOVER_COLOR))
-                .overlay(
-                    IKey.str(StatCollector.translateToLocal("item.gtnl.celestweave.radial.hud"))
-                        .color(TEXT_COLOR)
-                        .shadow(true))
-                .onMousePressed(button -> {
-                    openHudEditor();
-                    return true;
-                }),
-            HUD_GAP);
+        int shift = (HUD_WIDTH + BUTTON_SPACING) / 2;
+        below(button("gtnl.hud.editor.open", HudEditor::open), HUD_GAP, -shift);
+        below(button("item.gtnl.celestweave.wheel.sound", EquipmentSoundScreen::open), HUD_GAP, shift);
     }
 
     private static WheelMenuModel menu() {
@@ -70,7 +57,7 @@ public class CelestweaveWheelScreen extends WheelScreen {
                     .highlightColor(HIGHLIGHT_COLOR)
                     .build());
         for (int piece : PIECE) {
-            String label = StatCollector.translateToLocal("item.gtnl.celestweave.radial.piece." + piece);
+            String label = StatCollector.translateToLocal("item.gtnl.celestweave.wheel.piece." + piece);
             builder.entry(
                 WheelEntry
                     .action(
@@ -93,10 +80,20 @@ public class CelestweaveWheelScreen extends WheelScreen {
         ScienceNotLeisure.network.sendToServer(new CelestweaveKeyPacket(CelestweaveKeyPacket.OPEN_PIECE, piece));
     }
 
-    private void openHudEditor() {
-        if (leaving) return;
-        leaving = true;
-        HudEditor.open();
+    private ButtonWidget<?> button(String lang, Runnable open) {
+        return new ButtonWidget<>().size(HUD_WIDTH, HUD_HEIGHT)
+            .disableThemeBackground(true)
+            .disableHoverThemeBackground(true)
+            .background(new Rectangle().setColor(HUD_COLOR))
+            .hoverBackground(new Rectangle().setColor(HUD_HOVER_COLOR))
+            .overlay(
+                IKey.str(StatCollector.translateToLocal(lang))
+                    .color(TEXT_COLOR)
+                    .shadow(true))
+            .onMousePressed(button -> {
+                openNext(open);
+                return true;
+            });
     }
 
     @Override

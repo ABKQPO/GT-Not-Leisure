@@ -76,6 +76,16 @@ public class WheelWidget extends Widget<WheelWidget> implements Interactable {
     private ModularGuiContext drawContext;
     private WidgetTheme drawTheme;
 
+    public static float slotAngle(int index, int count) {
+        return FxAngle.TAU * index / count;
+    }
+
+    public static int slotAt(float angle, int count) {
+        if (count <= 0) return -1;
+        float step = FxAngle.TAU / count;
+        return (int) Math.floor(FxAngle.normalizePositive(angle + step / 2) / step) % count;
+    }
+
     public WheelWidget(WheelMenuModel model, WheelOpenMode openMode) {
         this.navigator = new WheelNavigator(model, openMode);
         this.style = model.style();
@@ -249,13 +259,13 @@ public class WheelWidget extends Widget<WheelWidget> implements Interactable {
             return;
         }
         mouseAngle = FxAngle.angleOf(dx, dy);
-        int index = WheelGeometry.slotAt(mouseAngle, navigator.slotCount());
+        int index = slotAt(mouseAngle, navigator.slotCount());
         setSelected(navigator.isSelectable(index) ? index : -1);
     }
 
     private void setSelected(int index) {
         if (selected == index) return;
-        if (selected < 0 && index >= 0) highlightAngle = WheelGeometry.slotAngle(index, navigator.slotCount());
+        if (selected < 0 && index >= 0) highlightAngle = slotAngle(index, navigator.slotCount());
         selected = index;
         selectedSince = frameTime;
     }
@@ -327,7 +337,7 @@ public class WheelWidget extends Widget<WheelWidget> implements Interactable {
 
     private void renderHighlight(float p) {
         int slots = navigator.slotCount();
-        float target = WheelGeometry.slotAngle(selected, slots);
+        float target = slotAngle(selected, slots);
         float frames = Math.min(MAX_FRAME_STEPS, (frameTime - lastFrameTime) / FRAME_MS);
         float follow = 1 - (float) Math.pow(1 - 1 / style.highlightLag, frames);
         highlightAngle = FxAngle
@@ -364,7 +374,7 @@ public class WheelWidget extends Widget<WheelWidget> implements Interactable {
             IDrawable icon = navigator.entry(i)
                 .icon();
             if (icon == null) continue;
-            float angle = WheelGeometry.slotAngle(i, slots);
+            float angle = slotAngle(i, slots);
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             GL11.glColor4f(1, 1, 1, 1);
             GL11.glPushMatrix();

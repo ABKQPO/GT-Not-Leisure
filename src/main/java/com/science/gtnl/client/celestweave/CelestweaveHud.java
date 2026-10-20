@@ -9,11 +9,13 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import org.lwjgl.opengl.GL11;
 
+import com.science.gtnl.client.celestweave.CelestweaveClientEvents.HitOrigin;
 import com.science.gtnl.client.fx.FxColor;
 import com.science.gtnl.client.fx.FxEasing;
 import com.science.gtnl.client.hud.HudEditor;
@@ -24,6 +26,7 @@ import com.science.gtnl.common.celestweave.CelestweaveEnergy;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
+import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.Utils;
@@ -41,7 +44,7 @@ public class CelestweaveHud {
         DIM_RGB = 0x9FB0BE;
     private static final float LOW = 0.15F, SMALL = 0.75F, CORE_RADIUS = 8F, RING_INNER = 13F, RING_OUTER = 16.5F,
         DASH_RADIUS = 21F, DASH_SPAN = 50F, LADDER_HALF = 36F, LADDER_SCALE = 3F, PREVIEW_FRACTION = 0.7F;
-    private static final double PREVIEW_STORED = 7_000_000;
+    private static final double PREVIEW_STORED = 7_000_000, RING_AIM_MIN_DISTANCE_SQ = 0.16;
     private static final long PREVIEW_DASH_AGE = 600, PREVIEW_DASH_LIFETIME = 1000;
     private static final float[] PREVIEW_PIECES = { 0.9F, 0.7F, 0.6F, 0.5F };
     private static final float[] CORE = polygon(CORE_RADIUS, 0), CORE_INNER = polygon(CORE_RADIUS - 1.2F, 0),
@@ -52,12 +55,12 @@ public class CelestweaveHud {
         landedAt = CelestweaveClientState.NEVER;
     private static int hitLifetime = HIT_LIFETIME, signature, wornMask = -1, historySize, historyHead;
     private static boolean save, omni, flying, signed;
-    private static float hitX, hitZ, climb, rate;
+    private static HitOrigin hitOrigin = new HitOrigin(0, 0, 0);
+    private static float climb, rate;
     private static double lastSeen = Double.NaN;
 
-    static void hit(float x, float z, boolean saved, boolean ambient) {
-        hitX = x;
-        hitZ = z;
+    static void hit(HitOrigin origin, boolean saved, boolean ambient) {
+        hitOrigin = origin;
         save = saved;
         omni = ambient;
         hitLifetime = saved ? SAVE_LIFETIME : HIT_LIFETIME;
@@ -73,7 +76,7 @@ public class CelestweaveHud {
 
     @SubscribeEvent
     public void overlay(RenderGameOverlayEvent.Post event) {
-        if (event.type != RenderGameOverlayEvent.ElementType.ALL || !MainConfig.client.enableCelestweaveHud) return;
+        if (event.type != RenderGameOverlayEvent.ElementType.ALL || !HudLayout.enabled()) return;
         Minecraft minecraft = Minecraft.getMinecraft();
         EntityPlayer player = minecraft.thePlayer;
         if (player == null || minecraft.renderViewEntity != player
@@ -233,9 +236,13 @@ public class CelestweaveHud {
 
     private static void readout(FontRenderer font, float fraction, double stored, float[] pieces, int rgb,
         int glowColor, float slide) {
-        String percent = Math.round(fraction * 100) + "%", energy = Utils.shortFormat((long) stored) + " EU";
+        String percent = Math.round(fraction * 100) + "%";
+        String energy = StatCollector
+            .translateToLocalFormatted("item.gtnl.celestweave.hud.energy", Utils.shortFormat((long) stored));
         String flow = Math.abs(rate) < 0.5F ? ""
-            : (rate > 0 ? "-" : "+") + Utils.shortFormat(Math.round(Math.abs(rate))) + "/t";
+            : StatCollector.translateToLocalFormatted(
+                "item.gtnl.celestweave.hud.rate",
+                (rate > 0 ? "-" : "+") + Utils.shortFormat(Math.round(Math.abs(rate))));
         String eta = rate >= 0.5F ? duration(stored / rate / 20) : "";
         int split = font.getStringWidth(percent) + 4;
         float second = 19 + (font.getStringWidth(flow) + (eta.isEmpty() ? 0 : font.getStringWidth(eta) + 6)) * SMALL;
@@ -266,9 +273,10 @@ public class CelestweaveHud {
         if (age < 0 || age >= hitLifetime) return;
         float progress = age / (float) hitLifetime;
         float envelope = Math.min(1F, age / 60F) * (1 - progress) * (1 - progress);
-        double dx = hitX - player.posX, dz = hitZ - player.posZ, yaw = Math.toRadians(player.rotationYaw);
-        double forward = dx * -Math.sin(yaw) + dz * Math.cos(yaw), lateral = dx * -Math.cos(yaw) + dz * -Math.sin(yaw);
-        boolean directional = !save && !omni && forward * forward + lateral * lateral > 0.16;
+        EquipmentVec offset = hitOrigin.offset(player, 0);
+        double forward = HitOrigin.forward(offset, player.rotationYaw),
+            lateral = HitOrigin.lateral(offset, player.rotationYaw);
+        boolean directional = !save && !omni && forward * forward + lateral * lateral > RING_AIM_MIN_DISTANCE_SQ;
         shield(glowColor, progress, envelope, directional, Math.atan2(lateral, forward), save);
     }
 
@@ -345,7 +353,8 @@ public class CelestweaveHud {
             MathHelper.floor_double(feet),
             MathHelper.floor_double(player.posZ));
         int bright = FxColor.mixWhite(glowColor, 0.4F);
-        String altitude = "Y " + (int) Math.floor(feet);
+        String altitude = StatCollector
+            .translateToLocalFormatted("item.gtnl.celestweave.hud.altitude", (int) Math.floor(feet));
         float label = -8 - font.getStringWidth(altitude);
         double span = LADDER_HALF / LADDER_SCALE;
         Tessellator tessellator = Tessellator.instance;
@@ -379,15 +388,25 @@ public class CelestweaveHud {
         }
         tessellator.draw();
         text(font, altitude, label, -4, 0xFFFFFF, alpha);
-        String height = ground == Integer.MIN_VALUE ? "--" : String.format(Locale.ROOT, "%.1f", feet - ground);
-        small(font, "H " + height, label, 8, DIM_RGB, alpha);
+        String height = ground == Integer.MIN_VALUE
+            ? StatCollector.translateToLocal("item.gtnl.celestweave.hud.no_ground")
+            : String.format(Locale.ROOT, "%.1f", feet - ground);
+        small(
+            font,
+            StatCollector.translateToLocalFormatted("item.gtnl.celestweave.hud.height", height),
+            label,
+            8,
+            DIM_RGB,
+            alpha);
         for (long mark = (long) Math.ceil((feet - span) / 10) * 10; mark <= feet + span; mark += 10) {
             float y = (float) (-(mark - feet) * LADDER_SCALE), edge = Math.abs(y) / LADDER_HALF;
             if (edge < 0.85F && Math.abs(y) > 7)
                 small(font, String.valueOf(mark), 8, y - 3, DIM_RGB, alpha * (1 - edge));
         }
         if (legs != null) {
-            String level = "Lv" + CelestweaveModuleSetting.FLIGHT_SPEED.get(legs);
+            String level = StatCollector.translateToLocalFormatted(
+                "item.gtnl.celestweave.hud.level",
+                CelestweaveModuleSetting.FLIGHT_SPEED.get(legs));
             text(font, level, -font.getStringWidth(level) / 2F, -LADDER_HALF - 10, bright, alpha);
         }
         String speed = String.format(Locale.ROOT, "%.1f", Math.abs(climb));
@@ -434,7 +453,7 @@ public class CelestweaveHud {
     static String duration(double seconds) {
         if (!Double.isFinite(seconds) || seconds < 0) return "";
         long total = Math.round(seconds);
-        if (total >= 360000) return ">99h";
+        if (total >= 360000) return StatCollector.translateToLocal("item.gtnl.celestweave.hud.duration_capped");
         if (total >= 3600) return String.format(Locale.ROOT, "%d:%02d:%02d", total / 3600, total / 60 % 60, total % 60);
         return String.format(Locale.ROOT, "%d:%02d", total / 60, total % 60);
     }

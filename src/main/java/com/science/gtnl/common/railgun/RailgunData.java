@@ -11,15 +11,21 @@ import net.minecraft.nbt.NBTTagList;
 
 import com.google.common.collect.MapMaker;
 import com.science.gtnl.common.equipment.EquipmentModules;
+import com.science.gtnl.common.equipment.EquipmentTag;
 import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.config.MainConfig;
 
 public class RailgunData {
 
+    public static final String ROOT = "Railgun";
     public static final String MODULES = "Modules";
     public static final int MODULE_SLOTS = 8;
     public static final int FULL_CHARGE_UNITS = RailgunChargeTier.EHV3.chargeTicks;
     public static final double RATE_EPSILON = 1.0E-6;
+    public static final int CHARGE_RESUME_GRACE_TICKS = 6;
+    public static final int BEAM_RANGE = 64;
+    public static final EquipmentModules.Storage MODULE_STORAGE = EquipmentModules
+        .storage(RailgunData::moduleList, RailgunData::moduleStacks, RailgunData::writeModuleStacks);
     private static final Modules NO_MODULES = new Modules(Collections.emptyMap(), 0);
     private static final Map<NBTTagList, Modules> CACHE = new MapMaker().weakKeys()
         .makeMap();
@@ -33,21 +39,23 @@ public class RailgunData {
 
     public static double chargeRate(ItemStack stack) {
         double bonus = Math.max(0, Math.min(1, MainConfig.item.railgun.accelerationBonus));
-        return 1 + bonus * modules(stack).count(RailgunModuleType.ACCELERATION);
+        return 1 + bonus * modules(stack).count(RailgunModule.ACCELERATION);
     }
 
     public static int units(long ticks, double rate) {
         return (int) Math.floor(Math.max(0, ticks) * rate + RATE_EPSILON);
     }
 
+    public static NBTTagCompound root(ItemStack stack) {
+        return EquipmentTag.child(stack, ROOT);
+    }
+
     public static NBTTagCompound rootForWrite(ItemStack stack) {
-        if (stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
-        return stack.getTagCompound();
+        return EquipmentTag.childForWrite(stack, ROOT);
     }
 
     public static NBTTagList moduleList(ItemStack stack) {
-        return stack.hasTagCompound() ? stack.getTagCompound()
-            .getTagList(MODULES, 10) : new NBTTagList();
+        return root(stack).getTagList(MODULES, 10);
     }
 
     public static ItemStack[] moduleStacks(ItemStack stack) {
@@ -59,15 +67,15 @@ public class RailgunData {
     }
 
     public static Modules modules(ItemStack stack) {
-        NBTTagCompound tag = stack.getTagCompound();
-        if (tag == null || !tag.hasKey(MODULES, 9)) return NO_MODULES;
-        NBTTagList list = tag.getTagList(MODULES, 10);
+        NBTTagCompound root = root(stack);
+        if (!root.hasKey(MODULES, 9)) return NO_MODULES;
+        NBTTagList list = root.getTagList(MODULES, 10);
         Modules cached = CACHE.get(list);
         if (cached != null) return cached;
         ItemStack[] stacks = moduleStacks(stack);
-        Map<RailgunModuleType, Integer> counts = new EnumMap<>(RailgunModuleType.class);
+        Map<RailgunModule, Integer> counts = new EnumMap<>(RailgunModule.class);
         for (ItemStack module : stacks) {
-            RailgunModuleType type = RailgunModuleType.of(module);
+            RailgunModule type = RailgunModule.of(module);
             if (type != null) counts.put(type, Math.min(type.limit, counts.getOrDefault(type, 0) + 1));
         }
         Modules result = new Modules(Collections.unmodifiableMap(counts), EquipmentModules.energyTier(stacks));
@@ -75,9 +83,9 @@ public class RailgunData {
         return result;
     }
 
-    public record Modules(Map<RailgunModuleType, Integer> counts, int energyTier) {
+    public record Modules(Map<RailgunModule, Integer> counts, int energyTier) {
 
-        public int count(RailgunModuleType type) {
+        public int count(RailgunModule type) {
             return counts.getOrDefault(type, 0);
         }
 

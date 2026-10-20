@@ -2,10 +2,8 @@ package com.science.gtnl.common.gui.equipment;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
@@ -13,7 +11,6 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagList;
 
 import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.api.drawable.IKey;
@@ -34,17 +31,15 @@ import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.celestweave.CelestweaveBackpack;
+import com.science.gtnl.common.celestweave.CelestweaveBackpackData;
 import com.science.gtnl.common.celestweave.CelestweaveCosmeticOption;
 import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.celestweave.CelestweaveEnergy;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
-import com.science.gtnl.common.celestweave.CelestweaveSettings;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveKeyPacket;
-
-import gregtech.api.modularui2.GTGuiTextures;
 
 public class CelestweaveGui extends EquipmentGui {
 
@@ -75,15 +70,13 @@ public class CelestweaveGui extends EquipmentGui {
 
     @Override
     public ModularPanel build() {
-        ModularPanel panel = panel("celestweave_armor", 288);
+        ModularPanel panel = panel("celestweave_armor", CONTENT_Y + PAGE_HEIGHT);
         modules = new ModuleHandler();
         boolean backpackButton = piece == CelestweaveArmor.CHEST
             && CelestweaveData.isArmorSlot(data.getPlayer(), data.getSlotIndex());
         title(panel, stack.getUnlocalizedName() + ".name", backpackButton ? 106 : 160);
         if (backpackButton) panel.child(
-            new ButtonWidget<>().pos(116, 3)
-                .size(52, 13)
-                .background(GTGuiTextures.BUTTON_STANDARD)
+            standardButton(116, 3, 52, 13)
                 .overlay(
                     IKey.dynamic(
                         () -> (installed(CelestweaveModule.BACKPACK) ? "" : "§8")
@@ -119,9 +112,7 @@ public class CelestweaveGui extends EquipmentGui {
         for (int i = 0; i < PAGES.length; i++) {
             final int index = i;
             panel.child(
-                new ButtonWidget<>().pos(8 + i * 54, 66)
-                    .size(52, 14)
-                    .background(GTGuiTextures.BUTTON_STANDARD)
+                standardButton(8 + i * 54, 66, 52, 14)
                     .overlay(
                         IKey.dynamic(
                             () -> (page == index ? "§e" : "§7") + tr("item.gtnl.celestweave.gui.page." + PAGES[index])))
@@ -134,7 +125,7 @@ public class CelestweaveGui extends EquipmentGui {
         buildModulePage(panel);
         buildSettingsPage(panel);
         buildAppearancePage(panel);
-        panel.bindPlayerInventory();
+        bindFooter(panel);
         return panel;
     }
 
@@ -169,8 +160,8 @@ public class CelestweaveGui extends EquipmentGui {
 
     private void setModuleState(CelestweaveModule module, int state) {
         ItemStack armor = bound();
-        boolean changed = CelestweaveSettings.setEnabled(armor, module, (state & ACTIVE) != 0);
-        changed |= CelestweaveSettings.setShown(armor, module, (state & SHOWN) != 0);
+        boolean changed = CelestweaveData.setEnabled(armor, module, (state & ACTIVE) != 0);
+        changed |= CelestweaveData.setShown(armor, module, (state & SHOWN) != 0);
         if (changed) changed();
     }
 
@@ -188,9 +179,7 @@ public class CelestweaveGui extends EquipmentGui {
             sync.syncValue("module_" + module.id, state);
             states.put(module, state);
             panel.child(
-                new ButtonWidget<>().pos(8 + (row % 2) * 81, CONTENT_Y + (row / 2) * 16)
-                    .size(79, 14)
-                    .background(GTGuiTextures.BUTTON_STANDARD)
+                standardButton(8 + (row % 2) * 81, CONTENT_Y + (row / 2) * 16, 79, 14)
                     .overlay(IKey.dynamic(() -> moduleLabel(module, state.getIntValue())))
                     .tooltipBuilder(tooltip -> {
                         tooltip.addLine(IKey.lang("item.gtnl.celestweave_module." + module.id + ".name"));
@@ -258,14 +247,14 @@ public class CelestweaveGui extends EquipmentGui {
                 0,
                 160,
                 () -> setting.on(bound()),
-                enabled -> { if (CelestweaveSettings.setValue(bound(), setting, enabled ? 1F : 0F)) changed(); },
+                enabled -> { if (CelestweaveData.setValue(bound(), setting, enabled ? 1F : 0F)) changed(); },
                 () -> installed(module),
                 null);
             return row;
         }
         IntSyncValue value = new IntSyncValue(
             () -> setting.get(bound()),
-            v -> { if (CelestweaveSettings.setValue(bound(), setting, v)) changed(); }).allowC2S();
+            v -> { if (CelestweaveData.setValue(bound(), setting, v)) changed(); }).allowC2S();
         sync.syncValue(syncKey, value);
         stepper(
             row,
@@ -279,10 +268,7 @@ public class CelestweaveGui extends EquipmentGui {
     }
 
     private static ButtonWidget<?> stepButton(int x, String label, Runnable action) {
-        return new ButtonWidget<>().pos(x, 0)
-            .size(16, 14)
-            .background(GTGuiTextures.BUTTON_STANDARD)
-            .overlay(IKey.str(label))
+        return standardButton(x, 0, 16, 14).overlay(IKey.str(label))
             .onMousePressed(mouse -> {
                 if (mouse != 0) return false;
                 action.run();
@@ -311,7 +297,7 @@ public class CelestweaveGui extends EquipmentGui {
             () -> Math.round(
                 CelestweaveData.cosmetic(bound())
                     .get(option) * scale),
-            v -> { if (CelestweaveSettings.setCosmetic(bound(), option, v / scale)) changed(); }).allowC2S();
+            v -> { if (CelestweaveData.setCosmetic(bound(), option, v / scale)) changed(); }).allowC2S();
         sync.syncValue("cosmetic_" + option.key, value);
         return value;
     }
@@ -443,8 +429,7 @@ public class CelestweaveGui extends EquipmentGui {
                 enabled -> {
                     int mask = CelestweaveData.cosmetic(bound())
                         .getInt(option);
-                    if (CelestweaveSettings.setCosmetic(bound(), option, enabled ? mask | flag : mask & ~flag))
-                        changed();
+                    if (CelestweaveData.setCosmetic(bound(), option, enabled ? mask | flag : mask & ~flag)) changed();
                 },
                 () -> true,
                 key + ".tooltip");
@@ -482,43 +467,34 @@ public class CelestweaveGui extends EquipmentGui {
         }
     }
 
-    private class ModuleHandler extends ModuleSlots {
+    private class ModuleHandler extends ModuleSlots<CelestweaveModule> {
 
         private final BareView view = new BareView(CelestweaveData.MODULE_SLOTS, CelestweaveBackpack::strip);
 
         ModuleHandler() {
-            super(CelestweaveData.MODULE_SLOTS);
-        }
-
-        @Override
-        protected NBTTagList tag(ItemStack host) {
-            return CelestweaveData.root(host)
-                .getTagList(CelestweaveData.MODULES, 10);
+            super(CelestweaveData.MODULE_SLOTS, CelestweaveData.MODULE_STORAGE, CelestweaveModule::of);
         }
 
         @Override
         protected ItemStack[] load(ItemStack host) {
-            ItemStack[] loaded = CelestweaveData.moduleStacks(host);
-            if (!client) for (int i = 0; i < loaded.length; i++) loaded[i] = CelestweaveBackpack.restore(loaded[i]);
+            ItemStack[] loaded = super.load(host);
+            if (client) return loaded;
+            CelestweaveBackpackData data = CelestweaveBackpackData.get();
+            for (int i = 0; i < loaded.length; i++) loaded[i] = CelestweaveBackpack.restore(loaded[i], data);
             return loaded;
         }
 
         @Override
         protected void save(ItemStack host, ItemStack[] out) {
-            Set<String> before = new HashSet<>();
-            if (!client) for (ItemStack module : CelestweaveData.moduleStacks(host))
-                before.add(CelestweaveBackpack.heldId(module));
-            for (int i = 0; i < out.length; i++)
-                out[i] = client ? CelestweaveBackpack.strip(out[i]) : CelestweaveBackpack.store(out[i]);
-            CelestweaveData.writeModuleStacks(host, out);
-            if (client) return;
-            for (ItemStack module : out) before.remove(CelestweaveBackpack.heldId(module));
-            for (String id : before) CelestweaveBackpack.discard(id);
+            if (client) for (int i = 0; i < out.length; i++) out[i] = CelestweaveBackpack.strip(out[i]);
+            else out = CelestweaveBackpack
+                .persist(CelestweaveData.moduleStacks(host), out, CelestweaveBackpackData.get());
+            super.save(host, out);
         }
 
         @Override
-        protected Object type(ItemStack candidate) {
-            CelestweaveModule module = CelestweaveModule.of(candidate);
+        protected CelestweaveModule type(ItemStack candidate) {
+            CelestweaveModule module = super.type(candidate);
             return module != null && module.fits(piece) ? module : null;
         }
 

@@ -18,7 +18,7 @@ import net.minecraft.world.WorldServer;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
-import com.science.gtnl.common.equipment.EquipmentMessages;
+import com.science.gtnl.common.equipment.EquipmentNet;
 import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.packet.RailgunChargeCapPacket;
@@ -29,6 +29,15 @@ import com.science.gtnl.common.railgun.RailgunChainResolver.Kind;
 import com.science.gtnl.config.MainConfig;
 
 public class RailgunFireService {
+
+    private static final int CHARGED_RANGE = 64;
+    private static final double PENETRATION_DESTROY_HARDNESS = 25;
+    private static final double PENETRATION_DESTROY_RADIUS = 3;
+    private static final int PENETRATION_MAX_TARGETS = 5;
+    private static final double[] PULSE_DAMAGE_RATIOS = { 0.6, 0.85, 1 };
+    private static final int PULSE_RADIUS = 10;
+    private static final double RECOIL_AIRBORNE_MUL = 1.5;
+    private static final double RECOIL_CROUCH_MUL = 0.5;
 
     public static final String RECOIL_GRACE = "gtnl.railgunRecoilGrace";
     private static final int RECOIL_GRACE_TICKS = 60;
@@ -59,7 +68,7 @@ public class RailgunFireService {
         }
 
         private boolean live(long now) {
-            return now - lastActiveTick <= RailgunDefaults.CHARGE_RESUME_GRACE_TICKS;
+            return now - lastActiveTick <= RailgunData.CHARGE_RESUME_GRACE_TICKS;
         }
 
         private int units(long now) {
@@ -108,8 +117,8 @@ public class RailgunFireService {
         if (session == null || session.stack != stack) return;
         long now = now(player);
         session.lastActiveTick = now;
-        if (session.capped()) return;
-        double energy = RailgunEnergy.available(player, stack);
+        if (session.capped() || EquipmentEnergy.free(player)) return;
+        double energy = RailgunEnergy.available(stack);
         if (energy >= totalCostUpTo(session.units(now), session.rate)) return;
         RailgunNet
             .sendAround(player, new RailgunChargeCapPacket(player.getEntityId(), session.capAtAffordable(now, energy)));
@@ -184,7 +193,7 @@ public class RailgunFireService {
     }
 
     public static void noEnergy(EntityPlayerMP player) {
-        EquipmentMessages.hotbar(player, "item.gtnl.railgun.fail.no_eu");
+        EquipmentNet.hotbar(player, "item.gtnl.railgun.fail.no_eu");
     }
 
     public static void fireCharged(WorldServer world, EntityPlayerMP player, ItemStack stack, RailgunChargeTier tier) {
@@ -192,8 +201,7 @@ public class RailgunFireService {
         boolean players = RailgunSetting.PVP.active(stack), chain = RailgunSetting.CHAIN.active(stack);
         boolean max = tier == RailgunChargeTier.EHV3;
         EquipmentVec from = EquipmentVec.eye(player);
-        double range = RailgunRaycast
-            .effectiveRange(RailgunDefaults.CHARGED_RANGE, modules.count(RailgunModuleType.RANGE));
+        double range = RailgunRaycast.effectiveRange(CHARGED_RANGE, modules.count(RailgunModule.RANGE));
         var trace = RailgunRaycast.traceFirst(
             world,
             player,
@@ -212,23 +220,20 @@ public class RailgunFireService {
             .entity() instanceof EntityLivingBase living ? living : null;
         int primaryId = primary == null ? -1 : primary.getEntityId();
         List<Hit> hits = new ArrayList<>();
-        int compute = modules.count(RailgunModuleType.COMPUTE);
-        double pulseRadius = max ? RailgunDefaults.PULSE_RADIUS + 1.5 * compute : 0;
+        int compute = modules.count(RailgunModule.COMPUTE);
+        double pulseRadius = max ? PULSE_RADIUS + 1.5 * compute : 0;
         if (primary != null) {
             hits.add(Hit.primary(primary, context.firstDamage()));
             if (chain) hits.addAll(RailgunChainResolver.chainFrom(world, player, primary, context, Set.of(), null));
             if (max) {
-                hits.addAll(
-                    RailgunChainResolver
-                        .penetration(world, player, primary, context, RailgunDefaults.PENETRATION_MAX_TARGETS));
+                hits.addAll(RailgunChainResolver.penetration(world, player, primary, context, PENETRATION_MAX_TARGETS));
                 hits.addAll(
                     RailgunChainResolver.pulse(
                         world,
                         player,
                         EquipmentVec.pos(primary),
                         pulseRadius,
-                        RailgunDefaults.PULSE_DAMAGE_RATIOS[Math
-                            .min(compute, RailgunDefaults.PULSE_DAMAGE_RATIOS.length - 1)],
+                        PULSE_DAMAGE_RATIOS[Math.min(compute, PULSE_DAMAGE_RATIOS.length - 1)],
                         context,
                         primaryId));
             }
@@ -273,8 +278,8 @@ public class RailgunFireService {
             for (var hit : hits) if (hit.kind() == Kind.PENETRATION) RailgunTerrainService.queueSphere(
                 world,
                 EquipmentVec.pos(hit.target()),
-                RailgunDefaults.PENETRATION_DESTROY_RADIUS,
-                RailgunDefaults.PENETRATION_DESTROY_HARDNESS,
+                PENETRATION_DESTROY_RADIUS,
+                PENETRATION_DESTROY_HARDNESS,
                 player);
         }
         applyRecoil(player, tier);
@@ -292,9 +297,9 @@ public class RailgunFireService {
 
     private static void applyRecoil(EntityPlayerMP player, RailgunChargeTier tier) {
         boolean crouching = player.isSneaking();
-        double speed = tier.recoilSpeed * (crouching ? RailgunDefaults.RECOIL_CROUCH_MUL : 1)
-            * (player.onGround ? 1 : RailgunDefaults.RECOIL_AIRBORNE_MUL);
-        float pitch = tier.recoilPitch * (crouching ? (float) RailgunDefaults.RECOIL_CROUCH_MUL : 1);
+        double speed = tier.recoilSpeed * (crouching ? RECOIL_CROUCH_MUL : 1)
+            * (player.onGround ? 1 : RECOIL_AIRBORNE_MUL);
+        float pitch = tier.recoilPitch * (crouching ? (float) RECOIL_CROUCH_MUL : 1);
         EquipmentVec back = EquipmentVec.look(player)
             .scale(-1);
         EquipmentVec behind = EquipmentVec.pos(player)

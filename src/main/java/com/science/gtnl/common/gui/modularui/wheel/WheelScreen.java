@@ -31,6 +31,7 @@ public class WheelScreen extends ModularScreen {
 
     private final WheelWidget widget;
     private final List<Widget<?>> extras = new ArrayList<>();
+    private Runnable next;
 
     protected WheelScreen(WheelMenuModel model, WheelOpenMode openMode, KeyBinding holdKey) {
         this(new WheelWidget(model, openMode), holdKey);
@@ -81,7 +82,11 @@ public class WheelScreen extends ModularScreen {
     }
 
     public WheelScreen below(Widget<?> extra, int offset) {
-        extra.leftRel(0.5F)
+        return below(extra, offset, 0);
+    }
+
+    public WheelScreen below(Widget<?> extra, int offset, int shift) {
+        extra.leftRelOffset(0.5F, shift)
             .topRel(this::belowWheel, offset, 0)
             .setEnabledIf(w -> widget.progress() > 0);
         extras.add(extra);
@@ -112,6 +117,17 @@ public class WheelScreen extends ModularScreen {
 
     public void closeIfFinished() {
         if (widget.isFinished() && isActive()) close();
+    }
+
+    public void openNext(Runnable open) {
+        if (next == null) next = open;
+    }
+
+    private void afterFrame() {
+        Runnable open = next;
+        next = null;
+        if (open != null) open.run();
+        else closeIfFinished();
     }
 
     @Override
@@ -149,7 +165,7 @@ public class WheelScreen extends ModularScreen {
         @SubscribeEvent
         public void afterFrame(TickEvent.RenderTickEvent event) {
             if (event.phase == TickEvent.Phase.END && Minecraft.getMinecraft().currentScreen instanceof IMuiScreen mui
-                && mui.getScreen() instanceof WheelScreen wheel) wheel.closeIfFinished();
+                && mui.getScreen() instanceof WheelScreen wheel) wheel.afterFrame();
         }
     }
 }

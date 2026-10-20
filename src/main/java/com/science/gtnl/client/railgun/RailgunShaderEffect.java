@@ -5,6 +5,10 @@ import net.minecraft.util.ResourceLocation;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.shader.ShaderEffect;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class RailgunShaderEffect extends ShaderEffect {
 
     private static final String SHADER_ROOT = "shaders/railgun/";
