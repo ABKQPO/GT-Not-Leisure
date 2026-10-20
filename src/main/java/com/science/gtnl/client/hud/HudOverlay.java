@@ -6,7 +6,9 @@ import net.minecraftforge.common.MinecraftForge;
 
 import com.science.gtnl.client.hud.HudLayout.Placement;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -16,7 +18,11 @@ public class HudOverlay {
     private HudOverlay() {}
 
     public static void register() {
-        MinecraftForge.EVENT_BUS.register(new HudOverlay());
+        HudOverlay overlay = new HudOverlay();
+        MinecraftForge.EVENT_BUS.register(overlay);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(overlay);
     }
 
     @SubscribeEvent
@@ -30,5 +36,10 @@ public class HudOverlay {
             if (place == null) continue;
             element.render(place, event.partialTicks);
         }
+    }
+
+    @SubscribeEvent
+    public void afterFrame(TickEvent.RenderTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) HudEditor.openPending();
     }
 }

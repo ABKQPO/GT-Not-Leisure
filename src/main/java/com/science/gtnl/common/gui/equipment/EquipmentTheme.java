@@ -12,7 +12,8 @@ import com.cleanroommc.modularui.utils.JsonBuilder;
 import com.cleanroommc.modularui.utils.JsonHelper;
 import com.google.gson.JsonObject;
 import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
-import com.science.gtnl.client.hud.HudEditor;
+import com.science.gtnl.client.hud.HudColor;
+import com.science.gtnl.common.gui.modularui.layout.LayoutTheme;
 import com.science.gtnl.common.gui.modularui.theme.LivePalette;
 import com.science.gtnl.common.gui.modularui.theme.PaletteThemes;
 import com.science.gtnl.common.gui.modularui.theme.ThemePalette;
@@ -30,7 +31,7 @@ public class EquipmentTheme {
         BUTTON = 0x9614141E, BUTTON_HOVER = 0xA0FF3D9A, TAB_HOVER = 0x50FF3D9A, WELL = 0x80000000,
         WELL_EDGE = 0xFF3A3640, SLOT_HOVER = 0x50FF3D9A, TRACK = 0xFF1A1420, SWITCH_OFF = 0xFF3A3640, KNOB = 0xFFF2EEF4,
         KNOB_OFF = 0xFF8C8794, TEXT_ON = 0xFFF4F0F6, TEXT_DIM = 0xFF6E6876, TEXT_OFF = 0xFF9A94A2, CURSOR = 0xFFFFE6F1,
-        CURSOR_TEXT = 0xFF4A0A2A, TICK = 0x40FFFFFF, MILESTONE = 0x99FFFFFF;
+        CURSOR_TEXT = 0xFF4A0A2A, TICK = 0x40FFFFFF, MILESTONE = 0x99FFFFFF, DANGER = 0xFFE5484D;
     public static final ThemePalette PALETTE = new ThemePalette(
         ACCENT,
         ACCENT_DIM,
@@ -57,7 +58,8 @@ public class EquipmentTheme {
         CURSOR,
         CURSOR_TEXT,
         TICK,
-        MILESTONE);
+        MILESTONE,
+        DANGER);
     public static final WidgetThemeKey<Colors> COLORS = registerColors(new Colors(PALETTE));
     public static final LivePalette LIVE = PaletteThemes
         .live(EquipmentTheme::selected, () -> MainConfig.client.enableEquipmentThemeGlowColor);
@@ -92,7 +94,13 @@ public class EquipmentTheme {
     }
 
     public static void shareWithHudEditor() {
-        HudEditor.colors(() -> colors().accentDim, () -> colors().accent);
+        HudColor.editor(() -> colors().accentDim, () -> colors().accent);
+    }
+
+    public static LayoutTheme layout() {
+        return LayoutTheme.of(
+            IThemeApi.get()
+                .getTheme(selected()));
     }
 
     public static Colors colors() {

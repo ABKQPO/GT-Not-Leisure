@@ -27,6 +27,12 @@ public class HudRegistry {
         return null;
     }
 
+    public static List<HudElement> candidates(boolean showAll) {
+        List<HudElement> candidates = new ArrayList<>();
+        for (HudElement element : ELEMENTS) if (showAll || element.isInUse()) candidates.add(element);
+        return candidates;
+    }
+
     public static void reserveCrosshair(BooleanSupplier inUse) {
         CROSSHAIR_USERS.add(inUse);
     }

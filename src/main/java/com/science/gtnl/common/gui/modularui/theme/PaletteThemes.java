@@ -17,8 +17,10 @@ import com.cleanroommc.modularui.drawable.Rectangle;
 import com.cleanroommc.modularui.theme.ReloadThemeEvent;
 import com.cleanroommc.modularui.theme.SelectableTheme;
 import com.cleanroommc.modularui.theme.ThemeBuilder;
+import com.cleanroommc.modularui.theme.WidgetThemeKey;
 import com.cleanroommc.modularui.utils.Color;
 import com.cleanroommc.modularui.utils.JsonBuilder;
+import com.science.gtnl.common.gui.modularui.layout.LayoutTheme;
 import com.science.gtnl.common.gui.modularui.widget.CardDrawable;
 import com.science.gtnl.common.gui.modularui.widget.FillBar;
 import com.science.gtnl.common.gui.modularui.widget.FrameDrawable;
@@ -173,8 +175,21 @@ public class PaletteThemes {
                     .knob(palette.knob(), palette.knobOff())
                     .text(palette.textOn(), palette.textDim(), palette.textOff()))
             .hoverBackground(SlideSwitch.Theme.KEY, new Rectangle().color(palette.hover()))
-            .widgetTheme(FillBar.Theme.KEY, new FillBar.Theme.Builder().colors(palette.track(), palette.accent()));
-        theme.mergeAdd(IThemeApi.CLOSE_BUTTON.getFullName(), new JsonBuilder().add(IThemeApi.BACKGROUND, "empty"));
+            .widgetTheme(FillBar.Theme.KEY, new FillBar.Theme.Builder().colors(palette.track(), palette.accent()))
+            .widgetTheme(LayoutTheme.KEY, new LayoutTheme.Builder().style(style))
+            .background(ButtonPurpose.PRIMARY.key, new Rectangle().color(palette.buttonHover()))
+            .hoverBackground(ButtonPurpose.PRIMARY.key, new Rectangle().color(palette.accent()))
+            .textColor(ButtonPurpose.PRIMARY.key, palette.selectedText())
+            .textHoverColor(ButtonPurpose.PRIMARY.key, palette.selectedText())
+            .textShadow(ButtonPurpose.PRIMARY.key, palette.selectedTextShadow())
+            .textHoverShadow(ButtonPurpose.PRIMARY.key, palette.selectedTextShadow())
+            .background(ButtonPurpose.DANGER.key, new Rectangle().color(palette.button()))
+            .hoverBackground(ButtonPurpose.DANGER.key, new Rectangle().color(palette.danger()))
+            .textColor(ButtonPurpose.DANGER.key, palette.danger())
+            .textHoverColor(ButtonPurpose.DANGER.key, palette.text())
+            .hoverBackground(ButtonPurpose.ICON.key, new Rectangle().color(palette.hover()));
+        for (WidgetThemeKey<?> key : new WidgetThemeKey<?>[] { IThemeApi.CLOSE_BUTTON, ButtonPurpose.ICON.key })
+            theme.mergeAdd(key.getFullName(), new JsonBuilder().add(IThemeApi.BACKGROUND, "empty"));
         theme.mergeAdd(
             IThemeApi.TOGGLE_BUTTON.getFullName(),
             new JsonBuilder().add(IThemeApi.SELECTED_TEXT_SHADOW, palette.selectedTextShadow()));

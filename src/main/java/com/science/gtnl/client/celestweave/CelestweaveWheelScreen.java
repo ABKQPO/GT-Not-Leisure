@@ -15,6 +15,11 @@ import com.science.gtnl.client.hud.HudEditor;
 import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.gui.equipment.EquipmentSoundScreen;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme;
+import com.science.gtnl.common.gui.modularui.layout.Layout;
+import com.science.gtnl.common.gui.modularui.layout.LayoutMath;
+import com.science.gtnl.common.gui.modularui.layout.LayoutTheme;
+import com.science.gtnl.common.gui.modularui.layout.Size;
+import com.science.gtnl.common.gui.modularui.theme.ButtonPurpose;
 import com.science.gtnl.common.gui.modularui.wheel.WheelEntry;
 import com.science.gtnl.common.gui.modularui.wheel.WheelMenuBuilder;
 import com.science.gtnl.common.gui.modularui.wheel.WheelMenuModel;
@@ -31,18 +36,25 @@ public class CelestweaveWheelScreen extends WheelScreen {
 
     private static final int[] PIECE = { 0, 1, 3, 2 };
     private static final int TITLE_GAP = 8;
-    private static final int HUD_WIDTH = 72, HUD_HEIGHT = 14, HUD_GAP = 22, BUTTON_SPACING = 4;
+    private static final int BUTTON_WIDTH = 72, BUTTON_GAP = 22;
+    private static final String HUD = "gtnl.hud.editor.open", SOUND = "item.gtnl.celestweave.wheel.sound";
 
     public CelestweaveWheelScreen(KeyBinding key) {
         super(menu(), WheelOpenMode.HOLD, key);
         useTheme(EquipmentTheme.selected());
         below(
-            IKey.str(StatCollector.translateToLocal("item.gtnl.celestweave.wheel.title"))
+            IKey.str(tr("item.gtnl.celestweave.wheel.title"))
                 .asWidget(),
             TITLE_GAP);
-        int shift = (HUD_WIDTH + BUTTON_SPACING) / 2;
-        below(button("gtnl.hud.editor.open", HudEditor::open), HUD_GAP, -shift);
-        below(button("item.gtnl.celestweave.wheel.sound", EquipmentSoundScreen::open), HUD_GAP, shift);
+        LayoutTheme style = EquipmentTheme.layout();
+        int width = Size
+            .content(
+                LayoutMath.widest(Layout.textWidth(tr(HUD), style), Layout.textWidth(tr(SOUND), style)),
+                style.padding)
+            .atLeast(BUTTON_WIDTH)
+            .resolve(0), shift = (width + style.spacingMedium) / 2;
+        below(button(HUD, HudEditor::open, width, style), BUTTON_GAP, -shift);
+        below(button(SOUND, EquipmentSoundScreen::open, width, style), BUTTON_GAP, shift);
     }
 
     private static WheelMenuModel menu() {
@@ -76,9 +88,14 @@ public class CelestweaveWheelScreen extends WheelScreen {
         ScienceNotLeisure.network.sendToServer(new CelestweaveKeyPacket(CelestweaveKeyPacket.OPEN_PIECE, piece));
     }
 
-    private ButtonWidget<?> button(String lang, Runnable open) {
-        return new ButtonWidget<>().size(HUD_WIDTH, HUD_HEIGHT)
-            .overlay(IKey.str(StatCollector.translateToLocal(lang)))
+    private static String tr(String lang) {
+        return StatCollector.translateToLocal(lang);
+    }
+
+    private ButtonWidget<?> button(String lang, Runnable open, int width, LayoutTheme style) {
+        return ButtonPurpose.NORMAL.apply(new ButtonWidget<>())
+            .size(width, style.buttonHeight)
+            .overlay(Layout.caption(IKey.str(tr(lang)), style))
             .onMousePressed(button -> {
                 openNext(open);
                 return true;

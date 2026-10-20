@@ -20,11 +20,13 @@ import com.cleanroommc.modularui.utils.Color;
 import com.cleanroommc.modularui.utils.JsonHelper;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.google.gson.JsonObject;
+import com.science.gtnl.common.gui.modularui.layout.LayoutTheme;
 import com.science.gtnl.utils.RenderUtils;
 
 public class SlideSwitch extends ButtonWidget<SlideSwitch> {
 
-    private static final int SWITCH_X = 3, SWITCH_WIDTH = 12, SWITCH_HEIGHT = 6, LABEL_X = 18, LABEL_Y = 1;
+    private static final int SWITCH_X = 3, SWITCH_WIDTH = 12, SWITCH_HEIGHT = 6, LABEL_X = 18, LABEL_Y = 1,
+        LABEL_END = 2;
 
     private BooleanSupplier on = () -> false, live = () -> true, available = () -> true;
     private IKey label = IKey.EMPTY;
@@ -59,6 +61,10 @@ public class SlideSwitch extends ButtonWidget<SlideSwitch> {
         return theme instanceof Theme colors ? colors : Theme.KEY.getDefaultValue();
     }
 
+    public static int widthFor(int textWidth) {
+        return LABEL_X + textWidth + LABEL_END;
+    }
+
     public static int trackColor(Theme colors, boolean on, boolean lit) {
         return !on ? colors.track : lit ? colors.trackOn : colors.trackDim;
     }
@@ -80,7 +86,7 @@ public class SlideSwitch extends ButtonWidget<SlideSwitch> {
             SWITCH_HEIGHT,
             SWITCH_HEIGHT,
             on ? colors.knob : colors.knobOff);
-        RenderUtils.drawTextLine(
+        RenderUtils.drawTextFitted(
             label.get(),
             LABEL_X,
             LABEL_Y,
@@ -88,7 +94,8 @@ public class SlideSwitch extends ButtonWidget<SlideSwitch> {
             height,
             Alignment.CenterLeft,
             textColor(colors, on, lit, open),
-            lit);
+            lit,
+            LayoutTheme.of(context.getTheme()).textScale);
     }
 
     public static class Theme extends WidgetTheme {

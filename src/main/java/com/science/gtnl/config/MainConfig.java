@@ -128,18 +128,6 @@ public class MainConfig {
         @RangeFloat(min = 0.5F, max = 3F)
         public float hudScale = 1F;
 
-        @Comment("Seconds without any event before the Celestweave HUD fades out")
-        @LangKey("gtnl.gui.config.general.client.celestweave_hud_idle_seconds")
-        @DefaultFloat(3F)
-        @RangeFloat(min = 0F, max = 60F)
-        public float celestweaveHudIdleSeconds = 3F;
-
-        @Comment("Opacity of the energy core while the Celestweave HUD is idle, 0 hides it")
-        @LangKey("gtnl.gui.config.general.client.celestweave_hud_idle_alpha")
-        @DefaultFloat(0.35F)
-        @RangeFloat(min = 0F, max = 1F)
-        public float celestweaveHudIdleAlpha = 0.35F;
-
         @Comment("Theme of the equipment screens: sound settings, Celestweave and Celestweave Lance settings and the Celestweave wheel; only registered themes can be chosen, an unknown id falls back to gtnl:equipment")
         @LangKey("gtnl.gui.config.general.client.equipment_theme")
         @DefaultString(EquipmentTheme.ID)

@@ -15,6 +15,7 @@ import com.science.gtnl.client.hud.HudEditor;
 import com.science.gtnl.client.hud.HudElement;
 import com.science.gtnl.client.hud.HudLayout.Placement;
 import com.science.gtnl.client.hud.HudRegistry;
+import com.science.gtnl.client.hud.HudTiming;
 import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
 import com.science.gtnl.common.railgun.RailgunData;
@@ -51,8 +52,10 @@ public class RailgunHudRenderer {
             scale -> (HudRegistry.crosshairReserved() ? BOLT_CLEAR_OFFSET : BOLT_OFFSET) + BOLT_HALF_WIDTH * scale,
             HudElement.Offset.NONE)
         .lang("item.gtnl.railgun.hud.element.railgun_charge")
+        .style(HudElement.STANDARD_STYLE)
+        .timing(HudTiming.ACTIVE)
         .inUseWhen(() -> ElectromagneticRailgun.isHeld(Minecraft.getMinecraft().thePlayer))
-        .visibleWhen(() -> RailgunCharge.charging(Minecraft.getMinecraft().thePlayer))
+        .activeWhen(() -> RailgunCharge.charging(Minecraft.getMinecraft().thePlayer))
         .preview((place, partialTicks) -> preview(place))
         .render(RailgunHudRenderer::render)
         .build();
@@ -70,7 +73,8 @@ public class RailgunHudRenderer {
     }
 
     private static void render(Placement place, float partialTicks) {
-        float units = RailgunCharge.units(Minecraft.getMinecraft().thePlayer, partialTicks);
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        float units = RailgunCharge.charging(player) ? RailgunCharge.units(player, partialTicks) : 0F;
         drawBolt(
             Minecraft.getMinecraft(),
             place,
@@ -131,17 +135,18 @@ public class RailgunHudRenderer {
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             GL11.glEnable(GL11.GL_BLEND);
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-            GL11.glColor4f(1F, 1F, 1F, 1F);
+            float alpha = place.alpha();
+            GL11.glColor4f(1F, 1F, 1F, alpha);
             minecraft.getTextureManager()
                 .bindTexture(BOLT_EMPTY);
             Gui.func_146110_a(0, 0, 0, 0, ICON_WIDTH, ICON_HEIGHT, ICON_WIDTH, ICON_HEIGHT);
             if (filled <= 0) return;
             int top = ICON_HEIGHT - filled;
-            FxColor.gl(rgb, 1F);
+            FxColor.gl(rgb, alpha);
             minecraft.getTextureManager()
                 .bindTexture(BOLT_FILL);
             Gui.func_146110_a(0, top, 0, top, ICON_WIDTH, filled, ICON_WIDTH, ICON_HEIGHT);
-            GL11.glColor4f(1F, 1F, 1F, 1F);
+            GL11.glColor4f(1F, 1F, 1F, alpha);
             minecraft.getTextureManager()
                 .bindTexture(BOLT_HIGHLIGHT);
             Gui.func_146110_a(0, top, 0, top, ICON_WIDTH, filled, ICON_WIDTH, ICON_HEIGHT);

@@ -2,209 +2,185 @@ package com.science.gtnl.client.hud;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.StatCollector;
 
-import org.lwjgl.input.Mouse;
-
+import com.cleanroommc.modularui.api.IThemeApi;
+import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.factory.ClientGUI;
-import com.science.gtnl.client.hud.HudLayout.Placement;
+import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.ModularScreen;
+import com.cleanroommc.modularui.screen.RecipeViewerSettingsImpl;
+import com.cleanroommc.modularui.utils.Alignment;
+import com.cleanroommc.modularui.widgets.ButtonWidget;
+import com.cleanroommc.modularui.widgets.layout.Flow;
+import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.gui.modularui.layout.Layout;
+import com.science.gtnl.common.gui.modularui.layout.LayoutMath;
+import com.science.gtnl.common.gui.modularui.layout.LayoutTheme;
+import com.science.gtnl.common.gui.modularui.layout.Size;
+import com.science.gtnl.common.gui.modularui.theme.ButtonPurpose;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class HudEditor extends GuiScreen {
+public class HudEditor extends ModularScreen {
 
-    private static final String LANG = "gtnl.hud.editor.";
-    private static final int RESET = 0, DONE = 1, SHOW_ALL = 2, SNAP = 4, BUTTON_WIDTH = 100, BUTTON_HEIGHT = 20,
-        BUTTON_Y = 22, BUTTON_GAP = 4;
-    private static final int SHADE = 0x30000000, GUIDE = 0x80FFFFFF, FRAME = 0x60FFFFFF, ACTIVE = 0xFFFFFFFF,
-        HIDDEN = 0x80808080;
-    private static IntSupplier guide = () -> GUIDE, active = () -> ACTIVE;
+    private static final String LANG = "gtnl.hud.editor.", UNAVAILABLE = "§7";
+    private static final int HELP_Y = 6, TEXT_HEIGHT = 10, TOOLBAR_Y = 20, MARGIN = 6, BUTTON_MIN = 52;
+    private static final float HELP_WIDTH = 0.96F;
+    private static boolean pending;
 
-    private HudElement dragging;
-    private float grabX, grabY;
-    private boolean snapX, snapY, showAll;
+    private final HudCanvas canvas;
+    private final HudSettingsCard card;
+
+    private HudEditor(HudCanvas canvas, LayoutTheme style) {
+        this(canvas, new HudSettingsCard(canvas, style, TOOLBAR_Y + style.buttonHeight + MARGIN, MARGIN), style);
+    }
+
+    private HudEditor(HudCanvas canvas, HudSettingsCard card, LayoutTheme style) {
+        super(ScienceNotLeisure.MODID, panel(canvas, card, style));
+        this.canvas = canvas;
+        this.card = card;
+        String theme = HudColor.theme();
+        if (theme != null) useTheme(theme);
+        drawDarkBackground(false);
+    }
 
     public static void open() {
-        ClientGUI.open(new HudEditor());
+        pending = true;
+    }
+
+    public static void openPending() {
+        if (!pending) return;
+        pending = false;
+        String theme = HudColor.theme();
+        LayoutTheme style = theme == null ? LayoutTheme.DEFAULT
+            : LayoutTheme.of(
+                IThemeApi.get()
+                    .getTheme(theme));
+        RecipeViewerSettingsImpl recipeViewer = new RecipeViewerSettingsImpl();
+        recipeViewer.disable();
+        ClientGUI.open(new HudEditor(new HudCanvas(), style), recipeViewer);
     }
 
     public static boolean isOpen() {
-        return Minecraft.getMinecraft().currentScreen instanceof HudEditor;
+        return ModularScreen.getCurrent() instanceof HudEditor;
     }
 
-    public static void colors(IntSupplier guide, IntSupplier active) {
-        HudEditor.guide = guide;
-        HudEditor.active = active;
-    }
+    private static ModularPanel panel(HudCanvas canvas, HudSettingsCard card, LayoutTheme style) {
+        ModularPanel panel = new ModularPanel("hud_editor") {
 
-    public static int guideColor() {
-        return guide.getAsInt();
-    }
-
-    public static int activeColor() {
-        return active.getAsInt();
-    }
-
-    public static List<HudElement> candidates(boolean showAll) {
-        List<HudElement> candidates = new ArrayList<>();
-        for (HudElement element : HudRegistry.elements()) if (showAll || element.isInUse()) candidates.add(element);
-        return candidates;
-    }
-
-    @Override
-    public boolean doesGuiPauseGame() {
-        return false;
-    }
-
-    @Override
-    public void initGui() {
-        buttonList.clear();
-        int left = width / 2 - (BUTTON_WIDTH * 3 + BUTTON_GAP * 2) / 2, stride = BUTTON_WIDTH + BUTTON_GAP;
-        buttonList.add(new GuiButton(SHOW_ALL, left, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT, showAllLabel()));
-        buttonList.add(new GuiButton(RESET, left + stride, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT, tr("reset")));
-        buttonList.add(new GuiButton(DONE, left + stride * 2, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT, tr("done")));
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton button) {
-        if (button.id == RESET) HudLayout.reset();
-        else if (button.id == DONE) mc.displayGuiScreen(null);
-        else if (button.id == SHOW_ALL) {
-            showAll = !showAll;
-            button.displayString = showAllLabel();
-        }
-    }
-
-    private String showAllLabel() {
-        return tr(showAll ? "in_use_only" : "show_all");
-    }
-
-    @Override
-    public void onGuiClosed() {
-        HudLayout.save();
-    }
-
-    private Placement place(HudElement element) {
-        return HudLayout.preview(element, width, height);
-    }
-
-    private float[] frame(HudElement element) {
-        Placement place = place(element);
-        float scale = place.scale();
-        return new float[] { place.x() + element.minX * scale, place.y() + element.minY * scale,
-            place.x() + element.maxX * scale, place.y() + element.maxY * scale };
-    }
-
-    private HudElement elementAt(int mouseX, int mouseY) {
-        HudElement best = null;
-        float smallest = Float.MAX_VALUE;
-        for (HudElement element : candidates(showAll)) {
-            float[] frame = frame(element);
-            if (mouseX < frame[0] || mouseX > frame[2] || mouseY < frame[1] || mouseY > frame[3]) continue;
-            float area = (frame[2] - frame[0]) * (frame[3] - frame[1]);
-            if (area < smallest) {
-                smallest = area;
-                best = element;
+            @Override
+            public boolean shouldAnimate() {
+                return false;
             }
-        }
-        return best;
+        };
+        panel.full()
+            .disableThemeBackground(true)
+            .disableHoverBackground();
+        panel.child(
+            canvas.reserveTop(TOOLBAR_Y + style.buttonHeight + 2)
+                .full());
+        panel.child(
+            Layout.label(IKey.lang(LANG + "help"), style)
+                .alignment(Alignment.Center)
+                .leftRel(0.5F)
+                .top(HELP_Y)
+                .widthRel(HELP_WIDTH)
+                .height(TEXT_HEIGHT));
+        List<ButtonWidget<?>> buttons = new ArrayList<>();
+        List<Integer> widths = new ArrayList<>();
+        add(
+            buttons,
+            widths,
+            style,
+            ButtonPurpose.NORMAL,
+            () -> tr(canvas.showAll() ? "in_use_only" : "show_all"),
+            canvas::toggleShowAll,
+            "show_all",
+            "in_use_only");
+        add(
+            buttons,
+            widths,
+            style,
+            ButtonPurpose.NORMAL,
+            () -> (canvas.canUndo() ? "" : UNAVAILABLE) + tr("undo"),
+            canvas::undo,
+            "undo");
+        add(
+            buttons,
+            widths,
+            style,
+            ButtonPurpose.NORMAL,
+            () -> (canvas.canRedo() ? "" : UNAVAILABLE) + tr("redo"),
+            canvas::redo,
+            "redo");
+        add(buttons, widths, style, ButtonPurpose.DANGER, () -> tr("reset"), canvas::resetAll, "reset");
+        add(
+            buttons,
+            widths,
+            style,
+            ButtonPurpose.PRIMARY,
+            () -> tr("done"),
+            () -> canvas.getPanel()
+                .closeIfOpen(),
+            "done");
+        int[] sizes = widths.stream()
+            .mapToInt(Integer::intValue)
+            .toArray();
+        Flow toolbar = Flow.row()
+            .size(LayoutMath.total(sizes, style.spacingMedium), style.buttonHeight)
+            .childPadding(style.spacingMedium)
+            .leftRel(0.5F)
+            .top(TOOLBAR_Y);
+        for (int i = 0; i < buttons.size(); i++) toolbar.child(
+            buttons.get(i)
+                .width(sizes[i]));
+        panel.child(toolbar);
+        panel.child(card);
+        return panel;
     }
 
-    private boolean overButton(int mouseX, int mouseY) {
-        for (Object button : buttonList) if (((GuiButton) button).mousePressed(mc, mouseX, mouseY)) return true;
-        return false;
-    }
-
-    @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
-        if (overButton(mouseX, mouseY)) return;
-        HudElement element = elementAt(mouseX, mouseY);
-        if (element == null) return;
-        if (button == 0) {
-            Placement place = place(element);
-            dragging = element;
-            grabX = mouseX - place.x();
-            grabY = mouseY - place.y();
-        } else if (button == 1) HudLayout.toggle(element);
-    }
-
-    @Override
-    protected void mouseClickMove(int mouseX, int mouseY, int button, long held) {
-        if (dragging == null || button != 0) return;
-        float scale = place(dragging).scale();
-        float x = HudLayout.clamp(mouseX - grabX, -dragging.minX * scale, width - dragging.maxX * scale);
-        float y = HudLayout.clamp(mouseY - grabY, -dragging.minY * scale, height - dragging.maxY * scale);
-        snapX = Math.abs(x - width / 2F) <= SNAP;
-        snapY = Math.abs(y - height / 2F) <= SNAP;
-        HudLayout.move(dragging, snapX ? width / 2F : x, snapY ? height / 2F : y, width, height);
-    }
-
-    @Override
-    protected void mouseMovedOrUp(int mouseX, int mouseY, int which) {
-        super.mouseMovedOrUp(mouseX, mouseY, which);
-        if (which != 0) return;
-        dragging = null;
-        snapX = snapY = false;
-    }
-
-    @Override
-    public void handleMouseInput() {
-        super.handleMouseInput();
-        int wheel = Mouse.getEventDWheel();
-        if (wheel == 0 || dragging != null) return;
-        int mouseX = Mouse.getEventX() * width / mc.displayWidth;
-        int mouseY = height - Mouse.getEventY() * height / mc.displayHeight - 1;
-        HudElement element = elementAt(mouseX, mouseY);
-        if (element != null) HudLayout.rescale(element, wheel > 0 ? 1 : -1);
-    }
-
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        drawRect(0, 0, width, height, SHADE);
-        int guideColor = guideColor(), activeColor = activeColor();
-        if (snapX) drawRect(width / 2, 0, width / 2 + 1, height, guideColor);
-        if (snapY) drawRect(0, height / 2, width, height / 2 + 1, guideColor);
-        HudElement focus = dragging != null ? dragging : elementAt(mouseX, mouseY);
-        List<HudElement> candidates = candidates(showAll);
-        for (HudElement element : candidates) {
-            boolean hidden = HudLayout.hidden(element);
-            if (!hidden && mc.thePlayer != null) element.preview(place(element), partialTicks);
-            outline(frame(element), element == focus ? activeColor : hidden ? HIDDEN : FRAME);
-        }
-        if (focus != null) label(focus);
-        if (candidates.isEmpty()) drawCenteredString(fontRendererObj, tr("empty"), width / 2, height / 2, 0xFFFFFF);
-        drawCenteredString(fontRendererObj, tr("help"), width / 2, 8, 0xFFFFFF);
-        super.drawScreen(mouseX, mouseY, partialTicks);
-    }
-
-    private void outline(float[] frame, int color) {
-        int x0 = Math.round(frame[0]), y0 = Math.round(frame[1]), x1 = Math.round(frame[2]), y1 = Math.round(frame[3]);
-        drawRect(x0, y0, x1, y0 + 1, color);
-        drawRect(x0, y1 - 1, x1, y1, color);
-        drawRect(x0, y0, x0 + 1, y1, color);
-        drawRect(x1 - 1, y0, x1, y1, color);
-    }
-
-    private void label(HudElement element) {
-        String text = StatCollector.translateToLocal(element.lang()) + " ×"
-            + String.format(Locale.ROOT, "%.1f", HudLayout.scale(element));
-        if (HudLayout.hidden(element)) text += " " + tr("hidden");
-        float[] frame = frame(element);
-        int x = Math.round((frame[0] + frame[2]) / 2), y = Math.round(frame[1]) - 11;
-        if (y < BUTTON_Y + BUTTON_HEIGHT + 2) y = Math.round(frame[3]) + 3;
-        drawCenteredString(fontRendererObj, text, x, y, 0xFFFFFF);
+    private static void add(List<ButtonWidget<?>> buttons, List<Integer> widths, LayoutTheme style,
+        ButtonPurpose purpose, Supplier<String> label, Runnable action, String... keys) {
+        int widest = 0;
+        for (String key : keys) widest = Math.max(widest, Layout.textWidth(tr(key), style));
+        widths.add(
+            Size.content(widest, style.padding)
+                .atLeast(BUTTON_MIN)
+                .resolve(0));
+        ButtonWidget<?> button = new ButtonWidget<>();
+        buttons.add(
+            purpose.apply(button)
+                .height(style.buttonHeight)
+                .overlay(Layout.caption(IKey.dynamic(label), style))
+                .onMousePressed(mouse -> {
+                    if (mouse != 0) return false;
+                    action.run();
+                    return true;
+                }));
     }
 
     private static String tr(String key) {
         return StatCollector.translateToLocal(LANG + key);
+    }
+
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
+        if (canvas.takeDirty()) card.refresh();
+    }
+
+    @Override
+    public boolean onKeyPressed(char typedChar, int keyCode) {
+        return canvas.key(keyCode) || super.onKeyPressed(typedChar, keyCode);
+    }
+
+    @Override
+    public void onClose() {
+        HudLayout.save();
     }
 }

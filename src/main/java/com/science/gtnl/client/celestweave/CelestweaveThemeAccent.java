@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.screen.ModularPanel;
+import com.science.gtnl.client.hud.HudColor;
 import com.science.gtnl.common.celestweave.CelestweaveCosmeticOption;
 import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme;
@@ -20,6 +21,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class CelestweaveThemeAccent {
 
     private static final int OPAQUE = 0xFF000000, RGB = 0xFFFFFF;
+    private static final String HUD_COLOR_LANG = "item.gtnl.celestweave.hud.color.glow";
     private static ModularPanel editedPanel;
     private static IntSupplier editedGlow;
 
@@ -27,6 +29,7 @@ public class CelestweaveThemeAccent {
 
     public static void register() {
         EquipmentTheme.LIVE.accentFrom(CelestweaveThemeAccent::accent);
+        HudColor.source(EquipmentTheme.LIVE, HUD_COLOR_LANG);
     }
 
     public static void editing(ModularPanel panel, IntSupplier glow) {

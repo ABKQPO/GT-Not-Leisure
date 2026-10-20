@@ -21,6 +21,7 @@ import com.science.gtnl.client.fx.FxEasing;
 import com.science.gtnl.client.hud.HudEditor;
 import com.science.gtnl.client.hud.HudLayout;
 import com.science.gtnl.client.hud.HudLayout.Placement;
+import com.science.gtnl.client.hud.HudTiming;
 import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.celestweave.CelestweaveEnergy;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
@@ -38,12 +39,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class CelestweaveHud {
 
-    private static final int HIT_LIFETIME = 900, SAVE_LIFETIME = 1400, FADE = 500, READY_FLASH = 350, WINDOW_MS = 12000,
+    private static final int HIT_LIFETIME = 900, SAVE_LIFETIME = 1400, READY_FLASH = 350, WINDOW_MS = 12000,
         STALE_MS = 7000, SAMPLES = 32, GROUND_SCAN = 96;
     private static final int LOW_RGB = 0xFF3B3B, PANEL_RGB = 0x0C1622, PANEL_HI_RGB = 0x13212F, TRACK_RGB = 0x1C2C3B,
         DIM_RGB = 0x9FB0BE;
     private static final float LOW = 0.15F, SMALL = 0.75F, CORE_RADIUS = 8F, RING_INNER = 13F, RING_OUTER = 16.5F,
-        DASH_RADIUS = 21F, DASH_SPAN = 50F, LADDER_HALF = 36F, LADDER_SCALE = 3F, PREVIEW_FRACTION = 0.7F;
+        DASH_RADIUS = 21F, DASH_SPAN = 50F, LADDER_HALF = 36F, LADDER_SCALE = 3F, PREVIEW_FRACTION = 0.7F, REST = 0.6F;
     private static final double PREVIEW_STORED = 7_000_000, RING_AIM_MIN_DISTANCE_SQ = 0.16;
     private static final long PREVIEW_DASH_AGE = 600, PREVIEW_DASH_LIFETIME = 1000;
     private static final float[] PREVIEW_PIECES = { 0.9F, 0.7F, 0.6F, 0.5F };
@@ -51,12 +52,11 @@ public class CelestweaveHud {
         CORE_DOT = polygon(2.2F, 0), RING = polygon(RING_INNER, Math.PI / 6);
     private static final double[] HISTORY = new double[SAMPLES];
     private static final long[] TIMES = new long[SAMPLES];
-    private static long hitAt = CelestweaveClientState.NEVER, wakeAt = CelestweaveClientState.NEVER,
-        landedAt = CelestweaveClientState.NEVER;
-    private static int hitLifetime = HIT_LIFETIME, signature, wornMask = -1, historySize, historyHead;
-    private static boolean save, omni, flying, signed;
+    private static long hitAt = CelestweaveClientState.NEVER, landedAt = CelestweaveClientState.NEVER;
+    private static int hitLifetime = HIT_LIFETIME, wakes, coreSignature, wornMask = -1, historySize, historyHead;
+    private static boolean save, omni, flying, coreActive, shieldActive, dashActive;
     private static HitOrigin hitOrigin = new HitOrigin(0, 0, 0);
-    private static float climb, rate;
+    private static float climb, rate, ladder;
     private static double lastSeen = Double.NaN;
 
     static void hit(HitOrigin origin, boolean saved, boolean ambient) {
@@ -64,14 +64,36 @@ public class CelestweaveHud {
         save = saved;
         omni = ambient;
         hitLifetime = saved ? SAVE_LIFETIME : HIT_LIFETIME;
-        hitAt = wakeAt = Minecraft.getSystemTime();
+        hitAt = Minecraft.getSystemTime();
+        wakes++;
     }
 
     static void clear() {
-        hitAt = wakeAt = landedAt = CelestweaveClientState.NEVER;
-        signed = flying = false;
+        hitAt = landedAt = CelestweaveClientState.NEVER;
+        flying = false;
         climb = 0F;
+        wakes++;
         resetRate();
+    }
+
+    static boolean coreActive() {
+        return coreActive;
+    }
+
+    static int coreSignature() {
+        return coreSignature;
+    }
+
+    static boolean shieldActive() {
+        return shieldActive;
+    }
+
+    static boolean dashActive() {
+        return dashActive;
+    }
+
+    static boolean altimeterActive() {
+        return ladder > 0;
     }
 
     @SubscribeEvent
@@ -97,7 +119,7 @@ public class CelestweaveHud {
             pieces[piece] = (float) CelestweaveEnergy.fraction(stack);
         }
         if (mask == 0) {
-            signed = flying = false;
+            flying = false;
             resetRate();
             return;
         }
@@ -114,54 +136,65 @@ public class CelestweaveHud {
         boolean nowFlying = look.flightActive && player.capabilities.isFlying;
         if (flying && !nowFlying) landedAt = now;
         flying = nowFlying;
-        status = status * 4 + (flying ? 2 : 0) + (low ? 1 : 0);
-        if (!signed || status != signature) {
-            signed = true;
-            signature = status;
-            wakeAt = now;
-        }
         long dashLife = MainConfig.item.celestweave.dashCooldown * 50L, dashAge = now - state.dashAt;
-        if (flying || low || dashAge >= 0 && dashAge < dashLife + READY_FLASH) wakeAt = now;
-        float awake = fade(now - wakeAt - (long) (MainConfig.client.celestweaveHudIdleSeconds * 1000));
-        float idle = MainConfig.client.celestweaveHudIdleAlpha;
+        boolean dashing = dashAge >= 0 && dashAge < dashLife + READY_FLASH;
+        ItemStack boots = look.worn[CelestweaveArmor.BOOTS];
+        coreSignature = (status * 4 + (flying ? 2 : 0) + (low ? 1 : 0)) * 31 + wakes;
+        coreActive = flying || low || dashing;
+        shieldActive = now - hitAt >= 0 && now - hitAt < hitLifetime;
+        dashActive = dashing && dashReady(boots);
+        ladder = flying ? 1F : HudTiming.fade(now - landedAt);
         int width = event.resolution.getScaledWidth(), height = event.resolution.getScaledHeight();
         FontRenderer font = minecraft.fontRenderer;
         open();
         try {
-            int rgb = low ? LOW_RGB : look.glowColor;
-            float pulse = low ? 0.5F + 0.5F * (float) Math.sin(now * Math.PI * 2 / 600.0) : 0F;
             Placement corePlace = HudLayout.place(CelestweaveHudElement.CORE.hud, width, height);
             if (corePlace != null) {
                 begin(corePlace);
-                float alpha = idle + (1 - idle) * awake;
-                if (alpha > 0.01F) core(fraction, rgb, pulse, alpha);
-                if (FxEasing.easeOutCubic(awake) > 0.02F)
-                    readout(font, fraction, stored, pieces, rgb, look.glowColor, FxEasing.easeOutCubic(awake));
+                int glow = corePlace.color(), rgb = low ? LOW_RGB : glow;
+                float pulse = low ? 0.5F + 0.5F * (float) Math.sin(now * Math.PI * 2 / 600.0) : 0F;
+                core(fraction, rgb, pulse, corePlace.alpha());
+                float slide = FxEasing.easeOutCubic(corePlace.awake());
+                if (slide > 0.02F && corePlace.on(CelestweaveHudElement.READOUT))
+                    readout(font, fraction, stored, pieces, rgb, glow, slide, corePlace.opacity() * slide);
                 end();
             }
             Placement ringPlace = HudLayout.place(CelestweaveHudElement.SHIELD_RING.hud, width, height);
             if (ringPlace != null) {
                 begin(ringPlace);
-                ring(player, look.glowColor, now);
+                ring(player, ringPlace.color(), now, ringPlace.alpha(), ringPlace.resting());
                 end();
             }
             Placement dashPlace = HudLayout.place(CelestweaveHudElement.DASH_ARC.hud, width, height);
-            if (dashPlace != null) {
+            if (dashPlace != null && dashReady(boots)) {
                 begin(dashPlace);
-                dash(look.worn[CelestweaveArmor.BOOTS], look.glowColor, dashAge, dashLife);
+                dashArc(
+                    dashPlace.color(),
+                    dashing ? dashAge : dashLife + READY_FLASH,
+                    dashLife,
+                    dashPlace.alpha(),
+                    dashPlace.resting());
                 end();
             }
-            float ladder = flying ? 1F : fade(now - landedAt);
-            Placement ladderPlace = ladder > 0 ? HudLayout.place(CelestweaveHudElement.ALTIMETER.hud, width, height)
-                : null;
+            Placement ladderPlace = HudLayout.place(CelestweaveHudElement.ALTIMETER.hud, width, height);
             if (ladderPlace != null) {
                 begin(ladderPlace);
-                ladder(font, player, look.worn[CelestweaveArmor.LEGS], look.glowColor, ladder, event.partialTicks);
+                ladder(
+                    font,
+                    player,
+                    look.worn[CelestweaveArmor.LEGS],
+                    ladderPlace.color(),
+                    (ladderPlace.resting() ? 1F : ladder) * ladderPlace.alpha(),
+                    event.partialTicks);
                 end();
             }
         } finally {
             close();
         }
+    }
+
+    private static boolean dashReady(ItemStack boots) {
+        return boots != null && CelestweaveData.active(boots, CelestweaveModule.DASH);
     }
 
     static void preview(CelestweaveHudElement element, Placement place, float partialTicks) {
@@ -170,23 +203,27 @@ public class CelestweaveHud {
         if (player == null) return;
         CelestweaveLook look = CelestweaveClientEvents.look(player, CelestweaveClientState.of(player));
         FontRenderer font = minecraft.fontRenderer;
+        int glow = place.color();
+        float alpha = place.alpha();
         open();
         try {
             begin(place);
             switch (element) {
                 case CORE -> {
-                    core(PREVIEW_FRACTION, look.glowColor, 0F, 1F);
-                    readout(font, PREVIEW_FRACTION, PREVIEW_STORED, PREVIEW_PIECES, look.glowColor, look.glowColor, 1F);
+                    core(PREVIEW_FRACTION, glow, 0F, alpha);
+                    if (place.on(CelestweaveHudElement.READOUT)) readout(
+                        font,
+                        PREVIEW_FRACTION,
+                        PREVIEW_STORED,
+                        PREVIEW_PIECES,
+                        glow,
+                        glow,
+                        1F,
+                        place.opacity());
                 }
-                case SHIELD_RING -> shield(look.glowColor, 0F, 1F, false, 0, false);
-                case DASH_ARC -> dashArc(look.glowColor, PREVIEW_DASH_AGE, PREVIEW_DASH_LIFETIME);
-                case ALTIMETER -> ladder(
-                    font,
-                    player,
-                    look.worn[CelestweaveArmor.LEGS],
-                    look.glowColor,
-                    1F,
-                    partialTicks);
+                case SHIELD_RING -> shield(glow, 0F, 1F, false, 0, false, alpha);
+                case DASH_ARC -> dashArc(glow, PREVIEW_DASH_AGE, PREVIEW_DASH_LIFETIME, alpha, false);
+                case ALTIMETER -> ladder(font, player, look.worn[CelestweaveArmor.LEGS], glow, alpha, partialTicks);
                 default -> {}
             }
             end();
@@ -235,7 +272,7 @@ public class CelestweaveHud {
     }
 
     private static void readout(FontRenderer font, float fraction, double stored, float[] pieces, int rgb,
-        int glowColor, float slide) {
+        int glowColor, float slide, float alpha) {
         String percent = Math.round(fraction * 100) + "%";
         String energy = StatCollector
             .translateToLocalFormatted("item.gtnl.celestweave.hud.energy", Utils.shortFormat((long) stored));
@@ -250,14 +287,14 @@ public class CelestweaveHud {
         float right = -CORE_RADIUS - 4 + (1 - slide) * 6, left = right - inner - 7;
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        screen(tessellator, left, -11, right, 9, glowColor, slide);
+        screen(tessellator, left, -11, right, 9, glowColor, alpha);
         for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++)
-            cell(tessellator, left + 4 + piece * 4, 1.5F, pieces[piece], glowColor, slide);
+            cell(tessellator, left + 4 + piece * 4, 1.5F, pieces[piece], glowColor, alpha);
         tessellator.draw();
-        text(font, percent, left + 4, -9, FxColor.mixWhite(rgb, 0.4F), slide);
-        text(font, energy, left + 4 + split, -9, DIM_RGB, slide);
-        small(font, flow, left + 23, 1.5F, rate > 0 ? DIM_RGB : FxColor.mixWhite(glowColor, 0.4F), slide);
-        if (!eta.isEmpty()) small(font, eta, left + 23 + (font.getStringWidth(flow) + 6) * SMALL, 1.5F, DIM_RGB, slide);
+        text(font, percent, left + 4, -9, FxColor.mixWhite(rgb, 0.4F), alpha);
+        text(font, energy, left + 4 + split, -9, DIM_RGB, alpha);
+        small(font, flow, left + 23, 1.5F, rate > 0 ? DIM_RGB : FxColor.mixWhite(glowColor, 0.4F), alpha);
+        if (!eta.isEmpty()) small(font, eta, left + 23 + (font.getStringWidth(flow) + 6) * SMALL, 1.5F, DIM_RGB, alpha);
     }
 
     private static void cell(Tessellator tessellator, float x, float y, float fraction, int glowColor, float alpha) {
@@ -268,7 +305,8 @@ public class CelestweaveHud {
         rect(tessellator, x, y + 6 * (1 - fraction), x + 3, y + 6);
     }
 
-    private static void ring(EntityPlayer player, int glowColor, long now) {
+    private static void ring(EntityPlayer player, int glowColor, long now, float alpha, boolean resting) {
+        if (resting) shield(glowColor, 0F, REST, false, 0, false, alpha);
         long age = now - hitAt;
         if (age < 0 || age >= hitLifetime) return;
         float progress = age / (float) hitLifetime;
@@ -277,22 +315,22 @@ public class CelestweaveHud {
         double forward = HitOrigin.forward(offset, player.rotationYaw),
             lateral = HitOrigin.lateral(offset, player.rotationYaw);
         boolean directional = !save && !omni && forward * forward + lateral * lateral > RING_AIM_MIN_DISTANCE_SQ;
-        shield(glowColor, progress, envelope, directional, Math.atan2(lateral, forward), save);
+        shield(glowColor, progress, envelope, directional, Math.atan2(lateral, forward), save, alpha);
     }
 
     private static void shield(int glowColor, float progress, float envelope, boolean directional, double angle,
-        boolean saved) {
+        boolean saved, float alpha) {
         int rgb = FxColor.mixWhite(glowColor, saved ? 0.55F : 0.25F);
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
         for (int segment = 0; segment < 6; segment++) {
             float weight = saved ? 1F : directional ? segmentWeight(angle, segment) : 0.45F;
             float[] outer = polygon(RING_OUTER + 2.5F * weight * (1 - progress), Math.PI / 6);
-            FxColor.tessellate(tessellator, rgb, envelope * (0.18F + 0.82F * weight));
+            FxColor.tessellate(tessellator, rgb, envelope * (0.18F + 0.82F * weight) * alpha);
             edge(tessellator, outer, RING, segment, 0.08F);
         }
         if (saved) {
-            FxColor.tessellate(tessellator, rgb, 0.6F * (1 - progress));
+            FxColor.tessellate(tessellator, rgb, 0.6F * (1 - progress) * alpha);
             outline(
                 tessellator,
                 polygon(RING_OUTER + 1 + 14 * progress, Math.PI / 6),
@@ -302,28 +340,22 @@ public class CelestweaveHud {
         if (!directional) return;
         float sin = (float) Math.sin(angle), cos = (float) -Math.cos(angle), base = RING_OUTER + 4.5F + 2 * progress;
         tessellator.startDrawing(GL11.GL_TRIANGLES);
-        FxColor.tessellate(tessellator, FxColor.mixWhite(glowColor, 0.6F), envelope);
+        FxColor.tessellate(tessellator, FxColor.mixWhite(glowColor, 0.6F), envelope * alpha);
         tessellator.addVertex(sin * (base + 4), cos * (base + 4), 0);
         tessellator.addVertex(sin * base - cos * 3, cos * base + sin * 3, 0);
         tessellator.addVertex(sin * base + cos * 3, cos * base - sin * 3, 0);
         tessellator.draw();
     }
 
-    private static void dash(ItemStack boots, int glowColor, long age, long lifetime) {
-        if (boots == null || !CelestweaveData.active(boots, CelestweaveModule.DASH)) return;
-        if (age < 0 || age >= lifetime + READY_FLASH) return;
-        dashArc(glowColor, age, lifetime);
-    }
-
-    private static void dashArc(int glowColor, long age, long lifetime) {
+    private static void dashArc(int glowColor, long age, long lifetime, float alpha, boolean resting) {
         float progress = lifetime <= 0 ? 1F : Math.min(1F, age / (float) lifetime);
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        arc(tessellator, 1F, DASH_RADIUS, 1.2F, 0x000000, 0.4F);
+        arc(tessellator, 1F, DASH_RADIUS, 1.2F, 0x000000, 0.4F * alpha);
         for (int tick = 0; tick <= 4; tick++) {
             double a = Math.toRadians(180 + DASH_SPAN - 2 * DASH_SPAN * tick / 4.0);
             float sin = (float) Math.sin(a), cos = (float) -Math.cos(a), length = tick % 4 == 0 ? 3.2F : 2F;
-            FxColor.tessellate(tessellator, 0xFFFFFF, progress >= tick / 4F ? 0.7F : 0.3F);
+            FxColor.tessellate(tessellator, 0xFFFFFF, (progress >= tick / 4F ? 0.7F : 0.3F) * alpha);
             tessellator.addVertex(sin * (DASH_RADIUS + 1.4F) - cos * 0.4F, cos * (DASH_RADIUS + 1.4F) + sin * 0.4F, 0);
             tessellator.addVertex(sin * (DASH_RADIUS + 1.4F) + cos * 0.4F, cos * (DASH_RADIUS + 1.4F) - sin * 0.4F, 0);
             tessellator.addVertex(
@@ -335,10 +367,16 @@ public class CelestweaveHud {
                 cos * (DASH_RADIUS + 1.4F + length) + sin * 0.4F,
                 0);
         }
-        if (progress < 1) arc(tessellator, progress, DASH_RADIUS, 1F, glowColor, 0.85F);
+        if (progress < 1) arc(tessellator, progress, DASH_RADIUS, 1F, glowColor, 0.85F * alpha);
         else {
-            float flash = fade((age - lifetime) * FADE / READY_FLASH);
-            arc(tessellator, 1F, DASH_RADIUS, 1.2F + 1.2F * flash, FxColor.mixWhite(glowColor, 0.6F), flash);
+            float flash = HudTiming.fade((age - lifetime) * HudTiming.FADE_MS / READY_FLASH);
+            arc(
+                tessellator,
+                1F,
+                DASH_RADIUS,
+                1.2F + 1.2F * flash,
+                FxColor.mixWhite(glowColor, 0.6F),
+                (resting ? Math.max(flash, REST) : flash) * alpha);
         }
         tessellator.draw();
     }
@@ -466,10 +504,6 @@ public class CelestweaveHud {
 
     private static void end() {
         GL11.glPopMatrix();
-    }
-
-    static float fade(long overdue) {
-        return overdue <= 0 ? 1F : Math.max(0F, 1F - overdue / (float) FADE);
     }
 
     static float segmentWeight(double angle, int segment) {

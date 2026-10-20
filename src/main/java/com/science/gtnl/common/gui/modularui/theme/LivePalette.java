@@ -47,6 +47,10 @@ public class LivePalette {
         return snapshot().theme();
     }
 
+    public int accent() {
+        return snapshot().accent();
+    }
+
     public ThemePalette themed() {
         return snapshot().themed();
     }

@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,6 +46,7 @@ import com.cleanroommc.modularui.api.IJsonSerializable;
 import com.cleanroommc.modularui.api.ITheme;
 import com.cleanroommc.modularui.api.IThemeApi;
 import com.cleanroommc.modularui.api.drawable.IDrawable;
+import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.drawable.DrawableSerialization;
 import com.cleanroommc.modularui.drawable.Rectangle;
 import com.cleanroommc.modularui.theme.ReloadThemeEvent;
@@ -59,13 +61,16 @@ import com.cleanroommc.modularui.theme.WidgetThemeKey;
 import com.cleanroommc.modularui.utils.JsonBuilder;
 import com.cleanroommc.modularui.value.DoubleValue;
 import com.cleanroommc.modularui.value.IntValue;
+import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.gtnewhorizon.gtnhlib.config.Config;
 import com.science.gtnl.client.fx.FxColor;
-import com.science.gtnl.client.hud.HudEditor;
+import com.science.gtnl.client.hud.HudColor;
+import com.science.gtnl.client.hud.HudElement;
+import com.science.gtnl.client.hud.HudTiming;
 import com.science.gtnl.client.railgun.RailgunHudRenderer;
 import com.science.gtnl.common.celestweave.CelestweaveCosmeticOption;
 import com.science.gtnl.common.celestweave.CelestweaveData;
@@ -76,6 +81,11 @@ import com.science.gtnl.common.gui.equipment.CelestweaveGui;
 import com.science.gtnl.common.gui.equipment.EquipmentSoundScreen;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme.Colors;
+import com.science.gtnl.common.gui.modularui.layout.Layout;
+import com.science.gtnl.common.gui.modularui.layout.LayoutMath;
+import com.science.gtnl.common.gui.modularui.layout.LayoutTheme;
+import com.science.gtnl.common.gui.modularui.layout.Size;
+import com.science.gtnl.common.gui.modularui.theme.ButtonPurpose;
 import com.science.gtnl.common.gui.modularui.theme.LivePalette;
 import com.science.gtnl.common.gui.modularui.theme.PaletteThemes;
 import com.science.gtnl.common.gui.modularui.theme.ThemePalette;
@@ -110,6 +120,7 @@ public class EquipmentResourceContracts {
         soundChannels();
         equipmentTheme();
         equipmentScreens();
+        layoutRules();
         lang();
     }
 
@@ -506,7 +517,7 @@ public class EquipmentResourceContracts {
 
     private static void equipmentTheme() throws Exception {
         check(
-            HudEditor.guideColor() == 0x80FFFFFF && HudEditor.activeColor() == 0xFFFFFFFF,
+            HudColor.guide() == 0x80FFFFFF && HudColor.selection() == 0xFFFFFFFF,
             "hud editor framework colors are neutral");
         DrawableSerialization.init();
         EquipmentTheme.register();
@@ -612,7 +623,7 @@ public class EquipmentResourceContracts {
                 && main.milestone == slider.milestone,
             "explicit colors override only the track, fill and cursor");
         check(
-            HudEditor.guideColor() == 0x80FF3D9A && HudEditor.activeColor() == 0xFFFF3D9A,
+            HudColor.guide() == 0x80FF3D9A && HudColor.selection() == 0xFFFF3D9A,
             "equipment theme hands its accent to the hud editor");
         equipmentControls(plain);
         paletteThemes(standard);
@@ -620,18 +631,22 @@ public class EquipmentResourceContracts {
         themeChoice();
         Pattern hex = Pattern.compile("0x[0-9A-Fa-f]{6,8}");
         for (String file : new String[] { "common/gui/equipment/EquipmentSoundScreen.java",
-            "client/celestweave/CelestweaveWheelScreen.java", "client/hud/HudEditor.java",
+            "client/celestweave/CelestweaveWheelScreen.java", "client/hud/HudEditor.java", "client/hud/HudCanvas.java",
+            "client/hud/HudSettingsCard.java", "client/hud/HudColor.java",
             "common/gui/modularui/widget/StepSlider.java", "common/gui/modularui/theme/ThemePalette.java",
             "common/gui/modularui/widget/FrameDrawable.java", "common/gui/modularui/widget/CardDrawable.java",
             "common/gui/modularui/widget/SlideSwitch.java", "common/gui/modularui/theme/ThemeStyle.java",
-            "common/gui/modularui/widget/FillBar.java", "common/gui/modularui/theme/PaletteThemes.java" }) {
+            "common/gui/modularui/widget/FillBar.java", "common/gui/modularui/theme/PaletteThemes.java",
+            "common/gui/modularui/theme/ButtonPurpose.java", "common/gui/modularui/layout/Layout.java",
+            "common/gui/modularui/layout/LayoutMath.java", "common/gui/modularui/layout/LayoutTheme.java",
+            "common/gui/modularui/layout/Size.java" }) {
             String source = new String(Files.readAllBytes(SOURCES.resolve(file)), StandardCharsets.UTF_8);
             check(
                 !source.toUpperCase(Locale.ROOT)
                     .contains("3D9A"),
                 file + " has no hard-coded equipment pink");
             if (!file.contains("modularui")) check(
-                file.contains("HudEditor") || !hex.matcher(source)
+                file.contains("client/hud") || !hex.matcher(source)
                     .find(),
                 file + " takes every color from the equipment theme");
             else check(
@@ -648,12 +663,27 @@ public class EquipmentResourceContracts {
             .getTheme();
         check(
             overridden.accent == 0xFF00FF00 && overridden.hint == expected.get("hint")
-                && HudEditor.activeColor() == 0xFF00FF00,
+                && HudColor.selection() == 0xFF00FF00,
             "an override of one equipment color keeps the others");
         check(
             overriddenSlider.fill == 0xFF00FF00 && overriddenSlider.track == defaults.track,
             "an override replaces the whole slider object");
+        reloadThemes(
+            new JsonBuilder().add(
+                LayoutTheme.KEY.getFullName(),
+                new JsonBuilder().add(LayoutTheme.SPACING_SMALL, 5)
+                    .add(LayoutTheme.ROW_HEIGHT, 3)
+                    .add(LayoutTheme.TEXT_SCALE, -1)));
+        LayoutTheme packed = EquipmentTheme.layout();
+        check(
+            packed.spacingSmall == 5 && packed.padding == ThemeStyle.DEFAULT.padding()
+                && packed.rowHeight == packed.buttonHeight
+                && packed.textScale == ThemeStyle.DEFAULT.textScale(),
+            "a resource pack changes one spacing, keeps the others and cannot make rows shorter than buttons");
         reloadThemes();
+        check(
+            EquipmentTheme.layout().spacingSmall == ThemeStyle.DEFAULT.spacingSmall(),
+            "theme reload restores spacing");
         check(EquipmentTheme.colors().accent == expected.get("accent"), "theme reload restores the accent");
     }
 
@@ -700,6 +730,176 @@ public class EquipmentResourceContracts {
         check(!armor.contains("hidden_mark"), "hidden modules show in the tooltip instead of a label mark");
     }
 
+    private static void layoutRules() throws IOException {
+        int available = 160, gap = 2, shortSwitch = SlideSwitch.widthFor(56);
+        check(
+            SlideSwitch.widthFor(0) == 20 && shortSwitch == 76,
+            "a switch needs its track, its label and a small margin");
+        check(LayoutMath.columns(available, gap, shortSwitch, 2) == 2, "short labels keep two columns");
+        check(
+            Arrays.equals(LayoutMath.split(available, gap, 2), new int[] { 79, 79 }),
+            "two columns keep the old 79 pixel cells");
+        for (int text : new int[] { 62, 120, 400 }) {
+            int columns = LayoutMath.columns(available, gap, SlideSwitch.widthFor(text), 2);
+            check(
+                columns == 1 && LayoutMath.total(LayoutMath.split(available, gap, columns), gap) == available,
+                "a " + text + " pixel label drops to one column that stays inside the panel");
+        }
+        check(
+            LayoutMath.columns(available, gap, 79, 2) == 2 && LayoutMath.columns(available, gap, 80, 2) == 1,
+            "two columns until a cell no longer fits");
+        check(LayoutMath.columns(available, gap, 0, 2) == 2, "unmeasured labels on the server keep the most columns");
+        check(LayoutMath.columns(available, 1, 10, 7) == 7, "a column count is an upper bound");
+        check(
+            Arrays.equals(LayoutMath.split(available, gap, 3), new int[] { 52, 52, 52 }),
+            "three tabs keep the old 52 pixel tabs");
+        check(
+            Arrays.equals(LayoutMath.split(available, 1, 7), new int[] { 22, 22, 22, 22, 22, 22, 22 }),
+            "seven arc flags keep the old 22 pixel buttons");
+        for (int tabs = 1; tabs <= 8; tabs++) {
+            int[] widths = LayoutMath.split(available, gap, tabs);
+            int narrowest = Integer.MAX_VALUE, widest = 0;
+            for (int width : widths) {
+                narrowest = Math.min(narrowest, width);
+                widest = Math.max(widest, width);
+            }
+            check(
+                widths.length == tabs && LayoutMath.total(widths, gap) == available && widest - narrowest <= 1,
+                tabs + " tabs share the row evenly and fill it");
+        }
+        check(
+            Arrays.equals(
+                LayoutMath.line(
+                    Arrays.asList(Size.fixed(20), Size.fill(), Size.percent(0.25F), Size.content(24, 3)),
+                    available,
+                    gap),
+                new int[] { 20, 64, 40, 30 }),
+            "fixed, fill, percent and content sizes share one row");
+        check(
+            Arrays.equals(LayoutMath.line(Arrays.asList(Size.fill(1), Size.fill(3)), 100, 0), new int[] { 25, 75 }),
+            "fill splits the rest by weight");
+        check(
+            Arrays.equals(
+                LayoutMath.line(
+                    Arrays.asList(
+                        Size.fill()
+                            .atMost(30),
+                        Size.fill()),
+                    100,
+                    0),
+                new int[] { 30, 70 }),
+            "a capped fill hands the rest to the other fill");
+        check(
+            Arrays.equals(
+                LayoutMath.line(
+                    Arrays.asList(
+                        Size.fill()
+                            .atLeast(80),
+                        Size.fill()),
+                    100,
+                    0),
+                new int[] { 80, 20 }),
+            "a minimum wins over an even share");
+        check(
+            Size.percent(0.5F)
+                .atMost(30)
+                .resolve(100) == 30
+                && Size.content(10)
+                    .atLeast(72)
+                    .resolve(0) == 72
+                && Size.fixed(14)
+                    .resolve(500) == 14,
+            "minimum and maximum clamp every size kind");
+        int[] stepper = LayoutMath.line(Arrays.asList(Size.fill(), Size.fixed(32)), available, 4);
+        check(
+            stepper[0] == 124 && 8 + stepper[0] + 4 == 136,
+            "stepper buttons stay at x 136 with the label filling the rest");
+        List<Size> colorRow = new ArrayList<>();
+        colorRow.add(Size.fill());
+        for (int i = 0; i < 7; i++) colorRow.add(Size.fixed(12));
+        colorRow.add(Size.fixed(20));
+        int[] colors = LayoutMath.line(colorRow, available, gap);
+        check(
+            colors[0] == 40 && 8 + LayoutMath.total(Arrays.copyOf(colors, 8), gap) + gap == 148,
+            "color swatches start at x 50 and the picker stays at x 148");
+        check(
+            Arrays.equals(LayoutMath.wrap(new int[] { 50, 50, 50 }, 120, 2), new int[] { 0, 0, 1 }),
+            "an item that no longer fits moves to the next row");
+        check(
+            LayoutMath.wrap(new int[] { 200 }, 120, 2)[0] == 0,
+            "an item wider than the row still starts the first row");
+        int[] shrunk = LayoutMath.shrink(new int[] { 100, 100 }, new int[] { 40, 80 }, 150, 0);
+        check(
+            LayoutMath.total(shrunk, 0) == 150 && shrunk[0] >= 40 && shrunk[1] >= 80 && shrunk[0] < shrunk[1],
+            "shrinking takes the overflow from the room above each minimum");
+        check(
+            Arrays.equals(LayoutMath.shrink(new int[] { 50, 50 }, new int[] { 50, 50 }, 80, 0), new int[] { 50, 50 }),
+            "nothing shrinks below its minimum");
+        int[] cards = { 200, 200 }, heights = { 150, 118 };
+        check(!LayoutMath.stacks(cards, heights, 10, 414, 200), "a wide screen keeps the sound cards side by side");
+        check(LayoutMath.stacks(cards, heights, 10, 380, 300), "a narrow screen stacks the sound cards");
+        check(
+            !LayoutMath.stacks(cards, heights, 10, 380, 250),
+            "a narrow and short screen keeps the cards side by side instead of cutting them off");
+        Layout rows = Layout.rows(LayoutTheme.DEFAULT, 176);
+        check(
+            rows.available() == 160 && rows.inset(4)
+                .available() == 168,
+            "rows keep the theme padding on both sides");
+        List<SlideSwitch> five = new ArrayList<>();
+        for (int i = 0; i < 5; i++) five.add(new SlideSwitch());
+        List<IWidget> grid = rows.grid(gap, 2, five);
+        check(
+            grid.size() == 3 && ((Flow) grid.get(0)).getChildren()
+                .size() == 2
+                && ((Flow) grid.get(2)).getChildren()
+                    .size() == 1,
+            "a grid fills its rows left to right");
+        check(
+            rows.wrap(gap, Collections.nCopies(3, Size.fixed(70)), five.subList(0, 3))
+                .size() == 2,
+            "a wrapping row breaks where the next item no longer fits");
+        Map<String, String> sources = new HashMap<>();
+        for (String file : new String[] { "common/gui/equipment/EquipmentGui.java",
+            "common/gui/equipment/CelestweaveGui.java", "common/gui/equipment/RailgunGui.java",
+            "common/gui/equipment/EquipmentSoundScreen.java", "client/celestweave/CelestweaveWheelScreen.java" })
+            sources.put(file, new String(Files.readAllBytes(SOURCES.resolve(file)), StandardCharsets.UTF_8));
+        String base = compact(sources.get("common/gui/equipment/EquipmentGui.java")),
+            armor = compact(sources.get("common/gui/equipment/CelestweaveGui.java")),
+            railgun = compact(sources.get("common/gui/equipment/RailgunGui.java")),
+            sound = compact(sources.get("common/gui/equipment/EquipmentSoundScreen.java")),
+            wheel = compact(sources.get("client/celestweave/CelestweaveWheelScreen.java"));
+        String columns = "rows.columns(style.spacingSmall,widestSwitch(labels),MAX_COLUMNS)";
+        check(
+            armor.contains(columns) && railgun.contains(columns),
+            "module and setting switches pick their column count from the widest label");
+        check(
+            armor.contains("Collections.nCopies(tabs.size(),Size.fill())") && armor.contains("ButtonPurpose.TAB"),
+            "armor tabs share the row evenly");
+        check(
+            base.contains("EquipmentTheme.layout()") && sound.contains("EquipmentTheme.layout()")
+                && wheel.contains("EquipmentTheme.layout()"),
+            "settings pages, the sound screen and the wheel read their spacing from the selected theme");
+        check(
+            sound.contains("LayoutMath.stacks(")
+                && sound.contains("publicvoidonResize(intwidth,intheight){arrangement.fit(width,height);"),
+            "the sound screen stacks its cards on a narrow screen, also after the window is resized");
+        check(sound.contains(".atLeast(LABEL_WIDTH)"), "the sound name column grows with the longest name");
+        check(
+            wheel.contains("LayoutMath.widest(") && wheel.contains(".atLeast(BUTTON_WIDTH)")
+                && wheel.contains("(width+style.spacingMedium)/2"),
+            "wheel buttons share the width of the longer label and stay centered");
+        Pattern oldPixels = Pattern.compile("\\b(79|81|54|98|108|122|136|148|152|160|161)\\b");
+        for (Map.Entry<String, String> entry : sources.entrySet()) check(
+            !oldPixels.matcher(entry.getValue())
+                .find(),
+            entry.getKey() + " has no hard-coded column, tab or row positions left");
+    }
+
+    private static String compact(String source) {
+        return source.replaceAll("\\s+", "");
+    }
+
     private static void equipmentControls(ITheme plain) throws Exception {
         JsonObject registered = IThemeApi.get()
             .getJavaDefaultThemes(EquipmentTheme.ID)
@@ -721,9 +921,17 @@ public class EquipmentResourceContracts {
         check(
             !soundSource.contains("GuiDraw") && !soundSource.contains("disableThemeBackground")
                 && soundSource.contains("new SlideSwitch()")
-                && soundSource.contains("widgetTheme(CardDrawable.KEY)")
+                && soundSource.contains("Layout.card(")
                 && soundSource.contains("EquipmentGui.closeButton()"),
             "sound screen draws its panel, cards, switches and close button through the theme");
+        String layoutSource = new String(
+            Files.readAllBytes(SOURCES.resolve("common/gui/modularui/layout/Layout.java")),
+            StandardCharsets.UTF_8);
+        check(layoutSource.contains("widgetTheme(CardDrawable.KEY)"), "layout cards draw with the theme card");
+        check(
+            compact(layoutSource).contains("returnnewScrollingTextWidget(key)") && compact(layoutSource).contains(
+                "RenderUtils.drawTextFitted(key.getFormatted(),x,y,width,height,Alignment.Center,theme.getTextColor(),theme.getTextShadow(),style.textScale)"),
+            "labels and button captions cut text that does not fit instead of spilling out");
         reloadThemes();
         ITheme theme = IThemeApi.get()
             .getTheme(EquipmentTheme.ID);
@@ -753,13 +961,14 @@ public class EquipmentResourceContracts {
             0xFFFFE6F1,
             0xFF4A0A2A,
             0x40FFFFFF,
-            0x99FFFFFF);
+            0x99FFFFFF,
+            0xFFE5484D);
         check(
             EquipmentTheme.PALETTE.equals(pink),
             "equipment palette keeps every old color: " + EquipmentTheme.PALETTE);
         check(
-            ThemeStyle.DEFAULT.equals(new ThemeStyle(6, 2, 3, 2, 10)),
-            "default theme style keeps the old corner and card accent sizes");
+            ThemeStyle.DEFAULT.equals(new ThemeStyle(6, 2, 3, 2, 10, 2, 4, 10, 8, 14, 16, 1F)),
+            "default theme style keeps the old corner, card accent, spacing, button and row sizes");
         paletteControls("equipment", theme, pink, ThemeStyle.DEFAULT);
         SlideSwitch.Theme slide = theme.getWidgetTheme(SlideSwitch.Theme.KEY)
             .getTheme();
@@ -808,12 +1017,12 @@ public class EquipmentResourceContracts {
             "palette theme builder writes exactly the equipment theme that was written by hand before");
         ThemePalette inverted = EquipmentTheme.PALETTE.map(color -> color ^ 0x00FFFFFF);
         List<Integer> before = components(EquipmentTheme.PALETTE), after = components(inverted);
-        check(before.size() == 26 && after.size() == 26, "palette maps every color");
+        check(before.size() == 27 && after.size() == 27, "palette maps every color");
         for (int i = 0; i < after.size(); i++) check(
             !after.get(i)
                 .equals(before.get(i)) && !pink(after.get(i)),
             "test palette color " + i + " differs from the equipment palette and is not pink");
-        ThemeStyle style = new ThemeStyle(4, 1, 2, 3, 8);
+        ThemeStyle style = new ThemeStyle(4, 1, 2, 3, 8, 3, 6, 12, 6, 16, 20, 0.75F);
         PaletteThemes.register(TEST_THEME, standard, inverted, style);
         reloadThemes();
         ITheme theme = IThemeApi.get()
@@ -855,6 +1064,7 @@ public class EquipmentResourceContracts {
         same("cyan button hover", cyan.buttonHover(), 0xA03DE8FF);
         same("cyan tab hover", cyan.tabHover(), 0x503DE8FF);
         same("cyan slot hover", cyan.slotHover(), 0x503DE8FF);
+        same("cyan danger", cyan.danger(), palette.danger());
         List<Integer> base = components(palette), tinted = components(cyan);
         for (int i = 0; i < base.size(); i++) {
             int from = base.get(i), to = tinted.get(i);
@@ -962,7 +1172,7 @@ public class EquipmentResourceContracts {
             "a chestplate glow tints the live palette");
         paletteControls("live cyan", view, cyan, ThemeStyle.DEFAULT);
         check(
-            HudEditor.activeColor() == cyan.accent() && HudEditor.guideColor() == cyan.accentDim()
+            HudColor.selection() == cyan.accent() && HudColor.guide() == cyan.accentDim()
                 && EquipmentTheme.colors().accent == cyan.accent(),
             "hud editor guides and code colors follow the glow");
         WidgetThemeEntry<WidgetTheme> tintedPanel = view.getPanelTheme();
@@ -1052,7 +1262,7 @@ public class EquipmentResourceContracts {
                 && PaletteThemes.forScreen(equipment) == equipment,
             "a second registered theme can be chosen and takes over the equipment screens");
         check(
-            EquipmentTheme.colors().accent == chosen.accent() && HudEditor.activeColor() == chosen.accent(),
+            EquipmentTheme.colors().accent == chosen.accent() && HudColor.selection() == chosen.accent(),
             "code colors come from the chosen theme");
         int[] glow = { 0xFF000000 | CYAN };
         EquipmentTheme.LIVE.accentFrom(() -> glow[0]);
@@ -1271,6 +1481,76 @@ public class EquipmentResourceContracts {
             same(label + " code accent dim", read.accentDim, palette.accentDim());
             same(label + " code hint", read.hint, palette.hint());
         }
+        LayoutTheme layout = LayoutTheme.of(theme);
+        check(
+            layout.spacingSmall == style.spacingSmall() && layout.spacingMedium == style.spacingMedium()
+                && layout.spacingLarge == style.spacingLarge()
+                && layout.padding == style.padding()
+                && layout.buttonHeight == style.buttonHeight()
+                && layout.rowHeight == style.rowHeight()
+                && layout.textScale == style.textScale(),
+            label + " spacing, padding, button and row heights and text scale come from the theme style");
+        check(
+            theme.getWidgetTheme(ButtonPurpose.NORMAL.key) == button
+                && theme.getWidgetTheme(ButtonPurpose.TAB.key) == tabs,
+            label + " normal buttons and tabs use the plain button and toggle button themes");
+        WidgetThemeEntry<?> primary = theme.getWidgetTheme(ButtonPurpose.PRIMARY.key),
+            danger = theme.getWidgetTheme(ButtonPurpose.DANGER.key),
+            icon = theme.getWidgetTheme(ButtonPurpose.ICON.key);
+        sameRectangle(
+            label + " primary button",
+            primary.getTheme()
+                .getBackground(),
+            palette.buttonHover());
+        sameRectangle(
+            label + " primary button hover",
+            primary.getHoverTheme()
+                .getBackground(),
+            palette.accent());
+        same(
+            label + " primary button text",
+            primary.getTheme()
+                .getTextColor(),
+            palette.selectedText());
+        same(
+            label + " primary button hover text",
+            primary.getHoverTheme()
+                .getTextColor(),
+            palette.selectedText());
+        sameRectangle(
+            label + " danger button",
+            danger.getTheme()
+                .getBackground(),
+            palette.button());
+        same(
+            label + " danger button text",
+            danger.getTheme()
+                .getTextColor(),
+            palette.danger());
+        sameRectangle(
+            label + " danger button hover",
+            danger.getHoverTheme()
+                .getBackground(),
+            palette.danger());
+        same(
+            label + " danger button hover text",
+            danger.getHoverTheme()
+                .getTextColor(),
+            palette.text());
+        check(
+            icon.getTheme()
+                .getBackground() == IDrawable.EMPTY,
+            label + " icon button has no background until hovered");
+        sameRectangle(
+            label + " icon button hover",
+            icon.getHoverTheme()
+                .getBackground(),
+            palette.hover());
+        same(
+            label + " icon button text",
+            icon.getTheme()
+                .getTextColor(),
+            palette.text());
     }
 
     private static boolean pink(int color) {
@@ -1339,8 +1619,12 @@ public class EquipmentResourceContracts {
         for (int piece = 0; piece < 4; piece++) expected.add("item.gtnl.celestweave.wheel.piece." + piece);
         for (CelestweaveHudElement element : CelestweaveHudElement.values()) expected.add(element.hud.lang());
         expected.add(RailgunHudRenderer.CHARGE.lang());
-        for (String key : new String[] { "open", "help", "reset", "done", "hidden", "show_all", "in_use_only",
-            "empty" }) expected.add("gtnl.hud.editor." + key);
+        for (String key : new String[] { "open", "help", "reset", "done", "hidden", "show_all", "in_use_only", "undo",
+            "redo", "reset_element", "seconds", "empty" }) expected.add("gtnl.hud.editor." + key);
+        for (HudElement.Setting setting : HudElement.Setting.values()) expected.add(setting.lang());
+        for (HudTiming timing : HudTiming.values()) expected.add(timing.lang());
+        for (HudColor color : HudColor.values()) expected.add(color.lang());
+        expected.add(HudElement.STANDARD_STYLE.lang());
         for (Field field : MainConfig.Client.class.getFields()) {
             Config.LangKey key = field.getAnnotation(Config.LangKey.class);
             String name = field.getName()

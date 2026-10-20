@@ -7,7 +7,7 @@ import com.science.gtnl.client.fx.FxColor;
 public record ThemePalette(int accent, int accentDim, int hover, int text, int hint, int panelTop, int panelBottom,
     int card, int cardEdge, int button, int buttonHover, int tabHover, int well, int wellEdge, int slotHover, int track,
     int switchOff, int knob, int knobOff, int textOn, int textDim, int textOff, int cursor, int cursorText, int tick,
-    int milestone) {
+    int milestone, int danger) {
 
     private static final int OPAQUE = 0xFF000000, RGB = 0xFFFFFF, LIGHTNESS_STEPS = 24;
     private static final double MIN_ACCENT_CONTRAST = 3, MAX_ACCENT_LIGHTNESS = 0.85, ACCENT_FAMILY_SATURATION = 0.5;
@@ -15,7 +15,7 @@ public record ThemePalette(int accent, int accentDim, int hover, int text, int h
     public ThemePalette follow(int glow) {
         int from = accent & RGB, to = readableAccent(glow) & RGB;
         double[] source = FxColor.hsl(from), target = FxColor.hsl(to);
-        return map(color -> shift(color, from, to, source, target));
+        return map(color -> shift(color, from, to, source, target), IntUnaryOperator.identity());
     }
 
     public int readableAccent(int glow) {
@@ -56,6 +56,10 @@ public record ThemePalette(int accent, int accentDim, int hover, int text, int h
     }
 
     public ThemePalette map(IntUnaryOperator color) {
+        return map(color, color);
+    }
+
+    private ThemePalette map(IntUnaryOperator color, IntUnaryOperator signal) {
         return new ThemePalette(
             color.applyAsInt(accent),
             color.applyAsInt(accentDim),
@@ -82,6 +86,7 @@ public record ThemePalette(int accent, int accentDim, int hover, int text, int h
             color.applyAsInt(cursor),
             color.applyAsInt(cursorText),
             color.applyAsInt(tick),
-            color.applyAsInt(milestone));
+            color.applyAsInt(milestone),
+            signal.applyAsInt(danger));
     }
 }

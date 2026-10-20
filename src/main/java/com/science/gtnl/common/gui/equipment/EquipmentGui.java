@@ -19,7 +19,6 @@ import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
 import com.cleanroommc.modularui.value.sync.LongSyncValue;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
-import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
@@ -28,6 +27,10 @@ import com.science.gtnl.client.hud.HudEditor;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.equipment.EquipmentModules;
 import com.science.gtnl.common.equipment.IEquipmentVariant;
+import com.science.gtnl.common.gui.modularui.layout.Layout;
+import com.science.gtnl.common.gui.modularui.layout.LayoutTheme;
+import com.science.gtnl.common.gui.modularui.layout.Size;
+import com.science.gtnl.common.gui.modularui.theme.ButtonPurpose;
 import com.science.gtnl.common.gui.modularui.widget.FillBar;
 import com.science.gtnl.common.gui.modularui.widget.SlideSwitch;
 import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
@@ -37,16 +40,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class EquipmentGui {
 
-    protected static final int WIDTH = 176, BUTTON_HEIGHT = 14;
-    private static final int CLOSE_SIZE = 10, CLOSE_INSET = 4;
-    private static final int INVENTORY_HEIGHT = 76, INVENTORY_BOTTOM = 7, FOOTER_GAP = 4, HUD_BUTTON_WIDTH = 56,
-        HUD_BUTTON_SIDE = 8, HUD_BUTTON_BOTTOM = INVENTORY_BOTTOM + INVENTORY_HEIGHT + FOOTER_GAP,
-        FOOTER_HEIGHT = HUD_BUTTON_BOTTOM + BUTTON_HEIGHT;
+    protected static final int WIDTH = 176, TITLE_Y = 6, TEXT_HEIGHT = 10, MAX_COLUMNS = 2;
+    protected static final int CLOSE_SIZE = 10, SLOT_SIZE = 18;
+    private static final int INVENTORY_HEIGHT = 76, INVENTORY_BOTTOM = 7, HUD_BUTTON_WIDTH = 56, SLOT_X = 16,
+        BAR_GAP = 16, BAR_HEIGHT = 5;
 
     protected final PlayerInventoryGuiData data;
     protected final PanelSyncManager sync;
     protected final ItemStack stack;
     protected final boolean client;
+    protected final LayoutTheme style;
 
     protected EquipmentGui(PlayerInventoryGuiData data, PanelSyncManager sync) {
         this.data = data;
@@ -54,6 +57,12 @@ public abstract class EquipmentGui {
         this.stack = data.getUsedItemStack();
         if (!holds(stack)) throw new IllegalStateException("Missing equipment for " + getClass().getSimpleName());
         this.client = data.getPlayer().worldObj.isRemote;
+        this.style = client ? themeStyle() : LayoutTheme.DEFAULT;
+    }
+
+    @SideOnly(Side.CLIENT)
+    private static LayoutTheme themeStyle() {
+        return EquipmentTheme.layout();
     }
 
     /**
@@ -84,19 +93,54 @@ public abstract class EquipmentGui {
         return StatCollector.translateToLocal(key);
     }
 
-    protected static ModularPanel panel(String name, int contentHeight) {
-        return new ModularPanel(name).size(WIDTH, contentHeight + FOOTER_HEIGHT)
-            .child(
-                closeButton().size(CLOSE_SIZE, CLOSE_SIZE)
-                    .top(CLOSE_INSET)
-                    .right(CLOSE_INSET));
+    protected int footerHeight() {
+        return INVENTORY_BOTTOM + INVENTORY_HEIGHT + style.spacingMedium + style.buttonHeight;
     }
 
-    protected static void bindFooter(ModularPanel panel) {
+    protected int contentWidth() {
+        return WIDTH - style.padding * 2;
+    }
+
+    protected int closeLeft() {
+        return WIDTH - style.spacingMedium - CLOSE_SIZE;
+    }
+
+    protected Layout rows() {
+        return Layout.rows(style, WIDTH);
+    }
+
+    protected int textWidth(String text) {
+        return client ? Layout.textWidth(text, style) : 0;
+    }
+
+    protected int buttonWidth(String text, int padding, int min) {
+        return Size.content(textWidth(text), padding)
+            .atLeast(min)
+            .atMost(contentWidth())
+            .resolve(contentWidth());
+    }
+
+    protected int widestSwitch(Iterable<String> labels) {
+        int widest = 0;
+        for (String label : labels) widest = Math.max(widest, SlideSwitch.widthFor(textWidth(label)));
+        return widest;
+    }
+
+    protected ModularPanel panel(String name, int contentHeight) {
+        return new ModularPanel(name).size(WIDTH, contentHeight + footerHeight())
+            .child(
+                closeButton().size(CLOSE_SIZE, CLOSE_SIZE)
+                    .top(style.spacingMedium)
+                    .right(style.spacingMedium));
+    }
+
+    protected void bindFooter(ModularPanel panel) {
         panel.child(
-            standardButton(HUD_BUTTON_WIDTH, BUTTON_HEIGHT).right(HUD_BUTTON_SIDE)
-                .bottom(HUD_BUTTON_BOTTOM)
-                .overlay(IKey.lang("gtnl.hud.editor.open"))
+            button(ButtonPurpose.NORMAL)
+                .size(buttonWidth(tr("gtnl.hud.editor.open"), style.padding, HUD_BUTTON_WIDTH), style.buttonHeight)
+                .right(style.padding)
+                .bottom(INVENTORY_BOTTOM + INVENTORY_HEIGHT + style.spacingMedium)
+                .overlay(Layout.caption(IKey.lang("gtnl.hud.editor.open"), style))
                 .onMousePressed(mouse -> {
                     if (mouse != 0) return false;
                     openHudEditor();
@@ -124,12 +168,16 @@ public abstract class EquipmentGui {
             });
     }
 
-    protected static void title(ModularPanel panel, String lang, int width) {
+    protected static ButtonWidget<?> button(ButtonPurpose purpose) {
+        ButtonWidget<?> button = new ButtonWidget<>();
+        return purpose.apply(button);
+    }
+
+    protected void title(ModularPanel panel, String lang, int width) {
         panel.child(
-            IKey.lang(lang)
-                .asWidget()
-                .pos(8, 6)
-                .size(width, 10));
+            Layout.label(IKey.lang(lang), style)
+                .pos(style.padding, TITLE_Y)
+                .size(width, TEXT_HEIGHT));
     }
 
     protected void moduleSlots(ModularPanel panel, ModuleSlots<?> handler, String group, int y, String limits) {
@@ -141,7 +189,7 @@ public abstract class EquipmentGui {
                     .slot(
                         new ModularSlot(handler, i).filter(candidate -> handler.isItemValid(slot, candidate))
                             .slotGroup(group))
-                    .pos(16 + i * 18, y)
+                    .pos(SLOT_X + i * SLOT_SIZE, y)
                     .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang(limits))));
         }
     }
@@ -153,26 +201,20 @@ public abstract class EquipmentGui {
         sync.syncValue("energy", stored);
         sync.syncValue("capacity", max);
         panel.child(
-            IKey.dynamic(
-                () -> StatCollector.translateToLocalFormatted(
-                    "item.gtnl.equipment.gui.energy",
-                    EquipmentEnergy.format(stored.getLongValue()),
-                    EquipmentEnergy.format(max.getLongValue())))
-                .asWidget()
-                .pos(8, y)
-                .size(labelWidth, 10));
+            Layout
+                .label(
+                    IKey.dynamic(
+                        () -> StatCollector.translateToLocalFormatted(
+                            "item.gtnl.equipment.gui.energy",
+                            EquipmentEnergy.format(stored.getLongValue()),
+                            EquipmentEnergy.format(max.getLongValue()))),
+                    style)
+                .pos(style.padding, y)
+                .size(labelWidth, TEXT_HEIGHT));
         panel.child(
             new FillBar().value(() -> stored.getLongValue() / (double) Math.max(1, max.getLongValue()))
-                .pos(8, y + 16)
-                .size(160, 5));
-    }
-
-    protected static ButtonWidget<?> standardButton(int x, int y, int width, int height) {
-        return standardButton(width, height).pos(x, y);
-    }
-
-    private static ButtonWidget<?> standardButton(int width, int height) {
-        return new ButtonWidget<>().size(width, height);
+                .pos(style.padding, y + BAR_GAP)
+                .size(contentWidth(), BAR_HEIGHT));
     }
 
     protected BooleanSyncValue syncToggle(String key, BooleanSupplier getter, Consumer<Boolean> setter,
@@ -194,21 +236,18 @@ public abstract class EquipmentGui {
                         : "item.gtnl.equipment.gui.unavailable")));
     }
 
-    protected void addToggle(ParentWidget<?> parent, String key, String lang, int x, int y, int width,
-        BooleanSupplier getter, Consumer<Boolean> setter, BooleanSupplier allowed, String hint) {
+    protected SlideSwitch toggle(String key, String lang, BooleanSupplier getter, Consumer<Boolean> setter,
+        BooleanSupplier allowed, String hint) {
         BooleanSyncValue value = syncToggle(key, getter, setter, allowed);
-        parent.child(
-            new SlideSwitch().value(value::getBoolValue)
-                .availableWhen(allowed)
-                .label(IKey.dynamic(() -> tr(lang)))
-                .pos(x, y)
-                .size(width, BUTTON_HEIGHT)
-                .tooltipBuilder(tooltip -> stateTooltip(tooltip, hint, allowed, value::getBoolValue))
-                .onMousePressed(mouse -> {
-                    if (mouse != 0 || !allowed.getAsBoolean()) return false;
-                    value.setBoolValue(!value.getBoolValue());
-                    return true;
-                }));
+        return new SlideSwitch().value(value::getBoolValue)
+            .availableWhen(allowed)
+            .label(IKey.dynamic(() -> tr(lang)))
+            .tooltipBuilder(tooltip -> stateTooltip(tooltip, hint, allowed, value::getBoolValue))
+            .onMousePressed(mouse -> {
+                if (mouse != 0 || !allowed.getAsBoolean()) return false;
+                value.setBoolValue(!value.getBoolValue());
+                return true;
+            });
     }
 
     protected class ModuleSlots<T extends IEquipmentVariant> extends ItemStackHandler {
