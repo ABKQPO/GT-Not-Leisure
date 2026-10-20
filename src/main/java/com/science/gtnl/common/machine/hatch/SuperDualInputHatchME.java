@@ -208,6 +208,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     public long[] i_client = new long[SLOT_COUNT];
     public long[] f_client = new long[SLOT_COUNT];
     private IStackWatcher watcher;
+    private boolean wasReady = true;
 
     public DecimalFormat df2 = new DecimalFormat("#,###.00");
     public DecimalFormat df = new DecimalFormat("#,###");
@@ -1286,7 +1287,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
 
         } catch (GridAccessException ignored) {}
         if (inputChanged) {
-            scheduleRecipeCheck(RecipeCheckReason.THROTTLED);
+            configureWatchers();
         }
     }
 
@@ -1323,12 +1324,15 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
             }
         } catch (GridAccessException ignored) {}
         if (inputChanged) {
-            scheduleRecipeCheck(RecipeCheckReason.THROTTLED);
+            configureWatchers();
         }
     }
 
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTimer) {
         if (getBaseMetaTileEntity().isServerSide()) {
+            boolean ready = isAllowedToWork() && isActive();
+            if (ready && !wasReady) scheduleRecipeCheck(RecipeCheckReason.IMMEDIATE);
+            wasReady = ready;
             if (aTimer % autoPullRefreshTime == 0 && autoPullItemList) {
                 refreshItemList();
                 refreshItemListF();
@@ -1364,7 +1368,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     private void configureWatchers() {
         if (watcher != null) {
             watcher.clear();
-            if (MachineStats.machines.useStackWatcher && !autoPullItemList) {
+            if (MachineStats.machines.useStackWatcher) {
                 for (ItemStack stack : i_mark) {
                     if (stack != null) watcher.add(AEItemStack.create(stack));
                 }
@@ -1379,13 +1383,13 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     private boolean areItemStacksEqual(ItemStack first, ItemStack second) {
         return first == second || first != null && second != null
             && first.stackSize == second.stackSize
-            && GTUtility.areStacksEqual(first, second, true);
+            && GTUtility.areStacksEqual(first, second);
     }
 
     private boolean areFluidStacksEqual(FluidStack first, FluidStack second) {
         return first == second || first != null && second != null
             && first.amount == second.amount
-            && GTUtility.areFluidsEqual(first, second, true);
+            && GTUtility.areFluidsEqual(first, second);
     }
 
     private void scheduleRecipeCheck(RecipeCheckReason reason) {
