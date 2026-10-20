@@ -9,11 +9,11 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.common.equipment.EquipmentEnergy;
-import com.science.gtnl.common.item.items.CelestweaveArmor;
-import com.science.gtnl.common.item.items.EnergyModuleItem;
+import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
+import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
 import com.science.gtnl.config.MainConfig;
 
-public final class CelestweaveEnergy {
+public class CelestweaveEnergy {
 
     private static final double FLUSH_SHARE = 0.01;
     private static final Map<UUID, double[]> PENDING = new HashMap<>();
@@ -36,7 +36,7 @@ public final class CelestweaveEnergy {
         EquipmentEnergy.clamp(stack, capacity(stack));
     }
 
-    public static double pending(EntityPlayer player, int piece) {
+    private static double pending(EntityPlayer player, int piece) {
         double[] pending = PENDING.get(player.getUniqueID());
         return pending == null ? 0 : pending[piece];
     }

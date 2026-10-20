@@ -17,17 +17,17 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
-import com.science.gtnl.client.fx.FxCamera;
-import com.science.gtnl.client.fx.FxRenderHelper;
-import com.science.gtnl.client.fx.FxRenderHelper.Sprite;
-import com.science.gtnl.client.railgun.shader.RailgunShaderEffect;
+import com.science.gtnl.client.fx.world.FxCamera;
+import com.science.gtnl.client.fx.world.FxRenderHelper;
+import com.science.gtnl.client.fx.world.FxRenderHelper.Sprite;
 import com.science.gtnl.common.equipment.EquipmentVec;
-import com.science.gtnl.common.item.items.ElectromagneticRailgun;
+import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.packet.RailgunBeamUpdatePacket;
 import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunDefaults;
 import com.science.gtnl.common.railgun.RailgunModuleType;
 import com.science.gtnl.common.railgun.RailgunRaycast;
+import com.science.gtnl.common.railgun.RailgunSetting;
 import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -47,6 +47,7 @@ public class RailgunBeamRenderer {
     private static final double CLIPPED_RANGE = 1.5;
     private static final double MAX_FRAME_SECONDS = 0.25;
     private static final double PLASMA_WIDTH = 0.42;
+    private static final double MUZZLE_CLEARANCE = 0.12;
 
     private static final double[] BODY_RADII = { 0.17, 0.1, 0.035 };
     private static final double[] BODY_SPIN = { 0.22, -0.34, 0.58 };
@@ -100,7 +101,7 @@ public class RailgunBeamRenderer {
 
     private static HeldBeam seed(EntityPlayer player, ItemStack stack) {
         HeldBeam held = new HeldBeam();
-        held.ehv = ElectromagneticRailgun.isExtremeHighVoltage(stack);
+        held.ehv = RailgunSetting.EHV_BEAM.active(stack);
         held.range = localRange(player, stack);
         held.targetRange = held.range;
         held.lastFrameMillis = Minecraft.getSystemTime();
@@ -207,8 +208,9 @@ public class RailgunBeamRenderer {
     private static List<Beam> collect(long now, float partialTicks) {
         List<Beam> beams = new ArrayList<>(SHOTS.size() + HELD.size());
         for (Shot shot : SHOTS) {
-            EquipmentVec from = RailgunMuzzleAnchor.muzzle(shot.shooterId, shot.from, partialTicks);
-            if (valid(from, shot.to)) beams.add(new Beam(from, shot.to, shot.ehv, shot.intensity, shot.shooterId));
+            if (!RailgunClientFx.visible(shot.shooterId, shot.from)) continue;
+            if (valid(shot.from, shot.to))
+                beams.add(new Beam(pastMuzzle(shot.from, shot.to), shot.to, shot.ehv, shot.intensity, shot.shooterId));
         }
         World world = Minecraft.getMinecraft().theWorld;
         long millis = Minecraft.getSystemTime();
@@ -216,12 +218,12 @@ public class RailgunBeamRenderer {
             advance(held, millis);
             Entity shooter = world == null ? null : world.getEntityByID(id);
             EquipmentVec origin = RailgunMuzzleAnchor.muzzle(id, partialTicks);
-            if (shooter == null || origin == null) return;
+            if (shooter == null || origin == null || !RailgunClientFx.visible(id, origin)) return;
             EquipmentVec end = aimEnd(
                 shooter,
                 partialTicks,
                 Math.max(MIN_BEAM_LENGTH, Math.min(MAX_BEAM_LENGTH, held.range)));
-            if (valid(origin, end)) beams.add(new Beam(origin, end, held.ehv, 1F, id));
+            if (valid(origin, end)) beams.add(new Beam(pastMuzzle(origin, end), end, held.ehv, 1F, id));
         });
         return beams;
     }
@@ -234,7 +236,7 @@ public class RailgunBeamRenderer {
         double reach = range;
         if (firstPerson) {
             origin = FxCamera.position();
-            direction = FxCamera.forward();
+            direction = RailgunMuzzleAnchor.firstPersonAim(partialTicks);
             reach += origin.subtract(EquipmentVec.eye(shooter, partialTicks))
                 .length();
         } else {
@@ -266,6 +268,15 @@ public class RailgunBeamRenderer {
             .length();
         if (distance < CLIPPED_RANGE && range > CLIPPED_RANGE * 4) return range;
         return Math.max(MIN_BLOCK_RANGE, Math.min(range, distance));
+    }
+
+    private static EquipmentVec pastMuzzle(EquipmentVec from, EquipmentVec to) {
+        EquipmentVec delta = to.subtract(from);
+        double length = delta.length();
+        return length <= MUZZLE_CLEARANCE * 2 ? from
+            : from.add(
+                delta.normalize()
+                    .scale(MUZZLE_CLEARANCE));
     }
 
     private static boolean valid(EquipmentVec from, EquipmentVec to) {

@@ -11,14 +11,14 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
-import com.science.gtnl.common.item.items.ElectromagneticRailgun;
+import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-public final class RailgunServerEvents {
+public class RailgunServerEvents {
 
     private static boolean registered;
 

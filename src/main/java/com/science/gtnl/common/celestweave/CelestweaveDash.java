@@ -9,11 +9,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
 
 import com.science.gtnl.common.equipment.EquipmentMessages;
-import com.science.gtnl.common.item.items.CelestweaveArmor;
+import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.config.MainConfig;
 
-public final class CelestweaveDash {
+public class CelestweaveDash {
 
     private static final Map<UUID, Long> LAST = new ConcurrentHashMap<>();
 

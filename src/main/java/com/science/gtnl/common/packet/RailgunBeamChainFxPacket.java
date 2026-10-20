@@ -36,7 +36,7 @@ public class RailgunBeamChainFxPacket extends ClientboundPacket {
     protected void read(ByteBuf buffer) {
         try {
             shooterId = buffer.readInt();
-            origin = RailgunNet.readVec(buffer);
+            origin = EquipmentVec.read(buffer);
             path = RailgunNet.readPath(buffer);
             sound = buffer.readBoolean();
             ehv = buffer.readBoolean();
@@ -49,7 +49,7 @@ public class RailgunBeamChainFxPacket extends ClientboundPacket {
     @Override
     protected void write(ByteBuf buffer) {
         buffer.writeInt(shooterId);
-        RailgunNet.writeVec(buffer, origin);
+        origin.write(buffer);
         RailgunNet.writePath(buffer, path);
         buffer.writeBoolean(sound);
         buffer.writeBoolean(ehv);

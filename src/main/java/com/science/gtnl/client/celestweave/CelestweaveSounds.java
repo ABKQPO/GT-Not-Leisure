@@ -11,7 +11,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-final class CelestweaveSounds {
+public class CelestweaveSounds {
 
     private CelestweaveSounds() {}
 
@@ -24,7 +24,7 @@ final class CelestweaveSounds {
             z,
             ScienceNotLeisure.RESOURCE_ROOT_ID + ":celestweave." + name,
             volume,
-            pitch * (0.95F + 0.1F * CwArcs.RNG.nextFloat()),
+            pitch * (0.95F + 0.1F * CelestweaveArcs.RNG.nextFloat()),
             false);
     }
 

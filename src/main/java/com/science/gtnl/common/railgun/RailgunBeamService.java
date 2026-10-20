@@ -14,15 +14,15 @@ import net.minecraft.world.WorldServer;
 
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.equipment.EquipmentVec;
-import com.science.gtnl.common.item.items.ElectromagneticRailgun;
+import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.packet.RailgunBeamChainFxPacket;
 import com.science.gtnl.common.packet.RailgunBeamUpdatePacket;
 import com.science.gtnl.common.railgun.RailgunChainResolver.Hit;
 import com.science.gtnl.config.MainConfig;
 
-public final class RailgunBeamService {
+public class RailgunBeamService {
 
-    private static final class BeamState {
+    private static class BeamState {
 
         final ItemStack stack;
         final int slot, dimension;
@@ -125,8 +125,11 @@ public final class RailgunBeamService {
         var config = MainConfig.item.railgun;
         var modules = RailgunData.modules(stack);
         boolean pvp = RailgunSetting.PVP.active(stack), ehv = RailgunSetting.EHV_BEAM.active(stack);
-        double cost = ehv ? Math.max(0, config.ehvBeamEuPerSettle) + 16 * Math.max(0, config.ehvLightningEu)
-            : Math.max(0, config.beamEuPerSettle) + Math.max(0, config.hvLightningEu) / 8;
+        double cost = ehv
+            ? Math.max(0, config.ehvBeamEuPerSettle)
+                + RailgunDefaults.EHV_BEAM_LIGHTNINGS_PER_SETTLE * Math.max(0, config.ehvLightningEu)
+            : Math.max(0, config.beamEuPerSettle)
+                + RailgunDefaults.HV_BEAM_LIGHTNINGS_PER_SETTLE * Math.max(0, config.hvLightningEu);
         if (!EquipmentEnergy.drain(player, stack, cost)) {
             DRAINED.add(player.getUniqueID());
             RailgunFireService.noEnergy(player);

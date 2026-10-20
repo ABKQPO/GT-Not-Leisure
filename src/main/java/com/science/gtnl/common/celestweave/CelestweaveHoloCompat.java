@@ -3,7 +3,7 @@ package com.science.gtnl.common.celestweave;
 import net.dries007.holoInventory.api.IHoloGlasses;
 import net.minecraft.item.ItemStack;
 
-final class CelestweaveHoloCompat {
+public class CelestweaveHoloCompat {
 
     private CelestweaveHoloCompat() {}
 

@@ -14,7 +14,7 @@ import com.science.gtnl.common.packet.CelestweaveKeyPacket;
 import tconstruct.client.tabs.AbstractTab;
 import tconstruct.client.tabs.TabRegistry;
 
-final class CelestweaveBackpackTicCompat {
+public class CelestweaveBackpackTicCompat {
 
     private static final ItemStack FALLBACK = new ItemStack(Blocks.chest);
 
@@ -30,7 +30,7 @@ final class CelestweaveBackpackTicCompat {
         TabRegistry.addTabsToList((List<GuiButton>) buttons);
     }
 
-    static final class Tab extends AbstractTab {
+    public static class Tab extends AbstractTab {
 
         Tab() {
             super(0, 0, 0, FALLBACK);

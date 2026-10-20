@@ -1,12 +1,12 @@
 package com.science.gtnl.client.railgun;
 
-import com.science.gtnl.client.fx.FxArcRenderer;
-import com.science.gtnl.client.fx.FxArcRenderer.Color;
-import com.science.gtnl.client.fx.FxArcRenderer.Style;
+import com.science.gtnl.client.fx.world.FxArcRenderer;
+import com.science.gtnl.client.fx.world.FxArcRenderer.Color;
+import com.science.gtnl.client.fx.world.FxArcRenderer.Style;
 import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.config.MainConfig;
 
-public final class RailgunArcs {
+public class RailgunArcs {
 
     private static final Style PLASMA = new Style(
         new Color(1F, 0.3F, 0.6F),

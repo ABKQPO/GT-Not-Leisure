@@ -4,23 +4,18 @@ import java.util.Locale;
 
 import net.minecraft.item.ItemStack;
 
-import com.science.gtnl.common.item.items.RailgunModuleItem;
+import com.science.gtnl.common.equipment.IEquipmentVariant;
+import com.science.gtnl.common.equipment.MetaLookup;
+import com.science.gtnl.common.item.items.equipment.RailgunModuleItem;
 
-public enum RailgunModuleType {
+public enum RailgunModuleType implements IEquipmentVariant {
 
     COMPUTE(0, 2),
     ACCELERATION(1, 2),
     RANGE(2, 2),
     EHV_BEAM(3, 1);
 
-    private static final RailgunModuleType[] BY_META;
-
-    static {
-        int count = 0;
-        for (RailgunModuleType type : values()) count = Math.max(count, type.meta + 1);
-        BY_META = new RailgunModuleType[count];
-        for (RailgunModuleType type : values()) BY_META[type.meta] = type;
-    }
+    public static final MetaLookup<RailgunModuleType> LOOKUP = new MetaLookup<>(values());
 
     public final String id;
     public final int meta, limit;
@@ -36,11 +31,21 @@ public enum RailgunModuleType {
         return byMeta(stack.getItemDamage());
     }
 
+    @Override
+    public String id() {
+        return id;
+    }
+
+    @Override
+    public int meta() {
+        return meta;
+    }
+
     public static RailgunModuleType byMeta(int meta) {
-        return meta >= 0 && meta < BY_META.length ? BY_META[meta] : null;
+        return LOOKUP.byMeta(meta);
     }
 
     public static int metaCount() {
-        return BY_META.length;
+        return LOOKUP.size();
     }
 }

@@ -12,13 +12,13 @@ import com.science.gtnl.common.item.items.PortableItem;
 
 public class ContainerPortableEnderChest extends ContainerChest {
 
-    public final PortableStorageHost host;
+    public final IPortableStorageHost host;
 
     public ContainerPortableEnderChest(InventoryPlayer playerInv, IInventory enderInv) {
         this(playerInv, enderInv, null);
     }
 
-    public ContainerPortableEnderChest(InventoryPlayer playerInv, IInventory enderInv, PortableStorageHost host) {
+    public ContainerPortableEnderChest(InventoryPlayer playerInv, IInventory enderInv, IPortableStorageHost host) {
         super(playerInv, enderInv);
         this.host = host;
 

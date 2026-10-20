@@ -41,10 +41,6 @@ public class GlslProgram implements AutoCloseable {
         GL20.glUseProgram(program);
     }
 
-    public static void release() {
-        GL20.glUseProgram(0);
-    }
-
     public int uniform(String name) {
         if (program == 0) throw new IllegalStateException("GLSL program is not compiled yet");
         return uniforms.computeIfAbsent(name, key -> GL20.glGetUniformLocation(program, key));

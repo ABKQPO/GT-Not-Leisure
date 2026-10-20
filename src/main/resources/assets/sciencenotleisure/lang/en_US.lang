@@ -74,6 +74,10 @@ gtnl.gui.config.general.client.enable_railgun_bloom.tooltip=Render the soft bloo
 
 gtnl.gui.config.general.client.enable_railgun_shaders=Railgun GLSL Shaders
 gtnl.gui.config.general.client.enable_railgun_shaders.tooltip=Procedural shaders for the railgun beam, charge orb and charge overlay. Falls back to the textured sprites when a shader fails to compile.
+gtnl.gui.config.general.client.enable_railgun_show_others_fx=Show Others' Railgun Effects
+gtnl.gui.config.general.client.enable_railgun_show_others_fx.tooltip=Show beams, charge orbs, arcs and impact effects of other players' railguns. Sounds still play when this is off.
+gtnl.gui.config.general.client.railgun_fx_distance=Railgun Effect Distance
+gtnl.gui.config.general.client.railgun_fx_distance.tooltip=Railgun effects of other players farther than this many blocks are not drawn.
 
 gtnl.gui.config.general.client.celestweave_fx_level=Celestweave Effect Level
 gtnl.gui.config.general.client.celestweave_fx_level.tooltip=0 turns all Celestweave arcs off, 1 shows event effects only, 2 also shows the idle arcs.
@@ -94,17 +98,13 @@ gtnl.gui.config.general.client.enable_celestweave_first_person_arm.tooltip=Draw 
 gtnl.gui.config.general.client.enable_celestweave_sounds=Celestweave Sounds
 gtnl.gui.config.general.client.enable_celestweave_sounds.tooltip=Play Celestweave armor sounds for shield hits, reflects, dashes, landings and wings.
 gtnl.gui.config.general.client.enable_celestweave_hud=Celestweave HUD
-gtnl.gui.config.general.client.enable_celestweave_hud.tooltip=Show the energy core next to the hotbar, the shield hit ring around the crosshair, the dash cooldown arc and the flight altimeter.
+gtnl.gui.config.general.client.enable_celestweave_hud.tooltip=Show the energy core next to the hotbar, the shield hit ring around the crosshair, the dash cooldown arc, the flight altimeter and the Celestweave Lance charge. Drag each element in Edit HUD at the bottom of the radial menu.
 gtnl.gui.config.general.client.celestweave_hud_scale=Celestweave HUD Scale
-gtnl.gui.config.general.client.celestweave_hud_scale.tooltip=Size multiplier of every Celestweave HUD element.
+gtnl.gui.config.general.client.celestweave_hud_scale.tooltip=Base size multiplier of every Celestweave HUD element. Each element can be scaled further in Edit HUD.
 gtnl.gui.config.general.client.celestweave_hud_idle_seconds=Celestweave HUD Idle Seconds
 gtnl.gui.config.general.client.celestweave_hud_idle_seconds.tooltip=Seconds without hits, dashes, flight or energy changes before the HUD fades out.
 gtnl.gui.config.general.client.celestweave_hud_idle_alpha=Celestweave HUD Idle Opacity
 gtnl.gui.config.general.client.celestweave_hud_idle_alpha.tooltip=Opacity of the energy core while the HUD is idle. 0 hides it completely.
-gtnl.gui.config.general.client.celestweave_hud_core_x=Celestweave Energy Core X Offset
-gtnl.gui.config.general.client.celestweave_hud_core_x.tooltip=Moves the energy core horizontally from its default place left of the hotbar.
-gtnl.gui.config.general.client.celestweave_hud_core_y=Celestweave Energy Core Y Offset
-gtnl.gui.config.general.client.celestweave_hud_core_y.tooltip=Moves the energy core vertically from its default place left of the hotbar.
 
 gtnl.gui.config.general.effect.enableghostlyshape=Enable Ghostly Shape
 gtnl.gui.config.general.effect.enableghostlyshape.tooltip=When the player dies and respawns, give the player the Ghost Shape effect.
@@ -3885,7 +3885,7 @@ item.gtnl.twilight_sword.tooltip.9=§rHold right-click to trigger a special atta
 item.gtnl.twilight_sword.tooltip.10=§oModel by IceyArk
 entity.sciencenotleisure.ArrowCustom.name=Twilight Arrow
 
-item.gtnl.electromagnetic_railgun.name=&{sb;colors=#DF65A0}Electromagnetic Railgun
+item.gtnl.electromagnetic_railgun.name=&{sb;colors=#DF65A0}Celestweave Lance
 item.gtnl.electromagnetic_railgun.tooltip.0=Energy: %s / %s EU
 item.gtnl.electromagnetic_railgun.tooltip.1=Installed modules: %s / 8
 item.gtnl.electromagnetic_railgun.tooltip.2=Hold right click to charge; hold left click for beam; press the equipment settings key (G) to open settings
@@ -3916,10 +3916,10 @@ item.gtnl.energy_module.t3.name=Energy Module T3
 item.gtnl.energy_module.tooltip=Capacity: %s EU
 item.gtnl.energy_module.install=Fits the railgun or any Celestweave armor piece; one energy module each
 
-item.gtnl.celestweave_oculus.name=Celestweave Oculus
-item.gtnl.celestweave_core.name=Celestweave Core
-item.gtnl.celestweave_conduit.name=Celestweave Conduit
-item.gtnl.celestweave_stride.name=Celestweave Stride
+item.gtnl.celestweave_oculus.name=&{sb;colors=#DF65A0}Celestweave Oculus
+item.gtnl.celestweave_core.name=&{sb;colors=#DF65A0}Celestweave Core
+item.gtnl.celestweave_conduit.name=&{sb;colors=#DF65A0}Celestweave Conduit
+item.gtnl.celestweave_stride.name=&{sb;colors=#DF65A0}Celestweave Stride
 item.gtnl.celestweave.tooltip.energy=Energy: %s / %s EU
 item.gtnl.celestweave.tooltip.hidden=(hidden)
 item.gtnl.celestweave_module.held=Holding: %s
@@ -4040,6 +4040,16 @@ item.gtnl.celestweave.radial.piece.0=Helmet
 item.gtnl.celestweave.radial.piece.1=Chestplate
 item.gtnl.celestweave.radial.piece.2=Leggings
 item.gtnl.celestweave.radial.piece.3=Boots
+item.gtnl.celestweave.radial.hud=Edit HUD
+item.gtnl.celestweave.hud.editor.help=Drag to move - scroll to scale - right-click to show or hide
+item.gtnl.celestweave.hud.editor.reset=Reset All
+item.gtnl.celestweave.hud.editor.done=Done
+item.gtnl.celestweave.hud.editor.hidden=(hidden)
+item.gtnl.celestweave.hud.element.core=Energy Core
+item.gtnl.celestweave.hud.element.shield_ring=Shield Hit Ring
+item.gtnl.celestweave.hud.element.dash_arc=Dash Cooldown Arc
+item.gtnl.celestweave.hud.element.altimeter=Flight Altimeter
+item.gtnl.celestweave.hud.element.railgun_charge=Lance Charge
 item.gtnl.celestweave.gui.open_backpack=Backpack
 item.gtnl.railgun.fail.no_eu=Not enough EU to fire the railgun
 gtnl.potion.electromagnetic_paralysis=Electromagnetic Paralysis

@@ -61,11 +61,6 @@ public enum CelestweaveCosmeticOption {
         this.applies = applies;
     }
 
-    public static CelestweaveCosmeticOption byKey(String key) {
-        for (CelestweaveCosmeticOption option : values()) if (option.key.equals(key)) return option;
-        return null;
-    }
-
     public float max() {
         return kind == Kind.FLAGS ? (1 << names.size()) - 1 : (float) max.getAsDouble();
     }
@@ -96,11 +91,15 @@ public enum CelestweaveCosmeticOption {
         return switch (kind) {
             case COLOR -> tag.getInteger(key) & 0xFFFFFF;
             case FLAGS -> tag.getInteger(key) & (int) max();
-            case CHOICE -> tag.hasKey(key, 8) ? Math.max(0, names.indexOf(tag.getString(key)))
-                : clamp(tag.getInteger(key));
+            case CHOICE -> tag.hasKey(key, 8) ? named(tag.getString(key)) : clamp(tag.getInteger(key));
             case INT -> clamp(tag.getInteger(key));
             case DECIMAL -> clamp(tag.getFloat(key));
         };
+    }
+
+    private float named(String id) {
+        int index = names.indexOf(id);
+        return index < 0 ? fallback : index;
     }
 
     void write(NBTTagCompound tag, float value) {

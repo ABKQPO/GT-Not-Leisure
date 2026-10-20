@@ -22,7 +22,7 @@ import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public final class RailgunTerrainService {
+public class RailgunTerrainService {
 
     private record Position(int x, int y, int z, double order) {}
 

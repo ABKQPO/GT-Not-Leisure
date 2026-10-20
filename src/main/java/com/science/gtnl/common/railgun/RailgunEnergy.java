@@ -5,10 +5,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.common.equipment.EquipmentEnergy;
-import com.science.gtnl.common.item.items.EnergyModuleItem;
+import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
 import com.science.gtnl.config.MainConfig;
 
-public final class RailgunEnergy {
+public class RailgunEnergy {
 
     private RailgunEnergy() {}
 

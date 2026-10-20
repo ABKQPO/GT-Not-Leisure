@@ -11,10 +11,10 @@ import net.minecraft.nbt.NBTTagList;
 
 import com.google.common.collect.MapMaker;
 import com.science.gtnl.common.equipment.EquipmentModules;
-import com.science.gtnl.common.item.items.ElectromagneticRailgun;
+import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.config.MainConfig;
 
-public final class RailgunData {
+public class RailgunData {
 
     public static final String MODULES = "Modules";
     public static final int MODULE_SLOTS = 8;
@@ -45,11 +45,6 @@ public final class RailgunData {
         return stack.getTagCompound();
     }
 
-    public static void updateMode(ItemStack stack) {
-        rootForWrite(stack)
-            .setBoolean(ElectromagneticRailgun.NBT_EXTREME_HIGH_VOLTAGE, RailgunSetting.EHV_BEAM.active(stack));
-    }
-
     public static NBTTagList moduleList(ItemStack stack) {
         return stack.hasTagCompound() ? stack.getTagCompound()
             .getTagList(MODULES, 10) : new NBTTagList();
@@ -61,7 +56,6 @@ public final class RailgunData {
 
     public static void writeModuleStacks(ItemStack stack, ItemStack[] slots) {
         rootForWrite(stack).setTag(MODULES, EquipmentModules.write(slots, MODULE_SLOTS));
-        updateMode(stack);
     }
 
     public static Modules modules(ItemStack stack) {

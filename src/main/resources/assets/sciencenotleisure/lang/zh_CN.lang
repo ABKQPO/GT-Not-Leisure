@@ -74,6 +74,10 @@ gtnl.gui.config.general.client.enable_railgun_bloom.tooltip=启用柔和泛光�
 
 gtnl.gui.config.general.client.enable_railgun_shaders=电磁炮着色器特效
 gtnl.gui.config.general.client.enable_railgun_shaders.tooltip=为光束、蓄力光球与蓄力屏幕效果启用 GLSL 着色器。着色器编译失败时自动回退到贴图特效
+gtnl.gui.config.general.client.enable_railgun_show_others_fx=显示他人的电磁炮特效
+gtnl.gui.config.general.client.enable_railgun_show_others_fx.tooltip=显示其他玩家电磁炮的光束、蓄力光球、电弧与命中特效。关闭后仍能听到声音
+gtnl.gui.config.general.client.railgun_fx_distance=电磁炮特效距离
+gtnl.gui.config.general.client.railgun_fx_distance.tooltip=超过此距离（格）的其他玩家不画电磁炮特效
 
 gtnl.gui.config.general.client.celestweave_fx_level=苍穹织雷特效等级
 gtnl.gui.config.general.client.celestweave_fx_level.tooltip=0 关闭全部电弧，1 只显示事件特效，2 同时显示待机电弧
@@ -94,17 +98,13 @@ gtnl.gui.config.general.client.enable_celestweave_first_person_arm.tooltip=第�
 gtnl.gui.config.general.client.enable_celestweave_sounds=苍穹织雷音效
 gtnl.gui.config.general.client.enable_celestweave_sounds.tooltip=播放护盾受击、反击、冲刺、落地与翅膀展开收起的音效
 gtnl.gui.config.general.client.enable_celestweave_hud=苍穹织雷 HUD
-gtnl.gui.config.general.client.enable_celestweave_hud.tooltip=显示快捷栏旁的能量核心、准星外的护盾受击环、冲刺冷却弧与飞行高度标尺
+gtnl.gui.config.general.client.enable_celestweave_hud.tooltip=显示快捷栏旁的能量核心、准星外的护盾受击环、冲刺冷却弧、飞行高度标尺与贯雷蓄力指示；可在轮盘最下方的“编辑 HUD”中拖动每个元素
 gtnl.gui.config.general.client.celestweave_hud_scale=苍穹织雷 HUD 缩放
-gtnl.gui.config.general.client.celestweave_hud_scale.tooltip=所有苍穹织雷 HUD 元素的尺寸倍率
+gtnl.gui.config.general.client.celestweave_hud_scale.tooltip=所有苍穹织雷 HUD 元素的基础尺寸倍率，每个元素还可在“编辑 HUD”中单独缩放
 gtnl.gui.config.general.client.celestweave_hud_idle_seconds=苍穹织雷 HUD 闲置秒数
 gtnl.gui.config.general.client.celestweave_hud_idle_seconds.tooltip=没有受击、冲刺、飞行或能量变化超过此秒数后 HUD 淡出
 gtnl.gui.config.general.client.celestweave_hud_idle_alpha=苍穹织雷 HUD 闲置不透明度
 gtnl.gui.config.general.client.celestweave_hud_idle_alpha.tooltip=HUD 闲置时能量核心的不透明度，0 为完全隐藏
-gtnl.gui.config.general.client.celestweave_hud_core_x=苍穹织雷能量核心横向偏移
-gtnl.gui.config.general.client.celestweave_hud_core_x.tooltip=从快捷栏左侧的默认位置横向移动能量核心
-gtnl.gui.config.general.client.celestweave_hud_core_y=苍穹织雷能量核心纵向偏移
-gtnl.gui.config.general.client.celestweave_hud_core_y.tooltip=从快捷栏左侧的默认位置纵向移动能量核心
 
 gtnl.gui.config.general.effect.enableghostlyshape=启用幽灵形态
 gtnl.gui.config.general.effect.enableghostlyshape.tooltip=当玩家死亡重生时，给予玩家幽灵形态效果
@@ -3885,7 +3885,7 @@ item.gtnl.twilight_sword.tooltip.9=§r长按右键触发特殊攻击
 item.gtnl.twilight_sword.tooltip.10=§oModel by IceyArk
 entity.sciencenotleisure.ArrowCustom.name=薄暝之箭
 
-item.gtnl.electromagnetic_railgun.name=&{sb;colors=#DF65A0}电磁炮
+item.gtnl.electromagnetic_railgun.name=&{sb;colors=#DF65A0}苍穹织雷·贯雷
 item.gtnl.electromagnetic_railgun.tooltip.0=能量：%s / %s EU
 item.gtnl.electromagnetic_railgun.tooltip.1=已安装模块：%s / 8
 item.gtnl.electromagnetic_railgun.tooltip.2=按住右键蓄力；按住左键发射光束；按装备设置键（默认 G）打开设置
@@ -3916,10 +3916,10 @@ item.gtnl.energy_module.t3.name=能量模块 T3
 item.gtnl.energy_module.tooltip=容量：%s EU
 item.gtnl.energy_module.install=可装入电磁炮或苍穹织雷护甲任意部位，每件装备限装一个
 
-item.gtnl.celestweave_oculus.name=苍穹织雷·目镜
-item.gtnl.celestweave_core.name=苍穹织雷·核心
-item.gtnl.celestweave_conduit.name=苍穹织雷·导能
-item.gtnl.celestweave_stride.name=苍穹织雷·踏雷
+item.gtnl.celestweave_oculus.name=&{sb;colors=#DF65A0}苍穹织雷·瞰雷
+item.gtnl.celestweave_core.name=&{sb;colors=#DF65A0}苍穹织雷·蕴雷
+item.gtnl.celestweave_conduit.name=&{sb;colors=#DF65A0}苍穹织雷·驭雷
+item.gtnl.celestweave_stride.name=&{sb;colors=#DF65A0}苍穹织雷·踏雷
 item.gtnl.celestweave.tooltip.energy=能量：%s / %s EU
 item.gtnl.celestweave.tooltip.hidden=（外观已隐藏）
 item.gtnl.celestweave_module.held=已放入：%s
@@ -4040,6 +4040,16 @@ item.gtnl.celestweave.radial.piece.0=头盔
 item.gtnl.celestweave.radial.piece.1=胸甲
 item.gtnl.celestweave.radial.piece.2=护腿
 item.gtnl.celestweave.radial.piece.3=靴子
+item.gtnl.celestweave.radial.hud=编辑 HUD
+item.gtnl.celestweave.hud.editor.help=拖动移动 · 滚轮缩放 · 右键显示/隐藏
+item.gtnl.celestweave.hud.editor.reset=重置全部
+item.gtnl.celestweave.hud.editor.done=完成
+item.gtnl.celestweave.hud.editor.hidden=（已隐藏）
+item.gtnl.celestweave.hud.element.core=能量核心
+item.gtnl.celestweave.hud.element.shield_ring=护盾受击环
+item.gtnl.celestweave.hud.element.dash_arc=冲刺冷却弧
+item.gtnl.celestweave.hud.element.altimeter=飞行高度标尺
+item.gtnl.celestweave.hud.element.railgun_charge=贯雷蓄力
 item.gtnl.celestweave.gui.open_backpack=打开背包
 item.gtnl.railgun.fail.no_eu=电磁炮能量不足
 gtnl.potion.electromagnetic_paralysis=电磁麻痹

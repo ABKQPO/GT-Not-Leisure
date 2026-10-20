@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 
 import gregtech.api.enums.Mods;
 
-public final class CelestweaveCompat {
+public class CelestweaveCompat {
 
     private CelestweaveCompat() {}
 

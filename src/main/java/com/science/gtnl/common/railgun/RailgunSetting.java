@@ -49,6 +49,5 @@ public enum RailgunSetting {
         if (!root.hasKey(TAG, 10)) root.setTag(TAG, new NBTTagCompound());
         root.getCompoundTag(TAG)
             .setBoolean(key, value);
-        RailgunData.updateMode(stack);
     }
 }

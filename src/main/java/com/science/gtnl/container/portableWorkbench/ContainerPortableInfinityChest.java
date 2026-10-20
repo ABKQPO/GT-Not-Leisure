@@ -24,7 +24,7 @@ public class ContainerPortableInfinityChest extends ContainerPortableAvaritiaddo
     }
 
     public ContainerPortableInfinityChest(@NotNull ItemStack stack, InventoryPlayer playerInv,
-        PortableStorageHost host) {
+        IPortableStorageHost host) {
         super(stack, playerInv, true, host);
     }
 

@@ -12,17 +12,17 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import com.science.gtnl.CommonProxy;
 import com.science.gtnl.common.equipment.EquipmentMessages;
-import com.science.gtnl.common.item.items.CelestweaveArmor;
 import com.science.gtnl.common.item.items.PortableChestType;
 import com.science.gtnl.common.item.items.PortableItem;
+import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableChest;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableCompressedChest;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableEnderChest;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableInfinityChest;
-import com.science.gtnl.container.portableWorkbench.PortableStorageHost;
+import com.science.gtnl.container.portableWorkbench.IPortableStorageHost;
 import com.science.gtnl.utils.enums.GuiType;
 
-public final class CelestweaveBackpack {
+public class CelestweaveBackpack {
 
     private static final String[] CONTENT_KEYS = { "Items", "Contents" };
     private static final Set<PortableItem.PortableType> STORAGE = EnumSet.of(
@@ -180,12 +180,12 @@ public final class CelestweaveBackpack {
         CelestweaveBackpackData data = CelestweaveBackpackData.get();
         NBTTagCompound contents = data != null ? data.read(id) : null;
         ItemStack virtual = contents != null ? withContents(held, contents) : held.copy();
-        PortableStorageHost host = new Host(id, type, held.getItem(), player.dimension);
+        IPortableStorageHost host = new Host(id, type, held.getItem(), player.dimension);
         return container(player, type, virtual, host);
     }
 
     public static Object container(EntityPlayer player, PortableItem.PortableType type, ItemStack stack,
-        PortableStorageHost host) {
+        IPortableStorageHost host) {
         return switch (type) {
             case ENDERCHEST -> new ContainerPortableEnderChest(player.inventory, player.getInventoryEnderChest(), host);
             case COMPRESSEDCHEST -> new ContainerPortableCompressedChest(stack, player.inventory, host);
@@ -198,8 +198,8 @@ public final class CelestweaveBackpack {
         return PortableChestType.valueOf(type.name());
     }
 
-    public static PortableStorageHost clientHost() {
-        return new PortableStorageHost() {
+    public static IPortableStorageHost clientHost() {
+        return new IPortableStorageHost() {
 
             @Override
             public boolean valid(EntityPlayer player) {
@@ -217,7 +217,7 @@ public final class CelestweaveBackpack {
     }
 
     private record Host(String id, PortableItem.PortableType type, Item item, int dimension)
-        implements PortableStorageHost {
+        implements IPortableStorageHost {
 
         @Override
         public boolean valid(EntityPlayer player) {

@@ -9,13 +9,13 @@ import com.science.gtnl.client.gui.portableWorkbench.GuiPortablePortableCompress
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortablePortableInfinityChest;
 import com.science.gtnl.common.celestweave.CelestweaveBackpack;
 import com.science.gtnl.common.item.items.PortableItem;
-import com.science.gtnl.container.portableWorkbench.PortableStorageHost;
+import com.science.gtnl.container.portableWorkbench.IPortableStorageHost;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public final class CelestweaveBackpackClient {
+public class CelestweaveBackpackClient {
 
     private CelestweaveBackpackClient() {}
 
@@ -24,7 +24,7 @@ public final class CelestweaveBackpackClient {
         if (worn == null) return null;
         ItemStack held = worn.copy();
         PortableItem.PortableType type = PortableItem.getPortableType(held);
-        PortableStorageHost host = CelestweaveBackpack.clientHost();
+        IPortableStorageHost host = CelestweaveBackpack.clientHost();
         return switch (type) {
             case ENDERCHEST -> new GuiPortableEnderChest(player.inventory, player.getInventoryEnderChest(), true);
             case COMPRESSEDCHEST -> new GuiPortablePortableCompressedChest(held, player.inventory, host);

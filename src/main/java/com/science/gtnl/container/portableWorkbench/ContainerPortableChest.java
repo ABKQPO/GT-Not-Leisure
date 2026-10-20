@@ -29,24 +29,24 @@ public class ContainerPortableChest extends Container implements ISortableContai
     public ItemStack itemStack;
     public final String portableID;
     private final PortableItem.PortableType type;
-    public final PortableStorageHost host;
+    public final IPortableStorageHost host;
 
     public ContainerPortableChest(InventoryPlayer playerInventory, ItemStack stack, PortableChestType type) {
-        this(playerInventory, stack, type, PortableStorageHost.held(stack));
+        this(playerInventory, stack, type, IPortableStorageHost.held(stack));
     }
 
     public ContainerPortableChest(InventoryPlayer playerInventory, ItemStack stack, PortableChestType type,
-        PortableStorageHost host) {
+        IPortableStorageHost host) {
         this(playerInventory, stack, type.xSize, type.ySize, type.rows, type.cols, host);
     }
 
     public ContainerPortableChest(InventoryPlayer playerInventory, ItemStack stack, int xSize, int ySize, int rows,
         int cols) {
-        this(playerInventory, stack, xSize, ySize, rows, cols, PortableStorageHost.held(stack));
+        this(playerInventory, stack, xSize, ySize, rows, cols, IPortableStorageHost.held(stack));
     }
 
     public ContainerPortableChest(InventoryPlayer playerInventory, ItemStack stack, int xSize, int ySize, int rows,
-        int cols, PortableStorageHost host) {
+        int cols, IPortableStorageHost host) {
         this.host = host;
         this.rows = rows;
         this.cols = cols;

@@ -15,7 +15,7 @@ import net.minecraftforge.common.util.FakePlayer;
 
 import com.science.gtnl.common.equipment.EquipmentVec;
 
-public final class RailgunTargetRules {
+public class RailgunTargetRules {
 
     private static final double SEARCH_PADDING = 16;
     private static final double LOCAL_REFERENCE_RANGE = 64;

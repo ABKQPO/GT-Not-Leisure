@@ -11,7 +11,7 @@ import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import io.netty.buffer.ByteBuf;
 
-public final class RailgunNet {
+public class RailgunNet {
 
     public static final int MAX_PATH = 256;
     private static final double FX_RANGE = 256;
@@ -22,22 +22,11 @@ public final class RailgunNet {
         EquipmentNet.sendAround(entity, packet, FX_RANGE);
     }
 
-    public static void writeVec(ByteBuf buffer, EquipmentVec vector) {
-        buffer.writeDouble(vector.x());
-        buffer.writeDouble(vector.y());
-        buffer.writeDouble(vector.z());
-    }
-
-    public static EquipmentVec readVec(ByteBuf buffer) {
-        EquipmentVec vector = new EquipmentVec(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
-        if (!vector.finite()) throw new IllegalArgumentException("Non-finite railgun vector");
-        return vector;
-    }
-
     public static void writePath(ByteBuf buffer, List<EquipmentVec> path) {
         int size = Math.min(MAX_PATH, path.size()) & ~1;
         buffer.writeShort(size);
-        for (int i = 0; i < size; i++) writeVec(buffer, path.get(i));
+        for (int i = 0; i < size; i++) path.get(i)
+            .write(buffer);
     }
 
     public static List<EquipmentVec> readPath(ByteBuf buffer) {
@@ -45,7 +34,7 @@ public final class RailgunNet {
         if (size > MAX_PATH || (size & 1) != 0 || size * 24 > buffer.readableBytes())
             throw new IllegalArgumentException("Invalid railgun path length");
         List<EquipmentVec> path = new ArrayList<>(size);
-        for (int i = 0; i < size; i++) path.add(readVec(buffer));
+        for (int i = 0; i < size; i++) path.add(EquipmentVec.read(buffer));
         return path;
     }
 

@@ -27,14 +27,14 @@ public class ContainerPortableAvaritiaddonsChest extends Container implements IS
     public ItemStack itemStack;
     public final String portableID;
     public boolean isInfinity;
-    public final PortableStorageHost host;
+    public final IPortableStorageHost host;
 
     public ContainerPortableAvaritiaddonsChest(ItemStack stack, InventoryPlayer playerInv, boolean isInfinity) {
-        this(stack, playerInv, isInfinity, PortableStorageHost.held(stack));
+        this(stack, playerInv, isInfinity, IPortableStorageHost.held(stack));
     }
 
     public ContainerPortableAvaritiaddonsChest(ItemStack stack, InventoryPlayer playerInv, boolean isInfinity,
-        PortableStorageHost host) {
+        IPortableStorageHost host) {
         this.host = host;
         type = PortableItem.getPortableType(stack);
         chestInventory = type.getInventory(stack);

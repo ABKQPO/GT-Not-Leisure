@@ -1,8 +1,10 @@
 package com.science.gtnl.common.railgun;
 
-public final class RailgunDefaults {
+public class RailgunDefaults {
 
     public static final int BEAM_SETTLE_INTERVAL_TICKS = 2;
+    public static final double HV_BEAM_LIGHTNINGS_PER_SETTLE = 0.125;
+    public static final double EHV_BEAM_LIGHTNINGS_PER_SETTLE = 16;
     public static final int BEAM_RESEND_TICKS = 10;
     public static final int BEAM_USE_CONFLICT_TICKS = 20;
     public static final double BEAM_RESEND_DISTANCE = 0.02;

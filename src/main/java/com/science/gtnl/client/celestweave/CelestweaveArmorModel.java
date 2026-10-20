@@ -12,7 +12,9 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnl.common.item.items.CelestweaveArmor;
+import com.science.gtnl.client.fx.world.FxVisibility;
+import com.science.gtnl.common.celestweave.CelestweaveCosmetic;
+import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.relauncher.Side;
@@ -50,13 +52,13 @@ public class CelestweaveArmorModel extends ModelBiped {
         }
         setRotationAngles(limbSwing, limbAmount, age, yaw, pitch, scale, entity);
         if (!(entity instanceof EntityLivingBase living) || entity.isInvisible()) return;
-        CwFrames frames = CwModel.INSTANCE.frames();
+        CelestweaveFrames frames = CelestweaveObjModel.INSTANCE.frames();
         if (frames == null) return;
-        CwClientState state = CwClientState.of(entity);
-        CwLook look = CelestweaveClientEvents.look(living, state);
+        CelestweaveClientState state = CelestweaveClientState.of(entity);
+        CelestweaveLook look = CelestweaveClientEvents.look(living, state);
         if (!look.wears(piece)) return;
-        CwPose pose = CwAnimator.pose(living, state, look, frames);
-        double distance = CelestweaveClientEvents.distanceToViewer(entity);
+        CelestweavePose pose = CelestweaveAnimator.pose(living, state, look, frames);
+        double distance = FxVisibility.distanceToViewer(entity);
         boolean lod = distance > MainConfig.client.celestweaveDetailDistance;
         boolean overlay = (living.hurtTime > 0 || living.deathTime > 0) && !GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
 
@@ -73,13 +75,13 @@ public class CelestweaveArmorModel extends ModelBiped {
 
     public static void renderFirstPersonArm(EntityPlayer player, ModelRenderer arm) {
         if (!MainConfig.client.enableCelestweaveFirstPersonArm || player == null || player.isInvisible()) return;
-        CwFrames frames = CwModel.INSTANCE.frames();
+        CelestweaveFrames frames = CelestweaveObjModel.INSTANCE.frames();
         if (frames == null) return;
-        CwClientState state = CwClientState.of(player);
-        CwLook look = CelestweaveClientEvents.look(player, state);
+        CelestweaveClientState state = CelestweaveClientState.of(player);
+        CelestweaveLook look = CelestweaveClientEvents.look(player, state);
         if (!look.wears(CelestweaveArmor.CHEST)) return;
         CelestweaveArmorModel model = forPiece(CelestweaveArmor.CHEST);
-        ModelRenderer bone = model.bones[CwFrames.RIGHT_ARM];
+        ModelRenderer bone = model.bones[CelestweaveFrames.RIGHT_ARM];
         bone.showModel = true;
         bone.isHidden = false;
         bone.rotationPointX = arm.rotationPointX;
@@ -88,9 +90,11 @@ public class CelestweaveArmorModel extends ModelBiped {
         bone.rotateAngleX = arm.rotateAngleX;
         bone.rotateAngleY = arm.rotateAngleY;
         bone.rotateAngleZ = arm.rotateAngleZ;
-        CwPose pose = CwAnimator.pose(player, state, look, frames);
+        CelestweavePose pose = CelestweaveAnimator.pose(player, state, look, frames);
 
-        isolated(() -> model.renderLayers(player, frames, state, look, pose, 0.0625F, false, 0D, CwFrames.RIGHT_ARM));
+        isolated(
+            () -> model
+                .renderLayers(player, frames, state, look, pose, 0.0625F, false, 0D, CelestweaveFrames.RIGHT_ARM));
         GL11.glColor4f(1F, 1F, 1F, 1F);
         if (player instanceof AbstractClientPlayer client) Minecraft.getMinecraft()
             .getTextureManager()
@@ -115,33 +119,36 @@ public class CelestweaveArmorModel extends ModelBiped {
         }
     }
 
-    private void renderOverlay(CwFrames frames, CwLook look, CwPose pose, float scale, boolean lod) {
-        for (CwFrames.Group group : frames.groups(piece)) {
-            if (group.layerKind != CwFrames.Layer.SOLID && group.layerKind != CwFrames.Layer.GLOW_FACES
-                && (group.layerKind != CwFrames.Layer.SOLID_DETAIL || lod)) continue;
+    private void renderOverlay(CelestweaveFrames frames, CelestweaveLook look, CelestweavePose pose, float scale,
+        boolean lod) {
+        for (CelestweaveFrames.Group group : frames.groups(piece)) {
+            if (group.layerKind != CelestweaveFrames.Layer.SOLID
+                && group.layerKind != CelestweaveFrames.Layer.GLOW_FACES
+                && (group.layerKind != CelestweaveFrames.Layer.SOLID_DETAIL || lod)) continue;
             if (partVisible(group.partKind, look)) draw(group, pose, scale);
         }
     }
 
-    private void renderLayers(Entity entity, CwFrames frames, CwClientState state, CwLook look, CwPose pose,
-        float scale, boolean lod, double distance, int onlyBone) {
+    private void renderLayers(Entity entity, CelestweaveFrames frames, CelestweaveClientState state,
+        CelestweaveLook look, CelestweavePose pose, float scale, boolean lod, double distance, int onlyBone) {
         TextureManager textures = Minecraft.getMinecraft()
             .getTextureManager();
         var groups = frames.groups(piece);
-        textures.bindTexture(CwModel.BASE);
+        textures.bindTexture(CelestweaveObjModel.BASE);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glDepthMask(true);
         GL11.glColor4f(1F, 1F, 1F, 1F);
-        for (CwFrames.Group group : groups) {
-            if (group.layerKind != CwFrames.Layer.SOLID && (group.layerKind != CwFrames.Layer.SOLID_DETAIL || lod))
-                continue;
+        for (CelestweaveFrames.Group group : groups) {
+            if (group.layerKind != CelestweaveFrames.Layer.SOLID
+                && (group.layerKind != CelestweaveFrames.Layer.SOLID_DETAIL || lod)) continue;
             if (onBone(group, onlyBone) && partVisible(group.partKind, look)) draw(group, pose, scale);
         }
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glColor4f(0.3F, 0.318F, 0.408F, 1F);
-        for (CwFrames.Group group : groups) if (group.layerKind == CwFrames.Layer.GLOW_FACES && onBone(group, onlyBone)
-            && partVisible(group.partKind, look)) draw(group, pose, scale);
+        for (CelestweaveFrames.Group group : groups)
+            if (group.layerKind == CelestweaveFrames.Layer.GLOW_FACES && onBone(group, onlyBone)
+                && partVisible(group.partKind, look)) draw(group, pose, scale);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glColor4f(1F, 1F, 1F, 1F);
         if (!look.glowOn(piece)) return;
@@ -154,17 +161,19 @@ public class CelestweaveArmorModel extends ModelBiped {
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
         GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
         GL11.glPolygonOffset(-1F, -1F);
-        textures.bindTexture(CwModel.GLOW);
-        CwStripEffect strip = CwStripStyles.of(look.cosmetic.stripStyle());
-        float seconds = entity instanceof EntityLivingBase living ? CwAnimator.seconds(living) : 0F;
-        for (CwFrames.Group group : groups) {
-            if (group.layerKind != CwFrames.Layer.GLOW_FACES && group.layerKind != CwFrames.Layer.GLOW) continue;
+        textures.bindTexture(CelestweaveObjModel.GLOW);
+        ICelestweaveStripEffect strip = CelestweaveStripEffects.of(look.cosmetic.stripStyle());
+        float seconds = entity instanceof EntityLivingBase living ? CelestweaveAnimator.seconds(living) : 0F;
+        for (CelestweaveFrames.Group group : groups) {
+            if (group.layerKind != CelestweaveFrames.Layer.GLOW_FACES
+                && group.layerKind != CelestweaveFrames.Layer.GLOW) continue;
             if (!onBone(group, onlyBone) || !partVisible(group.partKind, look) || lod && lodSkip(group)) continue;
-            if (group.layerKind == CwFrames.Layer.GLOW_FACES && group.tintKind == CwFrames.Tint.GLOW) {
+            if (group.layerKind == CelestweaveFrames.Layer.GLOW_FACES
+                && group.tintKind == CelestweaveFrames.Tint.GLOW) {
                 boolean textured = strip.begin(pose, look.cosmetic, seconds, bones[group.bone].rotationPointY);
                 draw(group, pose, scale);
                 strip.end();
-                if (textured) textures.bindTexture(CwModel.GLOW);
+                if (textured) textures.bindTexture(CelestweaveObjModel.GLOW);
                 continue;
             }
             applyColor(group, pose);
@@ -174,15 +183,18 @@ public class CelestweaveArmorModel extends ModelBiped {
 
         if (onlyBone == ALL_BONES && !lod
             && piece == look.arcOwner()
-            && CelestweaveClientEvents.fxVisible(entity, distance))
-            CwArcs.render(this, frames, state, look, pose, scale);
-        if (onlyBone == ALL_BONES && !lod && piece == CelestweaveArmor.CHEST)
-            CwCoreBurst.render(this, frames, state, look, pose, scale);
+            && CelestweaveClientEvents.fxAllowed(entity, distance))
+            CelestweaveArcs.render(this, frames, state, look, pose, scale);
+        if (onlyBone == ALL_BONES && !lod
+            && piece == CelestweaveArmor.CHEST
+            && CelestweaveClientEvents.fxAllowed(entity, distance)
+            && look.cosmetic.event(CelestweaveCosmetic.EVENT_HIT))
+            CelestweaveCoreBurst.render(this, frames, state, look, pose, scale);
 
-        textures.bindTexture(CwModel.FX);
+        textures.bindTexture(CelestweaveObjModel.FX);
         GL11.glDisable(GL11.GL_CULL_FACE);
-        for (CwFrames.Group group : groups) {
-            if (group.layerKind != CwFrames.Layer.PANE || !onBone(group, onlyBone)
+        for (CelestweaveFrames.Group group : groups) {
+            if (group.layerKind != CelestweaveFrames.Layer.PANE || !onBone(group, onlyBone)
                 || !partVisible(group.partKind, look)
                 || lod && lodSkip(group)) continue;
             if (group.additive) GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
@@ -192,42 +204,42 @@ public class CelestweaveArmorModel extends ModelBiped {
         }
     }
 
-    private static boolean onBone(CwFrames.Group group, int onlyBone) {
+    private static boolean onBone(CelestweaveFrames.Group group, int onlyBone) {
         return onlyBone == ALL_BONES || group.bone == onlyBone;
     }
 
-    private static boolean lodSkip(CwFrames.Group group) {
+    private static boolean lodSkip(CelestweaveFrames.Group group) {
         return switch (group.partKind) {
-            case CHEST -> group.layerKind == CwFrames.Layer.PANE
-                || group.frameRef != null && group.layerKind == CwFrames.Layer.GLOW;
-            case HOLO -> group.layerKind == CwFrames.Layer.PANE;
+            case CHEST -> group.layerKind == CelestweaveFrames.Layer.PANE
+                || group.frameRef != null && group.layerKind == CelestweaveFrames.Layer.GLOW;
+            case HOLO -> group.layerKind == CelestweaveFrames.Layer.PANE;
             default -> false;
         };
     }
 
-    private boolean partVisible(CwFrames.Part part, CwLook look) {
+    private boolean partVisible(CelestweaveFrames.Part part, CelestweaveLook look) {
         return part.piece == piece && part.visible(look);
     }
 
-    private void applyColor(CwFrames.Group group, CwPose pose) {
-        CwFrames.Frame frame = group.frameRef;
+    private void applyColor(CelestweaveFrames.Group group, CelestweavePose pose) {
+        CelestweaveFrames.Frame frame = group.frameRef;
         if (frame != null && pose.colored[frame.index]) {
             int i = frame.index;
             GL11.glColor4f(pose.r[i], pose.g[i], pose.b[i], pose.a[i]);
             return;
         }
-        if (group.layerKind == CwFrames.Layer.PANE) {
+        if (group.layerKind == CelestweaveFrames.Layer.PANE) {
             GL11.glColor4f(1F, 1F, 1F, 1F);
             return;
         }
         float k = pose.brightness;
-        if (group.tintKind == CwFrames.Tint.GLOW)
+        if (group.tintKind == CelestweaveFrames.Tint.GLOW)
             GL11.glColor4f(clamp(pose.glowR * k), clamp(pose.glowG * k), clamp(pose.glowB * k), 1F);
         else GL11.glColor4f(clamp(group.rgb[0] * k), clamp(group.rgb[1] * k), clamp(group.rgb[2] * k), 1F);
     }
 
-    private void draw(CwFrames.Group group, CwPose pose, float scale) {
-        CwFrames.Frame frame = group.frameRef;
+    private void draw(CelestweaveFrames.Group group, CelestweavePose pose, float scale) {
+        CelestweaveFrames.Frame frame = group.frameRef;
         if (frame != null && !pose.visible(frame)) return;
         GL11.glPushMatrix();
         enterAnchor(group.bone, frame, pose, scale);
@@ -239,7 +251,7 @@ public class CelestweaveArmorModel extends ModelBiped {
             GL11.glTranslatef(texFrame * group.strip.strideU, 0F, 0F);
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
         }
-        CwModel.INSTANCE.call(group);
+        CelestweaveObjModel.INSTANCE.call(group);
         if (shifted) {
             GL11.glMatrixMode(GL11.GL_TEXTURE);
             GL11.glPopMatrix();
@@ -248,13 +260,13 @@ public class CelestweaveArmorModel extends ModelBiped {
         GL11.glPopMatrix();
     }
 
-    void enterAnchor(int bone, CwFrames.Frame frame, CwPose pose, float scale) {
+    void enterAnchor(int bone, CelestweaveFrames.Frame frame, CelestweavePose pose, float scale) {
         bones[bone].postRender(scale);
         GL11.glScalef(scale, scale, scale);
         if (frame != null) applyFrame(frame, pose);
     }
 
-    private void applyFrame(CwFrames.Frame frame, CwPose pose) {
+    private void applyFrame(CelestweaveFrames.Frame frame, CelestweavePose pose) {
         if (frame.parentFrame != null) applyFrame(frame.parentFrame, pose);
         if (frame.chainBuffer != null) {
             frame.chainBuffer.rewind();

@@ -20,7 +20,7 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.equipment.EquipmentMessages;
 import com.science.gtnl.common.equipment.EquipmentVec;
-import com.science.gtnl.common.item.items.ElectromagneticRailgun;
+import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.packet.RailgunChargeCapPacket;
 import com.science.gtnl.common.packet.RailgunFireFxPacket;
 import com.science.gtnl.common.packet.RailgunRecoilFxPacket;
@@ -28,13 +28,13 @@ import com.science.gtnl.common.railgun.RailgunChainResolver.Hit;
 import com.science.gtnl.common.railgun.RailgunChainResolver.Kind;
 import com.science.gtnl.config.MainConfig;
 
-public final class RailgunFireService {
+public class RailgunFireService {
 
     public static final String RECOIL_GRACE = "gtnl.railgunRecoilGrace";
     private static final int RECOIL_GRACE_TICKS = 60;
     private static final double MAX_RATE = 3;
 
-    private static final class ChargeSession {
+    private static class ChargeSession {
 
         private final long startTick;
         private final double rate;
@@ -111,7 +111,8 @@ public final class RailgunFireService {
         if (session.capped()) return;
         double energy = RailgunEnergy.available(player, stack);
         if (energy >= totalCostUpTo(session.units(now), session.rate)) return;
-        ScienceNotLeisure.network.sendTo(new RailgunChargeCapPacket(session.capAtAffordable(now, energy)), player);
+        RailgunNet
+            .sendAround(player, new RailgunChargeCapPacket(player.getEntityId(), session.capAtAffordable(now, energy)));
         noEnergy(player);
     }
 

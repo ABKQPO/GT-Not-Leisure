@@ -11,7 +11,7 @@ import gregtech.api.enums.GTValues;
 import gregtech.common.misc.WirelessNetworkManager;
 import gregtech.common.misc.spaceprojects.SpaceProjectManager;
 
-public final class EquipmentEnergy {
+public class EquipmentEnergy {
 
     public static final String CHARGE = "charge";
     private static final int[] VOLTAGE_TIERS = { 3, 5, 6, 7 };

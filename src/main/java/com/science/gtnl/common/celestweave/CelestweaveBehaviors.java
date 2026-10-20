@@ -22,33 +22,34 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.FoodStats;
 
-import com.science.gtnl.common.item.items.CelestweaveArmor;
+import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.config.MainConfig;
 
 import vazkii.botania.api.internal.IManaBurst;
 import vazkii.botania.api.mana.ManaItemHandler;
 
-public final class CelestweaveBehaviors {
+public class CelestweaveBehaviors {
 
     public static final float STEP_HEIGHT = 1.0031F;
     private static final UUID SPEED_UUID = UUID.fromString("5d1b6c1e-2f0a-4c3e-9a61-7c2e4b8f1a30");
     private static final UUID KNOCKBACK_UUID = UUID.fromString("a83f0d52-6e14-4b7c-8d29-3f5e1c9b7a42");
-    private static final CelestweaveBehavior NONE = new CelestweaveBehavior() {};
-    private static final Map<CelestweaveModule, CelestweaveBehavior> BEHAVIORS = new EnumMap<>(CelestweaveModule.class);
+    private static final ICelestweaveBehavior NONE = new ICelestweaveBehavior() {};
+    private static final Map<CelestweaveModule, ICelestweaveBehavior> BEHAVIORS = new EnumMap<>(
+        CelestweaveModule.class);
     private static final Map<EntityPlayer, Float> STEP_ORIGINAL = Collections.synchronizedMap(new WeakHashMap<>());
     private static final Map<Entity, Boolean> REFLECTED = Collections.synchronizedMap(new WeakHashMap<>());
 
     static {
         for (CelestweaveModule module : CelestweaveModule.values()) {
-            CelestweaveBehavior behavior = module.newBehavior();
+            ICelestweaveBehavior behavior = module.newBehavior();
             if (behavior != null) BEHAVIORS.put(module, behavior);
         }
     }
 
     private CelestweaveBehaviors() {}
 
-    public static CelestweaveBehavior of(CelestweaveModule module) {
+    public static ICelestweaveBehavior of(CelestweaveModule module) {
         return BEHAVIORS.getOrDefault(module, NONE);
     }
 
@@ -65,7 +66,7 @@ public final class CelestweaveBehaviors {
         if (amount != 0) attribute.applyModifier(new AttributeModifier(id, name, amount, operation));
     }
 
-    static final class NightVision implements CelestweaveBehavior {
+    public static class NightVision implements ICelestweaveBehavior {
 
         @Override
         public void tick(CelestweaveContext ctx) {
@@ -93,7 +94,7 @@ public final class CelestweaveBehaviors {
         }
     }
 
-    static final class Saturation implements CelestweaveBehavior {
+    public static class Saturation implements ICelestweaveBehavior {
 
         @Override
         public void tick(CelestweaveContext ctx) {
@@ -106,7 +107,7 @@ public final class CelestweaveBehaviors {
         }
     }
 
-    static final class Purification implements CelestweaveBehavior {
+    public static class Purification implements ICelestweaveBehavior {
 
         @Override
         public void tick(CelestweaveContext ctx) {
@@ -123,7 +124,7 @@ public final class CelestweaveBehaviors {
         }
     }
 
-    static final class Terrasteel implements CelestweaveBehavior {
+    public static class Terrasteel implements ICelestweaveBehavior {
 
         @Override
         public void tick(CelestweaveContext ctx) {
@@ -132,7 +133,7 @@ public final class CelestweaveBehaviors {
         }
     }
 
-    static final class Shield implements CelestweaveBehavior {
+    public static class Shield implements ICelestweaveBehavior {
 
         @Override
         public void tick(CelestweaveContext ctx) {
@@ -162,7 +163,7 @@ public final class CelestweaveBehaviors {
         }
     }
 
-    static final class Reflect implements CelestweaveBehavior {
+    public static class Reflect implements ICelestweaveBehavior {
 
         @Override
         public void tick(CelestweaveContext ctx) {
@@ -219,7 +220,7 @@ public final class CelestweaveBehaviors {
         }
     }
 
-    static final class WalkAssist implements CelestweaveBehavior {
+    public static class WalkAssist implements ICelestweaveBehavior {
 
         @Override
         public void tick(CelestweaveContext ctx) {

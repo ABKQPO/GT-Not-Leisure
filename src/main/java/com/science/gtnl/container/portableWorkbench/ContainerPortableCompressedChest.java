@@ -10,7 +10,7 @@ public class ContainerPortableCompressedChest extends ContainerPortableAvaritiad
         super(stack, playerInv, false);
     }
 
-    public ContainerPortableCompressedChest(ItemStack stack, InventoryPlayer playerInv, PortableStorageHost host) {
+    public ContainerPortableCompressedChest(ItemStack stack, InventoryPlayer playerInv, IPortableStorageHost host) {
         super(stack, playerInv, false, host);
     }
 

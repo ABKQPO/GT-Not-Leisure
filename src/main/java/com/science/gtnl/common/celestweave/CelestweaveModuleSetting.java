@@ -53,12 +53,6 @@ public enum CelestweaveModuleSetting {
         this.fallback = fallback;
     }
 
-    public static CelestweaveModuleSetting byKey(CelestweaveModule module, String key) {
-        for (CelestweaveModuleSetting setting : values())
-            if (setting.module == module && setting.key.equals(key)) return setting;
-        return null;
-    }
-
     public boolean bool() {
         return format == Format.TOGGLE;
     }

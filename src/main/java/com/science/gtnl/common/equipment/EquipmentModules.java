@@ -4,9 +4,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-import com.science.gtnl.common.item.items.EnergyModuleItem;
+import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
 
-public final class EquipmentModules {
+public class EquipmentModules {
 
     private static final String SLOT = "Slot";
 

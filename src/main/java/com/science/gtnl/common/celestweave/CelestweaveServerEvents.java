@@ -20,10 +20,12 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
+import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
 import net.minecraftforge.event.entity.player.PlayerFlyableFallEvent;
 
 import com.science.gtnl.common.equipment.EquipmentNet;
-import com.science.gtnl.common.item.items.CelestweaveArmor;
+import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.config.MainConfig;
 
@@ -33,7 +35,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-public final class CelestweaveServerEvents {
+public class CelestweaveServerEvents {
 
     public static final String SOULBOUND_TAG = "GTNLCelestweaveSoulbound";
     private static final double FX_RANGE = 64;
@@ -86,7 +88,7 @@ public final class CelestweaveServerEvents {
                 .equals(CelestweaveData.root(previous));
     }
 
-    private static final class Tracked {
+    private static class Tracked {
 
         @SuppressWarnings("unchecked")
         final Set<CelestweaveModule>[] modules = new Set[CelestweaveArmor.PIECES];
@@ -96,7 +98,7 @@ public final class CelestweaveServerEvents {
         int checks;
 
         Tracked() {
-            for (int i = 0; i < 4; i++) modules[i] = Collections.emptySet();
+            for (int i = 0; i < CelestweaveArmor.PIECES; i++) modules[i] = Collections.emptySet();
         }
     }
 
@@ -163,7 +165,7 @@ public final class CelestweaveServerEvents {
     }
 
     @SubscribeEvent
-    public void startTracking(net.minecraftforge.event.entity.player.PlayerEvent.StartTracking event) {
+    public void startTracking(StartTracking event) {
         if (event.target instanceof EntityPlayer target && event.entityPlayer instanceof EntityPlayerMP viewer)
             CelestweaveFlight.startTracking(target, viewer);
     }
@@ -191,7 +193,7 @@ public final class CelestweaveServerEvents {
     }
 
     @SubscribeEvent
-    public void breakSpeed(net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed event) {
+    public void breakSpeed(BreakSpeed event) {
         EntityPlayer player = event.entityPlayer;
         if (!CelestweaveEnergy.activeAndHasEnergy(player, CelestweaveArmor.BOOTS, CelestweaveModule.DIG_AFFINITY))
             return;
@@ -260,6 +262,7 @@ public final class CelestweaveServerEvents {
     @SubscribeEvent
     public void login(PlayerEvent.PlayerLoggedInEvent event) {
         restoreSoulbound(event.player);
+        if (event.player instanceof EntityPlayerMP player) CelestweaveFlight.restore(player);
     }
 
     @SubscribeEvent

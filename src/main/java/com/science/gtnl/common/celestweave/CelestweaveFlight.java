@@ -8,16 +8,17 @@ import java.util.UUID;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.equipment.EquipmentNet;
-import com.science.gtnl.common.item.items.CelestweaveArmor;
+import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFlightPacket;
 import com.science.gtnl.config.MainConfig;
 
-public final class CelestweaveFlight implements CelestweaveBehavior {
+public class CelestweaveFlight implements ICelestweaveBehavior {
 
-    private static final String TAG = "GTNLCelestweaveFlight";
+    private static final String TAG = "GTNLCelestweaveFlight", WAS_FLYING = "GTNLCelestweaveWasFlying";
     private static final double SYNC_RANGE = 256;
     private static final Set<UUID> FLYING = Collections.synchronizedSet(new HashSet<>());
 
@@ -78,6 +79,7 @@ public final class CelestweaveFlight implements CelestweaveBehavior {
         boolean active = legs != null && CelestweaveData.active(legs, CelestweaveModule.FLIGHT);
         if (!active && revoke(player)) player.sendPlayerAbilities();
         boolean flying = active && player.capabilities.isFlying;
+        remember(player, flying);
         UUID id = player.getUniqueID();
         if (flying == FLYING.contains(id)) return;
         if (flying) FLYING.add(id);
@@ -98,5 +100,26 @@ public final class CelestweaveFlight implements CelestweaveBehavior {
 
     public static void forget(EntityPlayer player) {
         FLYING.remove(player.getUniqueID());
+    }
+
+    private static void remember(EntityPlayer player, boolean flying) {
+        NBTTagCompound data = player.getEntityData();
+        boolean wasFlying = flying && data.getBoolean(TAG);
+        if (wasFlying == data.getBoolean(WAS_FLYING)) return;
+        if (wasFlying) data.setBoolean(WAS_FLYING, true);
+        else data.removeTag(WAS_FLYING);
+    }
+
+    public static void restore(EntityPlayerMP player) {
+        if (!player.getEntityData()
+            .getBoolean(WAS_FLYING)) return;
+        player.getEntityData()
+            .removeTag(WAS_FLYING);
+        if (player.isRiding() || !canFly(player, CelestweaveData.piece(player, CelestweaveArmor.LEGS))) return;
+        player.capabilities.allowFlying = true;
+        player.capabilities.isFlying = true;
+        player.getEntityData()
+            .setBoolean(TAG, true);
+        player.sendPlayerAbilities();
     }
 }

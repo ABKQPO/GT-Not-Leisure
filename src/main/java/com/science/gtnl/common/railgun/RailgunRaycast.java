@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 
 import com.science.gtnl.common.equipment.EquipmentVec;
 
-public final class RailgunRaycast {
+public class RailgunRaycast {
 
     private RailgunRaycast() {}
 

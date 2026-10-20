@@ -5,7 +5,7 @@ import net.minecraft.util.ChatComponentTranslation;
 
 import com.gtnewhorizon.gtnhlib.GTNHLib;
 
-public final class EquipmentMessages {
+public class EquipmentMessages {
 
     private EquipmentMessages() {}
 

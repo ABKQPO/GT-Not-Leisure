@@ -25,9 +25,9 @@ import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.equipment.EquipmentVec;
-import com.science.gtnl.common.item.items.CelestweaveModuleItem;
-import com.science.gtnl.common.item.items.EnergyModuleItem;
-import com.science.gtnl.common.item.items.RailgunModuleItem;
+import com.science.gtnl.common.item.items.equipment.CelestweaveModuleItem;
+import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
+import com.science.gtnl.common.item.items.equipment.RailgunModuleItem;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.common.packet.RailgunBeamChainFxPacket;
 import com.science.gtnl.common.packet.RailgunBeamUpdatePacket;
@@ -36,16 +36,16 @@ import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunEnergy;
 import com.science.gtnl.common.railgun.RailgunModuleType;
 import com.science.gtnl.common.railgun.RailgunSetting;
+import com.sun.management.ThreadMXBean;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-public final class EquipmentPerfBench {
+public class EquipmentPerfBench {
 
     private static final int WARMUP = 200_000, RUNS = 2_000_000;
-    private static final com.sun.management.ThreadMXBean THREADS = (com.sun.management.ThreadMXBean) ManagementFactory
-        .getThreadMXBean();
+    private static final ThreadMXBean THREADS = (ThreadMXBean) ManagementFactory.getThreadMXBean();
     private static double sink;
 
     private EquipmentPerfBench() {}
@@ -143,10 +143,10 @@ public final class EquipmentPerfBench {
         bench("ItemStack.copy（胸甲，电量变化时）", () -> chest.copy().stackSize);
 
         System.out.println("== HUD 每帧几何 ==");
-        float[] core = CwHud.polygon(8F, 0);
-        bench("CwHud.clipBelow + span", () -> {
-            float[] fill = CwHud.clipBelow(core, 2F);
-            float[] span = CwHud.span(fill, 2F);
+        float[] core = CelestweaveHud.polygon(8F, 0);
+        bench("CelestweaveHud.clipBelow + span", () -> {
+            float[] fill = CelestweaveHud.clipBelow(core, 2F);
+            float[] span = CelestweaveHud.span(fill, 2F);
             return fill.length + (span == null ? 0 : span[0]);
         });
 

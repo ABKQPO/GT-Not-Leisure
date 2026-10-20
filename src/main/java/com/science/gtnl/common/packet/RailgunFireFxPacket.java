@@ -41,8 +41,8 @@ public class RailgunFireFxPacket extends ClientboundPacket {
     protected void read(ByteBuf buffer) {
         try {
             shooterId = buffer.readInt();
-            from = RailgunNet.readVec(buffer);
-            firstHit = RailgunNet.readVec(buffer);
+            from = EquipmentVec.read(buffer);
+            firstHit = EquipmentVec.read(buffer);
             chainPath = RailgunNet.readPath(buffer);
             tier = buffer.readByte();
             impactRadius = buffer.readFloat();
@@ -58,8 +58,8 @@ public class RailgunFireFxPacket extends ClientboundPacket {
     @Override
     protected void write(ByteBuf buffer) {
         buffer.writeInt(shooterId);
-        RailgunNet.writeVec(buffer, from);
-        RailgunNet.writeVec(buffer, firstHit);
+        from.write(buffer);
+        firstHit.write(buffer);
         RailgunNet.writePath(buffer, chainPath);
         buffer.writeByte(tier);
         buffer.writeFloat(impactRadius);

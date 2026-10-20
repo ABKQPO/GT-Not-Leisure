@@ -7,7 +7,7 @@ import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 
-public final class EquipmentNet {
+public class EquipmentNet {
 
     private EquipmentNet() {}
 

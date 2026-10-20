@@ -6,13 +6,15 @@ import java.util.function.Supplier;
 
 import net.minecraft.item.ItemStack;
 
-import com.science.gtnl.common.item.items.CelestweaveArmor;
-import com.science.gtnl.common.item.items.CelestweaveModuleItem;
+import com.science.gtnl.common.equipment.IEquipmentVariant;
+import com.science.gtnl.common.equipment.MetaLookup;
+import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
+import com.science.gtnl.common.item.items.equipment.CelestweaveModuleItem;
 
 import thaumcraft.api.IGoggles;
 import thaumcraft.api.nodes.IRevealer;
 
-public enum CelestweaveModule {
+public enum CelestweaveModule implements IEquipmentVariant {
 
     APIARIST(0, Mask.ANY),
     NIGHT_VISION(1, Mask.HEAD, () -> new CelestweaveBehaviors.NightVision()),
@@ -33,49 +35,42 @@ public enum CelestweaveModule {
     DASH(15, Mask.BOOTS),
     DIG_AFFINITY(16, Mask.BOOTS);
 
-    public static final class Mask {
+    public static class Mask {
 
         public static final int HEAD = 1, CHEST = 2, LEGS = 4, BOOTS = 8, ANY = 15;
 
         private Mask() {}
     }
 
-    public static final class Trait {
+    public static class Trait {
 
         public static final int HIDEABLE = 1, BUILT_IN = 2;
 
         private Trait() {}
     }
 
-    private static final CelestweaveModule[] BY_META;
-
-    static {
-        int count = 0;
-        for (CelestweaveModule module : values()) count = Math.max(count, module.meta + 1);
-        BY_META = new CelestweaveModule[count];
-        for (CelestweaveModule module : values()) BY_META[module.meta] = module;
-    }
+    public static final MetaLookup<CelestweaveModule> LOOKUP = new MetaLookup<>(values());
 
     public final String id;
-    public final int meta, slots;
+    public final int meta, pieceMask;
     public final boolean holdsItem, builtIn;
     private final int traits;
     private final Predicate<ItemStack> holds;
-    private final Supplier<CelestweaveBehavior> behavior;
+    private final Supplier<ICelestweaveBehavior> behavior;
 
-    CelestweaveModule(int meta, int slots) {
-        this(meta, slots, 0, null, null);
+    CelestweaveModule(int meta, int pieceMask) {
+        this(meta, pieceMask, 0, null, null);
     }
 
-    CelestweaveModule(int meta, int slots, Supplier<CelestweaveBehavior> behavior) {
-        this(meta, slots, 0, null, behavior);
+    CelestweaveModule(int meta, int pieceMask, Supplier<ICelestweaveBehavior> behavior) {
+        this(meta, pieceMask, 0, null, behavior);
     }
 
-    CelestweaveModule(int meta, int slots, int traits, Predicate<ItemStack> holds,
-        Supplier<CelestweaveBehavior> behavior) {
+    CelestweaveModule(int meta, int pieceMask, int traits, Predicate<ItemStack> holds,
+        Supplier<ICelestweaveBehavior> behavior) {
         this.id = name().toLowerCase(Locale.ROOT);
         this.meta = meta;
-        this.slots = slots;
+        this.pieceMask = pieceMask;
         this.traits = traits;
         this.holds = holds;
         this.behavior = behavior;
@@ -84,7 +79,7 @@ public enum CelestweaveModule {
     }
 
     public boolean fits(int piece) {
-        return piece >= 0 && piece < CelestweaveArmor.PIECES && (slots & (1 << piece)) != 0;
+        return piece >= 0 && piece < CelestweaveArmor.PIECES && (pieceMask & (1 << piece)) != 0;
     }
 
     public boolean hideable() {
@@ -99,7 +94,7 @@ public enum CelestweaveModule {
         return holds.test(stack);
     }
 
-    CelestweaveBehavior newBehavior() {
+    ICelestweaveBehavior newBehavior() {
         return behavior == null ? null : behavior.get();
     }
 
@@ -109,12 +104,22 @@ public enum CelestweaveModule {
         return module == null || module.builtIn ? null : module;
     }
 
+    @Override
+    public String id() {
+        return id;
+    }
+
+    @Override
+    public int meta() {
+        return meta;
+    }
+
     public static CelestweaveModule byMeta(int meta) {
-        return meta >= 0 && meta < BY_META.length ? BY_META[meta] : null;
+        return LOOKUP.byMeta(meta);
     }
 
     public static int metaCount() {
-        return BY_META.length;
+        return LOOKUP.size();
     }
 
     public static CelestweaveModule byId(String id) {

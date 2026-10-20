@@ -6,9 +6,23 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 
+import io.netty.buffer.ByteBuf;
+
 public record EquipmentVec(double x, double y, double z) {
 
     public static final EquipmentVec ZERO = new EquipmentVec(0, 0, 0);
+
+    public static EquipmentVec read(ByteBuf buffer) {
+        EquipmentVec vector = new EquipmentVec(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+        if (!vector.finite()) throw new IllegalArgumentException("Non-finite equipment vector");
+        return vector;
+    }
+
+    public void write(ByteBuf buffer) {
+        buffer.writeDouble(x);
+        buffer.writeDouble(y);
+        buffer.writeDouble(z);
+    }
 
     public static EquipmentVec of(Vec3 vector) {
         return new EquipmentVec(vector.xCoord, vector.yCoord, vector.zCoord);

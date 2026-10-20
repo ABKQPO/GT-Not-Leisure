@@ -60,6 +60,17 @@ public class MainConfig {
         @DefaultBoolean(true)
         public boolean enableRailgunShaders = true;
 
+        @Comment("Show beams, charge orbs, arcs and impact effects of other players' railguns")
+        @LangKey("gtnl.gui.config.general.client.enable_railgun_show_others_fx")
+        @DefaultBoolean(true)
+        public boolean enableRailgunShowOthersFx = true;
+
+        @Comment("Railgun effects of other players are not drawn beyond this distance in blocks")
+        @LangKey("gtnl.gui.config.general.client.railgun_fx_distance")
+        @DefaultInt(256)
+        @RangeInt(min = 0, max = 256)
+        public int railgunFxDistance = 256;
+
         @Comment("Celestweave armor effect level: 0 off, 1 event effects only, 2 all effects")
         @LangKey("gtnl.gui.config.general.client.celestweave_fx_level")
         @DefaultInt(2)
@@ -110,12 +121,12 @@ public class MainConfig {
         @DefaultBoolean(true)
         public boolean enableCelestweaveSounds = true;
 
-        @Comment("Show the Celestweave HUD: energy core, shield hit ring, dash cooldown and flight altimeter")
+        @Comment("Show the Celestweave HUD: energy core, shield hit ring, dash cooldown, flight altimeter and Celestweave Lance charge; drag each element in the HUD editor at the bottom of the Celestweave radial menu")
         @LangKey("gtnl.gui.config.general.client.enable_celestweave_hud")
         @DefaultBoolean(true)
         public boolean enableCelestweaveHud = true;
 
-        @Comment("Scale of the Celestweave HUD")
+        @Comment("Base scale of every Celestweave HUD element; each element can be scaled further in the HUD editor")
         @LangKey("gtnl.gui.config.general.client.celestweave_hud_scale")
         @DefaultFloat(1F)
         @RangeFloat(min = 0.5F, max = 3F)
@@ -132,18 +143,6 @@ public class MainConfig {
         @DefaultFloat(0.35F)
         @RangeFloat(min = 0F, max = 1F)
         public float celestweaveHudIdleAlpha = 0.35F;
-
-        @Comment("Horizontal offset of the energy core from its place left of the hotbar")
-        @LangKey("gtnl.gui.config.general.client.celestweave_hud_core_x")
-        @DefaultInt(0)
-        @RangeInt(min = -2000, max = 2000)
-        public int celestweaveHudCoreX = 0;
-
-        @Comment("Vertical offset of the energy core from its place left of the hotbar")
-        @LangKey("gtnl.gui.config.general.client.celestweave_hud_core_y")
-        @DefaultInt(0)
-        @RangeInt(min = -2000, max = 2000)
-        public int celestweaveHudCoreY = 0;
     }
 
     public static final Effect effect = new Effect();

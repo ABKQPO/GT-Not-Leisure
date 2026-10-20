@@ -22,14 +22,14 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 import com.reavaritia.common.items.InfinitySword;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
-import com.science.gtnl.common.item.items.CelestweaveArmor;
+import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public final class CelestweaveShield {
+public class CelestweaveShield {
 
     private static final String LIGHTNING = "gtnl.celestweave.lightning";
     private static final Map<EntityPlayer, Absorb> PENDING = new WeakHashMap<>();

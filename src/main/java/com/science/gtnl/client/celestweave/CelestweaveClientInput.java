@@ -8,15 +8,14 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.client.equipment.EquipmentClientInput;
 import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.celestweave.CelestweaveEnergy;
 import com.science.gtnl.common.celestweave.CelestweaveFlight;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
-import com.science.gtnl.common.item.items.CelestweaveArmor;
-import com.science.gtnl.common.item.items.ElectromagneticRailgun;
+import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveKeyPacket;
-import com.science.gtnl.common.packet.OpenEquipmentGuiPacket;
 import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -27,13 +26,9 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public final class CelestweaveClientInput {
+public class CelestweaveClientInput {
 
     static final KeyBinding DASH = new KeyBinding("key.gtnl.celestweave_dash", Keyboard.KEY_V, "key.categories.gtnl");
-    static final KeyBinding RADIAL = new KeyBinding(
-        "key.gtnl.equipment_settings",
-        Keyboard.KEY_G,
-        "key.categories.gtnl");
     static final KeyBinding BACKPACK = new KeyBinding(
         "key.gtnl.celestweave_backpack",
         Keyboard.KEY_NONE,
@@ -46,12 +41,20 @@ public final class CelestweaveClientInput {
     private CelestweaveClientInput() {}
 
     public static void register() {
+        EquipmentClientInput.addSettingsHandler(CelestweaveClientInput::openWheel);
         ClientRegistry.registerKeyBinding(DASH);
-        ClientRegistry.registerKeyBinding(RADIAL);
         ClientRegistry.registerKeyBinding(BACKPACK);
         FMLCommonHandler.instance()
             .bus()
             .register(new CelestweaveClientInput());
+    }
+
+    private static boolean openWheel() {
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        if (player == null || !CelestweaveData.wearsAny(player)
+            || EquipmentClientInput.holdsEquipment(player) && !player.isSneaking()) return false;
+        new CelestweaveWheelScreen(EquipmentClientInput.EQUIPMENT_SETTINGS).open();
+        return true;
     }
 
     @SubscribeEvent
@@ -64,10 +67,9 @@ public final class CelestweaveClientInput {
             return;
         }
         if (minecraft.currentScreen != null || !minecraft.inGameHasFocus) return;
-        boolean dash = false, backpack = false, radial = false;
+        boolean dash = false, backpack = false;
         while (DASH.isPressed()) dash = true;
         while (BACKPACK.isPressed()) backpack = true;
-        while (RADIAL.isPressed()) radial = true;
         if (dash && CelestweaveEnergy.activeAndAffords(
             player,
             CelestweaveArmor.BOOTS,
@@ -75,12 +77,6 @@ public final class CelestweaveClientInput {
             MainConfig.item.celestweave.dashEu))
             ScienceNotLeisure.network.sendToServer(new CelestweaveKeyPacket(CelestweaveKeyPacket.DASH));
         if (backpack) ScienceNotLeisure.network.sendToServer(new CelestweaveKeyPacket(CelestweaveKeyPacket.BACKPACK));
-        ItemStack held = player.getHeldItem();
-        boolean wearing = CelestweaveData.wearsAny(player);
-        if (radial && held != null
-            && (held.getItem() instanceof ElectromagneticRailgun || held.getItem() instanceof CelestweaveArmor)
-            && !(wearing && player.isSneaking())) ScienceNotLeisure.network.sendToServer(new OpenEquipmentGuiPacket());
-        else if (radial && wearing) minecraft.displayGuiScreen(new CelestweaveRadialScreen(RADIAL));
     }
 
     @SubscribeEvent

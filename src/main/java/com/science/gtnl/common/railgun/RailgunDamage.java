@@ -18,7 +18,7 @@ import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.EffectLoader;
 
-public final class RailgunDamage {
+public class RailgunDamage {
 
     public record DamageContext(double firstDamage, double bypassRatio, double chainDecay, int chainSegments,
         int chainForkCount, double chainRadius, boolean isMaxCharged, boolean pvp) {}

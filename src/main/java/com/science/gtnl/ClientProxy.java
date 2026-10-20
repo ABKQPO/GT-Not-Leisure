@@ -20,6 +20,10 @@ import com.science.gtnl.client.GTNLInputHandler;
 import com.science.gtnl.client.GTNLTooltipManager;
 import com.science.gtnl.client.WirelessCardInput;
 import com.science.gtnl.client.WirelessWorldHighlight;
+import com.science.gtnl.client.celestweave.CelestweaveBackpackClient;
+import com.science.gtnl.client.celestweave.CelestweaveClientEvents;
+import com.science.gtnl.client.equipment.EquipmentClientInput;
+import com.science.gtnl.client.fx.world.FxEffects;
 import com.science.gtnl.client.gui.GuiActiveFormationPlane;
 import com.science.gtnl.client.gui.GuiCustomPriority;
 import com.science.gtnl.client.gui.GuiDirePatternEncoder;
@@ -38,7 +42,10 @@ import com.science.gtnl.client.gui.portableWorkbench.GuiPortableEnderChest;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableFurnace;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortablePortableCompressedChest;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortablePortableInfinityChest;
+import com.science.gtnl.client.hud.HudOverlay;
 import com.science.gtnl.client.meminiterminal.MiniTerminalClient;
+import com.science.gtnl.client.railgun.RailgunClientFx;
+import com.science.gtnl.client.shader.ShaderEffect;
 import com.science.gtnl.client.text.EffectTextRenderer;
 import com.science.gtnl.client.text.effect.BuiltinTextEffects;
 import com.science.gtnl.client.text.preview.TextEffectPreviewCommand;
@@ -149,9 +156,12 @@ public class ClientProxy extends CommonProxy {
         super.preInit(event);
         MiniTerminalClient.init();
         WirelessCardInput.register();
-        com.science.gtnl.client.fx.FxEffects.register();
-        com.science.gtnl.client.railgun.RailgunClientFx.register();
-        com.science.gtnl.client.celestweave.CelestweaveClientEvents.register();
+        FxEffects.register();
+        HudOverlay.register();
+        MinecraftForge.EVENT_BUS.register(new ShaderEffect.Reloader());
+        EquipmentClientInput.register();
+        RailgunClientFx.register();
+        CelestweaveClientEvents.register();
         MinecraftForge.EVENT_BUS.register(WirelessWorldHighlight.INSTANCE);
         ModelRegistry.registerModid(ScienceNotLeisure.MODID);
 
@@ -352,7 +362,7 @@ public class ClientProxy extends CommonProxy {
             case PortableCellWorkbenchGUI -> createPortableCellWorkbenchGui(player, x);
             case PortableCellWorkbenchOreFilterGUI -> createPortableCellWorkbenchOreFilterGui(player, x);
             case PortableCellWorkbenchRestrictionGUI -> createPortableCellWorkbenchRestrictionGui(player, x);
-            case CelestweaveBackpackGUI -> com.science.gtnl.client.celestweave.CelestweaveBackpackClient.gui(player);
+            case CelestweaveBackpackGUI -> CelestweaveBackpackClient.gui(player);
             case MEChiselGUI -> {
                 var t = world.getTileEntity(x, y, z);
                 if (t instanceof TileEntityMEChisel d) {

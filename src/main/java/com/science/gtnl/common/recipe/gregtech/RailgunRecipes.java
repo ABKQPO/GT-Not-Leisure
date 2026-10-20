@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 
-import com.science.gtnl.common.item.items.EnergyModuleItem;
+import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
 import com.science.gtnl.common.railgun.RailgunModuleType;
 import com.science.gtnl.loader.ItemLoader;
 
@@ -17,7 +17,7 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
 
-public final class RailgunRecipes {
+public class RailgunRecipes {
 
     private RailgunRecipes() {}
 

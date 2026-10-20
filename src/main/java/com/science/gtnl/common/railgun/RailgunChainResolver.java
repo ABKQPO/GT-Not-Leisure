@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.railgun.RailgunDamage.DamageContext;
 
-public final class RailgunChainResolver {
+public class RailgunChainResolver {
 
     private static final double PENETRATION_LENGTH = 32, PENETRATION_WIDTH = 1.5, SPLASH_FALLOFF = 0.6;
 

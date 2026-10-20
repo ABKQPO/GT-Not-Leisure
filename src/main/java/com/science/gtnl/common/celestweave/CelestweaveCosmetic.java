@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import net.minecraft.nbt.NBTTagCompound;
 
-public final class CelestweaveCosmetic {
+public class CelestweaveCosmetic {
 
     public static final int EVENT_HIT = 1, EVENT_DASH = 2, EVENT_LAND = 4, EVENT_REFLECT = 8, EVENT_WING = 16,
         EVENT_ANTENNA = 32, EVENT_LOW = 64, EVENT_ALL = 127;

@@ -18,9 +18,9 @@ import net.minecraft.nbt.NBTTagString;
 
 import com.google.common.collect.MapMaker;
 import com.science.gtnl.common.equipment.EquipmentModules;
-import com.science.gtnl.common.item.items.CelestweaveArmor;
+import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 
-public final class CelestweaveData {
+public class CelestweaveData {
 
     public static final String ROOT = "Celestweave";
     public static final String MODULES = "Modules";

@@ -27,11 +27,10 @@ public class RailgunSounds {
     private static final float BODY_HEIGHT = 0.45F;
     private static final double BEAM_RANGE = 256;
     private static final float MIN_START_VOLUME = 0.001F;
+    private static final double CHARGE_HEARING_RANGE = 24;
 
     private static final Map<Integer, BeamLoopSound> BEAMS = new HashMap<>();
-    private static ChargeRampSound ramp;
-    private static ChargeSustainSound sustain;
-    private static boolean wasCharging;
+    private static final Map<Integer, ChargeVoice> CHARGES = new HashMap<>();
 
     private static boolean enabled(Entity entity) {
         return entity instanceof EntityPlayer player && !player.isDead && RailgunData.soundEnabled(player);
@@ -56,18 +55,16 @@ public class RailgunSounds {
         BEAMS.values()
             .removeIf(FollowSound::isDonePlaying);
         trackBeams(minecraft);
-        trackCharge(minecraft, minecraft.thePlayer);
+        trackCharges(minecraft);
     }
 
     public static void clear() {
         BEAMS.values()
             .forEach(FollowSound::stop);
         BEAMS.clear();
-        if (ramp != null) ramp.stop();
-        if (sustain != null) sustain.stop();
-        ramp = null;
-        sustain = null;
-        wasCharging = false;
+        CHARGES.values()
+            .forEach(ChargeVoice::stop);
+        CHARGES.clear();
     }
 
     private static void trackBeams(Minecraft minecraft) {
@@ -80,33 +77,76 @@ public class RailgunSounds {
         }
     }
 
-    private static void trackCharge(Minecraft minecraft, EntityPlayer player) {
-        boolean charging = charging(player);
-        if (charging && !wasCharging) {
-            if (ramp != null) ramp.stop();
-            if (sustain != null) sustain.stop();
-            ramp = null;
-            sustain = null;
+    private static void trackCharges(Minecraft minecraft) {
+        for (Object entity : minecraft.theWorld.playerEntities) {
+            EntityPlayer player = (EntityPlayer) entity;
+            ChargeVoice voice = CHARGES.get(player.getEntityId());
+            if (voice == null) {
+                if (!charging(player) || !withinHearing(minecraft, player)) continue;
+                voice = new ChargeVoice();
+                CHARGES.put(player.getEntityId(), voice);
+            }
+            voice.track(minecraft, player);
         }
-        wasCharging = charging;
-        if (!charging) {
-            if (ramp != null) ramp.requestStop();
-            if (sustain != null) sustain.requestStop();
-            return;
-        }
-        if (fullyCharged(player)) {
-            if (ramp != null) ramp.requestStop();
-            if (sustain == null || sustain.isDonePlaying()) sustain = play(minecraft, new ChargeSustainSound(player));
-        } else {
-            if (sustain != null) sustain.requestStop();
-            if (ramp == null) ramp = play(minecraft, new ChargeRampSound(player));
-        }
+        CHARGES.entrySet()
+            .removeIf(entry -> {
+                ChargeVoice voice = entry.getValue();
+                if (minecraft.theWorld.getEntityByID(entry.getKey()) instanceof EntityPlayer && !voice.idle())
+                    return false;
+                voice.stop();
+                return true;
+            });
+    }
+
+    private static boolean withinHearing(Minecraft minecraft, EntityPlayer player) {
+        return player == minecraft.thePlayer
+            || player.getDistanceSqToEntity(minecraft.thePlayer) <= CHARGE_HEARING_RANGE * CHARGE_HEARING_RANGE;
     }
 
     private static <T extends FollowSound> T play(Minecraft minecraft, T sound) {
         minecraft.getSoundHandler()
             .playSound(sound);
         return sound;
+    }
+
+    private static class ChargeVoice {
+
+        private ChargeRampSound ramp;
+        private ChargeSustainSound sustain;
+        private boolean wasCharging;
+
+        private void track(Minecraft minecraft, EntityPlayer player) {
+            boolean charging = charging(player);
+            if (charging && !wasCharging) {
+                stop();
+                ramp = null;
+                sustain = null;
+            }
+            wasCharging = charging;
+            if (!charging) {
+                if (ramp != null) ramp.requestStop();
+                if (sustain != null) sustain.requestStop();
+                return;
+            }
+            if (fullyCharged(player)) {
+                if (ramp != null) ramp.requestStop();
+                if (sustain == null || sustain.isDonePlaying())
+                    sustain = play(minecraft, new ChargeSustainSound(player));
+            } else {
+                if (sustain != null) sustain.requestStop();
+                if (ramp == null) ramp = play(minecraft, new ChargeRampSound(player));
+            }
+        }
+
+        private boolean idle() {
+            return !wasCharging && (ramp == null || ramp.isDonePlaying())
+                && (sustain == null || sustain.isDonePlaying());
+        }
+
+        private void stop() {
+            if (ramp != null) ramp.stop();
+            if (sustain != null) sustain.stop();
+        }
     }
 
     public abstract static class FollowSound extends MovingSound {

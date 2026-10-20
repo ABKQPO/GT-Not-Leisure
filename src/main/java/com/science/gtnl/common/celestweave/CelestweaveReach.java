@@ -7,12 +7,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import com.science.gtnl.common.item.items.CelestweaveArmor;
+import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.config.MainConfig;
 
 import vazkii.botania.common.Botania;
 
-public final class CelestweaveReach {
+public class CelestweaveReach {
 
     private static final Map<UUID, Float> SERVER = new ConcurrentHashMap<>();
     private static final Map<UUID, Float> CLIENT = new ConcurrentHashMap<>();

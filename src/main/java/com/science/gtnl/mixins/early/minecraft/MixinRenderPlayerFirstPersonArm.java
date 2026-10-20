@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.science.gtnl.client.celestweave.CelestweaveArmorModel;
-import com.science.gtnl.client.celestweave.CwSkinLayers;
+import com.science.gtnl.client.celestweave.CelestweaveSkinLayers;
 
 @Mixin(value = RenderPlayer.class, remap = true)
 public class MixinRenderPlayerFirstPersonArm {
@@ -21,12 +21,12 @@ public class MixinRenderPlayerFirstPersonArm {
 
     @Inject(method = "renderFirstPersonArm", at = @At("HEAD"))
     public void mixin$celestweaveHideSleeve(EntityPlayer player, CallbackInfo ci) {
-        CwSkinLayers.hideArm(modelBipedMain.bipedRightArm, player);
+        CelestweaveSkinLayers.hideArm(modelBipedMain.bipedRightArm, player);
     }
 
     @Inject(method = "renderFirstPersonArm", at = @At("RETURN"))
     public void mixin$celestweaveArm(EntityPlayer player, CallbackInfo ci) {
-        CwSkinLayers.restore();
+        CelestweaveSkinLayers.restore();
         CelestweaveArmorModel.renderFirstPersonArm(player, modelBipedMain.bipedRightArm);
     }
 }

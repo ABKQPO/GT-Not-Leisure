@@ -1,0 +1,108 @@
+package com.science.gtnl.client.celestweave;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
+
+import com.cleanroommc.modularui.api.drawable.IKey;
+import com.cleanroommc.modularui.drawable.DynamicDrawable;
+import com.cleanroommc.modularui.drawable.ItemDrawable;
+import com.cleanroommc.modularui.drawable.Rectangle;
+import com.cleanroommc.modularui.widgets.ButtonWidget;
+import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.client.hud.HudEditor;
+import com.science.gtnl.common.celestweave.CelestweaveData;
+import com.science.gtnl.common.gui.modularui.wheel.WheelEntry;
+import com.science.gtnl.common.gui.modularui.wheel.WheelMenuBuilder;
+import com.science.gtnl.common.gui.modularui.wheel.WheelMenuModel;
+import com.science.gtnl.common.gui.modularui.wheel.WheelOpenMode;
+import com.science.gtnl.common.gui.modularui.wheel.WheelScreen;
+import com.science.gtnl.common.gui.modularui.wheel.WheelStyle;
+import com.science.gtnl.common.packet.CelestweaveKeyPacket;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
+public class CelestweaveWheelScreen extends WheelScreen {
+
+    private static final int[] PIECE = { 0, 1, 3, 2 };
+    private static final int HIGHLIGHT_COLOR = 0xFFFF3D9A;
+    private static final int TEXT_COLOR = 0xFFFFFFFF;
+    private static final int TITLE_GAP = 8;
+    private static final int HUD_WIDTH = 72, HUD_HEIGHT = 14, HUD_GAP = 22;
+    private static final int HUD_COLOR = 0x9614141E, HUD_HOVER_COLOR = 0xA0FF3D9A;
+
+    private boolean leaving;
+
+    public CelestweaveWheelScreen(KeyBinding key) {
+        super(menu(), WheelOpenMode.HOLD, key);
+        below(
+            IKey.str(StatCollector.translateToLocal("item.gtnl.celestweave.radial.title"))
+                .asWidget()
+                .color(TEXT_COLOR)
+                .shadow(true),
+            TITLE_GAP);
+        below(
+            new ButtonWidget<>().size(HUD_WIDTH, HUD_HEIGHT)
+                .disableThemeBackground(true)
+                .disableHoverThemeBackground(true)
+                .background(new Rectangle().setColor(HUD_COLOR))
+                .hoverBackground(new Rectangle().setColor(HUD_HOVER_COLOR))
+                .overlay(
+                    IKey.str(StatCollector.translateToLocal("item.gtnl.celestweave.radial.hud"))
+                        .color(TEXT_COLOR)
+                        .shadow(true))
+                .onMousePressed(button -> {
+                    openHudEditor();
+                    return true;
+                }),
+            HUD_GAP);
+    }
+
+    private static WheelMenuModel menu() {
+        WheelMenuBuilder builder = WheelMenuBuilder.create()
+            .slotsPerPage(PIECE.length)
+            .style(
+                WheelStyle.builder()
+                    .highlightColor(HIGHLIGHT_COLOR)
+                    .build());
+        for (int piece : PIECE) {
+            String label = StatCollector.translateToLocal("item.gtnl.celestweave.radial.piece." + piece);
+            builder.entry(
+                WheelEntry
+                    .action(
+                        "piece_" + piece,
+                        label,
+                        new DynamicDrawable(() -> new ItemDrawable(piece(piece))),
+                        context -> open(piece))
+                    .visibleWhen(() -> piece(piece) != null));
+        }
+        return builder.build();
+    }
+
+    private static ItemStack piece(int piece) {
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        return player == null ? null : CelestweaveData.piece(player, piece);
+    }
+
+    private static void open(int piece) {
+        if (piece(piece) == null) return;
+        ScienceNotLeisure.network.sendToServer(new CelestweaveKeyPacket(CelestweaveKeyPacket.OPEN_PIECE, piece));
+    }
+
+    private void openHudEditor() {
+        if (leaving) return;
+        leaving = true;
+        HudEditor.open();
+    }
+
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        if (player == null || !CelestweaveData.wearsAny(player)) close();
+    }
+}

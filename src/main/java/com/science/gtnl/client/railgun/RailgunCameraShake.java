@@ -132,7 +132,9 @@ public class RailgunCameraShake {
     }
 
     private static float sustain(EntityPlayer player) {
-        float target = RailgunBeamRenderer.localFiring() ? BEAM_TREMOR : 0F;
+        float target = RailgunBeamRenderer.localFiring() && RailgunBeamRenderer.active(player.getEntityId())
+            ? BEAM_TREMOR
+            : 0F;
         if (!RailgunCharge.charging(player)) {
             chargedTier = 0;
             return target;

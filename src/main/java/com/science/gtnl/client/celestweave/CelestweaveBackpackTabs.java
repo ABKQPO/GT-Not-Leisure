@@ -4,7 +4,7 @@ import java.util.List;
 
 import gregtech.api.enums.Mods;
 
-public final class CelestweaveBackpackTabs {
+public class CelestweaveBackpackTabs {
 
     private CelestweaveBackpackTabs() {}
 

@@ -14,6 +14,7 @@ import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaTube;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperDualInterface;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperInterface;
+import com.science.gtnl.common.celestweave.CelestweaveBackpack;
 import com.science.gtnl.common.entity.EntityParticleBeam;
 import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchContainer;
 import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchGuiFactory;
@@ -272,8 +273,7 @@ public class CommonProxy implements IGuiHandler {
             case PortableCellWorkbenchGUI -> createPortableCellWorkbenchContainer(player, x);
             case PortableCellWorkbenchOreFilterGUI -> createPortableCellWorkbenchOreFilter(player, x);
             case PortableCellWorkbenchRestrictionGUI -> createPortableCellWorkbenchRestriction(player, x);
-            case CelestweaveBackpackGUI -> com.science.gtnl.common.celestweave.CelestweaveBackpack
-                .serverContainer(player);
+            case CelestweaveBackpackGUI -> CelestweaveBackpack.serverContainer(player);
             case DirePatternEncoderGUI -> {
                 var t = world.getTileEntity(x, y, z);
                 if (t instanceof TileEntityDirePatternEncoder d) {
