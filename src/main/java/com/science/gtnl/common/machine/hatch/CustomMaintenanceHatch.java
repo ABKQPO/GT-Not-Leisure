@@ -34,7 +34,6 @@ import gregtech.api.render.TextureFactory;
 import lombok.Getter;
 import lombok.Setter;
 
-@IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class CustomMaintenanceHatch extends MTEHatchMaintenance
     implements IConfigurationMaintenance, IAddGregtechLogo, IDataCopyable {

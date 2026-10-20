@@ -29,7 +29,6 @@ import gregtech.common.tileentities.machines.multi.drone.MTEHatchDroneDownLink;
 import lombok.Getter;
 import lombok.Setter;
 
-@IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class CustomDroneDownLinkHatch extends MTEHatchDroneDownLink
     implements IConfigurationMaintenance, IAddGregtechLogo, IDataCopyable {

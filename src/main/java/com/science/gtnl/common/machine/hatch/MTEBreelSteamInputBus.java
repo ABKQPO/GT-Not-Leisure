@@ -11,23 +11,20 @@ import com.science.gtnl.api.mixinHelper.ICommonMetaTileEntityInventory;
 import com.science.gtnl.api.mixinHelper.IMetaTileEntityInventoryHandler;
 
 import gregtech.api.interfaces.ITexture;
-import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTItemTransfer;
 import gregtech.common.gui.modularui.hatch.MTEHatchInputBusGui;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSteamBusInput;
 
-@IMetaTileEntity.SkipGenerateName
-@IMetaTileEntity.SkipGenerateDescription
-public class BreelSteamInputBus extends MTEHatchSteamBusInput {
+public class MTEBreelSteamInputBus extends MTEHatchSteamBusInput {
 
-    public BreelSteamInputBus(int id, String name, String regionalName, int tier) {
+    public MTEBreelSteamInputBus(int id, String name, String regionalName, int tier) {
         super(id, name, regionalName, tier);
         initializeInventory();
     }
 
-    public BreelSteamInputBus(String name, int tier, String[] description, ITexture[][][] textures) {
+    public MTEBreelSteamInputBus(String name, int tier, String[] description, ITexture[][][] textures) {
         super(name, tier, description, textures);
         initializeInventory();
     }
@@ -38,14 +35,14 @@ public class BreelSteamInputBus extends MTEHatchSteamBusInput {
 
             @Override
             public void onContentsChanged(int slot) {
-                BreelSteamInputBus.this.onContentsChanged(slot);
+                MTEBreelSteamInputBus.this.onContentsChanged(slot);
             }
         });
     }
 
     @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity tileEntity) {
-        return new BreelSteamInputBus(mName, mTier, mDescriptionArray, mTextures);
+        return new MTEBreelSteamInputBus(mName, mTier, mDescriptionArray, mTextures);
     }
 
     @Override

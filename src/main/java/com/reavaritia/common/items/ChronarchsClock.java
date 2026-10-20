@@ -96,9 +96,7 @@ public class ChronarchsClock extends Item implements SubtitleDisplay, IBehaviorD
         long lastUsed = nbt.getLong("LastUsed");
 
         if (world.getTotalWorldTime() - lastUsed < MainConfig.re_avaritia.chronarch_clock.chronarchsClockCooldown) {
-            if (world.isRemote) {
-                showSubtitle("reavaritia.item.chronarchs_clock.tooltip.01");
-            }
+            showSubtitle("reavaritia.item.chronarchs_clock.tooltip.01");
             return stack;
         }
 

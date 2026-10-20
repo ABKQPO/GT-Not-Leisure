@@ -47,7 +47,6 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 
-@IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class HumongousDualInputHatch extends DualInputHatch
     implements ISkipStackSizeCheck, IRecipeProcessingAwareDualHatch {

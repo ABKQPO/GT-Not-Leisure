@@ -3,13 +3,10 @@ package com.science.gtnl.common.machine.hatch;
 import net.minecraft.util.StatCollector;
 
 import gregtech.api.interfaces.ITexture;
-import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchDynamo;
 
-@IMetaTileEntity.SkipGenerateName
-@IMetaTileEntity.SkipGenerateDescription
 public class ExplosionDynamoHatch extends MTEHatchDynamo {
 
     public ExplosionDynamoHatch(int aID, String aName, String aNameRegional, int aTier) {

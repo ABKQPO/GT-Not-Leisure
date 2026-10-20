@@ -14,14 +14,11 @@ import com.science.gtnl.common.gui.modularui.NuclearFluidHatchGui;
 import gregtech.GTMod;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
-import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.render.TextureFactory;
 
-@IMetaTileEntity.SkipGenerateName
-@IMetaTileEntity.SkipGenerateDescription
 public class NuclearFluidHatch extends MTEHatch {
 
     public int mFluidCapacity;

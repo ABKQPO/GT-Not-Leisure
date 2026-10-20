@@ -25,7 +25,6 @@ import com.cleanroommc.modularui.value.sync.StringSyncValue;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widget.scroll.VerticalScrollData;
-import com.cleanroommc.modularui.widget.sizer.Unit;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.SlotGroupWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
@@ -40,8 +39,6 @@ import com.science.gtnl.common.machine.monitor.EnergyMonitorSummarySnapshot;
 import appeng.api.util.DimensionalCoord;
 import appeng.client.render.highlighter.BlockPosHighlighter;
 import appeng.core.localization.PlayerMessages;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.modularui2.GTGuis;
 import gregtech.api.util.GTUtility;
@@ -231,7 +228,7 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
             .crossAxisAlignment(Alignment.CrossAxis.START)
             .crossAxisChildPadding(1)
             .child(
-                IKey.lang("gtnl.energy_monitor.statistics")
+                IKey.str(StatCollector.translateToLocal("gtnl.energy_monitor.statistics"))
                     .asWidget()
                     .textAlign(Alignment.CenterLeft)
                     .maxWidth(TERMINAL_TEXT_WIDTH))
@@ -328,20 +325,20 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
         EnergyMonitorMode[] modes = EnergyMonitorMode.values();
         ParentWidget<?> holder = new ParentWidget<>().height(INLINE_BUTTON_HEIGHT);
         for (EnergyMonitorMode mode : modes) {
+            String buttonText = formatModeText(mode, wrapWithParentheses);
+            int buttonWidth = getModeButtonWidth(mode, wrapWithParentheses);
             holder.child(
                 new ButtonWidget<>().background(IDrawable.EMPTY)
-                    .width(() -> getModeButtonWidth(mode, wrapWithParentheses), Unit.Measure.PIXEL)
-                    .height(INLINE_BUTTON_HEIGHT)
+                    .size(buttonWidth, INLINE_BUTTON_HEIGHT)
                     .disableThemeBackground(true)
                     .disableHoverThemeBackground(true)
                     .disableHoverBackground()
                     .disableHoverOverlay()
                     .child(
-                        IKey.dynamic(() -> formatModeText(mode, wrapWithParentheses))
+                        IKey.str(buttonText)
                             .asWidget()
                             .textAlign(Alignment.CenterLeft)
-                            .fullWidth()
-                            .height(INLINE_BUTTON_HEIGHT))
+                            .size(buttonWidth, INLINE_BUTTON_HEIGHT))
                     .onMousePressed(mouseButton -> {
                         if (mouseButton != 0 && mouseButton != 1) {
                             return false;
@@ -356,7 +353,7 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
                     .tooltipShowUpTimer(TOOLTIP_DELAY)
                     .setEnabledIf(widget -> resolveMode(modeSyncer.getIntValue()) == mode));
         }
-        return holder.width(() -> getModeButtonWidth(wrapWithParentheses), Unit.Measure.PIXEL)
+        return holder.size(getModeButtonWidth(wrapWithParentheses), INLINE_BUTTON_HEIGHT)
             .marginLeft(INLINE_BUTTON_SPACING);
     }
 
@@ -424,7 +421,6 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
         return value.startsWith("gtnl.energy_monitor.") ? StatCollector.translateToLocal(value) : value;
     }
 
-    @SideOnly(Side.CLIENT)
     private static int getModeButtonWidth(boolean wrapWithParentheses) {
         int maxWidth = 0;
         for (EnergyMonitorMode mode : EnergyMonitorMode.values()) {
@@ -433,7 +429,6 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
         return maxWidth;
     }
 
-    @SideOnly(Side.CLIENT)
     private static int getModeButtonWidth(EnergyMonitorMode mode, boolean wrapWithParentheses) {
         return Math.max(
             1,
@@ -442,7 +437,6 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
                     .getDefaultWidth() + MODE_BUTTON_PADDING) * 1.5D));
     }
 
-    @SideOnly(Side.CLIENT)
     private static int getHighlightButtonWidth() {
         return Math.max(
             1,
@@ -450,7 +444,6 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
                 .getDefaultWidth() + 2);
     }
 
-    @SideOnly(Side.CLIENT)
     private static int getRowContentWidth(EnergyMonitorRowSnapshot row, int totalWidth) {
         int textWidth = Math.max(
             1,
@@ -485,9 +478,6 @@ public class EnergyMonitorGui extends MTETieredMachineBlockBaseGui<EnergyMonitor
         }
 
         public void rebuildDynamicRows() {
-            if (!syncManager.isClient()) {
-                return;
-            }
             List<EnergyMonitorRowSnapshot> visibleRows = machine.getVisibleRowsForGui();
             boolean hasMoreRows = machine.hasMoreRowsForGui();
             dynamicRows.removeAll();
