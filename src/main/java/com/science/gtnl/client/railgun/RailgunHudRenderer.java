@@ -10,16 +10,16 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.client.fx.FxColor;
-import com.science.gtnl.client.hud.HudEditor;
-import com.science.gtnl.client.hud.HudElement;
-import com.science.gtnl.client.hud.HudLayout.Placement;
-import com.science.gtnl.client.hud.HudRegistry;
-import com.science.gtnl.client.hud.HudTiming;
 import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
 import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnllib.client.fx.FxColor;
+import com.science.gtnllib.client.hud.HudEditor;
+import com.science.gtnllib.client.hud.HudElement;
+import com.science.gtnllib.client.hud.HudLayout.Placement;
+import com.science.gtnllib.client.hud.HudRegistry;
+import com.science.gtnllib.client.hud.HudTiming;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;

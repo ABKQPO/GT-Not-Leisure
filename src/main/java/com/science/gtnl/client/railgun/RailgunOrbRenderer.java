@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
-import com.science.gtnl.client.fx.FxEasing;
 import com.science.gtnl.client.fx.world.FxArcRenderer.Color;
 import com.science.gtnl.client.fx.world.FxArcRenderer.Style;
 import com.science.gtnl.client.fx.world.FxCamera;
@@ -19,6 +18,7 @@ import com.science.gtnl.client.railgun.RailgunBolts.Bolt;
 import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnllib.client.fx.FxEasing;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;

@@ -1,10 +1,10 @@
 package com.science.gtnl.client.celestweave;
 
-import static com.science.gtnl.client.celestweave.CelestweaveContractTest.call;
-import static com.science.gtnl.client.celestweave.CelestweaveContractTest.check;
-import static com.science.gtnl.client.celestweave.CelestweaveContractTest.field;
-import static com.science.gtnl.client.celestweave.CelestweaveContractTest.near;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.roundTrip;
+import static com.science.gtnllib.GTNLLibContractTest.call;
+import static com.science.gtnllib.GTNLLibContractTest.check;
+import static com.science.gtnllib.GTNLLibContractTest.field;
+import static com.science.gtnllib.GTNLLibContractTest.near;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -29,7 +29,6 @@ import net.minecraft.util.AxisAlignedBB;
 import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
 import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.science.gtnl.client.celestweave.CelestweaveClientEvents.HitOrigin;
-import com.science.gtnl.client.fx.FxEasing;
 import com.science.gtnl.client.fx.world.FxVisibility;
 import com.science.gtnl.common.celestweave.CelestweaveBackpack;
 import com.science.gtnl.common.celestweave.CelestweaveBackpackData;
@@ -62,6 +61,7 @@ import com.science.gtnl.common.railgun.RailgunEnergy;
 import com.science.gtnl.common.railgun.RailgunModule;
 import com.science.gtnl.common.railgun.RailgunSetting;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnllib.client.fx.FxEasing;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

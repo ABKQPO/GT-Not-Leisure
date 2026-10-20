@@ -1,10 +1,10 @@
 package com.science.gtnl.client.celestweave;
 
-import static com.science.gtnl.client.celestweave.CelestweaveContractTest.call;
-import static com.science.gtnl.client.celestweave.CelestweaveContractTest.check;
-import static com.science.gtnl.client.celestweave.CelestweaveContractTest.field;
-import static com.science.gtnl.client.celestweave.CelestweaveContractTest.near;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.roundTrip;
+import static com.science.gtnllib.GTNLLibContractTest.call;
+import static com.science.gtnllib.GTNLLibContractTest.check;
+import static com.science.gtnllib.GTNLLibContractTest.field;
+import static com.science.gtnllib.GTNLLibContractTest.near;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;

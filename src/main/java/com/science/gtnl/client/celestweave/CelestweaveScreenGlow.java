@@ -8,8 +8,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
 
 import com.science.gtnl.client.celestweave.CelestweaveClientEvents.HitOrigin;
-import com.science.gtnl.client.fx.FxColor;
 import com.science.gtnl.common.equipment.EquipmentVec;
+import com.science.gtnllib.client.fx.FxColor;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;

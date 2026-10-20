@@ -12,13 +12,13 @@ import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
-import com.science.gtnl.common.gui.modularui.layout.Layout;
-import com.science.gtnl.common.gui.modularui.widget.SlideSwitch;
 import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunEnergy;
 import com.science.gtnl.common.railgun.RailgunModule;
 import com.science.gtnl.common.railgun.RailgunSetting;
+import com.science.gtnllib.gui.layout.Layout;
+import com.science.gtnllib.gui.widget.SlideSwitch;
 
 public class RailgunGui extends EquipmentGui {
 

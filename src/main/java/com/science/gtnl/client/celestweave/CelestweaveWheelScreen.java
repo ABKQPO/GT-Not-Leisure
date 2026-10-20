@@ -11,22 +11,22 @@ import com.cleanroommc.modularui.drawable.DynamicDrawable;
 import com.cleanroommc.modularui.drawable.ItemDrawable;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.client.hud.HudEditor;
 import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.gui.equipment.EquipmentSoundScreen;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme;
-import com.science.gtnl.common.gui.modularui.layout.Layout;
-import com.science.gtnl.common.gui.modularui.layout.LayoutMath;
-import com.science.gtnl.common.gui.modularui.layout.LayoutTheme;
-import com.science.gtnl.common.gui.modularui.layout.Size;
-import com.science.gtnl.common.gui.modularui.theme.ButtonPurpose;
-import com.science.gtnl.common.gui.modularui.wheel.WheelEntry;
-import com.science.gtnl.common.gui.modularui.wheel.WheelMenuBuilder;
-import com.science.gtnl.common.gui.modularui.wheel.WheelMenuModel;
-import com.science.gtnl.common.gui.modularui.wheel.WheelOpenMode;
-import com.science.gtnl.common.gui.modularui.wheel.WheelScreen;
-import com.science.gtnl.common.gui.modularui.wheel.WheelStyle;
 import com.science.gtnl.common.packet.CelestweaveKeyPacket;
+import com.science.gtnllib.client.hud.HudEditor;
+import com.science.gtnllib.gui.layout.Layout;
+import com.science.gtnllib.gui.layout.LayoutMath;
+import com.science.gtnllib.gui.layout.LayoutTheme;
+import com.science.gtnllib.gui.layout.Size;
+import com.science.gtnllib.gui.theme.ButtonPurpose;
+import com.science.gtnllib.gui.wheel.WheelEntry;
+import com.science.gtnllib.gui.wheel.WheelMenuBuilder;
+import com.science.gtnllib.gui.wheel.WheelMenuModel;
+import com.science.gtnllib.gui.wheel.WheelOpenMode;
+import com.science.gtnllib.gui.wheel.WheelScreen;
+import com.science.gtnllib.gui.wheel.WheelStyle;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -37,7 +37,7 @@ public class CelestweaveWheelScreen extends WheelScreen {
     private static final int[] PIECE = { 0, 1, 3, 2 };
     private static final int TITLE_GAP = 8;
     private static final int BUTTON_WIDTH = 72, BUTTON_GAP = 22;
-    private static final String HUD = "gtnl.hud.editor.open", SOUND = "item.gtnl.celestweave.wheel.sound";
+    private static final String HUD = HudEditor.OPEN_LANG, SOUND = "item.gtnl.celestweave.wheel.sound";
 
     public CelestweaveWheelScreen(KeyBinding key) {
         super(menu(), WheelOpenMode.HOLD, key);

@@ -10,8 +10,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
-import com.science.gtnl.client.fx.FxColor;
 import com.science.gtnl.common.equipment.EquipmentVec;
+import com.science.gtnllib.client.fx.FxColor;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 

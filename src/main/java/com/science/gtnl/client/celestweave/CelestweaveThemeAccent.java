@@ -7,12 +7,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.screen.ModularPanel;
-import com.science.gtnl.client.hud.HudColor;
 import com.science.gtnl.common.celestweave.CelestweaveCosmeticOption;
 import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme;
-import com.science.gtnl.common.gui.modularui.theme.LivePalette;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
+import com.science.gtnllib.client.hud.HudColor;
+import com.science.gtnllib.gui.theme.LivePalette;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

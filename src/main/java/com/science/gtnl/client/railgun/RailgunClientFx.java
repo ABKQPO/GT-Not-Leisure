@@ -7,13 +7,13 @@ import net.minecraftforge.event.world.WorldEvent;
 
 import com.science.gtnl.client.fx.world.FxShockwaveRenderer;
 import com.science.gtnl.client.fx.world.FxVisibility;
-import com.science.gtnl.client.hud.HudRegistry;
 import com.science.gtnl.common.equipment.EquipmentSound;
 import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.packet.RailgunBeamChainFxPacket;
 import com.science.gtnl.common.packet.RailgunFireFxPacket;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnllib.client.hud.HudRegistry;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;

@@ -23,17 +23,17 @@ import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
-import com.science.gtnl.client.hud.HudEditor;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.equipment.EquipmentModules;
 import com.science.gtnl.common.equipment.IEquipmentVariant;
-import com.science.gtnl.common.gui.modularui.layout.Layout;
-import com.science.gtnl.common.gui.modularui.layout.LayoutTheme;
-import com.science.gtnl.common.gui.modularui.layout.Size;
-import com.science.gtnl.common.gui.modularui.theme.ButtonPurpose;
-import com.science.gtnl.common.gui.modularui.widget.FillBar;
-import com.science.gtnl.common.gui.modularui.widget.SlideSwitch;
 import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
+import com.science.gtnllib.client.hud.HudEditor;
+import com.science.gtnllib.gui.layout.Layout;
+import com.science.gtnllib.gui.layout.LayoutTheme;
+import com.science.gtnllib.gui.layout.Size;
+import com.science.gtnllib.gui.theme.ButtonPurpose;
+import com.science.gtnllib.gui.widget.FillBar;
+import com.science.gtnllib.gui.widget.SlideSwitch;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -137,10 +137,10 @@ public abstract class EquipmentGui {
     protected void bindFooter(ModularPanel panel) {
         panel.child(
             button(ButtonPurpose.NORMAL)
-                .size(buttonWidth(tr("gtnl.hud.editor.open"), style.padding, HUD_BUTTON_WIDTH), style.buttonHeight)
+                .size(buttonWidth(tr(HudEditor.OPEN_LANG), style.padding, HUD_BUTTON_WIDTH), style.buttonHeight)
                 .right(style.padding)
                 .bottom(INVENTORY_BOTTOM + INVENTORY_HEIGHT + style.spacingMedium)
-                .overlay(Layout.caption(IKey.lang("gtnl.hud.editor.open"), style))
+                .overlay(Layout.caption(IKey.lang(HudEditor.OPEN_LANG), style))
                 .onMousePressed(mouse -> {
                     if (mouse != 0) return false;
                     openHudEditor();

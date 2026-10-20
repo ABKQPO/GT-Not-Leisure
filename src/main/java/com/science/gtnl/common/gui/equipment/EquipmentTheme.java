@@ -1,8 +1,5 @@
 package com.science.gtnl.common.gui.equipment;
 
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-
 import com.cleanroommc.modularui.api.IThemeApi;
 import com.cleanroommc.modularui.theme.ThemeBuilder;
 import com.cleanroommc.modularui.theme.WidgetTheme;
@@ -11,16 +8,17 @@ import com.cleanroommc.modularui.utils.Color;
 import com.cleanroommc.modularui.utils.JsonBuilder;
 import com.cleanroommc.modularui.utils.JsonHelper;
 import com.google.gson.JsonObject;
-import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
-import com.science.gtnl.client.hud.HudColor;
-import com.science.gtnl.common.gui.modularui.layout.LayoutTheme;
-import com.science.gtnl.common.gui.modularui.theme.LivePalette;
-import com.science.gtnl.common.gui.modularui.theme.PaletteThemes;
-import com.science.gtnl.common.gui.modularui.theme.ThemePalette;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnllib.client.hud.HudColor;
+import com.science.gtnllib.gui.layout.LayoutTheme;
+import com.science.gtnllib.gui.theme.LivePalette;
+import com.science.gtnllib.gui.theme.PaletteThemes;
+import com.science.gtnllib.gui.theme.ThemePalette;
+import com.science.gtnllib.gui.theme.ThemeStyle;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.modularui2.GTGuiThemes;
 
 @SideOnly(Side.CLIENT)
 public class EquipmentTheme {
@@ -63,34 +61,17 @@ public class EquipmentTheme {
     public static final WidgetThemeKey<Colors> COLORS = registerColors(new Colors(PALETTE));
     public static final LivePalette LIVE = PaletteThemes
         .live(EquipmentTheme::selected, () -> MainConfig.client.enableEquipmentThemeGlowColor);
-    private static final String CONFIG_CATEGORY = "general.client", CONFIG_THEME = "equipmentTheme";
 
     private EquipmentTheme() {}
 
     public static void register() {
         PaletteThemes.extend(EquipmentTheme::addColors);
-        PaletteThemes.onRegister(EquipmentTheme::listChoices);
-        PaletteThemes.register(ID, PALETTE);
+        PaletteThemes.register(ID, GTGuiThemes.STANDARD.getId(), PALETTE, ThemeStyle.DEFAULT);
         shareWithHudEditor();
     }
 
     public static String selected() {
-        String id = MainConfig.client.equipmentTheme;
-        return PaletteThemes.ids()
-            .contains(id) ? id : ID;
-    }
-
-    public static String[] choices() {
-        return PaletteThemes.ids()
-            .toArray(new String[0]);
-    }
-
-    private static void listChoices() {
-        Configuration config = ConfigurationManager.getConfig(MainConfig.class);
-        Property property = config == null ? null
-            : config.getCategory(CONFIG_CATEGORY)
-                .get(CONFIG_THEME);
-        if (property != null) property.setValidValues(choices());
+        return PaletteThemes.selected(ID);
     }
 
     public static void shareWithHudEditor() {

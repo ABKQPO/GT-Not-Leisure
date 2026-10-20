@@ -3,7 +3,7 @@ package com.science.gtnl.client.railgun;
 import net.minecraft.util.ResourceLocation;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.client.shader.ShaderEffect;
+import com.science.gtnllib.client.shader.ShaderEffect;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

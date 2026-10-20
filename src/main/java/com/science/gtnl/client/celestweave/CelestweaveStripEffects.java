@@ -10,11 +10,11 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnl.client.fx.FxColor;
-import com.science.gtnl.client.fx.FxEasing;
 import com.science.gtnl.common.celestweave.CelestweaveCosmetic;
 import com.science.gtnl.common.celestweave.CelestweaveCosmeticOption;
 import com.science.gtnl.common.celestweave.CelestweaveStripStyle;
+import com.science.gtnllib.client.fx.FxColor;
+import com.science.gtnllib.client.fx.FxEasing;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

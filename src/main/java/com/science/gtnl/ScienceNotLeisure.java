@@ -56,7 +56,8 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
         + "required-after:structurelib;"
         + "required-after:Thaumcraft;"
         + "before:TwistSpaceTechnology;",
-    acceptedMinecraftVersions = "1.7.10")
+    acceptedMinecraftVersions = "1.7.10",
+    guiFactory = "com.science.gtnl.config.ConfigGuiFactory")
 public class ScienceNotLeisure {
 
     public static final String MODID = "sciencenotleisure";

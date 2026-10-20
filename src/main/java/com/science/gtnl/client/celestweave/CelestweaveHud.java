@@ -16,12 +16,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
 
 import com.science.gtnl.client.celestweave.CelestweaveClientEvents.HitOrigin;
-import com.science.gtnl.client.fx.FxColor;
-import com.science.gtnl.client.fx.FxEasing;
-import com.science.gtnl.client.hud.HudEditor;
-import com.science.gtnl.client.hud.HudLayout;
-import com.science.gtnl.client.hud.HudLayout.Placement;
-import com.science.gtnl.client.hud.HudTiming;
 import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.celestweave.CelestweaveEnergy;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
@@ -31,6 +25,12 @@ import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.Utils;
+import com.science.gtnllib.client.fx.FxColor;
+import com.science.gtnllib.client.fx.FxEasing;
+import com.science.gtnllib.client.hud.HudEditor;
+import com.science.gtnllib.client.hud.HudLayout;
+import com.science.gtnllib.client.hud.HudLayout.Placement;
+import com.science.gtnllib.client.hud.HudTiming;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;

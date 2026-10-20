@@ -2,7 +2,7 @@ package com.science.gtnl.client.celestweave;
 
 import java.util.Arrays;
 
-import com.science.gtnl.client.fx.FxColor;
+import com.science.gtnllib.client.fx.FxColor;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

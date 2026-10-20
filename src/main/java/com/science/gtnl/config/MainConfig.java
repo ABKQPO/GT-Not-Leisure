@@ -16,7 +16,6 @@ import com.gtnewhorizon.gtnhlib.config.Config.RangeInt;
 import com.gtnewhorizon.gtnhlib.config.Config.RequiresMcRestart;
 import com.gtnewhorizon.gtnhlib.config.Config.Sync;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.gui.equipment.EquipmentTheme;
 
 import gregtech.api.enums.Mods;
 
@@ -116,22 +115,6 @@ public class MainConfig {
         @LangKey("gtnl.gui.config.general.client.enable_celestweave_first_person_arm")
         @DefaultBoolean(true)
         public boolean enableCelestweaveFirstPersonArm = true;
-
-        @Comment("Show every HUD element, such as the Celestweave energy core, shield hit ring, dash cooldown, flight altimeter and Celestweave Lance charge; arrange them with Edit HUD below the Celestweave wheel or in an equipment settings screen")
-        @LangKey("gtnl.gui.config.general.client.enable_hud")
-        @DefaultBoolean(true)
-        public boolean enableHud = true;
-
-        @Comment("Base scale of every HUD element; each element can be scaled further in the HUD editor")
-        @LangKey("gtnl.gui.config.general.client.hud_scale")
-        @DefaultFloat(1F)
-        @RangeFloat(min = 0.5F, max = 3F)
-        public float hudScale = 1F;
-
-        @Comment("Theme of the equipment screens: sound settings, Celestweave and Celestweave Lance settings and the Celestweave wheel; only registered themes can be chosen, an unknown id falls back to gtnl:equipment")
-        @LangKey("gtnl.gui.config.general.client.equipment_theme")
-        @DefaultString(EquipmentTheme.ID)
-        public String equipmentTheme = EquipmentTheme.ID;
 
         @Comment("Tint the equipment screens and the HUD editor guides with the glow color of the Celestweave chestplate you wear or are editing; when off they use the colors of the chosen theme")
         @LangKey("gtnl.gui.config.general.client.enable_equipment_theme_glow_color")

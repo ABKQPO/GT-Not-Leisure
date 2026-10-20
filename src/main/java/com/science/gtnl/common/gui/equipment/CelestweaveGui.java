@@ -46,12 +46,12 @@ import com.science.gtnl.common.celestweave.CelestweaveEnergy;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
-import com.science.gtnl.common.gui.modularui.layout.Layout;
-import com.science.gtnl.common.gui.modularui.layout.Size;
-import com.science.gtnl.common.gui.modularui.theme.ButtonPurpose;
-import com.science.gtnl.common.gui.modularui.widget.SlideSwitch;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveKeyPacket;
+import com.science.gtnllib.gui.layout.Layout;
+import com.science.gtnllib.gui.layout.Size;
+import com.science.gtnllib.gui.theme.ButtonPurpose;
+import com.science.gtnllib.gui.widget.SlideSwitch;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
