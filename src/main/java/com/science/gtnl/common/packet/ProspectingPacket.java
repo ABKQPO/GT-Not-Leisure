@@ -33,6 +33,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.longs.Long2LongMap;
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ShortMap;
 import it.unimi.dsi.fastutil.longs.Long2ShortOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ShortOpenHashMap;
@@ -62,6 +63,7 @@ public class ProspectingPacket extends ClientboundPacket {
     private final Short2ObjectOpenHashMap<ItemStack> itemStacks = new Short2ObjectOpenHashMap<>();
     private final Short2ObjectOpenHashMap<FluidStack> fluidStacks = new Short2ObjectOpenHashMap<>();
     private final Object2ShortOpenHashMap<String> nameLookup = new Object2ShortOpenHashMap<>();
+    private final Long2ObjectOpenHashMap<String> objectKeyCache = new Long2ObjectOpenHashMap<>();
     private short nextId;
 
     public ProspectingPacket() {}
@@ -254,10 +256,24 @@ public class ProspectingPacket extends ClientboundPacket {
     }
 
     public void addBlock(int worldX, int worldY, int worldZ, Block block, int meta) {
-        ItemStack stack = new ItemStack(block, 1, meta);
-        String objectKey = "block:" + Block.blockRegistry.getNameForObject(block) + ':' + meta;
+        final long cacheKey = ((long) Block.getIdFromBlock(block) << 32) | (meta & 0xFFFFFFFFL);
+        String objectKey = objectKeyCache.get(cacheKey);
+        if (objectKey == null) {
+            objectKey = getObjectKey(block, meta);
+            objectKeyCache.put(cacheKey, objectKey);
+        }
 
-        addBlock(worldX, worldY, worldZ, objectKey, stack);
+        addBlock(worldX, worldY, worldZ, objectKey, new ItemStack(block, 1, meta));
+    }
+
+    private static String getObjectKey(Block block, int meta) {
+        try (var info = OreManager.getOreInfo(block, meta)) {
+            if (info != null && info.material != null) {
+                return "ore:" + info.material.getClass()
+                    .getName() + ':' + info.material.getInternalName() + (info.isSmall ? ":small" : "");
+            }
+        }
+        return "block:" + Block.blockRegistry.getNameForObject(block) + ':' + meta;
     }
 
     private void addBlock(int worldX, int worldY, int worldZ, String objectKey, ItemStack stack) {

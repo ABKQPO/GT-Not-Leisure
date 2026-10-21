@@ -18,6 +18,8 @@ import com.science.gtnl.common.packet.ProspectingPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
+import it.unimi.dsi.fastutil.shorts.ShortSet;
 
 @SideOnly(Side.CLIENT)
 public class DetravMapTexture extends AbstractTexture {
@@ -91,10 +93,10 @@ public class DetravMapTexture extends AbstractTexture {
         Arrays.fill(topId, (short) -1);
         topY = new int[blockSize * blockSize];
 
-        short selectedId = findSelectedObjectId();
+        final ShortSet selectedIds = findSelectedObjectIds();
 
         for (var entry : packet.map.long2ShortEntrySet()) {
-            if (selectedId != -1 && selectedId != entry.getShortValue()) {
+            if (selectedIds != null && !selectedIds.contains(entry.getShortValue())) {
                 continue;
             }
 
@@ -181,18 +183,19 @@ public class DetravMapTexture extends AbstractTexture {
         }
     }
 
-    private short findSelectedObjectId() {
+    private ShortSet findSelectedObjectIds() {
         if (ALL_ORES.equals(selected)) {
-            return -1;
+            return null;
         }
+        final ShortSet ids = new ShortOpenHashSet();
         for (var entry : packet.objects.short2ObjectEntrySet()) {
             if (selected.equals(
                 entry.getValue()
                     .left())) {
-                return entry.getShortKey();
+                ids.add(entry.getShortKey());
             }
         }
-        return -1;
+        return ids;
     }
 
     public String getTopOreName(int x, int z) {

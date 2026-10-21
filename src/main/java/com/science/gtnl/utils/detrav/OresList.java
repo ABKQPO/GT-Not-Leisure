@@ -41,6 +41,7 @@ public class OresList extends GuiScrollingList {
                 .map(
                     entry -> entry.getValue()
                         .left())
+                .distinct()
                 .toList());
         Collections.sort(allKeys);
 
@@ -55,7 +56,7 @@ public class OresList extends GuiScrollingList {
         selectedName = keys.isEmpty() ? null : keys.get(0);
 
         for (var entry : packet.objects.short2ObjectEntrySet()) {
-            colors.put(
+            colors.putIfAbsent(
                 entry.getValue()
                     .left(),
                 entry.getValue()
