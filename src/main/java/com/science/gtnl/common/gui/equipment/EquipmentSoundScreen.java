@@ -56,12 +56,12 @@ public class EquipmentSoundScreen extends ModularScreen {
 
     private static ModularPanel panel(Arrangement arrangement, Colors colors) {
         LayoutTheme style = arrangement.style;
-        int pad = style.spacingLarge;
+        int pad = style.padding;
         ModularPanel panel = new ModularPanel("equipment_sound").width(arrangement::width, Unit.Measure.PIXEL)
             .height(arrangement::height, Unit.Measure.PIXEL);
         panel.child(
             Layout.label(IKey.lang("item.gtnl.equipment.gui.sound"), style)
-                .pos(pad + style.spacingSmall, pad)
+                .pos(pad, pad)
                 .width(() -> arrangement.width() - pad * 2 - CloseButton.SIZE - style.spacingMedium, Unit.Measure.PIXEL)
                 .height(TEXT_HEIGHT));
         panel.child(
@@ -83,7 +83,7 @@ public class EquipmentSoundScreen extends ModularScreen {
                 .color(colors.hint)
                 .shadow(false)
                 .asWidget()
-                .left(pad + style.spacingSmall)
+                .left(pad)
                 .top(arrangement::hintTop, Unit.Measure.PIXEL)
                 .width(() -> arrangement.width() - pad * 2, Unit.Measure.PIXEL)
                 .height(() -> arrangement.hintLines() * TEXT_HEIGHT, Unit.Measure.PIXEL));
@@ -173,25 +173,22 @@ public class EquipmentSoundScreen extends ModularScreen {
         }
 
         private void fit(int screenWidth, int screenHeight) {
-            int pad = style.spacingLarge, columnLines = Layout.textLines(hint, columnWidth() - pad * 2, style);
+            int pad = style.padding, columnLines = Layout.textLines(hint, columnWidth() - pad * 2, style);
             stacked = LayoutMath
                 .stacks(widths, heights, style.spacingLarge, screenWidth - pad * 2, screenHeight - chrome(columnLines));
             hintLines = stacked ? columnLines : Layout.textLines(hint, rowWidth() - pad * 2, style);
         }
 
         private int chrome(int lines) {
-            return style.spacingLarge + TITLE_HEIGHT
-                + style.spacingMedium * 2
-                + style.spacingSmall
-                + lines * TEXT_HEIGHT;
+            return style.padding * 2 + TITLE_HEIGHT + style.spacingMedium + lines * TEXT_HEIGHT;
         }
 
         private int rowWidth() {
-            return style.spacingLarge * 2 + LayoutMath.total(widths, style.spacingLarge);
+            return style.padding * 2 + LayoutMath.total(widths, style.spacingLarge);
         }
 
         private int columnWidth() {
-            return style.spacingLarge * 2 + LayoutMath.widest(widths);
+            return style.padding * 2 + LayoutMath.widest(widths);
         }
 
         private int cardsHeight() {
@@ -207,13 +204,13 @@ public class EquipmentSoundScreen extends ModularScreen {
         }
 
         private int x(int card) {
-            int x = style.spacingLarge;
+            int x = style.padding;
             if (!stacked) for (int i = 0; i < card; i++) x += widths[i] + style.spacingLarge;
             return x;
         }
 
         private int y(int card) {
-            int y = style.spacingLarge + TITLE_HEIGHT;
+            int y = style.padding + TITLE_HEIGHT;
             if (stacked) for (int i = 0; i < card; i++) y += heights[i] + style.spacingLarge;
             return y;
         }
@@ -223,7 +220,7 @@ public class EquipmentSoundScreen extends ModularScreen {
         }
 
         private int hintTop() {
-            return style.spacingLarge + TITLE_HEIGHT + cardsHeight() + style.spacingMedium;
+            return style.padding + TITLE_HEIGHT + cardsHeight() + style.spacingMedium;
         }
 
         private int hintLines() {

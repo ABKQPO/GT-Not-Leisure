@@ -73,27 +73,27 @@ public class LayoutContracts {
         for (int i = 0; i < 5; i++) five.add(new SlideSwitch());
         Layout.Grid grid = rows.adaptiveGrid(2, 76, 3, five);
         check(
-            rows.available() == 160 && grid.columns() == 2
+            rows.available() == 156 && grid.columns() == 2
                 && grid.rowCount() == 3
                 && grid.contentHeight() == 48
                 && grid.cellLeft(1) == 89
-                && grid.cellWidth(1) == 79
+                && grid.cellWidth(1) == 77
                 && grid.cellTop(2) == 16
                 && grid.getChildren()
                     .size() == 5,
             "an adaptive grid on a narrow panel keeps two columns");
         width[0] = 256;
         check(
-            rows.available() == 240 && grid.columns() == 3
+            rows.available() == 236 && grid.columns() == 3
                 && grid.rowCount() == 2
                 && grid.contentHeight() == 32
-                && grid.cellLeft(2) == 170
-                && grid.cellWidth(2) == 78
+                && grid.cellLeft(2) == 169
+                && grid.cellWidth(2) == 77
                 && grid.cellTop(3) == 16,
             "the same grid takes a third column once the panel grows");
         width[0] = 120;
         check(
-            grid.columns() == 1 && grid.rowCount() == 5 && grid.cellWidth(4) == 104 && grid.cellLeft(4) == 8,
+            grid.columns() == 1 && grid.rowCount() == 5 && grid.cellWidth(4) == 100 && grid.cellLeft(4) == 10,
             "and falls back to one full-width column when the panel shrinks");
         check(
             rows.stackHeight(Arrays.asList(rows.section(IKey.str("title"), 0), grid)) == 16 + grid.contentHeight(),
@@ -114,10 +114,10 @@ public class LayoutContracts {
     private static void layoutRules() {
         int available = 160, gap = 2, shortSwitch = SlideSwitch.widthFor(56);
         check(
-            SlideSwitch.widthFor(0) == 20 && shortSwitch == 76,
+            SlideSwitch.widthFor(0) == 17 && shortSwitch == 73,
             "a switch needs its track, its label and a small margin");
         check(LayoutMath.columns(available, gap, shortSwitch, 2) == 2, "short labels keep two columns");
-        for (int text : new int[] { 62, 120, 400 }) {
+        for (int text : new int[] { 64, 120, 400 }) {
             int columns = LayoutMath.columns(available, gap, SlideSwitch.widthFor(text), 2);
             check(
                 columns == 1 && LayoutMath.total(LayoutMath.split(available, gap, columns), gap) == available,
@@ -191,7 +191,7 @@ public class LayoutContracts {
             "nothing shrinks below its minimum");
         Layout rows = Layout.rows(LayoutTheme.DEFAULT, 176);
         check(
-            rows.available() == 160 && rows.inset(4)
+            rows.available() == 156 && rows.inset(4)
                 .available() == 168,
             "rows keep the theme padding on both sides");
         List<SlideSwitch> five = new ArrayList<>();

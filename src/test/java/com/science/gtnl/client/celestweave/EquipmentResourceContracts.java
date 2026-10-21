@@ -23,6 +23,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -81,6 +83,7 @@ import com.science.gtnl.common.gui.equipment.EquipmentSoundScreen;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme.Colors;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
+import com.science.gtnl.common.railgun.RailgunModule;
 import com.science.gtnl.config.EquipmentSoundConfig;
 import com.science.gtnl.config.EquipmentSoundConfig.Channel;
 import com.science.gtnl.config.MainConfig;
@@ -91,6 +94,7 @@ public class EquipmentResourceContracts {
 
     private static final String TEST_THEME = "gtnl:palette_test";
     private static final int CYAN = 0x3DE8FF;
+    private static final Pattern PLACEHOLDER = Pattern.compile("%(?:\\d+\\$)?[sd]");
 
     private EquipmentResourceContracts() {}
 
@@ -105,6 +109,7 @@ public class EquipmentResourceContracts {
         equipmentScreens();
         layoutRules();
         lang();
+        langOrder();
     }
 
     private static void hexTexture() throws ReflectiveOperationException {
@@ -662,12 +667,12 @@ public class EquipmentResourceContracts {
         check(
             LayoutMath.columns(160, gap, 76, 3) == 2 && LayoutMath.columns(240, gap, 76, 3) == 3,
             "short switch labels keep two columns on a narrow panel and take three on the widest one");
-        int narrowTop = 97, wideTop = 72, footer = 93;
+        int wideTop = 78, footer = 96;
         check(
-            narrowTop + LayoutMath.fitRows(240 - 8 - narrowTop - footer, 16, 3, 11) + footer <= 240
-                && LayoutMath.fitRows(270 - 8 - wideTop - footer, 16, 3, 11) == 96
+            wideTop + LayoutMath.fitRows(240 - 8 - wideTop - footer, 16, 3, 11) + footer <= 240
+                && LayoutMath.fitRows(270 - 8 - wideTop - footer, 16, 3, 11) == 80
                 && LayoutMath.fitRows(360 - 8 - wideTop - footer, 16, 3, 11) == 176,
-            "the armor pages fit the smallest screen and show six rows at GUI scale 4 on a 1080p screen");
+            "the armor pages fit a 720p screen at GUI scale 3 and show five rows at GUI scale 4 on a 1080p screen");
         List<Size> colorRow = new ArrayList<>();
         colorRow.add(Size.fill());
         for (int i = 0; i < 7; i++) colorRow.add(Size.fixed(12));
@@ -718,8 +723,23 @@ public class EquipmentResourceContracts {
             "the page scrollbar is a thin bar right of the content instead of lying on the panel frame");
         check(
             base.contains("newDivider().color(client?dividerColor():0)")
-                && base.contains("returnINVENTORY_BOTTOM+INVENTORY_HEIGHT+style.spacingLarge;"),
-            "a divider in a wider gap separates the settings from the player inventory");
+                && base.contains("returnstyle.padding+INVENTORY_HEIGHT+style.spacingLarge;")
+                && base.contains("panel.bindPlayerInventory(style.padding);"),
+            "a divider in a wider gap separates the settings from the player inventory, which keeps the theme margin below it");
+        check(
+            base.contains(".pos(style.padding,style.padding)") && sound.contains("intpad=style.padding;")
+                && sound.contains(".pos(pad,pad)")
+                && !sound.contains("pad+style.spacingSmall"),
+            "settings pages and the sound screen keep the same theme margin on every side");
+        check(
+            armor.contains(".crossAxisAlignment(Alignment.CrossAxis.START)") && !armor.contains("paddingLeft("),
+            "page rows start at the same left edge as the header, labels are not indented");
+        check(
+            armor.contains("markColor(rgb)+\"✔\":\"\").shadow(false)")
+                && armor.contains("markColor(color.getIntValue())+\"...\").shadow(false)")
+                && !armor.contains("\"§0...\"")
+                && !armor.contains("\"§0✔\""),
+            "color marks are drawn once in black or white, whichever reads better on the swatch");
         check(
             armor.contains("rows.section(") && armor.contains("newStepSlider()")
                 && armor.contains("()->value.getIntValue()==index")
@@ -1088,7 +1108,53 @@ public class EquipmentResourceContracts {
             keys.stream()
                 .noneMatch(key -> key.startsWith("gtnllib.") || key.startsWith("gtnl.hud.")),
             "GTNL lang files leave the GTNLLib keys to the GTNLLib lang files");
+        Map<String, String> englishText = langValues("en_US.lang"), chineseText = langValues("zh_CN.lang");
+        List<String> mismatched = new ArrayList<>();
+        for (Map.Entry<String, String> entry : englishText.entrySet()) {
+            String other = chineseText.get(entry.getKey());
+            if (equipmentKey(entry.getKey()) && other != null
+                && !placeholders(entry.getValue()).equals(placeholders(other))) mismatched.add(entry.getKey());
+        }
+        check(mismatched.isEmpty(), "English and Chinese equipment texts take the same values: " + mismatched);
+        String installed = "item.gtnl.electromagnetic_railgun.tooltip.1";
+        check(
+            englishText.getOrDefault(installed, "")
+                .contains("%s / %s") && RailgunModule.totalLimit() == 7,
+            "the railgun tooltip shows the installed count against the sum of the module limits, not a fixed number");
         check(new File("src/main/resources").isDirectory(), "run from the project root");
+    }
+
+    private static void langOrder() throws IOException {
+        String loader = read(SOURCES.resolve("loader/ItemLoader.java"));
+        String[][] items = { { "new ElectromagneticRailgun()", "item.gtnl.electromagnetic_railgun.name" },
+            { "new RailgunModuleItem()", "item.gtnl.railgun_module.compute.name" },
+            { "new EnergyModuleItem()", "item.gtnl.energy_module.t1.name" },
+            { "new CelestweaveModuleItem()", "item.gtnl.celestweave_module.apiarist.name" },
+            { "new CelestweaveArmor(0", "item.gtnl.celestweave_oculus.name" } };
+        Arrays.sort(items, Comparator.comparingInt(item -> loader.indexOf(item[0])));
+        for (String file : new String[] { "en_US.lang", "zh_CN.lang" }) {
+            List<String> keys = new ArrayList<>();
+            for (String line : Files.readAllLines(RESOURCES.resolve("lang/" + file), StandardCharsets.UTF_8))
+                keys.add(line.contains("=") ? line.substring(0, line.indexOf('=')) : "");
+            int last = -1;
+            boolean ordered = true;
+            for (String[] item : items) {
+                int at = keys.indexOf(item[1]);
+                ordered &= at > last;
+                last = at;
+            }
+            check(
+                ordered,
+                file + " lists the equipment items in the order ItemLoader registers them, which is their numeric id order");
+            int railgun = keys.indexOf("item.gtnl.electromagnetic_railgun.name"),
+                modules = keys.indexOf("item.gtnl.railgun_module.compute.name");
+            check(
+                keys.indexOf("gtnl.potion.electromagnetic_paralysis") > railgun
+                    && keys.indexOf("gtnl.potion.electromagnetic_paralysis") < modules
+                    && keys.indexOf("death.attack.gtnl.railgun") > railgun
+                    && keys.indexOf("death.attack.gtnl.railgun") < modules,
+                file + " keeps the railgun potion and death message with the railgun");
+        }
     }
 
     private static boolean equipmentKey(String key) {
@@ -1096,13 +1162,26 @@ public class EquipmentResourceContracts {
     }
 
     private static Set<String> langKeys(String file) throws IOException {
-        Set<String> keys = new HashSet<>();
+        return langValues(file).keySet();
+    }
+
+    private static Map<String, String> langValues(String file) throws IOException {
+        Map<String, String> values = new HashMap<>();
         for (String line : Files.readAllLines(RESOURCES.resolve("lang/" + file), StandardCharsets.UTF_8)) {
             int split = line.indexOf('=');
-            if (split > 0 && !line.startsWith("#")) keys.add(
+            if (split > 0 && !line.startsWith("#")) values.put(
                 line.substring(0, split)
-                    .trim());
+                    .trim(),
+                line.substring(split + 1));
         }
-        return keys;
+        return values;
+    }
+
+    private static List<String> placeholders(String text) {
+        List<String> found = new ArrayList<>();
+        Matcher matcher = PLACEHOLDER.matcher(text);
+        while (matcher.find()) found.add(matcher.group());
+        Collections.sort(found);
+        return found;
     }
 }

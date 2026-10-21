@@ -955,18 +955,18 @@ public class CelestweaveArmorContracts {
         int narrow = headerBottom(RailgunGui.class, 10, 1, 160), wide = headerBottom(WidePanel.class, 10, 1, 160),
             longText = headerBottom(WidePanel.class, 10, 1, 230), railgun = headerBottom(WidePanel.class, 5, 0, 160);
         check(
-            narrow == 79,
+            narrow == 85,
             "on the narrowest panel ten module slots take two rows and the energy text sits above its bar: " + narrow);
         check(
-            wide == 54,
+            wide == 60,
             "on the widest panel ten module slots share one row with the held item slot and the energy bar follows its text: "
                 + wide);
-        check(longText == 61, "an energy text too long for one row puts the bar on its own row: " + longText);
-        check(railgun == 54, "the railgun header is one slot row and one energy row on the widest panel: " + railgun);
-        int fullRow = headerBottom(WidePanel.class, 12, 1, 160), crowded = headerBottom(WidePanel.class, 13, 1, 160),
-            free = headerBottom(WidePanel.class, 13, 0, 160);
+        check(longText == 67, "an energy text too long for one row puts the bar on its own row: " + longText);
+        check(railgun == 60, "the railgun header is one slot row and one energy row on the widest panel: " + railgun);
+        int fullRow = headerBottom(WidePanel.class, 11, 1, 160), crowded = headerBottom(WidePanel.class, 12, 1, 160),
+            free = headerBottom(WidePanel.class, 12, 0, 160);
         check(
-            fullRow == 54 && crowded == 72 && free == 54,
+            fullRow == 60 && crowded == 78 && free == 60,
             "the held item slot keeps its own place at the end of the slot row: " + fullRow
                 + ", "
                 + crowded

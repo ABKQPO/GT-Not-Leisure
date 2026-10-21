@@ -49,4 +49,10 @@ public enum RailgunModule implements IEquipmentVariant {
     public static RailgunModule byMeta(int meta) {
         return LOOKUP.byMeta(meta);
     }
+
+    public static int totalLimit() {
+        int total = 0;
+        for (RailgunModule type : values()) total += type.limit;
+        return total;
+    }
 }

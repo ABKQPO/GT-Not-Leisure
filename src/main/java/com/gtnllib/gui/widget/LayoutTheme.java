@@ -16,7 +16,7 @@ public class LayoutTheme extends WidgetTheme {
         SPACING_LARGE = "spacingLarge", PADDING = "padding", BUTTON_HEIGHT = "buttonHeight", ROW_HEIGHT = "rowHeight",
         TEXT_SCALE = "textScale";
     private static final int DEFAULT_SPACING_SMALL = 2, DEFAULT_SPACING_MEDIUM = 4, DEFAULT_SPACING_LARGE = 10,
-        DEFAULT_PADDING = 8, DEFAULT_BUTTON_HEIGHT = 14, DEFAULT_ROW_HEIGHT = 16;
+        DEFAULT_PADDING = 10, DEFAULT_BUTTON_HEIGHT = 14, DEFAULT_ROW_HEIGHT = 16;
     private static final float DEFAULT_TEXT_SCALE = 1F;
     public static final LayoutTheme DEFAULT = new LayoutTheme(
         DEFAULT_SPACING_SMALL,

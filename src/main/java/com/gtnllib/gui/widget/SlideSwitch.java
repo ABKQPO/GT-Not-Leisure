@@ -24,8 +24,7 @@ import com.gtnllib.utils.TextRenderUtils;
 
 public class SlideSwitch extends ButtonWidget<SlideSwitch> {
 
-    private static final int SWITCH_X = 3, SWITCH_WIDTH = 12, SWITCH_HEIGHT = 6, LABEL_X = 18, LABEL_Y = 1,
-        LABEL_END = 2;
+    private static final int SWITCH_WIDTH = 12, SWITCH_HEIGHT = 6, LABEL_X = 15, LABEL_Y = 1, LABEL_END = 2;
 
     private BooleanSupplier on = () -> false, live = () -> true, available = () -> true;
     private IKey label = IKey.EMPTY;
@@ -78,10 +77,10 @@ public class SlideSwitch extends ButtonWidget<SlideSwitch> {
         Theme colors = colors(widgetTheme.getTheme());
         boolean on = this.on.getAsBoolean(), open = available.getAsBoolean(), lit = on && open && live.getAsBoolean();
         int width = getArea().w(), height = getArea().h(), top = (height - SWITCH_HEIGHT) / 2;
-        int knobX = on ? SWITCH_X + SWITCH_WIDTH - SWITCH_HEIGHT : SWITCH_X, knob = on ? colors.knob : colors.knobOff;
+        int knobX = on ? SWITCH_WIDTH - SWITCH_HEIGHT : 0, knob = on ? colors.knob : colors.knobOff;
         if (colors.trackSkin != null)
-            colors.trackSkin.draw(SWITCH_X, top, SWITCH_WIDTH, SWITCH_HEIGHT, on ? trackColor(colors, true, lit) : 0);
-        else GuiDraw.drawRect(SWITCH_X, top, SWITCH_WIDTH, SWITCH_HEIGHT, trackColor(colors, on, lit));
+            colors.trackSkin.draw(0, top, SWITCH_WIDTH, SWITCH_HEIGHT, on ? trackColor(colors, true, lit) : 0);
+        else GuiDraw.drawRect(0, top, SWITCH_WIDTH, SWITCH_HEIGHT, trackColor(colors, on, lit));
         if (colors.knobSkin != null) colors.knobSkin.draw(knobX, top, SWITCH_HEIGHT, SWITCH_HEIGHT, knob);
         else GuiDraw.drawRect(knobX, top, SWITCH_HEIGHT, SWITCH_HEIGHT, knob);
         TextRenderUtils.drawTextFitted(

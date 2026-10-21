@@ -98,9 +98,9 @@ public class Layout {
             .child(
                 label(title, style).color(color)
                     .shadow(true)
-                    .left(inset + style.spacingSmall)
+                    .left(inset)
                     .top((style.rowHeight - TITLE_HEIGHT) / 2)
-                    .width(() -> available() - style.spacingSmall, Unit.Measure.PIXEL)
+                    .width(this::available, Unit.Measure.PIXEL)
                     .height(TITLE_HEIGHT))
             .child(
                 new Divider().color(color)
@@ -151,14 +151,14 @@ public class Layout {
     }
 
     public static ParentWidget<?> card(IKey title, int titleColor, LayoutTheme style, int width, int height) {
-        int inset = style.spacingMedium, titleX = inset + style.spacingSmall;
+        int inset = style.spacingMedium;
         return new ParentWidget<>().widgetTheme(CardDrawable.KEY)
             .size(width, height)
             .child(
                 label(title, style).color(titleColor)
                     .shadow(true)
-                    .pos(titleX, inset)
-                    .size(width - titleX - inset, TITLE_HEIGHT));
+                    .pos(inset, inset)
+                    .size(width - inset * 2, TITLE_HEIGHT));
     }
 
     public static int screenWidth(IWidget widget) {

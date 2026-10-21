@@ -206,8 +206,8 @@ public class ThemeContracts {
                 .contains("EVENT_BUS.register(new PaletteThemes.Reloader())"),
             "GTNLLib rebuilds its palette themes before every theme reload");
         check(
-            ThemeStyle.DEFAULT.equals(new ThemeStyle(6, 2, 3, 2, 10, 2, 4, 10, 8, 14, 16, 1F)),
-            "default theme style keeps the old corner, card accent, spacing, button and row sizes");
+            ThemeStyle.DEFAULT.equals(new ThemeStyle(6, 2, 3, 2, 10, 2, 4, 10, 10, 14, 16, 1F)),
+            "default theme style keeps the old corner, card accent, spacing, button and row sizes, with the 10 pixel margin of the sound screen");
         paletteControls("sample", theme, SAMPLE, ThemeStyle.DEFAULT);
         SlideSwitch.Theme slide = theme.getWidgetTheme(SlideSwitch.Theme.KEY)
             .getTheme();

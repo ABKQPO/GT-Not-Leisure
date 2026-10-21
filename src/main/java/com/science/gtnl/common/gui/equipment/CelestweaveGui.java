@@ -21,6 +21,7 @@ import com.cleanroommc.modularui.drawable.GuiDraw;
 import com.cleanroommc.modularui.drawable.Rectangle;
 import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.cleanroommc.modularui.value.BoolValue;
 import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
@@ -39,10 +40,9 @@ import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 import com.gtnllib.gui.layout.Layout;
 import com.gtnllib.gui.layout.Size;
 import com.gtnllib.gui.theme.ButtonPurpose;
-import com.gtnllib.gui.widget.CloseButton;
 import com.gtnllib.gui.widget.SlideSwitch;
 import com.gtnllib.gui.widget.StepSlider;
-import com.science.gtnl.ScienceNotLeisure;
+import com.gtnllib.utils.ColorMath;
 import com.science.gtnl.client.celestweave.CelestweaveThemeAccent;
 import com.science.gtnl.common.celestweave.CelestweaveBackpack;
 import com.science.gtnl.common.celestweave.CelestweaveBackpackData;
@@ -53,7 +53,6 @@ import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
-import com.science.gtnl.common.packet.CelestweaveKeyPacket;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -63,8 +62,7 @@ public class CelestweaveGui extends EquipmentGui {
     private static final int[] COLORS = { 0xFF3D9A, 0x3DE8FF, 0xFFC13D, 0xA35CFF, 0x4DFF88, 0xFF4040, 0xEEF0FF };
     private static final String GUI_LANG = "item.gtnl.celestweave.gui.", UNAVAILABLE = "§7";
     private static final String SHORT_LANG = "item.gtnl.celestweave.short.";
-    private static final int BACKPACK_WIDTH = 52, BACKPACK_HEIGHT = 13, FLAGS_PER_ROW = 7, FLAG_GAP = 1,
-        SLIDER_WIDTH = 80, SWATCH_SIZE = 12;
+    private static final int FLAGS_PER_ROW = 7, FLAG_GAP = 1, SLIDER_WIDTH = 80, SWATCH_SIZE = 12;
     private static final float SLIDER_SHARE = 0.5F;
     private static final String[] PAGES = { "modules", "settings", "appearance" };
     private static final int APPEARANCE_PAGE = 2;
@@ -92,28 +90,7 @@ public class CelestweaveGui extends EquipmentGui {
     public ModularPanel build() {
         ModularPanel panel = panel("celestweave_armor", () -> contentY() + pageHeight());
         modules = new ModuleHandler();
-        boolean backpackButton = piece == CelestweaveArmor.CHEST
-            && CelestweaveData.isArmorSlot(data.getPlayer(), data.getSlotIndex());
-        int backpackWidth = buttonWidth(
-            tr("item.gtnl.celestweave.gui.open_backpack"),
-            style.spacingSmall,
-            BACKPACK_WIDTH), closeInset = CloseButton.inset(style.padding, style);
-        title(panel, stack.getUnlocalizedName() + ".name", backpackButton ? backpackWidth + style.spacingSmall : 0);
-        if (backpackButton) panel.child(
-            button(ButtonPurpose.NORMAL).top(closeInset + (CloseButton.SIZE - BACKPACK_HEIGHT) / 2)
-                .right(closeInset + CloseButton.SIZE + style.spacingSmall)
-                .size(backpackWidth, BACKPACK_HEIGHT)
-                .overlay(
-                    Layout.caption(
-                        IKey.dynamic(
-                            () -> (installed(CelestweaveModule.BACKPACK) ? "" : UNAVAILABLE)
-                                + tr("item.gtnl.celestweave.gui.open_backpack")),
-                        style))
-                .onMousePressed(mouse -> {
-                    if (mouse != 0 || !installed(CelestweaveModule.BACKPACK)) return false;
-                    ScienceNotLeisure.network.sendToServer(new CelestweaveKeyPacket(CelestweaveKeyPacket.BACKPACK));
-                    return true;
-                }));
+        title(panel, stack.getUnlocalizedName() + ".name", 0);
         moduleSlots(panel, modules, "celestweave_modules", "item.gtnl.celestweave.gui.module_limits");
         List<CelestweaveModule> holders = new ArrayList<>();
         for (CelestweaveModule module : CelestweaveModule.values())
@@ -179,6 +156,7 @@ public class CelestweaveGui extends EquipmentGui {
         }
         ListWidget<IWidget, ?> list = new ListWidget<>()
             .scrollDirection(ScrollData.of(GuiAxis.Y, false, style.spacingSmall))
+            .crossAxisAlignment(Alignment.CrossAxis.START)
             .left(0)
             .top(this::contentY, Unit.Measure.PIXEL)
             .width(this::listWidth, Unit.Measure.PIXEL)
@@ -361,10 +339,7 @@ public class CelestweaveGui extends EquipmentGui {
         return rows().line(
             style.spacingMedium,
             Arrays.asList(Size.fill(), sliderSize()),
-            Arrays.asList(
-                Layout.label(label, style)
-                    .paddingLeft(style.spacingSmall),
-                sliderControl(value, min, max, step, format, active)));
+            Arrays.asList(Layout.label(label, style), sliderControl(value, min, max, step, format, active)));
     }
 
     @SideOnly(Side.CLIENT)
@@ -426,16 +401,16 @@ public class CelestweaveGui extends EquipmentGui {
                 true);
         List<Widget<?>> cells = new ArrayList<>();
         List<Size> sizes = new ArrayList<>();
-        cells.add(
-            Layout.label(IKey.lang(GUI_LANG + option.lang), style)
-                .paddingLeft(style.spacingSmall));
+        cells.add(Layout.label(IKey.lang(GUI_LANG + option.lang), style));
         sizes.add(Size.fill());
         for (int rgb : COLORS) {
             cells.add(
                 new ButtonWidget<>().size(SWATCH_SIZE, SWATCH_SIZE)
                     .background(new Rectangle().color(0xFF000000 | rgb))
                     .disableHoverThemeBackground(true)
-                    .overlay(IKey.dynamic(() -> color.getIntValue() == rgb ? "§0✔" : ""))
+                    .overlay(
+                        IKey.dynamic(() -> color.getIntValue() == rgb ? markColor(rgb) + "✔" : "")
+                            .shadow(false))
                     .onMousePressed(mouse -> {
                         if (mouse != 0) return false;
                         color.setIntValue(rgb);
@@ -450,7 +425,9 @@ public class CelestweaveGui extends EquipmentGui {
                         .drawRect(x, top, width, height, 0xFF000000 | color.getIntValue()))
                 .disableHoverBackground()
                 .disableHoverThemeBackground(true)
-                .overlay(IKey.str("§0..."))
+                .overlay(
+                    IKey.dynamic(() -> markColor(color.getIntValue()) + "...")
+                        .shadow(false))
                 .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang("item.gtnl.celestweave.gui.custom_color")))
                 .onMousePressed(mouse -> {
                     if (mouse != 0) return false;
@@ -461,6 +438,11 @@ public class CelestweaveGui extends EquipmentGui {
                 }));
         sizes.add(Size.fixed(SWATCH_SIZE));
         return rows().line(style.spacingSmall, sizes, cells);
+    }
+
+    @SideOnly(Side.CLIENT)
+    private static String markColor(int rgb) {
+        return ColorMath.contrast(0, rgb) >= ColorMath.contrast(0xFFFFFF, rgb) ? "§0" : "§f";
     }
 
     @SideOnly(Side.CLIENT)
@@ -492,8 +474,7 @@ public class CelestweaveGui extends EquipmentGui {
                     Size.content(SlideSwitch.widthFor(textWidth(tr(GUI_LANG + option.minLabel)))),
                     sliderSize()),
                 Arrays.asList(
-                    Layout.label(label, style)
-                        .paddingLeft(style.spacingSmall),
+                    Layout.label(label, style),
                     toggle,
                     sliderControl(
                         value,
@@ -529,9 +510,7 @@ public class CelestweaveGui extends EquipmentGui {
             rows.line(
                 0,
                 Collections.singletonList(Size.fill()),
-                Collections.singletonList(
-                    Layout.label(IKey.lang(GUI_LANG + option.lang), style)
-                        .paddingLeft(style.spacingSmall))),
+                Collections.singletonList(Layout.label(IKey.lang(GUI_LANG + option.lang), style))),
             rows.adaptiveGrid(style.spacingSmall, widest, names.size(), picks));
     }
 

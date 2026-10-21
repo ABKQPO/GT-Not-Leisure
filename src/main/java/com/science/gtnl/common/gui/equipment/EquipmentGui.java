@@ -43,10 +43,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class EquipmentGui {
 
-    protected static final int WIDTH = 176, TITLE_Y = 6, TEXT_HEIGHT = 10, MAX_COLUMNS = 3;
+    protected static final int WIDTH = 176, TEXT_HEIGHT = 10, MAX_COLUMNS = 3;
     protected static final int SLOT_SIZE = 18;
     private static final int MAX_WIDTH = 256, SCREEN_MARGIN = 4, MIN_PAGE_ROWS = 3;
-    private static final int INVENTORY_HEIGHT = 76, INVENTORY_BOTTOM = 7, BAR_HEIGHT = 5, MIN_BAR_WIDTH = 40;
+    private static final int INVENTORY_HEIGHT = 76, BAR_HEIGHT = 5, MIN_BAR_WIDTH = 40;
 
     protected final PlayerInventoryGuiData data;
     protected final PanelSyncManager sync;
@@ -97,11 +97,11 @@ public abstract class EquipmentGui {
     }
 
     protected int footerHeight() {
-        return INVENTORY_BOTTOM + INVENTORY_HEIGHT + style.spacingLarge;
+        return style.padding + INVENTORY_HEIGHT + style.spacingLarge;
     }
 
     protected int slotsTop() {
-        return TITLE_Y + TEXT_HEIGHT + style.spacingSmall;
+        return style.padding + TEXT_HEIGHT + style.spacingMedium;
     }
 
     protected void reserveHeld(int slots) {
@@ -179,10 +179,10 @@ public abstract class EquipmentGui {
         panel.child(
             new Divider().color(client ? dividerColor() : 0)
                 .left(style.padding)
-                .bottom(INVENTORY_BOTTOM + INVENTORY_HEIGHT + (style.spacingLarge - Divider.HEIGHT) / 2)
+                .bottom(style.padding + INVENTORY_HEIGHT + (style.spacingLarge - Divider.HEIGHT) / 2)
                 .width(this::contentWidth, Unit.Measure.PIXEL)
                 .height(Divider.HEIGHT));
-        panel.bindPlayerInventory();
+        panel.bindPlayerInventory(style.padding);
     }
 
     @SideOnly(Side.CLIENT)
@@ -198,7 +198,7 @@ public abstract class EquipmentGui {
     protected void title(ModularPanel panel, String lang, int reserved) {
         panel.child(
             Layout.label(IKey.lang(lang), style)
-                .pos(style.padding, TITLE_Y)
+                .pos(style.padding, style.padding)
                 .width(() -> contentWidth() - CloseButton.reserve(style.padding, style) - reserved, Unit.Measure.PIXEL)
                 .height(TEXT_HEIGHT));
     }

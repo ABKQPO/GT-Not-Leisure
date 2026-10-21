@@ -34,6 +34,7 @@ import com.science.gtnl.common.railgun.RailgunBeamService;
 import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunEnergy;
 import com.science.gtnl.common.railgun.RailgunFireService;
+import com.science.gtnl.common.railgun.RailgunModule;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -67,7 +68,8 @@ public class ElectromagneticRailgun extends Item
             StatCollector.translateToLocalFormatted(
                 "item.gtnl.electromagnetic_railgun.tooltip.1",
                 RailgunData.modules(stack)
-                    .total()));
+                    .total(),
+                RailgunModule.totalLimit()));
         toolTip.add(StatCollector.translateToLocal("item.gtnl.electromagnetic_railgun.tooltip.2"));
         toolTip.add(StatCollector.translateToLocal("item.gtnl.electromagnetic_railgun.tooltip.3"));
     }
