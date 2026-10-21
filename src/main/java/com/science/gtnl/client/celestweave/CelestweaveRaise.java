@@ -27,6 +27,12 @@ public class CelestweaveRaise {
         return quads;
     }
 
+    static float[] normal(float[] quad) {
+        float[] a = { quad[0], quad[1], quad[2] }, b = { quad[5], quad[6], quad[7] },
+            c = { quad[10], quad[11], quad[12] };
+        return normalize(cross(minus(b, a), minus(c, a)));
+    }
+
     static boolean lit(int argb) {
         return (argb >>> 24) > 0 && Math.max(argb >> 16 & 255, Math.max(argb >> 8 & 255, argb & 255)) > LIT;
     }

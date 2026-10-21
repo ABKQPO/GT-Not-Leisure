@@ -70,10 +70,12 @@ public class CelestweaveFrames {
     public Textures textures;
     public List<Frame> frames;
     public List<Group> groups;
+    public Arcs arcs;
 
     private transient Map<String, Frame> frameByName;
     private transient String[] objByPiece;
     private transient List<Group>[] groupsByPiece;
+    private transient CelestweaveSeam[] seams;
 
     public static class Frame {
 
@@ -128,6 +130,33 @@ public class CelestweaveFrames {
 
         public int frames;
         public float strideU;
+    }
+
+    public static class Arcs {
+
+        public List<Seam> seams;
+        public Line antenna;
+        public Core core;
+        public Map<String, Line> dash, wingFore;
+    }
+
+    public static class Seam {
+
+        public String part, anchor;
+        public float[] a, b, half;
+    }
+
+    public static class Line {
+
+        public String anchor;
+        public float[] a, b;
+    }
+
+    public static class Core {
+
+        public String anchor;
+        public float[] center, inner, innerRadius, hitRadius, hitReach;
+        public float lowRadius;
     }
 
     @SuppressWarnings("unchecked")
@@ -188,6 +217,18 @@ public class CelestweaveFrames {
             }
             groupsByPiece[group.piece].add(group);
         }
+        List<Seam> data = arcs != null && arcs.seams != null ? arcs.seams : Collections.emptyList();
+        seams = new CelestweaveSeam[data.size()];
+        for (int i = 0; i < seams.length; i++) {
+            Seam seam = data.get(i);
+            Part part = Part.valueOf(seam.part.toUpperCase(Locale.ROOT));
+            seams[i] = seam.half == null ? CelestweaveSeam.line(part, seam.anchor, seam.a, seam.b)
+                : CelestweaveSeam.patch(part, seam.anchor, seam.a, seam.b, seam.half);
+        }
+    }
+
+    public CelestweaveSeam[] seams() {
+        return seams;
     }
 
     public Frame frame(String name) {

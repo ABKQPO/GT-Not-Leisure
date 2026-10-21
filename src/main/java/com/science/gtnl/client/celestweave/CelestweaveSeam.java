@@ -6,18 +6,22 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public record CelestweaveSeam(int piece, String anchor, float[] a, float[] b, float[] half) {
+public record CelestweaveSeam(CelestweaveFrames.Part part, String anchor, float[] a, float[] b, float[] half) {
 
     static final float DIRECTED_START = 0.15F, DIRECTED_END = 0.85F, MIN_SPAN_SHARE = 0.45F, FORK_CHANCE = 0.4F,
         FORK_FROM = 0.3F, FORK_TO = 0.7F, FORK_MIN_LENGTH = 1.2F;
     private static final int TRIES = 8, FORK_TRIES = 6;
 
-    static CelestweaveSeam line(int piece, String anchor, float[] a, float[] b) {
-        return new CelestweaveSeam(piece, anchor, a, b, null);
+    static CelestweaveSeam line(CelestweaveFrames.Part part, String anchor, float[] a, float[] b) {
+        return new CelestweaveSeam(part, anchor, a, b, null);
     }
 
-    static CelestweaveSeam patch(int piece, String anchor, float[] a, float[] b, float[] half) {
-        return new CelestweaveSeam(piece, anchor, a, b, half);
+    static CelestweaveSeam patch(CelestweaveFrames.Part part, String anchor, float[] a, float[] b, float[] half) {
+        return new CelestweaveSeam(part, anchor, a, b, half);
+    }
+
+    boolean shown(CelestweaveLook look) {
+        return look.wears(part.piece) && part.visible(look);
     }
 
     boolean directed() {
@@ -55,7 +59,7 @@ public record CelestweaveSeam(int piece, String anchor, float[] a, float[] b, fl
         return lerp(a, b, t);
     }
 
-    private static float[] lerp(float[] from, float[] to, float t) {
+    static float[] lerp(float[] from, float[] to, float t) {
         return new float[] { from[0] + (to[0] - from[0]) * t, from[1] + (to[1] - from[1]) * t,
             from[2] + (to[2] - from[2]) * t };
     }

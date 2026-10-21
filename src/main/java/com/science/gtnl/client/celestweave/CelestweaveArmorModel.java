@@ -146,6 +146,7 @@ public class CelestweaveArmorModel extends ModelBiped {
             if (onBone(group, onlyBone) && partVisible(group.partKind, look)) draw(group, pose, scale);
         }
         GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glColor4f(0.3F, 0.318F, 0.408F, 1F);
         for (CelestweaveFrames.Group group : groups)
             if (group.layerKind == CelestweaveFrames.Layer.GLOW_FACES && onBone(group, onlyBone)

@@ -22,38 +22,22 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class CelestweaveArcs {
 
     private static final Random RNG = new Random();
-    private static final float[] ANTENNA_A = { -5.25F, -9.2F, 6.9F }, ANTENNA_B = { 5.25F, -9.2F, 6.9F };
-    private static final float[] CORE = { 0F, 3.25F, -4.3F }, CORE_INNER = { 0F, 3.25F, -4.35F };
-    private static final float[] DASH_FROM = { 0F, 11F, 3.3F };
     private static final float FORK_SPREAD = 0.75F, FORK_WIDTH = 0.07F, FORK_LIFETIME = 0.6F;
     private static final int FORK_SEGMENTS = 3, FORK_DELAY_MS = 40;
-    static final CelestweaveSeam[] SEAMS = { CelestweaveSeam
-        .patch(CelestweaveArmor.CHEST, "bone:rightArm", v(-4.1F, 0.75F, -3F), v(-4.1F, 0.75F, 2.5F), v(0F, 1.5F, 0F)),
-        CelestweaveSeam
-            .patch(CelestweaveArmor.CHEST, "bone:leftArm", v(4.1F, 0.75F, -3F), v(4.1F, 0.75F, 2.5F), v(0F, -1.5F, 0F)),
-        CelestweaveSeam.line(CelestweaveArmor.CHEST, "bone:rightArm", v(-4.1F, 6.2F, 0F), v(-4.1F, 9.1F, 0F)),
-        CelestweaveSeam.line(CelestweaveArmor.CHEST, "bone:leftArm", v(4.1F, 6.2F, 0F), v(4.1F, 9.1F, 0F)),
-        CelestweaveSeam.patch(
-            CelestweaveArmor.LEGS,
-            "bone:rightLeg",
-            v(-3.1F, 0.8F, -1F),
-            v(-3.1F, 4.8F, 1F),
-            v(0F, 0.25F, -0.51F)),
-        CelestweaveSeam
-            .patch(CelestweaveArmor.LEGS, "bone:leftLeg", v(3.1F, 0.8F, -1F), v(3.1F, 4.8F, 1F), v(0F, -0.25F, 0.51F)),
-        CelestweaveSeam.line(CelestweaveArmor.CHEST, "bone:body", v(-2.6F, 3.25F, -4.1F), v(-4.3F, 4.4F, -3.6F)),
-        CelestweaveSeam.line(CelestweaveArmor.CHEST, "bone:body", v(2.6F, 3.25F, -4.1F), v(4.3F, 4.4F, -3.6F)),
-        CelestweaveSeam.line(CelestweaveArmor.CHEST, "bone:body", v(-2.5F, 1.5F, 4.6F), v(-2.5F, 8F, 4.6F)),
-        CelestweaveSeam.line(CelestweaveArmor.CHEST, "bone:body", v(2.5F, 1.5F, 4.6F), v(2.5F, 8F, 4.6F)),
-        CelestweaveSeam.line(CelestweaveArmor.HEAD, "bone:head", v(-1.6F, -10.85F, -2.2F), v(1.6F, -10.85F, 2.2F)) };
 
     static int total;
 
-    private static float[] v(float x, float y, float z) {
-        return new float[] { x, y, z };
+    private CelestweaveArcs() {}
+
+    private static CelestweaveFrames.Arcs arcs() {
+        CelestweaveFrames frames = CelestweaveObjModel.INSTANCE.frames();
+        return frames == null ? null : frames.arcs;
     }
 
-    private CelestweaveArcs() {}
+    private static float[] ring(float[] center, float radius, float squash, float angle, float z) {
+        return new float[] { center[0] + (float) Math.cos(angle) * radius,
+            center[1] + (float) Math.sin(angle) * radius * squash, z };
+    }
 
     static boolean spawn(CelestweaveClientState state, String anchor, float[] a, float[] b, int segs, float spread,
         float width, long born, int lifetime, int rgb, CelestweaveArc.Kind kind) {
@@ -66,15 +50,18 @@ public class CelestweaveArcs {
 
     static void tick(EntityLivingBase entity, CelestweaveClientState state, CelestweaveLook look, long now, int level) {
         state.arcs.removeIf(arc -> arc.expired(now));
-        if (level <= 0 || look.fraction <= 0) return;
+        CelestweaveFrames frames = CelestweaveObjModel.INSTANCE.frames();
+        if (frames == null || frames.arcs == null || level <= 0 || look.fraction <= 0) return;
+        CelestweaveFrames.Arcs arcs = frames.arcs;
+        CelestweaveSeam[] seams = frames.seams();
         CelestweaveCosmetic cosmetic = look.cosmetic;
         int glowColor = look.glowColor;
         boolean storm = entity.worldObj.isThundering();
         if (level >= 2 && look.tier > 0) {
             int want = Math.min(look.idleWant(storm), MainConfig.client.celestweaveMaxArcsPerPlayer);
-            for (int n = state.countIdle(); n < want; n++) {
-                CelestweaveSeam seam = SEAMS[RNG.nextInt(SEAMS.length)];
-                if (!look.wears(seam.piece())) continue;
+            for (int n = state.countIdle(); n < want && seams.length > 0; n++) {
+                CelestweaveSeam seam = seams[RNG.nextInt(seams.length)];
+                if (!seam.shown(look)) continue;
                 float spread = 0.8F * cosmetic.get(CelestweaveCosmeticOption.ARC_SPREAD);
                 int lifetime = Math.round(rand(140F, 320F) / cosmetic.get(CelestweaveCosmeticOption.ARC_FREQ));
                 float[][] ends = seam.endpoints(RNG);
@@ -109,9 +96,9 @@ public class CelestweaveArcs {
                 && !state.hasAntenna())
                 spawn(
                     state,
-                    "bone:head",
-                    ANTENNA_A,
-                    ANTENNA_B,
+                    arcs.antenna.anchor,
+                    arcs.antenna.a,
+                    arcs.antenna.b,
                     10,
                     2.2F,
                     0.15F,
@@ -123,12 +110,12 @@ public class CelestweaveArcs {
         if (cosmetic.event(CelestweaveCosmetic.EVENT_LOW) && look.fraction < 0.1F
             && look.wears(CelestweaveArmor.CHEST)
             && RNG.nextFloat() < 0.15F) {
-            float angle = rand(0F, (float) (Math.PI * 2));
+            CelestweaveFrames.Core core = arcs.core;
             spawn(
                 state,
-                "bone:body",
-                CORE,
-                new float[] { (float) Math.cos(angle) * 2.2F, 3.25F + (float) Math.sin(angle) * 2.2F, -4.3F },
+                core.anchor,
+                core.center,
+                ring(core.center, core.lowRadius, 1F, rand(0F, (float) (Math.PI * 2)), core.center[2]),
                 3,
                 0.6F,
                 0.1F,
@@ -142,13 +129,14 @@ public class CelestweaveArcs {
             float rate = (look.tier == 2 ? 1.2F : look.tier == 3 ? 4F : 0F) * look.fraction + (hit ? 25F : 0F);
             float expected = rate / 20F;
             int count = (int) expected + (RNG.nextFloat() < expected % 1F ? 1 : 0);
+            CelestweaveFrames.Core core = arcs.core;
             for (int i = 0; i < count; i++) {
-                float angle = rand(0F, (float) (Math.PI * 2)), radius = rand(1.3F, 1.8F);
+                float angle = rand(0F, (float) (Math.PI * 2)), radius = rand(core.innerRadius[0], core.innerRadius[1]);
                 spawn(
                     state,
-                    "bone:body",
-                    CORE_INNER,
-                    new float[] { (float) Math.cos(angle) * radius, 3.25F + (float) Math.sin(angle) * radius, -4.35F },
+                    core.anchor,
+                    core.inner,
+                    ring(core.inner, radius, 1F, angle, core.inner[2]),
                     3,
                     0.5F,
                     0.06F,
@@ -163,7 +151,8 @@ public class CelestweaveArcs {
             float rate = since < 0.6F ? 14F : 0.8F * (storm ? 2F : 1F);
             if (RNG.nextFloat() < rate / 20F) {
                 int side = RNG.nextBoolean() ? 1 : -1;
-                String anchor = "wing.fore." + (side > 0 ? "L" : "R");
+                CelestweaveFrames.Line fore = arcs.wingFore.get(side > 0 ? "L" : "R");
+                String anchor = fore.anchor;
                 if (RNG.nextFloat() < 0.55F) {
                     int i = RNG.nextInt(CelestweaveAnimator.BLADES.length - 1);
                     float f = rand(0.7F, 0.95F);
@@ -180,32 +169,38 @@ public class CelestweaveArcs {
                         Math.round(rand(90F, 170F)),
                         glowColor,
                         CelestweaveArc.Kind.BURST);
-                } else spawn(
-                    state,
-                    anchor,
-                    new float[] { side * rand(0F, 1.5F), 0F, 0.5F },
-                    new float[] { side * rand(5F, CelestweaveAnimator.FORE_LENGTH), rand(-0.3F, 0.3F), 0.5F },
-                    6,
-                    0.5F,
-                    0.12F,
-                    now,
-                    Math.round(rand(100F, 200F)),
-                    glowColor,
-                    CelestweaveArc.Kind.BURST);
+                } else {
+                    float[] to = CelestweaveSeam.lerp(fore.a, fore.b, rand(0.85F, 1F));
+                    to[1] += rand(-0.3F, 0.3F);
+                    spawn(
+                        state,
+                        anchor,
+                        CelestweaveSeam.lerp(fore.a, fore.b, rand(0F, 0.3F)),
+                        to,
+                        6,
+                        0.5F,
+                        0.12F,
+                        now,
+                        Math.round(rand(100F, 200F)),
+                        glowColor,
+                        CelestweaveArc.Kind.BURST);
+                }
             }
         }
     }
 
     static void hit(CelestweaveClientState state, CelestweaveLook look, long now) {
+        CelestweaveFrames.Arcs arcs = arcs();
+        if (arcs == null) return;
         int glowColor = look.glowColor;
+        CelestweaveFrames.Core core = arcs.core;
         for (int i = 0; i < 6; i++) {
-            float angle = rand(0F, (float) (Math.PI * 2)), radius = rand(5F, 8F);
+            float angle = rand(0F, (float) (Math.PI * 2)), radius = rand(core.hitRadius[0], core.hitRadius[1]);
             spawn(
                 state,
-                "bone:body",
-                CORE,
-                new float[] { (float) Math.cos(angle) * radius, 3.25F + (float) Math.sin(angle) * radius * 0.8F,
-                    -4.3F - rand(1F, 4F) },
+                core.anchor,
+                core.center,
+                ring(core.center, radius, 0.8F, angle, core.center[2] - rand(core.hitReach[0], core.hitReach[1])),
                 7,
                 1.1F,
                 0.16F,
@@ -216,9 +211,9 @@ public class CelestweaveArcs {
         }
         if (look.wears(CelestweaveArmor.HEAD)) spawn(
             state,
-            "bone:head",
-            ANTENNA_A,
-            ANTENNA_B,
+            arcs.antenna.anchor,
+            arcs.antenna.a,
+            arcs.antenna.b,
             10,
             2.5F,
             0.15F,
@@ -229,10 +224,12 @@ public class CelestweaveArcs {
     }
 
     static void dash(CelestweaveClientState state, CelestweaveLook look, long now) {
-        for (String leg : new String[] { "bone:rightLeg", "bone:leftLeg" }) for (int i = 0; i < 5; i++) spawn(
+        CelestweaveFrames.Arcs arcs = arcs();
+        if (arcs == null) return;
+        for (CelestweaveFrames.Line leg : arcs.dash.values()) for (int i = 0; i < 5; i++) spawn(
             state,
-            leg,
-            DASH_FROM,
+            leg.anchor,
+            leg.a,
             new float[] { rand(-3F, 3F), rand(10F, 12.5F), rand(9F, 16F) },
             7,
             1.4F,

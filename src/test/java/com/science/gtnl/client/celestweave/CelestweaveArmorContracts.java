@@ -106,8 +106,8 @@ public class CelestweaveArmorContracts {
         float[] a = { 0F, 0F, 0F }, b = { 0F, 6F, 0F };
         float halfWidth = 1.5F, eps = 1.0E-4F;
         CelestweaveSeam patch = CelestweaveSeam
-            .patch(CelestweaveArmor.CHEST, "bone:body", a, b, new float[] { halfWidth, 0F, 0F });
-        CelestweaveSeam line = CelestweaveSeam.line(CelestweaveArmor.CHEST, "bone:body", a, b);
+            .patch(CelestweaveFrames.Part.CHEST, "bone:body", a, b, new float[] { halfWidth, 0F, 0F });
+        CelestweaveSeam line = CelestweaveSeam.line(CelestweaveFrames.Part.CHEST, "bone:body", a, b);
         int draws = 2000, inside = 0, apart = 0, reversed = 0, tilted = 0, forks = 0, forksFromMiddle = 0;
         for (int i = 0; i < draws; i++) {
             float[][] ends = patch.endpoints(random);
@@ -145,11 +145,6 @@ public class CelestweaveArmorContracts {
         }
         check(directedRight == draws, "directed seams always run from near a to near b");
         check(directedForks == 0, "directed seams never fork");
-        int patches = 0;
-        for (CelestweaveSeam seam : CelestweaveArcs.SEAMS) if (!seam.directed()) patches++;
-        check(
-            CelestweaveArcs.SEAMS.length == 11 && patches == 4,
-            "the shoulder and thigh seams spread over a patch, the other seams stay directed");
     }
 
     private static void modules() {

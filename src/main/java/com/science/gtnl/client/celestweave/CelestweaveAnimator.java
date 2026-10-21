@@ -20,7 +20,7 @@ public class CelestweaveAnimator {
 
     public static final float[][] BLADES = { { 5F, -0.3F, 13F, 4F }, { 4F, 0F, 12F, 4F }, { 3F, 0.3F, 11F, 4F },
         { 2F, 0.6F, 10F, 4F }, { 1F, 0.9F, 9F, 4F } };
-    public static final float BLADE_GAP = 1F, FORE_LENGTH = 5F;
+    public static final float BLADE_GAP = 1F;
     static final int WING_PARTS = BLADES.length + 3;
     static final long WING_RETRACT_MS = 600;
     private static final Random RNG = new Random();

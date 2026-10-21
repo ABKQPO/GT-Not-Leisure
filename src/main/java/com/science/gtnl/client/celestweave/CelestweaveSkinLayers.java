@@ -22,6 +22,10 @@ public class CelestweaveSkinLayers {
 
     public static void hide(ModelBiped model, EntityLivingBase entity) {
         restore();
+        if (CelestweaveData.piece(entity, CelestweaveArmor.HEAD) != null) {
+            hidePart(model.bipedHeadwear);
+            hideChildren(model.bipedHead);
+        }
         if (CelestweaveData.piece(entity, CelestweaveArmor.CHEST) != null) {
             hideChildren(model.bipedBody);
             hideChildren(model.bipedRightArm);
@@ -46,9 +50,12 @@ public class CelestweaveSkinLayers {
 
     private static void hideChildren(ModelRenderer part) {
         if (part == null || part.childModels == null) return;
-        for (Object child : part.childModels) if (child instanceof ModelRenderer layer && layer.showModel) {
-            layer.showModel = false;
-            HIDDEN.add(layer);
-        }
+        for (Object child : part.childModels) if (child instanceof ModelRenderer layer) hidePart(layer);
+    }
+
+    private static void hidePart(ModelRenderer part) {
+        if (part == null || !part.showModel) return;
+        part.showModel = false;
+        HIDDEN.add(part);
     }
 }

@@ -93,8 +93,12 @@ public class CelestweaveObjModel implements IResourceManagerReloadListener {
         List<float[]> quads = CelestweaveRaise.raise(faces, glowPixels, glowWidth, glowHeight, CelestweaveRaise.HEIGHT);
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        for (float[] quad : quads) for (int i = 0; i < 20; i += 5)
-            tessellator.addVertexWithUV(quad[i], quad[i + 1], quad[i + 2], quad[i + 3], quad[i + 4]);
+        for (float[] quad : quads) {
+            float[] normal = CelestweaveRaise.normal(quad);
+            if (normal != null) tessellator.setNormal(normal[0], normal[1], normal[2]);
+            for (int i = 0; i < 20; i += 5)
+                tessellator.addVertexWithUV(quad[i], quad[i + 1], quad[i + 2], quad[i + 3], quad[i + 4]);
+        }
         tessellator.draw();
     }
 

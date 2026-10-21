@@ -177,6 +177,7 @@ public class EquipmentResourceContracts {
         }
         for (String anchor : new String[] { "core.shock", "wing.fore.L", "wing.fore.R" })
             check(frames.frame(anchor) != null, "anchor frame " + anchor);
+        arcAnchors(frames);
         JsonObject textures = new JsonParser()
             .parse(new String(Files.readAllBytes(armor.resolve("celestweave_frames.json")), StandardCharsets.UTF_8))
             .getAsJsonObject()
@@ -187,6 +188,50 @@ public class EquipmentResourceContracts {
                 .get("file")
                 .getAsString();
             check(Files.exists(RESOURCES.resolve("textures/models/armor/" + file)), "texture exists " + file);
+        }
+    }
+
+    private static void arcAnchors(CelestweaveFrames frames) {
+        CelestweaveFrames.Arcs arcs = frames.arcs;
+        check(arcs != null, "model data carries the arc anchors");
+        if (arcs == null) return;
+        CelestweaveSeam[] seams = frames.seams();
+        int patches = 0;
+        Set<CelestweaveFrames.Part> parts = new HashSet<>();
+        for (CelestweaveSeam seam : seams) {
+            check(frames.anchorBone(seam.anchor()) >= 0, "seam anchor resolves " + seam.anchor());
+            check(
+                seam.a() != null && seam.a().length == 3 && seam.b() != null && seam.b().length == 3,
+                "seam ends are points on " + seam.anchor());
+            if (!seam.directed()) {
+                patches++;
+                check(
+                    CelestweaveSeam.distance(new float[3], seam.half()) > 0.3F,
+                    "seam patch has width on " + seam.anchor());
+            }
+            parts.add(seam.part());
+        }
+        check(seams.length >= 12, "idle arcs have at least six mirrored seam pairs, got " + seams.length);
+        check(patches > 0 && patches < seams.length, "some seams spread over a patch and some stay directed");
+        for (CelestweaveFrames.Part part : new CelestweaveFrames.Part[] { CelestweaveFrames.Part.HELMET,
+            CelestweaveFrames.Part.CHEST, CelestweaveFrames.Part.LEGS })
+            check(parts.contains(part), "idle arcs crawl over the " + part);
+        check(
+            arcs.antenna != null && frames.anchorBone(arcs.antenna.anchor) == 0
+                && CelestweaveSeam.distance(arcs.antenna.a, arcs.antenna.b) > 8F,
+            "antenna arc spans the head between the two antenna tips");
+        CelestweaveFrames.Core core = arcs.core;
+        check(core != null && frames.frame(core.anchor) != null, "core arcs hang on the core frame");
+        if (core != null) check(
+            core.innerRadius[0] < core.innerRadius[1] && core.lowRadius > core.innerRadius[1]
+                && core.hitRadius[0] < core.hitRadius[1]
+                && core.hitReach[0] < core.hitReach[1],
+            "core arc radii grow from the inner ring to the hit burst");
+        for (String side : new String[] { "R", "L" }) {
+            CelestweaveFrames.Line dash = arcs.dash == null ? null : arcs.dash.get(side);
+            check(dash != null && frames.anchorBone(dash.anchor) >= 4, "dash arc starts on a leg " + side);
+            CelestweaveFrames.Line fore = arcs.wingFore == null ? null : arcs.wingFore.get(side);
+            check(fore != null && ("wing.fore." + side).equals(fore.anchor), "wing arcs run along wing.fore." + side);
         }
     }
 
@@ -262,6 +307,11 @@ public class EquipmentResourceContracts {
                 cz += quad[i + 2] / 4;
             }
             check(nx * (cx - 2) + ny * (cy - 2) + nz * (cz - 0.125F) > 0, "raised strip faces point outward");
+            float[] normal = CelestweaveRaise.normal(quad);
+            check(
+                normal != null && normal[0] * nx + normal[1] * ny + normal[2] * nz > 0
+                    && Math.abs(normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2] - 1F) < 1.0E-4F,
+                "raised strip quads carry their outward unit normal");
             for (int i = 0; i < 20; i += 5) {
                 int x = Math.min(3, (int) (quad[i + 3] * 4)), y = Math.min(3, (int) (quad[i + 4] * 4));
                 check(CelestweaveRaise.lit(pixels[y * 4 + x]), "raised strip samples lit texels");
