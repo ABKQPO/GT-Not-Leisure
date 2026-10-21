@@ -664,6 +664,13 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     }
 
     @Override
+    public boolean tryConsumeItems() {
+        boolean result = IControllerUpgrade.super.tryConsumeItems();
+        if (result) onMachineBlockUpdate();
+        return result;
+    }
+
+    @Override
     public String getUpgradeButtonTooltip() {
         return StatCollector.translateToLocal("gtnl.gui.pcb_factory.upgrade.t4_machine_tier");
     }

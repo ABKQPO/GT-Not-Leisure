@@ -38,6 +38,7 @@ import codechicken.nei.recipe.GuiUsageRecipe;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 import gregtech.api.modularui2.GTGuiTextures;
+import gregtech.api.util.GTUtility;
 import gregtech.common.gui.modularui.synchandler.NBTTagSyncHandler;
 import gregtech.common.modularui2.widget.SlotLikeButtonWidget;
 
@@ -355,7 +356,7 @@ public class GTNLControllerUpgradePanels {
 
     private ItemStack getUpgradeItem(boolean currentPanel, int displayPage, int itemIndex) {
         ItemStack[] upgradeItems = getUpgradeItems(currentPanel, displayPage);
-        return itemIndex < upgradeItems.length ? upgradeItems[itemIndex] : null;
+        return itemIndex < upgradeItems.length ? GTUtility.copyOrNull(upgradeItems[itemIndex]) : null;
     }
 
     private int[] getUpgradePaidCosts(boolean currentPanel, int displayPage) {
