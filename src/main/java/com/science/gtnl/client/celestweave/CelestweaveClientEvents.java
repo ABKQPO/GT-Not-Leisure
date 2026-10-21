@@ -143,6 +143,7 @@ public class CelestweaveClientEvents {
             CelestweaveShieldFlash.clear();
             CelestweaveScreenGlow.clear();
             CelestweaveHud.clear();
+            CelestweaveThemeAccent.clear();
             SCHEDULED.clear();
             REMOTE_FLYING.clear();
             if (world == null) CelestweaveReach.clearClient();

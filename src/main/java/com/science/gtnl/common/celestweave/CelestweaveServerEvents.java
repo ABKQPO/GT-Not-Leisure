@@ -3,7 +3,6 @@ package com.science.gtnl.common.celestweave;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -23,6 +22,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
 import net.minecraftforge.event.entity.player.PlayerFlyableFallEvent;
 
+import com.google.common.collect.MapMaker;
 import com.science.gtnl.common.equipment.EquipmentNet;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
@@ -42,7 +42,8 @@ public class CelestweaveServerEvents {
     private static final double JUMP_BOOST = 0.275, JUMP_EXPONENT = 1.08;
     private static final int FLUSH_INTERVAL_TICKS = 20, FULL_FLUSH_EVERY = 5;
     private static final float MINING_PENALTY_COMPENSATION = 5F;
-    private static final Map<EntityPlayer, Tracked> TRACKED = Collections.synchronizedMap(new WeakHashMap<>());
+    private static final Map<EntityPlayer, Tracked> TRACKED = new MapMaker().weakKeys()
+        .makeMap();
     private static boolean registered;
 
     private CelestweaveServerEvents() {}
@@ -112,10 +113,7 @@ public class CelestweaveServerEvents {
         EntityPlayer player = event.player;
         if (!player.isClientWorld()) return;
         boolean server = !player.worldObj.isRemote;
-        Tracked tracked;
-        synchronized (TRACKED) {
-            tracked = TRACKED.computeIfAbsent(player, k -> new Tracked());
-        }
+        Tracked tracked = TRACKED.computeIfAbsent(player, k -> new Tracked());
         long now = player.worldObj.getTotalWorldTime();
         if (tracked.lastTick == now) return;
         tracked.lastTick = now;

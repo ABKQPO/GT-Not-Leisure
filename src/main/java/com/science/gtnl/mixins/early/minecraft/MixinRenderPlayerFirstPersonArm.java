@@ -20,12 +20,12 @@ public class MixinRenderPlayerFirstPersonArm {
     public ModelBiped modelBipedMain;
 
     @Inject(method = "renderFirstPersonArm", at = @At("HEAD"))
-    public void mixin$celestweaveHideSleeve(EntityPlayer player, CallbackInfo ci) {
+    public void gtnl$celestweaveHideSleeve(EntityPlayer player, CallbackInfo ci) {
         CelestweaveSkinLayers.hideArm(modelBipedMain.bipedRightArm, player);
     }
 
     @Inject(method = "renderFirstPersonArm", at = @At("RETURN"))
-    public void mixin$celestweaveArm(EntityPlayer player, CallbackInfo ci) {
+    public void gtnl$celestweaveArm(EntityPlayer player, CallbackInfo ci) {
         CelestweaveSkinLayers.restore();
         CelestweaveArmorModel.renderFirstPersonArm(player, modelBipedMain.bipedRightArm);
     }

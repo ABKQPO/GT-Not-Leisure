@@ -38,8 +38,14 @@ public class CelestweaveThemeAccent {
         EquipmentTheme.LIVE.refresh();
     }
 
+    public static void clear() {
+        editedPanel = null;
+        editedGlow = null;
+    }
+
     public static int accent() {
-        if (editedPanel != null && editedPanel.isOpen()) return OPAQUE | editedGlow.getAsInt() & RGB;
+        if (editedPanel != null && !editedPanel.isOpen()) clear();
+        if (editedPanel != null) return OPAQUE | editedGlow.getAsInt() & RGB;
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         return accent(player == null ? null : CelestweaveData.piece(player, CelestweaveArmor.CHEST));
     }

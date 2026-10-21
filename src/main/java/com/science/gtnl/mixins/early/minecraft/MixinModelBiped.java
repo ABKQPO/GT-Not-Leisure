@@ -25,7 +25,7 @@ public class MixinModelBiped {
     public ModelRenderer bipedLeftArm;
 
     @Inject(method = "setRotationAngles", at = @At("RETURN"))
-    public void mixin$poseRailgunArms(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
+    public void gtnl$poseRailgunArms(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
         float headPitch, float scale, Entity entity, CallbackInfo ci) {
         if (!(entity instanceof EntityLivingBase living)) return;
         ItemStack held = living.getHeldItem();

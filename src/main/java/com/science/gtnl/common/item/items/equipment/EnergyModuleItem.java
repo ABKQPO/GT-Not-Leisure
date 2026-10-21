@@ -30,7 +30,8 @@ public class EnergyModuleItem extends EquipmentVariantItem<EnergyModuleItem.Tier
 
     public static int tier(ItemStack stack) {
         if (stack == null || !(stack.getItem() instanceof EnergyModuleItem)) return 0;
-        return Math.max(1, Math.min(TIERS, stack.getItemDamage() + 1));
+        Tier tier = Tier.LOOKUP.byMeta(stack.getItemDamage());
+        return tier == null ? 0 : tier.meta() + 1;
     }
 
     public static double capacity(int tier, double base) {

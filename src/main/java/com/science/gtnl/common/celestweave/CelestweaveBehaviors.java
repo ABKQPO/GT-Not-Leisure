@@ -22,6 +22,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.FoodStats;
 
+import com.google.common.collect.MapMaker;
 import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
@@ -39,7 +40,8 @@ public class CelestweaveBehaviors {
     private static final ICelestweaveBehavior NONE = new ICelestweaveBehavior() {};
     private static final Map<CelestweaveModule, ICelestweaveBehavior> BEHAVIORS = new EnumMap<>(
         CelestweaveModule.class);
-    private static final Map<EntityPlayer, Float> STEP_ORIGINAL = Collections.synchronizedMap(new WeakHashMap<>());
+    private static final Map<EntityPlayer, Float> STEP_ORIGINAL = new MapMaker().weakKeys()
+        .makeMap();
     private static final Map<Entity, Boolean> REFLECTED = Collections.synchronizedMap(new WeakHashMap<>());
 
     static {
