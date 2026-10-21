@@ -1059,12 +1059,27 @@ public class EquipmentResourceContracts {
             expected.add(key.value());
             expected.add(key.value() + ".tooltip");
         }
-        for (Field field : MainConfig.Item.Railgun.class.getFields()) {
-            String key = "gtnl.gui.config.general.item.railgun." + field.getName()
-                .toLowerCase();
-            expected.add(key);
-            expected.add(key + ".tooltip");
+        Map<String, Class<?>> itemSections = Map.of(
+            "railgun",
+            MainConfig.Item.Railgun.class,
+            "celestweave",
+            MainConfig.Item.Celestweave.class,
+            "energymodule",
+            MainConfig.Item.EnergyModule.class);
+        Set<String> itemConfigKeys = new TreeSet<>();
+        for (Map.Entry<String, Class<?>> section : itemSections.entrySet()) {
+            String category = "gtnl.gui.config.general.item." + section.getKey();
+            itemConfigKeys.add(category);
+            for (Field field : section.getValue()
+                .getFields()) {
+                String key = category + "."
+                    + field.getName()
+                        .toLowerCase();
+                itemConfigKeys.add(key);
+                itemConfigKeys.add(key + ".tooltip");
+            }
         }
+        expected.addAll(itemConfigKeys);
         for (Class<?> section : new Class<?>[] { MainConfig.Item.Railgun.class, MainConfig.Item.Celestweave.class })
             for (Field field : section.getFields()) if (field.getType() == boolean.class) check(
                 field.getName()
@@ -1104,6 +1119,12 @@ public class EquipmentResourceContracts {
             if (equipmentKey(key)) check(chinese.contains(key), "zh_CN missing equipment key " + key);
         for (String key : chinese)
             if (equipmentKey(key)) check(english.contains(key), "en_US missing equipment key " + key);
+        Map<String, Set<String>> langFiles = Map.of("en_US", english, "zh_CN", chinese);
+        for (Map.Entry<String, Set<String>> file : langFiles.entrySet())
+            for (String key : file.getValue()) if (itemSections.keySet()
+                .stream()
+                .anyMatch(section -> key.startsWith("gtnl.gui.config.general.item." + section)))
+                check(itemConfigKeys.contains(key), file.getKey() + " has no key for a removed config option " + key);
         for (Set<String> keys : Arrays.asList(english, chinese)) check(
             keys.stream()
                 .noneMatch(key -> key.startsWith("gtnllib.") || key.startsWith("gtnl.hud.")),
