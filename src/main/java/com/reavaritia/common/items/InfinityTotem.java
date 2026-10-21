@@ -9,6 +9,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -34,6 +35,8 @@ import com.reavaritia.client.ReAvaCreativeTabs;
 import com.reavaritia.utils.enums.ReAvaItemList;
 import com.reavaritia.utils.item.PlaySound;
 import com.reavaritia.utils.item.SubtitleDisplay;
+import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.packet.StatusMessage;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.item.ItemUtils;
 
@@ -86,7 +89,6 @@ public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, Pla
         Minecraft.getMinecraft().ingameGUI.func_110326_a(component.getFormattedText(), true);
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
     public void playSoundIfReady(EntityPlayer player) {
         player.worldObj.playSoundAtEntity(player, ReAvaritia.RESOURCE_ROOT_ID + ":" + "totem.enable", 1.0F, 1.0F);
@@ -170,7 +172,11 @@ public class InfinityTotem extends Item implements IBauble, SubtitleDisplay, Pla
                     event.setCanceled(true);
                     triggerNormalEffect(player.worldObj, player, stack);
                 }
-                showSubtitle();
+                if (player instanceof EntityPlayerMP serverPlayer) {
+                    IChatComponent message = new ChatComponentTranslation("reavaritia.item.infinity_totem.enable");
+                    message.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE));
+                    ScienceNotLeisure.network.sendTo(new StatusMessage(message), serverPlayer);
+                }
                 playSoundIfReady(player);
             }
         }
