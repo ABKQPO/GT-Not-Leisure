@@ -1,11 +1,10 @@
 package com.science.gtnl.common.machine.hatch;
 
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
-
-import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -36,8 +35,17 @@ public class StronzeInputHatch extends MTEHatchInput {
     }
 
     @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal("gt.blockmachines.stronze.input_hatch.steam.name");
+    }
+
+    @Override
     public String[] getDescription() {
-        return new String[] { "%%%" + NumberFormatUtil.formatNumber(getCapacity()) + "%%%" };
+        return new String[] { StatCollector.translateToLocal("gt.blockmachines.stronze.input_hatch.steam.tooltip.0"),
+            StatCollector.translateToLocal("gt.blockmachines.stronze.input_hatch.steam.tooltip.1"),
+            StatCollector.translateToLocal("gt.blockmachines.stronze.input_hatch.steam.tooltip.2"),
+            StatCollector.translateToLocal("gt.blockmachines.stronze.input_hatch.steam.tooltip.3") };
     }
 
     @Override

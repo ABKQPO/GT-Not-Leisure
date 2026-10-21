@@ -1,6 +1,7 @@
 package com.science.gtnl.common.machine.hatch;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
@@ -36,6 +37,7 @@ import com.science.gtnl.common.gui.modularui.HumongousDualInputHatchGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.GTLoggers;
+import gregtech.api.enums.GTValues;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -67,6 +69,13 @@ public class HumongousDualInputHatch extends DualInputHatch
     public HumongousDualInputHatch(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {
         super(aName, aTier, aDescription, aTextures);
         initializeHumongousStorage(aTier);
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(
+            "gtnl.hatch.humongous_dual_input." + GTValues.VN[mTier].toLowerCase(Locale.ROOT) + ".name");
     }
 
     @Override

@@ -41,6 +41,12 @@ public class OriginalInputHatch extends MTEHatchInput {
     }
 
     @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal("gtnl.hatch.original_input.name");
+    }
+
+    @Override
     public String[] getDescription() {
         return new String[] { StatCollector.translateToLocal("gtnl.hatch.original_input.tooltip.0"),
             StatCollector.translateToLocal("gtnl.hatch.original_input.tooltip.1"),

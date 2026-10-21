@@ -56,6 +56,7 @@ public class NetWorkHandler {
         registerClientbound(WirelessVisualisationPacket.class);
         registerServerbound(MiniTerminalRequestPacket.class);
         registerClientbound(MiniTerminalUpdatePacket.class);
+        registerServerbound(UniversalStorageBusActionPacket.class);
     }
 
     public static <T extends ClientboundPacket> void registerClientbound(Class<T> packet) {

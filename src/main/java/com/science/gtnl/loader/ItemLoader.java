@@ -35,6 +35,7 @@ import com.science.gtnl.common.item.items.ItemPartMECellDock;
 import com.science.gtnl.common.item.items.ItemPartSuperDenseEnergyCell;
 import com.science.gtnl.common.item.items.ItemPartSuperDualInterface;
 import com.science.gtnl.common.item.items.ItemPartSuperInterface;
+import com.science.gtnl.common.item.items.ItemPartUniversalBus;
 import com.science.gtnl.common.item.items.KFCFamily;
 import com.science.gtnl.common.item.items.NetherTeleporter;
 import com.science.gtnl.common.item.items.NullPointerException;
@@ -208,6 +209,12 @@ public class ItemLoader {
     public static ItemPartEnergyCell energyCell = new ItemPartEnergyCell();
     public static ItemPartDenseEnergyCell denseEnergyCell = new ItemPartDenseEnergyCell();
     public static ItemPartSuperDenseEnergyCell superDenseEnergyCell = new ItemPartSuperDenseEnergyCell();
+    public static ItemPartUniversalBus universalStorageBus = new ItemPartUniversalBus(
+        ItemPartUniversalBus.BusType.STORAGE);
+    public static ItemPartUniversalBus universalImportBus = new ItemPartUniversalBus(
+        ItemPartUniversalBus.BusType.IMPORT);
+    public static ItemPartUniversalBus universalExportBus = new ItemPartUniversalBus(
+        ItemPartUniversalBus.BusType.EXPORT);
 
     public static ItemStack infinityDyeCell;
     public static ItemStack infinityDyeFluidCell;

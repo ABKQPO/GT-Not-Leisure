@@ -30,6 +30,10 @@ public enum ModsItemlist {
     AE2FluidCraftPartFluidInterface(Mods.AE2FluidCraft.ID, "part_fluid_interface", 0),
     // ME流体存储总线
     AE2FluidCraftPartFluidStorageBus(Mods.AE2FluidCraft.ID, "part_fluid_storage_bus", 0),
+    // ME流体输入总线
+    AE2FluidCraftPartFluidImportBus(Mods.AE2FluidCraft.ID, "part_fluid_import", 0),
+    // ME流体输出总线
+    AE2FluidCraftPartFluidExportBus(Mods.AE2FluidCraft.ID, "part_fluid_export", 0),
 
     // 无限增幅卡
     AE2WCTInfinityBoosterCard(Mods.AE2WCT.ID, "infinityBoosterCard", true),

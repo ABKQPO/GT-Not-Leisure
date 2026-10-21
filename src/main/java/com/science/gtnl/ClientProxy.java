@@ -28,6 +28,8 @@ import com.science.gtnl.client.gui.GuiMEChisel;
 import com.science.gtnl.client.gui.GuiSuperDualInterface;
 import com.science.gtnl.client.gui.GuiSuperDualInterfaceFluid;
 import com.science.gtnl.client.gui.GuiSuperInterface;
+import com.science.gtnl.client.gui.GuiUniversalBusIO;
+import com.science.gtnl.client.gui.GuiUniversalStorageBus;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableAdvancedWorkbench;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableAnvil;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableBasicWorkbench;
@@ -70,6 +72,9 @@ import com.science.gtnl.common.part.PartActiveFormationPlane;
 import com.science.gtnl.common.part.PartMECellDock;
 import com.science.gtnl.common.part.PartSuperDualInterface;
 import com.science.gtnl.common.part.PartSuperInterface;
+import com.science.gtnl.common.part.PartUniversalExportBus;
+import com.science.gtnl.common.part.PartUniversalImportBus;
+import com.science.gtnl.common.part.PartUniversalStorageBus;
 import com.science.gtnl.common.render.SpoceRenderHandler;
 import com.science.gtnl.common.render.beamformer.BeamFormerItemRenderer;
 import com.science.gtnl.common.render.beamformer.BeamFormerModel;
@@ -114,6 +119,7 @@ import appeng.client.render.ItemRenderer;
 import appeng.client.render.TESRWrapper;
 import appeng.container.AEBaseContainer;
 import appeng.helpers.IPriorityHost;
+import appeng.parts.automation.PartSharedItemBus;
 import codechicken.nei.guihook.GuiContainerManager;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -399,6 +405,21 @@ public class ClientProxy extends CommonProxy {
                 }
                 yield null;
             }
+            case UniversalStorageBusGUI -> {
+                var t = world.getTileEntity(x, y, z);
+                if (t instanceof IPartHost host && host.getPart(side) instanceof PartUniversalStorageBus bus) {
+                    yield new GuiUniversalStorageBus(player.inventory, bus);
+                }
+                yield null;
+            }
+            case UniversalBusGUI -> {
+                var t = world.getTileEntity(x, y, z);
+                if (t instanceof IPartHost host && host.getPart(side) instanceof PartSharedItemBus<?>bus
+                    && (bus instanceof PartUniversalImportBus || bus instanceof PartUniversalExportBus)) {
+                    yield new GuiUniversalBusIO(player.inventory, bus);
+                }
+                yield null;
+            }
             case MECellDockGUI -> {
                 var t = world.getTileEntity(x, y, z);
                 if (t instanceof IPartHost host) {
@@ -434,6 +455,9 @@ public class ClientProxy extends CommonProxy {
                     } else if (part instanceof PartMECellDock dock) {
                         priorityHost = dock;
                         type = GuiType.MECellDockGUI;
+                    } else if (part instanceof PartUniversalStorageBus bus) {
+                        priorityHost = bus;
+                        type = GuiType.UniversalStorageBusGUI;
                     }
                 }
 

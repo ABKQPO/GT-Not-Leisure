@@ -1,6 +1,7 @@
 package com.science.gtnl;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -27,6 +28,9 @@ import com.science.gtnl.common.part.PartActiveFormationPlane;
 import com.science.gtnl.common.part.PartMECellDock;
 import com.science.gtnl.common.part.PartSuperDualInterface;
 import com.science.gtnl.common.part.PartSuperInterface;
+import com.science.gtnl.common.part.PartUniversalExportBus;
+import com.science.gtnl.common.part.PartUniversalImportBus;
+import com.science.gtnl.common.part.PartUniversalStorageBus;
 import com.science.gtnl.common.recipe.gtnl.ExtremeExtremeEntityCrusherRecipes;
 import com.science.gtnl.common.recipe.thaumcraft.TCResearches;
 import com.science.gtnl.common.wireless.WirelessAutoConnect;
@@ -41,6 +45,8 @@ import com.science.gtnl.container.ContainerMECellDock;
 import com.science.gtnl.container.ContainerMEChisel;
 import com.science.gtnl.container.ContainerSuperDualInterfaceFluid;
 import com.science.gtnl.container.ContainerSuperInterface;
+import com.science.gtnl.container.ContainerUniversalBusIO;
+import com.science.gtnl.container.ContainerUniversalStorageBus;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableAdvancedWorkbench;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableAnvil;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableBasicWorkbench;
@@ -64,6 +70,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.container.ContainerOpenContext;
 import appeng.helpers.IPriorityHost;
+import appeng.parts.automation.PartSharedItemBus;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -162,6 +169,22 @@ public class CommonProxy implements IGuiHandler {
         Upgrades.CAPACITY.registerItem(GTNLItemList.PartActiveFormationPlane.get(1), 5);
         Upgrades.FUZZY.registerItem(GTNLItemList.PartActiveFormationPlane.get(1), 1);
         Upgrades.INVERTER.registerItem(GTNLItemList.PartActiveFormationPlane.get(1), 1);
+
+        Upgrades.FUZZY.registerItem(GTNLItemList.PartUniversalStorageBus.get(1), 1);
+        Upgrades.ORE_FILTER.registerItem(GTNLItemList.PartUniversalStorageBus.get(1), 1);
+        Upgrades.INVERTER.registerItem(GTNLItemList.PartUniversalStorageBus.get(1), 1);
+        Upgrades.CAPACITY.registerItem(GTNLItemList.PartUniversalStorageBus.get(1), 5);
+        Upgrades.STICKY.registerItem(GTNLItemList.PartUniversalStorageBus.get(1), 1);
+
+        for (ItemStack bus : new ItemStack[] { GTNLItemList.PartUniversalImportBus.get(1),
+            GTNLItemList.PartUniversalExportBus.get(1) }) {
+            Upgrades.FUZZY.registerItem(bus, 1);
+            Upgrades.REDSTONE.registerItem(bus, 1);
+            Upgrades.CAPACITY.registerItem(bus, 2);
+            Upgrades.SPEED.registerItem(bus, 4);
+            Upgrades.SUPERSPEED.registerItem(bus, 4);
+            Upgrades.SUPERLUMINALSPEED.registerItem(bus, 4);
+        }
 
         if (Mods.ThaumicEnergistics.isModLoaded()) {
             registerEssentiaHatch();
@@ -390,6 +413,37 @@ public class CommonProxy implements IGuiHandler {
                 }
                 yield null;
             }
+            case UniversalStorageBusGUI -> {
+                var t = world.getTileEntity(x, y, z);
+                if (t instanceof IPartHost host && host.getPart(side) instanceof PartUniversalStorageBus bus) {
+                    var container = new ContainerUniversalStorageBus(player.inventory, bus);
+                    ContainerOpenContext ctx = new ContainerOpenContext(bus);
+                    ctx.setWorld(world);
+                    ctx.setX(x);
+                    ctx.setY(y);
+                    ctx.setZ(z);
+                    ctx.setSide(side);
+                    container.setOpenContext(ctx);
+                    yield container;
+                }
+                yield null;
+            }
+            case UniversalBusGUI -> {
+                var t = world.getTileEntity(x, y, z);
+                if (t instanceof IPartHost host && host.getPart(side) instanceof PartSharedItemBus<?>bus
+                    && (bus instanceof PartUniversalImportBus || bus instanceof PartUniversalExportBus)) {
+                    var container = new ContainerUniversalBusIO(player.inventory, bus);
+                    ContainerOpenContext ctx = new ContainerOpenContext(bus);
+                    ctx.setWorld(world);
+                    ctx.setX(x);
+                    ctx.setY(y);
+                    ctx.setZ(z);
+                    ctx.setSide(side);
+                    container.setOpenContext(ctx);
+                    yield container;
+                }
+                yield null;
+            }
             case MECellDockGUI -> {
                 var t = world.getTileEntity(x, y, z);
                 if (t instanceof IPartHost host) {
@@ -425,6 +479,8 @@ public class CommonProxy implements IGuiHandler {
                         priorityHost = si;
                     } else if (part instanceof PartMECellDock dock) {
                         priorityHost = dock;
+                    } else if (part instanceof PartUniversalStorageBus bus) {
+                        priorityHost = bus;
                     }
                 }
                 if (priorityHost != null) {

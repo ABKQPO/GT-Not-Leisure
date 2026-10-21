@@ -17,8 +17,9 @@ import com.science.gtnl.common.packet.SuperDualInterfaceFluidSyncPacket;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.container.AEBaseContainer;
-import appeng.container.guisync.GuiSync;
 import appeng.container.slot.IOptionalSlotHost;
+import appeng.container.sync.SyncRegistrar;
+import appeng.container.sync.handlers.IntSyncHandler;
 import appeng.util.item.AEFluidStack;
 import lombok.Getter;
 
@@ -30,15 +31,23 @@ public class ContainerSuperDualInterfaceFluid extends AEBaseContainer implements
     @Getter
     private final IDualHost tile;
     private final OptionalFluidSlotFakeTypeOnly[][] configSlotPages;
-    @GuiSync(1)
     public int currentPage = 0;
-    @GuiSync(2)
     public int maxPage;
+    private final IntSyncHandler currentPageSync;
+    private final IntSyncHandler maxPageSync;
 
     public ContainerSuperDualInterfaceFluid(InventoryPlayer inventoryPlayer, IDualHost tile) {
         super(inventoryPlayer, tile);
         this.tile = tile;
         this.maxPage = SuperDualInterfaceSlots.FLUID_PAGE_COUNT;
+        SyncRegistrar sync = this.syncRegistrar();
+        this.currentPageSync = sync.intSync("currentPage");
+        this.maxPageSync = sync.intS2C("maxPage");
+        this.currentPageSync.onClientChange((oldValue, newValue) -> this.currentPage = newValue);
+        this.currentPageSync.onServerChange((oldValue, newValue) -> this.currentPage = newValue);
+        this.maxPageSync.onClientChange((oldValue, newValue) -> this.maxPage = newValue);
+        this.currentPageSync.setLocalValue(this.currentPage);
+        this.maxPageSync.setLocalValue(this.maxPage);
         this.configSlotPages = new OptionalFluidSlotFakeTypeOnly[maxPage][FLUIDS_PER_PAGE];
         int y = 35;
         for (int i = 0; i < FLUIDS_PER_PAGE * maxPage; i++) {
@@ -68,6 +77,7 @@ public class ContainerSuperDualInterfaceFluid extends AEBaseContainer implements
         if (currentPage > 0) {
             setPageSlotsVisible(currentPage, false);
             currentPage--;
+            this.currentPageSync.set(currentPage);
             setPageSlotsVisible(currentPage, true);
         }
     }
@@ -76,6 +86,7 @@ public class ContainerSuperDualInterfaceFluid extends AEBaseContainer implements
         if (currentPage < maxPage - 1) {
             setPageSlotsVisible(currentPage, false);
             currentPage++;
+            this.currentPageSync.set(currentPage);
             setPageSlotsVisible(currentPage, true);
         }
     }

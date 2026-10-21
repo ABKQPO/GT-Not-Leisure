@@ -1,7 +1,9 @@
 package com.science.gtnl.client;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
+import java.util.stream.Collectors;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -16,6 +18,7 @@ import org.lwjgl.input.Mouse;
 
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.client.gui.IBookmarkGroupDropTarget;
 import com.science.gtnl.common.item.items.Stick;
 import com.science.gtnl.common.packet.KeyBindingHandler;
 import com.science.gtnl.utils.ClientUtils;
@@ -30,9 +33,12 @@ import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.container.implementations.ContainerMEMonitorable;
 import codechicken.nei.BookmarkPanel;
 import codechicken.nei.ItemPanel;
+import codechicken.nei.ItemPanels;
 import codechicken.nei.LayoutManager;
 import codechicken.nei.NEIClientConfig;
 import codechicken.nei.Widget;
+import codechicken.nei.bookmark.BookmarkItem;
+import codechicken.nei.bookmark.SortableGroup;
 import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.guihook.IContainerInputHandler;
 import codechicken.nei.recipe.GuiCraftingRecipe;
@@ -61,6 +67,8 @@ public class GTNLInputHandler implements IContainerInputHandler {
     public static int ANIMATION_TICK = 0;
     public static int FRAME_COUNTER = 0;
     public static GuiScreen LAST_GUI_SCREEN = null;
+
+    public List<ItemStack> draggedBookmarkGroup;
 
     public GTNLInputHandler() {
         GuiContainerManager.addInputHandler(this);
@@ -193,7 +201,12 @@ public class GTNLInputHandler implements IContainerInputHandler {
     public void onMouseClicked(GuiContainer gui, int mousex, int mousey, int button) {}
 
     @Override
-    public void onMouseUp(GuiContainer gui, int mousex, int mousey, int button) {}
+    public void onMouseUp(GuiContainer gui, int mousex, int mousey, int button) {
+        if (button == 0 && this.draggedBookmarkGroup != null && gui instanceof IBookmarkGroupDropTarget target) {
+            target.handleBookmarkGroupDrop(mousex, mousey, this.draggedBookmarkGroup);
+        }
+        this.draggedBookmarkGroup = null;
+    }
 
     @Override
     public boolean keyTyped(GuiContainer gui, char keyChar, int keyID) {
@@ -209,6 +222,14 @@ public class GTNLInputHandler implements IContainerInputHandler {
     public void onMouseScrolled(GuiContainer gui, int mousex, int mousey, int scrolled) {}
 
     @Override
-    public void onMouseDragged(GuiContainer gui, int mousex, int mousey, int button, long heldTime) {}
+    public void onMouseDragged(GuiContainer gui, int mousex, int mousey, int button, long heldTime) {
+        final SortableGroup group = ItemPanels.bookmarkPanel.sortableGroup;
+        if (gui instanceof IBookmarkGroupDropTarget && group != null && this.draggedBookmarkGroup == null) {
+            this.draggedBookmarkGroup = group.getBookmarkItems()
+                .stream()
+                .map(BookmarkItem::getItemStack)
+                .collect(Collectors.toList());
+        }
+    }
 
 }

@@ -38,6 +38,12 @@ public class OriginalOutputHatch extends MTEHatchOutput {
     }
 
     @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal("gtnl.hatch.original_output.name");
+    }
+
+    @Override
     public String[] getDescription() {
         return new String[] { StatCollector.translateToLocal("gtnl.hatch.original_output.tooltip.0"),
             StatCollector.translateToLocalFormatted(

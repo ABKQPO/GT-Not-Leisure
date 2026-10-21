@@ -1455,6 +1455,38 @@ public class CraftingTableRecipes implements IRecipePool {
                 'D', GTOreDictUnificator.get(OrePrefixes.screw, Materials.Titanium, 1), 'E', aeParts.exportBus()
                     .maybeStack(1)
                     .orNull() });
+        GTModHandler
+            .addCraftingRecipe(
+                GTNLItemList.PartUniversalStorageBus.get(1),
+                new Object[] { "A B", "CDC", "   ", 'A', aeParts.storageBus()
+                    .maybeStack(1)
+                    .orNull(), 'B', ModsItemlist.AE2FluidCraftPartFluidStorageBus.get(1), 'C',
+                    GTOreDictUnificator.get(OrePrefixes.screw, Materials.TungstenSteel, 1), 'D',
+                    aeMaterials.engProcessor()
+                        .maybeStack(1)
+                        .orNull() });
+
+        GTModHandler
+            .addCraftingRecipe(
+                GTNLItemList.PartUniversalImportBus.get(1),
+                new Object[] { "A B", "CDC", "   ", 'A', aeParts.importBus()
+                    .maybeStack(1)
+                    .orNull(), 'B', ModsItemlist.AE2FluidCraftPartFluidImportBus.get(1), 'C',
+                    GTOreDictUnificator.get(OrePrefixes.screw, Materials.TungstenSteel, 1), 'D',
+                    aeMaterials.engProcessor()
+                        .maybeStack(1)
+                        .orNull() });
+
+        GTModHandler
+            .addCraftingRecipe(
+                GTNLItemList.PartUniversalExportBus.get(1),
+                new Object[] { "A B", "CDC", "   ", 'A', aeParts.exportBus()
+                    .maybeStack(1)
+                    .orNull(), 'B', ModsItemlist.AE2FluidCraftPartFluidExportBus.get(1), 'C',
+                    GTOreDictUnificator.get(OrePrefixes.screw, Materials.TungstenSteel, 1), 'D',
+                    aeMaterials.engProcessor()
+                        .maybeStack(1)
+                        .orNull() });
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.MECellDock.get(1),
