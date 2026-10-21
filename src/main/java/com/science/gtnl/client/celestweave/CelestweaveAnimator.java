@@ -7,10 +7,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
 
+import com.gtnllib.client.fx.FxAngle;
+import com.gtnllib.client.fx.FxEasing;
+import com.gtnllib.utils.ColorMath;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
-import com.science.gtnllib.client.fx.FxAngle;
-import com.science.gtnllib.client.fx.FxEasing;
-import com.science.gtnllib.utils.ColorMath;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

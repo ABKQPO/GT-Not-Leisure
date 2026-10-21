@@ -7,25 +7,25 @@ import java.util.function.BooleanSupplier;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
-import com.cleanroommc.modularui.drawable.Rectangle;
 import com.cleanroommc.modularui.factory.ClientGUI;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widget.sizer.Unit;
 import com.cleanroommc.modularui.widgets.layout.Flow;
+import com.gtnllib.gui.layout.Layout;
+import com.gtnllib.gui.layout.LayoutMath;
+import com.gtnllib.gui.layout.Size;
+import com.gtnllib.gui.widget.CloseButton;
+import com.gtnllib.gui.widget.Divider;
+import com.gtnllib.gui.widget.LayoutTheme;
+import com.gtnllib.gui.widget.SlideSwitch;
+import com.gtnllib.gui.widget.StepSlider;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.equipment.EquipmentSound;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme.Colors;
 import com.science.gtnl.config.EquipmentSoundConfig;
 import com.science.gtnl.config.EquipmentSoundConfig.Channel;
-import com.science.gtnllib.gui.layout.Layout;
-import com.science.gtnllib.gui.layout.LayoutMath;
-import com.science.gtnllib.gui.layout.Size;
-import com.science.gtnllib.gui.widget.CloseButton;
-import com.science.gtnllib.gui.widget.LayoutTheme;
-import com.science.gtnllib.gui.widget.SlideSwitch;
-import com.science.gtnllib.gui.widget.StepSlider;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -33,7 +33,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class EquipmentSoundScreen extends ModularScreen {
 
-    private static final int TITLE_HEIGHT = 20, TITLE_RULE = 7, TEXT_HEIGHT = 10, LABEL_WIDTH = 96, SLIDER_WIDTH = 92,
+    private static final int TITLE_HEIGHT = 20, TITLE_RULE = 8, TEXT_HEIGHT = 10, LABEL_WIDTH = 96, SLIDER_WIDTH = 92,
         TAG_WIDTH = 19;
     private static final int STEPS = 20, MILESTONE_EVERY = 5;
     private static final String HINT = "item.gtnl.equipment.gui.sound.hint";
@@ -65,11 +65,10 @@ public class EquipmentSoundScreen extends ModularScreen {
                 .width(() -> arrangement.width() - pad * 2 - CloseButton.SIZE - style.spacingMedium, Unit.Measure.PIXEL)
                 .height(TEXT_HEIGHT));
         panel.child(
-            new Rectangle().horizontalGradient(colors.accent, 0)
-                .asWidget()
+            new Divider().color(colors.accent)
                 .pos(pad, pad + TITLE_HEIGHT - TITLE_RULE)
                 .width(() -> (arrangement.width() - pad * 2) / 2D, Unit.Measure.PIXEL)
-                .height(1));
+                .height(Divider.HEIGHT));
         panel.child(new CloseButton().corner(pad, style));
         EquipmentSound.Group[] groups = EquipmentSound.Group.values();
         for (int index = 0; index < groups.length; index++) {

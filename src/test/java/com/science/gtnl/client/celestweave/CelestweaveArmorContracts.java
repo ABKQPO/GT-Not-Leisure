@@ -1,14 +1,14 @@
 package com.science.gtnl.client.celestweave;
 
+import static com.gtnllib.GTNLLibContractTest.call;
+import static com.gtnllib.GTNLLibContractTest.check;
+import static com.gtnllib.GTNLLibContractTest.compact;
+import static com.gtnllib.GTNLLibContractTest.field;
+import static com.gtnllib.GTNLLibContractTest.near;
+import static com.gtnllib.GTNLLibContractTest.read;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.RESOURCES;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.SOURCES;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.roundTrip;
-import static com.science.gtnllib.GTNLLibContractTest.call;
-import static com.science.gtnllib.GTNLLibContractTest.check;
-import static com.science.gtnllib.GTNLLibContractTest.compact;
-import static com.science.gtnllib.GTNLLibContractTest.field;
-import static com.science.gtnllib.GTNLLibContractTest.near;
-import static com.science.gtnllib.GTNLLibContractTest.read;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -21,6 +21,7 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.IntSupplier;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -35,6 +36,10 @@ import net.minecraft.util.AxisAlignedBB;
 
 import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
 import com.cleanroommc.modularui.utils.item.ItemStackHandler;
+import com.gtnllib.client.fx.FxEasing;
+import com.gtnllib.client.fx.world.FxVisibility;
+import com.gtnllib.gui.widget.LayoutTheme;
+import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.client.celestweave.CelestweaveClientEvents.HitOrigin;
 import com.science.gtnl.client.equipment.EquipmentWheelScreen;
 import com.science.gtnl.common.celestweave.CelestweaveBackpack;
@@ -69,9 +74,6 @@ import com.science.gtnl.common.railgun.RailgunEnergy;
 import com.science.gtnl.common.railgun.RailgunModule;
 import com.science.gtnl.common.railgun.RailgunSetting;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnllib.client.fx.FxEasing;
-import com.science.gtnllib.client.fx.world.FxVisibility;
-import com.science.gtnllib.utils.Vec3d;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -744,14 +746,16 @@ public class CelestweaveArmorContracts {
         check(
             CelestweaveData.moduleSlots(plainStack()) == 10,
             "an unknown host reads with the most slots any piece has, so nothing is dropped");
-        Class<?>[] intArg = { int.class };
+        Class<?>[] slotArgs = { int.class, int.class };
         check(
-            (int) call(EquipmentGui.class, "slotsPerRow", null, intArg, 10) == 5
-                && (int) call(EquipmentGui.class, "slotRowsShift", null, intArg, 10) == 18
-                && (int) call(EquipmentGui.class, "slotsPerRow", null, intArg, 5) == 5
-                && (int) call(EquipmentGui.class, "slotRowsShift", null, intArg, 5) == 0
-                && (int) call(EquipmentGui.class, "slotRowsShift", null, intArg, 0) == 0,
-            "ten slots fold into two even rows that push the panel down one row, five stay on one row");
+            (int) call(EquipmentGui.class, "slotsPerRow", null, slotArgs, 10, 138) == 5
+                && (int) call(EquipmentGui.class, "slotRows", null, slotArgs, 10, 138) == 2
+                && (int) call(EquipmentGui.class, "slotsPerRow", null, slotArgs, 10, 218) == 10
+                && (int) call(EquipmentGui.class, "slotRows", null, slotArgs, 10, 218) == 1
+                && (int) call(EquipmentGui.class, "slotRows", null, slotArgs, 5, 138) == 1
+                && (int) call(EquipmentGui.class, "slotRows", null, slotArgs, 0, 138) == 0,
+            "ten module slots fold into two even rows when the row is narrow and stay on one row on the widest panel");
+        headerLayout();
         NBTTagList wide = EquipmentModules.write(
             new ItemStack[] { null, null, null, null, null, null, null, railgunModule.stack(RailgunModule.RANGE) },
             8);
@@ -947,6 +951,39 @@ public class CelestweaveArmorContracts {
         return new ItemStack(new Item());
     }
 
+    private static void headerLayout() throws ReflectiveOperationException {
+        int narrow = headerBottom(RailgunGui.class, 10, 1, 160), wide = headerBottom(WidePanel.class, 10, 1, 160),
+            longText = headerBottom(WidePanel.class, 10, 1, 230), railgun = headerBottom(WidePanel.class, 5, 0, 160);
+        check(
+            narrow == 79,
+            "on the narrowest panel ten module slots take two rows and the energy text sits above its bar: " + narrow);
+        check(
+            wide == 54,
+            "on the widest panel ten module slots share one row with the held item slot and the energy bar follows its text: "
+                + wide);
+        check(longText == 61, "an energy text too long for one row puts the bar on its own row: " + longText);
+        check(railgun == 54, "the railgun header is one slot row and one energy row on the widest panel: " + railgun);
+        int fullRow = headerBottom(WidePanel.class, 12, 1, 160), crowded = headerBottom(WidePanel.class, 13, 1, 160),
+            free = headerBottom(WidePanel.class, 13, 0, 160);
+        check(
+            fullRow == 54 && crowded == 72 && free == 54,
+            "the held item slot keeps its own place at the end of the slot row: " + fullRow
+                + ", "
+                + crowded
+                + ", "
+                + free);
+    }
+
+    private static int headerBottom(Class<? extends EquipmentGui> type, int modules, int held, int energyText)
+        throws ReflectiveOperationException {
+        EquipmentGui gui = allocate(type);
+        setField(EquipmentGui.class, gui, "style", LayoutTheme.DEFAULT);
+        setField(EquipmentGui.class, gui, "moduleSlots", modules);
+        setField(EquipmentGui.class, gui, "heldSlots", held);
+        setField(EquipmentGui.class, gui, "energyLabel", (IntSupplier) () -> energyText);
+        return (int) call(EquipmentGui.class, "headerBottom", gui, new Class<?>[0]);
+    }
+
     private static void setField(Class<?> owner, Object target, String name, Object value)
         throws ReflectiveOperationException {
         Field field = owner.getDeclaredField(name);
@@ -991,5 +1028,17 @@ public class CelestweaveArmorContracts {
         add.setAccessible(true);
         add.invoke(Item.itemRegistry, id, name, item, new BitSet());
         return item;
+    }
+
+    private static class WidePanel extends RailgunGui {
+
+        private WidePanel() {
+            super(null, null);
+        }
+
+        @Override
+        protected int panelWidth() {
+            return 256;
+        }
     }
 }

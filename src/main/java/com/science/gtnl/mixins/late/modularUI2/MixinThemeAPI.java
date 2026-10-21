@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.cleanroommc.modularui.api.ITheme;
 import com.cleanroommc.modularui.theme.ThemeAPI;
-import com.science.gtnllib.gui.theme.PaletteThemes;
+import com.gtnllib.gui.theme.PaletteThemes;
 
 @Mixin(value = ThemeAPI.class, remap = false)
 public abstract class MixinThemeAPI {

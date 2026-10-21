@@ -2,8 +2,8 @@ package com.science.gtnl.client.text.effect;
 
 import net.minecraft.util.ResourceLocation;
 
+import com.gtnllib.client.shader.GlslProgram;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnllib.client.shader.GlslProgram;
 
 public class TextShader extends GlslProgram {
 

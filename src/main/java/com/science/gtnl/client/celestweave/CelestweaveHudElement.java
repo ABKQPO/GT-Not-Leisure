@@ -6,13 +6,13 @@ import java.util.function.UnaryOperator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.gtnllib.client.hud.HudColor;
+import com.gtnllib.client.hud.HudElement;
+import com.gtnllib.client.hud.HudElement.Offset;
+import com.gtnllib.client.hud.HudOption;
+import com.gtnllib.client.hud.HudRegistry;
+import com.gtnllib.client.hud.HudTiming;
 import com.science.gtnl.common.celestweave.CelestweaveData;
-import com.science.gtnllib.client.hud.HudColor;
-import com.science.gtnllib.client.hud.HudElement;
-import com.science.gtnllib.client.hud.HudElement.Offset;
-import com.science.gtnllib.client.hud.HudOption;
-import com.science.gtnllib.client.hud.HudRegistry;
-import com.science.gtnllib.client.hud.HudTiming;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

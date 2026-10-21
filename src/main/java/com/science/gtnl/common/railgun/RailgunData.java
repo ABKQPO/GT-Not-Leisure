@@ -11,11 +11,11 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 
 import com.google.common.collect.MapMaker;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.common.equipment.EquipmentModules;
 import com.science.gtnl.common.equipment.EquipmentTag;
 import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnllib.utils.MathUtils;
 
 public class RailgunData {
 

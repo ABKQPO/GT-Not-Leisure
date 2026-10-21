@@ -20,6 +20,7 @@ import net.minecraftforge.client.model.IModelCustom;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.client.railgun.RailgunBolts;
 import com.science.gtnl.client.railgun.RailgunBolts.Bolt;
 import com.science.gtnl.client.railgun.RailgunCameraShake;
@@ -30,7 +31,6 @@ import com.science.gtnl.client.railgun.RailgunMuzzleAnchor;
 import com.science.gtnl.client.railgun.RailgunOrbRenderer;
 import com.science.gtnl.common.railgun.RailgunSetting;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

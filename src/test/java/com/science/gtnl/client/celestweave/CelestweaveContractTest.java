@@ -1,13 +1,13 @@
 package com.science.gtnl.client.celestweave;
 
-import static com.science.gtnllib.GTNLLibContractTest.check;
+import static com.gtnllib.GTNLLibContractTest.check;
 
 import java.lang.reflect.Constructor;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import com.gtnllib.GTNLLibContractTest;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme;
-import com.science.gtnllib.GTNLLibContractTest;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import gregtech.api.modularui2.GTGuiThemes;

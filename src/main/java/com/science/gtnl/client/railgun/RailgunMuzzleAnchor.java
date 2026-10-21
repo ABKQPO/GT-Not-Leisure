@@ -12,8 +12,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnllib.client.fx.world.FxCamera;
-import com.science.gtnllib.utils.Vec3d;
+import com.gtnllib.client.fx.world.FxCamera;
+import com.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

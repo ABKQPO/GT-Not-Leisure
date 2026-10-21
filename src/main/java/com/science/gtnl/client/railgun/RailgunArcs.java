@@ -1,9 +1,9 @@
 package com.science.gtnl.client.railgun;
 
+import com.gtnllib.client.fx.world.FxArcRenderer;
+import com.gtnllib.client.fx.world.FxArcRenderer.Style;
+import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnllib.client.fx.world.FxArcRenderer;
-import com.science.gtnllib.client.fx.world.FxArcRenderer.Style;
-import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

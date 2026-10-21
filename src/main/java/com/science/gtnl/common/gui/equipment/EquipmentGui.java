@@ -23,19 +23,20 @@ import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
+import com.gtnllib.gui.layout.Layout;
+import com.gtnllib.gui.layout.LayoutMath;
+import com.gtnllib.gui.layout.Size;
+import com.gtnllib.gui.theme.ButtonPurpose;
+import com.gtnllib.gui.widget.CloseButton;
+import com.gtnllib.gui.widget.Divider;
+import com.gtnllib.gui.widget.FillBar;
+import com.gtnllib.gui.widget.LayoutTheme;
+import com.gtnllib.gui.widget.SlideSwitch;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.equipment.EquipmentModules;
 import com.science.gtnl.common.equipment.IEquipmentVariant;
 import com.science.gtnl.common.gui.GTNLMui2Textures;
 import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
-import com.science.gtnllib.gui.layout.Layout;
-import com.science.gtnllib.gui.layout.LayoutMath;
-import com.science.gtnllib.gui.layout.Size;
-import com.science.gtnllib.gui.theme.ButtonPurpose;
-import com.science.gtnllib.gui.widget.CloseButton;
-import com.science.gtnllib.gui.widget.FillBar;
-import com.science.gtnllib.gui.widget.LayoutTheme;
-import com.science.gtnllib.gui.widget.SlideSwitch;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -45,8 +46,7 @@ public abstract class EquipmentGui {
     protected static final int WIDTH = 176, TITLE_Y = 6, TEXT_HEIGHT = 10, MAX_COLUMNS = 3;
     protected static final int SLOT_SIZE = 18;
     private static final int MAX_WIDTH = 256, SCREEN_MARGIN = 4, MIN_PAGE_ROWS = 3;
-    private static final int INVENTORY_HEIGHT = 76, INVENTORY_BOTTOM = 7, SLOT_X = 16, BAR_GAP = 16, BAR_HEIGHT = 5;
-    private static final int MAX_SLOTS_PER_ROW = (WIDTH - SLOT_X * 2) / SLOT_SIZE;
+    private static final int INVENTORY_HEIGHT = 76, INVENTORY_BOTTOM = 7, BAR_HEIGHT = 5, MIN_BAR_WIDTH = 40;
 
     protected final PlayerInventoryGuiData data;
     protected final PanelSyncManager sync;
@@ -54,6 +54,8 @@ public abstract class EquipmentGui {
     protected final boolean client;
     protected final LayoutTheme style;
     private ModularPanel panel;
+    private int moduleSlots, heldSlots, energyWidth = -1;
+    private IntSupplier energyLabel = () -> 0;
 
     protected EquipmentGui(PlayerInventoryGuiData data, PanelSyncManager sync) {
         this.data = data;
@@ -95,7 +97,36 @@ public abstract class EquipmentGui {
     }
 
     protected int footerHeight() {
-        return INVENTORY_BOTTOM + INVENTORY_HEIGHT + style.spacingMedium;
+        return INVENTORY_BOTTOM + INVENTORY_HEIGHT + style.spacingLarge;
+    }
+
+    protected int slotsTop() {
+        return TITLE_Y + TEXT_HEIGHT + style.spacingSmall;
+    }
+
+    protected void reserveHeld(int slots) {
+        heldSlots = slots;
+    }
+
+    private int slotRoom() {
+        return contentWidth() - (heldSlots == 0 ? 0 : heldSlots * SLOT_SIZE + style.spacingMedium);
+    }
+
+    private int energyTop() {
+        return slotsTop() + slotRows(moduleSlots, slotRoom()) * SLOT_SIZE + style.spacingMedium;
+    }
+
+    private boolean energyInline() {
+        return energyLabel.getAsInt() + style.spacingMedium + MIN_BAR_WIDTH <= contentWidth();
+    }
+
+    protected int headerBottom() {
+        return energyTop() + (energyInline() ? TEXT_HEIGHT : TEXT_HEIGHT + style.spacingSmall + BAR_HEIGHT)
+            + style.spacingMedium;
+    }
+
+    protected int listWidth() {
+        return panelWidth() - style.padding + style.spacingSmall;
     }
 
     protected int panelWidth() {
@@ -145,7 +176,18 @@ public abstract class EquipmentGui {
     }
 
     protected void bindFooter(ModularPanel panel) {
+        panel.child(
+            new Divider().color(client ? dividerColor() : 0)
+                .left(style.padding)
+                .bottom(INVENTORY_BOTTOM + INVENTORY_HEIGHT + (style.spacingLarge - Divider.HEIGHT) / 2)
+                .width(this::contentWidth, Unit.Measure.PIXEL)
+                .height(Divider.HEIGHT));
         panel.bindPlayerInventory();
+    }
+
+    @SideOnly(Side.CLIENT)
+    private static int dividerColor() {
+        return EquipmentTheme.colors().accentDim;
     }
 
     protected static ButtonWidget<?> button(ButtonPurpose purpose) {
@@ -161,17 +203,18 @@ public abstract class EquipmentGui {
                 .height(TEXT_HEIGHT));
     }
 
-    protected static int slotsPerRow(int slots) {
-        return LayoutMath.rows(slots, LayoutMath.rows(slots, MAX_SLOTS_PER_ROW));
+    protected static int slotsPerRow(int slots, int room) {
+        return LayoutMath.rows(slots, slotRows(slots, room));
     }
 
-    protected static int slotRowsShift(int slots) {
-        return Math.max(0, LayoutMath.rows(slots, slotsPerRow(slots)) - 1) * SLOT_SIZE;
+    protected static int slotRows(int slots, int room) {
+        return LayoutMath.rows(slots, Math.max(1, room / SLOT_SIZE));
     }
 
-    protected void moduleSlots(ModularPanel panel, ModuleSlots<?> handler, String group, int y, String limits) {
+    protected void moduleSlots(ModularPanel panel, ModuleSlots<?> handler, String group, String limits) {
         sync.registerSlotGroup(new SlotGroup(group, handler.getSlots(), 0, true));
-        int perRow = slotsPerRow(handler.getSlots());
+        moduleSlots = handler.getSlots();
+        IntSupplier perRow = () -> slotsPerRow(moduleSlots, slotRoom());
         for (int i = 0; i < handler.getSlots(); i++) {
             final int slot = i;
             panel
@@ -184,33 +227,51 @@ public abstract class EquipmentGui {
                             if (handler.getStackInSlot(slot) == null)
                                 GTNLMui2Textures.OVERLAY_SLOT_MODULE.draw(context, x, top, width, height, theme);
                         })
-                        .pos(SLOT_X + i % perRow * SLOT_SIZE, y + i / perRow * SLOT_SIZE)
+                        .left(() -> style.padding + slot % perRow.getAsInt() * SLOT_SIZE, Unit.Measure.PIXEL)
+                        .top(() -> slotsTop() + slot / perRow.getAsInt() * SLOT_SIZE, Unit.Measure.PIXEL)
                         .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang(limits))));
         }
     }
 
-    protected void energyBar(ModularPanel panel, DoubleSupplier energy, DoubleSupplier capacity, int y, int reserved) {
+    protected void energyBar(ModularPanel panel, DoubleSupplier energy, DoubleSupplier capacity) {
         LongSyncValue stored = new LongSyncValue(() -> (long) energy.getAsDouble());
         LongSyncValue max = new LongSyncValue(() -> (long) capacity.getAsDouble());
         sync.syncValue("energy", stored);
         sync.syncValue("capacity", max);
+        energyLabel = () -> textWidth(energyText(max.getLongValue(), max.getLongValue()));
         panel.child(
-            Layout
-                .label(
-                    IKey.dynamic(
-                        () -> StatCollector.translateToLocalFormatted(
-                            "item.gtnl.equipment.gui.energy",
-                            EquipmentEnergy.format(stored.getLongValue()),
-                            EquipmentEnergy.format(max.getLongValue()))),
-                    style)
-                .pos(style.padding, y)
-                .width(() -> contentWidth() - reserved, Unit.Measure.PIXEL)
-                .height(TEXT_HEIGHT));
+            Layout.label(IKey.dynamic(() -> energyText(stored.getLongValue(), max.getLongValue())), style)
+                .left(style.padding)
+                .top(this::energyTop, Unit.Measure.PIXEL)
+                .width(() -> energyInline() ? energyLabel.getAsInt() : contentWidth(), Unit.Measure.PIXEL)
+                .height(TEXT_HEIGHT)
+                .onUpdateListener(label -> {
+                    int width = energyLabel.getAsInt();
+                    if (width == energyWidth) return;
+                    energyWidth = width;
+                    panel.scheduleResize();
+                }));
         panel.child(
             new FillBar().value(() -> stored.getLongValue() / (double) Math.max(1, max.getLongValue()))
-                .pos(style.padding, y + BAR_GAP)
-                .width(this::contentWidth, Unit.Measure.PIXEL)
+                .left(
+                    () -> style.padding + (energyInline() ? energyLabel.getAsInt() + style.spacingMedium : 0),
+                    Unit.Measure.PIXEL)
+                .top(
+                    () -> energyTop()
+                        + (energyInline() ? (TEXT_HEIGHT - BAR_HEIGHT) / 2 : TEXT_HEIGHT + style.spacingSmall),
+                    Unit.Measure.PIXEL)
+                .width(
+                    () -> energyInline() ? contentWidth() - energyLabel.getAsInt() - style.spacingMedium
+                        : contentWidth(),
+                    Unit.Measure.PIXEL)
                 .height(BAR_HEIGHT));
+    }
+
+    private static String energyText(long stored, long max) {
+        return StatCollector.translateToLocalFormatted(
+            "item.gtnl.equipment.gui.energy",
+            EquipmentEnergy.format(stored),
+            EquipmentEnergy.format(max));
     }
 
     protected BooleanSyncValue syncToggle(String key, BooleanSupplier getter, Consumer<Boolean> setter,

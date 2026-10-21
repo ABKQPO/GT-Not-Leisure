@@ -14,10 +14,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 
+import com.gtnllib.utils.MathUtils;
+import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.EffectLoader;
-import com.science.gtnllib.utils.MathUtils;
-import com.science.gtnllib.utils.Vec3d;
 
 public class RailgunDamage {
 

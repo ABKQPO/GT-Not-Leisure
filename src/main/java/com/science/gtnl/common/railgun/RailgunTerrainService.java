@@ -17,8 +17,8 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.ForgeHooks;
 
+import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 

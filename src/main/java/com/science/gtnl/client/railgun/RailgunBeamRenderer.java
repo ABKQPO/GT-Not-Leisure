@@ -17,6 +17,10 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
+import com.gtnllib.client.fx.world.FxCamera;
+import com.gtnllib.client.fx.world.FxRenderHelper;
+import com.gtnllib.client.fx.world.FxRenderHelper.Sprite;
+import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.packet.RailgunBeamUpdatePacket;
 import com.science.gtnl.common.railgun.RailgunData;
@@ -24,10 +28,6 @@ import com.science.gtnl.common.railgun.RailgunModule;
 import com.science.gtnl.common.railgun.RailgunRaycast;
 import com.science.gtnl.common.railgun.RailgunSetting;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnllib.client.fx.world.FxCamera;
-import com.science.gtnllib.client.fx.world.FxRenderHelper;
-import com.science.gtnllib.client.fx.world.FxRenderHelper.Sprite;
-import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;

@@ -14,12 +14,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
-import com.science.gtnllib.client.fx.world.FxArcRenderer;
-import com.science.gtnllib.client.fx.world.FxCamera;
-import com.science.gtnllib.client.fx.world.FxRenderHelper;
-import com.science.gtnllib.utils.ColorMath;
-import com.science.gtnllib.utils.MathUtils;
-import com.science.gtnllib.utils.Vec3d;
+import com.gtnllib.client.fx.world.FxArcRenderer;
+import com.gtnllib.client.fx.world.FxCamera;
+import com.gtnllib.client.fx.world.FxRenderHelper;
+import com.gtnllib.utils.ColorMath;
+import com.gtnllib.utils.MathUtils;
+import com.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;

@@ -1,10 +1,10 @@
 package com.science.gtnl.client.celestweave;
 
+import static com.gtnllib.GTNLLibContractTest.call;
+import static com.gtnllib.GTNLLibContractTest.check;
+import static com.gtnllib.GTNLLibContractTest.field;
+import static com.gtnllib.GTNLLibContractTest.near;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.roundTrip;
-import static com.science.gtnllib.GTNLLibContractTest.call;
-import static com.science.gtnllib.GTNLLibContractTest.check;
-import static com.science.gtnllib.GTNLLibContractTest.field;
-import static com.science.gtnllib.GTNLLibContractTest.near;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -14,6 +14,9 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 
+import com.gtnllib.client.fx.world.FxArcRenderer.Color;
+import com.gtnllib.client.fx.world.FxArcRenderer.Style;
+import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.client.railgun.RailgunBolts;
 import com.science.gtnl.client.railgun.RailgunChargeState;
 import com.science.gtnl.client.railgun.RailgunHudRenderer;
@@ -24,9 +27,6 @@ import com.science.gtnl.common.railgun.RailgunDamage;
 import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunFireService;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnllib.client.fx.world.FxArcRenderer.Color;
-import com.science.gtnllib.client.fx.world.FxArcRenderer.Style;
-import com.science.gtnllib.utils.Vec3d;
 
 public class RailgunContracts {
 

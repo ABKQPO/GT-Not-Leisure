@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.science.gtnllib.utils.MathUtils;
-import com.science.gtnllib.utils.Vec3d;
+import com.gtnllib.utils.MathUtils;
+import com.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

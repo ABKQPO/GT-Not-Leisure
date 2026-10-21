@@ -2,8 +2,8 @@ package com.science.gtnl.client.celestweave;
 
 import java.util.Arrays;
 
-import com.science.gtnllib.utils.ColorMath;
-import com.science.gtnllib.utils.MathUtils;
+import com.gtnllib.utils.ColorMath;
+import com.gtnllib.utils.MathUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

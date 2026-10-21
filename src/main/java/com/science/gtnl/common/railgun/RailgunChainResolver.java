@@ -17,8 +17,8 @@ import net.minecraft.world.WorldServer;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.common.railgun.RailgunDamage.DamageContext;
-import com.science.gtnllib.utils.Vec3d;
 
 public class RailgunChainResolver {
 

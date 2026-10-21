@@ -7,8 +7,8 @@ import net.minecraft.client.renderer.Tessellator;
 
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnllib.client.fx.FxEasing;
-import com.science.gtnllib.utils.ColorMath;
+import com.gtnllib.client.fx.FxEasing;
+import com.gtnllib.utils.ColorMath;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

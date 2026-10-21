@@ -12,6 +12,7 @@ import java.util.function.UnaryOperator;
 
 import net.minecraft.item.ItemStack;
 
+import com.cleanroommc.modularui.api.GuiAxis;
 import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
@@ -26,6 +27,7 @@ import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
 import com.cleanroommc.modularui.value.sync.IntSyncValue;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widget.Widget;
+import com.cleanroommc.modularui.widget.scroll.ScrollData;
 import com.cleanroommc.modularui.widget.sizer.Unit;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.ColorPickerDialog;
@@ -34,6 +36,12 @@ import com.cleanroommc.modularui.widgets.ToggleButton;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
+import com.gtnllib.gui.layout.Layout;
+import com.gtnllib.gui.layout.Size;
+import com.gtnllib.gui.theme.ButtonPurpose;
+import com.gtnllib.gui.widget.CloseButton;
+import com.gtnllib.gui.widget.SlideSwitch;
+import com.gtnllib.gui.widget.StepSlider;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.celestweave.CelestweaveThemeAccent;
 import com.science.gtnl.common.celestweave.CelestweaveBackpack;
@@ -46,12 +54,6 @@ import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveKeyPacket;
-import com.science.gtnllib.gui.layout.Layout;
-import com.science.gtnllib.gui.layout.Size;
-import com.science.gtnllib.gui.theme.ButtonPurpose;
-import com.science.gtnllib.gui.widget.CloseButton;
-import com.science.gtnllib.gui.widget.SlideSwitch;
-import com.science.gtnllib.gui.widget.StepSlider;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -61,8 +63,8 @@ public class CelestweaveGui extends EquipmentGui {
     private static final int[] COLORS = { 0xFF3D9A, 0x3DE8FF, 0xFFC13D, 0xA35CFF, 0x4DFF88, 0xFF4040, 0xEEF0FF };
     private static final String GUI_LANG = "item.gtnl.celestweave.gui.", UNAVAILABLE = "§7";
     private static final String SHORT_LANG = "item.gtnl.celestweave.short.";
-    private static final int TABS_Y = 66, SLOTS_Y = 18, HELD_Y = 38, ENERGY_Y = 42, BACKPACK_WIDTH = 52,
-        BACKPACK_HEIGHT = 13, FLAGS_PER_ROW = 7, FLAG_GAP = 1, SLIDER_WIDTH = 80, SWATCH_SIZE = 12;
+    private static final int BACKPACK_WIDTH = 52, BACKPACK_HEIGHT = 13, FLAGS_PER_ROW = 7, FLAG_GAP = 1,
+        SLIDER_WIDTH = 80, SWATCH_SIZE = 12;
     private static final float SLIDER_SHARE = 0.5F;
     private static final String[] PAGES = { "modules", "settings", "appearance" };
     private static final int APPEARANCE_PAGE = 2;
@@ -75,7 +77,6 @@ public class CelestweaveGui extends EquipmentGui {
     private ModuleHandler modules;
     private HolderHandler heldSlots;
     private int viewing;
-    private int contentY;
 
     public CelestweaveGui(PlayerInventoryGuiData data, PanelSyncManager sync) {
         super(data, sync);
@@ -89,7 +90,7 @@ public class CelestweaveGui extends EquipmentGui {
 
     @Override
     public ModularPanel build() {
-        ModularPanel panel = panel("celestweave_armor", () -> contentY + pageHeight());
+        ModularPanel panel = panel("celestweave_armor", () -> contentY() + pageHeight());
         modules = new ModuleHandler();
         boolean backpackButton = piece == CelestweaveArmor.CHEST
             && CelestweaveData.isArmorSlot(data.getPlayer(), data.getSlotIndex());
@@ -113,15 +114,14 @@ public class CelestweaveGui extends EquipmentGui {
                     ScienceNotLeisure.network.sendToServer(new CelestweaveKeyPacket(CelestweaveKeyPacket.BACKPACK));
                     return true;
                 }));
-        moduleSlots(panel, modules, "celestweave_modules", SLOTS_Y, "item.gtnl.celestweave.gui.module_limits");
-        int shift = slotRowsShift(modules.getSlots());
-        contentY = TABS_Y + shift + style.buttonHeight + style.spacingMedium;
+        moduleSlots(panel, modules, "celestweave_modules", "item.gtnl.celestweave.gui.module_limits");
         List<CelestweaveModule> holders = new ArrayList<>();
         for (CelestweaveModule module : CelestweaveModule.values())
             if (module.holdsItem && module.fits(piece)) holders.add(module);
         if (!holders.isEmpty()) {
             HolderHandler held = new HolderHandler(holders.toArray(new CelestweaveModule[0]));
             heldSlots = held;
+            reserveHeld(holders.size());
             sync.registerSlotGroup(new SlotGroup("celestweave_held", holders.size(), 1, true));
             for (int i = 0; i < holders.size(); i++) {
                 final int slot = i;
@@ -132,18 +132,13 @@ public class CelestweaveGui extends EquipmentGui {
                             .slot(
                                 new ModularSlot(held, i).filter(candidate -> held.isItemValid(slot, candidate))
                                     .slotGroup("celestweave_held"))
-                            .top(HELD_Y + shift)
+                            .top(slotsTop())
                             .right(style.padding + SLOT_SIZE * (holders.size() - 1 - i))
                             .tooltipBuilder(
                                 tooltip -> tooltip.addLine(IKey.lang("item.gtnl.celestweave.gui.held." + module.id))));
             }
         }
-        energyBar(
-            panel,
-            this::energy,
-            () -> CelestweaveEnergy.capacity(bound()),
-            ENERGY_Y + shift,
-            SLOT_SIZE * holders.size());
+        energyBar(panel, this::energy, () -> CelestweaveEnergy.capacity(bound()));
         List<ToggleButton> tabs = new ArrayList<>();
         for (int i = 0; i < PAGES.length; i++) {
             final int index = i;
@@ -154,7 +149,8 @@ public class CelestweaveGui extends EquipmentGui {
         }
         panel.child(
             rows().line(style.spacingSmall, Collections.nCopies(tabs.size(), Size.fill()), tabs)
-                .pos(0, TABS_Y + shift)
+                .left(0)
+                .top(this::headerBottom, Unit.Measure.PIXEL)
                 .height(style.buttonHeight));
         pages.add(modulePage());
         pages.add(settingsPage());
@@ -164,11 +160,15 @@ public class CelestweaveGui extends EquipmentGui {
         return panel;
     }
 
+    private int contentY() {
+        return headerBottom() + style.buttonHeight + style.spacingMedium;
+    }
+
     private int pageHeight() {
         Layout rows = rows();
         int needed = 0;
         for (List<IWidget> lines : pages) needed = Math.max(needed, rows.stackHeight(lines));
-        return fitHeight(contentY, needed);
+        return fitHeight(contentY(), needed);
     }
 
     private void attachPage(ModularPanel panel, int index) {
@@ -177,8 +177,11 @@ public class CelestweaveGui extends EquipmentGui {
             pageNote(panel, index);
             return;
         }
-        ListWidget<IWidget, ?> list = new ListWidget<>().pos(0, contentY)
-            .width(this::panelWidth, Unit.Measure.PIXEL)
+        ListWidget<IWidget, ?> list = new ListWidget<>()
+            .scrollDirection(ScrollData.of(GuiAxis.Y, false, style.spacingSmall))
+            .left(0)
+            .top(this::contentY, Unit.Measure.PIXEL)
+            .width(this::listWidth, Unit.Measure.PIXEL)
             .height(this::pageHeight, Unit.Measure.PIXEL)
             .setEnabledIf(widget -> page == index);
         lines.forEach(list::child);
@@ -191,7 +194,8 @@ public class CelestweaveGui extends EquipmentGui {
         panel.child(
             IKey.lang(lang)
                 .asWidget()
-                .pos(style.padding, contentY + style.spacingSmall)
+                .left(style.padding)
+                .top(() -> contentY() + style.spacingSmall, Unit.Measure.PIXEL)
                 .width(this::contentWidth, Unit.Measure.PIXEL)
                 .height(TEXT_HEIGHT * 2)
                 .setEnabledIf(widget -> page == index));

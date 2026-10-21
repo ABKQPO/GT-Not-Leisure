@@ -5,15 +5,15 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.gtnllib.client.fx.world.FxShockwaveRenderer;
+import com.gtnllib.client.fx.world.FxVisibility;
+import com.gtnllib.client.hud.HudRegistry;
+import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.common.equipment.EquipmentSound;
 import com.science.gtnl.common.packet.RailgunBeamChainFxPacket;
 import com.science.gtnl.common.packet.RailgunFireFxPacket;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnllib.client.fx.world.FxShockwaveRenderer;
-import com.science.gtnllib.client.fx.world.FxVisibility;
-import com.science.gtnllib.client.hud.HudRegistry;
-import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;

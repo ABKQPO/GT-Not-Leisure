@@ -1,10 +1,10 @@
 package com.science.gtnl.client.celestweave;
 
+import static com.gtnllib.GTNLLibContractTest.check;
+import static com.gtnllib.GTNLLibContractTest.compact;
+import static com.gtnllib.GTNLLibContractTest.near;
+import static com.gtnllib.GTNLLibContractTest.read;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.SOURCES;
-import static com.science.gtnllib.GTNLLibContractTest.check;
-import static com.science.gtnllib.GTNLLibContractTest.compact;
-import static com.science.gtnllib.GTNLLibContractTest.near;
-import static com.science.gtnllib.GTNLLibContractTest.read;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -12,14 +12,14 @@ import java.util.Locale;
 
 import net.minecraft.util.StatCollector;
 
+import com.gtnllib.client.hud.HudColor;
+import com.gtnllib.client.hud.HudElement;
+import com.gtnllib.client.hud.HudElement.Setting;
+import com.gtnllib.client.hud.HudLayout;
+import com.gtnllib.client.hud.HudRegistry;
+import com.gtnllib.client.hud.HudTiming;
 import com.science.gtnl.client.railgun.RailgunHudRenderer;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnllib.client.hud.HudColor;
-import com.science.gtnllib.client.hud.HudElement;
-import com.science.gtnllib.client.hud.HudElement.Setting;
-import com.science.gtnllib.client.hud.HudLayout;
-import com.science.gtnllib.client.hud.HudRegistry;
-import com.science.gtnllib.client.hud.HudTiming;
 
 public class EquipmentHudContracts {
 

@@ -1,16 +1,16 @@
 package com.science.gtnl.client.celestweave;
 
+import static com.gtnllib.GTNLLibContractTest.call;
+import static com.gtnllib.GTNLLibContractTest.check;
+import static com.gtnllib.GTNLLibContractTest.compact;
+import static com.gtnllib.GTNLLibContractTest.field;
+import static com.gtnllib.GTNLLibContractTest.near;
+import static com.gtnllib.GTNLLibContractTest.read;
+import static com.gtnllib.ThemeContracts.paletteControls;
+import static com.gtnllib.ThemeContracts.reloadThemes;
+import static com.gtnllib.ThemeContracts.same;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.RESOURCES;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.SOURCES;
-import static com.science.gtnllib.GTNLLibContractTest.call;
-import static com.science.gtnllib.GTNLLibContractTest.check;
-import static com.science.gtnllib.GTNLLibContractTest.compact;
-import static com.science.gtnllib.GTNLLibContractTest.field;
-import static com.science.gtnllib.GTNLLibContractTest.near;
-import static com.science.gtnllib.GTNLLibContractTest.read;
-import static com.science.gtnllib.ThemeContracts.paletteControls;
-import static com.science.gtnllib.ThemeContracts.reloadThemes;
-import static com.science.gtnllib.ThemeContracts.same;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -59,6 +59,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.gtnewhorizon.gtnhlib.config.Config;
+import com.gtnllib.client.hud.HudColor;
+import com.gtnllib.config.GTNLLibConfig;
+import com.gtnllib.gui.layout.LayoutMath;
+import com.gtnllib.gui.layout.Size;
+import com.gtnllib.gui.theme.LivePalette;
+import com.gtnllib.gui.theme.MetalSkin;
+import com.gtnllib.gui.theme.PaletteThemes;
+import com.gtnllib.gui.theme.ThemePalette;
+import com.gtnllib.gui.theme.ThemeStyle;
+import com.gtnllib.gui.widget.LayoutTheme;
+import com.gtnllib.gui.widget.StepSlider;
 import com.science.gtnl.client.railgun.RailgunHudRenderer;
 import com.science.gtnl.common.celestweave.CelestweaveCosmeticOption;
 import com.science.gtnl.common.celestweave.CelestweaveData;
@@ -73,17 +84,6 @@ import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.config.EquipmentSoundConfig;
 import com.science.gtnl.config.EquipmentSoundConfig.Channel;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnllib.client.hud.HudColor;
-import com.science.gtnllib.config.GTNLLibConfig;
-import com.science.gtnllib.gui.layout.LayoutMath;
-import com.science.gtnllib.gui.layout.Size;
-import com.science.gtnllib.gui.theme.LivePalette;
-import com.science.gtnllib.gui.theme.MetalSkin;
-import com.science.gtnllib.gui.theme.PaletteThemes;
-import com.science.gtnllib.gui.theme.ThemePalette;
-import com.science.gtnllib.gui.theme.ThemeStyle;
-import com.science.gtnllib.gui.widget.LayoutTheme;
-import com.science.gtnllib.gui.widget.StepSlider;
 
 import gregtech.api.modularui2.GTGuiThemes;
 
@@ -497,7 +497,7 @@ public class EquipmentResourceContracts {
                 .chars()
                 .allMatch(c -> charset.indexOf(c) >= 0) && StepSlider.compactWidth("×2") == 7,
             "the compact font also draws multipliers and seconds");
-        String sliderSource = read(Paths.get("src/main/java/com/science/gtnllib/gui/widget/StepSlider.java"));
+        String sliderSource = read(Paths.get("src/main/java/com/gtnllib/gui/widget/StepSlider.java"));
         check(
             !sliderSource.contains("fontRenderer") && !sliderSource.contains("compactDigits")
                 && !sliderSource.contains("compactFits"),
@@ -662,12 +662,12 @@ public class EquipmentResourceContracts {
         check(
             LayoutMath.columns(160, gap, 76, 3) == 2 && LayoutMath.columns(240, gap, 76, 3) == 3,
             "short switch labels keep two columns on a narrow panel and take three on the widest one");
-        int armorTop = 84, footer = 87;
+        int narrowTop = 97, wideTop = 72, footer = 93;
         check(
-            armorTop + LayoutMath.fitRows(240 - 8 - armorTop - footer, 16, 3, 11) + footer <= 240
-                && LayoutMath.fitRows(270 - 8 - armorTop - footer, 16, 3, 11) == 80
-                && LayoutMath.fitRows(360 - 8 - armorTop - footer, 16, 3, 11) == 176,
-            "the armor pages shrink to fit the smallest screen and grow on taller ones");
+            narrowTop + LayoutMath.fitRows(240 - 8 - narrowTop - footer, 16, 3, 11) + footer <= 240
+                && LayoutMath.fitRows(270 - 8 - wideTop - footer, 16, 3, 11) == 96
+                && LayoutMath.fitRows(360 - 8 - wideTop - footer, 16, 3, 11) == 176,
+            "the armor pages fit the smallest screen and show six rows at GUI scale 4 on a 1080p screen");
         List<Size> colorRow = new ArrayList<>();
         colorRow.add(Size.fill());
         for (int i = 0; i < 7; i++) colorRow.add(Size.fixed(12));
@@ -704,8 +704,22 @@ public class EquipmentResourceContracts {
             "settings panels and their rows follow the screen width, also after a resize");
         check(
             base.contains("LayoutMath.fitRows(") && armor.contains(".height(this::pageHeight,Unit.Measure.PIXEL)")
-                && railgun.contains("()->SETTINGS_Y+grid.contentHeight()"),
+                && railgun.contains("()->headerBottom()+grid.contentHeight()"),
             "armor pages fit the screen height and the railgun panel grows with its switch rows");
+        check(
+            base.contains("slotRows(moduleSlots,slotRoom())") && base.contains("panel.scheduleResize();")
+                && armor.contains("reserveHeld(holders.size());")
+                && armor.contains(".top(slotsTop())"),
+            "module slots fill the row the panel width leaves, held item slots share it, and the header lays out again when the energy text changes width");
+        check(
+            armor.contains("scrollDirection(ScrollData.of(GuiAxis.Y,false,style.spacingSmall))")
+                && armor.contains(".width(this::listWidth,Unit.Measure.PIXEL)")
+                && base.contains("returnpanelWidth()-style.padding+style.spacingSmall;"),
+            "the page scrollbar is a thin bar right of the content instead of lying on the panel frame");
+        check(
+            base.contains("newDivider().color(client?dividerColor():0)")
+                && base.contains("returnINVENTORY_BOTTOM+INVENTORY_HEIGHT+style.spacingLarge;"),
+            "a divider in a wider gap separates the settings from the player inventory");
         check(
             armor.contains("rows.section(") && armor.contains("newStepSlider()")
                 && armor.contains("()->value.getIntValue()==index")
@@ -765,8 +779,10 @@ public class EquipmentResourceContracts {
             !soundSource.contains("GuiDraw") && !soundSource.contains("disableThemeBackground")
                 && soundSource.contains("new SlideSwitch()")
                 && soundSource.contains("Layout.card(")
-                && soundSource.contains("new CloseButton().corner(pad, style)"),
-            "sound screen draws its panel, cards, switches and close button through the theme");
+                && soundSource.contains("new CloseButton().corner(pad, style)")
+                && soundSource.contains("new Divider().color(colors.accent)")
+                && !soundSource.contains("Rectangle"),
+            "sound screen draws its panel, cards, switches, title divider and close button through the theme");
         for (String file : new String[] { "common/packet/OpenEquipmentGuiPacket.java",
             "common/equipment/EquipmentNet.java" })
             check(

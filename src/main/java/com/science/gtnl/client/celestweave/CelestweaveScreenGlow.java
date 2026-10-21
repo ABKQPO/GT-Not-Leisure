@@ -7,9 +7,9 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import org.lwjgl.opengl.GL11;
 
+import com.gtnllib.utils.ColorMath;
+import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.client.celestweave.CelestweaveClientEvents.HitOrigin;
-import com.science.gtnllib.utils.ColorMath;
-import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;

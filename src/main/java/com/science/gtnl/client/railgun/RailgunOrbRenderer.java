@@ -9,17 +9,17 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
+import com.gtnllib.client.fx.FxEasing;
+import com.gtnllib.client.fx.world.FxArcRenderer.Color;
+import com.gtnllib.client.fx.world.FxArcRenderer.Style;
+import com.gtnllib.client.fx.world.FxCamera;
+import com.gtnllib.client.fx.world.FxRenderHelper;
+import com.gtnllib.client.fx.world.FxRenderHelper.Sprite;
+import com.gtnllib.utils.MathUtils;
+import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.client.railgun.RailgunBolts.Bolt;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnllib.client.fx.FxEasing;
-import com.science.gtnllib.client.fx.world.FxArcRenderer.Color;
-import com.science.gtnllib.client.fx.world.FxArcRenderer.Style;
-import com.science.gtnllib.client.fx.world.FxCamera;
-import com.science.gtnllib.client.fx.world.FxRenderHelper;
-import com.science.gtnllib.client.fx.world.FxRenderHelper.Sprite;
-import com.science.gtnllib.utils.MathUtils;
-import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;

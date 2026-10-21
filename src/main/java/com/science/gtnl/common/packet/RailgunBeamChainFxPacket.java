@@ -4,10 +4,10 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 
+import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.client.railgun.RailgunClientFx;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
 import com.science.gtnl.common.railgun.RailgunNet;
-import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

@@ -3,9 +3,9 @@ package com.science.gtnl.common.equipment;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.config.EquipmentSoundConfig;
 import com.science.gtnl.config.EquipmentSoundConfig.Channel;
-import com.science.gtnllib.utils.MathUtils;
 
 public enum EquipmentSound {
 

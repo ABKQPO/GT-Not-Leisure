@@ -6,7 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import com.science.gtnllib.utils.Vec3d;
+import com.gtnllib.utils.Vec3d;
 
 public class RailgunRaycast {
 

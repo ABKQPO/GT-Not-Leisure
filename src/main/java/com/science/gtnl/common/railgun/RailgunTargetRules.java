@@ -13,7 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.FakePlayer;
 
-import com.science.gtnllib.utils.Vec3d;
+import com.gtnllib.utils.Vec3d;
 
 public class RailgunTargetRules {
 

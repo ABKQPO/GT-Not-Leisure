@@ -22,10 +22,10 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.FoodStats;
 
+import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnllib.utils.Vec3d;
 
 import vazkii.botania.api.internal.IManaBurst;
 import vazkii.botania.api.mana.ManaItemHandler;

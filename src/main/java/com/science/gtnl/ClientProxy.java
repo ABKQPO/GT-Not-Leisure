@@ -15,6 +15,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.gtnewhorizon.gtnhlib.client.model.loading.ModelRegistry;
+import com.gtnllib.client.GTNLLibClient;
+import com.gtnllib.client.fx.world.FxEffects;
 import com.science.gtnl.asm.GTNLEarlyCoreMod;
 import com.science.gtnl.client.GTNLInputHandler;
 import com.science.gtnl.client.GTNLTooltipManager;
@@ -111,8 +113,6 @@ import com.science.gtnl.utils.detrav.DetravScannerGUI;
 import com.science.gtnl.utils.detrav.DetravScannerInputHandler;
 import com.science.gtnl.utils.enums.GuiType;
 import com.science.gtnl.utils.event.SubscribeEventClientUtils;
-import com.science.gtnllib.client.GTNLLibClient;
-import com.science.gtnllib.client.fx.world.FxEffects;
 
 import Forge.NullPointerException;
 import appeng.api.parts.IPart;

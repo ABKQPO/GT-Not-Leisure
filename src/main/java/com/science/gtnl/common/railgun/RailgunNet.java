@@ -5,9 +5,9 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 
+import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.common.equipment.EquipmentNet;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
-import com.science.gtnllib.utils.Vec3d;
 
 import io.netty.buffer.ByteBuf;
 

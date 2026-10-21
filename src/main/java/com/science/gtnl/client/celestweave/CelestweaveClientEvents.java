@@ -13,6 +13,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.gtnllib.client.fx.world.FxArcRenderer;
+import com.gtnllib.client.fx.world.FxShockwaveRenderer;
+import com.gtnllib.client.fx.world.FxVisibility;
+import com.gtnllib.utils.ColorMath;
+import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.common.celestweave.CelestweaveCosmetic;
 import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
@@ -20,11 +25,6 @@ import com.science.gtnl.common.celestweave.CelestweaveReach;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnllib.client.fx.world.FxArcRenderer;
-import com.science.gtnllib.client.fx.world.FxShockwaveRenderer;
-import com.science.gtnllib.client.fx.world.FxVisibility;
-import com.science.gtnllib.utils.ColorMath;
-import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
