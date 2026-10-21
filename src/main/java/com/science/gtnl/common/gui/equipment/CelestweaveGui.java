@@ -578,7 +578,7 @@ public class CelestweaveGui extends EquipmentGui {
 
     private class ModuleHandler extends ModuleSlots<CelestweaveModule> {
 
-        private final BareView view = new BareView(CelestweaveData.moduleSlots(piece), CelestweaveBackpack::strip);
+        private final BareView view = new BareView(getSlots(), CelestweaveBackpack::strip);
 
         ModuleHandler() {
             super(CelestweaveData.moduleSlots(piece), CelestweaveData.MODULE_STORAGE, CelestweaveModule::of);

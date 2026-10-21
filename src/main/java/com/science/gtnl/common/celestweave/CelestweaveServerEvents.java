@@ -15,6 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
@@ -157,6 +158,11 @@ public class CelestweaveServerEvents {
                 if (stack != null) CelestweaveEnergy.refillFromWireless(stack, serverPlayer);
             }
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void expire(ItemExpireEvent event) {
+        CelestweaveBackpack.discard(event.entityItem.getEntityItem());
     }
 
     @SubscribeEvent

@@ -14,8 +14,10 @@ public class OwnerResearchCache {
 
     private static final String RESEARCH_KEY = "Research";
     private static final String RESEARCH_NAME_KEY = "ResearchName";
+    private static final String RESEARCH_OWNER_KEY = "ResearchOwner";
 
     private final Set<String> completedResearch = new HashSet<>();
+    private String owner = "";
 
     public boolean isComplete(String ownerName, String research) {
         if (research == null) return false;
@@ -28,6 +30,8 @@ public class OwnerResearchCache {
 
     public void refresh(String ownerName) {
         if (ownerName == null || ownerName.isEmpty()) return;
+        if (!owner.isEmpty() && !owner.equals(ownerName)) completedResearch.clear();
+        owner = ownerName;
 
         ArrayList<String> research = ResearchManager.getResearchForPlayer(ownerName);
         if (research == null || research.isEmpty() || research.size() == completedResearch.size()) return;
@@ -44,6 +48,7 @@ public class OwnerResearchCache {
             list.appendTag(tag);
         }
         nbt.setTag(RESEARCH_KEY, list);
+        nbt.setString(RESEARCH_OWNER_KEY, owner);
     }
 
     public void readFromNBT(NBTTagCompound nbt) {
@@ -53,5 +58,6 @@ public class OwnerResearchCache {
             NBTTagCompound tag = list.getCompoundTagAt(i);
             if (tag.hasKey(RESEARCH_NAME_KEY)) completedResearch.add(tag.getString(RESEARCH_NAME_KEY));
         }
+        owner = nbt.getString(RESEARCH_OWNER_KEY);
     }
 }

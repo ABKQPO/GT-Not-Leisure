@@ -64,7 +64,7 @@ public class RailgunData {
     }
 
     public static void writeModuleStacks(ItemStack stack, ItemStack[] slots) {
-        rootForWrite(stack).setTag(MODULES, EquipmentModules.write(slots, MODULE_SLOTS));
+        rootForWrite(stack).setTag(MODULES, EquipmentModules.write(slots));
     }
 
     public static Modules modules(ItemStack stack) {

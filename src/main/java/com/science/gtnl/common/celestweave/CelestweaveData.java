@@ -119,7 +119,7 @@ public class CelestweaveData {
     }
 
     public static void writeModuleStacks(ItemStack stack, ItemStack[] stacks) {
-        rootForWrite(stack).setTag(MODULES, EquipmentModules.write(stacks, moduleSlots(stack)));
+        rootForWrite(stack).setTag(MODULES, EquipmentModules.write(stacks));
     }
 
     public static Set<CelestweaveModule> installed(ItemStack stack) {

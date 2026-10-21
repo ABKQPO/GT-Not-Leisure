@@ -332,7 +332,7 @@ public abstract class EquipmentGui {
         protected int version;
 
         protected ModuleSlots(int size, EquipmentModules.Storage storage, Function<ItemStack, T> types) {
-            super(size);
+            super(Math.max(size, storage.moduleStacks(bound()).length));
             this.storage = storage;
             this.types = types;
         }
@@ -357,7 +357,7 @@ public abstract class EquipmentGui {
             if (current.equals(synced)) return;
             synced = (NBTTagList) current.copy();
             ItemStack[] loaded = load(host);
-            for (int i = 0; i < Math.min(loaded.length, getSlots()); i++) stacks.set(i, loaded[i]);
+            for (int i = 0; i < getSlots(); i++) stacks.set(i, i < loaded.length ? loaded[i] : null);
             version++;
         }
 

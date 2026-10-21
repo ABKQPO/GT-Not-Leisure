@@ -757,12 +757,42 @@ public class CelestweaveArmorContracts {
             "ten module slots fold into two even rows when the row is narrow and stay on one row on the widest panel");
         headerLayout();
         NBTTagList wide = EquipmentModules.write(
-            new ItemStack[] { null, null, null, null, null, null, null, railgunModule.stack(RailgunModule.RANGE) },
-            8);
+            new ItemStack[] { null, null, null, null, null, null, null, railgunModule.stack(RailgunModule.RANGE) });
         ItemStack[] folded = EquipmentModules.read(wide, RailgunData.MODULE_SLOTS);
         check(
             folded.length == RailgunData.MODULE_SLOTS && RailgunModule.of(folded[0]) == RailgunModule.RANGE,
             "a module saved in a slot that no longer exists moves into the first free slot instead of vanishing");
+        ItemStack[] crowded = new ItemStack[RailgunData.MODULE_SLOTS + 1];
+        for (int i = 0; i < RailgunData.MODULE_SLOTS; i++) crowded[i] = railgunModule.stack(RailgunModule.COMPUTE);
+        crowded[RailgunData.MODULE_SLOTS] = railgunModule.stack(RailgunModule.EHV_BEAM);
+        ItemStack[] kept = EquipmentModules.read(EquipmentModules.write(crowded), RailgunData.MODULE_SLOTS);
+        check(
+            kept.length == RailgunData.MODULE_SLOTS + 1
+                && RailgunModule.of(kept[RailgunData.MODULE_SLOTS]) == RailgunModule.EHV_BEAM,
+            "a module with no free slot left stays as an extra entry instead of being dropped");
+        check(
+            EquipmentModules.read(EquipmentModules.write(kept), RailgunData.MODULE_SLOTS).length
+                == RailgunData.MODULE_SLOTS + 1,
+            "writing modules back keeps the extra entry");
+        NBTTagList clashing = EquipmentModules.write(new ItemStack[] { railgunModule.stack(RailgunModule.RANGE) });
+        clashing.appendTag(
+            EquipmentModules.write(new ItemStack[] { railgunModule.stack(RailgunModule.EHV_BEAM) })
+                .getCompoundTagAt(0));
+        ItemStack[] unclashed = EquipmentModules.read(clashing, RailgunData.MODULE_SLOTS);
+        check(
+            RailgunModule.of(unclashed[0]) == RailgunModule.RANGE
+                && RailgunModule.of(unclashed[1]) == RailgunModule.EHV_BEAM,
+            "two modules saved in the same slot both survive, the second moves to a free slot");
+        ItemStack crowdedHost = plainStack();
+        RailgunData.writeModuleStacks(crowdedHost, crowded);
+        RailgunGui crowdedGui = allocate(RailgunGui.class);
+        bindGui(crowdedGui, crowdedHost);
+        ItemStackHandler crowdedSlots = (ItemStackHandler) slotsOf
+            .newInstance(crowdedGui, RailgunData.MODULE_SLOTS, RailgunData.MODULE_STORAGE, railgunTypes);
+        check(
+            crowdedSlots.getSlots() == RailgunData.MODULE_SLOTS + 1
+                && RailgunModule.of(crowdedSlots.getStackInSlot(RailgunData.MODULE_SLOTS)) == RailgunModule.EHV_BEAM,
+            "the settings screen shows an extra slot for a module that has no slot left, so it can be taken out");
         String gui = compact(read(SOURCES.resolve("common/gui/equipment/EquipmentGui.java")));
         check(
             gui.contains("newModuleSlot(handler,i)")
@@ -807,8 +837,7 @@ public class CelestweaveArmorContracts {
                 .contains(CelestweaveModule.SHIELD) && CelestweaveData.energyTier(chest) == 3,
             "armor slots save to the armor");
 
-        NBTTagList written = EquipmentModules
-            .write(new ItemStack[] { null, compute, null, beam }, RailgunData.MODULE_SLOTS);
+        NBTTagList written = EquipmentModules.write(new ItemStack[] { null, compute, null, beam });
         check(
             written.tagCount() == 2 && written.getCompoundTagAt(0)
                 .getByte("Slot") == 1

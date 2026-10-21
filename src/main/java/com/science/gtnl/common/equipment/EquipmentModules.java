@@ -1,6 +1,7 @@
 package com.science.gtnl.common.equipment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -26,19 +27,25 @@ public class EquipmentModules {
             if (!entry.hasKey(SLOT)) continue;
             int slot = entry.getByte(SLOT) & 255;
             ItemStack stack = ItemStack.loadItemStackFromNBT((NBTTagCompound) entry.copy());
-            if (slot < slots) stacks[slot] = stack;
+            if (slot < slots && stacks[slot] == null) stacks[slot] = stack;
             else if (stack != null) overflow.add(stack);
         }
-        for (ItemStack extra : overflow) for (int slot = 0; slot < slots; slot++) if (stacks[slot] == null) {
-            stacks[slot] = extra;
-            break;
+        List<ItemStack> unplaced = new ArrayList<>();
+        for (ItemStack extra : overflow) {
+            int free = Arrays.asList(stacks)
+                .indexOf(null);
+            if (free >= 0) stacks[free] = extra;
+            else unplaced.add(extra);
         }
-        return stacks;
+        if (unplaced.isEmpty()) return stacks;
+        ItemStack[] grown = Arrays.copyOf(stacks, slots + unplaced.size());
+        for (int i = 0; i < unplaced.size(); i++) grown[slots + i] = unplaced.get(i);
+        return grown;
     }
 
-    public static NBTTagList write(ItemStack[] stacks, int slots) {
+    public static NBTTagList write(ItemStack[] stacks) {
         NBTTagList list = new NBTTagList();
-        for (int slot = 0; slot < Math.min(slots, stacks.length); slot++) {
+        for (int slot = 0; slot < stacks.length; slot++) {
             if (stacks[slot] == null) continue;
             NBTTagCompound entry = stacks[slot].writeToNBT(new NBTTagCompound());
             entry.setByte(SLOT, (byte) slot);

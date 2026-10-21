@@ -81,6 +81,12 @@ public class CelestweaveBackpack {
         return stored;
     }
 
+    public static void discard(ItemStack armor) {
+        if (!isBackpackArmor(armor)) return;
+        CelestweaveBackpackData data = CelestweaveBackpackData.get();
+        if (data != null) persist(CelestweaveData.moduleStacks(armor), new ItemStack[0], data);
+    }
+
     private static ItemStack renew(ItemStack module) {
         ItemStack chest = CelestweaveData.heldOf(module);
         chest.getTagCompound()
