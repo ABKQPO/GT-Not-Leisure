@@ -31,6 +31,7 @@ import com.science.gtnl.common.part.PartSuperInterface;
 import com.science.gtnl.common.part.PartUniversalExportBus;
 import com.science.gtnl.common.part.PartUniversalImportBus;
 import com.science.gtnl.common.part.PartUniversalStorageBus;
+import com.science.gtnl.common.part.universal.UniversalBusPrimaryGui;
 import com.science.gtnl.common.recipe.gtnl.ExtremeExtremeEntityCrusherRecipes;
 import com.science.gtnl.common.recipe.thaumcraft.TCResearches;
 import com.science.gtnl.common.wireless.WirelessAutoConnect;
@@ -69,8 +70,11 @@ import appeng.api.config.Upgrades;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.container.ContainerOpenContext;
+import appeng.container.implementations.ContainerOreFilter;
+import appeng.helpers.IOreFilterable;
 import appeng.helpers.IPriorityHost;
 import appeng.parts.automation.PartSharedItemBus;
+import appeng.parts.automation.PartUpgradeable;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -179,6 +183,7 @@ public class CommonProxy implements IGuiHandler {
         for (ItemStack bus : new ItemStack[] { GTNLItemList.PartUniversalImportBus.get(1),
             GTNLItemList.PartUniversalExportBus.get(1) }) {
             Upgrades.FUZZY.registerItem(bus, 1);
+            Upgrades.ORE_FILTER.registerItem(bus, 1);
             Upgrades.REDSTONE.registerItem(bus, 1);
             Upgrades.CAPACITY.registerItem(bus, 2);
             Upgrades.SPEED.registerItem(bus, 4);
@@ -440,6 +445,38 @@ public class CommonProxy implements IGuiHandler {
                     ctx.setZ(z);
                     ctx.setSide(side);
                     container.setOpenContext(ctx);
+                    yield container;
+                }
+                yield null;
+            }
+            case UniversalOreFilterGUI -> {
+                var t = world.getTileEntity(x, y, z);
+                if (t instanceof IPartHost host && host.getPart(side) instanceof IOreFilterable filterable
+                    && host.getPart(side) instanceof PartUpgradeable part
+                    && part.getInstalledUpgrades(Upgrades.ORE_FILTER) > 0) {
+                    final GuiType returnGui;
+                    final ItemStack icon;
+                    if (part instanceof PartUniversalStorageBus) {
+                        returnGui = GuiType.UniversalStorageBusGUI;
+                        icon = GTNLItemList.PartUniversalStorageBus.get(1);
+                    } else if (part instanceof PartUniversalImportBus) {
+                        returnGui = GuiType.UniversalBusGUI;
+                        icon = GTNLItemList.PartUniversalImportBus.get(1);
+                    } else if (part instanceof PartUniversalExportBus) {
+                        returnGui = GuiType.UniversalBusGUI;
+                        icon = GTNLItemList.PartUniversalExportBus.get(1);
+                    } else {
+                        yield null;
+                    }
+                    var container = new ContainerOreFilter(player.inventory, filterable);
+                    ContainerOpenContext ctx = new ContainerOpenContext(part);
+                    ctx.setWorld(world);
+                    ctx.setX(x);
+                    ctx.setY(y);
+                    ctx.setZ(z);
+                    ctx.setSide(side);
+                    container.setOpenContext(ctx);
+                    container.setPrimaryGui(new UniversalBusPrimaryGui(returnGui, icon, t, side));
                     yield container;
                 }
                 yield null;

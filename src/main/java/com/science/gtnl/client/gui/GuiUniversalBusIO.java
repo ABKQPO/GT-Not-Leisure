@@ -5,12 +5,16 @@ import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.input.Mouse;
 
+import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.packet.SwitchToCustomGuiPacket;
 import com.science.gtnl.common.part.PartUniversalExportBus;
 import com.science.gtnl.container.ContainerUniversalBusIO;
+import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.api.config.SchedulingMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.implementations.GuiUpgradeable;
 import appeng.client.gui.slots.VirtualMEPhantomSlot;
 import appeng.client.gui.widgets.GuiImgButton;
@@ -71,6 +75,13 @@ public class GuiUniversalBusIO extends GuiUpgradeable {
 
     @Override
     public void actionPerformed(GuiButton btn) {
+        if (btn == this.oreFilter) {
+            // AE2 could not return from its ore filter GUI to this one, so open it through the GTNL GUI handler
+            AEBaseGui.setSwitchingGuis(true);
+            ScienceNotLeisure.network
+                .sendToServer(new SwitchToCustomGuiPacket(GuiType.UniversalOreFilterGUI, this.bus.getSide()));
+            return;
+        }
         super.actionPerformed(btn);
         if (btn == this.schedulingMode) {
             NetworkHandler.instance

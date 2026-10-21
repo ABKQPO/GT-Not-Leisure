@@ -118,6 +118,7 @@ import appeng.client.gui.implementations.GuiOreFilter;
 import appeng.client.render.ItemRenderer;
 import appeng.client.render.TESRWrapper;
 import appeng.container.AEBaseContainer;
+import appeng.helpers.IOreFilterable;
 import appeng.helpers.IPriorityHost;
 import appeng.parts.automation.PartSharedItemBus;
 import codechicken.nei.guihook.GuiContainerManager;
@@ -417,6 +418,15 @@ public class ClientProxy extends CommonProxy {
                 if (t instanceof IPartHost host && host.getPart(side) instanceof PartSharedItemBus<?>bus
                     && (bus instanceof PartUniversalImportBus || bus instanceof PartUniversalExportBus)) {
                     yield new GuiUniversalBusIO(player.inventory, bus);
+                }
+                yield null;
+            }
+            case UniversalOreFilterGUI -> {
+                var t = world.getTileEntity(x, y, z);
+                if (t instanceof IPartHost host && host.getPart(side) instanceof IOreFilterable filterable
+                    && (filterable instanceof PartUniversalStorageBus || filterable instanceof PartUniversalImportBus
+                        || filterable instanceof PartUniversalExportBus)) {
+                    yield new GuiOreFilter(player.inventory, filterable);
                 }
                 yield null;
             }

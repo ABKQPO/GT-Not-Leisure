@@ -2,9 +2,11 @@ package com.science.gtnl.common.part;
 
 import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -36,7 +38,9 @@ import appeng.parts.automation.PartBaseImportBus;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
+import appeng.util.inv.ItemSlot;
 import appeng.util.item.AEItemStack;
+import appeng.util.prioitylist.OreFilteredList;
 
 public class PartUniversalImportBus extends PartBaseImportBus<IAEItemStack> {
 
@@ -76,16 +80,29 @@ public class PartUniversalImportBus extends PartBaseImportBus<IAEItemStack> {
             final long operations = UniversalBusHelper.calculateOperations(this);
             final Map<IAEStackType<?>, List<IAEStack<?>>> configured = UniversalBusHelper
                 .groupConfig(this.getAEInventoryByName(StorageName.CONFIG), this.availableSlots());
+            // With an ore filter card the items are filtered by the ore expression, item config slots are ignored.
+            final Predicate<IAEItemStack> orePredicate = this.getOrePredicate();
+            if (this.getInstalledUpgrades(Upgrades.ORE_FILTER) > 0) configured.remove(ITEM_STACK_TYPE);
+            final boolean anyConfigured = !configured.isEmpty() || orePredicate != null;
 
             for (IAEStackType<?> type : UniversalBusHelper.getTypes()) {
                 final List<IAEStack<?>> filters = configured.get(type);
-                if (!configured.isEmpty() && filters == null) continue;
+                final boolean itemsByOre = type == ITEM_STACK_TYPE && orePredicate != null;
+                if (anyConfigured && filters == null && !itemsByOre) continue;
 
                 final IMEMonitor<?> network = storage.getMEMonitor(type);
                 if (network == null) continue;
                 final long budget = operations * type.getAmountPerUnit();
 
-                if (type == ITEM_STACK_TYPE) {
+                if (itemsByOre) {
+                    this.importItemsByOre(
+                        target,
+                        targetSide,
+                        orePredicate,
+                        (IMEMonitor<IAEItemStack>) network,
+                        energy,
+                        budget);
+                } else if (type == ITEM_STACK_TYPE) {
                     this.importItems(target, targetSide, filters, (IMEMonitor<IAEItemStack>) network, energy, budget);
                 } else {
                     this.importGeneric(target, targetSide, type, filters, network, energy, budget);
@@ -105,11 +122,7 @@ public class PartUniversalImportBus extends PartBaseImportBus<IAEItemStack> {
         final boolean fuzzy = this.getInstalledUpgrades(Upgrades.FUZZY) > 0;
         final FuzzyMode fuzzyMode = (FuzzyMode) this.getConfigManager()
             .getSetting(Settings.FUZZY_MODE);
-        final IInventoryDestination destination = stack -> {
-            if (stack == null || stack.getItem() == null) return false;
-            final IAEItemStack left = network.injectItems(AEItemStack.create(stack), Actionable.SIMULATE, this.mySrc);
-            return left == null || left.getStackSize() != stack.stackSize;
-        };
+        final IInventoryDestination destination = this.createDestination(network);
 
         final List<IAEStack<?>> targets = filters == null ? Collections.singletonList(null) : filters;
         for (IAEStack<?> filter : targets) {
@@ -123,6 +136,64 @@ public class PartUniversalImportBus extends PartBaseImportBus<IAEItemStack> {
             }
             if (budget <= 0) return;
         }
+    }
+
+    private void importItemsByOre(TileEntity target, ForgeDirection targetSide, Predicate<IAEItemStack> orePredicate,
+        IMEMonitor<IAEItemStack> network, IEnergySource energy, long budget) {
+        final InventoryAdaptor adaptor = InventoryAdaptor
+            .getAdaptor(target, targetSide, InventoryAdaptor.ALLOW_ITEMS | InventoryAdaptor.FOR_EXTRACTS);
+        if (adaptor == null) return;
+
+        // Collect first, removing items while iterating the adaptor is not safe
+        final List<ItemStack> matches = new ArrayList<>();
+        for (ItemSlot slot : adaptor) {
+            if (!slot.isExtractable() || slot.getItemStack() == null) continue;
+            if (orePredicate.test(slot.getAEItemStack())) matches.add(
+                slot.getItemStack()
+                    .copy());
+        }
+
+        final IInventoryDestination destination = this.createDestination(network);
+        for (ItemStack filter : matches) {
+            while (budget > 0) {
+                final long moved = this.importItemBatch(
+                    adaptor,
+                    filter,
+                    false,
+                    FuzzyMode.IGNORE_ALL,
+                    destination,
+                    network,
+                    energy,
+                    budget);
+                if (moved <= 0) break;
+                budget -= moved;
+                this.worked = true;
+            }
+            if (budget <= 0) return;
+        }
+    }
+
+    private IInventoryDestination createDestination(IMEMonitor<IAEItemStack> network) {
+        return stack -> {
+            if (stack == null || stack.getItem() == null) return false;
+            final IAEItemStack left = network.injectItems(AEItemStack.create(stack), Actionable.SIMULATE, this.mySrc);
+            return left == null || left.getStackSize() != stack.stackSize;
+        };
+    }
+
+    /**
+     * Same semantics as the AE2 import bus: an empty expression means no ore filtering.
+     */
+    private Predicate<IAEItemStack> getOrePredicate() {
+        if (this.getInstalledUpgrades(Upgrades.ORE_FILTER) == 0 || this.oreFilterString.isEmpty()) return null;
+        if (this.filterPredicate == null) this.filterPredicate = OreFilteredList.makeFilter(this.oreFilterString);
+        return this.filterPredicate;
+    }
+
+    @Override
+    public void setFilter(String filter) {
+        super.setFilter(filter == null ? "" : filter);
+        this.saveChanges();
     }
 
     private long importItemBatch(InventoryAdaptor adaptor, ItemStack filter, boolean fuzzy, FuzzyMode fuzzyMode,

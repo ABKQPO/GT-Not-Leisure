@@ -2,10 +2,13 @@ package com.science.gtnl.common.part;
 
 import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -39,6 +42,7 @@ import appeng.parts.automation.PartBaseExportBus;
 import appeng.tile.inventory.IAEStackInventory;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import appeng.util.prioitylist.OreFilteredList;
 
 public class PartUniversalExportBus extends PartBaseExportBus<IAEItemStack> {
 
@@ -100,7 +104,10 @@ public class PartUniversalExportBus extends PartBaseExportBus<IAEItemStack> {
 
             final Map<IAEStackType<?>, Long> budgets = new HashMap<>();
             final Map<IAEStackType<?>, IMEInventory> externals = new HashMap<>();
-            InventoryAdaptor itemAdaptor = null;
+            final InventoryAdaptor itemAdaptor = InventoryAdaptor
+                .getAdaptor(target, targetSide, InventoryAdaptor.ALLOW_ITEMS | InventoryAdaptor.FOR_INSERTS);
+            // With an ore filter card the items are exported by the ore expression, item config slots are ignored.
+            final boolean oreFilter = this.getInstalledUpgrades(Upgrades.ORE_FILTER) > 0;
             int lastWorkedSlot = -1;
 
             for (int x = 0; x < slots; x++) {
@@ -109,6 +116,7 @@ public class PartUniversalExportBus extends PartBaseExportBus<IAEItemStack> {
                 if (stack == null) continue;
 
                 final IAEStackType<?> type = stack.getStackType();
+                if (oreFilter && type == ITEM_STACK_TYPE) continue;
                 final long budget = budgets.computeIfAbsent(type, t -> operations * t.getAmountPerUnit());
                 if (budget <= 0) continue;
 
@@ -117,13 +125,7 @@ public class PartUniversalExportBus extends PartBaseExportBus<IAEItemStack> {
 
                 final long moved;
                 if (type == ITEM_STACK_TYPE) {
-                    if (itemAdaptor == null) {
-                        itemAdaptor = InventoryAdaptor.getAdaptor(
-                            target,
-                            targetSide,
-                            InventoryAdaptor.ALLOW_ITEMS | InventoryAdaptor.FOR_INSERTS);
-                        if (itemAdaptor == null) continue;
-                    }
+                    if (itemAdaptor == null) continue;
                     moved = this.exportItems(
                         itemAdaptor,
                         (IAEItemStack) stack,
@@ -131,9 +133,12 @@ public class PartUniversalExportBus extends PartBaseExportBus<IAEItemStack> {
                         energy,
                         budget);
                 } else {
-                    final IMEInventory external = externals.computeIfAbsent(
-                        type,
-                        t -> UniversalBusHelper.getTransferInventory(target, targetSide, t, this.mySrc));
+                    if (!externals.containsKey(type)) {
+                        // also cache null, the target simply does not hold this type
+                        externals
+                            .put(type, UniversalBusHelper.getTransferInventory(target, targetSide, type, this.mySrc));
+                    }
+                    final IMEInventory external = externals.get(type);
                     if (external == null) continue;
                     moved = UniversalBusHelper.exportFrom(energy, network, external, stack, budget, this.mySrc);
                 }
@@ -142,6 +147,19 @@ public class PartUniversalExportBus extends PartBaseExportBus<IAEItemStack> {
                     budgets.put(type, budget - moved);
                     worked = true;
                     lastWorkedSlot = x;
+                }
+            }
+
+            final Predicate<IAEItemStack> orePredicate = this.getOrePredicate();
+            if (orePredicate != null && itemAdaptor != null) {
+                final IMEMonitor<IAEItemStack> network = storage.getItemInventory();
+                if (network != null && this.exportItemsByOre(
+                    itemAdaptor,
+                    orePredicate,
+                    network,
+                    energy,
+                    operations * ITEM_STACK_TYPE.getAmountPerUnit()) > 0) {
+                    worked = true;
                 }
             }
 
@@ -157,11 +175,13 @@ public class PartUniversalExportBus extends PartBaseExportBus<IAEItemStack> {
         IEnergySource energy, long budget) {
         final Collection<IAEItemStack> sources;
         if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
-            sources = network.getStorageList()
-                .findFuzzy(
-                    config,
-                    (FuzzyMode) this.getConfigManager()
-                        .getSetting(Settings.FUZZY_MODE));
+            // Copy, the storage list changes while extracting
+            sources = new ArrayList<>(
+                network.getStorageList()
+                    .findFuzzy(
+                        config,
+                        (FuzzyMode) this.getConfigManager()
+                            .getSetting(Settings.FUZZY_MODE)));
         } else {
             sources = Collections.singletonList(config);
         }
@@ -170,29 +190,66 @@ public class PartUniversalExportBus extends PartBaseExportBus<IAEItemStack> {
         for (IAEItemStack source : sources) {
             final long remaining = budget - moved;
             if (remaining <= 0) break;
-
-            final IAEItemStack toInsert = source.copy();
-            toInsert.setStackSize(remaining);
-            final IAEStack<?> notFit = adaptor.simulateAddStack(toInsert, InsertionMode.DEFAULT);
-            final long canFit = remaining - (notFit == null ? 0 : notFit.getStackSize());
-            if (canFit <= 0) continue;
-
-            final IAEItemStack request = source.copy();
-            request.setStackSize(canFit);
-            final IAEItemStack extracted = Platform.poweredExtraction(energy, network, request, this.mySrc);
-            if (extracted == null || extracted.getStackSize() <= 0) continue;
-
-            final IAEStack<?> failed = adaptor.addStack(extracted, InsertionMode.DEFAULT);
-            long placed = extracted.getStackSize();
-            if (failed != null && failed.getStackSize() > 0) {
-                placed -= failed.getStackSize();
-                final IAEItemStack back = extracted.copy();
-                back.setStackSize(failed.getStackSize());
-                network.injectItems(back, Actionable.MODULATE, this.mySrc);
-            }
-            moved += placed;
+            moved += this.pushItem(adaptor, source, network, energy, remaining);
         }
         return moved;
+    }
+
+    private long exportItemsByOre(InventoryAdaptor adaptor, Predicate<IAEItemStack> orePredicate,
+        IMEMonitor<IAEItemStack> network, IEnergySource energy, long budget) {
+        // Collect first, the storage list changes while extracting
+        final List<IAEItemStack> matches = new ArrayList<>();
+        for (IAEItemStack stack : network.getStorageList()) {
+            if (stack != null && stack.getStackSize() > 0 && orePredicate.test(stack)) matches.add(stack.copy());
+        }
+
+        long moved = 0;
+        for (IAEItemStack source : matches) {
+            final long remaining = budget - moved;
+            if (remaining <= 0) break;
+            moved += this.pushItem(adaptor, source, network, energy, remaining);
+        }
+        return moved;
+    }
+
+    /**
+     * Same semantics as the AE2 export bus: an empty expression means no ore filtering.
+     */
+    private Predicate<IAEItemStack> getOrePredicate() {
+        if (this.getInstalledUpgrades(Upgrades.ORE_FILTER) == 0 || this.oreFilterString.isEmpty()) return null;
+        if (this.filterPredicate == null) this.filterPredicate = OreFilteredList.makeFilter(this.oreFilterString);
+        return this.filterPredicate;
+    }
+
+    @Override
+    public void setFilter(String filter) {
+        super.setFilter(filter == null ? "" : filter);
+        this.saveChanges();
+    }
+
+    /**
+     * Pushes up to {@code remaining} of {@code source} into the target, returning what was placed.
+     */
+    private long pushItem(InventoryAdaptor adaptor, IAEItemStack source, IMEMonitor<IAEItemStack> network,
+        IEnergySource energy, long remaining) {
+        final IAEItemStack toInsert = source.copy();
+        toInsert.setStackSize(remaining);
+        final IAEStack<?> notFit = adaptor.simulateAddStack(toInsert, InsertionMode.DEFAULT);
+        final long canFit = remaining - (notFit == null ? 0 : notFit.getStackSize());
+        if (canFit <= 0) return 0;
+
+        final IAEItemStack request = source.copy();
+        request.setStackSize(canFit);
+        final IAEItemStack extracted = Platform.poweredExtraction(energy, network, request, this.mySrc);
+        if (extracted == null || extracted.getStackSize() <= 0) return 0;
+
+        final IAEStack<?> failed = adaptor.addStack(extracted, InsertionMode.DEFAULT);
+        if (failed == null || failed.getStackSize() <= 0) return extracted.getStackSize();
+
+        final IAEItemStack back = extracted.copy();
+        back.setStackSize(failed.getStackSize());
+        network.injectItems(back, Actionable.MODULATE, this.mySrc);
+        return extracted.getStackSize() - failed.getStackSize();
     }
 
     private int getStartingSlot(final SchedulingMode schedulingMode, final int x, final int slots) {

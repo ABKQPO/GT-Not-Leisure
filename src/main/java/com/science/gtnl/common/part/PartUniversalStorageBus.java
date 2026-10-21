@@ -453,6 +453,11 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
 
             final Map<IAEStackType<?>, List<IAEStack<?>>> configured = UniversalBusHelper
                 .groupConfig(this.config, this.getActiveConfigSlots());
+            // With an ore filter card the items are filtered by the ore expression, item config slots are ignored.
+            final OreFilteredList oreList = oreFilter ? new OreFilteredList(this.oreFilterString) : null;
+            final boolean itemsByOre = oreList != null && !oreList.isEmpty();
+            if (oreFilter) configured.remove(ITEM_STACK_TYPE);
+            final boolean anyConfigured = !configured.isEmpty() || itemsByOre;
 
             for (IAEStackType<?> type : UniversalBusHelper.getTypes()) {
                 final IMEInventory inv = UniversalBusHelper.getStorageInventory(target, targetSide, type, this.source);
@@ -460,14 +465,15 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
 
                 if (inv instanceof IStorageBusMonitor<?>m) {
                     m.setMode(storageFilter);
-                    m.setActionSource(new MachineSource(this));
+                    m.setActionSource(this.source);
                 }
                 if (inv instanceof MEMonitorPassThrough<?>h) {
                     h.setMode(storageFilter);
                 }
 
                 final List<IAEStack<?>> filters = configured.get(type);
-                final boolean exposed = inverted || configured.isEmpty() || filters != null;
+                final boolean hasFilter = type == ITEM_STACK_TYPE && oreList != null ? itemsByOre : filters != null;
+                final boolean exposed = inverted || !anyConfigured || hasFilter;
 
                 final MEInventoryHandler handler = new StorageBusInventoryHandler(inv, type, this::getReshuffleAccess);
                 handler.setBaseAccess(access);
@@ -477,8 +483,8 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
                 if (this.getInstalledUpgrades(Upgrades.STICKY) > 0) handler.setSticky(true);
 
                 final IPartitionList partitionList;
-                if (type == ITEM_STACK_TYPE && oreFilter) {
-                    partitionList = new OreFilteredList(this.oreFilterString);
+                if (type == ITEM_STACK_TYPE && oreList != null) {
+                    partitionList = oreList;
                 } else {
                     final IItemList priorityList = type.createList();
                     if (filters != null) {
@@ -677,7 +683,10 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
     public List<IAEStack<?>> getTargetContents() {
         this.refreshChannels();
         final List<IAEStack<?>> result = new ArrayList<>();
+        final boolean oreFilter = this.getInstalledUpgrades(Upgrades.ORE_FILTER) > 0;
         for (TypeChannel channel : this.channels.values()) {
+            // Item config slots are ignored with an ore filter card
+            if (oreFilter && channel.type == ITEM_STACK_TYPE) continue;
             if (channel.monitor != null) channel.monitor.onTick();
             result.addAll(UniversalBusHelper.listAvailable(channel.inventory, channel.type));
         }

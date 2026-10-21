@@ -35,8 +35,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 public class ContainerUniversalStorageBus extends ContainerUpgradeable implements IVirtualSlotHolder {
 
-    /** Pending partition pages per player, so pressing the button again shows the next page. */
-    private static final Map<EntityPlayer, Iterator<IAEStack<?>>> PARTITION_ITERATORS = new WeakHashMap<>();
+    /** Pending partition pages per player, so pressing the button again shows the next page of the same bus. */
+    private static final Map<EntityPlayer, PartitionState> PARTITION_STATES = new WeakHashMap<>();
 
     private final PartUniversalStorageBus storageBus;
     private final IAEStack<?>[] configClientSlot = new IAEStack[PartUniversalStorageBus.CONFIG_SIZE];
@@ -60,8 +60,8 @@ public class ContainerUniversalStorageBus extends ContainerUpgradeable implement
     public ContainerUniversalStorageBus(InventoryPlayer ip, PartUniversalStorageBus te) {
         super(ip, te);
         this.storageBus = te;
-        this.partitionMode = PARTITION_ITERATORS.containsKey(ip.player) ? ActionItems.NEXT_PARTITION
-            : ActionItems.WRENCH;
+        final PartitionState state = PARTITION_STATES.get(ip.player);
+        this.partitionMode = state != null && state.bus == te ? ActionItems.NEXT_PARTITION : ActionItems.WRENCH;
 
         SyncRegistrar sync = this.syncRegistrar();
         this.rwModeSync = sync.configEnum(
@@ -170,7 +170,8 @@ public class ContainerUniversalStorageBus extends ContainerUpgradeable implement
             return;
         }
 
-        Iterator<IAEStack<?>> iterator = PARTITION_ITERATORS.get(player);
+        final PartitionState state = PARTITION_STATES.get(player);
+        Iterator<IAEStack<?>> iterator = state != null && state.bus == this.storageBus ? state.iterator : null;
         if (iterator == null) {
             final List<IAEStack<?>> contents = this.storageBus.getTargetContents();
             if (contents.isEmpty()) {
@@ -178,7 +179,7 @@ public class ContainerUniversalStorageBus extends ContainerUpgradeable implement
                 return;
             }
             iterator = contents.iterator();
-            PARTITION_ITERATORS.put(player, iterator);
+            PARTITION_STATES.put(player, new PartitionState(this.storageBus, iterator));
             this.partitionMode = ActionItems.NEXT_PARTITION;
         }
 
@@ -201,7 +202,7 @@ public class ContainerUniversalStorageBus extends ContainerUpgradeable implement
     }
 
     private void clearPartitionIterator(EntityPlayer player) {
-        PARTITION_ITERATORS.remove(player);
+        PARTITION_STATES.remove(player);
         this.partitionMode = ActionItems.WRENCH;
     }
 
@@ -223,5 +224,16 @@ public class ContainerUniversalStorageBus extends ContainerUpgradeable implement
 
     public PartUniversalStorageBus getStorageBus() {
         return this.storageBus;
+    }
+
+    private static final class PartitionState {
+
+        private final PartUniversalStorageBus bus;
+        private final Iterator<IAEStack<?>> iterator;
+
+        private PartitionState(PartUniversalStorageBus bus, Iterator<IAEStack<?>> iterator) {
+            this.bus = bus;
+            this.iterator = iterator;
+        }
     }
 }

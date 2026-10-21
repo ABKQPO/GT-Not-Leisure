@@ -176,6 +176,13 @@ public class GuiUniversalStorageBus extends GuiUpgradeable implements IBookmarkG
 
     @Override
     public void actionPerformed(final GuiButton btn) {
+        if (btn == this.oreFilter) {
+            // AE2 could not return from its ore filter GUI to this one, so open it through the GTNL GUI handler
+            AEBaseGui.setSwitchingGuis(true);
+            ScienceNotLeisure.network
+                .sendToServer(new SwitchToCustomGuiPacket(GuiType.UniversalOreFilterGUI, this.storageBus.getSide()));
+            return;
+        }
         super.actionPerformed(btn);
 
         final boolean backwards = Mouse.isButtonDown(1);
