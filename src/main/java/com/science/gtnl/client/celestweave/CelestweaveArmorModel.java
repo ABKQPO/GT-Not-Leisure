@@ -12,10 +12,10 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnl.client.fx.world.FxVisibility;
 import com.science.gtnl.common.celestweave.CelestweaveCosmetic;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnllib.client.fx.world.FxVisibility;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

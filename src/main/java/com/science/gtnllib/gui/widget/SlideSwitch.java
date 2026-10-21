@@ -79,13 +79,12 @@ public class SlideSwitch extends ButtonWidget<SlideSwitch> {
         Theme colors = colors(widgetTheme.getTheme());
         boolean on = this.on.getAsBoolean(), open = available.getAsBoolean(), lit = on && open && live.getAsBoolean();
         int width = getArea().w(), height = getArea().h(), top = (height - SWITCH_HEIGHT) / 2;
-        GuiDraw.drawRect(SWITCH_X, top, SWITCH_WIDTH, SWITCH_HEIGHT, trackColor(colors, on, lit));
-        GuiDraw.drawRect(
-            on ? SWITCH_X + SWITCH_WIDTH - SWITCH_HEIGHT : SWITCH_X,
-            top,
-            SWITCH_HEIGHT,
-            SWITCH_HEIGHT,
-            on ? colors.knob : colors.knobOff);
+        int knobX = on ? SWITCH_X + SWITCH_WIDTH - SWITCH_HEIGHT : SWITCH_X, knob = on ? colors.knob : colors.knobOff;
+        if (colors.trackSkin != null)
+            colors.trackSkin.draw(SWITCH_X, top, SWITCH_WIDTH, SWITCH_HEIGHT, on ? trackColor(colors, true, lit) : 0);
+        else GuiDraw.drawRect(SWITCH_X, top, SWITCH_WIDTH, SWITCH_HEIGHT, trackColor(colors, on, lit));
+        if (colors.knobSkin != null) colors.knobSkin.draw(knobX, top, SWITCH_HEIGHT, SWITCH_HEIGHT, knob);
+        else GuiDraw.drawRect(knobX, top, SWITCH_HEIGHT, SWITCH_HEIGHT, knob);
         TextRenderUtils.drawTextFitted(
             label.get(),
             LABEL_X,
@@ -102,11 +101,12 @@ public class SlideSwitch extends ButtonWidget<SlideSwitch> {
 
         public static final String TRACK = "trackColor", TRACK_ON = "trackOnColor", TRACK_DIM = "trackDimColor",
             KNOB = "knobColor", KNOB_OFF = "knobOffColor", TEXT_ON = "textOnColor", TEXT_DIM = "textDimColor",
-            TEXT_OFF = "textOffColor";
+            TEXT_OFF = "textOffColor", TRACK_SKIN = "trackSkin", KNOB_SKIN = "knobSkin";
         private static final int DEFAULT_SIZE = 18;
         public static final WidgetThemeKey<Theme> KEY = register();
 
         public final int track, trackOn, trackDim, knob, knobOff, textOn, textDim, textOff;
+        public final SkinDrawable trackSkin, knobSkin;
 
         public Theme(@Nullable IDrawable background, int track, int trackOn, int trackDim, int knob, int knobOff,
             int textOn, int textDim, int textOff) {
@@ -119,6 +119,8 @@ public class SlideSwitch extends ButtonWidget<SlideSwitch> {
             this.textOn = textOn;
             this.textDim = textDim;
             this.textOff = textOff;
+            this.trackSkin = null;
+            this.knobSkin = null;
         }
 
         public Theme(Theme parent, JsonObject json, JsonObject fallback) {
@@ -131,6 +133,8 @@ public class SlideSwitch extends ButtonWidget<SlideSwitch> {
             textOn = JsonHelper.getColor(json, parent.textOn, TEXT_ON);
             textDim = JsonHelper.getColor(json, parent.textDim, TEXT_DIM);
             textOff = JsonHelper.getColor(json, parent.textOff, TEXT_OFF);
+            trackSkin = SkinDrawable.read(json, TRACK_SKIN, parent.trackSkin);
+            knobSkin = SkinDrawable.read(json, KNOB_SKIN, parent.knobSkin);
         }
 
         private static WidgetThemeKey<Theme> register() {
@@ -169,6 +173,12 @@ public class SlideSwitch extends ButtonWidget<SlideSwitch> {
             public Builder knob(int on, int off) {
                 add(KNOB, on);
                 add(KNOB_OFF, off);
+                return this;
+            }
+
+            public Builder skins(SkinDrawable track, SkinDrawable knob) {
+                SkinDrawable.write(this, TRACK_SKIN, track);
+                SkinDrawable.write(this, KNOB_SKIN, knob);
                 return this;
             }
 

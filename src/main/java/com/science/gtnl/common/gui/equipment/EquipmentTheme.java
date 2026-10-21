@@ -12,6 +12,7 @@ import com.science.gtnl.config.MainConfig;
 import com.science.gtnllib.client.hud.HudColor;
 import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.theme.LivePalette;
+import com.science.gtnllib.gui.theme.MetalSkin;
 import com.science.gtnllib.gui.theme.PaletteThemes;
 import com.science.gtnllib.gui.theme.ThemePalette;
 import com.science.gtnllib.gui.theme.ThemeStyle;
@@ -24,12 +25,12 @@ import gregtech.api.modularui2.GTGuiThemes;
 public class EquipmentTheme {
 
     public static final String ID = "gtnl:equipment";
-    private static final int ACCENT = 0xFFFF3D9A, ACCENT_DIM = 0x80FF3D9A, HOVER = 0x26FF3D9A, TEXT = 0xFFFFFFFF,
-        HINT = 0xFF8E8796, PANEL_TOP = 0xF2211A27, PANEL_BOTTOM = 0xF20D0A11, CARD = 0x50000000, CARD_EDGE = 0x24FFFFFF,
-        BUTTON = 0x9614141E, BUTTON_HOVER = 0xA0FF3D9A, TAB_HOVER = 0x50FF3D9A, WELL = 0x80000000,
-        WELL_EDGE = 0xFF3A3640, SLOT_HOVER = 0x50FF3D9A, TRACK = 0xFF1A1420, SWITCH_OFF = 0xFF3A3640, KNOB = 0xFFF2EEF4,
-        KNOB_OFF = 0xFF8C8794, TEXT_ON = 0xFFF4F0F6, TEXT_DIM = 0xFF6E6876, TEXT_OFF = 0xFF9A94A2, CURSOR = 0xFFFFE6F1,
-        CURSOR_TEXT = 0xFF4A0A2A, TICK = 0x40FFFFFF, MILESTONE = 0x99FFFFFF, DANGER = 0xFFE5484D;
+    private static final int ACCENT = 0xFFDF65A0, ACCENT_DIM = 0x80DF65A0, HOVER = 0x26DF65A0, TEXT = 0xFFFFFFFF,
+        HINT = 0xFF8A8F96, PANEL_TOP = 0xFF1C1F24, PANEL_BOTTOM = 0xFF17191D, CARD = 0x40000000, CARD_EDGE = 0x1FFFFFFF,
+        BUTTON = 0xFF353940, BUTTON_HOVER = 0xA0DF65A0, TAB_HOVER = 0x50DF65A0, WELL = 0xFF14161A,
+        WELL_EDGE = 0xFF353940, SLOT_HOVER = 0x50DF65A0, TRACK = 0xFF0B0C0E, SWITCH_OFF = 0xFF353940, KNOB = 0xFFDEDFE2,
+        KNOB_OFF = 0xFF797E84, TEXT_ON = 0xFFF0F1F3, TEXT_DIM = 0xFF61666D, TEXT_OFF = 0xFFA5A7AC, CURSOR = 0xFFFFC7E6,
+        CURSOR_TEXT = 0xFF4A1030, TICK = 0x40FFFFFF, MILESTONE = 0x99FFFFFF, DANGER = 0xFFE5484D;
     public static final ThemePalette PALETTE = new ThemePalette(
         ACCENT,
         ACCENT_DIM,
@@ -66,7 +67,7 @@ public class EquipmentTheme {
 
     public static void register() {
         PaletteThemes.extend(EquipmentTheme::addColors);
-        PaletteThemes.register(ID, GTGuiThemes.STANDARD.getId(), PALETTE, ThemeStyle.DEFAULT);
+        PaletteThemes.register(ID, GTGuiThemes.STANDARD.getId(), PALETTE, ThemeStyle.DEFAULT, MetalSkin.SKIN);
         shareWithHudEditor();
     }
 

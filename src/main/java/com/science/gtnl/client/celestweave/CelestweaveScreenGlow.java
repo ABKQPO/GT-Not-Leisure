@@ -8,8 +8,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
 
 import com.science.gtnl.client.celestweave.CelestweaveClientEvents.HitOrigin;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnllib.client.fx.FxColor;
+import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -25,15 +25,15 @@ public class CelestweaveScreenGlow {
     private static int lifetime = HIT_LIFETIME;
     private static int rgb;
     private static boolean save, directional;
-    private static EquipmentVec direction = EquipmentVec.ZERO;
+    private static Vec3d direction = Vec3d.ZERO;
 
     static void hit(HitOrigin origin, int glowColor, boolean saved, boolean omni) {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         if (player == null) return;
-        EquipmentVec offset = origin.offset(player, HIT_HEIGHT);
+        Vec3d offset = origin.offset(player, HIT_HEIGHT);
         double length = offset.length();
         directional = !omni && length > MIN_DISTANCE;
-        if (directional) direction = new EquipmentVec(offset.x() / length, offset.y() / length, offset.z() / length);
+        if (directional) direction = new Vec3d(offset.x() / length, offset.y() / length, offset.z() / length);
         born = Minecraft.getSystemTime();
         lifetime = saved ? SAVE_LIFETIME : HIT_LIFETIME;
         rgb = FxColor.mixWhite(glowColor, 0.15F);

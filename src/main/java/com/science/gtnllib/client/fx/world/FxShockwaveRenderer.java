@@ -1,4 +1,4 @@
-package com.science.gtnl.client.fx.world;
+package com.science.gtnllib.client.fx.world;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,8 +10,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnllib.client.fx.FxColor;
+import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -29,7 +29,7 @@ public class FxShockwaveRenderer {
 
     private static class Wave {
 
-        final EquipmentVec center;
+        final Vec3d center;
         final double maxRadius;
         final int lifetime;
         final long born;
@@ -37,7 +37,7 @@ public class FxShockwaveRenderer {
         final boolean[] occluded = new boolean[RING_SEGMENTS];
         long occlusionTick = Long.MIN_VALUE;
 
-        Wave(EquipmentVec center, double maxRadius, int lifetime, long born, float red, float green, float blue) {
+        Wave(Vec3d center, double maxRadius, int lifetime, long born, float red, float green, float blue) {
             this.center = center;
             this.maxRadius = maxRadius;
             this.lifetime = lifetime;
@@ -50,11 +50,11 @@ public class FxShockwaveRenderer {
 
     private static final List<Wave> ACTIVE = new ArrayList<>();
 
-    public static void spawn(EquipmentVec center, double radius, int lifetime, int rgb) {
+    public static void spawn(Vec3d center, double radius, int lifetime, int rgb) {
         spawn(center, radius, lifetime, FxColor.red(rgb), FxColor.green(rgb), FxColor.blue(rgb));
     }
 
-    public static void spawn(EquipmentVec center, double radius, int lifetime, float red, float green, float blue) {
+    public static void spawn(Vec3d center, double radius, int lifetime, float red, float green, float blue) {
         var world = Minecraft.getMinecraft().theWorld;
         if (world == null || center == null
             || !center.finite()
@@ -108,13 +108,13 @@ public class FxShockwaveRenderer {
             Arrays.fill(wave.occluded, false);
             return;
         }
-        EquipmentVec origin = wave.center.add(0, PLANE_OFFSET, 0);
+        Vec3d origin = wave.center.add(0, PLANE_OFFSET, 0);
         for (int i = 0; i < RING_SEGMENTS; i++) {
             double middle = (i + 0.5) * Math.PI * 2 / RING_SEGMENTS;
             double reach = Math.max(
                 jittered(wave, radius, i, progress) + width * 0.5,
                 jittered(wave, radius, i + 1, progress) + width * 0.5) + OCCLUSION_MARGIN;
-            EquipmentVec edge = origin.add(Math.cos(middle) * reach, 0, Math.sin(middle) * reach);
+            Vec3d edge = origin.add(Math.cos(middle) * reach, 0, Math.sin(middle) * reach);
             MovingObjectPosition hit = world.func_147447_a(origin.toMc(), edge.toMc(), false, true, false);
             wave.occluded[i] = hit != null && hit.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK;
         }
@@ -142,7 +142,7 @@ public class FxShockwaveRenderer {
 
     private static double jittered(Wave wave, double radius, int segment, float progress) {
         if (radius <= 0) return radius;
-        EquipmentVec center = wave.center;
+        Vec3d center = wave.center;
         double phase = center.x() * 0.17 + center.y() * 0.11 + center.z() * 0.13;
         double slow = Math.sin(segment * 0.59 + phase + progress * 2.4);
         double fast = Math.sin(segment * 1.37 + phase * 0.43 - progress * 3.1);

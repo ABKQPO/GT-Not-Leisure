@@ -21,7 +21,6 @@ import com.science.gtnl.common.celestweave.CelestweaveEnergy;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.Utils;
@@ -31,6 +30,7 @@ import com.science.gtnllib.client.hud.HudEditor;
 import com.science.gtnllib.client.hud.HudLayout;
 import com.science.gtnllib.client.hud.HudLayout.Placement;
 import com.science.gtnllib.client.hud.HudTiming;
+import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -311,7 +311,7 @@ public class CelestweaveHud {
         if (age < 0 || age >= hitLifetime) return;
         float progress = age / (float) hitLifetime;
         float envelope = Math.min(1F, age / 60F) * (1 - progress) * (1 - progress);
-        EquipmentVec offset = hitOrigin.offset(player, 0);
+        Vec3d offset = hitOrigin.offset(player, 0);
         double forward = HitOrigin.forward(offset, player.rotationYaw),
             lateral = HitOrigin.lateral(offset, player.rotationYaw);
         boolean directional = !save && !omni && forward * forward + lateral * lateral > RING_AIM_MIN_DISTANCE_SQ;

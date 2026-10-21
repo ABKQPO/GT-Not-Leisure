@@ -22,10 +22,10 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.FoodStats;
 
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnllib.utils.Vec3d;
 
 import vazkii.botania.api.internal.IManaBurst;
 import vazkii.botania.api.mana.ManaItemHandler;
@@ -183,7 +183,7 @@ public class CelestweaveBehaviors {
             if (!ctx.server() || !CelestweaveModuleSetting.REFLECT_PROJECTILE.on(ctx.stack())
                 || !ctx.affords(config().reflectEu)) return;
             EntityPlayer player = ctx.player();
-            EquipmentVec center = EquipmentVec.center(player);
+            Vec3d center = Vec3d.center(player);
             List<?> nearby = player.worldObj
                 .getEntitiesWithinAABB(IProjectile.class, player.boundingBox.expand(RADIUS, RADIUS, RADIUS));
             for (Object entry : nearby) {

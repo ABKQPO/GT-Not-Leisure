@@ -10,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
-import com.cleanroommc.modularui.drawable.Rectangle;
 import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widget.Widget;
@@ -18,6 +17,7 @@ import com.cleanroommc.modularui.widget.sizer.Unit;
 import com.cleanroommc.modularui.widgets.ScrollingTextWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.science.gtnllib.gui.widget.CardDrawable;
+import com.science.gtnllib.gui.widget.Divider;
 import com.science.gtnllib.utils.TextRenderUtils;
 
 import cpw.mods.fml.relauncher.Side;
@@ -25,7 +25,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class Layout {
 
-    private static final int TITLE_HEIGHT = 10, RULE_HEIGHT = 1;
+    private static final int TITLE_HEIGHT = 10;
 
     private final LayoutTheme style;
     private final IntSupplier width;
@@ -102,12 +102,11 @@ public class Layout {
                     .width(() -> available() - style.spacingSmall, Unit.Measure.PIXEL)
                     .height(TITLE_HEIGHT))
             .child(
-                new Rectangle().horizontalGradient(color, 0)
-                    .asWidget()
+                new Divider().color(color)
                     .left(inset)
                     .bottom(0)
                     .width(this::available, Unit.Measure.PIXEL)
-                    .height(RULE_HEIGHT));
+                    .height(Divider.HEIGHT));
     }
 
     public int stackHeight(List<? extends IWidget> rows) {

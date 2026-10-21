@@ -28,9 +28,9 @@ import com.science.gtnl.client.railgun.RailgunCharge;
 import com.science.gtnl.client.railgun.RailgunClientFx;
 import com.science.gtnl.client.railgun.RailgunMuzzleAnchor;
 import com.science.gtnl.client.railgun.RailgunOrbRenderer;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.railgun.RailgunSetting;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -45,7 +45,7 @@ public class ItemElectromagneticRailgunRender implements IItemRenderer {
     private static final float WEAPON_DRIFT = 0.01F;
     private static final float BOLT_GLOW_MIX = 0.3F, BOLT_GLOW_ALPHA = 0.5F, BOLT_CORE_MIX = 0.85F, FULL_BRIGHT = 240F;
     private static final double BOLT_GLOW_WIDTH = 2.5;
-    private static final EquipmentVec AXIS_X = new EquipmentVec(1, 0, 0), AXIS_Y = new EquipmentVec(0, 1, 0);
+    private static final Vec3d AXIS_X = new Vec3d(1, 0, 0), AXIS_Y = new Vec3d(0, 1, 0);
     private static final float[] BOLT_COLOR = new float[3];
 
     private final IModelCustom model = AdvancedModelLoader
@@ -113,7 +113,7 @@ public class ItemElectromagneticRailgunRender implements IItemRenderer {
     private static void renderBodyBolts(Entity holder) {
         if (!MainConfig.client.enableRailgunBloom || !(holder instanceof EntityPlayer player)) return;
         if (!RailgunCharge.charging(player)) return;
-        if (!RailgunClientFx.visible(player.getEntityId(), EquipmentVec.pos(player))) return;
+        if (!RailgunClientFx.visible(player.getEntityId(), Vec3d.pos(player))) return;
         int tier = RailgunCharge.tier(player)
             .ordinal();
         double age = RailgunCharge.age(player, Minecraft.getMinecraft().timer.renderPartialTicks);
@@ -156,15 +156,15 @@ public class ItemElectromagneticRailgunRender implements IItemRenderer {
     private static void boltStrip(Tessellator tessellator, Bolt bolt, int tier, float mix, float alpha, double width) {
         float[] rgb = RailgunOrbRenderer.color(tier, mix, BOLT_COLOR);
         tessellator.setColorRGBA_F(rgb[0], rgb[1], rgb[2], alpha);
-        List<EquipmentVec> points = bolt.points();
+        List<Vec3d> points = bolt.points();
         for (int i = 1; i < points.size(); i++) {
-            EquipmentVec from = points.get(i - 1), to = points.get(i);
-            EquipmentVec direction = to.subtract(from)
+            Vec3d from = points.get(i - 1), to = points.get(i);
+            Vec3d direction = to.subtract(from)
                 .normalize();
-            EquipmentVec first = direction.cross(Math.abs(direction.y()) > 0.95 ? AXIS_X : AXIS_Y)
+            Vec3d first = direction.cross(Math.abs(direction.y()) > 0.95 ? AXIS_X : AXIS_Y)
                 .normalize()
                 .scale(width);
-            EquipmentVec second = direction.cross(first)
+            Vec3d second = direction.cross(first)
                 .normalize()
                 .scale(width);
             boltQuad(tessellator, from, to, first);
@@ -172,14 +172,14 @@ public class ItemElectromagneticRailgunRender implements IItemRenderer {
         }
     }
 
-    private static void boltQuad(Tessellator tessellator, EquipmentVec from, EquipmentVec to, EquipmentVec offset) {
+    private static void boltQuad(Tessellator tessellator, Vec3d from, Vec3d to, Vec3d offset) {
         boltVertex(tessellator, from.subtract(offset));
         boltVertex(tessellator, from.add(offset));
         boltVertex(tessellator, to.add(offset));
         boltVertex(tessellator, to.subtract(offset));
     }
 
-    private static void boltVertex(Tessellator tessellator, EquipmentVec point) {
+    private static void boltVertex(Tessellator tessellator, Vec3d point) {
         tessellator.addVertex(point.x(), point.y(), point.z());
     }
 

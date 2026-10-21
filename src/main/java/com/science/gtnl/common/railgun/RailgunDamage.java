@@ -14,9 +14,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.EffectLoader;
+import com.science.gtnllib.utils.Vec3d;
 
 public class RailgunDamage {
 
@@ -88,7 +88,7 @@ public class RailgunDamage {
         return new EntityDamageSource("gtnl.railgun", player).setDamageBypassesArmor();
     }
 
-    public static void hitObject(EntityPlayerMP player, Entity target, EquipmentVec reference, double damage) {
+    public static void hitObject(EntityPlayerMP player, Entity target, Vec3d reference, double damage) {
         striking = true;
         try {
             if (MinecraftForge.EVENT_BUS.post(new AttackEntityEvent(player, target))) return;
@@ -105,7 +105,7 @@ public class RailgunDamage {
     }
 
     public static void applyAll(EntityPlayerMP player, List<RailgunChainResolver.Hit> hits, DamageContext context,
-        boolean resetInvulnerability, EquipmentVec reference) {
+        boolean resetInvulnerability, Vec3d reference) {
         for (var hit : hits) {
             EntityLivingBase target = hit.target();
             if (!RailgunTargetRules.canAffect(player, target, context.pvp())) continue;

@@ -5,9 +5,9 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 
 import com.science.gtnl.client.railgun.RailgunClientFx;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
 import com.science.gtnl.common.railgun.RailgunNet;
+import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -16,14 +16,14 @@ import io.netty.buffer.ByteBuf;
 public class RailgunBeamChainFxPacket extends ClientboundPacket {
 
     public int shooterId;
-    public EquipmentVec origin;
-    public List<EquipmentVec> path;
+    public Vec3d origin;
+    public List<Vec3d> path;
     public boolean ehv;
     private boolean valid;
 
     public RailgunBeamChainFxPacket() {}
 
-    public RailgunBeamChainFxPacket(int shooterId, EquipmentVec origin, List<EquipmentVec> path, boolean ehv) {
+    public RailgunBeamChainFxPacket(int shooterId, Vec3d origin, List<Vec3d> path, boolean ehv) {
         this.shooterId = shooterId;
         this.origin = origin;
         this.path = path;
@@ -34,7 +34,7 @@ public class RailgunBeamChainFxPacket extends ClientboundPacket {
     protected void read(ByteBuf buffer) {
         try {
             shooterId = buffer.readInt();
-            origin = EquipmentVec.read(buffer);
+            origin = Vec3d.read(buffer);
             path = RailgunNet.readPath(buffer);
             ehv = buffer.readBoolean();
             valid = true;

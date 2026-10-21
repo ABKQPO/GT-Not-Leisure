@@ -23,7 +23,9 @@ import com.cleanroommc.modularui.utils.Color;
 import com.cleanroommc.modularui.utils.JsonBuilder;
 import com.science.gtnllib.config.GTNLLibConfig;
 import com.science.gtnllib.gui.layout.LayoutTheme;
+import com.science.gtnllib.gui.theme.ThemeSkin.Part;
 import com.science.gtnllib.gui.widget.CardDrawable;
+import com.science.gtnllib.gui.widget.Divider;
 import com.science.gtnllib.gui.widget.FillBar;
 import com.science.gtnllib.gui.widget.FrameDrawable;
 import com.science.gtnllib.gui.widget.SlideSwitch;
@@ -49,7 +51,11 @@ public class PaletteThemes {
     }
 
     public static void register(String id, String parent, ThemePalette palette, ThemeStyle style) {
-        THEMES.put(id, new Definition(parent, palette, style));
+        register(id, parent, palette, style, ThemeSkin.NONE);
+    }
+
+    public static void register(String id, String parent, ThemePalette palette, ThemeStyle style, ThemeSkin skin) {
+        THEMES.put(id, new Definition(parent, palette, style, skin));
         rebuild(id);
         for (Runnable listener : LISTENERS) listener.run();
     }
@@ -92,7 +98,7 @@ public class PaletteThemes {
     }
 
     private static ThemeBuilder<?> decorated(String id, Definition definition, ThemePalette palette) {
-        ThemeBuilder<?> theme = build(id, definition.parent(), palette, definition.style());
+        ThemeBuilder<?> theme = build(id, definition.parent(), palette, definition.style(), definition.skin());
         for (BiConsumer<ThemeBuilder<?>, ThemePalette> extension : EXTENSIONS) extension.accept(theme, palette);
         return theme;
     }
@@ -126,40 +132,65 @@ public class PaletteThemes {
     }
 
     public static ThemeBuilder<?> build(String id, String parent, ThemePalette palette, ThemeStyle style) {
+        return build(id, parent, palette, style, ThemeSkin.NONE);
+    }
+
+    public static ThemeBuilder<?> build(String id, String parent, ThemePalette palette, ThemeStyle style,
+        ThemeSkin skin) {
         ThemeBuilder<?> theme = new ThemeBuilder<>(id).parent(parent)
             .defaultColor(Color.WHITE.main)
             .defaultTextColor(palette.text())
             .defaultTextShadow(true)
             .background(
                 IThemeApi.PANEL,
-                new FrameDrawable().fill(palette.panelTop(), palette.panelBottom())
-                    .border(palette.accentDim())
-                    .corners(palette.accent(), style.cornerLength(), style.cornerThickness()))
-            .background(IThemeApi.BUTTON, new Rectangle().color(palette.button()))
-            .hoverBackground(IThemeApi.BUTTON, new Rectangle().color(palette.buttonHover()))
+                skin.lit(
+                    Part.PANEL,
+                    palette.accent(),
+                    () -> new FrameDrawable().fill(palette.panelTop(), palette.panelBottom())
+                        .border(palette.accentDim())
+                        .corners(palette.accent(), style.cornerLength(), style.cornerThickness())))
+            .background(IThemeApi.BUTTON, skin.plain(Part.BUTTON, () -> new Rectangle().color(palette.button())))
+            .hoverBackground(
+                IThemeApi.BUTTON,
+                skin.lit(Part.BUTTON, palette.buttonHover(), () -> new Rectangle().color(palette.buttonHover())))
             .textHoverColor(IThemeApi.BUTTON, palette.selectedText())
             .textHoverShadow(IThemeApi.BUTTON, palette.selectedTextShadow())
             .hoverBackground(IThemeApi.CLOSE_BUTTON, new Rectangle().color(palette.hover()))
             .widgetTheme(
                 IThemeApi.TOGGLE_BUTTON,
-                new SelectableTheme.Builder<>().background(new Rectangle().color(palette.button()))
+                new SelectableTheme.Builder<>()
+                    .background(skin.plain(Part.BUTTON, () -> new Rectangle().color(palette.button())))
                     .textColor(palette.textOff())
-                    .selectedBackground(new Rectangle().color(palette.buttonHover()))
+                    .selectedBackground(
+                        skin.lit(
+                            Part.BUTTON,
+                            palette.buttonHover(),
+                            () -> new Rectangle().color(palette.buttonHover())))
                     .selectedTextColor(palette.selectedText()))
             .textShadow(IThemeApi.TOGGLE_BUTTON, false)
             .widgetThemeHover(
                 IThemeApi.TOGGLE_BUTTON,
-                new SelectableTheme.Builder<>().background(new Rectangle().color(palette.tabHover()))
-                    .selectedBackground(new Rectangle().color(palette.buttonHover())))
+                new SelectableTheme.Builder<>()
+                    .background(
+                        skin.lit(Part.BUTTON, palette.tabHover(), () -> new Rectangle().color(palette.tabHover())))
+                    .selectedBackground(
+                        skin.lit(
+                            Part.BUTTON,
+                            palette.buttonHover(),
+                            () -> new Rectangle().color(palette.buttonHover()))))
             .background(
                 IThemeApi.ITEM_SLOT,
-                new FrameDrawable().fill(palette.well())
-                    .border(palette.wellEdge()))
+                skin.plain(
+                    Part.SLOT,
+                    () -> new FrameDrawable().fill(palette.well())
+                        .border(palette.wellEdge())))
             .itemSlotHoverColor(palette.slotHover())
             .background(
                 IThemeApi.TEXT_FIELD,
-                new FrameDrawable().fill(palette.well())
-                    .border(palette.accentDim()))
+                skin.plain(
+                    Part.SLOT,
+                    () -> new FrameDrawable().fill(palette.well())
+                        .border(palette.accentDim())))
             .textColor(IThemeApi.TEXT_FIELD, palette.text())
             .textShadow(IThemeApi.TEXT_FIELD, false)
             .textFieldMarkedColor(palette.accentDim())
@@ -167,29 +198,48 @@ public class PaletteThemes {
             .background(IThemeApi.SCROLLBAR, new Rectangle().color(palette.accentDim()))
             .background(
                 CardDrawable.KEY,
-                new CardDrawable().fill(palette.card())
-                    .edge(palette.cardEdge())
-                    .accent(palette.accent(), style.cardAccentTop(), style.cardAccentWidth(), style.cardAccentHeight()))
+                skin.lit(
+                    Part.CARD,
+                    palette.accent(),
+                    () -> new CardDrawable().fill(palette.card())
+                        .edge(palette.cardEdge())
+                        .accent(
+                            palette.accent(),
+                            style.cardAccentTop(),
+                            style.cardAccentWidth(),
+                            style.cardAccentHeight())))
             .widgetTheme(
                 StepSlider.Theme.KEY,
                 new StepSlider.Theme.Builder()
                     .colors(palette.track(), palette.accent(), palette.cursor(), palette.cursorText())
-                    .tickColors(palette.tick(), palette.milestone()))
+                    .tickColors(palette.tick(), palette.milestone())
+                    .skins(skin.get(Part.SLIDER_TRACK), skin.get(Part.SLIDER_FILL), skin.get(Part.SLIDER_TAG)))
             .widgetTheme(
                 SlideSwitch.Theme.KEY,
                 new SlideSwitch.Theme.Builder().track(palette.switchOff(), palette.accent(), palette.accentDim())
                     .knob(palette.knob(), palette.knobOff())
-                    .text(palette.textOn(), palette.textDim(), palette.textOff()))
+                    .text(palette.textOn(), palette.textDim(), palette.textOff())
+                    .skins(skin.get(Part.SWITCH_TRACK), skin.get(Part.SWITCH_KNOB)))
             .hoverBackground(SlideSwitch.Theme.KEY, new Rectangle().color(palette.hover()))
-            .widgetTheme(FillBar.Theme.KEY, new FillBar.Theme.Builder().colors(palette.track(), palette.accent()))
+            .widgetTheme(
+                FillBar.Theme.KEY,
+                new FillBar.Theme.Builder().colors(palette.track(), palette.accent())
+                    .skins(skin.get(Part.SLIDER_TRACK), skin.get(Part.SLIDER_FILL)))
+            .widgetTheme(Divider.Theme.KEY, new Divider.Theme.Builder().skin(skin.get(Part.DIVIDER)))
             .widgetTheme(LayoutTheme.KEY, new LayoutTheme.Builder().style(style))
-            .background(ButtonPurpose.PRIMARY.key, new Rectangle().color(palette.buttonHover()))
-            .hoverBackground(ButtonPurpose.PRIMARY.key, new Rectangle().color(palette.accent()))
+            .background(
+                ButtonPurpose.PRIMARY.key,
+                skin.lit(Part.BUTTON, palette.buttonHover(), () -> new Rectangle().color(palette.buttonHover())))
+            .hoverBackground(
+                ButtonPurpose.PRIMARY.key,
+                skin.lit(Part.BUTTON, palette.accent(), () -> new Rectangle().color(palette.accent())))
             .textColor(ButtonPurpose.PRIMARY.key, palette.selectedText())
             .textHoverColor(ButtonPurpose.PRIMARY.key, palette.selectedText())
             .textShadow(ButtonPurpose.PRIMARY.key, palette.selectedTextShadow())
             .textHoverShadow(ButtonPurpose.PRIMARY.key, palette.selectedTextShadow())
-            .background(ButtonPurpose.DANGER.key, new Rectangle().color(palette.button()))
+            .background(
+                ButtonPurpose.DANGER.key,
+                skin.plain(Part.BUTTON, () -> new Rectangle().color(palette.button())))
             .hoverBackground(ButtonPurpose.DANGER.key, new Rectangle().color(palette.danger()))
             .textColor(ButtonPurpose.DANGER.key, palette.danger())
             .textHoverColor(ButtonPurpose.DANGER.key, palette.text())
@@ -202,7 +252,7 @@ public class PaletteThemes {
         return theme;
     }
 
-    private record Definition(String parent, ThemePalette palette, ThemeStyle style) {}
+    private record Definition(String parent, ThemePalette palette, ThemeStyle style, ThemeSkin skin) {}
 
     private record Variant(ThemePalette palette, ITheme theme) {}
 

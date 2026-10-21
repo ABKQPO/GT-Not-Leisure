@@ -17,10 +17,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
-import com.science.gtnl.client.fx.world.FxCamera;
-import com.science.gtnl.client.fx.world.FxRenderHelper;
-import com.science.gtnl.client.fx.world.FxRenderHelper.Sprite;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.packet.RailgunBeamUpdatePacket;
 import com.science.gtnl.common.railgun.RailgunData;
@@ -28,6 +24,10 @@ import com.science.gtnl.common.railgun.RailgunModule;
 import com.science.gtnl.common.railgun.RailgunRaycast;
 import com.science.gtnl.common.railgun.RailgunSetting;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnllib.client.fx.world.FxCamera;
+import com.science.gtnllib.client.fx.world.FxRenderHelper;
+import com.science.gtnllib.client.fx.world.FxRenderHelper.Sprite;
+import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -62,9 +62,9 @@ public class RailgunBeamRenderer {
 
     private static final float[] COLOR = new float[3];
 
-    private record Shot(int shooterId, EquipmentVec from, EquipmentVec to, boolean ehv, float intensity, long until) {}
+    private record Shot(int shooterId, Vec3d from, Vec3d to, boolean ehv, float intensity, long until) {}
 
-    private record Beam(EquipmentVec from, EquipmentVec to, boolean ehv, float intensity, int seed) {}
+    private record Beam(Vec3d from, Vec3d to, boolean ehv, float intensity, int seed) {}
 
     private static class HeldBeam {
 
@@ -116,7 +116,7 @@ public class RailgunBeamRenderer {
             RailgunData.BEAM_RANGE,
             RailgunData.modules(stack)
                 .count(RailgunModule.RANGE));
-        return clampRange(player, EquipmentVec.eye(player, 1F), EquipmentVec.look(player), range);
+        return clampRange(player, Vec3d.eye(player, 1F), Vec3d.look(player), range);
     }
 
     public static boolean localFiring() {
@@ -133,7 +133,7 @@ public class RailgunBeamRenderer {
         return new HashSet<>(HELD.keySet());
     }
 
-    public static void shot(int shooterId, EquipmentVec from, EquipmentVec to, boolean ehv, float intensity) {
+    public static void shot(int shooterId, Vec3d from, Vec3d to, boolean ehv, float intensity) {
         World world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
         if (SHOTS.size() >= MAX_SHOTS) SHOTS.remove(0);
@@ -219,31 +219,28 @@ public class RailgunBeamRenderer {
         HELD.forEach((id, held) -> {
             advance(held, millis);
             Entity shooter = world == null ? null : world.getEntityByID(id);
-            EquipmentVec origin = RailgunMuzzleAnchor.muzzle(id, partialTicks);
+            Vec3d origin = RailgunMuzzleAnchor.muzzle(id, partialTicks);
             if (shooter == null || origin == null || !RailgunClientFx.visible(id, origin)) return;
-            EquipmentVec end = aimEnd(
-                shooter,
-                partialTicks,
-                Math.max(MIN_BEAM_LENGTH, Math.min(MAX_BEAM_LENGTH, held.range)));
+            Vec3d end = aimEnd(shooter, partialTicks, Math.max(MIN_BEAM_LENGTH, Math.min(MAX_BEAM_LENGTH, held.range)));
             if (valid(origin, end)) beams.add(new Beam(pastMuzzle(origin, end), end, held.ehv, 1F, id));
         });
         return beams;
     }
 
-    private static EquipmentVec aimEnd(Entity shooter, float partialTicks, double range) {
+    private static Vec3d aimEnd(Entity shooter, float partialTicks, double range) {
         Minecraft minecraft = Minecraft.getMinecraft();
         boolean firstPerson = shooter == minecraft.thePlayer && minecraft.gameSettings.thirdPersonView == 0;
-        EquipmentVec origin;
-        EquipmentVec direction;
+        Vec3d origin;
+        Vec3d direction;
         double reach = range;
         if (firstPerson) {
             origin = FxCamera.position();
             direction = RailgunMuzzleAnchor.firstPersonAim(partialTicks);
-            reach += origin.subtract(EquipmentVec.eye(shooter, partialTicks))
+            reach += origin.subtract(Vec3d.eye(shooter, partialTicks))
                 .length();
         } else {
-            origin = EquipmentVec.eye(shooter, partialTicks);
-            direction = EquipmentVec.look(shooter, partialTicks);
+            origin = Vec3d.eye(shooter, partialTicks);
+            direction = Vec3d.look(shooter, partialTicks);
         }
         return origin.add(direction.scale(clampRange(shooter, origin, direction, reach)));
     }
@@ -256,7 +253,7 @@ public class RailgunBeamRenderer {
         else held.range += difference * (1 - Math.exp(-seconds * BEAM_RANGE_RESPONSE));
     }
 
-    private static double clampRange(Entity shooter, EquipmentVec origin, EquipmentVec direction, double range) {
+    private static double clampRange(Entity shooter, Vec3d origin, Vec3d direction, double range) {
         MovingObjectPosition hit = shooter.worldObj.func_147447_a(
             origin.toMc(),
             origin.add(direction.scale(range))
@@ -265,15 +262,15 @@ public class RailgunBeamRenderer {
             true,
             false);
         if (hit == null) return range;
-        double distance = EquipmentVec.of(hit.hitVec)
+        double distance = Vec3d.of(hit.hitVec)
             .subtract(origin)
             .length();
         if (distance < CLIPPED_RANGE && range > CLIPPED_RANGE * 4) return range;
         return Math.max(MIN_BLOCK_RANGE, Math.min(range, distance));
     }
 
-    private static EquipmentVec pastMuzzle(EquipmentVec from, EquipmentVec to) {
-        EquipmentVec delta = to.subtract(from);
+    private static Vec3d pastMuzzle(Vec3d from, Vec3d to) {
+        Vec3d delta = to.subtract(from);
         double length = delta.length();
         return length <= MUZZLE_CLEARANCE * 2 ? from
             : from.add(
@@ -281,7 +278,7 @@ public class RailgunBeamRenderer {
                     .scale(MUZZLE_CLEARANCE));
     }
 
-    private static boolean valid(EquipmentVec from, EquipmentVec to) {
+    private static boolean valid(Vec3d from, Vec3d to) {
         if (from == null || to == null) return false;
         double length = to.subtract(from)
             .length();
@@ -301,7 +298,7 @@ public class RailgunBeamRenderer {
     }
 
     private static void plasma(Beam beam) {
-        EquipmentVec delta = beam.to.subtract(beam.from);
+        Vec3d delta = beam.to.subtract(beam.from);
         double length = delta.length();
         for (int segment = 0; segment < BLOOM_SEGMENTS; segment++) {
             double start = segment / (double) BLOOM_SEGMENTS, end = (segment + 1) / (double) BLOOM_SEGMENTS;
@@ -321,10 +318,10 @@ public class RailgunBeamRenderer {
     }
 
     private static void body(Beam beam, double time) {
-        EquipmentVec delta = beam.to.subtract(beam.from);
-        EquipmentVec direction = delta.normalize();
-        EquipmentVec right = EquipmentVec.rightOf(direction);
-        EquipmentVec up = right.cross(direction)
+        Vec3d delta = beam.to.subtract(beam.from);
+        Vec3d direction = delta.normalize();
+        Vec3d right = Vec3d.rightOf(direction);
+        Vec3d up = right.cross(direction)
             .normalize();
         double breathing = 1 + Math.sin(time * 0.3 + beam.seed) * 0.08;
         for (int layer = 0; layer < BODY_RADII.length; layer++) {
@@ -332,8 +329,8 @@ public class RailgunBeamRenderer {
             double spin = time * BODY_SPIN[layer] + beam.seed;
             for (int segment = 0; segment < BODY_SEGMENTS; segment++) {
                 double start = segment / (double) BODY_SEGMENTS, end = (segment + 1) / (double) BODY_SEGMENTS;
-                EquipmentVec startPoint = beam.from.add(delta.scale(start));
-                EquipmentVec endPoint = beam.from.add(delta.scale(end));
+                Vec3d startPoint = beam.from.add(delta.scale(start));
+                Vec3d endPoint = beam.from.add(delta.scale(end));
                 double rotation = spin + start * Math.PI * 2, nextRotation = spin + end * Math.PI * 2;
                 float flow = (float) (0.78 + 0.22 * Math.sin(time * 0.55 - segment * 0.8 + beam.seed));
                 setColor(beam.ehv, layer / (BODY_RADII.length - 1F), BODY_ALPHA[layer] * flow * beam.intensity);
@@ -349,10 +346,10 @@ public class RailgunBeamRenderer {
     }
 
     private static void bloom(Beam beam, double time) {
-        EquipmentVec delta = beam.to.subtract(beam.from);
+        Vec3d delta = beam.to.subtract(beam.from);
         for (int segment = 0; segment < BLOOM_SEGMENTS; segment++) {
             double start = segment / (double) BLOOM_SEGMENTS, end = (segment + 1) / (double) BLOOM_SEGMENTS;
-            EquipmentVec from = beam.from.add(delta.scale(start)), to = beam.from.add(delta.scale(end));
+            Vec3d from = beam.from.add(delta.scale(start)), to = beam.from.add(delta.scale(end));
             float pulse = (float) (0.72 + 0.28 * Math.sin(time * 0.6 - segment * 0.85 + beam.seed));
             for (int layer = 0; layer < BLOOM_WIDTHS.length; layer++) {
                 setColor(beam.ehv, layer / (BLOOM_WIDTHS.length - 1F), BLOOM_ALPHA[layer] * pulse * beam.intensity);
@@ -380,8 +377,7 @@ public class RailgunBeamRenderer {
         Tessellator.instance.setColorRGBA_F(rgb[0], rgb[1], rgb[2], alpha);
     }
 
-    private static EquipmentVec corner(EquipmentVec center, EquipmentVec right, EquipmentVec up, double angle,
-        double radius) {
+    private static Vec3d corner(Vec3d center, Vec3d right, Vec3d up, double angle, double radius) {
         return center.add(right.scale(Math.cos(angle) * radius))
             .add(up.scale(Math.sin(angle) * radius));
     }
@@ -392,10 +388,10 @@ public class RailgunBeamRenderer {
         for (Beam beam : beams) {
             if (now - LAST_ARC.getOrDefault(beam.seed, -100L) < ARC_INTERVAL) continue;
             LAST_ARC.put(beam.seed, now);
-            EquipmentVec point = beam.from.add(
+            Vec3d point = beam.from.add(
                 beam.to.subtract(beam.from)
                     .scale(world.rand.nextDouble()));
-            EquipmentVec end = point.add(
+            Vec3d end = point.add(
                 (world.rand.nextDouble() - 0.5) * 2,
                 (world.rand.nextDouble() - 0.5) * 2,
                 (world.rand.nextDouble() - 0.5) * 2);

@@ -1,4 +1,4 @@
-package com.science.gtnl.client.fx.world;
+package com.science.gtnllib.client.fx.world;
 
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;

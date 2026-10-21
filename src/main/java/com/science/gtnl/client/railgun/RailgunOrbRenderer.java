@@ -9,16 +9,16 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
-import com.science.gtnl.client.fx.world.FxArcRenderer.Color;
-import com.science.gtnl.client.fx.world.FxArcRenderer.Style;
-import com.science.gtnl.client.fx.world.FxCamera;
-import com.science.gtnl.client.fx.world.FxRenderHelper;
-import com.science.gtnl.client.fx.world.FxRenderHelper.Sprite;
 import com.science.gtnl.client.railgun.RailgunBolts.Bolt;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnllib.client.fx.FxEasing;
+import com.science.gtnllib.client.fx.world.FxArcRenderer.Color;
+import com.science.gtnllib.client.fx.world.FxArcRenderer.Style;
+import com.science.gtnllib.client.fx.world.FxCamera;
+import com.science.gtnllib.client.fx.world.FxRenderHelper;
+import com.science.gtnllib.client.fx.world.FxRenderHelper.Sprite;
+import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -88,15 +88,15 @@ public class RailgunOrbRenderer {
     private static final double[] SHELL_MIX = { 0.15, 0.55, 1 };
     private static final float[] SHELL_ALPHA = { 0.62F, 0.85F, 1F };
 
-    private record LaunchedOrb(int shooterId, EquipmentVec from, EquipmentVec target, int tier, long born,
-        int travelTicks, Runnable onArrive) {}
+    private record LaunchedOrb(int shooterId, Vec3d from, Vec3d target, int tier, long born, int travelTicks,
+        Runnable onArrive) {}
 
-    private record OrbViz(EquipmentVec center, EquipmentVec direction, EquipmentVec tail, double radius, int tier,
-        int seed, double time, float strength, float burst, float tension, EquipmentVec anchor) {}
+    private record OrbViz(Vec3d center, Vec3d direction, Vec3d tail, double radius, int tier, int seed, double time,
+        float strength, float burst, float tension, Vec3d anchor) {}
 
     private static final List<LaunchedOrb> ORBS = new ArrayList<>();
 
-    public static void launch(int shooterId, EquipmentVec from, EquipmentVec target, int tier, Runnable onArrive) {
+    public static void launch(int shooterId, Vec3d from, Vec3d target, int tier, Runnable onArrive) {
         var world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
         if (from == null || !from.finite() || target == null || !target.finite()) return;
@@ -116,7 +116,7 @@ public class RailgunOrbRenderer {
                 onArrive));
     }
 
-    public static int travelTicks(EquipmentVec from, EquipmentVec to) {
+    public static int travelTicks(Vec3d from, Vec3d to) {
         double squared = from.distanceToSqr(to);
         if (squared <= 0) return MIN_TRAVEL_TICKS;
         double ticks = Math.sqrt(squared) / BLOCKS_PER_TICK;
@@ -247,19 +247,19 @@ public class RailgunOrbRenderer {
 
     private static OrbViz charging(EntityPlayer player, long now, float partialTicks) {
         if (!RailgunCharge.charging(player)) return null;
-        EquipmentVec at = EquipmentVec.pos(player);
+        Vec3d at = Vec3d.pos(player);
         if (!RailgunClientFx.visible(player.getEntityId(), at)) return null;
         float progress = RailgunCharge.progress(player);
-        EquipmentVec direction = EquipmentVec.look(player, partialTicks);
+        Vec3d direction = Vec3d.look(player, partialTicks);
         float tension = tension(progress);
         int id = player.getEntityId();
         double time = now + partialTicks;
         double radius = (ORB_MIN_RADIUS + ORB_CHARGE_RADIUS * progress * progress) * pulse(tension, time)
             * tremble(tension, id, now);
-        EquipmentVec right = EquipmentVec.rightOf(direction), up = right.cross(direction)
+        Vec3d right = Vec3d.rightOf(direction), up = right.cross(direction)
             .normalize();
-        EquipmentVec anchor = RailgunMuzzleAnchor.muzzle(id, at, partialTicks);
-        EquipmentVec muzzle = anchor
+        Vec3d anchor = RailgunMuzzleAnchor.muzzle(id, at, partialTicks);
+        Vec3d muzzle = anchor
             .add(direction.scale(RailgunBolts.ORB_MUZZLE_GAP * (1 - progress) + radius * RailgunBolts.ORB_CLEARANCE))
             .add(right.scale(shake(tension, id, now, 0) * radius))
             .add(up.scale(shake(tension, id, now, 1) * radius));
@@ -282,10 +282,10 @@ public class RailgunOrbRenderer {
         double raw = (now - orb.born + partialTicks) / orb.travelTicks;
         if (raw < 0) return null;
         double eased = 1 - (1 - Math.min(1, raw)) * (1 - Math.min(1, raw));
-        EquipmentVec from = orb.from;
-        EquipmentVec delta = orb.target.subtract(from);
+        Vec3d from = orb.from;
+        Vec3d delta = orb.target.subtract(from);
         if (delta.length() < 1.0E-4) return null;
-        EquipmentVec head = from.add(delta.scale(eased));
+        Vec3d head = from.add(delta.scale(eased));
         double radius = ORB_MIN_RADIUS + ORB_TIER_RADIUS * orb.tier - FLIGHT_SHRINK * eased;
         return new OrbViz(
             head,
@@ -321,17 +321,17 @@ public class RailgunOrbRenderer {
         for (Bolt bolt : legs(orb)) core(orb, bolt, world -> world);
     }
 
-    private static void glow(OrbViz orb, Bolt bolt, UnaryOperator<EquipmentVec> place) {
+    private static void glow(OrbViz orb, Bolt bolt, UnaryOperator<Vec3d> place) {
         setColor(orb.tier(), BOLT_GLOW_MIX, bolt.alpha() * BOLT_GLOW_ALPHA);
-        List<EquipmentVec> points = bolt.points();
+        List<Vec3d> points = bolt.points();
         double width = bolt.width() * orb.radius() * BOLT_GLOW_WIDTH;
         for (int i = 1; i < points.size(); i++)
             FxRenderHelper.glowRibbon(place.apply(points.get(i - 1)), place.apply(points.get(i)), width, width);
     }
 
-    private static void core(OrbViz orb, Bolt bolt, UnaryOperator<EquipmentVec> place) {
+    private static void core(OrbViz orb, Bolt bolt, UnaryOperator<Vec3d> place) {
         float[] rgb = mix(orb.tier(), BOLT_CORE_MIX);
-        List<EquipmentVec> points = bolt.points();
+        List<Vec3d> points = bolt.points();
         double width = bolt.width() * orb.radius() * BOLT_CORE_WIDTH;
         for (int i = 1; i < points.size(); i++) FxRenderHelper.ribbon(
             place.apply(points.get(i - 1)),
@@ -343,7 +343,7 @@ public class RailgunOrbRenderer {
             bolt.alpha());
     }
 
-    private static EquipmentVec boltPoint(OrbViz orb, EquipmentVec local) {
+    private static Vec3d boltPoint(OrbViz orb, Vec3d local) {
         return orb.center()
             .add(local.scale(orb.radius()));
     }
@@ -368,9 +368,9 @@ public class RailgunOrbRenderer {
     }
 
     private static void trail(OrbViz orb) {
-        EquipmentVec tail = orb.tail();
+        Vec3d tail = orb.tail();
         if (tail == null) return;
-        EquipmentVec delta = orb.center()
+        Vec3d delta = orb.center()
             .subtract(tail);
         for (int segment = 0; segment < TRAIL_SEGMENTS; segment++) {
             double start = segment / (double) TRAIL_SEGMENTS, end = (segment + 1) / (double) TRAIL_SEGMENTS;
@@ -382,9 +382,9 @@ public class RailgunOrbRenderer {
     }
 
     private static void filaments(OrbViz orb) {
-        EquipmentVec direction = orb.direction();
-        EquipmentVec right = EquipmentVec.rightOf(direction);
-        EquipmentVec up = right.cross(direction)
+        Vec3d direction = orb.direction();
+        Vec3d right = Vec3d.rightOf(direction);
+        Vec3d up = right.cross(direction)
             .normalize();
         double reach = orb.radius() * FILAMENT_REACH;
         double width = Math.max(FILAMENT_MIN_WIDTH, orb.radius() * FILAMENT_WIDTH);
@@ -395,22 +395,12 @@ public class RailgunOrbRenderer {
             double phase = orb.time() * FILAMENT_SPEED + filament * (Math.PI * 2 / FILAMENTS) + orb.seed() * 0.37;
             double wobblePhase = orb.time() * FILAMENT_WOBBLE_SPEED + filament * 1.7 + orb.seed() * 0.11;
             float flicker = (float) (0.55 + 0.45 * RailgunBolts.noise(orb.seed(), filament, -1, tick));
-            EquipmentVec previous = filamentPoint(
-                orb,
-                direction,
-                right,
-                up,
-                reach,
-                phase,
-                wobblePhase,
-                0,
-                0,
-                agitation);
+            Vec3d previous = filamentPoint(orb, direction, right, up, reach, phase, wobblePhase, 0, 0, agitation);
             for (int segment = 1; segment <= FILAMENT_SEGMENTS; segment++) {
                 double start = (segment - 1) / (double) FILAMENT_SEGMENTS;
                 double end = segment / (double) FILAMENT_SEGMENTS;
                 double crackle = (RailgunBolts.noise(orb.seed(), filament, segment, tick) * 2 - 1) * agitation;
-                EquipmentVec current = filamentPoint(
+                Vec3d current = filamentPoint(
                     orb,
                     direction,
                     right,
@@ -435,17 +425,17 @@ public class RailgunOrbRenderer {
         }
     }
 
-    private static EquipmentVec filamentPoint(OrbViz orb, EquipmentVec direction, EquipmentVec right, EquipmentVec up,
-        double reach, double phase, double wobblePhase, double position, double crackle, double agitation) {
+    private static Vec3d filamentPoint(OrbViz orb, Vec3d direction, Vec3d right, Vec3d up, double reach, double phase,
+        double wobblePhase, double position, double crackle, double agitation) {
         double along = (position - 0.5) * reach * 2;
         double radialPhase = phase + position * 2.4;
         double envelope = 0.6 + 0.4 * Math.sin(Math.PI * position);
         double wobble = orb.radius() * (0.22 + 0.12 * Math.sin(wobblePhase + position * 5.2)) * (0.6 + 0.4 * agitation);
-        EquipmentVec radial = right.scale(Math.cos(radialPhase) * orb.radius() * envelope)
+        Vec3d radial = right.scale(Math.cos(radialPhase) * orb.radius() * envelope)
             .add(up.scale(Math.sin(radialPhase) * orb.radius() * envelope));
-        EquipmentVec jitter = right.scale(Math.sin(wobblePhase * 0.9 + position * 8.0) * wobble)
+        Vec3d jitter = right.scale(Math.sin(wobblePhase * 0.9 + position * 8.0) * wobble)
             .add(up.scale(Math.cos(wobblePhase * 0.73 + position * 6.4) * wobble * 0.72));
-        EquipmentVec crackleOffset = radial.normalize()
+        Vec3d crackleOffset = radial.normalize()
             .scale(crackle * orb.radius() * FILAMENT_CRACKLE);
         return orb.center()
             .add(direction.scale(along))

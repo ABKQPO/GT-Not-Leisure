@@ -14,19 +14,19 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 
-import com.science.gtnl.client.fx.world.FxArcRenderer.Color;
-import com.science.gtnl.client.fx.world.FxArcRenderer.Style;
 import com.science.gtnl.client.railgun.RailgunBolts;
 import com.science.gtnl.client.railgun.RailgunChargeState;
 import com.science.gtnl.client.railgun.RailgunHudRenderer;
 import com.science.gtnl.client.railgun.RailgunOrbRenderer;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.packet.RailgunChargeCapPacket;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
 import com.science.gtnl.common.railgun.RailgunDamage;
 import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunFireService;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnllib.client.fx.world.FxArcRenderer.Color;
+import com.science.gtnllib.client.fx.world.FxArcRenderer.Style;
+import com.science.gtnllib.utils.Vec3d;
 
 public class RailgunContracts {
 
@@ -230,7 +230,7 @@ public class RailgunContracts {
             !RailgunBolts.orb(7, 100, 0.6F)
                 .equals(RailgunBolts.orb(8, 100, 0.6F)),
             "each shooter has its own bolts");
-        EquipmentVec origin = new EquipmentVec(0, 0, 0);
+        Vec3d origin = new Vec3d(0, 0, 0);
         int fullArcs = RailgunBolts.orbArcs(1F), discharges = 0, ticks = 300;
         double farthest = 0;
         for (long tick = 0; tick < ticks; tick++) {
@@ -241,7 +241,7 @@ public class RailgunContracts {
             List<RailgunBolts.Bolt> bolts = RailgunBolts.orb(3, tick, 1F);
             check(bolts.size() <= fullArcs + RailgunBolts.ORB_MAX_DISCHARGES, "orb lightning stays sparse");
             for (int index = 0; index < bolts.size(); index++) {
-                List<EquipmentVec> points = bolts.get(index)
+                List<Vec3d> points = bolts.get(index)
                     .points();
                 if (index >= fullArcs) {
                     discharges++;
@@ -255,7 +255,7 @@ public class RailgunContracts {
                         "discharge leaves from the orb surface");
                     continue;
                 }
-                for (EquipmentVec point : points) {
+                for (Vec3d point : points) {
                     double distance = Math.sqrt(point.distanceToSqr(origin));
                     if (distance < RailgunBolts.ARC_LOW - 1.0E-9 || distance > RailgunBolts.ARC_HIGH + 1.0E-9) {
                         check(false, "surface arcs hug the orb");
@@ -298,7 +298,7 @@ public class RailgunContracts {
                 "gun lightning stays sparse");
             moves |= !bolts.equals(RailgunBolts.body(5, time + 0.25, 1F));
             for (int index = 0; index < 2; index++) {
-                List<EquipmentVec> points = bolts.get(index)
+                List<Vec3d> points = bolts.get(index)
                     .points();
                 check(
                     Math.abs(
@@ -312,7 +312,7 @@ public class RailgunContracts {
             }
             int fixed = 2 + RailgunBolts.ANCHORS_PER_SIDE * 2;
             for (int index = 2; index < fixed; index++) {
-                List<EquipmentVec> points = bolts.get(index)
+                List<Vec3d> points = bolts.get(index)
                     .points();
                 double reach = points.get(points.size() - 1)
                     .z() - RailgunBolts.GROOVE_CENTER;
@@ -328,8 +328,8 @@ public class RailgunContracts {
             }
             for (int index = fixed; index < bolts.size(); index++) {
                 RailgunBolts.Bolt bolt = bolts.get(index);
-                List<EquipmentVec> points = bolt.points();
-                EquipmentVec first = points.get(0), last = points.get(points.size() - 1);
+                List<Vec3d> points = bolt.points();
+                Vec3d first = points.get(0), last = points.get(points.size() - 1);
                 check(bolt.width() <= 0.0075, "gun lightning is thin");
                 if (inGroove(points)) {
                     flows++;
@@ -381,7 +381,7 @@ public class RailgunContracts {
             }
         }
         check(matched > 0 && lost == 0, "groove current flows smoothly while the charge rises");
-        EquipmentVec legFrom = new EquipmentVec(1, 2, 3), legTo = legFrom.add(0, 0, 0.5);
+        Vec3d legFrom = new Vec3d(1, 2, 3), legTo = legFrom.add(0, 0, 0.5);
         List<RailgunBolts.Bolt> legs = RailgunBolts.tethers(9, 40, 0.5F, legFrom, legTo);
         check(legs.size() == 2, "two tethers bind the orb");
         for (RailgunBolts.Bolt leg : legs) check(
@@ -415,7 +415,7 @@ public class RailgunContracts {
     private static List<double[]> currents(List<RailgunBolts.Bolt> bolts) {
         List<double[]> currents = new ArrayList<>();
         for (int index = 2 + RailgunBolts.ANCHORS_PER_SIDE * 2; index < bolts.size(); index++) {
-            List<EquipmentVec> points = bolts.get(index)
+            List<Vec3d> points = bolts.get(index)
                 .points();
             if (inGroove(points)) currents.add(
                 new double[] { points.get(0)
@@ -426,8 +426,8 @@ public class RailgunContracts {
         return currents;
     }
 
-    private static boolean inGroove(List<EquipmentVec> points) {
-        for (EquipmentVec point : points) {
+    private static boolean inGroove(List<Vec3d> points) {
+        for (Vec3d point : points) {
             if (point.z() < RailgunBolts.GROOVE_FRONT - 1.0E-9 || point.z() > RailgunBolts.GROOVE_BACK + 1.0E-9
                 || point.y() < RailgunBolts.GROOVE_LOW - 1.0E-9
                 || point.y() > RailgunBolts.GROOVE_HIGH + 1.0E-9
@@ -437,11 +437,11 @@ public class RailgunContracts {
         return true;
     }
 
-    private static boolean onEdge(EquipmentVec point) {
+    private static boolean onEdge(Vec3d point) {
         for (RailgunBolts.Edge edge : RailgunBolts.HOP_EDGES) {
             for (int side = -1; side <= 1; side += 2) {
-                EquipmentVec from = edge.at(0, side), to = edge.at(1, side);
-                EquipmentVec along = to.subtract(from);
+                Vec3d from = edge.at(0, side), to = edge.at(1, side);
+                Vec3d along = to.subtract(from);
                 double t = point.subtract(from)
                     .dot(along) / along.dot(along);
                 if (t < -1.0E-9 || t > 1 + 1.0E-9) continue;
@@ -451,10 +451,10 @@ public class RailgunContracts {
         return false;
     }
 
-    private static double reach(List<RailgunBolts.Bolt> bolts, EquipmentVec origin) {
+    private static double reach(List<RailgunBolts.Bolt> bolts, Vec3d origin) {
         double farthest = 0;
-        for (RailgunBolts.Bolt bolt : bolts) for (EquipmentVec point : bolt.points())
-            farthest = Math.max(farthest, Math.sqrt(point.distanceToSqr(origin)));
+        for (RailgunBolts.Bolt bolt : bolts)
+            for (Vec3d point : bolt.points()) farthest = Math.max(farthest, Math.sqrt(point.distanceToSqr(origin)));
         return farthest;
     }
 

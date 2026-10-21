@@ -92,8 +92,8 @@ public class HudSettingsCard extends ParentWidget<HudSettingsCard> {
                 .size(WIDTH - style.padding * 2 - CloseButton.SIZE - style.spacingSmall, TEXT_HEIGHT));
         child(
             new CloseButton().action(() -> canvas.select(null))
-                .top(style.spacingSmall)
-                .right(style.spacingSmall));
+                .top(style.spacingMedium)
+                .right(style.spacingMedium));
         Layout rows = Layout.rows(style, WIDTH);
         List<IWidget> lines = new ArrayList<>();
         for (Setting setting : element.settings(HudLayout.timing(element)))

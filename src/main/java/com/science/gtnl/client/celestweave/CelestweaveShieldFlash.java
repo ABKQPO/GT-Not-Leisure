@@ -13,11 +13,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
-import com.science.gtnl.client.fx.world.FxArcRenderer;
-import com.science.gtnl.client.fx.world.FxCamera;
-import com.science.gtnl.client.fx.world.FxRenderHelper;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnllib.client.fx.FxColor;
+import com.science.gtnllib.client.fx.world.FxArcRenderer;
+import com.science.gtnllib.client.fx.world.FxCamera;
+import com.science.gtnllib.client.fx.world.FxRenderHelper;
+import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -32,15 +32,15 @@ public class CelestweaveShieldFlash {
     private static final List<Flash> ACTIVE = new ArrayList<>();
     private static ResourceLocation hex;
 
-    private record Flash(int entityId, EquipmentVec direction, long born, int lifetime, int rgb, boolean save) {}
+    private record Flash(int entityId, Vec3d direction, long born, int lifetime, int rgb, boolean save) {}
 
-    private record Shell(Flash flash, EquipmentVec center, double horizontal, double vertical, float progress,
+    private record Shell(Flash flash, Vec3d center, double horizontal, double vertical, float progress,
         float strength) {}
 
     static void spawn(EntityLivingBase entity, float x, float y, float z, int rgb, boolean save, boolean omni) {
-        EquipmentVec center = center(entity, 1F);
-        EquipmentVec offset = new EquipmentVec(x, y, z).subtract(center);
-        EquipmentVec direction = omni || offset.length() < 0.4 ? null : offset.normalize();
+        Vec3d center = center(entity, 1F);
+        Vec3d offset = new Vec3d(x, y, z).subtract(center);
+        Vec3d direction = omni || offset.length() < 0.4 ? null : offset.normalize();
         if (ACTIVE.size() >= MAX_ACTIVE) ACTIVE.remove(0);
         ACTIVE.add(
             new Flash(
@@ -70,37 +70,36 @@ public class CelestweaveShieldFlash {
         return entity.height * 0.62;
     }
 
-    private static EquipmentVec center(Entity entity, float partialTicks) {
-        return EquipmentVec.interpolated(entity, partialTicks)
+    private static Vec3d center(Entity entity, float partialTicks) {
+        return Vec3d.interpolated(entity, partialTicks)
             .add(
-                EquipmentVec.center(entity)
-                    .subtract(EquipmentVec.pos(entity)));
+                Vec3d.center(entity)
+                    .subtract(Vec3d.pos(entity)));
     }
 
-    private static EquipmentVec surface(EquipmentVec center, EquipmentVec normal, double horizontal, double vertical) {
+    private static Vec3d surface(Vec3d center, Vec3d normal, double horizontal, double vertical) {
         return center.add(normal.x() * horizontal, normal.y() * vertical, normal.z() * horizontal);
     }
 
-    private static EquipmentVec randomUnit() {
-        EquipmentVec vector = new EquipmentVec(
+    private static Vec3d randomUnit() {
+        Vec3d vector = new Vec3d(
             CelestweaveArcs.RNG.nextGaussian(),
             CelestweaveArcs.RNG.nextGaussian(),
             CelestweaveArcs.RNG.nextGaussian());
-        return vector.length() < 1.0E-3 ? new EquipmentVec(0, 1, 0) : vector.normalize();
+        return vector.length() < 1.0E-3 ? new Vec3d(0, 1, 0) : vector.normalize();
     }
 
-    private static void sparks(EntityLivingBase entity, EquipmentVec center, EquipmentVec direction, int rgb,
-        boolean save) {
+    private static void sparks(EntityLivingBase entity, Vec3d center, Vec3d direction, int rgb, boolean save) {
         double horizontal = horizontal(entity), vertical = vertical(entity);
         int bright = FxColor.mixWhite(rgb, 0.45F);
         int count = save ? 10 : 6;
         for (int i = 0; i < count; i++) {
-            EquipmentVec from = direction != null ? direction : randomUnit();
-            EquipmentVec axis = from.cross(randomUnit());
+            Vec3d from = direction != null ? direction : randomUnit();
+            Vec3d axis = from.cross(randomUnit());
             if (axis.length() < 1.0E-3) continue;
             axis = axis.normalize();
             double angle = CelestweaveArcs.rand(0.35F, 0.8F);
-            EquipmentVec to = from.scale(Math.cos(angle))
+            Vec3d to = from.scale(Math.cos(angle))
                 .add(
                     axis.cross(from)
                         .scale(Math.sin(angle)));
@@ -146,7 +145,7 @@ public class CelestweaveShieldFlash {
         FxRenderHelper.renderGlow(FxRenderHelper.Sprite.RADIAL, () -> { for (Shell shell : shells) impact(shell); });
     }
 
-    private static void emit(Shell shell, EquipmentVec camera, boolean hexPass) {
+    private static void emit(Shell shell, Vec3d camera, boolean hexPass) {
         for (int ring = 0; ring < LATITUDES; ring++) {
             for (int segment = 0; segment < LONGITUDES; segment++) {
                 vertex(shell, ring, segment, camera, hexPass);
@@ -157,15 +156,15 @@ public class CelestweaveShieldFlash {
         }
     }
 
-    private static void vertex(Shell shell, int ring, int segment, EquipmentVec camera, boolean hexPass) {
+    private static void vertex(Shell shell, int ring, int segment, Vec3d camera, boolean hexPass) {
         Flash flash = shell.flash;
         float progress = shell.progress;
         double latitude = Math.PI * (ring / (double) LATITUDES - 0.5);
         double longitude = Math.PI * 2 * segment / LONGITUDES;
         double nx = Math.cos(latitude) * Math.cos(longitude), ny = Math.sin(latitude),
             nz = Math.cos(latitude) * Math.sin(longitude);
-        EquipmentVec point = shell.center.add(nx * shell.horizontal, ny * shell.vertical, nz * shell.horizontal);
-        EquipmentVec view = camera.subtract(point)
+        Vec3d point = shell.center.add(nx * shell.horizontal, ny * shell.vertical, nz * shell.horizontal);
+        Vec3d view = camera.subtract(point)
             .normalize();
         double facing = Math.abs(nx * view.x() + ny * view.y() + nz * view.z());
         double rim = Math.pow(1 - facing, 3) * (flash.save ? 0.6 : 0.35);
@@ -207,7 +206,7 @@ public class CelestweaveShieldFlash {
         Flash flash = shell.flash;
         float k = Math.max(0F, 1F - shell.progress / 0.35F);
         if (flash.direction == null || k <= 0F) return;
-        EquipmentVec point = surface(shell.center, flash.direction, shell.horizontal, shell.vertical);
+        Vec3d point = surface(shell.center, flash.direction, shell.horizontal, shell.vertical);
         int light = FxColor.mixWhite(flash.rgb, 0.3F);
         Tessellator tessellator = Tessellator.instance;
         tessellator.setColorRGBA_F(FxColor.red(light), FxColor.green(light), FxColor.blue(light), 0.55F * k);

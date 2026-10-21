@@ -37,7 +37,6 @@ import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
 import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.science.gtnl.client.celestweave.CelestweaveClientEvents.HitOrigin;
 import com.science.gtnl.client.equipment.EquipmentWheelScreen;
-import com.science.gtnl.client.fx.world.FxVisibility;
 import com.science.gtnl.common.celestweave.CelestweaveBackpack;
 import com.science.gtnl.common.celestweave.CelestweaveBackpackData;
 import com.science.gtnl.common.celestweave.CelestweaveBehaviors;
@@ -50,7 +49,6 @@ import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
 import com.science.gtnl.common.celestweave.CelestweaveStripStyle;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.equipment.EquipmentModules;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.equipment.IEquipmentVariant;
 import com.science.gtnl.common.equipment.MetaLookup;
 import com.science.gtnl.common.gui.equipment.CelestweaveGui;
@@ -72,6 +70,8 @@ import com.science.gtnl.common.railgun.RailgunModule;
 import com.science.gtnl.common.railgun.RailgunSetting;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnllib.client.fx.FxEasing;
+import com.science.gtnllib.client.fx.world.FxVisibility;
+import com.science.gtnllib.utils.Vec3d;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -188,14 +188,14 @@ public class CelestweaveArmorContracts {
         check(!FxVisibility.allowed(false, 10.5, true, 10), "others hidden beyond the distance limit");
 
         ByteBuf buffer = Unpooled.buffer();
-        new EquipmentVec(1.5, -2.25, 1.0E7).write(buffer);
-        EquipmentVec read = EquipmentVec.read(buffer);
-        check(read.equals(new EquipmentVec(1.5, -2.25, 1.0E7)) && buffer.readableBytes() == 0, "vector round trip");
+        new Vec3d(1.5, -2.25, 1.0E7).write(buffer);
+        Vec3d read = Vec3d.read(buffer);
+        check(read.equals(new Vec3d(1.5, -2.25, 1.0E7)) && buffer.readableBytes() == 0, "vector round trip");
         ByteBuf broken = Unpooled.buffer();
-        new EquipmentVec(Double.NaN, 0, 0).write(broken);
+        new Vec3d(Double.NaN, 0, 0).write(broken);
         boolean rejected = false;
         try {
-            EquipmentVec.read(broken);
+            Vec3d.read(broken);
         } catch (IllegalArgumentException expected) {
             rejected = true;
         }
@@ -845,8 +845,8 @@ public class CelestweaveArmorContracts {
             CelestweaveFxPacket.class.getConstructor());
         check((int) field(fx, "entityId") == 42, "fx entity id");
         check(field(fx, "type") == CelestweaveFxPacket.Type.SHIELD_AMBIENT, "fx type");
-        near(-2.25, ((EquipmentVec) field(fx, "position")).y(), "fx y");
-        near(1.0E6, ((EquipmentVec) field(fx, "position")).z(), "fx z keeps precision");
+        near(-2.25, ((Vec3d) field(fx, "position")).y(), "fx y");
+        near(1.0E6, ((Vec3d) field(fx, "position")).z(), "fx z keeps precision");
         String[] wireOrder = { "SHIELD_HIT", "DASH", "LAND", "REFLECT", "SAVE", "LIGHTNING", "SHIELD_AMBIENT" };
         CelestweaveFxPacket.Type[] types = CelestweaveFxPacket.Type.values();
         check(types.length == wireOrder.length, "fx types keep their wire order");
@@ -860,7 +860,7 @@ public class CelestweaveArmorContracts {
         ByteBuf unknown = Unpooled.buffer();
         unknown.writeInt(42);
         unknown.writeByte(types.length);
-        EquipmentVec.ZERO.write(unknown);
+        Vec3d.ZERO.write(unknown);
         CelestweaveFxPacket dropped = new CelestweaveFxPacket();
         dropped.fromBytes(unknown);
         check(field(dropped, "type") == null, "fx packet with unknown type is dropped");
@@ -907,7 +907,7 @@ public class CelestweaveArmorContracts {
         EntityPlayerMP target = allocate(EntityPlayerMP.class);
         setField(Entity.class, target, "boundingBox", AxisAlignedBB.getBoundingBox(-0.3, 64, -0.3, 0.3, 65.8, 0.3));
         target.height = 1.8F;
-        EquipmentVec ahead = new HitOrigin(0, 70, 2).offset(target, 0);
+        Vec3d ahead = new HitOrigin(0, 70, 2).offset(target, 0);
         near(2, HitOrigin.forward(ahead, 0), "a hit from the south is ahead when facing south");
         near(0, HitOrigin.lateral(ahead, 0), "a hit from straight ahead is not to the side");
         near(6, ahead.y(), "hit height is measured from the feet");
@@ -916,7 +916,7 @@ public class CelestweaveArmorContracts {
             new HitOrigin(0, 70, 2).offset(target, 0.5)
                 .y(),
             "hit height is measured from the given body height");
-        EquipmentVec west = new HitOrigin(-2, 64, 0).offset(target, 0);
+        Vec3d west = new HitOrigin(-2, 64, 0).offset(target, 0);
         near(2, HitOrigin.lateral(west, 0), "west is to the right when facing south");
         near(2, HitOrigin.forward(west, 90), "west is ahead when facing west");
 

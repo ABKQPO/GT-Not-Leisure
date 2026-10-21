@@ -13,8 +13,8 @@ import net.minecraft.util.ResourceLocation;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.equipment.EquipmentSound;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.railgun.RailgunData;
+import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -115,8 +115,7 @@ public class RailgunSounds {
         return sound;
     }
 
-    public static void playAt(EquipmentSound channel, EquipmentVec at, String name, float volume, float pitch,
-        double range) {
+    public static void playAt(EquipmentSound channel, Vec3d at, String name, float volume, float pitch, double range) {
         Entity listener = listener();
         if (at == null || listener == null || range <= 0) return;
         float scaled = distanceFalloff(listener, at.x(), at.y(), at.z(), range) * volume * channel.volume();
@@ -137,7 +136,7 @@ public class RailgunSounds {
 
     public static class PointSound extends PositionedSound {
 
-        public PointSound(String name, float volume, float pitch, EquipmentVec at) {
+        public PointSound(String name, float volume, float pitch, Vec3d at) {
             super(new ResourceLocation(ScienceNotLeisure.RESOURCE_ROOT_ID, "railgun." + name));
             this.volume = volume;
             this.field_147663_c = pitch;

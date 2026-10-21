@@ -5,15 +5,15 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 
-import com.science.gtnl.client.fx.world.FxShockwaveRenderer;
-import com.science.gtnl.client.fx.world.FxVisibility;
 import com.science.gtnl.common.equipment.EquipmentSound;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.packet.RailgunBeamChainFxPacket;
 import com.science.gtnl.common.packet.RailgunFireFxPacket;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnllib.client.fx.world.FxShockwaveRenderer;
+import com.science.gtnllib.client.fx.world.FxVisibility;
 import com.science.gtnllib.client.hud.HudRegistry;
+import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -61,7 +61,7 @@ public class RailgunClientFx {
             impactSound(packet);
             return;
         }
-        EquipmentVec muzzle = RailgunMuzzleAnchor
+        Vec3d muzzle = RailgunMuzzleAnchor
             .muzzle(packet.shooterId, packet.from, Minecraft.getMinecraft().timer.renderPartialTicks);
         RailgunOrbRenderer.launch(packet.shooterId, muzzle, packet.firstHit, packet.tier, () -> impact(packet, muzzle));
     }
@@ -70,11 +70,11 @@ public class RailgunClientFx {
         return packet.tier == RailgunChargeTier.EHV3.ordinal();
     }
 
-    private static void impact(RailgunFireFxPacket packet, EquipmentVec muzzle) {
+    private static void impact(RailgunFireFxPacket packet, Vec3d muzzle) {
         WorldClient world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
         boolean max = max(packet);
-        EquipmentVec hit = packet.firstHit;
+        Vec3d hit = packet.firstHit;
         float intensity = 1F + 0.22F * Math.max(0, packet.tier - 1);
         RailgunBeamRenderer.shot(packet.shooterId, muzzle, hit, true, intensity);
         double radius = packet.impactRadius;
@@ -84,7 +84,7 @@ public class RailgunClientFx {
             shockwave(hit, radius * 0.5, Math.max(35, waveLife - 15));
         }
         for (int index = 0; index + 1 < packet.chainPath.size(); index += 2) {
-            EquipmentVec target = packet.chainPath.get(index + 1);
+            Vec3d target = packet.chainPath.get(index + 1);
             RailgunArcs.chain(packet.chainPath.get(index), target, max ? 40 : 32, true);
             sparks(world, target, CHAIN_SPARKS, CHAIN_SPARK_SPREAD);
         }
@@ -127,7 +127,7 @@ public class RailgunClientFx {
             SHOT_HEARING_RANGE);
     }
 
-    public static boolean visible(int shooterId, EquipmentVec at) {
+    public static boolean visible(int shooterId, Vec3d at) {
         return FxVisibility.allowed(
             FxVisibility.isViewer(shooterId),
             FxVisibility.distanceToViewer(at),
@@ -135,7 +135,7 @@ public class RailgunClientFx {
             MainConfig.client.railgunFxDistance);
     }
 
-    private static void shockwave(EquipmentVec at, double radius, int lifetime) {
+    private static void shockwave(Vec3d at, double radius, int lifetime) {
         FxShockwaveRenderer.spawn(
             at,
             radius,
@@ -145,7 +145,7 @@ public class RailgunClientFx {
             RailgunOrbRenderer.SHOCKWAVE_BLUE);
     }
 
-    private static void sparks(WorldClient world, EquipmentVec at, int count, double spread) {
+    private static void sparks(WorldClient world, Vec3d at, int count, double spread) {
         for (int spark = 0; spark < count; spark++) world.spawnParticle(
             "fireworksSpark",
             at.x(),

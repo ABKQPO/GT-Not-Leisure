@@ -1,4 +1,4 @@
-package com.science.gtnl.client.fx.world;
+package com.science.gtnllib.client.fx.world;
 
 import java.nio.FloatBuffer;
 
@@ -9,7 +9,7 @@ import net.minecraft.entity.Entity;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnl.common.equipment.EquipmentVec;
+import com.science.gtnllib.utils.Vec3d;
 
 public class FxCamera {
 
@@ -18,22 +18,22 @@ public class FxCamera {
     private static final double[] ROTATION = new double[9];
     private static final FloatBuffer PROJECTION = BufferUtils.createFloatBuffer(16);
 
-    private static EquipmentVec position = EquipmentVec.ZERO;
+    private static Vec3d position = Vec3d.ZERO;
     private static float focalX = 1F, focalY = 1F;
 
     private FxCamera() {}
 
-    public static EquipmentVec position() {
+    public static Vec3d position() {
         return position;
     }
 
-    public static EquipmentVec eye() {
+    public static Vec3d eye() {
         Minecraft minecraft = Minecraft.getMinecraft();
         return eye(minecraft.renderViewEntity, minecraft.timer.renderPartialTicks);
     }
 
-    public static EquipmentVec eye(Entity entity, float partialTicks) {
-        return entity == null ? EquipmentVec.ZERO : EquipmentVec.eye(entity, partialTicks);
+    public static Vec3d eye(Entity entity, float partialTicks) {
+        return entity == null ? Vec3d.ZERO : Vec3d.eye(entity, partialTicks);
     }
 
     public static void capture() {
@@ -47,13 +47,10 @@ public class FxCamera {
         GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, MATRIX);
         for (int row = 0; row < 3; row++)
             for (int column = 0; column < 3; column++) ROTATION[row * 3 + column] = MATRIX.get(column * 4 + row);
-        EquipmentVec fallback = eye();
-        EquipmentVec local = rotate(new EquipmentVec(MATRIX.get(12), MATRIX.get(13), MATRIX.get(14))).scale(-1);
-        EquipmentVec renderOrigin = new EquipmentVec(
-            RenderManager.renderPosX,
-            RenderManager.renderPosY,
-            RenderManager.renderPosZ);
-        EquipmentVec derived = renderOrigin.add(local);
+        Vec3d fallback = eye();
+        Vec3d local = rotate(new Vec3d(MATRIX.get(12), MATRIX.get(13), MATRIX.get(14))).scale(-1);
+        Vec3d renderOrigin = new Vec3d(RenderManager.renderPosX, RenderManager.renderPosY, RenderManager.renderPosZ);
+        Vec3d derived = renderOrigin.add(local);
         position = derived.finite() && derived.distanceToSqr(fallback) < MAX_TRUSTED_DISTANCE * MAX_TRUSTED_DISTANCE
             ? derived
             : fallback;
@@ -67,21 +64,21 @@ public class FxCamera {
         return focalY;
     }
 
-    public static EquipmentVec toWorld(EquipmentVec eyeSpace) {
+    public static Vec3d toWorld(Vec3d eyeSpace) {
         return position.add(rotate(eyeSpace));
     }
 
-    public static EquipmentVec direction(EquipmentVec eyeSpace) {
+    public static Vec3d direction(Vec3d eyeSpace) {
         return rotate(eyeSpace);
     }
 
-    public static EquipmentVec forward() {
-        return rotate(new EquipmentVec(0, 0, -1));
+    public static Vec3d forward() {
+        return rotate(new Vec3d(0, 0, -1));
     }
 
-    private static EquipmentVec rotate(EquipmentVec eyeSpace) {
+    private static Vec3d rotate(Vec3d eyeSpace) {
         double x = eyeSpace.x(), y = eyeSpace.y(), z = eyeSpace.z();
-        return new EquipmentVec(
+        return new Vec3d(
             ROTATION[0] * x + ROTATION[3] * y + ROTATION[6] * z,
             ROTATION[1] * x + ROTATION[4] * y + ROTATION[7] * z,
             ROTATION[2] * x + ROTATION[5] * y + ROTATION[8] * z);

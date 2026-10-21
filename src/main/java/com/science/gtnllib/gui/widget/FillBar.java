@@ -39,29 +39,41 @@ public class FillBar extends Widget<FillBar> {
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         Theme colors = widgetTheme.getTheme() instanceof Theme bar ? bar : Theme.KEY.getDefaultValue();
         int width = getArea().w(), height = getArea().h();
-        GuiDraw.drawRect(0, 0, width, height, colors.track);
-        int filled = filledWidth(value.getAsDouble(), width);
-        if (filled > 0) GuiDraw.drawRect(0, 0, filled, height, colors.fill);
+        if (colors.trackSkin == null || colors.fillSkin == null) {
+            GuiDraw.drawRect(0, 0, width, height, colors.track);
+            int filled = filledWidth(value.getAsDouble(), width);
+            if (filled > 0) GuiDraw.drawRect(0, 0, filled, height, colors.fill);
+            return;
+        }
+        colors.trackSkin.draw(0, 0, width, height, 0);
+        int filled = filledWidth(value.getAsDouble(), width - 2);
+        if (filled > 0) colors.fillSkin.draw(1, 1, filled, height - 2, colors.fill);
     }
 
     public static class Theme extends WidgetTheme {
 
-        public static final String TRACK = "trackColor", FILL = "fillColor";
+        public static final String TRACK = "trackColor", FILL = "fillColor", TRACK_SKIN = "trackSkin",
+            FILL_SKIN = "fillSkin";
         private static final int DEFAULT_SIZE = 18;
         public static final WidgetThemeKey<Theme> KEY = register(new Theme(0xFF2A2A2E, 0xFFDDDDDD));
 
         public final int track, fill;
+        public final SkinDrawable trackSkin, fillSkin;
 
         public Theme(int track, int fill) {
             super(DEFAULT_SIZE, DEFAULT_SIZE, null, Color.WHITE.main, Color.WHITE.main, false, Color.WHITE.main);
             this.track = track;
             this.fill = fill;
+            this.trackSkin = null;
+            this.fillSkin = null;
         }
 
         public Theme(Theme parent, JsonObject json, JsonObject fallback) {
             super(parent, json, fallback);
             track = JsonHelper.getColor(json, parent.track, TRACK);
             fill = JsonHelper.getColor(json, parent.fill, FILL);
+            trackSkin = SkinDrawable.read(json, TRACK_SKIN, parent.trackSkin);
+            fillSkin = SkinDrawable.read(json, FILL_SKIN, parent.fillSkin);
         }
 
         private static WidgetThemeKey<Theme> register(Theme defaults) {
@@ -78,6 +90,12 @@ public class FillBar extends Widget<FillBar> {
             public Builder colors(int track, int fill) {
                 add(TRACK, track);
                 add(FILL, fill);
+                return this;
+            }
+
+            public Builder skins(SkinDrawable track, SkinDrawable fill) {
+                SkinDrawable.write(this, TRACK_SKIN, track);
+                SkinDrawable.write(this, FILL_SKIN, fill);
                 return this;
             }
         }

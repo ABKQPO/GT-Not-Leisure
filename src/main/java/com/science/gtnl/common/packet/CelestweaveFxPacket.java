@@ -3,8 +3,8 @@ package com.science.gtnl.common.packet;
 import net.minecraft.client.Minecraft;
 
 import com.science.gtnl.client.celestweave.CelestweaveClientEvents;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
+import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -31,14 +31,14 @@ public class CelestweaveFxPacket extends ClientboundPacket {
 
     private int entityId;
     private Type type;
-    private EquipmentVec position;
+    private Vec3d position;
 
     public CelestweaveFxPacket() {}
 
     public CelestweaveFxPacket(int entityId, Type type, double x, double y, double z) {
         this.entityId = entityId;
         this.type = type;
-        this.position = new EquipmentVec(x, y, z);
+        this.position = new Vec3d(x, y, z);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class CelestweaveFxPacket extends ClientboundPacket {
         entityId = buffer.readInt();
         type = Type.byOrdinal(buffer.readByte());
         try {
-            position = EquipmentVec.read(buffer);
+            position = Vec3d.read(buffer);
         } catch (IllegalArgumentException invalid) {
             position = null;
         }

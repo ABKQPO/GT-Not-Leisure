@@ -1,4 +1,4 @@
-package com.science.gtnl.client.fx.world;
+package com.science.gtnllib.client.fx.world;
 
 import java.awt.image.BufferedImage;
 import java.util.EnumMap;
@@ -13,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnl.common.equipment.EquipmentVec;
+import com.science.gtnllib.utils.Vec3d;
 
 public class FxRenderHelper {
 
@@ -62,13 +62,12 @@ public class FxRenderHelper {
         TEXTURES.clear();
     }
 
-    public static void vertex(EquipmentVec vector) {
+    public static void vertex(Vec3d vector) {
         Tessellator.instance.addVertex(vector.x(), vector.y(), vector.z());
     }
 
-    public static void ribbon(EquipmentVec from, EquipmentVec to, double width, float red, float green, float blue,
-        float alpha) {
-        EquipmentVec side = ribbonAxis(from, to).scale(width);
+    public static void ribbon(Vec3d from, Vec3d to, double width, float red, float green, float blue, float alpha) {
+        Vec3d side = ribbonAxis(from, to).scale(width);
         Tessellator.instance.setColorRGBA_F(red, green, blue, alpha);
         vertex(from.subtract(side));
         vertex(from.add(side));
@@ -76,19 +75,19 @@ public class FxRenderHelper {
         vertex(to.subtract(side));
     }
 
-    public static void glow(EquipmentVec center, double radius, float radians) {
-        EquipmentVec direction = FxCamera.position()
+    public static void glow(Vec3d center, double radius, float radians) {
+        Vec3d direction = FxCamera.position()
             .subtract(center)
             .normalize();
-        EquipmentVec right = EquipmentVec.rightOf(direction);
-        EquipmentVec up = right.cross(direction)
+        Vec3d right = Vec3d.rightOf(direction);
+        Vec3d up = right.cross(direction)
             .normalize();
-        if (up.length() < DEGENERATE) up = new EquipmentVec(0, 1, 0);
+        if (up.length() < DEGENERATE) up = new Vec3d(0, 1, 0);
         float cosine = (float) Math.cos(radians), sine = (float) Math.sin(radians);
-        EquipmentVec sideways = right.scale(cosine)
+        Vec3d sideways = right.scale(cosine)
             .add(up.scale(sine))
             .scale(radius);
-        EquipmentVec upward = up.scale(cosine)
+        Vec3d upward = up.scale(cosine)
             .subtract(right.scale(sine))
             .scale(radius);
         uvVertex(
@@ -113,10 +112,10 @@ public class FxRenderHelper {
             1);
     }
 
-    public static void sphere(EquipmentVec center, double radius, int longitudes, int latitudes, float red, float green,
+    public static void sphere(Vec3d center, double radius, int longitudes, int latitudes, float red, float green,
         float blue, float alpha, double rim) {
         int rings = Math.max(3, latitudes), segments = Math.max(4, longitudes);
-        EquipmentVec view = FxCamera.position()
+        Vec3d view = FxCamera.position()
             .subtract(center)
             .normalize();
         for (int ring = 0; ring < rings; ring++) {
@@ -183,42 +182,41 @@ public class FxRenderHelper {
         }
     }
 
-    private static void shade(EquipmentVec center, double normalX, double normalY, double normalZ, EquipmentVec view,
-        double rim, float red, float green, float blue, float alpha) {
+    private static void shade(Vec3d center, double normalX, double normalY, double normalZ, Vec3d view, double rim,
+        float red, float green, float blue, float alpha) {
         double facing = (normalX * view.x() + normalY * view.y() + normalZ * view.z());
         double factor = facing <= 0 ? 0 : Math.pow(facing, rim);
         Tessellator.instance.setColorRGBA_F(red, green, blue, (float) (alpha * factor));
     }
 
-    public static void glowRibbon(EquipmentVec from, EquipmentVec to, double fromWidth, double toWidth) {
+    public static void glowRibbon(Vec3d from, Vec3d to, double fromWidth, double toWidth) {
         uvRibbon(from, to, fromWidth, toWidth, 0, 1);
     }
 
-    public static void uvRibbon(EquipmentVec from, EquipmentVec to, double fromWidth, double toWidth, double startV,
-        double endV) {
-        EquipmentVec axis = ribbonAxis(from, to);
-        EquipmentVec fromSide = axis.scale(fromWidth), toSide = axis.scale(toWidth);
+    public static void uvRibbon(Vec3d from, Vec3d to, double fromWidth, double toWidth, double startV, double endV) {
+        Vec3d axis = ribbonAxis(from, to);
+        Vec3d fromSide = axis.scale(fromWidth), toSide = axis.scale(toWidth);
         uvVertex(from.subtract(fromSide), 0, startV);
         uvVertex(from.add(fromSide), 1, startV);
         uvVertex(to.add(toSide), 1, endV);
         uvVertex(to.subtract(toSide), 0, endV);
     }
 
-    private static EquipmentVec ribbonAxis(EquipmentVec from, EquipmentVec to) {
-        EquipmentVec axis = to.subtract(from)
+    private static Vec3d ribbonAxis(Vec3d from, Vec3d to) {
+        Vec3d axis = to.subtract(from)
             .cross(
                 FxCamera.position()
                     .subtract(
                         from.add(to)
                             .scale(0.5)))
             .normalize();
-        return axis.length() < DEGENERATE ? EquipmentVec.rightOf(
+        return axis.length() < DEGENERATE ? Vec3d.rightOf(
             to.subtract(from)
                 .normalize())
             : axis;
     }
 
-    private static void uvVertex(EquipmentVec vector, double u, double v) {
+    private static void uvVertex(Vec3d vector, double u, double v) {
         Tessellator.instance.addVertexWithUV(vector.x(), vector.y(), vector.z(), u, v);
     }
 

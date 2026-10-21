@@ -97,8 +97,9 @@ public class BoundaryContracts {
             String name = RESOURCES.relativize(file)
                 .toString()
                 .replace('\\', '/');
-            boolean lang = name.endsWith(".lang"), shader = name.endsWith(".glsl");
-            check(lang || shader, name + " is a GTNLLib lang file or shader");
+            boolean lang = name.endsWith(".lang"), shader = name.endsWith(".glsl"),
+                texture = name.startsWith("textures/") && name.endsWith(".png");
+            check(lang || shader || texture, name + " is a GTNLLib lang file, shader or texture");
             if (lang) for (String key : langKeys(file))
                 check(key.startsWith(GTNLLib.MODID + "."), name + " key " + key + " starts with the gtnllib prefix");
             if (shader) {

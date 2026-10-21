@@ -3,6 +3,7 @@ package com.science.gtnllib;
 import static com.science.gtnllib.GTNLLibContractTest.SOURCES;
 import static com.science.gtnllib.GTNLLibContractTest.check;
 import static com.science.gtnllib.GTNLLibContractTest.compact;
+import static com.science.gtnllib.GTNLLibContractTest.field;
 import static com.science.gtnllib.GTNLLibContractTest.read;
 
 import java.io.IOException;
@@ -18,19 +19,20 @@ import com.science.gtnllib.gui.layout.LayoutMath;
 import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.layout.Size;
 import com.science.gtnllib.gui.widget.CloseButton;
+import com.science.gtnllib.gui.widget.Divider;
 import com.science.gtnllib.gui.widget.SlideSwitch;
 
 public class LayoutContracts {
 
     private LayoutContracts() {}
 
-    static void run() throws IOException {
+    static void run() throws IOException, ReflectiveOperationException {
         layoutRules();
         adaptiveRules();
         layoutSources();
     }
 
-    private static void adaptiveRules() {
+    private static void adaptiveRules() throws ReflectiveOperationException {
         check(
             Arrays.equals(LayoutMath.offsets(new int[] { 79, 79 }, 2), new int[] { 0, 81 })
                 && LayoutMath.offsets(new int[0], 2).length == 0,
@@ -76,6 +78,12 @@ public class LayoutContracts {
         check(
             rows.stackHeight(Arrays.asList(rows.section(IKey.str("title"), 0), grid)) == 16 + grid.contentHeight(),
             "a stack of rows adds one row per line and the current height of each grid");
+        IWidget rule = rows.section(IKey.str("title"), 0xFF123456)
+            .getChildren()
+            .get(1);
+        check(
+            rule instanceof Divider && (int) field(rule, "color") == 0xFF123456,
+            "a section title sits over a themed divider in the title color");
         check(
             CloseButton.inset(8, LayoutTheme.DEFAULT) == 6 && CloseButton.inset(10, LayoutTheme.DEFAULT) == 8
                 && CloseButton.reserve(8, LayoutTheme.DEFAULT) == 11

@@ -1,9 +1,9 @@
-package com.science.gtnl.client.fx.world;
+package com.science.gtnllib.client.fx.world;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 
-import com.science.gtnl.common.equipment.EquipmentVec;
+import com.science.gtnllib.utils.Vec3d;
 
 public class FxVisibility {
 
@@ -27,7 +27,7 @@ public class FxVisibility {
         return viewer == null || viewer == entity ? 0 : viewer.getDistanceToEntity(entity);
     }
 
-    public static double distanceToViewer(EquipmentVec point) {
+    public static double distanceToViewer(Vec3d point) {
         Entity viewer = Minecraft.getMinecraft().renderViewEntity;
         if (viewer == null || point == null) return 0;
         return Math.sqrt(viewer.getDistanceSq(point.x(), point.y(), point.z()));

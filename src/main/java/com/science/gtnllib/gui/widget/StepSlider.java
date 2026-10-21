@@ -220,7 +220,16 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
         if (colors == null && tickColors == null) return base;
         int[] main = colors != null ? colors : new int[] { base.track, base.fill, base.cursor, base.cursorText };
         int[] ticks = tickColors != null ? tickColors : new int[] { base.tick, base.milestone };
-        return new Theme(main[0], main[1], main[2], main[3], ticks[0], ticks[1]);
+        return new Theme(
+            main[0],
+            main[1],
+            main[2],
+            main[3],
+            ticks[0],
+            ticks[1],
+            base.trackSkin,
+            base.fillSkin,
+            base.tagSkin);
     }
 
     @Override
@@ -232,9 +241,14 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
         float cursor = notchPosition(current, steps, length, vertical);
         float origin = notchPosition(0, steps, length, vertical);
         int fill = on ? palette.fill : INACTIVE_FILL, light = shade(fill, 1.35F), edge = shade(palette.track, 0.6F);
-        bar(0, trackStart - 1, length, TRACK_THICKNESS + 2, edge, edge);
-        bar(1, trackStart, length - 2, TRACK_THICKNESS, palette.track, palette.track);
-        bar(Math.min(origin, cursor), trackStart, Math.abs(cursor - origin) + 1, TRACK_THICKNESS, light, fill);
+        float fillStart = Math.min(origin, cursor), fillLength = Math.abs(cursor - origin) + 1;
+        if (vertical || palette.trackSkin == null) {
+            bar(0, trackStart - 1, length, TRACK_THICKNESS + 2, edge, edge);
+            bar(1, trackStart, length - 2, TRACK_THICKNESS, palette.track, palette.track);
+        } else palette.trackSkin.draw(0, (int) trackStart - 1, length, TRACK_THICKNESS + 2, 0);
+        if (vertical || palette.fillSkin == null) bar(fillStart, trackStart, fillLength, TRACK_THICKNESS, light, fill);
+        else palette.fillSkin
+            .draw(Math.round(fillStart), (int) trackStart, Math.round(fillLength), TRACK_THICKNESS, fill);
         float tickStart = trackStart + TRACK_THICKNESS + TICK_GAP;
         boolean minorTicks = (length - 3F) / steps >= MIN_TICK_SPACING;
         for (int step = 0; step <= steps; step++) {
@@ -277,9 +291,19 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
         int across = clamp(Math.round(trackCenter - acrossSize / 2F), thickness() - acrossSize);
         int tagX = vertical ? across : along, tagY = vertical ? along : across;
         int tag = on ? palette.cursor : INACTIVE_TAG, textColor = on ? palette.cursorText : INACTIVE_TEXT;
-        GuiDraw.drawRect(tagX, tagY, tagWidth, tagHeight, shade(tag, on && (dragging || isHovering()) ? 0.75F : 0.55F));
-        GuiDraw
-            .drawRect(tagX + 1, tagY + 1, tagWidth - 2, tagHeight - 2, tag, tag, shade(tag, 0.88F), shade(tag, 0.88F));
+        boolean held = on && (dragging || isHovering());
+        if (vertical || palette.tagSkin == null) {
+            GuiDraw.drawRect(tagX, tagY, tagWidth, tagHeight, shade(tag, held ? 0.75F : 0.55F));
+            GuiDraw.drawRect(
+                tagX + 1,
+                tagY + 1,
+                tagWidth - 2,
+                tagHeight - 2,
+                tag,
+                tag,
+                shade(tag, 0.88F),
+                shade(tag, 0.88F));
+        } else palette.tagSkin.draw(tagX, tagY, tagWidth, tagHeight, held ? tag : shade(tag, 0.88F));
         drawCompact(
             text,
             tagX + Math.round((tagWidth - textWidth) / 2F),
@@ -333,14 +357,21 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
     public static class Theme extends WidgetTheme {
 
         public static final String TRACK = "trackColor", FILL = "fillColor", CURSOR = "cursorColor",
-            CURSOR_TEXT = "cursorTextColor", TICK = "tickColor", MILESTONE = "milestoneColor";
+            CURSOR_TEXT = "cursorTextColor", TICK = "tickColor", MILESTONE = "milestoneColor", TRACK_SKIN = "trackSkin",
+            FILL_SKIN = "fillSkin", TAG_SKIN = "tagSkin";
         private static final int DEFAULT_SIZE = 18;
         public static final WidgetThemeKey<Theme> KEY = register(
             new Theme(0xFF1E1A22, 0xFFB98A3C, 0xFFF4E2B0, 0xFF442000, 0x55FFFFFF, 0xB0FFFFFF));
 
         public final int track, fill, cursor, cursorText, tick, milestone;
+        public final SkinDrawable trackSkin, fillSkin, tagSkin;
 
         public Theme(int track, int fill, int cursor, int cursorText, int tick, int milestone) {
+            this(track, fill, cursor, cursorText, tick, milestone, null, null, null);
+        }
+
+        public Theme(int track, int fill, int cursor, int cursorText, int tick, int milestone, SkinDrawable trackSkin,
+            SkinDrawable fillSkin, SkinDrawable tagSkin) {
             super(DEFAULT_SIZE, DEFAULT_SIZE, null, Color.WHITE.main, Color.TEXT_COLOR_DARK, false, Color.WHITE.main);
             this.track = track;
             this.fill = fill;
@@ -348,6 +379,9 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
             this.cursorText = cursorText;
             this.tick = tick;
             this.milestone = milestone;
+            this.trackSkin = trackSkin;
+            this.fillSkin = fillSkin;
+            this.tagSkin = tagSkin;
         }
 
         public Theme(Theme parent, JsonObject json, JsonObject fallback) {
@@ -358,6 +392,9 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
             cursorText = JsonHelper.getColor(json, parent.cursorText, CURSOR_TEXT);
             tick = JsonHelper.getColor(json, parent.tick, TICK);
             milestone = JsonHelper.getColor(json, parent.milestone, MILESTONE);
+            trackSkin = SkinDrawable.read(json, TRACK_SKIN, parent.trackSkin);
+            fillSkin = SkinDrawable.read(json, FILL_SKIN, parent.fillSkin);
+            tagSkin = SkinDrawable.read(json, TAG_SKIN, parent.tagSkin);
         }
 
         private static WidgetThemeKey<Theme> register(Theme defaults) {
@@ -376,6 +413,13 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
                 add(FILL, fill);
                 add(CURSOR, cursor);
                 add(CURSOR_TEXT, cursorText);
+                return this;
+            }
+
+            public Builder skins(SkinDrawable track, SkinDrawable fill, SkinDrawable tag) {
+                SkinDrawable.write(this, TRACK_SKIN, track);
+                SkinDrawable.write(this, FILL_SKIN, fill);
+                SkinDrawable.write(this, TAG_SKIN, tag);
                 return this;
             }
 

@@ -13,7 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.FakePlayer;
 
-import com.science.gtnl.common.equipment.EquipmentVec;
+import com.science.gtnllib.utils.Vec3d;
 
 public class RailgunTargetRules {
 
@@ -32,16 +32,16 @@ public class RailgunTargetRules {
         return target.canBeCollidedWith();
     }
 
-    public static Entity damageAnchor(Entity target, EquipmentVec reference) {
+    public static Entity damageAnchor(Entity target, Vec3d reference) {
         if (target == null || target instanceof EntityDragonPart || !(target instanceof IEntityMultiPart))
             return target;
-        EquipmentVec center = EquipmentVec.center(target);
-        EquipmentVec point = reference == null || !reference.finite() ? center : reference;
+        Vec3d center = Vec3d.center(target);
+        Vec3d point = reference == null || !reference.finite() ? center : reference;
         if (point.distanceToSqr(center) > LOCAL_REFERENCE_RANGE) point = center;
         EntityDragonPart nearest = null;
         double nearestDistance = Double.POSITIVE_INFINITY;
         for (EntityDragonPart part : parts(target)) {
-            double distance = EquipmentVec.center(part)
+            double distance = Vec3d.center(part)
                 .distanceToSqr(point);
             if (distance < nearestDistance) {
                 nearestDistance = distance;

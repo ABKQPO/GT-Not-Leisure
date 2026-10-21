@@ -24,7 +24,6 @@ import com.science.gtnl.common.celestweave.CelestweaveEnergy;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.item.items.equipment.CelestweaveModuleItem;
 import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
 import com.science.gtnl.common.item.items.equipment.RailgunModuleItem;
@@ -36,6 +35,7 @@ import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunEnergy;
 import com.science.gtnl.common.railgun.RailgunModule;
 import com.science.gtnl.common.railgun.RailgunSetting;
+import com.science.gtnllib.utils.Vec3d;
 import com.sun.management.ThreadMXBean;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -152,14 +152,12 @@ public class EquipmentPerfBench {
         System.out.println("== 网络与 NBT 大小 ==");
         size("护甲胸甲 NBT（压缩后，装备同步时发送）", chest);
         size("电磁炮 NBT（压缩后，每次扣电重发）", railgun);
-        List<EquipmentVec> path = new ArrayList<>();
-        for (int i = 0; i < 256; i++) path.add(new EquipmentVec(i, 64, i));
-        packet(
-            "RailgunFireFxPacket（满 256 点路径）",
-            new RailgunFireFxPacket(1, EquipmentVec.ZERO, EquipmentVec.ZERO, path, 3, 10F));
+        List<Vec3d> path = new ArrayList<>();
+        for (int i = 0; i < 256; i++) path.add(new Vec3d(i, 64, i));
+        packet("RailgunFireFxPacket（满 256 点路径）", new RailgunFireFxPacket(1, Vec3d.ZERO, Vec3d.ZERO, path, 3, 10F));
         packet(
             "RailgunBeamChainFxPacket（14 点路径）",
-            new RailgunBeamChainFxPacket(1, EquipmentVec.ZERO, path.subList(0, 14), true));
+            new RailgunBeamChainFxPacket(1, Vec3d.ZERO, path.subList(0, 14), true));
         packet("RailgunBeamUpdatePacket", RailgunBeamUpdatePacket.move(1, 64, true));
         packet("CelestweaveFxPacket", new CelestweaveFxPacket(1, CelestweaveFxPacket.Type.SHIELD_HIT, 0, 0, 0));
         if (sink == 42) System.out.println();

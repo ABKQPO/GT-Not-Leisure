@@ -23,7 +23,6 @@ import com.science.gtnl.client.WirelessWorldHighlight;
 import com.science.gtnl.client.celestweave.CelestweaveBackpackClient;
 import com.science.gtnl.client.celestweave.CelestweaveClientEvents;
 import com.science.gtnl.client.equipment.EquipmentClientInput;
-import com.science.gtnl.client.fx.world.FxEffects;
 import com.science.gtnl.client.gui.GuiActiveFormationPlane;
 import com.science.gtnl.client.gui.GuiCustomPriority;
 import com.science.gtnl.client.gui.GuiDirePatternEncoder;
@@ -113,6 +112,7 @@ import com.science.gtnl.utils.detrav.DetravScannerInputHandler;
 import com.science.gtnl.utils.enums.GuiType;
 import com.science.gtnl.utils.event.SubscribeEventClientUtils;
 import com.science.gtnllib.client.GTNLLibClient;
+import com.science.gtnllib.client.fx.world.FxEffects;
 
 import Forge.NullPointerException;
 import appeng.api.parts.IPart;

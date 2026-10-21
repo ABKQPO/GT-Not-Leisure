@@ -1,4 +1,4 @@
-package com.science.gtnl.client.fx.world;
+package com.science.gtnllib.client.fx.world;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,9 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
-import com.science.gtnl.client.fx.world.FxRenderHelper.Sprite;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnllib.client.fx.FxColor;
+import com.science.gtnllib.client.fx.world.FxRenderHelper.Sprite;
+import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -31,18 +31,17 @@ public class FxArcRenderer {
 
     public record Style(Color glow, Color mid, Color core, Color haloOuter, Color haloInner, double widthScale) {}
 
-    private record Arc(List<EquipmentVec> points, EquipmentVec side, EquipmentVec up, int lifetime, long born,
-        Style style, long seed, boolean halo) {}
+    private record Arc(List<Vec3d> points, Vec3d side, Vec3d up, int lifetime, long born, Style style, long seed,
+        boolean halo) {}
 
     private static final List<Arc> ACTIVE = new ArrayList<>();
 
-    public static void spawnColored(EquipmentVec from, EquipmentVec to, int segments, double spread, int lifetime,
-        int rgb) {
+    public static void spawnColored(Vec3d from, Vec3d to, int segments, double spread, int lifetime, int rgb) {
         spawnColored(from, to, segments, spread, lifetime, rgb, 1);
     }
 
-    public static void spawnColored(EquipmentVec from, EquipmentVec to, int segments, double spread, int lifetime,
-        int rgb, double width) {
+    public static void spawnColored(Vec3d from, Vec3d to, int segments, double spread, int lifetime, int rgb,
+        double width) {
         Color glow = new Color(FxColor.red(rgb), FxColor.green(rgb), FxColor.blue(rgb));
         spawn(
             from,
@@ -67,7 +66,7 @@ public class FxArcRenderer {
             color.blue() + (1 - color.blue()) * k);
     }
 
-    public static void spawn(EquipmentVec from, EquipmentVec to, int segments, double spread, int lifetime, Style style,
+    public static void spawn(Vec3d from, Vec3d to, int segments, double spread, int lifetime, Style style,
         boolean halo) {
         var world = Minecraft.getMinecraft().theWorld;
         if (world == null || from == null
@@ -77,18 +76,18 @@ public class FxArcRenderer {
             || !Double.isFinite(spread)
             || spread < 0
             || lifetime <= 0) return;
-        EquipmentVec delta = to.subtract(from);
+        Vec3d delta = to.subtract(from);
         double length = delta.length();
         if (length < 0.001 || length > MAX_ARC_SPAN) return;
         segments = Math.max(2, Math.min(MAX_SEGMENTS, segments));
-        EquipmentVec direction = delta.normalize();
-        EquipmentVec reference = Math.abs(direction.y()) > 0.95 ? new EquipmentVec(1, 0, 0) : new EquipmentVec(0, 1, 0);
-        EquipmentVec side = direction.cross(reference)
+        Vec3d direction = delta.normalize();
+        Vec3d reference = Math.abs(direction.y()) > 0.95 ? new Vec3d(1, 0, 0) : new Vec3d(0, 1, 0);
+        Vec3d side = direction.cross(reference)
             .normalize(),
             up = direction.cross(side)
                 .normalize();
         long seed = world.rand.nextLong();
-        List<EquipmentVec> points = new ArrayList<>(segments + 1);
+        List<Vec3d> points = new ArrayList<>(segments + 1);
         points.add(from);
         for (int i = 1; i < segments; i++) {
             double t = i / (double) segments;
@@ -127,7 +126,7 @@ public class FxArcRenderer {
                 Style style = arc.style;
                 double swayPhase = time * SWAY_SPEED + arc.seed * 0.000000001;
                 for (int i = 1; i < arc.points.size(); i++) {
-                    EquipmentVec from = animated(arc, i - 1, swayPhase), to = animated(arc, i, swayPhase);
+                    Vec3d from = animated(arc, i - 1, swayPhase), to = animated(arc, i, swayPhase);
                     float pulse = (float) (0.86 + 0.14 * Math.sin(swayPhase * 1.7 + i * 0.73));
                     float segmentAlpha = alpha * pulse;
                     ribbon(from, to, GLOW_WIDTH * style.widthScale, style.glow, segmentAlpha * GLOW_ALPHA);
@@ -148,7 +147,7 @@ public class FxArcRenderer {
                     int step = Math.max(2, arc.points.size() / 6);
                     double phase = time * SWAY_SPEED + arc.seed * 0.000000001;
                     for (int index = 1; index < arc.points.size() - 1; index += step) {
-                        EquipmentVec node = animated(arc, index, phase);
+                        Vec3d node = animated(arc, index, phase);
                         float pulse = (float) (0.8 + 0.2 * Math.sin(phase * 1.7 + index * 0.73));
                         setColor(style.haloOuter, alpha * pulse * 0.36F);
                         FxRenderHelper.glow(node, 0.11 * style.widthScale, (float) (phase + index));
@@ -160,7 +159,7 @@ public class FxArcRenderer {
         }
     }
 
-    private static void ribbon(EquipmentVec from, EquipmentVec to, double width, Color color, float alpha) {
+    private static void ribbon(Vec3d from, Vec3d to, double width, Color color, float alpha) {
         FxRenderHelper.ribbon(from, to, width, color.red, color.green, color.blue, alpha);
     }
 
@@ -174,7 +173,7 @@ public class FxArcRenderer {
         return (float) (fadeIn * (1 - progress) * (0.9 + 0.1 * Math.sin(progress * Math.PI)));
     }
 
-    private static EquipmentVec animated(Arc arc, int index, double phase) {
+    private static Vec3d animated(Arc arc, int index, double phase) {
         if (index == 0 || index == arc.points.size() - 1) return arc.points.get(index);
         double t = index / (double) (arc.points.size() - 1);
         double attenuation = 4 * t * (1 - t);

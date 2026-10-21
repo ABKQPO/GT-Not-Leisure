@@ -8,7 +8,6 @@ import static com.science.gtnllib.GTNLLibContractTest.compact;
 import static com.science.gtnllib.GTNLLibContractTest.field;
 import static com.science.gtnllib.GTNLLibContractTest.near;
 import static com.science.gtnllib.GTNLLibContractTest.read;
-import static com.science.gtnllib.ThemeContracts.SAMPLE;
 import static com.science.gtnllib.ThemeContracts.paletteControls;
 import static com.science.gtnllib.ThemeContracts.reloadThemes;
 import static com.science.gtnllib.ThemeContracts.same;
@@ -80,6 +79,7 @@ import com.science.gtnllib.gui.layout.LayoutMath;
 import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.layout.Size;
 import com.science.gtnllib.gui.theme.LivePalette;
+import com.science.gtnllib.gui.theme.MetalSkin;
 import com.science.gtnllib.gui.theme.PaletteThemes;
 import com.science.gtnllib.gui.theme.ThemePalette;
 import com.science.gtnllib.gui.theme.ThemeStyle;
@@ -526,9 +526,9 @@ public class EquipmentResourceContracts {
                 .equals(standard),
             "equipment theme inherits the GT standard theme");
         Map<String, Integer> expected = new HashMap<>();
-        expected.put("accent", 0xFFFF3D9A);
-        expected.put("accentDim", 0x80FF3D9A);
-        expected.put("hint", 0xFF8E8796);
+        expected.put("accent", 0xFFDF65A0);
+        expected.put("accentDim", 0x80DF65A0);
+        expected.put("hint", 0xFF8A8F96);
         WidgetThemeEntry<Colors> entry = theme.getWidgetTheme(EquipmentTheme.COLORS);
         for (Colors colors : new Colors[] { entry.getTheme(), entry.getHoverTheme(), EquipmentTheme.colors(),
             EquipmentTheme.COLORS.getDefaultValue() }) {
@@ -539,21 +539,21 @@ public class EquipmentResourceContracts {
                 Integer color = expected.get(field.getName());
                 check(
                     color != null && field.getInt(colors) == color,
-                    "equipment color " + field.getName() + " keeps its old value");
+                    "equipment color " + field.getName() + " is the module palette value");
             }
             check(fields == expected.size(), "equipment palette keeps only the colors code reads");
         }
         StepSlider.Theme slider = theme.getWidgetTheme(StepSlider.Theme.KEY)
             .getTheme();
         check(
-            slider.track == 0xFF1A1420 && slider.fill == 0xFFFF3D9A
-                && slider.cursor == 0xFFFFE6F1
-                && slider.cursorText == 0xFF4A0A2A
+            slider.track == 0xFF0B0C0E && slider.fill == 0xFFDF65A0
+                && slider.cursor == 0xFFFFC7E6
+                && slider.cursorText == 0xFF4A1030
                 && slider.tick == 0x40FFFFFF
                 && slider.milestone == 0x99FFFFFF,
-            "equipment theme keeps the old sound slider colors");
+            "equipment sliders use the module palette colors");
         check(
-            HudColor.guide() == 0x80FF3D9A && HudColor.selection() == 0xFFFF3D9A,
+            HudColor.guide() == 0x80DF65A0 && HudColor.selection() == 0xFFDF65A0,
             "equipment theme hands its accent to the hud editor");
         equipmentControls();
         liveThemes(standard);
@@ -565,7 +565,9 @@ public class EquipmentResourceContracts {
             String source = read(SOURCES.resolve(file));
             check(
                 !source.toUpperCase(Locale.ROOT)
-                    .contains("3D9A"),
+                    .contains("3D9A")
+                    && !source.toUpperCase(Locale.ROOT)
+                        .contains("DF65A0"),
                 file + " has no hard-coded equipment pink");
             check(
                 !hex.matcher(source)
@@ -766,8 +768,37 @@ public class EquipmentResourceContracts {
                 && soundSource.contains("new CloseButton().corner(pad, style)"),
             "sound screen draws its panel, cards, switches and close button through the theme");
         check(
-            EquipmentTheme.PALETTE.equals(SAMPLE),
-            "equipment palette keeps every old color: " + EquipmentTheme.PALETTE);
+            EquipmentTheme.PALETTE.equals(
+                new ThemePalette(
+                    0xFFDF65A0,
+                    0x80DF65A0,
+                    0x26DF65A0,
+                    0xFFFFFFFF,
+                    0xFF8A8F96,
+                    0xFF1C1F24,
+                    0xFF17191D,
+                    0x40000000,
+                    0x1FFFFFFF,
+                    0xFF353940,
+                    0xA0DF65A0,
+                    0x50DF65A0,
+                    0xFF14161A,
+                    0xFF353940,
+                    0x50DF65A0,
+                    0xFF0B0C0E,
+                    0xFF353940,
+                    0xFFDEDFE2,
+                    0xFF797E84,
+                    0xFFF0F1F3,
+                    0xFF61666D,
+                    0xFFA5A7AC,
+                    0xFFFFC7E6,
+                    0xFF4A1030,
+                    0x40FFFFFF,
+                    0x99FFFFFF,
+                    0xFFE5484D)),
+            "equipment palette takes the gunmetal, silver and magenta of the module textures: "
+                + EquipmentTheme.PALETTE);
         equipmentPaletteControls(
             "equipment",
             IThemeApi.get()
@@ -782,7 +813,7 @@ public class EquipmentResourceContracts {
 
     private static void equipmentPaletteControls(String label, ITheme theme, ThemePalette palette, ThemeStyle style)
         throws ReflectiveOperationException {
-        paletteControls(label, theme, palette, style);
+        paletteControls(label, theme, palette, style, MetalSkin.SKIN);
         codeColors(label, theme, palette);
     }
 

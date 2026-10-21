@@ -17,8 +17,8 @@ import net.minecraft.world.WorldServer;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.railgun.RailgunDamage.DamageContext;
+import com.science.gtnllib.utils.Vec3d;
 
 public class RailgunChainResolver {
 
@@ -33,7 +33,7 @@ public class RailgunChainResolver {
         AREA
     }
 
-    public record Hit(EntityLivingBase target, double damage, Kind kind, @Nullable EquipmentVec chainStartAt) {
+    public record Hit(EntityLivingBase target, double damage, Kind kind, @Nullable Vec3d chainStartAt) {
 
         public static Hit primary(EntityLivingBase target, double damage) {
             return new Hit(target, damage, Kind.PRIMARY, null);
@@ -53,26 +53,25 @@ public class RailgunChainResolver {
     }
 
     public static List<Hit> chainFrom(WorldServer world, EntityPlayerMP shooter, EntityLivingBase start,
-        DamageContext ctx, Set<Integer> excluded, @Nullable EquipmentVec visualStart) {
+        DamageContext ctx, Set<Integer> excluded, @Nullable Vec3d visualStart) {
         Set<Integer> visited = new HashSet<>(excluded);
         visited.add(start.getEntityId());
         return branches(
             world,
             shooter,
-            EquipmentVec.pos(start),
+            Vec3d.pos(start),
             Math.max(1, ctx.chainForkCount()),
             ctx,
             visited,
-            visualStart != null ? visualStart : EquipmentVec.center(start));
+            visualStart != null ? visualStart : Vec3d.center(start));
     }
 
-    public static List<Hit> chainFromPoint(WorldServer world, EntityPlayerMP shooter, EquipmentVec point,
-        DamageContext ctx) {
+    public static List<Hit> chainFromPoint(WorldServer world, EntityPlayerMP shooter, Vec3d point, DamageContext ctx) {
         return branches(world, shooter, point, 1, ctx, new HashSet<>(), point);
     }
 
-    private static List<Hit> branches(WorldServer world, EntityPlayerMP shooter, EquipmentVec center, int forks,
-        DamageContext ctx, Set<Integer> visited, EquipmentVec visualStart) {
+    private static List<Hit> branches(WorldServer world, EntityPlayerMP shooter, Vec3d center, int forks,
+        DamageContext ctx, Set<Integer> visited, Vec3d visualStart) {
         List<Hit> out = new ArrayList<>();
         if (ctx.chainSegments() <= 0) return out;
         List<EntityLivingBase> seeds = nearest(world, shooter, center, ctx.chainRadius(), visited, ctx.pvp(), forks);
@@ -82,7 +81,7 @@ public class RailgunChainResolver {
     }
 
     private static void walk(WorldServer world, EntityPlayerMP shooter, EntityLivingBase seed, DamageContext ctx,
-        Set<Integer> visited, EquipmentVec visualStart, List<Hit> out) {
+        Set<Integer> visited, Vec3d visualStart, List<Hit> out) {
         double damage = ctx.firstDamage() * (ctx.isMaxCharged() ? 1 : ctx.chainDecay());
         out.add(new Hit(seed, damage, Kind.CHAIN, visualStart));
         EntityLivingBase previous = seed;
@@ -91,7 +90,7 @@ public class RailgunChainResolver {
             List<EntityLivingBase> next = nearest(
                 world,
                 shooter,
-                EquipmentVec.pos(previous),
+                Vec3d.pos(previous),
                 ctx.chainRadius(),
                 visited,
                 ctx.pvp(),
@@ -107,22 +106,22 @@ public class RailgunChainResolver {
         DamageContext ctx, int maxTargets) {
         List<Hit> out = new ArrayList<>();
         if (!ctx.isMaxCharged() || maxTargets <= 0) return out;
-        EquipmentVec from = EquipmentVec.eye(shooter);
-        EquipmentVec direction = EquipmentVec.pos(firstHit)
+        Vec3d from = Vec3d.eye(shooter);
+        Vec3d direction = Vec3d.pos(firstHit)
             .subtract(from)
             .normalize();
-        EquipmentVec to = from.add(direction.scale(PENETRATION_LENGTH));
+        Vec3d to = from.add(direction.scale(PENETRATION_LENGTH));
         List<EntityLivingBase> candidates = query(
             world,
             from.boxTo(to, PENETRATION_WIDTH),
             e -> e != firstHit && RailgunTargetRules.canAffect(shooter, e, ctx.pvp()));
         candidates.sort(
             Comparator.comparingDouble(
-                entity -> EquipmentVec.pos(entity)
+                entity -> Vec3d.pos(entity)
                     .subtract(from)
                     .dot(direction)));
         for (EntityLivingBase entity : candidates) {
-            EquipmentVec offset = EquipmentVec.pos(entity)
+            Vec3d offset = Vec3d.pos(entity)
                 .subtract(from);
             double along = offset.dot(direction);
             if (along < 0 || along > PENETRATION_LENGTH
@@ -135,18 +134,18 @@ public class RailgunChainResolver {
         return out;
     }
 
-    public static List<Hit> pulse(WorldServer world, EntityPlayerMP shooter, EquipmentVec center, double radius,
-        double ratio, DamageContext ctx, int excludeId) {
+    public static List<Hit> pulse(WorldServer world, EntityPlayerMP shooter, Vec3d center, double radius, double ratio,
+        DamageContext ctx, int excludeId) {
         return area(world, shooter, center, radius, ratio, 0, excludeId, ctx);
     }
 
-    public static List<Hit> splash(WorldServer world, EntityPlayerMP shooter, EquipmentVec center, double radius,
-        double ratio, DamageContext ctx, int excludeId) {
+    public static List<Hit> splash(WorldServer world, EntityPlayerMP shooter, Vec3d center, double radius, double ratio,
+        DamageContext ctx, int excludeId) {
         return area(world, shooter, center, radius, ratio, SPLASH_FALLOFF, excludeId, ctx);
     }
 
-    private static List<Hit> area(WorldServer world, EntityPlayerMP shooter, EquipmentVec center, double radius,
-        double ratio, double falloff, int excludeId, DamageContext ctx) {
+    private static List<Hit> area(WorldServer world, EntityPlayerMP shooter, Vec3d center, double radius, double ratio,
+        double falloff, int excludeId, DamageContext ctx) {
         List<Hit> out = new ArrayList<>();
         if (radius <= 0 || ratio <= 0) return out;
         for (EntityLivingBase entity : query(
@@ -154,7 +153,7 @@ public class RailgunChainResolver {
             center.boxTo(center, radius),
             e -> e.getEntityId() != excludeId && RailgunTargetRules.canAffect(shooter, e, ctx.pvp()))) {
             double distance = Math.sqrt(
-                EquipmentVec.pos(entity)
+                Vec3d.pos(entity)
                     .distanceToSqr(center));
             if (distance > radius) continue;
             double damage = ctx.firstDamage() * ratio * (1 - distance / radius * falloff);
@@ -164,18 +163,18 @@ public class RailgunChainResolver {
         return out;
     }
 
-    private static List<EntityLivingBase> nearest(WorldServer world, EntityPlayerMP shooter, EquipmentVec center,
+    private static List<EntityLivingBase> nearest(WorldServer world, EntityPlayerMP shooter, Vec3d center,
         double radius, Set<Integer> visited, boolean pvp, int count) {
         if (count <= 0) return List.of();
         List<EntityLivingBase> found = query(
             world,
             center.boxTo(center, radius),
             e -> !visited.contains(e.getEntityId()) && RailgunTargetRules.canAffect(shooter, e, pvp)
-                && EquipmentVec.pos(e)
+                && Vec3d.pos(e)
                     .distanceToSqr(center) <= radius * radius);
         found.sort(
             Comparator.comparingDouble(
-                entity -> EquipmentVec.pos(entity)
+                entity -> Vec3d.pos(entity)
                     .distanceToSqr(center)));
         return found.size() > count ? new ArrayList<>(found.subList(0, count)) : found;
     }

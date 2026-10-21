@@ -19,7 +19,6 @@ import net.minecraft.world.WorldServer;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.equipment.EquipmentNet;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.packet.RailgunChargeCapPacket;
 import com.science.gtnl.common.packet.RailgunFireFxPacket;
@@ -27,6 +26,7 @@ import com.science.gtnl.common.packet.RailgunRecoilFxPacket;
 import com.science.gtnl.common.railgun.RailgunChainResolver.Hit;
 import com.science.gtnl.common.railgun.RailgunChainResolver.Kind;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnllib.utils.Vec3d;
 
 public class RailgunFireService {
 
@@ -202,20 +202,20 @@ public class RailgunFireService {
         var modules = RailgunData.modules(stack);
         boolean players = RailgunSetting.PVP.active(stack), chain = RailgunSetting.CHAIN.active(stack);
         boolean max = tier == RailgunChargeTier.EHV3;
-        EquipmentVec from = EquipmentVec.eye(player);
+        Vec3d from = Vec3d.eye(player);
         double range = RailgunRaycast.effectiveRange(CHARGED_RANGE, modules.count(RailgunModule.RANGE));
         var trace = RailgunRaycast.traceFirst(
             world,
             player,
             from,
             from.add(
-                EquipmentVec.look(player)
+                Vec3d.look(player)
                     .scale(range)),
             CHARGED_TRACE_PADDING,
             CHARGED_TRACE_INFLATION,
             entity -> RailgunTargetRules.canAffect(player, entity, players));
         var context = RailgunDamage.buildCharged(player, tier, modules, world, players);
-        EquipmentVec impact = trace.hit() == null ? trace.blockEnd()
+        Vec3d impact = trace.hit() == null ? trace.blockEnd()
             : trace.hit()
                 .position();
         EntityLivingBase primary = trace.hit() != null && trace.hit()
@@ -233,7 +233,7 @@ public class RailgunFireService {
                     RailgunChainResolver.pulse(
                         world,
                         player,
-                        EquipmentVec.pos(primary),
+                        Vec3d.pos(primary),
                         pulseRadius,
                         PULSE_DAMAGE_RATIOS[Math.min(compute, PULSE_DAMAGE_RATIOS.length - 1)],
                         context,
@@ -250,7 +250,7 @@ public class RailgunFireService {
             .map(Hit::target)
             .min(
                 Comparator.comparingDouble(
-                    target -> EquipmentVec.pos(target)
+                    target -> Vec3d.pos(target)
                         .distanceToSqr(impact)))
             .orElse(null);
         if (chain && anchor != null) {
@@ -279,7 +279,7 @@ public class RailgunFireService {
             RailgunTerrainService.queueSphere(world, impact, tier.terrainRadius, tier.terrainHardness, player);
             for (var hit : hits) if (hit.kind() == Kind.PENETRATION) RailgunTerrainService.queueSphere(
                 world,
-                EquipmentVec.pos(hit.target()),
+                Vec3d.pos(hit.target()),
                 PENETRATION_DESTROY_RADIUS,
                 PENETRATION_DESTROY_HARDNESS,
                 player);
@@ -301,9 +301,9 @@ public class RailgunFireService {
         double speed = tier.recoilSpeed * (crouching ? RECOIL_CROUCH_MUL : 1)
             * (player.onGround ? 1 : RECOIL_AIRBORNE_MUL);
         float pitch = tier.recoilPitch * (crouching ? (float) RECOIL_CROUCH_MUL : 1);
-        EquipmentVec back = EquipmentVec.look(player)
+        Vec3d back = Vec3d.look(player)
             .scale(-1);
-        EquipmentVec behind = EquipmentVec.pos(player)
+        Vec3d behind = Vec3d.pos(player)
             .add(back);
         int x = MathHelper.floor_double(behind.x()), y = MathHelper.floor_double(behind.y()),
             z = MathHelper.floor_double(behind.z());

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.science.gtnl.common.equipment.EquipmentVec;
+import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -20,7 +20,7 @@ public class RailgunBolts {
     public static final double ARC_LOW = 1.02, ARC_HIGH = 1.22;
     public static final double DISCHARGE_MIN_REACH = 0.6, DISCHARGE_REACH_GAIN = 0.8;
 
-    public static final EquipmentVec MUZZLE = new EquipmentVec(0.0, 0.286612, -1.213388);
+    public static final Vec3d MUZZLE = new Vec3d(0.0, 0.286612, -1.213388);
     public static final double ORB_MUZZLE_GAP = 0.1;
     public static final double ORB_CLEARANCE = 1.1;
     public static final int TETHER_SEGMENTS = 8, LEG_SEGMENTS = 4;
@@ -41,23 +41,23 @@ public class RailgunBolts {
     public static final double HOP_MIN = 0.04, HOP_MAX = 0.12, HOP_LIFT = 0.025, HOP_CHANCE = 0.55,
         HOP_CROSS_CHANCE = 0.3, HOP_JITTER = 0.012;
     public static final List<Edge> HOP_EDGES = List.of(
-        new Edge(new EquipmentVec(0.125, 0.375, -1.125), new EquipmentVec(0.125, 0.375, 0.375)),
-        new Edge(new EquipmentVec(0.25, 0.25, -0.4375), new EquipmentVec(0.25, 0.25, 0.375)),
-        new Edge(new EquipmentVec(0.25, 0.0625, -0.4375), new EquipmentVec(0.25, 0.0625, 0.375)),
-        new Edge(new EquipmentVec(0.1875, 0.375, 0.75), new EquipmentVec(0.1875, 0.375, 1.25)));
+        new Edge(new Vec3d(0.125, 0.375, -1.125), new Vec3d(0.125, 0.375, 0.375)),
+        new Edge(new Vec3d(0.25, 0.25, -0.4375), new Vec3d(0.25, 0.25, 0.375)),
+        new Edge(new Vec3d(0.25, 0.0625, -0.4375), new Vec3d(0.25, 0.0625, 0.375)),
+        new Edge(new Vec3d(0.1875, 0.375, 0.75), new Vec3d(0.1875, 0.375, 1.25)));
 
     private static final int DISCHARGE_SLOT_OFFSET = 8, FLOW_SLOT_OFFSET = 16, SPARK_SLOT_OFFSET = 32,
         HOP_SLOT_OFFSET = 48, TETHER_SLOT_OFFSET = 64, ANCHOR_SLOT_OFFSET = 80;
 
-    public record Bolt(List<EquipmentVec> points, double width, float alpha) {}
+    public record Bolt(List<Vec3d> points, double width, float alpha) {}
 
-    public record Edge(EquipmentVec from, EquipmentVec to) {
+    public record Edge(Vec3d from, Vec3d to) {
 
-        public EquipmentVec at(double t, int side) {
-            EquipmentVec point = from.add(
+        public Vec3d at(double t, int side) {
+            Vec3d point = from.add(
                 to.subtract(from)
                     .scale(t));
-            return new EquipmentVec(point.x() * side, point.y(), point.z());
+            return new Vec3d(point.x() * side, point.y(), point.z());
         }
 
         public double length() {
@@ -108,7 +108,7 @@ public class RailgunBolts {
             int slot = DISCHARGE_SLOT_OFFSET + index;
             Random random = random(owner, slot, tick);
             if (random.nextDouble() >= chance) continue;
-            EquipmentVec from = unit(random);
+            Vec3d from = unit(random);
             double reach = reachLimit * (0.7 + 0.3 * random.nextDouble());
             bolts.add(
                 new Bolt(
@@ -119,15 +119,15 @@ public class RailgunBolts {
         return bolts;
     }
 
-    private static List<EquipmentVec> surfaceArc(Random random) {
-        EquipmentVec start = unit(random);
-        EquipmentVec across = unit(random);
+    private static List<Vec3d> surfaceArc(Random random) {
+        Vec3d start = unit(random);
+        Vec3d across = unit(random);
         across = across.subtract(start.scale(across.dot(start)))
             .normalize();
-        if (across.length() < 0.5) across = EquipmentVec.rightOf(start);
+        if (across.length() < 0.5) across = Vec3d.rightOf(start);
         double sweep = Math.toRadians(30 + 35 * random.nextDouble());
         double radius = between(random, 1.04, 1.1);
-        List<EquipmentVec> points = new ArrayList<>(ARC_SEGMENTS + 1);
+        List<Vec3d> points = new ArrayList<>(ARC_SEGMENTS + 1);
         for (int i = 0; i <= ARC_SEGMENTS; i++) {
             if (i > 0) radius = Math.max(ARC_LOW, Math.min(ARC_HIGH, radius + (random.nextDouble() * 2 - 1) * 0.04));
             double angle = sweep * i / ARC_SEGMENTS;
@@ -172,7 +172,7 @@ public class RailgunBolts {
         for (int side = -1; side <= 1; side += 2) {
             int slot = TETHER_SLOT_OFFSET + (side < 0 ? 0 : 1);
             Random random = random(owner, slot, tick);
-            List<EquipmentVec> points = channel(random, side, GROOVE_CENTER, GROOVE_FRONT, TETHER_SEGMENTS);
+            List<Vec3d> points = channel(random, side, GROOVE_CENTER, GROOVE_FRONT, TETHER_SEGMENTS);
             points.add(MUZZLE);
             bolts.add(new Bolt(points, 0.005 + 0.002 * p, (0.5F + 0.45F * p) * flicker(slot, tick)));
         }
@@ -218,8 +218,8 @@ public class RailgunBolts {
             Random random = random(owner, slot, tick);
             if (random.nextDouble() >= sparkChance) continue;
             double z = GROOVE_CENTER + (random.nextDouble() * 2 - 1) * span;
-            EquipmentVec from = new EquipmentVec(side * GROOVE_OUTER, between(random, GROOVE_LOW, GROOVE_HIGH), z);
-            EquipmentVec to = from.add(
+            Vec3d from = new Vec3d(side * GROOVE_OUTER, between(random, GROOVE_LOW, GROOVE_HIGH), z);
+            Vec3d to = from.add(
                 side * (SPARK_MIN_REACH + SPARK_REACH_GAIN * p * random.nextDouble()),
                 0.005 + 0.025 * random.nextDouble(),
                 (random.nextDouble() - 0.5) * 0.04);
@@ -235,27 +235,25 @@ public class RailgunBolts {
         return bolts;
     }
 
-    private static List<EquipmentVec> hop(Random random, float p) {
+    private static List<Vec3d> hop(Random random, float p) {
         int side = random.nextBoolean() ? 1 : -1;
         Edge edge = HOP_EDGES.get(random.nextInt(HOP_EDGES.size()));
         double start = random.nextDouble();
-        EquipmentVec from = edge.at(start, side);
-        EquipmentVec to = random.nextDouble() < HOP_CROSS_CHANCE ? crossTarget(random, edge, from, side) : null;
+        Vec3d from = edge.at(start, side);
+        Vec3d to = random.nextDouble() < HOP_CROSS_CHANCE ? crossTarget(random, edge, from, side) : null;
         if (to == null) {
             double reach = (HOP_MIN + (HOP_MAX - HOP_MIN) * p * random.nextDouble()) / edge.length();
             double end = start + (random.nextBoolean() ? reach : -reach);
             if (end < 0 || end > 1) end = 2 * start - end;
             to = edge.at(Math.max(0, Math.min(1, end)), side);
         }
-        EquipmentVec lift = new EquipmentVec(
-            side * between(random, 0.2, 1),
-            between(random, -0.5, 1),
-            between(random, -0.4, 0.4)).normalize()
-                .scale(HOP_LIFT * between(random, 0.4, 1.6));
-        List<EquipmentVec> points = new ArrayList<>(HOP_SEGMENTS + 1);
+        Vec3d lift = new Vec3d(side * between(random, 0.2, 1), between(random, -0.5, 1), between(random, -0.4, 0.4))
+            .normalize()
+            .scale(HOP_LIFT * between(random, 0.4, 1.6));
+        List<Vec3d> points = new ArrayList<>(HOP_SEGMENTS + 1);
         for (int i = 0; i <= HOP_SEGMENTS; i++) {
             double t = i / (double) HOP_SEGMENTS;
-            EquipmentVec jitter = i == 0 || i == HOP_SEGMENTS ? EquipmentVec.ZERO
+            Vec3d jitter = i == 0 || i == HOP_SEGMENTS ? Vec3d.ZERO
                 : unit(random).scale(HOP_JITTER * random.nextDouble());
             points.add(
                 from.add(
@@ -267,7 +265,7 @@ public class RailgunBolts {
         return points;
     }
 
-    private static EquipmentVec crossTarget(Random random, Edge origin, EquipmentVec point, int side) {
+    private static Vec3d crossTarget(Random random, Edge origin, Vec3d point, int side) {
         List<Edge> options = new ArrayList<>();
         for (Edge edge : HOP_EDGES) if (edge != origin && edge.coversZ(point.z())) options.add(edge);
         if (options.isEmpty()) return null;
@@ -276,7 +274,7 @@ public class RailgunBolts {
         return target.at(Math.max(0, Math.min(1, t)), side);
     }
 
-    public static List<Bolt> tethers(int owner, long tick, float intensity, EquipmentVec from, EquipmentVec to) {
+    public static List<Bolt> tethers(int owner, long tick, float intensity, Vec3d from, Vec3d to) {
         float p = clamp(intensity);
         if (p < MIN_INTENSITY || from == null || to == null) return List.of();
         List<Bolt> bolts = new ArrayList<>(2);
@@ -292,8 +290,8 @@ public class RailgunBolts {
         return bolts;
     }
 
-    private static List<EquipmentVec> channel(Random random, int side, double start, double end, int segments) {
-        List<EquipmentVec> points = new ArrayList<>(segments + 1);
+    private static List<Vec3d> channel(Random random, int side, double start, double end, int segments) {
+        List<Vec3d> points = new ArrayList<>(segments + 1);
         double x = between(random, GROOVE_INNER, GROOVE_OUTER), y = between(random, GROOVE_LOW, GROOVE_HIGH);
         double stepX = (GROOVE_OUTER - GROOVE_INNER) * 0.45, stepY = (GROOVE_HIGH - GROOVE_LOW) * 0.45;
         for (int i = 0; i <= segments; i++) {
@@ -301,19 +299,18 @@ public class RailgunBolts {
                 x = Math.max(GROOVE_INNER, Math.min(GROOVE_OUTER, x + (random.nextDouble() * 2 - 1) * stepX));
                 y = Math.max(GROOVE_LOW, Math.min(GROOVE_HIGH, y + (random.nextDouble() * 2 - 1) * stepY));
             }
-            points.add(new EquipmentVec(side * x, y, start + (end - start) * i / segments));
+            points.add(new Vec3d(side * x, y, start + (end - start) * i / segments));
         }
         return points;
     }
 
-    private static List<EquipmentVec> jagged(Random random, EquipmentVec from, EquipmentVec to, int segments,
-        double jitter) {
-        EquipmentVec delta = to.subtract(from);
+    private static List<Vec3d> jagged(Random random, Vec3d from, Vec3d to, int segments, double jitter) {
+        Vec3d delta = to.subtract(from);
         double step = delta.length() / segments;
-        EquipmentVec axis = delta.normalize();
-        EquipmentVec side = EquipmentVec.rightOf(axis), up = side.cross(axis)
+        Vec3d axis = delta.normalize();
+        Vec3d side = Vec3d.rightOf(axis), up = side.cross(axis)
             .normalize();
-        List<EquipmentVec> points = new ArrayList<>(segments + 1);
+        List<Vec3d> points = new ArrayList<>(segments + 1);
         points.add(from);
         double offsetSide = 0, offsetUp = 0;
         for (int i = 1; i <= segments; i++) {
@@ -327,10 +324,10 @@ public class RailgunBolts {
         return points;
     }
 
-    private static EquipmentVec unit(Random random) {
+    private static Vec3d unit(Random random) {
         double z = random.nextDouble() * 2 - 1, angle = random.nextDouble() * Math.PI * 2;
         double ring = Math.sqrt(1 - z * z);
-        return new EquipmentVec(ring * Math.cos(angle), ring * Math.sin(angle), z);
+        return new Vec3d(ring * Math.cos(angle), ring * Math.sin(angle), z);
     }
 
     private static double between(Random random, double low, double high) {

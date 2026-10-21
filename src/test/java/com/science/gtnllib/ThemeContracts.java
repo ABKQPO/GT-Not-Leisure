@@ -1,18 +1,28 @@
 package com.science.gtnllib;
 
+import static com.science.gtnllib.GTNLLibContractTest.RESOURCES;
 import static com.science.gtnllib.GTNLLibContractTest.SOURCES;
 import static com.science.gtnllib.GTNLLibContractTest.call;
 import static com.science.gtnllib.GTNLLibContractTest.check;
 import static com.science.gtnllib.GTNLLibContractTest.field;
 import static com.science.gtnllib.GTNLLibContractTest.read;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+
+import javax.imageio.ImageIO;
+
+import net.minecraft.util.ResourceLocation;
 
 import com.cleanroommc.modularui.api.IJsonSerializable;
 import com.cleanroommc.modularui.api.ITheme;
@@ -38,13 +48,18 @@ import com.science.gtnllib.config.GTNLLibConfig;
 import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.theme.ButtonPurpose;
 import com.science.gtnllib.gui.theme.LivePalette;
+import com.science.gtnllib.gui.theme.MetalSkin;
 import com.science.gtnllib.gui.theme.PaletteThemes;
 import com.science.gtnllib.gui.theme.ThemePalette;
+import com.science.gtnllib.gui.theme.ThemeSkin;
+import com.science.gtnllib.gui.theme.ThemeSkin.Part;
 import com.science.gtnllib.gui.theme.ThemeStyle;
 import com.science.gtnllib.gui.theme.VariantTheme;
 import com.science.gtnllib.gui.widget.CardDrawable;
+import com.science.gtnllib.gui.widget.Divider;
 import com.science.gtnllib.gui.widget.FillBar;
 import com.science.gtnllib.gui.widget.FrameDrawable;
+import com.science.gtnllib.gui.widget.SkinDrawable;
 import com.science.gtnllib.gui.widget.SlideSwitch;
 import com.science.gtnllib.gui.widget.StepSlider;
 
@@ -78,9 +93,11 @@ public class ThemeContracts {
         0x40FFFFFF,
         0x99FFFFFF,
         0xFFE5484D);
-    private static final String SAMPLE_THEME = "gtnllib:contract_sample", TEST_THEME = "gtnllib:contract_test";
+    private static final String SAMPLE_THEME = "gtnllib:contract_sample", TEST_THEME = "gtnllib:contract_test",
+        SKIN_THEME = "gtnllib:contract_skin";
     private static final int CYAN = 0x3DE8FF;
     private static final double HUE_TOLERANCE = 6;
+    private static final int MAX_GRAY_SPREAD = 12;
 
     private ThemeContracts() {}
 
@@ -108,6 +125,7 @@ public class ThemeContracts {
         variants();
         choice();
         overrides();
+        skins();
     }
 
     private static void sliders(ITheme theme, ITheme plain) throws Exception {
@@ -416,6 +434,171 @@ public class ThemeContracts {
         GTNLLibConfig.theme = saved;
     }
 
+    private static void skins() throws IOException, ReflectiveOperationException {
+        SkinDrawable panel = new SkinDrawable()
+            .texture(new ResourceLocation("gtnllib", "textures/test/panel.png"), 28, 28)
+            .border(10, 10, 10, 10)
+            .tiled(true)
+            .glow(new ResourceLocation("gtnllib", "textures/test/panel_glow.png"));
+        List<SkinDrawable.Piece> exact = panel.pieces(0, 0, 28, 28);
+        boolean oneToOne = exact.size() == 9;
+        for (SkinDrawable.Piece piece : exact)
+            oneToOne &= Math.round(piece.u0() * 28) == piece.x() && Math.round(piece.v0() * 28) == piece.y()
+                && Math.round((piece.u1() - piece.u0()) * 28) == piece.w()
+                && Math.round((piece.v1() - piece.v0()) * 28) == piece.h();
+        check(oneToOne, "a nine-slice texture drawn at its own size puts every texel on one pixel");
+        List<SkinDrawable.Piece> wide = panel.pieces(5, 7, 200, 90);
+        SkinDrawable.Piece corner = wide.get(0), middle = wide.get(4), last = wide.get(8);
+        check(
+            wide.size() == 9 && corner.x() == 5
+                && corner.y() == 7
+                && corner.w() == 10
+                && corner.h() == 10
+                && corner.tileWidth() == 0
+                && last.x() == 195
+                && last.y() == 87
+                && last.w() == 10
+                && last.h() == 10,
+            "corners keep their texel size at the four corners of a larger area");
+        check(
+            middle.x() == 15 && middle.y() == 17
+                && middle.w() == 180
+                && middle.h() == 70
+                && middle.tileWidth() == 8
+                && middle.tileHeight() == 8
+                && wide.get(1)
+                    .tileWidth() == 8
+                && wide.get(1)
+                    .tileHeight() == 10
+                && wide.get(3)
+                    .tileWidth() == 10
+                && wide.get(3)
+                    .tileHeight() == 8,
+            "a tiled texture repeats its edges and middle at their texel size");
+        boolean stretched = true;
+        for (SkinDrawable.Piece piece : panel.copy()
+            .tiled(false)
+            .pieces(0, 0, 200, 90)) stretched &= piece.tileWidth() == 0 && piece.tileHeight() == 0;
+        check(stretched, "a texture that is not tiled stretches its edges and middle");
+        check(
+            Arrays.equals(SkinDrawable.fit(14, 4, 4), new int[] { 4, 4 })
+                && Arrays.equals(SkinDrawable.fit(6, 4, 2), new int[] { 4, 2 })
+                && Arrays.equals(SkinDrawable.fit(3, 4, 2), new int[] { 2, 1 })
+                && Arrays.equals(SkinDrawable.fit(5, 0, 0), new int[] { 0, 0 }),
+            "borders shrink in proportion when the area is smaller than both borders");
+        int covered = 0;
+        boolean positive = true;
+        for (SkinDrawable.Piece piece : panel.pieces(0, 0, 12, 6)) {
+            positive &= piece.w() > 0 && piece.h() > 0;
+            covered += piece.w() * piece.h();
+        }
+        check(positive && covered == 12 * 6, "an area smaller than the borders is still covered exactly once");
+        SkinDrawable lit = panel.copy()
+            .glowColor(0xA0123456),
+            bare = new SkinDrawable().texture(new ResourceLocation("gtnllib", "textures/test/slot.png"), 18, 18)
+                .border(2, 2, 2, 2);
+        check(
+            lit.equals(DrawableSerialization.deserialize(DrawableSerialization.serialize(lit)))
+                && bare.equals(DrawableSerialization.deserialize(DrawableSerialization.serialize(bare))),
+            "a texture skin survives the theme JSON with its glow texture and glow color");
+        IDrawable fallback = new Rectangle();
+        SkinDrawable rule = new SkinDrawable()
+            .texture(new ResourceLocation("gtnllib", "textures/test/divider.png"), 32, 2)
+            .border(26, 0, 2, 0)
+            .glow(new ResourceLocation("gtnllib", "textures/test/divider_glow.png"));
+        ThemeSkin skin = ThemeSkin.NONE.with(Part.PANEL, panel)
+            .with(Part.BUTTON, bare)
+            .with(Part.SLIDER_TRACK, bare)
+            .with(Part.SLIDER_TAG, lit)
+            .with(Part.SWITCH_KNOB, bare)
+            .with(Part.DIVIDER, rule);
+        SkinDrawable before = panel.copy();
+        panel.border(1, 1, 1, 1);
+        check(
+            ThemeSkin.NONE.plain(Part.PANEL, () -> fallback) == fallback && !ThemeSkin.NONE.has(Part.PANEL)
+                && skin.plain(Part.CARD, () -> fallback) == fallback
+                && skin.plain(Part.PANEL, () -> fallback)
+                    .equals(before)
+                && skin.lit(Part.PANEL, 0xFF00FF00, () -> fallback)
+                    .equals(
+                        before.copy()
+                            .glowColor(0xFF00FF00)),
+            "a skin keeps its own copy of each texture and leaves missing parts to the drawn fallback");
+        PaletteThemes.register(SKIN_THEME, ThemeAPI.DEFAULT_ID, SAMPLE, ThemeStyle.DEFAULT, skin);
+        reloadThemes(SKIN_THEME);
+        paletteControls(
+            "skinned",
+            IThemeApi.get()
+                .getTheme(SKIN_THEME),
+            SAMPLE,
+            ThemeStyle.DEFAULT,
+            skin);
+        ThemePalette cyan = SAMPLE.follow(CYAN);
+        paletteControls("skinned cyan", PaletteThemes.variant(SKIN_THEME, cyan), cyan, ThemeStyle.DEFAULT, skin);
+        metalSkin();
+        StepSlider.Theme recolored = (StepSlider.Theme) call(
+            StepSlider.class,
+            "resolveColors",
+            new StepSlider().colors(1, 2, 3, 4),
+            new Class<?>[] { WidgetTheme.class },
+            IThemeApi.get()
+                .getTheme(SKIN_THEME)
+                .getWidgetTheme(StepSlider.Theme.KEY)
+                .getTheme());
+        check(
+            recolored.fill == 2 && recolored.trackSkin.equals(skin.get(Part.SLIDER_TRACK))
+                && recolored.tagSkin.equals(skin.get(Part.SLIDER_TAG)),
+            "a slider with its own colors keeps the theme textures");
+    }
+
+    private static void metalSkin() throws IOException, ReflectiveOperationException {
+        for (Part part : Part.values()) {
+            check(MetalSkin.SKIN.has(part), "the metal skin has a texture for the " + part);
+            if (!MetalSkin.SKIN.has(part)) continue;
+            IDrawable skin = MetalSkin.SKIN.plain(part, () -> IDrawable.EMPTY);
+            ResourceLocation texture = (ResourceLocation) field(skin, "texture"),
+                glow = (ResourceLocation) field(skin, "glow");
+            int width = (int) field(skin, "width"), height = (int) field(skin, "height");
+            BufferedImage base = skinImage(texture);
+            check(
+                base != null && base.getWidth() == width && base.getHeight() == height,
+                part + " texture " + texture + " exists at its declared size " + width + "x" + height);
+            if (base != null)
+                check(neutral(base), part + " texture is gray metal, so the screen can follow the glow color");
+            if (glow == null) continue;
+            BufferedImage mask = skinImage(glow);
+            check(
+                mask != null && mask.getWidth() == width && mask.getHeight() == height && whiteMask(mask),
+                part + " glow " + glow + " is a white mask of the same size, tinted by the theme accent");
+        }
+    }
+
+    private static BufferedImage skinImage(ResourceLocation location) throws IOException {
+        Path path = RESOURCES.resolve(location.getResourcePath());
+        return location.getResourceDomain()
+            .equals(GTNLLib.MODID) && Files.isRegularFile(path) ? ImageIO.read(path.toFile()) : null;
+    }
+
+    private static boolean neutral(BufferedImage image) {
+        for (int y = 0; y < image.getHeight(); y++) for (int x = 0; x < image.getWidth(); x++) {
+            int argb = image.getRGB(x, y), r = argb >> 16 & 255, g = argb >> 8 & 255, b = argb & 255;
+            if ((argb >>> 24) != 0 && Math.max(r, Math.max(g, b)) - Math.min(r, Math.min(g, b)) > MAX_GRAY_SPREAD)
+                return false;
+        }
+        return true;
+    }
+
+    private static boolean whiteMask(BufferedImage image) {
+        boolean any = false;
+        for (int y = 0; y < image.getHeight(); y++) for (int x = 0; x < image.getWidth(); x++) {
+            int argb = image.getRGB(x, y);
+            if ((argb >>> 24) == 0) continue;
+            any = true;
+            if ((argb & 0xFFFFFF) != 0xFFFFFF) return false;
+        }
+        return any;
+    }
+
     private static void overrides() throws ReflectiveOperationException {
         StepSlider.Theme defaults = StepSlider.Theme.KEY.getDefaultValue();
         reloadThemes(
@@ -464,12 +647,19 @@ public class ThemeContracts {
 
     public static void paletteControls(String label, ITheme theme, ThemePalette palette, ThemeStyle style)
         throws ReflectiveOperationException {
+        paletteControls(label, theme, palette, style, ThemeSkin.NONE);
+    }
+
+    public static void paletteControls(String label, ITheme theme, ThemePalette palette, ThemeStyle style,
+        ThemeSkin skin) throws ReflectiveOperationException {
+        skinControls(label, theme, palette, skin);
+        widgetSkins(label, theme, skin);
         WidgetTheme fallback = theme.getFallback()
             .getTheme();
         check(
             fallback.getTextColor() == palette.text() && fallback.getTextShadow() && fallback.getColor() == 0xFFFFFFFF,
             label + " text defaults to the palette text with a shadow");
-        sameFrame(
+        if (!skin.has(Part.PANEL)) sameFrame(
             label + " panel",
             theme.getPanelTheme()
                 .getTheme()
@@ -477,12 +667,12 @@ public class ThemeContracts {
             new int[] { palette.panelTop(), palette.panelBottom(), palette.accentDim(), palette.accent(),
                 style.cornerLength(), style.cornerThickness() });
         WidgetThemeEntry<WidgetTheme> button = theme.getButtonTheme();
-        sameRectangle(
+        if (!skin.has(Part.BUTTON)) sameRectangle(
             label + " button",
             button.getTheme()
                 .getBackground(),
             palette.button());
-        sameRectangle(
+        if (!skin.has(Part.BUTTON)) sameRectangle(
             label + " button hover",
             button.getHoverTheme()
                 .getBackground(),
@@ -522,7 +712,7 @@ public class ThemeContracts {
             close.getTheme()
                 .getTextShadow(),
             label + " close button text has a shadow");
-        sameCard(
+        if (!skin.has(Part.CARD)) sameCard(
             label,
             theme.getWidgetTheme(CardDrawable.KEY)
                 .getTheme()
@@ -559,7 +749,7 @@ public class ThemeContracts {
         same(label + " slider milestone", slider.milestone, palette.milestone());
         SlotTheme slot = theme.getItemSlotTheme()
             .getTheme();
-        sameFrame(
+        if (!skin.has(Part.SLOT)) sameFrame(
             label + " item slot",
             slot.getBackground(),
             new int[] { palette.well(), palette.well(), palette.wellEdge(), 0, 0, 0 });
@@ -576,7 +766,7 @@ public class ThemeContracts {
                 label + " player inventory slot " + key.getFullName() + " uses the item slot");
         TextFieldTheme field = theme.getTextFieldTheme()
             .getTheme();
-        sameFrame(
+        if (!skin.has(Part.SLOT)) sameFrame(
             label + " text field",
             field.getBackground(),
             new int[] { palette.well(), palette.well(), palette.accentDim(), 0, 0, 0 });
@@ -592,9 +782,9 @@ public class ThemeContracts {
             palette.accentDim());
         WidgetThemeEntry<SelectableTheme> tabs = theme.getToggleButtonTheme();
         SelectableTheme tab = tabs.getTheme(), tabHover = tabs.getHoverTheme();
-        sameRectangle(label + " tab", tab.getBackground(), palette.button());
+        if (!skin.has(Part.BUTTON)) sameRectangle(label + " tab", tab.getBackground(), palette.button());
         same(label + " tab text", tab.getTextColor(), palette.textOff());
-        sameRectangle(
+        if (!skin.has(Part.BUTTON)) sameRectangle(
             label + " selected tab",
             tab.getSelected()
                 .getBackground(),
@@ -608,8 +798,8 @@ public class ThemeContracts {
             !tab.getTextShadow() && tab.getSelected()
                 .getTextShadow() == palette.selectedTextShadow(),
             label + " unselected tab text has no shadow, selected tab text follows its background");
-        sameRectangle(label + " tab hover", tabHover.getBackground(), palette.tabHover());
-        sameRectangle(
+        if (!skin.has(Part.BUTTON)) sameRectangle(label + " tab hover", tabHover.getBackground(), palette.tabHover());
+        if (!skin.has(Part.BUTTON)) sameRectangle(
             label + " selected tab hover",
             tabHover.getSelected()
                 .getBackground(),
@@ -630,12 +820,12 @@ public class ThemeContracts {
         WidgetThemeEntry<?> primary = theme.getWidgetTheme(ButtonPurpose.PRIMARY.key),
             danger = theme.getWidgetTheme(ButtonPurpose.DANGER.key),
             icon = theme.getWidgetTheme(ButtonPurpose.ICON.key);
-        sameRectangle(
+        if (!skin.has(Part.BUTTON)) sameRectangle(
             label + " primary button",
             primary.getTheme()
                 .getBackground(),
             palette.buttonHover());
-        sameRectangle(
+        if (!skin.has(Part.BUTTON)) sameRectangle(
             label + " primary button hover",
             primary.getHoverTheme()
                 .getBackground(),
@@ -650,7 +840,7 @@ public class ThemeContracts {
             primary.getHoverTheme()
                 .getTextColor(),
             palette.selectedText());
-        sameRectangle(
+        if (!skin.has(Part.BUTTON)) sameRectangle(
             label + " danger button",
             danger.getTheme()
                 .getBackground(),
@@ -684,6 +874,144 @@ public class ThemeContracts {
             icon.getTheme()
                 .getTextColor(),
             palette.text());
+    }
+
+    private static void skinControls(String label, ITheme theme, ThemePalette palette, ThemeSkin skin) {
+        WidgetThemeEntry<WidgetTheme> button = theme.getButtonTheme();
+        WidgetThemeEntry<SelectableTheme> tabs = theme.getToggleButtonTheme();
+        WidgetThemeEntry<?> primary = theme.getWidgetTheme(ButtonPurpose.PRIMARY.key),
+            danger = theme.getWidgetTheme(ButtonPurpose.DANGER.key);
+        skinned(
+            label + " panel",
+            theme.getPanelTheme()
+                .getTheme()
+                .getBackground(),
+            skin,
+            Part.PANEL,
+            palette.accent());
+        skinned(
+            label + " card",
+            theme.getWidgetTheme(CardDrawable.KEY)
+                .getTheme()
+                .getBackground(),
+            skin,
+            Part.CARD,
+            palette.accent());
+        skinned(
+            label + " button",
+            button.getTheme()
+                .getBackground(),
+            skin,
+            Part.BUTTON,
+            0);
+        skinned(
+            label + " button hover",
+            button.getHoverTheme()
+                .getBackground(),
+            skin,
+            Part.BUTTON,
+            palette.buttonHover());
+        skinned(
+            label + " tab",
+            tabs.getTheme()
+                .getBackground(),
+            skin,
+            Part.BUTTON,
+            0);
+        skinned(
+            label + " selected tab",
+            tabs.getTheme()
+                .getSelected()
+                .getBackground(),
+            skin,
+            Part.BUTTON,
+            palette.buttonHover());
+        skinned(
+            label + " tab hover",
+            tabs.getHoverTheme()
+                .getBackground(),
+            skin,
+            Part.BUTTON,
+            palette.tabHover());
+        skinned(
+            label + " selected tab hover",
+            tabs.getHoverTheme()
+                .getSelected()
+                .getBackground(),
+            skin,
+            Part.BUTTON,
+            palette.buttonHover());
+        skinned(
+            label + " primary button",
+            primary.getTheme()
+                .getBackground(),
+            skin,
+            Part.BUTTON,
+            palette.buttonHover());
+        skinned(
+            label + " primary button hover",
+            primary.getHoverTheme()
+                .getBackground(),
+            skin,
+            Part.BUTTON,
+            palette.accent());
+        skinned(
+            label + " danger button",
+            danger.getTheme()
+                .getBackground(),
+            skin,
+            Part.BUTTON,
+            0);
+        skinned(
+            label + " item slot",
+            theme.getItemSlotTheme()
+                .getTheme()
+                .getBackground(),
+            skin,
+            Part.SLOT,
+            0);
+        skinned(
+            label + " text field",
+            theme.getTextFieldTheme()
+                .getTheme()
+                .getBackground(),
+            skin,
+            Part.SLOT,
+            0);
+    }
+
+    private static void widgetSkins(String label, ITheme theme, ThemeSkin skin) {
+        WidgetThemeEntry<StepSlider.Theme> slider = theme.getWidgetTheme(StepSlider.Theme.KEY);
+        WidgetThemeEntry<SlideSwitch.Theme> slide = theme.getWidgetTheme(SlideSwitch.Theme.KEY);
+        WidgetThemeEntry<FillBar.Theme> bar = theme.getWidgetTheme(FillBar.Theme.KEY);
+        WidgetThemeEntry<Divider.Theme> divider = theme.getWidgetTheme(Divider.Theme.KEY);
+        for (StepSlider.Theme read : Arrays.asList(slider.getTheme(), slider.getHoverTheme())) check(
+            Objects.equals(read.trackSkin, skin.get(Part.SLIDER_TRACK))
+                && Objects.equals(read.fillSkin, skin.get(Part.SLIDER_FILL))
+                && Objects.equals(read.tagSkin, skin.get(Part.SLIDER_TAG)),
+            label + " slider track, fill and tag textures come from the skin, also while hovered");
+        for (SlideSwitch.Theme read : Arrays.asList(slide.getTheme(), slide.getHoverTheme())) check(
+            Objects.equals(read.trackSkin, skin.get(Part.SWITCH_TRACK))
+                && Objects.equals(read.knobSkin, skin.get(Part.SWITCH_KNOB)),
+            label + " switch track and knob textures come from the skin, also while hovered");
+        for (FillBar.Theme read : Arrays.asList(bar.getTheme(), bar.getHoverTheme())) check(
+            Objects.equals(read.trackSkin, skin.get(Part.SLIDER_TRACK))
+                && Objects.equals(read.fillSkin, skin.get(Part.SLIDER_FILL)),
+            label + " fill bar shares the slider track and fill textures");
+        for (Divider.Theme read : Arrays.asList(divider.getTheme(), divider.getHoverTheme())) check(
+            Objects.equals(read.skin, skin.get(Part.DIVIDER)),
+            label + " section divider texture comes from the skin");
+    }
+
+    private static void skinned(String what, IDrawable drawable, ThemeSkin skin, Part part, int glow) {
+        if (!skin.has(part)) return;
+        check(
+            skin.lit(part, glow, () -> IDrawable.EMPTY)
+                .equals(drawable),
+            what + " is the "
+                + part
+                + " texture"
+                + (glow == 0 ? " without glow" : " glowing " + Integer.toHexString(glow)));
     }
 
     public static void same(String what, int actual, int expected) {

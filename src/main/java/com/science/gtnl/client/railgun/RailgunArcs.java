@@ -1,9 +1,9 @@
 package com.science.gtnl.client.railgun;
 
-import com.science.gtnl.client.fx.world.FxArcRenderer;
-import com.science.gtnl.client.fx.world.FxArcRenderer.Style;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnllib.client.fx.world.FxArcRenderer;
+import com.science.gtnllib.client.fx.world.FxArcRenderer.Style;
+import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -13,7 +13,7 @@ public class RailgunArcs {
 
     private RailgunArcs() {}
 
-    public static void chain(EquipmentVec from, EquipmentVec to, int lifetime, boolean ehv) {
+    public static void chain(Vec3d from, Vec3d to, int lifetime, boolean ehv) {
         if (from == null || to == null || !from.finite() || !to.finite()) return;
         double length = to.subtract(from)
             .length();
@@ -28,11 +28,11 @@ public class RailgunArcs {
             ehv ? RailgunOrbRenderer.PLASMA_ARC : RailgunOrbRenderer.HIGH_VOLTAGE_ARC);
     }
 
-    public static void plasma(EquipmentVec from, EquipmentVec to, int segments, double spread, int lifetime) {
+    public static void plasma(Vec3d from, Vec3d to, int segments, double spread, int lifetime) {
         spawn(from, to, segments, spread, lifetime, RailgunOrbRenderer.PLASMA_ARC);
     }
 
-    public static void impactSpark(EquipmentVec from, EquipmentVec to, int lifetime) {
+    public static void impactSpark(Vec3d from, Vec3d to, int lifetime) {
         if (from == null || to == null || !from.finite() || !to.finite()) return;
         double length = to.subtract(from)
             .length();
@@ -41,8 +41,7 @@ public class RailgunArcs {
         spawn(from, to, segments, spread, lifetime, RailgunOrbRenderer.IMPACT_SPARK_ARC);
     }
 
-    private static void spawn(EquipmentVec from, EquipmentVec to, int segments, double spread, int lifetime,
-        Style style) {
+    private static void spawn(Vec3d from, Vec3d to, int segments, double spread, int lifetime, Style style) {
         FxArcRenderer.spawn(from, to, segments, spread, lifetime, style, MainConfig.client.enableRailgunBloom);
     }
 }

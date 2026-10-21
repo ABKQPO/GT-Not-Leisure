@@ -5,10 +5,10 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 
 import com.science.gtnl.client.railgun.RailgunClientFx;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
 import com.science.gtnl.common.railgun.RailgunNet;
+import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -19,16 +19,16 @@ public class RailgunFireFxPacket extends ClientboundPacket {
     private static final float MAX_IMPACT_RADIUS = 32;
 
     public int shooterId;
-    public EquipmentVec from, firstHit;
-    public List<EquipmentVec> chainPath;
+    public Vec3d from, firstHit;
+    public List<Vec3d> chainPath;
     public byte tier;
     public float impactRadius;
     private boolean valid;
 
     public RailgunFireFxPacket() {}
 
-    public RailgunFireFxPacket(int shooterId, EquipmentVec from, EquipmentVec firstHit, List<EquipmentVec> chainPath,
-        int tier, float impactRadius) {
+    public RailgunFireFxPacket(int shooterId, Vec3d from, Vec3d firstHit, List<Vec3d> chainPath, int tier,
+        float impactRadius) {
         this.shooterId = shooterId;
         this.from = from;
         this.firstHit = firstHit;
@@ -41,8 +41,8 @@ public class RailgunFireFxPacket extends ClientboundPacket {
     protected void read(ByteBuf buffer) {
         try {
             shooterId = buffer.readInt();
-            from = EquipmentVec.read(buffer);
-            firstHit = EquipmentVec.read(buffer);
+            from = Vec3d.read(buffer);
+            firstHit = Vec3d.read(buffer);
             chainPath = RailgunNet.readPath(buffer);
             tier = buffer.readByte();
             impactRadius = buffer.readFloat();

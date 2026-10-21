@@ -12,18 +12,18 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 
-import com.science.gtnl.client.fx.world.FxArcRenderer;
-import com.science.gtnl.client.fx.world.FxShockwaveRenderer;
-import com.science.gtnl.client.fx.world.FxVisibility;
 import com.science.gtnl.common.celestweave.CelestweaveCosmetic;
 import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveReach;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnllib.client.fx.FxColor;
+import com.science.gtnllib.client.fx.world.FxArcRenderer;
+import com.science.gtnllib.client.fx.world.FxShockwaveRenderer;
+import com.science.gtnllib.client.fx.world.FxVisibility;
+import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -53,19 +53,19 @@ public class CelestweaveClientEvents {
 
     public record HitOrigin(double x, double y, double z) {
 
-        EquipmentVec offset(EntityLivingBase entity, double heightFraction) {
-            return new EquipmentVec(
+        Vec3d offset(EntityLivingBase entity, double heightFraction) {
+            return new Vec3d(
                 x - entity.posX,
                 y - (entity.boundingBox.minY + entity.height * heightFraction),
                 z - entity.posZ);
         }
 
-        static double forward(EquipmentVec offset, float yawDegrees) {
+        static double forward(Vec3d offset, float yawDegrees) {
             double yaw = Math.toRadians(yawDegrees);
             return offset.x() * -Math.sin(yaw) + offset.z() * Math.cos(yaw);
         }
 
-        static double lateral(EquipmentVec offset, float yawDegrees) {
+        static double lateral(Vec3d offset, float yawDegrees) {
             double yaw = Math.toRadians(yawDegrees);
             return offset.x() * -Math.cos(yaw) + offset.z() * -Math.sin(yaw);
         }
@@ -210,28 +210,26 @@ public class CelestweaveClientEvents {
 
     private static void dashJet(EntityLivingBase living, int rgb) {
         double yaw = Math.toRadians(living.rotationYaw);
-        EquipmentVec forward = new EquipmentVec(-Math.sin(yaw), 0, Math.cos(yaw));
-        EquipmentVec right = EquipmentVec.rightOf(forward);
+        Vec3d forward = new Vec3d(-Math.sin(yaw), 0, Math.cos(yaw));
+        Vec3d right = Vec3d.rightOf(forward);
         for (int tick = 0; tick < DASH_JET_TICKS; tick++) {
             final int step = tick;
             schedule(tick, () -> {
                 if (living.isDead) return;
                 double feet = living.boundingBox.minY;
-                EquipmentVec back = new EquipmentVec(living.posX, feet + living.height * 0.62, living.posZ)
-                    .add(forward.scale(-0.35));
+                Vec3d back = new Vec3d(living.posX, feet + living.height * 0.62, living.posZ).add(forward.scale(-0.35));
                 int bolts = step == 0 ? 4 : 2;
                 double reach = step == 0 ? 5.5 : 4.2 - step * 0.3;
                 for (int i = 0; i < bolts; i++) {
-                    EquipmentVec to = back.add(forward.scale(-reach * CelestweaveArcs.rand(0.75F, 1F)))
+                    Vec3d to = back.add(forward.scale(-reach * CelestweaveArcs.rand(0.75F, 1F)))
                         .add(right.scale(CelestweaveArcs.rand(-0.7F, 0.7F)))
                         .add(0, CelestweaveArcs.rand(-0.9F, 0.25F), 0);
                     FxArcRenderer.spawnColored(back, to, 12, 0.35, 4 + CelestweaveArcs.RNG.nextInt(3), rgb);
                 }
                 if (step > 3) return;
                 for (int side : new int[] { 1, -1 }) {
-                    EquipmentVec foot = new EquipmentVec(living.posX, feet + 0.05, living.posZ)
-                        .add(right.scale(side * 0.15));
-                    EquipmentVec trail = foot.add(forward.scale(-CelestweaveArcs.rand(1.5F, 2.8F)))
+                    Vec3d foot = new Vec3d(living.posX, feet + 0.05, living.posZ).add(right.scale(side * 0.15));
+                    Vec3d trail = foot.add(forward.scale(-CelestweaveArcs.rand(1.5F, 2.8F)))
                         .add(right.scale(side * CelestweaveArcs.rand(0.1F, 0.5F)))
                         .add(0, -0.02, 0);
                     FxArcRenderer.spawnColored(foot, trail, 8, 0.12, 4 + CelestweaveArcs.RNG.nextInt(2), rgb);
@@ -241,7 +239,7 @@ public class CelestweaveClientEvents {
     }
 
     private static void aimHit(CelestweaveClientState state, EntityLivingBase living, HitOrigin origin, boolean omni) {
-        EquipmentVec offset = origin.offset(living, HIT_AIM_HEIGHT);
+        Vec3d offset = origin.offset(living, HIT_AIM_HEIGHT);
         double side = -HitOrigin.lateral(offset, living.renderYawOffset), down = -offset.y();
         double length = Math.sqrt(side * side + down * down);
         state.hitDirectional = !omni && length > HIT_AIM_MIN_OFFSET && length > offset.length() * HIT_AIM_MIN_RATIO;
@@ -251,9 +249,9 @@ public class CelestweaveClientEvents {
     }
 
     private static void lightning(float x, float y, float z, int rgb) {
-        EquipmentVec ground = new EquipmentVec(x, y + 0.05, z);
-        EquipmentVec sky = ground.add(CelestweaveArcs.rand(-1.5F, 1.5F), 16, CelestweaveArcs.rand(-1.5F, 1.5F));
-        EquipmentVec drop = ground.subtract(sky);
+        Vec3d ground = new Vec3d(x, y + 0.05, z);
+        Vec3d sky = ground.add(CelestweaveArcs.rand(-1.5F, 1.5F), 16, CelestweaveArcs.rand(-1.5F, 1.5F));
+        Vec3d drop = ground.subtract(sky);
         int bright = FxColor.mixWhite(rgb, 0.4F);
         for (int flash = 0; flash < 3; flash++) {
             final int step = flash;
@@ -261,10 +259,10 @@ public class CelestweaveClientEvents {
                 FxArcRenderer.spawnColored(sky, ground, 32, 1.1, 5, step == 0 ? bright : rgb, step == 0 ? 3.2 : 2.2);
                 if (step > 0) return;
                 for (int i = 0; i < 3; i++) {
-                    EquipmentVec from = sky.add(drop.scale(CelestweaveArcs.rand(0.25F, 0.7F)));
+                    Vec3d from = sky.add(drop.scale(CelestweaveArcs.rand(0.25F, 0.7F)));
                     double angle = CelestweaveArcs.rand(0F, (float) (Math.PI * 2)),
                         reach = CelestweaveArcs.rand(1.5F, 3.5F);
-                    EquipmentVec to = from
+                    Vec3d to = from
                         .add(Math.cos(angle) * reach, -CelestweaveArcs.rand(1.5F, 4F), Math.sin(angle) * reach);
                     FxArcRenderer.spawnColored(from, to, 10, 0.5, 4, rgb, 1.2);
                 }
@@ -332,14 +330,11 @@ public class CelestweaveClientEvents {
                 for (int i = 0; i < 9; i++) {
                     float angle = CelestweaveArcs.rand(0F, (float) (Math.PI * 2)),
                         radius = CelestweaveArcs.rand(0.3F, 0.6F);
-                    EquipmentVec from = new EquipmentVec(
+                    Vec3d from = new Vec3d(
                         x + CelestweaveArcs.rand(-0.1F, 0.1F),
                         y + 0.03,
                         z + CelestweaveArcs.rand(-0.1F, 0.1F));
-                    EquipmentVec to = new EquipmentVec(
-                        x + Math.cos(angle) * radius,
-                        y + 0.03,
-                        z + Math.sin(angle) * radius);
+                    Vec3d to = new Vec3d(x + Math.cos(angle) * radius, y + 0.03, z + Math.sin(angle) * radius);
                     schedule(
                         CelestweaveArcs.RNG.nextInt(2),
                         () -> FxArcRenderer
@@ -349,13 +344,10 @@ public class CelestweaveClientEvents {
             case REFLECT -> {
                 CelestweaveSounds.reflect(x, y, z);
                 if (!allowed || !cosmetic.event(CelestweaveCosmetic.EVENT_REFLECT)) return;
-                EquipmentVec target = new EquipmentVec(x, y, z);
+                Vec3d target = new Vec3d(x, y, z);
                 for (int i = 0; i < 3; i++) schedule(i * 3, () -> {
                     if (living.isDead) return;
-                    EquipmentVec chest = new EquipmentVec(
-                        living.posX,
-                        living.boundingBox.minY + living.height * 0.72,
-                        living.posZ);
+                    Vec3d chest = new Vec3d(living.posX, living.boundingBox.minY + living.height * 0.72, living.posZ);
                     FxArcRenderer.spawnColored(chest, target, 14, 0.12, 5, look.glowColor);
                 });
             }

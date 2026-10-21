@@ -17,8 +17,8 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.ForgeHooks;
 
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -41,7 +41,7 @@ public class RailgunTerrainService {
 
     private RailgunTerrainService() {}
 
-    public static void queueSphere(WorldServer world, EquipmentVec center, double radius, double hardness,
+    public static void queueSphere(WorldServer world, Vec3d center, double radius, double hardness,
         EntityPlayerMP player) {
         if (!MainConfig.item.railgun.enableTerrain || !center.finite()
             || radius <= 0
@@ -53,7 +53,7 @@ public class RailgunTerrainService {
             maxY = Math.min(MAX_Y, MathHelper.floor_double(center.y() + radius));
         int minZ = MathHelper.floor_double(center.z() - radius), maxZ = MathHelper.floor_double(center.z() + radius);
         for (int x = minX; x <= maxX; x++) for (int y = minY; y <= maxY; y++) for (int z = minZ; z <= maxZ; z++) {
-            double distance = Math.sqrt(new EquipmentVec(x + 0.5, y + 0.5, z + 0.5).distanceToSqr(center));
+            double distance = Math.sqrt(new Vec3d(x + 0.5, y + 0.5, z + 0.5).distanceToSqr(center));
             if (distance <= radius)
                 positions.add(new Position(x, y, z, distance + world.rand.nextDouble() * EDGE_JITTER));
         }

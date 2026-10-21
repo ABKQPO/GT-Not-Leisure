@@ -13,12 +13,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.WorldServer;
 
 import com.science.gtnl.common.equipment.EquipmentEnergy;
-import com.science.gtnl.common.equipment.EquipmentVec;
 import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.packet.RailgunBeamChainFxPacket;
 import com.science.gtnl.common.packet.RailgunBeamUpdatePacket;
 import com.science.gtnl.common.railgun.RailgunChainResolver.Hit;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnllib.utils.Vec3d;
 
 public class RailgunBeamService {
 
@@ -36,7 +36,7 @@ public class RailgunBeamService {
         final ItemStack stack;
         final int slot, dimension;
         int lastSettleTick, lastChainTick;
-        EquipmentVec lastSentEnd;
+        Vec3d lastSentEnd;
         boolean lastSentEhv;
 
         BeamState(EntityPlayerMP player) {
@@ -144,23 +144,23 @@ public class RailgunBeamService {
             return false;
         }
         WorldServer world = (WorldServer) player.worldObj;
-        EquipmentVec from = EquipmentVec.eye(player);
+        Vec3d from = Vec3d.eye(player);
         double range = RailgunRaycast.effectiveRange(RailgunData.BEAM_RANGE, modules.count(RailgunModule.RANGE));
         var trace = RailgunRaycast.traceFirst(
             world,
             player,
             from,
             from.add(
-                EquipmentVec.look(player)
+                Vec3d.look(player)
                     .scale(range)),
             BEAM_TRACE_PADDING,
             BEAM_TRACE_INFLATION,
             entity -> RailgunTargetRules.canAffect(player, entity, pvp));
-        EquipmentVec end = trace.hit() == null ? trace.blockEnd()
-            : EquipmentVec.center(
+        Vec3d end = trace.hit() == null ? trace.blockEnd()
+            : Vec3d.center(
                 trace.hit()
                     .entity());
-        EquipmentVec hitPoint = trace.hit() == null ? trace.blockEnd()
+        Vec3d hitPoint = trace.hit() == null ? trace.blockEnd()
             : trace.hit()
                 .position();
         var context = RailgunDamage
@@ -178,7 +178,7 @@ public class RailgunBeamService {
         if (RailgunSetting.CHAIN.active(stack)
             && player.ticksExisted - state.lastChainTick >= BEAM_CHAIN_THROTTLE_TICKS) {
             state.lastChainTick = player.ticksExisted;
-            EquipmentVec origin = anchor == null ? end : EquipmentVec.center(anchor);
+            Vec3d origin = anchor == null ? end : Vec3d.center(anchor);
             var chain = anchor == null ? RailgunChainResolver.chainFromPoint(world, player, origin, context)
                 : RailgunChainResolver.chainFrom(world, player, anchor, context, Set.of(), origin);
             var path = RailgunNet.path(origin, chain);
@@ -190,8 +190,7 @@ public class RailgunBeamService {
         return true;
     }
 
-    private static void sendUpdate(EntityPlayerMP player, BeamState state, EquipmentVec from, EquipmentVec end,
-        boolean ehv) {
+    private static void sendUpdate(EntityPlayerMP player, BeamState state, Vec3d from, Vec3d end, boolean ehv) {
         boolean moved = state.lastSentEnd == null || state.lastSentEhv != ehv
             || state.lastSentEnd.distanceToSqr(end) > BEAM_RESEND_DISTANCE * BEAM_RESEND_DISTANCE;
         state.lastSentEnd = end;
