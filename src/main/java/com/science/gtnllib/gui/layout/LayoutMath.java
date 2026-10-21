@@ -86,6 +86,21 @@ public class LayoutMath {
         return columns <= 0 ? count : (count + columns - 1) / columns;
     }
 
+    public static int[] offsets(int[] sizes, int gap) {
+        int[] result = new int[sizes.length];
+        for (int i = 1; i < sizes.length; i++) result[i] = result[i - 1] + sizes[i - 1] + gap;
+        return result;
+    }
+
+    public static int fit(int space, int margin, int min, int max) {
+        return Math.max(min, Math.min(max, space - margin * 2));
+    }
+
+    public static int fitRows(int space, int rowHeight, int minRows, int maxRows) {
+        if (rowHeight <= 0) return 0;
+        return Math.max(0, Math.min(maxRows, Math.max(minRows, space / rowHeight))) * rowHeight;
+    }
+
     public static int[] shrink(int[] sizes, int[] minimums, int available, int gap) {
         int[] result = sizes.clone();
         int overflow = total(sizes, gap) - available, slack = 0;

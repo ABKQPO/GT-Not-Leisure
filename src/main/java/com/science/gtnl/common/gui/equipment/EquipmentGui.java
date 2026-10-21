@@ -4,6 +4,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
+import java.util.function.IntSupplier;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -19,6 +20,7 @@ import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
 import com.cleanroommc.modularui.value.sync.LongSyncValue;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.cleanroommc.modularui.widget.sizer.Unit;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
@@ -29,6 +31,7 @@ import com.science.gtnl.common.equipment.IEquipmentVariant;
 import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
 import com.science.gtnllib.client.hud.HudEditor;
 import com.science.gtnllib.gui.layout.Layout;
+import com.science.gtnllib.gui.layout.LayoutMath;
 import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.layout.Size;
 import com.science.gtnllib.gui.theme.ButtonPurpose;
@@ -40,8 +43,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class EquipmentGui {
 
-    protected static final int WIDTH = 176, TITLE_Y = 6, TEXT_HEIGHT = 10, MAX_COLUMNS = 2;
+    protected static final int WIDTH = 176, TITLE_Y = 6, TEXT_HEIGHT = 10, MAX_COLUMNS = 3;
     protected static final int CLOSE_SIZE = 10, SLOT_SIZE = 18;
+    private static final int MAX_WIDTH = 256, SCREEN_MARGIN = 4, MIN_PAGE_ROWS = 3;
     private static final int INVENTORY_HEIGHT = 76, INVENTORY_BOTTOM = 7, HUD_BUTTON_WIDTH = 56, SLOT_X = 16,
         BAR_GAP = 16, BAR_HEIGHT = 5;
 
@@ -50,6 +54,7 @@ public abstract class EquipmentGui {
     protected final ItemStack stack;
     protected final boolean client;
     protected final LayoutTheme style;
+    private ModularPanel panel;
 
     protected EquipmentGui(PlayerInventoryGuiData data, PanelSyncManager sync) {
         this.data = data;
@@ -97,16 +102,26 @@ public abstract class EquipmentGui {
         return INVENTORY_BOTTOM + INVENTORY_HEIGHT + style.spacingMedium + style.buttonHeight;
     }
 
-    protected int contentWidth() {
-        return WIDTH - style.padding * 2;
+    protected int panelWidth() {
+        if (panel == null || !panel.isValid()) return WIDTH;
+        return LayoutMath.fit(Layout.screenWidth(panel), SCREEN_MARGIN, WIDTH, MAX_WIDTH);
     }
 
-    protected int closeLeft() {
-        return WIDTH - style.spacingMedium - CLOSE_SIZE;
+    protected int contentWidth() {
+        return panelWidth() - style.padding * 2;
+    }
+
+    protected int fitHeight(int top, int needed) {
+        if (panel == null || !panel.isValid()) return needed;
+        return LayoutMath.fitRows(
+            Layout.screenHeight(panel) - SCREEN_MARGIN * 2 - top - footerHeight(),
+            style.rowHeight,
+            MIN_PAGE_ROWS,
+            LayoutMath.rows(needed, style.rowHeight));
     }
 
     protected Layout rows() {
-        return Layout.rows(style, WIDTH);
+        return Layout.rows(style, this::panelWidth);
     }
 
     protected int textWidth(String text) {
@@ -126,8 +141,10 @@ public abstract class EquipmentGui {
         return widest;
     }
 
-    protected ModularPanel panel(String name, int contentHeight) {
-        return new ModularPanel(name).size(WIDTH, contentHeight + footerHeight())
+    protected ModularPanel panel(String name, IntSupplier contentHeight) {
+        panel = new ModularPanel(name);
+        return panel.width(this::panelWidth, Unit.Measure.PIXEL)
+            .height(() -> contentHeight.getAsInt() + footerHeight(), Unit.Measure.PIXEL)
             .child(
                 closeButton().size(CLOSE_SIZE, CLOSE_SIZE)
                     .top(style.spacingMedium)
@@ -173,11 +190,12 @@ public abstract class EquipmentGui {
         return purpose.apply(button);
     }
 
-    protected void title(ModularPanel panel, String lang, int width) {
+    protected void title(ModularPanel panel, String lang, int reserved) {
         panel.child(
             Layout.label(IKey.lang(lang), style)
                 .pos(style.padding, TITLE_Y)
-                .size(width, TEXT_HEIGHT));
+                .width(() -> contentWidth() - reserved, Unit.Measure.PIXEL)
+                .height(TEXT_HEIGHT));
     }
 
     protected void moduleSlots(ModularPanel panel, ModuleSlots<?> handler, String group, int y, String limits) {
@@ -194,8 +212,7 @@ public abstract class EquipmentGui {
         }
     }
 
-    protected void energyBar(ModularPanel panel, DoubleSupplier energy, DoubleSupplier capacity, int y,
-        int labelWidth) {
+    protected void energyBar(ModularPanel panel, DoubleSupplier energy, DoubleSupplier capacity, int y, int reserved) {
         LongSyncValue stored = new LongSyncValue(() -> (long) energy.getAsDouble());
         LongSyncValue max = new LongSyncValue(() -> (long) capacity.getAsDouble());
         sync.syncValue("energy", stored);
@@ -210,11 +227,13 @@ public abstract class EquipmentGui {
                             EquipmentEnergy.format(max.getLongValue()))),
                     style)
                 .pos(style.padding, y)
-                .size(labelWidth, TEXT_HEIGHT));
+                .width(() -> contentWidth() - reserved, Unit.Measure.PIXEL)
+                .height(TEXT_HEIGHT));
         panel.child(
             new FillBar().value(() -> stored.getLongValue() / (double) Math.max(1, max.getLongValue()))
                 .pos(style.padding, y + BAR_GAP)
-                .size(contentWidth(), BAR_HEIGHT));
+                .width(this::contentWidth, Unit.Measure.PIXEL)
+                .height(BAR_HEIGHT));
     }
 
     protected BooleanSyncValue syncToggle(String key, BooleanSupplier getter, Consumer<Boolean> setter,

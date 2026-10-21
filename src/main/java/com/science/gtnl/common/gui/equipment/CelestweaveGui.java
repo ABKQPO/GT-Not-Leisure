@@ -7,9 +7,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
-import java.util.function.IntConsumer;
-import java.util.function.IntSupplier;
-import java.util.function.Supplier;
+import java.util.function.IntFunction;
 import java.util.function.UnaryOperator;
 
 import net.minecraft.item.ItemStack;
@@ -28,11 +26,11 @@ import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
 import com.cleanroommc.modularui.value.sync.IntSyncValue;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widget.Widget;
+import com.cleanroommc.modularui.widget.sizer.Unit;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.ColorPickerDialog;
 import com.cleanroommc.modularui.widgets.ListWidget;
 import com.cleanroommc.modularui.widgets.ToggleButton;
-import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
@@ -52,6 +50,7 @@ import com.science.gtnllib.gui.layout.Layout;
 import com.science.gtnllib.gui.layout.Size;
 import com.science.gtnllib.gui.theme.ButtonPurpose;
 import com.science.gtnllib.gui.widget.SlideSwitch;
+import com.science.gtnllib.gui.widget.StepSlider;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -60,20 +59,21 @@ public class CelestweaveGui extends EquipmentGui {
 
     private static final int[] COLORS = { 0xFF3D9A, 0x3DE8FF, 0xFFC13D, 0xA35CFF, 0x4DFF88, 0xFF4040, 0xEEF0FF };
     private static final String GUI_LANG = "item.gtnl.celestweave.gui.", UNAVAILABLE = "§7";
+    private static final String SHORT_LANG = "item.gtnl.celestweave.short.";
     private static final int TABS_Y = 66, SLOTS_Y = 18, HELD_Y = 38, ENERGY_Y = 42, BACKPACK_Y = 3, BACKPACK_WIDTH = 52,
-        BACKPACK_HEIGHT = 13, PAGE_ROWS = 7, FLAGS_PER_ROW = 7, FLAG_GAP = 1, STEP_WIDTH = 16, SWATCH_SIZE = 12,
-        PICKER_WIDTH = 20;
-    private static final int MODULES_PAGE = 0, SETTINGS_PAGE = 1, APPEARANCE_PAGE = 2;
+        BACKPACK_HEIGHT = 13, FLAGS_PER_ROW = 7, FLAG_GAP = 1, SLIDER_WIDTH = 80, SWATCH_SIZE = 12, PICKER_WIDTH = 20;
     private static final String[] PAGES = { "modules", "settings", "appearance" };
+    private static final int APPEARANCE_PAGE = 2;
     private static final int INSTALLED = 1, ACTIVE = 2, SHOWN = 4;
 
     private final int piece;
     private final Map<CelestweaveModule, IntSyncValue> states = new EnumMap<>(CelestweaveModule.class);
+    private final List<List<IWidget>> pages = new ArrayList<>();
     private int page;
     private ModuleHandler modules;
     private HolderHandler heldSlots;
     private int viewing;
-    private int contentY, pageHeight;
+    private int contentY;
 
     public CelestweaveGui(PlayerInventoryGuiData data, PanelSyncManager sync) {
         super(data, sync);
@@ -88,21 +88,21 @@ public class CelestweaveGui extends EquipmentGui {
     @Override
     public ModularPanel build() {
         contentY = TABS_Y + style.buttonHeight + style.spacingMedium;
-        pageHeight = PAGE_ROWS * style.rowHeight;
-        ModularPanel panel = panel("celestweave_armor", contentY + pageHeight);
+        ModularPanel panel = panel("celestweave_armor", () -> contentY + pageHeight());
         modules = new ModuleHandler();
         boolean backpackButton = piece == CelestweaveArmor.CHEST
             && CelestweaveData.isArmorSlot(data.getPlayer(), data.getSlotIndex());
         int backpackWidth = buttonWidth(
             tr("item.gtnl.celestweave.gui.open_backpack"),
             style.spacingSmall,
-            BACKPACK_WIDTH), backpackX = closeLeft() - style.spacingSmall - backpackWidth;
+            BACKPACK_WIDTH), backpackRight = style.spacingMedium + CLOSE_SIZE + style.spacingSmall;
         title(
             panel,
             stack.getUnlocalizedName() + ".name",
-            backpackButton ? backpackX - style.padding - style.spacingSmall : contentWidth());
+            backpackButton ? backpackRight + backpackWidth + style.spacingSmall - style.padding : 0);
         if (backpackButton) panel.child(
-            button(ButtonPurpose.NORMAL).pos(backpackX, BACKPACK_Y)
+            button(ButtonPurpose.NORMAL).top(BACKPACK_Y)
+                .right(backpackRight)
                 .size(backpackWidth, BACKPACK_HEIGHT)
                 .overlay(
                     Layout.caption(
@@ -132,17 +132,13 @@ public class CelestweaveGui extends EquipmentGui {
                             .slot(
                                 new ModularSlot(held, i).filter(candidate -> held.isItemValid(slot, candidate))
                                     .slotGroup("celestweave_held"))
-                            .pos(WIDTH - style.padding - SLOT_SIZE * (holders.size() - i), HELD_Y)
+                            .top(HELD_Y)
+                            .right(style.padding + SLOT_SIZE * (holders.size() - 1 - i))
                             .tooltipBuilder(
                                 tooltip -> tooltip.addLine(IKey.lang("item.gtnl.celestweave.gui.held." + module.id))));
             }
         }
-        energyBar(
-            panel,
-            this::energy,
-            () -> CelestweaveEnergy.capacity(bound()),
-            ENERGY_Y,
-            contentWidth() - SLOT_SIZE * holders.size());
+        energyBar(panel, this::energy, () -> CelestweaveEnergy.capacity(bound()), ENERGY_Y, SLOT_SIZE * holders.size());
         List<ToggleButton> tabs = new ArrayList<>();
         for (int i = 0; i < PAGES.length; i++) {
             final int index = i;
@@ -155,11 +151,45 @@ public class CelestweaveGui extends EquipmentGui {
             rows().line(style.spacingSmall, Collections.nCopies(tabs.size(), Size.fill()), tabs)
                 .pos(0, TABS_Y)
                 .height(style.buttonHeight));
-        buildModulePage(panel);
-        buildSettingsPage(panel);
-        buildAppearancePage(panel);
+        pages.add(modulePage());
+        pages.add(settingsPage());
+        pages.add(appearancePage(panel));
+        for (int i = 0; i < pages.size(); i++) attachPage(panel, i);
         bindFooter(panel);
         return panel;
+    }
+
+    private int pageHeight() {
+        Layout rows = rows();
+        int needed = 0;
+        for (List<IWidget> lines : pages) needed = Math.max(needed, rows.stackHeight(lines));
+        return fitHeight(contentY, needed);
+    }
+
+    private void attachPage(ModularPanel panel, int index) {
+        List<IWidget> lines = pages.get(index);
+        if (lines.isEmpty()) {
+            pageNote(panel, index);
+            return;
+        }
+        ListWidget<IWidget, ?> list = new ListWidget<>().pos(0, contentY)
+            .width(this::panelWidth, Unit.Measure.PIXEL)
+            .height(this::pageHeight, Unit.Measure.PIXEL)
+            .setEnabledIf(widget -> page == index);
+        lines.forEach(list::child);
+        panel.child(list);
+    }
+
+    private void pageNote(ModularPanel panel, int index) {
+        String lang = index == APPEARANCE_PAGE ? "item.gtnl.celestweave.gui.appearance_on_chest"
+            : "item.gtnl.celestweave.gui.no_settings";
+        panel.child(
+            IKey.lang(lang)
+                .asWidget()
+                .pos(style.padding, contentY + style.spacingSmall)
+                .width(this::contentWidth, Unit.Measure.PIXEL)
+                .height(TEXT_HEIGHT * 2)
+                .setEnabledIf(widget -> page == index));
     }
 
     private double energy() {
@@ -203,7 +233,7 @@ public class CelestweaveGui extends EquipmentGui {
         return state != null && (state.getIntValue() & INSTALLED) != 0;
     }
 
-    private void buildModulePage(ModularPanel panel) {
+    private List<IWidget> modulePage() {
         List<SlideSwitch> switches = new ArrayList<>();
         List<String> labels = new ArrayList<>();
         for (CelestweaveModule module : CelestweaveModule.values()) {
@@ -212,12 +242,12 @@ public class CelestweaveGui extends EquipmentGui {
                 .allowC2S();
             sync.syncValue("module_" + module.id, state);
             states.put(module, state);
-            labels.add(tr("item.gtnl.celestweave.short." + module.id));
+            labels.add(tr(SHORT_LANG + module.id));
             switches.add(
                 new SlideSwitch().value(() -> (state.getIntValue() & ACTIVE) != 0)
                     .availableWhen(() -> (state.getIntValue() & INSTALLED) != 0)
                     .liveWhen(() -> (state.getIntValue() & SHOWN) != 0)
-                    .label(IKey.dynamic(() -> tr("item.gtnl.celestweave.short." + module.id)))
+                    .label(IKey.dynamic(() -> tr(SHORT_LANG + module.id)))
                     .tooltipAutoUpdate(true)
                     .tooltipBuilder(tooltip -> {
                         tooltip.addLine(IKey.lang("item.gtnl.celestweave_module." + module.id + ".name"));
@@ -236,95 +266,101 @@ public class CelestweaveGui extends EquipmentGui {
                         return true;
                     }));
         }
-        Layout rows = rows();
-        ListWidget<IWidget, ?> list = pageList(MODULES_PAGE);
-        rows.grid(style.spacingSmall, rows.columns(style.spacingSmall, widestSwitch(labels), MAX_COLUMNS), switches)
-            .forEach(list::child);
-        panel.child(list);
+        return Collections
+            .singletonList(rows().adaptiveGrid(style.spacingSmall, widestSwitch(labels), MAX_COLUMNS, switches));
     }
 
     private static boolean hidden(int state) {
         return (state & INSTALLED) != 0 && (state & SHOWN) == 0;
     }
 
-    private ListWidget<IWidget, ?> pageList(int visiblePage) {
-        return new ListWidget<>().pos(0, contentY)
-            .size(WIDTH, pageHeight)
-            .setEnabledIf(widget -> page == visiblePage);
-    }
-
-    private void pageNote(ModularPanel panel, String lang, int height, int visiblePage) {
-        panel.child(
-            IKey.lang(lang)
-                .asWidget()
-                .pos(style.padding, contentY + style.spacingSmall)
-                .size(contentWidth(), height)
-                .setEnabledIf(widget -> page == visiblePage));
-    }
-
-    private void buildSettingsPage(ModularPanel panel) {
-        ListWidget<IWidget, ?> list = pageList(SETTINGS_PAGE);
-        int rows = 0;
-        for (CelestweaveModuleSetting setting : CelestweaveModuleSetting.values()) if (setting.module.fits(piece)) {
-            list.child(settingRow(setting));
-            rows++;
+    private List<IWidget> settingsPage() {
+        Layout rows = rows();
+        List<IWidget> lines = new ArrayList<>();
+        for (CelestweaveModule module : CelestweaveModule.values()) {
+            if (!module.fits(piece)) continue;
+            List<IWidget> sliders = new ArrayList<>();
+            List<SlideSwitch> toggles = new ArrayList<>();
+            List<String> labels = new ArrayList<>();
+            for (CelestweaveModuleSetting setting : CelestweaveModuleSetting.values()) {
+                if (setting.module != module) continue;
+                if (setting.bool()) {
+                    toggles.add(settingToggle(setting));
+                    labels.add(tr(setting.lang()));
+                } else sliders.add(settingSlider(setting));
+            }
+            if (sliders.isEmpty() && toggles.isEmpty()) continue;
+            lines.add(
+                rows.section(
+                    IKey.dynamic(() -> (installed(module) ? "" : UNAVAILABLE) + tr(SHORT_LANG + module.id)),
+                    client ? accent() : 0));
+            lines.addAll(sliders);
+            if (!toggles.isEmpty())
+                lines.add(rows.adaptiveGrid(style.spacingSmall, widestSwitch(labels), MAX_COLUMNS, toggles));
         }
-        if (rows == 0) pageNote(panel, "item.gtnl.celestweave.gui.no_settings", TEXT_HEIGHT, SETTINGS_PAGE);
-        else panel.child(list);
+        return lines;
     }
 
-    private IWidget settingRow(CelestweaveModuleSetting setting) {
+    @SideOnly(Side.CLIENT)
+    private static int accent() {
+        return EquipmentTheme.colors().accent;
+    }
+
+    private static String settingKey(CelestweaveModuleSetting setting) {
+        return "setting_" + setting.module.id + "_" + setting.key;
+    }
+
+    private SlideSwitch settingToggle(CelestweaveModuleSetting setting) {
+        return toggle(
+            settingKey(setting),
+            setting.lang(),
+            () -> setting.on(bound()),
+            enabled -> { if (CelestweaveData.setValue(bound(), setting, enabled ? 1F : 0F)) changed(); },
+            () -> installed(setting.module),
+            null);
+    }
+
+    private IWidget settingSlider(CelestweaveModuleSetting setting) {
         CelestweaveModule module = setting.module;
-        String syncKey = "setting_" + module.id + "_" + setting.key;
-        if (setting.bool()) return rows().line(
-            0,
-            Collections.singletonList(Size.fill()),
-            Collections.singletonList(
-                toggle(
-                    syncKey,
-                    setting.lang(),
-                    () -> setting.on(bound()),
-                    enabled -> { if (CelestweaveData.setValue(bound(), setting, enabled ? 1F : 0F)) changed(); },
-                    () -> installed(module),
-                    null)));
         IntSyncValue value = new IntSyncValue(
             () -> setting.get(bound()),
             v -> { if (CelestweaveData.setValue(bound(), setting, v)) changed(); }).allowC2S();
-        sync.syncValue(syncKey, value);
-        return stepper(
-            () -> (installed(module) ? "" : UNAVAILABLE) + tr(setting.lang())
-                + ": "
-                + setting.display(value.getIntValue()),
-            value::getIntValue,
-            v -> { if (installed(module)) value.setIntValue(v); },
+        sync.syncValue(settingKey(setting), value);
+        return slider(
+            IKey.dynamic(() -> (installed(module) ? "" : UNAVAILABLE) + tr(setting.lang())),
+            value,
             setting.min,
-            setting::max,
-            1);
+            setting.max(),
+            1,
+            setting::display,
+            () -> installed(module));
     }
 
-    private ButtonWidget<?> stepButton(String label, Runnable action) {
-        return button(ButtonPurpose.NORMAL).size(STEP_WIDTH, style.buttonHeight)
-            .overlay(Layout.caption(IKey.str(label), style))
-            .onMousePressed(mouse -> {
-                if (mouse != 0) return false;
-                action.run();
-                return true;
-            });
-    }
-
-    private IWidget stepper(Supplier<String> label, IntSupplier getter, IntConsumer setter, int min, IntSupplier max,
-        int step) {
-        Flow buttons = Flow.row()
-            .size(STEP_WIDTH * 2, style.buttonHeight)
-            .child(stepButton("-", () -> setter.accept(Math.max(min, getter.getAsInt() - step))))
-            .child(stepButton("+", () -> setter.accept(Math.min(max.getAsInt(), getter.getAsInt() + step))));
+    private IWidget slider(IKey label, IntSyncValue value, int min, int max, int step, IntFunction<String> format,
+        BooleanSupplier active) {
+        Widget<?> control = client && max > min ? stepSlider(value, min, max, step, format, active)
+            : Layout.label(IKey.dynamic(() -> format.apply(value.getIntValue())), style);
         return rows().line(
             style.spacingMedium,
-            Arrays.asList(Size.fill(), Size.fixed(STEP_WIDTH * 2)),
             Arrays.asList(
-                Layout.label(IKey.dynamic(label), style)
+                Size.fill(),
+                Size.fill()
+                    .atLeast(SLIDER_WIDTH)),
+            Arrays.asList(
+                Layout.label(label, style)
                     .paddingLeft(style.spacingSmall),
-                buttons));
+                control));
+    }
+
+    @SideOnly(Side.CLIENT)
+    private static StepSlider stepSlider(IntSyncValue value, int min, int max, int step, IntFunction<String> format,
+        BooleanSupplier active) {
+        return new StepSlider()
+            .value(value::getIntValue, v -> { if (active.getAsBoolean()) value.setIntValue((int) Math.round(v)); })
+            .range(min, max, Math.max(1, (max - min) / step))
+            .format(v -> format.apply((int) Math.round(v)))
+            .activeWhen(active)
+            .compactDigits(true);
     }
 
     private static float guiScale(CelestweaveCosmeticOption option) {
@@ -342,20 +378,18 @@ public class CelestweaveGui extends EquipmentGui {
         return value;
     }
 
-    private void buildAppearancePage(ModularPanel panel) {
-        if (piece != CelestweaveArmor.CHEST) {
-            pageNote(panel, "item.gtnl.celestweave.gui.appearance_on_chest", TEXT_HEIGHT * 2, APPEARANCE_PAGE);
-            return;
-        }
-        ListWidget<IWidget, ?> list = pageList(APPEARANCE_PAGE);
+    private List<IWidget> appearancePage(ModularPanel panel) {
+        List<IWidget> lines = new ArrayList<>();
+        if (piece != CelestweaveArmor.CHEST) return lines;
         for (CelestweaveCosmeticOption option : CelestweaveCosmeticOption.values()) {
             switch (option.kind) {
-                case COLOR -> list.child(colorRow(panel, option));
-                case FLAGS -> flagRows(option).forEach(list::child);
-                default -> list.child(stepperRow(option));
+                case COLOR -> lines.add(colorRow(panel, option));
+                case FLAGS -> lines.addAll(flagRows(option));
+                case CHOICE -> lines.addAll(choiceRows(option));
+                default -> lines.add(cosmeticSlider(option));
             }
         }
-        panel.child(list);
+        return lines;
     }
 
     private IWidget colorRow(ModularPanel panel, CelestweaveCosmeticOption option) {
@@ -420,27 +454,53 @@ public class CelestweaveGui extends EquipmentGui {
         CelestweaveThemeAccent.editing(panel, color::getIntValue);
     }
 
-    private IWidget stepperRow(CelestweaveCosmeticOption option) {
+    private IWidget cosmeticSlider(CelestweaveCosmeticOption option) {
         float scale = guiScale(option);
         IntSyncValue value = cosmeticValue(option);
         BooleanSupplier applies = () -> option.appliesTo(CelestweaveData.cosmetic(bound()));
-        return stepper(
-            () -> (applies.getAsBoolean() ? "" : UNAVAILABLE) + tr(GUI_LANG + option.lang)
-                + ": "
-                + cosmeticText(option, value.getIntValue()),
-            value::getIntValue,
-            v -> { if (applies.getAsBoolean()) value.setIntValue(v); },
+        return slider(
+            IKey.dynamic(() -> (applies.getAsBoolean() ? "" : UNAVAILABLE) + tr(GUI_LANG + option.lang)),
+            value,
             Math.round(option.min * scale),
-            () -> Math.round(option.max() * scale),
-            Math.max(1, Math.round(option.step * scale)));
+            Math.round(option.max() * scale),
+            Math.max(1, Math.round(option.step * scale)),
+            v -> cosmeticText(option, v),
+            applies);
+    }
+
+    private List<IWidget> choiceRows(CelestweaveCosmeticOption option) {
+        IntSyncValue value = cosmeticValue(option);
+        List<String> names = option.names();
+        List<ToggleButton> picks = new ArrayList<>();
+        int widest = 0;
+        for (int i = 0; i < names.size(); i++) {
+            final int index = i;
+            String key = GUI_LANG + option.lang + "." + names.get(i);
+            widest = Math.max(
+                widest,
+                Size.content(textWidth(tr(key)), style.padding)
+                    .resolve(0));
+            picks.add(
+                ButtonPurpose.TAB.apply(new ToggleButton())
+                    .value(
+                        new BoolValue.Dynamic(
+                            () -> value.getIntValue() == index,
+                            selected -> { if (selected) value.setIntValue(index); }))
+                    .overlay(Layout.caption(IKey.lang(key), style)));
+        }
+        Layout rows = rows();
+        return Arrays.asList(
+            rows.line(
+                0,
+                Collections.singletonList(Size.fill()),
+                Collections.singletonList(
+                    Layout.label(IKey.lang(GUI_LANG + option.lang), style)
+                        .paddingLeft(style.spacingSmall))),
+            rows.adaptiveGrid(style.spacingSmall, widest, names.size(), picks));
     }
 
     private static String cosmeticText(CelestweaveCosmeticOption option, int value) {
         return switch (option.kind) {
-            case CHOICE -> {
-                List<String> names = option.names();
-                yield tr(GUI_LANG + option.lang + "." + names.get(Math.max(0, Math.min(names.size() - 1, value))));
-            }
             case DECIMAL -> String.format("%.2f", value / guiScale(option));
             default -> option.minLabel != null && value <= option.min ? tr(GUI_LANG + option.minLabel)
                 : String.valueOf(value);

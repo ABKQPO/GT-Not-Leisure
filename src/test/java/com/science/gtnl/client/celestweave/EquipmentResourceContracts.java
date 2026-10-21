@@ -629,10 +629,34 @@ public class EquipmentResourceContracts {
         check(
             Arrays.equals(LayoutMath.split(available, 1, 7), new int[] { 22, 22, 22, 22, 22, 22, 22 }),
             "seven arc flags keep the old 22 pixel buttons");
-        int[] stepper = LayoutMath.line(Arrays.asList(Size.fill(), Size.fixed(32)), available, 4);
+        int[] slider = LayoutMath.line(
+            Arrays.asList(
+                Size.fill(),
+                Size.fill()
+                    .atLeast(80)),
+            available,
+            4);
+        check(slider[0] == 76 && slider[1] == 80, "a setting slider keeps at least 80 pixels on the narrowest panel");
+        int[] wide = LayoutMath.line(
+            Arrays.asList(
+                Size.fill(),
+                Size.fill()
+                    .atLeast(80)),
+            240,
+            4);
+        check(wide[0] == 118 && wide[1] == 118, "and shares a wide panel evenly with its label");
         check(
-            stepper[0] == 124 && 8 + stepper[0] + 4 == 136,
-            "stepper buttons stay at x 136 with the label filling the rest");
+            LayoutMath.fit(320, 4, 176, 256) == 256 && LayoutMath.fit(176, 4, 176, 256) == 176,
+            "settings panels grow from 176 to 256 pixels with the screen");
+        check(
+            LayoutMath.columns(160, gap, 76, 3) == 2 && LayoutMath.columns(240, gap, 76, 3) == 3,
+            "short switch labels keep two columns on a narrow panel and take three on the widest one");
+        int armorTop = 84, footer = 101;
+        check(
+            armorTop + LayoutMath.fitRows(240 - 8 - armorTop - footer, 16, 3, 11) + footer <= 240
+                && LayoutMath.fitRows(270 - 8 - armorTop - footer, 16, 3, 11) == 64
+                && LayoutMath.fitRows(360 - 8 - armorTop - footer, 16, 3, 11) == 160,
+            "the armor pages shrink to fit the smallest screen and grow on taller ones");
         List<Size> colorRow = new ArrayList<>();
         colorRow.add(Size.fill());
         for (int i = 0; i < 7; i++) colorRow.add(Size.fixed(12));
@@ -657,10 +681,29 @@ public class EquipmentResourceContracts {
             railgun = compact(sources.get("common/gui/equipment/RailgunGui.java")),
             sound = compact(sources.get("common/gui/equipment/EquipmentSoundScreen.java")),
             wheel = compact(sources.get("client/celestweave/CelestweaveWheelScreen.java"));
-        String columns = "rows.columns(style.spacingSmall,widestSwitch(labels),MAX_COLUMNS)";
+        String columns = "adaptiveGrid(style.spacingSmall,widestSwitch(labels),MAX_COLUMNS,";
         check(
-            armor.contains(columns) && railgun.contains(columns),
-            "module and setting switches pick their column count from the widest label");
+            armor.contains(columns + "switches)") && armor.contains(columns + "toggles)")
+                && railgun.contains(columns + "switches)"),
+            "module and setting switches pick their column count from the widest label and the current width");
+        check(
+            base.contains("LayoutMath.fit(Layout.screenWidth(panel),SCREEN_MARGIN,WIDTH,MAX_WIDTH)")
+                && base.contains("panel.width(this::panelWidth,Unit.Measure.PIXEL)")
+                && base.contains("returnLayout.rows(style,this::panelWidth);"),
+            "settings panels and their rows follow the screen width, also after a resize");
+        check(
+            base.contains("LayoutMath.fitRows(") && armor.contains(".height(this::pageHeight,Unit.Measure.PIXEL)")
+                && railgun.contains("()->SETTINGS_Y+grid.contentHeight()"),
+            "armor pages fit the screen height and the railgun panel grows with its switch rows");
+        check(
+            armor.contains("rows.section(") && armor.contains("newStepSlider()")
+                && armor.contains("()->value.getIntValue()==index")
+                && !armor.contains("stepButton"),
+            "armor settings are grouped by module, numbers use sliders and choices use pick buttons");
+        check(
+            armor.contains("client&&max>min?stepSlider(")
+                && armor.contains("@SideOnly(Side.CLIENT)privatestaticStepSliderstepSlider("),
+            "sliders are only built on the client, the server panel never loads them");
         check(
             armor.contains("Collections.nCopies(tabs.size(),Size.fill())") && armor.contains("ButtonPurpose.TAB"),
             "armor tabs share the row evenly");

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.science.gtnllib.gui.layout.Layout;
@@ -24,7 +25,56 @@ public class LayoutContracts {
 
     static void run() throws IOException {
         layoutRules();
+        adaptiveRules();
         layoutSources();
+    }
+
+    private static void adaptiveRules() {
+        check(
+            Arrays.equals(LayoutMath.offsets(new int[] { 79, 79 }, 2), new int[] { 0, 81 })
+                && LayoutMath.offsets(new int[0], 2).length == 0,
+            "cells start after the cells and gaps before them");
+        check(
+            LayoutMath.fit(480, 4, 176, 256) == 256 && LayoutMath.fit(220, 4, 176, 256) == 212
+                && LayoutMath.fit(100, 4, 176, 256) == 176,
+            "a panel follows the screen between its narrowest and widest size");
+        check(
+            LayoutMath.fitRows(77, 16, 3, 11) == 64 && LayoutMath.fitRows(500, 16, 3, 11) == 176
+                && LayoutMath.fitRows(10, 16, 3, 11) == 48
+                && LayoutMath.fitRows(500, 16, 3, 2) == 32
+                && LayoutMath.fitRows(100, 0, 3, 11) == 0,
+            "a scrolling area shows whole rows, at least the minimum, never more than its content");
+        int[] width = { 176 };
+        Layout rows = Layout.rows(LayoutTheme.DEFAULT, () -> width[0]);
+        List<SlideSwitch> five = new ArrayList<>();
+        for (int i = 0; i < 5; i++) five.add(new SlideSwitch());
+        Layout.Grid grid = rows.adaptiveGrid(2, 76, 3, five);
+        check(
+            rows.available() == 160 && grid.columns() == 2
+                && grid.rowCount() == 3
+                && grid.contentHeight() == 48
+                && grid.cellLeft(1) == 89
+                && grid.cellWidth(1) == 79
+                && grid.cellTop(2) == 16
+                && grid.getChildren()
+                    .size() == 5,
+            "an adaptive grid on a narrow panel keeps two columns");
+        width[0] = 256;
+        check(
+            rows.available() == 240 && grid.columns() == 3
+                && grid.rowCount() == 2
+                && grid.contentHeight() == 32
+                && grid.cellLeft(2) == 170
+                && grid.cellWidth(2) == 78
+                && grid.cellTop(3) == 16,
+            "the same grid takes a third column once the panel grows");
+        width[0] = 120;
+        check(
+            grid.columns() == 1 && grid.rowCount() == 5 && grid.cellWidth(4) == 104 && grid.cellLeft(4) == 8,
+            "and falls back to one full-width column when the panel shrinks");
+        check(
+            rows.stackHeight(Arrays.asList(rows.section(IKey.str("title"), 0), grid)) == 16 + grid.contentHeight(),
+            "a stack of rows adds one row per line and the current height of each grid");
     }
 
     private static void layoutRules() {
@@ -128,5 +178,9 @@ public class LayoutContracts {
             compact(layout).contains("returnnewScrollingTextWidget(key)") && compact(layout).contains(
                 "TextRenderUtils.drawTextFitted(key.getFormatted(),x,y,width,height,Alignment.Center,theme.getTextColor(),theme.getTextShadow(),style.textScale)"),
             "labels and button captions cut text that does not fit instead of spilling out");
+        check(
+            compact(layout).contains("returnchild.width(()->widths.get()[index],Unit.Measure.PIXEL);")
+                && compact(layout).contains(".width(this::width,Unit.Measure.PIXEL)"),
+            "rows and their cells read their width when the screen lays out, so they follow a resized panel");
     }
 }
