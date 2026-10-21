@@ -210,16 +210,7 @@ public class CrucibleCraftingRecipes implements IRecipePool {
         }
     }
 
-    private static class Pending {
+    public record Pending(CrucibleRecipeData recipe, String identity, int circuit) {
 
-        private final CrucibleRecipeData recipe;
-        private final String identity;
-        private final int circuit;
-
-        private Pending(CrucibleRecipeData recipe, String identity, int circuit) {
-            this.recipe = recipe;
-            this.identity = identity;
-            this.circuit = circuit;
-        }
     }
 }

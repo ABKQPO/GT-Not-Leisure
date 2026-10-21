@@ -18,11 +18,11 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 
-import bartworks.system.material.WerkstoffLoader;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
@@ -120,12 +120,11 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
             true);
     }
 
-    // TODO: Use GTNLMaterials
     @Override
     public IStructureDefinition<CheatOreProcessingFactory> getStructureDefinition() {
         return StructureDefinition.<CheatOreProcessingFactory>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasings, 31_766 + 300))
+            .addElement('A', GTNLCasings.ReboltedBronzeCasing.asElement())
             .addElement('B', GTStructureUtility.ofFrame(Materials.Bronze))
             .addElement('C', Casings.HeatResistantCokeOvenCasing.asElement())
             .addElement('D', Casings.BronzeGearBoxCasing.asElement())
@@ -139,7 +138,7 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
                         .casingIndex(Casings.BronzePlatedBricks.getTextureId())
                         .hint(1)
                         .build(),
-                    StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasingsAdvanced, 31_766 + 300)))
+                    GTNLCasings.ReboltedBronzeCasing.asElement()))
             .addElement('H', GTStructureUtility.chainAllGlasses())
             .build();
     }

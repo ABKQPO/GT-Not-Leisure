@@ -513,7 +513,6 @@ public class SubscribeEventUtils {
             return;
         }
 
-        // 声音、清空和聊天消息全部由服务器处理
         if (player.worldObj.isRemote) {
             suppressWandAirUseTick = player.worldObj.getTotalWorldTime();
             return;

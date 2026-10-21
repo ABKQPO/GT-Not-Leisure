@@ -24,6 +24,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
@@ -34,7 +35,6 @@ import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import bartworks.common.loaders.FluidLoader;
-import bartworks.system.material.WerkstoffLoader;
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
@@ -87,7 +87,6 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
         return new HighwayToHell(this.mName);
     }
 
-    // TODO: Use GTNLMaterials
     @Override
     public IStructureDefinition<HighwayToHell> getStructureDefinition() {
         return StructureDefinition.<HighwayToHell>builder()
@@ -125,7 +124,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
                     .buildAndChain(
                         StructureUtility
                             .onElementPass(x -> ++x.mCountCasing, Casings.RadiantNaquadahAlloyCasing.asElement())))
-            .addElement('P', StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasingsAdvanced, 31_766 + 129))
+            .addElement('P', GTNLCasings.ReboltedNeutroniumCasing.asElement())
             .addElement('Q', CustomHatchElement.ROTOR_ASSEMBLY.newAny(getCasingTextureID(), 2))
             .build();
     }

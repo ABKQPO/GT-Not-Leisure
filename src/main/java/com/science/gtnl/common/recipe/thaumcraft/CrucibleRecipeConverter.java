@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.recipe.gtnl.ShapedArcaneCraftingRecipes;
 
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
@@ -15,16 +16,16 @@ public class CrucibleRecipeConverter {
 
     private static final int MAX_REJECTION_LOGS = 20;
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static List<CrucibleRecipeData> scanRecipes() {
         List<CrucibleRecipeData> recipes = new ArrayList<>();
         int rejected = 0;
 
         for (Object entry : new ArrayList<>(ThaumcraftApi.getCraftingRecipes())) {
-            if (!(entry instanceof CrucibleRecipe)) {
+            if (!(entry instanceof CrucibleRecipe recipe)) {
                 continue;
             }
 
-            CrucibleRecipe recipe = (CrucibleRecipe) entry;
             CrucibleRecipeData data = convertRecipe(recipe);
             if (data != null) {
                 recipes.add(data);
@@ -73,21 +74,20 @@ public class CrucibleRecipeConverter {
             return null;
         }
 
-        CrucibleRecipeData data = new CrucibleRecipeData();
-        data.sourceHash = recipe.hash;
-        data.researchKey = recipe.key == null ? "" : recipe.key;
-        data.catalysts = catalysts;
-        data.catalystOreName = ThaumcraftRecipeInputs.findOreDictionaryName(recipe.catalyst);
-        data.output = output.copy();
-        data.aspects = recipe.aspects.copy();
-        return data;
+        return CrucibleRecipeData.builder()
+            .sourceHash(recipe.hash)
+            .researchKey(recipe.key == null ? "" : recipe.key)
+            .catalysts(catalysts)
+            .catalystOreName(ShapedArcaneCraftingRecipes.findOreDictionaryName(recipe.catalyst))
+            .output(output.copy())
+            .aspects(recipe.aspects.copy())
+            .build();
     }
 
     public static ItemStack[] expandCatalyst(Object catalyst) {
         List<ItemStack> expanded = new ArrayList<>();
 
-        if (catalyst instanceof ItemStack) {
-            ItemStack stack = (ItemStack) catalyst;
+        if (catalyst instanceof ItemStack stack) {
             if (isUsableCatalyst(stack)) {
                 expanded.add(stack.copy());
             }
