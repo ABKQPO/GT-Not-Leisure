@@ -2,6 +2,8 @@ package com.science.gtnl.common.gui.modularui;
 
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 
+import net.minecraft.item.ItemStack;
+
 import com.cleanroommc.modularui.api.IPanelHandler;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
@@ -17,8 +19,8 @@ import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.science.gtnl.common.machine.multiblock.wireless.HighwayToHell;
 
+import gregtech.api.items.MetaGeneratedTool;
 import gregtech.api.modularui2.GTGuis;
-import gtPlusPlus.xmod.gregtech.common.tileentities.machines.multi.production.turbines.MTELargerTurbineBaseLegacy;
 
 public class HighwayToHellGui extends GTNLMultiBlockBaseGui<HighwayToHell> {
 
@@ -80,6 +82,12 @@ public class HighwayToHellGui extends GTNLMultiBlockBaseGui<HighwayToHell> {
     public IWidget createTurbineSlot(int index) {
         return new ItemSlot().slot(
             new ModularSlot(multiblock.turbineHolder, index).slotGroup(TURBINE_SLOT_GROUP)
-                .filter(MTELargerTurbineBaseLegacy::isValidTurbine));
+                .filter(HighwayToHellGui::isValidTurbine));
+    }
+
+    public static boolean isValidTurbine(ItemStack aTurbine) {
+        return (aTurbine != null && aTurbine.getItem() instanceof MetaGeneratedTool
+            && aTurbine.getItemDamage() >= 170
+            && aTurbine.getItemDamage() <= 176);
     }
 }
