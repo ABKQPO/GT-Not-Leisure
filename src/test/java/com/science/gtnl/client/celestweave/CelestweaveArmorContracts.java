@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
@@ -97,6 +98,58 @@ public class CelestweaveArmorContracts {
         packets();
         envelopes();
         hitDirection();
+        arcs();
+    }
+
+    private static void arcs() {
+        Random random = new Random(20261022L);
+        float[] a = { 0F, 0F, 0F }, b = { 0F, 6F, 0F };
+        float halfWidth = 1.5F, eps = 1.0E-4F;
+        CelestweaveSeam patch = CelestweaveSeam
+            .patch(CelestweaveArmor.CHEST, "bone:body", a, b, new float[] { halfWidth, 0F, 0F });
+        CelestweaveSeam line = CelestweaveSeam.line(CelestweaveArmor.CHEST, "bone:body", a, b);
+        int draws = 2000, inside = 0, apart = 0, reversed = 0, tilted = 0, forks = 0, forksFromMiddle = 0;
+        for (int i = 0; i < draws; i++) {
+            float[][] ends = patch.endpoints(random);
+            boolean bothInside = true;
+            for (float[] p : ends) bothInside &= Math.abs(p[0]) <= halfWidth + eps && p[1] >= -eps
+                && p[1] <= 6F + eps
+                && Math.abs(p[2]) <= eps;
+            if (bothInside) inside++;
+            if (CelestweaveSeam.distance(ends[0], ends[1]) >= CelestweaveSeam.MIN_SPAN_SHARE * 6F) apart++;
+            float dx = ends[1][0] - ends[0][0], dy = ends[1][1] - ends[0][1];
+            if (dy < 0) reversed++;
+            if (Math.abs(dx) > Math.tan(Math.toRadians(15)) * Math.abs(dy)) tilted++;
+            float[][] fork = patch.fork(ends, random);
+            if (fork == null) continue;
+            forks++;
+            float[] along = { ends[1][0] - ends[0][0], ends[1][1] - ends[0][1], ends[1][2] - ends[0][2] };
+            float lengthSquared = along[0] * along[0] + along[1] * along[1] + along[2] * along[2];
+            float t = ((fork[0][0] - ends[0][0]) * along[0] + (fork[0][1] - ends[0][1]) * along[1]
+                + (fork[0][2] - ends[0][2]) * along[2]) / lengthSquared;
+            if (t >= CelestweaveSeam.FORK_FROM - eps && t <= CelestweaveSeam.FORK_TO + eps) forksFromMiddle++;
+        }
+        check(inside == draws, "irregular arcs start and end inside the seam's patch");
+        check(apart > draws * 0.9, "irregular arcs usually span at least the minimum share of the patch");
+        check(reversed > draws * 0.4 && reversed < draws * 0.6, "irregular arcs run both ways along a seam");
+        check(tilted > draws * 0.3, "irregular arcs are not all parallel to their seam");
+        check(forks > draws * 0.33 && forks < draws * 0.47, "about four in ten irregular arcs fork");
+        check(forks > 0 && forksFromMiddle == forks, "a fork starts from the middle of its main arc");
+        int directedRight = 0, directedForks = 0;
+        for (int i = 0; i < draws; i++) {
+            float[][] ends = line.endpoints(random);
+            if (ends[0][0] == 0F && ends[1][0] == 0F
+                && ends[0][1] <= CelestweaveSeam.DIRECTED_START * 6F + eps
+                && ends[1][1] >= CelestweaveSeam.DIRECTED_END * 6F - eps) directedRight++;
+            if (line.fork(ends, random) != null) directedForks++;
+        }
+        check(directedRight == draws, "directed seams always run from near a to near b");
+        check(directedForks == 0, "directed seams never fork");
+        int patches = 0;
+        for (CelestweaveSeam seam : CelestweaveArcs.SEAMS) if (!seam.directed()) patches++;
+        check(
+            CelestweaveArcs.SEAMS.length == 11 && patches == 4,
+            "the shoulder and thigh seams spread over a patch, the other seams stay directed");
     }
 
     private static void modules() {

@@ -25,26 +25,32 @@ public class CelestweaveArcs {
     private static final float[] ANTENNA_A = { -5.25F, -9.2F, 6.9F }, ANTENNA_B = { 5.25F, -9.2F, 6.9F };
     private static final float[] CORE = { 0F, 3.25F, -4.3F }, CORE_INNER = { 0F, 3.25F, -4.35F };
     private static final float[] DASH_FROM = { 0F, 11F, 3.3F };
-    private static final Seam[] SEAMS = {
-        new Seam(CelestweaveArmor.CHEST, "bone:rightArm", -4.1F, 0.75F, -3F, -4.1F, 0.75F, 2.5F),
-        new Seam(CelestweaveArmor.CHEST, "bone:leftArm", 4.1F, 0.75F, -3F, 4.1F, 0.75F, 2.5F),
-        new Seam(CelestweaveArmor.CHEST, "bone:rightArm", -4.1F, 6.2F, 0F, -4.1F, 9.1F, 0F),
-        new Seam(CelestweaveArmor.CHEST, "bone:leftArm", 4.1F, 6.2F, 0F, 4.1F, 9.1F, 0F),
-        new Seam(CelestweaveArmor.LEGS, "bone:rightLeg", -3.1F, 0.8F, -1F, -3.1F, 4.8F, 1F),
-        new Seam(CelestweaveArmor.LEGS, "bone:leftLeg", 3.1F, 0.8F, -1F, 3.1F, 4.8F, 1F),
-        new Seam(CelestweaveArmor.CHEST, "bone:body", -2.6F, 3.25F, -4.1F, -4.3F, 4.4F, -3.6F),
-        new Seam(CelestweaveArmor.CHEST, "bone:body", 2.6F, 3.25F, -4.1F, 4.3F, 4.4F, -3.6F),
-        new Seam(CelestweaveArmor.CHEST, "bone:body", -2.5F, 1.5F, 4.6F, -2.5F, 8F, 4.6F),
-        new Seam(CelestweaveArmor.CHEST, "bone:body", 2.5F, 1.5F, 4.6F, 2.5F, 8F, 4.6F),
-        new Seam(CelestweaveArmor.HEAD, "bone:head", -1.6F, -10.85F, -2.2F, 1.6F, -10.85F, 2.2F) };
+    private static final float FORK_SPREAD = 0.75F, FORK_WIDTH = 0.07F, FORK_LIFETIME = 0.6F;
+    private static final int FORK_SEGMENTS = 3, FORK_DELAY_MS = 40;
+    static final CelestweaveSeam[] SEAMS = { CelestweaveSeam
+        .patch(CelestweaveArmor.CHEST, "bone:rightArm", v(-4.1F, 0.75F, -3F), v(-4.1F, 0.75F, 2.5F), v(0F, 1.5F, 0F)),
+        CelestweaveSeam
+            .patch(CelestweaveArmor.CHEST, "bone:leftArm", v(4.1F, 0.75F, -3F), v(4.1F, 0.75F, 2.5F), v(0F, -1.5F, 0F)),
+        CelestweaveSeam.line(CelestweaveArmor.CHEST, "bone:rightArm", v(-4.1F, 6.2F, 0F), v(-4.1F, 9.1F, 0F)),
+        CelestweaveSeam.line(CelestweaveArmor.CHEST, "bone:leftArm", v(4.1F, 6.2F, 0F), v(4.1F, 9.1F, 0F)),
+        CelestweaveSeam.patch(
+            CelestweaveArmor.LEGS,
+            "bone:rightLeg",
+            v(-3.1F, 0.8F, -1F),
+            v(-3.1F, 4.8F, 1F),
+            v(0F, 0.25F, -0.51F)),
+        CelestweaveSeam
+            .patch(CelestweaveArmor.LEGS, "bone:leftLeg", v(3.1F, 0.8F, -1F), v(3.1F, 4.8F, 1F), v(0F, -0.25F, 0.51F)),
+        CelestweaveSeam.line(CelestweaveArmor.CHEST, "bone:body", v(-2.6F, 3.25F, -4.1F), v(-4.3F, 4.4F, -3.6F)),
+        CelestweaveSeam.line(CelestweaveArmor.CHEST, "bone:body", v(2.6F, 3.25F, -4.1F), v(4.3F, 4.4F, -3.6F)),
+        CelestweaveSeam.line(CelestweaveArmor.CHEST, "bone:body", v(-2.5F, 1.5F, 4.6F), v(-2.5F, 8F, 4.6F)),
+        CelestweaveSeam.line(CelestweaveArmor.CHEST, "bone:body", v(2.5F, 1.5F, 4.6F), v(2.5F, 8F, 4.6F)),
+        CelestweaveSeam.line(CelestweaveArmor.HEAD, "bone:head", v(-1.6F, -10.85F, -2.2F), v(1.6F, -10.85F, 2.2F)) };
 
     static int total;
 
-    private record Seam(int piece, String anchor, float[] a, float[] b) {
-
-        Seam(int piece, String anchor, float ax, float ay, float az, float bx, float by, float bz) {
-            this(piece, anchor, new float[] { ax, ay, az }, new float[] { bx, by, bz });
-        }
+    private static float[] v(float x, float y, float z) {
+        return new float[] { x, y, z };
     }
 
     private CelestweaveArcs() {}
@@ -67,20 +73,36 @@ public class CelestweaveArcs {
         if (level >= 2 && look.tier > 0) {
             int want = Math.min(look.idleWant(storm), MainConfig.client.celestweaveMaxArcsPerPlayer);
             for (int n = state.countIdle(); n < want; n++) {
-                Seam seam = SEAMS[RNG.nextInt(SEAMS.length)];
+                CelestweaveSeam seam = SEAMS[RNG.nextInt(SEAMS.length)];
                 if (!look.wears(seam.piece())) continue;
+                float spread = 0.8F * cosmetic.get(CelestweaveCosmeticOption.ARC_SPREAD);
+                int lifetime = Math.round(rand(140F, 320F) / cosmetic.get(CelestweaveCosmeticOption.ARC_FREQ));
+                float[][] ends = seam.endpoints(RNG);
                 spawn(
                     state,
                     seam.anchor(),
-                    seam.a(),
-                    seam.b(),
+                    ends[0],
+                    ends[1],
                     5,
-                    0.8F * cosmetic.get(CelestweaveCosmeticOption.ARC_SPREAD),
+                    spread,
                     0.11F,
                     now,
-                    Math.round(rand(140F, 320F) / cosmetic.get(CelestweaveCosmeticOption.ARC_FREQ)),
+                    lifetime,
                     glowColor,
                     CelestweaveArc.Kind.IDLE);
+                float[][] fork = seam.fork(ends, RNG);
+                if (fork != null) spawn(
+                    state,
+                    seam.anchor(),
+                    fork[0],
+                    fork[1],
+                    FORK_SEGMENTS,
+                    FORK_SPREAD * spread,
+                    FORK_WIDTH,
+                    now + RNG.nextInt(FORK_DELAY_MS),
+                    Math.round(lifetime * FORK_LIFETIME),
+                    glowColor,
+                    CelestweaveArc.Kind.BURST);
             }
             if (look.tier == 3 && cosmetic.event(CelestweaveCosmetic.EVENT_ANTENNA)
                 && look.wears(CelestweaveArmor.HEAD)
