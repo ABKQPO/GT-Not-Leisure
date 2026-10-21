@@ -9,6 +9,9 @@ import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.common.internal.Theme;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 @Deprecated
 public class AutoScalingStackSizeText implements IDrawable {
 
@@ -18,7 +21,7 @@ public class AutoScalingStackSizeText implements IDrawable {
     private static final TextRenderer renderer = new TextRenderer();
     private Alignment alignment = Alignment.Center;
     private final String text;
-    private int simWidth;
+    private int simWidth = -1;
 
     private int color;
     private boolean shadow = false;
@@ -26,7 +29,6 @@ public class AutoScalingStackSizeText implements IDrawable {
     public AutoScalingStackSizeText(long stackSize) {
         this.text = muiNumberFormat.formatWithSuffix(stackSize);
         this.color = Theme.INSTANCE.getText();
-        this.measure();
     }
 
     public AutoScalingStackSizeText color(int color) {
@@ -49,7 +51,7 @@ public class AutoScalingStackSizeText implements IDrawable {
     }
 
     public AutoScalingStackSizeText measure() {
-        this.simWidth = measuringRenderer.getMaxWidth(Collections.singletonList(this.text));
+        this.simWidth = -1;
         return this;
     }
 
@@ -63,7 +65,11 @@ public class AutoScalingStackSizeText implements IDrawable {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void draw(float x, float y, float width, float height, float partialTicks) {
+        if (this.simWidth < 0) {
+            this.simWidth = measuringRenderer.getMaxWidth(Collections.singletonList(this.text));
+        }
         renderer.setPos((int) (x - 0.5), (int) (y - 0.5));
         renderer.setShadow(this.shadow);
         renderer.setAlignment(alignment, width, height);

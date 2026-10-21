@@ -40,6 +40,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 
+@IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, IDualInputHatch, IAddGregtechLogo {
 

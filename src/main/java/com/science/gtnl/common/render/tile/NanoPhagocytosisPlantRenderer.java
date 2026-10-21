@@ -170,22 +170,23 @@ public class NanoPhagocytosisPlantRenderer extends TileEntitySpecialRenderer {
         bindTexture(TextureMap.locationBlocksTexture);
         fadeBypassShader.use();
 
-        renderRing(tile, ringOne, x, y, z, timer / 6 * 7, ringOneNudge);
-        renderRing(tile, ringTwo, x, y, z, -timer / 4 * 5, ringTwoNudge);
-        renderRing(tile, ringThree, x, y, z, timer * 3, ringThreeNudge);
+        renderRing(tile, ringOne, x, y, z, timer / 6 * 7, 0, ringOneNudge);
+        renderRing(tile, ringTwo, x, y, z, -timer / 4 * 5, 90, ringTwoNudge);
+        renderRing(tile, ringThree, x, y, z, timer * 3, 0, ringThreeNudge);
 
         ShaderProgram.clear();
         GL11.glPopAttrib();
     }
 
     private void renderRing(TileEntityNanoPhagocytosisPlant tile, IVertexArrayObject ring, double x, double y, double z,
-        float spinDegrees, Vector3f nudge) {
+        float spinDegrees, float yawDegrees, Vector3f nudge) {
         ringMatrix.translation((float) x + .5f, (float) y + .5f, (float) z + .5f)
             .rotate(
                 tile.getRotAngle() / 180f * (float) Math.PI,
                 tile.getRotAxisX(),
                 tile.getRotAxisY(),
                 tile.getRotAxisZ())
+            .rotateY(yawDegrees / 180f * (float) Math.PI)
             .rotate(spinDegrees / 180f * (float) Math.PI, 1, 0, 0)
             .translate(nudge);
 

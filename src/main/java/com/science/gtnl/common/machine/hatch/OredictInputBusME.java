@@ -87,6 +87,7 @@ import gregtech.common.tileentities.machines.ISmartInputHatch;
 import gregtech.common.tileentities.machines.MTEHatchInputBusME;
 import gregtech.common.tileentities.machines.RecipeCheckReason;
 
+@IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProcessingAwareHatch, IAddGregtechLogo,
     IAddUIWidgets, IPowerChannelState, ISmartInputHatch, IDataCopyable {
