@@ -1,14 +1,21 @@
 package com.science.gtnl.client.celestweave;
 
+import static com.science.gtnl.client.celestweave.CelestweaveContractTest.RESOURCES;
+import static com.science.gtnl.client.celestweave.CelestweaveContractTest.SOURCES;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.roundTrip;
 import static com.science.gtnllib.GTNLLibContractTest.call;
 import static com.science.gtnllib.GTNLLibContractTest.check;
+import static com.science.gtnllib.GTNLLibContractTest.compact;
 import static com.science.gtnllib.GTNLLibContractTest.field;
 import static com.science.gtnllib.GTNLLibContractTest.near;
+import static com.science.gtnllib.GTNLLibContractTest.read;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -29,6 +36,7 @@ import net.minecraft.util.AxisAlignedBB;
 import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
 import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.science.gtnl.client.celestweave.CelestweaveClientEvents.HitOrigin;
+import com.science.gtnl.client.equipment.EquipmentWheelScreen;
 import com.science.gtnl.client.fx.world.FxVisibility;
 import com.science.gtnl.common.celestweave.CelestweaveBackpack;
 import com.science.gtnl.common.celestweave.CelestweaveBackpackData;
@@ -51,11 +59,13 @@ import com.science.gtnl.common.gui.equipment.RailgunGui;
 import com.science.gtnl.common.item.items.PortableItem;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.item.items.equipment.CelestweaveModuleItem;
+import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
 import com.science.gtnl.common.item.items.equipment.RailgunModuleItem;
 import com.science.gtnl.common.packet.CelestweaveFlightPacket;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.common.packet.CelestweaveKeyPacket;
+import com.science.gtnl.common.packet.OpenEquipmentGuiPacket;
 import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunEnergy;
 import com.science.gtnl.common.railgun.RailgunModule;
@@ -67,6 +77,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 public class CelestweaveArmorContracts {
+
+    private static final int DEFAULT_STACK = 64;
 
     private CelestweaveArmorContracts() {}
 
@@ -205,7 +217,7 @@ public class CelestweaveArmorContracts {
         };
     }
 
-    private static void cosmetic() {
+    private static void cosmetic() throws IOException {
         int maxArcs = MainConfig.item.celestweave.maxIdleArcs;
         check(CelestweaveCosmetic.read(new NBTTagCompound()) == CelestweaveCosmetic.DEFAULT, "empty cosmetic");
         Set<String> optionKeys = new HashSet<>();
@@ -237,9 +249,26 @@ public class CelestweaveArmorContracts {
             "strip effect choices follow the styles");
         for (CelestweaveStripStyle style : CelestweaveStripStyle.values())
             check(CelestweaveStripEffects.registered(style), "strip style has an effect " + style.id);
+        String strips = compact(read(SOURCES.resolve("client/celestweave/CelestweaveStripEffects.java")));
+        check(
+            strips.split("pose\\.brightness", -1).length - 1 == 1 && strips.contains(
+                "classFlickerimplementsICelestweaveStripEffect{@Overridepublicbooleanbegin(CelestweavePosepose,CelestweaveCosmeticcosmetic,floatseconds,floatboneY){color(pose.glowR,pose.glowG,pose.glowB,pose.brightness);")
+                && strips.contains(
+                    "classSteadyimplementsICelestweaveStripEffect{@Overridepublicbooleanbegin(CelestweavePosepose,CelestweaveCosmeticcosmetic,floatseconds,floatboneY){color(pose.glowR,pose.glowG,pose.glowB,pose.steadyBrightness);"),
+            "only the flicker strip uses the shimmering brightness, steady and every other effect stay flicker-free");
+        String animator = compact(read(SOURCES.resolve("client/celestweave/CelestweaveAnimator.java")));
+        check(
+            animator.contains("pose.steadyBrightness=steadyBrightness*(1F+1.1F*glow);") && animator
+                .contains("floatsteadyBrightness=tier==0?0.3F:0.4F+0.6F*fraction,baseBrightness=steadyBrightness;"),
+            "the steady brightness leaves out both the slow shimmer and the low-energy flicker");
+        check(
+            !CelestweaveStripStyle.FLICKER.usesSpeed && !CelestweaveStripStyle.STEADY.usesSpeed
+                && CelestweaveStripStyle.FLICKER.ordinal() == 0
+                && CelestweaveCosmetic.DEFAULT.stripStyle() == CelestweaveStripStyle.FLICKER,
+            "the old steady look is kept as the flicker style, listed first and used by default");
         check(
             !CelestweaveCosmeticOption.STRIP_SPEED.appliesTo(CelestweaveCosmetic.DEFAULT),
-            "strip speed does not apply to steady strips");
+            "strip speed does not apply to the default flicker strips");
         check(
             CelestweaveCosmeticOption.STRIP_SPEED.appliesTo(
                 CelestweaveCosmetic.DEFAULT
@@ -281,16 +310,16 @@ public class CelestweaveArmorContracts {
             CelestweaveCosmetic.read(wild)
                 .getInt(CelestweaveCosmeticOption.IDLE_ARCS) == -1,
             "idle arcs min");
-        check(clamped.stripStyle() == CelestweaveStripStyle.STEADY, "strip effect defaults to steady");
+        check(clamped.stripStyle() == CelestweaveStripStyle.FLICKER, "strip effect defaults to flicker");
         wild.setInteger("StripFx", 99);
         check(
             CelestweaveCosmetic.read(wild)
-                .stripStyle() == CelestweaveStripStyle.STEADY,
-            "numeric strip effect past the styles falls back to steady");
+                .stripStyle() == CelestweaveStripStyle.FLICKER,
+            "numeric strip effect past the styles falls back to flicker");
         wild.setInteger("StripFx", CelestweaveStripStyle.BREATH.ordinal());
         check(
             CelestweaveCosmetic.read(wild)
-                .stripStyle() == CelestweaveStripStyle.STEADY,
+                .stripStyle() == CelestweaveStripStyle.FLICKER,
             "numeric strip effect is not read as a style index");
         wild.setString("StripFx", CelestweaveStripStyle.BREATH.id);
         check(
@@ -300,8 +329,8 @@ public class CelestweaveArmorContracts {
         wild.setString("StripFx", "nope");
         check(
             CelestweaveCosmetic.read(wild)
-                .stripStyle() == CelestweaveStripStyle.STEADY,
-            "unknown strip effect id falls back to steady");
+                .stripStyle() == CelestweaveStripStyle.FLICKER,
+            "unknown strip effect id falls back to flicker");
         ItemStack chest = plainStack();
         for (CelestweaveStripStyle style : CelestweaveStripStyle.values()) {
             check(
@@ -552,12 +581,12 @@ public class CelestweaveArmorContracts {
             !railgunTop.hasKey(RailgunData.MODULES) && RailgunData.root(railgun)
                 .hasKey(RailgunData.MODULES, 9),
             "railgun modules live under the railgun tag");
-        RailgunSetting.SOUND.set(railgun, false);
+        RailgunSetting.SPLASH.set(railgun, false);
         check(
-            !RailgunSetting.SOUND.on(railgun) && !railgunTop.hasKey("Settings")
+            !RailgunSetting.SPLASH.on(railgun) && !railgunTop.hasKey("Settings")
                 && RailgunData.root(railgun)
                     .getCompoundTag("Settings")
-                    .hasKey(RailgunSetting.SOUND.key),
+                    .hasKey(RailgunSetting.SPLASH.key),
             "railgun settings live under the railgun tag");
         EquipmentEnergy.write(railgun, 5, 10);
         check(
@@ -571,7 +600,7 @@ public class CelestweaveArmorContracts {
                 .hasNoTags() && !untouched.hasTagCompound()
                 && RailgunData.root(null)
                     .hasNoTags()
-                && RailgunSetting.SOUND.on(untouched) == RailgunSetting.SOUND.fallback,
+                && RailgunSetting.SPLASH.on(untouched) == RailgunSetting.SPLASH.fallback,
             "reading railgun data creates no tag");
         RailgunData.rootForWrite(untouched);
         check(
@@ -616,7 +645,7 @@ public class CelestweaveArmorContracts {
         }
     }
 
-    private static void moduleSlots() throws ReflectiveOperationException {
+    private static void moduleSlots() throws ReflectiveOperationException, IOException {
         CelestweaveModuleItem armorModule = registered(
             bare(CelestweaveModuleItem.class),
             "gtnl:contract_slot_celestweave_module",
@@ -629,6 +658,8 @@ public class CelestweaveArmorContracts {
             bare(RailgunModuleItem.class),
             "gtnl:contract_slot_railgun_module",
             31109);
+        for (Item module : new Item[] { armorModule, energyModule, railgunModule })
+            setField(Item.class, module, "maxStackSize", DEFAULT_STACK);
         for (RailgunModule type : RailgunModule.values())
             check(type.limit() == type.limit, "railgun module limit comes from its declaration " + type.id);
         for (CelestweaveModule module : CelestweaveModule.values())
@@ -671,6 +702,82 @@ public class CelestweaveArmorContracts {
             RailgunModule.of(railgunSlots.getStackInSlot(0)) == RailgunModule.RANGE
                 && railgunSlots.getStackInSlot(1) == null,
             "railgun slots reload after an outside change");
+        ItemStack stacked = plainStack();
+        RailgunGui stackedGui = allocate(RailgunGui.class);
+        bindGui(stackedGui, stacked);
+        ItemStackHandler stackedSlots = (ItemStackHandler) slotsOf
+            .newInstance(stackedGui, RailgunData.MODULE_SLOTS, RailgunData.MODULE_STORAGE, railgunTypes);
+        ItemStack fiveCompute = railgunModule.stack(RailgunModule.COMPUTE);
+        fiveCompute.stackSize = 5;
+        ItemStack rest = stackedSlots.insertItem(0, fiveCompute, false);
+        check(
+            stackedSlots.getStackInSlot(0).stackSize == RailgunModule.COMPUTE.limit && rest != null
+                && rest.stackSize == 5 - RailgunModule.COMPUTE.limit,
+            "one slot stacks modules up to the per-host limit and hands back the rest");
+        check(
+            !stackedSlots.isItemValid(1, railgunModule.stack(RailgunModule.COMPUTE)),
+            "a full stack counts against the limit in every other slot");
+        ItemStack twoBeams = railgunModule.stack(RailgunModule.EHV_BEAM);
+        twoBeams.stackSize = 2;
+        rest = stackedSlots.insertItem(1, twoBeams, false);
+        ItemStack twoEnergy = energyModule.stack(1);
+        twoEnergy.stackSize = 2;
+        ItemStack energyRest = stackedSlots.insertItem(2, twoEnergy, false);
+        check(
+            stackedSlots.getStackInSlot(1).stackSize == 1 && rest.stackSize == 1
+                && stackedSlots.getStackInSlot(2).stackSize == 1
+                && energyRest.stackSize == 1,
+            "single-limit modules and energy modules still take one");
+        RailgunData.Modules stackedInstalled = RailgunData.modules(stacked);
+        check(
+            stackedInstalled.count(RailgunModule.COMPUTE) == RailgunModule.COMPUTE.limit
+                && RailgunData.moduleStacks(stacked)[0].stackSize == RailgunModule.COMPUTE.limit,
+            "a stacked slot saves its count and every module in it counts");
+        check(stackedSlots.getSlotLimit(0) == DEFAULT_STACK, "module slots keep the default stack size");
+        check(
+            RailgunData.MODULE_SLOTS == RailgunModule.values().length + 1,
+            "the railgun has one slot per module kind plus the energy module");
+        int[] pieceSlots = { 4, 10, 3, 5 };
+        for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++) check(
+            CelestweaveData.moduleSlots(piece) == pieceSlots[piece],
+            "armor piece " + piece + " has one slot per installable module kind plus the energy module");
+        check(
+            CelestweaveData.moduleSlots(plainStack()) == 10,
+            "an unknown host reads with the most slots any piece has, so nothing is dropped");
+        Class<?>[] intArg = { int.class };
+        check(
+            (int) call(EquipmentGui.class, "slotsPerRow", null, intArg, 10) == 5
+                && (int) call(EquipmentGui.class, "slotRowsShift", null, intArg, 10) == 18
+                && (int) call(EquipmentGui.class, "slotsPerRow", null, intArg, 5) == 5
+                && (int) call(EquipmentGui.class, "slotRowsShift", null, intArg, 5) == 0
+                && (int) call(EquipmentGui.class, "slotRowsShift", null, intArg, 0) == 0,
+            "ten slots fold into two even rows that push the panel down one row, five stay on one row");
+        NBTTagList wide = EquipmentModules.write(
+            new ItemStack[] { null, null, null, null, null, null, null, railgunModule.stack(RailgunModule.RANGE) },
+            8);
+        ItemStack[] folded = EquipmentModules.read(wide, RailgunData.MODULE_SLOTS);
+        check(
+            folded.length == RailgunData.MODULE_SLOTS && RailgunModule.of(folded[0]) == RailgunModule.RANGE,
+            "a module saved in a slot that no longer exists moves into the first free slot instead of vanishing");
+        String gui = compact(read(SOURCES.resolve("common/gui/equipment/EquipmentGui.java")));
+        check(
+            gui.contains("newModuleSlot(handler,i)")
+                && gui.contains("publicintgetItemStackLimit(ItemStackstack){returnmodules.allowance(slot,stack);}"),
+            "clicks and shift-clicks ask the module slot how many of that module still fit");
+        check(
+            gui.contains("if(handler.getStackInSlot(slot)==null)GTNLMui2Textures.OVERLAY_SLOT_MODULE.draw(")
+                && Files.isRegularFile(RESOURCES.resolve("textures/gui/equipment/module_slot.png")),
+            "empty module slots show the module outline texture");
+        InventoryPlayer inventory = new InventoryPlayer(null);
+        EntityPlayerMP carrier = allocate(EntityPlayerMP.class);
+        setField(EntityPlayer.class, carrier, "inventory", inventory);
+        ElectromagneticRailgun gun = bare(ElectromagneticRailgun.class);
+        inventory.currentItem = 7;
+        for (int slot : new int[] { 2, 7, 39 }) inventory.setInventorySlotContents(slot, new ItemStack(gun));
+        inventory.setInventorySlotContents(3, plainStack());
+        check(
+            Arrays.equals(EquipmentWheelScreen.equipmentSlots(carrier), new int[] { 39, 7, 2 }),
+            "the wheel lists every carried equipment once: worn first, then the held item, then the inventory");
 
         ItemStack chest = plainStack();
         CelestweaveGui armorGui = allocate(CelestweaveGui.class);
@@ -762,9 +869,15 @@ public class CelestweaveArmorContracts {
             CelestweaveFlightPacket.class.getConstructor());
         check((int) field(flight, "entityId") == 7 && (boolean) field(flight, "flying"), "flight packet");
         CelestweaveKeyPacket key = roundTrip(
-            new CelestweaveKeyPacket(CelestweaveKeyPacket.OPEN_PIECE, 3),
+            new CelestweaveKeyPacket(CelestweaveKeyPacket.BACKPACK),
             CelestweaveKeyPacket.class.getConstructor());
-        check((byte) field(key, "action") == CelestweaveKeyPacket.OPEN_PIECE && (byte) field(key, "piece") == 3, "key");
+        check((byte) field(key, "action") == CelestweaveKeyPacket.BACKPACK, "key");
+        OpenEquipmentGuiPacket open = roundTrip(
+            new OpenEquipmentGuiPacket(39),
+            OpenEquipmentGuiPacket.class.getConstructor());
+        check(
+            (int) field(open, "slot") == 39,
+            "open equipment packet carries the inventory slot, armor slots included");
     }
 
     private static void envelopes() throws ReflectiveOperationException {

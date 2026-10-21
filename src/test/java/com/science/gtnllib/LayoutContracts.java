@@ -17,6 +17,7 @@ import com.science.gtnllib.gui.layout.Layout;
 import com.science.gtnllib.gui.layout.LayoutMath;
 import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.layout.Size;
+import com.science.gtnllib.gui.widget.CloseButton;
 import com.science.gtnllib.gui.widget.SlideSwitch;
 
 public class LayoutContracts {
@@ -75,6 +76,11 @@ public class LayoutContracts {
         check(
             rows.stackHeight(Arrays.asList(rows.section(IKey.str("title"), 0), grid)) == 16 + grid.contentHeight(),
             "a stack of rows adds one row per line and the current height of each grid");
+        check(
+            CloseButton.inset(8, LayoutTheme.DEFAULT) == 6 && CloseButton.inset(10, LayoutTheme.DEFAULT) == 8
+                && CloseButton.reserve(8, LayoutTheme.DEFAULT) == 11
+                && CloseButton.inset(1, LayoutTheme.DEFAULT) == 0,
+            "a close button sits one small gap outside the content padding and the title leaves room for it");
     }
 
     private static void layoutRules() {

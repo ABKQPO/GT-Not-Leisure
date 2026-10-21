@@ -27,6 +27,7 @@ import com.science.gtnllib.gui.layout.Layout;
 import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.layout.Size;
 import com.science.gtnllib.gui.theme.ButtonPurpose;
+import com.science.gtnllib.gui.widget.CloseButton;
 import com.science.gtnllib.gui.widget.SlideSwitch;
 import com.science.gtnllib.gui.widget.StepSlider;
 
@@ -37,8 +38,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class HudSettingsCard extends ParentWidget<HudSettingsCard> {
 
     private static final String LANG = "gtnllib.hud.editor.";
-    private static final int WIDTH = 172, SLIDER_WIDTH = 84, CLOSE_SIZE = 11, TEXT_HEIGHT = 10, MAX_COLUMNS = 3,
-        SCALE_STEPS = 25, OPACITY_STEPS = 18, IDLE_STEPS = 30, ALPHA_STEPS = 20, MILESTONES = 5;
+    private static final int WIDTH = 172, SLIDER_WIDTH = 84, TEXT_HEIGHT = 10, MAX_COLUMNS = 3, SCALE_STEPS = 25,
+        OPACITY_STEPS = 18, IDLE_STEPS = 30, ALPHA_STEPS = 20, MILESTONES = 5;
 
     private final HudCanvas canvas;
     private final LayoutTheme style;
@@ -88,19 +89,11 @@ public class HudSettingsCard extends ParentWidget<HudSettingsCard> {
         child(
             Layout.label(IKey.lang(element.lang()), style)
                 .pos(style.padding, style.spacingMedium)
-                .size(WIDTH - style.padding * 2 - CLOSE_SIZE - style.spacingSmall, TEXT_HEIGHT));
-        ButtonWidget<?> close = new ButtonWidget<>();
+                .size(WIDTH - style.padding * 2 - CloseButton.SIZE - style.spacingSmall, TEXT_HEIGHT));
         child(
-            close.widgetTheme(IThemeApi.CLOSE_BUTTON)
-                .overlay(IKey.str("×"))
-                .size(CLOSE_SIZE, CLOSE_SIZE)
+            new CloseButton().action(() -> canvas.select(null))
                 .top(style.spacingSmall)
-                .right(style.spacingSmall)
-                .onMousePressed(mouse -> {
-                    if (mouse != 0) return false;
-                    canvas.select(null);
-                    return true;
-                }));
+                .right(style.spacingSmall));
         Layout rows = Layout.rows(style, WIDTH);
         List<IWidget> lines = new ArrayList<>();
         for (Setting setting : element.settings(HudLayout.timing(element)))
@@ -180,7 +173,7 @@ public class HudSettingsCard extends ParentWidget<HudSettingsCard> {
                     0,
                     HudLayout.MAX_IDLE_SECONDS,
                     IDLE_STEPS,
-                    value -> StatCollector.translateToLocalFormatted(LANG + "seconds", Math.round(value))));
+                    value -> Math.round(value) + "s"));
             case IDLE_ALPHA -> Collections.singletonList(
                 slider(
                     rows,
@@ -272,7 +265,7 @@ public class HudSettingsCard extends ParentWidget<HudSettingsCard> {
                     .range(min, max, steps)
                     .milestones(MILESTONES)
                     .format(format)
-                    .compactDigits(true)
+
                     .onRelease(canvas::seal)));
     }
 

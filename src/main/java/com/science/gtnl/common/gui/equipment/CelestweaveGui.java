@@ -49,6 +49,7 @@ import com.science.gtnl.common.packet.CelestweaveKeyPacket;
 import com.science.gtnllib.gui.layout.Layout;
 import com.science.gtnllib.gui.layout.Size;
 import com.science.gtnllib.gui.theme.ButtonPurpose;
+import com.science.gtnllib.gui.widget.CloseButton;
 import com.science.gtnllib.gui.widget.SlideSwitch;
 import com.science.gtnllib.gui.widget.StepSlider;
 
@@ -60,8 +61,9 @@ public class CelestweaveGui extends EquipmentGui {
     private static final int[] COLORS = { 0xFF3D9A, 0x3DE8FF, 0xFFC13D, 0xA35CFF, 0x4DFF88, 0xFF4040, 0xEEF0FF };
     private static final String GUI_LANG = "item.gtnl.celestweave.gui.", UNAVAILABLE = "§7";
     private static final String SHORT_LANG = "item.gtnl.celestweave.short.";
-    private static final int TABS_Y = 66, SLOTS_Y = 18, HELD_Y = 38, ENERGY_Y = 42, BACKPACK_Y = 3, BACKPACK_WIDTH = 52,
-        BACKPACK_HEIGHT = 13, FLAGS_PER_ROW = 7, FLAG_GAP = 1, SLIDER_WIDTH = 80, SWATCH_SIZE = 12, PICKER_WIDTH = 20;
+    private static final int TABS_Y = 66, SLOTS_Y = 18, HELD_Y = 38, ENERGY_Y = 42, BACKPACK_WIDTH = 52,
+        BACKPACK_HEIGHT = 13, FLAGS_PER_ROW = 7, FLAG_GAP = 1, SLIDER_WIDTH = 80, SWATCH_SIZE = 12;
+    private static final float SLIDER_SHARE = 0.5F;
     private static final String[] PAGES = { "modules", "settings", "appearance" };
     private static final int APPEARANCE_PAGE = 2;
     private static final int INSTALLED = 1, ACTIVE = 2, SHOWN = 4;
@@ -87,7 +89,6 @@ public class CelestweaveGui extends EquipmentGui {
 
     @Override
     public ModularPanel build() {
-        contentY = TABS_Y + style.buttonHeight + style.spacingMedium;
         ModularPanel panel = panel("celestweave_armor", () -> contentY + pageHeight());
         modules = new ModuleHandler();
         boolean backpackButton = piece == CelestweaveArmor.CHEST
@@ -95,14 +96,11 @@ public class CelestweaveGui extends EquipmentGui {
         int backpackWidth = buttonWidth(
             tr("item.gtnl.celestweave.gui.open_backpack"),
             style.spacingSmall,
-            BACKPACK_WIDTH), backpackRight = style.spacingMedium + CLOSE_SIZE + style.spacingSmall;
-        title(
-            panel,
-            stack.getUnlocalizedName() + ".name",
-            backpackButton ? backpackRight + backpackWidth + style.spacingSmall - style.padding : 0);
+            BACKPACK_WIDTH), closeInset = CloseButton.inset(style.padding, style);
+        title(panel, stack.getUnlocalizedName() + ".name", backpackButton ? backpackWidth + style.spacingSmall : 0);
         if (backpackButton) panel.child(
-            button(ButtonPurpose.NORMAL).top(BACKPACK_Y)
-                .right(backpackRight)
+            button(ButtonPurpose.NORMAL).top(closeInset + (CloseButton.SIZE - BACKPACK_HEIGHT) / 2)
+                .right(closeInset + CloseButton.SIZE + style.spacingSmall)
                 .size(backpackWidth, BACKPACK_HEIGHT)
                 .overlay(
                     Layout.caption(
@@ -116,6 +114,8 @@ public class CelestweaveGui extends EquipmentGui {
                     return true;
                 }));
         moduleSlots(panel, modules, "celestweave_modules", SLOTS_Y, "item.gtnl.celestweave.gui.module_limits");
+        int shift = slotRowsShift(modules.getSlots());
+        contentY = TABS_Y + shift + style.buttonHeight + style.spacingMedium;
         List<CelestweaveModule> holders = new ArrayList<>();
         for (CelestweaveModule module : CelestweaveModule.values())
             if (module.holdsItem && module.fits(piece)) holders.add(module);
@@ -132,13 +132,18 @@ public class CelestweaveGui extends EquipmentGui {
                             .slot(
                                 new ModularSlot(held, i).filter(candidate -> held.isItemValid(slot, candidate))
                                     .slotGroup("celestweave_held"))
-                            .top(HELD_Y)
+                            .top(HELD_Y + shift)
                             .right(style.padding + SLOT_SIZE * (holders.size() - 1 - i))
                             .tooltipBuilder(
                                 tooltip -> tooltip.addLine(IKey.lang("item.gtnl.celestweave.gui.held." + module.id))));
             }
         }
-        energyBar(panel, this::energy, () -> CelestweaveEnergy.capacity(bound()), ENERGY_Y, SLOT_SIZE * holders.size());
+        energyBar(
+            panel,
+            this::energy,
+            () -> CelestweaveEnergy.capacity(bound()),
+            ENERGY_Y + shift,
+            SLOT_SIZE * holders.size());
         List<ToggleButton> tabs = new ArrayList<>();
         for (int i = 0; i < PAGES.length; i++) {
             final int index = i;
@@ -149,7 +154,7 @@ public class CelestweaveGui extends EquipmentGui {
         }
         panel.child(
             rows().line(style.spacingSmall, Collections.nCopies(tabs.size(), Size.fill()), tabs)
-                .pos(0, TABS_Y)
+                .pos(0, TABS_Y + shift)
                 .height(style.buttonHeight));
         pages.add(modulePage());
         pages.add(settingsPage());
@@ -336,20 +341,26 @@ public class CelestweaveGui extends EquipmentGui {
             () -> installed(module));
     }
 
+    private static Size sliderSize() {
+        return Size.percent(SLIDER_SHARE)
+            .atLeast(SLIDER_WIDTH);
+    }
+
+    private Widget<?> sliderControl(IntSyncValue value, int min, int max, int step, IntFunction<String> format,
+        BooleanSupplier active) {
+        return client && max > min ? stepSlider(value, min, max, step, format, active)
+            : Layout.label(IKey.dynamic(() -> format.apply(value.getIntValue())), style);
+    }
+
     private IWidget slider(IKey label, IntSyncValue value, int min, int max, int step, IntFunction<String> format,
         BooleanSupplier active) {
-        Widget<?> control = client && max > min ? stepSlider(value, min, max, step, format, active)
-            : Layout.label(IKey.dynamic(() -> format.apply(value.getIntValue())), style);
         return rows().line(
             style.spacingMedium,
-            Arrays.asList(
-                Size.fill(),
-                Size.fill()
-                    .atLeast(SLIDER_WIDTH)),
+            Arrays.asList(Size.fill(), sliderSize()),
             Arrays.asList(
                 Layout.label(label, style)
                     .paddingLeft(style.spacingSmall),
-                control));
+                sliderControl(value, min, max, step, format, active)));
     }
 
     @SideOnly(Side.CLIENT)
@@ -359,8 +370,7 @@ public class CelestweaveGui extends EquipmentGui {
             .value(value::getIntValue, v -> { if (active.getAsBoolean()) value.setIntValue((int) Math.round(v)); })
             .range(min, max, Math.max(1, (max - min) / step))
             .format(v -> format.apply((int) Math.round(v)))
-            .activeWhen(active)
-            .compactDigits(true);
+            .activeWhen(active);
     }
 
     private static float guiScale(CelestweaveCosmeticOption option) {
@@ -386,7 +396,7 @@ public class CelestweaveGui extends EquipmentGui {
                 case COLOR -> lines.add(colorRow(panel, option));
                 case FLAGS -> lines.addAll(flagRows(option));
                 case CHOICE -> lines.addAll(choiceRows(option));
-                default -> lines.add(cosmeticSlider(option));
+                default -> lines.addAll(cosmeticRows(option));
             }
         }
         return lines;
@@ -430,7 +440,7 @@ public class CelestweaveGui extends EquipmentGui {
             sizes.add(Size.fixed(SWATCH_SIZE));
         }
         cells.add(
-            new ButtonWidget<>()
+            new ButtonWidget<>().height(SWATCH_SIZE)
                 .background(
                     (context, x, top, width, height, theme) -> GuiDraw
                         .drawRect(x, top, width, height, 0xFF000000 | color.getIntValue()))
@@ -445,7 +455,7 @@ public class CelestweaveGui extends EquipmentGui {
                     picker.openPanel();
                     return true;
                 }));
-        sizes.add(Size.fixed(PICKER_WIDTH));
+        sizes.add(Size.fixed(SWATCH_SIZE));
         return rows().line(style.spacingSmall, sizes, cells);
     }
 
@@ -454,18 +464,40 @@ public class CelestweaveGui extends EquipmentGui {
         CelestweaveThemeAccent.editing(panel, color::getIntValue);
     }
 
-    private IWidget cosmeticSlider(CelestweaveCosmeticOption option) {
+    private List<IWidget> cosmeticRows(CelestweaveCosmeticOption option) {
         float scale = guiScale(option);
         IntSyncValue value = cosmeticValue(option);
         BooleanSupplier applies = () -> option.appliesTo(CelestweaveData.cosmetic(bound()));
-        return slider(
-            IKey.dynamic(() -> (applies.getAsBoolean() ? "" : UNAVAILABLE) + tr(GUI_LANG + option.lang)),
-            value,
-            Math.round(option.min * scale),
-            Math.round(option.max() * scale),
-            Math.max(1, Math.round(option.step * scale)),
-            v -> cosmeticText(option, v),
-            applies);
+        int min = Math.round(option.min * scale), step = Math.max(1, Math.round(option.step * scale));
+        IKey label = IKey.dynamic(() -> (applies.getAsBoolean() ? "" : UNAVAILABLE) + tr(GUI_LANG + option.lang));
+        if (option.minLabel == null) return Collections.singletonList(
+            slider(label, value, min, Math.round(option.max() * scale), step, v -> cosmeticText(option, v), applies));
+        BooleanSupplier automatic = () -> value.getIntValue() <= min;
+        SlideSwitch toggle = new SlideSwitch().value(automatic)
+            .label(IKey.lang(GUI_LANG + option.minLabel))
+            .onMousePressed(mouse -> {
+                if (mouse != 0) return false;
+                value.setIntValue(automatic.getAsBoolean() ? min + step : min);
+                return true;
+            });
+        return Collections.singletonList(
+            rows().line(
+                style.spacingMedium,
+                Arrays.asList(
+                    Size.fill(),
+                    Size.content(SlideSwitch.widthFor(textWidth(tr(GUI_LANG + option.minLabel)))),
+                    sliderSize()),
+                Arrays.asList(
+                    Layout.label(label, style)
+                        .paddingLeft(style.spacingSmall),
+                    toggle,
+                    sliderControl(
+                        value,
+                        min + step,
+                        Math.round(option.max() * scale),
+                        step,
+                        v -> cosmeticText(option, v),
+                        () -> applies.getAsBoolean() && !automatic.getAsBoolean()))));
     }
 
     private List<IWidget> choiceRows(CelestweaveCosmeticOption option) {
@@ -502,8 +534,7 @@ public class CelestweaveGui extends EquipmentGui {
     private static String cosmeticText(CelestweaveCosmeticOption option, int value) {
         return switch (option.kind) {
             case DECIMAL -> String.format("%.2f", value / guiScale(option));
-            default -> option.minLabel != null && value <= option.min ? tr(GUI_LANG + option.minLabel)
-                : String.valueOf(value);
+            default -> String.valueOf(value);
         };
     }
 
@@ -564,10 +595,10 @@ public class CelestweaveGui extends EquipmentGui {
 
     private class ModuleHandler extends ModuleSlots<CelestweaveModule> {
 
-        private final BareView view = new BareView(CelestweaveData.MODULE_SLOTS, CelestweaveBackpack::strip);
+        private final BareView view = new BareView(CelestweaveData.moduleSlots(piece), CelestweaveBackpack::strip);
 
         ModuleHandler() {
-            super(CelestweaveData.MODULE_SLOTS, CelestweaveData.MODULE_STORAGE, CelestweaveModule::of);
+            super(CelestweaveData.moduleSlots(piece), CelestweaveData.MODULE_STORAGE, CelestweaveModule::of);
         }
 
         @Override

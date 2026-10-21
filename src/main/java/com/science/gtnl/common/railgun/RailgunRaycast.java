@@ -12,6 +12,7 @@ public class RailgunRaycast {
 
     private static final int ENTITY_QUERY_SEGMENT_LENGTH = 16;
     private static final int MAX_RANGE_MULTIPLIER = 4;
+    private static final double MIN_LENGTH_SQUARED = 1.0E-8, PROJECTION_TOLERANCE = 1.0E-6;
 
     private RailgunRaycast() {}
 
@@ -35,10 +36,10 @@ public class RailgunRaycast {
     static EquipmentVec sanitize(EquipmentVec from, EquipmentVec to, EquipmentVec raw) {
         EquipmentVec delta = to.subtract(from);
         double lengthSquared = delta.dot(delta);
-        if (!raw.finite() || lengthSquared < 1.0E-8) return to;
+        if (!raw.finite() || lengthSquared < MIN_LENGTH_SQUARED) return to;
         double projection = raw.subtract(from)
             .dot(delta) / lengthSquared;
-        if (projection < 0 || projection > 1.000001) return to;
+        if (projection < 0 || projection > 1 + PROJECTION_TOLERANCE) return to;
         return raw.distanceToSqr(from.add(delta.scale(projection))) > 1 ? to : raw;
     }
 

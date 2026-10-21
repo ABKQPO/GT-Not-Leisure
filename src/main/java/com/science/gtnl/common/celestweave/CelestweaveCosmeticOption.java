@@ -17,7 +17,7 @@ public enum CelestweaveCosmeticOption {
     STRIP_STYLE("StripFx", Kind.CHOICE, "strip_fx", 0F, () -> CelestweaveStripStyle.values().length - 1, 0F, 1F,
         CelestweaveStripStyle.ids(), null),
     STRIP_SPEED("StripSpeed", Kind.DECIMAL, "strip_speed", 0.25F, () -> 3F, 1F, 0.25F, null, null,
-        cosmetic -> cosmetic.stripStyle() != CelestweaveStripStyle.STEADY),
+        cosmetic -> cosmetic.stripStyle().usesSpeed),
     IDLE_ARCS("IdleArcs", Kind.INT, "idle_arcs", -1F, () -> MainConfig.item.celestweave.maxIdleArcs, -1F, 1F, null,
         "by_tier"),
     ARC_FREQ("ArcFreq", Kind.DECIMAL, "arc_freq", 0.25F, () -> 3F, 1F, 0.25F, null, null),

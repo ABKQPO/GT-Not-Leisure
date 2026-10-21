@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.Constants;
 
 import com.science.gtnl.config.MainConfig;
 
@@ -11,7 +12,6 @@ public enum RailgunSetting {
 
     TERRAIN("terrain", false, stack -> MainConfig.item.railgun.enableTerrain),
     PVP("pvp", false, stack -> MainConfig.item.railgun.enablePlayerDamage),
-    SOUND("sound", true, null),
     SPLASH("splash", true, null),
     CHAIN("chain", true, null),
     EHV_BEAM("ehvBeam", false, stack -> RailgunData.modules(stack)
@@ -31,7 +31,7 @@ public enum RailgunSetting {
 
     public boolean on(ItemStack stack) {
         NBTTagCompound root = RailgunData.root(stack);
-        if (!root.hasKey(TAG, 10)) return fallback;
+        if (!root.hasKey(TAG, Constants.NBT.TAG_COMPOUND)) return fallback;
         NBTTagCompound tag = root.getCompoundTag(TAG);
         return tag.hasKey(key) ? tag.getBoolean(key) : fallback;
     }
@@ -46,7 +46,7 @@ public enum RailgunSetting {
 
     public void set(ItemStack stack, boolean value) {
         NBTTagCompound root = RailgunData.rootForWrite(stack);
-        if (!root.hasKey(TAG, 10)) root.setTag(TAG, new NBTTagCompound());
+        if (!root.hasKey(TAG, Constants.NBT.TAG_COMPOUND)) root.setTag(TAG, new NBTTagCompound());
         root.getCompoundTag(TAG)
             .setBoolean(key, value);
     }

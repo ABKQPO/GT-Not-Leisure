@@ -12,6 +12,8 @@ import io.netty.buffer.ByteBuf;
 
 public class RailgunRecoilFxPacket extends ClientboundPacket {
 
+    private static final float MAX_PITCH_UP = 30;
+
     private float pitchUp;
     private byte tier;
 
@@ -38,7 +40,7 @@ public class RailgunRecoilFxPacket extends ClientboundPacket {
     @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
         if (Float.isFinite(pitchUp) && pitchUp >= 0
-            && pitchUp <= 30
+            && pitchUp <= MAX_PITCH_UP
             && RailgunChargeTier.byOrdinal(tier) != RailgunChargeTier.NONE)
             runInWorld(minecraft, () -> RailgunCameraShake.recoil(pitchUp, tier));
     }

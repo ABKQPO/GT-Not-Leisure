@@ -43,6 +43,8 @@ public class CelestweaveClientEvents {
     private static final List<Scheduled> SCHEDULED = new ArrayList<>();
     private static final IntSet REMOTE_FLYING = new IntOpenHashSet();
     private static final double HIT_AIM_HEIGHT = 0.72, HIT_AIM_MIN_OFFSET = 0.3, HIT_AIM_MIN_RATIO = 0.35;
+    private static final int LOOK_REFRESH_TICKS = 20, WING_SOUND_MIN_AGE = 10, PRUNE_INTERVAL_TICKS = 100,
+        MAX_SCHEDULED = 256, DASH_JET_TICKS = 8;
     private static long frame;
     private static long ticks;
     private static World lastWorld;
@@ -92,7 +94,9 @@ public class CelestweaveClientEvents {
 
     static CelestweaveLook look(EntityLivingBase entity, CelestweaveClientState state) {
         int age = entity.ticksExisted - state.lookTick;
-        if (state.look == null || age < 0 || age >= 20 || !CelestweaveLook.sameStacks(state.look, entity)) {
+        if (state.look == null || age < 0
+            || age >= LOOK_REFRESH_TICKS
+            || !CelestweaveLook.sameStacks(state.look, entity)) {
             state.look = CelestweaveLook.compute(entity);
             state.lookTick = entity.ticksExisted;
         }
@@ -157,7 +161,7 @@ public class CelestweaveClientEvents {
             boolean flying = player == minecraft.thePlayer ? look.flightActive && player.capabilities.isFlying
                 : look.flightInstalled && REMOTE_FLYING.contains(player.getEntityId());
             if (CelestweaveAnimator.wingToggle(state, flying, now) && look.visible(CelestweaveModule.FLIGHT)
-                && player.ticksExisted > 10) CelestweaveSounds.wings(player, flying);
+                && player.ticksExisted > WING_SOUND_MIN_AGE) CelestweaveSounds.wings(player, flying);
             boolean self = player == minecraft.thePlayer;
             boolean process = FxVisibility.allowed(
                 self,
@@ -170,7 +174,7 @@ public class CelestweaveClientEvents {
             total += state.arcs.size();
         }
         CelestweaveArcs.total = total;
-        if (ticks % 100 == 0) prune(world);
+        if (ticks % PRUNE_INTERVAL_TICKS == 0) prune(world);
     }
 
     private static void prune(World world) {
@@ -201,14 +205,14 @@ public class CelestweaveClientEvents {
     }
 
     private static void schedule(int delay, Runnable task) {
-        if (SCHEDULED.size() < 256) SCHEDULED.add(new Scheduled(ticks + delay, task));
+        if (SCHEDULED.size() < MAX_SCHEDULED) SCHEDULED.add(new Scheduled(ticks + delay, task));
     }
 
     private static void dashJet(EntityLivingBase living, int rgb) {
         double yaw = Math.toRadians(living.rotationYaw);
         EquipmentVec forward = new EquipmentVec(-Math.sin(yaw), 0, Math.cos(yaw));
         EquipmentVec right = EquipmentVec.rightOf(forward);
-        for (int tick = 0; tick < 8; tick++) {
+        for (int tick = 0; tick < DASH_JET_TICKS; tick++) {
             final int step = tick;
             schedule(tick, () -> {
                 if (living.isDead) return;

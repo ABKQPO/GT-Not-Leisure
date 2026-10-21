@@ -30,6 +30,7 @@ public class CelestweaveStripEffects {
 
     static {
         EFFECTS.put(CelestweaveStripStyle.STEADY, new Steady());
+        EFFECTS.put(CelestweaveStripStyle.FLICKER, new Flicker());
         EFFECTS.put(CelestweaveStripStyle.BREATH, new Breath());
         EFFECTS.put(CelestweaveStripStyle.FLOW, new Flow());
         EFFECTS.put(CelestweaveStripStyle.RAINBOW, new Rainbow());
@@ -92,6 +93,15 @@ public class CelestweaveStripEffects {
 
         @Override
         public boolean begin(CelestweavePose pose, CelestweaveCosmetic cosmetic, float seconds, float boneY) {
+            color(pose.glowR, pose.glowG, pose.glowB, pose.steadyBrightness);
+            return false;
+        }
+    }
+
+    private static class Flicker implements ICelestweaveStripEffect {
+
+        @Override
+        public boolean begin(CelestweavePose pose, CelestweaveCosmetic cosmetic, float seconds, float boneY) {
             color(pose.glowR, pose.glowG, pose.glowB, pose.brightness);
             return false;
         }
@@ -106,7 +116,7 @@ public class CelestweaveStripEffects {
                 pose.glowR + (1F - pose.glowR) * white,
                 pose.glowG + (1F - pose.glowG) * white,
                 pose.glowB + (1F - pose.glowB) * white,
-                pose.baseBrightness * (0.12F + 0.88F * level));
+                pose.steadyBrightness * (0.12F + 0.88F * level));
             return false;
         }
     }
@@ -116,7 +126,7 @@ public class CelestweaveStripEffects {
         @Override
         public boolean begin(CelestweavePose pose, CelestweaveCosmetic cosmetic, float seconds, float boneY) {
             int rgb = Color.HSBtoRGB(seconds * speed(cosmetic) * 0.15F % 1F, 0.85F, 1F);
-            color(FxColor.red(rgb), FxColor.green(rgb), FxColor.blue(rgb), pose.brightness);
+            color(FxColor.red(rgb), FxColor.green(rgb), FxColor.blue(rgb), pose.steadyBrightness);
             return false;
         }
     }
@@ -178,7 +188,7 @@ public class CelestweaveStripEffects {
 
         @Override
         void tint(CelestweavePose pose) {
-            color(pose.glowR, pose.glowG, pose.glowB, Math.min(1.4F, pose.brightness * 1.25F));
+            color(pose.glowR, pose.glowG, pose.glowB, Math.min(1.4F, pose.steadyBrightness * 1.25F));
         }
     }
 
@@ -196,7 +206,7 @@ public class CelestweaveStripEffects {
 
         @Override
         void tint(CelestweavePose pose) {
-            color(1F, 1F, 1F, pose.brightness);
+            color(1F, 1F, 1F, pose.steadyBrightness);
         }
     }
 }

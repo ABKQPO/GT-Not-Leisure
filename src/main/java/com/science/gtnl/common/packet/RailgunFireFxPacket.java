@@ -16,25 +16,25 @@ import io.netty.buffer.ByteBuf;
 
 public class RailgunFireFxPacket extends ClientboundPacket {
 
+    private static final float MAX_IMPACT_RADIUS = 32;
+
     public int shooterId;
     public EquipmentVec from, firstHit;
     public List<EquipmentVec> chainPath;
     public byte tier;
     public float impactRadius;
-    public boolean sound;
     private boolean valid;
 
     public RailgunFireFxPacket() {}
 
     public RailgunFireFxPacket(int shooterId, EquipmentVec from, EquipmentVec firstHit, List<EquipmentVec> chainPath,
-        int tier, float impactRadius, boolean sound) {
+        int tier, float impactRadius) {
         this.shooterId = shooterId;
         this.from = from;
         this.firstHit = firstHit;
         this.chainPath = chainPath;
         this.tier = (byte) tier;
         this.impactRadius = impactRadius;
-        this.sound = sound;
     }
 
     @Override
@@ -46,10 +46,9 @@ public class RailgunFireFxPacket extends ClientboundPacket {
             chainPath = RailgunNet.readPath(buffer);
             tier = buffer.readByte();
             impactRadius = buffer.readFloat();
-            sound = buffer.readBoolean();
             valid = RailgunChargeTier.byOrdinal(tier) != RailgunChargeTier.NONE && Float.isFinite(impactRadius)
                 && impactRadius >= 0
-                && impactRadius <= 32;
+                && impactRadius <= MAX_IMPACT_RADIUS;
         } catch (RuntimeException ignored) {
             valid = false;
         }
@@ -63,7 +62,6 @@ public class RailgunFireFxPacket extends ClientboundPacket {
         RailgunNet.writePath(buffer, chainPath);
         buffer.writeByte(tier);
         buffer.writeFloat(impactRadius);
-        buffer.writeBoolean(sound);
     }
 
     @Override

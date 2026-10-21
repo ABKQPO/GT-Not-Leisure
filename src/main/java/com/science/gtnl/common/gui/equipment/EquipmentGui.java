@@ -6,12 +6,10 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.StatCollector;
 
-import com.cleanroommc.modularui.api.IThemeApi;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
@@ -28,13 +26,14 @@ import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.equipment.EquipmentModules;
 import com.science.gtnl.common.equipment.IEquipmentVariant;
+import com.science.gtnl.common.gui.GTNLMui2Textures;
 import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
-import com.science.gtnllib.client.hud.HudEditor;
 import com.science.gtnllib.gui.layout.Layout;
 import com.science.gtnllib.gui.layout.LayoutMath;
 import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.layout.Size;
 import com.science.gtnllib.gui.theme.ButtonPurpose;
+import com.science.gtnllib.gui.widget.CloseButton;
 import com.science.gtnllib.gui.widget.FillBar;
 import com.science.gtnllib.gui.widget.SlideSwitch;
 
@@ -44,10 +43,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class EquipmentGui {
 
     protected static final int WIDTH = 176, TITLE_Y = 6, TEXT_HEIGHT = 10, MAX_COLUMNS = 3;
-    protected static final int CLOSE_SIZE = 10, SLOT_SIZE = 18;
+    protected static final int SLOT_SIZE = 18;
     private static final int MAX_WIDTH = 256, SCREEN_MARGIN = 4, MIN_PAGE_ROWS = 3;
-    private static final int INVENTORY_HEIGHT = 76, INVENTORY_BOTTOM = 7, HUD_BUTTON_WIDTH = 56, SLOT_X = 16,
-        BAR_GAP = 16, BAR_HEIGHT = 5;
+    private static final int INVENTORY_HEIGHT = 76, INVENTORY_BOTTOM = 7, SLOT_X = 16, BAR_GAP = 16, BAR_HEIGHT = 5;
+    private static final int MAX_SLOTS_PER_ROW = (WIDTH - SLOT_X * 2) / SLOT_SIZE;
 
     protected final PlayerInventoryGuiData data;
     protected final PanelSyncManager sync;
@@ -94,12 +93,12 @@ public abstract class EquipmentGui {
         data.getPlayer().inventory.markDirty();
     }
 
-    protected static String tr(String key) {
+    public static String tr(String key) {
         return StatCollector.translateToLocal(key);
     }
 
     protected int footerHeight() {
-        return INVENTORY_BOTTOM + INVENTORY_HEIGHT + style.spacingMedium + style.buttonHeight;
+        return INVENTORY_BOTTOM + INVENTORY_HEIGHT + style.spacingMedium;
     }
 
     protected int panelWidth() {
@@ -145,44 +144,11 @@ public abstract class EquipmentGui {
         panel = new ModularPanel(name);
         return panel.width(this::panelWidth, Unit.Measure.PIXEL)
             .height(() -> contentHeight.getAsInt() + footerHeight(), Unit.Measure.PIXEL)
-            .child(
-                closeButton().size(CLOSE_SIZE, CLOSE_SIZE)
-                    .top(style.spacingMedium)
-                    .right(style.spacingMedium));
+            .child(new CloseButton().corner(style.padding, style));
     }
 
     protected void bindFooter(ModularPanel panel) {
-        panel.child(
-            button(ButtonPurpose.NORMAL)
-                .size(buttonWidth(tr(HudEditor.OPEN_LANG), style.padding, HUD_BUTTON_WIDTH), style.buttonHeight)
-                .right(style.padding)
-                .bottom(INVENTORY_BOTTOM + INVENTORY_HEIGHT + style.spacingMedium)
-                .overlay(Layout.caption(IKey.lang(HudEditor.OPEN_LANG), style))
-                .onMousePressed(mouse -> {
-                    if (mouse != 0) return false;
-                    openHudEditor();
-                    return true;
-                }));
         panel.bindPlayerInventory();
-    }
-
-    @SideOnly(Side.CLIENT)
-    private static void openHudEditor() {
-        Minecraft.getMinecraft()
-            .displayGuiScreen(null);
-        HudEditor.open();
-    }
-
-    public static ButtonWidget<?> closeButton() {
-        ButtonWidget<?> button = new ButtonWidget<>();
-        return button.widgetTheme(IThemeApi.CLOSE_BUTTON)
-            .overlay(IKey.str("×"))
-            .onMousePressed(mouse -> {
-                if (mouse != 0) return false;
-                button.getPanel()
-                    .closeIfOpen();
-                return true;
-            });
     }
 
     protected static ButtonWidget<?> button(ButtonPurpose purpose) {
@@ -194,21 +160,35 @@ public abstract class EquipmentGui {
         panel.child(
             Layout.label(IKey.lang(lang), style)
                 .pos(style.padding, TITLE_Y)
-                .width(() -> contentWidth() - reserved, Unit.Measure.PIXEL)
+                .width(() -> contentWidth() - CloseButton.reserve(style.padding, style) - reserved, Unit.Measure.PIXEL)
                 .height(TEXT_HEIGHT));
+    }
+
+    protected static int slotsPerRow(int slots) {
+        return LayoutMath.rows(slots, LayoutMath.rows(slots, MAX_SLOTS_PER_ROW));
+    }
+
+    protected static int slotRowsShift(int slots) {
+        return Math.max(0, LayoutMath.rows(slots, slotsPerRow(slots)) - 1) * SLOT_SIZE;
     }
 
     protected void moduleSlots(ModularPanel panel, ModuleSlots<?> handler, String group, int y, String limits) {
         sync.registerSlotGroup(new SlotGroup(group, handler.getSlots(), 0, true));
+        int perRow = slotsPerRow(handler.getSlots());
         for (int i = 0; i < handler.getSlots(); i++) {
             final int slot = i;
-            panel.child(
-                new ItemSlot()
-                    .slot(
-                        new ModularSlot(handler, i).filter(candidate -> handler.isItemValid(slot, candidate))
-                            .slotGroup(group))
-                    .pos(SLOT_X + i * SLOT_SIZE, y)
-                    .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang(limits))));
+            panel
+                .child(
+                    new ItemSlot()
+                        .slot(
+                            new ModuleSlot(handler, i).filter(candidate -> handler.isItemValid(slot, candidate))
+                                .slotGroup(group))
+                        .overlay((context, x, top, width, height, theme) -> {
+                            if (handler.getStackInSlot(slot) == null)
+                                GTNLMui2Textures.OVERLAY_SLOT_MODULE.draw(context, x, top, width, height, theme);
+                        })
+                        .pos(SLOT_X + i % perRow * SLOT_SIZE, y + i / perRow * SLOT_SIZE)
+                        .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang(limits))));
         }
     }
 
@@ -269,6 +249,23 @@ public abstract class EquipmentGui {
             });
     }
 
+    private static class ModuleSlot extends ModularSlot {
+
+        private final ModuleSlots<?> modules;
+        private final int slot;
+
+        private ModuleSlot(ModuleSlots<?> modules, int slot) {
+            super(modules, slot);
+            this.modules = modules;
+            this.slot = slot;
+        }
+
+        @Override
+        public int getItemStackLimit(ItemStack stack) {
+            return modules.allowance(slot, stack);
+        }
+    }
+
     protected class ModuleSlots<T extends IEquipmentVariant> extends ItemStackHandler {
 
         private final EquipmentModules.Storage storage;
@@ -325,22 +322,28 @@ public abstract class EquipmentGui {
         }
 
         @Override
-        public int getSlotLimit(int slot) {
-            return 1;
+        protected int getStackLimit(int slot, ItemStack candidate) {
+            return allowance(slot, candidate);
+        }
+
+        protected int allowance(int slot, ItemStack candidate) {
+            if (candidate == null) return 0;
+            boolean energy = EnergyModuleItem.tier(candidate) > 0;
+            T type = energy ? null : type(candidate);
+            if (!energy && type == null) return 0;
+            int used = 0;
+            for (int i = 0; i < getSlots(); i++) {
+                if (i == slot) continue;
+                ItemStack other = getStackInSlot(i);
+                if (other != null && (energy ? EnergyModuleItem.tier(other) > 0 : type.equals(type(other))))
+                    used += other.stackSize;
+            }
+            return Math.max(0, Math.min(candidate.getMaxStackSize(), (energy ? 1 : type.limit()) - used));
         }
 
         @Override
         public boolean isItemValid(int slot, ItemStack candidate) {
-            boolean energy = EnergyModuleItem.tier(candidate) > 0;
-            T type = energy ? null : type(candidate);
-            if (!energy && type == null) return false;
-            int count = 0;
-            for (int i = 0; i < getSlots(); i++) {
-                if (i == slot) continue;
-                ItemStack other = getStackInSlot(i);
-                if (energy ? EnergyModuleItem.tier(other) > 0 : type.equals(type(other))) count++;
-            }
-            return count < (energy ? 1 : type.limit());
+            return allowance(slot, candidate) > 0;
         }
 
         @Override

@@ -17,7 +17,6 @@ gtnllib.hud.editor.empty=No HUD element in use. Press Show All to see them all.
 gtnllib.hud.editor.undo=Undo
 gtnllib.hud.editor.redo=Redo
 gtnllib.hud.editor.reset_element=Reset This Element
-gtnllib.hud.editor.seconds=%s s
 gtnllib.hud.setting.shown=Visible
 gtnllib.hud.setting.scale=Scale
 gtnllib.hud.setting.opacity=Opacity

@@ -10,6 +10,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -72,6 +73,8 @@ public class CelestweaveArmor extends ItemArmor implements IEquipmentElectricIte
     private static final double UNBLOCKABLE_RATIO = 0.3, MAGIC_RATIO = 0.4, FIRE_OR_EXPLOSION_RATIO = 0.7,
         PHYSICAL_RATIO = 0.6;
     private static final double UNPOWERED_FACTOR = 0.25;
+    private static final float TERRASTEEL_MANA_DISCOUNT = 0.4F;
+    private static final int APIARIST_PROTECTION = 4, BLOCKING_POSE = 3;
     private static final double SET_BASE = 0.875, SET_BONUS_PER_PIECE = 0.125;
     private static final int UNBLOCKABLE_PRIORITY = 2, SPECIAL_PRIORITY = 1, PHYSICAL_PRIORITY = 0;
 
@@ -109,7 +112,7 @@ public class CelestweaveArmor extends ItemArmor implements IEquipmentElectricIte
             model.heldItemRight = held != null ? 1 : 0;
             if (held != null && entity instanceof EntityPlayer player && player.getItemInUseCount() > 0) {
                 EnumAction action = held.getItemUseAction();
-                if (action == EnumAction.block) model.heldItemRight = 3;
+                if (action == EnumAction.block) model.heldItemRight = BLOCKING_POSE;
                 else if (action == EnumAction.bow) model.aimedBow = true;
             }
         }
@@ -244,8 +247,13 @@ public class CelestweaveArmor extends ItemArmor implements IEquipmentElectricIte
     }
 
     @Override
+    public void beforeSettingsOpen(EntityPlayerMP player, ItemStack stack) {
+        CelestweaveEnergy.flush(player);
+    }
+
+    @Override
     public float getDiscount(ItemStack stack, int slot, EntityPlayer player) {
-        return armorType == CHEST && on(stack, CelestweaveModule.TERRASTEEL) ? 0.4F : 0F;
+        return armorType == CHEST && on(stack, CelestweaveModule.TERRASTEEL) ? TERRASTEEL_MANA_DISCOUNT : 0F;
     }
 
     @Override
@@ -263,7 +271,7 @@ public class CelestweaveArmor extends ItemArmor implements IEquipmentElectricIte
     @Override
     @Optional.Method(modid = "Forestry")
     public int getProtectionCount(EntityLivingBase entity, ItemStack stack, String cause) {
-        return on(stack, CelestweaveModule.APIARIST) ? 4 : 0;
+        return on(stack, CelestweaveModule.APIARIST) ? APIARIST_PROTECTION : 0;
     }
 
     @Override

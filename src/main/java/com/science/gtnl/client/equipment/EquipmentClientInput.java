@@ -1,19 +1,10 @@
 package com.science.gtnl.client.equipment;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BooleanSupplier;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Keyboard;
-
-import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.equipment.IEquipmentItem;
-import com.science.gtnl.common.packet.OpenEquipmentGuiPacket;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -30,8 +21,6 @@ public class EquipmentClientInput {
         Keyboard.KEY_G,
         "key.categories.gtnl");
 
-    private static final List<BooleanSupplier> SETTINGS_HANDLERS = new ArrayList<>();
-
     private EquipmentClientInput() {}
 
     public static void register() {
@@ -39,15 +28,6 @@ public class EquipmentClientInput {
         FMLCommonHandler.instance()
             .bus()
             .register(new EquipmentClientInput());
-    }
-
-    public static void addSettingsHandler(BooleanSupplier handler) {
-        SETTINGS_HANDLERS.add(handler);
-    }
-
-    public static boolean holdsEquipment(EntityPlayerSP player) {
-        ItemStack held = player == null ? null : player.getHeldItem();
-        return held != null && held.getItem() instanceof IEquipmentItem;
     }
 
     @SubscribeEvent
@@ -61,7 +41,7 @@ public class EquipmentClientInput {
         boolean pressed = false;
         while (EQUIPMENT_SETTINGS.isPressed()) pressed = true;
         if (!pressed) return;
-        for (BooleanSupplier handler : SETTINGS_HANDLERS) if (handler.getAsBoolean()) return;
-        if (holdsEquipment(player)) ScienceNotLeisure.network.sendToServer(new OpenEquipmentGuiPacket());
+        int[] slots = EquipmentWheelScreen.equipmentSlots(player);
+        if (slots.length > 0) new EquipmentWheelScreen(EQUIPMENT_SETTINGS, slots).open();
     }
 }

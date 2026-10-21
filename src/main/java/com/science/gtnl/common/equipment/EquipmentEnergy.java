@@ -6,6 +6,7 @@ import java.util.UUID;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.Constants;
 
 import gregtech.api.enums.GTValues;
 import gregtech.common.misc.WirelessNetworkManager;
@@ -30,7 +31,7 @@ public class EquipmentEnergy {
     public static double read(ItemStack stack) {
         if (stack == null || !stack.hasTagCompound()
             || !stack.getTagCompound()
-                .hasKey(CHARGE, 99))
+                .hasKey(CHARGE, Constants.NBT.TAG_ANY_NUMERIC))
             return 0;
         double charge = stack.getTagCompound()
             .getDouble(CHARGE);

@@ -13,7 +13,7 @@ public class CelestweavePose {
     final float[] dx, dy, dz, rx, ry, rz, sx, sy, sz, r, g, b, a;
     final boolean[] hidden, colored;
     final int[] texFrame;
-    float brightness, baseBrightness;
+    float brightness, steadyBrightness;
     float glowR, glowG, glowB;
 
     CelestweavePose(int size) {

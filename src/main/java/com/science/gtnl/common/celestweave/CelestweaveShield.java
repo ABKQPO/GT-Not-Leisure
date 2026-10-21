@@ -32,6 +32,9 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class CelestweaveShield {
 
     private static final String LIGHTNING = "gtnl.celestweave.lightning";
+    private static final float ABSORB_REMAINDER = 0.01F;
+    private static final double ATTACKER_CENTER = 0.5, ATTACKER_REACH = 2;
+    private static final int IGNITE_SECONDS = 5, BLIND_TICKS = 200, SLOW_AMPLIFIER = 1, DEATH_SAVE_RESISTANCE = 3;
     private static final Map<EntityPlayer, Absorb> PENDING = new WeakHashMap<>();
     private static final Map<EntityPlayer, Hit> HANDLED = new WeakHashMap<>();
 
@@ -114,10 +117,10 @@ public class CelestweaveShield {
                 player,
                 CelestweaveFxPacket.Type.SHIELD_HIT,
                 attacker.posX,
-                attacker.posY + attacker.height * 0.5,
+                attacker.posY + attacker.height * ATTACKER_CENTER,
                 attacker.posZ);
         }
-        if (incoming - absorbed > 0.01F) {
+        if (incoming - absorbed > ABSORB_REMAINDER) {
             PENDING.put(player, new Absorb(source, absorbed / incoming));
             return;
         }
@@ -164,7 +167,9 @@ public class CelestweaveShield {
                 && living.getDistanceSqToEntity(player) <= radius * radius) targets.add(living);
         }
         targets.sort(Comparator.comparingDouble(living -> living.getDistanceSqToEntity(player)));
-        if (!attacker.isDead && attacker.getDistanceSqToEntity(player) <= radius * radius * 4) targets.add(0, attacker);
+        if (!attacker.isDead
+            && attacker.getDistanceSqToEntity(player) <= radius * radius * ATTACKER_REACH * ATTACKER_REACH)
+            targets.add(0, attacker);
         if (targets.size() > config.maxReflectTargets) targets.subList(config.maxReflectTargets, targets.size())
             .clear();
         float damage = amount * config.reflectRatio;
@@ -174,10 +179,10 @@ public class CelestweaveShield {
             boolean hurt = damage <= 0
                 || target.attackEntityFrom(new EntityDamageSource(LIGHTNING, player).setMagicDamage(), damage);
             if (!hurt && target instanceof EntityPlayer) continue;
-            if (ignite) target.setFire(5);
+            if (ignite) target.setFire(IGNITE_SECONDS);
             if (blind) {
-                target.addPotionEffect(new PotionEffect(Potion.blindness.id, 200, 0));
-                target.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 200, 1));
+                target.addPotionEffect(new PotionEffect(Potion.blindness.id, BLIND_TICKS, 0));
+                target.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, BLIND_TICKS, SLOW_AMPLIFIER));
             }
             CelestweaveServerEvents
                 .sendFx(player, CelestweaveFxPacket.Type.LIGHTNING, target.posX, target.boundingBox.minY, target.posZ);
@@ -195,7 +200,7 @@ public class CelestweaveShield {
         event.setCanceled(true);
         player.setHealth(1F);
         player.extinguish();
-        player.hurtResistantTime = player.maxHurtResistantTime * 3;
+        player.hurtResistantTime = player.maxHurtResistantTime * DEATH_SAVE_RESISTANCE;
         CelestweaveServerEvents
             .sendFx(player, CelestweaveFxPacket.Type.SAVE, player.posX, player.posY + 1, player.posZ);
     }

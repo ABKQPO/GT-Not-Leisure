@@ -156,10 +156,10 @@ public class EquipmentPerfBench {
         for (int i = 0; i < 256; i++) path.add(new EquipmentVec(i, 64, i));
         packet(
             "RailgunFireFxPacket（满 256 点路径）",
-            new RailgunFireFxPacket(1, EquipmentVec.ZERO, EquipmentVec.ZERO, path, 3, 10F, true));
+            new RailgunFireFxPacket(1, EquipmentVec.ZERO, EquipmentVec.ZERO, path, 3, 10F));
         packet(
             "RailgunBeamChainFxPacket（14 点路径）",
-            new RailgunBeamChainFxPacket(1, EquipmentVec.ZERO, path.subList(0, 14), true, true));
+            new RailgunBeamChainFxPacket(1, EquipmentVec.ZERO, path.subList(0, 14), true));
         packet("RailgunBeamUpdatePacket", RailgunBeamUpdatePacket.move(1, 64, true));
         packet("CelestweaveFxPacket", new CelestweaveFxPacket(1, CelestweaveFxPacket.Type.SHIELD_HIT, 0, 0, 0));
         if (sink == 42) System.out.println();

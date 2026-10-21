@@ -18,17 +18,15 @@ public class RailgunBeamChainFxPacket extends ClientboundPacket {
     public int shooterId;
     public EquipmentVec origin;
     public List<EquipmentVec> path;
-    public boolean sound, ehv;
+    public boolean ehv;
     private boolean valid;
 
     public RailgunBeamChainFxPacket() {}
 
-    public RailgunBeamChainFxPacket(int shooterId, EquipmentVec origin, List<EquipmentVec> path, boolean sound,
-        boolean ehv) {
+    public RailgunBeamChainFxPacket(int shooterId, EquipmentVec origin, List<EquipmentVec> path, boolean ehv) {
         this.shooterId = shooterId;
         this.origin = origin;
         this.path = path;
-        this.sound = sound;
         this.ehv = ehv;
     }
 
@@ -38,7 +36,6 @@ public class RailgunBeamChainFxPacket extends ClientboundPacket {
             shooterId = buffer.readInt();
             origin = EquipmentVec.read(buffer);
             path = RailgunNet.readPath(buffer);
-            sound = buffer.readBoolean();
             ehv = buffer.readBoolean();
             valid = true;
         } catch (RuntimeException ignored) {
@@ -51,7 +48,6 @@ public class RailgunBeamChainFxPacket extends ClientboundPacket {
         buffer.writeInt(shooterId);
         origin.write(buffer);
         RailgunNet.writePath(buffer, path);
-        buffer.writeBoolean(sound);
         buffer.writeBoolean(ehv);
     }
 

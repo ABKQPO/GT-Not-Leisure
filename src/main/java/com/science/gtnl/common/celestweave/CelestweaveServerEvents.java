@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
@@ -225,30 +226,30 @@ public class CelestweaveServerEvents {
             NBTTagCompound tag = stack.writeToNBT(new NBTTagCompound());
             tag.setByte("Type", (byte) piece);
             list.appendTag(tag);
-            player.inventory.armorInventory[3 - piece] = null;
+            player.inventory.armorInventory[CelestweaveData.armorIndex(piece)] = null;
         }
         if (list.tagCount() > 0) persisted(player).setTag(SOULBOUND_TAG, list);
     }
 
     private static NBTTagCompound persisted(EntityPlayer player) {
         NBTTagCompound data = player.getEntityData();
-        if (!data.hasKey(EntityPlayer.PERSISTED_NBT_TAG, 10))
+        if (!data.hasKey(EntityPlayer.PERSISTED_NBT_TAG, Constants.NBT.TAG_COMPOUND))
             data.setTag(EntityPlayer.PERSISTED_NBT_TAG, new NBTTagCompound());
         return data.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
     }
 
     private static void restoreSoulbound(EntityPlayer player) {
         if (player.getHealth() <= 0 || !player.getEntityData()
-            .hasKey(EntityPlayer.PERSISTED_NBT_TAG, 10)) return;
+            .hasKey(EntityPlayer.PERSISTED_NBT_TAG, Constants.NBT.TAG_COMPOUND)) return;
         NBTTagCompound persisted = persisted(player);
-        if (!persisted.hasKey(SOULBOUND_TAG, 9)) return;
-        NBTTagList list = persisted.getTagList(SOULBOUND_TAG, 10);
+        if (!persisted.hasKey(SOULBOUND_TAG, Constants.NBT.TAG_LIST)) return;
+        NBTTagList list = persisted.getTagList(SOULBOUND_TAG, Constants.NBT.TAG_COMPOUND);
         persisted.removeTag(SOULBOUND_TAG);
         for (int i = 0; i < list.tagCount(); i++) {
             NBTTagCompound tag = list.getCompoundTagAt(i);
             ItemStack stack = ItemStack.loadItemStackFromNBT(tag);
             if (stack == null) continue;
-            int slot = 3 - (tag.getByte("Type") & 3);
+            int slot = CelestweaveData.armorIndex(Math.floorMod(tag.getByte("Type"), CelestweaveArmor.PIECES));
             if (player.inventory.armorInventory[slot] == null) player.inventory.armorInventory[slot] = stack;
             else if (!player.inventory.addItemStackToInventory(stack))
                 player.dropPlayerItemWithRandomChoice(stack, false);

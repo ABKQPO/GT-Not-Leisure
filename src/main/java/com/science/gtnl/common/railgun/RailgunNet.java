@@ -15,6 +15,7 @@ public class RailgunNet {
 
     public static final int MAX_PATH = 256;
     private static final double FX_RANGE = 256;
+    private static final int POINT_BYTES = Double.BYTES * 3;
 
     private RailgunNet() {}
 
@@ -31,7 +32,7 @@ public class RailgunNet {
 
     public static List<EquipmentVec> readPath(ByteBuf buffer) {
         int size = buffer.readUnsignedShort();
-        if (size > MAX_PATH || (size & 1) != 0 || size * 24 > buffer.readableBytes())
+        if (size > MAX_PATH || (size & 1) != 0 || size * POINT_BYTES > buffer.readableBytes())
             throw new IllegalArgumentException("Invalid railgun path length");
         List<EquipmentVec> path = new ArrayList<>(size);
         for (int i = 0; i < size; i++) path.add(EquipmentVec.read(buffer));

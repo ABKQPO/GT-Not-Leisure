@@ -26,7 +26,8 @@ public class RailgunBeamService {
     private static final int BEAM_MAX_CONCURRENT = 16;
     private static final double BEAM_RESEND_DISTANCE = 0.02;
     private static final int BEAM_SETTLE_INTERVAL_TICKS = 2;
-    private static final int BEAM_USE_CONFLICT_TICKS = 20;
+    private static final int BEAM_USE_CONFLICT_TICKS = 20, BEAM_USE_CONFLICT_WINDOWS = 3;
+    private static final double BEAM_TRACE_PADDING = 0.5, BEAM_TRACE_INFLATION = 0;
     private static final double EHV_BEAM_LIGHTNINGS_PER_SETTLE = 16;
     private static final double HV_BEAM_LIGHTNINGS_PER_SETTLE = 0.125;
 
@@ -83,7 +84,7 @@ public class RailgunBeamService {
     private static boolean resolveUseConflict(EntityPlayerMP player) {
         long now = player.worldObj.getTotalWorldTime();
         Long first = USE_CONFLICT.get(player.getUniqueID());
-        if (first == null || now - first > BEAM_USE_CONFLICT_TICKS * 3L) {
+        if (first == null || now - first > (long) BEAM_USE_CONFLICT_TICKS * BEAM_USE_CONFLICT_WINDOWS) {
             USE_CONFLICT.put(player.getUniqueID(), now);
             return false;
         }
@@ -152,8 +153,8 @@ public class RailgunBeamService {
             from.add(
                 EquipmentVec.look(player)
                     .scale(range)),
-            0.5,
-            0,
+            BEAM_TRACE_PADDING,
+            BEAM_TRACE_INFLATION,
             entity -> RailgunTargetRules.canAffect(player, entity, pvp));
         EquipmentVec end = trace.hit() == null ? trace.blockEnd()
             : EquipmentVec.center(
@@ -182,14 +183,8 @@ public class RailgunBeamService {
                 : RailgunChainResolver.chainFrom(world, player, anchor, context, Set.of(), origin);
             var path = RailgunNet.path(origin, chain);
             RailgunDamage.applyAll(player, chain, context, false, hitPoint);
-            if (!path.isEmpty()) RailgunNet.sendAround(
-                player,
-                new RailgunBeamChainFxPacket(
-                    player.getEntityId(),
-                    origin,
-                    path,
-                    RailgunSetting.SOUND.active(stack),
-                    ehv));
+            if (!path.isEmpty())
+                RailgunNet.sendAround(player, new RailgunBeamChainFxPacket(player.getEntityId(), origin, path, ehv));
         }
         sendUpdate(player, state, from, end, ehv);
         return true;

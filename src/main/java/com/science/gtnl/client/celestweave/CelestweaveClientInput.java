@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.client.equipment.EquipmentClientInput;
 import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.celestweave.CelestweaveEnergy;
 import com.science.gtnl.common.celestweave.CelestweaveFlight;
@@ -41,20 +40,11 @@ public class CelestweaveClientInput {
     private CelestweaveClientInput() {}
 
     public static void register() {
-        EquipmentClientInput.addSettingsHandler(CelestweaveClientInput::openWheel);
         ClientRegistry.registerKeyBinding(DASH);
         ClientRegistry.registerKeyBinding(BACKPACK);
         FMLCommonHandler.instance()
             .bus()
             .register(new CelestweaveClientInput());
-    }
-
-    private static boolean openWheel() {
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-        if (player == null || !CelestweaveData.wearsAny(player)
-            || EquipmentClientInput.holdsEquipment(player) && !player.isSneaking()) return false;
-        new CelestweaveWheelScreen(EquipmentClientInput.EQUIPMENT_SETTINGS).open();
-        return true;
     }
 
     @SubscribeEvent

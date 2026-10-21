@@ -115,7 +115,7 @@ public class BoundaryContracts {
     private static void lang(Set<String> used) throws IOException {
         Set<String> expected = new TreeSet<>(used);
         for (String key : new String[] { "open", "help", "reset", "done", "hidden", "show_all", "in_use_only", "undo",
-            "redo", "reset_element", "seconds", "empty" }) expected.add("gtnllib.hud.editor." + key);
+            "redo", "reset_element", "empty" }) expected.add("gtnllib.hud.editor." + key);
         for (HudElement.Setting setting : HudElement.Setting.values()) expected.add(setting.lang());
         for (HudTiming timing : HudTiming.values()) expected.add(timing.lang());
         for (HudColor color : HudColor.values()) expected.add(color.lang());

@@ -6,6 +6,7 @@ import java.util.function.IntSupplier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.util.Constants;
 
 import com.science.gtnl.config.MainConfig;
 
@@ -64,7 +65,7 @@ public enum CelestweaveModuleSetting {
 
     public int get(ItemStack stack) {
         NBTTagCompound values = CelestweaveData.settings(stack, module);
-        if (!values.hasKey(key, 99)) return fallback;
+        if (!values.hasKey(key, Constants.NBT.TAG_ANY_NUMERIC)) return fallback;
         return bool() ? values.getBoolean(key) ? 1 : 0 : Math.max(min, Math.min(max(), values.getInteger(key)));
     }
 

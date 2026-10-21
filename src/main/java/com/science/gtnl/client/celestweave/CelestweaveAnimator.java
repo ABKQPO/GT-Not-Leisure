@@ -93,12 +93,12 @@ public class CelestweaveAnimator {
         int tier = look.tier, glowColor = look.glowColor;
         float fraction = look.fraction;
         float glow = state.hitGlow(now);
-        float baseBrightness = tier == 0 ? 0.3F : 0.4F + 0.6F * fraction;
+        float steadyBrightness = tier == 0 ? 0.3F : 0.4F + 0.6F * fraction, baseBrightness = steadyBrightness;
         if (tier > 0 && fraction < 0.1F && RNG.nextFloat() < 0.18F) baseBrightness *= 0.25F;
         float brightness = baseBrightness * (0.8F + 0.2F * MathHelper.sin(seconds * (1.5F + 1.2F * tier)))
             * (1F + 1.1F * glow);
         pose.brightness = brightness;
-        pose.baseBrightness = baseBrightness * (1F + 1.1F * glow);
+        pose.steadyBrightness = steadyBrightness * (1F + 1.1F * glow);
         pose.glowR = FxColor.red(glowColor);
         pose.glowG = FxColor.green(glowColor);
         pose.glowB = FxColor.blue(glowColor);

@@ -11,6 +11,7 @@ import io.netty.buffer.ByteBuf;
 public record EquipmentVec(double x, double y, double z) {
 
     public static final EquipmentVec ZERO = new EquipmentVec(0, 0, 0);
+    private static final double PARALLEL_LENGTH = 1.0E-4, ZERO_LENGTH = 1.0E-8;
 
     public static EquipmentVec read(ByteBuf buffer) {
         EquipmentVec vector = new EquipmentVec(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
@@ -49,7 +50,7 @@ public record EquipmentVec(double x, double y, double z) {
 
     public static EquipmentVec rightOf(EquipmentVec direction) {
         EquipmentVec right = direction.cross(new EquipmentVec(0, 1, 0));
-        return right.length() < 1.0E-4 ? new EquipmentVec(1, 0, 0) : right.normalize();
+        return right.length() < PARALLEL_LENGTH ? new EquipmentVec(1, 0, 0) : right.normalize();
     }
 
     public static EquipmentVec look(Entity entity) {
@@ -101,7 +102,7 @@ public record EquipmentVec(double x, double y, double z) {
 
     public EquipmentVec normalize() {
         double length = length();
-        return length < 1.0E-8 ? ZERO : scale(1 / length);
+        return length < ZERO_LENGTH ? ZERO : scale(1 / length);
     }
 
     public Vec3 toMc() {

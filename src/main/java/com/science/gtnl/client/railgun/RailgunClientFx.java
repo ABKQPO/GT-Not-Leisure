@@ -50,7 +50,7 @@ public class RailgunClientFx {
         WorldClient world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
         RailgunCharge.finish(packet.shooterId);
-        if (packet.sound) RailgunSounds.playAt(
+        RailgunSounds.playAt(
             EquipmentSound.FIRE,
             packet.from,
             max(packet) ? "fire.max" : "fire.charged",
@@ -118,7 +118,6 @@ public class RailgunClientFx {
     }
 
     private static void impactSound(RailgunFireFxPacket packet) {
-        if (!packet.sound) return;
         RailgunSounds.playAt(
             EquipmentSound.IMPACT,
             packet.firstHit,
@@ -162,8 +161,7 @@ public class RailgunClientFx {
         if (world == null) return;
         if (visible(packet.shooterId, packet.origin)) for (int index = 0; index + 1 < packet.path.size(); index += 2)
             RailgunArcs.chain(packet.path.get(index), packet.path.get(index + 1), 6, packet.ehv);
-        if (packet.sound)
-            RailgunSounds.playAt(EquipmentSound.CHAIN, packet.origin, "beam.chain", 0.35F, 1.6F, CHAIN_HEARING_RANGE);
+        RailgunSounds.playAt(EquipmentSound.CHAIN, packet.origin, "beam.chain", 0.35F, 1.6F, CHAIN_HEARING_RANGE);
     }
 
     @SubscribeEvent

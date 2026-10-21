@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.Constants;
 
 import com.google.common.collect.MapMaker;
 import com.science.gtnl.common.equipment.EquipmentModules;
@@ -19,7 +20,7 @@ public class RailgunData {
 
     public static final String ROOT = "Railgun";
     public static final String MODULES = "Modules";
-    public static final int MODULE_SLOTS = 8;
+    public static final int MODULE_SLOTS = RailgunModule.values().length + EquipmentModules.ENERGY_SLOTS;
     public static final int FULL_CHARGE_UNITS = RailgunChargeTier.EHV3.chargeTicks;
     public static final double RATE_EPSILON = 1.0E-6;
     public static final int CHARGE_RESUME_GRACE_TICKS = 6;
@@ -32,9 +33,8 @@ public class RailgunData {
 
     private RailgunData() {}
 
-    public static boolean soundEnabled(EntityPlayer player) {
-        ItemStack stack = player == null ? null : player.getHeldItem();
-        return ElectromagneticRailgun.is(stack) && RailgunSetting.SOUND.active(stack);
+    public static boolean holding(EntityPlayer player) {
+        return player != null && ElectromagneticRailgun.is(player.getHeldItem());
     }
 
     public static double chargeRate(ItemStack stack) {
@@ -55,7 +55,7 @@ public class RailgunData {
     }
 
     public static NBTTagList moduleList(ItemStack stack) {
-        return root(stack).getTagList(MODULES, 10);
+        return root(stack).getTagList(MODULES, Constants.NBT.TAG_COMPOUND);
     }
 
     public static ItemStack[] moduleStacks(ItemStack stack) {
@@ -68,15 +68,15 @@ public class RailgunData {
 
     public static Modules modules(ItemStack stack) {
         NBTTagCompound root = root(stack);
-        if (!root.hasKey(MODULES, 9)) return NO_MODULES;
-        NBTTagList list = root.getTagList(MODULES, 10);
+        if (!root.hasKey(MODULES, Constants.NBT.TAG_LIST)) return NO_MODULES;
+        NBTTagList list = root.getTagList(MODULES, Constants.NBT.TAG_COMPOUND);
         Modules cached = CACHE.get(list);
         if (cached != null) return cached;
         ItemStack[] stacks = moduleStacks(stack);
         Map<RailgunModule, Integer> counts = new EnumMap<>(RailgunModule.class);
         for (ItemStack module : stacks) {
             RailgunModule type = RailgunModule.of(module);
-            if (type != null) counts.put(type, Math.min(type.limit, counts.getOrDefault(type, 0) + 1));
+            if (type != null) counts.put(type, Math.min(type.limit, counts.getOrDefault(type, 0) + module.stackSize));
         }
         Modules result = new Modules(Collections.unmodifiableMap(counts), EquipmentModules.energyTier(stacks));
         CACHE.put(list, result);

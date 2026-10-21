@@ -483,16 +483,26 @@ public class EquipmentResourceContracts {
         near(2.25, speed.getDoubleValue(), "slider writes a double value");
         check(StepSlider.compactWidth("100%") == 15, "compact width of 100%");
         check(StepSlider.compactWidth("12.5%") == 17, "compact width counts the narrow dot");
-        check(
-            StepSlider.compactFits("-12.5%") && !StepSlider.compactFits("1e5") && !StepSlider.compactFits(""),
-            "compact font charset");
         Field chars = StepSlider.class.getDeclaredField("COMPACT_CHARS"),
             glyphs = StepSlider.class.getDeclaredField("COMPACT_GLYPHS");
         chars.setAccessible(true);
         glyphs.setAccessible(true);
+        String charset = (String) chars.get(null);
         check(
-            ((String) chars.get(null)).length() == ((int[]) glyphs.get(null)).length,
-            "every compact char has a glyph");
+            "-12.5%+".chars()
+                .allMatch(c -> charset.indexOf(c) >= 0) && charset.indexOf('e') < 0,
+            "compact font charset");
+        check(
+            "×1.5 30s".replace(" ", "")
+                .chars()
+                .allMatch(c -> charset.indexOf(c) >= 0) && StepSlider.compactWidth("×2") == 7,
+            "the compact font also draws multipliers and seconds");
+        String sliderSource = read(Paths.get("src/main/java/com/science/gtnllib/gui/widget/StepSlider.java"));
+        check(
+            !sliderSource.contains("fontRenderer") && !sliderSource.contains("compactDigits")
+                && !sliderSource.contains("compactFits"),
+            "every slider draws its value tag in the compact font");
+        check(charset.length() == ((int[]) glyphs.get(null)).length, "every compact char has a glyph");
         Field tag = EquipmentSoundScreen.class.getDeclaredField("TAG_WIDTH");
         tag.setAccessible(true);
         check(StepSlider.compactWidth("100%") + 4 <= tag.getInt(null), "sound slider tag fits 100%");
@@ -551,7 +561,7 @@ public class EquipmentResourceContracts {
         configScreen();
         Pattern hex = Pattern.compile("0x[0-9A-Fa-f]{6,8}");
         for (String file : new String[] { "common/gui/equipment/EquipmentSoundScreen.java",
-            "client/celestweave/CelestweaveWheelScreen.java" }) {
+            "client/equipment/EquipmentWheelScreen.java" }) {
             String source = read(SOURCES.resolve(file));
             check(
                 !source.toUpperCase(Locale.ROOT)
@@ -578,7 +588,7 @@ public class EquipmentResourceContracts {
     private static void equipmentScreens() throws IOException {
         for (String file : new String[] { "common/item/items/armor/CelestweaveArmor.java",
             "common/item/items/equipment/ElectromagneticRailgun.java", "common/gui/equipment/EquipmentSoundScreen.java",
-            "client/celestweave/CelestweaveWheelScreen.java" }) {
+            "client/equipment/EquipmentWheelScreen.java" }) {
             String source = new String(Files.readAllBytes(SOURCES.resolve(file)), StandardCharsets.UTF_8);
             check(
                 source.contains("useTheme(EquipmentTheme.selected())") && !source.contains("EquipmentTheme.ID")
@@ -600,7 +610,7 @@ public class EquipmentResourceContracts {
         }
         String base = sources.get("EquipmentGui"), armor = sources.get("CelestweaveGui");
         check(
-            base.contains("new ModularPanel(name)") && base.contains("closeButton().size("),
+            base.contains("new ModularPanel(name)") && base.contains("new CloseButton().corner(style.padding, style)"),
             "settings panels use the theme panel and close button");
         check(base.contains("new FillBar()"), "settings energy bar is a themed fill bar");
         check(base.contains("new SlideSwitch()"), "settings switches are slide switches");
@@ -629,42 +639,41 @@ public class EquipmentResourceContracts {
         check(
             Arrays.equals(LayoutMath.split(available, 1, 7), new int[] { 22, 22, 22, 22, 22, 22, 22 }),
             "seven arc flags keep the old 22 pixel buttons");
-        int[] slider = LayoutMath.line(
-            Arrays.asList(
-                Size.fill(),
-                Size.fill()
-                    .atLeast(80)),
-            available,
-            4);
-        check(slider[0] == 76 && slider[1] == 80, "a setting slider keeps at least 80 pixels on the narrowest panel");
-        int[] wide = LayoutMath.line(
-            Arrays.asList(
-                Size.fill(),
-                Size.fill()
-                    .atLeast(80)),
-            240,
-            4);
-        check(wide[0] == 118 && wide[1] == 118, "and shares a wide panel evenly with its label");
+        Size sliderSize = Size.percent(0.5F)
+            .atLeast(80);
+        for (int width : new int[] { available, 200, 240 }) {
+            int[] plain = LayoutMath.line(Arrays.asList(Size.fill(), sliderSize), width, 4);
+            int[] shared = LayoutMath.shrink(
+                LayoutMath.line(Arrays.asList(Size.fill(), Size.content(47), sliderSize), width, 4),
+                new int[] { 0, 0, 80 },
+                width,
+                4);
+            check(
+                plain[1] == Math.max(80, width / 2) && shared[2] == plain[1]
+                    && shared[0] + 4 + shared[1] + 4 == plain[0] + 4,
+                "at " + width
+                    + " pixels every slider has the same width and starts at the same x, also next to the by-tier switch");
+        }
         check(
             LayoutMath.fit(320, 4, 176, 256) == 256 && LayoutMath.fit(176, 4, 176, 256) == 176,
             "settings panels grow from 176 to 256 pixels with the screen");
         check(
             LayoutMath.columns(160, gap, 76, 3) == 2 && LayoutMath.columns(240, gap, 76, 3) == 3,
             "short switch labels keep two columns on a narrow panel and take three on the widest one");
-        int armorTop = 84, footer = 101;
+        int armorTop = 84, footer = 87;
         check(
             armorTop + LayoutMath.fitRows(240 - 8 - armorTop - footer, 16, 3, 11) + footer <= 240
-                && LayoutMath.fitRows(270 - 8 - armorTop - footer, 16, 3, 11) == 64
-                && LayoutMath.fitRows(360 - 8 - armorTop - footer, 16, 3, 11) == 160,
+                && LayoutMath.fitRows(270 - 8 - armorTop - footer, 16, 3, 11) == 80
+                && LayoutMath.fitRows(360 - 8 - armorTop - footer, 16, 3, 11) == 176,
             "the armor pages shrink to fit the smallest screen and grow on taller ones");
         List<Size> colorRow = new ArrayList<>();
         colorRow.add(Size.fill());
         for (int i = 0; i < 7; i++) colorRow.add(Size.fixed(12));
-        colorRow.add(Size.fixed(20));
+        colorRow.add(Size.fixed(12));
         int[] colors = LayoutMath.line(colorRow, available, gap);
         check(
-            colors[0] == 40 && 8 + LayoutMath.total(Arrays.copyOf(colors, 8), gap) + gap == 148,
-            "color swatches start at x 50 and the picker stays at x 148");
+            colors[0] == 48 && colors[8] == colors[1] && LayoutMath.total(colors, gap) == available,
+            "the custom color button is as large as the swatches and the row still fills the panel");
         int[] cards = { 200, 200 }, heights = { 150, 118 };
         check(!LayoutMath.stacks(cards, heights, 10, 414, 200), "a wide screen keeps the sound cards side by side");
         check(LayoutMath.stacks(cards, heights, 10, 380, 300), "a narrow screen stacks the sound cards");
@@ -674,13 +683,13 @@ public class EquipmentResourceContracts {
         Map<String, String> sources = new HashMap<>();
         for (String file : new String[] { "common/gui/equipment/EquipmentGui.java",
             "common/gui/equipment/CelestweaveGui.java", "common/gui/equipment/RailgunGui.java",
-            "common/gui/equipment/EquipmentSoundScreen.java", "client/celestweave/CelestweaveWheelScreen.java" })
+            "common/gui/equipment/EquipmentSoundScreen.java", "client/equipment/EquipmentWheelScreen.java" })
             sources.put(file, read(SOURCES.resolve(file)));
         String base = compact(sources.get("common/gui/equipment/EquipmentGui.java")),
             armor = compact(sources.get("common/gui/equipment/CelestweaveGui.java")),
             railgun = compact(sources.get("common/gui/equipment/RailgunGui.java")),
             sound = compact(sources.get("common/gui/equipment/EquipmentSoundScreen.java")),
-            wheel = compact(sources.get("client/celestweave/CelestweaveWheelScreen.java"));
+            wheel = compact(sources.get("client/equipment/EquipmentWheelScreen.java"));
         String columns = "adaptiveGrid(style.spacingSmall,widestSwitch(labels),MAX_COLUMNS,";
         check(
             armor.contains(columns + "switches)") && armor.contains(columns + "toggles)")
@@ -701,6 +710,11 @@ public class EquipmentResourceContracts {
                 && !armor.contains("stepButton"),
             "armor settings are grouped by module, numbers use sliders and choices use pick buttons");
         check(
+            armor.contains("toggle,sliderControl(") && armor.contains(
+                "Arrays.asList(Size.fill(),Size.content(SlideSwitch.widthFor(textWidth(tr(GUI_LANG+option.minLabel)))),sliderSize())")
+                && armor.split("sliderSize\\(\\)", -1).length - 1 == 3,
+            "the idle arc count and its by-tier switch share one row");
+        check(
             armor.contains("client&&max>min?stepSlider(")
                 && armor.contains("@SideOnly(Side.CLIENT)privatestaticStepSliderstepSlider("),
             "sliders are only built on the client, the server panel never loads them");
@@ -720,6 +734,17 @@ public class EquipmentResourceContracts {
             wheel.contains("LayoutMath.widest(") && wheel.contains(".atLeast(BUTTON_WIDTH)")
                 && wheel.contains("(width+style.spacingMedium)/2"),
             "wheel buttons share the width of the longer label and stay centered");
+        String input = compact(read(SOURCES.resolve("client/equipment/EquipmentClientInput.java")));
+        check(
+            input.contains(
+                "int[]slots=EquipmentWheelScreen.equipmentSlots(player);if(slots.length>0)newEquipmentWheelScreen(EQUIPMENT_SETTINGS,slots).open();")
+                && !input.contains("OpenEquipmentGuiPacket"),
+            "the settings key scans the inventory once and opens the wheel when any equipment is carried");
+        check(
+            wheel.contains("stackAt(slot).getDisplayName()") && wheel.contains("newOpenEquipmentGuiPacket(slot)")
+                && wheel.contains("for(intslot:slots)if(present(slot))return;close();")
+                && !wheel.contains("LANG+\"piece."),
+            "every carried equipment gets a wheel slot with its own name, and an open wheel only rechecks its own slots");
         Pattern oldPixels = Pattern.compile("\\b(79|81|54|98|108|122|136|148|152|160|161)\\b");
         for (Map.Entry<String, String> entry : sources.entrySet()) check(
             !oldPixels.matcher(entry.getValue())
@@ -738,7 +763,7 @@ public class EquipmentResourceContracts {
             !soundSource.contains("GuiDraw") && !soundSource.contains("disableThemeBackground")
                 && soundSource.contains("new SlideSwitch()")
                 && soundSource.contains("Layout.card(")
-                && soundSource.contains("EquipmentGui.closeButton()"),
+                && soundSource.contains("new CloseButton().corner(pad, style)"),
             "sound screen draws its panel, cards, switches and close button through the theme");
         check(
             EquipmentTheme.PALETTE.equals(SAMPLE),
@@ -949,7 +974,8 @@ public class EquipmentResourceContracts {
                 if (option.kind == CelestweaveCosmeticOption.Kind.FLAGS) expected.add(base + "." + name + ".tooltip");
             }
         }
-        for (int piece = 0; piece < 4; piece++) expected.add("item.gtnl.celestweave.wheel.piece." + piece);
+        expected.add("item.gtnl.equipment.wheel.title");
+        expected.add("item.gtnl.equipment.wheel.sound");
         for (CelestweaveHudElement element : CelestweaveHudElement.values()) expected.add(element.hud.lang());
         expected.add(RailgunHudRenderer.CHARGE.lang());
         for (Field field : MainConfig.Client.class.getFields()) {

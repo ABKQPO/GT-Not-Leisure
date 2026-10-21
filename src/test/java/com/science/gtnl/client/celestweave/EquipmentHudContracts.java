@@ -166,9 +166,10 @@ public class EquipmentHudContracts {
 
     private static void hudSources() throws IOException {
         check(
-            compact(read(SOURCES.resolve("common/gui/equipment/EquipmentGui.java")))
-                .contains(".displayGuiScreen(null);HudEditor.open();"),
-            "the equipment settings button closes its container before the editor opens");
+            !read(SOURCES.resolve("common/gui/equipment/EquipmentGui.java")).contains("HudEditor")
+                && compact(read(SOURCES.resolve("client/equipment/EquipmentWheelScreen.java")))
+                    .contains("button(HUD,HudEditor::open,"),
+            "the HUD editor opens only from the armor wheel, not from the settings panels");
         check(
             compact(read(SOURCES.resolve("client/celestweave/CelestweaveThemeAccent.java")))
                 .contains("HudColor.source(EquipmentTheme.LIVE,"),

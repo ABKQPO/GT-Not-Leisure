@@ -44,6 +44,7 @@ public class ElectromagneticRailgun extends Item
     implements IEquipmentElectricItem, IEquipmentItem, IGuiHolder<PlayerInventoryGuiData> {
 
     public static final int USE_DURATION = 72000;
+    private static final int WIRELESS_REFILL_TICKS = 20;
 
     public ElectromagneticRailgun() {
         this.setMaxStackSize(1);
@@ -83,7 +84,7 @@ public class ElectromagneticRailgun extends Item
         if (!world.isRemote && held
             && entity instanceof EntityPlayerMP player
             && !player.isUsingItem()
-            && world.getTotalWorldTime() % 20 == 0) RailgunEnergy.refillFromWireless(stack, player);
+            && world.getTotalWorldTime() % WIRELESS_REFILL_TICKS == 0) RailgunEnergy.refillFromWireless(stack, player);
     }
 
     @Override

@@ -39,7 +39,7 @@ public class RailgunSounds {
     private static final Map<Integer, ChargeVoice> CHARGES = new HashMap<>();
 
     private static boolean enabled(Entity entity) {
-        return entity instanceof EntityPlayer player && !player.isDead && RailgunData.soundEnabled(player);
+        return entity instanceof EntityPlayer player && !player.isDead && RailgunData.holding(player);
     }
 
     private static boolean charging(EntityPlayer player) {

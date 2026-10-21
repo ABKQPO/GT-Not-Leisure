@@ -52,7 +52,7 @@ public class RailgunTargetRules {
     }
 
     private static List<EntityDragonPart> parts(Entity target) {
-        List<EntityDragonPart> parts = new ArrayList<>(8);
+        List<EntityDragonPart> parts = new ArrayList<>();
         if (target instanceof EntityDragon dragon) {
             Collections.addAll(
                 parts,

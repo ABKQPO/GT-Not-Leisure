@@ -17,7 +17,6 @@ gtnllib.hud.editor.empty=没有在用的 HUD 元素，点“显示全部”查�
 gtnllib.hud.editor.undo=撤销
 gtnllib.hud.editor.redo=重做
 gtnllib.hud.editor.reset_element=重置此元素
-gtnllib.hud.editor.seconds=%s 秒
 gtnllib.hud.setting.shown=显示此元素
 gtnllib.hud.setting.scale=缩放
 gtnllib.hud.setting.opacity=透明度

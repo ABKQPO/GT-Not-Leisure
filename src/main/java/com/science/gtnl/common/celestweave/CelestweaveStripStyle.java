@@ -4,13 +4,19 @@ import java.util.Locale;
 
 public enum CelestweaveStripStyle {
 
-    STEADY,
-    BREATH,
-    FLOW,
-    RAINBOW,
-    GRADIENT;
+    FLICKER(false),
+    STEADY(false),
+    BREATH(true),
+    FLOW(true),
+    RAINBOW(true),
+    GRADIENT(true);
 
     public final String id = name().toLowerCase(Locale.ROOT);
+    public final boolean usesSpeed;
+
+    CelestweaveStripStyle(boolean usesSpeed) {
+        this.usesSpeed = usesSpeed;
+    }
 
     public static String[] ids() {
         String[] ids = new String[values().length];

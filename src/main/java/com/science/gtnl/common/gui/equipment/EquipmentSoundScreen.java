@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
-import net.minecraft.util.StatCollector;
-
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.drawable.Rectangle;
@@ -25,6 +23,7 @@ import com.science.gtnllib.gui.layout.Layout;
 import com.science.gtnllib.gui.layout.LayoutMath;
 import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.layout.Size;
+import com.science.gtnllib.gui.widget.CloseButton;
 import com.science.gtnllib.gui.widget.SlideSwitch;
 import com.science.gtnllib.gui.widget.StepSlider;
 
@@ -35,7 +34,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class EquipmentSoundScreen extends ModularScreen {
 
     private static final int TITLE_HEIGHT = 20, TITLE_RULE = 7, TEXT_HEIGHT = 10, LABEL_WIDTH = 96, SLIDER_WIDTH = 92,
-        CLOSE_SIZE = 11, TAG_WIDTH = 19;
+        TAG_WIDTH = 19;
     private static final int STEPS = 20, MILESTONE_EVERY = 5;
     private static final String HINT = "item.gtnl.equipment.gui.sound.hint";
 
@@ -63,7 +62,7 @@ public class EquipmentSoundScreen extends ModularScreen {
         panel.child(
             Layout.label(IKey.lang("item.gtnl.equipment.gui.sound"), style)
                 .pos(pad + style.spacingSmall, pad)
-                .width(() -> arrangement.width() - pad * 2 - CLOSE_SIZE - style.spacingMedium, Unit.Measure.PIXEL)
+                .width(() -> arrangement.width() - pad * 2 - CloseButton.SIZE - style.spacingMedium, Unit.Measure.PIXEL)
                 .height(TEXT_HEIGHT));
         panel.child(
             new Rectangle().horizontalGradient(colors.accent, 0)
@@ -71,11 +70,7 @@ public class EquipmentSoundScreen extends ModularScreen {
                 .pos(pad, pad + TITLE_HEIGHT - TITLE_RULE)
                 .width(() -> (arrangement.width() - pad * 2) / 2D, Unit.Measure.PIXEL)
                 .height(1));
-        panel.child(
-            EquipmentGui.closeButton()
-                .size(CLOSE_SIZE, CLOSE_SIZE)
-                .top(pad - style.spacingSmall)
-                .right(pad - style.spacingSmall));
+        panel.child(new CloseButton().corner(pad, style));
         EquipmentSound.Group[] groups = EquipmentSound.Group.values();
         for (int index = 0; index < groups.length; index++) {
             final int card = index;
@@ -120,7 +115,7 @@ public class EquipmentSoundScreen extends ModularScreen {
             Arrays.asList(
                 new SlideSwitch().value(() -> channel.enabled)
                     .liveWhen(audible)
-                    .label(IKey.dynamic(() -> StatCollector.translateToLocal(lang)))
+                    .label(IKey.dynamic(() -> EquipmentGui.tr(lang)))
                     .onMousePressed(button -> {
                         if (button != 0) return false;
                         channel.enabled = !channel.enabled;
@@ -133,7 +128,7 @@ public class EquipmentSoundScreen extends ModularScreen {
                     .format(value -> Math.round(value * 100) + "%")
                     .activeWhen(() -> channel.enabled && audible.getAsBoolean())
                     .tagWidth(TAG_WIDTH)
-                    .compactDigits(true)
+
                     .onRelease(EquipmentSoundConfig::save)));
     }
 
@@ -160,9 +155,9 @@ public class EquipmentSoundScreen extends ModularScreen {
         private Arrangement(LayoutTheme style) {
             this.style = style;
             EquipmentSound.Group[] groups = EquipmentSound.Group.values();
-            int widest = Layout.textWidth(tr("gtnl.gui.config.sound.all"), style);
+            int widest = Layout.textWidth(EquipmentGui.tr("gtnl.gui.config.sound.all"), style);
             for (EquipmentSound.Group group : groups) for (EquipmentSound sound : group.sounds())
-                widest = Math.max(widest, Layout.textWidth(tr(sound.lang()), style));
+                widest = Math.max(widest, Layout.textWidth(EquipmentGui.tr(sound.lang()), style));
             labelWidth = Size.content(SlideSwitch.widthFor(widest))
                 .atLeast(LABEL_WIDTH)
                 .resolve(0);
@@ -174,12 +169,8 @@ public class EquipmentSoundScreen extends ModularScreen {
                 heights[i] = Layout.cardHeader(style) + (groups[i].sounds()
                     .size() + 1) * style.rowHeight + style.spacingMedium;
             }
-            hint = tr(HINT);
+            hint = EquipmentGui.tr(HINT);
             fit(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        }
-
-        private static String tr(String key) {
-            return StatCollector.translateToLocal(key);
         }
 
         private void fit(int screenWidth, int screenHeight) {

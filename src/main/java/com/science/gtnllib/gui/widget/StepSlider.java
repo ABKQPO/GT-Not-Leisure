@@ -24,26 +24,24 @@ import com.cleanroommc.modularui.theme.WidgetTheme;
 import com.cleanroommc.modularui.theme.WidgetThemeBuilder;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.theme.WidgetThemeKey;
-import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.utils.Color;
 import com.cleanroommc.modularui.utils.JsonHelper;
 import com.cleanroommc.modularui.widget.Widget;
 import com.google.gson.JsonObject;
 import com.science.gtnllib.client.fx.FxColor;
-import com.science.gtnllib.utils.TextRenderUtils;
 
 public class StepSlider extends Widget<StepSlider> implements Interactable {
 
     private static final ResourceLocation TICK_SOUND = new ResourceLocation("random.click");
     private static final float LOW_PITCH = 1.15F, HIGH_PITCH = 1.5F;
-    private static final int TRACK_THICKNESS = 4, TICK_GAP = 2, MINOR_TICK = 1, MAJOR_TICK = 3, TAG_HEIGHT = 11,
-        TAG_PADDING = 3, MIN_TICK_SPACING = 2;
+    private static final int TRACK_THICKNESS = 4, TICK_GAP = 2, MINOR_TICK = 1, MAJOR_TICK = 3, MIN_TICK_SPACING = 2;
     private static final long SOUND_GAP_MILLIS = 40;
-    private static final String COMPACT_CHARS = "0123456789%.-+";
+    private static final String COMPACT_CHARS = "0123456789%.-+×s";
     private static final int[] COMPACT_GLYPHS = { 0b111_101_101_101_111, 0b010_110_010_010_111, 0b111_001_111_100_111,
         0b111_001_111_001_111, 0b101_101_111_001_001, 0b111_100_111_001_111, 0b111_100_111_101_111,
         0b111_001_001_010_010, 0b111_101_111_101_111, 0b111_101_111_001_111, 0b101_001_010_100_101,
-        0b000_000_000_000_100, 0b000_000_111_000_000, 0b000_010_111_010_000 };
+        0b000_000_000_000_100, 0b000_000_111_000_000, 0b000_010_111_010_000, 0b000_101_010_101_000,
+        0b000_011_100_001_110 };
     private static final int COMPACT_HEIGHT = 5, COMPACT_TAG_HEIGHT = 9, COMPACT_TAG_PADDING = 2;
     private static final int INACTIVE_FILL = 0xFF4A4A50, INACTIVE_TAG = 0xFF707078, INACTIVE_TEXT = 0xFF2A2A2E;
 
@@ -56,7 +54,7 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
     private int steps = 10, milestoneEvery = 5;
     private int[] colors, tickColors;
     private int tagWidth;
-    private boolean compact, vertical, dragging;
+    private boolean vertical, dragging;
     private long lastSound;
 
     public StepSlider() {
@@ -120,11 +118,6 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
 
     public StepSlider tagWidth(int width) {
         this.tagWidth = Math.max(0, width);
-        return this;
-    }
-
-    public StepSlider compactDigits(boolean compact) {
-        this.compact = compact;
         return this;
     }
 
@@ -277,10 +270,8 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
     }
 
     private void drawTag(String text, float cursor, float trackCenter, boolean on, Theme palette) {
-        boolean small = compact && compactFits(text);
-        int textWidth = small ? compactWidth(text) : Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
-        int tagHeight = small ? COMPACT_TAG_HEIGHT : TAG_HEIGHT;
-        int tagWidth = this.tagWidth > 0 ? this.tagWidth : textWidth + (small ? COMPACT_TAG_PADDING : TAG_PADDING) * 2;
+        int textWidth = compactWidth(text), tagHeight = COMPACT_TAG_HEIGHT;
+        int tagWidth = this.tagWidth > 0 ? this.tagWidth : textWidth + COMPACT_TAG_PADDING * 2;
         int alongSize = vertical ? tagHeight : tagWidth, acrossSize = vertical ? tagWidth : tagHeight;
         int along = clamp(Math.round(cursor + 0.5F - alongSize / 2F), length() - alongSize);
         int across = clamp(Math.round(trackCenter - acrossSize / 2F), thickness() - acrossSize);
@@ -289,25 +280,20 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
         GuiDraw.drawRect(tagX, tagY, tagWidth, tagHeight, shade(tag, on && (dragging || isHovering()) ? 0.75F : 0.55F));
         GuiDraw
             .drawRect(tagX + 1, tagY + 1, tagWidth - 2, tagHeight - 2, tag, tag, shade(tag, 0.88F), shade(tag, 0.88F));
-        if (small) {
-            drawCompact(
-                text,
-                tagX + Math.round((tagWidth - textWidth) / 2F),
-                tagY + (tagHeight - COMPACT_HEIGHT) / 2,
-                textColor);
-            return;
-        }
-        TextRenderUtils.drawTextLine(text, tagX, tagY, tagWidth, tagHeight, Alignment.Center, textColor, false);
+        drawCompact(
+            text,
+            tagX + Math.round((tagWidth - textWidth) / 2F),
+            tagY + (tagHeight - COMPACT_HEIGHT) / 2,
+            textColor);
     }
 
     private static int clamp(int value, int max) {
         return Math.max(0, Math.min(max, value));
     }
 
-    public static boolean compactFits(String text) {
-        if (text == null || text.isEmpty()) return false;
-        for (int i = 0; i < text.length(); i++) if (COMPACT_CHARS.indexOf(text.charAt(i)) < 0) return false;
-        return true;
+    private static int glyph(char c) {
+        int index = COMPACT_CHARS.indexOf(c);
+        return index < 0 ? 0 : COMPACT_GLYPHS[index];
     }
 
     public static int compactWidth(String text) {
@@ -323,7 +309,7 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
     private static void drawCompact(String text, int x, int y, int color) {
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
-            int glyph = COMPACT_GLYPHS[COMPACT_CHARS.indexOf(c)], glyphWidth = glyphWidth(c);
+            int glyph = glyph(c), glyphWidth = glyphWidth(c);
             for (int row = 0; row < COMPACT_HEIGHT; row++) {
                 int start = -1;
                 for (int column = 0; column <= glyphWidth; column++) {

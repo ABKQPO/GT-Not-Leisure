@@ -42,6 +42,8 @@ public class RailgunFireService {
     public static final String RECOIL_GRACE = "gtnl.railgunRecoilGrace";
     private static final int RECOIL_GRACE_TICKS = 60;
     private static final double MAX_RATE = 3;
+    private static final double CHARGED_TRACE_PADDING = 1, CHARGED_TRACE_INFLATION = 0.3,
+        PULSE_RADIUS_PER_COMPUTE = 1.5;
 
     private static class ChargeSession {
 
@@ -209,8 +211,8 @@ public class RailgunFireService {
             from.add(
                 EquipmentVec.look(player)
                     .scale(range)),
-            1,
-            0.3,
+            CHARGED_TRACE_PADDING,
+            CHARGED_TRACE_INFLATION,
             entity -> RailgunTargetRules.canAffect(player, entity, players));
         var context = RailgunDamage.buildCharged(player, tier, modules, world, players);
         EquipmentVec impact = trace.hit() == null ? trace.blockEnd()
@@ -221,7 +223,7 @@ public class RailgunFireService {
         int primaryId = primary == null ? -1 : primary.getEntityId();
         List<Hit> hits = new ArrayList<>();
         int compute = modules.count(RailgunModule.COMPUTE);
-        double pulseRadius = max ? PULSE_RADIUS + 1.5 * compute : 0;
+        double pulseRadius = max ? PULSE_RADIUS + PULSE_RADIUS_PER_COMPUTE * compute : 0;
         if (primary != null) {
             hits.add(Hit.primary(primary, context.firstDamage()));
             if (chain) hits.addAll(RailgunChainResolver.chainFrom(world, player, primary, context, Set.of(), null));
@@ -291,8 +293,7 @@ public class RailgunFireService {
                 impact,
                 path,
                 tier.ordinal(),
-                (float) Math.max(splash, pulseRadius),
-                RailgunSetting.SOUND.active(stack)));
+                (float) Math.max(splash, pulseRadius)));
     }
 
     private static void applyRecoil(EntityPlayerMP player, RailgunChargeTier tier) {
