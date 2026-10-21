@@ -50,7 +50,7 @@ public class ClientUtils {
     }
 
     public static boolean onBeforePickBlock(EntityPlayer playerMP, World world, boolean useAE) {
-        if (tryOpenMultiEssentiaJarBlock(world)) {
+        if (tryOpenMultiEssentiaJarBlock(playerMP, world)) {
             return true;
         }
         if (tryHandlePickBlockHandler(playerMP)) {
@@ -70,7 +70,9 @@ public class ClientUtils {
         return false;
     }
 
-    private static boolean tryOpenMultiEssentiaJarBlock(World world) {
+    private static boolean tryOpenMultiEssentiaJarBlock(EntityPlayer player, World world) {
+        if (player.capabilities.isCreativeMode) return false;
+
         MovingObjectPosition target = Minecraft.getMinecraft().objectMouseOver;
 
         if (target == null || target.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) {

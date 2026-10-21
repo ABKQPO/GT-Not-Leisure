@@ -548,7 +548,7 @@ gtnl.machine.small_arcane_assembler.casing=任意魔法机械方块
 gtnl.machine.industrial_crucible.name=工业坩埚
 gtnl.recipe.industrial_crucible=工业坩埚
 gtnl.machine.industrial_crucible.recipe_type=坩埚炼金
-gtnl.machine.industrial_crucible.tooltip.1=支持源质输入仓、复合源质输入仓与源质供应器。
+gtnl.machine.industrial_crucible.tooltip.1=支持源质输入仓、复合源质输入仓与注魔供应器。
 gtnl.machine.industrial_crucible.tooltip.2=需要机器所有者解锁对应的神秘研究。
 gtnl.machine.industrial_crucible.casing=任意魔法机械方块
 
@@ -3279,7 +3279,7 @@ gtnl.machine.small_essentia_smeltery.mv.name=进阶电力炼金炉
 gtnl.machine.small_essentia_smeltery.hv.name=进阶电力炼金炉 II
 gtnl.machine.small_essentia_smeltery.tooltip.0=使用大型源质冶炼炉的方式动态解析物品源质
 gtnl.machine.small_essentia_smeltery.tooltip.1=基础耗能为 30 EU/t，每点源质耗时 32 tick，支持标准超频
-gtnl.machine.small_essentia_smeltery.tooltip.2=源质从可配置输出面送入相邻的源质容器或管道
+gtnl.machine.small_essentia_smeltery.tooltip.2=源质从可配置输出面送入相邻的源质容器或管道，推荐连接复合源质管道
 gtnl.machine.small_essentia_smeltery.tooltip.3=内部源质缓存：%s
 gtnl.gui.small_essentia_smeltery.output=输出源质：
 
@@ -4127,6 +4127,7 @@ item.gtnl.wireless_frequency_card.name=无线频率卡
 item.gtnl.wireless_frequency_card.tooltip.0=潜行右键 ME 控制器：绑定发射源
 item.gtnl.wireless_frequency_card.tooltip.1=右键 ME 设备：连接 / 断开整簇
 item.gtnl.wireless_frequency_card.tooltip.2=潜行右键空气：清除绑定
+item.gtnl.wireless_frequency_card.tooltip.3=提示：在成堆的 ME 接口中穿一根致密线缆，无线入口即可承载 32 个频道而不是 8 个
 item.gtnl.wireless_frequency_card.manage_hint=右键空气：打开管理界面
 item.gtnl.wireless_frequency_card.more_hint=按住 Shift 查看操作
 item.gtnl.wireless_frequency_card.unbound=尚未绑定。请潜行右键 ME 控制器。

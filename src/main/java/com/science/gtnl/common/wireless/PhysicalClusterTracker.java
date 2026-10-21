@@ -103,7 +103,7 @@ public class PhysicalClusterTracker<N, F> {
         components.forEach(
             (scan, members) -> scanned.add(
                 new Cluster<>(
-                    Collections.unmodifiableSet(members),
+                    Set.copyOf(members),
                     Set.of(),
                     members.stream()
                         .anyMatch(topology::blocksWireless),
@@ -132,7 +132,7 @@ public class PhysicalClusterTracker<N, F> {
                 frequencies.addAll(labels);
             }
             Cluster<N, F> cluster = new Cluster<>(
-                Collections.unmodifiableSet(members),
+                Set.copyOf(members),
                 frequencies.stream()
                     .map(frequencyIdentity)
                     .collect(Collectors.toUnmodifiableSet()),
@@ -201,8 +201,8 @@ public class PhysicalClusterTracker<N, F> {
         }
     }
 
-    public void forget(Predicate<N> removed) {
-        claims.keySet()
+    public boolean forget(Predicate<N> removed) {
+        return claims.keySet()
             .removeIf(removed);
     }
 

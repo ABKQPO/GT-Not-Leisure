@@ -33,7 +33,7 @@ public class SteamGateAssemblerFrontend extends RecipeMapFrontend {
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {
         super(
             uiPropertiesBuilder.progressBarPos(new Pos2d(124, 175)),
-            neiPropertiesBuilder.recipeBackgroundSize(new Size(170, 170)));
+            neiPropertiesBuilder.recipeBackgroundSize(new Size(170, 196)));
     }
 
     @Override

@@ -156,7 +156,7 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
     public CheckRecipeResult checkProcessing() {
         CheckRecipeResult result = super.checkProcessing();
         if (result.wasSuccessful() && machineMode == InfusionCrafting) {
-            mOutputItems = TCRecipeTools.appendPrimordialPearlReturns(mOutputItems);
+            mOutputItems = TCRecipeTools.appendPrimordialPearlReturns(mOutputItems, processingLogic);
         }
         return result;
     }

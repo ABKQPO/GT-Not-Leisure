@@ -120,6 +120,10 @@ public class PhysicalMeTopology implements PhysicalClusterTracker.Topology<IGrid
         return node.hasFlag(GridFlags.REQUIRE_CHANNEL) ? 2 : 1;
     }
 
+    static int entranceCapacity(IGridNode node) {
+        return node.hasFlag(GridFlags.DENSE_CAPACITY) ? ChannelBudget.CHANNELS_PER_FACE : 8;
+    }
+
     Address entranceAddress(IGridNode node) {
         NodeRef reference = references.get(node);
         return reference == null || reference.external() ? null : reference.address();

@@ -1,26 +1,35 @@
 package com.science.gtnl.common.block.blocks.tile;
 
+import java.util.List;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import com.science.gtnl.common.machine.basicMachine.SmallEssentiaSmeltery;
 
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IEssentiaTransport;
+import thaumcraft.codechicken.lib.raytracer.IndexedCuboid6;
+import thaumcraft.codechicken.lib.vec.Cuboid6;
 import thaumcraft.common.tiles.TileTubeBuffer;
 
-public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
+public class TileEntityMultiEssentiaTube extends TileTubeBuffer implements IMultiEssentiaContainer {
 
     private static final int TRANSFER_PER_TICK = 16;
     private static final int BELLOWS_CHECK_INTERVAL = 20;
     private static final int BASE_SUCTION = 63;
     private static final int MAX_SUCTION = 127;
+    private static final double ARM_MIN = 0.42D;
+    private static final double ARM_MAX = 0.58D;
 
     public static final int MAX_CAPACITY = 64;
 
     // 复用父类 aspects 字段作为存储，排序缓存与容器操作统一交给共享组件。
     private final MultiEssentiaStorage storage = new MultiEssentiaStorage(aspects, MAX_CAPACITY);
+    private final EssentiaSyncThrottle syncThrottle = new EssentiaSyncThrottle();
 
     private boolean bellowsInitialized;
     private int transferTick;
@@ -97,9 +106,13 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
 
     @Override
     public int getSuctionAmount(ForgeDirection face) {
-        if (!isValidFace(face) || !super.isConnectable(face) || getTotalAmount() >= MAX_CAPACITY) {
-            return 0;
-        }
+        int baseSuction = getBaseSuction(face);
+        if (baseSuction <= 0 || getTotalAmount() < MAX_CAPACITY) return baseSuction;
+        return isUpstream(face, baseSuction) ? baseSuction : 0;
+    }
+
+    private int getBaseSuction(ForgeDirection face) {
+        if (!isValidFace(face) || !super.isConnectable(face)) return 0;
 
         int originalSuction = super.getSuctionAmount(face);
         if (chokedSides[face.ordinal()] != 0) {
@@ -107,6 +120,20 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
         }
 
         return Math.min(MAX_SUCTION, Math.max(BASE_SUCTION, originalSuction));
+    }
+
+    private boolean isUpstream(ForgeDirection face, int baseSuction) {
+        if (worldObj == null) return false;
+
+        TileEntity tile = ThaumcraftApiHelper.getConnectableTile(worldObj, xCoord, yCoord, zCoord, face);
+        if (!(tile instanceof IEssentiaTransport source)) return false;
+
+        ForgeDirection sourceSide = face.getOpposite();
+        if (!source.canOutputTo(sourceSide)) return false;
+
+        int sourceSuction = source instanceof TileEntityMultiEssentiaTube tube ? tube.getBaseSuction(sourceSide)
+            : source.getSuctionAmount(sourceSide);
+        return sourceSuction < baseSuction && baseSuction >= source.getMinimumSuction();
     }
 
     @Override
@@ -157,11 +184,20 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
         }
 
         // 每 tick 尝试补充缓存；transferTick 仅用于风箱检查间隔。
-        if (!worldObj.isRemote && getTotalAmount() < MAX_CAPACITY) {
+        if (worldObj.isRemote) return;
+
+        syncThrottle.flush(this);
+        if (getTotalAmount() < MAX_CAPACITY) {
             fillCache(TRANSFER_PER_TICK);
         }
     }
 
+    @Override
+    public int getEssentiaCapacity() {
+        return MAX_CAPACITY;
+    }
+
+    @Override
     public int getTotalAmount() {
         return storage.getTotalAmount();
     }
@@ -209,6 +245,36 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
         return transferred;
     }
 
+    @Override
+    public void addTraceableCuboids(List<IndexedCuboid6> cuboids) {
+        super.addTraceableCuboids(cuboids);
+
+        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
+            TileEntity tile = worldObj
+                .getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
+            if (!SmallEssentiaSmeltery.isOutputFacing(tile, direction.getOpposite())) continue;
+
+            cuboids.add(
+                new IndexedCuboid6(
+                    direction.ordinal(),
+                    new Cuboid6(
+                        xCoord + getArmMin(direction.offsetX),
+                        yCoord + getArmMin(direction.offsetY),
+                        zCoord + getArmMin(direction.offsetZ),
+                        xCoord + getArmMax(direction.offsetX),
+                        yCoord + getArmMax(direction.offsetY),
+                        zCoord + getArmMax(direction.offsetZ))));
+        }
+    }
+
+    private static double getArmMin(int offset) {
+        return offset == 0 ? ARM_MIN : offset < 0 ? 0.0D : 0.5D;
+    }
+
+    private static double getArmMax(int offset) {
+        return offset == 0 ? ARM_MAX : offset < 0 ? 0.5D : 1.0D;
+    }
+
     private static boolean isValidFace(ForgeDirection face) {
         return face != null && face != ForgeDirection.UNKNOWN && face.ordinal() < 6;
     }
@@ -216,9 +282,6 @@ public class TileEntityMultiEssentiaTube extends TileTubeBuffer {
     private void markEssentiaChanged() {
         storage.markDirty();
         markDirty();
-
-        if (worldObj != null) {
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-        }
+        syncThrottle.request(this);
     }
 }

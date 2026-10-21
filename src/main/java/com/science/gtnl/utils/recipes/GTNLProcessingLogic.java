@@ -45,6 +45,7 @@ public class GTNLProcessingLogic extends ProcessingLogic {
 
     public double extraSpeedBoost = 1.0;
     public int maxOverclocks = Integer.MAX_VALUE;
+    protected GTRecipe appliedRecipe;
 
     public GTNLProcessingLogic() {}
 
@@ -397,6 +398,7 @@ public class GTNLProcessingLogic extends ProcessingLogic {
         this.duration = 0;
         this.calculatedParallels = 0;
         this.activeDualInv = null;
+        this.appliedRecipe = null;
         return this;
     }
 
@@ -573,6 +575,7 @@ public class GTNLProcessingLogic extends ProcessingLogic {
             return hookResult;
         }
 
+        appliedRecipe = recipe;
         outputItems = helper.getItemOutputs();
         outputFluids = helper.getFluidOutputs();
 
@@ -902,6 +905,10 @@ public class GTNLProcessingLogic extends ProcessingLogic {
     // Cache
     public RecipeMap<?> getLastRecipeMap() {
         return lastRecipeMap;
+    }
+
+    public GTRecipe getAppliedRecipe() {
+        return appliedRecipe;
     }
 
     public GTRecipe getLastRecipe() {

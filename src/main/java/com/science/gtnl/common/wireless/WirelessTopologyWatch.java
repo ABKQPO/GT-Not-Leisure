@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -15,28 +16,37 @@ import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 import com.science.gtnl.common.world.WorldListener;
 
 import appeng.api.networking.IGridNode;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 
 public class WirelessTopologyWatch implements IBlockStateListener {
 
     private final Map<World, LongSet> watched = new IdentityHashMap<>();
+    private final Map<World, Long2ObjectMap<TileEntity>> tiles = new IdentityHashMap<>();
 
     void update(Collection<Cluster<IGridNode, Address>> clusters, PhysicalMeTopology topology) {
         Map<World, LongSet> next = new IdentityHashMap<>();
+        Map<World, Long2ObjectMap<TileEntity>> nextTiles = new IdentityHashMap<>();
         for (var cluster : clusters) {
             if (cluster.frequencies()
                 .isEmpty()) continue;
-            for (IGridNode node : cluster.nodes()) add(next, topology.nodeAddress(node));
-            for (Address source : cluster.frequencies()) add(next, source);
+            for (IGridNode node : cluster.nodes()) add(next, nextTiles, topology.nodeAddress(node));
+            for (Address source : cluster.frequencies()) add(next, nextTiles, source);
         }
-        for (World world : watched.keySet()) {
-            if (!next.containsKey(world)) WorldListener.INSTANCE.unregisterBlockStateListener(world, this);
+        for (World world : tiles.keySet()) {
+            if (!nextTiles.containsKey(world)) WorldListener.INSTANCE.unregisterBlockStateListener(world, this);
         }
-        for (var entry : next.entrySet()) {
-            if (entry.getValue()
-                .equals(watched.get(entry.getKey()))) continue;
+        for (var entry : nextTiles.entrySet()) {
+            Long2ObjectMap<TileEntity> previous = tiles.get(entry.getKey());
+            if (previous != null && previous.keySet()
+                .equals(
+                    entry.getValue()
+                        .keySet()))
+                continue;
             Iterable<BlockPos> positions = () -> entry.getValue()
+                .keySet()
                 .longStream()
                 .mapToObj(
                     position -> new BlockPos(
@@ -48,14 +58,20 @@ public class WirelessTopologyWatch implements IBlockStateListener {
         }
         watched.clear();
         watched.putAll(next);
+        tiles.clear();
+        tiles.putAll(nextTiles);
     }
 
-    private static void add(Map<World, LongSet> map, Address address) {
+    private static void add(Map<World, LongSet> map, Map<World, Long2ObjectMap<TileEntity>> tiles, Address address) {
         if (address == null) return;
         var tile = address.tile();
         if (tile == null) return;
-        LongSet positions = map.computeIfAbsent(tile.getWorldObj(), ignored -> new LongOpenHashSet());
-        positions.add(CoordinatePacker.pack(address.x(), address.y(), address.z()));
+        World world = tile.getWorldObj();
+        long position = CoordinatePacker.pack(address.x(), address.y(), address.z());
+        tiles.computeIfAbsent(world, ignored -> new Long2ObjectOpenHashMap<>())
+            .put(position, tile);
+        LongSet positions = map.computeIfAbsent(world, ignored -> new LongOpenHashSet());
+        positions.add(position);
         for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS) {
             positions.add(
                 CoordinatePacker
@@ -64,9 +80,11 @@ public class WirelessTopologyWatch implements IBlockStateListener {
     }
 
     void nodeChanged(IGridNode node) {
+        if (watched.isEmpty()) return;
         var block = node.getGridBlock();
-        if (block == null || block.getLocation() == null) return;
+        if (block == null) return;
         var position = block.getLocation();
+        if (position == null) return;
         World world = position.getWorld();
         if (world == null || world.isRemote) return;
         LongSet positions = watched.get(world);
@@ -77,11 +95,26 @@ public class WirelessTopologyWatch implements IBlockStateListener {
 
     @Override
     public void onBlockChanged(BlockPos pos) {
-        WirelessClusterManager.invalidateTopology();
+        long packed = CoordinatePacker.pack(pos.x, pos.y, pos.z);
+        boolean known = false;
+        for (var entry : tiles.entrySet()) {
+            TileEntity expected = entry.getValue()
+                .get(packed);
+            if (expected == null) continue;
+            known = true;
+            World world = entry.getKey();
+            if (expected.isInvalid() || !world.blockExists(pos.x, pos.y, pos.z)
+                || world.getTileEntity(pos.x, pos.y, pos.z) != expected) {
+                WirelessClusterManager.invalidateTopology();
+                return;
+            }
+        }
+        if (!known) WirelessClusterManager.invalidateTopology();
     }
 
     void clear() {
-        for (World world : watched.keySet()) WorldListener.INSTANCE.unregisterBlockStateListener(world, this);
+        for (World world : tiles.keySet()) WorldListener.INSTANCE.unregisterBlockStateListener(world, this);
         watched.clear();
+        tiles.clear();
     }
 }

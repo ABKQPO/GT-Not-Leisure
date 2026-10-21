@@ -1,9 +1,5 @@
 package com.science.gtnl.common.render.tile;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -16,7 +12,6 @@ import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.AspectList;
 import thaumcraft.client.lib.UtilsFX;
 import thaumcraft.client.renderers.tile.TileJarRenderer;
 import thaumcraft.common.blocks.BlockJar;
@@ -33,6 +28,8 @@ public class MultiEssentiaJarRenderer extends TileJarRenderer {
     private static final double LIQUID_MIN_XZ = 0.25D;
     private static final double LIQUID_MAX_XZ = 0.75D;
     private static final double MIN_VISIBLE_LAYER_HEIGHT = 0.015625D;
+
+    private final RenderBlocks renderBlocks = new RenderBlocks();
 
     @Override
     public void renderTileEntityAt(TileJar tile, double x, double y, double z, float partialTicks) {
@@ -99,15 +96,15 @@ public class MultiEssentiaJarRenderer extends TileJarRenderer {
         }
         if (field_147501_a.field_147553_e == null || jar.getTotalAmount() <= 0) return;
 
-        AspectList storedAspects = jar.getAspects();
-        List<Aspect> renderOrder = getRenderOrder(storedAspects, jar.getActiveAspect());
-        if (renderOrder.isEmpty()) return;
+        Aspect[] sortedAspects = jar.getStoredAspectsSorted();
+        int layerCount = sortedAspects.length;
+        if (layerCount == 0) return;
+        int activeIndex = indexOf(sortedAspects, jar.getActiveAspect());
 
         GL11.glPushMatrix();
         GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
         GL11.glDisable(GL11.GL_LIGHTING);
 
-        RenderBlocks renderBlocks = new RenderBlocks();
         Tessellator tessellator = Tessellator.instance;
         IIcon liquidIcon = ((BlockJar) ConfigBlocks.blockJar).iconLiquid;
         field_147501_a.field_147553_e.bindTexture(TextureMap.locationBlocksTexture);
@@ -124,12 +121,11 @@ public class MultiEssentiaJarRenderer extends TileJarRenderer {
         double actualLiquidHeight = LIQUID_HEIGHT * totalAmount / TileEntityMultiEssentiaJar.MAX_CAPACITY;
 
         double visibleLiquidHeight = Math
-            .min(LIQUID_HEIGHT, Math.max(actualLiquidHeight, renderOrder.size() * MIN_VISIBLE_LAYER_HEIGHT));
+            .min(LIQUID_HEIGHT, Math.max(actualLiquidHeight, layerCount * MIN_VISIBLE_LAYER_HEIGHT));
 
-        double minimumLayerHeight = Math
-            .min(MIN_VISIBLE_LAYER_HEIGHT, visibleLiquidHeight / (renderOrder.size() * 2.0D));
+        double minimumLayerHeight = Math.min(MIN_VISIBLE_LAYER_HEIGHT, visibleLiquidHeight / (layerCount * 2.0D));
 
-        double distributableHeight = visibleLiquidHeight - minimumLayerHeight * renderOrder.size();
+        double distributableHeight = visibleLiquidHeight - minimumLayerHeight * layerCount;
 
         double liquidTop = LIQUID_MIN + visibleLiquidHeight;
         double layerBottom = LIQUID_MIN;
@@ -137,15 +133,14 @@ public class MultiEssentiaJarRenderer extends TileJarRenderer {
         tessellator.startDrawingQuads();
         tessellator.setBrightness(brightness);
 
-        for (int index = 0; index < renderOrder.size(); index++) {
-            Aspect aspect = renderOrder.get(index);
-            int amount = storedAspects.getAmount(aspect);
+        for (int index = 0; index < layerCount; index++) {
+            Aspect aspect = getLayerAspect(sortedAspects, activeIndex, index);
+            int amount = jar.containerContains(aspect);
             if (amount <= 0) continue;
 
             double layerHeight = minimumLayerHeight + distributableHeight * amount / totalAmount;
 
-            double layerTop = index == renderOrder.size() - 1 ? liquidTop
-                : Math.min(liquidTop, layerBottom + layerHeight);
+            double layerTop = index == layerCount - 1 ? liquidTop : Math.min(liquidTop, layerBottom + layerHeight);
             renderBlocks
                 .setRenderBounds(LIQUID_MIN_XZ, layerBottom, LIQUID_MIN_XZ, LIQUID_MAX_XZ, layerTop, LIQUID_MAX_XZ);
             tessellator.setColorOpaque_I(aspect.getColor());
@@ -168,18 +163,17 @@ public class MultiEssentiaJarRenderer extends TileJarRenderer {
         GL11.glColor3f(1.0F, 1.0F, 1.0F);
     }
 
-    private static List<Aspect> getRenderOrder(AspectList storedAspects, Aspect activeAspect) {
-        List<Aspect> renderOrder = new ArrayList<>();
-        for (Aspect aspect : storedAspects.getAspects()) {
-            if (aspect != null && storedAspects.getAmount(aspect) > 0) {
-                renderOrder.add(aspect);
-            }
+    private static int indexOf(Aspect[] aspects, Aspect target) {
+        if (target == null) return -1;
+        for (int index = 0; index < aspects.length; index++) {
+            if (aspects[index] == target) return index;
         }
+        return -1;
+    }
 
-        renderOrder.sort(Comparator.comparing(Aspect::getTag));
-        if (activeAspect != null && renderOrder.remove(activeAspect)) {
-            renderOrder.add(activeAspect);
-        }
-        return renderOrder;
+    private static Aspect getLayerAspect(Aspect[] sortedAspects, int activeIndex, int layer) {
+        if (activeIndex < 0) return sortedAspects[layer];
+        if (layer == sortedAspects.length - 1) return sortedAspects[activeIndex];
+        return sortedAspects[layer < activeIndex ? layer : layer + 1];
     }
 }

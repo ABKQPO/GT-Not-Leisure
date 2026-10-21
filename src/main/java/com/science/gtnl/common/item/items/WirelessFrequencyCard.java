@@ -270,7 +270,7 @@ public class WirelessFrequencyCard extends Item implements IBaubleExpanded, IGui
     }
 
     private static void showStatus(WirelessCardBinding binding, EntityPlayer player) {
-        WirelessClusterManager.refresh();
+        WirelessClusterManager.refreshIfStale();
         var summary = WirelessClusterManager.summary(binding.source());
         message(
             player,
@@ -354,6 +354,7 @@ public class WirelessFrequencyCard extends Item implements IBaubleExpanded, IGui
             tooltip.add(GRAY + StatCollector.translateToLocal(LANG + "tooltip.2"));
             tooltip.add(GRAY + StatCollector.translateToLocal(LANG + "visualisation_scroll_hint"));
             tooltip.add(GRAY + StatCollector.translateToLocal("gtnl.wireless.gui.visualisation_hint"));
+            tooltip.add(GRAY + StatCollector.translateToLocal(LANG + "tooltip.3"));
         } else tooltip.add(YELLOW + StatCollector.translateToLocal(LANG + "more_hint"));
     }
 }

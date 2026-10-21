@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import com.science.gtnl.utils.AspectTooltipUtils;
 import com.science.gtnl.utils.enums.ModsItemlist;
+import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import cpw.mods.fml.common.Optional;
@@ -24,10 +25,12 @@ import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.IRecipeMap;
+import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.objects.ItemData;
 import gregtech.api.recipe.RecipeMetadataKey;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.util.GTRecipe;
 import lombok.Getter;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
@@ -199,27 +202,37 @@ public class TCRecipeTools {
         return stacks;
     }
 
-    public static ItemStack[] appendPrimordialPearlReturns(ItemStack[] outputs) {
-        if (outputs == null || outputs.length == 0) return outputs;
+    public static ItemStack[] appendPrimordialPearlReturns(ItemStack[] outputs, ProcessingLogic logic) {
+        if (!(logic instanceof GTNLProcessingLogic gtnlLogic)) return outputs;
+        return appendPrimordialPearlReturns(outputs, gtnlLogic.getAppliedRecipe(), gtnlLogic.getCurrentParallels());
+    }
+
+    public static ItemStack[] appendPrimordialPearlReturns(ItemStack[] outputs, GTRecipe recipe, int parallels) {
+        if (outputs == null || recipe == null || recipe.mOutputs == null || parallels <= 0) return outputs;
 
         ItemId primordialPearl = ItemId.create(new ItemStack(itemEldritchObject, 1, 3));
-        int pearlCount = 0;
-        for (ItemStack output : outputs) {
+        long pearlsPerCraft = 0;
+        for (ItemStack output : recipe.mOutputs) {
             if (output == null || PRIMORDIAL_PEARL_RETURN_EXCLUSIONS.contains(ItemId.create(output))) continue;
 
-            InfusionRecipe recipe = ThaumcraftApi.getInfusionRecipe(output);
-            if (recipe == null || recipe.getComponents() == null) continue;
+            InfusionRecipe infusionRecipe = ThaumcraftApi.getInfusionRecipe(output);
+            if (infusionRecipe == null || infusionRecipe.getComponents() == null) continue;
 
-            for (ItemStack component : recipe.getComponents()) {
-                if (component != null && primordialPearl.equals(ItemId.create(component))) pearlCount++;
+            for (ItemStack component : infusionRecipe.getComponents()) {
+                if (component != null && primordialPearl.equals(ItemId.create(component))) pearlsPerCraft++;
             }
         }
 
-        if (pearlCount == 0) return outputs;
+        long pearlCount = pearlsPerCraft * parallels;
+        if (pearlCount <= 0) return outputs;
 
-        ItemStack[] withReturns = Arrays.copyOf(outputs, outputs.length + 1);
-        withReturns[outputs.length] = new ItemStack(itemEldritchObject, pearlCount, 3);
-        return withReturns;
+        List<ItemStack> withReturns = new ArrayList<>(Arrays.asList(outputs));
+        while (pearlCount > 0) {
+            int stackSize = (int) Math.min(64, pearlCount);
+            withReturns.add(new ItemStack(itemEldritchObject, stackSize, 3));
+            pearlCount -= stackSize;
+        }
+        return withReturns.toArray(new ItemStack[0]);
     }
 
     // Register a Thaumcraft recipe with aspect and research metadata.
@@ -316,7 +329,6 @@ public class TCRecipeTools {
             .clearInvalid()
             .itemInputsUnified(inputs)
             .itemOutputs(output)
-            .special(createAspectDisplayStacksFromCopy(snapshot))
             .metadata(aspectKey, snapshot)
             .metadata(researchKey, research)
             .duration(duration)
@@ -334,7 +346,6 @@ public class TCRecipeTools {
             .itemInputsUnified(inputs)
             .circuit(circuit)
             .itemOutputs(output)
-            .special(createAspectDisplayStacksFromCopy(snapshot))
             .metadata(aspectKey, snapshot)
             .metadata(researchKey, research)
             .duration(duration)
@@ -354,7 +365,6 @@ public class TCRecipeTools {
             .clearInvalid()
             .itemInputs(inputs)
             .itemOutputs(output)
-            .special(createAspectDisplayStacksFromCopy(snapshot))
             .metadata(aspectKey, snapshot)
             .metadata(researchKey, research)
             .duration(duration)
@@ -373,7 +383,6 @@ public class TCRecipeTools {
             .itemInputs(inputs)
             .circuit(circuit)
             .itemOutputs(output)
-            .special(createAspectDisplayStacksFromCopy(snapshot))
             .metadata(aspectKey, snapshot)
             .metadata(researchKey, research)
             .duration(duration)

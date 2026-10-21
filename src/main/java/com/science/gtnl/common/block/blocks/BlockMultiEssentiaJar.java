@@ -67,19 +67,17 @@ public class BlockMultiEssentiaJar extends BlockJar {
 
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack stack) {
-        super.onBlockPlacedBy(world, x, y, z, entity, stack);
         TileEntity tile = world.getTileEntity(x, y, z);
-        if (tile instanceof TileEntityMultiEssentiaJar jar) {
-            jar.readFromItemStack(stack);
+        if (!(tile instanceof TileEntityMultiEssentiaJar jar)) return;
 
-            // 标签默认贴在南面，放置时按玩家朝向旋转，使标签面朝玩家
-            if (entity != null) {
-                int playerFacing = MathHelper.floor_double((entity.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-                // playerFacing: 0=南 1=西 2=北 3=东 -> 对应标签朝向的 facing 值
-                jar.setFacing(new int[] { 2, 5, 3, 4 }[playerFacing]);
-                world.markBlockForUpdate(x, y, z);
-            }
+        // 标签默认贴在南面，放置时按玩家朝向旋转，使标签面朝玩家
+        if (entity != null) {
+            int playerFacing = MathHelper.floor_double((entity.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+            // playerFacing: 0=南 1=西 2=北 3=东 -> 对应标签朝向的 facing 值
+            jar.setFacing(new int[] { 2, 5, 3, 4 }[playerFacing]);
         }
+        jar.readFromItemStack(stack);
+        world.markBlockForUpdate(x, y, z);
     }
 
     @Override
