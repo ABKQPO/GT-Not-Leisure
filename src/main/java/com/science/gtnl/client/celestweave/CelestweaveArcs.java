@@ -13,7 +13,7 @@ import com.science.gtnl.common.celestweave.CelestweaveCosmeticOption;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnllib.client.fx.FxColor;
+import com.science.gtnllib.utils.ColorMath;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -21,7 +21,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class CelestweaveArcs {
 
-    static final Random RNG = new Random();
+    private static final Random RNG = new Random();
     private static final float[] ANTENNA_A = { -5.25F, -9.2F, 6.9F }, ANTENNA_B = { 5.25F, -9.2F, 6.9F };
     private static final float[] CORE = { 0F, 3.25F, -4.3F }, CORE_INNER = { 0F, 3.25F, -4.35F };
     private static final float[] DASH_FROM = { 0F, 11F, 3.3F };
@@ -132,7 +132,7 @@ public class CelestweaveArcs {
                     0.06F,
                     now,
                     Math.round(rand(70F, 160F)),
-                    FxColor.mixWhite(glowColor, 0.4F),
+                    ColorMath.mixWhite(glowColor, 0.4F),
                     CelestweaveArc.Kind.BURST);
             }
         }
@@ -217,7 +217,7 @@ public class CelestweaveArcs {
             0.24F,
             now + i * 90L,
             230,
-            FxColor.mixWhite(look.glowColor, 0.25F),
+            ColorMath.mixWhite(look.glowColor, 0.25F),
             CelestweaveArc.Kind.BURST);
     }
 
@@ -277,7 +277,7 @@ public class CelestweaveArcs {
         }
         float vx = dy * uz, vy = dz * ux - dx * uz, vz = -dy * ux;
         float half = width * 0.5F;
-        FxColor.tessellate(tessellator, rgb, alpha);
+        ColorMath.tessellate(tessellator, rgb, alpha);
         quad(tessellator, x0, y0, z0, x1, y1, z1, ux * half, 0F, uz * half);
         quad(tessellator, x0, y0, z0, x1, y1, z1, vx * half, vy * half, vz * half);
     }

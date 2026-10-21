@@ -7,8 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
-import com.science.gtnllib.client.fx.FxColor;
 import com.science.gtnllib.client.fx.world.FxRenderHelper.Sprite;
+import com.science.gtnllib.utils.ColorMath;
+import com.science.gtnllib.utils.MathUtils;
 import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -42,7 +43,7 @@ public class FxArcRenderer {
 
     public static void spawnColored(Vec3d from, Vec3d to, int segments, double spread, int lifetime, int rgb,
         double width) {
-        Color glow = new Color(FxColor.red(rgb), FxColor.green(rgb), FxColor.blue(rgb));
+        Color glow = new Color(ColorMath.red(rgb), ColorMath.green(rgb), ColorMath.blue(rgb));
         spawn(
             from,
             to,
@@ -168,7 +169,7 @@ public class FxArcRenderer {
     }
 
     private static float fade(double age, int lifetime) {
-        double progress = Math.max(0, Math.min(1, age / lifetime));
+        double progress = MathUtils.clampUnit(age / lifetime);
         double fadeIn = Math.min(1, progress * 5);
         return (float) (fadeIn * (1 - progress) * (0.9 + 0.1 * Math.sin(progress * Math.PI)));
     }

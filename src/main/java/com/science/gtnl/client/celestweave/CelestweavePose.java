@@ -2,7 +2,8 @@ package com.science.gtnl.client.celestweave;
 
 import java.util.Arrays;
 
-import com.science.gtnllib.client.fx.FxColor;
+import com.science.gtnllib.utils.ColorMath;
+import com.science.gtnllib.utils.MathUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -57,10 +58,10 @@ public class CelestweavePose {
 
     void color(int index, int rgb, float k, float alpha) {
         if (index < 0) return;
-        r[index] = Math.min(1F, FxColor.red(rgb) * k);
-        g[index] = Math.min(1F, FxColor.green(rgb) * k);
-        b[index] = Math.min(1F, FxColor.blue(rgb) * k);
-        a[index] = Math.max(0F, Math.min(1F, alpha));
+        r[index] = Math.min(1F, ColorMath.red(rgb) * k);
+        g[index] = Math.min(1F, ColorMath.green(rgb) * k);
+        b[index] = Math.min(1F, ColorMath.blue(rgb) * k);
+        a[index] = MathUtils.clampUnit(alpha);
         colored[index] = true;
     }
 

@@ -28,7 +28,7 @@ import com.cleanroommc.modularui.utils.Color;
 import com.cleanroommc.modularui.utils.JsonHelper;
 import com.cleanroommc.modularui.widget.Widget;
 import com.google.gson.JsonObject;
-import com.science.gtnllib.client.fx.FxColor;
+import com.science.gtnllib.utils.ColorMath;
 
 public class StepSlider extends Widget<StepSlider> implements Interactable {
 
@@ -351,7 +351,7 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
     }
 
     private static int shade(int argb, float factor) {
-        return argb & 0xFF000000 | FxColor.scale(argb, factor);
+        return argb & 0xFF000000 | ColorMath.scale(argb, factor);
     }
 
     public static class Theme extends WidgetTheme {

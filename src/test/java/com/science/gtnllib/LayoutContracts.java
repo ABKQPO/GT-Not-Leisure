@@ -16,11 +16,12 @@ import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.science.gtnllib.gui.layout.Layout;
 import com.science.gtnllib.gui.layout.LayoutMath;
-import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.layout.Size;
 import com.science.gtnllib.gui.widget.CloseButton;
 import com.science.gtnllib.gui.widget.Divider;
+import com.science.gtnllib.gui.widget.LayoutTheme;
 import com.science.gtnllib.gui.widget.SlideSwitch;
+import com.science.gtnllib.utils.MathUtils;
 
 public class LayoutContracts {
 
@@ -29,7 +30,26 @@ public class LayoutContracts {
     static void run() throws IOException, ReflectiveOperationException {
         layoutRules();
         adaptiveRules();
+        mathRules();
         layoutSources();
+    }
+
+    private static void mathRules() {
+        check(
+            MathUtils.clampUnit(-0.5F) == 0F && MathUtils.clampUnit(1.5F) == 1F
+                && MathUtils.clampUnit(0.25F) == 0.25F
+                && MathUtils.clampUnit(-2.0) == 0
+                && MathUtils.clampUnit(3.0) == 1
+                && MathUtils.clampUnit(0.75) == 0.75,
+            "values clamp into 0..1 and values inside stay as they are");
+        check(
+            Float.isNaN(MathUtils.clampUnit(Float.NaN)) && Double.isNaN(MathUtils.clampUnit(Double.NaN)),
+            "the plain clamp passes NaN through like the code it replaced");
+        check(
+            MathUtils.clampUnit(Float.NaN, 0F) == 0F && MathUtils.clampUnit(Float.POSITIVE_INFINITY, 1F) == 1F
+                && MathUtils.clampUnit(Float.NEGATIVE_INFINITY, 0.5F) == 0.5F
+                && MathUtils.clampUnit(2F, 0F) == 1F,
+            "the clamp with a fallback replaces every non-finite value and clamps the rest");
     }
 
     private static void adaptiveRules() throws ReflectiveOperationException {

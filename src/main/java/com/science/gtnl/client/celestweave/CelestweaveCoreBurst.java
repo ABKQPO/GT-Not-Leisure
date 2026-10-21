@@ -7,8 +7,8 @@ import net.minecraft.client.renderer.Tessellator;
 
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnllib.client.fx.FxColor;
 import com.science.gtnllib.client.fx.FxEasing;
+import com.science.gtnllib.utils.ColorMath;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -51,13 +51,13 @@ public class CelestweaveCoreBurst {
         float fade = 1F - time / 200F;
         if (fade <= 0F) return;
         float radius = (1.2F + 0.8F * FxEasing.easeOutCubic(time / 90F)) * size;
-        int edge = FxColor.mixWhite(glowColor, 0.3F);
+        int edge = ColorMath.mixWhite(glowColor, 0.3F);
         for (int i = 0; i < SEGMENTS; i++) {
             double a0 = Math.PI * 2 * i / SEGMENTS, a1 = Math.PI * 2 * (i + 1) / SEGMENTS;
-            FxColor.tessellate(tessellator, 0xFFFFFF, fade);
+            ColorMath.tessellate(tessellator, 0xFFFFFF, fade);
             tessellator.addVertex(0, 0, Z);
             tessellator.addVertex(0, 0, Z);
-            FxColor.tessellate(tessellator, edge, 0F);
+            ColorMath.tessellate(tessellator, edge, 0F);
             tessellator.addVertex(Math.cos(a1) * radius, Math.sin(a1) * radius, Z);
             tessellator.addVertex(Math.cos(a0) * radius, Math.sin(a0) * radius, Z);
         }
@@ -73,7 +73,7 @@ public class CelestweaveCoreBurst {
         float cool = Math.min(1F, time / 520F);
         float alpha = 1F - cool * cool;
         if (alpha <= 0F) return;
-        int rgb = time < 120F ? 0xFFFFFF : FxColor.mixWhite(glowColor, Math.max(0F, 0.6F - cool));
+        int rgb = time < 120F ? 0xFFFFFF : ColorMath.mixWhite(glowColor, Math.max(0F, 0.6F - cool));
         float grow = FxEasing.easeOutCubic(time / 110F);
         Random random = new Random(state.hitAt);
         for (int i = 0; i < CRACKS; i++) {
@@ -123,7 +123,7 @@ public class CelestweaveCoreBurst {
         double dx = x1 - x0, dy = y1 - y0, length = Math.sqrt(dx * dx + dy * dy);
         if (length < 1.0E-4) return;
         double px = -dy / length * width * 0.5, py = dx / length * width * 0.5;
-        FxColor.tessellate(tessellator, rgb, alpha);
+        ColorMath.tessellate(tessellator, rgb, alpha);
         tessellator.addVertex(x0 - px, y0 - py, Z);
         tessellator.addVertex(x0 + px, y0 + py, Z);
         tessellator.addVertex(x1 + px, y1 + py, Z);
@@ -135,7 +135,7 @@ public class CelestweaveCoreBurst {
         if (progress >= 1F) return;
         float radius = (1.5F + 2F * FxEasing.easeOutCubic(progress)) * size;
         float alpha = (float) Math.pow(1F - progress, 1.5);
-        int rgb = FxColor.mixWhite(glowColor, 0.6F * (1F - progress));
+        int rgb = ColorMath.mixWhite(glowColor, 0.6F * (1F - progress));
         for (int k = 0; k < 6; k++) {
             double a0 = k * Math.PI / 3 + Math.PI / 6, a1 = a0 + Math.PI / 3;
             segment(
@@ -165,14 +165,14 @@ public class CelestweaveCoreBurst {
         if (progress >= 1F) return;
         Random random = new Random(state.hitAt ^ 0x5DEECE66DL);
         double bias = state.hitDirectional ? Math.atan2(state.hitDirectionY, state.hitDirectionX) : 0;
-        int rgb = FxColor.mixWhite(glowColor, 0.5F);
+        int rgb = ColorMath.mixWhite(glowColor, 0.5F);
         float radius = 0.18F * (1F - progress) + 0.06F;
         for (int i = 0; i < EMBERS; i++) {
             double angle = state.hitDirectional ? bias + (i - (EMBERS - 1) / 2.0) * 0.3 + random.nextFloat() * 0.2
                 : Math.PI * 2 * i / EMBERS + random.nextFloat() * 0.4;
             double distance = (1.4 + 3.4 * (1 - Math.exp(-progress * 4)) * (0.7 + random.nextFloat() * 0.5)) * size;
             double x = Math.cos(angle) * distance, y = Math.sin(angle) * distance;
-            FxColor.tessellate(tessellator, rgb, 1F - progress);
+            ColorMath.tessellate(tessellator, rgb, 1F - progress);
             tessellator.addVertex(x, y - radius, Z);
             tessellator.addVertex(x + radius, y, Z);
             tessellator.addVertex(x, y + radius, Z);

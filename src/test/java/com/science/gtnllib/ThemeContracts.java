@@ -43,9 +43,7 @@ import com.cleanroommc.modularui.utils.JsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.science.gtnllib.client.fx.FxColor;
 import com.science.gtnllib.config.GTNLLibConfig;
-import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.theme.ButtonPurpose;
 import com.science.gtnllib.gui.theme.LivePalette;
 import com.science.gtnllib.gui.theme.MetalSkin;
@@ -59,9 +57,11 @@ import com.science.gtnllib.gui.widget.CardDrawable;
 import com.science.gtnllib.gui.widget.Divider;
 import com.science.gtnllib.gui.widget.FillBar;
 import com.science.gtnllib.gui.widget.FrameDrawable;
+import com.science.gtnllib.gui.widget.LayoutTheme;
 import com.science.gtnllib.gui.widget.SkinDrawable;
 import com.science.gtnllib.gui.widget.SlideSwitch;
 import com.science.gtnllib.gui.widget.StepSlider;
+import com.science.gtnllib.utils.ColorMath;
 
 public class ThemeContracts {
 
@@ -304,7 +304,7 @@ public class ThemeContracts {
         List<Integer> base = components(palette), tinted = components(cyan);
         for (int i = 0; i < base.size(); i++) {
             int from = base.get(i), to = tinted.get(i);
-            double[] before = FxColor.hsl(from & 0xFFFFFF), after = FxColor.hsl(to & 0xFFFFFF);
+            double[] before = ColorMath.hsl(from & 0xFFFFFF), after = ColorMath.hsl(to & 0xFFFFFF);
             check(!pink(to), "cyan color " + i + " has no pink left");
             check(from >>> 24 == to >>> 24, "cyan color " + i + " keeps its transparency");
             if (before[1] < 0.5) check(
@@ -312,7 +312,7 @@ public class ThemeContracts {
                 "cyan color " + i + " keeps the brightness of the pink one");
         }
         check(
-            FxColor.hsl(cyan.cursor() & 0xFFFFFF)[2] > 0.9 && FxColor.hsl(cyan.cursorText() & 0xFFFFFF)[2] < 0.25,
+            ColorMath.hsl(cyan.cursor() & 0xFFFFFF)[2] > 0.9 && ColorMath.hsl(cyan.cursorText() & 0xFFFFFF)[2] < 0.25,
             "the slider tag stays a pale tint with dark text");
         check(
             Math.abs(hueOffset(cyan.cursor(), cyan.accent()) - hueOffset(palette.cursor(), palette.accent()))
@@ -328,7 +328,7 @@ public class ThemeContracts {
                     < 0.02,
             "pale and dark tints keep their white and black mix toward a darker accent");
         check(
-            FxColor.hsl(
+            ColorMath.hsl(
                 palette.follow(0xFFFFFF)
                     .panelTop() & 0xFFFFFF)[1]
                 < 0.01,
@@ -340,22 +340,22 @@ public class ThemeContracts {
         for (int accent : new int[] { 0x000000, 0xFFFFFF, 0x0000FF }) {
             int readable = palette.readableAccent(accent);
             check(
-                FxColor.contrast(readable & 0xFFFFFF, palette.panelTop() & 0xFFFFFF) >= 3 && palette.follow(accent)
+                ColorMath.contrast(readable & 0xFFFFFF, palette.panelTop() & 0xFFFFFF) >= 3 && palette.follow(accent)
                     .accent() == readable,
                 "a " + Integer.toHexString(accent) + " accent becomes readable on the dark panel");
         }
         check(palette.readableAccent(0x000000) != 0xFF000000, "a black accent is lifted");
-        check(FxColor.hsl(palette.readableAccent(0xFFFFFF) & 0xFFFFFF)[2] <= 0.851, "a white accent is toned down");
+        check(ColorMath.hsl(palette.readableAccent(0xFFFFFF) & 0xFFFFFF)[2] <= 0.851, "a white accent is toned down");
         same("pink accent after the readability check", palette.readableAccent(0xFF3D9A), 0xFFFF3D9A);
         check(
             palette.selectedText() == palette.text() && palette.selectedTextShadow(),
             "pink tabs keep white text with a shadow");
         ThemePalette white = palette.follow(0xFFFFFF);
-        int tab = FxColor.over(white.buttonHover(), white.panelTop() & 0xFFFFFF);
+        int tab = ColorMath.over(white.buttonHover(), white.panelTop() & 0xFFFFFF);
         check(
             white.selectedText() != white.text() && !white.selectedTextShadow()
-                && FxColor.contrast(white.selectedText() & 0xFFFFFF, tab)
-                    > FxColor.contrast(white.text() & 0xFFFFFF, tab),
+                && ColorMath.contrast(white.selectedText() & 0xFFFFFF, tab)
+                    > ColorMath.contrast(white.text() & 0xFFFFFF, tab),
             "bright tabs switch to dark text without a shadow");
         check(
             palette.follow(0x000000)
@@ -1025,16 +1025,16 @@ public class ThemeContracts {
     }
 
     private static double hueOffset(int color, int accent) {
-        return (FxColor.hsl(color & 0xFFFFFF)[0] - FxColor.hsl(accent & 0xFFFFFF)[0] + 360) % 360;
+        return (ColorMath.hsl(color & 0xFFFFFF)[0] - ColorMath.hsl(accent & 0xFFFFFF)[0] + 360) % 360;
     }
 
     private static double whiteMix(int color, int accent) {
-        double lightness = FxColor.hsl(accent & 0xFFFFFF)[2];
-        return (FxColor.hsl(color & 0xFFFFFF)[2] - lightness) / (1 - lightness);
+        double lightness = ColorMath.hsl(accent & 0xFFFFFF)[2];
+        return (ColorMath.hsl(color & 0xFFFFFF)[2] - lightness) / (1 - lightness);
     }
 
     private static double blackMix(int color, int accent) {
-        return FxColor.hsl(color & 0xFFFFFF)[2] / FxColor.hsl(accent & 0xFFFFFF)[2];
+        return ColorMath.hsl(color & 0xFFFFFF)[2] / ColorMath.hsl(accent & 0xFFFFFF)[2];
     }
 
     private static boolean sameWidgetTheme(Object expected, Object actual) throws IllegalAccessException {

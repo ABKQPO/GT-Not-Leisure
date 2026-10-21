@@ -9,8 +9,8 @@ import net.minecraft.util.MathHelper;
 
 import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnllib.client.fx.FxAngle;
-import com.science.gtnllib.client.fx.FxColor;
 import com.science.gtnllib.client.fx.FxEasing;
+import com.science.gtnllib.utils.ColorMath;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -99,9 +99,9 @@ public class CelestweaveAnimator {
             * (1F + 1.1F * glow);
         pose.brightness = brightness;
         pose.steadyBrightness = steadyBrightness * (1F + 1.1F * glow);
-        pose.glowR = FxColor.red(glowColor);
-        pose.glowG = FxColor.green(glowColor);
-        pose.glowB = FxColor.blue(glowColor);
+        pose.glowR = ColorMath.red(glowColor);
+        pose.glowG = ColorMath.green(glowColor);
+        pose.glowB = ColorMath.blue(glowColor);
         int tierRgb = look.tierColor();
 
         float spin = tier == 0 ? 0F : (0.35F + 0.45F * tier) * (0.4F + 0.6F * fraction) * (1F + 3F * glow);
@@ -120,9 +120,9 @@ public class CelestweaveAnimator {
         }
         pose.hide(innerRotor, tier == 0);
         for (int index : INNER_SEG)
-            pose.color(index, FxColor.mixWhite(glowColor, Math.min(1F, 0.4F + 0.3F * glow)), brightness, 1F);
+            pose.color(index, ColorMath.mixWhite(glowColor, Math.min(1F, 0.4F + 0.3F * glow)), brightness, 1F);
         pose.color(shellA, tierRgb, 0.9F * brightness, 1F);
-        pose.color(nucleus, FxColor.mixWhite(glowColor, 0.6F), Math.min(1.2F, 1.25F * brightness), 1F);
+        pose.color(nucleus, ColorMath.mixWhite(glowColor, 0.6F), Math.min(1.2F, 1.25F * brightness), 1F);
         float nucleusScale = (tier == 0 ? 0.75F : 0.88F + 0.14F * MathHelper.sin(seconds * (3F + 2F * tier)))
             * (1F + 0.3F * glow);
         scale(pose, nucleus, nucleusScale, nucleusScale, nucleusScale);
@@ -136,11 +136,11 @@ public class CelestweaveAnimator {
         scale(pose, halo, haloScale, haloScale, 1F);
         pose.color(
             halo,
-            FxColor.mixWhite(glowColor, Math.min(0.6F, 0.4F * glow)),
+            ColorMath.mixWhite(glowColor, Math.min(0.6F, 0.4F * glow)),
             1F,
             Math.min(1F, haloAlpha * (0.85F + 0.15F * MathHelper.sin(seconds * 4F))));
 
-        pose.color(visorEyes, FxColor.mixWhite(glowColor, 0.25F), Math.min(1.1F, brightness), 1F);
+        pose.color(visorEyes, ColorMath.mixWhite(glowColor, 0.25F), Math.min(1.1F, brightness), 1F);
 
         if (look.packColor == CelestweaveLook.PACK_RAINBOW)
             pose.color(packBand, Color.HSBtoRGB(seconds * 0.25F % 1F, 0.8F, 1F) & 0xFFFFFF, brightness, 1F);
@@ -160,7 +160,7 @@ public class CelestweaveAnimator {
         float spar = wing[0], fore = wing[1], field = wing[WING_PARTS - 1];
         float hover = MathHelper.sin(1.6F * seconds);
         int flow = MathHelper.floor_float(seconds * 8F) & 3, scan = MathHelper.floor_float(seconds * 4F) & 3;
-        int bladeRgb = FxColor.mixWhite(glowColor, 0.2F), fieldRgb = FxColor.mixWhite(glowColor, 0.1F);
+        int bladeRgb = ColorMath.mixWhite(glowColor, 0.2F), fieldRgb = ColorMath.mixWhite(glowColor, 0.1F);
         for (int side : new int[] { 1, -1 }) {
             int sparIndex = side > 0 ? sparL : sparR, foreIndex = side > 0 ? foreL : foreR,
                 fieldIndex = side > 0 ? fieldL : fieldR;

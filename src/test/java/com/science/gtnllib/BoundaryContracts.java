@@ -10,10 +10,14 @@ import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,11 +44,69 @@ public class BoundaryContracts {
 
     private BoundaryContracts() {}
 
+    private static final Pattern LIB_IMPORT = Pattern.compile(
+        "^import (?:static )?com\\.science\\.gtnllib\\.((?:[a-z]\\w*\\.)*[a-z]\\w*)\\.[A-Z]",
+        Pattern.MULTILINE);
+
     static void run() throws IOException {
         Set<String> used = new TreeSet<>();
         sources(used);
         resources();
         lang(used);
+        packages();
+    }
+
+    private static void packages() throws IOException {
+        Map<String, Set<String>> imports = new TreeMap<>();
+        Set<String> configReaders = new TreeSet<>();
+        for (Path file : files(SOURCES)) {
+            if (!file.toString()
+                .endsWith(".java")) continue;
+            String from = packageOf(SOURCES.relativize(file.getParent()));
+            Set<String> targets = imports.computeIfAbsent(from, key -> new TreeSet<>());
+            Matcher matcher = LIB_IMPORT.matcher(read(file));
+            while (matcher.find()) {
+                String to = matcher.group(1)
+                    .replace('.', '/');
+                if (!to.equals(from)) targets.add(to);
+                if (to.equals("config") && !from.equals("config")) configReaders.add(
+                    file.getFileName()
+                        .toString());
+            }
+        }
+        for (String start : imports.keySet()) {
+            List<String> cycle = cycleFrom(start, start, imports, new ArrayList<>(), new HashSet<>());
+            check(
+                cycle == null,
+                "GTNLLib package " + start + " is not part of an import cycle" + (cycle == null ? "" : ": " + cycle));
+        }
+        check(
+            configReaders.equals(Collections.singleton("GTNLLibClient.java")),
+            "only the GTNLLib client entry point reads the config and hands it to themes and the HUD: "
+                + configReaders);
+    }
+
+    private static String packageOf(Path relative) {
+        String name = relative.toString()
+            .replace('\\', '/');
+        return name.isEmpty() ? "root" : name;
+    }
+
+    private static List<String> cycleFrom(String start, String at, Map<String, Set<String>> imports, List<String> path,
+        Set<String> seen) {
+        path.add(at);
+        for (String next : imports.getOrDefault(at, Collections.emptySet())) {
+            if (next.equals(start)) {
+                List<String> cycle = new ArrayList<>(path);
+                cycle.add(start);
+                return cycle;
+            }
+            if (!seen.add(next)) continue;
+            List<String> found = cycleFrom(start, next, imports, path, seen);
+            if (found != null) return found;
+        }
+        path.remove(path.size() - 1);
+        return null;
     }
 
     private static List<Path> files(Path root) throws IOException {

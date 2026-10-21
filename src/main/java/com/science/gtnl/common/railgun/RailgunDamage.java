@@ -16,6 +16,7 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.EffectLoader;
+import com.science.gtnllib.utils.MathUtils;
 import com.science.gtnllib.utils.Vec3d;
 
 public class RailgunDamage {
@@ -101,7 +102,7 @@ public class RailgunDamage {
 
     public static double finalDamage(double base, double bypass, double armor) {
         return Math.max(0, base)
-            * (1 - Math.max(0, Math.min(MAX_ARMOR_REDUCTION, armor)) * (1 - Math.max(0, Math.min(1, bypass))));
+            * (1 - Math.max(0, Math.min(MAX_ARMOR_REDUCTION, armor)) * (1 - MathUtils.clampUnit(bypass)));
     }
 
     public static void applyAll(EntityPlayerMP player, List<RailgunChainResolver.Hit> hits, DamageContext context,

@@ -14,12 +14,12 @@ import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
 import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnllib.client.fx.FxColor;
 import com.science.gtnllib.client.hud.HudEditor;
 import com.science.gtnllib.client.hud.HudElement;
 import com.science.gtnllib.client.hud.HudLayout.Placement;
 import com.science.gtnllib.client.hud.HudRegistry;
 import com.science.gtnllib.client.hud.HudTiming;
+import com.science.gtnllib.utils.ColorMath;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -100,7 +100,7 @@ public class RailgunHudRenderer {
             shader.uniform1f("time", (float) ((System.currentTimeMillis() % 3600000L) / 1000.0));
             shader.uniform1f("progress", progress * progress * OVERLAY_INTENSITY);
             shader.uniform2f("screen", width, height);
-            FxColor.gl(rgb, 1F);
+            ColorMath.gl(rgb, 1F);
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glDisable(GL11.GL_ALPHA_TEST);
@@ -142,7 +142,7 @@ public class RailgunHudRenderer {
             Gui.func_146110_a(0, 0, 0, 0, ICON_WIDTH, ICON_HEIGHT, ICON_WIDTH, ICON_HEIGHT);
             if (filled <= 0) return;
             int top = ICON_HEIGHT - filled;
-            FxColor.gl(rgb, alpha);
+            ColorMath.gl(rgb, alpha);
             minecraft.getTextureManager()
                 .bindTexture(BOLT_FILL);
             Gui.func_146110_a(0, top, 0, top, ICON_WIDTH, filled, ICON_WIDTH, ICON_HEIGHT);
@@ -161,7 +161,7 @@ public class RailgunHudRenderer {
         for (int i = 1; i < COLOR_STOPS.length; i++) {
             if (units >= COLOR_STOPS[i]) continue;
             float t = (units - COLOR_STOPS[i - 1]) / (COLOR_STOPS[i] - COLOR_STOPS[i - 1]);
-            return FxColor.lerp(COLORS[i - 1], COLORS[i], t);
+            return ColorMath.lerp(COLORS[i - 1], COLORS[i], t);
         }
         return COLORS[COLORS.length - 1];
     }

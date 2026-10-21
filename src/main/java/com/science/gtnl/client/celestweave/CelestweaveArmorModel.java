@@ -16,6 +16,7 @@ import com.science.gtnl.common.celestweave.CelestweaveCosmetic;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnllib.client.fx.world.FxVisibility;
+import com.science.gtnllib.utils.MathUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -233,9 +234,16 @@ public class CelestweaveArmorModel extends ModelBiped {
             return;
         }
         float k = pose.brightness;
-        if (group.tintKind == CelestweaveFrames.Tint.GLOW)
-            GL11.glColor4f(clamp(pose.glowR * k), clamp(pose.glowG * k), clamp(pose.glowB * k), 1F);
-        else GL11.glColor4f(clamp(group.rgb[0] * k), clamp(group.rgb[1] * k), clamp(group.rgb[2] * k), 1F);
+        if (group.tintKind == CelestweaveFrames.Tint.GLOW) GL11.glColor4f(
+            MathUtils.clampUnit(pose.glowR * k),
+            MathUtils.clampUnit(pose.glowG * k),
+            MathUtils.clampUnit(pose.glowB * k),
+            1F);
+        else GL11.glColor4f(
+            MathUtils.clampUnit(group.rgb[0] * k),
+            MathUtils.clampUnit(group.rgb[1] * k),
+            MathUtils.clampUnit(group.rgb[2] * k),
+            1F);
     }
 
     private void draw(CelestweaveFrames.Group group, CelestweavePose pose, float scale) {
@@ -280,9 +288,5 @@ public class CelestweaveArmorModel extends ModelBiped {
         if (rx != 0F) GL11.glRotatef(rx * RAD_TO_DEG, 1F, 0F, 0F);
         if (pose.sx[i] != 1F || pose.sy[i] != 1F || pose.sz[i] != 1F)
             GL11.glScalef(Math.max(0.001F, pose.sx[i]), Math.max(0.001F, pose.sy[i]), Math.max(0.001F, pose.sz[i]));
-    }
-
-    private static float clamp(float value) {
-        return Math.max(0F, Math.min(1F, value));
     }
 }

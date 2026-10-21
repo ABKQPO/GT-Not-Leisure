@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.science.gtnl.config.EquipmentSoundConfig;
 import com.science.gtnl.config.EquipmentSoundConfig.Channel;
+import com.science.gtnllib.utils.MathUtils;
 
 public enum EquipmentSound {
 
@@ -64,10 +65,6 @@ public enum EquipmentSound {
     }
 
     public float volume() {
-        return on() ? clamp(group.all.volume) * clamp(channel.volume) : 0F;
-    }
-
-    private static float clamp(float volume) {
-        return Float.isFinite(volume) ? Math.max(0F, Math.min(1F, volume)) : 1F;
+        return on() ? MathUtils.clampUnit(group.all.volume, 1F) * MathUtils.clampUnit(channel.volume, 1F) : 0F;
     }
 }

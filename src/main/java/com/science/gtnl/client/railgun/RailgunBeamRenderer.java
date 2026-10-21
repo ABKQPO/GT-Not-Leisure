@@ -155,7 +155,7 @@ public class RailgunBeamRenderer {
         FxCamera.capture();
         long now = world.getTotalWorldTime();
         SHOTS.removeIf(shot -> shot.until <= now);
-        drain(now);
+        applyPending(now);
         HELD.entrySet()
             .removeIf(entry -> now - entry.getValue().lastUpdateTick > UPDATE_TIMEOUT);
         List<Beam> beams = collect(now, event.partialTicks);
@@ -177,7 +177,7 @@ public class RailgunBeamRenderer {
             .retainAll(active);
     }
 
-    private static void drain(long now) {
+    private static void applyPending(long now) {
         for (Map.Entry<Integer, RailgunBeamUpdatePacket> entry : PENDING.entrySet()) {
             RailgunBeamUpdatePacket packet = entry.getValue();
             if (!PENDING.remove(entry.getKey(), packet)) continue;

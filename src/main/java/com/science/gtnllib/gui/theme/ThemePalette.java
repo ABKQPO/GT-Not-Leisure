@@ -2,7 +2,7 @@ package com.science.gtnllib.gui.theme;
 
 import java.util.function.IntUnaryOperator;
 
-import com.science.gtnllib.client.fx.FxColor;
+import com.science.gtnllib.utils.ColorMath;
 
 public record ThemePalette(int accent, int accentDim, int hover, int text, int hint, int panelTop, int panelBottom,
     int card, int cardEdge, int button, int buttonHover, int tabHover, int well, int wellEdge, int slotHover, int track,
@@ -14,27 +14,28 @@ public record ThemePalette(int accent, int accentDim, int hover, int text, int h
 
     public ThemePalette follow(int glow) {
         int from = accent & RGB, to = readableAccent(glow) & RGB;
-        double[] source = FxColor.hsl(from), target = FxColor.hsl(to);
+        double[] source = ColorMath.hsl(from), target = ColorMath.hsl(to);
         return map(color -> shift(color, from, to, source, target), IntUnaryOperator.identity());
     }
 
     public int readableAccent(int glow) {
         int background = panelTop & RGB;
-        double[] hsl = FxColor.hsl(glow & RGB);
-        int color = hsl[2] > MAX_ACCENT_LIGHTNESS ? FxColor.hsl(hsl[0], hsl[1], MAX_ACCENT_LIGHTNESS) : glow & RGB;
-        if (FxColor.contrast(color, background) >= MIN_ACCENT_CONTRAST) return OPAQUE | color;
+        double[] hsl = ColorMath.hsl(glow & RGB);
+        int color = hsl[2] > MAX_ACCENT_LIGHTNESS ? ColorMath.hsl(hsl[0], hsl[1], MAX_ACCENT_LIGHTNESS) : glow & RGB;
+        if (ColorMath.contrast(color, background) >= MIN_ACCENT_CONTRAST) return OPAQUE | color;
         double dark = Math.min(hsl[2], MAX_ACCENT_LIGHTNESS), light = MAX_ACCENT_LIGHTNESS;
         for (int step = 0; step < LIGHTNESS_STEPS; step++) {
             double middle = (dark + light) / 2;
-            if (FxColor.contrast(FxColor.hsl(hsl[0], hsl[1], middle), background) < MIN_ACCENT_CONTRAST) dark = middle;
+            if (ColorMath.contrast(ColorMath.hsl(hsl[0], hsl[1], middle), background) < MIN_ACCENT_CONTRAST)
+                dark = middle;
             else light = middle;
         }
-        return OPAQUE | FxColor.hsl(hsl[0], hsl[1], light);
+        return OPAQUE | ColorMath.hsl(hsl[0], hsl[1], light);
     }
 
     public int selectedText() {
-        int background = FxColor.over(buttonHover, panelTop & RGB), dark = OPAQUE | panelBottom & RGB;
-        return FxColor.contrast(text & RGB, background) >= FxColor.contrast(dark & RGB, background) ? text : dark;
+        int background = ColorMath.over(buttonHover, panelTop & RGB), dark = OPAQUE | panelBottom & RGB;
+        return ColorMath.contrast(text & RGB, background) >= ColorMath.contrast(dark & RGB, background) ? text : dark;
     }
 
     public boolean selectedTextShadow() {
@@ -44,10 +45,10 @@ public record ThemePalette(int accent, int accentDim, int hover, int text, int h
     private static int shift(int color, int from, int to, double[] source, double[] target) {
         int alpha = color & OPAQUE, rgb = color & RGB;
         if (rgb == from) return alpha | to;
-        double[] hsl = FxColor.hsl(rgb);
+        double[] hsl = ColorMath.hsl(rgb);
         double saturation = source[1] > 0 ? Math.min(1, hsl[1] * target[1] / source[1]) : hsl[1];
         double lightness = hsl[1] >= ACCENT_FAMILY_SATURATION ? relight(hsl[2], source[2], target[2]) : hsl[2];
-        return alpha | FxColor.hsl(hsl[0] + target[0] - source[0], saturation, lightness);
+        return alpha | ColorMath.hsl(hsl[0] + target[0] - source[0], saturation, lightness);
     }
 
     private static double relight(double lightness, double from, double to) {

@@ -8,7 +8,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
 
 import com.science.gtnl.client.celestweave.CelestweaveClientEvents.HitOrigin;
-import com.science.gtnllib.client.fx.FxColor;
+import com.science.gtnllib.utils.ColorMath;
 import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -36,7 +36,7 @@ public class CelestweaveScreenGlow {
         if (directional) direction = new Vec3d(offset.x() / length, offset.y() / length, offset.z() / length);
         born = Minecraft.getSystemTime();
         lifetime = saved ? SAVE_LIFETIME : HIT_LIFETIME;
-        rgb = FxColor.mixWhite(glowColor, 0.15F);
+        rgb = ColorMath.mixWhite(glowColor, 0.15F);
         save = saved;
     }
 
@@ -65,7 +65,7 @@ public class CelestweaveScreenGlow {
         }
         int width = event.resolution.getScaledWidth(), height = event.resolution.getScaledHeight();
         float thickness = Math.min(width, height) * 0.22F;
-        float red = FxColor.red(rgb), green = FxColor.green(rgb), blue = FxColor.blue(rgb);
+        float red = ColorMath.red(rgb), green = ColorMath.green(rgb), blue = ColorMath.blue(rgb);
         GL11.glPushAttrib(
             GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT
                 | GL11.GL_LIGHTING_BIT

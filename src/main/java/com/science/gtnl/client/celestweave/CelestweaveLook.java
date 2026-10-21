@@ -13,7 +13,7 @@ import com.science.gtnl.common.celestweave.CelestweaveEnergy;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnllib.client.fx.FxColor;
+import com.science.gtnllib.utils.ColorMath;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -120,8 +120,8 @@ public class CelestweaveLook {
 
     public int tierColor() {
         return switch (tier) {
-            case 0 -> FxColor.scale(glowColor, 0.45F);
-            case 1 -> FxColor.mixWhite(glowColor, 0.35F);
+            case 0 -> ColorMath.scale(glowColor, 0.45F);
+            case 1 -> ColorMath.mixWhite(glowColor, 0.35F);
             default -> glowColor;
         };
     }

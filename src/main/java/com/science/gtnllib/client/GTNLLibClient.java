@@ -2,6 +2,7 @@ package com.science.gtnllib.client;
 
 import net.minecraftforge.common.MinecraftForge;
 
+import com.science.gtnllib.client.hud.HudLayout;
 import com.science.gtnllib.client.hud.HudOverlay;
 import com.science.gtnllib.client.shader.ShaderEffect;
 import com.science.gtnllib.config.GTNLLibConfig;
@@ -17,8 +18,15 @@ public class GTNLLibClient {
 
     public static void preInit() {
         GTNLLibConfig.register();
+        connectConfig();
         HudOverlay.register();
         MinecraftForge.EVENT_BUS.register(new ShaderEffect.Reloader());
         MinecraftForge.EVENT_BUS.register(new PaletteThemes.Reloader());
+    }
+
+    public static void connectConfig() {
+        PaletteThemes.chooseWith(() -> GTNLLibConfig.theme);
+        PaletteThemes.onRegister(() -> GTNLLibConfig.listThemes(PaletteThemes.ids()));
+        HudLayout.settings(() -> GTNLLibConfig.enableHud, () -> GTNLLibConfig.hudScale);
     }
 }

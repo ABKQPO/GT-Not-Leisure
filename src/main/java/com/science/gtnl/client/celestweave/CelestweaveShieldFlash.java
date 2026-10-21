@@ -3,6 +3,7 @@ package com.science.gtnl.client.celestweave;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
@@ -13,10 +14,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
-import com.science.gtnllib.client.fx.FxColor;
 import com.science.gtnllib.client.fx.world.FxArcRenderer;
 import com.science.gtnllib.client.fx.world.FxCamera;
 import com.science.gtnllib.client.fx.world.FxRenderHelper;
+import com.science.gtnllib.utils.ColorMath;
+import com.science.gtnllib.utils.MathUtils;
 import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -26,6 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class CelestweaveShieldFlash {
 
+    private static final Random RNG = new Random();
     private static final int MAX_ACTIVE = 32, LONGITUDES = 24, LATITUDES = 16, U_REPEAT = 10, V_REPEAT = 4;
     private static final int HIT_LIFETIME = 420, SAVE_LIFETIME = 800;
     private static final int HEX_WIDTH = 64, HEX_HEIGHT = 111;
@@ -82,16 +85,13 @@ public class CelestweaveShieldFlash {
     }
 
     private static Vec3d randomUnit() {
-        Vec3d vector = new Vec3d(
-            CelestweaveArcs.RNG.nextGaussian(),
-            CelestweaveArcs.RNG.nextGaussian(),
-            CelestweaveArcs.RNG.nextGaussian());
+        Vec3d vector = new Vec3d(RNG.nextGaussian(), RNG.nextGaussian(), RNG.nextGaussian());
         return vector.length() < 1.0E-3 ? new Vec3d(0, 1, 0) : vector.normalize();
     }
 
     private static void sparks(EntityLivingBase entity, Vec3d center, Vec3d direction, int rgb, boolean save) {
         double horizontal = horizontal(entity), vertical = vertical(entity);
-        int bright = FxColor.mixWhite(rgb, 0.45F);
+        int bright = ColorMath.mixWhite(rgb, 0.45F);
         int count = save ? 10 : 6;
         for (int i = 0; i < count; i++) {
             Vec3d from = direction != null ? direction : randomUnit();
@@ -108,7 +108,7 @@ public class CelestweaveShieldFlash {
                 surface(center, to, horizontal, vertical),
                 6,
                 0.05,
-                3 + CelestweaveArcs.RNG.nextInt(2),
+                3 + RNG.nextInt(2),
                 bright,
                 0.6);
         }
@@ -186,7 +186,7 @@ public class CelestweaveShieldFlash {
             alpha = (rim * 0.8 + spot * 0.55 + wave * 0.35) * shimmer * shell.strength;
         }
         float white = (float) Math.min(1, spot * 0.7 + (flash.save ? 0.25 : 0));
-        float red = FxColor.red(flash.rgb), green = FxColor.green(flash.rgb), blue = FxColor.blue(flash.rgb);
+        float red = ColorMath.red(flash.rgb), green = ColorMath.green(flash.rgb), blue = ColorMath.blue(flash.rgb);
         Tessellator tessellator = Tessellator.instance;
         tessellator.setColorRGBA_F(
             red + (1 - red) * white,
@@ -207,9 +207,9 @@ public class CelestweaveShieldFlash {
         float k = Math.max(0F, 1F - shell.progress / 0.35F);
         if (flash.direction == null || k <= 0F) return;
         Vec3d point = surface(shell.center, flash.direction, shell.horizontal, shell.vertical);
-        int light = FxColor.mixWhite(flash.rgb, 0.3F);
+        int light = ColorMath.mixWhite(flash.rgb, 0.3F);
         Tessellator tessellator = Tessellator.instance;
-        tessellator.setColorRGBA_F(FxColor.red(light), FxColor.green(light), FxColor.blue(light), 0.55F * k);
+        tessellator.setColorRGBA_F(ColorMath.red(light), ColorMath.green(light), ColorMath.blue(light), 0.55F * k);
         FxRenderHelper.glow(point, 0.35 + 0.35 * (1 - k), shell.progress * 6F);
         tessellator.setColorRGBA_F(1F, 1F, 1F, 0.85F * k * k);
         FxRenderHelper.glow(point, 0.18, -shell.progress * 9F);
@@ -245,14 +245,11 @@ public class CelestweaveShieldFlash {
                     }
                 }
                 double edge = second - first, corner = third - first;
-                double alpha = clamp(1 - edge / 3.0) + 0.22 * clamp(1 - edge / 14.0) + 0.5 * clamp(1 - corner / 6.0);
-                image.setRGB(px, py, (int) (clamp(alpha) * 255) << 24 | 0xFFFFFF);
+                double alpha = MathUtils.clampUnit(1 - edge / 3.0) + 0.22 * MathUtils.clampUnit(1 - edge / 14.0)
+                    + 0.5 * MathUtils.clampUnit(1 - corner / 6.0);
+                image.setRGB(px, py, (int) (MathUtils.clampUnit(alpha) * 255) << 24 | 0xFFFFFF);
             }
         }
         return image;
-    }
-
-    private static double clamp(double value) {
-        return Math.max(0, Math.min(1, value));
     }
 }

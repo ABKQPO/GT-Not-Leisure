@@ -30,11 +30,11 @@ import com.science.gtnl.common.gui.GTNLMui2Textures;
 import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
 import com.science.gtnllib.gui.layout.Layout;
 import com.science.gtnllib.gui.layout.LayoutMath;
-import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.layout.Size;
 import com.science.gtnllib.gui.theme.ButtonPurpose;
 import com.science.gtnllib.gui.widget.CloseButton;
 import com.science.gtnllib.gui.widget.FillBar;
+import com.science.gtnllib.gui.widget.LayoutTheme;
 import com.science.gtnllib.gui.widget.SlideSwitch;
 
 import cpw.mods.fml.relauncher.Side;
@@ -79,9 +79,6 @@ public abstract class EquipmentGui {
      */
     public abstract ModularPanel build();
 
-    /**
-     * Swaps the module slots to their network view while the container syncs; no-op unless a GUI hides data.
-     */
     public void syncView(boolean bare) {}
 
     protected ItemStack bound() {

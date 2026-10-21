@@ -15,6 +15,7 @@ import com.science.gtnl.common.equipment.EquipmentModules;
 import com.science.gtnl.common.equipment.EquipmentTag;
 import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnllib.utils.MathUtils;
 
 public class RailgunData {
 
@@ -38,7 +39,7 @@ public class RailgunData {
     }
 
     public static double chargeRate(ItemStack stack) {
-        double bonus = Math.max(0, Math.min(1, MainConfig.item.railgun.accelerationBonus));
+        double bonus = MathUtils.clampUnit(MainConfig.item.railgun.accelerationBonus);
         return 1 + bonus * modules(stack).count(RailgunModule.ACCELERATION);
     }
 

@@ -1,5 +1,7 @@
 package com.science.gtnllib.config;
 
+import java.util.Collection;
+
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -13,7 +15,6 @@ import com.gtnewhorizon.gtnhlib.config.Config.RangeFloat;
 import com.gtnewhorizon.gtnhlib.config.ConfigException;
 import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.science.gtnllib.GTNLLib;
-import com.science.gtnllib.gui.theme.PaletteThemes;
 
 @Config(
     modid = GTNLLib.MODID,
@@ -28,6 +29,8 @@ public class GTNLLibConfig {
     public static final String CATEGORY = "client";
     @Config.Ignore
     private static final String THEME = "theme";
+    @Config.Ignore
+    private static String[] themes = {};
 
     @Comment("Show every HUD element; arrange them with Edit HUD")
     @LangKey("gtnllib.gui.config.client.enable_hud")
@@ -54,19 +57,18 @@ public class GTNLLibConfig {
             GTNLLib.LOG.error("Failed to load the GTNLLib client settings", e);
             return;
         }
-        PaletteThemes.onRegister(GTNLLibConfig::listThemes);
     }
 
     public static String[] themes() {
-        return PaletteThemes.ids()
-            .toArray(new String[0]);
+        return themes.clone();
     }
 
-    private static void listThemes() {
+    public static void listThemes(Collection<String> ids) {
+        themes = ids.toArray(new String[0]);
         Configuration config = ConfigurationManager.getConfig(GTNLLibConfig.class);
         Property property = config == null ? null
             : config.getCategory(CATEGORY)
                 .get(THEME);
-        if (property != null) property.setValidValues(themes());
+        if (property != null) property.setValidValues(themes.clone());
     }
 }

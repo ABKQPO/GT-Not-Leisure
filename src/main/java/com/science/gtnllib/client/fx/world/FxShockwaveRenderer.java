@@ -10,7 +10,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
-import com.science.gtnllib.client.fx.FxColor;
+import com.science.gtnllib.utils.ColorMath;
 import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -51,7 +51,7 @@ public class FxShockwaveRenderer {
     private static final List<Wave> ACTIVE = new ArrayList<>();
 
     public static void spawn(Vec3d center, double radius, int lifetime, int rgb) {
-        spawn(center, radius, lifetime, FxColor.red(rgb), FxColor.green(rgb), FxColor.blue(rgb));
+        spawn(center, radius, lifetime, ColorMath.red(rgb), ColorMath.green(rgb), ColorMath.blue(rgb));
     }
 
     public static void spawn(Vec3d center, double radius, int lifetime, float red, float green, float blue) {

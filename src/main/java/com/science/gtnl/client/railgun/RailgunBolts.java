@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.science.gtnllib.utils.MathUtils;
 import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.relauncher.Side;
@@ -77,26 +78,26 @@ public class RailgunBolts {
     private RailgunBolts() {}
 
     public static int orbArcs(float intensity) {
-        float p = clamp(intensity);
+        float p = MathUtils.clampUnit(intensity, 0F);
         return p < MIN_INTENSITY ? 0 : 1 + Math.round(p * (ORB_MAX_ARCS - 1));
     }
 
     public static int dischargeSlots(float intensity) {
-        float p = clamp(intensity);
+        float p = MathUtils.clampUnit(intensity, 0F);
         return p <= DISCHARGE_START ? 0 : ORB_MAX_DISCHARGES;
     }
 
     public static double dischargeChance(float intensity) {
-        float p = clamp(intensity);
+        float p = MathUtils.clampUnit(intensity, 0F);
         return p <= DISCHARGE_START ? 0 : Math.min(1, (p - DISCHARGE_START) * 0.8);
     }
 
     public static double dischargeReach(float intensity) {
-        return DISCHARGE_MIN_REACH + DISCHARGE_REACH_GAIN * clamp(intensity);
+        return DISCHARGE_MIN_REACH + DISCHARGE_REACH_GAIN * MathUtils.clampUnit(intensity, 0F);
     }
 
     public static List<Bolt> orb(int owner, long tick, float intensity) {
-        float p = clamp(intensity);
+        float p = MathUtils.clampUnit(intensity, 0F);
         int arcs = orbArcs(p), discharges = dischargeSlots(p);
         List<Bolt> bolts = new ArrayList<>(arcs + discharges);
         for (int slot = 0; slot < arcs; slot++) {
@@ -140,30 +141,30 @@ public class RailgunBolts {
     }
 
     public static int flowsPerSide(float intensity) {
-        float p = clamp(intensity);
+        float p = MathUtils.clampUnit(intensity, 0F);
         return p < MIN_INTENSITY ? 0 : 1 + Math.round(p * (FLOW_MAX_PER_SIDE - 1));
     }
 
     public static double flowSpan(float intensity) {
-        return FLOW_MIN_SPAN + FLOW_SPAN_GAIN * clamp(intensity);
+        return FLOW_MIN_SPAN + FLOW_SPAN_GAIN * MathUtils.clampUnit(intensity, 0F);
     }
 
     public static double flowPeriod(float intensity) {
-        return FLOW_SLOW_TICKS + (FLOW_FAST_TICKS - FLOW_SLOW_TICKS) * clamp(intensity);
+        return FLOW_SLOW_TICKS + (FLOW_FAST_TICKS - FLOW_SLOW_TICKS) * MathUtils.clampUnit(intensity, 0F);
     }
 
     public static double sparkChance(float intensity) {
-        float p = clamp(intensity);
+        float p = MathUtils.clampUnit(intensity, 0F);
         return p <= SPARK_START ? 0 : Math.min(1, (p - SPARK_START) * 1.2);
     }
 
     public static double hopChance(float intensity) {
-        float p = clamp(intensity);
+        float p = MathUtils.clampUnit(intensity, 0F);
         return p <= HOP_START ? 0 : HOP_CHANCE * (p - HOP_START) / (1 - HOP_START);
     }
 
     public static List<Bolt> body(int owner, double age, float intensity) {
-        float p = clamp(intensity);
+        float p = MathUtils.clampUnit(intensity, 0F);
         long tick = (long) Math.floor(age);
         int flows = flowsPerSide(p);
         if (p < MIN_INTENSITY) return List.of();
@@ -245,7 +246,7 @@ public class RailgunBolts {
             double reach = (HOP_MIN + (HOP_MAX - HOP_MIN) * p * random.nextDouble()) / edge.length();
             double end = start + (random.nextBoolean() ? reach : -reach);
             if (end < 0 || end > 1) end = 2 * start - end;
-            to = edge.at(Math.max(0, Math.min(1, end)), side);
+            to = edge.at(MathUtils.clampUnit(end), side);
         }
         Vec3d lift = new Vec3d(side * between(random, 0.2, 1), between(random, -0.5, 1), between(random, -0.4, 0.4))
             .normalize()
@@ -271,11 +272,11 @@ public class RailgunBolts {
         if (options.isEmpty()) return null;
         Edge target = options.get(random.nextInt(options.size()));
         double t = target.paramAtZ(point.z()) + (random.nextDouble() * 2 - 1) * HOP_MIN / target.length();
-        return target.at(Math.max(0, Math.min(1, t)), side);
+        return target.at(MathUtils.clampUnit(t), side);
     }
 
     public static List<Bolt> tethers(int owner, long tick, float intensity, Vec3d from, Vec3d to) {
-        float p = clamp(intensity);
+        float p = MathUtils.clampUnit(intensity, 0F);
         if (p < MIN_INTENSITY || from == null || to == null) return List.of();
         List<Bolt> bolts = new ArrayList<>(2);
         for (int index = 0; index < 2; index++) {
@@ -353,9 +354,5 @@ public class RailgunBolts {
         long window = Math.floorDiv(tick + slot * 5L, FLICKER_TICKS);
         long seed = owner * 0x9E3779B97F4A7C15L ^ slot * 0xC2B2AE3D27D4EB4FL ^ window * 0x165667B19E3779F9L;
         return new Random(seed);
-    }
-
-    private static float clamp(float intensity) {
-        return Float.isFinite(intensity) ? Math.max(0F, Math.min(1F, intensity)) : 0F;
     }
 }

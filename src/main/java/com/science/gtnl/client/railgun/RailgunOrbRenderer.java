@@ -18,6 +18,7 @@ import com.science.gtnllib.client.fx.world.FxArcRenderer.Style;
 import com.science.gtnllib.client.fx.world.FxCamera;
 import com.science.gtnllib.client.fx.world.FxRenderHelper;
 import com.science.gtnllib.client.fx.world.FxRenderHelper.Sprite;
+import com.science.gtnllib.utils.MathUtils;
 import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -145,7 +146,7 @@ public class RailgunOrbRenderer {
 
     public static float tension(float progress) {
         if (!Float.isFinite(progress)) return 0F;
-        return FxEasing.smoothStep(Math.max(0F, Math.min(1F, (progress - CALM_UNTIL) / (1F - CALM_UNTIL))));
+        return FxEasing.smoothStep(MathUtils.clampUnit((progress - CALM_UNTIL) / (1F - CALM_UNTIL)));
     }
 
     public static double pulse(float tension, double time) {

@@ -3,7 +3,6 @@ package com.science.gtnllib.gui.widget;
 import com.cleanroommc.modularui.api.IThemeApi;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
-import com.science.gtnllib.gui.layout.LayoutTheme;
 
 public class CloseButton extends ButtonWidget<CloseButton> {
 

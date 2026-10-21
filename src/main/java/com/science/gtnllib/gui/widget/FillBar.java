@@ -14,6 +14,7 @@ import com.cleanroommc.modularui.utils.Color;
 import com.cleanroommc.modularui.utils.JsonHelper;
 import com.cleanroommc.modularui.widget.Widget;
 import com.google.gson.JsonObject;
+import com.science.gtnllib.utils.MathUtils;
 
 public class FillBar extends Widget<FillBar> {
 
@@ -25,7 +26,7 @@ public class FillBar extends Widget<FillBar> {
     }
 
     public static int filledWidth(double value, int width) {
-        double clamped = Double.isNaN(value) ? 0 : Math.max(0, Math.min(1, value));
+        double clamped = Double.isNaN(value) ? 0 : MathUtils.clampUnit(value);
         return (int) Math.round(clamped * width);
     }
 

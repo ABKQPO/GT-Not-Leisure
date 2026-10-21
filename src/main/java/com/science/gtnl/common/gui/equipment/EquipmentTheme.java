@@ -10,12 +10,12 @@ import com.cleanroommc.modularui.utils.JsonHelper;
 import com.google.gson.JsonObject;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnllib.client.hud.HudColor;
-import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.theme.LivePalette;
 import com.science.gtnllib.gui.theme.MetalSkin;
 import com.science.gtnllib.gui.theme.PaletteThemes;
 import com.science.gtnllib.gui.theme.ThemePalette;
 import com.science.gtnllib.gui.theme.ThemeStyle;
+import com.science.gtnllib.gui.widget.LayoutTheme;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

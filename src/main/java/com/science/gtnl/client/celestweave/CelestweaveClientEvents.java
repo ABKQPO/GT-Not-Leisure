@@ -3,6 +3,7 @@ package com.science.gtnl.client.celestweave;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -19,10 +20,10 @@ import com.science.gtnl.common.celestweave.CelestweaveReach;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnllib.client.fx.FxColor;
 import com.science.gtnllib.client.fx.world.FxArcRenderer;
 import com.science.gtnllib.client.fx.world.FxShockwaveRenderer;
 import com.science.gtnllib.client.fx.world.FxVisibility;
+import com.science.gtnllib.utils.ColorMath;
 import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -39,6 +40,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 @SideOnly(Side.CLIENT)
 public class CelestweaveClientEvents {
 
+    private static final Random RNG = new Random();
     private static final CelestweaveClientEvents INSTANCE = new CelestweaveClientEvents();
     private static final List<Scheduled> SCHEDULED = new ArrayList<>();
     private static final IntSet REMOTE_FLYING = new IntOpenHashSet();
@@ -224,7 +226,7 @@ public class CelestweaveClientEvents {
                     Vec3d to = back.add(forward.scale(-reach * CelestweaveArcs.rand(0.75F, 1F)))
                         .add(right.scale(CelestweaveArcs.rand(-0.7F, 0.7F)))
                         .add(0, CelestweaveArcs.rand(-0.9F, 0.25F), 0);
-                    FxArcRenderer.spawnColored(back, to, 12, 0.35, 4 + CelestweaveArcs.RNG.nextInt(3), rgb);
+                    FxArcRenderer.spawnColored(back, to, 12, 0.35, 4 + RNG.nextInt(3), rgb);
                 }
                 if (step > 3) return;
                 for (int side : new int[] { 1, -1 }) {
@@ -232,7 +234,7 @@ public class CelestweaveClientEvents {
                     Vec3d trail = foot.add(forward.scale(-CelestweaveArcs.rand(1.5F, 2.8F)))
                         .add(right.scale(side * CelestweaveArcs.rand(0.1F, 0.5F)))
                         .add(0, -0.02, 0);
-                    FxArcRenderer.spawnColored(foot, trail, 8, 0.12, 4 + CelestweaveArcs.RNG.nextInt(2), rgb);
+                    FxArcRenderer.spawnColored(foot, trail, 8, 0.12, 4 + RNG.nextInt(2), rgb);
                 }
             });
         }
@@ -252,7 +254,7 @@ public class CelestweaveClientEvents {
         Vec3d ground = new Vec3d(x, y + 0.05, z);
         Vec3d sky = ground.add(CelestweaveArcs.rand(-1.5F, 1.5F), 16, CelestweaveArcs.rand(-1.5F, 1.5F));
         Vec3d drop = ground.subtract(sky);
-        int bright = FxColor.mixWhite(rgb, 0.4F);
+        int bright = ColorMath.mixWhite(rgb, 0.4F);
         for (int flash = 0; flash < 3; flash++) {
             final int step = flash;
             schedule(step * 2, () -> {
@@ -321,7 +323,7 @@ public class CelestweaveClientEvents {
                 state.dashAt = now;
                 if (allowed && cosmetic.event(CelestweaveCosmetic.EVENT_DASH) && look.wears(CelestweaveArmor.BOOTS)) {
                     CelestweaveArcs.dash(state, look, now);
-                    dashJet(living, FxColor.mixWhite(look.glowColor, 0.3F));
+                    dashJet(living, ColorMath.mixWhite(look.glowColor, 0.3F));
                 }
             }
             case LAND -> {
@@ -336,9 +338,8 @@ public class CelestweaveClientEvents {
                         z + CelestweaveArcs.rand(-0.1F, 0.1F));
                     Vec3d to = new Vec3d(x + Math.cos(angle) * radius, y + 0.03, z + Math.sin(angle) * radius);
                     schedule(
-                        CelestweaveArcs.RNG.nextInt(2),
-                        () -> FxArcRenderer
-                            .spawnColored(from, to, 8, 0.06, 5 + CelestweaveArcs.RNG.nextInt(2), look.glowColor));
+                        RNG.nextInt(2),
+                        () -> FxArcRenderer.spawnColored(from, to, 8, 0.06, 5 + RNG.nextInt(2), look.glowColor));
                 }
             }
             case REFLECT -> {

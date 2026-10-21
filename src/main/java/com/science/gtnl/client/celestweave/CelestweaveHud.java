@@ -24,12 +24,13 @@ import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.Utils;
-import com.science.gtnllib.client.fx.FxColor;
 import com.science.gtnllib.client.fx.FxEasing;
 import com.science.gtnllib.client.hud.HudEditor;
 import com.science.gtnllib.client.hud.HudLayout;
 import com.science.gtnllib.client.hud.HudLayout.Placement;
 import com.science.gtnllib.client.hud.HudTiming;
+import com.science.gtnllib.utils.ColorMath;
+import com.science.gtnllib.utils.MathUtils;
 import com.science.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -262,13 +263,13 @@ public class CelestweaveHud {
         tessellator.startDrawingQuads();
         float[] span = span(fill, level);
         if (span != null && fraction < 0.995F) {
-            FxColor.tessellate(tessellator, FxColor.mixWhite(rgb, 0.75F), 0.9F * alpha);
+            ColorMath.tessellate(tessellator, ColorMath.mixWhite(rgb, 0.75F), 0.9F * alpha);
             rect(tessellator, span[0] + 0.6F, level - 0.4F, span[1] - 0.6F, level + 0.4F);
         }
-        FxColor.tessellate(tessellator, FxColor.mixWhite(rgb, 0.35F), (0.85F + 0.15F * pulse) * alpha);
+        ColorMath.tessellate(tessellator, ColorMath.mixWhite(rgb, 0.35F), (0.85F + 0.15F * pulse) * alpha);
         outline(tessellator, CORE, CORE_INNER);
         tessellator.draw();
-        fan(tessellator, CORE_DOT, FxColor.mixWhite(rgb, 0.7F), 0.9F * alpha);
+        fan(tessellator, CORE_DOT, ColorMath.mixWhite(rgb, 0.7F), 0.9F * alpha);
     }
 
     private static void readout(FontRenderer font, float fraction, double stored, float[] pieces, int rgb,
@@ -291,17 +292,17 @@ public class CelestweaveHud {
         for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++)
             cell(tessellator, left + 4 + piece * 4, 1.5F, pieces[piece], glowColor, alpha);
         tessellator.draw();
-        text(font, percent, left + 4, -9, FxColor.mixWhite(rgb, 0.4F), alpha);
+        text(font, percent, left + 4, -9, ColorMath.mixWhite(rgb, 0.4F), alpha);
         text(font, energy, left + 4 + split, -9, DIM_RGB, alpha);
-        small(font, flow, left + 23, 1.5F, rate > 0 ? DIM_RGB : FxColor.mixWhite(glowColor, 0.4F), alpha);
+        small(font, flow, left + 23, 1.5F, rate > 0 ? DIM_RGB : ColorMath.mixWhite(glowColor, 0.4F), alpha);
         if (!eta.isEmpty()) small(font, eta, left + 23 + (font.getStringWidth(flow) + 6) * SMALL, 1.5F, DIM_RGB, alpha);
     }
 
     private static void cell(Tessellator tessellator, float x, float y, float fraction, int glowColor, float alpha) {
-        FxColor.tessellate(tessellator, TRACK_RGB, (fraction < 0 ? 0.35F : 0.9F) * alpha);
+        ColorMath.tessellate(tessellator, TRACK_RGB, (fraction < 0 ? 0.35F : 0.9F) * alpha);
         rect(tessellator, x, y, x + 3, y + 6);
         if (fraction <= 0) return;
-        FxColor.tessellate(tessellator, fraction < LOW ? LOW_RGB : glowColor, alpha);
+        ColorMath.tessellate(tessellator, fraction < LOW ? LOW_RGB : glowColor, alpha);
         rect(tessellator, x, y + 6 * (1 - fraction), x + 3, y + 6);
     }
 
@@ -320,17 +321,17 @@ public class CelestweaveHud {
 
     private static void shield(int glowColor, float progress, float envelope, boolean directional, double angle,
         boolean saved, float alpha) {
-        int rgb = FxColor.mixWhite(glowColor, saved ? 0.55F : 0.25F);
+        int rgb = ColorMath.mixWhite(glowColor, saved ? 0.55F : 0.25F);
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
         for (int segment = 0; segment < 6; segment++) {
             float weight = saved ? 1F : directional ? segmentWeight(angle, segment) : 0.45F;
             float[] outer = polygon(RING_OUTER + 2.5F * weight * (1 - progress), Math.PI / 6);
-            FxColor.tessellate(tessellator, rgb, envelope * (0.18F + 0.82F * weight) * alpha);
+            ColorMath.tessellate(tessellator, rgb, envelope * (0.18F + 0.82F * weight) * alpha);
             edge(tessellator, outer, RING, segment, 0.08F);
         }
         if (saved) {
-            FxColor.tessellate(tessellator, rgb, 0.6F * (1 - progress) * alpha);
+            ColorMath.tessellate(tessellator, rgb, 0.6F * (1 - progress) * alpha);
             outline(
                 tessellator,
                 polygon(RING_OUTER + 1 + 14 * progress, Math.PI / 6),
@@ -340,7 +341,7 @@ public class CelestweaveHud {
         if (!directional) return;
         float sin = (float) Math.sin(angle), cos = (float) -Math.cos(angle), base = RING_OUTER + 4.5F + 2 * progress;
         tessellator.startDrawing(GL11.GL_TRIANGLES);
-        FxColor.tessellate(tessellator, FxColor.mixWhite(glowColor, 0.6F), envelope * alpha);
+        ColorMath.tessellate(tessellator, ColorMath.mixWhite(glowColor, 0.6F), envelope * alpha);
         tessellator.addVertex(sin * (base + 4), cos * (base + 4), 0);
         tessellator.addVertex(sin * base - cos * 3, cos * base + sin * 3, 0);
         tessellator.addVertex(sin * base + cos * 3, cos * base - sin * 3, 0);
@@ -355,7 +356,7 @@ public class CelestweaveHud {
         for (int tick = 0; tick <= 4; tick++) {
             double a = Math.toRadians(180 + DASH_SPAN - 2 * DASH_SPAN * tick / 4.0);
             float sin = (float) Math.sin(a), cos = (float) -Math.cos(a), length = tick % 4 == 0 ? 3.2F : 2F;
-            FxColor.tessellate(tessellator, 0xFFFFFF, (progress >= tick / 4F ? 0.7F : 0.3F) * alpha);
+            ColorMath.tessellate(tessellator, 0xFFFFFF, (progress >= tick / 4F ? 0.7F : 0.3F) * alpha);
             tessellator.addVertex(sin * (DASH_RADIUS + 1.4F) - cos * 0.4F, cos * (DASH_RADIUS + 1.4F) + sin * 0.4F, 0);
             tessellator.addVertex(sin * (DASH_RADIUS + 1.4F) + cos * 0.4F, cos * (DASH_RADIUS + 1.4F) - sin * 0.4F, 0);
             tessellator.addVertex(
@@ -375,7 +376,7 @@ public class CelestweaveHud {
                 1F,
                 DASH_RADIUS,
                 1.2F + 1.2F * flash,
-                FxColor.mixWhite(glowColor, 0.6F),
+                ColorMath.mixWhite(glowColor, 0.6F),
                 (resting ? Math.max(flash, REST) : flash) * alpha);
         }
         tessellator.draw();
@@ -390,7 +391,7 @@ public class CelestweaveHud {
             MathHelper.floor_double(player.posX),
             MathHelper.floor_double(feet),
             MathHelper.floor_double(player.posZ));
-        int bright = FxColor.mixWhite(glowColor, 0.4F);
+        int bright = ColorMath.mixWhite(glowColor, 0.4F);
         String altitude = StatCollector
             .translateToLocalFormatted("item.gtnl.celestweave.hud.altitude", (int) Math.floor(feet));
         float label = -8 - font.getStringWidth(altitude);
@@ -398,28 +399,28 @@ public class CelestweaveHud {
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
         screen(tessellator, label - 3, -6, -6, 6, glowColor, alpha);
-        FxColor.tessellate(tessellator, 0xFFFFFF, 0.35F * alpha);
+        ColorMath.tessellate(tessellator, 0xFFFFFF, 0.35F * alpha);
         rect(tessellator, -0.5F, -LADDER_HALF, 0.5F, LADDER_HALF);
         for (long mark = (long) Math.ceil((feet - span) / 2) * 2; mark <= feet + span; mark += 2) {
             float y = (float) (-(mark - feet) * LADDER_SCALE), edge = Math.abs(y) / LADDER_HALF;
-            FxColor.tessellate(tessellator, mark % 10 == 0 ? bright : 0xFFFFFF, 0.75F * alpha * (1 - edge * edge));
+            ColorMath.tessellate(tessellator, mark % 10 == 0 ? bright : 0xFFFFFF, 0.75F * alpha * (1 - edge * edge));
             rect(tessellator, 0.5F, y - 0.5F, mark % 10 == 0 ? 6.5F : 3.5F, y + 0.5F);
         }
         if (ground != Integer.MIN_VALUE && feet - ground <= span) {
             float y = (float) ((feet - ground) * LADDER_SCALE);
-            FxColor.tessellate(tessellator, glowColor, 0.55F * alpha);
+            ColorMath.tessellate(tessellator, glowColor, 0.55F * alpha);
             rect(tessellator, -3F, y - 0.75F, 9F, y + 0.75F);
             for (int i = 0; i < 4; i++) rect(tessellator, -2F + i * 3, y + 0.75F, -1F + i * 3, y + 2.5F);
         }
         tessellator.draw();
         tessellator.startDrawing(GL11.GL_TRIANGLES);
-        FxColor.tessellate(tessellator, bright, 0.95F * alpha);
+        ColorMath.tessellate(tessellator, bright, 0.95F * alpha);
         tessellator.addVertex(-1, 0, 0);
         tessellator.addVertex(-5, 3, 0);
         tessellator.addVertex(-5, -3, 0);
         float arrow = Math.abs(climb) < 0.05F ? 0 : Math.signum(climb), below = LADDER_HALF + 7.5F;
         if (arrow != 0) {
-            FxColor.tessellate(tessellator, 0xFFFFFF, 0.8F * alpha);
+            ColorMath.tessellate(tessellator, 0xFFFFFF, 0.8F * alpha);
             tessellator.addVertex(-8, below - arrow * 2, 0);
             tessellator.addVertex(-10.5F, below + arrow * 1.5F, 0);
             tessellator.addVertex(-5.5F, below + arrow * 1.5F, 0);
@@ -553,7 +554,7 @@ public class CelestweaveHud {
     private static void fan(Tessellator tessellator, float[] polygon, int rgb, float alpha) {
         if (polygon.length < 6) return;
         tessellator.startDrawing(GL11.GL_TRIANGLE_FAN);
-        FxColor.tessellate(tessellator, rgb, alpha);
+        ColorMath.tessellate(tessellator, rgb, alpha);
         for (int i = 0; i < polygon.length; i += 2) tessellator.addVertex(polygon[i], polygon[i + 1], 0);
         tessellator.draw();
     }
@@ -578,7 +579,7 @@ public class CelestweaveHud {
     }
 
     private static void arc(Tessellator tessellator, float progress, float radius, float half, int rgb, float alpha) {
-        FxColor.tessellate(tessellator, rgb, alpha);
+        ColorMath.tessellate(tessellator, rgb, alpha);
         int steps = Math.max(1, Math.round(24 * progress));
         double start = Math.toRadians(180 + DASH_SPAN), sweep = -Math.toRadians(2 * DASH_SPAN) * progress;
         for (int i = 0; i < steps; i++) {
@@ -594,11 +595,11 @@ public class CelestweaveHud {
 
     private static void screen(Tessellator tessellator, float x0, float y0, float x1, float y1, int accent,
         float alpha) {
-        FxColor.tessellate(tessellator, PANEL_RGB, 0.78F * alpha);
+        ColorMath.tessellate(tessellator, PANEL_RGB, 0.78F * alpha);
         rect(tessellator, x0, y0, x1, y1);
-        FxColor.tessellate(tessellator, PANEL_HI_RGB, 0.78F * alpha);
+        ColorMath.tessellate(tessellator, PANEL_HI_RGB, 0.78F * alpha);
         rect(tessellator, x0, y0, x1, Math.min(y1, y0 + 3));
-        FxColor.tessellate(tessellator, accent, 0.9F * alpha);
+        ColorMath.tessellate(tessellator, accent, 0.9F * alpha);
         corner(tessellator, x0, y0, 1, 1);
         corner(tessellator, x1, y0, -1, 1);
         corner(tessellator, x0, y1, 1, -1);
@@ -632,7 +633,7 @@ public class CelestweaveHud {
     }
 
     private static void text(FontRenderer font, String text, float x, float y, int rgb, float alpha) {
-        int opacity = Math.round(Math.max(0F, Math.min(1F, alpha)) * 255);
+        int opacity = Math.round(MathUtils.clampUnit(alpha) * 255);
         if (opacity < 8) return;
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         font.drawStringWithShadow(text, Math.round(x), Math.round(y), opacity << 24 | rgb & 0xFFFFFF);

@@ -1,4 +1,4 @@
-package com.science.gtnllib.client.fx;
+package com.science.gtnllib.utils;
 
 import net.minecraft.client.renderer.Tessellator;
 
@@ -8,12 +8,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class FxColor {
+public class ColorMath {
 
     private static final double RED_WEIGHT = 0.2126, GREEN_WEIGHT = 0.7152, BLUE_WEIGHT = 0.0722, LINEAR_KNEE = 0.04045,
         LINEAR_SLOPE = 12.92, GAMMA_OFFSET = 0.055, GAMMA = 2.4, CONTRAST_FLARE = 0.05;
 
-    private FxColor() {}
+    private ColorMath() {}
 
     public static float red(int rgb) {
         return (rgb >> 16 & 255) / 255F;
@@ -60,7 +60,7 @@ public class FxColor {
     }
 
     public static int hsl(double hue, double saturation, double lightness) {
-        double h = (hue % 360 + 360) % 360, s = unit(saturation), l = unit(lightness);
+        double h = (hue % 360 + 360) % 360, s = MathUtils.clampUnit(saturation), l = MathUtils.clampUnit(lightness);
         double chroma = (1 - Math.abs(2 * l - 1)) * s, x = chroma * (1 - Math.abs(h / 60 % 2 - 1)), m = l - chroma / 2;
         int sector = (int) (h / 60);
         double r = sector == 0 || sector == 5 ? chroma : sector == 1 || sector == 4 ? x : 0;
@@ -85,16 +85,12 @@ public class FxColor {
             : Math.pow((value + GAMMA_OFFSET) / (1 + GAMMA_OFFSET), GAMMA);
     }
 
-    private static double unit(double value) {
-        return Math.max(0, Math.min(1, value));
-    }
-
     private static int channel(double value) {
-        return (int) Math.round(unit(value) * 255);
+        return (int) Math.round(MathUtils.clampUnit(value) * 255);
     }
 
     public static void tessellate(Tessellator tessellator, int rgb, float alpha) {
-        tessellator.setColorRGBA_F(red(rgb), green(rgb), blue(rgb), Math.max(0F, Math.min(1F, alpha)));
+        tessellator.setColorRGBA_F(red(rgb), green(rgb), blue(rgb), MathUtils.clampUnit(alpha));
     }
 
     public static void gl(int rgb, float alpha) {

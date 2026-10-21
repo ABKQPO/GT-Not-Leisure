@@ -21,9 +21,9 @@ import com.science.gtnl.config.EquipmentSoundConfig;
 import com.science.gtnl.config.EquipmentSoundConfig.Channel;
 import com.science.gtnllib.gui.layout.Layout;
 import com.science.gtnllib.gui.layout.LayoutMath;
-import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.layout.Size;
 import com.science.gtnllib.gui.widget.CloseButton;
+import com.science.gtnllib.gui.widget.LayoutTheme;
 import com.science.gtnllib.gui.widget.SlideSwitch;
 import com.science.gtnllib.gui.widget.StepSlider;
 

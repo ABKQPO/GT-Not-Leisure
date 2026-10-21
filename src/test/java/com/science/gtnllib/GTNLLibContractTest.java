@@ -10,6 +10,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.science.gtnllib.client.GTNLLibClient;
+
 public class GTNLLibContractTest {
 
     public static final Path SOURCES = Paths.get("src/main/java/com/science/gtnllib");
@@ -25,6 +27,7 @@ public class GTNLLibContractTest {
     }
 
     public static void run() throws Exception {
+        GTNLLibClient.connectConfig();
         HudContracts.run();
         WheelContracts.run();
         LayoutContracts.run();

@@ -16,6 +16,8 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import net.minecraft.client.Minecraft;
 
@@ -28,7 +30,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.science.gtnllib.GTNLLib;
-import com.science.gtnllib.config.GTNLLibConfig;
+import com.science.gtnllib.utils.MathUtils;
 
 public class HudLayout {
 
@@ -40,6 +42,8 @@ public class HudLayout {
     private static final Map<String, Entry> ENTRIES = new LinkedHashMap<>();
     private static final Map<String, HudTiming.Tracker> TRACKERS = new HashMap<>();
     private static boolean loaded;
+    private static BooleanSupplier shown = () -> true;
+    private static DoubleSupplier globalScale = () -> 1;
 
     private HudLayout() {}
 
@@ -212,8 +216,13 @@ public class HudLayout {
         return ENTRIES.computeIfAbsent(element.id, key -> new Entry());
     }
 
+    public static void settings(BooleanSupplier shown, DoubleSupplier globalScale) {
+        HudLayout.shown = shown;
+        HudLayout.globalScale = globalScale;
+    }
+
     public static boolean enabled() {
-        return GTNLLibConfig.enableHud;
+        return shown.getAsBoolean();
     }
 
     public static Placement place(HudElement element, int width, int height) {
@@ -259,7 +268,7 @@ public class HudLayout {
     }
 
     private static float baseScale(HudElement element) {
-        return element.baseScale() * HudElement.validScale(GTNLLibConfig.hudScale);
+        return element.baseScale() * HudElement.validScale((float) globalScale.getAsDouble());
     }
 
     private static long now() {
@@ -465,7 +474,7 @@ public class HudLayout {
     }
 
     private static float clampIdleAlpha(float alpha) {
-        return Float.isFinite(alpha) ? Math.max(0F, Math.min(1F, alpha)) : Float.NaN;
+        return MathUtils.clampUnit(alpha, Float.NaN);
     }
 
     static float clampX(HudElement element, float x, float scale, int width) {

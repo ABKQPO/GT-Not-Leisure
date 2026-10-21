@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.science.gtnl.common.celestweave.CelestweaveBackpack;
 import com.science.gtnl.common.celestweave.CelestweaveDash;
-import com.science.gtnl.common.celestweave.CelestweaveServerEvents;
+import com.science.gtnl.common.equipment.EquipmentNet;
 import com.science.gtnl.common.packet.base.ServerboundPacket;
 
 import io.netty.buffer.ByteBuf;
@@ -39,7 +39,7 @@ public class CelestweaveKeyPacket extends ServerboundPacket {
             switch (action) {
                 case DASH -> CelestweaveDash.dash(player);
                 case BACKPACK -> {
-                    if (!CelestweaveServerEvents.guiThrottled(player)) CelestweaveBackpack.open(player);
+                    if (!EquipmentNet.guiThrottled(player)) CelestweaveBackpack.open(player);
                 }
                 default -> {}
             }

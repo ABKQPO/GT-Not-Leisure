@@ -1,5 +1,7 @@
 package com.science.gtnl.client.celestweave;
 
+import java.util.Random;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
@@ -12,6 +14,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class CelestweaveSounds {
+
+    private static final Random RNG = new Random();
 
     private CelestweaveSounds() {}
 
@@ -26,7 +30,7 @@ public class CelestweaveSounds {
             z,
             ScienceNotLeisure.RESOURCE_ROOT_ID + ":celestweave." + name,
             volume * scale,
-            pitch * (0.95F + 0.1F * CelestweaveArcs.RNG.nextFloat()),
+            pitch * (0.95F + 0.1F * RNG.nextFloat()),
             false);
     }
 

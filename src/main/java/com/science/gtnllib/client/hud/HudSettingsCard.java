@@ -24,10 +24,10 @@ import com.cleanroommc.modularui.widgets.ToggleButton;
 import com.science.gtnllib.client.hud.HudElement.Choice;
 import com.science.gtnllib.client.hud.HudElement.Setting;
 import com.science.gtnllib.gui.layout.Layout;
-import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.layout.Size;
 import com.science.gtnllib.gui.theme.ButtonPurpose;
 import com.science.gtnllib.gui.widget.CloseButton;
+import com.science.gtnllib.gui.widget.LayoutTheme;
 import com.science.gtnllib.gui.widget.SlideSwitch;
 import com.science.gtnllib.gui.widget.StepSlider;
 

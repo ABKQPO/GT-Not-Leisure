@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.factory.GuiFactories;
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
-import com.science.gtnl.common.celestweave.CelestweaveServerEvents;
+import com.science.gtnl.common.equipment.EquipmentNet;
 import com.science.gtnl.common.equipment.IEquipmentItem;
 import com.science.gtnl.common.packet.base.ServerboundPacket;
 
@@ -39,7 +39,7 @@ public class OpenEquipmentGuiPacket extends ServerboundPacket {
                 || player.isUsingItem()) return;
             ItemStack stack = player.inventory.getStackInSlot(slot);
             if (stack == null || !(stack.getItem() instanceof IEquipmentItem equipment)
-                || CelestweaveServerEvents.guiThrottled(player)) return;
+                || EquipmentNet.guiThrottled(player)) return;
             equipment.beforeSettingsOpen(player, stack);
             if (player.openContainer != player.inventoryContainer) player.closeScreen();
             GuiFactories.playerInventory()

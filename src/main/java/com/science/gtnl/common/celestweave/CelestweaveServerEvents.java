@@ -1,10 +1,8 @@
 package com.science.gtnl.common.celestweave;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.WeakHashMap;
 
 import net.minecraft.block.material.Material;
@@ -39,13 +37,11 @@ public class CelestweaveServerEvents {
 
     public static final String SOULBOUND_TAG = "GTNLCelestweaveSoulbound";
     private static final double FX_RANGE = 64;
-    private static final int GUI_THROTTLE_TICKS = 5;
     private static final float LAND_FX_MIN_FALL = 3F, FALL_REDUCTION_PER_LEVEL = 3F;
     private static final double JUMP_BOOST = 0.275, JUMP_EXPONENT = 1.08;
     private static final int FLUSH_INTERVAL_TICKS = 20, FULL_FLUSH_EVERY = 5;
     private static final float MINING_PENALTY_COMPENSATION = 5F;
     private static final Map<EntityPlayer, Tracked> TRACKED = Collections.synchronizedMap(new WeakHashMap<>());
-    private static final Map<UUID, Long> LAST_GUI = new HashMap<>();
     private static boolean registered;
 
     private CelestweaveServerEvents() {}
@@ -60,12 +56,6 @@ public class CelestweaveServerEvents {
         FMLCommonHandler.instance()
             .bus()
             .register(handler);
-    }
-
-    public static boolean guiThrottled(EntityPlayer player) {
-        long now = player.worldObj.getTotalWorldTime();
-        Long last = LAST_GUI.put(player.getUniqueID(), now);
-        return last != null && now - last >= 0 && now - last < GUI_THROTTLE_TICKS;
     }
 
     public static void sendFx(Entity entity, CelestweaveFxPacket.Type type, double x, double y, double z) {
@@ -277,7 +267,6 @@ public class CelestweaveServerEvents {
         CelestweaveBehaviors.forget(event.player);
         CelestweaveFlight.forget(event.player);
         TRACKED.remove(event.player);
-        LAST_GUI.remove(event.player.getUniqueID());
         if (event.player instanceof EntityPlayerMP player) CelestweaveDash.forget(player);
     }
 

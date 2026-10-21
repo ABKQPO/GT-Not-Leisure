@@ -13,8 +13,8 @@ import org.lwjgl.opengl.GL11;
 import com.science.gtnl.common.celestweave.CelestweaveCosmetic;
 import com.science.gtnl.common.celestweave.CelestweaveCosmeticOption;
 import com.science.gtnl.common.celestweave.CelestweaveStripStyle;
-import com.science.gtnllib.client.fx.FxColor;
 import com.science.gtnllib.client.fx.FxEasing;
+import com.science.gtnllib.utils.ColorMath;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -126,7 +126,7 @@ public class CelestweaveStripEffects {
         @Override
         public boolean begin(CelestweavePose pose, CelestweaveCosmetic cosmetic, float seconds, float boneY) {
             int rgb = Color.HSBtoRGB(seconds * speed(cosmetic) * 0.15F % 1F, 0.85F, 1F);
-            color(FxColor.red(rgb), FxColor.green(rgb), FxColor.blue(rgb), pose.steadyBrightness);
+            color(ColorMath.red(rgb), ColorMath.green(rgb), ColorMath.blue(rgb), pose.steadyBrightness);
             return false;
         }
     }

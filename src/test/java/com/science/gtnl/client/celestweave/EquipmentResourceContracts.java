@@ -76,13 +76,13 @@ import com.science.gtnl.config.MainConfig;
 import com.science.gtnllib.client.hud.HudColor;
 import com.science.gtnllib.config.GTNLLibConfig;
 import com.science.gtnllib.gui.layout.LayoutMath;
-import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.layout.Size;
 import com.science.gtnllib.gui.theme.LivePalette;
 import com.science.gtnllib.gui.theme.MetalSkin;
 import com.science.gtnllib.gui.theme.PaletteThemes;
 import com.science.gtnllib.gui.theme.ThemePalette;
 import com.science.gtnllib.gui.theme.ThemeStyle;
+import com.science.gtnllib.gui.widget.LayoutTheme;
 import com.science.gtnllib.gui.widget.StepSlider;
 
 import gregtech.api.modularui2.GTGuiThemes;
@@ -767,6 +767,11 @@ public class EquipmentResourceContracts {
                 && soundSource.contains("Layout.card(")
                 && soundSource.contains("new CloseButton().corner(pad, style)"),
             "sound screen draws its panel, cards, switches and close button through the theme");
+        for (String file : new String[] { "common/packet/OpenEquipmentGuiPacket.java",
+            "common/equipment/EquipmentNet.java" })
+            check(
+                !read(SOURCES.resolve(file)).contains("celestweave"),
+                file + " is shared by both pieces of equipment and does not depend on the armor package");
         check(
             EquipmentTheme.PALETTE.equals(
                 new ThemePalette(

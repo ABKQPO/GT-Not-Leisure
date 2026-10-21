@@ -21,13 +21,12 @@ import com.cleanroommc.modularui.theme.ThemeBuilder;
 import com.cleanroommc.modularui.theme.WidgetThemeKey;
 import com.cleanroommc.modularui.utils.Color;
 import com.cleanroommc.modularui.utils.JsonBuilder;
-import com.science.gtnllib.config.GTNLLibConfig;
-import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.theme.ThemeSkin.Part;
 import com.science.gtnllib.gui.widget.CardDrawable;
 import com.science.gtnllib.gui.widget.Divider;
 import com.science.gtnllib.gui.widget.FillBar;
 import com.science.gtnllib.gui.widget.FrameDrawable;
+import com.science.gtnllib.gui.widget.LayoutTheme;
 import com.science.gtnllib.gui.widget.SlideSwitch;
 import com.science.gtnllib.gui.widget.StepSlider;
 
@@ -43,6 +42,7 @@ public class PaletteThemes {
     private static final List<LivePalette> LIVE = new ArrayList<>();
     private static final Map<String, Variant> VARIANTS = new HashMap<>();
     private static final List<Runnable> LISTENERS = new ArrayList<>();
+    private static Supplier<String> chosen = () -> "";
 
     private PaletteThemes() {}
 
@@ -74,8 +74,12 @@ public class PaletteThemes {
         return Collections.unmodifiableSet(THEMES.keySet());
     }
 
+    public static void chooseWith(Supplier<String> chosen) {
+        PaletteThemes.chosen = chosen;
+    }
+
     public static String selected(String fallback) {
-        String id = GTNLLibConfig.theme;
+        String id = chosen.get();
         return THEMES.containsKey(id) ? id : fallback;
     }
 
@@ -226,7 +230,7 @@ public class PaletteThemes {
                 new FillBar.Theme.Builder().colors(palette.track(), palette.accent())
                     .skins(skin.get(Part.SLIDER_TRACK), skin.get(Part.SLIDER_FILL)))
             .widgetTheme(Divider.Theme.KEY, new Divider.Theme.Builder().skin(skin.get(Part.DIVIDER)))
-            .widgetTheme(LayoutTheme.KEY, new LayoutTheme.Builder().style(style))
+            .widgetTheme(LayoutTheme.KEY, new LayoutTheme.Builder().values(style.layout()))
             .background(
                 ButtonPurpose.PRIMARY.key,
                 skin.lit(Part.BUTTON, palette.buttonHover(), () -> new Rectangle().color(palette.buttonHover())))

@@ -20,7 +20,6 @@ import com.cleanroommc.modularui.utils.Color;
 import com.cleanroommc.modularui.utils.JsonHelper;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.google.gson.JsonObject;
-import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.utils.TextRenderUtils;
 
 public class SlideSwitch extends ButtonWidget<SlideSwitch> {

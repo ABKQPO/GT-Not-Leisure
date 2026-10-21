@@ -22,7 +22,6 @@ import com.science.gtnl.common.packet.OpenEquipmentGuiPacket;
 import com.science.gtnllib.client.hud.HudEditor;
 import com.science.gtnllib.gui.layout.Layout;
 import com.science.gtnllib.gui.layout.LayoutMath;
-import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.layout.Size;
 import com.science.gtnllib.gui.theme.ButtonPurpose;
 import com.science.gtnllib.gui.wheel.WheelEntry;
@@ -31,6 +30,7 @@ import com.science.gtnllib.gui.wheel.WheelMenuModel;
 import com.science.gtnllib.gui.wheel.WheelOpenMode;
 import com.science.gtnllib.gui.wheel.WheelScreen;
 import com.science.gtnllib.gui.wheel.WheelStyle;
+import com.science.gtnllib.gui.widget.LayoutTheme;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

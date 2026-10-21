@@ -18,9 +18,9 @@ import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.science.gtnllib.GTNLLib;
 import com.science.gtnllib.gui.layout.Layout;
 import com.science.gtnllib.gui.layout.LayoutMath;
-import com.science.gtnllib.gui.layout.LayoutTheme;
 import com.science.gtnllib.gui.layout.Size;
 import com.science.gtnllib.gui.theme.ButtonPurpose;
+import com.science.gtnllib.gui.widget.LayoutTheme;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
