@@ -45,6 +45,7 @@ import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 public final class QuantumCraftingTree {
 
     private static final int MAX_NODES = 100_000;
+    private static final int MAX_LOOP_DEPTH = 64;
     private static final int CHUNK_SIZE = 1024 * 1024;
     private static final byte JOB_STATE_FINISHED = 1;
 
@@ -55,9 +56,10 @@ public final class QuantumCraftingTree {
     private final Object2LongOpenHashMap<AEKey> emitted = new Object2LongOpenHashMap<>();
     private final Object2LongOpenHashMap<AEKey> missing = new Object2LongOpenHashMap<>();
     private final Object2LongOpenHashMap<AEKey> byproducts = new Object2LongOpenHashMap<>();
-    private final Reference2LongOpenHashMap<QuantumPattern> crafts = new Reference2LongOpenHashMap<>();
-    private final Map<AEKey, List<QuantumPattern>> producers = new Object2ObjectOpenHashMap<>();
+    private final Reference2LongOpenHashMap<IPatternDetails> crafts = new Reference2LongOpenHashMap<>();
+    private final Map<AEKey, List<IPatternDetails>> producers = new Object2ObjectOpenHashMap<>();
     private final Map<Object, List<AEKey>> poolKeysByGroup = new Object2ObjectOpenHashMap<>();
+    private final Map<IPatternDetails, Set<AEKey>> producedKeys = new Object2ObjectOpenHashMap<>();
     private int nodes;
 
     private QuantumCraftingTree(World world, CraftingMode craftingMode, long byteTotal, CraftingPlan plan) {
@@ -69,7 +71,7 @@ public final class QuantumCraftingTree {
         fill(this.missing, plan.missingItems());
         for (Object2LongMap.Entry<IPatternDetails> entry : plan.patternTimes()
             .object2LongEntrySet()) {
-            final QuantumPattern pattern = (QuantumPattern) entry.getKey();
+            final IPatternDetails pattern = entry.getKey();
             if (entry.getLongValue() <= 0) continue;
             this.crafts.put(pattern, entry.getLongValue());
             for (GenericStack output : pattern.getOutputs()) {
@@ -119,6 +121,7 @@ public final class QuantumCraftingTree {
             finalOutput.amount(),
             0,
             SubstitutionMode.PRECISE_FRESH,
+            null,
             null);
         final ArrayDeque<Request> pending = new ArrayDeque<>();
         pending.add(root);
@@ -134,32 +137,22 @@ public final class QuantumCraftingTree {
         long rest = request.amount;
         final Set<AEKey> candidates = candidates(request);
 
-        // The requested output itself is never taken from storage
+        // The requested output itself is never taken from storage. What a loop gets back takes the stored items first:
+        // they are what starts the loop, and the rest comes around from the crafts above.
         if (request.mode != SubstitutionMode.PRECISE_FRESH) {
-            for (AEKey candidate : candidates) {
-                if (rest <= 0) break;
-                final long taken = take(this.byproducts, candidate, rest);
-                if (taken > 0) {
-                    rest -= taken;
-                    final Resolver resolver = new Resolver(Kind.EXTRACT, candidate, taken);
-                    resolver.fromByproducts = true;
-                    request.resolvers.add(resolver);
-                }
-            }
-            for (AEKey candidate : candidates) {
-                if (rest <= 0) break;
-                final long taken = take(this.stored, candidate, rest);
-                if (taken > 0) {
-                    rest -= taken;
-                    request.resolvers.add(new Resolver(Kind.EXTRACT, candidate, taken));
-                }
+            if (request.loop) {
+                rest = extract(request, candidates, rest, false);
+                rest = extract(request, candidates, rest, true);
+            } else {
+                rest = extract(request, candidates, rest, true);
+                rest = extract(request, candidates, rest, false);
             }
         }
 
         for (AEKey candidate : candidates) {
-            final List<QuantumPattern> patterns = this.producers.get(candidate);
+            final List<IPatternDetails> patterns = this.producers.get(candidate);
             if (patterns == null) continue;
-            for (QuantumPattern pattern : patterns) {
+            for (IPatternDetails pattern : patterns) {
                 if (rest <= 0) break;
                 final long available = this.crafts.getLong(pattern);
                 final long perCraft = outputAmount(pattern, candidate);
@@ -174,12 +167,14 @@ public final class QuantumCraftingTree {
                     if (output.what()
                         .equals(candidate)) {
                         addToPool(this.byproducts, candidate, made - fulfilled);
-                    } else {
+                    } else if (inputAmount(pattern, output.what()) <= 0) {
                         addToPool(this.byproducts, output.what(), made);
                     }
                 }
+                addReturns(pattern, candidate, times);
 
                 final Resolver resolver = new Resolver(Kind.CRAFT, candidate, fulfilled);
+                resolver.owner = request;
                 resolver.pattern = pattern;
                 resolver.times = times;
                 resolver.perCraftOutput = perCraft;
@@ -209,6 +204,89 @@ public final class QuantumCraftingTree {
             }
         }
         request.remaining = rest;
+        addToPool(this.byproducts, request.key, request.returnsAfter);
+    }
+
+    private long extract(Request request, Set<AEKey> candidates, long rest, boolean fromByproducts) {
+        final Object2LongOpenHashMap<AEKey> pool = fromByproducts ? this.byproducts : this.stored;
+        for (AEKey candidate : candidates) {
+            if (rest <= 0) break;
+            final long taken = take(pool, candidate, rest);
+            if (taken > 0) {
+                rest -= taken;
+                final Resolver resolver = new Resolver(Kind.EXTRACT, candidate, taken);
+                resolver.fromByproducts = fromByproducts;
+                request.resolvers.add(resolver);
+            }
+        }
+        return rest;
+    }
+
+    // What a batch of crafts gives back of its own inputs for the crafts below it to take: what the catalysts gain,
+    // and the containers of all crafts but the last. The catalysts themselves only come back once they are there, see
+    // Request#returnsAfter.
+    private void addReturns(IPatternDetails pattern, AEKey candidate, long times) {
+        final Set<AEKey> seen = new ObjectLinkedOpenHashSet<>();
+        for (GenericStack output : pattern.getOutputs()) {
+            final AEKey key = output.what();
+            if (key.equals(candidate) || !seen.add(key)) continue;
+            final long perCraft = inputAmount(pattern, key);
+            if (perCraft > 0) {
+                final long returned = outputAmount(pattern, key);
+                final long after = catalystReturned(perCraft, returned, times);
+                addToPool(this.byproducts, key, after - Math.min(after, catalystRequired(perCraft, returned, times)));
+            }
+        }
+        for (IPatternDetails.IInput input : pattern.getInputs()) {
+            final GenericStack[] possible = input.possibleInputs();
+            if (possible.length == 0) continue;
+            final AEKey container = input.getRemainingKey(possible[0].what());
+            if (container != null) {
+                addToPool(this.byproducts, container, multiplySaturated(input.getMultiplier(), times - 1));
+            }
+        }
+    }
+
+    // A catalyst only has to be there for the first craft, each later one needs what the earlier ones did not give back
+    private static long catalystRequired(long perCraft, long returned, long times) {
+        final long lost = Math.max(0, perCraft - returned);
+        return addSaturated(perCraft, multiplySaturated(lost, times - 1));
+    }
+
+    private static long catalystReturned(long perCraft, long returned, long times) {
+        return returned < perCraft ? returned : addSaturated(perCraft, multiplySaturated(returned - perCraft, times));
+    }
+
+    private Set<AEKey> producedKeys(IPatternDetails pattern) {
+        Set<AEKey> keys = this.producedKeys.get(pattern);
+        if (keys == null) {
+            keys = new ObjectLinkedOpenHashSet<>();
+            for (GenericStack output : pattern.getOutputs()) {
+                keys.add(output.what());
+            }
+            for (IPatternDetails.IInput input : pattern.getInputs()) {
+                final GenericStack[] possible = input.possibleInputs();
+                if (possible.length == 0) continue;
+                final AEKey container = input.getRemainingKey(possible[0].what());
+                if (container != null) {
+                    keys.add(container);
+                }
+            }
+            this.producedKeys.put(pattern, keys);
+        }
+        return keys;
+    }
+
+    // A request for what a craft above it makes is the way back around a loop
+    private boolean isLoop(AEKey key, Resolver parent) {
+        Resolver resolver = parent;
+        for (int depth = 0; resolver != null && depth < MAX_LOOP_DEPTH; depth++) {
+            if (producedKeys(resolver.pattern).contains(key)) {
+                return true;
+            }
+            resolver = resolver.owner.parent;
+        }
+        return false;
     }
 
     private Set<AEKey> candidates(Request request) {
@@ -242,7 +320,7 @@ public final class QuantumCraftingTree {
     }
 
     private void addInputs(Resolver resolver, ArrayDeque<Request> pending) {
-        final QuantumPattern pattern = resolver.pattern;
+        final IPatternDetails pattern = resolver.pattern;
         final SubstitutionMode mode = pattern.canSubstitute() ? SubstitutionMode.ACCEPT_FUZZY
             : SubstitutionMode.PRECISE;
 
@@ -255,23 +333,43 @@ public final class QuantumCraftingTree {
             final Request existing = byKey.get(possible[0].what());
             if (existing != null) {
                 existing.perCraft = addSaturated(existing.perCraft, perCraft);
-                existing.amount = multiplySaturated(existing.perCraft, resolver.times);
                 continue;
             }
-            final Request child = new Request(
-                possible[0].what(),
-                multiplySaturated(perCraft, resolver.times),
-                perCraft,
-                mode,
-                input);
+            final Request child = new Request(possible[0].what(), 0, perCraft, mode, input, resolver);
             byKey.put(child.key, child);
             resolver.children.add(child);
+        }
+        for (Request child : resolver.children) {
+            final long returned = child.key.equals(resolver.what) ? 0 : outputAmount(pattern, child.key);
+            if (returned > 0) {
+                child.amount = catalystRequired(child.perCraft, returned, resolver.times);
+                child.returnsAfter = Math.min(child.amount, catalystReturned(child.perCraft, returned, resolver.times));
+            } else {
+                child.amount = multiplySaturated(child.perCraft, resolver.times);
+            }
+            child.loop = isLoop(child.key, resolver);
+        }
+        // Inputs from outside the loop first, the way back around it last
+        resolver.children.sort((a, b) -> Boolean.compare(a.loop, b.loop));
+        for (Request child : resolver.children) {
             pending.add(child);
             this.nodes++;
         }
     }
 
-    private static long outputAmount(QuantumPattern pattern, AEKey what) {
+    private static long inputAmount(IPatternDetails pattern, AEKey what) {
+        long amount = 0;
+        for (IPatternDetails.IInput input : pattern.getInputs()) {
+            final GenericStack[] possible = input.possibleInputs();
+            if (possible.length > 0 && possible[0].what()
+                .equals(what)) {
+                amount = addSaturated(amount, multiplySaturated(possible[0].amount(), input.getMultiplier()));
+            }
+        }
+        return amount;
+    }
+
+    private static long outputAmount(IPatternDetails pattern, AEKey what) {
         long amount = 0;
         for (GenericStack output : pattern.getOutputs()) {
             if (output.what()
@@ -333,7 +431,7 @@ public final class QuantumCraftingTree {
 
     private void writeTask(CraftingTreeSerializer serializer, Resolver resolver, ArrayDeque<Runnable> work) {
         final ByteBuf buffer = serializer.getBuffer();
-        final ItemStack patternItem = resolver.kind == Kind.CRAFT ? resolver.pattern.getDetails()
+        final ItemStack patternItem = resolver.kind == Kind.CRAFT ? ((QuantumPattern) resolver.pattern).getDetails()
             .getPattern() : null;
         // AE2 rebuilds crafting tasks from the pattern item, so other patterns can only be shown as their output
         final Kind kind = resolver.kind == Kind.CRAFT
@@ -476,17 +574,23 @@ public final class QuantumCraftingTree {
         private final SubstitutionMode mode;
         @Nullable
         private final IPatternDetails.IInput input;
+        @Nullable
+        private final Resolver parent;
         private final List<Resolver> resolvers = new ArrayList<>(1);
         private long remaining;
         private boolean simulated;
+        private boolean loop;
+        // The catalyst the crafts of the parent give back once this request got it to them
+        private long returnsAfter;
 
         private Request(AEKey key, long amount, long perCraft, SubstitutionMode mode,
-            @Nullable IPatternDetails.IInput input) {
+            @Nullable IPatternDetails.IInput input, @Nullable Resolver parent) {
             this.key = key;
             this.amount = amount;
             this.perCraft = perCraft;
             this.mode = mode;
             this.input = input;
+            this.parent = parent;
         }
     }
 
@@ -495,7 +599,8 @@ public final class QuantumCraftingTree {
         private final Kind kind;
         private final AEKey what;
         private final long amount;
-        private QuantumPattern pattern;
+        private Request owner;
+        private IPatternDetails pattern;
         private long times;
         private long perCraftOutput;
         private boolean fromByproducts;

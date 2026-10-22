@@ -39,6 +39,7 @@ import com.science.gtnl.common.crafting.quantum.api.stacks.GenericStack;
 import com.science.gtnl.common.crafting.quantum.api.stacks.KeyCounter;
 import com.science.gtnl.common.crafting.quantum.core.AEConfig;
 import com.science.gtnl.common.crafting.quantum.core.AELog;
+import com.science.gtnl.common.crafting.quantum.core.localization.PlayerMessages;
 import com.science.gtnl.common.crafting.quantum.crafting.execution.InputTemplate;
 import com.science.gtnl.common.crafting.quantum.crafting.graph.CraftingGraph;
 import com.science.gtnl.common.crafting.quantum.crafting.graph.DemandPropagation;
@@ -109,6 +110,9 @@ public class CraftingCalculation {
     private static final int LEGACY_STEPS_PER_NODE = 32;
     private long fallbackDeadline = Long.MAX_VALUE;
     private int fallbackSteps;
+    private long limitDeadline = Long.MAX_VALUE;
+    private int limitChecks;
+    private boolean limitExceeded;
     private static final ThreadLocal<CraftingCalculation> CURRENT = new ThreadLocal<>();
     @Nullable
     private Runnable steppingThreadTask;
@@ -373,6 +377,11 @@ public class CraftingCalculation {
 
     public CraftingPlan run() throws InterruptedException {
         this.workerThread = Thread.currentThread();
+        long limit = AEConfig.instance()
+            .getCalculationLimitNanos();
+        if (limit > 0) {
+            this.limitDeadline = LongMath.saturatedAdd(workerTime(), limit);
+        }
         CURRENT.set(this);
         try {
             startPerformanceListener();
@@ -682,6 +691,7 @@ public class CraftingCalculation {
                 this.graph = graph;
                 alternative = needsLegacyTree(graph) ? null : planGraph(graph, productionAmount);
             } catch (CraftingCalculationFailure | IllegalArgumentException e) {
+                if (this.limitExceeded) throw e;
                 alternative = null;
             }
             if (alternative == null) break;
@@ -703,8 +713,10 @@ public class CraftingCalculation {
             if (legacyPlan != null && total(legacyPlan.missingItems()) <= total(best.missingItems())) {
                 return legacyPlan;
             }
-        } catch (FallbackTimeout | CraftingCalculationFailure ignored) {
+        } catch (FallbackTimeout ignored) {
             // Keep the plan of the graph
+        } catch (CraftingCalculationFailure failure) {
+            if (this.limitExceeded) throw failure;
         } finally {
             this.fallbackDeadline = Long.MAX_VALUE;
         }
@@ -739,6 +751,12 @@ public class CraftingCalculation {
     }
 
     public void handlePausing() throws InterruptedException {
+        if (this.limitDeadline != Long.MAX_VALUE && (++this.limitChecks & 1023) == 0
+            && Thread.currentThread() == this.workerThread
+            && workerTime() > this.limitDeadline) {
+            this.limitExceeded = true;
+            throw new CraftingCalculationFailure(PlayerMessages.CraftingTooLong);
+        }
         if (this.fallbackDeadline != Long.MAX_VALUE
             && (--this.fallbackSteps < 0 || (this.fallbackSteps & 1023) == 0 && workerTime() > this.fallbackDeadline)) {
             throw new FallbackTimeout();

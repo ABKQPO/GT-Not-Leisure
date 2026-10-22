@@ -289,13 +289,27 @@ public class CraftingTreeNode {
 
         while (totalRequestedItems > 0) {
             long times = getRequestedPatternTimes(pro, totalRequestedItems, craftedPerPattern, recursiveBatch);
-            if (this.job.isPerformanceTrackingEnabled()) {
-                this.job.runTimedCrafting("request-missing-branch " + this.what, () -> pro.request(inv, times));
-            } else {
-                pro.request(inv, times);
+            var marker = this.job.createCalculationMarker();
+            var child = new ChildCraftingSimulationState(inv);
+            try {
+                if (this.job.isPerformanceTrackingEnabled()) {
+                    this.job.runTimedCrafting("request-missing-branch " + this.what, () -> pro.request(child, times));
+                } else {
+                    pro.request(child, times);
+                }
+            } catch (CraftBranchFailure failure) {
+                // A cycle below that cannot make an item only leaves this one missing, unlike one the request
+                // itself can only come out of
+                if (failure.getWhat()
+                    .equals(this.job.getOutput())) {
+                    throw failure;
+                }
+                this.job.restoreCalculationMarker(marker);
+                this.job.addMissing(this.what, totalRequestedItems);
+                return;
             }
+            child.applyDiff(inv);
 
-            // by now we have succeeded, as request throws an exception in case of failure
             // check how much was actually produced
             var available = extractCraftedBranchOutput(inv, totalRequestedItems);
             if (available != 0) {

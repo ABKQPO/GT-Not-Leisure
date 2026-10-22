@@ -55,6 +55,12 @@ public class CraftingTreeProcess {
      * possible.
      */
     private boolean limitQty;
+    // Per input slot: how much of a catalyst one craft gives back, and the container a precise input leaves. Both
+    // only have to be there for the first craft of a batch, the later ones take back what the earlier ones returned.
+    private final CraftingTreeNode[] slotNodes;
+    private final long[] catalystReturns;
+    private final AEKey[] slotContainers;
+    private boolean batchedSlots;
 
     public CraftingTreeProcess(ICraftingService cc, CraftingCalculation job, IPatternDetails details,
         CraftingTreeNode craftingTreeNode) {
@@ -63,15 +69,18 @@ public class CraftingTreeProcess {
         this.job = job;
         this.inputs = details.getInputs();
         this.outputs = details.getOutputs();
-        updateLimitQty();
+        this.slotNodes = new CraftingTreeNode[this.inputs.length];
+        this.catalystReturns = new long[this.inputs.length];
+        this.slotContainers = new AEKey[this.inputs.length];
 
         for (int x = 0; x < this.inputs.length; ++x) {
             var input = this.inputs[x];
             var firstInput = input.possibleInputs()[0];
-            this.nodes.put(
-                new CraftingTreeNode(cc, job, firstInput.what(), firstInput.amount(), this, x),
-                input.getMultiplier());
+            var node = new CraftingTreeNode(cc, job, firstInput.what(), firstInput.amount(), this, x);
+            this.slotNodes[x] = node;
+            this.nodes.put(node, input.getMultiplier());
         }
+        updateLimitQty();
     }
 
     /**
@@ -84,40 +93,120 @@ public class CraftingTreeProcess {
     /**
      * Check if this pattern has one of its outputs as input. If that's the case, update {@code limitQty} to make sure
      * we simulate this pattern one by one. Also check for container items.
+     * <p>
+     * The catalyst of a precise input, which the pattern gives back, and the container a precise input leaves are
+     * batched instead, see {@link #slotUnits}: one at a time, the calculation costs as much as the requested amount.
+     * What the request itself is made of, and the inputs of substituting patterns, whose variant decides what comes
+     * back, are still crafted one at a time.
      */
     private void updateLimitQty() {
-        // TODO: consider checking substitute inputs as well?
-        for (IPatternDetails.IInput input : this.inputs) {
+        var requested = this.parent == null ? null : this.parent.getWhat();
+        for (int x = 0; x < this.inputs.length; x++) {
+            var input = this.inputs[x];
             var primaryInput = input.possibleInputs()[0];
-            boolean isAnInput = false;
-
-            if (this.outputs instanceof RandomAccess) {
-                for (int i = 0, size = this.outputs.size(); i < size; i++) {
-                    if (this.outputs.get(i)
-                        .what()
-                        .matches(primaryInput)) {
-                        isAnInput = true;
-                        break;
-                    }
-                }
-            } else {
-                for (var output : this.outputs) {
-                    if (output.what()
-                        .matches(primaryInput)) {
-                        isAnInput = true;
-                        break;
-                    }
-                }
+            var key = primaryInput.what();
+            boolean precise = !this.details.canSubstitute() && input.possibleInputs().length == 1;
+            long returned = getOutputCount(key);
+            var container = input.getRemainingKey(key);
+            if (container != null) {
+                this.containerItems = true;
             }
 
-            if (isAnInput) {
-                this.limitQty = true;
-            }
-
-            if (input.getRemainingKey(primaryInput.what()) != null) {
-                this.limitQty = this.containerItems = true;
+            if (returned > 0) {
+                if (precise && container == null
+                    && returned % primaryInput.amount() == 0
+                    && !key.equals(requested)
+                    && countSlots(key) == 1) {
+                    this.catalystReturns[x] = returned;
+                    this.batchedSlots = true;
+                } else {
+                    this.limitQty = true;
+                }
+            } else if (container != null) {
+                if (precise) {
+                    this.slotContainers[x] = container;
+                    this.batchedSlots = true;
+                } else {
+                    this.limitQty = true;
+                }
             }
         }
+    }
+
+    private int countSlots(AEKey key) {
+        int count = 0;
+        for (var input : this.inputs) {
+            if (input.possibleInputs()[0].what()
+                .equals(key)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    // How much of the input of a slot a batch of crafts requests, in units of its node
+    private long slotUnits(int slot, long multiplier, long times) {
+        if (this.catalystReturns[slot] <= 0 || times <= 0) {
+            return LongMath.saturatedMultiply(multiplier, times);
+        }
+        long unit = this.inputs[slot].possibleInputs()[0].amount();
+        long perCraft = LongMath.saturatedMultiply(unit, multiplier);
+        long lost = Math.max(0, perCraft - this.catalystReturns[slot]);
+        long items = LongMath.saturatedAdd(perCraft, LongMath.saturatedMultiply(lost, times - 1));
+        return items / unit;
+    }
+
+    // The most crafts of a batch that the given units of the input of a slot allow
+    private long slotTimes(int slot, long multiplier, long units) {
+        if (this.catalystReturns[slot] <= 0) {
+            return units / multiplier;
+        }
+        long unit = this.inputs[slot].possibleInputs()[0].amount();
+        long perCraft = LongMath.saturatedMultiply(unit, multiplier);
+        long items = LongMath.saturatedMultiply(units, unit);
+        if (items < perCraft) {
+            return 0;
+        }
+        long lost = perCraft - this.catalystReturns[slot];
+        return lost <= 0 ? Long.MAX_VALUE : LongMath.saturatedAdd(1, (items - perCraft) / lost);
+    }
+
+    // The catalyst of a slot left after a batch, from what the batch requested and what its crafts gave back
+    private long catalystReturned(int slot, long times) {
+        long unit = this.inputs[slot].possibleInputs()[0].amount();
+        long perCraft = LongMath.saturatedMultiply(unit, this.nodes.getLong(this.slotNodes[slot]));
+        long returned = this.catalystReturns[slot];
+        if (returned < perCraft) {
+            return returned;
+        }
+        return LongMath.saturatedAdd(perCraft, LongMath.saturatedMultiply(returned - perCraft, times));
+    }
+
+    private boolean isCatalyst(AEKey key) {
+        for (int x = 0; x < this.inputs.length; x++) {
+            if (this.catalystReturns[x] > 0 && this.slotNodes[x].getWhat()
+                .equals(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // The containers the earlier crafts of a batch leave for the later ones
+    private @Nullable KeyCounter creditContainers(CraftingSimulationState inv, long times) {
+        if (times <= 1) {
+            return null;
+        }
+        KeyCounter credited = null;
+        for (int x = 0; x < this.inputs.length; x++) {
+            var container = this.slotContainers[x];
+            if (container == null) continue;
+            long amount = LongMath.saturatedMultiply(this.nodes.getLong(this.slotNodes[x]), times - 1);
+            inv.insert(container, amount, Actionable.MODULATE);
+            if (credited == null) credited = new KeyCounter();
+            credited.add(container, amount);
+        }
+        return credited;
     }
 
     boolean limitsQuantity() {
@@ -125,7 +214,7 @@ public class CraftingTreeProcess {
     }
 
     boolean canReusePreview() {
-        return !this.job.isLocalUnitMode() && !this.limitQty && !this.containerItems;
+        return !this.job.isLocalUnitMode() && !this.limitQty && !this.containerItems && !this.batchedSlots;
     }
 
     private static KeyCounter copyPositiveDelta(KeyCounter after, KeyCounter before) {
@@ -177,6 +266,9 @@ public class CraftingTreeProcess {
                 return craftableTimes;
             }
 
+            if (this.batchedSlots) {
+                return getBatchCraftableTimes(inv, maxTimes);
+            }
             for (Object2LongMap.Entry<CraftingTreeNode> entry : this.nodes.object2LongEntrySet()) {
                 long requiredPerPattern = entry.getLongValue();
                 long availableInputs = entry.getKey()
@@ -213,6 +305,35 @@ public class CraftingTreeProcess {
                     System.nanoTime() - start);
             }
         }
+    }
+
+    // The credited containers depend on the batch size, so a smaller batch is checked again until it holds
+    private long getBatchCraftableTimes(CraftingSimulationState inv, long maxTimes) throws InterruptedException {
+        long times = maxTimes;
+        for (int attempt = 0; attempt < 8; attempt++) {
+            long craftable = batchCraftableTimes(inv, times);
+            if (craftable >= times || craftable == 0) {
+                return Math.min(craftable, times);
+            }
+            times = craftable;
+        }
+        return Math.min(1, batchCraftableTimes(inv, 1));
+    }
+
+    private long batchCraftableTimes(CraftingSimulationState inv, long times) throws InterruptedException {
+        var sharedInputs = new ChildCraftingSimulationState(inv);
+        creditContainers(sharedInputs, times);
+        long craftable = times;
+        for (int x = 0; x < this.slotNodes.length; x++) {
+            long multiplier = this.nodes.getLong(this.slotNodes[x]);
+            long available = this.slotNodes[x]
+                .extractAvailableForCrafting(sharedInputs, slotUnits(x, multiplier, craftable));
+            craftable = Math.min(craftable, slotTimes(x, multiplier, available));
+            if (craftable == 0) {
+                return 0;
+            }
+        }
+        return craftable;
     }
 
     private void cacheReusablePreview(CraftingSimulationState parent, ChildCraftingSimulationState state, long times,
@@ -297,6 +418,7 @@ public class CraftingTreeProcess {
         try {
             var containerItems = this.containerItems ? new KeyCounter() : null;
             long intermediateFinalOutputMarker = this.job.getIntermediateFinalOutputMarker();
+            var credited = creditContainers(inv, times);
 
             // request and remove inputs...
             requestInputs(inv, times, containerItems, null);
@@ -306,7 +428,13 @@ public class CraftingTreeProcess {
             // add container items
             if (containerItems != null) {
                 for (var stack : containerItems) {
-                    inv.insert(stack.getKey(), stack.getLongValue(), Actionable.MODULATE);
+                    long amount = stack.getLongValue();
+                    if (credited != null) {
+                        amount -= credited.get(stack.getKey());
+                    }
+                    if (amount > 0) {
+                        inv.insert(stack.getKey(), amount, Actionable.MODULATE);
+                    }
                     inv.addStackBytes(stack.getKey(), stack.getLongValue(), 1);
                 }
             }
@@ -314,7 +442,14 @@ public class CraftingTreeProcess {
             // add crafting results.
             for (int i = 0, size = this.outputs.size(); i < size; i++) {
                 var out = this.outputs.get(i);
-                inv.insert(out.what(), LongMath.saturatedMultiply(out.amount(), times), Actionable.MODULATE);
+                if (!isCatalyst(out.what())) {
+                    inv.insert(out.what(), LongMath.saturatedMultiply(out.amount(), times), Actionable.MODULATE);
+                }
+            }
+            for (int x = 0; x < this.inputs.length; x++) {
+                if (this.catalystReturns[x] > 0) {
+                    inv.insert(this.slotNodes[x].getWhat(), catalystReturned(x, times), Actionable.MODULATE);
+                }
             }
 
             inv.addCrafting(details, times);
@@ -329,13 +464,16 @@ public class CraftingTreeProcess {
 
     private void requestInputs(CraftingSimulationState inv, long times, @Nullable KeyCounter containerItems,
         @Nullable AEKey skippedInput) throws CraftBranchFailure, InterruptedException {
-        for (Object2LongMap.Entry<CraftingTreeNode> entry : this.nodes.object2LongEntrySet()) {
-            var node = entry.getKey();
+        for (int x = 0; x < this.slotNodes.length; x++) {
+            var node = this.slotNodes[x];
             if (node.getWhat()
                 .equals(skippedInput)) {
                 continue;
             }
-            node.request(inv, LongMath.saturatedMultiply(entry.getLongValue(), times), containerItems);
+            long multiplier = this.nodes.getLong(node);
+            long units = skippedInput == null ? slotUnits(x, multiplier, times)
+                : LongMath.saturatedMultiply(multiplier, times);
+            node.request(inv, units, containerItems);
         }
     }
 

@@ -203,10 +203,15 @@ public class MainConfig {
             @DefaultBoolean(false)
             public boolean enableCalculationPerformanceLog = false;
 
-            @Comment("Seconds of calculation time a quantum crafting plan with missing items may spend on trying alternative patterns, after which the plan found first is kept. 0 never tries them")
+            @Comment("Seconds of calculation time a quantum crafting plan with missing items may spend on trying alternative patterns one by one, after which the best plan found so far is kept. 0 never tries them")
             @RangeInt(min = 0)
             @DefaultInt(5)
             public int calculationFallbackSeconds = 5;
+
+            @Comment("Seconds of calculation time one quantum crafting calculation may take on a dedicated server before it fails, like MaxCraftingSteps of AE2. 0 disables the limit")
+            @RangeInt(min = 0)
+            @DefaultInt(30)
+            public int calculationLimitSeconds = 30;
         }
 
         @Name("meteor_miner")

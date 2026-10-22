@@ -22,17 +22,24 @@ import com.science.gtnl.common.crafting.quantum.core.localization.PlayerMessages
 
 public class CraftBranchFailure extends Exception {
 
+    private final AEKey what;
     @Nullable
     private final PlayerMessages messageKey;
 
     public CraftBranchFailure(AEKey what, long howMany) {
         super("Failed: " + what + " x " + howMany);
+        this.what = what;
         this.messageKey = null;
     }
 
     public CraftBranchFailure(AEKey what, long howMany, PlayerMessages messageKey) {
         super("Failed: " + what + " x " + howMany + " (" + messageKey.getTranslationKey() + ")");
+        this.what = what;
         this.messageKey = messageKey;
+    }
+
+    public AEKey getWhat() {
+        return this.what;
     }
 
     public PlayerMessages getLocalizedMessageKey() {

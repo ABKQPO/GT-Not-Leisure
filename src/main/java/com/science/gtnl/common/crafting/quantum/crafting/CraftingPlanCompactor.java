@@ -16,6 +16,7 @@ import com.science.gtnl.common.crafting.quantum.api.stacks.GenericStack;
 import com.science.gtnl.common.crafting.quantum.api.stacks.KeyCounter;
 import com.science.gtnl.common.crafting.quantum.core.AELog;
 import com.science.gtnl.common.crafting.quantum.core.localization.PlayerMessages;
+import com.science.gtnl.common.crafting.quantum.util.LongMath;
 
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
@@ -79,7 +80,13 @@ final class CraftingPlanCompactor {
         }
         final CraftingPlanCompactor compactor = new CraftingPlanCompactor(calculation);
         try {
-            return compactor.run(plan);
+            final CraftingPlan compacted = compactor.run(plan);
+            // Balanced as a whole, a catalyst the plan crafted looks like surplus, yet the first craft needs it
+            if (!compactor.flexible && total(compacted.missingItems()) > total(plan.missingItems())
+                && compactor.runsAsIs(plan)) {
+                return plan;
+            }
+            return compacted;
         } catch (ArithmeticException overflow) {
             // Raising crafts without limit overflows on a cycle that consumes more than it makes
             try {
@@ -260,6 +267,38 @@ final class CraftingPlanCompactor {
         return rebuild(plan, times, taken);
     }
 
+    // Whether every craft of the plan runs, in some order, from what the plan lists alone
+    private boolean runsAsIs(CraftingPlan plan) throws InterruptedException {
+        final int finalKey = this.keyIndex.getInt(
+            plan.finalOutput()
+                .what());
+        if (finalKey < 0) {
+            return false;
+        }
+        final long[] times = new long[this.recipes.size()];
+        for (Recipe recipe : this.recipes) {
+            times[recipe.index] = recipe.limit;
+        }
+        this.stock = new long[this.keys.size()];
+        addAll(this.stock, plan.usedItems());
+        final long[] supply = this.stock.clone();
+        addAll(supply, plan.emittedItems());
+        addAll(supply, plan.missingItems());
+        final long[] demand = new long[this.keys.size()];
+        demand[finalKey] = plan.finalOutput()
+            .amount();
+        final long[] borrowed = new long[this.keys.size()];
+        if (replayGreedy(times, supply, demand, borrowed, finalKey) != Replay.DONE) {
+            return false;
+        }
+        for (long amount : borrowed) {
+            if (amount > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private Replay replayGreedy(long[] times, long[] supply, long[] demand, long[] borrowed, int avoided)
         throws InterruptedException {
         this.steps = 0;
@@ -375,6 +414,14 @@ final class CraftingPlanCompactor {
         missing.addAll(plan.missingItems());
         missing.add(what, amount);
         return plan.withMissing(missing);
+    }
+
+    private static long total(KeyCounter counter) {
+        long total = 0;
+        for (Object2LongMap.Entry<AEKey> entry : counter) {
+            total = LongMath.saturatedAdd(total, entry.getLongValue());
+        }
+        return total;
     }
 
     private static CraftingPlan keepOrFail(CraftingPlan plan, boolean planBalanced) {

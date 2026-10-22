@@ -4179,6 +4179,7 @@ gtnl.gui.quantum_crafting.mode.on=On: plans with the quantum algorithm, which re
 gtnl.gui.quantum_crafting.mode.off=Off: plans with the AE2 algorithm.
 gtnl.quantum_crafting.message.CraftingNoPlan=Quantum crafting calculation failed to produce a plan.
 gtnl.quantum_crafting.message.CraftingNoNetOutput=The available patterns cannot produce a net positive amount of the requested item. Check for recursive patterns that consume their own result or require additional external inputs.
+gtnl.quantum_crafting.message.CraftingTooLong=The quantum crafting calculation took longer than this server allows. Request a smaller amount, or raise calculationLimitSeconds in the config.
 gtnl.machine.assembler_matrix.pattern_exists=A similar pattern exists. Upload skipped and blank pattern returned!
 
 gtnl.tooltip.craft_complete.0=§5Auto-Crafting Complete

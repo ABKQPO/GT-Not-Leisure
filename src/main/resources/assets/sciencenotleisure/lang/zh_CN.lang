@@ -4179,6 +4179,7 @@ gtnl.gui.quantum_crafting.mode.on=开启：使用量子算法计算合成计划�
 gtnl.gui.quantum_crafting.mode.off=关闭：使用AE2算法计算合成计划。
 gtnl.quantum_crafting.message.CraftingNoPlan=量子合成计算未能生成计划。
 gtnl.quantum_crafting.message.CraftingNoNetOutput=现有样板无法净产出请求的物品。请检查递归样板是否消耗自身产物，或是否还依赖额外外部输入。
+gtnl.quantum_crafting.message.CraftingTooLong=量子合成计算超出了本服务器允许的计算时间。请减少请求数量，或在配置中调高 calculationLimitSeconds。
 gtnl.machine.assembler_matrix.pattern_exists=网络已有类似的合成样板,已跳过上传并返还空白样板！
 
 gtnl.tooltip.craft_complete.0=§5自动合成完毕！
