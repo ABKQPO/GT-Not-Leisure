@@ -20,7 +20,7 @@ import appeng.client.gui.implementations.GuiCraftAmount;
 import appeng.client.gui.widgets.GuiToggleButton;
 import appeng.core.AEConfig;
 
-@Mixin(GuiCraftAmount.class)
+@Mixin(value = GuiCraftAmount.class, remap = false)
 public abstract class MixinGuiCraftAmount extends GuiAmount implements IQuantumCraftAmountGui {
 
     @Shadow(remap = false)
@@ -35,12 +35,11 @@ public abstract class MixinGuiCraftAmount extends GuiAmount implements IQuantumC
     @Unique
     private boolean gtnl$quantumAvailable;
 
-    @SuppressWarnings("DataFlowIssue")
     public MixinGuiCraftAmount() {
         super(null);
     }
 
-    @Inject(method = "initGui", at = @At("TAIL"))
+    @Inject(method = "initGui", at = @At("TAIL"), remap = true)
     private void gtnl$addQuantumModeButton(CallbackInfo ci) {
         this.gtnl$quantumMode = new QuantumCraftingModeButton(this.guiLeft - 18, this.guiTop + 48);
         this.gtnl$quantumMode.setState(QuantumCraftingClientConfig.isQuantumCraftingMode());
@@ -50,7 +49,7 @@ public abstract class MixinGuiCraftAmount extends GuiAmount implements IQuantumC
         ScienceNotLeisure.network.sendToServer(new QuantumCraftingModePacket(this.gtnl$quantumMode.getState()));
     }
 
-    @Inject(method = "actionPerformed", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "actionPerformed", at = @At("HEAD"), cancellable = true, remap = true)
     private void gtnl$toggleQuantumMode(GuiButton btn, CallbackInfo ci) {
         if (this.gtnl$quantumMode == null) return;
 
@@ -68,7 +67,7 @@ public abstract class MixinGuiCraftAmount extends GuiAmount implements IQuantumC
             }
     }
 
-    @Inject(method = "setControlButtonPressed", at = @At("TAIL"), remap = false)
+    @Inject(method = "setControlButtonPressed", at = @At("TAIL"))
     private void gtnl$hideQuantumModeWhileEditing(boolean pressed, CallbackInfo ci) {
         this.gtnl$updateQuantumModeVisibility();
     }

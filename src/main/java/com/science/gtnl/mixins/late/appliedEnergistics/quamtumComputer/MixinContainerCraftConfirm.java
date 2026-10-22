@@ -29,7 +29,7 @@ import appeng.core.sync.packets.PacketCraftingTreeData;
 public abstract class MixinContainerCraftConfirm implements IQuantumCraftConfirm {
 
     @Shadow
-    private ICraftingJob result;
+    protected ICraftingJob result;
 
     @Unique
     private boolean gtnl$quantumJob;
@@ -40,8 +40,10 @@ public abstract class MixinContainerCraftConfirm implements IQuantumCraftConfirm
             value = "FIELD",
             target = "Lappeng/container/implementations/ContainerCraftConfirm;result:Lappeng/api/networking/crafting/ICraftingJob;",
             opcode = Opcodes.PUTFIELD,
-            shift = At.Shift.AFTER),
-        require = 1)
+            shift = At.Shift.AFTER,
+            remap = false),
+        require = 1,
+        remap = true)
     private void gtnl$syncQuantumJob(CallbackInfo ci) {
         final boolean quantumJob = this.result instanceof QuantumCraftingJob;
         if (!(((AEBaseContainer) (Object) this).getPlayerInv().player instanceof EntityPlayerMP player)) return;
