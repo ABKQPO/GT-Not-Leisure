@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.ToLongFunction;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -35,6 +36,22 @@ public class CraftingBatchPlannerImpl implements CraftingBatchPlanner {
         Objects.requireNonNull(expandedInputs, "expandedInputs");
         Objects.requireNonNull(condensedOutputs, "condensedOutputs");
         Objects.requireNonNull(inventory, "inventory");
+        return plan(requestedCrafts, mediumStrategy, expandedInputs, condensedOutputs, input -> {
+            IAEStack<?> available = getAvailableItem(
+                inventory,
+                input.copy()
+                    .setStackSize(1));
+            return available == null ? 0 : Math.max(0, available.getStackSize());
+        }, energySimulation);
+    }
+
+    @Override
+    public BatchPlan plan(long requestedCrafts, MediumStrategy mediumStrategy, List<IAEStack<?>> expandedInputs,
+        IAEStack<?>[] condensedOutputs, ToLongFunction<IAEStack<?>> availability, EnergySimulation energySimulation) {
+        Objects.requireNonNull(mediumStrategy, "mediumStrategy");
+        Objects.requireNonNull(expandedInputs, "expandedInputs");
+        Objects.requireNonNull(condensedOutputs, "condensedOutputs");
+        Objects.requireNonNull(availability, "availability");
         Objects.requireNonNull(energySimulation, "energySimulation");
 
         if (!hasValidItemStacks(expandedInputs) || !hasValidItemStacks(condensedOutputs)) {
@@ -46,12 +63,11 @@ public class CraftingBatchPlannerImpl implements CraftingBatchPlanner {
             if (input == null) continue;
             IAEStack<?> key = input.copy()
                 .setStackSize(1);
-            IAEStack<?> available = getAvailableItem(inventory, key);
             requirements.add(
                 new BatchRequirement(
                     key,
                     input.getStackSize(),
-                    available == null ? 0 : Math.max(0, available.getStackSize()),
+                    Math.max(0, availability.applyAsLong(input)),
                     input.getAmountPerUnit()));
         }
         long[] outputAmounts = new long[condensedOutputs.length];

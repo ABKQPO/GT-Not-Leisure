@@ -194,6 +194,19 @@ public class MainConfig {
             @RangeInt(min = 1)
             @DefaultInt(1)
             public int maxDataEntangler = 1;
+
+            @Comment("Log the step breakdown of every quantum crafting calculation")
+            @DefaultBoolean(false)
+            public boolean enableCalculationLog = false;
+
+            @Comment("Log stage timings and counters of every quantum crafting calculation")
+            @DefaultBoolean(false)
+            public boolean enableCalculationPerformanceLog = false;
+
+            @Comment("Seconds of calculation time a quantum crafting plan with missing items may spend on trying alternative patterns, after which the plan found first is kept. 0 never tries them")
+            @RangeInt(min = 0)
+            @DefaultInt(5)
+            public int calculationFallbackSeconds = 5;
         }
 
         @Name("meteor_miner")

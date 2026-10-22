@@ -121,6 +121,10 @@ gtnl.gui.config.general.machine.quantum_computer.maxmultithreader=Maximum Multi-
 gtnl.gui.config.general.machine.quantum_computer.maxmultithreader.tooltip=Maximum number of multi-threader processors allowed in the Quantum Computer.
 gtnl.gui.config.general.machine.quantum_computer.maxdataentangler=Maximum Data Entangler Count
 gtnl.gui.config.general.machine.quantum_computer.maxdataentangler.tooltip=Maximum number of data entanglers allowed in the Quantum Computer.
+gtnl.gui.config.general.machine.quantum_computer.enablecalculationlog=Quantum Crafting Calculation Log
+gtnl.gui.config.general.machine.quantum_computer.enablecalculationlog.tooltip=Log the step breakdown of every quantum crafting calculation.
+gtnl.gui.config.general.machine.quantum_computer.enablecalculationperformancelog=Quantum Crafting Performance Log
+gtnl.gui.config.general.machine.quantum_computer.enablecalculationperformancelog.tooltip=Log stage timings and counters of every quantum crafting calculation.
 
 gtnl.gui.config.general.machine.meteor_miner=Meteor Miner
 gtnl.gui.config.general.machine.meteor_miner.meteorminermaxblockpercycle=Max Blocks Per Cycle
@@ -4170,6 +4174,11 @@ gtnl.machine.godforge.module.casing.3= Celestial Matter Guidance Casing
 gtnl.machine.godforge.module.casing.4= Stellar Energy Siphon Casing
 
 gtnl.gui.assembler_matrix.upload_pattern=Upload pattern to available §9Assembler Matrix§r in current network.
+gtnl.gui.quantum_crafting.mode=Quantum Crafting Mode
+gtnl.gui.quantum_crafting.mode.on=On: plans with the quantum algorithm, which resolves recursive and cyclic patterns. Only Quantum Computer CPUs can run these jobs. Excludes lite mode.
+gtnl.gui.quantum_crafting.mode.off=Off: plans with the AE2 algorithm.
+gtnl.quantum_crafting.message.CraftingNoPlan=Quantum crafting calculation failed to produce a plan.
+gtnl.quantum_crafting.message.CraftingNoNetOutput=The available patterns cannot produce a net positive amount of the requested item. Check for recursive patterns that consume their own result or require additional external inputs.
 gtnl.machine.assembler_matrix.pattern_exists=A similar pattern exists. Upload skipped and blank pattern returned!
 
 gtnl.tooltip.craft_complete.0=§5Auto-Crafting Complete

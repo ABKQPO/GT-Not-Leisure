@@ -121,6 +121,10 @@ gtnl.gui.config.general.machine.quantum_computer.maxmultithreader=最大多线�
 gtnl.gui.config.general.machine.quantum_computer.maxmultithreader.tooltip=量子计算机中允许的最大量子计算机多线程处理器数量
 gtnl.gui.config.general.machine.quantum_computer.maxdataentangler=最大数据纠缠器数量
 gtnl.gui.config.general.machine.quantum_computer.maxdataentangler.tooltip=量子计算机中允许的最大量子数据纠缠器数量
+gtnl.gui.config.general.machine.quantum_computer.enablecalculationlog=量子合成计算日志
+gtnl.gui.config.general.machine.quantum_computer.enablecalculationlog.tooltip=记录每次量子合成计算的步骤明细。
+gtnl.gui.config.general.machine.quantum_computer.enablecalculationperformancelog=量子合成性能日志
+gtnl.gui.config.general.machine.quantum_computer.enablecalculationperformancelog.tooltip=记录每次量子合成计算各阶段的耗时与计数。
 
 gtnl.gui.config.general.machine.meteor_miner=坠星采矿场
 gtnl.gui.config.general.machine.meteor_miner.meteorminermaxblockpercycle=单周期最大方块数
@@ -4170,6 +4174,11 @@ gtnl.machine.godforge.module.casing.3= 天体物质引导机械方块
 gtnl.machine.godforge.module.casing.4= 恒星能量抽取机械方块
 
 gtnl.gui.assembler_matrix.upload_pattern=上传样板至当前网络中可用的§9装配矩阵§r。
+gtnl.gui.quantum_crafting.mode=量子合成模式
+gtnl.gui.quantum_crafting.mode.on=开启：使用量子算法计算合成计划，可解析递归与循环样板。只有量子计算机CPU可以执行此类任务。与轻量模式互斥。
+gtnl.gui.quantum_crafting.mode.off=关闭：使用AE2算法计算合成计划。
+gtnl.quantum_crafting.message.CraftingNoPlan=量子合成计算未能生成计划。
+gtnl.quantum_crafting.message.CraftingNoNetOutput=现有样板无法净产出请求的物品。请检查递归样板是否消耗自身产物，或是否还依赖额外外部输入。
 gtnl.machine.assembler_matrix.pattern_exists=网络已有类似的合成样板,已跳过上传并返还空白样板！
 
 gtnl.tooltip.craft_complete.0=§5自动合成完毕！
