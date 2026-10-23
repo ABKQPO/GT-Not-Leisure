@@ -1,5 +1,7 @@
 package com.science.gtnl.common.machine.hatch;
 
+import java.util.Locale;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,6 +35,18 @@ public class TapDynamoHatch extends MTEHatchDynamo {
 
     public TapDynamoHatch(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {
         super(aName, aTier, aDescription, aTextures);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return "gtnl.hatch.tap_dynamo." + GTValues.VN[mTier].toLowerCase(Locale.ROOT) + ".name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
     }
 
     @Override

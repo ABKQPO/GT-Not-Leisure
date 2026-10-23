@@ -143,6 +143,18 @@ public class OredictInputBusME extends MTEHatchInputBusME implements IRecipeProc
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return isSuper ? "gtnl.hatch.oredict_input_bus_me.advanced.name" : "gtnl.hatch.oredict_input_bus_me.name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
+    @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new OredictInputBusME(mName, autoPullAvailable, mTier, mDescriptionArray, mTextures, isSuper);
     }

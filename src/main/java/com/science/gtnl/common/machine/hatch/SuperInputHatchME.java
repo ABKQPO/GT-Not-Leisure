@@ -118,6 +118,19 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return autoPullAvailable ? "gtnl.hatch.super_input_hatch_me.advanced.name"
+            : "gtnl.hatch.super_input_hatch_me.name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
+    @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new SuperInputHatchME(mName, autoPullAvailable, mTier, mDescriptionArray, mTextures);
     }

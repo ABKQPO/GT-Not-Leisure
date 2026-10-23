@@ -73,6 +73,18 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return "gtnl.hatch.super_crafting_input_proxy.name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
+    @Override
     public String[] getDescription() {
         return mDescriptionArray;
     }

@@ -79,10 +79,15 @@ public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLog
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return "gtnl.hatch.parallel_controller." + GTValues.VN[mTier].toLowerCase(Locale.ROOT) + ".name";
+    }
+
+    @Override
     public String getLocalName() {
         if (!hasOwnLocalName()) return super.getLocalName();
-        return StatCollector.translateToLocal(
-            "gtnl.hatch.parallel_controller." + GTValues.VN[mTier].toLowerCase(Locale.ROOT) + ".name");
+        return StatCollector.translateToLocal(getLocalNameKey());
     }
 
     @Override

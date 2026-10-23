@@ -27,6 +27,18 @@ public class DebugDataAccessHatch extends MTEHatchDataAccess {
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return "gtnl.hatch.debug_data_access.name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
+    @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new DebugDataAccessHatch(mName, mTier, mDescriptionArray, mTextures);
     }

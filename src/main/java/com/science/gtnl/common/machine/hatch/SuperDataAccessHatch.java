@@ -42,6 +42,18 @@ public class SuperDataAccessHatch extends MTEHatchDataAccess implements IAddGreg
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return "gtnl.hatch.super_data_access.name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
+    @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new SuperDataAccessHatch(mName, mTier, mDescriptionArray, mTextures);
     }

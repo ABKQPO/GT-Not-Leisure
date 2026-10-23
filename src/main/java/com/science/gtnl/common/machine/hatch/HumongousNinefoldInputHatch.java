@@ -20,6 +20,12 @@ public class HumongousNinefoldInputHatch extends NinefoldInputHatch implements I
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return "gtnl.hatch.humongous_ninefold_input.name";
+    }
+
+    @Override
     public int getCapacityPerTank(int aTier, int aSlot) {
         return Integer.MAX_VALUE;
     }

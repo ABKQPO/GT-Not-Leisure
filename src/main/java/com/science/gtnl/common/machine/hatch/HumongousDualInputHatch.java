@@ -72,10 +72,15 @@ public class HumongousDualInputHatch extends DualInputHatch
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return "gtnl.hatch.humongous_dual_input." + GTValues.VN[mTier].toLowerCase(Locale.ROOT) + ".name";
+    }
+
+    @Override
     public String getLocalName() {
         if (!hasOwnLocalName()) return super.getLocalName();
-        return StatCollector.translateToLocal(
-            "gtnl.hatch.humongous_dual_input." + GTValues.VN[mTier].toLowerCase(Locale.ROOT) + ".name");
+        return StatCollector.translateToLocal(getLocalNameKey());
     }
 
     @Override

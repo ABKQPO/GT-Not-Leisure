@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.Constants;
 
 import com.cleanroommc.modularui.factory.PosGuiData;
@@ -48,6 +49,18 @@ public class SuperVoidBus extends MTEHatchVoidBus implements IAddGregtechLogo {
 
     public SuperVoidBus(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {
         super(aName, aTier, aDescription, aTextures);
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return "gtnl.hatch.super_void_bus.name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
     }
 
     @Override

@@ -2577,24 +2577,24 @@ gtnl.machine.hydraulic_super_buffer.tooltip.4=§7电压输出: §e0§7 (§e蒸�
 gtnl.machine.hydraulic_super_buffer.tooltip.5=§7安培数：§b0§7
 gtnl.machine.hydraulic_super_buffer.tooltip.6=§7容量: §9没有输送电量功能！§7
 
-gt.blockmachines.breel.input_bus.steam.name=输入总线（青铁）
-gt.blockmachines.breel.input_bus.steam.tooltip.0=为多方块机器输入物品
-gt.blockmachines.breel.input_bus.steam.tooltip.1=手持螺丝刀Shift右键以切换分类模式
-gt.blockmachines.breel.input_bus.steam.tooltip.2=自动从正面相邻容器拉取物品
-gt.blockmachines.breel.input_bus.steam.tooltip.3=容量：%s格
-gt.blockmachines.breel.input_bus.steam.tooltip.4=无法用于非蒸汽多方块
+gtnl.hatch.breel.input_bus.steam.name=输入总线（青铁）
+gtnl.hatch.breel.input_bus.steam.tooltip.0=为多方块机器输入物品
+gtnl.hatch.breel.input_bus.steam.tooltip.1=手持螺丝刀Shift右键以切换分类模式
+gtnl.hatch.breel.input_bus.steam.tooltip.2=自动从正面相邻容器拉取物品
+gtnl.hatch.breel.input_bus.steam.tooltip.3=容量：%s格
+gtnl.hatch.breel.input_bus.steam.tooltip.4=无法用于非蒸汽多方块
 
-gt.blockmachines.breel.output_bus.steam.name=输出总线（青铁）
-gt.blockmachines.breel.output_bus.steam.tooltip.0=为多方块机器输出物品
-gt.blockmachines.breel.output_bus.steam.tooltip.1=自动把产物输出到正面相邻容器
-gt.blockmachines.breel.output_bus.steam.tooltip.2=容量：%s格
-gt.blockmachines.breel.output_bus.steam.tooltip.3=无法用于非蒸汽多方块
+gtnl.hatch.breel.output_bus.steam.name=输出总线（青铁）
+gtnl.hatch.breel.output_bus.steam.tooltip.0=为多方块机器输出物品
+gtnl.hatch.breel.output_bus.steam.tooltip.1=自动把产物输出到正面相邻容器
+gtnl.hatch.breel.output_bus.steam.tooltip.2=容量：%s格
+gtnl.hatch.breel.output_bus.steam.tooltip.3=无法用于非蒸汽多方块
 
-gt.blockmachines.stronze.input_hatch.steam.name=输入仓（青钢）
-gt.blockmachines.stronze.input_hatch.steam.tooltip.0=为多方块机器输入流体
-gt.blockmachines.stronze.input_hatch.steam.tooltip.1=手持螺丝刀右键以切换输入过滤
-gt.blockmachines.stronze.input_hatch.steam.tooltip.2=容量：%s升
-gt.blockmachines.stronze.input_hatch.steam.tooltip.3=接受任意流体，并自动从正面相邻容器抽取
+gtnl.hatch.stronze.input_hatch.steam.name=输入仓（青钢）
+gtnl.hatch.stronze.input_hatch.steam.tooltip.0=为多方块机器输入流体
+gtnl.hatch.stronze.input_hatch.steam.tooltip.1=手持螺丝刀右键以切换输入过滤
+gtnl.hatch.stronze.input_hatch.steam.tooltip.2=容量：%s升
+gtnl.hatch.stronze.input_hatch.steam.tooltip.3=接受任意流体，并自动从正面相邻容器抽取
 
 gt.blockmachines.wire.stargate.01.name=1x%material导线
 gt.blockmachines.wire.stargate.02.name=2x%material导线

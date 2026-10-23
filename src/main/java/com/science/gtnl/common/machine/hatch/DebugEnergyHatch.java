@@ -64,6 +64,18 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
         super(aName, 14, aDescription, aTextures);
     }
 
+    @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return "gtnl.hatch.debug_energy.name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
     public void setMEUT(long eut) {
         mEUT = Math.max(0L, eut);
         updateProducingState();

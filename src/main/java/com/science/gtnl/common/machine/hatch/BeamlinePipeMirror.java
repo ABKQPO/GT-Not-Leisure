@@ -36,6 +36,16 @@ public class BeamlinePipeMirror extends MTEBeamlinePipe {
     }
 
     @Override
+    public String getLocalNameKey() {
+        return "gtnl.blockmachines.beamlinepipemirror.name";
+    }
+
+    @Override
+    public String getLocalName() {
+        return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
+    @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new BeamlinePipeMirror(mName);
     }

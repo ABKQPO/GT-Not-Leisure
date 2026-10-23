@@ -2,6 +2,7 @@ package com.science.gtnl.common.machine.hatch;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -15,6 +16,7 @@ import net.minecraftforge.fluids.FluidStack;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.common.material.GTNLMaterials;
 
+import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.modularui.IAddUIWidgets;
@@ -43,6 +45,18 @@ public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
     public ManaEnergyHatch(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures, int aAmp) {
         super(aName, aTier, aDescription, aTextures);
         mAmp = aAmp;
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return "gtnl.hatch.mana_energy." + GTValues.VN[mTier].toLowerCase(Locale.ROOT) + ".name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
     }
 
     @Override

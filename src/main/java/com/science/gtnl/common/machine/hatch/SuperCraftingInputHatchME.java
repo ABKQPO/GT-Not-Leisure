@@ -201,6 +201,19 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return supportFluids ? "gtnl.hatch.super_crafting_input_me.hatch.name"
+            : "gtnl.hatch.super_crafting_input_me.bus.name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
+    @Override
     public String[] getDescription() {
         return mDescriptionArray;
     }

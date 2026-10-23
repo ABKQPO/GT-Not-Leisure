@@ -47,6 +47,18 @@ public class NuclearFluidHatch extends MTEHatch {
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return "gtnl.hatch.nuclear_fluid_hatch.name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
+    @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new NuclearFluidHatch(mName, mTier, mFluidCapacity, mDescriptionArray, mTextures);
     }

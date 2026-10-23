@@ -55,6 +55,18 @@ public class SuperVoidHatch extends MTEHatchVoid implements IFluidsLockable, IAd
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return "gtnl.hatch.super_void_hatch.name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
+    @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new SuperVoidHatch(mName, mTier, mDescriptionArray, mTextures);
     }

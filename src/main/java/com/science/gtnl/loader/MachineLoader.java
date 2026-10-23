@@ -42,8 +42,12 @@ import com.science.gtnl.common.machine.hatch.ExplosionDynamoHatch;
 import com.science.gtnl.common.machine.hatch.HumongousDualInputHatch;
 import com.science.gtnl.common.machine.hatch.HumongousNinefoldInputHatch;
 import com.science.gtnl.common.machine.hatch.HumongousSolidifierHatch;
+import com.science.gtnl.common.machine.hatch.LaserDynamoHatch;
+import com.science.gtnl.common.machine.hatch.LaserEnergyHatch;
 import com.science.gtnl.common.machine.hatch.ManaDynamoHatch;
 import com.science.gtnl.common.machine.hatch.ManaEnergyHatch;
+import com.science.gtnl.common.machine.hatch.MultiDynamoHatch;
+import com.science.gtnl.common.machine.hatch.MultiEnergyHatch;
 import com.science.gtnl.common.machine.hatch.NinefoldInputHatch;
 import com.science.gtnl.common.machine.hatch.NuclearFluidHatch;
 import com.science.gtnl.common.machine.hatch.NuclearItemBus;
@@ -53,6 +57,8 @@ import com.science.gtnl.common.machine.hatch.OriginalOutputHatch;
 import com.science.gtnl.common.machine.hatch.OutputBusMEProxy;
 import com.science.gtnl.common.machine.hatch.OutputHatchMEProxy;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
+import com.science.gtnl.common.machine.hatch.StandardDynamoHatch;
+import com.science.gtnl.common.machine.hatch.StandardEnergyHatch;
 import com.science.gtnl.common.machine.hatch.StronzeInputHatch;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputProxy;
@@ -66,6 +72,7 @@ import com.science.gtnl.common.machine.hatch.TapDynamoHatch;
 import com.science.gtnl.common.machine.hatch.TypeFilteredInputBusME;
 import com.science.gtnl.common.machine.hatch.VaultPortHatch;
 import com.science.gtnl.common.machine.hatch.WirelessMultiDynamoHatch;
+import com.science.gtnl.common.machine.hatch.WirelessMultiEnergyHatch;
 import com.science.gtnl.common.machine.hatch.WirelessSteamDynamoHatch;
 import com.science.gtnl.common.machine.hatch.WirelessSteamEnergyHatch;
 import com.science.gtnl.common.machine.hatch.WirelessVacuumConveyorInputHatch;
@@ -305,8 +312,6 @@ import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEBasicMachineWithRecipe;
-import gregtech.api.metatileentity.implementations.MTEHatchDynamo;
-import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
 import gregtech.common.covers.CoverConveyor;
@@ -316,11 +321,6 @@ import gregtech.common.covers.CoverSteamRegulator;
 import gregtech.common.covers.CoverSteamValve;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 import tectech.thing.CustomItemList;
-import tectech.thing.metaTileEntity.hatch.MTEHatchDynamoMulti;
-import tectech.thing.metaTileEntity.hatch.MTEHatchDynamoTunnel;
-import tectech.thing.metaTileEntity.hatch.MTEHatchEnergyMulti;
-import tectech.thing.metaTileEntity.hatch.MTEHatchEnergyTunnel;
-import tectech.thing.metaTileEntity.hatch.MTEHatchWirelessMulti;
 
 public class MachineLoader {
 
@@ -1578,7 +1578,7 @@ public class MachineLoader {
             new BreelSteamInputBus(
                 GTNLMachineID.BREEL_STEAM_INPUT_BUS.ID,
                 "breel.input_bus.steam",
-                "gt.blockmachines.breel.input_bus.steam.name",
+                "gtnl.hatch.breel.input_bus.steam.name",
                 0));
         AnimatedTooltipHandler
             .addItemTooltip(GTNLItemList.BreelReinforcedSteamInputBus.get(1), AnimatedText.GT_NOT_LEISURE);
@@ -1589,7 +1589,7 @@ public class MachineLoader {
             new BreelSteamOutputBus(
                 GTNLMachineID.BREEL_STEAM_OUTPUT_BUS.ID,
                 "breel.output_bus.steam",
-                "gt.blockmachines.breel.output_bus.steam.name",
+                "gtnl.hatch.breel.output_bus.steam.name",
                 0));
         AnimatedTooltipHandler
             .addItemTooltip(GTNLItemList.BreelReinforcedSteamOutputBus.get(1), AnimatedText.GT_NOT_LEISURE);
@@ -1600,7 +1600,7 @@ public class MachineLoader {
             new StronzeInputHatch(
                 GTNLMachineID.STRONZE_STEAM_INPUT_HATCH.ID,
                 "stronze.input_hatch.steam",
-                "gt.blockmachines.stronze.input_hatch.steam.name",
+                "gtnl.hatch.stronze.input_hatch.steam.name",
                 0));
         AnimatedTooltipHandler
             .addItemTooltip(GTNLItemList.StronzeReinforcedSteamInputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
@@ -1623,7 +1623,7 @@ public class MachineLoader {
                 512000,
                 GTNLMachineID.FLUID_MANA_INPUT_HATCH.ID,
                 "FluidManaInputHatch",
-                StatCollector.translateToLocal("gtnl.hatch.fluid_mana_input.name"),
+                "gtnl.hatch.fluid_mana_input.name",
                 6));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FluidManaInputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
@@ -1633,7 +1633,7 @@ public class MachineLoader {
                 256000,
                 GTNLMachineID.FLUID_ICE_INPUT_HATCH.ID,
                 "FluidIceInputHatch",
-                StatCollector.translateToLocal("gtnl.hatch.fluid_ice_input.name"),
+                "gtnl.hatch.fluid_ice_input.name",
                 5));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FluidIceInputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
@@ -1643,7 +1643,7 @@ public class MachineLoader {
                 256000,
                 GTNLMachineID.FLUID_BLAZE_INPUT_HATCH.ID,
                 "FluidBlazeInputHatch",
-                StatCollector.translateToLocal("gtnl.hatch.fluid_blaze_input.name"),
+                "gtnl.hatch.fluid_blaze_input.name",
                 5));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.FluidBlazeInputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
@@ -1921,7 +1921,7 @@ public class MachineLoader {
                 4096000,
                 GTNLMachineID.BIG_STEAM_INPUT_HATCH.ID,
                 "BigSteamInputHatch",
-                StatCollector.translateToLocal("gtnl.hatch.big_steam_input.name"),
+                "gtnl.hatch.big_steam_input.name",
                 1,
                 ItemUtils.PICTURE_GTNL_STEAM_LOGO));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.BigSteamInputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
@@ -2064,7 +2064,7 @@ public class MachineLoader {
             new WirelessSteamEnergyHatch(
                 GTNLMachineID.PIPELESS_STEAM_HATCH.ID,
                 "PipelessSteamHatch",
-                StatCollector.translateToLocal("gtnl.hatch.pipeless_steam.hatch.name"),
+                "gtnl.hatch.pipeless_steam.hatch.name",
                 0));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PipelessSteamHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
@@ -2080,7 +2080,7 @@ public class MachineLoader {
             new WirelessSteamEnergyHatch(
                 GTNLMachineID.PIPELESS_JETSTREAM_HATCH.ID,
                 "PipelessJetstreamHatch",
-                StatCollector.translateToLocal("gtnl.hatch.pipeless_jetstream.hatch.name"),
+                "gtnl.hatch.pipeless_jetstream.hatch.name",
                 1));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.PipelessJetstreamHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
@@ -2096,7 +2096,7 @@ public class MachineLoader {
             new CustomMaintenanceHatch(
                 GTNLMachineID.AUTO_CONFIGURATION_MAINTENANCE_HATCH.ID,
                 "AutoConfigurationMaintenanceHatch",
-                StatCollector.translateToLocal("gtnl.hatch.auto_configuration_maintenance.name"),
+                "gtnl.hatch.auto_configuration_maintenance.name",
                 80,
                 120,
                 5,
@@ -2445,7 +2445,7 @@ public class MachineLoader {
             new CustomMaintenanceHatch(
                 GTNLMachineID.STERILE_CONFIGURATION_MAINTENANCE_HATCH.ID,
                 "SterileConfigurationMaintenanceHatch",
-                StatCollector.translateToLocal("gtnl.hatch.sterile_configuration_maintenance.name"),
+                "gtnl.hatch.sterile_configuration_maintenance.name",
                 70,
                 130,
                 9,
@@ -2459,7 +2459,7 @@ public class MachineLoader {
             new CustomMaintenanceHatch(
                 GTNLMachineID.HUMONGOUS_CONFIGURATION_MAINTENANCE_HATCH.ID,
                 "HumongousConfigurationMaintenanceHatch",
-                StatCollector.translateToLocal("gtnl.hatch.humongous_configuration_maintenance.name"),
+                "gtnl.hatch.humongous_configuration_maintenance.name",
                 50,
                 150,
                 14,
@@ -2571,7 +2571,7 @@ public class MachineLoader {
         GTNLItemList.EnergyHatchLV.set(ItemList.Hatch_Energy_LV.get(1));
 
         GTNLItemList.EnergyHatchLV4A.set(
-            new MTEHatchEnergyMulti(
+            new MultiEnergyHatch(
                 GTNLMachineID.ENERGY_HATCH_LV_4A.ID,
                 "EnergyHatchLV4A",
                 StatCollector.translateToLocal("gtnl.hatch.energy.lv.4.name"),
@@ -2580,7 +2580,7 @@ public class MachineLoader {
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchLV4A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchLV16A.set(
-            new MTEHatchEnergyMulti(
+            new MultiEnergyHatch(
                 GTNLMachineID.ENERGY_HATCH_LV_16A.ID,
                 "EnergyHatchLV16A",
                 StatCollector.translateToLocal("gtnl.hatch.energy.lv.16.name"),
@@ -2589,7 +2589,7 @@ public class MachineLoader {
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchLV16A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchLV64A.set(
-            new MTEHatchEnergyMulti(
+            new MultiEnergyHatch(
                 GTNLMachineID.ENERGY_HATCH_LV_64A.ID,
                 "EnergyHatchLV64A",
                 StatCollector.translateToLocal("gtnl.hatch.energy.lv.64.name"),
@@ -2600,7 +2600,7 @@ public class MachineLoader {
         GTNLItemList.EnergyHatchMV.set(ItemList.Hatch_Energy_MV.get(1));
 
         GTNLItemList.EnergyHatchMV4A.set(
-            new MTEHatchEnergyMulti(
+            new MultiEnergyHatch(
                 GTNLMachineID.ENERGY_HATCH_MV_4A.ID,
                 "EnergyHatchMV4A",
                 StatCollector.translateToLocal("gtnl.hatch.energy.mv.4.name"),
@@ -2609,7 +2609,7 @@ public class MachineLoader {
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMV4A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchMV16A.set(
-            new MTEHatchEnergyMulti(
+            new MultiEnergyHatch(
                 GTNLMachineID.ENERGY_HATCH_MV_16A.ID,
                 "EnergyHatchMV16A",
                 StatCollector.translateToLocal("gtnl.hatch.energy.mv.16.name"),
@@ -2618,7 +2618,7 @@ public class MachineLoader {
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMV16A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchMV64A.set(
-            new MTEHatchEnergyMulti(
+            new MultiEnergyHatch(
                 GTNLMachineID.ENERGY_HATCH_MV_64A.ID,
                 "EnergyHatchMV64A",
                 StatCollector.translateToLocal("gtnl.hatch.energy.mv.64.name"),
@@ -2629,7 +2629,7 @@ public class MachineLoader {
         GTNLItemList.EnergyHatchHV.set(ItemList.Hatch_Energy_HV.get(1));
 
         GTNLItemList.EnergyHatchHV4A.set(
-            new MTEHatchEnergyMulti(
+            new MultiEnergyHatch(
                 GTNLMachineID.ENERGY_HATCH_HV_4A.ID,
                 "EnergyHatchHV4A",
                 StatCollector.translateToLocal("gtnl.hatch.energy.hv.4.name"),
@@ -2638,7 +2638,7 @@ public class MachineLoader {
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchHV4A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchHV16A.set(
-            new MTEHatchEnergyMulti(
+            new MultiEnergyHatch(
                 GTNLMachineID.ENERGY_HATCH_HV_16A.ID,
                 "EnergyHatchHV16A",
                 StatCollector.translateToLocal("gtnl.hatch.energy.hv.16.name"),
@@ -2647,7 +2647,7 @@ public class MachineLoader {
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchHV16A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchHV64A.set(
-            new MTEHatchEnergyMulti(
+            new MultiEnergyHatch(
                 GTNLMachineID.ENERGY_HATCH_HV_64A.ID,
                 "EnergyHatchHV64A",
                 StatCollector.translateToLocal("gtnl.hatch.energy.hv.64.name"),
@@ -2736,7 +2736,7 @@ public class MachineLoader {
         GTNLItemList.EnergyHatchUXV64A.set(CustomItemList.eM_energyMulti64_UXV.get(1));
 
         GTNLItemList.EnergyHatchMAX.set(
-            new MTEHatchEnergy(
+            new StandardEnergyHatch(
                 GTNLMachineID.ENERGY_HATCH_MAX.ID,
                 "EnergyHatchMAX",
                 StatCollector.translateToLocal("gtnl.hatch.energy.max.standard.name"),
@@ -2744,7 +2744,7 @@ public class MachineLoader {
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMAX.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchMAX4A.set(
-            new MTEHatchEnergyMulti(
+            new MultiEnergyHatch(
                 GTNLMachineID.ENERGY_HATCH_MAX_4A.ID,
                 "EnergyHatchMAX4A",
                 StatCollector.translateToLocal("gtnl.hatch.energy.max.4.name"),
@@ -2753,7 +2753,7 @@ public class MachineLoader {
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMAX4A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchMAX16A.set(
-            new MTEHatchEnergyMulti(
+            new MultiEnergyHatch(
                 GTNLMachineID.ENERGY_HATCH_MAX_16A.ID,
                 "EnergyHatchMAX16A",
                 StatCollector.translateToLocal("gtnl.hatch.energy.max.16.name"),
@@ -2762,7 +2762,7 @@ public class MachineLoader {
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.EnergyHatchMAX16A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.EnergyHatchMAX64A.set(
-            new MTEHatchEnergyMulti(
+            new MultiEnergyHatch(
                 GTNLMachineID.ENERGY_HATCH_MAX_64A.ID,
                 "EnergyHatchMAX64A",
                 StatCollector.translateToLocal("gtnl.hatch.energy.max.64.name"),
@@ -2773,7 +2773,7 @@ public class MachineLoader {
         GTNLItemList.DynamoHatchLV.set(ItemList.Hatch_Dynamo_LV.get(1));
 
         GTNLItemList.DynamoHatchLV4A.set(
-            new MTEHatchDynamoMulti(
+            new MultiDynamoHatch(
                 GTNLMachineID.DYNAMO_HATCH_LV_4A.ID,
                 "DynamoHatchLV4A",
                 StatCollector.translateToLocal("gtnl.hatch.dynamo.lv.4.name"),
@@ -2781,7 +2781,7 @@ public class MachineLoader {
                 4));
 
         GTNLItemList.DynamoHatchLV16A.set(
-            new MTEHatchDynamoMulti(
+            new MultiDynamoHatch(
                 GTNLMachineID.DYNAMO_HATCH_LV_16A.ID,
                 "DynamoHatchLV16A",
                 StatCollector.translateToLocal("gtnl.hatch.dynamo.lv.16.name"),
@@ -2789,7 +2789,7 @@ public class MachineLoader {
                 16));
 
         GTNLItemList.DynamoHatchLV64A.set(
-            new MTEHatchDynamoMulti(
+            new MultiDynamoHatch(
                 GTNLMachineID.DYNAMO_HATCH_LV_64A.ID,
                 "DynamoHatchLV64A",
                 StatCollector.translateToLocal("gtnl.hatch.dynamo.lv.64.name"),
@@ -2799,7 +2799,7 @@ public class MachineLoader {
         GTNLItemList.DynamoHatchMV.set(ItemList.Hatch_Dynamo_MV.get(1));
 
         GTNLItemList.DynamoHatchMV4A.set(
-            new MTEHatchDynamoMulti(
+            new MultiDynamoHatch(
                 GTNLMachineID.DYNAMO_HATCH_MV_4A.ID,
                 "DynamoHatchMV4A",
                 StatCollector.translateToLocal("gtnl.hatch.dynamo.mv.4.name"),
@@ -2807,7 +2807,7 @@ public class MachineLoader {
                 4));
 
         GTNLItemList.DynamoHatchMV16A.set(
-            new MTEHatchDynamoMulti(
+            new MultiDynamoHatch(
                 GTNLMachineID.DYNAMO_HATCH_MV_16A.ID,
                 "DynamoHatchMV16A",
                 StatCollector.translateToLocal("gtnl.hatch.dynamo.mv.16.name"),
@@ -2815,7 +2815,7 @@ public class MachineLoader {
                 16));
 
         GTNLItemList.DynamoHatchMV64A.set(
-            new MTEHatchDynamoMulti(
+            new MultiDynamoHatch(
                 GTNLMachineID.DYNAMO_HATCH_MV_64A.ID,
                 "DynamoHatchMV64A",
                 StatCollector.translateToLocal("gtnl.hatch.dynamo.mv.64.name"),
@@ -2825,7 +2825,7 @@ public class MachineLoader {
         GTNLItemList.DynamoHatchHV.set(ItemList.Hatch_Dynamo_HV.get(1));
 
         GTNLItemList.DynamoHatchHV4A.set(
-            new MTEHatchDynamoMulti(
+            new MultiDynamoHatch(
                 GTNLMachineID.DYNAMO_HATCH_HV_4A.ID,
                 "DynamoHatchHV4A",
                 StatCollector.translateToLocal("gtnl.hatch.dynamo.hv.4.name"),
@@ -2833,7 +2833,7 @@ public class MachineLoader {
                 4));
 
         GTNLItemList.DynamoHatchHV16A.set(
-            new MTEHatchDynamoMulti(
+            new MultiDynamoHatch(
                 GTNLMachineID.DYNAMO_HATCH_HV_16A.ID,
                 "DynamoHatchHV16A",
                 StatCollector.translateToLocal("gtnl.hatch.dynamo.hv.16.name"),
@@ -2841,7 +2841,7 @@ public class MachineLoader {
                 16));
 
         GTNLItemList.DynamoHatchHV64A.set(
-            new MTEHatchDynamoMulti(
+            new MultiDynamoHatch(
                 GTNLMachineID.DYNAMO_HATCH_HV_64A.ID,
                 "DynamoHatchHV64A",
                 StatCollector.translateToLocal("gtnl.hatch.dynamo.hv.64.name"),
@@ -2929,14 +2929,14 @@ public class MachineLoader {
         GTNLItemList.DynamoHatchUXV64A.set(CustomItemList.eM_dynamoMulti64_UXV.get(1));
 
         GTNLItemList.DynamoHatchMAX.set(
-            new MTEHatchDynamo(
+            new StandardDynamoHatch(
                 GTNLMachineID.DYNAMO_HATCH_MAX.ID,
                 "DynamoHatchMAX",
                 StatCollector.translateToLocal("gtnl.hatch.dynamo.max.standard.name"),
                 14));
 
         GTNLItemList.DynamoHatchMAX4A.set(
-            new MTEHatchDynamoMulti(
+            new MultiDynamoHatch(
                 GTNLMachineID.DYNAMO_HATCH_MAX_4A.ID,
                 "DynamoHatchMAX4A",
                 StatCollector.translateToLocal("gtnl.hatch.dynamo.max.4.name"),
@@ -2944,7 +2944,7 @@ public class MachineLoader {
                 4));
 
         GTNLItemList.DynamoHatchMAX16A.set(
-            new MTEHatchDynamoMulti(
+            new MultiDynamoHatch(
                 GTNLMachineID.DYNAMO_HATCH_MAX_16A.ID,
                 "DynamoHatchMAX16A",
                 StatCollector.translateToLocal("gtnl.hatch.dynamo.max.16.name"),
@@ -2952,7 +2952,7 @@ public class MachineLoader {
                 16));
 
         GTNLItemList.DynamoHatchMAX64A.set(
-            new MTEHatchDynamoMulti(
+            new MultiDynamoHatch(
                 GTNLMachineID.DYNAMO_HATCH_MAX_64A.ID,
                 "DynamoHatchMAX64A",
                 StatCollector.translateToLocal("gtnl.hatch.dynamo.max.64.name"),
@@ -2962,7 +2962,7 @@ public class MachineLoader {
         GTNLItemList.WirelessEnergyHatchLV.set(ItemList.Wireless_Hatch_Energy_LV.get(1));
 
         GTNLItemList.WirelessEnergyHatchLV4A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_LV_4A.ID,
                 "WirelessEnergyHatchLV4A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.lv.4.name"),
@@ -2971,7 +2971,7 @@ public class MachineLoader {
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.WirelessEnergyHatchLV4A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLV16A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_LV_16A.ID,
                 "WirelessEnergyHatchLV16A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.lv.16.name"),
@@ -2981,7 +2981,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchLV16A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLV64A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_LV_64A.ID,
                 "WirelessEnergyHatchLV64A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.lv.64.name"),
@@ -2993,7 +2993,7 @@ public class MachineLoader {
         GTNLItemList.WirelessEnergyHatchMV.set(ItemList.Wireless_Hatch_Energy_MV.get(1));
 
         GTNLItemList.WirelessEnergyHatchMV4A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_MV_4A.ID,
                 "WirelessEnergyHatchMV4A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.mv.4.name"),
@@ -3002,7 +3002,7 @@ public class MachineLoader {
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.WirelessEnergyHatchMV4A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMV16A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_MV_16A.ID,
                 "WirelessEnergyHatchMV16A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.mv.16.name"),
@@ -3012,7 +3012,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchMV16A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMV64A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_MV_64A.ID,
                 "WirelessEnergyHatchMV64A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.mv.64.name"),
@@ -3024,7 +3024,7 @@ public class MachineLoader {
         GTNLItemList.WirelessEnergyHatchHV.set(ItemList.Wireless_Hatch_Energy_HV.get(1));
 
         GTNLItemList.WirelessEnergyHatchHV4A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_HV_4A.ID,
                 "WirelessEnergyHatchHV4A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.hv.4.name"),
@@ -3033,7 +3033,7 @@ public class MachineLoader {
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.WirelessEnergyHatchHV4A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchHV16A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_HV_16A.ID,
                 "WirelessEnergyHatchHV16A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.hv.16.name"),
@@ -3043,7 +3043,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchHV16A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchHV64A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_HV_64A.ID,
                 "WirelessEnergyHatchHV64A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.hv.64.name"),
@@ -3075,7 +3075,7 @@ public class MachineLoader {
         GTNLItemList.LaserEnergyHatchIV1048576A.set(CustomItemList.eM_energyTunnel4_UV.get(1));
 
         GTNLItemList.LaserEnergyHatchIV4194304A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_IV_4194304A.ID,
                 "LaserEnergyHatchIV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.iv.4194304.name"),
@@ -3085,7 +3085,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserEnergyHatchIV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchIV16777216A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_IV_16777216A.ID,
                 "LaserEnergyHatchIV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.iv.16777216.name"),
@@ -3109,7 +3109,7 @@ public class MachineLoader {
         GTNLItemList.LaserEnergyHatchLuV1048576A.set(CustomItemList.eM_energyTunnel4_UHV.get(1));
 
         GTNLItemList.LaserEnergyHatchLuV4194304A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_LUV_4194304A.ID,
                 "LaserEnergyHatchLuV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.luv.4194304.name"),
@@ -3119,7 +3119,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserEnergyHatchLuV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchLuV16777216A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_LUV_16777216A.ID,
                 "LaserEnergyHatchLuV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.luv.16777216.name"),
@@ -3143,7 +3143,7 @@ public class MachineLoader {
         GTNLItemList.LaserEnergyHatchZPM1048576A.set(CustomItemList.eM_energyTunnel5_UHV.get(1));
 
         GTNLItemList.LaserEnergyHatchZPM4194304A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_ZPM_4194304A.ID,
                 "LaserEnergyHatchZPM4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.zpm.4194304.name"),
@@ -3153,7 +3153,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserEnergyHatchZPM4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchZPM16777216A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_ZPM_16777216A.ID,
                 "LaserEnergyHatchZPM16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.zpm.16777216.name"),
@@ -3177,7 +3177,7 @@ public class MachineLoader {
         GTNLItemList.LaserEnergyHatchUV1048576A.set(CustomItemList.eM_energyTunnel5_UEV.get(1));
 
         GTNLItemList.LaserEnergyHatchUV4194304A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_UV_4194304A.ID,
                 "LaserEnergyHatchUV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.uv.4194304.name"),
@@ -3187,7 +3187,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserEnergyHatchUV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchUV16777216A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_UV_16777216A.ID,
                 "LaserEnergyHatchUV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.uv.16777216.name"),
@@ -3211,7 +3211,7 @@ public class MachineLoader {
         GTNLItemList.LaserEnergyHatchUHV1048576A.set(CustomItemList.eM_energyTunnel6_UEV.get(1));
 
         GTNLItemList.LaserEnergyHatchUHV4194304A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_UHV_4194304A.ID,
                 "LaserEnergyHatchUHV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.uhv.4194304.name"),
@@ -3221,7 +3221,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserEnergyHatchUHV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchUHV16777216A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_UHV_16777216A.ID,
                 "LaserEnergyHatchUHV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.uhv.16777216.name"),
@@ -3245,7 +3245,7 @@ public class MachineLoader {
         GTNLItemList.LaserEnergyHatchUEV1048576A.set(CustomItemList.eM_energyTunnel6_UIV.get(1));
 
         GTNLItemList.LaserEnergyHatchUEV4194304A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_UEV_4194304A.ID,
                 "LaserEnergyHatchUEV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.uev.4194304.name"),
@@ -3255,7 +3255,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserEnergyHatchUEV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchUEV16777216A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_UEV_16777216A.ID,
                 "LaserEnergyHatchUEV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.uev.16777216.name"),
@@ -3279,7 +3279,7 @@ public class MachineLoader {
         GTNLItemList.LaserEnergyHatchUIV1048576A.set(CustomItemList.eM_energyTunnel7_UIV.get(1));
 
         GTNLItemList.LaserEnergyHatchUIV4194304A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_UIV_4194304A.ID,
                 "LaserEnergyHatchUIV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.uiv.4194304.name"),
@@ -3289,7 +3289,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserEnergyHatchUIV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchUIV16777216A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_UIV_16777216A.ID,
                 "LaserEnergyHatchUIV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.uiv.16777216.name"),
@@ -3315,7 +3315,7 @@ public class MachineLoader {
         GTNLItemList.LaserEnergyHatchUMV4194304A.set(CustomItemList.eM_energyTunnel8_UMV.get(1));
 
         GTNLItemList.LaserEnergyHatchUMV16777216A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_UMV_16777216A.ID,
                 "LaserEnergyHatchUMV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.umv.16777216.name"),
@@ -3343,7 +3343,7 @@ public class MachineLoader {
         GTNLItemList.LaserEnergyHatchUXV16777216A.set(CustomItemList.eM_energyTunnel9_UXV.get(1));
 
         GTNLItemList.LaserEnergyHatchMAX256A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_MAX_256A.ID,
                 "LaserEnergyHatchMAX256A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.max.256.name"),
@@ -3352,7 +3352,7 @@ public class MachineLoader {
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LaserEnergyHatchMAX256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchMAX1024A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_MAX_1024A.ID,
                 "LaserEnergyHatchMAX1024A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.max.1024.name"),
@@ -3362,7 +3362,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchMAX4096A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_MAX_4096A.ID,
                 "LaserEnergyHatchMAX4096A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.max.4096.name"),
@@ -3372,7 +3372,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchMAX16384A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_MAX_16384A.ID,
                 "LaserEnergyHatchMAX16384A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.max.16384.name"),
@@ -3382,7 +3382,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchMAX65536A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_MAX_65536A.ID,
                 "LaserEnergyHatchMAX65536A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.max.65536.name"),
@@ -3392,7 +3392,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchMAX262144A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_MAX_262144A.ID,
                 "LaserEnergyHatchMAX262144A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.max.262144.name"),
@@ -3402,7 +3402,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchMAX1048576A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_MAX_1048576A.ID,
                 "LaserEnergyHatchMAX1048576A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.max.1048576.name"),
@@ -3412,7 +3412,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchMAX4194304A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_MAX_4194304A.ID,
                 "LaserEnergyHatchMAX4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.max.4194304.name"),
@@ -3422,7 +3422,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserEnergyHatchMAX4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserEnergyHatchMAX16777216A.set(
-            new MTEHatchEnergyTunnel(
+            new LaserEnergyHatch(
                 GTNLMachineID.LASER_ENERGY_HATCH_MAX_16777216A.ID,
                 "LaserEnergyHatchMAX16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_energy.max.16777216.name"),
@@ -3446,7 +3446,7 @@ public class MachineLoader {
         GTNLItemList.LaserDynamoHatchIV1048576A.set(CustomItemList.eM_dynamoTunnel4_UV.get(1));
 
         GTNLItemList.LaserDynamoHatchIV4194304A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_IV_4194304A.ID,
                 "LaserDynamoHatchIV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.iv.4194304.name"),
@@ -3456,7 +3456,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserDynamoHatchIV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchIV16777216A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_IV_16777216A.ID,
                 "LaserDynamoHatchIV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.iv.16777216.name"),
@@ -3480,7 +3480,7 @@ public class MachineLoader {
         GTNLItemList.LaserDynamoHatchLuV1048576A.set(CustomItemList.eM_dynamoTunnel4_UHV.get(1));
 
         GTNLItemList.LaserDynamoHatchLuV4194304A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_LUV_4194304A.ID,
                 "LaserDynamoHatchLuV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.luv.4194304.name"),
@@ -3490,7 +3490,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserDynamoHatchLuV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchLuV16777216A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_LUV_16777216A.ID,
                 "LaserDynamoHatchLuV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.luv.16777216.name"),
@@ -3514,7 +3514,7 @@ public class MachineLoader {
         GTNLItemList.LaserDynamoHatchZPM1048576A.set(CustomItemList.eM_dynamoTunnel5_UHV.get(1));
 
         GTNLItemList.LaserDynamoHatchZPM4194304A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_ZPM_4194304A.ID,
                 "LaserDynamoHatchZPM4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.zpm.4194304.name"),
@@ -3524,7 +3524,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserDynamoHatchZPM4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchZPM16777216A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_ZPM_16777216A.ID,
                 "LaserDynamoHatchZPM16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.zpm.16777216.name"),
@@ -3548,7 +3548,7 @@ public class MachineLoader {
         GTNLItemList.LaserDynamoHatchUV1048576A.set(CustomItemList.eM_dynamoTunnel5_UEV.get(1));
 
         GTNLItemList.LaserDynamoHatchUV4194304A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_UV_4194304A.ID,
                 "LaserDynamoHatchUV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.uv.4194304.name"),
@@ -3558,7 +3558,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserDynamoHatchUV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchUV16777216A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_UV_16777216A.ID,
                 "LaserDynamoHatchUV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.uv.16777216.name"),
@@ -3582,7 +3582,7 @@ public class MachineLoader {
         GTNLItemList.LaserDynamoHatchUHV1048576A.set(CustomItemList.eM_dynamoTunnel6_UEV.get(1));
 
         GTNLItemList.LaserDynamoHatchUHV4194304A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_UHV_4194304A.ID,
                 "LaserDynamoHatchUHV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.uhv.4194304.name"),
@@ -3592,7 +3592,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserDynamoHatchUHV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchUHV16777216A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_UHV_16777216A.ID,
                 "LaserDynamoHatchUHV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.uhv.16777216.name"),
@@ -3616,7 +3616,7 @@ public class MachineLoader {
         GTNLItemList.LaserDynamoHatchUEV1048576A.set(CustomItemList.eM_dynamoTunnel6_UIV.get(1));
 
         GTNLItemList.LaserDynamoHatchUEV4194304A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_UEV_4194304A.ID,
                 "LaserDynamoHatchUEV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.uev.4194304.name"),
@@ -3626,7 +3626,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserDynamoHatchUEV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchUEV16777216A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_UEV_16777216A.ID,
                 "LaserDynamoHatchUEV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.uev.16777216.name"),
@@ -3650,7 +3650,7 @@ public class MachineLoader {
         GTNLItemList.LaserDynamoHatchUIV1048576A.set(CustomItemList.eM_dynamoTunnel7_UIV.get(1));
 
         GTNLItemList.LaserDynamoHatchUIV4194304A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_UIV_4194304A.ID,
                 "LaserDynamoHatchUIV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.uiv.4194304.name"),
@@ -3660,7 +3660,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserDynamoHatchUIV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchUIV16777216A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_UIV_16777216A.ID,
                 "LaserDynamoHatchUIV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.uiv.16777216.name"),
@@ -3686,7 +3686,7 @@ public class MachineLoader {
         GTNLItemList.LaserDynamoHatchUMV4194304A.set(CustomItemList.eM_dynamoTunnel8_UMV.get(1));
 
         GTNLItemList.LaserDynamoHatchUMV16777216A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_UMV_16777216A.ID,
                 "LaserDynamoHatchUMV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.umv.16777216.name"),
@@ -3714,7 +3714,7 @@ public class MachineLoader {
         GTNLItemList.LaserDynamoHatchUXV16777216A.set(CustomItemList.eM_dynamoTunnel9_UXV.get(1));
 
         GTNLItemList.LaserDynamoHatchMAX256A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_MAX_256A.ID,
                 "LaserDynamoHatchMAX256A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.max.256.name"),
@@ -3723,7 +3723,7 @@ public class MachineLoader {
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LaserDynamoHatchMAX256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchMAX1024A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_MAX_1024A.ID,
                 "LaserDynamoHatchMAX1024A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.max.1024.name"),
@@ -3733,7 +3733,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchMAX4096A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_MAX_4096A.ID,
                 "LaserDynamoHatchMAX4096A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.max.4096.name"),
@@ -3743,7 +3743,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchMAX16384A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_MAX_16384A.ID,
                 "LaserDynamoHatchMAX16384A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.max.16384.name"),
@@ -3753,7 +3753,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchMAX65536A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_MAX_65536A.ID,
                 "LaserDynamoHatchMAX65536A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.max.65536.name"),
@@ -3763,7 +3763,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchMAX262144A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_MAX_262144A.ID,
                 "LaserDynamoHatchMAX262144A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.max.262144.name"),
@@ -3773,7 +3773,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchMAX1048576A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_MAX_1048576A.ID,
                 "LaserDynamoHatchMAX1048576A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.max.1048576.name"),
@@ -3783,7 +3783,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchMAX4194304A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_MAX_4194304A.ID,
                 "LaserDynamoHatchMAX4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.max.4194304.name"),
@@ -3793,7 +3793,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.LaserDynamoHatchMAX4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LaserDynamoHatchMAX16777216A.set(
-            new MTEHatchDynamoTunnel(
+            new LaserDynamoHatch(
                 GTNLMachineID.LASER_DYNAMO_HATCH_MAX_16777216A.ID,
                 "LaserDynamoHatchMAX16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.laser_dynamo.max.16777216.name"),
@@ -3811,7 +3811,7 @@ public class MachineLoader {
         GTNLItemList.WirelessEnergyHatchIV64A.set(CustomItemList.eM_energyWirelessMulti64_IV.get(1));
 
         GTNLItemList.WirelessEnergyHatchIV256A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_IV_256A.ID,
                 "WirelessEnergyHatchIV256A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.iv.256.name"),
@@ -3821,7 +3821,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchIV1024A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_IV_1024A.ID,
                 "WirelessEnergyHatchIV1024A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.iv.1024.name"),
@@ -3831,7 +3831,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchIV4096A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_IV_4096A.ID,
                 "WirelessEnergyHatchIV4096A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.iv.4096.name"),
@@ -3841,7 +3841,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchIV16384A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_IV_16384A.ID,
                 "WirelessEnergyHatchIV16384A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.iv.16384.name"),
@@ -3851,7 +3851,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchIV65536A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_IV_65536A.ID,
                 "WirelessEnergyHatchIV65536A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.iv.65536.name"),
@@ -3861,7 +3861,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchIV262144A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_IV_262144A.ID,
                 "WirelessEnergyHatchIV262144A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.iv.262144.name"),
@@ -3871,7 +3871,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchIV1048576A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_IV_1048576A.ID,
                 "WirelessEnergyHatchIV1048576A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.iv.1048576.name"),
@@ -3881,7 +3881,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchIV4194304A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_IV_4194304A.ID,
                 "WirelessEnergyHatchIV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.iv.4194304.name"),
@@ -3891,7 +3891,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchIV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchIV16777216A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_IV_16777216A.ID,
                 "WirelessEnergyHatchIV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.iv.16777216.name"),
@@ -3909,7 +3909,7 @@ public class MachineLoader {
         GTNLItemList.WirelessEnergyHatchLuV64A.set(CustomItemList.eM_energyWirelessMulti64_LuV.get(1));
 
         GTNLItemList.WirelessEnergyHatchLuV256A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_LUV_256A.ID,
                 "WirelessEnergyHatchLuV256A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.luv.256.name"),
@@ -3919,7 +3919,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLuV1024A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_LUV_1024A.ID,
                 "WirelessEnergyHatchLuV1024A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.luv.1024.name"),
@@ -3929,7 +3929,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLuV4096A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_LUV_4096A.ID,
                 "WirelessEnergyHatchLuV4096A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.luv.4096.name"),
@@ -3939,7 +3939,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLuV16384A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_LUV_16384A.ID,
                 "WirelessEnergyHatchLuV16384A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.luv.16384.name"),
@@ -3949,7 +3949,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLuV65536A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_LUV_65536A.ID,
                 "WirelessEnergyHatchLuV65536A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.luv.65536.name"),
@@ -3959,7 +3959,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLuV262144A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_LUV_262144A.ID,
                 "WirelessEnergyHatchLuV262144A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.luv.262144.name"),
@@ -3969,7 +3969,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLuV1048576A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_LUV_1048576A.ID,
                 "WirelessEnergyHatchLuV1048576A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.luv.1048576.name"),
@@ -3979,7 +3979,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLuV4194304A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_LUV_4194304A.ID,
                 "WirelessEnergyHatchLuV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.luv.4194304.name"),
@@ -3989,7 +3989,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchLuV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchLuV16777216A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_LUV_16777216A.ID,
                 "WirelessEnergyHatchLuV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.luv.16777216.name"),
@@ -4007,7 +4007,7 @@ public class MachineLoader {
         GTNLItemList.WirelessEnergyHatchZPM64A.set(CustomItemList.eM_energyWirelessMulti64_ZPM.get(1));
 
         GTNLItemList.WirelessEnergyHatchZPM256A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_ZPM_256A.ID,
                 "WirelessEnergyHatchZPM256A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.zpm.256.name"),
@@ -4017,7 +4017,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchZPM1024A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_ZPM_1024A.ID,
                 "WirelessEnergyHatchZPM1024A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.zpm.1024.name"),
@@ -4027,7 +4027,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchZPM4096A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_ZPM_4096A.ID,
                 "WirelessEnergyHatchZPM4096A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.zpm.4096.name"),
@@ -4037,7 +4037,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchZPM16384A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_ZPM_16384A.ID,
                 "WirelessEnergyHatchZPM16384A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.zpm.16384.name"),
@@ -4047,7 +4047,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchZPM65536A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_ZPM_65536A.ID,
                 "WirelessEnergyHatchZPM65536A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.zpm.65536.name"),
@@ -4057,7 +4057,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchZPM262144A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_ZPM_262144A.ID,
                 "WirelessEnergyHatchZPM262144A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.zpm.262144.name"),
@@ -4067,7 +4067,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchZPM1048576A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_ZPM_1048576A.ID,
                 "WirelessEnergyHatchZPM1048576A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.zpm.1048576.name"),
@@ -4077,7 +4077,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchZPM4194304A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_ZPM_4194304A.ID,
                 "WirelessEnergyHatchZPM4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.zpm.4194304.name"),
@@ -4087,7 +4087,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchZPM4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchZPM16777216A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_ZPM_16777216A.ID,
                 "WirelessEnergyHatchZPM16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.zpm.16777216.name"),
@@ -4105,7 +4105,7 @@ public class MachineLoader {
         GTNLItemList.WirelessEnergyHatchUV64A.set(CustomItemList.eM_energyWirelessMulti64_UV.get(1));
 
         GTNLItemList.WirelessEnergyHatchUV256A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UV_256A.ID,
                 "WirelessEnergyHatchUV256A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uv.256.name"),
@@ -4115,7 +4115,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUV1024A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UV_1024A.ID,
                 "WirelessEnergyHatchUV1024A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uv.1024.name"),
@@ -4125,7 +4125,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUV4096A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UV_4096A.ID,
                 "WirelessEnergyHatchUV4096A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uv.4096.name"),
@@ -4135,7 +4135,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUV16384A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UV_16384A.ID,
                 "WirelessEnergyHatchUV16384A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uv.16384.name"),
@@ -4145,7 +4145,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUV65536A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UV_65536A.ID,
                 "WirelessEnergyHatchUV65536A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uv.65536.name"),
@@ -4155,7 +4155,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUV262144A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UV_262144A.ID,
                 "WirelessEnergyHatchUV262144A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uv.262144.name"),
@@ -4165,7 +4165,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUV1048576A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UV_1048576A.ID,
                 "WirelessEnergyHatchUV1048576A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uv.1048576.name"),
@@ -4175,7 +4175,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUV4194304A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UV_4194304A.ID,
                 "WirelessEnergyHatchUV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uv.4194304.name"),
@@ -4185,7 +4185,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUV16777216A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UV_16777216A.ID,
                 "WirelessEnergyHatchUV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uv.16777216.name"),
@@ -4203,7 +4203,7 @@ public class MachineLoader {
         GTNLItemList.WirelessEnergyHatchUHV64A.set(CustomItemList.eM_energyWirelessMulti64_UHV.get(1));
 
         GTNLItemList.WirelessEnergyHatchUHV256A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UHV_256A.ID,
                 "WirelessEnergyHatchUHV256A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uhv.256.name"),
@@ -4213,7 +4213,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUHV1024A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UHV_1024A.ID,
                 "WirelessEnergyHatchUHV1024A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uhv.1024.name"),
@@ -4223,7 +4223,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUHV4096A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UHV_4096A.ID,
                 "WirelessEnergyHatchUHV4096A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uhv.4096.name"),
@@ -4233,7 +4233,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUHV16384A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UHV_16384A.ID,
                 "WirelessEnergyHatchUHV16384A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uhv.16384.name"),
@@ -4243,7 +4243,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUHV65536A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UHV_65536A.ID,
                 "WirelessEnergyHatchUHV65536A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uhv.65536.name"),
@@ -4253,7 +4253,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUHV262144A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UHV_262144A.ID,
                 "WirelessEnergyHatchUHV262144A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uhv.262144.name"),
@@ -4263,7 +4263,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUHV1048576A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UHV_1048576A.ID,
                 "WirelessEnergyHatchUHV1048576A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uhv.1048576.name"),
@@ -4273,7 +4273,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUHV4194304A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UHV_4194304A.ID,
                 "WirelessEnergyHatchUHV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uhv.4194304.name"),
@@ -4283,7 +4283,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUHV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUHV16777216A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UHV_16777216A.ID,
                 "WirelessEnergyHatchUHV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uhv.16777216.name"),
@@ -4301,7 +4301,7 @@ public class MachineLoader {
         GTNLItemList.WirelessEnergyHatchUEV64A.set(CustomItemList.eM_energyWirelessMulti64_UEV.get(1));
 
         GTNLItemList.WirelessEnergyHatchUEV256A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UEV_256A.ID,
                 "WirelessEnergyHatchUEV256A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uev.256.name"),
@@ -4311,7 +4311,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUEV1024A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UEV_1024A.ID,
                 "WirelessEnergyHatchUEV1024A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uev.1024.name"),
@@ -4321,7 +4321,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUEV4096A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UEV_4096A.ID,
                 "WirelessEnergyHatchUEV4096A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uev.4096.name"),
@@ -4331,7 +4331,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUEV16384A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UEV_16384A.ID,
                 "WirelessEnergyHatchUEV16384A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uev.16384.name"),
@@ -4341,7 +4341,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUEV65536A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UEV_65536A.ID,
                 "WirelessEnergyHatchUEV65536A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uev.65536.name"),
@@ -4351,7 +4351,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUEV262144A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UEV_262144A.ID,
                 "WirelessEnergyHatchUEV262144A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uev.262144.name"),
@@ -4361,7 +4361,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUEV1048576A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UEV_1048576A.ID,
                 "WirelessEnergyHatchUEV1048576A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uev.1048576.name"),
@@ -4371,7 +4371,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUEV4194304A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UEV_4194304A.ID,
                 "WirelessEnergyHatchUEV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uev.4194304.name"),
@@ -4381,7 +4381,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUEV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUEV16777216A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UEV_16777216A.ID,
                 "WirelessEnergyHatchUEV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uev.16777216.name"),
@@ -4399,7 +4399,7 @@ public class MachineLoader {
         GTNLItemList.WirelessEnergyHatchUIV64A.set(CustomItemList.eM_energyWirelessMulti64_UIV.get(1));
 
         GTNLItemList.WirelessEnergyHatchUIV256A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UIV_256A.ID,
                 "WirelessEnergyHatchUIV256A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uiv.256.name"),
@@ -4409,7 +4409,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUIV1024A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UIV_1024A.ID,
                 "WirelessEnergyHatchUIV1024A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uiv.1024.name"),
@@ -4419,7 +4419,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUIV4096A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UIV_4096A.ID,
                 "WirelessEnergyHatchUIV4096A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uiv.4096.name"),
@@ -4429,7 +4429,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUIV16384A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UIV_16384A.ID,
                 "WirelessEnergyHatchUIV16384A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uiv.16384.name"),
@@ -4439,7 +4439,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUIV65536A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UIV_65536A.ID,
                 "WirelessEnergyHatchUIV65536A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uiv.65536.name"),
@@ -4449,7 +4449,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUIV262144A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UIV_262144A.ID,
                 "WirelessEnergyHatchUIV262144A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uiv.262144.name"),
@@ -4459,7 +4459,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUIV1048576A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UIV_1048576A.ID,
                 "WirelessEnergyHatchUIV1048576A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uiv.1048576.name"),
@@ -4469,7 +4469,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUIV4194304A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UIV_4194304A.ID,
                 "WirelessEnergyHatchUIV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uiv.4194304.name"),
@@ -4479,7 +4479,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUIV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUIV16777216A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UIV_16777216A.ID,
                 "WirelessEnergyHatchUIV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.uiv.16777216.name"),
@@ -4497,7 +4497,7 @@ public class MachineLoader {
         GTNLItemList.WirelessEnergyHatchUMV64A.set(CustomItemList.eM_energyWirelessMulti64_UMV.get(1));
 
         GTNLItemList.WirelessEnergyHatchUMV256A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UMV_256A.ID,
                 "WirelessEnergyHatchUMV256A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.umv.256.name"),
@@ -4507,7 +4507,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUMV1024A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UMV_1024A.ID,
                 "WirelessEnergyHatchUMV1024A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.umv.1024.name"),
@@ -4517,7 +4517,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUMV4096A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UMV_4096A.ID,
                 "WirelessEnergyHatchUMV4096A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.umv.4096.name"),
@@ -4527,7 +4527,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUMV16384A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UMV_16384A.ID,
                 "WirelessEnergyHatchUMV16384A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.umv.16384.name"),
@@ -4537,7 +4537,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUMV65536A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UMV_65536A.ID,
                 "WirelessEnergyHatchUMV65536A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.umv.65536.name"),
@@ -4547,7 +4547,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUMV262144A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UMV_262144A.ID,
                 "WirelessEnergyHatchUMV262144A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.umv.262144.name"),
@@ -4557,7 +4557,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUMV1048576A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UMV_1048576A.ID,
                 "WirelessEnergyHatchUMV1048576A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.umv.1048576.name"),
@@ -4567,7 +4567,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUMV4194304A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UMV_4194304A.ID,
                 "WirelessEnergyHatchUMV4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.umv.4194304.name"),
@@ -4577,7 +4577,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchUMV4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchUMV16777216A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_UMV_16777216A.ID,
                 "WirelessEnergyHatchUMV16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.umv.16777216.name"),
@@ -4621,7 +4621,7 @@ public class MachineLoader {
         GTNLItemList.WirelessEnergyHatchMAX64A.set(CustomItemList.eM_energyWirelessMulti64_MAX.get(1));
 
         GTNLItemList.WirelessEnergyHatchMAX256A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_MAX_256A.ID,
                 "WirelessEnergyHatchMAX256A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.max.256.name"),
@@ -4631,7 +4631,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX256A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMAX1024A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_MAX_1024A.ID,
                 "WirelessEnergyHatchMAX1024A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.max.1024.name"),
@@ -4641,7 +4641,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX1024A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMAX4096A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_MAX_4096A.ID,
                 "WirelessEnergyHatchMAX4096A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.max.4096.name"),
@@ -4651,7 +4651,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX4096A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMAX16384A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_MAX_16384A.ID,
                 "WirelessEnergyHatchMAX16384A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.max.16384.name"),
@@ -4661,7 +4661,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX16384A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMAX65536A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_MAX_65536A.ID,
                 "WirelessEnergyHatchMAX65536A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.max.65536.name"),
@@ -4671,7 +4671,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX65536A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMAX262144A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_MAX_262144A.ID,
                 "WirelessEnergyHatchMAX262144A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.max.262144.name"),
@@ -4681,7 +4681,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX262144A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMAX1048576A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_MAX_1048576A.ID,
                 "WirelessEnergyHatchMAX1048576A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.max.1048576.name"),
@@ -4691,7 +4691,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX1048576A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMAX4194304A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_MAX_4194304A.ID,
                 "WirelessEnergyHatchMAX4194304A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.max.4194304.name"),
@@ -4701,7 +4701,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX4194304A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.WirelessEnergyHatchMAX16777216A.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.WIRELESS_ENERGY_HATCH_MAX_16777216A.ID,
                 "WirelessEnergyHatchMAX16777216A",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.max.16777216.name"),
@@ -4711,12 +4711,12 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.WirelessEnergyHatchMAX16777216A.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.HumongousWirelessEnergyHatch.set(
-            new MTEHatchWirelessMulti(
+            new WirelessMultiEnergyHatch(
                 GTNLMachineID.HUMONGOUS_WIRELESS_ENERGY_HATCH.ID,
                 "HumongousWirelessEnergyHatch",
                 StatCollector.translateToLocal("gtnl.hatch.wireless_energy.humongous.name"),
                 14,
-                Integer.MAX_VALUE / 10));
+                WirelessMultiEnergyHatch.HUMONGOUS_AMPERES));
         AnimatedTooltipHandler
             .addItemTooltip(GTNLItemList.HumongousWirelessEnergyHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 

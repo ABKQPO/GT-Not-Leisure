@@ -130,6 +130,18 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return autoPullAvailable ? "gtnl.hatch.super_input_bus_me.advanced.name" : "gtnl.hatch.super_input_bus_me.name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
+    @Override
     public String[] getDescription() {
         List<String> strings = new ArrayList<>(8);
         strings.add(StatCollector.translateToLocal("gtnl.hatch.super_input_bus_me.tooltip.0"));

@@ -2,6 +2,7 @@ package com.science.gtnl.common.machine.hatch;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -54,6 +55,18 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
     public ManaDynamoHatch(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures, int aAmp) {
         super(aName, aTier, aDescription, aTextures);
         mAmp = aAmp;
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return "gtnl.hatch.mana_dynamo." + GTValues.VN[mTier].toLowerCase(Locale.ROOT) + ".name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
     }
 
     @Override

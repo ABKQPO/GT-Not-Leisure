@@ -82,17 +82,23 @@ public class BreelSteamInputBus extends MTEHatchSteamBusInput {
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return "gtnl.hatch.breel.input_bus.steam.name";
+    }
+
+    @Override
     public String getLocalName() {
         if (!hasOwnLocalName()) return super.getLocalName();
-        return StatCollector.translateToLocal("gt.blockmachines.breel.input_bus.steam.name");
+        return StatCollector.translateToLocal(getLocalNameKey());
     }
 
     @Override
     public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("gt.blockmachines.breel.input_bus.steam.tooltip.0"),
-            StatCollector.translateToLocal("gt.blockmachines.breel.input_bus.steam.tooltip.1"),
-            StatCollector.translateToLocal("gt.blockmachines.breel.input_bus.steam.tooltip.2"),
-            StatCollector.translateToLocal("gt.blockmachines.breel.input_bus.steam.tooltip.3"),
-            StatCollector.translateToLocal("gt.blockmachines.breel.input_bus.steam.tooltip.4") };
+        return new String[] { StatCollector.translateToLocal("gtnl.hatch.breel.input_bus.steam.tooltip.0"),
+            StatCollector.translateToLocal("gtnl.hatch.breel.input_bus.steam.tooltip.1"),
+            StatCollector.translateToLocal("gtnl.hatch.breel.input_bus.steam.tooltip.2"),
+            StatCollector.translateToLocal("gtnl.hatch.breel.input_bus.steam.tooltip.3"),
+            StatCollector.translateToLocal("gtnl.hatch.breel.input_bus.steam.tooltip.4") };
     }
 }

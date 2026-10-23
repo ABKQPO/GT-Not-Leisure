@@ -5,6 +5,7 @@ import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_FULLAUTOMAIN
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.cleanroommc.modularui.factory.PosGuiData;
@@ -48,51 +49,58 @@ public class CustomMaintenanceHatch extends MTEHatchMaintenance
     @Setter
     public int mCleanroomTier;
     public String[] mDescription;
+    public final String nameKey;
 
-    public CustomMaintenanceHatch(int aID, String aName, String aNameRegional, int aCleanroomTier, int aTier) {
-        super(aID, aName, aNameRegional, aTier);
+    public CustomMaintenanceHatch(int aID, String aName, String aNameKey, int aCleanroomTier, int aTier) {
+        super(aID, aName, aNameKey, aTier);
+        nameKey = aNameKey;
         mCleanroomTier = aCleanroomTier;
         mMinConfigTime = 100;
         mMaxConfigTime = 100;
     }
 
-    public CustomMaintenanceHatch(int aID, String aName, String aNameRegional, int aCleanroomTier, int aTier,
+    public CustomMaintenanceHatch(int aID, String aName, String aNameKey, int aCleanroomTier, int aTier,
         String[] aDescription) {
-        super(aID, aName, aNameRegional, aTier);
+        super(aID, aName, aNameKey, aTier);
+        nameKey = aNameKey;
         mDescription = aDescription;
         mCleanroomTier = aCleanroomTier;
         mMinConfigTime = 100;
         mMaxConfigTime = 100;
     }
 
-    public CustomMaintenanceHatch(int aID, String aName, String aNameRegional, int aCleanroomTier, int aMinConfigTime,
+    public CustomMaintenanceHatch(int aID, String aName, String aNameKey, int aCleanroomTier, int aMinConfigTime,
         int aMaxConfigTime, int aTier) {
-        super(aID, aName, aNameRegional, aTier);
+        super(aID, aName, aNameKey, aTier);
+        nameKey = aNameKey;
         mCleanroomTier = aCleanroomTier;
         mMinConfigTime = aMinConfigTime;
         mMaxConfigTime = aMaxConfigTime;
     }
 
-    public CustomMaintenanceHatch(int aID, String aName, String aNameRegional, int aCleanroomTier, int aMinConfigTime,
+    public CustomMaintenanceHatch(int aID, String aName, String aNameKey, int aCleanroomTier, int aMinConfigTime,
         int aMaxConfigTime, int aTier, String[] aDescription) {
-        super(aID, aName, aNameRegional, aTier);
+        super(aID, aName, aNameKey, aTier);
+        nameKey = aNameKey;
         mDescription = aDescription;
         mCleanroomTier = aCleanroomTier;
         mMinConfigTime = aMinConfigTime;
         mMaxConfigTime = aMaxConfigTime;
     }
 
-    public CustomMaintenanceHatch(int aID, String aName, String aNameRegional, int aMinConfigTime, int aMaxConfigTime,
+    public CustomMaintenanceHatch(int aID, String aName, String aNameKey, int aMinConfigTime, int aMaxConfigTime,
         int aTier) {
-        super(aID, aName, aNameRegional, aTier);
+        super(aID, aName, aNameKey, aTier);
+        nameKey = aNameKey;
         mCleanroomTier = 0;
         mMinConfigTime = aMinConfigTime;
         mMaxConfigTime = aMaxConfigTime;
     }
 
-    public CustomMaintenanceHatch(int aID, String aName, String aNameRegional, int aMinConfigTime, int aMaxConfigTime,
+    public CustomMaintenanceHatch(int aID, String aName, String aNameKey, int aMinConfigTime, int aMaxConfigTime,
         int aTier, String[] aDescription) {
-        super(aID, aName, aNameRegional, aTier);
+        super(aID, aName, aNameKey, aTier);
+        nameKey = aNameKey;
         mDescription = aDescription;
         mCleanroomTier = 0;
         mMinConfigTime = aMinConfigTime;
@@ -100,11 +108,24 @@ public class CustomMaintenanceHatch extends MTEHatchMaintenance
     }
 
     public CustomMaintenanceHatch(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures,
-        int aMinConfigTime, int aMaxConfigTime) {
+        int aMinConfigTime, int aMaxConfigTime, String aNameKey) {
         super(aName, aTier, aDescription, aTextures, false);
         mMinConfigTime = aMinConfigTime;
         mMaxConfigTime = aMaxConfigTime;
         mDescription = aDescription;
+        nameKey = aNameKey;
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return nameKey;
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
     }
 
     @Override
@@ -115,7 +136,8 @@ public class CustomMaintenanceHatch extends MTEHatchMaintenance
             this.mDescriptionArray,
             this.mTextures,
             this.mMinConfigTime,
-            this.mMaxConfigTime);
+            this.mMaxConfigTime,
+            this.nameKey);
     }
 
     @Override
