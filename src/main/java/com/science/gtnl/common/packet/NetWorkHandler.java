@@ -72,6 +72,8 @@ public class NetWorkHandler {
         registerClientbound(RailgunChargeCapPacket.class);
         registerClientbound(CelestweaveFxPacket.class);
         registerClientbound(CelestweaveFlightPacket.class);
+        registerServerbound(PortalGunSelectPacket.class);
+        registerServerbound(PortalGunFavoritePacket.class);
     }
 
     public static <T extends ClientboundPacket> void registerClientbound(Class<T> packet) {

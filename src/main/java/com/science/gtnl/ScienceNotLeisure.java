@@ -15,6 +15,7 @@ import com.science.gtnl.common.command.CommandWirelessME;
 import com.science.gtnl.common.crafting.quantum.ae2.QuantumCraftingCache;
 import com.science.gtnl.common.crafting.quantum.ae2.QuantumCraftingMode;
 import com.science.gtnl.common.crafting.quantum.hooks.ticking.TickHandler;
+import com.science.gtnl.common.portalgun.PortalGunPairs;
 import com.science.gtnl.common.wireless.WirelessChannelManager;
 import com.science.gtnl.loader.MaterialLoader;
 import com.science.gtnl.utils.enums.ModList;
@@ -135,6 +136,7 @@ public class ScienceNotLeisure {
             .closeSession();
         QuantumCraftingMode.clear();
         QuantumCraftingCache.clearAll();
+        PortalGunPairs.OPENED.clear();
     }
 
     @Mod.EventHandler

@@ -46,6 +46,7 @@ import com.science.gtnl.client.gui.portableWorkbench.GuiPortableFurnace;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortablePortableCompressedChest;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortablePortableInfinityChest;
 import com.science.gtnl.client.meminiterminal.MiniTerminalClient;
+import com.science.gtnl.client.portalgun.PortalGunOrbTrail;
 import com.science.gtnl.client.quantum.RecursivePatternReport;
 import com.science.gtnl.client.railgun.RailgunClientFx;
 import com.science.gtnl.client.text.EffectTextRenderer;
@@ -71,6 +72,8 @@ import com.science.gtnl.common.block.blocks.tile.TileEntityWaterCandle;
 import com.science.gtnl.common.command.CommandSpoce;
 import com.science.gtnl.common.entity.EntityParticleBeam;
 import com.science.gtnl.common.entity.EntityPlayerLeashKnot;
+import com.science.gtnl.common.entity.EntityPortalGunOrb;
+import com.science.gtnl.common.entity.EntityPortalGunPortal;
 import com.science.gtnl.common.entity.EntitySaddleSlime;
 import com.science.gtnl.common.entity.EntitySteamRocket;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme;
@@ -87,6 +90,8 @@ import com.science.gtnl.common.render.SpoceRenderHandler;
 import com.science.gtnl.common.render.beamformer.BeamFormerItemRenderer;
 import com.science.gtnl.common.render.beamformer.BeamFormerModel;
 import com.science.gtnl.common.render.entity.NullPointerExceptionRender;
+import com.science.gtnl.common.render.entity.PortalGunOrbRender;
+import com.science.gtnl.common.render.entity.PortalGunPortalRender;
 import com.science.gtnl.common.render.entity.SaddleSlimeRender;
 import com.science.gtnl.common.render.entity.SteamRocketRender;
 import com.science.gtnl.common.render.item.AprilFoolMachineRender;
@@ -94,6 +99,8 @@ import com.science.gtnl.common.render.item.ItemBlockArtificialStarRender;
 import com.science.gtnl.common.render.item.ItemElectromagneticRailgunRender;
 import com.science.gtnl.common.render.item.ItemNullPointerExceptionRender;
 import com.science.gtnl.common.render.item.ItemPlayerDollRenderer;
+import com.science.gtnl.common.render.item.ItemPortalGunRender;
+import com.science.gtnl.common.render.item.ItemPortalGunRender.Edition;
 import com.science.gtnl.common.render.item.ItemSteamRocketRenderer;
 import com.science.gtnl.common.render.item.ItemTwilightSwordRender;
 import com.science.gtnl.common.render.item.PigmeeFumoHeadRenderer;
@@ -172,6 +179,7 @@ public class ClientProxy extends CommonProxy {
         EquipmentSoundConfig.register();
         EquipmentTheme.register();
         RailgunClientFx.register();
+        PortalGunOrbTrail.register();
         CelestweaveClientEvents.register();
         MinecraftForge.EVENT_BUS.register(WirelessWorldHighlight.INSTANCE);
         ModelRegistry.registerModid(ScienceNotLeisure.MODID);
@@ -278,6 +286,8 @@ public class ClientProxy extends CommonProxy {
         MinecraftForgeClient.registerItemRenderer(ItemLoader.twilightSword, new ItemTwilightSwordRender());
         MinecraftForgeClient
             .registerItemRenderer(ItemLoader.electromagneticRailgun, new ItemElectromagneticRailgunRender());
+        MinecraftForgeClient.registerItemRenderer(ItemLoader.portalGun, new ItemPortalGunRender(Edition.TECH));
+        MinecraftForgeClient.registerItemRenderer(ItemLoader.portalGunC137, new ItemPortalGunRender(Edition.C137));
 
         MinecraftForgeClient.registerItemRenderer(
             Item.getItemFromBlock(BlockLoader.nanoPhagocytosisPlantRender),
@@ -316,6 +326,8 @@ public class ClientProxy extends CommonProxy {
             new SaddleSlimeRender(new ModelSlime(16), new ModelSlime(0), 0.25f));
 
         RenderingRegistry.registerEntityRenderingHandler(EntityPlayerLeashKnot.class, new RenderLeashKnot());
+        RenderingRegistry.registerEntityRenderingHandler(EntityPortalGunOrb.class, new PortalGunOrbRender());
+        RenderingRegistry.registerEntityRenderingHandler(EntityPortalGunPortal.class, new PortalGunPortalRender());
 
         RenderingRegistry.registerEntityRenderingHandler(NullPointerException.class, new NullPointerExceptionRender());
         MinecraftForgeClient

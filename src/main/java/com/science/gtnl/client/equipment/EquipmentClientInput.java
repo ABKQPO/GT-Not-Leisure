@@ -6,6 +6,9 @@ import net.minecraft.client.settings.KeyBinding;
 
 import org.lwjgl.input.Keyboard;
 
+import com.science.gtnl.client.portalgun.PortalGunWheelScreen;
+import com.science.gtnl.common.item.items.PortalGun;
+
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -41,6 +44,10 @@ public class EquipmentClientInput {
         boolean pressed = false;
         while (EQUIPMENT_SETTINGS.isPressed()) pressed = true;
         if (!pressed) return;
+        if (PortalGun.held(player) != null) {
+            PortalGunWheelScreen.open(EQUIPMENT_SETTINGS);
+            return;
+        }
         int[] slots = EquipmentWheelScreen.equipmentSlots(player);
         if (slots.length > 0) new EquipmentWheelScreen(EQUIPMENT_SETTINGS, slots).open();
     }

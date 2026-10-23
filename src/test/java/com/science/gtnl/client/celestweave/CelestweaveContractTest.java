@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.gtnllib.GTNLLibContractTest;
+import com.science.gtnl.client.portalgun.PortalGunContracts;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -16,8 +17,8 @@ import io.netty.buffer.Unpooled;
 
 public class CelestweaveContractTest {
 
-    static final Path RESOURCES = Paths.get("src/main/resources/assets/sciencenotleisure");
-    static final Path SOURCES = Paths.get("src/main/java/com/science/gtnl");
+    public static final Path RESOURCES = Paths.get("src/main/resources/assets/sciencenotleisure");
+    public static final Path SOURCES = Paths.get("src/main/java/com/science/gtnl");
 
     private CelestweaveContractTest() {}
 
@@ -28,12 +29,13 @@ public class CelestweaveContractTest {
         GTNLLibContractTest.run();
         CelestweaveArmorContracts.run();
         RailgunContracts.run();
+        PortalGunContracts.run();
         EquipmentHudContracts.run();
         EquipmentResourceContracts.run();
         GTNLLibContractTest.finish("Celestweave");
     }
 
-    static <T> T roundTrip(T packet, Constructor<T> empty) throws ReflectiveOperationException {
+    public static <T> T roundTrip(T packet, Constructor<T> empty) throws ReflectiveOperationException {
         ByteBuf buffer = Unpooled.buffer();
         ((IMessage) packet).toBytes(buffer);
         T copy = empty.newInstance();

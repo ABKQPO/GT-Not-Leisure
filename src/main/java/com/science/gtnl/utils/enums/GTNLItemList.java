@@ -402,6 +402,8 @@ public enum GTNLItemList implements IItemContainer {
     CelestweaveConduit,
     CelestweaveStride,
     CelestweaveModule,
+    PortalGun,
+    PortalGunC137,
 
     GaiaGlass,
     TerraGlass,

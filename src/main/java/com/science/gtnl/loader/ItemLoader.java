@@ -41,6 +41,7 @@ import com.science.gtnl.common.item.items.NetherTeleporter;
 import com.science.gtnl.common.item.items.NullPointerException;
 import com.science.gtnl.common.item.items.PortableCellWorkbenchItem;
 import com.science.gtnl.common.item.items.PortableItem;
+import com.science.gtnl.common.item.items.PortalGun;
 import com.science.gtnl.common.item.items.SlimeSaddle;
 import com.science.gtnl.common.item.items.SteamRocket;
 import com.science.gtnl.common.item.items.Stick;
@@ -100,6 +101,8 @@ public class ItemLoader {
     public static CelestweaveArmor celestweaveStride = new CelestweaveArmor(3, GTNLItemList.CelestweaveStride);
     public static CircuitIntegratedPlus circuitIntegratedPlus = new CircuitIntegratedPlus();
     public static TimeStopPocketWatch timeStopPocketWatch = new TimeStopPocketWatch();
+    public static PortalGun portalGun = new PortalGun("portal_gun", GTNLItemList.PortalGun);
+    public static PortalGun portalGunC137 = new PortalGun("portal_gun_c137", GTNLItemList.PortalGunC137);
     public static Item recordSus = new GTNLItemRecord("sus");
 
     public static ItemInfinityItem infinityTorch = new ItemInfinityItem(
