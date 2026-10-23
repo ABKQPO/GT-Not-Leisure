@@ -7,6 +7,8 @@ import java.util.Set;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
@@ -24,6 +26,8 @@ import lombok.Setter;
 
 @Getter
 public class AssemblerMatrixPatternState {
+
+    private static final String INVALID_PATTERN_TAG = "InvalidPattern";
 
     private final Map<ItemStack, DireCraftingPatternDetails> patterns = new Reference2ObjectOpenHashMap<>();
     private final Set<IAEItemStack> possibleOutputs = new ObjectOpenHashSet<>();
@@ -59,21 +63,30 @@ public class AssemblerMatrixPatternState {
             }
             changed = true;
         }
-        if (newStack != null && newStack.getItem() instanceof ICraftingPatternItem craftingPatternItem) {
-            ICraftingPatternDetails pattern = craftingPatternItem.getPatternForItem(
-                newStack,
-                machine.getBaseMetaTileEntity()
-                    .getWorld());
-            if (pattern != null && pattern.isCraftable()) {
-                pattern = new DireCraftingPatternDetails(pattern);
-            }
-            if (pattern instanceof DireCraftingPatternDetails details) {
-                details.setMultiply(patternMultiply);
-                addPattern(newStack, details);
-                changed = true;
-            }
+        DireCraftingPatternDetails details = decodePattern(
+            newStack,
+            machine.getBaseMetaTileEntity()
+                .getWorld());
+        if (details != null) {
+            details.setMultiply(patternMultiply);
+            addPattern(newStack, details);
+            changed = true;
         }
         return changed;
+    }
+
+    public static DireCraftingPatternDetails decodePattern(ItemStack stack, World world) {
+        if (world == null || stack == null || !(stack.getItem() instanceof ICraftingPatternItem patternItem)) {
+            return null;
+        }
+        NBTTagCompound tag = stack.getTagCompound();
+        if (tag != null) tag.removeTag(INVALID_PATTERN_TAG);
+
+        ICraftingPatternDetails pattern = patternItem.getPatternForItem(stack, world);
+        if (pattern != null && pattern.isCraftable()) {
+            pattern = new DireCraftingPatternDetails(pattern);
+        }
+        return pattern instanceof DireCraftingPatternDetails details ? details : null;
     }
 
     public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table) {

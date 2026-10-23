@@ -36,7 +36,7 @@ public class MixinContainerInterfaceTerminal {
             if (inv.getPatterns() instanceof AssemblerMatrix.CombinationPatternsIInventory) {
                 var i = (ItemEncodedPattern) object;
                 var d = i.getPatternForItem(handStack, player.worldObj);
-                return d.isCraftable() || d instanceof DireCraftingPatternDetails;
+                return d != null && (d.isCraftable() || d instanceof DireCraftingPatternDetails);
             }
             return true;
         }
