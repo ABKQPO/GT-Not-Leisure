@@ -43,11 +43,17 @@ public class ContainerSuperInterface extends ContainerInterface {
     public ContainerSuperInterface(InventoryPlayer ip, IInterfaceHost te) {
         super(ip, te);
         this.myDuality = te.getInterfaceDuality();
-        SyncRegistrar sync = this.syncRegistrar();
-        this.sidelessModeSync = sync
-            .configEnum("sidelessMode", Settings.SIDELESS_MODE, SidelessMode.class, this.myDuality.getConfigManager());
-        this.sidelessModeSync
-            .onClientChange((oldValue, newValue) -> { if (newValue != null) this.sidelessMode = newValue; });
+        IConfigManager configManager = this.myDuality.getConfigManager();
+        if (configManager.getSettings()
+            .contains(Settings.SIDELESS_MODE)) {
+            SyncRegistrar sync = this.syncRegistrar();
+            this.sidelessModeSync = sync
+                .configEnum("sidelessMode", Settings.SIDELESS_MODE, SidelessMode.class, configManager);
+            this.sidelessModeSync
+                .onClientChange((oldValue, newValue) -> { if (newValue != null) this.sidelessMode = newValue; });
+        } else {
+            this.sidelessModeSync = null;
+        }
         var accessor = (IDualityInterface) myDuality;
 
         configSlots = accessor.getConfigSlots();
@@ -175,7 +181,7 @@ public class ContainerSuperInterface extends ContainerInterface {
     @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
         super.loadSettingsFromHost(cm);
-        if (cm.getSettings()
+        if (this.sidelessModeSync != null && cm.getSettings()
             .contains(Settings.SIDELESS_MODE)) {
             this.sidelessModeSync.syncFromConfig();
             this.sidelessMode = this.sidelessModeSync.get();

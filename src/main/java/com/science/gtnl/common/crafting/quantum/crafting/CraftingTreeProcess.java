@@ -113,10 +113,7 @@ public class CraftingTreeProcess {
             }
 
             if (returned > 0) {
-                if (precise && container == null
-                    && returned % primaryInput.amount() == 0
-                    && !key.equals(requested)
-                    && countSlots(key) == 1) {
+                if (precise && container == null && !key.equals(requested) && countSlots(key) == 1) {
                     this.catalystReturns[x] = returned;
                     this.batchedSlots = true;
                 } else {
@@ -153,7 +150,7 @@ public class CraftingTreeProcess {
         long perCraft = LongMath.saturatedMultiply(unit, multiplier);
         long lost = Math.max(0, perCraft - this.catalystReturns[slot]);
         long items = LongMath.saturatedAdd(perCraft, LongMath.saturatedMultiply(lost, times - 1));
-        return items / unit;
+        return LongMath.saturatedAdd(items / unit, items % unit == 0 ? 0 : 1);
     }
 
     // The most crafts of a batch that the given units of the input of a slot allow
@@ -174,12 +171,11 @@ public class CraftingTreeProcess {
     // The catalyst of a slot left after a batch, from what the batch requested and what its crafts gave back
     private long catalystReturned(int slot, long times) {
         long unit = this.inputs[slot].possibleInputs()[0].amount();
-        long perCraft = LongMath.saturatedMultiply(unit, this.nodes.getLong(this.slotNodes[slot]));
-        long returned = this.catalystReturns[slot];
-        if (returned < perCraft) {
-            return returned;
-        }
-        return LongMath.saturatedAdd(perCraft, LongMath.saturatedMultiply(returned - perCraft, times));
+        long multiplier = this.nodes.getLong(this.slotNodes[slot]);
+        long perCraft = LongMath.saturatedMultiply(unit, multiplier);
+        long requested = LongMath.saturatedMultiply(slotUnits(slot, multiplier, times), unit);
+        long net = LongMath.saturatedMultiply(this.catalystReturns[slot] - perCraft, times);
+        return Math.max(0, LongMath.saturatedAdd(requested, net));
     }
 
     private boolean isCatalyst(AEKey key) {

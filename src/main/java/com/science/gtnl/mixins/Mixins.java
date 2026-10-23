@@ -220,7 +220,9 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.assembler.MixinGuiMEMonitorable",
             "appliedEnergistics.assembler.MixinGuiPatternTerm",
             "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable",
-            "appliedEnergistics.quamtumComputer.MixinGuiCraftAmount")
+            "appliedEnergistics.quamtumComputer.MixinGuiCraftAmount",
+            "appliedEnergistics.quamtumComputer.MixinGuiCraftConfirm",
+            "appliedEnergistics.quamtumComputer.MixinGuiCraftingTree")
         .setPhase(Phase.LATE)),
 
     APPLIED_ENERGISTICS_PROCESSING_PATTERN(new MixinBuilder("Applied Energistics processing pattern capacity mixins")

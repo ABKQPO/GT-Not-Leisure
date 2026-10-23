@@ -41,6 +41,7 @@ import com.science.gtnl.client.gui.portableWorkbench.GuiPortableFurnace;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortablePortableCompressedChest;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortablePortableInfinityChest;
 import com.science.gtnl.client.meminiterminal.MiniTerminalClient;
+import com.science.gtnl.client.quantum.RecursivePatternReport;
 import com.science.gtnl.client.text.EffectTextRenderer;
 import com.science.gtnl.client.text.effect.BuiltinTextEffects;
 import com.science.gtnl.client.text.preview.TextEffectPreviewCommand;
@@ -155,6 +156,7 @@ public class ClientProxy extends CommonProxy {
         super.preInit(event);
         MiniTerminalClient.init();
         WirelessCardInput.register();
+        RecursivePatternReport.register();
         MinecraftForge.EVENT_BUS.register(WirelessWorldHighlight.INSTANCE);
         ModelRegistry.registerModid(ScienceNotLeisure.MODID);
 

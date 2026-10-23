@@ -60,6 +60,8 @@ public class NetWorkHandler {
         registerServerbound(QuantumCraftingModePacket.class);
         registerClientbound(QuantumCraftingAvailabilityPacket.class);
         registerClientbound(QuantumCraftConfirmPacket.class);
+        registerServerbound(RecursivePatternQueryPacket.class);
+        registerClientbound(RecursivePatternResultPacket.class);
     }
 
     public static <T extends ClientboundPacket> void registerClientbound(Class<T> packet) {
