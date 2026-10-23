@@ -1,5 +1,7 @@
 package com.gtnllib.gui.wheel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 
@@ -7,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.EnumChatFormatting;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -33,6 +36,7 @@ public class WheelWidget extends Widget<WheelWidget> implements Interactable {
     private static final float FRAME_MS = 1000F / 60F;
     private static final float MAX_FRAME_STEPS = 10F;
     private static final int TEXT_SHADOW_ALPHA = 0x99;
+    private static final float TITLE_WIDTH = 0.82F, TITLE_HEIGHT = 0.6F;
     private static final float ICON_RATIO = 0.9F;
     private static final int MIN_ICON_SIZE = 8;
     private static final int MAX_ICON_SIZE = 32;
@@ -48,6 +52,9 @@ public class WheelWidget extends Widget<WheelWidget> implements Interactable {
     private static final float PAGE_CHEVRON_SIZE = 8F;
     private static final float PAGE_CHEVRON_THICKNESS = 3F;
     private static final float PAGE_ARROW_OFFSET = 26F;
+    // Why: the hotbar is still drawn under a wheel screen, so whatever sits below the wheel has to end above it.
+    private static final float HOTBAR_CLEARANCE = 26F, TOP_CLEARANCE = 6F;
+    private static final float MIN_FITTED_RADIUS = 48F;
 
     private final WheelNavigator navigator;
     private final WheelStyle style;
@@ -56,6 +63,7 @@ public class WheelWidget extends Widget<WheelWidget> implements Interactable {
     private BiPredicate<Integer, Integer> selectionBlocker = (x, y) -> false;
     private KeyBinding holdKey;
     private Runnable holdRelease = this::confirm;
+    private int room, roomAbove;
     private boolean holdReleased;
     private long displayTime;
     private boolean animationStarted;
@@ -86,6 +94,22 @@ public class WheelWidget extends Widget<WheelWidget> implements Interactable {
         return (int) Math.floor(FxAngle.normalizePositive(angle + step / 2) / step) % count;
     }
 
+    public static float fitSize(float width, float height, int room, WheelStyle style) {
+        return fitSize(width, height, room, 0, style);
+    }
+
+    /**
+     * The wheel size that leaves {@code below} pixels under the wheel, clear of the hotbar, and {@code above}
+     * pixels over it, clear of the screen top. The wheel stays centred, so the tighter side decides.
+     */
+    public static float fitSize(float width, float height, int below, int above, WheelStyle style) {
+        float size = Math.min(width, height);
+        if (below <= 0 && above <= 0) return size;
+        float reserve = Math.max(below > 0 ? HOTBAR_CLEARANCE + below : 0, above > 0 ? TOP_CLEARANCE + above : 0);
+        float fitted = Math.max(height / 2F - reserve, MIN_FITTED_RADIUS);
+        return Math.min(size, fitted / style.outerRadiusScale);
+    }
+
     public WheelWidget(WheelMenuModel model, WheelOpenMode openMode) {
         this.navigator = new WheelNavigator(model, openMode);
         this.style = model.style();
@@ -110,6 +134,24 @@ public class WheelWidget extends Widget<WheelWidget> implements Interactable {
     public WheelWidget onHoldRelease(Runnable holdRelease) {
         this.holdRelease = Objects.requireNonNull(holdRelease, "holdRelease");
         return this;
+    }
+
+    public WheelWidget room(int room) {
+        this.room = Math.max(0, room);
+        return this;
+    }
+
+    public int room() {
+        return room;
+    }
+
+    public WheelWidget roomAbove(int roomAbove) {
+        this.roomAbove = Math.max(0, roomAbove);
+        return this;
+    }
+
+    public int roomAbove() {
+        return roomAbove;
     }
 
     public WheelNavigator navigator() {
@@ -147,7 +189,9 @@ public class WheelWidget extends Widget<WheelWidget> implements Interactable {
     }
 
     public boolean press(int mouseButton) {
-        if (mouseButton != 0 || isDismissed()) return false;
+        if (isDismissed()) return false;
+        if (mouseButton == 1) return navigator.rightClick(selected);
+        if (mouseButton != 0) return false;
         if (navigator.openMode() == WheelOpenMode.HOLD && selected < 0) return false;
         confirm();
         return true;
@@ -241,7 +285,7 @@ public class WheelWidget extends Widget<WheelWidget> implements Interactable {
 
     private void layout() {
         float width = getArea().w(), height = getArea().h();
-        float size = Math.min(width, height);
+        float size = fitSize(width, height, room, roomAbove, style);
         centerX = width / 2F;
         centerY = height / 2F;
         outerRadius = size * style.outerRadiusScale;
@@ -385,6 +429,15 @@ public class WheelWidget extends Widget<WheelWidget> implements Interactable {
         FxShapes.prepareState();
     }
 
+    /**
+     * The scale that fits every line of a title inside a box, never above the preferred scale.
+     */
+    public static float fitScale(float preferred, int widest, int lines, int lineHeight, float boxWidth,
+        float boxHeight) {
+        if (widest <= 0 || lines <= 0) return preferred;
+        return Math.min(preferred, Math.min(boxWidth / widest, boxHeight / (lines * (float) lineHeight)));
+    }
+
     private void renderTitle(float p) {
         WheelEntry entry = navigator.entry(selected);
         if (entry == null) return;
@@ -392,16 +445,31 @@ public class WheelWidget extends Widget<WheelWidget> implements Interactable {
         int alpha = Math.round(p * 0xFF);
         if (title.isEmpty() || alpha < 4) return;
         int shadowAlpha = Math.round(p * TEXT_SHADOW_ALPHA);
-        float scale = style.titleScale * detailScale;
+        float preferred = style.titleScale * detailScale, boxWidth = 2 * innerRadius * TITLE_WIDTH,
+            boxHeight = 2 * innerRadius * TITLE_HEIGHT;
         FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+        List<String> lines = new ArrayList<>();
+        int widest = 0;
+        for (String line : title.split("\n"))
+            for (Object part : font.listFormattedStringToWidth(line, Math.max(1, (int) (boxWidth / preferred)))) {
+                lines.add((String) part);
+                widest = Math.max(widest, font.getStringWidth((String) part));
+            }
+        float scale = fitScale(preferred, widest, lines.size(), font.FONT_HEIGHT, boxWidth, boxHeight);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glColor4f(1, 1, 1, 1);
         GL11.glPushMatrix();
         GL11.glTranslatef(centerX, centerY, 0);
         GL11.glScalef(scale, scale, 1);
-        int x = -font.getStringWidth(title) / 2, y = -font.FONT_HEIGHT / 2;
-        if (shadowAlpha >= 4) font.drawString(title, x + 1, y + 1, shadowAlpha << 24);
-        font.drawString(title, x, y, alpha << 24 | style.textColor & 0xFFFFFF);
+        int top = -lines.size() * font.FONT_HEIGHT / 2;
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+            int x = -font.getStringWidth(line) / 2, y = top + i * font.FONT_HEIGHT;
+            // Why: colour codes in the line would tint the shadow too, so the shadow is drawn from the plain text.
+            if (shadowAlpha >= 4) font
+                .drawString(EnumChatFormatting.getTextWithoutFormattingCodes(line), x + 1, y + 1, shadowAlpha << 24);
+            font.drawString(line, x, y, alpha << 24 | style.textColor & 0xFFFFFF);
+        }
         GL11.glPopMatrix();
         FxShapes.prepareState();
     }

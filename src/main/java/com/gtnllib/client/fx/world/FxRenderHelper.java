@@ -1,8 +1,14 @@
 package com.gtnllib.client.fx.world;
 
 import java.awt.image.BufferedImage;
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.IntConsumer;
+import java.util.function.IntToDoubleFunction;
+import java.util.function.ObjDoubleConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -11,6 +17,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.util.ResourceLocation;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import com.gtnllib.utils.Vec3d;
@@ -19,32 +26,47 @@ public class FxRenderHelper {
 
     public enum Sprite {
 
-        RADIAL(128, 1.55F, true),
-        STREAK(128, 1.05F, false);
+        RADIAL(128, false),
+        STREAK(128, false),
+        PIXEL_DOT(8, true),
+        PIXEL_PUFF(14, true),
+        PIXEL_RING(32, true),
+        SOFT_RING(64, false),
+        PIXEL_SPARK(5, true);
 
         private final int size;
-        private final float falloff;
-        private final boolean circular;
+        private final boolean pixel;
 
-        Sprite(int size, float falloff, boolean circular) {
+        Sprite(int size, boolean pixel) {
             this.size = size;
-            this.falloff = falloff;
-            this.circular = circular;
+            this.pixel = pixel;
         }
     }
 
+    public record SegmentSides(Vec3d start, Vec3d end) {}
+
     private static final Map<Sprite, Integer> TEXTURES = new EnumMap<>(Sprite.class);
 
-    private static final double DEGENERATE = 1.0E-6;
+    private static final double DEGENERATE = 1.0E-6, MITER_LIMIT = 0.5;
+    private static final FloatBuffer MODELVIEW = BufferUtils.createFloatBuffer(16);
+    private static Vec3d localFacing;
 
     private FxRenderHelper() {}
 
     public static void render(Runnable draw) {
-        batch(null, draw);
+        batch(null, draw, true);
     }
 
     public static void renderGlow(Sprite sprite, Runnable draw) {
-        batch(() -> bind(sprite), draw);
+        batch(() -> bind(sprite), draw, true);
+    }
+
+    public static void renderLocal(Runnable draw) {
+        batch(null, draw, false);
+    }
+
+    public static void renderLocalGlow(Sprite sprite, Runnable draw) {
+        batch(() -> bind(sprite), draw, false);
     }
 
     public static void renderTextured(ResourceLocation texture, Runnable draw) {
@@ -54,7 +76,7 @@ public class FxRenderHelper {
                 .bindTexture(texture);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-        }, draw);
+        }, draw, true);
     }
 
     public static void clearSprites() {
@@ -75,6 +97,68 @@ public class FxRenderHelper {
         vertex(to.subtract(side));
     }
 
+    public static void path(List<Vec3d> points, double width) {
+        path(points, index -> width, index -> {});
+    }
+
+    public static void path(List<Vec3d> points, IntToDoubleFunction width, IntConsumer shade) {
+        int count = points.size();
+        if (count < 2) return;
+        List<Vec3d> axes = new ArrayList<>(count - 1);
+        for (int i = 1; i < count; i++) axes.add(ribbonAxis(points.get(i - 1), points.get(i)));
+        List<SegmentSides> sides = pathSides(axes);
+        for (int i = 1; i < count; i++) {
+            Vec3d from = points.get(i - 1), to = points.get(i);
+            Vec3d fromSide = sides.get(i - 1)
+                .start()
+                .scale(width.applyAsDouble(i - 1)),
+                toSide = sides.get(i - 1)
+                    .end()
+                    .scale(width.applyAsDouble(i));
+            double startV = (i - 1) / (double) (count - 1), endV = i / (double) (count - 1);
+            shade.accept(i - 1);
+            uvVertex(from.subtract(fromSide), 0, startV);
+            uvVertex(from.add(fromSide), 1, startV);
+            shade.accept(i);
+            uvVertex(to.add(toSide), 1, endV);
+            uvVertex(to.subtract(toSide), 0, endV);
+        }
+    }
+
+    public static List<SegmentSides> pathSides(List<Vec3d> axes) {
+        List<SegmentSides> sides = new ArrayList<>(axes.size());
+        for (int i = 0; i < axes.size(); i++) sides.add(new SegmentSides(join(axes, i, i - 1), join(axes, i, i + 1)));
+        return sides;
+    }
+
+    public static void along(List<Vec3d> points, double spacing, ObjDoubleConsumer<Vec3d> each) {
+        double total = 0;
+        for (int i = 1; i < points.size(); i++) total += points.get(i)
+            .subtract(points.get(i - 1))
+            .length();
+        if (spacing <= 0 || total < DEGENERATE) return;
+        double walked = 0, carry = 0;
+        for (int i = 1; i < points.size(); i++) {
+            Vec3d from = points.get(i - 1), step = points.get(i)
+                .subtract(from);
+            double length = step.length(), t = carry;
+            if (length < DEGENERATE) continue;
+            for (; t <= length; t += spacing) each.accept(from.add(step.scale(t / length)), (walked + t) / total);
+            carry = t - length;
+            walked += length;
+        }
+    }
+
+    private static Vec3d join(List<Vec3d> axes, int own, int other) {
+        Vec3d axis = axes.get(own);
+        if (other < 0 || other >= axes.size()) return axis;
+        Vec3d sum = axis.add(axes.get(other));
+        if (sum.length() < DEGENERATE) return axis;
+        Vec3d join = sum.normalize();
+        double cosine = join.dot(axis);
+        return cosine < MITER_LIMIT ? axis : join.scale(1 / cosine);
+    }
+
     public static void glow(Vec3d center, double radius, float radians) {
         Vec3d direction = FxCamera.position()
             .subtract(center)
@@ -90,6 +174,20 @@ public class FxRenderHelper {
         Vec3d upward = up.scale(cosine)
             .subtract(right.scale(sine))
             .scale(radius);
+        quad(center, sideways, upward);
+    }
+
+    public static void localGlow(Vec3d center, double radius) {
+        quad(center, viewAxis(0).scale(radius), viewAxis(1).scale(radius));
+    }
+
+    public static void planeGlow(Vec3d center, Vec3d normal, double radius) {
+        Vec3d along = Vec3d.rightOf(normal.normalize())
+            .scale(radius);
+        quad(center, along, along.cross(normal.normalize()));
+    }
+
+    private static void quad(Vec3d center, Vec3d sideways, Vec3d upward) {
         uvVertex(
             center.subtract(sideways)
                 .subtract(upward),
@@ -203,12 +301,13 @@ public class FxRenderHelper {
     }
 
     private static Vec3d ribbonAxis(Vec3d from, Vec3d to) {
+        Vec3d toCamera = localFacing != null ? localFacing
+            : FxCamera.position()
+                .subtract(
+                    from.add(to)
+                        .scale(0.5));
         Vec3d axis = to.subtract(from)
-            .cross(
-                FxCamera.position()
-                    .subtract(
-                        from.add(to)
-                            .scale(0.5)))
+            .cross(toCamera)
             .normalize();
         return axis.length() < DEGENERATE ? Vec3d.rightOf(
             to.subtract(from)
@@ -216,18 +315,26 @@ public class FxRenderHelper {
             : axis;
     }
 
+    private static Vec3d viewAxis(int row) {
+        MODELVIEW.clear();
+        GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, MODELVIEW);
+        return new Vec3d(MODELVIEW.get(row), MODELVIEW.get(4 + row), MODELVIEW.get(8 + row)).normalize();
+    }
+
     private static void uvVertex(Vec3d vector, double u, double v) {
         Tessellator.instance.addVertexWithUV(vector.x(), vector.y(), vector.z(), u, v);
     }
 
-    private static void batch(Runnable bind, Runnable draw) {
+    private static void batch(Runnable bind, Runnable draw, boolean world) {
         float lightX = OpenGlHelper.lastBrightnessX, lightY = OpenGlHelper.lastBrightnessY;
-        FxCamera.capture();
+        if (world) FxCamera.capture();
         GL11.glPushMatrix();
         GL11.glPushAttrib(
             GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_CURRENT_BIT);
         try {
-            GL11.glTranslated(-RenderManager.renderPosX, -RenderManager.renderPosY, -RenderManager.renderPosZ);
+            if (world)
+                GL11.glTranslated(-RenderManager.renderPosX, -RenderManager.renderPosY, -RenderManager.renderPosZ);
+            else localFacing = viewAxis(2);
             if (bind == null) GL11.glDisable(GL11.GL_TEXTURE_2D);
             else {
                 OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
@@ -248,6 +355,7 @@ public class FxRenderHelper {
             draw.run();
             Tessellator.instance.draw();
         } finally {
+            localFacing = null;
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightX, lightY);
             GL11.glPopAttrib();
             GL11.glPopMatrix();
@@ -266,8 +374,9 @@ public class FxRenderHelper {
         TextureUtil.uploadTextureImage(handle, build(sprite));
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, handle);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        int filter = sprite.pixel ? GL11.GL_NEAREST : GL11.GL_LINEAR;
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, filter);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, filter);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
         TEXTURES.put(sprite, handle);
@@ -277,16 +386,26 @@ public class FxRenderHelper {
     private static BufferedImage build(Sprite sprite) {
         int size = sprite.size;
         BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
-        float center = (size - 1) / 2F;
-        for (int y = 0; y < size; y++) {
-            float offsetY = sprite.circular ? (y - center) / center : 0F;
-            for (int x = 0; x < size; x++) {
-                float offsetX = (x - center) / center;
-                float distance = Math.min(1F, (float) Math.sqrt(offsetX * offsetX + offsetY * offsetY));
-                float alpha = (float) Math.pow(1F - distance, sprite.falloff);
-                image.setRGB(x, y, Math.round(alpha * 255F) << 24 | 0xFFFFFF);
-            }
-        }
+        for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++) image.setRGB(x, y, Math.round(alpha(sprite, x, y) * 255F) << 24 | 0xFFFFFF);
         return image;
+    }
+
+    public static float alpha(Sprite sprite, int x, int y) {
+        float center = (sprite.size - 1) / 2F;
+        float offsetX = (x - center) / center, offsetY = (y - center) / center;
+        double pixel = Math.hypot(x + 0.5 - sprite.size / 2.0, y + 0.5 - sprite.size / 2.0);
+        return switch (sprite) {
+            case RADIAL -> (float) Math.pow(1F - Math.min(1F, Math.hypot(offsetX, offsetY)), 1.55F);
+            case STREAK -> (float) Math.pow(1F - Math.min(1F, Math.abs(offsetX)), 1.05F);
+            case PIXEL_DOT -> pixel <= 3.9 ? 1F : 0F;
+            case PIXEL_PUFF -> pixel <= 6.6 ? 1F : 0F;
+            case PIXEL_RING -> pixel >= 13.4 && pixel <= 15.6 ? 1F : 0F;
+            case SOFT_RING -> (float) Math.exp(-Math.pow((pixel / (sprite.size / 2.0) - 0.88) / 0.1, 2));
+            case PIXEL_SPARK -> {
+                int arm = Math.abs(x - 2) + Math.abs(y - 2);
+                yield x != 2 && y != 2 ? 0F : arm == 0 ? 1F : arm == 1 ? 0.9F : 0.45F;
+            }
+        };
     }
 }

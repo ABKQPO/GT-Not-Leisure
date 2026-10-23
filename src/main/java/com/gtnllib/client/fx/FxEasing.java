@@ -15,8 +15,17 @@ public class FxEasing {
         return 1 - rest * rest * rest;
     }
 
+    public static float easeOutBack(float t) {
+        float p = MathUtils.clampUnit(t) - 1;
+        return 1 + 2.70158F * p * p * p + 1.70158F * p * p;
+    }
+
     public static float smoothStep(float t) {
         float p = MathUtils.clampUnit(t);
         return p * p * (3 - 2 * p);
+    }
+
+    public static float smoothStep(float from, float to, float value) {
+        return smoothStep((value - from) / (to - from));
     }
 }

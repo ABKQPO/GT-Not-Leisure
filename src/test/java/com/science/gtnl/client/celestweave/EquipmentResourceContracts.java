@@ -816,9 +816,14 @@ public class EquipmentResourceContracts {
                 && sound.contains("publicvoidonResize(intwidth,intheight){arrangement.fit(width,height);"),
             "the sound screen stacks its cards on a narrow screen, also after the window is resized");
         check(sound.contains(".atLeast(LABEL_WIDTH)"), "the sound name column grows with the longest name");
+        String layout = compact(read(Paths.get("src/main/java/com/gtnllib/gui/layout/Layout.java"))),
+            wheelBase = compact(read(Paths.get("src/main/java/com/gtnllib/gui/wheel/WheelScreen.java")));
         check(
-            wheel.contains("LayoutMath.widest(") && wheel.contains(".atLeast(BUTTON_WIDTH)")
-                && wheel.contains("(width+style.spacingMedium)/2"),
+            wheel.contains("Layout.buttonWidth(style,BUTTON_WIDTH,") && wheel.contains("belowPair(")
+                && wheel.contains("style.spacingMedium);")
+                && layout.contains("LayoutMath.widest(widest,textWidth(caption,style))")
+                && layout.contains(".atLeast(least)")
+                && wheelBase.contains("intshift=(width+gap)/2;"),
             "wheel buttons share the width of the longer label and stay centered");
         String input = compact(read(SOURCES.resolve("client/equipment/EquipmentClientInput.java")));
         check(

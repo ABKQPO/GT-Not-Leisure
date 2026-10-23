@@ -93,6 +93,14 @@ public class WheelNavigator {
         return Outcome.ACTION;
     }
 
+    public boolean rightClick(int slot) {
+        WheelEntry entry = entry(slot);
+        if (entry == null || !entry.isEnabled() || entry.rightClick() == null) return false;
+        entry.rightClick()
+            .trigger(new WheelActionContext(pageIndex, slot, entry.id(), openMode));
+        return true;
+    }
+
     public boolean back() {
         if (menuStack.size() <= 1) return false;
         menuStack.removeLast();

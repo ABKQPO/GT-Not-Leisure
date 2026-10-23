@@ -17,6 +17,7 @@ public class FxEffects {
         MinecraftForge.EVENT_BUS.register(new FxEffects());
         MinecraftForge.EVENT_BUS.register(new FxArcRenderer());
         MinecraftForge.EVENT_BUS.register(new FxShockwaveRenderer());
+        MinecraftForge.EVENT_BUS.register(new FxMoteRenderer());
     }
 
     @SubscribeEvent
@@ -24,6 +25,7 @@ public class FxEffects {
         if (!event.world.isRemote) return;
         FxArcRenderer.clear();
         FxShockwaveRenderer.clear();
+        FxMoteRenderer.clear();
     }
 
     @SubscribeEvent

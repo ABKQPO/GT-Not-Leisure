@@ -2,6 +2,7 @@ package com.gtnllib.client;
 
 import net.minecraftforge.common.MinecraftForge;
 
+import com.gtnllib.client.fx.world.FxMoteRenderer;
 import com.gtnllib.client.hud.HudLayout;
 import com.gtnllib.client.hud.HudOverlay;
 import com.gtnllib.client.shader.ShaderEffect;
@@ -28,5 +29,6 @@ public class GTNLLibClient {
         PaletteThemes.chooseWith(() -> GTNLLibConfig.theme);
         PaletteThemes.onRegister(() -> GTNLLibConfig.listThemes(PaletteThemes.ids()));
         HudLayout.settings(() -> GTNLLibConfig.enableHud, () -> GTNLLibConfig.hudScale);
+        FxMoteRenderer.limitWith(() -> GTNLLibConfig.maxWorldMotes);
     }
 }

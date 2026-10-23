@@ -195,11 +195,11 @@ public class RailgunBolts {
             for (int index = 0; index < flows; index++) {
                 int slot = FLOW_SLOT_OFFSET + (side < 0 ? 0 : FLOW_MAX_PER_SIDE) + index;
                 int direction = (index + (side < 0 ? 0 : 1)) % 2 == 0 ? -1 : 1;
-                double offset = noise(owner, slot, 0, 0) * period;
+                double offset = MathUtils.hashUnit(owner, slot, 0, 0) * period;
                 double phase = ((age + offset) / period) % 1;
                 double head = Math.min(span, phase * (span + length)), tail = Math.max(0, head - length);
                 if (head - tail < 1.0E-3) continue;
-                Random random = new Random(Double.doubleToLongBits(noise(owner, slot, 1, tick)));
+                Random random = new Random(Double.doubleToLongBits(MathUtils.hashUnit(owner, slot, 1, tick)));
                 float fade = (float) Math.sqrt(Math.sin(Math.PI * phase));
                 bolts.add(
                     new Bolt(
@@ -338,16 +338,6 @@ public class RailgunBolts {
     private static float flicker(int slot, long tick) {
         long step = Math.floorMod(tick + slot * 5L, FLICKER_TICKS);
         return 1F - 0.45F * step / FLICKER_TICKS;
-    }
-
-    public static double noise(int owner, int slot, int index, long tick) {
-        long hash = owner * 0x9E3779B97F4A7C15L + slot * 0xC2B2AE3D27D4EB4FL
-            + index * 0x165667B19E3779F9L
-            + tick * 0xD6E8FEB86659FD93L;
-        hash ^= hash >>> 33;
-        hash *= 0xFF51AFD7ED558CCDL;
-        hash ^= hash >>> 33;
-        return (hash >>> 11) * 0x1.0p-53;
     }
 
     private static Random random(int owner, int slot, long tick) {

@@ -15,9 +15,6 @@ import com.cleanroommc.modularui.drawable.ItemDrawable;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.gtnllib.client.hud.HudEditor;
 import com.gtnllib.gui.layout.Layout;
-import com.gtnllib.gui.layout.LayoutMath;
-import com.gtnllib.gui.layout.Size;
-import com.gtnllib.gui.theme.ButtonPurpose;
 import com.gtnllib.gui.wheel.WheelEntry;
 import com.gtnllib.gui.wheel.WheelMenuBuilder;
 import com.gtnllib.gui.wheel.WheelMenuModel;
@@ -54,16 +51,13 @@ public class EquipmentWheelScreen extends WheelScreen {
                 .asWidget(),
             TITLE_GAP);
         LayoutTheme style = EquipmentTheme.layout();
-        int width = Size
-            .content(
-                LayoutMath.widest(
-                    Layout.textWidth(EquipmentGui.tr(HUD), style),
-                    Layout.textWidth(EquipmentGui.tr(SOUND), style)),
-                style.padding)
-            .atLeast(BUTTON_WIDTH)
-            .resolve(0), shift = (width + style.spacingMedium) / 2;
-        below(button(HUD, HudEditor::open, width, style), BUTTON_GAP, -shift);
-        below(button(SOUND, EquipmentSoundScreen::open, width, style), BUTTON_GAP, shift);
+        int width = Layout.buttonWidth(style, BUTTON_WIDTH, EquipmentGui.tr(HUD), EquipmentGui.tr(SOUND));
+        belowPair(
+            button(HUD, HudEditor::open, width, style),
+            button(SOUND, EquipmentSoundScreen::open, width, style),
+            BUTTON_GAP,
+            width,
+            style.spacingMedium);
     }
 
     public static int[] equipmentSlots(EntityPlayer player) {
@@ -127,13 +121,7 @@ public class EquipmentWheelScreen extends WheelScreen {
     }
 
     private ButtonWidget<?> button(String lang, Runnable open, int width, LayoutTheme style) {
-        return ButtonPurpose.NORMAL.apply(new ButtonWidget<>())
-            .size(width, style.buttonHeight)
-            .overlay(Layout.caption(IKey.str(EquipmentGui.tr(lang)), style))
-            .onMousePressed(button -> {
-                openNext(open);
-                return true;
-            });
+        return Layout.button(IKey.str(EquipmentGui.tr(lang)), width, style, () -> openNext(open));
     }
 
     @Override

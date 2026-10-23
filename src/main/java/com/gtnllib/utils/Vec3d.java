@@ -5,6 +5,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import io.netty.buffer.ByteBuf;
 
@@ -27,6 +28,10 @@ public record Vec3d(double x, double y, double z) {
 
     public static Vec3d of(Vec3 vector) {
         return new Vec3d(vector.xCoord, vector.yCoord, vector.zCoord);
+    }
+
+    public static Vec3d of(ForgeDirection direction) {
+        return new Vec3d(direction.offsetX, direction.offsetY, direction.offsetZ);
     }
 
     public static Vec3d pos(Entity entity) {

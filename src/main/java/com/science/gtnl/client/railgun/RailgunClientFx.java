@@ -5,6 +5,7 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.gtnllib.client.fx.world.FxMuzzleAnchor;
 import com.gtnllib.client.fx.world.FxShockwaveRenderer;
 import com.gtnllib.client.fx.world.FxVisibility;
 import com.gtnllib.client.hud.HudRegistry;
@@ -61,7 +62,7 @@ public class RailgunClientFx {
             impactSound(packet);
             return;
         }
-        Vec3d muzzle = RailgunMuzzleAnchor
+        Vec3d muzzle = FxMuzzleAnchor
             .muzzle(packet.shooterId, packet.from, Minecraft.getMinecraft().timer.renderPartialTicks);
         RailgunOrbRenderer.launch(packet.shooterId, muzzle, packet.firstHit, packet.tier, () -> impact(packet, muzzle));
     }
@@ -171,7 +172,7 @@ public class RailgunClientFx {
         RailgunOrbRenderer.clear();
         RailgunCameraShake.clear();
         RailgunCharge.clear();
-        RailgunMuzzleAnchor.clear();
+        FxMuzzleAnchor.clear();
         RailgunSounds.clear();
     }
 }

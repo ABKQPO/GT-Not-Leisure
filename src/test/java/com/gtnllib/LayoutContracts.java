@@ -5,6 +5,7 @@ import static com.gtnllib.GTNLLibContractTest.check;
 import static com.gtnllib.GTNLLibContractTest.compact;
 import static com.gtnllib.GTNLLibContractTest.field;
 import static com.gtnllib.GTNLLibContractTest.read;
+import static com.gtnllib.GTNLLibContractTest.rejects;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,13 +15,20 @@ import java.util.List;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
+import com.gtnewhorizon.gtnhlib.config.Config;
+import com.gtnllib.config.GTNLLibConfig;
 import com.gtnllib.gui.layout.Layout;
 import com.gtnllib.gui.layout.LayoutMath;
 import com.gtnllib.gui.layout.Size;
+import com.gtnllib.gui.settings.BlockPosFields;
+import com.gtnllib.gui.settings.SettingControls;
+import com.gtnllib.gui.settings.SettingControls.Slider;
+import com.gtnllib.gui.settings.SettingControls.Toggle;
 import com.gtnllib.gui.widget.CloseButton;
 import com.gtnllib.gui.widget.Divider;
 import com.gtnllib.gui.widget.LayoutTheme;
 import com.gtnllib.gui.widget.SlideSwitch;
+import com.gtnllib.gui.widget.StepSlider;
 import com.gtnllib.utils.MathUtils;
 
 public class LayoutContracts {
@@ -32,6 +40,72 @@ public class LayoutContracts {
         adaptiveRules();
         mathRules();
         layoutSources();
+        settingControls();
+        blockPosFields();
+    }
+
+    private static void blockPosFields() {
+        check(BlockPosFields.typed("12", 12.37, 0.5) == 12.37, "an untouched block field keeps the exact coordinate");
+        check(BlockPosFields.typed("-3", -2.5, 0.5) == -2.5, "an untouched negative block keeps its exact coordinate");
+        check(BlockPosFields.typed("40", 12.37, 0.5) == 40.5, "a typed block on X or Z is its middle");
+        check(BlockPosFields.typed("70", 64, 0) == 70, "a typed block on Y is its floor");
+        check(BlockPosFields.typed("1,234", 0, 0.5) == 1234.5, "a grouped number still reads as one block");
+        check(
+            BlockPosFields.typed("", 7.25, 0.5) == 7.25 && BlockPosFields.typed("-", 7.25, 0.5) == 7.25,
+            "a field that is not a number keeps the exact coordinate");
+    }
+
+    private static void settingControls() throws ReflectiveOperationException {
+        int savedMotes = GTNLLibConfig.maxWorldMotes;
+        float savedScale = GTNLLibConfig.hudScale;
+        boolean savedHud = GTNLLibConfig.enableHud;
+        try {
+            Slider motes = SettingControls.slider(null, GTNLLibConfig.class, "maxWorldMotes", 128, StepSlider.whole());
+            Config.RangeInt range = GTNLLibConfig.class.getField("maxWorldMotes")
+                .getAnnotation(Config.RangeInt.class);
+            check(
+                motes.min() == range.min() && motes.max() == range.max() && motes.steps() == 31,
+                "a setting slider takes its range from the config annotation");
+            check(
+                motes.initial() == GTNLLibConfig.DEFAULT_MAX_WORLD_MOTES,
+                "a setting slider takes its default from the config annotation");
+            check(
+                motes.lang()
+                    .equals("gtnllib.gui.config.client.max_world_motes"),
+                "a setting slider takes its lang key from the config annotation");
+            motes.set(1000.4);
+            check(GTNLLibConfig.maxWorldMotes == 1024, "a setting slider snaps an int setting to its step");
+            motes.set(300);
+            check(GTNLLibConfig.maxWorldMotes == 256, "a setting slider rounds to the nearest step");
+            check(motes.value() == 256, "a setting slider reads the field back");
+            motes.reset();
+            check(GTNLLibConfig.maxWorldMotes == 1024, "resetting a setting slider writes its default back");
+            Slider scale = SettingControls.slider(null, GTNLLibConfig.class, "hudScale", 0.25, StepSlider.decimals(2));
+            scale.set(1.6);
+            check(GTNLLibConfig.hudScale == 1.5F, "a setting slider writes a float setting");
+            Toggle hud = SettingControls.toggle(null, GTNLLibConfig.class, "enableHud");
+            GTNLLibConfig.enableHud = !hud.initial();
+            check(hud.on() != hud.initial(), "a setting switch reads the field");
+            hud.reset();
+            check(GTNLLibConfig.enableHud == hud.initial(), "resetting a setting switch writes its default back");
+            check(
+                SettingControls.tagWidth(Arrays.asList(motes, scale, hud))
+                    == Math.max(motes.widestTag(), scale.widestTag()),
+                "the shared value tag is as wide as the widest slider value");
+            check(
+                rejects(() -> SettingControls.slider(null, GTNLLibConfig.class, "missing", 1, StepSlider.whole())),
+                "a setting slider for a field that does not exist is refused");
+            check(
+                rejects(() -> SettingControls.slider(null, GTNLLibConfig.class, "theme", 1, StepSlider.whole())),
+                "a setting slider for a text setting is refused");
+            check(
+                rejects(() -> SettingControls.toggle(null, GTNLLibConfig.class, "hudScale")),
+                "a setting switch for a number setting is refused");
+        } finally {
+            GTNLLibConfig.maxWorldMotes = savedMotes;
+            GTNLLibConfig.hudScale = savedScale;
+            GTNLLibConfig.enableHud = savedHud;
+        }
     }
 
     private static void mathRules() {

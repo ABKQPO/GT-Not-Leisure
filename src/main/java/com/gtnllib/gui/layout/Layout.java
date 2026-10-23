@@ -14,8 +14,10 @@ import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widget.sizer.Unit;
+import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.ScrollingTextWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
+import com.gtnllib.gui.theme.ButtonPurpose;
 import com.gtnllib.gui.widget.CardDrawable;
 import com.gtnllib.gui.widget.Divider;
 import com.gtnllib.gui.widget.LayoutTheme;
@@ -146,6 +148,16 @@ public class Layout {
             style.textScale);
     }
 
+    public static ButtonWidget<?> button(IKey caption, int width, LayoutTheme style, Runnable action) {
+        return ButtonPurpose.NORMAL.apply(new ButtonWidget<>())
+            .size(width, style.buttonHeight)
+            .overlay(caption(caption, style))
+            .onMousePressed(mouse -> {
+                action.run();
+                return true;
+            });
+    }
+
     public static int cardHeader(LayoutTheme style) {
         return style.spacingMedium * 2 + TITLE_HEIGHT;
     }
@@ -176,6 +188,15 @@ public class Layout {
     @SideOnly(Side.CLIENT)
     public static int textWidth(String text, LayoutTheme style) {
         return style.scaled(Minecraft.getMinecraft().fontRenderer.getStringWidth(text));
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static int buttonWidth(LayoutTheme style, int least, String... captions) {
+        int widest = 0;
+        for (String caption : captions) widest = LayoutMath.widest(widest, textWidth(caption, style));
+        return Size.content(widest, style.padding)
+            .atLeast(least)
+            .resolve(0);
     }
 
     @SideOnly(Side.CLIENT)

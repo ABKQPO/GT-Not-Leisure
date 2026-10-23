@@ -9,9 +9,11 @@ import com.gtnewhorizon.gtnhlib.config.Config;
 import com.gtnewhorizon.gtnhlib.config.Config.Comment;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultBoolean;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultFloat;
+import com.gtnewhorizon.gtnhlib.config.Config.DefaultInt;
 import com.gtnewhorizon.gtnhlib.config.Config.DefaultString;
 import com.gtnewhorizon.gtnhlib.config.Config.LangKey;
 import com.gtnewhorizon.gtnhlib.config.Config.RangeFloat;
+import com.gtnewhorizon.gtnhlib.config.Config.RangeInt;
 import com.gtnewhorizon.gtnhlib.config.ConfigException;
 import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.gtnllib.GTNLLib;
@@ -30,6 +32,8 @@ public class GTNLLibConfig {
     @Config.Ignore
     private static final String THEME = "theme";
     @Config.Ignore
+    public static final int DEFAULT_MAX_WORLD_MOTES = 1024;
+    @Config.Ignore
     private static String[] themes = {};
 
     @Comment("Show every HUD element; arrange them with Edit HUD")
@@ -47,6 +51,12 @@ public class GTNLLibConfig {
     @LangKey("gtnllib.gui.config.client.theme")
     @DefaultString("")
     public static String theme = "";
+
+    @Comment("Most glowing dots, puffs and sparks shown in the world at once; when there are more, the oldest disappear first")
+    @LangKey("gtnllib.gui.config.client.max_world_motes")
+    @DefaultInt(DEFAULT_MAX_WORLD_MOTES)
+    @RangeInt(min = 128, max = 4096)
+    public static int maxWorldMotes = DEFAULT_MAX_WORLD_MOTES;
 
     private GTNLLibConfig() {}
 

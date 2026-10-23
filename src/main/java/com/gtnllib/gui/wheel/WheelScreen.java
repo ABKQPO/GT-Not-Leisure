@@ -32,6 +32,8 @@ public class WheelScreen extends ModularScreen {
     private final WheelWidget widget;
     private final List<Widget<?>> extras = new ArrayList<>();
     private Runnable next;
+    private boolean keepOpen;
+    private KeyBinding closeKey;
 
     protected WheelScreen(WheelMenuModel model, WheelOpenMode openMode, KeyBinding holdKey) {
         this(new WheelWidget(model, openMode), holdKey);
@@ -81,6 +83,17 @@ public class WheelScreen extends ModularScreen {
         ClientGUI.open(this, recipeViewer);
     }
 
+    public WheelScreen keepOpenOnConfirm() {
+        keepOpen = true;
+        widget.dismissOnConfirm(false);
+        return this;
+    }
+
+    public WheelScreen closeOnKey(KeyBinding key) {
+        closeKey = key;
+        return this;
+    }
+
     public WheelScreen below(Widget<?> extra, int offset) {
         return below(extra, offset, 0);
     }
@@ -94,15 +107,55 @@ public class WheelScreen extends ModularScreen {
         return this;
     }
 
+    public WheelScreen belowPair(Widget<?> left, Widget<?> right, int offset, int width, int gap) {
+        int shift = (width + gap) / 2;
+        return below(left, offset, -shift).below(right, offset, shift);
+    }
+
+    /**
+     * Puts a widget over the wheel, its bottom {@code offset} pixels above the wheel's top edge.
+     */
+    public WheelScreen above(Widget<?> extra, int offset) {
+        return above(extra, offset, 0);
+    }
+
+    public WheelScreen above(Widget<?> extra, int offset, int shift) {
+        // Why: the wheel is centred, so its top edge sits as far from the bottom as its bottom edge from the top.
+        extra.leftRelOffset(0.5F, shift)
+            .bottomRel(this::belowWheel, offset, 0)
+            .setEnabledIf(w -> widget.progress() > 0);
+        extras.add(extra);
+        getMainPanel().child(extra);
+        return this;
+    }
+
+    public WheelScreen abovePair(Widget<?> left, Widget<?> right, int offset, int width, int gap) {
+        int shift = (width + gap) / 2;
+        return above(left, offset, -shift).above(right, offset, shift);
+    }
+
+    public WheelScreen roomBelow(int height) {
+        widget.room(height);
+        return this;
+    }
+
+    public WheelScreen roomAbove(int height) {
+        widget.roomAbove(height);
+        return this;
+    }
+
     private double belowWheel() {
         float width = getMainPanel().getArea()
             .w(),
             height = getMainPanel().getArea()
                 .h();
         if (height <= 0) return 0;
-        return (height / 2D + Math.min(width, height) * widget.navigator()
+        WheelStyle style = widget.navigator()
             .model()
-            .style().outerRadiusScale) / height;
+            .style();
+        return (height / 2D
+            + WheelWidget.fitSize(width, height, widget.room(), widget.roomAbove(), style) * style.outerRadiusScale)
+            / height;
     }
 
     protected Widget<?> hoveredExtra() {
@@ -111,8 +164,13 @@ public class WheelScreen extends ModularScreen {
     }
 
     protected void handleHoldRelease() {
-        if (hoveredExtra() instanceof Interactable interactable) interactable.onMousePressed(0);
+        if (keepOpen) widget.dismiss();
+        else if (hoveredExtra() instanceof Interactable interactable) interactable.onMousePressed(0);
         else widget.confirm();
+    }
+
+    public void dismiss() {
+        widget.dismiss();
     }
 
     public void closeIfFinished() {
@@ -155,8 +213,13 @@ public class WheelScreen extends ModularScreen {
 
     @Override
     public boolean onKeyPressed(char typedChar, int keyCode) {
+        if (closeKey != null && keyCode != Keyboard.KEY_NONE && keyCode == closeKey.getKeyCode()) {
+            // Why: ModularUI enables key repeat while its screens are open, so keeping the opening key held repeats it.
+            if (!Keyboard.isRepeatEvent()) widget.dismiss();
+            return true;
+        }
         if (keyCode != Keyboard.KEY_ESCAPE) return super.onKeyPressed(typedChar, keyCode);
-        widget.back();
+        if (!widget.back() && keepOpen) widget.dismiss();
         return true;
     }
 

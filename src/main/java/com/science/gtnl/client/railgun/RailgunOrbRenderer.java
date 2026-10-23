@@ -2,6 +2,7 @@ package com.science.gtnl.client.railgun;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntToDoubleFunction;
 import java.util.function.UnaryOperator;
 
 import net.minecraft.client.Minecraft;
@@ -13,6 +14,7 @@ import com.gtnllib.client.fx.FxEasing;
 import com.gtnllib.client.fx.world.FxArcRenderer.Color;
 import com.gtnllib.client.fx.world.FxArcRenderer.Style;
 import com.gtnllib.client.fx.world.FxCamera;
+import com.gtnllib.client.fx.world.FxMuzzleAnchor;
 import com.gtnllib.client.fx.world.FxRenderHelper;
 import com.gtnllib.client.fx.world.FxRenderHelper.Sprite;
 import com.gtnllib.utils.MathUtils;
@@ -155,11 +157,11 @@ public class RailgunOrbRenderer {
     }
 
     public static double tremble(float tension, int owner, long tick) {
-        return 1 + TREMBLE_DEPTH * tension * tension * tension * (RailgunBolts.noise(owner, -2, 0, tick) * 2 - 1);
+        return 1 + TREMBLE_DEPTH * tension * tension * tension * (MathUtils.hashUnit(owner, -2, 0, tick) * 2 - 1);
     }
 
     public static double shake(float tension, int owner, long tick, int axis) {
-        return SHAKE_DEPTH * tension * tension * tension * (RailgunBolts.noise(owner, -3, axis, tick) * 2 - 1);
+        return SHAKE_DEPTH * tension * tension * tension * (MathUtils.hashUnit(owner, -3, axis, tick) * 2 - 1);
     }
 
     public static float flare(float tension, double time) {
@@ -262,7 +264,7 @@ public class RailgunOrbRenderer {
             * tremble(tension, id, now);
         Vec3d right = Vec3d.rightOf(direction), up = right.cross(direction)
             .normalize();
-        Vec3d anchor = RailgunMuzzleAnchor.muzzle(id, at, partialTicks);
+        Vec3d anchor = FxMuzzleAnchor.muzzle(id, at, partialTicks);
         Vec3d muzzle = anchor
             .add(direction.scale(RailgunBolts.ORB_MUZZLE_GAP * (1 - progress) + radius * RailgunBolts.ORB_CLEARANCE))
             .add(right.scale(shake(tension, id, now, 0) * radius))
@@ -327,24 +329,20 @@ public class RailgunOrbRenderer {
 
     private static void glow(OrbViz orb, Bolt bolt, UnaryOperator<Vec3d> place) {
         setColor(orb.tier(), BOLT_GLOW_MIX, bolt.alpha() * BOLT_GLOW_ALPHA);
-        List<Vec3d> points = bolt.points();
-        double width = bolt.width() * orb.radius() * BOLT_GLOW_WIDTH;
-        for (int i = 1; i < points.size(); i++)
-            FxRenderHelper.glowRibbon(place.apply(points.get(i - 1)), place.apply(points.get(i)), width, width);
+        FxRenderHelper.path(placed(bolt, place), bolt.width() * orb.radius() * BOLT_GLOW_WIDTH);
     }
 
     private static void core(OrbViz orb, Bolt bolt, UnaryOperator<Vec3d> place) {
-        float[] rgb = mix(orb.tier(), BOLT_CORE_MIX);
-        List<Vec3d> points = bolt.points();
-        double width = bolt.width() * orb.radius() * BOLT_CORE_WIDTH;
-        for (int i = 1; i < points.size(); i++) FxRenderHelper.ribbon(
-            place.apply(points.get(i - 1)),
-            place.apply(points.get(i)),
-            width,
-            rgb[0],
-            rgb[1],
-            rgb[2],
-            bolt.alpha());
+        setColor(orb.tier(), BOLT_CORE_MIX, bolt.alpha());
+        FxRenderHelper.path(placed(bolt, place), bolt.width() * orb.radius() * BOLT_CORE_WIDTH);
+    }
+
+    private static List<Vec3d> placed(Bolt bolt, UnaryOperator<Vec3d> place) {
+        List<Vec3d> points = new ArrayList<>(
+            bolt.points()
+                .size());
+        for (Vec3d point : bolt.points()) points.add(place.apply(point));
+        return points;
     }
 
     private static Vec3d boltPoint(OrbViz orb, Vec3d local) {
@@ -398,12 +396,12 @@ public class RailgunOrbRenderer {
         for (int filament = 0; filament < count; filament++) {
             double phase = orb.time() * FILAMENT_SPEED + filament * (Math.PI * 2 / FILAMENTS) + orb.seed() * 0.37;
             double wobblePhase = orb.time() * FILAMENT_WOBBLE_SPEED + filament * 1.7 + orb.seed() * 0.11;
-            float flicker = (float) (0.55 + 0.45 * RailgunBolts.noise(orb.seed(), filament, -1, tick));
-            Vec3d previous = filamentPoint(orb, direction, right, up, reach, phase, wobblePhase, 0, 0, agitation);
+            float flicker = (float) (0.55 + 0.45 * MathUtils.hashUnit(orb.seed(), filament, -1, tick));
+            List<Vec3d> run = new ArrayList<>(FILAMENT_SEGMENTS + 1);
+            int first = 0;
+            run.add(filamentPoint(orb, direction, right, up, reach, phase, wobblePhase, 0, 0, agitation));
             for (int segment = 1; segment <= FILAMENT_SEGMENTS; segment++) {
-                double start = (segment - 1) / (double) FILAMENT_SEGMENTS;
-                double end = segment / (double) FILAMENT_SEGMENTS;
-                double crackle = (RailgunBolts.noise(orb.seed(), filament, segment, tick) * 2 - 1) * agitation;
+                double crackle = (MathUtils.hashUnit(orb.seed(), filament, segment, tick) * 2 - 1) * agitation;
                 Vec3d current = filamentPoint(
                     orb,
                     direction,
@@ -412,21 +410,28 @@ public class RailgunOrbRenderer {
                     reach,
                     phase,
                     wobblePhase,
-                    end,
+                    segment / (double) FILAMENT_SEGMENTS,
                     crackle,
                     agitation);
-                boolean gap = RailgunBolts.noise(orb.seed(), filament, segment + FILAMENT_SEGMENTS, tick)
+                boolean gap = MathUtils.hashUnit(orb.seed(), filament, segment + FILAMENT_SEGMENTS, tick)
                     < FILAMENT_GAP * agitation;
-                if (!gap) {
-                    double taper = 0.5 + 0.5 * Math.sin(Math.PI * (start + end) * 0.5);
-                    setColor(orb.tier(), 0.52F, FILAMENT_GLOW_ALPHA * flicker);
-                    FxRenderHelper.uvRibbon(previous, current, width * 1.6 * taper, width * 1.6 * taper, start, end);
-                    setColor(orb.tier(), 0.92F, FILAMENT_CORE_ALPHA * flicker);
-                    FxRenderHelper.uvRibbon(previous, current, width * 0.38 * taper, width * 0.38 * taper, start, end);
+                if (gap) {
+                    filament(orb, run, first, width, flicker);
+                    run = new ArrayList<>(FILAMENT_SEGMENTS + 1);
+                    first = segment;
                 }
-                previous = current;
+                run.add(current);
             }
+            filament(orb, run, first, width, flicker);
         }
+    }
+
+    private static void filament(OrbViz orb, List<Vec3d> run, int first, double width, float flicker) {
+        IntToDoubleFunction taper = index -> 0.5 + 0.5 * Math.sin(Math.PI * (first + index) / FILAMENT_SEGMENTS);
+        setColor(orb.tier(), 0.52F, FILAMENT_GLOW_ALPHA * flicker);
+        FxRenderHelper.path(run, index -> width * 1.6 * taper.applyAsDouble(index), index -> {});
+        setColor(orb.tier(), 0.92F, FILAMENT_CORE_ALPHA * flicker);
+        FxRenderHelper.path(run, index -> width * 0.38 * taper.applyAsDouble(index), index -> {});
     }
 
     private static Vec3d filamentPoint(OrbViz orb, Vec3d direction, Vec3d right, Vec3d up, double reach, double phase,

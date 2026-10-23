@@ -76,6 +76,26 @@ public class FxCamera {
         return rotate(new Vec3d(0, 0, -1));
     }
 
+    public static boolean inView(Vec3d center, double radius) {
+        Vec3d offset = center.subtract(position);
+        double x = offset.x(), y = offset.y(), z = offset.z();
+        return inFrustum(
+            new Vec3d(
+                ROTATION[0] * x + ROTATION[1] * y + ROTATION[2] * z,
+                ROTATION[3] * x + ROTATION[4] * y + ROTATION[5] * z,
+                ROTATION[6] * x + ROTATION[7] * y + ROTATION[8] * z),
+            radius,
+            focalX,
+            focalY);
+    }
+
+    public static boolean inFrustum(Vec3d eyeSpace, double radius, double focalX, double focalY) {
+        double x = eyeSpace.x(), y = eyeSpace.y(), z = eyeSpace.z();
+        if (z > radius) return false;
+        return (focalX * Math.abs(x) + z) / Math.sqrt(focalX * focalX + 1) <= radius
+            && (focalY * Math.abs(y) + z) / Math.sqrt(focalY * focalY + 1) <= radius;
+    }
+
     private static Vec3d rotate(Vec3d eyeSpace) {
         double x = eyeSpace.x(), y = eyeSpace.y(), z = eyeSpace.z();
         return new Vec3d(

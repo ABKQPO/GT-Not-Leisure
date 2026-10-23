@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
 import com.gtnllib.client.fx.world.FxCamera;
+import com.gtnllib.client.fx.world.FxMuzzleAnchor;
 import com.gtnllib.client.fx.world.FxRenderHelper;
 import com.gtnllib.client.fx.world.FxRenderHelper.Sprite;
 import com.gtnllib.utils.Vec3d;
@@ -219,7 +220,7 @@ public class RailgunBeamRenderer {
         HELD.forEach((id, held) -> {
             advance(held, millis);
             Entity shooter = world == null ? null : world.getEntityByID(id);
-            Vec3d origin = RailgunMuzzleAnchor.muzzle(id, partialTicks);
+            Vec3d origin = FxMuzzleAnchor.muzzle(id, partialTicks);
             if (shooter == null || origin == null || !RailgunClientFx.visible(id, origin)) return;
             Vec3d end = aimEnd(shooter, partialTicks, Math.max(MIN_BEAM_LENGTH, Math.min(MAX_BEAM_LENGTH, held.range)));
             if (valid(origin, end)) beams.add(new Beam(pastMuzzle(origin, end), end, held.ehv, 1F, id));
@@ -235,7 +236,7 @@ public class RailgunBeamRenderer {
         double reach = range;
         if (firstPerson) {
             origin = FxCamera.position();
-            direction = RailgunMuzzleAnchor.firstPersonAim(partialTicks);
+            direction = FxMuzzleAnchor.firstPersonAim(partialTicks);
             reach += origin.subtract(Vec3d.eye(shooter, partialTicks))
                 .length();
         } else {

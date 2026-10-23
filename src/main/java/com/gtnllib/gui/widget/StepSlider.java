@@ -286,7 +286,7 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
 
     private void drawTag(String text, float cursor, float trackCenter, boolean on, Theme palette) {
         int textWidth = compactWidth(text), tagHeight = COMPACT_TAG_HEIGHT;
-        int tagWidth = this.tagWidth > 0 ? this.tagWidth : textWidth + COMPACT_TAG_PADDING * 2;
+        int tagWidth = this.tagWidth > 0 ? this.tagWidth : fittedTagWidth(text);
         int alongSize = vertical ? tagHeight : tagWidth, acrossSize = vertical ? tagWidth : tagHeight;
         int along = clamp(Math.round(cursor + 0.5F - alongSize / 2F), length() - alongSize);
         int across = clamp(Math.round(trackCenter - acrossSize / 2F), thickness() - acrossSize);
@@ -325,6 +325,14 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
         String pattern = "%." + digits + "f";
         // Why: the compact font has no comma, which many locales write as the decimal point.
         return value -> String.format(Locale.ROOT, pattern, value);
+    }
+
+    public static DoubleFunction<String> whole() {
+        return value -> String.valueOf(Math.round(value));
+    }
+
+    public static int fittedTagWidth(String text) {
+        return compactWidth(text) + COMPACT_TAG_PADDING * 2;
     }
 
     public static int compactWidth(String text) {

@@ -51,7 +51,7 @@ public class CelestweaveStripEffects {
         float phase = seconds / 3.6F % 1F;
         if (phase < 0.45F) return FxEasing.smoothStep(phase / 0.45F);
         if (phase < 0.55F) return 1F;
-        if (phase < 0.9F) return 1F - FxEasing.smoothStep((phase - 0.55F) / 0.35F);
+        if (phase < 0.9F) return 1F - FxEasing.smoothStep(0.55F, 0.9F, phase);
         return 0F;
     }
 

@@ -93,6 +93,10 @@ public class ColorMath {
         tessellator.setColorRGBA_F(red(rgb), green(rgb), blue(rgb), MathUtils.clampUnit(alpha));
     }
 
+    public static void tessellateArgb(Tessellator tessellator, int argb) {
+        tessellator.setColorRGBA_I(argb & 0xFFFFFF, argb >>> 24);
+    }
+
     public static void gl(int rgb, float alpha) {
         GL11.glColor4f(red(rgb), green(rgb), blue(rgb), alpha);
     }

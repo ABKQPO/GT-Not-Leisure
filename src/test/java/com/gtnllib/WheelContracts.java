@@ -37,6 +37,62 @@ public class WheelContracts {
 
     static void run() throws Exception {
         wheel();
+        closeKey();
+        fit();
+    }
+
+    private static void fit() {
+        int hotbar = 22, room = 104;
+        near(504, WheelWidget.fitSize(960, 504, 0, WheelStyle.DEFAULT), "a wheel with nothing below keeps its size");
+        WheelStyle style = WheelStyle.builder()
+            .radii(0.125F, 0.24F, 15F)
+            .build();
+        for (int[] screen : new int[][] { { 960, 504 }, { 640, 360 }, { 1280, 680 } }) {
+            float radius = WheelWidget.fitSize(screen[0], screen[1], room, style) * style.outerRadiusScale;
+            check(
+                screen[1] / 2F + radius + room <= screen[1] - hotbar,
+                "the buttons below a " + screen[0] + "x" + screen[1] + " wheel end above the hotbar, radius " + radius);
+            check(radius <= screen[1] * style.outerRadiusScale + 1.0E-3F, "a fitted wheel never grows past its style");
+        }
+        near(
+            504,
+            WheelWidget.fitSize(960, 504, room, style),
+            "a wheel whose buttons already clear the hotbar keeps its size");
+        near(
+            48,
+            WheelWidget.fitSize(427, 240, room, style) * style.outerRadiusScale,
+            "a wheel on a screen too short for its buttons stops shrinking at a usable size");
+        int above = 44;
+        for (int[] screen : new int[][] { { 960, 504 }, { 640, 360 }, { 1280, 680 } }) {
+            float radius = WheelWidget.fitSize(screen[0], screen[1], room, above, style) * style.outerRadiusScale;
+            check(
+                screen[1] / 2F - radius - above >= 0 && screen[1] / 2F + radius + room <= screen[1] - hotbar,
+                "buttons above and below a " + screen[0]
+                    + "x"
+                    + screen[1]
+                    + " wheel both stay on screen, radius "
+                    + radius);
+        }
+        near(
+            WheelWidget.fitSize(640, 360, room, style),
+            WheelWidget.fitSize(640, 360, room, 0, style),
+            "a wheel with nothing above sizes as before");
+        check(
+            WheelWidget.fitSize(640, 360, 0, 200, style) < WheelWidget.fitSize(640, 360, 0, 0, style),
+            "a wheel shrinks to make room for tall buttons above it");
+    }
+
+    private static void closeKey() throws Exception {
+        String screen = new String(
+            Files.readAllBytes(SOURCES.resolve("gui/wheel/WheelScreen.java")),
+            StandardCharsets.UTF_8).replaceAll("\\s", "");
+        int start = screen.indexOf("publicbooleanonKeyPressed("), end = screen.indexOf("publicstaticclassCloser");
+        check(start >= 0 && end > start, "wheel screen handles key presses before its closer class");
+        if (start < 0 || end <= start) return;
+        check(
+            screen.substring(start, end)
+                .contains("if(!Keyboard.isRepeatEvent())widget.dismiss();"),
+            "wheel close key ignores key repeat, which ModularUI turns on while its screens are open");
     }
 
     private static void wheel() throws Exception {
@@ -197,6 +253,29 @@ public class WheelContracts {
         WheelNavigator hold = new WheelNavigator(navigable, WheelOpenMode.HOLD);
         check(hold.confirm(2) == WheelNavigator.Outcome.NONE && hold.depth() == 1, "wheel hold mode skips submenu");
         check(!hold.turnPage(1), "wheel navigator single page does not turn");
+        near(1F, WheelWidget.fitScale(1F, 100, 1, 9, 200, 100), "a short wheel title keeps its size");
+        near(0.5F, WheelWidget.fitScale(1F, 300, 1, 9, 150, 100), "a wide wheel title shrinks to the circle");
+        near(0.5F, WheelWidget.fitScale(1F, 50, 4, 9, 200, 18), "a wheel title with many lines shrinks to fit");
+        near(1F, WheelWidget.fitScale(1F, 0, 0, 9, 10, 10), "an empty wheel title keeps its size");
+        List<WheelActionContext> rightClicked = new ArrayList<>();
+        WheelNavigator right = new WheelNavigator(
+            WheelMenuBuilder.create()
+                .slotsPerPage(4)
+                .entry(
+                    WheelEntry.action("r", "R", context -> {})
+                        .onRightClick(rightClicked::add))
+                .action("plain", "P", context -> {})
+                .build(),
+            WheelOpenMode.HOLD);
+        check(
+            right.rightClick(0) && rightClicked.size() == 1
+                && rightClicked.get(0)
+                    .entryId()
+                    .equals("r"),
+            "wheel right click runs the entry's right click action");
+        check(
+            !right.rightClick(1) && !right.rightClick(-1) && rightClicked.size() == 1,
+            "wheel right click ignores entries without one and no selection");
 
         WheelStyle style = WheelStyle.DEFAULT;
         near(0.17F, style.innerRadiusScale, "wheel style inner radius");

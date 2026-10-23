@@ -1,4 +1,4 @@
-package com.science.gtnl.client.railgun;
+package com.gtnllib.client.fx.world;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;
@@ -12,14 +12,19 @@ import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import com.gtnllib.client.fx.world.FxCamera;
 import com.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Where the muzzle of a held gun is in the world, so shots and muzzle effects start at the barrel the player sees.
+ * Item renderers record the muzzle while they draw the gun: in first person from the hand view, which is drawn with
+ * its own field of view, and in third person from the holder's arm. When nothing was recorded lately it falls back to
+ * where a gun held in the right hand usually is.
+ */
 @SideOnly(Side.CLIENT)
-public class RailgunMuzzleAnchor {
+public class FxMuzzleAnchor {
 
     private static final long STALE_MILLIS = 100;
     private static final float ARM_LAG = 0.1F;
@@ -42,25 +47,34 @@ public class RailgunMuzzleAnchor {
     private static final FloatBuffer MATRIX = BufferUtils.createFloatBuffer(16);
     private static HandAnchor hand;
 
-    private RailgunMuzzleAnchor() {}
+    private FxMuzzleAnchor() {}
 
-    public static void capture(int entityId) {
+    /**
+     * Records the muzzle of a gun drawn in a holder's hand; {@code muzzle} is in the model's own coordinates and the
+     * current model view matrix must be the one the gun is drawn with.
+     */
+    public static void capture(int entityId, Vec3d muzzle) {
         MATRIX.clear();
         GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, MATRIX);
-        Vec3d eyeSpace = transform(RailgunBolts.MUZZLE);
-        ANCHORS.put(entityId, new Anchor(eyeSpace, Minecraft.getSystemTime()));
+        ANCHORS.put(entityId, new Anchor(transform(muzzle), Minecraft.getSystemTime()));
     }
 
-    public static void captureFirstPerson() {
+    /**
+     * Records the muzzle of the gun drawn in the first person hand view, with the matrices it is drawn with.
+     */
+    public static void captureFirstPerson(Vec3d muzzle) {
         MATRIX.clear();
         GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, MATRIX);
-        Vec3d eyeSpace = transform(RailgunBolts.MUZZLE);
+        Vec3d eyeSpace = transform(muzzle);
         MATRIX.clear();
         GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX, MATRIX);
         if (MATRIX.get(0) <= 0 || MATRIX.get(5) <= 0) return;
         hand = new HandAnchor(eyeSpace, Minecraft.getSystemTime(), MATRIX.get(0), MATRIX.get(5));
     }
 
+    /**
+     * The world position of a shooter's muzzle, or null when the shooter is not loaded.
+     */
     public static Vec3d muzzle(int shooterId, float partialTicks) {
         Minecraft minecraft = Minecraft.getMinecraft();
         Entity entity = minecraft.theWorld == null ? null : minecraft.theWorld.getEntityByID(shooterId);
@@ -103,6 +117,9 @@ public class RailgunMuzzleAnchor {
             .add(look.scale(THIRD_PERSON_FORWARD));
     }
 
+    /**
+     * Where the first person gun points, lagging behind the view the way the held item sways when the camera turns.
+     */
     public static Vec3d firstPersonAim(float partialTicks) {
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
         if (player == null) return FxCamera.forward();

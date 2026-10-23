@@ -2,6 +2,7 @@ package com.gtnllib.client.fx.world;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntToDoubleFunction;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
@@ -43,21 +44,22 @@ public class FxArcRenderer {
 
     public static void spawnColored(Vec3d from, Vec3d to, int segments, double spread, int lifetime, int rgb,
         double width) {
+        spawn(from, to, segments, spread, lifetime, colored(rgb, width), true);
+    }
+
+    public static Style colored(int rgb, double width) {
         Color glow = new Color(ColorMath.red(rgb), ColorMath.green(rgb), ColorMath.blue(rgb));
-        spawn(
-            from,
-            to,
-            segments,
-            spread,
-            lifetime,
-            new Style(
-                glow,
-                mixWhite(glow, 0.3F),
-                mixWhite(glow, 0.7F),
-                mixWhite(glow, 0.1F),
-                mixWhite(glow, 0.6F),
-                width),
-            true);
+        return new Style(
+            glow,
+            mixWhite(glow, 0.3F),
+            mixWhite(glow, 0.7F),
+            mixWhite(glow, 0.1F),
+            mixWhite(glow, 0.6F),
+            width);
+    }
+
+    public static void drawPath(List<Vec3d> points, Style style, float alpha) {
+        drawPath(points, style, index -> alpha);
     }
 
     private static Color mixWhite(Color color, float k) {
@@ -124,16 +126,10 @@ public class FxArcRenderer {
                 double age = time - arc.born;
                 float alpha = fade(age, arc.lifetime);
                 if (alpha <= 0) continue;
-                Style style = arc.style;
                 double swayPhase = time * SWAY_SPEED + arc.seed * 0.000000001;
-                for (int i = 1; i < arc.points.size(); i++) {
-                    Vec3d from = animated(arc, i - 1, swayPhase), to = animated(arc, i, swayPhase);
-                    float pulse = (float) (0.86 + 0.14 * Math.sin(swayPhase * 1.7 + i * 0.73));
-                    float segmentAlpha = alpha * pulse;
-                    ribbon(from, to, GLOW_WIDTH * style.widthScale, style.glow, segmentAlpha * GLOW_ALPHA);
-                    ribbon(from, to, MID_WIDTH * style.widthScale, style.mid, segmentAlpha * MID_ALPHA);
-                    ribbon(from, to, CORE_WIDTH * style.widthScale, style.core, segmentAlpha);
-                }
+                List<Vec3d> points = new ArrayList<>(arc.points.size());
+                for (int i = 0; i < arc.points.size(); i++) points.add(animated(arc, i, swayPhase));
+                drawPath(points, arc.style, index -> alpha * (0.86 + 0.14 * Math.sin(swayPhase * 1.7 + index * 0.73)));
             }
         });
         if (ACTIVE.stream()
@@ -160,8 +156,16 @@ public class FxArcRenderer {
         }
     }
 
-    private static void ribbon(Vec3d from, Vec3d to, double width, Color color, float alpha) {
-        FxRenderHelper.ribbon(from, to, width, color.red, color.green, color.blue, alpha);
+    private static void drawPath(List<Vec3d> points, Style style, IntToDoubleFunction alpha) {
+        layer(points, GLOW_WIDTH * style.widthScale, style.glow, alpha, GLOW_ALPHA);
+        layer(points, MID_WIDTH * style.widthScale, style.mid, alpha, MID_ALPHA);
+        layer(points, CORE_WIDTH * style.widthScale, style.core, alpha, 1F);
+    }
+
+    private static void layer(List<Vec3d> points, double width, Color color, IntToDoubleFunction alpha,
+        float strength) {
+        FxRenderHelper
+            .path(points, index -> width, index -> setColor(color, (float) (alpha.applyAsDouble(index) * strength)));
     }
 
     private static void setColor(Color color, float alpha) {

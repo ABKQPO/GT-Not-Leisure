@@ -6,6 +6,13 @@ public class FxAngle {
 
     private FxAngle() {}
 
+    /**
+     * Whether a sector this many radians to either side of its middle already covers the whole turn.
+     */
+    public static boolean fullTurn(float halfRange) {
+        return halfRange >= Math.PI;
+    }
+
     public static float angleOf(double dx, double dy) {
         return normalizePositive((float) Math.atan2(dx, -dy));
     }

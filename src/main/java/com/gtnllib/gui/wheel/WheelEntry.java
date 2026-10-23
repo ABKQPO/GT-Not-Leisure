@@ -19,14 +19,16 @@ public class WheelEntry {
     private final BooleanSupplier enabled;
     private final BooleanSupplier visible;
     private final boolean placeholder;
+    private final IWheelEntryAction rightClick;
 
     private WheelEntry(String id, Supplier<String> label, IDrawable icon, IWheelEntryAction action,
         List<WheelEntry> submenu, BooleanSupplier enabled, boolean placeholder) {
-        this(id, label, icon, action, submenu, enabled, ALWAYS, placeholder);
+        this(id, label, icon, action, submenu, enabled, ALWAYS, placeholder, null);
     }
 
     private WheelEntry(String id, Supplier<String> label, IDrawable icon, IWheelEntryAction action,
-        List<WheelEntry> submenu, BooleanSupplier enabled, BooleanSupplier visible, boolean placeholder) {
+        List<WheelEntry> submenu, BooleanSupplier enabled, BooleanSupplier visible, boolean placeholder,
+        IWheelEntryAction rightClick) {
         this.id = Objects.requireNonNull(id, "id");
         this.label = Objects.requireNonNull(label, "label");
         this.icon = icon;
@@ -35,6 +37,7 @@ public class WheelEntry {
         this.enabled = Objects.requireNonNull(enabled, "enabled");
         this.visible = Objects.requireNonNull(visible, "visible");
         this.placeholder = placeholder;
+        this.rightClick = rightClick;
     }
 
     private static Supplier<String> fixed(String label) {
@@ -88,15 +91,28 @@ public class WheelEntry {
     }
 
     public WheelEntry labelFrom(Supplier<String> label) {
-        return new WheelEntry(id, label, icon, action, submenu, enabled, visible, placeholder);
+        return new WheelEntry(id, label, icon, action, submenu, enabled, visible, placeholder, rightClick);
     }
 
     public WheelEntry enabledWhen(BooleanSupplier enabled) {
-        return new WheelEntry(id, label, icon, action, submenu, enabled, visible, placeholder);
+        return new WheelEntry(id, label, icon, action, submenu, enabled, visible, placeholder, rightClick);
     }
 
     public WheelEntry visibleWhen(BooleanSupplier visible) {
-        return new WheelEntry(id, label, icon, action, submenu, enabled, visible, placeholder);
+        return new WheelEntry(id, label, icon, action, submenu, enabled, visible, placeholder, rightClick);
+    }
+
+    public WheelEntry onRightClick(IWheelEntryAction rightClick) {
+        return new WheelEntry(
+            id,
+            label,
+            icon,
+            action,
+            submenu,
+            enabled,
+            visible,
+            placeholder,
+            Objects.requireNonNull(rightClick, "rightClick"));
     }
 
     public String id() {
@@ -114,6 +130,10 @@ public class WheelEntry {
 
     public IWheelEntryAction action() {
         return action;
+    }
+
+    public IWheelEntryAction rightClick() {
+        return rightClick;
     }
 
     public List<WheelEntry> submenu() {
