@@ -1,5 +1,9 @@
 package com.science.gtnl.common.railgun;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,7 +24,8 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class RailgunServerEvents {
 
-    private static boolean registered;
+    private static final Map<UUID, EntityPlayerMP> ONLINE = new HashMap<>();
+    private static boolean registered, ticking, indexed;
 
     public static void register() {
         if (registered) return;
@@ -33,13 +38,22 @@ public class RailgunServerEvents {
     }
 
     public static EntityPlayerMP player(UUID id) {
-        MinecraftServer server = MinecraftServer.getServer();
-        if (server == null || server.getConfigurationManager() == null) return null;
-        for (Object candidate : server.getConfigurationManager().playerEntityList) {
-            EntityPlayerMP player = (EntityPlayerMP) candidate;
-            if (id.equals(player.getUniqueID())) return player;
+        if (ticking) {
+            if (!indexed) {
+                for (EntityPlayerMP player : online()) ONLINE.put(player.getUniqueID(), player);
+                indexed = true;
+            }
+            return ONLINE.get(id);
         }
+        for (EntityPlayerMP player : online()) if (id.equals(player.getUniqueID())) return player;
         return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<EntityPlayerMP> online() {
+        MinecraftServer server = MinecraftServer.getServer();
+        return server == null || server.getConfigurationManager() == null ? Collections.emptyList()
+            : server.getConfigurationManager().playerEntityList;
     }
 
     private static void forget(EntityPlayer player) {
@@ -50,9 +64,16 @@ public class RailgunServerEvents {
     @SubscribeEvent
     public void tick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
-        RailgunBeamService.tick();
-        RailgunTerrainService.tick();
-        RailgunFireService.tick();
+        ticking = true;
+        try {
+            RailgunBeamService.tick();
+            RailgunTerrainService.tick();
+            RailgunFireService.tick();
+        } finally {
+            ticking = false;
+            indexed = false;
+            ONLINE.clear();
+        }
     }
 
     @SubscribeEvent

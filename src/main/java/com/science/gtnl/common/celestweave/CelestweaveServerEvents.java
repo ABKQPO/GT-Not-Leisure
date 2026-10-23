@@ -7,6 +7,7 @@ import java.util.Set;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -14,6 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -161,6 +163,16 @@ public class CelestweaveServerEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void expire(ItemExpireEvent event) {
         CelestweaveBackpack.discard(event.entityItem.getEntityItem());
+    }
+
+    @SubscribeEvent
+    public void joinWorld(EntityJoinWorldEvent event) {
+        if (!event.world.isRemote && event.entity instanceof EntityItem drop) CelestweaveBackpack.trackDrop(drop);
+    }
+
+    @SubscribeEvent
+    public void serverTick(TickEvent.ServerTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) CelestweaveBackpack.discardDestroyedDrops();
     }
 
     @SubscribeEvent

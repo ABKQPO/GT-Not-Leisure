@@ -1,9 +1,11 @@
 package com.science.gtnl.common.celestweave;
 
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
@@ -11,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.google.common.collect.MapMaker;
 import com.science.gtnl.CommonProxy;
 import com.science.gtnl.common.equipment.EquipmentNet;
 import com.science.gtnl.common.item.items.PortableChestType;
@@ -41,6 +44,10 @@ public class CelestweaveBackpack {
         PortableItem.PortableType.OBSIDIAN,
         PortableItem.PortableType.NETHERITE,
         PortableItem.PortableType.DARKSTEEL);
+    private static final double VOID_Y = -64;
+    private static final Set<EntityItem> DROPS = Collections.newSetFromMap(
+        new MapMaker().weakKeys()
+            .<EntityItem, Boolean>makeMap());
 
     private CelestweaveBackpack() {}
 
@@ -85,6 +92,20 @@ public class CelestweaveBackpack {
         if (!isBackpackArmor(armor)) return;
         CelestweaveBackpackData data = CelestweaveBackpackData.get();
         if (data != null) persist(CelestweaveData.moduleStacks(armor), new ItemStack[0], data);
+    }
+
+    public static void trackDrop(EntityItem drop) {
+        if (isBackpackArmor(drop.getEntityItem())) DROPS.add(drop);
+    }
+
+    public static void discardDestroyedDrops() {
+        if (DROPS.isEmpty()) return;
+        DROPS.removeIf(drop -> {
+            if (!drop.isDead) return false;
+            ItemStack stack = drop.getEntityItem();
+            if (stack.stackSize > 0 && (drop.health <= 0 || drop.posY < VOID_Y)) discard(stack);
+            return true;
+        });
     }
 
     private static ItemStack renew(ItemStack module) {

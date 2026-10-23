@@ -1,6 +1,6 @@
-The radial menu in com.science.gtnl.client.wheel, the shape and frosted backdrop renderers
-in com.science.gtnl.client.fx (FxShapes, FxFrostedBackdrop) and the shaders in
-assets/sciencenotleisure/shaders/fx are ported from the wheel module of AnvilLib
+The radial menu in com.gtnllib.gui.wheel, the shape and frosted backdrop renderers
+in com.gtnllib.client.fx.screen (FxShapes, FxFrostedBackdrop) and the shaders in
+assets/gtnllib/shaders/fx are ported from the wheel module of AnvilLib
 (https://github.com/Anvil-Dev/AnvilLib, branch dev/1.21.1, commit 0f817d4d).
 
 MIT License
