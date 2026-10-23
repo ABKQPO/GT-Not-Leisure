@@ -35,17 +35,23 @@ public class StronzeInputHatch extends MTEHatchInput {
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return "gtnl.hatch.stronze.input_hatch.steam.name";
+    }
+
+    @Override
     public String getLocalName() {
         if (!hasOwnLocalName()) return super.getLocalName();
-        return StatCollector.translateToLocal("gt.blockmachines.stronze.input_hatch.steam.name");
+        return StatCollector.translateToLocal(getLocalNameKey());
     }
 
     @Override
     public String[] getDescription() {
-        return new String[] { StatCollector.translateToLocal("gt.blockmachines.stronze.input_hatch.steam.tooltip.0"),
-            StatCollector.translateToLocal("gt.blockmachines.stronze.input_hatch.steam.tooltip.1"),
-            StatCollector.translateToLocal("gt.blockmachines.stronze.input_hatch.steam.tooltip.2"),
-            StatCollector.translateToLocal("gt.blockmachines.stronze.input_hatch.steam.tooltip.3") };
+        return new String[] { StatCollector.translateToLocal("gtnl.hatch.stronze.input_hatch.steam.tooltip.0"),
+            StatCollector.translateToLocal("gtnl.hatch.stronze.input_hatch.steam.tooltip.1"),
+            StatCollector.translateToLocal("gtnl.hatch.stronze.input_hatch.steam.tooltip.2"),
+            StatCollector.translateToLocal("gtnl.hatch.stronze.input_hatch.steam.tooltip.3") };
     }
 
     @Override

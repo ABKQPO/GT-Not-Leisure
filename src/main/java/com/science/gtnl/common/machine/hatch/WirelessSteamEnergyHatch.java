@@ -49,29 +49,25 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
     public BigInteger steamDisplay;
     private SteamTypes selectedSteam = SteamTypes.STEAM;
 
-    public WirelessSteamEnergyHatch(final int aID, final String aName, final String aNameRegional, int aTier) {
-        super(
-            SteamTypes.getSupportedFluids(),
-            aTier == 0 ? 8000000 : Integer.MAX_VALUE,
-            aID,
-            aName,
-            aNameRegional,
-            aTier);
+    public WirelessSteamEnergyHatch(final int aID, final String aName, final String aNameKey, int aTier) {
+        super(SteamTypes.getSupportedFluids(), aTier == 0 ? 8000000 : Integer.MAX_VALUE, aID, aName, aNameKey, aTier);
     }
 
-    public WirelessSteamEnergyHatch(final String aName, final ITexture[][][] aTextures, int aTier) {
+    public WirelessSteamEnergyHatch(final String aName, final ITexture[][][] aTextures, int aTier,
+        final String aNameKey) {
         super(
             SteamTypes.getSupportedFluids(),
             aTier == 0 ? 8000000 : Integer.MAX_VALUE,
             aName,
             aTier,
             new String[] { "" },
-            aTextures);
+            aTextures,
+            aNameKey);
     }
 
     @Override
     public MetaTileEntity newMetaEntity(final IGregTechTileEntity aTileEntity) {
-        return new WirelessSteamEnergyHatch(this.mName, this.mTextures, this.mTier);
+        return new WirelessSteamEnergyHatch(this.mName, this.mTextures, this.mTier, this.nameKey);
     }
 
     @Override

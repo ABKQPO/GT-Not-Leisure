@@ -42,13 +42,14 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
     public Set<GTUtility.FluidId> mLockedFluids;
     public int mFluidCapacity;
     public UITexture uiTexture = ItemUtils.PICTURE_GTNL_LOGO;
+    public final String nameKey;
 
-    public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, int aID, String aName, String aNameRegional,
+    public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, int aID, String aName, String aNameKey,
         int aTier) {
         super(
             aID,
             aName,
-            aNameRegional,
+            aNameKey,
             aTier,
             3,
             new String[] { StatCollector.translateToLocal("gtnl.hatch.custom_fluid.tooltip.0"),
@@ -57,14 +58,15 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
                     + "L" });
         this.mLockedFluids = aFluid;
         this.mFluidCapacity = aAmount;
+        this.nameKey = aNameKey;
     }
 
-    public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, int aID, String aName, String aNameRegional,
+    public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, int aID, String aName, String aNameKey,
         int aTier, UITexture aUITexture) {
         super(
             aID,
             aName,
-            aNameRegional,
+            aNameKey,
             aTier,
             3,
             new String[] { StatCollector.translateToLocal("gtnl.hatch.custom_fluid.tooltip.0"),
@@ -74,35 +76,52 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
         this.mLockedFluids = aFluid;
         this.mFluidCapacity = aAmount;
         this.uiTexture = aUITexture;
+        this.nameKey = aNameKey;
     }
 
-    public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, int aID, String aName, String aNameRegional,
+    public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, int aID, String aName, String aNameKey,
         int aTier, String[] aDescription, ITexture... aTextures) {
-        super(aID, aName, aNameRegional, aTier, 3, aDescription, aTextures);
+        super(aID, aName, aNameKey, aTier, 3, aDescription, aTextures);
         this.mLockedFluids = aFluid;
         this.mFluidCapacity = aAmount;
+        this.nameKey = aNameKey;
     }
 
-    public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, int aID, String aName, String aNameRegional,
+    public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, int aID, String aName, String aNameKey,
         int aTier, String[] aDescription) {
-        super(aID, aName, aNameRegional, aTier, 3, aDescription);
+        super(aID, aName, aNameKey, aTier, 3, aDescription);
         this.mLockedFluids = aFluid;
         this.mFluidCapacity = aAmount;
+        this.nameKey = aNameKey;
     }
 
     public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, String aName, int aTier, String[] aDescription,
-        ITexture[][][] aTextures) {
+        ITexture[][][] aTextures, String aNameKey) {
         super(aName, aTier, 3, aDescription, aTextures);
         this.mLockedFluids = aFluid;
         this.mFluidCapacity = aAmount;
+        this.nameKey = aNameKey;
     }
 
     public CustomFluidHatch(Set<GTUtility.FluidId> aFluid, int aAmount, String aName, int aTier, String[] aDescription,
-        ITexture[][][] aTextures, UITexture aUITexture) {
+        ITexture[][][] aTextures, UITexture aUITexture, String aNameKey) {
         super(aName, aTier, 3, aDescription, aTextures);
         this.mLockedFluids = aFluid;
         this.mFluidCapacity = aAmount;
         this.uiTexture = aUITexture;
+        this.nameKey = aNameKey;
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return nameKey;
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
     }
 
     @Override
@@ -114,7 +133,8 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
             this.mTier,
             this.mDescriptionArray,
             this.mTextures,
-            this.uiTexture);
+            this.uiTexture,
+            this.nameKey);
     }
 
     @Override

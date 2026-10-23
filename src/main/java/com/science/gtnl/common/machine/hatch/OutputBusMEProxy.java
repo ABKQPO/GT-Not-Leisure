@@ -44,6 +44,18 @@ public class OutputBusMEProxy extends MTEHatchOutputBusME {
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return "gtnl.hatch.output_bus_me_proxy.name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
+    @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new OutputBusMEProxy(mName, mTier, mDescriptionArray, mTextures);
     }

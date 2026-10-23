@@ -242,6 +242,18 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return allowAuto ? "gtnl.hatch.super_dual_input_me.advanced.name" : "gtnl.hatch.super_dual_input_me.name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
+    @Override
     public String[] getDescription() {
         List<String> strings = new ArrayList<>(8);
         strings.add(StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.tooltip.0"));

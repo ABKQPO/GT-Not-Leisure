@@ -2,6 +2,7 @@ package com.science.gtnl.common.machine.hatch;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
@@ -100,6 +101,18 @@ public class CustomDroneDownLinkHatch extends MTEHatchDroneDownLink
         mMinConfigTime = aMinConfigTime;
         mMaxConfigTime = aMaxConfigTime;
         mDescription = aDescription;
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return "gtnl.hatch.configuration_drone_downlink.name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
     }
 
     @Override

@@ -59,6 +59,13 @@ public class TypeFilteredInputBusME extends OredictInputBusME {
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return isSuper ? "gtnl.hatch.type_filtered_input_bus_me.advanced.name"
+            : "gtnl.hatch.type_filtered_input_bus_me.name";
+    }
+
+    @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new TypeFilteredInputBusME(mName, autoPullAvailable, mTier, mDescriptionArray, mTextures, isSuper);
     }

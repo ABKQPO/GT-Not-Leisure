@@ -61,6 +61,18 @@ public class EnergyTransferNode extends MTETieredMachineBlock implements IConnec
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return "gtnl.hatch.energy_transfer_node.name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
+    @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity iGregTechTileEntity) {
         return new EnergyTransferNode(mName, mTier, mDescriptionArray, mTextures);
     }

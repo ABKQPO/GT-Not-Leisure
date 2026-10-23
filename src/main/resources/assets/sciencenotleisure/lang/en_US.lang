@@ -2746,24 +2746,24 @@ gtnl.machine.hydraulic_super_buffer.tooltip.4=§7Voltage OUT: §e0§7 (§eSteam�
 gtnl.machine.hydraulic_super_buffer.tooltip.5=§7Amperage: §b0§7
 gtnl.machine.hydraulic_super_buffer.tooltip.6=§7Capacity: §9No power transfer function!§7
 
-gt.blockmachines.breel.input_bus.steam.name=Input Bus (Breel)
-gt.blockmachines.breel.input_bus.steam.tooltip.0=Item Input for Steam Multiblocks
-gt.blockmachines.breel.input_bus.steam.tooltip.1=Shift + right click with screwdriver to turn Sort mode on/off
-gt.blockmachines.breel.input_bus.steam.tooltip.2=Automatically pulls items from the container in front of it
-gt.blockmachines.breel.input_bus.steam.tooltip.3=Capacity: %s slots
-gt.blockmachines.breel.input_bus.steam.tooltip.4=Does not work with non-steam multiblocks
+gtnl.hatch.breel.input_bus.steam.name=Input Bus (Breel)
+gtnl.hatch.breel.input_bus.steam.tooltip.0=Item Input for Steam Multiblocks
+gtnl.hatch.breel.input_bus.steam.tooltip.1=Shift + right click with screwdriver to turn Sort mode on/off
+gtnl.hatch.breel.input_bus.steam.tooltip.2=Automatically pulls items from the container in front of it
+gtnl.hatch.breel.input_bus.steam.tooltip.3=Capacity: %s slots
+gtnl.hatch.breel.input_bus.steam.tooltip.4=Does not work with non-steam multiblocks
 
-gt.blockmachines.breel.output_bus.steam.name=Output Bus (Breel)
-gt.blockmachines.breel.output_bus.steam.tooltip.0=Item Output for Steam Multiblocks
-gt.blockmachines.breel.output_bus.steam.tooltip.1=Automatically exports items into the container in front of it
-gt.blockmachines.breel.output_bus.steam.tooltip.2=Capacity: %s slots
-gt.blockmachines.breel.output_bus.steam.tooltip.3=Does not work with non-steam multiblocks
+gtnl.hatch.breel.output_bus.steam.name=Output Bus (Breel)
+gtnl.hatch.breel.output_bus.steam.tooltip.0=Item Output for Steam Multiblocks
+gtnl.hatch.breel.output_bus.steam.tooltip.1=Automatically exports items into the container in front of it
+gtnl.hatch.breel.output_bus.steam.tooltip.2=Capacity: %s slots
+gtnl.hatch.breel.output_bus.steam.tooltip.3=Does not work with non-steam multiblocks
 
-gt.blockmachines.stronze.input_hatch.steam.name=Input Hatch (Stronze)
-gt.blockmachines.stronze.input_hatch.steam.tooltip.0=Fluid Input for Multiblocks
-gt.blockmachines.stronze.input_hatch.steam.tooltip.1=Right click with screwdriver to toggle input filter
-gt.blockmachines.stronze.input_hatch.steam.tooltip.2=Capacity: %s L
-gt.blockmachines.stronze.input_hatch.steam.tooltip.3=Accepts any fluid, and automatically drains the tank in front of it
+gtnl.hatch.stronze.input_hatch.steam.name=Input Hatch (Stronze)
+gtnl.hatch.stronze.input_hatch.steam.tooltip.0=Fluid Input for Multiblocks
+gtnl.hatch.stronze.input_hatch.steam.tooltip.1=Right click with screwdriver to toggle input filter
+gtnl.hatch.stronze.input_hatch.steam.tooltip.2=Capacity: %s L
+gtnl.hatch.stronze.input_hatch.steam.tooltip.3=Accepts any fluid, and automatically drains the tank in front of it
 
 gt.blockmachines.wire.stargate.01.name=1x Stargate Wire
 gt.blockmachines.wire.stargate.02.name=2x Stargate Wire

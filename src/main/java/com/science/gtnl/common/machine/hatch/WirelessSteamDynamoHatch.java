@@ -74,6 +74,18 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
     }
 
     @Override
+    public String getLocalNameKey() {
+        if (!hasOwnLocalName()) return super.getLocalNameKey();
+        return mTier == 0 ? "gtnl.hatch.pipeless_steam.vent.name" : "gtnl.hatch.pipeless_jetstream.vent.name";
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
+    @Override
     public MetaTileEntity newMetaEntity(final IGregTechTileEntity aTileEntity) {
         return new WirelessSteamDynamoHatch(this.mName, this.mTier, this.mTextures, this.mLockedFluids);
     }
