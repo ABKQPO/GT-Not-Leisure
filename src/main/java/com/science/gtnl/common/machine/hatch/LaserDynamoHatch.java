@@ -11,10 +11,6 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import tectech.thing.metaTileEntity.hatch.MTEHatchDynamoTunnel;
 
-/**
- * Laser source hatch registered by GTNL. The GT class names itself from tier and amperage, so this only swaps in GTNL's
- * key.
- */
 @IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class LaserDynamoHatch extends MTEHatchDynamoTunnel {

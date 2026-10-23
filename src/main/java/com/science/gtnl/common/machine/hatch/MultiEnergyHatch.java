@@ -11,10 +11,6 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import tectech.thing.metaTileEntity.hatch.MTEHatchEnergyMulti;
 
-/**
- * Multi-amp energy hatch registered by GTNL. The GT class names itself from tier and amperage, so this only swaps in
- * GTNL's key.
- */
 @IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class MultiEnergyHatch extends MTEHatchEnergyMulti {
