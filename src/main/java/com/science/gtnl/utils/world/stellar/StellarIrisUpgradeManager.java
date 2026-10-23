@@ -14,8 +14,6 @@ import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 public class StellarIrisUpgradeManager {
 
-    private StellarIrisUpgradeManager() {}
-
     public static StellarIrisTeamSnapshot getSnapshot(EntityPlayer player) {
         StellarIrisTeamState state = getOrCreateState(player.worldObj, player.getUniqueID());
         return state.createSnapshot();

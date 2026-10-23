@@ -17,8 +17,6 @@ import com.science.gtnl.utils.text.effect.TextEffects;
 /** Shared visible layout for drawing, wrapping, and trimming marked strings. */
 public class EffectTextLayout {
 
-    private EffectTextLayout() {}
-
     public static Layout create(FontRenderer font, String text) {
         IFontParameters parameters = (IFontParameters) font;
         List<Glyph> glyphs = new ArrayList<>();

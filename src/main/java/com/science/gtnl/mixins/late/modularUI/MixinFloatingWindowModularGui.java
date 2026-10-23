@@ -8,13 +8,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
-import com.science.gtnl.client.meminiterminal.MiniTerminalHostLayer;
+import com.science.gtnl.client.floatingwindow.FloatingWindowLayer;
 
 @Mixin(value = ModularGui.class, remap = false)
-public abstract class MixinMiniTerminalModularGui {
+public abstract class MixinFloatingWindowModularGui {
 
     @Inject(method = "shouldRenderOurTooltip", at = @At("HEAD"), cancellable = true)
-    private void gtnl$ignoreHoverUnderMiniTerminal(CallbackInfoReturnable<Boolean> cir) {
-        if (MiniTerminalHostLayer.mouseOverTerminal((GuiScreen) (Object) this)) cir.setReturnValue(false);
+    private void gtnl$ignoreHoverUnderFloatingWindow(CallbackInfoReturnable<Boolean> cir) {
+        if (FloatingWindowLayer.mouseOverWindow((GuiScreen) (Object) this)) cir.setReturnValue(false);
     }
 }

@@ -17,8 +17,6 @@ public class DeferredTextEffects {
     private static final Deque<Draw> POOL = new ArrayDeque<>();
     private static boolean flushing;
 
-    private DeferredTextEffects() {}
-
     public static boolean isFlushing() {
         return flushing;
     }

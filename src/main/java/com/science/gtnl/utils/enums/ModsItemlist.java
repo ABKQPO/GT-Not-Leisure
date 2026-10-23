@@ -244,8 +244,6 @@ public enum ModsItemlist {
     BotaniaDragonstone(Mods.Botania.ID, "manaResource", 9),
     // 增生之种
     BotaniaOvergrowthSeed(Mods.Botania.ID, "overgrowthSeed", 0),
-    // 增生之种
-    BotaniaOvergrowthSeedDamage3(Mods.Botania.ID, "overgrowthSeed", 3),
     // 粉色手炮
     BotaniaPinkinator(Mods.Botania.ID, "pinkinator", 0),
     // 力量传递器

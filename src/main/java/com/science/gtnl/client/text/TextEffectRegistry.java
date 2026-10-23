@@ -13,8 +13,6 @@ public class TextEffectRegistry {
     private static final Map<String, TextEffect> EFFECTS = new LinkedHashMap<>();
     private static List<String> identifiers = List.of();
 
-    private TextEffectRegistry() {}
-
     public static void register(String identifier, TextEffect effect) {
         new TextEffectStyle(identifier, List.of(), 1);
         if (EFFECTS.putIfAbsent(identifier, Objects.requireNonNull(effect, "effect")) != null) {

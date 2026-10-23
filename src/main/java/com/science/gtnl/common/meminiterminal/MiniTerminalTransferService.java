@@ -19,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
+import com.science.gtnl.utils.CreativeCursor;
 
 import appeng.api.config.InsertionMode;
 import appeng.api.config.SecurityPermissions;
@@ -45,8 +46,6 @@ final class MiniTerminalTransferService {
 
     private static final Map<UUID, PickupHost> PICKUP_HOSTS = new HashMap<>();
     private static final Map<Container, Boolean> COVERS_MAIN_INVENTORY = new WeakHashMap<>();
-
-    private MiniTerminalTransferService() {}
 
     static void depositInventory(EntityPlayerMP player, MiniTerminalMonitorableAdapter terminal, Slot sourceSlot,
         int amount, BooleanSupplier valid) {
@@ -135,7 +134,7 @@ final class MiniTerminalTransferService {
                 return;
             }
         }
-        player.updateHeldItem();
+        CreativeCursor.sync(player);
     }
 
     private static boolean coversMainInventory(EntityPlayer player, Container container) {

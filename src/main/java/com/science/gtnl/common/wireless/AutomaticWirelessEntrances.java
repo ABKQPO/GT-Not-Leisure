@@ -128,8 +128,6 @@ public class AutomaticWirelessEntrances {
         }
     }
 
-    private AutomaticWirelessEntrances() {}
-
     static void refresh(Collection<Cluster<IGridNode, Address>> clusters, PhysicalMeTopology topology,
         WirelessEntranceIndex entrances) {
         Map<IGrid, Work> workByGrid = new IdentityHashMap<>();

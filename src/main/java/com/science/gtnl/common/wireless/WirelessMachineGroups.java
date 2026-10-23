@@ -23,8 +23,6 @@ import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 
 public class WirelessMachineGroups {
 
-    private WirelessMachineGroups() {}
-
     public static class Startup {
 
         private final Set<World> inspected = Collections.newSetFromMap(new IdentityHashMap<>());

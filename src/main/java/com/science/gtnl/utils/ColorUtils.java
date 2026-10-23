@@ -236,5 +236,4 @@ public class ColorUtils {
         return rgb(ENDER_ELEVATOR_COLORS[index]);
     }
 
-    private ColorUtils() {}
 }

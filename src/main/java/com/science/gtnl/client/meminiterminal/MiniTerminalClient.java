@@ -20,7 +20,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -30,6 +29,8 @@ import org.lwjgl.input.Mouse;
 import com.cleanroommc.modularui.api.IMuiScreen;
 import com.cleanroommc.modularui.screen.OpenScreenEvent;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.client.floatingwindow.FloatingWindowHost;
+import com.science.gtnl.client.floatingwindow.FloatingWindows;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import com.science.gtnl.common.meminiterminal.MiniTerminalPinSettings;
 import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket;
@@ -45,7 +46,6 @@ import appeng.container.AEBaseContainer;
 import appeng.helpers.IPinsHandler;
 import appeng.helpers.MonitorableAction;
 import appeng.util.Platform;
-import codechicken.nei.api.API;
 import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.recipe.GuiRecipe;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -105,25 +105,8 @@ public final class MiniTerminalClient {
         FMLCommonHandler.instance()
             .bus()
             .register(INSTANCE);
-        MiniTerminalNEIAdapter nei = new MiniTerminalNEIAdapter();
-        API.registerNEIGuiHandler(nei);
-
-        GuiContainerManager.objectHandlers.addFirst(nei);
-        GuiContainerManager.addDrawHandler(nei);
-        GuiContainerManager.addTooltipHandler(nei);
-        GuiContainerManager.addSlotClickHandler(nei);
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void prepareNativePanel(DrawScreenEvent.Pre event) {
-        MiniTerminalHostLayer.beginFrame(event.gui);
-        MiniTerminalInventoryPanel panel = overlay(event.gui);
-        if (panel != null) panel.prepareFrame();
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void finishHostFrame(DrawScreenEvent.Post event) {
-        MiniTerminalHostLayer.endFrame(event.gui);
+        FloatingWindows.register(MiniTerminalClient::overlay);
+        GuiContainerManager.addSlotClickHandler(new MiniTerminalNEIAdapter());
     }
 
     @SubscribeEvent
@@ -152,9 +135,13 @@ public final class MiniTerminalClient {
 
     private static void attachPanel(InitGuiEvent.Post event) {
         checkConnection();
+        attachPanel(event.gui);
+    }
+
+    private static void attachPanel(GuiScreen gui) {
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.currentScreen != event.gui || overlay != null
-            || !(event.gui instanceof GuiContainer inventory)
+        if (mc.currentScreen != gui || overlay != null
+            || !(gui instanceof GuiContainer inventory)
             || mc.thePlayer == null
             || mc.playerController == null
             || inventory instanceof GuiInventory && mc.playerController.isInCreativeMode()
@@ -172,7 +159,11 @@ public final class MiniTerminalClient {
         MiniTerminalModel model = model();
         if (slot >= 0) model.readSettings(ItemMEMiniPortableTerminal.getTerminalStack(mc.thePlayer, slot));
         model.beginSession();
-        MiniTerminalPanelHost host = MiniTerminalPanelHost.create(inventory, model);
+        FloatingWindowHost<MiniTerminalInventoryPanel> host = FloatingWindowHost.create(
+            inventory,
+            "me_mini_portable_terminal",
+            screen -> new MiniTerminalInventoryPanel(screen, model),
+            panel -> panel.setModel(model));
         overlay = host.panel();
         host.open();
         cachedPickupToME = readPickupToME();
@@ -198,11 +189,18 @@ public final class MiniTerminalClient {
         if (event.phase != TickEvent.Phase.END) return;
         checkConnection();
         Minecraft mc = Minecraft.getMinecraft();
+        if (overlay != null && !overlay.isValid()) closeOverlay(overlay);
+        if (overlay != null && mc.currentScreen == overlay.inventory() && !hasMiniTerminal()) {
+            MiniTerminalInventoryPanel closing = overlay;
+            closing.closeWindow();
+            closeOverlay(closing);
+        }
         if (overlay == null || mc.currentScreen != overlay.inventory()) {
             MiniTerminalClientConfig.saveWindow(LAYOUT);
             if (session != 0 || waiting || sessionPrepared) closeSession();
             if (overlay != null) overlay.detach();
             overlay = null;
+            if (mc.currentScreen != null && hasMiniTerminal()) attachPanel(mc.currentScreen);
             return;
         }
         if (sessionContainer != null && !hasCurrentContainer()) {
@@ -282,7 +280,7 @@ public final class MiniTerminalClient {
 
     private static boolean hasMiniTerminal() {
         Minecraft mc = Minecraft.getMinecraft();
-        return ItemMEMiniPortableTerminal.findFirstTerminalSlot(mc.thePlayer) >= 0;
+        return mc.thePlayer != null && ItemMEMiniPortableTerminal.findFirstTerminalSlot(mc.thePlayer) >= 0;
     }
 
     private static int findSelectedSlot() {

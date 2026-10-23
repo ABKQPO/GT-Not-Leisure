@@ -16,8 +16,6 @@ public class EffectTextParser {
     public static final String CLOSE = "\u2063[/gtnl]\u2063";
     public static final String END = "]\u2063";
 
-    private EffectTextParser() {}
-
     public static boolean containsMarkers(String text) {
         return text != null && (text.indexOf('\u2063') >= 0 || text.contains(TextEffectFormat.INLINE_OPEN)
             || text.contains(TextEffectFormat.AMP_INLINE_OPEN));

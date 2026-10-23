@@ -32,8 +32,6 @@ public class TextEffects {
     public static final TextEffectStyle PAPER_FOLD = preset("paper_fold");
     public static final TextEffectStyle FROST_CRYSTAL = preset("frost_crystal");
 
-    private TextEffects() {}
-
     private static TextEffectStyle preset(String name) {
         return new TextEffectStyle(ScienceNotLeisure.MODID + ":" + name, List.of(), 1);
     }

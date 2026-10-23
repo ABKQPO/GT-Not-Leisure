@@ -39,7 +39,8 @@ public enum Mixins implements IMixins {
         "minecraft.MixinEntityPlayer", "minecraft.MixinExplosion", "minecraft.MixinInventoryCrafting",
         "minecraft.MixinItemStack", "minecraft.MixinMinecraftServer", "minecraft.MixinNBTTagList",
         "minecraft.MixinPotionEffect", "minecraft.MixinServerConfigurationManager", "minecraft.MixinWorld",
-        "minecraft.MixinWorldGhostlyShape", "minecraft.MixinWorldServer"),
+        "minecraft.MixinWorldGhostlyShape", "minecraft.MixinWorldServer", "minecraft.MixinContainerYogTerminal",
+        "minecraft.MixinItemStackYogTerminalName"),
 
     APRIL_FOOL(new MixinBuilder("April Fool Late Mixins")
         .addSidedMixins(Side.CLIENT, "aprilFool.MixinBaseMetaTileEntityRenderer", "aprilFool.MixinCommonMetaTileEntity")
@@ -120,12 +121,27 @@ public enum Mixins implements IMixins {
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.AppliedEnergistics)),
 
-    ME_MINI_TERMINAL_HOST_TOOLTIP(new MixinBuilder("ME mini portable terminal host tooltip layering")
-        .addClientMixins("minecraft.AccessorGuiScreen", "minecraft.MixinMiniTerminalHostTooltip")
+    FLOATING_WINDOW_HOST_TOOLTIP(new MixinBuilder("Floating window host tooltip layering")
+        .addClientMixins("minecraft.AccessorGuiScreen", "minecraft.MixinFloatingWindowHostTooltip")
         .setPhase(Phase.EARLY)),
 
-    ME_MINI_TERMINAL_MODULAR_UI(new MixinBuilder("ME mini portable terminal ModularUI hover blocking")
-        .addClientMixins("modularUI.MixinMiniTerminalModularGui")
+    YOG_SOTHOTH_TERMINAL_BAUBLES(new MixinBuilder("Yog-Sothoth terminal virtual bauble slots")
+        .addCommonMixins("baubles.MixinBaublesApiYogTerminal")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.Baubles)),
+
+    YOG_SOTHOTH_TERMINAL_AE(new MixinBuilder("Yog-Sothoth terminal opens stored AE terminals in place")
+        .addCommonMixins("appliedEnergistics.MixinPlatformYogTerminal")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.AppliedEnergistics)),
+
+    YOG_SOTHOTH_TERMINAL_WCT(new MixinBuilder("Yog-Sothoth terminal opened wireless crafting terminal lookup")
+        .addCommonMixins("wirelessCraftingTerminal.MixinRandomUtilsYogTerminal")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.WirelessCraftingTerminal)),
+
+    FLOATING_WINDOW_MODULAR_UI(new MixinBuilder("Floating window ModularUI hover blocking")
+        .addClientMixins("modularUI.MixinFloatingWindowModularGui")
         .setPhase(Phase.LATE)),
 
     ME_MINI_TERMINAL_BOGO(new MixinBuilder("ME mini portable terminal native Bogo shortcut destinations")

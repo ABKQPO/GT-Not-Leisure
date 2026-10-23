@@ -43,6 +43,7 @@ import appeng.items.tools.powered.ToolWirelessTerminal;
 import appeng.util.Platform;
 import baubles.api.expanded.BaubleExpandedSlots;
 import baubles.common.container.InventoryBaubles;
+import baubles.common.lib.PlayerHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -317,7 +318,9 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
     public void onWornTick(ItemStack stack, EntityLivingBase wearer) {
         if (!(wearer instanceof EntityPlayerMP player)) return;
         assignMissingIdentity(stack, player);
-        if (!(BaublesCompat.getBaubles(player) instanceof InventoryBaubles worn)) return;
+        // Real slots only: the API view may append a Yog-Sothoth terminal's virtual slots.
+        InventoryBaubles worn = PlayerHandler.getPlayerBaubles(player);
+        if (worn == null) return;
         Map<Integer, ItemStack> snapshots = WORN_SNAPSHOTS.computeIfAbsent(player, key -> new HashMap<>());
 
         for (int slot = 0; slot < worn.getSizeInventory(); slot++) {

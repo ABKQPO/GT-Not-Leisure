@@ -42,8 +42,6 @@ public class TextEffectFormat {
             Map.entry("pf", "paper_fold"),
             Map.entry("fc", "frost_crystal")));
 
-    private TextEffectFormat() {}
-
     public static void registerAlias(String alias, String rendererId) {
         if (alias == null || !alias.matches("[a-z][a-z0-9_]{0,15}"))
             throw new IllegalArgumentException("Invalid text effect alias");

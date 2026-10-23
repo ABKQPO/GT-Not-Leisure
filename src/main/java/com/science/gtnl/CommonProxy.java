@@ -39,6 +39,7 @@ import com.science.gtnl.common.wireless.WirelessChannelManager;
 import com.science.gtnl.common.world.GTNLWorldgenloader;
 import com.science.gtnl.common.world.VoidWorldHandler;
 import com.science.gtnl.common.world.WorldListener;
+import com.science.gtnl.common.yogsothoth.YogTerminalService;
 import com.science.gtnl.container.ContainerActiveFormationPlane;
 import com.science.gtnl.container.ContainerCustomPriority;
 import com.science.gtnl.container.ContainerDirePatternEncoder;
@@ -113,6 +114,10 @@ public class CommonProxy implements IGuiHandler {
     // load "Do your mod setup. Build whatever data structures you care about. Register recipes." (Remove if not needed)
     public void init(FMLInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(MiniTerminalSessionService.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(YogTerminalService.INSTANCE);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(YogTerminalService.INSTANCE);
         FMLCommonHandler.instance()
             .bus()
             .register(MiniTerminalSessionService.INSTANCE);

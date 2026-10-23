@@ -26,13 +26,9 @@ import gregtech.api.util.GTUtility;
 
 public class WirelessCardTeleport {
 
-    private WirelessCardTeleport() {}
-
     public static class Landing {
 
         record Position(int x, int y, int z) {}
-
-        private Landing() {}
 
         static Position find(int x, int y, int z, ForgeDirection front, Predicate<Position> safe) {
             Set<Position> candidates = new LinkedHashSet<>();

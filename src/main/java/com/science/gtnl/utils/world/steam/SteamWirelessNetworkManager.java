@@ -12,8 +12,6 @@ public class SteamWirelessNetworkManager {
 
     public static HashMap<UUID, BigInteger> GLOBAL_STEAM = new HashMap<>(100, 0.9f);
 
-    private SteamWirelessNetworkManager() {}
-
     public static void strongCheckOrAddUser(UUID user_uuid) {
         user_uuid = TeamNetworkManager.getTeamId(user_uuid);
         GLOBAL_STEAM.putIfAbsent(user_uuid, BigInteger.ZERO);

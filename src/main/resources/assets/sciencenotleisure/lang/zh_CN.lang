@@ -3950,6 +3950,32 @@ gtnl.meminiterminal.status.invalid_container=当前容器不可用
 gtnl.meminiterminal.status.ambiguous=终端标识重复
 gtnl.meminiterminal.status.stale=连接失效，请重连
 
+item.gtnl.yog_sothoth_terminal.name=犹格索托斯终端
+item.gtnl.yog_sothoth_terminal.disguised=犹格索托斯终端(%s)
+gtnl.yog_sothoth_terminal.tooltip.stored=已存储终端：%s
+gtnl.yog_sothoth_terminal.tooltip.pending=待存入终端：%s
+gtnl.yog_sothoth_terminal.tooltip.1=潜行+滚轮：切换为存储的终端
+gtnl.yog_sothoth_terminal.tooltip.2=Shift+Q：丢出第一个终端
+gtnl.yog_sothoth_terminal.tooltip.3=中键：打开犹格索托斯终端界面
+gtnl.yog_sothoth_terminal.screen.inventory=物品栏
+gtnl.yog_sothoth_terminal.show_window=浮动窗口
+gtnl.yog_sothoth_terminal.show_window.on=已开启
+gtnl.yog_sothoth_terminal.show_window.off=已关闭
+gtnl.yog_sothoth_terminal.hold_to_open=这个终端无法在犹格索托斯终端里直接打开，请手持犹格索托斯终端后再打开
+gtnl.yog_sothoth_terminal.title=犹格索托斯终端
+gtnl.yog_sothoth_terminal.expand=点击展开
+gtnl.yog_sothoth_terminal.no_room=屏幕空间不足，无法展开
+gtnl.yog_sothoth_terminal.next=切换犹格索托斯终端
+gtnl.yog_sothoth_terminal.next.desc=身上带着多个犹格索托斯终端时，切换窗口显示哪一个
+gtnl.yog_sothoth_terminal.reset_window=重置窗口
+gtnl.yog_sothoth_terminal.reset_window.desc=恢复默认位置和宽度（停靠在界面左侧）
+gtnl.yog_sothoth_terminal.collapse=收起窗口
+gtnl.yog_sothoth_terminal.collapse.desc=收起为小图标，点击小图标可重新展开
+gtnl.yog_sothoth_terminal.hide_window=隐藏浮动窗口
+gtnl.yog_sothoth_terminal.hide_window.desc=隐藏这个犹格索托斯终端的浮动窗口，可在中键界面中重新开启
+gtnl.yog_sothoth_terminal.hint.locked=已锁定
+gtnl.yog_sothoth_terminal.hint.use=右键：打开
+
 item.gtnl.suspicious_stew.name=迷之炖菜
 
 item.gtnl.portable.0.name=便携工作台

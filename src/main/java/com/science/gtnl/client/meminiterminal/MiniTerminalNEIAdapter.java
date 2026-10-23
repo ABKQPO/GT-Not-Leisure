@@ -3,7 +3,6 @@ package com.science.gtnl.client.meminiterminal;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
-import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -24,15 +23,10 @@ import appeng.util.item.AEItemStack;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.NEIClientConfig;
 import codechicken.nei.NEIClientUtils;
-import codechicken.nei.api.ShortcutInputHandler;
 import codechicken.nei.guihook.GuiContainerManager;
-import codechicken.nei.guihook.IContainerDrawHandler;
-import codechicken.nei.guihook.IContainerObjectHandler;
 import codechicken.nei.guihook.IContainerSlotClickHandler;
-import codechicken.nei.guihook.IContainerTooltipHandler;
 
-public final class MiniTerminalNEIAdapter extends NEIGuiHandler
-    implements IContainerObjectHandler, IContainerTooltipHandler, IContainerSlotClickHandler, IContainerDrawHandler {
+public final class MiniTerminalNEIAdapter extends NEIGuiHandler implements IContainerSlotClickHandler {
 
     static void refreshHoveredSlot(GuiContainer gui) {
         if (MiniTerminalClient.overlay(gui) != null) {
@@ -66,8 +60,7 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
         return fillSearch(gui, mouse.x, mouse.y, stack);
     }
 
-    @Override
-    public boolean handleDragNDrop(GuiContainer gui, int mouseX, int mouseY, ItemStack draggedStack, int button) {
+    static boolean dragNDrop(GuiContainer gui, int mouseX, int mouseY, ItemStack draggedStack, int button) {
         if (NEI.instance != null && NEI.instance.getDraggingPhantomItem() != null
             && pinDrop(gui, mouseX, mouseY, draggedStack, button)) return true;
         return fillSearch(gui, mouseX, mouseY, draggedStack);
@@ -108,14 +101,6 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
         return true;
     }
 
-    @Override
-    public void renderObjects(GuiContainer gui, int mouseX, int mouseY) {
-        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
-        if (overlay == null) return;
-        if (overlay.getScreen() instanceof MiniTerminalInventoryOverlay screen) screen.drawInContainer(mouseX, mouseY);
-        MiniTerminalHostLayer.flushTooltips(gui);
-    }
-
     static void drawMuiSlotTooltip(MiniTerminalInventoryPanel panel) {
         if (!panel.isActive()) return;
         int mouseX = panel.getContext()
@@ -129,73 +114,29 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
         NEIClientUtils.gl2DRenderContext(() -> manager.renderToolTips(mouseX, mouseY));
     }
 
-    @Override
-    public void onPreDraw(GuiContainer gui) {
-        MiniTerminalHostLayer.openHostPass(gui);
-    }
-
-    @Override
-    public void postRenderObjects(GuiContainer gui, int mouseX, int mouseY) {}
-
-    @Override
-    public void renderSlotUnderlay(GuiContainer gui, Slot slot) {}
-
-    @Override
-    public void renderSlotOverlay(GuiContainer gui, Slot slot) {}
-
-    @Override
-    public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int width, int height) {
-        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
-        return overlay != null && overlay.intersects(x, y, width, height);
-    }
-
-    @Override
-    public ItemStack getStackUnderMouse(GuiContainer gui, int mouseX, int mouseY) {
-        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
-        VirtualMESlot slot = overlay == null ? null : overlay.hoveredSlot(mouseX, mouseY);
+    static ItemStack stackUnderMouse(MiniTerminalInventoryPanel overlay, int mouseX, int mouseY) {
+        VirtualMESlot slot = overlay.hoveredSlot(mouseX, mouseY);
         IAEStack<?> stack = slot == null ? null : slot.getAEStack();
 
         return stack == null ? null : stack.getItemStackForNEI();
     }
 
-    @Override
-    public boolean objectUnderMouse(GuiContainer gui, int mouseX, int mouseY) {
-        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
-        return overlay != null && overlay.isMouseOver(mouseX, mouseY);
-    }
-
-    @Override
-    public List<String> handleTooltip(GuiContainer gui, int mouseX, int mouseY, List<String> currentTooltip) {
-        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
-        if (overlay == null || !overlay.isOnline()) return currentTooltip;
+    static List<String> handleTooltip(MiniTerminalInventoryPanel overlay, int mouseX, int mouseY,
+        List<String> currentTooltip) {
+        if (!overlay.isOnline()) return currentTooltip;
         VirtualMESlot slot = overlay.hoveredSlot(mouseX, mouseY);
         if (slot != null) slot.addTooltip(currentTooltip);
         return currentTooltip;
     }
 
-    @Override
-    public List<String> handleItemTooltip(GuiContainer gui, ItemStack stack, int mouseX, int mouseY,
+    static List<String> handleItemTooltip(MiniTerminalInventoryPanel overlay, int mouseX, int mouseY,
         List<String> currentTooltip) {
-        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
-        if (overlay == null || stack == null) return currentTooltip;
         VirtualMESlot slot = overlay.hoveredSlot(mouseX, mouseY);
         if (slot == null || slot.getAEStack() == null) return currentTooltip;
         if (!overlay.isOnline()) currentTooltip.add(StatCollector.translateToLocal("gtnl.meminiterminal.unknown"));
         if (slot instanceof VirtualMEPinSlot)
             currentTooltip.add(StatCollector.translateToLocal("gtnl.meminiterminal.unpin"));
         return currentTooltip;
-    }
-
-    @Override
-    public Map<String, String> handleHotkeys(GuiContainer gui, int mouseX, int mouseY, Map<String, String> hotkeys) {
-        ItemStack stack = getStackUnderMouse(gui, mouseX, mouseY);
-        if (stack != null) hotkeys.putAll(ShortcutInputHandler.handleHotkeys(mouseX, mouseY, stack));
-        return hotkeys;
-    }
-
-    @Override
-    public boolean shouldShowTooltip(GuiContainer gui) {
-        return true;
     }
 
     @Override
@@ -211,16 +152,4 @@ public final class MiniTerminalNEIAdapter extends NEIGuiHandler
 
     @Override
     public void afterSlotClick(GuiContainer gui, int slotIndex, int button, Slot slot, int modifier) {}
-
-    @Override
-    public void guiTick(GuiContainer gui) {
-
-        refreshHoveredSlot(gui);
-    }
-
-    @Override
-    public void refresh(GuiContainer gui) {}
-
-    @Override
-    public void load(GuiContainer gui) {}
 }

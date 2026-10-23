@@ -20,8 +20,6 @@ public class VaultTypeCountFormatter {
     private static final String FIELD_SEPARATOR = "\t";
     private static final NumberFormat NUMBER_FORMAT = NumberFormat.getNumberInstance();
 
-    private VaultTypeCountFormatter() {}
-
     public static List<IWidget> createTypeCountRows(String payload, String translationKey) {
         List<TypeCountLine> lines = parsePayload(payload);
         if (lines.isEmpty()) {

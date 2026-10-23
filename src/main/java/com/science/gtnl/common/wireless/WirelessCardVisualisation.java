@@ -32,8 +32,6 @@ public class WirelessCardVisualisation {
         }
     }
 
-    private WirelessCardVisualisation() {}
-
     public static int mode(NBTTagCompound tag) {
         int value = tag == null ? 0 : tag.getInteger(MODE);
         return validMode(value) ? value : 0;
