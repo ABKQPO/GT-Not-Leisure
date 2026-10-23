@@ -313,6 +313,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     public String getGuiCustomName() {
+        return hasCustomName() ? customName : "";
     }
 
     @Override
