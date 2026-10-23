@@ -9,6 +9,9 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -490,16 +493,29 @@ public class HudLayout {
     }
 
     public static void save() {
-        File file = file();
+        save(file());
+    }
+
+    public static void save(File file) {
+        File temp = new File(file.getPath() + ".tmp");
         try {
             File parent = file.getParentFile();
             if (parent != null && !parent.isDirectory() && !parent.mkdirs())
                 throw new IOException("Cannot create " + parent);
-            try (Writer out = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
+            try (Writer out = new OutputStreamWriter(new FileOutputStream(temp), StandardCharsets.UTF_8)) {
                 GSON.toJson(write(), out);
             }
+            replace(temp, file);
         } catch (IOException | JsonIOException exception) {
             GTNLLib.LOG.warn("Could not save the HUD layout to {}", file, exception);
+        }
+    }
+
+    private static void replace(File from, File to) throws IOException {
+        try {
+            Files.move(from.toPath(), to.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+        } catch (AtomicMoveNotSupportedException unsupported) {
+            Files.move(from.toPath(), to.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
     }
 

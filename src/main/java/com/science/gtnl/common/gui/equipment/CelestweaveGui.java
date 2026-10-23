@@ -516,7 +516,8 @@ public class CelestweaveGui extends EquipmentGui {
 
     private static String cosmeticText(CelestweaveCosmeticOption option, int value) {
         return switch (option.kind) {
-            case DECIMAL -> String.format("%.2f", value / guiScale(option));
+            case DECIMAL -> StepSlider.decimals(2)
+                .apply(value / guiScale(option));
             default -> String.valueOf(value);
         };
     }

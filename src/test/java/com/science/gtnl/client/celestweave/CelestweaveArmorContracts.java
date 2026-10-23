@@ -3,6 +3,7 @@ package com.science.gtnl.client.celestweave;
 import static com.gtnllib.GTNLLibContractTest.call;
 import static com.gtnllib.GTNLLibContractTest.check;
 import static com.gtnllib.GTNLLibContractTest.compact;
+import static com.gtnllib.GTNLLibContractTest.compactDrawable;
 import static com.gtnllib.GTNLLibContractTest.field;
 import static com.gtnllib.GTNLLibContractTest.near;
 import static com.gtnllib.GTNLLibContractTest.read;
@@ -14,11 +15,13 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
@@ -37,6 +40,7 @@ import net.minecraft.util.AxisAlignedBB;
 
 import com.cleanroommc.modularui.factory.PlayerInventoryGuiData;
 import com.cleanroommc.modularui.utils.item.ItemStackHandler;
+import com.google.gson.Gson;
 import com.gtnllib.client.fx.FxEasing;
 import com.gtnllib.client.fx.world.FxVisibility;
 import com.gtnllib.gui.widget.LayoutTheme;
@@ -99,6 +103,42 @@ public class CelestweaveArmorContracts {
         envelopes();
         hitDirection();
         arcs();
+        arcReload();
+    }
+
+    private static CelestweaveFrames loadFrames() throws IOException {
+        try (var reader = Files
+            .newBufferedReader(RESOURCES.resolve("models/armor/celestweave_frames.json"), StandardCharsets.UTF_8)) {
+            CelestweaveFrames frames = new Gson().fromJson(reader, CelestweaveFrames.class);
+            frames.resolve();
+            return frames;
+        }
+    }
+
+    private static void arcReload() throws IOException {
+        CelestweaveFrames before = loadFrames(), after = loadFrames();
+        String anchor = null;
+        for (CelestweaveFrames.Frame frame : before.frames) if (before.anchorBone(frame.name()) >= 0) {
+            anchor = frame.name();
+            break;
+        }
+        check(anchor != null, "the armor model has a frame an arc can hang on");
+        if (anchor == null) return;
+        CelestweaveArc arc = new CelestweaveArc(
+            anchor,
+            new float[3],
+            new float[] { 0F, 1F, 0F },
+            3,
+            0.5F,
+            0.1F,
+            0L,
+            100,
+            0xFFFFFF,
+            CelestweaveArc.Kind.BURST);
+        check(arc.resolve(before) && arc.frame == before.frame(anchor), "an arc finds its frame in the loaded model");
+        check(
+            arc.resolve(after) && arc.frame == after.frame(anchor),
+            "an arc finds its frame again in the model loaded after a resource reload");
     }
 
     private static void arcs() {
@@ -267,6 +307,31 @@ public class CelestweaveArmorContracts {
         };
     }
 
+    private static void decimalLabels() {
+        Locale saved = Locale.getDefault();
+        // Why: German and many other locales write the decimal point as a comma.
+        Locale.setDefault(Locale.GERMANY);
+        try {
+            for (CelestweaveCosmeticOption option : CelestweaveCosmeticOption.values()) {
+                if (option.kind != CelestweaveCosmeticOption.Kind.DECIMAL) continue;
+                String text = (String) call(
+                    CelestweaveGui.class,
+                    "cosmeticText",
+                    null,
+                    new Class<?>[] { CelestweaveCosmeticOption.class, int.class },
+                    option,
+                    Math.round(option.fallback * 100));
+                check(
+                    compactDrawable(text),
+                    "the compact font draws the " + option.key + " slider value " + text + " with a comma locale");
+            }
+        } catch (ReflectiveOperationException e) {
+            check(false, "the armor appearance slider labels are readable: " + e);
+        } finally {
+            Locale.setDefault(saved);
+        }
+    }
+
     private static void cosmetic() throws IOException {
         int maxArcs = MainConfig.item.celestweave.maxIdleArcs;
         check(CelestweaveCosmetic.read(new NBTTagCompound()) == CelestweaveCosmetic.DEFAULT, "empty cosmetic");
@@ -284,6 +349,7 @@ public class CelestweaveArmorContracts {
                     .isEmpty()),
                 "cosmetic names match kind " + option.key);
         }
+        decimalLabels();
         CelestweaveCosmeticOption events = CelestweaveCosmeticOption.ARC_EVENTS;
         int[] eventFlags = { CelestweaveCosmetic.EVENT_HIT, CelestweaveCosmetic.EVENT_DASH,
             CelestweaveCosmetic.EVENT_LAND, CelestweaveCosmetic.EVENT_REFLECT, CelestweaveCosmetic.EVENT_WING,
@@ -600,6 +666,15 @@ public class CelestweaveArmorContracts {
                 .getTagCompound()
                 .hasKey("Items"),
             "strip leaves the original module untouched");
+        check(CelestweaveBackpack.strip(stripped) == stripped, "strip keeps a backpack module that has no contents");
+        ItemStack filled = CelestweaveData.heldOf(module), emptied = CelestweaveBackpack.bare(filled);
+        check(
+            emptied != filled && !emptied.getTagCompound()
+                .hasKey("Items")
+                && filled.getTagCompound()
+                    .hasKey("Items"),
+            "bare returns an emptied copy and leaves the chest itself alone");
+        check(CelestweaveBackpack.bare(emptied) == emptied, "bare keeps a chest that has no contents");
 
         ItemStack railgun = plainStack();
         check(

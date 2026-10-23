@@ -7,8 +7,11 @@ import static com.gtnllib.GTNLLibContractTest.near;
 import static com.gtnllib.GTNLLibContractTest.read;
 import static com.gtnllib.GTNLLibContractTest.rejects;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -58,6 +61,7 @@ public class HudContracts {
     static void run() throws Exception {
         hud();
         hudLayout();
+        hudSaveFile();
         hudInUse();
         hudTiming();
         hudSettings();
@@ -90,6 +94,33 @@ public class HudContracts {
         return json(
             HudLayout.write()
                 .toString());
+    }
+
+    private static void hudSaveFile() throws IOException {
+        Map<String, HudLayout.Entry> before = HudLayout.snapshot();
+        Path folder = Files.createTempDirectory("gtnllib-hud");
+        File target = folder.resolve("hud.json")
+            .toFile();
+        File temp = new File(target.getPath() + ".tmp");
+        try {
+            HudLayout.read(json("{\"elements\":{\"saved_once\":{\"moved\":true,\"x\":3,\"y\":4}}}"));
+            HudLayout.save(target);
+            check(target.isFile() && json(read(target.toPath())).equals(saved()), "the HUD layout saves to its file");
+            HudLayout.read(json("{\"elements\":{}}"));
+            HudLayout.save(target);
+            check(
+                target.isFile() && json(read(target.toPath())).equals(saved()),
+                "a second save replaces the old HUD file");
+            check(!temp.exists(), "saving leaves no temporary HUD file behind");
+            check(
+                compact(read(SOURCES.resolve("client/hud/HudLayout.java"))).contains("StandardCopyOption.ATOMIC_MOVE"),
+                "the HUD file is swapped in one step, so a crash while saving keeps the old layout");
+        } finally {
+            Files.deleteIfExists(temp.toPath());
+            Files.deleteIfExists(target.toPath());
+            Files.deleteIfExists(folder);
+            HudLayout.restore(before);
+        }
     }
 
     private static void hudLayout() throws ReflectiveOperationException {

@@ -1,7 +1,6 @@
 package com.gtnllib.client.fx.world;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -26,6 +25,7 @@ public class FxShockwaveRenderer {
     private static final float RING_WIDTH = 0.18F;
     private static final float RING_ALPHA = 0.85F;
     private static final float RIM_ALPHA = 0.15F;
+    private static final int OCCLUSION_REFRESH_TICKS = 5;
 
     private static class Wave {
 
@@ -34,8 +34,8 @@ public class FxShockwaveRenderer {
         final int lifetime;
         final long born;
         final float red, green, blue;
-        final boolean[] occluded = new boolean[RING_SEGMENTS];
-        long occlusionTick = Long.MIN_VALUE;
+        final double[] blocked = new double[RING_SEGMENTS];
+        long tracedTick;
 
         Wave(Vec3d center, double maxRadius, int lifetime, long born, float red, float green, float blue) {
             this.center = center;
@@ -45,6 +45,7 @@ public class FxShockwaveRenderer {
             this.red = red;
             this.green = green;
             this.blue = blue;
+            this.tracedTick = born - OCCLUSION_REFRESH_TICKS;
         }
     }
 
@@ -77,12 +78,8 @@ public class FxShockwaveRenderer {
         long now = world.getTotalWorldTime();
         ACTIVE.removeIf(wave -> now - wave.born >= wave.lifetime);
         if (ACTIVE.isEmpty()) return;
-        for (Wave wave : ACTIVE) {
-            float progress = progress(wave, now, event.partialTicks);
-            if (now != wave.occlusionTick)
-                refreshOcclusion(world, wave, radius(wave, progress), width(wave, progress), progress);
-            wave.occlusionTick = now;
-        }
+        for (Wave wave : ACTIVE) if (now - wave.tracedTick >= OCCLUSION_REFRESH_TICKS || now < wave.tracedTick)
+            traceBlocked(world, wave, now);
         FxRenderHelper.render(() -> {
             for (Wave wave : ACTIVE) {
                 float progress = progress(wave, now, event.partialTicks);
@@ -103,21 +100,27 @@ public class FxShockwaveRenderer {
         return wave.maxRadius * RING_WIDTH * (1 - progress * 0.5);
     }
 
-    private static void refreshOcclusion(World world, Wave wave, double radius, double width, float progress) {
-        if (radius <= 0 || width <= 0) {
-            Arrays.fill(wave.occluded, false);
-            return;
-        }
+    private static void traceBlocked(World world, Wave wave, long now) {
+        wave.tracedTick = now;
         Vec3d origin = wave.center.add(0, PLANE_OFFSET, 0);
+        double longest = wave.maxRadius * (1 + RADIUS_JITTER + RING_WIDTH * 0.5) + OCCLUSION_MARGIN;
         for (int i = 0; i < RING_SEGMENTS; i++) {
             double middle = (i + 0.5) * Math.PI * 2 / RING_SEGMENTS;
-            double reach = Math.max(
-                jittered(wave, radius, i, progress) + width * 0.5,
-                jittered(wave, radius, i + 1, progress) + width * 0.5) + OCCLUSION_MARGIN;
-            Vec3d edge = origin.add(Math.cos(middle) * reach, 0, Math.sin(middle) * reach);
+            Vec3d edge = origin.add(Math.cos(middle) * longest, 0, Math.sin(middle) * longest);
             MovingObjectPosition hit = world.func_147447_a(origin.toMc(), edge.toMc(), false, true, false);
-            wave.occluded[i] = hit != null && hit.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK;
+            wave.blocked[i] = hit != null && hit.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK
+                ? Vec3d.of(hit.hitVec)
+                    .subtract(origin)
+                    .length()
+                : Double.POSITIVE_INFINITY;
         }
+    }
+
+    private static boolean occluded(Wave wave, int segment, double radius, double width, float progress) {
+        double reach = Math.max(
+            jittered(wave, radius, segment, progress) + width * 0.5,
+            jittered(wave, radius, segment + 1, progress) + width * 0.5) + OCCLUSION_MARGIN;
+        return wave.blocked[segment] <= reach;
     }
 
     private static void ring(Wave wave, double radius, double width, float progress, float alpha) {
@@ -125,7 +128,7 @@ public class FxShockwaveRenderer {
         Tessellator tessellator = Tessellator.instance;
         double y = wave.center.y() + PLANE_OFFSET;
         for (int i = 0; i < RING_SEGMENTS; i++) {
-            if (wave.occluded[i]) continue;
+            if (occluded(wave, i, radius, width, progress)) continue;
             double start = i * Math.PI * 2 / RING_SEGMENTS, end = (i + 1) * Math.PI * 2 / RING_SEGMENTS;
             double radius0 = jittered(wave, radius, i, progress), radius1 = jittered(wave, radius, i + 1, progress);
             double inner0 = Math.max(0, radius0 - width * 0.5), inner1 = Math.max(0, radius1 - width * 0.5);

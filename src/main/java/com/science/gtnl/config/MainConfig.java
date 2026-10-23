@@ -277,9 +277,9 @@ public class MainConfig {
             @DefaultStringList({ Mods.ModIDs.GREG_TECH, Mods.ModIDs.BART_WORKS, Mods.ModIDs.TECTECH,
                 Mods.ModIDs.G_T_N_H_LANTHANIDES, Mods.ModIDs.G_T_PLUS_PLUS, Mods.ModIDs.APPLIED_ENERGISTICS2,
                 Mods.ModIDs.A_E2_FLUID_CRAFT, ScienceNotLeisure.MODID })
-            public String[] terrainProtectedMods = { Mods.GregTech.ID, Mods.BartWorks.ID, Mods.TecTech.ID,
-                Mods.GTNHLanthanides.ID, Mods.GTPlusPlus.ID, Mods.AppliedEnergistics2.ID, Mods.AE2FluidCraft.ID,
-                ScienceNotLeisure.MODID };
+            public String[] terrainProtectedMods = { Mods.ModIDs.GREG_TECH, Mods.ModIDs.BART_WORKS, Mods.ModIDs.TECTECH,
+                Mods.ModIDs.G_T_N_H_LANTHANIDES, Mods.ModIDs.G_T_PLUS_PLUS, Mods.ModIDs.APPLIED_ENERGISTICS2,
+                Mods.ModIDs.A_E2_FLUID_CRAFT, ScienceNotLeisure.MODID };
 
             @Comment("Refill the held railgun from the owner's wireless EU network once per second")
             @DefaultBoolean(true)

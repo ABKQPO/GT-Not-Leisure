@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 
+import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
 import com.science.gtnl.common.railgun.RailgunModule;
 import com.science.gtnl.loader.ItemLoader;
@@ -17,11 +18,10 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
 
-public class RailgunRecipes {
+public class RailgunRecipes implements IRecipePool {
 
-    private RailgunRecipes() {}
-
-    public static void register() {
+    @Override
+    public void loadRecipes() {
         GTValues.RA.stdBuilder()
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.plateDouble, Materials.Neutronium, 4),

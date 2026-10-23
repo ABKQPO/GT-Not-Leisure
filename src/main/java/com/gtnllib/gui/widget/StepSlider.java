@@ -1,5 +1,6 @@
 package com.gtnllib.gui.widget;
 
+import java.util.Locale;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleFunction;
@@ -318,6 +319,12 @@ public class StepSlider extends Widget<StepSlider> implements Interactable {
     private static int glyph(char c) {
         int index = COMPACT_CHARS.indexOf(c);
         return index < 0 ? 0 : COMPACT_GLYPHS[index];
+    }
+
+    public static DoubleFunction<String> decimals(int digits) {
+        String pattern = "%." + digits + "f";
+        // Why: the compact font has no comma, which many locales write as the decimal point.
+        return value -> String.format(Locale.ROOT, pattern, value);
     }
 
     public static int compactWidth(String text) {

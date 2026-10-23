@@ -2,18 +2,26 @@ package com.science.gtnl.client.celestweave;
 
 import static com.gtnllib.GTNLLibContractTest.call;
 import static com.gtnllib.GTNLLibContractTest.check;
+import static com.gtnllib.GTNLLibContractTest.compact;
 import static com.gtnllib.GTNLLibContractTest.field;
 import static com.gtnllib.GTNLLibContractTest.near;
+import static com.gtnllib.GTNLLibContractTest.read;
+import static com.science.gtnl.client.celestweave.CelestweaveContractTest.SOURCES;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.roundTrip;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+import java.util.function.BiPredicate;
+import java.util.regex.Pattern;
 
 import net.minecraft.item.ItemStack;
 
+import com.gtnewhorizon.gtnhlib.config.Config;
 import com.gtnllib.client.fx.world.FxArcRenderer.Color;
 import com.gtnllib.client.fx.world.FxArcRenderer.Style;
 import com.gtnllib.utils.Vec3d;
@@ -26,6 +34,7 @@ import com.science.gtnl.common.railgun.RailgunChargeTier;
 import com.science.gtnl.common.railgun.RailgunDamage;
 import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunFireService;
+import com.science.gtnl.common.railgun.RailgunRaycast;
 import com.science.gtnl.config.MainConfig;
 
 public class RailgunContracts {
@@ -35,6 +44,9 @@ public class RailgunContracts {
     static void run() throws Exception {
         railgunCost();
         railgunDamage();
+        railgunLoadedEnd();
+        railgunBlockTrace();
+        railgunConfig();
         railgunPackets();
         railgunCharge();
         railgunBolts();
@@ -113,6 +125,179 @@ public class RailgunContracts {
         near(2, RailgunDamage.finalDamage(10, 0, 3), "armor reduction caps at 80 percent");
         near(10, RailgunDamage.finalDamage(10, 5, 0.5), "bypass above 1 counts as 1");
         near(0, RailgunDamage.finalDamage(-4, 0, 0), "negative damage counts as none");
+    }
+
+    private static int chunkOf(double coordinate) {
+        return (int) Math.floor(coordinate) >> 4;
+    }
+
+    private static boolean loadedAlong(Vec3d from, Vec3d end, BiPredicate<Integer, Integer> loaded) {
+        int samples = 4000;
+        for (int i = 0; i <= samples; i++) {
+            Vec3d point = from.add(
+                end.subtract(from)
+                    .scale(i / (double) samples));
+            if (!loaded.test(chunkOf(point.x()), chunkOf(point.z()))) return false;
+        }
+        return true;
+    }
+
+    private static void railgunLoadedEnd() throws IOException {
+        Vec3d from = new Vec3d(8.5, 70, 8.5), far = new Vec3d(208.5, 72, 8.5);
+        check(
+            RailgunRaycast.loadedEnd(from, far, (x, z) -> true)
+                .equals(far),
+            "a ray inside loaded chunks keeps its full length");
+        check(
+            RailgunRaycast.loadedEnd(from, far, (x, z) -> false)
+                .equals(from),
+            "a ray starting in an unloaded chunk has no length");
+        Vec3d up = new Vec3d(9.5, 250, 7.5);
+        check(
+            RailgunRaycast.loadedEnd(from, up, (x, z) -> x == 0 && z == 0)
+                .equals(up),
+            "a ray inside its own chunk keeps its full length");
+        Vec3d east = RailgunRaycast.loadedEnd(from, far, (x, z) -> x < 2);
+        check(east.x() < 32 && east.x() > 31.99, "a ray stops just before the first unloaded chunk east: " + east);
+        Vec3d west = RailgunRaycast.loadedEnd(from, new Vec3d(-191.5, 70, 8.5), (x, z) -> x >= -1);
+        check(west.x() > -16 && west.x() < -15.99, "a ray stops just before the first unloaded chunk west: " + west);
+        Vec3d south = RailgunRaycast.loadedEnd(from, new Vec3d(8.5, 64, 108.5), (x, z) -> z < 3);
+        check(south.z() < 48 && south.z() > 47.99, "a ray stops just before the first unloaded chunk south: " + south);
+        Vec3d border = RailgunRaycast.loadedEnd(from, new Vec3d(32, 70, 8.5), (x, z) -> x < 2);
+        check(border.x() < 32, "a ray ending on the border of an unloaded chunk stops before it: " + border);
+        BiPredicate<Integer, Integer> holed = (x, z) -> x != 5 || z != 2;
+        Vec3d slanted = new Vec3d(170.25, 64, 90.75), stopped = RailgunRaycast.loadedEnd(from, slanted, holed);
+        check(
+            stopped.x() < 80 && stopped.x() > 79.99 && loadedAlong(from, stopped, holed),
+            "a slanted ray stops just before an unloaded chunk on its path: " + stopped);
+        Vec3d corner = new Vec3d(8, 70, 8), across = new Vec3d(40, 70, 40);
+        for (int[] missing : new int[][] { { 0, 1 }, { 1, 0 }, { 1, 1 } }) {
+            Vec3d end = RailgunRaycast.loadedEnd(corner, across, (x, z) -> x != missing[0] || z != missing[1]);
+            check(
+                end.x() < 16 && end.z() < 16 && end.x() > 15.99,
+                "a ray through a chunk corner stops when chunk " + Arrays.toString(missing) + " is unloaded: " + end);
+        }
+        Random random = new Random(648);
+        boolean inside = true, onLine = true;
+        for (int i = 0; i < 300; i++) {
+            Vec3d start = new Vec3d(random.nextDouble() * 64 - 32, 70, random.nextDouble() * 64 - 32);
+            Vec3d target = start
+                .add(random.nextGaussian() * 120, random.nextGaussian() * 20, random.nextGaussian() * 120);
+            int salt = random.nextInt(5), startX = chunkOf(start.x()), startZ = chunkOf(start.z());
+            BiPredicate<Integer, Integer> pattern = (x, z) -> x == startX && z == startZ
+                || Math.floorMod(x * 31 + z * 17 + salt, 5) != 0;
+            Vec3d end = RailgunRaycast.loadedEnd(start, target, pattern);
+            Vec3d delta = target.subtract(start);
+            double share = end.subtract(start)
+                .dot(delta) / delta.dot(delta);
+            onLine &= share >= 0 && share <= 1 && end.distanceToSqr(start.add(delta.scale(share))) < 1.0E-12;
+            inside &= loadedAlong(start, end, pattern);
+        }
+        check(onLine, "a shortened ray keeps its direction");
+        check(inside, "a shortened ray never passes through an unloaded chunk");
+        String raycast = compact(read(SOURCES.resolve("common/railgun/RailgunRaycast.java")));
+        check(
+            raycast.contains("Vec3dreach=loadedEnd(from,to,world.getChunkProvider()::chunkExists);")
+                && raycast.contains("traceSegments(from,reach,"),
+            "the server block trace only reaches loaded chunks");
+    }
+
+    private static int blockOf(double coordinate) {
+        return (int) Math.floor(coordinate);
+    }
+
+    private static double boundary(double start, double delta, int block) {
+        if (delta == 0) return Double.POSITIVE_INFINITY;
+        return ((delta > 0 ? block + 1 : block) - start) / delta;
+    }
+
+    private static Vec3d vanillaTrace(Vec3d from, Vec3d to, int wallX) {
+        int x = blockOf(from.x()), y = blockOf(from.y()), z = blockOf(from.z());
+        if (x >= wallX) return from;
+        int endX = blockOf(to.x()), endY = blockOf(to.y()), endZ = blockOf(to.z());
+        Vec3d delta = to.subtract(from);
+        double dx = delta.x(), dy = delta.y(), dz = delta.z();
+        double nextX = boundary(from.x(), dx, x), nextY = boundary(from.y(), dy, y), nextZ = boundary(from.z(), dz, z);
+        // Why: the vanilla block trace runs at most 201 steps, one block boundary each, then reports a miss.
+        for (int step = 0; step <= 200; step++) {
+            if (x == endX && y == endY && z == endZ) return null;
+            double crossing = Math.min(nextX, Math.min(nextY, nextZ));
+            if (crossing == nextX) {
+                x += dx > 0 ? 1 : -1;
+                nextX += 1 / Math.abs(dx);
+            } else if (crossing == nextY) {
+                y += dy > 0 ? 1 : -1;
+                nextY += 1 / Math.abs(dy);
+            } else {
+                z += dz > 0 ? 1 : -1;
+                nextZ += 1 / Math.abs(dz);
+            }
+            if (x >= wallX) return from.add(delta.scale(crossing));
+        }
+        return null;
+    }
+
+    private static int crossings(Vec3d from, Vec3d to) {
+        return Math.abs(blockOf(to.x()) - blockOf(from.x())) + Math.abs(blockOf(to.y()) - blockOf(from.y()))
+            + Math.abs(blockOf(to.z()) - blockOf(from.z()));
+    }
+
+    private static void railgunBlockTrace() throws IOException {
+        Vec3d from = new Vec3d(0.5, 70.5, 0.5), far = new Vec3d(255.5, 120.5, 200.5);
+        check(vanillaTrace(from, far, 230) == null, "one vanilla trace gives up before a wall 230 blocks away");
+        Vec3d wall = RailgunRaycast.traceSegments(from, far, (start, next) -> vanillaTrace(start, next, 230));
+        check(
+            wall != null && Math.abs(wall.x() - 230) < 1.0E-6,
+            "a long block trace still stops at a wall past the vanilla step limit: " + wall);
+        Vec3d near = RailgunRaycast.traceSegments(from, far, (start, next) -> vanillaTrace(start, next, 20));
+        check(
+            near != null && Math.abs(near.x() - 20) < 1.0E-6,
+            "a block trace stops at the first wall in its first segment: " + near);
+        check(
+            RailgunRaycast.traceSegments(from, far, (start, next) -> vanillaTrace(start, next, 300)) == null,
+            "a block trace with no wall in range hits nothing");
+        Random random = new Random(649);
+        boolean chained = true, fits = true;
+        for (int i = 0; i < 200; i++) {
+            Vec3d start = new Vec3d(
+                random.nextDouble() * 100 - 50,
+                random.nextDouble() * 200,
+                random.nextDouble() * 100);
+            Vec3d target = start
+                .add(random.nextGaussian() * 200, random.nextGaussian() * 100, random.nextGaussian() * 200);
+            List<Vec3d[]> calls = new ArrayList<>();
+            RailgunRaycast.traceSegments(start, target, (a, b) -> {
+                calls.add(new Vec3d[] { a, b });
+                return null;
+            });
+            chained &= !calls.isEmpty() && calls.get(0)[0].equals(start)
+                && calls.get(calls.size() - 1)[1].equals(target);
+            for (int call = 1; call < calls.size(); call++)
+                chained &= calls.get(call)[0].equals(calls.get(call - 1)[1]);
+            for (Vec3d[] call : calls) fits &= crossings(call[0], call[1]) <= 200;
+        }
+        check(chained, "block trace segments cover the whole ray end to end");
+        check(fits, "every block trace segment fits the vanilla step limit");
+        String raycast = compact(read(SOURCES.resolve("common/railgun/RailgunRaycast.java")));
+        check(
+            raycast.contains("func_147447_a(start.toMc(),next.toMc(),")
+                && !raycast.contains("func_147447_a(from.toMc(),"),
+            "the server block trace runs in short segments");
+    }
+
+    private static void railgunConfig() throws IOException, ReflectiveOperationException {
+        String config = read(SOURCES.resolve("config/MainConfig.java"));
+        check(
+            !Pattern.compile("Mods\\.[A-Z]\\w*\\.ID\\b")
+                .matcher(config)
+                .find(),
+            "config defaults use mod id constants, so no GT class loads while the core mod registers the config");
+        String[] listed = MainConfig.Item.Railgun.class.getField("terrainProtectedMods")
+            .getAnnotation(Config.DefaultStringList.class)
+            .value();
+        check(
+            Arrays.equals(listed, new MainConfig.Item.Railgun().terrainProtectedMods),
+            "the protected mods default matches its config annotation");
     }
 
     private static void railgunPackets() throws ReflectiveOperationException {

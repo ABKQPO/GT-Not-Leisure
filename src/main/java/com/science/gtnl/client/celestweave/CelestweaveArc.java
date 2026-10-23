@@ -26,9 +26,9 @@ public class CelestweaveArc {
     final Kind kind;
     final float[] points;
     long nextLayout = Long.MIN_VALUE;
-    boolean resolved;
     int bone = -1;
     CelestweaveFrames.Frame frame;
+    private CelestweaveFrames resolvedFor;
 
     CelestweaveArc(String anchor, float[] a, float[] b, int segs, float spread, float width, long born, int lifetime,
         int rgb, Kind kind) {
@@ -54,8 +54,8 @@ public class CelestweaveArc {
     }
 
     boolean resolve(CelestweaveFrames frames) {
-        if (!resolved) {
-            resolved = true;
+        if (resolvedFor != frames) {
+            resolvedFor = frames;
             bone = frames.anchorBone(anchor);
             frame = anchor.startsWith("bone:") ? null : frames.frame(anchor);
         }

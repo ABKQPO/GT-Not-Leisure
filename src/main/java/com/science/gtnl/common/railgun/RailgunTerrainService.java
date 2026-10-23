@@ -4,8 +4,10 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -38,6 +40,7 @@ public class RailgunTerrainService {
     private static final double SPARK_SPREAD = 0.3, SPARK_SPEED = 0.05;
     private static final double OBSIDIAN_HARDNESS = 50;
     private static final ArrayDeque<Job> PENDING = new ArrayDeque<>();
+    private static final Map<Block, String> MOD_IDS = new IdentityHashMap<>();
 
     private RailgunTerrainService() {}
 
@@ -130,9 +133,14 @@ public class RailgunTerrainService {
         if (block.hasTileEntity(world.getBlockMetadata(x, y, z)) || world.getTileEntity(x, y, z) != null) return false;
         float hardness = block.getBlockHardness(world, x, y, z);
         if (!Float.isFinite(hardness) || hardness < 0 || hardness > maxHardness) return false;
-        var id = GameRegistry.findUniqueIdentifierFor(block);
-        if (id == null || protectedMods().contains(id.modId.toLowerCase(Locale.ROOT))) return false;
+        String modId = MOD_IDS.computeIfAbsent(block, RailgunTerrainService::modId);
+        if (modId.isEmpty() || protectedMods().contains(modId)) return false;
         return block != Blocks.bedrock && block != Blocks.end_portal_frame
             && (block != Blocks.obsidian || maxHardness >= OBSIDIAN_HARDNESS);
+    }
+
+    private static String modId(Block block) {
+        var id = GameRegistry.findUniqueIdentifierFor(block);
+        return id == null ? "" : id.modId.toLowerCase(Locale.ROOT);
     }
 }

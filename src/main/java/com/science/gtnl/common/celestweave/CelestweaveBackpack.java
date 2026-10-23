@@ -121,39 +121,34 @@ public class CelestweaveBackpack {
         ItemStack chest = CelestweaveData.heldOf(module);
         if (chest == null || !accepts(chest)) return module;
         String id = PortableItem.ensurePortableID(chest);
-        NBTTagCompound contents = new NBTTagCompound();
         NBTTagCompound tag = chest.getTagCompound();
-        for (String key : CONTENT_KEYS) if (tag.hasKey(key)) {
-            contents.setTag(key, tag.getTag(key));
-            tag.removeTag(key);
-        }
+        NBTTagCompound contents = contents(tag);
+        dropContents(tag);
         if (!contents.hasNoTags() || data.read(id) == null) data.write(id, contents);
         return CelestweaveData.withHeld(module.copy(), chest);
     }
 
     public static ItemStack strip(ItemStack module) {
         if (CelestweaveModule.of(module) != CelestweaveModule.BACKPACK) return module;
-        ItemStack chest = CelestweaveData.heldOf(module);
-        if (chest == null || !chest.hasTagCompound()) return module;
-        NBTTagCompound tag = chest.getTagCompound();
-        boolean changed = false;
-        for (String key : CONTENT_KEYS) if (tag.hasKey(key)) {
-            tag.removeTag(key);
-            changed = true;
-        }
-        return changed ? CelestweaveData.withHeld(module.copy(), chest) : module;
+        ItemStack chest = CelestweaveData.heldOf(module), bare = bare(chest);
+        return bare == chest ? module : CelestweaveData.withHeld(module.copy(), bare);
     }
 
     public static ItemStack bare(ItemStack chest) {
-        if (chest == null || !chest.hasTagCompound()) return chest;
-        ItemStack copy = null;
-        for (String key : CONTENT_KEYS) if (chest.getTagCompound()
-            .hasKey(key)) {
-                if (copy == null) copy = chest.copy();
-                copy.getTagCompound()
-                    .removeTag(key);
-            }
-        return copy != null ? copy : chest;
+        if (chest == null || !chest.hasTagCompound() || contents(chest.getTagCompound()).hasNoTags()) return chest;
+        ItemStack copy = chest.copy();
+        dropContents(copy.getTagCompound());
+        return copy;
+    }
+
+    private static NBTTagCompound contents(NBTTagCompound tag) {
+        NBTTagCompound contents = new NBTTagCompound();
+        for (String key : CONTENT_KEYS) if (tag.hasKey(key)) contents.setTag(key, tag.getTag(key));
+        return contents;
+    }
+
+    private static void dropContents(NBTTagCompound tag) {
+        for (String key : CONTENT_KEYS) tag.removeTag(key);
     }
 
     public static String heldId(ItemStack module) {
@@ -279,14 +274,7 @@ public class CelestweaveBackpack {
             if (data == null) return;
             ItemStack virtual = new ItemStack(item, 1, type.getMeta());
             type.saveInventory(virtual, inventory);
-            NBTTagCompound contents = new NBTTagCompound();
-            for (String key : CONTENT_KEYS) if (virtual.getTagCompound()
-                .hasKey(key))
-                contents.setTag(
-                    key,
-                    virtual.getTagCompound()
-                        .getTag(key));
-            data.write(id, contents);
+            data.write(id, contents(virtual.getTagCompound()));
         }
 
         @Override

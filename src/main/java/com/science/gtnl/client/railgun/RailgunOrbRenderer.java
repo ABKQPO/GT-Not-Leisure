@@ -105,7 +105,7 @@ public class RailgunOrbRenderer {
             if (onArrive != null) onArrive.run();
             return;
         }
-        if (ORBS.size() >= MAX_ORBS) ORBS.remove(0);
+        if (ORBS.size() >= MAX_ORBS) land(ORBS.remove(0));
         ORBS.add(
             new LaunchedOrb(
                 shooterId,
@@ -228,9 +228,12 @@ public class RailgunOrbRenderer {
         for (int index = ORBS.size() - 1; index >= 0; index--) {
             LaunchedOrb orb = ORBS.get(index);
             if (now < orb.born + orb.travelTicks) continue;
-            ORBS.remove(index);
-            if (orb.onArrive != null) orb.onArrive.run();
+            land(ORBS.remove(index));
         }
+    }
+
+    private static void land(LaunchedOrb orb) {
+        if (orb.onArrive != null) orb.onArrive.run();
     }
 
     private static List<OrbViz> collect(long now, float partialTicks) {

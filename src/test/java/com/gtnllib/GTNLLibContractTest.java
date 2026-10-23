@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.gtnllib.client.GTNLLibClient;
+import com.gtnllib.gui.widget.StepSlider;
 
 public class GTNLLibContractTest {
 
@@ -57,6 +58,14 @@ public class GTNLLibContractTest {
         Method method = owner.getDeclaredMethod(name, types);
         method.setAccessible(true);
         return method.invoke(target, args);
+    }
+
+    public static boolean compactDrawable(String text) throws ReflectiveOperationException {
+        Field chars = StepSlider.class.getDeclaredField("COMPACT_CHARS");
+        chars.setAccessible(true);
+        String charset = (String) chars.get(null);
+        return text.chars()
+            .allMatch(c -> charset.indexOf(c) >= 0);
     }
 
     public static Object field(Object target, String name) throws ReflectiveOperationException {
