@@ -7,7 +7,10 @@ import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class RailgunCameraShake {
 
     public enum Axis {
@@ -132,7 +135,9 @@ public class RailgunCameraShake {
     }
 
     private static float sustain(EntityPlayer player) {
-        float target = RailgunBeamRenderer.localFiring() ? BEAM_TREMOR : 0F;
+        float target = RailgunBeamRenderer.localFiring() && RailgunBeamRenderer.active(player.getEntityId())
+            ? BEAM_TREMOR
+            : 0F;
         if (!RailgunCharge.charging(player)) {
             chargedTier = 0;
             return target;
@@ -149,12 +154,12 @@ public class RailgunCameraShake {
     }
 
     private static void apply(float partialTicks) {
-        var mc = Minecraft.getMinecraft();
-        if (mc.thePlayer == null || mc.theWorld == null || !MainConfig.client.enableRailgunShake) return;
+        var minecraft = Minecraft.getMinecraft();
+        if (minecraft.thePlayer == null || minecraft.theWorld == null || !MainConfig.client.enableRailgunShake) return;
         if (idle()) return;
         float yaw = tremor(Axis.YAW, partialTicks), pitch = tremor(Axis.PITCH, partialTicks);
         if (Math.abs(yaw) < 1.0E-4F && Math.abs(pitch) < 1.0E-4F) return;
-        shaken = mc.thePlayer;
+        shaken = minecraft.thePlayer;
         appliedYaw = yaw;
         appliedPitch = pitch;
         shaken.rotationYaw += yaw;

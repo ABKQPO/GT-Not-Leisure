@@ -12,27 +12,47 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.WorldServer;
 
-import com.science.gtnl.common.item.items.ElectromagneticRailgun;
+import com.gtnllib.utils.Vec3d;
+import com.science.gtnl.common.equipment.EquipmentEnergy;
+import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.packet.RailgunBeamChainFxPacket;
 import com.science.gtnl.common.packet.RailgunBeamUpdatePacket;
+import com.science.gtnl.common.railgun.RailgunChainResolver.Hit;
 import com.science.gtnl.config.MainConfig;
 
-public final class RailgunBeamService {
+public class RailgunBeamService {
 
-    private static final class BeamState {
+    private static final int BEAM_CHAIN_THROTTLE_TICKS = 5;
+    private static final int BEAM_MAX_CONCURRENT = 16;
+    private static final double BEAM_RESEND_DISTANCE = 0.02;
+    private static final int BEAM_SETTLE_INTERVAL_TICKS = 2;
+    private static final int BEAM_USE_CONFLICT_TICKS = 20, BEAM_USE_CONFLICT_WINDOWS = 3;
+    private static final double BEAM_TRACE_PADDING = 0.5, BEAM_TRACE_INFLATION = 0;
+    private static final double EHV_BEAM_LIGHTNINGS_PER_SETTLE = 16;
+    private static final double HV_BEAM_LIGHTNINGS_PER_SETTLE = 0.125;
+
+    private static class BeamState {
 
         final ItemStack stack;
         final int slot, dimension;
-        int lastSettleTick, lastChainTick, settleCount;
-        RailgunVec lastSentEnd;
+        int lastSettleTick, lastChainTick;
+        Vec3d lastSentEnd;
         boolean lastSentEhv;
 
         BeamState(EntityPlayerMP player) {
             stack = player.getHeldItem();
             slot = player.inventory.currentItem;
             dimension = player.dimension;
-            lastSettleTick = player.ticksExisted - RailgunDefaults.BEAM_SETTLE_INTERVAL_TICKS;
-            lastChainTick = player.ticksExisted - RailgunDefaults.BEAM_CHAIN_THROTTLE_TICKS;
+            lastSettleTick = player.ticksExisted - BEAM_SETTLE_INTERVAL_TICKS;
+            lastChainTick = player.ticksExisted - BEAM_CHAIN_THROTTLE_TICKS;
+        }
+
+        boolean holds(EntityPlayerMP player) {
+            return !player.isDead && player.getHeldItem() == stack
+                && player.inventory.currentItem == slot
+                && player.dimension == dimension
+                && !player.isUsingItem()
+                && player.openContainer == player.inventoryContainer;
         }
     }
 
@@ -45,36 +65,32 @@ public final class RailgunBeamService {
     public static void setFiring(EntityPlayerMP player, boolean firing) {
         UUID id = player.getUniqueID();
         if (!firing) {
-            DRAINED.remove(id);
-            USE_CONFLICT.remove(id);
-            stop(player);
+            forget(player);
             return;
         }
-        ItemStack stack = player.getHeldItem();
-        if (player.isDead || stack == null
-            || !(stack.getItem() instanceof ElectromagneticRailgun)
+        if (player.isDead || !ElectromagneticRailgun.is(player.getHeldItem())
             || player.openContainer != player.inventoryContainer
             || DRAINED.contains(id)
             || ACTIVE.containsKey(id)) return;
         if (player.isUsingItem() && !resolveUseConflict(player)) return;
         USE_CONFLICT.remove(id);
-        if (ACTIVE.size() >= RailgunDefaults.BEAM_MAX_CONCURRENT) {
+        if (ACTIVE.size() >= BEAM_MAX_CONCURRENT) {
             broadcastStop(player);
             return;
         }
-        ACTIVE.put(player.getUniqueID(), new BeamState(player));
+        ACTIVE.put(id, new BeamState(player));
     }
 
     private static boolean resolveUseConflict(EntityPlayerMP player) {
         long now = player.worldObj.getTotalWorldTime();
         Long first = USE_CONFLICT.get(player.getUniqueID());
-        if (first == null || now - first > RailgunDefaults.BEAM_USE_CONFLICT_TICKS * 3L) {
+        if (first == null || now - first > (long) BEAM_USE_CONFLICT_TICKS * BEAM_USE_CONFLICT_WINDOWS) {
             USE_CONFLICT.put(player.getUniqueID(), now);
             return false;
         }
-        if (now - first < RailgunDefaults.BEAM_USE_CONFLICT_TICKS) return false;
+        if (now - first < BEAM_USE_CONFLICT_TICKS) return false;
         player.clearItemInUse();
-        RailgunFireService.CHARGING.remove(player.getUniqueID());
+        RailgunFireService.forget(player);
         return true;
     }
 
@@ -89,8 +105,8 @@ public final class RailgunBeamService {
     }
 
     public static void unload(int dimension) {
-        ACTIVE.entrySet()
-            .removeIf(entry -> entry.getValue().dimension == dimension);
+        ACTIVE.values()
+            .removeIf(state -> state.dimension == dimension);
     }
 
     public static void tick() {
@@ -104,111 +120,90 @@ public final class RailgunBeamService {
                 iterator.remove();
                 continue;
             }
-            ItemStack stack = player.getHeldItem();
-            if (player.isDead || stack != state.stack
-                || player.inventory.currentItem != state.slot
-                || player.dimension != state.dimension
-                || player.isUsingItem()
-                || player.openContainer != player.inventoryContainer) {
-                iterator.remove();
-                broadcastStop(player);
-                continue;
+            if (state.holds(player)) {
+                if (player.ticksExisted - state.lastSettleTick < BEAM_SETTLE_INTERVAL_TICKS) continue;
+                state.lastSettleTick = player.ticksExisted;
+                if (settle(player, state.stack, state)) continue;
             }
-            if (player.ticksExisted - state.lastSettleTick < RailgunDefaults.BEAM_SETTLE_INTERVAL_TICKS) continue;
-            state.lastSettleTick = player.ticksExisted;
-            state.settleCount++;
-            if (!settle(player, stack, state)) {
-                iterator.remove();
-                broadcastStop(player);
-            }
+            iterator.remove();
+            broadcastStop(player);
         }
     }
 
     private static boolean settle(EntityPlayerMP player, ItemStack stack, BeamState state) {
-        if (player.isUsingItem()) return false;
         var config = MainConfig.item.railgun;
         var modules = RailgunData.modules(stack);
-        var settings = RailgunData.settings(stack);
-        boolean pvp = config.damagePlayers && settings.pvp();
-        boolean ehv = settings.ehvBeam() && modules.count(RailgunModuleType.EHV_BEAM) > 0;
-        double cost = ehv ? Math.max(0, config.ehvBeamEuPerSettle) + 16 * Math.max(0, config.ehvLightningEu)
-            : Math.max(0, config.beamEuPerSettle) + Math.max(0, config.hvLightningEu) / 8;
-        if (!RailgunEnergy.tryConsume(stack, cost)) {
+        boolean pvp = RailgunSetting.PVP.active(stack), ehv = RailgunSetting.EHV_BEAM.active(stack);
+        double cost = ehv
+            ? Math.max(0, config.ehvBeamEuPerSettle)
+                + EHV_BEAM_LIGHTNINGS_PER_SETTLE * Math.max(0, config.ehvLightningEu)
+            : Math.max(0, config.beamEuPerSettle) + HV_BEAM_LIGHTNINGS_PER_SETTLE * Math.max(0, config.hvLightningEu);
+        if (!EquipmentEnergy.drain(player, stack, cost)) {
             DRAINED.add(player.getUniqueID());
             RailgunFireService.noEnergy(player);
             return false;
         }
-        RailgunData.keepInUse(player, stack);
         WorldServer world = (WorldServer) player.worldObj;
-        RailgunVec from = RailgunVec.eye(player);
-        double range = RailgunRaycast
-            .effectiveRange(RailgunDefaults.BEAM_RANGE, modules.count(RailgunModuleType.RANGE));
+        Vec3d from = Vec3d.eye(player);
+        double range = RailgunRaycast.effectiveRange(RailgunData.BEAM_RANGE, modules.count(RailgunModule.RANGE));
         var trace = RailgunRaycast.traceFirst(
             world,
             player,
             from,
             from.add(
-                RailgunVec.look(player)
+                Vec3d.look(player)
                     .scale(range)),
-            0.5,
-            0,
+            BEAM_TRACE_PADDING,
+            BEAM_TRACE_INFLATION,
             entity -> RailgunTargetRules.canAffect(player, entity, pvp));
-        RailgunVec end = trace.hit() == null ? trace.blockEnd()
-            : RailgunVec.center(
+        Vec3d end = trace.hit() == null ? trace.blockEnd()
+            : Vec3d.center(
                 trace.hit()
                     .entity());
-        RailgunVec hitPoint = trace.hit() == null ? trace.blockEnd()
+        Vec3d hitPoint = trace.hit() == null ? trace.blockEnd()
             : trace.hit()
                 .position();
         var context = RailgunDamage
             .buildBeam(player, modules, world, pvp, ehv ? config.ehvBeamDamage : config.beamDamage);
         EntityLivingBase anchor = trace.hit() != null && trace.hit()
             .entity() instanceof EntityLivingBase living ? living : null;
-        if (anchor != null) RailgunDamage.applyAll(
+        if (anchor != null)
+            RailgunDamage.applyAll(player, List.of(Hit.primary(anchor, context.firstDamage())), context, ehv, hitPoint);
+        else if (trace.hit() != null) RailgunDamage.hitObject(
             player,
-            List.of(new RailgunChainResolver.Hit(anchor, context.firstDamage(), false, false)),
-            context,
-            ehv,
-            hitPoint);
-        else if (trace.hit() != null) RailgunTargetRules.damageAnchor(
             trace.hit()
                 .entity(),
-            hitPoint)
-            .attackEntityFrom(RailgunDamage.source(player), (float) Math.min(context.firstDamage(), Float.MAX_VALUE));
-        if (settings.chain()
-            && player.ticksExisted - state.lastChainTick >= RailgunDefaults.BEAM_CHAIN_THROTTLE_TICKS) {
+            hitPoint,
+            context.firstDamage());
+        if (RailgunSetting.CHAIN.active(stack)
+            && player.ticksExisted - state.lastChainTick >= BEAM_CHAIN_THROTTLE_TICKS) {
             state.lastChainTick = player.ticksExisted;
-            RailgunVec origin = anchor == null ? end : RailgunVec.center(anchor);
-            var chain = anchor == null ? RailgunChainResolver.resolveChainFromPoint(world, player, origin, context)
-                : RailgunChainResolver.resolveChainFrom(world, player, anchor, context, new HashSet<>(), null);
+            Vec3d origin = anchor == null ? end : Vec3d.center(anchor);
+            var chain = anchor == null ? RailgunChainResolver.chainFromPoint(world, player, origin, context)
+                : RailgunChainResolver.chainFrom(world, player, anchor, context, Set.of(), origin);
             var path = RailgunNet.path(origin, chain);
             RailgunDamage.applyAll(player, chain, context, false, hitPoint);
-            if (!path.isEmpty()) RailgunNet.sendAround(
-                world,
-                player,
-                new RailgunBeamChainFxPacket(player.getEntityId(), origin, path, settings.sound(), ehv));
+            if (!path.isEmpty())
+                RailgunNet.sendAround(player, new RailgunBeamChainFxPacket(player.getEntityId(), origin, path, ehv));
         }
-        sendUpdate(world, player, state, from, end, ehv);
+        sendUpdate(player, state, from, end, ehv);
         return true;
     }
 
-    private static void sendUpdate(WorldServer world, EntityPlayerMP player, BeamState state, RailgunVec from,
-        RailgunVec end, boolean ehv) {
+    private static void sendUpdate(EntityPlayerMP player, BeamState state, Vec3d from, Vec3d end, boolean ehv) {
         boolean moved = state.lastSentEnd == null || state.lastSentEhv != ehv
-            || state.lastSentEnd.distanceToSqr(end)
-                > RailgunDefaults.BEAM_RESEND_DISTANCE * RailgunDefaults.BEAM_RESEND_DISTANCE;
+            || state.lastSentEnd.distanceToSqr(end) > BEAM_RESEND_DISTANCE * BEAM_RESEND_DISTANCE;
         state.lastSentEnd = end;
         state.lastSentEhv = ehv;
         double range = from.subtract(end)
             .length();
         RailgunNet.sendAround(
-            world,
             player,
             moved ? RailgunBeamUpdatePacket.move(player.getEntityId(), range, ehv)
                 : RailgunBeamUpdatePacket.hold(player.getEntityId(), range, ehv));
     }
 
     private static void broadcastStop(EntityPlayerMP player) {
-        RailgunNet.sendAround(player.worldObj, player, RailgunBeamUpdatePacket.stop(player.getEntityId()));
+        RailgunNet.sendAround(player, RailgunBeamUpdatePacket.stop(player.getEntityId()));
     }
 }

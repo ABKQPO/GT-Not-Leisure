@@ -13,7 +13,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.FakePlayer;
 
-public final class RailgunTargetRules {
+import com.gtnllib.utils.Vec3d;
+
+public class RailgunTargetRules {
 
     private static final double SEARCH_PADDING = 16;
     private static final double LOCAL_REFERENCE_RANGE = 64;
@@ -30,16 +32,16 @@ public final class RailgunTargetRules {
         return target.canBeCollidedWith();
     }
 
-    public static Entity damageAnchor(Entity target, RailgunVec reference) {
+    public static Entity damageAnchor(Entity target, Vec3d reference) {
         if (target == null || target instanceof EntityDragonPart || !(target instanceof IEntityMultiPart))
             return target;
-        RailgunVec center = RailgunVec.center(target);
-        RailgunVec point = reference == null || !reference.finite() ? center : reference;
+        Vec3d center = Vec3d.center(target);
+        Vec3d point = reference == null || !reference.finite() ? center : reference;
         if (point.distanceToSqr(center) > LOCAL_REFERENCE_RANGE) point = center;
         EntityDragonPart nearest = null;
         double nearestDistance = Double.POSITIVE_INFINITY;
         for (EntityDragonPart part : parts(target)) {
-            double distance = RailgunVec.center(part)
+            double distance = Vec3d.center(part)
                 .distanceToSqr(point);
             if (distance < nearestDistance) {
                 nearestDistance = distance;
@@ -50,7 +52,7 @@ public final class RailgunTargetRules {
     }
 
     private static List<EntityDragonPart> parts(Entity target) {
-        List<EntityDragonPart> parts = new ArrayList<>(8);
+        List<EntityDragonPart> parts = new ArrayList<>();
         if (target instanceof EntityDragon dragon) {
             Collections.addAll(
                 parts,

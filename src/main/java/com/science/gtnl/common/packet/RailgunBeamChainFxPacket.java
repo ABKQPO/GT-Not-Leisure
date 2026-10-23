@@ -4,10 +4,10 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 
+import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.client.railgun.RailgunClientFx;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
 import com.science.gtnl.common.railgun.RailgunNet;
-import com.science.gtnl.common.railgun.RailgunVec;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -16,19 +16,17 @@ import io.netty.buffer.ByteBuf;
 public class RailgunBeamChainFxPacket extends ClientboundPacket {
 
     public int shooterId;
-    public RailgunVec origin;
-    public List<RailgunVec> path;
-    public boolean sound, ehv;
+    public Vec3d origin;
+    public List<Vec3d> path;
+    public boolean ehv;
     private boolean valid;
 
     public RailgunBeamChainFxPacket() {}
 
-    public RailgunBeamChainFxPacket(int shooterId, RailgunVec origin, List<RailgunVec> path, boolean sound,
-        boolean ehv) {
+    public RailgunBeamChainFxPacket(int shooterId, Vec3d origin, List<Vec3d> path, boolean ehv) {
         this.shooterId = shooterId;
         this.origin = origin;
         this.path = path;
-        this.sound = sound;
         this.ehv = ehv;
     }
 
@@ -36,9 +34,8 @@ public class RailgunBeamChainFxPacket extends ClientboundPacket {
     protected void read(ByteBuf buffer) {
         try {
             shooterId = buffer.readInt();
-            origin = RailgunNet.readVec(buffer);
+            origin = Vec3d.read(buffer);
             path = RailgunNet.readPath(buffer);
-            sound = buffer.readBoolean();
             ehv = buffer.readBoolean();
             valid = true;
         } catch (RuntimeException ignored) {
@@ -49,17 +46,14 @@ public class RailgunBeamChainFxPacket extends ClientboundPacket {
     @Override
     protected void write(ByteBuf buffer) {
         buffer.writeInt(shooterId);
-        RailgunNet.writeVec(buffer, origin);
+        origin.write(buffer);
         RailgunNet.writePath(buffer, path);
-        buffer.writeBoolean(sound);
         buffer.writeBoolean(ehv);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
-        var connection = minecraft.getNetHandler();
-        if (valid) minecraft
-            .func_152344_a(() -> { if (minecraft.getNetHandler() == connection) RailgunClientFx.playChain(this); });
+        if (valid) runInWorld(minecraft, () -> RailgunClientFx.playChain(this));
     }
 }

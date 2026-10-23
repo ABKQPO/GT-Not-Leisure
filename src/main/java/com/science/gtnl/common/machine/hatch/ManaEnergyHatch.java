@@ -26,7 +26,6 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import vazkii.botania.common.block.tile.mana.TilePool;
 
-@IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
 

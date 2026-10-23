@@ -14,7 +14,6 @@ import java.util.UUID;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.StatCollector;
@@ -30,8 +29,10 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.mojang.authlib.GameProfile;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.common.recipe.thaumcraft.OwnerResearchCache;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
+import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
 import gregtech.api.casing.Casings;
@@ -53,13 +54,11 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
-import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.api.visnet.TileVisNode;
 import thaumcraft.api.visnet.VisNetHandler;
 import thaumcraft.common.Thaumcraft;
 import thaumcraft.common.items.wands.ItemWandCasting;
 import thaumcraft.common.lib.FakeThaumcraftPlayer;
-import thaumcraft.common.lib.research.ResearchManager;
 import thaumcraft.common.tiles.TileVisRelay;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -73,13 +72,14 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
     private static final int VERTICAL_OFFSET = 3;
     private static final int DEPTH_OFFSET = 0;
     private static final int CASING_TEXTURE_ID = 1536;
-    private static final int RESEARCH_REFRESH_INTERVAL = 100;
+    private static final int VIS_NODE_SCAN_INTERVAL = 200;
     private static final long WAND_CHARGE_EUT = 32;
     private static final int WAND_CHARGE_INTERVAL = 128;
     private static final int WAND_CHARGE_ASPECT_COUNT = 2;
     private static final int WAND_CHARGE_MIN_VIS = 1;
     private static final int WAND_CHARGE_MAX_VIS = 4;
     private static final int CENTIVIS_PER_VIS = 100;
+    private static final int MAX_SCALED_VIS = Integer.MAX_VALUE / CENTIVIS_PER_VIS;
     private static final int CV_BOOST_REFERENCE = 30;
     private static final double MAX_CV_CHARGE_BONUS = 2.00;
     private static final int OVERFLOW_TRANSFER_DENOMINATOR = 60;
@@ -87,7 +87,9 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
     private static final int VIS_EFFECT_RANGE = 8;
     private static final List<Aspect> PRIMAL_ASPECTS = Aspect.getPrimalAspects();
 
-    private ArrayList<String> cachedResearch = new ArrayList<>();
+    private final OwnerResearchCache researchCache = new OwnerResearchCache();
+    private final ArrayList<ChunkCoordinates> visNodeCoordinates = new ArrayList<>();
+    private long nextVisNodeScanTick;
     private int chargeCycleTicksRemaining;
     private final int[] cycleChargeCV = new int[6];
     private final int[] overflowTransferNumerators = new int[6];
@@ -140,13 +142,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
 
     @Override
     public void saveNBTData(NBTTagCompound nbt) {
-        NBTTagList list = new NBTTagList();
-        for (String research : cachedResearch) {
-            NBTTagCompound tag = new NBTTagCompound();
-            tag.setString("ResearchName", research);
-            list.appendTag(tag);
-        }
-        nbt.setTag("Research", list);
+        researchCache.writeToNBT(nbt);
         nbt.setInteger("WandChargeTicks", chargeCycleTicksRemaining);
         nbt.setIntArray("WandCycleCharge", cycleChargeCV);
         nbt.setIntArray("WandOverflowNumerators", overflowTransferNumerators);
@@ -158,14 +154,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
 
     @Override
     public void loadNBTData(NBTTagCompound nbt) {
-        cachedResearch.clear();
-        NBTTagList list = nbt.getTagList("Research", 10);
-        for (int i = 0; i < list.tagCount(); i++) {
-            NBTTagCompound tag = list.getCompoundTagAt(i);
-            if (tag.hasKey("ResearchName")) {
-                cachedResearch.add(tag.getString("ResearchName"));
-            }
-        }
+        researchCache.readFromNBT(nbt);
         chargeCycleTicksRemaining = Math.min(WAND_CHARGE_INTERVAL, Math.max(0, nbt.getInteger("WandChargeTicks")));
         loadIntArray(nbt.getIntArray("WandCycleCharge"), cycleChargeCV);
         loadIntArray(nbt.getIntArray("WandOverflowNumerators"), overflowTransferNumerators);
@@ -188,15 +177,6 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
         super.onFirstTick(baseMetaTileEntity);
         if (baseMetaTileEntity.isServerSide() && visConnectionActive) {
             baseMetaTileEntity.sendBlockEvent(GregTechTileClientEvents.CHANGE_CUSTOM_DATA, getUpdateData());
-        }
-    }
-
-    @Override
-    public void onPreTick(IGregTechTileEntity baseMetaTileEntity, long tick) {
-        super.onPreTick(baseMetaTileEntity, tick);
-
-        if (baseMetaTileEntity.isServerSide() && tick % RESEARCH_REFRESH_INTERVAL == 0) {
-            refreshResearchCache();
         }
     }
 
@@ -267,26 +247,18 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
     }
 
     private ArrayList<TileVisNode> getNearbyVisNodes(IGregTechTileEntity baseMetaTileEntity) {
-        ArrayList<TileVisNode> nodes = new ArrayList<>();
-        for (int x = -VIS_EFFECT_RANGE; x <= VIS_EFFECT_RANGE; x++) {
-            for (int y = -VIS_EFFECT_RANGE; y <= VIS_EFFECT_RANGE; y++) {
-                for (int z = -VIS_EFFECT_RANGE; z <= VIS_EFFECT_RANGE; z++) {
-                    TileEntity tileEntity = baseMetaTileEntity.getWorld()
-                        .getTileEntity(
-                            baseMetaTileEntity.getXCoord() + x,
-                            baseMetaTileEntity.getYCoord() + y,
-                            baseMetaTileEntity.getZCoord() + z);
-                    if (!isValidVisEffectNode(tileEntity)) continue;
+        long worldTime = baseMetaTileEntity.getWorld()
+            .getTotalWorldTime();
+        if (worldTime >= nextVisNodeScanTick) {
+            scanVisNodeCoordinates(baseMetaTileEntity);
+            nextVisNodeScanTick = worldTime + VIS_NODE_SCAN_INTERVAL;
+        }
 
-                    TileVisNode node = (TileVisNode) tileEntity;
-                    if (node.getDistanceFrom(
-                        baseMetaTileEntity.getXCoord(),
-                        baseMetaTileEntity.getYCoord(),
-                        baseMetaTileEntity.getZCoord()) <= VIS_EFFECT_RANGE * VIS_EFFECT_RANGE) {
-                        nodes.add(node);
-                    }
-                }
-            }
+        ArrayList<TileVisNode> nodes = new ArrayList<>();
+        for (ChunkCoordinates coordinates : visNodeCoordinates) {
+            TileEntity tileEntity = baseMetaTileEntity.getWorld()
+                .getTileEntity(coordinates.posX, coordinates.posY, coordinates.posZ);
+            if (isValidVisEffectNode(tileEntity)) nodes.add((TileVisNode) tileEntity);
         }
 
         nodes.sort((first, second) -> {
@@ -304,6 +276,25 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
                     baseMetaTileEntity.getZCoord()));
         });
         return nodes;
+    }
+
+    private void scanVisNodeCoordinates(IGregTechTileEntity baseMetaTileEntity) {
+        visNodeCoordinates.clear();
+        int centerX = baseMetaTileEntity.getXCoord();
+        int centerY = baseMetaTileEntity.getYCoord();
+        int centerZ = baseMetaTileEntity.getZCoord();
+        for (int x = -VIS_EFFECT_RANGE; x <= VIS_EFFECT_RANGE; x++) {
+            for (int y = -VIS_EFFECT_RANGE; y <= VIS_EFFECT_RANGE; y++) {
+                for (int z = -VIS_EFFECT_RANGE; z <= VIS_EFFECT_RANGE; z++) {
+                    TileEntity tileEntity = baseMetaTileEntity.getWorld()
+                        .getTileEntity(centerX + x, centerY + y, centerZ + z);
+                    if (tileEntity instanceof TileVisNode node
+                        && node.getDistanceFrom(centerX, centerY, centerZ) <= VIS_EFFECT_RANGE * VIS_EFFECT_RANGE) {
+                        visNodeCoordinates.add(new ChunkCoordinates(node.xCoord, node.yCoord, node.zCoord));
+                    }
+                }
+            }
+        }
     }
 
     private int drainVisWithoutParticles(List<TileVisNode> nodes, Aspect aspect, int amount) {
@@ -378,6 +369,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
                 clientVisEffectNodes.clear();
                 visConnectionBeams.clear();
                 nextVisEffectNodeSearchTick = 0;
+                nextVisNodeScanTick = 0;
             }
         } else {
             visConnectionActive = false;
@@ -484,22 +476,10 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
         return distributable > 0;
     }
 
-    private void refreshResearchCache() {
-        String ownerName = getBaseMetaTileEntity().getOwnerName();
-        if (ownerName == null || ownerName.isEmpty()) return;
-
-        ArrayList<String> list = ResearchManager.getResearchForPlayer(ownerName);
-        if ((cachedResearch == null && list != null)
-            || (list != null && !list.isEmpty() && cachedResearch.size() != list.size())) {
-            cachedResearch = list;
-        }
-    }
-
-    private boolean isResearchCached(String research) {
-        if (!research.startsWith("@") && ResearchCategories.getResearch(research) == null) {
-            return false;
-        }
-        return cachedResearch.contains(research);
+    private boolean isResearchComplete(String research) {
+        IGregTechTileEntity baseMetaTileEntity = getBaseMetaTileEntity();
+        String ownerName = baseMetaTileEntity == null ? null : baseMetaTileEntity.getOwnerName();
+        return researchCache.isComplete(ownerName, research);
     }
 
     @Override
@@ -541,17 +521,25 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
                 AspectList requiredVis = recipe.getMetadata(ARCANE_VIS);
                 if (research == null || requiredVis == null) return CheckRecipeResultRegistry.NO_RECIPE;
 
-                if (!isResearchCached(research)) {
+                if (!isResearchComplete(research)) {
                     return SimpleCheckRecipeResult.ofFailure("missing_arcane_research");
                 }
                 if (getArcaneWand() == null) {
                     return SimpleCheckRecipeResult.ofFailure("missing_arcane_wand");
                 }
-                if (!consumeVis(requiredVis, false)) {
+                if (getAffordableCrafts(requiredVis, 1) <= 0) {
                     return SimpleCheckRecipeResult.ofFailure("insufficient_vis");
                 }
 
                 return CheckRecipeResultRegistry.SUCCESSFUL;
+            }
+
+            @NotNull
+            @Override
+            public GTNLParallelHelper createParallelHelper(@NotNull GTRecipe recipe) {
+                int limit = (int) Math.min(Integer.MAX_VALUE, (long) getTrueParallel() * getMaxBatchSize());
+                int affordable = getAffordableCrafts(recipe.getMetadata(ARCANE_VIS), limit);
+                return super.createParallelHelper(recipe).setMaxTotalParallel(affordable);
             }
 
             @NotNull
@@ -562,7 +550,8 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
                 if (getArcaneWand() == null) {
                     return SimpleCheckRecipeResult.ofFailure("missing_arcane_wand");
                 }
-                if (!consumeVis(requiredVis, true)) {
+                FakeThaumcraftPlayer player = createOwnerPlayer();
+                if (player == null || !consumeVis(scaleAspects(requiredVis, calculatedParallels), player, true)) {
                     return SimpleCheckRecipeResult.ofFailure("insufficient_vis");
                 }
                 return CheckRecipeResultRegistry.SUCCESSFUL;
@@ -590,17 +579,49 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
         return wand != null && wand.getItem() instanceof ItemWandCasting ? wand : null;
     }
 
-    private boolean consumeVis(AspectList requiredVis, boolean consume) {
+    private int getAffordableCrafts(AspectList requiredVis, int limit) {
+        if (requiredVis == null || limit <= 0) return 0;
+
+        FakeThaumcraftPlayer player = createOwnerPlayer();
+        if (player == null || !consumeVis(requiredVis, player, false)) return 0;
+        if (consumeVis(scaleAspects(requiredVis, limit), player, false)) return limit;
+
+        int affordable = 1;
+        int unaffordable = limit;
+        while (unaffordable - affordable > 1) {
+            int middle = affordable + (unaffordable - affordable) / 2;
+            if (consumeVis(scaleAspects(requiredVis, middle), player, false)) {
+                affordable = middle;
+            } else {
+                unaffordable = middle;
+            }
+        }
+        return affordable;
+    }
+
+    private static AspectList scaleAspects(AspectList aspects, int multiplier) {
+        AspectList scaled = new AspectList();
+        for (Aspect aspect : aspects.getAspects()) {
+            if (aspect == null) continue;
+            int amount = aspects.getAmount(aspect);
+            if (amount > 0) scaled.add(aspect, (int) Math.min(MAX_SCALED_VIS, (long) amount * multiplier));
+        }
+        return scaled;
+    }
+
+    private FakeThaumcraftPlayer createOwnerPlayer() {
+        IGregTechTileEntity baseMetaTileEntity = getBaseMetaTileEntity();
+        String ownerName = baseMetaTileEntity.getOwnerName();
+        if (ownerName == null || ownerName.isEmpty()) return null;
+
+        UUID ownerUuid = baseMetaTileEntity.getOwnerUuid();
+        return new FakeThaumcraftPlayer(baseMetaTileEntity.getWorld(), new GameProfile(ownerUuid, ownerName));
+    }
+
+    private boolean consumeVis(AspectList requiredVis, FakeThaumcraftPlayer player, boolean consume) {
         ItemStack wand = getArcaneWand();
-        if (wand == null) return false;
+        if (wand == null || requiredVis.size() == 0) return false;
 
-        String ownerName = getBaseMetaTileEntity().getOwnerName();
-        if (ownerName == null || ownerName.isEmpty()) return false;
-
-        UUID ownerUuid = getBaseMetaTileEntity().getOwnerUuid();
-        FakeThaumcraftPlayer player = new FakeThaumcraftPlayer(
-            getBaseMetaTileEntity().getWorld(),
-            new GameProfile(ownerUuid, ownerName));
         boolean successful = ((ItemWandCasting) wand.getItem())
             .consumeAllVisCrafting(wand, player, requiredVis, consume);
         if (successful && consume) getBaseMetaTileEntity().markDirty();

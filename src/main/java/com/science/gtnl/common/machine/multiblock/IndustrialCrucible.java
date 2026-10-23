@@ -4,11 +4,10 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static thaumcraft.common.config.ConfigBlocks.blockCosmeticOpaque;
 import static thaumcraft.common.config.ConfigBlocks.blockCosmeticSolid;
 
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -20,22 +19,21 @@ import com.gtnewhorizon.structurelib.structure.IStructureElement;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEssentiaHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.recipe.gtnl.CrucibleCraftingRecipes;
+import com.science.gtnl.common.recipe.thaumcraft.EssentiaSupply;
+import com.science.gtnl.common.recipe.thaumcraft.OwnerResearchCache;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
-import cpw.mods.fml.common.Optional;
 import goodgenerator.loader.Loaders;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -50,11 +48,7 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
-import thaumcraft.api.research.ResearchCategories;
-import thaumcraft.common.lib.research.ResearchManager;
-import thaumicenergistics.common.tiles.TileInfusionProvider;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
@@ -68,14 +62,10 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
     private static final int DEPTH_OFFSET = 0;
     private static final int CASING_TEXTURE_ID = 1536;
 
-    private static final int ESSENTIA_COMMIT_COOLDOWN_TICKS = 200;
-
     private static final int MAX_PARALLEL_RECIPES = 1;
 
-    public final List<TileEntityEssentiaHatch> mEssentiaHatches = new ArrayList<>();
-    private final List<TileEntity> mInfusionProviders = new ArrayList<>();
-
-    private long essentiaCommitBlockedUntil;
+    private final EssentiaSupply essentiaSupply = new EssentiaSupply("IndustrialCrucible");
+    private final OwnerResearchCache researchCache = new OwnerResearchCache();
 
     public IndustrialCrucible(int id, String name, String nameRegional) {
         super(id, name, nameRegional);
@@ -130,13 +120,21 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
     }
 
     @Override
+    public void saveNBTData(NBTTagCompound nbt) {
+        researchCache.writeToNBT(nbt);
+        super.saveNBTData(nbt);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound nbt) {
+        researchCache.readFromNBT(nbt);
+        super.loadNBTData(nbt);
+    }
+
+    @Override
     public void checkHatch(List<StructureError> errors) {
         super.checkHatch(errors);
-        checkHasInputBus(errors);
-        checkHasOutputBus(errors);
-        checkHatchMin(errors, HatchElement.Energy.or(HatchElement.MultiAmpEnergy), 1);
-        checkHasMaintenanceHatch(errors);
-        if (mEssentiaHatches.isEmpty() && mInfusionProviders.isEmpty()) {
+        if (essentiaSupply.isEmpty()) {
             errors.add(GTNLStructureErrors.invalidHatchConfiguration());
         }
     }
@@ -144,26 +142,15 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
     @Override
     public void clearHatches() {
         super.clearHatches();
-        mEssentiaHatches.clear();
-        mInfusionProviders.clear();
+        essentiaSupply.clear();
     }
 
     public boolean addEssentiaHatch(TileEntityEssentiaHatch tileEntity) {
-        if (tileEntity == null || tileEntity.isInvalid()) return false;
-        if (mEssentiaHatches.contains(tileEntity)) return false;
-        return mEssentiaHatches.add(tileEntity);
+        return essentiaSupply.addHatch(tileEntity);
     }
 
     public boolean addInfusionProvider(TileEntity tileEntity) {
-        if (tileEntity == null || tileEntity.isInvalid()) return false;
-        return Mods.ThaumicEnergistics.isModLoaded() && addInfusionProviderCompat(tileEntity);
-    }
-
-    @Optional.Method(modid = "thaumicenergistics")
-    private boolean addInfusionProviderCompat(TileEntity tileEntity) {
-        if (!(tileEntity instanceof TileInfusionProvider)) return false;
-        if (mInfusionProviders.contains(tileEntity)) return false;
-        return mInfusionProviders.add(tileEntity);
+        return essentiaSupply.addProvider(tileEntity);
     }
 
     @Override
@@ -186,12 +173,6 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
             true);
     }
 
-    @NotNull
-    @Override
-    public CheckRecipeResult checkProcessing() {
-        return super.checkProcessing();
-    }
-
     @Override
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
@@ -211,16 +192,16 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
                     return CheckRecipeResultRegistry.NO_RECIPE;
                 }
 
-                if (!isResearchAvailable(research)) {
+                if (!isResearchComplete(research)) {
                     return SimpleCheckRecipeResult.ofFailure("missing_crucible_research");
                 }
 
-                if (isEssentiaCommitBlocked()) {
+                if (essentiaSupply.isCommitBlocked(currentWorldTime())) {
                     return SimpleCheckRecipeResult.ofFailure("essentia_commit_failed");
                 }
 
-                int affordable = affordableCrafts(requiredAspects);
-                if (affordable <= 0) {
+                if (essentiaSupply.getAffordableCrafts(requiredAspects, 1) <= 0) {
+                    essentiaSupply.requestShortfall(requiredAspects, 1);
                     return SimpleCheckRecipeResult.ofFailure("insufficient_essentia");
                 }
 
@@ -236,13 +217,7 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
                     return CheckRecipeResultRegistry.NO_RECIPE;
                 }
 
-                int crafts = calculatedParallels;
-
-                if (!hasRequiredEssentia(requiredAspects, crafts)) {
-                    return SimpleCheckRecipeResult.ofFailure("insufficient_essentia");
-                }
-
-                if (!consumeEssentia(requiredAspects, crafts)) {
+                if (!essentiaSupply.consume(requiredAspects, calculatedParallels, currentWorldTime())) {
                     return SimpleCheckRecipeResult.ofFailure("insufficient_essentia");
                 }
 
@@ -252,12 +227,10 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
             @NotNull
             @Override
             public GTNLParallelHelper createParallelHelper(@NotNull GTRecipe recipe) {
-                int affordable = affordableCrafts(recipe.getMetadata(CrucibleCraftingRecipes.CRUCIBLE_ASPECTS));
-                int batchFactor = isBatchModeEnabled() ? Math.max(1, Math.min(getMaxBatchSize(), affordable)) : 1;
-                setMaxParallel(getMaxParallelRecipes());
-
-                return super.createParallelHelper(recipe).enableBatchMode(batchFactor)
-                    .setMaxTotalParallel(affordable);
+                int affordable = essentiaSupply.getAffordableCrafts(
+                    recipe.getMetadata(CrucibleCraftingRecipes.CRUCIBLE_ASPECTS),
+                    Integer.MAX_VALUE);
+                return super.createParallelHelper(recipe).setMaxTotalParallel(affordable);
             }
 
             @NotNull
@@ -277,130 +250,10 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
         }.setMaxParallelSupplier(this::getTrueParallel);
     }
 
-    private int affordableCrafts(AspectList requiredAspects) {
-        if (requiredAspects == null) return 0;
-
-        int affordable = Integer.MAX_VALUE;
-
-        try {
-            for (Aspect aspect : requiredAspects.getAspects()) {
-                if (aspect == null) continue;
-
-                int amount = requiredAspects.getAmount(aspect);
-                if (amount <= 0) continue;
-
-                long available = getStoredEssentiaInHatches(aspect, Long.MAX_VALUE)
-                    + getMaximumProviderEssentia(aspect);
-                affordable = (int) Math.min(affordable, available / amount);
-                if (affordable <= 0) return 0;
-            }
-        } catch (ConcurrentModificationException e) {
-            ScienceNotLeisure.LOG
-                .warn("IndustrialCrucible: concurrent modification in recipe aspects, treating as insufficient", e);
-            return 0;
-        }
-
-        return affordable == Integer.MAX_VALUE ? getMaxParallelRecipes() : affordable;
-    }
-
-    private boolean hasRequiredEssentia(AspectList requiredAspects, int crafts) {
-
-        if (requiredAspects == null || crafts <= 0) {
-            return false;
-        }
-
-        try {
-            for (Aspect aspect : requiredAspects.getAspects()) {
-                if (aspect == null || requiredAspects.getAmount(aspect) < 0) {
-                    return false;
-                }
-
-                long required = (long) requiredAspects.getAmount(aspect) * crafts;
-                long storedInHatches = getStoredEssentiaInHatches(aspect, required);
-                if (storedInHatches < required && getMaximumProviderEssentia(aspect) < required - storedInHatches) {
-                    return false;
-                }
-            }
-        } catch (ConcurrentModificationException e) {
-            ScienceNotLeisure.LOG
-                .warn("IndustrialCrucible: concurrent modification in recipe aspects, treating as insufficient", e);
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean consumeEssentia(AspectList requiredAspects, int crafts) {
-
-        if (requiredAspects == null || crafts <= 0) {
-            return false;
-        }
-
-        boolean withdrawn = false;
-
-        try {
-            for (Aspect aspect : requiredAspects.getAspects()) {
-                if (aspect == null || requiredAspects.getAmount(aspect) < 0) {
-                    return abortPartialConsumption(withdrawn, aspect);
-                }
-
-                long remaining = (long) requiredAspects.getAmount(aspect) * crafts;
-                long storedInHatches = getStoredEssentiaInHatches(aspect, remaining);
-                long providerAmount = Math.max(0, remaining - storedInHatches);
-
-                if (providerAmount > 0) {
-                    TileEntity provider = findInfusionProvider(aspect, providerAmount);
-                    if (provider == null || providerAmount > Integer.MAX_VALUE
-                        || !takeFromInfusionProvider(provider, aspect, (int) providerAmount)) {
-                        return abortPartialConsumption(withdrawn, aspect);
-                    }
-                    withdrawn = true;
-                    remaining -= providerAmount;
-                }
-
-                for (TileEntityEssentiaHatch hatch : mEssentiaHatches) {
-                    if (remaining <= 0) {
-                        break;
-                    }
-
-                    if (hatch == null || hatch.isInvalid()) {
-                        continue;
-                    }
-
-                    int available = hatch.containerContains(aspect);
-                    int removed = (int) Math.min(remaining, available);
-
-                    if (removed > 0 && hatch.reduceStoredEssentia(aspect, removed)) {
-                        withdrawn = true;
-                        remaining -= removed;
-                    }
-                }
-
-                if (remaining > 0) return abortPartialConsumption(withdrawn, aspect);
-            }
-        } catch (ConcurrentModificationException e) {
-            essentiaCommitBlockedUntil = currentWorldTime() + ESSENTIA_COMMIT_COOLDOWN_TICKS;
-            ScienceNotLeisure.LOG
-                .warn("IndustrialCrucible: concurrent modification in recipe aspects, aborting consumption", e);
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean abortPartialConsumption(boolean withdrawn, Aspect aspect) {
-        if (withdrawn) {
-            essentiaCommitBlockedUntil = currentWorldTime() + ESSENTIA_COMMIT_COOLDOWN_TICKS;
-            ScienceNotLeisure.LOG.warn(
-                "IndustrialCrucible: partial essentia withdrawal failed on {}, pausing crafts for {} ticks",
-                aspect == null ? "unknown aspect" : aspect.getTag(),
-                ESSENTIA_COMMIT_COOLDOWN_TICKS);
-        }
-        return false;
-    }
-
-    private boolean isEssentiaCommitBlocked() {
-        return currentWorldTime() < essentiaCommitBlockedUntil;
+    private boolean isResearchComplete(String research) {
+        IGregTechTileEntity baseMetaTileEntity = getBaseMetaTileEntity();
+        String ownerName = baseMetaTileEntity == null ? null : baseMetaTileEntity.getOwnerName();
+        return researchCache.isComplete(ownerName, research);
     }
 
     private long currentWorldTime() {
@@ -408,80 +261,6 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
         if (baseMetaTileEntity == null || baseMetaTileEntity.getWorld() == null) return 0;
         return baseMetaTileEntity.getWorld()
             .getTotalWorldTime();
-    }
-
-    private long getStoredEssentiaInHatches(Aspect aspect, long required) {
-        if (aspect == null || required <= 0) return 0;
-
-        long stored = 0;
-        for (TileEntityEssentiaHatch hatch : mEssentiaHatches) {
-            if (hatch == null || hatch.isInvalid()) continue;
-
-            stored += hatch.containerContains(aspect);
-            if (stored >= required) break;
-        }
-        return Math.min(stored, required);
-    }
-
-    private long getMaximumProviderEssentia(Aspect aspect) {
-        long maximum = 0;
-        for (TileEntity provider : mInfusionProviders) {
-            if (provider == null || provider.isInvalid()) continue;
-            maximum = Math.max(maximum, getProviderAspectAmount(provider, aspect));
-        }
-        return maximum;
-    }
-
-    private TileEntity findInfusionProvider(Aspect aspect, long required) {
-        TileEntity selected = null;
-        long maximum = 0;
-        for (TileEntity provider : mInfusionProviders) {
-            if (provider == null || provider.isInvalid()) continue;
-
-            long available = getProviderAspectAmount(provider, aspect);
-            if (available >= required && available > maximum) {
-                selected = provider;
-                maximum = available;
-            }
-        }
-        return selected;
-    }
-
-    private long getProviderAspectAmount(TileEntity provider, Aspect aspect) {
-        if (!Mods.ThaumicEnergistics.isModLoaded()) return 0;
-        return getProviderAspectAmountCompat(provider, aspect);
-    }
-
-    @Optional.Method(modid = "thaumicenergistics")
-    private long getProviderAspectAmountCompat(TileEntity provider, Aspect aspect) {
-        return provider instanceof TileInfusionProvider
-            ? ((TileInfusionProvider) provider).getAspectAmountInNetwork(aspect)
-            : 0;
-    }
-
-    private boolean takeFromInfusionProvider(TileEntity provider, Aspect aspect, int amount) {
-        return Mods.ThaumicEnergistics.isModLoaded() && takeFromInfusionProviderCompat(provider, aspect, amount);
-    }
-
-    @Optional.Method(modid = "thaumicenergistics")
-    private boolean takeFromInfusionProviderCompat(TileEntity provider, Aspect aspect, int amount) {
-        return provider instanceof TileInfusionProvider
-            && ((TileInfusionProvider) provider).takeFromContainer(aspect, amount);
-    }
-
-    private boolean isResearchAvailable(String research) {
-        if (research == null) return false;
-        if (research.isEmpty()) return true;
-
-        if (!research.startsWith("@") && ResearchCategories.getResearch(research) == null) {
-            return false;
-        }
-
-        IGregTechTileEntity baseMetaTileEntity = getBaseMetaTileEntity();
-        String ownerName = baseMetaTileEntity == null ? null : baseMetaTileEntity.getOwnerName();
-        if (ownerName == null || ownerName.isEmpty()) return false;
-
-        return ResearchManager.isResearchComplete(ownerName, research);
     }
 
     @Override

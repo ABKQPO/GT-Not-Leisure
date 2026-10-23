@@ -11,6 +11,7 @@ import com.gtnewhorizon.gtnhlib.config.Config.DefaultStringList;
 import com.gtnewhorizon.gtnhlib.config.Config.LangKey;
 import com.gtnewhorizon.gtnhlib.config.Config.Name;
 import com.gtnewhorizon.gtnhlib.config.Config.RangeDouble;
+import com.gtnewhorizon.gtnhlib.config.Config.RangeFloat;
 import com.gtnewhorizon.gtnhlib.config.Config.RangeInt;
 import com.gtnewhorizon.gtnhlib.config.Config.RequiresMcRestart;
 import com.gtnewhorizon.gtnhlib.config.Config.Sync;
@@ -58,6 +59,67 @@ public class MainConfig {
         @LangKey("gtnl.gui.config.general.client.enable_railgun_shaders")
         @DefaultBoolean(true)
         public boolean enableRailgunShaders = true;
+
+        @Comment("Show beams, charge orbs, arcs and impact effects of other players' railguns")
+        @LangKey("gtnl.gui.config.general.client.enable_railgun_show_others_fx")
+        @DefaultBoolean(true)
+        public boolean enableRailgunShowOthersFx = true;
+
+        @Comment("Railgun effects of other players are not drawn beyond this distance in blocks")
+        @LangKey("gtnl.gui.config.general.client.railgun_fx_distance")
+        @DefaultInt(256)
+        @RangeInt(min = 0, max = 256)
+        public int railgunFxDistance = 256;
+
+        @Comment("Celestweave armor effect level: 0 off, 1 event effects only, 2 all effects")
+        @LangKey("gtnl.gui.config.general.client.celestweave_fx_level")
+        @DefaultInt(2)
+        @RangeInt(min = 0, max = 2)
+        public int celestweaveFxLevel = 2;
+
+        @Comment("Maximum number of Celestweave arcs shown for one wearer")
+        @LangKey("gtnl.gui.config.general.client.celestweave_max_arcs_per_player")
+        @DefaultInt(16)
+        @RangeInt(min = 0, max = 64)
+        public int celestweaveMaxArcsPerPlayer = 16;
+
+        @Comment("Maximum number of Celestweave arcs shown in total")
+        @LangKey("gtnl.gui.config.general.client.celestweave_max_arcs_total")
+        @DefaultInt(128)
+        @RangeInt(min = 0, max = 1024)
+        public int celestweaveMaxArcsTotal = 128;
+
+        @Comment("Show arcs and event effects of other players' Celestweave armor")
+        @LangKey("gtnl.gui.config.general.client.enable_celestweave_show_others_fx")
+        @DefaultBoolean(true)
+        public boolean enableCelestweaveShowOthersFx = true;
+
+        @Comment("Celestweave arcs are not drawn beyond this distance in blocks")
+        @LangKey("gtnl.gui.config.general.client.celestweave_fx_distance")
+        @DefaultInt(32)
+        @RangeInt(min = 0, max = 256)
+        public int celestweaveFxDistance = 32;
+
+        @Comment("Beyond this distance in blocks only the main body of Celestweave armor is drawn")
+        @LangKey("gtnl.gui.config.general.client.celestweave_detail_distance")
+        @DefaultInt(24)
+        @RangeInt(min = 0, max = 256)
+        public int celestweaveDetailDistance = 24;
+
+        @Comment("Process your own idle Celestweave arcs in first person view")
+        @LangKey("gtnl.gui.config.general.client.enable_celestweave_first_person_fx")
+        @DefaultBoolean(false)
+        public boolean enableCelestweaveFirstPersonFx = false;
+
+        @Comment("Draw the Celestweave chestplate arm over your empty first person hand")
+        @LangKey("gtnl.gui.config.general.client.enable_celestweave_first_person_arm")
+        @DefaultBoolean(true)
+        public boolean enableCelestweaveFirstPersonArm = true;
+
+        @Comment("Tint the equipment screens and the HUD editor guides with the glow color of the Celestweave chestplate you wear or are editing; when off they use the colors of the chosen theme")
+        @LangKey("gtnl.gui.config.general.client.enable_equipment_theme_glow_color")
+        @DefaultBoolean(true)
+        public boolean enableEquipmentThemeGlowColor = true;
     }
 
     public static final Effect effect = new Effect();
@@ -88,6 +150,25 @@ public class MainConfig {
     @Comment("Item section")
     public static class Item {
 
+        @Name("energyModule")
+        public final EnergyModule energyModule = new EnergyModule();
+
+        @Comment("Energy module shared by the railgun and Celestweave armor")
+        public static class EnergyModule {
+
+            @Comment("EU capacity of a railgun or armor piece with a T1 energy module installed")
+            @DefaultDouble(25000000)
+            public double capacityT1 = 25000000;
+
+            @Comment("EU capacity of a railgun or armor piece with a T2 energy module installed")
+            @DefaultDouble(125000000)
+            public double capacityT2 = 125000000;
+
+            @Comment("EU capacity of a railgun or armor piece with a T3 energy module installed")
+            @DefaultDouble(500000000)
+            public double capacityT3 = 500000000;
+        }
+
         @Name("railgun")
         public final Railgun railgun = new Railgun();
 
@@ -97,18 +178,6 @@ public class MainConfig {
             @Comment("EU capacity of the railgun without an energy module")
             @DefaultDouble(250000)
             public double baseCapacity = 250000;
-
-            @Comment("EU capacity with a T1 energy module installed")
-            @DefaultDouble(25000000)
-            public double energyCapacityT1 = 25000000;
-
-            @Comment("EU capacity with a T2 energy module installed")
-            @DefaultDouble(125000000)
-            public double energyCapacityT2 = 125000000;
-
-            @Comment("EU capacity with a T3 energy module installed")
-            @DefaultDouble(500000000)
-            public double energyCapacityT3 = 500000000;
 
             @Comment("EU equivalent of one high voltage lightning, used by the sustained beam")
             @DefaultDouble(1600)
@@ -185,19 +254,19 @@ public class MainConfig {
 
             @Comment("Allow the railgun to damage players when the PvP setting of the railgun is enabled")
             @DefaultBoolean(true)
-            public boolean damagePlayers = true;
+            public boolean enablePlayerDamage = true;
 
             @Comment("Apply electromagnetic paralysis to players hit by the railgun")
             @DefaultBoolean(true)
-            public boolean paralysisOnPlayers = true;
+            public boolean enablePlayerParalysis = true;
 
             @Comment("Allow charged shots to destroy terrain when the terrain setting of the railgun is enabled")
             @DefaultBoolean(false)
-            public boolean terrainEnabled = false;
+            public boolean enableTerrain = false;
 
             @Comment("Drop items from blocks destroyed by the railgun")
             @DefaultBoolean(false)
-            public boolean terrainDropItems = false;
+            public boolean enableTerrainDrops = false;
 
             @Comment("Maximum number of blocks the railgun destroys per tick across all impacts")
             @DefaultInt(200)
@@ -214,7 +283,7 @@ public class MainConfig {
 
             @Comment("Refill the held railgun from the owner's wireless EU network once per second")
             @DefaultBoolean(true)
-            public boolean wirelessRefill = true;
+            public boolean enableWirelessRefill = true;
         }
 
         @Name("player_doll")
@@ -274,6 +343,140 @@ public class MainConfig {
             @Comment("The GUI ID for the NASA Workbench when using Steam Rocket Schematic")
             @DefaultInt(114514)
             public int nasaWorkbenchSteamRocket = 114514;
+        }
+
+        @Name("celestweave")
+        public final Celestweave celestweave = new Celestweave();
+
+        @Comment("Celestweave Armor")
+        public static class Celestweave {
+
+            @Comment("EU capacity of each armor piece without an energy module")
+            @DefaultDouble(2500000)
+            public double baseCapacity = 2500000;
+
+            @Comment("Refill worn armor from the owner's wireless EU network every second")
+            @DefaultBoolean(true)
+            public boolean enableWirelessRefill = true;
+
+            @Comment("Upper limit of the idle arc count a wearer can choose")
+            @DefaultInt(8)
+            @RangeInt(min = 0, max = 8)
+            public int maxIdleArcs = 8;
+
+            @Comment("Draw from the owner's wireless EU network when the armor charge cannot pay for absorbed damage")
+            @DefaultBoolean(true)
+            public boolean enableWirelessFallback = true;
+
+            @Comment("EU paid per point of absorbed damage")
+            @DefaultDouble(20000)
+            @RangeDouble(min = 0, max = 1.0E12)
+            public double shieldEuPerDamage = 20000;
+
+            @Comment("Upper limit of EU paid for a single hit")
+            @DefaultDouble(1.0E9)
+            @RangeDouble(min = 0, max = 1.0E15)
+            public double maxEuPerHit = 1.0E9;
+
+            @Comment("Damage absorbed per hit by the shield")
+            @DefaultFloat(1.0E6F)
+            @RangeFloat(min = 0, max = 1.0E9F)
+            public float maxAbsorbPerHit = 1.0E6F;
+
+            @Comment("EU paid when the shield prevents a death")
+            @DefaultDouble(1.0E8)
+            @RangeDouble(min = 0, max = 1.0E15)
+            public double deathSaveEu = 1.0E8;
+
+            @Comment("Share of the incoming damage dealt by each lightning strike of the reflect module")
+            @DefaultFloat(0.5F)
+            @RangeFloat(min = 0, max = 10)
+            public float reflectRatio = 0.5F;
+
+            @Comment("Radius in blocks within which the reflect module strikes hostile mobs")
+            @DefaultDouble(8)
+            @RangeDouble(min = 0, max = 32)
+            public double reflectRadius = 8;
+
+            @Comment("Most targets struck by lightning per reflected hit, including the attacker")
+            @DefaultInt(4)
+            @RangeInt(min = 1, max = 16)
+            public int maxReflectTargets = 4;
+
+            @Comment("EU paid per reflected hit or projectile")
+            @DefaultDouble(50000)
+            @RangeDouble(min = 0, max = 1.0E12)
+            public double reflectEu = 50000;
+
+            @Comment("EU paid per tick while the wearer is flying and moving with the flight module")
+            @DefaultDouble(100)
+            @RangeDouble(min = 0, max = 1.0E12)
+            public double flightEuPerTick = 100;
+
+            @Comment("EU paid per tick by the walk assist module while moving on the ground")
+            @DefaultDouble(20)
+            @RangeDouble(min = 0, max = 1.0E12)
+            public double walkEuPerTick = 20;
+
+            @Comment("Upper limit of the walk assist speed and jump multipliers")
+            @DefaultInt(4)
+            @RangeInt(min = 1, max = 16)
+            public int maxWalkLevel = 4;
+
+            @Comment("Upper limit of the flight speed multiplier")
+            @DefaultInt(8)
+            @RangeInt(min = 1, max = 16)
+            public int maxFlightLevel = 8;
+
+            @Comment("EU paid per dash")
+            @DefaultDouble(500000)
+            @RangeDouble(min = 0, max = 1.0E12)
+            public double dashEu = 500000;
+
+            @Comment("Ticks between two dashes")
+            @DefaultInt(40)
+            @RangeInt(min = 0, max = 1200)
+            public int dashCooldown = 40;
+
+            @Comment("Dash velocity in blocks per tick")
+            @DefaultFloat(2.2F)
+            @RangeFloat(min = 0, max = 10)
+            public float dashSpeed = 2.2F;
+
+            @Comment("Extra reach of the reach module at level 1")
+            @DefaultFloat(5)
+            @RangeFloat(min = 0, max = 100)
+            public float reachLevel1 = 5;
+
+            @Comment("Extra reach of the reach module at level 2")
+            @DefaultFloat(10)
+            @RangeFloat(min = 0, max = 100)
+            public float reachLevel2 = 10;
+
+            @Comment("Extra reach of the reach module at level 3")
+            @DefaultFloat(20)
+            @RangeFloat(min = 0, max = 100)
+            public float reachLevel3 = 20;
+
+            @Comment("EU paid per point of hunger refilled by the saturation module")
+            @DefaultDouble(5000)
+            @RangeDouble(min = 0, max = 1.0E12)
+            public double saturationEu = 5000;
+
+            @Comment("EU paid per removed negative effect by the purification module")
+            @DefaultDouble(20000)
+            @RangeDouble(min = 0, max = 1.0E12)
+            public double purificationEu = 20000;
+
+            @Comment("EU paid per tick by the night vision module")
+            @DefaultDouble(5)
+            @RangeDouble(min = 0, max = 1.0E12)
+            public double nightVisionEuPerTick = 5;
+
+            @Comment("EU paid per point of mana supplied by the terrasteel module")
+            @DefaultDouble(100)
+            @RangeDouble(min = 0, max = 1.0E12)
+            public double manaEu = 100;
         }
     }
 

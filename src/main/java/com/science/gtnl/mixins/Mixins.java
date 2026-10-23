@@ -53,7 +53,7 @@ public enum Mixins implements IMixins {
 
     MINECRAFT_CLIENT(Side.CLIENT, "minecraft.AccessorEntityRenderer", "minecraft.AccessorGuiChat",
         "minecraft.MixinMinecraft", "minecraft.MixinModelBiped", "minecraft.MixinMinecraftRailgunClick",
-        "minecraft.MixinWorldClient",
+        "minecraft.MixinRenderPlayerFirstPersonArm", "minecraft.MixinWorldClient",
         // "minecraft.MixinSimpleReloadableResourceManager",
         "minecraft.MixinGuiContainer", "minecraft.MixinGuiFlatPresets"),
 
@@ -128,6 +128,10 @@ public enum Mixins implements IMixins {
     ME_MINI_TERMINAL_MODULAR_UI(new MixinBuilder("ME mini portable terminal ModularUI hover blocking")
         .addClientMixins("modularUI.MixinMiniTerminalModularGui")
         .setPhase(Phase.LATE)),
+
+    MODULAR_UI_LIVE_PALETTE_THEMES(
+        new MixinBuilder("ModularUI 2 screens follow live palette themes").addClientMixins("modularUI2.MixinThemeAPI")
+            .setPhase(Phase.LATE)),
 
     ME_MINI_TERMINAL_BOGO(new MixinBuilder("ME mini portable terminal native Bogo shortcut destinations")
         .addClientMixins("inventoryBogoSorter.MixinMiniTerminalShortcuts")
@@ -236,6 +240,14 @@ public enum Mixins implements IMixins {
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.AppliedEnergistics)
         .addRequiredMod(ModList.NotEnoughItems)),
+
+    THAUMIC_ENERGISTICS(new MixinBuilder("Thaumic Energistics multi essentia container compatibility mixins")
+        .addCommonMixins(
+            "thaumicEnergistics.MixinEssentiaTileContainerHelper",
+            "thaumicEnergistics.MixinMEMonitorEssentiaHandler",
+            "thaumicEnergistics.MixinPartEssentiaImportBus")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.ThaumicEnergistics)),
 
     THAUMCRAFT_CLIENT(
         new MixinBuilder("Thaumcraft client compatibility mixins").addClientMixins("thaumcraft.MixinTileJarRenderer")

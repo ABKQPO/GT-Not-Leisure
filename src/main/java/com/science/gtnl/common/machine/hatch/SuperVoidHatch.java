@@ -32,7 +32,6 @@ import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.machine.FluidsLockWidget;
 
 import gregtech.api.interfaces.ITexture;
-import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -40,8 +39,6 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchVoid;
 import gregtech.api.util.GTUtility;
 
-@IMetaTileEntity.SkipGenerateName
-@IMetaTileEntity.SkipGenerateDescription
 public class SuperVoidHatch extends MTEHatchVoid implements IFluidsLockable, IAddGregtechLogo {
 
     public String[] lockedFluidNames = new String[100];

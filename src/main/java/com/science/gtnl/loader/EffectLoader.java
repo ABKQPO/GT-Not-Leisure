@@ -22,12 +22,12 @@ public class EffectLoader {
     public static Potion electromagneticParalysis;
 
     public static void registry() {
-        electromagneticParalysis = new ElectromagneticParalysisEffect(findNextFreePotionId());
         awe = new AweEffect(findNextFreePotionId());
         perfect_physique = new PerfectPhysiqueEffect(findNextFreePotionId());
         shimmering = new ShimmeringEffect(findNextFreePotionId());
         ghostly_shape = new PotionGhostlyShape(findNextFreePotionId());
         battle = new BattleEffect(findNextFreePotionId());
+        electromagneticParalysis = new ElectromagneticParalysisEffect(findNextFreePotionId());
     }
 
     public static int findNextFreePotionId() {

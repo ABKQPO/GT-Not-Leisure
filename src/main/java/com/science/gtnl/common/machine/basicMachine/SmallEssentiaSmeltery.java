@@ -142,6 +142,12 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
         return result;
     }
 
+    public static boolean isOutputFacing(TileEntity tile, ForgeDirection face) {
+        return tile instanceof IGregTechTileEntity gregTechTile
+            && gregTechTile.getMetaTileEntity() instanceof SmallEssentiaSmeltery
+            && gregTechTile.getFrontFacing() == face;
+    }
+
     private static int getEssentiaBufferCapacity(int tier) {
         return BASE_ESSENTIA_BUFFER_CAPACITY << Math.max(0, tier - 1);
     }
@@ -151,11 +157,16 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
         outputAspects.add(pendingAspects);
         pendingAspects.aspects.clear();
         getBaseMetaTileEntity().markDirty();
+        tryOutputEssentia(getBaseMetaTileEntity());
     }
 
     @Override
     public void onPostTick(IGregTechTileEntity baseMetaTileEntity, long tick) {
+        tryOutputEssentia(baseMetaTileEntity);
         super.onPostTick(baseMetaTileEntity, tick);
+    }
+
+    private void tryOutputEssentia(IGregTechTileEntity baseMetaTileEntity) {
         if (baseMetaTileEntity.isServerSide() && outputAspects.size() > 0 && outputEssentia(baseMetaTileEntity)) {
             baseMetaTileEntity.markDirty();
             baseMetaTileEntity.markInventoryBeenModified();
@@ -164,11 +175,7 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
 
     private boolean outputEssentia(IGregTechTileEntity baseMetaTileEntity) {
         ForgeDirection outputSide = baseMetaTileEntity.getFrontFacing();
-        TileEntity tileEntity = baseMetaTileEntity.getWorld()
-            .getTileEntity(
-                baseMetaTileEntity.getOffsetX(outputSide, 1),
-                baseMetaTileEntity.getOffsetY(outputSide, 1),
-                baseMetaTileEntity.getOffsetZ(outputSide, 1));
+        TileEntity tileEntity = baseMetaTileEntity.getTileEntityAtSide(outputSide);
         if (!(tileEntity instanceof IEssentiaTransport transport)) return false;
 
         ForgeDirection targetSide = outputSide.getOpposite();
@@ -180,12 +187,9 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
             if (!transport.isConnectable(targetSide) || !transport.canInputFrom(targetSide)) return false;
         }
 
-        // 目标明确请求的源质作为首选；但若缓冲里没有该源质，回退到自身缓冲。
-        // 跳过 null / 非正数条目：TC 解析可能混入 null 要素，取到 null 会永久卡死输出。
-        Aspect aspect = null;
-        Aspect preferred = transport.getSuctionType(targetSide);
-        if (preferred != null && outputAspects.getAmount(preferred) > 0) {
-            aspect = preferred;
+        Aspect aspect = transport.getSuctionType(targetSide);
+        if (aspect != null) {
+            if (outputAspects.getAmount(aspect) <= 0) return false;
         } else {
             for (Aspect candidate : outputAspects.getAspectsSortedAmount()) {
                 if (candidate != null && outputAspects.getAmount(candidate) > 0) {

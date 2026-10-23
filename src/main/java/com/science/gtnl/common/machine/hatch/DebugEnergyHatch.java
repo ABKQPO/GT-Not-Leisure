@@ -46,7 +46,6 @@ import tectech.thing.metaTileEntity.pipe.MTEPipeLaser;
 import tectech.thing.metaTileEntity.pipe.MTEPipeLaserMirror;
 import tectech.util.CommonValues;
 
-@IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, IAddGregtechLogo {
 

@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.science.gtnl.common.item.items.ElectromagneticRailgun;
+import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 
 @Mixin(value = ModelBiped.class, remap = true)
 public class MixinModelBiped {
@@ -25,11 +25,11 @@ public class MixinModelBiped {
     public ModelRenderer bipedLeftArm;
 
     @Inject(method = "setRotationAngles", at = @At("RETURN"))
-    public void mixin$poseRailgunArms(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
+    public void gtnl$poseRailgunArms(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
         float headPitch, float scale, Entity entity, CallbackInfo ci) {
         if (!(entity instanceof EntityLivingBase living)) return;
         ItemStack held = living.getHeldItem();
-        if (held == null || !(held.getItem() instanceof ElectromagneticRailgun)) return;
+        if (!ElectromagneticRailgun.is(held)) return;
 
         bipedRightArm.rotateAngleX = -1.48F + bipedHead.rotateAngleX;
         bipedRightArm.rotateAngleY = bipedHead.rotateAngleY;

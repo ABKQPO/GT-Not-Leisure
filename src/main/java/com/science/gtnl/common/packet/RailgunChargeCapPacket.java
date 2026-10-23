@@ -11,29 +11,30 @@ import io.netty.buffer.ByteBuf;
 
 public class RailgunChargeCapPacket extends ClientboundPacket {
 
-    private int units;
+    private int shooterId, units;
 
     public RailgunChargeCapPacket() {}
 
-    public RailgunChargeCapPacket(int units) {
+    public RailgunChargeCapPacket(int shooterId, int units) {
+        this.shooterId = shooterId;
         this.units = units;
     }
 
     @Override
     protected void read(ByteBuf buffer) {
+        shooterId = buffer.readInt();
         units = buffer.readInt();
     }
 
     @Override
     protected void write(ByteBuf buffer) {
+        buffer.writeInt(shooterId);
         buffer.writeInt(units);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
-        if (units < 0) return;
-        var world = minecraft.theWorld;
-        minecraft.func_152344_a(() -> { if (world != null && minecraft.theWorld == world) RailgunCharge.cap(units); });
+        if (units >= 0) runInWorld(minecraft, () -> RailgunCharge.cap(shooterId, units));
     }
 }

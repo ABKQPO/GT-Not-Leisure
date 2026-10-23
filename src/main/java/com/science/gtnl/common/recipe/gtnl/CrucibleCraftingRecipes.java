@@ -22,6 +22,7 @@ import com.science.gtnl.common.recipe.thaumcraft.CrucibleRecipeData;
 import com.science.gtnl.common.recipe.thaumcraft.TCRecipeTools;
 
 import gregtech.api.enums.TierEU;
+import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMetadataKey;
 import gregtech.api.recipe.metadata.SimpleRecipeMetadataKey;
 import gregtech.api.util.GTOreDictUnificator;
@@ -71,24 +72,26 @@ public class CrucibleCraftingRecipes implements IRecipePool {
     }
 
     private void registerRecipe(Pending pending) {
-        Object[] inputs = createInputs(pending.recipe);
-        if (inputs.length == 0) {
+        List<Object[]> inputVariants = createInputVariants(pending.recipe);
+        if (inputVariants.isEmpty()) {
             return;
         }
 
         try {
-            TCRecipeTools.addArcaneRecipeWithCircuit(
-                GTNLRecipeMaps.IndustrialCrucibleRecipes,
-                inputs,
-                new ItemStack[] { pending.recipe.output },
-                pending.recipe.aspects,
-                pending.recipe.researchKey,
-                CRUCIBLE_ASPECTS,
-                CRUCIBLE_RESEARCH,
-                TCRecipeTools
-                    .computeAspectDuration(pending.recipe.aspects, TCRecipeTools.ARCANE_DURATION_TICKS_PER_ASPECT),
-                TierEU.RECIPE_LV,
-                pending.circuit);
+            for (Object[] inputs : inputVariants) {
+                TCRecipeTools.addArcaneRecipeWithCircuit(
+                    GTNLRecipeMaps.IndustrialCrucibleRecipes,
+                    inputs,
+                    new ItemStack[] { pending.recipe.output.copy() },
+                    pending.recipe.aspects,
+                    pending.recipe.researchKey,
+                    CRUCIBLE_ASPECTS,
+                    CRUCIBLE_RESEARCH,
+                    TCRecipeTools
+                        .computeAspectDuration(pending.recipe.aspects, TCRecipeTools.ARCANE_DURATION_TICKS_PER_ASPECT),
+                    TierEU.RECIPE_LV,
+                    pending.circuit);
+            }
         } catch (RuntimeException e) {
             ScienceNotLeisure.LOG.warn(
                 "CrucibleCraftingRecipes: failed to register a crucible recipe, it will be retried on the next load",
@@ -99,24 +102,26 @@ public class CrucibleCraftingRecipes implements IRecipePool {
         REGISTERED.put(pending.identity, pending);
     }
 
-    private Object[] createInputs(CrucibleRecipeData recipe) {
+    private List<Object[]> createInputVariants(CrucibleRecipeData recipe) {
         if (recipe == null || recipe.catalysts == null || recipe.catalysts.length == 0) {
-            return new Object[0];
+            return Collections.emptyList();
         }
 
-        List<ItemStack> alternatives = new ArrayList<>(recipe.catalysts.length);
+        if (recipe.catalystOreName != null) {
+            // Crucible ore catalysts consume one item; keep the ore ID for GT's runtime matching.
+            return Collections.singletonList(new Object[] { new OreDictItemStack(recipe.catalystOreName, 1) });
+        }
+
+        // GT only matches the first item of an explicit alternatives array, so register each catalyst separately.
+        List<Object[]> alternatives = new ArrayList<>(recipe.catalysts.length);
         for (ItemStack catalyst : recipe.catalysts) {
             if (catalyst == null || catalyst.getItem() == null || catalyst.stackSize <= 0) {
                 continue;
             }
-            alternatives.add(catalyst.copy());
+            alternatives.add(new Object[] { catalyst.copy() });
         }
 
-        if (alternatives.isEmpty()) {
-            return new Object[0];
-        }
-
-        return new Object[] { alternatives.toArray(new ItemStack[0]) };
+        return alternatives;
     }
 
     private static int findSelectorCircuit(CrucibleRecipeData recipe) {
@@ -181,6 +186,10 @@ public class CrucibleCraftingRecipes implements IRecipePool {
             .append(stackIdentity(recipe.output))
             .append('x')
             .append(recipe.output.stackSize);
+        if (recipe.catalystOreName != null) {
+            builder.append("|ore:")
+                .append(recipe.catalystOreName);
+        }
         for (String part : aspectParts) {
             builder.append('|')
                 .append(part);

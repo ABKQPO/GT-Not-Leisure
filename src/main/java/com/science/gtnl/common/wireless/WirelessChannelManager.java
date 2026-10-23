@@ -57,6 +57,8 @@ public class WirelessChannelManager {
     private static long allocationRevision;
     private static final Map<Address, Address> CONTROLLER_SOURCES = new HashMap<>();
     private static Map<IGridNode, Set<IGridConnection>> connectionSnapshot;
+    private static boolean creatingOwnedConnection;
+    private static boolean entrancesVerified;
 
     public static boolean isSupportedController(TileEntity tile) {
         return tile != null
@@ -177,8 +179,13 @@ public class WirelessChannelManager {
             .contains(connection);
     }
 
-    public static void connectionsChanged(IGridNode node) {
+    public static void connectionsChanged(IGridNode node, IGridConnection connection) {
         if (connectionSnapshot != null) connectionSnapshot.remove(node);
+        if (creatingOwnedConnection || isOwned(connection)) return;
+        WirelessClusterManager.connectionChanged(node);
+        IGrid grid = node.getGrid();
+        if (grid != null && grid.getCache(IPathingGrid.class) instanceof IWirelessPathingState state)
+            state.gtnl$topologyChanged();
     }
 
     public static boolean isOwned(IGridConnection connection) {
@@ -187,8 +194,8 @@ public class WirelessChannelManager {
 
     public static boolean manages(IGrid grid) {
         for (Entrance entrance : ENTRANCES.values()) {
-            if (entrance.isLive() && entrance.sourceNode()
-                .getGrid() == grid) return true;
+            if (entrance.sourceNode()
+                .getGrid() == grid && entrance.isLive()) return true;
         }
         return false;
     }
@@ -246,8 +253,14 @@ public class WirelessChannelManager {
             }
         }
         // AE2 performs its own security, self-link and duplicate-connection checks.
-        IGridConnection connection = AEApi.instance()
-            .createGridConnection(from, to);
+        IGridConnection connection;
+        creatingOwnedConnection = true;
+        try {
+            connection = AEApi.instance()
+                .createGridConnection(from, to);
+        } finally {
+            creatingOwnedConnection = false;
+        }
         int id = nextId++;
         Entrance entrance = new Entrance(id, source, target, from, to, connection);
         ENTRANCES.put(id, entrance);
@@ -270,9 +283,9 @@ public class WirelessChannelManager {
                 .getGrid());
         entranceCountChanged(entrance.source(), -1);
         WirelessLinkPersistence.forgetEntrance(entrance);
-        OWNED_CONNECTIONS.remove(entrance.connection());
         if (entrance.isLive()) entrance.connection()
             .destroy();
+        OWNED_CONNECTIONS.remove(entrance.connection());
         return true;
     }
 
@@ -350,27 +363,39 @@ public class WirelessChannelManager {
                     WirelessClusterManager.invalidateTopology();
                 }
             }
-            WirelessClusterManager.tick();
+            entrancesVerified = true;
+            try {
+                WirelessClusterManager.tick();
+            } finally {
+                entrancesVerified = false;
+            }
             WirelessAutoConnect.tick();
         } finally {
             connectionSnapshot = null;
         }
     }
 
+    static boolean entrancesVerified() {
+        return entrancesVerified;
+    }
+
     @SubscribeEvent
     public void loadChunk(ChunkEvent.Load event) {
         if (event.world.isRemote) return;
-        WirelessLinkPersistence.discover(event.getChunk());
-        WirelessClusterManager.invalidateTopology();
+        if (WirelessLinkPersistence.discover(event.getChunk())) WirelessClusterManager.invalidateTopology();
     }
 
     @SubscribeEvent
     public void unloadChunk(ChunkEvent.Unload event) {
         if (event.world.isRemote) return;
-        WirelessClusterManager.forgetTargets(address -> inChunk(address, event));
+        boolean changed = WirelessClusterManager.forgetTargets(address -> inChunk(address, event));
         for (Entrance entrance : entrances()) {
-            if (inChunk(entrance.source(), event) || inChunk(entrance.target(), event)) disconnect(entrance.id());
+            if (inChunk(entrance.source(), event) || inChunk(entrance.target(), event)) {
+                disconnect(entrance.id());
+                changed = true;
+            }
         }
+        if (changed) WirelessClusterManager.invalidateTopology();
     }
 
     private static boolean inChunk(Address address, ChunkEvent event) {
@@ -383,6 +408,7 @@ public class WirelessChannelManager {
     public void unloadWorld(WorldEvent.Unload event) {
         if (event.world.isRemote) return;
         WirelessClusterManager.forgetTargets(address -> address.dimension() == event.world.provider.dimensionId);
+        WirelessClusterManager.invalidateTopology();
         for (Entrance entrance : entrances()) {
             if (entrance.source()
                 .dimension() == event.world.provider.dimensionId

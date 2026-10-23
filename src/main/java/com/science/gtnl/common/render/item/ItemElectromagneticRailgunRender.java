@@ -2,8 +2,11 @@ package com.science.gtnl.common.render.item;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,10 +20,17 @@ import net.minecraftforge.client.model.IModelCustom;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.gtnllib.utils.Vec3d;
+import com.science.gtnl.client.railgun.RailgunBolts;
+import com.science.gtnl.client.railgun.RailgunBolts.Bolt;
 import com.science.gtnl.client.railgun.RailgunCameraShake;
 import com.science.gtnl.client.railgun.RailgunCameraShake.Axis;
+import com.science.gtnl.client.railgun.RailgunCharge;
+import com.science.gtnl.client.railgun.RailgunClientFx;
 import com.science.gtnl.client.railgun.RailgunMuzzleAnchor;
-import com.science.gtnl.common.item.items.ElectromagneticRailgun;
+import com.science.gtnl.client.railgun.RailgunOrbRenderer;
+import com.science.gtnl.common.railgun.RailgunSetting;
+import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -33,6 +43,10 @@ public class ItemElectromagneticRailgunRender implements IItemRenderer {
     private static final float WEAPON_ROLL_DEGREES = 3.2F;
     private static final float WEAPON_PITCH_DEGREES = 2.4F;
     private static final float WEAPON_DRIFT = 0.01F;
+    private static final float BOLT_GLOW_MIX = 0.3F, BOLT_GLOW_ALPHA = 0.5F, BOLT_CORE_MIX = 0.85F, FULL_BRIGHT = 240F;
+    private static final double BOLT_GLOW_WIDTH = 2.5;
+    private static final Vec3d AXIS_X = new Vec3d(1, 0, 0), AXIS_Y = new Vec3d(0, 1, 0);
+    private static final float[] BOLT_COLOR = new float[3];
 
     private final IModelCustom model = AdvancedModelLoader
         .loadModel(new ResourceLocation(ROOT + "electromagnetic_railgun.obj"));
@@ -68,7 +82,10 @@ public class ItemElectromagneticRailgunRender implements IItemRenderer {
                 applyThirdPerson();
                 anchorMuzzle(data);
             }
-            case EQUIPPED_FIRST_PERSON -> applyFirstPerson();
+            case EQUIPPED_FIRST_PERSON -> {
+                applyFirstPerson();
+                RailgunMuzzleAnchor.captureFirstPerson();
+            }
             case ENTITY -> applyGround();
             case INVENTORY -> applyGui();
             default -> {}
@@ -85,19 +102,95 @@ public class ItemElectromagneticRailgunRender implements IItemRenderer {
             GL11.glEnable(GL11.GL_LIGHTING);
         }
 
-        renderModel(ElectromagneticRailgun.isExtremeHighVoltage(item));
+        renderModel(RailgunSetting.EHV_BEAM.active(item));
+        if (type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON)
+            renderBodyBolts(holder(data));
 
         GL11.glPopAttrib();
         GL11.glPopMatrix();
     }
 
-    private static void anchorMuzzle(Object[] data) {
-        for (Object datum : data) {
-            if (datum instanceof Entity entity) {
-                RailgunMuzzleAnchor.capture(entity.getEntityId());
-                return;
+    private static void renderBodyBolts(Entity holder) {
+        if (!MainConfig.client.enableRailgunBloom || !(holder instanceof EntityPlayer player)) return;
+        if (!RailgunCharge.charging(player)) return;
+        if (!RailgunClientFx.visible(player.getEntityId(), Vec3d.pos(player))) return;
+        int tier = RailgunCharge.tier(player)
+            .ordinal();
+        double age = RailgunCharge.age(player, Minecraft.getMinecraft().timer.renderPartialTicks);
+        List<Bolt> bolts = RailgunBolts.body(player.getEntityId(), age, RailgunCharge.progress(player));
+        if (bolts.isEmpty()) return;
+        float lastBrightnessX = OpenGlHelper.lastBrightnessX, lastBrightnessY = OpenGlHelper.lastBrightnessY;
+        GL11.glPushAttrib(
+            GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT
+                | GL11.GL_DEPTH_BUFFER_BIT
+                | GL11.GL_LIGHTING_BIT
+                | GL11.GL_CURRENT_BIT);
+        try {
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glDisable(GL11.GL_CULL_FACE);
+            GL11.glDisable(GL11.GL_ALPHA_TEST);
+            GL11.glEnable(GL11.GL_BLEND);
+            OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ONE, GL11.GL_ZERO);
+            GL11.glDepthMask(false);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, FULL_BRIGHT, FULL_BRIGHT);
+            Tessellator tessellator = Tessellator.instance;
+            tessellator.startDrawingQuads();
+            for (Bolt bolt : bolts) {
+                boltStrip(
+                    tessellator,
+                    bolt,
+                    tier,
+                    BOLT_GLOW_MIX,
+                    bolt.alpha() * BOLT_GLOW_ALPHA,
+                    bolt.width() * BOLT_GLOW_WIDTH);
+                boltStrip(tessellator, bolt, tier, BOLT_CORE_MIX, bolt.alpha(), bolt.width());
             }
+            tessellator.draw();
+        } finally {
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lastBrightnessX, lastBrightnessY);
+            GL11.glPopAttrib();
         }
+    }
+
+    private static void boltStrip(Tessellator tessellator, Bolt bolt, int tier, float mix, float alpha, double width) {
+        float[] rgb = RailgunOrbRenderer.color(tier, mix, BOLT_COLOR);
+        tessellator.setColorRGBA_F(rgb[0], rgb[1], rgb[2], alpha);
+        List<Vec3d> points = bolt.points();
+        for (int i = 1; i < points.size(); i++) {
+            Vec3d from = points.get(i - 1), to = points.get(i);
+            Vec3d direction = to.subtract(from)
+                .normalize();
+            Vec3d first = direction.cross(Math.abs(direction.y()) > 0.95 ? AXIS_X : AXIS_Y)
+                .normalize()
+                .scale(width);
+            Vec3d second = direction.cross(first)
+                .normalize()
+                .scale(width);
+            boltQuad(tessellator, from, to, first);
+            boltQuad(tessellator, from, to, second);
+        }
+    }
+
+    private static void boltQuad(Tessellator tessellator, Vec3d from, Vec3d to, Vec3d offset) {
+        boltVertex(tessellator, from.subtract(offset));
+        boltVertex(tessellator, from.add(offset));
+        boltVertex(tessellator, to.add(offset));
+        boltVertex(tessellator, to.subtract(offset));
+    }
+
+    private static void boltVertex(Tessellator tessellator, Vec3d point) {
+        tessellator.addVertex(point.x(), point.y(), point.z());
+    }
+
+    private static Entity holder(Object[] data) {
+        for (Object datum : data) if (datum instanceof Entity entity) return entity;
+        return null;
+    }
+
+    private static void anchorMuzzle(Object[] data) {
+        Entity holder = holder(data);
+        if (holder != null) RailgunMuzzleAnchor.capture(holder.getEntityId());
     }
 
     private void renderModel(boolean extremeHighVoltage) {
@@ -135,9 +228,9 @@ public class ItemElectromagneticRailgunRender implements IItemRenderer {
     }
 
     private static void applyFirstPerson() {
-        Minecraft mc = Minecraft.getMinecraft();
-        EntityPlayer player = mc.thePlayer;
-        float partialTicks = mc.timer.renderPartialTicks;
+        Minecraft minecraft = Minecraft.getMinecraft();
+        EntityPlayer player = minecraft.thePlayer;
+        float partialTicks = minecraft.timer.renderPartialTicks;
         float swing = player.getSwingProgress(partialTicks);
         float swingSq = MathHelper.sin(swing * swing * PI);
         float swingRoot = MathHelper.sin(MathHelper.sqrt_float(swing) * PI);

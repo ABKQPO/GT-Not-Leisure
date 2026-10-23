@@ -6,7 +6,6 @@ import static com.science.gtnl.common.wireless.WirelessChannelManager.sameSource
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -48,6 +47,8 @@ public class WirelessClusterManager {
     private static final VerifiedEntranceRecovery<IGridNode, Address> RECOVERY = new VerifiedEntranceRecovery<>();
     private static final ScanSchedule SCANS = new ScanSchedule();
     private static final WirelessTopologyWatch WATCH = new WirelessTopologyWatch();
+    private static final Map<Cluster<IGridNode, Address>, WirelessNetworkStatistics> STATISTICS = new IdentityHashMap<>();
+    private static WirelessEntranceIndex entranceIndex = new WirelessEntranceIndex(TRACKER);
 
     private enum State {
         ACTIVE,
@@ -62,11 +63,17 @@ public class WirelessClusterManager {
 
     public static class ScanSchedule {
 
+        private static final int IDLE_INTERVAL = 600;
+        private static final int RETRY_INTERVAL = 20;
         private boolean dirty = true;
         private int remaining;
 
         void invalidate() {
             dirty = true;
+        }
+
+        boolean pending() {
+            return dirty;
         }
 
         boolean tick() {
@@ -76,7 +83,11 @@ public class WirelessClusterManager {
 
         void beginScan() {
             dirty = false;
-            remaining = 20;
+            remaining = IDLE_INTERVAL;
+        }
+
+        void retrySoon() {
+            remaining = Math.min(remaining, RETRY_INTERVAL);
         }
 
         void clear() {
@@ -91,12 +102,24 @@ public class WirelessClusterManager {
     }
 
     public static void nodeChanged(IGridNode node) {
-        if (node.getWorld() != null && !node.getWorld().isRemote && node.getMachine() instanceof AccessorTileController)
+        if (node.getMachine() instanceof AccessorTileController && node.getGrid() != null
+            && WirelessChannelManager.manages(node.getGrid())) {
             invalidateTopology();
+            return;
+        }
         WATCH.nodeChanged(node);
     }
 
+    static void connectionChanged(IGridNode node) {
+        WATCH.nodeChanged(node);
+    }
+
+    public static void refreshIfStale() {
+        if (SCANS.pending()) refresh();
+    }
+
     public static void tick() {
+        STATISTICS.clear();
         RECOVERY.nextTick();
         if (SCANS.tick()) refresh();
         else {
@@ -120,6 +143,7 @@ public class WirelessClusterManager {
             SCANS.beginScan();
             TOPOLOGY.beginScan();
             List<IGridNode> seeds = new ArrayList<>(WirelessLinkPersistence.seeds());
+            if (WirelessLinkPersistence.hasPendingSeeds()) SCANS.retrySoon();
             seeds.addAll(extraSeeds);
             TRACKER.refresh(
                 TOPOLOGY,
@@ -161,6 +185,7 @@ public class WirelessClusterManager {
 
     private static void reconcile() {
         STATES.clear();
+        boolean verified = WirelessChannelManager.entrancesVerified();
         // Tear down every conflicting entrance before trying to reconnect any source.
         for (Entrance entrance : WirelessChannelManager.entrances()) {
             Cluster<IGridNode, Address> cluster = TRACKER.clusterOf(entrance.targetNode());
@@ -170,15 +195,14 @@ public class WirelessClusterManager {
                 || paused(cluster, entrance.source())
                 || !cluster.frequencies()
                     .contains(controllerSource(entrance.source()))
-                || !entrance.isLive()
-                || entrance.source()
+                || !verified && (!entrance.isLive() || entrance.source()
                     .node() != entrance.sourceNode()
-                || entrance.target()
-                    .node() != entrance.targetNode()) {
+                    || entrance.target()
+                        .node() != entrance.targetNode())) {
                 WirelessChannelManager.disconnect(entrance.id());
             }
         }
-        WirelessEntranceIndex entrances = new WirelessEntranceIndex(TRACKER);
+        WirelessEntranceIndex entrances = entranceIndex;
         Set<Address> pendingRecovery = restoreSavedEntrances(entrances);
         for (Cluster<IGridNode, Address> cluster : TRACKER.clusters()) {
             if (cluster.frequencies()
@@ -212,11 +236,6 @@ public class WirelessClusterManager {
     }
 
     private static Set<Address> restoreSavedEntrances(WirelessEntranceIndex entrances) {
-        Map<IGridNode, Set<Address>> connected = new IdentityHashMap<>();
-        for (Entrance entrance : WirelessChannelManager.entrances()) {
-            if (entrance.isLive()) connected.computeIfAbsent(entrance.targetNode(), ignored -> new HashSet<>())
-                .add(controllerSource(entrance.source()));
-        }
         List<Candidate<IGridNode, Address>> candidates = new ArrayList<>();
         for (var cluster : TRACKER.clusters()) {
             if (cluster.limited() || cluster.blocked()
@@ -228,15 +247,16 @@ public class WirelessClusterManager {
                 .next();
             if (paused(cluster, source)) continue;
             for (IGridNode node : SAVED_ENTRANCES.getOrDefault(cluster, Set.of())) {
-                if (connected.getOrDefault(node, Set.of())
-                    .contains(controllerSource(source))) continue;
+                if (hasEntrance(node, source, entrances)) continue;
                 candidates.add(new Candidate<>(node, source));
             }
         }
         candidates.sort(
             Comparator.comparing(
-                candidate -> TOPOLOGY.nodeAddress(candidate.node())
-                    .toString()));
+                candidate -> TOPOLOGY.nodeAddress(candidate.node()),
+                Comparator.nullsLast(
+                    Comparator.comparingInt(Address::dimension)
+                        .thenComparing(Address.POSITION_ORDER))));
         return RECOVERY.restore(
             candidates,
             candidate -> TOPOLOGY.isLive(candidate.node()) && TOPOLOGY.entranceAddress(candidate.node()) != null
@@ -333,7 +353,6 @@ public class WirelessClusterManager {
         try (var ignored = WirelessLinkData.readBatch()) {
             source = controllerSource(source);
             List<ClusterView> result = new ArrayList<>();
-            WirelessEntranceIndex entranceIndex = new WirelessEntranceIndex(TRACKER);
             for (var cluster : TRACKER.clusters()) {
                 if (!cluster.frequencies()
                     .contains(source)) continue;
@@ -365,7 +384,10 @@ public class WirelessClusterManager {
                         paused,
                         state,
                         entrances,
-                        WirelessNetworkStatistics.measure(cluster.nodes(), WirelessChannelManager.channelsEnabled()),
+                        STATISTICS.computeIfAbsent(
+                            cluster,
+                            measured -> WirelessNetworkStatistics
+                                .measure(measured.nodes(), WirelessChannelManager.channelsEnabled())),
                         Set.copyOf(cluster.nodes())));
             }
             result.sort(
@@ -552,13 +574,22 @@ public class WirelessClusterManager {
         return new Summary(clusters, active, conflicted, waiting, scanLimited);
     }
 
-    public static void forgetTargets(Predicate<Address> removed) {
-        invalidateTopology();
-        TRACKER.forget(node -> TOPOLOGY.matches(node, removed));
-        WirelessLinkPersistence.forget(removed);
+    public static boolean forgetTargets(Predicate<Address> removed) {
+        boolean tracked = false;
+        for (IGridNode node : TRACKER.nodes()) {
+            if (TOPOLOGY.matches(node, removed)) {
+                tracked = true;
+                break;
+            }
+        }
+        boolean forgotten = TRACKER.forget(node -> TOPOLOGY.matches(node, removed));
+        forgotten |= WirelessLinkPersistence.forget(removed);
+        return tracked || forgotten;
     }
 
     public static void clear() {
+        entranceIndex = new WirelessEntranceIndex(TRACKER);
+        STATISTICS.clear();
         WATCH.clear();
         SCANS.clear();
         TRACKER.clear();

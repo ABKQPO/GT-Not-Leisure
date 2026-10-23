@@ -14,6 +14,8 @@ import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaTube;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperDualInterface;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperInterface;
+import com.science.gtnl.common.celestweave.CelestweaveBackpack;
+import com.science.gtnl.common.celestweave.CelestweaveServerEvents;
 import com.science.gtnl.common.entity.EntityParticleBeam;
 import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchContainer;
 import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchGuiFactory;
@@ -27,6 +29,7 @@ import com.science.gtnl.common.part.PartActiveFormationPlane;
 import com.science.gtnl.common.part.PartMECellDock;
 import com.science.gtnl.common.part.PartSuperDualInterface;
 import com.science.gtnl.common.part.PartSuperInterface;
+import com.science.gtnl.common.railgun.RailgunServerEvents;
 import com.science.gtnl.common.recipe.gtnl.ExtremeExtremeEntityCrusherRecipes;
 import com.science.gtnl.common.recipe.thaumcraft.TCResearches;
 import com.science.gtnl.common.wireless.WirelessAutoConnect;
@@ -97,6 +100,8 @@ public class CommonProxy implements IGuiHandler {
         MinecraftForge.TERRAIN_GEN_BUS.register(GTNL_WORLDGEN_LOADER);
 
         NetWorkHandler.register();
+        CelestweaveServerEvents.register();
+        RailgunServerEvents.register();
     }
 
     // load "Do your mod setup. Build whatever data structures you care about. Register recipes." (Remove if not needed)
@@ -196,7 +201,7 @@ public class CommonProxy implements IGuiHandler {
                 TileEntityMultiEssentiaInputHatch.class,
                 TileEntityMultiEssentiaInputHatch.MAX_CAPACITY);
         api.transportPermissions()
-            .addAspectContainerTileToInjectPermissions(
+            .addAspectContainerTileToBothPermissions(
                 TileEntityMultiEssentiaJar.class,
                 TileEntityMultiEssentiaJar.MAX_CAPACITY);
         api.transportPermissions()
@@ -272,6 +277,7 @@ public class CommonProxy implements IGuiHandler {
             case PortableCellWorkbenchGUI -> createPortableCellWorkbenchContainer(player, x);
             case PortableCellWorkbenchOreFilterGUI -> createPortableCellWorkbenchOreFilter(player, x);
             case PortableCellWorkbenchRestrictionGUI -> createPortableCellWorkbenchRestriction(player, x);
+            case CelestweaveBackpackGUI -> CelestweaveBackpack.serverContainer(player);
             case DirePatternEncoderGUI -> {
                 var t = world.getTileEntity(x, y, z);
                 if (t instanceof TileEntityDirePatternEncoder d) {
