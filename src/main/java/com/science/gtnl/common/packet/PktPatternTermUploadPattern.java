@@ -52,7 +52,7 @@ public class PktPatternTermUploadPattern extends ServerboundPacket {
         final IAEItemStack out;
         if (patternStack.getItem() instanceof ItemEncodedPattern item) {
             var pattern = item.getPatternForItem(patternStack, player.worldObj);
-            if (pattern.isCraftable() || pattern instanceof DireCraftingPatternDetails) {
+            if (pattern != null && (pattern.isCraftable() || pattern instanceof DireCraftingPatternDetails)) {
                 out = pattern.getCondensedOutputs()[0];
             } else return;
         } else return;

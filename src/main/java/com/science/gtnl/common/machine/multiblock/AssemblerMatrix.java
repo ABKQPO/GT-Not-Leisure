@@ -69,7 +69,6 @@ import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.AssemblerMatrixGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
-import com.science.gtnl.utils.DireCraftingPatternDetails;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -314,7 +313,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     public String getGuiCustomName() {
-        return hasCustomName() ? customName : getMachineCraftingIcon().getDisplayName();
     }
 
     @Override
@@ -378,7 +376,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
         builder.widget(
             new TextFieldWidget().setSetter((value) -> customName = value)
-                .setGetter(() -> hasCustomName() ? customName : getMachineCraftingIcon().getDisplayName())
+                .setGetter(this::getGuiCustomName)
                 .setTextAlignment(Alignment.Center)
                 .setScrollBar()
                 .setTextColor(Color.WHITE.normal)
@@ -847,20 +845,13 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         patternState.clearPatternData();
 
         for (var newStack : this.inventory) {
-            if (newStack.getItem() instanceof ICraftingPatternItem ic) {
-                var pattern = ic.getPatternForItem(
-                    newStack,
-                    this.getBaseMetaTileEntity()
-                        .getWorld());
-                if (pattern == null) continue;
-                if (pattern.isCraftable()) {
-                    pattern = new DireCraftingPatternDetails(pattern);
-                }
-                if (pattern instanceof DireCraftingPatternDetails d) {
-                    d.setMultiply(getPatternMultiply());
-                    patternState.addPattern(newStack, d);
-                }
-            }
+            var d = AssemblerMatrixPatternState.decodePattern(
+                newStack,
+                this.getBaseMetaTileEntity()
+                    .getWorld());
+            if (d == null) continue;
+            d.setMultiply(getPatternMultiply());
+            patternState.addPattern(newStack, d);
         }
         try {
             AssemblerMatrix.this.getProxy()
@@ -1015,19 +1006,15 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
                 boolean updated = false;
 
                 for (ItemStack input : storedInputs) {
-                    if (!(input.getItem() instanceof ICraftingPatternItem i)) continue;
+                    if (!(input.getItem() instanceof ICraftingPatternItem)) continue;
                     if (isBlockedAe2ThingsInfusionPattern(input)) continue;
                     int slot = inventory.getFirstEmptySlot();
                     if (slot == -1) continue;
-                    var p = i.getPatternForItem(
+                    var d = AssemblerMatrixPatternState.decodePattern(
                         input,
                         this.getBaseMetaTileEntity()
                             .getWorld());
-                    if (p == null) continue;
-                    if (p.isCraftable()) {
-                        p = new DireCraftingPatternDetails(p);
-                    }
-                    if (!(p instanceof DireCraftingPatternDetails d)) continue;
+                    if (d == null) continue;
                     ItemStack pattern = input.copy();
                     pattern.stackSize = 1;
                     inventory.setInventorySlotContents(slot, pattern);
@@ -1567,7 +1554,10 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
     @Override
     public ItemStack getDisplayRep() {
-        return getSelfRep();
+        ItemStack displayRep = getSelfRep();
+        // AE2 shows the icon's name when the raw name has no translation key, so the custom name must ride on the icon.
+        if (displayRep != null && hasCustomName()) displayRep.setStackDisplayName(customName);
+        return displayRep;
     }
 
     public Set<IAEItemStack> getPossibleOutputs() {
@@ -1728,7 +1718,8 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             for (var o : n.func_150296_c()) {
                 getInventory(Integer.parseInt(o)).readFromNBT(n.getCompoundTag(o));
             }
-            AssemblerMatrix.this.upPatterns();
+            // Patterns are decoded by the structure check instead: chunk loading reads NBT before the world is set and
+            // before script recipes exist, and a failed AE2 decode marks the pattern stack as invalid for good.
         }
 
         private int size = -1;

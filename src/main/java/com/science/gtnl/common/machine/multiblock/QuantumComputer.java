@@ -206,8 +206,8 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
         this.usedStorage = usedStorage;
     }
 
-    public String getDisplayNameForGui() {
-        return hasCustomName() ? customName : getMachineCraftingIcon().getDisplayName();
+    public String getCustomNameForGui() {
+        return hasCustomName() ? customName : "";
     }
 
     public QuantumComputer(int aID, String aName, String aNameRegional) {
@@ -984,8 +984,8 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                 .setSize(182, 79));
 
         builder.widget(
-            new TextFieldWidget().setSetter((value) -> customName = value)
-                .setGetter(() -> hasCustomName() ? customName : getMachineCraftingIcon().getDisplayName())
+            new TextFieldWidget().setSetter(this::setCustomName)
+                .setGetter(this::getCustomNameForGui)
                 .setTextAlignment(Alignment.Center)
                 .setScrollBar()
                 .setTextColor(Color.WHITE.normal)
