@@ -10,6 +10,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchOutput;
 
+@IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class OriginalOutputHatch extends MTEHatchOutput {
 
@@ -34,6 +35,12 @@ public class OriginalOutputHatch extends MTEHatchOutput {
     @Override
     public int getCapacity() {
         return 4096000;
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal("gtnl.hatch.original_output.name");
     }
 
     @Override

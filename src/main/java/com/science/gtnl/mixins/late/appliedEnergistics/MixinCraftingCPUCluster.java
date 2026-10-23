@@ -24,6 +24,7 @@ import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
 import com.science.gtnl.utils.ChiselPatternDetails;
 import com.science.gtnl.utils.DireCraftingPatternDetails;
+import com.science.gtnl.utils.ECraftingCPUCluster;
 import com.science.gtnl.utils.LargeInventoryCrafting;
 import com.science.gtnl.utils.crafting.CraftingBatchPlanner;
 import com.science.gtnl.utils.crafting.CraftingBatchPlanner.BatchPlan;
@@ -104,13 +105,22 @@ public abstract class MixinCraftingCPUCluster {
         BatchDispatchContext context = contextRef.get();
         if (expandedInputs == null || context == null || context.taskProgress == null) return expandedInputs;
 
-        BatchPlan plan = GTNL$BATCH_PLANNER.plan(
-            context.taskProgress.getValue(),
-            context.mediumStrategy,
-            expandedInputs,
-            details.getCondensedAEOutputs(),
-            this.inventory,
-            requested -> eg.extractAEPower(requested, Actionable.SIMULATE, PowerMultiplier.CONFIG));
+        // A quantum CPU only extracts the variants a substituting pattern has budget for
+        BatchPlan plan = (Object) this instanceof ECraftingCPUCluster quantum && quantum.hasVariantBudget(details)
+            ? GTNL$BATCH_PLANNER.plan(
+                context.taskProgress.getValue(),
+                context.mediumStrategy,
+                expandedInputs,
+                details.getCondensedAEOutputs(),
+                input -> quantum.getBudgetedAvailable(details, input),
+                requested -> eg.extractAEPower(requested, Actionable.SIMULATE, PowerMultiplier.CONFIG))
+            : GTNL$BATCH_PLANNER.plan(
+                context.taskProgress.getValue(),
+                context.mediumStrategy,
+                expandedInputs,
+                details.getCondensedAEOutputs(),
+                this.inventory,
+                requested -> eg.extractAEPower(requested, Actionable.SIMULATE, PowerMultiplier.CONFIG));
         context.resetForPlan(plan);
         if (!plan.isBatched()) return expandedInputs;
 

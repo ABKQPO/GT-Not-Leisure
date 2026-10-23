@@ -1,6 +1,7 @@
 package com.science.gtnl.common.render;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -28,10 +29,25 @@ public class PlayerDollRenderManager {
     public static Set<String> BLACKLISTED_CAPE_URLS = Sets.newConcurrentHashSet();
     public static Map<String, String> UUID_CACHE = new ConcurrentHashMap<>();
 
+    private static final int CONNECT_TIMEOUT_MS = 3000;
+    private static final int READ_TIMEOUT_MS = 5000;
+
+    public static HttpURLConnection openConnection(String url) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.setConnectTimeout(CONNECT_TIMEOUT_MS);
+        connection.setReadTimeout(READ_TIMEOUT_MS);
+        return connection;
+    }
+
     public static class AsyncDownloader {
 
         public static Map<String, Future<String>> pendingTasks = new ConcurrentHashMap<>();
-        public static ExecutorService executor = Executors.newFixedThreadPool(2);
+        // Daemon threads, so a download that is still running never keeps the game from closing.
+        public static ExecutorService executor = Executors.newFixedThreadPool(2, runnable -> {
+            Thread thread = new Thread(runnable, "GTNL Player Doll Downloader");
+            thread.setDaemon(true);
+            return thread;
+        });
         public static Map<String, Future<ResourceLocation>> pendingDownloads = new ConcurrentHashMap<>();
 
         public static ResourceLocation getTexture(String key, Callable<ResourceLocation> task) {
@@ -86,10 +102,9 @@ public class PlayerDollRenderManager {
 
         return AsyncDownloader.getUUID(cacheKey, () -> {
             try {
-                URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + username);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                HttpURLConnection connection = openConnection(
+                    "https://api.mojang.com/users/profiles/minecraft/" + username);
                 connection.setRequestMethod("GET");
-                connection.setConnectTimeout(3000);
 
                 if (connection.getResponseCode() == 204) {
                     BLACKLISTED_NAMES.add(cacheKey);

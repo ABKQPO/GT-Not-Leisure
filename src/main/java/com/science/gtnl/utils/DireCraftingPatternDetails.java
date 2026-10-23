@@ -18,6 +18,7 @@ import lombok.Getter;
 public class DireCraftingPatternDetails implements ICraftingPatternDetails {
 
     private final ItemStack pattern;
+    private final IAEItemStack patternKey;
     private final IAEItemStack[] inputs;
     private IAEItemStack[] condensedInputs;
     private final long[] baseInputSizes;
@@ -28,6 +29,7 @@ public class DireCraftingPatternDetails implements ICraftingPatternDetails {
 
     public DireCraftingPatternDetails(ItemStack is) {
         pattern = is;
+        patternKey = createPatternKey(is);
 
         if (is.hasTagCompound()) {
             inputs = new IAEItemStack[81];
@@ -59,6 +61,7 @@ public class DireCraftingPatternDetails implements ICraftingPatternDetails {
     public DireCraftingPatternDetails(ICraftingPatternDetails is) {
         pattern = is.getPattern()
             .copy();
+        patternKey = createPatternKey(pattern);
         inputs = copyStacks(is.getInputs());
         baseInputSizes = captureStackSizes(inputs);
         var list = new ItemList();
@@ -91,6 +94,16 @@ public class DireCraftingPatternDetails implements ICraftingPatternDetails {
             if (output == null) continue;
             output.setStackSize(multiplyStackSize(baseOutputSizes[i], this.multiply));
         }
+    }
+
+    private static IAEItemStack createPatternKey(ItemStack pattern) {
+        ItemStack forComparison = pattern.copy();
+        NBTTagCompound tag = forComparison.getTagCompound();
+        if (tag != null) {
+            tag.removeTag("author");
+            tag.removeTag("encodedAt");
+        }
+        return AEItemStack.create(forComparison);
     }
 
     private static IAEItemStack[] copyStacks(IAEItemStack[] stacks) {
@@ -182,5 +195,17 @@ public class DireCraftingPatternDetails implements ICraftingPatternDetails {
     @Override
     public void setPriority(int priority) {
 
+    }
+
+    @Override
+    public int hashCode() {
+        return patternKey.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof DireCraftingPatternDetails other)) return false;
+        return patternKey.equals(other.patternKey);
     }
 }

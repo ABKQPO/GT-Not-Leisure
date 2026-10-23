@@ -56,6 +56,12 @@ public class NetWorkHandler {
         registerClientbound(WirelessVisualisationPacket.class);
         registerServerbound(MiniTerminalRequestPacket.class);
         registerClientbound(MiniTerminalUpdatePacket.class);
+        registerServerbound(UniversalStorageBusActionPacket.class);
+        registerServerbound(QuantumCraftingModePacket.class);
+        registerClientbound(QuantumCraftingAvailabilityPacket.class);
+        registerClientbound(QuantumCraftConfirmPacket.class);
+        registerServerbound(RecursivePatternQueryPacket.class);
+        registerClientbound(RecursivePatternResultPacket.class);
         registerClientbound(RailgunFireFxPacket.class);
         registerClientbound(RailgunRecoilFxPacket.class);
         registerServerbound(RailgunBeamTogglePacket.class);

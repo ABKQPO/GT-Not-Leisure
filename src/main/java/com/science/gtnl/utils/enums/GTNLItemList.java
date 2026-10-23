@@ -62,6 +62,9 @@ public enum GTNLItemList implements IItemContainer {
     PartEnergyCell,
     PartDenseEnergyCell,
     PartSuperDenseEnergyCell,
+    PartUniversalStorageBus,
+    PartUniversalImportBus,
+    PartUniversalExportBus,
     SuperDenseEnergyCell,
     BlockBeamFormer,
 

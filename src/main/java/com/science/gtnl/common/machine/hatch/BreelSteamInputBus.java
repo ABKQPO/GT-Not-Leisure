@@ -1,6 +1,7 @@
 package com.science.gtnl.common.machine.hatch;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
@@ -11,20 +12,23 @@ import com.science.gtnl.api.mixinHelper.ICommonMetaTileEntityInventory;
 import com.science.gtnl.api.mixinHelper.IMetaTileEntityInventoryHandler;
 
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTItemTransfer;
 import gregtech.common.gui.modularui.hatch.MTEHatchInputBusGui;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSteamBusInput;
 
-public class MTEBreelSteamInputBus extends MTEHatchSteamBusInput {
+@IMetaTileEntity.SkipGenerateName
+@IMetaTileEntity.SkipGenerateDescription
+public class BreelSteamInputBus extends MTEHatchSteamBusInput {
 
-    public MTEBreelSteamInputBus(int id, String name, String regionalName, int tier) {
+    public BreelSteamInputBus(int id, String name, String regionalName, int tier) {
         super(id, name, regionalName, tier);
         initializeInventory();
     }
 
-    public MTEBreelSteamInputBus(String name, int tier, String[] description, ITexture[][][] textures) {
+    public BreelSteamInputBus(String name, int tier, String[] description, ITexture[][][] textures) {
         super(name, tier, description, textures);
         initializeInventory();
     }
@@ -35,14 +39,14 @@ public class MTEBreelSteamInputBus extends MTEHatchSteamBusInput {
 
             @Override
             public void onContentsChanged(int slot) {
-                MTEBreelSteamInputBus.this.onContentsChanged(slot);
+                BreelSteamInputBus.this.onContentsChanged(slot);
             }
         });
     }
 
     @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity tileEntity) {
-        return new MTEBreelSteamInputBus(mName, mTier, mDescriptionArray, mTextures);
+        return new BreelSteamInputBus(mName, mTier, mDescriptionArray, mTextures);
     }
 
     @Override
@@ -78,7 +82,17 @@ public class MTEBreelSteamInputBus extends MTEHatchSteamBusInput {
     }
 
     @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal("gt.blockmachines.breel.input_bus.steam.name");
+    }
+
+    @Override
     public String[] getDescription() {
-        return new String[] { "%%%" + 25 + "%%%" };
+        return new String[] { StatCollector.translateToLocal("gt.blockmachines.breel.input_bus.steam.tooltip.0"),
+            StatCollector.translateToLocal("gt.blockmachines.breel.input_bus.steam.tooltip.1"),
+            StatCollector.translateToLocal("gt.blockmachines.breel.input_bus.steam.tooltip.2"),
+            StatCollector.translateToLocal("gt.blockmachines.breel.input_bus.steam.tooltip.3"),
+            StatCollector.translateToLocal("gt.blockmachines.breel.input_bus.steam.tooltip.4") };
     }
 }

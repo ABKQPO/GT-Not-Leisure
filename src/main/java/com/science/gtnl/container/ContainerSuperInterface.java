@@ -8,12 +8,13 @@ import com.science.gtnl.mixins.late.appliedEnergistics.AccessorContainerUpgradea
 import appeng.api.config.Settings;
 import appeng.api.config.SidelessMode;
 import appeng.api.util.IConfigManager;
-import appeng.container.guisync.GuiSync;
 import appeng.container.implementations.ContainerInterface;
 import appeng.container.slot.OptionalSlotFake;
 import appeng.container.slot.OptionalSlotRestrictedInput;
 import appeng.container.slot.SlotNormal;
 import appeng.container.slot.SlotRestrictedInput;
+import appeng.container.sync.SyncRegistrar;
+import appeng.container.sync.handlers.ConfigEnumSyncHandler;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.util.Platform;
@@ -36,12 +37,23 @@ public class ContainerSuperInterface extends ContainerInterface {
     public static final int SECTION_GAP = 3;
     public static final int PLAYER_INV_HEIGHT = 82;
 
-    @GuiSync(19)
     public SidelessMode sidelessMode = SidelessMode.SIDELESS;
+    private final ConfigEnumSyncHandler<SidelessMode> sidelessModeSync;
 
     public ContainerSuperInterface(InventoryPlayer ip, IInterfaceHost te) {
         super(ip, te);
         this.myDuality = te.getInterfaceDuality();
+        IConfigManager configManager = this.myDuality.getConfigManager();
+        if (configManager.getSettings()
+            .contains(Settings.SIDELESS_MODE)) {
+            SyncRegistrar sync = this.syncRegistrar();
+            this.sidelessModeSync = sync
+                .configEnum("sidelessMode", Settings.SIDELESS_MODE, SidelessMode.class, configManager);
+            this.sidelessModeSync
+                .onClientChange((oldValue, newValue) -> { if (newValue != null) this.sidelessMode = newValue; });
+        } else {
+            this.sidelessModeSync = null;
+        }
         var accessor = (IDualityInterface) myDuality;
 
         configSlots = accessor.getConfigSlots();
@@ -169,9 +181,10 @@ public class ContainerSuperInterface extends ContainerInterface {
     @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
         super.loadSettingsFromHost(cm);
-        if (cm.getSettings()
+        if (this.sidelessModeSync != null && cm.getSettings()
             .contains(Settings.SIDELESS_MODE)) {
-            sidelessMode = (SidelessMode) cm.getSetting(Settings.SIDELESS_MODE);
+            this.sidelessModeSync.syncFromConfig();
+            this.sidelessMode = this.sidelessModeSync.get();
         }
     }
 

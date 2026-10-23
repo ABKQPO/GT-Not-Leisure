@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.FutureTask;
 
 import javax.imageio.ImageIO;
 
@@ -43,6 +43,7 @@ public class PlayerDollRenderManagerClient {
     public static final Map<String, BufferedImage> TEXTURE_PENDING = new ConcurrentHashMap<>();
     public static final Map<String, Boolean> SKIN_MODEL = new ConcurrentHashMap<>();
     public static final Map<String, Integer> UPLOADED_TEXTURE_ID = new ConcurrentHashMap<>();
+    private static final Map<String, FutureTask<JsonObject>> PROFILE_TEXTURES = new ConcurrentHashMap<>();
 
     public static final ResourceLocation DEFAULT_SKIN = new ResourceLocation(RESOURCE_ROOT_ID + ":models/skin.png");
     public static final ResourceLocation DEFAULT_CAPE = new ResourceLocation(RESOURCE_ROOT_ID + ":models/cape.png");
@@ -109,9 +110,8 @@ public class PlayerDollRenderManagerClient {
 
         Map<String, ResourceLocation> cache = type == TextureType.SKIN ? TEXTURE_SKIN_CACHE : TEXTURE_CAPE_CACHE;
 
-        if (cache.containsKey(uuid)) {
-            return cache.get(uuid);
-        }
+        ResourceLocation cached = cache.get(uuid);
+        if (cached != null) return cached;
 
         File local = new File(type == TextureType.SKIN ? SKIN_DIR : CAPE_DIR, uuid + ".png");
         if (local.exists()) {
@@ -122,13 +122,14 @@ public class PlayerDollRenderManagerClient {
             }
         }
 
-        String url = fetchTextureUrl(uuid, type);
-        if (url == null) {
-            cache.put(uuid, type == TextureType.SKIN ? DEFAULT_SKIN : DEFAULT_CAPE);
-            return null;
-        }
-
-        return downloadAndCacheTexture(url, uuid, type, false);
+        // Called from the renderer every frame, so the profile lookup runs on the downloader together with the image.
+        return PlayerDollRenderManager.AsyncDownloader.getTexture(type.name() + "_" + uuid, () -> {
+            String url = fetchTextureUrl(uuid, type);
+            ResourceLocation tex = url == null ? null : downloadTexture(url, local, type);
+            if (tex == null) tex = type == TextureType.SKIN ? DEFAULT_SKIN : DEFAULT_CAPE;
+            cache.put(uuid, tex);
+            return tex;
+        });
     }
 
     public static ResourceLocation downloadAndCacheCustomSkin(String url) {
@@ -155,66 +156,88 @@ public class PlayerDollRenderManagerClient {
 
         if (target.exists()) return getLocalTextureFromFile(target, type);
 
-        return PlayerDollRenderManager.AsyncDownloader.getTexture(key, () -> {
-            try (InputStream in = new URL(url).openStream(); FileOutputStream out = new FileOutputStream(target)) {
-
-                byte[] buf = new byte[8192];
-                int len;
-                while ((len = in.read(buf)) != -1) out.write(buf, 0, len);
-
-                if (!isValidImage(target)) {
-                    target.delete();
-                    return type == TextureType.SKIN ? DEFAULT_SKIN : null;
-                }
-
-                ResourceLocation tex = getLocalTextureFromFile(target, type);
-                if (tex != null) cache.put(key, tex);
-                return tex;
-
-            } catch (IOException e) {
-                target.delete();
-                return type == TextureType.SKIN ? DEFAULT_SKIN : null;
-            }
+        // The type is part of the key, as a skin and a cape with the same key go to different files.
+        return PlayerDollRenderManager.AsyncDownloader.getTexture(type.name() + "_" + key, () -> {
+            ResourceLocation tex = downloadTexture(url, target, type);
+            if (tex == null) return type == TextureType.SKIN ? DEFAULT_SKIN : null;
+            cache.put(key, tex);
+            return tex;
         });
     }
 
-    public static String fetchTextureUrl(String uuid, TextureType type) {
+    /**
+     * Downloads an image into {@code target}. Blocks, so it may only run on the downloader. The image is written to a
+     * temporary file first, as the render thread loads {@code target} as soon as it exists.
+     */
+    private static ResourceLocation downloadTexture(String url, File target, TextureType type) {
+        File temp = new File(target.getPath() + ".part");
         try {
-            HttpURLConnection conn = (HttpURLConnection) new URL(
-                "https://sessionserver.mojang.com/session/minecraft/profile/" + uuid).openConnection();
+            try (InputStream in = PlayerDollRenderManager.openConnection(url)
+                .getInputStream(); FileOutputStream out = new FileOutputStream(temp)) {
+                byte[] buf = new byte[8192];
+                int len;
+                while ((len = in.read(buf)) != -1) out.write(buf, 0, len);
+            }
 
-            conn.setConnectTimeout(3000);
-            if (conn.getResponseCode() != 200) return null;
+            // renameTo does not replace an existing file on Windows, e.g. an unreadable one left by an older version.
+            target.delete();
+            if (!isValidImage(temp) || !temp.renameTo(target)) {
+                temp.delete();
+                return null;
+            }
+            return getLocalTextureFromFile(target, type);
+        } catch (Exception e) {
+            temp.delete();
+            return null;
+        }
+    }
 
-            String json = readAll(conn.getInputStream());
+    /**
+     * Reads a texture URL from the player's Mojang profile. Blocks, so it may only run on the downloader. Skin and cape
+     * share one request, since the session server refuses a second request for the same profile within a minute.
+     */
+    public static String fetchTextureUrl(String uuid, TextureType type) {
+        FutureTask<JsonObject> task = new FutureTask<>(() -> requestProfileTextures(uuid));
+        FutureTask<JsonObject> existing = PROFILE_TEXTURES.putIfAbsent(uuid, task);
+        if (existing == null) {
+            // Run on this thread instead of the pool, whose other thread may already be waiting for this very task.
+            task.run();
+            existing = task;
+        }
 
-            JsonObject profile = new JsonParser().parse(json)
-                .getAsJsonObject();
-
-            String value = profile.getAsJsonArray("properties")
-                .get(0)
-                .getAsJsonObject()
-                .get("value")
-                .getAsString();
-
-            JsonObject textures = new JsonParser().parse(
-                new String(
-                    Base64.getDecoder()
-                        .decode(value)))
-                .getAsJsonObject()
-                .getAsJsonObject("textures");
-
-            if (type == TextureType.SKIN && textures.has("SKIN")) return textures.getAsJsonObject("SKIN")
+        try {
+            JsonObject textures = existing.get();
+            String name = type == TextureType.SKIN ? "SKIN" : "CAPE";
+            if (textures != null && textures.has(name)) return textures.getAsJsonObject(name)
                 .get("url")
                 .getAsString();
-
-            if (type == TextureType.CAPE && textures.has("CAPE")) return textures.getAsJsonObject("CAPE")
-                .get("url")
-                .getAsString();
-
         } catch (Exception ignored) {}
 
         return null;
+    }
+
+    private static JsonObject requestProfileTextures(String uuid) throws IOException {
+        HttpURLConnection conn = PlayerDollRenderManager
+            .openConnection("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid);
+        if (conn.getResponseCode() != 200) return null;
+
+        String json = readAll(conn.getInputStream());
+
+        JsonObject profile = new JsonParser().parse(json)
+            .getAsJsonObject();
+
+        String value = profile.getAsJsonArray("properties")
+            .get(0)
+            .getAsJsonObject()
+            .get("value")
+            .getAsString();
+
+        return new JsonParser().parse(
+            new String(
+                Base64.getDecoder()
+                    .decode(value)))
+            .getAsJsonObject()
+            .getAsJsonObject("textures");
     }
 
     public static String readAll(InputStream in) throws IOException {

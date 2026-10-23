@@ -4,6 +4,7 @@ import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_DUAL_HATCH;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -29,6 +30,7 @@ import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.common.gui.modularui.DualInputHatchGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
+import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.modularui.IAddGregtechLogo;
@@ -40,6 +42,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 
+@IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, IDualInputHatch, IAddGregtechLogo {
 
@@ -107,6 +110,13 @@ public class DualInputHatch extends MTEHatchInputBus implements IAddUIWidgets, I
         }
         this.inventory = new Inventory(mInventory, mStoredFluid);
         this.disableSort = true;
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector
+            .translateToLocal("gtnl.hatch.dual_input." + GTValues.VN[mTier].toLowerCase(Locale.ROOT) + ".name");
     }
 
     @Override

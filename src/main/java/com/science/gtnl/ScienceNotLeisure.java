@@ -12,6 +12,9 @@ import com.science.gtnl.common.command.CommandSudo;
 import com.science.gtnl.common.command.CommandSuicide;
 import com.science.gtnl.common.command.CommandTickrate;
 import com.science.gtnl.common.command.CommandWirelessME;
+import com.science.gtnl.common.crafting.quantum.ae2.QuantumCraftingCache;
+import com.science.gtnl.common.crafting.quantum.ae2.QuantumCraftingMode;
+import com.science.gtnl.common.crafting.quantum.hooks.ticking.TickHandler;
 import com.science.gtnl.common.wireless.WirelessChannelManager;
 import com.science.gtnl.loader.MaterialLoader;
 import com.science.gtnl.utils.enums.ModList;
@@ -121,11 +124,17 @@ public class ScienceNotLeisure {
         event.registerServerCommand(new CommandItemInfo());
         event.registerServerCommand(new CommandSudo());
         event.registerServerCommand(new CommandSuicide());
+        TickHandler.instance()
+            .openSession();
     }
 
     @Mod.EventHandler
     public void serverStopping(FMLServerStoppingEvent event) {
         WirelessChannelManager.clear();
+        TickHandler.instance()
+            .closeSession();
+        QuantumCraftingMode.clear();
+        QuantumCraftingCache.clearAll();
     }
 
     @Mod.EventHandler

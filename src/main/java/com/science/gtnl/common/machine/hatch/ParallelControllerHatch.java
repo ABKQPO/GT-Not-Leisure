@@ -2,6 +2,8 @@ package com.science.gtnl.common.machine.hatch;
 
 import static com.science.gtnl.utils.enums.BlockIcons.OVERLAY_FRONT_PARALLEL_CONTROLLER;
 
+import java.util.Locale;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
@@ -22,6 +24,7 @@ import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
 import com.science.gtnl.common.gui.modularui.ParallelControllerHatchGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
+import gregtech.api.enums.GTValues;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -31,6 +34,8 @@ import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.render.TextureFactory;
 import lombok.Getter;
 
+@IMetaTileEntity.SkipGenerateName
+@IMetaTileEntity.SkipGenerateDescription
 @Getter
 public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLogo {
 
@@ -71,6 +76,13 @@ public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLog
             .format(StatCollector.translateToLocal("gtnl.hatch.parallel_controller.tooltip.2"), speedBoost);
         mDescriptionArray[3] = String
             .format(StatCollector.translateToLocal("gtnl.hatch.parallel_controller.tooltip.3"), euDiscount);
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal(
+            "gtnl.hatch.parallel_controller." + GTValues.VN[mTier].toLowerCase(Locale.ROOT) + ".name");
     }
 
     @Override

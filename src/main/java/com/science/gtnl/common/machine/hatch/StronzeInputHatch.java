@@ -1,30 +1,32 @@
 package com.science.gtnl.common.machine.hatch;
 
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 
-import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
-
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchInput;
 
-public class MTEStronzeInputHatch extends MTEHatchInput {
+@IMetaTileEntity.SkipGenerateName
+@IMetaTileEntity.SkipGenerateDescription
+public class StronzeInputHatch extends MTEHatchInput {
 
-    public MTEStronzeInputHatch(int id, String name, String regionalName, int tier) {
+    public StronzeInputHatch(int id, String name, String regionalName, int tier) {
         super(id, name, regionalName, tier);
     }
 
-    public MTEStronzeInputHatch(String name, int tier, String[] description, ITexture[][][] textures) {
+    public StronzeInputHatch(String name, int tier, String[] description, ITexture[][][] textures) {
         super(name, tier, description, textures);
     }
 
     @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity tileEntity) {
-        return new MTEStronzeInputHatch(mName, mTier, mDescriptionArray, mTextures);
+        return new StronzeInputHatch(mName, mTier, mDescriptionArray, mTextures);
     }
 
     @Override
@@ -33,8 +35,17 @@ public class MTEStronzeInputHatch extends MTEHatchInput {
     }
 
     @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal("gt.blockmachines.stronze.input_hatch.steam.name");
+    }
+
+    @Override
     public String[] getDescription() {
-        return new String[] { "%%%" + NumberFormatUtil.formatNumber(getCapacity()) + "%%%" };
+        return new String[] { StatCollector.translateToLocal("gt.blockmachines.stronze.input_hatch.steam.tooltip.0"),
+            StatCollector.translateToLocal("gt.blockmachines.stronze.input_hatch.steam.tooltip.1"),
+            StatCollector.translateToLocal("gt.blockmachines.stronze.input_hatch.steam.tooltip.2"),
+            StatCollector.translateToLocal("gt.blockmachines.stronze.input_hatch.steam.tooltip.3") };
     }
 
     @Override

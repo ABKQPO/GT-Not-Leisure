@@ -1,6 +1,7 @@
 package com.science.gtnl.common.machine.hatch;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
@@ -11,19 +12,22 @@ import com.science.gtnl.api.mixinHelper.ICommonMetaTileEntityInventory;
 import com.science.gtnl.api.mixinHelper.IMetaTileEntityInventoryHandler;
 
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.common.gui.modularui.hatch.MTEHatchOutputBusGui;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSteamBusOutput;
 
-public class MTEBreelSteamOutputBus extends MTEHatchSteamBusOutput {
+@IMetaTileEntity.SkipGenerateName
+@IMetaTileEntity.SkipGenerateDescription
+public class BreelSteamOutputBus extends MTEHatchSteamBusOutput {
 
-    public MTEBreelSteamOutputBus(int id, String name, String regionalName, int tier) {
+    public BreelSteamOutputBus(int id, String name, String regionalName, int tier) {
         super(id, name, regionalName, tier);
         initializeInventory();
     }
 
-    public MTEBreelSteamOutputBus(String name, int tier, String[] description, ITexture[][][] textures) {
+    public BreelSteamOutputBus(String name, int tier, String[] description, ITexture[][][] textures) {
         super(name, tier, description, textures);
         initializeInventory();
     }
@@ -34,14 +38,14 @@ public class MTEBreelSteamOutputBus extends MTEHatchSteamBusOutput {
 
             @Override
             public void onContentsChanged(int slot) {
-                MTEBreelSteamOutputBus.this.onContentsChanged(slot);
+                BreelSteamOutputBus.this.onContentsChanged(slot);
             }
         });
     }
 
     @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity tileEntity) {
-        return new MTEBreelSteamOutputBus(mName, mTier, mDescriptionArray, mTextures);
+        return new BreelSteamOutputBus(mName, mTier, mDescriptionArray, mTextures);
     }
 
     @Override
@@ -61,7 +65,16 @@ public class MTEBreelSteamOutputBus extends MTEHatchSteamBusOutput {
     }
 
     @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector.translateToLocal("gt.blockmachines.breel.output_bus.steam.name");
+    }
+
+    @Override
     public String[] getDescription() {
-        return new String[] { "%%%" + 25 + "%%%" };
+        return new String[] { StatCollector.translateToLocal("gt.blockmachines.breel.output_bus.steam.tooltip.0"),
+            StatCollector.translateToLocal("gt.blockmachines.breel.output_bus.steam.tooltip.1"),
+            StatCollector.translateToLocal("gt.blockmachines.breel.output_bus.steam.tooltip.2"),
+            StatCollector.translateToLocal("gt.blockmachines.breel.output_bus.steam.tooltip.3") };
     }
 }

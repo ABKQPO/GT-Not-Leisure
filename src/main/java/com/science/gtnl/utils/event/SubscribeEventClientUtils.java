@@ -44,6 +44,7 @@ import com.brandon3055.draconicevolution.common.ModItems;
 import com.gtnewhorizon.gtnhlib.client.title.TitleAPI;
 import com.reavaritia.client.render.CustomEntityRenderer;
 import com.science.gtnl.api.TickrateAPI;
+import com.science.gtnl.client.quantum.QuantumCraftingClientConfig;
 import com.science.gtnl.common.block.blocks.item.ItemBlockMultiEssentiaJar;
 import com.science.gtnl.common.item.BaubleItem;
 import com.science.gtnl.common.item.items.NullPointerException;
@@ -105,6 +106,7 @@ public class SubscribeEventClientUtils {
     @SubscribeEvent
     public void onClientConnectedToServerEvent(FMLNetworkEvent.ClientConnectedToServerEvent aEvent) {
         PLAYING_SOUNDS.clear();
+        QuantumCraftingClientConfig.scheduleSync();
     }
 
     @SubscribeEvent
@@ -402,6 +404,10 @@ public class SubscribeEventClientUtils {
         if (aEvent.phase == TickEvent.Phase.END) {
             Minecraft mc = Minecraft.getMinecraft();
             EntityPlayer player = mc.thePlayer;
+
+            if (player != null) {
+                QuantumCraftingClientConfig.syncIfScheduled();
+            }
 
             if (player != null && mc.theWorld != null && !PLAYING_SOUNDS.isEmpty()) {
                 double playerX = player.posX;

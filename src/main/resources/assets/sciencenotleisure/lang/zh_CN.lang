@@ -290,6 +290,10 @@ gtnl.gui.config.general.machine.quantum_computer.maxmultithreader=最大多线�
 gtnl.gui.config.general.machine.quantum_computer.maxmultithreader.tooltip=量子计算机中允许的最大量子计算机多线程处理器数量
 gtnl.gui.config.general.machine.quantum_computer.maxdataentangler=最大数据纠缠器数量
 gtnl.gui.config.general.machine.quantum_computer.maxdataentangler.tooltip=量子计算机中允许的最大量子数据纠缠器数量
+gtnl.gui.config.general.machine.quantum_computer.enablecalculationlog=量子合成计算日志
+gtnl.gui.config.general.machine.quantum_computer.enablecalculationlog.tooltip=记录每次量子合成计算的步骤明细。
+gtnl.gui.config.general.machine.quantum_computer.enablecalculationperformancelog=量子合成性能日志
+gtnl.gui.config.general.machine.quantum_computer.enablecalculationperformancelog.tooltip=记录每次量子合成计算各阶段的耗时与计数。
 
 gtnl.gui.config.general.machine.meteor_miner=坠星采矿场
 gtnl.gui.config.general.machine.meteor_miner.meteorminermaxblockpercycle=单周期最大方块数
@@ -2669,8 +2673,6 @@ gtnl.hatch.ninefold_input.tooltip.0=为多方块机器输入流体
 gtnl.hatch.ninefold_input.tooltip.capacity=容量：
 gtnl.hatch.ninefold_input.tooltip.fluid_types=可容纳 %s 种流体
 
-gtnl.hatch.quadruple_output.ev.name=四重输出仓 (EV)
-gtnl.hatch.ninefold_output.ev.name=九重输出仓 (EV)
 gtnl.hatch.dual_input.lv.name=输入总成 (LV)
 gtnl.hatch.dual_input.mv.name=输入总成 (MV)
 gtnl.hatch.dual_input.hv.name=输入总成 (HV)
@@ -2745,11 +2747,23 @@ gtnl.machine.hydraulic_super_buffer.tooltip.5=§7安培数：§b0§7
 gtnl.machine.hydraulic_super_buffer.tooltip.6=§7容量: §9没有输送电量功能！§7
 
 gt.blockmachines.breel.input_bus.steam.name=输入总线（青铁）
-gt.blockmachines.breel.input_bus.steam.tooltip=为多方块机器输入物品\n手持螺丝刀Shift右键以切换分类模式\n自动从正面相邻容器拉取物品\n容量：%s格\n无法用于非蒸汽多方块
+gt.blockmachines.breel.input_bus.steam.tooltip.0=为多方块机器输入物品
+gt.blockmachines.breel.input_bus.steam.tooltip.1=手持螺丝刀Shift右键以切换分类模式
+gt.blockmachines.breel.input_bus.steam.tooltip.2=自动从正面相邻容器拉取物品
+gt.blockmachines.breel.input_bus.steam.tooltip.3=容量：%s格
+gt.blockmachines.breel.input_bus.steam.tooltip.4=无法用于非蒸汽多方块
+
 gt.blockmachines.breel.output_bus.steam.name=输出总线（青铁）
-gt.blockmachines.breel.output_bus.steam.tooltip=为多方块机器输出物品\n自动把产物输出到正面相邻容器\n容量：%s格\n无法用于非蒸汽多方块
+gt.blockmachines.breel.output_bus.steam.tooltip.0=为多方块机器输出物品
+gt.blockmachines.breel.output_bus.steam.tooltip.1=自动把产物输出到正面相邻容器
+gt.blockmachines.breel.output_bus.steam.tooltip.2=容量：%s格
+gt.blockmachines.breel.output_bus.steam.tooltip.3=无法用于非蒸汽多方块
+
 gt.blockmachines.stronze.input_hatch.steam.name=输入仓（青钢）
-gt.blockmachines.stronze.input_hatch.steam.tooltip=为多方块机器输入流体\n手持螺丝刀右键以切换输入过滤\n容量：%s升\n接受任意流体，并自动从正面相邻容器抽取
+gt.blockmachines.stronze.input_hatch.steam.tooltip.0=为多方块机器输入流体
+gt.blockmachines.stronze.input_hatch.steam.tooltip.1=手持螺丝刀右键以切换输入过滤
+gt.blockmachines.stronze.input_hatch.steam.tooltip.2=容量：%s升
+gt.blockmachines.stronze.input_hatch.steam.tooltip.3=接受任意流体，并自动从正面相邻容器抽取
 
 gt.blockmachines.wire.stargate.01.name=1x%material导线
 gt.blockmachines.wire.stargate.02.name=2x%material导线
@@ -3704,6 +3718,10 @@ item.gtnl.part_energy_cell.name=ME能源元件
 item.gtnl.part_dense_energy_cell.name=ME致密能源元件
 item.gtnl.part_super_dense_energy_cell.name=ME超致密能源元件
 
+item.gtnl.part_universal_storage_bus.name=ME通用存储总线
+item.gtnl.part_universal_import_bus.name=ME通用输入总线
+item.gtnl.part_universal_export_bus.name=ME通用输出总线
+
 item.gtnl.part_beam_former.name=ME光束成型器
 gtnl.machine.beam_former.beam.hidden=已隐藏光束。
 gtnl.machine.beam_former.beam.shown=已显示光束。
@@ -4503,6 +4521,37 @@ gtnl.machine.godforge.module.casing.3= 天体物质引导机械方块
 gtnl.machine.godforge.module.casing.4= 恒星能量抽取机械方块
 
 gtnl.gui.assembler_matrix.upload_pattern=上传样板至当前网络中可用的§9装配矩阵§r。
+gtnl.gui.quantum_crafting.mode=量子合成模式
+gtnl.gui.quantum_crafting.mode.on=开启：使用量子算法计算合成计划，可解析递归与循环样板。只有量子计算机CPU可以执行此类任务。与轻量模式互斥。
+gtnl.gui.quantum_crafting.mode.off=关闭：使用AE2算法计算合成计划。
+gtnl.quantum_crafting.message.CraftingNoPlan=量子合成计算未能生成计划。
+gtnl.quantum_crafting.message.CraftingNoNetOutput=现有样板无法净产出请求的物品。请检查递归样板是否消耗自身产物，或是否还依赖额外外部输入。
+gtnl.gui.recursive_patterns=查找递归样板
+gtnl.gui.recursive_patterns.hint=§7列出这次请求会经过的合成循环，并高亮存放这些样板的机器。没有净产出的循环（计算报“无净产出”的原因）优先。与使用哪种合成计算无关。在合成树中悬停循环里的合成并按高亮键，可只高亮它所在的循环。
+gtnl.recursive_patterns.none=§b[递归样板]§r %s：没有找到合成循环。
+gtnl.recursive_patterns.header=§b[递归样板]§r %s：找到 %s 个合成循环。
+gtnl.recursive_patterns.cycle.no_net=§c 循环 %s（无净产出）§r：%s
+gtnl.recursive_patterns.cycle.net=§a 循环 %s（有净产出）§r：%s
+gtnl.recursive_patterns.pattern=§7   样板 §e%s§7：%s 台机器
+gtnl.recursive_patterns.found=§7   %2$s（%1$s 的循环样板）位于 %3$s, %4$s, %5$s
+gtnl.recursive_patterns.wrong_dim=§7   %2$s（%1$s 的循环样板）在维度 %3$s
+gtnl.recursive_patterns.no_machines=§7   没有找到存放这些样板的机器。
+gtnl.gui.crafting_ring.summary=%s 次合成，%s 处绕回，%s 项外部输入
+gtnl.gui.crafting_ring.omitted=，另有 %s 个样板不在这一圈上
+gtnl.gui.crafting_ring.tooltip=§b合成循环：%s 次合成，%s 处绕回
+gtnl.gui.crafting_ring.open=§7点击：以环形查看这个循环
+gtnl.gui.crafting_ring.open_list=§7Shift+左键：以环形查看这个循环
+gtnl.gui.crafting_ring.fold_inputs=§7Shift+左键：收起/展开这个循环从外部需要的原料
+gtnl.gui.crafting_ring.nested=§b这个原料也来自一个合成循环
+gtnl.gui.crafting_ring.locate=§7Shift+左键：回到合成树中的这个节点（不在树中时高亮它的机器）
+gtnl.gui.crafting_ring.folded=§7这里收起了循环后面的 %s 次合成，点击展开
+gtnl.gui.crafting_ring.back=返回
+gtnl.gui.recursive_patterns.tooltip.net=§a递归样板：循环 %s（有净产出）
+gtnl.gui.recursive_patterns.tooltip.no_net=§c递归样板：循环 %s（无净产出）
+gtnl.gui.recursive_patterns.tooltip.machines=§7存放在 %s 台机器中，按 %s 高亮
+gtnl.recursive_patterns.blocked=§c[递归样板]§r %s：计划因 %s 个合成循环无法开始，已高亮存放这些样板的机器。在合成树中悬停其他循环的合成并按 %s 可高亮它们。
+gtnl.recursive_patterns.highlighted=§b[递归样板]§r 循环 %1$s：已高亮 %3$s 台机器（%2$s）
+gtnl.quantum_crafting.message.CraftingTooLong=量子合成计算超出了本服务器允许的计算时间。请减少请求数量，或在配置中调高 calculationLimitSeconds。
 gtnl.machine.assembler_matrix.pattern_exists=网络已有类似的合成样板,已跳过上传并返还空白样板！
 
 gtnl.tooltip.craft_complete.0=§5自动合成完毕！
@@ -4867,6 +4916,7 @@ gtnl.text_effect.italic=切换斜体
 key.gtnl.wireless_card_visualisation=切换频率卡网络可视化显示
 key.gtnl.wireless_card_auto=切换频率卡自动连接
 key.gtnl.wireless_card_open=打开频率卡管理界面
+key.gtnl.highlight_recursive_patterns=高亮递归样板所在机器
 key.gtnl.celestweave_dash=苍穹织雷冲刺
 key.gtnl.equipment_settings=装备轮盘
 key.gtnl.celestweave_backpack=打开苍穹织雷背包

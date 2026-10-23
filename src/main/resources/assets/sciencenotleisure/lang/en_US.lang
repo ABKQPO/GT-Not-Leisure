@@ -290,6 +290,10 @@ gtnl.gui.config.general.machine.quantum_computer.maxmultithreader=Maximum Multi-
 gtnl.gui.config.general.machine.quantum_computer.maxmultithreader.tooltip=Maximum number of multi-threader processors allowed in the Quantum Computer.
 gtnl.gui.config.general.machine.quantum_computer.maxdataentangler=Maximum Data Entangler Count
 gtnl.gui.config.general.machine.quantum_computer.maxdataentangler.tooltip=Maximum number of data entanglers allowed in the Quantum Computer.
+gtnl.gui.config.general.machine.quantum_computer.enablecalculationlog=Quantum Crafting Calculation Log
+gtnl.gui.config.general.machine.quantum_computer.enablecalculationlog.tooltip=Log the step breakdown of every quantum crafting calculation.
+gtnl.gui.config.general.machine.quantum_computer.enablecalculationperformancelog=Quantum Crafting Performance Log
+gtnl.gui.config.general.machine.quantum_computer.enablecalculationperformancelog.tooltip=Log stage timings and counters of every quantum crafting calculation.
 
 gtnl.gui.config.general.machine.meteor_miner=Meteor Miner
 gtnl.gui.config.general.machine.meteor_miner.meteorminermaxblockpercycle=Max Blocks Per Cycle
@@ -2669,8 +2673,6 @@ gtnl.hatch.ninefold_input.tooltip.0=Input fluids for multiblock machines
 gtnl.hatch.ninefold_input.tooltip.capacity=Capacity:
 gtnl.hatch.ninefold_input.tooltip.fluid_types=Can hold %s types of fluids
 
-gtnl.hatch.quadruple_output.ev.name=Quadruple Output Hatch (EV)
-gtnl.hatch.ninefold_output.ev.name=Nonuple Output Hatch (EV)
 gtnl.hatch.dual_input.lv.name=Input Assembly (LV)
 gtnl.hatch.dual_input.mv.name=Input Assembly (MV)
 gtnl.hatch.dual_input.hv.name=Input Assembly (HV)
@@ -2745,11 +2747,23 @@ gtnl.machine.hydraulic_super_buffer.tooltip.5=§7Amperage: §b0§7
 gtnl.machine.hydraulic_super_buffer.tooltip.6=§7Capacity: §9No power transfer function!§7
 
 gt.blockmachines.breel.input_bus.steam.name=Input Bus (Breel)
-gt.blockmachines.breel.input_bus.steam.tooltip=Item Input for Steam Multiblocks\nShift + right click with screwdriver to turn Sort mode on/off\nAutomatically pulls items from the container in front of it\nCapacity: %s slots\nDoes not work with non-steam multiblocks
+gt.blockmachines.breel.input_bus.steam.tooltip.0=Item Input for Steam Multiblocks
+gt.blockmachines.breel.input_bus.steam.tooltip.1=Shift + right click with screwdriver to turn Sort mode on/off
+gt.blockmachines.breel.input_bus.steam.tooltip.2=Automatically pulls items from the container in front of it
+gt.blockmachines.breel.input_bus.steam.tooltip.3=Capacity: %s slots
+gt.blockmachines.breel.input_bus.steam.tooltip.4=Does not work with non-steam multiblocks
+
 gt.blockmachines.breel.output_bus.steam.name=Output Bus (Breel)
-gt.blockmachines.breel.output_bus.steam.tooltip=Item Output for Steam Multiblocks\nAutomatically exports items into the container in front of it\nCapacity: %s slots\nDoes not work with non-steam multiblocks
+gt.blockmachines.breel.output_bus.steam.tooltip.0=Item Output for Steam Multiblocks
+gt.blockmachines.breel.output_bus.steam.tooltip.1=Automatically exports items into the container in front of it
+gt.blockmachines.breel.output_bus.steam.tooltip.2=Capacity: %s slots
+gt.blockmachines.breel.output_bus.steam.tooltip.3=Does not work with non-steam multiblocks
+
 gt.blockmachines.stronze.input_hatch.steam.name=Input Hatch (Stronze)
-gt.blockmachines.stronze.input_hatch.steam.tooltip=Fluid Input for Multiblocks\nRight click with screwdriver to toggle input filter\nCapacity: %s L\nAccepts any fluid, and automatically drains the tank in front of it
+gt.blockmachines.stronze.input_hatch.steam.tooltip.0=Fluid Input for Multiblocks
+gt.blockmachines.stronze.input_hatch.steam.tooltip.1=Right click with screwdriver to toggle input filter
+gt.blockmachines.stronze.input_hatch.steam.tooltip.2=Capacity: %s L
+gt.blockmachines.stronze.input_hatch.steam.tooltip.3=Accepts any fluid, and automatically drains the tank in front of it
 
 gt.blockmachines.wire.stargate.01.name=1x Stargate Wire
 gt.blockmachines.wire.stargate.02.name=2x Stargate Wire
@@ -3704,6 +3718,10 @@ item.gtnl.part_energy_cell.name=ME Energy Cell
 item.gtnl.part_dense_energy_cell.name=ME Dense Energy Cell
 item.gtnl.part_super_dense_energy_cell.name=ME Super Dense Energy Cell
 
+item.gtnl.part_universal_storage_bus.name=ME Universal Storage Bus
+item.gtnl.part_universal_import_bus.name=ME Universal Import Bus
+item.gtnl.part_universal_export_bus.name=ME Universal Export Bus
+
 item.gtnl.part_beam_former.name=ME Beam Former
 gtnl.machine.beam_former.beam.hidden=Hiding beam.
 gtnl.machine.beam_former.beam.shown=Showing beam.
@@ -4503,6 +4521,37 @@ gtnl.machine.godforge.module.casing.3= Celestial Matter Guidance Casing
 gtnl.machine.godforge.module.casing.4= Stellar Energy Siphon Casing
 
 gtnl.gui.assembler_matrix.upload_pattern=Upload pattern to available §9Assembler Matrix§r in current network.
+gtnl.gui.quantum_crafting.mode=Quantum Crafting Mode
+gtnl.gui.quantum_crafting.mode.on=On: plans with the quantum algorithm, which resolves recursive and cyclic patterns. Only Quantum Computer CPUs can run these jobs. Excludes lite mode.
+gtnl.gui.quantum_crafting.mode.off=Off: plans with the AE2 algorithm.
+gtnl.quantum_crafting.message.CraftingNoPlan=Quantum crafting calculation failed to produce a plan.
+gtnl.quantum_crafting.message.CraftingNoNetOutput=The available patterns cannot produce a net positive amount of the requested item. Check for recursive patterns that consume their own result or require additional external inputs.
+gtnl.gui.recursive_patterns=Find Recursive Patterns
+gtnl.gui.recursive_patterns.hint=§7Lists the crafting cycles of this request and highlights their machines, cycles without net output first. In the tree, hover a cycle craft and press the highlight key for just that cycle.
+gtnl.recursive_patterns.none=§b[Recursive Patterns]§r %s: no crafting cycle found.
+gtnl.recursive_patterns.header=§b[Recursive Patterns]§r %s: %s crafting cycles found.
+gtnl.recursive_patterns.cycle.no_net=§c Cycle %s (no net output)§r: %s
+gtnl.recursive_patterns.cycle.net=§a Cycle %s (net output)§r: %s
+gtnl.recursive_patterns.pattern=§7   Pattern §e%s§7: %s machines
+gtnl.recursive_patterns.found=§7   %2$s at %3$s, %4$s, %5$s
+gtnl.recursive_patterns.wrong_dim=§7   %2$s in dimension %3$s
+gtnl.recursive_patterns.no_machines=§7   No machines found for these patterns.
+gtnl.gui.crafting_ring.summary=%s crafts, %s loops back, %s inputs
+gtnl.gui.crafting_ring.omitted=, %s patterns not shown
+gtnl.gui.crafting_ring.tooltip=§bCycle: %s crafts, %s loops back
+gtnl.gui.crafting_ring.open=§7Click: view as ring
+gtnl.gui.crafting_ring.open_list=§7Shift-click: view as ring
+gtnl.gui.crafting_ring.fold_inputs=§7Shift-click: fold inputs
+gtnl.gui.crafting_ring.nested=§bAlso made in a cycle
+gtnl.gui.crafting_ring.locate=§7Shift-click: find in tree
+gtnl.gui.crafting_ring.folded=§7%s more crafts folded, click to unfold
+gtnl.gui.crafting_ring.back=Back
+gtnl.gui.recursive_patterns.tooltip.net=§aCycle %s (net output)
+gtnl.gui.recursive_patterns.tooltip.no_net=§cCycle %s (no net output)
+gtnl.gui.recursive_patterns.tooltip.machines=§7%s machines, press %s to highlight
+gtnl.recursive_patterns.blocked=§c[Recursive Patterns]§r %s cannot start due to %s cycles; their machines are highlighted. Press %s on another cycle to highlight it.
+gtnl.recursive_patterns.highlighted=§b[Recursive Patterns]§r Cycle %1$s: %3$s machines highlighted (%2$s)
+gtnl.quantum_crafting.message.CraftingTooLong=The quantum crafting calculation took longer than this server allows. Request a smaller amount, or raise calculationLimitSeconds in the config.
 gtnl.machine.assembler_matrix.pattern_exists=A similar pattern exists. Upload skipped and blank pattern returned!
 
 gtnl.tooltip.craft_complete.0=§5Auto-Crafting Complete
@@ -4867,6 +4916,7 @@ gtnl.text_effect.italic=Toggle italic
 key.gtnl.wireless_card_visualisation=Cycle Frequency Card Network View
 key.gtnl.wireless_card_auto=Toggle frequency card auto-connect
 key.gtnl.wireless_card_open=Open frequency card manager
+key.gtnl.highlight_recursive_patterns=Highlight Recursive Patterns
 key.gtnl.celestweave_dash=Celestweave Dash
 key.gtnl.equipment_settings=Equipment Wheel
 key.gtnl.celestweave_backpack=Open Celestweave Backpack

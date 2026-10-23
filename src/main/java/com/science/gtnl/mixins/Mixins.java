@@ -162,6 +162,9 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.AccessorSessionCraftCount",
             "appliedEnergistics.quamtumComputer.MixinCraftingGridCache",
             "appliedEnergistics.quamtumComputer.MixinCraftingCPUStatus",
+            "appliedEnergistics.quamtumComputer.MixinCraftingCPUClusterQuantumJob",
+            "appliedEnergistics.quamtumComputer.MixinContainerCraftConfirm",
+            "appliedEnergistics.quamtumComputer.AccessorPacketCraftingTreeData",
             "bartwork.MixinItemRegistry",
             "bartwork.MixinMultipleMetalLoader",
             "bartwork.MixinSimpleMetalLoader",
@@ -221,7 +224,10 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.MixinTESRWrapperBeamRange",
             "appliedEnergistics.assembler.MixinGuiMEMonitorable",
             "appliedEnergistics.assembler.MixinGuiPatternTerm",
-            "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable")
+            "appliedEnergistics.quamtumComputer.MixinGuiCraftingCPUTable",
+            "appliedEnergistics.quamtumComputer.MixinGuiCraftAmount",
+            "appliedEnergistics.quamtumComputer.MixinGuiCraftConfirm",
+            "appliedEnergistics.quamtumComputer.MixinGuiCraftingTree")
         .setPhase(Phase.LATE)),
 
     APPLIED_ENERGISTICS_PROCESSING_PATTERN(new MixinBuilder("Applied Energistics processing pattern capacity mixins")

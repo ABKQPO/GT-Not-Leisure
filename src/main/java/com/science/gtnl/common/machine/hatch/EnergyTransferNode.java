@@ -45,6 +45,7 @@ import tectech.thing.metaTileEntity.pipe.MTEPipeLaser;
 import tectech.thing.metaTileEntity.pipe.MTEPipeLaserMirror;
 import tectech.thing.metaTileEntity.single.MTEDebugPowerGenerator;
 
+@IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class EnergyTransferNode extends MTETieredMachineBlock implements IConnectsToEnergyTunnel {
 

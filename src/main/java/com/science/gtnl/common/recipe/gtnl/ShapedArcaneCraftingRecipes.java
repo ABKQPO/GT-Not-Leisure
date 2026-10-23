@@ -11,7 +11,6 @@ import net.minecraftforge.oredict.OreDictionary;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.recipe.thaumcraft.TCRecipeTools;
-import com.science.gtnl.common.recipe.thaumcraft.ThaumcraftRecipeInputs;
 
 import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.IRecipeMap;
@@ -58,13 +57,7 @@ public class ShapedArcaneCraftingRecipes implements IRecipePool {
             output.stackSize = 1;
 
             for (Object[] inputs : createInputVariants(Arrays.asList(recipe.getInputItems()))) {
-                registerRecipe(
-                    IAA,
-                    inputs,
-                    output,
-                    recipe.getInputAspects(),
-                    recipe.getResearch(),
-                    inputs.length == 1);
+                registerRecipe(IAA, inputs, output, recipe.getInputAspects(), recipe.getResearch(), inputs.length == 1);
             }
         }
 
@@ -147,9 +140,9 @@ public class ShapedArcaneCraftingRecipes implements IRecipePool {
         if (input instanceof ItemStack stack) {
             return stack.getItem() == null ? null : Collections.singletonList(normalizeInput(stack));
         }
-        if (!(input instanceof List<?> candidates) || candidates.isEmpty()) return null;
+        if (!(input instanceof List<?>candidates) || candidates.isEmpty()) return null;
 
-        String oreName = ThaumcraftRecipeInputs.findOreDictionaryName(input);
+        String oreName = findOreDictionaryName(input);
         if (oreName != null) {
             if (BLACKLISTED_OREDICT_NAMES.contains(oreName)) return Collections.emptyList();
             return Collections.singletonList(new OreDictItemStack(oreName, 1));
@@ -179,5 +172,24 @@ public class ShapedArcaneCraftingRecipes implements IRecipePool {
             }
         }
         return false;
+    }
+
+    public static String findOreDictionaryName(Object input) {
+        if (!(input instanceof Iterable<?>candidates)) return null;
+
+        // Thaumcraft stores Forge's live list in place of the original ore name. Match that
+        // exact list, not a shared ore tag that could broaden an explicit set of alternatives.
+        for (Object candidate : candidates) {
+            if (!(candidate instanceof ItemStack stack) || stack.getItem() == null) continue;
+
+            for (int oreId : OreDictionary.getOreIDs(stack)) {
+                String oreName = OreDictionary.getOreName(oreId);
+                if (OreDictionary.getOres(oreName, false) == input) {
+                    return oreName;
+                }
+            }
+            return null;
+        }
+        return null;
     }
 }

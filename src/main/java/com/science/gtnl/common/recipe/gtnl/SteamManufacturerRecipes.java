@@ -27,7 +27,8 @@ import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 public class SteamManufacturerRecipes implements IRecipePool {
 
     public RecipeMap<?> SMFR = GTNLRecipeMaps.SteamManufacturerRecipes;
-    public RecipeMap<?> As = RecipeMaps.assemblerRecipes;
+    public RecipeMap<?> AR = RecipeMaps.assemblerRecipes;
+    public RecipeMap<?> HOR = GTNLRecipeMaps.HardOverrideRecipes;
 
     @Override
     public void loadRecipes() {
@@ -111,7 +112,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(1 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -124,7 +125,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(1 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -136,7 +137,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(1 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -149,7 +150,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(1 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -160,7 +161,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(1 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -172,7 +173,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(1 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -184,7 +185,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(1 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -196,7 +197,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(1 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -208,7 +209,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(1 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -218,7 +219,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(5 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -228,7 +229,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(5 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -238,7 +239,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(5 * SECONDS)
             .eut(512)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -248,7 +249,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(5 * SECONDS)
             .eut(512)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -270,7 +271,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(3 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         if (Mods.StorageDrawers.isModLoaded()) {
             // Drawer template
@@ -461,7 +462,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -473,7 +474,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR)
+            .addTo(HOR);
 
         // Machine Casings
 
@@ -485,7 +487,8 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .itemOutputs(ItemList.Casing_BronzePlatedBricks.get(1))
             .duration(2 * SECONDS)
             .eut(16)
-            .addTo(SMFR);
+            .addTo(SMFR)
+            .addTo(HOR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -569,7 +572,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -580,7 +583,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -591,7 +594,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         // Extractinator Solid Casing
         RecipeBuilder.builder()
@@ -602,7 +605,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         // Stronze Wrapped Casingg
         RecipeBuilder.builder()
@@ -613,7 +616,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         // Breel Pipe Casingg
         RecipeBuilder.builder()
@@ -625,7 +628,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         // Solar Cell Casing
         RecipeBuilder.builder()
@@ -637,7 +640,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         // Hydraulic Assembling Casing
         RecipeBuilder.builder()
@@ -649,7 +652,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         // Hyper Pressure Breel Casing
         RecipeBuilder.builder()
@@ -661,7 +664,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         // Breel-Plated Casing
         RecipeBuilder.builder()
@@ -673,7 +676,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         // Compact Pipe Casing
         RecipeBuilder.builder()
@@ -685,7 +688,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(6 * SECONDS)
             .eut(24)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         // Weighted Pressure Plates
         RecipeBuilder.builder()
@@ -715,7 +718,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(10 * SECONDS)
             .eut(200)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         // Supercompressor
         RecipeBuilder.builder()
@@ -724,7 +727,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(120 * SECONDS)
             .eut(1600)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         // Progenitor
         RecipeBuilder.builder()
@@ -742,7 +745,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(120 * SECONDS)
             .eut(1600)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         // Compact Fusion
         RecipeBuilder.builder()
@@ -760,7 +763,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(120 * SECONDS)
             .eut(1600)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         // Pipeless
         RecipeBuilder.builder()
@@ -775,7 +778,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -789,7 +792,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         // Jetstream Hatch
         RecipeBuilder.builder()
@@ -802,7 +805,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(20 * SECONDS)
             .eut(400)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         // Jetstream Vent
         RecipeBuilder.builder()
@@ -815,7 +818,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(20 * SECONDS)
             .eut(400)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -827,7 +830,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(20 * SECONDS)
             .eut(400)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -838,7 +841,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -849,7 +852,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -860,7 +863,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(
@@ -871,7 +874,7 @@ public class SteamManufacturerRecipes implements IRecipePool {
             .duration(2 * SECONDS)
             .eut(16)
             .addTo(SMFR)
-            .addTo(As);
+            .addTo(AR);
 
         RecipeBuilder.builder()
             .itemInputs(

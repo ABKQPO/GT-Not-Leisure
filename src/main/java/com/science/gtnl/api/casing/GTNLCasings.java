@@ -3,13 +3,16 @@ package com.science.gtnl.api.casing;
 import java.util.Objects;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizon.gtnhlib.util.data.BlockSupplier;
 import com.science.gtnl.common.block.casings.casing.MetaCasing;
+import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.loader.BlockLoader;
 
+import bartworks.system.material.WerkstoffLoader;
 import gregtech.api.casing.ICasing;
 import gregtech.api.util.GTUtility;
 
@@ -120,7 +123,14 @@ public enum GTNLCasings implements ICasing {
     LightGrayLamp(() -> BlockLoader.metaBlockGlow, 29, -1),
     LightGrayLampBorderless(() -> BlockLoader.metaBlockGlow, 30, -1),
     WhiteLamp(() -> BlockLoader.metaBlockGlow, 31, -1),
-    WhiteLampBorderless(() -> BlockLoader.metaBlockGlow, 32, -1),;
+    WhiteLampBorderless(() -> BlockLoader.metaBlockGlow, 32, -1),
+
+    // Bartworks Casings
+    BoltedBronzeCasing(() -> WerkstoffLoader.BWBlockCasings, 31_766 + 300, GTNLMaterials.Bronze.getId()),
+    ReboltedBronzeCasing(() -> WerkstoffLoader.BWBlockCasingsAdvanced, 31_766 + 300, GTNLMaterials.Bronze.getId()),
+    BoltedNeutroniumCasing(() -> WerkstoffLoader.BWBlockCasings, 31_766 + 129, GTNLMaterials.Neutronium.getId()),
+    ReboltedNeutroniumCasing(() -> WerkstoffLoader.BWBlockCasingsAdvanced, 31_766 + 129,
+        GTNLMaterials.Neutronium.getId()),;
 
     public final BlockSupplier blockGetter;
     private volatile Block block;
@@ -160,6 +170,10 @@ public enum GTNLCasings implements ICasing {
     @Override
     public boolean isTiered() {
         return false;
+    }
+
+    public ItemStack getItemStack(int amount) {
+        return new ItemStack(getBlock(), amount, getBlockMeta());
     }
 
     private static int casingTexture(MetaCasing casing, int meta) {

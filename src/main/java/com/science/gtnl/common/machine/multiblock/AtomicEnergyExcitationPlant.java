@@ -23,6 +23,7 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.ITierConverter;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.render.tile.AtomicEnergyExcitationPlantRenderer;
@@ -31,7 +32,6 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.metadata.FuelRefiningMetadata;
 
-import bartworks.system.material.WerkstoffLoader;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import goodgenerator.loader.Loaders;
@@ -230,7 +230,6 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
         return tiers;
     }
 
-    // TODO: Use GTNLMaterials
     @Override
     public IStructureDefinition<AtomicEnergyExcitationPlant> getStructureDefinition() {
         return StructureDefinition.<AtomicEnergyExcitationPlant>builder()
@@ -274,8 +273,8 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
                             x -> ++x.mCountCasing,
                             Casings.HeatResistantTriniumPlatedCasing.asElement())))
             .addElement('G', GTStructureUtility.ofFrame(Materials.Neutronium))
-            .addElement('H', StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasingsAdvanced, 31_766 + 129))
-            .addElement('I', StructureUtility.ofBlock(WerkstoffLoader.BWBlockCasings, 31_766 + 129))
+            .addElement('H', GTNLCasings.ReboltedNeutroniumCasing.asElement())
+            .addElement('I', GTNLCasings.BoltedNeutroniumCasing.asElement())
             .addElement('J', StructureUtility.ofBlock(GregTechAPI.sBlockMetal4, 13))
             .addElement('K', StructureUtility.ofBlock(GregTechAPI.sBlockMetal4, 14))
             .addElement('L', StructureUtility.isAir())

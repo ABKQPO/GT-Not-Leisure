@@ -29,6 +29,8 @@ import com.science.gtnl.common.machine.cover.VoidCover;
 import com.science.gtnl.common.machine.cover.WirelessMultiEnergyCover;
 import com.science.gtnl.common.machine.cover.WirelessSteamCover;
 import com.science.gtnl.common.machine.hatch.BeamlinePipeMirror;
+import com.science.gtnl.common.machine.hatch.BreelSteamInputBus;
+import com.science.gtnl.common.machine.hatch.BreelSteamOutputBus;
 import com.science.gtnl.common.machine.hatch.CustomDroneDownLinkHatch;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.hatch.CustomMaintenanceHatch;
@@ -40,9 +42,6 @@ import com.science.gtnl.common.machine.hatch.ExplosionDynamoHatch;
 import com.science.gtnl.common.machine.hatch.HumongousDualInputHatch;
 import com.science.gtnl.common.machine.hatch.HumongousNinefoldInputHatch;
 import com.science.gtnl.common.machine.hatch.HumongousSolidifierHatch;
-import com.science.gtnl.common.machine.hatch.MTEBreelSteamInputBus;
-import com.science.gtnl.common.machine.hatch.MTEBreelSteamOutputBus;
-import com.science.gtnl.common.machine.hatch.MTEStronzeInputHatch;
 import com.science.gtnl.common.machine.hatch.ManaDynamoHatch;
 import com.science.gtnl.common.machine.hatch.ManaEnergyHatch;
 import com.science.gtnl.common.machine.hatch.NinefoldInputHatch;
@@ -54,6 +53,7 @@ import com.science.gtnl.common.machine.hatch.OriginalOutputHatch;
 import com.science.gtnl.common.machine.hatch.OutputBusMEProxy;
 import com.science.gtnl.common.machine.hatch.OutputHatchMEProxy;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
+import com.science.gtnl.common.machine.hatch.StronzeInputHatch;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputProxy;
 import com.science.gtnl.common.machine.hatch.SuperDataAccessHatch;
@@ -1575,7 +1575,7 @@ public class MachineLoader {
 
     public static void registerHatch() {
         GTNLItemList.BreelReinforcedSteamInputBus.set(
-            new MTEBreelSteamInputBus(
+            new BreelSteamInputBus(
                 GTNLMachineID.BREEL_STEAM_INPUT_BUS.ID,
                 "breel.input_bus.steam",
                 "gt.blockmachines.breel.input_bus.steam.name",
@@ -1586,7 +1586,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.BreelReinforcedSteamInputBus.get(1), AnimatedText.AUTHOR_LINEBROKE);
 
         GTNLItemList.BreelReinforcedSteamOutputBus.set(
-            new MTEBreelSteamOutputBus(
+            new BreelSteamOutputBus(
                 GTNLMachineID.BREEL_STEAM_OUTPUT_BUS.ID,
                 "breel.output_bus.steam",
                 "gt.blockmachines.breel.output_bus.steam.name",
@@ -1597,7 +1597,7 @@ public class MachineLoader {
             .addItemTooltip(GTNLItemList.BreelReinforcedSteamOutputBus.get(1), AnimatedText.AUTHOR_LINEBROKE);
 
         GTNLItemList.StronzeReinforcedSteamInputHatch.set(
-            new MTEStronzeInputHatch(
+            new StronzeInputHatch(
                 GTNLMachineID.STRONZE_STEAM_INPUT_HATCH.ID,
                 "stronze.input_hatch.steam",
                 "gt.blockmachines.stronze.input_hatch.steam.name",

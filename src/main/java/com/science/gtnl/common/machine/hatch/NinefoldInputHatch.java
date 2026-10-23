@@ -1,6 +1,7 @@
 package com.science.gtnl.common.machine.hatch;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,6 +26,7 @@ import com.science.gtnl.common.gui.modularui.NinefoldInputHatchGui;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.item.ItemUtils;
 
+import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.IConfigurationCircuitSupport;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -35,6 +37,7 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchMultiInput;
 import gregtech.api.render.TextureFactory;
 
+@IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class NinefoldInputHatch extends MTEHatchMultiInput
     implements IConfigurationCircuitSupport, IAddUIWidgets, IAddGregtechLogo {
@@ -67,6 +70,13 @@ public class NinefoldInputHatch extends MTEHatchMultiInput
                 fluid -> mStoredFluid[index] = fluid,
                 mCapacityPer);
         }
+    }
+
+    @Override
+    public String getLocalName() {
+        if (!hasOwnLocalName()) return super.getLocalName();
+        return StatCollector
+            .translateToLocal("gtnl.hatch.ninefold_input." + GTValues.VN[mTier].toLowerCase(Locale.ROOT) + ".name");
     }
 
     @Override

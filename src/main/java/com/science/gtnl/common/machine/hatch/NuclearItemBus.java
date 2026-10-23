@@ -14,6 +14,7 @@ import com.science.gtnl.common.gui.modularui.NuclearItemBusGui;
 import gregtech.GTMod;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.items.ItemRadioactiveCellIC;
 import gregtech.api.metatileentity.MetaTileEntity;
@@ -23,6 +24,8 @@ import gregtech.api.util.GTOreDictUnificator;
 import gregtech.common.items.ItemNeutronReflector;
 import ic2.core.item.reactor.ItemReactorReflector;
 
+@IMetaTileEntity.SkipGenerateName
+@IMetaTileEntity.SkipGenerateDescription
 public class NuclearItemBus extends MTEHatch {
 
     public static final int SLOT_INPUT = 0;
