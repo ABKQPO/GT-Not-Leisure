@@ -313,7 +313,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     public String getGuiCustomName() {
-        return hasCustomName() ? customName : getMachineCraftingIcon().getDisplayName();
     }
 
     @Override
@@ -377,7 +376,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
         builder.widget(
             new TextFieldWidget().setSetter((value) -> customName = value)
-                .setGetter(() -> hasCustomName() ? customName : getMachineCraftingIcon().getDisplayName())
+                .setGetter(this::getGuiCustomName)
                 .setTextAlignment(Alignment.Center)
                 .setScrollBar()
                 .setTextColor(Color.WHITE.normal)
