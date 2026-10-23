@@ -35,6 +35,7 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.TickrateAPI;
 import com.science.gtnl.common.block.blocks.BlockMultiEssentiaJar;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
+import com.science.gtnl.common.crafting.quantum.ae2.QuantumCraftingMode;
 import com.science.gtnl.common.item.BaubleItem;
 import com.science.gtnl.common.item.items.TimeStopPocketWatch;
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionHitEffectState;
@@ -193,6 +194,7 @@ public class SubscribeEventUtils {
         BaubleItem.removePlayer(event.player.getUniqueID());
         DraconicArmorProjectionState.clear(event.player.getUniqueID());
         DraconicArmorProjectionHitEffectState.clear(event.player.getUniqueID());
+        QuantumCraftingMode.onPlayerLoggedOut(event.player);
         FOOD_TICK_TIMERS.removeInt(event.player.getUniqueID());
         CIRCUIT_NANITES_DATA_LOAD = false;
     }
