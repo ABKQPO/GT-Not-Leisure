@@ -24,6 +24,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -710,6 +711,13 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
                 if (drained != null) remaining.amount -= drained.amount;
                 if (remaining.amount <= 0) return aLiquid.amount;
             }
+        }
+        for (MTEHatchInput tHatch : GTUtility.validMTEList(mInputHatches)) {
+            setHatchRecipeMap(tHatch);
+            FluidStack drained = tHatch.drain(ForgeDirection.UNKNOWN, remaining, !simulate);
+            if (drained == null || drained.getFluid() != aLiquid.getFluid()) continue;
+            remaining.amount -= drained.amount;
+            if (remaining.amount <= 0) return aLiquid.amount;
         }
         return aLiquid.amount - remaining.amount;
     }
