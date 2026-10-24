@@ -34,7 +34,8 @@ public enum GuiType {
     MECellDockGUI(29),
     UniversalStorageBusGUI(30),
     UniversalBusGUI(31),
-    UniversalOreFilterGUI(32);
+    UniversalOreFilterGUI(32),
+    CelestweaveBackpackGUI(33);
 
     private final int id;
 

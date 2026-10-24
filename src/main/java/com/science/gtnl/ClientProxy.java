@@ -15,11 +15,16 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.gtnewhorizon.gtnhlib.client.model.loading.ModelRegistry;
+import com.gtnllib.client.GTNLLibClient;
+import com.gtnllib.client.fx.world.FxEffects;
 import com.science.gtnl.asm.GTNLEarlyCoreMod;
 import com.science.gtnl.client.GTNLInputHandler;
 import com.science.gtnl.client.GTNLTooltipManager;
 import com.science.gtnl.client.WirelessCardInput;
 import com.science.gtnl.client.WirelessWorldHighlight;
+import com.science.gtnl.client.celestweave.CelestweaveBackpackClient;
+import com.science.gtnl.client.celestweave.CelestweaveClientEvents;
+import com.science.gtnl.client.equipment.EquipmentClientInput;
 import com.science.gtnl.client.gui.GuiActiveFormationPlane;
 import com.science.gtnl.client.gui.GuiCustomPriority;
 import com.science.gtnl.client.gui.GuiDirePatternEncoder;
@@ -41,7 +46,9 @@ import com.science.gtnl.client.gui.portableWorkbench.GuiPortableFurnace;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortablePortableCompressedChest;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortablePortableInfinityChest;
 import com.science.gtnl.client.meminiterminal.MiniTerminalClient;
+import com.science.gtnl.client.portalgun.PortalGunOrbTrail;
 import com.science.gtnl.client.quantum.RecursivePatternReport;
+import com.science.gtnl.client.railgun.RailgunClientFx;
 import com.science.gtnl.client.text.EffectTextRenderer;
 import com.science.gtnl.client.text.effect.BuiltinTextEffects;
 import com.science.gtnl.client.text.preview.TextEffectPreviewCommand;
@@ -66,8 +73,11 @@ import com.science.gtnl.common.block.blocks.tile.TileEntityWaterCandle;
 import com.science.gtnl.common.command.CommandSpoce;
 import com.science.gtnl.common.entity.EntityParticleBeam;
 import com.science.gtnl.common.entity.EntityPlayerLeashKnot;
+import com.science.gtnl.common.entity.EntityPortalGunOrb;
+import com.science.gtnl.common.entity.EntityPortalGunPortal;
 import com.science.gtnl.common.entity.EntitySaddleSlime;
 import com.science.gtnl.common.entity.EntitySteamRocket;
+import com.science.gtnl.common.gui.equipment.EquipmentTheme;
 import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchGuiFactory;
 import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchHost;
 import com.science.gtnl.common.part.PartActiveFormationPlane;
@@ -81,12 +91,17 @@ import com.science.gtnl.common.render.SpoceRenderHandler;
 import com.science.gtnl.common.render.beamformer.BeamFormerItemRenderer;
 import com.science.gtnl.common.render.beamformer.BeamFormerModel;
 import com.science.gtnl.common.render.entity.NullPointerExceptionRender;
+import com.science.gtnl.common.render.entity.PortalGunOrbRender;
+import com.science.gtnl.common.render.entity.PortalGunPortalRender;
 import com.science.gtnl.common.render.entity.SaddleSlimeRender;
 import com.science.gtnl.common.render.entity.SteamRocketRender;
 import com.science.gtnl.common.render.item.AprilFoolMachineRender;
 import com.science.gtnl.common.render.item.ItemBlockArtificialStarRender;
+import com.science.gtnl.common.render.item.ItemElectromagneticRailgunRender;
 import com.science.gtnl.common.render.item.ItemNullPointerExceptionRender;
 import com.science.gtnl.common.render.item.ItemPlayerDollRenderer;
+import com.science.gtnl.common.render.item.ItemPortalGunRender;
+import com.science.gtnl.common.render.item.ItemPortalGunRender.Edition;
 import com.science.gtnl.common.render.item.ItemSteamRocketRenderer;
 import com.science.gtnl.common.render.item.ItemTwilightSwordRender;
 import com.science.gtnl.common.render.item.PigmeeFumoHeadRenderer;
@@ -103,6 +118,7 @@ import com.science.gtnl.common.render.tile.PigmeeFumoRenderer;
 import com.science.gtnl.common.render.tile.PlayerDollRenderer;
 import com.science.gtnl.common.render.tile.RealArtificialStarRenderer;
 import com.science.gtnl.common.render.tile.WaterCandleRenderer;
+import com.science.gtnl.config.EquipmentSoundConfig;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableAdvancedWorkbench;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.loader.ItemLoader;
@@ -159,6 +175,14 @@ public class ClientProxy extends CommonProxy {
         YogTerminalClient.init();
         WirelessCardInput.register();
         RecursivePatternReport.register();
+        FxEffects.register();
+        GTNLLibClient.preInit();
+        EquipmentClientInput.register();
+        EquipmentSoundConfig.register();
+        EquipmentTheme.register();
+        RailgunClientFx.register();
+        PortalGunOrbTrail.register();
+        CelestweaveClientEvents.register();
         MinecraftForge.EVENT_BUS.register(WirelessWorldHighlight.INSTANCE);
         ModelRegistry.registerModid(ScienceNotLeisure.MODID);
 
@@ -262,6 +286,10 @@ public class ClientProxy extends CommonProxy {
             new ItemBlockArtificialStarRender());
 
         MinecraftForgeClient.registerItemRenderer(ItemLoader.twilightSword, new ItemTwilightSwordRender());
+        MinecraftForgeClient
+            .registerItemRenderer(ItemLoader.electromagneticRailgun, new ItemElectromagneticRailgunRender());
+        MinecraftForgeClient.registerItemRenderer(ItemLoader.portalGun, new ItemPortalGunRender(Edition.TECH));
+        MinecraftForgeClient.registerItemRenderer(ItemLoader.portalGunC137, new ItemPortalGunRender(Edition.C137));
 
         MinecraftForgeClient.registerItemRenderer(
             Item.getItemFromBlock(BlockLoader.nanoPhagocytosisPlantRender),
@@ -300,6 +328,8 @@ public class ClientProxy extends CommonProxy {
             new SaddleSlimeRender(new ModelSlime(16), new ModelSlime(0), 0.25f));
 
         RenderingRegistry.registerEntityRenderingHandler(EntityPlayerLeashKnot.class, new RenderLeashKnot());
+        RenderingRegistry.registerEntityRenderingHandler(EntityPortalGunOrb.class, new PortalGunOrbRender());
+        RenderingRegistry.registerEntityRenderingHandler(EntityPortalGunPortal.class, new PortalGunPortalRender());
 
         RenderingRegistry.registerEntityRenderingHandler(NullPointerException.class, new NullPointerExceptionRender());
         MinecraftForgeClient
@@ -357,6 +387,7 @@ public class ClientProxy extends CommonProxy {
             case PortableCellWorkbenchGUI -> createPortableCellWorkbenchGui(player, x);
             case PortableCellWorkbenchOreFilterGUI -> createPortableCellWorkbenchOreFilterGui(player, x);
             case PortableCellWorkbenchRestrictionGUI -> createPortableCellWorkbenchRestrictionGui(player, x);
+            case CelestweaveBackpackGUI -> CelestweaveBackpackClient.gui(player);
             case MEChiselGUI -> {
                 var t = world.getTileEntity(x, y, z);
                 if (t instanceof TileEntityMEChisel d) {

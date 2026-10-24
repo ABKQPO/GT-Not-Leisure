@@ -69,6 +69,19 @@ public class NetWorkHandler {
         registerClientbound(QuantumCraftConfirmPacket.class);
         registerServerbound(RecursivePatternQueryPacket.class);
         registerClientbound(RecursivePatternResultPacket.class);
+        registerClientbound(RailgunFireFxPacket.class);
+        registerClientbound(RailgunRecoilFxPacket.class);
+        registerServerbound(RailgunBeamTogglePacket.class);
+        registerServerbound(OpenEquipmentGuiPacket.class);
+        registerServerbound(CelestweaveKeyPacket.class);
+        registerClientbound(RailgunBeamUpdatePacket.class);
+        registerClientbound(RailgunBeamChainFxPacket.class);
+        registerClientbound(RailgunChargeCapPacket.class);
+        registerClientbound(CelestweaveFxPacket.class);
+        registerClientbound(CelestweaveFlightPacket.class);
+        registerServerbound(PortalGunSelectPacket.class);
+        registerServerbound(PortalGunFavoritePacket.class);
+        registerClientbound(CelestweaveFireballPacket.class);
     }
 
     public static <T extends ClientboundPacket> void registerClientbound(Class<T> packet) {

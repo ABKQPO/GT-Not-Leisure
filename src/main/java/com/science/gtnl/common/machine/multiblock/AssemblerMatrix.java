@@ -1607,6 +1607,11 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         } catch (GridAccessException ignored) {}
     }
 
+    @Override
+    public boolean isCraftingPatternProvider() {
+        return true;
+    }
+
     public class CombinationPatternsIInventory implements IInventory, Iterable<ItemStack> {
 
         private AppEngInternalInventory[] combinationInventory = new AppEngInternalInventory[0];

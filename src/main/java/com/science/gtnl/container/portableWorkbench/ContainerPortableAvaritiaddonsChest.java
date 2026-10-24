@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import com.cleanroommc.bogosorter.api.IPosSetter;
 import com.cleanroommc.bogosorter.api.ISortableContainer;
 import com.cleanroommc.bogosorter.api.ISortingContextBuilder;
+import com.science.gtnl.common.celestweave.CelestweaveBackpack;
 import com.science.gtnl.common.item.items.PortableItem;
 import com.science.gtnl.utils.SlotInfinity;
 
@@ -26,8 +27,15 @@ public class ContainerPortableAvaritiaddonsChest extends Container implements IS
     public ItemStack itemStack;
     public final String portableID;
     public boolean isInfinity;
+    public final IPortableStorageHost host;
 
     public ContainerPortableAvaritiaddonsChest(ItemStack stack, InventoryPlayer playerInv, boolean isInfinity) {
+        this(stack, playerInv, isInfinity, IPortableStorageHost.held(stack));
+    }
+
+    public ContainerPortableAvaritiaddonsChest(ItemStack stack, InventoryPlayer playerInv, boolean isInfinity,
+        IPortableStorageHost host) {
+        this.host = host;
         type = PortableItem.getPortableType(stack);
         chestInventory = type.getInventory(stack);
         itemStack = stack;
@@ -61,6 +69,7 @@ public class ContainerPortableAvaritiaddonsChest extends Container implements IS
                         && (stack.getItemDamage() >= 6 && stack.getItemDamage() <= 17)) {
                         return false;
                     }
+                    if (CelestweaveBackpack.blockedInStorage(stack)) return false;
                     return super.isItemValid(stack);
                 }
             };
@@ -73,6 +82,7 @@ public class ContainerPortableAvaritiaddonsChest extends Container implements IS
                         && (stack.getItemDamage() >= 6 && stack.getItemDamage() <= 17)) {
                         return false;
                     }
+                    if (CelestweaveBackpack.blockedInStorage(stack)) return false;
                     return super.isItemValid(stack);
                 }
             };
@@ -108,6 +118,9 @@ public class ContainerPortableAvaritiaddonsChest extends Container implements IS
                 return null;
             }
 
+            if (index >= 243 && !inventorySlots.get(0)
+                .isItemValid(stackInSlot)) return null;
+
             if (index < 243) {
                 if (!this.mergeItemStack(stackInSlot, 243, this.inventorySlots.size(), true)) {
                     return null;
@@ -123,13 +136,7 @@ public class ContainerPortableAvaritiaddonsChest extends Container implements IS
             }
         }
 
-        ItemStack held = player.getHeldItem();
-        if (held != null && held.getItem() instanceof PortableItem) {
-            if (PortableItem.getPortableType(held) == type) {
-                type.saveInventory(held, this.chestInventory);
-                itemStack = held;
-            }
-        }
+        host.save(player, chestInventory);
         return itemstack;
     }
 

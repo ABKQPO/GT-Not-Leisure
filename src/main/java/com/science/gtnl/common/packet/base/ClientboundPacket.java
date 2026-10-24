@@ -25,4 +25,10 @@ public abstract class ClientboundPacket implements IMessage {
 
     @SideOnly(Side.CLIENT)
     public abstract void handleClient(Minecraft minecraft);
+
+    @SideOnly(Side.CLIENT)
+    protected static void runInWorld(Minecraft minecraft, Runnable task) {
+        var world = minecraft.theWorld;
+        if (world != null) minecraft.func_152344_a(() -> { if (minecraft.theWorld == world) task.run(); });
+    }
 }
