@@ -12,8 +12,8 @@
     <a href="https://github.com/ABKQPO/GT-Not-Leisure/releases/latest">
       <img src="https://img.shields.io/github/v/release/ABKQPO/GT-Not-Leisure?style=for-the-badge&color=orange" alt="Latest Version">
     </a>
-    <a href="https://www.gnu.org/licenses/lgpl-3.0.html">
-      <img src="https://img.shields.io/badge/License-LGPLv3-blue?style=for-the-badge" alt="License">
+    <a href="https://www.gnu.org/licenses/gpl-3.0.html">
+      <img src="https://img.shields.io/badge/License-GPLv3-blue?style=for-the-badge" alt="License">
     </a>
     <br>
     <a href="https://discord.gg/3sADCeCsjA">
