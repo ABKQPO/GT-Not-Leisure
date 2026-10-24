@@ -765,6 +765,19 @@ public final class YogTerminalService {
             .openFromMainHand(player);
     }
 
+    public static void disguise(EntityPlayerMP player, UUID id, int location, int index) {
+        int hand = player.inventory.currentItem;
+        if (locks(player).contains(hand)) return;
+        YogRecord record = resolve(player, id, location, false);
+        if (record == null || index >= record.size()) return;
+        Place token = findToken(player, record.id);
+        if (token == null || !token.isMain(hand) || record.active == index) return;
+        if (record.active >= 0) retract(player, record);
+        if (index >= 0) disguise(player, record, index, hand);
+        sendInventory(player);
+        sync(player, record);
+    }
+
     public static void toggleWindow(EntityPlayerMP player, UUID id, int location) {
         YogRecord record = resolve(player, id, location, true);
         if (record == null) return;

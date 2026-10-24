@@ -27,6 +27,8 @@ import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.cleanroommc.modularui.api.IMuiScreen;
 import com.cleanroommc.modularui.screen.OpenScreenEvent;
@@ -44,6 +46,7 @@ import com.science.gtnl.common.yogsothoth.YogToken;
 import baubles.common.container.InventoryBaubles;
 import baubles.common.lib.PlayerHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
@@ -63,6 +66,8 @@ public final class YogTerminalClient {
     private static YogTerminalPanel window;
     private static UUID selected;
     private static long nextWheel;
+    private static int attackHeldTicks;
+    private static final int WHEEL_HOLD_TICKS = 6;
     private static PendingUse pendingUse;
     private static volatile UUID sessionRecord;
     private static volatile int sessionIndex = -1;
@@ -186,6 +191,10 @@ public final class YogTerminalClient {
         for (Token token : tokens()) carried.add(token.id());
         if (VIEWS.keySet()
             .removeIf(id -> !carried.contains(id) && !id.equals(sessionRecord))) modifications++;
+    }
+
+    static View view(UUID id) {
+        return id == null ? null : VIEWS.get(id);
     }
 
     static View view(UUID id, int generation) {
@@ -461,6 +470,7 @@ public final class YogTerminalClient {
         if (sessionRecord == null && pendingUse == null) awaitingScreen = false;
         if (pendingUse != null) tryUse();
         trackSessionScreen(mc);
+        trackWheelHold(mc);
         if (mc.thePlayer != null && mc.thePlayer.ticksExisted % 200 == 0) pruneViews();
         boolean creative = mc.currentScreen instanceof GuiContainerCreative;
         if (creative != creativeScreen && mc.thePlayer != null) {
@@ -507,6 +517,37 @@ public final class YogTerminalClient {
             while (mc.gameSettings.keyBindDrop.isPressed())
                 ScienceNotLeisure.network.sendToServer(YogTerminalActionPacket.dropFirst());
         }
+    }
+
+    private static void trackWheelHold(Minecraft mc) {
+        if (mc.currentScreen != null || mc.thePlayer == null
+            || !mc.inGameHasFocus
+            || !mc.gameSettings.keyBindAttack.getIsKeyPressed()
+            || !holdsUsable()) {
+            attackHeldTicks = 0;
+            return;
+        }
+        if (++attackHeldTicks == WHEEL_HOLD_TICKS) YogTerminalWheelScreen.open(mc.gameSettings.keyBindAttack);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void leftClick(PlayerInteractEvent event) {
+        if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK
+            && event.entityPlayer == Minecraft.getMinecraft().thePlayer
+            && heldDisguise()) {
+            event.setCanceled(true);
+            event.useItem = Event.Result.DENY;
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void attack(AttackEntityEvent event) {
+        if (event.entityPlayer == Minecraft.getMinecraft().thePlayer && heldDisguise()) event.setCanceled(true);
+    }
+
+    private static boolean heldDisguise() {
+        Minecraft mc = Minecraft.getMinecraft();
+        return mc.thePlayer != null && YogToken.link(mc.thePlayer.getHeldItem()) != null;
     }
 
     @SubscribeEvent
@@ -557,7 +598,15 @@ public final class YogTerminalClient {
         }
     }
 
-    private static void send(YogTerminalActionPacket packet) {
+    static YogTerminalClient.Token heldToken() {
+        Minecraft mc = Minecraft.getMinecraft();
+        if (mc.thePlayer == null) return null;
+        int hand = mc.thePlayer.inventory.currentItem;
+        for (Token token : tokens()) if (token.location() == hand) return token;
+        return null;
+    }
+
+    static void send(YogTerminalActionPacket packet) {
         ScienceNotLeisure.network.sendToServer(packet);
     }
 

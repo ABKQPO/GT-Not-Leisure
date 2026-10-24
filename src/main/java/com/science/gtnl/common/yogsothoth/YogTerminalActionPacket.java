@@ -22,7 +22,8 @@ public class YogTerminalActionPacket extends ServerboundPacket {
         SYNC,
         SCREEN,
         OPEN_SCREEN,
-        TOGGLE_WINDOW
+        TOGGLE_WINDOW,
+        DISGUISE
     }
 
     private static final Action[] ACTIONS = Action.values();
@@ -80,6 +81,10 @@ public class YogTerminalActionPacket extends ServerboundPacket {
         return new YogTerminalActionPacket(Action.TOGGLE_WINDOW, id, location, 0, false);
     }
 
+    public static YogTerminalActionPacket disguise(UUID id, int location, int index) {
+        return new YogTerminalActionPacket(Action.DISGUISE, id, location, Math.max(-1, index) + 1, false);
+    }
+
     public static YogTerminalActionPacket sync(UUID id) {
         return new YogTerminalActionPacket(Action.SYNC, id, -1, 0, false);
     }
@@ -127,6 +132,7 @@ public class YogTerminalActionPacket extends ServerboundPacket {
                 case SCREEN -> YogTerminalService.clientScreen(player, flag);
                 case OPEN_SCREEN -> YogTerminalService.openScreen(player);
                 case TOGGLE_WINDOW -> YogTerminalService.toggleWindow(player, id, location);
+                case DISGUISE -> YogTerminalService.disguise(player, id, location, index - 1);
             }
         });
     }

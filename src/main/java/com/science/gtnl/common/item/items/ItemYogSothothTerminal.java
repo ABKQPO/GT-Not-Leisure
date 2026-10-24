@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -315,6 +316,26 @@ public class ItemYogSothothTerminal extends Item implements IBauble, IBaubleExpa
             if (terminal.getItem() instanceof IEnergyContainerItem container)
                 energy += container.getMaxEnergyStored(terminal);
         return (int) Math.min(Integer.MAX_VALUE, energy);
+    }
+
+    @Override
+    public boolean onEntitySwing(EntityLivingBase entity, ItemStack stack) {
+        return true;
+    }
+
+    @Override
+    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
+        return true;
+    }
+
+    @Override
+    public float getDigSpeed(ItemStack stack, Block block, int meta) {
+        return 0;
+    }
+
+    @Override
+    public boolean canHarvestBlock(Block block, ItemStack stack) {
+        return false;
     }
 
     @Override
