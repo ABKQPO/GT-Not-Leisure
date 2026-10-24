@@ -12,6 +12,7 @@ import net.minecraftforge.fluids.FluidStack;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
@@ -41,6 +42,19 @@ public class MixerRecipes implements IRecipePool {
 
     @Override
     public void loadRecipes() {
+        RecipeBuilder.builder()
+            .itemInputs(
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.EnderPearl, 1),
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Glowstone, 2),
+                GTOreDictUnificator.get(OrePrefixes.dust, Materials.Silver, 1))
+            .circuit(24)
+            .fluidInputs(Materials.Water.getFluid(1000))
+            .fluidOutputs(new FluidStack(BlockLoader.shimmerFluid, 1000))
+            .duration(20 * SECONDS)
+            .eut(TierEU.RECIPE_LV)
+            .addTo(MCR)
+            .addTo(MNCR);
+
         RecipeBuilder.builder()
             .itemInputs(
                 GTOreDictUnificator.get(OrePrefixes.dust, Materials.SodiumHydroxide, 3L),

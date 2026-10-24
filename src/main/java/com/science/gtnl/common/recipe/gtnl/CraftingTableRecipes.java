@@ -1320,6 +1320,18 @@ public class CraftingTableRecipes implements IRecipePool {
                 new ItemStack(Items.flint_and_steel, 1) });
 
         GTModHandler.addCraftingRecipe(
+            GTNLItemList.PortalGun.get(1),
+            new Object[] { "PEP", "GQC", "PSC", 'P', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 1),
+                'E', ItemList.Emitter_LV.get(1), 'S', ItemList.Sensor_LV.get(1), 'G', new ItemStack(Blocks.glass, 1),
+                'Q', new ItemStack(Items.ender_pearl, 1), 'C', OrePrefixes.circuit.get(Materials.LV) });
+
+        GTModHandler.addCraftingRecipe(
+            GTNLItemList.PortalGunC137.get(1),
+            new Object[] { "PSP", "GQC", "PEC", 'P', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 1),
+                'E', ItemList.Emitter_LV.get(1), 'S', ItemList.Sensor_LV.get(1), 'G', new ItemStack(Blocks.glass, 1),
+                'Q', new ItemStack(Items.ender_pearl, 1), 'C', OrePrefixes.circuit.get(Materials.LV) });
+
+        GTModHandler.addCraftingRecipe(
             GTNLItemList.PlayerLeash.get(1),
             new Object[] { "ABA", "CDC", "EBE", 'A', new ItemStack(Items.feather, 1), 'B', new ItemStack(Items.lead, 1),
                 'C', new ItemStack(Blocks.wool, 1), 'D', new ItemStack(Blocks.fence, 1), 'E',
