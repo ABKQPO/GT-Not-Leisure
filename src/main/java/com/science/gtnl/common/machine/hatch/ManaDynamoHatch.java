@@ -210,14 +210,13 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
             int currentMana = tag.getInteger("currentMana");
             int capacity = tag.getInteger("capacity");
             currentTip.add(
-                EnumChatFormatting.BLUE + StatCollector.translateToLocal("gtnl.hatch.mana_dynamo.info.stored_mana")
-                    + EnumChatFormatting.RESET
-                    + EnumChatFormatting.GREEN
-                    + NumberFormatUtil.formatNumber(currentMana)
-                    + EnumChatFormatting.RESET
-                    + " / "
-                    + EnumChatFormatting.YELLOW
-                    + NumberFormatUtil.formatNumber(capacity));
+                EnumChatFormatting.BLUE + StatCollector.translateToLocalFormatted(
+                    "gtnl.hatch.mana_dynamo.info.stored_mana",
+                    EnumChatFormatting.GREEN + NumberFormatUtil.formatNumber(currentMana)
+                        + EnumChatFormatting.RESET
+                        + " / "
+                        + EnumChatFormatting.YELLOW
+                        + NumberFormatUtil.formatNumber(capacity)));
         }
     }
 

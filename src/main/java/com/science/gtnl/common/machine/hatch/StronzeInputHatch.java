@@ -6,6 +6,8 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
+
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -50,7 +52,9 @@ public class StronzeInputHatch extends MTEHatchInput {
     public String[] getDescription() {
         return new String[] { StatCollector.translateToLocal("gtnl.hatch.stronze.input_hatch.steam.tooltip.0"),
             StatCollector.translateToLocal("gtnl.hatch.stronze.input_hatch.steam.tooltip.1"),
-            StatCollector.translateToLocal("gtnl.hatch.stronze.input_hatch.steam.tooltip.2"),
+            StatCollector.translateToLocalFormatted(
+                "gtnl.hatch.stronze.input_hatch.steam.tooltip.2",
+                NumberFormatUtil.formatNumber(getCapacity())),
             StatCollector.translateToLocal("gtnl.hatch.stronze.input_hatch.steam.tooltip.3") };
     }
 

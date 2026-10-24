@@ -29,11 +29,11 @@ public class CircuitNanitesDataMetadata extends RecipeMetadataKey<CircuitNanites
         AccessorRecipeDisplayInfo displayInfo = (AccessorRecipeDisplayInfo) recipeInfo;
         displayInfo.setYPos(displayInfo.getYPos() - 80);
         recipeInfo.drawText(
-            StatCollector.translateToLocalFormatted("gtnl.machine.tree_diagram.metadata.eu_discount", data.speedBoost),
+            StatCollector.translateToLocalFormatted("gtnl.machine.tree_diagram.metadata.eu_discount", data.euModifier),
             28,
             10);
         recipeInfo.drawText(
-            StatCollector.translateToLocalFormatted("gtnl.machine.tree_diagram.metadata.speed_bonus", data.euModifier),
+            StatCollector.translateToLocalFormatted("gtnl.machine.tree_diagram.metadata.speed_bonus", data.speedBoost),
             28,
             10);
         recipeInfo.drawText(

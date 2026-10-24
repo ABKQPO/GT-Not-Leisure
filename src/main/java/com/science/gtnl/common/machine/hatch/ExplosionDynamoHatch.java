@@ -13,12 +13,7 @@ import gregtech.api.metatileentity.implementations.MTEHatchDynamo;
 public class ExplosionDynamoHatch extends MTEHatchDynamo {
 
     public ExplosionDynamoHatch(int aID, String aName, String aNameRegional, int aTier) {
-        super(
-            aID,
-            aName,
-            aNameRegional,
-            aTier,
-            new String[] { StatCollector.translateToLocal("gtnl.hatch.explosion_dynamo.tooltip.0") });
+        super(aID, aName, aNameRegional, aTier);
     }
 
     public ExplosionDynamoHatch(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {
@@ -35,6 +30,11 @@ public class ExplosionDynamoHatch extends MTEHatchDynamo {
     public String getLocalName() {
         if (!hasOwnLocalName()) return super.getLocalName();
         return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
+    @Override
+    public String[] getDescription() {
+        return new String[] { StatCollector.translateToLocal("gtnl.hatch.explosion_dynamo.tooltip.0") };
     }
 
     @Override

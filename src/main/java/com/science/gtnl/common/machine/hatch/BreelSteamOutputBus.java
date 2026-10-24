@@ -22,6 +22,8 @@ import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSteam
 @IMetaTileEntity.SkipGenerateDescription
 public class BreelSteamOutputBus extends MTEHatchSteamBusOutput {
 
+    private static final int ITEM_SLOTS = 25;
+
     public BreelSteamOutputBus(int id, String name, String regionalName, int tier) {
         super(id, name, regionalName, tier);
         initializeInventory();
@@ -33,7 +35,7 @@ public class BreelSteamOutputBus extends MTEHatchSteamBusOutput {
     }
 
     public void initializeInventory() {
-        ((ICommonMetaTileEntityInventory) this).setMInventory(new ItemStack[25]);
+        ((ICommonMetaTileEntityInventory) this).setMInventory(new ItemStack[ITEM_SLOTS]);
         ((IMetaTileEntityInventoryHandler) this).setInventoryHandler(new ItemStackHandler(mInventory) {
 
             @Override
@@ -80,7 +82,7 @@ public class BreelSteamOutputBus extends MTEHatchSteamBusOutput {
     public String[] getDescription() {
         return new String[] { StatCollector.translateToLocal("gtnl.hatch.breel.output_bus.steam.tooltip.0"),
             StatCollector.translateToLocal("gtnl.hatch.breel.output_bus.steam.tooltip.1"),
-            StatCollector.translateToLocal("gtnl.hatch.breel.output_bus.steam.tooltip.2"),
+            StatCollector.translateToLocalFormatted("gtnl.hatch.breel.output_bus.steam.tooltip.2", ITEM_SLOTS),
             StatCollector.translateToLocal("gtnl.hatch.breel.output_bus.steam.tooltip.3") };
     }
 }
