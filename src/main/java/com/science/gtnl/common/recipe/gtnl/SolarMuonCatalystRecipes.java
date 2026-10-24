@@ -7,11 +7,10 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 import com.science.gtnl.utils.recipes.metadata.SolorMuonCatalystMetadata;
 
+import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.util.GTUtility;
 import gtPlusPlus.core.material.MaterialsElements;
-import gtPlusPlus.core.material.Particle;
 
 public class SolarMuonCatalystRecipes implements IRecipePool {
 
@@ -20,7 +19,7 @@ public class SolarMuonCatalystRecipes implements IRecipePool {
     @Override
     public void loadRecipes() {
         RecipeBuilder.builder()
-            .itemInputs(GTUtility.copyAmount(0, Particle.getBaseParticle(Particle.MUON)))
+            .itemInputs(ItemList.Quark_Creation_Catalyst_Strange.get(0))
             .fluidInputs(
                 Materials.Lutetium.getPlasma(2304),
                 Materials.Uranium.getPlasma(2304),
@@ -37,7 +36,7 @@ public class SolarMuonCatalystRecipes implements IRecipePool {
 
         RecipeBuilder.builder()
             .metadata(SolorMuonCatalystMetadata.INSTANCE, true)
-            .itemInputs(GTUtility.copyAmount(0, Particle.getBaseParticle(Particle.MUON)))
+            .itemInputs(ItemList.Quark_Creation_Catalyst_Strange.get(0))
             .fluidInputs(
                 Materials.Space.getMolten(100),
                 Materials.Time.getMolten(50),
