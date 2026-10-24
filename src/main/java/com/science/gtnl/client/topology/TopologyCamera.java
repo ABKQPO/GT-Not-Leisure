@@ -8,9 +8,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class TopologyCamera {
 
-    public static final float MIN_ZOOM = 0.22F;
-    public static final float MAX_ZOOM = 2.8F;
+    public static final float MIN_ZOOM = 0.12F;
+    public static final float MAX_ZOOM = 8.0F;
     private static final float DEFAULT_ZOOM = 0.85F;
+    // Framing the whole graph must not shrink the nodes past the point where their icon is still recognisable.
+    private static final float FIT_MIN_ZOOM = 0.45F;
     private static final float RESPONSE = 14.0F;
 
     private float x, y, zoom = DEFAULT_ZOOM;
@@ -72,6 +74,6 @@ public class TopologyCamera {
         // A fixed margin eats most of a Minecraft sized viewport, so it scales with the smaller edge.
         float margin = Math.min(48.0F, Math.min(viewWidth, viewHeight) * 0.12F);
         float available = Math.max(80.0F, Math.min(viewWidth, viewHeight) - margin * 2);
-        targetZoom = MathHelper.clamp_float(available / (graphRadius * 2), MIN_ZOOM, MAX_ZOOM);
+        targetZoom = MathHelper.clamp_float(available / (graphRadius * 2), FIT_MIN_ZOOM, MAX_ZOOM);
     }
 }

@@ -1,6 +1,7 @@
 package com.science.gtnl.common.topology;
 
 import com.science.gtnl.api.topology.MeBridgeProbeRegistry;
+import com.science.gtnl.api.topology.TopologyDimensionBadges;
 import com.science.gtnl.common.topology.probe.AdjacentHostBridgeProbe;
 import com.science.gtnl.common.topology.probe.ExternalNodeBridgeProbe;
 import com.science.gtnl.common.topology.probe.InterfaceInboundProbe;
@@ -17,5 +18,6 @@ public class TopologyProbes {
         MeBridgeProbeRegistry.register(new AdjacentHostBridgeProbe());
         MeBridgeProbeRegistry.register(new QuantumBridgeProbe());
         MeBridgeProbeRegistry.register(new InterfaceInboundProbe());
+        TopologyDimensionBadges.registerDefaults();
     }
 }

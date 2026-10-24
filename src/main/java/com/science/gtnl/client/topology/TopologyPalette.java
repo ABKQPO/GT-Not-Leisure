@@ -11,12 +11,6 @@ public class TopologyPalette {
 
     public static final int BACKDROP_INNER = 0x111722;
     public static final int BACKDROP_OUTER = 0x07090E;
-    public static final int PANEL = 0x11141B;
-    public static final int PANEL_RAISED = 0x151922;
-    public static final int PANEL_HOVER = 0x161B24;
-    public static final int PANEL_SELECTED = 0x142028;
-    public static final int STROKE = 0x232834;
-    public static final int DIVIDER = 0x1A1E28;
     public static final int METER_TRACK = 0x222736;
 
     public static final int TEXT = 0xE6E9F0;
@@ -33,6 +27,19 @@ public class TopologyPalette {
     public static final int NODE_SHELL = 0x0E131B;
     public static final int RING_GUIDE = 0x50607C;
 
+    /**
+     * Devices hang off their own network with a neutral slate spoke. Cross network links keep the saturated link kind
+     * colours, so the two classes of line are never confused for one another.
+     */
+    public static final int SPOKE = 0x6E7F99;
+
+    /**
+     * The main network's own tint. It deliberately avoids the link palette so the root never reads as a link colour.
+     */
+    public static final int MAIN = 0xF2F7FF;
+    public static final int CHROME_FILL = 0x1A2230;
+    public static final int CHROME_ACTIVE = 0x24435A;
+
     private TopologyPalette() {}
 
     public static int health(TopologyNetwork network) {
@@ -41,14 +48,23 @@ public class TopologyPalette {
         return GOOD;
     }
 
+    /**
+     * Health always wins. Marking the main network with the accent colour before checking it would paint a conflicted
+     * or starving main network the same calm blue as a healthy one, which is exactly when the warning matters most.
+     */
     public static int outline(TopologyNetwork network) {
-        if (network.isMain()) return ACCENT;
         int state = health(network);
-        return state == GOOD ? NODE_IDLE : state;
+        if (state != GOOD) return state;
+        return network.isMain() ? MAIN : NODE_IDLE;
     }
 
-    public static int occupancy(float ratio) {
-        return ratio > 0.92F ? BAD : ratio > 0.7F ? WARN : GOOD;
+    /**
+     * Node tint by health alone. Healthy is green rather than the old accent blue, which keeps every node clear of the
+     * cross network link hues.
+     */
+    public static int deviceState(boolean active, boolean channelOk) {
+        if (!active) return BAD;
+        return channelOk ? GOOD : WARN;
     }
 
     public static int availability(float ratio) {
@@ -62,13 +78,5 @@ public class TopologyPalette {
 
     public static int opaque(int rgb) {
         return 0xFF000000 | (rgb & 0xFFFFFF);
-    }
-
-    public static int mix(int from, int to, float progress) {
-        float t = progress <= 0 ? 0 : Math.min(1, progress);
-        int red = (int) (((from >> 16) & 0xFF) + (((to >> 16) & 0xFF) - ((from >> 16) & 0xFF)) * t);
-        int green = (int) (((from >> 8) & 0xFF) + (((to >> 8) & 0xFF) - ((from >> 8) & 0xFF)) * t);
-        int blue = (int) ((from & 0xFF) + ((to & 0xFF) - (from & 0xFF)) * t);
-        return (red << 16) | (green << 8) | blue;
     }
 }

@@ -15,12 +15,14 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import com.cleanroommc.modularui.screen.ModularContainer;
 import com.cleanroommc.modularui.value.sync.SyncHandler;
+import com.gtnewhorizon.gtnhlib.item.ItemStackNBT;
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.topology.GridCoord;
 import com.science.gtnl.api.topology.TopologyBridge;
 import com.science.gtnl.api.topology.TopologyDevice;
 import com.science.gtnl.api.topology.TopologyNetwork;
+import com.science.gtnl.api.topology.TopologyRelay;
 import com.science.gtnl.api.topology.TopologySnapshot;
 import com.science.gtnl.client.topology.TopologyViewState;
 import com.science.gtnl.common.item.items.NetworkTopologyTool;
@@ -28,6 +30,10 @@ import com.science.gtnl.common.packet.WirelessHighlightPacket;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.world.BlockSideTeleport;
 
+import appeng.api.config.SecurityPermissions;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.ISecurityGrid;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.Unpooled;
@@ -39,10 +45,13 @@ public class TopologyContainer extends ModularContainer {
     private static final int ACTION_RESCAN = 0;
     private static final int ACTION_HIGHLIGHT = 1;
     private static final int ACTION_TELEPORT = 2;
+    private static final int ACTION_PROMOTE = 3;
+    private static final int ACTION_CONSOLE = 4;
 
     public final SnapshotSync sync = new SnapshotSync().allowC2S();
     public final EntityPlayer player;
-    public final TopologyBinding binding;
+
+    private TopologyBinding binding;
 
     private final int toolSlot;
     private final boolean heldOnly;
@@ -84,7 +93,11 @@ public class TopologyContainer extends ModularContainer {
 
     @SideOnly(Side.CLIENT)
     public TopologyViewState viewState() {
-        if (viewState == null) viewState = new TopologyViewState();
+        if (viewState == null) {
+            viewState = new TopologyViewState();
+            // The item already carries the preference on the client, so the drawer opens in the right state at once.
+            viewState.consoleOpen(TopologyPreferences.consoleOpen(tool));
+        }
         return viewState;
     }
 
@@ -182,15 +195,32 @@ public class TopologyContainer extends ModularContainer {
                 ServerThreadUtil.addScheduledTask(() -> { if (allowed()) rescanRequested = true; });
                 return;
             }
+            if (action == ACTION_CONSOLE) {
+                if (buffer.readableBytes() < 1) return;
+                boolean open = buffer.readBoolean();
+                ServerThreadUtil.addScheduledTask(() -> {
+                    if (!allowed()) return;
+                    TopologyPreferences.consoleOpen(tool, open);
+                    player.inventory.markDirty();
+                });
+                return;
+            }
+            if (action == ACTION_PROMOTE) {
+                if (buffer.readableBytes() < 1) return;
+                int target = buffer.readVarIntFromBuffer();
+                ServerThreadUtil.addScheduledTask(() -> { if (allowed()) promote(target); });
+                return;
+            }
             if (action != ACTION_HIGHLIGHT && action != ACTION_TELEPORT) return;
-            if (buffer.readableBytes() < 3) return;
+            if (buffer.readableBytes() < 4) return;
             int networkId = buffer.readVarIntFromBuffer() - 1;
             int bridgeId = buffer.readVarIntFromBuffer() - 1;
             int deviceId = buffer.readVarIntFromBuffer() - 1;
+            int relayId = buffer.readVarIntFromBuffer() - 1;
             ServerThreadUtil.addScheduledTask(() -> {
                 if (!allowed()) return;
                 // Resolve against the published snapshot, so a client can only act on something it was actually shown.
-                GridCoord target = resolve(networkId, bridgeId, deviceId);
+                GridCoord target = resolve(networkId, bridgeId, deviceId, relayId);
                 if (target == null) {
                     message("target_unavailable");
                     return;
@@ -201,23 +231,41 @@ public class TopologyContainer extends ModularContainer {
         }
 
         @SideOnly(Side.CLIENT)
-        public void requestHighlight(int networkId, int bridgeId, int deviceId) {
-            request(ACTION_HIGHLIGHT, networkId, bridgeId, deviceId);
+        public void requestHighlight(int networkId, int bridgeId, int deviceId, int relayId) {
+            request(ACTION_HIGHLIGHT, networkId, bridgeId, deviceId, relayId);
         }
 
         @SideOnly(Side.CLIENT)
-        public void requestTeleport(int networkId, int bridgeId, int deviceId) {
-            request(ACTION_TELEPORT, networkId, bridgeId, deviceId);
+        public void requestTeleport(int networkId, int bridgeId, int deviceId, int relayId) {
+            request(ACTION_TELEPORT, networkId, bridgeId, deviceId, relayId);
         }
 
         @SideOnly(Side.CLIENT)
-        private void request(int action, int networkId, int bridgeId, int deviceId) {
+        public void requestConsole(boolean open) {
+            if (isValid()) syncToServer(ACTION_PACKET, buffer -> {
+                buffer.writeByte(ACTION_CONSOLE);
+                buffer.writeBoolean(open);
+            });
+        }
+
+        @SideOnly(Side.CLIENT)
+        public void requestPromote(int networkId) {
+            if (!isValid()) return;
+            syncToServer(ACTION_PACKET, buffer -> {
+                buffer.writeByte(ACTION_PROMOTE);
+                buffer.writeVarIntToBuffer(networkId);
+            });
+        }
+
+        @SideOnly(Side.CLIENT)
+        private void request(int action, int networkId, int bridgeId, int deviceId, int relayId) {
             if (!isValid()) return;
             syncToServer(ACTION_PACKET, buffer -> {
                 buffer.writeByte(action);
                 buffer.writeVarIntToBuffer(networkId + 1);
                 buffer.writeVarIntToBuffer(bridgeId + 1);
                 buffer.writeVarIntToBuffer(deviceId + 1);
+                buffer.writeVarIntToBuffer(relayId + 1);
             });
         }
 
@@ -254,10 +302,14 @@ public class TopologyContainer extends ModularContainer {
         return sync.isValid() && player.openContainer == this && canInteractWith(player);
     }
 
-    private GridCoord resolve(int networkId, int bridgeId, int deviceId) {
+    private GridCoord resolve(int networkId, int bridgeId, int deviceId, int relayId) {
         if (deviceId >= 0) {
             TopologyDevice device = published.device(deviceId);
             return device == null ? null : device.position();
+        }
+        if (relayId >= 0) {
+            TopologyRelay relay = published.relay(relayId);
+            return relay == null ? null : relay.position();
         }
         if (bridgeId >= 0) {
             TopologyBridge bridge = published.bridge(bridgeId);
@@ -265,6 +317,33 @@ public class TopologyContainer extends ModularContainer {
         }
         TopologyNetwork network = published.network(networkId);
         return network == null ? null : network.pivot();
+    }
+
+    /**
+     * Rebinds the tool to a network the client was actually shown. The grid node is re-resolved and re-authorised
+     * here, so a crafted packet can never bind something the viewer may not see.
+     */
+    private void promote(int networkId) {
+        TopologyNetwork network = published.network(networkId);
+        GridCoord pivot = network == null ? null : network.pivot();
+        IGridNode node = pivot == null ? null : pivot.node();
+        IGrid grid = node == null ? null : node.getGrid();
+        if (grid == null || !canView(grid, player)) {
+            message("target_unavailable");
+            return;
+        }
+        binding = new TopologyBinding(pivot, player.getUniqueID(), player.getCommandSenderName());
+        binding.write(ItemStackNBT.get(tool));
+        player.inventory.markDirty();
+        player.inventoryContainer.detectAndSendChanges();
+        scanner.forget();
+        rescanRequested = true;
+        message("promoted", pivot.dimension(), pivot.x(), pivot.y(), pivot.z());
+    }
+
+    private static boolean canView(IGrid grid, EntityPlayer viewer) {
+        ISecurityGrid security = grid.getCache(ISecurityGrid.class);
+        return security == null || security.hasPermission(viewer, SecurityPermissions.BUILD);
     }
 
     private void highlight(GridCoord target) {

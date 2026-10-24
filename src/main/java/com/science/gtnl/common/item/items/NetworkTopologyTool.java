@@ -190,6 +190,7 @@ public class NetworkTopologyTool extends Item implements IGuiHolder<PlayerInvent
             tooltip.add(GRAY + StatCollector.translateToLocal(LANG + "tooltip.1"));
             tooltip.add(GRAY + StatCollector.translateToLocal(LANG + "tooltip.2"));
             tooltip.add(GRAY + StatCollector.translateToLocal(LANG + "tooltip.3"));
+            tooltip.add(GRAY + StatCollector.translateToLocal(LANG + "tooltip.4"));
         } else tooltip.add(YELLOW + StatCollector.translateToLocal(LANG + "more_hint"));
     }
 }

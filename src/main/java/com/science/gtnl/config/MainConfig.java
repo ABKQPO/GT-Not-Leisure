@@ -74,6 +74,11 @@ public class MainConfig {
         @RangeInt(min = 1, max = 4096)
         public int maxNetworks = 64;
 
+        @Comment("Nesting levels a scan may walk, counting the bound main network as the first level.")
+        @DefaultInt(5)
+        @RangeInt(min = 1, max = 5)
+        public int maxNestingLevels = 5;
+
         @Comment("Maximum boundary candidate nodes a single scan may probe across all discovered networks.")
         @DefaultInt(8192)
         @RangeInt(min = 64, max = 1048576)

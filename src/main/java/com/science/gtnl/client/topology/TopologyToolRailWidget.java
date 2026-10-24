@@ -2,13 +2,11 @@ package com.science.gtnl.client.topology;
 
 import java.util.function.BooleanSupplier;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 import com.cleanroommc.modularui.api.widget.Interactable;
+import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widget.Widget;
@@ -19,19 +17,22 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class TopologyToolRailWidget extends Widget<TopologyToolRailWidget> implements Interactable {
 
-    private static final int SLOT_LARGE = 22;
-    private static final int SLOT_SMALL = 16;
-    private static final int TOP = 5;
-    private static final int GLYPH_INSET = 3;
+    private static final int MAX_SLOT = 20;
+    private static final int MIN_SLOT = 9;
+    private static final int MAX_GAP = 2;
+    private static final int MARGIN = 0;
+    private static final float CORNER = 3.0F;
 
     private record Tool(String glyph, String key, Runnable action, BooleanSupplier active) {}
 
-    private final TopologyViewState state;
-    private final TopologyDraw draw = new TopologyDraw();
     private final Tool[] tools;
 
+    private final TopologyDraw draw = new TopologyDraw();
+
+    private int slot = MAX_SLOT;
+    private int gap = MAX_GAP;
+
     public TopologyToolRailWidget(TopologyViewState state, TopologyGraphWidget graph, Runnable rescan) {
-        this.state = state;
         this.tools = new Tool[] { new Tool("G", "tool.fit", graph::fitToView, () -> false),
             new Tool("M", "tool.focus_main", () -> {
                 if (state.main() == null) return;
@@ -56,86 +57,80 @@ public class TopologyToolRailWidget extends Widget<TopologyToolRailWidget> imple
             new Tool("D", "tool.depth", state::cycleDepthLimit, () -> state.depthLimit() != Integer.MAX_VALUE),
             new Tool("R", "tool.rescan", rescan, () -> false),
             new Tool(">", "tool.console", state::toggleConsole, state::consoleOpen) };
+        // The label rides the ModularUI tooltip layer, so it is never painted over by a neighbouring panel.
+        tooltipDynamic(this::buildTooltip).tooltipPos(RichTooltip.Pos.NEXT_TO_MOUSE)
+            .tooltipShowUpTimer(0)
+            .tooltipAutoUpdate(true);
+    }
+
+    /**
+     * Picks the largest slot size that still fits every tool in the given column height, giving up the spacing before
+     * the slot size, so no entry is ever pushed out of reach at a high gui scale.
+     */
+    public void fit(int availableHeight) {
+        int room = Math.max(0, availableHeight - MARGIN * 2);
+        for (int candidate = MAX_GAP; candidate >= 0; candidate--) {
+            int size = (room - candidate * (tools.length - 1)) / tools.length;
+            if (size < MIN_SLOT) continue;
+            slot = Math.min(size, MAX_SLOT);
+            gap = candidate;
+            return;
+        }
+        slot = MIN_SLOT;
+        gap = 0;
+    }
+
+    public int railWidth() {
+        return slot + MARGIN * 2;
+    }
+
+    public int railHeight() {
+        return MARGIN * 2 + tools.length * slot + gap * (tools.length - 1);
     }
 
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-        int height = getArea().height;
-        int hovered = indexAt(getContext().getAbsMouseY() - getArea().y);
+        int hovered = indexAt();
         draw.begin();
         for (int index = 0; index < tools.length; index++) {
             boolean active = tools[index].active()
                 .getAsBoolean();
-            float top = TOP + index * slotSize();
-            if (active || index == hovered) draw.roundedRect(
-                GLYPH_INSET,
-                top,
-                width() - GLYPH_INSET,
-                top + slotSize() - 4,
-                5,
-                TopologyPalette.withAlpha(active ? TopologyPalette.PANEL_SELECTED : TopologyPalette.PANEL_HOVER, 1.0F));
-            if (active) draw.roundedRect(
-                0,
-                top + 4,
-                2,
-                top + slotSize() - 8,
-                1,
-                TopologyPalette.withAlpha(TopologyPalette.ACCENT, 1.0F));
+            TopologyChrome.pill(draw, MARGIN, slotTop(index), slot, slot, CORNER, index == hovered, active);
         }
         draw.end();
         drawGlyphs(hovered);
     }
 
     private void drawGlyphs(int hovered) {
-        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
         GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_BLEND);
         try {
             for (int index = 0; index < tools.length; index++) {
-                Tool tool = tools[index];
-                boolean active = tool.active()
+                boolean active = tools[index].active()
                     .getAsBoolean();
                 int color = active ? TopologyPalette.ACCENT
-                    : index == hovered ? TopologyPalette.TEXT : TopologyPalette.TEXT_DIM;
-                int top = TOP + index * slotSize();
-                font.drawString(
-                    tool.glyph(),
-                    (width() - font.getStringWidth(tool.glyph())) / 2,
-                    top + (slotSize() - 4 - font.FONT_HEIGHT) / 2 + 1,
-                    TopologyPalette.opaque(color));
+                    : index == hovered ? TopologyPalette.TEXT : TopologyPalette.TEXT_MUTED;
+                TopologyTheme.centeredLabel(
+                    tools[index].glyph(),
+                    MARGIN + slot / 2,
+                    TopologyTheme.captionTop(slotTop(index), slot),
+                    TopologyPalette.opaque(color),
+                    false);
             }
-            if (hovered < 0) return;
-            String label = TopologyViewState.translate(tools[hovered].key());
-            int labelWidth = font.getStringWidth(label) + 8;
-            int top = TOP + hovered * slotSize() + 2;
-            draw.begin();
-            draw.roundedRect(
-                width() + 4,
-                top,
-                width() + 4 + labelWidth,
-                top + 14,
-                3,
-                TopologyPalette.withAlpha(TopologyPalette.PANEL_RAISED, 0.96F));
-            draw.roundedOutline(
-                width() + 4,
-                top,
-                width() + 4 + labelWidth,
-                top + 14,
-                3,
-                1,
-                TopologyPalette.withAlpha(TopologyPalette.STROKE, 1.0F));
-            draw.end();
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            font.drawString(label, width() + 8, top + 3, TopologyPalette.opaque(TopologyPalette.TEXT));
         } finally {
             GL11.glPopAttrib();
         }
     }
 
+    private void buildTooltip(RichTooltip tooltip) {
+        int index = indexAt();
+        if (index >= 0) tooltip.add(TopologyViewState.translate(tools[index].key()));
+    }
+
     @Override
     public @NotNull Result onMousePressed(int mouseButton) {
-        int index = indexAt(getContext().getAbsMouseY() - getArea().y);
+        int index = indexAt();
         if (index < 0) return Result.STOP;
         tools[index].action()
             .run();
@@ -143,24 +138,18 @@ public class TopologyToolRailWidget extends Widget<TopologyToolRailWidget> imple
         return Result.SUCCESS;
     }
 
-    private int indexAt(int localY) {
+    private int slotTop(int index) {
+        return MARGIN + index * (slot + gap);
+    }
+
+    private int indexAt() {
         if (!isBelowMouse()) return -1;
         int mouseX = getContext().getAbsMouseX() - getArea().x;
-        if (mouseX < 0 || mouseX > width()) return -1;
-        int index = (localY - TOP) / slotSize();
-        if (index < 0 || index >= tools.length) return -1;
-        return (localY - TOP) % slotSize() <= slotSize() - 4 ? index : -1;
-    }
-
-    public int slotSize() {
-        return state.screenHeight() < 230 ? SLOT_SMALL : SLOT_LARGE;
-    }
-
-    private int width() {
-        return slotSize() + 6;
-    }
-
-    public int preferredHeight() {
-        return TOP * 2 + tools.length * slotSize() - 4;
+        int mouseY = getContext().getAbsMouseY() - getArea().y;
+        if (mouseX < MARGIN || mouseX > MARGIN + slot) return -1;
+        int step = slot + gap;
+        int index = (mouseY - MARGIN) / step;
+        if (mouseY < MARGIN || index >= tools.length) return -1;
+        return (mouseY - MARGIN) % step < slot ? index : -1;
     }
 }

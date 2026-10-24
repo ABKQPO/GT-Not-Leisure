@@ -12,8 +12,10 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.science.gtnl.api.topology.GridCoord;
 import com.science.gtnl.api.topology.TopologyBridge;
 import com.science.gtnl.api.topology.TopologyDevice;
+import com.science.gtnl.api.topology.TopologyLimits;
 import com.science.gtnl.api.topology.TopologyLinkKind;
 import com.science.gtnl.api.topology.TopologyNetwork;
+import com.science.gtnl.api.topology.TopologyRelay;
 import com.science.gtnl.api.topology.TopologySnapshot;
 
 import appeng.api.networking.pathing.ControllerState;
@@ -23,6 +25,7 @@ public class TopologyCodec {
     private static final int MAX_NETWORKS = 4096;
     private static final int MAX_BRIDGES = 16384;
     private static final int MAX_DEVICES = 65536;
+    private static final int MAX_RELAYS = 4096;
     private static final ControllerState[] CONTROLLER_STATES = ControllerState.values();
 
     private TopologyCodec() {}
@@ -55,10 +58,25 @@ public class TopologyCodec {
             writeIcon(buffer, network.icon());
         }
 
+        List<TopologyRelay> relays = snapshot.relays();
+        buffer.writeVarIntToBuffer(relays.size());
+        for (TopologyRelay relay : relays) {
+            buffer.writeVarIntToBuffer(relay.network());
+            buffer.writeVarIntToBuffer(relay.parent() + 1);
+            buffer.writeByte(
+                relay.kind()
+                    .ordinal());
+            buffer.writeBoolean(relay.active());
+            writeCoord(buffer, relay.position(), anchor);
+            writeIcon(buffer, relay.icon());
+            writeIcon(buffer, relay.dimensionIcon());
+        }
+
         List<TopologyDevice> devices = snapshot.devices();
         buffer.writeVarIntToBuffer(devices.size());
         for (TopologyDevice device : devices) {
             buffer.writeVarIntToBuffer(device.network());
+            buffer.writeVarIntToBuffer(device.relay() + 1);
             buffer.writeByte((device.active() ? 1 : 0) | (device.channelOk() ? 2 : 0));
             writeCoord(buffer, device.position(), anchor);
             writeIcon(buffer, device.icon());
@@ -76,6 +94,7 @@ public class TopologyCodec {
             writeCoord(buffer, bridge.origin(), anchor);
             writeCoord(buffer, bridge.farEnd(), anchor);
             writeIcon(buffer, bridge.icon());
+            writeIcon(buffer, bridge.dimensionIcon());
         }
     }
 
@@ -108,6 +127,7 @@ public class TopologyCodec {
                 || online < 0
                 || starving < 0
                 || cpus < 0
+                || depth > TopologyLimits.MAX_DEPTH
                 || controller >= CONTROLLER_STATES.length) throw new IOException("Bad network entry");
             if (anchor == null) anchor = pivot;
             networks.add(
@@ -130,16 +150,35 @@ public class TopologyCodec {
                     depth));
         }
 
+        int relayCount = buffer.readVarIntFromBuffer();
+        if (relayCount < 0 || relayCount > MAX_RELAYS) throw new IOException("Bad relay count");
+        List<TopologyRelay> relays = new ArrayList<>(relayCount);
+        for (int index = 0; index < relayCount; index++) {
+            int network = buffer.readVarIntFromBuffer();
+            int parent = buffer.readVarIntFromBuffer() - 1;
+            TopologyLinkKind kind = TopologyLinkKind.byOrdinal(buffer.readUnsignedByte());
+            boolean active = buffer.readBoolean();
+            GridCoord position = readCoord(buffer, anchor);
+            ItemStack icon = readIcon(buffer);
+            ItemStack dimensionIcon = readIcon(buffer);
+            // A relay may only hang off one that was already read, which keeps the tree acyclic by construction.
+            if (network < 0 || parent < TopologyRelay.ROOT || parent >= index) throw new IOException("Bad relay entry");
+            relays.add(new TopologyRelay(index, network, parent, position, icon, dimensionIcon, kind, active));
+        }
+
         int deviceCount = buffer.readVarIntFromBuffer();
         if (deviceCount < 0 || deviceCount > MAX_DEVICES) throw new IOException("Bad device count");
         List<TopologyDevice> devices = new ArrayList<>(deviceCount);
         for (int index = 0; index < deviceCount; index++) {
             int network = buffer.readVarIntFromBuffer();
+            int relay = buffer.readVarIntFromBuffer() - 1;
             int flags2 = buffer.readUnsignedByte();
             GridCoord position = readCoord(buffer, anchor);
             ItemStack icon = readIcon(buffer);
-            if (network < 0) throw new IOException("Bad device entry");
-            devices.add(new TopologyDevice(index, network, position, icon, (flags2 & 1) != 0, (flags2 & 2) != 0));
+            if (network < 0 || relay < TopologyDevice.DIRECT || relay >= relayCount)
+                throw new IOException("Bad device entry");
+            devices
+                .add(new TopologyDevice(index, network, relay, position, icon, (flags2 & 1) != 0, (flags2 & 2) != 0));
         }
 
         int bridgeCount = buffer.readVarIntFromBuffer();
@@ -153,11 +192,13 @@ public class TopologyCodec {
             GridCoord origin = readCoord(buffer, anchor);
             GridCoord far = readCoord(buffer, anchor);
             ItemStack icon = readIcon(buffer);
+            ItemStack dimensionIcon = readIcon(buffer);
             if (from < 0 || to < TopologyBridge.UNRESOLVED || origin == null) throw new IOException("Bad bridge entry");
-            bridges.add(new TopologyBridge(index, kind, from, to, origin, far, icon, active));
+            bridges.add(new TopologyBridge(index, kind, from, to, origin, far, icon, dimensionIcon, active));
         }
         return new TopologySnapshot(
             networks,
+            relays,
             devices,
             bridges,
             (flags & 1) != 0,

@@ -17,7 +17,10 @@ import com.science.gtnl.api.topology.MeBridgeProbe;
 import com.science.gtnl.api.topology.MeBridgeProbeRegistry;
 import com.science.gtnl.api.topology.TopologyBridge;
 import com.science.gtnl.api.topology.TopologyDevice;
+import com.science.gtnl.api.topology.TopologyDimensionBadges;
+import com.science.gtnl.api.topology.TopologyLimits;
 import com.science.gtnl.api.topology.TopologyNetwork;
+import com.science.gtnl.api.topology.TopologyRelay;
 import com.science.gtnl.api.topology.TopologySnapshot;
 import com.science.gtnl.common.topology.probe.ProbeSupport;
 import com.science.gtnl.config.MainConfig;
@@ -38,6 +41,7 @@ import appeng.tile.networking.TileCreativeEnergyController;
 public class TopologyScanner {
 
     private static final int MAX_REPORTS_PER_NETWORK = 4096;
+    private static final int RELAY_LIMIT = 512;
 
     private final Map<IGrid, Integer> ids = new IdentityHashMap<>();
     private int nextId;
@@ -45,12 +49,14 @@ public class TopologyScanner {
     public TopologySnapshot scan(IGridNode origin, EntityPlayer viewer) {
         IGrid main = origin == null ? null : origin.getGrid();
         if (main == null || !canView(main, viewer))
-            return new TopologySnapshot(List.of(), List.of(), List.of(), true, false, false, 0L);
+            return new TopologySnapshot(List.of(), List.of(), List.of(), List.of(), true, false, false, 0L);
 
         int networkBudget = Math.max(1, MainConfig.topology.maxNetworks);
         int nodeBudget = Math.max(64, MainConfig.topology.maxProbedNodes);
+        int deepestDepth = TopologyLimits.clampLevels(MainConfig.topology.maxNestingLevels) - 1;
 
         List<TopologyNetwork> networks = new ArrayList<>();
+        List<TopologyRelay> relays = new ArrayList<>();
         List<TopologyDevice> devices = new ArrayList<>();
         List<TopologyBridge> bridges = new ArrayList<>();
         int deviceBudget = Math.max(0, MainConfig.topology.maxDevicesTotal);
@@ -63,14 +69,34 @@ public class TopologyScanner {
         pending.add(main);
         boolean truncated = false;
         int probedNodes = 0;
+        int walkedNodes = 0;
 
         while (!pending.isEmpty()) {
             IGrid grid = pending.removeFirst();
             int depth = depths.get(grid);
             int networkId = id(grid);
             networks.add(describe(grid, networkId, depth));
-            if (collect(grid, networkId, devices, Math.min(devicesPerNetwork, deviceBudget - devices.size())))
-                truncated = true;
+            // The physical shape inside the grid comes first: devices are then filed under the hop they sit behind.
+            // The walk starts at the controller, so the end of a hop that faces it is always the near end.
+            TopologySegments segments = new TopologySegments(
+                grid,
+                representative(grid),
+                nodeBudget - walkedNodes,
+                RELAY_LIMIT - relays.size());
+            walkedNodes += segments.visited();
+            if (segments.truncated()) truncated = true;
+            int relayBase = relays.size();
+            TopologyNetwork described = networks.get(networks.size() - 1);
+            for (TopologySegments.Relay relay : segments.relays()) {
+                relays.add(describe(relay, relayBase, described));
+            }
+            if (collect(
+                grid,
+                networkId,
+                segments,
+                relayBase,
+                devices,
+                Math.min(devicesPerNetwork, deviceBudget - devices.size()))) truncated = true;
 
             Collector collector = new Collector();
             probedNodes += probe(grid, collector, nodeBudget - probedNodes);
@@ -83,14 +109,18 @@ public class TopologyScanner {
                 if (remote != null && canView(remote, viewer)) {
                     if (depths.containsKey(remote)) {
                         remoteId = id(remote);
-                    } else if (depths.size() < networkBudget) {
+                    } else if (depth >= deepestDepth || depths.size() >= networkBudget) {
+                        // Beyond the explored nesting the far side stays unresolved rather than silently vanishing.
+                        truncated = true;
+                    } else {
                         depths.put(remote, depth + 1);
                         pending.add(remote);
                         remoteId = id(remote);
-                    } else {
-                        truncated = true;
                     }
                 }
+                GridCoord farEnd = report.remoteEnd();
+                boolean crossesDimension = farEnd != null && farEnd.dimension() != report.origin()
+                    .dimension();
                 bridges.add(
                     new TopologyBridge(
                         bridges.size(),
@@ -98,12 +128,13 @@ public class TopologyScanner {
                         id(grid),
                         remoteId,
                         report.origin(),
-                        report.remoteEnd(),
+                        farEnd,
                         report.icon(),
+                        crossesDimension ? TopologyDimensionBadges.resolve(farEnd) : null,
                         report.active()));
             }
         }
-        return new TopologySnapshot(networks, devices, bridges, true, true, truncated, 0L);
+        return new TopologySnapshot(networks, relays, devices, bridges, true, true, truncated, 0L);
     }
 
     private int id(IGrid grid) {
@@ -111,6 +142,15 @@ public class TopologyScanner {
         if (existing != null) return existing;
         ids.put(grid, nextId);
         return nextId++;
+    }
+
+    /**
+     * Drops every remembered grid identity. Used when the viewer is re-pointed at a different main network, so the
+     * next snapshot numbers its networks from scratch instead of inheriting the previous root's ids.
+     */
+    public void forget() {
+        ids.clear();
+        nextId = 0;
     }
 
     public void retain(TopologySnapshot snapshot) {
@@ -159,7 +199,27 @@ public class TopologyScanner {
         return GridCoord.of(pivot) == null ? null : pivot;
     }
 
-    private static boolean collect(IGrid grid, int networkId, List<TopologyDevice> sink, int budget) {
+    /**
+     * Turns one end of a hop into a snapshot node. Relay ids are local to the walk, so they are rebased onto the
+     * snapshot's own numbering here.
+     */
+    private static TopologyRelay describe(TopologySegments.Relay relay, int base, TopologyNetwork owner) {
+        GridCoord position = TopologySegments.position(relay.node());
+        // Only a hop that actually lands in another dimension earns the emblem.
+        boolean elsewhere = position != null && position.dimension() != owner.dimension();
+        return new TopologyRelay(
+            base + relay.id(),
+            owner.id(),
+            relay.parent() == TopologySegments.Relay.ROOT_ANCHOR ? TopologyRelay.ROOT : base + relay.parent(),
+            position,
+            ProbeSupport.icon(relay.node()),
+            elsewhere ? TopologyDimensionBadges.resolve(position) : null,
+            relay.kind(),
+            relay.active());
+    }
+
+    private static boolean collect(IGrid grid, int networkId, TopologySegments segments, int relayBase,
+        List<TopologyDevice> sink, int budget) {
         if (budget <= 0) return grid.getNodes()
             .size() > 0 && hasDevices(grid);
         Set<GridCoord> seen = new HashSet<>();
@@ -169,10 +229,12 @@ public class TopologyScanner {
             if (added >= budget) return true;
             GridCoord position = GridCoord.of(node);
             if (position == null || !seen.add(position)) continue;
+            int anchor = segments.anchorOf(node);
             sink.add(
                 new TopologyDevice(
                     sink.size(),
                     networkId,
+                    anchor == TopologySegments.Relay.ROOT_ANCHOR ? TopologyDevice.DIRECT : relayBase + anchor,
                     position,
                     ProbeSupport.icon(node),
                     node.isActive(),

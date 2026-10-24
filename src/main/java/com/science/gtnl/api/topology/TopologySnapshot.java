@@ -3,10 +3,11 @@ package com.science.gtnl.api.topology;
 import java.util.ArrayList;
 import java.util.List;
 
-public record TopologySnapshot(List<TopologyNetwork> networks, List<TopologyDevice> devices,
+public record TopologySnapshot(List<TopologyNetwork> networks, List<TopologyRelay> relays, List<TopologyDevice> devices,
     List<TopologyBridge> bridges, boolean bound, boolean available, boolean truncated, long revision) {
 
     public static final TopologySnapshot EMPTY = new TopologySnapshot(
+        List.of(),
         List.of(),
         List.of(),
         List.of(),
@@ -17,6 +18,7 @@ public record TopologySnapshot(List<TopologyNetwork> networks, List<TopologyDevi
 
     public TopologySnapshot {
         networks = List.copyOf(networks);
+        relays = List.copyOf(relays);
         devices = List.copyOf(devices);
         bridges = List.copyOf(bridges);
     }
@@ -28,6 +30,13 @@ public record TopologySnapshot(List<TopologyNetwork> networks, List<TopologyDevi
     public TopologyNetwork network(int id) {
         for (TopologyNetwork network : networks) {
             if (network.id() == id) return network;
+        }
+        return null;
+    }
+
+    public TopologyRelay relay(int id) {
+        for (TopologyRelay relay : relays) {
+            if (relay.id() == id) return relay;
         }
         return null;
     }
@@ -55,6 +64,6 @@ public record TopologySnapshot(List<TopologyNetwork> networks, List<TopologyDevi
     }
 
     public TopologySnapshot withRevision(long newRevision) {
-        return new TopologySnapshot(networks, devices, bridges, bound, available, truncated, newRevision);
+        return new TopologySnapshot(networks, relays, devices, bridges, bound, available, truncated, newRevision);
     }
 }

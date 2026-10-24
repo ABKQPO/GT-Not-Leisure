@@ -1,13 +1,18 @@
 package com.science.gtnl.api.topology;
 
+/**
+ * Link colours are picked to stay clear of the node health palette: nodes are green, amber, red or slate, so no
+ * link hue may land in those families, and no two link hues may sit next to each other either.
+ */
 public enum TopologyLinkKind {
 
     STORAGE(0x4FC3F7),
-    ENERGY(0xFFD54F),
-    TUNNEL(0xBA68C8),
-    TOGGLE(0xFF8A65),
-    QUANTUM(0x4DD0E1),
-    ADJACENT(0x9E9E9E);
+    ENERGY(0x7E57C2),
+    TUNNEL(0xD500F9),
+    TOGGLE(0xFF7043),
+    QUANTUM(0x00E5FF),
+    WIRELESS(0xFF4081),
+    ADJACENT(0x90A4AE);
 
     private static final TopologyLinkKind[] VALUES = values();
 

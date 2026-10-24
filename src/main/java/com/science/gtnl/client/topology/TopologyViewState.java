@@ -12,8 +12,10 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.topology.GridCoord;
 import com.science.gtnl.api.topology.TopologyBridge;
 import com.science.gtnl.api.topology.TopologyDevice;
+import com.science.gtnl.api.topology.TopologyLimits;
 import com.science.gtnl.api.topology.TopologyLinkKind;
 import com.science.gtnl.api.topology.TopologyNetwork;
+import com.science.gtnl.api.topology.TopologyRelay;
 import com.science.gtnl.api.topology.TopologySnapshot;
 import com.science.gtnl.common.topology.TopologyContainer;
 import com.science.gtnl.common.topology.TopologyTransport;
@@ -28,6 +30,13 @@ public class TopologyViewState {
     private static final int MAX_CONSOLE_WIDTH = 176;
     private static final int MIN_HUD_WIDTH = 104;
     private static final int MAX_HUD_WIDTH = 150;
+    private static final float CONSOLE_SHARE = 0.34F;
+    private static final float CONSOLE_CEILING = 0.42F;
+    private static final float HUD_SHARE = 0.27F;
+    private static final float HUD_CEILING = 0.32F;
+    private static final int MIN_GRAPH_WIDTH = 96;
+    private static final int COMPACT_WIDTH = 320;
+    private static final int COMPACT_HEIGHT = 200;
     private static final float CONSOLE_RESPONSE = 13.0F;
     private static final float DEFAULT_DELTA = 1.0F / 60.0F;
     private static final float MAX_DELTA = 0.1F;
@@ -36,9 +45,13 @@ public class TopologyViewState {
 
         void rescan();
 
-        void highlight(int networkId, int bridgeId, int deviceId);
+        void highlight(int networkId, int bridgeId, int deviceId, int relayId);
 
-        void teleport(int networkId, int bridgeId, int deviceId);
+        void teleport(int networkId, int bridgeId, int deviceId, int relayId);
+
+        void promote(int networkId);
+
+        void console(boolean open);
     }
 
     public enum ConsoleTab {
@@ -80,12 +93,17 @@ public class TopologyViewState {
     private boolean consoleOpen = true;
     private ConsoleTab tab = ConsoleTab.NODES;
 
+    private Rect header = Rect.EMPTY;
+    private Rect rail = Rect.EMPTY;
+
     private int selectedNetwork = -1;
     private int selectedBridge = -1;
     private int hoveredNetwork = -1;
     private int hoveredBridge = -1;
     private int hoveredDevice = -1;
     private int selectedDevice = -1;
+    private int hoveredRelay = -1;
+    private int selectedRelay = -1;
 
     private List<TopologyNetwork> filteredNetworks = List.of();
     private List<TopologyBridge> filteredBridges = List.of();
@@ -119,20 +137,36 @@ public class TopologyViewState {
         return screenHeight;
     }
 
+    /**
+     * A high gui scale shrinks the virtual screen to a few hundred pixels, so the chrome has to give way instead of
+     * covering the graph. Every metric below is therefore a share of the current screen with a hard ceiling.
+     */
+    public boolean compact() {
+        return screenWidth < COMPACT_WIDTH || screenHeight < COMPACT_HEIGHT;
+    }
+
     public int edge() {
-        return screenHeight < 200 || screenWidth < 320 ? 4 : 8;
+        return compact() ? 3 : 7;
     }
 
     public int consoleWidth() {
-        return clamp(Math.round(screenWidth * 0.33F), MIN_CONSOLE_WIDTH, MAX_CONSOLE_WIDTH);
+        return share(CONSOLE_SHARE, CONSOLE_CEILING, MIN_CONSOLE_WIDTH, MAX_CONSOLE_WIDTH);
     }
 
     public int hudWidth() {
-        return clamp(Math.round(screenWidth * 0.30F), MIN_HUD_WIDTH, MAX_HUD_WIDTH);
+        return share(HUD_SHARE, HUD_CEILING, MIN_HUD_WIDTH, MAX_HUD_WIDTH);
     }
 
-    public int hudHeight(int preferred) {
-        return Math.max(40, Math.min(preferred, screenHeight / 2));
+    /**
+     * The status card is the first thing to go: on a cramped screen the graph and the console are worth more.
+     */
+    public boolean hudVisible() {
+        return screenWidth - consoleWidth() - hudWidth() >= MIN_GRAPH_WIDTH;
+    }
+
+    private int share(float preferred, float ceiling, int min, int max) {
+        int limit = Math.min(max, Math.round(screenWidth * ceiling));
+        return clamp(Math.round(screenWidth * preferred), Math.min(min, limit), limit);
     }
 
     private static int clamp(int value, int min, int max) {
@@ -183,14 +217,11 @@ public class TopologyViewState {
 
     private void accept(TopologySnapshot next) {
         snapshot = next;
-        if (next.network(selectedNetwork) == null) {
-            TopologyNetwork main = next.networks()
-                .isEmpty() ? null
-                    : next.networks()
-                        .get(0);
-            selectedNetwork = main == null ? -1 : main.id();
-        }
+        // A deliberate "nothing selected" is preserved; only a selection that vanished from the scan is dropped.
+        if (selectedNetwork >= 0 && next.network(selectedNetwork) == null) selectedNetwork = -1;
         if (selectedBridge >= 0 && next.bridge(selectedBridge) == null) selectedBridge = -1;
+        if (selectedDevice >= 0 && next.device(selectedDevice) == null) selectedDevice = -1;
+        if (selectedRelay >= 0 && next.relay(selectedRelay) == null) selectedRelay = -1;
         invalidate();
     }
 
@@ -208,24 +239,33 @@ public class TopologyViewState {
 
     public void requestHighlight() {
         Target target = actionTarget();
-        if (target != null) actions.highlight(target.network(), target.bridge(), target.device());
+        if (target != null) actions.highlight(target.network(), target.bridge(), target.device(), target.relay());
     }
 
     public void requestTeleport() {
         Target target = actionTarget();
-        if (target != null) actions.teleport(target.network(), target.bridge(), target.device());
+        if (target != null) actions.teleport(target.network(), target.bridge(), target.device(), target.relay());
     }
 
-    private record Target(int network, int bridge, int device) {}
+    /**
+     * Rebinds the tool to the given network and rediscovers from there, turning a subnet into the new main network.
+     */
+    public void requestPromote(int networkId) {
+        if (actions != null && snapshot.network(networkId) != null) actions.promote(networkId);
+    }
+
+    private record Target(int network, int bridge, int device, int relay) {}
 
     private Target actionTarget() {
         if (actions == null) return null;
         int device = hoveredDevice >= 0 ? hoveredDevice : selectedDevice;
-        if (device >= 0 && snapshot.device(device) != null) return new Target(-1, -1, device);
+        if (device >= 0 && snapshot.device(device) != null) return new Target(-1, -1, device, -1);
+        int relay = hoveredRelay >= 0 ? hoveredRelay : selectedRelay;
+        if (relay >= 0 && snapshot.relay(relay) != null) return new Target(-1, -1, -1, relay);
         int bridge = hoveredBridge >= 0 ? hoveredBridge : selectedBridge;
-        if (bridge >= 0) return new Target(-1, bridge, -1);
+        if (bridge >= 0) return new Target(-1, bridge, -1, -1);
         int network = hoveredNetwork >= 0 ? hoveredNetwork : selectedNetwork;
-        return network >= 0 ? new Target(network, -1, -1) : null;
+        return network >= 0 ? new Target(network, -1, -1, -1) : null;
     }
 
     public TopologyCamera camera() {
@@ -272,7 +312,8 @@ public class TopologyViewState {
     }
 
     public void cycleDepthLimit() {
-        depthLimit = depthLimit == Integer.MAX_VALUE ? 1 : depthLimit >= 3 ? Integer.MAX_VALUE : depthLimit + 1;
+        depthLimit = depthLimit == Integer.MAX_VALUE ? 1
+            : depthLimit >= TopologyLimits.MAX_DEPTH ? Integer.MAX_VALUE : depthLimit + 1;
         invalidate();
     }
 
@@ -300,6 +341,15 @@ public class TopologyViewState {
 
     public void toggleConsole() {
         consoleOpen = !consoleOpen;
+        if (actions != null) actions.console(consoleOpen);
+    }
+
+    /**
+     * Seeds the drawer from the preference stored on the tool, without sending it straight back to the server.
+     */
+    public void consoleOpen(boolean open) {
+        consoleOpen = open;
+        consoleSlide = open ? 1.0F : 0.0F;
     }
 
     public ConsoleTab tab() {
@@ -322,12 +372,20 @@ public class TopologyViewState {
         selectedNetwork = id;
         selectedBridge = -1;
         selectedDevice = -1;
+        selectedRelay = -1;
+        invalidate();
     }
 
+    /**
+     * Picking a boundary or a device on the canvas also brings up the list that describes it, so the console never
+     * shows something other than what was just clicked.
+     */
     public void selectBridge(int id) {
         selectedBridge = id;
         selectedNetwork = -1;
         selectedDevice = -1;
+        if (id >= 0) tab = ConsoleTab.BRIDGES;
+        invalidate();
     }
 
     public int hoveredNetwork() {
@@ -348,16 +406,83 @@ public class TopologyViewState {
 
     public void selectDevice(int id) {
         selectedDevice = id;
+        selectedRelay = -1;
+        if (id >= 0) tab = ConsoleTab.DEVICES;
+        invalidate();
+    }
+
+    /**
+     * Drops the focus entirely. The console still falls back to the main network for its listings, but nothing on the
+     * canvas stays lit once the cursor has moved on.
+     */
+    public void clearSelection() {
+        if (selectedNetwork < 0 && selectedBridge < 0 && selectedDevice < 0 && selectedRelay < 0) return;
+        selectedNetwork = -1;
+        selectedBridge = -1;
+        selectedDevice = -1;
+        selectedRelay = -1;
+        invalidate();
     }
 
     public void hover(int networkId, int bridgeId) {
-        hover(networkId, bridgeId, -1);
+        hover(networkId, bridgeId, -1, -1);
     }
 
     public void hover(int networkId, int bridgeId, int deviceId) {
+        hover(networkId, bridgeId, deviceId, -1);
+    }
+
+    public void hover(int networkId, int bridgeId, int deviceId, int relayId) {
         hoveredNetwork = networkId;
         hoveredBridge = bridgeId;
         hoveredDevice = deviceId;
+        hoveredRelay = relayId;
+    }
+
+    public int hoveredRelay() {
+        return hoveredRelay;
+    }
+
+    public int selectedRelay() {
+        return selectedRelay;
+    }
+
+    public void selectRelay(int id) {
+        selectedRelay = id;
+        selectedBridge = -1;
+        selectedDevice = -1;
+        invalidate();
+    }
+
+    /**
+     * Cleared once per frame before the widgets draw, so whichever surface the cursor is actually over owns the
+     * highlight and a stale one never survives behind the chrome.
+     */
+    public void clearHover() {
+        hover(-1, -1, -1, -1);
+    }
+
+    public record Rect(int x, int y, int width, int height) {
+
+        public static final Rect EMPTY = new Rect(0, 0, 0, 0);
+
+        public boolean contains(int pointX, int pointY) {
+            return pointX >= x && pointX < x + width && pointY >= y && pointY < y + height;
+        }
+    }
+
+    /**
+     * Opaque chrome the canvas must not react through. The status card is deliberately absent: it is a read-only
+     * overlay and the star map stays reachable underneath it.
+     */
+    public void chrome(Rect headerPlate, Rect railPlate) {
+        header = headerPlate;
+        rail = railPlate;
+    }
+
+    public boolean pointerBlocked(int pointX, int pointY) {
+        if (pointX >= screenWidth - consoleVisibleWidth()) return true;
+        return header.contains(pointX, pointY) || rail.contains(pointX, pointY);
     }
 
     public List<TopologyNetwork> filteredNetworks() {
@@ -399,6 +524,30 @@ public class TopologyViewState {
         if (network.depth() > depthLimit) return false;
         if (problemsOnly && TopologyPalette.health(network) == TopologyPalette.GOOD) return false;
         return query.isEmpty() || matches(network);
+    }
+
+    /**
+     * Relays follow the same link kind chips as the links they stand for, so hiding a kind hides its whole chain.
+     */
+    public boolean passes(TopologyRelay relay) {
+        if (!kindVisible(relay.kind())) return false;
+        if (problemsOnly && relay.active()) return false;
+        if (query.isEmpty()) return true;
+        String needle = query.toLowerCase(Locale.ROOT);
+        return relayName(relay).toLowerCase(Locale.ROOT)
+            .contains(needle) || coordinates(relay.position()).contains(needle);
+    }
+
+    public static String relayName(TopologyRelay relay) {
+        if (relay.icon() != null) {
+            try {
+                return relay.icon()
+                    .getDisplayName();
+            } catch (RuntimeException ignored) {
+                // A broken item name must never take down the viewer.
+            }
+        }
+        return kindLabel(relay.kind());
     }
 
     public boolean passes(TopologyBridge bridge) {
@@ -448,6 +597,9 @@ public class TopologyViewState {
     }
 
     public int focusedNetwork() {
+        // A picked device wins, otherwise clicking a subnet device on the canvas would list another network's devices.
+        TopologyDevice device = snapshot.device(selectedDevice);
+        if (device != null) return device.network();
         TopologyBridge bridge = snapshot.bridge(selectedBridge);
         if (bridge != null) return bridge.resolved() ? bridge.to() : bridge.from();
         if (snapshot.network(selectedNetwork) != null) return selectedNetwork;
@@ -470,10 +622,6 @@ public class TopologyViewState {
 
     public static int offline(TopologyNetwork network) {
         return Math.max(0, network.devices() - network.online());
-    }
-
-    public static String deviceSummary(TopologyNetwork network) {
-        return translate("devices_summary", network.online(), offline(network), network.starving());
     }
 
     public static String location(GridCoord coord) {

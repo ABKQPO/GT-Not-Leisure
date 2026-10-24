@@ -15,10 +15,10 @@ public class TopologyDraw {
     private static final float TURN = (float) (Math.PI * 2);
     private static final float FEATHER = 0.75F;
 
-    public static final float[] CORNER_TOP_RIGHT = { 0.0F, 0.25F };
-    public static final float[] CORNER_BOTTOM_RIGHT = { 0.25F, 0.5F };
-    public static final float[] CORNER_BOTTOM_LEFT = { 0.5F, 0.75F };
-    public static final float[] CORNER_TOP_LEFT = { 0.75F, 1.0F };
+    private static final float[] CORNER_TOP_RIGHT = { 0.0F, 0.25F };
+    private static final float[] CORNER_BOTTOM_RIGHT = { 0.25F, 0.5F };
+    private static final float[] CORNER_BOTTOM_LEFT = { 0.5F, 0.75F };
+    private static final float[] CORNER_TOP_LEFT = { 0.75F, 1.0F };
 
     private final Tessellator tessellator = Tessellator.instance;
     private boolean batching;
@@ -44,25 +44,8 @@ public class TopologyDraw {
         batching = false;
     }
 
-    public void flush() {
-        if (!batching) return;
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-    }
-
-    public boolean batching() {
-        return batching;
-    }
-
     public void rect(float left, float top, float right, float bottom, int color) {
         quad(left, top, right, top, right, bottom, left, bottom, color);
-    }
-
-    public void gradient(float left, float top, float right, float bottom, int topColor, int bottomColor) {
-        colored(left, top, topColor);
-        colored(right, top, topColor);
-        colored(right, bottom, bottomColor);
-        colored(left, bottom, bottomColor);
     }
 
     public void roundedRect(float left, float top, float right, float bottom, float radius, int color) {
@@ -169,14 +152,6 @@ public class TopologyDraw {
     public static float curvePoint(float start, float control, float end, float t) {
         float inverse = 1.0F - t;
         return inverse * inverse * start + 2 * inverse * t * control + t * t * end;
-    }
-
-    public static float curveX(float x1, float cx, float x2, float t) {
-        return curvePoint(x1, cx, x2, t);
-    }
-
-    public static float curveY(float y1, float cy, float y2, float t) {
-        return curvePoint(y1, cy, y2, t);
     }
 
     private void pie(float centerX, float centerY, float radius, float[] turns, int color) {

@@ -18,8 +18,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TopologyConsoleHandleWidget extends Widget<TopologyConsoleHandleWidget> implements Interactable {
 
     public static final int WIDTH = 9;
-    private static final int MIN_HEIGHT = 22;
-    private static final int MAX_HEIGHT = 40;
+    private static final int MIN_HEIGHT = 18;
+    private static final int MAX_HEIGHT = 36;
 
     private final TopologyViewState state;
 
@@ -35,16 +35,21 @@ public class TopologyConsoleHandleWidget extends Widget<TopologyConsoleHandleWid
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         boolean hovered = isBelowMouse();
+        int height = getArea().height;
+        TopologyTheme.drawButton(context, 0, 0, WIDTH, height, hovered, state.consoleOpen());
+
         FontRenderer font = Minecraft.getMinecraft().fontRenderer;
         String glyph = state.consoleOpen() ? ">" : "<";
         GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_BLEND);
         try {
-            font.drawString(
+            TopologyTheme.centeredLabel(
                 glyph,
-                (WIDTH - font.getStringWidth(glyph)) / 2,
-                (getArea().height - font.FONT_HEIGHT) / 2,
-                TopologyPalette.opaque(hovered ? TopologyPalette.TEXT : TopologyPalette.TEXT_MUTED));
+                WIDTH / 2,
+                TopologyTheme.captionTop(0, height),
+                TopologyTheme.buttonText(context, hovered),
+                TopologyTheme.buttonShadow(context, hovered));
         } finally {
             GL11.glPopAttrib();
         }

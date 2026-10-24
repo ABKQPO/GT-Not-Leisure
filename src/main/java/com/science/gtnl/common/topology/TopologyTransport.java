@@ -9,6 +9,7 @@ import java.util.zip.Inflater;
 import com.science.gtnl.api.topology.TopologyBridge;
 import com.science.gtnl.api.topology.TopologyDevice;
 import com.science.gtnl.api.topology.TopologyNetwork;
+import com.science.gtnl.api.topology.TopologyRelay;
 import com.science.gtnl.api.topology.TopologySnapshot;
 
 public class TopologyTransport {
@@ -75,10 +76,23 @@ public class TopologyTransport {
             hash = hash * 31 + powerBucket(network.storedPower(), network.maxPower());
             hash = hash * 31 + Math.round(network.idleDrain());
         }
+        List<TopologyRelay> relays = snapshot.relays();
+        hash = hash * 31 + relays.size();
+        for (TopologyRelay relay : relays) {
+            hash = hash * 31 + relay.network();
+            hash = hash * 31 + relay.parent();
+            hash = hash * 31 + relay.kind()
+                .ordinal();
+            hash = hash * 31 + (relay.active() ? 1 : 0);
+            hash = hash * 31 + (relay.position() == null ? 0
+                : relay.position()
+                    .hashCode());
+        }
         List<TopologyDevice> devices = snapshot.devices();
         hash = hash * 31 + devices.size();
         for (TopologyDevice device : devices) {
             hash = hash * 31 + device.network();
+            hash = hash * 31 + device.relay();
             hash = hash * 31 + (device.active() ? 2 : 0) + (device.channelOk() ? 1 : 0);
             hash = hash * 31 + (device.position() == null ? 0
                 : device.position()

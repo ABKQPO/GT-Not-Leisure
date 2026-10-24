@@ -3,14 +3,13 @@ package com.science.gtnl.client.topology;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
-import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.widget.Widget;
 import com.science.gtnl.api.topology.TopologyBridge;
+import com.science.gtnl.api.topology.TopologyLimits;
 import com.science.gtnl.api.topology.TopologyNetwork;
 import com.science.gtnl.api.topology.TopologySnapshot;
 
@@ -19,17 +18,24 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class TopologyHudWidget extends Widget<TopologyHudWidget> implements Interactable {
+/**
+ * Read-only summary card. It is intentionally not interactive: the canvas fills the whole screen behind it, and a
+ * click on the card has to reach the star map rather than being swallowed here.
+ */
+public class TopologyHudWidget extends Widget<TopologyHudWidget> {
 
-    private static final int ROW = 11;
-    private static final int METER = 11;
-    private static final int PADDING = 11;
-    public static final int PREFERRED_HEIGHT = PADDING + 14 + 11 * ROW + 2 * METER + 14;
+    private static final int ROWS = 11;
+    private static final int ROW = 10;
+    private static final int METER = 9;
+    private static final int TITLE = 12;
+    private static final int BAR_HEIGHT = 3;
 
     private final TopologyViewState state;
     private final TopologyDraw draw = new TopologyDraw();
 
     private int cursor;
+    private int textColor;
+    private int mutedColor;
 
     public TopologyHudWidget(TopologyViewState state) {
         this.state = state;
@@ -37,30 +43,39 @@ public class TopologyHudWidget extends Widget<TopologyHudWidget> implements Inte
         transform((widget, stack) -> stack.translate(-state.consoleVisibleWidth(), 0));
     }
 
+    public int preferredHeight() {
+        return padding() * 2 + TITLE + ROWS * ROW + 2 * METER;
+    }
+
+    private int padding() {
+        return state.compact() ? 4 : 7;
+    }
+
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         int width = getArea().width;
-        // The card surface itself is a ModularUI background drawable; only the contents are drawn here.
+        int padding = padding();
+        textColor = TopologyPalette.opaque(TopologyPalette.TEXT);
+        mutedColor = TopologyPalette.opaque(TopologyPalette.TEXT_MUTED);
         FontRenderer font = Minecraft.getMinecraft().fontRenderer;
         GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_BLEND);
         try {
-            cursor = PADDING - 3;
-            font.drawString(
-                TopologyViewState.translate("hud.title"),
-                PADDING,
-                cursor,
-                TopologyPalette.opaque(TopologyPalette.TEXT_MUTED));
-            cursor += 14;
+            cursor = padding;
+            TopologyTheme.label(TopologyViewState.translate("hud.title"), padding, cursor, mutedColor, false);
+            cursor += TITLE;
             TopologySnapshot snapshot = state.snapshot();
             TopologyNetwork main = state.main();
             if (main == null) {
-                font.drawString(
-                    TopologyViewState.translate(snapshot.bound() ? "unavailable" : "unbound"),
-                    PADDING,
+                TopologyTheme.label(
+                    font.trimStringToWidth(
+                        TopologyViewState.translate(snapshot.bound() ? "unavailable" : "unbound"),
+                        width - padding * 2),
+                    padding,
                     cursor,
-                    TopologyPalette.opaque(TopologyPalette.WARN));
+                    TopologyPalette.opaque(TopologyPalette.WARN),
+                    false);
                 return;
             }
             float availability = main.devices() == 0 ? 1.0F : main.online() / (float) main.devices();
@@ -77,84 +92,93 @@ public class TopologyHudWidget extends Widget<TopologyHudWidget> implements Inte
                 width,
                 "hud.offline",
                 Integer.toString(TopologyViewState.offline(main)),
-                TopologyViewState.offline(main) > 0 ? TopologyPalette.WARN : TopologyPalette.TEXT);
+                TopologyViewState.offline(main) > 0 ? TopologyPalette.WARN : 0);
             row(
                 font,
                 width,
                 "hud.starving",
                 Integer.toString(main.starving()),
-                main.starving() > 0 ? TopologyPalette.BAD : TopologyPalette.TEXT);
-            row(font, width, "hud.nodes", Integer.toString(main.nodes()), TopologyPalette.TEXT);
-            row(font, width, "hud.subnets", Integer.toString(subnets(snapshot)), TopologyPalette.TEXT);
-            row(font, width, "hud.bridges", bridgeSummary(snapshot), TopologyPalette.TEXT);
+                main.starving() > 0 ? TopologyPalette.BAD : 0);
+            row(font, width, "hud.nodes", Integer.toString(main.nodes()), 0);
+            row(font, width, "hud.subnets", Integer.toString(subnets(snapshot)), 0);
+            int levels = levels(snapshot);
+            row(
+                font,
+                width,
+                "hud.levels",
+                TopologyViewState.translate("hud.levels_value", levels, TopologyLimits.MAX_NESTING_LEVELS),
+                levels >= TopologyLimits.MAX_NESTING_LEVELS ? TopologyPalette.WARN : 0);
+            row(font, width, "hud.bridges", bridgeSummary(snapshot), 0);
             float charge = main.maxPower() <= 0 ? 0 : (float) (main.storedPower() / main.maxPower());
             row(
                 font,
                 width,
                 "hud.energy",
                 TopologyViewState.translate("hud.energy_value", compact(main.storedPower()), compact(main.maxPower())),
-                TopologyPalette.TEXT);
+                0);
             meter(width, charge, TopologyPalette.availability(charge));
-            row(
-                font,
-                width,
-                "hud.idle",
-                TopologyViewState.translate("hud.idle_value", compact(main.idleDrain())),
-                TopologyPalette.TEXT);
-            row(font, width, "hud.cpus", Integer.toString(main.craftingCpu()), TopologyPalette.TEXT);
-            if (snapshot.truncated()) font.drawString(
-                font.trimStringToWidth(TopologyViewState.translate("hud.truncated"), width - PADDING * 2),
-                PADDING,
-                cursor + 3,
-                TopologyPalette.opaque(TopologyPalette.WARN));
+            row(font, width, "hud.idle", TopologyViewState.translate("hud.idle_value", compact(main.idleDrain())), 0);
+            row(font, width, "hud.cpus", Integer.toString(main.craftingCpu()), 0);
+            if (snapshot.truncated() && cursor + ROW <= getArea().height - padding) TopologyTheme.label(
+                font.trimStringToWidth(TopologyViewState.translate("hud.truncated"), width - padding * 2),
+                padding,
+                cursor,
+                TopologyPalette.opaque(TopologyPalette.WARN),
+                false);
         } finally {
             GL11.glPopAttrib();
         }
     }
 
-    private void row(FontRenderer font, int width, String key, String value, int valueColor) {
+    /**
+     * A zero accent means the value takes the plain theme text colour; anything else is a semantic health colour.
+     */
+    private void row(FontRenderer font, int width, String key, String value, int accent) {
+        int padding = padding();
         // Short cards simply stop drawing rather than spilling past their own border.
-        if (cursor + ROW > getArea().height - 2) {
+        if (cursor + ROW > getArea().height - padding) {
             cursor += ROW;
             return;
         }
-        font.drawString(
-            TopologyViewState.translate(key),
-            PADDING,
+        int room = width - padding * 2 - font.getStringWidth(value) - 4;
+        TopologyTheme.label(
+            font.trimStringToWidth(TopologyViewState.translate(key), Math.max(8, room)),
+            padding,
             cursor,
-            TopologyPalette.opaque(TopologyPalette.TEXT_MUTED));
-        font.drawString(
+            mutedColor,
+            false);
+        TopologyTheme.label(
             value,
-            width - PADDING - font.getStringWidth(value),
+            width - padding - font.getStringWidth(value),
             cursor,
-            TopologyPalette.opaque(valueColor));
+            accent == 0 ? textColor : TopologyPalette.opaque(accent),
+            false);
         cursor += ROW;
     }
 
     private void meter(int width, float ratio, int color) {
-        if (cursor + METER > getArea().height - 2) {
+        int padding = padding();
+        if (cursor + METER > getArea().height - padding) {
             cursor += METER;
             return;
         }
-        int barWidth = width - PADDING * 2;
-        int top = cursor + 2;
+        int barWidth = width - padding * 2;
+        int top = cursor + 1;
         // The bar is vector geometry, so it has to be emitted in its own batch between two font passes.
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         draw.begin();
-        draw.roundedRect(PADDING, top, PADDING + barWidth, top + 4, 2, TopologyPalette.withAlpha(0x222736, 1.0F));
+        draw.rect(
+            padding,
+            top,
+            padding + barWidth,
+            top + BAR_HEIGHT,
+            TopologyPalette.withAlpha(TopologyPalette.METER_TRACK, 0.65F));
         float filled = Math.max(0, Math.min(1, ratio)) * barWidth;
-        if (filled > 1)
-            draw.roundedRect(PADDING, top, PADDING + filled, top + 4, 2, TopologyPalette.withAlpha(color, 1.0F));
+        if (filled > 1) draw.rect(padding, top, padding + filled, top + BAR_HEIGHT, TopologyPalette.opaque(color));
         draw.end();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_BLEND);
         cursor += METER;
-    }
-
-    @Override
-    public @NotNull Result onMousePressed(int mouseButton) {
-        // The card floats over the canvas; swallowing the click stops a drag from panning the graph underneath.
-        return Result.STOP;
     }
 
     private static String controllerLabel(TopologyNetwork main) {
@@ -169,7 +193,17 @@ public class TopologyHudWidget extends Widget<TopologyHudWidget> implements Inte
     private static int controllerColor(TopologyNetwork main) {
         if (main.controller() == ControllerState.CONTROLLER_CONFLICT) return TopologyPalette.BAD;
         if (main.booting()) return TopologyPalette.WARN;
-        return main.controller() == ControllerState.CONTROLLER_ONLINE ? TopologyPalette.GOOD : TopologyPalette.TEXT;
+        return main.controller() == ControllerState.CONTROLLER_ONLINE ? TopologyPalette.GOOD : 0;
+    }
+
+    /**
+     * How deep the discovery actually went, so a system that bumps into the nesting ceiling says so.
+     */
+    private static int levels(TopologySnapshot snapshot) {
+        int deepest = 0;
+        for (TopologyNetwork network : snapshot.networks()) deepest = Math.max(deepest, network.depth());
+        return snapshot.networks()
+            .isEmpty() ? 0 : deepest + 1;
     }
 
     private static int subnets(TopologySnapshot snapshot) {

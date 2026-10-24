@@ -6,7 +6,6 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Keyboard;
 
-import com.cleanroommc.modularui.drawable.Rectangle;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
@@ -22,10 +21,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class NetworkTopologyGui extends ModularPanel {
 
+    private static final String THEME = "vanilla";
     private static final int SEARCH_HEIGHT = 12;
-    private static final int MIN_TOP_BAR_WIDTH = 60;
-    private static final int MIN_SEARCH_WIDTH = 60;
-    private static final int MAX_SEARCH_WIDTH = 150;
+    private static final int MIN_TOP_BAR_WIDTH = 48;
+    private static final int MIN_SEARCH_WIDTH = 48;
+    private static final int MAX_SEARCH_WIDTH = 140;
+    private static final int MIN_HUD_HEIGHT = 36;
+    private static final int RAIL_GAP = 2;
+    private static final int HANDLE_CLEARANCE = 44;
 
     private final TopologyViewState state;
     private final TopologyGraphWidget graph;
@@ -34,14 +37,15 @@ public class NetworkTopologyGui extends ModularPanel {
     private final TopologyHudWidget hud;
     private final TopologyToolRailWidget rail;
     private final TopologyTopBarWidget topBar;
+    private final TopologySurfaceWidget searchInset;
     private final TextFieldWidget search;
     private final Runnable rescan;
 
     public NetworkTopologyGui(TopologyContainer container) {
         super("network_topology");
         this.state = container.viewState();
-        // The graph paints its own backdrop, so the panel itself stays invisible and full screen.
-        fullScreenInvisible();
+        // The whole viewer is one vanilla screen: the panel itself paints the themed background.
+        full();
 
         this.graph = new TopologyGraphWidget(state);
         this.rescan = () -> {
@@ -57,13 +61,24 @@ public class NetworkTopologyGui extends ModularPanel {
             }
 
             @Override
-            public void highlight(int networkId, int bridgeId, int deviceId) {
-                container.sync.requestHighlight(networkId, bridgeId, deviceId);
+            public void highlight(int networkId, int bridgeId, int deviceId, int relayId) {
+                container.sync.requestHighlight(networkId, bridgeId, deviceId, relayId);
             }
 
             @Override
-            public void teleport(int networkId, int bridgeId, int deviceId) {
-                container.sync.requestTeleport(networkId, bridgeId, deviceId);
+            public void teleport(int networkId, int bridgeId, int deviceId, int relayId) {
+                container.sync.requestTeleport(networkId, bridgeId, deviceId, relayId);
+            }
+
+            @Override
+            public void console(boolean open) {
+                container.sync.requestConsole(open);
+            }
+
+            @Override
+            public void promote(int networkId) {
+                container.sync.requestPromote(networkId);
+                graph.fitToView();
             }
         });
 
@@ -74,86 +89,96 @@ public class NetworkTopologyGui extends ModularPanel {
         this.handle = new TopologyConsoleHandleWidget(state);
         this.hud = new TopologyHudWidget(state);
 
-        // Surfaces are ModularUI drawables so they are painted by its own pipeline; the widgets only add detail.
-        child(graph.full());
-        child(
-            console.background(
-                new Rectangle().color(TopologyPalette.withAlpha(TopologyPalette.PANEL, 0.97F)),
-                new Rectangle().color(TopologyPalette.opaque(TopologyPalette.STROKE))
-                    .hollow(1)));
-        child(
-            rail.background(
-                new Rectangle().color(TopologyPalette.withAlpha(TopologyPalette.PANEL, 0.92F))
-                    .cornerRadius(4),
-                new Rectangle().color(TopologyPalette.opaque(TopologyPalette.STROKE))
-                    .cornerRadius(4)
-                    .hollow(1)));
+        this.searchInset = new TopologySurfaceWidget();
+
+        // Child order is the paint order: the full screen canvas first, then every piece of chrome on top of it.
+        child(graph);
         child(topBar);
+        child(searchInset);
         child(search);
-        child(
-            hud.background(
-                new Rectangle().color(TopologyPalette.withAlpha(TopologyPalette.PANEL, 0.9F))
-                    .cornerRadius(4),
-                new Rectangle().color(TopologyPalette.opaque(TopologyPalette.STROKE))
-                    .cornerRadius(4)
-                    .hollow(1)));
-        child(
-            handle.background(
-                new Rectangle().color(TopologyPalette.withAlpha(TopologyPalette.PANEL_RAISED, 0.96F))
-                    .cornerRadius(3),
-                new Rectangle().color(TopologyPalette.opaque(TopologyPalette.STROKE))
-                    .cornerRadius(3)
-                    .hollow(1)));
+        child(rail);
+        child(hud);
+        child(console);
+        child(handle);
 
         Minecraft minecraft = Minecraft.getMinecraft();
         ScaledResolution resolution = new ScaledResolution(minecraft, minecraft.displayWidth, minecraft.displayHeight);
         applyMetrics(resolution.getScaledWidth(), resolution.getScaledHeight());
     }
 
+    /**
+     * Rebuilt from scratch for every screen size, so switching the gui scale while the viewer is open leaves every
+     * control on screen and reachable.
+     */
     private void applyMetrics(int screenWidth, int screenHeight) {
         state.screen(screenWidth, screenHeight);
         int edge = state.edge();
         int consoleWidth = state.consoleWidth();
-        int hudWidth = state.hudWidth();
-        int hudHeight = state.hudHeight(TopologyHudWidget.PREFERRED_HEIGHT);
-        int railWidth = rail.slotSize() + 6;
-        int railTop = TopologyTopBarWidget.HEIGHT + edge * 2;
-        int railHeight = Math.min(rail.preferredHeight(), Math.max(rail.slotSize(), screenHeight - railTop - edge));
-        int railColumn = edge + railWidth + edge;
-        int topBarWidth = Math.max(MIN_TOP_BAR_WIDTH, screenWidth - railColumn - edge * 2 - hudWidth - consoleWidth);
 
-        console.right(0)
-            .fullHeight()
-            .width(consoleWidth);
+        int railTop = edge;
+        int railRoom = Math.max(TopologyTopBarWidget.HEIGHT, screenHeight - railTop - edge);
+        rail.fit(railRoom);
+        int railWidth = rail.railWidth();
+        int railHeight = Math.min(rail.railHeight(), railRoom);
+
+        // The status card sits in the top right corner, so the header beside it stops short of the room it needs.
+        int hudWidth = state.hudWidth();
+        boolean showHud = state.hudVisible();
+        int hudHeight = Math
+            .max(MIN_HUD_HEIGHT, Math.min(hud.preferredHeight(), screenHeight - edge * 2 - HANDLE_CLEARANCE));
+
+        int contentLeft = edge + railWidth + RAIL_GAP;
+        int headerRoom = screenWidth - contentLeft - edge - consoleWidth - (showHud ? hudWidth + RAIL_GAP : 0);
+        int topBarWidth = Math.max(MIN_TOP_BAR_WIDTH, headerRoom);
+        int searchWidth = Math.min(topBarWidth, MAX_SEARCH_WIDTH);
+        boolean showSearch = searchWidth >= MIN_SEARCH_WIDTH;
+        int searchTop = edge + TopologyTopBarWidget.HEIGHT + RAIL_GAP;
+        int headerHeight = TopologyTopBarWidget.HEIGHT + (showSearch ? RAIL_GAP + SEARCH_HEIGHT : 0);
+
+        // The star map owns the whole screen; every other surface is an opaque card floating on top of it.
+        graph.left(0)
+            .top(0)
+            .width(screenWidth)
+            .height(screenHeight);
+        topBar.left(contentLeft)
+            .top(edge)
+            .width(topBarWidth)
+            .height(TopologyTopBarWidget.HEIGHT);
+        searchInset.setEnabled(showSearch);
+        searchInset.left(contentLeft)
+            .top(searchTop)
+            .width(Math.max(MIN_SEARCH_WIDTH, searchWidth))
+            .height(SEARCH_HEIGHT);
+        search.setEnabled(showSearch);
+        search.left(contentLeft)
+            .top(searchTop)
+            .width(Math.max(MIN_SEARCH_WIDTH, searchWidth))
+            .height(SEARCH_HEIGHT);
         rail.left(edge)
             .top(railTop)
             .width(railWidth)
             .height(railHeight);
-        topBar.left(railColumn)
-            .top(edge)
-            .width(topBarWidth)
-            .height(TopologyTopBarWidget.HEIGHT);
-        search.left(railColumn)
-            .top(edge + TopologyTopBarWidget.HEIGHT + 2)
-            .width(Math.max(MIN_SEARCH_WIDTH, Math.min(topBarWidth, MAX_SEARCH_WIDTH)))
-            .height(SEARCH_HEIGHT);
+        hud.setEnabled(showHud);
         hud.right(edge)
             .top(edge)
             .width(hudWidth)
             .height(hudHeight);
+        console.right(0)
+            .top(0)
+            .width(consoleWidth)
+            .height(screenHeight);
+        // Anchored to the bottom so it can never collide with the status card above it, whatever the screen size is.
         handle.right(0)
-            .top(edge + hudHeight + edge)
+            .bottom(edge)
             .width(TopologyConsoleHandleWidget.WIDTH)
             .height(TopologyConsoleHandleWidget.grabHeight(screenHeight));
+        state.chrome(
+            new TopologyViewState.Rect(contentLeft, edge, topBarWidth, headerHeight),
+            new TopologyViewState.Rect(edge, railTop, railWidth, railHeight));
     }
 
     private TextFieldWidget searchField() {
-        return new TextFieldWidget()
-            .background(
-                new Rectangle().color(TopologyPalette.withAlpha(TopologyPalette.PANEL_RAISED, 0.95F)),
-                new Rectangle().color(TopologyPalette.opaque(TopologyPalette.STROKE))
-                    .hollow(1))
-            .setTooltipOverride(true)
+        return new TextFieldWidget().setTooltipOverride(true)
             .hintText(StatCollector.translateToLocal("gtnl.topology.gui.search_hint"))
             .hintColor(TopologyPalette.opaque(TopologyPalette.TEXT_DIM))
             .setMaxLength(48)
@@ -182,7 +207,7 @@ public class NetworkTopologyGui extends ModularPanel {
             case Keyboard.KEY_H -> state.requestHighlight();
             case Keyboard.KEY_T -> state.requestTeleport();
             default -> {
-                return super.onKeyPressed(character, key);
+                return graph.onCanvasKey(key) || super.onKeyPressed(character, key);
             }
         }
         return true;
@@ -192,6 +217,7 @@ public class NetworkTopologyGui extends ModularPanel {
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         // One frame clock for the whole viewer: the panel draws before its children, so every animation shares it.
         state.advanceFrame();
+        state.clearHover();
         super.draw(context, widgetTheme);
     }
 
@@ -203,6 +229,6 @@ public class NetworkTopologyGui extends ModularPanel {
                 applyMetrics(width, height);
                 super.onResize(width, height);
             }
-        };
+        }.useTheme(THEME);
     }
 }

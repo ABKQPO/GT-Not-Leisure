@@ -14,11 +14,18 @@ import com.cleanroommc.modularui.widget.Widget;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Floats directly on the star map, so it carries no panel plate: only a flat pill behind the single button and light
+ * text that reads against the dark canvas.
+ */
 @SideOnly(Side.CLIENT)
 public class TopologyTopBarWidget extends Widget<TopologyTopBarWidget> implements Interactable {
 
-    public static final int HEIGHT = 26;
-    private static final int PADDING = 2;
+    public static final int HEIGHT = 16;
+    private static final int BUTTON_PADDING = 14;
+    private static final int TITLE_GAP = 10;
+    private static final int COUNT_GAP = 8;
+    private static final float CORNER = 3.0F;
 
     private final TopologyViewState state;
     private final TopologyDraw draw = new TopologyDraw();
@@ -32,24 +39,10 @@ public class TopologyTopBarWidget extends Widget<TopologyTopBarWidget> implement
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         int width = getArea().width;
-        int buttonWidth = buttonWidth();
+        int buttonWidth = buttonWidth(width);
         boolean hovered = isOverButton();
         draw.begin();
-        draw.roundedRect(
-            width - buttonWidth,
-            PADDING,
-            width,
-            HEIGHT - PADDING,
-            (HEIGHT - PADDING * 2) * 0.5F,
-            TopologyPalette.withAlpha(hovered ? TopologyPalette.PANEL_SELECTED : TopologyPalette.PANEL_RAISED, 0.92F));
-        draw.roundedOutline(
-            width - buttonWidth,
-            PADDING,
-            width,
-            HEIGHT - PADDING,
-            (HEIGHT - PADDING * 2) * 0.5F,
-            1,
-            TopologyPalette.withAlpha(hovered ? TopologyPalette.ACCENT_DEEP : TopologyPalette.STROKE, 1.0F));
+        TopologyChrome.pill(draw, width - buttonWidth, 0, buttonWidth, HEIGHT, CORNER, hovered, false);
         draw.end();
 
         FontRenderer font = Minecraft.getMinecraft().fontRenderer;
@@ -57,16 +50,20 @@ public class TopologyTopBarWidget extends Widget<TopologyTopBarWidget> implement
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_BLEND);
         try {
+            int baseline = TopologyTheme.captionTop(0, HEIGHT);
             String title = TopologyViewState.translate("title");
-            font.drawString(title, 0, (HEIGHT - font.FONT_HEIGHT) / 2, TopologyPalette.opaque(TopologyPalette.TEXT));
+            TopologyTheme.label(title, 0, baseline, TopologyPalette.opaque(TopologyPalette.TEXT), false);
             String label = TopologyViewState.translate("rescan");
-            font.drawString(
+            if (buttonWidth >= font.getStringWidth(label) + 4) TopologyTheme.centeredLabel(
                 label,
-                width - buttonWidth + (buttonWidth - font.getStringWidth(label)) / 2,
-                (HEIGHT - font.FONT_HEIGHT) / 2,
-                TopologyPalette.opaque(hovered ? TopologyPalette.TEXT : TopologyPalette.TEXT_MUTED));
+                width - buttonWidth / 2,
+                baseline,
+                TopologyPalette.opaque(hovered ? TopologyPalette.TEXT : TopologyPalette.TEXT_MUTED),
+                false);
+
             // Counts first, then the shortcut hint, and only while each still fits beside the title.
-            int cursor = width - buttonWidth - 10;
+            int titleEnd = font.getStringWidth(title) + TITLE_GAP;
+            int cursor = width - buttonWidth - COUNT_GAP;
             String counts = TopologyViewState.translate(
                 "counts",
                 state.filteredNetworks()
@@ -76,22 +73,20 @@ public class TopologyTopBarWidget extends Widget<TopologyTopBarWidget> implement
                     .size(),
                 state.filteredBridges()
                     .size());
-            int titleEnd = font.getStringWidth(title) + 16;
             if (cursor - font.getStringWidth(counts) > titleEnd) {
                 cursor -= font.getStringWidth(counts);
-                font.drawString(
-                    counts,
-                    cursor,
-                    (HEIGHT - font.FONT_HEIGHT) / 2,
-                    TopologyPalette.opaque(TopologyPalette.TEXT_DIM));
-                cursor -= 14;
+                TopologyTheme
+                    .label(counts, cursor, baseline, TopologyPalette.opaque(TopologyPalette.TEXT_MUTED), false);
+                cursor -= COUNT_GAP * 2;
             }
+            if (state.compact()) return;
             String shortcuts = TopologyViewState.translate("shortcuts");
-            if (cursor - font.getStringWidth(shortcuts) > titleEnd) font.drawString(
+            if (cursor - font.getStringWidth(shortcuts) > titleEnd) TopologyTheme.label(
                 shortcuts,
                 cursor - font.getStringWidth(shortcuts),
-                (HEIGHT - font.FONT_HEIGHT) / 2,
-                TopologyPalette.withAlpha(TopologyPalette.TEXT_DIM, 0.65F));
+                baseline,
+                TopologyPalette.opaque(TopologyPalette.TEXT_DIM),
+                false);
         } finally {
             GL11.glPopAttrib();
         }
@@ -105,13 +100,15 @@ public class TopologyTopBarWidget extends Widget<TopologyTopBarWidget> implement
         return Result.SUCCESS;
     }
 
-    public int buttonWidth() {
-        return Minecraft.getMinecraft().fontRenderer.getStringWidth(TopologyViewState.translate("rescan")) + 24;
+    private int buttonWidth(int width) {
+        int natural = Minecraft.getMinecraft().fontRenderer.getStringWidth(TopologyViewState.translate("rescan"))
+            + BUTTON_PADDING;
+        return Math.min(natural, Math.max(0, width - TITLE_GAP));
     }
 
     private boolean isOverButton() {
         if (!isBelowMouse()) return false;
         int mouseX = getContext().getAbsMouseX() - getArea().x;
-        return mouseX >= getArea().width - buttonWidth();
+        return mouseX >= getArea().width - buttonWidth(getArea().width);
     }
 }
