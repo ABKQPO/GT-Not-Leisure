@@ -25,6 +25,7 @@ import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.common.yogsothoth.YogMergeRecipe;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
@@ -110,6 +111,20 @@ public class CraftingTableRecipes implements IRecipePool {
             GameRegistry
                 .addRecipe(new MiniTerminalCardRecipe(new WirelessTerminalRecipe(terminal), item::hasInfinityRange));
         }
+
+        RecipeSorter.register(
+            ScienceNotLeisure.MODID + ":yog_sothoth_terminal_merge",
+            YogMergeRecipe.class,
+            RecipeSorter.Category.SHAPELESS,
+            "after:forge:shapelessore");
+        ItemStack wirelessTerminal = AEApi.instance()
+            .definitions()
+            .items()
+            .wirelessTerminal()
+            .maybeStack(1)
+            .orNull();
+        if (wirelessTerminal != null)
+            GameRegistry.addRecipe(new YogMergeRecipe(GTNLItemList.YogSothothTerminal.get(1), wirelessTerminal));
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.LargeSteamCrusher.get(1),

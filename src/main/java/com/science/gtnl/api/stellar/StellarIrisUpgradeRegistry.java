@@ -15,8 +15,6 @@ public class StellarIrisUpgradeRegistry {
     private static final List<StellarIrisUpgradeDefinition> UPGRADES_BY_NETWORK_ID = new ArrayList<>();
     private static final Map<String, List<IStellarIrisUpgradeEffect>> EFFECTS = new LinkedHashMap<>();
 
-    private StellarIrisUpgradeRegistry() {}
-
     public static void registerBranch(StellarIrisUpgradeBranch branch) {
         if (branch == null) {
             throw new IllegalArgumentException("Branch must not be null");

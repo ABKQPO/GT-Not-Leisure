@@ -69,8 +69,6 @@ public class WirelessLinkPersistence {
         }
     }
 
-    private WirelessLinkPersistence() {}
-
     public static boolean discover(TileEntity tile) {
         if (!(tile instanceof IWirelessTileData data) || !data.gtnl$hasWirelessData()) return false;
         TILES.add(tile);

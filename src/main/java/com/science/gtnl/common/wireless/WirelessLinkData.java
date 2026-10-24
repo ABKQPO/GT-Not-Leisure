@@ -67,8 +67,6 @@ public class WirelessLinkData {
         }
     }
 
-    private WirelessLinkData() {}
-
     public static Map<Slot, Claim> read(NBTTagCompound tileData) {
         // Callers edit their own slot map; Claim and its contents are immutable.
         return readBatch == null ? decode(tileData) : new HashMap<>(readView(tileData));

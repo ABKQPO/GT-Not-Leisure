@@ -28,6 +28,7 @@ import com.cleanroommc.bogosorter.mixins.early.minecraft.SlotAccessor;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket.DepositMode;
+import com.science.gtnl.utils.CreativeCursor;
 import com.science.gtnl.utils.enums.ModList;
 
 import appeng.api.AEApi;
@@ -245,7 +246,7 @@ public final class MiniTerminalSessionService {
         if (request.kind != MiniTerminalRequestPacket.Kind.CREATIVE_ACTION || !player.theItemInWorldManager.isCreative()
             || player.openContainer != player.inventoryContainer) return;
         player.inventory.setItemStack(ItemStack.copyItemStack(request.creativeCursor));
-        player.updateHeldItem();
+        CreativeCursor.returnToClient(player);
     }
 
     public static boolean isSessionStack(EntityPlayerMP player, ItemStack stack) {
@@ -626,7 +627,6 @@ public final class MiniTerminalSessionService {
         long lastAction;
         int energyTicks;
         int lastResync;
-        boolean creativeActionSynchronized;
         boolean resumed;
 
         Session(EntityPlayerMP player, long id, long requestId, int slot, UUID terminalId, ItemStack stack) {
@@ -920,11 +920,10 @@ public final class MiniTerminalSessionService {
             if (!player.theItemInWorldManager.isCreative() || container != player.inventoryContainer) return;
 
             player.inventory.setItemStack(ItemStack.copyItemStack(request.creativeCursor));
-            creativeActionSynchronized = false;
             try {
                 action(request);
             } finally {
-                if (!creativeActionSynchronized) player.updateHeldItem();
+                CreativeCursor.returnToClient(player);
             }
         }
 
@@ -942,7 +941,6 @@ public final class MiniTerminalSessionService {
 
             if (request.action == MonitorableAction.UNSET_PIN) {
                 if (nativePin < 0 || hand != null) return;
-                creativeActionSynchronized = true;
                 try {
                     terminal.pin(null, nativePin, () -> operationValid(SecurityPermissions.EXTRACT));
                 } finally {
@@ -982,7 +980,6 @@ public final class MiniTerminalSessionService {
                 if (target == null || target.getStackSize() <= 0) return;
             }
             if (target == null && !inject) return;
-            creativeActionSynchronized = true;
             MiniTerminalTransferService.execute(
                 player,
                 terminal,

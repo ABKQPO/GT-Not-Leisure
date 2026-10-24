@@ -17,8 +17,6 @@ import gtneioreplugin.util.DimensionHelper;
 
 public class WirelessCardViewCodec {
 
-    private WirelessCardViewCodec() {}
-
     static void writeStatistics(NBTTagCompound data, WirelessNetworkStatistics statistics) {
         data.setInteger("devices", statistics.devices());
         data.setInteger("online", statistics.online());

@@ -18,8 +18,6 @@ public class GTNLVeinCatalog {
     private static final int SHIMMER_VEIN_MIN_Y = 8;
     private static final int SHIMMER_VEIN_MAX_Y = 70;
 
-    private GTNLVeinCatalog() {}
-
     public static List<OreMixBuilder> additionalVeins() {
         IOreMaterial shimmer = findShimmerMaterial();
         if (shimmer == null) {

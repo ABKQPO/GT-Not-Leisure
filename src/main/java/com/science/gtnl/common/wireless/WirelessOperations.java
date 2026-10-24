@@ -28,8 +28,6 @@ public class WirelessOperations {
     public static class Denied extends IllegalStateException {
     }
 
-    private WirelessOperations() {}
-
     public static Result toggle(EntityPlayer player, WirelessCardBinding binding, Address target)
         throws FailedConnection {
         return change(player, binding, target, false);

@@ -11,18 +11,18 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.science.gtnl.client.meminiterminal.MiniTerminalHostLayer;
+import com.science.gtnl.client.floatingwindow.FloatingWindowLayer;
 
 @Mixin(value = GuiScreen.class, priority = 900)
-public abstract class MixinMiniTerminalHostTooltip {
+public abstract class MixinFloatingWindowHostTooltip {
 
     @Inject(method = "renderToolTip", at = @At("HEAD"), cancellable = true)
-    private void gtnl$dropMiniTerminalHostItemTooltip(ItemStack stack, int x, int y, CallbackInfo ci) {
-        if (MiniTerminalHostLayer.dropTooltip((GuiScreen) (Object) this, x, y)) ci.cancel();
+    private void gtnl$dropFloatingWindowHostItemTooltip(ItemStack stack, int x, int y, CallbackInfo ci) {
+        if (FloatingWindowLayer.dropTooltip((GuiScreen) (Object) this, x, y)) ci.cancel();
     }
 
     @Inject(method = "drawHoveringText", at = @At("HEAD"), cancellable = true, remap = false)
-    private void gtnl$deferMiniTerminalHostTooltip(List<?> lines, int x, int y, FontRenderer font, CallbackInfo ci) {
-        if (MiniTerminalHostLayer.deferTooltip((GuiScreen) (Object) this, lines, x, y, font)) ci.cancel();
+    private void gtnl$deferFloatingWindowHostTooltip(List<?> lines, int x, int y, FontRenderer font, CallbackInfo ci) {
+        if (FloatingWindowLayer.deferTooltip((GuiScreen) (Object) this, lines, x, y, font)) ci.cancel();
     }
 }

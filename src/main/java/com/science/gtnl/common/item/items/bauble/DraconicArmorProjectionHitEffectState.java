@@ -13,8 +13,6 @@ public class DraconicArmorProjectionHitEffectState {
     private static final int DEFAULT_DURATION_TICKS = 6;
     private static final Map<UUID, HitEffectState> STATES = new Object2ObjectOpenHashMap<>();
 
-    private DraconicArmorProjectionHitEffectState() {}
-
     public static void trigger(EntityPlayer player, float shieldPower) {
         if (player == null) {
             return;

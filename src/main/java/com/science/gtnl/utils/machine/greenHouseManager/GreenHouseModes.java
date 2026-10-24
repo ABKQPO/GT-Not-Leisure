@@ -15,8 +15,6 @@ public class GreenHouseModes {
     public static final GreenHouseMode IC2 = addMode(GreenHouseIC2Mode.instance);
 
     // this is basically a fake enum, plz don't instantiate
-    private GreenHouseModes() {}
-
     private static GreenHouseMode addMode(GreenHouseMode mode) {
         modes.put(mode.getName(), mode);
         return mode;

@@ -52,6 +52,7 @@ import com.science.gtnl.client.railgun.RailgunClientFx;
 import com.science.gtnl.client.text.EffectTextRenderer;
 import com.science.gtnl.client.text.effect.BuiltinTextEffects;
 import com.science.gtnl.client.text.preview.TextEffectPreviewCommand;
+import com.science.gtnl.client.yogsothoth.YogTerminalClient;
 import com.science.gtnl.common.block.blocks.item.ItemBlockEternalGregTechWorkshopRender;
 import com.science.gtnl.common.block.blocks.item.ItemBlockNanoPhagocytosisPlantRender;
 import com.science.gtnl.common.block.blocks.tile.TileEntityArtificialStar;
@@ -171,6 +172,7 @@ public class ClientProxy extends CommonProxy {
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
         MiniTerminalClient.init();
+        YogTerminalClient.init();
         WirelessCardInput.register();
         RecursivePatternReport.register();
         FxEffects.register();

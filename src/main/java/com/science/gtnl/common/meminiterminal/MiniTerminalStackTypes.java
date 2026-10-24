@@ -15,8 +15,6 @@ public final class MiniTerminalStackTypes {
 
     private static final int MAX_FILTERS = 32;
 
-    private MiniTerminalStackTypes() {}
-
     public static IAEStackType<?> containerType(ItemStack stack) {
         if (stack == null) return null;
         for (IAEStackType<?> type : AEStackTypeRegistry.getSortedTypes()) {

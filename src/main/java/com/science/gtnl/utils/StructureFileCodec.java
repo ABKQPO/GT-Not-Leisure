@@ -18,8 +18,6 @@ public class StructureFileCodec {
 
     private static final byte[] MAGIC = new byte[] { 'M', 'B', 'S', '1' };
 
-    private StructureFileCodec() {}
-
     public static String[][] readText(InputStream inputStream) throws IOException {
         List<String[]> rows = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {

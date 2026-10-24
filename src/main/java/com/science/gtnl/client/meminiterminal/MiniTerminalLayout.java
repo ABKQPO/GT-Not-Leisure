@@ -7,17 +7,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
-
-import com.cleanroommc.modularui.api.widget.ResizeDragArea;
-import com.cleanroommc.modularui.core.mixins.early.minecraft.GuiContainerAccessor;
 import com.cleanroommc.modularui.widget.sizer.Area;
+import com.science.gtnl.client.floatingwindow.FloatingWindowGeometry;
 
 import appeng.api.storage.data.AEStackTypeRegistry;
 import appeng.api.storage.data.IAEStackType;
 import appeng.items.contents.PinList;
 
-public final class MiniTerminalLayout {
+public final class MiniTerminalLayout extends FloatingWindowGeometry {
 
     public static final int COLUMNS = 5;
     public static final int MIN_COLUMNS = 2;
@@ -42,19 +39,10 @@ public final class MiniTerminalLayout {
     private static final int FIXED_CONTROL_BUTTONS = 5;
     private static final int MIN_SCROLL_HEIGHT = 13;
     private static List<IAEStackType<?>> toggleTypes;
-    private final Rectangle bounds = new Rectangle();
-    private Rectangle preferredBounds;
-    private int defaultHeight = 166;
+    private final Rectangle bounds = area();
     private int craftingPins;
     private int playerPins;
     private boolean playerFirst = true;
-    private boolean geometryDirty;
-    private boolean expanded;
-    private boolean hasRoom;
-    private boolean snappedWidth;
-    private boolean snappedHeight;
-    private int screenWidth;
-    private int screenHeight;
 
     static List<IAEStackType<?>> toggleTypes() {
         if (toggleTypes == null) {
@@ -72,95 +60,11 @@ public final class MiniTerminalLayout {
         return FIXED_CONTROL_BUTTONS + toggleTypes().size();
     }
 
-    static int minHeight() {
+    static int minimumHeight() {
         int controlsBottom = HEADER_Y + (1 + controlButtons()) * BUTTON_HEIGHT + 2 + MIN_SCROLL_HEIGHT;
         int height = MIN_HEIGHT;
         while (PIN_Y + (height - PIN_Y - 4) / CELL * CELL < controlsBottom) height += CELL;
         return height;
-    }
-
-    public boolean update(GuiContainer inventory, boolean collapsed) {
-        GuiContainerAccessor gui = (GuiContainerAccessor) inventory;
-        return update(
-            inventory.width,
-            inventory.height,
-            gui.getGuiLeft(),
-            gui.getGuiTop(),
-            gui.getXSize(),
-            gui.getYSize(),
-            collapsed);
-    }
-
-    boolean update(int screenWidth, int screenHeight, int guiLeft, int guiTop, int guiWidth, int height,
-        boolean collapsed) {
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
-        defaultHeight = Math.max(minHeight(), height);
-        int x = preferredBounds == null ? guiLeft + guiWidth + 3 : preferredBounds.x;
-        int y = preferredBounds == null ? guiTop : preferredBounds.y;
-        int width = preferredBounds == null ? WIDTH : preferredBounds.width;
-        int panelHeight = preferredBounds == null ? defaultHeight : preferredBounds.height;
-
-        int availableWidth = Math.max(0, screenWidth - 2);
-        int availableHeight = Math.max(0, screenHeight - 2);
-        hasRoom = availableWidth >= MIN_WIDTH && availableHeight >= minHeight()
-            && (preferredBounds != null
-                || x >= 0 && x + width <= screenWidth && y >= 0 && y + panelHeight <= screenHeight);
-        boolean nextExpanded = !collapsed && hasRoom;
-        if (nextExpanded) {
-            width = snappedWidth ? snapSize(width, MIN_WIDTH, availableWidth)
-                : Math.min(Math.max(MIN_WIDTH, width), availableWidth);
-            panelHeight = snappedHeight ? snapSize(panelHeight, minHeight(), availableHeight)
-                : Math.min(Math.max(minHeight(), panelHeight), availableHeight);
-        } else {
-            width = Math.max(0, Math.min(COMPACT_SIZE, Math.min(screenWidth, screenHeight)));
-            panelHeight = width;
-        }
-        Rectangle next = new Rectangle(x, y, width, panelHeight);
-        keepDragHandleVisible(next, nextExpanded, screenWidth, screenHeight);
-        boolean changed = !bounds.equals(next) || expanded != nextExpanded || geometryDirty;
-        expanded = nextExpanded;
-        bounds.setBounds(next);
-        geometryDirty = false;
-        return changed;
-    }
-
-    static void keepDragHandleVisible(Rectangle area, boolean expanded, int screenWidth, int screenHeight) {
-        int handleX = expanded ? area.width - BUTTON_WIDTH - 4 : 0;
-        int handleY = expanded ? HEADER_Y : 0;
-        int handleWidth = expanded ? BUTTON_WIDTH : area.width;
-        int handleHeight = expanded ? BUTTON_HEIGHT : area.height;
-        area.x = Math.max(-handleX, Math.min(area.x, Math.max(0, screenWidth - handleWidth) - handleX));
-        area.y = Math.max(-handleY, Math.min(area.y, Math.max(0, screenHeight - handleHeight) - handleY));
-    }
-
-    public void reset() {
-        restorePreference(null);
-    }
-
-    record WindowPreference(int x, int y, int width, int height, boolean snappedWidth, boolean snappedHeight) {}
-
-    WindowPreference preference() {
-        return preferredBounds == null ? null
-            : new WindowPreference(
-                preferredBounds.x,
-                preferredBounds.y,
-                preferredBounds.width,
-                preferredBounds.height,
-                snappedWidth,
-                snappedHeight);
-    }
-
-    void restorePreference(WindowPreference preference) {
-        preferredBounds = preference == null ? null
-            : new Rectangle(
-                preference.x(),
-                preference.y(),
-                Math.max(MIN_WIDTH, preference.width()),
-                Math.max(MIN_HEIGHT, preference.height()));
-        snappedWidth = preference != null && preference.snappedWidth();
-        snappedHeight = preference != null && preference.snappedHeight();
-        geometryDirty = true;
     }
 
     public void configurePins(int craftingCount, int playerCount, boolean playerFirst) {
@@ -170,68 +74,43 @@ public final class MiniTerminalLayout {
         craftingPins = nextCrafting;
         playerPins = nextPlayer;
         this.playerFirst = playerFirst;
-        geometryDirty = true;
+        markGeometryDirty();
     }
 
-    void acceptPanelBounds(Rectangle next) {
-        int width = expanded ? Math.max(MIN_WIDTH, next.width)
-            : preferredBounds == null ? WIDTH : preferredBounds.width;
-        int height = expanded ? Math.max(minHeight(), next.height)
-            : preferredBounds == null ? defaultHeight : preferredBounds.height;
-
-        if (preferredBounds != null) {
-            if (next.width == bounds.width) width = preferredBounds.width;
-            if (next.height == bounds.height) height = preferredBounds.height;
-        }
-        preferredBounds = new Rectangle(next.x, next.y, width, height);
+    @Override
+    public int minWidth() {
+        return MIN_WIDTH;
     }
 
-    void acceptResizedBounds(Rectangle next, Rectangle start, ResizeDragArea edge, boolean centered) {
-        if (!expanded) return;
-        boolean horizontal = edge.left || edge.right;
-        boolean vertical = edge.top || edge.bottom;
-        int width = horizontal ? snapSize(next.width, MIN_WIDTH, screenWidth - 2)
-            : preferredBounds == null ? start.width : preferredBounds.width;
-        int height = vertical ? snapSize(next.height, minHeight(), screenHeight - 2)
-            : preferredBounds == null ? start.height : preferredBounds.height;
-
-        int x = horizontal ? start.x + anchorOffset(start.width, width, edge.left, centered)
-            : preferredBounds == null ? start.x : preferredBounds.x;
-        int y = vertical ? start.y + anchorOffset(start.height, height, edge.top, centered)
-            : preferredBounds == null ? start.y : preferredBounds.y;
-        snappedWidth |= horizontal;
-        snappedHeight |= vertical;
-        preferredBounds = new Rectangle(x, y, width, height);
+    @Override
+    public int minHeight() {
+        return minimumHeight();
     }
 
-    private static int anchorOffset(int previous, int next, boolean fromStart, boolean centered) {
-        return centered ? Math.floorDiv(previous - next, 2) : fromStart ? previous - next : 0;
+    @Override
+    public int defaultWidth() {
+        return WIDTH;
     }
 
-    private static int snapSize(int requested, int minimum, int maximum) {
-        int maxSteps = Math.max(0, (maximum - minimum) / CELL);
-        long nearest = Math.max(0L, ((long) requested - minimum + CELL / 2) / CELL);
-        return minimum + (int) Math.min(nearest, maxSteps) * CELL;
+    @Override
+    public int cellSize() {
+        return CELL;
     }
 
-    public Rectangle bounds() {
-        return new Rectangle(bounds);
+    @Override
+    public int compactSize() {
+        return COMPACT_SIZE;
     }
 
-    boolean intersects(int x, int y, int width, int height) {
-        return bounds.intersects(x, y, width, height);
+    @Override
+    protected int restoredMinHeight() {
+        return MIN_HEIGHT;
     }
 
-    public boolean contains(int x, int y) {
-        return bounds.contains(x, y);
-    }
-
-    public boolean expanded() {
-        return expanded;
-    }
-
-    public boolean hasRoom() {
-        return hasRoom;
+    @Override
+    protected Rectangle dragHandle(int width, int height, boolean expanded) {
+        return expanded ? new Rectangle(width - BUTTON_WIDTH - 4, HEADER_Y, BUTTON_WIDTH, BUTTON_HEIGHT)
+            : new Rectangle(0, 0, width, height);
     }
 
     public int columns() {
@@ -314,7 +193,7 @@ public final class MiniTerminalLayout {
 
     public boolean dragHandleAt(int x, int y) {
         if (!bounds.contains(bounds.x + x, bounds.y + y)) return false;
-        if (!expanded) return x < 4 || y < 4 || x >= bounds.width - 4 || y >= bounds.height - 4;
+        if (!expanded()) return x < 4 || y < 4 || x >= bounds.width - 4 || y >= bounds.height - 4;
         return Area.isInside(dragHandleX(), HEADER_Y, BUTTON_WIDTH, BUTTON_HEIGHT, x, y);
     }
 

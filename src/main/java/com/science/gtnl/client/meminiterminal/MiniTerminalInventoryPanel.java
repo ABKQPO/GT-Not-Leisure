@@ -33,7 +33,6 @@ import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.drawable.GuiTextures;
 import com.cleanroommc.modularui.drawable.UITexture;
-import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.RichTooltip;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetThemeEntry;
@@ -42,6 +41,7 @@ import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widget.WidgetTree;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
+import com.science.gtnl.client.floatingwindow.FloatingWindowPanel;
 import com.science.gtnl.common.meminiterminal.MiniTerminalPinSettings;
 import com.science.gtnl.common.meminiterminal.MiniTerminalStackTypes;
 
@@ -72,7 +72,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import cpw.mods.fml.common.Loader;
 
-public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
+public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
 
     private static final UITexture MAGNET_CARD = UITexture.fullImage("ae2wct", "items/magnetCard");
 
@@ -121,7 +121,6 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
         .adaptable(2)
         .build();
 
-    private final GuiContainer inventory;
     private final MiniTerminalLayout layout = MiniTerminalClient.layoutState();
     private MiniTerminalModel model;
     private final MiniTerminalSearchField search;
@@ -132,13 +131,12 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
     private boolean resizing;
 
     public MiniTerminalInventoryPanel(GuiContainer inventory, MiniTerminalModel model) {
-        super(MiniTerminalClient.layoutState());
+        super("me_mini_portable_terminal", inventory, MiniTerminalClient.layoutState());
         pos(0, 0).size(MiniTerminalLayout.WIDTH, 166);
         tooltipBuilder(tooltip -> {
             tooltip.addLine(tr("move"));
             if (layout.expanded()) tooltip.addLine(tr("resize"));
         });
-        this.inventory = inventory;
         this.model = model;
         terminal = new TerminalWidget();
         terminal.full()
@@ -248,40 +246,15 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
         MiniTerminalClient.closeOverlay(this);
     }
 
-    public GuiContainer inventory() {
-        return inventory;
-    }
-
-    boolean isActive() {
+    @Override
+    public boolean isActive() {
         return MiniTerminalClient.overlay() == this && isValid()
             && isOpen()
-            && Minecraft.getMinecraft().currentScreen == inventory;
+            && Minecraft.getMinecraft().currentScreen == inventory();
     }
 
     public MiniTerminalLayout layout() {
         return layout;
-    }
-
-    public Rectangle bounds() {
-        Rectangle moving = movingBounds();
-        return moving == null ? layout.bounds() : moving;
-    }
-
-    boolean intersects(int x, int y, int width, int height) {
-        Rectangle moving = movingBounds();
-        return moving == null ? layout.intersects(x, y, width, height) : moving.intersects(x, y, width, height);
-    }
-
-    boolean isMouseOver(int mouseX, int mouseY) {
-        if (!isValid() || !isOpen() || !isEnabled()) return false;
-        Rectangle moving = movingBounds();
-        if (moving == null ? !layout.contains(mouseX, mouseY) : !moving.contains(mouseX, mouseY)) return false;
-        for (ModularPanel panel : getScreen().getPanelManager()
-            .getOpenPanels()) {
-            if (panel == this) return true;
-            if (panel.disablePanelsBelow() || panel.isAnyHovered()) return false;
-        }
-        return false;
     }
 
     public VirtualMESlot hoveredSlot(int mouseX, int mouseY) {
@@ -328,7 +301,7 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
                 pins.craftingCount(),
                 pins.playerCount(),
                 AEConfig.instance.pinSectionOrder == PinSectionOrder.PLAYER_FIRST);
-            changed |= layout.update(inventory, MiniTerminalClient.collapsed());
+            changed |= layout.update(inventory(), MiniTerminalClient.collapsed());
             Rectangle bounds = layout.bounds();
             if (getArea().x != bounds.x || getArea().y != bounds.y
                 || getArea().width != bounds.width
@@ -358,21 +331,38 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
         }
     }
 
-    void prepareFrame() {
+    @Override
+    public void prepareFrame() {
         syncLayout();
         MiniTerminalClient.ensureSession();
     }
 
-    void resetInteraction() {
-        if (isValid() && isMoving() && getContext().hasDraggable()) getContext().dropDraggable(true);
+    @Override
+    public void resetInteraction() {
+        super.resetInteraction();
         consumedMouseButtons.clear();
         terminal.releaseButton(terminal.pressedButton);
         if (search.isFocused()) getContext().removeFocus();
     }
 
-    void detach() {
-        resetInteraction();
-        if (isValid() && !getScreen().isOverlay()) closeIfOpen();
+    @Override
+    public ItemStack stackUnderMouse(int mouseX, int mouseY) {
+        return MiniTerminalNEIAdapter.stackUnderMouse(this, mouseX, mouseY);
+    }
+
+    @Override
+    public List<String> handleTooltip(int mouseX, int mouseY, List<String> tooltip) {
+        return MiniTerminalNEIAdapter.handleTooltip(this, mouseX, mouseY, tooltip);
+    }
+
+    @Override
+    public List<String> handleItemTooltip(ItemStack stack, int mouseX, int mouseY, List<String> tooltip) {
+        return MiniTerminalNEIAdapter.handleItemTooltip(this, mouseX, mouseY, tooltip);
+    }
+
+    @Override
+    public boolean handleDragNDrop(int mouseX, int mouseY, ItemStack stack, int button) {
+        return MiniTerminalNEIAdapter.dragNDrop(inventory(), mouseX, mouseY, stack, button);
     }
 
     @Override
@@ -398,7 +388,7 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             if (getScreen().isOverlay() && search.isFocused()) getContext().removeFocus();
             return false;
         }
-        boolean handled = MiniTerminalNEIAdapter.handleDrop(inventory, button);
+        boolean handled = MiniTerminalNEIAdapter.handleDrop(inventory(), button);
         if (handled) getContext().removeFocus();
         if (!handled) {
             if (!layout.expanded() && button == 1) {
@@ -418,7 +408,7 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
     public boolean onKeyPressed(char character, int keyCode) {
         syncLayout();
         if (hasForeignFocus()) return false;
-        if (MiniTerminalBogoCompat.handleSearchKey(inventory)) return true;
+        if (MiniTerminalBogoCompat.handleSearchKey(inventory())) return true;
         boolean inside = isMouseOver(getContext().getAbsMouseX(), getContext().getAbsMouseY());
         boolean closeKey = keyCode == Keyboard.KEY_ESCAPE
             || keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode();
@@ -434,7 +424,7 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
             return true;
         }
         boolean block = inside && !closeKey;
-        if (!handled && block) MiniTerminalNEIAdapter.handleKeyTyped(inventory, character, keyCode);
+        if (!handled && block) MiniTerminalNEIAdapter.handleKeyTyped(inventory(), character, keyCode);
         return handled || block;
     }
 
@@ -878,7 +868,7 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
         }
 
         private boolean handleBogoInput(boolean fromMouse) {
-            return MiniTerminalBogoCompat.handleMiniInput(inventory, fromMouse);
+            return MiniTerminalBogoCompat.handleMiniInput(inventory(), fromMouse);
         }
 
         @Override
@@ -949,7 +939,7 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
                 return Result.IGNORE;
             }
             if (handleBogoInput(false)) return Result.SUCCESS;
-            if (MiniTerminalNEIAdapter.handleKeyTyped(inventory, typedChar, keyCode)) return Result.SUCCESS;
+            if (MiniTerminalNEIAdapter.handleKeyTyped(inventory(), typedChar, keyCode)) return Result.SUCCESS;
             if (keyCode == mc.gameSettings.keyBindPickBlock.getKeyCode()) {
                 clickSlot(getContext().getMouseX(), getContext().getMouseY(), keyBindPickBlockAction);
             }
@@ -960,8 +950,6 @@ public final class MiniTerminalInventoryPanel extends MiniTerminalPanel {
     }
 
     static final class Input {
-
-        private Input() {}
 
         static int mouseButton(int button, int pickKey) {
             return button == pickKey + 100 ? keyBindPickBlockAction : button;

@@ -10,8 +10,6 @@ public class GTNLStructureErrors {
     private static final TranslatableText PARALLEL_CONTROLLER_HATCH = TranslatableText
         .lang("gtnl.gui.structure_error.parallel_controller_hatch");
 
-    private GTNLStructureErrors() {}
-
     public static StructureError parallelControllerHatchCount(ErrorType type, int current, int target) {
         return StructureErrors.hatchCount(type, PARALLEL_CONTROLLER_HATCH, current, target);
     }

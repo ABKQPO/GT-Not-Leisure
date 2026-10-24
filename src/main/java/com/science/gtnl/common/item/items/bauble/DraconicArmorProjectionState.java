@@ -11,8 +11,6 @@ public class DraconicArmorProjectionState {
 
     private static final Map<UUID, DraconicArmorProjectionType> STATES = new Object2ObjectOpenHashMap<>();
 
-    private DraconicArmorProjectionState() {}
-
     public static void set(EntityPlayer player, DraconicArmorProjectionType type) {
         if (player == null || type == null) {
             return;

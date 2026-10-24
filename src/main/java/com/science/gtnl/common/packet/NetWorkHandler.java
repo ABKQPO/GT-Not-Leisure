@@ -7,6 +7,9 @@ import com.science.gtnl.common.meminiterminal.MiniTerminalUpdatePacket;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
 import com.science.gtnl.common.packet.base.PayloadHandler;
 import com.science.gtnl.common.packet.base.ServerboundPacket;
+import com.science.gtnl.common.yogsothoth.YogTerminalActionPacket;
+import com.science.gtnl.common.yogsothoth.YogTerminalStatePacket;
+import com.science.gtnl.common.yogsothoth.YogTerminalSyncPacket;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -56,6 +59,10 @@ public class NetWorkHandler {
         registerClientbound(WirelessVisualisationPacket.class);
         registerServerbound(MiniTerminalRequestPacket.class);
         registerClientbound(MiniTerminalUpdatePacket.class);
+        registerServerbound(YogTerminalActionPacket.class);
+        registerServerbound(CreativeScreenPacket.class);
+        registerClientbound(YogTerminalSyncPacket.class);
+        registerClientbound(YogTerminalStatePacket.class);
         registerServerbound(UniversalStorageBusActionPacket.class);
         registerServerbound(QuantumCraftingModePacket.class);
         registerClientbound(QuantumCraftingAvailabilityPacket.class);

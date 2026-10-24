@@ -6,8 +6,6 @@ public class InterfaceNameControllerContext {
 
     private static final ThreadLocal<MTEMultiBlockBase> CURRENT = new ThreadLocal<>();
 
-    private InterfaceNameControllerContext() {}
-
     public static MTEMultiBlockBase enter(MTEMultiBlockBase controller) {
         MTEMultiBlockBase previous = CURRENT.get();
         CURRENT.set(controller);

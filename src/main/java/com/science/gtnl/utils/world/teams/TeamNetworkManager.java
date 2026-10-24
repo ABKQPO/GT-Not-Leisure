@@ -35,8 +35,6 @@ public class TeamNetworkManager {
     private static final String MEMBER_UUID_TAG = "MEMBER_UUID";
     private static final String LEADER_UUID_TAG = "LEADER_UUID";
 
-    private TeamNetworkManager() {}
-
     public static Team getOrCreateTeam(UUID playerId) {
         return TeamManager.getOrCreateTeam(getPlayerName(playerId), playerId);
     }

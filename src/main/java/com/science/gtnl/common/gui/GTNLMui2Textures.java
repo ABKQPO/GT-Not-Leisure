@@ -7,8 +7,6 @@ import gregtech.api.enums.Mods;
 
 public class GTNLMui2Textures {
 
-    private GTNLMui2Textures() {}
-
     public static final UITexture PICTURE_CIRCULATION = UITexture
         .fullImage(ModList.ScienceNotLeisure.ID, "gui/picture/circulation_");
 

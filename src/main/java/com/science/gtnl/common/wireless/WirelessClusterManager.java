@@ -59,8 +59,6 @@ public class WirelessClusterManager {
 
     public record Summary(int clusters, int active, int conflicted, int waiting, boolean scanLimited) {}
 
-    private WirelessClusterManager() {}
-
     public static class ScanSchedule {
 
         private static final int IDLE_INTERVAL = 600;

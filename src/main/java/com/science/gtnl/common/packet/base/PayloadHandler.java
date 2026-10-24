@@ -15,8 +15,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PayloadHandler {
 
-    private PayloadHandler() {}
-
     public static class Client<T extends ClientboundPacket> implements IMessageHandler<T, IMessage> {
 
         @Override

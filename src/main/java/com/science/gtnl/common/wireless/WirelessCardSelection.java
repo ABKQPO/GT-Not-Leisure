@@ -8,8 +8,6 @@ public class WirelessCardSelection {
 
     record Selection<T> (T card, boolean ambiguous) {}
 
-    private WirelessCardSelection() {}
-
     static <T> Selection<T> select(List<Candidate<T>> cards, boolean connecting) {
         T selected = null;
         int count = 0;

@@ -39,8 +39,6 @@ final class MiniTerminalOutbound {
         void failed(EntityPlayerMP player, long session, Throwable cause);
     }
 
-    private MiniTerminalOutbound() {}
-
     static void send(EntityPlayerMP player, NBTTagCompound data) {
         enqueue(player, new Pending(data, false, CompletableFuture.completedFuture(null), null));
     }

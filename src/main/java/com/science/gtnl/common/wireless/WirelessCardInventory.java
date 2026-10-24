@@ -17,8 +17,6 @@ import baubles.common.container.InventoryBaubles;
 
 public class WirelessCardInventory {
 
-    private WirelessCardInventory() {}
-
     public record CardSlot(IInventory inventory, int index) {}
 
     // GUI address: 0 = held, positive = main slot + 1, negative = -(Baubles slot + 1).

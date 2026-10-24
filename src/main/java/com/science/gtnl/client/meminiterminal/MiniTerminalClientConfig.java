@@ -6,6 +6,7 @@ import com.gtnewhorizon.gtnhlib.config.Config;
 import com.gtnewhorizon.gtnhlib.config.ConfigException;
 import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.client.floatingwindow.FloatingWindowGeometry;
 
 @Config(modid = ScienceNotLeisure.MODID, configSubDirectory = "GTNotLeisure", filename = "MEMiniTerminalClient")
 @Config.ExcludeFromAutoGui
@@ -42,8 +43,6 @@ public final class MiniTerminalClientConfig {
     @Config.Ignore
     private static boolean registered;
 
-    private MiniTerminalClientConfig() {}
-
     static void load(MiniTerminalLayout layout) {
         try {
             ConfigurationManager.registerConfig(MiniTerminalClientConfig.class);
@@ -54,13 +53,13 @@ public final class MiniTerminalClientConfig {
         }
     }
 
-    private static MiniTerminalLayout.WindowPreference windowPreference() {
-        return customWindow ? new MiniTerminalLayout.WindowPreference(x, y, width, height, snappedWidth, snappedHeight)
+    private static FloatingWindowGeometry.Preference windowPreference() {
+        return customWindow ? new FloatingWindowGeometry.Preference(x, y, width, height, snappedWidth, snappedHeight)
             : null;
     }
 
     static void saveWindow(MiniTerminalLayout layout) {
-        MiniTerminalLayout.WindowPreference preference = layout.preference();
+        FloatingWindowGeometry.Preference preference = layout.preference();
         if (Objects.equals(preference, windowPreference())) return;
         customWindow = preference != null;
         x = customWindow ? preference.x() : 0;
