@@ -53,9 +53,10 @@ public class GraphExecutor {
         }
 
         var sccPlan = graph.getTopology()
-            .isCyclic(node) ? graph.getSccPlan(
-                graph.getTopology()
-                    .getComponentId(node))
+            .isCyclic(node)
+                ? graph.getSccPlan(
+                    graph.getTopology()
+                        .getComponentId(node))
                 : null;
         boolean ring = sccPlan != null && sccPlan.ring();
         CraftingGraphEdge cycleCut = null;
@@ -102,14 +103,15 @@ public class GraphExecutor {
                 outputAmount = Math.max(0, outputAmount - sccPlan.takenByCycle(node));
             } else if (cycleCut != null && output.what()
                 .equals(node.getWhat())) {
-                if (sccPlan != null) {
-                    // Replace the planned seed portion with the amount actually allocated. Missing seeds must not
-                    // become synthetic output; the remaining planned amount is the real net gain of crafted batches.
-                    long planned = sccPlan.plannedOutput(node);
-                    long netGain = Math.max(0, planned - cycleCut.seedRequired());
-                    outputAmount = LongMath.saturatedAdd(cycleCut.seedAllocated(), netGain);
+                    if (sccPlan != null) {
+                        // Replace the planned seed portion with the amount actually allocated. Missing seeds must not
+                        // become synthetic output; the remaining planned amount is the real net gain of crafted
+                        // batches.
+                        long planned = sccPlan.plannedOutput(node);
+                        long netGain = Math.max(0, planned - cycleCut.seedRequired());
+                        outputAmount = LongMath.saturatedAdd(cycleCut.seedAllocated(), netGain);
+                    }
                 }
-            }
             inv.insert(output.what(), outputAmount, Actionable.MODULATE);
         }
 

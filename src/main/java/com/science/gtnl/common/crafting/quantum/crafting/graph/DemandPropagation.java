@@ -12,8 +12,8 @@ import com.science.gtnl.common.crafting.quantum.util.LongMath;
 
 import appeng.api.config.Actionable;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 
 public class DemandPropagation {
 
@@ -181,8 +181,9 @@ public class DemandPropagation {
             for (var edge : node.getInputs()) {
                 var producer = edge.producer();
                 if (producer == null || topology.getComponentId(producer) != component.id()) continue;
-                if (ring[i] != null || edge.amountPerCraft() <= 0 || !edge.inputKey()
-                    .equals(producer.getWhat())) {
+                if (ring[i] != null || edge.amountPerCraft() <= 0
+                    || !edge.inputKey()
+                        .equals(producer.getWhat())) {
                     return null;
                 }
                 ring[i] = edge;
@@ -286,8 +287,10 @@ public class DemandPropagation {
                 long needed = nodes.get(i) == root ? LongMath.saturatedAdd(demand[i], Math.max(0, internal - supply))
                     : Math.max(0, LongMath.saturatedAdd(demand[i], internal) - supply);
                 if (needed == Long.MAX_VALUE) return false;
-                long times = divideCeil(needed, nodes.get(i)
-                    .getOutputPerCraft());
+                long times = divideCeil(
+                    needed,
+                    nodes.get(i)
+                        .getOutputPerCraft());
                 if (times != runs[i]) {
                     runs[i] = times;
                     changed = true;

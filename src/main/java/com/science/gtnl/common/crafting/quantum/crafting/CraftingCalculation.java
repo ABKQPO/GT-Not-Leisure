@@ -15,11 +15,10 @@
 
 package com.science.gtnl.common.crafting.quantum.crafting;
 
-import java.math.BigInteger;
-import java.util.Collections;
-
 import java.lang.management.ManagementFactory;
+import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
@@ -2234,7 +2233,6 @@ public class CraftingCalculation {
         }
     }
 
-
     /**
      * How many root crafts of a cycle are tried before falling back to the batch in which every craft divides evenly,
      * see {@link #getCycleBatchRuns}.
@@ -2405,7 +2403,6 @@ public class CraftingCalculation {
     public long getRecursiveIngredientReserveAmount() {
         return this.recursiveIngredientReserveAmount;
     }
-
 
     private static <T> Set<T> snapshotSet(Set<T> source) {
         // Backtracking mutates the source. Non-empty markers must remain detached; empty ones need no allocation.

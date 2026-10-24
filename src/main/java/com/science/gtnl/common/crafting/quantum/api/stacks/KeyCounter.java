@@ -32,8 +32,6 @@ import java.util.function.ObjLongConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.google.common.collect.Iterators;
-
 import appeng.api.config.FuzzyMode;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
