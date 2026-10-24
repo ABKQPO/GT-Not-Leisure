@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import com.gtnllib.GTNLLibContractTest;
 import com.science.gtnl.client.portalgun.PortalGunContracts;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme;
+import com.science.gtnl.common.yogsothoth.YogSothothContracts;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import gregtech.api.modularui2.GTGuiThemes;
@@ -30,6 +31,7 @@ public class CelestweaveContractTest {
         CelestweaveArmorContracts.run();
         RailgunContracts.run();
         PortalGunContracts.run();
+        YogSothothContracts.run();
         EquipmentRegressionContracts.run();
         EquipmentHudContracts.run();
         EquipmentResourceContracts.run();

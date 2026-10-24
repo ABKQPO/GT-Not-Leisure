@@ -1,18 +1,22 @@
 package com.science.gtnl.common.yogsothoth;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.function.BiFunction;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 import baubles.common.container.InventoryBaubles;
 
-public final class YogBaublesView implements IInventory {
+// Why: other mods cast BaublesApi.getBaubles to InventoryBaubles (Witching Gadgets' Kama on equip).
+public class YogBaublesView extends InventoryBaubles {
 
     public interface Entry {
 
@@ -21,15 +25,14 @@ public final class YogBaublesView implements IInventory {
         void set(EntityPlayer player, ItemStack stack);
     }
 
-    private static final Map<EntityPlayer, YogBaublesView> VIEWS = Collections.synchronizedMap(new WeakHashMap<>());
     private static BiFunction<EntityPlayer, InventoryBaubles, List<? extends Entry>> clientEntries;
 
-    private final EntityPlayer player;
     private final InventoryBaubles delegate;
 
     private YogBaublesView(EntityPlayer player, InventoryBaubles delegate) {
-        this.player = player;
+        super(player);
         this.delegate = delegate;
+        stackList = delegate.stackList;
     }
 
     public static void setClientEntries(BiFunction<EntityPlayer, InventoryBaubles, List<? extends Entry>> entries) {
@@ -37,16 +40,13 @@ public final class YogBaublesView implements IInventory {
     }
 
     public static IInventory wrap(EntityPlayer player, IInventory original) {
-        if (!(original instanceof InventoryBaubles baubles) || player == null
+        if (!(original instanceof InventoryBaubles baubles) || original instanceof YogBaublesView
+            || player == null
             || player.isDead
             || player.getHealth() <= 0) return original;
         if (entries(player, baubles).isEmpty()) return original;
-        YogBaublesView view = VIEWS.get(player);
-        if (view == null || view.delegate != baubles) {
-            view = new YogBaublesView(player, baubles);
-            VIEWS.put(player, view);
-        }
-        return view;
+        // Why: not cached; a player-keyed cache pins the player, and a respawned player equals the dead one.
+        return new YogBaublesView(player, baubles);
     }
 
     static List<? extends Entry> entries(EntityPlayer player, InventoryBaubles baubles) {
@@ -58,16 +58,26 @@ public final class YogBaublesView implements IInventory {
         return delegate;
     }
 
+    private List<? extends Entry> virtualEntries() {
+        EntityPlayer owner = player.get();
+        return owner == null ? Collections.emptyList() : entries(owner, delegate);
+    }
+
     private Entry entry(int slot) {
         int virtual = slot - delegate.getSizeInventory();
         if (virtual < 0) return null;
-        List<? extends Entry> entries = entries(player, delegate);
+        List<? extends Entry> entries = virtualEntries();
         return virtual < entries.size() ? entries.get(virtual) : null;
+    }
+
+    private EntityPlayer serverOwner() {
+        EntityPlayer owner = player.get();
+        return owner == null || owner.worldObj.isRemote ? null : owner;
     }
 
     @Override
     public int getSizeInventory() {
-        return delegate.getSizeInventory() + entries(player, delegate).size();
+        return delegate.getSizeInventory() + virtualEntries().size();
     }
 
     @Override
@@ -83,7 +93,8 @@ public final class YogBaublesView implements IInventory {
         Entry entry = entry(slot);
         ItemStack stack = entry == null ? null : entry.get();
         if (stack == null || amount <= 0) return null;
-        if (!player.worldObj.isRemote) entry.set(player, null);
+        EntityPlayer owner = serverOwner();
+        if (owner != null) entry.set(owner, null);
         return stack;
     }
 
@@ -98,10 +109,26 @@ public final class YogBaublesView implements IInventory {
             delegate.setInventorySlotContents(slot, stack);
             return;
         }
-        if (player.worldObj.isRemote) return;
+        EntityPlayer owner = serverOwner();
+        if (owner == null) return;
         Entry entry = entry(slot);
-        if (entry != null) entry.set(player, stack);
-        else YogTerminalService.acceptCarried(player, delegate, stack);
+        if (entry != null) entry.set(owner, stack);
+        else YogTerminalService.acceptCarried(owner, delegate, stack);
+    }
+
+    @Override
+    public void syncSlotToClients(int slot) {
+        if (slot < delegate.getSizeInventory()) delegate.syncSlotToClients(slot);
+    }
+
+    @Override
+    public Container getEventHandler() {
+        return delegate.getEventHandler();
+    }
+
+    @Override
+    public void setEventHandler(Container eventHandler) {
+        delegate.setEventHandler(eventHandler);
     }
 
     @Override
@@ -125,8 +152,8 @@ public final class YogBaublesView implements IInventory {
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
-        return delegate.isUseableByPlayer(player);
+    public boolean isUseableByPlayer(EntityPlayer user) {
+        return delegate.isUseableByPlayer(user);
     }
 
     @Override
@@ -143,6 +170,37 @@ public final class YogBaublesView implements IInventory {
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
         if (slot < delegate.getSizeInventory()) return delegate.isItemValidForSlot(slot, stack);
         if (entry(slot) != null) return YogToken.isStorable(stack);
-        return !player.worldObj.isRemote && YogTerminalService.acceptsCarried(player, delegate, stack);
+        EntityPlayer owner = serverOwner();
+        return owner != null && YogTerminalService.acceptsCarried(owner, delegate, stack);
+    }
+
+    @Override
+    public void saveNBT(EntityPlayer owner) {
+        delegate.saveNBT(owner);
+    }
+
+    @Override
+    public void saveNBT(NBTTagCompound tags) {
+        delegate.saveNBT(tags);
+    }
+
+    @Override
+    public void readNBT(EntityPlayer owner) {
+        delegate.readNBT(owner);
+    }
+
+    @Override
+    public void readNBT(NBTTagCompound tags) {
+        delegate.readNBT(tags);
+    }
+
+    @Override
+    public void dropItems(ArrayList<EntityItem> drops) {
+        delegate.dropItems(drops);
+    }
+
+    @Override
+    public void dropItemsAt(ArrayList<EntityItem> drops, Entity entity) {
+        delegate.dropItemsAt(drops, entity);
     }
 }

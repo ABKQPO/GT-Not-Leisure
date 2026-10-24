@@ -12,6 +12,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.science.gtnl.common.yogsothoth.YogTerminals;
 
+import it.unimi.dsi.fastutil.ints.IntObjectImmutablePair;
+import it.unimi.dsi.fastutil.ints.IntObjectPair;
+
 @Pseudo
 @Mixin(targets = "net.p455w0rd.wirelesscraftingterminal.common.utils.RandomUtils", remap = false)
 public abstract class MixinRandomUtilsYogTerminal {
@@ -24,16 +27,35 @@ public abstract class MixinRandomUtilsYogTerminal {
         at = @At("HEAD"),
         cancellable = true)
     private static void gtnl$openedYogTerminal(InventoryPlayer inventory, CallbackInfoReturnable<ItemStack> cir) {
-        ItemStack opened = YogTerminals.opened(inventory.player);
+        ItemStack opened = gtnl$openedCraftingTerminal(inventory);
+        if (opened != null) cir.setReturnValue(opened);
+    }
+
+    @Inject(
+        method = "getWirelessTermWithSlot(Lnet/minecraft/entity/player/InventoryPlayer;)Lit/unimi/dsi/fastutil/ints/IntObjectPair;",
+        at = @At("HEAD"),
+        cancellable = true)
+    private static void gtnl$openedYogTerminalWithSlot(InventoryPlayer inventory,
+        CallbackInfoReturnable<IntObjectPair<ItemStack>> cir) {
+        ItemStack opened = gtnl$openedCraftingTerminal(inventory);
         if (opened == null) return;
+        // Why: a disguise in hand has no virtual slot, and WCT already returns the held terminal first.
+        int slot = YogTerminals.slotOf(inventory.player, opened);
+        if (slot >= 0) cir.setReturnValue(new IntObjectImmutablePair<>(slot, opened));
+    }
+
+    @Unique
+    private static ItemStack gtnl$openedCraftingTerminal(InventoryPlayer inventory) {
+        ItemStack opened = YogTerminals.opened(inventory.player);
+        if (opened == null) return null;
         if (gtnl$craftingTerminal == null) {
             try {
                 gtnl$craftingTerminal = Class
                     .forName("net.p455w0rd.wirelesscraftingterminal.api.IWirelessCraftingTerminalItem");
             } catch (ClassNotFoundException exception) {
-                return;
+                return null;
             }
         }
-        if (gtnl$craftingTerminal.isInstance(opened.getItem())) cir.setReturnValue(opened);
+        return gtnl$craftingTerminal.isInstance(opened.getItem()) ? opened : null;
     }
 }
