@@ -394,7 +394,7 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         @Override
         public MultiblockTooltipBuilder createTooltip() {
             MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_naquadah_reactor.recipe_type"))
+            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.naquadah_reactor.recipe_type"))
                 .addInfo(
                     StatCollector.translateToLocalFormatted(
                         "gtnl.machine.large_naquadah_reactor.tooltip.0",
