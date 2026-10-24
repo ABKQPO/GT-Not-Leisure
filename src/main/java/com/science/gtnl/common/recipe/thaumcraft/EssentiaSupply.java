@@ -10,10 +10,15 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEssentiaHatch;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaInputHatch;
 
+import appeng.api.config.Actionable;
+import appeng.api.storage.IMEMonitor;
+import appeng.me.GridAccessException;
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Mods;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
+import thaumicenergistics.common.storage.AEEssentiaStack;
+import thaumicenergistics.common.storage.AEEssentiaStackType;
 import thaumicenergistics.common.tiles.TileAdvancedInfusionProvider;
 import thaumicenergistics.common.tiles.TileInfusionProvider;
 
@@ -104,16 +109,16 @@ public class EssentiaSupply {
             if (fromProvider[i] <= 0) continue;
             if (takeFromProvider(selectedProviders[i], aspects[i], (int) fromProvider[i])) continue;
 
-            int refunded = 0;
+            long lost = 0;
             for (int j = 0; j < i; j++) {
-                if (fromProvider[j] > 0) refunded += refundToHatches(aspects[j], fromProvider[j]);
+                if (fromProvider[j] > 0) lost += refund(selectedProviders[j], aspects[j], fromProvider[j]);
             }
             commitBlockedUntil = worldTime + COMMIT_COOLDOWN_TICKS;
             ScienceNotLeisure.LOG.warn(
-                "{}: essentia provider failed to supply {}, refunded {} essentia to hatches, pausing for {} ticks",
+                "{}: essentia provider failed to supply {}, returned the essentia already taken ({} could not be placed), pausing for {} ticks",
                 machineName,
                 aspects[i].getTag(),
-                refunded,
+                lost,
                 COMMIT_COOLDOWN_TICKS);
             return false;
         }
@@ -191,6 +196,11 @@ public class EssentiaSupply {
         }
     }
 
+    private long refund(TileEntity provider, Aspect aspect, long amount) {
+        long remaining = amount - returnToProvider(provider, aspect, amount);
+        return remaining - refundToHatches(aspect, remaining);
+    }
+
     private int refundToHatches(Aspect aspect, long amount) {
         int remaining = (int) Math.min(Integer.MAX_VALUE, amount);
         int total = remaining;
@@ -200,6 +210,11 @@ public class EssentiaSupply {
             remaining = hatch.addToContainer(aspect, remaining);
         }
         return total - remaining;
+    }
+
+    private long returnToProvider(TileEntity provider, Aspect aspect, long amount) {
+        return amount > 0 && Mods.ThaumicEnergistics.isModLoaded() ? returnToProviderCompat(provider, aspect, amount)
+            : 0;
     }
 
     private long getMaximumProviderAmount(Aspect aspect) {
@@ -262,5 +277,24 @@ public class EssentiaSupply {
     private static boolean takeFromProviderCompat(TileEntity provider, Aspect aspect, int amount) {
         return provider instanceof TileInfusionProvider infusionProvider
             && infusionProvider.takeFromContainer(aspect, amount);
+    }
+
+    @Optional.Method(modid = "thaumicenergistics")
+    @SuppressWarnings("unchecked")
+    private static long returnToProviderCompat(TileEntity provider, Aspect aspect, long amount) {
+        if (!(provider instanceof TileInfusionProvider infusionProvider)) return 0;
+        try {
+            IMEMonitor<AEEssentiaStack> monitor = (IMEMonitor<AEEssentiaStack>) infusionProvider.getProxy()
+                .getStorage()
+                .getMEMonitor(AEEssentiaStackType.ESSENTIA_STACK_TYPE);
+            if (monitor == null) return 0;
+            AEEssentiaStack rejected = monitor.injectItems(
+                new AEEssentiaStack(aspect, amount),
+                Actionable.MODULATE,
+                infusionProvider.getMachineSource());
+            return amount - (rejected == null ? 0 : rejected.getStackSize());
+        } catch (GridAccessException e) {
+            return 0;
+        }
     }
 }

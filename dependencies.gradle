@@ -43,6 +43,8 @@ dependencies {
     compileOnlyApi("ganymedes01.etfuturum:Et-Futurum-Requiem:2.6.60-GTNH") { transitive = false }
     compileOnlyApi("com.github.GTNewHorizons:ForgeMultipart:1.7.16:dev") { transitive = false }
     compileOnlyApi("com.github.GTNewHorizons:Variable-Horizons:0.1.07:dev") { transitive = false }
+    compileOnly("com.github.GTNewHorizons:HoloInventory:2.5.17-GTNH:dev") { transitive = false }
+    compileOnly("com.github.GTNewHorizons:TinkersConstruct:1.14.118-GTNH:dev") { transitive = false }
 
     devOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughEnergistics:1.7.46:dev")
 
@@ -54,6 +56,7 @@ dependencies {
     runtimeOnlyNonPublishable('com.github.GTNewHorizons:BetterBuildersWands:0.13.12-GTNH:dev') { transitive = false }
     runtimeOnlyNonPublishable(rfg.deobf("curse.maven:spark-361579:4271867"))
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:AspectRecipeIndex:1.1.5:dev")
+    runtimeOnlyNonPublishable("com.github.GTNewHorizons:DuraDisplay:1.4.6:dev")
 
     // jvmDowngrader
     compileOnly("javax.xml.bind:jaxb-api:2.3.1")

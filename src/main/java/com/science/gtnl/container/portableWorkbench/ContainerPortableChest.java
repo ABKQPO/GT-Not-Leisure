@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import com.cleanroommc.bogosorter.api.IPosSetter;
 import com.cleanroommc.bogosorter.api.ISortableContainer;
 import com.cleanroommc.bogosorter.api.ISortingContextBuilder;
+import com.science.gtnl.common.celestweave.CelestweaveBackpack;
 import com.science.gtnl.common.item.items.PortableChestType;
 import com.science.gtnl.common.item.items.PortableItem;
 
@@ -28,13 +29,25 @@ public class ContainerPortableChest extends Container implements ISortableContai
     public ItemStack itemStack;
     public final String portableID;
     private final PortableItem.PortableType type;
+    public final IPortableStorageHost host;
 
     public ContainerPortableChest(InventoryPlayer playerInventory, ItemStack stack, PortableChestType type) {
-        this(playerInventory, stack, type.xSize, type.ySize, type.rows, type.cols);
+        this(playerInventory, stack, type, IPortableStorageHost.held(stack));
+    }
+
+    public ContainerPortableChest(InventoryPlayer playerInventory, ItemStack stack, PortableChestType type,
+        IPortableStorageHost host) {
+        this(playerInventory, stack, type.xSize, type.ySize, type.rows, type.cols, host);
     }
 
     public ContainerPortableChest(InventoryPlayer playerInventory, ItemStack stack, int xSize, int ySize, int rows,
         int cols) {
+        this(playerInventory, stack, xSize, ySize, rows, cols, IPortableStorageHost.held(stack));
+    }
+
+    public ContainerPortableChest(InventoryPlayer playerInventory, ItemStack stack, int xSize, int ySize, int rows,
+        int cols, IPortableStorageHost host) {
+        this.host = host;
         this.rows = rows;
         this.cols = cols;
         this.chestInventory = new InventoryBasic("PortableChest", false, rows * cols);
@@ -59,6 +72,7 @@ public class ContainerPortableChest extends Container implements ISortableContai
                             && (stack.getItemDamage() >= 6 && stack.getItemDamage() <= 17)) {
                             return false;
                         }
+                        if (CelestweaveBackpack.blockedInStorage(stack)) return false;
                         return super.isItemValid(stack);
                     }
                 });
@@ -95,28 +109,19 @@ public class ContainerPortableChest extends Container implements ISortableContai
 
     @Override
     public boolean canInteractWith(EntityPlayer player) {
-        ItemStack held = player.getHeldItem();
-        return PortableItem.matchesPortableID(held, portableID);
+        return host.valid(player);
     }
 
     @Override
     public void onContainerClosed(EntityPlayer player) {
         super.onContainerClosed(player);
-        ItemStack held = player.getHeldItem();
-        if (PortableItem.matchesPortableID(held, portableID)) {
-            type.saveInventory(held, chestInventory);
-            itemStack = held;
-        }
+        host.save(player, chestInventory);
     }
 
     @Override
     public ItemStack slotClick(int slotId, int clickedButton, int mode, EntityPlayer player) {
         ItemStack result = super.slotClick(slotId, clickedButton, mode, player);
-        ItemStack held = player.getHeldItem();
-        if (PortableItem.matchesPortableID(held, portableID)) {
-            type.saveInventory(held, chestInventory);
-            itemStack = held;
-        }
+        host.save(player, chestInventory);
         return result;
     }
 
@@ -129,6 +134,8 @@ public class ContainerPortableChest extends Container implements ISortableContai
             itemstack = itemstack1.copy();
 
             int chestSize = chestInventory.getSizeInventory();
+            if (index >= chestSize && !inventorySlots.get(0)
+                .isItemValid(itemstack1)) return null;
 
             if (index < chestSize) {
                 if (!this.mergeItemStack(itemstack1, chestSize, this.inventorySlots.size(), true)) {
@@ -145,11 +152,7 @@ public class ContainerPortableChest extends Container implements ISortableContai
             }
         }
 
-        ItemStack held = player.getHeldItem();
-        if (PortableItem.matchesPortableID(held, portableID)) {
-            type.saveInventory(held, chestInventory);
-            itemStack = held;
-        }
+        host.save(player, chestInventory);
         return itemstack;
     }
 }

@@ -2,6 +2,8 @@ package com.science.gtnl.loader;
 
 import com.science.gtnl.common.entity.EntityArrowCustom;
 import com.science.gtnl.common.entity.EntityPlayerLeashKnot;
+import com.science.gtnl.common.entity.EntityPortalGunOrb;
+import com.science.gtnl.common.entity.EntityPortalGunPortal;
 import com.science.gtnl.common.entity.EntitySaddleSlime;
 import com.science.gtnl.common.entity.EntitySteamRocket;
 import com.science.gtnl.utils.enums.ModList;
@@ -28,5 +30,15 @@ public class EntityLoader {
             64,
             2,
             true);
+        EntityRegistry
+            .registerModEntity(EntityPortalGunOrb.class, "PortalGunOrb", 3, ModList.ScienceNotLeisure.ID, 64, 10, true);
+        EntityRegistry.registerModEntity(
+            EntityPortalGunPortal.class,
+            "PortalGunPortal",
+            4,
+            ModList.ScienceNotLeisure.ID,
+            128,
+            20,
+            false);
     }
 }

@@ -18,6 +18,9 @@ public class GTNLMui2Textures {
     public static final UITexture PICTURE_GTNL_STEAM_LOGO = UITexture
         .fullImage(ModList.ScienceNotLeisure.ID, "gui/picture/steam_logo");
 
+    public static final UITexture OVERLAY_SLOT_MODULE = UITexture
+        .fullImage(ModList.ScienceNotLeisure.ID, "gui/equipment/module_slot");
+
     public static final UITexture BACKGROUND_GLOW_WHITE = UITexture
         .fullImage(Mods.TecTech.ID, "gui/background/white_glow");
 

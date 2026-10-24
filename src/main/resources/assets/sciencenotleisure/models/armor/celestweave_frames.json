@@ -1,0 +1,2079 @@
+{
+ "version": "celestweave-obj-2",
+ "note": "Generated from blockbench/celestweave_sets/src (celestweave_classic) by export.py. Units: model pixels, render with scale 1/16. ModelBiped axes: +x model left, +y down, -z front. Rotation order like ModelRenderer: Z, then Y, then X (radians). Pivots are relative to the parent frame or bone rotation point.",
+ "objFiles": {
+  "helmet": "celestweave_oculus.obj",
+  "chest": "celestweave_core.obj",
+  "legs": "celestweave_conduit.obj",
+  "boots": "celestweave_stride.obj"
+ },
+ "textures": {
+  "base": {
+   "file": "celestweave_base.png",
+   "size": [
+    256,
+    256
+   ]
+  },
+  "glow": {
+   "file": "celestweave_glow.png",
+   "size": [
+    128,
+    128
+   ]
+  },
+  "fx": {
+   "file": "celestweave_fx.png",
+   "size": [
+    128,
+    64
+   ],
+   "strips": {
+    "holo": {
+     "frames": 4,
+     "strideU": 0.109375
+    },
+    "field_n": {
+     "frames": 4,
+     "strideU": 0.1015625
+    },
+    "field_m": {
+     "frames": 4,
+     "strideU": 0.1015625
+    },
+    "blade0_n": {
+     "frames": 4,
+     "strideU": 0.1015625
+    },
+    "blade0_m": {
+     "frames": 4,
+     "strideU": 0.1015625
+    },
+    "blade1_n": {
+     "frames": 4,
+     "strideU": 0.09375
+    },
+    "blade1_m": {
+     "frames": 4,
+     "strideU": 0.09375
+    },
+    "blade2_n": {
+     "frames": 4,
+     "strideU": 0.0859375
+    },
+    "blade2_m": {
+     "frames": 4,
+     "strideU": 0.0859375
+    },
+    "blade3_n": {
+     "frames": 4,
+     "strideU": 0.078125
+    },
+    "blade3_m": {
+     "frames": 4,
+     "strideU": 0.078125
+    },
+    "blade4_n": {
+     "frames": 4,
+     "strideU": 0.0703125
+    },
+    "blade4_m": {
+     "frames": 4,
+     "strideU": 0.0703125
+    }
+   }
+  }
+ },
+ "bones": {
+  "head": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "body": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "rightArm": [
+   -5.0,
+   2.0,
+   0.0
+  ],
+  "leftArm": [
+   5.0,
+   2.0,
+   0.0
+  ],
+  "rightLeg": [
+   -1.9,
+   12.0,
+   0.0
+  ],
+  "leftLeg": [
+   1.9,
+   12.0,
+   0.0
+  ]
+ },
+ "frames": [
+  {
+   "name": "visor.eyes",
+   "file": "celestweave_oculus",
+   "part": "helmet",
+   "parent": "bone:head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "goggles.glass",
+   "file": "celestweave_oculus",
+   "part": "goggles",
+   "parent": "bone:head",
+   "pivot": [
+    2.25,
+    -3.5,
+    -6.5
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "holo.screen",
+   "file": "celestweave_oculus",
+   "part": "holo",
+   "parent": "bone:head",
+   "pivot": [
+    -2.5,
+    -4.125,
+    -7.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "holo.beam",
+   "file": "celestweave_oculus",
+   "part": "holo",
+   "parent": "bone:head",
+   "pivot": [
+    -4.625,
+    -5.25,
+    -6.125
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "bone:body",
+   "pivot": [
+    0.0,
+    4.0,
+    -4.61
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.innerRotor",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.innerSeg0",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core.innerRotor",
+   "pivot": [
+    0.0,
+    -0.95,
+    -0.425
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.innerSeg1",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core.innerRotor",
+   "pivot": [
+    0.8227,
+    0.475,
+    -0.425
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.innerSeg2",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core.innerRotor",
+   "pivot": [
+    -0.8227,
+    0.475,
+    -0.425
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.stator",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.rotorSeg0",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core.stator",
+   "pivot": [
+    0.6889,
+    -1.663,
+    -0.25
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.rotorSeg1",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core.stator",
+   "pivot": [
+    1.663,
+    -0.6889,
+    -0.25
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.rotorSeg2",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core.stator",
+   "pivot": [
+    1.663,
+    0.6889,
+    -0.25
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.rotorSeg3",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core.stator",
+   "pivot": [
+    0.6889,
+    1.663,
+    -0.25
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.rotorSeg4",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core.stator",
+   "pivot": [
+    -0.6889,
+    1.663,
+    -0.25
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.rotorSeg5",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core.stator",
+   "pivot": [
+    -1.663,
+    0.6889,
+    -0.25
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.rotorSeg6",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core.stator",
+   "pivot": [
+    -1.663,
+    -0.6889,
+    -0.25
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.rotorSeg7",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core.stator",
+   "pivot": [
+    -0.6889,
+    -1.663,
+    -0.25
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.swirl",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core",
+   "pivot": [
+    0.0,
+    0.0,
+    0.05
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.swirlPane",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core.swirl",
+   "pivot": [
+    0.0,
+    0.0,
+    -0.025
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.halo",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core",
+   "pivot": [
+    0.0,
+    0.0,
+    -0.775
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.crystal",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core",
+   "pivot": [
+    0.0,
+    0.0,
+    -0.3
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.shellA",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core.crystal",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.nucleus",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core.crystal",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "pack.band",
+   "file": "celestweave_core",
+   "part": "pack",
+   "parent": "bone:body",
+   "pivot": [
+    0.0,
+    5.0,
+    5.5
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.rotor",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.shardRing",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core",
+   "pivot": [
+    0.0,
+    0.0,
+    -0.3
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "core.shock",
+   "file": "celestweave_core",
+   "part": "chest",
+   "parent": "core",
+   "pivot": [
+    0.0,
+    0.0,
+    -0.875
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "wing.spar.R",
+   "file": "celestweave_conduit",
+   "part": "wings",
+   "parent": "bone:body",
+   "pivot": [
+    -5.5,
+    2.0,
+    5.5
+   ],
+   "rot": [
+    0.0,
+    0.35,
+    0.6
+   ]
+  },
+  {
+   "name": "wing.spar.L",
+   "file": "celestweave_conduit",
+   "part": "wings",
+   "parent": "bone:body",
+   "pivot": [
+    5.5,
+    2.0,
+    5.5
+   ],
+   "rot": [
+    0.0,
+    -0.35,
+    -0.6
+   ]
+  },
+  {
+   "name": "wing.fore.R",
+   "file": "celestweave_conduit",
+   "part": "wings",
+   "parent": "wing.spar.R",
+   "pivot": [
+    -3.0,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    -0.35
+   ]
+  },
+  {
+   "name": "wing.fore.L",
+   "file": "celestweave_conduit",
+   "part": "wings",
+   "parent": "wing.spar.L",
+   "pivot": [
+    3.0,
+    0.0,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.35
+   ]
+  },
+  {
+   "name": "wing.field.R",
+   "file": "celestweave_conduit",
+   "part": "wings",
+   "parent": "wing.fore.R",
+   "pivot": [
+    0.0,
+    0.0,
+    -0.2
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "wing.field.L",
+   "file": "celestweave_conduit",
+   "part": "wings",
+   "parent": "wing.fore.L",
+   "pivot": [
+    0.0,
+    0.0,
+    -0.2
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "wing.blade.R0",
+   "file": "celestweave_conduit",
+   "part": "wings",
+   "parent": "wing.fore.R",
+   "pivot": [
+    -5.0,
+    0.0,
+    0.15
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.3
+   ]
+  },
+  {
+   "name": "wing.blade.L0",
+   "file": "celestweave_conduit",
+   "part": "wings",
+   "parent": "wing.fore.L",
+   "pivot": [
+    5.0,
+    0.0,
+    0.15
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    -0.3
+   ]
+  },
+  {
+   "name": "wing.blade.R1",
+   "file": "celestweave_conduit",
+   "part": "wings",
+   "parent": "wing.fore.R",
+   "pivot": [
+    -4.0,
+    0.0,
+    0.21
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "wing.blade.L1",
+   "file": "celestweave_conduit",
+   "part": "wings",
+   "parent": "wing.fore.L",
+   "pivot": [
+    4.0,
+    0.0,
+    0.21
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "wing.blade.R2",
+   "file": "celestweave_conduit",
+   "part": "wings",
+   "parent": "wing.fore.R",
+   "pivot": [
+    -3.0,
+    0.0,
+    0.27
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    -0.3
+   ]
+  },
+  {
+   "name": "wing.blade.L2",
+   "file": "celestweave_conduit",
+   "part": "wings",
+   "parent": "wing.fore.L",
+   "pivot": [
+    3.0,
+    0.0,
+    0.27
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.3
+   ]
+  },
+  {
+   "name": "wing.blade.R3",
+   "file": "celestweave_conduit",
+   "part": "wings",
+   "parent": "wing.fore.R",
+   "pivot": [
+    -2.0,
+    0.0,
+    0.33
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    -0.6
+   ]
+  },
+  {
+   "name": "wing.blade.L3",
+   "file": "celestweave_conduit",
+   "part": "wings",
+   "parent": "wing.fore.L",
+   "pivot": [
+    2.0,
+    0.0,
+    0.33
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.6
+   ]
+  },
+  {
+   "name": "wing.blade.R4",
+   "file": "celestweave_conduit",
+   "part": "wings",
+   "parent": "wing.fore.R",
+   "pivot": [
+    -1.0,
+    0.0,
+    0.39
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    -0.9
+   ]
+  },
+  {
+   "name": "wing.blade.L4",
+   "file": "celestweave_conduit",
+   "part": "wings",
+   "parent": "wing.fore.L",
+   "pivot": [
+    1.0,
+    0.0,
+    0.39
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.9
+   ]
+  },
+  {
+   "name": "boots.heelNozzle0",
+   "file": "celestweave_stride",
+   "part": "boots",
+   "parent": "bone:rightLeg",
+   "pivot": [
+    -0.6,
+    9.5,
+    3.5
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "name": "boots.heelNozzle1",
+   "file": "celestweave_stride",
+   "part": "boots",
+   "parent": "bone:leftLeg",
+   "pivot": [
+    0.6,
+    9.5,
+    3.5
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ],
+ "groups": [
+  {
+   "obj": "celestweave_oculus.obj",
+   "name": "bone_head__glowFaces__helmet",
+   "frame": "bone:head",
+   "part": "helmet",
+   "layer": "glowFaces",
+   "tint": "glow",
+   "quads": 22
+  },
+  {
+   "obj": "celestweave_oculus.obj",
+   "name": "bone_head__glow_63dbe6__holo",
+   "frame": "bone:head",
+   "part": "holo",
+   "layer": "glow",
+   "tint": "fixed",
+   "color": [
+    99,
+    219,
+    230
+   ],
+   "quads": 10
+  },
+  {
+   "obj": "celestweave_oculus.obj",
+   "name": "bone_head__glow_79ffff__holo",
+   "frame": "bone:head",
+   "part": "holo",
+   "layer": "glow",
+   "tint": "fixed",
+   "color": [
+    121,
+    255,
+    255
+   ],
+   "quads": 5
+  },
+  {
+   "obj": "celestweave_oculus.obj",
+   "name": "bone_head__glow__helmet",
+   "frame": "bone:head",
+   "part": "helmet",
+   "layer": "glow",
+   "tint": "glow",
+   "quads": 10
+  },
+  {
+   "obj": "celestweave_oculus.obj",
+   "name": "bone_head__glow_ffc85a__goggles",
+   "frame": "bone:head",
+   "part": "goggles",
+   "layer": "glow",
+   "tint": "fixed",
+   "color": [
+    255,
+    200,
+    90
+   ],
+   "quads": 5
+  },
+  {
+   "obj": "celestweave_oculus.obj",
+   "name": "bone_head__pane_visorGlass__helmet",
+   "frame": "bone:head",
+   "part": "helmet",
+   "layer": "pane",
+   "blend": "additive",
+   "texture": "visorGlass",
+   "quads": 3
+  },
+  {
+   "obj": "celestweave_oculus.obj",
+   "name": "bone_head__solid__goggles",
+   "frame": "bone:head",
+   "part": "goggles",
+   "layer": "solid",
+   "quads": 46
+  },
+  {
+   "obj": "celestweave_oculus.obj",
+   "name": "bone_head__solid__helmet",
+   "frame": "bone:head",
+   "part": "helmet",
+   "layer": "solid",
+   "quads": 177
+  },
+  {
+   "obj": "celestweave_oculus.obj",
+   "name": "bone_head__solid__holo",
+   "frame": "bone:head",
+   "part": "holo",
+   "layer": "solid",
+   "quads": 67
+  },
+  {
+   "obj": "celestweave_oculus.obj",
+   "name": "goggles.glass__pane_lens__goggles",
+   "frame": "goggles.glass",
+   "part": "goggles",
+   "layer": "pane",
+   "blend": "alpha",
+   "texture": "lens",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_oculus.obj",
+   "name": "holo.beam__pane_beam__holo",
+   "frame": "holo.beam",
+   "part": "holo",
+   "layer": "pane",
+   "blend": "additive",
+   "texture": "beam",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_oculus.obj",
+   "name": "holo.screen__pane_holo__holo",
+   "frame": "holo.screen",
+   "part": "holo",
+   "layer": "pane",
+   "blend": "alpha",
+   "texture": "holo",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_oculus.obj",
+   "name": "visor.eyes__glowFaces_fff2f9__helmet",
+   "frame": "visor.eyes",
+   "part": "helmet",
+   "layer": "glowFaces",
+   "tint": "fixed",
+   "color": [
+    255,
+    242,
+    249
+   ],
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "bone_body__glowFaces__chest",
+   "frame": "bone:body",
+   "part": "chest",
+   "layer": "glowFaces",
+   "tint": "glow",
+   "quads": 4
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "bone_body__glowFaces__coils",
+   "frame": "bone:body",
+   "part": "coils",
+   "layer": "glowFaces",
+   "tint": "glow",
+   "quads": 12
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "bone_body__solid__chest",
+   "frame": "bone:body",
+   "part": "chest",
+   "layer": "solid",
+   "quads": 108
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "bone_body__solid__coils",
+   "frame": "bone:body",
+   "part": "coils",
+   "layer": "solid",
+   "quads": 44
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "bone_body__solid__pack",
+   "frame": "bone:body",
+   "part": "pack",
+   "layer": "solid",
+   "quads": 21
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "bone_leftArm__glowFaces__chest",
+   "frame": "bone:leftArm",
+   "part": "chest",
+   "layer": "glowFaces",
+   "tint": "glow",
+   "quads": 3
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "bone_leftArm__glow__chest",
+   "frame": "bone:leftArm",
+   "part": "chest",
+   "layer": "glow",
+   "tint": "glow",
+   "quads": 5
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "bone_leftArm__solid__chest",
+   "frame": "bone:leftArm",
+   "part": "chest",
+   "layer": "solid",
+   "quads": 103
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "bone_rightArm__glowFaces__chest",
+   "frame": "bone:rightArm",
+   "part": "chest",
+   "layer": "glowFaces",
+   "tint": "glow",
+   "quads": 3
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "bone_rightArm__glow__chest",
+   "frame": "bone:rightArm",
+   "part": "chest",
+   "layer": "glow",
+   "tint": "glow",
+   "quads": 5
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "bone_rightArm__solid__chest",
+   "frame": "bone:rightArm",
+   "part": "chest",
+   "layer": "solid",
+   "quads": 103
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "core.halo__pane_halo__chest",
+   "frame": "core.halo",
+   "part": "chest",
+   "layer": "pane",
+   "blend": "additive",
+   "texture": "halo",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "core.innerSeg0__glow_ffc8eb__chest",
+   "frame": "core.innerSeg0",
+   "part": "chest",
+   "layer": "glow",
+   "tint": "fixed",
+   "color": [
+    255,
+    200,
+    235
+   ],
+   "quads": 6
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "core.innerSeg1__glow_ffc8eb__chest",
+   "frame": "core.innerSeg1",
+   "part": "chest",
+   "layer": "glow",
+   "tint": "fixed",
+   "color": [
+    255,
+    200,
+    235
+   ],
+   "quads": 6
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "core.innerSeg2__glow_ffc8eb__chest",
+   "frame": "core.innerSeg2",
+   "part": "chest",
+   "layer": "glow",
+   "tint": "fixed",
+   "color": [
+    255,
+    200,
+    235
+   ],
+   "quads": 6
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "core.nucleus__glow_ffe6f5__chest",
+   "frame": "core.nucleus",
+   "part": "chest",
+   "layer": "glow",
+   "tint": "fixed",
+   "color": [
+    255,
+    230,
+    245
+   ],
+   "quads": 6
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "core.rotorSeg0__glow__chest",
+   "frame": "core.rotorSeg0",
+   "part": "chest",
+   "layer": "glow",
+   "tint": "glow",
+   "quads": 6
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "core.rotorSeg1__glow__chest",
+   "frame": "core.rotorSeg1",
+   "part": "chest",
+   "layer": "glow",
+   "tint": "glow",
+   "quads": 6
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "core.rotorSeg2__glow__chest",
+   "frame": "core.rotorSeg2",
+   "part": "chest",
+   "layer": "glow",
+   "tint": "glow",
+   "quads": 6
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "core.rotorSeg3__glow__chest",
+   "frame": "core.rotorSeg3",
+   "part": "chest",
+   "layer": "glow",
+   "tint": "glow",
+   "quads": 6
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "core.rotorSeg4__glow__chest",
+   "frame": "core.rotorSeg4",
+   "part": "chest",
+   "layer": "glow",
+   "tint": "glow",
+   "quads": 6
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "core.rotorSeg5__glow__chest",
+   "frame": "core.rotorSeg5",
+   "part": "chest",
+   "layer": "glow",
+   "tint": "glow",
+   "quads": 6
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "core.rotorSeg6__glow__chest",
+   "frame": "core.rotorSeg6",
+   "part": "chest",
+   "layer": "glow",
+   "tint": "glow",
+   "quads": 6
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "core.rotorSeg7__glow__chest",
+   "frame": "core.rotorSeg7",
+   "part": "chest",
+   "layer": "glow",
+   "tint": "glow",
+   "quads": 6
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "core.shellA__glow__chest",
+   "frame": "core.shellA",
+   "part": "chest",
+   "layer": "glow",
+   "tint": "glow",
+   "quads": 6
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "core.stator__solid__chest",
+   "frame": "core.stator",
+   "part": "chest",
+   "layer": "solid",
+   "quads": 44
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "core.swirlPane__pane_swirl__chest",
+   "frame": "core.swirlPane",
+   "part": "chest",
+   "layer": "pane",
+   "blend": "additive",
+   "texture": "swirl",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_core.obj",
+   "name": "pack.band__glow_5ee0e0__pack",
+   "frame": "pack.band",
+   "part": "pack",
+   "layer": "glow",
+   "tint": "fixed",
+   "color": [
+    94,
+    224,
+    224
+   ],
+   "quads": 6
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "bone_body__glowFaces__legs",
+   "frame": "bone:body",
+   "part": "legs",
+   "layer": "glowFaces",
+   "tint": "glow",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "bone_body__glowFaces__wings",
+   "frame": "bone:body",
+   "part": "wings",
+   "layer": "glowFaces",
+   "tint": "glow",
+   "quads": 8
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "bone_body__solid__legs",
+   "frame": "bone:body",
+   "part": "legs",
+   "layer": "solid",
+   "quads": 15
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "bone_body__solid__wings",
+   "frame": "bone:body",
+   "part": "wings",
+   "layer": "solid",
+   "quads": 32
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "bone_leftLeg__glowFaces__legs",
+   "frame": "bone:leftLeg",
+   "part": "legs",
+   "layer": "glowFaces",
+   "tint": "glow",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "bone_leftLeg__solid__legs",
+   "frame": "bone:leftLeg",
+   "part": "legs",
+   "layer": "solid",
+   "quads": 71
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "bone_rightLeg__glowFaces__legs",
+   "frame": "bone:rightLeg",
+   "part": "legs",
+   "layer": "glowFaces",
+   "tint": "glow",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "bone_rightLeg__solid__legs",
+   "frame": "bone:rightLeg",
+   "part": "legs",
+   "layer": "solid",
+   "quads": 71
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.blade.L0__pane_blade0__wings",
+   "frame": "wing.blade.L0",
+   "part": "wings",
+   "layer": "pane",
+   "blend": "additive",
+   "texture": "blade0",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.blade.L1__pane_blade1__wings",
+   "frame": "wing.blade.L1",
+   "part": "wings",
+   "layer": "pane",
+   "blend": "additive",
+   "texture": "blade1",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.blade.L2__pane_blade2__wings",
+   "frame": "wing.blade.L2",
+   "part": "wings",
+   "layer": "pane",
+   "blend": "additive",
+   "texture": "blade2",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.blade.L3__pane_blade3__wings",
+   "frame": "wing.blade.L3",
+   "part": "wings",
+   "layer": "pane",
+   "blend": "additive",
+   "texture": "blade3",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.blade.L4__pane_blade4__wings",
+   "frame": "wing.blade.L4",
+   "part": "wings",
+   "layer": "pane",
+   "blend": "additive",
+   "texture": "blade4",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.blade.R0__pane_blade0__wings",
+   "frame": "wing.blade.R0",
+   "part": "wings",
+   "layer": "pane",
+   "blend": "additive",
+   "texture": "blade0",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.blade.R1__pane_blade1__wings",
+   "frame": "wing.blade.R1",
+   "part": "wings",
+   "layer": "pane",
+   "blend": "additive",
+   "texture": "blade1",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.blade.R2__pane_blade2__wings",
+   "frame": "wing.blade.R2",
+   "part": "wings",
+   "layer": "pane",
+   "blend": "additive",
+   "texture": "blade2",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.blade.R3__pane_blade3__wings",
+   "frame": "wing.blade.R3",
+   "part": "wings",
+   "layer": "pane",
+   "blend": "additive",
+   "texture": "blade3",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.blade.R4__pane_blade4__wings",
+   "frame": "wing.blade.R4",
+   "part": "wings",
+   "layer": "pane",
+   "blend": "additive",
+   "texture": "blade4",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.field.L__pane_field__wings",
+   "frame": "wing.field.L",
+   "part": "wings",
+   "layer": "pane",
+   "blend": "additive",
+   "texture": "field",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.field.R__pane_field__wings",
+   "frame": "wing.field.R",
+   "part": "wings",
+   "layer": "pane",
+   "blend": "additive",
+   "texture": "field",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.fore.L__glowFaces__wings",
+   "frame": "wing.fore.L",
+   "part": "wings",
+   "layer": "glowFaces",
+   "tint": "glow",
+   "quads": 3
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.fore.L__glow__wings",
+   "frame": "wing.fore.L",
+   "part": "wings",
+   "layer": "glow",
+   "tint": "glow",
+   "quads": 5
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.fore.L__solid__wings",
+   "frame": "wing.fore.L",
+   "part": "wings",
+   "layer": "solid",
+   "quads": 24
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.fore.R__glowFaces__wings",
+   "frame": "wing.fore.R",
+   "part": "wings",
+   "layer": "glowFaces",
+   "tint": "glow",
+   "quads": 3
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.fore.R__glow__wings",
+   "frame": "wing.fore.R",
+   "part": "wings",
+   "layer": "glow",
+   "tint": "glow",
+   "quads": 5
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.fore.R__solid__wings",
+   "frame": "wing.fore.R",
+   "part": "wings",
+   "layer": "solid",
+   "quads": 24
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.spar.L__glowFaces__wings",
+   "frame": "wing.spar.L",
+   "part": "wings",
+   "layer": "glowFaces",
+   "tint": "glow",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.spar.L__solid__wings",
+   "frame": "wing.spar.L",
+   "part": "wings",
+   "layer": "solid",
+   "quads": 21
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.spar.R__glowFaces__wings",
+   "frame": "wing.spar.R",
+   "part": "wings",
+   "layer": "glowFaces",
+   "tint": "glow",
+   "quads": 2
+  },
+  {
+   "obj": "celestweave_conduit.obj",
+   "name": "wing.spar.R__solid__wings",
+   "frame": "wing.spar.R",
+   "part": "wings",
+   "layer": "solid",
+   "quads": 21
+  },
+  {
+   "obj": "celestweave_stride.obj",
+   "name": "bone_leftLeg__glowFaces__boots",
+   "frame": "bone:leftLeg",
+   "part": "boots",
+   "layer": "glowFaces",
+   "tint": "glow",
+   "quads": 4
+  },
+  {
+   "obj": "celestweave_stride.obj",
+   "name": "bone_leftLeg__solid__boots",
+   "frame": "bone:leftLeg",
+   "part": "boots",
+   "layer": "solid",
+   "quads": 59
+  },
+  {
+   "obj": "celestweave_stride.obj",
+   "name": "bone_rightLeg__glowFaces__boots",
+   "frame": "bone:rightLeg",
+   "part": "boots",
+   "layer": "glowFaces",
+   "tint": "glow",
+   "quads": 4
+  },
+  {
+   "obj": "celestweave_stride.obj",
+   "name": "bone_rightLeg__solid__boots",
+   "frame": "bone:rightLeg",
+   "part": "boots",
+   "layer": "solid",
+   "quads": 59
+  },
+  {
+   "obj": "celestweave_stride.obj",
+   "name": "boots.heelNozzle0__glowFaces__boots",
+   "frame": "boots.heelNozzle0",
+   "part": "boots",
+   "layer": "glowFaces",
+   "tint": "glow",
+   "quads": 1
+  },
+  {
+   "obj": "celestweave_stride.obj",
+   "name": "boots.heelNozzle0__solid__boots",
+   "frame": "boots.heelNozzle0",
+   "part": "boots",
+   "layer": "solid",
+   "quads": 12
+  },
+  {
+   "obj": "celestweave_stride.obj",
+   "name": "boots.heelNozzle1__glowFaces__boots",
+   "frame": "boots.heelNozzle1",
+   "part": "boots",
+   "layer": "glowFaces",
+   "tint": "glow",
+   "quads": 1
+  },
+  {
+   "obj": "celestweave_stride.obj",
+   "name": "boots.heelNozzle1__solid__boots",
+   "frame": "boots.heelNozzle1",
+   "part": "boots",
+   "layer": "solid",
+   "quads": 12
+  }
+ ],
+ "arcs": {
+  "seams": [
+   {
+    "part": "chest",
+    "anchor": "bone:body",
+    "a": [
+     3.4,
+     10.0,
+     3.5
+    ],
+    "b": [
+     3.4,
+     4.5,
+     3.5
+    ],
+    "half": [
+     0.0,
+     0.0,
+     -1.0
+    ]
+   },
+   {
+    "part": "chest",
+    "anchor": "bone:body",
+    "a": [
+     -3.4,
+     10.0,
+     3.5
+    ],
+    "b": [
+     -3.4,
+     4.5,
+     3.5
+    ],
+    "half": [
+     0.0,
+     0.0,
+     1.0
+    ]
+   },
+   {
+    "part": "chest",
+    "anchor": "bone:body",
+    "a": [
+     3.25,
+     7.5,
+     -3.5
+    ],
+    "b": [
+     3.25,
+     3.25,
+     -3.5
+    ],
+    "half": [
+     0.0,
+     0.0,
+     -0.4875
+    ]
+   },
+   {
+    "part": "chest",
+    "anchor": "bone:body",
+    "a": [
+     -3.25,
+     7.5,
+     -3.5
+    ],
+    "b": [
+     -3.25,
+     3.25,
+     -3.5
+    ],
+    "half": [
+     0.0,
+     0.0,
+     0.4875
+    ]
+   },
+   {
+    "part": "coils",
+    "anchor": "bone:body",
+    "a": [
+     2.0,
+     9.0,
+     6.1
+    ],
+    "b": [
+     2.0,
+     4.0,
+     6.1
+    ],
+    "half": [
+     1.6,
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "part": "coils",
+    "anchor": "bone:body",
+    "a": [
+     -2.0,
+     9.0,
+     6.1
+    ],
+    "b": [
+     -2.0,
+     4.0,
+     6.1
+    ],
+    "half": [
+     1.6,
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "part": "chest",
+    "anchor": "bone:body",
+    "a": [
+     2.6,
+     4.0,
+     -4.6
+    ],
+    "b": [
+     4.1,
+     5.5,
+     -3.2
+    ]
+   },
+   {
+    "part": "chest",
+    "anchor": "bone:body",
+    "a": [
+     -2.6,
+     4.0,
+     -4.6
+    ],
+    "b": [
+     -4.1,
+     5.5,
+     -3.2
+    ]
+   },
+   {
+    "part": "chest",
+    "anchor": "bone:body",
+    "a": [
+     0.75,
+     6.75,
+     -4.6
+    ],
+    "b": [
+     2.25,
+     8.75,
+     -4.1
+    ],
+    "half": [
+     0.71386,
+     -0.5354,
+     0.0
+    ]
+   },
+   {
+    "part": "chest",
+    "anchor": "bone:body",
+    "a": [
+     -0.75,
+     6.75,
+     -4.6
+    ],
+    "b": [
+     -2.25,
+     8.75,
+     -4.1
+    ],
+    "half": [
+     0.71386,
+     0.5354,
+     0.0
+    ]
+   },
+   {
+    "part": "chest",
+    "anchor": "bone:body",
+    "a": [
+     0.75,
+     1.25,
+     -4.6
+    ],
+    "b": [
+     2.75,
+     0.25,
+     -4.1
+    ]
+   },
+   {
+    "part": "chest",
+    "anchor": "bone:body",
+    "a": [
+     -0.75,
+     1.25,
+     -4.6
+    ],
+    "b": [
+     -2.75,
+     0.25,
+     -4.1
+    ]
+   },
+   {
+    "part": "helmet",
+    "anchor": "bone:head",
+    "a": [
+     1.75,
+     -11.15,
+     1.25
+    ],
+    "b": [
+     1.75,
+     -10.1,
+     -3.4
+    ]
+   },
+   {
+    "part": "helmet",
+    "anchor": "bone:head",
+    "a": [
+     -1.75,
+     -11.15,
+     1.25
+    ],
+    "b": [
+     -1.75,
+     -10.1,
+     -3.4
+    ]
+   },
+   {
+    "part": "chest",
+    "anchor": "bone:leftArm",
+    "a": [
+     3.75,
+     10.75,
+     2.25
+    ],
+    "b": [
+     3.75,
+     7.25,
+     2.25
+    ],
+    "half": [
+     0.0,
+     0.0,
+     -0.725
+    ]
+   },
+   {
+    "part": "chest",
+    "anchor": "bone:rightArm",
+    "a": [
+     -3.75,
+     10.75,
+     2.25
+    ],
+    "b": [
+     -3.75,
+     7.25,
+     2.25
+    ],
+    "half": [
+     0.0,
+     0.0,
+     0.725
+    ]
+   },
+   {
+    "part": "legs",
+    "anchor": "bone:leftLeg",
+    "a": [
+     -1.4,
+     5.5,
+     -4.1
+    ],
+    "b": [
+     1.6,
+     5.5,
+     -4.1
+    ],
+    "half": [
+     0.0,
+     -1.05,
+     0.0
+    ]
+   },
+   {
+    "part": "legs",
+    "anchor": "bone:rightLeg",
+    "a": [
+     1.4,
+     5.5,
+     -4.1
+    ],
+    "b": [
+     -1.6,
+     5.5,
+     -4.1
+    ],
+    "half": [
+     0.0,
+     1.05,
+     0.0
+    ]
+   },
+   {
+    "part": "chest",
+    "anchor": "bone:leftArm",
+    "a": [
+     5.4,
+     -0.3,
+     -3.0
+    ],
+    "b": [
+     5.4,
+     -0.3,
+     3.5
+    ]
+   },
+   {
+    "part": "chest",
+    "anchor": "bone:rightArm",
+    "a": [
+     -5.4,
+     -0.3,
+     -3.0
+    ],
+    "b": [
+     -5.4,
+     -0.3,
+     3.5
+    ]
+   },
+   {
+    "part": "legs",
+    "anchor": "bone:leftLeg",
+    "a": [
+     3.7,
+     5.5,
+     -1.5
+    ],
+    "b": [
+     3.7,
+     1.5,
+     1.5
+    ],
+    "half": [
+     0.0,
+     -0.54,
+     -0.72
+    ]
+   },
+   {
+    "part": "legs",
+    "anchor": "bone:rightLeg",
+    "a": [
+     -3.7,
+     5.5,
+     -1.5
+    ],
+    "b": [
+     -3.7,
+     1.5,
+     1.5
+    ],
+    "half": [
+     0.0,
+     0.54,
+     0.72
+    ]
+   }
+  ],
+  "antenna": {
+   "anchor": "bone:head",
+   "a": [
+    -4.5,
+    -10.24264,
+    6.74264
+   ],
+   "b": [
+    4.5,
+    -10.24264,
+    6.74264
+   ]
+  },
+  "core": {
+   "anchor": "core",
+   "center": [
+    0.0,
+    0.0,
+    -0.3
+   ],
+   "inner": [
+    0.0,
+    0.0,
+    -0.35
+   ],
+   "innerRadius": [
+    1.3,
+    1.8
+   ],
+   "lowRadius": 2.2,
+   "hitRadius": [
+    5.0,
+    8.0
+   ],
+   "hitReach": [
+    1.0,
+    4.0
+   ]
+  },
+  "dash": {
+   "R": {
+    "anchor": "bone:rightLeg",
+    "a": [
+     -0.6,
+     9.5,
+     4.0
+    ]
+   },
+   "L": {
+    "anchor": "bone:leftLeg",
+    "a": [
+     0.6,
+     9.5,
+     4.0
+    ]
+   }
+  },
+  "wingFore": {
+   "R": {
+    "anchor": "wing.fore.R",
+    "a": [
+     -0.5,
+     -1.1,
+     0.0
+    ],
+    "b": [
+     -5.0,
+     -1.1,
+     0.0
+    ]
+   },
+   "L": {
+    "anchor": "wing.fore.L",
+    "a": [
+     0.5,
+     -1.1,
+     0.0
+    ],
+    "b": [
+     5.0,
+     -1.1,
+     0.0
+    ]
+   }
+  }
+ }
+}

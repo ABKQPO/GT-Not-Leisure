@@ -1,4 +1,94 @@
 {
+  "railgun.fire.charged": {"category": "player", "sounds": ["railgun/fire"]},
+  "railgun.fire.max": {"category": "player", "sounds": ["railgun/fire"]},
+  "railgun.fire.impact": {
+    "category": "player",
+    "sounds": ["minecraft:random/explode1", "minecraft:random/explode2", "minecraft:random/explode3", "minecraft:random/explode4"]
+  },
+  "railgun.beam.chain": {
+    "category": "player",
+    "sounds": [
+      {"name": "minecraft:note/pling", "volume": 0.75, "pitch": 1.8, "weight": 4},
+      {"name": "minecraft:random/explode1", "volume": 0.25, "pitch": 2.0},
+      {"name": "minecraft:random/explode2", "volume": 0.25, "pitch": 2.0},
+      {"name": "minecraft:random/explode3", "volume": 0.25, "pitch": 2.0},
+      {"name": "minecraft:random/explode4", "volume": 0.25, "pitch": 2.0}
+    ]
+  },
+  "railgun.beam.loop": {"category": "player", "sounds": ["railgun/beam_loop"]},
+  "railgun.charge.loop": {"category": "player", "sounds": ["railgun/charge_loop"]},
+  "railgun.charge.ramp": {"category": "player", "sounds": ["railgun/charge_ramp"]},
+  "celestweave.shield.block": {
+    "category": "player",
+    "sounds": [{"name": "minecraft:random/anvil_land", "volume": 0.25, "pitch": 1.9}]
+  },
+  "celestweave.shield.hum": {
+    "category": "player",
+    "sounds": [
+      {"name": "minecraft:mob/endermen/portal", "volume": 0.5, "pitch": 1.6},
+      {"name": "minecraft:mob/endermen/portal2", "volume": 0.5, "pitch": 1.6}
+    ]
+  },
+  "celestweave.shield.save": {
+    "category": "player",
+    "sounds": [{"name": "minecraft:random/anvil_land", "volume": 0.6, "pitch": 0.7}]
+  },
+  "celestweave.zap": {
+    "category": "player",
+    "sounds": [
+      {"name": "minecraft:fireworks/twinkle1", "volume": 0.7, "pitch": 1.5},
+      {"name": "minecraft:fireworks/twinkle_far1", "volume": 0.7, "pitch": 1.7},
+      {"name": "minecraft:fire/ignite", "volume": 0.6, "pitch": 1.8}
+    ]
+  },
+  "celestweave.reflect": {
+    "category": "player",
+    "sounds": [
+      {"name": "minecraft:note/pling", "volume": 0.6, "pitch": 2.0, "weight": 2},
+      {"name": "minecraft:fireworks/blast1", "volume": 0.5, "pitch": 1.8},
+      {"name": "minecraft:fireworks/blast_far1", "volume": 0.5, "pitch": 1.8}
+    ]
+  },
+  "celestweave.lightning": {
+    "category": "player",
+    "sounds": [
+      {"name": "minecraft:ambient/weather/thunder1", "volume": 0.35, "pitch": 1.6},
+      {"name": "minecraft:ambient/weather/thunder2", "volume": 0.35, "pitch": 1.6},
+      {"name": "minecraft:ambient/weather/thunder3", "volume": 0.35, "pitch": 1.6}
+    ]
+  },
+  "celestweave.dash": {
+    "category": "player",
+    "sounds": [{"name": "railgun/fire", "volume": 0.4, "pitch": 1.7}]
+  },
+  "celestweave.whoosh": {
+    "category": "player",
+    "sounds": [
+      {"name": "minecraft:mob/enderdragon/wings1", "volume": 0.6, "pitch": 1.6},
+      {"name": "minecraft:mob/enderdragon/wings2", "volume": 0.6, "pitch": 1.6},
+      {"name": "minecraft:mob/enderdragon/wings3", "volume": 0.6, "pitch": 1.6},
+      {"name": "minecraft:mob/enderdragon/wings4", "volume": 0.6, "pitch": 1.6},
+      {"name": "minecraft:mob/enderdragon/wings5", "volume": 0.6, "pitch": 1.6},
+      {"name": "minecraft:mob/enderdragon/wings6", "volume": 0.6, "pitch": 1.6}
+    ]
+  },
+  "celestweave.land": {
+    "category": "player",
+    "sounds": [
+      {"name": "minecraft:random/explode1", "volume": 0.2, "pitch": 1.9},
+      {"name": "minecraft:random/explode2", "volume": 0.2, "pitch": 1.9},
+      {"name": "minecraft:random/explode3", "volume": 0.2, "pitch": 1.9},
+      {"name": "minecraft:random/explode4", "volume": 0.2, "pitch": 1.9}
+    ]
+  },
+  "celestweave.wing.open": {
+    "category": "player",
+    "sounds": [{"name": "minecraft:tile/piston/out", "volume": 0.45, "pitch": 1.5}]
+  },
+  "celestweave.wing.close": {
+    "category": "player",
+    "sounds": [{"name": "minecraft:tile/piston/in", "volume": 0.45, "pitch": 1.5}]
+  },
   "time.stop": {
     "category": "player",
     "sounds": [

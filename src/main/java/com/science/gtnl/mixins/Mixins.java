@@ -52,7 +52,8 @@ public enum Mixins implements IMixins {
             .setApplyIf(() -> MainConfig.minecraft.enableKillEnhance)),
 
     MINECRAFT_CLIENT(Side.CLIENT, "minecraft.AccessorEntityRenderer", "minecraft.AccessorGuiChat",
-        "minecraft.MixinMinecraft", "minecraft.MixinWorldClient",
+        "minecraft.MixinMinecraft", "minecraft.MixinModelBiped", "minecraft.MixinMinecraftRailgunClick",
+        "minecraft.MixinRenderPlayerFirstPersonArm", "minecraft.MixinWorldClient", "minecraft.MixinItemRendererRailgun",
         // "minecraft.MixinSimpleReloadableResourceManager",
         "minecraft.MixinGuiContainer", "minecraft.MixinGuiFlatPresets"),
 
@@ -127,6 +128,10 @@ public enum Mixins implements IMixins {
     ME_MINI_TERMINAL_MODULAR_UI(new MixinBuilder("ME mini portable terminal ModularUI hover blocking")
         .addClientMixins("modularUI.MixinMiniTerminalModularGui")
         .setPhase(Phase.LATE)),
+
+    MODULAR_UI_LIVE_PALETTE_THEMES(
+        new MixinBuilder("ModularUI 2 screens follow live palette themes").addClientMixins("modularUI2.MixinThemeAPI")
+            .setPhase(Phase.LATE)),
 
     ME_MINI_TERMINAL_BOGO(new MixinBuilder("ME mini portable terminal native Bogo shortcut destinations")
         .addClientMixins("inventoryBogoSorter.MixinMiniTerminalShortcuts")

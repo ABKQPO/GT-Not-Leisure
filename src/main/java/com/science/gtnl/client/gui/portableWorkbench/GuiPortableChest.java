@@ -7,8 +7,10 @@ import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
 
+import com.science.gtnl.client.celestweave.CelestweaveBackpackClient;
 import com.science.gtnl.common.item.items.PortableChestType;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableChest;
+import com.science.gtnl.container.portableWorkbench.IPortableStorageHost;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -23,6 +25,21 @@ public class GuiPortableChest extends GuiContainer {
         this.type = type;
         this.xSize = type.xSize;
         this.ySize = type.ySize;
+    }
+
+    public GuiPortableChest(PortableChestType type, InventoryPlayer player, ItemStack stack,
+        IPortableStorageHost host) {
+        super(new ContainerPortableChest(player, stack, type, host));
+        this.type = type;
+        this.xSize = type.xSize;
+        this.ySize = type.ySize;
+    }
+
+    @Override
+    public void initGui() {
+        super.initGui();
+        if (inventorySlots instanceof ContainerPortableChest chest && chest.host.fromBackpack())
+            CelestweaveBackpackClient.addTabs(guiLeft, guiTop, buttonList);
     }
 
     @Override
