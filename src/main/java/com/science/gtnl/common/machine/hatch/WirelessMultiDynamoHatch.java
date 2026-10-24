@@ -81,10 +81,8 @@ public class WirelessMultiDynamoHatch extends MTEHatchWirelessDynamoMulti implem
                 + AnimatedTooltipHandler.GREEN
                 + AnimatedTooltipHandler.BOLD
                 + "Chrom",
-            StatCollector.translateToLocal("gt.blockmachines.hatch.energytunnel.desc.1") + ": "
-                + AnimatedTooltipHandler.YELLOW
-                + NumberFormatUtil.formatNumber(maxAmperes * GTValues.V[mTier])
-                + AnimatedTooltipHandler.GRAY
-                + " EU/t" };
+            StatCollector.translateToLocalFormatted(
+                "gt.tileentity.throughput",
+                NumberFormatUtil.formatNumber(maxAmperes * GTValues.V[mTier])) };
     }
 }
