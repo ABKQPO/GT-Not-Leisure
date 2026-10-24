@@ -1,7 +1,5 @@
 package com.science.gtnl.common.railgun;
 
-import java.util.Collections;
-import java.util.EnumMap;
 import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,6 +15,11 @@ import com.science.gtnl.common.equipment.EquipmentTag;
 import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.config.MainConfig;
 
+import it.unimi.dsi.fastutil.ints.IntIterator;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMaps;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+
 public class RailgunData {
 
     public static final String ROOT = "Railgun";
@@ -28,7 +31,7 @@ public class RailgunData {
     public static final int BEAM_RANGE = 64;
     public static final EquipmentModules.Storage MODULE_STORAGE = EquipmentModules
         .storage(RailgunData::moduleList, RailgunData::moduleStacks, RailgunData::writeModuleStacks);
-    private static final Modules NO_MODULES = new Modules(Collections.emptyMap(), 0);
+    private static final Modules NO_MODULES = new Modules(Reference2IntMaps.emptyMap(), 0);
     private static final Map<NBTTagList, Modules> CACHE = new MapMaker().weakKeys()
         .makeMap();
 
@@ -74,25 +77,26 @@ public class RailgunData {
         Modules cached = CACHE.get(list);
         if (cached != null) return cached;
         ItemStack[] stacks = moduleStacks(stack);
-        Map<RailgunModule, Integer> counts = new EnumMap<>(RailgunModule.class);
+        Reference2IntOpenHashMap<RailgunModule> counts = new Reference2IntOpenHashMap<>();
         for (ItemStack module : stacks) {
             RailgunModule type = RailgunModule.of(module);
-            if (type != null) counts.put(type, Math.min(type.limit, counts.getOrDefault(type, 0) + module.stackSize));
+            if (type != null) counts.put(type, Math.min(type.limit, counts.getInt(type) + module.stackSize));
         }
-        Modules result = new Modules(Collections.unmodifiableMap(counts), EquipmentModules.energyTier(stacks));
+        Modules result = new Modules(Reference2IntMaps.unmodifiable(counts), EquipmentModules.energyTier(stacks));
         CACHE.put(list, result);
         return result;
     }
 
-    public record Modules(Map<RailgunModule, Integer> counts, int energyTier) {
+    public record Modules(Reference2IntMap<RailgunModule> counts, int energyTier) {
 
         public int count(RailgunModule type) {
-            return counts.getOrDefault(type, 0);
+            return counts.getInt(type);
         }
 
         public int total() {
             int total = 0;
-            for (int count : counts.values()) total += count;
+            for (IntIterator it = counts.values()
+                .iterator(); it.hasNext();) total += it.nextInt();
             return total;
         }
     }

@@ -1,6 +1,5 @@
 package com.science.gtnl.common.effect.effects;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -26,10 +25,11 @@ import com.science.gtnl.mixins.early.minecraft.AccessorFoodStats;
 import com.science.gtnl.utils.ColorUtils;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class PotionGhostlyShape extends EffectBase {
 
-    private static final Set<EntityPlayer> affectedPlayers = new HashSet<>();
+    private static final Set<EntityPlayer> affectedPlayers = new ObjectOpenHashSet<>();
 
     public PotionGhostlyShape(int id) {
         super(id, "ghostly_shape", false, ColorUtils.rgb(ColorUtils.effectGhostlyShape), 4);

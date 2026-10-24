@@ -1,9 +1,6 @@
 package com.science.gtnl.common.wireless;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 
@@ -29,14 +26,16 @@ import appeng.api.parts.IPartHost;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class WirelessAutoConnect {
 
     public static final WirelessAutoConnect INSTANCE = new WirelessAutoConnect();
     private static final String LANG = "item.gtnl.wireless_frequency_card.";
-    private static final List<Pending> PENDING = new ArrayList<>();
-    private static final Map<UUID, Long> NOTICES = new HashMap<>();
-    private static final Map<UUID, Long> TOGGLES = new HashMap<>();
+    private static final List<Pending> PENDING = new ObjectArrayList<>();
+    private static final Object2LongOpenHashMap<UUID> NOTICES = new Object2LongOpenHashMap<>();
+    private static final Object2LongOpenHashMap<UUID> TOGGLES = new Object2LongOpenHashMap<>();
     private static long ticks;
 
     private static class Pending {
@@ -201,9 +200,9 @@ public class WirelessAutoConnect {
         }
         if (ticks % 200 == 0) {
             NOTICES.values()
-                .removeIf(until -> until < ticks);
+                .removeIf((long until) -> until < ticks);
             TOGGLES.values()
-                .removeIf(until -> until < ticks);
+                .removeIf((long until) -> until < ticks);
         }
     }
 

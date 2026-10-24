@@ -1,8 +1,5 @@
 package com.science.gtnl.client.equipment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,6 +28,8 @@ import com.science.gtnl.common.packet.OpenEquipmentGuiPacket;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 
 @SideOnly(Side.CLIENT)
 public class EquipmentWheelScreen extends WheelScreen {
@@ -63,17 +62,15 @@ public class EquipmentWheelScreen extends WheelScreen {
     public static int[] equipmentSlots(EntityPlayer player) {
         if (player == null) return new int[0];
         InventoryPlayer inventory = player.inventory;
-        List<Integer> found = new ArrayList<>();
+        IntArrayList found = new IntArrayList();
         int armorStart = inventory.mainInventory.length;
         for (int slot = inventory.getSizeInventory() - 1; slot >= armorStart; slot--) add(found, inventory, slot);
         add(found, inventory, inventory.currentItem);
         for (int slot = 0; slot < armorStart; slot++) add(found, inventory, slot);
-        int[] slots = new int[found.size()];
-        for (int i = 0; i < slots.length; i++) slots[i] = found.get(i);
-        return slots;
+        return found.toIntArray();
     }
 
-    private static void add(List<Integer> found, InventoryPlayer inventory, int slot) {
+    private static void add(IntList found, InventoryPlayer inventory, int slot) {
         if (equipment(inventory.getStackInSlot(slot)) && !found.contains(slot)) found.add(slot);
     }
 

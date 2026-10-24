@@ -2,7 +2,6 @@ package com.science.gtnl.common.recipe.gtnl;
 
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -30,12 +29,13 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import micdoodle8.mods.galacticraft.api.recipe.INasaWorkbenchRecipe;
 import micdoodle8.mods.galacticraft.core.recipe.NasaWorkbenchRecipe;
 
 public class RocketAssemblerRecipes implements IRecipePool {
 
-    public static List<INasaWorkbenchRecipe> RECIPES_ROCKET_STEAM = new ArrayList<>();
+    public static List<INasaWorkbenchRecipe> RECIPES_ROCKET_STEAM = new ObjectArrayList<>();
     public static final RecipeMap<?> RAR = GTNLRecipeMaps.RocketAssemblerRecipes;
 
     private final ItemStack[] schematics = new ItemStack[] { ModsItemlist.GalacticraftTier2RocketSchematic.get(1),

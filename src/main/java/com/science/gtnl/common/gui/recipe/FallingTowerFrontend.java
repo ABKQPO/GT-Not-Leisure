@@ -1,6 +1,5 @@
 package com.science.gtnl.common.gui.recipe;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,6 +24,7 @@ import gregtech.api.recipe.RecipeMapFrontend;
 import gregtech.api.util.MethodsReturnNonnullByDefault;
 import gregtech.common.gui.modularui.UIHelper;
 import gregtech.nei.GTNEIDefaultHandler;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -53,7 +53,7 @@ public class FallingTowerFrontend extends RecipeMapFrontend {
 
     @Override
     public List<Pos2d> getItemOutputPositions(int itemOutputCount) {
-        ArrayList<Pos2d> positions = new ArrayList<>();
+        ObjectArrayList<Pos2d> positions = new ObjectArrayList<>();
         for (int j = 0; j < 9; j++) {
             for (int i = 0; i < 9; i++) {
                 positions.add(new Pos2d((6 + 18 * i), (25 + 18 * j)));

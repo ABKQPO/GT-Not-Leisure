@@ -5,10 +5,8 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -64,6 +62,8 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTLanguageManager;
 import gregtech.api.util.GTUtility;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 
 @SuppressWarnings("unused")
 public class Utils {
@@ -130,7 +130,7 @@ public class Utils {
 
     public static <C extends Collection<E>, E extends MetaTileEntity, T extends E> List<T> filterValidMTEs(
         C metaTileEntities, Class<T> targetClass) {
-        List<T> result = new ArrayList<>();
+        List<T> result = new ObjectArrayList<>();
         for (E mte : metaTileEntities) {
             if (mte != null && mte.isValid() && targetClass.isInstance(mte)) {
                 result.add(targetClass.cast(mte));
@@ -324,7 +324,7 @@ public class Utils {
     }
 
     public static List<ItemStack> mergeAndSplitStacks(List<ItemStack> stacks) {
-        List<ItemStack> uniqueStacks = new ArrayList<>();
+        List<ItemStack> uniqueStacks = new ObjectArrayList<>();
         Object2LongOpenHashMap<ItemStack> counts = new Object2LongOpenHashMap<>(stacks.size());
 
         for (ItemStack stack : stacks) {
@@ -347,7 +347,7 @@ public class Utils {
             }
         }
 
-        List<ItemStack> result = new ArrayList<>(uniqueStacks.size());
+        List<ItemStack> result = new ObjectArrayList<>(uniqueStacks.size());
         for (ItemStack stack : uniqueStacks) {
             long remaining = counts.getLong(stack);
             while (remaining > 0L) {
@@ -854,11 +854,11 @@ public class Utils {
                     .filter(Objects::nonNull)
                     .forEach(set::add);
             }, (buffer, s) -> {
-                List<T> list = new ArrayList<>(s);
+                List<T> list = new ObjectArrayList<>(s);
                 writeListToBuffer(buffer, list, writeElementToBuffer);
             }, buffer -> {
                 List<T> list = readListFromBuffer(buffer, readElementFromBuffer);
-                Set<T> result = new LinkedHashSet<>();
+                Set<T> result = new ObjectLinkedOpenHashSet<>();
                 list.stream()
                     .filter(Objects::nonNull)
                     .forEach(result::add);

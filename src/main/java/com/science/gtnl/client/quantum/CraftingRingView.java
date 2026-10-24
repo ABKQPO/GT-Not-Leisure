@@ -1,8 +1,5 @@
 package com.science.gtnl.client.quantum;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +17,13 @@ import com.science.gtnl.common.crafting.cycle.RecursivePatternFinder.Cycle;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiCraftingTree;
 import appeng.core.localization.ColorUtils;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.Reference2IntMaps;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 /**
  * Shows one crafting cycle in the crafting tree widget, laid out the way the tree lays out a branch: what it makes on
@@ -39,17 +43,20 @@ public final class CraftingRingView {
 
     private record Line(int[] points, int color) {}
 
+    // A way back from the craft making an input to it, run along a lane from top to bottom
+    private record Route(Object maker, Object to, boolean right, int top, int bottom) {}
+
     private final GuiCraftingTree tree;
     private final Ring ring;
-    private final Set<Object> inRing = Collections.newSetFromMap(new IdentityHashMap<>());
+    private final Set<Object> inRing = new ReferenceOpenHashSet<>();
     // The round of the cycle, from the craft making the entry down to the way back
-    private final List<Object> round = new ArrayList<>();
-    private final Set<Object> onRound = Collections.newSetFromMap(new IdentityHashMap<>());
-    private final List<Object> nodes = new ArrayList<>();
-    private final Map<Object, Integer> widths = new IdentityHashMap<>();
-    private final Map<Object, Integer> hidden = new IdentityHashMap<>();
-    private final List<Line> lines = new ArrayList<>();
-    private final Map<Object, int[]> saved = new IdentityHashMap<>();
+    private final List<Object> round = new ObjectArrayList<>();
+    private final Set<Object> onRound = new ReferenceOpenHashSet<>();
+    private final List<Object> nodes = new ObjectArrayList<>();
+    private final Reference2IntOpenHashMap<Object> widths = new Reference2IntOpenHashMap<>();
+    private final Reference2IntOpenHashMap<Object> hidden = new Reference2IntOpenHashMap<>();
+    private final List<Line> lines = new ObjectArrayList<>();
+    private final Map<Object, int[]> saved = new Reference2ObjectOpenHashMap<>();
     private final float savedScrollX, savedScrollY, savedZoom;
     private final int[] savedSize;
     private final boolean ofTree;
@@ -104,6 +111,11 @@ public final class CraftingRingView {
         layout();
         float zoom = Math.min(tree.widgetW / (this.width + 8f), tree.widgetH / (this.height + 8f));
         zoom = MathHelper.clamp_float(zoom, 0.5f, 1.0f);
+        // Whole screen pixels to a pixel of the ring, so its one pixel lines are all drawn as wide
+        var gui = (AEBaseGui) CraftingTreeRings.parentGui(tree);
+        float scale = (float) gui.mc.displayWidth / gui.width;
+        float snapped = (float) Math.floor(zoom * scale) / scale;
+        if (snapped >= 0.5f) zoom = snapped;
         CraftingTreeRings.setZoom(tree, zoom);
         tree.scrollX = Math.min(0, (this.width - tree.widgetW / zoom) / 2);
         tree.scrollY = Math.min(0, (this.height - tree.widgetH / zoom) / 2);
@@ -164,7 +176,7 @@ public final class CraftingRingView {
     public int foldedCrafts(Object node) {
         if (!CraftingTreeRings.collapsed(node) || !contains(node)) return 0;
         int count = 0;
-        var pending = new ArrayList<>(CraftingTreeRings.children(node));
+        var pending = new ObjectArrayList<>(CraftingTreeRings.children(node));
         while (!pending.isEmpty()) {
             var next = pending.remove(pending.size() - 1);
             if (!this.inRing.contains(next)) continue;
@@ -212,7 +224,7 @@ public final class CraftingRingView {
 
     private void findRound() {
         // Depth first from the craft making the entry, the first way back found ends the round
-        var pending = new ArrayList<Object>();
+        var pending = new ObjectArrayList<Object>();
         for (var child : CraftingTreeRings.children(this.ring.entry())) {
             if (this.inRing.contains(child)) pending.add(child);
         }
@@ -240,8 +252,8 @@ public final class CraftingRingView {
             return this.round.isEmpty() ? List.of() : List.of(this.round.get(0));
         }
         if (!this.inRing.contains(node) || CraftingTreeRings.collapsed(node)) return List.of();
-        var ofRing = new ArrayList<Object>();
-        var outside = new ArrayList<Object>();
+        var ofRing = new ObjectArrayList<Object>();
+        var outside = new ObjectArrayList<Object>();
         for (var child : CraftingTreeRings.children(node)) {
             if (this.onRound.contains(child)) ofRing.add(0, child);
             else if (this.inRing.contains(child)) ofRing.add(child);
@@ -249,7 +261,7 @@ public final class CraftingRingView {
         }
         if (outside.size() > MAX_OUTSIDE) {
             this.hidden.put(node, outside.size() - MAX_OUTSIDE);
-            outside = new ArrayList<>(outside.subList(0, MAX_OUTSIDE));
+            outside = new ObjectArrayList<>(outside.subList(0, MAX_OUTSIDE));
         }
         ofRing.addAll(outside);
         return ofRing;
@@ -261,8 +273,8 @@ public final class CraftingRingView {
         this.widths.clear();
         this.hidden.clear();
         this.lines.clear();
-        var children = new IdentityHashMap<Object, List<Object>>();
-        var pending = new ArrayList<Object>();
+        var children = new Reference2ObjectOpenHashMap<Object, List<Object>>();
+        var pending = new ObjectArrayList<Object>();
         pending.add(this.ring.entry());
         while (!pending.isEmpty()) {
             var node = pending.remove(pending.size() - 1);
@@ -274,20 +286,10 @@ public final class CraftingRingView {
         for (int i = this.nodes.size() - 1; i >= 0; i--) {
             var node = this.nodes.get(i);
             int sum = 0;
-            for (var child : children.get(node)) sum += this.widths.get(child);
+            for (var child : children.get(node)) sum += this.widths.getInt(child);
             this.widths.put(node, Math.max(X_SPACING, sum));
         }
-        // The ways back run up the left of everything, one lane each
-        var back = new ArrayList<Object[]>();
-        for (var edge : this.ring.backEdges()) {
-            var maker = CraftingTreeRings.maker(edge);
-            Object to = edge;
-            while (to != null && !this.widths.containsKey(to)) to = CraftingTreeRings.parent(to);
-            if (maker == null || to == null || !this.widths.containsKey(maker) || to == maker) continue;
-            back.add(new Object[] { maker, to });
-        }
-        int left = 3 + LANE * back.size() + 4;
-        CraftingTreeRings.moveTo(this.ring.entry(), left, 4);
+        CraftingTreeRings.moveTo(this.ring.entry(), 0, 4);
         int maxX = 0, maxY = 0;
         for (var node : this.nodes) {
             CraftingTreeRings.setVisible(node, true);
@@ -300,44 +302,107 @@ public final class CraftingRingView {
             int childX = x;
             for (var child : children.get(node)) {
                 CraftingTreeRings.moveTo(child, childX, childY);
-                childX += this.widths.get(child);
+                childX += this.widths.getInt(child);
             }
         }
-        int leftLanes = 0, rightLanes = 0;
-        for (var edge : back) {
-            var maker = edge[0];
-            var to = edge[1];
+        // The ways back, in tree order so they keep their lanes from one layout to the next
+        var routes = new ObjectArrayList<Route>();
+        for (var edge : this.ring.members()) {
+            if (!this.ring.backEdges()
+                .contains(edge)) continue;
+            var maker = CraftingTreeRings.maker(edge);
+            Object to = edge;
+            while (to != null && !this.widths.containsKey(to)) to = CraftingTreeRings.parent(to);
+            if (maker == null || to == null || !this.widths.containsKey(maker) || to == maker) continue;
+            int my = CraftingTreeRings.y(maker), ty = CraftingTreeRings.y(to);
+            boolean byLeft = outermost(maker, -1) && outermost(to, -1);
+            // Both ends last in their rows, as a catalyst returned to its craft: down the right
+            boolean right = !byLeft && outermost(maker, 1) && outermost(to, 1);
+            int from = right || outermost(maker, -1) ? my + 8 : my + 22;
+            int into = right || outermost(to, -1) ? ty + 8 : ty + 22;
+            routes.add(new Route(maker, to, right, Math.min(from, into), Math.max(from, into)));
+        }
+        var lanes = new int[routes.size()];
+        int leftLanes = assignLanes(routes, false, lanes);
+        int rightLanes = assignLanes(routes, true, lanes);
+        // The ways back run up the left of everything
+        int left = 3 + LANE * leftLanes + 4;
+        for (var node : this.nodes) {
+            CraftingTreeRings.moveTo(node, CraftingTreeRings.x(node) + left, CraftingTreeRings.y(node));
+        }
+        maxX += left;
+        for (int i = 0; i < routes.size(); i++) {
+            var route = routes.get(i);
+            var maker = route.maker();
+            var to = route.to();
             int mx = CraftingTreeRings.x(maker), my = CraftingTreeRings.y(maker);
             int tx = CraftingTreeRings.x(to), ty = CraftingTreeRings.y(to);
-            var points = new ArrayList<Integer>();
-            boolean byLeft = outermost(maker, -1) && outermost(to, -1);
-            if (!byLeft && outermost(maker, 1) && outermost(to, 1)) {
-                // Both ends last in their rows, as a catalyst returned to its craft: down the right
-                int lane = maxX + 4 + LANE * rightLanes++;
-                points.addAll(List.of(mx + 22, my + 8, lane, my + 8, lane, ty + 8, tx + 22, ty + 8));
+            var points = new IntArrayList();
+            if (route.right()) {
+                int lane = maxX + 4 + LANE * lanes[i];
+                points.addAll(IntList.of(mx + 22, my + 8, lane, my + 8, lane, ty + 8, tx + 22, ty + 8));
             } else {
-                int lane = left - 3 - LANE * ++leftLanes;
+                int lane = left - 3 - LANE * (lanes[i] + 1);
                 // Out of the side when nothing is left of it in its row, else out of the bottom and under the row
                 if (outermost(maker, -1)) {
-                    points.addAll(List.of(mx - 4, my + 8, lane, my + 8));
+                    points.addAll(IntList.of(mx - 4, my + 8, lane, my + 8));
                 } else {
-                    points.addAll(List.of(mx + 2, my + 21, mx + 2, my + 22, lane, my + 22));
+                    points.addAll(IntList.of(mx + 2, my + 21, mx + 2, my + 22, lane, my + 22));
                 }
                 // Into the side the same way, or up into it from under its row, as what it takes comes in
                 if (outermost(to, -1)) {
-                    points.addAll(List.of(lane, ty + 8, tx - 4, ty + 8));
+                    points.addAll(IntList.of(lane, ty + 8, tx - 4, ty + 8));
                 } else {
-                    points.addAll(List.of(lane, ty + 22, tx + 2, ty + 22, tx + 2, ty + 21));
+                    points.addAll(IntList.of(lane, ty + 22, tx + 2, ty + 22, tx + 2, ty + 21));
                 }
             }
-            var flat = new int[points.size()];
-            for (int k = 0; k < flat.length; k++) flat[k] = points.get(k);
+            var flat = points.toIntArray();
             this.lines.add(new Line(flat, ColorUtils.searchGoToHighlight.getColor()));
         }
         maxX += LANE * rightLanes;
         this.width = maxX + 4;
         this.height = maxY + 4;
         CraftingTreeRings.setTreeSize(this.tree, this.width, this.height);
+    }
+
+    /**
+     * Puts each way back on that side in the innermost lane free along the rows it runs over, the shortest first, so
+     * one inside another stays inside it and those one after another share a lane.
+     *
+     * @return the lanes used
+     */
+    private static int assignLanes(List<Route> routes, boolean right, int[] lanes) {
+        var order = new IntArrayList();
+        for (int i = 0; i < routes.size(); i++) {
+            if (routes.get(i)
+                .right() == right) order.add(i);
+        }
+        order.sort((int a, int b) -> Integer.compare(span(routes.get(a)), span(routes.get(b))));
+        int count = 0;
+        for (int k = 0; k < order.size(); k++) {
+            int i = order.getInt(k);
+            var route = routes.get(i);
+            int lane = 0;
+            for (boolean taken = true; taken;) {
+                taken = false;
+                for (int m = 0; m < k; m++) {
+                    int j = order.getInt(m);
+                    var other = routes.get(j);
+                    if (lanes[j] == lane && other.top() <= route.bottom() && route.top() <= other.bottom()) {
+                        taken = true;
+                        lane++;
+                        break;
+                    }
+                }
+            }
+            lanes[i] = lane;
+            count = Math.max(count, lane + 1);
+        }
+        return count;
+    }
+
+    private static int span(Route route) {
+        return route.bottom() - route.top();
     }
 
     // Whether nothing is on that side of it in its row
@@ -382,8 +447,8 @@ public final class CraftingRingView {
         CraftingTreeRings.setTooltipNode(this.tree, nodeAt(guiMouseX - gui.getGuiLeft(), guiMouseY - gui.getGuiTop()));
         for (var node : this.nodes) CraftingTreeRings.draw(node);
         var font = gui.getFontRenderer();
-        for (var entry : this.hidden.entrySet()) {
-            var text = "+" + entry.getValue();
+        for (var entry : Reference2IntMaps.fastIterable(this.hidden)) {
+            var text = "+" + entry.getIntValue();
             int x = CraftingTreeRings.x(entry.getKey()) + 20;
             int y = CraftingTreeRings.y(entry.getKey()) + 18;
             GL11.glPushMatrix();

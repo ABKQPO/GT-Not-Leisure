@@ -81,6 +81,7 @@ import gregtech.common.tileentities.machines.MTEHatchInputME;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import tectech.thing.CustomItemList;
@@ -143,7 +144,7 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     @Setter
     public boolean upgradeConsumed = false;
 
-    public ArrayList<MTEHatchInput> mWaterInputHatches = new ArrayList<>();
+    public ObjectArrayList<MTEHatchInput> mWaterInputHatches = new ObjectArrayList<>();
     public int machineTier;
 
     public PCBFactory(int aID, String aName, String aNameRegional) {
@@ -240,7 +241,7 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
             depletePurifiedWater();
         }
 
-        List<ItemStack> expandedOutputs = new ArrayList<>();
+        List<ItemStack> expandedOutputs = new ObjectArrayList<>();
 
         for (ItemStack is : mOutputItems) {
             if (is == null) continue;

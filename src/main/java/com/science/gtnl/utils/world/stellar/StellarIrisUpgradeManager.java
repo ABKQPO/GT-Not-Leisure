@@ -1,6 +1,5 @@
 package com.science.gtnl.utils.world.stellar;
 
-import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,6 +10,8 @@ import com.science.gtnl.api.stellar.StellarIrisUpgradeDefinition;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeEffectContext;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeRegistry;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
+
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 
 public class StellarIrisUpgradeManager {
 
@@ -161,7 +162,7 @@ public class StellarIrisUpgradeManager {
         return canUnlock(state.getTier(), state.getLevels(), definition, currentLevel);
     }
 
-    private static boolean canUnlock(int tier, Map<String, Integer> levels, StellarIrisUpgradeDefinition definition,
+    private static boolean canUnlock(int tier, Object2IntMap<String> levels, StellarIrisUpgradeDefinition definition,
         int currentLevel) {
         if (currentLevel >= definition.getMaxLevel()) {
             return false;
@@ -178,14 +179,14 @@ public class StellarIrisUpgradeManager {
         }
         if (definition.getRow() <= 2) {
             for (String prerequisiteId : definition.getPrerequisiteIds()) {
-                if (levels.getOrDefault(prerequisiteId, 0) > 0) {
+                if (levels.getInt(prerequisiteId) > 0) {
                     return true;
                 }
             }
             return false;
         }
         for (String prerequisiteId : definition.getPrerequisiteIds()) {
-            if (levels.getOrDefault(prerequisiteId, 0) <= 0) {
+            if (levels.getInt(prerequisiteId) <= 0) {
                 return false;
             }
         }

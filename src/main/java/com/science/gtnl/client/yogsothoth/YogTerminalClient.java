@@ -1,10 +1,6 @@
 package com.science.gtnl.client.yogsothoth;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,14 +49,18 @@ import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 @SideOnly(Side.CLIENT)
 public final class YogTerminalClient {
 
     private static final YogTerminalClient INSTANCE = new YogTerminalClient();
     private static final YogTerminalLayout LAYOUT = new YogTerminalLayout();
-    private static final Map<UUID, View> VIEWS = new HashMap<>();
-    private static final Map<UUID, Assembly> ASSEMBLIES = new HashMap<>();
+    private static final Map<UUID, View> VIEWS = new Object2ObjectOpenHashMap<>();
+    private static final Map<UUID, Assembly> ASSEMBLIES = new Object2ObjectOpenHashMap<>();
     private static final int USE_RETRY_TICKS = 20;
     private static NetHandlerPlayClient connection;
     private static YogTerminalPanel window;
@@ -107,7 +107,7 @@ public final class YogTerminalClient {
         int active = -1;
         boolean hidden;
         long structure = -1;
-        final List<ItemStack> terminals = new ArrayList<>();
+        final List<ItemStack> terminals = new ObjectArrayList<>();
 
         View(UUID id) {
             this.id = id;
@@ -187,7 +187,7 @@ public final class YogTerminalClient {
     }
 
     private static void pruneViews() {
-        Set<UUID> carried = new HashSet<>();
+        Set<UUID> carried = new ObjectOpenHashSet<>();
         for (Token token : tokens()) carried.add(token.id());
         if (VIEWS.keySet()
             .removeIf(id -> !carried.contains(id) && !id.equals(sessionRecord))) modifications++;
@@ -205,7 +205,7 @@ public final class YogTerminalClient {
     private static List<ItemStack> stored(UUID id, int generation) {
         View view = view(id, generation);
         if (view == null) return Collections.emptyList();
-        List<ItemStack> stored = new ArrayList<>(view.terminals.size());
+        List<ItemStack> stored = new ObjectArrayList<>(view.terminals.size());
         for (int index = 0; index < view.terminals.size(); index++) {
             ItemStack stack = view.terminals.get(index);
             if (stack != null && index != view.active) stored.add(stack);
@@ -227,11 +227,11 @@ public final class YogTerminalClient {
     }
 
     private static List<YogBaublesView.Entry> computeEntries(EntityPlayer player, InventoryBaubles baubles) {
-        Set<View> views = new LinkedHashSet<>();
+        Set<View> views = new ObjectLinkedOpenHashSet<>();
         for (int slot = 0; slot < baubles.getSizeInventory(); slot++) addView(views, baubles.getStackInSlot(slot));
         for (ItemStack stack : player.inventory.mainInventory) addView(views, stack);
         if (views.isEmpty()) return Collections.emptyList();
-        List<YogBaublesView.Entry> entries = new ArrayList<>();
+        List<YogBaublesView.Entry> entries = new ObjectArrayList<>();
         for (View view : views) {
             for (int index = 0; index < view.terminals.size(); index++) {
                 int entry = index;
@@ -310,7 +310,7 @@ public final class YogTerminalClient {
     }
 
     private static List<Token> scanTokens(Minecraft mc) {
-        List<Token> tokens = new ArrayList<>();
+        List<Token> tokens = new ObjectArrayList<>();
         ItemStack[] main = mc.thePlayer.inventory.mainInventory;
         for (int slot = 0; slot < main.length; slot++) addToken(tokens, main[slot], slot);
         InventoryBaubles baubles = PlayerHandler.getPlayerBaubles(mc.thePlayer);
@@ -331,7 +331,7 @@ public final class YogTerminalClient {
     static List<Token> windowTokens() {
         List<Token> tokens = tokens();
         if (windowCache == null || windowSource != tokens) {
-            List<Token> visible = new ArrayList<>(tokens);
+            List<Token> visible = new ObjectArrayList<>(tokens);
             visible.removeIf(token -> token.view() != null && token.view().hidden);
             windowCache = Collections.unmodifiableList(visible);
             windowSource = tokens;

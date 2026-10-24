@@ -1,8 +1,5 @@
 package com.science.gtnl.client.railgun;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -13,11 +10,12 @@ import com.science.gtnl.common.railgun.RailgunData;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 @SideOnly(Side.CLIENT)
 public class RailgunCharge {
 
-    private static final Map<Integer, RailgunChargeState> STATES = new HashMap<>();
+    private static final Int2ObjectOpenHashMap<RailgunChargeState> STATES = new Int2ObjectOpenHashMap<>();
 
     private RailgunCharge() {}
 

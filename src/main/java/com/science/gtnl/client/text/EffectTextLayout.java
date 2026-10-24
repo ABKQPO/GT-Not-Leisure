@@ -1,6 +1,5 @@
 package com.science.gtnl.client.text;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,12 +13,14 @@ import com.science.gtnl.utils.text.effect.EffectTextParser.Token;
 import com.science.gtnl.utils.text.effect.TextEffectStyle;
 import com.science.gtnl.utils.text.effect.TextEffects;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 /** Shared visible layout for drawing, wrapping, and trimming marked strings. */
 public class EffectTextLayout {
 
     public static Layout create(FontRenderer font, String text) {
         IFontParameters parameters = (IFontParameters) font;
-        List<Glyph> glyphs = new ArrayList<>();
+        List<Glyph> glyphs = new ObjectArrayList<>();
         float lineWidth = 0;
         float width = 0;
         int lines = 1;
@@ -140,7 +141,7 @@ public class EffectTextLayout {
     public static List<String> wrap(FontRenderer font, String text, int width) {
         Layout layout = EffectTextRenderer.INSTANCE.layout(font, text);
         List<Glyph> glyphs = layout.glyphs();
-        List<String> lines = new ArrayList<>();
+        List<String> lines = new ObjectArrayList<>();
         int start = 0;
         while (start < glyphs.size()) {
             int end = start;
@@ -206,7 +207,7 @@ public class EffectTextLayout {
     }
 
     private static List<DrawRun> prepareRuns(List<Glyph> glyphs, float height, float spacing) {
-        List<DrawRun> runs = new ArrayList<>();
+        List<DrawRun> runs = new ObjectArrayList<>();
         float x = 0;
         float y = 0;
         boolean spaced = false;

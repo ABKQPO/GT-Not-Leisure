@@ -15,10 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,6 +58,9 @@ import cpw.mods.fml.common.network.ByteBufUtils;
 import ic2.api.item.IElectricItem;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class PortalGunContracts {
 
@@ -133,7 +133,7 @@ public class PortalGunContracts {
                 "each axis turns whole circles per loop, so the spin never jumps");
         double[] room3 = { core.roomX(), core.roomY(), core.roomZ() };
         boolean inside = true;
-        Set<String> shapes = new HashSet<>();
+        Set<String> shapes = new ObjectOpenHashSet<>();
         for (long millis = 0; millis < 4000; millis += PortalGunCoreArcs.STEP_MILLIS) {
             List<Arc> arcs = PortalGunCoreArcs
                 .arcs(millis, core.half(), room3, PortalGunCoreArcs.angles(millis), PortalGunCoreArcs.shake(millis));
@@ -154,7 +154,7 @@ public class PortalGunContracts {
     }
 
     private static List<double[]> groupVertices(List<String> lines, String group) {
-        List<double[]> vertices = new ArrayList<>();
+        List<double[]> vertices = new ObjectArrayList<>();
         boolean inside = false;
         for (String line : lines) {
             if (line.startsWith("o ")) inside = line.equals("o " + group);
@@ -746,7 +746,7 @@ public class PortalGunContracts {
     }
 
     private static Map<String, String> lang(String file) throws IOException {
-        Map<String, String> map = new LinkedHashMap<>();
+        Map<String, String> map = new Object2ObjectLinkedOpenHashMap<>();
         for (String line : Files.readAllLines(RESOURCES.resolve("lang/" + file), StandardCharsets.UTF_8)) {
             int at = line.indexOf('=');
             if (at > 0) map.put(line.substring(0, at), line.substring(at + 1));

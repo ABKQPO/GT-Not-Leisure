@@ -1,6 +1,5 @@
 package com.science.gtnl.client.celestweave;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraftforge.client.model.obj.Face;
@@ -9,6 +8,7 @@ import net.minecraftforge.client.model.obj.Vertex;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class CelestweaveRaise {
@@ -20,7 +20,7 @@ public class CelestweaveRaise {
     private CelestweaveRaise() {}
 
     static List<float[]> raise(List<Face> faces, int[] argb, int width, int height, float lift) {
-        List<float[]> quads = new ArrayList<>();
+        List<float[]> quads = new ObjectArrayList<>();
         for (Face face : faces) if (face.vertices != null && face.vertices.length == 4
             && face.textureCoordinates != null
             && face.textureCoordinates.length == 4) raiseFace(face, argb, width, height, lift, quads);

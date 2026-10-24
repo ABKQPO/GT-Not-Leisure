@@ -1,6 +1,5 @@
 package com.science.gtnl.common.crafting.quantum.ae2;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +25,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.helpers.PatternHelper;
 import appeng.me.cache.CraftingGridCache;
 import appeng.util.TunnelPatternExpander;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
@@ -177,7 +177,7 @@ public final class QuantumCraftingCache {
         }
 
         private List<IAEStack<?>> substitutableStacks() {
-            final List<IAEStack<?>> result = new ArrayList<>();
+            final List<IAEStack<?>> result = new ObjectArrayList<>();
             for (Map.Entry<IAEStack<?>, ImmutableList<ICraftingPatternDetails>> entry : this.patterns.entrySet()) {
                 for (ICraftingPatternDetails details : entry.getValue()) {
                     if (details.canBeSubstitute()) {

@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
@@ -24,6 +23,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.OverclockCalculator;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.WirelessNetworkManager;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import tectech.thing.metaTileEntity.multi.godforge.MTEBaseModule;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -112,7 +112,7 @@ public class FOGAlloyBlastSmelterModule extends MTEBaseModule {
 
     @Override
     public String[] getInfoData() {
-        ArrayList<String> str = new ArrayList<>();
+        ObjectArrayList<String> str = new ObjectArrayList<>();
         str.add(
             IGregTechDeviceInformation.encode(
                 "GT5U.infodata.progress",

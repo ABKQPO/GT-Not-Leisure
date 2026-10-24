@@ -1,6 +1,5 @@
 package com.science.gtnl.mixins.late.gregtech;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +30,10 @@ import gregtech.api.metatileentity.CommonBaseMetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchInputBus;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME.PatternSlot;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -86,8 +89,8 @@ public abstract class MixinMTEHatchCraftingInputME extends MTEHatchInputBus impl
         tag.removeTag("gtnl$craftingManualItems");
         if (manualItems.tagCount() > 0) tag.setTag("gtnl$craftingManualItems", manualItems);
 
-        Map<String, NBTTagCompound> entries = new HashMap<>();
-        Map<String, Long> amounts = new HashMap<>();
+        Map<String, NBTTagCompound> entries = new Object2ObjectOpenHashMap<>();
+        Object2LongOpenHashMap<String> amounts = new Object2LongOpenHashMap<>();
         Iterator<PatternSlot<MTEHatchCraftingInputME>> inventories = hatch.inventories();
         while (inventories.hasNext()) {
             PatternSlot<MTEHatchCraftingInputME> slot = inventories.next();
@@ -98,7 +101,7 @@ public abstract class MixinMTEHatchCraftingInputME extends MTEHatchInputBus impl
                 NBTTagCompound entry = displayItem.writeToNBT(new NBTTagCompound());
                 String key = "item:" + entry;
                 entries.putIfAbsent(key, entry);
-                amounts.merge(key, (long) item.stackSize, Long::sum);
+                amounts.addTo(key, item.stackSize);
             }
             for (FluidStack fluid : slot.getFluidInputs()) {
                 if (fluid == null || fluid.amount <= 0) continue;
@@ -107,19 +110,19 @@ public abstract class MixinMTEHatchCraftingInputME extends MTEHatchInputBus impl
                 NBTTagCompound entry = displayFluid.writeToNBT(new NBTTagCompound());
                 String key = "fluid:" + entry;
                 entries.putIfAbsent(key, entry);
-                amounts.merge(key, (long) fluid.amount, Long::sum);
+                amounts.addTo(key, fluid.amount);
             }
         }
 
         NBTTagList inventory = new NBTTagList();
-        for (Map.Entry<String, Long> amount : amounts.entrySet()) {
+        for (Object2LongMap.Entry<String> amount : Object2LongMaps.fastIterable(amounts)) {
             NBTTagCompound entry = new NBTTagCompound();
             entry.setByte(
                 "type",
                 (byte) (amount.getKey()
                     .startsWith("item:") ? 0 : 1));
             entry.setTag("entry", entries.get(amount.getKey()));
-            entry.setLong("amount", amount.getValue());
+            entry.setLong("amount", amount.getLongValue());
             inventory.appendTag(entry);
         }
         tag.removeTag("inventory");

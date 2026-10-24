@@ -1,6 +1,5 @@
 package com.science.gtnl.common.recipe.thaumcraft;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -8,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.recipe.gtnl.ShapedArcaneCraftingRecipes;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.crafting.CrucibleRecipe;
@@ -18,10 +18,10 @@ public class CrucibleRecipeConverter {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static List<CrucibleRecipeData> scanRecipes() {
-        List<CrucibleRecipeData> recipes = new ArrayList<>();
+        List<CrucibleRecipeData> recipes = new ObjectArrayList<>();
         int rejected = 0;
 
-        for (Object entry : new ArrayList<>(ThaumcraftApi.getCraftingRecipes())) {
+        for (Object entry : new ObjectArrayList<>(ThaumcraftApi.getCraftingRecipes())) {
             if (!(entry instanceof CrucibleRecipe recipe)) {
                 continue;
             }
@@ -85,7 +85,7 @@ public class CrucibleRecipeConverter {
     }
 
     public static ItemStack[] expandCatalyst(Object catalyst) {
-        List<ItemStack> expanded = new ArrayList<>();
+        List<ItemStack> expanded = new ObjectArrayList<>();
 
         if (catalyst instanceof ItemStack stack) {
             if (isUsableCatalyst(stack)) {

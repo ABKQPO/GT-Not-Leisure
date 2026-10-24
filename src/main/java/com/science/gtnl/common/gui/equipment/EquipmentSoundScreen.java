@@ -1,6 +1,5 @@
 package com.science.gtnl.common.gui.equipment;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -29,6 +28,7 @@ import com.science.gtnl.config.EquipmentSoundConfig.Channel;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class EquipmentSoundScreen extends ModularScreen {
@@ -94,7 +94,7 @@ public class EquipmentSoundScreen extends ModularScreen {
         LayoutTheme style = arrangement.style;
         Layout rows = Layout.rows(style, arrangement.cardWidth)
             .inset(style.spacingMedium);
-        List<IWidget> lines = new ArrayList<>();
+        List<IWidget> lines = new ObjectArrayList<>();
         lines.add(row(rows, arrangement, "gtnl.gui.config.sound.all", group.all, () -> true));
         for (EquipmentSound sound : group.sounds())
             lines.add(row(rows, arrangement, sound.lang(), sound.channel, () -> group.all.enabled));

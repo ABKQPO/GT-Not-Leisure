@@ -1,6 +1,5 @@
 package com.science.gtnl.common.yogsothoth;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -14,6 +13,7 @@ import appeng.util.Platform;
 import baubles.common.container.InventoryBaubles;
 import baubles.common.lib.PlayerHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public final class YogTerminals {
 
@@ -35,7 +35,7 @@ public final class YogTerminals {
             return clientStored == null ? Collections.emptyList() : clientStored.apply(id, YogToken.generation(yog));
         YogRecord record = YogTerminalStorage.get(id);
         if (record == null || record.generation != YogToken.generation(yog)) return Collections.emptyList();
-        List<ItemStack> stored = new ArrayList<>(record.size());
+        List<ItemStack> stored = new ObjectArrayList<>(record.size());
         for (int index = 0; index < record.size(); index++) {
             if (index != record.active) stored.add(record.get(index));
         }
@@ -45,7 +45,7 @@ public final class YogTerminals {
     public static List<ItemStack> carried(EntityPlayer player) {
         InventoryBaubles baubles = PlayerHandler.getPlayerBaubles(player);
         if (player == null || baubles == null) return Collections.emptyList();
-        List<ItemStack> carried = new ArrayList<>();
+        List<ItemStack> carried = new ObjectArrayList<>();
         for (YogBaublesView.Entry entry : YogBaublesView.entries(player, baubles)) {
             ItemStack stack = entry.get();
             if (stack != null) carried.add(stack);

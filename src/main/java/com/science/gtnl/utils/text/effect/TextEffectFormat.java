@@ -1,13 +1,14 @@
 package com.science.gtnl.utils.text.effect;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.utils.ColorUtils;
+
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 /** Client-independent syntax and native formatting rules for effect text. */
 public class TextEffectFormat {
@@ -15,7 +16,7 @@ public class TextEffectFormat {
     public static final String INLINE_OPEN = "\u00a7{";
     public static final String AMP_INLINE_OPEN = "&{";
     public static final int MAX_HEADER_LENGTH = 512;
-    private static final Map<String, String> ALIASES = new HashMap<>(
+    private static final Map<String, String> ALIASES = new Object2ObjectOpenHashMap<>(
         Map.ofEntries(
             Map.entry("ir", "infernum_red_rarity"),
             Map.entry("gc", "genesis_component_rarity_shader"),
@@ -45,7 +46,7 @@ public class TextEffectFormat {
     public static void registerAlias(String alias, String rendererId) {
         if (alias == null || !alias.matches("[a-z][a-z0-9_]{0,15}"))
             throw new IllegalArgumentException("Invalid text effect alias");
-        new TextEffectStyle(rendererId, List.of(), 1);
+        new TextEffectStyle(rendererId, IntList.of(), 1);
         if (ALIASES.putIfAbsent(alias, rendererId) != null)
             throw new IllegalArgumentException("Text effect alias already registered: " + alias);
     }
@@ -87,7 +88,7 @@ public class TextEffectFormat {
         String id = fields[0].trim();
         id = ALIASES.getOrDefault(id, id);
         if (id.indexOf(':') < 0) id = ScienceNotLeisure.MODID + ":" + id;
-        List<Integer> colors = List.of();
+        IntList colors = IntList.of();
         float speed = 1;
         boolean hasColors = false;
         boolean hasSpeed = false;
@@ -123,10 +124,10 @@ public class TextEffectFormat {
         }
     }
 
-    private static List<Integer> readColors(String value) {
+    private static IntList readColors(String value) {
         String[] entries = value.split(",", -1);
         if (entries.length > 8) throw new IllegalArgumentException("At most eight colors are supported");
-        List<Integer> colors = new ArrayList<>(entries.length);
+        IntArrayList colors = new IntArrayList(entries.length);
         for (String entry : entries) {
             String hex = entry.trim();
             if (hex.startsWith("#")) hex = hex.substring(1);

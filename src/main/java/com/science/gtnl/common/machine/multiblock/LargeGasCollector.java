@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -46,6 +45,7 @@ import gregtech.common.tileentities.machines.IDualInputInventory;
 import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
 import gtneioreplugin.plugin.block.ModBlocks;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> implements ISurvivalConstructable {
@@ -57,7 +57,7 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
     private static final int DEPTH_OFF_SET = 0;
     private static final String[][] shape = StructureUtils.readStructureFromFile(LGC_STRUCTURE_FILE_PATH);
 
-    public final ArrayList<ItemStack> dimensionRecipeInputs = new ArrayList<>(2);
+    public final ObjectArrayList<ItemStack> dimensionRecipeInputs = new ObjectArrayList<>(2);
 
     public LargeGasCollector(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

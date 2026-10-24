@@ -1,22 +1,22 @@
 package com.science.gtnl.common.yogsothoth;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.ints.IntSets;
 
 public final class YogTerminalLocks {
 
-    private static volatile Set<Integer> client = Collections.emptySet();
+    private static volatile IntSet client = IntSets.emptySet();
 
-    public static Set<Integer> client() {
+    public static IntSet client() {
         return client;
     }
 
-    static void setClient(Set<Integer> locked) {
-        client = locked.isEmpty() ? Collections.emptySet() : Collections.unmodifiableSet(new HashSet<>(locked));
+    static void setClient(IntSet locked) {
+        client = locked.isEmpty() ? IntSets.emptySet() : IntSets.unmodifiable(new IntOpenHashSet(locked));
     }
 
     public static void clearClient() {
-        client = Collections.emptySet();
+        client = IntSets.emptySet();
     }
 }

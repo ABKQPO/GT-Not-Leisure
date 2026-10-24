@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.steam;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -41,6 +40,7 @@ import gregtech.api.structure.error.StructureErrors;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -52,7 +52,7 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
     public static final String STRUCTURE_PIECE_LAYER_HINT = "layerHint";
     public static final String STRUCTURE_PIECE_TOP_HINT = "topHint";
 
-    public final List<List<MTEHatchOutput>> mOutputHatchesByLayer = new ArrayList<>();
+    public final List<List<MTEHatchOutput>> mOutputHatchesByLayer = new ObjectArrayList<>();
     public int mHeight;
     public boolean mTopLayerFound;
 
@@ -368,7 +368,7 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
         if (aTileEntity == null || aTileEntity.isDead()
             || !(aTileEntity.getMetaTileEntity() instanceof MTEHatchOutput outputHatch)) return false;
         while (mOutputHatchesByLayer.size() < mHeight) {
-            mOutputHatchesByLayer.add(new ArrayList<>());
+            mOutputHatchesByLayer.add(new ObjectArrayList<>());
         }
         outputHatch.updateTexture(aBaseCasingIndex);
         return mOutputHatchesByLayer.get(mHeight - 1)

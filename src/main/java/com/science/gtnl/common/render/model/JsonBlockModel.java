@@ -1,7 +1,5 @@
 package com.science.gtnl.common.render.model;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.client.Minecraft;
@@ -25,6 +23,9 @@ import com.gtnewhorizon.gtnhlib.client.renderer.cel.model.quad.ModelQuad;
 import com.gtnewhorizon.gtnhlib.client.renderer.cel.model.quad.ModelQuadView;
 import com.gtnewhorizon.gtnhlib.client.renderer.cel.model.quad.properties.ModelQuadFacing;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 /** Bakes geometry, UV rotations and lighting once, following MyCTMLib's block model approach. */
 public class JsonBlockModel extends JSONModel {
 
@@ -33,7 +34,7 @@ public class JsonBlockModel extends JSONModel {
     public JsonBlockModel(JSONModel model) {
         super(model);
         for (String key : textures.keySet()) {
-            Set<String> visited = new HashSet<>();
+            Set<String> visited = new ObjectOpenHashSet<>();
             String texture = textures.get(key);
             while (texture.startsWith("#")) {
                 if (!visited.add(texture) || !textures.containsKey(texture)) {
@@ -75,8 +76,8 @@ public class JsonBlockModel extends JSONModel {
                     0,
                     1))
             .translate(-0.5F, -0.5F, -0.5F);
-        ArrayList<ModelQuadView> quads = new ArrayList<>();
-        ArrayList<ForgeDirection> culls = new ArrayList<>();
+        ObjectArrayList<ModelQuadView> quads = new ObjectArrayList<>();
+        ObjectArrayList<ForgeDirection> culls = new ObjectArrayList<>();
         for (ModelElement element : elements) {
             Matrix4f transform = new Matrix4f(orientation).mul(elementTransform(element.rotation()));
             for (Face face : element.faces()) {

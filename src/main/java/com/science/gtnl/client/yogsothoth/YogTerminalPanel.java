@@ -1,9 +1,7 @@
 package com.science.gtnl.client.yogsothoth;
 
 import java.awt.Rectangle;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.BooleanSupplier;
 
 import net.minecraft.client.Minecraft;
@@ -34,6 +32,7 @@ import com.science.gtnl.client.floatingwindow.FloatingWindowPanel;
 import codechicken.nei.guihook.GuiContainerManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 
 @SideOnly(Side.CLIENT)
 public final class YogTerminalPanel extends FloatingWindowPanel {
@@ -41,7 +40,7 @@ public final class YogTerminalPanel extends FloatingWindowPanel {
     private static final int TITLE_COLOR = 0xE6DAFF;
 
     private final YogTerminalLayout layout = YogTerminalClient.layout();
-    private final Set<Integer> consumedMouseButtons = new HashSet<>();
+    private final IntOpenHashSet consumedMouseButtons = new IntOpenHashSet();
     private final HeaderButton[] buttons;
     private int scroll;
     private boolean resizing;

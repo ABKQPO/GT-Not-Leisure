@@ -1,8 +1,5 @@
 package com.science.gtnl.common.yogsothoth;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
@@ -13,36 +10,40 @@ import com.science.gtnl.common.packet.base.ClientboundPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
+import it.unimi.dsi.fastutil.ints.IntIterator;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.ints.IntSets;
 
 public class YogTerminalStatePacket extends ClientboundPacket {
 
     private static final int ENDED = 0, OPENING = 1, USE = 2;
 
     private int kind;
-    private Set<Integer> locked = new HashSet<>();
+    private IntOpenHashSet locked = new IntOpenHashSet();
     private UUID record;
     private int index;
     private boolean sneak;
 
     public YogTerminalStatePacket() {}
 
-    private YogTerminalStatePacket(int kind, Set<Integer> locked, UUID record, int index, boolean sneak) {
+    private YogTerminalStatePacket(int kind, IntSet locked, UUID record, int index, boolean sneak) {
         this.kind = kind;
-        this.locked = new HashSet<>(locked);
+        this.locked = new IntOpenHashSet(locked);
         this.record = record;
         this.index = index;
         this.sneak = sneak;
     }
 
     static YogTerminalStatePacket ended() {
-        return new YogTerminalStatePacket(ENDED, Collections.emptySet(), null, -1, false);
+        return new YogTerminalStatePacket(ENDED, IntSets.emptySet(), null, -1, false);
     }
 
-    static YogTerminalStatePacket opening(Set<Integer> locked, UUID record, int index) {
+    static YogTerminalStatePacket opening(IntSet locked, UUID record, int index) {
         return new YogTerminalStatePacket(OPENING, locked, record, index, false);
     }
 
-    static YogTerminalStatePacket use(Set<Integer> locked, UUID record, int index, boolean sneak) {
+    static YogTerminalStatePacket use(IntSet locked, UUID record, int index, boolean sneak) {
         return new YogTerminalStatePacket(USE, locked, record, index, sneak);
     }
 
@@ -50,7 +51,7 @@ public class YogTerminalStatePacket extends ClientboundPacket {
     protected void read(ByteBuf buf) {
         kind = buf.readUnsignedByte();
         int count = buf.readUnsignedByte();
-        for (int slot = 0; slot < count; slot++) locked.add((int) buf.readByte());
+        for (int slot = 0; slot < count; slot++) locked.add(buf.readByte());
         if (kind == ENDED) return;
         record = new UUID(buf.readLong(), buf.readLong());
         index = buf.readInt();
@@ -61,7 +62,7 @@ public class YogTerminalStatePacket extends ClientboundPacket {
     protected void write(ByteBuf buf) {
         buf.writeByte(kind);
         buf.writeByte(locked.size());
-        for (int slot : locked) buf.writeByte(slot);
+        for (IntIterator it = locked.iterator(); it.hasNext();) buf.writeByte(it.nextInt());
         if (kind == ENDED) return;
         buf.writeLong(record.getMostSignificantBits());
         buf.writeLong(record.getLeastSignificantBits());

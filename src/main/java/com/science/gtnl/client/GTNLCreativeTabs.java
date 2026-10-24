@@ -1,6 +1,5 @@
 package com.science.gtnl.client;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -12,6 +11,7 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SuppressWarnings("unused")
 public class GTNLCreativeTabs {
@@ -56,7 +56,7 @@ public class GTNLCreativeTabs {
         }
     };
 
-    private static final List<ItemStack> GTNotLeisureMachineStack = new ArrayList<>();
+    private static final List<ItemStack> GTNotLeisureMachineStack = new ObjectArrayList<>();
 
     public static void addToMachineList(ItemStack stack) {
         GTNotLeisureMachineStack.add(stack);

@@ -3,7 +3,6 @@
 // LGPL-3.0, model by TedXenon. Adapted for GT-Not-Leisure, Forge 1.7.10.
 package com.science.gtnl.common.render.model.pigmeeModel;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -29,6 +28,7 @@ import com.gtnewhorizon.gtnhlib.client.renderer.cel.model.quad.properties.ModelQ
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class PigmeeFumoRenderHelper {
@@ -59,7 +59,7 @@ public class PigmeeFumoRenderHelper {
     public record FacedQuad(ModelQuadFacing lightFace, ModelQuadView quad) {}
 
     public static List<FacedQuad> getAllQuads(BakedModel model) {
-        List<FacedQuad> quads = new ArrayList<>();
+        List<FacedQuad> quads = new ObjectArrayList<>();
         for (ModelQuadFacing bucket : ModelQuadFacing.VALUES) {
             List<ModelQuadView> batch = model.getQuads(new PlainQuadContext(bucket));
             if (batch == null || batch.isEmpty()) continue;

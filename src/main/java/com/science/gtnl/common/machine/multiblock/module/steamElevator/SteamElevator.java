@@ -4,7 +4,6 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -81,6 +80,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.base.MTEHatchCustomFluidBase;
 import gtnhintergalactic.gui.IG_UITextures;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import micdoodle8.mods.galacticraft.core.client.gui.screen.GuiCelestialSelection;
@@ -99,7 +99,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String SE_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/steam_elevator";
     private static final String[][] shape = StructureUtils.readStructureFromFile(SE_STRUCTURE_FILE_PATH);
-    public ArrayList<SteamElevatorModuleBase> mModuleHatches = new ArrayList<>();
+    public ObjectArrayList<SteamElevatorModuleBase> mModuleHatches = new ObjectArrayList<>();
     public boolean isLoadedChunk;
     public boolean wirelessMode = false;
     public String costingEUText = Utils.ZERO_STRING;
@@ -581,7 +581,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
         })
             .setPlayClickSound(false)
             .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
+                List<UITexture> ret = new ObjectArrayList<>();
                 ret.add(TecTechUITextures.BUTTON_STANDARD_16x16);
                 ret.add(IG_UITextures.OVERLAY_BUTTON_PLANET_TELEPORT);
                 return ret.toArray(new IDrawable[0]);
@@ -636,7 +636,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
             .setOnClick((clickData, widget) -> { if (getStructureUpdateTime() <= -20) setStructureUpdateTime(1); })
             .setPlayClickSound(true)
             .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
+                List<UITexture> ret = new ObjectArrayList<>();
                 if (getStructureUpdateTime() > -20) {
                     ret.add(GTUITextures.BUTTON_STANDARD_PRESSED);
                 } else {

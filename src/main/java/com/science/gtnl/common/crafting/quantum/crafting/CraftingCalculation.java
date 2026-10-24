@@ -15,6 +15,9 @@
 
 package com.science.gtnl.common.crafting.quantum.crafting;
 
+import java.math.BigInteger;
+import java.util.Collections;
+
 import java.lang.management.ManagementFactory;
 import java.util.Collection;
 import java.util.List;
@@ -68,7 +71,7 @@ public class CraftingCalculation {
     final ICraftingService craftingService;
     private final NetworkCraftingSimulationState networkInv;
     private final World level;
-    private final KeyCounter missing = new KeyCounter();
+    private KeyCounter missing = new KeyCounter();
     private final KeyCounter recursiveMissingSeeds = new KeyCounter();
     private final Object monitor = new Object();
     private final @Nullable CraftingPerformanceLog performanceLog;
@@ -368,11 +371,12 @@ public class CraftingCalculation {
     }
 
     List<InputTemplate> collectValidTemplates(Iterable<InputTemplate> templates) {
-        var collected = new ObjectArrayList<InputTemplate>();
+        ObjectArrayList<InputTemplate> collected = null;
         for (var template : templates) {
+            if (collected == null) collected = new ObjectArrayList<>(1);
             collected.add(template);
         }
-        return collected;
+        return collected == null ? List.of() : collected;
     }
 
     public CraftingPlan run() throws InterruptedException {
@@ -487,10 +491,13 @@ public class CraftingCalculation {
         return runGraphBasedAttempt(requestedAmount);
     }
 
+    /**
+     * Starts an attempt over. The missing items are a new counter: a plan of an earlier attempt keeps its own.
+     */
     private void resetAttemptState() {
         this.simulate = false;
         this.allowMissing = true;
-        this.missing.clear();
+        this.missing = new KeyCounter();
         this.recursiveMissingSeeds.clear();
         for (var key : this.recursiveNetCache.keySet()) {
             this.recursiveNetKeyPool.release(key);
@@ -532,7 +539,7 @@ public class CraftingCalculation {
             }
         } catch (CraftBranchFailure failure) {
             if (failure.hasExplicitMessageKey()) {
-                throw new CraftingCalculationFailure(failure.getLocalizedMessageKey());
+                throw reported(failure);
             }
             if (logCrafting) {
                 this.attempts.add(new CraftAttempt(productionAmount + " failed", timer));
@@ -599,19 +606,7 @@ public class CraftingCalculation {
     }
 
     private static boolean needsLegacyTree(CraftingGraph graph) {
-        if (graph.requiresLegacyFallback()) {
-            return true;
-        }
-        var topology = graph.getTopology();
-        if (topology.isCondensed()) {
-            for (var component : topology.getComponents()) {
-                if (component.cyclic() && component.nodes()
-                    .size() > 1) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return graph.requiresLegacyFallback() || hasUnsolvableCycle(graph);
     }
 
     private CraftingPlan runGraphBasedAttemptBody(CraftingGraph graph, long productionAmount,
@@ -751,15 +746,15 @@ public class CraftingCalculation {
     }
 
     public void handlePausing() throws InterruptedException {
+        if (this.fallbackDeadline != Long.MAX_VALUE
+            && (--this.fallbackSteps < 0 || (this.fallbackSteps & 1023) == 0 && workerTime() > this.fallbackDeadline)) {
+            throw new FallbackTimeout();
+        }
         if (this.limitDeadline != Long.MAX_VALUE && (++this.limitChecks & 1023) == 0
             && Thread.currentThread() == this.workerThread
             && workerTime() > this.limitDeadline) {
             this.limitExceeded = true;
             throw new CraftingCalculationFailure(PlayerMessages.CraftingTooLong);
-        }
-        if (this.fallbackDeadline != Long.MAX_VALUE
-            && (--this.fallbackSteps < 0 || (this.fallbackSteps & 1023) == 0 && workerTime() > this.fallbackDeadline)) {
-            throw new FallbackTimeout();
         }
         if (this.incTime > AEConfig.CRAFTING.craftingCalculationPausingInterval) {
             this.incTime = 0;
@@ -891,8 +886,17 @@ public class CraftingCalculation {
         this.processHashPowers.removeInt(this.processHashPowers.size() - 1);
     }
 
+    // The failure the player is told about, with the cycle without net output it ran into
+    private CraftingCalculationFailure reported(CraftBranchFailure failure) {
+        return new CraftingCalculationFailure(failure.getLocalizedMessageKey(), failure.getCycle());
+    }
+
     public boolean cycleHasNetOutput(AEKey what) {
-        return getCycleNetOutput(what) > 0;
+        if (getCycleNetOutput(what) > 0) {
+            return true;
+        }
+        int requestIndex = findRecursiveRequestIndex(what);
+        return requestIndex >= 0 && getCycleBatchRuns(what, requestIndex) != null;
     }
 
     long getCycleNetOutput(AEKey what) {
@@ -1024,7 +1028,15 @@ public class CraftingCalculation {
         }
 
         var frozenKey = this.recursiveNetLookup.freeze(this.recursiveNetKeyPool);
-        var computed = computeRecursiveNet(frozenKey);
+        var computed = computeRecursiveNet(frozenKey, null);
+        if (!computed.canResolve() && computed.netByKey()
+            .get(what) < 0) {
+            // The batch only depends on the processes, which the cache key holds.
+            long[] runs = getCycleBatchRuns(what, requestIndex);
+            if (runs != null && runs[0] > 1) {
+                computed = computeRecursiveNet(frozenKey, runs);
+            }
+        }
         this.recursiveNetCache.put(frozenKey, computed);
         return computed;
     }
@@ -1045,14 +1057,17 @@ public class CraftingCalculation {
         return -1;
     }
 
-    private RecursiveNet computeRecursiveNet(RecursiveNetKey key) {
+    /**
+     * @param runs how often each process runs, see {@link #getCycleBatchRuns}, or null for once each
+     */
+    private RecursiveNet computeRecursiveNet(RecursiveNetKey key, @Nullable long[] runs) {
         recordPerformanceCount("recursive-net-analysis", 1);
         var netByKey = new KeyCounter();
         var inputKeys = new ObjectOpenHashSet<AEKey>();
         var includedPatterns = new ObjectOpenHashSet<IPatternDetails>();
         for (int i = 0; i < key.processCount(); i++) {
             var process = key.processAt(i);
-            process.accumulateNet(netByKey);
+            process.accumulateNet(netByKey, runs == null ? 1 : runs[i]);
             process.accumulateInputKeys(inputKeys);
             includedPatterns.add(process.details);
         }
@@ -1267,9 +1282,7 @@ public class CraftingCalculation {
         this.applyingRecursiveIngredientReserve = true;
         try {
             var reserveCandidates = new ObjectArrayList<AEKey>();
-            for (var entry : this.recursiveReserveCandidates) {
-                reserveCandidates.add(entry.getKey());
-            }
+            this.recursiveReserveCandidates.forEach((entryKey, entryAmount) -> reserveCandidates.add(entryKey));
             for (int i = 0; i < reserveCandidates.size(); i++) {
                 var what = reserveCandidates.get(i);
                 if (protectedMissingSeeds.get(what) > 0) {
@@ -1318,7 +1331,7 @@ public class CraftingCalculation {
                         continue;
                     }
                     if (failure.hasExplicitMessageKey()) {
-                        throw new CraftingCalculationFailure(failure.getLocalizedMessageKey());
+                        throw reported(failure);
                     }
                     restoreRecursiveReserveBranchMarker(branchMarker);
                     this.missing.add(what, deficit);
@@ -1424,39 +1437,43 @@ public class CraftingCalculation {
 
     private static KeyCounter positiveCounterDelta(KeyCounter before, KeyCounter after) {
         var result = new KeyCounter();
-        for (var entry : after) {
-            long delta = entry.getLongValue() - before.get(entry.getKey());
+        after.forEach((entryKey, entryAmount) -> {
+            long delta = entryAmount - before.get(entryKey);
             if (delta > 0) {
-                result.add(entry.getKey(), delta);
+                result.add(entryKey, delta);
             }
-        }
+        });
         return result;
     }
 
     private static KeyCounter increasedCounterTargets(KeyCounter before, KeyCounter after) {
         var result = new KeyCounter();
-        for (var entry : after) {
-            if (entry.getLongValue() > before.get(entry.getKey())) {
-                result.add(entry.getKey(), entry.getLongValue());
+        after.forEach((entryKey, entryAmount) -> {
+            if (entryAmount > before.get(entryKey)) {
+                result.add(entryKey, entryAmount);
             }
-        }
+        });
         return result;
     }
 
     private static void mergeCounterMaximum(KeyCounter target, KeyCounter additions) {
-        for (var entry : additions) {
-            long current = target.get(entry.getKey());
-            if (entry.getLongValue() > current) {
-                target.add(entry.getKey(), entry.getLongValue() - current);
+        additions.forEach((entryKey, entryAmount) -> {
+            long current = target.get(entryKey);
+            if (entryAmount > current) {
+                target.add(entryKey, entryAmount - current);
             }
-        }
+        });
     }
 
     private static <T> Set<T> setDelta(Set<T> before, Set<T> after) {
-        Set<T> result = new ObjectOpenHashSet<>();
-        result.addAll(after);
-        result.removeAll(before);
-        return result;
+        Set<T> result = null;
+        for (var key : after) {
+            if (!before.contains(key)) {
+                if (result == null) result = new ObjectOpenHashSet<>(Math.min(4, after.size()));
+                result.add(key);
+            }
+        }
+        return result == null ? Set.of() : Collections.unmodifiableSet(result);
     }
 
     /**
@@ -1587,35 +1604,35 @@ public class CraftingCalculation {
     }
 
     private void restoreProtectedRecursiveMissingSeeds(KeyCounter protectedSeeds) {
-        for (var entry : protectedSeeds) {
-            long current = this.recursiveMissingSeeds.get(entry.getKey());
-            if (current < entry.getLongValue()) {
-                this.recursiveMissingSeeds.add(entry.getKey(), entry.getLongValue() - current);
+        protectedSeeds.forEach((entryKey, entryAmount) -> {
+            long current = this.recursiveMissingSeeds.get(entryKey);
+            if (current < entryAmount) {
+                this.recursiveMissingSeeds.add(entryKey, entryAmount - current);
             }
-        }
+        });
     }
 
     private void addRecursiveMissingSeedsToPlan() {
-        for (var entry : this.recursiveMissingSeeds) {
-            if (hasRealSeededRecursiveRequestFor(entry.getKey()) || this.realRecursiveSeeds.contains(entry.getKey())
-                || this.realSeededRecursiveKeys.contains(entry.getKey())
-                || this.missing.get(entry.getKey()) >= entry.getLongValue()) {
-                continue;
+        this.recursiveMissingSeeds.forEach((entryKey, entryAmount) -> {
+            if (hasRealSeededRecursiveRequestFor(entryKey) || this.realRecursiveSeeds.contains(entryKey)
+                || this.realSeededRecursiveKeys.contains(entryKey)
+                || this.missing.get(entryKey) >= entryAmount) {
+                return;
             }
-            this.missing.add(entry.getKey(), entry.getLongValue());
-        }
+            this.missing.add(entryKey, entryAmount);
+        });
     }
 
     private void clearResolvedRecursiveMissingItems(CraftingSimulationState inv) {
         var keys = new ObjectArrayList<AEKey>();
-        for (var entry : this.missing) {
-            var key = entry.getKey();
-            if (this.realSeededRecursiveKeys.contains(key) || this.realRecursiveSeeds.contains(key)
-                || hasRealSeededRecursiveRequestFor(key)
-                || (this.recursiveMissingSeeds.get(key) <= 0 && inv.getNetCraftedAmount(key) >= entry.getLongValue())) {
-                keys.add(key);
+        this.missing.forEach((entryKey, entryAmount) -> {
+            if (this.realSeededRecursiveKeys.contains(entryKey) || this.realRecursiveSeeds.contains(entryKey)
+                || hasRealSeededRecursiveRequestFor(entryKey)
+                || (this.recursiveMissingSeeds.get(entryKey) <= 0
+                    && inv.getNetCraftedAmount(entryKey) >= entryAmount)) {
+                keys.add(entryKey);
             }
-        }
+        });
         for (int i = 0; i < keys.size(); i++) {
             this.missing.remove(keys.get(i));
         }
@@ -1640,39 +1657,38 @@ public class CraftingCalculation {
     }
 
     private void addRealSeededRecursiveKeys(KeyCounter netByKey) {
-        for (var entry : netByKey) {
-            if (entry.getLongValue() >= 0) {
-                var key = entry.getKey();
-                if (isReserveProtectedMissingSeed(key)) {
-                    continue;
+        netByKey.forEach((entryKey, entryAmount) -> {
+            if (entryAmount >= 0) {
+                if (isReserveProtectedMissingSeed(entryKey)) {
+                    return;
                 }
-                this.realSeededRecursiveKeys.add(key);
-                clearRecursiveMissingSeed(key);
+                this.realSeededRecursiveKeys.add(entryKey);
+                clearRecursiveMissingSeed(entryKey);
             }
-        }
+        });
     }
 
     private void addRecursiveReserveCandidates(RecursiveNet recursiveNet) {
-        for (var entry : recursiveNet.netByKey()) {
-            AEKey key = entry.getKey();
-            if (entry.getLongValue() < 0 || isReserveProtectedMissingSeed(key)) {
-                continue;
-            }
+        recursiveNet.netByKey()
+            .forEach((entryKey, entryAmount) -> {
+                if (entryAmount < 0 || isReserveProtectedMissingSeed(entryKey)) {
+                    return;
+                }
 
-            long reservePerBatch = entry.getLongValue();
-            if (reservePerBatch <= 0 && recursiveNet.inputKeys()
-                .contains(key)) {
-                reservePerBatch = getRecursiveSeedAmount(key, recursiveNet.requestIndex());
-            }
-            if (reservePerBatch <= 0) {
-                continue;
-            }
+                long reservePerBatch = entryAmount;
+                if (reservePerBatch <= 0 && recursiveNet.inputKeys()
+                    .contains(entryKey)) {
+                    reservePerBatch = getRecursiveSeedAmount(entryKey, recursiveNet.requestIndex());
+                }
+                if (reservePerBatch <= 0) {
+                    return;
+                }
 
-            long existing = this.recursiveReserveCandidates.get(key);
-            if (existing < reservePerBatch) {
-                this.recursiveReserveCandidates.add(key, reservePerBatch - existing);
-            }
-        }
+                long existing = this.recursiveReserveCandidates.get(entryKey);
+                if (existing < reservePerBatch) {
+                    this.recursiveReserveCandidates.add(entryKey, reservePerBatch - existing);
+                }
+            });
     }
 
     private void expandRecursiveNetClosure(KeyCounter netByKey, @Nullable Collection<AEKey> inputKeys,
@@ -1682,11 +1698,11 @@ public class CraftingCalculation {
         // scanned once instead of on every closure round.
         var pending = new ObjectArrayList<AEKey>();
         var queued = new ObjectOpenHashSet<AEKey>();
-        for (var entry : netByKey) {
-            if (entry.getLongValue() < 0 && queued.add(entry.getKey())) {
-                pending.add(entry.getKey());
+        netByKey.forEach((entryKey, entryAmount) -> {
+            if (entryAmount < 0 && queued.add(entryKey)) {
+                pending.add(entryKey);
             }
-        }
+        });
 
         for (int i = 0; i < pending.size(); i++) {
             var key = pending.get(i);
@@ -1704,11 +1720,11 @@ public class CraftingCalculation {
                     break;
                 }
                 accumulatePatternNet(netByKey, inputKeys, selected, 1);
-                for (var entry : netByKey) {
-                    if (entry.getLongValue() < 0 && queued.add(entry.getKey())) {
-                        pending.add(entry.getKey());
+                netByKey.forEach((entryKey, entryAmount) -> {
+                    if (entryAmount < 0 && queued.add(entryKey)) {
+                        pending.add(entryKey);
                     }
-                }
+                });
             }
         }
     }
@@ -1813,7 +1829,7 @@ public class CraftingCalculation {
     }
 
     Set<AEKey> getRealSeededRecursiveRequestsMarker() {
-        return new ObjectOpenHashSet<>(this.realSeededRecursiveRequests);
+        return snapshotSet(this.realSeededRecursiveRequests);
     }
 
     void restoreRealSeededRecursiveRequestsMarker(Set<AEKey> marker) {
@@ -1826,7 +1842,7 @@ public class CraftingCalculation {
     }
 
     Set<AEKey> getRealRecursiveSeedsMarker() {
-        return new ObjectOpenHashSet<>(this.realRecursiveSeeds);
+        return snapshotSet(this.realRecursiveSeeds);
     }
 
     void restoreRealRecursiveSeedsMarker(Set<AEKey> marker) {
@@ -1843,7 +1859,7 @@ public class CraftingCalculation {
     }
 
     Set<AEKey> getRealSeededRecursiveKeysMarker() {
-        return new ObjectOpenHashSet<>(this.realSeededRecursiveKeys);
+        return snapshotSet(this.realSeededRecursiveKeys);
     }
 
     void restoreRealSeededRecursiveKeysMarker(Set<AEKey> marker) {
@@ -1860,11 +1876,11 @@ public class CraftingCalculation {
     }
 
     void applyRecursiveMissingSeedPreview(KeyCounter clearedSeeds, KeyCounter addedSeeds) {
-        for (var entry : clearedSeeds) {
-            if (!isReserveProtectedMissingSeed(entry.getKey())) {
-                clearRecursiveMissingSeed(entry.getKey());
+        clearedSeeds.forEach((entryKey, entryAmount) -> {
+            if (!isReserveProtectedMissingSeed(entryKey)) {
+                clearRecursiveMissingSeed(entryKey);
             }
-        }
+        });
         this.recursiveMissingSeeds.addAll(addedSeeds);
     }
 
@@ -1894,8 +1910,6 @@ public class CraftingCalculation {
      * @return true if this needs more simulation
      */
     public boolean simulateFor(int micros) {
-        this.time = micros;
-
         synchronized (this.monitor) {
             if (this.done || this.cancelled) {
                 return false;
@@ -1903,6 +1917,7 @@ public class CraftingCalculation {
 
             this.watch.reset();
             this.watch.start();
+            this.time = micros;
             this.running = true;
 
             AELog.craftingDebug("main thread is now going to sleep");
@@ -2200,12 +2215,11 @@ public class CraftingCalculation {
 
         private final ObjectArrayList<T> pool = new ObjectArrayList<>();
         private final Supplier<T> factory;
+        private final int maxRetained;
 
-        ObjectPool(Supplier<T> factory, int initialCapacity) {
+        ObjectPool(Supplier<T> factory, int maxRetained) {
             this.factory = factory;
-            for (int i = 0; i < initialCapacity; i++) {
-                pool.add(factory.get());
-            }
+            this.maxRetained = maxRetained;
         }
 
         T acquire() {
@@ -2216,8 +2230,193 @@ public class CraftingCalculation {
         }
 
         void release(T obj) {
-            pool.add(obj);
+            if (pool.size() < this.maxRetained) pool.add(obj);
         }
     }
 
+
+    /**
+     * How many root crafts of a cycle are tried before falling back to the batch in which every craft divides evenly,
+     * see {@link #getCycleBatchRuns}.
+     */
+    private static final long MAX_CYCLE_BATCH_SEARCH = 1024;
+
+    /**
+     * The cycle the request for an item being requested further up runs around: the items requested from that request
+     * down, and the patterns of the processes between them.
+     */
+    @Nullable
+    NoNetOutputCycle describeCycle(AEKey what) {
+        int requestIndex = this.requestStack.lastIndexOf(what);
+        if (requestIndex < 0) {
+            return null;
+        }
+        var items = new ObjectArrayList<>(this.requestStack.subList(requestIndex, this.requestStack.size()));
+        items.add(what);
+        var patterns = new ObjectArrayList<IPatternDetails>();
+        for (int i = requestIndex; i < this.processStack.size(); i++) {
+            patterns.add(
+                this.processStack.get(i)
+                    .getDetails());
+        }
+        return NoNetOutputCycle.of(items, patterns);
+    }
+
+    KeyCounter getAddedRecursiveMissingSeeds(KeyCounter marker) {
+        return positiveCounterDelta(marker, this.recursiveMissingSeeds);
+    }
+
+    KeyCounter getClearedRecursiveMissingSeeds(KeyCounter marker) {
+        return positiveCounterDelta(this.recursiveMissingSeeds, marker);
+    }
+
+    Set<AEKey> getRealSeededRecursiveRequestsDelta(Set<AEKey> marker) {
+        return setDelta(marker, this.realSeededRecursiveRequests);
+    }
+
+    Set<AEKey> getRealRecursiveSeedsDelta(Set<AEKey> marker) {
+        return setDelta(marker, this.realRecursiveSeeds);
+    }
+
+    Set<AEKey> getRealSeededRecursiveKeysDelta(Set<AEKey> marker) {
+        return setDelta(marker, this.realSeededRecursiveKeys);
+    }
+
+    /**
+     * One craft of each process around a cycle can take more of the requested key than it makes although the cycle
+     * multiplies it: with 4 stone -> 5 bricks and 1 brick -> 2 stone, one craft each takes 4 stone to make 2. Crafting
+     * in the ratio the processes feed each other shows the gain: 5 brick crafts make 10 stone from the 5 bricks that
+     * one stone craft makes from 4 stone.
+     * <p/>
+     * Returns how often each process from {@code requestIndex} up the process stack runs in the smallest batch, by root
+     * crafts, that makes at least as much of {@code what} as it takes, or null if the cycle can never net produce it.
+     */
+    @Nullable
+    private long[] getCycleBatchRuns(AEKey what, int requestIndex) {
+        int count = this.processStack.size() - requestIndex;
+        if (count <= 0 || !what.equals(
+            this.processStack.get(requestIndex)
+                .getRequestedKey())) {
+            return null;
+        }
+
+        // Process i crafts for its node from what process i + 1 crafts; the last one takes what itself. The keys come
+        // from the processes: not every request in between is on the request stack.
+        long[] made = new long[count];
+        long[] taken = new long[count];
+        var madeProduct = BigInteger.ONE;
+        var takenProduct = BigInteger.ONE;
+        for (int i = 0; i < count; i++) {
+            var process = this.processStack.get(requestIndex + i);
+            var input = i + 1 < count ? this.processStack.get(requestIndex + i + 1)
+                .getRequestedKey() : what;
+            var output = process.getRequestedKey();
+            if (input == null || output == null) {
+                return null;
+            }
+            made[i] = process.getOutputCount(output);
+            taken[i] = process.getInputCount(input);
+            if (made[i] <= 0 || taken[i] <= 0) {
+                return null;
+            }
+            madeProduct = madeProduct.multiply(BigInteger.valueOf(made[i]));
+            takenProduct = takenProduct.multiply(BigInteger.valueOf(taken[i]));
+        }
+        if (madeProduct.compareTo(takenProduct) <= 0) {
+            return null;
+        }
+
+        // With this many root crafts every process divides evenly into the next, so the gain is exact.
+        long evenRootRuns = 1;
+        for (int i = 1; i < count; i++) {
+            evenRootRuns = LongMath.saturatedMultiply(evenRootRuns, made[i]);
+        }
+        long[] runs = new long[count];
+        long searched = Math.min(evenRootRuns, MAX_CYCLE_BATCH_SEARCH);
+        for (long rootRuns = 1; rootRuns <= searched; rootRuns++) {
+            if (fillCycleBatchRuns(what, requestIndex, made, taken, rootRuns, runs)) {
+                return runs;
+            }
+        }
+        if (evenRootRuns > searched && evenRootRuns < Long.MAX_VALUE
+            && fillCycleBatchRuns(what, requestIndex, made, taken, evenRootRuns, runs)) {
+            return runs;
+        }
+        return null;
+    }
+
+    private boolean fillCycleBatchRuns(AEKey what, int requestIndex, long[] made, long[] taken, long rootRuns,
+        long[] runs) {
+        runs[0] = rootRuns;
+        for (int i = 1; i < runs.length; i++) {
+            long needed = LongMath.saturatedMultiply(runs[i - 1], taken[i - 1]);
+            runs[i] = needed / made[i] + (needed % made[i] == 0 ? 0 : 1);
+        }
+
+        long net = 0;
+        for (int i = 0; i < runs.length; i++) {
+            if (runs[i] == Long.MAX_VALUE) {
+                return false;
+            }
+            var process = this.processStack.get(requestIndex + i);
+            net = LongMath.saturatedAdd(net, LongMath.saturatedMultiply(runs[i], process.getOutputCount(what)));
+            net = LongMath.saturatedSubtract(net, LongMath.saturatedMultiply(runs[i], process.getInputCount(what)));
+        }
+        return net >= 0;
+    }
+
+    private static boolean hasNativeRing(CraftingGraph graph) {
+        var topology = graph.getTopology();
+        if (!topology.isCondensed()) return false;
+        for (var component : topology.getComponents()) {
+            var sccPlan = component.cyclic() ? graph.getSccPlan(component.id()) : null;
+            if (sccPlan != null && sccPlan.ring()) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Whether a cycle of several patterns is more than a ring the graph plans natively, see
+     * DemandPropagation#ringEdges.
+     */
+    private static boolean hasUnsolvableCycle(CraftingGraph graph) {
+        var topology = graph.getTopology();
+        if (topology.isCondensed()) {
+            for (var component : topology.getComponents()) {
+                if (component.cyclic() && component.nodes()
+                    .size() > 1 && DemandPropagation.ringEdges(topology, component) == null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * How much of a crafting graph's crafted final output its crafts take back.
+     */
+    public void addGraphIntermediateFinalOutput(long amount) {
+        addIntermediateFinalOutput(amount);
+    }
+
+    /**
+     * How much of each recursive ingredient taken from storage the plan should leave there, in crafts of what takes it.
+     */
+    public long getRecursiveIngredientReserveAmount() {
+        return this.recursiveIngredientReserveAmount;
+    }
+
+
+    private static <T> Set<T> snapshotSet(Set<T> source) {
+        // Backtracking mutates the source. Non-empty markers must remain detached; empty ones need no allocation.
+        return source.isEmpty() ? Set.of() : Collections.unmodifiableSet(new ObjectOpenHashSet<>(source));
+    }
+
+    private static long totalAmount(KeyCounter counter) {
+        long total = 0;
+        for (var entry : counter) {
+            total = LongMath.saturatedAdd(total, entry.getLongValue());
+        }
+        return total;
+    }
 }

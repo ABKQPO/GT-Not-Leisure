@@ -13,7 +13,6 @@ import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -84,6 +83,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
 import gregtech.common.tileentities.machines.MTEHatchInputBusME;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -122,7 +122,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     private static final String STORE_STACKS_KEY = "STORE_STACKS";
     private static final char GUI_PAYLOAD_SEPARATOR = '\t';
 
-    public Map<IAEStackType<?>, IItemList<?>> STORE_STACKS = new IdentityHashMap<>();
+    public Map<IAEStackType<?>, IItemList<?>> STORE_STACKS = new Reference2ObjectOpenHashMap<>();
     private String typeCountPayloadForGui = "";
 
     public SingularityDataHub(int aID, String aName, String aNameRegional) {

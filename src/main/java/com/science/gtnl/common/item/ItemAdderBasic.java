@@ -1,6 +1,5 @@
 package com.science.gtnl.common.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -11,10 +10,11 @@ import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class ItemAdderBasic extends Item {
 
-    public List<String> tooltips = new ArrayList<>();
+    public List<String> tooltips = new ObjectArrayList<>();
 
     public String unlocalizedName;
 

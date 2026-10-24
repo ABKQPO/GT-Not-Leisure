@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -44,6 +43,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtnhlanth.common.register.LanthItemList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import tectech.thing.casing.BlockGTCasingsTT;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -199,7 +199,7 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
         if (!foundValidInput || totalOutput == 0) return CheckRecipeResultRegistry.NO_RECIPE;
 
         if (hasCircuit1) {
-            List<ItemStack> outputItems = new ArrayList<>();
+            List<ItemStack> outputItems = new ObjectArrayList<>();
             long remaining = totalOutput;
             while (remaining > 0) {
                 int stackSize = (int) Math.min(remaining, Integer.MAX_VALUE);
@@ -208,7 +208,7 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
             }
             mOutputItems = outputItems.toArray(new ItemStack[0]);
         } else {
-            List<FluidStack> outputFluids = new ArrayList<>();
+            List<FluidStack> outputFluids = new ObjectArrayList<>();
             long fluidAmount = totalOutput * 100000L;
             while (fluidAmount > 0) {
                 int amount = (int) Math.min(fluidAmount, Integer.MAX_VALUE);

@@ -14,11 +14,8 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -50,6 +47,12 @@ import com.science.gtnl.common.render.entity.PortalGunVortexRender;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.PortalGunPortalEffect;
 import com.science.gtnl.utils.enums.PortalGunPortalEffect.Kind;
+
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class PortalGunLookContracts {
 
@@ -268,7 +271,7 @@ public class PortalGunLookContracts {
     }
 
     private static void lookPage() {
-        List<Control> controls = new ArrayList<>();
+        List<Control> controls = new ObjectArrayList<>();
         try {
             Method method = PortalGunLookScreen.class.getDeclaredMethod("sections");
             method.setAccessible(true);
@@ -278,8 +281,8 @@ public class PortalGunLookContracts {
             check(false, "the look page's controls are readable: " + e);
             return;
         }
-        Map<String, Control> shown = new HashMap<>();
-        List<Field> settings = new ArrayList<>();
+        Map<String, Control> shown = new Object2ObjectOpenHashMap<>();
+        List<Field> settings = new ObjectArrayList<>();
         try {
             for (Control control : controls) shown.put(control.lang(), control);
             for (Field field : MainConfig.Client.class.getFields()) if (field.getName()
@@ -337,7 +340,7 @@ public class PortalGunLookContracts {
 
     private static void restoring(List<Field> settings) throws ReflectiveOperationException {
         MainConfig.Client defaults = new MainConfig.Client();
-        Map<Field, Object> initial = new HashMap<>();
+        Map<Field, Object> initial = new Object2ObjectOpenHashMap<>();
         for (Field field : settings) {
             boolean library = field.getDeclaringClass() == GTNLLibConfig.class;
             Object owner = library ? null : MainConfig.client;
@@ -392,7 +395,7 @@ public class PortalGunLookContracts {
     }
 
     private static Map<String, String> langFile(String name) {
-        Map<String, String> entries = new HashMap<>();
+        Map<String, String> entries = new Object2ObjectOpenHashMap<>();
         try {
             for (String line : Files
                 .readAllLines(RESOURCES.resolve("lang/" + name + ".lang"), StandardCharsets.UTF_8)) {
@@ -430,7 +433,7 @@ public class PortalGunLookContracts {
         for (PortalGunPortalEffect effect : PortalGunPortalEffect.values()) openingArcs(effect, defaults);
         sharpArcs(defaults);
         Random r = new Random(5);
-        List<Arc> arcs = new ArrayList<>();
+        List<Arc> arcs = new ObjectArrayList<>();
         PortalGunPortalFx.bolt(arcs, r, new Vec3d(-0.3, 0, 0.03), new Vec3d(0.3, 0.1, 0.03), 0.1, 0.3, 0, false, 1);
         check(arcs.size() == 1, "an arc never forks when forks are off");
         List<Vec3d> points = arcs.get(0)
@@ -562,7 +565,7 @@ public class PortalGunLookContracts {
 
     private static void sharpArcs(MainConfig.Client defaults) {
         Vec3d a = new Vec3d(-0.3, 0, 0.03), b = new Vec3d(0.3, 0.1, 0.03);
-        List<Arc> arcs = new ArrayList<>();
+        List<Arc> arcs = new ObjectArrayList<>();
         PortalGunPortalFx.sharpBolt(arcs, new Random(9), a, b, 0.2, 0.8, 0.6, 0, false, 1);
         List<Vec3d> points = arcs.get(0)
             .points();
@@ -686,7 +689,7 @@ public class PortalGunLookContracts {
         double halfWidth = PortalGunDoorRender.DOOR_HALF_WIDTH, halfHeight = PortalGunDoorRender.DOOR_HALF_HEIGHT,
             reach = PortalGunDoorRender.ARC_LIFT + PortalGunDoorRender.ARC_REACH;
         int window = 200, quiet = 0, crawled = 0, cornered = 0;
-        Set<Long> spots = new HashSet<>();
+        LongOpenHashSet spots = new LongOpenHashSet();
         for (int tick = 0; tick < window; tick++) {
             List<PortalGunDoorRender.FrameArc> arcs = PortalGunDoorRender.frameArcs(halfWidth, halfHeight, tick),
                 next = PortalGunDoorRender.frameArcs(halfWidth, halfHeight, tick + PortalGunDoorRender.ARC_HOP_TICKS);
@@ -842,13 +845,13 @@ public class PortalGunLookContracts {
         check(
             trail > 0 && burst >= 2 * trail,
             "a forming vortex throws far more droplets than an open one, " + burst + " vs " + trail);
-        List<PortalGunVortexRender.Drop> all = new ArrayList<>();
-        Set<Long> spots = new HashSet<>();
+        List<PortalGunVortexRender.Drop> all = new ObjectArrayList<>();
+        LongOpenHashSet spots = new LongOpenHashSet();
         int crowded = 0;
         for (int tick = 0; tick < 400; tick++) {
             float open = Math.min(1, tick / (float) PortalGunVortexRender.OPEN_TICKS),
                 size = PortalGunVortexRender.size(open, 0);
-            List<PortalGunVortexRender.Drop> drops = new ArrayList<>();
+            List<PortalGunVortexRender.Drop> drops = new ObjectArrayList<>();
             for (int stream = 0; stream < PortalGunVortexRender.STREAMS; stream++)
                 drops.addAll(PortalGunVortexRender.droplets(stream, tick, size));
             all.addAll(drops);
@@ -943,7 +946,7 @@ public class PortalGunLookContracts {
         check(PortalGunVortexRender.INTERIOR >= base, "the light inside reaches under the flames, so no gap shows");
         int samples = 2880;
         for (int tick = 0; tick < 80; tick += 13) {
-            List<Double> tips = new ArrayList<>(), angles = new ArrayList<>();
+            DoubleArrayList tips = new DoubleArrayList(), angles = new DoubleArrayList();
             double low = 1, high = 0;
             double[] radii = new double[samples];
             for (int k = 0; k < samples; k++) {
@@ -969,18 +972,17 @@ public class PortalGunLookContracts {
             check(
                 tips.size() >= 5 && tips.size() <= PortalGunVortexRender.FLAMES + 2,
                 "the rim has a handful of flames at tick " + tick + ", found " + tips.size());
-            double shallowest = tips.stream()
-                .mapToDouble(Double::doubleValue)
+            double shallowest = tips.doubleStream()
                 .min()
                 .orElse(0),
-                deepest = tips.stream()
-                    .mapToDouble(Double::doubleValue)
+                deepest = tips.doubleStream()
                     .max()
                     .orElse(0);
             check(deepest - shallowest >= 0.25 * depth, "the flames reach in by different amounts at tick " + tick);
             double widest = 0, narrowest = 2 * Math.PI;
             for (int i = 0; i < angles.size(); i++) {
-                double gap = (angles.get((i + 1) % angles.size()) - angles.get(i) + 2 * Math.PI) % (2 * Math.PI);
+                double gap = (angles.getDouble((i + 1) % angles.size()) - angles.getDouble(i) + 2 * Math.PI)
+                    % (2 * Math.PI);
                 widest = Math.max(widest, gap);
                 narrowest = Math.min(narrowest, gap);
             }
@@ -1154,7 +1156,7 @@ public class PortalGunLookContracts {
         boolean longRays = false;
         for (int frame = 0; frame < effect.frames; frame++) {
             int[] cells = new int[8];
-            Set<Integer> shades = new HashSet<>();
+            IntOpenHashSet shades = new IntOpenHashSet();
             int stars = 0;
             for (int y = 0; y < height; y++) {
                 int run = 0;

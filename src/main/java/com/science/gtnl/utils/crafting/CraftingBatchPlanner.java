@@ -6,6 +6,7 @@ import java.util.function.ToLongFunction;
 
 import appeng.api.storage.data.IAEStack;
 import appeng.crafting.MECraftingInventory;
+import it.unimi.dsi.fastutil.booleans.BooleanList;
 
 /**
  * Plans and commits one exact crafting dispatch batch.
@@ -355,7 +356,7 @@ public interface CraftingBatchPlanner {
      * @param compatibleMedia one compatibility result for every medium registered for the pattern
      * @return batching only when the list is non-empty and every entry is compatible
      */
-    MediumStrategy resolveMediumStrategy(List<Boolean> compatibleMedia);
+    MediumStrategy resolveMediumStrategy(BooleanList compatibleMedia);
 
     /**
      * Computes the exact dispatch multiplier from task, arithmetic, material, and energy constraints.

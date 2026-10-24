@@ -1,6 +1,5 @@
 package com.reavaritia.utils;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -13,11 +12,12 @@ import com.reavaritia.common.ItemLoader;
 
 import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public class MissingMappingsHandler {
 
-    private static final Map<String, Item> ITEM_MAPPINGS = new HashMap<>();
-    private static final Map<String, Block> BLOCK_MAPPINGS = new HashMap<>();
+    private static final Map<String, Item> ITEM_MAPPINGS = new Object2ObjectOpenHashMap<>();
+    private static final Map<String, Block> BLOCK_MAPPINGS = new Object2ObjectOpenHashMap<>();
 
     static {
         String[] names = { "CrystalSword", "CrystalAxe", "CrystalPickaxe", "CrystalShovel", "CrystalHoe", "BlazeSword",

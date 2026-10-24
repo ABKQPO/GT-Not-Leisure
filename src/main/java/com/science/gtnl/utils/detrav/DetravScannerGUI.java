@@ -3,7 +3,6 @@ package com.science.gtnl.utils.detrav;
 import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
 import static com.science.gtnl.ScienceNotLeisure.network;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -27,6 +26,7 @@ import com.science.gtnl.utils.ColorUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class DetravScannerGUI extends GuiScreen {
@@ -708,7 +708,7 @@ public class DetravScannerGUI extends GuiScreen {
                 if (!findNearestOre(mouseX, mouseY)) {
                     return;
                 }
-                List<String> lines = new ArrayList<>();
+                List<String> lines = new ObjectArrayList<>();
                 lines.add(map.getTopOreName(nearestOreX, nearestOreZ));
                 lines.add(
                     StatCollector.translateToLocalFormatted(
@@ -730,7 +730,7 @@ public class DetravScannerGUI extends GuiScreen {
                 }
                 int chunkX = blockX / 16;
                 int chunkZ = blockZ / 16;
-                List<String> lines = new ArrayList<>();
+                List<String> lines = new ObjectArrayList<>();
                 short objectId = map.packet.map.getOrDefault(CoordinatePacker.pack(chunkX, 0, chunkZ), (short) -1);
                 int amount = map.packet.getAmount(chunkX, chunkZ);
                 var object = map.packet.objects.get(objectId);
@@ -756,7 +756,7 @@ public class DetravScannerGUI extends GuiScreen {
                 if (amount <= 0) {
                     return;
                 }
-                List<String> lines = new ArrayList<>();
+                List<String> lines = new ObjectArrayList<>();
                 lines.add(
                     StatCollector.translateToLocal("gui.detrav.scanner.pollution") + ": "
                         + formatNumber(amount)

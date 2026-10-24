@@ -1,6 +1,5 @@
 package com.science.gtnl.utils.machine.greenHouseManager.buckets;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
@@ -71,7 +70,7 @@ public class GreenHouseInfusedSeedBucket extends GreenHouseBucket {
         Aspect aspect = ItemInfusedSeeds.getAspect(this.seed);
         if (aspect == null) return;
 
-        HashMap<ItemStack, Integer> aspectDrops = AccessorAspectCropLootManager.getLootMap()
+        Map<ItemStack, Integer> aspectDrops = AccessorAspectCropLootManager.getLootMap()
             .get(aspect);
         if (aspectDrops == null || aspectDrops.isEmpty()) return; // no drops
 

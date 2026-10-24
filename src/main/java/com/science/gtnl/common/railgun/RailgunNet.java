@@ -1,6 +1,5 @@
 package com.science.gtnl.common.railgun;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
@@ -10,6 +9,7 @@ import com.science.gtnl.common.equipment.EquipmentNet;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import io.netty.buffer.ByteBuf;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class RailgunNet {
 
@@ -34,13 +34,13 @@ public class RailgunNet {
         int size = buffer.readUnsignedShort();
         if (size > MAX_PATH || (size & 1) != 0 || size * POINT_BYTES > buffer.readableBytes())
             throw new IllegalArgumentException("Invalid railgun path length");
-        List<Vec3d> path = new ArrayList<>(size);
+        List<Vec3d> path = new ObjectArrayList<>(size);
         for (int i = 0; i < size; i++) path.add(Vec3d.read(buffer));
         return path;
     }
 
     public static List<Vec3d> path(Vec3d origin, List<RailgunChainResolver.Hit> hits) {
-        List<Vec3d> path = new ArrayList<>();
+        List<Vec3d> path = new ObjectArrayList<>();
         Vec3d previous = origin;
         for (var hit : hits) {
             if (hit.kind() != RailgunChainResolver.Kind.PRIMARY && hit.kind() != RailgunChainResolver.Kind.CHAIN)

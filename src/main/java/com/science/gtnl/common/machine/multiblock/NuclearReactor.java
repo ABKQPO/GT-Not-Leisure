@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -55,6 +54,7 @@ import gregtech.common.misc.GTStructureChannels;
 import ic2.api.item.ICustomDamageItem;
 import ic2.core.init.MainConfig;
 import ic2.core.util.ConfigUtil;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -557,7 +557,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
         clearHatches();
         mReactorTier = 0;
-        List<StructureError> probeErrors = new ArrayList<>();
+        List<StructureError> probeErrors = new ObjectArrayList<>();
         for (int tier = MAX_TIER; tier >= 1; tier--) {
             int w = footprintOf(tier);
             clearHatches();
@@ -1118,7 +1118,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
     }
 
     public List<CoreCellDisplay> getCoreCellDisplaysForGui() {
-        List<CoreCellDisplay> displays = new ArrayList<>(getCoreCellCount());
+        List<CoreCellDisplay> displays = new ObjectArrayList<>(getCoreCellCount());
         for (int slot = 0; slot < getCoreCellCount(); slot++) {
             IMetaTileEntity meta = getCoreCell(slot);
             if (meta instanceof NuclearItemBus bus) {

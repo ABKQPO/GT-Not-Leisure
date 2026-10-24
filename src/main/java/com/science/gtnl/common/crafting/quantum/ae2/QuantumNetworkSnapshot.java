@@ -1,6 +1,5 @@
 package com.science.gtnl.common.crafting.quantum.ae2;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -146,7 +145,7 @@ public final class QuantumNetworkSnapshot implements ICraftingService, IStorageS
             // Already sorted by priority, highest first
             final ImmutableList<ICraftingPatternDetails> details = this.patterns.get(key.getStack());
             if (details != null && !details.isEmpty()) {
-                final List<IPatternDetails> adapted = new ArrayList<>(details.size());
+                final List<IPatternDetails> adapted = new ObjectArrayList<>(details.size());
                 for (ICraftingPatternDetails detail : details) {
                     final QuantumPattern pattern = adapt(detail);
                     if (pattern != null) {

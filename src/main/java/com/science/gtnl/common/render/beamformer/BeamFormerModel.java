@@ -5,8 +5,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,6 +36,8 @@ import com.science.gtnl.common.render.model.JsonBlockModel.Geometry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 @SideOnly(Side.CLIENT)
 public class BeamFormerModel {
@@ -73,8 +73,8 @@ public class BeamFormerModel {
                     MODEL,
                     Minecraft.getMinecraft()
                         .getResourceManager(),
-                    new HashMap<>(),
-                    new HashSet<>()));
+                    new Object2ObjectOpenHashMap<>(),
+                    new ObjectOpenHashSet<>()));
             for (String texture : pending.getTextures()
                 .values()) {
                 if (event.map.registerIcon(texture) instanceof BaseCheckedTex sprite) {

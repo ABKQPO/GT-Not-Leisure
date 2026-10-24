@@ -1,8 +1,6 @@
 package com.science.gtnl.utils.recipes;
 
 import java.util.Arrays;
-import java.util.IdentityHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -34,6 +32,8 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SingleRecipeCheck;
 import gregtech.api.util.GTRecipe;
 import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 /**
  * Logic class to calculate result of recipe check from inputs, based on recipemap.
@@ -171,7 +171,8 @@ public class GTNLProcessingLogic extends ProcessingLogic {
         GTDualInputPattern inputs = inv.getPatternInputs();
         setInputItems(prepareCatalyst(deduplicateInputItems(inputs.inputItems)));
         setInputFluids(deduplicateInputFluids(inputs.inputFluid));
-        Set<GTRecipe> recipes = findRecipeMatches(recipeMap).collect(Collectors.toCollection(LinkedHashSet::new));
+        Set<GTRecipe> recipes = findRecipeMatches(recipeMap)
+            .collect(Collectors.toCollection(ObjectLinkedOpenHashSet::new));
 
         // reset the status
         setInputItems();
@@ -713,7 +714,7 @@ public class GTNLProcessingLogic extends ProcessingLogic {
             }
             for (int j = i + 1; j < inputs.length; j++) {
                 if (current == inputs[j]) {
-                    return copyUniqueItemInputs(inputs, new IdentityHashMap<>(inputs.length));
+                    return copyUniqueItemInputs(inputs, new ReferenceOpenHashSet<>(inputs.length));
                 }
             }
         }
@@ -721,24 +722,24 @@ public class GTNLProcessingLogic extends ProcessingLogic {
     }
 
     private ItemStack[] deduplicateItemInputsWithIdentityMap(ItemStack[] inputs) {
-        IdentityHashMap<ItemStack, Boolean> seenItems = new IdentityHashMap<>(inputs.length);
+        ReferenceOpenHashSet<ItemStack> seenItems = new ReferenceOpenHashSet<>(inputs.length);
         for (ItemStack input : inputs) {
             if (input == null) {
                 continue;
             }
-            if (seenItems.put(input, Boolean.TRUE) != null) {
+            if (!seenItems.add(input)) {
                 return copyUniqueItemInputs(inputs, seenItems);
             }
         }
         return inputs;
     }
 
-    private ItemStack[] copyUniqueItemInputs(ItemStack[] inputs, IdentityHashMap<ItemStack, Boolean> seenItems) {
+    private ItemStack[] copyUniqueItemInputs(ItemStack[] inputs, ReferenceOpenHashSet<ItemStack> seenItems) {
         ItemStack[] uniqueItems = new ItemStack[inputs.length];
         int uniqueCount = 0;
         seenItems.clear();
         for (ItemStack input : inputs) {
-            if (input == null || seenItems.put(input, Boolean.TRUE) != null) {
+            if (input == null || !seenItems.add(input)) {
                 continue;
             }
             uniqueItems[uniqueCount++] = input;
@@ -754,7 +755,7 @@ public class GTNLProcessingLogic extends ProcessingLogic {
             }
             for (int j = i + 1; j < inputs.length; j++) {
                 if (current == inputs[j]) {
-                    return copyUniqueFluidInputs(inputs, new IdentityHashMap<>(inputs.length));
+                    return copyUniqueFluidInputs(inputs, new ReferenceOpenHashSet<>(inputs.length));
                 }
             }
         }
@@ -762,24 +763,24 @@ public class GTNLProcessingLogic extends ProcessingLogic {
     }
 
     private FluidStack[] deduplicateFluidInputsWithIdentityMap(FluidStack[] inputs) {
-        IdentityHashMap<FluidStack, Boolean> seenFluids = new IdentityHashMap<>(inputs.length);
+        ReferenceOpenHashSet<FluidStack> seenFluids = new ReferenceOpenHashSet<>(inputs.length);
         for (FluidStack input : inputs) {
             if (input == null) {
                 continue;
             }
-            if (seenFluids.put(input, Boolean.TRUE) != null) {
+            if (!seenFluids.add(input)) {
                 return copyUniqueFluidInputs(inputs, seenFluids);
             }
         }
         return inputs;
     }
 
-    private FluidStack[] copyUniqueFluidInputs(FluidStack[] inputs, IdentityHashMap<FluidStack, Boolean> seenFluids) {
+    private FluidStack[] copyUniqueFluidInputs(FluidStack[] inputs, ReferenceOpenHashSet<FluidStack> seenFluids) {
         FluidStack[] uniqueFluids = new FluidStack[inputs.length];
         int uniqueCount = 0;
         seenFluids.clear();
         for (FluidStack input : inputs) {
-            if (input == null || seenFluids.put(input, Boolean.TRUE) != null) {
+            if (input == null || !seenFluids.add(input)) {
                 continue;
             }
             uniqueFluids[uniqueCount++] = input;

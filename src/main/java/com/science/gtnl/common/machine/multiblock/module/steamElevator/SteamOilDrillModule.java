@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
-import java.util.ArrayList;
-
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -17,6 +15,7 @@ import gregtech.api.objects.XSTR;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class SteamOilDrillModule extends SteamElevatorModuleBase {
@@ -42,7 +41,7 @@ public class SteamOilDrillModule extends SteamElevatorModuleBase {
         int dimensionId = getBaseMetaTileEntity().getWorld().provider.dimensionId;
         GTUODimension dimension = GTMod.proxy.mUndergroundOil.GetDimension(dimensionId);
         if (dimension == null) return CheckRecipeResultRegistry.NO_RECIPE;
-        ArrayList<FluidStack> fluidStack = new ArrayList<>();
+        ObjectArrayList<FluidStack> fluidStack = new ObjectArrayList<>();
 
         for (int i = 0; i < mTier - 1; i++) {
             GTUOFluid uoFluid = dimension.getRandomFluid(tVeinRNG);

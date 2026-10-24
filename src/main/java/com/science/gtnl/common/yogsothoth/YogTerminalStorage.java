@@ -1,6 +1,5 @@
 package com.science.gtnl.common.yogsothoth;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -13,12 +12,14 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 import com.science.gtnl.ScienceNotLeisure;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
 public class YogTerminalStorage extends WorldSavedData {
 
     public static final String DATA_NAME = "GTNL_YogSothothTerminals";
     private static YogTerminalStorage instance;
 
-    private final Map<UUID, YogRecord> records = new HashMap<>();
+    private final Map<UUID, YogRecord> records = new Object2ObjectOpenHashMap<>();
 
     public YogTerminalStorage() {
         super(DATA_NAME);

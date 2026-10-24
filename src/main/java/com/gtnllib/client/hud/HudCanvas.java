@@ -1,6 +1,5 @@
 package com.gtnllib.client.hud;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -27,6 +26,7 @@ import com.gtnllib.utils.TextRenderUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class HudCanvas extends Widget<HudCanvas> implements Interactable {
@@ -170,7 +170,7 @@ public class HudCanvas extends Widget<HudCanvas> implements Interactable {
     }
 
     private List<Box> others(HudElement moving) {
-        List<Box> others = new ArrayList<>();
+        List<Box> others = new ObjectArrayList<>();
         for (HudElement element : candidates())
             if (element != moving && !HudLayout.hidden(element)) others.add(box(element));
         return others;

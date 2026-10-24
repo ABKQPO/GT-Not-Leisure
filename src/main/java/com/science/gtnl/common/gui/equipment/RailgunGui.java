@@ -1,6 +1,5 @@
 package com.science.gtnl.common.gui.equipment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -19,6 +18,8 @@ import com.science.gtnl.common.railgun.RailgunEnergy;
 import com.science.gtnl.common.railgun.RailgunModule;
 import com.science.gtnl.common.railgun.RailgunSetting;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 public class RailgunGui extends EquipmentGui {
 
     public RailgunGui(PlayerInventoryGuiData data, PanelSyncManager sync) {
@@ -32,8 +33,8 @@ public class RailgunGui extends EquipmentGui {
 
     @Override
     public ModularPanel build() {
-        List<SlideSwitch> switches = new ArrayList<>();
-        List<String> labels = new ArrayList<>();
+        List<SlideSwitch> switches = new ObjectArrayList<>();
+        List<String> labels = new ObjectArrayList<>();
         for (RailgunSetting setting : RailgunSetting.values()) {
             switches.add(setting(setting));
             labels.add(tr(lang(setting)));

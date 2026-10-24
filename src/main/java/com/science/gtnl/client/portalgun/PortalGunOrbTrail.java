@@ -1,6 +1,5 @@
 package com.science.gtnl.client.portalgun;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +29,7 @@ import com.science.gtnl.utils.enums.PortalGunPortalEffect;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class PortalGunOrbTrail {
@@ -54,7 +54,7 @@ public class PortalGunOrbTrail {
         private final double depth;
         private final int glow, core;
         private final boolean shown;
-        private final List<Mote> trailDots = new ArrayList<>();
+        private final List<Mote> trailDots = new ObjectArrayList<>();
         private Vec3d last;
         private double travelled, spawned;
         private int rings;

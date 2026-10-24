@@ -20,6 +20,8 @@ import net.minecraft.world.storage.MapStorage;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
 public class GlobalSteamWorldSavedData extends WorldSavedData {
 
     public static GlobalSteamWorldSavedData INSTANCE;
@@ -68,7 +70,7 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
     }
 
     private Map<UUID, BigInteger> readSteam(NBTTagCompound nbtTagCompound) {
-        Map<UUID, BigInteger> loadedSteam = new HashMap<>();
+        Map<UUID, BigInteger> loadedSteam = new Object2ObjectOpenHashMap<>();
         try {
             byte[] ba = nbtTagCompound.getByteArray(GLOBAL_STEAM_NBT_TAG);
             if (ba.length == 0) return loadedSteam;
@@ -101,7 +103,7 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
 
     private Map<UUID, UUID> readLegacyTeams(NBTTagCompound nbtTagCompound) {
         // TODO: Remove this legacy mapping after the migration support window ends.
-        Map<UUID, UUID> legacyTeams = new HashMap<>();
+        Map<UUID, UUID> legacyTeams = new Object2ObjectOpenHashMap<>();
         try {
             if (!nbtTagCompound.hasKey(GLOBAL_STEAM_TEAM_NBT_TAG)) return legacyTeams;
 

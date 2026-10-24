@@ -1,6 +1,5 @@
 package com.gtnllib.client.hud;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -24,6 +23,9 @@ import com.gtnllib.gui.widget.LayoutTheme;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class HudEditor extends ModularScreen {
@@ -92,8 +94,8 @@ public class HudEditor extends ModularScreen {
                 .top(HELP_Y)
                 .widthRel(HELP_WIDTH)
                 .height(TEXT_HEIGHT));
-        List<ButtonWidget<?>> buttons = new ArrayList<>();
-        List<Integer> widths = new ArrayList<>();
+        List<ButtonWidget<?>> buttons = new ObjectArrayList<>();
+        IntArrayList widths = new IntArrayList();
         add(
             buttons,
             widths,
@@ -129,9 +131,7 @@ public class HudEditor extends ModularScreen {
             () -> canvas.getPanel()
                 .closeIfOpen(),
             "done");
-        int[] sizes = widths.stream()
-            .mapToInt(Integer::intValue)
-            .toArray();
+        int[] sizes = widths.toIntArray();
         Flow toolbar = Flow.row()
             .size(LayoutMath.total(sizes, style.spacingMedium), style.buttonHeight)
             .childPadding(style.spacingMedium)
@@ -145,8 +145,8 @@ public class HudEditor extends ModularScreen {
         return panel;
     }
 
-    private static void add(List<ButtonWidget<?>> buttons, List<Integer> widths, LayoutTheme style,
-        ButtonPurpose purpose, Supplier<String> label, Runnable action, String... keys) {
+    private static void add(List<ButtonWidget<?>> buttons, IntList widths, LayoutTheme style, ButtonPurpose purpose,
+        Supplier<String> label, Runnable action, String... keys) {
         int widest = 0;
         for (String key : keys) widest = Math.max(widest, Layout.textWidth(tr(key), style));
         widths.add(

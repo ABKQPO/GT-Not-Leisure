@@ -1,6 +1,5 @@
 package com.science.gtnl.common.render.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.renderer.Tessellator;
@@ -21,6 +20,7 @@ import com.science.gtnl.utils.enums.PortalGunPortalEffect;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class PortalGunDoorRender {
@@ -61,7 +61,7 @@ public class PortalGunDoorRender {
      * surge is the stretch of frame it passes over. A flat slit has none.
      */
     public static List<FrameArc> frameArcs(double halfWidth, double halfHeight, float ticks) {
-        List<FrameArc> arcs = new ArrayList<>();
+        List<FrameArc> arcs = new ObjectArrayList<>();
         if (halfWidth <= MIN_EDGE || halfHeight <= MIN_EDGE) return arcs;
         long now = (long) Math.floor(ticks / ARC_HOP_TICKS);
         for (long slot = now - MAX_HOPS + 1; slot <= now; slot++) {
@@ -93,7 +93,7 @@ public class PortalGunDoorRender {
     }
 
     private static FrameArc arc(double halfWidth, double halfHeight, double start, double end, long seed) {
-        List<Vec3d> path = new ArrayList<>(ARC_POINTS), surge = new ArrayList<>(ARC_POINTS);
+        List<Vec3d> path = new ObjectArrayList<>(ARC_POINTS), surge = new ObjectArrayList<>(ARC_POINTS);
         for (int i = 0; i < ARC_POINTS; i++) {
             double t = i / (double) (ARC_POINTS - 1), along = start + (end - start) * t;
             double outward = (ARC_LIFT + ARC_REACH * MathUtils.hashUnit(seed, i, 0, SHAPE_SALT))
@@ -188,7 +188,7 @@ public class PortalGunDoorRender {
                 corners[0],
                 world(center, right, up, 0, halfHeight))
             : List.of(world(center, right, up, -halfWidth, 0), world(center, right, up, halfWidth, 0));
-        List<FrameArc> arcs = new ArrayList<>();
+        List<FrameArc> arcs = new ObjectArrayList<>();
         for (FrameArc arc : frameArcs(halfWidth, halfHeight, ticks)) arcs.add(
             new FrameArc(world(center, right, up, arc.path()), world(center, right, up, arc.surge()), arc.flash()));
         int glow = ColorMath.lerp(CYAN, WHITE, 0.5F), surge = ColorMath.lerp(CYAN, WHITE, 0.6F);
@@ -251,7 +251,7 @@ public class PortalGunDoorRender {
     }
 
     private static List<Vec3d> world(Vec3d center, Vec3d right, Vec3d up, List<Vec3d> local) {
-        List<Vec3d> points = new ArrayList<>(local.size());
+        List<Vec3d> points = new ObjectArrayList<>(local.size());
         for (Vec3d point : local) points.add(world(center, right, up, point.x(), point.y()));
         return points;
     }

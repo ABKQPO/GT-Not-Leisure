@@ -1,6 +1,5 @@
 package com.science.gtnl.mixins.late.twistSpaceTechnology;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +29,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.shutdown.ShutDownReason;
 import gtPlusPlus.core.util.minecraft.ItemUtils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -91,7 +91,7 @@ public abstract class MixinMM_DimensionallyTranscendentMatterPlasmaForgePrototyp
     public void getInfoData(CallbackInfoReturnable<String[]> cir) {
         if (!gtnl$lockRuntime) return;
         String[] original = cir.getReturnValue();
-        List<String> list = new ArrayList<>(Arrays.asList(original));
+        List<String> list = new ObjectArrayList<>(Arrays.asList(original));
         list.add(IGregTechDeviceInformation.encode("gtnl.waila.plasma_forge.decay_blocking"));
         cir.setReturnValue(list.toArray(new String[0]));
     }

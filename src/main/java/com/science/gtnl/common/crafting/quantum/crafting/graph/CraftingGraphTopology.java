@@ -1,6 +1,5 @@
 package com.science.gtnl.common.crafting.quantum.crafting.graph;
 
-import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -27,94 +26,35 @@ public final class CraftingGraphTopology {
     private final List<CraftingGraphNode> topologicalOrder;
     private final List<Component> components;
     private final Reference2IntMap<CraftingGraphNode> componentIds;
+    private final int edgeCount;
 
     private CraftingGraphTopology(List<CraftingGraphNode> topologicalOrder, List<Component> components,
-        Reference2IntMap<CraftingGraphNode> componentIds) {
+        Reference2IntMap<CraftingGraphNode> componentIds, int edgeCount) {
         // Both lists are built by this class and never mutated afterwards; wrap them instead of copying.
         this.topologicalOrder = Collections.unmodifiableList(topologicalOrder);
         this.components = Collections.unmodifiableList(components);
         this.componentIds = componentIds;
+        this.edgeCount = edgeCount;
     }
 
     static CraftingGraphTopology analyze(CraftingGraph graph) {
+        int edgeCount = 0;
+        var nodes = graph.getAllNodes();
+        for (int i = 0; i < nodes.size(); i++) {
+            var edges = nodes.get(i)
+                .getInputs();
+            for (int j = 0; j < edges.size(); j++) edges.get(j)
+                .assignOrdinal(edgeCount++);
+        }
         var nodeOrder = kahnSortNodes(graph);
         if (nodeOrder.size() == graph.getNodeCount()) {
-            return new CraftingGraphTopology(nodeOrder, List.of(), emptyComponentIds());
+            return new CraftingGraphTopology(nodeOrder, List.of(), emptyComponentIds(), edgeCount);
         }
 
-        return condense(graph);
+        return condense(graph, edgeCount);
     }
 
-    /**
-     * Returns parent-before-dependency order. Nodes in a recursive component are adjacent, in stable component-local
-     * order. Callers that execute producers first can traverse this list in reverse.
-     */
-    public List<CraftingGraphNode> getTopologicalOrder() {
-        return topologicalOrder;
-    }
-
-    /**
-     * Returns whether Tarjan decomposition was necessary.
-     */
-    public boolean isCondensed() {
-        return !components.isEmpty();
-    }
-
-    /**
-     * Returns the condensation DAG in parent-before-dependency order. This is empty on the pure-DAG fast path.
-     */
-    public List<Component> getComponents() {
-        return components;
-    }
-
-    /**
-     * Returns the component id, or {@code -1} when this is the pure-DAG fast path or the node is not in this graph.
-     */
-    public int getComponentId(CraftingGraphNode node) {
-        return componentIds.getInt(node);
-    }
-
-    public boolean isCyclic(CraftingGraphNode node) {
-        int componentId = getComponentId(node);
-        return componentId >= 0 && components.get(componentId)
-            .cyclic();
-    }
-
-    private static List<CraftingGraphNode> kahnSortNodes(CraftingGraph graph) {
-        var inDegree = new Reference2IntOpenHashMap<CraftingGraphNode>();
-        inDegree.defaultReturnValue(0);
-        var queue = new PriorityQueue<>(NODE_ORDER);
-        var result = new ObjectArrayList<CraftingGraphNode>(graph.getNodeCount());
-
-        for (var node : graph.getAllNodes()) {
-            int degree = node.getParents()
-                .size();
-            inDegree.put(node, degree);
-            if (degree == 0) {
-                queue.add(node);
-            }
-        }
-
-        while (!queue.isEmpty()) {
-            var node = queue.remove();
-            result.add(node);
-
-            for (var edge : node.getInputs()) {
-                var producer = edge.producer();
-                if (producer == null) {
-                    continue;
-                }
-                int previousDegree = inDegree.addTo(producer, -1);
-                if (previousDegree == 1) {
-                    queue.add(producer);
-                }
-            }
-        }
-
-        return result;
-    }
-
-    private static CraftingGraphTopology condense(CraftingGraph graph) {
+    private static CraftingGraphTopology condense(CraftingGraph graph, int edgeCount) {
         var tarjan = new Tarjan();
         for (var node : graph.getAllNodes()) {
             tarjan.visitIfNeeded(node);
@@ -187,7 +127,80 @@ public final class CraftingGraphTopology {
             components.add(new Component(newId, nodes, cyclic));
         }
 
-        return new CraftingGraphTopology(nodeOrder, components, componentIds);
+        return new CraftingGraphTopology(nodeOrder, components, componentIds, edgeCount);
+    }
+
+    private static List<CraftingGraphNode> kahnSortNodes(CraftingGraph graph) {
+        var inDegree = new Reference2IntOpenHashMap<CraftingGraphNode>();
+        inDegree.defaultReturnValue(0);
+        var queue = new PriorityQueue<>(NODE_ORDER);
+        var result = new ObjectArrayList<CraftingGraphNode>(graph.getNodeCount());
+
+        for (var node : graph.getAllNodes()) {
+            int degree = node.getParents()
+                .size();
+            inDegree.put(node, degree);
+            if (degree == 0) {
+                queue.add(node);
+            }
+        }
+
+        while (!queue.isEmpty()) {
+            var node = queue.remove();
+            result.add(node);
+
+            for (var edge : node.getInputs()) {
+                var producer = edge.producer();
+                if (producer == null) {
+                    continue;
+                }
+                int previousDegree = inDegree.addTo(producer, -1);
+                if (previousDegree == 1) {
+                    queue.add(producer);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns parent-before-dependency order. Nodes in a recursive component are adjacent, in stable component-local
+     * order. Callers that execute producers first can traverse this list in reverse.
+     */
+    public List<CraftingGraphNode> getTopologicalOrder() {
+        return topologicalOrder;
+    }
+
+    /**
+     * Returns whether Tarjan decomposition was necessary.
+     */
+    public boolean isCondensed() {
+        return !components.isEmpty();
+    }
+
+    /**
+     * Returns the condensation DAG in parent-before-dependency order. This is empty on the pure-DAG fast path.
+     */
+    public List<Component> getComponents() {
+        return components;
+    }
+
+    /**
+     * Returns the component id, or {@code -1} when this is the pure-DAG fast path or the node is not in this graph.
+     */
+    public int getComponentId(CraftingGraphNode node) {
+        return componentIds.getInt(node);
+    }
+
+    public boolean isCyclic(CraftingGraphNode node) {
+        int componentId = getComponentId(node);
+        return componentId >= 0 && components.get(componentId)
+            .cyclic();
+    }
+
+    int edgeCount() {
+        return edgeCount;
     }
 
     private static boolean hasSelfLoop(CraftingGraphNode node) {
@@ -220,9 +233,9 @@ public final class CraftingGraphTopology {
         private final Reference2IntMap<CraftingGraphNode> componentIds = new Reference2IntOpenHashMap<>();
         private final ReferenceOpenHashSet<CraftingGraphNode> onStack = new ReferenceOpenHashSet<>();
         private final ReferenceOpenHashSet<CraftingGraphNode> visited = new ReferenceOpenHashSet<>();
-        private final ArrayDeque<CraftingGraphNode> stack = new ArrayDeque<>();
+        private final ObjectArrayList<CraftingGraphNode> stack = new ObjectArrayList<>();
         private final ObjectArrayList<ObjectArrayList<CraftingGraphNode>> components = new ObjectArrayList<>();
-        private final ArrayDeque<Frame> depthFirstSearch = new ArrayDeque<>();
+        private final ObjectArrayList<Frame> depthFirstSearch = new ObjectArrayList<>();
         private int nextIndex;
 
         private Tarjan() {
@@ -240,7 +253,7 @@ public final class CraftingGraphTopology {
         private void visitIteratively(CraftingGraphNode root) {
             push(root, null);
             while (!depthFirstSearch.isEmpty()) {
-                var frame = depthFirstSearch.peek();
+                var frame = depthFirstSearch.top();
                 if (frame.nextEdge < frame.node.getInputs()
                     .size()) {
                     var producer = frame.node.getInputs()

@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +38,7 @@ import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.modularui.IControllerWithOptionalFeatures;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.BaseTileEntity;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import tectech.TecTech;
 
 /**
@@ -58,7 +58,7 @@ public class EternalGregTechWorkshopUI {
         })
             .setPlayClickSound(false)
             .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
+                List<UITexture> ret = new ObjectArrayList<>();
                 ret.add(EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32);
                 if (mte.isInputSeparationEnabled()) {
                     ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_INPUT_SEPARATION);
@@ -86,7 +86,7 @@ public class EternalGregTechWorkshopUI {
         })
             .setPlayClickSound(false)
             .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
+                List<UITexture> ret = new ObjectArrayList<>();
                 ret.add(EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32);
                 if (mte.isBatchModeEnabled()) {
                     ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_BATCH_MODE);
@@ -112,7 +112,7 @@ public class EternalGregTechWorkshopUI {
         })
             .setPlayClickSound(false)
             .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
+                List<UITexture> ret = new ObjectArrayList<>();
                 ret.add(EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32);
                 if (mte.isRecipeLockingEnabled()) {
                     ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_RECIPE_LOCKED);
@@ -147,7 +147,7 @@ public class EternalGregTechWorkshopUI {
         })
             .setPlayClickSound(false)
             .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
+                List<UITexture> ret = new ObjectArrayList<>();
                 ret.add(EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32);
                 switch (mte.getVoidingMode()) {
                     case VOID_NONE -> ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_VOIDING_OFF);

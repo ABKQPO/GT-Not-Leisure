@@ -1,7 +1,6 @@
 package com.science.gtnl.client.quantum;
 
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +21,8 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.util.NamedDimensionalCoord;
 import appeng.client.render.highlighter.BlockPosHighlighter;
 import cpw.mods.fml.client.registry.ClientRegistry;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
 
 /**
  * Shows the crafting cycles of a request in the chat and highlights the machines holding their patterns.
@@ -110,7 +111,7 @@ public final class RecursivePatternReport {
     public static void highlight(Minecraft minecraft, IAEStack<?> request, List<Match> matches) {
         var player = minecraft.thePlayer;
         if (player == null || matches.isEmpty()) return;
-        var cycles = new LinkedHashSet<Integer>();
+        var cycles = new IntLinkedOpenHashSet();
         var highlights = new LinkedHashMap<NamedDimensionalCoord, String[]>();
         for (var match : matches) {
             cycles.add(match.number());
@@ -127,7 +128,7 @@ public final class RecursivePatternReport {
         player.addChatMessage(
             new ChatComponentTranslation(
                 "gtnl.recursive_patterns.highlighted",
-                cycles.toString(),
+                new IntArrayList(cycles).toString(),
                 names.toString(),
                 highlights.size()));
         highlight(player, highlights, request);

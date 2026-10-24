@@ -1,6 +1,5 @@
 package com.science.gtnl.common.equipment;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -12,6 +11,8 @@ import net.minecraft.nbt.NBTTagList;
 
 import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 public class EquipmentModules {
 
     public static final int ENERGY_SLOTS = 1;
@@ -21,7 +22,7 @@ public class EquipmentModules {
 
     public static ItemStack[] read(NBTTagList list, int slots) {
         ItemStack[] stacks = new ItemStack[slots];
-        List<ItemStack> overflow = new ArrayList<>();
+        List<ItemStack> overflow = new ObjectArrayList<>();
         for (int i = 0; i < list.tagCount(); i++) {
             NBTTagCompound entry = list.getCompoundTagAt(i);
             if (!entry.hasKey(SLOT)) continue;
@@ -30,7 +31,7 @@ public class EquipmentModules {
             if (slot < slots && stacks[slot] == null) stacks[slot] = stack;
             else if (stack != null) overflow.add(stack);
         }
-        List<ItemStack> unplaced = new ArrayList<>();
+        List<ItemStack> unplaced = new ObjectArrayList<>();
         for (ItemStack extra : overflow) {
             int free = Arrays.asList(stacks)
                 .indexOf(null);

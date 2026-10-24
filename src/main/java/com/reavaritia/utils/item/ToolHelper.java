@@ -1,7 +1,5 @@
 package com.reavaritia.utils.item;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,8 +23,11 @@ import net.minecraftforge.common.util.EnumHelper;
 import com.reavaritia.common.items.InfinityAxe;
 import com.reavaritia.common.items.MatterCluster;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class ToolHelper {
 
@@ -37,21 +38,21 @@ public class ToolHelper {
         Material.piston, Material.anvil, Material.grass, Material.ground, Material.sand, Material.snow,
         Material.craftedSnow, Material.clay };
 
-    public static Set<EntityPlayer> hammering = new HashSet<>();
+    public static Set<EntityPlayer> hammering = new ObjectOpenHashSet<>();
     public static Map<EntityPlayer, List<ItemStack>> hammerdrops = new WeakHashMap<>();
 
-    public static void generateMatterCluster(World world, EntityPlayer player, Map<ItemStackWrapper, Integer> items) {
+    public static void generateMatterCluster(World world, EntityPlayer player, Object2IntMap<ItemStackWrapper> items) {
         if (items == null || items.isEmpty()) {
             return;
         }
 
         Object2IntOpenHashMap<ItemStackWrapper> clusterContents = new Object2IntOpenHashMap<>();
-        items.forEach((key, count) -> {
-            if (key == null || key.stack() == null || count == null || count <= 0) {
-                return;
-            }
-            clusterContents.put(key, clusterContents.getInt(key) + count);
-        });
+        for (Object2IntMap.Entry<ItemStackWrapper> entry : Object2IntMaps.fastIterable(items)) {
+            ItemStackWrapper key = entry.getKey();
+            int count = entry.getIntValue();
+            if (key == null || key.stack() == null || count <= 0) continue;
+            clusterContents.addTo(key, count);
+        }
 
         for (ItemStack cluster : MatterCluster.makeReAvaritiaClusters(clusterContents)) {
             EntityItem entity = new EntityItem(world, player.posX, player.posY + 0.5, player.posZ, cluster);
@@ -66,7 +67,7 @@ public class ToolHelper {
         float blockHardness = block == null ? 1F : block.getBlockHardness(world, x, y, z);
 
         if (!hammerdrops.containsKey(player) || hammerdrops.get(player) == null) {
-            hammerdrops.put(player, new ArrayList<>());
+            hammerdrops.put(player, new ObjectArrayList<>());
         }
 
         hammering.add(player);
@@ -217,7 +218,7 @@ public class ToolHelper {
                     counts.put(wrap, 0);
                 }
 
-                counts.put(wrap, counts.get(wrap) + stack.stackSize);
+                counts.addTo(wrap, stack.stackSize);
             }
         }
 

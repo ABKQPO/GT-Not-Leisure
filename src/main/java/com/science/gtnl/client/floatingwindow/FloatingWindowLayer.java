@@ -2,7 +2,6 @@ package com.science.gtnl.client.floatingwindow;
 
 import java.awt.Point;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.gui.FontRenderer;
@@ -17,13 +16,14 @@ import com.science.gtnl.mixins.early.minecraft.AccessorGuiScreen;
 import codechicken.lib.gui.GuiDraw;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public final class FloatingWindowLayer {
 
     private static final FloatBuffer BASE_MATRIX = BufferUtils.createFloatBuffer(16);
     private static final FloatBuffer SCRATCH_MATRIX = BufferUtils.createFloatBuffer(16);
-    private static final List<HostTooltip> TOOLTIPS = new ArrayList<>();
+    private static final List<HostTooltip> TOOLTIPS = new ObjectArrayList<>();
     private static GuiScreen frameGui;
     private static boolean capturing;
     private static boolean replaying;
@@ -56,7 +56,7 @@ public final class FloatingWindowLayer {
         if (!capturing || replaying || gui != frameGui || lines == null || lines.isEmpty()) return false;
         float[] matrix = currentMatrix();
         if (!anchoredInWindow(gui, matrix, x, y)) {
-            TOOLTIPS.add(new HostTooltip(new ArrayList<>(lines), x, y, font, matrix));
+            TOOLTIPS.add(new HostTooltip(new ObjectArrayList<>(lines), x, y, font, matrix));
         }
         return true;
     }

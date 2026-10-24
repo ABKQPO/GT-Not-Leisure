@@ -4,11 +4,9 @@ import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
 import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -131,6 +129,7 @@ import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
 import gregtech.common.tileentities.machines.IHatchWatcher;
 import gregtech.crossmod.ae2.ChatComponentNonConsumedItemsSuffix;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
@@ -153,7 +152,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
     public static int MANUAL_SLOT_WINDOW = 400;
     public BaseActionSource requestSource = null;
     public @Nullable AENetworkProxy gridProxy = null;
-    public List<ProcessingLogic> processingLogics = new ArrayList<>();
+    public List<ProcessingLogic> processingLogics = new ObjectArrayList<>();
     @Setter
     public boolean showPattern = true;
 
@@ -163,7 +162,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
     public int lastNonNullIndex = -1;
 
     // a hash map for faster lookup of pattern slots, not necessarily all valid.
-    public Map<ICraftingPatternDetails, PatternSlot<SuperCraftingInputHatchME>> patternDetailsPatternSlotMap = new HashMap<>(
+    public Map<ICraftingPatternDetails, PatternSlot<SuperCraftingInputHatchME>> patternDetailsPatternSlotMap = new Object2ObjectOpenHashMap<>(
         MAX_PATTERN_COUNT);
 
     public boolean needPatternSync = true;
@@ -420,7 +419,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
             suffix = nameProvider.getInterfaceNameSuffix();
         }
 
-        List<ItemStack> manualSlots = new ArrayList<>();
+        List<ItemStack> manualSlots = new ObjectArrayList<>();
         for (int i = SLOT_MANUAL_START; i < SLOT_MANUAL_START + SLOT_MANUAL_SIZE; i++) {
             ItemStack stack = mInventory[i];
             if (stack != null) manualSlots.add(stack);
@@ -940,7 +939,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
         NBTTagList inventory = new NBTTagList();
 
         Object2LongOpenHashMap<String> entryToAmount = new Object2LongOpenHashMap<>();
-        Map<String, NBTTagCompound> entries = new HashMap<>();
+        Map<String, NBTTagCompound> entries = new Object2ObjectOpenHashMap<>();
 
         Iterator<PatternSlot<SuperCraftingInputHatchME>> it = inventories();
         while (it.hasNext()) {
@@ -1264,7 +1263,7 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
 
     @Override
     public List<ItemStack> getItemsForHoloGlasses() {
-        List<ItemStack> list = new ArrayList<>();
+        List<ItemStack> list = new ObjectArrayList<>();
         for (PatternSlot<SuperCraftingInputHatchME> slot : internalInventory) {
             if (slot == null) continue;
 
@@ -1327,8 +1326,8 @@ public class SuperCraftingInputHatchME extends MTEHatchInputBus
                 parent.getBaseMetaTileEntity()
                     .getWorld());
             this.slotIndex = index;
-            this.itemInventory = new ArrayList<>();
-            this.fluidInventory = new ArrayList<>();
+            this.itemInventory = new ObjectArrayList<>();
+            this.fluidInventory = new ObjectArrayList<>();
             this.patternItemId = GTUtility.ItemId.create(pattern);
 
             if (nbt == null) return;

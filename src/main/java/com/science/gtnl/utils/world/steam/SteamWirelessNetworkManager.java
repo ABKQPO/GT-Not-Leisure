@@ -1,16 +1,16 @@
 package com.science.gtnl.utils.world.steam;
 
 import java.math.BigInteger;
-import java.util.HashMap;
 import java.util.UUID;
 
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public class SteamWirelessNetworkManager {
 
-    public static HashMap<UUID, BigInteger> GLOBAL_STEAM = new HashMap<>(100, 0.9f);
+    public static Object2ObjectOpenHashMap<UUID, BigInteger> GLOBAL_STEAM = new Object2ObjectOpenHashMap<>(100, 0.9f);
 
     public static void strongCheckOrAddUser(UUID user_uuid) {
         user_uuid = TeamNetworkManager.getTeamId(user_uuid);

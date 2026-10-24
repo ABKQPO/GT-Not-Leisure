@@ -1,6 +1,5 @@
 package com.science.gtnl.common.block.blocks.tile;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -9,6 +8,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Mods;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -26,7 +26,7 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch i
 
     private final AspectList storedAspects = new AspectList();
     private final MultiEssentiaStorage storage = new MultiEssentiaStorage(storedAspects, MAX_CAPACITY);
-    private final Map<Aspect, EssentiaDemand> demands = new LinkedHashMap<>();
+    private final Map<Aspect, EssentiaDemand> demands = new Object2ObjectLinkedOpenHashMap<>();
     private Aspect providerRequest;
     private int demandCursor;
 

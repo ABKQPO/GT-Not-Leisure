@@ -1,6 +1,5 @@
 package com.gtnllib.gui.widget;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,6 +18,8 @@ import com.cleanroommc.modularui.utils.JsonBuilder;
 import com.cleanroommc.modularui.utils.JsonHelper;
 import com.cleanroommc.modularui.utils.Platform;
 import com.google.gson.JsonObject;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class SkinDrawable implements IDrawable, IJsonSerializable {
 
@@ -80,7 +81,7 @@ public class SkinDrawable implements IDrawable, IJsonSerializable {
     }
 
     public List<Piece> pieces(int x, int y, int w, int h) {
-        List<Piece> pieces = new ArrayList<>();
+        List<Piece> pieces = new ObjectArrayList<>();
         int[] across = fit(w, left, right), down = fit(h, top, bottom);
         int[] xs = { x, x + across[0], x + w - across[1], x + w };
         int[] ys = { y, y + down[0], y + h - down[1], y + h };

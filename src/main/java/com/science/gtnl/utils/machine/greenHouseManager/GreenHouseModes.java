@@ -1,15 +1,14 @@
 package com.science.gtnl.utils.machine.greenHouseManager;
 
-import java.util.HashMap;
-
 import com.science.gtnl.utils.machine.greenHouseManager.modes.GreenHouseIC2Mode;
 import com.science.gtnl.utils.machine.greenHouseManager.modes.GreenHouseNormalMode;
 
 import gregtech.api.util.MultiblockTooltipBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public class GreenHouseModes {
 
-    private static final HashMap<String, GreenHouseMode> modes = new HashMap<>();
+    private static final Object2ObjectOpenHashMap<String, GreenHouseMode> modes = new Object2ObjectOpenHashMap<>();
 
     public static final GreenHouseMode Normal = addMode(GreenHouseNormalMode.instance);
     public static final GreenHouseMode IC2 = addMode(GreenHouseIC2Mode.instance);

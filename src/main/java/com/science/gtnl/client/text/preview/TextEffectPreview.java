@@ -1,6 +1,5 @@
 package com.science.gtnl.client.text.preview;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
@@ -18,6 +17,9 @@ import com.science.gtnl.utils.text.effect.TextEffectFormat;
 import com.science.gtnl.utils.text.effect.TextEffectStyle;
 import com.science.gtnl.utils.text.effect.TextEffects;
 
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 /** Interactive rendering sample using the same entry points as ordinary GUI text. */
 public class TextEffectPreview extends GuiScreen {
 
@@ -31,9 +33,9 @@ public class TextEffectPreview extends GuiScreen {
 
     @Override
     public void initGui() {
-        List<Entry> registered = new ArrayList<>();
+        List<Entry> registered = new ObjectArrayList<>();
         for (String identifier : TextEffectRegistry.identifiers()) {
-            TextEffectStyle style = new TextEffectStyle(identifier, List.of(), 1);
+            TextEffectStyle style = new TextEffectStyle(identifier, IntList.of(), 1);
             String alias = TextEffectFormat.aliasFor(identifier);
             String name = effectName(style);
             registered.add(new Entry(style, alias.isEmpty() ? name : "[" + alias + "] " + name));

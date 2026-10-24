@@ -1,12 +1,13 @@
 package com.science.gtnl.utils.selector;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class EntitySelector {
 
@@ -18,7 +19,7 @@ public class EntitySelector {
 
         SelectorParser parser = new SelectorParser(token);
 
-        List<Entity> entities = new ArrayList<>();
+        List<Entity> entities = new ObjectArrayList<>();
 
         for (World world : MinecraftServer.getServer().worldServers) {
             entities.addAll(world.loadedEntityList);

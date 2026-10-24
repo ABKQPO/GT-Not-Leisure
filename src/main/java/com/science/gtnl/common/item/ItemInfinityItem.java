@@ -2,8 +2,6 @@ package com.science.gtnl.common.item;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.UUID;
@@ -39,6 +37,8 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
+import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import vazkii.botania.common.Botania;
 
@@ -203,14 +203,14 @@ public class ItemInfinityItem extends Item implements IFluidContainerItem {
 
     public void clearConnectedFluid(World world, int x, int y, int z, Block fluidBlock, int limit) {
         FLUID_CLEAR_EXECUTOR.submit(() -> {
-            Queue<BlockPos> queue = new ArrayDeque<>();
+            ObjectArrayFIFOQueue<BlockPos> queue = new ObjectArrayFIFOQueue<>();
             LongSet visited = new LongOpenHashSet();
-            List<BlockPos> blocksToClear = new ArrayList<>();
+            List<BlockPos> blocksToClear = new ObjectArrayList<>();
 
-            queue.add(new BlockPos(x, y, z));
+            queue.enqueue(new BlockPos(x, y, z));
 
             while (!queue.isEmpty() && blocksToClear.size() < limit) {
-                BlockPos pos = queue.poll();
+                BlockPos pos = queue.dequeue();
                 int px = pos.x, py = pos.y, pz = pos.z;
                 long key = (((long) px) & 0x3FFFFFF) << 38 | (((long) py) & 0xFFF) << 26 | (((long) pz) & 0x3FFFFFF);
                 if (visited.contains(key)) continue;
@@ -225,7 +225,7 @@ public class ItemInfinityItem extends Item implements IFluidContainerItem {
                         for (int dy = -1; dy <= 1; dy++) {
                             for (int dz = -1; dz <= 1; dz++) {
                                 if (Math.abs(dx) + Math.abs(dy) + Math.abs(dz) == 1) {
-                                    queue.add(new BlockPos(px + dx, py + dy, pz + dz));
+                                    queue.enqueue(new BlockPos(px + dx, py + dy, pz + dz));
                                 }
                             }
                         }

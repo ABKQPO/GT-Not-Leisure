@@ -8,8 +8,6 @@ import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -81,7 +79,12 @@ import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 import gregtech.common.tileentities.machines.MTEHatchInputME;
 import gtnhlanth.common.register.LanthItemList;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -97,8 +100,8 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
 
     public static FluidStack UUMatter = Materials.UUMatter.getFluid(1);
 
-    public Set<ItemCopyingEntry> itemEntry = new HashSet<>();
-    public Set<FluidCopyingEntry> fluidEntry = new HashSet<>();
+    public Set<ItemCopyingEntry> itemEntry = new ObjectOpenHashSet<>();
+    public Set<FluidCopyingEntry> fluidEntry = new ObjectOpenHashSet<>();
 
     public ElementCopying(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -205,7 +208,7 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
 
         long totalUUMNeeded = needUUMPerUnit * maxParallelStored;
 
-        List<FluidStack> matter = new ArrayList<>();
+        List<FluidStack> matter = new ObjectArrayList<>();
         while (totalUUMNeeded > 0) {
             int amount = (int) Math.min(Integer.MAX_VALUE, totalUUMNeeded);
             matter.add(Materials.UUMatter.getFluid(amount));
@@ -219,7 +222,7 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
                     .toStack(maxParallelStored))
             .toArray(ItemStack[]::new);
 
-        List<FluidStack> outputFluidList = new ArrayList<>();
+        List<FluidStack> outputFluidList = new ObjectArrayList<>();
         for (FluidCopyingEntry entry : fluidEntry) {
             long totalAmount = (long) maxParallelStored * 1000L;
             while (totalAmount > 0) {
@@ -442,23 +445,23 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
 
         ArrayList<FluidStack> storedFluids = getStoredFluids();
         List<MTEHatch> allInputHatches = getAllInputHatches();
-        Map<Fluid, Long> mergedStorage = new HashMap<>();
+        Object2LongOpenHashMap<Fluid> mergedStorage = new Object2LongOpenHashMap<>();
         for (FluidStack stored : storedFluids) {
             if (stored != null) {
-                mergedStorage.merge(stored.getFluid(), (long) stored.amount, Long::sum);
+                mergedStorage.addTo(stored.getFluid(), stored.amount);
             }
         }
 
-        Map<Fluid, Long> mergedNeeded = new HashMap<>();
+        Object2LongOpenHashMap<Fluid> mergedNeeded = new Object2LongOpenHashMap<>();
         for (FluidStack needed : fluids) {
             if (needed != null) {
-                mergedNeeded.merge(needed.getFluid(), (long) needed.amount, Long::sum);
+                mergedNeeded.addTo(needed.getFluid(), needed.amount);
             }
         }
 
-        for (Map.Entry<Fluid, Long> neededEntry : mergedNeeded.entrySet()) {
-            long availableAmount = mergedStorage.getOrDefault(neededEntry.getKey(), 0L);
-            if (availableAmount < neededEntry.getValue()) return false;
+        for (Object2LongMap.Entry<Fluid> neededEntry : Object2LongMaps.fastIterable(mergedNeeded)) {
+            long availableAmount = mergedStorage.getLong(neededEntry.getKey());
+            if (availableAmount < neededEntry.getLongValue()) return false;
         }
 
         if (simulate) return true;
@@ -506,7 +509,7 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
     }
 
     public List<MTEHatch> getAllInputHatches() {
-        List<MTEHatch> allHatches = new ArrayList<>(mInputHatches.size() + mDualInputHatches.size());
+        List<MTEHatch> allHatches = new ObjectArrayList<>(mInputHatches.size() + mDualInputHatches.size());
         for (MTEHatchInput inputHatch : GTUtility.validMTEList(mInputHatches)) {
             allHatches.add(inputHatch);
         }
@@ -530,7 +533,7 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
     }
 
     public List<ItemCopyingEntry> getSelectedItemEntriesForGui() {
-        return new ArrayList<>(itemEntry);
+        return new ObjectArrayList<>(itemEntry);
     }
 
     public void setSelectedItemEntriesFromGui(List<ItemCopyingEntry> entries) {
@@ -541,7 +544,7 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
     }
 
     public List<FluidCopyingEntry> getSelectedFluidEntriesForGui() {
-        return new ArrayList<>(fluidEntry);
+        return new ObjectArrayList<>(fluidEntry);
     }
 
     public void setSelectedFluidEntriesFromGui(List<FluidCopyingEntry> entries) {

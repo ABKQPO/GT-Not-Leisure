@@ -3,7 +3,6 @@ package com.science.gtnl.client.meminiterminal;
 import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
 
 import java.awt.Rectangle;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,6 +12,7 @@ import com.science.gtnl.client.floatingwindow.FloatingWindowGeometry;
 import appeng.api.storage.data.AEStackTypeRegistry;
 import appeng.api.storage.data.IAEStackType;
 import appeng.items.contents.PinList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public final class MiniTerminalLayout extends FloatingWindowGeometry {
 
@@ -46,7 +46,7 @@ public final class MiniTerminalLayout extends FloatingWindowGeometry {
 
     static List<IAEStackType<?>> toggleTypes() {
         if (toggleTypes == null) {
-            List<IAEStackType<?>> types = new ArrayList<>();
+            List<IAEStackType<?>> types = new ObjectArrayList<>();
             for (IAEStackType<?> type : AEStackTypeRegistry.getSortedTypes()) {
                 if (type != ITEM_STACK_TYPE && type.getButtonTexture() != null && type.getButtonIcon() != null)
                     types.add(type);

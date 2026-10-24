@@ -1,16 +1,17 @@
 package com.science.gtnl.utils.selector;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class SelectorParser {
 
     public char selector;
 
-    public Map<String, List<String>> args = new HashMap<>();
+    public Map<String, List<String>> args = new Object2ObjectOpenHashMap<>();
 
     public SelectorParser(String token) {
 
@@ -30,7 +31,7 @@ public class SelectorParser {
 
             if (kv.length == 2) {
 
-                args.computeIfAbsent(kv[0], k -> new ArrayList<>())
+                args.computeIfAbsent(kv[0], k -> new ObjectArrayList<>())
                     .add(kv[1]);
             }
         }

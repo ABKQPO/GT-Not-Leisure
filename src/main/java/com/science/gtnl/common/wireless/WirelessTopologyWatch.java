@@ -1,7 +1,6 @@
 package com.science.gtnl.common.wireless;
 
 import java.util.Collection;
-import java.util.IdentityHashMap;
 import java.util.Map;
 
 import net.minecraft.tileentity.TileEntity;
@@ -20,15 +19,16 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 public class WirelessTopologyWatch implements IBlockStateListener {
 
-    private final Map<World, LongSet> watched = new IdentityHashMap<>();
-    private final Map<World, Long2ObjectMap<TileEntity>> tiles = new IdentityHashMap<>();
+    private final Map<World, LongSet> watched = new Reference2ObjectOpenHashMap<>();
+    private final Map<World, Long2ObjectMap<TileEntity>> tiles = new Reference2ObjectOpenHashMap<>();
 
     void update(Collection<Cluster<IGridNode, Address>> clusters, PhysicalMeTopology topology) {
-        Map<World, LongSet> next = new IdentityHashMap<>();
-        Map<World, Long2ObjectMap<TileEntity>> nextTiles = new IdentityHashMap<>();
+        Map<World, LongSet> next = new Reference2ObjectOpenHashMap<>();
+        Map<World, Long2ObjectMap<TileEntity>> nextTiles = new Reference2ObjectOpenHashMap<>();
         for (var cluster : clusters) {
             if (cluster.frequencies()
                 .isEmpty()) continue;

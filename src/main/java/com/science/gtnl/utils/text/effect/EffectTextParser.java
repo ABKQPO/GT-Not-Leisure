@@ -1,13 +1,13 @@
 package com.science.gtnl.utils.text.effect;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 /** Parses scoped and inline effects without depending on client rendering classes. */
 public class EffectTextParser {
@@ -34,7 +34,7 @@ public class EffectTextParser {
     public static Parsed parse(String text) {
         if (text == null || text.isEmpty()) return new Parsed("", List.of());
         if (!containsMarkers(text)) return new Parsed(text, List.of(new Run(text, null)));
-        List<Run> runs = new ArrayList<>();
+        List<Run> runs = new ObjectArrayList<>();
         StringBuilder plain = new StringBuilder(text.length());
         StringBuilder run = new StringBuilder();
         Cursor cursor = new Cursor(text);
@@ -70,7 +70,7 @@ public class EffectTextParser {
         private final UnaryOperator<String> preprocessor;
         private final boolean hexResetsStyles;
         private final Predicate<String> rendererAvailable;
-        private final Deque<Scope> scopes = new ArrayDeque<>();
+        private final ObjectArrayList<Scope> scopes = new ObjectArrayList<>();
         private TextEffectStyle style;
         private String formatting = "";
         private int position;
@@ -151,7 +151,7 @@ public class EffectTextParser {
         /** Restores the current native formatting and all open effect scopes after a source split. */
         public String continuation() {
             StringBuilder result = new StringBuilder("\u00a7r").append(formatting);
-            Iterator<Scope> iterator = scopes.descendingIterator();
+            Iterator<Scope> iterator = scopes.iterator();
             Scope scope = iterator.hasNext() ? iterator.next() : null;
             TextEffectStyle root = scope == null ? style : scope.saved();
             if (root != null) result.append(TextEffects.format(root));
@@ -205,7 +205,7 @@ public class EffectTextParser {
         String[] fields = header.split(";", -1);
         if (fields.length != 3) return null;
         try {
-            List<Integer> colors = new ArrayList<>();
+            IntArrayList colors = new IntArrayList();
             if (!fields[2].isEmpty()) {
                 String[] values = fields[2].split(",", -1);
                 if (values.length > 8) return null;

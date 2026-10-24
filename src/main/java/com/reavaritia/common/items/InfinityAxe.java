@@ -2,9 +2,7 @@ package com.reavaritia.common.items;
 
 import static com.reavaritia.ReAvaritia.RESOURCE_ROOT_ID;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
 
 import net.minecraft.block.Block;
@@ -30,8 +28,8 @@ import com.reavaritia.utils.item.ToolHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class InfinityAxe extends ItemAxe {
@@ -82,13 +80,13 @@ public class InfinityAxe extends ItemAxe {
     }
 
     public void harvestTree(World world, int x, int y, int z, Block logBlock, EntityPlayer player) {
-        Object2IntMap<ItemStackWrapper> logCounts = new Object2IntOpenHashMap<>();
+        Object2IntOpenHashMap<ItemStackWrapper> logCounts = new Object2IntOpenHashMap<>();
         Set<BlockPos> logs = new ObjectOpenHashSet<>();
-        Queue<BlockPos> queue = new LinkedList<>();
-        queue.add(new BlockPos(x, y, z));
+        ObjectArrayFIFOQueue<BlockPos> queue = new ObjectArrayFIFOQueue<>();
+        queue.enqueue(new BlockPos(x, y, z));
 
         while (!queue.isEmpty()) {
-            BlockPos pos = queue.poll();
+            BlockPos pos = queue.dequeue();
             if (logs.contains(pos)) continue;
 
             if (world.getBlock(pos.x, pos.y, pos.z) == logBlock) {
@@ -102,7 +100,7 @@ public class InfinityAxe extends ItemAxe {
 
                 for (ItemStack stack : drops) {
                     ItemStackWrapper key = new ItemStackWrapper(stack);
-                    logCounts.put(key, logCounts.getInt(key) + stack.stackSize);
+                    logCounts.addTo(key, stack.stackSize);
                 }
 
                 world.setBlockToAir(pos.x, pos.y, pos.z);
@@ -111,7 +109,7 @@ public class InfinityAxe extends ItemAxe {
                 for (int dx = -1; dx <= 1; dx++) {
                     for (int dy = -1; dy <= 1; dy++) {
                         for (int dz = -1; dz <= 1; dz++) {
-                            queue.add(new BlockPos(pos.x + dx, pos.y + dy, pos.z + dz));
+                            queue.enqueue(new BlockPos(pos.x + dx, pos.y + dy, pos.z + dz));
                         }
                     }
                 }
@@ -126,7 +124,7 @@ public class InfinityAxe extends ItemAxe {
     public void processLeaves(World world, EntityPlayer player) {
         if (world.isRemote) return;
 
-        Object2IntMap<ItemStackWrapper> leavesCount = new Object2IntOpenHashMap<>();
+        Object2IntOpenHashMap<ItemStackWrapper> leavesCount = new Object2IntOpenHashMap<>();
         ItemStack tool = player.getHeldItem();
         int silkTouchLevel = EnchantmentHelper.getEnchantmentLevel(Enchantment.silkTouch.effectId, tool);
 
@@ -152,7 +150,7 @@ public class InfinityAxe extends ItemAxe {
                         for (ItemStack stack : drops) {
                             if (shouldKeepItem(stack, silkTouchLevel)) {
                                 ItemStackWrapper key = new ItemStackWrapper(stack);
-                                leavesCount.put(key, leavesCount.getInt(key) + stack.stackSize);
+                                leavesCount.addTo(key, stack.stackSize);
                             }
                         }
                     }

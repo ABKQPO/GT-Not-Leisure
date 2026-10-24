@@ -2,7 +2,6 @@ package com.science.gtnl.utils.recipes;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 import net.minecraft.item.ItemStack;
 
@@ -10,13 +9,14 @@ import com.science.gtnl.mixins.early.gregtech.AccessorEyeOfHarmonyRecipe;
 
 import gtneioreplugin.plugin.block.BlockDimensionDisplay;
 import gtneioreplugin.plugin.block.ModBlocks;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import tectech.recipe.EyeOfHarmonyRecipe;
 import tectech.util.FluidStackLong;
 import tectech.util.ItemStackLong;
 
 public class EyeOfHarmonyRecipeFactory {
 
-    public static final HashMap<String, EyeOfHarmonyRecipe> customRecipeHashMap = new HashMap<>();
+    public static final Object2ObjectOpenHashMap<String, EyeOfHarmonyRecipe> customRecipeHashMap = new Object2ObjectOpenHashMap<>();
 
     public static EyeOfHarmonyRecipe createCustomRecipe(ItemStack recipeTriggerItem,
         ArrayList<ItemStackLong> outputItems, ArrayList<FluidStackLong> outputFluids, long rocketTierOfRecipe,

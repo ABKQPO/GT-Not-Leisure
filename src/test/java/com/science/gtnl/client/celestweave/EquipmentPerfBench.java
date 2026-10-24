@@ -7,7 +7,6 @@ import java.lang.management.ManagementFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.Locale;
@@ -41,6 +40,7 @@ import com.sun.management.ThreadMXBean;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class EquipmentPerfBench {
 
@@ -58,7 +58,7 @@ public class EquipmentPerfBench {
         register(plain, "gtnl:bench_plain", 31004);
 
         ItemStack chest = new ItemStack(plain);
-        List<ItemStack> modules = new ArrayList<>();
+        List<ItemStack> modules = new ObjectArrayList<>();
         modules.add(new ItemStack(energyModule, 1, 2));
         for (CelestweaveModule module : new CelestweaveModule[] { CelestweaveModule.SHIELD, CelestweaveModule.REFLECT,
             CelestweaveModule.PURIFICATION, CelestweaveModule.HAZARD, CelestweaveModule.SOULBOUND,
@@ -152,7 +152,7 @@ public class EquipmentPerfBench {
         System.out.println("== 网络与 NBT 大小 ==");
         size("护甲胸甲 NBT（压缩后，装备同步时发送）", chest);
         size("电磁炮 NBT（压缩后，每次扣电重发）", railgun);
-        List<Vec3d> path = new ArrayList<>();
+        List<Vec3d> path = new ObjectArrayList<>();
         for (int i = 0; i < 256; i++) path.add(new Vec3d(i, 64, i));
         packet("RailgunFireFxPacket（满 256 点路径）", new RailgunFireFxPacket(1, Vec3d.ZERO, Vec3d.ZERO, path, 3, 10F));
         packet(

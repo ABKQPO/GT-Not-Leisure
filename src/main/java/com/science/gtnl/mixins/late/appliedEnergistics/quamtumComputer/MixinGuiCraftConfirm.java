@@ -1,6 +1,5 @@
 package com.science.gtnl.mixins.late.appliedEnergistics.quamtumComputer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
@@ -36,6 +35,7 @@ import appeng.client.gui.widgets.GuiTabButton;
 import appeng.client.gui.widgets.MEGuiTextField;
 import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.core.localization.ColorUtils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 /**
  * Finds the crafting cycles of the request once it is calculated, marks them in the crafting tree and the list, and
@@ -203,7 +203,7 @@ public abstract class MixinGuiCraftConfirm extends GuiSub implements ICraftingCy
     private List<Cycle> gtnl$blocking(List<Cycle> cycles) {
         var error = this.ccc.getErrorMessage();
         boolean noNetOutput = GTNL$NO_NET_OUTPUT.equals(error);
-        var blocking = new ArrayList<Cycle>();
+        var blocking = new ObjectArrayList<Cycle>();
         if (!noNetOutput && !this.ccc.isSimulation()) return blocking;
         for (var cycle : cycles) {
             boolean blocks = noNetOutput && !cycle.netOutput();

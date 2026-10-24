@@ -1,6 +1,5 @@
 package com.science.gtnl.common.celestweave;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +27,7 @@ import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class CelestweaveShield {
 
@@ -158,7 +158,7 @@ public class CelestweaveShield {
     private static void strike(EntityPlayerMP player, ItemStack chest, EntityLivingBase attacker, float amount) {
         var config = MainConfig.item.celestweave;
         double radius = config.reflectRadius;
-        List<EntityLivingBase> targets = new ArrayList<>();
+        List<EntityLivingBase> targets = new ObjectArrayList<>();
         for (Object entry : player.worldObj
             .getEntitiesWithinAABB(EntityLivingBase.class, player.boundingBox.expand(radius, radius, radius))) {
             if (entry instanceof EntityLivingBase living && living != attacker

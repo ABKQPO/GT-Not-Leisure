@@ -1,9 +1,9 @@
 package com.science.gtnl.client.text.effect;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
+
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 /** A reproducible tick schedule with independent idle trials and non-retriggerable flashes. */
 public class TickFlashTimeline {
@@ -20,7 +20,7 @@ public class TickFlashTimeline {
         this.durationTicks = durationTicks;
         this.cycleTicks = cycleTicks;
         Random random = new Random(seed);
-        List<Integer> events = new ArrayList<>();
+        IntArrayList events = new IntArrayList();
         double failureLog = Math.log1p(-probability);
         long tick = durationTicks;
         while (tick < cycleTicks) {
@@ -32,9 +32,7 @@ public class TickFlashTimeline {
             events.add((int) tick);
             tick += durationTicks;
         }
-        starts = events.stream()
-            .mapToInt(Integer::intValue)
-            .toArray();
+        starts = events.toIntArray();
     }
 
     public boolean active(int tick) {

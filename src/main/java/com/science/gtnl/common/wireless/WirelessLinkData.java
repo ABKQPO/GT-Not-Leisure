@@ -1,8 +1,5 @@
 package com.science.gtnl.common.wireless;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -12,6 +9,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 public class WirelessLinkData {
 
@@ -23,7 +24,7 @@ public class WirelessLinkData {
     private record Decoded(NBTTagCompound payload, Map<Slot, Claim> claims) {}
 
     static void beginReadBatch() {
-        if (readBatchDepth++ == 0) readBatch = new IdentityHashMap<>();
+        if (readBatchDepth++ == 0) readBatch = new Reference2ObjectOpenHashMap<>();
     }
 
     static void endReadBatch() {
@@ -69,7 +70,7 @@ public class WirelessLinkData {
 
     public static Map<Slot, Claim> read(NBTTagCompound tileData) {
         // Callers edit their own slot map; Claim and its contents are immutable.
-        return readBatch == null ? decode(tileData) : new HashMap<>(readView(tileData));
+        return readBatch == null ? decode(tileData) : new Object2ObjectOpenHashMap<>(readView(tileData));
     }
 
     static Claim claim(NBTTagCompound tileData, Slot slot) {
@@ -88,7 +89,7 @@ public class WirelessLinkData {
     }
 
     private static Map<Slot, Claim> decode(NBTTagCompound tileData) {
-        Map<Slot, Claim> result = new HashMap<>();
+        Map<Slot, Claim> result = new Object2ObjectOpenHashMap<>();
         if (!tileData.hasKey(KEY, 10)) return result;
         NBTTagCompound data = tileData.getCompoundTag(KEY);
         if (!data.hasKey("version", 3) || data.getInteger("version") != VERSION) return result;
@@ -104,9 +105,9 @@ public class WirelessLinkData {
                 || entry.getString("kind")
                     .isEmpty())
                 continue;
-            Set<Address> frequencies = new HashSet<>();
-            Set<Address> paused = new HashSet<>();
-            Set<Address> entrances = new HashSet<>();
+            Set<Address> frequencies = new ObjectOpenHashSet<>();
+            Set<Address> paused = new ObjectOpenHashSet<>();
+            Set<Address> entrances = new ObjectOpenHashSet<>();
             NBTTagList sources = entry.getTagList("frequencies", 10);
             for (int j = 0; j < sources.tagCount(); j++) {
                 NBTTagCompound source = sources.getCompoundTagAt(j);

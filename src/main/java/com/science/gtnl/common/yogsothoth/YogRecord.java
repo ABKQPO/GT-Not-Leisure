@@ -1,7 +1,5 @@
 package com.science.gtnl.common.yogsothoth;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -12,6 +10,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.common.util.Constants.NBT;
 
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 public final class YogRecord {
 
     public final UUID id;
@@ -21,17 +23,17 @@ public final class YogRecord {
     // Bumped when entries are added or removed; within one structure, clients can be sent only changed entries.
     long structure;
     static long modifications;
-    final List<ItemStack> terminals = new ArrayList<>();
+    final List<ItemStack> terminals = new ObjectArrayList<>();
     // Revision at which each entry last changed, parallel to terminals.
-    private final List<Long> stamps = new ArrayList<>();
-    final Set<String> batches = new HashSet<>();
+    private final LongArrayList stamps = new LongArrayList();
+    final Set<String> batches = new ObjectOpenHashSet<>();
     int active = -1;
     boolean hidden;
     int home = -1;
     UUID holder;
     // The Yog-Sothoth stack a disguise replaced, kept so reverting restores the same object screens hold.
     transient ItemStack base;
-    private final List<ItemStack> snapshot = new ArrayList<>();
+    private final List<ItemStack> snapshot = new ObjectArrayList<>();
 
     YogRecord(UUID id, UUID owner) {
         this.id = id;
@@ -87,7 +89,7 @@ public final class YogRecord {
         if (stack == null) return null;
         terminals.remove(index);
         snapshot.remove(index);
-        stamps.remove(index);
+        stamps.removeLong(index);
         if (active == index) clearActive();
         else if (active > index) {
             active--;
@@ -128,7 +130,7 @@ public final class YogRecord {
     NBTTagList writeChangedSince(long since) {
         NBTTagList list = new NBTTagList();
         for (int index = 0; index < terminals.size(); index++) {
-            if (stamps.get(index) <= since) continue;
+            if (stamps.getLong(index) <= since) continue;
             NBTTagCompound entry = YogToken.unlinkedCopy(terminals.get(index))
                 .writeToNBT(new NBTTagCompound());
             entry.setInteger("slot", index);

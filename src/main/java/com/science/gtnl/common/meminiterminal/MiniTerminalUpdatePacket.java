@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
@@ -24,6 +23,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class MiniTerminalUpdatePacket extends ClientboundPacket {
 
@@ -68,7 +68,7 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
         }
         try {
             if (raw.readableBytes() > MAX_PART_BYTES) throw new IllegalArgumentException("Mini terminal entries");
-            List<Entry> decoded = new ArrayList<>();
+            List<Entry> decoded = new ObjectArrayList<>();
             while (raw.isReadable()) decoded.add(new Entry(raw.readInt(), Platform.readStackByte(raw)));
             entries = decoded;
         } finally {
@@ -94,7 +94,7 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
     }
 
     static List<byte[]> encode(List<Entry> entries, int level) throws IOException {
-        List<byte[]> parts = new ArrayList<>();
+        List<byte[]> parts = new ObjectArrayList<>();
         ByteBuf part = Unpooled.buffer(Math.min(PART_BYTES, 64 + entries.size() * 64));
         try {
             for (Entry entry : entries) {

@@ -2,7 +2,6 @@ package com.science.gtnl.common.render.item;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -30,6 +29,7 @@ import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class ItemPortalGunRender extends ItemGunRender {
@@ -189,7 +189,7 @@ public class ItemPortalGunRender extends ItemGunRender {
             PortalGunCoreArcs.shake(millis));
         FxRenderHelper.renderLocal(() -> {
             for (Arc arc : arcs) {
-                List<Vec3d> points = new ArrayList<>(arc.points().length);
+                List<Vec3d> points = new ObjectArrayList<>(arc.points().length);
                 for (double[] point : arc.points())
                     points.add(new Vec3d(core.x() + point[0], core.y() + point[1], core.z() + point[2]));
                 FxArcRenderer.drawPath(points, ARC_STYLE, arc.brightness());

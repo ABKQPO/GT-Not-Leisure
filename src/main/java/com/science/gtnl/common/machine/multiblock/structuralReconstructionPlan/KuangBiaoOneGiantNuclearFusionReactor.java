@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -76,6 +75,7 @@ import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import gregtech.common.render.IMTERenderer;
 import gtPlusPlus.core.block.ModBlocks;
 import gtnhlanth.common.register.LanthItemList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -962,7 +962,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
         @Override
         public String[] getInfoData() {
-            List<String> ret = new ArrayList<>(Arrays.asList(super.getInfoData()));
+            List<String> ret = new ObjectArrayList<>(Arrays.asList(super.getInfoData()));
             if (wirelessMode) {
                 ret.add(
                     EnumChatFormatting.LIGHT_PURPLE + IGregTechDeviceInformation.encode("gtnl.waila.wireless.mode"));

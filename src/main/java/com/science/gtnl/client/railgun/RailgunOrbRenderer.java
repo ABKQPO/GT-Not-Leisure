@@ -1,6 +1,5 @@
 package com.science.gtnl.client.railgun;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.UnaryOperator;
@@ -26,6 +25,7 @@ import com.science.gtnl.config.MainConfig;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class RailgunOrbRenderer {
@@ -97,7 +97,7 @@ public class RailgunOrbRenderer {
     private record OrbViz(Vec3d center, Vec3d direction, Vec3d tail, double radius, int tier, int seed, double time,
         float strength, float burst, float tension, Vec3d anchor) {}
 
-    private static final List<LaunchedOrb> ORBS = new ArrayList<>();
+    private static final List<LaunchedOrb> ORBS = new ObjectArrayList<>();
 
     public static void launch(int shooterId, Vec3d from, Vec3d target, int tier, Runnable onArrive) {
         var world = Minecraft.getMinecraft().theWorld;
@@ -239,7 +239,7 @@ public class RailgunOrbRenderer {
     }
 
     private static List<OrbViz> collect(long now, float partialTicks) {
-        List<OrbViz> orbs = new ArrayList<>(ORBS.size() + 1);
+        List<OrbViz> orbs = new ObjectArrayList<>(ORBS.size() + 1);
         for (Object entity : Minecraft.getMinecraft().theWorld.playerEntities) {
             OrbViz charging = charging((EntityPlayer) entity, now, partialTicks);
             if (charging != null) orbs.add(charging);
@@ -338,7 +338,7 @@ public class RailgunOrbRenderer {
     }
 
     private static List<Vec3d> placed(Bolt bolt, UnaryOperator<Vec3d> place) {
-        List<Vec3d> points = new ArrayList<>(
+        List<Vec3d> points = new ObjectArrayList<>(
             bolt.points()
                 .size());
         for (Vec3d point : bolt.points()) points.add(place.apply(point));
@@ -397,7 +397,7 @@ public class RailgunOrbRenderer {
             double phase = orb.time() * FILAMENT_SPEED + filament * (Math.PI * 2 / FILAMENTS) + orb.seed() * 0.37;
             double wobblePhase = orb.time() * FILAMENT_WOBBLE_SPEED + filament * 1.7 + orb.seed() * 0.11;
             float flicker = (float) (0.55 + 0.45 * MathUtils.hashUnit(orb.seed(), filament, -1, tick));
-            List<Vec3d> run = new ArrayList<>(FILAMENT_SEGMENTS + 1);
+            List<Vec3d> run = new ObjectArrayList<>(FILAMENT_SEGMENTS + 1);
             int first = 0;
             run.add(filamentPoint(orb, direction, right, up, reach, phase, wobblePhase, 0, 0, agitation));
             for (int segment = 1; segment <= FILAMENT_SEGMENTS; segment++) {
@@ -417,7 +417,7 @@ public class RailgunOrbRenderer {
                     < FILAMENT_GAP * agitation;
                 if (gap) {
                     filament(orb, run, first, width, flicker);
-                    run = new ArrayList<>(FILAMENT_SEGMENTS + 1);
+                    run = new ObjectArrayList<>(FILAMENT_SEGMENTS + 1);
                     first = segment;
                 }
                 run.add(current);

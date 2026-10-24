@@ -40,6 +40,7 @@ import gregtech.api.util.GTRecipeBuilder;
 import gregtech.api.util.GTRecipeConstants;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.extensions.ArrayExt;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class RecipeBuilder {
 
@@ -286,7 +287,7 @@ public class RecipeBuilder {
                             + "\" is empty; recipe will be skipped.");
                     result = GTValues.emptyItemStackArray;
                 } else {
-                    ArrayList<ItemStack> list = new ArrayList<>(ores.size());
+                    ObjectArrayList<ItemStack> list = new ObjectArrayList<>(ores.size());
                     for (ItemStack ore : ores) {
                         ItemStack copy = GTUtility.copyAmount(oreDictItemStack.mAmount, ore);
                         if (GTUtility.isStackValid(copy)) {
@@ -305,7 +306,7 @@ public class RecipeBuilder {
                     result = GTValues.emptyItemStackArray;
                 } else {
                     int size = ((Number) arr[1]).intValue();
-                    ArrayList<ItemStack> list = new ArrayList<>(ores.size());
+                    ObjectArrayList<ItemStack> list = new ObjectArrayList<>(ores.size());
                     for (ItemStack ore : ores) {
                         ItemStack copy = GTUtility.copyAmount(size, ore);
                         if (GTUtility.isStackValid(copy)) list.add(copy);
@@ -325,7 +326,7 @@ public class RecipeBuilder {
         }
 
         int l = alts.length;
-        ArrayList<ItemStack> basics = new ArrayList<>(l);
+        ObjectArrayList<ItemStack> basics = new ObjectArrayList<>(l);
         for (ItemStack[] s : alts) {
             basics.add(s.length > 0 ? s[0] : null);
         }
@@ -387,8 +388,8 @@ public class RecipeBuilder {
             return this;
         }
 
-        List<FluidStack> mainFluidList = new ArrayList<>(fluids.length);
-        List<FluidStack[]> altFluidList = new ArrayList<>(fluids.length);
+        List<FluidStack> mainFluidList = new ObjectArrayList<>(fluids.length);
+        List<FluidStack[]> altFluidList = new ObjectArrayList<>(fluids.length);
         for (Object fluid : fluids) {
             if (fluid instanceof SubstituteFluidStack substituteFluidStack) {
                 FluidStack[] alternatives = substituteFluidStack.fluidStacks.toArray(new FluidStack[0]);
@@ -885,7 +886,7 @@ public class RecipeBuilder {
         if (skip || recipeMaps == null || recipeMaps.length == 0) {
             return Collections.emptyList();
         }
-        List<GTRecipe> addedRecipes = new ArrayList<>();
+        List<GTRecipe> addedRecipes = new ObjectArrayList<>();
         normalizeChanceArrays();
         for (IRecipeMap recipeMap : recipeMaps) {
             if (recipeMap == null) {
@@ -1118,7 +1119,7 @@ public class RecipeBuilder {
         if (stacks == null || stacks.length == 0) {
             return GTValues.emptyItemStackArray;
         }
-        List<ItemStack> validStacks = new ArrayList<>(stacks.length);
+        List<ItemStack> validStacks = new ObjectArrayList<>(stacks.length);
         for (ItemStack stack : stacks) {
             if (GTUtility.isStackValid(stack)) {
                 validStacks.add(stack);

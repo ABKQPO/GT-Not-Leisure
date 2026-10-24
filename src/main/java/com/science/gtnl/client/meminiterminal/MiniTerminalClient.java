@@ -2,10 +2,8 @@ package com.science.gtnl.client.meminiterminal;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
@@ -54,6 +52,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.longs.LongLinkedOpenHashSet;
 
 @SideOnly(Side.CLIENT)
 public final class MiniTerminalClient {
@@ -69,7 +69,7 @@ public final class MiniTerminalClient {
     };
 
     private static final MiniTerminalLayout LAYOUT = new MiniTerminalLayout();
-    private static final Set<Long> RETIRED_SESSIONS = new LinkedHashSet<>();
+    private static final LongLinkedOpenHashSet RETIRED_SESSIONS = new LongLinkedOpenHashSet();
     private static NetHandlerPlayClient connection;
     private static MiniTerminalInventoryPanel overlay;
     private static UUID selected;
@@ -273,9 +273,7 @@ public final class MiniTerminalClient {
             ScienceNotLeisure.network.sendToServer(MiniTerminalRequestPacket.end(id));
         }
         RETIRED_SESSIONS.add(id);
-        if (RETIRED_SESSIONS.size() > 128) RETIRED_SESSIONS.remove(
-            RETIRED_SESSIONS.iterator()
-                .next());
+        if (RETIRED_SESSIONS.size() > 128) RETIRED_SESSIONS.removeFirstLong();
     }
 
     private static boolean hasMiniTerminal() {
@@ -605,10 +603,10 @@ public final class MiniTerminalClient {
 
     public static void selectNext() {
         Minecraft mc = Minecraft.getMinecraft();
-        List<Integer> slots = ItemMEMiniPortableTerminal.getTerminalSlots(mc.thePlayer);
+        IntList slots = ItemMEMiniPortableTerminal.getTerminalSlots(mc.thePlayer);
         int start = slots.indexOf(findSelectedSlot());
         for (int step = 1; step <= slots.size(); step++) {
-            int slot = slots.get((start + step) % slots.size());
+            int slot = slots.getInt((start + step) % slots.size());
             ItemStack stack = ItemMEMiniPortableTerminal.getTerminalStack(mc.thePlayer, slot);
             if (!ItemMEMiniPortableTerminal.isMiniTerminal(stack)) continue;
             closeSession();

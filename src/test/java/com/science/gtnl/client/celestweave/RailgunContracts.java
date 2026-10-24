@@ -15,7 +15,6 @@ import static com.science.gtnl.client.celestweave.CelestweaveContractTest.roundT
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -47,6 +46,8 @@ import com.science.gtnl.common.railgun.RailgunFireService;
 import com.science.gtnl.common.railgun.RailgunRaycast;
 import com.science.gtnl.common.render.item.ItemElectromagneticRailgunRender;
 import com.science.gtnl.config.MainConfig;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class RailgunContracts {
 
@@ -277,7 +278,7 @@ public class RailgunContracts {
                 random.nextDouble() * 100);
             Vec3d target = start
                 .add(random.nextGaussian() * 200, random.nextGaussian() * 100, random.nextGaussian() * 200);
-            List<Vec3d[]> calls = new ArrayList<>();
+            List<Vec3d[]> calls = new ObjectArrayList<>();
             RailgunRaycast.traceSegments(start, target, (a, b) -> {
                 calls.add(new Vec3d[] { a, b });
                 return null;
@@ -730,7 +731,7 @@ public class RailgunContracts {
     }
 
     private static List<double[]> currents(List<RailgunBolts.Bolt> bolts) {
-        List<double[]> currents = new ArrayList<>();
+        List<double[]> currents = new ObjectArrayList<>();
         for (int index = 2 + RailgunBolts.ANCHORS_PER_SIDE * 2; index < bolts.size(); index++) {
             List<Vec3d> points = bolts.get(index)
                 .points();

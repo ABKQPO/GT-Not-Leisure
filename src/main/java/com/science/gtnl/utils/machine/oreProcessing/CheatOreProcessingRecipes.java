@@ -1,7 +1,5 @@
 package com.science.gtnl.utils.machine.oreProcessing;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +24,8 @@ import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 import gtnhlanth.common.register.WerkstoffMaterialPool;
 import ic2.core.Ic2Items;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class CheatOreProcessingRecipes implements IRecipePool {
 
@@ -48,7 +48,7 @@ public class CheatOreProcessingRecipes implements IRecipePool {
         OrePrefixes.oreNetherrack,
         OrePrefixes.oreEndstone);
 
-    public final Map<Materials, ItemStack> processingLineMaterials = new HashMap<>();
+    public final Map<Materials, ItemStack> processingLineMaterials = new Object2ObjectOpenHashMap<>();
 
     public void initProcessingLineMaterials() {
         processingLineMaterials.put(Materials.Platinum, WerkstoffLoader.PTMetallicPowder.get(OrePrefixes.dust, 1));
@@ -260,7 +260,7 @@ public class CheatOreProcessingRecipes implements IRecipePool {
     }
 
     public ItemStack[] getOutputs(Materials material, boolean isRich) {
-        List<ItemStack> outputs = new ArrayList<>();
+        List<ItemStack> outputs = new ObjectArrayList<>();
 
         // check byproduct
         if (!material.mOreByProducts.isEmpty()) {

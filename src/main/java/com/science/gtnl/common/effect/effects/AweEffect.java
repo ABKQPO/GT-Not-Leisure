@@ -1,6 +1,5 @@
 package com.science.gtnl.common.effect.effects;
 
-import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
@@ -21,6 +20,7 @@ import com.science.gtnl.utils.ColorUtils;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class AweEffect extends EffectBase {
 
@@ -30,7 +30,7 @@ public class AweEffect extends EffectBase {
         .setDamageAllowedInCreativeMode()
         .setMagicDamage();
 
-    private static final Set<EntityPlayer> affectedPlayers = new HashSet<>();
+    private static final Set<EntityPlayer> affectedPlayers = new ObjectOpenHashSet<>();
     private static final Random random = new Random();
 
     public AweEffect(int id) {

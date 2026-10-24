@@ -1,6 +1,5 @@
 package com.science.gtnl.common.render.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.renderer.Tessellator;
@@ -15,6 +14,8 @@ import com.science.gtnl.utils.enums.PortalGunPortalEffect;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class PortalGunVortexRender {
@@ -91,7 +92,7 @@ public class PortalGunVortexRender {
     }
 
     public static Flow flow(int stream, float open, float size, float ticks) {
-        List<double[]> points = new ArrayList<>(STREAM_POINTS);
+        List<double[]> points = new ObjectArrayList<>(STREAM_POINTS);
         for (int i = 0; i < STREAM_POINTS; i++)
             points.add(spine(stream, open, size, ticks, i / (double) (STREAM_POINTS - 1)));
         return new Flow(points, open);
@@ -141,7 +142,7 @@ public class PortalGunVortexRender {
         double offset = (0.1 + 0.12 * companion(stream, index, 1)) * (index == 0 ? 1 : -0.7),
             lag = 0.15 + 0.4 * companion(stream, index, 2), span = 0.9 + 0.5 * companion(stream, index, 3),
             thick = 0.012 + 0.008 * companion(stream, index, 4);
-        List<double[]> spine = new ArrayList<>(COMPANION_POINTS);
+        List<double[]> spine = new ObjectArrayList<>(COMPANION_POINTS);
         for (int i = 0; i < COMPANION_POINTS; i++)
             spine.add(spine(stream, open, size, ticks, i / (double) (COMPANION_POINTS - 1), lag, span, offset));
         double[][] points = spine.toArray(new double[0][]), normals = new double[COMPANION_POINTS][];
@@ -161,7 +162,7 @@ public class PortalGunVortexRender {
     }
 
     public static List<Drop> droplets(int stream, float ticks, float size) {
-        List<Drop> drops = new ArrayList<>(DROP_SLOTS);
+        List<Drop> drops = new ObjectArrayList<>(DROP_SLOTS);
         for (int k = 0; k < DROP_SLOTS; k++) {
             double life = 6 + 8 * drop(stream, k), clock = ticks + life * ((k * GOLDEN + 0.5 * stream) % 1);
             int cycle = (int) Math.floor(clock / life), seed = k * 4096 + cycle;
@@ -267,9 +268,9 @@ public class PortalGunVortexRender {
     private static void drawFluid(float ticks, float open, float close, float size) {
         float alpha = fluid(open, close);
         if (alpha <= 0.01F) return;
-        List<Outline> outlines = new ArrayList<>(STREAMS), companions = new ArrayList<>();
-        List<Float> companionAlphas = new ArrayList<>();
-        List<Drop> drops = new ArrayList<>();
+        List<Outline> outlines = new ObjectArrayList<>(STREAMS), companions = new ObjectArrayList<>();
+        FloatArrayList companionAlphas = new FloatArrayList();
+        List<Drop> drops = new ObjectArrayList<>();
         for (int stream = 0; stream < STREAMS; stream++) {
             outlines.add(outline(flow(stream, open, size, ticks), stream, ticks));
             drops.addAll(droplets(stream, ticks, size));
@@ -284,13 +285,13 @@ public class PortalGunVortexRender {
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
         tessellator.startDrawingQuads();
-        for (int i = 0; i < companions.size(); i++) halo(companions.get(i), companionAlphas.get(i) * 0.8F);
+        for (int i = 0; i < companions.size(); i++) halo(companions.get(i), companionAlphas.getFloat(i) * 0.8F);
         for (Outline outline : outlines) halo(outline, alpha);
         for (Drop drop : drops) dropHalo(drop, alpha * (float) drop.alpha());
         tessellator.draw();
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         tessellator.startDrawingQuads();
-        for (int i = 0; i < companions.size(); i++) fill(companions.get(i), COMPANION, companionAlphas.get(i));
+        for (int i = 0; i < companions.size(); i++) fill(companions.get(i), COMPANION, companionAlphas.getFloat(i));
         for (Outline outline : outlines) body(outline, alpha);
         for (Drop drop : drops) blob(drop, alpha * (float) drop.alpha());
         tessellator.draw();

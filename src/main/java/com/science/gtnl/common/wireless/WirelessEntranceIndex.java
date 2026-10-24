@@ -1,7 +1,5 @@
 package com.science.gtnl.common.wireless;
 
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,12 +8,14 @@ import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Entrance;
 
 import appeng.api.networking.IGridNode;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 public class WirelessEntranceIndex {
 
     private final PhysicalClusterTracker<IGridNode, Address> tracker;
-    private final Map<Cluster<IGridNode, Address>, List<Entrance>> byCluster = new IdentityHashMap<>();
-    private final Map<IGridNode, List<Entrance>> byNode = new IdentityHashMap<>();
+    private final Map<Cluster<IGridNode, Address>, List<Entrance>> byCluster = new Reference2ObjectOpenHashMap<>();
+    private final Map<IGridNode, List<Entrance>> byNode = new Reference2ObjectOpenHashMap<>();
     private List<Entrance> entrances;
     private List<Cluster<IGridNode, Address>> clusters;
 
@@ -40,10 +40,10 @@ public class WirelessEntranceIndex {
         byCluster.clear();
         byNode.clear();
         for (Entrance entrance : currentEntrances) {
-            byNode.computeIfAbsent(entrance.targetNode(), ignored -> new ArrayList<>())
+            byNode.computeIfAbsent(entrance.targetNode(), ignored -> new ObjectArrayList<>())
                 .add(entrance);
             Cluster<IGridNode, Address> cluster = tracker.clusterOf(entrance.targetNode());
-            if (cluster != null) byCluster.computeIfAbsent(cluster, ignored -> new ArrayList<>())
+            if (cluster != null) byCluster.computeIfAbsent(cluster, ignored -> new ObjectArrayList<>())
                 .add(entrance);
         }
         byCluster.replaceAll((cluster, entries) -> List.copyOf(entries));

@@ -1,6 +1,5 @@
 package com.science.gtnl.common.crafting.quantum.crafting;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
@@ -29,6 +28,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectLinkedOpenHashMap;
 
 final class CraftingPlanCompactor {
@@ -45,10 +45,10 @@ final class CraftingPlanCompactor {
     private final CraftingCalculation calculation;
     @Nullable
     private final World level;
-    private final List<Recipe> recipes = new ArrayList<>();
+    private final List<Recipe> recipes = new ObjectArrayList<>();
     private final Object2IntOpenHashMap<AEKey> keyIndex = new Object2IntOpenHashMap<>();
-    private final List<AEKey> keys = new ArrayList<>();
-    private final List<List<Recipe>> producers = new ArrayList<>();
+    private final List<AEKey> keys = new ObjectArrayList<>();
+    private final List<List<Recipe>> producers = new ObjectArrayList<>();
     private final Map<Object, IntArrayList> groups = new Object2ObjectOpenHashMap<>();
     private boolean flexible;
     private boolean planBalanced = true;
@@ -447,7 +447,7 @@ final class CraftingPlanCompactor {
             index = this.keys.size();
             this.keyIndex.put(key, index);
             this.keys.add(key);
-            this.producers.add(new ArrayList<>(1));
+            this.producers.add(new ObjectArrayList<>(1));
             this.groups.computeIfAbsent(key.getPrimaryKey(), k -> new IntArrayList(1))
                 .add(index);
             if (this.balance.length <= index) {
@@ -469,7 +469,7 @@ final class CraftingPlanCompactor {
                 slot.pending = 0;
             }
         }
-        final List<Slot> pending = new ArrayList<>();
+        final List<Slot> pending = new ObjectArrayList<>();
         final long[] times = new long[this.recipes.size()];
         // Keys closer to the requested output first, so a key is only raised once all of its consumers were, with
         // the whole shortfall known: raising it in pieces would round up every piece. Byproducts of crafts raised
@@ -549,7 +549,7 @@ final class CraftingPlanCompactor {
     }
 
     private void trim(long[] times) throws InterruptedException {
-        final List<Recipe> order = new ArrayList<>(this.recipes);
+        final List<Recipe> order = new ObjectArrayList<>(this.recipes);
         order.sort((a, b) -> Integer.compare(rankOf(a.firstOutput()), rankOf(b.firstOutput())));
         boolean changed = true;
         for (int pass = 0; changed && pass < 64; pass++) {
@@ -754,7 +754,7 @@ final class CraftingPlanCompactor {
         final long[] lowest = supply.clone();
         int borrows = 0;
         final long[] left = times.clone();
-        final List<Int2LongLinkedOpenHashMap[]> allocations = new ArrayList<>(this.recipes.size());
+        final List<Int2LongLinkedOpenHashMap[]> allocations = new ObjectArrayList<>(this.recipes.size());
         long remaining = 0;
         for (Recipe recipe : this.recipes) {
             remaining = Math.addExact(remaining, left[recipe.index]);
@@ -1059,7 +1059,7 @@ final class CraftingPlanCompactor {
             final boolean substitutes = pattern.canSubstitute();
             final Object2LongOpenHashMap<AEKey> inputs = new Object2LongOpenHashMap<>();
             final Object2LongOpenHashMap<AEKey> outputs = new Object2LongOpenHashMap<>();
-            final List<Slot> slots = new ArrayList<>();
+            final List<Slot> slots = new ObjectArrayList<>();
             for (IPatternDetails.IInput input : pattern.getInputs()) {
                 final GenericStack[] possible = input.possibleInputs();
                 if (possible.length == 0 || input.getMultiplier() <= 0) {
@@ -1097,7 +1097,7 @@ final class CraftingPlanCompactor {
                 outputs.addTo(output.what(), output.amount());
             }
 
-            final List<AEKey> order = new ArrayList<>(inputs.keySet());
+            final List<AEKey> order = new ObjectArrayList<>(inputs.keySet());
             for (AEKey key : outputs.keySet()) {
                 if (!inputs.containsKey(key)) {
                     order.add(key);

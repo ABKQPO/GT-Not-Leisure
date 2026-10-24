@@ -4,6 +4,9 @@ import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.ObjLongConsumer;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -53,25 +56,35 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     }
 
     public void addAll(VariantCounter other) {
-        for (var entry : other.getRecords()
-            .object2LongEntrySet()) {
-            add(entry.getKey(), entry.getLongValue());
-        }
+        other.forEachEntry(this::add);
     }
 
     public void removeAll(VariantCounter other) {
-        for (var entry : other.getRecords()
-            .object2LongEntrySet()) {
-            long amount = entry.getLongValue();
+        other.forEachEntry((key, amount) -> {
             if (amount == Long.MIN_VALUE) {
-                add(entry.getKey(), Long.MAX_VALUE);
+                add(key, Long.MAX_VALUE);
             } else {
-                add(entry.getKey(), -amount);
+                add(key, -amount);
             }
-        }
+        });
     }
 
     public abstract Collection<Object2LongMap.Entry<AEKey>> findFuzzy(AEKey filter, FuzzyMode fuzzy);
+
+    @Override
+    public void forEach(Consumer<? super Object2LongMap.Entry<AEKey>> action) {
+        Objects.requireNonNull(action, "action");
+        var records = getRecords();
+        if (!records.isEmpty()) Object2LongMaps.fastForEach(records, action);
+    }
+
+    public void forEachEntry(ObjLongConsumer<? super AEKey> action) {
+        Objects.requireNonNull(action, "action");
+        var records = getRecords();
+        if (!records.isEmpty()) records.forEachEntry(action);
+    }
+
+    public abstract void forEachFuzzy(AEKey filter, FuzzyMode fuzzy, ObjLongConsumer<? super AEKey> action);
 
     public int size() {
         return getRecords().size();
@@ -92,9 +105,7 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
      * Sets all amounts to zero.
      */
     public void reset() {
-        for (var entry : getRecords().object2LongEntrySet()) {
-            entry.setValue(0L);
-        }
+        forEach(entry -> entry.setValue(0L));
     }
 
     public void clear() {
@@ -104,10 +115,10 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     public abstract VariantCounter copy(boolean saturating);
 
     public void invert() {
-        for (var entry : getRecords().object2LongEntrySet()) {
+        forEach(entry -> {
             long amount = entry.getLongValue();
             entry.setValue(amount == Long.MIN_VALUE ? Long.MAX_VALUE : -amount);
-        }
+        });
     }
 
     public void removeZeros() {
@@ -127,10 +138,16 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
      */
     static class UnorderedVariantMap extends VariantCounter {
 
-        private final AEKey2LongMap records = new AEKey2LongMap.OpenHashMap();
+        // Most primary keys have only one variant. Do not allocate 32 buckets for each such counter.
+        private final AEKey2LongMap records;
 
         UnorderedVariantMap(boolean saturating) {
+            this(saturating, 1);
+        }
+
+        private UnorderedVariantMap(boolean saturating, int expected) {
             super(saturating);
+            this.records = new AEKey2LongMap.OpenHashMap(expected);
         }
 
         /**
@@ -143,13 +160,18 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
         }
 
         @Override
+        public void forEachFuzzy(AEKey filter, FuzzyMode fuzzy, ObjLongConsumer<? super AEKey> action) {
+            records.forEachEntry(action);
+        }
+
+        @Override
         AEKey2LongMap getRecords() {
             return records;
         }
 
         @Override
         public VariantCounter copy(boolean saturating) {
-            var result = new UnorderedVariantMap(saturating);
+            var result = new UnorderedVariantMap(saturating, records.size());
             result.records.putAll(records);
             return result;
         }
@@ -165,6 +187,11 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
 
         FuzzyVariantMap(boolean saturating) {
             super(saturating);
+        }
+
+        @Override
+        public void forEachFuzzy(AEKey filter, FuzzyMode fuzzy, ObjLongConsumer<? super AEKey> action) {
+            records.forEachEntry((key, amount) -> { if (key.fuzzyEquals(filter, fuzzy)) action.accept(key, amount); });
         }
 
         @Override
@@ -187,11 +214,13 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
 
                 @Override
                 public @NotNull Iterator<Object2LongMap.Entry<AEKey>> iterator() {
-                    var source = Object2LongMaps.fastIterator(records);
                     return new Iterator<>() {
 
+                        private Iterator<Object2LongMap.Entry<AEKey>> source = records.object2LongEntrySet()
+                            .iterator();
                         private Object2LongMap.Entry<AEKey> next;
                         private Object2LongMap.Entry<AEKey> current;
+                        private boolean advanced;
 
                         @Override
                         public boolean hasNext() {
@@ -200,6 +229,7 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
                             }
                             while (source.hasNext()) {
                                 var candidate = source.next();
+                                advanced = true;
                                 if (candidate.getKey()
                                     .fuzzyEquals(key, fuzzy)) {
                                     next = candidate;
@@ -216,6 +246,7 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
                             }
                             current = next;
                             next = null;
+                            advanced = false;
                             return current;
                         }
 
@@ -224,7 +255,17 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
                             if (current == null) {
                                 throw new IllegalStateException();
                             }
-                            source.remove();
+                            if (advanced) {
+                                // hasNext may have moved past current, including past rejected entries. Remove the
+                                // returned key and seek strictly after it so the AVL iterator cannot retain a
+                                // deleted predecessor, and a prefetched match is neither skipped nor removed.
+                                records.removeLong(current.getKey());
+                                source = records.object2LongEntrySet()
+                                    .iterator(current);
+                                next = null;
+                            } else {
+                                source.remove();
+                            }
                             current = null;
                         }
                     };

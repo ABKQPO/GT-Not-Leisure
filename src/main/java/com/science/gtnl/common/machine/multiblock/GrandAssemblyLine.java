@@ -55,6 +55,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
+import com.science.gtnl.utils.recipes.GrandAssemblyLineOverclockTool;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import gregtech.api.casing.Casings;
@@ -303,8 +304,8 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         for (byte color = 0; color < (doColorChecking ? 16 : 1); color++) {
             if (isColorAbsent(hatchColors, color)) continue;
 
-            List<ItemStack> inputItems = new ArrayList<>(getStoredInputsForColor(Optional.of(color)));
-            List<FluidStack> inputFluids = new ArrayList<>(getStoredFluidsForColor(Optional.of(color)));
+            List<ItemStack> inputItems = new ObjectArrayList<>(getStoredInputsForColor(Optional.of(color)));
+            List<FluidStack> inputFluids = new ObjectArrayList<>(getStoredFluidsForColor(Optional.of(color)));
 
             if (getControllerSlot() != null) {
                 inputItems.add(getControllerSlot());
@@ -352,7 +353,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         }
 
         BigInteger wirelessUserEU = wirelessMode ? WirelessNetworkManager.getUserEU(ownerUUID) : BigInteger.ZERO;
-        List<RecipeTask> tasks = new ArrayList<>();
+        List<RecipeTask> tasks = new ObjectArrayList<>();
         int remainingGlobalParallel = maxParallel;
         long currentWiredInstantPower = 0; // 有线模式累计瞬时功率
         BigInteger currentWirelessTotalEnergy = BigInteger.ZERO; // 无线模式累计消耗总量
@@ -493,25 +494,18 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
                 }
             } else {
                 // 有线模式：基于瞬时功率进行超频
-                int ocCount = 0;
                 long availableInstant = energyEU - (currentWiredInstantPower - (task.adjustedPower * task.parallel));
-                long ratio = availableInstant / Math.max(1, (task.adjustedPower * task.parallel));
-                long thresh = 1;
-                while (ratio >= thresh * 4) {
-                    ocCount++;
-                    thresh *= 4;
-                }
-
-                while (ocCount > 0 && task.adjustedPower * 4 <= Integer.MAX_VALUE
-                    && task.adjustedTime / overclockFactor >= minDuration) {
-                    long addedInstant = (task.adjustedPower * 3) * task.parallel;
-                    if (currentWiredInstantPower + addedInstant <= energyEU) {
-                        task.adjustedPower *= 4;
-                        task.adjustedTime /= overclockFactor;
-                        currentWiredInstantPower += addedInstant;
-                        ocCount--;
-                    } else break;
-                }
+                final GrandAssemblyLineOverclockTool.Result overclock = GrandAssemblyLineOverclockTool
+                    .applyWiredOverclock(
+                        task.adjustedPower,
+                        task.adjustedTime,
+                        availableInstant,
+                        task.parallel,
+                        minDuration,
+                        overclockFactor);
+                task.adjustedPower = overclock.power();
+                task.adjustedTime = overclock.duration();
+                currentWiredInstantPower += overclock.addedInstantPower();
             }
 
             // 批处理逻辑：在功率限制内延长至 128t
@@ -639,7 +633,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
         double currentParallel = maxParallel;
         Object2LongOpenHashMap<ItemId> requiredMap = new Object2LongOpenHashMap<>();
-        List<ItemStack> requirements = new ArrayList<>(recipe.mInputs.length);
+        List<ItemStack> requirements = new ObjectArrayList<>(recipe.mInputs.length);
 
         for (int i = 0; i < recipe.mInputs.length; i++) {
             ItemStack mainReq = recipe.mInputs[i];
@@ -899,12 +893,12 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
     @Override
     public double getEUtDiscount() {
-        return 0.8 - (mParallelTier / 50.0) * ((mParallelTier >= 12) ? 0.2 : 1);
+        return GrandAssemblyLineOverclockTool.getEUtDiscount(mParallelTier);
     }
 
     @Override
     public double getDurationModifier() {
-        return (1 / 1.67 - (Math.max(0, mParallelTier - 1) / 50.0)) * ((mParallelTier >= 12) ? 1.0 / 20.0 : 1);
+        return GrandAssemblyLineOverclockTool.getDurationModifier(mParallelTier);
     }
 
     @Override

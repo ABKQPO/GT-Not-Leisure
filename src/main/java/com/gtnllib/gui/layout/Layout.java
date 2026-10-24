@@ -1,6 +1,5 @@
 package com.gtnllib.gui.layout;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntFunction;
 import java.util.function.IntSupplier;
@@ -25,6 +24,7 @@ import com.gtnllib.utils.TextRenderUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class Layout {
 
@@ -81,7 +81,7 @@ public class Layout {
 
     public List<IWidget> grid(int gap, int columns, List<? extends Widget<?>> cells) {
         Track widths = new Track(this::available, available -> LayoutMath.split(available, gap, columns));
-        List<IWidget> rows = new ArrayList<>();
+        List<IWidget> rows = new ObjectArrayList<>();
         Flow row = null;
         for (int i = 0; i < cells.size(); i++) {
             if (i % columns == 0) rows.add(row = row(gap));

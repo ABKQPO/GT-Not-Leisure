@@ -1,8 +1,5 @@
 package com.science.gtnl.container;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -21,6 +18,7 @@ import appeng.container.slot.IOptionalSlotHost;
 import appeng.container.sync.SyncRegistrar;
 import appeng.container.sync.handlers.IntSyncHandler;
 import appeng.util.item.AEFluidStack;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 
 public class ContainerSuperDualInterfaceFluid extends AEBaseContainer implements IOptionalSlotHost {
@@ -108,7 +106,7 @@ public class ContainerSuperDualInterfaceFluid extends AEBaseContainer implements
     @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
-        Map<Integer, IAEFluidStack> update = new HashMap<>();
+        Int2ObjectOpenHashMap<IAEFluidStack> update = new Int2ObjectOpenHashMap<>();
         for (int i = 0; i < FLUIDS_PER_PAGE * maxPage; i++) {
             update.put(
                 i,

@@ -3,10 +3,8 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.util.GTRecipeConstants.GLASS;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -77,6 +75,8 @@ import gregtech.api.util.recipe.Sievert;
 import gregtech.common.misc.GTStructureChannels;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -94,8 +94,8 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
     private static final int DEFAULT_CULTURE_COLOR = ColorUtils.rgb(ColorUtils.guiTextColorGray);
 
     public Sievert defaultSievertData = new Sievert(0, false);
-    public HashSet<EntityPlayerMP> playerMPHashSet = new HashSet<>();
-    public ArrayList<MTERadioHatch> mRadHatches = new ArrayList<>();
+    public ObjectOpenHashSet<EntityPlayerMP> playerMPHashSet = new ObjectOpenHashSet<>();
+    public ObjectArrayList<MTERadioHatch> mRadHatches = new ObjectArrayList<>();
     public int height = 1;
     public Fluid mFluid = FluidRegistry.LAVA;
     public BioCulture mCulture;

@@ -3,10 +3,8 @@ package com.science.gtnl.common.wireless;
 import static com.science.gtnl.common.wireless.WirelessChannelManager.controllerSource;
 import static com.science.gtnl.common.wireless.WirelessChannelManager.sameSource;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -33,6 +31,9 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingGrid;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 public class WirelessClusterManager {
 
@@ -40,14 +41,14 @@ public class WirelessClusterManager {
     private static final PhysicalClusterTracker<IGridNode, Address> TRACKER = new PhysicalClusterTracker<>(
         MAX_SCANNED_NODES);
     private static final PhysicalMeTopology TOPOLOGY = new PhysicalMeTopology();
-    private static final Map<Cluster<IGridNode, Address>, State> STATES = new IdentityHashMap<>();
-    private static final Map<IGridNode, Long> RETRY_AFTER = new IdentityHashMap<>();
-    private static final Map<Cluster<IGridNode, Address>, Set<Address>> PAUSES = new IdentityHashMap<>();
-    private static final Map<Cluster<IGridNode, Address>, Set<IGridNode>> SAVED_ENTRANCES = new IdentityHashMap<>();
+    private static final Map<Cluster<IGridNode, Address>, State> STATES = new Reference2ObjectOpenHashMap<>();
+    private static final Reference2LongOpenHashMap<IGridNode> RETRY_AFTER = new Reference2LongOpenHashMap<>();
+    private static final Map<Cluster<IGridNode, Address>, Set<Address>> PAUSES = new Reference2ObjectOpenHashMap<>();
+    private static final Map<Cluster<IGridNode, Address>, Set<IGridNode>> SAVED_ENTRANCES = new Reference2ObjectOpenHashMap<>();
     private static final VerifiedEntranceRecovery<IGridNode, Address> RECOVERY = new VerifiedEntranceRecovery<>();
     private static final ScanSchedule SCANS = new ScanSchedule();
     private static final WirelessTopologyWatch WATCH = new WirelessTopologyWatch();
-    private static final Map<Cluster<IGridNode, Address>, WirelessNetworkStatistics> STATISTICS = new IdentityHashMap<>();
+    private static final Map<Cluster<IGridNode, Address>, WirelessNetworkStatistics> STATISTICS = new Reference2ObjectOpenHashMap<>();
     private static WirelessEntranceIndex entranceIndex = new WirelessEntranceIndex(TRACKER);
 
     private enum State {
@@ -140,7 +141,7 @@ public class WirelessClusterManager {
         try (var ignored = WirelessLinkData.readBatch()) {
             SCANS.beginScan();
             TOPOLOGY.beginScan();
-            List<IGridNode> seeds = new ArrayList<>(WirelessLinkPersistence.seeds());
+            List<IGridNode> seeds = new ObjectArrayList<>(WirelessLinkPersistence.seeds());
             if (WirelessLinkPersistence.hasPendingSeeds()) SCANS.retrySoon();
             seeds.addAll(extraSeeds);
             TRACKER.refresh(
@@ -234,7 +235,7 @@ public class WirelessClusterManager {
     }
 
     private static Set<Address> restoreSavedEntrances(WirelessEntranceIndex entrances) {
-        List<Candidate<IGridNode, Address>> candidates = new ArrayList<>();
+        List<Candidate<IGridNode, Address>> candidates = new ObjectArrayList<>();
         for (var cluster : TRACKER.clusters()) {
             if (cluster.limited() || cluster.blocked()
                 || cluster.frequencies()
@@ -333,7 +334,7 @@ public class WirelessClusterManager {
         if (now < RETRY_AFTER.getOrDefault(anchor, Long.MIN_VALUE)) return;
         try {
             WirelessChannelManager.connect(source, TOPOLOGY.entranceAddress(anchor));
-            RETRY_AFTER.remove(anchor);
+            RETRY_AFTER.removeLong(anchor);
             STATES.put(cluster, State.ACTIVE);
         } catch (IllegalArgumentException | FailedConnection unavailable) {
             // AE2 may still be repathing after a conflict or reject a security/foreign bridge connection.
@@ -350,7 +351,7 @@ public class WirelessClusterManager {
     public static List<ClusterView> links(Address source) {
         try (var ignored = WirelessLinkData.readBatch()) {
             source = controllerSource(source);
-            List<ClusterView> result = new ArrayList<>();
+            List<ClusterView> result = new ObjectArrayList<>();
             for (var cluster : TRACKER.clusters()) {
                 if (!cluster.frequencies()
                     .contains(source)) continue;
@@ -414,7 +415,7 @@ public class WirelessClusterManager {
     }
 
     static List<IWirelessLinkView> entranceLinks(Address source, ClusterView cluster) {
-        List<IWirelessLinkView> result = new ArrayList<>();
+        List<IWirelessLinkView> result = new ObjectArrayList<>();
         for (Entrance entrance : WirelessChannelManager.entrances()) {
             if (sameSource(entrance.source(), source) && entrance.isLive()
                 && cluster.members()

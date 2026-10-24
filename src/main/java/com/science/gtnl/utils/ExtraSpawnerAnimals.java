@@ -1,6 +1,5 @@
 package com.science.gtnl.utils;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,6 +21,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -97,7 +97,7 @@ public class ExtraSpawnerAnimals {
                             * maxSpawnMultiplier) {
 
                     // 打乱区块顺序，增加生成的随机性
-                    List<ChunkCoordIntPair> tempList = new ArrayList<>(eligibleChunksForSpawning.keySet());
+                    List<ChunkCoordIntPair> tempList = new ObjectArrayList<>(eligibleChunksForSpawning.keySet());
                     Collections.shuffle(tempList);
 
                     // 遍历所有可刷怪的区块

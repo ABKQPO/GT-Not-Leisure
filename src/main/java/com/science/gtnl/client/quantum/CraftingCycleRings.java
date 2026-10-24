@@ -1,8 +1,5 @@
 package com.science.gtnl.client.quantum;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -23,6 +20,11 @@ import appeng.client.gui.widgets.GuiCraftingTree;
 import appeng.crafting.v2.CraftingRequest;
 import appeng.crafting.v2.resolvers.CraftableItemResolver.CraftFromPatternTask;
 import appeng.util.item.AEItemStack;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 /**
  * Makes a ring of a crafting cycle found in the patterns, for when the crafting tree has none to show: the lightweight
@@ -58,8 +60,8 @@ public final class CraftingCycleRings {
      */
     public static @Nullable Built build(GuiCraftingTree tree, CraftingCycleIndex index, Cycle cycle,
         @Nullable IAEStack<?> start, Function<Match, ICraftingPatternDetails> decode) {
-        var patterns = new ArrayList<ICraftingPatternDetails>();
-        var located = new ArrayList<Match>();
+        var patterns = new ObjectArrayList<ICraftingPatternDetails>();
+        var located = new ObjectArrayList<Match>();
         for (var match : index.all(List.of(cycle))) {
             var details = decode.apply(match);
             if (details == null) continue;
@@ -68,7 +70,7 @@ public final class CraftingCycleRings {
         }
         if (patterns.isEmpty()) return null;
         var items = cycle.items();
-        var order = new ArrayList<IAEStack<?>>();
+        var order = new ObjectArrayList<IAEStack<?>>();
         if (start != null) {
             for (var item : items) {
                 if (item.isSameType(start)) order.add(item);
@@ -94,9 +96,9 @@ public final class CraftingCycleRings {
         private final List<ICraftingPatternDetails> patterns;
         private final List<IAEStack<?>> items;
         private final boolean[] used;
-        private final List<Integer> path = new ArrayList<>();
-        private final List<IAEStack<?>> chain = new ArrayList<>();
-        private List<Integer> best;
+        private final IntArrayList path = new IntArrayList();
+        private final List<IAEStack<?>> chain = new ObjectArrayList<>();
+        private IntArrayList best;
         private List<IAEStack<?>> bestChain;
         private int steps;
 
@@ -125,8 +127,8 @@ public final class CraftingCycleRings {
                     if (input == null || !inCycle(input)) continue;
                     if (input.isSameType(this.start)) {
                         if (this.best == null || this.path.size() > this.best.size()) {
-                            this.best = new ArrayList<>(this.path);
-                            this.bestChain = new ArrayList<>(this.chain);
+                            this.best = new IntArrayList(this.path);
+                            this.bestChain = new ObjectArrayList<>(this.chain);
                             this.bestChain.add(input);
                         }
                     } else if (this.chain.stream()
@@ -136,7 +138,7 @@ public final class CraftingCycleRings {
                             this.chain.remove(this.chain.size() - 1);
                         }
                 }
-                this.path.remove(this.path.size() - 1);
+                this.path.removeInt(this.path.size() - 1);
                 this.used[p] = false;
             }
         }
@@ -166,22 +168,22 @@ public final class CraftingCycleRings {
             x -> true);
     }
 
-    private static Built assemble(GuiCraftingTree tree, IAEStack<?> start, List<Integer> path, List<IAEStack<?>> chain,
+    private static Built assemble(GuiCraftingTree tree, IAEStack<?> start, IntList path, List<IAEStack<?>> chain,
         List<ICraftingPatternDetails> patterns, List<Match> located) {
-        var first = patterns.get(path.get(0));
+        var first = patterns.get(path.getInt(0));
         var request = request(
             null,
             start.copy()
                 .setStackSize(made(first, start)));
         var entry = CraftingTreeRings.newRequestNode(tree, null, request);
-        var members = new ArrayList<Object>();
+        var members = new ObjectArrayList<Object>();
         members.add(entry);
-        var external = new ArrayList<Object>();
-        var matches = new IdentityHashMap<Object, Match>();
+        var external = new ObjectArrayList<Object>();
+        var matches = new Reference2ObjectOpenHashMap<Object, Match>();
         Object parent = entry;
         for (int k = 0; k < path.size(); k++) {
-            var pattern = patterns.get(path.get(k));
-            var match = located.get(path.get(k));
+            var pattern = patterns.get(path.getInt(k));
+            var match = located.get(path.getInt(k));
             var task = new CraftFromPatternTask(request, pattern, 0, false, false);
             CraftingTreeRings.setCraftsDone(task, 1);
             var icon = match.location()
@@ -210,7 +212,7 @@ public final class CraftingCycleRings {
             parent = nextNode;
             request = nextRequest;
         }
-        var back = Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>());
+        var back = new ReferenceOpenHashSet<>();
         back.add(parent);
         return new Built(new Ring(entry, members, back, external), matches, patterns.size() - path.size());
     }

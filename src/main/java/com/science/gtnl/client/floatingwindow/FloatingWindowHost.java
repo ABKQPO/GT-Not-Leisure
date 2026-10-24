@@ -1,7 +1,6 @@
 package com.science.gtnl.client.floatingwindow;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
@@ -20,6 +19,7 @@ import com.science.gtnl.ScienceNotLeisure;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 @SideOnly(Side.CLIENT)
 public final class FloatingWindowHost<P extends FloatingWindowPanel> {
@@ -36,7 +36,7 @@ public final class FloatingWindowHost<P extends FloatingWindowPanel> {
         if (!(inventory instanceof IMuiScreen host)) return new FloatingWindowHost<>(factory.apply(inventory), null);
         ModularScreen screen = host.getScreen();
         Map<String, WeakReference<FloatingWindowHost<?>>> hosts = NATIVE_HOSTS
-            .computeIfAbsent(screen, ignored -> new HashMap<>());
+            .computeIfAbsent(screen, ignored -> new Object2ObjectOpenHashMap<>());
         WeakReference<FloatingWindowHost<?>> reference = hosts.get(key);
         FloatingWindowHost<P> attachment = reference == null ? null : (FloatingWindowHost<P>) reference.get();
         if (attachment == null) {

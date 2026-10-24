@@ -1,6 +1,5 @@
 package com.science.gtnl.common.packet;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.client.Minecraft;
@@ -12,6 +11,7 @@ import com.science.gtnl.common.packet.client.SoundHandler;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public class SoundPacket extends ClientboundPacket {
 
@@ -65,7 +65,7 @@ public class SoundPacket extends ClientboundPacket {
         }
         if (isSyncPacket) {
             int mapSize = buf.readInt();
-            soundsToSync = new HashMap<>(mapSize);
+            soundsToSync = new Object2ObjectOpenHashMap<>(mapSize);
             for (int i = 0; i < mapSize; i++) {
                 String key = ByteBufUtils.readUTF8String(buf);
                 String resourceLocationString = ByteBufUtils.readUTF8String(buf);

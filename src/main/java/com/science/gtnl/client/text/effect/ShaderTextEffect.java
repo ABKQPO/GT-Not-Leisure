@@ -1,7 +1,5 @@
 package com.science.gtnl.client.text.effect;
 
-import java.util.List;
-
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
 
@@ -11,6 +9,8 @@ import org.lwjgl.opengl.GL20;
 import com.science.gtnl.client.text.TextEffect;
 import com.science.gtnl.client.text.TextMaskCache.Mask;
 import com.science.gtnl.client.text.TextRenderContext;
+
+import it.unimi.dsi.fastutil.ints.IntList;
 
 /** A shader and its default palette form an independently registerable effect. */
 public class ShaderTextEffect implements TextEffect {
@@ -51,7 +51,7 @@ public class ShaderTextEffect implements TextEffect {
     public void render(TextRenderContext context) {
         shader.use();
         Mask mask = context.mask();
-        List<Integer> overrides = context.style()
+        IntList overrides = context.style()
             .colors();
         int count = overrides.isEmpty() ? colors.length : overrides.size();
         GL20.glUniform1i(shader.uniform("textMask"), 0);
@@ -60,7 +60,7 @@ public class ShaderTextEffect implements TextEffect {
         GL20.glUniform2f(shader.uniform("textOrigin"), context.x(), context.y());
         for (int i = 0; i < 8; i++) {
             int color = overrides.isEmpty() ? colors[Math.min(i, colors.length - 1)]
-                : overrides.get(Math.min(i, overrides.size() - 1));
+                : overrides.getInt(Math.min(i, overrides.size() - 1));
             GL20.glUniform3f(
                 shader.uniform(PALETTE_UNIFORMS[i]),
                 (color >> 16 & 255) / 255f,

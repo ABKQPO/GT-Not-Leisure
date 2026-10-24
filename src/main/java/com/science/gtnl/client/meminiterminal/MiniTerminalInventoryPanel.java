@@ -3,8 +3,6 @@ package com.science.gtnl.client.meminiterminal;
 import static appeng.client.gui.implementations.GuiMEMonitorable.keyBindPickBlockAction;
 
 import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -71,6 +69,9 @@ import appeng.items.contents.PinList;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import cpw.mods.fml.common.Loader;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
 
@@ -127,7 +128,7 @@ public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
     private final TerminalWidget terminal;
     private final Flow header;
     private final Flow controls;
-    private final Set<Integer> consumedMouseButtons = new HashSet<>();
+    private final IntOpenHashSet consumedMouseButtons = new IntOpenHashSet();
     private boolean resizing;
 
     public MiniTerminalInventoryPanel(GuiContainer inventory, MiniTerminalModel model) {
@@ -574,7 +575,7 @@ public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
         private int previousPlayerPins;
         private PinSectionOrder previousPinOrder;
         private boolean draggingScroll;
-        private final Set<VirtualMESlot> draggedSlots = new HashSet<>();
+        private final Set<VirtualMESlot> draggedSlots = new ObjectOpenHashSet<>();
         private int pressedButton = -1;
 
         TerminalWidget() {
@@ -590,7 +591,7 @@ public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
                         VirtualMESlot slot = displayedSlotAt(x, y);
 
                         if (slot instanceof VirtualMEPinSlot && slot.getAEStack() == null) {
-                            List<String> interactionTooltip = new ArrayList<>();
+                            List<String> interactionTooltip = new ObjectArrayList<>();
                             if (model.isOnline()) slot.addTooltip(interactionTooltip);
                             if (interactionTooltip.isEmpty()) tooltip.addLine(tr("pin"));
                         }

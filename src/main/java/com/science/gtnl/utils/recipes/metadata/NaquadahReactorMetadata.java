@@ -4,28 +4,27 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import net.minecraft.util.StatCollector;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import gregtech.api.recipe.RecipeMetadataKey;
 import gregtech.api.util.MethodsReturnNonnullByDefault;
 import gregtech.nei.RecipeDisplayInfo;
+import it.unimi.dsi.fastutil.ints.IntLongPair;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class NaquadahReactorMetadata extends RecipeMetadataKey<Pair<Integer, Long>> {
+public class NaquadahReactorMetadata extends RecipeMetadataKey<IntLongPair> {
 
     public static final NaquadahReactorMetadata INSTANCE = new NaquadahReactorMetadata();
+    public static final IntLongPair NONE = IntLongPair.of(0, 0L);
 
-    @SuppressWarnings("unchecked")
     private NaquadahReactorMetadata() {
-        super((Class<Pair<Integer, Long>>) (Class<?>) Pair.class, "naquadah_reactor_data");
+        super(IntLongPair.class, "naquadah_reactor_data");
     }
 
     @Override
     public void drawInfo(RecipeDisplayInfo recipeInfo, @Nullable Object value) {
-        Pair<Integer, Long> data = cast(value, Pair.of(0, 0L));
-        int tier = data.getKey();
+        int tier = cast(value, NONE).leftInt();
 
         if (tier == 1) {
             recipeInfo.drawText(StatCollector.translateToLocal("gtnl.recipe.metadata.naquadah_reactor.0"));

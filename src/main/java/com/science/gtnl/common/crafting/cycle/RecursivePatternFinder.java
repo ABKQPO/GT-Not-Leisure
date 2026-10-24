@@ -1,12 +1,7 @@
 package com.science.gtnl.common.crafting.cycle;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 
 import net.minecraft.item.ItemStack;
@@ -25,6 +20,12 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.cache.CraftingGridCache;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntIterator;
+import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 /**
  * Finds the crafting cycles a request can run into, whatever calculates it: the patterns reachable from the requested
@@ -48,11 +49,11 @@ public final class RecursivePatternFinder {
     private final Function<IAEStack<?>, Collection<ICraftingPatternDetails>> craftingFor;
     private final Function<ICraftingPatternDetails, List<DimensionalCoord>> machines;
     private final Function<ICraftingPatternDetails, ItemStack> icons;
-    private final List<IAEStack<?>> keys = new ArrayList<>();
-    private final Map<IAEStack<?>, Integer> index = new HashMap<>();
+    private final List<IAEStack<?>> keys = new ObjectArrayList<>();
+    private final Object2IntOpenHashMap<IAEStack<?>> index = new Object2IntOpenHashMap<>();
     // Per key, the patterns making it and, per pattern, the keys it takes
-    private final List<List<ICraftingPatternDetails>> patterns = new ArrayList<>();
-    private final List<int[]> edges = new ArrayList<>();
+    private final List<List<ICraftingPatternDetails>> patterns = new ObjectArrayList<>();
+    private final List<int[]> edges = new ObjectArrayList<>();
 
     private RecursivePatternFinder(Function<IAEStack<?>, Collection<ICraftingPatternDetails>> craftingFor,
         Function<ICraftingPatternDetails, List<DimensionalCoord>> machines,
@@ -64,7 +65,7 @@ public final class RecursivePatternFinder {
 
     public static List<Cycle> find(CraftingGridCache crafting, IAEStack<?> request, World world) {
         return find(request, stack -> crafting.getCraftingFor(stack, null, 0, world), pattern -> {
-            var machines = new ArrayList<DimensionalCoord>();
+            var machines = new ObjectArrayList<DimensionalCoord>();
             for (ICraftingMedium medium : crafting.getMediums(pattern)) {
                 var coord = locate(medium);
                 if (coord != null && !machines.contains(coord)) {
@@ -103,8 +104,8 @@ public final class RecursivePatternFinder {
     private int indexOf(IAEStack<?> stack) {
         var key = stack.copy();
         key.setStackSize(1);
-        var known = this.index.get(key);
-        if (known != null) {
+        int known = this.index.getOrDefault(key, -1);
+        if (known >= 0) {
             return known;
         }
         int id = this.keys.size();
@@ -117,14 +118,14 @@ public final class RecursivePatternFinder {
 
     // Breadth-first over every key the request can need, with the patterns that make each one
     private void explore(IAEStack<?> request) {
-        var queue = new ArrayList<Integer>();
+        var queue = new IntArrayList();
         queue.add(indexOf(request));
         for (int head = 0; head < queue.size() && this.keys.size() < MAX_KEYS; head++) {
-            int id = queue.get(head);
+            int id = queue.getInt(head);
             if (this.patterns.get(id) != null) continue;
-            var found = new ArrayList<>(this.craftingFor.apply(this.keys.get(id)));
+            var found = new ObjectArrayList<>(this.craftingFor.apply(this.keys.get(id)));
             this.patterns.set(id, found);
-            var targets = new LinkedHashSet<Integer>();
+            var targets = new IntLinkedOpenHashSet();
             for (var pattern : found) {
                 for (var input : pattern.getCondensedAEInputs()) {
                     if (input == null) continue;
@@ -134,11 +135,7 @@ public final class RecursivePatternFinder {
                     }
                 }
             }
-            this.edges.set(
-                id,
-                targets.stream()
-                    .mapToInt(Integer::intValue)
-                    .toArray());
+            this.edges.set(id, targets.toIntArray());
         }
     }
 
@@ -154,12 +151,12 @@ public final class RecursivePatternFinder {
         int[] low = new int[count];
         boolean[] onStack = new boolean[count];
         java.util.Arrays.fill(order, -1);
-        var stack = new ArrayList<Integer>();
-        var result = new ArrayList<Cycle>();
+        var stack = new IntArrayList();
+        var result = new ObjectArrayList<Cycle>();
         int counter = 0;
         for (int start = 0; start < count; start++) {
             if (order[start] >= 0) continue;
-            var work = new ArrayList<int[]>();
+            var work = new ObjectArrayList<int[]>();
             work.add(new int[] { start, 0 });
             order[start] = low[start] = counter++;
             stack.add(start);
@@ -186,10 +183,10 @@ public final class RecursivePatternFinder {
                     low[parent] = Math.min(low[parent], low[node]);
                 }
                 if (low[node] == order[node]) {
-                    var members = new LinkedHashSet<Integer>();
+                    var members = new IntLinkedOpenHashSet();
                     int member;
                     do {
-                        member = stack.remove(stack.size() - 1);
+                        member = stack.removeInt(stack.size() - 1);
                         onStack[member] = false;
                         members.add(member);
                     } while (member != node);
@@ -205,10 +202,11 @@ public final class RecursivePatternFinder {
         return result;
     }
 
-    private @Nullable Cycle describe(Set<Integer> members) {
-        var inCycle = new ArrayList<ICraftingPatternDetails>();
+    private @Nullable Cycle describe(IntSet members) {
+        var inCycle = new ObjectArrayList<ICraftingPatternDetails>();
         boolean netOutput = false;
-        for (int member : members) {
+        for (IntIterator it = members.iterator(); it.hasNext();) {
+            int member = it.nextInt();
             var made = this.patterns.get(member);
             if (made == null) continue;
             for (var pattern : made) {
@@ -216,8 +214,8 @@ public final class RecursivePatternFinder {
                 boolean closes = false;
                 for (var input : pattern.getCondensedAEInputs()) {
                     if (input == null) continue;
-                    var key = this.index.get(normalized(input));
-                    if (key != null && members.contains(key)) {
+                    int key = this.index.getOrDefault(normalized(input), -1);
+                    if (key >= 0 && members.contains(key)) {
                         closes = true;
                         taken += input.getStackSize();
                     }
@@ -226,8 +224,8 @@ public final class RecursivePatternFinder {
                 long given = 0;
                 for (var output : pattern.getCondensedAEOutputs()) {
                     if (output == null) continue;
-                    var key = this.index.get(normalized(output));
-                    if (key != null && members.contains(key)) {
+                    int key = this.index.getOrDefault(normalized(output), -1);
+                    if (key >= 0 && members.contains(key)) {
                         given += output.getStackSize();
                     }
                 }
@@ -238,11 +236,11 @@ public final class RecursivePatternFinder {
         if (inCycle.isEmpty()) {
             return null;
         }
-        var items = new ArrayList<IAEStack<?>>();
-        for (int member : members) {
-            items.add(this.keys.get(member));
+        var items = new ObjectArrayList<IAEStack<?>>();
+        for (IntIterator it = members.iterator(); it.hasNext();) {
+            items.add(this.keys.get(it.nextInt()));
         }
-        var located = new ArrayList<PatternLocation>();
+        var located = new ObjectArrayList<PatternLocation>();
         for (var pattern : inCycle) {
             var outputs = pattern.getCondensedAEOutputs();
             var output = outputs.length > 0 && outputs[0] != null ? outputs[0].copy() : null;

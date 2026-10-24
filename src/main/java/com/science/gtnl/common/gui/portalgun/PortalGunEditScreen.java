@@ -1,6 +1,5 @@
 package com.science.gtnl.common.gui.portalgun;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,6 +31,7 @@ import com.science.gtnl.common.portalgun.PortalGunDestination;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class PortalGunEditScreen extends ModularScreen {
@@ -70,8 +70,8 @@ public class PortalGunEditScreen extends ModularScreen {
             PortalGunData.MAX_HORIZONTAL,
             PortalGunData.MIN_HEIGHT,
             PortalGunData.MAX_HEIGHT);
-        List<Size> placeSizes = new ArrayList<>(List.of(caption));
-        List<Widget<?>> placeCells = new ArrayList<>(List.of(label(captions[1], style)));
+        List<Size> placeSizes = new ObjectArrayList<>(List.of(caption));
+        List<Widget<?>> placeCells = new ObjectArrayList<>(List.of(label(captions[1], style)));
         place.addTo(placeSizes, placeCells, style);
         GhostItemSlot icon = new GhostItemSlot().item(saved.icon());
         String clear = tr("icon_clear");

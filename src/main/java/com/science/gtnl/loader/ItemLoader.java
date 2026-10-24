@@ -2,7 +2,6 @@ package com.science.gtnl.loader;
 
 import static com.science.gtnl.common.item.items.SuspiciousStew.registerFlower;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.init.Blocks;
@@ -81,6 +80,7 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Mods;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.common.render.items.InfinityMetaItemRenderer;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class ItemLoader {
 
@@ -263,7 +263,7 @@ public class ItemLoader {
             "infinity_dye_fluid_cell",
             subDyeFluid);
 
-        List<ItemInfinityCell.SubItem> infinityStoneCell = new ArrayList<>();
+        List<ItemInfinityCell.SubItem> infinityStoneCell = new ObjectArrayList<>();
         infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(Blocks.stone));
         infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(Blocks.cobblestone));
         infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(Blocks.netherrack));

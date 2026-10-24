@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiMachineBase;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -33,6 +32,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -214,7 +214,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
 
     @Override
     public String[] getInfoData() {
-        List<String> infoData = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        List<String> infoData = new ObjectArrayList<>(Arrays.asList(super.getInfoData()));
         if (wirelessMode) {
             infoData.add(
                 IGregTechDeviceInformation.encode("gtnl.waila.wireless.mode.format", EnumChatFormatting.LIGHT_PURPLE));

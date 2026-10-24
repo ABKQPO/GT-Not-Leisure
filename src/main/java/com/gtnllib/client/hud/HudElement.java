@@ -1,8 +1,6 @@
 package com.gtnllib.client.hud;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -11,6 +9,9 @@ import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
 
 import org.lwjgl.opengl.GL11;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class HudElement {
 
@@ -47,8 +48,8 @@ public class HudElement {
         this.active = builder.active;
         this.signature = builder.signature;
         this.baseScale = builder.baseScale;
-        this.styles = Collections.unmodifiableList(new ArrayList<>(builder.styles));
-        this.options = Collections.unmodifiableList(new ArrayList<>(builder.options));
+        this.styles = Collections.unmodifiableList(new ObjectArrayList<>(builder.styles));
+        this.options = Collections.unmodifiableList(new ObjectArrayList<>(builder.options));
         this.color = builder.color;
         this.timing = builder.timing;
         this.idleSeconds = builder.idleSeconds;
@@ -128,7 +129,7 @@ public class HudElement {
     }
 
     public List<Setting> settings(HudTiming current) {
-        List<Setting> settings = new ArrayList<>();
+        List<Setting> settings = new ObjectArrayList<>();
         Collections.addAll(settings, Setting.SHOWN, Setting.SCALE, Setting.OPACITY);
         if (colorable()) settings.add(Setting.COLOR);
         settings.add(Setting.TIMING);
@@ -201,8 +202,8 @@ public class HudElement {
         private BooleanSupplier inUse = () -> true, active = () -> true;
         private IntSupplier signature = () -> 0;
         private DoubleSupplier baseScale = () -> 1;
-        private final List<Choice> styles = new ArrayList<>();
-        private final List<HudOption> options = new ArrayList<>();
+        private final List<Choice> styles = new ObjectArrayList<>();
+        private final List<HudOption> options = new ObjectArrayList<>();
         private HudColor color;
         private HudTiming timing = HudTiming.ALWAYS;
         private float idleSeconds = DEFAULT_IDLE_SECONDS, idleAlpha = DEFAULT_IDLE_ALPHA;
@@ -304,7 +305,7 @@ public class HudElement {
             if (!(maxX > minX && maxY > minY))
                 throw new IllegalStateException("HUD element " + id + " needs bounds with max greater than min");
             if (styles.isEmpty()) throw new IllegalStateException("HUD element " + id + " needs at least one style");
-            Set<String> styleIds = new HashSet<>(), optionIds = new HashSet<>();
+            Set<String> styleIds = new ObjectOpenHashSet<>(), optionIds = new ObjectOpenHashSet<>();
             for (Choice style : styles) if (!styleIds.add(style.id))
                 throw new IllegalStateException("HUD element " + id + " repeats style " + style.id);
             for (HudOption option : options) if (!optionIds.add(option.id))

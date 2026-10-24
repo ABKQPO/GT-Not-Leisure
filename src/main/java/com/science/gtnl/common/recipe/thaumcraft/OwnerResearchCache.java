@@ -1,12 +1,12 @@
 package com.science.gtnl.common.recipe.thaumcraft;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.common.lib.research.ResearchManager;
 
@@ -16,7 +16,7 @@ public class OwnerResearchCache {
     private static final String RESEARCH_NAME_KEY = "ResearchName";
     private static final String RESEARCH_OWNER_KEY = "ResearchOwner";
 
-    private final Set<String> completedResearch = new HashSet<>();
+    private final Set<String> completedResearch = new ObjectOpenHashSet<>();
     private String owner = "";
 
     public boolean isComplete(String ownerName, String research) {

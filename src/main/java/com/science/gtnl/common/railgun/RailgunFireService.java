@@ -1,12 +1,8 @@
 package com.science.gtnl.common.railgun;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -27,6 +23,11 @@ import com.science.gtnl.common.packet.RailgunRecoilFxPacket;
 import com.science.gtnl.common.railgun.RailgunChainResolver.Hit;
 import com.science.gtnl.common.railgun.RailgunChainResolver.Kind;
 import com.science.gtnl.config.MainConfig;
+
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSets;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class RailgunFireService {
 
@@ -93,7 +94,7 @@ public class RailgunFireService {
         }
     }
 
-    private static final Map<UUID, ChargeSession> CHARGING = new HashMap<>();
+    private static final Map<UUID, ChargeSession> CHARGING = new Object2ObjectOpenHashMap<>();
 
     private RailgunFireService() {}
 
@@ -220,12 +221,13 @@ public class RailgunFireService {
         EntityLivingBase primary = trace.hit() != null && trace.hit()
             .entity() instanceof EntityLivingBase living ? living : null;
         int primaryId = primary == null ? -1 : primary.getEntityId();
-        List<Hit> hits = new ArrayList<>();
+        List<Hit> hits = new ObjectArrayList<>();
         int compute = modules.count(RailgunModule.COMPUTE);
         double pulseRadius = max ? PULSE_RADIUS + PULSE_RADIUS_PER_COMPUTE * compute : 0;
         if (primary != null) {
             hits.add(Hit.primary(primary, context.firstDamage()));
-            if (chain) hits.addAll(RailgunChainResolver.chainFrom(world, player, primary, context, Set.of(), null));
+            if (chain)
+                hits.addAll(RailgunChainResolver.chainFrom(world, player, primary, context, IntSets.emptySet(), null));
             if (max) {
                 hits.addAll(
                     RailgunChainResolver
@@ -255,7 +257,7 @@ public class RailgunFireService {
                         .distanceToSqr(impact)))
             .orElse(null);
         if (chain && anchor != null) {
-            Set<Integer> visited = new HashSet<>();
+            IntOpenHashSet visited = new IntOpenHashSet();
             hits.forEach(
                 hit -> visited.add(
                     hit.target()

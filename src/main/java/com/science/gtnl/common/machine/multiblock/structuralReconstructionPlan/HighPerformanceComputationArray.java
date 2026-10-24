@@ -67,6 +67,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReason;
 import gregtech.common.WirelessComputationPacket;
 import gregtech.common.render.IMTERenderer;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import tectech.mechanics.dataTransport.QuantumDataPacket;
 import tectech.thing.casing.BlockGTCasingsTT;
@@ -118,8 +119,8 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
 
     public int[][] randomColor;
     public Table<Integer, Integer, MTEHatchRack> rackTable = HashBasedTable.create();
-    public ArrayList<MTEHatchRack> mRackHatchs = new ArrayList<>();
-    public ArrayList<MTEHatchWirelessComputationOutput> mWirelessComputationOutputHatchs = new ArrayList<>();
+    public ObjectArrayList<MTEHatchRack> mRackHatchs = new ObjectArrayList<>();
+    public ObjectArrayList<MTEHatchWirelessComputationOutput> mWirelessComputationOutputHatchs = new ObjectArrayList<>();
     public Parameters.Group.ParameterOut maxCurrentTemp, availableData, machineLens, coolantUse;
 
     public HighPerformanceComputationArray(int aID, String aName, String aNameRegional) {
@@ -608,7 +609,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
 
     @Override
     public String[] getInfoData() {
-        ArrayList<String> data = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        ObjectArrayList<String> data = new ObjectArrayList<>(Arrays.asList(super.getInfoData()));
         if (wirelessMode) {
             WirelessComputationPacket wirelessComputationPacket = WirelessComputationPacket
                 .getPacketByUserId(getBaseMetaTileEntity().getOwnerUuid());

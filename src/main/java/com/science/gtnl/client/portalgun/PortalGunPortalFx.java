@@ -1,6 +1,5 @@
 package com.science.gtnl.client.portalgun;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -27,6 +26,7 @@ import com.science.gtnl.utils.enums.PortalGunPortalEffect;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class PortalGunPortalFx {
@@ -157,7 +157,7 @@ public class PortalGunPortalFx {
         Shape full = shape(effect, Float.MAX_VALUE / 2, 0);
         int spots = Math.max(1, (int) Math.round(full.perimeter() * settings.portalGunOpenDensity));
         double limit = Math.max(1.0E-4, settings.portalGunOpenSpread * 2.5);
-        List<Dot> dots = new ArrayList<>();
+        List<Dot> dots = new ObjectArrayList<>();
         for (int i = 0; i < spots; i++) {
             double born = BURST * Math.pow(r.nextDouble(), 1.6);
             Shape now = shape(effect, (float) born, 0);
@@ -185,7 +185,7 @@ public class PortalGunPortalFx {
     public static List<Dot> passDots(PortalGunPortalEffect effect, long seed, MainConfig.Client settings) {
         Random r = new Random(MathUtils.hash(seed, 0x5A55, 0, 0));
         Shape full = shape(effect, Float.MAX_VALUE / 2, 0);
-        List<Dot> dots = new ArrayList<>(settings.portalGunPassDotCount);
+        List<Dot> dots = new ObjectArrayList<>(settings.portalGunPassDotCount);
         for (int i = 0; i < settings.portalGunPassDotCount; i++) {
             double angle = r.nextDouble() * 2 * Math.PI, k = Math.sqrt(r.nextDouble()) * PASS_REACH;
             Vec3d origin = new Vec3d(
@@ -215,7 +215,7 @@ public class PortalGunPortalFx {
 
     public static List<Arc> openingArcs(PortalGunPortalEffect effect, double age, long seed,
         MainConfig.Client settings) {
-        List<Arc> arcs = new ArrayList<>();
+        List<Arc> arcs = new ObjectArrayList<>();
         if (age < 0 || age >= settings.portalGunOpenArcTicks) return arcs;
         double hop = settings.portalGunArcHop;
         Random r = new Random(MathUtils.hash(seed, (long) Math.floor(age / hop), 0, 0));
@@ -264,7 +264,7 @@ public class PortalGunPortalFx {
     }
 
     public static List<Arc> idleArcs(PortalGunPortalEffect effect, double age, long seed, MainConfig.Client settings) {
-        List<Arc> arcs = new ArrayList<>();
+        List<Arc> arcs = new ObjectArrayList<>();
         int opened = openedAt(effect);
         if (age < opened) return arcs;
         double hop = settings.portalGunArcHop;
@@ -332,9 +332,9 @@ public class PortalGunPortalFx {
 
     public static void bolt(List<Arc> arcs, Random r, Vec3d a, Vec3d b, double lift, double rough, double forkChance,
         boolean straightOut, float alpha) {
-        List<Vec3d> points = new ArrayList<>(List.of(a, b));
+        List<Vec3d> points = new ObjectArrayList<>(List.of(a, b));
         for (int level = 0; level < LEVELS; level++) {
-            List<Vec3d> next = new ArrayList<>(points.size() * 2);
+            List<Vec3d> next = new ObjectArrayList<>(points.size() * 2);
             next.add(points.get(0));
             for (int i = 1; i < points.size(); i++) {
                 Vec3d p0 = points.get(i - 1), p1 = points.get(i), delta = p1.subtract(p0);
@@ -351,7 +351,7 @@ public class PortalGunPortalFx {
             points = next;
         }
         int last = points.size() - 1;
-        List<Vec3d> lifted = new ArrayList<>(points.size());
+        List<Vec3d> lifted = new ObjectArrayList<>(points.size());
         for (int i = 0; i <= last; i++) lifted.add(
             points.get(i)
                 .add(0, 0, lift * Math.sin(Math.PI * i / last)));
@@ -360,9 +360,9 @@ public class PortalGunPortalFx {
 
     public static void sharpBolt(List<Arc> arcs, Random r, Vec3d a, Vec3d b, double peak, double bend, double rise,
         double forkChance, boolean straightOut, float alpha) {
-        List<Vec3d> points = new ArrayList<>(List.of(a, b));
+        List<Vec3d> points = new ObjectArrayList<>(List.of(a, b));
         for (int level = 0; level < LEVELS; level++) {
-            List<Vec3d> next = new ArrayList<>(points.size() * 2);
+            List<Vec3d> next = new ObjectArrayList<>(points.size() * 2);
             next.add(points.get(0));
             for (int i = 1; i < points.size(); i++) {
                 Vec3d p0 = points.get(i - 1), p1 = points.get(i), delta = p1.subtract(p0);
@@ -448,7 +448,7 @@ public class PortalGunPortalFx {
             ColorMath.tessellate(Tessellator.instance, ColorMath.lerp(glow, core, 0.3F), (float) (0.6 * haze));
             FxRenderHelper.glow(posedCenter.add(normal.scale(0.05)), 1.8 * Math.max(0.3, shape.halfHeight()), 0);
         });
-        List<Arc> arcs = new ArrayList<>();
+        List<Arc> arcs = new ObjectArrayList<>();
         float fade = 1 - FxEasing.smoothStep(
             (float) (settings.portalGunOpenArcTicks - ARC_FADE),
             (float) settings.portalGunOpenArcTicks,
@@ -457,9 +457,9 @@ public class PortalGunPortalFx {
             arcs.add(new Arc(arc.points(), arc.straightOut(), arc.fork(), arc.alpha() * fade));
         if (!portal.closing()) arcs.addAll(idleArcs(effect, age, seed, settings));
         if (arcs.isEmpty()) return;
-        List<List<Vec3d>> paths = new ArrayList<>(arcs.size());
+        List<List<Vec3d>> paths = new ObjectArrayList<>(arcs.size());
         for (Arc arc : arcs) {
-            List<Vec3d> points = new ArrayList<>(
+            List<Vec3d> points = new ObjectArrayList<>(
                 arc.points()
                     .size());
             for (Vec3d local : arc.points()) points.add(world(local, posedCenter, posedRight, posedUp, normal));

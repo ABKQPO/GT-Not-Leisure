@@ -1,7 +1,6 @@
 package com.science.gtnl.client;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -23,6 +22,7 @@ import com.science.gtnl.common.wireless.WirelessCardContainer;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class WirelessWorldHighlight {
@@ -43,7 +43,7 @@ public class WirelessWorldHighlight {
     public static void show(Minecraft mc, NBTTagList positions) {
         if (mc.theWorld == null) return;
         arrival = null;
-        List<Position> targets = new ArrayList<>();
+        List<Position> targets = new ObjectArrayList<>();
         for (int i = 0; i < Math.min(512, positions.tagCount()); i++) {
             var pos = positions.getCompoundTagAt(i);
             if (pos.getInteger("dimension") == mc.theWorld.provider.dimensionId)

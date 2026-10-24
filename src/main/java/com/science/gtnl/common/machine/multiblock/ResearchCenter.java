@@ -14,9 +14,7 @@ import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -60,6 +58,10 @@ import gregtech.api.util.GTScannerResult;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import tectech.recipe.TecTechRecipeMaps;
 import tectech.thing.metaTileEntity.multi.MTEResearchStation;
 import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
@@ -122,8 +124,8 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
     private int dataSticksToConsume;
 
     private final IItemHandlerModifiable lockedOutputHandler = new ItemStackHandler(lockedOutputs);
-    private final ArrayList<ItemStack> researchStacksToConsume = new ArrayList<>();
-    private final ArrayList<ItemStack> researchOutputsForGUI = new ArrayList<>();
+    private final ObjectArrayList<ItemStack> researchStacksToConsume = new ObjectArrayList<>();
+    private final ObjectArrayList<ItemStack> researchOutputsForGUI = new ObjectArrayList<>();
 
     public ResearchCenter(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -226,9 +228,9 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
             return CheckRecipeResultRegistry.NO_DATA_STICKS;
         }
 
-        ArrayList<ItemStack> outputs = new ArrayList<>();
-        ArrayList<ItemStack> researchStacksToConsume = new ArrayList<>();
-        ArrayList<ItemStack> researchOutputsForGUI = new ArrayList<>();
+        ObjectArrayList<ItemStack> outputs = new ObjectArrayList<>();
+        ObjectArrayList<ItemStack> researchStacksToConsume = new ObjectArrayList<>();
+        ObjectArrayList<ItemStack> researchOutputsForGUI = new ObjectArrayList<>();
         ItemStack firstResearchOutput = null;
         long computationRequired = 0;
         int recipeEUt = 0;
@@ -354,13 +356,13 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
             return "";
         }
 
-        Map<String, Integer> outputCounts = new LinkedHashMap<>();
+        Object2IntLinkedOpenHashMap<String> outputCounts = new Object2IntLinkedOpenHashMap<>();
         for (ItemStack output : this.researchOutputsForGUI) {
             if (GTUtility.isStackInvalid(output)) {
                 continue;
             }
             String displayName = output.getDisplayName();
-            outputCounts.put(displayName, outputCounts.getOrDefault(displayName, 0) + 1);
+            outputCounts.addTo(displayName, 1);
         }
         if (outputCounts.isEmpty()) {
             return "";
@@ -368,15 +370,15 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
 
         StringBuilder builder = new StringBuilder();
         boolean first = true;
-        for (Map.Entry<String, Integer> entry : outputCounts.entrySet()) {
+        for (Object2IntMap.Entry<String> entry : Object2IntMaps.fastIterable(outputCounts)) {
             if (!first) {
                 builder.append(", ");
             }
             first = false;
             builder.append(entry.getKey());
-            if (entry.getValue() > 1) {
+            if (entry.getIntValue() > 1) {
                 builder.append(" x")
-                    .append(entry.getValue());
+                    .append(entry.getIntValue());
             }
         }
         return builder.toString();
@@ -572,7 +574,7 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
     }
 
     private List<ItemStack> getScannerCandidateItems() {
-        ArrayList<ItemStack> candidates = new ArrayList<>();
+        ObjectArrayList<ItemStack> candidates = new ObjectArrayList<>();
         for (ItemStack input : getAllStoredInputs()) {
             if (GTUtility.isStackValid(input) && !isDataContainer(input)) {
                 candidates.add(input);

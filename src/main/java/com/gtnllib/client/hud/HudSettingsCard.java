@@ -1,6 +1,5 @@
 package com.gtnllib.client.hud;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +32,7 @@ import com.gtnllib.gui.widget.StepSlider;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class HudSettingsCard extends ParentWidget<HudSettingsCard> {
@@ -95,7 +95,7 @@ public class HudSettingsCard extends ParentWidget<HudSettingsCard> {
                 .top(style.spacingMedium)
                 .right(style.spacingMedium));
         Layout rows = Layout.rows(style, WIDTH);
-        List<IWidget> lines = new ArrayList<>();
+        List<IWidget> lines = new ObjectArrayList<>();
         for (Setting setting : element.settings(HudLayout.timing(element)))
             lines.addAll(setting(rows, element, setting));
         for (HudOption option : element.options()) lines.addAll(option(rows, element, option));
@@ -146,7 +146,7 @@ public class HudSettingsCard extends ParentWidget<HudSettingsCard> {
                     OPACITY_STEPS,
                     HudSettingsCard::percent));
             case COLOR -> {
-                List<Pick> picks = new ArrayList<>();
+                List<Pick> picks = new ObjectArrayList<>();
                 for (HudColor color : HudColor.values()) picks.add(
                     new Pick(
                         color.lang(),
@@ -155,7 +155,7 @@ public class HudSettingsCard extends ParentWidget<HudSettingsCard> {
                 yield picks(rows, lang, picks);
             }
             case TIMING -> {
-                List<Pick> picks = new ArrayList<>();
+                List<Pick> picks = new ObjectArrayList<>();
                 for (HudTiming timing : HudTiming.values())
                     picks.add(new Pick(timing.lang(), () -> HudLayout.timing(element) == timing, () -> {
                         canvas.change(null, () -> HudLayout.setTiming(element, timing));
@@ -186,7 +186,7 @@ public class HudSettingsCard extends ParentWidget<HudSettingsCard> {
                     ALPHA_STEPS,
                     HudSettingsCard::percent));
             case STYLE -> {
-                List<Pick> picks = new ArrayList<>();
+                List<Pick> picks = new ObjectArrayList<>();
                 for (Choice style : element.styles()) picks.add(
                     new Pick(
                         style.lang(),
@@ -220,7 +220,7 @@ public class HudSettingsCard extends ParentWidget<HudSettingsCard> {
                     option.steps,
                     option::format));
             case CHOICE -> {
-                List<Pick> picks = new ArrayList<>();
+                List<Pick> picks = new ObjectArrayList<>();
                 for (Choice choice : option.choices()) picks.add(
                     new Pick(
                         choice.lang(),
@@ -270,13 +270,13 @@ public class HudSettingsCard extends ParentWidget<HudSettingsCard> {
     }
 
     private List<IWidget> picks(Layout rows, String lang, List<Pick> picks) {
-        List<IWidget> lines = new ArrayList<>();
+        List<IWidget> lines = new ObjectArrayList<>();
         lines.add(
             rows.line(
                 0,
                 Collections.singletonList(Size.fill()),
                 Collections.singletonList(Layout.label(IKey.lang(lang), style))));
-        List<ToggleButton> buttons = new ArrayList<>();
+        List<ToggleButton> buttons = new ObjectArrayList<>();
         int widest = 0;
         for (Pick pick : picks) {
             widest = Math.max(

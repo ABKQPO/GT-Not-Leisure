@@ -1,7 +1,6 @@
 package com.science.gtnl.common.crafting.quantum.ae2;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +27,9 @@ import appeng.container.ContainerNull;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import cpw.mods.fml.common.FMLCommonHandler;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 public final class QuantumPattern implements IPatternDetails {
@@ -90,7 +92,7 @@ public final class QuantumPattern implements IPatternDetails {
         private final Map<SlotTemplate, Optional<StackKey>> remaining = new ConcurrentHashMap<>();
         @Nullable
         private QuantumPattern plain;
-        private final List<QuantumPattern> variantInstances = new ArrayList<>(1);
+        private final List<QuantumPattern> variantInstances = new ObjectArrayList<>(1);
 
         Shape(ICraftingPatternDetails details, @Nullable IAEStack<?>[] processingInputs, StackKeyFactory keys,
             World world) {
@@ -98,7 +100,7 @@ public final class QuantumPattern implements IPatternDetails {
             this.keys = keys;
             this.world = new WeakReference<>(world);
 
-            final List<GenericStack> outputs = new ArrayList<>();
+            final List<GenericStack> outputs = new ObjectArrayList<>();
             for (IAEStack<?> output : details.getCondensedAEOutputs()) {
                 final StackKey key = keys.of(output);
                 if (key != null && output.getStackSize() > 0) {
@@ -107,9 +109,9 @@ public final class QuantumPattern implements IPatternDetails {
             }
             this.outputs = Collections.unmodifiableList(outputs);
 
-            final List<Integer> slots = new ArrayList<>();
-            final List<StackKey> encoded = new ArrayList<>();
-            final List<Long> amounts = new ArrayList<>();
+            final IntArrayList slots = new IntArrayList();
+            final List<StackKey> encoded = new ObjectArrayList<>();
+            final LongArrayList amounts = new LongArrayList();
             boolean usable = !outputs.isEmpty();
             final IAEStack<?>[] stacks;
             if (details.isCraftable()) {
@@ -130,13 +132,9 @@ public final class QuantumPattern implements IPatternDetails {
                     amounts.add(stack.getStackSize());
                 }
             }
-            this.slots = slots.stream()
-                .mapToInt(Integer::intValue)
-                .toArray();
+            this.slots = slots.toIntArray();
             this.encoded = encoded.toArray(new StackKey[0]);
-            this.amounts = amounts.stream()
-                .mapToLong(Long::longValue)
-                .toArray();
+            this.amounts = amounts.toLongArray();
             this.usable = usable;
 
             boolean substitutes = false;

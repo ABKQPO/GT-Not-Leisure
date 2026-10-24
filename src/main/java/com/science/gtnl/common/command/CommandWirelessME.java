@@ -1,6 +1,5 @@
 package com.science.gtnl.common.command;
 
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
@@ -24,10 +23,11 @@ import com.science.gtnl.config.MainConfig;
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.pathing.IPathingGrid;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public class CommandWirelessME extends CommandBase {
 
-    private final Map<UUID, Address> sources = new HashMap<>();
+    private final Map<UUID, Address> sources = new Object2ObjectOpenHashMap<>();
 
     @Override
     public String getCommandName() {

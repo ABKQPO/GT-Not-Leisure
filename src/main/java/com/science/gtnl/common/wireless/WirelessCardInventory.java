@@ -1,6 +1,5 @@
 package com.science.gtnl.common.wireless;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -14,6 +13,7 @@ import com.science.gtnl.common.item.items.WirelessFrequencyCard;
 import com.science.gtnl.common.wireless.WirelessCardSelection.Candidate;
 
 import baubles.common.container.InventoryBaubles;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class WirelessCardInventory {
 
@@ -57,7 +57,7 @@ public class WirelessCardInventory {
 
     static List<Candidate<ItemStack>> candidates(EntityPlayer player, List<ItemStack> stacks,
         Predicate<NBTTagCompound> enabled) {
-        List<Candidate<ItemStack>> candidates = new ArrayList<>();
+        List<Candidate<ItemStack>> candidates = new ObjectArrayList<>();
         for (ItemStack stack : stacks) {
             if (!(stack.getItem() instanceof WirelessFrequencyCard)) continue;
             NBTTagCompound tag = stack.getTagCompound();
@@ -74,7 +74,7 @@ public class WirelessCardInventory {
     }
 
     static List<ItemStack> collect(ItemStack[] main, IInventory worn) {
-        List<ItemStack> stacks = new ArrayList<>();
+        List<ItemStack> stacks = new ObjectArrayList<>();
         for (ItemStack stack : main) add(stacks, stack);
         if (worn != null) {
             for (int slot = 0; slot < worn.getSizeInventory(); slot++) add(stacks, worn.getStackInSlot(slot));

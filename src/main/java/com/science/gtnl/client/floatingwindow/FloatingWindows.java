@@ -1,6 +1,5 @@
 package com.science.gtnl.client.floatingwindow;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -15,12 +14,13 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public final class FloatingWindows {
 
     private static final FloatingWindows INSTANCE = new FloatingWindows();
-    private static final List<Function<GuiScreen, ? extends FloatingWindowPanel>> PROVIDERS = new ArrayList<>();
+    private static final List<Function<GuiScreen, ? extends FloatingWindowPanel>> PROVIDERS = new ObjectArrayList<>();
     private static boolean initialized;
 
     private FloatingWindows() {}
@@ -47,7 +47,7 @@ public final class FloatingWindows {
         for (Function<GuiScreen, ? extends FloatingWindowPanel> provider : PROVIDERS) {
             FloatingWindowPanel window = provider.apply(gui);
             if (window == null || !window.isValid() || window.inventory() != gui) continue;
-            if (windows == null) windows = new ArrayList<>(PROVIDERS.size());
+            if (windows == null) windows = new ObjectArrayList<>(PROVIDERS.size());
             windows.add(window);
         }
         return windows == null ? Collections.emptyList() : windows;

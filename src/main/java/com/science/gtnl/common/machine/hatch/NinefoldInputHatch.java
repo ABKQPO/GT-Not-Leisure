@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import java.util.ArrayList;
 import java.util.Locale;
 
 import net.minecraft.item.ItemStack;
@@ -36,6 +35,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchMultiInput;
 import gregtech.api.render.TextureFactory;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
@@ -361,7 +361,7 @@ public class NinefoldInputHatch extends MTEHatchMultiInput
 
     @Override
     public String[] getDescription() {
-        ArrayList<String> desc = new ArrayList<>();
+        ObjectArrayList<String> desc = new ObjectArrayList<>();
         desc.add(StatCollector.translateToLocal("gtnl.hatch.ninefold_input.tooltip.0"));
         desc.add(
             StatCollector.translateToLocal("gtnl.hatch.ninefold_input.tooltip.capacity") + " "

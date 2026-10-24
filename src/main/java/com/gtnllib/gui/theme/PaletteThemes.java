@@ -1,9 +1,6 @@
 package com.gtnllib.gui.theme;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,15 +30,18 @@ import com.gtnllib.gui.widget.StepSlider;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class PaletteThemes {
 
-    private static final Map<String, Definition> THEMES = new LinkedHashMap<>();
-    private static final List<BiConsumer<ThemeBuilder<?>, ThemePalette>> EXTENSIONS = new ArrayList<>();
-    private static final List<LivePalette> LIVE = new ArrayList<>();
-    private static final Map<String, Variant> VARIANTS = new HashMap<>();
-    private static final List<Runnable> LISTENERS = new ArrayList<>();
+    private static final Map<String, Definition> THEMES = new Object2ObjectLinkedOpenHashMap<>();
+    private static final List<BiConsumer<ThemeBuilder<?>, ThemePalette>> EXTENSIONS = new ObjectArrayList<>();
+    private static final List<LivePalette> LIVE = new ObjectArrayList<>();
+    private static final Map<String, Variant> VARIANTS = new Object2ObjectOpenHashMap<>();
+    private static final List<Runnable> LISTENERS = new ObjectArrayList<>();
     private static Supplier<String> chosen = () -> "";
 
     private PaletteThemes() {}

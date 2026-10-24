@@ -66,6 +66,7 @@ import gregtech.api.util.shutdown.ShutDownReason;
 import gregtech.common.WirelessComputationPacket;
 import gtPlusPlus.core.fluids.GTPPFluids;
 import gtPlusPlus.core.material.MaterialsAlloy;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import tectech.mechanics.dataTransport.QuantumDataPacket;
 import tectech.thing.casing.BlockGTCasingsTT;
 import tectech.thing.metaTileEntity.hatch.MTEHatchDataInput;
@@ -115,8 +116,8 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
         return LedStatus.STATUS_OK;
     };
 
-    public ArrayList<MTEHatchRack> mRackHatchs = new ArrayList<>();
-    public ArrayList<MTEHatchWirelessComputationOutput> mWirelessComputationOutputHatchs = new ArrayList<>();
+    public ObjectArrayList<MTEHatchRack> mRackHatchs = new ObjectArrayList<>();
+    public ObjectArrayList<MTEHatchWirelessComputationOutput> mWirelessComputationOutputHatchs = new ObjectArrayList<>();
     public Parameters.Group.ParameterIn overclock, overvolt;
     public Parameters.Group.ParameterOut maxCurrentTemp, availableData;
 
@@ -460,7 +461,7 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
 
     @Override
     public String[] getInfoData() {
-        ArrayList<String> data = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        ObjectArrayList<String> data = new ObjectArrayList<>(Arrays.asList(super.getInfoData()));
         if (wirelessMode) {
             WirelessComputationPacket wirelessComputationPacket = WirelessComputationPacket
                 .getPacketByUserId(getBaseMetaTileEntity().getOwnerUuid());

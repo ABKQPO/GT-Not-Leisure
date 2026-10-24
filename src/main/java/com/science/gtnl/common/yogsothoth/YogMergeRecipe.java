@@ -3,7 +3,6 @@ package com.science.gtnl.common.yogsothoth;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,6 +12,8 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class YogMergeRecipe extends ShapelessOreRecipe {
 
@@ -62,7 +63,7 @@ public class YogMergeRecipe extends ShapelessOreRecipe {
 
     private static List<ItemStack> split(InventoryCrafting inventory) {
         ItemStack yog = null;
-        List<ItemStack> parts = new ArrayList<>();
+        List<ItemStack> parts = new ObjectArrayList<>();
         parts.add(null);
         for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
             ItemStack stack = inventory.getStackInSlot(slot);

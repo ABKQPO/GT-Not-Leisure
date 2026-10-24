@@ -2,7 +2,6 @@ package com.science.gtnl.common.item.items;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -48,13 +47,14 @@ import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 @Optional.Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHAPI|energy")
 public class ItemYogSothothTerminal extends Item implements IBauble, IBaubleExpanded, ISpecialElectricItem,
     IAEItemPowerStorage, IEnergyContainerItem, IGuiHolder<PlayerInventoryGuiData>, INetworkEncodable {
 
     public static ItemYogSothothTerminal INSTANCE;
-    private static final Set<Class<?>> FAILING_TICKS = new HashSet<>();
+    private static final Set<Class<?>> FAILING_TICKS = new ObjectOpenHashSet<>();
 
     public ItemYogSothothTerminal() {
         INSTANCE = this;

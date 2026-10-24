@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -52,6 +51,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -68,7 +68,7 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
     public int mCasingTier;
 
     public static List<Pair<Block, Integer>> createComponentCasingVariants() {
-        List<Pair<Block, Integer>> casingVariants = new ArrayList<>(8);
+        List<Pair<Block, Integer>> casingVariants = new ObjectArrayList<>(8);
         for (int tier = 0; tier < 8; tier++) {
             casingVariants.add(Pair.of(Loaders.componentAssemblylineCasing, tier));
         }

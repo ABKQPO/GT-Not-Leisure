@@ -2,7 +2,6 @@ package com.gtnllib.gui.theme;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.cleanroommc.modularui.api.ITheme;
@@ -17,6 +16,7 @@ import com.google.gson.JsonObject;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 @SideOnly(Side.CLIENT)
 public class VariantTheme extends AbstractTheme {
@@ -31,7 +31,7 @@ public class VariantTheme extends AbstractTheme {
     }
 
     public static VariantTheme parse(String id, ITheme parent, JsonObject json) {
-        Map<WidgetThemeKey<?>, WidgetThemeEntry<?>> widgetThemes = new HashMap<>();
+        Map<WidgetThemeKey<?>, WidgetThemeEntry<?>> widgetThemes = new Object2ObjectOpenHashMap<>();
         WidgetTheme fallback = new WidgetTheme(
             parent.getFallback()
                 .getTheme(),

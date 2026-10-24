@@ -1,6 +1,5 @@
 package com.science.gtnl.common.wireless;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,6 +13,7 @@ import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
 
 import galacticgreg.api.enums.DimensionDef;
 import gtneioreplugin.util.DimensionHelper;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class WirelessCardViewCodec {
 
@@ -84,7 +84,7 @@ public class WirelessCardViewCodec {
     static void localizeInterfaceNames(NBTTagCompound row) {
         NBTTagList entries = row.getTagList("interfaceNames", 10);
         if (entries.tagCount() == 0) return;
-        List<String> names = new ArrayList<>();
+        List<String> names = new ObjectArrayList<>();
         for (int i = 0; i < entries.tagCount(); i++) {
             NBTTagCompound entry = entries.getCompoundTagAt(i);
             names.add(

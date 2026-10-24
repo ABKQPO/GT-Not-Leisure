@@ -3,7 +3,6 @@ package com.science.gtnl.common.gui.modularui;
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -51,6 +50,7 @@ import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.modularui2.GTWidgetThemes;
 import gregtech.api.util.GTUtility;
 import gregtech.common.modularui2.widget.SlotLikeButtonWidget;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class SteamGreenhouseModuleGui extends GTNLSteamMultiBlockBaseGui {
 
@@ -267,7 +267,7 @@ public class SteamGreenhouseModuleGui extends GTNLSteamMultiBlockBaseGui {
 
     private IWidget createCropInventoryWidget(PanelSyncManager syncManager, GreenHouseViewMode viewMode,
         List<CropSlot> cropSlots) {
-        List<IWidget> buttons = new ArrayList<>();
+        List<IWidget> buttons = new ObjectArrayList<>();
         int storedSeedCount = 0;
         for (CropSlot cropSlot : cropSlots) {
             storedSeedCount += cropSlot.seedStack().stackSize;
@@ -651,7 +651,7 @@ public class SteamGreenhouseModuleGui extends GTNLSteamMultiBlockBaseGui {
         try {
             GreenHouseViewMode viewMode = GreenHouseViewMode.fromOrdinalWithoutBlocks(buffer.readVarIntFromBuffer());
             int size = buffer.readVarIntFromBuffer();
-            List<CropSlot> slots = new ArrayList<>(size);
+            List<CropSlot> slots = new ObjectArrayList<>(size);
             for (int i = 0; i < size; i++) {
                 slots.add(CropSlot.read(buffer));
             }
@@ -672,7 +672,7 @@ public class SteamGreenhouseModuleGui extends GTNLSteamMultiBlockBaseGui {
     }
 
     private List<CropSlot> createCropSlots() {
-        List<CropSlot> slots = new ArrayList<>();
+        List<CropSlot> slots = new ObjectArrayList<>();
         for (int i = 0; i < multiblock.getStoredCrops()
             .size(); i++) {
             GreenHouseStoredCrop crop = multiblock.getStoredCrops()
@@ -693,7 +693,7 @@ public class SteamGreenhouseModuleGui extends GTNLSteamMultiBlockBaseGui {
     }
 
     private List<DropEntry> createDropEntries() {
-        List<DropEntry> entries = new ArrayList<>();
+        List<DropEntry> entries = new ObjectArrayList<>();
         IFDropTable tracker = multiblock.getIndustrialFarmGuiDropTracker();
         for (Map.Entry<ItemStack, Double> drop : tracker.entrySet()) {
             entries.add(

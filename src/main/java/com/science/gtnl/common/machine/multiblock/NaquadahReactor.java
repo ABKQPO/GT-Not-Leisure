@@ -19,7 +19,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
@@ -117,8 +116,9 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
 
             @Override
             public @NotNull CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
-                int recipeReq = recipe.getMetadataOrDefault(NaquadahReactorMetadata.INSTANCE, Pair.of(0, 0L))
-                    .getKey();
+                int recipeReq = recipe
+                    .getMetadataOrDefault(NaquadahReactorMetadata.INSTANCE, NaquadahReactorMetadata.NONE)
+                    .leftInt();
                 if (recipeReq > getReactorTier()) {
                     return CheckRecipeResultRegistry.insufficientMachineTier(recipeReq);
                 }
@@ -178,8 +178,8 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         mEfficiencyIncrease = 10000;
         mMaxProgresstime = (int) (processingLogic.getDuration() * mConfigSpeedBoost);
         lEUt = ((GTNLProcessingLogic) processingLogic).getLastRecipe()
-            .getMetadataOrDefault(NaquadahReactorMetadata.INSTANCE, Pair.of(0, 0L))
-            .getValue() * processingLogic.getCurrentParallels();
+            .getMetadataOrDefault(NaquadahReactorMetadata.INSTANCE, NaquadahReactorMetadata.NONE)
+            .rightLong() * processingLogic.getCurrentParallels();
 
         if (useExtraGas) {
             mMaxProgresstime /= getDurationMultiple();

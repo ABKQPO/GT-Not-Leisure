@@ -4,7 +4,6 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -52,6 +51,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -80,7 +80,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     public static final int MACHINEMODE_TOWER = 0;
     public static final int MACHINEMODE_DISTILLERY = 1;
 
-    public final List<List<MTEHatchOutput>> mOutputHatchesByLayer = new ArrayList<>();
+    public final List<List<MTEHatchOutput>> mOutputHatchesByLayer = new ObjectArrayList<>();
     public int mHeight;
 
     public LargeDistillery(int aID, String aName, String aNameRegional) {
@@ -448,7 +448,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
         if (aTileEntity == null || aTileEntity.isDead()
             || !(aTileEntity.getMetaTileEntity() instanceof MTEHatchOutput outputHatch)) return false;
         while (mOutputHatchesByLayer.size() < mHeight) {
-            mOutputHatchesByLayer.add(new ArrayList<>());
+            mOutputHatchesByLayer.add(new ObjectArrayList<>());
         }
         outputHatch.updateTexture(aBaseCasingIndex);
         List<MTEHatchOutput> layer = mOutputHatchesByLayer.get(mHeight - 1);

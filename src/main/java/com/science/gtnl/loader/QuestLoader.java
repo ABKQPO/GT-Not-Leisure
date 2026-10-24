@@ -1,6 +1,5 @@
 package com.science.gtnl.loader;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,6 +9,7 @@ import com.hfstudio.bqapi.api.definition.ChapterDefinition;
 import com.science.gtnl.ScienceNotLeisure;
 
 import betterquesting.api.utils.UuidConverter;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class QuestLoader {
 
@@ -19,7 +19,7 @@ public class QuestLoader {
 
     public static boolean registered;
 
-    public static final List<ChapterDefinition> CHAPTERS = new ArrayList<>();
+    public static final List<ChapterDefinition> CHAPTERS = new ObjectArrayList<>();
 
     static {
         CHAPTERS.add(

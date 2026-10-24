@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -56,6 +55,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gregtech.common.render.IMTERenderer;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import kubatech.loaders.BlockLoader;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -223,7 +223,7 @@ public class AtomicEnergyExcitationPlant extends GTMMultiMachineBase<AtomicEnerg
     }
 
     public static List<Pair<Block, Integer>> getAllFieldCoilTiers() {
-        ArrayList<Pair<Block, Integer>> tiers = new ArrayList<>();
+        ObjectArrayList<Pair<Block, Integer>> tiers = new ObjectArrayList<>();
         for (Block coil : coils) {
             tiers.add(Pair.of(coil, 0));
         }

@@ -1,6 +1,5 @@
 package com.science.gtnl.client.railgun;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -9,6 +8,7 @@ import com.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class RailgunBolts {
@@ -99,7 +99,7 @@ public class RailgunBolts {
     public static List<Bolt> orb(int owner, long tick, float intensity) {
         float p = MathUtils.clampUnit(intensity, 0F);
         int arcs = orbArcs(p), discharges = dischargeSlots(p);
-        List<Bolt> bolts = new ArrayList<>(arcs + discharges);
+        List<Bolt> bolts = new ObjectArrayList<>(arcs + discharges);
         for (int slot = 0; slot < arcs; slot++) {
             Random random = random(owner, slot, tick);
             bolts.add(new Bolt(surfaceArc(random), 0.025 + 0.015 * p, (0.5F + 0.4F * p) * flicker(slot, tick)));
@@ -128,7 +128,7 @@ public class RailgunBolts {
         if (across.length() < 0.5) across = Vec3d.rightOf(start);
         double sweep = Math.toRadians(30 + 35 * random.nextDouble());
         double radius = between(random, 1.04, 1.1);
-        List<Vec3d> points = new ArrayList<>(ARC_SEGMENTS + 1);
+        List<Vec3d> points = new ObjectArrayList<>(ARC_SEGMENTS + 1);
         for (int i = 0; i <= ARC_SEGMENTS; i++) {
             if (i > 0) radius = Math.max(ARC_LOW, Math.min(ARC_HIGH, radius + (random.nextDouble() * 2 - 1) * 0.04));
             double angle = sweep * i / ARC_SEGMENTS;
@@ -168,7 +168,7 @@ public class RailgunBolts {
         long tick = (long) Math.floor(age);
         int flows = flowsPerSide(p);
         if (p < MIN_INTENSITY) return List.of();
-        List<Bolt> bolts = new ArrayList<>(2 + ANCHORS_PER_SIDE * 2 + flows * 2 + 2 + HOP_SLOTS);
+        List<Bolt> bolts = new ObjectArrayList<>(2 + ANCHORS_PER_SIDE * 2 + flows * 2 + 2 + HOP_SLOTS);
         double span = flowSpan(p), period = flowPeriod(p), length = FLOW_LENGTH + FLOW_LENGTH_GAIN * p;
         for (int side = -1; side <= 1; side += 2) {
             int slot = TETHER_SLOT_OFFSET + (side < 0 ? 0 : 1);
@@ -251,7 +251,7 @@ public class RailgunBolts {
         Vec3d lift = new Vec3d(side * between(random, 0.2, 1), between(random, -0.5, 1), between(random, -0.4, 0.4))
             .normalize()
             .scale(HOP_LIFT * between(random, 0.4, 1.6));
-        List<Vec3d> points = new ArrayList<>(HOP_SEGMENTS + 1);
+        List<Vec3d> points = new ObjectArrayList<>(HOP_SEGMENTS + 1);
         for (int i = 0; i <= HOP_SEGMENTS; i++) {
             double t = i / (double) HOP_SEGMENTS;
             Vec3d jitter = i == 0 || i == HOP_SEGMENTS ? Vec3d.ZERO
@@ -267,7 +267,7 @@ public class RailgunBolts {
     }
 
     private static Vec3d crossTarget(Random random, Edge origin, Vec3d point, int side) {
-        List<Edge> options = new ArrayList<>();
+        List<Edge> options = new ObjectArrayList<>();
         for (Edge edge : HOP_EDGES) if (edge != origin && edge.coversZ(point.z())) options.add(edge);
         if (options.isEmpty()) return null;
         Edge target = options.get(random.nextInt(options.size()));
@@ -278,7 +278,7 @@ public class RailgunBolts {
     public static List<Bolt> tethers(int owner, long tick, float intensity, Vec3d from, Vec3d to) {
         float p = MathUtils.clampUnit(intensity, 0F);
         if (p < MIN_INTENSITY || from == null || to == null) return List.of();
-        List<Bolt> bolts = new ArrayList<>(2);
+        List<Bolt> bolts = new ObjectArrayList<>(2);
         for (int index = 0; index < 2; index++) {
             int slot = TETHER_SLOT_OFFSET + 2 + index;
             Random random = random(owner, slot, tick);
@@ -292,7 +292,7 @@ public class RailgunBolts {
     }
 
     private static List<Vec3d> channel(Random random, int side, double start, double end, int segments) {
-        List<Vec3d> points = new ArrayList<>(segments + 1);
+        List<Vec3d> points = new ObjectArrayList<>(segments + 1);
         double x = between(random, GROOVE_INNER, GROOVE_OUTER), y = between(random, GROOVE_LOW, GROOVE_HIGH);
         double stepX = (GROOVE_OUTER - GROOVE_INNER) * 0.45, stepY = (GROOVE_HIGH - GROOVE_LOW) * 0.45;
         for (int i = 0; i <= segments; i++) {
@@ -311,7 +311,7 @@ public class RailgunBolts {
         Vec3d axis = delta.normalize();
         Vec3d side = Vec3d.rightOf(axis), up = side.cross(axis)
             .normalize();
-        List<Vec3d> points = new ArrayList<>(segments + 1);
+        List<Vec3d> points = new ObjectArrayList<>(segments + 1);
         points.add(from);
         double offsetSide = 0, offsetUp = 0;
         for (int i = 1; i <= segments; i++) {

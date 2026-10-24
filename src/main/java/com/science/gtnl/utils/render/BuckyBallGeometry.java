@@ -1,12 +1,13 @@
 package com.science.gtnl.utils.render;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class BuckyBallGeometry {
 
-    public static final List<double[]> vertices = new ArrayList<>();
-    public static final List<int[]> edges = new ArrayList<>();
+    public static final List<double[]> vertices = new ObjectArrayList<>();
+    public static final List<int[]> edges = new ObjectArrayList<>();
 
     static {
         double p = (1.0 + Math.sqrt(5.0)) / 2.0;

@@ -3,7 +3,6 @@ package com.science.gtnl.common.item.items;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.init.Blocks;
@@ -35,6 +34,7 @@ import gregtech.api.util.GTUtility;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 import it.unimi.dsi.fastutil.objects.Object2CharLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2CharMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import tectech.thing.CustomItemList;
 
 public class DebugItem extends Item {
@@ -42,7 +42,7 @@ public class DebugItem extends Item {
     public static Class<?>[] ITEMLIST;
 
     static {
-        List<Class<?>> list = new ArrayList<>();
+        List<Class<?>> list = new ObjectArrayList<>();
         list.add(GTNLItemList.class);
         list.add(ItemList.class);
         list.add(CustomItemList.class);

@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -59,6 +58,7 @@ import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.recipe.Sievert;
 import gregtech.common.misc.GTStructureChannels;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -74,7 +74,7 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
     public static Sievert defaultSievertData = new Sievert(0, false);
 
     public int itemQuantity;
-    public ArrayList<MTERadioHatch> mRadHatches = new ArrayList<>();
+    public ObjectArrayList<MTERadioHatch> mRadHatches = new ObjectArrayList<>();
     public int mSievert;
     public int mNeededSievert;
 

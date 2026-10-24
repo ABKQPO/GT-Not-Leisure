@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 import net.minecraft.init.Items;
@@ -32,7 +31,9 @@ import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class RemoveRecipes {
 
@@ -55,7 +56,7 @@ public class RemoveRecipes {
         Object2IntMap<String> removedRecipeCounts = new Object2IntOpenHashMap<>();
 
         // 合金冶炼炉
-        List<GTRecipe> recipesToRemoveFromAlloyBlastSmelter = new ArrayList<>();
+        List<GTRecipe> recipesToRemoveFromAlloyBlastSmelter = new ObjectArrayList<>();
         for (GTRecipe recipe : alloyBlastSmelterRecipe.getAllRecipes()) {
             for (ItemStack input : recipe.mInputs) {
                 if (input != null) {
@@ -70,7 +71,7 @@ public class RemoveRecipes {
         alloyBlastSmelterRecipe.removeRecipes(recipesToRemoveFromAlloyBlastSmelter);
 
         // 高压釜
-        List<GTRecipe> recipesToRemoveFromAutoClave = new ArrayList<>();
+        List<GTRecipe> recipesToRemoveFromAutoClave = new ObjectArrayList<>();
         for (GTRecipe recipe : autoClaveRecipe.getAllRecipes()) {
             for (ItemStack output : recipe.mOutputs) {
                 if (output != null) {
@@ -95,7 +96,7 @@ public class RemoveRecipes {
         autoClaveRecipe.removeRecipes(recipesToRemoveFromAutoClave);
 
         // 冲压机床
-        List<GTRecipe> recipesToRemoveFromFormingPress = new ArrayList<>();
+        List<GTRecipe> recipesToRemoveFromFormingPress = new ObjectArrayList<>();
         for (GTRecipe recipe : formingPressRecipe.getAllRecipes()) {
             for (ItemStack output : recipe.mOutputs) {
                 if (output != null) {
@@ -110,7 +111,7 @@ public class RemoveRecipes {
         formingPressRecipe.removeRecipes(recipesToRemoveFromFormingPress);
 
         // 工业高炉
-        List<GTRecipe> recipesToRemoveFromBlastFurnace = new ArrayList<>();
+        List<GTRecipe> recipesToRemoveFromBlastFurnace = new ObjectArrayList<>();
         for (GTRecipe recipe : blastFurnaceRecipe.getAllRecipes()) {
             for (ItemStack output : recipe.mOutputs) {
                 if (output != null) {
@@ -125,7 +126,7 @@ public class RemoveRecipes {
         blastFurnaceRecipe.removeRecipes(recipesToRemoveFromBlastFurnace);
 
         // 真空干燥炉
-        List<GTRecipe> recipesToRemoveFromVacuumFurnace = new ArrayList<>();
+        List<GTRecipe> recipesToRemoveFromVacuumFurnace = new ObjectArrayList<>();
         for (GTRecipe recipe : vacuumFurnaceRecipe.getAllRecipes()) {
             for (ItemStack output : recipe.mOutputs) {
                 if (output != null) {
@@ -150,7 +151,7 @@ public class RemoveRecipes {
         vacuumFurnaceRecipe.removeRecipes(recipesToRemoveFromVacuumFurnace);
 
         // 埃克森美孚化工厂
-        List<GTRecipe> recipesToRemoveFromChemicalPlant = new ArrayList<>();
+        List<GTRecipe> recipesToRemoveFromChemicalPlant = new ObjectArrayList<>();
         for (GTRecipe recipe : chemicalPlantRecipe.getAllRecipes()) {
             for (ItemStack output : recipe.mOutputs) {
                 if (output != null) {
@@ -165,7 +166,7 @@ public class RemoveRecipes {
         chemicalPlantRecipe.removeRecipes(recipesToRemoveFromChemicalPlant);
 
         // 真空冷冻机
-        List<GTRecipe> recipesToRemoveFromVacuumFreezer = new ArrayList<>();
+        List<GTRecipe> recipesToRemoveFromVacuumFreezer = new ObjectArrayList<>();
         for (GTRecipe recipe : vacuumFreezerRecipe.getAllRecipes()) {
             for (FluidStack output : recipe.mFluidOutputs) {
                 if (output != null) {
@@ -185,7 +186,7 @@ public class RemoveRecipes {
         vacuumFreezerRecipe.removeRecipes(recipesToRemoveFromVacuumFreezer);
 
         // 化学浸洗机
-        List<GTRecipe> recipesToRemoveFromChemicalBath = new ArrayList<>();
+        List<GTRecipe> recipesToRemoveFromChemicalBath = new ObjectArrayList<>();
         for (GTRecipe recipe : chemicalBathRecipe.getAllRecipes()) {
             for (ItemStack output : recipe.mOutputs) {
                 if (output != null) {
@@ -209,7 +210,7 @@ public class RemoveRecipes {
         chemicalBathRecipe.removeRecipes(recipesToRemoveFromChemicalBath);
 
         // 搅拌机
-        List<GTRecipe> recipesToRemoveFromMixer = new ArrayList<>();
+        List<GTRecipe> recipesToRemoveFromMixer = new ObjectArrayList<>();
         for (GTRecipe recipe : mixerRecipe.getAllRecipes()) {
             for (FluidStack output : recipe.mFluidOutputs) {
                 if (output != null) {
@@ -224,7 +225,7 @@ public class RemoveRecipes {
         mixerRecipe.removeRecipes(recipesToRemoveFromMixer);
 
         // 多方块搅拌机
-        List<GTRecipe> recipesToRemoveFromMixerNonCell = new ArrayList<>();
+        List<GTRecipe> recipesToRemoveFromMixerNonCell = new ObjectArrayList<>();
         for (GTRecipe recipe : mixerNonCellRecipe.getAllRecipes()) {
             for (FluidStack output : recipe.mFluidOutputs) {
                 if (output != null) {
@@ -239,7 +240,7 @@ public class RemoveRecipes {
         mixerNonCellRecipe.removeRecipes(recipesToRemoveFromMixerNonCell);
 
         // 电路组装机
-        List<GTRecipe> recipesToRemoveFromCircuitAssembler = new ArrayList<>();
+        List<GTRecipe> recipesToRemoveFromCircuitAssembler = new ObjectArrayList<>();
         List<ItemStack> targetOutputs = Arrays.asList(
             ItemList.Circuit_Crystalprocessor.get(1), // 晶体处理器
             ItemList.Circuit_Crystalcomputer.get(1), // 晶体处理器集群
@@ -267,7 +268,7 @@ public class RemoveRecipes {
         circuitAssemblerRecipe.removeRecipes(recipesToRemoveFromCircuitAssembler);
 
         // 电路装配线
-        List<GTRecipe> recipesToRemoveFromCircuitAssemblyLine = new ArrayList<>();
+        List<GTRecipe> recipesToRemoveFromCircuitAssemblyLine = new ObjectArrayList<>();
         for (GTRecipe recipe : circuitAssemblyLineRecipe.getAllRecipes()) {
             for (ItemStack output : recipe.mOutputs) {
                 if (output == null) continue;
@@ -299,11 +300,11 @@ public class RemoveRecipes {
             removedRecipeCounts.put("Multiblock Mixer", recipesToRemoveFromMixerNonCell.size());
 
             StringBuilder logMessage = new StringBuilder("GTNL: Removed recipes from the following recipe pools:");
-            for (Map.Entry<String, Integer> entry : removedRecipeCounts.entrySet()) {
+            for (Object2IntMap.Entry<String> entry : Object2IntMaps.fastIterable(removedRecipeCounts)) {
                 logMessage.append("\n- ")
                     .append(entry.getKey())
                     .append(": ")
-                    .append(entry.getValue())
+                    .append(entry.getIntValue())
                     .append(" recipes");
             }
             ScienceNotLeisure.LOG.info("{}", logMessage);
@@ -370,7 +371,7 @@ public class RemoveRecipes {
 
     public static void addToBuffer(HashSet<ItemId> outputs, Function<IRecipe, Boolean> whenToRemove) {
         for (ItemId output : outputs) {
-            bufferMap.computeIfAbsent(output, o -> new ArrayList<>())
+            bufferMap.computeIfAbsent(output, o -> new ObjectArrayList<>())
                 .add(whenToRemove);
         }
     }

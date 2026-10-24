@@ -3,7 +3,6 @@ package com.gtnllib;
 import static com.gtnllib.GTNLLibContractTest.check;
 import static com.gtnllib.GTNLLibContractTest.near;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,6 +19,9 @@ import com.gtnllib.client.fx.world.FxRenderHelper.SegmentSides;
 import com.gtnllib.client.fx.world.FxRenderHelper.Sprite;
 import com.gtnllib.config.GTNLLibConfig;
 import com.gtnllib.utils.Vec3d;
+
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class FxContracts {
 
@@ -114,8 +116,8 @@ public class FxContracts {
                     .start()
                     .distanceToSqr(down) < 1.0E-12,
             "a path that doubles back keeps each piece's own width");
-        List<Vec3d> stamps = new ArrayList<>();
-        List<Double> fractions = new ArrayList<>();
+        List<Vec3d> stamps = new ObjectArrayList<>();
+        DoubleArrayList fractions = new DoubleArrayList();
         FxRenderHelper.along(Arrays.asList(new Vec3d(0, 0, 0), right, new Vec3d(1, 1, 0)), 0.25, (point, fraction) -> {
             stamps.add(point);
             fractions.add(fraction);
@@ -123,8 +125,8 @@ public class FxContracts {
         check(stamps.size() == 9, "stamps every 0.25 along a 2 block path land 9 times, got " + stamps.size());
         check(
             stamps.get(8)
-                .distanceToSqr(new Vec3d(1, 1, 0)) < 1.0E-12 && Math.abs(fractions.get(8) - 1) < 1.0E-9
-                && fractions.get(0) == 0,
+                .distanceToSqr(new Vec3d(1, 1, 0)) < 1.0E-12 && Math.abs(fractions.getDouble(8) - 1) < 1.0E-9
+                && fractions.getDouble(0) == 0,
             "stamps run from the first point to the last, measured as a share of the path");
         check(
             stamps.get(5)
@@ -228,7 +230,7 @@ public class FxContracts {
         Mote ball = new Mote(Kind.DOT, new Vec3d(0, 3, 0), 0.03, 100, 0, 0).velocity(new Vec3d(0.01, 0, 0))
             .fall(0.96, 0.02)
             .bounce(0.45, 0.7, 3, true);
-        List<Double> landings = new ArrayList<>();
+        DoubleArrayList landings = new DoubleArrayList();
         double lowest = Double.MAX_VALUE, last = 3;
         for (int i = 1; i <= 2000; i++) {
             double age = i / 20.0;
@@ -244,7 +246,7 @@ public class FxContracts {
             landings.size() == 2,
             "a dot lands, bounces once and is gone at its second landing, landings " + landings);
         if (landings.size() == 2) {
-            double first = landings.get(0), second = landings.get(1);
+            double first = landings.getDouble(0), second = landings.getDouble(1);
             near(1, ball.settle(first - 0.5), "a dot keeps its full size until it first touches the ground");
             float half = ball.settle((first + second) / 2);
             check(half > 0.2F && half < 0.8F, "a dot is half shrunk halfway between its two landings, at " + half);

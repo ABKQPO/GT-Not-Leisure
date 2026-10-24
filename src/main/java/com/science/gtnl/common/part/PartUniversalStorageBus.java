@@ -4,11 +4,7 @@ import static appeng.util.Platform.readStackNBT;
 import static appeng.util.Platform.writeStackNBT;
 import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -84,6 +80,10 @@ import buildcraft.api.transport.IPipeTile.PipeType;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 public class PartUniversalStorageBus extends PartUpgradeable implements IStorageBus, ICustomGui {
 
@@ -107,8 +107,8 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
         }
     };
 
-    public final Map<IAEStackType<?>, TypeChannel> channels = new LinkedHashMap<>();
-    public final Set<IAEStackType<?>> readOncePass = new HashSet<>();
+    public final Map<IAEStackType<?>, TypeChannel> channels = new Object2ObjectLinkedOpenHashMap<>();
+    public final Set<IAEStackType<?>> readOncePass = new ObjectOpenHashSet<>();
 
     public int priority = 0;
     public boolean cached = false;
@@ -379,7 +379,7 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
         }
 
         final Map<IAEStackType<?>, IItemList<?>> after = this.snapshotExposed();
-        final Set<IAEStackType<?>> types = new HashSet<>(before.keySet());
+        final Set<IAEStackType<?>> types = new ObjectOpenHashSet<>(before.keySet());
         types.addAll(after.keySet());
         for (IAEStackType<?> type : types) {
             this.postListChanges(type, before.get(type), after.get(type));
@@ -541,7 +541,7 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
     }
 
     public Set<IMEInventoryHandler<?>> getExposedHandlers() {
-        final Set<IMEInventoryHandler<?>> handlers = Collections.newSetFromMap(new IdentityHashMap<>());
+        final Set<IMEInventoryHandler<?>> handlers = new ReferenceOpenHashSet<>();
         for (TypeChannel channel : this.channels.values()) {
             if (channel.exposed) handlers.add(channel.handler);
         }
@@ -550,7 +550,7 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public Map<IAEStackType<?>, IItemList<?>> snapshotExposed() {
-        final Map<IAEStackType<?>, IItemList<?>> result = new LinkedHashMap<>();
+        final Map<IAEStackType<?>, IItemList<?>> result = new Object2ObjectLinkedOpenHashMap<>();
         for (TypeChannel channel : this.channels.values()) {
             if (!channel.exposed) continue;
             final IItemList list = channel.handler
@@ -576,7 +576,7 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
             }
         }
 
-        final List<IAEStack<?>> result = new ArrayList<>();
+        final List<IAEStack<?>> result = new ObjectArrayList<>();
         for (Object o : changes) {
             final IAEStack<?> stack = (IAEStack<?>) o;
             if (stack.getStackSize() != 0) result.add(stack);
@@ -642,7 +642,7 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
             return change;
         }
         final Predicate condition = handler.getExtractFilterCondition();
-        final List<IAEStack<?>> result = new ArrayList<>();
+        final List<IAEStack<?>> result = new ObjectArrayList<>();
         for (IAEStack<?> stack : change) {
             if (condition.test(stack)) result.add(stack);
         }
@@ -682,7 +682,7 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
 
     public List<IAEStack<?>> getTargetContents() {
         this.refreshChannels();
-        final List<IAEStack<?>> result = new ArrayList<>();
+        final List<IAEStack<?>> result = new ObjectArrayList<>();
         final boolean oreFilter = this.getInstalledUpgrades(Upgrades.ORE_FILTER) > 0;
         for (TypeChannel channel : this.channels.values()) {
             // Item config slots are ignored with an ore filter card

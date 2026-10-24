@@ -1,9 +1,7 @@
 package com.science.gtnl.api.stellar;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -12,6 +10,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import lombok.Getter;
 
 public class StellarIrisUpgradeDefinition {
@@ -67,7 +67,7 @@ public class StellarIrisUpgradeDefinition {
         this.descriptionKey = builder.descriptionKey == null ? translationKey + ".desc" : builder.descriptionKey;
         this.nodeDisplay = builder.nodeDisplay;
         this.colorOverride = builder.colorOverride;
-        this.prerequisiteIds = Collections.unmodifiableSet(new LinkedHashSet<>(builder.prerequisiteIds));
+        this.prerequisiteIds = Collections.unmodifiableSet(new ObjectLinkedOpenHashSet<>(builder.prerequisiteIds));
         this.effects = List.copyOf(builder.effects);
     }
 
@@ -112,8 +112,8 @@ public class StellarIrisUpgradeDefinition {
         private String descriptionKey;
         private StellarIrisNodeDisplay nodeDisplay;
         private Integer colorOverride;
-        private final Set<String> prerequisiteIds = new LinkedHashSet<>();
-        private final List<IStellarIrisUpgradeEffect> effects = new ArrayList<>();
+        private final Set<String> prerequisiteIds = new ObjectLinkedOpenHashSet<>();
+        private final List<IStellarIrisUpgradeEffect> effects = new ObjectArrayList<>();
 
         public Builder(String id) {
             this.id = id;

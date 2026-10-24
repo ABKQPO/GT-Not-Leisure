@@ -6,7 +6,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import com.science.gtnl.mixins.late.wirelessCraftingTerminal.MixinRandomUtilsYogTerminal;
 
 import baubles.common.container.InventoryBaubles;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class YogSothothContracts {
 
@@ -83,7 +83,7 @@ public class YogSothothContracts {
     }
 
     private static void craftingTerminalLookups() {
-        Set<String> targets = new HashSet<>();
+        Set<String> targets = new ObjectOpenHashSet<>();
         for (Method method : MixinRandomUtilsYogTerminal.class.getDeclaredMethods()) {
             Inject inject = method.getAnnotation(Inject.class);
             if (inject == null) continue;

@@ -1,8 +1,6 @@
 package com.science.gtnl.common.entity;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
@@ -30,6 +28,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.util.GTUtility;
 import io.netty.buffer.ByteBuf;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 public class EntityPortalGunPortal extends Entity implements IEntityAdditionalSpawnData {
 
@@ -46,7 +45,7 @@ public class EntityPortalGunPortal extends Entity implements IEntityAdditionalSp
     private PortalGunPlacement link;
     private UUID gunId;
     private int pair, lifetime, closingTicks;
-    private final Map<Integer, Track> tracks = new HashMap<>();
+    private final Int2ObjectOpenHashMap<Track> tracks = new Int2ObjectOpenHashMap<>();
 
     public EntityPortalGunPortal(World world) {
         super(world);

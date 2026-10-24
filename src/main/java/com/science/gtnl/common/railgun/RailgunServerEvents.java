@@ -1,7 +1,6 @@
 package com.science.gtnl.common.railgun;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -21,10 +20,11 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public class RailgunServerEvents {
 
-    private static final Map<UUID, EntityPlayerMP> ONLINE = new HashMap<>();
+    private static final Map<UUID, EntityPlayerMP> ONLINE = new Object2ObjectOpenHashMap<>();
     private static boolean registered, ticking, indexed;
 
     public static void register() {

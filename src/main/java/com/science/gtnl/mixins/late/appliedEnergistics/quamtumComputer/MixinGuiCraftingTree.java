@@ -1,12 +1,11 @@
 package com.science.gtnl.mixins.late.appliedEnergistics.quamtumComputer;
 
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 
 import org.jetbrains.annotations.Nullable;
@@ -36,6 +35,8 @@ import appeng.core.localization.ColorUtils;
 import appeng.crafting.v2.CraftingRequest;
 import appeng.crafting.v2.resolvers.CraftableItemResolver.CraftFromPatternTask;
 import appeng.crafting.v2.resolvers.CraftingTask;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 /**
  * Contracts each crafting cycle of the tree into the request it is entered by, marked with a ring, with what the cycle
@@ -73,7 +74,7 @@ public abstract class MixinGuiCraftingTree implements ICraftingTreeCycles {
 
     // The rings open, each opened from the one before
     @Unique
-    private final List<CraftingRingView> gtnl$views = new ArrayList<>();
+    private final List<CraftingRingView> gtnl$views = new ObjectArrayList<>();
 
     @Unique
     private boolean gtnl$settingRequest;
@@ -139,7 +140,7 @@ public abstract class MixinGuiCraftingTree implements ICraftingTreeCycles {
     @Unique
     private Map<Object, CraftingCycleIndex.Match> gtnl$matches() {
         if (this.gtnl$matches == null) {
-            this.gtnl$matches = new IdentityHashMap<>();
+            this.gtnl$matches = new Reference2ObjectOpenHashMap<>();
             if (this.gtnl$index != null && this.request != null) {
                 var nodes = this.gtnl$contraction != null ? this.gtnl$contraction.allNodes()
                     : CraftingTreeRings.allNodes(gtnl$tree());
@@ -245,7 +246,7 @@ public abstract class MixinGuiCraftingTree implements ICraftingTreeCycles {
 
     @Unique
     private List<CraftingCycleIndex.Match> gtnl$matchesOf(List<Object> nodes) {
-        var result = new ArrayList<CraftingCycleIndex.Match>();
+        var result = new ObjectArrayList<CraftingCycleIndex.Match>();
         for (var node : nodes) {
             var match = gtnl$matchOf(node);
             if (match != null && result.stream()
@@ -320,6 +321,29 @@ public abstract class MixinGuiCraftingTree implements ICraftingTreeCycles {
             }
         }
         GL11.glColor4f(1, 1, 1, 1);
+    }
+
+    // Zooms by whole screen pixels to a pixel of the tree while it can, so the one pixel lines are all drawn as wide
+    @Inject(method = "onMouseWheel", at = @At("HEAD"), cancellable = true)
+    private void gtnl$zoomByPixels(int mouseX, int mouseY, int wheel, CallbackInfo ci) {
+        if (wheel == 0 || GuiScreen.isShiftKeyDown() || !GuiScreen.isCtrlKeyDown()) return;
+        var tree = gtnl$tree();
+        var gui = (AEBaseGui) CraftingTreeRings.parentGui(tree);
+        float scale = (float) gui.mc.displayWidth / gui.width;
+        float oldZoom = CraftingTreeRings.zoom(tree);
+        float zoom = MathHelper.clamp_float(oldZoom * (float) Math.pow(1.4, wheel), 0.1f, 8.0f);
+        float pixels = oldZoom * scale;
+        long snapped = Math.round(zoom * scale);
+        if (wheel > 0) snapped = Math.max(snapped, (long) Math.floor(pixels) + 1);
+        else snapped = Math.min(snapped, (long) Math.ceil(pixels) - 1);
+        snapped = Math.min(snapped, (long) Math.floor(8.0f * scale));
+        if (snapped >= 1) zoom = snapped / scale;
+        mouseX -= tree.widgetX;
+        mouseY -= tree.widgetY;
+        tree.scrollX += mouseX / oldZoom - mouseX / zoom;
+        tree.scrollY += mouseY / oldZoom - mouseY / zoom;
+        CraftingTreeRings.setZoom(tree, zoom);
+        ci.cancel();
     }
 
     @Inject(method = "getNodeAt", at = @At("HEAD"), cancellable = true)

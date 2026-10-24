@@ -21,13 +21,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -89,6 +86,10 @@ import com.science.gtnl.config.EquipmentSoundConfig.Channel;
 import com.science.gtnl.config.MainConfig;
 
 import gregtech.api.modularui2.GTGuiThemes;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class EquipmentResourceContracts {
 
@@ -141,8 +142,8 @@ public class EquipmentResourceContracts {
             frames = new Gson().fromJson(reader, CelestweaveFrames.class);
         }
         frames.resolve();
-        List<String> problems = new ArrayList<>();
-        Map<String, Map<String, int[]>> objs = new HashMap<>();
+        List<String> problems = new ObjectArrayList<>();
+        Map<String, Map<String, int[]>> objs = new Object2ObjectOpenHashMap<>();
         for (int type = 0; type < 4; type++) {
             String file = frames.objFile(type);
             check(file != null, "obj file for piece " + type);
@@ -152,7 +153,7 @@ public class EquipmentResourceContracts {
             if (Files.exists(path)) objs.put(file, obj(path, problems));
         }
         problems.forEach(problem -> check(false, problem));
-        Set<String> listed = new HashSet<>();
+        Set<String> listed = new ObjectOpenHashSet<>();
         for (CelestweaveFrames.Group group : frames.groups) {
             String where = "group " + group.name;
             check(group.piece >= 0, where + " has known obj " + group.obj);
@@ -197,7 +198,7 @@ public class EquipmentResourceContracts {
         if (arcs == null) return;
         CelestweaveSeam[] seams = frames.seams();
         int patches = 0;
-        Set<CelestweaveFrames.Part> parts = new HashSet<>();
+        Set<CelestweaveFrames.Part> parts = new ObjectOpenHashSet<>();
         for (CelestweaveSeam seam : seams) {
             check(frames.anchorBone(seam.anchor()) >= 0, "seam anchor resolves " + seam.anchor());
             check(
@@ -236,10 +237,10 @@ public class EquipmentResourceContracts {
     }
 
     private static Map<String, int[]> obj(Path path, List<String> problems) throws IOException {
-        Map<String, int[]> groups = new HashMap<>();
+        Map<String, int[]> groups = new Object2ObjectOpenHashMap<>();
         int vertices = 0, uvs = 0;
         String group = null;
-        List<String> faces = new ArrayList<>();
+        List<String> faces = new ObjectArrayList<>();
         for (String line : Files.readAllLines(path, StandardCharsets.UTF_8)) {
             if (line.startsWith("v ")) vertices++;
             else if (line.startsWith("vt ")) uvs++;
@@ -392,7 +393,7 @@ public class EquipmentResourceContracts {
         }
         frames.resolve();
         check("rightArm".equals(CelestweaveFrames.BONES[CelestweaveFrames.RIGHT_ARM]), "right arm bone index");
-        Set<CelestweaveFrames.Layer> armLayers = new HashSet<>();
+        Set<CelestweaveFrames.Layer> armLayers = new ObjectOpenHashSet<>();
         for (CelestweaveFrames.Group group : frames.groups(CelestweaveArmor.CHEST))
             if (group.bone == CelestweaveFrames.RIGHT_ARM) armLayers.add(group.layerKind);
         check(armLayers.contains(CelestweaveFrames.Layer.SOLID), "chest has solid parts on the right arm");
@@ -437,7 +438,7 @@ public class EquipmentResourceContracts {
         Path index = Paths
             .get(System.getProperty("user.home"), ".gradle/caches/retro_futura_gradle/assets/indexes/1.7.10.json");
         if (!Files.exists(index)) return null;
-        Set<String> sounds = new HashSet<>();
+        Set<String> sounds = new ObjectOpenHashSet<>();
         JsonObject objects = new JsonParser().parse(new String(Files.readAllBytes(index), StandardCharsets.UTF_8))
             .getAsJsonObject()
             .getAsJsonObject("objects");
@@ -580,7 +581,7 @@ public class EquipmentResourceContracts {
                 .getId()
                 .equals(standard),
             "equipment theme inherits the GT standard theme");
-        Map<String, Integer> expected = new HashMap<>();
+        Object2IntOpenHashMap<String> expected = new Object2IntOpenHashMap<>();
         expected.put("accent", 0xFFDF65A0);
         expected.put("accentDim", 0x80DF65A0);
         expected.put("hint", 0xFF8A8F96);
@@ -591,9 +592,8 @@ public class EquipmentResourceContracts {
             for (Field field : Colors.class.getFields()) {
                 if (field.getType() != int.class || Modifier.isStatic(field.getModifiers())) continue;
                 fields++;
-                Integer color = expected.get(field.getName());
                 check(
-                    color != null && field.getInt(colors) == color,
+                    expected.containsKey(field.getName()) && field.getInt(colors) == expected.getInt(field.getName()),
                     "equipment color " + field.getName() + " is the module palette value");
             }
             check(fields == expected.size(), "equipment palette keeps only the colors code reads");
@@ -635,11 +635,11 @@ public class EquipmentResourceContracts {
                 .add(EquipmentTheme.COLORS.getFullName(), new JsonBuilder().add("accentColor", 0xFF00FF00)));
         Colors overridden = EquipmentTheme.colors();
         check(
-            overridden.accent == 0xFF00FF00 && overridden.hint == expected.get("hint")
+            overridden.accent == 0xFF00FF00 && overridden.hint == expected.getInt("hint")
                 && HudColor.selection() == 0xFF00FF00,
             "an override of one equipment color keeps the others");
         reloadThemes(EquipmentTheme.ID);
-        check(EquipmentTheme.colors().accent == expected.get("accent"), "theme reload restores the accent");
+        check(EquipmentTheme.colors().accent == expected.getInt("accent"), "theme reload restores the accent");
     }
 
     private static void equipmentScreens() throws IOException {
@@ -652,7 +652,7 @@ public class EquipmentResourceContracts {
                     && !source.contains("GTGuiThemes"),
                 file + " opens with the equipment theme chosen in the config");
         }
-        Map<String, String> sources = new HashMap<>();
+        Map<String, String> sources = new Object2ObjectOpenHashMap<>();
         for (String name : new String[] { "EquipmentGui", "CelestweaveGui", "RailgunGui" }) sources.put(
             name,
             new String(
@@ -723,7 +723,7 @@ public class EquipmentResourceContracts {
                 && LayoutMath.fitRows(270 - 8 - wideTop - footer, 16, 3, 11) == 80
                 && LayoutMath.fitRows(360 - 8 - wideTop - footer, 16, 3, 11) == 176,
             "the armor pages fit a 720p screen at GUI scale 3 and show five rows at GUI scale 4 on a 1080p screen");
-        List<Size> colorRow = new ArrayList<>();
+        List<Size> colorRow = new ObjectArrayList<>();
         colorRow.add(Size.fill());
         for (int i = 0; i < 7; i++) colorRow.add(Size.fixed(12));
         colorRow.add(Size.fixed(12));
@@ -737,7 +737,7 @@ public class EquipmentResourceContracts {
         check(
             !LayoutMath.stacks(cards, heights, 10, 380, 250),
             "a narrow and short screen keeps the cards side by side instead of cutting them off");
-        Map<String, String> sources = new HashMap<>();
+        Map<String, String> sources = new Object2ObjectOpenHashMap<>();
         for (String file : new String[] { "common/gui/equipment/EquipmentGui.java",
             "common/gui/equipment/CelestweaveGui.java", "common/gui/equipment/RailgunGui.java",
             "common/gui/equipment/EquipmentSoundScreen.java", "client/equipment/EquipmentWheelScreen.java" })
@@ -1185,7 +1185,7 @@ public class EquipmentResourceContracts {
                 .noneMatch(key -> key.startsWith("gtnllib.") || key.startsWith("gtnl.hud.")),
             "GTNL lang files leave the GTNLLib keys to the GTNLLib lang files");
         Map<String, String> englishText = langValues("en_US.lang"), chineseText = langValues("zh_CN.lang");
-        List<String> mismatched = new ArrayList<>();
+        List<String> mismatched = new ObjectArrayList<>();
         for (Map.Entry<String, String> entry : englishText.entrySet()) {
             String other = chineseText.get(entry.getKey());
             if (equipmentKey(entry.getKey()) && other != null
@@ -1209,7 +1209,7 @@ public class EquipmentResourceContracts {
             { "new CelestweaveArmor(0", "item.gtnl.celestweave_oculus.name" } };
         Arrays.sort(items, Comparator.comparingInt(item -> loader.indexOf(item[0])));
         for (String file : new String[] { "en_US.lang", "zh_CN.lang" }) {
-            List<String> keys = new ArrayList<>();
+            List<String> keys = new ObjectArrayList<>();
             for (String line : Files.readAllLines(RESOURCES.resolve("lang/" + file), StandardCharsets.UTF_8))
                 keys.add(line.contains("=") ? line.substring(0, line.indexOf('=')) : "");
             int last = -1;
@@ -1242,7 +1242,7 @@ public class EquipmentResourceContracts {
     }
 
     private static Map<String, String> langValues(String file) throws IOException {
-        Map<String, String> values = new HashMap<>();
+        Map<String, String> values = new Object2ObjectOpenHashMap<>();
         for (String line : Files.readAllLines(RESOURCES.resolve("lang/" + file), StandardCharsets.UTF_8)) {
             int split = line.indexOf('=');
             if (split > 0 && !line.startsWith("#")) values.put(
@@ -1254,7 +1254,7 @@ public class EquipmentResourceContracts {
     }
 
     private static List<String> placeholders(String text) {
-        List<String> found = new ArrayList<>();
+        List<String> found = new ObjectArrayList<>();
         Matcher matcher = PLACEHOLDER.matcher(text);
         while (matcher.find()) found.add(matcher.group());
         Collections.sort(found);

@@ -73,6 +73,7 @@ import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
 import gregtech.common.tileentities.machines.MTEHatchInputBusME;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSteamBusInput;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -388,7 +389,7 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
 
     @Override
     public String[] getInfoData() {
-        ArrayList<String> info = new ArrayList<>();
+        ObjectArrayList<String> info = new ObjectArrayList<>();
         info.add(
             EnumChatFormatting.YELLOW + IGregTechDeviceInformation.encode("gtnl.waila.steam_item_vault.stored_items")
                 + EnumChatFormatting.RESET);

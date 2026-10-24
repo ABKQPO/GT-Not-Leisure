@@ -61,4 +61,13 @@ public class NetworkCraftingSimulationState extends CraftingSimulationState {
     protected Iterable<AEKey> findFuzzyParent(AEKey input) {
         return Iterables.transform(list.findFuzzy(input, FuzzyMode.IGNORE_ALL), Map.Entry::getKey);
     }
+
+    @Override
+    protected void cacheFuzzyParent(AEKey what) {
+        if (getClass() == NetworkCraftingSimulationState.class) {
+            list.forEachFuzzy(what, FuzzyMode.IGNORE_ALL, this::cacheInherited);
+        } else {
+            super.cacheFuzzyParent(what);
+        }
+    }
 }

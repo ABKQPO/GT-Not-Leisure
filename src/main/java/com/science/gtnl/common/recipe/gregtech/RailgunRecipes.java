@@ -1,6 +1,5 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -17,6 +16,7 @@ import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTOreDictUnificator;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class RailgunRecipes implements IRecipePool {
 
@@ -52,7 +52,7 @@ public class RailgunRecipes implements IRecipePool {
         int[] fieldGenerators = { 1, 2, 4 };
         for (int tier = 1; tier <= EnergyModuleItem.TIERS; tier++) {
             boolean uhv = tier == EnergyModuleItem.TIERS;
-            List<ItemStack> inputs = new ArrayList<>();
+            List<ItemStack> inputs = new ObjectArrayList<>();
             inputs.add(GTOreDictUnificator.get(OrePrefixes.circuit, uhv ? Materials.UHV : Materials.UV, 4));
             inputs.add(GTOreDictUnificator.get(OrePrefixes.plateDouble, Materials.Neutronium, 2));
             inputs.add(ItemList.Field_Generator_UV.get(fieldGenerators[tier - 1]));

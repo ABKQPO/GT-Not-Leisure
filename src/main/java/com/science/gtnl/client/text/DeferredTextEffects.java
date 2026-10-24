@@ -1,8 +1,6 @@
 package com.science.gtnl.client.text;
 
 import java.nio.FloatBuffer;
-import java.util.ArrayDeque;
-import java.util.Deque;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -10,11 +8,14 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 /** Replays effect text after the model geometry that owns Angelica's deferred font batch. */
 public class DeferredTextEffects {
 
-    private static final Deque<Draw> PENDING = new ArrayDeque<>();
-    private static final Deque<Draw> POOL = new ArrayDeque<>();
+    private static final ObjectArrayFIFOQueue<Draw> PENDING = new ObjectArrayFIFOQueue<>();
+    private static final ObjectArrayList<Draw> POOL = new ObjectArrayList<>();
     private static boolean flushing;
 
     public static boolean isFlushing() {
@@ -22,17 +23,17 @@ public class DeferredTextEffects {
     }
 
     public static void enqueue(FontRenderer font, String text, float x, float y, int color, boolean shadow) {
-        Draw draw = POOL.pollFirst();
-        if (draw == null) draw = new Draw();
+        Draw draw = POOL.isEmpty() ? new Draw() : POOL.pop();
         draw.capture(font, text, x, y, color, shadow);
-        PENDING.addLast(draw);
+        PENDING.enqueue(draw);
     }
 
     public static void flush() {
         if (flushing || PENDING.isEmpty() || EffectTextRenderer.isCapturing()) return;
         flushing = true;
         try (TextRenderState ignored = new TextRenderState()) {
-            for (Draw draw; (draw = PENDING.pollFirst()) != null;) {
+            while (!PENDING.isEmpty()) {
+                Draw draw = PENDING.dequeue();
                 try {
                     draw.render();
                 } finally {
@@ -46,13 +47,13 @@ public class DeferredTextEffects {
     }
 
     public static void clear() {
-        for (Draw draw; (draw = PENDING.pollFirst()) != null;) recycle(draw);
+        while (!PENDING.isEmpty()) recycle(PENDING.dequeue());
     }
 
     private static void recycle(Draw draw) {
         draw.font = null;
         draw.text = null;
-        if (POOL.size() < 256) POOL.addFirst(draw);
+        if (POOL.size() < 256) POOL.push(draw);
     }
 
     /** Mutable storage is reused between frames and owned exclusively by the render thread. */

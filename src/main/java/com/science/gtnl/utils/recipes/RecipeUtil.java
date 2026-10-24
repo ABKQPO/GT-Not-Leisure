@@ -1,8 +1,6 @@
 package com.science.gtnl.utils.recipes;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,10 +20,12 @@ import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.core.util.minecraft.ItemUtils;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class RecipeUtil {
 
-    private static final ArrayList<ItemStack> mEmptyItems = new ArrayList<>();
+    private static final ObjectArrayList<ItemStack> mEmptyItems = new ObjectArrayList<>();
 
     static {
         mEmptyItems.add(ItemList.Cell_Empty.get(1));
@@ -96,7 +96,7 @@ public class RecipeUtil {
         int aOriginalCount = aInputs.getAllRecipes()
             .size();
 
-        Map<String, GTRecipe> uniqueRecipes = new HashMap<>();
+        Map<String, GTRecipe> uniqueRecipes = new Object2ObjectOpenHashMap<>();
 
         for (GTRecipe x : aInputs.getAllRecipes()) {
             if (x == null) {
@@ -111,10 +111,10 @@ public class RecipeUtil {
             FluidStack[] aOutputFluids = x.mFluidOutputs.clone();
             ItemStack aSpecialItems = (x.mSpecialItems instanceof ItemStack) ? (ItemStack) x.mSpecialItems : null;
 
-            List<ItemStack> aInputItemsMap = new ArrayList<>();
-            List<ItemStack> aOutputItemsMap = new ArrayList<>();
-            List<FluidStack> aInputFluidsMap = new ArrayList<>();
-            List<FluidStack> aOutputFluidsMap = new ArrayList<>();
+            List<ItemStack> aInputItemsMap = new ObjectArrayList<>();
+            List<ItemStack> aOutputItemsMap = new ObjectArrayList<>();
+            List<FluidStack> aInputFluidsMap = new ObjectArrayList<>();
+            List<FluidStack> aOutputFluidsMap = new ObjectArrayList<>();
 
             if (aInputItems.length >= 4 && aInputItems[2] != null
                 && aInputItems[3] != null
@@ -184,7 +184,7 @@ public class RecipeUtil {
                 x.mSpecialValue);
             newRecipe.isNBTSensitive = true;
             if (x.owners != null) {
-                newRecipe.owners = new ArrayList<>(x.owners);
+                newRecipe.owners = new ObjectArrayList<>(x.owners);
             }
 
             // 构建包含 NBT 的唯一键
@@ -259,7 +259,7 @@ public class RecipeUtil {
         int aOriginalCount = aInputs.getAllRecipes()
             .size();
 
-        Map<String, GTRecipe> uniqueRecipes = new HashMap<>();
+        Map<String, GTRecipe> uniqueRecipes = new Object2ObjectOpenHashMap<>();
 
         for (GTRecipe x : aInputs.getAllRecipes()) {
             if (x == null) {
@@ -274,10 +274,10 @@ public class RecipeUtil {
             FluidStack[] aOutputFluids = x.mFluidOutputs.clone();
             ItemStack aSpecialItems = (x.mSpecialItems instanceof ItemStack) ? (ItemStack) x.mSpecialItems : null;
 
-            List<ItemStack> aInputItemsMap = new ArrayList<>();
-            List<ItemStack> aOutputItemsMap = new ArrayList<>();
-            List<FluidStack> aInputFluidsMap = new ArrayList<>();
-            List<FluidStack> aOutputFluidsMap = new ArrayList<>();
+            List<ItemStack> aInputItemsMap = new ObjectArrayList<>();
+            List<ItemStack> aOutputItemsMap = new ObjectArrayList<>();
+            List<FluidStack> aInputFluidsMap = new ObjectArrayList<>();
+            List<FluidStack> aOutputFluidsMap = new ObjectArrayList<>();
 
             // 物品->流体转换并过滤
             for (ItemStack in : aInputItems) {
@@ -340,7 +340,7 @@ public class RecipeUtil {
                 x.mEUt,
                 x.mSpecialValue);
             if (x.owners != null) {
-                newRecipe.owners = new ArrayList<>(x.owners);
+                newRecipe.owners = new ObjectArrayList<>(x.owners);
             }
 
             // 构建包含 NBT 的唯一键

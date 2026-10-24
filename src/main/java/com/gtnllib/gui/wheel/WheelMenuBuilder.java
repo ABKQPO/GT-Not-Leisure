@@ -1,15 +1,16 @@
 package com.gtnllib.gui.wheel;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 public class WheelMenuBuilder {
 
-    private final List<WheelEntry> entries = new ArrayList<>();
+    private final List<WheelEntry> entries = new ObjectArrayList<>();
     private int slotsPerPage = WheelMenuModel.DEFAULT_SLOTS_PER_PAGE;
     private WheelStyle style = WheelStyle.DEFAULT;
 
@@ -61,7 +62,7 @@ public class WheelMenuBuilder {
 
     public static class SubmenuBuilder {
 
-        private final List<WheelEntry> entries = new ArrayList<>();
+        private final List<WheelEntry> entries = new ObjectArrayList<>();
 
         private SubmenuBuilder() {}
 

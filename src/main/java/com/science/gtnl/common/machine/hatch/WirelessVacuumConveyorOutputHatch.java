@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -24,6 +23,7 @@ import gregtech.common.tileentities.machines.multi.nanochip.factory.VacuumFactor
 import gregtech.common.tileentities.machines.multi.nanochip.factory.VacuumFactoryGrid;
 import gregtech.common.tileentities.machines.multi.nanochip.hatches.MTEHatchVacuumConveyorOutput;
 import gregtech.common.tileentities.machines.multi.nanochip.util.CircuitComponentPacket;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
@@ -170,7 +170,7 @@ public class WirelessVacuumConveyorOutputHatch extends MTEHatchVacuumConveyorOut
 
     @Override
     public String[] getInfoData() {
-        ArrayList<String> info = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        ObjectArrayList<String> info = new ObjectArrayList<>(Arrays.asList(super.getInfoData()));
         if (targetSet) {
             info.add(
                 StatCollector.translateToLocalFormatted(

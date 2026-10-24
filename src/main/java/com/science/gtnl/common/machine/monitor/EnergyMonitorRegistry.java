@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.monitor;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -12,6 +11,7 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEBasicMachine;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class EnergyMonitorRegistry {
 
@@ -32,7 +32,7 @@ public class EnergyMonitorRegistry {
     }
 
     public static List<MetaTileEntity> snapshot() {
-        return new ArrayList<>(TRACKED);
+        return new ObjectArrayList<>(TRACKED);
     }
 
     public static void cleanupInvalidEntries() {

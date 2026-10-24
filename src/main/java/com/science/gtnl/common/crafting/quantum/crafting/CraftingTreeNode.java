@@ -184,7 +184,11 @@ public class CraftingTreeNode {
                 return;
             }
             if (this.job.canUseMissingItems()) {
-                throw new CraftBranchFailure(this.what, totalRequestedItems, PlayerMessages.CraftingNoNetOutput);
+                throw new CraftBranchFailure(
+                    this.what,
+                    totalRequestedItems,
+                    PlayerMessages.CraftingNoNetOutput,
+                    this.job.describeCycle(this.what));
             }
             throw new CraftBranchFailure(this.what, totalRequestedItems);
         }
@@ -298,8 +302,8 @@ public class CraftingTreeNode {
                     pro.request(child, times);
                 }
             } catch (CraftBranchFailure failure) {
-                // A cycle below that cannot make an item only leaves this one missing, unlike one the request
-                // itself can only come out of
+                // A cycle below that cannot make an item only leaves this item missing. A request that can only come
+                // out of such a cycle still fails, see CraftingTreeNode#request.
                 if (failure.getWhat()
                     .equals(this.job.getOutput())) {
                     throw failure;

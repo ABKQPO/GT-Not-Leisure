@@ -1,6 +1,5 @@
 package com.science.gtnl.common.material;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -15,12 +14,13 @@ import gregtech.api.interfaces.IOreMaterial;
 import gregtech.api.interfaces.IStoneType;
 import gregtech.api.interfaces.ISubTagContainer;
 import gregtech.api.util.GTOreDictUnificator;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class ShimmerOreMaterial implements IOreMaterial {
 
     public static final String INTERNAL_NAME = "Shimmer";
 
-    private static final List<IStoneType> VALID_STONES = new ArrayList<>();
+    private static final List<IStoneType> VALID_STONES = new ObjectArrayList<>();
 
     private final int id;
     private final TextureSet textureSet;

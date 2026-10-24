@@ -1,6 +1,5 @@
 package com.science.gtnl.mixins.late.gregtech;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -15,6 +14,8 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.TierEU;
 import gregtech.common.tileentities.machines.multi.MTETreeFarm;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @Mixin(value = MTETreeFarm.class, remap = false)
 public class MixinMTETreeFarm {
@@ -32,8 +33,8 @@ public class MixinMTETreeFarm {
         ItemStack newSaplingIn = saplingIn.copy();
         newSaplingIn.stackSize = 0;
 
-        List<ItemStack> outputs = new ArrayList<>();
-        List<Integer> chances = new ArrayList<>();
+        List<ItemStack> outputs = new ObjectArrayList<>();
+        IntArrayList chances = new IntArrayList();
 
         ItemStack newLogOut = log.copy();
         newLogOut.stackSize = 48;
@@ -62,10 +63,7 @@ public class MixinMTETreeFarm {
         RecipeBuilder.builder()
             .itemInputs(newSaplingIn)
             .itemOutputs(outputs.toArray(new ItemStack[0]))
-            .outputChances(
-                chances.stream()
-                    .mapToInt(i -> i)
-                    .toArray())
+            .outputChances(chances.toIntArray())
             .duration(40)
             .eut(TierEU.RECIPE_LV)
             .addTo(GTNLRecipeMaps.WoodcutterRecipes);

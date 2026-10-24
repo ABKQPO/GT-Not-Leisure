@@ -1,6 +1,5 @@
 package com.science.gtnl.loader;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.util.EnumChatFormatting;
@@ -320,6 +319,7 @@ import gregtech.common.covers.CoverPump;
 import gregtech.common.covers.CoverSteamRegulator;
 import gregtech.common.covers.CoverSteamValve;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import tectech.thing.CustomItemList;
 
 public class MachineLoader {
@@ -1607,7 +1607,7 @@ public class MachineLoader {
         AnimatedTooltipHandler
             .addItemTooltip(GTNLItemList.StronzeReinforcedSteamInputHatch.get(1), AnimatedText.AUTHOR_LINEBROKE);
 
-        Set<GTUtility.FluidId> acceptedFluids = new HashSet<>();
+        Set<GTUtility.FluidId> acceptedFluids = new ObjectOpenHashSet<>();
         acceptedFluids.add(
             GTUtility.FluidId.create(
                 GTNLMaterials.FluidMana.getFluidOrGas(1)

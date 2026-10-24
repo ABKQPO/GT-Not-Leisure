@@ -1,11 +1,7 @@
 package com.science.gtnl.client.railgun;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.client.Minecraft;
@@ -33,6 +29,13 @@ import com.science.gtnl.config.MainConfig;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.ints.Int2LongOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class RailgunBeamRenderer {
@@ -76,10 +79,10 @@ public class RailgunBeamRenderer {
         long lastFrameMillis;
     }
 
-    private static final List<Shot> SHOTS = new ArrayList<>();
-    private static final Map<Integer, HeldBeam> HELD = new HashMap<>();
+    private static final List<Shot> SHOTS = new ObjectArrayList<>();
+    private static final Int2ObjectOpenHashMap<HeldBeam> HELD = new Int2ObjectOpenHashMap<>();
     private static final Map<Integer, RailgunBeamUpdatePacket> PENDING = new ConcurrentHashMap<>();
-    private static final Map<Integer, Long> LAST_ARC = new HashMap<>();
+    private static final Int2LongOpenHashMap LAST_ARC = new Int2LongOpenHashMap();
     private static boolean localRequested;
 
     public static void submit(RailgunBeamUpdatePacket packet) {
@@ -130,8 +133,8 @@ public class RailgunBeamRenderer {
         return world != null && beam != null && world.getTotalWorldTime() - beam.lastUpdateTick <= UPDATE_TIMEOUT;
     }
 
-    public static Set<Integer> shooters() {
-        return new HashSet<>(HELD.keySet());
+    public static IntSet shooters() {
+        return new IntOpenHashSet(HELD.keySet());
     }
 
     public static void shot(int shooterId, Vec3d from, Vec3d to, boolean ehv, float intensity) {
@@ -157,8 +160,8 @@ public class RailgunBeamRenderer {
         long now = world.getTotalWorldTime();
         SHOTS.removeIf(shot -> shot.until <= now);
         applyPending(now);
-        HELD.entrySet()
-            .removeIf(entry -> now - entry.getValue().lastUpdateTick > UPDATE_TIMEOUT);
+        HELD.values()
+            .removeIf(held -> now - held.lastUpdateTick > UPDATE_TIMEOUT);
         List<Beam> beams = collect(now, event.partialTicks);
         retainArcTimers(beams);
         spawnAmbientArcs(beams, now);
@@ -172,7 +175,7 @@ public class RailgunBeamRenderer {
     }
 
     private static void retainArcTimers(List<Beam> beams) {
-        Set<Integer> active = new HashSet<>(beams.size());
+        IntOpenHashSet active = new IntOpenHashSet(beams.size());
         for (Beam beam : beams) active.add(beam.seed);
         LAST_ARC.keySet()
             .retainAll(active);
@@ -209,7 +212,7 @@ public class RailgunBeamRenderer {
     }
 
     private static List<Beam> collect(long now, float partialTicks) {
-        List<Beam> beams = new ArrayList<>(SHOTS.size() + HELD.size());
+        List<Beam> beams = new ObjectArrayList<>(SHOTS.size() + HELD.size());
         for (Shot shot : SHOTS) {
             if (!RailgunClientFx.visible(shot.shooterId, shot.from)) continue;
             if (valid(shot.from, shot.to))
@@ -217,14 +220,16 @@ public class RailgunBeamRenderer {
         }
         World world = Minecraft.getMinecraft().theWorld;
         long millis = Minecraft.getSystemTime();
-        HELD.forEach((id, held) -> {
+        for (Int2ObjectMap.Entry<HeldBeam> entry : Int2ObjectMaps.fastIterable(HELD)) {
+            int id = entry.getIntKey();
+            HeldBeam held = entry.getValue();
             advance(held, millis);
             Entity shooter = world == null ? null : world.getEntityByID(id);
             Vec3d origin = FxMuzzleAnchor.muzzle(id, partialTicks);
-            if (shooter == null || origin == null || !RailgunClientFx.visible(id, origin)) return;
+            if (shooter == null || origin == null || !RailgunClientFx.visible(id, origin)) continue;
             Vec3d end = aimEnd(shooter, partialTicks, Math.max(MIN_BEAM_LENGTH, Math.min(MAX_BEAM_LENGTH, held.range)));
             if (valid(origin, end)) beams.add(new Beam(pastMuzzle(origin, end), end, held.ehv, 1F, id));
-        });
+        }
         return beams;
     }
 

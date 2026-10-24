@@ -1,12 +1,11 @@
 package com.science.gtnl.utils.world.stellar;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import lombok.Getter;
 
 public class StellarIrisTeamState {
@@ -24,7 +23,7 @@ public class StellarIrisTeamState {
     private int lifetimePoints;
     @Getter
     private int tier;
-    private final Map<String, Integer> levels = new LinkedHashMap<>();
+    private final Object2IntLinkedOpenHashMap<String> levels = new Object2IntLinkedOpenHashMap<>();
 
     public void setSpendablePoints(int spendablePoints) {
         this.spendablePoints = Math.max(0, spendablePoints);
@@ -39,7 +38,7 @@ public class StellarIrisTeamState {
     }
 
     public int getLevel(String upgradeId) {
-        return levels.getOrDefault(upgradeId, 0);
+        return levels.getInt(upgradeId);
     }
 
     public void setLevel(String upgradeId, int level) {
@@ -47,14 +46,14 @@ public class StellarIrisTeamState {
             return;
         }
         if (level <= 0) {
-            levels.remove(upgradeId);
+            levels.removeInt(upgradeId);
             return;
         }
         levels.put(upgradeId, level);
     }
 
-    public Map<String, Integer> getLevels() {
-        return Collections.unmodifiableMap(levels);
+    public Object2IntMap<String> getLevels() {
+        return Object2IntMaps.unmodifiable(levels);
     }
 
     public StellarIrisTeamSnapshot createSnapshot() {
@@ -67,13 +66,13 @@ public class StellarIrisTeamState {
         tag.setInteger(LIFETIME_POINTS_TAG, lifetimePoints);
         tag.setInteger(TIER_TAG, tier);
         NBTTagList levelTags = new NBTTagList();
-        for (Map.Entry<String, Integer> entry : levels.entrySet()) {
-            if (entry.getValue() <= 0) {
+        for (Object2IntMap.Entry<String> entry : Object2IntMaps.fastIterable(levels)) {
+            if (entry.getIntValue() <= 0) {
                 continue;
             }
             NBTTagCompound levelTag = new NBTTagCompound();
             levelTag.setString(LEVEL_ID_TAG, entry.getKey());
-            levelTag.setInteger(LEVEL_VALUE_TAG, entry.getValue());
+            levelTag.setInteger(LEVEL_VALUE_TAG, entry.getIntValue());
             levelTags.appendTag(levelTag);
         }
         tag.setTag(LEVELS_TAG, levelTags);

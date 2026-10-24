@@ -6,7 +6,6 @@ import java.util.List;
 
 import net.minecraft.util.StatCollector;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
@@ -54,6 +53,7 @@ import gregtech.api.recipe.RecipeMapBuilder;
 import gregtech.api.util.GTRecipe;
 import gregtech.nei.GTNEIDefaultHandler;
 import gregtech.nei.formatter.HeatingCoilSpecialValueFormatter;
+import it.unimi.dsi.fastutil.ints.IntLongPair;
 
 public class GTNLRecipeMaps {
 
@@ -305,8 +305,10 @@ public class GTNLRecipeMaps {
         .neiHandlerInfo(builder -> builder.setDisplayStack(GTNLItemList.LargeNaquadahReactor.get(1)))
         .neiRecipeComparator(
             Comparator
-                .<GTRecipe, Pair<Integer, Long>>comparing(
-                    recipe -> recipe.getMetadataOrDefault(NaquadahReactorMetadata.INSTANCE, Pair.of(0, 0L)))
+                .comparing(
+                    (GTRecipe recipe) -> recipe
+                        .getMetadataOrDefault(NaquadahReactorMetadata.INSTANCE, NaquadahReactorMetadata.NONE),
+                    IntLongPair.lexComparator())
                 .thenComparing(GTRecipe::compareTo))
         .addSpecialTexture(59, 20, 58, 42, GGUITextures.PICTURE_NAQUADAH_REACTOR)
         .build();

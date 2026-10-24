@@ -1,6 +1,5 @@
 package com.science.gtnl.client.celestweave;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.model.ModelBiped;
@@ -12,11 +11,12 @@ import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class CelestweaveSkinLayers {
 
-    private static final List<ModelRenderer> HIDDEN = new ArrayList<>();
+    private static final List<ModelRenderer> HIDDEN = new ObjectArrayList<>();
 
     private CelestweaveSkinLayers() {}
 

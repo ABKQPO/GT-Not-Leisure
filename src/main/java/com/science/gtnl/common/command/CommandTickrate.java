@@ -1,6 +1,5 @@
 package com.science.gtnl.common.command;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,6 +20,8 @@ import net.minecraft.world.GameRules;
 import com.science.gtnl.api.TickrateAPI;
 import com.science.gtnl.common.item.items.TimeStopPocketWatch;
 import com.science.gtnl.config.MainConfig;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 /**
  * @author Guilherme Chaguri
@@ -60,7 +61,7 @@ public class CommandTickrate extends CommandBase {
         if (args.length < 1) {
             return null;
         }
-        List<String> tab = new ArrayList<>();
+        List<String> tab = new ObjectArrayList<>();
         if (args.length == 1) {
             tab.addAll(suggestedTickrateValues);
             float defaultTickrate = MainConfig.tickrate.defaultTickrate;

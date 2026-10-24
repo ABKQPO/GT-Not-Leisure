@@ -1,6 +1,5 @@
 package galaxyspace.core.nei;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.init.Items;
@@ -20,6 +19,7 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.util.GTOreDictUnificator;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SuppressWarnings("unused")
 public class NEIGTNLGalaxySpaceConfig implements IConfigureNEI {
@@ -55,7 +55,7 @@ public class NEIGTNLGalaxySpaceConfig implements IConfigureNEI {
         int x = 4;
         int y = 4 - recipeHandler.y;
 
-        List<PositionedStack> input = new ArrayList<>();
+        List<PositionedStack> input = new ObjectArrayList<>();
         input.add(new PositionedStack(ModsItemlist.StevesCartsStandardHull.get(1), 134 - x, 10 - y));
         input.add(
             new PositionedStack(
@@ -88,17 +88,17 @@ public class NEIGTNLGalaxySpaceConfig implements IConfigureNEI {
 
         recipeHandler.addRecipe(input, new PositionedStack(GTNLItemList.SteamRocket.get(1), 134 - x, 73 - y));
 
-        List<PositionedStack> input2 = new ArrayList<>(input);
+        List<PositionedStack> input2 = new ObjectArrayList<>(input);
         input2.add(new PositionedStack(new ItemStack(GSBlocks.ironChest, 1, 3), 134 - x, 46 - y));
         recipeHandler
             .addRecipe(input2, new PositionedStack(GTNLItemList.SteamRocket.getWithMeta(1, 1), 134 - x, 73 - y));
 
-        input2 = new ArrayList<>(input);
+        input2 = new ObjectArrayList<>(input);
         input2.add(new PositionedStack(new ItemStack(GSBlocks.ironChest, 1, 0), 134 - x, 46 - y));
         recipeHandler
             .addRecipe(input2, new PositionedStack(GTNLItemList.SteamRocket.getWithMeta(1, 2), 134 - x, 73 - y));
 
-        input2 = new ArrayList<>(input);
+        input2 = new ObjectArrayList<>(input);
         input2.add(new PositionedStack(new ItemStack(GSBlocks.ironChest, 1, 1), 134 - x, 46 - y));
         recipeHandler
             .addRecipe(input2, new PositionedStack(GTNLItemList.SteamRocket.getWithMeta(1, 3), 134 - x, 73 - y));

@@ -10,7 +10,6 @@ import static com.science.gtnl.common.wireless.WirelessCardActions.type;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,6 +30,8 @@ import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class WirelessCardClientView {
@@ -80,7 +81,7 @@ public class WirelessCardClientView {
             page = 0;
         WirelessCardViewCodec.localizeDimensions(data);
         source = data;
-        List<Row> next = new ArrayList<>();
+        List<Row> next = new ObjectArrayList<>();
         NBTTagList rows = data.getTagList("rows", 10);
         for (int i = 0; i < rows.tagCount(); i++) {
             NBTTagCompound row = rows.getCompoundTagAt(i);
@@ -99,7 +100,7 @@ public class WirelessCardClientView {
     private Row readRow(NBTTagCompound data, String prefix, String position) {
         WirelessCardViewCodec.localizePosition(data, "position", source.getCompoundTag("dimensions"));
         WirelessCardViewCodec.localizeInterfaceNames(data);
-        List<Row> children = new ArrayList<>();
+        List<Row> children = new ObjectArrayList<>();
         NBTTagList entries = data.getTagList("children", 10);
         for (int i = 0; i < entries.tagCount(); i++)
             children.add(readRow(entries.getCompoundTagAt(i), prefix, position));
@@ -252,7 +253,7 @@ public class WirelessCardClientView {
     private NBTTagCompound buildListing(Row machine, String typeKey, int requestedPage) {
         boolean detail = source.getBoolean("detail");
         NBTTagCompound data = copy(source);
-        List<Row> rows = new ArrayList<>();
+        List<Row> rows = new ObjectArrayList<>();
         if (detail) {
             rows.addAll(roots);
         } else {
@@ -380,13 +381,13 @@ public class WirelessCardClientView {
     }
 
     private static List<Row> collapse(List<Row> rows) {
-        List<Row> result = new ArrayList<>();
-        Map<String, List<Row>> types = new LinkedHashMap<>();
+        List<Row> result = new ObjectArrayList<>();
+        Map<String, List<Row>> types = new Object2ObjectLinkedOpenHashMap<>();
         for (Row row : rows) {
             String key = row.data()
                 .getString("typeKey");
             if (key.isEmpty()) result.add(row);
-            else types.computeIfAbsent(key, ignored -> new ArrayList<>())
+            else types.computeIfAbsent(key, ignored -> new ObjectArrayList<>())
                 .add(row);
         }
         types.forEach((key, children) -> {
@@ -469,7 +470,7 @@ public class WirelessCardClientView {
                         .getString("sortKey")));
         boolean[] pinned = new boolean[rows.size()];
         if (!previous.isEmpty()) {
-            Map<String, Row> remaining = new LinkedHashMap<>();
+            Map<String, Row> remaining = new Object2ObjectLinkedOpenHashMap<>();
             for (Row row : rows) remaining.put(
                 row.data()
                     .getString("key"),
@@ -491,7 +492,7 @@ public class WirelessCardClientView {
                 .iterator();
             for (int i = 0; i < ordered.length; i++) rows.set(i, ordered[i] == null ? moving.next() : ordered[i]);
         }
-        List<RowOrder> order = new ArrayList<>();
+        List<RowOrder> order = new ObjectArrayList<>();
         for (int i = 0; i < rows.size(); i++) {
             NBTTagCompound row = rows.get(i)
                 .data();

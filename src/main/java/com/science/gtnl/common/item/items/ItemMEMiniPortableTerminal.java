@@ -2,8 +2,6 @@ package com.science.gtnl.common.item.items;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -47,12 +45,15 @@ import baubles.common.lib.PlayerHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 
 public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
 
     private static final String ID_TAG = "gtnlMiniTerminalId";
     private static final String PICKUP_TAG = "gtnlMiniTerminalPickupToME";
-    private static final Map<EntityPlayer, Map<Integer, ItemStack>> WORN_SNAPSHOTS = new WeakHashMap<>();
+    private static final Map<EntityPlayer, Int2ObjectOpenHashMap<ItemStack>> WORN_SNAPSHOTS = new WeakHashMap<>();
 
     public ItemMEMiniPortableTerminal() {
         setUnlocalizedName("gtnl.me_mini_portable_terminal");
@@ -144,7 +145,9 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
     public static int findTerminalSlot(EntityPlayer player, UUID id) {
         if (id == null || id.equals(getTerminalId(player.inventory.getItemStack()))) return -1;
         int found = -1;
-        for (int slot : getTerminalSlots(player)) {
+        IntList slots = getTerminalSlots(player);
+        for (int i = 0; i < slots.size(); i++) {
+            int slot = slots.getInt(i);
             if (!id.equals(getTerminalId(getTerminalStack(player, slot)))) continue;
             if (found >= 0) return -1;
             found = slot;
@@ -155,18 +158,19 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
     public static boolean isTerminalDuplicated(EntityPlayer player, UUID id) {
         if (id == null) return false;
         int count = 0;
-        for (int slot : getTerminalSlots(player)) {
-            if (id.equals(getTerminalId(getTerminalStack(player, slot))) && ++count > 1) return true;
+        IntList slots = getTerminalSlots(player);
+        for (int i = 0; i < slots.size(); i++) {
+            if (id.equals(getTerminalId(getTerminalStack(player, slots.getInt(i)))) && ++count > 1) return true;
         }
         return false;
     }
 
-    public static boolean hasUniqueIdentity(EntityPlayer player, ItemStack stack, List<Integer> terminalSlots) {
+    public static boolean hasUniqueIdentity(EntityPlayer player, ItemStack stack, IntList terminalSlots) {
         String id = rawIdentity(stack);
         if (id.isEmpty() || id.equals(rawIdentity(player.inventory.getItemStack()))) return false;
         int count = 0;
-        for (int slot : terminalSlots) {
-            if (id.equals(rawIdentity(getTerminalStack(player, slot))) && ++count > 1) return false;
+        for (int i = 0; i < terminalSlots.size(); i++) {
+            if (id.equals(rawIdentity(getTerminalStack(player, terminalSlots.getInt(i)))) && ++count > 1) return false;
         }
         return true;
     }
@@ -176,12 +180,12 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
     }
 
     public static int findFirstTerminalSlot(EntityPlayer player) {
-        List<Integer> slots = getTerminalSlots(player);
-        return slots.isEmpty() ? -1 : slots.get(0);
+        IntList slots = getTerminalSlots(player);
+        return slots.isEmpty() ? -1 : slots.getInt(0);
     }
 
-    public static List<Integer> getTerminalSlots(EntityPlayer player) {
-        List<Integer> slots = new ArrayList<>();
+    public static IntList getTerminalSlots(EntityPlayer player) {
+        IntArrayList slots = new IntArrayList();
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++) {
             if (isMiniTerminal(player.inventory.mainInventory[slot])) slots.add(slot);
         }
@@ -256,7 +260,9 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
     private static void separateDuplicateIdentity(ItemStack stack, EntityPlayerMP player) {
         String id = rawIdentity(stack);
         if (id.isEmpty() || MiniTerminalSessionService.isSessionStack(player, stack)) return;
-        for (int slot : getTerminalSlots(player)) {
+        IntList slots = getTerminalSlots(player);
+        for (int i = 0; i < slots.size(); i++) {
+            int slot = slots.getInt(i);
             ItemStack other = getTerminalStack(player, slot);
             if (other == stack || !id.equals(rawIdentity(other))) continue;
             ItemStackNBT.setString(
@@ -321,7 +327,8 @@ public class ItemMEMiniPortableTerminal extends ToolWirelessTerminal {
         // Real slots only: the API view may append a Yog-Sothoth terminal's virtual slots.
         InventoryBaubles worn = PlayerHandler.getPlayerBaubles(player);
         if (worn == null) return;
-        Map<Integer, ItemStack> snapshots = WORN_SNAPSHOTS.computeIfAbsent(player, key -> new HashMap<>());
+        Int2ObjectOpenHashMap<ItemStack> snapshots = WORN_SNAPSHOTS
+            .computeIfAbsent(player, key -> new Int2ObjectOpenHashMap<>());
 
         for (int slot = 0; slot < worn.getSizeInventory(); slot++) {
             if (worn.getStackInSlot(slot) != stack) continue;

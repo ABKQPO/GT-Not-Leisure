@@ -82,6 +82,7 @@ import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
 import gtPlusPlus.api.objects.minecraft.BlockPos;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSteamBusInput;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import tectech.thing.metaTileEntity.hatch.MTEHatchDynamoMulti;
@@ -101,13 +102,13 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         return colorOptions;
     }
 
-    public ArrayList<MTEHatch> mExoticDynamoHatches = new ArrayList<>();
-    public ArrayList<ParallelControllerHatch> mParallelControllerHatches = new ArrayList<>();
+    public ObjectArrayList<MTEHatch> mExoticDynamoHatches = new ObjectArrayList<>();
+    public ObjectArrayList<ParallelControllerHatch> mParallelControllerHatches = new ObjectArrayList<>();
 
     public GTCoilTracker.MultiCoilLease coilLease = null;
-    public final ArrayList<ItemStack> recipeSearchItemInputs = new ArrayList<>();
-    public final ArrayList<FluidStack> recipeSearchFluidInputs = new ArrayList<>();
-    public List<SlotWidget> slotWidgets = new ArrayList<>(1);
+    public final ObjectArrayList<ItemStack> recipeSearchItemInputs = new ObjectArrayList<>();
+    public final ObjectArrayList<FluidStack> recipeSearchFluidInputs = new ObjectArrayList<>();
+    public List<SlotWidget> slotWidgets = new ObjectArrayList<>(1);
     public int mCountCasing = -1;
     public int mGlassTier = -1;
     public int mParallelTier = 0;
@@ -669,7 +670,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         addBaseTextScroll(builder);
 
         if (supportsMachineModeSwitch() && machineModeIcons == null) {
-            machineModeIcons = new ArrayList<>(4);
+            machineModeIcons = new ObjectArrayList<>(4);
             setMachineModeIcons();
         }
         builder.widget(createPowerSwitchButton(builder))
@@ -729,7 +730,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
             .setPlayClickSound(true)
             .setEnabled(canBeMuffled)
             .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
+                List<UITexture> ret = new ObjectArrayList<>();
                 if (isMuffled()) {
                     ret.add(GTUITextures.BUTTON_STANDARD_PRESSED);
                     ret.add(GTUITextures.OVERLAY_BUTTON_MUFFLE_ON);

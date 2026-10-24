@@ -1,11 +1,7 @@
 package com.science.gtnl.common.yogsothoth;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,17 +37,24 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.ints.IntSets;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public final class YogTerminalService {
 
     public static final YogTerminalService INSTANCE = new YogTerminalService();
     private static final int USE_TIMEOUT_TICKS = 20;
     private static final int REFRESH_INTERVAL = 10;
-    private static final Map<UUID, Session> SESSIONS = new HashMap<>();
+    private static final Map<UUID, Session> SESSIONS = new Object2ObjectOpenHashMap<>();
     // Per player and record: the structure and revision the client has.
-    private static final Map<UUID, Map<UUID, long[]>> SENT = new HashMap<>();
-    private static final Map<UUID, Set<UUID>> HELD = new HashMap<>();
-    private static final List<Place> CLICK_CONVERTED = new ArrayList<>();
+    private static final Map<UUID, Map<UUID, long[]>> SENT = new Object2ObjectOpenHashMap<>();
+    private static final Map<UUID, Set<UUID>> HELD = new Object2ObjectOpenHashMap<>();
+    private static final List<Place> CLICK_CONVERTED = new ObjectArrayList<>();
     private static final Map<EntityPlayer, CarriedEntries> CARRIED = new WeakHashMap<>();
     private static int clickDepth;
     private static int openingSlot = Integer.MIN_VALUE;
@@ -130,7 +133,7 @@ public final class YogTerminalService {
     }
 
     static List<Place> places(EntityPlayer player) {
-        List<Place> places = new ArrayList<>(48);
+        List<Place> places = new ObjectArrayList<>(48);
         for (int index = 0; index < player.inventory.mainInventory.length; index++)
             places.add(Place.main(player, index));
         InventoryBaubles baubles = PlayerHandler.getPlayerBaubles(player);
@@ -167,7 +170,7 @@ public final class YogTerminalService {
         HELD.clear();
         for (YogRecord record : YogTerminalStorage.all()) {
             if (record.holder != null && record.active >= 0)
-                HELD.computeIfAbsent(record.holder, ignored -> new HashSet<>())
+                HELD.computeIfAbsent(record.holder, ignored -> new ObjectOpenHashSet<>())
                     .add(record.id);
         }
     }
@@ -221,8 +224,8 @@ public final class YogTerminalService {
                 if (place.kind == Place.SLOT) places.add(place);
             }
         }
-        Set<UUID> held = HELD.computeIfAbsent(player.getUniqueID(), ignored -> new HashSet<>());
-        Set<UUID> seen = new HashSet<>();
+        Set<UUID> held = HELD.computeIfAbsent(player.getUniqueID(), ignored -> new ObjectOpenHashSet<>());
+        Set<UUID> seen = new ObjectOpenHashSet<>();
         for (Place place : places) {
             ItemStack stack = place.get();
             YogToken.Link link = YogToken.link(stack);
@@ -333,7 +336,7 @@ public final class YogTerminalService {
     }
 
     public static boolean blocksClick(Container container, int slotId, int button, int mode, EntityPlayer player) {
-        Set<Integer> locked = player.worldObj.isRemote ? YogTerminalLocks.client() : locks(player);
+        IntSet locked = player.worldObj.isRemote ? YogTerminalLocks.client() : locks(player);
         if (locked.isEmpty()) return false;
         if (mode == 2 && locked.contains(button)) return true;
         if (slotId < 0 || slotId >= container.inventorySlots.size()) return false;
@@ -418,7 +421,7 @@ public final class YogTerminalService {
     }
 
     private static void refresh(EntityPlayerMP player) {
-        Set<UUID> visible = new HashSet<>();
+        Set<UUID> visible = new ObjectOpenHashSet<>();
         for (Place place : places(player)) {
             ItemStack stack = place.get();
             if (YogToken.isYog(stack)) {
@@ -429,7 +432,8 @@ public final class YogTerminalService {
                 if (link != null) visible.add(link.id());
             }
         }
-        Map<UUID, long[]> sent = SENT.computeIfAbsent(player.getUniqueID(), ignored -> new HashMap<>());
+        Map<UUID, long[]> sent = SENT
+            .computeIfAbsent(player.getUniqueID(), ignored -> new Object2ObjectOpenHashMap<>());
         sent.keySet()
             .retainAll(visible);
         for (UUID id : visible) {
@@ -492,7 +496,8 @@ public final class YogTerminalService {
 
     static void sync(EntityPlayerMP player, YogRecord record) {
         if (player.playerNetServerHandler == null) return;
-        Map<UUID, long[]> sent = SENT.computeIfAbsent(player.getUniqueID(), ignored -> new HashMap<>());
+        Map<UUID, long[]> sent = SENT
+            .computeIfAbsent(player.getUniqueID(), ignored -> new Object2ObjectOpenHashMap<>());
         long[] known = sent.get(record.id);
         long since = known != null && known[0] == record.structure ? known[1] : -1;
         Session session = SESSIONS.get(player.getUniqueID());
@@ -508,14 +513,14 @@ public final class YogTerminalService {
         final UUID record;
         final ItemStack terminal;
         final Container before;
-        final Set<Integer> locked;
+        final IntSet locked;
         Container opened;
         boolean clientScreen;
         // Disguise to restore when nothing opened: the previous active entry, -1 for the bare Yog-Sothoth terminal.
         int rollback = Integer.MIN_VALUE;
         int ticks;
 
-        Session(UUID record, ItemStack terminal, Container before, Set<Integer> locked) {
+        Session(UUID record, ItemStack terminal, Container before, IntSet locked) {
             this.record = record;
             this.terminal = terminal;
             this.before = before;
@@ -523,9 +528,9 @@ public final class YogTerminalService {
         }
     }
 
-    static Set<Integer> locks(EntityPlayer player) {
+    static IntSet locks(EntityPlayer player) {
         Session session = SESSIONS.get(player.getUniqueID());
-        return session == null ? Collections.emptySet() : session.locked;
+        return session == null ? IntSets.emptySet() : session.locked;
     }
 
     static ItemStack opened(EntityPlayer player) {
@@ -681,7 +686,7 @@ public final class YogTerminalService {
     }
 
     private static void startSession(EntityPlayerMP player, YogRecord record, ItemStack terminal, boolean inHand) {
-        Set<Integer> locked = new HashSet<>();
+        IntOpenHashSet locked = new IntOpenHashSet();
         if (inHand) locked.add(player.inventory.currentItem);
         Place token = findToken(player, record.id);
         if (token != null && token.kind == Place.MAIN) locked.add(token.index);
@@ -813,16 +818,16 @@ public final class YogTerminalService {
         record.home = hand;
         record.holder = player.getUniqueID();
         record.changed();
-        HELD.computeIfAbsent(player.getUniqueID(), ignored -> new HashSet<>())
+        HELD.computeIfAbsent(player.getUniqueID(), ignored -> new ObjectOpenHashSet<>())
             .add(record.id);
     }
 
     static List<YogRecord> carriedRecords(EntityPlayer player, InventoryBaubles baubles) {
-        Set<YogRecord> records = new LinkedHashSet<>();
+        Set<YogRecord> records = new ObjectLinkedOpenHashSet<>();
         if (baubles != null) for (int slot = 0; slot < baubles.getSizeInventory(); slot++)
             addRecord(records, baubles.getStackInSlot(slot));
         for (ItemStack stack : player.inventory.mainInventory) addRecord(records, stack);
-        return new ArrayList<>(records);
+        return new ObjectArrayList<>(records);
     }
 
     private static void addRecord(Set<YogRecord> records, ItemStack stack) {
@@ -846,7 +851,7 @@ public final class YogTerminalService {
             && cached.baubles == baubles) return cached.entries;
         List<Entry> entries = null;
         for (YogRecord record : carriedRecords(player, baubles)) {
-            if (entries == null) entries = new ArrayList<>();
+            if (entries == null) entries = new ObjectArrayList<>();
             for (int index = 0; index < record.size(); index++) entries.add(new Entry(record, index));
         }
         if (entries == null) entries = Collections.emptyList();

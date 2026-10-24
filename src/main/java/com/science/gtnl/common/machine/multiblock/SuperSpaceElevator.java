@@ -23,7 +23,6 @@ import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap
 import static gregtech.common.misc.WirelessNetworkManager.getUserEU;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -95,6 +94,7 @@ import gtnhintergalactic.tile.TileEntitySpaceElevatorCable;
 import gtnhintergalactic.tile.multi.elevator.ElevatorUtil;
 import gtnhintergalactic.tile.multi.elevator.TileEntitySpaceElevator;
 import gtnhintergalactic.tile.multi.elevatormodules.TileEntityModuleBase;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import kubatech.loaders.BlockLoader;
 import lombok.Getter;
 import lombok.Setter;
@@ -137,11 +137,11 @@ public class SuperSpaceElevator extends TTMultiblockBase
     public boolean wirelessMode = false;
     public UUID ownerUUID;
     public String costingEUText = Utils.ZERO_STRING;
-    public ArrayList<TileEntityModuleBase> mProjectModuleHatches = new ArrayList<>();
+    public ObjectArrayList<TileEntityModuleBase> mProjectModuleHatches = new ObjectArrayList<>();
     public TileEntitySpaceElevatorCable elevatorCable;
     public boolean isLoadedChunk;
 
-    public ArrayList<ParallelControllerHatch> mParallelControllerHatches = new ArrayList<>();
+    public ObjectArrayList<ParallelControllerHatch> mParallelControllerHatches = new ObjectArrayList<>();
 
     public SuperSpaceElevator(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -204,7 +204,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
 
     @Override
     public String[] getInfoData() {
-        List<String> ret = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        List<String> ret = new ObjectArrayList<>(Arrays.asList(super.getInfoData()));
         if (wirelessMode) {
             ret.add(
                 IGregTechDeviceInformation.encode("gtnl.waila.wireless.mode.format", EnumChatFormatting.LIGHT_PURPLE));
@@ -669,7 +669,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
         })
             .setPlayClickSound(false)
             .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
+                List<UITexture> ret = new ObjectArrayList<>();
                 ret.add(TecTechUITextures.BUTTON_STANDARD_16x16);
                 ret.add(IG_UITextures.OVERLAY_BUTTON_PLANET_TELEPORT);
                 return ret.toArray(new IDrawable[0]);

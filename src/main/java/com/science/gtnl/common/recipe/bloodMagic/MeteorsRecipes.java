@@ -1,10 +1,7 @@
 package com.science.gtnl.common.recipe.bloodMagic;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -19,6 +16,8 @@ import com.science.gtnl.utils.enums.ModsItemlist;
 import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.Mods;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class MeteorsRecipes implements IRecipePool {
 
@@ -88,7 +87,7 @@ public class MeteorsRecipes implements IRecipePool {
     }
 
     public static @NotNull List<String> getTNTMeteor() {
-        List<String> meteorDrops = new ArrayList<>();
+        List<String> meteorDrops = new ObjectArrayList<>();
 
         meteorDrops.add("miscutils:blockMiningExplosives:0:20");
         meteorDrops.add("IC2:blockITNT:0:20");
@@ -114,10 +113,10 @@ public class MeteorsRecipes implements IRecipePool {
         return meteorDrops;
     }
 
-    public static Map<String, Boolean> ORE_DICT_CACHE = new HashMap<>();
+    public static Object2BooleanOpenHashMap<String> ORE_DICT_CACHE = new Object2BooleanOpenHashMap<>();
 
     public static String[] generateAndMergeMetalBlocks(String[] originalFillers) {
-        List<String> metalVariants = new ArrayList<>();
+        List<String> metalVariants = new ObjectArrayList<>();
 
         for (int blockType = 1; blockType <= 9; blockType++) {
             int maxMeta = (blockType == 9) ? 11 : 15;
@@ -142,7 +141,7 @@ public class MeteorsRecipes implements IRecipePool {
     }
 
     public static boolean isOreDictRegistered(String blockKey) {
-        return ORE_DICT_CACHE.computeIfAbsent(blockKey, k -> {
+        return ORE_DICT_CACHE.computeIfAbsent(blockKey, (String k) -> {
             String[] parts = blockKey.split(":");
             if (parts.length < 3) return false;
             String modId = parts[0];

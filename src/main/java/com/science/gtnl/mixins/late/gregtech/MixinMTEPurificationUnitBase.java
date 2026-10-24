@@ -63,8 +63,11 @@ import gregtech.common.tileentities.machines.MTEHatchInputBusME;
 import gregtech.common.tileentities.machines.MTEHatchInputME;
 import gregtech.common.tileentities.machines.multi.purification.MTEPurificationPlant;
 import gregtech.common.tileentities.machines.multi.purification.MTEPurificationUnitBase;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -244,7 +247,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
 
         // Make sure to scale purified water output with parallel amount.
         // Make sure to make a full copy of the array, so we don't go modifying recipes
-        ArrayList<FluidStack> fluidOutputList = new ArrayList<>();
+        ObjectArrayList<FluidStack> fluidOutputList = new ObjectArrayList<>();
         for (int i = 0; i < this.currentRecipe.mFluidOutputs.length; ++i) {
             FluidStack output = this.currentRecipe.mFluidOutputs[i].copy();
             long scaledAmount = gtnl$effectiveParallelLong * output.amount;
@@ -292,7 +295,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
         long totalAmount = Math
             .round((double) outputWater.amount * WATER_BOOST_NEEDED_FLUID * this.gtnl$effectiveParallelLong);
 
-        return new ArrayList<>(gtnl$splitLongToFluidStacks(outputWater, totalAmount));
+        return new ObjectArrayList<>(gtnl$splitLongToFluidStacks(outputWater, totalAmount));
     }
 
     @Unique
@@ -383,9 +386,9 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
             }
         }
 
-        for (Map.Entry<Fluid, Long> neededEntry : mergedNeeded.entrySet()) {
+        for (Object2LongMap.Entry<Fluid> neededEntry : Object2LongMaps.fastIterable(mergedNeeded)) {
             long availableAmount = mergedStorage.getLong(neededEntry.getKey());
-            if (availableAmount < neededEntry.getValue()) return false;
+            if (availableAmount < neededEntry.getLongValue()) return false;
         }
 
         if (simulate) return true;
@@ -443,7 +446,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
             .map(h -> (MTEHatch) h)
             .toList();
 
-        List<MTEHatch> allHatches = new ArrayList<>(mInputHatches);
+        List<MTEHatch> allHatches = new ObjectArrayList<>(mInputHatches);
         allHatches.addAll(dualHatches);
 
         return GTUtility.filterValidMTEs(allHatches);

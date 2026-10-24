@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +61,10 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -78,10 +79,10 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
         .createGreenhouseUI(GreenHouseMode.MUIContainer_Greenhouse::new);
 
     public Collection<GreenHouseMode.EIGMigrationHolder> toMigrate;
-    public HashMap<ItemStack, Double> synchedGUIDropTracker = new HashMap<>();
+    public Object2DoubleOpenHashMap<ItemStack> synchedGUIDropTracker = new Object2DoubleOpenHashMap<>();
 
     @Getter
-    public List<GreenHouseStoredCrop> storedCrops = new LinkedList<>();
+    public List<GreenHouseStoredCrop> storedCrops = new ObjectArrayList<>();
 
     @Getter
     @Setter
@@ -276,7 +277,7 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
                 .append(String.format("%,.1f", progressPercent))
                 .append("%)\n");
         Object2IntOpenHashMap<ItemId> outputCounts = getOutputItemCounts(mOutputItems);
-        ArrayList<Map.Entry<ItemStack, Double>> sortedDrops = new ArrayList<>(
+        ObjectArrayList<Map.Entry<ItemStack, Double>> sortedDrops = new ObjectArrayList<>(
             this.industrialFarmGuiDropTracker.entrySet());
         sortedDrops.sort(
             Comparator.comparing(
@@ -310,7 +311,7 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
 
     @Override
     public String[] getInfoData() {
-        List<String> info = new ArrayList<>(
+        List<String> info = new ObjectArrayList<>(
             Arrays.asList(
                 IGregTechDeviceInformation.encode(
                     "gtnl.machine.eden_garden.info.mode",
@@ -438,7 +439,7 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
         builder.widget(
             new DrawableWidget().setDrawable(this.tierMachine == 2 ? STEAM_GAUGE_STEEL_BG : STEAM_GAUGE_BG)
                 .dynamicTooltip(() -> {
-                    List<String> ret = new ArrayList<>();
+                    List<String> ret = new ObjectArrayList<>();
                     ret.add(
                         StatCollector.translateToLocal("gtnl.machine.steam.total_capacity") + uiSteamStored
                             + "/"
@@ -468,26 +469,26 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
     @Override
     public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
         screenElements.widget(new FakeSyncWidget<>(() -> {
-            HashMap<ItemStack, Double> ret = new HashMap<>();
+            Object2DoubleOpenHashMap<ItemStack> ret = new Object2DoubleOpenHashMap<>();
 
             for (Map.Entry<ItemStack, Double> drop : this.industrialFarmGuiDropTracker.entrySet()) {
-                ret.merge(drop.getKey(), drop.getValue(), Double::sum);
+                ret.addTo(drop.getKey(), drop.getValue());
             }
 
             return ret;
         }, h -> this.synchedGUIDropTracker = h, (buffer, h) -> {
             buffer.writeVarIntToBuffer(h.size());
-            for (Map.Entry<ItemStack, Double> itemStackDoubleEntry : h.entrySet()) {
+            for (Object2DoubleMap.Entry<ItemStack> itemStackDoubleEntry : h.object2DoubleEntrySet()) {
                 try {
                     buffer.writeItemStackToBuffer(itemStackDoubleEntry.getKey());
-                    buffer.writeDouble(itemStackDoubleEntry.getValue());
+                    buffer.writeDouble(itemStackDoubleEntry.getDoubleValue());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
         }, buffer -> {
             int len = buffer.readVarIntFromBuffer();
-            HashMap<ItemStack, Double> ret = new HashMap<>(len);
+            Object2DoubleOpenHashMap<ItemStack> ret = new Object2DoubleOpenHashMap<>(len);
             for (int i = 0; i < len; i++) {
                 try {
                     ret.put(buffer.readItemStackFromBuffer(), buffer.readDouble());

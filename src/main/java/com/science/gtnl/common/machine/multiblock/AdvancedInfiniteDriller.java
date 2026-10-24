@@ -67,6 +67,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.tileentities.machines.MTEHeatSensor;
 import gtPlusPlus.core.fluids.GTPPFluids;
 import gtneioreplugin.plugin.item.ItemDimensionDisplay;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -91,7 +92,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
     public double excessFuel = 0;
 
     public int drillTier = 0;
-    public ArrayList<MTEHeatSensor> sensorHatches = new ArrayList<>();
+    public ObjectArrayList<MTEHeatSensor> sensorHatches = new ObjectArrayList<>();
 
     public AdvancedInfiniteDriller(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -296,7 +297,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
         }
 
         int needEu = 0;
-        List<FluidStack> outputFluids = new ArrayList<>();
+        List<FluidStack> outputFluids = new ObjectArrayList<>();
         for (ItemStack item : getAllStoredInputs()) {
             if (item.getItem() instanceof ItemDimensionDisplay) {
                 Integer dimID = VMTweakHelper.DIM_MAPPING.getDimensionId(ItemDimensionDisplay.getDimension(item));
@@ -396,7 +397,7 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
 
     @Override
     public String[] getInfoData() {
-        List<String> ret = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        List<String> ret = new ObjectArrayList<>(Arrays.asList(super.getInfoData()));
         ret.add(
             IGregTechDeviceInformation.encode("gtnl.machine.advanced_infinite_driller.info.excess_fuel", excessFuel));
         return ret.toArray(new String[0]);

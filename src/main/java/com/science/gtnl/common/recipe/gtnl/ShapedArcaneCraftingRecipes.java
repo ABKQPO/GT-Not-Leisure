@@ -1,6 +1,5 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +16,7 @@ import gregtech.api.interfaces.IRecipeMap;
 import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMetadataKey;
 import gregtech.api.recipe.metadata.SimpleRecipeMetadataKey;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import thaumcraft.api.aspects.AspectList;
 
 public class ShapedArcaneCraftingRecipes implements IRecipePool {
@@ -113,7 +113,7 @@ public class ShapedArcaneCraftingRecipes implements IRecipePool {
     }
 
     private List<Object[]> createInputVariants(Iterable<?> inputs) {
-        List<Object[]> variants = new ArrayList<>();
+        List<Object[]> variants = new ObjectArrayList<>();
         variants.add(new Object[0]);
 
         for (Object input : inputs) {
@@ -122,7 +122,7 @@ public class ShapedArcaneCraftingRecipes implements IRecipePool {
             if (alternatives.isEmpty()) continue;
 
             // Only explicit alternatives are expanded. Ore dictionary slots keep their original ID.
-            List<Object[]> expanded = new ArrayList<>();
+            List<Object[]> expanded = new ObjectArrayList<>();
             for (Object[] variant : variants) {
                 for (Object alternative : alternatives) {
                     Object[] next = Arrays.copyOf(variant, variant.length + 1);
@@ -148,7 +148,7 @@ public class ShapedArcaneCraftingRecipes implements IRecipePool {
             return Collections.singletonList(new OreDictItemStack(oreName, 1));
         }
 
-        List<Object> alternatives = new ArrayList<>();
+        List<Object> alternatives = new ObjectArrayList<>();
         for (Object candidate : candidates) {
             if (!(candidate instanceof ItemStack stack) || stack.getItem() == null) continue;
             if (alternatives.isEmpty() && isOreDictBlacklisted(stack)) return Collections.emptyList();

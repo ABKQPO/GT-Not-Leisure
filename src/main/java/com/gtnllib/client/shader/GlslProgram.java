@@ -3,9 +3,6 @@ package com.gtnllib.client.shader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,6 +14,9 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 public class GlslProgram implements AutoCloseable {
 
     private static final Pattern INCLUDE = Pattern.compile("(?m)^[\\t ]*#include[\\t ]+\"([^\"]+)\"[\\t ]*\\r?$");
@@ -24,7 +24,7 @@ public class GlslProgram implements AutoCloseable {
 
     private final ResourceLocation vertexSource;
     private final ResourceLocation fragmentSource;
-    private final Map<String, Integer> uniforms = new HashMap<>();
+    private final Object2IntOpenHashMap<String> uniforms = new Object2IntOpenHashMap<>();
     private int program;
 
     public GlslProgram(ResourceLocation vertexSource, ResourceLocation fragmentSource) {
@@ -43,7 +43,7 @@ public class GlslProgram implements AutoCloseable {
 
     public int uniform(String name) {
         if (program == 0) throw new IllegalStateException("GLSL program is not compiled yet");
-        return uniforms.computeIfAbsent(name, key -> GL20.glGetUniformLocation(program, key));
+        return uniforms.computeIfAbsent(name, (String key) -> GL20.glGetUniformLocation(program, key));
     }
 
     public void uniform1f(String name, float value) {
@@ -67,8 +67,8 @@ public class GlslProgram implements AutoCloseable {
         int pixel = 0;
         int linked = 0;
         try {
-            vertex = compileStage(GL20.GL_VERTEX_SHADER, source(vertexSource, new HashSet<>()));
-            pixel = compileStage(GL20.GL_FRAGMENT_SHADER, source(fragmentSource, new HashSet<>()));
+            vertex = compileStage(GL20.GL_VERTEX_SHADER, source(vertexSource, new ObjectOpenHashSet<>()));
+            pixel = compileStage(GL20.GL_FRAGMENT_SHADER, source(fragmentSource, new ObjectOpenHashSet<>()));
             linked = GL20.glCreateProgram();
             GL20.glAttachShader(linked, vertex);
             GL20.glAttachShader(linked, pixel);

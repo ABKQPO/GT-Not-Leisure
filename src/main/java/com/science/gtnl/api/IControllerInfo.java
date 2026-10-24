@@ -1,6 +1,5 @@
 package com.science.gtnl.api;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,6 +21,7 @@ import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop
 
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.metatileentity.BaseTileEntity;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public interface IControllerInfo {
 
@@ -81,7 +81,7 @@ public interface IControllerInfo {
         })
             .setPlayClickSound(true)
             .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
+                List<UITexture> ret = new ObjectArrayList<>();
                 ret.add(GTUITextures.BUTTON_STANDARD);
                 ret.add(GTUITextures.OVERLAY_BUTTON_POWER_PANEL);
                 return ret.toArray(new IDrawable[0]);

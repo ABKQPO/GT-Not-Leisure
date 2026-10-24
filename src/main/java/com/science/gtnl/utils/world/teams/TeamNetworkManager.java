@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -26,6 +25,8 @@ import com.gtnewhorizon.gtnhlib.teams.TeamManager;
 import com.gtnewhorizon.gtnhlib.util.ServerPlayerUtils;
 import com.mojang.authlib.GameProfile;
 import com.science.gtnl.ScienceNotLeisure;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public class TeamNetworkManager {
 
@@ -154,13 +155,13 @@ public class TeamNetworkManager {
         }
 
         return new LegacyTeamReadResult(
-            new HashMap<>(),
+            new Object2ObjectOpenHashMap<>(),
             dataFileTeams.readSuccessfully() && jsonTeams.readSuccessfully());
     }
 
     private static LegacyTeamReadResult readLegacyTeamsFromDataFile(File dataFile) {
         if (!dataFile.isFile()) {
-            return new LegacyTeamReadResult(new HashMap<>(), true);
+            return new LegacyTeamReadResult(new Object2ObjectOpenHashMap<>(), true);
         }
         try (InputStream input = Files.newInputStream(dataFile.toPath())) {
             NBTTagCompound rootTag = CompressedStreamTools.readCompressed(input);
@@ -168,13 +169,13 @@ public class TeamNetworkManager {
             return new LegacyTeamReadResult(parseLegacyTeams(dataTag.getString(LEGACY_TEAMS_TAG)), true);
         } catch (IOException | RuntimeException exception) {
             ScienceNotLeisure.LOG.warn("Unable to read legacy team data from {}", dataFile);
-            return new LegacyTeamReadResult(new HashMap<>(), false);
+            return new LegacyTeamReadResult(new Object2ObjectOpenHashMap<>(), false);
         }
     }
 
     private static LegacyTeamReadResult readLegacyTeamsFromJson(File teamsFile) {
         if (!teamsFile.isFile()) {
-            return new LegacyTeamReadResult(new HashMap<>(), true);
+            return new LegacyTeamReadResult(new Object2ObjectOpenHashMap<>(), true);
         }
         try (BufferedReader reader = Files.newBufferedReader(teamsFile.toPath(), StandardCharsets.UTF_8)) {
             return new LegacyTeamReadResult(
@@ -184,12 +185,12 @@ public class TeamNetworkManager {
                 true);
         } catch (IOException | RuntimeException exception) {
             ScienceNotLeisure.LOG.warn("Unable to read legacy team JSON from {}", teamsFile);
-            return new LegacyTeamReadResult(new HashMap<>(), false);
+            return new LegacyTeamReadResult(new Object2ObjectOpenHashMap<>(), false);
         }
     }
 
     private static Map<UUID, UUID> parseLegacyTeams(String encodedTeams) {
-        Map<UUID, UUID> teams = new HashMap<>();
+        Map<UUID, UUID> teams = new Object2ObjectOpenHashMap<>();
         if (encodedTeams == null || encodedTeams.isEmpty()) {
             return teams;
         }

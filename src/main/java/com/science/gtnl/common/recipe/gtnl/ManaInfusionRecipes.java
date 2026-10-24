@@ -1,6 +1,5 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -15,6 +14,7 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 import gregtech.api.enums.TierEU;
 import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.recipe.RecipeManaInfusion;
 
@@ -35,7 +35,7 @@ public class ManaInfusionRecipes implements IRecipePool {
 
             boolean hasOreDict = false;
 
-            List<Object> finalInputs = new ArrayList<>(2);
+            List<Object> finalInputs = new ObjectArrayList<>(2);
 
             if (isAlchemy) {
                 finalInputs.add(ModsItemlist.BotaniaAlchemyCatalyst.get(0));

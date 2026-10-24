@@ -1,6 +1,5 @@
 package com.science.gtnl.utils.detrav;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,6 +37,7 @@ import gregtech.client.renderer.BillboardRenderHelper;
 import gregtech.client.renderer.BillboardRenderHelper.Plane;
 import gregtech.common.config.Client;
 import gtneioreplugin.util.DimensionHelper;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 
 @SideOnly(Side.CLIENT)
@@ -47,7 +47,7 @@ public class DetravOreMarkerRenderer {
     private static final Vector3d VERTEX = new Vector3d();
 
     @Getter
-    private static final List<DetravOreMarker> markers = new ArrayList<>();
+    private static final List<DetravOreMarker> markers = new ObjectArrayList<>();
 
     public static void toggleMarker(int dimensionId, int x, int y, int z, String name, int color,
         @Nullable String materialName) {

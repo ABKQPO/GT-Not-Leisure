@@ -1,7 +1,5 @@
 package com.science.gtnl.common.gui.modularui;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -31,6 +29,10 @@ import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.world.stellar.StellarIrisTeamSnapshot;
 import com.science.gtnl.utils.world.stellar.StellarIrisUpgradeManager;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -43,14 +45,14 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
     private static final int[][] CIRCLE_HALF_WIDTHS = createCircleHalfWidths();
     private static final int[][] RING_OFFSETS = createRingOffsets();
 
-    private final List<CosmicParticle> particles = new ArrayList<>();
-    private final Map<String, NodePosition> nodePositions = new HashMap<>();
-    private final Map<String, NodePosition> baseNodeOffsets = new HashMap<>();
-    private final Map<StellarIrisUpgradeTree, List<StellarIrisUpgradeDefinition>> definitionsByTree = new HashMap<>();
-    private final Map<StellarIrisUpgradeTree, Map<Integer, List<StellarIrisUpgradeDefinition>>> definitionsByTreeAndRow = new HashMap<>();
+    private final List<CosmicParticle> particles = new ObjectArrayList<>();
+    private final Map<String, NodePosition> nodePositions = new Object2ObjectOpenHashMap<>();
+    private final Map<String, NodePosition> baseNodeOffsets = new Object2ObjectOpenHashMap<>();
+    private final Map<StellarIrisUpgradeTree, List<StellarIrisUpgradeDefinition>> definitionsByTree = new Object2ObjectOpenHashMap<>();
+    private final Map<StellarIrisUpgradeTree, Int2ObjectMap<List<StellarIrisUpgradeDefinition>>> definitionsByTreeAndRow = new Object2ObjectOpenHashMap<>();
     private final Random random = new Random();
 
-    private List<StellarIrisUpgradeDefinition> definitions = new ArrayList<>();
+    private List<StellarIrisUpgradeDefinition> definitions = new ObjectArrayList<>();
     private StellarIrisTeamSnapshot snapshot = new StellarIrisTeamSnapshot();
     @Setter
     private StellarIrisUpgradeActionSyncHandler actionHandler;
@@ -307,16 +309,16 @@ public class StellarIrisUpgradeTreeWidget extends Widget<StellarIrisUpgradeTreeW
         if (cachedDefinitionCount == definitionCount) {
             return;
         }
-        definitions = new ArrayList<>(StellarIrisUpgradeRegistry.getUpgrades());
+        definitions = new ObjectArrayList<>(StellarIrisUpgradeRegistry.getUpgrades());
         definitionsByTree.clear();
         definitionsByTreeAndRow.clear();
         baseNodeOffsets.clear();
         for (StellarIrisUpgradeDefinition definition : definitions) {
             StellarIrisUpgradeTree tree = definition.getTree();
-            definitionsByTree.computeIfAbsent(tree, ignored -> new ArrayList<>())
+            definitionsByTree.computeIfAbsent(tree, ignored -> new ObjectArrayList<>())
                 .add(definition);
-            definitionsByTreeAndRow.computeIfAbsent(tree, ignored -> new HashMap<>())
-                .computeIfAbsent(definition.getRow(), ignored -> new ArrayList<>())
+            definitionsByTreeAndRow.computeIfAbsent(tree, ignored -> new Int2ObjectOpenHashMap<>())
+                .computeIfAbsent(definition.getRow(), ignored -> new ObjectArrayList<>())
                 .add(definition);
         }
         for (StellarIrisUpgradeDefinition definition : definitions) {

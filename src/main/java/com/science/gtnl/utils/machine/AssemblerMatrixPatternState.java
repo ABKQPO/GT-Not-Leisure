@@ -19,6 +19,7 @@ import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.item.AEItemStack;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
@@ -104,8 +105,8 @@ public class AssemblerMatrixPatternState {
             return false;
         }
 
-        Queue<IAEItemStack> batchInputs = new ArrayDeque<>();
-        Queue<IAEItemStack> batchOutputs = new ArrayDeque<>();
+        ObjectArrayList<IAEItemStack> batchInputs = new ObjectArrayList<>();
+        ObjectArrayList<IAEItemStack> batchOutputs = new ObjectArrayList<>();
         IAEItemStack[] patternInputs = direPattern.getInputs();
         try {
             for (int slot = 0; slot < table.getSizeInventory(); slot++) {

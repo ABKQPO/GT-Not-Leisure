@@ -2,10 +2,7 @@ package com.gtnllib.client.fx.world;
 
 import java.awt.image.BufferedImage;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.IntConsumer;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.ObjDoubleConsumer;
@@ -21,6 +18,10 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import com.gtnllib.utils.Vec3d;
+
+import it.unimi.dsi.fastutil.ints.IntIterator;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 
 public class FxRenderHelper {
 
@@ -45,7 +46,7 @@ public class FxRenderHelper {
 
     public record SegmentSides(Vec3d start, Vec3d end) {}
 
-    private static final Map<Sprite, Integer> TEXTURES = new EnumMap<>(Sprite.class);
+    private static final Reference2IntOpenHashMap<Sprite> TEXTURES = new Reference2IntOpenHashMap<>();
 
     private static final double DEGENERATE = 1.0E-6, MITER_LIMIT = 0.5;
     private static final FloatBuffer MODELVIEW = BufferUtils.createFloatBuffer(16);
@@ -80,7 +81,8 @@ public class FxRenderHelper {
     }
 
     public static void clearSprites() {
-        for (Integer handle : TEXTURES.values()) GL11.glDeleteTextures(handle);
+        for (IntIterator it = TEXTURES.values()
+            .iterator(); it.hasNext();) GL11.glDeleteTextures(it.nextInt());
         TEXTURES.clear();
     }
 
@@ -104,7 +106,7 @@ public class FxRenderHelper {
     public static void path(List<Vec3d> points, IntToDoubleFunction width, IntConsumer shade) {
         int count = points.size();
         if (count < 2) return;
-        List<Vec3d> axes = new ArrayList<>(count - 1);
+        List<Vec3d> axes = new ObjectArrayList<>(count - 1);
         for (int i = 1; i < count; i++) axes.add(ribbonAxis(points.get(i - 1), points.get(i)));
         List<SegmentSides> sides = pathSides(axes);
         for (int i = 1; i < count; i++) {
@@ -126,7 +128,7 @@ public class FxRenderHelper {
     }
 
     public static List<SegmentSides> pathSides(List<Vec3d> axes) {
-        List<SegmentSides> sides = new ArrayList<>(axes.size());
+        List<SegmentSides> sides = new ObjectArrayList<>(axes.size());
         for (int i = 0; i < axes.size(); i++) sides.add(new SegmentSides(join(axes, i, i - 1), join(axes, i, i + 1)));
         return sides;
     }
@@ -368,8 +370,8 @@ public class FxRenderHelper {
     }
 
     private static int texture(Sprite sprite) {
-        Integer cached = TEXTURES.get(sprite);
-        if (cached != null) return cached;
+        int cached = TEXTURES.getInt(sprite);
+        if (cached != 0) return cached;
         int handle = GL11.glGenTextures();
         TextureUtil.uploadTextureImage(handle, build(sprite));
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);

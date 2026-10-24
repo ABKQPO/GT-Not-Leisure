@@ -3,7 +3,6 @@ package com.science.gtnl.common.yogsothoth;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -18,6 +17,7 @@ import com.science.gtnl.common.packet.base.ClientboundPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class YogTerminalSyncPacket extends ClientboundPacket {
 
@@ -34,7 +34,7 @@ public class YogTerminalSyncPacket extends ClientboundPacket {
 
     // since: revision the client has within the current structure, -1 for everything; session: open entry or -1.
     static List<YogTerminalSyncPacket> of(YogRecord record, long since, int session) {
-        List<NBTTagList> parts = new ArrayList<>();
+        List<NBTTagList> parts = new ObjectArrayList<>();
         NBTTagList all = since < 0 ? record.writeTerminals() : record.writeChangedSince(since);
         NBTTagList part = new NBTTagList();
         int size = 0;
@@ -50,7 +50,7 @@ public class YogTerminalSyncPacket extends ClientboundPacket {
             size += entrySize;
         }
         parts.add(part);
-        List<YogTerminalSyncPacket> packets = new ArrayList<>(parts.size());
+        List<YogTerminalSyncPacket> packets = new ObjectArrayList<>(parts.size());
         for (int index = 0; index < parts.size(); index++) {
             NBTTagCompound tag = new NBTTagCompound();
             tag.setString("id", record.id.toString());

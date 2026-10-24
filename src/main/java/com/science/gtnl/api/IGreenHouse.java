@@ -4,7 +4,6 @@ import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +18,6 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fluids.FluidStack;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import com.gtnewhorizon.cropsnh.api.IGrowthRequirement;
@@ -57,6 +55,9 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.ItemEjectionHelper;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public interface IGreenHouse extends IVoidable {
 
@@ -445,7 +446,7 @@ public interface IGreenHouse extends IVoidable {
         if (removable <= 0) return CheckRecipeResultRegistry.ITEM_OUTPUT_FULL;
 
         List<ItemStack> outputs = createStoredCropOutputs(removable);
-        ItemEjectionHelper ejectionHelper = new ItemEjectionHelper(new ArrayList<>(getOutputBus()), true);
+        ItemEjectionHelper ejectionHelper = new ItemEjectionHelper(new ObjectArrayList<>(getOutputBus()), true);
         if (ejectionHelper.ejectItems(outputs, 1) <= 0) return CheckRecipeResultRegistry.ITEM_OUTPUT_FULL;
         ejectionHelper.commit();
 
@@ -486,12 +487,12 @@ public interface IGreenHouse extends IVoidable {
         if (amount <= 0) return false;
         List<ItemStack> outputs = createStoredCropOutputs(amount);
         if (outputs.isEmpty()) return false;
-        ItemEjectionHelper ejectionHelper = new ItemEjectionHelper(new ArrayList<>(getOutputBus()), true);
+        ItemEjectionHelper ejectionHelper = new ItemEjectionHelper(new ObjectArrayList<>(getOutputBus()), true);
         return ejectionHelper.ejectItems(outputs, 1) > 0;
     }
 
     default List<ItemStack> createStoredCropOutputs(int amount) {
-        List<ItemStack> outputs = new ArrayList<>();
+        List<ItemStack> outputs = new ObjectArrayList<>();
         int remaining = amount;
         for (GreenHouseStoredCrop crop : getStoredCrops()) {
             if (remaining <= 0) break;
@@ -552,7 +553,7 @@ public interface IGreenHouse extends IVoidable {
             return skippedBlockUnderCrop ? BLOCK_UNDER_MISMATCH_FARM : CheckRecipeResultRegistry.NO_RECIPE;
         }
 
-        List<Pair<FluidStack, Integer>> waterToConsume = new ArrayList<>();
+        List<ObjectIntPair<FluidStack>> waterToConsume = new ObjectArrayList<>();
         int waterMissing = getWaterUsage();
         for (FluidStack fluidStack : getStoredFluids()) {
             if (CropsNHUtils.isStackInvalid(fluidStack)) continue;
@@ -560,7 +561,7 @@ public interface IGreenHouse extends IVoidable {
             int amount = getAmountToConsumeBasedOnPotency(waterMissing, potency, fluidStack.amount);
             if (amount > 0) {
                 waterMissing -= amount * potency;
-                waterToConsume.add(Pair.of(fluidStack, amount));
+                waterToConsume.add(ObjectIntPair.of(fluidStack, amount));
             }
             if (waterMissing <= 0) break;
         }
@@ -568,14 +569,14 @@ public interface IGreenHouse extends IVoidable {
 
         cycleDrops.addTo(getIndustrialFarmDropTracker());
         if (getVoidingMode().protectItem) {
-            ItemEjectionHelper helper = new ItemEjectionHelper(new ArrayList<>(getOutputBus()), true);
+            ItemEjectionHelper helper = new ItemEjectionHelper(new ObjectArrayList<>(getOutputBus()), true);
             ItemStack[] drops = getIndustrialFarmDropTracker().getDrops(true);
             if (drops.length != 0 && helper.ejectItems(Arrays.asList(drops), 1) <= 0) {
                 cycleDrops.addTo(getIndustrialFarmDropTracker(), -1.0d);
                 return CheckRecipeResultRegistry.ITEM_OUTPUT_FULL;
             }
         }
-        waterToConsume.forEach(pair -> pair.getLeft().amount -= pair.getRight());
+        for (ObjectIntPair<FluidStack> pair : waterToConsume) pair.left().amount -= pair.rightInt();
         setIndustrialFarmGuiDropTracker(cycleDrops);
         setGreenHouseOutputItems(getIndustrialFarmDropTracker().getDrops(false));
         setLEUt(-getIndustrialFarmEUt());
@@ -623,7 +624,8 @@ public interface IGreenHouse extends IVoidable {
         IGregTechTileEntity base = getBaseMetaTileEntity();
         if (base == null) return 0;
         BiomeGenBase biome = base.getBiome();
-        Set<BiomeDictionary.Type> biomeTags = new HashSet<>(Arrays.asList(BiomeDictionary.getTypesForBiome(biome)));
+        Set<BiomeDictionary.Type> biomeTags = new ObjectOpenHashSet<>(
+            Arrays.asList(BiomeDictionary.getTypesForBiome(biome)));
         int likedBiomes = (int) seedData.getCrop()
             .getLikedBiomeTags()
             .stream()

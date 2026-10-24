@@ -1,6 +1,5 @@
 package com.science.gtnl.common.gui.modularui;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,6 +24,7 @@ import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.E
 import gregtech.api.util.GTUtility;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class EnergyInfuserGui extends GTNLTTMultiBlockBaseGui<EnergyInfuser> {
 
@@ -101,10 +101,10 @@ public class EnergyInfuserGui extends GTNLTTMultiBlockBaseGui<EnergyInfuser> {
             nameToAmount.addTo(item, item.stackSize);
         }
 
-        List<Object2LongMap.Entry<ItemStack>> sortedList = new ArrayList<>(nameToAmount.object2LongEntrySet());
+        List<Object2LongMap.Entry<ItemStack>> sortedList = new ObjectArrayList<>(nameToAmount.object2LongEntrySet());
         sortedList.sort((left, right) -> Long.compare(right.getLongValue(), left.getLongValue()));
 
-        List<IWidget> rows = new ArrayList<>();
+        List<IWidget> rows = new ObjectArrayList<>();
         for (Object2LongMap.Entry<ItemStack> entry : sortedList) {
             rows.add(createStoredItemRow(entry));
         }

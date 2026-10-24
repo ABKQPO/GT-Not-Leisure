@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -33,6 +32,8 @@ import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class CelestweaveObjModel implements IResourceManagerReloadListener {
@@ -49,7 +50,7 @@ public class CelestweaveObjModel implements IResourceManagerReloadListener {
         "textures/models/armor/celestweave_fx.png");
     private static final String ROOT = "models/armor/";
 
-    private final List<Integer> lists = new ArrayList<>();
+    private final IntArrayList lists = new IntArrayList();
     private CelestweaveFrames frames;
     private IModelCustom[] models;
     private int[] glowPixels;
@@ -88,7 +89,7 @@ public class CelestweaveObjModel implements IResourceManagerReloadListener {
     }
 
     private void renderRaised(WavefrontObject obj, String name) {
-        List<Face> faces = new ArrayList<>();
+        List<Face> faces = new ObjectArrayList<>();
         for (GroupObject part : obj.groupObjects) if (name.equalsIgnoreCase(part.name)) faces.addAll(part.faces);
         List<float[]> quads = CelestweaveRaise.raise(faces, glowPixels, glowWidth, glowHeight, CelestweaveRaise.HEIGHT);
         Tessellator tessellator = Tessellator.instance;
@@ -104,7 +105,7 @@ public class CelestweaveObjModel implements IResourceManagerReloadListener {
 
     @Override
     public void onResourceManagerReload(IResourceManager manager) {
-        for (int id : lists) GLAllocation.deleteDisplayLists(id);
+        for (int i = 0; i < lists.size(); i++) GLAllocation.deleteDisplayLists(lists.getInt(i));
         lists.clear();
         frames = null;
         models = null;

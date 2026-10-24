@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock;
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -37,6 +36,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import kekztech.common.Blocks;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -196,7 +196,7 @@ public class PetrochemicalPlant extends MultiMachineBase<PetrochemicalPlant> imp
 
         mOutputFluids = outputFluids;
         if (outputFluids != null) {
-            List<FluidStack> expandedFluids = new ArrayList<>();
+            List<FluidStack> expandedFluids = new ObjectArrayList<>();
             for (FluidStack fluidStack : outputFluids) {
                 if (fluidStack != null) {
                     long totalAmount = (long) fluidStack.amount * (getMCoilLevel().getTier() + 1)

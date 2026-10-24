@@ -5,7 +5,6 @@ import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -64,6 +63,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchTurbine;
 import gtPlusPlus.xmod.gregtech.common.tileentities.machines.multi.production.turbines.MTELargerTurbineBaseLegacy;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell> {
@@ -75,7 +75,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
     private static final String HTH_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/highway_to_hell";
     private static final String[][] shape = StructureUtils.readStructureFromFile(HTH_STRUCTURE_FILE_PATH);
 
-    public ArrayList<MTEHatchTurbine> mTurbineHatches = new ArrayList<>();
+    public ObjectArrayList<MTEHatchTurbine> mTurbineHatches = new ObjectArrayList<>();
     public LimitingItemStackHandler turbineHolder = new LimitingItemStackHandler(4, 1) {
 
         @Override
@@ -264,7 +264,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
         }
 
         List<ItemStack> original = getAllStoredInputs();
-        List<ItemStack> merged = new ArrayList<>();
+        List<ItemStack> merged = new ObjectArrayList<>();
 
         outer: for (ItemStack stack : original) {
             if (stack == null) continue;

@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -49,6 +48,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import thaumcraft.common.config.Config;
@@ -854,7 +854,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
         })
             .setPlayClickSound(true)
             .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
+                List<UITexture> ret = new ObjectArrayList<>();
                 ret.add(GTUITextures.BUTTON_STANDARD);
                 ret.add(GTUITextures.OVERLAY_BUTTON_BATCH_MODE_ON);
                 return ret.toArray(new IDrawable[0]);
@@ -900,7 +900,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                         () -> hasSpeedEffect() ? SoundResource.GUI_BUTTON_UP.resourceLocation
                             : SoundResource.GUI_BUTTON_DOWN.resourceLocation)
                     .setBackground(() -> {
-                        List<UITexture> ret = new ArrayList<>();
+                        List<UITexture> ret = new ObjectArrayList<>();
                         if (hasSpeedEffect()) {
                             ret.add(GTUITextures.BUTTON_STANDARD_PRESSED);
                         } else {
@@ -920,7 +920,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                         () -> hasStrengthEffect() ? SoundResource.GUI_BUTTON_UP.resourceLocation
                             : SoundResource.GUI_BUTTON_DOWN.resourceLocation)
                     .setBackground(() -> {
-                        List<UITexture> ret = new ArrayList<>();
+                        List<UITexture> ret = new ObjectArrayList<>();
                         if (hasStrengthEffect()) {
                             ret.add(GTUITextures.BUTTON_STANDARD_PRESSED);
                         } else {
@@ -942,7 +942,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                         () -> hasJumpBoostEffect() ? SoundResource.GUI_BUTTON_UP.resourceLocation
                             : SoundResource.GUI_BUTTON_DOWN.resourceLocation)
                     .setBackground(() -> {
-                        List<UITexture> ret = new ArrayList<>();
+                        List<UITexture> ret = new ObjectArrayList<>();
                         if (hasJumpBoostEffect()) {
                             ret.add(GTUITextures.BUTTON_STANDARD_PRESSED);
                         } else {
@@ -964,7 +964,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                         () -> hasResistanceEffect() ? SoundResource.GUI_BUTTON_UP.resourceLocation
                             : SoundResource.GUI_BUTTON_DOWN.resourceLocation)
                     .setBackground(() -> {
-                        List<UITexture> ret = new ArrayList<>();
+                        List<UITexture> ret = new ObjectArrayList<>();
                         if (hasResistanceEffect()) {
                             ret.add(GTUITextures.BUTTON_STANDARD_PRESSED);
                         } else {
@@ -986,7 +986,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                         () -> hasHealthRegenerationEffect() ? SoundResource.GUI_BUTTON_UP.resourceLocation
                             : SoundResource.GUI_BUTTON_DOWN.resourceLocation)
                     .setBackground(() -> {
-                        List<UITexture> ret = new ArrayList<>();
+                        List<UITexture> ret = new ObjectArrayList<>();
                         if (hasHealthRegenerationEffect()) {
                             ret.add(GTUITextures.BUTTON_STANDARD_PRESSED);
                         } else {
@@ -1010,7 +1010,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                         () -> hasNightVisionEffect() ? SoundResource.GUI_BUTTON_UP.resourceLocation
                             : SoundResource.GUI_BUTTON_DOWN.resourceLocation)
                     .setBackground(() -> {
-                        List<UITexture> ret = new ArrayList<>();
+                        List<UITexture> ret = new ObjectArrayList<>();
                         if (hasNightVisionEffect()) {
                             ret.add(GTUITextures.BUTTON_STANDARD_PRESSED);
                         } else {
@@ -1033,7 +1033,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                         () -> hasHasteEffect() ? SoundResource.GUI_BUTTON_UP.resourceLocation
                             : SoundResource.GUI_BUTTON_DOWN.resourceLocation)
                     .setBackground(() -> {
-                        List<UITexture> ret = new ArrayList<>();
+                        List<UITexture> ret = new ObjectArrayList<>();
                         if (hasHasteEffect()) {
                             ret.add(GTUITextures.BUTTON_STANDARD_PRESSED);
                         } else {
@@ -1053,7 +1053,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                             () -> hasFireResistanceEffect() ? SoundResource.GUI_BUTTON_UP.resourceLocation
                                 : SoundResource.GUI_BUTTON_DOWN.resourceLocation)
                         .setBackground(() -> {
-                            List<UITexture> ret = new ArrayList<>();
+                            List<UITexture> ret = new ObjectArrayList<>();
                             if (hasFireResistanceEffect()) {
                                 ret.add(GTUITextures.BUTTON_STANDARD_PRESSED);
                             } else {
@@ -1077,7 +1077,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                             () -> hasWaterBreathingEffect() ? SoundResource.GUI_BUTTON_UP.resourceLocation
                                 : SoundResource.GUI_BUTTON_DOWN.resourceLocation)
                         .setBackground(() -> {
-                            List<UITexture> ret = new ArrayList<>();
+                            List<UITexture> ret = new ObjectArrayList<>();
                             if (hasWaterBreathingEffect()) {
                                 ret.add(GTUITextures.BUTTON_STANDARD_PRESSED);
                             } else {
@@ -1103,7 +1103,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                         () -> hasWarpWardEffect() ? SoundResource.GUI_BUTTON_UP.resourceLocation
                             : SoundResource.GUI_BUTTON_DOWN.resourceLocation)
                     .setBackground(() -> {
-                        List<UITexture> ret = new ArrayList<>();
+                        List<UITexture> ret = new ObjectArrayList<>();
                         if (hasWarpWardEffect()) {
                             ret.add(GTUITextures.BUTTON_STANDARD_PRESSED);
                         } else {
@@ -1125,7 +1125,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                             () -> hasFeatherFeetEffect() ? SoundResource.GUI_BUTTON_UP.resourceLocation
                                 : SoundResource.GUI_BUTTON_DOWN.resourceLocation)
                         .setBackground(() -> {
-                            List<UITexture> ret = new ArrayList<>();
+                            List<UITexture> ret = new ObjectArrayList<>();
                             if (hasFeatherFeetEffect()) {
                                 ret.add(GTUITextures.BUTTON_STANDARD_PRESSED);
                             } else {
@@ -1149,7 +1149,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                             () -> hasVisRegenEffect() ? SoundResource.GUI_BUTTON_UP.resourceLocation
                                 : SoundResource.GUI_BUTTON_DOWN.resourceLocation)
                         .setBackground(() -> {
-                            List<UITexture> ret = new ArrayList<>();
+                            List<UITexture> ret = new ObjectArrayList<>();
                             if (hasVisRegenEffect()) {
                                 ret.add(GTUITextures.BUTTON_STANDARD_PRESSED);
                             } else {
@@ -1181,7 +1181,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
         })
             .setPlayClickSoundResource(SoundResource.GUI_BUTTON_UP.resourceLocation)
             .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
+                List<UITexture> ret = new ObjectArrayList<>();
                 ret.add(GTUITextures.BUTTON_STANDARD);
                 ret.add(GTUITextures.OVERLAY_BUTTON_CHECKMARK);
                 return ret.toArray(new IDrawable[0]);
