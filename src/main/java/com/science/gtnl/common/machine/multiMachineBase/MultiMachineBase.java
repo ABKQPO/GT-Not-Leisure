@@ -1095,20 +1095,11 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
                 return totalInjected;
             }
 
-            long voltage = dynamo.maxEUOutput();
-            int ampsToInject = (int) (leftToInject / voltage);
-            int remainder = (int) (leftToInject - (ampsToInject * voltage));
-            int ampsOnCurrentHatch = (int) Math.min(dynamo.maxAmperesOut(), ampsToInject);
-            for (int i = 0; i < ampsOnCurrentHatch; i++) {
-                dynamo.getBaseMetaTileEntity()
-                    .increaseStoredEnergyUnits(voltage, false);
-            }
-            totalInjected += voltage * ampsOnCurrentHatch;
-            if (remainder > 0 && ampsOnCurrentHatch < dynamo.maxAmperesOut()) {
-                dynamo.getBaseMetaTileEntity()
-                    .increaseStoredEnergyUnits(remainder, false);
-                totalInjected += remainder;
-            }
+            // Why: one write per hatch; a per-amp loop runs millions of times a tick on high-amp laser dynamos
+            long energy = Math.min(leftToInject, dynamo.maxEUOutput() * dynamo.maxAmperesOut());
+            dynamo.getBaseMetaTileEntity()
+                .increaseStoredEnergyUnits(energy, false);
+            totalInjected += energy;
         }
         return totalInjected;
     }
