@@ -39,7 +39,6 @@ public abstract class MixinRandomUtilsYogTerminal {
         CallbackInfoReturnable<IntObjectPair<ItemStack>> cir) {
         ItemStack opened = gtnl$openedCraftingTerminal(inventory);
         if (opened == null) return;
-        // Why: a disguise in hand has no virtual slot, and WCT already returns the held terminal first.
         int slot = YogTerminals.slotOf(inventory.player, opened);
         if (slot >= 0) cir.setReturnValue(new IntObjectImmutablePair<>(slot, opened));
     }

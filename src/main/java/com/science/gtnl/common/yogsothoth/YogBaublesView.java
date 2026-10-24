@@ -15,7 +15,6 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import baubles.common.container.InventoryBaubles;
 
-// Why: other mods cast BaublesApi.getBaubles to InventoryBaubles (Witching Gadgets' Kama on equip).
 public class YogBaublesView extends InventoryBaubles {
 
     public interface Entry {

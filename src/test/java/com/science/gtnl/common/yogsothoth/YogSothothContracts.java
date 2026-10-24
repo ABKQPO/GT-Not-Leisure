@@ -21,8 +21,6 @@ import baubles.common.container.InventoryBaubles;
 
 public class YogSothothContracts {
 
-    private YogSothothContracts() {}
-
     public static void run() throws Exception {
         baublesViewCasts();
         baublesViewKeepsNoPlayer();
