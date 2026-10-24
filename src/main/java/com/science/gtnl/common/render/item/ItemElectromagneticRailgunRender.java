@@ -5,6 +5,7 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -27,6 +28,7 @@ import com.science.gtnl.client.railgun.RailgunCameraShake.Axis;
 import com.science.gtnl.client.railgun.RailgunCharge;
 import com.science.gtnl.client.railgun.RailgunClientFx;
 import com.science.gtnl.client.railgun.RailgunOrbRenderer;
+import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.railgun.RailgunSetting;
 import com.science.gtnl.config.MainConfig;
 
@@ -66,6 +68,12 @@ public class ItemElectromagneticRailgunRender extends ItemGunRender {
     protected void thirdPerson(Object[] data) {
         holdInRightHand();
         anchorMuzzle(ItemRenderType.EQUIPPED, data, RailgunBolts.MUZZLE);
+    }
+
+    public static boolean keepsRaised(ItemRenderer renderer, ItemRenderer mainHand, EntityPlayer player) {
+        return renderer != null && renderer == mainHand
+            && ElectromagneticRailgun.isHeld(player)
+            && player.getItemInUse() == player.getHeldItem();
     }
 
     private static void renderBodyBolts(Entity holder) {

@@ -17,6 +17,10 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.ItemFluidContainer;
@@ -33,6 +37,7 @@ import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cofh.api.energy.IEnergyContainerItem;
+import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -70,6 +75,7 @@ public class PortalGun extends ItemFluidContainer implements IEnergyContainerIte
         Block block = world.getBlock(hit.blockX, hit.blockY, hit.blockZ);
         if (!(block instanceof IFluidBlock fluidBlock) || fluidBlock.getFluid() != BlockLoader.shimmerFluid
             || !fluidBlock.canDrain(world, hit.blockX, hit.blockY, hit.blockZ)) return false;
+        if (!canCollectShimmer(stack, world, player, hit)) return true;
         FluidStack available = fluidBlock.drain(world, hit.blockX, hit.blockY, hit.blockZ, false);
         if (available == null || fill(stack, available, false) < available.amount) {
             EquipmentNet.hotbar(player, "item.gtnl.portal_gun.shimmer_full");
@@ -78,6 +84,33 @@ public class PortalGun extends ItemFluidContainer implements IEnergyContainerIte
         fill(stack, fluidBlock.drain(world, hit.blockX, hit.blockY, hit.blockZ, true), true);
         world.playSoundAtEntity(player, "random.splash", 0.5F, 1.4F);
         return true;
+    }
+
+    private static boolean canCollectShimmer(ItemStack stack, World world, EntityPlayer player,
+        MovingObjectPosition hit) {
+        if (!world.canMineBlock(player, hit.blockX, hit.blockY, hit.blockZ)
+            || !player.canPlayerEdit(hit.blockX, hit.blockY, hit.blockZ, hit.sideHit, stack)) return false;
+        // The initial use may be RIGHT_CLICK_AIR; protection handlers need the actual fluid coordinates.
+        PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(
+            player,
+            PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK,
+            hit.blockX,
+            hit.blockY,
+            hit.blockZ,
+            hit.sideHit,
+            world);
+        if (event.isCanceled() || event.useBlock == Result.DENY || event.useItem == Result.DENY) return false;
+        // Draining removes the source block; interaction permission alone need not permit editing a claim.
+        BlockEvent.BreakEvent breaking = new BlockEvent.BreakEvent(
+            hit.blockX,
+            hit.blockY,
+            hit.blockZ,
+            world,
+            world.getBlock(hit.blockX, hit.blockY, hit.blockZ),
+            world.getBlockMetadata(hit.blockX, hit.blockY, hit.blockZ),
+            player);
+        MinecraftForge.EVENT_BUS.post(breaking);
+        return !breaking.isCanceled();
     }
 
     public void fire(ItemStack stack, World world, EntityPlayerMP player, boolean back) {

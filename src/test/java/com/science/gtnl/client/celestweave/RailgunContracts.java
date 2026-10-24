@@ -6,6 +6,9 @@ import static com.gtnllib.GTNLLibContractTest.compact;
 import static com.gtnllib.GTNLLibContractTest.field;
 import static com.gtnllib.GTNLLibContractTest.near;
 import static com.gtnllib.GTNLLibContractTest.read;
+import static com.science.gtnl.client.celestweave.CelestweaveArmorContracts.allocate;
+import static com.science.gtnl.client.celestweave.CelestweaveArmorContracts.bare;
+import static com.science.gtnl.client.celestweave.CelestweaveArmorContracts.setField;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.SOURCES;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.roundTrip;
 
@@ -19,6 +22,12 @@ import java.util.Random;
 import java.util.function.BiPredicate;
 import java.util.regex.Pattern;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import com.gtnewhorizon.gtnhlib.config.Config;
@@ -29,12 +38,14 @@ import com.science.gtnl.client.railgun.RailgunBolts;
 import com.science.gtnl.client.railgun.RailgunChargeState;
 import com.science.gtnl.client.railgun.RailgunHudRenderer;
 import com.science.gtnl.client.railgun.RailgunOrbRenderer;
+import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.packet.RailgunChargeCapPacket;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
 import com.science.gtnl.common.railgun.RailgunDamage;
 import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunFireService;
 import com.science.gtnl.common.railgun.RailgunRaycast;
+import com.science.gtnl.common.render.item.ItemElectromagneticRailgunRender;
 import com.science.gtnl.config.MainConfig;
 
 public class RailgunContracts {
@@ -47,6 +58,7 @@ public class RailgunContracts {
         railgunLoadedEnd();
         railgunBlockTrace();
         railgunConfig();
+        railgunHandPose();
         railgunPackets();
         railgunCharge();
         railgunBolts();
@@ -298,6 +310,126 @@ public class RailgunContracts {
         check(
             Arrays.equals(listed, new MainConfig.Item.Railgun().terrainProtectedMods),
             "the protected mods default matches its config annotation");
+    }
+
+    private static EntityClientPlayerMP holding(ItemStack stack) throws ReflectiveOperationException {
+        EntityClientPlayerMP player = allocate(EntityClientPlayerMP.class);
+        InventoryPlayer inventory = new InventoryPlayer(null);
+        setField(EntityPlayer.class, player, "inventory", inventory);
+        inventory.setInventorySlotContents(inventory.currentItem, stack);
+        return player;
+    }
+
+    private static void railgunHandPose() throws IOException, ReflectiveOperationException {
+        ItemRenderer mainHand = allocate(ItemRenderer.class), offHand = allocate(ItemRenderer.class);
+        Item gun = bare(ElectromagneticRailgun.class);
+        ItemStack first = new ItemStack(gun), second = new ItemStack(gun), other = new ItemStack(new Item());
+        EntityPlayer gunner = holding(first);
+        check(
+            !ItemElectromagneticRailgunRender.keepsRaised(mainHand, mainHand, gunner),
+            "holding an idle railgun does not suppress explicit draw resets");
+        using(gunner, first);
+        check(
+            ItemElectromagneticRailgunRender.keepsRaised(mainHand, mainHand, gunner),
+            "starting a railgun charge keeps the main hand raised");
+        check(
+            !ItemElectromagneticRailgunRender.keepsRaised(offHand, mainHand, gunner),
+            "using an offhand item keeps the separate renderer's draw reset, even while holding a railgun");
+        gunner.inventory.setInventorySlotContents(1, second);
+        gunner.inventory.currentItem = 1;
+        check(
+            !ItemElectromagneticRailgunRender.keepsRaised(mainHand, mainHand, gunner),
+            "switching to a second railgun does not suppress a reset for the previous charge");
+        using(gunner, second);
+        check(
+            ItemElectromagneticRailgunRender.keepsRaised(mainHand, mainHand, gunner),
+            "a new charge on the second railgun keeps its main hand pose");
+        using(gunner, other);
+        check(
+            !ItemElectromagneticRailgunRender.keepsRaised(mainHand, mainHand, gunner),
+            "using a different item while holding a railgun does not suppress the main hand reset");
+        gunner.inventory.setInventorySlotContents(1, first);
+        using(gunner, second);
+        check(
+            !ItemElectromagneticRailgunRender.keepsRaised(mainHand, mainHand, gunner)
+                && !ItemElectromagneticRailgunRender.keepsRaised(offHand, mainHand, gunner),
+            "using the other railgun in the offhand does not suppress either renderer's reset");
+        EntityPlayer otherUser = holding(other);
+        using(otherUser, other);
+        check(
+            !ItemElectromagneticRailgunRender.keepsRaised(mainHand, mainHand, otherUser)
+                && !ItemElectromagneticRailgunRender.keepsRaised(mainHand, mainHand, holding(null))
+                && !ItemElectromagneticRailgunRender.keepsRaised(mainHand, mainHand, null)
+                && !ItemElectromagneticRailgunRender.keepsRaised(null, null, gunner),
+            "other items, an empty hand and no player keep the draw animation");
+        railgunSwitch(first, other, "railgun to ordinary item");
+        railgunSwitch(other, first, "ordinary item to railgun");
+        railgunSwitch(first, null, "railgun to empty hand");
+        railgunSwitch(first, second, "two railguns in different hotbar slots");
+        String mixins = compact(read(SOURCES.resolve("mixins/Mixins.java")));
+        int client = mixins.indexOf("MINECRAFT_CLIENT(Side.CLIENT,"),
+            end = client < 0 ? -1 : mixins.indexOf("),", client);
+        check(
+            end > client && mixins.substring(client, end)
+                .contains("\"minecraft.MixinItemRendererRailgun\""),
+            "the hand pose hook is registered for the client only");
+        String mixin = compact(read(SOURCES.resolve("mixins/early/minecraft/MixinItemRendererRailgun.java")));
+        check(
+            mixin.contains(
+                "method={\"resetEquippedProgress\",\"resetEquippedProgress2\"},at=@At(\"HEAD\"),cancellable=true")
+                && mixin.contains(
+                    ".keepsRaised((ItemRenderer)(Object)this,view.itemRenderer,minecraft.thePlayer))ci.cancel();"),
+            "the hand pose hook delegates both resets to the main hand charge guard");
+        check(
+            !mixin.contains("updateEquippedItem") && hasMethod(ItemRenderer.class, "resetEquippedProgress")
+                && hasMethod(ItemRenderer.class, "resetEquippedProgress2")
+                && hasMethod(ItemRenderer.class, "updateEquippedItem"),
+            "the reset-only hook does not intercept vanilla updateEquippedItem");
+    }
+
+    private static void using(EntityPlayer player, ItemStack stack) throws ReflectiveOperationException {
+        setField(EntityPlayer.class, player, "itemInUse", stack);
+        setField(EntityPlayer.class, player, "itemInUseCount", stack == null ? 0 : ElectromagneticRailgun.USE_DURATION);
+    }
+
+    private static void railgunSwitch(ItemStack before, ItemStack after, String scenario)
+        throws ReflectiveOperationException {
+        EntityClientPlayerMP player = holding(before);
+        Minecraft minecraft = allocate(Minecraft.class);
+        minecraft.thePlayer = player;
+        ItemRenderer renderer = allocate(ItemRenderer.class);
+        setField(ItemRenderer.class, renderer, "mc", minecraft);
+        setField(ItemRenderer.class, renderer, "itemToRender", before);
+        setField(ItemRenderer.class, renderer, "equippedItemSlot", 0);
+        setField(ItemRenderer.class, renderer, "equippedProgress", 1F);
+        setField(ItemRenderer.class, renderer, "prevEquippedProgress", 1F);
+        // A slot change can precede vanilla clearing the old use state during the player tick.
+        if (ElectromagneticRailgun.is(before)) using(player, before);
+        player.inventory.setInventorySlotContents(1, after);
+        player.inventory.currentItem = 1;
+        check(
+            !ItemElectromagneticRailgunRender.keepsRaised(renderer, renderer, player),
+            scenario + " allows resets even before the old use state is cleared");
+        boolean lowered = false;
+        for (int tick = 0; tick < 8; tick++) {
+            float previous = (float) field(renderer, "equippedProgress");
+            renderer.updateEquippedItem();
+            near(previous, (float) field(renderer, "prevEquippedProgress"), scenario + " preserves interpolation");
+            lowered |= (float) field(renderer, "equippedProgress") < 0.1F;
+        }
+        check(lowered, scenario + " lowers the hand through vanilla updateEquippedItem");
+        check(field(renderer, "itemToRender") == after, scenario + " renders the newly selected stack");
+        check((int) field(renderer, "equippedItemSlot") == 1, scenario + " updates the rendered hotbar slot");
+        near(1F, (float) field(renderer, "equippedProgress"), scenario + " finishes raising the hand");
+    }
+
+    private static boolean hasMethod(Class<?> owner, String name) {
+        try {
+            owner.getMethod(name);
+            return true;
+        } catch (NoSuchMethodException missing) {
+            return false;
+        }
     }
 
     private static void railgunPackets() throws ReflectiveOperationException {

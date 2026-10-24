@@ -1136,8 +1136,7 @@ public class CelestweaveArmorContracts {
         return (int) call(EquipmentGui.class, "headerBottom", gui, new Class<?>[0]);
     }
 
-    private static void setField(Class<?> owner, Object target, String name, Object value)
-        throws ReflectiveOperationException {
+    static void setField(Class<?> owner, Object target, String name, Object value) throws ReflectiveOperationException {
         Field field = owner.getDeclaredField(name);
         field.setAccessible(true);
         field.set(target, value);
@@ -1151,14 +1150,14 @@ public class CelestweaveArmorContracts {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> T allocate(Class<T> type) throws ReflectiveOperationException {
+    static <T> T allocate(Class<T> type) throws ReflectiveOperationException {
         Object unsafe = unsafe();
         return (T) unsafe.getClass()
             .getMethod("allocateInstance", Class.class)
             .invoke(unsafe, type);
     }
 
-    private static <T extends Item> T bare(Class<T> type) throws ReflectiveOperationException {
+    static <T extends Item> T bare(Class<T> type) throws ReflectiveOperationException {
         Object unsafe = unsafe();
         T item = allocate(type);
         Field delegate = Item.class.getDeclaredField("delegate");

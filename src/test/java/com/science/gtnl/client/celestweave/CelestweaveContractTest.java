@@ -30,6 +30,7 @@ public class CelestweaveContractTest {
         CelestweaveArmorContracts.run();
         RailgunContracts.run();
         PortalGunContracts.run();
+        EquipmentRegressionContracts.run();
         EquipmentHudContracts.run();
         EquipmentResourceContracts.run();
         GTNLLibContractTest.finish("Celestweave");

@@ -21,10 +21,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.FoodStats;
+import net.minecraft.world.WorldServer;
 
 import com.google.common.collect.MapMaker;
 import com.gtnllib.utils.Vec3d;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
+import com.science.gtnl.common.packet.CelestweaveFireballPacket;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.config.MainConfig;
 
@@ -186,12 +189,10 @@ public class CelestweaveBehaviors {
                 || !ctx.affords(config().reflectEu)) return;
             EntityPlayer player = ctx.player();
             Vec3d center = Vec3d.center(player);
-            List<?> nearby = player.worldObj
-                .getEntitiesWithinAABB(IProjectile.class, player.boundingBox.expand(RADIUS, RADIUS, RADIUS));
+            List<?> nearby = nearbyProjectiles(player);
             for (Object entry : nearby) {
-                if (!(entry instanceof Entity entity) || !(entry instanceof IProjectile)
-                    || entry instanceof IManaBurst
-                    || REFLECTED.containsKey(entity)) continue;
+                Entity entity = (Entity) entry;
+                if (REFLECTED.containsKey(entity)) continue;
                 Entity shooter = shooter(entity);
                 if (shooter == player) continue;
                 double vx = entity.motionX, vy = entity.motionY, vz = entity.motionZ;
@@ -217,12 +218,26 @@ public class CelestweaveBehaviors {
                     fireball.accelerationY = ty / length * FIREBALL_ACCELERATION;
                     fireball.accelerationZ = tz / length * FIREBALL_ACCELERATION;
                     fireball.shootingEntity = player;
+                    // Vanilla velocity packets omit acceleration, so clients otherwise keep accelerating inward.
+                    ((WorldServer) player.worldObj).getEntityTracker()
+                        .func_151247_a(
+                            fireball,
+                            ScienceNotLeisure.network.getPacketFrom(new CelestweaveFireballPacket(fireball)));
                 } else if (entity instanceof EntityArrow arrow) arrow.shootingEntity = player;
                 entity.velocityChanged = true;
                 REFLECTED.put(entity, Boolean.TRUE);
                 CelestweaveServerEvents
                     .sendFx(player, CelestweaveFxPacket.Type.REFLECT, entity.posX, entity.posY, entity.posZ);
             }
+        }
+
+        private static List<?> nearbyProjectiles(EntityPlayer player) {
+            // Vanilla fireballs do not implement IProjectile.
+            return player.worldObj.selectEntitiesWithinAABB(
+                Entity.class,
+                player.boundingBox.expand(RADIUS, RADIUS, RADIUS),
+                entity -> (entity instanceof IProjectile || entity instanceof EntityFireball)
+                    && !(entity instanceof IManaBurst));
         }
 
         private static Entity shooter(Entity entity) {

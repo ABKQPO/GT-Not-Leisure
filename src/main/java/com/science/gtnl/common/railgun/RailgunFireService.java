@@ -204,13 +204,12 @@ public class RailgunFireService {
         boolean max = tier == RailgunChargeTier.EHV3;
         Vec3d from = Vec3d.eye(player);
         double range = RailgunRaycast.effectiveRange(CHARGED_RANGE, modules.count(RailgunModule.RANGE));
+        Vec3d direction = Vec3d.look(player);
         var trace = RailgunRaycast.traceFirst(
             world,
             player,
             from,
-            from.add(
-                Vec3d.look(player)
-                    .scale(range)),
+            from.add(direction.scale(range)),
             CHARGED_TRACE_PADDING,
             CHARGED_TRACE_INFLATION,
             entity -> RailgunTargetRules.canAffect(player, entity, players));
@@ -228,7 +227,9 @@ public class RailgunFireService {
             hits.add(Hit.primary(primary, context.firstDamage()));
             if (chain) hits.addAll(RailgunChainResolver.chainFrom(world, player, primary, context, Set.of(), null));
             if (max) {
-                hits.addAll(RailgunChainResolver.penetration(world, player, primary, context, PENETRATION_MAX_TARGETS));
+                hits.addAll(
+                    RailgunChainResolver
+                        .penetration(world, player, primary, impact, direction, context, PENETRATION_MAX_TARGETS));
                 hits.addAll(
                     RailgunChainResolver.pulse(
                         world,

@@ -13,6 +13,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.WorldServer;
 
 import org.jetbrains.annotations.Nullable;
@@ -103,31 +104,28 @@ public class RailgunChainResolver {
     }
 
     public static List<Hit> penetration(WorldServer world, EntityPlayerMP shooter, EntityLivingBase firstHit,
-        DamageContext ctx, int maxTargets) {
+        Vec3d from, Vec3d direction, DamageContext ctx, int maxTargets) {
         List<Hit> out = new ArrayList<>();
         if (!ctx.isMaxCharged() || maxTargets <= 0) return out;
-        Vec3d from = Vec3d.eye(shooter);
-        Vec3d direction = Vec3d.pos(firstHit)
-            .subtract(from)
-            .normalize();
-        Vec3d to = from.add(direction.scale(PENETRATION_LENGTH));
-        List<EntityLivingBase> candidates = query(
+        Vec3d forward = direction.normalize();
+        Vec3d to = from.add(forward.scale(PENETRATION_LENGTH));
+        // Continue the shot from its impact, testing bodies rather than aiming at their feet.
+        Map<EntityLivingBase, Double> distances = new LinkedHashMap<>();
+        for (EntityLivingBase entity : query(
             world,
             from.boxTo(to, PENETRATION_WIDTH),
-            e -> e != firstHit && RailgunTargetRules.canAffect(shooter, e, ctx.pvp()));
-        candidates.sort(
-            Comparator.comparingDouble(
-                entity -> Vec3d.pos(entity)
-                    .subtract(from)
-                    .dot(direction)));
+            e -> e != firstHit && RailgunTargetRules.canAffect(shooter, e, ctx.pvp()))) {
+            if (Vec3d.center(entity)
+                .subtract(from)
+                .dot(forward) < 0) continue;
+            AxisAlignedBB box = entity.boundingBox.expand(PENETRATION_WIDTH, PENETRATION_WIDTH, PENETRATION_WIDTH);
+            MovingObjectPosition hit = box.calculateIntercept(from.toMc(), to.toMc());
+            if (box.isVecInside(from.toMc())) distances.put(entity, 0D);
+            else if (hit != null) distances.put(entity, from.distanceToSqr(Vec3d.of(hit.hitVec)));
+        }
+        List<EntityLivingBase> candidates = new ArrayList<>(distances.keySet());
+        candidates.sort(Comparator.comparingDouble(distances::get));
         for (EntityLivingBase entity : candidates) {
-            Vec3d offset = Vec3d.pos(entity)
-                .subtract(from);
-            double along = offset.dot(direction);
-            if (along < 0 || along > PENETRATION_LENGTH
-                || offset.subtract(direction.scale(along))
-                    .length() > PENETRATION_WIDTH)
-                continue;
             out.add(new Hit(entity, ctx.firstDamage(), Kind.PENETRATION, null));
             if (out.size() >= maxTargets) break;
         }

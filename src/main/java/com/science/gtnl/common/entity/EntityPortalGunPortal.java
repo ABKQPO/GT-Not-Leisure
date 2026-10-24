@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -162,6 +163,9 @@ public class EntityPortalGunPortal extends Entity implements IEntityAdditionalSp
             : (entity.boundingBox.minY - (posY - PortalGunGeometry.HEIGHT / 2))
                 / Math.max(1.0E-3, PortalGunGeometry.HEIGHT - entity.height);
         Vec3d spot = PortalGunGeometry.exitSpot(link, entity.width, entity.height, fraction);
+        if (!canExit(target, entity, spot)) return;
+        // Player relocation clears this step offset; use the same landing bounds for other entities too.
+        entity.ySize = 0;
         NBTTagCompound data = entity.getEntityData();
         data.setInteger(COOLDOWN, tick + ARRIVAL_COOLDOWN);
         data.setString(PAIR, pairKey(gunId, pair));
@@ -189,6 +193,24 @@ public class EntityPortalGunPortal extends Entity implements IEntityAdditionalSp
         if (partner != null) partner.markPassed();
         else spawnPartner(target);
         target.playSoundEffect(spot.x(), spot.y(), spot.z(), "mob.endermen.portal", 0.8F, 1.3F);
+    }
+
+    public static boolean canExit(WorldServer target, Entity entity, Vec3d spot) {
+        double half = entity.width / 2.0, feet = spot.y() - (entity instanceof EntityPlayerMP ? entity.yOffset : 0);
+        AxisAlignedBB box = AxisAlignedBB.getBoundingBox(
+            spot.x() - half,
+            feet,
+            spot.z() - half,
+            spot.x() + half,
+            feet + entity.height,
+            spot.z() + half);
+        // Collision queries skip unloaded columns. Load the exit footprint, including across chunk edges.
+        int minX = MathHelper.floor_double(box.minX) >> 4, maxX = MathHelper.floor_double(box.maxX) >> 4;
+        int minZ = MathHelper.floor_double(box.minZ) >> 4, maxZ = MathHelper.floor_double(box.maxZ) >> 4;
+        for (int x = minX; x <= maxX; x++)
+            for (int z = minZ; z <= maxZ; z++) target.theChunkProviderServer.loadChunk(x, z);
+        return target.getCollidingBoundingBoxes(entity, box)
+            .isEmpty();
     }
 
     private Vec3d carriedVelocity(Entity entity) {
