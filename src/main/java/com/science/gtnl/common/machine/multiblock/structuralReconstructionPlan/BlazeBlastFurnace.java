@@ -387,6 +387,7 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
             .addInfo(StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.3"))
             .addInfo(StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.4"))
             .addInfo(StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.5"))
+            .addInfo(StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.6"))
             .addSupportMultiAmp()
             .beginStructureBlock(7, 6, 7, true)
             .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.blaze_blast_furnace.tooltip.casing.0"), 1)

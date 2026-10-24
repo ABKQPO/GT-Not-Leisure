@@ -4168,7 +4168,7 @@ item.gtnl.celestweave.gui.toggle_hint=§7左键启用/禁用，右键显示/隐�
 item.gtnl.celestweave.gui.toggle_hint_enable=§7左键启用/禁用
 item.gtnl.celestweave.gui.hidden=外观已隐藏（右键显示）
 item.gtnl.celestweave.gui.no_settings=这个部位没有可调的设置
-item.gtnl.celestweave.gui.appearance_on_chest=æ´å¥æ¤ç²çååé¢è²ãç¯æ¡åçµå¼§ï¼é½å¨è¸ç²çå¤è§é¡µéè°
+item.gtnl.celestweave.gui.appearance_on_chest=整套护甲的发光颜色、灯条和电弧，都在胸甲的外观页里调
 item.gtnl.celestweave.gui.glow_color=发光颜色
 item.gtnl.celestweave.gui.custom_color=自选颜色
 item.gtnl.celestweave.gui.idle_arcs=待机电弧

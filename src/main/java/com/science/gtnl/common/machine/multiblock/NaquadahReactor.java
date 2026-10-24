@@ -299,16 +299,22 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
     @Override
     public String[] getInfoData() {
         String[] info = super.getInfoData();
+        String labelKey;
         String euText;
+        String unit;
         if (bigEUt != null) {
+            labelKey = "gtnl.waila.naquadah_reactor.wireless_power_output";
             euText = NumberFormatUtil.formatNumber(bigEUt.abs());
+            unit = " EU";
         } else {
+            labelKey = "gtnl.waila.naquadah_reactor.power_output";
             euText = NumberFormatUtil.formatNumber(Math.abs(this.lEUt));
+            unit = " EU/t";
         }
-        info[4] = StatCollector.translateToLocal("NaquadahReactor.Generates") + EnumChatFormatting.RED
+        info[4] = StatCollector.translateToLocal(labelKey) + EnumChatFormatting.RED
             + euText
             + EnumChatFormatting.RESET
-            + " EU";
+            + unit;
         return info;
     }
 
