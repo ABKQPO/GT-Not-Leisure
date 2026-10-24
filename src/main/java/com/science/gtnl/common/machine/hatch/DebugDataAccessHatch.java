@@ -18,8 +18,6 @@ public class DebugDataAccessHatch extends MTEHatchDataAccess {
 
     public DebugDataAccessHatch(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional, 14);
-        mDescriptionArray[0] = StatCollector.translateToLocal("gtnl.hatch.debug_data_access.tooltip.0");
-        mDescriptionArray[1] = StatCollector.translateToLocal("gtnl.hatch.debug_data_access.tooltip.1");
     }
 
     public DebugDataAccessHatch(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {
@@ -36,6 +34,12 @@ public class DebugDataAccessHatch extends MTEHatchDataAccess {
     public String getLocalName() {
         if (!hasOwnLocalName()) return super.getLocalName();
         return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
+    @Override
+    public String[] getDescription() {
+        return new String[] { StatCollector.translateToLocal("gtnl.hatch.debug_data_access.tooltip.0"),
+            StatCollector.translateToLocal("gtnl.hatch.debug_data_access.tooltip.1") };
     }
 
     @Override
