@@ -93,7 +93,7 @@ public class MultiblockTooltipReader {
     private static final int MAX_MACHINE_MODES = 16;
     // Why: StructureLib only returns bare lang keys, so hatches are recognised by the key families used for hatches.
     private static final String[] HATCH_KEY_PREFIXES = { "GT5U.MBTT.", "gt.blockmachines.", "hatch_type_",
-        "gtnl.structure.hatch." };
+        "gtnl.structure.hatch.", "gtnl.hatch." };
     private static final HatchElement[] HATCH_ORDER = { HatchElement.Energy, HatchElement.ExoticEnergy,
         HatchElement.MultiAmpEnergy, HatchElement.Dynamo, HatchElement.ExoticDynamo, HatchElement.Maintenance,
         HatchElement.Muffler, HatchElement.InputBus, HatchElement.InputHatch, HatchElement.OutputBus,

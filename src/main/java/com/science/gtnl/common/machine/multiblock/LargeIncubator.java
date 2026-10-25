@@ -28,6 +28,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import bartworks.API.recipe.BartWorksRecipeMaps;
 import bartworks.common.tileentities.tiered.MTERadioHatch;
@@ -58,7 +59,6 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.recipe.Sievert;
-import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -310,27 +310,8 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_incubator.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.4"))
-            .addPerfectOCInfo()
-            .addSupportAny()
-            .beginStructureBlock(13, 9, 13, false)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.casing"), 1)
-            .addOtherStructurePart(
-                StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.radio_hatch"),
-                StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.casing"),
-                1)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_incubator.tooltip.casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }
@@ -474,7 +455,8 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
 
     public enum RadioHatchElement implements IHatchElement<LargeIncubator> {
 
-        RadioHatch(LargeIncubator::addRadiationInputToMachineList, MTERadioHatch.class) {
+        RadioHatch("gt.blockmachines.bw.radiohatchhv.name", LargeIncubator::addRadiationInputToMachineList,
+            MTERadioHatch.class) {
 
             @Override
             public long count(LargeIncubator bioVat) {
@@ -484,11 +466,25 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
 
         public final List<Class<? extends IMetaTileEntity>> mteClasses;
         public final IGTHatchAdder<LargeIncubator> adder;
+        private final String nameKey;
 
         @SafeVarargs
-        RadioHatchElement(IGTHatchAdder<LargeIncubator> adder, Class<? extends IMetaTileEntity>... mteClasses) {
+        RadioHatchElement(String nameKey, IGTHatchAdder<LargeIncubator> adder,
+            Class<? extends IMetaTileEntity>... mteClasses) {
+            this.nameKey = nameKey;
             this.mteClasses = Collections.unmodifiableList(Arrays.asList(mteClasses));
             this.adder = adder;
+        }
+
+        // Why: GT names hatch elements by untranslated hatch_type_ keys, so these use the hatch item name.
+        @Override
+        public String getDescriptionLangKey() {
+            return nameKey;
+        }
+
+        @Override
+        public String getDisplayName() {
+            return StatCollector.translateToLocal(nameKey);
         }
 
         @Override

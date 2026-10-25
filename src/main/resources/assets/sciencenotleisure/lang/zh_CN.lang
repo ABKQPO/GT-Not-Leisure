@@ -662,15 +662,9 @@ gtnl.waila.output_me_proxy.target=链接到输出仓位置
 
 gtnl.machine.nuclear_reactor.name=核反应堆
 gtnl.machine.nuclear_reactor.tooltip.0=热反应堆
-gtnl.machine.nuclear_reactor.tooltip.quote=§9§l这是一台“现代”反应堆！§r
-gtnl.machine.nuclear_reactor.tooltip.1=§7使用燃料棒产生热量，流体仓吸收热量将水转化为蒸汽，输出的蒸汽从输出仓输出
-gtnl.machine.nuclear_reactor.tooltip.5=§7开机效率 §e60% + 50%·sin(X·π/120)§7（X 分钟），60 分钟后 §e110%§7，停机/损坏清零
 gtnl.machine.nuclear_reactor.gui.steam_rate=蒸汽输出速度
-gtnl.machine.nuclear_reactor.tooltip.3=顶部方块可替换为核仓室，样式请参考 NEI
-gtnl.machine.nuclear_reactor.tooltip.4=核燃料物品仓 / 核冷却液输入仓
 gtnl.machine.nuclear_reactor.structure.tiers=全部等级：§65x5x5§7 / §67x5x7§7 / §69x5x9
 gtnl.machine.nuclear_reactor.structure.output_hatch=输出仓至少需要 1 个
-gtnl.machine.nuclear_reactor.casing=反应堆外壳
 gtnl.structure.nuclear_reactor.core_cell=核燃料物品仓 或 核冷却液输入仓
 gtnl.structure.tooltip.controller.front_center=正面中央，第%s层
 gtnl.structure.tooltip.controller.layer=第%s层
@@ -1049,24 +1043,9 @@ gtnl.machine.rare_earth_centrifugal.recipe_type=稀土离心
 
 gtnl.machine.cold_ice_freezer.name=寒冰冷冻机
 gtnl.machine.cold_ice_freezer.recipe_type=凛冰冷冻机
-gtnl.machine.cold_ice_freezer.tooltip.0=比真空冷冻机快150%！
-gtnl.machine.cold_ice_freezer.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.cold_ice_freezer.tooltip.2=最大并行数固定为128
-gtnl.machine.cold_ice_freezer.tooltip.3=需每秒提供10x配方电压等级^2的碎冰
-gtnl.machine.cold_ice_freezer.tooltip.casing.0=任意防冻机械方块
-gtnl.machine.cold_ice_freezer.tooltip.casing.1=顶部中心防冻机械方块
 
 gtnl.machine.blaze_blast_furnace.name=烈焰高炉
 gtnl.machine.blaze_blast_furnace.recipe_type=工业高炉
-gtnl.machine.blaze_blast_furnace.tooltip.0=比工业高炉快300%
-gtnl.machine.blaze_blast_furnace.tooltip.1=只需要使用配方要求功率的70%
-gtnl.machine.blaze_blast_furnace.tooltip.2=最大并行数固定为32
-gtnl.machine.blaze_blast_furnace.tooltip.3=在控制器内放入炽骨立方将并行提高到128
-gtnl.machine.blaze_blast_furnace.tooltip.4=需每秒提供10x配方电压等级^2的熔融烈焰
-gtnl.machine.blaze_blast_furnace.tooltip.5=放入炽骨立方后消耗乘以4倍
-gtnl.machine.blaze_blast_furnace.tooltip.6=超过MV后的每一级电压，都会将温度提高100K
-gtnl.machine.blaze_blast_furnace.tooltip.casing.0=任意冶炼炉机械方块
-gtnl.machine.blaze_blast_furnace.tooltip.casing.1=顶部中心炽焱高炉机械方块
 
 gtnl.machine.chemical_plant.name=化工厂
 gtnl.machine.chemical_plant.recipe_type=化学反应釜
@@ -1241,9 +1220,6 @@ gtnl.recipe.isa_mill=湿法碾磨
 gtnl.recipe.metadata.isa_mill.0=需要铝研磨球
 gtnl.recipe.metadata.isa_mill.1=需要皂石研磨球
 gtnl.machine.isa_mill.recipe_type=湿法碾磨
-gtnl.machine.isa_mill.tooltip.0=工业级湿法碾磨
-gtnl.machine.isa_mill.tooltip.1=玻璃等级限制了能源仓等级，UHV玻璃解锁所有等级
-gtnl.machine.isa_mill.tooltip.casing=任意艾萨研磨外围机械方块
 
 gtnl.machine.flotation_cell_regulator.name=工业浮选机
 gtnl.recipe.cell_regulator=浮选
@@ -1273,21 +1249,9 @@ gtnl.machine.large_distillery.tooltip.casing=任意储罐拓展方块
 
 gtnl.machine.incubator.name=培养缸
 gtnl.machine.incubator.recipe_type=细菌培养缸
-gtnl.machine.incubator.tooltip.0=不再需要保持输出仓半满！这台机器固定以1001倍流体倍率运行！
-gtnl.machine.incubator.tooltip.1=固定并行为4
-gtnl.machine.incubator.tooltip.2=玻璃等级限制了能源仓等级，UHV玻璃解锁所有等级
-gtnl.machine.incubator.tooltip.radio_hatch=放射仓
-gtnl.machine.incubator.tooltip.casing=任意塑料混凝土方块
 
 gtnl.machine.large_incubator.name=大型培养缸
 gtnl.machine.large_incubator.recipe_type=细菌培养缸
-gtnl.machine.large_incubator.tooltip.0=比相同电压的单方块机器快400%
-gtnl.machine.large_incubator.tooltip.1=只需要使用配方要求功率的60%
-gtnl.machine.large_incubator.tooltip.2=不再需要保持输出仓半满！这台机器固定以1001倍流体倍率运行！
-gtnl.machine.large_incubator.tooltip.3=无视玻璃等级要求和精确剂量要求
-gtnl.machine.large_incubator.tooltip.4=并行数：4 * 培养皿数量 + 2 * 电压等级 * 玻璃等级
-gtnl.machine.large_incubator.tooltip.radio_hatch=放射仓
-gtnl.machine.large_incubator.tooltip.casing=任意塑料混凝土方块
 
 gtnl.machine.large_engraving_laser.name=大型激光蚀刻机
 gtnl.machine.large_engraving_laser.recipe_type=激光蚀刻机
@@ -1439,20 +1403,6 @@ gtnl.machine.cracker_hub.recipe_type=石油裂化机
 
 gtnl.machine.advanced_infinite_driller.name=进阶无尽油气钻机
 gtnl.machine.advanced_infinite_driller.recipe_type=进阶无尽油气钻机
-gtnl.machine.advanced_infinite_driller.tooltip.0=利用维度技术和坚不可摧的钻头无情的抽取星球的每一份血液
-gtnl.machine.advanced_infinite_driller.tooltip.1=更加高级的无尽流体钻井
-gtnl.machine.advanced_infinite_driller.tooltip.2=可以更加高效的抽取流体，与此同时钻机需要一定温度来启动，可以通入烈焰之炽焱来升温
-gtnl.machine.advanced_infinite_driller.tooltip.3=钻头等级：宇宙中子态素-1 无尽-2 超时空金属-3 时空-4
-gtnl.machine.advanced_infinite_driller.tooltip.4=钻机在不同的工作温度下会产生热量，产热公式为 (钻头等级 * 温度 / 2000)
-gtnl.machine.advanced_infinite_driller.tooltip.5=随着温度提升，效率也会提升. 当温度超过临界值，钻头将会融毁
-gtnl.machine.advanced_infinite_driller.tooltip.6=可以通入不同的流体来降温，可用冷却液如下. 冷却固定消耗为200kL / 5t
-gtnl.machine.advanced_infinite_driller.tooltip.7=蒸馏水 1K
-gtnl.machine.advanced_infinite_driller.tooltip.8=液态氧 2K
-gtnl.machine.advanced_infinite_driller.tooltip.9=液态氦 4K
-gtnl.machine.advanced_infinite_driller.tooltip.10=极寒之凛冰 40K
-gtnl.machine.advanced_infinite_driller.tooltip.11=烈焰之炽焱消耗公式为 (当前温度^1.3)
-gtnl.machine.advanced_infinite_driller.tooltip.12=放入对应的维度标记方块来抽取流体，支持多种！
-gtnl.machine.advanced_infinite_driller.tooltip.casing=任意放射硅岩合金机械方块
 gtnl.machine.advanced_infinite_driller.info.excess_fuel=§r当前温度：§e%s§rK
 
 gtnl.machine.electric_blast_furnace.name=电力工业高炉
@@ -1833,15 +1783,6 @@ gtnl.machine.primitive_brick_kiln.recipe_type=原始土窑
 
 gtnl.machine.singularity_data_hub.name=奇点数据中枢
 gtnl.machine.singularity_data_hub.recipe_type=保险库
-gtnl.machine.singularity_data_hub.tooltip.0=§9§o由展开的维度编织而成的仓库
-gtnl.machine.singularity_data_hub.tooltip.1=无限存储！
-gtnl.machine.singularity_data_hub.tooltip.2=不再兼容输出总线和输出仓，只允许输入
-gtnl.machine.singularity_data_hub.tooltip.3=必须使用保险库多方块输入/输出总成
-gtnl.machine.singularity_data_hub.tooltip.4=默认运行能耗1A UHV
-gtnl.machine.singularity_data_hub.tooltip.5=不安装能源仓将自动进入无线模式
-gtnl.machine.singularity_data_hub.tooltip.6=可以通过三录仪获取存储物品的信息
-gtnl.machine.singularity_data_hub.tooltip.7=使用螺丝刀右键控制器方块可开启过量销毁功能
-gtnl.machine.singularity_data_hub.casing=任意抗震安全外壳
 gtnl.waila.singularity_data_hub.stored_stacks=已存储%s：
 gtnl.waila.singularity_data_hub.operational_data=操作数据
 gtnl.waila.singularity_data_hub.type_used=%s已用容量：%s

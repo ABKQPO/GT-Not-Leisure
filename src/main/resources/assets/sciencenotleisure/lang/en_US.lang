@@ -662,15 +662,9 @@ gtnl.waila.output_me_proxy.target=Linked to Output at
 
 gtnl.machine.nuclear_reactor.name=Nuclear Reactor
 gtnl.machine.nuclear_reactor.tooltip.0=Heat Reactor
-gtnl.machine.nuclear_reactor.tooltip.quote=§9§lThis is a MODERN reactor!§r
-gtnl.machine.nuclear_reactor.tooltip.1=§7Fuel rods generate heat; fluid hatches absorb it and turn water into steam
-gtnl.machine.nuclear_reactor.tooltip.5=§7Startup efficiency §e60% + 50%·sin(X·π/120)§7 (X in minutes), §e110%§7 after 60 min, reset on stop/break
 gtnl.machine.nuclear_reactor.gui.steam_rate=Steam output
-gtnl.machine.nuclear_reactor.tooltip.3=top blocks can be replaced with nuclear hatches, see NEI for the pattern
-gtnl.machine.nuclear_reactor.tooltip.4=Nuclear Fuel Item Bus / Nuclear Cooling Fluid Input Hatch
 gtnl.machine.nuclear_reactor.structure.tiers=All tiers: §65x5x5§7 / §67x5x7§7 / §69x5x9
 gtnl.machine.nuclear_reactor.structure.output_hatch=At least 1 output hatch required
-gtnl.machine.nuclear_reactor.casing=Reactor casing
 gtnl.structure.nuclear_reactor.core_cell=Nuclear Fuel Item Bus or Nuclear Cooling Fluid Input Hatch
 gtnl.structure.tooltip.controller.front_center=Front center, layer %s
 gtnl.structure.tooltip.controller.layer=Layer %s
@@ -1049,24 +1043,9 @@ gtnl.machine.rare_earth_centrifugal.recipe_type=Rare Earth Centrifuging
 
 gtnl.machine.cold_ice_freezer.name=Cold Ice Freezer
 gtnl.machine.cold_ice_freezer.recipe_type=Cryo Freezer
-gtnl.machine.cold_ice_freezer.tooltip.0=150% faster than the Vacuum Freezer!
-gtnl.machine.cold_ice_freezer.tooltip.1=Consumes only 80% of the recipe's required power.
-gtnl.machine.cold_ice_freezer.tooltip.2=Maximum parallel fixed at 128.
-gtnl.machine.cold_ice_freezer.tooltip.3=Requires 10x recipe voltage level^2 of Ice per second.
-gtnl.machine.cold_ice_freezer.tooltip.casing.0=Any Freeze-Proof Machine Block
-gtnl.machine.cold_ice_freezer.tooltip.casing.1=Top center anti-freeze mechanical block
 
 gtnl.machine.blaze_blast_furnace.name=Blaze Blast Furnace
 gtnl.machine.blaze_blast_furnace.recipe_type=Industrial Blast Furnace
-gtnl.machine.blaze_blast_furnace.tooltip.0=300% faster than the Industrial Blast Furnace!
-gtnl.machine.blaze_blast_furnace.tooltip.1=Consumes only 70% of the recipe's required power.
-gtnl.machine.blaze_blast_furnace.tooltip.2=Maximum parallel fixed at 32.
-gtnl.machine.blaze_blast_furnace.tooltip.3=Placing a Blaze Cube in the controller increases parallel to 128.
-gtnl.machine.blaze_blast_furnace.tooltip.4=Requires 10x recipe voltage level^2 of Molten Blaze per second.
-gtnl.machine.blaze_blast_furnace.tooltip.5=Placing into the Blaze Cube, consumption multiplied by 4
-gtnl.machine.blaze_blast_furnace.tooltip.6=Each voltage level above MV increases temperature by 100K.
-gtnl.machine.blaze_blast_furnace.tooltip.casing.0=Any Blast Furnace Machine Block
-gtnl.machine.blaze_blast_furnace.tooltip.casing.1=Top center Blazing Blast Furnace Machine Block
 
 gtnl.machine.chemical_plant.name=Chemical Plant
 gtnl.machine.chemical_plant.recipe_type=Chemical Reactor
@@ -1241,9 +1220,6 @@ gtnl.recipe.isa_mill=Wet Grinding
 gtnl.recipe.metadata.isa_mill.0=Requires aluminum grinding balls
 gtnl.recipe.metadata.isa_mill.1=Requires soapstone grinding balls
 gtnl.machine.isa_mill.recipe_type=Wet Grinding
-gtnl.machine.isa_mill.tooltip.0=Industrial-level wet grinding
-gtnl.machine.isa_mill.tooltip.1=Glass tier limits the energy hatch tier, UHV glass unlocks all tiers
-gtnl.machine.isa_mill.tooltip.casing=Any Isa Mill casing machine block
 
 gtnl.machine.flotation_cell_regulator.name=Industrial Flotation Cell
 gtnl.recipe.cell_regulator=Flotation
@@ -1273,21 +1249,9 @@ gtnl.machine.large_distillery.tooltip.casing=Any tank expansion block
 
 gtnl.machine.incubator.name=Incubator
 gtnl.machine.incubator.recipe_type=Bacterial Incubator
-gtnl.machine.incubator.tooltip.0=No longer needs to keep the output bus half full!This machine is fixed to run at a fluid multiplication of 1001×.
-gtnl.machine.incubator.tooltip.1=Fixed parallel of 4.
-gtnl.machine.incubator.tooltip.2=Glass tier limits the energy hatch tier, UHV glass unlocks all tiers.
-gtnl.machine.incubator.tooltip.radio_hatch=Radioactive Hatch
-gtnl.machine.incubator.tooltip.casing=Any Plastic Concrete Block
 
 gtnl.machine.large_incubator.name=Large Incubator
 gtnl.machine.large_incubator.recipe_type=Bacterial Incubator
-gtnl.machine.large_incubator.tooltip.0=400% faster than the single-block machine of the same voltage.
-gtnl.machine.large_incubator.tooltip.1=Consumes only 60% of the recipe's required power.
-gtnl.machine.large_incubator.tooltip.2=No longer needs to keep the output bus half full!This machine is fixed to run at a fluid multiplication of 1001×.
-gtnl.machine.large_incubator.tooltip.3=Ignores glass tier requirements and precise dosage requirements.
-gtnl.machine.large_incubator.tooltip.4=Parallel: 4 * number of petri dishes + 2 * voltage tier * glass tier.
-gtnl.machine.large_incubator.tooltip.radio_hatch=Radioactive Hatch
-gtnl.machine.large_incubator.tooltip.casing=Any Plastic Concrete Block
 
 gtnl.machine.large_engraving_laser.name=Large Engraving Laser
 gtnl.machine.large_engraving_laser.recipe_type=Engraving Laser
@@ -1439,20 +1403,6 @@ gtnl.machine.cracker_hub.recipe_type=Oil Cracker
 
 gtnl.machine.advanced_infinite_driller.name=Advanced Infinite Fluid Driller
 gtnl.machine.advanced_infinite_driller.recipe_type=Advanced Infinite Fluid Driller
-gtnl.machine.advanced_infinite_driller.tooltip.0=Uses dimensional technology and an indestructible drill to ruthlessly extract every drop of a planet's blood.
-gtnl.machine.advanced_infinite_driller.tooltip.1=A more advanced infinite fluid drill.
-gtnl.machine.advanced_infinite_driller.tooltip.2=Can extract fluids more efficiently, while requiring a certain temperature to start. Can be heated by inputting Blazing Pyrotheum.
-gtnl.machine.advanced_infinite_driller.tooltip.3=Drill Tier: Cosmic Neutronium - 1; Infinity - 2; Transcendent Metal - 3; Space Time - 4
-gtnl.machine.advanced_infinite_driller.tooltip.4=The drill generates heat based on its working temperature. Heat generation formula: (Drill Tier * Temperature / 2000).
-gtnl.machine.advanced_infinite_driller.tooltip.5=As temperature increases, efficiency also increases. When temperature exceeds the critical value, the drill bit will melt.
-gtnl.machine.advanced_infinite_driller.tooltip.6=Can input different fluids to cool down. Available coolants are as follows. Cooling consumption is fixed at 200kL / 5t.
-gtnl.machine.advanced_infinite_driller.tooltip.7=Distilled Water 1K
-gtnl.machine.advanced_infinite_driller.tooltip.8=Liquid Oxygen 2K
-gtnl.machine.advanced_infinite_driller.tooltip.9=Liquid Helium 4K
-gtnl.machine.advanced_infinite_driller.tooltip.10=Cryotheum 40K
-gtnl.machine.advanced_infinite_driller.tooltip.11=Blazing Pyrotheum consumption formula: (Current Temperature^1.3)
-gtnl.machine.advanced_infinite_driller.tooltip.12=Place the corresponding dimension marker block to extract fluids, supports multiple!
-gtnl.machine.advanced_infinite_driller.tooltip.casing=Any Radiant Naquadah Alloy Machine Block
 gtnl.machine.advanced_infinite_driller.info.excess_fuel=§rCurrent Temperature: §e%s §rK
 
 gtnl.machine.electric_blast_furnace.name=Electric Industrial Blast Furnace
@@ -1833,15 +1783,6 @@ gtnl.machine.primitive_brick_kiln.recipe_type=Primitive Brick Kiln
 
 gtnl.machine.singularity_data_hub.name=Singularity Data Hub
 gtnl.machine.singularity_data_hub.recipe_type=Vault
-gtnl.machine.singularity_data_hub.tooltip.0=§9§oA vault woven from unfolded dimensions
-gtnl.machine.singularity_data_hub.tooltip.1=Infinite storage!
-gtnl.machine.singularity_data_hub.tooltip.2=No longer compatible with output bus or output hatche, input only
-gtnl.machine.singularity_data_hub.tooltip.3=Must be used with Vault Multiblock Input/Output Assembly
-gtnl.machine.singularity_data_hub.tooltip.4=Default energy consumption: 1A UHV
-gtnl.machine.singularity_data_hub.tooltip.5=If no energy hatch is installed, it will automatically enter wireless mode
-gtnl.machine.singularity_data_hub.tooltip.6=The index of a stored item can be obtained through the Tricorder
-gtnl.machine.singularity_data_hub.tooltip.7=Right clicking the controller with a screwdriver will turn on excess voiding
-gtnl.machine.singularity_data_hub.casing=Any Vibration-Safe Casing
 gtnl.waila.singularity_data_hub.stored_stacks=Stored %s:
 gtnl.waila.singularity_data_hub.operational_data=Operational Data
 gtnl.waila.singularity_data_hub.type_used=%s Used Capacity: %s

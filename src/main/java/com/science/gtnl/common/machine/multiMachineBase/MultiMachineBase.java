@@ -475,6 +475,24 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         }
     }
 
+    protected void checkHatchMin(List<StructureError> errors, String hatchLangKey, int current, int min) {
+        if (StructureTooltipHooks
+            .onCheckHatchKeys(this, min, StructureTooltipHooks.UNLIMITED, Collections.singletonList(hatchLangKey)))
+            return;
+        checkHatchMin(errors, TranslatableText.lang(hatchLangKey), current, min);
+    }
+
+    protected void checkHatchExact(List<StructureError> errors, String hatchLangKey, int current, int target) {
+        if (StructureTooltipHooks.onCheckHatchKeys(this, target, target, Collections.singletonList(hatchLangKey)))
+            return;
+        checkHatchExact(errors, TranslatableText.lang(hatchLangKey), current, target);
+    }
+
+    protected void checkHatchMax(List<StructureError> errors, String hatchLangKey, int current, int max) {
+        if (StructureTooltipHooks.onCheckHatchKeys(this, 0, max, Collections.singletonList(hatchLangKey))) return;
+        checkHatchMax(errors, TranslatableText.lang(hatchLangKey), current, max);
+    }
+
     protected void checkHatchMin(List<StructureError> errors, TranslatableText name, int current, int min) {
         if (current < min) {
             errors.add(StructureErrors.hatchCount(ErrorType.TOO_FEW, name, current, min));

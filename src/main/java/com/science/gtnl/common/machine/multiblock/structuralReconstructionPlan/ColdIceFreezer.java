@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
@@ -17,6 +16,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -35,7 +35,6 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
-import gregtech.api.structure.error.TranslatableText;
 import gregtech.api.util.ExoticEnergyInputHelper;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
@@ -47,7 +46,7 @@ import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 @IMetaTileEntity.SkipGenerateName
 public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements ISurvivalConstructable {
 
-    private static final TranslatableText ICE_INPUT_HATCH_NAME = TranslatableText.lang("FluidIceInputHatch");
+    private static final String ICE_INPUT_HATCH_NAME = "gtnl.hatch.fluid_ice_input.name";
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String CIF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/cold_ice_freeze";
     private static final String[][] shape = StructureUtils.readStructureFromFile(CIF_STRUCTURE_FILE_PATH);
@@ -132,6 +131,7 @@ public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements 
                     GTStructureUtility.buildHatchAdder(ColdIceFreezer.class)
                         .adder(ColdIceFreezer::addFluidIceInputHatch)
                         .hatchId(21502)
+                        .description(() -> ICE_INPUT_HATCH_NAME)
                         .shouldReject(x -> !x.mFluidIceInputHatch.isEmpty())
                         .casingIndex(getCasingTextureID())
                         .hint(1)
@@ -244,28 +244,8 @@ public class ColdIceFreezer extends MultiMachineBase<ColdIceFreezer> implements 
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.cold_ice_freezer.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.cold_ice_freezer.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.cold_ice_freezer.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.cold_ice_freezer.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.cold_ice_freezer.tooltip.3"))
-            .addSupportMultiAmp()
-            .beginStructureBlock(5, 5, 9, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.cold_ice_freezer.tooltip.casing.0"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.cold_ice_freezer.tooltip.casing.0"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.cold_ice_freezer.tooltip.casing.0"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.cold_ice_freezer.tooltip.casing.0"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.cold_ice_freezer.tooltip.casing.0"), 1)
-            .addMufflerHatch("0+", StatCollector.translateToLocal("gtnl.machine.cold_ice_freezer.tooltip.casing.1"), 1)
-            .addMaintenanceHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.cold_ice_freezer.tooltip.casing.0"),
-                1)
-            .addOtherStructurePart(
-                StatCollector.translateToLocal("FluidIceInputHatch"),
-                StatCollector.translateToLocal("gtnl.machine.cold_ice_freezer.tooltip.casing.0"),
-                1)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }
