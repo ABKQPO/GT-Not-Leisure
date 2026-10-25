@@ -1132,14 +1132,6 @@ gtnl.machine.processing_array.tooltip.casing=任意加强钛机械方块
 
 gtnl.machine.mega_blast_furnace.name=巨型工业高炉
 gtnl.machine.mega_blast_furnace.recipe_type=工业高炉
-gtnl.machine.mega_blast_furnace.tooltip.0=每超过配方温度900K，耗能均将乘以95%(不计超频)
-gtnl.machine.mega_blast_furnace.tooltip.1=每超过配方温度1800K，将进行一次无损超频
-gtnl.machine.mega_blast_furnace.tooltip.2=超过MV后的每一级电压，都会将温度提高100K
-gtnl.machine.mega_blast_furnace.tooltip.3=并行控制仓额外提供4倍并行！
-gtnl.machine.mega_blast_furnace.tooltip.4=比工业高炉快400%
-gtnl.machine.mega_blast_furnace.tooltip.5=安装UEV及以上的并行控制仓解锁§c无损超频§7
-gtnl.machine.mega_blast_furnace.tooltip.casing.0=任意冶炼炉机械方块
-gtnl.machine.mega_blast_furnace.tooltip.casing.1=顶部中心放射硅岩合金机械方块
 
 gtnl.machine.bricked_blast_furnace.name=砖高炉
 gtnl.machine.bricked_blast_furnace.recipe_type=§c跃§6进§e一§a号§b原§9始§d高§5炉
@@ -1182,16 +1174,9 @@ gtnl.machine.blaze_blast_furnace.tooltip.casing.1=顶部中心炽焱高炉机械
 
 gtnl.machine.chemical_plant.name=化工厂
 gtnl.machine.chemical_plant.recipe_type=化学反应釜
-gtnl.machine.chemical_plant.tooltip.0=线圈等级每高出白铜一级能耗与速度均将乘以95%
-gtnl.machine.chemical_plant.tooltip.1=并行数不高于1024
-gtnl.machine.chemical_plant.tooltip.casing=任意化学惰性机械方块
 
 gtnl.machine.vacuum_freezer.name=真空冷冻机
 gtnl.machine.vacuum_freezer.recipe_type=真空冷冻机
-gtnl.machine.vacuum_freezer.tooltip.0=比原版的真空冷冻机快33%
-gtnl.machine.vacuum_freezer.tooltip.1=并行数 = 8 + 2 * 电压等级
-gtnl.machine.vacuum_freezer.tooltip.2=支持两次免费的§c无损超频§7！
-gtnl.machine.vacuum_freezer.tooltip.casing=任意防冻机械方块
 
 gtnl.machine.industrial_arcane_assembler.name=工业奥术装配室
 gtnl.recipe.industrial_shaped_arcane_crafting=工业奥术装配室
@@ -1246,7 +1231,6 @@ gtnl.machine.large_bender.recipe_type=卷板机
 
 gtnl.machine.electric_implosion_compressor.name=电力聚爆压缩机
 gtnl.machine.electric_implosion_compressor.recipe_type=电动聚爆压缩机
-gtnl.machine.electric_implosion_compressor.tooltip.casing=任意强化钨钢机械方块
 
 gtnl.machine.large_extruder.name=大型压模机
 gtnl.machine.large_extruder.recipe_type=压模机
@@ -1344,9 +1328,6 @@ gtnl.machine.large_canning.recipe_type=装罐机
 
 gtnl.machine.digester.name=煮解池
 gtnl.machine.digester.recipe_type=煮解池
-gtnl.machine.digester.tooltip.0=提升线圈等级来获得更高的速度加成和耗电减免！ 
-gtnl.machine.digester.tooltip.1=超过MV后的每一级电压，都会将温度提高100K
-gtnl.machine.digester.tooltip.casing=任意强化钨钢机械方块
 
 gtnl.machine.alloy_blast_smelter.name=合金冶炼炉
 gtnl.machine.alloy_blast_smelter.recipe_type=合金冶炼炉
@@ -1381,8 +1362,6 @@ gtnl.machine.isa_mill.tooltip.casing=任意艾萨研磨外围机械方块
 gtnl.machine.flotation_cell_regulator.name=工业浮选机
 gtnl.recipe.cell_regulator=浮选
 gtnl.machine.flotation_cell_regulator.recipe_type=浮选
-gtnl.machine.flotation_cell_regulator.tooltip.0=玻璃等级限制了能源仓等级，UHV玻璃解锁所有等级
-gtnl.machine.flotation_cell_regulator.tooltip.casing=任意哈斯特洛伊合金-X结构方块
 
 gtnl.machine.vacuum_drying_furnace.name=真空干燥炉
 gtnl.machine.vacuum_drying_furnace.recipe_type=真空炉 / 脱水机 / 冷阱 / 反应堆熔盐加工厂
@@ -1430,8 +1409,6 @@ gtnl.machine.large_engraving_laser.recipe_type=激光蚀刻机
 gtnl.machine.fishing_ground.name=渔场
 gtnl.recipe.fishing_ground=渔场
 gtnl.machine.fishing_ground.recipe_type=渔场
-gtnl.machine.fishing_ground.tooltip.0=把珠海渔场和藻类农场结合在一起！
-gtnl.machine.fishing_ground.tooltip.casing=任意哈斯特洛伊-X结构方块
 
 gtnl.machine.element_copying.name=元素复制机
 gtnl.machine.element_copying.recipe_type=元素复制
@@ -1444,8 +1421,6 @@ gtnl.machine.element_copying.info.selected_types=已选择种类：%s，使用UU
 gtnl.machine.wood_distillation.name=木化工厂
 gtnl.recipe.wood_distillation=集成木质生物质热解
 gtnl.machine.wood_distillation.recipe_type=集成木质生物质热解
-gtnl.machine.wood_distillation.tooltip.0=最终产出：配方输出 * 电压等级 * 2
-gtnl.machine.wood_distillation.tooltip.casing=任意隔热机械方块
 
 gtnl.machine.large_packer.name=大型打包机
 gtnl.machine.large_packer.recipe_type=打包机 / 解包器
@@ -1458,7 +1433,6 @@ gtnl.machine.large_alloy_smelter.recipe_type=合金炉
 gtnl.machine.molecular_transformer.name=分子重组仪
 gtnl.recipe.molecular_transformer=物质重组
 gtnl.machine.molecular_transformer.recipe_type=物质重组
-gtnl.machine.molecular_transformer.tooltip.casing=任意化学惰性机械方块
 
 gtnl.machine.large_pyrolyse_oven.name=大型热解炉
 gtnl.machine.large_pyrolyse_oven.recipe_type=焦炉
@@ -1495,11 +1469,6 @@ gtnl.machine.precision_assembler.name=精密组装机
 gtnl.machine.precision_assembler.recipe_type=组装机 / 精密组装机
 gtnl.machine.precision_assembler.mode.0=组装机
 gtnl.machine.precision_assembler.mode.1=精密组装机
-gtnl.machine.precision_assembler.tooltip.0=比相同电压的机器快125%
-gtnl.machine.precision_assembler.tooltip.1=机械方块等级决定了能源仓最大等级，UHV机械方块解锁所有等级
-gtnl.machine.precision_assembler.tooltip.2=并行数：2 ^ 玻璃等级 + 精密电子单元机械方块等级 * 64
-gtnl.machine.precision_assembler.tooltip.3=当精密电子单元机械方块等级大于3时，开启§c无损超频§7
-gtnl.machine.precision_assembler.tooltip.casing=任意精密机械方块
 
 gtnl.machine.mega_alloy_blast_smelter.name=巨型合金冶炼炉
 gtnl.machine.mega_alloy_blast_smelter.recipe_type=合金冶炼炉
@@ -1617,14 +1586,6 @@ gtnl.machine.advanced_infinite_driller.info.excess_fuel=§r当前温度：§e%s�
 
 gtnl.machine.electric_blast_furnace.name=电力工业高炉
 gtnl.machine.electric_blast_furnace.recipe_type=工业高炉
-gtnl.machine.electric_blast_furnace.tooltip.0=比工业高炉快25%
-gtnl.machine.electric_blast_furnace.tooltip.1=只需要使用配方要求功率的75%
-gtnl.machine.electric_blast_furnace.tooltip.2=每超过配方温度900K，耗能均将乘以95%(不计超频)
-gtnl.machine.electric_blast_furnace.tooltip.3=每超过配方温度1800K，将进行一次无损超频
-gtnl.machine.electric_blast_furnace.tooltip.4=超过MV后的每一级电压，都会将温度提高100K
-gtnl.machine.electric_blast_furnace.tooltip.5=每提升一个电压等级或线圈等级，每次运行可以多处理两个物品
-gtnl.machine.electric_blast_furnace.tooltip.casing=任意隔热机械方块
-gtnl.machine.electric_blast_furnace.tooltip.muffler=顶部中心格栅机械方块
 
 gtnl.machine.platinum_based_treatment.name=铂族工业统合枢纽
 gtnl.recipe.platinum_based_treatment=单步铂处理
@@ -2176,9 +2137,6 @@ gtnl.machine.steam_greenhouse_module.tooltip.5=无法超频
 gtnl.machine.rocket_assembler.name=火箭组装厂
 gtnl.recipe.rocket_assembler=火箭组装厂
 gtnl.machine.rocket_assembler.recipe_type=火箭组装厂
-gtnl.machine.rocket_assembler.info.0=§d§l我有一个航天梦
-gtnl.machine.rocket_assembler.info.1=使用剪线钳开启/关闭动画特效
-gtnl.machine.rocket_assembler.casing=任意洁净不锈钢机械方块
 gtnl.nei.rocket_assembler.special_value=需要%s阶火箭NASA工作台图纸
 
 gtnl.machine.steam_oil_drill_module.1.name=蒸汽流体钻机模块 I

@@ -6,7 +6,6 @@ import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
@@ -18,6 +17,7 @@ import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
@@ -74,18 +74,8 @@ public class MolecularTransformer extends GTMMultiMachineBase<MolecularTransform
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.molecular_transformer.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
-            .addSupportAny()
-            .beginStructureBlock(9, 11, 9, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.molecular_transformer.tooltip.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.molecular_transformer.tooltip.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.molecular_transformer.tooltip.casing"))
-            .addMaintenanceHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.molecular_transformer.tooltip.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

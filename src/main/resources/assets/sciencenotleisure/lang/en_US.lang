@@ -1132,14 +1132,6 @@ gtnl.machine.processing_array.tooltip.casing=Any Reinforced Titanium Machine Blo
 
 gtnl.machine.mega_blast_furnace.name=Mega Industrial Blast Furnace
 gtnl.machine.mega_blast_furnace.recipe_type=Industrial Blast Furnace
-gtnl.machine.mega_blast_furnace.tooltip.0=For every 900K above the recipe temperature, energy consumption will multiply by 95% (excluding overclocking).
-gtnl.machine.mega_blast_furnace.tooltip.1=For every 1800K above the recipe temperature, it will perform a lossless overclock
-gtnl.machine.mega_blast_furnace.tooltip.2=For every voltage level above MV, temperature will increase by 100K
-gtnl.machine.mega_blast_furnace.tooltip.3=Parallel Control Hatch provides 4x additional parallel!
-gtnl.machine.mega_blast_furnace.tooltip.4=400% faster than the Industrial Blast Furnace
-gtnl.machine.mega_blast_furnace.tooltip.5=Install a UEV or higher Parallel Control Hatch to unlock §cperfect overclock§7
-gtnl.machine.mega_blast_furnace.tooltip.casing.0=Any Smelting Furnace Mechanical Block
-gtnl.machine.mega_blast_furnace.tooltip.casing.1=Top center radioactive silicon alloy mechanical block
 
 gtnl.machine.bricked_blast_furnace.name=Bricked Blast Furnace
 gtnl.machine.bricked_blast_furnace.recipe_type=Primitive Blast Furnace
@@ -1182,16 +1174,9 @@ gtnl.machine.blaze_blast_furnace.tooltip.casing.1=Top center Blazing Blast Furna
 
 gtnl.machine.chemical_plant.name=Chemical Plant
 gtnl.machine.chemical_plant.recipe_type=Chemical Reactor
-gtnl.machine.chemical_plant.tooltip.0=Each coil level above Cupronickel reduces energy consumption and speed by 95%.
-gtnl.machine.chemical_plant.tooltip.1=Parallel does not exceed 1024.
-gtnl.machine.chemical_plant.tooltip.casing=Any Chemically Inert Machine Block
 
 gtnl.machine.vacuum_freezer.name=Vacuum Freezer
 gtnl.machine.vacuum_freezer.recipe_type=Vacuum Freezer
-gtnl.machine.vacuum_freezer.tooltip.0=33% faster than the vanilla Vacuum Freezer.
-gtnl.machine.vacuum_freezer.tooltip.1=Parallel = 8 + 2 * voltage level.
-gtnl.machine.vacuum_freezer.tooltip.2=Supports two free §cperfect overclock§7!
-gtnl.machine.vacuum_freezer.tooltip.casing=Any Freeze-Proof Machine Block
 
 gtnl.machine.industrial_arcane_assembler.name=Industrial Arcane Assembler
 gtnl.recipe.industrial_shaped_arcane_crafting=Industrial Arcane Assembler
@@ -1246,7 +1231,6 @@ gtnl.machine.large_bender.recipe_type=Bender
 
 gtnl.machine.electric_implosion_compressor.name=Electric Implosion Compressor
 gtnl.machine.electric_implosion_compressor.recipe_type=Electric Implosion Compressor
-gtnl.machine.electric_implosion_compressor.tooltip.casing=Any Reinforced Tungstensteel Machine Block
 
 gtnl.machine.large_extruder.name=Large Extruder
 gtnl.machine.large_extruder.recipe_type=Extruder
@@ -1344,9 +1328,6 @@ gtnl.machine.large_canning.recipe_type=Canning Machine
 
 gtnl.machine.digester.name=Digester
 gtnl.machine.digester.recipe_type=Digester
-gtnl.machine.digester.tooltip.0=Higher coil levels provide greater speed bonuses and power reduction!
-gtnl.machine.digester.tooltip.1=Each voltage level above MV increases temperature by 100K.
-gtnl.machine.digester.tooltip.casing=Any Reinforced Tungstensteel Machine Block
 
 gtnl.machine.alloy_blast_smelter.name=Alloy Blast Smelter
 gtnl.machine.alloy_blast_smelter.recipe_type=Alloy Blast Smelter
@@ -1381,8 +1362,6 @@ gtnl.machine.isa_mill.tooltip.casing=Any Isa Mill casing machine block
 gtnl.machine.flotation_cell_regulator.name=Industrial Flotation Cell
 gtnl.recipe.cell_regulator=Flotation
 gtnl.machine.flotation_cell_regulator.recipe_type=Flotation
-gtnl.machine.flotation_cell_regulator.tooltip.0=Glass tier limits the energy hatch tier, UHV glass unlocks all tiers
-gtnl.machine.flotation_cell_regulator.tooltip.casing=Any Hastelloy-X structural block
 
 gtnl.machine.vacuum_drying_furnace.name=Vacuum Drying Furnace
 gtnl.machine.vacuum_drying_furnace.recipe_type=Vacuum Furnace / Dehydrator / Cold Trap / Reactor Molten Salt Processing Plant
@@ -1430,8 +1409,6 @@ gtnl.machine.large_engraving_laser.recipe_type=Engraving Laser
 gtnl.machine.fishing_ground.name=Fishing Ground
 gtnl.recipe.fishing_ground=Fishing Ground
 gtnl.machine.fishing_ground.recipe_type=Fishing Ground
-gtnl.machine.fishing_ground.tooltip.0=Combines the Zhuhai Fishing Ground and Algae Farm!
-gtnl.machine.fishing_ground.tooltip.casing=Any Hastelloy-X Structure Block
 
 gtnl.machine.element_copying.name=Element Copier
 gtnl.machine.element_copying.recipe_type=Element Copying
@@ -1444,8 +1421,6 @@ gtnl.machine.element_copying.info.selected_types=Selected types: %s, UUM used: %
 gtnl.machine.wood_distillation.name=Wood Chemical Plant
 gtnl.recipe.wood_distillation=Integrated Wood Biomass Pyrolysis
 gtnl.machine.wood_distillation.recipe_type=Integrated Wood Biomass Pyrolysis
-gtnl.machine.wood_distillation.tooltip.0=Final output: recipe output * voltage tier * 2
-gtnl.machine.wood_distillation.tooltip.casing=Any insulated machine block
 
 gtnl.machine.large_packer.name=Large Packer
 gtnl.machine.large_packer.recipe_type=Packer / Unpacker
@@ -1458,7 +1433,6 @@ gtnl.machine.large_alloy_smelter.recipe_type=Alloy Smelter
 gtnl.machine.molecular_transformer.name=Molecular Transformer
 gtnl.recipe.molecular_transformer=Matter Recombination
 gtnl.machine.molecular_transformer.recipe_type=Matter Recombination
-gtnl.machine.molecular_transformer.tooltip.casing=Any chemically inert machine block
 
 gtnl.machine.large_pyrolyse_oven.name=Large Pyrolysis Oven
 gtnl.machine.large_pyrolyse_oven.recipe_type=Coke Oven
@@ -1495,11 +1469,6 @@ gtnl.machine.precision_assembler.name=Precision Assembler
 gtnl.machine.precision_assembler.recipe_type=Assembler / Precision Assembler
 gtnl.machine.precision_assembler.mode.0=Assembler
 gtnl.machine.precision_assembler.mode.1=Precision Assembler
-gtnl.machine.precision_assembler.tooltip.0=125% faster than machines of the same voltage
-gtnl.machine.precision_assembler.tooltip.1=Machine block tier determines the max energy hatch tier, UHV machine blocks unlock all tiers
-gtnl.machine.precision_assembler.tooltip.2=parallel: 2 ^ glass tier + precision electronic unit machine block tier * 64
-gtnl.machine.precision_assembler.tooltip.3=When the precision electronic unit machine block tier is 3, enable §cPerfect Overclock§7
-gtnl.machine.precision_assembler.tooltip.casing=Any precision machine block
 
 gtnl.machine.mega_alloy_blast_smelter.name=Industrial Alloy Blast Smelter
 gtnl.machine.mega_alloy_blast_smelter.recipe_type=Alloy Blast Smelter
@@ -1617,14 +1586,6 @@ gtnl.machine.advanced_infinite_driller.info.excess_fuel=§rCurrent Temperature: 
 
 gtnl.machine.electric_blast_furnace.name=Electric Industrial Blast Furnace
 gtnl.machine.electric_blast_furnace.recipe_type=Industrial Blast Furnace
-gtnl.machine.electric_blast_furnace.tooltip.0=25% faster than the Industrial Blast Furnace.
-gtnl.machine.electric_blast_furnace.tooltip.1=Only uses 75% of the required power for the recipe.
-gtnl.machine.electric_blast_furnace.tooltip.2=For every 900K above the recipe temperature, energy consumption will multiply by 95% (excluding overclocking).
-gtnl.machine.electric_blast_furnace.tooltip.3=For every 1800K above the recipe temperature, it will perform a lossless overclock
-gtnl.machine.electric_blast_furnace.tooltip.4=For every voltage level above MV, temperature will increase by 100K.
-gtnl.machine.electric_blast_furnace.tooltip.5=For every increase in voltage level or coil level, it can process two more items per run.
-gtnl.machine.electric_blast_furnace.tooltip.casing=Any Heat-Insulated Mechanical Block
-gtnl.machine.electric_blast_furnace.tooltip.muffler=Top center grating mechanical block
 
 gtnl.machine.platinum_based_treatment.name=Platinum Group Processing Hub
 gtnl.recipe.platinum_based_treatment=Single-Step Platinum Processing
@@ -2176,9 +2137,6 @@ gtnl.machine.steam_greenhouse_module.tooltip.5=Cannot be overclocked
 gtnl.machine.rocket_assembler.name=Rocket Assembler
 gtnl.recipe.rocket_assembler=Rocket Assembler
 gtnl.machine.rocket_assembler.recipe_type=Rocket Assembler
-gtnl.machine.rocket_assembler.info.0=§d§lI have a space dream
-gtnl.machine.rocket_assembler.info.1=Use a wire cutter to turn on/off the animation effects.
-gtnl.machine.rocket_assembler.casing=Any clean stainless steel machine block
 gtnl.nei.rocket_assembler.special_value=Requires %s tier Rocket NASA Workbench Blueprint
 
 gtnl.machine.steam_oil_drill_module.1.name=Steam Oil Drill Module I

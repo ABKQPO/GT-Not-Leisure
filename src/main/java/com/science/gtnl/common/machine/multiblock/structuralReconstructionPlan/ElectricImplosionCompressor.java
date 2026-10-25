@@ -6,7 +6,6 @@ import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +20,7 @@ import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import bartworks.API.recipe.BartWorksRecipeMaps;
 import gregtech.api.casing.Casings;
@@ -182,26 +182,8 @@ public class ElectricImplosionCompressor extends GTMMultiMachineBase<ElectricImp
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.electric_implosion_compressor.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
-            .addSupportMultiAmp()
-            .beginStructureBlock(5, 8, 5, true)
-            .addInputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.electric_implosion_compressor.tooltip.casing"))
-            .addOutputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.electric_implosion_compressor.tooltip.casing"))
-            .addEnergyHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.electric_implosion_compressor.tooltip.casing"))
-            .addMaintenanceHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.electric_implosion_compressor.tooltip.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

@@ -12,7 +12,6 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -30,6 +29,7 @@ import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import goodgenerator.api.recipe.GoodGeneratorRecipeMaps;
@@ -349,25 +349,8 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.precision_assembler.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.3"))
-            .addSupportAny()
-            .beginStructureBlock(9, 5, 5, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.casing"))
-            .addMaintenanceHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.casing"))
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
-            .addSubChannelUsage(GTStructureChannels.PRASS_UNIT_CASING)
-            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }
