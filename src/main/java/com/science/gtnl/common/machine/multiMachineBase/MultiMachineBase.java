@@ -49,6 +49,8 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
+import com.science.gtnl.utils.structure.InfoSummary.BonusStat;
+import com.science.gtnl.utils.structure.InfoSummary.TierBonus;
 import com.science.gtnl.utils.structure.MultiblockTooltipReader;
 import com.science.gtnl.utils.structure.StructureTooltipHooks;
 
@@ -112,7 +114,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     public static final int ONE_TIER_SKIP = 1;
     private static final int BASE_TOOLTIP_TIER = 0;
     private static final int NO_TOOLTIP_TIER = -1;
-    private static final int FIRST_PARALLEL_CONTROLLER_PROBE_TIER = 2;
     private static final int LAST_PARALLEL_CONTROLLER_PROBE_TIER = 5;
     private static final int HEAT_PROBE_DURATION = 20, HEAT_PROBE_EUT = 30, HEAT_PROBE_RECIPE_HEAT = 1;
     private static final int VOLTAGE_HEAT_PER_TIER = 100, VOLTAGE_HEAT_FROM_TIER = VoltageIndex.MV;
@@ -636,6 +637,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     public TooltipStats getTooltipStatsAtTier(TieredPart part, int tier) {
         return switch (part) {
             case VOLTAGE, COIL, GLASS, CASING -> tooltipStatsWith(part, tier, NO_TOOLTIP_TIER);
+            case PARALLEL_CONTROLLER -> tooltipStatsWith(null, BASE_TOOLTIP_TIER, tier);
             case HIGH_PRESSURE -> null;
         };
     }
@@ -770,22 +772,18 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         if (!CustomHatchElement.ParallelCon.getDescriptionLangKey()
             .equals(hatchLangKey)) return Collections.emptyList();
         String hatch = GTNLMultiblockTooltipBuilder.hatchName(hatchLangKey);
-        TooltipStats low = tooltipStatsWith(null, BASE_TOOLTIP_TIER, FIRST_PARALLEL_CONTROLLER_PROBE_TIER);
+        TooltipStats low = tooltipStatsWith(
+            null,
+            BASE_TOOLTIP_TIER,
+            MultiblockTooltipReader.FIRST_PARALLEL_CONTROLLER_PROBE_TIER);
         TooltipStats high = tooltipStatsWith(null, BASE_TOOLTIP_TIER, LAST_PARALLEL_CONTROLLER_PROBE_TIER);
-        List<String> effects = new ArrayList<>();
-        if (high.parallels() > low.parallels()) effects.add(PARALLEL_CONTROLLER_TOOLTIP_KEY + ".parallel");
-        if (high.speed() > low.speed()) effects.add(PARALLEL_CONTROLLER_TOOLTIP_KEY + ".speed");
-        if (high.energyUsage() < low.energyUsage()) effects.add(PARALLEL_CONTROLLER_TOOLTIP_KEY + ".energy");
-        effects.replaceAll(StatCollector::translateToLocal);
+        List<String> effects = parallelControllerEffects(low, high);
         List<String> lines = new ArrayList<>();
         lines.add(
             effects.isEmpty()
                 ? StatCollector.translateToLocalFormatted(PARALLEL_CONTROLLER_TOOLTIP_KEY + ".accepts", hatch)
-                : StatCollector.translateToLocalFormatted(
-                    PARALLEL_CONTROLLER_TOOLTIP_KEY + ".install",
-                    hatch,
-                    GTNLMultiblockTooltipBuilder.joinPhrases(effects)));
-        int extra = extraParallels(low, FIRST_PARALLEL_CONTROLLER_PROBE_TIER);
+                : GTNLMultiblockTooltipBuilder.perTierText(TieredPart.PARALLEL_CONTROLLER, effects));
+        int extra = extraParallels(low, MultiblockTooltipReader.FIRST_PARALLEL_CONTROLLER_PROBE_TIER);
         if (extra > 1 && extra == extraParallels(high, LAST_PARALLEL_CONTROLLER_PROBE_TIER)) {
             lines.add(
                 StatCollector.translateToLocalFormatted(
@@ -803,6 +801,41 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         }
         for (String key : getTooltipParallelControllerKeys()) lines.add(StatCollector.translateToLocal(key));
         return lines;
+    }
+
+    private List<String> parallelControllerEffects(TooltipStats low, TooltipStats high) {
+        List<TierBonus> bonuses = MultiblockTooltipReader.tierBonusesOf(this, TieredPart.PARALLEL_CONTROLLER);
+        List<String> effects = new ArrayList<>();
+        if (high.parallels() > low.parallels()) {
+            effects.add(StatCollector.translateToLocal(PARALLEL_CONTROLLER_TOOLTIP_KEY + ".parallel"));
+        }
+        addParallelControllerEffect(
+            effects,
+            bonuses,
+            high.speed() > low.speed(),
+            ".speed",
+            BonusStat.SPEED,
+            BonusStat.DURATION);
+        addParallelControllerEffect(
+            effects,
+            bonuses,
+            high.energyUsage() < low.energyUsage(),
+            ".energy",
+            BonusStat.ENERGY);
+        return effects;
+    }
+
+    // Why: a stat that changes by no steady step or factor has no number to show, so only its direction is named.
+    private static void addParallelControllerEffect(List<String> effects, List<TierBonus> bonuses, boolean changes,
+        String fallbackSuffix, BonusStat... stats) {
+        List<BonusStat> shown = Arrays.asList(stats);
+        for (TierBonus bonus : bonuses) {
+            if (shown.contains(bonus.stat())) {
+                effects.add(GTNLMultiblockTooltipBuilder.effectText(bonus));
+                return;
+            }
+        }
+        if (changes) effects.add(StatCollector.translateToLocal(PARALLEL_CONTROLLER_TOOLTIP_KEY + fallbackSuffix));
     }
 
     private int parallelControllerPerfectOverclockTier() {

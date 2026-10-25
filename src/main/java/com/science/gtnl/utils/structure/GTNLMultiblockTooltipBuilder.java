@@ -52,6 +52,7 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
     private static final String LIST_JOIN_KEY = "gtnl.structure.tooltip.join.list";
     private static final String LAST_JOIN_KEY = "gtnl.structure.tooltip.join.last";
     private static final String PART_TIER_KEY = "gtnl.structure.tooltip.part.tier";
+    private static final String EFFECT_KEY = "gtnl.structure.tooltip.effect.";
     // Why: GT 5.09.54.205 has no hatch or mechanic tooltip colors yet; these are the ones newer GT versions use.
     public static final EnumChatFormatting HATCH_COLOR = EnumChatFormatting.GREEN;
     public static final EnumChatFormatting MECHANIC_COLOR = EnumChatFormatting.LIGHT_PURPLE;
@@ -265,6 +266,23 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
         List<String> names = new ArrayList<>();
         for (TieredPart part : parts) names.add(TooltipHelper.tierText(StatCollector.translateToLocal(part.langKey)));
         return StatCollector.translateToLocalFormatted(PART_TIER_KEY, joinPhrases(names));
+    }
+
+    public static String perTierText(TieredPart part, List<String> effects) {
+        String joined = effects.get(0);
+        for (int i = 1; i < effects.size(); i++) {
+            joined = StatCollector.translateToLocalFormatted(WITH_BONUS_KEY, joined, effects.get(i));
+        }
+        return StatCollector.translateToLocalFormatted(BONUS_KEY, partTierText(part), joined);
+    }
+
+    public static String effectText(TierBonus bonus) {
+        String text = StatCollector.translateToLocalFormatted(
+            EFFECT_KEY + bonus.stat()
+                .name()
+                .toLowerCase(Locale.ROOT),
+            changeText(bonus));
+        return bonus.multiplicative() ? StatCollector.translateToLocalFormatted(COMPOUND_KEY, text) : text;
     }
 
     private static String bonusText(TierBonus bonus, List<TieredPart> parts) {

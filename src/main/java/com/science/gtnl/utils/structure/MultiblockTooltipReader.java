@@ -74,6 +74,8 @@ public class MultiblockTooltipReader {
     private static final int FIRST_VOLTAGE_PROBE_TIER = 1;
     private static final int LOWEST_PROBE_TIER = 0;
     private static final int FIRST_GLASS_PROBE_TIER = 3;
+    // Why: GTM machines start their parallel controller bonus one tier late, at MV.
+    public static final int FIRST_PARALLEL_CONTROLLER_PROBE_TIER = 2;
     private static final int MAX_JOINED_TIER_NAMES = 2;
     public static final String NAME_SEPARATOR = " / ";
     private static final String GTNL_KEY_PREFIX = "gtnl.";
@@ -360,7 +362,7 @@ public class MultiblockTooltipReader {
     private static List<TierBonus> tierBonuses(IMultiblockTooltipRules rules, List<TieredPart> parts,
         TooltipStats base) {
         List<TierBonus> bonuses = new ArrayList<>();
-        for (TieredPart part : parts) addTierBonuses(bonuses, rules, part, base);
+        for (TieredPart part : parts) addTierBonuses(bonuses, rules, part);
         addSwitchBonuses(bonuses, rules, TieredPart.HIGH_PRESSURE, base);
         return bonuses;
     }
@@ -384,7 +386,7 @@ public class MultiblockTooltipReader {
 
     private static String tierName(TieredPart part, int tier, List<String> casingTierNames) {
         return switch (part) {
-            case VOLTAGE, GLASS -> TooltipHelper.voltageTierText(tier, false);
+            case VOLTAGE, GLASS, PARALLEL_CONTROLLER -> TooltipHelper.voltageTierText(tier, false);
             case COIL -> HeatingCoilLevel.getDisplayNameFromHeat(
                 (int) HeatingCoilLevel.getFromTier((byte) tier)
                     .getHeat(),
@@ -410,15 +412,20 @@ public class MultiblockTooltipReader {
             bonuses.add(new TierBonus(part, stat, false, change, false));
     }
 
-    private static void addTierBonuses(List<TierBonus> bonuses, IMultiblockTooltipRules rules, TieredPart part,
-        TooltipStats base) {
+    public static List<TierBonus> tierBonusesOf(IMultiblockTooltipRules rules, TieredPart part) {
+        List<TierBonus> bonuses = new ArrayList<>();
+        addTierBonuses(bonuses, rules, part);
+        return bonuses;
+    }
+
+    private static void addTierBonuses(List<TierBonus> bonuses, IMultiblockTooltipRules rules, TieredPart part) {
         TooltipStats[] probes = probeTiers(rules, part, BONUS_PROBE_TIERS);
         if (probes == null) return;
         addBonus(bonuses, part, BonusStat.PARALLEL, values(probes, TooltipStats::parallels), true);
         Double speedStep = steadyStep(values(probes, TooltipStats::speed), false);
         // Why: only a fixed speed gain per tier reads as speed, like GT's autoclave; other formulas cut recipe time.
         if (speedStep != null) bonuses.add(new TierBonus(part, BonusStat.SPEED, false, speedStep, true));
-        else addBonus(bonuses, part, BonusStat.DURATION, durationFactors(probes, base), false);
+        else addBonus(bonuses, part, BonusStat.DURATION, durations(probes), false);
         addBonus(bonuses, part, BonusStat.ENERGY, values(probes, TooltipStats::energyUsage), false);
     }
 
@@ -428,6 +435,7 @@ public class MultiblockTooltipReader {
             case VOLTAGE -> FIRST_VOLTAGE_PROBE_TIER;
             case COIL, CASING, HIGH_PRESSURE -> LOWEST_PROBE_TIER;
             case GLASS -> FIRST_GLASS_PROBE_TIER;
+            case PARALLEL_CONTROLLER -> FIRST_PARALLEL_CONTROLLER_PROBE_TIER;
         };
     }
 
@@ -447,8 +455,9 @@ public class MultiblockTooltipReader {
         return values;
     }
 
-    public static double[] durationFactors(TooltipStats[] probes, TooltipStats base) {
-        return values(probes, stats -> base.speed() / stats.speed());
+    // Why: recipe time steps are shown as the code writes them, such as 2% for a duration modifier lowered by 0.02.
+    public static double[] durations(TooltipStats[] probes) {
+        return values(probes, stats -> 1 / stats.speed());
     }
 
     private static void addBonus(List<TierBonus> bonuses, TieredPart part, BonusStat stat, double[] values,

@@ -250,7 +250,7 @@ public class MultiblockTooltipAudit {
         for (StatFamily family : StatFamily.values()) {
             TierBonus bonus = bonusOf(info, part, family);
             double[] values = bonus != null && bonus.stat() == BonusStat.DURATION
-                ? MultiblockTooltipReader.durationFactors(probes, info.stats())
+                ? MultiblockTooltipReader.durations(probes)
                 : MultiblockTooltipReader.values(probes, family.stat);
             if (!MultiblockTooltipReader.allFinite(values)) continue;
             if (family == StatFamily.PERFECT_OC && shownFrom(values, info, part, firstTier)) continue;
