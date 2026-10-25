@@ -773,10 +773,6 @@ gtnl.machine.siphon_turbine.gui.output=§f过去 6.4s 输出：§e%s §fEU
 
 gtnl.machine.small_infusion_matrix.name=小型注魔矩阵
 gtnl.machine.small_infusion_matrix.recipe_type=工业注魔
-gtnl.machine.small_infusion_matrix.tooltip.0=处理机器所有者已解锁的注魔配方
-gtnl.machine.small_infusion_matrix.tooltip.1=消耗各注魔配方指定的源质
-gtnl.machine.small_infusion_matrix.casing=任意魔法机械方块
-gtnl.machine.small_infusion_matrix.essentia_input_hatch=源质输入仓或神秘能源注魔供应器
 
 gtnl.machine.small_arcane_assembler.name=小型奥术组装机
 gtnl.machine.small_arcane_assembler.recipe_type=奥术合成
@@ -1953,15 +1949,6 @@ gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.6=这一模块专注于
 
 gtnl.machine.large_essentia_generator.name=大型源质发电机
 gtnl.machine.large_essentia_generator.recipe_type=源质发电机
-gtnl.machine.large_essentia_generator.info.0=可能某些神秘使会对它感到不安…
-gtnl.machine.large_essentia_generator.info.1=将源质转化为能量！
-gtnl.machine.large_essentia_generator.info.2=扩散单元决定本机器可接受的最高仓室等级
-gtnl.machine.large_essentia_generator.info.3=支持普通动力仓和至多64A的多安动力仓
-gtnl.machine.large_essentia_generator.info.4=每安装一个源质升级，动力仓限制最大电流翻倍
-gtnl.machine.large_essentia_generator.info.5=自ZPM起电压等级每提高一级，动力仓限制最大电流翻倍
-gtnl.machine.large_essentia_generator.info.6=你可以在魔导手册中读到更多信息.
-gtnl.machine.large_essentia_generator.casing=提示方块：1号
-gtnl.machine.large_essentia_generator.essentia_input_hatch=源质输入仓
 gtnl.chat.large_essentia_generator.installed= 已安装！
 gtnl.chat.large_essentia_generator.upgrade_installed=%s 已安装！
 

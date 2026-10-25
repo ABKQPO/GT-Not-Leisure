@@ -3,12 +3,19 @@ package com.science.gtnl.common.recipe.thaumcraft;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
+import java.util.function.BiPredicate;
 
+import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 
+import com.gtnewhorizon.structurelib.structure.IStructureElement;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.gtnewhorizon.structurelib.structure.adders.ITileAdder;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEssentiaHatch;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaInputHatch;
+import com.science.gtnl.loader.BlockLoader;
+import com.science.gtnl.utils.structure.StructureTooltipHooks;
 
 import appeng.api.config.Actionable;
 import appeng.api.storage.IMEMonitor;
@@ -25,6 +32,8 @@ import thaumicenergistics.common.tiles.TileInfusionProvider;
 public class EssentiaSupply {
 
     private static final int COMMIT_COOLDOWN_TICKS = 200;
+    private static final String INFUSION_PROVIDER_NAME_KEY = "thaumicenergistics.block.infusion.provider.name";
+    private static final String ADVANCED_INFUSION_PROVIDER_NAME_KEY = "thaumicenergistics.block.advanced.infusion.provider.name";
 
     private final String machineName;
     private final List<TileEntityEssentiaHatch> hatches = new ArrayList<>();
@@ -33,6 +42,22 @@ public class EssentiaSupply {
 
     public EssentiaSupply(String machineName) {
         this.machineName = machineName;
+    }
+
+    public static <T> IStructureElement<T> hatchElement(BiPredicate<T, TileEntityEssentiaHatch> adder, Block hintBlock,
+        int hintMeta) {
+        return StructureTooltipHooks.describeAsHatch(
+            StructureUtility.ofSpecificTileAdder(adder, TileEntityEssentiaHatch.class, hintBlock, hintMeta),
+            BlockLoader.essentiaHatch.getUnlocalizedName() + ".name",
+            BlockLoader.multiEssentiaInputHatch.getUnlocalizedName() + ".name");
+    }
+
+    public static <T> IStructureElement<T> providerElement(ITileAdder<T> adder, Block hintBlock, int hintMeta) {
+        IStructureElement<T> element = StructureUtility.ofTileAdder(adder, hintBlock, hintMeta);
+        // Why: providers only count when Thaumic Energistics is loaded, and their names come from its lang files.
+        if (!Mods.ThaumicEnergistics.isModLoaded()) return element;
+        return StructureTooltipHooks
+            .describeAsHatch(element, INFUSION_PROVIDER_NAME_KEY, ADVANCED_INFUSION_PROVIDER_NAME_KEY);
     }
 
     public void clear() {

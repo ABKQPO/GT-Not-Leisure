@@ -773,10 +773,6 @@ gtnl.machine.siphon_turbine.gui.output=§fOutput in the past 6.4s: §e%s §fEU
 
 gtnl.machine.small_infusion_matrix.name=Small Infusion Matrix
 gtnl.machine.small_infusion_matrix.recipe_type=Industrial Infusion
-gtnl.machine.small_infusion_matrix.tooltip.0=Processes infusion recipes unlocked by the machine owner.
-gtnl.machine.small_infusion_matrix.tooltip.1=Consumes the essentia specified by each infusion recipe.
-gtnl.machine.small_infusion_matrix.casing=Any Magic Mechanical Block
-gtnl.machine.small_infusion_matrix.essentia_input_hatch=Essentia Input Hatch or Thaumic Energistics Infusion Provider
 
 gtnl.machine.small_arcane_assembler.name=Small Arcane Assembler
 gtnl.machine.small_arcane_assembler.recipe_type=Arcane Crafting
@@ -1953,15 +1949,6 @@ gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.6=This module is specia
 
 gtnl.machine.large_essentia_generator.name=Large Essentia Generator
 gtnl.machine.large_essentia_generator.recipe_type=Essentia Generator
-gtnl.machine.large_essentia_generator.info.0=Maybe some Thaumaturges are upset by it. . .
-gtnl.machine.large_essentia_generator.info.1=Transform Essentia into energy!
-gtnl.machine.large_essentia_generator.info.2=The Diffusion Cell determines the highest hatch tier that the LEG can accept.
-gtnl.machine.large_essentia_generator.info.3=Supports normal Dynamo Hatches or TecTech Multi Amp ones for up to 64A.
-gtnl.machine.large_essentia_generator.info.4=Each installed Essentia Upgrade doubles the maximum allowed output amperage of the Dynamo Hatch.
-gtnl.machine.large_essentia_generator.info.5=Starting from ZPM, each higher voltage tier doubles the maximum allowed output amperage of the Dynamo Hatch.
-gtnl.machine.large_essentia_generator.info.6=You can find more information about this generator in the Thaumonomicon.
-gtnl.machine.large_essentia_generator.casing=Hint 1 dots
-gtnl.machine.large_essentia_generator.essentia_input_hatch=Essentia Input Hatch
 gtnl.chat.large_essentia_generator.installed= Installed!
 gtnl.chat.large_essentia_generator.upgrade_installed=%s Installed!
 

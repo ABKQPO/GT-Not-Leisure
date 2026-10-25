@@ -98,12 +98,8 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
                 StructureUtility.ofChain(
                     hatchAdder,
                     StructureUtility.onElementPass(machine -> ++machine.mCountCasing, Casings.MagicCasing.asElement()),
-                    StructureUtility.ofSpecificTileAdder(
-                        IndustrialCrucible::addEssentiaHatch,
-                        TileEntityEssentiaHatch.class,
-                        Loaders.magicCasing,
-                        0),
-                    StructureUtility.ofTileAdder(IndustrialCrucible::addInfusionProvider, Loaders.magicCasing, 0)))
+                    EssentiaSupply.hatchElement(IndustrialCrucible::addEssentiaHatch, Loaders.magicCasing, 0),
+                    EssentiaSupply.providerElement(IndustrialCrucible::addInfusionProvider, Loaders.magicCasing, 0)))
             .addElement('B', StructureUtility.ofBlock(blockCosmeticSolid, 7))
             .addElement('C', StructureUtility.ofBlock(blockCosmeticOpaque, 2))
             .build();

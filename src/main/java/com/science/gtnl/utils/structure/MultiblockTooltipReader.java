@@ -908,7 +908,7 @@ public class MultiblockTooltipReader {
         for (String prefix : HATCH_KEY_PREFIXES) {
             if (key.startsWith(prefix)) return true;
         }
-        return false;
+        return StructureTooltipHooks.isHatchBlockKey(key);
     }
 
     private static int hatchOrder(String hatchKey) {

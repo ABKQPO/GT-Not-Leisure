@@ -1,8 +1,10 @@
 package com.science.gtnl.utils.structure;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -10,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import com.gtnewhorizon.structurelib.alignment.constructable.ChannelDataAccessor;
 import com.gtnewhorizon.structurelib.structure.IStructureElement;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
 
@@ -23,6 +26,7 @@ public class StructureTooltipHooks {
     // Why: StructureLib's ChannelDataAccessor keeps sub-channel values under this tag and does not expose it.
     private static final String CHANNEL_TAG = "channels";
     private static final ThreadLocal<Recording> RECORDING = new ThreadLocal<>();
+    private static final Set<String> HATCH_BLOCK_KEYS = ConcurrentHashMap.newKeySet();
 
     public record PieceCall(String piece, int horizontalOffset, int verticalOffset, int depthOffset) {}
 
@@ -31,6 +35,17 @@ public class StructureTooltipHooks {
     public record CheckRecord(List<Integer> casingMinimums, List<HatchRule> hatchRules, String failure) {}
 
     private StructureTooltipHooks() {}
+
+    // Why: blocks that are not GT hatches have no hatch description, so the structure page would list them as casings.
+    public static <T> IStructureElement<T> describeAsHatch(IStructureElement<T> element, String... nameKeys) {
+        List<String> keys = Arrays.asList(nameKeys);
+        HATCH_BLOCK_KEYS.addAll(keys);
+        return StructureUtility.withDescription(keys, element);
+    }
+
+    public static boolean isHatchBlockKey(String key) {
+        return HATCH_BLOCK_KEYS.contains(key);
+    }
 
     public static boolean onBuildPiece(Object controller, String piece, int horizontalOffset, int verticalOffset,
         int depthOffset) {

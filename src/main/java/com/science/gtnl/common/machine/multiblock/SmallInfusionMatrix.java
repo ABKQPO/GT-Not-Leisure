@@ -12,7 +12,6 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -32,6 +31,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import goodgenerator.loader.Loaders;
@@ -93,12 +93,8 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
                         .hint(1)
                         .build(),
                     StructureUtility.onElementPass(machine -> ++machine.mCountCasing, Casings.MagicCasing.asElement()),
-                    StructureUtility.ofSpecificTileAdder(
-                        SmallInfusionMatrix::addEssentiaHatch,
-                        TileEntityEssentiaHatch.class,
-                        Loaders.magicCasing,
-                        0),
-                    StructureUtility.ofTileAdder(SmallInfusionMatrix::addInfusionProvider, Loaders.magicCasing, 0)))
+                    EssentiaSupply.hatchElement(SmallInfusionMatrix::addEssentiaHatch, Loaders.magicCasing, 0),
+                    EssentiaSupply.providerElement(SmallInfusionMatrix::addInfusionProvider, Loaders.magicCasing, 0)))
             .addElement('B', StructureUtility.ofBlock(blockCosmeticOpaque, 0))
             .addElement('C', StructureUtility.ofBlock(blockCosmeticSolid, 6))
             .addElement('D', StructureUtility.ofBlock(blockCosmeticOpaque, 2))
@@ -322,24 +318,10 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tooltip = new MultiblockTooltipBuilder();
-        tooltip.addMachineType(StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.tooltip.1"))
-            .addSupportMultiAmp()
-            .addPerfectOCInfo()
-            .beginStructureBlock(7, 5, 7, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"), 1)
-            .addMiscHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.essentia_input_hatch"),
-                StatCollector.translateToLocal("gtnl.machine.small_infusion_matrix.casing"),
-                1)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
-        return tooltip;
+        return tt;
     }
 
     @Override
