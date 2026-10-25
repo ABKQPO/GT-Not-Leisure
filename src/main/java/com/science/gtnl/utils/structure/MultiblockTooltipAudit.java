@@ -246,7 +246,7 @@ public class MultiblockTooltipAudit {
         int firstTier = MultiblockTooltipReader.firstProbeTier(part);
         TooltipStats[] probes = MultiblockTooltipReader.probeTiers(rules, part, part.maxTier + 1 - firstTier);
         if (probes == null) return;
-        String partName = StatCollector.translateToLocal(part.langKey);
+        String partName = GTNLMultiblockTooltipBuilder.partTierText(part);
         for (StatFamily family : StatFamily.values()) {
             TierBonus bonus = bonusOf(info, part, family);
             double[] values = bonus != null && bonus.stat() == BonusStat.DURATION

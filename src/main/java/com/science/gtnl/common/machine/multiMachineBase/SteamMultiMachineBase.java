@@ -67,6 +67,7 @@ import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 import com.science.gtnl.utils.structure.MultiblockTooltipReader;
 import com.science.gtnl.utils.structure.StructureTooltipHooks;
@@ -442,7 +443,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
             StatCollector.translateToLocalFormatted(
                 HIGH_PRESSURE_RECIPE_VOLTAGE_KEY,
                 basicText,
-                TooltipHelper.tierText(StatCollector.translateToLocal(TieredPart.HIGH_PRESSURE.langKey)),
+                GTNLMultiblockTooltipBuilder.partTierText(TieredPart.HIGH_PRESSURE),
                 TooltipHelper.voltageTierText(highPressure, false)));
     }
 

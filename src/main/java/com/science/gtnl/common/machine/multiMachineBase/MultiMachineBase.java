@@ -52,6 +52,7 @@ import com.science.gtnl.utils.structure.GTNLStructureErrors;
 import com.science.gtnl.utils.structure.MultiblockTooltipReader;
 import com.science.gtnl.utils.structure.StructureTooltipHooks;
 
+import bartworks.util.BWUtil;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
@@ -114,6 +115,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     private static final int FIRST_PARALLEL_CONTROLLER_PROBE_TIER = 2;
     private static final int LAST_PARALLEL_CONTROLLER_PROBE_TIER = 5;
     private static final int HEAT_PROBE_DURATION = 20, HEAT_PROBE_EUT = 30, HEAT_PROBE_RECIPE_HEAT = 1;
+    private static final int VOLTAGE_HEAT_PER_TIER = 100, VOLTAGE_HEAT_FROM_TIER = VoltageIndex.MV;
 
     @SuppressWarnings("unchecked")
     public static Optional<Byte>[] createHatchColorOptions() {
@@ -578,6 +580,15 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         return 0;
     }
 
+    public boolean addsVoltageHeat() {
+        return false;
+    }
+
+    protected int coilAndVoltageHeat() {
+        return (int) mCoilLevel.getHeat()
+            + VOLTAGE_HEAT_PER_TIER * (BWUtil.getTier(getMaxInputEu()) - VOLTAGE_HEAT_FROM_TIER);
+    }
+
     @ApiStatus.OverrideOnly
     public int getMaxOverclocks() {
         return Integer.MAX_VALUE;
@@ -661,7 +672,9 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
             calculator.heatOC,
             calculator.heatDiscount,
             calculator.heatDiscountExponent,
-            calculator.recipeHeat == HEAT_PROBE_RECIPE_HEAT);
+            calculator.recipeHeat == HEAT_PROBE_RECIPE_HEAT,
+            addsVoltageHeat() ? VOLTAGE_HEAT_PER_TIER : 0,
+            VOLTAGE_HEAT_FROM_TIER);
     }
 
     // Why: the overclock calculator only shows which heat rules it applies once it is built for a recipe.

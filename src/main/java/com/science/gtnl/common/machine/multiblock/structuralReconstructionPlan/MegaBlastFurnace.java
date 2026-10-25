@@ -26,7 +26,6 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
-import bartworks.util.BWUtil;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.casing.Casings;
@@ -166,8 +165,12 @@ public class MegaBlastFurnace extends GTMMultiMachineBase<MegaBlastFurnace> impl
     @Override
     public void setupParameters() {
         super.setupParameters();
-        this.mHeatingCapacity = (int) this.getMCoilLevel()
-            .getHeat() + 100 * (BWUtil.getTier(this.getMaxInputEu()) - 2);
+        mHeatingCapacity = coilAndVoltageHeat();
+    }
+
+    @Override
+    public boolean addsVoltageHeat() {
+        return true;
     }
 
     @Override

@@ -12,6 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -60,6 +61,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.api.util.tooltip.TooltipHelper;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
@@ -75,6 +77,8 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
     private static final int HORIZONTAL_OFF_SET = 4;
     private static final int VERTICAL_OFF_SET = 4;
     private static final int DEPTH_OFF_SET = 0;
+    private static final String MACHINE_CASING_LIMIT_TOOLTIP_KEY = "gtnl.structure.tooltip.machine_casing_energy_limit";
+    private static final int NO_UNLOCK_TIER = -1;
     private static final String[][] shape = StructureUtils.readStructureFromFile(LPA_STRUCTURE_FILE_PATH);
 
     @Nullable
@@ -301,7 +305,7 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
 
     @Override
     public int getMaxParallelRecipes() {
-        if (mGlassTier > 0) {
+        if (mGlassTier >= 0) {
             return (1 << mGlassTier) + mCasingTier * 64;
         } else {
             return 0;
@@ -327,6 +331,37 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
         if (mMachineTier < 0) return 0;
         if (mMachineTier >= 9) return GTValues.V[mEnergyHatchTier];
         return GTValues.V[Math.min(mMachineTier, mEnergyHatchTier)];
+    }
+
+    @Override
+    public List<String> getTooltipFeatureLines() {
+        List<String> lines = super.getTooltipFeatureLines();
+        int unlockTier = machineCasingUnlockTier();
+        if (unlockTier != NO_UNLOCK_TIER) {
+            lines.add(
+                StatCollector.translateToLocalFormatted(
+                    MACHINE_CASING_LIMIT_TOOLTIP_KEY,
+                    TooltipHelper.voltageTierText(unlockTier, false)));
+        }
+        return lines;
+    }
+
+    private int machineCasingUnlockTier() {
+        int machine = mMachineTier;
+        int hatch = mEnergyHatchTier;
+        mEnergyHatchTier = VoltageIndex.MAX;
+        try {
+            for (int tier = VoltageIndex.ULV; tier <= VoltageIndex.MAX; tier++) {
+                mMachineTier = tier;
+                int limit = GTUtility.getTier(getMachineVoltageLimit());
+                if (limit >= VoltageIndex.MAX) return tier;
+                if (limit != tier) return NO_UNLOCK_TIER;
+            }
+            return NO_UNLOCK_TIER;
+        } finally {
+            mMachineTier = machine;
+            mEnergyHatchTier = hatch;
+        }
     }
 
     @Override

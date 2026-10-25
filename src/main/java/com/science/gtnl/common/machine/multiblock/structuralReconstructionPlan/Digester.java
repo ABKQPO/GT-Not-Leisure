@@ -22,7 +22,6 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
-import bartworks.util.BWUtil;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
@@ -112,8 +111,12 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
     @Override
     public void setupParameters() {
         super.setupParameters();
-        this.mHeatingCapacity = (int) this.getMCoilLevel()
-            .getHeat() + 100 * (BWUtil.getTier(this.getMaxInputEu()) - 2);
+        mHeatingCapacity = coilAndVoltageHeat();
+    }
+
+    @Override
+    public boolean addsVoltageHeat() {
+        return true;
     }
 
     @Override
@@ -150,6 +153,7 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
             public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setMachineHeat(getMachineHeat())
+                    .setRecipeHeat(recipe.mSpecialValue)
                     .setHeatOC(getHeatOC())
                     .setHeatDiscount(getHeatDiscount())
                     .setPerfectOC(getPerfectOC())
@@ -172,12 +176,12 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
 
     @Override
     public double getEUtDiscount() {
-        return 0.8 - ((mParallelTier + mHeatingCapacity / 1800.0) / 50.0);
+        return 0.8 - ((mParallelTier + coilAndVoltageHeat() / 1800.0) / 50.0);
     }
 
     @Override
     public double getDurationModifier() {
-        return 1 / 1.67 - ((mParallelTier + mHeatingCapacity / 1800.0) / 200.0);
+        return 1 / 1.67 - ((mParallelTier + coilAndVoltageHeat() / 1800.0) / 200.0);
     }
 
     @Override

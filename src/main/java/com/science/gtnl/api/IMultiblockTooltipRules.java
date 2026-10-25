@@ -107,14 +107,19 @@ public interface IMultiblockTooltipRules {
     }
 
     /**
-     * How heat above a recipe's required heat changes the recipe, as the machine's overclock calculator applies it.
+     * How the voltage raises the machine heat, and how heat above a recipe's required heat changes the recipe, as the
+     * machine's overclock calculator applies it.
      *
-     * @param overclock      whether each heat overclock step above the recipe heat grants a perfect overclock
-     * @param discount       whether each heat discount step above the recipe heat lowers the EU usage
-     * @param discountFactor EU usage multiplier per discount step, such as 0.95 for 5% less
-     * @param usesRecipeHeat whether the calculator compares the machine heat with the recipe's required heat
+     * @param overclock          whether each heat overclock step above the recipe heat grants a perfect overclock
+     * @param discount           whether each heat discount step above the recipe heat lowers the EU usage
+     * @param discountFactor     EU usage multiplier per discount step, such as 0.95 for 5% less
+     * @param usesRecipeHeat     whether the calculator compares the machine heat with the recipe's required heat
+     * @param heatPerVoltageTier heat in kelvin that each voltage tier past {@code voltageHeatFrom} adds, or 0 when the
+     *                           voltage does not change the heat
+     * @param voltageHeatFrom    the voltage tier that adds no heat; each tier below it takes the same heat away
      */
-    record HeatRules(boolean overclock, boolean discount, double discountFactor, boolean usesRecipeHeat) {}
+    record HeatRules(boolean overclock, boolean discount, double discountFactor, boolean usesRecipeHeat,
+        int heatPerVoltageTier, int voltageHeatFrom) {}
 
     /**
      * Returns how heat changes this machine's recipes, shown after the feature lines.

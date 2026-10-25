@@ -2,8 +2,11 @@ package com.science.gtnl.utils.structure;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.OptionalInt;
 import java.util.regex.Pattern;
 
@@ -12,6 +15,7 @@ import net.minecraft.util.StatCollector;
 
 import com.science.gtnl.api.IMultiblockTooltipRules;
 import com.science.gtnl.api.IMultiblockTooltipRules.HeatRules;
+import com.science.gtnl.api.IMultiblockTooltipRules.TieredPart;
 import com.science.gtnl.api.IMultiblockTooltipRules.TooltipStats;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.structure.InfoSummary.BonusStat;
@@ -24,6 +28,7 @@ import com.science.gtnl.utils.structure.StructureSummary.MaterialTier;
 import com.science.gtnl.utils.structure.StructureSummary.Section;
 import com.science.gtnl.utils.structure.StructureSummary.Size;
 
+import gregtech.api.enums.GTValues;
 import gregtech.api.metatileentity.implementations.MTEEnhancedMultiBlockBase;
 import gregtech.api.structure.IStructureChannels;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -46,10 +51,12 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
     private static final String SWITCH_BONUS_KEY = "gtnl.structure.tooltip.switch_bonus";
     private static final String LIST_JOIN_KEY = "gtnl.structure.tooltip.join.list";
     private static final String LAST_JOIN_KEY = "gtnl.structure.tooltip.join.last";
+    private static final String PART_TIER_KEY = "gtnl.structure.tooltip.part.tier";
     // Why: GT 5.09.54.205 has no hatch or mechanic tooltip colors yet; these are the ones newer GT versions use.
     public static final EnumChatFormatting HATCH_COLOR = EnumChatFormatting.GREEN;
     public static final EnumChatFormatting MECHANIC_COLOR = EnumChatFormatting.LIGHT_PURPLE;
 
+    private static final String VOLTAGE_HEAT_KEY = "gtnl.structure.tooltip.voltage_heat";
     private static final String HEAT_DISCOUNT_KEY = "gtnl.structure.tooltip.heat_discount";
     private static final String HEAT_OVERCLOCK_KEY = "gtnl.structure.tooltip.heat_overclock";
     private static final String PERFECT_OC_FROM_KEY = "gtnl.structure.tooltip.perfect_oc_from";
@@ -160,6 +167,13 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
     }
 
     private void addHeatLines(HeatRules heat) {
+        if (heat.heatPerVoltageTier() > 0) {
+            addInfo(
+                StatCollector.translateToLocalFormatted(
+                    VOLTAGE_HEAT_KEY,
+                    heat.heatPerVoltageTier() + HEAT_UNIT,
+                    EnumChatFormatting.AQUA + GTValues.VN[heat.voltageHeatFrom()] + EnumChatFormatting.GRAY));
+        }
         if (!heat.usesRecipeHeat()) return;
         if (heat.discount()) {
             addInfo(
@@ -219,16 +233,42 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
 
     private void addStatLine(String line, List<TierBonus> bonuses, BonusStat... stats) {
         List<BonusStat> shown = Arrays.asList(stats);
+        Map<TierBonus, List<TieredPart>> partsBySameBonus = new LinkedHashMap<>();
         for (TierBonus bonus : bonuses) {
-            if (shown.contains(bonus.stat())) {
-                line = StatCollector.translateToLocalFormatted(WITH_BONUS_KEY, line, bonusText(bonus));
-            }
+            if (!shown.contains(bonus.stat())) continue;
+            partsBySameBonus
+                .computeIfAbsent(sameBonusAs(partsBySameBonus.keySet(), bonus), ignored -> new ArrayList<>())
+                .add(bonus.part());
+        }
+        for (Map.Entry<TierBonus, List<TieredPart>> entry : partsBySameBonus.entrySet()) {
+            line = StatCollector
+                .translateToLocalFormatted(WITH_BONUS_KEY, line, bonusText(entry.getKey(), entry.getValue()));
         }
         addInfo(line);
     }
 
-    private static String bonusText(TierBonus bonus) {
-        String part = TooltipHelper.tierText(StatCollector.translateToLocal(bonus.part().langKey));
+    private static TierBonus sameBonusAs(Collection<TierBonus> shown, TierBonus bonus) {
+        for (TierBonus other : shown) {
+            if (other.perTier() && bonus.perTier()
+                && other.stat() == bonus.stat()
+                && other.multiplicative() == bonus.multiplicative()
+                && changeText(other).equals(changeText(bonus))) return other;
+        }
+        return bonus;
+    }
+
+    public static String partTierText(TieredPart... parts) {
+        return partTierText(Arrays.asList(parts));
+    }
+
+    public static String partTierText(List<TieredPart> parts) {
+        List<String> names = new ArrayList<>();
+        for (TieredPart part : parts) names.add(TooltipHelper.tierText(StatCollector.translateToLocal(part.langKey)));
+        return StatCollector.translateToLocalFormatted(PART_TIER_KEY, joinPhrases(names));
+    }
+
+    private static String bonusText(TierBonus bonus, List<TieredPart> parts) {
+        String part = partTierText(parts);
         if (!bonus.perTier()) return StatCollector.translateToLocalFormatted(SWITCH_BONUS_KEY, part, changeText(bonus));
         String key = bonus.stat() == BonusStat.DURATION ? DURATION_BONUS_KEY : BONUS_KEY;
         String text = StatCollector.translateToLocalFormatted(key, part, changeText(bonus));
@@ -240,8 +280,9 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
         String amount = bonus.stat() == BonusStat.PARALLEL && !bonus.multiplicative()
             ? Long.toString(Math.round(Math.abs(change)))
             : TooltipHelper.percentageFormat.format(Math.abs(change));
-        String text = StatCollector.translateToLocalFormatted(change < 0 ? DECREASE_KEY : INCREASE_KEY, amount);
-        return TooltipHelper.coloredText(text, colorOf(bonus.stat()));
+        return StatCollector.translateToLocalFormatted(
+            change < 0 ? DECREASE_KEY : INCREASE_KEY,
+            TooltipHelper.coloredText(amount, colorOf(bonus.stat())));
     }
 
     private static EnumChatFormatting colorOf(BonusStat stat) {
