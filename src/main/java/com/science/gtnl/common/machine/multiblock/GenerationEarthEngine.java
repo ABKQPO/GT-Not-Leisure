@@ -6,7 +6,6 @@ import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.structurelib.alignment.IAlignmentLimits;
@@ -20,6 +19,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.CommonElements;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import crazypants.enderio.EnderIO;
 import goodgenerator.loader.Loaders;
@@ -175,33 +175,8 @@ public class GenerationEarthEngine extends MultiMachineBase<GenerationEarthEngin
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.generation_earth_engine.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.generation_earth_engine.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.generation_earth_engine.tooltip.1"))
-            .beginStructureBlock(643, 218, 643, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.generation_earth_engine.tooltip.casing"), 1)
-            .addOutputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.generation_earth_engine.tooltip.casing"),
-                1)
-            .addInputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.generation_earth_engine.tooltip.casing"),
-                1)
-            .addOutputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.generation_earth_engine.tooltip.casing"),
-                1)
-            .addEnergyHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.generation_earth_engine.tooltip.casing"),
-                1)
-            .addMaintenanceHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.generation_earth_engine.tooltip.casing"),
-                1)
-            .addSubChannelUsage(GTNLStructureChannels.STRUCTURE_RENDER)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

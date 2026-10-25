@@ -41,6 +41,7 @@ import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.enums.ModsItemlist;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
@@ -463,49 +464,15 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        // Why: this machine makes power, so recipe speed and power usage lines would mislead.
+        return null;
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.7"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.8"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.tooltip.9"))
-            .beginStructureBlock(121, 112, 109, false)
-            .addStructureInfo(
-                StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.output_coefficient"))
-            .addStructureInfo(
-                StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.actual_output"))
-            .addStructureInfo(
-                StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.recovery_chance"))
-            .addStructureInfo(
-                StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.fuel_consumption"))
-            .addStructureInfo(
-                StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.continuous_bonus"))
-            .addStructureInfo(
-                StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.max_continuous_bonus"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.1"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.2"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.3"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.4"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.5"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.6"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.7"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.8"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.9"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.10"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.11"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.12"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.13"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.14"))
-            .addSubChannelUsage(GTStructureChannels.EOH_COMPRESSION)
-            .addSubChannelUsage(GTStructureChannels.EOH_DILATION)
-            .addSubChannelUsage(GTStructureChannels.EOH_STABILISATION)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

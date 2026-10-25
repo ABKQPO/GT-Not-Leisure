@@ -75,6 +75,7 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.machine.AssemblerMatrixPatternState;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
@@ -813,18 +814,15 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        // Why: this machine runs its own process instead of recipes, so recipe numbers would mislead.
+        return null;
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.assembler_matrix.tooltip.6"))
-            .addSupportAny()
-            .beginStructureBlock(9, 9, 9, false)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

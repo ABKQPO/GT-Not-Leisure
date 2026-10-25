@@ -42,6 +42,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
@@ -78,7 +79,6 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import gregtech.common.misc.GTStructureChannels;
 import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
@@ -285,45 +285,15 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        // Why: this machine runs its own process instead of recipes, so recipe numbers would mislead.
+        return null;
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.meteor_miner.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.7"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.8"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.9"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.10"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.11"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.12"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.13"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.14"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.15"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.16"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.17"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.7"))
-            .addController(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.casing.0.0"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.casing.0.1"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.casing.0.1"), 1)
-            .addMaintenanceHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.casing.0.1"),
-                1)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.casing.0.2"), 2)
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.13"))
-            .addController(StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.casing.1.0"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.casing.1.1"), 3)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.casing.1.1"), 3)
-            .addMaintenanceHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.meteor_miner.tooltip.casing.1.1"),
-                3)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

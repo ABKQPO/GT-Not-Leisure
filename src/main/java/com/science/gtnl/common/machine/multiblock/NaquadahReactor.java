@@ -546,29 +546,8 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
 
         @Override
         public MultiblockTooltipBuilder createTooltip() {
-            MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.naquadah_reactor.recipe_type"))
-                .addInfo(
-                    StatCollector.translateToLocalFormatted(
-                        "gtnl.machine.hyper_naquadah_reactor.tooltip.0",
-                        getMaxParallelRecipes()))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.hyper_naquadah_reactor.tooltip.1"))
-                .addInfo(
-                    StatCollector.translateToLocalFormatted(
-                        "gtnl.machine.hyper_naquadah_reactor.tooltip.2",
-                        getDurationMultiple(),
-                        getEUtMultiple()))
-                .addInfo(
-                    StatCollector.translateToLocalFormatted(
-                        "gtnl.machine.hyper_naquadah_reactor.tooltip.3",
-                        getExtraGas().amount))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.hyper_naquadah_reactor.tooltip.4"))
-                .beginStructureBlock(27, 21, 21, true)
-                .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.hyper_naquadah_reactor.casing"))
-                .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.hyper_naquadah_reactor.casing"))
-                .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.hyper_naquadah_reactor.casing"))
-                .addDynamoHatch("0+", StatCollector.translateToLocal("gtnl.machine.hyper_naquadah_reactor.casing"))
-                .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.hyper_naquadah_reactor.casing"))
+            GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+            tt.addAutoTooltip(this)
                 .toolTipFinisher();
             return tt;
         }
@@ -782,39 +761,8 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
 
         @Override
         public MultiblockTooltipBuilder createTooltip() {
-            MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.naquadah_reactor.recipe_type"))
-                .addInfo(
-                    StatCollector.translateToLocalFormatted(
-                        "gtnl.machine.advanced_hyper_naquadah_reactor.tooltip.0",
-                        getMaxParallelRecipes()))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_hyper_naquadah_reactor.tooltip.1"))
-                .addInfo(
-                    StatCollector.translateToLocalFormatted(
-                        "gtnl.machine.advanced_hyper_naquadah_reactor.tooltip.2",
-                        getDurationMultiple(),
-                        getEUtMultiple()))
-                .addInfo(
-                    StatCollector.translateToLocalFormatted(
-                        "gtnl.machine.advanced_hyper_naquadah_reactor.tooltip.3",
-                        getExtraGas().amount))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_hyper_naquadah_reactor.tooltip.4"))
-                .beginStructureBlock(35, 19, 36, true)
-                .addInputHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.advanced_hyper_naquadah_reactor.casing"))
-                .addOutputHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.advanced_hyper_naquadah_reactor.casing"))
-                .addEnergyHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.advanced_hyper_naquadah_reactor.casing"))
-                .addDynamoHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.advanced_hyper_naquadah_reactor.casing"))
-                .addMaintenanceHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.advanced_hyper_naquadah_reactor.casing"))
+            GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+            tt.addAutoTooltip(this)
                 .toolTipFinisher();
             return tt;
         }

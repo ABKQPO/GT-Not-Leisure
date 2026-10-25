@@ -6,7 +6,6 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
@@ -22,6 +21,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
@@ -206,6 +206,12 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
             IGregTechDeviceInformation.encode("GT5U.engine.consumption.fmt", NumberFormatUtil.formatNumber(lEUt / 4)) };
     }
 
+    @Override
+    public TooltipStats getTooltipStats() {
+        // Why: this machine makes power, so recipe speed and power usage lines would mislead.
+        return null;
+    }
+
     @IMetaTileEntity.SkipGenerateDescription
     @IMetaTileEntity.SkipGenerateName
     public static class EnergeticPhotovoltaicPowerStation extends PhotovoltaicPowerStation {
@@ -225,20 +231,8 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
 
         @Override
         public MultiblockTooltipBuilder createTooltip() {
-            MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.photovoltaic_power_station.recipe_type"))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.photovoltaic_power_station.tooltip.0"))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.photovoltaic_power_station.tooltip.1"))
-                .beginStructureBlock(9, 5, 7, true)
-                .addInputHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.energetic_photovoltaic_power_station.tooltip.casing"))
-                .addDynamoHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.energetic_photovoltaic_power_station.tooltip.casing"))
-                .addMaintenanceHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.energetic_photovoltaic_power_station.tooltip.casing"))
+            GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+            tt.addAutoTooltip(this, "gtnl.machine.photovoltaic_power_station")
                 .toolTipFinisher();
             return tt;
         }
@@ -298,20 +292,8 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
 
         @Override
         public MultiblockTooltipBuilder createTooltip() {
-            MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.photovoltaic_power_station.recipe_type"))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.photovoltaic_power_station.tooltip.0"))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.photovoltaic_power_station.tooltip.1"))
-                .beginStructureBlock(9, 5, 7, true)
-                .addInputHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.advanced_photovoltaic_power_station.tooltip.casing"))
-                .addDynamoHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.advanced_photovoltaic_power_station.tooltip.casing"))
-                .addMaintenanceHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.advanced_photovoltaic_power_station.tooltip.casing"))
+            GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+            tt.addAutoTooltip(this, "gtnl.machine.photovoltaic_power_station")
                 .toolTipFinisher();
             return tt;
         }
@@ -371,20 +353,8 @@ public abstract class PhotovoltaicPowerStation extends MultiMachineBase<Photovol
 
         @Override
         public MultiblockTooltipBuilder createTooltip() {
-            MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.photovoltaic_power_station.recipe_type"))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.photovoltaic_power_station.tooltip.0"))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.photovoltaic_power_station.tooltip.1"))
-                .beginStructureBlock(9, 5, 7, true)
-                .addInputHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.vibrant_photovoltaic_power_station.tooltip.casing"))
-                .addDynamoHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.vibrant_photovoltaic_power_station.tooltip.casing"))
-                .addMaintenanceHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.vibrant_photovoltaic_power_station.tooltip.casing"))
+            GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+            tt.addAutoTooltip(this, "gtnl.machine.photovoltaic_power_station")
                 .toolTipFinisher();
             return tt;
         }
