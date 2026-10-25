@@ -18,7 +18,9 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
+import com.science.gtnl.utils.structure.StructureTooltipHooks;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
@@ -51,6 +53,7 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
     public static final String STRUCTURE_PIECE_LAYER = "layer";
     public static final String STRUCTURE_PIECE_LAYER_HINT = "layerHint";
     public static final String STRUCTURE_PIECE_TOP_HINT = "topHint";
+    private static final int MIN_LAYERS = 6;
 
     public final List<List<MTEHatchOutput>> mOutputHatchesByLayer = new ArrayList<>();
     public int mHeight;
@@ -76,27 +79,8 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.primitive_distillation_tower.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.primitive_distillation_tower.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.primitive_distillation_tower.tooltip.1"))
-            .beginStructureBlock(3, 7, 3, false)
-            .addInputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.primitive_distillation_tower.tooltip.casing.0"),
-                1)
-            .addOutputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.primitive_distillation_tower.tooltip.casing.0"),
-                1)
-            .addInputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.primitive_distillation_tower.tooltip.casing.0"),
-                1)
-            .addOutputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.primitive_distillation_tower.tooltip.casing.1"),
-                1)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }
@@ -230,8 +214,10 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
         if (!checkPiece(STRUCTURE_PIECE_BASE, 1, 0, 0, errors)) return;
         while (mHeight < 7) {
             if (!checkPiece(STRUCTURE_PIECE_LAYER, 1, mHeight, 0, errors)) return;
-            if (mOutputHatchesByLayer.size() < mHeight || mOutputHatchesByLayer.get(mHeight - 1)
-                .isEmpty()) errors.add(GTNLStructureErrors.missingDistillationLayerOutputHatch());
+            if (!StructureTooltipHooks.onCheckLayerHatches(this, MIN_LAYERS, 1, HatchElement.OutputHatch)
+                && (mOutputHatchesByLayer.size() < mHeight || mOutputHatchesByLayer.get(mHeight - 1)
+                    .isEmpty()))
+                errors.add(GTNLStructureErrors.missingDistillationLayerOutputHatch());
             if (mTopLayerFound) {
                 break;
             }
@@ -239,7 +225,7 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
             mHeight++;
         }
         updateHatchTexture();
-        if (mHeight < 6) {
+        if (mHeight < MIN_LAYERS) {
             errors.add(StructureErrorRegistry.TOO_SHORT_HEIGHT);
             return;
         }

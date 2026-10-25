@@ -65,6 +65,9 @@ import gregtech.common.misc.GTStructureChannels;
 public class MultiblockTooltipReader {
 
     private static final int MAX_STRUCTURE_TIERS = 5;
+    private static final int MAX_PROJECTOR_STACK = 64;
+    // Why: two steps that add the same blocks tell a repeated layer apart from a one-off larger variant.
+    private static final int MIN_LAYERED_SIZES = 3;
     private static final int MAX_INFO_LINES = 64;
     private static final Pattern FORMAT_PLACEHOLDER = Pattern.compile("%(\\d+\\$)?[sd]");
     private static final int TIER_PROBES = 2;
@@ -522,8 +525,8 @@ public class MultiblockTooltipReader {
     private static <T extends MTEEnhancedMultiBlockBase<T>> StructureSummary readPrototype(T controller) {
         IStructureDefinition<T> definition = controller.getStructureDefinition();
         Set<String> channelNames = new LinkedHashSet<>();
-        List<List<PieceCall>> tiers = recordTiers(controller, channelNames);
-        if (tiers.isEmpty()) {
+        List<List<PieceCall>> sizes = recordSizes(controller, channelNames);
+        if (sizes.isEmpty()) {
             ScienceNotLeisure.LOG.warn("Cannot find the structure pieces of {} for its tooltip", nameOf(controller));
             return null;
         }
@@ -535,12 +538,16 @@ public class MultiblockTooltipReader {
         // Why: StructureLib shares one air and one non-air element, which '-', '+' and custom air characters all use.
         IStructureElement<T> air = StructureUtility.isAir();
         IStructureElement<T> anyBlock = StructureUtility.notAir();
+        Predicate<IStructureElement<T>> solid = element -> element != air && element != anyBlock;
+        List<Cell<T>> layer = layerCells(definition, sizes, solid);
+        boolean layered = layer != null;
+        List<List<PieceCall>> tiers = layered ? sizes.subList(0, 1) : structureTiers(sizes);
+        List<PieceCall> largest = sizes.get(layered || tiers.size() > 1 ? sizes.size() - 1 : 0);
         List<List<Cell<T>>> tierCells = new ArrayList<>();
-        List<Cell<T>> airCells = new ArrayList<>();
-        for (List<PieceCall> tier : tiers) {
-            tierCells.add(readCells(definition, tier, element -> element != air && element != anyBlock));
-            airCells.addAll(readCells(definition, tier, element -> element == air));
-        }
+        for (List<PieceCall> tier : tiers) tierCells.add(readCells(definition, tier, solid));
+        if (layered) tierCells.add(layer);
+        List<List<Cell<T>>> largestCells = Collections.singletonList(readCells(definition, largest, solid));
+        List<Cell<T>> airCells = readCells(definition, largest, element -> element == air);
         Map<String, HatchGroup> hatches = new LinkedHashMap<>();
         List<List<BlockGroup>> tierGroups = new ArrayList<>();
         for (List<Cell<T>> cells : tierCells) {
@@ -569,14 +576,15 @@ public class MultiblockTooltipReader {
 
         StructureSummary summary = new StructureSummary(
             size(tierCells.subList(0, 1)),
-            size(tierCells),
-            isHollow(tierCells, airCells),
+            size(largestCells),
+            isHollow(largestCells, airCells),
             controllerPosition(tierCells.get(0)),
             toHatchLines(hatches, checks.hatchRules()),
             new ArrayList<>(hatchKeys),
             sections,
             new ArrayList<>(channels),
-            casingTierNames(controller, elementChannels));
+            casingTierNames(controller, elementChannels),
+            layered);
         if (summary.hasMaterialTiers() && materialChannel != null
             && !summary.channels()
                 .contains(materialChannel)) {
@@ -586,20 +594,80 @@ public class MultiblockTooltipReader {
         return summary;
     }
 
-    private static List<List<PieceCall>> recordTiers(MTEEnhancedMultiBlockBase<?> controller,
+    private static List<List<PieceCall>> recordSizes(MTEEnhancedMultiBlockBase<?> controller,
         Set<String> channelNames) {
-        List<List<PieceCall>> tiers = new ArrayList<>();
+        List<List<PieceCall>> sizes = new ArrayList<>();
         List<PieceCall> previous = Collections.emptyList();
-        for (int stackSize = 1; stackSize <= MAX_STRUCTURE_TIERS + 1; stackSize++) {
+        for (int stackSize = 1; stackSize <= MAX_PROJECTOR_STACK; stackSize++) {
             List<PieceCall> calls = StructureTooltipHooks.recordConstruct(controller, stackSize, channelNames);
             if (calls.isEmpty() || new HashSet<>(previous).containsAll(calls)) break;
-            if (stackSize > MAX_STRUCTURE_TIERS) return tiers.subList(0, 1);
+            sizes.add(calls);
+            previous = calls;
+        }
+        return sizes;
+    }
+
+    private static List<List<PieceCall>> structureTiers(List<List<PieceCall>> sizes) {
+        if (sizes.size() > MAX_STRUCTURE_TIERS) return sizes.subList(0, 1);
+        List<List<PieceCall>> tiers = new ArrayList<>();
+        List<PieceCall> previous = Collections.emptyList();
+        for (List<PieceCall> calls : sizes) {
             List<PieceCall> added = new ArrayList<>(calls);
             added.removeAll(previous);
             tiers.add(added);
             previous = calls;
         }
         return tiers;
+    }
+
+    // Why: a taller tower moves its top piece up instead of adding to it, so each size is compared as a whole.
+    private static <T> List<Cell<T>> layerCells(IStructureDefinition<T> definition, List<List<PieceCall>> sizes,
+        Predicate<IStructureElement<T>> kept) {
+        if (sizes.size() < MIN_LAYERED_SIZES || isAdditive(sizes)) return null;
+        Map<IStructureElement<T>, Integer> layer = null;
+        Map<IStructureElement<T>, Integer> previous = null;
+        for (List<PieceCall> calls : sizes) {
+            Map<IStructureElement<T>, Integer> counts = elementCounts(readCells(definition, calls, kept));
+            if (previous != null) {
+                Map<IStructureElement<T>, Integer> added = addedCounts(counts, previous);
+                if (added == null || added.isEmpty() || layer != null && !layer.equals(added)) return null;
+                layer = added;
+            }
+            previous = counts;
+        }
+        List<Cell<T>> cells = new ArrayList<>();
+        for (Map.Entry<IStructureElement<T>, Integer> entry : layer.entrySet()) {
+            for (int i = 0; i < entry.getValue(); i++) cells.add(new Cell<>(entry.getKey(), 0, 0, 0));
+        }
+        return cells;
+    }
+
+    private static boolean isAdditive(List<List<PieceCall>> sizes) {
+        for (int i = 1; i < sizes.size(); i++) {
+            if (!new HashSet<>(sizes.get(i)).containsAll(sizes.get(i - 1))) return false;
+        }
+        return true;
+    }
+
+    private static <T> Map<IStructureElement<T>, Integer> elementCounts(List<Cell<T>> cells) {
+        Map<Position, IStructureElement<T>> placed = new HashMap<>();
+        for (Cell<T> cell : cells) placed.put(new Position(cell.a(), cell.b(), cell.c()), cell.element());
+        Map<IStructureElement<T>, Integer> counts = new HashMap<>();
+        for (IStructureElement<T> element : placed.values()) counts.merge(element, 1, Integer::sum);
+        return counts;
+    }
+
+    private static <T> Map<IStructureElement<T>, Integer> addedCounts(Map<IStructureElement<T>, Integer> counts,
+        Map<IStructureElement<T>, Integer> previous) {
+        Map<IStructureElement<T>, Integer> added = new LinkedHashMap<>();
+        Set<IStructureElement<T>> elements = new LinkedHashSet<>(previous.keySet());
+        elements.addAll(counts.keySet());
+        for (IStructureElement<T> element : elements) {
+            int change = counts.getOrDefault(element, 0) - previous.getOrDefault(element, 0);
+            if (change < 0) return null;
+            if (change > 0) added.put(element, change);
+        }
+        return added;
     }
 
     private static <T> List<Cell<T>> readCells(IStructureDefinition<T> definition, List<PieceCall> calls,
@@ -873,9 +941,19 @@ public class MultiblockTooltipReader {
                 new HatchLine(
                     hatchCount(hatch, hatchRules),
                     new ArrayList<>(hatch.names),
-                    new ArrayList<>(hatch.locations)));
+                    hatchLocations(hatch, hatchRules)));
         }
         return lines;
+    }
+
+    private static List<String> hatchLocations(HatchGroup hatch, List<HatchRule> hatchRules) {
+        for (HatchRule rule : hatchRules) {
+            if (rule.perLayer() > 0 && !Collections.disjoint(hatch.keys, rule.hatchKeys())) {
+                return Collections.singletonList(
+                    StatCollector.translateToLocalFormatted("gtnl.structure.tooltip.hatch.per_layer", rule.perLayer()));
+            }
+        }
+        return new ArrayList<>(hatch.locations);
     }
 
     private static void mergeLinkedLines(Map<String, HatchGroup> hatches, List<HatchRule> hatchRules) {
@@ -925,6 +1003,8 @@ public class MultiblockTooltipReader {
     }
 
     private record Cell<T> (IStructureElement<T> element, int a, int b, int c) {}
+
+    private record Position(int a, int b, int c) {}
 
     private record Line(int first, int second) {}
 

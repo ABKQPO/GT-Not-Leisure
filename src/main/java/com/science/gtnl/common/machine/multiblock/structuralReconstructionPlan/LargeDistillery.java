@@ -11,7 +11,6 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -26,7 +25,9 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
+import com.science.gtnl.utils.structure.StructureTooltipHooks;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
@@ -74,6 +75,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     private static final String[][] shape_layer_hint = StructureUtils.readStructureFromFile(LDLH_STRUCTURE_FILE_PATH);
     private static final String[][] shape_top_hint = StructureUtils.readStructureFromFile(LDTH_STRUCTURE_FILE_PATH);
     private static final String[][] shape_top = StructureUtils.readStructureFromFile(LDT_STRUCTURE_FILE_PATH);
+    private static final int MIN_LAYERS = 2;
     public static final int MACHINEMODE_TOWER = 0;
     public static final int MACHINEMODE_DISTILLERY = 1;
 
@@ -177,8 +179,10 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
             if (!checkPiece(STRUCTURE_PIECE_LAYER, HORIZONTAL_OFF_SET, mHeight, DEPTH_OFF_SET, errors)) {
                 return;
             }
-            if (mOutputHatchesByLayer.size() < mHeight || mOutputHatchesByLayer.get(mHeight - 1)
-                .isEmpty()) errors.add(GTNLStructureErrors.missingDistillationLayerOutputHatch());
+            if (!StructureTooltipHooks.onCheckLayerHatches(this, MIN_LAYERS, 1, HatchElement.OutputHatch)
+                && (mOutputHatchesByLayer.size() < mHeight || mOutputHatchesByLayer.get(mHeight - 1)
+                    .isEmpty()))
+                errors.add(GTNLStructureErrors.missingDistillationLayerOutputHatch());
             if (checkPiece(STRUCTURE_PIECE_TOP, HORIZONTAL_OFF_SET, mHeight + 1, DEPTH_OFF_SET, null)) {
                 break;
             }
@@ -186,7 +190,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
         }
 
         if (!checkPiece(STRUCTURE_PIECE_TOP_HINT, HORIZONTAL_OFF_SET, mHeight, DEPTH_OFF_SET, errors)) return;
-        if (mHeight + 1 < 3) {
+        if (mHeight < MIN_LAYERS) {
             errors.add(StructureErrorRegistry.TOO_SHORT_HEIGHT);
             return;
         }
@@ -348,20 +352,8 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_distillery.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_distillery.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_distillery.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
-            .addSupportMultiAmp()
-            .beginStructureBlock(5, 15, 5, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_distillery.tooltip.casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_distillery.tooltip.casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_distillery.tooltip.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_distillery.tooltip.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_distillery.tooltip.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_distillery.tooltip.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

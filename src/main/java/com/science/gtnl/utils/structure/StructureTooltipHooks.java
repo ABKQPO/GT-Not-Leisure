@@ -30,7 +30,7 @@ public class StructureTooltipHooks {
 
     public record PieceCall(String piece, int horizontalOffset, int verticalOffset, int depthOffset) {}
 
-    public record HatchRule(List<String> hatchKeys, int min, int max) {}
+    public record HatchRule(List<String> hatchKeys, int min, int max, int perLayer) {}
 
     public record CheckRecord(List<Integer> casingMinimums, List<HatchRule> hatchRules, String failure) {}
 
@@ -76,7 +76,18 @@ public class StructureTooltipHooks {
     public static boolean onCheckHatchKeys(Object controller, int min, int max, List<String> hatchKeys) {
         Recording recording = activeFor(controller);
         if (recording == null) return false;
-        recording.hatchRules.add(new HatchRule(hatchKeys, min, max));
+        recording.hatchRules.add(new HatchRule(hatchKeys, min, max, 0));
+        return true;
+    }
+
+    public static boolean onCheckLayerHatches(Object controller, int minLayers, int perLayer,
+        IHatchElement<?>... elements) {
+        Recording recording = activeFor(controller);
+        if (recording == null) return false;
+        List<String> keys = new ArrayList<>();
+        for (IHatchElement<?> element : elements) keys.addAll(element.getDescriptionLangKeys());
+        HatchRule rule = new HatchRule(keys, minLayers * perLayer, UNLIMITED, perLayer);
+        if (!recording.hatchRules.contains(rule)) recording.hatchRules.add(rule);
         return true;
     }
 

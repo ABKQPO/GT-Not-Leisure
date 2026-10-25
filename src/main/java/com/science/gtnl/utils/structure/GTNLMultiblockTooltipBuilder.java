@@ -140,7 +140,7 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
             .size(); tier++) {
             if (structureTiers) {
                 addStructureInfo("");
-                addStructureInfo(structureTierHeader(tier + 1));
+                addStructureInfo(summary.layered() ? layerHeader(tier) : structureTierHeader(tier + 1));
             }
             addSection(
                 summary.sections()
@@ -367,7 +367,9 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
             .isEmpty()) return;
         addStructureInfo("");
         if (structureTiers) {
-            addMasterChannel(StatCollector.translateToLocal("gtnl.structure.tooltip.channel.structure_tier"));
+            String effect = summary.layered() ? "channels.gregtech.master.height"
+                : "gtnl.structure.tooltip.channel.structure_tier";
+            addMasterChannel(StatCollector.translateToLocal(effect));
         }
         for (IStructureChannels channel : summary.channels()) addSubChannelUsage(channel);
     }
@@ -375,5 +377,9 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
     private static String structureTierHeader(int tier) {
         String key = tier == 1 ? "gtnl.structure.tooltip.tier" : "gtnl.structure.tooltip.tier.extra";
         return StatCollector.translateToLocalFormatted(key, tier);
+    }
+
+    private static String layerHeader(int section) {
+        return StatCollector.translateToLocal(section == 0 ? "GT5U.MBTT.Structure.Base" : "GT5U.MBTT.Structure.Layer");
     }
 }
