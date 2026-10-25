@@ -427,23 +427,7 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         @Override
         public MultiblockTooltipBuilder createTooltip() {
             GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
-            tt.addAutoInfo(this)
-                .beginStructureBlock(25, 25, 9, true)
-                .addInputHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.large_naquadah_reactor.tooltip.casing"))
-                .addOutputHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.large_naquadah_reactor.tooltip.casing"))
-                .addEnergyHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.large_naquadah_reactor.tooltip.casing"))
-                .addDynamoHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.large_naquadah_reactor.tooltip.casing"))
-                .addMaintenanceHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.large_naquadah_reactor.tooltip.casing"))
+            tt.addAutoTooltip(this)
                 .toolTipFinisher();
             return tt;
         }

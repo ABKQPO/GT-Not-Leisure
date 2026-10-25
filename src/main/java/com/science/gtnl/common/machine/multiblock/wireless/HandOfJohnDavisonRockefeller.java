@@ -7,7 +7,6 @@ import static gtnhlanth.common.register.LanthItemList.FOCUS_MANIPULATION_CASING;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
@@ -34,7 +33,6 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -186,24 +184,7 @@ public class HandOfJohnDavisonRockefeller extends WirelessEnergyMultiMachineBase
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
-        tt.addAutoInfo(this)
-            .beginStructureBlock(41, 9, 9, true)
-            .addInputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.hand_of_john_davison_rockefeller.tooltip.casing"))
-            .addOutputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.hand_of_john_davison_rockefeller.tooltip.casing"))
-            .addInputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.hand_of_john_davison_rockefeller.tooltip.casing"))
-            .addOutputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.hand_of_john_davison_rockefeller.tooltip.casing"))
-            .addEnergyHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.hand_of_john_davison_rockefeller.tooltip.casing"))
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

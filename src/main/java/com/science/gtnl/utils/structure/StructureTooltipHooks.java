@@ -52,11 +52,16 @@ public class StructureTooltipHooks {
     }
 
     public static boolean onCheckHatches(Object controller, int min, int max, IHatchElement<?>... elements) {
-        Recording recording = activeFor(controller);
-        if (recording == null) return false;
+        if (activeFor(controller) == null) return false;
         List<String> keys = new ArrayList<>();
         for (IHatchElement<?> element : elements) keys.addAll(element.getDescriptionLangKeys());
-        recording.hatchRules.add(new HatchRule(keys, min, max));
+        return onCheckHatchKeys(controller, min, max, keys);
+    }
+
+    public static boolean onCheckHatchKeys(Object controller, int min, int max, List<String> hatchKeys) {
+        Recording recording = activeFor(controller);
+        if (recording == null) return false;
+        recording.hatchRules.add(new HatchRule(hatchKeys, min, max));
         return true;
     }
 

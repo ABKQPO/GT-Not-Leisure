@@ -152,8 +152,7 @@ public class AdvancedRareEarthCentrifugal extends GTMMultiMachineBase<AdvancedRa
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
-        tt.addAutoInfo(this)
-            .addAutoStructure(this)
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

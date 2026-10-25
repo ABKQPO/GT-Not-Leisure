@@ -107,8 +107,7 @@ public class SteamOilDrillModule extends SteamElevatorModuleBase {
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
-        tt.addAutoInfo(this)
-            .beginStructureBlock(1, 5, 2, false)
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

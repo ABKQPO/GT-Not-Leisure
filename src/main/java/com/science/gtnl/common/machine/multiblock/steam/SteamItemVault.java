@@ -381,10 +381,7 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
-        tt.addAutoInfo(this)
-            .beginStructureBlock(7, 11, 7, false)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.steam_item_vault.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.steam_item_vault.casing"), 1)
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

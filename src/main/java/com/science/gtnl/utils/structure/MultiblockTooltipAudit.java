@@ -131,8 +131,7 @@ public class MultiblockTooltipAudit {
         long start = System.nanoTime();
         if (machine instanceof MTEEnhancedMultiBlockBase enhanced) {
             try {
-                MultiblockTooltipBuilder auto = new GTNLMultiblockTooltipBuilder().addAutoInfo(enhanced)
-                    .addAutoStructure(enhanced)
+                MultiblockTooltipBuilder auto = new GTNLMultiblockTooltipBuilder().addAutoTooltip(enhanced)
                     .toolTipFinisher();
                 autoInfo = Arrays.asList(auto.getInformation());
                 autoStructure = Arrays.asList(auto.getStructureInformation());

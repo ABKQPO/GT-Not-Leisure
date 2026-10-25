@@ -220,8 +220,7 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
-        tt.addAutoInfo(this)
-            .beginStructureBlock(99, 84, 48, false)
+        tt.addAutoTooltip(this)
             .addStructureInfo(
                 StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.output_coefficient"))
             .toolTipFinisher();

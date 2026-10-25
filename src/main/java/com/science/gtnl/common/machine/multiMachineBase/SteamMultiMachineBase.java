@@ -68,6 +68,7 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 import com.science.gtnl.utils.structure.MultiblockTooltipReader;
+import com.science.gtnl.utils.structure.StructureTooltipHooks;
 import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
@@ -120,7 +121,8 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     implements IControllerInfo, IMultiblockTooltipRules {
 
     public static final int OC_WINDOW_ID = 12;
-    private static final String STEAM_INPUT_LINE = "steam_input";
+    // Why: GT's own steam multiblocks name their steam input line with this key in MultiblockTooltipBuilder.
+    private static final String STEAM_INPUT_LINE = "GTPP.MBTT.SteamHatch";
     private static final int BASIC_STEAM_TIER = 1;
     private static final int MAX_STEAM_TIER = 2;
     private static final int[] STEAM_INPUT_HATCH_IDS = { MetaTileEntityIDs.Hatch_Input_Steam.ID,
@@ -402,6 +404,9 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     }
 
     public void checkHatch(List<StructureError> errors) {
+        if (StructureTooltipHooks.onCheckHatchKeys(this, 1, StructureTooltipHooks.UNLIMITED, steamInputHatchKeys())) {
+            return;
+        }
         if (mSteamInputFluids.isEmpty() && mSteamBigInputFluids.isEmpty() && mSteamWirelessInputFluids.isEmpty()) {
             errors.add(StructureErrors.of("GT5U.gui.text.structure_error.missing_steam_input"));
         }
@@ -438,21 +443,19 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         }
     }
 
-    @Override
-    public String getStructureTooltipHatchLine(String hatchLangKey) {
+    private static List<String> steamInputHatchKeys() {
+        List<String> keys = new ArrayList<>();
         for (int id : STEAM_INPUT_HATCH_IDS) {
             IMetaTileEntity hatch = GregTechAPI.METATILEENTITIES[id];
             // Why: HatchElementBuilder.hatchIds() describes a hatch by this key, built from its meta name.
-            if (hatch != null && hatchLangKey.equals("gt.blockmachines." + hatch.getMetaName() + ".name")) {
-                return STEAM_INPUT_LINE;
-            }
+            if (hatch != null) keys.add("gt.blockmachines." + hatch.getMetaName() + ".name");
         }
-        return hatchLangKey;
+        return keys;
     }
 
     @Override
-    public String getStructureTooltipHatchCount(String hatchLine) {
-        return STEAM_INPUT_LINE.equals(hatchLine) ? "1+" : null;
+    public String getStructureTooltipHatchLine(String hatchLangKey) {
+        return steamInputHatchKeys().contains(hatchLangKey) ? STEAM_INPUT_LINE : hatchLangKey;
     }
 
     @Override

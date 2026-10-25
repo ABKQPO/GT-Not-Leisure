@@ -1244,7 +1244,6 @@ gtnl.machine.large_maceration_tower.tooltip.casing=任意坚实铱锇机械方�
 
 gtnl.machine.hand_of_john_davison_rockefeller.name=洛克菲勒之手
 gtnl.machine.hand_of_john_davison_rockefeller.recipe_type=化工厂
-gtnl.machine.hand_of_john_davison_rockefeller.tooltip.casing=任意压力抑制机械方块
 
 gtnl.machine.large_sifting_funnel.name=大型筛选漏斗
 gtnl.machine.large_sifting_funnel.recipe_type=筛选机
@@ -1568,7 +1567,6 @@ gtnl.recipe.metadata.naquadah_reactor.0=需要超能硅岩反应堆
 gtnl.recipe.metadata.naquadah_reactor.1=需要进阶超能硅岩反应堆
 gtnl.machine.large_naquadah_reactor.recipe_type=硅岩反应
 gtnl.nei.naquadah_reactor.special_value=产能功率：
-gtnl.machine.large_naquadah_reactor.tooltip.casing=任意放射硅岩合金机械方块
 gtnl.waila.naquadah_reactor.power_output=产能功率：
 gtnl.waila.naquadah_reactor.extra_gas_boost=使用额外气体加速
 gtnl.waila.naquadah_reactor.wireless_power_output=产能功率(无线模式)：
@@ -2223,7 +2221,6 @@ gtnl.machine.large_steam_cutting.casing=任意镀铜砖块或脱氧钢机械方�
 
 gtnl.machine.steam_item_vault.name=蒸汽物品保险库
 gtnl.machine.steam_item_vault.recipe_type=物品保险库
-gtnl.machine.steam_item_vault.casing=任意抗震安全外壳
 gtnl.waila.steam_item_vault.stored_items=已存储物品：
 gtnl.waila.steam_item_vault.operational_data=操作数据
 gtnl.waila.steam_item_vault.item_used=物品已用容量：%s

@@ -147,25 +147,15 @@ public interface IMultiblockTooltipRules {
     }
 
     /**
-     * Puts hatch types that satisfy one structure requirement on one line, for requirements the structure check
-     * enforces with its own code, such as "any one kind of steam input".
+     * Puts hatch types that count as one kind of hatch on one line under one name, such as every kind of steam input
+     * shown as a steam hatch. The line's count still comes from the structure check.
      *
      * @param hatchLangKey description lang key of a hatch type the structure accepts
-     * @return the line key; returning {@code hatchLangKey} keeps the hatch type on a line of its own
+     * @return the lang key that names the line; returning {@code hatchLangKey} keeps the hatch type on a line of its
+     *         own under its own name
      */
     default String getStructureTooltipHatchLine(String hatchLangKey) {
         return hatchLangKey;
-    }
-
-    /**
-     * Returns the count of a hatch line whose requirement the structure check enforces with its own code instead of
-     * the GT and GTNL hatch count checks, in the GT style such as "1", "1+" or "0-1".
-     *
-     * @param hatchLine the line key returned by {@link #getStructureTooltipHatchLine(String)}
-     * @return the count text, or null to read the count from the hatch count checks
-     */
-    default String getStructureTooltipHatchCount(String hatchLine) {
-        return null;
     }
 
     /**

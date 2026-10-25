@@ -60,14 +60,20 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
     private StructureSummary structure;
     private boolean structureRead;
 
-    public <T extends MTEEnhancedMultiBlockBase<T>> GTNLMultiblockTooltipBuilder addAutoInfo(T machine) {
-        return addAutoInfo(machine, MultiblockTooltipReader.keyPrefixOf(machine));
+    public <T extends MTEEnhancedMultiBlockBase<T>> GTNLMultiblockTooltipBuilder addAutoTooltip(T machine) {
+        return addAutoTooltip(machine, MultiblockTooltipReader.keyPrefixOf(machine));
     }
 
-    public <T extends MTEEnhancedMultiBlockBase<T>> GTNLMultiblockTooltipBuilder addAutoInfo(T machine,
+    public <T extends MTEEnhancedMultiBlockBase<T>> GTNLMultiblockTooltipBuilder addAutoTooltip(T machine,
         String keyPrefix) {
+        addAutoInfo(machine, keyPrefix);
+        addAutoStructure(machine);
+        return this;
+    }
+
+    private <T extends MTEEnhancedMultiBlockBase<T>> void addAutoInfo(T machine, String keyPrefix) {
         InfoSummary info = MultiblockTooltipReader.readInfo(machine, keyPrefix, structureOf(machine));
-        if (info == null) return this;
+        if (info == null) return;
         if (info.machineType() != null) addMachineType(info.machineType());
         TooltipStats stats = info.stats();
         if (stats != null) addStatLines(stats, info.tierBonuses());
@@ -79,7 +85,6 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
         if (info.supportAny()) addSupportAny();
         else if (info.supportMultiAmp()) addSupportMultiAmp();
         pendingGroups.addAll(info.groups());
-        return this;
     }
 
     @Override
@@ -110,9 +115,9 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
         return StatCollector.translateToLocalFormatted(LAST_JOIN_KEY, joined, phrases.get(phrases.size() - 1));
     }
 
-    public <T extends MTEEnhancedMultiBlockBase<T>> GTNLMultiblockTooltipBuilder addAutoStructure(T machine) {
+    private <T extends MTEEnhancedMultiBlockBase<T>> void addAutoStructure(T machine) {
         StructureSummary summary = structureOf(machine);
-        if (summary == null) return this;
+        if (summary == null) return;
         boolean structureTiers = summary.sections()
             .size() > 1;
 
@@ -131,7 +136,6 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
                 !structureTiers);
         }
         addChannelLines(summary, structureTiers);
-        return this;
     }
 
     private <T extends MTEEnhancedMultiBlockBase<T>> StructureSummary structureOf(T machine) {

@@ -252,14 +252,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
-        tt.addAutoInfo(this, "gtnl.machine.extreme_fusion_reactor")
-            .beginStructureBlock(39, 17, 39, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.casing"))
-            .addMaintenanceHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.casing"))
+        tt.addAutoTooltip(this, "gtnl.machine.extreme_fusion_reactor")
             .toolTipFinisher();
         return tt;
     }

@@ -563,7 +563,7 @@ public class MultiblockTooltipReader {
             size(tierCells),
             isHollow(tierCells, airCells),
             controllerPosition(tierCells.get(0)),
-            toHatchLines(hatches, checks.hatchRules(), rules),
+            toHatchLines(hatches, checks.hatchRules()),
             new ArrayList<>(hatchKeys),
             sections,
             new ArrayList<>(channels),
@@ -710,7 +710,7 @@ public class MultiblockTooltipReader {
                 String lineKey = rules == null ? hatchKey : rules.getStructureTooltipHatchLine(hatchKey);
                 HatchGroup hatch = hatches.computeIfAbsent(lineKey, key -> new HatchGroup());
                 hatch.keys.add(hatchKey);
-                hatch.names.add(StatCollector.translateToLocal(hatchKey));
+                hatch.names.add(StatCollector.translateToLocal(lineKey));
                 hatch.order = Math.min(hatch.order, hatchOrder(hatchKey));
                 if (!blockNames.isEmpty()) {
                     hatch.replacesBlocks = true;
@@ -854,17 +854,15 @@ public class MultiblockTooltipReader {
         return header != null ? header : StatCollector.translateToLocalFormatted("gtnl.structure.tooltip.tier", tier);
     }
 
-    private static List<HatchLine> toHatchLines(Map<String, HatchGroup> hatches, List<HatchRule> hatchRules,
-        IMultiblockTooltipRules rules) {
+    private static List<HatchLine> toHatchLines(Map<String, HatchGroup> hatches, List<HatchRule> hatchRules) {
         mergeLinkedLines(hatches, hatchRules);
-        List<Map.Entry<String, HatchGroup>> entries = new ArrayList<>(hatches.entrySet());
-        entries.sort(Comparator.comparingInt((Map.Entry<String, HatchGroup> entry) -> entry.getValue().order));
+        List<HatchGroup> groups = new ArrayList<>(hatches.values());
+        groups.sort(Comparator.comparingInt(group -> group.order));
         List<HatchLine> lines = new ArrayList<>();
-        for (Map.Entry<String, HatchGroup> entry : entries) {
-            HatchGroup hatch = entry.getValue();
+        for (HatchGroup hatch : groups) {
             lines.add(
                 new HatchLine(
-                    hatchCount(entry.getKey(), hatch, hatchRules, rules),
+                    hatchCount(hatch, hatchRules),
                     new ArrayList<>(hatch.names),
                     new ArrayList<>(hatch.locations)));
         }
@@ -884,11 +882,8 @@ public class MultiblockTooltipReader {
         }
     }
 
-    private static String hatchCount(String lineKey, HatchGroup hatch, List<HatchRule> hatchRules,
-        IMultiblockTooltipRules rules) {
+    private static String hatchCount(HatchGroup hatch, List<HatchRule> hatchRules) {
         if (!hatch.replacesBlocks) return String.valueOf(hatch.dedicated);
-        String custom = rules == null ? null : rules.getStructureTooltipHatchCount(lineKey);
-        if (custom != null) return custom;
         int min = 0, max = StructureTooltipHooks.UNLIMITED;
         for (HatchRule rule : hatchRules) {
             if (Collections.disjoint(hatch.keys, rule.hatchKeys())) continue;

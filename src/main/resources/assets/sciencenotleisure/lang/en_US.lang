@@ -1244,7 +1244,6 @@ gtnl.machine.large_maceration_tower.tooltip.casing=Any solid Iridium-Osmium mach
 
 gtnl.machine.hand_of_john_davison_rockefeller.name=Hand of John Davison Rockefeller
 gtnl.machine.hand_of_john_davison_rockefeller.recipe_type=Chemical Plant
-gtnl.machine.hand_of_john_davison_rockefeller.tooltip.casing=Any Pressure Suppression Machine Block
 
 gtnl.machine.large_sifting_funnel.name=Large Sifting Funnel
 gtnl.machine.large_sifting_funnel.recipe_type=Sifter
@@ -1568,7 +1567,6 @@ gtnl.recipe.metadata.naquadah_reactor.0=Requires Hyper Naquadah Reactor
 gtnl.recipe.metadata.naquadah_reactor.1=Requires Advanced Hyper Naquadah Reactor
 gtnl.machine.large_naquadah_reactor.recipe_type=Naquadah Reaction
 gtnl.nei.naquadah_reactor.special_value=Power Output:
-gtnl.machine.large_naquadah_reactor.tooltip.casing=Any radioactive Naquadah alloy machine block
 gtnl.waila.naquadah_reactor.power_output=Power Output: 
 gtnl.waila.naquadah_reactor.extra_gas_boost=Extra Gas Boost
 gtnl.waila.naquadah_reactor.wireless_power_output=Power Output (Wireless Mode): 
@@ -2223,7 +2221,6 @@ gtnl.machine.large_steam_cutting.casing=Any Copper Plated Bricks or Deoxidized S
 
 gtnl.machine.steam_item_vault.name=Steam Item Vault
 gtnl.machine.steam_item_vault.recipe_type=Item Vault
-gtnl.machine.steam_item_vault.casing=Any Vibration-Safe Casing
 gtnl.waila.steam_item_vault.stored_items=Stored Items:
 gtnl.waila.steam_item_vault.operational_data=Operational Data
 gtnl.waila.steam_item_vault.item_used=Item Used Capacity: %s

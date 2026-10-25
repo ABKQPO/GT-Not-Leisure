@@ -71,8 +71,7 @@ public class PlatinumBasedTreatment extends MultiMachineBase<PlatinumBasedTreatm
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
-        tt.addAutoInfo(this)
-            .addAutoStructure(this)
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }
