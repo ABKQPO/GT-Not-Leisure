@@ -19,6 +19,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.google.common.collect.ImmutableMap;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
@@ -49,6 +50,7 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.Textures;
+import gregtech.api.enums.TickTime;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.ITexture;
@@ -76,6 +78,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
+import gregtech.api.util.tooltip.TooltipHelper;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.tileentities.machines.IRecipeProcessingAwareHatch;
 import gregtech.common.tileentities.machines.MTEHatchInputME;
@@ -123,6 +126,11 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
         GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.SpaceTime, 16), ItemList.ZPM6.get(8),
         ItemList.Robot_Arm_UIV.get(64), ItemList.Conveyor_Module_UIV.get(64), ItemList.Field_Generator_UEV.get(64) };
 
+    private static final int DISTILLED_WATER_INTERVAL = TickTime.SECOND * 5;
+    private static final int LOW_GRADE_WATER_PER_PARALLEL = 100;
+    private static final int HIGH_GRADE_WATER_PER_PARALLEL = 50;
+    private static final double MACHINE_TIER_BONUS = 0.1;
+    private static final int PERFECT_OVERCLOCK_TIER = 3;
     public static FluidStack DISTILLED_WATER = GTModHandler.getDistilledWater(7500);
     public static ItemStack T1NANITE = GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Neutronium, 1);
     public static ItemStack T2NANITE = GTOreDictUnificator.get(OrePrefixes.nanite, Materials.Silver, 1);
@@ -298,11 +306,11 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
 
                 for (FluidStack fluidStack : getStoredWater()) {
                     if (GTUtility.areFluidsEqual(fluidStack, PURIFIED_WATER[requiredPCBTier - 1])) {
-                        parallel += (long) (fluidStack.amount / 100d
+                        parallel += (long) (fluidStack.amount / (double) LOW_GRADE_WATER_PER_PARALLEL
                             * GTUtility.powInt(2, machineTier - requiredPCBTier));
                     }
                     if (GTUtility.areFluidsEqual(fluidStack, PURIFIED_WATER[requiredPCBTier + 3])) {
-                        parallel += (long) (fluidStack.amount / 50d
+                        parallel += (long) (fluidStack.amount / (double) HIGH_GRADE_WATER_PER_PARALLEL
                             * GTUtility.powInt(2, machineTier - requiredPCBTier));
                     }
                 }
@@ -333,7 +341,13 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
 
     @Override
     public boolean getPerfectOC() {
-        return machineTier >= 3;
+        return machineTier >= PERFECT_OVERCLOCK_TIER;
+    }
+
+    // Why: this machine's overclock calculator applies getPerfectOC after the wireless mode's perfect overclock.
+    @Override
+    protected boolean overclocksPerfectlyInWirelessMode() {
+        return false;
     }
 
     @Override
@@ -349,11 +363,21 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     }
 
     @Override
-    public List<String> getTooltipFeatureKeys() {
-        List<String> keys = new ArrayList<>(super.getTooltipFeatureKeys());
-        keys.remove(MULTIPLICATIVE_SPEED_TOOLTIP_KEY);
-        keys.remove(PERFECT_OVERCLOCK_TOOLTIP_KEY);
-        return keys;
+    public Map<String, Object> getTooltipVars() {
+        return ImmutableMap.<String, Object>builder()
+            .put("distilled_water", DISTILLED_WATER.amount)
+            .put("distilled_water_seconds", DISTILLED_WATER_INTERVAL / TickTime.SECOND)
+            .put("low_grade_water", LOW_GRADE_WATER_PER_PARALLEL)
+            .put("high_grade_water", HIGH_GRADE_WATER_PER_PARALLEL)
+            .put("tier_bonus", TooltipHelper.percentageFormat.format(MACHINE_TIER_BONUS))
+            .put("perfect_overclock_tier", PERFECT_OVERCLOCK_TIER)
+            .build();
+    }
+
+    @Override
+    public List<String> getTooltipParallelControllerKeys() {
+        // Why: here each parallel controller tier adds speed instead of multiplying it like other wireless machines.
+        return Collections.emptyList();
     }
 
     @Override
@@ -480,12 +504,12 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
 
     @Override
     public double getEUtDiscount() {
-        return (wirelessUpgrade ? 0.6 : 0.8) - 0.1 * (machineTier - 1);
+        return (wirelessUpgrade ? 0.6 : 0.8) - MACHINE_TIER_BONUS * (machineTier - 1);
     }
 
     @Override
     public double getDurationModifier() {
-        double modifier = 1.0 / (wirelessUpgrade ? 8.0 : 3.0 + (machineTier - 1) * 0.1)
+        double modifier = 1.0 / (wirelessUpgrade ? 8.0 : 3.0 + (machineTier - 1) * MACHINE_TIER_BONUS)
             - (Math.max(0, mParallelTier - 1) / 50.0);
         return Math.max(0.00001, modifier);
     }
@@ -494,7 +518,7 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.onPostTick(aBaseMetaTileEntity, aTick);
         if (mStartUpCheck > 0 || !getBaseMetaTileEntity().isServerSide()) return;
-        if (isAllowedToWork() && aTick % 100 == 0) {
+        if (isAllowedToWork() && aTick % DISTILLED_WATER_INTERVAL == 0) {
             startRecipeProcessing();
             if (!depleteWaterInput(DISTILLED_WATER)) {
                 stopMachine(ShutDownReasonRegistry.NONE);
@@ -543,7 +567,7 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
             if (parallel <= 0) break;
             // Consume the higher-grade purified water first.
             if (GTUtility.areFluidsEqual(fluidStack, PURIFIED_WATER[tier + 3])) {
-                int deductAmount = 50 / (int) GTUtility.powInt(2, machineTier - tier);
+                int deductAmount = HIGH_GRADE_WATER_PER_PARALLEL / (int) GTUtility.powInt(2, machineTier - tier);
                 deductAmount = Math.max(1, deductAmount);
 
                 int timesToDeduct = fluidStack.amount / deductAmount;
@@ -559,7 +583,7 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
 
             // Consume the lower-grade purified water only if more parallels remain.
             if (GTUtility.areFluidsEqual(fluidStack, PURIFIED_WATER[tier - 1])) {
-                int deductAmount = 100 / (int) GTUtility.powInt(2, machineTier - tier);
+                int deductAmount = LOW_GRADE_WATER_PER_PARALLEL / (int) GTUtility.powInt(2, machineTier - tier);
                 deductAmount = Math.max(1, deductAmount);
 
                 int timesToDeduct = fluidStack.amount / deductAmount;

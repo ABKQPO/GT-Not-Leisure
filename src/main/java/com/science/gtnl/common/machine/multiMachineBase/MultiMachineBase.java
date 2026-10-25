@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -37,6 +38,7 @@ import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IControllerInfo;
 import com.science.gtnl.api.IMultiblockTooltipRules;
+import com.science.gtnl.api.IWirelessEnergy;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
@@ -45,12 +47,15 @@ import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
+import com.science.gtnl.utils.structure.MultiblockTooltipReader;
 import com.science.gtnl.utils.structure.StructureTooltipHooks;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
+import gregtech.api.enums.VoltageIndex;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -76,6 +81,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
+import gregtech.api.util.tooltip.TooltipHelper;
 import gregtech.common.data.GTCoilTracker;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.tileentities.machines.IDualInputHatch;
@@ -93,10 +99,19 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     implements IConstructable, ISurvivalConstructable, IControllerInfo, IMultiblockTooltipRules {
 
     public static final Optional<Byte>[] HATCH_COLOR_OPTIONS = createHatchColorOptions();
-    private static final List<String> PARALLEL_CONTROLLER_TOOLTIP_KEYS = Collections
-        .singletonList("gtnl.machine.common.parallel_controller.tooltip");
+    private static final String PARALLEL_CONTROLLER_TOOLTIP_KEY = "gtnl.structure.tooltip.parallel_controller";
+    protected static final String WIRELESS_UPGRADE_TOOLTIP_KEY = "gtnl.structure.tooltip.wireless_upgrade";
+    // Why: GT's addGlassEnergyLimitInfo(int) builds this sentence but is deprecated.
+    private static final String GLASS_LIMIT_TOOLTIP_KEY = "GT5U.MBTT.Structure.GlassEnergyLimit";
+    private static final String GLASS_LIMIT_TIER_TOOLTIP_KEY = "GT5U.MBTT.Structure.GlassEnergyLimitTier";
+    private static final String CASING_LIMIT_TOOLTIP_KEY = "gtnl.structure.tooltip.casing_energy_limit";
+    private static final String CASING_LIMIT_UNLOCK_TOOLTIP_KEY = CASING_LIMIT_TOOLTIP_KEY + ".unlock";
+    public static final int ONE_TIER_SKIP = 1;
     private static final int BASE_TOOLTIP_TIER = 0;
-    private static final int NO_TOOLTIP_VOLTAGE_TIER = -1;
+    private static final int NO_TOOLTIP_TIER = -1;
+    private static final int FIRST_PARALLEL_CONTROLLER_PROBE_TIER = 2;
+    private static final int LAST_PARALLEL_CONTROLLER_PROBE_TIER = 5;
+    private static final int HEAT_PROBE_DURATION = 20, HEAT_PROBE_EUT = 30, HEAT_PROBE_RECIPE_HEAT = 1;
 
     @SuppressWarnings("unchecked")
     public static Optional<Byte>[] createHatchColorOptions() {
@@ -116,6 +131,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     public List<SlotWidget> slotWidgets = new ArrayList<>(1);
     public int mCountCasing = -1;
     public int mGlassTier = -1;
+    public int mCasingTier = -1;
     public int mParallelTier = 0;
     public int mEnergyHatchTier = 0;
     public double mConfigSpeedBoost = 1;
@@ -124,7 +140,8 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     @Setter
     public HeatingCoilLevel mCoilLevel = HeatingCoilLevel.None;
     public int mHeatingCapacity = 0;
-    private int tooltipVoltageTier = NO_TOOLTIP_VOLTAGE_TIER;
+    private int tooltipVoltageTier = NO_TOOLTIP_TIER;
+    private int tooltipParallelTier = NO_TOOLTIP_TIER;
 
     public MultiMachineBase(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -496,7 +513,8 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     public void resetParallelTier() {
-        mParallelTier = 0;
+        // Why: tooltip probes give the hatchless prototype a parallel controller tier that a reset must not clear.
+        mParallelTier = tooltipParallelTier == NO_TOOLTIP_TIER ? 0 : tooltipParallelTier;
     }
 
     /**
@@ -565,7 +583,14 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     @ApiStatus.OverrideOnly
     public int getMaxTierSkip() {
-        return Integer.MAX_VALUE;
+        return UNLIMITED_TIER_SKIPS;
+    }
+
+    @Override
+    public void setupProcessingLogic(ProcessingLogic logic) {
+        super.setupProcessingLogic(logic);
+        // Why: a machine's own processing logic would otherwise keep GT's default instead of getMaxTierSkip.
+        logic.setMaxTierSkips(getMaxTierSkip());
     }
 
     @ApiStatus.OverrideOnly
@@ -590,46 +615,246 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     @Override
     public TooltipStats getTooltipStats() {
-        return tooltipStatsWith(BASE_TOOLTIP_TIER, BASE_TOOLTIP_TIER, NO_TOOLTIP_VOLTAGE_TIER);
+        if (!MultiblockTooltipReader.runsRecipes(this, this::createProcessingLogic)) return null;
+        return tooltipStatsWith(null, BASE_TOOLTIP_TIER, NO_TOOLTIP_TIER);
     }
 
     @Override
     public TooltipStats getTooltipStatsAtTier(TieredPart part, int tier) {
         return switch (part) {
-            case VOLTAGE -> tooltipStatsWith(BASE_TOOLTIP_TIER, BASE_TOOLTIP_TIER, tier);
-            case COIL -> tooltipStatsWith(tier, BASE_TOOLTIP_TIER, NO_TOOLTIP_VOLTAGE_TIER);
-            case GLASS -> tooltipStatsWith(BASE_TOOLTIP_TIER, tier, NO_TOOLTIP_VOLTAGE_TIER);
+            case VOLTAGE, COIL, GLASS, CASING -> tooltipStatsWith(part, tier, NO_TOOLTIP_TIER);
+            case HIGH_PRESSURE -> null;
         };
     }
 
-    protected TooltipStats readTooltipStats() {
-        return new TooltipStats(getMaxParallelRecipes(), 1 / getDurationModifier(), getEUtDiscount(), false);
+    @Override
+    public List<String> getTooltipFeatureLines() {
+        List<String> lines = new ArrayList<>();
+        int glassTier = getGlassEnergyTierLimit();
+        if (glassTier >= 0) {
+            lines.add(
+                StatCollector.translateToLocal(GLASS_LIMIT_TOOLTIP_KEY) + ", "
+                    + TooltipHelper.voltageTierText(glassTier, false)
+                    + StatCollector.translateToLocal(GLASS_LIMIT_TIER_TOOLTIP_KEY));
+        }
+        lines.addAll(casingEnergyLimitLines());
+        return lines;
     }
 
-    private TooltipStats tooltipStatsWith(int coilTier, int glassTier, int voltageTier) {
+    @Override
+    public OptionalInt getTooltipTierSkips() {
+        return OptionalInt.of(getMaxTierSkip());
+    }
+
+    @Override
+    public HeatRules getTooltipHeatRules() {
+        if (!(createProcessingLogic() instanceof GTNLProcessingLogic logic)) return null;
+        GTNLOverclockCalculator calculator = logic.createOverclockCalculator(heatProbeRecipe());
+        if (!calculator.heatOC && !calculator.heatDiscount) return null;
+        return new HeatRules(
+            calculator.heatOC,
+            calculator.heatDiscount,
+            calculator.heatDiscountExponent,
+            calculator.recipeHeat == HEAT_PROBE_RECIPE_HEAT);
+    }
+
+    // Why: the overclock calculator only shows which heat rules it applies once it is built for a recipe.
+    private static GTRecipe heatProbeRecipe() {
+        return new GTRecipe(
+            new ItemStack[0],
+            new ItemStack[0],
+            null,
+            new int[0],
+            new int[0],
+            new int[0],
+            new int[0],
+            new FluidStack[0],
+            new FluidStack[0],
+            HEAT_PROBE_DURATION,
+            HEAT_PROBE_EUT,
+            HEAT_PROBE_RECIPE_HEAT);
+    }
+
+    private List<String> casingEnergyLimitLines() {
+        int casing = mCasingTier;
+        int hatch = mEnergyHatchTier;
+        mEnergyHatchTier = VoltageIndex.MAX;
+        try {
+            Integer tiersAbove = null;
+            for (int tier = 0; tier <= TieredPart.CASING.maxTier; tier++) {
+                mCasingTier = tier;
+                int limit = GTUtility.getTier(getMachineVoltageLimit());
+                if (limit >= VoltageIndex.MAX) {
+                    if (tiersAbove == null) return Collections.emptyList();
+                    String unlock = TooltipHelper.voltageTierText(casingVoltageTier(tier), false);
+                    return Arrays.asList(
+                        StatCollector.translateToLocalFormatted(CASING_LIMIT_TOOLTIP_KEY, tiersAbove),
+                        StatCollector.translateToLocalFormatted(CASING_LIMIT_UNLOCK_TOOLTIP_KEY, unlock));
+                }
+                int above = limit - casingVoltageTier(tier);
+                if (tiersAbove != null && above != tiersAbove) return Collections.emptyList();
+                tiersAbove = above;
+            }
+            return tiersAbove == null ? Collections.emptyList()
+                : Collections
+                    .singletonList(StatCollector.translateToLocalFormatted(CASING_LIMIT_TOOLTIP_KEY, tiersAbove));
+        } finally {
+            mCasingTier = casing;
+            mEnergyHatchTier = hatch;
+        }
+    }
+
+    // Why: casings that cap the voltage are component assembly line casings, whose tier 0 is LV.
+    private static int casingVoltageTier(int casingTier) {
+        return casingTier + 1;
+    }
+
+    protected TooltipStats readTooltipStats() {
+        return new TooltipStats(
+            getMaxParallelRecipes(),
+            1 / getDurationModifier(),
+            getEUtDiscount(),
+            false,
+            getPerfectOC());
+    }
+
+    private TooltipStats tooltipStatsWith(TieredPart probed, int tier, int parallelTier) {
         HeatingCoilLevel coil = mCoilLevel;
         int glass = mGlassTier;
-        // Why: the prototype has no coils or glass, which coil and glass formulas would read as a penalty.
-        mCoilLevel = HeatingCoilLevel.getFromTier((byte) coilTier);
-        mGlassTier = glassTier;
-        tooltipVoltageTier = voltageTier;
+        int casing = mCasingTier;
+        int parallel = mParallelTier;
+        // Why: the prototype has no coils, glass or casings, which their formulas would read as a penalty.
+        mCoilLevel = HeatingCoilLevel.getFromTier((byte) tierOf(probed, TieredPart.COIL, tier));
+        mGlassTier = tierOf(probed, TieredPart.GLASS, tier);
+        mCasingTier = tierOf(probed, TieredPart.CASING, tier);
+        tooltipVoltageTier = probed == TieredPart.VOLTAGE ? tier : NO_TOOLTIP_TIER;
+        tooltipParallelTier = parallelTier;
+        if (parallelTier != NO_TOOLTIP_TIER) mParallelTier = parallelTier;
         try {
             return readTooltipStats();
         } finally {
             mCoilLevel = coil;
             mGlassTier = glass;
-            tooltipVoltageTier = NO_TOOLTIP_VOLTAGE_TIER;
+            mCasingTier = casing;
+            mParallelTier = parallel;
+            tooltipVoltageTier = NO_TOOLTIP_TIER;
+            tooltipParallelTier = NO_TOOLTIP_TIER;
         }
     }
 
+    private static int tierOf(TieredPart probed, TieredPart part, int tier) {
+        return probed == part ? tier : BASE_TOOLTIP_TIER;
+    }
+
     @Override
-    public List<String> getTooltipHatchFeatureKeys(String hatchLangKey) {
-        return CustomHatchElement.ParallelCon.getDescriptionLangKey()
-            .equals(hatchLangKey) ? getTooltipParallelControllerKeys() : Collections.emptyList();
+    public List<String> getTooltipHatchLines(String hatchLangKey) {
+        if (!CustomHatchElement.ParallelCon.getDescriptionLangKey()
+            .equals(hatchLangKey)) return Collections.emptyList();
+        String hatch = GTNLMultiblockTooltipBuilder.hatchName(hatchLangKey);
+        TooltipStats low = tooltipStatsWith(null, BASE_TOOLTIP_TIER, FIRST_PARALLEL_CONTROLLER_PROBE_TIER);
+        TooltipStats high = tooltipStatsWith(null, BASE_TOOLTIP_TIER, LAST_PARALLEL_CONTROLLER_PROBE_TIER);
+        List<String> effects = new ArrayList<>();
+        if (high.parallels() > low.parallels()) effects.add(PARALLEL_CONTROLLER_TOOLTIP_KEY + ".parallel");
+        if (high.speed() > low.speed()) effects.add(PARALLEL_CONTROLLER_TOOLTIP_KEY + ".speed");
+        if (high.energyUsage() < low.energyUsage()) effects.add(PARALLEL_CONTROLLER_TOOLTIP_KEY + ".energy");
+        effects.replaceAll(StatCollector::translateToLocal);
+        List<String> lines = new ArrayList<>();
+        lines.add(
+            effects.isEmpty()
+                ? StatCollector.translateToLocalFormatted(PARALLEL_CONTROLLER_TOOLTIP_KEY + ".accepts", hatch)
+                : StatCollector.translateToLocalFormatted(
+                    PARALLEL_CONTROLLER_TOOLTIP_KEY + ".install",
+                    hatch,
+                    GTNLMultiblockTooltipBuilder.joinPhrases(effects)));
+        int extra = extraParallels(low, FIRST_PARALLEL_CONTROLLER_PROBE_TIER);
+        if (extra > 1 && extra == extraParallels(high, LAST_PARALLEL_CONTROLLER_PROBE_TIER)) {
+            lines.add(
+                StatCollector.translateToLocalFormatted(
+                    PARALLEL_CONTROLLER_TOOLTIP_KEY + ".extra",
+                    hatch,
+                    TooltipHelper.parallelText(extra)));
+        }
+        int perfectFrom = parallelControllerPerfectOverclockTier();
+        if (perfectFrom != NO_TOOLTIP_TIER) {
+            lines.add(
+                StatCollector.translateToLocalFormatted(
+                    PARALLEL_CONTROLLER_TOOLTIP_KEY + ".perfect_oc",
+                    TooltipHelper.voltageTierText(perfectFrom, false),
+                    hatch));
+        }
+        for (String key : getTooltipParallelControllerKeys()) lines.add(StatCollector.translateToLocal(key));
+        return lines;
+    }
+
+    private int parallelControllerPerfectOverclockTier() {
+        if (tooltipStatsWith(null, BASE_TOOLTIP_TIER, NO_TOOLTIP_TIER).perfectOverclock()) return NO_TOOLTIP_TIER;
+        int from = NO_TOOLTIP_TIER;
+        for (int tier = VoltageIndex.MAX; tier >= VoltageIndex.LV
+            && tooltipStatsWith(null, BASE_TOOLTIP_TIER, tier).perfectOverclock(); tier--) {
+            from = tier;
+        }
+        return from;
+    }
+
+    private static int extraParallels(TooltipStats stats, int hatchTier) {
+        int hatchParallels = ParallelControllerHatch.maxParallelAt(hatchTier);
+        return stats.parallels() % hatchParallels == 0 ? stats.parallels() / hatchParallels : 1;
     }
 
     public List<String> getTooltipParallelControllerKeys() {
-        return PARALLEL_CONTROLLER_TOOLTIP_KEYS;
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<String> getTooltipUpgradeLines() {
+        if (!(this instanceof IWirelessEnergy wireless)) return Collections.emptyList();
+        List<String> lines = new ArrayList<>();
+        String upgrade = wirelessUpgradeLine(wireless);
+        if (upgrade != null) lines.add(upgrade);
+        lines.addAll(getTooltipWirelessModeLines());
+        return lines;
+    }
+
+    private String wirelessUpgradeLine(IWirelessEnergy wireless) {
+        boolean installed = wireless.isWirelessUpgrade();
+        TooltipStats without;
+        TooltipStats with;
+        try {
+            wireless.setWirelessUpgrade(false);
+            without = getTooltipStats();
+            wireless.setWirelessUpgrade(true);
+            with = getTooltipStats();
+        } finally {
+            wireless.setWirelessUpgrade(installed);
+        }
+        if (without == null || with == null) return null;
+        List<String> bonuses = new ArrayList<>();
+        if (rises(without.speed(), with.speed())) {
+            bonuses.add(
+                StatCollector.translateToLocalFormatted(
+                    WIRELESS_UPGRADE_TOOLTIP_KEY + ".speed",
+                    TooltipHelper.speedText(TooltipHelper.percentageFormat.format(with.speed() - without.speed()))));
+        }
+        if (rises(with.energyUsage(), without.energyUsage())) {
+            bonuses.add(
+                StatCollector.translateToLocalFormatted(
+                    WIRELESS_UPGRADE_TOOLTIP_KEY + ".energy",
+                    TooltipHelper
+                        .effText(TooltipHelper.percentageFormat.format(without.energyUsage() - with.energyUsage()))));
+        }
+        if (bonuses.isEmpty()) return null;
+        return StatCollector.translateToLocalFormatted(
+            WIRELESS_UPGRADE_TOOLTIP_KEY + ".bonus",
+            GTNLMultiblockTooltipBuilder.mechanicName(WIRELESS_UPGRADE_TOOLTIP_KEY),
+            GTNLMultiblockTooltipBuilder.joinPhrases(bonuses));
+    }
+
+    private static boolean rises(double from, double to) {
+        return to > from && !MultiblockTooltipReader.isNearly(from, to);
+    }
+
+    public List<String> getTooltipWirelessModeLines() {
+        return Collections.emptyList();
     }
 
     public abstract int getCasingTextureID();
@@ -1408,7 +1633,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     @Override
     public long getMaxInputVoltage() {
         // Why: tooltip probes run on the prototype, which has no energy hatch to read a voltage from.
-        if (tooltipVoltageTier != NO_TOOLTIP_VOLTAGE_TIER) return GTValues.V[tooltipVoltageTier];
+        if (tooltipVoltageTier != NO_TOOLTIP_TIER) return GTValues.V[tooltipVoltageTier];
         long rVoltage = 0;
         for (MTEHatchEnergy tHatch : GTUtility.validMTEList(mEnergyHatches)) rVoltage += tHatch.getBaseMetaTileEntity()
             .getInputVoltage();

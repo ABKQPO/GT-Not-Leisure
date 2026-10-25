@@ -1,14 +1,21 @@
 package com.science.gtnl.utils.structure;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.OptionalInt;
 
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 
+import com.science.gtnl.api.IMultiblockTooltipRules;
+import com.science.gtnl.api.IMultiblockTooltipRules.HeatRules;
 import com.science.gtnl.api.IMultiblockTooltipRules.TooltipStats;
+import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.structure.InfoSummary.BonusStat;
 import com.science.gtnl.utils.structure.InfoSummary.TierBonus;
+import com.science.gtnl.utils.structure.InfoSummary.TierThreshold;
 import com.science.gtnl.utils.structure.StructureSummary.BlockLine;
 import com.science.gtnl.utils.structure.StructureSummary.ControllerPosition;
 import com.science.gtnl.utils.structure.StructureSummary.HatchLine;
@@ -23,7 +30,7 @@ import gregtech.api.util.tooltip.TooltipHelper;
 
 public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
 
-    private static final String NAME_SEPARATOR = " / ";
+    private static final String NAME_SEPARATOR = MultiblockTooltipReader.NAME_SEPARATOR;
     // Why: GT's stat methods add a finished line, so these lines are rebuilt from GT's keys to append the bonuses.
     private static final String PARALLEL_KEY = "GT5U.MBTT.Parallel.Base";
     private static final String SPEED_KEY = "GT5U.MBTT.Speed.Base";
@@ -31,55 +38,27 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
     private static final String STEAM_KEY = "GT5U.MBTT.SteamDiscount.Base";
     private static final String WITH_BONUS_KEY = "gtnl.structure.tooltip.stat_with_bonus";
     private static final String BONUS_KEY = "gtnl.structure.tooltip.per_tier";
-    private static final String DURATION_BONUS_KEY = "gtnl.structure.tooltip.per_tier.duration";
     private static final String INCREASE_KEY = "gtnl.structure.tooltip.change.increase";
     private static final String DECREASE_KEY = "gtnl.structure.tooltip.change.decrease";
+    private static final String DURATION_BONUS_KEY = "gtnl.structure.tooltip.per_tier.duration";
     private static final String COMPOUND_KEY = "gtnl.structure.tooltip.change.compound";
+    private static final String SWITCH_BONUS_KEY = "gtnl.structure.tooltip.switch_bonus";
+    private static final String LIST_JOIN_KEY = "gtnl.structure.tooltip.join.list";
+    private static final String LAST_JOIN_KEY = "gtnl.structure.tooltip.join.last";
+    // Why: GT 5.09.54.205 has no hatch or mechanic tooltip colors yet; these are the ones newer GT versions use.
+    public static final EnumChatFormatting HATCH_COLOR = EnumChatFormatting.GREEN;
+    public static final EnumChatFormatting MECHANIC_COLOR = EnumChatFormatting.LIGHT_PURPLE;
 
+    private static final String HEAT_DISCOUNT_KEY = "gtnl.structure.tooltip.heat_discount";
+    private static final String HEAT_OVERCLOCK_KEY = "gtnl.structure.tooltip.heat_overclock";
+    private static final String PERFECT_OC_FROM_KEY = "gtnl.structure.tooltip.perfect_oc_from";
+    private static final String TIER_FROM_KEY = "gtnl.structure.tooltip.tier_from.";
+    private static final String CASING_LEVEL_FROM_KEY = TIER_FROM_KEY + "casing_level";
+    private static final String HEAT_UNIT = "K";
+
+    private final List<List<String>> pendingGroups = new ArrayList<>();
     private StructureSummary structure;
     private boolean structureRead;
-
-    @Override
-    public GTNLMultiblockTooltipBuilder addMachineType(String machine) {
-        super.addMachineType(machine);
-        return this;
-    }
-
-    @Override
-    public GTNLMultiblockTooltipBuilder addInfo(String info) {
-        super.addInfo(info);
-        return this;
-    }
-
-    @Override
-    public GTNLMultiblockTooltipBuilder addSeparator() {
-        super.addSeparator();
-        return this;
-    }
-
-    @Override
-    public GTNLMultiblockTooltipBuilder addSeparator(EnumChatFormatting color, int length) {
-        super.addSeparator(color, length);
-        return this;
-    }
-
-    @Override
-    public GTNLMultiblockTooltipBuilder addSupportAny() {
-        super.addSupportAny();
-        return this;
-    }
-
-    @Override
-    public GTNLMultiblockTooltipBuilder addSupportMultiAmp() {
-        super.addSupportMultiAmp();
-        return this;
-    }
-
-    @Override
-    public GTNLMultiblockTooltipBuilder addPerfectOCInfo() {
-        super.addPerfectOCInfo();
-        return this;
-    }
 
     public <T extends MTEEnhancedMultiBlockBase<T>> GTNLMultiblockTooltipBuilder addAutoInfo(T machine) {
         return addAutoInfo(machine, MultiblockTooltipReader.keyPrefixOf(machine));
@@ -93,10 +72,42 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
         TooltipStats stats = info.stats();
         if (stats != null) addStatLines(stats, info.tierBonuses());
         for (String line : info.lines()) addInfo(line);
+        for (String line : info.features()) addInfo(line);
+        if (info.heat() != null) addHeatLines(info.heat());
+        if (stats != null) addRecipeRuleLines(stats, info.perfectOverclockFrom(), info.tierSkips());
+        addPollutionAmount(info.pollution());
         if (info.supportAny()) addSupportAny();
         else if (info.supportMultiAmp()) addSupportMultiAmp();
-        if (info.materialTierNotice() != null) addInfo(info.materialTierNotice());
+        pendingGroups.addAll(info.groups());
         return this;
+    }
+
+    @Override
+    public MultiblockTooltipBuilder toolTipFinisher(EnumChatFormatting separatorColor, int separatorLength) {
+        for (List<String> group : pendingGroups) {
+            addSeparator();
+            for (String line : group) addInfo(line);
+        }
+        pendingGroups.clear();
+        return super.toolTipFinisher(separatorColor, separatorLength);
+    }
+
+    public static String hatchName(String langKey) {
+        return TooltipHelper.coloredText(StatCollector.translateToLocal(langKey), HATCH_COLOR);
+    }
+
+    public static String mechanicName(String langKey) {
+        return TooltipHelper.coloredText(StatCollector.translateToLocal(langKey), MECHANIC_COLOR);
+    }
+
+    public static String joinPhrases(List<String> phrases) {
+        if (phrases.isEmpty()) return "";
+        String joined = phrases.get(0);
+        for (int i = 1; i < phrases.size() - 1; i++) {
+            joined = StatCollector.translateToLocalFormatted(LIST_JOIN_KEY, joined, phrases.get(i));
+        }
+        if (phrases.size() == 1) return joined;
+        return StatCollector.translateToLocalFormatted(LAST_JOIN_KEY, joined, phrases.get(phrases.size() - 1));
     }
 
     public <T extends MTEEnhancedMultiBlockBase<T>> GTNLMultiblockTooltipBuilder addAutoStructure(T machine) {
@@ -141,6 +152,47 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
         addStatLine(energyText(stats), bonuses, BonusStat.ENERGY);
     }
 
+    private void addHeatLines(HeatRules heat) {
+        if (!heat.usesRecipeHeat()) return;
+        if (heat.discount()) {
+            addInfo(
+                StatCollector.translateToLocalFormatted(
+                    HEAT_DISCOUNT_KEY,
+                    GTNLOverclockCalculator.HEAT_DISCOUNT_THRESHOLD + HEAT_UNIT,
+                    TooltipHelper.percentageFormat.format(1 - heat.discountFactor())));
+        }
+        if (heat.overclock()) {
+            addInfo(
+                StatCollector.translateToLocalFormatted(
+                    HEAT_OVERCLOCK_KEY,
+                    GTNLOverclockCalculator.HEAT_OVERCLOCK_THRESHOLD + HEAT_UNIT));
+        }
+    }
+
+    private void addRecipeRuleLines(TooltipStats stats, List<TierThreshold> perfectFrom, OptionalInt tierSkips) {
+        if (stats.perfectOverclock()) addPerfectOCInfo();
+        for (TierThreshold threshold : perfectFrom) {
+            addInfo(StatCollector.translateToLocalFormatted(PERFECT_OC_FROM_KEY, thresholdText(threshold)));
+        }
+        if (!tierSkips.isPresent()) return;
+        int skips = tierSkips.getAsInt();
+        if (skips == IMultiblockTooltipRules.UNLIMITED_TIER_SKIPS) addUnlimitedTierSkips();
+        else if (skips == IMultiblockTooltipRules.NO_TIER_SKIP) addNoTierSkips();
+        else addMaxTierSkips(skips);
+    }
+
+    private static String thresholdText(TierThreshold threshold) {
+        if (threshold.tierName() == null) {
+            return StatCollector.translateToLocalFormatted(
+                CASING_LEVEL_FROM_KEY,
+                EnumChatFormatting.WHITE + String.valueOf(threshold.tier()) + EnumChatFormatting.GRAY);
+        }
+        String partKey = TIER_FROM_KEY + threshold.part()
+            .name()
+            .toLowerCase(Locale.ROOT);
+        return StatCollector.translateToLocalFormatted(partKey, threshold.tierName());
+    }
+
     private static String energyText(TooltipStats stats) {
         float usage = (float) stats.energyUsage();
         if (stats.steam())
@@ -164,6 +216,7 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
 
     private static String bonusText(TierBonus bonus) {
         String part = TooltipHelper.tierText(StatCollector.translateToLocal(bonus.part().langKey));
+        if (!bonus.perTier()) return StatCollector.translateToLocalFormatted(SWITCH_BONUS_KEY, part, changeText(bonus));
         String key = bonus.stat() == BonusStat.DURATION ? DURATION_BONUS_KEY : BONUS_KEY;
         String text = StatCollector.translateToLocalFormatted(key, part, changeText(bonus));
         return bonus.multiplicative() ? StatCollector.translateToLocalFormatted(COMPOUND_KEY, text) : text;

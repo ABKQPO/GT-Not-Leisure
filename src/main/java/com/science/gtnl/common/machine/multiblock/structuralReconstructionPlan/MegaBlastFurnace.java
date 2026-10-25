@@ -251,12 +251,6 @@ public class MegaBlastFurnace extends GTMMultiMachineBase<MegaBlastFurnace> impl
     }
 
     @Override
-    public void setupProcessingLogic(ProcessingLogic logic) {
-        super.setupProcessingLogic(logic);
-        logic.setUnlimitedTierSkips();
-    }
-
-    @Override
     public void setProcessingLogicPower(ProcessingLogic logic) {
         logic.setAvailableVoltage(getMaxInputEu());
         logic.setAvailableAmperage(1);

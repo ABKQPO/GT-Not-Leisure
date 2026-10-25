@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.multiMachineBase;
 
-import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,20 +16,12 @@ import gregtech.api.util.GTUtility;
 
 public abstract class GTMMultiMachineBase<T extends GTMMultiMachineBase<T>> extends MultiMachineBase<T> {
 
-    private static final List<String> PARALLEL_CONTROLLER_TOOLTIP_KEYS = Collections
-        .singletonList("gtnl.machine.common.gtm.tooltip.3");
-
     public GTMMultiMachineBase(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
     }
 
     public GTMMultiMachineBase(String aName) {
         super(aName);
-    }
-
-    @Override
-    public List<String> getTooltipParallelControllerKeys() {
-        return PARALLEL_CONTROLLER_TOOLTIP_KEYS;
     }
 
     @Override

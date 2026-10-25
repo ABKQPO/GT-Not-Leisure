@@ -193,6 +193,11 @@ public class DraconicFusionCrafting extends GTMMultiMachineBase<DraconicFusionCr
     }
 
     @Override
+    public int getMaxTierSkip() {
+        return ONE_TIER_SKIP;
+    }
+
+    @Override
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 

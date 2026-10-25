@@ -221,7 +221,7 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(configSpeedBoost)
                     .setEUtDiscount(0.5D * tierMachine * (1 << (2 * Math.min(4, recipeOcCount))))
                     .setDurationModifier(1.0D / 10.0D / tierMachine / (1 << Math.min(4, recipeOcCount)))
-                    .setMaxTierSkips(0)
+                    .setMaxTierSkips(getMaxTierSkip())
                     .setMaxOverclocks(0);
             }
         }.setMaxParallelSupplier(this::getTrueParallel);
@@ -411,19 +411,15 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
     }
 
     @Override
-    public TooltipStats getTooltipStats() {
-        TooltipStats stats = super.getTooltipStats();
+    protected TooltipStats readTooltipStats() {
+        TooltipStats stats = super.readTooltipStats();
         // Why: smelting runs in checkProcessing with a fixed duration, so the processing logic's speed never applies.
         return new TooltipStats(
             stats.parallels(),
             stats.speed() * FURNACE_RECIPE_DURATION / SMELTING_DURATION,
             stats.energyUsage(),
-            true);
-    }
-
-    @Override
-    public String getTooltipMaterialTierNotice() {
-        return "gtnl.machine.large_steam_furnace.high_pressure";
+            true,
+            stats.perfectOverclock());
     }
 
     @Override

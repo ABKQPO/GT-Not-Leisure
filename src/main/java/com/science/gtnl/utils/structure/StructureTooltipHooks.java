@@ -2,11 +2,16 @@ package com.science.gtnl.utils.structure;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
+import com.gtnewhorizon.structurelib.alignment.constructable.ChannelDataAccessor;
+import com.gtnewhorizon.structurelib.structure.IStructureElement;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.utils.enums.GTNLStructureChannels;
 
 import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.metatileentity.implementations.MTEEnhancedMultiBlockBase;
@@ -15,13 +20,15 @@ import gregtech.api.structure.error.StructureError;
 public class StructureTooltipHooks {
 
     public static final int UNLIMITED = Integer.MAX_VALUE;
+    // Why: StructureLib's ChannelDataAccessor keeps sub-channel values under this tag and does not expose it.
+    private static final String CHANNEL_TAG = "channels";
     private static final ThreadLocal<Recording> RECORDING = new ThreadLocal<>();
 
     public record PieceCall(String piece, int horizontalOffset, int verticalOffset, int depthOffset) {}
 
     public record HatchRule(List<String> hatchKeys, int min, int max) {}
 
-    public record CheckRecord(List<Integer> casingMinimums, List<HatchRule> hatchRules) {}
+    public record CheckRecord(List<Integer> casingMinimums, List<HatchRule> hatchRules, String failure) {}
 
     private StructureTooltipHooks() {}
 
@@ -53,11 +60,33 @@ public class StructureTooltipHooks {
         return true;
     }
 
-    public static List<PieceCall> recordConstruct(MTEEnhancedMultiBlockBase<?> controller, int stackSize) {
-        return record(
-            controller,
-            "structure pieces",
-            () -> controller.construct(new ItemStack(Items.stick, stackSize), true)).pieces;
+    public static List<PieceCall> recordConstruct(MTEEnhancedMultiBlockBase<?> controller, int stackSize,
+        Set<String> channels) {
+        ItemStack trigger = channelProbe(stackSize, channels);
+        // Why: some machines only build their blocks when this channel is set; the others ignore it.
+        ChannelDataAccessor.setChannelData(trigger, GTNLStructureChannels.STRUCTURE_RENDER.get(), 1);
+        return record(controller, "structure pieces", () -> controller.construct(trigger, true)).pieces;
+    }
+
+    public static <T> void recordChannels(T controller, IStructureElement<T> element, Set<String> channels) {
+        try {
+            element.getBlocksToPlace(controller, null, 0, 0, 0, channelProbe(1, channels), null);
+        } catch (RuntimeException e) {
+            // Why: an element may need a world after it looked up its channel, which is recorded by then.
+            ScienceNotLeisure.LOG.debug(
+                "Cannot probe a structure element of {} for its channels",
+                controller.getClass()
+                    .getSimpleName(),
+                e);
+        }
+    }
+
+    private static ItemStack channelProbe(int stackSize, Set<String> channels) {
+        ItemStack trigger = new ItemStack(Items.stick, stackSize);
+        NBTTagCompound tag = new NBTTagCompound();
+        tag.setTag(CHANNEL_TAG, new ChannelRecorder(channels));
+        trigger.setTagCompound(tag);
+        return trigger;
     }
 
     public static CheckRecord recordChecks(MTEEnhancedMultiBlockBase<?> controller) {
@@ -66,7 +95,10 @@ public class StructureTooltipHooks {
             controller,
             "structure checks",
             () -> controller.checkMachine(controller.getBaseMetaTileEntity(), null, errors));
-        return new CheckRecord(recording.casingMinimums, recording.hatchRules);
+        return new CheckRecord(
+            recording.casingMinimums,
+            recording.hatchRules,
+            recording.failure == null ? null : recording.failure.toString());
     }
 
     private static Recording activeFor(Object controller) {
@@ -80,6 +112,7 @@ public class StructureTooltipHooks {
         try {
             dryRun.run();
         } catch (RuntimeException e) {
+            recording.failure = e;
             ScienceNotLeisure.LOG.warn(
                 "Cannot read the {} of {} for its tooltip",
                 subject,
@@ -92,12 +125,29 @@ public class StructureTooltipHooks {
         return recording;
     }
 
+    // Why: StructureLib looks up every sub-channel of a trigger with hasKey on this compound.
+    private static class ChannelRecorder extends NBTTagCompound {
+
+        private final Set<String> channels;
+
+        private ChannelRecorder(Set<String> channels) {
+            this.channels = channels;
+        }
+
+        @Override
+        public boolean hasKey(String key, int type) {
+            channels.add(key);
+            return super.hasKey(key, type);
+        }
+    }
+
     private static class Recording {
 
         private final Object controller;
         private final List<PieceCall> pieces = new ArrayList<>();
         private final List<Integer> casingMinimums = new ArrayList<>();
         private final List<HatchRule> hatchRules = new ArrayList<>();
+        private RuntimeException failure;
 
         private Recording(Object controller) {
             this.controller = controller;

@@ -5,7 +5,8 @@ import java.util.List;
 import gregtech.api.structure.IStructureChannels;
 
 public record StructureSummary(Size firstTier, Size allTiers, boolean hollow, ControllerPosition controller,
-    List<HatchLine> hatchLines, List<String> hatchKeys, List<Section> sections, List<IStructureChannels> channels) {
+    List<HatchLine> hatchLines, List<String> hatchKeys, List<Section> sections, List<IStructureChannels> channels,
+    List<String> casingTierNames) {
 
     public boolean hasMaterialTiers() {
         for (Section section : sections) {

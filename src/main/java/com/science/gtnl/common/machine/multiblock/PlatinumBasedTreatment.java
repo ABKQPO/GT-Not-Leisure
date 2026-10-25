@@ -5,7 +5,6 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
@@ -72,9 +71,7 @@ public class PlatinumBasedTreatment extends MultiMachineBase<PlatinumBasedTreatm
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.recipe.platinum_based_treatment"))
-            .addAutoInfo(this)
-            .addPerfectOCInfo()
+        tt.addAutoInfo(this)
             .addAutoStructure(this)
             .toolTipFinisher();
         return tt;

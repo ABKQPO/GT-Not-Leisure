@@ -167,11 +167,11 @@ public class MagneticConfinementDimensionalityShockDevice
 
     @Override
     public void setProcessingLogicPower(ProcessingLogic logic) {
+        setOverclockRatio(logic);
         if (wirelessMode) {
             logic.setAvailableVoltage(Long.MAX_VALUE);
             logic.setAvailableAmperage(1);
             logic.setAmperageOC(true);
-            logic.enablePerfectOverclock();
         } else {
             logic.setAvailableVoltage(getMaxInputEu());
             logic.setAvailableAmperage(1);

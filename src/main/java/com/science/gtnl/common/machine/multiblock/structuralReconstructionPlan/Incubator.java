@@ -241,6 +241,11 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
     }
 
     @Override
+    public int getMaxTierSkip() {
+        return ONE_TIER_SKIP;
+    }
+
+    @Override
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 

@@ -5,6 +5,8 @@ import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,11 +26,14 @@ import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.VoltageIndex;
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
+import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GTRecipe;
@@ -41,17 +46,15 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMultiMachineBase<T>>
     extends MultiMachineBase<T> implements IWirelessEnergy {
 
-    protected static final String MULTIPLICATIVE_SPEED_TOOLTIP_KEY = "gtnl.machine.common.wireless.tooltip.5";
-    protected static final String PERFECT_OVERCLOCK_TOOLTIP_KEY = "gtnl.machine.common.wireless.tooltip.7";
-    private static final List<String> PARALLEL_CONTROLLER_TOOLTIP_KEYS = Arrays
-        .asList("gtnl.machine.common.wireless.tooltip.3", "gtnl.machine.common.wireless.tooltip.4");
-    private static final List<String> TOOLTIP_FEATURE_KEYS = Arrays.asList(
-        MULTIPLICATIVE_SPEED_TOOLTIP_KEY,
-        "gtnl.machine.common.wireless.tooltip.6",
-        PERFECT_OVERCLOCK_TOOLTIP_KEY,
-        "gtnl.machine.common.wireless.tooltip.8",
-        "gtnl.machine.common.wireless.tooltip.9",
-        "gtnl.machine.common.wireless.tooltip.10");
+    private static final List<String> PARALLEL_CONTROLLER_TOOLTIP_KEYS = Collections
+        .singletonList("gtnl.machine.common.wireless.tooltip.5");
+    // Why: GT ProcessingLogic's default overclock ratio, which enablePerfectOverclock overwrites for good.
+    private static final double NORMAL_DURATION_DECREASE = 2.0, NORMAL_POWER_INCREASE = 4.0;
+    private static final String WIRELESS_MODE_LINE_KEY = "gtnl.machine.common.wireless.mode";
+    private static final String WIRELESS_MODE_NAME_KEY = "gtnl.structure.tooltip.wireless_mode";
+    private static final int WIRELESS_VOLTAGE_TIER_OFFSET = 1;
+    private static final long WIRELESS_BASE_AMPERAGE = 8;
+    private static final long WIRELESS_AMPERAGE_RESERVE = 2;
 
     public UUID ownerUUID;
     @Getter
@@ -122,7 +125,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
             @NotNull
             @Override
             public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
-                if (wirelessMode && recipe.mEUt > GTValues.V[Math.min(mParallelTier + 1, 14)] * 4) {
+                if (wirelessMode && recipe.mEUt > wirelessModeVoltage() * 4) {
                     return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                 }
                 return super.validateRecipe(recipe);
@@ -205,23 +208,44 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     }
 
     @Override
-    public void setupProcessingLogic(ProcessingLogic logic) {
-        super.setupProcessingLogic(logic);
-        logic.setUnlimitedTierSkips();
-    }
-
-    @Override
     public void setProcessingLogicPower(ProcessingLogic logic) {
+        setOverclockRatio(logic);
         if (wirelessMode) {
-            logic.setAvailableVoltage(GTValues.V[Math.min(mParallelTier + 1, 14)]);
-            logic.setAvailableAmperage((8L << (2 * mParallelTier)) - 2L);
+            logic.setAvailableVoltage(appliesMachineVoltageLimit() ? getMachineVoltageLimit() : wirelessModeVoltage());
+            logic.setAvailableAmperage((WIRELESS_BASE_AMPERAGE << (2 * mParallelTier)) - WIRELESS_AMPERAGE_RESERVE);
             logic.setAmperageOC(true);
-            logic.enablePerfectOverclock();
             return;
         }
-        logic.setAvailableVoltage(getMaxInputEu());
+        logic.setAvailableVoltage(appliesMachineVoltageLimit() ? getLimitedInputEu() : getMaxInputEu());
         logic.setAvailableAmperage(1);
         logic.setAmperageOC(true);
+    }
+
+    // Why: enablePerfectOverclock stays on the logic, so leaving wireless mode has to set the normal ratio back.
+    protected void setOverclockRatio(ProcessingLogic logic) {
+        if (wirelessMode || getPerfectOC()) logic.enablePerfectOverclock();
+        else logic.setOverclock(NORMAL_DURATION_DECREASE, NORMAL_POWER_INCREASE);
+    }
+
+    protected boolean appliesMachineVoltageLimit() {
+        return false;
+    }
+
+    private long getLimitedInputEu() {
+        long limit = getMachineVoltageLimit();
+        return Math.max(limitedEu(mEnergyHatches, limit), limitedEu(mExoticEnergyHatches, limit));
+    }
+
+    private static long limitedEu(Collection<? extends MTEHatch> hatches, long voltageLimit) {
+        long eu = 0;
+        for (MTEHatch hatch : GTUtility.validMTEList(hatches)) {
+            long voltage = Math.min(
+                hatch.getBaseMetaTileEntity()
+                    .getInputVoltage(),
+                voltageLimit);
+            eu = GTUtility.addSafe(eu, GTUtility.mulSafe(voltage, hatch.maxWorkingAmperesIn()));
+        }
+        return eu;
     }
 
     @Override
@@ -303,18 +327,36 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     }
 
     @Override
-    public boolean getPerfectOC() {
-        return true;
-    }
-
-    @Override
     public List<String> getTooltipParallelControllerKeys() {
         return PARALLEL_CONTROLLER_TOOLTIP_KEYS;
     }
 
     @Override
-    public List<String> getTooltipFeatureKeys() {
-        return TOOLTIP_FEATURE_KEYS;
+    public List<String> getTooltipWirelessModeLines() {
+        String mode = GTNLMultiblockTooltipBuilder.mechanicName(WIRELESS_MODE_NAME_KEY);
+        String hatch = GTNLMultiblockTooltipBuilder.hatchName(CustomHatchElement.ParallelCon.getDescriptionLangKey());
+        List<String> lines = new ArrayList<>(
+            Arrays.asList(
+                StatCollector.translateToLocalFormatted(
+                    WIRELESS_MODE_LINE_KEY + ".auto",
+                    GTNLMultiblockTooltipBuilder.mechanicName(WIRELESS_UPGRADE_TOOLTIP_KEY),
+                    mode),
+                StatCollector.translateToLocalFormatted(
+                    WIRELESS_MODE_LINE_KEY + ".power",
+                    mode,
+                    hatch,
+                    WIRELESS_VOLTAGE_TIER_OFFSET,
+                    WIRELESS_BASE_AMPERAGE,
+                    WIRELESS_AMPERAGE_RESERVE),
+                StatCollector.translateToLocalFormatted(WIRELESS_MODE_LINE_KEY + ".recipes", mode)));
+        if (!getPerfectOC() && overclocksPerfectlyInWirelessMode()) {
+            lines.add(StatCollector.translateToLocalFormatted(WIRELESS_MODE_LINE_KEY + ".perfect_oc", mode));
+        }
+        return lines;
+    }
+
+    protected boolean overclocksPerfectlyInWirelessMode() {
+        return true;
     }
 
     @Override
@@ -330,9 +372,13 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     @Override
     public long getMaxInputVoltage() {
         if (wirelessMode) {
-            return GTValues.V[Math.min(mParallelTier + 1, 14)];
+            return wirelessModeVoltage();
         }
         return super.getMaxInputVoltage();
+    }
+
+    private long wirelessModeVoltage() {
+        return GTValues.V[Math.min(mParallelTier + WIRELESS_VOLTAGE_TIER_OFFSET, VoltageIndex.MAX)];
     }
 
     @Override

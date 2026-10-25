@@ -245,7 +245,7 @@ public class BlazeBlastFurnace extends MultiMachineBase<BlazeBlastFurnace> imple
 
     @Override
     public int getMaxTierSkip() {
-        return 0;
+        return ONE_TIER_SKIP;
     }
 
     @Override

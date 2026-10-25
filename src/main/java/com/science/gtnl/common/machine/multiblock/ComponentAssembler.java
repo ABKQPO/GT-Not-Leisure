@@ -65,8 +65,6 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
     private static final int DEPTH_OFF_SET = 0;
     public static final List<Pair<Block, Integer>> COMPONENT_CASING_VARIANTS = createComponentCasingVariants();
 
-    public int mCasingTier;
-
     public static List<Pair<Block, Integer>> createComponentCasingVariants() {
         List<Pair<Block, Integer>> casingVariants = new ArrayList<>(8);
         for (int tier = 0; tier < 8; tier++) {
@@ -176,6 +174,11 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
         if (mCasingTier >= 8) {
             errors.add(StructureErrorRegistry.UNKNOWN_TIER);
         }
+    }
+
+    @Override
+    public int getMaxTierSkip() {
+        return ONE_TIER_SKIP;
     }
 
     @Override

@@ -75,11 +75,6 @@ public class ShallowChemicalCoupling extends GTMMultiMachineBase<ShallowChemical
     }
 
     @Override
-    public boolean getPerfectOC() {
-        return true;
-    }
-
-    @Override
     public boolean getHeatOC() {
         return true;
     }
@@ -192,6 +187,11 @@ public class ShallowChemicalCoupling extends GTMMultiMachineBase<ShallowChemical
     }
 
     @Override
+    public int getMaxTierSkip() {
+        return ONE_TIER_SKIP;
+    }
+
+    @Override
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 
@@ -256,7 +256,6 @@ public class ShallowChemicalCoupling extends GTMMultiMachineBase<ShallowChemical
             .addInfo(StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.1"))
             .addInfo(StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.2"))
             .addInfo(StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.3"))
-            .addPerfectOCInfo()
             .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
             .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
             .addSupportAny()

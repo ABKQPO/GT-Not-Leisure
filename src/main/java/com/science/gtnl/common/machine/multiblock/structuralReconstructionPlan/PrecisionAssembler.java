@@ -92,7 +92,6 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
         return null;
     }
 
-    public int mCasingTier = -1;
     public int mMachineTier = -1;
 
     public PrecisionAssembler(int aID, String aName, String aNameRegional) {
@@ -297,7 +296,7 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
 
     @Override
     public int getMaxTierSkip() {
-        return 0;
+        return NO_TIER_SKIP;
     }
 
     @Override

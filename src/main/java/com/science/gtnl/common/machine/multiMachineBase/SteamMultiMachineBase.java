@@ -67,6 +67,7 @@ import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
+import com.science.gtnl.utils.structure.MultiblockTooltipReader;
 import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
@@ -120,6 +121,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
 
     public static final int OC_WINDOW_ID = 12;
     private static final String STEAM_INPUT_LINE = "steam_input";
+    private static final int BASIC_STEAM_TIER = 1;
     private static final int MAX_STEAM_TIER = 2;
     private static final int[] STEAM_INPUT_HATCH_IDS = { MetaTileEntityIDs.Hatch_Input_Steam.ID,
         GTNLMachineID.BIG_STEAM_INPUT_HATCH.ID, GTNLMachineID.PIPELESS_STEAM_HATCH.ID };
@@ -407,19 +409,33 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
 
     @Override
     public TooltipStats getTooltipStats() {
-        int tier = tierMachine;
-        // Why: steam machines are described at their basic tier; the material tier notice covers the next one.
-        tierMachine = 1;
-        try {
-            return new TooltipStats(getMaxParallelRecipes(), 1 / getDurationModifier(), getEUtDiscount(), true);
-        } finally {
-            tierMachine = tier;
-        }
+        if (!MultiblockTooltipReader.runsRecipes(this, this::createProcessingLogic)) return null;
+        return tooltipStatsAtMachineTier(BASIC_STEAM_TIER);
     }
 
     @Override
-    public String getTooltipMaterialTierNotice() {
-        return "gtnl.machine.steam.high_pressure.tooltip";
+    public TooltipStats getTooltipStatsAtTier(TieredPart part, int tier) {
+        return part == TieredPart.HIGH_PRESSURE ? tooltipStatsAtMachineTier(BASIC_STEAM_TIER + tier) : null;
+    }
+
+    protected TooltipStats readTooltipStats() {
+        return new TooltipStats(
+            getMaxParallelRecipes(),
+            1 / getDurationModifier(),
+            getEUtDiscount(),
+            true,
+            getPerfectOC());
+    }
+
+    private TooltipStats tooltipStatsAtMachineTier(int machineTier) {
+        int tier = tierMachine;
+        // Why: the prototype has no structure, so its machine tier is 0, which tier formulas divide or multiply by.
+        tierMachine = machineTier;
+        try {
+            return readTooltipStats();
+        } finally {
+            tierMachine = tier;
+        }
     }
 
     @Override

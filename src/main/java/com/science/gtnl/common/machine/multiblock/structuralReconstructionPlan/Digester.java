@@ -142,6 +142,11 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
     }
 
     @Override
+    public int getMaxTierSkip() {
+        return ONE_TIER_SKIP;
+    }
+
+    @Override
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 

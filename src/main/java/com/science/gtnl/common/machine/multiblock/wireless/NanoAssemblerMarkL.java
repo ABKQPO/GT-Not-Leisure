@@ -61,8 +61,6 @@ public class NanoAssemblerMarkL extends WirelessEnergyMultiMachineBase<NanoAssem
         return casingVariants;
     }
 
-    private int mCasingTier;
-
     public NanoAssemblerMarkL(String aName) {
         super(aName);
     }
@@ -219,6 +217,11 @@ public class NanoAssemblerMarkL extends WirelessEnergyMultiMachineBase<NanoAssem
             .addSubChannelUsage(GTStructureChannels.COMPONENT_ASSEMBLYLINE_CASING)
             .toolTipFinisher();
         return tt;
+    }
+
+    @Override
+    protected boolean appliesMachineVoltageLimit() {
+        return true;
     }
 
     @Override

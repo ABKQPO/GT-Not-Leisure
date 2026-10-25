@@ -187,6 +187,11 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
     }
 
     @Override
+    public int getMaxTierSkip() {
+        return ONE_TIER_SKIP;
+    }
+
+    @Override
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 
@@ -407,11 +412,6 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
         recipeTally = NBT.getLong("recipeTally");
         powerTally = new BigInteger(NBT.getByteArray("powerTally"));
         super.loadNBTData(NBT);
-    }
-
-    @Override
-    public boolean getPerfectOC() {
-        return true;
     }
 
     @Override

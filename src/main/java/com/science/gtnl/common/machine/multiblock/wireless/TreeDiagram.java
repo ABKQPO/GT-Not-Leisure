@@ -392,7 +392,6 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
     public MultiblockTooltipBuilder createTooltip() {
         MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
         tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.tree_diagram.recipe_type"))
-            .addPerfectOCInfo()
             .addSupportAny()
             .beginStructureBlock(194, 71, 184, true)
             .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.tree_diagram.tooltip.casing"))

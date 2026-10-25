@@ -51,7 +51,7 @@ public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLog
             0,
             new String[] { StatCollector.translateToLocal("gtnl.hatch.parallel_controller.tooltip.0"), "", "", "" },
             aTextures);
-        this.maxParallel = setMaxParallel(mTier);
+        this.maxParallel = maxParallelAt(mTier);
         this.parallel = maxParallel;
         int speedBoost = setDurationModifier(mTier);
         int euDiscount = setEUtDiscount(mTier);
@@ -66,7 +66,7 @@ public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLog
     public ParallelControllerHatch(String aName, int aTier, int aInvSlotCount, String[] aDescription,
         ITexture[][][] aTextures) {
         super(aName, aTier, aInvSlotCount, aDescription, aTextures);
-        this.maxParallel = setMaxParallel(mTier);
+        this.maxParallel = maxParallelAt(mTier);
         this.parallel = maxParallel;
         int speedBoost = setDurationModifier(mTier);
         int euDiscount = setEUtDiscount(mTier);
@@ -197,11 +197,11 @@ public class ParallelControllerHatch extends MTEHatch implements IAddGregtechLog
         this.parallel = Math.min(maxParallel, Math.max(1, parallel));
     }
 
-    public int setMaxParallel(int mTier) {
-        if (mTier <= 1) {
+    public static int maxParallelAt(int tier) {
+        if (tier <= 1) {
             return 1;
         }
-        return 1 << (2 * (mTier - 2));
+        return 1 << (2 * (tier - 2));
     }
 
     public int setDurationModifier(int mTier) {

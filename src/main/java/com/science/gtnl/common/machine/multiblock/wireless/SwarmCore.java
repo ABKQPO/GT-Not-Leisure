@@ -421,11 +421,11 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
 
     @Override
     public void setProcessingLogicPower(ProcessingLogic logic) {
+        setOverclockRatio(logic);
         if (wirelessMode) {
             logic.setAvailableVoltage(Integer.MAX_VALUE);
             logic.setAvailableAmperage((8L << (2 * mParallelTier)) - 2L);
             logic.setAmperageOC(false);
-            logic.enablePerfectOverclock();
         } else {
             boolean useSingleAmp = mEnergyHatches.size() == 1 && mExoticEnergyHatches.isEmpty()
                 && getMaxInputAmps() <= 4;

@@ -210,6 +210,11 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
     }
 
     @Override
+    public int getMaxTierSkip() {
+        return NO_TIER_SKIP;
+    }
+
+    @Override
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 
@@ -231,7 +236,7 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
             public @NotNull GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setEUtDiscount(getEUtDiscount())
                     .setDurationModifier(getDurationModifier())
-                    .setMaxTierSkips(0);
+                    .setMaxTierSkips(getMaxTierSkip());
             }
 
         }.setMaxParallelSupplier(this::getTrueParallel);

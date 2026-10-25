@@ -266,6 +266,11 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
     }
 
     @Override
+    public boolean getPerfectOC() {
+        return true;
+    }
+
+    @Override
     public void setProcessingLogicPower(ProcessingLogic logic) {
         if (wirelessMode) {
             logic.setAvailableVoltage(

@@ -94,8 +94,6 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
     @Setter
     public boolean upgradeConsumed = false;
 
-    public int mCasingTier;
-
     public EngravingLaserPlant(String aName) {
         super(aName);
     }
@@ -218,6 +216,11 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
     @Override
     public double getDurationModifier() {
         return super.getDurationModifier() * Math.pow(0.95, mGlassTier) * Math.pow(0.95, mCasingTier);
+    }
+
+    @Override
+    protected boolean appliesMachineVoltageLimit() {
+        return true;
     }
 
     @Override

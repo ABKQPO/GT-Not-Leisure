@@ -126,8 +126,6 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
     @Setter
     public boolean upgradeConsumed = false;
 
-    public int mCasingTier;
-
     public IntegratedAssemblyFacility(String aName) {
         super(aName);
     }
@@ -285,6 +283,11 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
                     .setDurationModifier(getDurationModifier());
             }
         }.setMaxParallelSupplier(this::getTrueParallel);
+    }
+
+    @Override
+    protected boolean appliesMachineVoltageLimit() {
+        return true;
     }
 
     @Override
