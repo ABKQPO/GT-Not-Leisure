@@ -227,6 +227,11 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         else logic.setOverclock(NORMAL_DURATION_DECREASE, NORMAL_POWER_INCREASE);
     }
 
+    @Override
+    public int getMaxTierSkip() {
+        return UNLIMITED_TIER_SKIPS;
+    }
+
     protected boolean appliesMachineVoltageLimit() {
         return false;
     }

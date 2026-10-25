@@ -204,11 +204,6 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
     }
 
     @Override
-    public int getMaxTierSkip() {
-        return ONE_TIER_SKIP;
-    }
-
-    @Override
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 

@@ -151,11 +151,6 @@ public class FuelRefiningComplex extends GTMMultiMachineBase<FuelRefiningComplex
     }
 
     @Override
-    public int getMaxTierSkip() {
-        return ONE_TIER_SKIP;
-    }
-
-    @Override
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 

@@ -115,11 +115,6 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
     }
 
     @Override
-    public int getMaxTierSkip() {
-        return ONE_TIER_SKIP;
-    }
-
-    @Override
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 

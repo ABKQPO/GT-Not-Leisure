@@ -583,7 +583,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     @ApiStatus.OverrideOnly
     public int getMaxTierSkip() {
-        return UNLIMITED_TIER_SKIPS;
+        return ONE_TIER_SKIP;
     }
 
     @Override
@@ -643,7 +643,9 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     @Override
     public OptionalInt getTooltipTierSkips() {
-        return OptionalInt.of(getMaxTierSkip());
+        int skips = getMaxTierSkip();
+        // Why: one tier skip is GT's own default, which GT's multiblock tooltips leave unsaid.
+        return skips == ONE_TIER_SKIP ? OptionalInt.empty() : OptionalInt.of(skips);
     }
 
     @Override

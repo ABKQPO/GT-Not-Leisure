@@ -177,11 +177,6 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
     }
 
     @Override
-    public int getMaxTierSkip() {
-        return ONE_TIER_SKIP;
-    }
-
-    @Override
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 
