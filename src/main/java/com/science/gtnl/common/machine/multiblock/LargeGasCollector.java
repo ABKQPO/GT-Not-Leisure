@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +24,7 @@ import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
@@ -230,18 +230,8 @@ public class LargeGasCollector extends MultiMachineBase<LargeGasCollector> imple
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_gas_collector.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_gas_collector.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_gas_collector.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_gas_collector.tooltip.2"))
-            .addSupportAny()
-            .beginStructureBlock(5, 5, 5, true)
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_gas_collector.casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_gas_collector.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_gas_collector.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_gas_collector.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_gas_collector.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

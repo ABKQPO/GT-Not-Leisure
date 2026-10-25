@@ -670,13 +670,19 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         if (!(createProcessingLogic() instanceof GTNLProcessingLogic logic)) return null;
         GTNLOverclockCalculator calculator = logic.createOverclockCalculator(heatProbeRecipe());
         if (!calculator.heatOC && !calculator.heatDiscount) return null;
+        boolean usesRecipeHeat = calculator.recipeHeat == HEAT_PROBE_RECIPE_HEAT;
+        // Why: without the recipe's heat the calculator applies the same heat overclocks to every recipe.
+        int freePerfectOverclocks = calculator.heatOC && !usesRecipeHeat ? Math
+            .max(0, (calculator.machineHeat - calculator.recipeHeat) / GTNLOverclockCalculator.HEAT_OVERCLOCK_THRESHOLD)
+            : 0;
         return new HeatRules(
             calculator.heatOC,
             calculator.heatDiscount,
             calculator.heatDiscountExponent,
-            calculator.recipeHeat == HEAT_PROBE_RECIPE_HEAT,
+            usesRecipeHeat,
             addsVoltageHeat() ? VOLTAGE_HEAT_PER_TIER : 0,
-            VOLTAGE_HEAT_FROM_TIER);
+            VOLTAGE_HEAT_FROM_TIER,
+            freePerfectOverclocks);
     }
 
     // Why: the overclock calculator only shows which heat rules it applies once it is built for a recipe.
@@ -799,7 +805,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
                     TooltipHelper.voltageTierText(perfectFrom, false),
                     hatch));
         }
-        for (String key : getTooltipParallelControllerKeys()) lines.add(StatCollector.translateToLocal(key));
+        lines.addAll(getTooltipParallelControllerLines(hatch));
         return lines;
     }
 
@@ -853,7 +859,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         return stats.parallels() % hatchParallels == 0 ? stats.parallels() / hatchParallels : 1;
     }
 
-    public List<String> getTooltipParallelControllerKeys() {
+    public List<String> getTooltipParallelControllerLines(String hatch) {
         return Collections.emptyList();
     }
 

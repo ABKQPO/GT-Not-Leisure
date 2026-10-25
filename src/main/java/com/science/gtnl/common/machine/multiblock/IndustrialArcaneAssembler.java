@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +22,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.recipe.thaumcraft.TCRecipeTools;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.item.ItemUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import gregtech.api.casing.Casings;
@@ -217,22 +217,8 @@ public class IndustrialArcaneAssembler extends MultiMachineBase<IndustrialArcane
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.industrial_arcane_assembler.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.industrial_arcane_assembler.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.industrial_arcane_assembler.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.industrial_arcane_assembler.tooltip.2"))
-            .addSupportAny()
-            .beginStructureBlock(19, 19, 19, true)
-            .addInputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.industrial_arcane_assembler.tooltip.casing"))
-            .addOutputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.industrial_arcane_assembler.tooltip.casing"))
-            .addEnergyHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.industrial_arcane_assembler.tooltip.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

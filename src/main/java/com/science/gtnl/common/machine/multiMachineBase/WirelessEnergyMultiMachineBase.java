@@ -6,7 +6,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,8 +45,6 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMultiMachineBase<T>>
     extends MultiMachineBase<T> implements IWirelessEnergy {
 
-    private static final List<String> PARALLEL_CONTROLLER_TOOLTIP_KEYS = Collections
-        .singletonList("gtnl.machine.common.wireless.tooltip.5");
     // Why: GT ProcessingLogic's default overclock ratio, which enablePerfectOverclock overwrites for good.
     private static final double NORMAL_DURATION_DECREASE = 2.0, NORMAL_POWER_INCREASE = 4.0;
     private static final String WIRELESS_MODE_LINE_KEY = "gtnl.machine.common.wireless.mode";
@@ -329,11 +326,6 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         wirelessUpgrade = aNBT.getBoolean("wirelessUpgrade");
         wirelessMode = aNBT.getBoolean("wirelessMode");
         mParallelTier = aNBT.getInteger("parallelTier");
-    }
-
-    @Override
-    public List<String> getTooltipParallelControllerKeys() {
-        return PARALLEL_CONTROLLER_TOOLTIP_KEYS;
     }
 
     @Override

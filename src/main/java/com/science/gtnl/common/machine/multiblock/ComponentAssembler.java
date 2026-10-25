@@ -9,7 +9,6 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -24,6 +23,7 @@ import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import goodgenerator.api.recipe.GoodGeneratorRecipeMaps;
 import goodgenerator.loader.Loaders;
@@ -42,10 +42,8 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
-import gregtech.api.structure.error.ErrorType;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.structure.error.StructureErrorRegistry;
-import gregtech.api.structure.error.StructureErrors;
 import gregtech.api.util.ExoticEnergyInputHelper;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
@@ -167,10 +165,7 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
         checkHatch(errors);
         checkCasingMin(errors, mCountCasing, 50);
         checkHatchExact(errors, HatchElement.Maintenance, 1);
-        int energyHatchCount = mEnergyHatches.size() + mExoticEnergyHatches.size();
-        if (energyHatchCount > 2) {
-            errors.add(StructureErrors.hatchCount(ErrorType.TOO_MANY, HatchElement.Energy, energyHatchCount, 1));
-        }
+        checkHatchMax(errors, HatchElement.Energy.or(HatchElement.ExoticEnergy), 2);
         if (mCasingTier >= 8) {
             errors.add(StructureErrorRegistry.UNKNOWN_TIER);
         }
@@ -275,27 +270,8 @@ public class ComponentAssembler extends MultiMachineBase<ComponentAssembler> imp
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.component_assembler.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.7"))
-            .addSupportMultiAmp()
-            .beginStructureBlock(7, 5, 5, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.casing"))
-            .addMaintenanceHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.casing"))
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.component_assembler.tooltip.casing"))
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
-            .addSubChannelUsage(GTStructureChannels.COMPONENT_ASSEMBLYLINE_CASING)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

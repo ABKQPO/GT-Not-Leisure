@@ -26,6 +26,7 @@ import net.minecraft.util.StatCollector;
 import com.google.gson.GsonBuilder;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IMultiblockTooltipRules;
+import com.science.gtnl.api.IMultiblockTooltipRules.HeatRules;
 import com.science.gtnl.api.IMultiblockTooltipRules.TieredPart;
 import com.science.gtnl.api.IMultiblockTooltipRules.TooltipStats;
 import com.science.gtnl.utils.structure.InfoSummary.BonusStat;
@@ -197,8 +198,11 @@ public class MultiblockTooltipAudit {
             notes.add(text("note.no_stats"));
             return;
         }
-        if (info.heat() != null && !info.heat()
-            .usesRecipeHeat()) problems.add(text("problem.heat_without_recipe_heat"));
+        HeatRules heat = info.heat();
+        // Why: fixed heats without the recipe's heat are how a machine grants free perfect overclocks on purpose.
+        if (heat != null && !heat.usesRecipeHeat() && (heat.discount() || heat.freePerfectOverclocks() == 0)) {
+            problems.add(text("problem.heat_without_recipe_heat"));
+        }
         problems.addAll(MultiblockTooltipReader.withPrototype(machine, prototype -> probe(prototype, info, structure)));
     }
 

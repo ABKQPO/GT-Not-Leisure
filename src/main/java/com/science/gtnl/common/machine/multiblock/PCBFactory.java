@@ -375,12 +375,6 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     }
 
     @Override
-    public List<String> getTooltipParallelControllerKeys() {
-        // Why: here each parallel controller tier adds speed instead of multiplying it like other wireless machines.
-        return Collections.emptyList();
-    }
-
-    @Override
     public RecipeMap<?> getRecipeMap() {
         return RecipeMaps.pcbFactoryRecipes;
     }

@@ -695,6 +695,7 @@ gtnl.structure.tooltip.casing_energy_limit.unlock=%s-tier casing unlocks all Ene
 gtnl.structure.tooltip.machine_casing_energy_limit=Energy Hatch limited by §fMachine Casing§7 Tier, %s-tier machine casing unlocks all Energy Hatch tiers
 gtnl.structure.tooltip.glass_energy_limit=%1$s, %2$s%3$s
 gtnl.structure.tooltip.voltage_heat=Increases Heat by §c%1$s§7 for every §fVoltage§7 tier past %2$s
+gtnl.structure.tooltip.free_perfect_overclocks=Grants %s free §dPerfect Overclocks
 gtnl.structure.tooltip.heat_discount=Every §c%1$s§7 above the recipe requirement reduces §bEU Usage§7 by §f%2$s
 gtnl.structure.tooltip.heat_overclock=Every §c%s§7 above the recipe requirement grants 1 §dPerfect Overclock
 gtnl.structure.tooltip.perfect_oc_from=§bDoes not lose efficiency when overclocked§7 with %s
@@ -789,19 +790,10 @@ gtnl.machine.small_infusion_matrix.essentia_input_hatch=Essentia Input Hatch or 
 
 gtnl.machine.small_arcane_assembler.name=Small Arcane Assembler
 gtnl.machine.small_arcane_assembler.recipe_type=Arcane Crafting
-gtnl.machine.small_arcane_assembler.tooltip.0=Processes shaped and shapeless Arcane Workbench recipes at one recipe per operation.
-gtnl.machine.small_arcane_assembler.tooltip.1=Requires the machine owner to have completed the recipe research.
-gtnl.machine.small_arcane_assembler.tooltip.2=Place a wand, sceptre, or staff in the controller slot; crafting vis is consumed from it.
-gtnl.machine.small_arcane_assembler.tooltip.3=Consumes 32 EU/t; two random primal aspects gain 1-4 vis smoothly over every 128 ticks.
-gtnl.machine.small_arcane_assembler.tooltip.4=Each selected aspect uses 0-30 matching CV; at 30 CV it gains a 200% charge bonus and overflow transfer rises from 25% to 75%.
-gtnl.machine.small_arcane_assembler.casing=Any Magic Mechanical Block
 
 gtnl.machine.industrial_crucible.name=Industrial Crucible
 gtnl.recipe.industrial_crucible=Industrial Crucible
 gtnl.machine.industrial_crucible.recipe_type=Crucible Alchemy
-gtnl.machine.industrial_crucible.tooltip.1=Accepts normal and multi essentia input hatches and infusion providers.
-gtnl.machine.industrial_crucible.tooltip.2=Requires the owner's Thaumcraft research.
-gtnl.machine.industrial_crucible.casing=Any Magic Casing Block
 
 gtnl.machine.quantum_computer.name=Quantum Computer
 gtnl.machine.quantum_computer.recipe_type=CPU
@@ -842,9 +834,6 @@ gtnl.machine.assembler_matrix.mode.operating=Operating Mode
 
 gtnl.machine.atomic_energy_excitation_plant.name=Atomic Energy Excitation Plant
 gtnl.machine.atomic_energy_excitation_plant.recipe_type=Fuel Refining Complex
-gtnl.machine.atomic_energy_excitation_plant.tooltip.0=For every 900K above the recipe temperature, energy consumption is multiplied by 95% (excluding overclocking)
-gtnl.machine.atomic_energy_excitation_plant.tooltip.1=For every 1800K above the recipe temperature, perform one Perfect Overclock
-gtnl.machine.atomic_energy_excitation_plant.tooltip.2=Use a wire cutter to turn on/off the animation effects.
 
 gtnl.machine.eden_garden.name=Eden Garden
 gtnl.machine.eden_garden.recipe_type=Crop Farm
@@ -992,18 +981,10 @@ gtnl.machine.teleportation_array_to_alfheim.mode.nature=Nature Spirit Array
 gtnl.machine.teleportation_array_to_alfheim.mode.mana=Mana Infusion
 gtnl.machine.teleportation_array_to_alfheim.mode.rune=Rune Altar
 gtnl.machine.teleportation_array_to_alfheim.recipe_type=Portal to Alfheim / Nature Spirit Array / Mana Infusion / Rune Altar
-gtnl.machine.teleportation_array_to_alfheim.tooltip.0=Legend says this array can stably transport large amounts of materials.
-gtnl.machine.teleportation_array_to_alfheim.tooltip.1=Requires a Liquid Mana Input Hatch.
-gtnl.machine.teleportation_array_to_alfheim.tooltip.2=Consumes 100L of liquid mana per second to operate.
-gtnl.machine.teleportation_array_to_alfheim.tooltip.3=Place an Eternal Mana Pool or Asgard Dandelion inside the controller to enable infinite mana
-gtnl.machine.teleportation_array_to_alfheim.tooltip.casing=Any Radiant Naquadah Alloy Machine Block
 
 gtnl.machine.lapotron_chip.name=Lapotron Factory
 gtnl.machine.lapotron_chip.recipe_type=Lapotron Factory
 gtnl.recipe.lapotron_chip=Lapotron Factory
-gtnl.machine.lapotron_chip.tooltip.0=Work in progress.
-gtnl.machine.lapotron_chip.tooltip.1=Can be used to quickly build a basic base.
-gtnl.machine.lapotron_chip.tooltip.casing=Any Radiant Naquadah Alloy Machine Block
 
 gtnl.machine.neutronium_wire_cutting.name=Neutronium Wire Cutter
 gtnl.machine.neutronium_wire_cutting.recipe_type=Cutter
@@ -1013,15 +994,6 @@ gtnl.machine.large_steam_crusher.recipe_type=Macerator
 
 gtnl.machine.component_assembler.name=Component Assembler
 gtnl.machine.component_assembler.recipe_type=Component Assembly Line
-gtnl.machine.component_assembler.tooltip.0=100% faster than machines of the same voltage
-gtnl.machine.component_assembler.tooltip.1=Only requires 80% of the recipe's power
-gtnl.machine.component_assembler.tooltip.2=Bulk assembles basic components (motors, pumps, etc.).
-gtnl.machine.component_assembler.tooltip.3=§eComponent Assembly Line Casing§r tier capped at UV.
-gtnl.machine.component_assembler.tooltip.4=Supports overvolting and overclocking.
-gtnl.machine.component_assembler.tooltip.5=Maximum of 2 Energy Hatches!
-gtnl.machine.component_assembler.tooltip.6=Glass tier limits Energy Hatch tier, UV glass unlocks all tiers.
-gtnl.machine.component_assembler.tooltip.7=§oEfficiency crushes other assemblers/assembly lines!
-gtnl.machine.component_assembler.tooltip.casing=Any Deoxidized Steel Machine Block
 
 gtnl.machine.large_steam_furnace.name=Large Steam Furnace
 gtnl.machine.large_steam_furnace.recipe_type=Furnace
@@ -1097,11 +1069,6 @@ gtnl.machine.large_circuit_assembler.recipe_type=Circuit Assembler
 gtnl.machine.petrochemical_plant.name=Petrochemical Plant
 gtnl.recipe.petrochemical_plant=Petrochemical Plant
 gtnl.machine.petrochemical_plant.recipe_type=Petrochemical Plant
-gtnl.machine.petrochemical_plant.tooltip.0=Each coil level increases parallel by 40.
-gtnl.machine.petrochemical_plant.tooltip.1=Final output: recipe output * coil level * voltage level * 6.
-gtnl.machine.petrochemical_plant.tooltip.2=Advanced extraction technology.
-gtnl.machine.petrochemical_plant.tooltip.casing=Any Pressure Suppression Machine Block
-gtnl.machine.petrochemical_plant.tooltip.muffler=Any Top Pressure Suppression Machine Block
 
 gtnl.machine.smelting_mixing_furnace.name=Smelting Mixing Furnace
 gtnl.recipe.smelting_mixing_furnace=Smelting Mixing
@@ -1125,16 +1092,6 @@ gtnl.effect.awe.kick=§f§l!!! At a loss !!!
 
 gtnl.machine.processing_array.name=Processing Array: Rebirth
 gtnl.machine.processing_array.recipe_type=Processing Array
-gtnl.machine.processing_array.tooltip.0=Allows machines inside to run as if placed in the world.
-gtnl.machine.processing_array.tooltip.1=Place up to 64 GT single-block machines in the controller GUI.
-gtnl.machine.processing_array.tooltip.2=Note that power consumption is the sum of the machines inside.
-gtnl.machine.processing_array.tooltip.3=Use a screwdriver to enable independent input bus functionality.
-gtnl.machine.processing_array.tooltip.4=Invalid for specific machines.
-gtnl.machine.processing_array.tooltip.5=Recipe time is (100 - (coil level + 1) * 3)% of same-tier machines.
-gtnl.machine.processing_array.tooltip.6=Consumes 90% required power.
-gtnl.machine.processing_array.tooltip.7=Parallel: number of GT single-block machines * 2 + voltage level * 4 + coil level * 4.
-gtnl.machine.processing_array.tooltip.8=Energy hatch tier cannot exceed the tier of the GT single-block machines in the controller GUI + 4!
-gtnl.machine.processing_array.tooltip.casing=Any Reinforced Titanium Machine Block
 
 gtnl.machine.mega_blast_furnace.name=Mega Industrial Blast Furnace
 gtnl.machine.mega_blast_furnace.recipe_type=Industrial Blast Furnace
@@ -1155,7 +1112,6 @@ gtnl.machine.bricked_blast_furnace.structure.4=16x Copper Plated Bricks
 gtnl.machine.rare_earth_centrifugal.name=Rare Earth Centrifuge
 gtnl.recipe.rare_earth_centrifugal=Rare Earth Centrifuging
 gtnl.machine.rare_earth_centrifugal.recipe_type=Rare Earth Centrifuging
-gtnl.machine.rare_earth_centrifugal.tooltip.casing=Any Molecular Suppression Machine Block
 
 gtnl.machine.cold_ice_freezer.name=Cold Ice Freezer
 gtnl.machine.cold_ice_freezer.recipe_type=Cryo Freezer
@@ -1190,10 +1146,6 @@ gtnl.recipe.industrial_infusion_crafting=Industrial Infusion Matrix
 gtnl.machine.industrial_arcane_assembler.recipe_type=Industrial Arcane Assembler / Industrial Infusion Matrix
 gtnl.machine.industrial_arcane_assembler.mode.0=Industrial Arcane Assembler
 gtnl.machine.industrial_arcane_assembler.mode.1=Industrial Infusion Matrix
-gtnl.machine.industrial_arcane_assembler.tooltip.0=§d§oCombines technology and magic.
-gtnl.machine.industrial_arcane_assembler.tooltip.1=Fixed and behaves as 2147483647
-gtnl.machine.industrial_arcane_assembler.tooltip.2=Requires a Crystal Studded Cosmic Neutronium Wand in the controller to form!
-gtnl.machine.industrial_arcane_assembler.tooltip.casing=Any Pressure Suppression Machine Block
 
 gtnl.machine.energetic_photovoltaic_power_station.name=Energetic Photovoltaic Power Station
 gtnl.machine.advanced_photovoltaic_power_station.name=Advanced Photovoltaic Power Station
@@ -1249,7 +1201,6 @@ gtnl.machine.large_forming.recipe_type=Forming Press
 
 gtnl.machine.matter_fabricator.name=Matter Fabricator
 gtnl.machine.matter_fabricator.recipe_type=Matter Fabricator
-gtnl.machine.matter_fabricator.casing=Any Computer Casing
 gtnl.recipe.matter_fabricator=Matter Fabricator
 gtnl.nei.matter_fabricator_recipes.0=Any Material Ingot
 gtnl.nei.matter_fabricator_recipes.1=Any Material Gem
@@ -1456,10 +1407,6 @@ gtnl.waila.naquadah_reactor.force_wireless=Force Wireless Mode
 
 gtnl.machine.draconic_fusion_crafting.name=Draconic Fusion Crafting
 gtnl.machine.draconic_fusion_crafting.recipe_type=Fusion Crafting
-gtnl.machine.draconic_fusion_crafting.tooltip.0=100% faster than Dragon Research Fusion Crafting
-gtnl.machine.draconic_fusion_crafting.tooltip.1=Only requires 50% of the recipe's power
-gtnl.machine.draconic_fusion_crafting.tooltip.2=Enables §clossless overclocking§7 when mechanical block tier exceeds 4
-gtnl.machine.draconic_fusion_crafting.tooltip.casing=Any Background Radiation Absorption Mechanical Block
 
 gtnl.machine.large_steam_extruder.name=Large Steam Extruder
 gtnl.machine.large_steam_extruder.recipe_type=Extruder
@@ -1467,9 +1414,6 @@ gtnl.machine.large_steam_extruder.recipe_type=Extruder
 gtnl.machine.decay_hastener.name=Decay Hastener
 gtnl.recipe.decay_hastener=Decay Distortion
 gtnl.machine.decay_hastener.recipe_type=Decay Distortion
-gtnl.machine.decay_hastener.tooltip.0=Accelerate or halt any part of a decay chain
-gtnl.machine.decay_hastener.tooltip.1=§9§oTime flows ever forward, yet we dam, halt, and release it at will
-gtnl.machine.decay_hastener.tooltip.casing=Any radioactive Naquadah alloy machine block
 
 gtnl.machine.precision_assembler.name=Precision Assembler
 gtnl.machine.precision_assembler.recipe_type=Assembler / Precision Assembler
@@ -1488,23 +1432,15 @@ gtnl.machine.mega_alloy_blast_smelter.tooltip.casing=Any Blast Furnace Machine B
 
 gtnl.machine.grand_assembly_line.name=Grand Assembly Line
 gtnl.machine.grand_assembly_line.recipe_type=Disordered Assembly Line
+gtnl.machine.grand_assembly_line.parallel_controller.energy=Install a %1$s or better %2$s to remove the energy hatch limit
+gtnl.machine.grand_assembly_line.parallel_controller.boost=A %1$s or better %2$s adds 1900%% speed (multiplicative), but the %2$s's EU usage reduction drops to 20%%
+gtnl.machine.grand_assembly_line.parallel_controller.wireless=Installing a %1$s or better %2$s without an energy hatch automatically enters wireless mode
 gtnl.recipe.grand_assembly_line_special=Assembly Line Conflict Detection
-gtnl.machine.grand_assembly_line.tooltip.0=§r§lMakes Henry Ford look like a joke.
-gtnl.machine.grand_assembly_line.tooltip.1=§rAssembles hardware at an astonishing speed.
-gtnl.machine.grand_assembly_line.tooltip.2=No longer need to input items in sequence
-gtnl.machine.grand_assembly_line.tooltip.3=The machine can process across recipes!
-gtnl.machine.grand_assembly_line.tooltip.4=By default, only one regular or multi-amp energy storage can be installed!
-gtnl.machine.grand_assembly_line.tooltip.5=Install parallel control hatch of UHV or above to remove the energy storage limit
-gtnl.machine.grand_assembly_line.tooltip.6=Install parallel control hatch of UIV or above to unlock §cPerfect Overclock§7
-gtnl.machine.grand_assembly_line.tooltip.7=Install parallel control hatch of UMV or above to provide an additional 500% power consumption reduction and 1900% acceleration (multiplied cumulatively)
-gtnl.machine.grand_assembly_line.tooltip.8=Installing a parallel control hatch of UMV tier or higher without an energy hatch will automatically activate wireless mode
-gtnl.machine.grand_assembly_line.tooltip.casing=Any advanced electronic computing machinery block or explosion-proof glass
 gtnl.machine.grand_assembly_line.info.minimum_recipe_time=Set overclock allow min time
 
 gtnl.machine.fuel_refining_complex.name=Fuel Refining Complex
 gtnl.machine.fuel_refining_complex.recipe_type=Fuel Refining Complex
 gtnl.recipe.fuel_refining_complex=Fuel Refining Complex
-gtnl.machine.fuel_refining_complex.tooltip.casing=Naquadah Fuel Refinery Casing
 gtnl.recipe.metadata.fuel_refining=Requires %s tier field restriction coil
 
 gtnl.machine.resource_collection_module.name=Space Elevator Resource Collection Module
@@ -1598,11 +1534,6 @@ gtnl.recipe.platinum_based_treatment=Single-Step Platinum Processing
 
 gtnl.machine.shallow_chemical_coupling.name=Shallow Chemical Coupling
 gtnl.recipe.shallow_chemical_coupling=Shallow Chemical Coupling
-gtnl.machine.shallow_chemical_coupling.tooltip.0=§7§oMolecular Control Reactor Integrator
-gtnl.machine.shallow_chemical_coupling.tooltip.1=§7§oDirect Molecular Bond Control Bypasses Multi-Step Reactions
-gtnl.machine.shallow_chemical_coupling.tooltip.2=Recipe time & energy multiply by 85% per coil tier.
-gtnl.machine.shallow_chemical_coupling.tooltip.3=Energy hatch limited by glass tier, UEV Glass unlocks all.
-gtnl.machine.shallow_chemical_coupling.tooltip.casing=Any Chemical Protection Machine Block
 
 gtnl.machine.steamgate.name=Steamgate Base Block
 gtnl.machine.steamgate.tooltip.0=§b§oAdvanced steam technology.
@@ -1785,10 +1716,6 @@ gtnl.machine.large_bio_lab.recipe_type=Large Bio Lab
 gtnl.machine.large_gas_collector.name=Large Gas Collector
 gtnl.recipe.gas_collector=Gas Collector
 gtnl.machine.large_gas_collector.recipe_type=Gas Collector
-gtnl.machine.large_gas_collector.tooltip.0=Large version of the Gas Collector
-gtnl.machine.large_gas_collector.tooltip.1=Maximum parallel is 1,000,000
-gtnl.machine.large_gas_collector.tooltip.2=Runs without input items in Overworld, End, Nether
-gtnl.machine.large_gas_collector.casing=Any Solid Steel Machine Casing
 
 gtnl.machine.eternal_greg_tech_workshop.name=Eternal GregTech Workshop
 gtnl.recipe.eternal_greg_tech_workshop_upgrade=Eternal GregTech Workshop Module Upgrade
@@ -1810,11 +1737,6 @@ gtnl.machine.egtw_fusion_module.casing=Hint 1 dots
 
 gtnl.machine.space_assembler.name=Space Assembler
 gtnl.machine.space_assembler.recipe_type=Space Assembler
-gtnl.machine.space_assembler.tooltip.0=§d§lOrbital Assembly Module
-gtnl.machine.space_assembler.tooltip.1=Must be operated on a space station!
-gtnl.machine.space_assembler.tooltip.2=Each tier of glass provides an additional 10% speed boost (multiplicative).
-gtnl.machine.space_assembler.tooltip.3=Requires upgrade to enable MK III tier recipes.
-gtnl.machine.space_assembler.casing=Any Advanced Computer Casing
 GT5U.gui.text.not_in_space_station=Not in Space Station!
 gtnl.gui.space_assembler.upgrade.title=Space Assembler Upgrade
 gtnl.gui.space_assembler.upgrade.disabled=Not upgraded
@@ -2158,7 +2080,6 @@ gtnl.machine.advanced_rare_earth_centrifugal.recipe_type=Rare Earth Centrifuging
 
 gtnl.machine.mass_fabricator.name=Mass Fabricator
 gtnl.machine.mass_fabricator.recipe_type=Mass Fabricator
-gtnl.machine.mass_fabricator.casing=Any ZPM Casing
 
 gtnl.machine.advanced_mass_fabricator.name=Advanced Mass Fabricator
 gtnl.machine.advanced_mass_fabricator.recipe_type=Mass Fabricator

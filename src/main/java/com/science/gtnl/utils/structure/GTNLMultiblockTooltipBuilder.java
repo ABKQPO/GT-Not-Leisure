@@ -58,6 +58,7 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
     public static final EnumChatFormatting MECHANIC_COLOR = EnumChatFormatting.LIGHT_PURPLE;
 
     private static final String VOLTAGE_HEAT_KEY = "gtnl.structure.tooltip.voltage_heat";
+    private static final String FREE_PERFECT_OC_KEY = "gtnl.structure.tooltip.free_perfect_overclocks";
     private static final String HEAT_DISCOUNT_KEY = "gtnl.structure.tooltip.heat_discount";
     private static final String HEAT_OVERCLOCK_KEY = "gtnl.structure.tooltip.heat_overclock";
     private static final String PERFECT_OC_FROM_KEY = "gtnl.structure.tooltip.perfect_oc_from";
@@ -174,6 +175,12 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
                     VOLTAGE_HEAT_KEY,
                     heat.heatPerVoltageTier() + HEAT_UNIT,
                     EnumChatFormatting.AQUA + GTValues.VN[heat.voltageHeatFrom()] + EnumChatFormatting.GRAY));
+        }
+        if (heat.freePerfectOverclocks() > 0) {
+            addInfo(
+                StatCollector.translateToLocalFormatted(
+                    FREE_PERFECT_OC_KEY,
+                    EnumChatFormatting.WHITE + String.valueOf(heat.freePerfectOverclocks()) + EnumChatFormatting.GRAY));
         }
         if (!heat.usesRecipeHeat()) return;
         if (heat.discount()) {

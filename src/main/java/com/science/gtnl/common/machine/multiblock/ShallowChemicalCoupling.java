@@ -6,7 +6,6 @@ import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +21,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
@@ -245,32 +245,8 @@ public class ShallowChemicalCoupling extends GTMMultiMachineBase<ShallowChemical
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.recipe.shallow_chemical_coupling"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
-            .addSupportAny()
-            .beginStructureBlock(7, 11, 7, true)
-            .addInputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.casing"))
-            .addOutputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.casing"))
-            .addEnergyHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.casing"))
-            .addMaintenanceHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.shallow_chemical_coupling.tooltip.casing"))
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
-            .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

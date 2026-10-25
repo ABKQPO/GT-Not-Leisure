@@ -15,7 +15,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
@@ -42,6 +41,7 @@ import com.science.gtnl.utils.machine.PortalToAlfheimExplosion;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
@@ -503,43 +503,8 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.3"))
-            .addPerfectOCInfo()
-            .addSupportAny()
-            .beginStructureBlock(23, 18, 23, false)
-            .addInputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.casing"),
-                1)
-            .addOutputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.casing"),
-                1)
-            .addInputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.casing"),
-                1)
-            .addOutputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.casing"),
-                1)
-            .addEnergyHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.casing"),
-                1)
-            .addMaintenanceHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.casing"),
-                1)
-            .addOtherStructurePart(
-                StatCollector.translateToLocal("gtnl.hatch.fluid_mana_input.name"),
-                StatCollector.translateToLocal("gtnl.machine.teleportation_array_to_alfheim.tooltip.casing"),
-                1)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

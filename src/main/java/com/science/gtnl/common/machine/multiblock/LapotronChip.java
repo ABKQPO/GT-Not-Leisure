@@ -8,7 +8,6 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -26,6 +25,7 @@ import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
@@ -196,21 +196,8 @@ public class LapotronChip extends MultiMachineBase<LapotronChip>
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.lapotron_chip.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.lapotron_chip.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.lapotron_chip.tooltip.1"))
-            .beginStructureBlock(177, 121, 177, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.lapotron_chip.tooltip.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.lapotron_chip.tooltip.casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.lapotron_chip.tooltip.casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.lapotron_chip.tooltip.casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.lapotron_chip.tooltip.casing"), 1)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.lapotron_chip.tooltip.casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
-            .addSubChannelUsage(GTStructureChannels.STRUCTURE_HEIGHT)
-            .addSubChannelUsage(GTStructureChannels.STRUCTURE_LENGTH)
-            .addSubChannelUsage(GTNLStructureChannels.STRUCTURE_RENDER)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }
