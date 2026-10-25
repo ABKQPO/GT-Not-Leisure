@@ -63,6 +63,7 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 public class CraftingCalculation {
 
@@ -91,6 +92,8 @@ public class CraftingCalculation {
     private final Map<RecursiveNetKey, RecursiveNet> recursiveNetCache = new Object2ObjectOpenHashMap<>();
     private final RecursiveNetKey recursiveNetLookup = RecursiveNetKey.mutableProbe();
     private final ObjectPool<RecursiveNetKey> recursiveNetKeyPool = new ObjectPool<>(RecursiveNetKey::new, 100);
+    // Plans the crafting CPU was already shown to run, which need no repair
+    private final Set<CraftingPlan> plansKnownToRun = new ReferenceOpenHashSet<>();
     private final Set<AEKey> realSeededRecursiveRequests = new ObjectOpenHashSet<>();
     private final Set<AEKey> realRecursiveSeeds = new ObjectOpenHashSet<>();
     private final Set<AEKey> realSeededRecursiveKeys = new ObjectOpenHashSet<>();
@@ -401,8 +404,8 @@ public class CraftingCalculation {
                 plan = computePlan();
             }
             // The legacy tree overshoots on cycles spanning several patterns
-            if (plan != null) {
-                plan = CraftingPlanCompactor.compact(plan, this);
+            if (plan != null && !this.plansKnownToRun.contains(plan)) {
+                plan = CraftingPlanCompactor.repair(plan, this);
             }
             this.logCraftingJob(plan);
             return plan;
@@ -633,7 +636,26 @@ public class CraftingCalculation {
         return graphPlan;
     }
 
+    /**
+     * Plans the graph, or returns null when only the legacy tree can plan it.
+     */
     private @Nullable CraftingPlan planGraph(CraftingGraph graph, long productionAmount) throws InterruptedException {
+        var plan = planGraphOnce(graph, productionAmount);
+        if (plan == null || !hasNativeRing(graph)) {
+            return plan;
+        }
+        // The CPU runs any craft whose inputs are there, so crafts outside a ring taking what it cycles can starve it
+        // although the plan balances. Such a plan would be repaired after the calculation, leaving the graph's crafting
+        // tree behind; the legacy tree plans it instead. The graph itself is kept for other amounts.
+        if (!CraftingCpuReplay.runs(plan, this)) {
+            return null;
+        }
+        this.plansKnownToRun.add(plan);
+        return plan;
+    }
+
+    private @Nullable CraftingPlan planGraphOnce(CraftingGraph graph, long productionAmount)
+        throws InterruptedException {
         var propagation = new DemandPropagation(this);
         var planningInventory = new ChildCraftingSimulationState(this.networkInv);
         timed("propagateDemand", () -> {
@@ -671,9 +693,8 @@ public class CraftingCalculation {
         tried.add(Map.of());
         for (int round = 0; round < ALTERNATIVE_ROUNDS && !plan.missingItems()
             .isEmpty(); round++) {
-            for (var entry : plan.missingItems()) {
-                scarcity.addTo(entry.getKey(), 1);
-            }
+            plan.missingItems()
+                .forEach((entryKey, entryAmount) -> scarcity.addTo(entryKey, 1));
             var choices = timed("choosePatterns", () -> new GraphBuilder(this).choosePatterns(this.output, scarcity));
             if (!tried.add(choices)) continue;
             resetAttemptState();
@@ -684,7 +705,7 @@ public class CraftingCalculation {
                     () -> new GraphBuilder(this, choices).buildGraph(this.output, productionAmount));
                 this.graph = graph;
                 alternative = needsLegacyTree(graph) ? null : planGraph(graph, productionAmount);
-            } catch (CraftingCalculationFailure | IllegalArgumentException e) {
+            } catch (CraftingCalculationFailure | IllegalArgumentException | IllegalStateException e) {
                 if (this.limitExceeded) throw e;
                 alternative = null;
             }
@@ -1364,7 +1385,7 @@ public class CraftingCalculation {
      * Captures calculation-global state which is not part of a {@link ChildCraftingSimulationState} diff.
      */
     public CalculationMarker createCalculationMarker() {
-        var recursiveFinalOutputInputs = new ObjectOpenHashSet<>(this.recursiveFinalOutputInputs);
+        var recursiveFinalOutputInputs = snapshotSet(this.recursiveFinalOutputInputs);
         var recursiveReserveCandidates = new KeyCounter();
         recursiveReserveCandidates.addAll(this.recursiveReserveCandidates);
         KeyCounter reserveProtectedMissingSeeds = null;

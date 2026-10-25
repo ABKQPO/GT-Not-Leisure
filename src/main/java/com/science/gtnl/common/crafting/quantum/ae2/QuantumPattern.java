@@ -32,7 +32,7 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
-public final class QuantumPattern implements IPatternDetails {
+public class QuantumPattern implements IPatternDetails {
 
     private final Shape shape;
     private final IInput[] inputs;
@@ -59,6 +59,11 @@ public final class QuantumPattern implements IPatternDetails {
     @Override
     public IInput[] getInputs() {
         return this.inputs;
+    }
+
+    @Override
+    public boolean isCrafting() {
+        return this.shape.details.isCraftable();
     }
 
     @Override
