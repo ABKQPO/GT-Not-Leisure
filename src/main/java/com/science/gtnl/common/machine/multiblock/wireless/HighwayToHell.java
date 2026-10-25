@@ -14,7 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +34,7 @@ import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import bartworks.common.loaders.FluidLoader;
@@ -444,28 +444,8 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.highway_to_hell.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.highway_to_hell.info.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.highway_to_hell.info.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.highway_to_hell.info.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.highway_to_hell.info.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
-            .addSupportAny()
-            .beginStructureBlock(19, 18, 17, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.highway_to_hell.casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.highway_to_hell.casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.highway_to_hell.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.highway_to_hell.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.highway_to_hell.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.highway_to_hell.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

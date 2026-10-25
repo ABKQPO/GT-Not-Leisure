@@ -8,7 +8,6 @@ import java.util.List;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +24,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.GregTechAPI;
@@ -46,7 +46,6 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class MicroorganismMaster extends WirelessEnergyMultiMachineBase<MicroorganismMaster> {
@@ -221,30 +220,8 @@ public class MicroorganismMaster extends WirelessEnergyMultiMachineBase<Microorg
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.microorganism_master.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.microorganism_master.info.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.microorganism_master.info.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.microorganism_master.info.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
-            .addSupportAny()
-            .beginStructureBlock(29, 25, 30, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.microorganism_master.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.microorganism_master.casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.microorganism_master.casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.microorganism_master.casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.microorganism_master.casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

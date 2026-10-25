@@ -9,7 +9,6 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -21,6 +20,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import goodgenerator.api.recipe.GoodGeneratorRecipeMaps;
 import goodgenerator.loader.Loaders;
@@ -193,28 +193,8 @@ public class NanoAssemblerMarkL extends WirelessEnergyMultiMachineBase<NanoAssem
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.nano_assembler_mark_l.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.component_assembly_line.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.component_assembly_line.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
-            .addSupportAny()
-            .beginStructureBlock(13, 10, 31, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.nano_assembler_mark_l.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.nano_assembler_mark_l.casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.nano_assembler_mark_l.casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.nano_assembler_mark_l.casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.COMPONENT_ASSEMBLYLINE_CASING)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

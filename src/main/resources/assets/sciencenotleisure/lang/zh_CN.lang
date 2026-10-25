@@ -1000,8 +1000,6 @@ gtnl.machine.lapotron_chip.tooltip.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.neutronium_wire_cutting.name=中子丝线切割机
 gtnl.machine.neutronium_wire_cutting.recipe_type=切割机
-gtnl.machine.neutronium_wire_cutting.tooltip.0=每级玻璃等级额外提供5%的加速和耗电减免(乘算叠加)
-gtnl.machine.neutronium_wire_cutting.tooltip.casing=任意超能硅岩强化无菌净水厂机械方块
 
 gtnl.machine.large_steam_crusher.name=大型蒸汽破碎机
 gtnl.machine.large_steam_crusher.recipe_type=粉碎机
@@ -1597,9 +1595,6 @@ gtnl.machine.large_steam_mixer.recipe_type=搅拌机
 
 gtnl.machine.cracker_hub.name=裂解反应枢纽
 gtnl.machine.cracker_hub.recipe_type=石油裂化机
-gtnl.machine.cracker_hub.tooltip.0=线圈等级每高出2级，产出+10%
-gtnl.machine.cracker_hub.tooltip.1=每级玻璃等级额外提供5%的加速和耗电减免(乘算叠加)
-gtnl.machine.cracker_hub.tooltip.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.advanced_infinite_driller.name=进阶无尽油气钻机
 gtnl.machine.advanced_infinite_driller.recipe_type=进阶无尽油气钻机
@@ -1762,8 +1757,6 @@ gtnl.machine.integrated_assembly_facility.name=综合组装车间
 gtnl.machine.integrated_assembly_facility.recipe_type=组装机 / 部件装配线
 gtnl.machine.integrated_assembly_facility.mode.0=组装机
 gtnl.machine.integrated_assembly_facility.mode.1=部件装配线
-gtnl.machine.integrated_assembly_facility.tooltip.0=部件装配线配方不获得16倍并行加成
-gtnl.machine.integrated_assembly_facility.tooltip.casing=任意强化镀铱机械方块
 gtnl.machine.integrated_assembly_facility.info.component_assembly_line_upgrade=部件装配线升级
 
 gtnl.machine.tree_diagram.name=树状图设计者
@@ -1776,21 +1769,14 @@ gtnl.machine.tree_diagram.metadata.output_coefficient=双倍产出几率：%s
 gtnl.machine.tree_diagram.metadata.parallel=并行：%s
 gtnl.machine.tree_diagram.metadata.nanites_tier=纳米蜂群等级：%s
 gtnl.recipe.tree_diagram=演算模拟
-gtnl.machine.tree_diagram.tooltip.casing=任意中子采矿机械方块
 
 gtnl.machine.nano_phagocytosis_plant.name=纳米吞噬厂
 gtnl.machine.nano_phagocytosis_plant.recipe_type=粉碎机 / 湿法碾磨
 gtnl.machine.nano_phagocytosis_plant.mode.0=粉碎机
 gtnl.machine.nano_phagocytosis_plant.mode.1=湿法碾磨
-gtnl.machine.nano_phagocytosis_plant.tooltip.0=使用纳米蜂群无情的撕碎一切
-gtnl.machine.nano_phagocytosis_plant.tooltip.1=每级电压等级额外提供25%的加速和耗电减免(乘算叠加)
-gtnl.machine.nano_phagocytosis_plant.tooltip.casing=任意超能硅岩强化无菌净水厂机械方块
 
 gtnl.machine.magnetic_energy_reaction_furnace.name=磁能反应炉
 gtnl.machine.magnetic_energy_reaction_furnace.recipe_type=电弧炉
-gtnl.machine.magnetic_energy_reaction_furnace.tooltip.0=电容器满负荷运作中
-gtnl.machine.magnetic_energy_reaction_furnace.tooltip.1=每级线圈等级额外提供20%的加速和耗电减免(乘算叠加)
-gtnl.machine.magnetic_energy_reaction_furnace.tooltip.casing=任意电弧炉机械方块
 
 gtnl.machine.nanites_integrated_processing_center.name=纳米集成加工中心
 gtnl.recipe.nanites_integrated_processing=纳米统合工坊
@@ -1871,41 +1857,27 @@ gtnl.recipe.precision_laser_engraver=精密激光蚀刻
 gtnl.machine.engraving_laser_plant.recipe_type=激光蚀刻机 / 精密激光蚀刻
 gtnl.machine.engraving_laser_plant.mode.0=激光蚀刻机
 gtnl.machine.engraving_laser_plant.mode.1=精密激光蚀刻
-gtnl.machine.engraving_laser_plant.info.0=每级玻璃和部件装配线外壳等级额外提供5%的加速和耗电减免(乘算叠加)
-gtnl.machine.engraving_laser_plant.info.1=部件装配线外壳等级决定了能源仓最大等级 + 3，UIV装配线外壳解锁所有等级
-gtnl.machine.engraving_laser_plant.info.2=精密激光蚀刻配方不获得16倍并行加成
-gtnl.machine.engraving_laser_plant.casing=任意强化镀铱机械方块
 gtnl.gui.engraving_laser_plant.precision_laser_engraver_upgrade=精密激光蚀刻升级
 
 gtnl.machine.vortex_matter_centrifuge.name=旋涡物质离心器
 gtnl.machine.vortex_matter_centrifuge.recipe_type=离心机
-gtnl.machine.vortex_matter_centrifuge.casing=任意分子机械方块
 
 gtnl.machine.superconducting_electromagnetism.name=超导电磁工厂
 gtnl.machine.superconducting_electromagnetism.recipe_type=电磁离析机 / 两级磁化机
 gtnl.machine.superconducting_electromagnetism.mode.0=电磁离析机
 gtnl.machine.superconducting_electromagnetism.mode.1=两级磁化机
-gtnl.machine.superconducting_electromagnetism.info=每级玻璃等级额外提供5%的加速和耗电减免(乘算叠加)
-gtnl.machine.superconducting_electromagnetism.casing=任意分子机械方块
 
 gtnl.machine.field_forge_press.name=力场锻压机
 gtnl.machine.field_forge_press.recipe_type=锻造锤
-gtnl.machine.field_forge_press.casing=任意分子机械方块
 
 gtnl.machine.superconducting_magnetic_presser.name=超导磁驱冲击装置
 gtnl.machine.superconducting_magnetic_presser.recipe_type=冲压机床
-gtnl.machine.superconducting_magnetic_presser.info=每级玻璃等级额外提供5%的加速和耗电减免(乘算叠加)
-gtnl.machine.superconducting_magnetic_presser.casing=任意镀铱机械方块
 
 gtnl.machine.heavy_rolling.name=重型辊轧机
 gtnl.machine.heavy_rolling.recipe_type=卷板机
-gtnl.machine.heavy_rolling.info=每级线圈等级额外提供15%的加速(乘算叠加)
-gtnl.machine.heavy_rolling.casing=任意冶炼炉机械方块
 
 gtnl.machine.high_energy_laser_lathe.name=高能激光车床
 gtnl.machine.high_energy_laser_lathe.recipe_type=车床
-gtnl.machine.high_energy_laser_lathe.info=每级玻璃等级额外提供5%的加速和耗电减免(乘算叠加)
-gtnl.machine.high_energy_laser_lathe.casing=任意镀铱机械方块
 
 gtnl.machine.mega_mixer.name=巨型搅拌机
 gtnl.machine.mega_mixer.recipe_type=搅拌机
@@ -1946,7 +1918,6 @@ gtnl.machine.steam_elevator_module.casing=任意脱氧钢机械方块
 
 gtnl.machine.nanites_circuit_assembly_factory.name=纳米蜂群电路组装厂
 gtnl.machine.nanites_circuit_assembly_factory.recipe_type=电路组装机
-gtnl.machine.nanites_circuit_assembly_factory.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.etgw_eye_of_harmony_module.name=永恒格雷工坊 - 鸿蒙之眼模块
 gtnl.machine.etgw_eye_of_harmony_module.recipe_type=鸿蒙之眼
@@ -1965,7 +1936,6 @@ gtnl.machine.egtw_eye_of_harmony_module.casing=提示方块：1号
 
 gtnl.machine.aetron_pressor.name=以太压铸机
 gtnl.machine.aetron_pressor.recipe_type=压模机
-gtnl.machine.aetron_pressor.casing=任意分子机械方块
 
 gtnl.machine.steam_elevator.name=蒸汽楼梯
 gtnl.machine.steam_elevator.recipe_type=蒸汽楼梯
@@ -2008,9 +1978,6 @@ gtnl.machine.steam_weather_module.tooltip.2=输入特定材料切换天气，持
 
 gtnl.machine.nano_assembler_mark_l.name=纳米组装机Mark-50
 gtnl.machine.nano_assembler_mark_l.recipe_type=精密组装机
-gtnl.machine.nano_assembler_mark_l.tooltip.0=每级部件装配线外壳等级额外提供10%的加速和耗电减免(乘算叠加)
-gtnl.machine.nano_assembler_mark_l.tooltip.1=部件装配线外壳等级决定了能源仓最大等级 + 3，UIV装配线外壳解锁所有等级
-gtnl.machine.nano_assembler_mark_l.casing=任意镀铱机械方块
 
 gtnl.machine.high_performance_computation_array.name=高性能计算阵列
 gtnl.machine.high_performance_computation_array.recipe_type=量子计算机
@@ -2055,8 +2022,6 @@ gtnl.recipe.plasma_condensation=等离子冷凝
 gtnl.machine.compound_extreme_cooling_unit.recipe_type=真空冷冻机 / 等离子冷凝
 gtnl.machine.compound_extreme_cooling_unit.mode.0=真空冷冻机
 gtnl.machine.compound_extreme_cooling_unit.mode.1=等离子冷凝
-gtnl.machine.compound_extreme_cooling_unit.info=每级玻璃额外提供5%的加速和耗电减免(乘算叠加)
-gtnl.machine.compound_extreme_cooling_unit.casing=任意防冻机械方块
 
 gtnl.machine.steam_ore_processor_module.name=蒸汽矿石处理模块
 gtnl.machine.steam_ore_processor_module.recipe_type=微缩矿石处理厂
@@ -2232,12 +2197,9 @@ gtnl.machine.mass_fabricator.casing=任意ZPM机械方块
 
 gtnl.machine.advanced_mass_fabricator.name=进阶质量发生器
 gtnl.machine.advanced_mass_fabricator.recipe_type=质量发生器
-gtnl.machine.advanced_mass_fabricator.casing=任意元素约束机械方块
 
 gtnl.machine.horizontal_compressor.name=卧式压缩机
 gtnl.machine.horizontal_compressor.recipe_type=压缩机
-gtnl.machine.horizontal_compressor.info=升级机器来启用黑洞压缩机！
-gtnl.machine.horizontal_compressor.casing=任意强化钨钢机械方块
 gtnl.machine.horizontal_compressor.upgrade=黑洞压缩机升级
 
 gtnl.machine.mega_vacuum_drying_furnace.name=巨型真空干燥炉
@@ -2256,42 +2218,29 @@ gtnl.machine.mega_bath_tank.recipe_type=洗矿池 / 简易洗矿池 / 化学浸�
 gtnl.machine.mega_bath_tank.mode.0=洗矿池
 gtnl.machine.mega_bath_tank.mode.1=简易洗矿池
 gtnl.machine.mega_bath_tank.mode.2=化学浸洗机
-gtnl.machine.mega_bath_tank.casing=任意强化无菌净水厂机械方块
 
 gtnl.machine.mega_canner.name=特大装罐机
 gtnl.machine.mega_canner.recipe_type=装罐机
-gtnl.machine.mega_canner.casing=任意洗矿厂机械方块
 
 gtnl.machine.compound_distillation_fractionator.name=复合式蒸馏分馏塔
 gtnl.machine.compound_distillation_fractionator.recipe_type=蒸馏塔 / 蒸馏室
 gtnl.machine.compound_distillation_fractionator.mode.0=蒸馏塔
 gtnl.machine.compound_distillation_fractionator.mode.1=蒸馏室
-gtnl.machine.compound_distillation_fractionator.casing=稳定化硅岩净水厂机械方块
 
 gtnl.machine.mega_brewer.name=巨型酿造厂
 gtnl.machine.mega_brewer.recipe_type=酿造室 / 发酵槽
-gtnl.machine.mega_brewer.info=每级线圈等级额外提供15%的加速(乘算叠加)
 gtnl.machine.mega_brewer.mode.0=酿造室
 gtnl.machine.mega_brewer.mode.1=发酵槽
-gtnl.machine.mega_brewer.casing=任意热抑制机械方块
 
 gtnl.machine.microorganism_master.name=微生物之主
 gtnl.recipe.microorganism_master=微生物之主
 gtnl.machine.microorganism_master.recipe_type=细菌培养缸
-gtnl.machine.microorganism_master.info.0=每级玻璃等级额外提供5%的加速和耗电减免(乘算叠加)
-gtnl.machine.microorganism_master.info.1=不再需要保持输出仓半满！这台机器固定以1001倍流体倍率运行！
-gtnl.machine.microorganism_master.info.2=无视玻璃等级要求和剂量要求
-gtnl.machine.microorganism_master.casing=任意化学惰性机械方块
 
 gtnl.machine.molten_core.name=熔火之心
 gtnl.machine.molten_core.recipe_type=流体加热器
-gtnl.machine.molten_core.info=每级线圈等级额外提供15%的加速(乘算叠加)
-gtnl.machine.molten_core.casing=任意强化镀铱机械方块
 
 gtnl.machine.crystal_builder.name=晶体构建者
 gtnl.machine.crystal_builder.recipe_type=高压釜
-gtnl.machine.crystal_builder.info=每级线圈等级额外提供15%的加速(乘算叠加)
-gtnl.machine.crystal_builder.casing=任意分子机械方块
 
 gtnl.machine.large_rock_crusher.name=大型碎岩机
 gtnl.recipe.industrial_rock_crusher=工业碎岩机
@@ -2302,40 +2251,28 @@ gtnl.machine.phase_change_cube.recipe_type=提取机 / 流体提取机 / 流体�
 gtnl.machine.phase_change_cube.mode.0=提取机
 gtnl.machine.phase_change_cube.mode.1=流体提取机
 gtnl.machine.phase_change_cube.mode.2=流体固化器
-gtnl.machine.phase_change_cube.info=每级线圈等级额外提供20%的加速和耗电减免(乘算叠加)
-gtnl.machine.phase_change_cube.casing=任意超能机械方块
 
 gtnl.machine.mantle_crusher.name=地层撕裂者
 gtnl.machine.mantle_crusher.recipe_type=工业碎岩机
-gtnl.machine.mantle_crusher.info=需要在输入仓中放入水和岩浆
-gtnl.machine.mantle_crusher.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.smart_sifting_hub.name=智能筛选中枢
 gtnl.machine.smart_sifting_hub.recipe_type=筛选机
-gtnl.machine.smart_sifting_hub.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.giant_electrochemical_workstation.name=巨型电化学工作站
 gtnl.machine.giant_electrochemical_workstation.recipe_type=电解机
-gtnl.machine.giant_electrochemical_workstation.info=每级线圈等级额外提供15%的加速(乘算叠加)
-gtnl.machine.giant_electrochemical_workstation.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.gemini_containment_system.name=双子星封装系统
 gtnl.machine.gemini_containment_system.recipe_type=打包机 / 解包器
 gtnl.machine.gemini_containment_system.mode.0=打包机
 gtnl.machine.gemini_containment_system.mode.1=解包器
-gtnl.machine.gemini_containment_system.info=每级线圈等级额外提供15%的加速(乘算叠加)
-gtnl.machine.gemini_containment_system.casing=任意强化镀铱机械方块
 
 gtnl.machine.extreme_compressor.name=极限压缩装置
 gtnl.machine.extreme_compressor.recipe_type=电动聚爆压缩机 / 中子态素压缩机
 gtnl.machine.extreme_compressor.mode.0=电动聚爆压缩机
 gtnl.machine.extreme_compressor.mode.1=中子态素压缩机
-gtnl.machine.extreme_compressor.casing=任意强化镀铱机械方块
 
 gtnl.machine.extreme_electric_furnace.name=极限电炉
 gtnl.machine.extreme_electric_furnace.recipe_type=合金炉
-gtnl.machine.extreme_electric_furnace.info=每级线圈等级额外提供15%的加速(乘算叠加)
-gtnl.machine.extreme_electric_furnace.casing=任意超能硅岩强化无菌净水厂机械方块
 
 gtnl.machine.data_center.name=数据中心
 gtnl.machine.data_center.recipe_type=数据库
@@ -2347,32 +2284,23 @@ gtnl.machine.data_center.casing=任意电子计算机械方块
 
 gtnl.machine.kerr_newman_homogenizer.name=克尔·纽曼均质仪
 gtnl.machine.kerr_newman_homogenizer.recipe_type=搅拌机
-gtnl.machine.kerr_newman_homogenizer.casing=任意强化镀铱机械方块
 
 gtnl.machine.large_steam_bending.name=大型蒸汽卷板机
 gtnl.machine.large_steam_bending.recipe_type=卷板机
 
 gtnl.machine.chemical_complex.name=化工复合体
 gtnl.machine.chemical_complex.recipe_type=化学反应釜
-gtnl.machine.chemical_complex.info=每级线圈等级额外提供15%的加速(乘算叠加)
-gtnl.machine.chemical_complex.casing=任意化学惰性机械方块
 
 gtnl.machine.mega_wiremill.name=特大线材轧机
 gtnl.machine.mega_wiremill.recipe_type=线缆轧机
-gtnl.machine.mega_wiremill.info=每级线圈等级额外提供15%的加速(乘算叠加)
-gtnl.machine.mega_wiremill.casing=任意隔热机械方块
 
 gtnl.machine.giant_flotation_tank.name=巨型浮游选矿池
 gtnl.machine.giant_flotation_tank.recipe_type=浮选
-gtnl.machine.giant_flotation_tank.casing=任意哈斯特洛伊-X结构方块
 
 gtnl.machine.dissolution_core.name=溶解核心
 gtnl.machine.dissolution_core.recipe_type=溶解罐 / 煮解池
 gtnl.machine.dissolution_core.mode.0=溶解罐
 gtnl.machine.dissolution_core.mode.1=煮解池
-gtnl.machine.dissolution_core.info.0=每级线圈等级额外提供15%的加速(乘算叠加)
-gtnl.machine.dissolution_core.info.1=无视比例要求和热容要求
-gtnl.machine.dissolution_core.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.swarm_core.name=蜂群之心
 gtnl.machine.swarm_core.recipe_type=纳米锻炉
@@ -2401,8 +2329,6 @@ gtnl.machine.advanced_hyper_naquadah_reactor.casing=任意硅岩合金聚合机�
 
 gtnl.machine.transliminal_oasis.name=超限绿洲
 gtnl.machine.transliminal_oasis.recipe_type=伐木场
-gtnl.machine.transliminal_oasis.info=每级玻璃等级额外提供5%的加速和耗电减免(乘算叠加)
-gtnl.machine.transliminal_oasis.casing=任意压力抑制机械方块
 
 gtnl.machine.fast_neutron_breeder_reactor.name=快中子增殖堆
 gtnl.recipe.electric_neutron_activator=电力中子活化器
@@ -2410,7 +2336,6 @@ gtnl.machine.fast_neutron_breeder_reactor.recipe_type=衰变加速器 / 电力�
 gtnl.machine.fast_neutron_breeder_reactor.mode.0=衰变加速器
 gtnl.machine.fast_neutron_breeder_reactor.mode.1=电力中子活化器
 gtnl.machine.fast_neutron_breeder_reactor.mode.2=粒子加速器
-gtnl.machine.fast_neutron_breeder_reactor.casing=任意批量生产框架
 
 gtnl.machine.magnetic_confinement_dimensionality_shock_device.name=磁约束维度震荡装置
 gtnl.machine.magnetic_confinement_dimensionality_shock_device.recipe_type=超维度搅拌机
@@ -2478,13 +2403,8 @@ gtnl.chat.large_essentia_generator.upgrade_installed=%s 已安装！
 gtnl.machine.highway_to_hell.name=超生高速
 gtnl.recipe.extreme_extreme_entity_crusher=极·工业屠宰场
 gtnl.machine.highway_to_hell.recipe_type=工业屠宰场
-gtnl.machine.highway_to_hell.info.0=§2克隆曾只是野心家的妄想，
-gtnl.machine.highway_to_hell.info.1=§2而如今，已成为噩梦般的现实。
-gtnl.machine.highway_to_hell.info.2=玻璃等级限制了能源仓等级，UMV玻璃解锁所有等级
-gtnl.machine.highway_to_hell.info.3=每提高一级涡轮等级，产出概率+1%
 gtnl.chat.highway_to_hell.static_turbine_texture=正在使用静态涡轮纹理
 gtnl.chat.highway_to_hell.animated_turbine_texture=正在使用动态涡轮纹理
-gtnl.machine.highway_to_hell.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.large_steam_wiremill.name=大型蒸汽线材轧机
 gtnl.machine.large_steam_wiremill.recipe_type=线材轧机

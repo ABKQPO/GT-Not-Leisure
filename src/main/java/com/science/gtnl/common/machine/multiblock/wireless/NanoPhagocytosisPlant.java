@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -32,6 +31,7 @@ import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachi
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
@@ -584,32 +584,8 @@ public class NanoPhagocytosisPlant extends WirelessEnergyMultiMachineBase<NanoPh
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.nano_phagocytosis_plant.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.nano_phagocytosis_plant.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.nano_phagocytosis_plant.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
-            .addSupportAny()
-            .beginStructureBlock(21, 24, 38, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.nano_phagocytosis_plant.tooltip.casing"), 1)
-            .addOutputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.nano_phagocytosis_plant.tooltip.casing"),
-                1)
-            .addEnergyHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.nano_phagocytosis_plant.tooltip.casing"),
-                1)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

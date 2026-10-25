@@ -1000,8 +1000,6 @@ gtnl.machine.lapotron_chip.tooltip.casing=Any Radiant Naquadah Alloy Machine Blo
 
 gtnl.machine.neutronium_wire_cutting.name=Neutronium Wire Cutter
 gtnl.machine.neutronium_wire_cutting.recipe_type=Cutter
-gtnl.machine.neutronium_wire_cutting.tooltip.0=Each glass tier provides an additional 5% speed and power reduction (multiplicative).
-gtnl.machine.neutronium_wire_cutting.tooltip.casing=Any Superconductor Reinforced Sterile Water Purifier Machine Block
 
 gtnl.machine.large_steam_crusher.name=Large Steam Crusher
 gtnl.machine.large_steam_crusher.recipe_type=Macerator
@@ -1597,9 +1595,6 @@ gtnl.machine.large_steam_mixer.recipe_type=Mixer
 
 gtnl.machine.cracker_hub.name=Cracker Hub
 gtnl.machine.cracker_hub.recipe_type=Oil Cracker
-gtnl.machine.cracker_hub.tooltip.0=For every 2 tiers above the coil tier, output increases by 10%.
-gtnl.machine.cracker_hub.tooltip.1=Each glass tier provides an additional 5% speed and power reduction (multiplicative).
-gtnl.machine.cracker_hub.tooltip.casing=Any Radiant Naquadah Alloy Machine Block
 
 gtnl.machine.advanced_infinite_driller.name=Advanced Infinite Fluid Driller
 gtnl.machine.advanced_infinite_driller.recipe_type=Advanced Infinite Fluid Driller
@@ -1762,8 +1757,6 @@ gtnl.machine.integrated_assembly_facility.name=Integrated Assembly Facility
 gtnl.machine.integrated_assembly_facility.recipe_type=Assembler / Component Assembly Line
 gtnl.machine.integrated_assembly_facility.mode.0=Assembler
 gtnl.machine.integrated_assembly_facility.mode.1=Component Assembly Line
-gtnl.machine.integrated_assembly_facility.tooltip.0=In Component Assembly Line recipes, it does not get the 16x parallel bonus
-gtnl.machine.integrated_assembly_facility.tooltip.casing=Ang Advanced Iridium Plated Machine Casing
 gtnl.machine.integrated_assembly_facility.info.component_assembly_line_upgrade=Component Assembly Line Upgrade
 
 gtnl.machine.tree_diagram.name=Tree Diagram
@@ -1776,21 +1769,14 @@ gtnl.machine.tree_diagram.metadata.output_coefficient=Output Coefficient: %s
 gtnl.machine.tree_diagram.metadata.parallel=Parallel: %s
 gtnl.machine.tree_diagram.metadata.nanites_tier=Nanites Tier: %s
 gtnl.recipe.tree_diagram=Computational Simulation
-gtnl.machine.tree_diagram.tooltip.casing=Any Neutron Mining Machine Block
 
 gtnl.machine.nano_phagocytosis_plant.name=Nano Phagocytosis Plant
 gtnl.machine.nano_phagocytosis_plant.recipe_type=Macerator / Wet Grinding
 gtnl.machine.nano_phagocytosis_plant.mode.0=Macerator
 gtnl.machine.nano_phagocytosis_plant.mode.1=Wet Grinding
-gtnl.machine.nano_phagocytosis_plant.tooltip.0=Uses nanites for high-efficiency material processing.
-gtnl.machine.nano_phagocytosis_plant.tooltip.1=Each voltage tier provides an additional 5% speed and power reduction (multiplicative).
-gtnl.machine.nano_phagocytosis_plant.tooltip.casing=Any Superconductor Reinforced Sterile Water Purifier Machine Block
 
 gtnl.machine.magnetic_energy_reaction_furnace.name=Magnetic Energy Reaction Furnace
 gtnl.machine.magnetic_energy_reaction_furnace.recipe_type=Arc Furnace
-gtnl.machine.magnetic_energy_reaction_furnace.tooltip.0=Capacitor is operating at full capacity.
-gtnl.machine.magnetic_energy_reaction_furnace.tooltip.1=Each level of coil grade provides an additional 20% acceleration and power consumption reduction (multiplication and superposition)
-gtnl.machine.magnetic_energy_reaction_furnace.tooltip.casing=Ang Tempered Arc Furnace Casing
 
 gtnl.machine.nanites_integrated_processing_center.name=Nanites Integrated Processing Center
 gtnl.recipe.nanites_integrated_processing=Nano Convergence Nexus
@@ -1871,41 +1857,27 @@ gtnl.recipe.precision_laser_engraver=Precision Laser Engraver
 gtnl.machine.engraving_laser_plant.recipe_type=Laser Engraver / Precision Laser Engraver
 gtnl.machine.engraving_laser_plant.mode.0=Laser Engraver
 gtnl.machine.engraving_laser_plant.mode.1=Precision Laser Engraver
-gtnl.machine.engraving_laser_plant.info.0=Each level of Glass and Component Assembly Line Casing grade provides an additional 5% acceleration and power consumption reduction (multiplication and superposition)
-gtnl.machine.engraving_laser_plant.info.1=The level of the Component Assembly Line Casing determines the maximum level of the energy warehouse + 3. UIV mechanical blocks unlock all levels.
-gtnl.machine.engraving_laser_plant.info.2=In Precision Laser Engraver recipes, it does not get the 16x parallel bonus
-gtnl.machine.engraving_laser_plant.casing=Ang Advanced Iridium Plated Machine Casing
 gtnl.gui.engraving_laser_plant.precision_laser_engraver_upgrade=Precision Laser Engraver Upgrade
 
 gtnl.machine.vortex_matter_centrifuge.name=Vortex Matter Centrifuge
 gtnl.machine.vortex_matter_centrifuge.recipe_type=Centrifuge
-gtnl.machine.vortex_matter_centrifuge.casing=Any Molecular Casing
 
 gtnl.machine.superconducting_electromagnetism.name=Superconducting Electromagnetism
 gtnl.machine.superconducting_electromagnetism.recipe_type=Electromagnetic Separator / Two-stage Magnetizer
 gtnl.machine.superconducting_electromagnetism.mode.0=Electromagnetic Separator
 gtnl.machine.superconducting_electromagnetism.mode.1=Two-stage Magnetizer
-gtnl.machine.superconducting_electromagnetism.info=Each glass tier provides an additional 5% speed and power reduction (multiplicative).
-gtnl.machine.superconducting_electromagnetism.casing=Any Molecular Casing
 
 gtnl.machine.field_forge_press.name=Field Forge Press
 gtnl.machine.field_forge_press.recipe_type=Forging Hammer
-gtnl.machine.field_forge_press.casing=Any Molecular Casing
 
 gtnl.machine.superconducting_magnetic_presser.name=Superconducting Magnetic Presser
 gtnl.machine.superconducting_magnetic_presser.recipe_type=Forming Press
-gtnl.machine.superconducting_magnetic_presser.info=Each glass tier provides an additional 5% speed and power reduction (multiplicative).
-gtnl.machine.superconducting_magnetic_presser.casing=Ang Advanced Iridium Plated Machine Casing
 
 gtnl.machine.heavy_rolling.name=Heavy Rolling
 gtnl.machine.heavy_rolling.recipe_type=Bender
-gtnl.machine.heavy_rolling.info=Each coil tier provides an additional 15% speed (multiplicative).
-gtnl.machine.heavy_rolling.casing=Any Blast Furnace Machine Block
 
 gtnl.machine.high_energy_laser_lathe.name=High Energy Laser Lathe
 gtnl.machine.high_energy_laser_lathe.recipe_type=Lathe
-gtnl.machine.high_energy_laser_lathe.info=Each glass tier provides an additional 5% speed and power reduction (multiplicative).
-gtnl.machine.high_energy_laser_lathe.casing=Ang Advanced Iridium Plated Machine Casing
 
 gtnl.machine.mega_mixer.name=Mega Mixer
 gtnl.machine.mega_mixer.recipe_type=Mixer
@@ -1946,7 +1918,6 @@ gtnl.machine.steam_elevator_module.casing=Any Solid Steel Machine Casing
 
 gtnl.machine.nanites_circuit_assembly_factory.name=Nanites Circuit Assembly Factory
 gtnl.machine.nanites_circuit_assembly_factory.recipe_type=Circuit Assembler
-gtnl.machine.nanites_circuit_assembly_factory.casing=Any Radiant Naquadah Alloy Machine Casing
 
 gtnl.machine.etgw_eye_of_harmony_module.name=EGTW - EOH Module
 gtnl.machine.etgw_eye_of_harmony_module.recipe_type=Eye Of Harmony
@@ -1965,7 +1936,6 @@ gtnl.machine.egtw_eye_of_harmony_module.casing=Hint 1 dots
 
 gtnl.machine.aetron_pressor.name=Aetron Pressor
 gtnl.machine.aetron_pressor.recipe_type=Extruder
-gtnl.machine.aetron_pressor.casing=Any Molecular Casing
 
 gtnl.machine.steam_elevator.name=Steam Elevator
 gtnl.machine.steam_elevator.recipe_type=Steam Elevator
@@ -2008,9 +1978,6 @@ gtnl.machine.steam_weather_module.tooltip.2=Enter a specific material to switch 
 
 gtnl.machine.nano_assembler_mark_l.name=Nano Assembler Mark-50
 gtnl.machine.nano_assembler_mark_l.recipe_type=Precision Assembler
-gtnl.machine.nano_assembler_mark_l.tooltip.0=Each level of Component Assembly Line Casing grade provides an additional 10% acceleration and power consumption reduction (multiplication and superposition)
-gtnl.machine.nano_assembler_mark_l.tooltip.1=The level of the Component Assembly Line Casing determines the maximum level of the energy warehouse + 3. UIV mechanical blocks unlock all levels.
-gtnl.machine.nano_assembler_mark_l.casing=Ang Advanced Iridium Plated Machine Casing
 
 gtnl.machine.high_performance_computation_array.name=High Performance Computation Array
 gtnl.machine.high_performance_computation_array.recipe_type=Quantum Computer
@@ -2055,8 +2022,6 @@ gtnl.recipe.plasma_condensation=Plasma Condensation
 gtnl.machine.compound_extreme_cooling_unit.recipe_type=Vacuum Freezer / Plasma Condensation
 gtnl.machine.compound_extreme_cooling_unit.mode.0=Vacuum Freezer
 gtnl.machine.compound_extreme_cooling_unit.mode.1=Plasma Condensation
-gtnl.machine.compound_extreme_cooling_unit.info=Each level of Glass grade provides an additional 5% acceleration and power consumption reduction (multiplication and superposition)
-gtnl.machine.compound_extreme_cooling_unit.casing=Any Freeze-Proof Machine Block
 
 gtnl.machine.steam_ore_processor_module.name=Steam Ore Processing Module
 gtnl.machine.steam_ore_processor_module.recipe_type=Miniature Ore Processing Factory
@@ -2232,12 +2197,9 @@ gtnl.machine.mass_fabricator.casing=Any ZPM Casing
 
 gtnl.machine.advanced_mass_fabricator.name=Advanced Mass Fabricator
 gtnl.machine.advanced_mass_fabricator.recipe_type=Mass Fabricator
-gtnl.machine.advanced_mass_fabricator.casing=Any Elemental Confinement Shell
 
 gtnl.machine.horizontal_compressor.name=Horizontal Compressor
 gtnl.machine.horizontal_compressor.recipe_type=Compressor
-gtnl.machine.horizontal_compressor.info=Upgrade machine to enable Black Hole Compressor!
-gtnl.machine.horizontal_compressor.casing=Any reinforced tungsten steel machine block
 gtnl.machine.horizontal_compressor.upgrade=Black Hole Compressor Upgrade
 
 gtnl.machine.mega_vacuum_drying_furnace.name=Mega Vacuum Drying Furnace
@@ -2256,42 +2218,29 @@ gtnl.machine.mega_bath_tank.recipe_type=Ore Washer / Simple Ore Washer / Chemica
 gtnl.machine.mega_bath_tank.mode.0=Ore Washer
 gtnl.machine.mega_bath_tank.mode.1=Simple Ore Washer
 gtnl.machine.mega_bath_tank.mode.2=Chemical Bath
-gtnl.machine.mega_bath_tank.casing=Any Reinforced Sterile Water Plant Casing
 
 gtnl.machine.mega_canner.name=Mega Canner
 gtnl.machine.mega_canner.recipe_type=Canning Machine
-gtnl.machine.mega_canner.casing=Any ore washing plant machine block
 
 gtnl.machine.compound_distillation_fractionator.name=Compound Distillation Fractionator
 gtnl.machine.compound_distillation_fractionator.recipe_type=Distillation Tower / Distillation Chamber
 gtnl.machine.compound_distillation_fractionator.mode.0=Distillation Tower
 gtnl.machine.compound_distillation_fractionator.mode.1=Distillation Chamber
-gtnl.machine.compound_distillation_fractionator.casing=Stabilized Naquadah Water Plant Casing
 
 gtnl.machine.mega_brewer.name=Mega Brewer
 gtnl.machine.mega_brewer.recipe_type=Brewery / Fermenter
-gtnl.machine.mega_brewer.info=Each coil tier provides an additional 15% speed (multiplicative).
 gtnl.machine.mega_brewer.mode.0=Brewery
 gtnl.machine.mega_brewer.mode.1=Fermenter
-gtnl.machine.mega_brewer.casing=Any Thermal Containment Casing
 
 gtnl.machine.microorganism_master.name=Microorganism Master
 gtnl.recipe.microorganism_master=Microorganism Master
 gtnl.machine.microorganism_master.recipe_type=Bacterial Incubator
-gtnl.machine.microorganism_master.info.0=Each glass tier provides an additional 5% speed and power reduction (multiplicative).
-gtnl.machine.microorganism_master.info.1=No longer needs to keep the output bus half full!This machine is fixed to run at a fluid multiplication of 1001×.
-gtnl.machine.microorganism_master.info.2=Ignores glass tier requirements and dosage requirements.
-gtnl.machine.microorganism_master.casing=Any Chemically Inert Machine Block
 
 gtnl.machine.molten_core.name=Molten Core
 gtnl.machine.molten_core.recipe_type=Fluid Heater
-gtnl.machine.molten_core.info=Each coil tier provides an additional 15% speed (multiplicative).
-gtnl.machine.molten_core.casing=Any Reinforced Iridium Machine Block
 
 gtnl.machine.crystal_builder.name=Crystal Builder
 gtnl.machine.crystal_builder.recipe_type=Autoclave
-gtnl.machine.crystal_builder.info=Each coil tier provides an additional 15% speed (multiplicative).
-gtnl.machine.crystal_builder.casing=Any Molecular Casing
 
 gtnl.machine.large_rock_crusher.name=Large Rock Crusher
 gtnl.recipe.industrial_rock_crusher=Industrial Rock Crusher
@@ -2302,40 +2251,28 @@ gtnl.machine.phase_change_cube.recipe_type=Extractor / Fluid Extractor / Fluid S
 gtnl.machine.phase_change_cube.mode.0=Extractor
 gtnl.machine.phase_change_cube.mode.1=Fluid Extractor
 gtnl.machine.phase_change_cube.mode.2=Fluid Solidifier
-gtnl.machine.phase_change_cube.info=Each level of coil grade provides an additional 20% acceleration and power consumption reduction (multiplication and superposition)
-gtnl.machine.phase_change_cube.casing=Any Hyper Energy Machine Block
 
 gtnl.machine.mantle_crusher.name=Mantle Crusher
 gtnl.machine.mantle_crusher.recipe_type=Industrial Rock Crusher
-gtnl.machine.mantle_crusher.info=Requires Water and Lava in Input Hatch.
-gtnl.machine.mantle_crusher.casing=Any Radioactive Naquadah Alloy Machine Block
 
 gtnl.machine.smart_sifting_hub.name=Smart Sifting Hub
 gtnl.machine.smart_sifting_hub.recipe_type=Sifter
-gtnl.machine.smart_sifting_hub.casing=Any Radioactive Naquadah Alloy Machine Block
 
 gtnl.machine.giant_electrochemical_workstation.name=Giant Electrochemical Workstation
 gtnl.machine.giant_electrochemical_workstation.recipe_type=Electrolyzer
-gtnl.machine.giant_electrochemical_workstation.info=Each coil tier provides an additional 15% speed (multiplicative).
-gtnl.machine.giant_electrochemical_workstation.casing=Any Radioactive Naquadah Alloy Machine Block
 
 gtnl.machine.gemini_containment_system.name=Gemini Containment System
 gtnl.machine.gemini_containment_system.recipe_type=Packer / Unpacker
 gtnl.machine.gemini_containment_system.mode.0=Packer
 gtnl.machine.gemini_containment_system.mode.1=Unpacker
-gtnl.machine.gemini_containment_system.info=Each coil tier provides an additional 15% speed (multiplicative).
-gtnl.machine.gemini_containment_system.casing=Any Reinforced Iridium Machine Block
 
 gtnl.machine.extreme_compressor.name=Extreme Compressor
 gtnl.machine.extreme_compressor.recipe_type=Electric Implosion Compressor / Neutronium Compressor
 gtnl.machine.extreme_compressor.mode.0=Electric Implosion Compressor
 gtnl.machine.extreme_compressor.mode.1=Neutronium Compressor
-gtnl.machine.extreme_compressor.casing=Any Reinforced Iridium Machine Block
 
 gtnl.machine.extreme_electric_furnace.name=Extreme Electric Furnace
 gtnl.machine.extreme_electric_furnace.recipe_type=Alloy Smelter
-gtnl.machine.extreme_electric_furnace.info=Each coil tier provides an additional 15% speed (multiplicative).
-gtnl.machine.extreme_electric_furnace.casing=Any Naquadria-Reinforced Water Plant Casing
 
 gtnl.machine.data_center.name=Data Center
 gtnl.machine.data_center.recipe_type=Data Bank
@@ -2347,32 +2284,23 @@ gtnl.machine.data_center.casing=Any Computer Casing
 
 gtnl.machine.kerr_newman_homogenizer.name=Kerr Newman Homogenizer
 gtnl.machine.kerr_newman_homogenizer.recipe_type=Mixer
-gtnl.machine.kerr_newman_homogenizer.casing=Any Reinforced Iridium Machine Block
 
 gtnl.machine.large_steam_bending.name=Large Steam Bender
 gtnl.machine.large_steam_bending.recipe_type=Bender
 
 gtnl.machine.chemical_complex.name=Chemical Complex
 gtnl.machine.chemical_complex.recipe_type=Chemical Reactor
-gtnl.machine.chemical_complex.info=Each coil tier provides an additional 15% speed (multiplicative).
-gtnl.machine.chemical_complex.casing=Any Chemically Inert Machine Block
 
 gtnl.machine.mega_wiremill.name=Mega Wiremill
 gtnl.machine.mega_wiremill.recipe_type=Wiremill
-gtnl.machine.mega_wiremill.info=Each coil tier provides an additional 15% speed (multiplicative).
-gtnl.machine.mega_wiremill.casing=Any insulated machine block
 
 gtnl.machine.giant_flotation_tank.name=Giant Flotation Tank
 gtnl.machine.giant_flotation_tank.recipe_type=Flotation
-gtnl.machine.giant_flotation_tank.casing=Any Hastelloy-X Structure Block
 
 gtnl.machine.dissolution_core.name=Dissolution Core
 gtnl.machine.dissolution_core.recipe_type=Dissolution Tank / Digester
 gtnl.machine.dissolution_core.mode.0=Dissolution Tank
 gtnl.machine.dissolution_core.mode.1=Digester
-gtnl.machine.dissolution_core.info.0=Each coil tier provides an additional 15% speed (multiplicative).
-gtnl.machine.dissolution_core.info.1=Ignores ratio and heat requirements.
-gtnl.machine.dissolution_core.casing=Any Radioactive Naquadah Alloy Machine Block
 
 gtnl.machine.swarm_core.name=Swarm Core
 gtnl.machine.swarm_core.recipe_type=Nano Forge
@@ -2401,8 +2329,6 @@ gtnl.machine.advanced_hyper_naquadah_reactor.casing=Any Naquadah Alloy Fusion Ca
 
 gtnl.machine.transliminal_oasis.name=Transliminal Oasis
 gtnl.machine.transliminal_oasis.recipe_type=Woodcutter
-gtnl.machine.transliminal_oasis.info=Each glass tier provides an additional 5% speed and power reduction (multiplicative).
-gtnl.machine.transliminal_oasis.casing=Any Pressure Suppression Machine Block
 
 gtnl.machine.fast_neutron_breeder_reactor.name=Fast Neutron Breeder Reactor
 gtnl.recipe.electric_neutron_activator=Electric Neutron Activator
@@ -2410,7 +2336,6 @@ gtnl.machine.fast_neutron_breeder_reactor.recipe_type=Decay Distortion / Electri
 gtnl.machine.fast_neutron_breeder_reactor.mode.0=Decay Distortion
 gtnl.machine.fast_neutron_breeder_reactor.mode.1=Electric Neutron Activator
 gtnl.machine.fast_neutron_breeder_reactor.mode.2=Particle Accelerator
-gtnl.machine.fast_neutron_breeder_reactor.casing=Any Batch Processing Machine Block
 
 gtnl.machine.magnetic_confinement_dimensionality_shock_device.name=Magnetic Confinement Dimensionality Shock Device
 gtnl.machine.magnetic_confinement_dimensionality_shock_device.recipe_type=Transcendent Mixer
@@ -2478,13 +2403,8 @@ gtnl.chat.large_essentia_generator.upgrade_installed=%s Installed!
 gtnl.machine.highway_to_hell.name=Highway To Hell
 gtnl.recipe.extreme_extreme_entity_crusher=Extreme Extreme Entity Crusher
 gtnl.machine.highway_to_hell.recipe_type=Extreme Entity Crusher
-gtnl.machine.highway_to_hell.info.0=§2Cloning was once merely the delusion of the ambitious,
-gtnl.machine.highway_to_hell.info.1=§2but now, it has become a nightmarish reality.
-gtnl.machine.highway_to_hell.info.2=Glass tier limits Energy Hatch tier, UMV glass unlocks all tiers.
-gtnl.machine.highway_to_hell.info.3=Each increase in turbine tier increases the output chance by 1%.
 gtnl.chat.highway_to_hell.static_turbine_texture=Using Static Turbine Texture.
 gtnl.chat.highway_to_hell.animated_turbine_texture=Using Animated Turbine Texture.
-gtnl.machine.highway_to_hell.casing=Any Radiant Naquadah Alloy Machine Block
 
 gtnl.machine.large_steam_wiremill.name=Large Steam Wiremill
 gtnl.machine.large_steam_wiremill.recipe_type=Wiremill
