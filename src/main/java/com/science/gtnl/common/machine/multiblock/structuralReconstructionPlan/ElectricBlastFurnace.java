@@ -209,6 +209,11 @@ public class ElectricBlastFurnace extends MultiMachineBase<ElectricBlastFurnace>
     }
 
     @Override
+    public boolean getHeatDiscount() {
+        return true;
+    }
+
+    @Override
     public int getMaxParallelRecipes() {
         return Math.max(1, GTUtility.getTier(this.getMaxInputVoltage()) * 2 + (getMCoilLevel().getTier() + 1) * 2);
     }
