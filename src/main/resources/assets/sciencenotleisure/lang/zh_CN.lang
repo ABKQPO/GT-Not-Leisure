@@ -1008,11 +1008,6 @@ gtnl.recipe.smelting_mixing_furnace=合金搅拌
 gtnl.machine.smelting_mixing_furnace.recipe_type=合金搅拌 / 超维度等离子锻炉
 gtnl.machine.smelting_mixing_furnace.mode.smelting_mixing=合金搅拌
 gtnl.machine.smelting_mixing_furnace.mode.plasma_forge=超维度等离子锻炉
-gtnl.machine.smelting_mixing_furnace.tooltip.0=§9§l以极高效的方式操纵物质
-gtnl.machine.smelting_mixing_furnace.tooltip.1=§9§l使合金的制作摆脱冶炼的桎梏
-gtnl.machine.smelting_mixing_furnace.tooltip.2=在控制器放入超维校准矩阵来启用超维度等离子锻炉配方
-gtnl.machine.smelting_mixing_furnace.tooltip.3=超维度等离子锻炉配方固定电压为MAX
-gtnl.machine.smelting_mixing_furnace.tooltip.casing=任意超能机械方块
 gtnl.machine.smelting_mixing_furnace.info.decay_blocking_enabled=§b已启用衰减阻挡
 
 gtnl.machine.white_night_generator.name=白夜发电机
@@ -1173,9 +1168,6 @@ gtnl.machine.large_extractor.mode.1=流体提取机
 
 gtnl.machine.reaction_furnace.name=反应炉
 gtnl.machine.reaction_furnace.recipe_type=熔炉
-gtnl.machine.reaction_furnace.tooltip.0=总并行数：并行控制仓提供的并行 * 8192 - 1
-gtnl.machine.reaction_furnace.tooltip.1=无线模式处理时间固定为128tick
-gtnl.machine.reaction_furnace.tooltip.casing=任意强化镀铱机械方块
 
 gtnl.machine.energy_infuser.name=能量注入仪
 gtnl.machine.energy_infuser.recipe_type=能量注入仪
@@ -1262,10 +1254,6 @@ gtnl.machine.fishing_ground.recipe_type=渔场
 
 gtnl.machine.element_copying.name=元素复制机
 gtnl.machine.element_copying.recipe_type=元素复制
-gtnl.machine.element_copying.tooltip.0=固定运行时间为20tick
-gtnl.machine.element_copying.tooltip.1=无法超频
-gtnl.machine.element_copying.tooltip.2=所有复制所需UU物质数量均减少10倍
-gtnl.machine.element_copying.tooltip.casing=任意分子机械方块
 gtnl.machine.element_copying.info.selected_types=已选择种类：%s，使用UU物质：%s L，耗电：%s EU
 
 gtnl.machine.wood_distillation.name=木化工厂
@@ -1998,10 +1986,6 @@ gtnl.machine.dissolution_core.mode.1=煮解池
 
 gtnl.machine.swarm_core.name=蜂群之心
 gtnl.machine.swarm_core.recipe_type=纳米锻炉
-gtnl.machine.swarm_core.info.0=§o§l§d神的上升↗↗↗爱来自1987
-gtnl.machine.swarm_core.info.1=升级机器来使用更高级的配方！
-gtnl.machine.swarm_core.info.2=固定电压为MAX
-gtnl.machine.swarm_core.casing=任意放射硅岩合金机械方块
 gtnl.machine.swarm_core.upgrade_required=纳米锻炉升级
 gtnl.machine.swarm_core.current_tier=锻炉等级：%s
 
@@ -2021,11 +2005,6 @@ gtnl.machine.fast_neutron_breeder_reactor.mode.2=粒子加速器
 
 gtnl.machine.magnetic_confinement_dimensionality_shock_device.name=磁约束维度震荡装置
 gtnl.machine.magnetic_confinement_dimensionality_shock_device.recipe_type=超维度搅拌机
-gtnl.machine.magnetic_confinement_dimensionality_shock_device.info.0=§e演奏宇宙的弦理论乐章
-gtnl.machine.magnetic_confinement_dimensionality_shock_device.info.1=自带2,147,483,647并行
-gtnl.machine.magnetic_confinement_dimensionality_shock_device.info.2=默认拥有无线升级
-gtnl.machine.magnetic_confinement_dimensionality_shock_device.info.3=无线模式固定电压为MAX+1，电流为MAX
-gtnl.machine.magnetic_confinement_dimensionality_shock_device.casing=任意分子机械方块
 
 gtnl.machine.supercomputing_center.name=运算中心
 gtnl.machine.supercomputing_center.recipe_type=量子计算机
@@ -4015,7 +3994,12 @@ gtnl.machine.common.wireless.tooltip.8=安装无线升级将额外提供500%加�
 gtnl.machine.common.wireless.tooltip.9=不安装能源仓且安装无线升级将自动进入无线模式
 gtnl.machine.common.wireless.tooltip.10=无线模式下电压为并行控制仓等级 + 1，电流为 4 ^ (等级 + 1) - 2
 gtnl.machine.common.wireless.mode.auto=不安装能源仓且安装%s将自动进入%s
-gtnl.machine.common.wireless.mode.power=%s下电压为%s等级 + %s，电流为 %s × 4 ^ 等级 - %s
+gtnl.machine.common.wireless.mode.power=%s下%s，%s
+gtnl.machine.common.wireless.mode.voltage.per_tier=电压为%s等级 + %s
+gtnl.machine.common.wireless.mode.voltage.fixed=固定电压为%s
+gtnl.machine.common.wireless.mode.current.per_tier=电流为 %s × 4 ^ 等级 - %s
+gtnl.machine.common.wireless.mode.current.fixed=电流为%s
+gtnl.machine.common.wireless.mode.current.scaled=电流为 %s × 4 ^ 等级
 gtnl.machine.common.wireless.mode.recipes=%s下支持跨配方并行
 gtnl.machine.common.wireless.mode.perfect_oc=%s下超频不会损失效率
 gtnl.waila.wireless.upgrade=已安装无线升级

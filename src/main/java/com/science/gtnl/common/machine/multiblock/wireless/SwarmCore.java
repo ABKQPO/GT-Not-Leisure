@@ -31,6 +31,7 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import bartworks.common.loaders.ItemRegistry;
 import goodgenerator.items.GGMaterial;
@@ -262,30 +263,8 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.swarm_core.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.swarm_core.info.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.swarm_core.info.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.swarm_core.info.2"))
-            .addSupportAny()
-            .beginStructureBlock(41, 54, 41, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.swarm_core.casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.swarm_core.casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.swarm_core.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.swarm_core.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.swarm_core.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.swarm_core.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

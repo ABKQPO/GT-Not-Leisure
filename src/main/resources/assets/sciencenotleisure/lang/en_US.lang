@@ -1008,11 +1008,6 @@ gtnl.recipe.smelting_mixing_furnace=Smelting Mixing
 gtnl.machine.smelting_mixing_furnace.recipe_type=Smelting Mixing / Dimensionally Transcendent Plasma Forge
 gtnl.machine.smelting_mixing_furnace.mode.smelting_mixing=Smelting Mixing
 gtnl.machine.smelting_mixing_furnace.mode.plasma_forge=Hyperdimensional Plasma Forge
-gtnl.machine.smelting_mixing_furnace.tooltip.0=§9§lEfficient alloy production system.
-gtnl.machine.smelting_mixing_furnace.tooltip.1=§9§lFrees alloy making from the shackles of smelting.
-gtnl.machine.smelting_mixing_furnace.tooltip.2=Place the Transdimensional Alignment Matrix into the controller to enable the DTPF recipe
-gtnl.machine.smelting_mixing_furnace.tooltip.3=DTPF recipes use a fixed MAX voltage.
-gtnl.machine.smelting_mixing_furnace.tooltip.casing=Any Hyper Energy Machine Block
 gtnl.machine.smelting_mixing_furnace.info.decay_blocking_enabled=§bDecay Blocking Enabled
 
 gtnl.machine.white_night_generator.name=White Night Generator
@@ -1173,9 +1168,6 @@ gtnl.machine.large_extractor.mode.1=Fluid Extractor
 
 gtnl.machine.reaction_furnace.name=Reaction Furnace
 gtnl.machine.reaction_furnace.recipe_type=Furnace
-gtnl.machine.reaction_furnace.tooltip.0=Total Parallels: Parallel Control Hatch parallels * 8192 - 1
-gtnl.machine.reaction_furnace.tooltip.1=Wireless mode processing time is fixed at 128 ticks
-gtnl.machine.reaction_furnace.tooltip.casing=Any Reinforced Iridium Machine Block
 
 gtnl.machine.energy_infuser.name=Energy Infuser
 gtnl.machine.energy_infuser.recipe_type=Energy Infuser
@@ -1262,10 +1254,6 @@ gtnl.machine.fishing_ground.recipe_type=Fishing Ground
 
 gtnl.machine.element_copying.name=Element Copier
 gtnl.machine.element_copying.recipe_type=Element Copying
-gtnl.machine.element_copying.tooltip.0=Fixed operation time: 20 ticks
-gtnl.machine.element_copying.tooltip.1=Cannot be overclocked
-gtnl.machine.element_copying.tooltip.2=All UU-Matter required for all copying is reduced by 10x
-gtnl.machine.element_copying.tooltip.casing=Any Molecular Machine Block
 gtnl.machine.element_copying.info.selected_types=Selected types: %s, UUM used: %s L, Energy cost: %s EU
 
 gtnl.machine.wood_distillation.name=Wood Chemical Plant
@@ -1998,10 +1986,6 @@ gtnl.machine.dissolution_core.mode.1=Digester
 
 gtnl.machine.swarm_core.name=Swarm Core
 gtnl.machine.swarm_core.recipe_type=Nano Forge
-gtnl.machine.swarm_core.info.0=§o§l§dGod Ascension ↗↗↗ Love from 1987
-gtnl.machine.swarm_core.info.1=Upgrade machine to use more advanced recipes!
-gtnl.machine.swarm_core.info.2=Voltage is fixed at MAX
-gtnl.machine.swarm_core.casing=Any radioactive Naquadah alloy machine block
 gtnl.machine.swarm_core.upgrade_required=Nano Forge Upgrade
 gtnl.machine.swarm_core.current_tier=Machine Tier: %s
 
@@ -2021,11 +2005,6 @@ gtnl.machine.fast_neutron_breeder_reactor.mode.2=Particle Accelerator
 
 gtnl.machine.magnetic_confinement_dimensionality_shock_device.name=Magnetic Confinement Dimensionality Shock Device
 gtnl.machine.magnetic_confinement_dimensionality_shock_device.recipe_type=Transcendent Mixer
-gtnl.machine.magnetic_confinement_dimensionality_shock_device.info.0=§eAdvanced dimensional mixing technology.
-gtnl.machine.magnetic_confinement_dimensionality_shock_device.info.1=Comes with 2,147,483,647 parallel processes
-gtnl.machine.magnetic_confinement_dimensionality_shock_device.info.2=Comes with wireless upgrade by default
-gtnl.machine.magnetic_confinement_dimensionality_shock_device.info.3=Wireless mode: Voltage fixed at MAX+1, current at MAX Amperage
-gtnl.machine.magnetic_confinement_dimensionality_shock_device.casing=Any Molecular Casing
 
 gtnl.machine.supercomputing_center.name=Supercomputing Center
 gtnl.machine.supercomputing_center.recipe_type=Quantum Computer
@@ -4015,7 +3994,12 @@ gtnl.machine.common.wireless.tooltip.8=Wireless upgrade grants +500% speed and -
 gtnl.machine.common.wireless.tooltip.9=Automatically enters wireless mode if no energy hatch and wireless upgrade is installed
 gtnl.machine.common.wireless.tooltip.10=In wireless mode, the voltage is the parallel control Hatch level + 1, amperage is 4 ^ (level + 1) - 2
 gtnl.machine.common.wireless.mode.auto=Enters %2$s automatically when no energy hatch is present and a %1$s is installed
-gtnl.machine.common.wireless.mode.power=In %s, voltage is %s tier + %s and amperage is %s × 4 ^ tier - %s
+gtnl.machine.common.wireless.mode.power=In %s, %s and %s
+gtnl.machine.common.wireless.mode.voltage.per_tier=voltage is %s tier + %s
+gtnl.machine.common.wireless.mode.voltage.fixed=voltage is fixed at %s
+gtnl.machine.common.wireless.mode.current.per_tier=amperage is %s × 4 ^ tier - %s
+gtnl.machine.common.wireless.mode.current.fixed=amperage is %s
+gtnl.machine.common.wireless.mode.current.scaled=amperage is %s × 4 ^ tier
 gtnl.machine.common.wireless.mode.recipes=Supports cross-recipe parallels in %s
 gtnl.machine.common.wireless.mode.perfect_oc=Does not lose efficiency when overclocked in %s
 gtnl.waila.wireless.upgrade=Wireless Upgrade Installed

@@ -55,6 +55,7 @@ import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachi
 import com.science.gtnl.common.recipe.gtnl.ElementCopyingRecipes;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
@@ -319,24 +320,20 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
     }
 
     @Override
+    protected TooltipStats readTooltipStats() {
+        // Why: copies run a fixed 20 ticks at a cost set by the element, so only the parallels follow the stat methods.
+        return new TooltipStats(super.readTooltipStats().parallels(), Double.NaN, Double.NaN, false, false);
+    }
+
+    @Override
+    protected boolean overclocksPerfectlyInWirelessMode() {
+        return false;
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.element_copying.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.element_copying.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.element_copying.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.element_copying.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
-            .addSupportAny()
-            .beginStructureBlock(15, 3, 15, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.element_copying.tooltip.casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.element_copying.tooltip.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.element_copying.tooltip.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.element_copying.tooltip.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.element_copying.tooltip.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

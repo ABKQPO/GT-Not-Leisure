@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,10 +23,12 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.api.IWirelessEnergy;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
+import com.science.gtnl.mixins.early.gregtech.AccessorProcessingLogic;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.utils.structure.MultiblockTooltipReader;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.VoltageIndex;
@@ -37,6 +40,7 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
+import gregtech.api.util.tooltip.TooltipHelper;
 import lombok.Getter;
 import lombok.Setter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -52,6 +56,8 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     private static final int WIRELESS_VOLTAGE_TIER_OFFSET = 1;
     private static final long WIRELESS_BASE_AMPERAGE = 8;
     private static final long WIRELESS_AMPERAGE_RESERVE = 2;
+    // Why: four tiers tell a steady step apart from other curves, as for the other tooltip probes.
+    private static final int WIRELESS_POWER_PROBES = 4;
 
     public UUID ownerUUID;
     @Getter
@@ -338,18 +344,92 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
                     WIRELESS_MODE_LINE_KEY + ".auto",
                     GTNLMultiblockTooltipBuilder.mechanicName(WIRELESS_UPGRADE_TOOLTIP_KEY),
                     mode),
-                StatCollector.translateToLocalFormatted(
-                    WIRELESS_MODE_LINE_KEY + ".power",
-                    mode,
-                    hatch,
-                    WIRELESS_VOLTAGE_TIER_OFFSET,
-                    WIRELESS_BASE_AMPERAGE,
-                    WIRELESS_AMPERAGE_RESERVE),
+                wirelessPowerLine(mode, hatch),
                 StatCollector.translateToLocalFormatted(WIRELESS_MODE_LINE_KEY + ".recipes", mode)));
+        lines.removeIf(Objects::isNull);
         if (!getPerfectOC() && overclocksPerfectlyInWirelessMode()) {
             lines.add(StatCollector.translateToLocalFormatted(WIRELESS_MODE_LINE_KEY + ".perfect_oc", mode));
         }
         return lines;
+    }
+
+    // Why: machines can replace the wireless mode power, so the line reads it back from the processing logic.
+    private String wirelessPowerLine(String mode, String hatch) {
+        if (appliesMachineVoltageLimit()) {
+            return powerLine(mode, perTierVoltage(hatch, WIRELESS_VOLTAGE_TIER_OFFSET), perTierCurrent());
+        }
+        int[] tiers = new int[WIRELESS_POWER_PROBES];
+        long[] amperages = new long[WIRELESS_POWER_PROBES];
+        boolean wireless = wirelessMode;
+        int parallelTier = mParallelTier;
+        try {
+            wirelessMode = true;
+            for (int index = 0; index < tiers.length; index++) {
+                mParallelTier = MultiblockTooltipReader.FIRST_PARALLEL_CONTROLLER_PROBE_TIER + index;
+                ProcessingLogic logic = new GTNLProcessingLogic();
+                setProcessingLogicPower(logic);
+                AccessorProcessingLogic power = (AccessorProcessingLogic) logic;
+                tiers[index] = GTUtility.getTier(power.getAvailableVoltage());
+                amperages[index] = power.getAvailableAmperage();
+            }
+        } finally {
+            wirelessMode = wireless;
+            mParallelTier = parallelTier;
+        }
+        String voltage = voltagePhrase(hatch, tiers);
+        String current = currentPhrase(amperages);
+        return voltage == null || current == null ? null : powerLine(mode, voltage, current);
+    }
+
+    private static String powerLine(String mode, String voltage, String current) {
+        return StatCollector.translateToLocalFormatted(WIRELESS_MODE_LINE_KEY + ".power", mode, voltage, current);
+    }
+
+    private static String voltagePhrase(String hatch, int[] tiers) {
+        int firstTier = MultiblockTooltipReader.FIRST_PARALLEL_CONTROLLER_PROBE_TIER;
+        boolean fixed = true, perTier = true;
+        for (int index = 1; index < tiers.length; index++) {
+            fixed &= tiers[index] == tiers[0];
+            perTier &= tiers[index] - (firstTier + index) == tiers[0] - firstTier;
+        }
+        if (perTier) return perTierVoltage(hatch, tiers[0] - firstTier);
+        if (!fixed) return null;
+        String tier = tiers[0] <= VoltageIndex.MAX ? TooltipHelper.voltageTierText(tiers[0], false)
+            : EnumChatFormatting.WHITE + GTValues.VN[tiers[0]] + EnumChatFormatting.GRAY;
+        return StatCollector.translateToLocalFormatted(WIRELESS_MODE_LINE_KEY + ".voltage.fixed", tier);
+    }
+
+    private static String perTierVoltage(String hatch, int offset) {
+        return StatCollector.translateToLocalFormatted(WIRELESS_MODE_LINE_KEY + ".voltage.per_tier", hatch, offset);
+    }
+
+    // Why: wireless amperage grows by a power of four per parallel controller tier, less a reserve.
+    private static String currentPhrase(long[] amperages) {
+        int firstTier = MultiblockTooltipReader.FIRST_PARALLEL_CONTROLLER_PROBE_TIER;
+        long step = (1L << (2 * (firstTier + 1))) - (1L << (2 * firstTier));
+        long difference = amperages[1] - amperages[0];
+        if (difference % step != 0) return null;
+        long scale = difference / step;
+        long offset = amperages[0] - (scale << (2 * firstTier));
+        for (int index = 0; index < amperages.length; index++) {
+            if (amperages[index] != (scale << (2 * (firstTier + index))) + offset) return null;
+        }
+        if (scale == 0) {
+            return StatCollector.translateToLocalFormatted(
+                WIRELESS_MODE_LINE_KEY + ".current.fixed",
+                NumberFormatUtil.formatNumber(offset));
+        }
+        if (scale < 0 || offset > 0) return null;
+        if (offset == 0)
+            return StatCollector.translateToLocalFormatted(WIRELESS_MODE_LINE_KEY + ".current.scaled", scale);
+        return StatCollector.translateToLocalFormatted(WIRELESS_MODE_LINE_KEY + ".current.per_tier", scale, -offset);
+    }
+
+    private static String perTierCurrent() {
+        return StatCollector.translateToLocalFormatted(
+            WIRELESS_MODE_LINE_KEY + ".current.per_tier",
+            WIRELESS_BASE_AMPERAGE,
+            WIRELESS_AMPERAGE_RESERVE);
     }
 
     protected boolean overclocksPerfectlyInWirelessMode() {

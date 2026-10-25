@@ -19,7 +19,8 @@ public interface IMultiblockTooltipRules {
     /**
      * The numbers shown at the top of the automatic tooltip, read from the machine in its base state: no parallel
      * controller, no upgrades, no energy hatch, heating coils and glass at tier 0 and, for tiered machines, the first
-     * tier. All three lines are always shown, colored the GT way.
+     * tier. The lines are colored the GT way; a speed or usage of NaN leaves its line out, for a machine whose
+     * recipes do not follow that number.
      *
      * @param parallels        parallel count
      * @param speed            speed multiplier compared to a single block machine, such as 1.67 for 167%

@@ -160,12 +160,14 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
 
     private void addStatLines(TooltipStats stats, List<TierBonus> bonuses) {
         addStatLine(statText(PARALLEL_KEY, TooltipHelper.parallelText(stats.parallels())), bonuses, BonusStat.PARALLEL);
-        addStatLine(
-            statText(SPEED_KEY, TooltipHelper.speedText((float) stats.speed())),
-            bonuses,
-            BonusStat.SPEED,
-            BonusStat.DURATION);
-        addStatLine(energyText(stats), bonuses, BonusStat.ENERGY);
+        if (!Double.isNaN(stats.speed())) {
+            addStatLine(
+                statText(SPEED_KEY, TooltipHelper.speedText((float) stats.speed())),
+                bonuses,
+                BonusStat.SPEED,
+                BonusStat.DURATION);
+        }
+        if (!Double.isNaN(stats.energyUsage())) addStatLine(energyText(stats), bonuses, BonusStat.ENERGY);
     }
 
     private void addHeatLines(HeatRules heat) {
