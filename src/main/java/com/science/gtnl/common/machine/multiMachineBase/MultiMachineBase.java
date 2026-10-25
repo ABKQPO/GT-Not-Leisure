@@ -36,6 +36,7 @@ import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IControllerInfo;
+import com.science.gtnl.api.IMultiblockTooltipRules;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
@@ -45,6 +46,7 @@ import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
+import com.science.gtnl.utils.structure.StructureTooltipHooks;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
@@ -88,9 +90,13 @@ import tectech.thing.metaTileEntity.hatch.MTEHatchDynamoMulti;
 import tectech.thing.metaTileEntity.hatch.MTEHatchEnergyTunnel;
 
 public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MTEExtendedPowerMultiBlockBase<T>
-    implements IConstructable, ISurvivalConstructable, IControllerInfo {
+    implements IConstructable, ISurvivalConstructable, IControllerInfo, IMultiblockTooltipRules {
 
     public static final Optional<Byte>[] HATCH_COLOR_OPTIONS = createHatchColorOptions();
+    private static final List<String> PARALLEL_CONTROLLER_TOOLTIP_KEYS = Collections
+        .singletonList("gtnl.machine.common.parallel_controller.tooltip");
+    private static final int BASE_TOOLTIP_TIER = 0;
+    private static final int NO_TOOLTIP_VOLTAGE_TIER = -1;
 
     @SuppressWarnings("unchecked")
     public static Optional<Byte>[] createHatchColorOptions() {
@@ -118,6 +124,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     @Setter
     public HeatingCoilLevel mCoilLevel = HeatingCoilLevel.None;
     public int mHeatingCapacity = 0;
+    private int tooltipVoltageTier = NO_TOOLTIP_VOLTAGE_TIER;
 
     public MultiMachineBase(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -415,6 +422,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     protected void checkParallelControllerHatchMax(List<StructureError> errors, int max) {
+        if (StructureTooltipHooks.onCheckHatches(this, 0, max, CustomHatchElement.ParallelCon)) return;
         int count = mParallelControllerHatches.size();
         if (count > max) {
             errors.add(GTNLStructureErrors.parallelControllerHatchCount(ErrorType.TOO_MANY, count, max));
@@ -422,6 +430,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     protected void checkHatchMin(List<StructureError> errors, IHatchElement<? super T> element, int min) {
+        if (StructureTooltipHooks.onCheckHatches(this, min, StructureTooltipHooks.UNLIMITED, element)) return;
         int count = (int) element.count(self());
         if (count < min) {
             errors.add(StructureErrors.hatchCount(ErrorType.TOO_FEW, getHatchElementName(element), count, min));
@@ -429,6 +438,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     protected void checkHatchExact(List<StructureError> errors, IHatchElement<? super T> element, int target) {
+        if (StructureTooltipHooks.onCheckHatches(this, target, target, element)) return;
         int count = (int) element.count(self());
         if (count != target) {
             errors.add(StructureErrors.hatchCount(ErrorType.NOT_MATCH, getHatchElementName(element), count, target));
@@ -436,6 +446,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     protected void checkHatchMax(List<StructureError> errors, IHatchElement<? super T> element, int max) {
+        if (StructureTooltipHooks.onCheckHatches(this, 0, max, element)) return;
         int count = (int) element.count(self());
         if (count > max) {
             errors.add(StructureErrors.hatchCount(ErrorType.TOO_MANY, getHatchElementName(element), count, max));
@@ -575,6 +586,50 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
      */
     public int getMaxParallelRecipes() {
         return 1;
+    }
+
+    @Override
+    public TooltipStats getTooltipStats() {
+        return tooltipStatsWith(BASE_TOOLTIP_TIER, BASE_TOOLTIP_TIER, NO_TOOLTIP_VOLTAGE_TIER);
+    }
+
+    @Override
+    public TooltipStats getTooltipStatsAtTier(TieredPart part, int tier) {
+        return switch (part) {
+            case VOLTAGE -> tooltipStatsWith(BASE_TOOLTIP_TIER, BASE_TOOLTIP_TIER, tier);
+            case COIL -> tooltipStatsWith(tier, BASE_TOOLTIP_TIER, NO_TOOLTIP_VOLTAGE_TIER);
+            case GLASS -> tooltipStatsWith(BASE_TOOLTIP_TIER, tier, NO_TOOLTIP_VOLTAGE_TIER);
+        };
+    }
+
+    protected TooltipStats readTooltipStats() {
+        return new TooltipStats(getMaxParallelRecipes(), 1 / getDurationModifier(), getEUtDiscount(), false);
+    }
+
+    private TooltipStats tooltipStatsWith(int coilTier, int glassTier, int voltageTier) {
+        HeatingCoilLevel coil = mCoilLevel;
+        int glass = mGlassTier;
+        // Why: the prototype has no coils or glass, which coil and glass formulas would read as a penalty.
+        mCoilLevel = HeatingCoilLevel.getFromTier((byte) coilTier);
+        mGlassTier = glassTier;
+        tooltipVoltageTier = voltageTier;
+        try {
+            return readTooltipStats();
+        } finally {
+            mCoilLevel = coil;
+            mGlassTier = glass;
+            tooltipVoltageTier = NO_TOOLTIP_VOLTAGE_TIER;
+        }
+    }
+
+    @Override
+    public List<String> getTooltipHatchFeatureKeys(String hatchLangKey) {
+        return CustomHatchElement.ParallelCon.getDescriptionLangKey()
+            .equals(hatchLangKey) ? getTooltipParallelControllerKeys() : Collections.emptyList();
+    }
+
+    public List<String> getTooltipParallelControllerKeys() {
+        return PARALLEL_CONTROLLER_TOOLTIP_KEYS;
     }
 
     public abstract int getCasingTextureID();
@@ -1352,6 +1407,8 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     @Override
     public long getMaxInputVoltage() {
+        // Why: tooltip probes run on the prototype, which has no energy hatch to read a voltage from.
+        if (tooltipVoltageTier != NO_TOOLTIP_VOLTAGE_TIER) return GTValues.V[tooltipVoltageTier];
         long rVoltage = 0;
         for (MTEHatchEnergy tHatch : GTUtility.validMTEList(mEnergyHatches)) rVoltage += tHatch.getBaseMetaTileEntity()
             .getInputVoltage();
@@ -1420,7 +1477,8 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     public enum CustomHatchElement implements IHatchElement<MultiMachineBase<?>> {
 
-        ParallelCon(MultiMachineBase::addParallelControllerToMachineList, ParallelControllerHatch.class) {
+        ParallelCon("gtnl.structure.hatch.parallel_controller", MultiMachineBase::addParallelControllerToMachineList,
+            ParallelControllerHatch.class) {
 
             @Override
             public long count(MultiMachineBase<?> tileEntity) {
@@ -1428,7 +1486,8 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
             }
         },
 
-        ExoticDynamo(MultiMachineBase::addTectechDynamoToMachineList, MTEHatchDynamoMulti.class) {
+        ExoticDynamo("gtnl.structure.hatch.exotic_dynamo", MultiMachineBase::addTectechDynamoToMachineList,
+            MTEHatchDynamoMulti.class) {
 
             @Override
             public long count(MultiMachineBase<?> tileEntity) {
@@ -1438,11 +1497,19 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
         public final List<Class<? extends IMetaTileEntity>> mteClasses;
         public final IGTHatchAdder<MultiMachineBase<?>> adder;
+        private final String descriptionLangKey;
 
         @SafeVarargs
-        CustomHatchElement(IGTHatchAdder<MultiMachineBase<?>> adder, Class<? extends IMetaTileEntity>... mteClasses) {
+        CustomHatchElement(String descriptionLangKey, IGTHatchAdder<MultiMachineBase<?>> adder,
+            Class<? extends IMetaTileEntity>... mteClasses) {
+            this.descriptionLangKey = descriptionLangKey;
             this.mteClasses = Collections.unmodifiableList(Arrays.asList(mteClasses));
             this.adder = adder;
+        }
+
+        @Override
+        public String getDescriptionLangKey() {
+            return descriptionLangKey;
         }
 
         @Override

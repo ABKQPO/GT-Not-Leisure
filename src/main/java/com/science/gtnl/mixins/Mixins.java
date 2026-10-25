@@ -377,6 +377,12 @@ public enum Mixins implements IMixins {
         .setPhase(Phase.LATE)
         .setApplyIf(() -> MainConfig.item.stick.enableStickItem)),
 
+    AUTO_STRUCTURE_TOOLTIP(new MixinBuilder("Automatic multiblock structure tooltips")
+        .addCommonMixins(
+            "structureLib.MixinLazyStructureElement",
+            "gregtech.MixinMTEEnhancedMultiBlockBaseStructureTooltip")
+        .setPhase(Phase.LATE)),
+
     ET_FUTURUM_ELYTRA(
         new MixinBuilder("InfinityElytra EtFuturum Mixin").addCommonMixins("etFuturum.MixinStartElytraFlyingHandler")
             .addClientMixins("etFuturum.MixinLayerBetterElytra")

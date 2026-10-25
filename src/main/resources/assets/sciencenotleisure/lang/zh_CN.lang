@@ -672,6 +672,27 @@ gtnl.machine.nuclear_reactor.structure.tiers=全部等级：§65x5x5§7 / §67x5
 gtnl.machine.nuclear_reactor.structure.output_hatch=输出仓至少需要 1 个
 gtnl.machine.nuclear_reactor.casing=反应堆外壳
 gtnl.structure.nuclear_reactor.core_cell=核燃料物品仓 或 核冷却液输入仓
+gtnl.structure.tooltip.controller.front_center=正面中央，第%s层
+gtnl.structure.tooltip.controller.layer=第%s层
+gtnl.structure.tooltip.hatch.replaces=任意%s
+gtnl.structure.tooltip.hatch.dedicated=指定位置
+gtnl.structure.tooltip.tier=§b等级 %s
+gtnl.structure.tooltip.tier.extra=§b等级 %s 额外需要
+gtnl.structure.tooltip.tier.steam.1=§9基础等级 §b(T1)
+gtnl.structure.tooltip.tier.steam.2=§9高压等级 §b(T2)
+gtnl.structure.tooltip.channel.structure_tier=结构等级
+gtnl.structure.tooltip.part.voltage=电压等级
+gtnl.structure.tooltip.part.coil=加热线圈等级
+gtnl.structure.tooltip.part.glass=玻璃等级
+gtnl.structure.tooltip.stat_with_bonus=%s，%s
+gtnl.structure.tooltip.per_tier=每%1$s%2$s
+gtnl.structure.tooltip.per_tier.duration=每%1$s配方时间%2$s
+gtnl.structure.tooltip.change.increase=增加%s
+gtnl.structure.tooltip.change.decrease=减少%s
+gtnl.structure.tooltip.change.compound=%s(乘算叠加)
+gtnl.structure.hatch.parallel_controller=并行控制仓
+gtnl.structure.hatch.exotic_dynamo=多安或激光动力仓
+gtnl.structure.hatch.water_input=输入仓（水）
 gtnl.machine.nuclear_reactor_t2.name=核反应堆 II
 gtnl.machine.nuclear_reactor_t2.tooltip.0=升级型热反应堆，拥有更大的 5×5 核芯。
 gtnl.machine.nuclear_reactor_t3.name=核反应堆 III
@@ -943,10 +964,8 @@ gtnl.machine.component_assembler.tooltip.casing=任意脱氧钢机械方块
 
 gtnl.machine.large_steam_furnace.name=大型蒸汽熔炉
 gtnl.machine.large_steam_furnace.recipe_type=熔炉
-gtnl.machine.large_steam_furnace.tooltip.0=比同等级的单方块熔炉快900%
-gtnl.machine.large_steam_furnace.tooltip.1=仅消耗正常需求50%的蒸汽
-gtnl.machine.large_steam_furnace.tooltip.2=一次可处理多达128个物品
-gtnl.machine.large_steam_furnace.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
+gtnl.machine.large_steam_furnace.tooltip.0=总蒸汽消耗按同时熔炼的物品数计算，再取整到所在电压等级的功率
+gtnl.machine.large_steam_furnace.high_pressure=高压等级下并行翻倍
 
 gtnl.machine.large_steam_alloy_smelter.name=大型蒸汽铸形炉
 gtnl.machine.large_steam_alloy_smelter.recipe_type=合金炉
@@ -1743,12 +1762,7 @@ gtnl.machine.platinum_based_treatment.name=铂族工业统合枢纽
 gtnl.recipe.platinum_based_treatment=单步铂处理
 gtnl.machine.platinum_based_treatment.tooltip.0=§o拯救千万格雷人于铂处理的水深火热之中
 gtnl.machine.platinum_based_treatment.tooltip.1=§o无数萌新盼望的单步铂处理
-gtnl.machine.platinum_based_treatment.tooltip.2=初始并行为8
-gtnl.machine.platinum_based_treatment.tooltip.3=线圈等级每提高一级，配方时间和耗电减少5%
 gtnl.machine.platinum_based_treatment.tooltip.4=玻璃等级限制了能源仓等级，UHV玻璃解锁所有等级
-gtnl.machine.platinum_based_treatment.tooltip.5=电压每提高一级，并行 +4
-gtnl.machine.platinum_based_treatment.tooltip.casing=任意多功能机械方块
-gtnl.machine.platinum_based_treatment.tooltip.muffler=消声仓位置请参考多方块结构投影
 
 gtnl.machine.shallow_chemical_coupling.name=浅层化学耦合
 gtnl.recipe.shallow_chemical_coupling=浅层化学耦合
@@ -2367,7 +2381,6 @@ gtnl.machine.steam_oil_drill_module.tooltip.4=基础工作周期：%st
 
 gtnl.machine.advanced_rare_earth_centrifugal.name=进阶稀土离心机
 gtnl.machine.advanced_rare_earth_centrifugal.recipe_type=稀土离心
-gtnl.machine.advanced_rare_earth_centrifugal.casing=任意镀铱机械方块
 
 gtnl.machine.mass_fabricator.name=质量发生器
 gtnl.machine.mass_fabricator.recipe_type=质量发生器
@@ -2582,8 +2595,6 @@ gtnl.machine.supercomputing_center.casing=提示方块：1号
 
 gtnl.machine.pcb_factory.name=PCB工厂
 gtnl.machine.pcb_factory.recipe_type=PCB工厂
-gtnl.machine.pcb_factory.info.0=比相同电压的机器快200%
-gtnl.machine.pcb_factory.info.1=只需要使用配方要求功率的80%
 gtnl.machine.pcb_factory.info.2=无视生物仓升级要求
 gtnl.machine.pcb_factory.info.3=固定双倍产出
 gtnl.machine.pcb_factory.info.4=机器开机时固定消耗7500L蒸馏水/5s
@@ -2593,7 +2604,6 @@ gtnl.machine.pcb_factory.info.7=机器等级每提高一级，速度+10%，要�
 gtnl.machine.pcb_factory.info.8=当机器等级超过3时开启§c无损超频§7
 gtnl.machine.pcb_factory.info.9=需要使用纳米蜂群提高结构等级，中子->银->金
 gtnl.machine.pcb_factory.info.10=只能从顶部输入蒸馏水和净化水
-gtnl.machine.pcb_factory.casing=任意镀铱机械方块
 gtnl.gui.pcb_factory.machine_tier=机器等级：
 gtnl.gui.pcb_factory.upgrade.t4_machine_tier=T4机器等级升级
 
@@ -4568,6 +4578,7 @@ gtnl.machine.common.gtm.tooltip.0=比相同电压的机器快67%
 gtnl.machine.common.gtm.tooltip.1=只需要使用配方要求功率的80%
 gtnl.machine.common.gtm.tooltip.2=初始并行为8
 gtnl.machine.common.gtm.tooltip.3=安装并行控制仓来提升最大并行数和减少耗电！
+gtnl.machine.common.parallel_controller.tooltip=可以安装并行控制仓
 
 gtnl.machine.common.component_assembly_line.tooltip.0=每级玻璃和部件装配线外壳等级额外提供5%的加速和耗电减免(乘算叠加)
 gtnl.machine.common.component_assembly_line.tooltip.1=部件装配线外壳等级决定了能源仓最大等级 + 3，UIV装配线外壳解锁所有等级

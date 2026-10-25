@@ -24,6 +24,7 @@ import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
@@ -57,6 +58,9 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String LSF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_steam_furnace";
     private static final String[][] shape = StructureUtils.readStructureFromFile(LSF_STRUCTURE_FILE_PATH);
+    private static final int SMELTING_DURATION = 64;
+    // Why: GT's furnace recipe map gives every smelting recipe this duration, which the speed line compares against.
+    private static final int FURNACE_RECIPE_DURATION = 128;
 
     public LargeSteamFurnace(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -241,7 +245,7 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
 
         GTNLOverclockCalculator calculator = new GTNLOverclockCalculator().setEUt(availableEUt)
             .setRecipeEUt(4)
-            .setDuration(64)
+            .setDuration(SMELTING_DURATION)
             .setParallel(originalMaxParallel)
             .setNoOverclock(true);
 
@@ -407,17 +411,26 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        TooltipStats stats = super.getTooltipStats();
+        // Why: smelting runs in checkProcessing with a fixed duration, so the processing logic's speed never applies.
+        return new TooltipStats(
+            stats.parallels(),
+            stats.speed() * FURNACE_RECIPE_DURATION / SMELTING_DURATION,
+            stats.energyUsage(),
+            true);
+    }
+
+    @Override
+    public String getTooltipMaterialTierNotice() {
+        return "gtnl.machine.large_steam_furnace.high_pressure";
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
-            .beginStructureBlock(9, 8, 10, false)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.tooltip.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.tooltip.casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoInfo(this)
+            .addAutoStructure(this)
             .toolTipFinisher();
         return tt;
     }

@@ -52,6 +52,7 @@ import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IControllerInfo;
+import com.science.gtnl.api.IMultiblockTooltipRules;
 import com.science.gtnl.common.gui.CircularGaugeDrawable;
 import com.science.gtnl.common.gui.modularui.GTNLSteamMultiBlockBaseGui;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
@@ -71,6 +72,7 @@ import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
+import gregtech.api.enums.MetaTileEntityIDs;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IIconContainer;
@@ -89,6 +91,7 @@ import gregtech.api.metatileentity.implementations.MTEHatchOutputBus;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
+import gregtech.api.structure.IStructureChannels;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.structure.error.StructureErrorRegistry;
 import gregtech.api.structure.error.StructureErrors;
@@ -97,6 +100,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.HatchElementBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
+import gregtech.common.misc.GTStructureChannels;
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
@@ -112,9 +116,13 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
 public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> extends MTESteamMultiBlockBase<T>
-    implements IControllerInfo {
+    implements IControllerInfo, IMultiblockTooltipRules {
 
     public static final int OC_WINDOW_ID = 12;
+    private static final String STEAM_INPUT_LINE = "steam_input";
+    private static final int MAX_STEAM_TIER = 2;
+    private static final int[] STEAM_INPUT_HATCH_IDS = { MetaTileEntityIDs.Hatch_Input_Steam.ID,
+        GTNLMachineID.BIG_STEAM_INPUT_HATCH.ID, GTNLMachineID.PIPELESS_STEAM_HATCH.ID };
     public double configSpeedBoost = 1;
     public int recipeOcCount = 0;
     public int tierAdvancedCasing = -1;
@@ -395,6 +403,55 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         if (mSteamInputFluids.isEmpty() && mSteamBigInputFluids.isEmpty() && mSteamWirelessInputFluids.isEmpty()) {
             errors.add(StructureErrors.of("GT5U.gui.text.structure_error.missing_steam_input"));
         }
+    }
+
+    @Override
+    public TooltipStats getTooltipStats() {
+        int tier = tierMachine;
+        // Why: steam machines are described at their basic tier; the material tier notice covers the next one.
+        tierMachine = 1;
+        try {
+            return new TooltipStats(getMaxParallelRecipes(), 1 / getDurationModifier(), getEUtDiscount(), true);
+        } finally {
+            tierMachine = tier;
+        }
+    }
+
+    @Override
+    public String getTooltipMaterialTierNotice() {
+        return "gtnl.machine.steam.high_pressure.tooltip";
+    }
+
+    @Override
+    public String getStructureTooltipHatchLine(String hatchLangKey) {
+        for (int id : STEAM_INPUT_HATCH_IDS) {
+            IMetaTileEntity hatch = GregTechAPI.METATILEENTITIES[id];
+            // Why: HatchElementBuilder.hatchIds() describes a hatch by this key, built from its meta name.
+            if (hatch != null && hatchLangKey.equals("gt.blockmachines." + hatch.getMetaName() + ".name")) {
+                return STEAM_INPUT_LINE;
+            }
+        }
+        return hatchLangKey;
+    }
+
+    @Override
+    public String getStructureTooltipHatchCount(String hatchLine) {
+        return STEAM_INPUT_LINE.equals(hatchLine) ? "1+" : null;
+    }
+
+    @Override
+    public int getStructureTooltipMaterialTiers() {
+        return MAX_STEAM_TIER;
+    }
+
+    @Override
+    public String getStructureTooltipMaterialTierHeader(int tier) {
+        return StatCollector.translateToLocal("gtnl.structure.tooltip.tier.steam." + tier);
+    }
+
+    @Override
+    public IStructureChannels getStructureTooltipMaterialTierChannel() {
+        return GTStructureChannels.TIER_MACHINE_CASING;
     }
 
     protected boolean checkMachineTier(List<StructureError> errors, int minCasing, boolean tier1Valid,

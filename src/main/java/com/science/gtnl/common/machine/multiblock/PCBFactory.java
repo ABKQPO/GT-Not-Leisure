@@ -40,6 +40,7 @@ import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachi
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
@@ -336,40 +337,35 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     }
 
     @Override
+    protected TooltipStats readTooltipStats() {
+        int tier = machineTier;
+        // Why: the tooltip describes the first structure tier; higher tiers are explained by the machine's own lines.
+        machineTier = 1;
+        try {
+            return super.readTooltipStats();
+        } finally {
+            machineTier = tier;
+        }
+    }
+
+    @Override
+    public List<String> getTooltipFeatureKeys() {
+        List<String> keys = new ArrayList<>(super.getTooltipFeatureKeys());
+        keys.remove(MULTIPLICATIVE_SPEED_TOOLTIP_KEY);
+        keys.remove(PERFECT_OVERCLOCK_TOOLTIP_KEY);
+        return keys;
+    }
+
+    @Override
     public RecipeMap<?> getRecipeMap() {
         return RecipeMaps.pcbFactoryRecipes;
     }
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.pcb_factory.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.7"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.8"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.9"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.pcb_factory.info.10"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
-            .addSupportAny()
-            .beginVariableStructureBlock(13, 47, 16, 30, 14, 46, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.pcb_factory.casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.pcb_factory.casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.pcb_factory.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.pcb_factory.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.pcb_factory.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.pcb_factory.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoInfo(this)
+            .addAutoStructure(this)
             .toolTipFinisher();
         return tt;
     }
@@ -784,6 +780,11 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
         @Override
         public String getDisplayName() {
             return StatCollector.translateToLocal(name);
+        }
+
+        @Override
+        public String getDescriptionLangKey() {
+            return "gtnl.structure.hatch.water_input";
         }
 
         public IGTHatchAdder<? super PCBFactory> adder() {

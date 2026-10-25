@@ -672,6 +672,27 @@ gtnl.machine.nuclear_reactor.structure.tiers=All tiers: §65x5x5§7 / §67x5x7§
 gtnl.machine.nuclear_reactor.structure.output_hatch=At least 1 output hatch required
 gtnl.machine.nuclear_reactor.casing=Reactor casing
 gtnl.structure.nuclear_reactor.core_cell=Nuclear Fuel Item Bus or Nuclear Cooling Fluid Input Hatch
+gtnl.structure.tooltip.controller.front_center=Front center, layer %s
+gtnl.structure.tooltip.controller.layer=Layer %s
+gtnl.structure.tooltip.hatch.replaces=Any %s
+gtnl.structure.tooltip.hatch.dedicated=Dedicated positions
+gtnl.structure.tooltip.tier=§bTier %s
+gtnl.structure.tooltip.tier.extra=§bTier %s adds
+gtnl.structure.tooltip.tier.steam.1=§9Basic §b(T1)
+gtnl.structure.tooltip.tier.steam.2=§9High-Pressure §b(T2)
+gtnl.structure.tooltip.channel.structure_tier=Structure Tier
+gtnl.structure.tooltip.part.voltage=Voltage Tier
+gtnl.structure.tooltip.part.coil=Heating Coil Tier
+gtnl.structure.tooltip.part.glass=Glass Tier
+gtnl.structure.tooltip.stat_with_bonus=%s, %s
+gtnl.structure.tooltip.per_tier=%2$s per %1$s
+gtnl.structure.tooltip.per_tier.duration=Recipe Time %2$s per %1$s
+gtnl.structure.tooltip.change.increase=increases by %s
+gtnl.structure.tooltip.change.decrease=decreases by %s
+gtnl.structure.tooltip.change.compound=%s (compounding)
+gtnl.structure.hatch.parallel_controller=Parallel Controller Hatch
+gtnl.structure.hatch.exotic_dynamo=Multi-Amp or Laser Dynamo Hatch
+gtnl.structure.hatch.water_input=Input Hatch (Water)
 gtnl.machine.nuclear_reactor_t2.name=Nuclear Reactor II
 gtnl.machine.nuclear_reactor_t2.tooltip.0=An upgraded heat reactor with a larger 5×5 core.
 gtnl.machine.nuclear_reactor_t3.name=Nuclear Reactor III
@@ -943,10 +964,8 @@ gtnl.machine.component_assembler.tooltip.casing=Any Deoxidized Steel Machine Blo
 
 gtnl.machine.large_steam_furnace.name=Large Steam Furnace
 gtnl.machine.large_steam_furnace.recipe_type=Furnace
-gtnl.machine.large_steam_furnace.tooltip.0=900% faster than the single-block furnace of the same tier.
-gtnl.machine.large_steam_furnace.tooltip.1=Consumes only 50% of the normal steam requirement.
-gtnl.machine.large_steam_furnace.tooltip.2=Can process up to 128 items at once.
-gtnl.machine.large_steam_furnace.tooltip.casing=Any Copper Plated Brick or Deoxidized Steel Machine Block
+gtnl.machine.large_steam_furnace.tooltip.0=Total steam usage scales with the number of items smelted at once, rounded to the power of the matching voltage tier
+gtnl.machine.large_steam_furnace.high_pressure=High pressure tier doubles the parallel count
 
 gtnl.machine.large_steam_alloy_smelter.name=Large Steam Alloy Smelter
 gtnl.machine.large_steam_alloy_smelter.recipe_type=Alloy Smelter
@@ -1743,12 +1762,7 @@ gtnl.machine.platinum_based_treatment.name=Platinum Group Processing Hub
 gtnl.recipe.platinum_based_treatment=Single-Step Platinum Processing
 gtnl.machine.platinum_based_treatment.tooltip.0=High-efficiency platinum processing unit.
 gtnl.machine.platinum_based_treatment.tooltip.1=Single-step platinum processing.
-gtnl.machine.platinum_based_treatment.tooltip.2=Initial parallel is 8.
-gtnl.machine.platinum_based_treatment.tooltip.3=For each level of coil upgrade, recipe time and power consumption are reduced by 5%.
 gtnl.machine.platinum_based_treatment.tooltip.4=Energy hatch limited by glass tier, UHV Glass unlocks all.
-gtnl.machine.platinum_based_treatment.tooltip.5=Each time the voltage level is increased, the parallel increases by +4.
-gtnl.machine.platinum_based_treatment.tooltip.casing=Any multifunctional machine block
-gtnl.machine.platinum_based_treatment.tooltip.muffler=Refer to the multiblock structure projection for muffler hatch placement
 
 gtnl.machine.shallow_chemical_coupling.name=Shallow Chemical Coupling
 gtnl.recipe.shallow_chemical_coupling=Shallow Chemical Coupling
@@ -2367,7 +2381,6 @@ gtnl.machine.steam_oil_drill_module.tooltip.4=Base cycle time: %s ticks
 
 gtnl.machine.advanced_rare_earth_centrifugal.name=Advanced Rare Earth Centrifuge
 gtnl.machine.advanced_rare_earth_centrifugal.recipe_type=Rare Earth Centrifuging
-gtnl.machine.advanced_rare_earth_centrifugal.casing=Ang Advanced Iridium Plated Machine Casing
 
 gtnl.machine.mass_fabricator.name=Mass Fabricator
 gtnl.machine.mass_fabricator.recipe_type=Mass Fabricator
@@ -2582,8 +2595,6 @@ gtnl.machine.supercomputing_center.casing=Hint 1 dots
 
 gtnl.machine.pcb_factory.name=PCB Factory
 gtnl.machine.pcb_factory.recipe_type=PCB Factory
-gtnl.machine.pcb_factory.info.0=200% faster than machines of the same voltage
-gtnl.machine.pcb_factory.info.1=Only requires 80% of the recipe's power demand
 gtnl.machine.pcb_factory.info.2=Ignores Biochamber Upgrade requirements
 gtnl.machine.pcb_factory.info.3=Fixed double output
 gtnl.machine.pcb_factory.info.4=Consumes 7500L of distilled water every 5 seconds when machine is running.
@@ -2593,7 +2604,6 @@ gtnl.machine.pcb_factory.info.7=For each machine tier increase, speed +10%, powe
 gtnl.machine.pcb_factory.info.8=Enables §cPerfect Overclock§7 when machine tier exceeds 3
 gtnl.machine.pcb_factory.info.9=Requires Nanites to increase the machine tier, Neutron -> Silver -> Gold
 gtnl.machine.pcb_factory.info.10=It can only accept distilled water and purified water from the top
-gtnl.machine.pcb_factory.casing=An Advanced Iridium Plated Machine Casing
 gtnl.gui.pcb_factory.machine_tier=Machine Tier: 
 gtnl.gui.pcb_factory.upgrade.t4_machine_tier=T4 Machine Tier Upgrade
 
@@ -4568,6 +4578,7 @@ gtnl.machine.common.gtm.tooltip.0=67% faster than machines of the same voltage
 gtnl.machine.common.gtm.tooltip.1=Only requires 80% of the recipe's power
 gtnl.machine.common.gtm.tooltip.2=Initial parallel is 8
 gtnl.machine.common.gtm.tooltip.3=Install Parallel Control Hatch to increase max parallel and reduce power consumption!
+gtnl.machine.common.parallel_controller.tooltip=Accepts a Parallel Controller Hatch
 
 gtnl.machine.common.component_assembly_line.tooltip.0=Each level of Glass and Component Assembly Line Casing grade provides an additional 5% acceleration and power consumption reduction (multiplication and superposition)
 gtnl.machine.common.component_assembly_line.tooltip.1=The level of the Component Assembly Line Casing determines the maximum level of the energy warehouse + 3. UIV mechanical blocks unlock all levels.

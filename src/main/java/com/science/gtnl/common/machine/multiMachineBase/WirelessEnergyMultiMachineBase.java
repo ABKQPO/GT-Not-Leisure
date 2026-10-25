@@ -41,6 +41,18 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMultiMachineBase<T>>
     extends MultiMachineBase<T> implements IWirelessEnergy {
 
+    protected static final String MULTIPLICATIVE_SPEED_TOOLTIP_KEY = "gtnl.machine.common.wireless.tooltip.5";
+    protected static final String PERFECT_OVERCLOCK_TOOLTIP_KEY = "gtnl.machine.common.wireless.tooltip.7";
+    private static final List<String> PARALLEL_CONTROLLER_TOOLTIP_KEYS = Arrays
+        .asList("gtnl.machine.common.wireless.tooltip.3", "gtnl.machine.common.wireless.tooltip.4");
+    private static final List<String> TOOLTIP_FEATURE_KEYS = Arrays.asList(
+        MULTIPLICATIVE_SPEED_TOOLTIP_KEY,
+        "gtnl.machine.common.wireless.tooltip.6",
+        PERFECT_OVERCLOCK_TOOLTIP_KEY,
+        "gtnl.machine.common.wireless.tooltip.8",
+        "gtnl.machine.common.wireless.tooltip.9",
+        "gtnl.machine.common.wireless.tooltip.10");
+
     public UUID ownerUUID;
     @Getter
     public boolean wirelessMode;
@@ -293,6 +305,16 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     @Override
     public boolean getPerfectOC() {
         return true;
+    }
+
+    @Override
+    public List<String> getTooltipParallelControllerKeys() {
+        return PARALLEL_CONTROLLER_TOOLTIP_KEYS;
+    }
+
+    @Override
+    public List<String> getTooltipFeatureKeys() {
+        return TOOLTIP_FEATURE_KEYS;
     }
 
     @Override
