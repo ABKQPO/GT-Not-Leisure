@@ -55,6 +55,7 @@ import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.item.ItemUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
@@ -675,16 +676,15 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        // Why: the stairway hands steam to its modules and runs no recipes itself, so recipe numbers would mislead.
+        return null;
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_elevator.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_elevator.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_elevator.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_elevator.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_elevator.tooltip.4"))
-            .beginStructureBlock(35, 43, 35, false)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.steam_elevator.casing"), 1)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

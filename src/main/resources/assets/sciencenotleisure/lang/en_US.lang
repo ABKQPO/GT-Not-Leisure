@@ -1567,11 +1567,6 @@ gtnl.machine.steam_beacon_module.recipe_type=Beacon
 gtnl.machine.steam_beacon_module.tooltip.basic=§a§lBasic Beacon.
 gtnl.machine.steam_beacon_module.tooltip.advanced=§a§lAdvanced Beacon.
 gtnl.machine.steam_beacon_module.tooltip.elite=§a§lElite Beacon.
-gtnl.machine.steam_beacon_module.tooltip.0=Add beacon module effects into the Steam Stairway
-gtnl.machine.steam_beacon_module.tooltip.1=Input steam to enable large-area potion effects
-gtnl.machine.steam_beacon_module.tooltip.2=Effective range: 
-gtnl.machine.steam_beacon_module.tooltip.3=Configure the potion effects to emit in the GUI
-gtnl.machine.steam_beacon_module.tooltip.4=Adjust overclock count to increase potion effect levels
 gtnl.machine.steam_beacon_module.configure=Configure beacon effects
 gtnl.machine.steam_beacon_module.confirm=Confirm
 gtnl.waila.steam_beacon_module.enabled_effects=Currently Enabled Effects:
@@ -1612,12 +1607,6 @@ gtnl.machine.aetron_pressor.recipe_type=Extruder
 
 gtnl.machine.steam_elevator.name=Steam Elevator
 gtnl.machine.steam_elevator.recipe_type=Steam Elevator
-gtnl.machine.steam_elevator.tooltip.0=§a§lStairway to the Sky?
-gtnl.machine.steam_elevator.tooltip.1=Each module has their own space for IO, except energy
-gtnl.machine.steam_elevator.tooltip.2=Steam is supplied to this controller and gets distributed
-gtnl.machine.steam_elevator.tooltip.3=The system automatically activates wireless mode when no steam input hatch is installed in the main structure
-gtnl.machine.steam_elevator.tooltip.4=Disabling this controller also pauses all modules
-gtnl.machine.steam_elevator.casing=Any Brick Steel Shell
 
 gtnl.machine.steam_monster_repellent_module.1.name=Steam Monster Repellator Module I
 gtnl.machine.steam_monster_repellent_module.2.name=Steam Monster Repellator Module II
@@ -1626,18 +1615,9 @@ gtnl.machine.steam_monster_repellent_module.recipe_type=Monster Repellator
 gtnl.machine.steam_monster_repellent_module.tooltip.basic=§a§lIt drives away monsters with loud noise.
 gtnl.machine.steam_monster_repellent_module.tooltip.advanced=§a§lYou can’t hear it, but the monsters hear it loud and clear.
 gtnl.machine.steam_monster_repellent_module.tooltip.elite=§a§lThis machine makes monsters alert and run away on their own.
-gtnl.machine.steam_monster_repellent_module.tooltip.0=Adds mob repellent module to the Steam Stairway
-gtnl.machine.steam_monster_repellent_module.tooltip.1=Creates a force field to prevent monster spawns
-gtnl.machine.steam_monster_repellent_module.tooltip.2=Only prevents spawns while the machine is running
-gtnl.machine.steam_monster_repellent_module.tooltip.3=Effective range: 
 
 gtnl.machine.steam_flight_module.name=Steam Flight Module
 gtnl.machine.steam_flight_module.recipe_type=Flight
-gtnl.machine.steam_flight_module.tooltip.0=§a§lSteam-powered flight assistance.
-gtnl.machine.steam_flight_module.tooltip.1=Adds flight module to the Steam Stairway
-gtnl.machine.steam_flight_module.tooltip.2=Consumes steam to grant you the power of free flight
-gtnl.machine.steam_flight_module.tooltip.3=Adjust overclock count to consume more steam and expand the range
-gtnl.machine.steam_flight_module.tooltip.4=Effective range: 64 * overclock count
 
 gtnl.machine.steam_weather_module.name=Steam Weather Module
 gtnl.recipe.steam_weather_module=Weather Changes
@@ -1645,9 +1625,6 @@ gtnl.nei.steam_weather.special_value.1=Set weather to clear
 gtnl.nei.steam_weather.special_value.2=Set weather to rain
 gtnl.nei.steam_weather.special_value.3=Set weather to thunderstorm
 gtnl.machine.steam_weather_module.recipe_type=Weather Changes
-gtnl.machine.steam_weather_module.tooltip.0=§a§lControls the weather using steam.
-gtnl.machine.steam_weather_module.tooltip.1=Adds weather changes module to the Steam Stairway
-gtnl.machine.steam_weather_module.tooltip.2=Enter a specific material to switch weather, lasting for 1 hour
 
 gtnl.machine.nano_assembler_mark_l.name=Nano Assembler Mark-50
 gtnl.machine.nano_assembler_mark_l.recipe_type=Precision Assembler
@@ -1705,15 +1682,6 @@ gtnl.machine.steam_ore_processor_module.mode.3=Macerator -> Ore Washer -> Sifter
 gtnl.machine.steam_ore_processor_module.mode.4=Macerator -> Chemical Bath -> Macerator -> Centrifuge
 gtnl.machine.steam_ore_processor_module.mode.5=Macerator -> Chemical Bath -> Thermal Centrifuge -> Macerator
 gtnl.machine.steam_ore_processor_module.mode.6=Forge Hammer -> Forge Hammer -> Simple Washer
-gtnl.machine.steam_ore_processor_module.tooltip.0=§a§lHigh-efficiency steam ore processor.
-gtnl.machine.steam_ore_processor_module.tooltip.1=Adds ore processing module to the Steam Stairway
-gtnl.machine.steam_ore_processor_module.tooltip.2=Do all ore processing in one step
-gtnl.machine.steam_ore_processor_module.tooltip.3=Can process up to 16 ores at a time
-gtnl.machine.steam_ore_processor_module.tooltip.4=Every ore costs 128L Steam/t, 1L lubricant, 10L distilled water
-gtnl.machine.steam_ore_processor_module.tooltip.5=Processing time depends on the current mode
-gtnl.machine.steam_ore_processor_module.tooltip.6=Set circuit to double both parallel and EU consumption
-gtnl.machine.steam_ore_processor_module.tooltip.7=Use a screwdriver to switch mode
-gtnl.machine.steam_ore_processor_module.tooltip.8=Sneak click with screwdriver to void the stone dust
 gtnl.waila.steam_ore_processor_module.actual_parallel=Actual Parallel: 
 
 gtnl.machine.large_steam_lathe.name=Large Steam Lathe
@@ -1794,40 +1762,15 @@ gtnl.machine.godforge.extractor_module.tooltip.6=This module is specialized in i
 
 gtnl.machine.steam_entity_crusher_module.name=Steam Entity Crusher Module
 gtnl.machine.steam_entity_crusher_module.recipe_type=Pneumatic Spawner Cage
-gtnl.machine.steam_entity_crusher_module.tooltip.0=§a§lSmelt mobs using high-temperature steam.
-gtnl.machine.steam_entity_crusher_module.tooltip.1=Adds entity crusher module to the Steam Stairway
-gtnl.machine.steam_entity_crusher_module.tooltip.2=Each operation has a 2% chance to double output.
-gtnl.machine.steam_entity_crusher_module.tooltip.3=Each additional identical spawner increases the chance by 0.5%.
-gtnl.machine.steam_entity_crusher_module.tooltip.4=Maximum chance increase is 34%.
-gtnl.machine.steam_entity_crusher_module.tooltip.5=As a trade-off, default time is doubled, power is halved.
-gtnl.machine.steam_entity_crusher_module.tooltip.6=Cannot be overclocked
 
 gtnl.machine.steam_apiary_module.name=Steam-Powered Apiary Module
 gtnl.machine.steam_apiary_module.recipe_type=Pneumatic Beehive
-gtnl.machine.steam_apiary_module.tooltip.0=§a§lHigh pressure makes the bees work §0§mharder§a§l and more efficiently.
-gtnl.machine.steam_apiary_module.tooltip.1=Adds apiary module to the Steam Stairway
-gtnl.machine.steam_apiary_module.tooltip.2=The bees' (ideal?) home
-gtnl.machine.steam_apiary_module.tooltip.3=Fixed operating time: 300 seconds
-gtnl.machine.steam_apiary_module.tooltip.4=Each overclock doubles the capacity, power ×4
-gtnl.machine.steam_apiary_module.tooltip.5=Base amount: 8
 
 gtnl.machine.steam_bee_breeding_module.name=Steam Bee Breeding Module
 gtnl.machine.steam_bee_breeding_module.recipe_type=Bee Breeding
-gtnl.machine.steam_bee_breeding_module.tooltip.0=§a§lLet the bees feel the scorching♂love.
-gtnl.machine.steam_bee_breeding_module.tooltip.1=Adds bee breeding module to the Steam Stairway
-gtnl.machine.steam_bee_breeding_module.tooltip.2=Place a queen bee inside the controller
-gtnl.machine.steam_bee_breeding_module.tooltip.3=It will slowly produce ignoble princesses
-gtnl.machine.steam_bee_breeding_module.tooltip.4=Consumes 128 royal jelly per operation
-gtnl.machine.steam_bee_breeding_module.tooltip.5=Base processing time: 10 minutes
 
 gtnl.machine.steam_greenhouse_module.name=Steam Greenhouse Planting Module
 gtnl.machine.steam_greenhouse_module.recipe_type=Crop Farm
-gtnl.machine.steam_greenhouse_module.tooltip.0=§a§lFarmer’s Secret to Fortune.
-gtnl.machine.steam_greenhouse_module.tooltip.1=Adds greenhouse module to the Steam Stairway
-gtnl.machine.steam_greenhouse_module.tooltip.2=No more fertilizer or herbicide needed!
-gtnl.machine.steam_greenhouse_module.tooltip.3=Consumes 16,000L of water per crop
-gtnl.machine.steam_greenhouse_module.tooltip.4=Fixed operation time of 60 seconds
-gtnl.machine.steam_greenhouse_module.tooltip.5=Cannot be overclocked
 
 gtnl.machine.rocket_assembler.name=Rocket Assembler
 gtnl.recipe.rocket_assembler=Rocket Assembler

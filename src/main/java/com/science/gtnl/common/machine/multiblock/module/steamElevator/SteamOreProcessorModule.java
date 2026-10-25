@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.drawable.UITexture;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gnu.trove.map.hash.TIntIntHashMap;
 import gregtech.api.enums.Materials;
@@ -281,19 +282,15 @@ public class SteamOreProcessorModule extends SteamElevatorModuleBase {
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        // Why: this machine runs its own process instead of recipes, so recipe numbers would mislead.
+        return null;
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.tooltip.7"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_ore_processor_module.tooltip.8"))
-            .beginStructureBlock(1, 5, 2, false)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

@@ -12,6 +12,8 @@ import net.minecraft.world.World;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
+
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.GTValues;
@@ -93,14 +95,8 @@ public class SteamFlightModule extends SteamElevatorModuleBase {
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_flight_module.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_flight_module.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_flight_module.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_flight_module.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_flight_module.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_flight_module.tooltip.4"))
-            .beginStructureBlock(1, 5, 2, false)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

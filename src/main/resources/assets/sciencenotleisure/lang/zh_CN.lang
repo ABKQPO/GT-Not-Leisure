@@ -1567,11 +1567,6 @@ gtnl.machine.steam_beacon_module.recipe_type=信标
 gtnl.machine.steam_beacon_module.tooltip.basic=§a§l村民向您分享了原始信标技术！
 gtnl.machine.steam_beacon_module.tooltip.advanced=§a§l将蒸汽嬗变成药水分子...
 gtnl.machine.steam_beacon_module.tooltip.elite=§a§l宇宙没有义务让你理解...喵！
-gtnl.machine.steam_beacon_module.tooltip.0=将信标功能添加到蒸汽楼梯
-gtnl.machine.steam_beacon_module.tooltip.1=通入蒸汽来启用大范围的药水效果
-gtnl.machine.steam_beacon_module.tooltip.2=生效范围：
-gtnl.machine.steam_beacon_module.tooltip.3=在GUI中配置要释放的药水效果
-gtnl.machine.steam_beacon_module.tooltip.4=调整超频次数来提高药水效果等级
 gtnl.machine.steam_beacon_module.configure=配置信标效果
 gtnl.machine.steam_beacon_module.confirm=确定
 gtnl.waila.steam_beacon_module.enabled_effects=当前启用效果：
@@ -1612,12 +1607,6 @@ gtnl.machine.aetron_pressor.recipe_type=压模机
 
 gtnl.machine.steam_elevator.name=蒸汽楼梯
 gtnl.machine.steam_elevator.recipe_type=蒸汽楼梯
-gtnl.machine.steam_elevator.tooltip.0=§a§l通向天空的楼梯?
-gtnl.machine.steam_elevator.tooltip.1=每个模块有各自独立的输入输出空间，除了蒸汽
-gtnl.machine.steam_elevator.tooltip.2=本控制器接收蒸汽供应并将蒸汽分发
-gtnl.machine.steam_elevator.tooltip.3=当主结构未安装蒸汽输入仓时自动进入无线模式
-gtnl.machine.steam_elevator.tooltip.4=关闭控制器即可暂停所有模块
-gtnl.machine.steam_elevator.casing=任意砖砌钢外壳
 
 gtnl.machine.steam_monster_repellent_module.1.name=蒸汽敌对生物驱逐模块 I
 gtnl.machine.steam_monster_repellent_module.2.name=蒸汽敌对生物驱逐模块 II
@@ -1626,18 +1615,9 @@ gtnl.machine.steam_monster_repellent_module.recipe_type=敌对生物驱逐器
 gtnl.machine.steam_monster_repellent_module.tooltip.basic=§a§l它通过发出巨大的噪音来赶走怪物...和你一天的好心情.
 gtnl.machine.steam_monster_repellent_module.tooltip.advanced=§a§l你听不到它，但怪物听得一清二楚.
 gtnl.machine.steam_monster_repellent_module.tooltip.elite=§a§l这机器让怪物自己报警跑路.
-gtnl.machine.steam_monster_repellent_module.tooltip.0=将敌对生物驱逐功能添加到蒸汽楼梯
-gtnl.machine.steam_monster_repellent_module.tooltip.1=创建一个力场阻止怪物的生成
-gtnl.machine.steam_monster_repellent_module.tooltip.2=只在机器运行的时候阻止
-gtnl.machine.steam_monster_repellent_module.tooltip.3=生效范围：
 
 gtnl.machine.steam_flight_module.name=蒸汽飞行模块
 gtnl.machine.steam_flight_module.recipe_type=飞行
-gtnl.machine.steam_flight_module.tooltip.0=§a§l蒸汽是人类进步的阶梯 - 高尔哈基米
-gtnl.machine.steam_flight_module.tooltip.1=将飞行功能添加到蒸汽楼梯
-gtnl.machine.steam_flight_module.tooltip.2=消耗蒸汽赋予你自由飞行的能力
-gtnl.machine.steam_flight_module.tooltip.3=调整超频次数来消耗更多蒸汽扩大范围
-gtnl.machine.steam_flight_module.tooltip.4=生效范围：64 * 超频次数
 
 gtnl.machine.steam_weather_module.name=蒸汽天气更替模块
 gtnl.recipe.steam_weather_module=天气更替
@@ -1645,9 +1625,6 @@ gtnl.nei.steam_weather.special_value.1=切换天气为晴天
 gtnl.nei.steam_weather.special_value.2=切换天气为雨天
 gtnl.nei.steam_weather.special_value.3=切换天气为雷暴
 gtnl.machine.steam_weather_module.recipe_type=天气更替
-gtnl.machine.steam_weather_module.tooltip.0=§a§l恩里克·普奇...这就是我的替身...「Weather Report！」
-gtnl.machine.steam_weather_module.tooltip.1=将天气更替功能添加到蒸汽楼梯
-gtnl.machine.steam_weather_module.tooltip.2=输入特定材料切换天气，持续1小时
 
 gtnl.machine.nano_assembler_mark_l.name=纳米组装机Mark-50
 gtnl.machine.nano_assembler_mark_l.recipe_type=精密组装机
@@ -1705,15 +1682,6 @@ gtnl.machine.steam_ore_processor_module.mode.3=粉碎机 -> 洗矿机 -> 筛选�
 gtnl.machine.steam_ore_processor_module.mode.4=粉碎机 -> 化学浸洗机 -> 粉碎机 -> 离心机
 gtnl.machine.steam_ore_processor_module.mode.5=粉碎机 -> 化学浸洗机 -> 热能离心机 -> 粉碎机
 gtnl.machine.steam_ore_processor_module.mode.6=锻造锤 -> 锻造锤 -> 简易洗矿机
-gtnl.machine.steam_ore_processor_module.tooltip.0=§a§l你有想过它存在的意义吗？
-gtnl.machine.steam_ore_processor_module.tooltip.1=将矿石处理功能添加到蒸汽楼梯
-gtnl.machine.steam_ore_processor_module.tooltip.2=一步完成所有矿石处理
-gtnl.machine.steam_ore_processor_module.tooltip.3=一次至多可处理8个矿石
-gtnl.machine.steam_ore_processor_module.tooltip.4=每个矿石消耗128L蒸汽/t、1升润滑油、10升蒸馏水
-gtnl.machine.steam_ore_processor_module.tooltip.5=处理时间取决于当前模式
-gtnl.machine.steam_ore_processor_module.tooltip.6=设置电路板来翻倍并行和耗电
-gtnl.machine.steam_ore_processor_module.tooltip.7=使用螺丝刀切换模式
-gtnl.machine.steam_ore_processor_module.tooltip.8=手持螺丝刀Shift+右键以销毁石粉
 gtnl.waila.steam_ore_processor_module.actual_parallel=实际并行：
 
 gtnl.machine.large_steam_lathe.name=大型蒸汽车床
@@ -1794,40 +1762,15 @@ gtnl.machine.godforge.extractor_module.tooltip.6=这一模块专注于无限的�
 
 gtnl.machine.steam_entity_crusher_module.name=蒸汽屠宰场模块
 gtnl.machine.steam_entity_crusher_module.recipe_type=气动刷怪笼
-gtnl.machine.steam_entity_crusher_module.tooltip.0=§a§l使用高温蒸汽熔炼怪物.
-gtnl.machine.steam_entity_crusher_module.tooltip.1=将屠宰场功能添加到蒸汽楼梯
-gtnl.machine.steam_entity_crusher_module.tooltip.2=每次运行有2%的概率双倍产出
-gtnl.machine.steam_entity_crusher_module.tooltip.3=每多一个同一种刷怪笼，概率+0.5%
-gtnl.machine.steam_entity_crusher_module.tooltip.4=最大增加34%的概率
-gtnl.machine.steam_entity_crusher_module.tooltip.5=作为代价，默认时间加倍，功率减半
-gtnl.machine.steam_entity_crusher_module.tooltip.6=无法超频
 
 gtnl.machine.steam_apiary_module.name=蒸汽蜜蜂养殖模块
 gtnl.machine.steam_apiary_module.recipe_type=气动蜂箱
-gtnl.machine.steam_apiary_module.tooltip.0=§a§l高压力让蜜蜂工作§0§m内卷§a§l更卖力.
-gtnl.machine.steam_apiary_module.tooltip.1=将蜂箱功能添加到蒸汽楼梯
-gtnl.machine.steam_apiary_module.tooltip.2=蜜蜂的理想(?)家园
-gtnl.machine.steam_apiary_module.tooltip.3=固定运行时间为300秒
-gtnl.machine.steam_apiary_module.tooltip.4=每次超频，可放入数翻倍，功率*4
-gtnl.machine.steam_apiary_module.tooltip.5=基础数量为8
 
 gtnl.machine.steam_bee_breeding_module.name=蒸汽蜜蜂繁殖模块
 gtnl.machine.steam_bee_breeding_module.recipe_type=蜜蜂繁殖
-gtnl.machine.steam_bee_breeding_module.tooltip.0=§a§l让蜜蜂感受灼♂热的爱吧.
-gtnl.machine.steam_bee_breeding_module.tooltip.1=将蜜蜂繁殖功能添加到蒸汽楼梯
-gtnl.machine.steam_bee_breeding_module.tooltip.2=在控制器内放入蜂后
-gtnl.machine.steam_bee_breeding_module.tooltip.3=它会缓慢生产卑贱种公主蜂
-gtnl.machine.steam_bee_breeding_module.tooltip.4=每次运行消耗128蜂王浆
-gtnl.machine.steam_bee_breeding_module.tooltip.5=基础运行时间：10分钟
 
 gtnl.machine.steam_greenhouse_module.name=蒸汽温室种植模块
 gtnl.machine.steam_greenhouse_module.recipe_type=作物农场
-gtnl.machine.steam_greenhouse_module.tooltip.0=§a§l农场主的致富经.
-gtnl.machine.steam_greenhouse_module.tooltip.1=将温室功能添加到蒸汽楼梯
-gtnl.machine.steam_greenhouse_module.tooltip.2=不再需要肥料和除草剂！ 
-gtnl.machine.steam_greenhouse_module.tooltip.3=每株作物消耗16000L水
-gtnl.machine.steam_greenhouse_module.tooltip.4=运行时间固定为60秒
-gtnl.machine.steam_greenhouse_module.tooltip.5=无法超频
 
 gtnl.machine.rocket_assembler.name=火箭组装厂
 gtnl.recipe.rocket_assembler=火箭组装厂

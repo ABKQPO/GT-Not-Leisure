@@ -431,7 +431,8 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
 
     @Override
     public List<String> getTooltipFeatureLines() {
-        if (!MultiblockTooltipReader.runsRecipes(this, this::createProcessingLogic)) return Collections.emptyList();
+        // Why: a machine that shows no recipe numbers runs no recipes, so a recipe voltage would mislead too.
+        if (getTooltipStats() == null) return Collections.emptyList();
         int basic = recipeTierAtMachineTier(BASIC_STEAM_TIER);
         if (basic >= VoltageIndex.MAX) return Collections.emptyList();
         String basicText = TooltipHelper.voltageTierText(basic, false);
