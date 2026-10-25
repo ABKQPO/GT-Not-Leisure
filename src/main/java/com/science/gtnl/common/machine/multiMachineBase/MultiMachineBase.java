@@ -104,6 +104,8 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     // Why: GT's addGlassEnergyLimitInfo(int) builds this sentence but is deprecated.
     private static final String GLASS_LIMIT_TOOLTIP_KEY = "GT5U.MBTT.Structure.GlassEnergyLimit";
     private static final String GLASS_LIMIT_TIER_TOOLTIP_KEY = "GT5U.MBTT.Structure.GlassEnergyLimitTier";
+    // Why: GT joins the two halves with a fixed English comma, which reads wrong in other languages.
+    private static final String GLASS_LIMIT_LINE_KEY = "gtnl.structure.tooltip.glass_energy_limit";
     private static final String CASING_LIMIT_TOOLTIP_KEY = "gtnl.structure.tooltip.casing_energy_limit";
     private static final String CASING_LIMIT_UNLOCK_TOOLTIP_KEY = CASING_LIMIT_TOOLTIP_KEY + ".unlock";
     public static final int ONE_TIER_SKIP = 1;
@@ -633,9 +635,11 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         int glassTier = getGlassEnergyTierLimit();
         if (glassTier >= 0) {
             lines.add(
-                StatCollector.translateToLocal(GLASS_LIMIT_TOOLTIP_KEY) + ", "
-                    + TooltipHelper.voltageTierText(glassTier, false)
-                    + StatCollector.translateToLocal(GLASS_LIMIT_TIER_TOOLTIP_KEY));
+                StatCollector.translateToLocalFormatted(
+                    GLASS_LIMIT_LINE_KEY,
+                    StatCollector.translateToLocal(GLASS_LIMIT_TOOLTIP_KEY),
+                    TooltipHelper.voltageTierText(glassTier, false),
+                    StatCollector.translateToLocal(GLASS_LIMIT_TIER_TOOLTIP_KEY)));
         }
         lines.addAll(casingEnergyLimitLines());
         return lines;

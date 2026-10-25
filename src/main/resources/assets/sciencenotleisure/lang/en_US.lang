@@ -687,6 +687,7 @@ gtnl.structure.tooltip.part.glass=Glass Tier
 gtnl.structure.tooltip.part.casing=Casing Tier
 gtnl.structure.tooltip.casing_energy_limit=Energy Hatch limited by §fCasing§7 Tier, up to casing tier + %s
 gtnl.structure.tooltip.casing_energy_limit.unlock=%s-tier casing unlocks all Energy Hatch tiers
+gtnl.structure.tooltip.glass_energy_limit=%1$s, %2$s%3$s
 gtnl.structure.tooltip.heat_discount=Every §c%1$s§7 above the recipe requirement reduces §bEU Usage§7 by §f%2$s
 gtnl.structure.tooltip.heat_overclock=Every §c%s§7 above the recipe requirement grants 1 §dPerfect Overclock
 gtnl.structure.tooltip.perfect_oc_from=§bDoes not lose efficiency when overclocked§7 with %s

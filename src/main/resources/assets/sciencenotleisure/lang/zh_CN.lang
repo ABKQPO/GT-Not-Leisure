@@ -687,6 +687,7 @@ gtnl.structure.tooltip.part.glass=玻璃等级
 gtnl.structure.tooltip.part.casing=外壳等级
 gtnl.structure.tooltip.casing_energy_limit=§f外壳§7等级限制了能源仓等级，能源仓最高为外壳等级 + %s
 gtnl.structure.tooltip.casing_energy_limit.unlock=%s等级外壳可解锁所有能源仓等级
+gtnl.structure.tooltip.glass_energy_limit=%1$s，%2$s%3$s
 gtnl.structure.tooltip.heat_discount=炉温每超出配方要求§c%1$s§7，§b功率系数§7降低§f%2$s
 gtnl.structure.tooltip.heat_overclock=每超出配方要求温度§c%s§7，将一次有损超频变为§d无损超频
 gtnl.structure.tooltip.perfect_oc_from=%s时，§b超频不会损失效率

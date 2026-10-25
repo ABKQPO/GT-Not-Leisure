@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.OptionalInt;
+import java.util.regex.Pattern;
 
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
@@ -55,6 +56,8 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
     private static final String TIER_FROM_KEY = "gtnl.structure.tooltip.tier_from.";
     private static final String CASING_LEVEL_FROM_KEY = TIER_FROM_KEY + "casing_level";
     private static final String HEAT_UNIT = "K";
+    // Why: Minecraft color codes reset the style, so italics are reapplied after every color change.
+    private static final Pattern STYLE_RESET = Pattern.compile("(\u00a7[0-9a-fA-FrR])");
 
     private final List<List<String>> pendingGroups = new ArrayList<>();
     private StructureSummary structure;
@@ -77,7 +80,7 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
         if (info.machineType() != null) addMachineType(info.machineType());
         TooltipStats stats = info.stats();
         if (stats != null) addStatLines(stats, info.tierBonuses());
-        for (String line : info.lines()) addInfo(line);
+        for (String line : info.lines()) addInfo(ownLine(line));
         for (String line : info.features()) addInfo(line);
         if (info.heat() != null) addHeatLines(info.heat());
         if (stats != null) addRecipeRuleLines(stats, info.perfectOverclockFrom(), info.tierSkips());
@@ -183,6 +186,12 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
         if (skips == IMultiblockTooltipRules.UNLIMITED_TIER_SKIPS) addUnlimitedTierSkips();
         else if (skips == IMultiblockTooltipRules.NO_TIER_SKIP) addNoTierSkips();
         else addMaxTierSkips(skips);
+    }
+
+    private static String ownLine(String line) {
+        String italic = EnumChatFormatting.ITALIC.toString();
+        return italic + STYLE_RESET.matcher(line)
+            .replaceAll("$1" + italic);
     }
 
     private static String thresholdText(TierThreshold threshold) {
