@@ -7,7 +7,6 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
@@ -18,6 +17,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
@@ -44,6 +44,8 @@ public class MegaMixer extends GTMMultiMachineBase<MegaMixer> implements ISurviv
     private static final int HORIZONTAL_OFF_SET = 5;
     private static final int VERTICAL_OFF_SET = 7;
     private static final int DEPTH_OFF_SET = 0;
+    private static final int SPEED_BOOST_INTERVAL = 10;
+    private static final double SPEED_BOOST_STEP = 0.05, MAX_SPEED_BOOST = 2;
     private static final String[][] shape = StructureUtils.readStructureFromFile(MM_STRUCTURE_FILE_PATH);
 
     public double runningSpeedBoost;
@@ -123,9 +125,9 @@ public class MegaMixer extends GTMMultiMachineBase<MegaMixer> implements ISurviv
     public boolean onRunningTick(ItemStack aStack) {
         if (mLockedToSingleRecipe) {
             runningTickCounter++;
-            if (runningTickCounter % 10 == 0 && runningSpeedBoost > 3) {
+            if (runningTickCounter % SPEED_BOOST_INTERVAL == 0 && runningSpeedBoost < MAX_SPEED_BOOST) {
                 runningTickCounter = 0;
-                runningSpeedBoost += 0.05;
+                runningSpeedBoost = Math.min(MAX_SPEED_BOOST, runningSpeedBoost + SPEED_BOOST_STEP);
             }
         } else {
             runningSpeedBoost = 0;
@@ -227,22 +229,8 @@ public class MegaMixer extends GTMMultiMachineBase<MegaMixer> implements ISurviv
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.mega_mixer.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_mixer.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_mixer.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_mixer.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_mixer.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
-            .addSupportAny()
-            .beginStructureBlock(11, 9, 18, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_mixer.casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_mixer.casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.mega_mixer.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.mega_mixer.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_mixer.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.mega_mixer.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

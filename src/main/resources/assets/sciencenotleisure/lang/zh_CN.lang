@@ -992,9 +992,6 @@ GT5U.gui.text.missing_schematic=§d缺失设计图
 gtnl.machine.desulfurizer.name=脱硫机
 gtnl.recipe.desulfurizer=脱硫
 gtnl.machine.desulfurizer.recipe_type=脱硫
-gtnl.machine.desulfurizer.tooltip.0=每提升一个线圈等级，并行加8
-gtnl.machine.desulfurizer.tooltip.1=每提升一个线圈等级，处理速度提升10%
-gtnl.machine.desulfurizer.tooltip.casing=任意洁净不锈钢机械方块
 
 gtnl.machine.large_circuit_assembler.name=大型电路组装设施
 gtnl.machine.large_circuit_assembler.recipe_type=电路组装机
@@ -1188,13 +1185,6 @@ gtnl.machine.digester.recipe_type=煮解池
 
 gtnl.machine.alloy_blast_smelter.name=合金冶炼炉
 gtnl.machine.alloy_blast_smelter.recipe_type=合金冶炼炉
-gtnl.machine.alloy_blast_smelter.tooltip.0=每超过配方温度900K，耗能均将乘以95%(不计超频)
-gtnl.machine.alloy_blast_smelter.tooltip.1=每超过配方温度1800K，将进行一次无损超频
-gtnl.machine.alloy_blast_smelter.tooltip.2=超过MV后的每一级电压，都会将温度提高100K
-gtnl.machine.alloy_blast_smelter.tooltip.3=固定并行为16
-gtnl.machine.alloy_blast_smelter.tooltip.4=安装并行控制仓来减少耗电！ 
-gtnl.machine.alloy_blast_smelter.tooltip.5=能源仓限制了机器工作的电压等级
-gtnl.machine.alloy_blast_smelter.tooltip.casing=任意冶炼炉机械方块
 
 gtnl.machine.large_steam_extractor.name=大型蒸汽提取机
 gtnl.machine.large_steam_extractor.recipe_type=提取机
@@ -1223,13 +1213,6 @@ gtnl.machine.vacuum_drying_furnace.mode.0=真空炉
 gtnl.machine.vacuum_drying_furnace.mode.1=脱水机
 gtnl.machine.vacuum_drying_furnace.mode.2=冷阱
 gtnl.machine.vacuum_drying_furnace.mode.3=反应堆熔盐加工厂
-gtnl.machine.vacuum_drying_furnace.tooltip.0=比相同电压的机器快150%
-gtnl.machine.vacuum_drying_furnace.tooltip.1=只需要使用配方要求功率的60%
-gtnl.machine.vacuum_drying_furnace.tooltip.2=每超过配方温度900K，耗能均将乘以95%(不计超频)
-gtnl.machine.vacuum_drying_furnace.tooltip.3=每超过配方温度1800K，将进行一次无损超频
-gtnl.machine.vacuum_drying_furnace.tooltip.4=超过MV后的每一级电压，都会将温度提高100K
-gtnl.machine.vacuum_drying_furnace.tooltip.5=配方为冷阱或反应堆熔盐加工厂时额外提供1000%的加速(乘算叠加)
-gtnl.machine.vacuum_drying_furnace.tooltip.casing=任意真空机械方块
 
 gtnl.machine.large_distillery.name=大型分馏蒸馏厂
 gtnl.machine.large_distillery.recipe_type=蒸馏塔 / 蒸馏室
@@ -1303,13 +1286,6 @@ gtnl.machine.precision_assembler.mode.1=精密组装机
 
 gtnl.machine.mega_alloy_blast_smelter.name=巨型合金冶炼炉
 gtnl.machine.mega_alloy_blast_smelter.recipe_type=合金冶炼炉
-gtnl.machine.mega_alloy_blast_smelter.tooltip.0=比合金冶炼炉快100%
-gtnl.machine.mega_alloy_blast_smelter.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.mega_alloy_blast_smelter.tooltip.2=每超过配方温度900K，耗能均将乘以95%(不计超频)
-gtnl.machine.mega_alloy_blast_smelter.tooltip.3=每级玻璃等级将额外提供2%概率的双倍产出！
-gtnl.machine.mega_alloy_blast_smelter.tooltip.4=每级线圈等级额外提供2%的耗电减免和2%的加速！
-gtnl.machine.mega_alloy_blast_smelter.tooltip.5=超过MV后的每一级电压，都会将温度提高100K
-gtnl.machine.mega_alloy_blast_smelter.tooltip.casing=任意冶炼炉机械方块
 
 gtnl.machine.grand_assembly_line.name=大型装配线
 gtnl.machine.grand_assembly_line.recipe_type=无序装配线
@@ -1583,11 +1559,6 @@ gtnl.machine.high_energy_laser_lathe.recipe_type=车床
 
 gtnl.machine.mega_mixer.name=巨型搅拌机
 gtnl.machine.mega_mixer.recipe_type=搅拌机
-gtnl.machine.mega_mixer.tooltip.0=比相同电压的机器快400%
-gtnl.machine.mega_mixer.tooltip.1=只需要使用配方要求功率的60%
-gtnl.machine.mega_mixer.tooltip.2=开启配方锁定后，给予两次无损超频，功率要求变为80%
-gtnl.machine.mega_mixer.tooltip.3=配方锁定后连续运行将加速至700%
-gtnl.machine.mega_mixer.casing=任意强化镀铱机械方块
 
 gtnl.machine.steam_beacon_module.1.name=蒸汽信标模块 I
 gtnl.machine.steam_beacon_module.2.name=蒸汽信标模块 II
@@ -1890,10 +1861,6 @@ gtnl.machine.mega_vacuum_drying_furnace.mode.0=真空炉
 gtnl.machine.mega_vacuum_drying_furnace.mode.1=脱水机
 gtnl.machine.mega_vacuum_drying_furnace.mode.2=冷阱
 gtnl.machine.mega_vacuum_drying_furnace.mode.3=反应堆熔盐加工厂
-gtnl.machine.mega_vacuum_drying_furnace.info.0=每超过配方温度900K，耗能均将乘以95%(不计超频)
-gtnl.machine.mega_vacuum_drying_furnace.info.1=每超过配方温度1800K，将进行一次无损超频
-gtnl.machine.mega_vacuum_drying_furnace.info.2=超过MV后的每一级电压，都会将温度提高100K
-gtnl.machine.mega_vacuum_drying_furnace.casing=任意超能机械方块
 
 gtnl.machine.mega_bath_tank.name=巨型浸洗池
 gtnl.machine.mega_bath_tank.recipe_type=洗矿池 / 简易洗矿池 / 化学浸洗机

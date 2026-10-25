@@ -992,9 +992,6 @@ GT5U.gui.text.missing_schematic=§dSchematic Missing
 gtnl.machine.desulfurizer.name=Desulfurizer
 gtnl.recipe.desulfurizer=Desulfurization
 gtnl.machine.desulfurizer.recipe_type=Desulfurization
-gtnl.machine.desulfurizer.tooltip.0=Each coil level increases parallel by 8.
-gtnl.machine.desulfurizer.tooltip.1=Each coil level increases processing speed by 10%.
-gtnl.machine.desulfurizer.tooltip.casing=Any Clean Stainless Steel Machine Block
 
 gtnl.machine.large_circuit_assembler.name=Large Circuit Assembler
 gtnl.machine.large_circuit_assembler.recipe_type=Circuit Assembler
@@ -1188,13 +1185,6 @@ gtnl.machine.digester.recipe_type=Digester
 
 gtnl.machine.alloy_blast_smelter.name=Alloy Blast Smelter
 gtnl.machine.alloy_blast_smelter.recipe_type=Alloy Blast Smelter
-gtnl.machine.alloy_blast_smelter.tooltip.0=For every 900K above the recipe temperature, energy consumption is multiplied by 95% (excluding overclocking).
-gtnl.machine.alloy_blast_smelter.tooltip.1=For every 1800K above the recipe temperature, one Perfect Overclock is performed.
-gtnl.machine.alloy_blast_smelter.tooltip.2=Each voltage level above MV increases temperature by 100K.
-gtnl.machine.alloy_blast_smelter.tooltip.3=Fixed parallel of 16.
-gtnl.machine.alloy_blast_smelter.tooltip.4=Install Parallel Control Hatch to reduce power consumption!
-gtnl.machine.alloy_blast_smelter.tooltip.5=Energy hatch limits the machine's working voltage tier.
-gtnl.machine.alloy_blast_smelter.tooltip.casing=Any Blast Furnace Machine Block
 
 gtnl.machine.large_steam_extractor.name=Large Steam Extractor
 gtnl.machine.large_steam_extractor.recipe_type=Extractor
@@ -1223,13 +1213,6 @@ gtnl.machine.vacuum_drying_furnace.mode.0=Vacuum Furnace
 gtnl.machine.vacuum_drying_furnace.mode.1=Dehydrator
 gtnl.machine.vacuum_drying_furnace.mode.2=Cold Trap
 gtnl.machine.vacuum_drying_furnace.mode.3=Reactor Molten Salt Processing Plant
-gtnl.machine.vacuum_drying_furnace.tooltip.0=150% faster than machines of the same voltage
-gtnl.machine.vacuum_drying_furnace.tooltip.1=Only requires 60% of the recipe's power demand
-gtnl.machine.vacuum_drying_furnace.tooltip.2=For every 900K above the recipe temperature, energy consumption is multiplied by 95% (excluding overclocking)
-gtnl.machine.vacuum_drying_furnace.tooltip.3=For every 1800K above the recipe temperature, perform one Perfect Overclock
-gtnl.machine.vacuum_drying_furnace.tooltip.4=For each voltage tier above MV, temperature increases by 100K
-gtnl.machine.vacuum_drying_furnace.tooltip.5=Provides an additional 1000% speed boost (multiplicative) when the recipe is a cold trap or reactor molten salt processing plant
-gtnl.machine.vacuum_drying_furnace.tooltip.casing=Any vacuum machine block
 
 gtnl.machine.large_distillery.name=Large Distillation Plant
 gtnl.machine.large_distillery.recipe_type=Distillation Tower / Distillation Chamber
@@ -1303,13 +1286,6 @@ gtnl.machine.precision_assembler.mode.1=Precision Assembler
 
 gtnl.machine.mega_alloy_blast_smelter.name=Industrial Alloy Blast Smelter
 gtnl.machine.mega_alloy_blast_smelter.recipe_type=Alloy Blast Smelter
-gtnl.machine.mega_alloy_blast_smelter.tooltip.0=100% faster than the Alloy Blast Smelter.
-gtnl.machine.mega_alloy_blast_smelter.tooltip.1=Consumes only 80% of the recipe's required power.
-gtnl.machine.mega_alloy_blast_smelter.tooltip.2=For every 900K above the recipe temperature, energy consumption is multiplied by 95% (excluding overclocking).
-gtnl.machine.mega_alloy_blast_smelter.tooltip.3=Each glass tier provides an additional 2% chance of double output!
-gtnl.machine.mega_alloy_blast_smelter.tooltip.4=Each coil tier provides an additional 2% power reduction and 2% speed boost!
-gtnl.machine.mega_alloy_blast_smelter.tooltip.5=Each voltage level above MV increases temperature by 100K.
-gtnl.machine.mega_alloy_blast_smelter.tooltip.casing=Any Blast Furnace Machine Block
 
 gtnl.machine.grand_assembly_line.name=Grand Assembly Line
 gtnl.machine.grand_assembly_line.recipe_type=Disordered Assembly Line
@@ -1583,11 +1559,6 @@ gtnl.machine.high_energy_laser_lathe.recipe_type=Lathe
 
 gtnl.machine.mega_mixer.name=Mega Mixer
 gtnl.machine.mega_mixer.recipe_type=Mixer
-gtnl.machine.mega_mixer.tooltip.0=400% faster than machines of the same voltage
-gtnl.machine.mega_mixer.tooltip.1=Only requires 60% of the recipe's power demand
-gtnl.machine.mega_mixer.tooltip.2=When recipe locking is enabled, grants two §cPerfect Overclock§7 and reduces power requirement to 80%
-gtnl.machine.mega_mixer.tooltip.3=With recipe locking, continuous operation speeds up to 700%
-gtnl.machine.mega_mixer.casing=Any Reinforced Iridium Machine Block
 
 gtnl.machine.steam_beacon_module.1.name=Steam Elevator Beacon Module I
 gtnl.machine.steam_beacon_module.2.name=Steam Elevator Beacon Module II
@@ -1890,10 +1861,6 @@ gtnl.machine.mega_vacuum_drying_furnace.mode.0=Vacuum Furnace
 gtnl.machine.mega_vacuum_drying_furnace.mode.1=Dehydrator
 gtnl.machine.mega_vacuum_drying_furnace.mode.2=Cold Trap
 gtnl.machine.mega_vacuum_drying_furnace.mode.3=Reactor Molten Salt Processing Plant
-gtnl.machine.mega_vacuum_drying_furnace.info.0=For every 900K above the recipe temperature, energy consumption is multiplied by 95% (excluding overclocking)
-gtnl.machine.mega_vacuum_drying_furnace.info.1=For every 1800K above the recipe temperature, perform one Perfect Overclock
-gtnl.machine.mega_vacuum_drying_furnace.info.2=For each voltage tier above MV, temperature increases by 100K
-gtnl.machine.mega_vacuum_drying_furnace.casing=Any Hyper Energy Machine Block
 
 gtnl.machine.mega_bath_tank.name=Mega Bath Tank
 gtnl.machine.mega_bath_tank.recipe_type=Ore Washer / Simple Ore Washer / Chemical Bath
