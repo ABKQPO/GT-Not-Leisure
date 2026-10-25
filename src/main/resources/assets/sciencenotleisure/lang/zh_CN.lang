@@ -1144,13 +1144,6 @@ gtnl.machine.reaction_furnace.recipe_type=熔炉
 
 gtnl.machine.energy_infuser.name=能量注入仪
 gtnl.machine.energy_infuser.recipe_type=能量注入仪
-gtnl.machine.energy_infuser.tooltip.0=比原版的能量注入仪更快！
-gtnl.machine.energy_infuser.tooltip.1=可用于为物品充电(无损)
-gtnl.machine.energy_infuser.tooltip.2=提供UU物质可修复物品
-gtnl.machine.energy_infuser.tooltip.3=充电时将存储在机器内部
-gtnl.machine.energy_infuser.tooltip.4=使用螺丝刀右键立即输出所有物品
-gtnl.machine.energy_infuser.tooltip.5=不安装能源仓将自动进入无线模式
-gtnl.machine.energy_infuser.tooltip.casing=任意分子机械方块
 gtnl.machine.energy_infuser.info.output_all_items=立即输出所有物品
 
 gtnl.machine.large_canning.name=大型装罐机
@@ -1352,10 +1345,6 @@ gtnl.machine.shallow_chemical_coupling.name=浅层化学耦合
 gtnl.recipe.shallow_chemical_coupling=浅层化学耦合
 
 gtnl.machine.steamgate.name=蒸汽之门基础方块
-gtnl.machine.steamgate.tooltip.0=§b§o不可思议的机器。
-gtnl.machine.steamgate.tooltip.1=必须使用蒸汽之门拨号装置连接到另一座蒸汽之门。
-gtnl.machine.steamgate.tooltip.2=左键单击以保存蒸汽之门数据。右键单击以连接到另一座蒸汽之门。
-gtnl.machine.steamgate.tooltip.3=右键单击已连接的蒸汽之门以进行传送。
 gtnl.machine.steamgate.message.saved=已保存蒸汽之门数据
 gtnl.machine.steamgate.message.linked=成功拨号到蒸汽之门
 gtnl.machine.steamgate.message.link_failed=无法拨号到蒸汽之门
@@ -1459,15 +1448,6 @@ gtnl.machine.nanites_module.tooltip.casing=提示方块：1号
 
 gtnl.machine.super_space_elevator.name=超级太空电梯
 gtnl.machine.super_space_elevator.recipe_type=太空电梯
-gtnl.machine.super_space_elevator.tooltip.0=§d§l连接星辰
-gtnl.machine.super_space_elevator.tooltip.1=每级加速轨道提供112模块数量
-gtnl.machine.super_space_elevator.tooltip.2=加速轨道等级限制了模块等级
-gtnl.machine.super_space_elevator.tooltip.3=每个模块有各自独立的输入输出空间，除了能量
-gtnl.machine.super_space_elevator.tooltip.4=本控制器接收能量供应并将能量分发
-gtnl.machine.super_space_elevator.tooltip.5=MK-III及以上加速轨道可开启无线模式
-gtnl.machine.super_space_elevator.tooltip.6=当主结构未安装能源仓时自动进入无线模式
-gtnl.machine.super_space_elevator.tooltip.7=关闭控制器即可暂停所有模块
-gtnl.machine.super_space_elevator.casing=任意太空电梯基座机械方块
 gtnl.machine.super_space_elevator.structure_levels=已检测到附属层数：
 
 gtnl.machine.large_bio_lab.name=大型生物实验室
@@ -1604,16 +1584,6 @@ gtnl.machine.nano_assembler_mark_l.recipe_type=精密组装机
 
 gtnl.machine.high_performance_computation_array.name=高性能计算阵列
 gtnl.machine.high_performance_computation_array.recipe_type=量子计算机
-gtnl.machine.high_performance_computation_array.info.0=用于生成算力(以及热量)
-gtnl.machine.high_performance_computation_array.info.1=需要持续输入超级冷却液来降低热量
-gtnl.machine.high_performance_computation_array.info.2=成型后会显示一系列的指示器
-gtnl.machine.high_performance_computation_array.info.3=不同的指示器会给予不同的性能调整
-gtnl.machine.high_performance_computation_array.info.4=使用螺丝刀切换无线模式
-gtnl.machine.high_performance_computation_array.casing.0=未定元解析器 X
-gtnl.machine.high_performance_computation_array.casing.1=任意电子计算机械方块(最前或最后一片)
-gtnl.machine.high_performance_computation_array.casing.2=数据接口
-gtnl.machine.high_performance_computation_array.casing.3=计算机箱
-gtnl.machine.high_performance_computation_array.casing.4=任意进阶电子计算机械方块，除外侧
 gtnl.gui.high_performance_computation_array.structure_length=结构长度
 gtnl.gui.high_performance_computation_array.max_heat=当前最大热量
 gtnl.gui.high_performance_computation_array.produced_computation=生成算力
@@ -1621,13 +1591,6 @@ gtnl.gui.high_performance_computation_array.coolant_consumption=当前消耗冷�
 
 gtnl.machine.eye_of_harmony_injector.name=鸿蒙之眼注入器
 gtnl.machine.eye_of_harmony_injector.recipe_type=§b鸿蒙之眼注入器
-gtnl.machine.eye_of_harmony_injector.tooltip.0=以强大的宇宙力量注入气体！
-gtnl.machine.eye_of_harmony_injector.tooltip.1=这太令人兴奋了！
-gtnl.machine.eye_of_harmony_injector.tooltip.2=直接操纵鸿蒙之眼来灌注流体
-gtnl.machine.eye_of_harmony_injector.tooltip.3=支持所有输入仓！
-gtnl.machine.eye_of_harmony_injector.tooltip.4=在GUI内配置最大输入阈值
-gtnl.machine.eye_of_harmony_injector.tooltip.5=§e爱来自Korosensei :)
-gtnl.machine.eye_of_harmony_injector.tooltip.casing=任意超能机械方块
 gtnl.machine.eye_of_harmony_injector.helium_threshold=§b氦气最大输入阈值
 gtnl.machine.eye_of_harmony_injector.hydrogen_threshold=§b氢气最大输入阈值
 gtnl.machine.eye_of_harmony_injector.raw_star_matter_threshold=§b浓缩原始恒星等离子体混合物最大输入阈值
@@ -1841,11 +1804,6 @@ gtnl.machine.extreme_electric_furnace.recipe_type=合金炉
 
 gtnl.machine.data_center.name=数据中心
 gtnl.machine.data_center.recipe_type=数据库
-gtnl.machine.data_center.tooltip.0=你的个人网络存储器
-gtnl.machine.data_center.tooltip.1=每个数据访问仓耗电1,024EU/t
-gtnl.machine.data_center.tooltip.2=每个发送接口耗电30,720EU/t
-gtnl.machine.data_center.tooltip.3=使用螺丝刀切换无线模式
-gtnl.machine.data_center.casing=任意电子计算机械方块
 
 gtnl.machine.kerr_newman_homogenizer.name=克尔·纽曼均质仪
 gtnl.machine.kerr_newman_homogenizer.recipe_type=搅拌机
@@ -1891,14 +1849,6 @@ gtnl.machine.magnetic_confinement_dimensionality_shock_device.recipe_type=超维
 
 gtnl.machine.supercomputing_center.name=运算中心
 gtnl.machine.supercomputing_center.recipe_type=量子计算机
-gtnl.machine.supercomputing_center.tooltip.0=用于生成算力(以及热量)
-gtnl.machine.supercomputing_center.tooltip.1=可以持续输入极寒之凛冰来降低热量
-gtnl.machine.supercomputing_center.tooltip.2=代价是每个机箱的热量会增加机箱算力 / 256
-gtnl.machine.supercomputing_center.tooltip.3=每个机箱额外提供16倍算力
-gtnl.machine.supercomputing_center.tooltip.4=如果输入极寒之凛冰，算力额外增加16倍
-gtnl.machine.supercomputing_center.tooltip.5=使用螺丝刀切换无线模式
-gtnl.machine.supercomputing_center.tooltip.6=不安装能源仓将自动进入无线电网模式
-gtnl.machine.supercomputing_center.casing=提示方块：1号
 
 gtnl.machine.pcb_factory.name=PCB工厂
 gtnl.machine.pcb_factory.recipe_type=PCB工厂
@@ -1940,17 +1890,6 @@ gtnl.machine.large_steam_wiremill.recipe_type=线材轧机
 
 gtnl.machine.research_center.name=科研中心
 gtnl.machine.research_center.recipe_type=研究站 / 扫描仪
-gtnl.machine.research_center.tooltip.0=拥有4并行
-gtnl.machine.research_center.tooltip.1=研究站模式不受最小算力输入限制，每个并行均能享受完整算力
-gtnl.machine.research_center.tooltip.2=拥有4个研究目标过滤槽，每个槽位对应一并行
-gtnl.machine.research_center.tooltip.3=在扫描模式时等同于Debug扫描仪
-gtnl.machine.research_center.casing=任意放射硅岩合金机械方块
-gtnl.machine.research_center.structure.0=113x 任意等级玻璃
-gtnl.machine.research_center.structure.1=682x 强化镀铱机械方块
-gtnl.machine.research_center.structure.2=232x 放射硅岩合金机械方块
-gtnl.machine.research_center.structure.3=335x 稳定化硅岩净水厂机械方块
-gtnl.machine.research_center.structure.4=4x 钢栏杆
-gtnl.machine.research_center.structure.5=36x 霓虹石
 
 gtnl.machine.cheat_ore_processing_factory.name=作弊者的究极集成矿处
 gtnl.recipe.cheat_ore_processing=作弊者的快速处理

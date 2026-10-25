@@ -1144,13 +1144,6 @@ gtnl.machine.reaction_furnace.recipe_type=Furnace
 
 gtnl.machine.energy_infuser.name=Energy Infuser
 gtnl.machine.energy_infuser.recipe_type=Energy Infuser
-gtnl.machine.energy_infuser.tooltip.0=Faster than the vanilla Energy Infuser!
-gtnl.machine.energy_infuser.tooltip.1=Can be used to charge items without loss.
-gtnl.machine.energy_infuser.tooltip.2=Provides UU-Matter to repair items.
-gtnl.machine.energy_infuser.tooltip.3=Store inside the machine during charging
-gtnl.machine.energy_infuser.tooltip.4=Right-click with the screwdriver to immediately output all items
-gtnl.machine.energy_infuser.tooltip.5=If no energy hatch is installed, it will automatically enter wireless mode
-gtnl.machine.energy_infuser.tooltip.casing=Any Molecular Machine Block
 gtnl.machine.energy_infuser.info.output_all_items=Immediately output all items
 
 gtnl.machine.large_canning.name=Large Canning Machine
@@ -1352,10 +1345,6 @@ gtnl.machine.shallow_chemical_coupling.name=Shallow Chemical Coupling
 gtnl.recipe.shallow_chemical_coupling=Shallow Chemical Coupling
 
 gtnl.machine.steamgate.name=Steamgate Base Block
-gtnl.machine.steamgate.tooltip.0=§b§oAdvanced steam technology.
-gtnl.machine.steamgate.tooltip.1=Must be linked to another steamgate with a Steamgate Dialing Device.
-gtnl.machine.steamgate.tooltip.2=Left click to save steamgate data. Right click to link to another steamgate.
-gtnl.machine.steamgate.tooltip.3=Right click a linked steamgate to teleport.
 gtnl.machine.steamgate.message.saved=Saved Steamgate Dialing Data
 gtnl.machine.steamgate.message.linked=Steamgate dialed successfully
 gtnl.machine.steamgate.message.link_failed=Steamgate could not be dialed
@@ -1459,15 +1448,6 @@ gtnl.machine.nanites_module.tooltip.casing=Hint 1 dots
 
 gtnl.machine.super_space_elevator.name=Super Space Elevator
 gtnl.machine.super_space_elevator.recipe_type=Space Elevator
-gtnl.machine.super_space_elevator.tooltip.0=§d§lConnected to the Stars
-gtnl.machine.super_space_elevator.tooltip.1=Each level of speed track provides 112 module
-gtnl.machine.super_space_elevator.tooltip.2=Motor tier limits module tier and amount of possible modules
-gtnl.machine.super_space_elevator.tooltip.3=Each module has their own space for IO, except energy
-gtnl.machine.super_space_elevator.tooltip.4=Energy is supplied to this controller and gets distributed
-gtnl.machine.super_space_elevator.tooltip.5=MK-III and above speed tracks can enable wireless mode
-gtnl.machine.super_space_elevator.tooltip.6=The system automatically activates wireless mode when no energy hatch is installed in the main structure
-gtnl.machine.super_space_elevator.tooltip.7=Disabling this controller also pauses all modules
-gtnl.machine.super_space_elevator.casing=Any Space Elevator Base Casing
 gtnl.machine.super_space_elevator.structure_levels=Detected attached structure levels: 
 
 gtnl.machine.large_bio_lab.name=Large Bio Lab
@@ -1604,16 +1584,6 @@ gtnl.machine.nano_assembler_mark_l.recipe_type=Precision Assembler
 
 gtnl.machine.high_performance_computation_array.name=High Performance Computation Array
 gtnl.machine.high_performance_computation_array.recipe_type=Quantum Computer
-gtnl.machine.high_performance_computation_array.info.0=Used to generate computation (and heat)
-gtnl.machine.high_performance_computation_array.info.1=Requires a continuous supply of Super Coolant to reduce heat
-gtnl.machine.high_performance_computation_array.info.2=After forming, a series of indicators will be displayed
-gtnl.machine.high_performance_computation_array.info.3=Different indicators provide different performance adjustments
-gtnl.machine.high_performance_computation_array.info.4=Use screwdriver to toggle wireless mode
-gtnl.machine.high_performance_computation_array.casing.0=Uncertainty Resolver X
-gtnl.machine.high_performance_computation_array.casing.1=Any Computer Casing on the first or last slice
-gtnl.machine.high_performance_computation_array.casing.2=Data Connector
-gtnl.machine.high_performance_computation_array.casing.3=Computer Rack
-gtnl.machine.high_performance_computation_array.casing.4=Any Advanced Computer Casing, except the outer ones
 gtnl.gui.high_performance_computation_array.structure_length=Structure Lens
 gtnl.gui.high_performance_computation_array.max_heat=Current max. heat
 gtnl.gui.high_performance_computation_array.produced_computation=Produced computation
@@ -1621,13 +1591,6 @@ gtnl.gui.high_performance_computation_array.coolant_consumption=Current coolant 
 
 gtnl.machine.eye_of_harmony_injector.name=Eye of Harmony Injector
 gtnl.machine.eye_of_harmony_injector.recipe_type=§bEye of Harmony Injector
-gtnl.machine.eye_of_harmony_injector.tooltip.0=Inject gas with powerful cosmic power!
-gtnl.machine.eye_of_harmony_injector.tooltip.1=It's so exciting!
-gtnl.machine.eye_of_harmony_injector.tooltip.2=Directly manipulate the Eye of Harmony to inject fluids
-gtnl.machine.eye_of_harmony_injector.tooltip.3=Supports all input hatches!
-gtnl.machine.eye_of_harmony_injector.tooltip.4=Configure maximum input threshold in the GUI
-gtnl.machine.eye_of_harmony_injector.tooltip.5=§eLove from Korosensei :)
-gtnl.machine.eye_of_harmony_injector.tooltip.casing=Any Hyper Energy Machine Block
 gtnl.machine.eye_of_harmony_injector.helium_threshold=§bMaximum helium input threshold
 gtnl.machine.eye_of_harmony_injector.hydrogen_threshold=§bMaximum hydrogen input threshold
 gtnl.machine.eye_of_harmony_injector.raw_star_matter_threshold=§bMaximum raw star matter input threshold
@@ -1841,11 +1804,6 @@ gtnl.machine.extreme_electric_furnace.recipe_type=Alloy Smelter
 
 gtnl.machine.data_center.name=Data Center
 gtnl.machine.data_center.recipe_type=Data Bank
-gtnl.machine.data_center.tooltip.0=Your personal network storage.
-gtnl.machine.data_center.tooltip.1=Each Data Access Hatch consumes 1,024 EU/t.
-gtnl.machine.data_center.tooltip.2=Each Transmission Connector consumes 30,720 EU/t.
-gtnl.machine.data_center.tooltip.3=Use screwdriver to toggle wireless mode.
-gtnl.machine.data_center.casing=Any Computer Casing
 
 gtnl.machine.kerr_newman_homogenizer.name=Kerr Newman Homogenizer
 gtnl.machine.kerr_newman_homogenizer.recipe_type=Mixer
@@ -1891,14 +1849,6 @@ gtnl.machine.magnetic_confinement_dimensionality_shock_device.recipe_type=Transc
 
 gtnl.machine.supercomputing_center.name=Supercomputing Center
 gtnl.machine.supercomputing_center.recipe_type=Quantum Computer
-gtnl.machine.supercomputing_center.tooltip.0=Used to generate computation (and heat)
-gtnl.machine.supercomputing_center.tooltip.1=Can continuously input Cryotheum to reduce heat
-gtnl.machine.supercomputing_center.tooltip.2=The cost is that the heat of each rack will increase by rack computation / 256
-gtnl.machine.supercomputing_center.tooltip.3=Each rack provides an additional 16 times computation
-gtnl.machine.supercomputing_center.tooltip.4=If Cryotheum is input, computation will increase by an additional 16 times
-gtnl.machine.supercomputing_center.tooltip.5=Use screwdriver to toggle wireless mode
-gtnl.machine.supercomputing_center.tooltip.6=If no energy hatch is installed, it will automatically enter wireless energy network
-gtnl.machine.supercomputing_center.casing=Hint 1 dots
 
 gtnl.machine.pcb_factory.name=PCB Factory
 gtnl.machine.pcb_factory.recipe_type=PCB Factory
@@ -1940,17 +1890,6 @@ gtnl.machine.large_steam_wiremill.recipe_type=Wiremill
 
 gtnl.machine.research_center.name=Research center
 gtnl.machine.research_center.recipe_type=Research Station / Scanner
-gtnl.machine.research_center.tooltip.0=Has 4 parallels
-gtnl.machine.research_center.tooltip.1=Research Station mode is not limited by minimum computation input; each parallel can use the full computation
-gtnl.machine.research_center.tooltip.2=Has 4 research target filter slots, each slot corresponds to one parallel
-gtnl.machine.research_center.tooltip.3=Scanner mode is equivalent to a Debug Scanner
-gtnl.machine.research_center.casing=Any Radiant Naquadah Alloy Machine Casing
-gtnl.machine.research_center.structure.0=113x Any Tier Glass
-gtnl.machine.research_center.structure.1=682x Advanced Iridium Plated Machine Casing
-gtnl.machine.research_center.structure.2=232x Radiant Naquadah Alloy Machine Casing
-gtnl.machine.research_center.structure.3=335x Stabilized Naquadah Water Plant Machine Casing
-gtnl.machine.research_center.structure.4=4x Steel Bars
-gtnl.machine.research_center.structure.5=36x Neonite
 
 gtnl.machine.cheat_ore_processing_factory.name=Cheat's Ore Processing Factory
 gtnl.recipe.cheat_ore_processing=Cheat's Fast Processing

@@ -25,7 +25,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -55,6 +54,7 @@ import com.science.gtnl.common.gui.modularui.EnergyInfuserGui;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.item.ItemUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cofh.api.energy.IEnergyContainerItem;
 import gregtech.api.GregTechAPI;
@@ -426,20 +426,8 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.energy_infuser.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.5"))
-            .addSupportAny()
-            .beginStructureBlock(5, 8, 5, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.energy_infuser.tooltip.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltipOf(this)
             .toolTipFinisher();
         return tt;
     }

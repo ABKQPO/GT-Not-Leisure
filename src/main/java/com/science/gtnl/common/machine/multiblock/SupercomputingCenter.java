@@ -42,6 +42,7 @@ import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
@@ -83,6 +84,7 @@ import tectech.util.CommonValues;
 @IMetaTileEntity.SkipGenerateDescription
 public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalConstructable {
 
+    private static final String RACK_HATCH_NAME_KEY = "gt.blockmachines.hatch.rack.tier.08.name";
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String SC_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/supercomputing_center";
     private static final String[][] shape = StructureUtils.readStructureFromFile(SC_STRUCTURE_FILE_PATH);
@@ -440,20 +442,8 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.supercomputing_center.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.supercomputing_center.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.supercomputing_center.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.supercomputing_center.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.supercomputing_center.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.supercomputing_center.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.supercomputing_center.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.supercomputing_center.tooltip.6"))
-            .addSupportAny()
-            .beginStructureBlock(28, 59, 21, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.supercomputing_center.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.supercomputing_center.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.supercomputing_center.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltipOf(this)
             .toolTipFinisher();
         return tt;
     }
@@ -590,6 +580,17 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
         @Override
         public IGTHatchAdder<? super SupercomputingCenter> adder() {
             return adder;
+        }
+
+        // Why: GT names hatch elements by untranslated hatch_type_ keys, so these use the hatch item name.
+        @Override
+        public String getDescriptionLangKey() {
+            return RACK_HATCH_NAME_KEY;
+        }
+
+        @Override
+        public String getDisplayName() {
+            return StatCollector.translateToLocal(RACK_HATCH_NAME_KEY);
         }
     }
 }

@@ -597,12 +597,15 @@ public class MultiblockTooltipReader {
     private static List<List<PieceCall>> recordSizes(MTEEnhancedMultiBlockBase<?> controller,
         Set<String> channelNames) {
         List<List<PieceCall>> sizes = new ArrayList<>();
-        List<PieceCall> previous = Collections.emptyList();
+        Set<PieceCall> previous = Collections.emptySet();
+        // Why: some machines clamp small projector sizes to a minimum, so equal sizes are skipped instead of ending.
         for (int stackSize = 1; stackSize <= MAX_PROJECTOR_STACK; stackSize++) {
             List<PieceCall> calls = StructureTooltipHooks.recordConstruct(controller, stackSize, channelNames);
-            if (calls.isEmpty() || new HashSet<>(previous).containsAll(calls)) break;
+            if (calls.isEmpty()) break;
+            Set<PieceCall> current = new HashSet<>(calls);
+            if (current.equals(previous)) continue;
             sizes.add(calls);
-            previous = calls;
+            previous = current;
         }
         return sizes;
     }

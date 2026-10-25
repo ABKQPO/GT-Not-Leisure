@@ -31,6 +31,7 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.Materials;
@@ -265,24 +266,8 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.data_center.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.data_center.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.data_center.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.data_center.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.data_center.tooltip.3"))
-            .addSupportAny()
-            .beginStructureBlock(15, 9, 15, true)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.data_center.casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.data_center.casing"), 1)
-            .addOtherStructurePart(
-                StatCollector.translateToLocal("gt.blockmachines.hatch.dataoutass.tier.07.name"),
-                StatCollector.translateToLocal("tt.keyword.Structure.AnyComputerCasing"),
-                1)
-            .addOtherStructurePart(
-                StatCollector.translateToLocal("tt.keyword.Structure.DataAccessHatch"),
-                StatCollector.translateToLocal("tt.keyword.Structure.AnyHighPowerCasing"),
-                2)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltipOf(this)
             .toolTipFinisher();
         return tt;
     }
@@ -325,28 +310,29 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
 
     public enum DataBankHatches implements IHatchElement<DataCenter> {
 
-        DataStick(MTEHatchDataAccess.class) {
+        DataStick("gt.blockmachines.hatch.dataaccess.name", MTEHatchDataAccess.class) {
 
             @Override
             public long count(DataCenter t) {
                 return t.mDataAccessHatches.size();
             }
         },
-        OutboundConnector(MTEHatchDataItemsOutput.class) {
+        OutboundConnector("gt.blockmachines.hatch.dataoutass.tier.07.name", MTEHatchDataItemsOutput.class) {
 
             @Override
             public long count(DataCenter t) {
                 return t.mStacksDataOutputs.size();
             }
         },
-        InboundConnector(MTEHatchDataItemsInput.class) {
+        InboundConnector("gt.blockmachines.hatch.datainass.tier.07.name", MTEHatchDataItemsInput.class) {
 
             @Override
             public long count(DataCenter t) {
                 return t.mDataAccessHatches.size();
             }
         },
-        WirelessOutboundConnector(MTEHatchWirelessDataItemsOutput.class) {
+        WirelessOutboundConnector("gt.blockmachines.hatch.dataoutass.wireless.tier.12.name",
+            MTEHatchWirelessDataItemsOutput.class) {
 
             @Override
             public long count(DataCenter t) {
@@ -355,10 +341,23 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
         };
 
         private final List<? extends Class<? extends IMetaTileEntity>> mteClasses;
+        private final String nameKey;
 
         @SafeVarargs
-        DataBankHatches(Class<? extends IMetaTileEntity>... mteClasses) {
+        DataBankHatches(String nameKey, Class<? extends IMetaTileEntity>... mteClasses) {
+            this.nameKey = nameKey;
             this.mteClasses = Collections.unmodifiableList(Arrays.asList(mteClasses));
+        }
+
+        // Why: GT names hatch elements by untranslated hatch_type_ keys, so these use the hatch item name.
+        @Override
+        public String getDescriptionLangKey() {
+            return nameKey;
+        }
+
+        @Override
+        public String getDisplayName() {
+            return StatCollector.translateToLocal(nameKey);
         }
 
         @Override

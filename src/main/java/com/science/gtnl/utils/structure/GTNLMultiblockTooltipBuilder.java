@@ -83,6 +83,13 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
         return this;
     }
 
+    // Why: TecTech machines extend a base typed with TTMultiblockBase, which the self-typed method cannot infer.
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public GTNLMultiblockTooltipBuilder addAutoTooltipOf(MTEEnhancedMultiBlockBase<?> machine) {
+        MTEEnhancedMultiBlockBase raw = machine;
+        return addAutoTooltip(raw);
+    }
+
     private <T extends MTEEnhancedMultiBlockBase<T>> void addAutoInfo(T machine, String keyPrefix) {
         InfoSummary info = MultiblockTooltipReader.readInfo(machine, keyPrefix, structureOf(machine));
         if (info == null) return;
