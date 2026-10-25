@@ -1107,9 +1107,6 @@ gtnl.machine.desulfurizer.tooltip.casing=Any Clean Stainless Steel Machine Block
 
 gtnl.machine.large_circuit_assembler.name=Large Circuit Assembler
 gtnl.machine.large_circuit_assembler.recipe_type=Circuit Assembler
-gtnl.machine.large_circuit_assembler.tooltip.0=Glass tier limits the energy hatch tier, UV glass unlocks all tiers.
-gtnl.machine.large_circuit_assembler.tooltip.1=Only one energy hatch can be installed!
-gtnl.machine.large_circuit_assembler.tooltip.casing=Any Multi-Functional Machine Block
 
 gtnl.machine.petrochemical_plant.name=Petrochemical Plant
 gtnl.recipe.petrochemical_plant=Petrochemical Plant
@@ -1239,54 +1236,33 @@ gtnl.machine.vibrant_photovoltaic_power_station.tooltip.casing=Any Reinforced Tu
 
 gtnl.machine.large_maceration_tower.name=Large Maceration Tower
 gtnl.machine.large_maceration_tower.recipe_type=Pulverizer
-gtnl.machine.large_maceration_tower.tooltip.0=300% faster than machines of the same voltage
-gtnl.machine.large_maceration_tower.tooltip.casing=Any solid Iridium-Osmium machine block
 
 gtnl.machine.hand_of_john_davison_rockefeller.name=Hand of John Davison Rockefeller
 gtnl.machine.hand_of_john_davison_rockefeller.recipe_type=Chemical Plant
 
 gtnl.machine.large_sifting_funnel.name=Large Sifting Funnel
 gtnl.machine.large_sifting_funnel.recipe_type=Sifter
-gtnl.machine.large_sifting_funnel.tooltip.0=400% faster than machines of the same voltage
-gtnl.machine.large_sifting_funnel.tooltip.1=Only requires 60% of the recipe's power demand
-gtnl.machine.large_sifting_funnel.tooltip.casing=Any centrifuge machine block
 
 gtnl.machine.large_cutter.name=Large Cutter
 gtnl.machine.large_cutter.recipe_type=Cutter
-gtnl.machine.large_cutter.tooltip.0=225% faster than machines of the same voltage
-gtnl.machine.large_cutter.tooltip.1=Only requires 50% of the recipe's power demand
-gtnl.machine.large_cutter.tooltip.casing=Any cutter frame
 
 gtnl.machine.large_brewer.name=Large Brewery
 gtnl.machine.large_brewer.recipe_type=Brewery / Fermenter / Fluid Heater
-gtnl.machine.large_brewer.tooltip.0=125% faster than machines of the same voltage
 gtnl.machine.large_brewer.mode.0=Brewery
 gtnl.machine.large_brewer.mode.1=Fermenter
 gtnl.machine.large_brewer.mode.2=Fluid Heater
-gtnl.machine.large_brewer.tooltip.casing=Any coke oven machine block
 
 gtnl.machine.large_industrial_lathe.name=Large Industrial Lathe
 gtnl.machine.large_industrial_lathe.recipe_type=Lathe
-gtnl.machine.large_industrial_lathe.tooltip.0=125% faster than machines of the same voltage
-gtnl.machine.large_industrial_lathe.tooltip.casing=Any reinforced nichrome machine block
 
 gtnl.machine.large_material_press.name=Large Material Press
 gtnl.machine.large_material_press.recipe_type=Compressor
-gtnl.machine.large_material_press.tooltip.0=150% faster than machines of the same voltage
-gtnl.machine.large_material_press.tooltip.1=Install UV or higher Parallel Control Hatch to support HIP Unit
-gtnl.machine.large_material_press.tooltip.casing=Any reinforced nichrome machine block
 
 gtnl.machine.large_wiremill.name=Large Wiremill
 gtnl.machine.large_wiremill.recipe_type=Wiremill
-gtnl.machine.large_wiremill.tooltip.0=225% faster than machines of the same voltage
-gtnl.machine.large_wiremill.tooltip.1=Only requires 60% of the recipe's power demand
-gtnl.machine.large_wiremill.tooltip.casing=Any reinforced nichrome machine block
 
 gtnl.machine.large_bender.name=Large Bender
 gtnl.machine.large_bender.recipe_type=Bender
-gtnl.machine.large_bender.tooltip.0=500% faster than machines of the same voltage
-gtnl.machine.large_bender.tooltip.1=Only requires 80% of the recipe's power demand
-gtnl.machine.large_bender.tooltip.casing=Any reinforced nichrome machine block
 
 gtnl.machine.electric_implosion_compressor.name=Electric Implosion Compressor
 gtnl.machine.electric_implosion_compressor.recipe_type=Electric Implosion Compressor
@@ -1294,21 +1270,12 @@ gtnl.machine.electric_implosion_compressor.tooltip.casing=Any Reinforced Tungste
 
 gtnl.machine.large_extruder.name=Large Extruder
 gtnl.machine.large_extruder.recipe_type=Extruder
-gtnl.machine.large_extruder.tooltip.0=275% faster than machines of the same voltage
-gtnl.machine.large_extruder.tooltip.1=Only requires 80% of the recipe's power demand
-gtnl.machine.large_extruder.tooltip.casing=Any reinforced nichrome machine block
 
 gtnl.machine.large_arc_smelter.name=Large Arc Smelter
 gtnl.machine.large_arc_smelter.recipe_type=Arc Furnace
-gtnl.machine.large_arc_smelter.tooltip.0=300% faster than machines of the same voltage
-gtnl.machine.large_arc_smelter.tooltip.1=Only requires 80% of the recipe's power demand
-gtnl.machine.large_arc_smelter.tooltip.casing=Any smelting furnace machine block
 
 gtnl.machine.large_forming.name=Large Forming Press
 gtnl.machine.large_forming.recipe_type=Forming Press
-gtnl.machine.large_forming.tooltip.0=500% faster than machines of the same voltage
-gtnl.machine.large_forming.tooltip.1=Only requires 80% of the recipe's power demand
-gtnl.machine.large_forming.tooltip.casing=Any reinforced nichrome machine block
 
 gtnl.machine.matter_fabricator.name=Matter Fabricator
 gtnl.machine.matter_fabricator.recipe_type=Matter Fabricator
@@ -1320,35 +1287,22 @@ gtnl.nei.matter_fabricator_recipes.2=Any Material Block
 
 gtnl.machine.large_electrolyzer.name=Large Electrolyzer
 gtnl.machine.large_electrolyzer.recipe_type=Electrolyzer
-gtnl.machine.large_electrolyzer.tooltip.0=200% faster than machines of the same voltage
-gtnl.machine.large_electrolyzer.tooltip.1=Only requires 80% of the recipe's power demand
-gtnl.machine.large_electrolyzer.tooltip.casing=Any electrolyzer machine block
 
 gtnl.machine.large_electromagnet.name=Large Electromagnet Factory
 gtnl.machine.large_electromagnet.recipe_type=Electromagnetic Separator / Two-stage Magnetizer
 gtnl.machine.large_electromagnet.mode.0=Electromagnetic Separator
 gtnl.machine.large_electromagnet.mode.1=Two-stage Magnetizer
-gtnl.machine.large_electromagnet.tooltip.casing=Any electrolyzer machine block
 
 gtnl.machine.large_assembler.name=Large Assembler
 gtnl.machine.large_assembler.recipe_type=Assembler
-gtnl.machine.large_assembler.tooltip.0=The Energy Hatch limits the machine's working voltage tier +1.
-gtnl.machine.large_assembler.tooltip.1=Glass tier limits Energy Hatch tier, UV glass unlocks all tiers.
-gtnl.machine.large_assembler.tooltip.2=200% faster than machines of the same voltage.
-gtnl.machine.large_assembler.tooltip.casing=Any Mass Production Frame
 
 gtnl.machine.large_mixer.name=Large Mixing Tank
 gtnl.machine.large_mixer.recipe_type=Mixer
-gtnl.machine.large_mixer.tooltip.0=275% faster than machines of the same voltage
-gtnl.machine.large_mixer.tooltip.1=Only requires 80% of the recipe's power demand
-gtnl.machine.large_mixer.tooltip.casing=Any tank expansion block
 
 gtnl.machine.large_centrifuge.name=Large Centrifuge
 gtnl.machine.large_centrifuge.recipe_type=Centrifuge / Thermal Centrifuge
 gtnl.machine.large_centrifuge.mode.0=Centrifuge
 gtnl.machine.large_centrifuge.mode.1=Thermal Centrifuge
-gtnl.machine.large_centrifuge.tooltip.0=240% faster than machines of the same voltage.
-gtnl.machine.large_centrifuge.tooltip.casing=Any Centrifuge Machine Block
 
 gtnl.machine.library_of_ruina.name=§eLibrary of Ruina
 gtnl.recipe.the_twilight_forest=Eternal Twilight
@@ -1376,26 +1330,17 @@ gtnl.machine.large_chemical_bath.recipe_type=Ore Washer / Simple Ore Washer / Ch
 gtnl.machine.large_chemical_bath.mode.0=Ore Washer
 gtnl.machine.large_chemical_bath.mode.1=Simple Ore Washer
 gtnl.machine.large_chemical_bath.mode.2=Chemical Bath
-gtnl.machine.large_chemical_bath.tooltip.0=500% faster than machines of the same voltage
-gtnl.machine.large_chemical_bath.tooltip.1=Only requires 80% of the recipe's power demand
-gtnl.machine.large_chemical_bath.tooltip.casing=Any ore washing plant machine block
 
 gtnl.machine.large_autoclave.name=Large Autoclave
 gtnl.machine.large_autoclave.recipe_type=Autoclave
-gtnl.machine.large_autoclave.tooltip.casing=Any ore washing plant machine block
 
 gtnl.machine.large_solidifier.name=Large Solidification Array
 gtnl.machine.large_solidifier.recipe_type=Fluid Solidifier
-gtnl.machine.large_solidifier.tooltip.0=300% faster than machines of the same voltage
-gtnl.machine.large_solidifier.tooltip.casing=Any ore washing plant machine block
 
 gtnl.machine.large_extractor.name=Large Extractor
 gtnl.machine.large_extractor.recipe_type=Extractor / Fluid Extractor
 gtnl.machine.large_extractor.mode.0=Extractor
 gtnl.machine.large_extractor.mode.1=Fluid Extractor
-gtnl.machine.large_extractor.tooltip.0=150% faster than machines of the same voltage
-gtnl.machine.large_extractor.tooltip.1=Only requires 60% of the power specified by the recipe.
-gtnl.machine.large_extractor.tooltip.casing=Any Ore Washer Machine Block
 
 gtnl.machine.reaction_furnace.name=Reaction Furnace
 gtnl.machine.reaction_furnace.recipe_type=Furnace
@@ -1416,9 +1361,6 @@ gtnl.machine.energy_infuser.info.output_all_items=Immediately output all items
 
 gtnl.machine.large_canning.name=Large Canning Machine
 gtnl.machine.large_canning.recipe_type=Canning Machine
-gtnl.machine.large_canning.tooltip.0=233% faster than machines of the same voltage
-gtnl.machine.large_canning.tooltip.1=Only requires 50% of the recipe's power demand
-gtnl.machine.large_canning.tooltip.casing=Any ore washing plant machine block
 
 gtnl.machine.digester.name=Digester
 gtnl.machine.digester.recipe_type=Digester
@@ -1454,8 +1396,6 @@ gtnl.machine.large_steam_ore_washer.tooltip.casing=Any Copper Plated Brick or De
 
 gtnl.machine.large_hammer.name=Large Forging Hammer
 gtnl.machine.large_hammer.recipe_type=Forging Hammer
-gtnl.machine.large_hammer.tooltip.0=150% faster than machines of the same voltage
-gtnl.machine.large_hammer.tooltip.casing=Any Reinforced Nichrome Mechanical Block
 
 gtnl.machine.isa_mill.name=Isa Mill
 gtnl.recipe.isa_mill=Wet Grinding
@@ -1514,10 +1454,6 @@ gtnl.machine.large_incubator.tooltip.casing=Any Plastic Concrete Block
 
 gtnl.machine.large_engraving_laser.name=Large Engraving Laser
 gtnl.machine.large_engraving_laser.recipe_type=Engraving Laser
-gtnl.machine.large_engraving_laser.tooltip.0=250% faster than machines of the same voltage.
-gtnl.machine.large_engraving_laser.tooltip.1=Only requires 80% of the power specified by the recipe.
-gtnl.machine.large_engraving_laser.tooltip.2=Glass tier limits Energy Hatch tier, UHV glass unlocks all tiers.
-gtnl.machine.large_engraving_laser.tooltip.casing=Any Laser Suppression Machine Block
 
 gtnl.machine.fishing_ground.name=Fishing Ground
 gtnl.recipe.fishing_ground=Fishing Ground
@@ -1543,14 +1479,9 @@ gtnl.machine.large_packer.name=Large Packer
 gtnl.machine.large_packer.recipe_type=Packer / Unpacker
 gtnl.machine.large_packer.mode.0=Packer
 gtnl.machine.large_packer.mode.1=Unpacker
-gtnl.machine.large_packer.tooltip.0=500% faster than machines of the same voltage
-gtnl.machine.large_packer.tooltip.1=Only requires 50% of the recipe's power demand
-gtnl.machine.large_packer.tooltip.casing=Any reinforced tungsten steel machine block
 
 gtnl.machine.large_alloy_smelter.name=Large Alloy Smelter
 gtnl.machine.large_alloy_smelter.recipe_type=Alloy Smelter
-gtnl.machine.large_alloy_smelter.tooltip.0=Each coil tier provides an additional 2% speed boost and power reduction!
-gtnl.machine.large_alloy_smelter.tooltip.casing=Any insulated machine block
 
 gtnl.machine.molecular_transformer.name=Molecular Transformer
 gtnl.recipe.molecular_transformer=Matter Recombination
@@ -1559,7 +1490,6 @@ gtnl.machine.molecular_transformer.tooltip.casing=Any chemically inert machine b
 
 gtnl.machine.large_pyrolyse_oven.name=Large Pyrolysis Oven
 gtnl.machine.large_pyrolyse_oven.recipe_type=Coke Oven
-gtnl.machine.large_pyrolyse_oven.tooltip.casing=Any clean stainless steel machine block
 
 gtnl.machine.large_naquadah_reactor.name=Large Naquadah Reactor
 gtnl.recipe.naquadah_reactor=Naquadah Reaction
@@ -1952,8 +1882,6 @@ gtnl.machine.super_space_elevator.structure_levels=Detected attached structure l
 gtnl.machine.large_bio_lab.name=Large Bio Lab
 gtnl.recipe.large_bio_lab=Large Bio Lab
 gtnl.machine.large_bio_lab.recipe_type=Large Bio Lab
-gtnl.machine.large_bio_lab.tooltip.0=§oThis absolutely violates the principle of slot machines!
-gtnl.machine.large_bio_lab.casing=Any Naquadria-Reinforced Water Plant Casing
 
 gtnl.machine.large_gas_collector.name=Large Gas Collector
 gtnl.recipe.gas_collector=Gas Collector
@@ -2434,8 +2362,6 @@ gtnl.machine.crystal_builder.casing=Any Molecular Casing
 gtnl.machine.large_rock_crusher.name=Large Rock Crusher
 gtnl.recipe.industrial_rock_crusher=Industrial Rock Crusher
 gtnl.machine.large_rock_crusher.recipe_type=Rock Crusher
-gtnl.machine.large_rock_crusher.info=Need put water and lava into input hatch
-gtnl.machine.large_rock_crusher.casing=Any solid Iridium-Osmium machine block
 
 gtnl.machine.phase_change_cube.name=Phase Change Cube
 gtnl.machine.phase_change_cube.recipe_type=Extractor / Fluid Extractor / Fluid Solidifier

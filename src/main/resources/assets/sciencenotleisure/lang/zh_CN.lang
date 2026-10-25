@@ -1107,9 +1107,6 @@ gtnl.machine.desulfurizer.tooltip.casing=任意洁净不锈钢机械方块
 
 gtnl.machine.large_circuit_assembler.name=大型电路组装设施
 gtnl.machine.large_circuit_assembler.recipe_type=电路组装机
-gtnl.machine.large_circuit_assembler.tooltip.0=玻璃等级限制了能源仓等级，UV玻璃解锁所有等级
-gtnl.machine.large_circuit_assembler.tooltip.1=只能安装一个能源仓！
-gtnl.machine.large_circuit_assembler.tooltip.casing=任意多功能机械方块
 
 gtnl.machine.petrochemical_plant.name=石化工厂
 gtnl.recipe.petrochemical_plant=石化工厂
@@ -1239,54 +1236,33 @@ gtnl.machine.vibrant_photovoltaic_power_station.tooltip.casing=任意强化钨�
 
 gtnl.machine.large_maceration_tower.name=大型研磨塔
 gtnl.machine.large_maceration_tower.recipe_type=粉碎机
-gtnl.machine.large_maceration_tower.tooltip.0=比相同电压的机器快300%
-gtnl.machine.large_maceration_tower.tooltip.casing=任意坚实铱锇机械方块
 
 gtnl.machine.hand_of_john_davison_rockefeller.name=洛克菲勒之手
 gtnl.machine.hand_of_john_davison_rockefeller.recipe_type=化工厂
 
 gtnl.machine.large_sifting_funnel.name=大型筛选漏斗
 gtnl.machine.large_sifting_funnel.recipe_type=筛选机
-gtnl.machine.large_sifting_funnel.tooltip.0=比相同电压的机器快400%
-gtnl.machine.large_sifting_funnel.tooltip.1=只需要使用配方要求功率的60%
-gtnl.machine.large_sifting_funnel.tooltip.casing=任意离心机机械方块
 
 gtnl.machine.large_cutter.name=大型切割机
 gtnl.machine.large_cutter.recipe_type=切割机
-gtnl.machine.large_cutter.tooltip.0=比相同电压的机器快225%
-gtnl.machine.large_cutter.tooltip.1=只需要使用配方要求功率的50%
-gtnl.machine.large_cutter.tooltip.casing=任意切割机框架
 
 gtnl.machine.large_brewer.name=大型酿造厂
 gtnl.machine.large_brewer.recipe_type=酿造室 / 发酵槽 / 流体加热器
-gtnl.machine.large_brewer.tooltip.0=比相同电压的机器快125%
 gtnl.machine.large_brewer.mode.0=酿造室
 gtnl.machine.large_brewer.mode.1=发酵槽
 gtnl.machine.large_brewer.mode.2=流体加热器
-gtnl.machine.large_brewer.tooltip.casing=任意焦炉机械方块
 
 gtnl.machine.large_industrial_lathe.name=大型工业车床
 gtnl.machine.large_industrial_lathe.recipe_type=车床
-gtnl.machine.large_industrial_lathe.tooltip.0=比相同电压的机器快125%
-gtnl.machine.large_industrial_lathe.tooltip.casing=任意强化镍铬机械方块
 
 gtnl.machine.large_material_press.name=大型挤压机
 gtnl.machine.large_material_press.recipe_type=压缩机
-gtnl.machine.large_material_press.tooltip.0=比相同电压的机器快150%
-gtnl.machine.large_material_press.tooltip.1=安装UV及以上的并行控制仓来支持热等静压装置
-gtnl.machine.large_material_press.tooltip.casing=任意强化镍铬机械方块
 
 gtnl.machine.large_wiremill.name=大型线材工厂
 gtnl.machine.large_wiremill.recipe_type=线缆轧机
-gtnl.machine.large_wiremill.tooltip.0=比相同电压的机器快225%
-gtnl.machine.large_wiremill.tooltip.1=只需要使用配方要求功率的60%
-gtnl.machine.large_wiremill.tooltip.casing=任意强化镍铬机械方块
 
 gtnl.machine.large_bender.name=大型卷板机
 gtnl.machine.large_bender.recipe_type=卷板机
-gtnl.machine.large_bender.tooltip.0=比相同电压的机器快500%
-gtnl.machine.large_bender.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.large_bender.tooltip.casing=任意强化镍铬机械方块
 
 gtnl.machine.electric_implosion_compressor.name=电力聚爆压缩机
 gtnl.machine.electric_implosion_compressor.recipe_type=电动聚爆压缩机
@@ -1294,21 +1270,12 @@ gtnl.machine.electric_implosion_compressor.tooltip.casing=任意强化钨钢机�
 
 gtnl.machine.large_extruder.name=大型压模机
 gtnl.machine.large_extruder.recipe_type=压模机
-gtnl.machine.large_extruder.tooltip.0=比相同电压的机器快275%
-gtnl.machine.large_extruder.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.large_extruder.tooltip.casing=任意强化镍铬机械方块
 
 gtnl.machine.large_arc_smelter.name=大型电弧炉
 gtnl.machine.large_arc_smelter.recipe_type=电弧炉
-gtnl.machine.large_arc_smelter.tooltip.0=比相同电压的机器快300%
-gtnl.machine.large_arc_smelter.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.large_arc_smelter.tooltip.casing=任意冶炼炉机械方块
 
 gtnl.machine.large_forming.name=大型冲压机
 gtnl.machine.large_forming.recipe_type=冲压机床
-gtnl.machine.large_forming.tooltip.0=比相同电压的机器快500%
-gtnl.machine.large_forming.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.large_forming.tooltip.casing=任意强化镍铬机械方块
 
 gtnl.machine.matter_fabricator.name=物质生成机
 gtnl.machine.matter_fabricator.recipe_type=物质生成机
@@ -1320,35 +1287,22 @@ gtnl.nei.matter_fabricator_recipes.2=任意材料方块
 
 gtnl.machine.large_electrolyzer.name=大型电解槽
 gtnl.machine.large_electrolyzer.recipe_type=电解机
-gtnl.machine.large_electrolyzer.tooltip.0=比相同电压的机器快200%
-gtnl.machine.large_electrolyzer.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.large_electrolyzer.tooltip.casing=任意电解机机械方块
 
 gtnl.machine.large_electromagnet.name=大型电磁工厂
 gtnl.machine.large_electromagnet.recipe_type=电磁离析机 / 两级磁化机
 gtnl.machine.large_electromagnet.mode.0=电磁离析机
 gtnl.machine.large_electromagnet.mode.1=两级磁化机
-gtnl.machine.large_electromagnet.tooltip.casing=任意电解机机械方块
 
 gtnl.machine.large_assembler.name=大型组装厂
 gtnl.machine.large_assembler.recipe_type=组装机
-gtnl.machine.large_assembler.tooltip.0=能源仓限制了机器工作的电压等级+1
-gtnl.machine.large_assembler.tooltip.1=玻璃等级限制了能源仓等级，UHV玻璃解锁所有等级
-gtnl.machine.large_assembler.tooltip.2=比相同电压的机器快200%
-gtnl.machine.large_assembler.tooltip.casing=任意批量生产框架
 
 gtnl.machine.large_mixer.name=大型搅拌罐
 gtnl.machine.large_mixer.recipe_type=搅拌机
-gtnl.machine.large_mixer.tooltip.0=比相同电压的机器快275%
-gtnl.machine.large_mixer.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.large_mixer.tooltip.casing=任意储罐拓展方块
 
 gtnl.machine.large_centrifuge.name=大型离心机组
 gtnl.machine.large_centrifuge.recipe_type=离心机 / 热力离心机
 gtnl.machine.large_centrifuge.mode.0=离心机
 gtnl.machine.large_centrifuge.mode.1=热力离心机
-gtnl.machine.large_centrifuge.tooltip.0=比相同电压的机器快240%
-gtnl.machine.large_centrifuge.tooltip.casing=任意离心机机械方块
 
 gtnl.machine.library_of_ruina.name=§e废墟图书馆
 gtnl.recipe.the_twilight_forest=永夜暮色
@@ -1376,26 +1330,17 @@ gtnl.machine.large_chemical_bath.recipe_type=洗矿池 / 简易洗矿池 / 化�
 gtnl.machine.large_chemical_bath.mode.0=洗矿池
 gtnl.machine.large_chemical_bath.mode.1=简易洗矿池
 gtnl.machine.large_chemical_bath.mode.2=化学浸洗机
-gtnl.machine.large_chemical_bath.tooltip.0=比相同电压的机器快500%
-gtnl.machine.large_chemical_bath.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.large_chemical_bath.tooltip.casing=任意洗矿厂机械方块
 
 gtnl.machine.large_autoclave.name=大型高压结晶釜
 gtnl.machine.large_autoclave.recipe_type=高压釜
-gtnl.machine.large_autoclave.tooltip.casing=任意洗矿厂机械方块
 
 gtnl.machine.large_solidifier.name=大型固化阵列
 gtnl.machine.large_solidifier.recipe_type=流体固化器
-gtnl.machine.large_solidifier.tooltip.0=比相同电压的机器快300%
-gtnl.machine.large_solidifier.tooltip.casing=任意洗矿厂机械方块
 
 gtnl.machine.large_extractor.name=大型提取机
 gtnl.machine.large_extractor.recipe_type=提取机 / 流体提取机
 gtnl.machine.large_extractor.mode.0=提取机
 gtnl.machine.large_extractor.mode.1=流体提取机
-gtnl.machine.large_extractor.tooltip.0=比相同电压的机器快150%
-gtnl.machine.large_extractor.tooltip.1=只需要使用配方要求功率的60%
-gtnl.machine.large_extractor.tooltip.casing=任意洗矿厂机械方块
 
 gtnl.machine.reaction_furnace.name=反应炉
 gtnl.machine.reaction_furnace.recipe_type=熔炉
@@ -1416,9 +1361,6 @@ gtnl.machine.energy_infuser.info.output_all_items=立即输出所有物品
 
 gtnl.machine.large_canning.name=大型装罐机
 gtnl.machine.large_canning.recipe_type=装罐机
-gtnl.machine.large_canning.tooltip.0=比相同电压的机器快233%
-gtnl.machine.large_canning.tooltip.1=只需要使用配方要求功率的50%
-gtnl.machine.large_canning.tooltip.casing=任意洗矿厂机械方块
 
 gtnl.machine.digester.name=煮解池
 gtnl.machine.digester.recipe_type=煮解池
@@ -1454,8 +1396,6 @@ gtnl.machine.large_steam_ore_washer.tooltip.casing=任意镀铜砖块或脱氧�
 
 gtnl.machine.large_hammer.name=大型锻造锤
 gtnl.machine.large_hammer.recipe_type=锻造锤
-gtnl.machine.large_hammer.tooltip.0=比相同电压的机器快150%
-gtnl.machine.large_hammer.tooltip.casing=任意强化镍铬机械方块
 
 gtnl.machine.isa_mill.name=艾萨研磨机
 gtnl.recipe.isa_mill=湿法碾磨
@@ -1514,10 +1454,6 @@ gtnl.machine.large_incubator.tooltip.casing=任意塑料混凝土方块
 
 gtnl.machine.large_engraving_laser.name=大型激光蚀刻机
 gtnl.machine.large_engraving_laser.recipe_type=激光蚀刻机
-gtnl.machine.large_engraving_laser.tooltip.0=比相同电压的机器快250%
-gtnl.machine.large_engraving_laser.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.large_engraving_laser.tooltip.2=玻璃等级限制了能源仓等级，UHV玻璃解锁所有等级
-gtnl.machine.large_engraving_laser.tooltip.casing=任意激光抑制机械方块
 
 gtnl.machine.fishing_ground.name=渔场
 gtnl.recipe.fishing_ground=渔场
@@ -1543,14 +1479,9 @@ gtnl.machine.large_packer.name=大型打包机
 gtnl.machine.large_packer.recipe_type=打包机 / 解包器
 gtnl.machine.large_packer.mode.0=打包机
 gtnl.machine.large_packer.mode.1=解包器
-gtnl.machine.large_packer.tooltip.0=比相同电压的机器快500%
-gtnl.machine.large_packer.tooltip.1=只需要使用配方要求功率的50%
-gtnl.machine.large_packer.tooltip.casing=任意强化钨钢机械方块
 
 gtnl.machine.large_alloy_smelter.name=大型合金炉
 gtnl.machine.large_alloy_smelter.recipe_type=合金炉
-gtnl.machine.large_alloy_smelter.tooltip.0=每级线圈额外提供2%的加速和耗电减免！
-gtnl.machine.large_alloy_smelter.tooltip.casing=任意隔热机械方块
 
 gtnl.machine.molecular_transformer.name=分子重组仪
 gtnl.recipe.molecular_transformer=物质重组
@@ -1559,7 +1490,6 @@ gtnl.machine.molecular_transformer.tooltip.casing=任意化学惰性机械方块
 
 gtnl.machine.large_pyrolyse_oven.name=大型热解炉
 gtnl.machine.large_pyrolyse_oven.recipe_type=焦炉
-gtnl.machine.large_pyrolyse_oven.tooltip.casing=任意洁净不锈钢机械方块
 
 gtnl.machine.large_naquadah_reactor.name=大型硅岩反应堆
 gtnl.recipe.naquadah_reactor=硅岩反应
@@ -1952,8 +1882,6 @@ gtnl.machine.super_space_elevator.structure_levels=已检测到附属层数：
 gtnl.machine.large_bio_lab.name=大型生物实验室
 gtnl.recipe.large_bio_lab=大型生物实验室
 gtnl.machine.large_bio_lab.recipe_type=大型生物实验室
-gtnl.machine.large_bio_lab.tooltip.0=§o这绝对违背了老虎机的原则！
-gtnl.machine.large_bio_lab.casing=任意超能硅岩强化无菌净水厂机械方块
 
 gtnl.machine.large_gas_collector.name=大型集气室
 gtnl.recipe.gas_collector=集气室
@@ -2434,8 +2362,6 @@ gtnl.machine.crystal_builder.casing=任意分子机械方块
 gtnl.machine.large_rock_crusher.name=大型碎岩机
 gtnl.recipe.industrial_rock_crusher=工业碎岩机
 gtnl.machine.large_rock_crusher.recipe_type=工业碎岩机
-gtnl.machine.large_rock_crusher.info=需要在输入仓中放入水和岩浆
-gtnl.machine.large_rock_crusher.casing=任意坚实铱锇机械方块
 
 gtnl.machine.phase_change_cube.name=相变魔方
 gtnl.machine.phase_change_cube.recipe_type=提取机 / 流体提取机 / 流体固化器
