@@ -20,6 +20,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
@@ -32,7 +33,6 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -172,15 +172,8 @@ public class SteamLavaMaker extends SteamMultiMachineBase<SteamLavaMaker> implem
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_lava_maker.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_lava_maker.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_lava_maker.tooltip.2"))
-            .beginStructureBlock(3, 5, 3, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.steam_lava_maker.tooltip.casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.steam_lava_maker.tooltip.casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

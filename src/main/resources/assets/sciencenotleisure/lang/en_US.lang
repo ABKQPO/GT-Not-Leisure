@@ -1007,9 +1007,6 @@ gtnl.machine.large_steam_thermal_centrifuge.recipe_type=Thermal Centrifuge
 gtnl.machine.steam_cracking.name=Steam Cracker
 gtnl.recipe.steam_cracker=Steam Cracking
 gtnl.machine.steam_cracking.recipe_type=Steam Cracking
-gtnl.machine.steam_cracking.tooltip.0=Thermally cracks sulfur-containing hydrocarbons into steam-cracked hydrocarbons.
-gtnl.machine.steam_cracking.tooltip.1=More efficient than the Chemical Reactor.
-gtnl.machine.steam_cracking.tooltip.casing=Any Copper Plated Brick or Deoxidized Steel Machine Block
 
 gtnl.machine.large_steam_chemical_bath.name=Large Steam Chemical Bath
 gtnl.machine.large_steam_chemical_bath.recipe_type=Chemical Bath
@@ -1098,11 +1095,6 @@ gtnl.machine.mega_blast_furnace.recipe_type=Industrial Blast Furnace
 
 gtnl.machine.bricked_blast_furnace.name=Bricked Blast Furnace
 gtnl.machine.bricked_blast_furnace.recipe_type=Primitive Blast Furnace
-gtnl.machine.bricked_blast_furnace.tooltip.0=Used for steelmaking or general pyrometallurgy.
-gtnl.machine.bricked_blast_furnace.tooltip.1=Unlike the original Brick Blast Furnace, it now uses hatches for item interaction.
-gtnl.machine.bricked_blast_furnace.tooltip.2=Benefits from furnace body improvements.
-gtnl.machine.bricked_blast_furnace.tooltip.3=Now any primitive blast furnace recipe takes only §l§c6.4§r seconds!
-gtnl.machine.bricked_blast_furnace.tooltip.4=The cost is that the price is now §l§c8§r times more expensive.
 gtnl.machine.bricked_blast_furnace.structure.0=355x Firebricks
 gtnl.machine.bricked_blast_furnace.structure.1=387x Stone Bricks
 gtnl.machine.bricked_blast_furnace.structure.2=70x Bronze Frames
@@ -1547,110 +1539,55 @@ gtnl.machine.steamgate.message.link_failed=Steamgate could not be dialed
 gtnl.machine.steam_gate_assembler.name=Perfect Steam Progenitor
 gtnl.recipe.steam_gate_assembler=Hydraulic Manufacturing
 gtnl.machine.steam_gate_assembler.recipe_type=Boundless Creation Engine
-gtnl.machine.steam_gate_assembler.tooltip.0=§b§oAn unholy amalgamation of pipes and cogs, capable of using incredible amounts of steam.
-gtnl.machine.steam_gate_assembler.tooltip.1=§b§oEach chamber is carefully calibrated with near-infinite amounts of pressure.
-gtnl.machine.steam_gate_assembler.tooltip.2=§b§oWhat would drive someone to create such a device? What purpose could this possibly serve?
-gtnl.machine.steam_gate_assembler.tooltip.3=Author: §d§oSteam§f§oIs§d§oThe§f§oNumber
 
 gtnl.machine.mega_steam_compressor.name=Steam Supercompressor
 gtnl.machine.mega_steam_compressor.recipe_type=Supercompressor
-gtnl.machine.mega_steam_compressor.tooltip.0=Has 256 parallels
-gtnl.machine.mega_steam_compressor.tooltip.1=§b§oShoots impossibly pressurized jets of steam at material to compress it.
-gtnl.machine.mega_steam_compressor.tooltip.2=§b§oCapable of creating superdense plates...
-gtnl.machine.mega_steam_compressor.tooltip.3=Author: §d§oSteam§f§oIs§d§oThe§f§oNumber
 
 gtnl.machine.mega_solar_boiler.name=Mega Pressure Solar Boiler
 gtnl.machine.mega_solar_boiler.recipe_type=Solar Boiler
-gtnl.machine.mega_solar_boiler.tooltip.0=Maybe an Eye of Harmony could provide enough silver for this monstrosity
-gtnl.machine.mega_solar_boiler.tooltip.1=Produces 96,000 L/s of Steam
-gtnl.machine.mega_solar_boiler.tooltip.2=§b§oMore steam/s than unplayed games in your steam library
 
 gtnl.machine.steam_cactus_wonder.name=Cactus Wonder
 gtnl.recipe.cactus_wonder_fake=Offerings to the Cacti Pantheon
 gtnl.machine.steam_cactus_wonder.recipe_type=Temple of Cacti Blessings
-gtnl.machine.steam_cactus_wonder.tooltip.0=Burns Cactus Coke and Charcoal for increasingly efficient amounts of steam.
-gtnl.machine.steam_cactus_wonder.tooltip.1=Every second the cactus wonder will consume all offers stored
-gtnl.machine.steam_cactus_wonder.tooltip.2=The god of cacti will save their value and return it as steam blessings to her faithful zealots.
-gtnl.machine.steam_cactus_wonder.tooltip.3=Can only take one type of offer at once.
-gtnl.machine.steam_cactus_wonder.tooltip.4=Needs Fully Grown Cacti on the Sand Blocks to form
-gtnl.machine.steam_cactus_wonder.tooltip.5=§b§oCactus🙏
 gtnl.machine.steam_cactus_wonder.info.offer_value=Offer Value: 
 
 gtnl.machine.steam_carpenter.name=Steam Carpenter
 gtnl.recipe.steam_carpenter=Steamic Carpentry
 gtnl.machine.steam_carpenter.recipe_type=Carpenter
-gtnl.machine.steam_carpenter.tooltip.0=§b§oCuts wood efficiently into many forms.
-gtnl.machine.steam_carpenter.tooltip.1=Author: §d§oSteam§f§oIs§d§oThe§f§oNumber
 
 gtnl.machine.steam_lava_maker.name=Steam Stone Superheater
 gtnl.recipe.lava_maker=Steam Vapor Melting
 gtnl.machine.steam_lava_maker.recipe_type=Superheater
-gtnl.machine.steam_lava_maker.tooltip.0=Can melt up to 4 stones at a time
-gtnl.machine.steam_lava_maker.tooltip.1=§b§oTurning up the heat
-gtnl.machine.steam_lava_maker.tooltip.2=Author: §d§oSteam§f§oIs§d§oThe§f§oNumber
-gtnl.machine.steam_lava_maker.tooltip.casing=Any Copper Plated Bricks or Deoxidized Steel Machine Block
 
 gtnl.machine.steam_manufacturer.name=Steam Manufacturer
 gtnl.recipe.steam_manufacturer=Hydraulic Manufacturing
 gtnl.machine.steam_manufacturer.recipe_type=Hydraulic Manufacturing / Assembler
-gtnl.machine.steam_manufacturer.tooltip.0=Has 4 Parallel
-gtnl.machine.steam_manufacturer.tooltip.1=Assembles assemblies assemblically
-gtnl.machine.steam_manufacturer.tooltip.2=100% faster
-gtnl.machine.steam_manufacturer.tooltip.3=Can run MV tier and below assembler recipes
-gtnl.machine.steam_manufacturer.tooltip.4=Put an HV Assembler in the controller to unlock HV assembler recipes
-gtnl.machine.steam_manufacturer.tooltip.5=§b§oSlave labor? Not in my GTNH!
 
 gtnl.machine.steam_rock_breaker.name=Steam Rock Breaker
 gtnl.recipe.rock_breaker=Rock Breaker
 gtnl.machine.steam_rock_breaker.recipe_type=Rock Breaker
 gtnl.machine.steam_rock_breaker.message.auto_placing_done=§6Auto placing done ! Now go place the water and lava by yourself !
-gtnl.machine.steam_rock_breaker.tooltip.0=Works as a Rock Breaker, but big
-gtnl.machine.steam_rock_breaker.tooltip.1=Cog 1 = Cobblestone, Cog 2 = Stone, Cog 3 = Obsidian
-gtnl.machine.steam_rock_breaker.tooltip.2=Processes up to 8 recipes at once
-gtnl.machine.steam_rock_breaker.tooltip.3=§b§oSTOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOONE
-gtnl.machine.steam_rock_breaker.tooltip.4=§b§oKeep an eye for Wallsharing :>
-gtnl.machine.steam_rock_breaker.tooltip.casing=Any Copper Plated Bricks or Deoxidized Steel Machine Block
 
 gtnl.machine.steam_woodcutter.name=Steam Woodcutter
 gtnl.recipe.woodcutter=Woodcutter
 gtnl.machine.steam_woodcutter.recipe_type=Woodcutter
-gtnl.machine.steam_woodcutter.tooltip.0=§b§oGrows trees slowly from saplings.
-gtnl.machine.steam_woodcutter.tooltip.1=Author: §d§oSteam§f§oIs§d§oThe§f§oNumber
 
 gtnl.machine.steam_extractinator.name=Steam Extractinator
 gtnl.recipe.steam_extractinator=Extractination
 gtnl.machine.steam_extractinator.recipe_type=Resource Extractor
-gtnl.machine.steam_extractinator.tooltip.0=Vaporizes impurities in different soil slurries to generate usable materials
-gtnl.machine.steam_extractinator.tooltip.1=Processes up to 4 recipes at once
-gtnl.machine.steam_extractinator.tooltip.2=§b§oFrom Steam to rocks, the power of the pressure may bring you infinite wealth!.
-gtnl.machine.steam_extractinator.tooltip.top_casing=Top Layer of Bronze Casings
-gtnl.machine.steam_extractinator.tooltip.bottom_casing=Bottom Layer of Bronze Casings
-gtnl.machine.steam_extractinator.tooltip.middle_casing=2 Middle Bronze Casing Layers
 
 gtnl.machine.steam_fusion_reactor.name=Hyper Pressure Reactor
 gtnl.recipe.steam_fusion_reactor=High Pressure Reactor
 gtnl.machine.steam_fusion_reactor.metadata.requires_compact_reactor=Requires Compact Hyper Pressure Reactor
 gtnl.machine.steam_fusion_reactor.recipe_type=High Pressure Reactor
 gtnl.machine.steam_fusion_reactor.error.requires_compact_reactor=Need Compact Hyper Pressure Reactor
-gtnl.machine.steam_fusion_reactor.tooltip.0=Combines Steam with hot fluids in order to reach higher temperatures
-gtnl.machine.steam_fusion_reactor.tooltip.1=Requires Steam to work? No, but kinda.
-gtnl.machine.steam_fusion_reactor.tooltip.2=§b§oWhat's this? Fusion? HAHAHA, tell another joke silly!
-gtnl.machine.steam_fusion_reactor.tooltip.casing=1-8, Blocks Adjacent to Glass
 
 gtnl.machine.high_pressure_steam_fusion_reactor.name=Compact Hyper Pressure Reactor
 gtnl.machine.high_pressure_steam_fusion_reactor.recipe_type=High Pressure Reactor
-gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.0=An Amalgamation of Breel and Steam, never envisioned before
-gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.1=For All the pressure needs you may have
-gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.2=Can do up to 256 recipes at once
-gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.3=§b§oWhat in the world have you done
-gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.casing=1-8, Blocks Adjacent to Glass
 
 gtnl.machine.steam_infernal_coke_oven.name=Infernal Coke Oven
 gtnl.recipe.infernal_coke_oven=High-Efficiency Coke Oven
 gtnl.machine.steam_infernal_coke_oven.recipe_type=Coke Oven
-gtnl.machine.steam_infernal_coke_oven.tooltip.0=Works more efficiently than a clay oven
-gtnl.machine.steam_infernal_coke_oven.tooltip.1=Every 5 seconds of continuous working it gets 5% faster, up to 1000%
-gtnl.machine.steam_infernal_coke_oven.tooltip.2=§b§oPoggers
 
 gtnl.machine.integrated_assembly_facility.name=Integrated Assembly Facility
 gtnl.machine.integrated_assembly_facility.recipe_type=Assembler / Component Assembly Line
@@ -2249,12 +2186,6 @@ gtnl.gui.pcb_factory.upgrade.t4_machine_tier=T4 Machine Tier Upgrade
 
 gtnl.machine.furnace_array.name=Furnace Array
 gtnl.machine.furnace_array.recipe_type=Furnace
-gtnl.machine.furnace_array.info.0=§o§6I say a 2048-furnace array beats an industrial furnace, because the array adds 1 parallel operation for every 8 cobblestones consumed
-gtnl.machine.furnace_array.info.1=Initial maximum parallel is 1; each furnace added increases the maximum parallel by 1
-gtnl.machine.furnace_array.info.2=For every 32 coal input, permanently light one furnace, increasing the maximum usable parallel by 1
-gtnl.machine.furnace_array.info.3=Fixed operation time is 5 seconds
-gtnl.machine.furnace_array.info.4=Each furnace produces unbelievable effects at the expected operating speed
-gtnl.machine.furnace_array.casing=Compressed Furnace Casing
 gtnl.machine.furnace_array.title=Come check out %s, %s, %s designed by %s: the %sms delay furnace!
 gtnl.machine.furnace_array.furnace_count=Current furnace count: %s
 gtnl.machine.furnace_array.coal_count=Current coal count: %s

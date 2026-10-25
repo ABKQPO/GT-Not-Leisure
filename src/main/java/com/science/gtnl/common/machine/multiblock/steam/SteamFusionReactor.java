@@ -22,6 +22,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.metadata.SteamFusionMetadata;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
@@ -37,7 +38,6 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -198,15 +198,8 @@ public class SteamFusionReactor extends SteamMultiMachineBase<SteamFusionReactor
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_fusion_reactor.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_fusion_reactor.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_fusion_reactor.tooltip.2"))
-            .beginStructureBlock(15, 3, 15, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.steam_fusion_reactor.tooltip.casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.steam_fusion_reactor.tooltip.casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

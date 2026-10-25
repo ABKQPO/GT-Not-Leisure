@@ -28,6 +28,7 @@ import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.MegaSolarBoilerGui;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -46,7 +47,6 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -178,6 +178,12 @@ public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> impl
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        // Why: a boiler makes steam, so recipe speed and steam usage lines would mislead.
+        return null;
+    }
+
+    @Override
     public int getTierRecipes() {
         return 14;
     }
@@ -194,13 +200,8 @@ public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> impl
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_solar_boiler.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_solar_boiler.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_solar_boiler.tooltip.2"))
-            .beginStructureBlock(21, 5, 7, true)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

@@ -1007,9 +1007,6 @@ gtnl.machine.large_steam_thermal_centrifuge.recipe_type=热力离心
 gtnl.machine.steam_cracking.name=蒸汽裂化机
 gtnl.recipe.steam_cracker=蒸汽裂化
 gtnl.machine.steam_cracking.recipe_type=蒸汽裂化
-gtnl.machine.steam_cracking.tooltip.0=将含硫烃热裂解成蒸汽裂化烃
-gtnl.machine.steam_cracking.tooltip.1=比化学反应釜更有效率
-gtnl.machine.steam_cracking.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_steam_chemical_bath.name=大型蒸汽化学浸洗机
 gtnl.machine.large_steam_chemical_bath.recipe_type=化学浸洗机
@@ -1098,11 +1095,6 @@ gtnl.machine.mega_blast_furnace.recipe_type=工业高炉
 
 gtnl.machine.bricked_blast_furnace.name=砖高炉
 gtnl.machine.bricked_blast_furnace.recipe_type=§c跃§6进§e一§a号§b原§9始§d高§5炉
-gtnl.machine.bricked_blast_furnace.tooltip.0=用于炼钢或一般的热冶金
-gtnl.machine.bricked_blast_furnace.tooltip.1=不同于原来的砖高炉，现在使用仓室进行物品交互
-gtnl.machine.bricked_blast_furnace.tooltip.2=获益于炉身的改进，
-gtnl.machine.bricked_blast_furnace.tooltip.3=现在原始高炉的任意配方仅需§l§c6.4§r秒！
-gtnl.machine.bricked_blast_furnace.tooltip.4=代价是造价比以前昂贵了§l§c8§r倍
 gtnl.machine.bricked_blast_furnace.structure.0=355x 耐火砖
 gtnl.machine.bricked_blast_furnace.structure.1=387x 石砖
 gtnl.machine.bricked_blast_furnace.structure.2=70x 青铜框架
@@ -1547,110 +1539,55 @@ gtnl.machine.steamgate.message.link_failed=无法拨号到蒸汽之门
 gtnl.machine.steam_gate_assembler.name=蒸汽至臻先驱者
 gtnl.recipe.steam_gate_assembler=液压动力精密制造
 gtnl.machine.steam_gate_assembler.recipe_type=无界造物核心
-gtnl.machine.steam_gate_assembler.tooltip.0=§b§o管道与齿轮的亵渎混合体，暴躁地吞噬着浩瀚蒸汽。
-gtnl.machine.steam_gate_assembler.tooltip.1=§b§o无数压力在每个精密调校的仓室内涌动，维持着机械的至高平衡。
-gtnl.machine.steam_gate_assembler.tooltip.2=§b§o是什么样的疯狂驱使着某人打造如此机械奇迹? 这究竟承载着怎样的宏伟构想?
-gtnl.machine.steam_gate_assembler.tooltip.3=作者：§d§oSteam§f§oIs§d§oThe§f§oNumber
 
 gtnl.machine.mega_steam_compressor.name=超级蒸汽压缩机
 gtnl.machine.mega_steam_compressor.recipe_type=超级压缩
-gtnl.machine.mega_steam_compressor.tooltip.0=拥有256并行
-gtnl.machine.mega_steam_compressor.tooltip.1=§b§o喷射超乎想象的高压蒸汽流，以强力压缩材料。
-gtnl.machine.mega_steam_compressor.tooltip.2=§b§o可制造超致密金属板……
-gtnl.machine.mega_steam_compressor.tooltip.3=作者：§d§oSteam§f§oIs§d§oThe§f§oNumber
 
 gtnl.machine.mega_solar_boiler.name=巨型高压太阳能锅炉
 gtnl.machine.mega_solar_boiler.recipe_type=太阳能锅炉
-gtnl.machine.mega_solar_boiler.tooltip.0=也许鸿蒙之眼能够提供足够的银子来支撑这庞然大物
-gtnl.machine.mega_solar_boiler.tooltip.1=产生 96,000 升/秒的蒸汽
-gtnl.machine.mega_solar_boiler.tooltip.2=§b§o每秒产生的蒸汽比你的Steam游戏库里未游玩的游戏还要多
 
 gtnl.machine.steam_cactus_wonder.name=仙人掌奇迹
 gtnl.recipe.cactus_wonder_fake=献给仙人掌神的供奉
 gtnl.machine.steam_cactus_wonder.recipe_type=仙人掌祝福之庙
-gtnl.machine.steam_cactus_wonder.tooltip.0=燃烧仙人掌焦炭和仙人掌炭，以产生越来越高效的蒸汽
-gtnl.machine.steam_cactus_wonder.tooltip.1=仙人掌奇迹每秒都会消耗所有储存的供奉
-gtnl.machine.steam_cactus_wonder.tooltip.2=仙人掌之神将保存它们的价值，并以蒸汽祝福回馈她忠诚的狂热信徒
-gtnl.machine.steam_cactus_wonder.tooltip.3=一次只能接受一种类型的供奉
-gtnl.machine.steam_cactus_wonder.tooltip.4=需要在沙子上种植成熟的仙人掌才能成型
-gtnl.machine.steam_cactus_wonder.tooltip.5=§b§o仙人掌🙏
 gtnl.machine.steam_cactus_wonder.info.offer_value=提供价值：
 
 gtnl.machine.steam_carpenter.name=蒸汽木匠
 gtnl.recipe.steam_carpenter=蒸汽工艺
 gtnl.machine.steam_carpenter.recipe_type=木匠
-gtnl.machine.steam_carpenter.tooltip.0=§b§o高效地将木材切割成多种形态
-gtnl.machine.steam_carpenter.tooltip.1=作者：§d§oSteam§f§oIs§d§oThe§f§oNumber
 
 gtnl.machine.steam_lava_maker.name=超级石头加热器
 gtnl.recipe.lava_maker=蒸汽蒸融
 gtnl.machine.steam_lava_maker.recipe_type=超级加热
-gtnl.machine.steam_lava_maker.tooltip.0=可一次熔化最多 4 块石头
-gtnl.machine.steam_lava_maker.tooltip.1=§b§o提高温度
-gtnl.machine.steam_lava_maker.tooltip.2=作者：§d§oSteam§f§oIs§d§oThe§f§oNumber
-gtnl.machine.steam_lava_maker.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.steam_manufacturer.name=蒸汽制造商
 gtnl.recipe.steam_manufacturer=液压制造
 gtnl.machine.steam_manufacturer.recipe_type=液压制造/组装机
-gtnl.machine.steam_manufacturer.tooltip.0=拥有4并行
-gtnl.machine.steam_manufacturer.tooltip.1=以组装的方式组装组件
-gtnl.machine.steam_manufacturer.tooltip.2=运行速度提升100%
-gtnl.machine.steam_manufacturer.tooltip.3=可执行MV及以下的组装机配方
-gtnl.machine.steam_manufacturer.tooltip.4=在控制器内放入HV组装机以解锁HV组装机配方
-gtnl.machine.steam_manufacturer.tooltip.5=§b§o奴隶劳动? 在我的 GTNH 里绝不可能！
 
 gtnl.machine.steam_rock_breaker.name=蒸汽造石机
 gtnl.recipe.rock_breaker=碎石机
 gtnl.machine.steam_rock_breaker.recipe_type=碎石机
 gtnl.machine.steam_rock_breaker.message.auto_placing_done=§6自动放置已完成！现在请自行放置水和岩浆！
-gtnl.machine.steam_rock_breaker.tooltip.0=像碎石机一样工作，但更大
-gtnl.machine.steam_rock_breaker.tooltip.1=电路板1 = 圆石，电路板2 = 石头，电路板3 = 黑曜石
-gtnl.machine.steam_rock_breaker.tooltip.2=一次可处理多达8配方
-gtnl.machine.steam_rock_breaker.tooltip.3=§b§o石石石石石石石石石石石石石石石石石石石石头头头头头头头头头头头头头头头头头头头头
-gtnl.machine.steam_rock_breaker.tooltip.4=§b§o注意结构共用：>
-gtnl.machine.steam_rock_breaker.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.steam_woodcutter.name=蒸汽树场
 gtnl.recipe.woodcutter=伐木场
 gtnl.machine.steam_woodcutter.recipe_type=伐木场
-gtnl.machine.steam_woodcutter.tooltip.0=§b§o从树苗缓慢生长成树木
-gtnl.machine.steam_woodcutter.tooltip.1=作者：§d§oSteam§f§oIs§d§oThe§f§oNumber
 
 gtnl.machine.steam_extractinator.name=蒸汽精萃机
 gtnl.recipe.steam_extractinator=萃取
 gtnl.machine.steam_extractinator.recipe_type=资源萃取
-gtnl.machine.steam_extractinator.tooltip.0=蒸发不同泥浆中的杂质，以生成可用材料
-gtnl.machine.steam_extractinator.tooltip.1=一次可处理多达4个物品
-gtnl.machine.steam_extractinator.tooltip.2=§b§o从蒸汽到岩石，压力的力量或许能带来无限财富！
-gtnl.machine.steam_extractinator.tooltip.top_casing=顶部青铜机械方块
-gtnl.machine.steam_extractinator.tooltip.bottom_casing=底部青铜机械方块
-gtnl.machine.steam_extractinator.tooltip.middle_casing=上下之间青铜机械方块
 
 gtnl.machine.steam_fusion_reactor.name=超高压反应堆
 gtnl.recipe.steam_fusion_reactor=高压反应堆
 gtnl.machine.steam_fusion_reactor.metadata.requires_compact_reactor=需要压缩超高压聚变反应堆
 gtnl.machine.steam_fusion_reactor.recipe_type=高压反应堆
 gtnl.machine.steam_fusion_reactor.error.requires_compact_reactor=需要压缩超高压反应堆
-gtnl.machine.steam_fusion_reactor.tooltip.0=将蒸汽与热流体结合，以达到更高的温度
-gtnl.machine.steam_fusion_reactor.tooltip.1=需要蒸汽才能运作? 不，但也算是
-gtnl.machine.steam_fusion_reactor.tooltip.2=§b§o这是什么? 聚变? 哈哈哈，别闹了，再讲个笑话吧！
-gtnl.machine.steam_fusion_reactor.tooltip.casing=1-8，玻璃相邻的方块
 
 gtnl.machine.high_pressure_steam_fusion_reactor.name=压缩超高压反应堆
 gtnl.machine.high_pressure_steam_fusion_reactor.recipe_type=高压反应堆
-gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.0=青铁与蒸汽的融合，从未被设想过
-gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.1=满足你所有的压力需求
-gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.2=一次可处理多达256配方
-gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.3=§b§o天啊，你到底做了什么
-gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.casing=1-8，玻璃相邻的方块
 
 gtnl.machine.steam_infernal_coke_oven.name=炼狱焦炉
 gtnl.recipe.infernal_coke_oven=焦炉但是超模
 gtnl.machine.steam_infernal_coke_oven.recipe_type=焦炉
-gtnl.machine.steam_infernal_coke_oven.tooltip.0=比粘土高炉更高效运作
-gtnl.machine.steam_infernal_coke_oven.tooltip.1=每连续工作5秒，速度提升5%，最高可达1000%
-gtnl.machine.steam_infernal_coke_oven.tooltip.2=§b§o太棒了！
 
 gtnl.machine.integrated_assembly_facility.name=综合组装车间
 gtnl.machine.integrated_assembly_facility.recipe_type=组装机 / 部件装配线
@@ -2249,12 +2186,6 @@ gtnl.gui.pcb_factory.upgrade.t4_machine_tier=T4机器等级升级
 
 gtnl.machine.furnace_array.name=熔炉组
 gtnl.machine.furnace_array.recipe_type=熔炉
-gtnl.machine.furnace_array.info.0=§o§6我说2048熔炉组比工业熔炉数值，因为熔炉组每消耗8个圆石就能加1并行
-gtnl.machine.furnace_array.info.1=初始最大并行为1，每输入一个熔炉，最大并行加1
-gtnl.machine.furnace_array.info.2=每输入32煤炭，永久点燃一个熔炉，使最大可用并行加1
-gtnl.machine.furnace_array.info.3=固定运行时间为5秒
-gtnl.machine.furnace_array.info.4=每个熔炉按照期望的运行速度产生不可思议的效果
-gtnl.machine.furnace_array.casing=压缩熔炉机壳
 gtnl.machine.furnace_array.title=大家快来看 %s, %s, %s 的%s设计的%sms延迟熔炉！
 gtnl.machine.furnace_array.furnace_count=当前熔炉数量：%s
 gtnl.machine.furnace_array.coal_count=当前煤炭数量：%s

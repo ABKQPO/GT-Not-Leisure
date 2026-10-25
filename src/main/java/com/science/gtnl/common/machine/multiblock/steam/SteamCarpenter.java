@@ -17,6 +17,7 @@ import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
@@ -164,11 +165,8 @@ public class SteamCarpenter extends SteamMultiMachineBase<SteamCarpenter> implem
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_carpenter.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_carpenter.tooltip.1"))
-            .beginStructureBlock(3, 3, 3, true)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

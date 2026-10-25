@@ -26,6 +26,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
@@ -249,15 +250,8 @@ public class SteamManufacturer extends SteamMultiMachineBase<SteamManufacturer> 
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_manufacturer.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_manufacturer.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_manufacturer.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_manufacturer.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_manufacturer.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_manufacturer.tooltip.5"))
-            .beginStructureBlock(9, 7, 7, true)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

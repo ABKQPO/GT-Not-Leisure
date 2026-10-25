@@ -24,6 +24,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
@@ -42,7 +43,6 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gregtech.common.misc.GTStructureChannels;
 import gregtech.common.tileentities.render.RenderingTileEntityBlackhole;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -249,14 +249,8 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_steam_compressor.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_steam_compressor.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_steam_compressor.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.mega_steam_compressor.tooltip.3"))
-            .beginStructureBlock(35, 33, 35, true)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

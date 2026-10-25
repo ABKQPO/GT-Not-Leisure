@@ -21,6 +21,7 @@ import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -200,12 +201,8 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_infernal_coke_oven.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_infernal_coke_oven.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_infernal_coke_oven.tooltip.2"))
-            .beginStructureBlock(5, 5, 5, true)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }
