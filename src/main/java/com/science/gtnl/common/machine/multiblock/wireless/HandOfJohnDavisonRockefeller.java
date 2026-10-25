@@ -18,6 +18,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
@@ -48,8 +49,6 @@ public class HandOfJohnDavisonRockefeller extends WirelessEnergyMultiMachineBase
     private static final int HORIZONTAL_OFF_SET = 20;
     private static final int VERTICAL_OFF_SET = 4;
     private static final int DEPTH_OFF_SET = 0;
-
-    public int mSpeedCount = 0;
 
     public HandOfJohnDavisonRockefeller(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -128,16 +127,8 @@ public class HandOfJohnDavisonRockefeller extends WirelessEnergyMultiMachineBase
         checkCasingMin(errors, mCountCasing, 30);
     }
 
-    @Override
-    public void clearHatches() {
-        super.clearHatches();
-        mSpeedCount = 0;
-    }
-
-    @Override
-    public void setupParameters() {
-        super.setupParameters();
-        mSpeedCount = mGlassTier + GTUtility.getTier(this.getMaxInputVoltage());
+    private int bonusTiers() {
+        return mGlassTier + GTUtility.getTier(this.getMaxInputVoltage());
     }
 
     @Override
@@ -148,7 +139,8 @@ public class HandOfJohnDavisonRockefeller extends WirelessEnergyMultiMachineBase
     @Override
     public double getEUtDiscount() {
         double discount = 1.0;
-        for (int i = 0; i < mSpeedCount; i++) {
+        int bonusTiers = bonusTiers();
+        for (int i = 0; i < bonusTiers; i++) {
             discount *= 0.95;
         }
         return super.getEUtDiscount() * discount;
@@ -157,7 +149,8 @@ public class HandOfJohnDavisonRockefeller extends WirelessEnergyMultiMachineBase
     @Override
     public double getDurationModifier() {
         double speedBoost = 1.0;
-        for (int i = 0; i < mSpeedCount; i++) {
+        int bonusTiers = bonusTiers();
+        for (int i = 0; i < bonusTiers; i++) {
             speedBoost -= 0.025;
             if (speedBoost < 0.1) {
                 speedBoost = 0.1;
@@ -192,25 +185,8 @@ public class HandOfJohnDavisonRockefeller extends WirelessEnergyMultiMachineBase
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.hand_of_john_davison_rockefeller.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.hand_of_john_davison_rockefeller.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.hand_of_john_davison_rockefeller.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.hand_of_john_davison_rockefeller.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.hand_of_john_davison_rockefeller.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.hand_of_john_davison_rockefeller.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
-            .addSupportAny()
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoInfo(this)
             .beginStructureBlock(41, 9, 9, true)
             .addInputHatch(
                 "0+",

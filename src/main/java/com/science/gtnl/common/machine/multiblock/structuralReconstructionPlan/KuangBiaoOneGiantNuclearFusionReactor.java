@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,6 +24,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.google.common.collect.ImmutableMap;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
@@ -40,6 +42,7 @@ import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -238,32 +241,18 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
     }
 
     @Override
+    public Map<String, Object> getTooltipVars() {
+        return ImmutableMap.of(
+            "energy_storage",
+            NumberFormatUtil.formatNumber(maxEUStore()),
+            "max_voltage",
+            GTValues.TIER_COLORS[getRecipeMaxTier()] + GTValues.VN[getRecipeMaxTier()]);
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.0"))
-            .addInfo(
-                StatCollector.translateToLocalFormatted(
-                    "gtnl.machine.extreme_fusion_reactor.tooltip.1",
-                    (int) ((getMachineDurationModifier() - 1) * 100)))
-            .addInfo(
-                StatCollector.translateToLocalFormatted(
-                    "gtnl.machine.extreme_fusion_reactor.tooltip.2",
-                    (int) (getMachineEUtDiscount() * 100)))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.3"))
-            .addInfo(
-                StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.4")
-                    + NumberFormatUtil.formatNumber(maxEUStore())
-                    + " EU")
-            .addInfo(
-                StatCollector.translateToLocalFormatted(
-                    "gtnl.machine.extreme_fusion_reactor.tooltip.5",
-                    GTValues.TIER_COLORS[getRecipeMaxTier()] + GTValues.VN[getRecipeMaxTier()]))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.6"))
-            .addPerfectOCInfo()
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
-            .addSupportAny()
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoInfo(this, "gtnl.machine.extreme_fusion_reactor")
             .beginStructureBlock(39, 17, 39, true)
             .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.casing"))
             .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.extreme_fusion_reactor.tooltip.casing"))

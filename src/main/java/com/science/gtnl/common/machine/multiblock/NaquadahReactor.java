@@ -5,6 +5,7 @@ import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,6 +23,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
+import com.google.common.collect.ImmutableMap;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizon.structurelib.alignment.constructable.IConstructable;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
@@ -37,6 +39,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.metadata.NaquadahReactorMetadata;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -144,6 +147,25 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
     public abstract int getEUtMultiple();
 
     public abstract FluidStack getExtraGas();
+
+    @Override
+    public TooltipStats getTooltipStats() {
+        // Why: a reactor makes power, so recipe speed and power usage lines would mislead.
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> getTooltipVars() {
+        return ImmutableMap.of(
+            "parallels",
+            getMaxParallelRecipes(),
+            "duration_multiple",
+            getDurationMultiple(),
+            "eut_multiple",
+            getEUtMultiple(),
+            "extra_gas",
+            getExtraGas().amount);
+    }
 
     public boolean hasExtraGasInput() {
         FluidStack extraGas = getExtraGas();
@@ -404,22 +426,8 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
 
         @Override
         public MultiblockTooltipBuilder createTooltip() {
-            MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_naquadah_reactor.recipe_type"))
-                .addInfo(
-                    StatCollector.translateToLocalFormatted(
-                        "gtnl.machine.large_naquadah_reactor.tooltip.0",
-                        getMaxParallelRecipes()))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.large_naquadah_reactor.tooltip.1"))
-                .addInfo(
-                    StatCollector.translateToLocalFormatted(
-                        "gtnl.machine.large_naquadah_reactor.tooltip.2",
-                        getDurationMultiple(),
-                        getEUtMultiple()))
-                .addInfo(
-                    StatCollector.translateToLocalFormatted(
-                        "gtnl.machine.large_naquadah_reactor.tooltip.3",
-                        getExtraGas().amount))
+            GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+            tt.addAutoInfo(this)
                 .beginStructureBlock(25, 25, 9, true)
                 .addInputHatch(
                     "0+",

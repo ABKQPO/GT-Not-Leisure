@@ -28,6 +28,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.google.common.collect.ImmutableMap;
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
@@ -46,6 +47,7 @@ import com.science.gtnl.common.machine.hatch.VaultPortHatch;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEItemStack;
@@ -366,19 +368,20 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        // Why: a vault stores items and runs no recipes, so recipe numbers would mislead.
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> getTooltipVars() {
+        return ImmutableMap.of("max_types", MAX_DISTINCT_ITEMS, "capacity", NF.format(MAX_CAPACITY_ITEM));
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_item_vault.recipe_type"))
-            .addInfo(
-                StatCollector.translateToLocalFormatted("gtnl.machine.steam_item_vault.info.0", MAX_DISTINCT_ITEMS))
-            .addInfo(
-                StatCollector.translateToLocalFormatted("gtnl.machine.steam_item_vault.info.1", MAX_DISTINCT_ITEMS))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_item_vault.info.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_item_vault.info.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_item_vault.info.4"))
-            .addInfo(
-                StatCollector
-                    .translateToLocalFormatted("gtnl.machine.steam_item_vault.info.5", NF.format(MAX_CAPACITY_ITEM)))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoInfo(this)
             .beginStructureBlock(7, 11, 7, false)
             .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.steam_item_vault.casing"), 1)
             .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.steam_item_vault.casing"), 1)
