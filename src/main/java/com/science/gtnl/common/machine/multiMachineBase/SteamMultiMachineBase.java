@@ -7,6 +7,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -76,6 +77,7 @@ import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.MetaTileEntityIDs;
 import gregtech.api.enums.Textures;
+import gregtech.api.enums.VoltageIndex;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IIconContainer;
 import gregtech.api.interfaces.IOutputBus;
@@ -101,6 +103,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.HatchElementBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
+import gregtech.api.util.tooltip.TooltipHelper;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
 import gregtech.common.tileentities.machines.IDualInputHatch;
@@ -123,6 +126,8 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     public static final int OC_WINDOW_ID = 12;
     // Why: GT's own steam multiblocks name their steam input line with this key in MultiblockTooltipBuilder.
     private static final String STEAM_INPUT_LINE = "GTPP.MBTT.SteamHatch";
+    private static final String RECIPE_VOLTAGE_KEY = "gtnl.structure.tooltip.steam_recipe_voltage";
+    private static final String HIGH_PRESSURE_RECIPE_VOLTAGE_KEY = RECIPE_VOLTAGE_KEY + ".high_pressure";
     private static final int BASIC_STEAM_TIER = 1;
     private static final int MAX_STEAM_TIER = 2;
     private static final int[] STEAM_INPUT_HATCH_IDS = { MetaTileEntityIDs.Hatch_Input_Steam.ID,
@@ -421,6 +426,34 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     @Override
     public TooltipStats getTooltipStatsAtTier(TieredPart part, int tier) {
         return part == TieredPart.HIGH_PRESSURE ? tooltipStatsAtMachineTier(BASIC_STEAM_TIER + tier) : null;
+    }
+
+    @Override
+    public List<String> getTooltipFeatureLines() {
+        if (!MultiblockTooltipReader.runsRecipes(this, this::createProcessingLogic)) return Collections.emptyList();
+        int basic = recipeTierAtMachineTier(BASIC_STEAM_TIER);
+        if (basic >= VoltageIndex.MAX) return Collections.emptyList();
+        String basicText = TooltipHelper.voltageTierText(basic, false);
+        int highPressure = recipeTierAtMachineTier(MAX_STEAM_TIER);
+        if (highPressure == basic) {
+            return Collections.singletonList(StatCollector.translateToLocalFormatted(RECIPE_VOLTAGE_KEY, basicText));
+        }
+        return Collections.singletonList(
+            StatCollector.translateToLocalFormatted(
+                HIGH_PRESSURE_RECIPE_VOLTAGE_KEY,
+                basicText,
+                TooltipHelper.tierText(StatCollector.translateToLocal(TieredPart.HIGH_PRESSURE.langKey)),
+                TooltipHelper.voltageTierText(highPressure, false)));
+    }
+
+    private int recipeTierAtMachineTier(int machineTier) {
+        int tier = tierMachine;
+        tierMachine = machineTier;
+        try {
+            return getTierRecipes();
+        } finally {
+            tierMachine = tier;
+        }
     }
 
     protected TooltipStats readTooltipStats() {

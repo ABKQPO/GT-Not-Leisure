@@ -697,6 +697,8 @@ gtnl.structure.tooltip.tier_from.casing=使用%s或更高级的外壳
 gtnl.structure.tooltip.tier_from.casing_level=外壳等级达到%s或更高
 gtnl.structure.tooltip.part.high_pressure=高压等级
 gtnl.structure.tooltip.switch_bonus=%s%s
+gtnl.structure.tooltip.steam_recipe_voltage=最高可运行%s配方
+gtnl.structure.tooltip.steam_recipe_voltage.high_pressure=最高可运行%1$s配方，%2$s为%3$s
 gtnl.structure.tooltip.stat_with_bonus=%s，%s
 gtnl.structure.tooltip.per_tier=每%1$s%2$s
 gtnl.structure.tooltip.per_tier.duration=每%1$s配方时间%2$s
@@ -900,11 +902,6 @@ gtnl.greenhouse.not_enough_fertilizer=肥料不足
 
 gtnl.machine.large_steam_circuit_assembler.name=大型蒸汽电路组装机
 gtnl.machine.large_steam_circuit_assembler.recipe_type=电路组装机
-gtnl.machine.large_steam_circuit_assembler.tooltip.0=比同等级的单方块组装机快11%
-gtnl.machine.large_steam_circuit_assembler.tooltip.1=仅消耗正常需求125%的蒸汽
-gtnl.machine.large_steam_circuit_assembler.tooltip.2=一次可处理多达16个物品
-gtnl.machine.large_steam_circuit_assembler.tooltip.3=原始科技！
-gtnl.machine.large_steam_circuit_assembler.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.generation_earth_engine.name=初代目行星发动机
 gtnl.machine.generation_earth_engine.recipe_type=聚变反应堆
@@ -1008,10 +1005,6 @@ gtnl.machine.neutronium_wire_cutting.tooltip.casing=任意超能硅岩强化无�
 
 gtnl.machine.large_steam_crusher.name=大型蒸汽破碎机
 gtnl.machine.large_steam_crusher.recipe_type=粉碎机
-gtnl.machine.large_steam_crusher.tooltip.0=比同等级的单方块粉碎机快900%
-gtnl.machine.large_steam_crusher.tooltip.1=仅消耗正常需求80%的蒸汽
-gtnl.machine.large_steam_crusher.tooltip.2=一次可处理多达128个物品
-gtnl.machine.large_steam_crusher.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.component_assembler.name=部件组装机
 gtnl.machine.component_assembler.recipe_type=部件装配线
@@ -1030,17 +1023,9 @@ gtnl.machine.large_steam_furnace.recipe_type=熔炉
 
 gtnl.machine.large_steam_alloy_smelter.name=大型蒸汽铸形炉
 gtnl.machine.large_steam_alloy_smelter.recipe_type=合金炉
-gtnl.machine.large_steam_alloy_smelter.tooltip.0=比同等级的单方块合金炉快43%
-gtnl.machine.large_steam_alloy_smelter.tooltip.1=仅消耗正常需求80%的蒸汽
-gtnl.machine.large_steam_alloy_smelter.tooltip.2=一次可处理多达16个物品
-gtnl.machine.large_steam_alloy_smelter.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_steam_thermal_centrifuge.name=大型蒸汽热力离心机
 gtnl.machine.large_steam_thermal_centrifuge.recipe_type=热力离心
-gtnl.machine.large_steam_thermal_centrifuge.tooltip.0=比同等级的单方块热力离心机快300%
-gtnl.machine.large_steam_thermal_centrifuge.tooltip.1=仅消耗正常需求80%的蒸汽
-gtnl.machine.large_steam_thermal_centrifuge.tooltip.2=一次可处理多达32个物品
-gtnl.machine.large_steam_thermal_centrifuge.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.steam_cracking.name=蒸汽裂化机
 gtnl.recipe.steam_cracker=蒸汽裂化
@@ -1051,10 +1036,6 @@ gtnl.machine.steam_cracking.tooltip.casing=任意镀铜砖块或脱氧钢机械�
 
 gtnl.machine.large_steam_chemical_bath.name=大型蒸汽化学浸洗机
 gtnl.machine.large_steam_chemical_bath.recipe_type=化学浸洗机
-gtnl.machine.large_steam_chemical_bath.tooltip.0=比同等级的单方块化学浸洗机快25%
-gtnl.machine.large_steam_chemical_bath.tooltip.1=仅消耗正常需求80%的蒸汽
-gtnl.machine.large_steam_chemical_bath.tooltip.2=一次可处理多达16个物品
-gtnl.machine.large_steam_chemical_bath.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.primitive_distillation_tower.name=原始蒸馏塔
 gtnl.machine.primitive_distillation_tower.recipe_type=蒸馏塔
@@ -1380,19 +1361,11 @@ gtnl.machine.alloy_blast_smelter.tooltip.casing=任意冶炼炉机械方块
 
 gtnl.machine.large_steam_extractor.name=大型蒸汽提取机
 gtnl.machine.large_steam_extractor.recipe_type=提取机
-gtnl.machine.large_steam_extractor.tooltip.0=比同等级的单方块提取机快33%
-gtnl.machine.large_steam_extractor.tooltip.1=仅消耗正常需求90%的蒸汽
-gtnl.machine.large_steam_extractor.tooltip.2=一次可处理多达16个物品
-gtnl.machine.large_steam_extractor.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_steam_ore_washer.name=大型蒸汽洗矿机
 gtnl.machine.large_steam_ore_washer.recipe_type=洗矿机 / 简易洗矿池
 gtnl.machine.large_steam_ore_washer.mode.0=洗矿机
 gtnl.machine.large_steam_ore_washer.mode.1=简易洗矿池
-gtnl.machine.large_steam_ore_washer.tooltip.0=比同等级的单方块洗矿机快1900%
-gtnl.machine.large_steam_ore_washer.tooltip.1=仅消耗正常需求60%的蒸汽
-gtnl.machine.large_steam_ore_washer.tooltip.2=一次可处理多达32个物品
-gtnl.machine.large_steam_ore_washer.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_hammer.name=大型锻造锤
 gtnl.machine.large_hammer.recipe_type=锻造锤
@@ -1511,10 +1484,6 @@ gtnl.machine.draconic_fusion_crafting.tooltip.casing=任意背景辐射吸收机
 
 gtnl.machine.large_steam_extruder.name=大型蒸汽压模机
 gtnl.machine.large_steam_extruder.recipe_type=压模机
-gtnl.machine.large_steam_extruder.tooltip.0=比同等级的单方块压模机快11%
-gtnl.machine.large_steam_extruder.tooltip.1=仅消耗正常需求95%的蒸汽
-gtnl.machine.large_steam_extruder.tooltip.2=一次可处理多达8个物品
-gtnl.machine.large_steam_extruder.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.decay_hastener.name=衰变加速器
 gtnl.recipe.decay_hastener=衰变扭曲
@@ -1597,31 +1566,15 @@ gtnl.machine.extreme_fusion_reactor.tooltip.casing=任意聚变机械方块
 
 gtnl.machine.large_steam_centrifuge.name=大型蒸汽离心机
 gtnl.machine.large_steam_centrifuge.recipe_type=离心机
-gtnl.machine.large_steam_centrifuge.tooltip.0=比同等级的单方块离心机快43%
-gtnl.machine.large_steam_centrifuge.tooltip.1=仅消耗正常需求100%的蒸汽
-gtnl.machine.large_steam_centrifuge.tooltip.2=一次可处理多达16个物品
-gtnl.machine.large_steam_centrifuge.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_steam_hammer.name=大型蒸汽锻造锤
 gtnl.machine.large_steam_hammer.recipe_type=锻造锤
-gtnl.machine.large_steam_hammer.tooltip.0=比同等级的单方块锻造锤快33%
-gtnl.machine.large_steam_hammer.tooltip.1=仅消耗正常需求75%的蒸汽
-gtnl.machine.large_steam_hammer.tooltip.2=一次可处理多达32个物品
-gtnl.machine.large_steam_hammer.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_steam_compressor.name=大型蒸汽压缩机
 gtnl.machine.large_steam_compressor.recipe_type=压缩机
-gtnl.machine.large_steam_compressor.tooltip.0=比同等级的单方块压缩机快100%
-gtnl.machine.large_steam_compressor.tooltip.1=仅消耗正常需求80%的蒸汽
-gtnl.machine.large_steam_compressor.tooltip.2=一次可处理多达16个物品
-gtnl.machine.large_steam_compressor.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_steam_sifter.name=大型蒸汽筛选机
 gtnl.machine.large_steam_sifter.recipe_type=筛选机
-gtnl.machine.large_steam_sifter.tooltip.0=比同等级的单方块筛选机快33%
-gtnl.machine.large_steam_sifter.tooltip.1=仅消耗正常需求80%的蒸汽
-gtnl.machine.large_steam_sifter.tooltip.2=一次可处理多达16个物品
-gtnl.machine.large_steam_sifter.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_boiler_bronze.name=大型青铜锅炉
 gtnl.machine.large_boiler_bronze.tooltip.0=每块煤炭将以64000升/秒的速率产生共计128000升的蒸汽
@@ -1638,17 +1591,9 @@ gtnl.machine.large_boiler.tooltip.firebox_casing=任意燃烧室机械方块
 
 gtnl.machine.large_steam_forming_press.name=大型蒸汽冲压机床
 gtnl.machine.large_steam_forming_press.recipe_type=冲压机床
-gtnl.machine.large_steam_forming_press.tooltip.0=比同等级的单方块冲压机床快25%
-gtnl.machine.large_steam_forming_press.tooltip.1=仅消耗正常需求90%的蒸汽
-gtnl.machine.large_steam_forming_press.tooltip.2=一次可处理多达16个物品
-gtnl.machine.large_steam_forming_press.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_steam_mixer.name=大型蒸汽搅拌机
 gtnl.machine.large_steam_mixer.recipe_type=搅拌机
-gtnl.machine.large_steam_mixer.tooltip.0=比同等级的单方块搅拌机慢33%
-gtnl.machine.large_steam_mixer.tooltip.1=一次可处理多达8个物品
-gtnl.machine.large_steam_mixer.tooltip.2=在控制器内放入不锈钢齿轮来解锁HV配方
-gtnl.machine.large_steam_mixer.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.cracker_hub.name=裂解反应枢纽
 gtnl.machine.cracker_hub.recipe_type=石油裂化机
@@ -2135,17 +2080,9 @@ gtnl.waila.steam_ore_processor_module.actual_parallel=实际并行：
 
 gtnl.machine.large_steam_lathe.name=大型蒸汽车床
 gtnl.machine.large_steam_lathe.recipe_type=车床
-gtnl.machine.large_steam_lathe.tooltip.0=比同等级的单方块车床快11%
-gtnl.machine.large_steam_lathe.tooltip.1=仅消耗正常需求95%的蒸汽
-gtnl.machine.large_steam_lathe.tooltip.2=一次可处理多达8个物品
-gtnl.machine.large_steam_lathe.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_steam_cutting.name=大型蒸汽切割机
 gtnl.machine.large_steam_cutting.recipe_type=切割机
-gtnl.machine.large_steam_cutting.tooltip.0=比同等级的单方块切割机快11%
-gtnl.machine.large_steam_cutting.tooltip.1=仅消耗正常需求95%的蒸汽
-gtnl.machine.large_steam_cutting.tooltip.2=一次可处理多达8个物品
-gtnl.machine.large_steam_cutting.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.steam_item_vault.name=蒸汽物品保险库
 gtnl.machine.steam_item_vault.recipe_type=物品保险库
@@ -2164,9 +2101,6 @@ gtnl.chat.steam_item_vault.auto_voiding=自动销毁：%b
 gtnl.machine.primitive_brick_kiln.name=直焰窑
 gtnl.recipe.primitive_brick_kiln=原始土窑
 gtnl.machine.primitive_brick_kiln.recipe_type=原始土窑
-gtnl.machine.primitive_brick_kiln.tooltip.0=景德镇品质认证！
-gtnl.machine.primitive_brick_kiln.tooltip.1=一次可处理多达8个物品
-gtnl.machine.primitive_brick_kiln.casing=任意耐火砖
 
 gtnl.machine.singularity_data_hub.name=奇点数据中枢
 gtnl.machine.singularity_data_hub.recipe_type=保险库
@@ -2417,10 +2351,6 @@ gtnl.machine.kerr_newman_homogenizer.casing=任意强化镀铱机械方块
 
 gtnl.machine.large_steam_bending.name=大型蒸汽卷板机
 gtnl.machine.large_steam_bending.recipe_type=卷板机
-gtnl.machine.large_steam_bending.tooltip.0=比同等级的单方块卷板机快5%
-gtnl.machine.large_steam_bending.tooltip.1=仅消耗正常需求95%的蒸汽
-gtnl.machine.large_steam_bending.tooltip.2=一次可处理多达8个物品
-gtnl.machine.large_steam_bending.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.chemical_complex.name=化工复合体
 gtnl.machine.chemical_complex.recipe_type=化学反应釜
@@ -2558,10 +2488,6 @@ gtnl.machine.highway_to_hell.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.large_steam_wiremill.name=大型蒸汽线材轧机
 gtnl.machine.large_steam_wiremill.recipe_type=线材轧机
-gtnl.machine.large_steam_wiremill.tooltip.0=比同等级的单方块线材轧机快11%
-gtnl.machine.large_steam_wiremill.tooltip.1=仅消耗正常需求85%的蒸汽
-gtnl.machine.large_steam_wiremill.tooltip.2=一次可处理多达4个物品
-gtnl.machine.large_steam_wiremill.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.research_center.name=科研中心
 gtnl.machine.research_center.recipe_type=研究站 / 扫描仪

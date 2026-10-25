@@ -697,6 +697,8 @@ gtnl.structure.tooltip.tier_from.casing=%s or better casings
 gtnl.structure.tooltip.tier_from.casing_level=casing tier %s or higher
 gtnl.structure.tooltip.part.high_pressure=High Pressure Tier
 gtnl.structure.tooltip.switch_bonus=%2$s at %1$s
+gtnl.structure.tooltip.steam_recipe_voltage=Runs recipes up to %s
+gtnl.structure.tooltip.steam_recipe_voltage.high_pressure=Runs recipes up to %1$s, %3$s at %2$s
 gtnl.structure.tooltip.stat_with_bonus=%s, %s
 gtnl.structure.tooltip.per_tier=%2$s per %1$s
 gtnl.structure.tooltip.per_tier.duration=recipe time %2$s per %1$s
@@ -900,11 +902,6 @@ gtnl.greenhouse.not_enough_fertilizer=Not enough fertilizer.
 
 gtnl.machine.large_steam_circuit_assembler.name=Large Steam Circuit Assembler
 gtnl.machine.large_steam_circuit_assembler.recipe_type=Circuit Assembler
-gtnl.machine.large_steam_circuit_assembler.tooltip.0=11% faster than single-block assemblers of the same tier.
-gtnl.machine.large_steam_circuit_assembler.tooltip.1=Only consumes 125% of the normal steam requirement.
-gtnl.machine.large_steam_circuit_assembler.tooltip.2=Can process up to 16 items at once.
-gtnl.machine.large_steam_circuit_assembler.tooltip.3=Primitive tech!
-gtnl.machine.large_steam_circuit_assembler.tooltip.casing=Any Copper Plated Bricks or Deoxidized Steel Machine Block
 
 gtnl.machine.generation_earth_engine.name=First Generation Planetary Engine
 gtnl.machine.generation_earth_engine.recipe_type=Fusion Reactor
@@ -1008,10 +1005,6 @@ gtnl.machine.neutronium_wire_cutting.tooltip.casing=Any Superconductor Reinforce
 
 gtnl.machine.large_steam_crusher.name=Large Steam Crusher
 gtnl.machine.large_steam_crusher.recipe_type=Macerator
-gtnl.machine.large_steam_crusher.tooltip.0=900% faster than single-block grinders of the same tier.
-gtnl.machine.large_steam_crusher.tooltip.1=Only consumes 80% of the normal steam requirement.
-gtnl.machine.large_steam_crusher.tooltip.2=Can process up to 128 items at once.
-gtnl.machine.large_steam_crusher.tooltip.casing=Any Copper Plated Bricks or Deoxidized Steel Machine Block
 
 gtnl.machine.component_assembler.name=Component Assembler
 gtnl.machine.component_assembler.recipe_type=Component Assembly Line
@@ -1030,17 +1023,9 @@ gtnl.machine.large_steam_furnace.recipe_type=Furnace
 
 gtnl.machine.large_steam_alloy_smelter.name=Large Steam Alloy Smelter
 gtnl.machine.large_steam_alloy_smelter.recipe_type=Alloy Smelter
-gtnl.machine.large_steam_alloy_smelter.tooltip.0=43% faster than the single-block alloy smelter of the same tier.
-gtnl.machine.large_steam_alloy_smelter.tooltip.1=Consumes only 80% of the normal steam requirement.
-gtnl.machine.large_steam_alloy_smelter.tooltip.2=Can process up to 16 items at once.
-gtnl.machine.large_steam_alloy_smelter.tooltip.casing=Any Copper Plated Brick or Deoxidized Steel Machine Block
 
 gtnl.machine.large_steam_thermal_centrifuge.name=Large Steam Thermal Centrifuge
 gtnl.machine.large_steam_thermal_centrifuge.recipe_type=Thermal Centrifuge
-gtnl.machine.large_steam_thermal_centrifuge.tooltip.0=300% faster than the single-block thermal centrifuge of the same tier.
-gtnl.machine.large_steam_thermal_centrifuge.tooltip.1=Consumes only 80% of the normal steam requirement.
-gtnl.machine.large_steam_thermal_centrifuge.tooltip.2=Can process up to 32 items at once.
-gtnl.machine.large_steam_thermal_centrifuge.tooltip.casing=Any Copper Plated Brick or Deoxidized Steel Machine Block
 
 gtnl.machine.steam_cracking.name=Steam Cracker
 gtnl.recipe.steam_cracker=Steam Cracking
@@ -1051,10 +1036,6 @@ gtnl.machine.steam_cracking.tooltip.casing=Any Copper Plated Brick or Deoxidized
 
 gtnl.machine.large_steam_chemical_bath.name=Large Steam Chemical Bath
 gtnl.machine.large_steam_chemical_bath.recipe_type=Chemical Bath
-gtnl.machine.large_steam_chemical_bath.tooltip.0=25% faster than the single-block chemical bath of the same tier.
-gtnl.machine.large_steam_chemical_bath.tooltip.1=Consumes only 80% of the normal steam requirement.
-gtnl.machine.large_steam_chemical_bath.tooltip.2=Can process up to 16 items at once.
-gtnl.machine.large_steam_chemical_bath.tooltip.casing=Any Copper Plated Brick or Deoxidized Steel Machine Block
 
 gtnl.machine.primitive_distillation_tower.name=Primitive Distillation Tower
 gtnl.machine.primitive_distillation_tower.recipe_type=Distillation Tower
@@ -1380,19 +1361,11 @@ gtnl.machine.alloy_blast_smelter.tooltip.casing=Any Blast Furnace Machine Block
 
 gtnl.machine.large_steam_extractor.name=Large Steam Extractor
 gtnl.machine.large_steam_extractor.recipe_type=Extractor
-gtnl.machine.large_steam_extractor.tooltip.0=33% faster than single-block extractors of the same tier.
-gtnl.machine.large_steam_extractor.tooltip.1=Only consumes 90% of the normal steam requirement.
-gtnl.machine.large_steam_extractor.tooltip.2=Can process up to 16 items at once.
-gtnl.machine.large_steam_extractor.tooltip.casing=Any Copper Plated Bricks or Deoxidized Steel Machine Block
 
 gtnl.machine.large_steam_ore_washer.name=Large Steam Ore Washer
 gtnl.machine.large_steam_ore_washer.recipe_type=Ore Washer / Simple Ore Washer Pool
 gtnl.machine.large_steam_ore_washer.mode.0=Ore Washer
 gtnl.machine.large_steam_ore_washer.mode.1=Simple Ore Washer Pool
-gtnl.machine.large_steam_ore_washer.tooltip.0=1900% faster than the single-block ore washer of the same tier.
-gtnl.machine.large_steam_ore_washer.tooltip.1=Consumes only 60% of the normal steam requirement.
-gtnl.machine.large_steam_ore_washer.tooltip.2=Can process up to 32 items at once.
-gtnl.machine.large_steam_ore_washer.tooltip.casing=Any Copper Plated Brick or Deoxidized Steel Machine Block
 
 gtnl.machine.large_hammer.name=Large Forging Hammer
 gtnl.machine.large_hammer.recipe_type=Forging Hammer
@@ -1511,10 +1484,6 @@ gtnl.machine.draconic_fusion_crafting.tooltip.casing=Any Background Radiation Ab
 
 gtnl.machine.large_steam_extruder.name=Large Steam Extruder
 gtnl.machine.large_steam_extruder.recipe_type=Extruder
-gtnl.machine.large_steam_extruder.tooltip.0=11% faster than single-block extruders of the same tier.
-gtnl.machine.large_steam_extruder.tooltip.1=Only consumes 95% of the normal steam requirement.
-gtnl.machine.large_steam_extruder.tooltip.2=Can process up to 8 items at once.
-gtnl.machine.large_steam_extruder.tooltip.casing=Any Copper Plated Bricks or Deoxidized Steel Machine Block
 
 gtnl.machine.decay_hastener.name=Decay Hastener
 gtnl.recipe.decay_hastener=Decay Distortion
@@ -1597,31 +1566,15 @@ gtnl.machine.extreme_fusion_reactor.tooltip.casing=Any fusion machine block
 
 gtnl.machine.large_steam_centrifuge.name=Large Steam Centrifuge
 gtnl.machine.large_steam_centrifuge.recipe_type=Centrifuge
-gtnl.machine.large_steam_centrifuge.tooltip.0=43% faster than single-block centrifuges of the same tier.
-gtnl.machine.large_steam_centrifuge.tooltip.1=Only consumes 100% of the normal steam requirement.
-gtnl.machine.large_steam_centrifuge.tooltip.2=Can process up to 16 items at once.
-gtnl.machine.large_steam_centrifuge.tooltip.casing=Any Copper Plated Bricks or Deoxidized Steel Machine Block
 
 gtnl.machine.large_steam_hammer.name=Large Steam Forging Hammer
 gtnl.machine.large_steam_hammer.recipe_type=Forging Hammer
-gtnl.machine.large_steam_hammer.tooltip.0=33% faster than single-block forging hammers of the same tier.
-gtnl.machine.large_steam_hammer.tooltip.1=Only consumes 75% of the normal steam requirement.
-gtnl.machine.large_steam_hammer.tooltip.2=Can process up to 32 items at once.
-gtnl.machine.large_steam_hammer.tooltip.casing=Any Copper Plated Bricks or Deoxidized Steel Machine Block
 
 gtnl.machine.large_steam_compressor.name=Large Steam Compressor
 gtnl.machine.large_steam_compressor.recipe_type=Compressor
-gtnl.machine.large_steam_compressor.tooltip.0=100% faster than single-block compressors of the same tier.
-gtnl.machine.large_steam_compressor.tooltip.1=Only consumes 80% of the normal steam requirement.
-gtnl.machine.large_steam_compressor.tooltip.2=Can process up to 16 items at once.
-gtnl.machine.large_steam_compressor.tooltip.casing=Any Copper Plated Bricks or Deoxidized Steel Machine Block
 
 gtnl.machine.large_steam_sifter.name=Large Steam Sifter
 gtnl.machine.large_steam_sifter.recipe_type=Sifter
-gtnl.machine.large_steam_sifter.tooltip.0=33% faster than single-block sifters of the same tier.
-gtnl.machine.large_steam_sifter.tooltip.1=Only consumes 80% of the normal steam requirement.
-gtnl.machine.large_steam_sifter.tooltip.2=Can process up to 16 items at once.
-gtnl.machine.large_steam_sifter.tooltip.casing=Any Copper Plated Bricks or Deoxidized Steel Machine Block
 
 gtnl.machine.large_boiler_bronze.name=Large Bronze Boiler
 gtnl.machine.large_boiler_bronze.tooltip.0=Each piece of coal produces 128,000L of steam at a rate of 64,000L/s.
@@ -1638,17 +1591,9 @@ gtnl.machine.large_boiler.tooltip.firebox_casing=Any Firebox Machine Block
 
 gtnl.machine.large_steam_forming_press.name=Large Steam Forming Press
 gtnl.machine.large_steam_forming_press.recipe_type=Forming Press
-gtnl.machine.large_steam_forming_press.tooltip.0=25% faster than the single-block forming press of the same tier.
-gtnl.machine.large_steam_forming_press.tooltip.1=Consumes only 90% of the normal steam requirement.
-gtnl.machine.large_steam_forming_press.tooltip.2=Can process up to 16 items at once.
-gtnl.machine.large_steam_forming_press.tooltip.casing=Any Copper Plated Brick or Deoxidized Steel Machine Block
 
 gtnl.machine.large_steam_mixer.name=Large Steam Mixer
 gtnl.machine.large_steam_mixer.recipe_type=Mixer
-gtnl.machine.large_steam_mixer.tooltip.0=33% slower than single-block mixers of the same tier.
-gtnl.machine.large_steam_mixer.tooltip.1=Can process up to 8 items at once.
-gtnl.machine.large_steam_mixer.tooltip.2=Place Stainless Steel Gears in the controller to unlock HV recipes.
-gtnl.machine.large_steam_mixer.tooltip.casing=Any Copper Plated Bricks or Deoxidized Steel Machine Block
 
 gtnl.machine.cracker_hub.name=Cracker Hub
 gtnl.machine.cracker_hub.recipe_type=Oil Cracker
@@ -2135,17 +2080,9 @@ gtnl.waila.steam_ore_processor_module.actual_parallel=Actual Parallel:
 
 gtnl.machine.large_steam_lathe.name=Large Steam Lathe
 gtnl.machine.large_steam_lathe.recipe_type=Lathe
-gtnl.machine.large_steam_lathe.tooltip.0=11% faster than single-block lathe of the same tier.
-gtnl.machine.large_steam_lathe.tooltip.1=Only consumes 95% of the normal steam requirement.
-gtnl.machine.large_steam_lathe.tooltip.2=Can process up to 8 items at once.
-gtnl.machine.large_steam_lathe.casing=Any Copper Plated Bricks or Deoxidized Steel Machine Block
 
 gtnl.machine.large_steam_cutting.name=Large Steam Cutting
 gtnl.machine.large_steam_cutting.recipe_type=Cutting
-gtnl.machine.large_steam_cutting.tooltip.0=11% faster than single-block cutting of the same tier.
-gtnl.machine.large_steam_cutting.tooltip.1=Only consumes 95% of the normal steam requirement.
-gtnl.machine.large_steam_cutting.tooltip.2=Can process up to 8 items at once.
-gtnl.machine.large_steam_cutting.casing=Any Copper Plated Bricks or Deoxidized Steel Machine Block
 
 gtnl.machine.steam_item_vault.name=Steam Item Vault
 gtnl.machine.steam_item_vault.recipe_type=Item Vault
@@ -2164,9 +2101,6 @@ gtnl.chat.steam_item_vault.auto_voiding=Auto-voiding: %b
 gtnl.machine.primitive_brick_kiln.name=Updraft Kiln
 gtnl.recipe.primitive_brick_kiln=Primitive Brick Kiln
 gtnl.machine.primitive_brick_kiln.recipe_type=Primitive Brick Kiln
-gtnl.machine.primitive_brick_kiln.tooltip.0=Jingdezhen Quality Certification!
-gtnl.machine.primitive_brick_kiln.tooltip.1=Can process up to 8 items at once
-gtnl.machine.primitive_brick_kiln.casing=Any Firebricks
 
 gtnl.machine.singularity_data_hub.name=Singularity Data Hub
 gtnl.machine.singularity_data_hub.recipe_type=Vault
@@ -2417,10 +2351,6 @@ gtnl.machine.kerr_newman_homogenizer.casing=Any Reinforced Iridium Machine Block
 
 gtnl.machine.large_steam_bending.name=Large Steam Bender
 gtnl.machine.large_steam_bending.recipe_type=Bender
-gtnl.machine.large_steam_bending.tooltip.0=5% faster than single-block bender of the same tier.
-gtnl.machine.large_steam_bending.tooltip.1=Only consumes 95% of the normal steam requirement.
-gtnl.machine.large_steam_bending.tooltip.2=Can process up to 8 items at once.
-gtnl.machine.large_steam_bending.casing=Any Copper Plated Bricks or Deoxidized Steel Machine Block
 
 gtnl.machine.chemical_complex.name=Chemical Complex
 gtnl.machine.chemical_complex.recipe_type=Chemical Reactor
@@ -2558,10 +2488,6 @@ gtnl.machine.highway_to_hell.casing=Any Radiant Naquadah Alloy Machine Block
 
 gtnl.machine.large_steam_wiremill.name=Large Steam Wiremill
 gtnl.machine.large_steam_wiremill.recipe_type=Wiremill
-gtnl.machine.large_steam_wiremill.tooltip.0=11% faster than a single-block wiremill of the same tier
-gtnl.machine.large_steam_wiremill.tooltip.1=Consumes only 85% of the normal steam requirement.
-gtnl.machine.large_steam_wiremill.tooltip.2=Can process up to 4 items at once.
-gtnl.machine.large_steam_wiremill.casing=Any Copper Plated Brick or Deoxidized Steel Machine Block
 
 gtnl.machine.research_center.name=Research center
 gtnl.machine.research_center.recipe_type=Research Station / Scanner
