@@ -18,8 +18,6 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.science.gtnl.api.IControllerUpgrade;
 import com.science.gtnl.common.gui.modularui.multiblock.SpaceAssemblerGui;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
@@ -253,14 +251,6 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler>
     @Override
     protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
         return new SpaceAssemblerGui(this);
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this MUI1 fallback after the upgrade window is fully ported to MUI2.
-        super.addUIWidgets(builder, buildContext);
-        createUpgradeButton(builder, buildContext);
     }
 
     @Override

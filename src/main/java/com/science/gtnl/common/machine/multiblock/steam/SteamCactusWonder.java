@@ -10,7 +10,6 @@ import java.util.List;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -21,11 +20,6 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.common.gui.modularui.multiblock.SteamCactusWonderGui;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
@@ -273,24 +267,6 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
 
     public String formatFueledAmountForGui(long fueledAmount) {
         return numberFormat.format(fueledAmount);
-    }
-
-    @Override
-    @Deprecated
-    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        // TODO: Remove this mui1 fallback after the Steam Cactus Wonder terminal text is fully ported to mui2.
-        super.drawTexts(screenElements, inventorySlot);
-
-        screenElements
-            .widget(
-                new TextWidget()
-                    .setStringSupplier(
-                        () -> EnumChatFormatting.WHITE
-                            + StatCollector.translateToLocal("gtnl.machine.steam_cactus_wonder.info.offer_value")
-                            + EnumChatFormatting.YELLOW
-                            + numberFormat.format(fueledAmount))
-                    .setTextAlignment((Alignment.CenterLeft)))
-            .widget(new FakeSyncWidget.LongSyncer(() -> fueledAmount, val -> fueledAmount = val));
     }
 
     @Override

@@ -2,25 +2,18 @@ package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
-import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -29,40 +22,8 @@ import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
-import com.gtnewhorizons.modularui.api.ModularUITextures;
-import com.gtnewhorizons.modularui.api.drawable.IDrawable;
-import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
-import com.gtnewhorizons.modularui.api.drawable.Text;
-import com.gtnewhorizons.modularui.api.drawable.UITexture;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.api.math.Color;
-import com.gtnewhorizons.modularui.api.math.MainAxisAlignment;
-import com.gtnewhorizons.modularui.api.math.Size;
-import com.gtnewhorizons.modularui.api.screen.ITileWithModularUI;
-import com.gtnewhorizons.modularui.api.screen.ModularUIContext;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.api.widget.Widget;
-import com.gtnewhorizons.modularui.common.builder.UIBuilder;
-import com.gtnewhorizons.modularui.common.builder.UIInfo;
-import com.gtnewhorizons.modularui.common.internal.wrapper.ModularGui;
-import com.gtnewhorizons.modularui.common.internal.wrapper.ModularUIContainer;
-import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.Column;
-import com.gtnewhorizons.modularui.common.widget.CycleButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedRow;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.MultiChildWidget;
-import com.gtnewhorizons.modularui.common.widget.Scrollable;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
-import com.science.gtnl.common.gui.CircularGaugeDrawable;
 import com.science.gtnl.common.gui.modularui.multiblock.SteamApiaryModuleGui;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
-import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.machine.MachineUtils;
 
 import cpw.mods.fml.relauncher.Side;
@@ -75,12 +36,9 @@ import forestry.apiculture.genetics.Bee;
 import forestry.plugins.PluginApiculture;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.SoundResource;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.metatileentity.BaseMetaTileEntity;
-import gregtech.api.metatileentity.BaseTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchOutputBus;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
@@ -88,8 +46,6 @@ import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import it.unimi.dsi.fastutil.objects.Object2DoubleLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
@@ -117,10 +73,6 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
     public static final int INVENTORY_X = 10;
     public static final int INVENTORY_Y = 16;
     public static final int INVENTORY_BORDER_WIDTH = 3;
-
-    // TODO: Remove this MUI1 startup path after Steam Apiary Module only uses MUI2.
-    @Deprecated
-    public static UIInfo<?, ?> apiaryUI = createMetaTileEntityUI();
 
     public int mPrimaryMode = MODE_PRIMARY_INPUT;
     public Object2DoubleOpenHashMap<ItemId> dropProgress = new Object2DoubleOpenHashMap<>();
@@ -398,204 +350,6 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
         return result;
     }
 
-    @Deprecated
-    public static UIInfo<?, ?> createMetaTileEntityUI() {
-        // TODO: Remove this MUI1 startup path after Steam Apiary Module only uses MUI2.
-        return UIBuilder.of()
-            .container((player, world, x, y, z) -> {
-                TileEntity te = world.getTileEntity(x, y, z);
-                if (te instanceof BaseMetaTileEntity baseMetaTileEntity) {
-                    IMetaTileEntity mte = baseMetaTileEntity.getMetaTileEntity();
-                    if (!(mte instanceof SteamApiaryModule steamApiaryModule)) return null;
-                    final UIBuildContext buildContext = new UIBuildContext(player);
-                    final ModularWindow window = ((ITileWithModularUI) te).createWindow(buildContext);
-                    return new MUIContainer(
-                        new ModularUIContext(buildContext, te::markDirty),
-                        window,
-                        steamApiaryModule);
-                }
-                return null;
-            })
-            .gui((player, world, x, y, z) -> {
-                if (!world.isRemote) return null;
-                TileEntity te = world.getTileEntity(x, y, z);
-                if (te instanceof BaseMetaTileEntity baseMetaTileEntity) {
-                    IMetaTileEntity mte = baseMetaTileEntity.getMetaTileEntity();
-                    if (!(mte instanceof SteamApiaryModule steamApiaryModule)) return null;
-                    final UIBuildContext buildContext = new UIBuildContext(player);
-                    final ModularWindow window = ((ITileWithModularUI) te).createWindow(buildContext);
-                    return new ModularGui(
-                        new MUIContainer(new ModularUIContext(buildContext, null), window, steamApiaryModule));
-                }
-                return null;
-            })
-            .build();
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this MUI1 fallback after Steam Apiary Module only uses MUI2.
-
-        buildContext.addSyncedWindow(OC_WINDOW_ID, this::createRecipeOcCountWindow);
-        builder.widget(new FakeSyncWidget.LongSyncer(this::getTotalSteamCapacityLong, val -> uiSteamCapacity = val));
-        builder.widget(new FakeSyncWidget.LongSyncer(this::getLongTotalSteamStored, val -> uiSteamStored = val));
-        builder.widget(
-            new FakeSyncWidget.IntegerSyncer(this::getTotalSteamStoredOfAnyType, val -> uiSteamStoredOfAllTypes = val));
-
-        isInInventory = !getBaseMetaTileEntity().isActive();
-        builder.widget(
-            new DrawableWidget().setDrawable(GTUITextures.PICTURE_SCREEN_BLACK)
-                .setPos(4, 4)
-                .setSize(190, 85)
-                .setEnabled(w -> !isInInventory));
-
-        builder.widget(
-            dynamicInventory.asWidget(builder, buildContext)
-                .setPos(INVENTORY_X, INVENTORY_Y)
-                .setEnabled(w -> isInInventory));
-
-        builder.widget(
-            new CycleButtonWidget().setToggle(() -> isInInventory, i -> isInInventory = i)
-                .setTextureGetter(
-                    i -> i == 0 ? new Text(StatCollector.translateToLocal("kubatech.gui.text.inventory"))
-                        : new Text(StatCollector.translateToLocal("kubatech.gui.text.status")))
-                .setBackground(GTUITextures.BUTTON_STANDARD)
-                .setPos(140, 91)
-                .setSize(55, 16));
-
-        final DynamicPositionedColumn screenElements = new DynamicPositionedColumn();
-        drawTexts(screenElements, null);
-        builder.widget(
-            new Scrollable().setVerticalScroll()
-                .widget(screenElements)
-                .setPos(10, 7)
-                .setSize(182, 79)
-                .setEnabled(w -> !isInInventory));
-
-        builder.widget(createPowerSwitchButton(builder))
-            .widget(createVoidExcessButton(builder))
-            .widget(createInputSeparationButton(builder))
-            .widget(createBatchModeButton(builder))
-            .widget(createLockToSingleRecipeButton(builder))
-            .widget(createStructureUpdateButton(builder));
-
-        DynamicPositionedRow configurationElements = new DynamicPositionedRow();
-        addConfigurationWidgets(configurationElements, buildContext);
-
-        builder.widget(
-            configurationElements.setSpace(2)
-                .setAlignment(MainAxisAlignment.SPACE_BETWEEN)
-                .setPos(getRecipeLockingButtonPos().add(18, 0)));
-
-        builder.widget(new ButtonWidget().setOnClick((clickData, widget) -> {
-            if (!widget.isClient()) {
-                widget.getContext()
-                    .openSyncedWindow(OC_WINDOW_ID);
-            }
-        })
-            .setPlayClickSound(true)
-            .setBackground(() -> {
-                List<UITexture> ret = new ObjectArrayList<>();
-                ret.add(GTUITextures.BUTTON_STANDARD);
-                ret.add(GTUITextures.OVERLAY_BUTTON_BATCH_MODE_ON);
-                return ret.toArray(new IDrawable[0]);
-            })
-            .addTooltip(StatCollector.translateToLocal("gtnl.machine.steam.overclocking_count"))
-            .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
-            .setPos(174, 112)
-            .setSize(16, 16));
-
-        builder.widget(
-            new DrawableWidget().setDrawable(this.tierMachine == 2 ? STEAM_GAUGE_STEEL_BG : STEAM_GAUGE_BG)
-                .dynamicTooltip(() -> {
-                    List<String> ret = new ObjectArrayList<>();
-                    ret.add(
-                        StatCollector.translateToLocal("gtnl.machine.steam.total_capacity") + uiSteamStored
-                            + "/"
-                            + uiSteamCapacity
-                            + "L");
-                    if (uiSteamStored == 0 && uiSteamStoredOfAllTypes != 0) {
-                        ret.add(EnumChatFormatting.RED + "Found steam of wrong type!");
-                    }
-                    return ret;
-                })
-                .setTooltipShowUpDelay(BaseTileEntity.TOOLTIP_DELAY)
-                .setUpdateTooltipEveryTick(true)
-                .setSize(64, 42)
-                .setPos(-64, 100));
-
-        builder.widget(
-            new DrawableWidget().setDrawable(new CircularGaugeDrawable(() -> (float) uiSteamStored / uiSteamCapacity))
-                .setPos(-64 + 21, 100 + 21)
-                .setSize(18, 4));
-
-        builder.widget(
-            new ItemDrawable(GTNLItemList.FakeItemSiren.get(1)).asWidget()
-                .setPos(-64 + 21 - 7, 100 - 20)
-                .setEnabled(w -> uiSteamStored == 0));
-    }
-
-    @Deprecated
-    public void addConfigurationWidgets(DynamicPositionedRow configurationElements, UIBuildContext buildContext) {
-        // TODO: Remove this MUI1 configuration button after Steam Apiary Module only uses MUI2.
-        buildContext.addSyncedWindow(CONFIGURATION_WINDOW_ID, this::createConfigurationWindow);
-        configurationElements.setSynced(false);
-        configurationElements.widget(
-            new ButtonWidget().setOnClick(
-                (clickData, widget) -> {
-                    if (!widget.isClient()) widget.getContext()
-                        .openSyncedWindow(CONFIGURATION_WINDOW_ID);
-                })
-                .setBackground(GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_CYCLIC)
-                .addTooltip(StatCollector.translateToLocal("kubatech.gui.text.configuration"))
-                .setSize(16, 16));
-    }
-
-    @Override
-    @Deprecated
-    public ModularWindow createRecipeOcCountWindow(EntityPlayer player) {
-        // TODO: Remove this MUI1 recipe OC window after Steam Apiary Module only uses MUI2.
-        final int WIDTH = 158;
-        final int HEIGHT = 52;
-        final int PARENT_WIDTH = getGUIWidth();
-        final int PARENT_HEIGHT = getGUIHeight();
-        ModularWindow.Builder builder = ModularWindow.builder(WIDTH, HEIGHT);
-        builder.setBackground(GTUITextures.BACKGROUND_SINGLEBLOCK_DEFAULT);
-        builder.setGuiTint(getGUIColorization());
-        builder.setDraggable(true);
-        builder.setPos(
-            (size, window) -> Alignment.Center.getAlignedPos(size, new Size(PARENT_WIDTH, PARENT_HEIGHT))
-                .add(
-                    Alignment.BottomRight.getAlignedPos(new Size(PARENT_WIDTH, PARENT_HEIGHT), new Size(WIDTH, HEIGHT))
-                        .add(WIDTH - 3, 0)
-                        .subtract(0, 10)));
-        builder.widget(
-            TextWidget.localised("gtnl.machine.steam.overclocking_count")
-                .setPos(3, 4)
-                .setSize(150, 20))
-            .widget(
-                new NumericWidget().setSetter(val -> recipeOcCount = clampRecipeOcCount((int) val))
-                    .setGetter(() -> {
-                        refreshMaxSlots();
-                        return clampRecipeOcCount(recipeOcCount);
-                    })
-                    .setBounds(0, Integer.MAX_VALUE)
-                    .setDefaultValue(0)
-                    .setScrollValues(1, 4, 64)
-                    .setTextAlignment(Alignment.Center)
-                    .setTextColor(Color.WHITE.normal)
-                    .setSize(150, 18)
-                    .setPos(4, 25)
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD)
-                    .attachSyncer(
-                        new FakeSyncWidget.IntegerSyncer(
-                            () -> clampRecipeOcCount(recipeOcCount),
-                            (val) -> recipeOcCount = clampRecipeOcCount(val)),
-                        builder));
-        return builder.build();
-    }
-
     @Override
     public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer) {
         if (aBaseMetaTileEntity.isClientSide()) return true;
@@ -612,141 +366,6 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
         return new SteamApiaryModuleGui(this);
     }
 
-    @Deprecated
-    public ModularWindow createConfigurationWindow(final EntityPlayer player) {
-        // TODO: Remove this MUI1 configuration window after Steam Apiary Module only uses MUI2.
-        ModularWindow.Builder builder = ModularWindow.builder(200, 100);
-        builder.setBackground(ModularUITextures.VANILLA_BACKGROUND);
-
-        builder.widget(
-            new DrawableWidget().setDrawable(GTUITextures.OVERLAY_BUTTON_CYCLIC)
-                .setPos(5, 5)
-                .setSize(16, 16))
-            .widget(new TextWidget(StatCollector.translateToLocal("kubatech.gui.text.configuration")).setPos(25, 9))
-            .widget(
-                ButtonWidget.closeWindowButton(true)
-                    .setPos(185, 3));
-
-        // Primary mode selector: input, output, and operating.
-        builder.widget(
-            new Column().widget(
-                new CycleButtonWidget().setLength(3)
-                    .setGetter(() -> mPrimaryMode)
-                    .setSetter(val -> {
-                        if (this.mMaxProgresstime > 0) {
-                            GTUtility.sendChatTrans(player, "gtnl.machine.message.mode_running");
-                            return;
-                        }
-                        mPrimaryMode = val;
-                        if (!(player instanceof EntityPlayerMP)) return;
-                        switch (mPrimaryMode) {
-                            case 0:
-                                GTUtility.sendChatTrans(player, "gtnl.machine.message.primary_mode.input");
-                                break;
-                            case 1:
-                                GTUtility.sendChatTrans(player, "gtnl.machine.message.primary_mode.output");
-                                break;
-                            case 2:
-                                GTUtility.sendChatTrans(player, "gtnl.machine.message.primary_mode.operating");
-                                break;
-                        }
-                    })
-                    .addTooltip(
-                        0,
-                        new Text(StatCollector.translateToLocal("kubatech.gui.text.input")).color(Color.YELLOW.dark(3)))
-                    .addTooltip(
-                        1,
-                        new Text(StatCollector.translateToLocal("kubatech.gui.text.output"))
-                            .color(Color.YELLOW.dark(3)))
-                    .addTooltip(
-                        2,
-                        new Text(StatCollector.translateToLocal("kubatech.gui.text.operating"))
-                            .color(Color.GREEN.dark(3)))
-                    .setTextureGetter(
-                        i -> i == 0
-                            ? new Text(StatCollector.translateToLocal("kubatech.gui.text.input"))
-                                .color(Color.YELLOW.dark(3))
-                            : i == 1
-                                ? new Text(StatCollector.translateToLocal("kubatech.gui.text.output"))
-                                    .color(Color.YELLOW.dark(3))
-                                : new Text(StatCollector.translateToLocal("kubatech.gui.text.operating"))
-                                    .color(Color.GREEN.dark(3)))
-                    .setBackground(
-                        ModularUITextures.VANILLA_BACKGROUND,
-                        GTUITextures.OVERLAY_BUTTON_CYCLIC.withFixedSize(18, 18))
-                    .setSize(70, 18)
-                    .addTooltip(StatCollector.translateToLocal("kubatech.gui.text.mia.primary_mode")))
-                .setEnabled(widget -> !getBaseMetaTileEntity().isActive())
-                .setPos(10, 30));
-
-        builder.widget(
-            new Column().widget(
-                new TextWidget(StatCollector.translateToLocal("kubatech.gui.text.mia.primary_mode")).setSize(100, 18))
-                .setEnabled(widget -> !getBaseMetaTileEntity().isActive())
-                .setPos(100, 30));
-
-        builder.widget(
-            new DrawableWidget().setDrawable(GTUITextures.OVERLAY_BUTTON_CROSS)
-                .setSize(18, 18)
-                .setPos(10, 30)
-                .addTooltip(
-                    new Text(StatCollector.translateToLocal("GT5U.gui.text.cannot_change_when_running"))
-                        .color(Color.RED.dark(3)))
-                .setEnabled(widget -> getBaseMetaTileEntity().isActive()));
-
-        return builder.build();
-    }
-
-    @Override
-    @Deprecated
-    public Widget generateCurrentRecipeInfoWidget() {
-        // TODO: Remove this MUI1 recipe info widget after Steam Apiary Module only uses MUI2.
-        DynamicPositionedColumn processingDetails = new DynamicPositionedColumn();
-        if (mOutputItems == null || GUIDropProgress == null) return processingDetails;
-        Object2IntOpenHashMap<ItemId> outputCounts = getOutputItemCounts(mOutputItems);
-        List<Object2DoubleMap.Entry<ItemStack>> sortedEntries = new ObjectArrayList<>(
-            GUIDropProgress.object2DoubleEntrySet());
-        sortedEntries.sort(
-            Comparator.comparingInt(
-                (Object2DoubleMap.Entry<ItemStack> entry) -> outputCounts.getInt(ItemId.createNoCopy(entry.getKey())))
-                .reversed());
-
-        Object2DoubleLinkedOpenHashMap<ItemStack> sortedMap = new Object2DoubleLinkedOpenHashMap<>(
-            sortedEntries.size());
-        for (Object2DoubleMap.Entry<ItemStack> entry : sortedEntries) {
-            sortedMap.put(entry.getKey(), entry.getDoubleValue());
-        }
-
-        for (Object2DoubleMap.Entry<ItemStack> drop : sortedMap.object2DoubleEntrySet()) {
-            int outputSize = outputCounts.getInt(ItemId.createNoCopy(drop.getKey()));
-            if (outputSize != 0) {
-                Long itemCount = (long) outputSize;
-                String itemName = drop.getKey()
-                    .getDisplayName();
-                String itemAmountString = EnumChatFormatting.WHITE + " x "
-                    + EnumChatFormatting.GOLD
-                    + GTUtility.formatShortenedLong(itemCount)
-                    + EnumChatFormatting.WHITE
-                    + appendRate(false, itemCount, true);
-                String lineText = EnumChatFormatting.AQUA + GTUtility.truncateText(itemName, 20) + itemAmountString;
-                String lineTooltip = EnumChatFormatting.AQUA + itemName + "\n" + appendRate(false, itemCount, false);
-
-                processingDetails.widget(
-                    new MultiChildWidget().addChild(
-                        new ItemDrawable(
-                            drop.getKey()
-                                .copy()).asWidget()
-                                    .setSize(8, 8)
-                                    .setPos(0, 0))
-                        .addChild(
-                            new TextWidget(lineText).setTextAlignment(Alignment.CenterLeft)
-                                .addTooltip(lineTooltip)
-                                .setPos(10, 1)));
-            }
-        }
-        return processingDetails;
-    }
-
     public Object2IntOpenHashMap<ItemId> getOutputItemCounts(ItemStack[] outputItems) {
         if (outputItems == null || outputItems.length == 0) return new Object2IntOpenHashMap<>();
         Object2IntOpenHashMap<ItemId> outputCounts = new Object2IntOpenHashMap<>(outputItems.length);
@@ -756,41 +375,6 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
             }
         }
         return outputCounts;
-    }
-
-    @Override
-    @Deprecated
-    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        // TODO: Remove this MUI1 text sync path after Steam Apiary Module only uses MUI2.
-        screenElements.widget(new FakeSyncWidget<>(() -> {
-            Object2DoubleOpenHashMap<ItemStack> ret = new Object2DoubleOpenHashMap<>(this.dropProgress.size());
-            for (Object2DoubleMap.Entry<ItemId> drop : this.dropProgress.object2DoubleEntrySet()) {
-                ret.put(BeeSimulator.dropstacks.get(drop.getKey()), drop.getDoubleValue());
-            }
-            return ret;
-        }, h -> GUIDropProgress = h, (buffer, h) -> {
-            buffer.writeVarIntToBuffer(h.size());
-            for (Object2DoubleMap.Entry<ItemStack> itemStackDoubleEntry : h.object2DoubleEntrySet()) {
-                try {
-                    buffer.writeItemStackToBuffer(itemStackDoubleEntry.getKey());
-                    buffer.writeDouble(itemStackDoubleEntry.getDoubleValue());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }, buffer -> {
-            int len = buffer.readVarIntFromBuffer();
-            Object2DoubleOpenHashMap<ItemStack> ret = new Object2DoubleOpenHashMap<>(len);
-            for (int i = 0; i < len; i++) {
-                try {
-                    ret.put(buffer.readItemStackFromBuffer(), buffer.readDouble());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return ret;
-        }));
-        super.drawTexts(screenElements, inventorySlot);
     }
 
     public <Y> void tryOutputAll(@Nullable List<Y> list, @Nullable Function<Y, List<ItemStack>> mappingFunction) {
@@ -1010,50 +594,6 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
                 tag.setFloat("t", t);
                 return tag;
             }
-        }
-    }
-
-    // TODO: Remove this MUI1 container after Steam Apiary Module only uses MUI2.
-    @Deprecated
-    public static class MUIContainer extends ModularUIContainer {
-
-        public final WeakReference<SteamApiaryModule> parent;
-
-        public MUIContainer(ModularUIContext context, ModularWindow mainWindow, SteamApiaryModule mte) {
-            super(context, mainWindow);
-            parent = new WeakReference<>(mte);
-        }
-
-        @Override
-        public ItemStack transferStackInSlot(EntityPlayer aPlayer, int aSlotIndex) {
-            if (!(aPlayer instanceof EntityPlayerMP)) return super.transferStackInSlot(aPlayer, aSlotIndex);
-            final Slot s = getSlot(aSlotIndex);
-            if (s == null) return super.transferStackInSlot(aPlayer, aSlotIndex);
-            if (aSlotIndex >= 36) return super.transferStackInSlot(aPlayer, aSlotIndex);
-            final ItemStack aStack = s.getStack();
-            if (aStack == null) return super.transferStackInSlot(aPlayer, aSlotIndex);
-            SteamApiaryModule mte = parent.get();
-            if (mte == null) return super.transferStackInSlot(aPlayer, aSlotIndex);
-            if (mte.mStorage.size() >= mte.mMaxSlots) return super.transferStackInSlot(aPlayer, aSlotIndex);
-            if (BeeManager.beeRoot.getType(aStack) == EnumBeeType.QUEEN) {
-                if (mte.mMaxProgresstime > 0) {
-                    GTUtility.sendChatTrans(aPlayer, "gtnl.machine.message.insert_running");
-                    return super.transferStackInSlot(aPlayer, aSlotIndex);
-                }
-                World w = mte.getBaseMetaTileEntity()
-                    .getWorld();
-                SteamApiaryModule.BeeSimulator bs = new SteamApiaryModule.BeeSimulator(
-                    aStack,
-                    w,
-                    6 + mte.recipeOcCount);
-                if (bs.isValid) {
-                    mte.mStorage.add(bs);
-                    s.putStack(null);
-                    detectAndSendChanges();
-                    return null;
-                }
-            }
-            return super.transferStackInSlot(aPlayer, aSlotIndex);
         }
     }
 }

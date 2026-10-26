@@ -14,19 +14,10 @@ import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.Scrollable;
-import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.science.gtnl.common.gui.modularui.hatch.SuperVoidBusGui;
-import com.science.gtnl.utils.item.ItemUtils;
 
-import gregtech.api.gui.widgets.PhantomItemButton;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
-import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchVoidBus;
@@ -34,7 +25,7 @@ import lombok.Getter;
 
 @IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
-public class SuperVoidBus extends MTEHatchVoidBus implements IAddGregtechLogo {
+public class SuperVoidBus extends MTEHatchVoidBus {
 
     public static String DATA_STICK_DATA_TYPE = "superVoidBusFilter";
     public static String LOCKED_ITEMS_NBT_KEY = "lockedItems";
@@ -131,28 +122,6 @@ public class SuperVoidBus extends MTEHatchVoidBus implements IAddGregtechLogo {
     }
 
     @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after SuperVoidBus mui2 rollout is complete.
-        if (lockedInventoryHandler == null) return;
-
-        final Scrollable scrollable = new Scrollable().setVerticalScroll();
-        SlotGroup slotGroup = SlotGroup.ofItemHandler(lockedInventoryHandler, 10)
-            .startFromSlot(0)
-            .endAtSlot(99)
-            .background(PhantomItemButton.FILTER_BACKGROUND)
-            .phantom(true)
-            .slotCreator(index -> new BaseSlot(lockedInventoryHandler, index, true))
-            .build();
-        scrollable.widget(slotGroup);
-
-        builder.widget(
-            scrollable.setSize(18 * 10 + 4, 72)
-                .setPos(20, 9));
-        addGregTechLogo(builder);
-    }
-
-    @Override
     public NBTTagCompound getCopiedData(EntityPlayer player) {
         final NBTTagCompound nbt = new NBTTagCompound();
         final NBTTagList lockedItemList = new NBTTagList();
@@ -186,16 +155,6 @@ public class SuperVoidBus extends MTEHatchVoidBus implements IAddGregtechLogo {
             }
         }
         return true;
-    }
-
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after SuperVoidBus mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(195, 83));
     }
 
 }

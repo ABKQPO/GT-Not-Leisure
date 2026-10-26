@@ -19,13 +19,10 @@ import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.gui.modularui.hatch.WirelessSteamEnergyHatchGui;
 import com.science.gtnl.common.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.utils.enums.SteamTypes;
-import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.api.enums.Textures;
@@ -99,16 +96,6 @@ public class WirelessSteamEnergyHatch extends CustomFluidHatch {
     @Override
     public ITexture[] getTexturesInactive(ITexture aBaseTexture) {
         return new ITexture[] { aBaseTexture, Textures.BlockIcons.OVERLAYS_ENERGY_ON_WIRELESS[0] };
-    }
-
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after WirelessSteamEnergyHatch mui2 parity is verified.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_STEAM_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 62));
     }
 
     @Override

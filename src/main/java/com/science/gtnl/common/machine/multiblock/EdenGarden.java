@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,19 +36,6 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnewhorizons.modularui.api.drawable.Text;
-import com.gtnewhorizons.modularui.api.math.MainAxisAlignment;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.builder.UIInfo;
-import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.CycleButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedRow;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.Scrollable;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.api.IGreenHouse;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.greenhouse.GreenHouseMode;
@@ -66,7 +52,6 @@ import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoidingMode;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IOutputBus;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -83,7 +68,6 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtnhlanth.common.register.LanthItemList;
 import ic2.core.init.BlocksItems;
 import ic2.core.init.InternalName;
-import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -103,11 +87,6 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     private static final int WATER_PER_SEED = 1000;
     private static final UITexture[] MODE_ICONS = { GTGuiTextures.OVERLAY_BUTTON_ALLOW_INPUT,
         GTGuiTextures.OVERLAY_BUTTON_CYCLIC, GTGuiTextures.OVERLAY_BUTTON_ALLOW_OUTPUT };
-
-    // TODO: Remove this MUI1 fallback after Eden Garden no longer supports MUI1 startup paths.
-    @Deprecated
-    public static final UIInfo<?, ?> GreenhouseUI = GreenHouseMode
-        .createGreenhouseUI(GreenHouseMode.MUIContainer_Greenhouse::new);
 
     public Collection<GreenHouseMode.EIGMigrationHolder> toMigrate;
     public Object2DoubleOpenHashMap<ItemStack> synchedGUIDropTracker = new Object2DoubleOpenHashMap<>();
@@ -573,41 +552,6 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     }
 
     @Override
-    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        screenElements.widget(new FakeSyncWidget<>(() -> {
-            Object2DoubleOpenHashMap<ItemStack> ret = new Object2DoubleOpenHashMap<>();
-
-            for (Map.Entry<ItemStack, Double> drop : this.industrialFarmGuiDropTracker.entrySet()) {
-                ret.addTo(drop.getKey(), drop.getValue());
-            }
-
-            return ret;
-        }, h -> this.synchedGUIDropTracker = h, (buffer, h) -> {
-            buffer.writeVarIntToBuffer(h.size());
-            for (Object2DoubleMap.Entry<ItemStack> itemStackDoubleEntry : h.object2DoubleEntrySet()) {
-                try {
-                    buffer.writeItemStackToBuffer(itemStackDoubleEntry.getKey());
-                    buffer.writeDouble(itemStackDoubleEntry.getDoubleValue());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }, buffer -> {
-            int len = buffer.readVarIntFromBuffer();
-            Object2DoubleOpenHashMap<ItemStack> ret = new Object2DoubleOpenHashMap<>(len);
-            for (int i = 0; i < len; i++) {
-                try {
-                    ret.put(buffer.readItemStackFromBuffer(), buffer.readDouble());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return ret;
-        }));
-        super.drawTexts(screenElements, inventorySlot);
-    }
-
-    @Override
     protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
         return new EdenGardenGui(this).withMachineModeIcons(MODE_ICONS);
     }
@@ -617,75 +561,6 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
         if (aBaseMetaTileEntity.isClientSide()) return true;
         openGui(aPlayer);
         return true;
-    }
-
-    @Override
-    @Deprecated
-    public void addConfigurationWidgets(DynamicPositionedRow configurationElements, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after Eden Garden no longer supports mui1 startup paths.
-        buildContext.addSyncedWindow(GreenHouseMode.CONFIGURATION_WINDOW_ID, this::createConfigurationWindow);
-        configurationElements.setSynced(false);
-        configurationElements.widget(
-            new ButtonWidget().setOnClick(
-                (clickData, widget) -> {
-                    if (!widget.isClient()) widget.getContext()
-                        .openSyncedWindow(GreenHouseMode.CONFIGURATION_WINDOW_ID);
-                })
-                .setBackground(GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_CYCLIC)
-                .addTooltip(StatCollector.translateToLocal("gtnl.machine.eden_garden.view.configuration"))
-                .setSize(16, 16));
-    }
-
-    @Override
-    public void createInventorySlots() {}
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after the Eden Garden main GUI is fully ported to mui2.
-        isInInventory = !getBaseMetaTileEntity().isActive();
-        builder.widget(
-            new DrawableWidget().setDrawable(GTUITextures.PICTURE_SCREEN_BLACK)
-                .setPos(4, 4)
-                .setSize(190, 85)
-                .setEnabled(w -> !isInInventory));
-        builder.widget(
-            new CycleButtonWidget().setToggle(() -> isInInventory, i -> isInInventory = i)
-                .setTextureGetter(
-                    i -> i == 0 ? new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.view.inventory"))
-                        : new Text(StatCollector.translateToLocal("gtnl.machine.eden_garden.view.status")))
-                .setBackground(GTUITextures.BUTTON_STANDARD)
-                .setPos(140, 91)
-                .setSize(55, 16));
-
-        final DynamicPositionedColumn screenElements = new DynamicPositionedColumn();
-        drawTexts(screenElements, null);
-        builder.widget(
-            new Scrollable().setVerticalScroll()
-                .widget(screenElements.setPos(10, 0))
-                .setPos(0, 7)
-                .setSize(190, 79)
-                .setEnabled(w -> !isInInventory));
-
-        builder.widget(createPowerSwitchButton(builder))
-            .widget(createVoidExcessButton(builder))
-            .widget(createInputSeparationButton(builder))
-            .widget(createBatchModeButton(builder))
-            .widget(createLockToSingleRecipeButton(builder))
-            .widget(createStructureUpdateButton(builder));
-
-        if (supportsMachineInfo()) {
-            builder.widget(createMachineInfoButton(builder));
-            buildContext.addSyncedWindow(MACHINE_INFO_WINDOW_ID, this::createMachineInfo);
-        }
-
-        DynamicPositionedRow configurationElements = new DynamicPositionedRow();
-        addConfigurationWidgets(configurationElements, buildContext);
-
-        builder.widget(
-            configurationElements.setSpace(2)
-                .setAlignment(MainAxisAlignment.SPACE_BETWEEN)
-                .setPos(getRecipeLockingButtonPos().add(18, 0)));
     }
 
     @Override

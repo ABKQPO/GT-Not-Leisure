@@ -10,7 +10,7 @@ import gregtech.api.util.MethodsReturnNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SpaceMinerFrontend extends GTNLLogoFrontend {
+public class SpaceMinerFrontend extends GTNLRecipeFrontend {
 
     public SpaceMinerFrontend(BasicUIPropertiesBuilder uiPropertiesBuilder,
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {

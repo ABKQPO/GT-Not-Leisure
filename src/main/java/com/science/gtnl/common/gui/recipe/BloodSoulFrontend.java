@@ -10,7 +10,7 @@ import gregtech.api.util.MethodsReturnNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BloodSoulFrontend extends GTNLLogoFrontend {
+public class BloodSoulFrontend extends GTNLRecipeFrontend {
 
     public BloodSoulFrontend(BasicUIPropertiesBuilder uiPropertiesBuilder,
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {

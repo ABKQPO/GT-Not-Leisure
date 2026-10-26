@@ -66,7 +66,6 @@ import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GTNLMachineID;
 import com.science.gtnl.utils.enums.SteamTypes;
-import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.text.AnimatedText;
 import com.science.gtnl.utils.text.AnimatedTooltipHandler;
 
@@ -428,7 +427,7 @@ public class HatchLoader {
                 "BigSteamInputHatch",
                 "gtnl.hatch.big_steam_input.name",
                 1,
-                ItemUtils.PICTURE_GTNL_STEAM_LOGO));
+                true));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.BigSteamInputHatch.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.ParallelControllerHatchLV.set(

@@ -22,11 +22,6 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.FurnaceArrayGui;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
@@ -400,27 +395,5 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
     @Override
     protected boolean supportsCraftingMEBuffer() {
         return false;
-    }
-
-    @Override
-    @Deprecated
-    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        // TODO: Remove this mui1 fallback after the Furnace Array terminal text is fully ported to mui2.
-        super.drawTexts(screenElements, inventorySlot);
-        screenElements
-            .widget(
-                new TextWidget()
-                    .setStringSupplier(
-                        () -> StatCollector
-                            .translateToLocalFormatted("gtnl.machine.furnace_array.furnace_count", furnaceCount))
-                    .setTextAlignment(Alignment.CenterLeft)
-                    .setDefaultColor(COLOR_TEXT_WHITE.get()))
-            .widget(
-                new TextWidget().setStringSupplier(
-                    () -> StatCollector.translateToLocalFormatted("gtnl.machine.furnace_array.coal_count", coalCount))
-                    .setTextAlignment(Alignment.CenterLeft)
-                    .setDefaultColor(COLOR_TEXT_WHITE.get()))
-            .widget(new FakeSyncWidget.LongSyncer(() -> furnaceCount, f -> furnaceCount = f))
-            .widget(new FakeSyncWidget.LongSyncer(() -> coalCount, c -> coalCount = c));
     }
 }

@@ -39,15 +39,10 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnllib.utils.GameUtils;
 import com.science.gtnl.api.IStackVault;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.SingularityDataHubGui;
-import com.science.gtnl.common.gui.modularui.multiblock.VaultTypeCountFormatter;
 import com.science.gtnl.common.machine.hatch.VaultPortHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
@@ -190,21 +185,6 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     @Override
     protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
         return new SingularityDataHubGui(this);
-    }
-
-    @Override
-    @Deprecated
-    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        super.drawTexts(screenElements, inventorySlot);
-        screenElements
-            .widget(
-                new TextWidget()
-                    .setStringSupplier(
-                        () -> VaultTypeCountFormatter
-                            .createTypeCountText(typeCountPayloadForGui, "gtnl.gui.singularity_data_hub.type_count"))
-                    .setDefaultColor(COLOR_TEXT_WHITE.get())
-                    .setEnabled(true))
-            .widget(new FakeSyncWidget.StringSyncer(this::getTypeCountPayloadForGui, this::setTypeCountPayloadFromGui));
     }
 
     @Override

@@ -24,10 +24,6 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.AdvancedInfiniteDrillerGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
@@ -420,24 +416,6 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
     @Override
     protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
         return new AdvancedInfiniteDrillerGui(this);
-    }
-
-    @Override
-    @Deprecated
-    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        // TODO: Remove this MUI1 fallback after the Advanced Infinite Driller terminal text is fully ported to MUI2.
-        super.drawTexts(screenElements, inventorySlot);
-        screenElements
-            .widget(
-                new TextWidget()
-                    .setStringSupplier(
-                        () -> StatCollector.translateToLocalFormatted(
-                            "gtnl.machine.advanced_infinite_driller.info.excess_fuel",
-                            excessFuel))
-                    .setDefaultColor(COLOR_TEXT_WHITE.get())
-                    .setEnabled(true))
-            .widget(
-                new FakeSyncWidget.DoubleSyncer(() -> excessFuel, fuel -> excessFuel = fuel).setSynced(true, false));
     }
 
     public double getExcessFuelForGui() {

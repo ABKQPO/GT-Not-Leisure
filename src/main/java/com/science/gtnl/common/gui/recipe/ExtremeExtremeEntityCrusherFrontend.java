@@ -13,12 +13,10 @@ import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.enums.TieredVariant;
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
 import gregtech.api.recipe.NEIRecipePropertiesBuilder;
-import gregtech.api.recipe.RecipeMapFrontend;
 import gregtech.api.util.MethodsReturnNonnullByDefault;
 import gregtech.common.gui.modularui.UIHelper;
 import gregtech.nei.GTNEIDefaultHandler;
@@ -26,7 +24,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ExtremeExtremeEntityCrusherFrontend extends RecipeMapFrontend {
+public class ExtremeExtremeEntityCrusherFrontend extends GTNLRecipeFrontend {
 
     public ExtremeExtremeEntityCrusherFrontend(BasicUIPropertiesBuilder uiPropertiesBuilder,
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {
@@ -36,11 +34,8 @@ public class ExtremeExtremeEntityCrusherFrontend extends RecipeMapFrontend {
     }
 
     @Override
-    public void addGregTechLogo(ModularWindow.Builder builder, Pos2d windowOffset) {
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(new Pos2d(150, 102).add(windowOffset)));
+    protected Slot logoSlot() {
+        return new Slot(150, 102);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.multiMachineBase;
 
-import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.math.BigInteger;
@@ -14,7 +13,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -35,26 +33,8 @@ import org.jetbrains.annotations.Nullable;
 
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
-import com.gtnewhorizons.modularui.api.drawable.IDrawable;
-import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
-import com.gtnewhorizons.modularui.api.drawable.UITexture;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.api.math.Color;
-import com.gtnewhorizons.modularui.api.math.Size;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
-import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.Scrollable;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IControllerInfo;
-import com.science.gtnl.common.gui.CircularGaugeDrawable;
 import com.science.gtnl.common.gui.modularui.GTNLSteamMultiBlockBaseGui;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.hatch.WirelessSteamEnergyHatch;
@@ -64,10 +44,8 @@ import com.science.gtnl.common.machine.tooltip.MultiblockTooltipReader;
 import com.science.gtnl.common.machine.tooltip.StructureTooltipHooks;
 import com.science.gtnl.common.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.loader.BlockLoader;
-import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GTNLMachineID;
 import com.science.gtnl.utils.enums.SteamTypes;
-import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.machine.MachineUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
@@ -79,7 +57,6 @@ import gregtech.api.casing.Casings;
 import gregtech.api.enums.MetaTileEntityIDs;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoltageIndex;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IIconContainer;
 import gregtech.api.interfaces.IOutputBus;
 import gregtech.api.interfaces.metatileentity.IItemLockable;
@@ -162,11 +139,6 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
 
     public ObjectArrayList<ItemStack> recipeSearchItemInputs = new ObjectArrayList<>();
     public ObjectArrayList<FluidStack> recipeSearchFluidInputs = new ObjectArrayList<>();
-
-    public static final UITexture STEAM_GAUGE_BG = UITexture
-        .fullImage(ScienceNotLeisure.MODID, "gui/background/steam_dial");
-    public static final UITexture STEAM_GAUGE_STEEL_BG = UITexture
-        .fullImage(ScienceNotLeisure.MODID, "gui/background/steam_dial_steel");
 
     public SteamMultiMachineBase(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -1350,16 +1322,6 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         return new GTNLSteamMultiBlockBaseGui(this);
     }
 
-    @Deprecated
-    @Override
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this MUI1 logo hook after steam multiblocks only use MUI2.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_STEAM_LOGO)
-                .setSize(18, 18)
-                .setPos(172, 67));
-    }
-
     @Override
     @NotNull
     public CheckRecipeResult doCheckRecipe() {
@@ -1568,114 +1530,6 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         return (hatchColors & (1 << color)) == 0;
     }
 
-    @Deprecated
-    @Override
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this MUI1 window assembly after the GTNL steam MUI2 wrapper is complete.
-        if (doesBindPlayerInventory()) {
-            builder.widget(
-                new DrawableWidget().setDrawable(GTUITextures.PICTURE_SCREEN_BLACK)
-                    .setPos(4, 4)
-                    .setSize(190, 85));
-            final SlotWidget inventorySlot = new SlotWidget(inventoryHandler, 1);
-            builder.widget(
-                inventorySlot.setPos(173, 167)
-                    .setBackground(GTUITextures.SLOT_DARK_GRAY));
-
-            final DynamicPositionedColumn screenElements = new DynamicPositionedColumn();
-            drawTexts(screenElements, inventorySlot);
-            builder.widget(
-                new Scrollable().setVerticalScroll()
-                    .widget(screenElements)
-                    .setPos(10, 7)
-                    .setSize(182, 79));
-
-            if (supportsMachineModeSwitch() && machineModeIcons == null) {
-                machineModeIcons = new ObjectArrayList<>(4);
-                setMachineModeIcons();
-            }
-            builder.widget(createPowerSwitchButton(builder))
-                .widget(createVoidExcessButton(builder))
-                .widget(createInputSeparationButton(builder))
-                .widget(createModeSwitchButton(builder))
-                .widget(createBatchModeButton(builder))
-                .widget(createLockToSingleRecipeButton(builder))
-                .widget(createStructureUpdateButton(builder))
-                .widget(createMuffleButton(builder, true));
-            if (supportsPowerPanel()) {
-                builder.widget(createPowerPanelButton(builder));
-                buildContext.addSyncedWindow(POWER_PANEL_WINDOW_ID, this::createPowerPanel);
-            }
-
-            if (supportsMachineInfo()) {
-                builder.widget(createMachineInfoButton(builder));
-                buildContext.addSyncedWindow(MACHINE_INFO_WINDOW_ID, this::createMachineInfo);
-            }
-        } else {
-            addNoPlayerInventoryUI(builder, buildContext);
-        }
-
-        buildContext.addSyncedWindow(OC_WINDOW_ID, this::createRecipeOcCountWindow);
-        builder.widget(new FakeSyncWidget.LongSyncer(this::getTotalSteamCapacityLong, val -> uiSteamCapacity = val));
-        builder.widget(new FakeSyncWidget.LongSyncer(this::getLongTotalSteamStored, val -> uiSteamStored = val));
-        builder.widget(
-            new FakeSyncWidget.IntegerSyncer(this::getTotalSteamStoredOfAnyType, val -> uiSteamStoredOfAllTypes = val));
-
-        builder.widget(new ButtonWidget().setOnClick((clickData, widget) -> {
-            if (!widget.isClient()) {
-                widget.getContext()
-                    .openSyncedWindow(OC_WINDOW_ID);
-            }
-        })
-            .setPlayClickSound(true)
-            .setBackground(() -> {
-                List<UITexture> ret = new ObjectArrayList<>();
-                ret.add(GTUITextures.BUTTON_STANDARD);
-                ret.add(GTUITextures.OVERLAY_BUTTON_BATCH_MODE_ON);
-                return ret.toArray(new IDrawable[0]);
-            })
-            .setEnabled(supportsSteamOC())
-            .addTooltip(StatCollector.translateToLocal("gtnl.machine.steam.overclocking_count"))
-            .setTooltipShowUpDelay(TOOLTIP_DELAY)
-            .setPos(174, 112)
-            .setSize(16, 16));
-        builder.widget(
-            new DrawableWidget().setDrawable(this.tierMachine == 2 ? STEAM_GAUGE_STEEL_BG : STEAM_GAUGE_BG)
-                .dynamicTooltip(() -> {
-                    List<String> ret = new ObjectArrayList<>();
-                    ret.add(
-                        StatCollector.translateToLocal("gtnl.machine.steam.total_capacity") + uiSteamStored
-                            + "/"
-                            + uiSteamCapacity
-                            + "L");
-                    if (uiSteamStored == 0 && uiSteamStoredOfAllTypes != 0) {
-                        ret.add(EnumChatFormatting.RED + "Found steam of wrong type!");
-                    }
-                    return ret;
-                })
-                .setEnabled(supportsSteamCapacityUI())
-                .setTooltipShowUpDelay(TOOLTIP_DELAY)
-                .setUpdateTooltipEveryTick(true)
-                .setSize(64, 42)
-                .setPos(-64, 100));
-
-        builder.widget(
-            new DrawableWidget().setDrawable(new CircularGaugeDrawable(() -> (float) uiSteamStored / uiSteamCapacity))
-                .setEnabled(supportsSteamCapacityUI())
-                .setPos(-64 + 21, 100 + 21)
-                .setSize(18, 4));
-
-        builder.widget(
-            new ItemDrawable(GTNLItemList.FakeItemSiren.get(1)).asWidget()
-                .setEnabled(supportsSteamCapacityUI())
-                .setPos(-64 + 21 - 7, 100 - 20)
-                .setEnabled(w -> uiSteamStored == 0));
-    }
-
-    public void addNoPlayerInventoryUI(ModularWindow.Builder builder, UIBuildContext buildContext) {
-
-    }
-
     @Override
     public void onMachineModeSwitchClick() {
         super.onMachineModeSwitchClick();
@@ -1702,30 +1556,6 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         return false;
     }
 
-    @Deprecated
-    @Override
-    public ButtonWidget createMuffleButton(IWidgetBuilder<?> builder, boolean canBeMuffled) {
-        // TODO: Remove this MUI1 muffler button after the GTNL steam MUI2 wrapper is complete.
-        return (ButtonWidget) new ButtonWidget().setOnClick((clickData, widget) -> setMuffled(!isMuffled()))
-            .setPlayClickSound(true)
-            .setEnabled(canBeMuffled)
-            .setBackground(() -> {
-                List<UITexture> ret = new ObjectArrayList<>();
-                if (isMuffled()) {
-                    ret.add(GTUITextures.BUTTON_STANDARD_PRESSED);
-                    ret.add(GTUITextures.OVERLAY_BUTTON_MUFFLE_ON);
-                } else {
-                    ret.add(GTUITextures.BUTTON_STANDARD);
-                    ret.add(GTUITextures.OVERLAY_BUTTON_MUFFLE_OFF);
-                }
-                return ret.toArray(new IDrawable[0]);
-            })
-            .attachSyncer(new FakeSyncWidget.BooleanSyncer(this::isMuffled, this::setMuffled), builder)
-            .addTooltip(StatCollector.translateToLocal("GT5U.machines.muffled"))
-            .setPos(200, 0)
-            .setSize(12, 12);
-    }
-
     public boolean clearRecipeMapForAllInputHatches() {
         return resetRecipeMapForAllInputHatches(null);
     }
@@ -1747,46 +1577,6 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
             }
         }
         return cleared > 0;
-    }
-
-    @Deprecated
-    public ModularWindow createRecipeOcCountWindow(EntityPlayer player) {
-        // TODO: Remove this MUI1 recipe OC window after the GTNL steam MUI2 wrapper is complete.
-        final int WIDTH = 158;
-        final int HEIGHT = 52;
-        final int PARENT_WIDTH = getGUIWidth();
-        final int PARENT_HEIGHT = getGUIHeight();
-        ModularWindow.Builder builder = ModularWindow.builder(WIDTH, HEIGHT);
-        builder.setBackground(GTUITextures.BACKGROUND_SINGLEBLOCK_DEFAULT);
-        builder.setGuiTint(getGUIColorization());
-        builder.setDraggable(true);
-        builder.setPos(
-            (size, window) -> Alignment.Center.getAlignedPos(size, new Size(PARENT_WIDTH, PARENT_HEIGHT))
-                .add(
-                    Alignment.BottomRight.getAlignedPos(new Size(PARENT_WIDTH, PARENT_HEIGHT), new Size(WIDTH, HEIGHT))
-                        .add(WIDTH - 3, 0)
-                        .subtract(0, 10)));
-        builder.widget(
-            TextWidget.localised("gtnl.machine.steam.overclocking_count")
-                .setPos(3, 4)
-                .setSize(150, 20))
-            .widget(
-                new NumericWidget().setSetter(val -> recipeOcCount = clampRecipeOcCount((int) val))
-                    .setGetter(() -> clampRecipeOcCount(recipeOcCount))
-                    .setBounds(0, Integer.MAX_VALUE)
-                    .setDefaultValue(0)
-                    .setScrollValues(1, 4, 64)
-                    .setTextAlignment(Alignment.Center)
-                    .setTextColor(Color.WHITE.normal)
-                    .setSize(150, 18)
-                    .setPos(4, 25)
-                    .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD)
-                    .attachSyncer(
-                        new FakeSyncWidget.IntegerSyncer(
-                            () -> clampRecipeOcCount(recipeOcCount),
-                            (val) -> recipeOcCount = clampRecipeOcCount(val)),
-                        builder));
-        return builder.build();
     }
 
     public int clampRecipeOcCount(int value) {

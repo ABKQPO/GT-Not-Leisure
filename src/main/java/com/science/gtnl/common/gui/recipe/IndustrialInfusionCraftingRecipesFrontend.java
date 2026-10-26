@@ -26,7 +26,7 @@ import thaumcraft.api.aspects.AspectList;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class IndustrialInfusionCraftingRecipesFrontend extends GTNLLogoFrontend {
+public class IndustrialInfusionCraftingRecipesFrontend extends GTNLRecipeFrontend {
 
     private static final int INPUT_X_ORIGIN = 6;
     private static final int INPUT_Y_ORIGIN = 8;

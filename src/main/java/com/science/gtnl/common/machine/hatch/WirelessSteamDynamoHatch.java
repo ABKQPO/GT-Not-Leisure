@@ -25,16 +25,12 @@ import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.gui.modularui.hatch.WirelessSteamDynamoHatchGui;
 import com.science.gtnl.common.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.mixins.early.gregtech.AccessorMTEHatch;
 import com.science.gtnl.utils.FluidIdUtils;
 import com.science.gtnl.utils.enums.SteamTypes;
-import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.api.enums.OutputHatchType;
@@ -42,7 +38,6 @@ import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.fluid.IFluidStore;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
-import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchOutput;
@@ -54,7 +49,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 
 @IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
-public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidStore, IAddGregtechLogo {
+public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidStore {
 
     public UUID ownerUUID;
     public UUID teamUUID;
@@ -88,16 +83,6 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
     @Override
     public MetaTileEntity newMetaEntity(final IGregTechTileEntity aTileEntity) {
         return new WirelessSteamDynamoHatch(this.mName, this.mTier, this.mTextures, this.mLockedFluids);
-    }
-
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after WirelessSteamDynamoHatch mui2 parity is verified.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_STEAM_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 62));
     }
 
     @Override
@@ -150,13 +135,6 @@ public class WirelessSteamDynamoHatch extends MTEHatchOutput implements IFluidSt
     @Override
     public OutputHatchType getHatchType() {
         return OutputHatchType.StandardFiltered;
-    }
-
-    @Override
-    @Deprecated
-    public FluidSlotWidget createFluidSlot() {
-        // TODO: Remove this mui1 fallback after WirelessSteamDynamoHatch mui2 parity is verified.
-        return super.createFluidSlot().setFilter(fluid -> FluidIdUtils.matchesAny(mLockedFluids, fluid));
     }
 
     @Override

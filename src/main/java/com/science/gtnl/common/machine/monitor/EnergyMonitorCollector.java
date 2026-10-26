@@ -33,6 +33,7 @@ import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.EternalGregTechWorkshopModule;
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.EnergyInfuser;
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.KuangBiaoOneGiantNuclearFusionReactor.UEVTier;
+import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.tileentity.ICoverable;
@@ -46,6 +47,7 @@ import gregtech.api.metatileentity.implementations.MTEWirelessEnergy;
 import gregtech.common.misc.WirelessNetworkManager;
 import gregtech.common.tileentities.machines.multi.purification.MTEPurificationPlant;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import kekztech.common.tileentities.MTELapotronicSuperCapacitor;
 import lombok.Getter;
 import tectech.thing.metaTileEntity.hatch.MTEHatchWirelessDynamoMulti;
@@ -79,9 +81,8 @@ public class EnergyMonitorCollector {
             return EnergyMonitorSnapshot.empty();
         }
 
-        WirelessTeam.TeamContext teamContext = WirelessTeam.resolveContext(monitorOwnerUuid);
-        UUID leader = teamContext.getLeader();
-        Set<UUID> teamMembers = teamContext.getMembers();
+        UUID leader = TeamNetworkManager.getTeamId(monitorOwnerUuid);
+        Set<UUID> teamMembers = new ObjectOpenHashSet<>(TeamNetworkManager.getMembers(monitorOwnerUuid));
         if (leader == null || teamMembers.isEmpty()) {
             return EnergyMonitorSnapshot.empty();
         }

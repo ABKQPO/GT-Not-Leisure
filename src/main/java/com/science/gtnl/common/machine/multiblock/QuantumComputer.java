@@ -15,22 +15,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizon.structurelib.StructureLibAPI;
 import com.gtnewhorizon.structurelib.alignment.constructable.IConstructable;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.api.math.Color;
-import com.gtnewhorizons.modularui.api.math.Pos2d;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.gtnewhorizons.modularui.common.widget.Scrollable;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
-import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.QuantumComputerGui;
@@ -38,7 +24,6 @@ import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.ECraftingCPUCluster;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import appeng.api.AEApi;
@@ -66,11 +51,9 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoidingMode;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ISecondaryDescribable;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
-import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTETooltipMultiBlockBase;
 import gregtech.api.render.TextureFactory;
@@ -82,7 +65,7 @@ import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
 public class QuantumComputer extends MTETooltipMultiBlockBase
-    implements IConstructable, ISecondaryDescribable, IActionHost, IGridProxyable, IAddGregtechLogo, ICustomNameObject {
+    implements IConstructable, ISecondaryDescribable, IActionHost, IGridProxyable, ICustomNameObject {
 
     public static int CASING_INDEX = GTNLCasings.QuantumComputerCasing.getTextureId();
     public static final EnumSet<ForgeDirection> upDirection = EnumSet.of(ForgeDirection.UP);
@@ -960,108 +943,6 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
     @Override
     protected @NotNull MTEMultiBlockBaseGui<?> getGui() {
         return new QuantumComputerGui(this);
-    }
-
-    @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this MUI1 fallback after Quantum Computer only uses the MUI2 GUI.
-        builder.widget(
-            new DrawableWidget().setDrawable(GTUITextures.PICTURE_SCREEN_BLACK)
-                .setPos(4, 4)
-                .setSize(190, 85));
-        final SlotWidget inventorySlot = new SlotWidget(inventoryHandler, 1);
-        builder.widget(
-            inventorySlot.setPos(173, 167)
-                .setBackground(GTUITextures.SLOT_DARK_GRAY));
-
-        final DynamicPositionedColumn screenElements = new DynamicPositionedColumn();
-        drawTexts(screenElements, inventorySlot);
-        builder.widget(
-            new Scrollable().setVerticalScroll()
-                .widget(screenElements)
-                .setPos(10, 7)
-                .setSize(182, 79));
-
-        builder.widget(
-            new TextFieldWidget().setSetter(this::setCustomName)
-                .setGetter(this::getCustomNameForGui)
-                .setTextAlignment(Alignment.Center)
-                .setScrollBar()
-                .setTextColor(Color.WHITE.normal)
-                .addTooltip(StatCollector.translateToLocal("gtnl.machine.quantum_computer.info.3"))
-                .setBackground(GTUITextures.BACKGROUND_TEXT_FIELD)
-                .setPos(7, 90)
-                .setSize(162, 18)
-                .attachSyncer(new FakeSyncWidget.StringSyncer(this::getCustomName, this::setCustomName), builder));
-
-        builder.widget(createStructureUpdateButton(builder));
-        addGregTechLogo(builder);
-    }
-
-    @Override
-    public Pos2d getStructureUpdateButtonPos() {
-        return new Pos2d(174, 148);
-    }
-
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this MUI1 logo hook after Quantum Computer only uses the MUI2 GUI.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_CIRCULATION)
-                .setSize(18, 18)
-                .setPos(172, 49));
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(172, 67));
-    }
-
-    @Override
-    @Deprecated
-    public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
-        // TODO: Remove this MUI1 terminal text after Quantum Computer only uses the MUI2 GUI.
-        super.drawTexts(screenElements, inventorySlot);
-        screenElements
-            .widget(
-                new TextWidget()
-                    .setStringSupplier(
-                        () -> StatCollector
-                            .translateToLocalFormatted("gtnl.machine.quantum_computer.info.0", width, height, depth))
-                    .setTextAlignment(Alignment.CenterLeft)
-                    .setDefaultColor(COLOR_TEXT_WHITE.get()))
-            .widget(
-                new TextWidget()
-                    .setStringSupplier(
-                        () -> StatCollector.translateToLocalFormatted(
-                            "gtnl.machine.quantum_computer.info.1",
-                            NumberFormatUtil.formatNumber(maximumParallel),
-                            NumberFormatUtil.formatNumber(usedParallel),
-                            String.format(
-                                "%.1f%%",
-                                maximumParallel > 0 ? (double) usedParallel / maximumParallel * 100.0 : 0.0)))
-                    .setTextAlignment(Alignment.CenterLeft)
-                    .setDefaultColor(COLOR_TEXT_WHITE.get()))
-            .widget(
-                new TextWidget()
-                    .setStringSupplier(
-                        () -> StatCollector.translateToLocalFormatted(
-                            "gtnl.machine.quantum_computer.info.2",
-                            MathUtils.shortFormat(getMaximumStorage()),
-                            usedStorage,
-                            String.format(
-                                "%.1f%%",
-                                getMaximumStorage() > 0 ? (double) usedParallel / getMaximumStorage() * 100.0 : 0.0)))
-                    .setTextAlignment(Alignment.CenterLeft)
-                    .setDefaultColor(COLOR_TEXT_WHITE.get()))
-            .widget(new FakeSyncWidget.IntegerSyncer(() -> width, w -> width = w))
-            .widget(new FakeSyncWidget.IntegerSyncer(() -> height, h -> height = h))
-            .widget(new FakeSyncWidget.IntegerSyncer(() -> depth, d -> depth = d))
-            .widget(new FakeSyncWidget.IntegerSyncer(() -> maximumParallel, parallel -> maximumParallel = parallel))
-            .widget(new FakeSyncWidget.IntegerSyncer(this::getUsedParallel, parallel -> usedParallel = parallel))
-            .widget(new FakeSyncWidget.LongSyncer(this::getMaximumStorage, storage -> maximumStorage = storage))
-            .widget(new FakeSyncWidget.LongSyncer(this::getUsedBytes, storage -> usedStorage = storage));
     }
 
     @Override

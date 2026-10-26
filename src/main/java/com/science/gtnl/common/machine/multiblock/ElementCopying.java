@@ -5,24 +5,17 @@ import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 import java.util.function.ToLongFunction;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -38,33 +31,18 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnewhorizons.modularui.api.drawable.FluidDrawable;
-import com.gtnewhorizons.modularui.api.drawable.IDrawable;
-import com.gtnewhorizons.modularui.api.drawable.ItemDrawable;
-import com.gtnewhorizons.modularui.api.drawable.Text;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.api.math.Color;
-import com.gtnewhorizons.modularui.api.math.Size;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
-import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
-import com.gtnewhorizons.modularui.common.widget.DynamicTextWidget;
-import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnllib.utils.MathUtils;
-import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.ElementCopyingGui;
 import com.science.gtnl.common.machine.monitor.EnergyMonitorCustomWirelessEutProvider;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
-import com.science.gtnl.common.recipe.gtnl.ElementCopyingRecipes;
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Textures;
-import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -90,7 +68,6 @@ import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -352,26 +329,6 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
     }
 
     @Override
-    @Deprecated
-    public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
-        // TODO: Remove this mui1 fallback after ElementCopying mui2 rollout is complete.
-        super.addUIWidgets(builder, buildContext);
-        buildContext.addSyncedWindow(11, this::createCopyingWindow);
-        addSyncers(builder);
-        builder.widget(new ButtonWidget().setOnClick((click, widget) -> {
-            if (!widget.isClient()) {
-                widget.getContext()
-                    .openSyncedWindow(11);
-            }
-        })
-            .setBackground(
-                () -> new IDrawable[] { GTUITextures.BUTTON_STANDARD, GTUITextures.OVERLAY_BUTTON_ARROW_GREEN_UP })
-            .setTooltipShowUpDelay(5)
-            .setPos(174, 110)
-            .setSize(16, 16));
-    }
-
-    @Override
     public void saveNBTData(NBTTagCompound aNBT) {
         super.saveNBTData(aNBT);
 
@@ -556,115 +513,6 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
         }
     }
 
-    @Deprecated
-    public ModularWindow createCopyingWindow(EntityPlayer player) {
-        // TODO: Remove this mui1 fallback after ElementCopying mui2 rollout is complete.
-        final int width = 198;
-        final int height = 42 + (ElementCopyingRecipes.ENTRIES.size() + 8) / 10 * 18;
-        final int parentWidth = getGUIWidth();
-        final int parentHeight = getGUIHeight();
-
-        ModularWindow.Builder builder = ModularWindow.builder(width, height);
-        builder.setBackground(GTUITextures.BACKGROUND_SINGLEBLOCK_DEFAULT);
-        builder.setGuiTint(getGUIColorization());
-        builder.setDraggable(true);
-        builder.setPos(
-            (size, window) -> Alignment.Center.getAlignedPos(size, new Size(parentWidth, parentHeight))
-                .add(Alignment.TopRight.getAlignedPos(new Size(parentWidth, parentHeight), new Size(width, height)))
-                .subtract(5, 0)
-                .add(0, 4));
-
-        for (int i = 0; i < ElementCopyingRecipes.ENTRIES.size(); i++) {
-            ElementCopyingEntry entry = ElementCopyingRecipes.ENTRIES.get(i);
-            int col = i % 10;
-            int row = i / 10;
-            int x = col * 18 + 9;
-            int y = row * 18 + 10;
-
-            if (entry instanceof ItemCopyingEntry item) {
-                ItemStack stack = item.itemId()
-                    .toStack(1);
-                builder.widget(new ButtonWidget().setOnClick((clickData, widget) -> {
-                    if (itemEntry.contains(item)) {
-                        itemEntry.remove(item);
-                    } else {
-                        itemEntry.add(item);
-                    }
-                })
-                    .addTooltip(stack.getDisplayName())
-                    .setBackground(
-                        () -> new IDrawable[] { itemEntry.contains(item) ? GTUITextures.BUTTON_STANDARD_PRESSED
-                            : GTUITextures.BUTTON_STANDARD, new ItemDrawable(stack) })
-                    .setSize(16, 16)
-                    .setPos(x, y));
-            } else if (entry instanceof FluidCopyingEntry fluid) {
-                FluidStack stack = fluid.fluidId()
-                    .getFluidStack();
-                builder.widget(new ButtonWidget().setOnClick((clickData, widget) -> {
-                    if (fluidEntry.contains(fluid)) {
-                        fluidEntry.remove(fluid);
-                    } else {
-                        fluidEntry.add(fluid);
-                    }
-                })
-                    .addTooltip(stack.getLocalizedName())
-                    .setBackground(
-                        () -> new IDrawable[] { fluidEntry.contains(fluid) ? GTUITextures.BUTTON_STANDARD_PRESSED
-                            : GTUITextures.BUTTON_STANDARD, new FluidDrawable().setFluid(stack) })
-                    .setSize(16, 16)
-                    .setPos(x, y));
-            }
-        }
-
-        builder.widget(
-            new DynamicTextWidget(
-                () -> new Text(
-                    StatCollector.translateToLocalFormatted(
-                        "gtnl.machine.element_copying.info.selected_types",
-                        itemEntry.size() + fluidEntry.size(),
-                        NumberFormatUtil.formatNumber(getNeedUUM()),
-                        NumberFormatUtil.formatNumber(getNeedEU()))).color(Color.WHITE.normal))
-                            .setTextAlignment(Alignment.Center)
-                            .setSize(180, 12)
-                            .setPos(9, height - 28));
-
-        return builder.build();
-    }
-
-    @Deprecated
-    public void addSyncers(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after ElementCopying mui2 rollout is complete.
-        builder.widget(new SetSyncer<>(itemEntry, (buffer, entry) -> {
-            try {
-                buffer.writeNBTTagCompoundToBuffer(entry.serialize());
-            } catch (IOException e) {
-                ScienceNotLeisure.LOG.error("Failed to sync entry", e);
-            }
-        }, buffer -> {
-            try {
-                return ItemCopyingEntry.deserialize(buffer.readNBTTagCompoundFromBuffer());
-            } catch (IOException e) {
-                ScienceNotLeisure.LOG.error("Failed to read entry", e);
-                return null;
-            }
-        }));
-
-        builder.widget(new SetSyncer<>(fluidEntry, (buffer, entry) -> {
-            try {
-                buffer.writeNBTTagCompoundToBuffer(entry.serialize());
-            } catch (IOException e) {
-                ScienceNotLeisure.LOG.error("Failed to sync entry", e);
-            }
-        }, buffer -> {
-            try {
-                return FluidCopyingEntry.deserialize(buffer.readNBTTagCompoundFromBuffer());
-            } catch (IOException e) {
-                ScienceNotLeisure.LOG.error("Failed to read entry", e);
-                return null;
-            }
-        }));
-    }
-
     public interface ElementCopyingEntry {
 
         long costUUM();
@@ -709,29 +557,6 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
                 GTUtility.FluidId.create(tag.getCompoundTag("id")),
                 tag.getLong("uum"),
                 tag.getLong("eu"));
-        }
-    }
-
-    public static class SetSyncer<T> extends FakeSyncWidget<Set<T>> {
-
-        public SetSyncer(Set<T> set, BiConsumer<PacketBuffer, T> writeElementToBuffer,
-            Function<PacketBuffer, T> readElementFromBuffer) {
-            super(() -> set, s -> {
-                set.clear();
-                s.stream()
-                    .filter(Objects::nonNull)
-                    .forEach(set::add);
-            }, (buffer, s) -> {
-                List<T> list = new ObjectArrayList<>(s);
-                writeListToBuffer(buffer, list, writeElementToBuffer);
-            }, buffer -> {
-                List<T> list = readListFromBuffer(buffer, readElementFromBuffer);
-                Set<T> result = new ObjectLinkedOpenHashSet<>();
-                list.stream()
-                    .filter(Objects::nonNull)
-                    .forEach(result::add);
-                return result;
-            });
         }
     }
 }

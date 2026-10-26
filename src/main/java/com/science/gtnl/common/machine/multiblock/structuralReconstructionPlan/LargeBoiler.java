@@ -18,10 +18,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
-import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.GTMod;
 import gregtech.api.GregTechAPI;
@@ -270,14 +267,6 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
                     .build() };
         }
         return new ITexture[] { BlockIcons.getCasingTextureForId(getCasingTextureIndex()) };
-    }
-
-    @Override
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(172, 67));
     }
 
     @Override

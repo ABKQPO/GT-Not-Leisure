@@ -9,10 +9,7 @@ import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
-import com.gtnewhorizons.modularui.api.screen.ModularWindow;
-import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.science.gtnl.common.gui.modularui.singleblock.GTNLBasicGeneratorGui;
-import com.science.gtnl.utils.item.ItemUtils;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -22,7 +19,6 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.ParticleFX;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
-import gregtech.api.interfaces.modularui.IAddGregtechLogo;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEBasicGenerator;
@@ -33,7 +29,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.WorldSpawnedEventBuilder.ParticleEventBuilder;
 
-public class DieselGenerator extends MTEBasicGenerator implements IAddGregtechLogo {
+public class DieselGenerator extends MTEBasicGenerator {
 
     public DieselGenerator(int aID, String aName, String aNameRegional, int aTier) {
         super(
@@ -71,16 +67,6 @@ public class DieselGenerator extends MTEBasicGenerator implements IAddGregtechLo
     @Override
     public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings uiSettings) {
         return new GTNLBasicGeneratorGui<>(this).build(data, syncManager, uiSettings);
-    }
-
-    @Override
-    @Deprecated
-    public void addGregTechLogo(ModularWindow.Builder builder) {
-        // TODO: Remove this mui1 fallback after DieselGenerator mui2 rollout is complete.
-        builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
-                .setSize(18, 18)
-                .setPos(151, 62));
     }
 
     @Override
