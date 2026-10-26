@@ -3,7 +3,6 @@ package com.science.gtnl.common.item.items;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static ggfab.GGItemList.SingleUseScrewdriver;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,14 +54,15 @@ import gregtech.crossmod.backhand.Backhand;
 import ic2.core.IC2;
 import ic2.core.IHasGui;
 import ic2.core.item.ItemToolbox;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class CircuitIntegratedPlus extends Item implements INetworkUpdatableItem, IGuiHolder<PlayerInventoryGuiData> {
 
     public static final int MAX_CIRCUIT_NUMBER = 24;
-    public static final List<ItemStack> NON_ZERO_VARIANTS = new ArrayList<>(MAX_CIRCUIT_NUMBER);
+    public static final List<ItemStack> NON_ZERO_VARIANTS = new ObjectArrayList<>(MAX_CIRCUIT_NUMBER);
 
     public static final String aTextEmptyRow = "   ";
-    public static final List<ItemStack> ALL_VARIANTS = new ArrayList<>(MAX_CIRCUIT_NUMBER + 1);
+    public static final List<ItemStack> ALL_VARIANTS = new ObjectArrayList<>(MAX_CIRCUIT_NUMBER + 1);
     public final IIcon[] mIconDamage = new IIcon[25];
 
     public CircuitIntegratedPlus() {

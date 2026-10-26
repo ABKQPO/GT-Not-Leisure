@@ -1,6 +1,5 @@
 package com.science.gtnl.utils.recipes.format;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.util.StatCollector;
@@ -11,13 +10,14 @@ import gregtech.common.misc.spaceprojects.SpaceProjectManager;
 import gregtech.nei.RecipeDisplayInfo;
 import gregtech.nei.formatter.INEISpecialInfoFormatter;
 import gtnhintergalactic.recipe.IGRecipeMaps;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class SpaceMinerFormat implements INEISpecialInfoFormatter {
 
     @Override
     @NotNull
     public List<String> format(RecipeDisplayInfo recipeInfo) {
-        List<String> specialInfo = new ArrayList<>();
+        List<String> specialInfo = new ObjectArrayList<>();
         specialInfo.add(StatCollector.translateToLocalFormatted("ig.nei.module", recipeInfo.recipe.mSpecialValue));
 
         String neededProject = recipeInfo.recipe.getMetadata(IGRecipeMaps.SPACE_PROJECT);

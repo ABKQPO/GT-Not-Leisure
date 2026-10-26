@@ -2,8 +2,6 @@ package com.science.gtnl.common.part.universal;
 
 import static appeng.util.item.AEFluidStackType.FLUID_STACK_TYPE;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +28,8 @@ import appeng.core.features.registries.entries.AEFluidTankHandler;
 import appeng.tile.inventory.IAEStackInventory;
 import appeng.util.IterationCounter;
 import appeng.util.Platform;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public final class UniversalBusHelper {
 
@@ -93,11 +93,11 @@ public final class UniversalBusHelper {
     }
 
     public static Map<IAEStackType<?>, List<IAEStack<?>>> groupConfig(IAEStackInventory config, int slots) {
-        final Map<IAEStackType<?>, List<IAEStack<?>>> result = new LinkedHashMap<>();
+        final Map<IAEStackType<?>, List<IAEStack<?>>> result = new Object2ObjectLinkedOpenHashMap<>();
         for (int i = 0; i < config.getSizeInventory() && i < slots; i++) {
             final IAEStack<?> stack = config.getAEStackInSlot(i);
             if (stack == null) continue;
-            result.computeIfAbsent(stack.getStackType(), t -> new ArrayList<>())
+            result.computeIfAbsent(stack.getStackType(), t -> new ObjectArrayList<>())
                 .add(stack);
         }
         return result;
@@ -113,7 +113,7 @@ public final class UniversalBusHelper {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static List<IAEStack<?>> listAvailable(IMEInventory inventory, IAEStackType<?> type) {
         final IItemList list = inventory.getAvailableItems(type.createList(), IterationCounter.fetchNewId());
-        final List<IAEStack<?>> result = new ArrayList<>();
+        final List<IAEStack<?>> result = new ObjectArrayList<>();
         for (Object stack : list) {
             if (stack instanceof IAEStack<?>aes && aes.getStackSize() > 0) result.add(aes);
         }

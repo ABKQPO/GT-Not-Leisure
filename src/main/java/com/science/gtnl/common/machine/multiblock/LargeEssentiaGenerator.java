@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ExoticDynamo;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -59,6 +58,7 @@ import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.core.fluids.GTPPFluids;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.config.ConfigBlocks;
@@ -99,7 +99,7 @@ public class LargeEssentiaGenerator extends MultiMachineBase<LargeEssentiaGenera
     public int mUpgrade = 1;
 
     public final XSTR random = new XSTR();
-    public List<TileEntityEssentiaHatch> mEssentiaHatch = new ArrayList<>();
+    public List<TileEntityEssentiaHatch> mEssentiaHatch = new ObjectArrayList<>();
 
     public LargeEssentiaGenerator(int id, String name, String nameRegional) {
         super(id, name, nameRegional);

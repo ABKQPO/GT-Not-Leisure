@@ -1,13 +1,13 @@
 package com.science.gtnl.utils.world.stellar;
 
-import java.util.Map;
-
 import com.science.gtnl.api.stellar.StellarIrisUpgradeDefinition;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeRegistry;
 
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMaps;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import lombok.Getter;
 
 public class StellarIrisTeamSnapshot {
@@ -22,17 +22,14 @@ public class StellarIrisTeamSnapshot {
 
     public StellarIrisTeamSnapshot() {}
 
-    public StellarIrisTeamSnapshot(int spendablePoints, int lifetimePoints, int tier, Map<String, Integer> levels) {
+    public StellarIrisTeamSnapshot(int spendablePoints, int lifetimePoints, int tier, Object2IntMap<String> levels) {
         this.spendablePoints = spendablePoints;
         this.lifetimePoints = lifetimePoints;
         this.tier = tier;
-        for (Map.Entry<String, Integer> entry : levels.entrySet()) {
+        for (Object2IntMap.Entry<String> entry : Object2IntMaps.fastIterable(levels)) {
             StellarIrisUpgradeDefinition definition = StellarIrisUpgradeRegistry.getUpgrade(entry.getKey());
-            if (definition != null && entry.getValue() > 0) {
-                networkLevels.put(
-                    definition.getNetworkId(),
-                    entry.getValue()
-                        .intValue());
+            if (definition != null && entry.getIntValue() > 0) {
+                networkLevels.put(definition.getNetworkId(), entry.getIntValue());
             }
         }
     }

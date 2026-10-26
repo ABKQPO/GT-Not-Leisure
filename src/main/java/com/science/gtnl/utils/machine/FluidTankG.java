@@ -1,7 +1,5 @@
 package com.science.gtnl.utils.machine;
 
-import java.util.ArrayList;
-
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -12,10 +10,11 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import org.jetbrains.annotations.NotNull;
 
 import appeng.api.storage.data.IAEFluidStack;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class FluidTankG {
 
-    public ArrayList<FluidStack> arr = new ArrayList<>();
+    public ObjectArrayList<FluidStack> arr = new ObjectArrayList<>();
 
     public boolean isEmpty() {
         return arr.stream()

@@ -2,7 +2,6 @@ package com.reavaritia.common.items;
 
 import static com.reavaritia.ReAvaritia.RESOURCE_ROOT_ID;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -66,6 +65,7 @@ import galaxyspace.core.entity.boss.EntityGhastBoss;
 import galaxyspace.core.entity.boss.EntitySlimeBoss;
 import galaxyspace.core.entity.boss.EntityWolfBoss;
 import gregtech.api.enums.Mods;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import micdoodle8.mods.galacticraft.core.entities.EntitySkeletonBoss;
 import micdoodle8.mods.galacticraft.planets.mars.entities.EntityCreeperBoss;
 import vazkii.botania.common.entity.EntityDoppleganger;
@@ -84,8 +84,8 @@ public class InfinitySword extends ItemSword implements ICosmicRenderItem, Subti
         .setDamageAllowedInCreativeMode()
         .setMagicDamage();
 
-    public List<Entity> sweepAttackTargets = new ArrayList<>();
-    public List<Entity> magnetTargets = new ArrayList<>();
+    public List<Entity> sweepAttackTargets = new ObjectArrayList<>();
+    public List<Entity> magnetTargets = new ObjectArrayList<>();
     public static final int MAX_ENTITY_PROCESS_PER_TICK = 100;
 
     public InfinitySword() {

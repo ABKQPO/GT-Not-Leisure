@@ -1,6 +1,5 @@
 package com.science.gtnl.client.celestweave;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
@@ -9,6 +8,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class CelestweaveClientState {
@@ -16,7 +16,7 @@ public class CelestweaveClientState {
     static final Int2ObjectMap<CelestweaveClientState> STATES = new Int2ObjectOpenHashMap<>();
     static final long NEVER = Long.MIN_VALUE / 4;
 
-    final List<CelestweaveArc> arcs = new ArrayList<>();
+    final List<CelestweaveArc> arcs = new ObjectArrayList<>();
     CelestweaveLook look;
     int lookTick = Integer.MIN_VALUE;
     CelestweavePose pose;

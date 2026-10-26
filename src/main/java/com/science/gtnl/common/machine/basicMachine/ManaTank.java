@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.basicMachine;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -41,6 +40,7 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTLanguageManager;
 import gregtech.api.util.GTUtility;
 import gregtech.common.tileentities.storage.MTEDigitalTankBase;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import vazkii.botania.api.subtile.ManaHelper;
 import vazkii.botania.api.subtile.SubTileEntity;
 import vazkii.botania.api.subtile.SubTileGenerating;
@@ -530,7 +530,7 @@ public class ManaTank extends MTEDigitalTankBase {
         int y = aBaseMetaTileEntity.getYCoord();
         int z = aBaseMetaTileEntity.getZCoord();
 
-        List<TilePool> pools = new ArrayList<>();
+        List<TilePool> pools = new ObjectArrayList<>();
 
         for (int dx = -MANA_POOL_RADIUS; dx <= MANA_POOL_RADIUS; dx++) {
             for (int dy = -MANA_POOL_RADIUS; dy <= MANA_POOL_RADIUS; dy++) {
@@ -551,7 +551,7 @@ public class ManaTank extends MTEDigitalTankBase {
         int y = aBaseMetaTileEntity.getYCoord();
         int z = aBaseMetaTileEntity.getZCoord();
 
-        List<SubTileGenerating> flowers = new ArrayList<>();
+        List<SubTileGenerating> flowers = new ObjectArrayList<>();
 
         for (int dx = -MANA_FLOWER_RADIUS; dx <= MANA_FLOWER_RADIUS; dx++) {
             for (int dy = -MANA_FLOWER_RADIUS; dy <= MANA_FLOWER_RADIUS; dy++) {

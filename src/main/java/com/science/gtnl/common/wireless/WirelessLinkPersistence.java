@@ -2,11 +2,7 @@ package com.science.gtnl.common.wireless;
 
 import static com.science.gtnl.common.wireless.WirelessChannelManager.sameSource;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -32,6 +28,10 @@ import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.helpers.ICustomNameObject;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 /**
  * Claims live in tile-owned NBT, which is saved even after an AE proxy has invalidated its grid node.
@@ -39,9 +39,10 @@ import appeng.helpers.ICustomNameObject;
  */
 public class WirelessLinkPersistence {
 
-    private static final Set<TileEntity> TILES = Collections.newSetFromMap(new IdentityHashMap<>());
-    private static final Map<IGridNode, Endpoint> IMPORTED = new IdentityHashMap<>();
-    private static final Map<Entrance, RememberedEntrance> REMEMBERED_ENTRANCES = new IdentityHashMap<>();
+    private static final Set<TileEntity> TILES = new ReferenceOpenHashSet<>();
+    private static final Set<TileEntity> PLACED = new ReferenceOpenHashSet<>();
+    private static final Map<IGridNode, Endpoint> IMPORTED = new Reference2ObjectOpenHashMap<>();
+    private static final Map<Entrance, RememberedEntrance> REMEMBERED_ENTRANCES = new Reference2ObjectOpenHashMap<>();
     private static boolean initialized;
     private static boolean pendingSeeds;
 
@@ -69,12 +70,18 @@ public class WirelessLinkPersistence {
         }
     }
 
-    private WirelessLinkPersistence() {}
-
     public static boolean discover(TileEntity tile) {
         if (!(tile instanceof IWirelessTileData data) || !data.gtnl$hasWirelessData()) return false;
         TILES.add(tile);
         return true;
+    }
+
+    public static void placed(TileEntity tile) {
+        World world = tile.getWorldObj();
+        if (world == null || world.isRemote) return;
+        // Tiles moved by tools such as Matter Manipulator arrive through setTileEntity, without a chunk load.
+        PLACED.add(tile);
+        WirelessClusterManager.invalidateTopology();
     }
 
     public static boolean discover(Chunk chunk) {
@@ -115,8 +122,17 @@ public class WirelessLinkPersistence {
                 previous.remove();
             }
         }
-        List<IGridNode> seeds = new ArrayList<>();
+        List<IGridNode> seeds = new ObjectArrayList<>();
         pendingSeeds = false;
+        var placed = PLACED.iterator();
+        while (placed.hasNext()) {
+            TileEntity tile = placed.next();
+            if (!loaded(tile)) placed.remove();
+            else if (!WirelessConstructionSites.contains(address(tile))) {
+                placed.remove();
+                discover(tile);
+            }
+        }
         var tiles = TILES.iterator();
         while (tiles.hasNext()) {
             TileEntity tile = tiles.next();
@@ -161,10 +177,10 @@ public class WirelessLinkPersistence {
 
     static void synchronize(PhysicalClusterTracker<IGridNode, Address> tracker, PhysicalMeTopology topology) {
         REMEMBERED_ENTRANCES.clear();
-        Map<TileEntity, Map<Slot, Claim>> updates = new IdentityHashMap<>();
-        Set<IGridNode> retained = Collections.newSetFromMap(new IdentityHashMap<>());
+        Map<TileEntity, Map<Slot, Claim>> updates = new Reference2ObjectOpenHashMap<>();
+        Set<IGridNode> retained = new ReferenceOpenHashSet<>();
         for (var cluster : tracker.clusters()) {
-            Set<Address> paused = new HashSet<>();
+            Set<Address> paused = new ObjectOpenHashSet<>();
             if (!cluster.limited()) for (IGridNode node : cluster.nodes()) {
                 Claim saved = claim(node, topology);
                 if (saved != null) paused.addAll(saved.paused());
@@ -183,7 +199,7 @@ public class WirelessLinkPersistence {
                 if (frequencies.isEmpty()) claims.remove(endpoint.slot());
                 else {
                     Claim old = claims.get(endpoint.slot());
-                    Set<Address> sourcePauses = new HashSet<>();
+                    Set<Address> sourcePauses = new ObjectOpenHashSet<>();
                     for (Address source : frequencies) {
                         if (paused.stream()
                             .anyMatch(label -> sameSource(label, source))) sourcePauses.add(source);
@@ -217,7 +233,7 @@ public class WirelessLinkPersistence {
     }
 
     static Set<Address> pausedSources(Collection<IGridNode> nodes, PhysicalMeTopology topology) {
-        Set<Address> paused = new HashSet<>();
+        Set<Address> paused = new ObjectOpenHashSet<>();
         for (IGridNode node : nodes) {
             Claim saved = claim(node, topology);
             if (saved != null) saved.paused()
@@ -229,7 +245,7 @@ public class WirelessLinkPersistence {
     }
 
     static Set<IGridNode> savedEntrances(Collection<IGridNode> nodes, Address source, PhysicalMeTopology topology) {
-        Set<IGridNode> result = Collections.newSetFromMap(new IdentityHashMap<>());
+        Set<IGridNode> result = new ReferenceOpenHashSet<>();
         for (IGridNode node : nodes) {
             Claim saved = claim(node, topology);
             if (saved != null && saved.entrances()
@@ -261,7 +277,7 @@ public class WirelessLinkPersistence {
             matched = true;
             if (saved.entrances()
                 .contains(label)) continue;
-            if (entrances == null) entrances = new HashSet<>(saved.entrances());
+            if (entrances == null) entrances = new ObjectOpenHashSet<>(saved.entrances());
             entrances.add(label);
         }
         if (!matched) return;
@@ -278,7 +294,7 @@ public class WirelessLinkPersistence {
     }
 
     static Map<IGridNode, String> names(Collection<IGridNode> nodes) {
-        Map<IGridNode, String> names = new IdentityHashMap<>();
+        Map<IGridNode, String> names = new Reference2ObjectOpenHashMap<>();
         for (IGridNode node : nodes) {
             if (node.getMachine() instanceof ICustomNameObject named) names.put(node, customName(named));
         }
@@ -301,7 +317,7 @@ public class WirelessLinkPersistence {
 
     static boolean rename(Map<IGridNode, String> names, String name, PhysicalMeTopology topology,
         Predicate<IGridNode> canRename) {
-        Map<ICustomNameObject, TileEntity> targets = new IdentityHashMap<>();
+        Map<ICustomNameObject, TileEntity> targets = new Reference2ObjectOpenHashMap<>();
         // Validate every member before any setter runs; internal and external nodes may share the same owner.
         for (IGridNode node : names.keySet()) {
             if (!canRename.test(node)) return false;
@@ -336,7 +352,7 @@ public class WirelessLinkPersistence {
             Map<Slot, Claim> claims = WirelessLinkData.read(IWirelessTileData.of(endpoint.tile()));
             Claim saved = claims.get(endpoint.slot());
             if (saved == null) continue;
-            Set<Address> next = new HashSet<>(saved.paused());
+            Set<Address> next = new ObjectOpenHashSet<>(saved.paused());
             for (Address label : saved.frequencies()) {
                 if (!sameSource(label, source)) continue;
                 if (paused) next.add(label);
@@ -394,18 +410,21 @@ public class WirelessLinkPersistence {
             .removeIf(entrance -> removed.test(entrance.source()) || removed.test(entrance.target()));
         boolean forgotten = IMPORTED.values()
             .removeIf(endpoint -> removed.test(endpoint.address()));
-        return TILES.removeIf(
-            tile -> tile.getWorldObj() != null && removed.test(
-                new Address(
-                    tile.getWorldObj().provider.dimensionId,
-                    tile.xCoord,
-                    tile.yCoord,
-                    tile.zCoord,
-                    ForgeDirection.UNKNOWN)))
-            || forgotten;
+        PLACED.removeIf(tile -> tile.getWorldObj() != null && removed.test(address(tile)));
+        return TILES.removeIf(tile -> tile.getWorldObj() != null && removed.test(address(tile))) || forgotten;
+    }
+
+    static Address address(TileEntity tile) {
+        return new Address(
+            tile.getWorldObj().provider.dimensionId,
+            tile.xCoord,
+            tile.yCoord,
+            tile.zCoord,
+            ForgeDirection.UNKNOWN);
     }
 
     static void clear() {
+        PLACED.clear();
         TILES.clear();
         IMPORTED.clear();
         REMEMBERED_ENTRANCES.clear();
@@ -415,7 +434,7 @@ public class WirelessLinkPersistence {
 
     public static void clearLoadedClaims() {
         seeds();
-        for (TileEntity tile : new ArrayList<>(TILES)) {
+        for (TileEntity tile : new ObjectArrayList<>(TILES)) {
             if (loaded(tile)) save(tile, Map.of());
         }
     }

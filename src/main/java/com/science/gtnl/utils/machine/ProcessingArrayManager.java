@@ -1,16 +1,15 @@
 package com.science.gtnl.utils.machine;
 
-import java.util.HashMap;
-
 import net.minecraft.item.ItemStack;
 
 import gregtech.api.enums.SoundResource;
 import gregtech.api.recipe.RecipeMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public class ProcessingArrayManager {
 
-    private static final HashMap<String, RecipeMap<?>> mRecipeSaves = new HashMap<>();
-    private static final HashMap<String, SoundResource> machineSounds = new HashMap<>();
+    private static final Object2ObjectOpenHashMap<String, RecipeMap<?>> mRecipeSaves = new Object2ObjectOpenHashMap<>();
+    private static final Object2ObjectOpenHashMap<String, SoundResource> machineSounds = new Object2ObjectOpenHashMap<>();
 
     // Adds recipe Maps to the PA using the machines unlocalized name.
     // Example: basicmachine.electrolyzer, with its recipe map will add the electrolyzer's recipe map to the PA

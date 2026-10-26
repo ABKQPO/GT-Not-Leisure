@@ -1,24 +1,22 @@
 package com.science.gtnl.common.wireless;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
+
 public class EntranceCandidates {
 
     private static final int NEED_RADIUS = 2;
     private static final int CAPTURE_RADIUS = 6;
-
-    private EntranceCandidates() {}
 
     public static <N> N select(Set<N> members, Collection<N> missing, Collection<N> occupied,
         Function<N, Iterable<N>> neighbours, Predicate<N> eligible, ToIntFunction<N> rank, ToIntFunction<N> capacity,
@@ -30,7 +28,7 @@ public class EntranceCandidates {
 
         private final Set<N> members;
         private final Function<N, Iterable<N>> neighbours;
-        private final Map<N, Integer> distanceFromEntrance;
+        private final Reference2IntOpenHashMap<N> distanceFromEntrance;
         private Collection<N> lastMissing;
         private Set<N> missingSet = Set.of();
 
@@ -44,26 +42,25 @@ public class EntranceCandidates {
             Comparator<N> order) {
             if (missing != lastMissing) {
                 lastMissing = missing;
-                missingSet = Collections.newSetFromMap(new IdentityHashMap<>());
+                missingSet = new ReferenceOpenHashSet<>();
                 missingSet.addAll(missing);
             }
-            List<N> needs = new ArrayList<>(missing);
+            List<N> needs = new ObjectArrayList<>(missing);
             needs.sort(
                 Comparator.<N>comparingInt(node -> distanceFromEntrance.getOrDefault(node, Integer.MAX_VALUE))
                     .reversed()
                     .thenComparing(order));
             for (N need : needs) {
-                Map<N, Integer> local = distances(members, List.of(need), neighbours, NEED_RADIUS);
-                Map<N, Integer> captured = new IdentityHashMap<>();
+                Reference2IntOpenHashMap<N> local = distances(members, List.of(need), neighbours, NEED_RADIUS);
+                Reference2IntOpenHashMap<N> captured = new Reference2IntOpenHashMap<>();
                 N best = local.keySet()
                     .stream()
                     .filter(eligible)
                     .min(
-                        Comparator
-                            .<N>comparingInt(
-                                node -> -captured.computeIfAbsent(node, key -> captured(key, capacity.applyAsInt(key))))
+                        Comparator.<N>comparingInt(
+                            node -> -captured.computeIfAbsent(node, (N key) -> captured(key, capacity.applyAsInt(key))))
                             .thenComparingInt(rank)
-                            .thenComparingInt(local::get)
+                            .thenComparingInt(local::getInt)
                             .thenComparing(order))
                     .orElse(null);
                 if (best != null) return best;
@@ -72,21 +69,21 @@ public class EntranceCandidates {
         }
 
         private int captured(N candidate, int limit) {
-            Map<N, Integer> seen = new IdentityHashMap<>();
-            ArrayDeque<N> queue = new ArrayDeque<>();
+            Reference2IntOpenHashMap<N> seen = new Reference2IntOpenHashMap<>();
+            ObjectArrayFIFOQueue<N> queue = new ObjectArrayFIFOQueue<>();
             seen.put(candidate, 0);
-            queue.add(candidate);
+            queue.enqueue(candidate);
             int count = 0;
             while (!queue.isEmpty()) {
-                N node = queue.removeFirst();
-                int distance = seen.get(node);
+                N node = queue.dequeue();
+                int distance = seen.getInt(node);
                 if (distance >= distanceFromEntrance.getOrDefault(node, Integer.MAX_VALUE)) continue;
                 if (missingSet.contains(node) && ++count >= limit) return count;
                 if (distance >= CAPTURE_RADIUS) continue;
                 for (N other : neighbours.apply(node)) {
                     if (members.contains(other) && !seen.containsKey(other)) {
                         seen.put(other, distance + 1);
-                        queue.addLast(other);
+                        queue.enqueue(other);
                     }
                 }
             }
@@ -97,39 +94,39 @@ public class EntranceCandidates {
             if (!members.contains(entrance) || distanceFromEntrance.getOrDefault(entrance, Integer.MAX_VALUE) == 0)
                 return;
             distanceFromEntrance.put(entrance, 0);
-            ArrayDeque<N> queue = new ArrayDeque<>();
-            queue.add(entrance);
+            ObjectArrayFIFOQueue<N> queue = new ObjectArrayFIFOQueue<>();
+            queue.enqueue(entrance);
             while (!queue.isEmpty()) {
-                N node = queue.removeFirst();
-                int next = distanceFromEntrance.get(node) + 1;
+                N node = queue.dequeue();
+                int next = distanceFromEntrance.getInt(node) + 1;
                 for (N other : neighbours.apply(node)) {
                     if (!members.contains(other) || distanceFromEntrance.getOrDefault(other, Integer.MAX_VALUE) <= next)
                         continue;
                     distanceFromEntrance.put(other, next);
-                    queue.addLast(other);
+                    queue.enqueue(other);
                 }
             }
         }
     }
 
-    private static <N> Map<N, Integer> distances(Set<N> members, Collection<N> seeds,
+    private static <N> Reference2IntOpenHashMap<N> distances(Set<N> members, Collection<N> seeds,
         Function<N, Iterable<N>> neighbours, int maxDistance) {
-        Map<N, Integer> result = new IdentityHashMap<>();
-        ArrayDeque<N> queue = new ArrayDeque<>();
+        Reference2IntOpenHashMap<N> result = new Reference2IntOpenHashMap<>();
+        ObjectArrayFIFOQueue<N> queue = new ObjectArrayFIFOQueue<>();
         for (N seed : seeds) {
             if (members.contains(seed) && !result.containsKey(seed)) {
                 result.put(seed, 0);
-                queue.add(seed);
+                queue.enqueue(seed);
             }
         }
         while (!queue.isEmpty()) {
-            N node = queue.removeFirst();
-            int distance = result.get(node);
+            N node = queue.dequeue();
+            int distance = result.getInt(node);
             if (distance >= maxDistance) continue;
             for (N other : neighbours.apply(node)) {
                 if (members.contains(other) && !result.containsKey(other)) {
                     result.put(other, distance + 1);
-                    queue.addLast(other);
+                    queue.enqueue(other);
                 }
             }
         }

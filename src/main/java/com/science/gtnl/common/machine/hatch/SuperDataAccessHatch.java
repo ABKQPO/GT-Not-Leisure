@@ -32,7 +32,6 @@ public class SuperDataAccessHatch extends MTEHatchDataAccess implements IAddGreg
 
     public SuperDataAccessHatch(int aID, String aName, String aNameRegional, int aTier) {
         super(aID, aName, aNameRegional, aTier);
-        mDescriptionArray[1] = StatCollector.translateToLocal("gtnl.hatch.super_data_access.tooltip.0");
         initializeInventory();
     }
 
@@ -51,6 +50,12 @@ public class SuperDataAccessHatch extends MTEHatchDataAccess implements IAddGreg
     public String getLocalName() {
         if (!hasOwnLocalName()) return super.getLocalName();
         return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
+    @Override
+    public String[] getDescription() {
+        return new String[] { super.getDescription()[0],
+            StatCollector.translateToLocal("gtnl.hatch.super_data_access.tooltip.0") };
     }
 
     @Override

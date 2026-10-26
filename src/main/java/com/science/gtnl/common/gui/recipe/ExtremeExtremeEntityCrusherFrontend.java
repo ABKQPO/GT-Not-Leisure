@@ -1,6 +1,5 @@
 package com.science.gtnl.common.gui.recipe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -23,6 +22,7 @@ import gregtech.api.recipe.RecipeMapFrontend;
 import gregtech.api.util.MethodsReturnNonnullByDefault;
 import gregtech.common.gui.modularui.UIHelper;
 import gregtech.nei.GTNEIDefaultHandler;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -45,14 +45,14 @@ public class ExtremeExtremeEntityCrusherFrontend extends RecipeMapFrontend {
 
     @Override
     public List<Pos2d> getItemInputPositions(int itemInputCount) {
-        ArrayList<Pos2d> positions = new ArrayList<>();
+        ObjectArrayList<Pos2d> positions = new ObjectArrayList<>();
         positions.add(new Pos2d(6, 7));
         return positions;
     }
 
     @Override
     public List<Pos2d> getItemOutputPositions(int itemOutputCount) {
-        ArrayList<Pos2d> positions = new ArrayList<>();
+        ObjectArrayList<Pos2d> positions = new ObjectArrayList<>();
         for (int j = 0; j < 4; j++) {
             for (int i = 0; i < 9; i++) {
                 positions.add(new Pos2d((6 + 18 * i), (25 + 18 * j)));
@@ -63,7 +63,7 @@ public class ExtremeExtremeEntityCrusherFrontend extends RecipeMapFrontend {
 
     @Override
     public List<Pos2d> getFluidOutputPositions(int fluidOutputCount) {
-        ArrayList<Pos2d> positions = new ArrayList<>();
+        ObjectArrayList<Pos2d> positions = new ObjectArrayList<>();
         positions.add(new Pos2d(60, 7));
         return positions;
     }

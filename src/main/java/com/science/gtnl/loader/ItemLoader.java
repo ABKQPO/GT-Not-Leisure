@@ -2,7 +2,6 @@ package com.science.gtnl.loader;
 
 import static com.science.gtnl.common.item.items.SuspiciousStew.registerFlower;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.init.Blocks;
@@ -36,6 +35,7 @@ import com.science.gtnl.common.item.items.ItemPartSuperDenseEnergyCell;
 import com.science.gtnl.common.item.items.ItemPartSuperDualInterface;
 import com.science.gtnl.common.item.items.ItemPartSuperInterface;
 import com.science.gtnl.common.item.items.ItemPartUniversalBus;
+import com.science.gtnl.common.item.items.ItemYogSothothTerminal;
 import com.science.gtnl.common.item.items.KFCFamily;
 import com.science.gtnl.common.item.items.NetherTeleporter;
 import com.science.gtnl.common.item.items.NullPointerException;
@@ -80,6 +80,7 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Mods;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.common.render.items.InfinityMetaItemRenderer;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class ItemLoader {
 
@@ -170,6 +171,7 @@ public class ItemLoader {
     public static WirelessUpgradeChip wirelessUpgradeChip = new WirelessUpgradeChip();
     public static WirelessFrequencyCard wirelessFrequencyCard = new WirelessFrequencyCard();
     public static ItemMEMiniPortableTerminal meMiniPortableTerminal = new ItemMEMiniPortableTerminal();
+    public static ItemYogSothothTerminal yogSothothTerminal = new ItemYogSothothTerminal();
     public static SuspiciousStew suspiciousStew = new SuspiciousStew();
     public static PortableItem portableItem = new PortableItem();
     public static PortableCellWorkbenchItem portableCellWorkbenchItem = new PortableCellWorkbenchItem();
@@ -261,7 +263,7 @@ public class ItemLoader {
             "infinity_dye_fluid_cell",
             subDyeFluid);
 
-        List<ItemInfinityCell.SubItem> infinityStoneCell = new ArrayList<>();
+        List<ItemInfinityCell.SubItem> infinityStoneCell = new ObjectArrayList<>();
         infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(Blocks.stone));
         infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(Blocks.cobblestone));
         infinityStoneCell.add(ItemInfinityCell.SubItem.getInstance(Blocks.netherrack));

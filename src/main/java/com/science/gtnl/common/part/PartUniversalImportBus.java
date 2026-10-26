@@ -2,7 +2,6 @@ package com.science.gtnl.common.part;
 
 import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +40,7 @@ import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.ItemSlot;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioitylist.OreFilteredList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class PartUniversalImportBus extends PartBaseImportBus<IAEItemStack> {
 
@@ -145,7 +145,7 @@ public class PartUniversalImportBus extends PartBaseImportBus<IAEItemStack> {
         if (adaptor == null) return;
 
         // Collect first, removing items while iterating the adaptor is not safe
-        final List<ItemStack> matches = new ArrayList<>();
+        final List<ItemStack> matches = new ObjectArrayList<>();
         for (ItemSlot slot : adaptor) {
             if (!slot.isExtractable() || slot.getItemStack() == null) continue;
             if (orePredicate.test(slot.getAEItemStack())) matches.add(

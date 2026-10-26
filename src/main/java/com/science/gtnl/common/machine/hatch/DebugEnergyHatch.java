@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import java.util.ArrayList;
 import java.util.function.LongConsumer;
 import java.util.function.LongSupplier;
 
@@ -40,6 +39,7 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gregtech.api.util.GTUtility;
 import it.unimi.dsi.fastutil.ints.IntConsumer;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import tectech.thing.metaTileEntity.hatch.MTEHatchEnergyTunnel;
 import tectech.thing.metaTileEntity.pipe.MTEPipeLaser;
@@ -186,7 +186,7 @@ public class DebugEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets, I
 
     @Override
     public String[] getDescription() {
-        ArrayList<String> desc = new ArrayList<>();
+        ObjectArrayList<String> desc = new ObjectArrayList<>();
         desc.add(StatCollector.translateToLocal("gtnl.hatch.debug_energy.tooltip.0"));
         desc.add(StatCollector.translateToLocal("gtnl.hatch.debug_energy.tooltip.1"));
         desc.add(StatCollector.translateToLocal("gtnl.hatch.debug_energy.tooltip.2"));

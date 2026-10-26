@@ -1,8 +1,7 @@
-package com.science.gtnl.client.meminiterminal;
+package com.science.gtnl.client.floatingwindow;
 
 import java.awt.Point;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.gui.FontRenderer;
@@ -17,23 +16,22 @@ import com.science.gtnl.mixins.early.minecraft.AccessorGuiScreen;
 import codechicken.lib.gui.GuiDraw;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
-public final class MiniTerminalHostLayer {
+public final class FloatingWindowLayer {
 
     private static final FloatBuffer BASE_MATRIX = BufferUtils.createFloatBuffer(16);
     private static final FloatBuffer SCRATCH_MATRIX = BufferUtils.createFloatBuffer(16);
-    private static final List<HostTooltip> TOOLTIPS = new ArrayList<>();
+    private static final List<HostTooltip> TOOLTIPS = new ObjectArrayList<>();
     private static GuiScreen frameGui;
     private static boolean capturing;
     private static boolean replaying;
 
-    private MiniTerminalHostLayer() {}
-
     static void beginFrame(GuiScreen gui) {
         TOOLTIPS.clear();
         capturing = false;
-        frameGui = MiniTerminalClient.overlay(gui) != null ? gui : null;
+        frameGui = FloatingWindows.hasWindows(gui) ? gui : null;
         if (frameGui == null) return;
         BASE_MATRIX.clear();
         GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, BASE_MATRIX);
@@ -48,7 +46,7 @@ public final class MiniTerminalHostLayer {
         capturing = gui == frameGui && !(gui instanceof IMuiScreen);
     }
 
-    static void loadTerminalMatrix(GuiScreen gui) {
+    static void loadWindowMatrix(GuiScreen gui) {
         if (gui != frameGui) return;
         GL11.glLoadMatrix(BASE_MATRIX);
         GL11.glTranslatef(0, 0, 200);
@@ -57,14 +55,14 @@ public final class MiniTerminalHostLayer {
     public static boolean deferTooltip(GuiScreen gui, List<?> lines, int x, int y, FontRenderer font) {
         if (!capturing || replaying || gui != frameGui || lines == null || lines.isEmpty()) return false;
         float[] matrix = currentMatrix();
-        if (!anchoredInTerminal(gui, matrix, x, y)) {
-            TOOLTIPS.add(new HostTooltip(new ArrayList<>(lines), x, y, font, matrix));
+        if (!anchoredInWindow(gui, matrix, x, y)) {
+            TOOLTIPS.add(new HostTooltip(new ObjectArrayList<>(lines), x, y, font, matrix));
         }
         return true;
     }
 
     public static boolean dropTooltip(GuiScreen gui, int x, int y) {
-        return capturing && !replaying && gui == frameGui && anchoredInTerminal(gui, currentMatrix(), x, y);
+        return capturing && !replaying && gui == frameGui && anchoredInWindow(gui, currentMatrix(), x, y);
     }
 
     static void flushTooltips(GuiScreen gui) {
@@ -97,18 +95,14 @@ public final class MiniTerminalHostLayer {
         }
     }
 
-    public static boolean mouseOverTerminal(GuiScreen gui) {
+    public static boolean mouseOverWindow(GuiScreen gui) {
         Point mouse = GuiDraw.getMousePosition();
-        return overTerminal(gui, mouse.x, mouse.y);
+        return FloatingWindows.windowAt(gui, mouse.x, mouse.y) != null;
     }
 
-    private static boolean overTerminal(GuiScreen gui, int x, int y) {
-        MiniTerminalInventoryPanel overlay = MiniTerminalClient.overlay(gui);
-        return overlay != null && overlay.isMouseOver(x, y);
-    }
-
-    private static boolean anchoredInTerminal(GuiScreen gui, float[] m, int x, int y) {
-        return overTerminal(gui, Math.round(m[0] * x + m[4] * y + m[12]), Math.round(m[1] * x + m[5] * y + m[13]));
+    private static boolean anchoredInWindow(GuiScreen gui, float[] m, int x, int y) {
+        return FloatingWindows
+            .windowAt(gui, Math.round(m[0] * x + m[4] * y + m[12]), Math.round(m[1] * x + m[5] * y + m[13])) != null;
     }
 
     private static float[] currentMatrix() {

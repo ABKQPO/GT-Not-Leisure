@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
 import static gregtech.api.recipe.RecipeMaps.simpleWasherRecipes;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
@@ -761,7 +760,7 @@ public class SteamOreProcessorModule extends SteamElevatorModuleBase {
         String simpleWasher = StatCollector.translateToLocalFormatted("GT5U.machines.oreprocessor.Simple_Washer");
         String arrow = " " + gray + "-> ";
 
-        List<String> des = new ArrayList<>();
+        List<String> des = new ObjectArrayList<>();
         des.add(StatCollector.translateToLocalFormatted("GT5U.multiblock.runningMode") + " ");
 
         switch (mode) {

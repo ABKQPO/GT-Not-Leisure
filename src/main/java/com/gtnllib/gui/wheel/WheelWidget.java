@@ -1,6 +1,5 @@
 package com.gtnllib.gui.wheel;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
@@ -28,6 +27,7 @@ import com.gtnllib.client.fx.screen.FxShapes;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class WheelWidget extends Widget<WheelWidget> implements Interactable {
@@ -448,7 +448,7 @@ public class WheelWidget extends Widget<WheelWidget> implements Interactable {
         float preferred = style.titleScale * detailScale, boxWidth = 2 * innerRadius * TITLE_WIDTH,
             boxHeight = 2 * innerRadius * TITLE_HEIGHT;
         FontRenderer font = Minecraft.getMinecraft().fontRenderer;
-        List<String> lines = new ArrayList<>();
+        List<String> lines = new ObjectArrayList<>();
         int widest = 0;
         for (String line : title.split("\n"))
             for (Object part : font.listFormattedStringToWidth(line, Math.max(1, (int) (boxWidth / preferred)))) {

@@ -13,6 +13,10 @@ public interface IPatternDetails {
 
     IInput[] getInputs();
 
+    default boolean isCrafting() {
+        return false;
+    }
+
     default boolean canSubstitute() {
         return false;
     }

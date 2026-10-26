@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 
 import net.minecraft.util.EnumChatFormatting;
 
@@ -27,6 +26,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.OverclockCalculator;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.WirelessNetworkManager;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import tectech.thing.metaTileEntity.multi.godforge.MTEBaseModule;
@@ -142,7 +142,7 @@ public class FOGSolarMuonCatalystModule extends MTEBaseModule implements IFOGMod
 
     @Override
     public String[] getInfoData() {
-        ArrayList<String> str = new ArrayList<>();
+        ObjectArrayList<String> str = new ObjectArrayList<>();
         str.add(
             IGregTechDeviceInformation.encode(
                 "GT5U.infodata.progress",

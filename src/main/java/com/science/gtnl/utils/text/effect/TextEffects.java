@@ -1,9 +1,10 @@
 package com.science.gtnl.utils.text.effect;
 
-import java.util.List;
 import java.util.Objects;
 
 import com.science.gtnl.ScienceNotLeisure;
+
+import it.unimi.dsi.fastutil.ints.IntList;
 
 public class TextEffects {
 
@@ -32,10 +33,8 @@ public class TextEffects {
     public static final TextEffectStyle PAPER_FOLD = preset("paper_fold");
     public static final TextEffectStyle FROST_CRYSTAL = preset("frost_crystal");
 
-    private TextEffects() {}
-
     private static TextEffectStyle preset(String name) {
-        return new TextEffectStyle(ScienceNotLeisure.MODID + ":" + name, List.of(), 1);
+        return new TextEffectStyle(ScienceNotLeisure.MODID + ":" + name, IntList.of(), 1);
     }
 
     /**
@@ -58,7 +57,7 @@ public class TextEffects {
                 if (i > 0) result.append(',');
                 String hex = Integer.toHexString(
                     style.colors()
-                        .get(i));
+                        .getInt(i));
                 result.append('#')
                     .append("000000", 0, 6 - hex.length())
                     .append(hex);
@@ -87,7 +86,7 @@ public class TextEffects {
             result.append(
                 Integer.toHexString(
                     style.colors()
-                        .get(i)));
+                        .getInt(i)));
         }
         return result.append(EffectTextParser.END)
             .toString();

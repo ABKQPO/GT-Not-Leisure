@@ -1,6 +1,5 @@
 package com.science.gtnl.common.packet;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -21,6 +20,7 @@ import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class RecursivePatternResultPacket extends ClientboundPacket {
 
@@ -106,22 +106,22 @@ public class RecursivePatternResultPacket extends ClientboundPacket {
         var data = ByteBufUtils.readTag(buf);
         this.request = IAEStack.fromNBTGeneric(data.getCompoundTag("request"));
         this.manual = data.getBoolean("manual");
-        this.cycles = new ArrayList<>();
+        this.cycles = new ObjectArrayList<>();
         var list = data.getTagList("cycles", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < list.tagCount(); i++) {
             var tag = list.getCompoundTagAt(i);
-            var items = new ArrayList<IAEStack<?>>();
+            var items = new ObjectArrayList<IAEStack<?>>();
             var itemTags = tag.getTagList("items", Constants.NBT.TAG_COMPOUND);
             for (int j = 0; j < itemTags.tagCount(); j++) {
                 var item = IAEStack.fromNBTGeneric(itemTags.getCompoundTagAt(j));
                 if (item != null) items.add(item);
             }
-            var patterns = new ArrayList<PatternLocation>();
+            var patterns = new ObjectArrayList<PatternLocation>();
             var patternTags = tag.getTagList("patterns", Constants.NBT.TAG_COMPOUND);
             for (int j = 0; j < patternTags.tagCount(); j++) {
                 var patternTag = patternTags.getCompoundTagAt(j);
                 var output = IAEStack.fromNBTGeneric(patternTag.getCompoundTag("output"));
-                var machines = new ArrayList<DimensionalCoord>();
+                var machines = new ObjectArrayList<DimensionalCoord>();
                 var machineTags = patternTag.getTagList("machines", Constants.NBT.TAG_COMPOUND);
                 for (int k = 0; k < machineTags.tagCount(); k++) {
                     machines.add(DimensionalCoord.readFromNBT(machineTags.getCompoundTagAt(k)));

@@ -1,21 +1,20 @@
 package com.science.gtnl.api.stellar;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 public class StellarIrisUpgradeRegistry {
 
-    private static final Map<String, StellarIrisUpgradeBranch> BRANCHES = new LinkedHashMap<>();
-    private static final Map<String, StellarIrisUpgradeTree> TREES = new LinkedHashMap<>();
-    private static final Map<String, StellarIrisUpgradeDefinition> UPGRADES = new LinkedHashMap<>();
-    private static final List<StellarIrisUpgradeDefinition> UPGRADES_BY_NETWORK_ID = new ArrayList<>();
-    private static final Map<String, List<IStellarIrisUpgradeEffect>> EFFECTS = new LinkedHashMap<>();
-
-    private StellarIrisUpgradeRegistry() {}
+    private static final Map<String, StellarIrisUpgradeBranch> BRANCHES = new Object2ObjectLinkedOpenHashMap<>();
+    private static final Map<String, StellarIrisUpgradeTree> TREES = new Object2ObjectLinkedOpenHashMap<>();
+    private static final Map<String, StellarIrisUpgradeDefinition> UPGRADES = new Object2ObjectLinkedOpenHashMap<>();
+    private static final List<StellarIrisUpgradeDefinition> UPGRADES_BY_NETWORK_ID = new ObjectArrayList<>();
+    private static final Map<String, List<IStellarIrisUpgradeEffect>> EFFECTS = new Object2ObjectLinkedOpenHashMap<>();
 
     public static void registerBranch(StellarIrisUpgradeBranch branch) {
         if (branch == null) {
@@ -59,7 +58,7 @@ public class StellarIrisUpgradeRegistry {
         definition.assignNetworkId(UPGRADES_BY_NETWORK_ID.size());
         UPGRADES.put(definition.getId(), definition);
         UPGRADES_BY_NETWORK_ID.add(definition);
-        EFFECTS.put(definition.getId(), new ArrayList<>(definition.getEffects()));
+        EFFECTS.put(definition.getId(), new ObjectArrayList<>(definition.getEffects()));
     }
 
     public static void registerEffect(String upgradeId, IStellarIrisUpgradeEffect effect) {
@@ -91,11 +90,11 @@ public class StellarIrisUpgradeRegistry {
     }
 
     public static Collection<StellarIrisUpgradeBranch> getBranches() {
-        return Collections.unmodifiableCollection(new ArrayList<>(BRANCHES.values()));
+        return Collections.unmodifiableCollection(new ObjectArrayList<>(BRANCHES.values()));
     }
 
     public static Collection<StellarIrisUpgradeTree> getTrees() {
-        return Collections.unmodifiableCollection(new ArrayList<>(TREES.values()));
+        return Collections.unmodifiableCollection(new ObjectArrayList<>(TREES.values()));
     }
 
     public static Collection<StellarIrisUpgradeDefinition> getUpgrades() {
@@ -107,7 +106,7 @@ public class StellarIrisUpgradeRegistry {
     }
 
     public static Collection<StellarIrisUpgradeDefinition> getUpgradesByBranch(String branchId) {
-        List<StellarIrisUpgradeDefinition> upgrades = new ArrayList<>();
+        List<StellarIrisUpgradeDefinition> upgrades = new ObjectArrayList<>();
         for (StellarIrisUpgradeDefinition definition : UPGRADES.values()) {
             if (branchId == null ? definition.getBranchId() == null : branchId.equals(definition.getBranchId())) {
                 upgrades.add(definition);

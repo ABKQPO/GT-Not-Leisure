@@ -20,7 +20,6 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
@@ -82,6 +81,8 @@ import com.science.gtnl.config.MainConfig;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class CelestweaveArmorContracts {
 
@@ -188,7 +189,7 @@ public class CelestweaveArmorContracts {
     }
 
     private static void modules() {
-        Set<String> ids = new HashSet<>();
+        Set<String> ids = new ObjectOpenHashSet<>();
         for (CelestweaveModule module : CelestweaveModule.values()) {
             check(ids.add(module.id), "duplicate module id " + module.id);
             check(CelestweaveModule.LOOKUP.byMeta(module.meta) == module, "lookup round trip " + module.id);
@@ -238,7 +239,7 @@ public class CelestweaveArmorContracts {
         check(
             CelestweaveModule.LOOKUP.size() == metaOrder.length,
             "new modules take a new meta after the existing ones");
-        Set<Integer> metas = new HashSet<>();
+        IntOpenHashSet metas = new IntOpenHashSet();
         for (CelestweaveModule module : CelestweaveModule.values())
             check(metas.add(module.meta), "duplicate module meta " + module.id);
         check(EnergyModuleItem.tier(plainStack()) == 0, "plain item is not an energy module");
@@ -335,7 +336,7 @@ public class CelestweaveArmorContracts {
     private static void cosmetic() throws IOException {
         int maxArcs = MainConfig.item.celestweave.maxIdleArcs;
         check(CelestweaveCosmetic.read(new NBTTagCompound()) == CelestweaveCosmetic.DEFAULT, "empty cosmetic");
-        Set<String> optionKeys = new HashSet<>();
+        Set<String> optionKeys = new ObjectOpenHashSet<>();
         for (CelestweaveCosmeticOption option : CelestweaveCosmeticOption.values()) {
             check(optionKeys.add(option.key), "duplicate cosmetic key " + option.key);
             check(option.clamp(option.fallback) == option.fallback, "cosmetic fallback in range " + option.key);
@@ -458,7 +459,7 @@ public class CelestweaveArmorContracts {
                 "strip effect " + style.id + " is stored");
         }
         int[] gradient = CelestweaveStripEffects.gradientPixels();
-        Set<Integer> hues = new HashSet<>();
+        IntOpenHashSet hues = new IntOpenHashSet();
         for (int rgb : gradient) hues.add(rgb & 0xFFFFFF);
         check(hues.size() > gradient.length / 2, "rainbow gradient spans many hues");
         int[] flow = CelestweaveStripEffects.flowPixels();
@@ -473,7 +474,7 @@ public class CelestweaveArmorContracts {
     }
 
     private static void settings() {
-        Set<String> keys = new HashSet<>();
+        Set<String> keys = new ObjectOpenHashSet<>();
         for (CelestweaveModuleSetting setting : CelestweaveModuleSetting.values()) {
             check(keys.add(setting.module.id + "." + setting.key), "duplicate setting " + setting.key);
             check(setting.min <= setting.fallback && setting.fallback <= setting.max(), "fallback " + setting.key);

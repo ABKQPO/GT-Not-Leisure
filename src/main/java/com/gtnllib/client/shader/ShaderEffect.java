@@ -1,6 +1,5 @@
 package com.gtnllib.client.shader;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -13,10 +12,11 @@ import org.lwjgl.opengl.GL20;
 import com.gtnllib.GTNLLib;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class ShaderEffect {
 
-    private static final List<ShaderEffect> ALL = new ArrayList<>();
+    private static final List<ShaderEffect> ALL = new ObjectArrayList<>();
 
     private final ResourceLocation vertex;
     private final ResourceLocation fragment;

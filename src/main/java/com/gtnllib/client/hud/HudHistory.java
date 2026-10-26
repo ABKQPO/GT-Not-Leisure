@@ -1,14 +1,14 @@
 package com.gtnllib.client.hud;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.Objects;
 import java.util.function.Supplier;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
 
 public class HudHistory<T> {
 
     private final int limit;
-    private final Deque<T> undo = new ArrayDeque<>(), redo = new ArrayDeque<>();
+    private final ObjectArrayFIFOQueue<T> undo = new ObjectArrayFIFOQueue<>(), redo = new ObjectArrayFIFOQueue<>();
     private Object group;
 
     public HudHistory(int limit) {
@@ -18,8 +18,8 @@ public class HudHistory<T> {
 
     public void record(Supplier<T> before, Object group) {
         if (group != null && group.equals(this.group)) return;
-        undo.push(Objects.requireNonNull(before.get(), "before"));
-        while (undo.size() > limit) undo.removeLast();
+        undo.enqueueFirst(Objects.requireNonNull(before.get(), "before"));
+        while (undo.size() > limit) undo.dequeueLast();
         redo.clear();
         this.group = group;
     }
@@ -39,14 +39,14 @@ public class HudHistory<T> {
     public T undo(T current) {
         if (undo.isEmpty()) return null;
         group = null;
-        redo.push(current);
-        return undo.pop();
+        redo.enqueueFirst(current);
+        return undo.dequeue();
     }
 
     public T redo(T current) {
         if (redo.isEmpty()) return null;
         group = null;
-        undo.push(current);
-        return redo.pop();
+        undo.enqueueFirst(current);
+        return redo.dequeue();
     }
 }

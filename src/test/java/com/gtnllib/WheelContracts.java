@@ -11,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -30,6 +29,8 @@ import com.gtnllib.gui.wheel.WheelOpenMode;
 import com.gtnllib.gui.wheel.WheelPageModel;
 import com.gtnllib.gui.wheel.WheelStyle;
 import com.gtnllib.gui.wheel.WheelWidget;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class WheelContracts {
 
@@ -203,7 +204,7 @@ public class WheelContracts {
             "wheel empty menu has no sections");
         check(second.slotCount() == 4, "wheel paged menu keeps full pages");
 
-        List<WheelActionContext> triggered = new ArrayList<>();
+        List<WheelActionContext> triggered = new ObjectArrayList<>();
         boolean[] extraShown = { true };
         WheelMenuModel navigable = WheelMenuBuilder.create()
             .slotsPerPage(4)
@@ -257,7 +258,7 @@ public class WheelContracts {
         near(0.5F, WheelWidget.fitScale(1F, 300, 1, 9, 150, 100), "a wide wheel title shrinks to the circle");
         near(0.5F, WheelWidget.fitScale(1F, 50, 4, 9, 200, 18), "a wheel title with many lines shrinks to fit");
         near(1F, WheelWidget.fitScale(1F, 0, 0, 9, 10, 10), "an empty wheel title keeps its size");
-        List<WheelActionContext> rightClicked = new ArrayList<>();
+        List<WheelActionContext> rightClicked = new ObjectArrayList<>();
         WheelNavigator right = new WheelNavigator(
             WheelMenuBuilder.create()
                 .slotsPerPage(4)

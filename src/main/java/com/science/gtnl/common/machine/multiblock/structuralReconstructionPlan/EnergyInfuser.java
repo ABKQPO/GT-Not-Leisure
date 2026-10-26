@@ -14,7 +14,6 @@ import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static kekztech.common.Blocks.lscLapotronicEnergyUnit;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -76,6 +75,7 @@ import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import tectech.thing.metaTileEntity.hatch.MTEHatchEnergyMulti;
 import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 
@@ -95,7 +95,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
     private static final int VERTICAL_OFF_SET = 7;
     private static final int DEPTH_OFF_SET = 0;
 
-    public List<ItemStack> mStoredItems = new ArrayList<>();
+    public List<ItemStack> mStoredItems = new ObjectArrayList<>();
 
     public boolean outputAllItems = false;
     public int mCountCasing;
@@ -181,7 +181,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
     public CheckRecipeResult checkProcessing_EM() {
         mEfficiencyIncrease = 10000;
         mMaxProgresstime = 1;
-        List<ItemStack> toStore = new ArrayList<>();
+        List<ItemStack> toStore = new ObjectArrayList<>();
 
         for (ItemStack stack : getAllStoredInputs()) {
             if (ItemUtil.isStackInvalid(stack)) continue;
@@ -211,7 +211,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
             return;
         }
 
-        List<ItemStack> remaining = new ArrayList<>(mStoredItems.size());
+        List<ItemStack> remaining = new ObjectArrayList<>(mStoredItems.size());
         long totalEU = getMaxStoredEU();
         long euPerItem = totalEU / mStoredItems.size();
         int remainingUum = getAvailableUumAmount();
@@ -457,7 +457,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
     }
 
     public void setStoredItemsFromGui(List<ItemStack> storedItems) {
-        mStoredItems = storedItems != null ? new ArrayList<>(storedItems) : new ArrayList<>();
+        mStoredItems = storedItems != null ? new ObjectArrayList<>(storedItems) : new ObjectArrayList<>();
     }
 
     public int getProgressTimeForGui() {
@@ -527,7 +527,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
                 nameToAmount.addTo(item, item.stackSize);
             }
 
-            final List<Object2LongMap.Entry<ItemStack>> sortedList = new ArrayList<>(
+            final List<Object2LongMap.Entry<ItemStack>> sortedList = new ObjectArrayList<>(
                 nameToAmount.object2LongEntrySet());
 
             sortedList.sort((left, right) -> Long.compare(right.getLongValue(), left.getLongValue()));

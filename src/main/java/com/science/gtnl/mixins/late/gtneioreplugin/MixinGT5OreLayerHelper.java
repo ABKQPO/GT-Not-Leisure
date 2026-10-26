@@ -1,6 +1,5 @@
 package com.science.gtnl.mixins.late.gtneioreplugin;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,6 +11,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.science.gtnl.common.world.GTNLVeinCatalog;
 
 import gtneioreplugin.util.GT5OreLayerHelper;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 @Mixin(value = GT5OreLayerHelper.class, remap = false)
 public abstract class MixinGT5OreLayerHelper {
@@ -24,7 +24,7 @@ public abstract class MixinGT5OreLayerHelper {
             ordinal = 0))
     private static ImmutableMap<String, ?> gtnl$addVeins(Map<String, ?> map,
         Operation<ImmutableMap<String, ?>> operation) {
-        Map<String, Object> copied = new HashMap<>(map);
+        Map<String, Object> copied = new Object2ObjectOpenHashMap<>(map);
         GTNLVeinCatalog.fillOreLayerWrappers(copied);
         return operation.call(copied);
     }

@@ -31,9 +31,8 @@ public class FallingTowerRecipes implements IRecipePool {
             }
 
             ItemStack[] outputs = data.outputs.toArray(new ItemStack[0]);
-            int[] chances = data.chances.stream()
-                .mapToInt(chance -> (int) (chance * 20000))
-                .toArray();
+            int[] chances = new int[data.chances.size()];
+            for (int i = 0; i < chances.length; i++) chances[i] = (int) (data.chances.getFloat(i) * 20000);
 
             RecipeBuilder.builder()
                 .itemInputs(input)

@@ -1,6 +1,5 @@
 package com.science.gtnl.loader;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.dreammaster.scripts.IScriptLoader;
@@ -9,16 +8,17 @@ import com.science.gtnl.common.recipe.script.ScriptAvaritia;
 import com.science.gtnl.common.recipe.script.ScriptTinkersConstruct;
 
 import gregtech.api.enums.Mods;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class ScriptLoader {
 
     public static void registry() {
 
-        List<IScriptLoader> scripts = new ArrayList<>(List.of(new ScriptTinkersConstruct()));
+        List<IScriptLoader> scripts = new ObjectArrayList<>(List.of(new ScriptTinkersConstruct()));
 
         if (Mods.Avaritia.isModLoaded()) scripts.add(new ScriptAvaritia());
 
-        ArrayList<String> errored = new ArrayList<>();
+        ObjectArrayList<String> errored = new ObjectArrayList<>();
         final long totalTimeStart = System.currentTimeMillis();
         for (IScriptLoader script : scripts) {
             if (script.isScriptLoadable()) {

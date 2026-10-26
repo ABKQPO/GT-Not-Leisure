@@ -1,6 +1,5 @@
 package com.science.gtnl.mixins.late.gregtech;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,6 +28,7 @@ import gregtech.api.metatileentity.implementations.MTEExtendedPowerMultiBlockBas
 import gregtech.api.util.GTUtility;
 import gregtech.common.tileentities.machines.multi.MTEPlasmaForge;
 import gtPlusPlus.core.util.minecraft.ItemUtils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -84,7 +84,7 @@ public abstract class MixinMTEPlasmaForge extends MTEExtendedPowerMultiBlockBase
     public String[] getInfoData() {
         String[] original = super.getInfoData();
         if (!gtnl$lockRuntime) return original;
-        List<String> list = new ArrayList<>(Arrays.asList(original));
+        List<String> list = new ObjectArrayList<>(Arrays.asList(original));
         list.add("gtnl.waila.plasma_forge.decay_blocking");
         return list.toArray(new String[0]);
     }

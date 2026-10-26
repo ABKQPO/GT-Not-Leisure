@@ -1,11 +1,7 @@
 package com.science.gtnl.common.gui.recipe;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,13 +19,20 @@ import gregtech.api.recipe.RecipeMapBackendPropertiesBuilder;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.MethodsReturnNonnullByDefault;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SteamGateAssemblerBackend extends RecipeMapBackend {
 
-    private final List<GTRecipe> steamGateRecipes = new ArrayList<>();
-    private final Map<GTItemStack, List<GTRecipe>> recipesByAnchor = new HashMap<>();
+    private final List<GTRecipe> steamGateRecipes = new ObjectArrayList<>();
+    private final Map<GTItemStack, List<GTRecipe>> recipesByAnchor = new Object2ObjectOpenHashMap<>();
 
     public SteamGateAssemblerBackend(RecipeMapBackendPropertiesBuilder propertiesBuilder) {
         super(propertiesBuilder);
@@ -94,10 +97,10 @@ public class SteamGateAssemblerBackend extends RecipeMapBackend {
             return;
         }
 
-        Set<GTRecipe> recipesToRemoveByIdentity = Collections.newSetFromMap(new IdentityHashMap<>());
+        Set<GTRecipe> recipesToRemoveByIdentity = new ReferenceOpenHashSet<>();
         recipesToRemoveByIdentity.addAll(recipesToRemove);
 
-        List<GTRecipe> keptRecipes = new ArrayList<>(steamGateRecipes.size());
+        List<GTRecipe> keptRecipes = new ObjectArrayList<>(steamGateRecipes.size());
         boolean removed = false;
         for (GTRecipe recipe : steamGateRecipes) {
             if (recipesToRemoveByIdentity.contains(recipe)) {
@@ -139,7 +142,7 @@ public class SteamGateAssemblerBackend extends RecipeMapBackend {
             return Collections.emptySet();
         }
 
-        Set<GTRecipe> candidates = new LinkedHashSet<>();
+        Set<GTRecipe> candidates = new ObjectLinkedOpenHashSet<>();
         for (ItemStack item : items) {
             if (item == null) {
                 continue;
@@ -183,7 +186,7 @@ public class SteamGateAssemblerBackend extends RecipeMapBackend {
             return;
         }
 
-        recipesByAnchor.computeIfAbsent(new GTItemStack(anchor), key -> new ArrayList<>())
+        recipesByAnchor.computeIfAbsent(new GTItemStack(anchor), key -> new ObjectArrayList<>())
             .add(recipe);
     }
 
@@ -192,22 +195,22 @@ public class SteamGateAssemblerBackend extends RecipeMapBackend {
             return null;
         }
 
-        Map<GTItemStack, Integer> inputCounts = new HashMap<>();
-        Map<GTItemStack, ItemStack> representativeInputs = new HashMap<>();
+        Object2IntOpenHashMap<GTItemStack> inputCounts = new Object2IntOpenHashMap<>();
+        Map<GTItemStack, ItemStack> representativeInputs = new Object2ObjectOpenHashMap<>();
         for (ItemStack input : recipe.mInputs) {
             if (input == null) {
                 continue;
             }
 
             GTItemStack key = new GTItemStack(input);
-            inputCounts.merge(key, 1, Integer::sum);
+            inputCounts.addTo(key, 1);
             representativeInputs.putIfAbsent(key, input);
         }
 
         GTItemStack bestKey = null;
         int bestCount = Integer.MAX_VALUE;
-        for (Map.Entry<GTItemStack, Integer> entry : inputCounts.entrySet()) {
-            int count = entry.getValue();
+        for (Object2IntMap.Entry<GTItemStack> entry : Object2IntMaps.fastIterable(inputCounts)) {
+            int count = entry.getIntValue();
             if (count < bestCount) {
                 bestCount = count;
                 bestKey = entry.getKey();

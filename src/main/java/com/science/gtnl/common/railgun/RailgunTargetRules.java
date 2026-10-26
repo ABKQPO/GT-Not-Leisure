@@ -1,6 +1,5 @@
 package com.science.gtnl.common.railgun;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,6 +13,8 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.FakePlayer;
 
 import com.gtnllib.utils.Vec3d;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class RailgunTargetRules {
 
@@ -52,7 +53,7 @@ public class RailgunTargetRules {
     }
 
     private static List<EntityDragonPart> parts(Entity target) {
-        List<EntityDragonPart> parts = new ArrayList<>();
+        List<EntityDragonPart> parts = new ObjectArrayList<>();
         if (target instanceof EntityDragon dragon) {
             Collections.addAll(
                 parts,

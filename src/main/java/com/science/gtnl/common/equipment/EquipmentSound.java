@@ -1,11 +1,12 @@
 package com.science.gtnl.common.equipment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.config.EquipmentSoundConfig;
 import com.science.gtnl.config.EquipmentSoundConfig.Channel;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public enum EquipmentSound {
 
@@ -40,7 +41,7 @@ public enum EquipmentSound {
         }
 
         public List<EquipmentSound> sounds() {
-            List<EquipmentSound> sounds = new ArrayList<>();
+            List<EquipmentSound> sounds = new ObjectArrayList<>();
             for (EquipmentSound sound : EquipmentSound.values()) if (sound.group == this) sounds.add(sound);
             return sounds;
         }

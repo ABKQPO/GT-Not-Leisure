@@ -2,7 +2,6 @@ package com.reavaritia.common.entity;
 
 import static com.reavaritia.common.BlockLoader.ExtremeAnvil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,6 +28,7 @@ import com.science.gtnl.utils.enums.ModList;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class EntityExtremeAnvil extends Entity {
 
@@ -228,7 +228,7 @@ public class EntityExtremeAnvil extends Entity {
             int i = MathHelper.ceiling_float_int(distance - 1.0F);
 
             if (i > 0) {
-                ArrayList<Entity> arraylist = new ArrayList<>(
+                ObjectArrayList<Entity> arraylist = new ObjectArrayList<>(
                     this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox));
                 boolean flag = this.blockType == Blocks.anvil;
                 DamageSource damagesource = flag ? DamageSource.anvil : DamageSource.fallingBlock;

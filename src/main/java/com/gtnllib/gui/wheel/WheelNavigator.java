@@ -1,10 +1,9 @@
 package com.gtnllib.gui.wheel;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class WheelNavigator {
 
@@ -16,7 +15,7 @@ public class WheelNavigator {
 
     private final WheelMenuModel model;
     private final WheelOpenMode openMode;
-    private final Deque<List<WheelEntry>> menuStack = new ArrayDeque<>();
+    private final ObjectArrayList<List<WheelEntry>> menuStack = new ObjectArrayList<>();
     private List<WheelEntry> visible;
     private WheelPageModel page;
     private int pageIndex;
@@ -25,7 +24,7 @@ public class WheelNavigator {
     public WheelNavigator(WheelMenuModel model, WheelOpenMode openMode) {
         this.model = Objects.requireNonNull(model, "model");
         this.openMode = Objects.requireNonNull(openMode, "openMode");
-        menuStack.addLast(model.rootEntries());
+        menuStack.push(model.rootEntries());
         refresh();
     }
 
@@ -67,9 +66,9 @@ public class WheelNavigator {
     }
 
     public boolean refresh() {
-        List<WheelEntry> entries = menuStack.getLast();
+        List<WheelEntry> entries = menuStack.top();
         if (visible != null && sameVisible(entries)) return false;
-        List<WheelEntry> shown = new ArrayList<>(entries.size());
+        List<WheelEntry> shown = new ObjectArrayList<>(entries.size());
         for (WheelEntry entry : entries) if (entry.isVisible()) shown.add(entry);
         visible = shown;
         pageCount = model.pageCount(shown);
@@ -82,7 +81,7 @@ public class WheelNavigator {
         if (!isSelectable(slot)) return Outcome.NONE;
         WheelEntry entry = page.slot(slot);
         if (openMode == WheelOpenMode.TAP && entry.hasSubmenu()) {
-            menuStack.addLast(entry.submenu());
+            menuStack.push(entry.submenu());
             pageIndex = 0;
             reload();
             return Outcome.SUBMENU;
@@ -103,7 +102,7 @@ public class WheelNavigator {
 
     public boolean back() {
         if (menuStack.size() <= 1) return false;
-        menuStack.removeLast();
+        menuStack.pop();
         pageIndex = 0;
         reload();
         return true;

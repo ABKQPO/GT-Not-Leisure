@@ -2,7 +2,6 @@ package com.science.gtnl.common.celestweave;
 
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.entity.item.EntityItem;
@@ -25,6 +24,8 @@ import com.science.gtnl.container.portableWorkbench.ContainerPortableEnderChest;
 import com.science.gtnl.container.portableWorkbench.ContainerPortableInfinityChest;
 import com.science.gtnl.container.portableWorkbench.IPortableStorageHost;
 import com.science.gtnl.utils.enums.GuiType;
+
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class CelestweaveBackpack {
 
@@ -73,7 +74,7 @@ public class CelestweaveBackpack {
     }
 
     public static ItemStack[] persist(ItemStack[] before, ItemStack[] after, CelestweaveBackpackData data) {
-        Set<String> previous = new HashSet<>();
+        Set<String> previous = new ObjectOpenHashSet<>();
         for (ItemStack module : before) previous.add(heldId(module));
         ItemStack[] stored = new ItemStack[after.length];
         for (int i = 0; i < after.length; i++) {

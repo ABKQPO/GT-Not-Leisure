@@ -1,12 +1,12 @@
 package com.science.gtnl.utils.recipes.format;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.util.StatCollector;
 
 import gregtech.nei.RecipeDisplayInfo;
 import gregtech.nei.formatter.INEISpecialInfoFormatter;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class RealArtificialStarFormat implements INEISpecialInfoFormatter {
 
@@ -14,7 +14,7 @@ public class RealArtificialStarFormat implements INEISpecialInfoFormatter {
 
     @Override
     public List<String> format(RecipeDisplayInfo recipeInfo) {
-        List<String> msgs = new ArrayList<>();
+        List<String> msgs = new ObjectArrayList<>();
         msgs.add(
             StatCollector.translateToLocal("gtnl.nei.real_artificial_star.generating.special_value")
                 + recipeInfo.recipe.mSpecialValue

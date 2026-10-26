@@ -12,8 +12,8 @@
     <a href="https://github.com/ABKQPO/GT-Not-Leisure/releases/latest">
       <img src="https://img.shields.io/github/v/release/ABKQPO/GT-Not-Leisure?style=for-the-badge&color=orange" alt="Latest Version">
     </a>
-    <a href="https://www.gnu.org/licenses/lgpl-3.0.html">
-      <img src="https://img.shields.io/badge/License-LGPLv3-blue?style=for-the-badge" alt="License">
+    <a href="https://www.gnu.org/licenses/gpl-3.0.html">
+      <img src="https://img.shields.io/badge/License-GPLv3-blue?style=for-the-badge" alt="License">
     </a>
     <br>
     <a href="https://discord.gg/3sADCeCsjA">
@@ -211,9 +211,6 @@ We gratefully acknowledge the use of code and assets from the open-source commun
 | **MEGACells Textures**       | [62832](https://github.com/62832/MEGACells)                      | [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/) |
 | **AE2 Lightning Tech Assets** | [MOAKIEE, TedXenon, et al.](https://github.com/AE2-Lightning-Tech-Reborn/AE2-Lightning-Tech-Reborn) | [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/) |
 | **AE2 Lightning Tech Railgun Code** | [MOAKIEE, TedXenon, et al.](https://github.com/AE2-Lightning-Tech-Reborn/AE2-Lightning-Tech-Reborn/tree/95801cf1b4bd) | [LGPL-3.0](https://www.gnu.org/licenses/lgpl-3.0.html) |
-
-The railgun port derives combat algorithms from AE2 Lightning Tech Reborn commit `95801cf1b4bd`.
-The derived railgun code retains LGPL-3.0; its model, module textures and railgun audio use the asset license listed above.
 
 Thanks to the following developers for their contributions to GT-Not-Leisure:
 

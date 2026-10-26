@@ -1,9 +1,7 @@
 package com.science.gtnl.client.quantum;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +10,9 @@ import org.jetbrains.annotations.Nullable;
 import com.science.gtnl.client.quantum.CraftingTreeRings.Ring;
 
 import appeng.client.gui.widgets.GuiCraftingTree;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 /**
  * Contracts each crafting cycle of a crafting tree into the request it is entered by. The crafts and requests of the
@@ -22,11 +23,11 @@ import appeng.client.gui.widgets.GuiCraftingTree;
 public final class CraftingTreeContraction {
 
     // Per cycle node, what hangs under it
-    private final Map<Object, List<Object>> children = new IdentityHashMap<>();
+    private final Map<Object, List<Object>> children = new Reference2ObjectOpenHashMap<>();
     // Per node under a cycle node, that node
-    private final Map<Object, Object> parents = new IdentityHashMap<>();
+    private final Map<Object, Object> parents = new Reference2ObjectOpenHashMap<>();
     // Per node of a cycle, the node it is contracted into
-    private final Map<Object, Object> cycleNodes = new IdentityHashMap<>();
+    private final Map<Object, Object> cycleNodes = new Reference2ObjectOpenHashMap<>();
     // Every node of the tree, those taken out of it too
     private final List<Object> all;
 
@@ -39,12 +40,12 @@ public final class CraftingTreeContraction {
      */
     public static CraftingTreeContraction of(GuiCraftingTree tree, Map<Object, Ring> rings) {
         var nodes = CraftingTreeRings.allNodes(tree);
-        var contraction = new CraftingTreeContraction(new ArrayList<>(nodes));
+        var contraction = new CraftingTreeContraction(new ObjectArrayList<>(nodes));
         for (var ring : rings.values()) {
             var entry = ring.entry();
-            var inRing = Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>());
+            var inRing = new ReferenceOpenHashSet<>();
             inRing.addAll(ring.members());
-            var under = new ArrayList<Object>();
+            var under = new ObjectArrayList<Object>();
             // What else the entry is resolved by stays first, then what the cycle takes, in tree order
             for (var child : CraftingTreeRings.children(entry)) {
                 if (!inRing.contains(child)) under.add(child);

@@ -1,7 +1,5 @@
 package com.science.gtnl.common.portalgun;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -16,13 +14,17 @@ import net.minecraftforge.common.DimensionManager;
 
 import com.science.gtnl.common.entity.EntityPortalGunPortal;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 public class PortalGunPairs {
 
     public static final PortalGunPairs OPENED = new PortalGunPairs();
     private static final double OVERLAP_MARGIN = 0.05;
 
-    private final Map<UUID, List<Opened>> opened = new HashMap<>();
-    private final Map<UUID, Integer> waiting = new HashMap<>();
+    private final Map<UUID, List<Opened>> opened = new Object2ObjectOpenHashMap<>();
+    private final Object2IntOpenHashMap<UUID> waiting = new Object2IntOpenHashMap<>();
     private int lastPair, lastRequest;
 
     public record Opened(int dimension, int entityId, int pair) {}
@@ -53,10 +55,7 @@ public class PortalGunPairs {
     }
 
     public boolean claim(UUID gunId, int request) {
-        Integer latest = waiting.get(gunId);
-        if (latest == null || latest != request) return false;
-        waiting.remove(gunId);
-        return true;
+        return waiting.remove(gunId, request);
     }
 
     private boolean openLoaded(World world, WorldServer target, PortalGunPlacement source,
@@ -88,7 +87,7 @@ public class PortalGunPairs {
     }
 
     public void remember(UUID gunId, Opened portal) {
-        opened.computeIfAbsent(gunId, id -> new ArrayList<>())
+        opened.computeIfAbsent(gunId, id -> new ObjectArrayList<>())
             .add(portal);
     }
 
@@ -101,12 +100,12 @@ public class PortalGunPairs {
 
     public List<Opened> take(UUID gunId) {
         List<Opened> list = opened.remove(gunId);
-        return list == null ? new ArrayList<>() : list;
+        return list == null ? new ObjectArrayList<>() : list;
     }
 
     public List<Opened> pair(UUID gunId, int pair) {
-        List<Opened> found = new ArrayList<>();
-        for (Opened portal : opened.getOrDefault(gunId, new ArrayList<>()))
+        List<Opened> found = new ObjectArrayList<>();
+        for (Opened portal : opened.getOrDefault(gunId, new ObjectArrayList<>()))
             if (portal.pair() == pair) found.add(portal);
         return found;
     }

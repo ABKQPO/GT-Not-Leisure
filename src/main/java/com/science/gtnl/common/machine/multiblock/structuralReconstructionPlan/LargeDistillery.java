@@ -4,10 +4,10 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static gtPlusPlus.core.block.ModBlocks.blockCasingsMisc;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -35,8 +35,10 @@ import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.TAE;
 import gregtech.api.enums.Textures.BlockIcons;
+import gregtech.api.enums.VoidingMode;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IHatchElement;
+import gregtech.api.interfaces.IOutputHatch;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -51,6 +53,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -81,7 +84,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     public static final int MACHINEMODE_TOWER = 0;
     public static final int MACHINEMODE_DISTILLERY = 1;
 
-    public final List<List<MTEHatchOutput>> mOutputHatchesByLayer = new ArrayList<>();
+    public final List<List<MTEHatchOutput>> mOutputHatchesByLayer = new ObjectArrayList<>();
     public int mHeight;
 
     public LargeDistillery(int aID, String aName, String aNameRegional) {
@@ -309,24 +312,6 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     }
 
     @Override
-    public boolean addFluidOutputs(FluidStack[] outputFluids) {
-        boolean succeed = true;
-        for (int i = 0; i < outputFluids.length && i < mOutputHatchesByLayer.size(); i++) {
-            final FluidStack fluidStack = outputFluids[i];
-            if (fluidStack == null) continue;
-            FluidStack stack = fluidStack.copy();
-            addOutputPartial(stack, mOutputHatchesByLayer.get(i));
-            if (stack.amount > 0) succeed = false;
-        }
-        return succeed;
-    }
-
-    @Override
-    public boolean canDumpFluidToME(List<GTUtility.FluidId> outputs) {
-        return canDumpFluidToMEByLayer(outputs, mOutputHatchesByLayer);
-    }
-
-    @Override
     public double getEUtDiscount() {
         return 0.5 - (mParallelTier / 50.0);
     }
@@ -371,6 +356,45 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     @Override
     public int getCasingTextureID() {
         return TAE.GTPP_INDEX(11);
+    }
+
+    @Override
+    public VoidingMode getDefaultVoidingMode() {
+        return VoidingMode.VOID_FLUID;
+    }
+
+    @Override
+    public Set<VoidingMode> getAllowedVoidingModes() {
+        return VoidingMode.FLUID_ONLY_MODES;
+    }
+
+    @Override
+    public boolean supportsVoidProtection() {
+        return true;
+    }
+
+    @Override
+    public List<IOutputHatch> getOutputHatches(FluidStack[] toOutput) {
+        return getOutputHatchesByLayers(toOutput, mOutputHatchesByLayer);
+    }
+
+    @Override
+    public boolean addFluidOutputs(@NotNull FluidStack[] outputFluids) {
+        boolean succeed = true;
+        for (int i = 0; i < outputFluids.length && i < mOutputHatchesByLayer.size(); i++) {
+            FluidStack fluidStack = outputFluids[i];
+            if (fluidStack == null) continue;
+
+            FluidStack remaining = fluidStack.copy();
+            addOutputPartial(remaining, mOutputHatchesByLayer.get(i));
+            if (remaining.amount > 0) succeed = false;
+        }
+        return succeed;
+    }
+
+    @Override
+    public boolean canDumpFluidToME(List<GTUtility.FluidId> outputs) {
+        return canDumpFluidToMEByLayer(outputs, mOutputHatchesByLayer);
     }
 
     @Override
@@ -437,11 +461,14 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
 
     public boolean addLayerOutputHatch(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
         if (aTileEntity == null || aTileEntity.isDead()
-            || !(aTileEntity.getMetaTileEntity() instanceof MTEHatchOutput tHatch)) return false;
-        while (mOutputHatchesByLayer.size() < mHeight) mOutputHatchesByLayer.add(new ArrayList<>());
-        tHatch.updateTexture(aBaseCasingIndex);
-        return mOutputHatchesByLayer.get(mHeight - 1)
-            .add(tHatch);
+            || !(aTileEntity.getMetaTileEntity() instanceof MTEHatchOutput outputHatch)) return false;
+        while (mOutputHatchesByLayer.size() < mHeight) {
+            mOutputHatchesByLayer.add(new ObjectArrayList<>());
+        }
+        outputHatch.updateTexture(aBaseCasingIndex);
+        List<MTEHatchOutput> layer = mOutputHatchesByLayer.get(mHeight - 1);
+        // 顶层会被 STRUCTURE_PIECE_LAYER 和 STRUCTURE_PIECE_TOP_HINT 各检查一次
+        return layer.contains(outputHatch) || layer.add(outputHatch);
     }
 
     @Override

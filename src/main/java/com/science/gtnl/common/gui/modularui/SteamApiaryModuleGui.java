@@ -4,9 +4,7 @@ import static forestry.api.apiculture.BeeManager.beeRoot;
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +61,13 @@ import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.modularui2.GTWidgetThemes;
 import gregtech.api.util.GTUtility;
 import gregtech.common.modularui2.widget.SlotLikeButtonWidget;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
 
@@ -93,7 +97,7 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
     private DynamicSyncHandler beeInventoryWidgetSyncer;
     private PanelSyncManager mainSyncManager;
     private IntSyncValue beeClickSyncer;
-    private List<BeeSlot> beeSlots = new ArrayList<>();
+    private List<BeeSlot> beeSlots = new ObjectArrayList<>();
     private int maxSlots;
     private int usedSlots;
     private boolean machineRunning;
@@ -396,26 +400,26 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
     }
 
     private List<BeeSlot> buildAggregatedBeeList() {
-        Map<String, Integer> countMap = new HashMap<>();
-        Map<String, ItemStack> stackMap = new HashMap<>();
-        Map<String, Integer> firstSlotMap = new HashMap<>();
+        Object2IntOpenHashMap<String> countMap = new Object2IntOpenHashMap<>();
+        Map<String, ItemStack> stackMap = new Object2ObjectOpenHashMap<>();
+        Object2IntOpenHashMap<String> firstSlotMap = new Object2IntOpenHashMap<>();
         for (int i = 0; i < steamApiary.mStorage.size(); i++) {
             SteamApiaryModule.BeeSimulator bee = steamApiary.mStorage.get(i);
             String key = bee.speciesKey != null ? bee.speciesKey
                 : ItemId.createNoCopy(bee.queenStack)
                     .toString();
-            countMap.merge(key, 1, Integer::sum);
+            countMap.addTo(key, 1);
             stackMap.putIfAbsent(key, createDisplayStack(bee.queenStack));
             firstSlotMap.putIfAbsent(key, i);
         }
-        List<BeeSlot> result = new ArrayList<>(countMap.size());
+        List<BeeSlot> result = new ObjectArrayList<>(countMap.size());
         int visibleIndex = 0;
-        for (Map.Entry<String, Integer> entry : countMap.entrySet()) {
+        for (Object2IntMap.Entry<String> entry : Object2IntMaps.fastIterable(countMap)) {
             result.add(
                 new BeeSlot(
                     visibleIndex++,
-                    firstSlotMap.get(entry.getKey()),
-                    entry.getValue(),
+                    firstSlotMap.getInt(entry.getKey()),
+                    entry.getIntValue(),
                     stackMap.get(entry.getKey())));
         }
         result.sort(
@@ -446,7 +450,7 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
     private List<BeeSlot> buildVisibleAggregatedBeeList() {
         List<BeeSlot> full = getFullAggregatedBeeList();
         int end = Math.min(MAX_VISIBLE_BEE_ENTRIES, full.size());
-        List<BeeSlot> page = new ArrayList<>(end);
+        List<BeeSlot> page = new ObjectArrayList<>(end);
         for (int i = 0; i < end; i++) {
             BeeSlot slot = full.get(i);
             page.add(new BeeSlot(i, slot.realIndex(), slot.count(), slot.stack()));
@@ -627,11 +631,11 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
     }
 
     private List<DropEntry> createDropEntries() {
-        List<DropEntry> entries = new ArrayList<>(steamApiary.dropProgress.size());
-        for (Map.Entry<ItemId, Double> drop : steamApiary.dropProgress.entrySet()) {
+        List<DropEntry> entries = new ObjectArrayList<>(steamApiary.dropProgress.size());
+        for (Object2DoubleMap.Entry<ItemId> drop : steamApiary.dropProgress.object2DoubleEntrySet()) {
             ItemStack stack = SteamApiaryModule.BeeSimulator.dropstacks.get(drop.getKey());
             if (stack == null) continue;
-            entries.add(new DropEntry(stack.copy(), drop.getValue()));
+            entries.add(new DropEntry(stack.copy(), drop.getDoubleValue()));
         }
         entries.sort(
             Comparator.comparing(
@@ -641,7 +645,7 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
     }
 
     private void setClientDropEntries(List<DropEntry> entries) {
-        HashMap<ItemStack, Double> progress = new HashMap<>(entries.size());
+        Object2DoubleOpenHashMap<ItemStack> progress = new Object2DoubleOpenHashMap<>(entries.size());
         for (DropEntry entry : entries) {
             progress.put(entry.stack(), entry.progress());
         }
@@ -651,11 +655,11 @@ public class SteamApiaryModuleGui extends GTNLSteamMultiBlockBaseGui {
     private List<IWidget> createDropRows(List<DropEntry> drops) {
         if (drops == null || drops.isEmpty()) return List.of();
         Object2IntOpenHashMap<ItemId> outputCounts = steamApiary.getOutputItemCounts(steamApiary.mOutputItems);
-        List<DropEntry> sortedDrops = new ArrayList<>(drops);
+        List<DropEntry> sortedDrops = new ObjectArrayList<>(drops);
         sortedDrops.sort(
             Comparator.comparingInt((DropEntry entry) -> outputCounts.getInt(ItemId.createNoCopy(entry.stack())))
                 .reversed());
-        List<IWidget> rows = new ArrayList<>(sortedDrops.size() + 1);
+        List<IWidget> rows = new ObjectArrayList<>(sortedDrops.size() + 1);
         rows.add(
             IKey.dynamic(this::createProgressText)
                 .asWidget()

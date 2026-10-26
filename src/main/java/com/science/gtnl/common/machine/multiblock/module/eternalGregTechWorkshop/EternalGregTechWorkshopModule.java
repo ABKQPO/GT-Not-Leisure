@@ -6,7 +6,6 @@ import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,6 +63,7 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import tectech.thing.gui.TecTechUITextures;
@@ -252,7 +252,7 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
 
     @Override
     public String[] getInfoData() {
-        ArrayList<String> str = new ArrayList<>();
+        ObjectArrayList<String> str = new ObjectArrayList<>();
         str.add(
             IGregTechDeviceInformation.encode(
                 "GT5U.infodata.progress",
@@ -371,7 +371,7 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
             })
                 .setSize(16, 16)
                 .setBackground(() -> {
-                    List<UITexture> ret = new ArrayList<>();
+                    List<UITexture> ret = new ObjectArrayList<>();
                     ret.add(EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32);
                     if (getStructureUpdateTime() > -20) {
                         ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_STRUCTURE_CHECK);

@@ -1,6 +1,5 @@
 package com.science.gtnl.client.celestweave;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -36,13 +35,14 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class CelestweaveClientEvents {
 
     private static final Random RNG = new Random();
     private static final CelestweaveClientEvents INSTANCE = new CelestweaveClientEvents();
-    private static final List<Scheduled> SCHEDULED = new ArrayList<>();
+    private static final List<Scheduled> SCHEDULED = new ObjectArrayList<>();
     private static final IntSet REMOTE_FLYING = new IntOpenHashSet();
     private static final double HIT_AIM_HEIGHT = 0.72, HIT_AIM_MIN_OFFSET = 0.3, HIT_AIM_MIN_RATIO = 0.35;
     private static final int LOOK_REFRESH_TICKS = 20, WING_SOUND_MIN_AGE = 10, PRUNE_INTERVAL_TICKS = 100,
@@ -197,7 +197,7 @@ public class CelestweaveClientEvents {
 
     private static void runScheduled() {
         Iterator<Scheduled> iterator = SCHEDULED.iterator();
-        List<Runnable> due = new ArrayList<>();
+        List<Runnable> due = new ObjectArrayList<>();
         while (iterator.hasNext()) {
             Scheduled scheduled = iterator.next();
             if (scheduled.due() > ticks) continue;

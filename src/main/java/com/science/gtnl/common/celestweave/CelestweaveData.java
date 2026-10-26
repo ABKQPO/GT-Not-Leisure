@@ -1,10 +1,8 @@
 package com.science.gtnl.common.celestweave;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,6 +19,9 @@ import com.google.common.collect.MapMaker;
 import com.science.gtnl.common.equipment.EquipmentModules;
 import com.science.gtnl.common.equipment.EquipmentTag;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class CelestweaveData {
 
@@ -48,7 +49,7 @@ public class CelestweaveData {
 
     private static final Map<NBTTagCompound, ItemStack> BUILT_IN_HELD = new MapMaker().weakKeys()
         .makeMap();
-    private static final List<Set<CelestweaveModule>> BUILT_IN = new ArrayList<>();
+    private static final List<Set<CelestweaveModule>> BUILT_IN = new ObjectArrayList<>();
 
     static {
         for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++) {
@@ -250,7 +251,7 @@ public class CelestweaveData {
         if (list.tagCount() == 0) return Collections.emptySet();
         Set<String> cached = ID_LISTS.get(list);
         if (cached != null) return cached;
-        Set<String> set = new HashSet<>();
+        Set<String> set = new ObjectOpenHashSet<>();
         for (int i = 0; i < list.tagCount(); i++) set.add(list.getStringTagAt(i));
         Set<String> result = Collections.unmodifiableSet(set);
         ID_LISTS.put(list, result);
@@ -264,7 +265,7 @@ public class CelestweaveData {
     }
 
     public static void writeFlag(ItemStack stack, String key, CelestweaveModule module, boolean present) {
-        Set<String> ids = new HashSet<>(idList(stack, key));
+        Set<String> ids = new ObjectOpenHashSet<>(idList(stack, key));
         if (present ? ids.add(module.id) : ids.remove(module.id)) writeIdList(stack, key, ids);
     }
 

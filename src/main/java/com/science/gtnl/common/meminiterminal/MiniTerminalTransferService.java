@@ -1,7 +1,5 @@
 package com.science.gtnl.common.meminiterminal;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -19,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
+import com.science.gtnl.utils.CreativeCursor;
 
 import appeng.api.config.InsertionMode;
 import appeng.api.config.SecurityPermissions;
@@ -40,13 +39,13 @@ import appeng.util.inv.AdaptorPlayerInventory;
 import appeng.util.inv.WrapperInventoryRange;
 import appeng.util.item.AEItemStack;
 import cpw.mods.fml.common.eventhandler.Event;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 final class MiniTerminalTransferService {
 
-    private static final Map<UUID, PickupHost> PICKUP_HOSTS = new HashMap<>();
+    private static final Map<UUID, PickupHost> PICKUP_HOSTS = new Object2ObjectOpenHashMap<>();
     private static final Map<Container, Boolean> COVERS_MAIN_INVENTORY = new WeakHashMap<>();
-
-    private MiniTerminalTransferService() {}
 
     static void depositInventory(EntityPlayerMP player, MiniTerminalMonitorableAdapter terminal, Slot sourceSlot,
         int amount, BooleanSupplier valid) {
@@ -135,7 +134,7 @@ final class MiniTerminalTransferService {
                 return;
             }
         }
-        player.updateHeldItem();
+        CreativeCursor.sync(player);
     }
 
     private static boolean coversMainInventory(EntityPlayer player, Container container) {
@@ -164,8 +163,9 @@ final class MiniTerminalTransferService {
         ItemStack picked = entity.getEntityItem();
         if (picked == null || picked.stackSize <= 0 || ItemMEMiniPortableTerminal.isMiniTerminal(picked)) return;
 
-        List<Integer> slots = ItemMEMiniPortableTerminal.getTerminalSlots(player);
-        for (int slot : slots) {
+        IntList slots = ItemMEMiniPortableTerminal.getTerminalSlots(player);
+        for (int i = 0; i < slots.size(); i++) {
+            int slot = slots.getInt(i);
             ItemStack terminalStack = ItemMEMiniPortableTerminal.getTerminalStack(player, slot);
             if (!ItemMEMiniPortableTerminal.isPickupToMEEnabled(terminalStack)) continue;
             if (ItemMEMiniPortableTerminal.hasUniqueIdentity(player, terminalStack, slots))

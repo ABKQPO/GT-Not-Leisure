@@ -1,7 +1,5 @@
 package com.science.gtnl.utils.item;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -14,6 +12,8 @@ import com.science.gtnl.loader.ItemLoader;
 
 import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class MissingMappingsHandler {
 
@@ -159,9 +159,9 @@ public class MissingMappingsHandler {
 
     public static class Remapper {
 
-        private final Map<String, Item> itemRemappings = new HashMap<>();
-        private final Map<String, Block> blockRemappings = new HashMap<>();
-        private final List<String> ignoreMappings = new ArrayList<>();
+        private final Map<String, Item> itemRemappings = new Object2ObjectOpenHashMap<>();
+        private final Map<String, Block> blockRemappings = new Object2ObjectOpenHashMap<>();
+        private final List<String> ignoreMappings = new ObjectArrayList<>();
 
         public Remapper remapBlock(String oldName, Block newBlock) {
             blockRemappings.put(oldName, newBlock);

@@ -1,8 +1,6 @@
 package com.science.gtnl.client.text;
 
 import java.nio.FloatBuffer;
-import java.util.ArrayDeque;
-import java.util.Deque;
 
 import net.minecraft.client.renderer.OpenGlHelper;
 
@@ -14,10 +12,12 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GLContext;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 /** Owns the GL state changed by a temporary font target or effect pass. */
 public class TextRenderState implements AutoCloseable {
 
-    private static final Deque<FloatBuffer> MATRIX_BUFFERS = new ArrayDeque<>();
+    private static final ObjectArrayList<FloatBuffer> MATRIX_BUFFERS = new ObjectArrayList<>();
     private final FloatBuffer projection = saveMatrix(GL11.GL_PROJECTION_MATRIX);
     private final FloatBuffer modelView = saveMatrix(GL11.GL_MODELVIEW_MATRIX);
     private final boolean shaders = GLContext.getCapabilities().OpenGL20;
@@ -40,8 +40,7 @@ public class TextRenderState implements AutoCloseable {
     }
 
     private static FloatBuffer saveMatrix(int parameter) {
-        FloatBuffer buffer = MATRIX_BUFFERS.pollFirst();
-        if (buffer == null) buffer = BufferUtils.createFloatBuffer(16);
+        FloatBuffer buffer = MATRIX_BUFFERS.isEmpty() ? BufferUtils.createFloatBuffer(16) : MATRIX_BUFFERS.pop();
         buffer.clear();
         GL11.glGetFloat(parameter, buffer);
         return buffer;
@@ -64,7 +63,7 @@ public class TextRenderState implements AutoCloseable {
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightX, lightY);
         OpenGlHelper.setActiveTexture(activeTexture);
         GL11.glMatrixMode(matrixMode);
-        MATRIX_BUFFERS.addFirst(modelView);
-        MATRIX_BUFFERS.addFirst(projection);
+        MATRIX_BUFFERS.push(modelView);
+        MATRIX_BUFFERS.push(projection);
     }
 }

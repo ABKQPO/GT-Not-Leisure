@@ -2,10 +2,8 @@ package com.science.gtnl.common.part;
 
 import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -43,6 +41,9 @@ import appeng.tile.inventory.IAEStackInventory;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.prioitylist.OreFilteredList;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class PartUniversalExportBus extends PartBaseExportBus<IAEItemStack> {
 
@@ -102,8 +103,8 @@ public class PartUniversalExportBus extends PartBaseExportBus<IAEItemStack> {
                 .getSetting(Settings.SCHEDULING_MODE);
             final int slots = this.availableSlots();
 
-            final Map<IAEStackType<?>, Long> budgets = new HashMap<>();
-            final Map<IAEStackType<?>, IMEInventory> externals = new HashMap<>();
+            final Object2LongOpenHashMap<IAEStackType<?>> budgets = new Object2LongOpenHashMap<>();
+            final Map<IAEStackType<?>, IMEInventory> externals = new Object2ObjectOpenHashMap<>();
             final InventoryAdaptor itemAdaptor = InventoryAdaptor
                 .getAdaptor(target, targetSide, InventoryAdaptor.ALLOW_ITEMS | InventoryAdaptor.FOR_INSERTS);
             // With an ore filter card the items are exported by the ore expression, item config slots are ignored.
@@ -117,7 +118,8 @@ public class PartUniversalExportBus extends PartBaseExportBus<IAEItemStack> {
 
                 final IAEStackType<?> type = stack.getStackType();
                 if (oreFilter && type == ITEM_STACK_TYPE) continue;
-                final long budget = budgets.computeIfAbsent(type, t -> operations * t.getAmountPerUnit());
+                final long budget = budgets
+                    .computeIfAbsent(type, (IAEStackType<?> t) -> operations * t.getAmountPerUnit());
                 if (budget <= 0) continue;
 
                 final IMEMonitor<?> network = storage.getMEMonitor(type);
@@ -176,7 +178,7 @@ public class PartUniversalExportBus extends PartBaseExportBus<IAEItemStack> {
         final Collection<IAEItemStack> sources;
         if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
             // Copy, the storage list changes while extracting
-            sources = new ArrayList<>(
+            sources = new ObjectArrayList<>(
                 network.getStorageList()
                     .findFuzzy(
                         config,
@@ -198,7 +200,7 @@ public class PartUniversalExportBus extends PartBaseExportBus<IAEItemStack> {
     private long exportItemsByOre(InventoryAdaptor adaptor, Predicate<IAEItemStack> orePredicate,
         IMEMonitor<IAEItemStack> network, IEnergySource energy, long budget) {
         // Collect first, the storage list changes while extracting
-        final List<IAEItemStack> matches = new ArrayList<>();
+        final List<IAEItemStack> matches = new ObjectArrayList<>();
         for (IAEItemStack stack : network.getStorageList()) {
             if (stack != null && stack.getStackSize() > 0 && orePredicate.test(stack)) matches.add(stack.copy());
         }

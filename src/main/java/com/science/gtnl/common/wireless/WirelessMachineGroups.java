@@ -1,8 +1,5 @@
 package com.science.gtnl.common.wireless;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,15 +17,18 @@ import appeng.helpers.IInterfaceHost;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 public class WirelessMachineGroups {
 
-    private WirelessMachineGroups() {}
-
     public static class Startup {
 
-        private final Set<World> inspected = Collections.newSetFromMap(new IdentityHashMap<>());
-        private final List<MTEMultiBlockBase> pending = new ArrayList<>();
+        private final Set<World> inspected = new ReferenceOpenHashSet<>();
+        private final List<MTEMultiBlockBase> pending = new ObjectArrayList<>();
         private boolean finished;
 
         boolean waiting(List<IWirelessLinkView> links) {
@@ -172,20 +172,20 @@ public class WirelessMachineGroups {
     }
 
     static List<Row> group(List<IWirelessLinkView> links, WirelessInterfaceView interfaces) {
-        List<Row> rows = new ArrayList<>();
-        Map<MTEMultiBlockBase, List<IWirelessLinkView>> machines = new IdentityHashMap<>();
-        Map<MTEMultiBlockBase, Boolean> validControllers = new IdentityHashMap<>();
+        List<Row> rows = new ObjectArrayList<>();
+        Map<MTEMultiBlockBase, List<IWirelessLinkView>> machines = new Reference2ObjectOpenHashMap<>();
+        Reference2BooleanOpenHashMap<MTEMultiBlockBase> validControllers = new Reference2BooleanOpenHashMap<>();
         for (IWirelessLinkView link : links) {
             Classification classification = classify(link, validControllers, interfaces);
             if (classification.machine() == null) rows.add(Row.cluster(link, classification.type()));
-            else machines.computeIfAbsent(classification.machine(), ignored -> new ArrayList<>())
+            else machines.computeIfAbsent(classification.machine(), ignored -> new ObjectArrayList<>())
                 .add(link);
         }
         machines.forEach((machine, members) -> rows.add(new Row(machine, members)));
         return rows;
     }
 
-    static Classification classify(IWirelessLinkView link, Map<MTEMultiBlockBase, Boolean> validControllers,
+    static Classification classify(IWirelessLinkView link, Reference2BooleanMap<MTEMultiBlockBase> validControllers,
         WirelessInterfaceView interfaces) {
         Set<MTEMultiBlockBase> owners = null;
         TypeKey type = null;

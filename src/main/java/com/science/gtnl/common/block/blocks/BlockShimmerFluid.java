@@ -99,7 +99,7 @@ public class BlockShimmerFluid extends BlockFluidBase {
                 }
             }
 
-            itemTimeMap.remove(uuid);
+            itemTimeMap.removeInt(uuid);
         }
     }
 

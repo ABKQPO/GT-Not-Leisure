@@ -1,10 +1,8 @@
 package com.science.gtnl.client.celestweave;
 
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -16,6 +14,8 @@ import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class CelestweaveFrames {
@@ -161,7 +161,7 @@ public class CelestweaveFrames {
 
     @SuppressWarnings("unchecked")
     void resolve() {
-        frameByName = new HashMap<>();
+        frameByName = new Object2ObjectOpenHashMap<>();
         for (int i = 0; i < frames.size(); i++) {
             Frame frame = frames.get(i);
             frame.index = i;
@@ -182,7 +182,7 @@ public class CelestweaveFrames {
         for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++)
             objByPiece[piece] = objFiles.get(FILE_KEYS[piece]);
         groupsByPiece = new List[CelestweaveArmor.PIECES];
-        for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++) groupsByPiece[piece] = new ArrayList<>();
+        for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++) groupsByPiece[piece] = new ObjectArrayList<>();
         Map<String, Strip> strips = textures != null && textures.fx != null && textures.fx.strips != null
             ? textures.fx.strips
             : Collections.emptyMap();

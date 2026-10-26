@@ -9,8 +9,6 @@ import com.science.gtnl.utils.text.effect.TextEffects;
 
 public class BuiltinTextEffects {
 
-    private BuiltinTextEffects() {}
-
     public static void register() {
         register(
             TextEffects.INFERNUM_RED_RARITY,

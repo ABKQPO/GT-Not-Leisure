@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.module.nanitesIntegratedProce
 
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -52,6 +51,7 @@ import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
 import gtnhlanth.common.register.LanthItemList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -66,7 +66,7 @@ public class NanitesIntegratedProcessingCenter
         + "multiblock/nanites_integrated_processing_center";
     private static final String[][] shape = StructureUtils.readStructureFromFile(NIPC_STRUCTURE_FILE_PATH);
 
-    public ArrayList<NanitesBaseModule<?>> moduleMachine = new ArrayList<>();
+    public ObjectArrayList<NanitesBaseModule<?>> moduleMachine = new ObjectArrayList<>();
     public boolean oreModule = false;
     public boolean bioModule = false;
     public boolean polModule = false;

@@ -37,6 +37,7 @@ public enum ModList implements IMod, ITargetMod {
     ChromaticTooltips("chromatictooltips", "Chromatic Tooltips", false),
     ChromaticTooltipsCompat("chromatictooltipscompat", "Chromatic Tooltips Compat", false),
     AppliedEnergistics("appliedenergistics2", "Applied Energistics 2", "appeng.transformer.AppEngCore", false),
+    WirelessCraftingTerminal("ae2wct", "Wireless Crafting Terminal", false),
     ThaumicEnergistics("thaumicenergistics", "Thaumic Energistics", false),
 
     NewHorizonsCoreMod("dreamcraft", "GT New Horizons Core Mod", "com.dreammaster.coremod.DreamCoreMod", false),
@@ -51,7 +52,8 @@ public enum ModList implements IMod, ITargetMod {
     NEICustomDiagrams("neicustomdiagram", "NEI Custom Diagrams", false),
     AvaritiaAddons("avaritiaddons", "Avaritia Addons", false),
     EtFuturumRequiem("etfuturum", "Et Futurum Requiem", false),
-    ForgeMultipart("McMultipart", "Forge Multipart", false);
+    ForgeMultipart("McMultipart", "Forge Multipart", false),
+    MatterManipulator("matter-manipulator", "Matter Manipulator", false);
 
     public static final ModList[] VALUES = values();
 

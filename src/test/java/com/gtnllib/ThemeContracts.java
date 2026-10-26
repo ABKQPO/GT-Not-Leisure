@@ -14,9 +14,7 @@ import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -62,6 +60,10 @@ import com.gtnllib.gui.widget.SkinDrawable;
 import com.gtnllib.gui.widget.SlideSwitch;
 import com.gtnllib.gui.widget.StepSlider;
 import com.gtnllib.utils.ColorMath;
+
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public class ThemeContracts {
 
@@ -252,11 +254,10 @@ public class ThemeContracts {
                     .getJson()),
             "palette theme builder writes exactly the theme that was written by hand before");
         ThemePalette inverted = SAMPLE.map(color -> color ^ 0x00FFFFFF);
-        List<Integer> before = components(SAMPLE), after = components(inverted);
+        IntList before = components(SAMPLE), after = components(inverted);
         check(before.size() == 27 && after.size() == 27, "palette maps every color");
         for (int i = 0; i < after.size(); i++) check(
-            !after.get(i)
-                .equals(before.get(i)) && !pink(after.get(i)),
+            after.getInt(i) != before.getInt(i) && !pink(after.getInt(i)),
             "test palette color " + i + " differs from the sample palette and is not pink");
         ThemeStyle style = new ThemeStyle(4, 1, 2, 3, 8, 3, 6, 12, 6, 16, 20, 0.75F);
         PaletteThemes.register(TEST_THEME, ThemeAPI.DEFAULT_ID, inverted, style);
@@ -301,9 +302,9 @@ public class ThemeContracts {
         same("cyan tab hover", cyan.tabHover(), 0x503DE8FF);
         same("cyan slot hover", cyan.slotHover(), 0x503DE8FF);
         same("cyan danger", cyan.danger(), palette.danger());
-        List<Integer> base = components(palette), tinted = components(cyan);
+        IntList base = components(palette), tinted = components(cyan);
         for (int i = 0; i < base.size(); i++) {
-            int from = base.get(i), to = tinted.get(i);
+            int from = base.getInt(i), to = tinted.getInt(i);
             double[] before = ColorMath.hsl(from & 0xFFFFFF), after = ColorMath.hsl(to & 0xFFFFFF);
             check(!pink(to), "cyan color " + i + " has no pink left");
             check(from >>> 24 == to >>> 24, "cyan color " + i + " keeps its transparency");
@@ -651,7 +652,7 @@ public class ThemeContracts {
         for (JsonBuilder override : overrides) IThemeApi.get()
             .registerTheme(id, override);
         call(ThemeAPI.class, "onReload", ThemeAPI.INSTANCE, new Class<?>[0]);
-        ThemeManager.loadThemes(new HashMap<>());
+        ThemeManager.loadThemes(new Object2ObjectOpenHashMap<>());
         new PaletteThemes.Reloader().onThemesLoaded(new ReloadThemeEvent.Post());
     }
 
@@ -1092,8 +1093,8 @@ public class ThemeContracts {
         return true;
     }
 
-    private static List<Integer> components(ThemePalette palette) {
-        List<Integer> colors = new ArrayList<>();
+    private static IntList components(ThemePalette palette) {
+        IntArrayList colors = new IntArrayList();
         palette.map(color -> {
             colors.add(color);
             return color;

@@ -1,6 +1,5 @@
 package com.science.gtnl.utils.selector;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -10,11 +9,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 public class SelectorFilter {
 
     public static List<Entity> applyFilters(ICommandSender sender, SelectorParser parser, List<Entity> input) {
 
-        List<Entity> result = new ArrayList<>(input);
+        List<Entity> result = new ObjectArrayList<>(input);
 
         filterType(parser, result);
         filterName(parser, result);

@@ -1,11 +1,8 @@
 package com.science.gtnl.common.recipe.gtnl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +24,9 @@ import gregtech.api.recipe.RecipeMetadataKey;
 import gregtech.api.recipe.metadata.SimpleRecipeMetadataKey;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 
@@ -39,11 +39,11 @@ public class CrucibleCraftingRecipes implements IRecipePool {
 
     private static final int MAX_SELECTOR_CIRCUIT = 24;
 
-    private static final Map<String, Pending> REGISTERED = new LinkedHashMap<>();
+    private static final Map<String, Pending> REGISTERED = new Object2ObjectLinkedOpenHashMap<>();
 
     @Override
     public void loadRecipes() {
-        Set<String> seen = new HashSet<>();
+        Set<String> seen = new ObjectOpenHashSet<>();
 
         for (CrucibleRecipeData recipe : CrucibleRecipeConverter.scanRecipes()) {
             String identity;
@@ -113,7 +113,7 @@ public class CrucibleCraftingRecipes implements IRecipePool {
         }
 
         // GT only matches the first item of an explicit alternatives array, so register each catalyst separately.
-        List<Object[]> alternatives = new ArrayList<>(recipe.catalysts.length);
+        List<Object[]> alternatives = new ObjectArrayList<>(recipe.catalysts.length);
         for (ItemStack catalyst : recipe.catalysts) {
             if (catalyst == null || catalyst.getItem() == null || catalyst.stackSize <= 0) {
                 continue;
@@ -157,7 +157,7 @@ public class CrucibleCraftingRecipes implements IRecipePool {
             return null;
         }
 
-        List<String> aspectParts = new ArrayList<>();
+        List<String> aspectParts = new ObjectArrayList<>();
         AspectList aspects = recipe.aspects;
         if (aspects != null) {
             for (Aspect aspect : aspects.getAspectsSortedAmount()) {
@@ -169,7 +169,7 @@ public class CrucibleCraftingRecipes implements IRecipePool {
         }
         Collections.sort(aspectParts);
 
-        List<String> catalystParts = new ArrayList<>();
+        List<String> catalystParts = new ObjectArrayList<>();
         if (recipe.catalysts != null) {
             for (ItemStack catalyst : recipe.catalysts) {
                 if (catalyst == null) {

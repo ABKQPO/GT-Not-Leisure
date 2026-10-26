@@ -1,6 +1,5 @@
 package com.science.gtnl.mixins.early.gregtech;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,6 +29,7 @@ import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.common.render.IMTERenderer;
 import gregtech.crossmod.ae2.ChatComponentNonConsumedItemsSuffix;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @Mixin(value = BaseMetaTileEntity.class, remap = false)
 public abstract class MixinBaseMetaTileEntity extends CommonBaseMetaTileEntity implements ITileEntityTickAcceleration {
@@ -83,7 +83,7 @@ public abstract class MixinBaseMetaTileEntity extends CommonBaseMetaTileEntity i
             return Collections.emptyList();
         }
 
-        List<ItemStack> extraItems = new ArrayList<>();
+        List<ItemStack> extraItems = new ObjectArrayList<>();
         for (int slot = 0; slot < mMetaTileEntity.getSizeInventory(); slot++) {
             ItemStack stack = mMetaTileEntity.getStackInSlot(slot);
             if (ItemUtils.isExtraItem(stack) && !INonConsumedItemDisplay.isDisplayableItem(recipeMap, stack)) {

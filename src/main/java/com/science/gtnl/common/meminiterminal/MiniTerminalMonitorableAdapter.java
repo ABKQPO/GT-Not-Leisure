@@ -1,6 +1,5 @@
 package com.science.gtnl.common.meminiterminal;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -26,11 +25,12 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public final class MiniTerminalMonitorableAdapter extends ContainerMEMonitorable implements AutoCloseable {
 
     private final EntityPlayerMP owner;
-    private final List<IMEMonitor<?>> monitors = new ArrayList<>();
+    private final List<IMEMonitor<?>> monitors = new ObjectArrayList<>();
     private final IEnergySource guardedPower;
     private MiniTerminalCatalog catalog;
     private OperationContext operation;

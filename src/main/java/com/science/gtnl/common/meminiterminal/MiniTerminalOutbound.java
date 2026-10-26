@@ -1,7 +1,5 @@
 package com.science.gtnl.common.meminiterminal;
 
-import java.util.ArrayDeque;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -15,6 +13,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.science.gtnl.ScienceNotLeisure;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
 
 final class MiniTerminalOutbound {
 
@@ -32,14 +33,12 @@ final class MiniTerminalOutbound {
             thread.setDaemon(true);
             return thread;
         });
-    private static final Map<UUID, ArrayDeque<Pending>> QUEUES = new HashMap<>();
+    private static final Map<UUID, ObjectArrayFIFOQueue<Pending>> QUEUES = new Object2ObjectOpenHashMap<>();
 
     interface EncodeFailure {
 
         void failed(EntityPlayerMP player, long session, Throwable cause);
     }
-
-    private MiniTerminalOutbound() {}
 
     static void send(EntityPlayerMP player, NBTTagCompound data) {
         enqueue(player, new Pending(data, false, CompletableFuture.completedFuture(null), null));
@@ -68,10 +67,10 @@ final class MiniTerminalOutbound {
     }
 
     static void flush(EntityPlayerMP player) {
-        ArrayDeque<Pending> queue = QUEUES.get(player.getUniqueID());
+        ObjectArrayFIFOQueue<Pending> queue = QUEUES.get(player.getUniqueID());
         if (queue == null) return;
-        while (!queue.isEmpty() && queue.peekFirst().parts.isDone()) {
-            queue.pollFirst()
+        while (!queue.isEmpty() && queue.first().parts.isDone()) {
+            queue.dequeue()
                 .deliver(player);
         }
         if (queue.isEmpty()) QUEUES.remove(player.getUniqueID());
@@ -82,8 +81,8 @@ final class MiniTerminalOutbound {
     }
 
     private static void enqueue(EntityPlayerMP player, Pending pending) {
-        QUEUES.computeIfAbsent(player.getUniqueID(), key -> new ArrayDeque<>())
-            .addLast(pending);
+        QUEUES.computeIfAbsent(player.getUniqueID(), key -> new ObjectArrayFIFOQueue<>())
+            .enqueue(pending);
         flush(player);
     }
 

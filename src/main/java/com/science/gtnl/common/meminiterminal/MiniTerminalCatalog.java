@@ -1,7 +1,6 @@
 package com.science.gtnl.common.meminiterminal;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +17,7 @@ import appeng.api.storage.data.IAEStackType;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 final class MiniTerminalCatalog {
@@ -104,7 +104,7 @@ final class MiniTerminalCatalog {
     }
 
     List<Entry> collect(int tick) throws IOException {
-        List<Entry> entries = new ArrayList<>();
+        List<Entry> entries = new ObjectArrayList<>();
 
         if (fullUpdate || listUpdate && (immediateScan || elapsed(tick, lastScan, MIN_SCAN_TICKS))) {
             BitSet seen = new BitSet((int) Math.min(nextId, Integer.MAX_VALUE));
@@ -130,7 +130,7 @@ final class MiniTerminalCatalog {
             listUpdate = false;
             lastScan = tick;
         } else {
-            List<IAEStack<?>> updates = new ArrayList<>();
+            List<IAEStack<?>> updates = new ObjectArrayList<>();
             for (IAEStack<?> identity : dirty) {
                 IAEStack<?> stack = current(identity);
                 if (stack == null || !visible(stack)) update(

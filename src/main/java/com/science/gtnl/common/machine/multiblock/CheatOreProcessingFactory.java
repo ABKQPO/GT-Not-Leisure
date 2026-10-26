@@ -40,6 +40,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessingFactory> {
@@ -151,7 +152,7 @@ public class CheatOreProcessingFactory extends MultiMachineBase<CheatOreProcessi
     public CheckRecipeResult OP_Process_Wireless() {
         Object2ObjectOpenHashMap<ItemId, ArrayList<GTRecipe>> recipeIndex = getRecipeIndex();
         ArrayList<ItemStack> inputs = getStoredInputs();
-        ArrayList<ItemStack> outputs = new ArrayList<>(inputs.size());
+        ObjectArrayList<ItemStack> outputs = new ObjectArrayList<>(inputs.size());
         for (ItemStack items : inputs) {
             boolean hasNotFound = true;
             ArrayList<GTRecipe> matchingRecipes = recipeIndex.get(ItemId.createNoCopy(items));

@@ -1,7 +1,5 @@
 package com.science.gtnl.common.railgun;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +17,11 @@ import com.science.gtnl.common.packet.RailgunBeamChainFxPacket;
 import com.science.gtnl.common.packet.RailgunBeamUpdatePacket;
 import com.science.gtnl.common.railgun.RailgunChainResolver.Hit;
 import com.science.gtnl.config.MainConfig;
+
+import it.unimi.dsi.fastutil.ints.IntSets;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class RailgunBeamService {
 
@@ -56,9 +59,9 @@ public class RailgunBeamService {
         }
     }
 
-    private static final Map<UUID, BeamState> ACTIVE = new HashMap<>();
-    private static final Map<UUID, Long> USE_CONFLICT = new HashMap<>();
-    private static final Set<UUID> DRAINED = new HashSet<>();
+    private static final Map<UUID, BeamState> ACTIVE = new Object2ObjectOpenHashMap<>();
+    private static final Object2LongOpenHashMap<UUID> USE_CONFLICT = new Object2LongOpenHashMap<>();
+    private static final Set<UUID> DRAINED = new ObjectOpenHashSet<>();
 
     private RailgunBeamService() {}
 
@@ -73,7 +76,7 @@ public class RailgunBeamService {
             || DRAINED.contains(id)
             || ACTIVE.containsKey(id)) return;
         if (player.isUsingItem() && !resolveUseConflict(player)) return;
-        USE_CONFLICT.remove(id);
+        USE_CONFLICT.removeLong(id);
         if (ACTIVE.size() >= BEAM_MAX_CONCURRENT) {
             broadcastStop(player);
             return;
@@ -83,9 +86,10 @@ public class RailgunBeamService {
 
     private static boolean resolveUseConflict(EntityPlayerMP player) {
         long now = player.worldObj.getTotalWorldTime();
-        Long first = USE_CONFLICT.get(player.getUniqueID());
-        if (first == null || now - first > (long) BEAM_USE_CONFLICT_TICKS * BEAM_USE_CONFLICT_WINDOWS) {
-            USE_CONFLICT.put(player.getUniqueID(), now);
+        UUID id = player.getUniqueID();
+        long first = USE_CONFLICT.getLong(id);
+        if (!USE_CONFLICT.containsKey(id) || now - first > (long) BEAM_USE_CONFLICT_TICKS * BEAM_USE_CONFLICT_WINDOWS) {
+            USE_CONFLICT.put(id, now);
             return false;
         }
         if (now - first < BEAM_USE_CONFLICT_TICKS) return false;
@@ -96,7 +100,7 @@ public class RailgunBeamService {
 
     public static void forget(EntityPlayerMP player) {
         stop(player);
-        USE_CONFLICT.remove(player.getUniqueID());
+        USE_CONFLICT.removeLong(player.getUniqueID());
         DRAINED.remove(player.getUniqueID());
     }
 
@@ -180,7 +184,7 @@ public class RailgunBeamService {
             state.lastChainTick = player.ticksExisted;
             Vec3d origin = anchor == null ? end : Vec3d.center(anchor);
             var chain = anchor == null ? RailgunChainResolver.chainFromPoint(world, player, origin, context)
-                : RailgunChainResolver.chainFrom(world, player, anchor, context, Set.of(), origin);
+                : RailgunChainResolver.chainFrom(world, player, anchor, context, IntSets.emptySet(), origin);
             var path = RailgunNet.path(origin, chain);
             RailgunDamage.applyAll(player, chain, context, false, hitPoint);
             if (!path.isEmpty())

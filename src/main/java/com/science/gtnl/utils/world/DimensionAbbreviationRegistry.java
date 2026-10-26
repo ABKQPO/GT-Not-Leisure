@@ -1,6 +1,5 @@
 package com.science.gtnl.utils.world;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.science.gtnl.api.DimensionNames;
@@ -8,14 +7,16 @@ import com.science.gtnl.api.IDimensionAbbreviationRegistry;
 import com.science.gtnl.api.IDimensionAbbreviationResolver;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class DimensionAbbreviationRegistry implements IDimensionAbbreviationRegistry {
 
-    private final List<IDimensionAbbreviationResolver> resolvers = new ArrayList<>();
+    private final List<IDimensionAbbreviationResolver> resolvers = new ObjectArrayList<>();
     private final Int2ObjectOpenHashMap<DimensionNames> namesByDimension = new Int2ObjectOpenHashMap<>();
     private final Int2ObjectOpenHashMap<String> abbreviationsByDimension = new Int2ObjectOpenHashMap<>();
-    private final Object2ObjectOpenHashMap<String, Integer> dimensionsByAbbreviation = new Object2ObjectOpenHashMap<>();
+    private final Object2IntOpenHashMap<String> dimensionsByAbbreviation = new Object2IntOpenHashMap<>();
     private final Object2ObjectOpenHashMap<String, String> abbreviationsByName = new Object2ObjectOpenHashMap<>();
 
     @Override
@@ -63,21 +64,22 @@ public class DimensionAbbreviationRegistry implements IDimensionAbbreviationRegi
 
     @Override
     public Integer getDimensionId(String abbreviation) {
-        return abbreviation == null ? null : dimensionsByAbbreviation.get(abbreviation);
+        return abbreviation == null || !dimensionsByAbbreviation.containsKey(abbreviation) ? null
+            : dimensionsByAbbreviation.getInt(abbreviation);
     }
 
     @Override
     public void bind(int dimensionId, String abbreviation) {
         if (abbreviation == null) return;
 
-        Integer previousDimension = dimensionsByAbbreviation.get(abbreviation);
-        if (previousDimension != null && previousDimension != dimensionId) {
-            abbreviationsByDimension.remove(previousDimension.intValue());
+        if (dimensionsByAbbreviation.containsKey(abbreviation)) {
+            int previousDimension = dimensionsByAbbreviation.getInt(abbreviation);
+            if (previousDimension != dimensionId) abbreviationsByDimension.remove(previousDimension);
         }
 
         String previousAbbreviation = abbreviationsByDimension.get(dimensionId);
         if (previousAbbreviation != null && !previousAbbreviation.equals(abbreviation)) {
-            dimensionsByAbbreviation.remove(previousAbbreviation);
+            dimensionsByAbbreviation.removeInt(previousAbbreviation);
         }
 
         abbreviationsByDimension.put(dimensionId, abbreviation);

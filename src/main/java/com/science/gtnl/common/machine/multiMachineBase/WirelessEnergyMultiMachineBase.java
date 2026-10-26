@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiMachineBase;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -42,6 +41,7 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.tooltip.TooltipHelper;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -258,7 +258,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
 
     @Override
     public String[] getInfoData() {
-        List<String> infoData = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        List<String> infoData = new ObjectArrayList<>(Arrays.asList(super.getInfoData()));
         if (wirelessMode) {
             infoData.add(
                 IGregTechDeviceInformation.encode("gtnl.waila.wireless.mode.format", EnumChatFormatting.LIGHT_PURPLE));
@@ -339,7 +339,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         String mode = GTNLMultiblockTooltipBuilder.mechanicName(WIRELESS_MODE_NAME_KEY);
         String hatch = GTNLMultiblockTooltipBuilder.hatchName(CustomHatchElement.ParallelCon.getDescriptionLangKey());
         String recipes = !getPerfectOC() && overclocksPerfectlyInWirelessMode() ? ".recipes.perfect_oc" : ".recipes";
-        List<String> lines = new ArrayList<>(
+        List<String> lines = new ObjectArrayList<>(
             Arrays.asList(
                 StatCollector.translateToLocalFormatted(
                     WIRELESS_MODE_LINE_KEY + ".auto",

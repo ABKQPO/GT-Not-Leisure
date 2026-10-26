@@ -15,6 +15,26 @@ public record WirelessCardBinding(Address source, UUID owner, String ownerName) 
     private static final int VERSION = 1;
     private static final String AUTO_KEY = "GTNLWirelessAutoConnect";
     private static final String GROUP_KEY = "GTNLWirelessCollapseTypes";
+    private static final String ID_KEY = "GTNLWirelessCardIdentity";
+
+    static UUID identity(NBTTagCompound itemTag) {
+        if (itemTag == null || !itemTag.hasKey(ID_KEY, 8)) return null;
+        try {
+            return UUID.fromString(itemTag.getString(ID_KEY));
+        } catch (IllegalArgumentException invalidId) {
+            return null;
+        }
+    }
+
+    static boolean identify(ItemStack card) {
+        if (identity(card.getTagCompound()) != null) return false;
+        ItemStackNBT.get(card)
+            .setString(
+                ID_KEY,
+                UUID.randomUUID()
+                    .toString());
+        return true;
+    }
 
     public static boolean automatic(NBTTagCompound itemTag) {
         return itemTag != null && itemTag.getBoolean(AUTO_KEY);

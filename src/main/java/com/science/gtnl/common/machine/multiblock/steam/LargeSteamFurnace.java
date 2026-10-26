@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock.steam;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -47,6 +46,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.GTStructureChannels;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -282,7 +282,7 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
 
         int finalParallel = (int) (batchMultiplierMax * currentParallelBeforeBatchMode);
 
-        List<ItemStack> outputSlots = new ArrayList<>();
+        List<ItemStack> outputSlots = new ObjectArrayList<>();
         for (ItemStack stack : getItemOutputSlots(null)) {
             if (stack != null) {
                 outputSlots.add(stack.copy());
@@ -300,7 +300,7 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
             }
         }
 
-        ArrayList<ItemStack> smeltedOutputs = new ArrayList<>();
+        ObjectArrayList<ItemStack> smeltedOutputs = new ObjectArrayList<>();
         int toSmelt = finalParallel;
         for (ItemStack item : tInput) {
             ItemStack smeltedOutput = GTModHandler.getSmeltingOutput(item, false, null);

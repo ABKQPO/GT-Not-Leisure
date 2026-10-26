@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -39,6 +38,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchVoid;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
@@ -194,7 +194,7 @@ public class SuperVoidHatch extends MTEHatchVoid implements IFluidsLockable, IAd
 
     @Override
     public String[] getInfoData() {
-        List<String> info = new ArrayList<>();
+        List<String> info = new ObjectArrayList<>();
 
         info.add(
             EnumChatFormatting.BLUE + IGregTechDeviceInformation.encode("GT5U.infodata.hatch.output")

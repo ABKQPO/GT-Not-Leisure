@@ -1,6 +1,5 @@
 package com.science.gtnl.utils.world.stellar;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -14,6 +13,8 @@ import net.minecraftforge.common.DimensionManager;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+
 public class StellarIrisWorldSavedData extends WorldSavedData {
 
     public static final String DATA_NAME = "GTNL_StellarIrisWorldData";
@@ -21,7 +22,7 @@ public class StellarIrisWorldSavedData extends WorldSavedData {
     private static final String LEADER_TAG = "leader";
     private static final String STATE_TAG = "state";
 
-    private final Map<UUID, StellarIrisTeamState> teamStates = new LinkedHashMap<>();
+    private final Map<UUID, StellarIrisTeamState> teamStates = new Object2ObjectLinkedOpenHashMap<>();
 
     public StellarIrisWorldSavedData() {
         super(DATA_NAME);

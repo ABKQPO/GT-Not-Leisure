@@ -5,7 +5,6 @@ import static thaumcraft.common.config.ConfigItems.itemJarNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,6 +30,8 @@ import gregtech.api.recipe.RecipeMetadataKey;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
@@ -41,17 +42,17 @@ import thaumcraft.api.crafting.ShapelessArcaneRecipe;
 
 public class TCRecipeTools {
 
-    public static ArrayList<ShapelessArcaneCraftingRecipe> ShaplessAR = new ArrayList<>();
-    public static ArrayList<ShapedArcaneCraftingRecipe> ShapedAR = new ArrayList<>();
-    public static ArrayList<InfusionCraftingRecipe> ICR = new ArrayList<>();
+    public static ObjectArrayList<ShapelessArcaneCraftingRecipe> ShaplessAR = new ObjectArrayList<>();
+    public static ObjectArrayList<ShapedArcaneCraftingRecipe> ShapedAR = new ObjectArrayList<>();
+    public static ObjectArrayList<InfusionCraftingRecipe> ICR = new ObjectArrayList<>();
 
     public TCRecipeTools() {}
 
     public static final ItemStack IC2_MACHINE = ModsItemlist.IC2IronFurnace.get(1);
     public static final ItemStack BLAST_FURNACE_TEMPLATE = GTModHandler
         .getModItem(Mods.EtFuturumRequiem.ID, "blast_furnace", 1);
-    public static final Set<ItemId> UNCONSUMED_ITEMS = new HashSet<>();
-    public static final Set<ItemId> PRIMORDIAL_PEARL_RETURN_EXCLUSIONS = new HashSet<>();
+    public static final Set<ItemId> UNCONSUMED_ITEMS = new ObjectOpenHashSet<>();
+    public static final Set<ItemId> PRIMORDIAL_PEARL_RETURN_EXCLUSIONS = new ObjectOpenHashSet<>();
 
     // Recipe duration is derived from the total aspect amount.
     private static final int ARCANE_DURATION_BASE_TICKS = 20;
@@ -94,7 +95,7 @@ public class TCRecipeTools {
     // Multiple recipe pools share the lazily initialized set.
     public static boolean shouldSkipThaumcraftItem(Item item) {
         if (skipItems == null) {
-            skipItems = new HashSet<>();
+            skipItems = new ObjectOpenHashSet<>();
             skipItems.add(itemJarNode);
 
             if (Mods.ThaumicBases.isModLoaded()) {
@@ -226,7 +227,7 @@ public class TCRecipeTools {
         long pearlCount = pearlsPerCraft * parallels;
         if (pearlCount <= 0) return outputs;
 
-        List<ItemStack> withReturns = new ArrayList<>(Arrays.asList(outputs));
+        List<ItemStack> withReturns = new ObjectArrayList<>(Arrays.asList(outputs));
         while (pearlCount > 0) {
             int stackSize = (int) Math.min(64, pearlCount);
             withReturns.add(new ItemStack(itemEldritchObject, stackSize, 3));

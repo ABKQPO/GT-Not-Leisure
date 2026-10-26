@@ -20,20 +20,23 @@
 package com.science.gtnl.common.crafting.quantum.api.stacks;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.ObjLongConsumer;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import com.google.common.collect.Iterators;
 
 import appeng.api.config.FuzzyMode;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 /**
@@ -41,6 +44,7 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
  */
 public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
 
+    private static final Reference2ObjectMap<Object, VariantCounter> EMPTY_LISTS = Reference2ObjectMaps.emptyMap();
     // First map contains a mapping from AEKey#primaryKey
     private Reference2ObjectMap<Object, VariantCounter> lists;
     private final boolean saturating;
@@ -51,7 +55,7 @@ public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
 
     private KeyCounter(boolean saturating) {
         this.saturating = saturating;
-        this.lists = new Reference2ObjectOpenHashMap<>();
+        this.lists = EMPTY_LISTS;
     }
 
     private KeyCounter(boolean saturating, int expectedKeys) {
@@ -80,12 +84,45 @@ public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
         return subIndex == null ? List.of() : subIndex.findFuzzy(key, fuzzy);
     }
 
+    /**
+     * Visits entries in iterator order without constructing the counter's iterator chain. Like the fast iterator,
+     * this traversal may reuse an entry object, so consume it inside the callback. Existing amounts may be updated,
+     * but the callback must not add or remove keys.
+     */
+    @Override
+    public void forEach(Consumer<? super Object2LongMap.Entry<AEKey>> action) {
+        Objects.requireNonNull(action, "action");
+        if (lists.isEmpty()) return;
+        lists.values()
+            .forEach(list -> list.forEach(action));
+    }
+
+    /**
+     * Visits keys and primitive amounts in iterator order without entry wrappers or boxed amounts. Existing amounts
+     * may be updated, but the callback must not add or remove keys.
+     */
+    public void forEach(ObjLongConsumer<? super AEKey> action) {
+        Objects.requireNonNull(action, "action");
+        if (lists.isEmpty()) return;
+        lists.values()
+            .forEach(list -> list.forEachEntry(action));
+    }
+
+    /**
+     * Same keys, amounts and order as findFuzzy, without constructing an iterable pipeline.
+     */
+    public void forEachFuzzy(AEKey key, FuzzyMode fuzzy, ObjLongConsumer<? super AEKey> action) {
+        Objects.requireNonNull(key, "key");
+        var subIndex = getSubIndexOrNull(key);
+        if (subIndex != null) subIndex.forEachFuzzy(key, fuzzy, action);
+    }
+
     public void removeZeros() {
-        var iterator = lists.entrySet()
+        if (lists.isEmpty()) return;
+        var iterator = lists.values()
             .iterator();
         while (iterator.hasNext()) {
-            var entry = iterator.next();
-            var variantList = entry.getValue();
+            var variantList = iterator.next();
             variantList.removeZeros();
             if (variantList.isEmpty()) {
                 iterator.remove();
@@ -94,36 +131,37 @@ public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     }
 
     public void removeEmptySubmaps() {
+        if (lists.isEmpty()) return;
         lists.values()
             .removeIf(VariantCounter::isEmpty);
     }
 
     public void addAll(KeyCounter other) {
-        for (var entry : other.lists.entrySet()) {
-            var ourSubIndex = lists.get(entry.getKey());
+        if (other.lists.isEmpty()) return;
+        ensureLists(other.lists.size());
+        other.lists.forEach((primaryKey, variants) -> {
+            var ourSubIndex = lists.get(primaryKey);
             if (ourSubIndex == null) {
-                lists.put(
-                    entry.getKey(),
-                    entry.getValue()
-                        .copy(saturating));
+                lists.put(primaryKey, variants.copy(saturating));
             } else {
-                ourSubIndex.addAll(entry.getValue());
+                ourSubIndex.addAll(variants);
             }
-        }
+        });
     }
 
     public void removeAll(KeyCounter other) {
-        for (var entry : other.lists.entrySet()) {
-            var ourSubIndex = lists.get(entry.getKey());
+        if (other.lists.isEmpty()) return;
+        ensureLists(other.lists.size());
+        other.lists.forEach((primaryKey, variants) -> {
+            var ourSubIndex = lists.get(primaryKey);
             if (ourSubIndex == null) {
-                var copied = entry.getValue()
-                    .copy(saturating);
+                var copied = variants.copy(saturating);
                 copied.invert();
-                lists.put(entry.getKey(), copied);
+                lists.put(primaryKey, copied);
             } else {
-                ourSubIndex.removeAll(entry.getValue());
+                ourSubIndex.removeAll(variants);
             }
-        }
+        });
     }
 
     public void add(AEKey key, long amount) {
@@ -146,7 +184,8 @@ public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
      * Removes the given key from this counter, and returns the old Value (or 0).
      */
     public void remove(AEKey key) {
-        var subIndex = getSubIndex(key);
+        var subIndex = getSubIndexOrNull(key);
+        if (subIndex == null) return;
         subIndex.remove(key);
         if (subIndex.isEmpty()) {
             lists.remove(key.getPrimaryKey());
@@ -167,15 +206,13 @@ public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     }
 
     public void reset() {
-        for (var list : lists.values()) {
-            list.reset();
-        }
+        lists.values()
+            .forEach(VariantCounter::reset);
     }
 
     public void clear() {
-        for (var list : lists.values()) {
-            list.clear();
-        }
+        lists.values()
+            .forEach(VariantCounter::clear);
     }
 
     /**
@@ -215,22 +252,52 @@ public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
 
     @Override
     public @NotNull Iterator<Object2LongMap.Entry<AEKey>> iterator() {
-        return Iterators.concat(
-            Iterators.transform(
-                lists.values()
-                    .iterator(),
-                VariantCounter::iterator));
+        if (lists.isEmpty()) return Collections.emptyIterator();
+        return new Iterator<>() {
+
+            private final Iterator<VariantCounter> groups = lists.values()
+                .iterator();
+            private Iterator<Object2LongMap.Entry<AEKey>> current = Collections.emptyIterator();
+            private Iterator<Object2LongMap.Entry<AEKey>> lastReturned;
+
+            @Override
+            public boolean hasNext() {
+                while (!current.hasNext() && groups.hasNext()) current = groups.next()
+                    .iterator();
+                return current.hasNext();
+            }
+
+            @Override
+            public Object2LongMap.Entry<AEKey> next() {
+                if (!hasNext()) throw new NoSuchElementException();
+                var entry = current.next();
+                lastReturned = current;
+                return entry;
+            }
+
+            @Override
+            public void remove() {
+                if (lastReturned == null) throw new IllegalStateException();
+                // hasNext() may already have advanced to another group.
+                lastReturned.remove();
+                lastReturned = null;
+            }
+        };
     }
 
     private VariantCounter getSubIndex(AEKey key) {
-        // We check before the call to computeIfAbsent, otherwise we'd need a capturing lambda.
-        if (key.getFuzzySearchMaxValue() > 0) {
-            return lists
-                .computeIfAbsent(key.getPrimaryKey(), ignored -> new VariantCounter.FuzzyVariantMap(saturating));
-        } else {
-            return lists
-                .computeIfAbsent(key.getPrimaryKey(), ignored -> new VariantCounter.UnorderedVariantMap(saturating));
-        }
+        var primaryKey = key.getPrimaryKey();
+        var result = lists.get(primaryKey);
+        if (result != null) return result;
+        ensureLists(1);
+        result = key.getFuzzySearchMaxValue() > 0 ? new VariantCounter.FuzzyVariantMap(saturating)
+            : new VariantCounter.UnorderedVariantMap(saturating);
+        lists.put(primaryKey, result);
+        return result;
+    }
+
+    private void ensureLists(int expectedKeys) {
+        if (lists == EMPTY_LISTS) lists = new Reference2ObjectOpenHashMap<>(expectedKeys);
     }
 
     @Nullable
@@ -277,11 +344,7 @@ public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
         // The exact entry count would require traversing every variant map before this traversal. The primary-map
         // count is a cheap lower bound and lets the set grow naturally for fuzzy variants.
         var keys = new ObjectOpenHashSet<AEKey>(lists.size());
-        for (var list : lists.values()) {
-            for (var entry : list) {
-                keys.add(entry.getKey());
-            }
-        }
+        forEach((key, amount) -> keys.add(key));
         return keys;
     }
 }

@@ -1,6 +1,5 @@
 package com.gtnllib.client.fx.world;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntToDoubleFunction;
 
@@ -14,6 +13,7 @@ import com.gtnllib.utils.MathUtils;
 import com.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class FxArcRenderer {
 
@@ -36,7 +36,7 @@ public class FxArcRenderer {
     private record Arc(List<Vec3d> points, Vec3d side, Vec3d up, int lifetime, long born, Style style, long seed,
         boolean halo) {}
 
-    private static final List<Arc> ACTIVE = new ArrayList<>();
+    private static final List<Arc> ACTIVE = new ObjectArrayList<>();
 
     public static void spawnColored(Vec3d from, Vec3d to, int segments, double spread, int lifetime, int rgb) {
         spawnColored(from, to, segments, spread, lifetime, rgb, 1);
@@ -90,7 +90,7 @@ public class FxArcRenderer {
             up = direction.cross(side)
                 .normalize();
         long seed = world.rand.nextLong();
-        List<Vec3d> points = new ArrayList<>(segments + 1);
+        List<Vec3d> points = new ObjectArrayList<>(segments + 1);
         points.add(from);
         for (int i = 1; i < segments; i++) {
             double t = i / (double) segments;
@@ -127,7 +127,7 @@ public class FxArcRenderer {
                 float alpha = fade(age, arc.lifetime);
                 if (alpha <= 0) continue;
                 double swayPhase = time * SWAY_SPEED + arc.seed * 0.000000001;
-                List<Vec3d> points = new ArrayList<>(arc.points.size());
+                List<Vec3d> points = new ObjectArrayList<>(arc.points.size());
                 for (int i = 0; i < arc.points.size(); i++) points.add(animated(arc, i, swayPhase));
                 drawPath(points, arc.style, index -> alpha * (0.86 + 0.14 * Math.sin(swayPhase * 1.7 + index * 0.73)));
             }

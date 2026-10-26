@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
@@ -58,6 +57,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import kubatech.loaders.BlockLoader;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -294,7 +294,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
     @Override
     public String[] getInfoData() {
         String[] data = super.getInfoData();
-        ArrayList<String> mInfo = new ArrayList<>(Arrays.asList(data));
+        ObjectArrayList<String> mInfo = new ObjectArrayList<>(Arrays.asList(data));
         String mode = StatCollector
             .translateToLocal(NineIndustrialMultiMachineManager.getModeLocalization(machineMode));
         mInfo.add(mode);

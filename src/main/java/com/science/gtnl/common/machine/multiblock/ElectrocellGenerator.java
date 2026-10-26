@@ -54,6 +54,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator> implements ISurvivalConstructable {
@@ -258,7 +259,7 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
                         lastEUt = lEUt;
                         outputFluid = recipe.mFluidOutputs[0];
 
-                        List<ItemStack> outputList = new ArrayList<>(recipe.mOutputs.length);
+                        List<ItemStack> outputList = new ObjectArrayList<>(recipe.mOutputs.length);
                         for (int i = 0; i < recipe.mOutputs.length; i++) {
                             int chance = recipe.getOutputChance(i);
                             if (random.nextInt(10000) < chance) {

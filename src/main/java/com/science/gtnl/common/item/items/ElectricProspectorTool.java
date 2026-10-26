@@ -1,6 +1,5 @@
 package com.science.gtnl.common.item.items;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +54,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class ElectricProspectorTool extends Item {
 
@@ -239,7 +239,7 @@ public class ElectricProspectorTool extends Item {
 
     private static List<Chunk> collectScannableChunks(World world, int chunkX, int chunkZ, int radius) {
         int scanRadius = radius + 1;
-        List<Chunk> chunks = new ArrayList<>((2 * scanRadius + 1) * (2 * scanRadius + 1));
+        List<Chunk> chunks = new ObjectArrayList<>((2 * scanRadius + 1) * (2 * scanRadius + 1));
         for (int offsetX = -scanRadius; offsetX <= scanRadius; offsetX++) {
             for (int offsetZ = -scanRadius; offsetZ <= scanRadius; offsetZ++) {
                 if (offsetX != -scanRadius && offsetX != scanRadius

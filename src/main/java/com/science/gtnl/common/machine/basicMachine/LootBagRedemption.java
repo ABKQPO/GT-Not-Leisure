@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.basicMachine;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -37,6 +36,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEBasicMachine;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -214,7 +214,7 @@ public class LootBagRedemption extends MTEBasicMachine {
         LootGroups.LootGroup tGrp = lootGroupsHandler.getMergedGroupFromID(groupID, 3);
         if (tGrp == null) return 0;
 
-        List<ItemStack> resultItems = new ArrayList<>();
+        List<ItemStack> resultItems = new ObjectArrayList<>();
         boolean specialItemFound = false;
 
         if (specialItem != null) {

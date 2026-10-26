@@ -2,7 +2,6 @@ package com.science.gtnl.common.gui.portalgun;
 
 import static com.gtnllib.gui.widget.StepSlider.decimals;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.DoubleFunction;
@@ -28,6 +27,7 @@ import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class PortalGunLookScreen extends ModularScreen {
@@ -124,7 +124,7 @@ public class PortalGunLookScreen extends ModularScreen {
     }
 
     private static List<Control> controls(List<Section> sections) {
-        List<Control> controls = new ArrayList<>();
+        List<Control> controls = new ObjectArrayList<>();
         for (Section section : sections) controls.addAll(section.controls());
         return controls;
     }
@@ -137,7 +137,7 @@ public class PortalGunLookScreen extends ModularScreen {
             .inset(0);
         List<Section> sections = sections();
         int tagWidth = SettingControls.tagWidth(controls(sections));
-        List<IWidget> lines = new ArrayList<>();
+        List<IWidget> lines = new ObjectArrayList<>();
         for (Section section : sections) {
             lines.add(rows.section(IKey.lang(LANG + section.title()), color));
             for (Control control : section.controls())

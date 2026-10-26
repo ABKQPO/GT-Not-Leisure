@@ -7,7 +7,6 @@ import static thaumcraft.common.config.ConfigBlocks.blockCosmeticOpaque;
 import static thaumcraft.common.config.ConfigBlocks.blockCosmeticSolid;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -52,6 +51,9 @@ import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.visnet.TileVisNode;
@@ -88,7 +90,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
     private static final List<Aspect> PRIMAL_ASPECTS = Aspect.getPrimalAspects();
 
     private final OwnerResearchCache researchCache = new OwnerResearchCache();
-    private final ArrayList<ChunkCoordinates> visNodeCoordinates = new ArrayList<>();
+    private final ObjectArrayList<ChunkCoordinates> visNodeCoordinates = new ObjectArrayList<>();
     private long nextVisNodeScanTick;
     private int chargeCycleTicksRemaining;
     private final int[] cycleChargeCV = new int[6];
@@ -96,8 +98,8 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
     private final int[] overflowTransferRemainders = new int[6];
     private Aspect visEffectAspect;
     private boolean visConnectionActive;
-    private final ArrayList<ChunkCoordinates> clientVisEffectNodes = new ArrayList<>();
-    private final Map<ChunkCoordinates, Object> visConnectionBeams = new HashMap<>();
+    private final ObjectArrayList<ChunkCoordinates> clientVisEffectNodes = new ObjectArrayList<>();
+    private final Map<ChunkCoordinates, Object> visConnectionBeams = new Object2ObjectOpenHashMap<>();
     private long nextVisEffectNodeSearchTick;
 
     public SmallArcaneAssembler(int id, String name, String nameRegional) {
@@ -224,7 +226,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
 
     private void beginChargeCycle(IGregTechTileEntity baseMetaTileEntity) {
         clearChargeCycle();
-        ArrayList<Aspect> selectedAspects = new ArrayList<>(PRIMAL_ASPECTS);
+        ObjectArrayList<Aspect> selectedAspects = new ObjectArrayList<>(PRIMAL_ASPECTS);
         ArrayList<TileVisNode> visNodes = getNearbyVisNodes(baseMetaTileEntity);
         boolean connectionEffectStarted = false;
         int aspectCount = Math.min(WAND_CHARGE_ASPECT_COUNT, selectedAspects.size());
@@ -424,7 +426,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
     }
 
     private void refreshClientVisEffectNodes(IGregTechTileEntity baseMetaTileEntity) {
-        ArrayList<ChunkCoordinates> updatedNodes = new ArrayList<>();
+        ObjectArrayList<ChunkCoordinates> updatedNodes = new ObjectArrayList<>();
         for (TileVisNode node : getNearbyVisNodes(baseMetaTileEntity)) {
             updatedNodes.add(new ChunkCoordinates(node.xCoord, node.yCoord, node.zCoord));
         }
@@ -443,8 +445,8 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
         ItemStack wandStack, int maxVis, int overflowPool) {
         if (overflowPool <= 0) return false;
 
-        ArrayList<Aspect> targets = new ArrayList<>();
-        ArrayList<Integer> rooms = new ArrayList<>();
+        ObjectArrayList<Aspect> targets = new ObjectArrayList<>();
+        IntArrayList rooms = new IntArrayList();
         int totalRoom = 0;
         for (Aspect aspect : PRIMAL_ASPECTS) {
             int room = maxVis - wand.getVis(wandStack, aspect);
@@ -460,7 +462,7 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
         int[] shares = new int[targets.size()];
         int distributed = 0;
         for (int i = 0; i < targets.size(); i++) {
-            shares[i] = (int) ((long) distributable * rooms.get(i) / totalRoom);
+            shares[i] = (int) ((long) distributable * rooms.getInt(i) / totalRoom);
             distributed += shares[i];
         }
 

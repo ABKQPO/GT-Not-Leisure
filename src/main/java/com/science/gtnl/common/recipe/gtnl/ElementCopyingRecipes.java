@@ -1,6 +1,5 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
@@ -10,10 +9,11 @@ import com.science.gtnl.common.machine.multiblock.ElementCopying;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class ElementCopyingRecipes implements IRecipePool {
 
-    public static List<ElementCopying.ElementCopyingEntry> ENTRIES = new ArrayList<>();
+    public static List<ElementCopying.ElementCopyingEntry> ENTRIES = new ObjectArrayList<>();
 
     @Override
     public void loadRecipes() {

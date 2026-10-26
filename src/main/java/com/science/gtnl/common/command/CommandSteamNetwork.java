@@ -1,7 +1,6 @@
 package com.science.gtnl.common.command;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -17,6 +16,8 @@ import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 public class CommandSteamNetwork extends CommandBase {
 
     @Override
@@ -31,7 +32,7 @@ public class CommandSteamNetwork extends CommandBase {
 
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args) {
-        List<String> completions = new ArrayList<>();
+        List<String> completions = new ObjectArrayList<>();
         String currentArg = args.length == 0 ? "" : args[args.length - 1].trim();
 
         if (args.length == 1) {

@@ -1,8 +1,5 @@
 package com.science.gtnl.client.railgun;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.MovingSound;
@@ -20,6 +17,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 
 @SideOnly(Side.CLIENT)
 public class RailgunSounds {
@@ -35,8 +34,8 @@ public class RailgunSounds {
     private static final float MIN_START_VOLUME = 0.001F;
     private static final double CHARGE_HEARING_RANGE = 24;
 
-    private static final Map<Integer, BeamLoopSound> BEAMS = new HashMap<>();
-    private static final Map<Integer, ChargeVoice> CHARGES = new HashMap<>();
+    private static final Int2ObjectOpenHashMap<BeamLoopSound> BEAMS = new Int2ObjectOpenHashMap<>();
+    private static final Int2ObjectOpenHashMap<ChargeVoice> CHARGES = new Int2ObjectOpenHashMap<>();
 
     private static boolean enabled(Entity entity) {
         return entity instanceof EntityPlayer player && !player.isDead && RailgunData.holding(player);
@@ -74,7 +73,9 @@ public class RailgunSounds {
     }
 
     private static void trackBeams(Minecraft minecraft) {
-        for (int id : RailgunBeamRenderer.shooters()) {
+        for (IntIterator it = RailgunBeamRenderer.shooters()
+            .iterator(); it.hasNext();) {
+            int id = it.nextInt();
             Entity entity = minecraft.theWorld.getEntityByID(id);
             if (!RailgunBeamRenderer.active(id) || !enabled(entity) || !EquipmentSound.BEAM.on()) continue;
             BeamLoopSound existing = BEAMS.get(id);
@@ -94,10 +95,10 @@ public class RailgunSounds {
             }
             voice.track(minecraft, player);
         }
-        CHARGES.entrySet()
+        CHARGES.int2ObjectEntrySet()
             .removeIf(entry -> {
                 ChargeVoice voice = entry.getValue();
-                if (minecraft.theWorld.getEntityByID(entry.getKey()) instanceof EntityPlayer && !voice.idle())
+                if (minecraft.theWorld.getEntityByID(entry.getIntKey()) instanceof EntityPlayer && !voice.idle())
                     return false;
                 voice.stop();
                 return true;

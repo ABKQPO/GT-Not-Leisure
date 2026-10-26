@@ -9,7 +9,6 @@ import static gregtech.api.enums.HatchElement.OutputBus;
 import static gregtech.api.enums.HatchElement.OutputHatch;
 import static net.minecraft.item.ItemStack.areItemStacksEqual;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -67,6 +66,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtnhintergalactic.tile.multi.elevator.TileEntitySpaceElevator;
 import gtnhintergalactic.tile.multi.elevatormodules.TileEntityModuleBase;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import micdoodle8.mods.galacticraft.core.util.GCCoreUtil;
 import tectech.thing.metaTileEntity.multi.base.INameFunction;
 import tectech.thing.metaTileEntity.multi.base.IStatusFunction;
@@ -102,7 +102,7 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     private int mParallelTier;
 
     public Parameters.Group.ParameterIn parallelSetting;
-    public ArrayList<ParallelControllerHatch> mParallelControllerHatches = new ArrayList<>();
+    public ObjectArrayList<ParallelControllerHatch> mParallelControllerHatches = new ObjectArrayList<>();
 
     public ResourceCollectionModule(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional, 25, 5, 1);
@@ -351,7 +351,7 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     public void addUIWidgets(ModularWindow.Builder builder, UIBuildContext buildContext) {
         // TODO: Remove this mui1 fallback after the Resource Collection Module custom GUI is fully ported to mui2.
         super.addUIWidgets(builder, buildContext);
-        machineModeIcons = new ArrayList<>(4);
+        machineModeIcons = new ObjectArrayList<>(4);
         setMachineModeIcons();
         builder.widget(
             new DynamicTextWidget(

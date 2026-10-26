@@ -9,19 +9,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class StructureFileCodec {
 
     private static final byte[] MAGIC = new byte[] { 'M', 'B', 'S', '1' };
 
-    private StructureFileCodec() {}
-
     public static String[][] readText(InputStream inputStream) throws IOException {
-        List<String[]> rows = new ArrayList<>();
+        List<String[]> rows = new ObjectArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -71,7 +69,7 @@ public class StructureFileCodec {
 
     public static void writeBinary(OutputStream outputStream, String[][] structure) throws IOException {
         try (DataOutputStream dataOutput = new DataOutputStream(outputStream)) {
-            Map<String, Integer> stringIndexes = new LinkedHashMap<>();
+            Object2IntLinkedOpenHashMap<String> stringIndexes = new Object2IntLinkedOpenHashMap<>();
             for (String[] row : structure) {
                 for (String cell : row) {
                     if (!stringIndexes.containsKey(cell)) {
@@ -91,7 +89,7 @@ public class StructureFileCodec {
             for (String[] row : structure) {
                 dataOutput.writeInt(row.length);
                 for (String cell : row) {
-                    dataOutput.writeInt(stringIndexes.get(cell));
+                    dataOutput.writeInt(stringIndexes.getInt(cell));
                 }
             }
             dataOutput.flush();

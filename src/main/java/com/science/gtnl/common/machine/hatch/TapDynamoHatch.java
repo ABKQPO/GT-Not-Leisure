@@ -24,13 +24,7 @@ public class TapDynamoHatch extends MTEHatchDynamo {
     public long lastClickTime = 0;
 
     public TapDynamoHatch(int aID, String aName, String aNameRegional, int aTier) {
-        super(
-            aID,
-            aName,
-            aNameRegional,
-            aTier,
-            new String[] { StatCollector.translateToLocal("gtnl.hatch.tap_dynamo.tooltip.0"),
-                StatCollector.translateToLocal("gtnl.hatch.tap_dynamo.tooltip.1") });
+        super(aID, aName, aNameRegional, aTier);
     }
 
     public TapDynamoHatch(String aName, int aTier, String[] aDescription, ITexture[][][] aTextures) {
@@ -47,6 +41,12 @@ public class TapDynamoHatch extends MTEHatchDynamo {
     public String getLocalName() {
         if (!hasOwnLocalName()) return super.getLocalName();
         return StatCollector.translateToLocal(getLocalNameKey());
+    }
+
+    @Override
+    public String[] getDescription() {
+        return new String[] { StatCollector.translateToLocal("gtnl.hatch.tap_dynamo.tooltip.0"),
+            StatCollector.translateToLocal("gtnl.hatch.tap_dynamo.tooltip.1") };
     }
 
     @Override

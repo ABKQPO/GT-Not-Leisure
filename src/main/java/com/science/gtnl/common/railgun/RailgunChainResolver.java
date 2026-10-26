@@ -1,12 +1,7 @@
 package com.science.gtnl.common.railgun;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.function.Predicate;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -20,6 +15,12 @@ import org.jetbrains.annotations.Nullable;
 
 import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.common.railgun.RailgunDamage.DamageContext;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.Object2DoubleLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class RailgunChainResolver {
 
@@ -44,18 +45,18 @@ public class RailgunChainResolver {
     private RailgunChainResolver() {}
 
     public static List<Hit> strongestPerTarget(List<Hit> hits) {
-        Map<Integer, Hit> strongest = new LinkedHashMap<>();
+        Int2ObjectLinkedOpenHashMap<Hit> strongest = new Int2ObjectLinkedOpenHashMap<>();
         for (Hit hit : hits) strongest.merge(
             hit.target()
                 .getEntityId(),
             hit,
             (kept, next) -> next.damage() > kept.damage() ? next : kept);
-        return new ArrayList<>(strongest.values());
+        return new ObjectArrayList<>(strongest.values());
     }
 
     public static List<Hit> chainFrom(WorldServer world, EntityPlayerMP shooter, EntityLivingBase start,
-        DamageContext ctx, Set<Integer> excluded, @Nullable Vec3d visualStart) {
-        Set<Integer> visited = new HashSet<>(excluded);
+        DamageContext ctx, IntSet excluded, @Nullable Vec3d visualStart) {
+        IntOpenHashSet visited = new IntOpenHashSet(excluded);
         visited.add(start.getEntityId());
         return branches(
             world,
@@ -68,12 +69,12 @@ public class RailgunChainResolver {
     }
 
     public static List<Hit> chainFromPoint(WorldServer world, EntityPlayerMP shooter, Vec3d point, DamageContext ctx) {
-        return branches(world, shooter, point, 1, ctx, new HashSet<>(), point);
+        return branches(world, shooter, point, 1, ctx, new IntOpenHashSet(), point);
     }
 
     private static List<Hit> branches(WorldServer world, EntityPlayerMP shooter, Vec3d center, int forks,
-        DamageContext ctx, Set<Integer> visited, Vec3d visualStart) {
-        List<Hit> out = new ArrayList<>();
+        DamageContext ctx, IntSet visited, Vec3d visualStart) {
+        List<Hit> out = new ObjectArrayList<>();
         if (ctx.chainSegments() <= 0) return out;
         List<EntityLivingBase> seeds = nearest(world, shooter, center, ctx.chainRadius(), visited, ctx.pvp(), forks);
         seeds.forEach(seed -> visited.add(seed.getEntityId()));
@@ -82,7 +83,7 @@ public class RailgunChainResolver {
     }
 
     private static void walk(WorldServer world, EntityPlayerMP shooter, EntityLivingBase seed, DamageContext ctx,
-        Set<Integer> visited, Vec3d visualStart, List<Hit> out) {
+        IntSet visited, Vec3d visualStart, List<Hit> out) {
         double damage = ctx.firstDamage() * (ctx.isMaxCharged() ? 1 : ctx.chainDecay());
         out.add(new Hit(seed, damage, Kind.CHAIN, visualStart));
         EntityLivingBase previous = seed;
@@ -105,12 +106,12 @@ public class RailgunChainResolver {
 
     public static List<Hit> penetration(WorldServer world, EntityPlayerMP shooter, EntityLivingBase firstHit,
         Vec3d from, Vec3d direction, DamageContext ctx, int maxTargets) {
-        List<Hit> out = new ArrayList<>();
+        List<Hit> out = new ObjectArrayList<>();
         if (!ctx.isMaxCharged() || maxTargets <= 0) return out;
         Vec3d forward = direction.normalize();
         Vec3d to = from.add(forward.scale(PENETRATION_LENGTH));
         // Continue the shot from its impact, testing bodies rather than aiming at their feet.
-        Map<EntityLivingBase, Double> distances = new LinkedHashMap<>();
+        Object2DoubleLinkedOpenHashMap<EntityLivingBase> distances = new Object2DoubleLinkedOpenHashMap<>();
         for (EntityLivingBase entity : query(
             world,
             from.boxTo(to, PENETRATION_WIDTH),
@@ -123,8 +124,8 @@ public class RailgunChainResolver {
             if (box.isVecInside(from.toMc())) distances.put(entity, 0D);
             else if (hit != null) distances.put(entity, from.distanceToSqr(Vec3d.of(hit.hitVec)));
         }
-        List<EntityLivingBase> candidates = new ArrayList<>(distances.keySet());
-        candidates.sort(Comparator.comparingDouble(distances::get));
+        List<EntityLivingBase> candidates = new ObjectArrayList<>(distances.keySet());
+        candidates.sort(Comparator.comparingDouble(distances::getDouble));
         for (EntityLivingBase entity : candidates) {
             out.add(new Hit(entity, ctx.firstDamage(), Kind.PENETRATION, null));
             if (out.size() >= maxTargets) break;
@@ -144,7 +145,7 @@ public class RailgunChainResolver {
 
     private static List<Hit> area(WorldServer world, EntityPlayerMP shooter, Vec3d center, double radius, double ratio,
         double falloff, int excludeId, DamageContext ctx) {
-        List<Hit> out = new ArrayList<>();
+        List<Hit> out = new ObjectArrayList<>();
         if (radius <= 0 || ratio <= 0) return out;
         for (EntityLivingBase entity : query(
             world,
@@ -162,7 +163,7 @@ public class RailgunChainResolver {
     }
 
     private static List<EntityLivingBase> nearest(WorldServer world, EntityPlayerMP shooter, Vec3d center,
-        double radius, Set<Integer> visited, boolean pvp, int count) {
+        double radius, IntSet visited, boolean pvp, int count) {
         if (count <= 0) return List.of();
         List<EntityLivingBase> found = query(
             world,
@@ -174,12 +175,12 @@ public class RailgunChainResolver {
             Comparator.comparingDouble(
                 entity -> Vec3d.pos(entity)
                     .distanceToSqr(center)));
-        return found.size() > count ? new ArrayList<>(found.subList(0, count)) : found;
+        return found.size() > count ? new ObjectArrayList<>(found.subList(0, count)) : found;
     }
 
     private static List<EntityLivingBase> query(WorldServer world, AxisAlignedBB box,
         Predicate<EntityLivingBase> filter) {
-        List<EntityLivingBase> result = new ArrayList<>();
+        List<EntityLivingBase> result = new ObjectArrayList<>();
         for (Object candidate : world.getEntitiesWithinAABB(EntityLivingBase.class, box)) {
             EntityLivingBase entity = (EntityLivingBase) candidate;
             if (filter.test(entity)) result.add(entity);

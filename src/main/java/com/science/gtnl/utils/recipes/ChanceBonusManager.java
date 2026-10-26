@@ -1,7 +1,5 @@
 package com.science.gtnl.utils.recipes;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.OptionalDouble;
 import java.util.function.Function;
@@ -19,11 +17,12 @@ import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 // Original code from Overpowered Mod. MIT License. 2025/4/18
 public class ChanceBonusManager {
 
-    public static LinkedList<ChanceBonusProvider> bonusProviders = new LinkedList<>();
+    public static ObjectArrayList<ChanceBonusProvider> bonusProviders = new ObjectArrayList<>();
     public static CustomChanceBonusProvider customProvider = new CustomChanceBonusProvider();
 
     public interface ChanceBonusProvider {
@@ -36,21 +35,22 @@ public class ChanceBonusManager {
         GTRecipe recipe) {}
 
     public static void addLastBonusProvider(ChanceBonusProvider provider) {
-        bonusProviders.addLast(provider);
+        bonusProviders.add(provider);
     }
 
     public static void addFirstBonusProvider(ChanceBonusProvider provider) {
-        bonusProviders.addFirst(provider);
+        bonusProviders.add(0, provider);
     }
 
     public static void addLastBonusProvider(Function<ChanceBonusProviderContext, Double> provider) {
-        bonusProviders.addLast(
+        bonusProviders.add(
             (machine, tier, prev, recipe) -> provider
                 .apply(new ChanceBonusProviderContext(machine, tier, prev, recipe)));
     }
 
     public static void addFirstBonusProvider(Function<ChanceBonusProviderContext, Double> provider) {
-        bonusProviders.addFirst(
+        bonusProviders.add(
+            0,
             (machine, tier, prev, recipe) -> provider
                 .apply(new ChanceBonusProviderContext(machine, tier, prev, recipe)));
     }
@@ -117,7 +117,7 @@ public class ChanceBonusManager {
         });
     }
 
-    public static List<RecipePair> BLACKLIST = new ArrayList<>();
+    public static List<RecipePair> BLACKLIST = new ObjectArrayList<>();
 
     static {
         addToBlacklist(

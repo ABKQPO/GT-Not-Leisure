@@ -79,8 +79,7 @@ public class MeteorRecipeData {
     }
 
     public int getTotalExpectedAmount() {
-        return expectedAmounts.stream()
-            .mapToInt(Integer::intValue)
+        return expectedAmounts.intStream()
             .sum();
     }
 }

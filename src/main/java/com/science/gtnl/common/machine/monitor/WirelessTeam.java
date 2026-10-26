@@ -1,11 +1,11 @@
 package com.science.gtnl.common.machine.monitor;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 
 @Deprecated
@@ -16,7 +16,7 @@ public class WirelessTeam {
             return new TeamContext(null, Set.of());
         }
         UUID teamId = TeamNetworkManager.getTeamId(viewerUuid);
-        return new TeamContext(teamId, new HashSet<>(TeamNetworkManager.getMembers(viewerUuid)));
+        return new TeamContext(teamId, new ObjectOpenHashSet<>(TeamNetworkManager.getMembers(viewerUuid)));
     }
 
     public static Set<UUID> resolveMembers(UUID viewerUuid) {

@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -24,6 +23,7 @@ import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import vazkii.botania.common.block.tile.mana.TilePool;
@@ -102,7 +102,7 @@ public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
 
     @Override
     public String[] getDescription() {
-        ArrayList<String> desc = new ArrayList<>();
+        ObjectArrayList<String> desc = new ObjectArrayList<>();
         desc.add(StatCollector.translateToLocal("gtnl.hatch.mana_energy.tooltip.0"));
         desc.add(StatCollector.translateToLocal("gtnl.hatch.mana_energy.tooltip.1"));
         desc.add(StatCollector.translateToLocalFormatted("gtnl.hatch.mana_energy.tooltip.2", EU_TO_MANA_RATE));
@@ -200,7 +200,7 @@ public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
         int y = aBaseMetaTileEntity.getYCoord();
         int z = aBaseMetaTileEntity.getZCoord();
 
-        List<TilePool> pools = new ArrayList<>();
+        List<TilePool> pools = new ObjectArrayList<>();
 
         for (int dx = -MANA_POOL_RADIUS; dx <= MANA_POOL_RADIUS; dx++) {
             for (int dy = -MANA_POOL_RADIUS; dy <= MANA_POOL_RADIUS; dy++) {

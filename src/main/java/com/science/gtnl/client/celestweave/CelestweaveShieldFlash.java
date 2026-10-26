@@ -1,7 +1,6 @@
 package com.science.gtnl.client.celestweave;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -24,6 +23,7 @@ import com.gtnllib.utils.Vec3d;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class CelestweaveShieldFlash {
@@ -32,7 +32,7 @@ public class CelestweaveShieldFlash {
     private static final int MAX_ACTIVE = 32, LONGITUDES = 24, LATITUDES = 16, U_REPEAT = 10, V_REPEAT = 4;
     private static final int HIT_LIFETIME = 420, SAVE_LIFETIME = 800;
     private static final int HEX_WIDTH = 64, HEX_HEIGHT = 111;
-    private static final List<Flash> ACTIVE = new ArrayList<>();
+    private static final List<Flash> ACTIVE = new ObjectArrayList<>();
     private static ResourceLocation hex;
 
     private record Flash(int entityId, Vec3d direction, long born, int lifetime, int rgb, boolean save) {}
@@ -121,7 +121,7 @@ public class CelestweaveShieldFlash {
         long now = Minecraft.getSystemTime();
         ACTIVE.removeIf(flash -> now - flash.born >= flash.lifetime);
         if (world == null || ACTIVE.isEmpty()) return;
-        List<Shell> shells = new ArrayList<>();
+        List<Shell> shells = new ObjectArrayList<>();
         for (Flash flash : ACTIVE) {
             Entity entity = world.getEntityByID(flash.entityId);
             if (!(entity instanceof EntityLivingBase) || entity.isDead || firstPerson(entity)) continue;

@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock.wireless;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.init.Blocks;
@@ -45,6 +44,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gtnhlanth.common.register.LanthItemList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class TransliminalOasis extends WirelessEnergyMultiMachineBase<TransliminalOasis> {
@@ -181,7 +181,7 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
         if (!wirelessMode) return super.checkProcessing();
 
         List<ItemStack> original = getAllStoredInputs();
-        List<ItemStack> merged = new ArrayList<>();
+        List<ItemStack> merged = new ObjectArrayList<>();
 
         outer: for (ItemStack stack : original) {
             if (stack == null) continue;

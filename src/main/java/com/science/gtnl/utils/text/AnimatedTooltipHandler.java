@@ -1,6 +1,5 @@
 package com.science.gtnl.utils.text;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -25,6 +24,7 @@ import com.science.gtnl.utils.text.effect.TextEffects;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @EventBusSubscriber(side = Side.CLIENT)
 public class AnimatedTooltipHandler {
@@ -151,7 +151,7 @@ public class AnimatedTooltipHandler {
 
     public static void addItemTooltip(ItemStack item, Supplier<String> tooltip) {
         if (item == null || tooltip == null) return;
-        List<Supplier<String>> list = TOOLTIP_MAP.computeIfAbsent(item, k -> new ArrayList<>());
+        List<Supplier<String>> list = TOOLTIP_MAP.computeIfAbsent(item, k -> new ObjectArrayList<>());
         list.add(tooltip);
     }
 
@@ -173,7 +173,7 @@ public class AnimatedTooltipHandler {
 
     public static void addItemTooltipShift(ItemStack item, Supplier<String> tooltip) {
         if (item == null || tooltip == null) return;
-        List<Supplier<String>> list = TOOLTIP_MAP_SHIFT.computeIfAbsent(item, k -> new ArrayList<>());
+        List<Supplier<String>> list = TOOLTIP_MAP_SHIFT.computeIfAbsent(item, k -> new ObjectArrayList<>());
         list.add(tooltip);
     }
 
@@ -195,7 +195,7 @@ public class AnimatedTooltipHandler {
 
     public static void addItemTooltipCtrl(ItemStack item, Supplier<String> tooltip) {
         if (item == null || tooltip == null) return;
-        List<Supplier<String>> list = TOOLTIP_MAP_CTRL.computeIfAbsent(item, k -> new ArrayList<>());
+        List<Supplier<String>> list = TOOLTIP_MAP_CTRL.computeIfAbsent(item, k -> new ObjectArrayList<>());
         list.add(tooltip);
     }
 

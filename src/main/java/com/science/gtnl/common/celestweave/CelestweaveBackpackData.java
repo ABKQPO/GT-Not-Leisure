@@ -1,6 +1,5 @@
 package com.science.gtnl.common.celestweave;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -8,11 +7,13 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraftforge.common.DimensionManager;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
 public class CelestweaveBackpackData extends WorldSavedData {
 
     public static final String NAME = "gtnl_celestweave_backpack";
 
-    private final Map<String, NBTTagCompound> entries = new HashMap<>();
+    private final Map<String, NBTTagCompound> entries = new Object2ObjectOpenHashMap<>();
 
     public CelestweaveBackpackData(String name) {
         super(name);

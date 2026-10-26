@@ -3,9 +3,7 @@ package com.science.gtnl.client.meminiterminal;
 import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
 
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -35,6 +33,9 @@ import appeng.util.AEStackTypeFilter;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
 import appeng.util.TerminalSettings;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
@@ -48,24 +49,24 @@ public final class MiniTerminalModel implements ISortSource {
     private int visibleCraftingCount;
     private int visiblePlayerCount;
     private ItemRepo repo = createRepo();
-    private Map<Integer, IAEStack<?>> entries = new HashMap<>();
+    private Int2ObjectMap<IAEStack<?>> entries = new Int2ObjectOpenHashMap<>();
     private final Object2IntOpenHashMap<IAEStack<?>> entryIds = new Object2IntOpenHashMap<>();
 
     {
         entryIds.defaultReturnValue(-1);
     }
-    private Map<Integer, IAEStack<?>> pending;
+    private Int2ObjectMap<IAEStack<?>> pending;
     private long pendingRevision;
-    private Map<Integer, IAEStack<?>> pendingDelta;
+    private Int2ObjectMap<IAEStack<?>> pendingDelta;
     private long pendingDeltaRevision;
-    private Map<Integer, IAEStack<?>> trailingDelta;
+    private Int2ObjectMap<IAEStack<?>> trailingDelta;
     private long trailingDeltaRevision;
     private int trailingPart;
     private long catalogEpoch;
     private IAEStack<?>[] pendingPins;
     private long pendingPinRevision;
     private MiniTerminalPinSettings pendingPinSettings;
-    private Map<Integer, IAEStack<?>> stagedCatalog;
+    private Int2ObjectMap<IAEStack<?>> stagedCatalog;
     private long stagedCatalogRevision;
     private IAEStack<?>[] stagedPins;
     private long stagedPinRevision;
@@ -223,7 +224,7 @@ public final class MiniTerminalModel implements ISortSource {
         catalogPart++;
         if (data.getBoolean("reset")) {
             if (savedScroll < 0) savedScroll = scrollbar.getCurrentScroll();
-            pending = new HashMap<>();
+            pending = new Int2ObjectOpenHashMap<>();
             pendingDelta = null;
             pendingRevision = revision;
         }
@@ -234,7 +235,7 @@ public final class MiniTerminalModel implements ISortSource {
             }
             readEntries(changes, pending);
             if (data.getBoolean("last")) {
-                Map<Integer, IAEStack<?>> complete = pending;
+                Int2ObjectMap<IAEStack<?>> complete = pending;
                 pending = null;
                 if (!sessionState.isOnline()) {
                     stagedCatalog = complete;
@@ -253,7 +254,7 @@ public final class MiniTerminalModel implements ISortSource {
         if (!sessionState.isOnline()) return false;
         if (data.getBoolean("snapshot") || data.getLong("baseRevision") != catalogRevision) return false;
         if (pendingDelta == null) {
-            pendingDelta = new HashMap<>();
+            pendingDelta = new Int2ObjectOpenHashMap<>();
             pendingDeltaRevision = revision;
         }
         if (pendingDeltaRevision != revision) {
@@ -262,7 +263,7 @@ public final class MiniTerminalModel implements ISortSource {
         }
         for (Entry change : changes) pendingDelta.put(change.key(), change.stack());
         if (!data.getBoolean("last")) return true;
-        Map<Integer, IAEStack<?>> delta = pendingDelta;
+        Int2ObjectMap<IAEStack<?>> delta = pendingDelta;
         pendingDelta = null;
         applyDelta(delta, revision);
         return true;
@@ -276,7 +277,7 @@ public final class MiniTerminalModel implements ISortSource {
             if (data.getBoolean("snapshot") || catalogRevision <= 0
                 || data.getLong("baseRevision") != catalogRevision
                 || revision <= catalogRevision) return;
-            trailingDelta = new HashMap<>();
+            trailingDelta = new Int2ObjectOpenHashMap<>();
             trailingDeltaRevision = revision;
             trailingPart = 0;
         }
@@ -287,19 +288,20 @@ public final class MiniTerminalModel implements ISortSource {
         trailingPart++;
         for (Entry change : changes) trailingDelta.put(change.key(), change.stack());
         if (!data.getBoolean("last")) return;
-        Map<Integer, IAEStack<?>> delta = trailingDelta;
+        Int2ObjectMap<IAEStack<?>> delta = trailingDelta;
         trailingDelta = null;
         applyDelta(delta, revision);
     }
 
-    private void applyDelta(Map<Integer, IAEStack<?>> delta, long revision) {
-        for (Map.Entry<Integer, IAEStack<?>> change : delta.entrySet()) {
+    private void applyDelta(Int2ObjectMap<IAEStack<?>> delta, long revision) {
+        for (Int2ObjectMap.Entry<IAEStack<?>> change : Int2ObjectMaps.fastIterable(delta)) {
             IAEStack<?> stack = change.getValue();
+            int key = change.getIntKey();
             repo.postUpdate(stack);
             boolean visible = stack.getStackSize() != 0 || stack.isCraftable();
-            IAEStack<?> previous = visible ? entries.put(change.getKey(), stack) : entries.remove(change.getKey());
+            IAEStack<?> previous = visible ? entries.put(key, stack) : entries.remove(key);
             if (previous != null) entryIds.removeInt(previous);
-            if (visible) entryIds.put(stack, (int) change.getKey());
+            if (visible) entryIds.put(stack, key);
         }
         catalogRevision = revision;
         repo.updateViewIfChanged();
@@ -322,7 +324,7 @@ public final class MiniTerminalModel implements ISortSource {
         return catalogEpoch;
     }
 
-    private static void readEntries(List<Entry> entries, Map<Integer, IAEStack<?>> destination) {
+    private static void readEntries(List<Entry> entries, Int2ObjectMap<IAEStack<?>> destination) {
         for (Entry entry : entries) {
             IAEStack<?> stack = entry.stack();
             if (stack == null || stack.getStackSize() == 0 && !stack.isCraftable()) destination.remove(entry.key());
@@ -551,11 +553,11 @@ public final class MiniTerminalModel implements ISortSource {
         return isOnline() && target != null ? entryIds.getInt(target) : -1;
     }
 
-    private void replaceEntries(Map<Integer, IAEStack<?>> next) {
+    private void replaceEntries(Int2ObjectMap<IAEStack<?>> next) {
         entries = next;
         entryIds.clear();
-        for (Map.Entry<Integer, IAEStack<?>> entry : next.entrySet())
-            entryIds.put(entry.getValue(), (int) entry.getKey());
+        for (Int2ObjectMap.Entry<IAEStack<?>> entry : Int2ObjectMaps.fastIterable(next))
+            entryIds.put(entry.getValue(), entry.getIntKey());
     }
 
     public long catalogRevision() {

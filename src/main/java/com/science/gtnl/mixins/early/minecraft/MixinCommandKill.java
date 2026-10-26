@@ -1,6 +1,5 @@
 package com.science.gtnl.mixins.early.minecraft;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +19,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 import com.science.gtnl.utils.selector.EntitySelector;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @Mixin(value = CommandKill.class, remap = true)
 public abstract class MixinCommandKill extends CommandBase {
@@ -82,7 +83,7 @@ public abstract class MixinCommandKill extends CommandBase {
         String currentArg = args[0];
 
         if (args.length == 1 && !currentArg.contains("[")) {
-            List<String> list = new ArrayList<>();
+            List<String> list = new ObjectArrayList<>();
             Collections.addAll(list, "@p", "@a", "@r", "@e", "@s", "@n");
             Collections.addAll(
                 list,
@@ -97,7 +98,7 @@ public abstract class MixinCommandKill extends CommandBase {
 
             String lastPart = suffix.contains(",") ? suffix.substring(suffix.lastIndexOf(",") + 1) : suffix;
 
-            List<String> suggestions = new ArrayList<>();
+            List<String> suggestions = new ObjectArrayList<>();
 
             if (lastPart.contains("=")) {
                 String key = lastPart.substring(0, lastPart.indexOf("=") + 1);
@@ -130,7 +131,7 @@ public abstract class MixinCommandKill extends CommandBase {
     private static String[] getEntityTypes() {
         Set<String> set = EntityList.stringToClassMapping.keySet();
 
-        List<String> list = new ArrayList<>(set);
+        List<String> list = new ObjectArrayList<>(set);
 
         list.add("player");
 

@@ -5,7 +5,6 @@ import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -335,7 +334,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         addBaseTextScroll(builder);
 
         if (supportsMachineModeSwitch() && machineModeIcons == null) {
-            machineModeIcons = new ArrayList<>(4);
+            machineModeIcons = new ObjectArrayList<>(4);
             setMachineModeIcons();
         }
         builder.widget(createPowerSwitchButton(builder))
@@ -399,7 +398,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         })
             .setPlayClickSound(true)
             .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
+                List<UITexture> ret = new ObjectArrayList<>();
                 ret.add(GTUITextures.BUTTON_STANDARD);
                 ret.add(GTUITextures.OVERLAY_BUTTON_POWER_PANEL);
                 return ret.toArray(new IDrawable[0]);

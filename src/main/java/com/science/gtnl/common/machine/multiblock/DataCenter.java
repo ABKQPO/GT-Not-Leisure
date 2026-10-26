@@ -11,10 +11,8 @@ import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
 import static tectech.thing.metaTileEntity.multi.base.TTMultiblockBase.HatchElement.EnergyMulti;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -52,6 +50,8 @@ import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.WirelessComputationPacket;
 import gtnhlanth.common.register.LanthItemList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import tectech.mechanics.dataTransport.ALRecipeDataPacket;
 import tectech.thing.casing.BlockGTCasingsTT;
 import tectech.thing.casing.TTCasingsContainer;
@@ -72,9 +72,9 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
     private static final String[][] shape = StructureUtils.readStructureFromFile(DC_STRUCTURE_FILE_PATH);
 
     public boolean wirelessModeEnabled = false;
-    public ArrayList<MTEHatchDataItemsOutput> mStacksDataOutputs = new ArrayList<>();
-    public ArrayList<MTEHatchWirelessDataItemsOutput> mWirelessStacksDataOutputs = new ArrayList<>();
-    public ArrayList<MTEHatchDataAccess> mDataAccessHatches = new ArrayList<>();
+    public ObjectArrayList<MTEHatchDataItemsOutput> mStacksDataOutputs = new ObjectArrayList<>();
+    public ObjectArrayList<MTEHatchWirelessDataItemsOutput> mWirelessStacksDataOutputs = new ObjectArrayList<>();
+    public ObjectArrayList<MTEHatchDataAccess> mDataAccessHatches = new ObjectArrayList<>();
     public boolean slave = false;
 
     public DataCenter(int aID, String aName, String aNameRegional) {
@@ -107,7 +107,7 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
 
     @Override
     public void outputAfterRecipe_EM() {
-        HashSet<RecipeAssemblyLine> availableRecipes = new HashSet<>();
+        ObjectOpenHashSet<RecipeAssemblyLine> availableRecipes = new ObjectOpenHashSet<>();
 
         for (MTEHatchDataAccess dataAccess : GTUtility.validMTEList(mDataAccessHatches)) {
             availableRecipes.addAll(dataAccess.getAssemblyLineRecipes());

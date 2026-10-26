@@ -1,6 +1,5 @@
 package com.science.gtnl.client.text.effect;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -12,6 +11,8 @@ import org.lwjgl.opengl.GL20;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.text.TextRenderContext;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class InfernumCyanSparkTextEffect extends ShaderTextEffect {
 
@@ -28,7 +29,7 @@ public class InfernumCyanSparkTextEffect extends ShaderTextEffect {
         "textures/effects/infernum_gleam.png");
 
     private final Random random = new Random();
-    private final List<CyanSparkle> sparkles = new ArrayList<>();
+    private final List<CyanSparkle> sparkles = new ObjectArrayList<>();
     private double lastSimulationSeconds = Double.NaN;
     private double simulationAccumulator;
 

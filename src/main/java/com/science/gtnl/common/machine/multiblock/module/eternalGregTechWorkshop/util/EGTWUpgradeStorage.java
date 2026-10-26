@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -14,6 +13,7 @@ import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 
 public class EGTWUpgradeStorage {
@@ -212,7 +212,7 @@ public class EGTWUpgradeStorage {
 
     /** Sync widget to sync the full upgrade tree. */
     public FakeSyncWidget<?> getFullSyncer() {
-        return new FakeSyncWidget.ListSyncer<>(() -> new ArrayList<>(unlockedUpgrades.values()), val -> {
+        return new FakeSyncWidget.ListSyncer<>(() -> new ObjectArrayList<>(unlockedUpgrades.values()), val -> {
             for (int i = 0; i < val.size(); i++) {
                 unlockedUpgrades.put(EternalGregTechWorkshopUpgrade.VALUES[i], val.get(i));
             }

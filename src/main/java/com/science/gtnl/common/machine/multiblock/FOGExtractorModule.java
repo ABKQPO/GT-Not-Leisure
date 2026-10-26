@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock;
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,6 +40,7 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.OverclockCalculator;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.WirelessNetworkManager;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Setter;
 import tectech.TecTech;
 import tectech.thing.metaTileEntity.multi.godforge.MTEBaseModule;
@@ -148,7 +148,7 @@ public class FOGExtractorModule extends MTEBaseModule {
 
     @Override
     public String[] getInfoData() {
-        ArrayList<String> str = new ArrayList<>();
+        ObjectArrayList<String> str = new ObjectArrayList<>();
         str.add(
             IGregTechDeviceInformation.encode(
                 "GT5U.infodata.progress",
@@ -210,7 +210,7 @@ public class FOGExtractorModule extends MTEBaseModule {
         })
             .setPlayClickSound(false)
             .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
+                List<UITexture> ret = new ObjectArrayList<>();
                 ret.add(EternalGregTechWorkshopTextures.BUTTON_CELESTIAL_32x32);
                 if (fluidMode) {
                     ret.add(EternalGregTechWorkshopTextures.OVERLAY_BUTTON_FURNACE_MODE);

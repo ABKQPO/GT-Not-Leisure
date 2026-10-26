@@ -5,7 +5,6 @@ import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -44,6 +43,7 @@ import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.misc.WirelessNetworkManager;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -231,7 +231,7 @@ public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurn
             this.lEUt = 0;
         }
 
-        ArrayList<ItemStack> smeltedOutputs = new ArrayList<>();
+        ObjectArrayList<ItemStack> smeltedOutputs = new ObjectArrayList<>();
         long toSmelt = finalParallel;
 
         for (ItemStack item : tInput) {

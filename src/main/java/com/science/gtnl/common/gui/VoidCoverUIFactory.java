@@ -1,6 +1,5 @@
 package com.science.gtnl.common.gui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.util.StatCollector;
@@ -20,6 +19,7 @@ import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.gui.modularui.GUITextureSet;
 import gregtech.api.gui.widgets.PhantomItemButton;
 import gregtech.common.gui.mui1.cover.CoverLegacyDataUIFactory;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @Deprecated
 public class VoidCoverUIFactory extends CoverLegacyDataUIFactory {
@@ -64,7 +64,7 @@ public class VoidCoverUIFactory extends CoverLegacyDataUIFactory {
             new ButtonWidget().setOnClick((clickData, widget) -> cover.isInputMode = !cover.isInputMode())
                 .setPlayClickSound(true)
                 .setBackground(() -> {
-                    List<IDrawable> ret = new ArrayList<>();
+                    List<IDrawable> ret = new ObjectArrayList<>();
                     if (cover.isInputMode) {
                         ret.add(GTUITextures.BUTTON_STANDARD_PRESSED);
                         ret.add(GTUITextures.OVERLAY_BUTTON_WHITELIST);

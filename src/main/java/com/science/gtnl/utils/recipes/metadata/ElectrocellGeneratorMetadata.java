@@ -1,6 +1,5 @@
 package com.science.gtnl.utils.recipes.metadata;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -13,6 +12,7 @@ import gregtech.api.recipe.RecipeMetadataKey;
 import gregtech.api.util.MethodsReturnNonnullByDefault;
 import gregtech.nei.RecipeDisplayInfo;
 import gregtech.nei.formatter.INEISpecialInfoFormatter;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -33,7 +33,7 @@ public class ElectrocellGeneratorMetadata extends RecipeMetadataKey<Long> implem
 
     @Override
     public List<String> format(RecipeDisplayInfo recipeInfo) {
-        List<String> specialInfo = new ArrayList<>();
+        List<String> specialInfo = new ObjectArrayList<>();
         specialInfo.add(
             StatCollector.translateToLocalFormatted(
                 "gtnl.nei.electrocell_generator.special_value",

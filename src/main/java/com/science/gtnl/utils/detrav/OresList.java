@@ -1,6 +1,5 @@
 package com.science.gtnl.utils.detrav;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -17,13 +16,14 @@ import cpw.mods.fml.client.GuiScrollingList;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class OresList extends GuiScrollingList {
 
     private final Object2IntOpenHashMap<String> colors = new Object2IntOpenHashMap<>();
-    private final List<String> allKeys = new ArrayList<>();
-    private final List<String> keys = new ArrayList<>();
+    private final List<String> allKeys = new ObjectArrayList<>();
+    private final List<String> keys = new ObjectArrayList<>();
     private final GuiScreen parent;
     private final BiConsumer<String, Boolean> onSelected;
     private boolean invert;

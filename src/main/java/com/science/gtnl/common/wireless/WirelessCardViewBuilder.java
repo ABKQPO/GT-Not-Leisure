@@ -6,9 +6,6 @@ import static com.science.gtnl.common.wireless.WirelessCardViewCodec.writeInterf
 import static com.science.gtnl.common.wireless.WirelessCardViewCodec.writeStatistics;
 import static com.science.gtnl.common.wireless.WirelessMachineGroups.coordinates;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -23,12 +20,17 @@ import com.science.gtnl.common.wireless.WirelessMachineGroups.Row;
 import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
 
 import appeng.api.networking.IGridNode;
+import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class WirelessCardViewBuilder {
 
     public IGridNode detailNode;
     private final WirelessMachineGroups.Startup startup = new WirelessMachineGroups.Startup();
-    private Map<Target, Long> targetIds = new HashMap<>();
+    private Object2LongOpenHashMap<Target> targetIds = new Object2LongOpenHashMap<>();
     private long nextTargetId, nameRevision;
     private RenameState renameState;
 
@@ -39,7 +41,7 @@ public class WirelessCardViewBuilder {
     WirelessCardSnapshot build(WirelessCardBinding binding, ItemStack card) {
         var interfaces = new WirelessInterfaceView();
         List<IWirelessLinkView> all = binding == null ? List.of()
-            : new ArrayList<>(WirelessClusterManager.links(binding.source()));
+            : new ObjectArrayList<>(WirelessClusterManager.links(binding.source()));
         boolean initializing = startup.waiting(all);
         var focus = detailNode == null ? null
             : all.stream()
@@ -99,8 +101,8 @@ public class WirelessCardViewBuilder {
                 data.setInteger("used", allocation == null ? -1 : allocation.used());
             }
         }
-        Map<Target, Long> nextIds = new HashMap<>();
-        Map<Long, IWirelessLinkView> targets = new LinkedHashMap<>();
+        Object2LongOpenHashMap<Target> nextIds = new Object2LongOpenHashMap<>();
+        Long2ObjectLinkedOpenHashMap<IWirelessLinkView> targets = new Long2ObjectLinkedOpenHashMap<>();
         if (focus != null) data.setLong("detailId", identify(focus, nextIds, targets));
         NBTTagList entries = new NBTTagList();
         for (Row row : rows) entries.appendTag(writeRow(row, interfaces, dimensions, nextIds, targets, focus != null));
@@ -110,18 +112,18 @@ public class WirelessCardViewBuilder {
         return new WirelessCardSnapshot(data, targets);
     }
 
-    private long identify(IWirelessLinkView link, Map<Target, Long> nextIds, Map<Long, IWirelessLinkView> targets) {
+    private long identify(IWirelessLinkView link, Object2LongMap<Target> nextIds,
+        Long2ObjectMap<IWirelessLinkView> targets) {
         Target key = new Target(link.node(), link.members(), link instanceof IWirelessLinkView.EntranceView);
-        long id = nextIds.computeIfAbsent(key, ignored -> {
-            Long previous = targetIds.get(key);
-            return previous == null ? ++nextTargetId : previous;
-        });
+        long id = nextIds.computeIfAbsent(
+            key,
+            (Target ignored) -> targetIds.containsKey(key) ? targetIds.getLong(key) : ++nextTargetId);
         targets.put(id, link);
         return id;
     }
 
     private NBTTagCompound writeRow(Row row, WirelessInterfaceView interfaces, NBTTagCompound dimensions,
-        Map<Target, Long> nextIds, Map<Long, IWirelessLinkView> targets, boolean detail) {
+        Object2LongMap<Target> nextIds, Long2ObjectMap<IWirelessLinkView> targets, boolean detail) {
         var target = row.target();
         NBTTagCompound entry = new NBTTagCompound();
         writeDimensionName(dimensions, target.dimension());

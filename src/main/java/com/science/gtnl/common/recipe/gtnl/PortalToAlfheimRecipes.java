@@ -1,6 +1,5 @@
 package com.science.gtnl.common.recipe.gtnl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.init.Blocks;
@@ -18,6 +17,7 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.recipe.RecipeElvenTrade;
 
@@ -48,7 +48,7 @@ public class PortalToAlfheimRecipes implements IRecipePool {
 
             boolean hasOreDict = false;
 
-            List<Object> inputs = new ArrayList<>();
+            List<Object> inputs = new ObjectArrayList<>();
 
             for (Object input : originInputs) {
 
@@ -99,7 +99,7 @@ public class PortalToAlfheimRecipes implements IRecipePool {
                 ModsItemlist.BotaniaWillOfTorag.get(1),
                 ModsItemlist.BotaniaWillOfVerac.get(1),
                 ModsItemlist.BotaniaWillOfKaril.get(1),
-                ModsItemlist.BotaniaOvergrowthSeedDamage3.get(1),
+                ModsItemlist.BotaniaOvergrowthSeed.get(1),
                 ModsItemlist.BotaniaManasteelIngot.get(16),
                 ModsItemlist.BotaniaManaPearl.get(8),
                 ModsItemlist.BotaniaManaDiamond.get(4),
@@ -177,7 +177,7 @@ public class PortalToAlfheimRecipes implements IRecipePool {
                 ModsItemlist.BotaniaWillOfTorag.get(1),
                 ModsItemlist.BotaniaWillOfVerac.get(1),
                 ModsItemlist.BotaniaWillOfKaril.get(1),
-                ModsItemlist.BotaniaOvergrowthSeedDamage3.get(1),
+                ModsItemlist.BotaniaOvergrowthSeed.get(1),
                 ModsItemlist.BotaniaManasteelIngot.get(16),
                 ModsItemlist.BotaniaManaPearl.get(8),
                 ModsItemlist.BotaniaManaDiamond.get(4),

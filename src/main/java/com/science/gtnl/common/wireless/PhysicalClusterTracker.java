@@ -1,11 +1,7 @@
 package com.science.gtnl.common.wireless;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,6 +9,12 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 public class PhysicalClusterTracker<N, F> {
 
@@ -40,8 +42,8 @@ public class PhysicalClusterTracker<N, F> {
     }
 
     private final int maxNodes;
-    private Map<N, Set<F>> claims = new IdentityHashMap<>();
-    private Map<N, Cluster<N, F>> byNode = new IdentityHashMap<>();
+    private Map<N, Set<F>> claims = new Reference2ObjectOpenHashMap<>();
+    private Map<N, Cluster<N, F>> byNode = new Reference2ObjectOpenHashMap<>();
     private List<Cluster<N, F>> clusters = List.of();
 
     public PhysicalClusterTracker(int maxNodes) {
@@ -66,24 +68,24 @@ public class PhysicalClusterTracker<N, F> {
 
     public void refresh(Topology<N> topology, Collection<N> extraSeeds, Function<N, Set<F>> savedClaims,
         UnaryOperator<F> frequencyIdentity) {
-        Map<N, Scan> owners = new IdentityHashMap<>();
-        List<N> seeds = new ArrayList<>(claims.keySet());
+        Map<N, Scan> owners = new Reference2ObjectOpenHashMap<>();
+        List<N> seeds = new ObjectArrayList<>(claims.keySet());
         seeds.addAll(extraSeeds);
         for (N seed : seeds) {
             if (owners.containsKey(seed) || !topology.isLive(seed)) continue;
             Scan scan = new Scan();
             int discovered = 1;
-            ArrayDeque<N> pending = new ArrayDeque<>();
-            pending.add(seed);
+            ObjectArrayFIFOQueue<N> pending = new ObjectArrayFIFOQueue<>();
+            pending.enqueue(seed);
             owners.put(seed, scan);
             while (!pending.isEmpty() && !scan.root().limited) {
-                N node = pending.removeFirst();
+                N node = pending.dequeue();
                 for (N neighbour : topology.neighbours(node)) {
                     if (!topology.isLive(neighbour)) continue;
                     Scan owner = owners.get(neighbour);
                     if (owner == null) {
                         owners.put(neighbour, scan);
-                        pending.addLast(neighbour);
+                        pending.enqueue(neighbour);
                         if (++discovered > maxNodes) scan.root().limited = true;
                     } else if (owner.root() != scan.root()) {
                         // A complete component cannot meet a different scan in an undirected physical graph.
@@ -95,11 +97,11 @@ public class PhysicalClusterTracker<N, F> {
                 }
             }
         }
-        Map<Scan, Set<N>> components = new IdentityHashMap<>();
+        Map<Scan, Set<N>> components = new Reference2ObjectOpenHashMap<>();
         owners.forEach(
             (node, owner) -> components.computeIfAbsent(owner.root(), ignored -> identitySet())
                 .add(node));
-        List<Cluster<N, F>> scanned = new ArrayList<>();
+        List<Cluster<N, F>> scanned = new ObjectArrayList<>();
         components.forEach(
             (scan, members) -> scanned.add(
                 new Cluster<>(
@@ -117,14 +119,14 @@ public class PhysicalClusterTracker<N, F> {
 
     private void rebuildClaims(List<Cluster<N, F>> scanned, Function<N, Set<F>> savedClaims,
         UnaryOperator<F> frequencyIdentity) {
-        List<Cluster<N, F>> nextClusters = new ArrayList<>();
-        Map<N, Set<F>> nextClaims = new IdentityHashMap<>();
-        Map<N, Cluster<N, F>> nextByNode = new IdentityHashMap<>();
+        List<Cluster<N, F>> nextClusters = new ObjectArrayList<>();
+        Map<N, Set<F>> nextClaims = new Reference2ObjectOpenHashMap<>();
+        Map<N, Cluster<N, F>> nextByNode = new Reference2ObjectOpenHashMap<>();
         for (var component : scanned) {
             Set<N> members = component.nodes();
             boolean limited = component.limited();
-            Map<N, Set<F>> provenance = new IdentityHashMap<>();
-            Set<F> frequencies = new HashSet<>();
+            Map<N, Set<F>> provenance = new Reference2ObjectOpenHashMap<>();
+            Set<F> frequencies = new ObjectOpenHashSet<>();
             boolean blocked = component.blocked();
             for (N node : members) {
                 Set<F> labels = claims.containsKey(node) ? claims.get(node) : savedClaims.apply(node);
@@ -192,7 +194,7 @@ public class PhysicalClusterTracker<N, F> {
         for (N node : cluster.nodes()) {
             Set<F> previous = claims.get(node);
             if (previous == null) continue;
-            Set<F> remaining = new HashSet<>(previous);
+            Set<F> remaining = new ObjectOpenHashSet<>(previous);
             remaining.removeIf(
                 label -> frequencyIdentity.apply(label)
                     .equals(frequency));
@@ -213,6 +215,6 @@ public class PhysicalClusterTracker<N, F> {
     }
 
     private static <N> Set<N> identitySet() {
-        return Collections.newSetFromMap(new IdentityHashMap<>());
+        return new ReferenceOpenHashSet<>();
     }
 }

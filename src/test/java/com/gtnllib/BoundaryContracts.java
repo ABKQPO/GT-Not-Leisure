@@ -10,9 +10,7 @@ import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -29,6 +27,9 @@ import com.gtnllib.client.hud.HudColor;
 import com.gtnllib.client.hud.HudElement;
 import com.gtnllib.client.hud.HudTiming;
 import com.gtnllib.config.GTNLLibConfig;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class BoundaryContracts {
 
@@ -77,7 +78,7 @@ public class BoundaryContracts {
                 .contains("gui/widget"),
             "the package scan sees the imports between GTNLLib packages, so the cycle check has something to check");
         for (String start : imports.keySet()) {
-            List<String> cycle = cycleFrom(start, start, imports, new ArrayList<>(), new HashSet<>());
+            List<String> cycle = cycleFrom(start, start, imports, new ObjectArrayList<>(), new ObjectOpenHashSet<>());
             check(
                 cycle == null,
                 "GTNLLib package " + start + " is not part of an import cycle" + (cycle == null ? "" : ": " + cycle));
@@ -99,7 +100,7 @@ public class BoundaryContracts {
         path.add(at);
         for (String next : imports.getOrDefault(at, Collections.emptySet())) {
             if (next.equals(start)) {
-                List<String> cycle = new ArrayList<>(path);
+                List<String> cycle = new ObjectArrayList<>(path);
                 cycle.add(start);
                 return cycle;
             }
@@ -205,7 +206,7 @@ public class BoundaryContracts {
     }
 
     private static Set<String> langKeys(Path file) throws IOException {
-        Set<String> keys = new HashSet<>();
+        Set<String> keys = new ObjectOpenHashSet<>();
         for (String line : Files.readAllLines(file, StandardCharsets.UTF_8)) {
             int split = line.indexOf('=');
             if (split > 0 && !line.startsWith("#")) keys.add(

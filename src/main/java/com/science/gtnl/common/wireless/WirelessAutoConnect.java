@@ -1,9 +1,6 @@
 package com.science.gtnl.common.wireless;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 
@@ -12,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.BlockEvent;
@@ -29,15 +27,18 @@ import appeng.api.parts.IPartHost;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class WirelessAutoConnect {
 
     public static final WirelessAutoConnect INSTANCE = new WirelessAutoConnect();
     private static final String LANG = "item.gtnl.wireless_frequency_card.";
-    private static final List<Pending> PENDING = new ArrayList<>();
-    private static final Map<UUID, Long> NOTICES = new HashMap<>();
-    private static final Map<UUID, Long> TOGGLES = new HashMap<>();
+    private static final List<Pending> PENDING = new ObjectArrayList<>();
+    private static final Object2LongOpenHashMap<UUID> NOTICES = new Object2LongOpenHashMap<>();
+    private static final Object2LongOpenHashMap<UUID> TOGGLES = new Object2LongOpenHashMap<>();
     private static long ticks;
+    private static int scanBudget;
 
     private static class Pending {
 
@@ -47,11 +48,11 @@ public class WirelessAutoConnect {
         public final int x, y, z;
         public final ForgeDirection side;
         public final IPart part;
-        public final ItemStack card;
+        private final WirelessCardInventory.TrackedCard card;
         public final WirelessCardBinding binding;
         public final ItemStack placedItem;
         public final BooleanSupplier canceled;
-        public final long expires;
+        public long expires;
         public long next;
 
         Pending(EntityPlayer player, TileEntity tile, ForgeDirection side, IPart part, ItemStack card,
@@ -64,13 +65,17 @@ public class WirelessAutoConnect {
             this.z = tile.zCoord;
             this.side = side;
             this.part = part;
-            this.card = card;
+            this.card = new WirelessCardInventory.TrackedCard(card, binding);
             this.binding = binding;
             this.canceled = canceled;
             ItemStack held = player.getCurrentEquippedItem();
             this.placedItem = held == null ? null : held.copy();
             this.next = ticks + 2;
             this.expires = ticks + 200;
+        }
+
+        boolean hasCard() {
+            return card.present(player);
         }
     }
 
@@ -141,7 +146,7 @@ public class WirelessAutoConnect {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void placed(BlockEvent.PlaceEvent event) {
-        if (event.isCanceled() || event.world.isRemote) return;
+        if (event.isCanceled() || event.world.isRemote || unchanged(event.blockSnapshot)) return;
         if (event instanceof BlockEvent.MultiPlaceEvent multi) {
             for (var snapshot : multi.getReplacedBlockSnapshots()) {
                 enqueue(
@@ -156,6 +161,12 @@ public class WirelessAutoConnect {
         }
     }
 
+    static boolean unchanged(BlockSnapshot snapshot) {
+        // Matter Manipulator posts a PlaceEvent as a permission probe before it places anything there.
+        return snapshot.getReplacedBlock() == snapshot.getCurrentBlock()
+            && snapshot.meta == snapshot.world.getBlockMetadata(snapshot.x, snapshot.y, snapshot.z);
+    }
+
     public static void placedPart(EntityPlayer player, TileEntity tile, ForgeDirection side, IPart part) {
         if (side != null && part != null) enqueue(player, tile, side, part, () -> false);
     }
@@ -166,6 +177,8 @@ public class WirelessAutoConnect {
             || player.worldObj.isRemote
             || tile instanceof AccessorTileController
             || !(tile instanceof IGridHost || tile instanceof IPartHost)) return;
+        // Bulk pastes restore each block's copied frequency once they finish, instead of the card's.
+        if (WirelessConstructionSites.contains(WirelessLinkPersistence.address(tile))) return;
         // Native cable/part placement is reported with an exact side and part identity by the AE hook.
         if (part == null && tile instanceof IPartHost) return;
         var selection = WirelessCardInventory.select(player, true);
@@ -183,12 +196,15 @@ public class WirelessAutoConnect {
             if (pending.player == player && pending.tile == tile && pending.part == part) return;
         }
         ItemStack card = selection.card();
+        if (WirelessCardBinding.identify(card)) WirelessCardInventory.sync(player, card);
         PENDING.add(
             new Pending(player, tile, side, part, card, WirelessCardBinding.read(card.getTagCompound()), canceled));
     }
 
     public static void tick() {
         ticks++;
+        scanBudget = 1;
+        Pending retried = null;
         var iterator = PENDING.iterator();
         while (iterator.hasNext()) {
             Pending pending = iterator.next();
@@ -196,14 +212,24 @@ public class WirelessAutoConnect {
             if (ticks > pending.expires) {
                 notice(pending.player, "auto_unavailable");
                 iterator.remove();
-            } else if (attempt(pending)) iterator.remove();
-            else pending.next = ticks + 1;
+            } else {
+                int before = scanBudget;
+                if (attempt(pending)) iterator.remove();
+                else {
+                    pending.next = ticks + 1;
+                    if (before > scanBudget) retried = pending;
+                }
+            }
+        }
+        if (retried != null) {
+            PENDING.remove(retried);
+            PENDING.add(retried);
         }
         if (ticks % 200 == 0) {
             NOTICES.values()
-                .removeIf(until -> until < ticks);
+                .removeIf((long until) -> until < ticks);
             TOGGLES.values()
-                .removeIf(until -> until < ticks);
+                .removeIf((long until) -> until < ticks);
         }
     }
 
@@ -218,9 +244,7 @@ public class WirelessAutoConnect {
             || pending.tile.isInvalid()) return true;
         if (pending.part != null
             && (!(pending.tile instanceof IPartHost host) || host.getPart(pending.side) != pending.part)) return true;
-        if (pending.card.stackSize <= 0 || WirelessCardInventory.location(player, pending.card) == Integer.MIN_VALUE
-            || !pending.binding.equals(WirelessCardBinding.read(pending.card.getTagCompound()))
-            || !WirelessCardBinding.automatic(pending.card.getTagCompound())) return true;
+        if (!pending.hasCard()) return true;
         ForgeDirection side = pending.side == null ? ForgeDirection.UNKNOWN : pending.side;
         Address target = new Address(world.provider.dimensionId, pending.x, pending.y, pending.z, side);
         IGridNode node = target.node();
@@ -248,7 +272,15 @@ public class WirelessAutoConnect {
             return true;
         }
         try {
-            var result = WirelessOperations.ensureConnected(player, pending.binding, target);
+            var result = WirelessOperations.ensureConnected(player, pending.binding, target, () -> {
+                if (scanBudget <= 0) return false;
+                scanBudget--;
+                return true;
+            });
+            if (result == WirelessOperations.Result.DEFERRED) {
+                pending.expires++;
+                return false;
+            }
             if (result == WirelessOperations.Result.DENIED) notice(player, "denied");
             else if (result == WirelessOperations.Result.UNAVAILABLE) notice(player, "auto_failed");
             return result != WirelessOperations.Result.WAITING;
@@ -258,7 +290,7 @@ public class WirelessAutoConnect {
         }
     }
 
-    private static void notice(EntityPlayer player, String key) {
+    static void notice(EntityPlayer player, String key) {
         if (ticks < NOTICES.getOrDefault(player.getUniqueID(), Long.MIN_VALUE)) return;
         NOTICES.put(player.getUniqueID(), ticks + 40);
         message(player, key);
@@ -273,5 +305,6 @@ public class WirelessAutoConnect {
         NOTICES.clear();
         TOGGLES.clear();
         ticks = 0;
+        scanBudget = 0;
     }
 }

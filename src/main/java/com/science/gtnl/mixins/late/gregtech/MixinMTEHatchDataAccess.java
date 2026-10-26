@@ -1,6 +1,5 @@
 package com.science.gtnl.mixins.late.gregtech;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,6 +15,7 @@ import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchDataAccess;
 import gregtech.api.util.AssemblyLineUtils;
 import gregtech.api.util.GTRecipe;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import tectech.recipe.TecTechRecipeMaps;
 
 @Mixin(value = MTEHatchDataAccess.class, remap = false)
@@ -43,7 +43,7 @@ public abstract class MixinMTEHatchDataAccess extends MTEHatch implements IAddUI
             return;
         }
 
-        cachedRecipes = new ArrayList<>();
+        cachedRecipes = new ObjectArrayList<>();
         for (int i = 0; i < getSizeInventory(); i++) {
             cachedRecipes.addAll(AssemblyLineUtils.findALRecipeFromDataStick(getStackInSlot(i)));
         }

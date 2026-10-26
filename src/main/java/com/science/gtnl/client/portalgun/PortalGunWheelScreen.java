@@ -1,6 +1,5 @@
 package com.science.gtnl.client.portalgun;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.client.Minecraft;
@@ -42,6 +41,7 @@ import com.science.gtnl.utils.enums.PortalGunPortalEffect;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 @SideOnly(Side.CLIENT)
 public class PortalGunWheelScreen extends WheelScreen {
@@ -240,7 +240,7 @@ public class PortalGunWheelScreen extends WheelScreen {
         private int selected;
         private boolean stayOpen;
         private PortalGunWheelScreen screen;
-        private final Map<ItemId, IDrawable> icons = new HashMap<>();
+        private final Map<ItemId, IDrawable> icons = new Object2ObjectOpenHashMap<>();
 
         private State(int selected, boolean stayOpen) {
             this.selected = selected;

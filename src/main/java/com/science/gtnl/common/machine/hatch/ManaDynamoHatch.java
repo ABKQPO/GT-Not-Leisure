@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,6 +26,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchDynamo;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import vazkii.botania.api.subtile.ManaHelper;
@@ -151,7 +151,7 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
 
     @Override
     public String[] getDescription() {
-        ArrayList<String> desc = new ArrayList<>();
+        ObjectArrayList<String> desc = new ObjectArrayList<>();
         desc.add(StatCollector.translateToLocal("gtnl.hatch.mana_dynamo.tooltip.0"));
         desc.add(StatCollector.translateToLocal("gtnl.hatch.mana_dynamo.tooltip.1"));
         desc.add(StatCollector.translateToLocalFormatted("gtnl.hatch.mana_dynamo.tooltip.2", MANA_TO_EU_RATE));
@@ -303,7 +303,7 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
         int y = aBaseMetaTileEntity.getYCoord();
         int z = aBaseMetaTileEntity.getZCoord();
 
-        List<TilePool> pools = new ArrayList<>();
+        List<TilePool> pools = new ObjectArrayList<>();
 
         for (int dx = -MANA_POOL_RADIUS; dx <= MANA_POOL_RADIUS; dx++) {
             for (int dy = -MANA_POOL_RADIUS; dy <= MANA_POOL_RADIUS; dy++) {
@@ -324,7 +324,7 @@ public class ManaDynamoHatch extends MTEHatchDynamo implements IAddUIWidgets {
         int y = aBaseMetaTileEntity.getYCoord();
         int z = aBaseMetaTileEntity.getZCoord();
 
-        List<SubTileGenerating> flowers = new ArrayList<>();
+        List<SubTileGenerating> flowers = new ObjectArrayList<>();
 
         for (int dx = -MANA_FLOWER_RADIUS; dx <= MANA_FLOWER_RADIUS; dx++) {
             for (int dy = -MANA_FLOWER_RADIUS; dy <= MANA_FLOWER_RADIUS; dy++) {

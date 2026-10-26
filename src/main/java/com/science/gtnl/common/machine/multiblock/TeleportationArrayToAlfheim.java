@@ -69,6 +69,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -92,7 +93,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
 
     public boolean enableInfinityMana = false;
     public ArrayList<CustomFluidHatch> mFluidManaInputHatch = new ArrayList<>();
-    public final ArrayList<FluidStack> sharedManaRecipeFluids = new ArrayList<>();
+    public final ObjectArrayList<FluidStack> sharedManaRecipeFluids = new ObjectArrayList<>();
 
     public TeleportationArrayToAlfheim(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

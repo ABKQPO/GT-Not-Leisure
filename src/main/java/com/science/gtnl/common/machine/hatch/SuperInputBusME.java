@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.hatch;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -83,6 +82,7 @@ import gregtech.common.tileentities.machines.IRecipeProcessingAwareHatch;
 import gregtech.common.tileentities.machines.ISmartInputHatch;
 import gregtech.common.tileentities.machines.MTEHatchInputBusME;
 import gregtech.common.tileentities.machines.RecipeCheckReason;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
@@ -143,7 +143,7 @@ public class SuperInputBusME extends MTEHatchInputBusME implements IConfiguratio
 
     @Override
     public String[] getDescription() {
-        List<String> strings = new ArrayList<>(8);
+        List<String> strings = new ObjectArrayList<>(8);
         strings.add(StatCollector.translateToLocal("gtnl.hatch.super_input_bus_me.tooltip.0"));
         strings.add(
             StatCollector.translateToLocal("gtnl.hatch.super_input_bus_me.tooltip.1") + " "

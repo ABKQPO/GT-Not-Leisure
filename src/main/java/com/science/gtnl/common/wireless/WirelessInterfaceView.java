@@ -2,9 +2,6 @@ package com.science.gtnl.common.wireless;
 
 import static com.gtnewhorizon.gtnhlib.capability.Capabilities.getCapability;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,11 +24,14 @@ import appeng.helpers.IInterfaceHost;
 import appeng.parts.AEBasePart;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatch;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 public class WirelessInterfaceView {
 
-    private final Map<IInterfaceHost, List<MTEHatch>> targets = new IdentityHashMap<>();
-    private final Map<IWirelessLinkView, List<Name>> names = new IdentityHashMap<>();
+    private final Map<IInterfaceHost, List<MTEHatch>> targets = new Reference2ObjectOpenHashMap<>();
+    private final Map<IWirelessLinkView, List<Name>> names = new Reference2ObjectOpenHashMap<>();
 
     record Name(String rawName, String suffix, ItemStack icon) {
 
@@ -50,7 +50,7 @@ public class WirelessInterfaceView {
         var tile = host.getTileEntity();
         if (tile == null || tile.isInvalid() || tile.getWorldObj() == null) return null;
         var world = tile.getWorldObj();
-        List<MTEHatch> hatches = new ArrayList<>();
+        List<MTEHatch> hatches = new ObjectArrayList<>();
         for (ForgeDirection side : host.getTargets()) {
             if (side == ForgeDirection.UNKNOWN) continue;
             int x = tile.xCoord + side.offsetX, y = tile.yCoord + side.offsetY, z = tile.zCoord + side.offsetZ;
@@ -71,7 +71,7 @@ public class WirelessInterfaceView {
     }
 
     private List<Name> readNames(IWirelessLinkView link) {
-        Set<Object> seen = Collections.newSetFromMap(new IdentityHashMap<>());
+        Set<Object> seen = new ReferenceOpenHashSet<>();
         var names = new TreeMap<String, Name>();
         for (var node : link.members()) {
             Object machine = node.getMachine();

@@ -1,8 +1,6 @@
 package com.science.gtnl.utils.machine.greenHouseManager;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,6 +28,8 @@ import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public abstract class GreenHouseMode {
 
@@ -64,15 +64,15 @@ public abstract class GreenHouseMode {
     /**
      * Used to resolve factory type to an identifier.
      */
-    private final HashMap<String, IGreenHouseBucketFactory> factories;
+    private final Object2ObjectOpenHashMap<String, IGreenHouseBucketFactory> factories;
     /**
      * A way to have other mods submit custom buckets that can be prioritized over our default buckets
      */
-    private final LinkedList<IGreenHouseBucketFactory> orderedFactories;
+    private final ObjectArrayList<IGreenHouseBucketFactory> orderedFactories;
 
     public GreenHouseMode() {
-        this.factories = new HashMap<>();
-        this.orderedFactories = new LinkedList<>();
+        this.factories = new Object2ObjectOpenHashMap<>();
+        this.orderedFactories = new ObjectArrayList<>();
     }
 
     /**
@@ -86,7 +86,7 @@ public abstract class GreenHouseMode {
         dealWithDuplicateFactoryId(factoryId);
         // add factory as lowest priority
         this.factories.put(factoryId, factory);
-        this.orderedFactories.addLast(factory);
+        this.orderedFactories.add(factory);
     }
 
     /**
@@ -100,7 +100,7 @@ public abstract class GreenHouseMode {
         dealWithDuplicateFactoryId(factoryId);
         // add factory as lowest priority
         this.factories.put(factoryId, factory);
-        this.orderedFactories.addFirst(factory);
+        this.orderedFactories.add(0, factory);
     }
 
     /**

@@ -1,7 +1,5 @@
 package com.science.gtnl.utils.machine.greenHouseManager;
 
-import java.util.LinkedList;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -18,6 +16,7 @@ import com.science.gtnl.utils.machine.greenHouseManager.buckets.GreenHouseStemBu
 
 import gregtech.api.enums.Mods;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 
 public abstract class GreenHouseBucket {
@@ -141,7 +140,7 @@ public abstract class GreenHouseBucket {
         }
 
         // Check if the item is found
-        LinkedList<ItemStack> toConsumeFrom = new LinkedList<>();
+        ObjectArrayList<ItemStack> toConsumeFrom = new ObjectArrayList<>();
         supportLoop: for (ItemStack supportItem : this.supportItems) {
             for (ItemStack otherInput : greenhouse.getStoredInputs()) {
                 // filter usable inputs
@@ -149,7 +148,7 @@ public abstract class GreenHouseBucket {
                 if (!GTUtility.areStacksEqual(supportItem, otherInput, false)) continue;
                 // update max consume again
                 maxConsume = Math.min(maxConsume, otherInput.stackSize);
-                toConsumeFrom.addLast(otherInput);
+                toConsumeFrom.add(otherInput);
                 continue supportLoop;
             }
             return -1;

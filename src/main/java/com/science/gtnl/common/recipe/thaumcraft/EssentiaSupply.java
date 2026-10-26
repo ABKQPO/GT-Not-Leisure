@@ -1,6 +1,5 @@
 package com.science.gtnl.common.recipe.thaumcraft;
 
-import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -22,6 +21,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.me.GridAccessException;
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Mods;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumicenergistics.common.storage.AEEssentiaStack;
@@ -36,8 +36,8 @@ public class EssentiaSupply {
     private static final String ADVANCED_INFUSION_PROVIDER_NAME_KEY = "thaumicenergistics.block.advanced.infusion.provider.name";
 
     private final String machineName;
-    private final List<TileEntityEssentiaHatch> hatches = new ArrayList<>();
-    private final List<TileEntity> providers = new ArrayList<>();
+    private final List<TileEntityEssentiaHatch> hatches = new ObjectArrayList<>();
+    private final List<TileEntity> providers = new ObjectArrayList<>();
     private long commitBlockedUntil;
 
     public EssentiaSupply(String machineName) {

@@ -1,7 +1,6 @@
 package com.science.gtnl.common.machine.monitor;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,6 +10,7 @@ import net.minecraft.nbt.NBTTagList;
 
 import com.cleanroommc.modularui.utils.item.INBTSerializable;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 
 @Getter
@@ -101,7 +101,7 @@ public class EnergyMonitorSnapshot implements INBTSerializable<NBTTagCompound> {
             return;
         }
         NBTTagList rowList = tag.getTagList("rows", 10);
-        List<EnergyMonitorRowSnapshot> deserializedRows = new ArrayList<>(rowList.tagCount());
+        List<EnergyMonitorRowSnapshot> deserializedRows = new ObjectArrayList<>(rowList.tagCount());
         for (int index = 0; index < rowList.tagCount(); index++) {
             deserializedRows.add(EnergyMonitorRowSnapshot.fromNBT(rowList.getCompoundTagAt(index)));
         }

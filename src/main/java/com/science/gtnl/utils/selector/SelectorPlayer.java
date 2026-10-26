@@ -1,17 +1,18 @@
 package com.science.gtnl.utils.selector;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 public class SelectorPlayer {
 
     public static List<Entity> matchPlayer(String name) {
 
-        List<Entity> result = new ArrayList<>();
+        List<Entity> result = new ObjectArrayList<>();
 
         EntityPlayerMP player = MinecraftServer.getServer()
             .getConfigurationManager()

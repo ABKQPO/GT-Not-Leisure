@@ -13,9 +13,6 @@ import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -35,6 +32,10 @@ import com.google.gson.JsonPrimitive;
 import com.gtnllib.GTNLLib;
 import com.gtnllib.utils.MathUtils;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 public class HudLayout {
 
     public static final float MIN_SCALE = 0.5F, MAX_SCALE = 3F, SCALE_STEP = 0.1F, MIN_OPACITY = 0.1F,
@@ -42,8 +43,8 @@ public class HudLayout {
     private static final String FILE = "config/" + GTNLLib.CONFIG_DIRECTORY + "/hud.json", ELEMENTS = "elements";
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting()
         .create();
-    private static final Map<String, Entry> ENTRIES = new LinkedHashMap<>();
-    private static final Map<String, HudTiming.Tracker> TRACKERS = new HashMap<>();
+    private static final Map<String, Entry> ENTRIES = new Object2ObjectLinkedOpenHashMap<>();
+    private static final Map<String, HudTiming.Tracker> TRACKERS = new Object2ObjectOpenHashMap<>();
     private static boolean loaded;
     private static BooleanSupplier shown = () -> true;
     private static DoubleSupplier globalScale = () -> 1;
@@ -84,7 +85,7 @@ public class HudLayout {
         private static final String MOVED = "moved", ANCHOR_X = "anchorX", ANCHOR_Y = "anchorY", X = "x", Y = "y",
             SCALE = "scale", HIDDEN = "hidden", OPACITY = "opacity", COLOR = "color", TIMING = "timing",
             IDLE_SECONDS = "idleSeconds", IDLE_ALPHA = "idleAlpha", STYLE = "style", OPTIONS = "options";
-        private static final Set<String> KNOWN = new HashSet<>(
+        private static final Set<String> KNOWN = new ObjectOpenHashSet<>(
             Arrays.asList(
                 MOVED,
                 ANCHOR_X,
@@ -104,8 +105,8 @@ public class HudLayout {
         public boolean moved, hidden;
         public float anchorX, anchorY, x, y, scale = 1F, opacity = 1F, idleSeconds = Float.NaN, idleAlpha = Float.NaN;
         public String color, timing, style;
-        public final Map<String, JsonPrimitive> options = new LinkedHashMap<>();
-        private final Map<String, JsonElement> unknown = new LinkedHashMap<>();
+        public final Map<String, JsonPrimitive> options = new Object2ObjectLinkedOpenHashMap<>();
+        private final Map<String, JsonElement> unknown = new Object2ObjectLinkedOpenHashMap<>();
 
         public Entry copy() {
             Entry copy = new Entry();
@@ -431,7 +432,7 @@ public class HudLayout {
 
     public static Map<String, Entry> snapshot() {
         if (!loaded) load();
-        Map<String, Entry> copy = new LinkedHashMap<>();
+        Map<String, Entry> copy = new Object2ObjectLinkedOpenHashMap<>();
         for (Map.Entry<String, Entry> pair : ENTRIES.entrySet()) copy.put(
             pair.getKey(),
             pair.getValue()

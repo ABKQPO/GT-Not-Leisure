@@ -1,6 +1,5 @@
 package com.science.gtnl.client.text;
 
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +26,8 @@ import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.text.effect.EffectTextParser;
 import com.science.gtnl.utils.text.effect.TextEffectStyle;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 /** Draws marked spans while leaving glyph generation to the current font. */
 public class EffectTextRenderer implements IResourceManagerReloadListener {
 
@@ -37,7 +38,7 @@ public class EffectTextRenderer implements IResourceManagerReloadListener {
     private static int nativeDepth;
     private final TextMaskCache masks = new TextMaskCache();
     private final Map<LayoutKey, Layout> layouts = new LinkedHashMap<>(32, 0.75f, true);
-    private final Set<String> failed = new HashSet<>();
+    private final Set<String> failed = new ObjectOpenHashSet<>();
 
     public static boolean isCapturing() {
         return captureDepth > 0;
@@ -178,7 +179,7 @@ public class EffectTextRenderer implements IResourceManagerReloadListener {
         if (style == null) return color;
         int rgb = !style.colors()
             .isEmpty() ? style.colors()
-                .get(0) : effect == null ? color & 0xFFFFFF : effect.fallbackColor();
+                .getInt(0) : effect == null ? color & 0xFFFFFF : effect.fallbackColor();
         return color & 0xFF000000 | rgb;
     }
 

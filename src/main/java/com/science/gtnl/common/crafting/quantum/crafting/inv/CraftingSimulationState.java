@@ -16,6 +16,11 @@
 package com.science.gtnl.common.crafting.quantum.crafting.inv;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.ObjLongConsumer;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -49,6 +54,7 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
      * Primary keys whose fuzzy variants have been loaded into the local caches.
      */
     private final ReferenceOpenHashSet<Object> loadedFuzzyGroups;
+    private final Object2LongOpenHashMap<IPatternDetails> crafts = new Object2LongOpenHashMap<>(0);
     /**
      * List of items to emit.
      */
@@ -62,7 +68,7 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
      * Inputs supplied by graph boundaries while previewing a local compatibility unit.
      */
     private final KeyCounter boundaryItems;
-    private final Object2LongOpenHashMap<IPatternDetails> crafts = new Object2LongOpenHashMap<>();
+    private @Nullable Set<AEKey> recordedReads;
     /**
      * Minimum amount of each item that needs to be extracted from the network. This is the maximum of (unmodified -
      * modifiable).
@@ -76,7 +82,7 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
     protected CraftingSimulationState() {
         this.unmodifiedCache = new KeyCounter();
         this.modifiableCache = new KeyCounter();
-        this.loadedFuzzyGroups = new ReferenceOpenHashSet<>();
+        this.loadedFuzzyGroups = new ReferenceOpenHashSet<>(1);
         this.emittedItems = new KeyCounter();
         this.pseudoItems = new KeyCounter();
         this.boundaryItems = new KeyCounter();
@@ -101,16 +107,32 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
 
     protected abstract Iterable<AEKey> findFuzzyParent(AEKey input);
 
+    protected void cacheFuzzyParent(AEKey what) {
+        for (var key : findFuzzyParent(what)) cacheInherited(key, simulateExtractParent(key));
+    }
+
+    protected final void cacheInherited(AEKey key, long amount) {
+        modifiableCache.add(key, amount);
+        unmodifiedCache.add(key, amount);
+    }
+
+    final void copyFuzzyTo(AEKey what, CraftingSimulationState child) {
+        cacheFuzzy(what);
+        modifiableCache.forEachFuzzy(what, FuzzyMode.IGNORE_ALL, (key, amount) -> {
+            // Match findFuzzyTemplates followed by extract(SIMULATE), including local boundary stock.
+            if (amount > 0) child.cacheInherited(key, LongMath.saturatedAdd(amount, boundaryItems.get(key)));
+        });
+    }
+
     private void cacheFuzzy(AEKey what) {
         if (!loadedFuzzyGroups.add(what.getPrimaryKey())) {
             return;
         }
-
-        for (var keyToCache : findFuzzyParent(what)) {
-            var extracted = simulateExtractParent(keyToCache);
-            modifiableCache.add(keyToCache, extracted);
-            unmodifiedCache.add(keyToCache, extracted);
+        if (this.recordedReads != null) {
+            this.recordedReads.add(what);
         }
+
+        cacheFuzzyParent(what);
     }
 
     @Override
@@ -163,7 +185,10 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
         cacheFuzzy(input);
 
         return Iterables.transform(
-            Iterables.filter(modifiableCache.findFuzzy(input, FuzzyMode.IGNORE_ALL), entry -> entry.getLongValue() > 0),
+            Iterables.filter(
+                modifiableCache.findFuzzy(input, FuzzyMode.IGNORE_ALL),
+                entry -> Objects.requireNonNull(entry)
+                    .getLongValue() > 0),
             Object2LongMap.Entry::getKey);
     }
 
@@ -220,6 +245,35 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
         return this.unmodifiedCache.get(what);
     }
 
+    /**
+     * Start before using an isolated state whose result may be memoized.
+     */
+    public void recordInventoryReads() {
+        this.recordedReads = new HashSet<>();
+    }
+
+    public InventorySnapshot snapshotInventoryReads() {
+        var amounts = new KeyCounter();
+        amounts.addAll(this.unmodifiedCache);
+        return new InventorySnapshot(amounts, List.copyOf(Objects.requireNonNull(this.recordedReads)));
+    }
+
+    public void applyDiff(CraftingSimulationState parent) {
+        // Check all exact-key changes before modifying the parent. An immediate child commit needs neither a
+        // frozen diff nor another inventory/variant index just to hold its deltas.
+        this.modifiableCache.forEach((ObjLongConsumer<? super AEKey>) (key1, amount1) -> {
+            long delta = amount1 - this.unmodifiedCache.get(key1);
+            if (delta < 0 && parent.extract(key1, -delta, Actionable.SIMULATE) != -delta) {
+                throw new IllegalStateException("Crafting simulation diff cannot be applied to parent");
+            }
+        });
+        parent.applyRequiredExtract(this.requiredExtract);
+        this.modifiableCache.forEach(
+            (ObjLongConsumer<? super AEKey>) (key, amount) -> parent
+                .applyInventoryDelta(key, amount - this.unmodifiedCache.get(key)));
+        parent.applyAdditionalChanges(this.emittedItems, this.pseudoItems, this.crafts, this.bytes);
+    }
+
     public long getRequiredExtractAmount(AEKey what) {
         return this.requiredExtract.get(what);
     }
@@ -247,13 +301,13 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
     }
 
     /**
-     * Amount of the key the planned crafts produce beyond what they consume themselves. A catalyst a pattern returns
+     * Amount of the key the planned crafts produce beyond what they consume themselves. A catalyst a pattern gives back
      * is not produced: it has to exist before the first craft.
      */
     public long getNetCraftedAmount(AEKey what) {
         long amount = 0;
         for (Object2LongMap.Entry<IPatternDetails> entry : this.crafts.object2LongEntrySet()) {
-            final IPatternDetails pattern = entry.getKey();
+            var pattern = entry.getKey();
             long net = 0;
             for (var output : pattern.getOutputs()) {
                 if (what.matches(output)) {
@@ -284,63 +338,95 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
         modifiableCache.set(stack, 0);
     }
 
-    public void applyDiff(CraftingSimulationState parent) {
-        CraftingSimulationDiff.shared(requiredExtract, inventoryDelta(), emittedItems, pseudoItems, crafts, bytes)
-            .applyTo(parent);
-    }
-
-    public CraftingSimulationDiff freezeDiff() {
-        return new CraftingSimulationDiff(requiredExtract, inventoryDelta(), emittedItems, pseudoItems, crafts, bytes);
-    }
-
-    private KeyCounter inventoryDelta() {
+    /**
+     * How much of each key this state holds more or less than its parent.
+     */
+    public KeyCounter getInventoryDelta() {
         var inventoryDelta = new KeyCounter();
-        for (var entry : modifiableCache) {
-            long delta = entry.getLongValue() - unmodifiedCache.get(entry.getKey());
+        modifiableCache.forEach((ObjLongConsumer<? super AEKey>) (key, amount) -> {
+            long delta = amount - unmodifiedCache.get(key);
             if (delta != 0) {
-                inventoryDelta.add(entry.getKey(), delta);
+                inventoryDelta.add(key, delta);
             }
-        }
+        });
         return inventoryDelta;
     }
 
+    public CraftingSimulationDiff freezeDiff() {
+        return new CraftingSimulationDiff(
+            requiredExtract,
+            getInventoryDelta(),
+            emittedItems,
+            pseudoItems,
+            crafts,
+            bytes);
+    }
+
     void applyDiff(CraftingSimulationDiff diff) {
+        applyRequiredExtract(diff.requiredExtract);
+        diff.inventoryDelta.forEach(this::applyInventoryDelta);
+        applyAdditionalChanges(diff.emittedItems, diff.pseudoItems, diff.crafts, diff.bytes);
+    }
+
+    private void applyRequiredExtract(KeyCounter required) {
         // It's important to apply this here to ensure that the extract below doesn't make us count some stacks twice.
-        for (var entry : diff.requiredExtract) {
-            var key = entry.getKey();
+        // To compute the new parent max difference during the processing of the child's queries:
+        // Take current parent difference, and add required extract (= max difference observed in the child).
+        required.forEach((ObjLongConsumer<? super AEKey>) (key, amount) -> {
             // To compute the new parent max difference during the processing of the child's queries:
             // Take current parent difference, and add required extract (= max difference observed in the child).
-            long delta = this.unmodifiedCache.get(key) - this.modifiableCache.get(key) + entry.getLongValue();
+            long delta = this.unmodifiedCache.get(key) - this.modifiableCache.get(key) + amount;
             this.updateRequiredExtract(key, delta);
-        }
+        });
+    }
 
-        for (var entry : diff.inventoryDelta) {
-            long sizeDelta = entry.getLongValue();
-
-            if (sizeDelta > 0) {
-                this.insert(entry.getKey(), sizeDelta, Actionable.MODULATE);
-            } else if (sizeDelta < 0) {
-                long newStackSize = -sizeDelta;
-                var reallyExtracted = this.extract(entry.getKey(), newStackSize, Actionable.MODULATE);
-
-                if (reallyExtracted != -sizeDelta) {
-                    throw new IllegalStateException("Failed to extract from parent. This is a bug!");
-                }
+    private void applyInventoryDelta(AEKey key, long delta) {
+        if (delta > 0) {
+            this.insert(key, delta, Actionable.MODULATE);
+        } else if (delta < 0) {
+            if (this.extract(key, -delta, Actionable.MODULATE) != -delta) {
+                throw new IllegalStateException("Failed to extract from parent. This is a bug!");
             }
         }
+    }
 
-        for (var toEmit : diff.emittedItems) {
-            this.emitItems(toEmit.getKey(), toEmit.getLongValue());
-        }
+    private void applyAdditionalChanges(KeyCounter emitted, KeyCounter pseudo,
+        Object2LongMap<IPatternDetails> addedCrafts, double addedBytes) {
+        emitted.forEach(this::emitItems);
 
-        for (var pseudoItem : diff.pseudoItems) {
-            this.insertPseudo(pseudoItem.getKey(), pseudoItem.getLongValue(), Actionable.MODULATE);
-        }
+        pseudo.forEach((entryKey, entryAmount) -> this.insertPseudo(entryKey, entryAmount, Actionable.MODULATE));
 
-        this.addBytes(diff.bytes);
+        this.addBytes(addedBytes);
 
-        for (Object2LongMap.Entry<IPatternDetails> entry : diff.crafts.object2LongEntrySet()) {
+        for (Object2LongMap.Entry<IPatternDetails> entry : addedCrafts.object2LongEntrySet()) {
             this.addCrafting(entry.getKey(), entry.getLongValue());
+        }
+    }
+
+    /**
+     * Inventory assumptions, including absent keys and newly appearing fuzzy variants.
+     */
+    public static final class InventorySnapshot {
+
+        private final KeyCounter amounts;
+        private final List<AEKey> probes;
+
+        private InventorySnapshot(KeyCounter amounts, List<AEKey> probes) {
+            this.amounts = amounts;
+            this.probes = probes;
+        }
+
+        public boolean matches(CraftingSimulationState inventory) {
+            for (var entry : this.amounts) {
+                if (inventory.getAvailableAmount(entry.getKey()) != entry.getLongValue()) return false;
+            }
+            for (int i = 0; i < this.probes.size(); i++) {
+                var probe = this.probes.get(i);
+                for (var key : Objects.requireNonNull(inventory.findFuzzyTemplates(probe))) {
+                    if (inventory.getAvailableAmount(key) != this.amounts.get(key)) return false;
+                }
+            }
+            return true;
         }
     }
 

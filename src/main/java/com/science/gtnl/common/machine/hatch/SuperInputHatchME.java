@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -137,7 +136,7 @@ public class SuperInputHatchME extends MTEHatchInputME implements IConfiguration
 
     @Override
     public String[] getDescription() {
-        List<String> strings = new ArrayList<>(8);
+        List<String> strings = new ObjectArrayList<>(8);
         strings.add(StatCollector.translateToLocal("gtnl.hatch.super_input_hatch_me.tooltip.0"));
         strings.add(
             StatCollector.translateToLocal("gtnl.hatch.super_input_hatch_me.tooltip.1") + " "

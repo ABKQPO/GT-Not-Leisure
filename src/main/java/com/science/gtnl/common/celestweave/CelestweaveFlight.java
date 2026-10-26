@@ -1,7 +1,6 @@
 package com.science.gtnl.common.celestweave;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,11 +15,13 @@ import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFlightPacket;
 import com.science.gtnl.config.MainConfig;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 public class CelestweaveFlight implements ICelestweaveBehavior {
 
     private static final String TAG = "GTNLCelestweaveFlight", WAS_FLYING = "GTNLCelestweaveWasFlying";
     private static final double SYNC_RANGE = 256;
-    private static final Set<UUID> FLYING = Collections.synchronizedSet(new HashSet<>());
+    private static final Set<UUID> FLYING = Collections.synchronizedSet(new ObjectOpenHashSet<>());
 
     CelestweaveFlight() {}
 

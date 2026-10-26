@@ -1,6 +1,5 @@
 package com.science.gtnl.client.nei;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,6 +21,7 @@ import gregtech.api.enums.OrePrefixes;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class NuclearReactorGuideHandler extends TemplateRecipeHandler {
 
@@ -86,16 +86,16 @@ public class NuclearReactorGuideHandler extends TemplateRecipeHandler {
     }
 
     private static List<List<String>> splitPages(List<String> lines) {
-        List<List<String>> pages = new ArrayList<>();
+        List<List<String>> pages = new ObjectArrayList<>();
         for (int i = 0; i < lines.size(); i += MAX_LINES_PER_PAGE) {
-            pages.add(new ArrayList<>(lines.subList(i, Math.min(i + MAX_LINES_PER_PAGE, lines.size()))));
+            pages.add(new ObjectArrayList<>(lines.subList(i, Math.min(i + MAX_LINES_PER_PAGE, lines.size()))));
         }
-        if (pages.isEmpty()) pages.add(new ArrayList<>());
+        if (pages.isEmpty()) pages.add(new ObjectArrayList<>());
         return pages;
     }
 
     private static List<GuidePageData> buildPages() {
-        List<GuidePageData> pages = new ArrayList<>(4);
+        List<GuidePageData> pages = new ObjectArrayList<>(4);
         addPage(pages, GTNLItemList.NuclearReactor.get(1), "gtnl.nei.nuclear_reactor");
         addPage(pages, ItemList.RodUranium.get(1), "gtnl.nei.nuclear_reactor.guide.fuel_rod");
         addPage(pages, GTModHandler.getIC2Item("reactorReflector", 1L), "gtnl.nei.nuclear_reactor.guide.reflector");

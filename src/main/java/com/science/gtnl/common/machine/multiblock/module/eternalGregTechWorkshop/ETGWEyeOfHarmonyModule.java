@@ -4,7 +4,6 @@ import static gregtech.api.enums.HatchElement.InputBus;
 import static gregtech.api.enums.HatchElement.InputHatch;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -51,6 +50,7 @@ import gregtech.common.tileentities.machines.outputme.MTEHatchOutputME;
 import gtneioreplugin.plugin.block.ModBlocks;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import kekztech.util.Util;
 import tectech.TecTech;
 import tectech.recipe.EyeOfHarmonyRecipe;
@@ -96,8 +96,8 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
     public long currentCircuitMultiplier = 0;
     public boolean enableRawStarMatter;
 
-    public List<ItemStackLong> outputItems = new ArrayList<>();
-    public List<FluidStackLong> outputFluids = new ArrayList<>();
+    public List<ItemStackLong> outputItems = new ObjectArrayList<>();
+    public List<FluidStackLong> outputFluids = new ObjectArrayList<>();
 
     public Object2LongMap<Fluid> validFluidMap = new Object2LongOpenHashMap<>() {
 
@@ -492,8 +492,8 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
         }
 
         // Clear the array list for new recipes.
-        outputItems = new ArrayList<>();
-        outputFluids = new ArrayList<>();
+        outputItems = new ObjectArrayList<>();
+        outputFluids = new ObjectArrayList<>();
     }
 
     private void outputItemToAENetwork(ItemStack item, long amount) {
@@ -775,7 +775,7 @@ public class ETGWEyeOfHarmonyModule extends EternalGregTechWorkshopModule {
 
     @Override
     public String[] getInfoData() {
-        ArrayList<String> str = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        ObjectArrayList<String> str = new ObjectArrayList<>(Arrays.asList(super.getInfoData()));
         str.add(
             EnumChatFormatting.GOLD.toString() + EnumChatFormatting.STRIKETHROUGH
                 + "-------------"

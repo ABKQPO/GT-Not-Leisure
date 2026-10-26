@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.hatch;
 import static net.minecraft.util.StatCollector.translateToLocal;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +29,7 @@ import gregtech.common.tileentities.machines.multi.nanochip.factory.VacuumFactor
 import gregtech.common.tileentities.machines.multi.nanochip.hatches.MTEHatchVacuumConveyorInput;
 import gregtech.common.tileentities.machines.multi.nanochip.util.CircuitComponent;
 import gregtech.common.tileentities.machines.multi.nanochip.util.CircuitComponentPacket;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 @IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
@@ -125,13 +125,13 @@ public class WirelessVacuumConveyorInputHatch extends MTEHatchVacuumConveyorInpu
         Map<CircuitComponent, List<MutablePair<String, Long>>> currentContents = contents == null ? Map.of()
             : contents.getComponents();
         if (!persistedContentsInitialized) {
-            persistedContents = new HashMap<>(currentContents);
+            persistedContents = new Object2ObjectOpenHashMap<>(currentContents);
             persistedContentsInitialized = true;
             return false;
         }
         if (persistedContents.equals(currentContents)) return false;
 
-        persistedContents = new HashMap<>(currentContents);
+        persistedContents = new Object2ObjectOpenHashMap<>(currentContents);
         return true;
     }
 

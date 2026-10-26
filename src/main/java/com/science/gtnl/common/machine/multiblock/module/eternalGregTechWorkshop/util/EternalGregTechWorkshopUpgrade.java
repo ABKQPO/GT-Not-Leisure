@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
@@ -264,7 +263,7 @@ public enum EternalGregTechWorkshopUpgrade {
             EternalGregTechWorkshopUpgrade.class);
         for (EternalGregTechWorkshopUpgrade upgrade : VALUES) {
             for (EternalGregTechWorkshopUpgrade prerequisite : upgrade.prerequisites) {
-                dependencies.computeIfAbsent(prerequisite, $ -> new ArrayList<>())
+                dependencies.computeIfAbsent(prerequisite, $ -> new ObjectArrayList<>())
                     .add(upgrade);
             }
         }
@@ -285,7 +284,7 @@ public enum EternalGregTechWorkshopUpgrade {
     // Cost
     @Getter
     private int shardCost;
-    private final List<ItemStack> extraCost = new ArrayList<>();
+    private final List<ItemStack> extraCost = new ObjectArrayList<>();
 
     // UI
     private UpgradeColor color;

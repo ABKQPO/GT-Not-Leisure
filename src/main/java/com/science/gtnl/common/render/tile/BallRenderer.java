@@ -27,6 +27,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gtneioreplugin.plugin.block.ModBlocks;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import tectech.rendering.EOH.EOHRenderingUtils;
 import tectech.thing.block.TileEntityEyeOfHarmony;
@@ -48,7 +49,7 @@ public class BallRenderer {
     public static double BALL_RADIUS = 0.7;
 
     @Getter
-    public static ArrayList<TileEntityEyeOfHarmony.OrbitingObject> orbitingObjects = new ArrayList<>();
+    public static ObjectArrayList<TileEntityEyeOfHarmony.OrbitingObject> orbitingObjects = new ObjectArrayList<>();
 
     public static Map<IMetaTileEntity, VisualState> visualStateMap = new WeakHashMap<>();
 
@@ -255,7 +256,7 @@ public class BallRenderer {
 
     public static <T> ArrayList<T> selectNRandomElements(Collection<T> inputList, long n) {
         ArrayList<T> randomElements = new ArrayList<>((int) n);
-        ArrayList<T> inputArray = new ArrayList<>(inputList);
+        ObjectArrayList<T> inputArray = new ObjectArrayList<>(inputList);
         Random rand = new Random();
 
         IntStream.range(0, (int) n)

@@ -1,6 +1,5 @@
 package com.science.gtnl.common.gui;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -20,6 +19,7 @@ import com.science.gtnl.utils.AspectTooltipUtils;
 
 import gregtech.api.modularui2.GTGuis;
 import gregtech.common.modularui2.factory.SelectItemGuiBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -149,7 +149,7 @@ public class MultiEssentiaJarGui {
     }
 
     private static List<Aspect> getSortedAspects(AspectList storedAspects) {
-        List<Aspect> result = new ArrayList<>();
+        List<Aspect> result = new ObjectArrayList<>();
 
         if (storedAspects == null) return result;
 
@@ -164,7 +164,7 @@ public class MultiEssentiaJarGui {
     }
 
     private static List<Aspect> getAllKnownSortedAspects(EntityPlayer viewer) {
-        List<Aspect> result = new ArrayList<>();
+        List<Aspect> result = new ObjectArrayList<>();
         if (viewer == null) return result;
 
         String playerName = viewer.getCommandSenderName();
@@ -180,7 +180,7 @@ public class MultiEssentiaJarGui {
     }
 
     private static List<ItemStack> createSelections(List<Aspect> aspects) {
-        List<ItemStack> result = new ArrayList<>(aspects.size());
+        List<ItemStack> result = new ObjectArrayList<>(aspects.size());
 
         for (Aspect aspect : aspects) {
             ItemStack stack = new ItemStack(ModItems.itemAspect);

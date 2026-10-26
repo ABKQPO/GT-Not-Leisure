@@ -1,9 +1,5 @@
 package com.science.gtnl.client.quantum;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +14,9 @@ import com.science.gtnl.common.crafting.cycle.RecursivePatternFinder.PatternLoca
 
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEStack;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 /**
  * The crafting cycles found for a request, by the pattern of each, so the crafts of the crafting tree can be told which
@@ -34,10 +33,10 @@ public record CraftingCycleIndex(IAEStack<?> request, List<Cycle> cycles, Set<Cy
     public record Match(int number, Cycle cycle, PatternLocation location, boolean blocking) {}
 
     public static CraftingCycleIndex of(IAEStack<?> request, List<Cycle> cycles, List<Cycle> blocking) {
-        var set = Collections.newSetFromMap(new IdentityHashMap<Cycle, Boolean>());
+        var set = new ReferenceOpenHashSet<Cycle>();
         set.addAll(blocking);
-        var byPattern = new HashMap<Item, List<Match>>();
-        var unencoded = new ArrayList<Match>();
+        var byPattern = new Object2ObjectOpenHashMap<Item, List<Match>>();
+        var unencoded = new ObjectArrayList<Match>();
         for (int i = 0; i < cycles.size(); i++) {
             var cycle = cycles.get(i);
             for (var location : cycle.patterns()) {
@@ -48,7 +47,7 @@ public record CraftingCycleIndex(IAEStack<?> request, List<Cycle> cycles, Set<Cy
                     byPattern.computeIfAbsent(
                         location.pattern()
                             .getItem(),
-                        k -> new ArrayList<>())
+                        k -> new ObjectArrayList<>())
                         .add(match);
                 }
             }
@@ -81,7 +80,7 @@ public record CraftingCycleIndex(IAEStack<?> request, List<Cycle> cycles, Set<Cy
     }
 
     public List<Cycle> cyclesWith(IAEStack<?> stack) {
-        var found = new ArrayList<Cycle>();
+        var found = new ObjectArrayList<Cycle>();
         for (var cycle : this.cycles) {
             for (var item : cycle.items()) {
                 if (item.isSameType(stack)) {
@@ -98,7 +97,7 @@ public record CraftingCycleIndex(IAEStack<?> request, List<Cycle> cycles, Set<Cy
      */
     public List<Match> matchesFor(IAEStack<?> stack) {
         var all = all(cyclesWith(stack));
-        var making = new ArrayList<Match>();
+        var making = new ObjectArrayList<Match>();
         for (var match : all) {
             if (match.location()
                 .output()
@@ -115,7 +114,7 @@ public record CraftingCycleIndex(IAEStack<?> request, List<Cycle> cycles, Set<Cy
     }
 
     public List<Match> all(Iterable<Cycle> cycles) {
-        var matches = new ArrayList<Match>();
+        var matches = new ObjectArrayList<Match>();
         for (var cycle : cycles) {
             int number = this.cycles.indexOf(cycle) + 1;
             for (var location : cycle.patterns()) {

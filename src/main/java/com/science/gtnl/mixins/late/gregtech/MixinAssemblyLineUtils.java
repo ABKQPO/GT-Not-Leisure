@@ -2,7 +2,6 @@ package com.science.gtnl.mixins.late.gregtech;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.Set;
 
 import net.minecraft.item.ItemStack;
@@ -20,6 +19,7 @@ import gregtech.api.util.AssemblyLineUtils;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.GTUtility.ItemId;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import tectech.recipe.TecTechRecipeMaps;
 
 @Mixin(value = AssemblyLineUtils.class, remap = false)
@@ -56,7 +56,7 @@ public abstract class MixinAssemblyLineUtils {
         }
 
         science$recipeLookup.clear();
-        Set<GTRecipe.RecipeAssemblyLine> addedRecipes = Collections.newSetFromMap(new IdentityHashMap<>());
+        Set<GTRecipe.RecipeAssemblyLine> addedRecipes = new ReferenceOpenHashSet<>();
         science$addRecipesToLookup(GTRecipe.RecipeAssemblyLine.sAssemblylineRecipes, addedRecipes);
         science$addRecipesToLookup(TecTechRecipeMaps.researchableALRecipeList, addedRecipes);
 

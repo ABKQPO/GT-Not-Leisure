@@ -1,6 +1,5 @@
 package com.science.gtnl.utils.machine;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import net.minecraft.item.Item;
@@ -11,11 +10,12 @@ import net.minecraft.nbt.NBTTagList;
 import org.jetbrains.annotations.NotNull;
 
 import appeng.api.storage.data.IAEItemStack;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 // G is for group
 public class ItemStackG {
 
-    public ArrayList<ItemStack> arr = new ArrayList<>();
+    public ObjectArrayList<ItemStack> arr = new ObjectArrayList<>();
 
     public boolean isEmpty() {
         return arr.stream()

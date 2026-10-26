@@ -1,7 +1,6 @@
 package com.science.gtnl.mixins.late.gregtech;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,6 +33,7 @@ import gregtech.common.tileentities.machines.multi.purification.LinkedPurificati
 import gregtech.common.tileentities.machines.multi.purification.MTEPurificationPlant;
 import gregtech.common.tileentities.machines.multi.purification.MTEPurificationUnitBaryonicPerfection;
 import gregtech.common.tileentities.machines.multi.purification.MTEPurificationUnitBase;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -152,7 +152,7 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
 
     @Override
     public String[] getInfoData() {
-        List<String> ret = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        List<String> ret = new ObjectArrayList<>(Arrays.asList(super.getInfoData()));
         if (gtnl$wirelessMode) {
             ret.add(
                 IGregTechDeviceInformation.encode("gtnl.waila.wireless.mode.format", EnumChatFormatting.LIGHT_PURPLE));

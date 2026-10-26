@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -90,8 +88,14 @@ import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
+import it.unimi.dsi.fastutil.objects.Object2DoubleLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import kubatech.api.DynamicInventory;
 import kubatech.api.utils.ItemUtils;
 
@@ -101,7 +105,7 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
     private static final int RUN_TICKS = 6000;
 
     public int mMaxSlots = 8;
-    public ArrayList<BeeSimulator> mStorage = new ArrayList<>();
+    public ObjectArrayList<BeeSimulator> mStorage = new ObjectArrayList<>();
 
     public static final int CONFIGURATION_WINDOW_ID = 10;
 
@@ -119,9 +123,9 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
     public static UIInfo<?, ?> apiaryUI = createMetaTileEntityUI();
 
     public int mPrimaryMode = MODE_PRIMARY_INPUT;
-    public HashMap<ItemId, Double> dropProgress = new HashMap<>();
+    public Object2DoubleOpenHashMap<ItemId> dropProgress = new Object2DoubleOpenHashMap<>();
     private static final double BASE_DROP_ACCELERATION = 32_00d;
-    private HashMap<ItemStack, Double> GUIDropProgress = new HashMap<>();
+    private Object2DoubleOpenHashMap<ItemStack> GUIDropProgress = new Object2DoubleOpenHashMap<>();
 
     public DynamicInventory<SteamApiaryModule.BeeSimulator> dynamicInventory = new DynamicInventory<>(
         INVENTORY_WIDTH,
@@ -251,7 +255,7 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
 
     @Override
     public String[] getInfoData() {
-        ArrayList<String> info = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        ObjectArrayList<String> info = new ObjectArrayList<>(Arrays.asList(super.getInfoData()));
         String modeKey = mPrimaryMode == 0 ? "kubatech.infodata.mia.running_mode.input"
             : mPrimaryMode == 1 ? "kubatech.infodata.mia.running_mode.output"
                 : "kubatech.infodata.mia.running_mode.operating.normal";
@@ -356,7 +360,7 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
                     this.updateSlots();
                 }
 
-                List<ItemStack> stacks = new ArrayList<>();
+                List<ItemStack> stacks = new ObjectArrayList<>();
                 for (int i = 0, mStorageSize = Math.min(mStorage.size(), mMaxSlots); i < mStorageSize; i++) {
                     SteamApiaryModule.BeeSimulator beeSimulator = mStorage.get(i);
                     stacks.addAll(beeSimulator.getDrops(this, BASE_DROP_ACCELERATION * boosted));
@@ -375,20 +379,20 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
     }
 
     private static ItemStack[] mergeOutputStacks(List<ItemStack> stacks) {
-        HashMap<ItemId, Integer> countMap = new HashMap<>();
-        HashMap<ItemId, ItemStack> stackMap = new HashMap<>();
+        Object2IntOpenHashMap<ItemId> countMap = new Object2IntOpenHashMap<>();
+        Object2ObjectOpenHashMap<ItemId, ItemStack> stackMap = new Object2ObjectOpenHashMap<>();
         for (ItemStack stack : stacks) {
             ItemId id = ItemId.createNoCopy(stack);
-            countMap.merge(id, stack.stackSize, Integer::sum);
+            countMap.addTo(id, stack.stackSize);
             stackMap.putIfAbsent(id, stack);
         }
 
         ItemStack[] result = new ItemStack[countMap.size()];
         int index = 0;
-        for (Map.Entry<ItemId, Integer> entry : countMap.entrySet()) {
+        for (Object2IntMap.Entry<ItemId> entry : Object2IntMaps.fastIterable(countMap)) {
             ItemStack merged = stackMap.get(entry.getKey())
                 .copy();
-            merged.stackSize = entry.getValue();
+            merged.stackSize = entry.getIntValue();
             result[index++] = merged;
         }
         return result;
@@ -492,7 +496,7 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
         })
             .setPlayClickSound(true)
             .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
+                List<UITexture> ret = new ObjectArrayList<>();
                 ret.add(GTUITextures.BUTTON_STANDARD);
                 ret.add(GTUITextures.OVERLAY_BUTTON_BATCH_MODE_ON);
                 return ret.toArray(new IDrawable[0]);
@@ -505,7 +509,7 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
         builder.widget(
             new DrawableWidget().setDrawable(this.tierMachine == 2 ? STEAM_GAUGE_STEEL_BG : STEAM_GAUGE_BG)
                 .dynamicTooltip(() -> {
-                    List<String> ret = new ArrayList<>();
+                    List<String> ret = new ObjectArrayList<>();
                     ret.add(
                         StatCollector.translateToLocal("gtnl.machine.steam.total_capacity") + uiSteamStored
                             + "/"
@@ -599,7 +603,7 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
         return true;
     }
 
-    public void setGuiDropProgressFromMui2(HashMap<ItemStack, Double> progress) {
+    public void setGuiDropProgressFromMui2(Object2DoubleOpenHashMap<ItemStack> progress) {
         GUIDropProgress = progress;
     }
 
@@ -700,19 +704,20 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
         DynamicPositionedColumn processingDetails = new DynamicPositionedColumn();
         if (mOutputItems == null || GUIDropProgress == null) return processingDetails;
         Object2IntOpenHashMap<ItemId> outputCounts = getOutputItemCounts(mOutputItems);
-        List<Map.Entry<ItemStack, Double>> sortedEntries = new ArrayList<>(GUIDropProgress.entrySet());
+        List<Object2DoubleMap.Entry<ItemStack>> sortedEntries = new ObjectArrayList<>(
+            GUIDropProgress.object2DoubleEntrySet());
         sortedEntries.sort(
-            Comparator
-                .comparingInt(
-                    (Map.Entry<ItemStack, Double> entry) -> outputCounts.getInt(ItemId.createNoCopy(entry.getKey())))
+            Comparator.comparingInt(
+                (Object2DoubleMap.Entry<ItemStack> entry) -> outputCounts.getInt(ItemId.createNoCopy(entry.getKey())))
                 .reversed());
 
-        LinkedHashMap<ItemStack, Double> sortedMap = new LinkedHashMap<>(sortedEntries.size());
-        for (Map.Entry<ItemStack, Double> entry : sortedEntries) {
-            sortedMap.put(entry.getKey(), entry.getValue());
+        Object2DoubleLinkedOpenHashMap<ItemStack> sortedMap = new Object2DoubleLinkedOpenHashMap<>(
+            sortedEntries.size());
+        for (Object2DoubleMap.Entry<ItemStack> entry : sortedEntries) {
+            sortedMap.put(entry.getKey(), entry.getDoubleValue());
         }
 
-        for (Map.Entry<ItemStack, Double> drop : sortedMap.entrySet()) {
+        for (Object2DoubleMap.Entry<ItemStack> drop : sortedMap.object2DoubleEntrySet()) {
             int outputSize = outputCounts.getInt(ItemId.createNoCopy(drop.getKey()));
             if (outputSize != 0) {
                 Long itemCount = (long) outputSize;
@@ -758,24 +763,24 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
     public void drawTexts(DynamicPositionedColumn screenElements, SlotWidget inventorySlot) {
         // TODO: Remove this MUI1 text sync path after Steam Apiary Module only uses MUI2.
         screenElements.widget(new FakeSyncWidget<>(() -> {
-            HashMap<ItemStack, Double> ret = new HashMap<>(this.dropProgress.size());
-            for (Map.Entry<ItemId, Double> drop : this.dropProgress.entrySet()) {
-                ret.put(BeeSimulator.dropstacks.get(drop.getKey()), drop.getValue());
+            Object2DoubleOpenHashMap<ItemStack> ret = new Object2DoubleOpenHashMap<>(this.dropProgress.size());
+            for (Object2DoubleMap.Entry<ItemId> drop : this.dropProgress.object2DoubleEntrySet()) {
+                ret.put(BeeSimulator.dropstacks.get(drop.getKey()), drop.getDoubleValue());
             }
             return ret;
         }, h -> GUIDropProgress = h, (buffer, h) -> {
             buffer.writeVarIntToBuffer(h.size());
-            for (Map.Entry<ItemStack, Double> itemStackDoubleEntry : h.entrySet()) {
+            for (Object2DoubleMap.Entry<ItemStack> itemStackDoubleEntry : h.object2DoubleEntrySet()) {
                 try {
                     buffer.writeItemStackToBuffer(itemStackDoubleEntry.getKey());
-                    buffer.writeDouble(itemStackDoubleEntry.getValue());
+                    buffer.writeDouble(itemStackDoubleEntry.getDoubleValue());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
         }, buffer -> {
             int len = buffer.readVarIntFromBuffer();
-            HashMap<ItemStack, Double> ret = new HashMap<>(len);
+            Object2DoubleOpenHashMap<ItemStack> ret = new Object2DoubleOpenHashMap<>(len);
             for (int i = 0; i < len; i++) {
                 try {
                     ret.put(buffer.readItemStackFromBuffer(), buffer.readDouble());
@@ -827,14 +832,14 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
     public static class BeeSimulator {
 
         public ItemStack queenStack;
-        public List<BeeDrop> drops = new ArrayList<>();
-        public List<BeeDrop> specialDrops = new ArrayList<>();
+        public List<BeeDrop> drops = new ObjectArrayList<>();
+        public List<BeeDrop> specialDrops = new ObjectArrayList<>();
         public boolean isValid;
         public float beeSpeed;
         public float maxBeeCycles;
         public String speciesKey;
         public static IBeekeepingMode mode;
-        public static Map<ItemId, ItemStack> dropstacks = new HashMap<>();
+        public static Map<ItemId, ItemStack> dropstacks = new Object2ObjectOpenHashMap<>();
 
         public BeeSimulator(ItemStack queenStack, World world, float t) {
             isValid = false;
@@ -848,8 +853,8 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
         public BeeSimulator(NBTTagCompound tag) {
             queenStack = ItemUtils.readItemStackFromNBT(tag.getCompoundTag("queenStack"));
             isValid = tag.getBoolean("isValid");
-            drops = new ArrayList<>();
-            specialDrops = new ArrayList<>();
+            drops = new ObjectArrayList<>();
+            specialDrops = new ObjectArrayList<>();
             for (int i = 0, isize = tag.getInteger("dropssize"); i < isize; i++)
                 drops.add(new BeeDrop(tag.getCompoundTag("drops" + i)));
             for (int i = 0, isize = tag.getInteger("specialDropssize"); i < isize; i++)
@@ -920,19 +925,19 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
             float tier = 6 + machine.recipeOcCount;
             drops.forEach(d -> {
                 d.updateTVar(tier);
-                machine.dropProgress.merge(d.id, d.getAmount(timePassed / 550d), Double::sum);
+                machine.dropProgress.addTo(d.id, d.getAmount(timePassed / 550d));
                 if (!dropstacks.containsKey(d.id)) dropstacks.put(d.id, d.stack);
             });
             specialDrops.forEach(d -> {
                 d.updateTVar(tier);
-                machine.dropProgress.merge(d.id, d.getAmount(timePassed / 550d), Double::sum);
+                machine.dropProgress.addTo(d.id, d.getAmount(timePassed / 550d));
                 if (!dropstacks.containsKey(d.id)) dropstacks.put(d.id, d.stack);
             });
 
-            List<ItemStack> currentDrops = new ArrayList<>();
-            machine.dropProgress.entrySet()
-                .forEach(e -> {
-                    double v = e.getValue();
+            List<ItemStack> currentDrops = new ObjectArrayList<>();
+            machine.dropProgress.object2DoubleEntrySet()
+                .fastForEach(e -> {
+                    double v = e.getDoubleValue();
                     while (v >= 1.0) {
                         int size = Math.min((int) v, 64);
                         ItemStack stack = dropstacks.get(e.getKey())

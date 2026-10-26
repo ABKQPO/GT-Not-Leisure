@@ -1,7 +1,6 @@
 package com.science.gtnl.common.gui.modularui;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,6 +12,7 @@ import com.cleanroommc.modularui.utils.Alignment;
 
 import appeng.api.storage.data.AEStackTypeRegistry;
 import appeng.api.storage.data.IAEStackType;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class VaultTypeCountFormatter {
 
@@ -20,15 +20,13 @@ public class VaultTypeCountFormatter {
     private static final String FIELD_SEPARATOR = "\t";
     private static final NumberFormat NUMBER_FORMAT = NumberFormat.getNumberInstance();
 
-    private VaultTypeCountFormatter() {}
-
     public static List<IWidget> createTypeCountRows(String payload, String translationKey) {
         List<TypeCountLine> lines = parsePayload(payload);
         if (lines.isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<IWidget> rows = new ArrayList<>(lines.size());
+        List<IWidget> rows = new ObjectArrayList<>(lines.size());
         for (TypeCountLine line : lines) {
             rows.add(createTypeCountRow(line, translationKey));
         }
@@ -72,7 +70,7 @@ public class VaultTypeCountFormatter {
         }
 
         String[] rawLines = payload.split(LINE_SEPARATOR);
-        List<TypeCountLine> lines = new ArrayList<>(rawLines.length);
+        List<TypeCountLine> lines = new ObjectArrayList<>(rawLines.length);
         for (String rawLine : rawLines) {
             TypeCountLine line = parseLine(rawLine);
             if (line != null) {

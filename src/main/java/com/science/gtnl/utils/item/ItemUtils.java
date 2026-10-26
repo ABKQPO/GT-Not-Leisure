@@ -1,6 +1,5 @@
 package com.science.gtnl.utils.item;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -50,6 +49,7 @@ import gregtech.common.items.MetaGeneratedItem01;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 import gtPlusPlus.xmod.gregtech.common.tileentities.machines.multi.processing.MTEIsaMill;
 import gtPlusPlus.xmod.gregtech.common.tileentities.machines.multi.production.chemplant.MTEChemicalPlant;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class ItemUtils {
 
@@ -436,7 +436,7 @@ public class ItemUtils {
         if (stack == null || count <= 0) return stack;
         if (!allowExisting && stack.isItemEnchanted()) return stack;
 
-        List<Enchantment> available = new ArrayList<>();
+        List<Enchantment> available = new ObjectArrayList<>();
         for (Enchantment ench : Enchantment.enchantmentsList) {
             if (ench != null && ench.canApply(stack)) {
                 available.add(ench);

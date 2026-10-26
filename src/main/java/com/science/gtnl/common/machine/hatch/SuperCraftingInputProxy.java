@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -37,6 +36,7 @@ import gregtech.common.tileentities.machines.IHatchWatcher;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME;
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputSlave;
 import gregtech.common.tileentities.machines.RecipeCheckReason;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -172,7 +172,7 @@ public class SuperCraftingInputProxy extends MTEHatchInputBus implements IDualIn
 
     @Override
     public String[] getInfoData() {
-        var ret = new ArrayList<String>();
+        var ret = new ObjectArrayList<String>();
         if (getMasterSuper() != null) {
             ret.add(
                 IGregTechDeviceInformation.encode(

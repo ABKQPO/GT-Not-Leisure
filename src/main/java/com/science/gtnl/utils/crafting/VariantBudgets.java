@@ -1,7 +1,5 @@
 package com.science.gtnl.utils.crafting;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,10 +18,12 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.inv.MEInventoryCrafting;
 import appeng.util.item.AEItemStack;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public final class VariantBudgets {
 
-    private final Map<IAEItemStack, Map<IAEStack<?>, IItemList<IAEStack<?>>>> budgets = new HashMap<>();
+    private final Map<IAEItemStack, Map<IAEStack<?>, IItemList<IAEStack<?>>>> budgets = new Object2ObjectOpenHashMap<>();
 
     public boolean isEmpty() {
         return this.budgets.isEmpty();
@@ -40,7 +40,8 @@ public final class VariantBudgets {
     }
 
     private void add(final IAEItemStack pattern, final IAEStack<?> input, final Iterable<IAEStack<?>> variants) {
-        final IItemList<IAEStack<?>> budget = this.budgets.computeIfAbsent(pattern, k -> new HashMap<>())
+        final IItemList<IAEStack<?>> budget = this.budgets
+            .computeIfAbsent(pattern, k -> new Object2ObjectOpenHashMap<>())
             .computeIfAbsent(
                 input.copy()
                     .setStackSize(1),
@@ -134,7 +135,7 @@ public final class VariantBudgets {
             final IAEStack<?> input = IAEStack.fromNBTGeneric(tag.getCompoundTag("input"));
             if (pattern == null || input == null) continue;
             final NBTTagList variants = tag.getTagList("variants", Constants.NBT.TAG_COMPOUND);
-            final List<IAEStack<?>> stacks = new ArrayList<>();
+            final List<IAEStack<?>> stacks = new ObjectArrayList<>();
             for (int v = 0; v < variants.tagCount(); v++) {
                 final IAEStack<?> stack = IAEStack.fromNBTGeneric(variants.getCompoundTagAt(v));
                 if (stack != null) stacks.add(stack);

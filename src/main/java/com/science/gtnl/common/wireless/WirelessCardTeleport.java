@@ -1,6 +1,5 @@
 package com.science.gtnl.common.wireless;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -23,19 +22,16 @@ import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 import appeng.api.util.IOrientable;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 
 public class WirelessCardTeleport {
-
-    private WirelessCardTeleport() {}
 
     public static class Landing {
 
         record Position(int x, int y, int z) {}
 
-        private Landing() {}
-
         static Position find(int x, int y, int z, ForgeDirection front, Predicate<Position> safe) {
-            Set<Position> candidates = new LinkedHashSet<>();
+            Set<Position> candidates = new ObjectLinkedOpenHashSet<>();
             if (front != null && front != ForgeDirection.UNKNOWN && front.offsetY == 0)
                 candidates.add(new Position(x + front.offsetX, y, z + front.offsetZ));
             for (int dy : new int[] { 0, 1, -1, 2, -2 }) {

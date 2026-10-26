@@ -5,7 +5,6 @@ import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -255,7 +254,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
 
     @Override
     public String[] getDescription() {
-        List<String> strings = new ArrayList<>(8);
+        List<String> strings = new ObjectArrayList<>(8);
         strings.add(StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.tooltip.0"));
         strings.add(
             StatCollector.translateToLocal("gtnl.hatch.super_dual_input_me.tooltip.1") + " "
@@ -482,7 +481,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
 
                     @Override
                     public List<String> getExtraTooltip() {
-                        List<String> extraLines = new ArrayList<>();
+                        List<String> extraLines = new ObjectArrayList<>();
                         if (i_client[slot.getSlotIndex()] >= 1000) {
                             extraLines.add(I18n.format("modularui2.amount", i_client[slot.getSlotIndex()]));
                         }

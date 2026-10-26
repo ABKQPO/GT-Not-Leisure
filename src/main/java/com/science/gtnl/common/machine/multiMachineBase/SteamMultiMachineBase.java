@@ -25,6 +25,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -118,6 +119,7 @@ import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchSteam
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.base.MTEHatchCustomFluidBase;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.base.MTESteamMultiBlockBase;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -159,8 +161,8 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     public BigInteger steamDisplay;
     public static final Optional<Byte>[] HATCH_COLOR_OPTIONS = createHatchColorOptions();
 
-    public ArrayList<ItemStack> recipeSearchItemInputs = new ArrayList<>();
-    public ArrayList<FluidStack> recipeSearchFluidInputs = new ArrayList<>();
+    public ObjectArrayList<ItemStack> recipeSearchItemInputs = new ObjectArrayList<>();
+    public ObjectArrayList<FluidStack> recipeSearchFluidInputs = new ObjectArrayList<>();
 
     public static final UITexture STEAM_GAUGE_BG = UITexture
         .fullImage(ModList.ScienceNotLeisure.ID, "gui/background/steam_dial");
@@ -578,7 +580,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
 
     @Override
     public String[] getInfoData() {
-        ArrayList<String> info = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        ObjectArrayList<String> info = new ObjectArrayList<>(Arrays.asList(super.getInfoData()));
         info.add(
             IGregTechDeviceInformation.encode("gtnl.machine.tooltip.tier", EnumChatFormatting.YELLOW, tierMachine));
         info.add(
@@ -818,6 +820,13 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
                 if (remaining.amount <= 0) return aLiquid.amount;
             }
         }
+        for (MTEHatchInput tHatch : GTUtility.validMTEList(mInputHatches)) {
+            setHatchRecipeMap(tHatch);
+            FluidStack drained = tHatch.drain(ForgeDirection.UNKNOWN, remaining, !simulate);
+            if (drained == null || drained.getFluid() != aLiquid.getFluid()) continue;
+            remaining.amount -= drained.amount;
+            if (remaining.amount <= 0) return aLiquid.amount;
+        }
         return aLiquid.amount - remaining.amount;
     }
 
@@ -951,7 +960,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
 
     @Override
     public List<IOutputBus> getOutputBusses() {
-        List<IOutputBus> output = new ArrayList<>();
+        List<IOutputBus> output = new ObjectArrayList<>();
         for (MTEHatchOutputBus outputBus : mSteamOutputs) {
             if (outputBus.isValid()) output.add(outputBus);
         }
@@ -988,7 +997,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     }
 
     public List<ItemStack> getItemOutputSlots(ItemStack[] toOutput) {
-        List<ItemStack> ret = new ArrayList<>();
+        List<ItemStack> ret = new ObjectArrayList<>();
 
         if (mOutputBusses != null && !mOutputBusses.isEmpty()) {
             for (final IOutputBus tBus : GTUtility.validMTEList(mOutputBusses)) {
@@ -1583,7 +1592,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
                     .setSize(182, 79));
 
             if (supportsMachineModeSwitch() && machineModeIcons == null) {
-                machineModeIcons = new ArrayList<>(4);
+                machineModeIcons = new ObjectArrayList<>(4);
                 setMachineModeIcons();
             }
             builder.widget(createPowerSwitchButton(builder))
@@ -1621,7 +1630,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         })
             .setPlayClickSound(true)
             .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
+                List<UITexture> ret = new ObjectArrayList<>();
                 ret.add(GTUITextures.BUTTON_STANDARD);
                 ret.add(GTUITextures.OVERLAY_BUTTON_BATCH_MODE_ON);
                 return ret.toArray(new IDrawable[0]);
@@ -1634,7 +1643,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         builder.widget(
             new DrawableWidget().setDrawable(this.tierMachine == 2 ? STEAM_GAUGE_STEEL_BG : STEAM_GAUGE_BG)
                 .dynamicTooltip(() -> {
-                    List<String> ret = new ArrayList<>();
+                    List<String> ret = new ObjectArrayList<>();
                     ret.add(
                         StatCollector.translateToLocal("gtnl.machine.steam.total_capacity") + uiSteamStored
                             + "/"
@@ -1702,7 +1711,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
             .setPlayClickSound(true)
             .setEnabled(canBeMuffled)
             .setBackground(() -> {
-                List<UITexture> ret = new ArrayList<>();
+                List<UITexture> ret = new ObjectArrayList<>();
                 if (isMuffled()) {
                     ret.add(GTUITextures.BUTTON_STANDARD_PRESSED);
                     ret.add(GTUITextures.OVERLAY_BUTTON_MUFFLE_ON);

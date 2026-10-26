@@ -11,8 +11,6 @@ import static com.science.gtnl.client.celestweave.CelestweaveArmorContracts.setF
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.SOURCES;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.roundTrip;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -64,6 +62,8 @@ import cpw.mods.fml.common.eventhandler.IEventListener;
 import cpw.mods.fml.common.eventhandler.ListenerList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import vazkii.botania.common.entity.EntityManaBurst;
 
 final class EquipmentRegressionContracts {
@@ -80,9 +80,9 @@ final class EquipmentRegressionContracts {
 
     private static TestWorld world() throws ReflectiveOperationException {
         TestWorld world = allocate(TestWorld.class);
-        world.entities = new ArrayList<>();
-        world.obstacles = new ArrayList<>();
-        world.loaded = new HashSet<>();
+        world.entities = new ObjectArrayList<>();
+        world.obstacles = new ObjectArrayList<>();
+        world.loaded = new ObjectOpenHashSet<>();
         TestChunks chunks = allocate(TestChunks.class);
         chunks.loaded = world.loaded;
         world.theChunkProviderServer = chunks;
@@ -212,7 +212,7 @@ final class EquipmentRegressionContracts {
             "only EHV3 penetrates");
         first.setPosition(40, 0, 0);
         second.setPosition(60, 0, 0);
-        world.entities = new ArrayList<>(List.of(first, second));
+        world.entities = new ObjectArrayList<>(List.of(first, second));
         hits = RailgunChainResolver.penetration(world, shooter, first, new Vec3d(39.5, 1.62, 0), forward, max, 5);
         check(
             hits.size() == 1 && hits.getFirst()
@@ -417,7 +417,7 @@ final class EquipmentRegressionContracts {
 
         @Override
         public <T> List<T> selectEntitiesWithinAABB(Class<T> type, AxisAlignedBB box, IEntitySelector selector) {
-            List<T> result = new ArrayList<>();
+            List<T> result = new ObjectArrayList<>();
             for (Entity entity : entities) if (type.isInstance(entity) && box.intersectsWith(entity.boundingBox)
                 && (selector == null || selector.isEntityApplicable(entity))) result.add(type.cast(entity));
             return result;

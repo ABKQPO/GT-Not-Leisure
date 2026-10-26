@@ -1,6 +1,5 @@
 package com.science.gtnl.common.part;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,6 +29,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.PartFormationPlane;
 import appeng.util.Platform;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class PartActiveFormationPlane extends PartFormationPlane implements IGridTickable, ICustomGui {
 
@@ -134,7 +134,7 @@ public class PartActiveFormationPlane extends PartFormationPlane implements IGri
     }
 
     public List<IAEItemStack> getFilterList() {
-        List<IAEItemStack> list = new ArrayList<>();
+        List<IAEItemStack> list = new ObjectArrayList<>();
         for (int i = 0; i < this.Config.getSizeInventory(); i++) {
             IAEStack<?> stack = this.Config.getAEStackInSlot(i);
             if (stack instanceof IAEItemStack itemStack) {

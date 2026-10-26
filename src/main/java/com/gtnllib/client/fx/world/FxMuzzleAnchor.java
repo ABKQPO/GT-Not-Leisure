@@ -1,8 +1,6 @@
 package com.gtnllib.client.fx.world;
 
 import java.nio.FloatBuffer;
-import java.util.HashMap;
-import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -16,6 +14,7 @@ import com.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 /**
  * Where the muzzle of a held gun is in the world, so shots and muzzle effects start at the barrel the player sees.
@@ -43,7 +42,7 @@ public class FxMuzzleAnchor {
 
     private record HandAnchor(Vec3d eyeSpace, long stamp, float focalX, float focalY) {}
 
-    private static final Map<Integer, Anchor> ANCHORS = new HashMap<>();
+    private static final Int2ObjectOpenHashMap<Anchor> ANCHORS = new Int2ObjectOpenHashMap<>();
     private static final FloatBuffer MATRIX = BufferUtils.createFloatBuffer(16);
     private static HandAnchor hand;
 

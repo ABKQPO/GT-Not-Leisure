@@ -1,7 +1,6 @@
 package com.science.gtnl.common.recipe.gtnl;
 
 import java.util.AbstractMap;
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -15,6 +14,7 @@ import gregtech.api.enums.TierEU;
 import gregtech.api.objects.OreDictItemStack;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.recipe.RecipeRuneAltar;
 import vazkii.botania.common.item.material.ItemRune;
@@ -30,9 +30,9 @@ public class RuneAltarRecipes implements IRecipePool {
             List<Object> inputs = recipe.getInputs();
             boolean hasOreDict = false;
 
-            List<Object> finalInputs = new ArrayList<>();
+            List<Object> finalInputs = new ObjectArrayList<>();
 
-            List<AbstractMap.SimpleEntry<ItemStack, Integer>> stackCounts = new ArrayList<>();
+            List<AbstractMap.SimpleEntry<ItemStack, Integer>> stackCounts = new ObjectArrayList<>();
 
             for (Object obj : inputs) {
                 if (obj instanceof ItemStack stack) {

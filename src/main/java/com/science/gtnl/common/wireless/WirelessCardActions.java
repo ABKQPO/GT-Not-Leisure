@@ -21,8 +21,6 @@ public class WirelessCardActions {
     public static final int TOGGLE_GROUPING = 61;
     private static final int ROW_STRIDE = 10;
 
-    private WirelessCardActions() {}
-
     public static int type(int id) {
         return isRowAction(id) ? id - rowIndex(id) : id;
     }

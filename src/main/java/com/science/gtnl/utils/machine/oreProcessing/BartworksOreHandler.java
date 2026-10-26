@@ -1,7 +1,5 @@
 package com.science.gtnl.utils.machine.oreProcessing;
 
-import java.util.ArrayList;
-
 import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.common.material.GTNLRecipeMaps;
@@ -10,13 +8,14 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 import bartworks.system.material.Werkstoff;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class BartworksOreHandler {
 
     public void processBWOreRecipes() {
         for (Werkstoff werkstoff : Werkstoff.werkstoffHashSet) {
             if (!werkstoff.hasItemType(OrePrefixes.ore)) continue;
-            ArrayList<ItemStack> outputs = new ArrayList<>();
+            ObjectArrayList<ItemStack> outputs = new ObjectArrayList<>();
             // basic output
             outputs.add(werkstoff.get(OrePrefixes.dust, Integer.MAX_VALUE));
 
@@ -48,7 +47,7 @@ public class BartworksOreHandler {
             }
 
             if (werkstoff.hasItemType(OrePrefixes.rawOre)) {
-                ArrayList<ItemStack> rawOreOutputs = new ArrayList<>();
+                ObjectArrayList<ItemStack> rawOreOutputs = new ObjectArrayList<>();
                 rawOreOutputs.add(werkstoff.get(OrePrefixes.dust, Integer.MAX_VALUE));
 
                 if (werkstoff.hasItemType(OrePrefixes.gem)) {

@@ -1,6 +1,5 @@
 package com.science.gtnl.common.crafting.quantum.ae2;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -41,6 +40,7 @@ import appeng.hooks.TickHandler;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public final class QuantumCraftingJob<StackType extends IAEStack<StackType>>
     implements ICraftingJob<StackType>, Future<ICraftingJob<StackType>> {
@@ -264,7 +264,7 @@ public final class QuantumCraftingJob<StackType extends IAEStack<StackType>>
                 .entrySet()) {
                 for (Map.Entry<AEKey, KeyCounter> input : pattern.getValue()
                     .entrySet()) {
-                    final List<IAEStack<?>> variants = new ArrayList<>();
+                    final List<IAEStack<?>> variants = new ObjectArrayList<>();
                     for (Object2LongMap.Entry<AEKey> entry : input.getValue()) {
                         variants.add(((StackKey) entry.getKey()).toStack(entry.getLongValue()));
                     }
@@ -300,7 +300,7 @@ public final class QuantumCraftingJob<StackType extends IAEStack<StackType>>
         MECraftingInventory result = this.storageAtBeginning;
         if (result == null) {
             final CraftingPlan plan = this.plan;
-            final List<AEKey> keys = new ArrayList<>();
+            final List<AEKey> keys = new ObjectArrayList<>();
             if (plan != null) {
                 for (Object2LongMap.Entry<AEKey> entry : plan.usedItems()) keys.add(entry.getKey());
                 for (Object2LongMap.Entry<AEKey> entry : plan.missingItems()) keys.add(entry.getKey());

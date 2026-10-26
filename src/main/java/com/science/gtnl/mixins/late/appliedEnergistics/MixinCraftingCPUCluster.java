@@ -1,6 +1,5 @@
 package com.science.gtnl.mixins.late.appliedEnergistics;
 
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,6 +44,7 @@ import appeng.crafting.MECraftingInventory;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.diagnostics.CraftingDiagnosticSessionId;
+import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 
 @Mixin(value = CraftingCPUCluster.class, remap = false)
 public abstract class MixinCraftingCPUCluster {
@@ -72,7 +72,7 @@ public abstract class MixinCraftingCPUCluster {
         @Local(name = "craftingEntry") Map.Entry<ICraftingPatternDetails, ?> craftingEntry,
         @Share("gtnl$batchDispatch") LocalRef<BatchDispatchContext> contextRef) {
         List<ICraftingMedium> media = original.call(cache, key);
-        List<Boolean> compatibility = new ArrayList<>(media.size());
+        BooleanArrayList compatibility = new BooleanArrayList(media.size());
         for (ICraftingMedium medium : media) {
             compatibility.add(gtnl$isCompatiblePair(key, medium));
         }

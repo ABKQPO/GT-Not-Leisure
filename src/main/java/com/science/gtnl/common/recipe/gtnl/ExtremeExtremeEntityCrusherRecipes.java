@@ -6,8 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidRegistry;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.brandon3055.draconicevolution.common.ModItems;
 import com.kuba6000.mobsinfo.api.MobDrop;
 import com.kuba6000.mobsinfo.api.MobRecipe;
@@ -20,9 +18,11 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import gregtech.api.objects.XSTR;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import kubatech.loaders.MobHandlerLoader;
 
@@ -56,7 +56,7 @@ public class ExtremeExtremeEntityCrusherRecipes {
         nbt.setBoolean("eio.abstractMachine", true);
         spawner.setTagCompound(nbt);
 
-        ObjectList<Pair<ItemStack, Integer>> merged = new ObjectArrayList<>();
+        ObjectList<ObjectIntPair<ItemStack>> merged = new ObjectArrayList<>();
 
         outer: for (MobDrop drop : drops) {
             ItemStack output = drop.stack.copy();
@@ -70,32 +70,29 @@ public class ExtremeExtremeEntityCrusherRecipes {
                 chance = 100 + FIXED_RANDOM.nextInt(901);
             }
 
-            for (Pair<ItemStack, Integer> pair : merged) {
-                if (pair.getRight() == chance && GTUtility.areStacksEqual(pair.getLeft(), output)) {
-                    pair.getLeft().stackSize += output.stackSize;
+            for (ObjectIntPair<ItemStack> pair : merged) {
+                if (pair.rightInt() == chance && GTUtility.areStacksEqual(pair.left(), output)) {
+                    pair.left().stackSize += output.stackSize;
                     continue outer;
                 }
             }
 
-            merged.add(Pair.of(output, chance));
+            merged.add(ObjectIntPair.of(output, chance));
         }
 
         ObjectList<ItemStack> outputs = new ObjectArrayList<>();
-        ObjectList<Integer> chances = new ObjectArrayList<>();
+        IntArrayList chances = new IntArrayList();
 
-        for (Pair<ItemStack, Integer> pair : merged) {
-            outputs.add(pair.getLeft());
-            chances.add(pair.getRight());
+        for (ObjectIntPair<ItemStack> pair : merged) {
+            outputs.add(pair.left());
+            chances.add(pair.rightInt());
         }
 
         RecipeBuilder.builder()
             .itemInputs(GTUtility.copyAmount(0, spawner))
             .itemOutputs(outputs.toArray(new ItemStack[0]))
             .fluidOutputs(FluidRegistry.getFluidStack("xpjuice", 120))
-            .outputChances(
-                chances.stream()
-                    .mapToInt(i -> i)
-                    .toArray())
+            .outputChances(chances.toIntArray())
             .nbtSensitive()
             .duration(eecRecipe.mDuration)
             .eut(eecRecipe.mEUt)

@@ -1,6 +1,5 @@
 package com.science.gtnl.common.celestweave;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -13,10 +12,12 @@ import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
 import com.science.gtnl.config.MainConfig;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
 public class CelestweaveEnergy {
 
     private static final double FLUSH_SHARE = 0.01;
-    private static final Map<UUID, double[]> PENDING = new HashMap<>();
+    private static final Map<UUID, double[]> PENDING = new Object2ObjectOpenHashMap<>();
 
     private CelestweaveEnergy() {}
 

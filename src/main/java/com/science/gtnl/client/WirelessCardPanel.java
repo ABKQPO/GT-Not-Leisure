@@ -16,7 +16,6 @@ import static com.science.gtnl.common.wireless.WirelessCardActions.rowIndex;
 import static com.science.gtnl.common.wireless.WirelessCardActions.type;
 import static net.minecraft.client.gui.Gui.drawRect;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -49,6 +48,7 @@ import com.science.gtnl.common.wireless.WirelessCardLayout;
 import appeng.core.localization.ColorUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public abstract class WirelessCardPanel extends ModularPanel {
@@ -57,7 +57,7 @@ public abstract class WirelessCardPanel extends ModularPanel {
     public final Minecraft mc = Minecraft.getMinecraft();
     public final FontRenderer fontRendererObj = mc.fontRenderer;
     public final WirelessCardContainer container;
-    public final List<WirelessCardButton> buttons = new ArrayList<>();
+    public final List<WirelessCardButton> buttons = new ObjectArrayList<>();
     public NBTTagCompound snapshot = new NBTTagCompound();
     public int xSize = 320, ySize = 232, visibleRows = WirelessCardLayout.MIN_ROWS;
 

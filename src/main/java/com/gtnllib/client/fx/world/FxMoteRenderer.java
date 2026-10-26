@@ -1,6 +1,5 @@
 package com.gtnllib.client.fx.world;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.IntSupplier;
@@ -21,6 +20,7 @@ import com.gtnllib.utils.ColorMath;
 import com.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class FxMoteRenderer {
 
@@ -210,7 +210,7 @@ public class FxMoteRenderer {
     private static final double SURFACE_GAP = 0.02, FLOOR_SLOPE = 0.7;
     private static final int WHITE = 0xFFFFFF;
 
-    private static final List<Mote> ACTIVE = new ArrayList<>();
+    private static final List<Mote> ACTIVE = new ObjectArrayList<>();
     private static IntSupplier limit = () -> DEFAULT_LIMIT;
 
     public static void limitWith(IntSupplier most) {

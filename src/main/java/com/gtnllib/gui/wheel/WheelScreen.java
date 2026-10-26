@@ -1,6 +1,5 @@
 package com.gtnllib.gui.wheel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -23,6 +22,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
 public class WheelScreen extends ModularScreen {
@@ -30,7 +30,7 @@ public class WheelScreen extends ModularScreen {
     private static boolean closerRegistered;
 
     private final WheelWidget widget;
-    private final List<Widget<?>> extras = new ArrayList<>();
+    private final List<Widget<?>> extras = new ObjectArrayList<>();
     private Runnable next;
     private boolean keepOpen;
     private KeyBinding closeKey;

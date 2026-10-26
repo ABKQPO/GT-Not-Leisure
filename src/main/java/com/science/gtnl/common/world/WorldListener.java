@@ -1,6 +1,5 @@
 package com.science.gtnl.common.world;
 
-import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,16 +19,17 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 public class WorldListener implements IWorldAccess {
 
     public static WorldListener INSTANCE;
 
-    private final Map<World, WorldListener> worlds = new IdentityHashMap<>();
+    private final Map<World, WorldListener> worlds = new Reference2ObjectOpenHashMap<>();
     private final Long2ObjectOpenHashMap<Set<IBlockStateListener>> blockStateListeners = new Long2ObjectOpenHashMap<>();
     private final Long2ObjectOpenHashMap<Set<IBlockStateListener>> chunkListeners = new Long2ObjectOpenHashMap<>();
-    private final Map<IBlockStateListener, LongSet> listenerPositions = new IdentityHashMap<>();
+    private final Map<IBlockStateListener, LongSet> listenerPositions = new Reference2ObjectOpenHashMap<>();
 
     public WorldListener() {
         INSTANCE = this;

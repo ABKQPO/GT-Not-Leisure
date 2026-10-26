@@ -1,9 +1,7 @@
 package com.science.gtnl.utils.crafting;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -12,6 +10,9 @@ import java.util.function.ToLongFunction;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.crafting.MECraftingInventory;
+import it.unimi.dsi.fastutil.booleans.BooleanList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 /**
  * Exact AE crafting batch planner used by the CPU cluster mixin.
@@ -21,10 +22,10 @@ public class CraftingBatchPlannerImpl implements CraftingBatchPlanner {
     private static final double AE_POWER_TOLERANCE = 0.01D;
 
     @Override
-    public MediumStrategy resolveMediumStrategy(List<Boolean> compatibleMedia) {
+    public MediumStrategy resolveMediumStrategy(BooleanList compatibleMedia) {
         if (compatibleMedia == null || compatibleMedia.isEmpty()) return MediumStrategy.NATIVE;
-        for (Boolean compatible : compatibleMedia) {
-            if (!Boolean.TRUE.equals(compatible)) return MediumStrategy.NATIVE;
+        for (int i = 0; i < compatibleMedia.size(); i++) {
+            if (!compatibleMedia.getBoolean(i)) return MediumStrategy.NATIVE;
         }
         return MediumStrategy.BATCH;
     }
@@ -58,7 +59,7 @@ public class CraftingBatchPlannerImpl implements CraftingBatchPlanner {
             return new BatchPlan(1, LimitingFactor.STACK_CONTRACT);
         }
 
-        List<BatchRequirement> requirements = new ArrayList<>();
+        List<BatchRequirement> requirements = new ObjectArrayList<>();
         for (IAEStack<?> input : expandedInputs) {
             if (input == null) continue;
             IAEStack<?> key = input.copy()
@@ -129,7 +130,7 @@ public class CraftingBatchPlannerImpl implements CraftingBatchPlanner {
     @Override
     public List<IAEStack<?>> scaleInputs(List<IAEStack<?>> inputs, long crafts) {
         Objects.requireNonNull(inputs, "inputs");
-        List<IAEStack<?>> scaled = new ArrayList<>(inputs.size());
+        List<IAEStack<?>> scaled = new ObjectArrayList<>(inputs.size());
         for (IAEStack<?> input : inputs) {
             scaled.add(input == null ? null : scaleStack(input, crafts));
         }
@@ -186,7 +187,7 @@ public class CraftingBatchPlannerImpl implements CraftingBatchPlanner {
 
         long remainingCrafts = crafts;
         long consumedCrafts = 0;
-        List<SessionAllocation<S>> allocations = new ArrayList<>();
+        List<SessionAllocation<S>> allocations = new ObjectArrayList<>();
         while (remainingCrafts > 0 && !segments.isEmpty()) {
             SessionSegment<S> segment = segments.peekFirst();
             if (segment == null || segment.getSessionId() == null || segment.getRemaining() <= 0) {
@@ -299,7 +300,7 @@ public class CraftingBatchPlannerImpl implements CraftingBatchPlanner {
     }
 
     private static Map<Object, AggregatedDemand> aggregateRequirements(List<BatchRequirement> requirements) {
-        Map<Object, AggregatedDemand> aggregated = new LinkedHashMap<>();
+        Map<Object, AggregatedDemand> aggregated = new Object2ObjectLinkedOpenHashMap<>();
         for (BatchRequirement requirement : requirements) {
             AggregatedDemand demand = aggregated.get(requirement.getMaterialKey());
             if (demand == null) {

@@ -1,6 +1,5 @@
 package com.science.gtnl.common.gui.equipment;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -56,6 +55,7 @@ import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class CelestweaveGui extends EquipmentGui {
 
@@ -70,7 +70,7 @@ public class CelestweaveGui extends EquipmentGui {
 
     private final int piece;
     private final Map<CelestweaveModule, IntSyncValue> states = new EnumMap<>(CelestweaveModule.class);
-    private final List<List<IWidget>> pages = new ArrayList<>();
+    private final List<List<IWidget>> pages = new ObjectArrayList<>();
     private int page;
     private ModuleHandler modules;
     private HolderHandler heldSlots;
@@ -92,7 +92,7 @@ public class CelestweaveGui extends EquipmentGui {
         modules = new ModuleHandler();
         title(panel, stack.getUnlocalizedName() + ".name", 0);
         moduleSlots(panel, modules, "celestweave_modules", "item.gtnl.celestweave.gui.module_limits");
-        List<CelestweaveModule> holders = new ArrayList<>();
+        List<CelestweaveModule> holders = new ObjectArrayList<>();
         for (CelestweaveModule module : CelestweaveModule.values())
             if (module.holdsItem && module.fits(piece)) holders.add(module);
         if (!holders.isEmpty()) {
@@ -116,7 +116,7 @@ public class CelestweaveGui extends EquipmentGui {
             }
         }
         energyBar(panel, this::energy, () -> CelestweaveEnergy.capacity(bound()));
-        List<ToggleButton> tabs = new ArrayList<>();
+        List<ToggleButton> tabs = new ObjectArrayList<>();
         for (int i = 0; i < PAGES.length; i++) {
             final int index = i;
             tabs.add(
@@ -221,8 +221,8 @@ public class CelestweaveGui extends EquipmentGui {
     }
 
     private List<IWidget> modulePage() {
-        List<SlideSwitch> switches = new ArrayList<>();
-        List<String> labels = new ArrayList<>();
+        List<SlideSwitch> switches = new ObjectArrayList<>();
+        List<String> labels = new ObjectArrayList<>();
         for (CelestweaveModule module : CelestweaveModule.values()) {
             if (!module.fits(piece)) continue;
             IntSyncValue state = new IntSyncValue(() -> moduleState(module), value -> setModuleState(module, value))
@@ -263,12 +263,12 @@ public class CelestweaveGui extends EquipmentGui {
 
     private List<IWidget> settingsPage() {
         Layout rows = rows();
-        List<IWidget> lines = new ArrayList<>();
+        List<IWidget> lines = new ObjectArrayList<>();
         for (CelestweaveModule module : CelestweaveModule.values()) {
             if (!module.fits(piece)) continue;
-            List<IWidget> sliders = new ArrayList<>();
-            List<SlideSwitch> toggles = new ArrayList<>();
-            List<String> labels = new ArrayList<>();
+            List<IWidget> sliders = new ObjectArrayList<>();
+            List<SlideSwitch> toggles = new ObjectArrayList<>();
+            List<String> labels = new ObjectArrayList<>();
             for (CelestweaveModuleSetting setting : CelestweaveModuleSetting.values()) {
                 if (setting.module != module) continue;
                 if (setting.bool()) {
@@ -368,7 +368,7 @@ public class CelestweaveGui extends EquipmentGui {
     }
 
     private List<IWidget> appearancePage(ModularPanel panel) {
-        List<IWidget> lines = new ArrayList<>();
+        List<IWidget> lines = new ObjectArrayList<>();
         if (piece != CelestweaveArmor.CHEST) return lines;
         for (CelestweaveCosmeticOption option : CelestweaveCosmeticOption.values()) {
             switch (option.kind) {
@@ -399,8 +399,8 @@ public class CelestweaveGui extends EquipmentGui {
                             .background(IDrawable.EMPTY)
                             .disableThemeBackground(false),
                 true);
-        List<Widget<?>> cells = new ArrayList<>();
-        List<Size> sizes = new ArrayList<>();
+        List<Widget<?>> cells = new ObjectArrayList<>();
+        List<Size> sizes = new ObjectArrayList<>();
         cells.add(Layout.label(IKey.lang(GUI_LANG + option.lang), style));
         sizes.add(Size.fill());
         for (int rgb : COLORS) {
@@ -488,7 +488,7 @@ public class CelestweaveGui extends EquipmentGui {
     private List<IWidget> choiceRows(CelestweaveCosmeticOption option) {
         IntSyncValue value = cosmeticValue(option);
         List<String> names = option.names();
-        List<ToggleButton> picks = new ArrayList<>();
+        List<ToggleButton> picks = new ObjectArrayList<>();
         int widest = 0;
         for (int i = 0; i < names.size(); i++) {
             final int index = i;
@@ -524,7 +524,7 @@ public class CelestweaveGui extends EquipmentGui {
 
     private List<IWidget> flagRows(CelestweaveCosmeticOption option) {
         List<String> names = option.names();
-        List<ToggleButton> flags = new ArrayList<>();
+        List<ToggleButton> flags = new ObjectArrayList<>();
         for (int i = 0; i < names.size(); i++) {
             final int flag = option.flag(i);
             final String key = GUI_LANG + option.lang + "." + names.get(i);

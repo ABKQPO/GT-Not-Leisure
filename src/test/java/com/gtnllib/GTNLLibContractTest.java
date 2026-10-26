@@ -7,17 +7,18 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.gtnllib.client.GTNLLibClient;
 import com.gtnllib.gui.widget.StepSlider;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 public class GTNLLibContractTest {
 
     public static final Path SOURCES = Paths.get("src/main/java/com/gtnllib");
     public static final Path RESOURCES = Paths.get("src/main/resources/assets/gtnllib");
-    private static final List<String> FAILURES = new ArrayList<>();
+    private static final List<String> FAILURES = new ObjectArrayList<>();
     private static int assertions;
 
     private GTNLLibContractTest() {}

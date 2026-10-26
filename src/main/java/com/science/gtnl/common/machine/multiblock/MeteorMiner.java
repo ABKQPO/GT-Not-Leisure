@@ -1,8 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,6 +80,7 @@ import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -108,7 +107,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
     public boolean isWaiting = false;
     public boolean isResetting = false;
     public boolean enableRender = true;
-    public final Collection<ItemStack> itemDrop = new ArrayList<>();
+    public final Collection<ItemStack> itemDrop = new ObjectArrayList<>();
     public byte tierMachine = 0;
 
     private static final ObjectPooler<BlockPos> BLOCK_POS_POOL = new ObjectPooler<>(BlockPos::new);
@@ -640,7 +639,7 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
 
     public Collection<ItemStack> getOutputByDrops(Collection<ItemStack> oreBlockDrops) {
         long voltage = getMaxInputVoltage();
-        Collection<ItemStack> outputItems = new HashSet<>();
+        Collection<ItemStack> outputItems = new ObjectOpenHashSet<>();
         oreBlockDrops.forEach(currentItem -> {
             if (!doUseMaceratorRecipe(currentItem)) {
                 outputItems.add(multiplyStackSize(currentItem));

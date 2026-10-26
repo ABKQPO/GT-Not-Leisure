@@ -1,13 +1,14 @@
 package com.science.gtnl.common.wireless;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class VerifiedEntranceRecovery<N, S> {
 
@@ -21,7 +22,7 @@ public class VerifiedEntranceRecovery<N, S> {
 
     private static final int BATCH_SIZE = 16;
     private static final int RETRY_DELAY = 20;
-    private final Map<Candidate<N, S>, Long> retryAfter = new HashMap<>();
+    private final Object2LongOpenHashMap<Candidate<N, S>> retryAfter = new Object2LongOpenHashMap<>();
     private long tick;
     private int remaining = BATCH_SIZE;
 
@@ -38,18 +39,18 @@ public class VerifiedEntranceRecovery<N, S> {
     Set<S> restore(List<Candidate<N, S>> candidates, Predicate<Candidate<N, S>> valid,
         Predicate<Candidate<N, S>> connected, Predicate<S> ready, Function<Candidate<N, S>, Result> connect) {
         retryAfter.keySet()
-            .retainAll(new HashSet<>(candidates));
-        List<Candidate<N, S>> eligible = new ArrayList<>();
-        Map<S, Boolean> readiness = new HashMap<>();
+            .retainAll(new ObjectOpenHashSet<>(candidates));
+        List<Candidate<N, S>> eligible = new ObjectArrayList<>();
+        Object2BooleanOpenHashMap<S> readiness = new Object2BooleanOpenHashMap<>();
         for (Candidate<N, S> candidate : candidates) {
             if (!valid.test(candidate) || connected.test(candidate)) continue;
             eligible.add(candidate);
             // Snapshot every source before creating edges: the first edge queues native repathing.
             readiness.computeIfAbsent(candidate.source(), ready::test);
         }
-        Set<S> pending = new HashSet<>();
+        Set<S> pending = new ObjectOpenHashSet<>();
         for (Candidate<N, S> candidate : eligible) {
-            if (!readiness.get(candidate.source()) || tick < retryAfter.getOrDefault(candidate, Long.MIN_VALUE))
+            if (!readiness.getBoolean(candidate.source()) || tick < retryAfter.getOrDefault(candidate, Long.MIN_VALUE))
                 continue;
             if (remaining == 0) {
                 pending.add(candidate.source());
@@ -57,7 +58,7 @@ public class VerifiedEntranceRecovery<N, S> {
             }
             remaining--;
             switch (connect.apply(candidate)) {
-                case CONNECTED -> retryAfter.remove(candidate);
+                case CONNECTED -> retryAfter.removeLong(candidate);
                 case REJECTED -> retryAfter.put(candidate, tick + RETRY_DELAY);
                 case WAITING -> {
                     // A grid merge can replace the source cache before AE updates controller state next tick.

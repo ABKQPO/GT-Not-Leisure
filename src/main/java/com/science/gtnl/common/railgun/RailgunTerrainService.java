@@ -1,10 +1,6 @@
 package com.science.gtnl.common.railgun;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -23,12 +19,16 @@ import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 public class RailgunTerrainService {
 
     private record Position(int x, int y, int z, double order) {}
 
-    private record Job(int dimension, UUID player, ArrayDeque<Position> queue, double maxHardness) {}
+    private record Job(int dimension, UUID player, ObjectArrayFIFOQueue<Position> queue, double maxHardness) {}
 
     private static String[] protectedSource;
     private static Set<String> protectedMods = Set.of();
@@ -39,8 +39,8 @@ public class RailgunTerrainService {
     private static final int SPARK_ONE_IN = 12, SPARK_COUNT = 2;
     private static final double SPARK_SPREAD = 0.3, SPARK_SPEED = 0.05;
     private static final double OBSIDIAN_HARDNESS = 50;
-    private static final ArrayDeque<Job> PENDING = new ArrayDeque<>();
-    private static final Map<Block, String> MOD_IDS = new IdentityHashMap<>();
+    private static final ObjectArrayList<Job> PENDING = new ObjectArrayList<>();
+    private static final Map<Block, String> MOD_IDS = new Reference2ObjectOpenHashMap<>();
 
     private RailgunTerrainService() {}
 
@@ -50,7 +50,7 @@ public class RailgunTerrainService {
             || radius <= 0
             || radius > MAX_RADIUS
             || PENDING.size() >= MAX_PENDING_JOBS) return;
-        List<Position> positions = new ArrayList<>();
+        List<Position> positions = new ObjectArrayList<>();
         int minX = MathHelper.floor_double(center.x() - radius), maxX = MathHelper.floor_double(center.x() + radius);
         int minY = Math.max(0, MathHelper.floor_double(center.y() - radius)),
             maxY = Math.min(MAX_Y, MathHelper.floor_double(center.y() + radius));
@@ -61,7 +61,9 @@ public class RailgunTerrainService {
                 positions.add(new Position(x, y, z, distance + world.rand.nextDouble() * EDGE_JITTER));
         }
         positions.sort(Comparator.comparingDouble(Position::order));
-        PENDING.add(new Job(world.provider.dimensionId, player.getUniqueID(), new ArrayDeque<>(positions), hardness));
+        ObjectArrayFIFOQueue<Position> queue = new ObjectArrayFIFOQueue<>(positions.size());
+        for (Position next : positions) queue.enqueue(next);
+        PENDING.add(new Job(world.provider.dimensionId, player.getUniqueID(), queue, hardness));
     }
 
     public static void unload(int dimension) {
@@ -86,7 +88,7 @@ public class RailgunTerrainService {
                 continue;
             }
             while (budget > 0 && checks > 0 && !job.queue.isEmpty()) {
-                Position position = job.queue.poll();
+                Position position = job.queue.dequeue();
                 checks--;
                 int x = position.x, y = position.y, z = position.z;
                 if (!world.blockExists(x, y, z)) continue;
@@ -119,7 +121,7 @@ public class RailgunTerrainService {
     private static Set<String> protectedMods() {
         String[] source = MainConfig.item.railgun.terrainProtectedMods;
         if (source != protectedSource) {
-            Set<String> mods = new HashSet<>();
+            Set<String> mods = new ObjectOpenHashSet<>();
             if (source != null) for (String mod : source) if (mod != null && !mod.isBlank()) mods.add(
                 mod.trim()
                     .toLowerCase(Locale.ROOT));

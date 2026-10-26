@@ -1,6 +1,5 @@
 package com.gtnllib.client.fx.world;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -13,6 +12,7 @@ import com.gtnllib.utils.ColorMath;
 import com.gtnllib.utils.Vec3d;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class FxShockwaveRenderer {
 
@@ -49,7 +49,7 @@ public class FxShockwaveRenderer {
         }
     }
 
-    private static final List<Wave> ACTIVE = new ArrayList<>();
+    private static final List<Wave> ACTIVE = new ObjectArrayList<>();
 
     public static void spawn(Vec3d center, double radius, int lifetime, int rgb) {
         spawn(center, radius, lifetime, ColorMath.red(rgb), ColorMath.green(rgb), ColorMath.blue(rgb));

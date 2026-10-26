@@ -1,8 +1,6 @@
 package com.science.gtnl.common.crafting.quantum.ae2;
 
 import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +37,8 @@ import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 
@@ -75,7 +75,7 @@ public final class QuantumCraftingTree {
             if (entry.getLongValue() <= 0) continue;
             this.crafts.put(pattern, entry.getLongValue());
             for (GenericStack output : pattern.getOutputs()) {
-                this.producers.computeIfAbsent(output.what(), k -> new ArrayList<>(1))
+                this.producers.computeIfAbsent(output.what(), k -> new ObjectArrayList<>(1))
                     .add(pattern);
             }
         }
@@ -90,7 +90,8 @@ public final class QuantumCraftingTree {
     private void addToPool(Object2LongOpenHashMap<AEKey> pool, AEKey key, long amount) {
         if (amount <= 0) return;
         pool.put(key, addSaturated(pool.getLong(key), amount));
-        final List<AEKey> group = this.poolKeysByGroup.computeIfAbsent(key.getPrimaryKey(), k -> new ArrayList<>(1));
+        final List<AEKey> group = this.poolKeysByGroup
+            .computeIfAbsent(key.getPrimaryKey(), k -> new ObjectArrayList<>(1));
         if (!group.contains(key)) {
             group.add(key);
         }
@@ -123,17 +124,105 @@ public final class QuantumCraftingTree {
             SubstitutionMode.PRECISE_FRESH,
             null,
             null);
-        final ArrayDeque<Request> pending = new ArrayDeque<>();
-        pending.add(root);
+        final ObjectArrayFIFOQueue<Request> pending = new ObjectArrayFIFOQueue<>();
+        pending.enqueue(root);
         this.nodes = 1;
         while (!pending.isEmpty()) {
-            final Request request = pending.poll();
+            final Request request = pending.dequeue();
             resolve(request, pending);
         }
+        foldLoops(root);
         return root;
     }
 
-    private void resolve(Request request, ArrayDeque<Request> pending) {
+    // What comes around a loop is crafted again by the pattern above it, repeating the loop under itself once per
+    // round. Those crafts are the ones above done more times, so they are merged into them, and what comes around is
+    // left with only what starts the loop under it.
+    private static void foldLoops(Request root) {
+        boolean folded = true;
+        while (folded) {
+            folded = false;
+            final ObjectArrayList<Request> pending = new ObjectArrayList<>();
+            pending.add(root);
+            while (!pending.isEmpty()) {
+                final Request request = pending.pop();
+                folded |= foldRounds(request);
+                for (Resolver resolver : request.resolvers) {
+                    pending.addAll(resolver.children);
+                }
+            }
+        }
+    }
+
+    private static boolean foldRounds(Request request) {
+        boolean folded = false;
+        for (int i = 0; i < request.resolvers.size();) {
+            final Resolver resolver = request.resolvers.get(i);
+            final Resolver above = resolver.kind == Kind.CRAFT ? craftAbove(request, resolver.pattern) : null;
+            if (above == null) {
+                i++;
+                continue;
+            }
+            request.resolvers.remove(i);
+            above.times = addSaturated(above.times, resolver.times);
+            mergeChildren(above, resolver);
+            folded = true;
+        }
+        return folded;
+    }
+
+    private static @Nullable Resolver craftAbove(Request request, IPatternDetails pattern) {
+        for (Resolver resolver = request.parent; resolver != null; resolver = resolver.owner.parent) {
+            if (resolver.pattern == pattern) return resolver;
+        }
+        return null;
+    }
+
+    private static void mergeChildren(Resolver into, Resolver from) {
+        for (Request child : from.children) {
+            Request same = null;
+            for (Request existing : into.children) {
+                if (existing.key.equals(child.key)) {
+                    same = existing;
+                    break;
+                }
+            }
+            if (same == null) {
+                child.parent = into;
+                into.children.add(child);
+            } else {
+                merge(same, child);
+            }
+        }
+    }
+
+    private static void merge(Request into, Request from) {
+        into.amount = addSaturated(into.amount, from.amount);
+        into.remaining = addSaturated(into.remaining, from.remaining);
+        into.returnsAfter = addSaturated(into.returnsAfter, from.returnsAfter);
+        into.simulated |= from.simulated;
+        for (Resolver resolver : from.resolvers) {
+            Resolver same = null;
+            for (Resolver existing : into.resolvers) {
+                if (existing.kind == resolver.kind && existing.what.equals(resolver.what)
+                    && existing.pattern == resolver.pattern
+                    && existing.fromByproducts == resolver.fromByproducts) {
+                    same = existing;
+                    break;
+                }
+            }
+            if (same == null) {
+                resolver.owner = into;
+                into.resolvers.add(resolver);
+            } else {
+                same.amount = addSaturated(same.amount, resolver.amount);
+                same.times = addSaturated(same.times, resolver.times);
+                mergeChildren(same, resolver);
+            }
+        }
+    }
+
+    private void resolve(Request request, ObjectArrayFIFOQueue<Request> pending) {
         long rest = request.amount;
         final Set<AEKey> candidates = candidates(request);
 
@@ -297,7 +386,7 @@ public final class QuantumCraftingTree {
             return candidates;
         }
 
-        final List<AEKey> alternatives = new ArrayList<>();
+        final List<AEKey> alternatives = new ObjectArrayList<>();
         for (GenericStack possible : input.possibleInputs()) {
             alternatives.add(possible.what());
         }
@@ -319,7 +408,7 @@ public final class QuantumCraftingTree {
         }
     }
 
-    private void addInputs(Resolver resolver, ArrayDeque<Request> pending) {
+    private void addInputs(Resolver resolver, ObjectArrayFIFOQueue<Request> pending) {
         final IPatternDetails pattern = resolver.pattern;
         final SubstitutionMode mode = pattern.canSubstitute() ? SubstitutionMode.ACCEPT_FUZZY
             : SubstitutionMode.PRECISE;
@@ -352,7 +441,7 @@ public final class QuantumCraftingTree {
         // Inputs from outside the loop first, the way back around it last
         resolver.children.sort((a, b) -> Boolean.compare(a.loop, b.loop));
         for (Request child : resolver.children) {
-            pending.add(child);
+            pending.enqueue(child);
             this.nodes++;
         }
     }
@@ -391,7 +480,7 @@ public final class QuantumCraftingTree {
     private ByteBuf serialize(Request root) throws IOException {
         final CraftingTreeSerializer serializer = new CraftingTreeSerializer(this.world);
         final ByteBuf buffer = serializer.getBuffer();
-        final ArrayDeque<Runnable> work = new ArrayDeque<>();
+        final ObjectArrayList<Runnable> work = new ObjectArrayList<>();
 
         ByteBufUtils.writeUTF8String(buffer, ":j");
         buffer.writeLong(this.byteTotal);
@@ -412,7 +501,7 @@ public final class QuantumCraftingTree {
         return serializer.finalizeSerializer();
     }
 
-    private void queueResolvers(CraftingTreeSerializer serializer, Request request, ArrayDeque<Runnable> work) {
+    private void queueResolvers(CraftingTreeSerializer serializer, Request request, ObjectArrayList<Runnable> work) {
         final List<Resolver> resolvers = request.resolvers;
         ByteBufUtils.writeVarInt(serializer.getBuffer(), resolvers.size(), 5);
         for (int i = resolvers.size() - 1; i >= 0; i--) {
@@ -421,7 +510,7 @@ public final class QuantumCraftingTree {
         }
     }
 
-    private void writeResolver(CraftingTreeSerializer serializer, Resolver resolver, ArrayDeque<Runnable> work) {
+    private void writeResolver(CraftingTreeSerializer serializer, Resolver resolver, ObjectArrayList<Runnable> work) {
         final ByteBuf buffer = serializer.getBuffer();
         ByteBufUtils.writeUTF8String(buffer, ":re");
         serializer.writeStackWithSize(stack(resolver.what, resolver.amount));
@@ -429,7 +518,7 @@ public final class QuantumCraftingTree {
         work.push(() -> writeTask(serializer, resolver, work));
     }
 
-    private void writeTask(CraftingTreeSerializer serializer, Resolver resolver, ArrayDeque<Runnable> work) {
+    private void writeTask(CraftingTreeSerializer serializer, Resolver resolver, ObjectArrayList<Runnable> work) {
         final ByteBuf buffer = serializer.getBuffer();
         final ItemStack patternItem = resolver.kind == Kind.CRAFT ? ((QuantumPattern) resolver.pattern).getDetails()
             .getPattern() : null;
@@ -476,7 +565,7 @@ public final class QuantumCraftingTree {
         }
     }
 
-    private void writeChildRequest(CraftingTreeSerializer serializer, Request request, ArrayDeque<Runnable> work) {
+    private void writeChildRequest(CraftingTreeSerializer serializer, Request request, ObjectArrayList<Runnable> work) {
         final ByteBuf buffer = serializer.getBuffer();
         ByteBufUtils.writeUTF8String(buffer, ":tcr");
         buffer.writeLong(request.perCraft);
@@ -535,7 +624,7 @@ public final class QuantumCraftingTree {
             gzos.finish();
         }
         final int chunkCount = (int) ceilDiv(output.readableBytes(), CHUNK_SIZE);
-        final List<PacketCraftingTreeData> chunks = new ArrayList<>(chunkCount);
+        final List<PacketCraftingTreeData> chunks = new ObjectArrayList<>(chunkCount);
         for (int chunk = 0; chunk < chunkCount; chunk++) {
             final int start = CHUNK_SIZE * chunk;
             final int length = Math.min(start + CHUNK_SIZE, output.readableBytes()) - start;
@@ -575,8 +664,8 @@ public final class QuantumCraftingTree {
         @Nullable
         private final IPatternDetails.IInput input;
         @Nullable
-        private final Resolver parent;
-        private final List<Resolver> resolvers = new ArrayList<>(1);
+        private Resolver parent;
+        private final List<Resolver> resolvers = new ObjectArrayList<>(1);
         private long remaining;
         private boolean simulated;
         private boolean loop;
@@ -598,13 +687,13 @@ public final class QuantumCraftingTree {
 
         private final Kind kind;
         private final AEKey what;
-        private final long amount;
+        private long amount;
         private Request owner;
         private IPatternDetails pattern;
         private long times;
         private long perCraftOutput;
         private boolean fromByproducts;
-        private final List<Request> children = new ArrayList<>();
+        private final List<Request> children = new ObjectArrayList<>();
 
         private Resolver(Kind kind, AEKey what, long amount) {
             this.kind = kind;

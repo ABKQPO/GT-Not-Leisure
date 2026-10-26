@@ -1,6 +1,5 @@
 package com.science.gtnl.common.machine.hatch;
 
-import java.util.ArrayList;
 import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,6 +33,7 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GTUtility;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
@@ -254,7 +254,7 @@ public class CustomFluidHatch extends MTEHatch implements IAddGregtechLogo {
     public String[] getDescription() {
         if (mLockedFluids == null) return new String[] { "INVALID HATCH. ASSIGN LOCKED FLUIDS" };
 
-        ArrayList<String> desc = new ArrayList<>();
+        ObjectArrayList<String> desc = new ObjectArrayList<>();
         desc.add(StatCollector.translateToLocal("gtnl.hatch.custom_fluid.tooltip.0"));
         desc.add(
             StatCollector.translateToLocal("gtnl.hatch.custom_fluid.tooltip.capacity") + " " + mFluidCapacity + "L");

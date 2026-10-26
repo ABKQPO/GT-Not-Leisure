@@ -4,7 +4,6 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 import static kubatech.loaders.BlockLoader.defcCasingBlock;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -63,6 +62,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtPlusPlus.core.util.minecraft.ItemUtils;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import tectech.thing.casing.BlockGTCasingsTT;
@@ -367,7 +367,7 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
     public String[] getInfoData() {
         if (!enableMnemonic) return super.getInfoData();
         String[] original = super.getInfoData();
-        List<String> list = new ArrayList<>(Arrays.asList(original));
+        List<String> list = new ObjectArrayList<>(Arrays.asList(original));
         list.add("gtnl.machine.smelting_mixing_furnace.info.decay_blocking_enabled");
         return list.toArray(new String[0]);
     }

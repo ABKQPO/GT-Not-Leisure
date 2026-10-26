@@ -37,8 +37,6 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public final class MiniTerminalBogoCompat {
 
-    private MiniTerminalBogoCompat() {}
-
     public static void init() {
         if (ModList.InventoryBogoSorter.isModLoaded()) Native.initialize();
     }

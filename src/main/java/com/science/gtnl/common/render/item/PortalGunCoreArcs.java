@@ -1,9 +1,10 @@
 package com.science.gtnl.common.render.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.gtnllib.utils.MathUtils;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 // Why: plain arrays keep this free of Minecraft types, so the offline preview script loads it without the game.
 public class PortalGunCoreArcs {
@@ -37,7 +38,7 @@ public class PortalGunCoreArcs {
     public static List<Arc> arcs(long millis, double half, double[] room, double[] degrees, double[] offset) {
         long step = millis / STEP_MILLIS;
         double[][] spin = rotation(degrees);
-        List<Arc> arcs = new ArrayList<>();
+        List<Arc> arcs = new ObjectArrayList<>();
         for (int slot = 0; slot < BOLT_SLOTS; slot++) {
             int epochSteps = 4 + 2 * slot + (int) (unit(slot, 0, BOLT_SALT, 0) * 3);
             long shifted = step + (long) (unit(slot, 1, BOLT_SALT, 0) * epochSteps);

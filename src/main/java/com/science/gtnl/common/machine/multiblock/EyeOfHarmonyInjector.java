@@ -149,10 +149,10 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
     public int mCountCasing;
 
     public float angle;
-    public ArrayList<TileEntityEyeOfHarmony.OrbitingObject> orbitingObjects = new ArrayList<>();
+    public ObjectArrayList<TileEntityEyeOfHarmony.OrbitingObject> orbitingObjects = new ObjectArrayList<>();
     public boolean enableRender = true;
 
-    public List<LinkedEyeOfHarmonyUnit> mLinkedUnits = new ArrayList<>();
+    public List<LinkedEyeOfHarmonyUnit> mLinkedUnits = new ObjectArrayList<>();
 
     public EyeOfHarmonyInjector(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -389,7 +389,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
 
     @Override
     public String[] getInfoData() {
-        var ret = new ArrayList<String>();
+        var ret = new ObjectArrayList<String>();
         // Show linked purification units and their status
         ret.add(IGregTechDeviceInformation.encode("GT5U.infodata.purification_plant.linked_units"));
         for (LinkedEyeOfHarmonyUnit unit : this.mLinkedUnits) {
@@ -430,7 +430,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
                 updateLinkedUnitForGui(unit);
             }
         }
-        List<LinkedUnitGuiData> guiData = new ArrayList<>(mLinkedUnits.size());
+        List<LinkedUnitGuiData> guiData = new ObjectArrayList<>(mLinkedUnits.size());
         for (LinkedEyeOfHarmonyUnit unit : mLinkedUnits) {
             guiData.add(new LinkedUnitGuiData(unit));
         }
@@ -891,7 +891,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
     public CheckRecipeResult checkProcessing_EM() {
         this.onMachineBlockUpdate();
         List<FluidStack> inputFluidStack = getStoredFluidsForColor(Optional.empty());
-        List<FluidStack> outputFluidStack = new ArrayList<>();
+        List<FluidStack> outputFluidStack = new ObjectArrayList<>();
         List<ItemStack> inputItemStack = getStoredInputs();
         boolean hasUpdate = false;
 
@@ -1246,7 +1246,7 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
     }
 
     public List<MTEHatch> getAllInputHatches() {
-        List<MTEHatch> allHatches = new ArrayList<>(mInputHatches.size() + mDualInputHatches.size());
+        List<MTEHatch> allHatches = new ObjectArrayList<>(mInputHatches.size() + mDualInputHatches.size());
         for (MTEHatchInput inputHatch : GTUtility.validMTEList(mInputHatches)) {
             allHatches.add(inputHatch);
         }

@@ -2,8 +2,6 @@ package com.science.gtnl.utils.recipes;
 
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,10 +10,13 @@ import org.jetbrains.annotations.NotNull;
 
 import com.science.gtnl.config.MainConfig;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 @SuppressWarnings({ "unused", "SpellCheckingInspection" })
 public class AssLineRecipeHook {
 
-    public static final Map<String, List<RemovalRecipe>> RECIPE_TO_REMOVE = new HashMap<>();
+    public static final Map<String, List<RemovalRecipe>> RECIPE_TO_REMOVE = new Object2ObjectOpenHashMap<>();
 
     // 必须在此处移除装配线配方, 不能调用对象获取name, 因为本方法执行在gt pre load 阶段开始
     public static void loadAndInit() {
@@ -98,7 +99,7 @@ public class AssLineRecipeHook {
         private void build() {
             if (researchItemKey == null || researchKey == null || outputItemKey == null || processKey == null)
                 throw new NullPointerException("Check....");
-            RECIPE_TO_REMOVE.computeIfAbsent(researchItemKey + researchKey, k -> new ArrayList<>())
+            RECIPE_TO_REMOVE.computeIfAbsent(researchItemKey + researchKey, k -> new ObjectArrayList<>())
                 .add(new RemovalRecipe(outputItemKey + processKey));
         }
     }

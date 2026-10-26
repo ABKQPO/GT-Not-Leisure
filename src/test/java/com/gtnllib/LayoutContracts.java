@@ -8,7 +8,6 @@ import static com.gtnllib.GTNLLibContractTest.read;
 import static com.gtnllib.GTNLLibContractTest.rejects;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +29,8 @@ import com.gtnllib.gui.widget.LayoutTheme;
 import com.gtnllib.gui.widget.SlideSwitch;
 import com.gtnllib.gui.widget.StepSlider;
 import com.gtnllib.utils.MathUtils;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class LayoutContracts {
 
@@ -143,7 +144,7 @@ public class LayoutContracts {
             "a scrolling area shows whole rows, at least the minimum, never more than its content");
         int[] width = { 176 };
         Layout rows = Layout.rows(LayoutTheme.DEFAULT, () -> width[0]);
-        List<SlideSwitch> five = new ArrayList<>();
+        List<SlideSwitch> five = new ObjectArrayList<>();
         for (int i = 0; i < 5; i++) five.add(new SlideSwitch());
         Layout.Grid grid = rows.adaptiveGrid(2, 76, 3, five);
         check(
@@ -268,7 +269,7 @@ public class LayoutContracts {
             rows.available() == 156 && rows.inset(4)
                 .available() == 168,
             "rows keep the theme padding on both sides");
-        List<SlideSwitch> five = new ArrayList<>();
+        List<SlideSwitch> five = new ObjectArrayList<>();
         for (int i = 0; i < 5; i++) five.add(new SlideSwitch());
         List<IWidget> grid = rows.grid(gap, 2, five);
         check(

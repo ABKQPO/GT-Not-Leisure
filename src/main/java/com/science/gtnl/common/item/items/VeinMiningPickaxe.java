@@ -1,7 +1,5 @@
 package com.science.gtnl.common.item.items;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
@@ -62,11 +60,13 @@ import it.unimi.dsi.fastutil.ints.IntArrayFIFOQueue;
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, IGuiHolder<PlayerInventoryGuiData> {
 
     public boolean isEnable;
-    private final List<ItemStack> capturedHarvestDrops = new ArrayList<>();
+    private final List<ItemStack> capturedHarvestDrops = new ObjectArrayList<>();
     private int harvestingX;
     private int harvestingY;
     private int harvestingZ;
@@ -393,7 +393,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
                     for (ItemStack drop : drops) {
                         if (drop == null) continue;
                         ItemStackWrapper dropKey = new ItemStackWrapper(drop);
-                        mergedDrops.put(dropKey, mergedDrops.getInt(dropKey) + drop.stackSize);
+                        mergedDrops.addTo(dropKey, drop.stackSize);
                     }
                 }
 
@@ -472,7 +472,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
     }
 
     private static Set<String> collectOreNames(Block block, int meta) {
-        Set<String> names = new HashSet<>();
+        Set<String> names = new ObjectOpenHashSet<>();
         for (int id : OreDictionary.getOreIDs(new ItemStack(block, 1, meta))) {
             names.add(OreDictionary.getOreName(id));
         }
@@ -512,7 +512,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
 
     public List<ItemStack> removeBlockAndGetDrops(EntityPlayerMP player, ItemStack stack, World world, int x, int y,
         int z, Block block, boolean silk, int fortune) {
-        List<ItemStack> drops = new ArrayList<>();
+        List<ItemStack> drops = new ObjectArrayList<>();
         if (!world.blockExists(x, y, z)) return drops;
 
         Block blk = world.getBlock(x, y, z);
@@ -547,7 +547,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
     }
 
     private List<ItemStack> copyDrops(List<ItemStack> drops) {
-        List<ItemStack> copiedDrops = new ArrayList<>();
+        List<ItemStack> copiedDrops = new ObjectArrayList<>();
         for (ItemStack drop : drops) {
             if (drop != null && drop.stackSize > 0) {
                 copiedDrops.add(drop.copy());

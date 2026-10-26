@@ -4,9 +4,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +15,10 @@ import appeng.api.storage.data.IAEStack;
 import appeng.client.gui.widgets.GuiCraftingTree;
 import appeng.crafting.v2.CraftingRequest;
 import appeng.crafting.v2.resolvers.CraftableItemResolver.CraftFromPatternTask;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 /**
  * Finds the crafting cycles of a crafting tree, whatever calculated it: a request for what a craft above it makes is
@@ -158,28 +159,28 @@ public final class CraftingTreeRings {
      * outermost one.
      */
     public static Map<Object, Ring> fold(GuiCraftingTree tree) {
-        var rings = new IdentityHashMap<Object, Ring>();
+        var rings = new Reference2ObjectOpenHashMap<Object, Ring>();
         var nodes = allNodes(tree);
         // Per entry, the nodes of all ways back into it
-        var members = new IdentityHashMap<Object, LinkedHashSet<Object>>();
-        var backEdges = new IdentityHashMap<Object, Set<Object>>();
+        var members = new Reference2ObjectOpenHashMap<Object, ObjectLinkedOpenHashSet<Object>>();
+        var backEdges = new Reference2ObjectOpenHashMap<Object, Set<Object>>();
         for (var node : nodes) {
             if (!isRequest(node)) continue;
             var maker = maker(node);
             var entry = maker == null ? null : parent(maker);
             if (entry == null) continue;
-            var path = new ArrayList<Object>();
+            var path = new ObjectArrayList<Object>();
             for (Object step = node; step != null; step = parent(step)) {
                 path.add(0, step);
                 if (step == entry) break;
             }
-            members.computeIfAbsent(entry, e -> new LinkedHashSet<>())
+            members.computeIfAbsent(entry, e -> new ObjectLinkedOpenHashSet<>())
                 .addAll(path);
-            backEdges.computeIfAbsent(entry, e -> Collections.newSetFromMap(new IdentityHashMap<>()))
+            backEdges.computeIfAbsent(entry, e -> new ReferenceOpenHashSet<>())
                 .add(node);
         }
         // An entry inside another ring belongs to that one
-        var outer = new IdentityHashMap<Object, Object>();
+        var outer = new Reference2ObjectOpenHashMap<Object, Object>();
         for (var entry : members.keySet()) {
             Object top = entry;
             boolean merged = true;
@@ -196,23 +197,23 @@ public final class CraftingTreeRings {
             }
             outer.put(entry, top);
         }
-        var mergedMembers = new IdentityHashMap<Object, LinkedHashSet<Object>>();
-        var mergedEdges = new IdentityHashMap<Object, Set<Object>>();
+        var mergedMembers = new Reference2ObjectOpenHashMap<Object, ObjectLinkedOpenHashSet<Object>>();
+        var mergedEdges = new Reference2ObjectOpenHashMap<Object, Set<Object>>();
         for (var entry : members.keySet()) {
             var top = outer.get(entry);
-            mergedMembers.computeIfAbsent(top, e -> new LinkedHashSet<>())
+            mergedMembers.computeIfAbsent(top, e -> new ObjectLinkedOpenHashSet<>())
                 .addAll(members.get(entry));
-            mergedEdges.computeIfAbsent(top, e -> Collections.newSetFromMap(new IdentityHashMap<>()))
+            mergedEdges.computeIfAbsent(top, e -> new ReferenceOpenHashSet<>())
                 .addAll(backEdges.get(entry));
         }
         for (var entry : mergedMembers.entrySet()) {
             var inRing = entry.getValue();
             // In tree order, so the ring is drawn the way the tree reads
-            var ordered = new ArrayList<Object>();
+            var ordered = new ObjectArrayList<Object>();
             for (var node : nodes) {
                 if (inRing.contains(node)) ordered.add(node);
             }
-            var external = new ArrayList<Object>();
+            var external = new ObjectArrayList<Object>();
             for (var node : ordered) {
                 if (!isTask(node)) continue;
                 for (var child : children(node)) {

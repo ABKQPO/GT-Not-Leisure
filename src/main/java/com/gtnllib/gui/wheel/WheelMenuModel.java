@@ -1,8 +1,9 @@
 package com.gtnllib.gui.wheel;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class WheelMenuModel {
 
@@ -49,7 +50,7 @@ public class WheelMenuModel {
             throw new IllegalArgumentException("pageIndex out of range: " + pageIndex);
         int start = pageIndex * slotsPerPage;
         int end = Math.min(start + slotsPerPage, entries.size());
-        List<WheelEntry> slots = new ArrayList<>(slotsPerPage);
+        List<WheelEntry> slots = new ObjectArrayList<>(slotsPerPage);
         for (int i = start; i < end; i++) slots.add(entries.get(i));
         if (pages > 1) for (int i = slots.size(); i < slotsPerPage; i++) slots.add(WheelEntry.placeholder(i));
         return new WheelPageModel(pageIndex, slotsPerPage, slots);

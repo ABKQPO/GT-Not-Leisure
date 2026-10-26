@@ -2,7 +2,6 @@ package com.science.gtnl.common.command;
 
 import static com.science.gtnl.ScienceNotLeisure.network;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.command.CommandBase;
@@ -12,6 +11,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentTranslation;
 
 import com.science.gtnl.common.packet.SudoPacket;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class CommandSudo extends CommandBase {
 
@@ -64,7 +65,7 @@ public class CommandSudo extends CommandBase {
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args) {
         if (args.length == 1) {
-            List<String> names = new ArrayList<>();
+            List<String> names = new ObjectArrayList<>();
             for (EntityPlayerMP obj : MinecraftServer.getServer()
                 .getConfigurationManager().playerEntityList) {
                 names.add(obj.getCommandSenderName());

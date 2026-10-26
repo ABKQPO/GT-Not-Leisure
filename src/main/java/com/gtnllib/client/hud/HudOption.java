@@ -2,7 +2,6 @@ package com.gtnllib.client.hud;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -10,6 +9,8 @@ import java.util.Set;
 
 import com.google.gson.JsonPrimitive;
 import com.gtnllib.client.hud.HudElement.Choice;
+
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 public class HudOption {
 
@@ -67,7 +68,7 @@ public class HudOption {
 
     public static HudOption choice(String id, String lang, String value, Choice... choices) {
         List<Choice> list = Collections.unmodifiableList(Arrays.asList(choices.clone()));
-        Set<String> ids = new HashSet<>();
+        Set<String> ids = new ObjectOpenHashSet<>();
         for (Choice each : list) if (!ids.add(each.id()))
             throw new IllegalArgumentException("Duplicate choice " + each.id() + " in HUD option " + id);
         if (!ids.contains(value)) throw new IllegalArgumentException("HUD option " + id + " has no choice " + value);

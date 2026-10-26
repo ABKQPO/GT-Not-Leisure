@@ -2,7 +2,6 @@ package com.science.gtnl.common.machine.multiblock.steam;
 
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.item.EntityItem;
@@ -51,6 +50,7 @@ import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements ISurvivalConstructable {
@@ -161,7 +161,7 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
         time = (long) (maxParallel / 5d + adjustmentFactor);
         if (time < 0) time = 0;
 
-        List<ItemStack> outputSlots = new ArrayList<>();
+        List<ItemStack> outputSlots = new ObjectArrayList<>();
         for (ItemStack stack : getItemOutputSlots(null)) {
             outputSlots.add(stack != null ? stack.copy() : null);
         }
@@ -176,7 +176,7 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
             }
         }
 
-        ArrayList<ItemStack> smeltedOutputs = new ArrayList<>();
+        ObjectArrayList<ItemStack> smeltedOutputs = new ObjectArrayList<>();
         long toSmelt = maxParallel;
         boolean outputFull = false;
 

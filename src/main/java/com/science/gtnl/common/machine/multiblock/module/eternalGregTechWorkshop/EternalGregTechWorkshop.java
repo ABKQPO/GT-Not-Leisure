@@ -100,6 +100,7 @@ import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Setter;
 import tectech.TecTech;
 import tectech.thing.casing.TTCasingsContainer;
@@ -292,7 +293,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     public EGTWUpgradeStorage upgrades = new EGTWUpgradeStorage();
     public EternalGregTechWorkshopUpgrade currentUpgradeWindow;
 
-    public ArrayList<EternalGregTechWorkshopModule> moduleHatches = new ArrayList<>();
+    public ObjectArrayList<EternalGregTechWorkshopModule> moduleHatches = new ObjectArrayList<>();
     public long ticker = 0;
     public final ArrayList<FluidStack> validFuelList = new ArrayList<>() {
 
@@ -966,7 +967,8 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
     }
 
     public List<EGTWUpgradeStorage.UpgradeData> getUpgradeDataForGui() {
-        ArrayList<EGTWUpgradeStorage.UpgradeData> data = new ArrayList<>(EternalGregTechWorkshopUpgrade.VALUES.length);
+        ObjectArrayList<EGTWUpgradeStorage.UpgradeData> data = new ObjectArrayList<>(
+            EternalGregTechWorkshopUpgrade.VALUES.length);
         for (EternalGregTechWorkshopUpgrade upgrade : EternalGregTechWorkshopUpgrade.VALUES) {
             data.add(upgrades.getData(upgrade));
         }

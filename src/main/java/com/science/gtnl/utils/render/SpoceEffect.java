@@ -1,16 +1,17 @@
 package com.science.gtnl.utils.render;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class SpoceEffect {
 
-    public static final List<SpoceEffect> effects = new ArrayList<>();
+    public static final List<SpoceEffect> effects = new ObjectArrayList<>();
 
     public double x, y, z;
     public float rotSpeed;
     public float globalScale;
-    public List<Layer> layers = new ArrayList<>();
+    public List<Layer> layers = new ObjectArrayList<>();
     public boolean removed = false;
 
     private float lastAnimProgress = 0;

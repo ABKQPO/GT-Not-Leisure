@@ -67,7 +67,9 @@ import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.shutdown.ShutDownReason;
 import gregtech.common.WirelessComputationPacket;
+import gregtech.common.misc.GTStructureChannels;
 import gregtech.common.render.IMTERenderer;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import tectech.mechanics.dataTransport.QuantumDataPacket;
 import tectech.thing.casing.BlockGTCasingsTT;
@@ -120,8 +122,8 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
 
     public int[][] randomColor;
     public Table<Integer, Integer, MTEHatchRack> rackTable = HashBasedTable.create();
-    public ArrayList<MTEHatchRack> mRackHatchs = new ArrayList<>();
-    public ArrayList<MTEHatchWirelessComputationOutput> mWirelessComputationOutputHatchs = new ArrayList<>();
+    public ObjectArrayList<MTEHatchRack> mRackHatchs = new ObjectArrayList<>();
+    public ObjectArrayList<MTEHatchWirelessComputationOutput> mWirelessComputationOutputHatchs = new ObjectArrayList<>();
     public Parameters.Group.ParameterOut maxCurrentTemp, availableData, machineLens, coolantUse;
 
     public HighPerformanceComputationArray(int aID, String aName, String aNameRegional) {
@@ -499,11 +501,13 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
 
     @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
+        int tLength = GTStructureChannels.STRUCTURE_LENGTH.getValueClamped(stackSize, 3, 15);
+
         buildPiece("front", stackSize, hintsOnly, 1, 2, 0);
         buildPiece("cap", stackSize, hintsOnly, 1, 2, -1);
 
         byte offset = -2;
-        for (int rackSlices = Math.min(Math.max(stackSize.stackSize, 3), 15); rackSlices > 0; rackSlices--) {
+        for (int rackSlices = tLength; rackSlices > 0; rackSlices--) {
             buildPiece("slice", stackSize, hintsOnly, 1, 2, offset--);
         }
 
@@ -514,17 +518,20 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) return -1;
+        int tLength = GTStructureChannels.STRUCTURE_LENGTH.getValueClamped(stackSize, 3, 15);
         int built;
+
         built = survivalBuildPiece("front", stackSize, 1, 2, 0, elementBudget, env, false, true);
         if (built >= 0) return built;
         built = survivalBuildPiece("cap", stackSize, 1, 2, -1, elementBudget, env, false, true);
         if (built >= 0) return built;
 
         byte offset = -2;
-        for (int rackSlices = Math.min(Math.max(stackSize.stackSize, 3), 15); rackSlices > 0; rackSlices--) {
+        for (int rackSlices = tLength; rackSlices > 0; rackSlices--) {
             built = survivalBuildPiece("slice", stackSize, 1, 2, offset--, elementBudget, env, false, true);
             if (built >= 0) return built;
         }
+
         built = survivalBuildPiece("cap", stackSize, 1, 2, offset--, elementBudget, env, false, true);
         if (built >= 0) return built;
         return survivalBuildPiece("back", stackSize, 1, 2, offset, elementBudget, env, false, true);
@@ -583,7 +590,7 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
 
     @Override
     public String[] getInfoData() {
-        ArrayList<String> data = new ArrayList<>(Arrays.asList(super.getInfoData()));
+        ObjectArrayList<String> data = new ObjectArrayList<>(Arrays.asList(super.getInfoData()));
         if (wirelessMode) {
             WirelessComputationPacket wirelessComputationPacket = WirelessComputationPacket
                 .getPacketByUserId(getBaseMetaTileEntity().getOwnerUuid());

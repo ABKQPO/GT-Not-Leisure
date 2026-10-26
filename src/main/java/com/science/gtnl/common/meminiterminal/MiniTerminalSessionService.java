@@ -3,8 +3,6 @@ package com.science.gtnl.common.meminiterminal;
 import static appeng.util.item.AEItemStackType.ITEM_STACK_TYPE;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -28,6 +26,7 @@ import com.cleanroommc.bogosorter.mixins.early.minecraft.SlotAccessor;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket.DepositMode;
+import com.science.gtnl.utils.CreativeCursor;
 import com.science.gtnl.utils.enums.ModList;
 
 import appeng.api.AEApi;
@@ -66,6 +65,10 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
@@ -87,10 +90,10 @@ public final class MiniTerminalSessionService {
     }
 
     public static final MiniTerminalSessionService INSTANCE = new MiniTerminalSessionService();
-    private static final Map<UUID, Session> SESSIONS = new HashMap<>();
-    private static final Map<UUID, UUID> SELECTED = new HashMap<>();
-    private static final Map<UUID, RequestBudget> BUDGETS = new HashMap<>();
-    private static final Map<UUID, ParkedCatalog> PARKED = new HashMap<>();
+    private static final Map<UUID, Session> SESSIONS = new Object2ObjectOpenHashMap<>();
+    private static final Map<UUID, UUID> SELECTED = new Object2ObjectOpenHashMap<>();
+    private static final Map<UUID, RequestBudget> BUDGETS = new Object2ObjectOpenHashMap<>();
+    private static final Map<UUID, ParkedCatalog> PARKED = new Object2ObjectOpenHashMap<>();
     private static final int PARK_TICKS = 1200;
     private static long nextSession;
 
@@ -245,7 +248,7 @@ public final class MiniTerminalSessionService {
         if (request.kind != MiniTerminalRequestPacket.Kind.CREATIVE_ACTION || !player.theItemInWorldManager.isCreative()
             || player.openContainer != player.inventoryContainer) return;
         player.inventory.setItemStack(ItemStack.copyItemStack(request.creativeCursor));
-        player.updateHeldItem();
+        CreativeCursor.returnToClient(player);
     }
 
     public static boolean isSessionStack(EntityPlayerMP player, ItemStack stack) {
@@ -290,7 +293,7 @@ public final class MiniTerminalSessionService {
             ISlotGroup group = GuiSortingContext.getOrCreate(container)
                 .getSlotGroup(source.slotNumber);
             if (group == null) return List.of();
-            List<Slot> slots = new ArrayList<>();
+            List<Slot> slots = new ObjectArrayList<>();
             for (SlotAccessor entry : group.getSlots()) {
                 int index = entry.getSlotNumber();
                 if (index < 0 || index >= container.inventorySlots.size()) continue;
@@ -314,8 +317,9 @@ public final class MiniTerminalSessionService {
         boolean enabled = !ItemMEMiniPortableTerminal.isPickupToMEEnabled(stack);
 
         if (enabled) {
-            for (int slot : ItemMEMiniPortableTerminal.getTerminalSlots(player)) {
-                ItemStack other = ItemMEMiniPortableTerminal.getTerminalStack(player, slot);
+            IntList slots = ItemMEMiniPortableTerminal.getTerminalSlots(player);
+            for (int i = 0; i < slots.size(); i++) {
+                ItemStack other = ItemMEMiniPortableTerminal.getTerminalStack(player, slots.getInt(i));
                 if (other != stack && ItemMEMiniPortableTerminal.isPickupToMEEnabled(other)) {
                     ItemMEMiniPortableTerminal.setPickupToMEEnabled(other, false);
                 }
@@ -626,7 +630,6 @@ public final class MiniTerminalSessionService {
         long lastAction;
         int energyTicks;
         int lastResync;
-        boolean creativeActionSynchronized;
         boolean resumed;
 
         Session(EntityPlayerMP player, long id, long requestId, int slot, UUID terminalId, ItemStack stack) {
@@ -765,7 +768,7 @@ public final class MiniTerminalSessionService {
         }
 
         void sendPins() {
-            List<MiniTerminalUpdatePacket.Entry> entries = new ArrayList<>();
+            List<MiniTerminalUpdatePacket.Entry> entries = new ObjectArrayList<>();
             for (int index = 0; index < PinList.TOTAL_SLOTS; index++) {
                 IAEStack<?> pin = terminal.getPin(index);
                 if (pin != null) entries.add(new MiniTerminalUpdatePacket.Entry(index, pin.copy()));
@@ -867,7 +870,7 @@ public final class MiniTerminalSessionService {
         }
 
         private List<Slot> nativeRegionSources(Slot source) {
-            List<Slot> slots = new ArrayList<>();
+            List<Slot> slots = new ObjectArrayList<>();
 
             for (Object entry : container.inventorySlots) {
                 Slot candidate = (Slot) entry;
@@ -889,7 +892,7 @@ public final class MiniTerminalSessionService {
             IAEStack<?> selected = request.nativePin >= 0 ? terminal.getPin(request.nativePin)
                 : catalog.target(request.entryId);
             if (!(selected instanceof IAEItemStack target)) return;
-            List<Integer> destinations = new ArrayList<>();
+            IntLinkedOpenHashSet destinations = new IntLinkedOpenHashSet();
 
             for (Object entry : player.inventoryContainer.inventorySlots) {
                 Slot playerSlot = (Slot) entry;
@@ -907,10 +910,7 @@ public final class MiniTerminalSessionService {
                 player,
                 terminal,
                 target,
-                destinations.stream()
-                    .mapToInt(Integer::intValue)
-                    .distinct()
-                    .toArray(),
+                destinations.toIntArray(),
                 request.emptyOnly,
                 request.single,
                 () -> operationValid(SecurityPermissions.EXTRACT));
@@ -920,11 +920,10 @@ public final class MiniTerminalSessionService {
             if (!player.theItemInWorldManager.isCreative() || container != player.inventoryContainer) return;
 
             player.inventory.setItemStack(ItemStack.copyItemStack(request.creativeCursor));
-            creativeActionSynchronized = false;
             try {
                 action(request);
             } finally {
-                if (!creativeActionSynchronized) player.updateHeldItem();
+                CreativeCursor.returnToClient(player);
             }
         }
 
@@ -942,7 +941,6 @@ public final class MiniTerminalSessionService {
 
             if (request.action == MonitorableAction.UNSET_PIN) {
                 if (nativePin < 0 || hand != null) return;
-                creativeActionSynchronized = true;
                 try {
                     terminal.pin(null, nativePin, () -> operationValid(SecurityPermissions.EXTRACT));
                 } finally {
@@ -982,7 +980,6 @@ public final class MiniTerminalSessionService {
                 if (target == null || target.getStackSize() <= 0) return;
             }
             if (target == null && !inject) return;
-            creativeActionSynchronized = true;
             MiniTerminalTransferService.execute(
                 player,
                 terminal,
