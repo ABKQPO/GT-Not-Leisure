@@ -3,7 +3,7 @@ package com.science.gtnl.common.packet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
-import com.science.gtnl.common.packet.base.ClientboundPacket;
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import cpw.mods.fml.common.network.ByteBufUtils;

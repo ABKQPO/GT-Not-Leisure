@@ -11,8 +11,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.gtnllib.mod.ModList;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.enums.ModList;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.tileentity.IRecipeLockable;

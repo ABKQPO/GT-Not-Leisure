@@ -3,10 +3,10 @@ package com.science.gtnl.common.packet;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
+import com.gtnllib.network.ServerboundPacket;
 import com.science.gtnl.common.celestweave.CelestweaveBackpack;
 import com.science.gtnl.common.celestweave.CelestweaveDash;
 import com.science.gtnl.common.equipment.EquipmentNet;
-import com.science.gtnl.common.packet.base.ServerboundPacket;
 
 import io.netty.buffer.ByteBuf;
 

@@ -12,8 +12,8 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
+import com.gtnllib.utils.GameUtils;
 import com.science.gtnl.common.steam.SteamWirelessNetworkManager;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -72,7 +72,7 @@ public class CommandSteamNetwork extends CommandBase {
         }
         switch (strings[0]) {
             case "add" -> {
-                if (!Utils.hasPermission(sender, 2)) {
+                if (!GameUtils.hasPermission(sender, 2)) {
                     sender.addChatMessage(new ChatComponentTranslation("commands.error.perm"));
                     break;
                 }
@@ -115,7 +115,7 @@ public class CommandSteamNetwork extends CommandBase {
 
             }
             case "set" -> {
-                if (!Utils.hasPermission(sender, 2)) {
+                if (!GameUtils.hasPermission(sender, 2)) {
                     sender.addChatMessage(new ChatComponentTranslation("commands.error.perm"));
                     break;
                 }
@@ -175,7 +175,7 @@ public class CommandSteamNetwork extends CommandBase {
                 boolean senderIsLeaderOfTeam = TeamNetworkManager.isSameTeam(uuidSender, uuidTeam)
                     && TeamNetworkManager.isTeamOwner(uuidSender);
 
-                if (!senderIsLeaderOfTeam && !Utils.hasPermission(sender, 2)) {
+                if (!senderIsLeaderOfTeam && !GameUtils.hasPermission(sender, 2)) {
                     sender.addChatMessage(new ChatComponentTranslation("commands.error.perm"));
                     break;
                 }

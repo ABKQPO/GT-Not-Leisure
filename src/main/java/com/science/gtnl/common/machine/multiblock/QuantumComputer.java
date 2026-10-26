@@ -30,13 +30,13 @@ import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.QuantumComputerGui;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.ECraftingCPUCluster;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
@@ -1048,7 +1048,7 @@ public class QuantumComputer extends MTETooltipMultiBlockBase
                     .setStringSupplier(
                         () -> StatCollector.translateToLocalFormatted(
                             "gtnl.machine.quantum_computer.info.2",
-                            Utils.shortFormat(getMaximumStorage()),
+                            MathUtils.shortFormat(getMaximumStorage()),
                             usedStorage,
                             String.format(
                                 "%.1f%%",

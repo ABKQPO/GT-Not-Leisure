@@ -36,11 +36,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.google.common.collect.Lists;
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
+import com.gtnllib.utils.MathUtils;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.science.gtnl.api.mixinHelper.ICostingEUHolder;
 import com.science.gtnl.api.mixinHelper.IPurificationUnitLongParallel;
 import com.science.gtnl.api.mixinHelper.IWirelessMode;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
@@ -131,7 +131,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
     public BigInteger gtnl$costingEU = BigInteger.ZERO;
 
     @Unique
-    public String gtnl$costingEUText = Utils.ZERO_STRING;
+    public String gtnl$costingEUText = MathUtils.ZERO_STRING;
 
     @Getter
     @Setter
@@ -177,7 +177,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
         if (!gtnl$wirelessMode) return;
         this.storedFluids = this.getStoredFluids();
         gtnl$costingEU = BigInteger.ZERO;
-        gtnl$costingEUText = Utils.ZERO_STRING;
+        gtnl$costingEUText = MathUtils.ZERO_STRING;
 
         CheckRecipeResult result = overrideRecipeCheck();
         if (result == null) result = gtnl$findRecipeForInputsLong(storedFluids.toArray(new FluidStack[] {}));
@@ -204,7 +204,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
             BigInteger costEU = BigInteger.valueOf(gtnl$effectiveParallelLong)
                 .multiply(BigInteger.valueOf(getBasePowerUsage()));
 
-            if (!addEUToGlobalEnergyMap(gtnl$ownerUUID, costEU.multiply(Utils.NEGATIVE_ONE))) {
+            if (!addEUToGlobalEnergyMap(gtnl$ownerUUID, costEU.multiply(MathUtils.NEGATIVE_ONE))) {
                 cir.setReturnValue(CheckRecipeResultRegistry.insufficientPower(costEU.longValue()));
                 return;
             }

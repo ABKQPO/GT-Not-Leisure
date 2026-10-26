@@ -23,9 +23,9 @@ import com.cleanroommc.modularui.value.sync.StringSyncValue;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.ListWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
+import com.gtnllib.mod.ModList;
 import com.science.gtnl.api.mixinHelper.IVoidMinerDimensionOverride;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.enums.ModList;
 
 import bwcrossmod.galacticgreg.MTEVoidMinerBase;
 import bwcrossmod.galacticgreg.VoidMinerUtility;

@@ -23,11 +23,11 @@ import com.cleanroommc.bogosorter.api.IBogoSortAPI;
 import com.cleanroommc.bogosorter.api.ISlotGroup;
 import com.cleanroommc.bogosorter.common.sort.GuiSortingContext;
 import com.cleanroommc.bogosorter.mixins.early.minecraft.SlotAccessor;
+import com.gtnllib.mod.ModList;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket.DepositMode;
 import com.science.gtnl.utils.CreativeCursor;
-import com.science.gtnl.utils.enums.ModList;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;

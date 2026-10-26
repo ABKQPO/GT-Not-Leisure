@@ -9,12 +9,12 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
+import com.gtnllib.client.text.EffectTextFieldView;
+import com.gtnllib.client.text.EffectTextLayout.Layout;
+import com.gtnllib.client.text.EffectTextRenderer;
+import com.gtnllib.text.EffectTextParser;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.science.gtnl.client.text.EffectTextFieldView;
-import com.science.gtnl.client.text.EffectTextLayout.Layout;
-import com.science.gtnl.client.text.EffectTextRenderer;
-import com.science.gtnl.utils.text.effect.EffectTextParser;
 
 /** Retains formatting while vanilla scrolls and draws either side of an input cursor. */
 @Mixin(GuiTextField.class)

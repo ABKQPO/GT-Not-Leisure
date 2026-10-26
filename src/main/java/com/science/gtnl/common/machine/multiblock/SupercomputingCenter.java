@@ -38,10 +38,10 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.util.Vec3Impl;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
 
 import gregtech.api.casing.Casings;
@@ -363,7 +363,7 @@ public class SupercomputingCenter extends TTMultiblockBase implements ISurvivalC
 
             if (energyWirelessMode) {
                 BigInteger costEU = BigInteger.valueOf(lEUt);
-                if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(Utils.NEGATIVE_ONE))) {
+                if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(MathUtils.NEGATIVE_ONE))) {
                     return CheckRecipeResultRegistry.insufficientPower(costEU.longValue());
                 }
                 lEUt = 0;

@@ -43,11 +43,6 @@ public class MainConfig {
     @Comment("Client section")
     public static class Client {
 
-        @Comment("Enable animated text effects on this client")
-        @LangKey("gtnl.gui.config.general.client.enable_text_effects")
-        @DefaultBoolean(true)
-        public boolean enableTextEffects = true;
-
         @Comment("Camera and weapon shake caused by charging and firing the electromagnetic railgun")
         @LangKey("gtnl.gui.config.general.client.enable_railgun_shake")
         @DefaultBoolean(true)

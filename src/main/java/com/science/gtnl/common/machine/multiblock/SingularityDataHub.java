@@ -43,6 +43,7 @@ import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.gtnllib.utils.GameUtils;
 import com.science.gtnl.api.IStackVault;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.SingularityDataHubGui;
@@ -51,7 +52,6 @@ import com.science.gtnl.common.machine.hatch.VaultPortHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
 
 import appeng.api.storage.data.AEStackTypeRegistry;
@@ -540,7 +540,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         }
 
         if (!hasStoredStacks()) return;
-        String uuid = Utils.ensureUUID(aNBT);
+        String uuid = GameUtils.ensureUUID(aNBT);
         NBTTagCompound storeRoot = new NBTTagCompound();
         writeStoredStacks(storeRoot);
 
@@ -567,7 +567,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
         if (!locked) {
             aNBT.setBoolean("locked", false);
         }
-        Utils.ensureUUID(aNBT);
+        GameUtils.ensureUUID(aNBT);
         writeStoredStacks(aNBT);
         super.saveNBTData(aNBT);
     }

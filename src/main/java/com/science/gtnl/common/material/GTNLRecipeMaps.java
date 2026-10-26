@@ -12,6 +12,7 @@ import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.common.widget.ProgressBar;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.gui.recipe.BloodSoulFrontend;
 import com.science.gtnl.common.gui.recipe.EGTWUpgradeCostFrontend;
 import com.science.gtnl.common.gui.recipe.ElectrocellGeneratorFrontend;
@@ -27,7 +28,6 @@ import com.science.gtnl.common.gui.recipe.SteamGateAssemblerFrontend;
 import com.science.gtnl.common.gui.recipe.SteamLogoFrontend;
 import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
 import com.science.gtnl.utils.recipes.data.NanitesIntegratedProcessingRecipesData;
 import com.science.gtnl.utils.recipes.format.NaquadahReactorFormat;
@@ -58,7 +58,7 @@ import it.unimi.dsi.fastutil.ints.IntLongPair;
 public class GTNLRecipeMaps {
 
     public static final UITexture PROGRESSBAR_GAS_COLLECTOR = UITexture
-        .fullImage(ModList.ScienceNotLeisure.ID, "gui/progressbar/gas_collector");
+        .fullImage(ScienceNotLeisure.MODID, "gui/progressbar/gas_collector");
 
     public static final RecipeMap<RecipeMapBackend> RecombinationFusionReactorRecipes = RecipeMapBuilder
         .of("gtnl.recipe.recombination_fusion_reactor", RecipeMapBackend::new)

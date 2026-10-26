@@ -60,12 +60,12 @@ import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.SuperSpaceElevatorGui;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
@@ -137,7 +137,7 @@ public class SuperSpaceElevator extends TTMultiblockBase
     public int mCountCasing = 0;
     public boolean wirelessMode = false;
     public UUID ownerUUID;
-    public String costingEUText = Utils.ZERO_STRING;
+    public String costingEUText = MathUtils.ZERO_STRING;
     public ObjectArrayList<TileEntityModuleBase> mProjectModuleHatches = new ObjectArrayList<>();
     public TileEntitySpaceElevatorCable elevatorCable;
     public boolean isLoadedChunk;

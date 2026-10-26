@@ -16,10 +16,10 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.gtnewhorizon.gtnhlib.util.map.ItemStackMap;
+import com.gtnllib.text.TextEffectStyle;
+import com.gtnllib.text.TextEffects;
 import com.science.gtnl.common.item.items.Stick;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.text.effect.TextEffectStyle;
-import com.science.gtnl.utils.text.effect.TextEffects;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;

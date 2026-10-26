@@ -38,6 +38,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
 import com.google.common.collect.ImmutableList;
+import com.gtnllib.utils.GameUtils;
 import com.reavaritia.client.ReAvaCreativeTabs;
 import com.reavaritia.common.ItemLoader;
 import com.reavaritia.utils.enums.ReAvaItemList;
@@ -47,7 +48,6 @@ import com.science.gtnl.common.entity.EntitySaddleSlime;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.mixins.late.botania.AccessorEntityDoppleganger;
 import com.science.gtnl.mixins.late.draconicEvolution.AccessorCustomArmorHandler;
-import com.science.gtnl.utils.Utils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Optional;
@@ -437,7 +437,7 @@ public class InfinitySword extends ItemSword implements ICosmicRenderItem, Subti
 
         if (entity instanceof EntityPlayer player) {
             if (player.getCurrentEquippedItem() == stack && player.swingProgress == 0.5F && !world.isRemote) {
-                MovingObjectPosition rayTraceResult = Utils.rayTrace(player, false, true, false, 100);
+                MovingObjectPosition rayTraceResult = GameUtils.rayTrace(player, false, true, false, 100);
 
                 if (rayTraceResult != null && rayTraceResult.entityHit != null) {
                     Entity hitEntity = rayTraceResult.entityHit;

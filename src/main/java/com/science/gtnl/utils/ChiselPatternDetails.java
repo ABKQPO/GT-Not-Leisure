@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.github.bsideup.jabel.Desugar;
+import com.science.gtnl.utils.machine.MachineUtils;
 
 import appeng.api.AEApi;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -63,7 +64,7 @@ public class ChiselPatternDetails implements ICraftingPatternDetails {
         if (outputs == null || outputs.isEmpty()) return false;
         for (var itemStack : outputs) {
             var out = AEItemStack.create(itemStack);
-            if (out != null && !Utils.equlsItemStackAndAEItemStack(input, itemStack)) {
+            if (out != null && !MachineUtils.equlsItemStackAndAEItemStack(input, itemStack)) {
                 patterns.add(
                     new ChiselPatternDetails(
                         input.copy()

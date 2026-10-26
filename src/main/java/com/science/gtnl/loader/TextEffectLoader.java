@@ -1,15 +1,7 @@
 package com.science.gtnl.loader;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraftforge.client.ClientCommandHandler;
-
-import com.science.gtnl.client.text.EffectTextRenderer;
-import com.science.gtnl.client.text.effect.BuiltinTextEffects;
-import com.science.gtnl.client.text.preview.TextEffectPreviewCommand;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import com.gtnllib.text.TextEffectFormat;
+import com.science.gtnl.ScienceNotLeisure;
 
 public class TextEffectLoader implements IContentLoader {
 
@@ -19,11 +11,7 @@ public class TextEffectLoader implements IContentLoader {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void clientPreInit() {
-        BuiltinTextEffects.register();
-        ((IReloadableResourceManager) Minecraft.getMinecraft()
-            .getResourceManager()).registerReloadListener(EffectTextRenderer.INSTANCE);
-        ClientCommandHandler.instance.registerCommand(new TextEffectPreviewCommand());
+    public void preInit() {
+        TextEffectFormat.legacyNamespace(ScienceNotLeisure.MODID);
     }
 }

@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.opengl.GL11;
 
 import com.brandon3055.draconicevolution.client.handler.ResourceHandler;
+import com.gtnllib.text.TextEffectColors;
 import com.science.gtnl.utils.ColorUtils;
 
 import cpw.mods.fml.relauncher.Side;
@@ -108,7 +109,7 @@ public class EntityParticleBeam extends EntityFX {
             partialTick,
             true,
             false,
-            ColorUtils.rgb(ColorUtils.effectCyan));
+            ColorUtils.rgb(TextEffectColors.effectCyan));
         GL11.glPopMatrix();
 
         GL11.glPushMatrix();
@@ -124,7 +125,7 @@ public class EntityParticleBeam extends EntityFX {
             partialTick,
             false,
             false,
-            ColorUtils.rgb(ColorUtils.effectCyan));
+            ColorUtils.rgb(TextEffectColors.effectCyan));
         GL11.glPopMatrix();
 
         GL11.glPushMatrix();

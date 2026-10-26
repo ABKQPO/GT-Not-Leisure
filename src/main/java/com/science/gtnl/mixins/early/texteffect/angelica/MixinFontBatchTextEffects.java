@@ -18,11 +18,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.gtnewhorizons.angelica.client.font.BatchingFontRenderer;
 import com.gtnewhorizons.angelica.config.FontConfig;
 import com.gtnewhorizons.angelica.glsm.GLStateManager;
-import com.science.gtnl.client.text.DeferredTextEffects;
-import com.science.gtnl.client.text.EffectTextRenderer;
-import com.science.gtnl.client.text.compat.AngelicaTextAdapter;
-import com.science.gtnl.client.text.compat.FontBatchBridge;
-import com.science.gtnl.utils.text.effect.EffectTextParser;
+import com.gtnllib.client.text.DeferredTextEffects;
+import com.gtnllib.client.text.EffectTextRenderer;
+import com.gtnllib.client.text.compat.AngelicaTextAdapter;
+import com.gtnllib.client.text.compat.FontBatchBridge;
+import com.gtnllib.text.EffectTextParser;
 
 /** Flushes the current batch before temporary render-target changes. */
 @Mixin(value = BatchingFontRenderer.class, remap = false)

@@ -20,13 +20,13 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.api.IWirelessEnergy;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.machine.tooltip.IMultiblockTooltipRules.TieredPart;
 import com.science.gtnl.common.machine.tooltip.MultiblockTooltipReader;
 import com.science.gtnl.mixins.early.gregtech.AccessorProcessingLogic;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
@@ -69,7 +69,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     public int maxParallelStored = -1;
     public boolean isRecipeProcessing = false;
     public BigInteger costingEU = BigInteger.ZERO;
-    public String costingEUText = Utils.ZERO_STRING;
+    public String costingEUText = MathUtils.ZERO_STRING;
     public int cycleNum = 100_000;
     public int cycleNow = 0;
 
@@ -150,7 +150,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         maxParallelStored = -1;
         resetParallelTier();
         costingEU = BigInteger.ZERO;
-        costingEUText = Utils.ZERO_STRING;
+        costingEUText = MathUtils.ZERO_STRING;
         totalOverclockedDuration = 0;
         cycleNow = 0;
         if (!wirelessMode) return super.checkProcessing();
@@ -196,13 +196,13 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
 
         BigInteger costEU = BigInteger.valueOf(processingLogic.getCalculatedEut())
             .multiply(BigInteger.valueOf(processingLogic.getDuration()));
-        if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(Utils.NEGATIVE_ONE))) {
+        if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(MathUtils.NEGATIVE_ONE))) {
             return CheckRecipeResultRegistry.insufficientPower(costEU.longValue());
         }
 
         costingEU = costingEU.add(costEU);
-        mOutputItems = Utils.mergeArray(mOutputItems, processingLogic.getOutputItems());
-        mOutputFluids = Utils.mergeArray(mOutputFluids, processingLogic.getOutputFluids());
+        mOutputItems = MathUtils.mergeArray(mOutputItems, processingLogic.getOutputItems());
+        mOutputFluids = MathUtils.mergeArray(mOutputFluids, processingLogic.getOutputFluids());
         totalOverclockedDuration += processingLogic.getDuration();
         maxParallelStored = maxParallelStored - processingLogic.getCurrentParallels();
 

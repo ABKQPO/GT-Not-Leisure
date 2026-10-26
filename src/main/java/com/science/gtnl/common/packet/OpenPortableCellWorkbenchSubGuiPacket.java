@@ -2,10 +2,10 @@ package com.science.gtnl.common.packet;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.gtnllib.network.ServerboundPacket;
 import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchHost;
 import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchSubGui;
-import com.science.gtnl.common.packet.base.ServerboundPacket;
 import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.api.config.Upgrades;

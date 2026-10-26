@@ -8,9 +8,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.gtnllib.text.EffectTextParser;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.science.gtnl.utils.text.effect.EffectTextParser;
 
 import codechicken.nei.FormattedTextField;
 

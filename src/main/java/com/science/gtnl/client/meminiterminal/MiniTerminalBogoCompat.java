@@ -19,9 +19,9 @@ import com.cleanroommc.bogosorter.common.config.ae2.TooltipFeatureConfig;
 import com.cleanroommc.bogosorter.compat.ae2.Ae2TerminalGuiDetector;
 import com.cleanroommc.modularui.api.event.KeyboardInputEvent;
 import com.cleanroommc.modularui.api.event.MouseInputEvent;
+import com.gtnllib.mod.ModList;
 import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket.DepositMode;
 import com.science.gtnl.common.meminiterminal.MiniTerminalStackTypes;
-import com.science.gtnl.utils.enums.ModList;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;

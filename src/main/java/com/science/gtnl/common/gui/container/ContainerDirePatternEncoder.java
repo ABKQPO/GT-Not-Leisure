@@ -9,9 +9,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
+import com.gtnllib.utils.GameUtils;
 import com.science.gtnl.common.block.blocks.tile.TileEntityDirePatternEncoder;
 import com.science.gtnl.common.item.items.DireCraftPattern;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.container.AEBaseContainer;
@@ -182,7 +182,7 @@ public class ContainerDirePatternEncoder extends AEBaseContainer implements IOpt
 
         output.setTagCompound(encodedValue);
 
-        if (isShift) Utils.placeItemBackInInventory(this.getPlayerInv().player, output);
+        if (isShift) GameUtils.placeItemBackInInventory(this.getPlayerInv().player, output);
     }
 
     public void clear() {

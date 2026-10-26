@@ -10,14 +10,18 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.ToLongFunction;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -45,6 +49,8 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.DynamicTextWidget;
+import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.ElementCopyingGui;
@@ -53,7 +59,6 @@ import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachi
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.recipe.gtnl.ElementCopyingRecipes;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
@@ -85,6 +90,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -187,9 +193,9 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
         resetParallelTier();
         maxParallelStored = getTrueParallel();
         costingEU = BigInteger.ZERO;
-        costingEUText = Utils.ZERO_STRING;
+        costingEUText = MathUtils.ZERO_STRING;
 
-        long maxInputEU = wirelessMode ? Utils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID))
+        long maxInputEU = wirelessMode ? MathUtils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID))
             : getMaxInputEu();
 
         long needUUMPerUnit = getNeedUUM();
@@ -628,7 +634,7 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
     @Deprecated
     public void addSyncers(ModularWindow.Builder builder) {
         // TODO: Remove this mui1 fallback after ElementCopying mui2 rollout is complete.
-        builder.widget(new Utils.SetSyncer<>(itemEntry, (buffer, entry) -> {
+        builder.widget(new SetSyncer<>(itemEntry, (buffer, entry) -> {
             try {
                 buffer.writeNBTTagCompoundToBuffer(entry.serialize());
             } catch (IOException e) {
@@ -643,7 +649,7 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
             }
         }));
 
-        builder.widget(new Utils.SetSyncer<>(fluidEntry, (buffer, entry) -> {
+        builder.widget(new SetSyncer<>(fluidEntry, (buffer, entry) -> {
             try {
                 buffer.writeNBTTagCompoundToBuffer(entry.serialize());
             } catch (IOException e) {
@@ -703,6 +709,29 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
                 GTUtility.FluidId.create(tag.getCompoundTag("id")),
                 tag.getLong("uum"),
                 tag.getLong("eu"));
+        }
+    }
+
+    public static class SetSyncer<T> extends FakeSyncWidget<Set<T>> {
+
+        public SetSyncer(Set<T> set, BiConsumer<PacketBuffer, T> writeElementToBuffer,
+            Function<PacketBuffer, T> readElementFromBuffer) {
+            super(() -> set, s -> {
+                set.clear();
+                s.stream()
+                    .filter(Objects::nonNull)
+                    .forEach(set::add);
+            }, (buffer, s) -> {
+                List<T> list = new ObjectArrayList<>(s);
+                writeListToBuffer(buffer, list, writeElementToBuffer);
+            }, buffer -> {
+                List<T> list = readListFromBuffer(buffer, readElementFromBuffer);
+                Set<T> result = new ObjectLinkedOpenHashSet<>();
+                list.stream()
+                    .filter(Objects::nonNull)
+                    .forEach(result::add);
+                return result;
+            });
         }
     }
 }

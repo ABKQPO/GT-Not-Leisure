@@ -35,7 +35,6 @@ import com.reavaritia.common.items.InfinityTotem;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.WirelessPickBlock;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.enums.ModsItemlist;
 
 import baubles.api.BaublesApi;
@@ -56,13 +55,12 @@ public class ItemUtils {
     public static final Random rand = new Random();
 
     public static final UITexture PICTURE_CIRCULATION = UITexture
-        .fullImage(ModList.ScienceNotLeisure.ID, "gui/picture/circulation_");
+        .fullImage(ScienceNotLeisure.MODID, "gui/picture/circulation_");
 
-    public static final UITexture PICTURE_GTNL_LOGO = UITexture
-        .fullImage(ModList.ScienceNotLeisure.ID, "gui/picture/logo");
+    public static final UITexture PICTURE_GTNL_LOGO = UITexture.fullImage(ScienceNotLeisure.MODID, "gui/picture/logo");
 
     public static final UITexture PICTURE_GTNL_STEAM_LOGO = UITexture
-        .fullImage(ModList.ScienceNotLeisure.ID, "gui/picture/steam_logo");
+        .fullImage(ScienceNotLeisure.MODID, "gui/picture/steam_logo");
 
     public static Materials[] TIER = { Materials.LV, Materials.MV, Materials.HV, Materials.EV, Materials.IV,
         Materials.LuV, Materials.ZPM, Materials.UV, Materials.UHV, Materials.UEV, Materials.UIV, Materials.UMV,

@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.WorldServer;
 
-import com.science.gtnl.common.packet.base.ServerboundPacket;
+import com.gtnllib.network.ServerboundPacket;
 
 import io.netty.buffer.ByteBuf;
 import lombok.Getter;

@@ -3,8 +3,8 @@ package com.science.gtnl.common.packet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.client.wireless.WirelessCardInput;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 import com.science.gtnl.common.wireless.WirelessCardBinding;
 import com.science.gtnl.common.wireless.WirelessCardVisualisation;
 

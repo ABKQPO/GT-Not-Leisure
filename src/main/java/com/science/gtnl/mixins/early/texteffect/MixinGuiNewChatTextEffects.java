@@ -5,10 +5,10 @@ import net.minecraft.client.gui.GuiNewChat;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
+import com.gtnllib.client.text.EffectTextLayout;
+import com.gtnllib.text.EffectTextParser;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.science.gtnl.client.text.EffectTextLayout;
-import com.science.gtnl.utils.text.effect.EffectTextParser;
 
 @Mixin(GuiNewChat.class)
 public abstract class MixinGuiNewChatTextEffects {

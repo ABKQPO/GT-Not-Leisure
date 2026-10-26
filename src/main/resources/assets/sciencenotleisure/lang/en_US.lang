@@ -63,8 +63,6 @@ gtnl.gui.config.general.minecraft.tooltip=Modifications made to some aspects of 
 gtnl.gui.config.general.debug.enabledebugmode=Debug Mode
 gtnl.gui.config.general.debug.enabledebugmode.tooltip=Enable debug print log output.
 
-gtnl.gui.config.general.client.enable_text_effects=Animated Text Effects
-gtnl.gui.config.general.client.enable_text_effects.tooltip=Render animated text effects. When disabled, styled text is shown as ordinary text.
 
 gtnl.gui.config.general.client.enable_railgun_shake=Railgun Camera Shake
 gtnl.gui.config.general.client.enable_railgun_shake.tooltip=Shake the camera and the first person model while charging and firing the railgun.
@@ -4205,23 +4203,6 @@ gtnl.command.steam_network.set_success=Successfully set %s's global steam networ
 gtnl.command.steam_network.rejoined=%s has rejoined their own global steam network.
 gtnl.command.steam_network.join_success=%s has joined %s.
 gtnl.command.steam_network.join_undo=To undo this, join your own network again with /steam_network join %s %s.
-gtnl.command.item_info.usage=/getiteminfo - Display all information about the item in your hand
-gtnl.command.item_info.player_only=This command can only be used by players.
-gtnl.command.item_info.no_item=You are not holding any item.
-gtnl.command.item_info.header====== Item Info =====
-gtnl.command.item_info.display_name=Display Name: %s
-gtnl.command.item_info.item_stack_display_name=ItemStack Display Name: %s
-gtnl.command.item_info.unlocalized_inefficient_name=Unlocalized Inefficient Name: %s
-gtnl.command.item_info.unlocalized_name=Unlocalized Name: %s
-gtnl.command.item_info.item_stack_unlocalized_name=ItemStack Unlocalized Name: %s
-gtnl.command.item_info.class=Class: %s
-gtnl.command.item_info.id=ID: %s
-gtnl.command.item_info.stack_size=Stack Size: %s
-gtnl.command.item_info.damage=Damage: %s
-gtnl.command.item_info.max_damage=Max Damage: %s
-gtnl.command.item_info.nbt_data=NBT Data:
-gtnl.command.item_info.nbt_entry=  %s : %s
-gtnl.command.item_info.no_nbt_data=No NBT data.
 gtnl.command.play_sound.usage=/gtnl_playsound <MODID>:<sound_resource>/stop [volume] [pitch] [seekMs]
 gtnl.command.play_sound.invalid_resource=Invalid sound resource path: %s
 gtnl.command.play_sound.invalid_volume=Invalid sound volume: %s, using default value 1.0.
@@ -4284,10 +4265,6 @@ gtnl.nei.nuclear_reactor.guide.fuel_rod=§6§lUranium Fuel Rod§r\n§0Adjacent f
 gtnl.nei.nuclear_reactor.guide.reflector=§6§lNeutron Reflector§r\n§0Put it in the Nuclear Fuel Item Bus: it bounces back the excitation of the orthogonally adjacent fuel rods, as if that cell held one more fuel rod.\n§0Its own durability use is one eighth of a fuel rod's;\n§0The Iridium Neutron Reflector has infinite durability.
 gtnl.nei.nuclear_reactor.guide.heat_plate=§6§lDense Invar Plate§r\n§0Put it in the Nuclear Fuel Item Bus: it copies the heat it receives to the four adjacent cells.\n§0After absorbing 240,000 HU in total it melts into 1008L of Molten Invar, which is output through the output hatch.
 
-gtnl.text_effect.title=Animated text effects
-gtnl.text_effect.palette=Change palette
-gtnl.text_effect.bold=Toggle bold
-gtnl.text_effect.italic=Toggle italic
 
 key.gtnl.wireless_card_visualisation=Cycle Frequency Card Network View
 key.gtnl.wireless_card_auto=Toggle frequency card auto-connect

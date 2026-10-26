@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import com.github.bsideup.jabel.Desugar;
 import com.gtnewhorizon.gtnhlib.util.data.IMod;
+import com.gtnllib.mod.ModList;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.compat.IModCompat;
 import com.science.gtnl.compat.avaritia.AvaritiaCompat;
@@ -19,7 +20,6 @@ import com.science.gtnl.compat.nutrition.NutrientLoader;
 import com.science.gtnl.compat.thaumcraft.TCResearches;
 import com.science.gtnl.compat.thaumicenergistics.ThaumicEnergisticsCompat;
 import com.science.gtnl.compat.waila.WailaLoader;
-import com.science.gtnl.utils.enums.ModList;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

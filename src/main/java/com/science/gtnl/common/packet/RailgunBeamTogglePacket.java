@@ -3,7 +3,7 @@ package com.science.gtnl.common.packet;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
-import com.science.gtnl.common.packet.base.ServerboundPacket;
+import com.gtnllib.network.ServerboundPacket;
 import com.science.gtnl.common.railgun.RailgunBeamService;
 
 import io.netty.buffer.ByteBuf;

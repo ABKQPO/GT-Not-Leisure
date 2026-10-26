@@ -4,6 +4,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.gui.GuiDirePatternEncoder;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableAdvancedWorkbench;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableBasicWorkbench;
@@ -11,7 +12,6 @@ import com.science.gtnl.client.gui.portableWorkbench.GuiPortableFurnace;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.enums.ModList;
 
 import bartworks.system.material.Werkstoff;
 import codechicken.nei.api.API;
@@ -95,8 +95,8 @@ public class NEIGTNLConfig implements IConfigureNEI {
         API.hideItem(GTNLItemList.NullPointerException.get(1));
         API.hideItem(GTNLItemList.TwilightSword.get(1));
         API.hideItem(GTNLItemList.FakeItemSiren.get(1));
-        API.hideItem(ModList.ScienceNotLeisure.ID + ":stick");
-        API.hideItem(ModList.ScienceNotLeisure.ID + ":player_doll tag.HideNEI=1b");
+        API.hideItem(ScienceNotLeisure.MODID + ":stick");
+        API.hideItem(ScienceNotLeisure.MODID + ":player_doll tag.HideNEI=1b");
 
         addMachineGuidePage(GTNLItemList.SiphonTurbine, "gtnl.nei.siphon_turbine");
 
@@ -115,14 +115,12 @@ public class NEIGTNLConfig implements IConfigureNEI {
         ItemStack controller = GTNLItemList.NuclearReactor.get(1);
         if (controller == null || controller.getItem() == null) return;
         event.registerHandlerInfo(
-            new HandlerInfo.Builder(
-                "gtnl_nuclear_reactor_guide",
-                ModList.ScienceNotLeisure.displayName,
-                ModList.ScienceNotLeisure.ID).setDisplayStack(controller)
-                    .setWidth(166)
-                    .setHeight(100)
-                    .setMultipleWidgetsAllowed(false)
-                    .build());
+            new HandlerInfo.Builder("gtnl_nuclear_reactor_guide", ScienceNotLeisure.MODNAME, ScienceNotLeisure.MODID)
+                .setDisplayStack(controller)
+                .setWidth(166)
+                .setHeight(100)
+                .setMultipleWidgetsAllowed(false)
+                .build());
     }
 
     private static void addMachineGuidePage(GTNLItemList item, String infoKey) {

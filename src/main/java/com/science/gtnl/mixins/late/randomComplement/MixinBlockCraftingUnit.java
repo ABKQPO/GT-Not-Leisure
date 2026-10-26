@@ -13,11 +13,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.gtnllib.utils.GameUtils;
 import com.mojang.authlib.GameProfile;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.StatusMessage;
 import com.science.gtnl.utils.BlockState;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.CraftingUnitHandler;
 
 import appeng.api.config.SecurityPermissions;
@@ -72,7 +72,7 @@ public class MixinBlockCraftingUnit extends AEBaseTileBlock {
                 // val cache = node.getGrid().getCache(ISecurityGrid.class);
                 // if (cache instanceof ISecurityGrid isg && isg.hasPermission(p, SecurityPermissions.BUILD)) {
                 // w.setBlock(x, y, z, block.block(), block.meta(), 2);
-                // Utils.placeItemBackInInventory(p, CraftingUnitHandler.getMatchItem(blockState));
+                // GameUtils.placeItemBackInInventory(p, CraftingUnitHandler.getMatchItem(blockState));
                 // cir.setReturnValue(true);
                 // }
                 // }
@@ -111,7 +111,7 @@ public class MixinBlockCraftingUnit extends AEBaseTileBlock {
                                         .getPlayerID(profile));
                             }
                             item.stackSize--;
-                            Utils.placeItemBackInInventory(p, CraftingUnitHandler.getMatchItem(blockState));
+                            GameUtils.placeItemBackInInventory(p, CraftingUnitHandler.getMatchItem(blockState));
                             cir.setReturnValue(true);
                         }
                     }

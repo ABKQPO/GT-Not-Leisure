@@ -14,8 +14,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.gtnllib.mod.ModList;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.recipes.ChanceBonusManager;
 
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;

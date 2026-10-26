@@ -21,10 +21,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
+import com.gtnllib.utils.MathUtils;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.science.gtnl.api.mixinHelper.ICostingEUHolder;
 import com.science.gtnl.api.mixinHelper.IWirelessMode;
-import com.science.gtnl.utils.Utils;
 
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.metatileentity.implementations.MTEExtendedPowerMultiBlockBase;
@@ -56,7 +56,7 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
     public BigInteger gtnl$costingEU = BigInteger.ZERO;
 
     @Unique
-    public String gtnl$costingEUText = Utils.ZERO_STRING;
+    public String gtnl$costingEUText = MathUtils.ZERO_STRING;
 
     public MixinMTEPurificationPlant(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -114,7 +114,7 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
     @Inject(method = "startCycle", at = @At("HEAD"))
     private void gtnl$resetCostingEU(CallbackInfo ci) {
         gtnl$costingEU = BigInteger.ZERO;
-        gtnl$costingEUText = Utils.ZERO_STRING;
+        gtnl$costingEUText = MathUtils.ZERO_STRING;
     }
 
     @Inject(method = "startCycle", at = @At("TAIL"))

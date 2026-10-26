@@ -17,13 +17,13 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.common.machine.monitor.EnergyMonitorCustomWirelessEutProvider;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 
 import gregtech.api.casing.Casings;
@@ -144,7 +144,7 @@ public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurn
     @NotNull
     public CheckRecipeResult checkProcessing() {
         costingEU = BigInteger.ZERO;
-        costingEUText = Utils.ZERO_STRING;
+        costingEUText = MathUtils.ZERO_STRING;
         List<ItemStack> tInput = getAllStoredInputs();
 
         if (tInput.isEmpty()) {
@@ -156,7 +156,7 @@ public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurn
         long availableEUt;
 
         if (wirelessMode) {
-            availableEUt = Utils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID));
+            availableEUt = MathUtils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID));
 
             if (availableEUt < 4) {
                 return CheckRecipeResultRegistry.insufficientPower(4);
@@ -227,7 +227,7 @@ public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurn
         } else {
             costingEU = BigInteger.valueOf(finalParallel)
                 .multiply(BigInteger.valueOf(4L));
-            WirelessNetworkManager.addEUToGlobalEnergyMap(ownerUUID, costingEU.multiply(Utils.NEGATIVE_ONE));
+            WirelessNetworkManager.addEUToGlobalEnergyMap(ownerUUID, costingEU.multiply(MathUtils.NEGATIVE_ONE));
             this.lEUt = 0;
         }
 

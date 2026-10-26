@@ -31,7 +31,6 @@ import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.Utils;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -276,11 +275,11 @@ public class CelestweaveHud {
         int glowColor, float slide, float alpha) {
         String percent = Math.round(fraction * 100) + "%";
         String energy = StatCollector
-            .translateToLocalFormatted("item.gtnl.celestweave.hud.energy", Utils.shortFormat((long) stored));
+            .translateToLocalFormatted("item.gtnl.celestweave.hud.energy", MathUtils.shortFormat((long) stored));
         String flow = Math.abs(rate) < 0.5F ? ""
             : StatCollector.translateToLocalFormatted(
                 "item.gtnl.celestweave.hud.rate",
-                (rate > 0 ? "-" : "+") + Utils.shortFormat(Math.round(Math.abs(rate))));
+                (rate > 0 ? "-" : "+") + MathUtils.shortFormat(Math.round(Math.abs(rate))));
         String eta = rate >= 0.5F ? duration(stored / rate / 20) : "";
         int split = font.getStringWidth(percent) + 4;
         float second = 19 + (font.getStringWidth(flow) + (eta.isEmpty() ? 0 : font.getStringWidth(eta) + 6)) * SMALL;

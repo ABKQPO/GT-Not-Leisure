@@ -4,9 +4,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
+import com.gtnllib.network.ClientboundPacket;
+import com.gtnllib.network.ServerboundPacket;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
-import com.science.gtnl.common.packet.base.ServerboundPacket;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

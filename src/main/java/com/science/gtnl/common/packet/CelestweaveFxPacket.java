@@ -2,9 +2,9 @@ package com.science.gtnl.common.packet;
 
 import net.minecraft.client.Minecraft;
 
+import com.gtnllib.network.ClientboundPacket;
 import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.client.celestweave.CelestweaveClientEvents;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

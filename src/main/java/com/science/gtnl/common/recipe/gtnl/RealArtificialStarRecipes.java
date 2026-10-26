@@ -2,11 +2,11 @@ package com.science.gtnl.common.recipe.gtnl;
 
 import net.minecraft.util.StatCollector;
 
+import com.gtnllib.mod.ModList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 

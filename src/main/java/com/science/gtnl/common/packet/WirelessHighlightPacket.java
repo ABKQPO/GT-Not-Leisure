@@ -2,8 +2,8 @@ package com.science.gtnl.common.packet;
 
 import net.minecraft.client.Minecraft;
 
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.client.wireless.WirelessWorldHighlight;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

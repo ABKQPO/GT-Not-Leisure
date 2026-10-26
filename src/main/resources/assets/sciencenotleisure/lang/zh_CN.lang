@@ -63,8 +63,6 @@ gtnl.gui.config.general.minecraft.tooltip=针对Minecraft的一些东西做出�
 gtnl.gui.config.general.debug.enabledebugmode=调试模式
 gtnl.gui.config.general.debug.enabledebugmode.tooltip=启用调试日志输出
 
-gtnl.gui.config.general.client.enable_text_effects=动态文字特效
-gtnl.gui.config.general.client.enable_text_effects.tooltip=启用动态文字特效。关闭后，含特效的文字以普通文字显示
 
 gtnl.gui.config.general.client.enable_railgun_shake=电磁炮镜头震动
 gtnl.gui.config.general.client.enable_railgun_shake.tooltip=蓄力与发射电磁炮时震动镜头和第一人称模型
@@ -4205,23 +4203,6 @@ gtnl.command.steam_network.set_success=已将 %s 的全局蒸汽网络设置为 
 gtnl.command.steam_network.rejoined=%s 已回到自己的全局蒸汽网络。
 gtnl.command.steam_network.join_success=%s 已加入 %s。
 gtnl.command.steam_network.join_undo=要撤销此操作，请使用 /steam_network join %s %s 加入自己的网络。
-gtnl.command.item_info.usage=/getiteminfo - 显示手持物品的全部信息
-gtnl.command.item_info.player_only=此指令只能由玩家使用。
-gtnl.command.item_info.no_item=你没有手持任何物品。
-gtnl.command.item_info.header====== 物品信息 =====
-gtnl.command.item_info.display_name=显示名称：%s
-gtnl.command.item_info.item_stack_display_name=物品堆显示名称：%s
-gtnl.command.item_info.unlocalized_inefficient_name=低效未本地化名称：%s
-gtnl.command.item_info.unlocalized_name=未本地化名称：%s
-gtnl.command.item_info.item_stack_unlocalized_name=物品堆未本地化名称：%s
-gtnl.command.item_info.class=类：%s
-gtnl.command.item_info.id=ID：%s
-gtnl.command.item_info.stack_size=堆叠数量：%s
-gtnl.command.item_info.damage=损伤值：%s
-gtnl.command.item_info.max_damage=最大损伤值：%s
-gtnl.command.item_info.nbt_data=NBT 数据：
-gtnl.command.item_info.nbt_entry=  %s：%s
-gtnl.command.item_info.no_nbt_data=没有 NBT 数据。
 gtnl.command.play_sound.usage=/gtnl_playsound <MODID>:<sound_resource>/stop [volume] [pitch] [seekMs]
 gtnl.command.play_sound.invalid_resource=无效的声音资源路径：%s
 gtnl.command.play_sound.invalid_volume=无效的音量：%s，使用默认值 1.0。
@@ -4284,10 +4265,6 @@ gtnl.nei.nuclear_reactor.guide.fuel_rod=§6§l铀燃料棒§r\n§0相邻燃料�
 gtnl.nei.nuclear_reactor.guide.reflector=§6§l中子反射板§r\n§0放在核燃料物品仓里，把正四方向相邻燃料棒的激发反弹回去，相当于那一格多一根燃料棒。\n§0自身耐久消耗是燃料棒的八分之一；\n§0铱中子反射板无限耐久。
 gtnl.nei.nuclear_reactor.guide.heat_plate=§6§l致密殷钢板§r\n§0放在核燃料物品仓里，把收到的热量复制给四面相邻的格子。\n§0累计吸收 240,000 HU 后熔化成 1008L 熔融殷钢，从输出仓输出。
 
-gtnl.text_effect.title=动态文字效果
-gtnl.text_effect.palette=切换配色
-gtnl.text_effect.bold=切换粗体
-gtnl.text_effect.italic=切换斜体
 
 key.gtnl.wireless_card_visualisation=切换频率卡网络可视化显示
 key.gtnl.wireless_card_auto=切换频率卡自动连接

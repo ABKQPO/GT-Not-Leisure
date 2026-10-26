@@ -3,9 +3,9 @@ package com.science.gtnl.common.packet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLInputHandler;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 public class RestorePreviousGuiPacket extends ClientboundPacket {
 

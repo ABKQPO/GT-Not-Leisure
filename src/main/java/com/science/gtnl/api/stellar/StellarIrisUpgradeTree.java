@@ -2,7 +2,7 @@ package com.science.gtnl.api.stellar;
 
 import net.minecraft.util.EnumChatFormatting;
 
-import com.science.gtnl.utils.ColorUtils;
+import com.gtnllib.text.TextEffectColors;
 
 import lombok.Getter;
 
@@ -42,22 +42,22 @@ public class StellarIrisUpgradeTree {
             throw new IllegalArgumentException("Tree tooltip color must not be null");
         }
         return switch (formatting) {
-            case BLACK -> ColorUtils.vanillaColor(0);
-            case DARK_BLUE -> ColorUtils.vanillaColor(1);
-            case DARK_GREEN -> ColorUtils.vanillaColor(2);
-            case DARK_AQUA -> ColorUtils.vanillaColor(3);
-            case DARK_RED -> ColorUtils.vanillaColor(4);
-            case DARK_PURPLE -> ColorUtils.vanillaColor(5);
-            case GOLD -> ColorUtils.vanillaColor(6);
-            case GRAY -> ColorUtils.vanillaColor(7);
-            case DARK_GRAY -> ColorUtils.vanillaColor(8);
-            case BLUE -> ColorUtils.vanillaColor(9);
-            case GREEN -> ColorUtils.vanillaColor(10);
-            case AQUA -> ColorUtils.vanillaColor(11);
-            case RED -> ColorUtils.vanillaColor(12);
-            case LIGHT_PURPLE -> ColorUtils.vanillaColor(13);
-            case YELLOW -> ColorUtils.vanillaColor(14);
-            case WHITE -> ColorUtils.vanillaColor(15);
+            case BLACK -> TextEffectColors.vanillaColor(0);
+            case DARK_BLUE -> TextEffectColors.vanillaColor(1);
+            case DARK_GREEN -> TextEffectColors.vanillaColor(2);
+            case DARK_AQUA -> TextEffectColors.vanillaColor(3);
+            case DARK_RED -> TextEffectColors.vanillaColor(4);
+            case DARK_PURPLE -> TextEffectColors.vanillaColor(5);
+            case GOLD -> TextEffectColors.vanillaColor(6);
+            case GRAY -> TextEffectColors.vanillaColor(7);
+            case DARK_GRAY -> TextEffectColors.vanillaColor(8);
+            case BLUE -> TextEffectColors.vanillaColor(9);
+            case GREEN -> TextEffectColors.vanillaColor(10);
+            case AQUA -> TextEffectColors.vanillaColor(11);
+            case RED -> TextEffectColors.vanillaColor(12);
+            case LIGHT_PURPLE -> TextEffectColors.vanillaColor(13);
+            case YELLOW -> TextEffectColors.vanillaColor(14);
+            case WHITE -> TextEffectColors.vanillaColor(15);
             default -> throw new IllegalArgumentException("Tree tooltip formatting must be a color");
         };
     }

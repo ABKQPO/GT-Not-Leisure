@@ -3,6 +3,7 @@ package com.science.gtnl.loader;
 import net.minecraft.util.StatCollector;
 
 import com.Nxer.TwistSpaceTechnology.common.GTCMItemList;
+import com.gtnllib.mod.ModList;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.machine.cover.FluidCover;
 import com.science.gtnl.common.machine.cover.VoidCover;
@@ -14,7 +15,6 @@ import com.science.gtnl.loader.machine.HatchLoader;
 import com.science.gtnl.loader.machine.MultiblockLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
-import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.text.AnimatedText;
 import com.science.gtnl.utils.text.AnimatedTooltipHandler;
 

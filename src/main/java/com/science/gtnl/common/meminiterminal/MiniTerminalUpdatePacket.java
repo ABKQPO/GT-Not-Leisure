@@ -12,8 +12,8 @@ import java.util.zip.GZIPOutputStream;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.client.meminiterminal.MiniTerminalClient;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import appeng.api.storage.data.IAEStack;
 import appeng.util.Platform;

@@ -6,7 +6,7 @@ import net.minecraft.util.EnumChatFormatting;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.science.gtnl.utils.text.effect.TextEffects;
+import com.gtnllib.text.TextEffects;
 
 public class AnimatedText {
 

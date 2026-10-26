@@ -1,12 +1,12 @@
 package com.science.gtnl.loader;
 
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.entity.EntityArrowCustom;
 import com.science.gtnl.common.entity.EntityPlayerLeashKnot;
 import com.science.gtnl.common.entity.EntityPortalGunOrb;
 import com.science.gtnl.common.entity.EntityPortalGunPortal;
 import com.science.gtnl.common.entity.EntitySaddleSlime;
 import com.science.gtnl.common.entity.EntitySteamRocket;
-import com.science.gtnl.utils.enums.ModList;
 
 import Forge.NullPointerException;
 import cpw.mods.fml.common.registry.EntityRegistry;
@@ -19,24 +19,18 @@ public class EntityLoader implements IContentLoader {
             .registerModEntity(NullPointerException.class, "NullPointerException", 1024, "Forge", 64, 2, true);
         GCCoreUtil.registerGalacticraftNonMobEntity(EntitySteamRocket.class, "SteamRocket", 150, 1, false);
         EntityRegistry
-            .registerModEntity(EntityArrowCustom.class, "ArrowCustom", 0, ModList.ScienceNotLeisure.ID, 64, 2, true);
+            .registerModEntity(EntityArrowCustom.class, "ArrowCustom", 0, ScienceNotLeisure.MODID, 64, 2, true);
         EntityRegistry
-            .registerModEntity(EntitySaddleSlime.class, "SaddleSlime", 1, ModList.ScienceNotLeisure.ID, 64, 2, true);
-        EntityRegistry.registerModEntity(
-            EntityPlayerLeashKnot.class,
-            "PlayerLeashKnot",
-            2,
-            ModList.ScienceNotLeisure.ID,
-            64,
-            2,
-            true);
+            .registerModEntity(EntitySaddleSlime.class, "SaddleSlime", 1, ScienceNotLeisure.MODID, 64, 2, true);
         EntityRegistry
-            .registerModEntity(EntityPortalGunOrb.class, "PortalGunOrb", 3, ModList.ScienceNotLeisure.ID, 64, 10, true);
+            .registerModEntity(EntityPlayerLeashKnot.class, "PlayerLeashKnot", 2, ScienceNotLeisure.MODID, 64, 2, true);
+        EntityRegistry
+            .registerModEntity(EntityPortalGunOrb.class, "PortalGunOrb", 3, ScienceNotLeisure.MODID, 64, 10, true);
         EntityRegistry.registerModEntity(
             EntityPortalGunPortal.class,
             "PortalGunPortal",
             4,
-            ModList.ScienceNotLeisure.ID,
+            ScienceNotLeisure.MODID,
             128,
             20,
             false);

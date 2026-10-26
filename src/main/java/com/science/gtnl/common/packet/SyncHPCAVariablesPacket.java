@@ -6,8 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan.HighPerformanceComputationArray;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

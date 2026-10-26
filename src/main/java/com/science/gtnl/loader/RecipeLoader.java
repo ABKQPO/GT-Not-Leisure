@@ -9,6 +9,7 @@ import net.minecraft.village.MerchantRecipe;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.Nxer.TwistSpaceTechnology.recipe.machineRecipe.expanded.AssemblyLineWithoutResearchRecipePool;
+import com.gtnllib.mod.ModList;
 import com.reavaritia.utils.enums.ReAvaItemList;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.item.items.Stick;
@@ -124,7 +125,6 @@ import com.science.gtnl.common.recipe.gtnl.TheTwilightForestRecipes;
 import com.science.gtnl.common.recipe.gtnl.TreeDiagramRecipes;
 import com.science.gtnl.common.recipe.gtnl.WoodDistillationRecipes;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.machine.ProcessingArrayRecipeLoader;
 import com.science.gtnl.utils.machine.oreProcessing.CheatOreProcessingRecipes;

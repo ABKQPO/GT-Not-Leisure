@@ -44,6 +44,7 @@ import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.SteamElevatorGui;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
@@ -52,7 +53,6 @@ import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.item.ItemUtils;
@@ -103,7 +103,7 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
     public ObjectArrayList<SteamElevatorModuleBase> mModuleHatches = new ObjectArrayList<>();
     public boolean isLoadedChunk;
     public boolean wirelessMode = false;
-    public String costingEUText = Utils.ZERO_STRING;
+    public String costingEUText = MathUtils.ZERO_STRING;
 
     public SteamElevator(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);

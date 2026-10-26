@@ -5,8 +5,8 @@ import net.minecraft.item.ItemStack;
 
 import com.cleanroommc.modularui.factory.GuiFactories;
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
+import com.gtnllib.network.ServerboundPacket;
 import com.science.gtnl.common.item.items.VeinMiningPickaxe;
-import com.science.gtnl.common.packet.base.ServerboundPacket;
 
 import gregtech.crossmod.backhand.Backhand;
 import io.netty.buffer.ByteBuf;

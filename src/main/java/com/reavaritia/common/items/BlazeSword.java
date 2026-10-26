@@ -16,11 +16,11 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import com.reavaritia.ReAvaritia;
 import com.reavaritia.client.ReAvaCreativeTabs;
 import com.reavaritia.common.entity.EntityBlazeFireball;
 import com.reavaritia.utils.enums.ReAvaItemList;
 import com.reavaritia.utils.item.ToolHelper;
-import com.science.gtnl.utils.enums.ModList;
 
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -73,7 +73,6 @@ public class BlazeSword extends ItemSword {
     }
 
     public static void registerEntity() {
-        EntityRegistry
-            .registerModEntity(EntityBlazeFireball.class, "BlazeFireBall", 0, ModList.ReAvaritia.ID, 64, 1, true);
+        EntityRegistry.registerModEntity(EntityBlazeFireball.class, "BlazeFireBall", 0, ReAvaritia.MODID, 64, 1, true);
     }
 }

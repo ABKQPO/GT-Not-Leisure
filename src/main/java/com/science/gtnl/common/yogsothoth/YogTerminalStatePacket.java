@@ -4,8 +4,8 @@ import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
 
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.client.yogsothoth.YogTerminalClient;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

@@ -1,11 +1,18 @@
 package com.science.gtnl.utils.text;
 
+import java.util.Map;
+
+import net.minecraftforge.common.config.Property;
+
 import com.science.gtnl.common.material.GTNLMaterials;
-import com.science.gtnl.utils.Utils;
+import com.science.gtnl.mixins.early.gregtech.AccessorGTLanguageManager;
+import com.science.gtnl.mixins.early.minecraft.AccessorStringTranslate;
 
 import bartworks.system.material.Werkstoff;
 import bartworks.system.material.WerkstoffLoader;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.LanguageRegistry;
+import gregtech.api.GregTechAPI;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.util.GTLanguageManager;
@@ -370,6 +377,51 @@ public class LanguageLoader {
     }
 
     public static String addStringLocalization(String trimmedKey, String text) {
-        return Utils.storeTranslation(trimmedKey, text);
+        return LanguageLoader.storeTranslation(trimmedKey, text);
+    }
+
+    public static synchronized String storeTranslation(String trimmedKey, String text) {
+        return storeTranslation(trimmedKey, text, "en_US");
+    }
+
+    public static synchronized String storeTranslation(String trimmedKey, String text, String language) {
+        String translation = writeToLangFile(trimmedKey, text);
+        AccessorGTLanguageManager.getLangMap()
+            .put(trimmedKey, translation);
+        AccessorGTLanguageManager.getStringTranslateLanguageListFallBack()
+            .put(trimmedKey, translation);
+        Map<String, String> langList = ((AccessorStringTranslate) AccessorStringTranslate.getInstance())
+            .getLanguageList();
+        if (langList != null) langList.put(trimmedKey, translation);
+        AccessorGTLanguageManager.getTempMap()
+            .put(trimmedKey, translation);
+        if (FMLCommonHandler.instance()
+            .getCurrentLanguage() != null) {
+            LanguageRegistry.instance()
+                // Inject only after the client language is selected.
+                .injectLanguage(language, AccessorGTLanguageManager.getTempMap());
+        }
+        AccessorGTLanguageManager.getTempMap()
+            .clear();
+        return translation;
+    }
+
+    public static synchronized String writeToLangFile(String trimmedKey, String text) {
+        Property tProperty = GTLanguageManager.sEnglishFile.get("LanguageFile", trimmedKey, text);
+        if (AccessorGTLanguageManager.getHasUnsavedEntry() && GregTechAPI.sPostloadFinished) {
+            GTLanguageManager.sEnglishFile.save();
+            AccessorGTLanguageManager.setHasUnsavedEntry(false);
+        }
+        String translation = tProperty.getString();
+        if (tProperty.wasRead()) {
+            if (!text.equals(translation)) {
+                tProperty.set(text);
+                AccessorGTLanguageManager.callMarkFileDirty();
+                return text;
+            }
+        } else {
+            AccessorGTLanguageManager.callMarkFileDirty();
+        }
+        return translation;
     }
 }

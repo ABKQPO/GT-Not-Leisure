@@ -22,6 +22,7 @@ import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 
 import com.cleanroommc.modularui.factory.GuiFactories;
+import com.gtnllib.utils.GameUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
 import com.science.gtnl.common.packet.GetTileEntityNBTRequestPacket;
@@ -118,7 +119,7 @@ public class ClientUtils {
     }
 
     public static boolean onPickEntity(EntityPlayer player, double range, boolean useAE) {
-        MovingObjectPosition target = Utils.rayTrace(player, false, true, true, range);
+        MovingObjectPosition target = GameUtils.rayTrace(player, false, true, true, range);
         if (target == null || target.typeOfHit != MovingObjectPosition.MovingObjectType.ENTITY) {
             return false;
         }
@@ -151,7 +152,7 @@ public class ClientUtils {
     }
 
     public static boolean onPickBlockNBTRange(EntityPlayer player, World world, double reachDistance, boolean useAE) {
-        MovingObjectPosition target = Utils.rayTraceBlock(player, reachDistance);
+        MovingObjectPosition target = GameUtils.rayTraceBlock(player, reachDistance);
         if (target == null || target.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) return false;
 
         int x = target.blockX;
@@ -185,7 +186,7 @@ public class ClientUtils {
     }
 
     public static boolean onPickBlockRange(EntityPlayer player, World world, double reachDistance, boolean useAE) {
-        MovingObjectPosition target = Utils.rayTraceBlock(player, reachDistance);
+        MovingObjectPosition target = GameUtils.rayTraceBlock(player, reachDistance);
 
         if (target == null || target.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) {
             return false;

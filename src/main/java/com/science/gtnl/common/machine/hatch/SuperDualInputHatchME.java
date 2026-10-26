@@ -81,11 +81,11 @@ import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IRecipeProcessingAwareDualHatch;
 import com.science.gtnl.common.gui.modularui.hatch.SuperDualInputHatchMEGui;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.machine.FluidTankG;
 import com.science.gtnl.utils.machine.ItemStackG;
+import com.science.gtnl.utils.machine.MachineUtils;
 
 import appeng.api.config.Actionable;
 import appeng.api.implementations.IPowerChannelState;
@@ -163,7 +163,7 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
     public static int SLOT_COUNT = 100;
     public static final String COPIED_DATA_IDENTIFIER = "superStockingDualHatch";
 
-    public static Utils.VargsFunction<Object[], FluidStack[]> asFluidStack = (s) -> Arrays.stream(s)
+    public static MachineUtils.VargsFunction<Object[], FluidStack[]> asFluidStack = (s) -> Arrays.stream(s)
         .flatMap(Arrays::stream)
         .map(f -> {
             if (f instanceof FluidTank tank) {
@@ -1602,12 +1602,13 @@ public class SuperDualInputHatchME extends MTEHatchInputBus
 
             @Override
             public ItemStack[] getItemInputs() {
-                return Utils.filterStack.apply(Utils.flat(i_shadow), new ItemStack[] { getStackInSlot(0) });
+                return MachineUtils.filterStack
+                    .apply(MachineUtils.flat(i_shadow), new ItemStack[] { getStackInSlot(0) });
             }
 
             @Override
             public FluidStack[] getFluidInputs() {
-                return asFluidStack.apply(Utils.flat(f_shadow));
+                return asFluidStack.apply(MachineUtils.flat(f_shadow));
             }
 
             @Override

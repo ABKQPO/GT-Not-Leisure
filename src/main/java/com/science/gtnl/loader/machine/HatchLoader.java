@@ -6,6 +6,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidRegistry;
 
 import com.google.common.collect.ImmutableSet;
+import com.gtnllib.mod.ModList;
 import com.science.gtnl.common.machine.basicMachine.DebugResearchStation;
 import com.science.gtnl.common.machine.basicMachine.Enchanting;
 import com.science.gtnl.common.machine.basicMachine.EnergyMonitor;
@@ -64,7 +65,6 @@ import com.science.gtnl.common.machine.multiblock.SmallInfusionMatrix;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GTNLMachineID;
-import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.text.AnimatedText;

@@ -23,10 +23,10 @@ import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.gui.modularui.GTNLMui2ItemHandlerAdapter;
 import com.science.gtnl.common.gui.modularui.GTNLSteamMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamBeaconModule;
-import com.science.gtnl.utils.enums.ModList;
 
 import gregtech.api.enums.Mods;
 import gregtech.api.modularui2.GTGuiTextures;
@@ -72,7 +72,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
     private static final UITexture FEATHER_FEET_EFFECT = fromAtlas(BOTANIA_POTIONS, 18, 198, 36, 216);
     private static final UITexture VIS_REGEN_EFFECT = fromAtlas(THAUMIC_HORIZONS_POTIONS, 54, 198, 72, 216);
     private static final UITexture BEACON_MATERIAL = UITexture
-        .fullImage(new ResourceLocation(ModList.ScienceNotLeisure.resourceDomain, "gui/picture/steam_beacon"));
+        .fullImage(new ResourceLocation(ScienceNotLeisure.MODID, "gui/picture/steam_beacon"));
 
     private final SteamBeaconModule beaconModule;
 

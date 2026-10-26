@@ -22,12 +22,12 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.machine.NineIndustrialMultiMachineManager;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
@@ -332,7 +332,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
     @Override
     public CheckRecipeResult checkProcessing() {
         costingEU = BigInteger.ZERO;
-        costingEUText = Utils.ZERO_STRING;
+        costingEUText = MathUtils.ZERO_STRING;
 
         if (!wirelessMode) return handleNonWirelessModeProcessing();
 
@@ -372,7 +372,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
         BigInteger costEU = BigInteger.valueOf(processingLogic.getCalculatedEut())
             .multiply(BigInteger.valueOf(processingLogic.getDuration()));
 
-        if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(Utils.NEGATIVE_ONE))) {
+        if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(MathUtils.NEGATIVE_ONE))) {
             return CheckRecipeResultRegistry.insufficientPower(costEU.longValue());
         }
 
@@ -388,7 +388,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
                 }
             }
         }
-        mOutputItems = Utils.mergeArray(mOutputItems, outputItems);
+        mOutputItems = MathUtils.mergeArray(mOutputItems, outputItems);
 
         FluidStack[] outputFluids = processingLogic.getOutputFluids();
         if (outputFluids != null) {
@@ -400,7 +400,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
                 }
             }
         }
-        mOutputFluids = Utils.mergeArray(mOutputFluids, outputFluids);
+        mOutputFluids = MathUtils.mergeArray(mOutputFluids, outputFluids);
 
         endRecipeProcessing();
         return result;

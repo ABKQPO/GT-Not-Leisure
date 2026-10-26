@@ -11,8 +11,8 @@ import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.client.yogsothoth.YogTerminalClient;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

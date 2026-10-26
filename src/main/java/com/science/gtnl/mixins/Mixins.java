@@ -2,9 +2,9 @@ package com.science.gtnl.mixins;
 
 import com.gtnewhorizon.gtnhmixins.builders.IMixins;
 import com.gtnewhorizon.gtnhmixins.builders.MixinBuilder;
+import com.gtnllib.mod.ModList;
 import com.science.gtnl.asm.GTNLEarlyCoreMod;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.enums.ModList;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

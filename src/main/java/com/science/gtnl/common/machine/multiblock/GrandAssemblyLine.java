@@ -49,12 +49,12 @@ import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.common.gui.modularui.multiblock.GrandAssemblyLineGui;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.recipes.GrandAssemblyLineOverclockTool;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
@@ -117,7 +117,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     private static final int UNLIMITED_ENERGY_HATCH_TIER = VoltageIndex.UHV, WIRELESS_TIER = VoltageIndex.UMV;
     private static final String PARALLEL_CONTROLLER_KEY = "gtnl.machine.grand_assembly_line.parallel_controller.";
     public List<MTEHatchDataAccess> mDataAccessHatches = new ObjectArrayList<>();
-    public String costingEUText = Utils.ZERO_STRING;
+    public String costingEUText = MathUtils.ZERO_STRING;
     public UUID ownerUUID;
     public boolean wirelessMode = false;
     public int minRecipeTime = 50;
@@ -289,7 +289,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         long energyEU;
 
         if (wirelessMode) {
-            energyEU = Utils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID));
+            energyEU = MathUtils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID));
         } else {
             energyEU = getMaxInputEu();
         }

@@ -18,8 +18,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.science.gtnl.common.supercreeper.SuperCreeperHooks;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.Utils;
 
 @Mixin(EntityAICreeperSwell.class)
 public abstract class MixinEntityAICreeperSwell {
@@ -33,9 +33,9 @@ public abstract class MixinEntityAICreeperSwell {
     private long gtnl$lastSpiderTargetUpdateTick = 0;
 
     @Unique
-    private Utils.TargetInfo gtnl$cachedBlockTarget = null;
+    private SuperCreeperHooks.TargetInfo gtnl$cachedBlockTarget = null;
     @Unique
-    private Utils.TargetInfo gtnl$cachedPlayerTarget = null;
+    private SuperCreeperHooks.TargetInfo gtnl$cachedPlayerTarget = null;
 
     @Unique
     private long gtnl$lastBlockTargetUpdateTick = 0;
@@ -43,7 +43,7 @@ public abstract class MixinEntityAICreeperSwell {
     private long gtnl$lastPlayerTargetUpdateTick = 0;
 
     @Unique
-    public Utils.TargetInfo gtnl$findNearestTarget() {
+    public SuperCreeperHooks.TargetInfo gtnl$findNearestTarget() {
         long currentTick = this.swellingCreeper.worldObj.getTotalWorldTime();
 
         if (currentTick - gtnl$lastBlockTargetUpdateTick >= MainConfig.super_creeper.blockTargetInterval) {
@@ -64,9 +64,9 @@ public abstract class MixinEntityAICreeperSwell {
     }
 
     @Unique
-    private Utils.TargetInfo gtnl$findNearestTargetBlock() {
+    private SuperCreeperHooks.TargetInfo gtnl$findNearestTargetBlock() {
         double minDistance = Double.MAX_VALUE;
-        Utils.TargetInfo closestTarget = null;
+        SuperCreeperHooks.TargetInfo closestTarget = null;
 
         int radius = MainConfig.super_creeper.blockFindRadius;
 
@@ -78,11 +78,11 @@ public abstract class MixinEntityAICreeperSwell {
                     <= MathHelper.floor_double(this.swellingCreeper.posZ) + radius; ++z) {
                     Block block = this.swellingCreeper.worldObj.getBlock(x, y, z);
                     int meta = this.swellingCreeper.worldObj.getBlockMetadata(x, y, z);
-                    if (Utils.isTargetBlock(block, meta)) {
+                    if (SuperCreeperHooks.isTargetBlock(block, meta)) {
                         double dist = this.swellingCreeper.getDistance(x + 0.5, y + 0.5, z + 0.5);
                         if (dist < minDistance) {
                             minDistance = dist;
-                            closestTarget = new Utils.TargetInfo(x, y, z, dist);
+                            closestTarget = new SuperCreeperHooks.TargetInfo(x, y, z, dist);
                         }
                     }
                 }
@@ -93,9 +93,9 @@ public abstract class MixinEntityAICreeperSwell {
     }
 
     @Unique
-    private Utils.TargetInfo gtnl$findNearestTargetPlayer() {
+    private SuperCreeperHooks.TargetInfo gtnl$findNearestTargetPlayer() {
         double minDistance = Double.MAX_VALUE;
-        Utils.TargetInfo closestTarget = null;
+        SuperCreeperHooks.TargetInfo closestTarget = null;
 
         int radius = MainConfig.super_creeper.playerFindRadius;
 
@@ -108,7 +108,7 @@ public abstract class MixinEntityAICreeperSwell {
             double dist = this.swellingCreeper.getDistanceToEntity(player);
             if (dist < minDistance) {
                 minDistance = dist;
-                closestTarget = new Utils.TargetInfo(player, dist);
+                closestTarget = new SuperCreeperHooks.TargetInfo(player, dist);
             }
         }
 
@@ -157,7 +157,7 @@ public abstract class MixinEntityAICreeperSwell {
 
     @Inject(method = "shouldExecute", at = @At("HEAD"), cancellable = true)
     public void shouldExecute(CallbackInfoReturnable<Boolean> cir) {
-        Utils.TargetInfo customTarget = gtnl$findNearestTarget();
+        SuperCreeperHooks.TargetInfo customTarget = gtnl$findNearestTarget();
         if (MainConfig.super_creeper.enableCreeperFindSpider) gtnl$executeSpider();
         double customTargetDistance = 0;
         double spiderDistance = 0;
@@ -187,7 +187,7 @@ public abstract class MixinEntityAICreeperSwell {
 
     @Inject(method = "updateTask", at = @At("HEAD"), cancellable = true)
     public void updateTask(CallbackInfo ci) {
-        Utils.TargetInfo customTarget = gtnl$findNearestTarget();
+        SuperCreeperHooks.TargetInfo customTarget = gtnl$findNearestTarget();
         double customTargetDistance = Double.MAX_VALUE;
         double spiderDistance = 0;
 

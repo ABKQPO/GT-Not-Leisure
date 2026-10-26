@@ -16,10 +16,10 @@ import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import com.gtnewhorizon.gtnhlib.util.CoordinatePacker;
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.client.detrav.DetravMapTexture;
 import com.science.gtnl.client.gui.detrav.DetravScannerGUI;
 import com.science.gtnl.common.gui.GTNLGuiHandler;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.enums.GuiType;
 

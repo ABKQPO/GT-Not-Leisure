@@ -3,6 +3,8 @@ package com.science.gtnl.utils.enums;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
+import com.gtnllib.mod.ModList;
+
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.Mods;
 import gregtech.api.util.GTModHandler;

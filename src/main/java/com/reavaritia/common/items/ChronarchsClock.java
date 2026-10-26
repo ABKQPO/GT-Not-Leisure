@@ -28,6 +28,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.reavaritia.ReAvaritia;
 import com.reavaritia.client.ReAvaCreativeTabs;
 import com.reavaritia.common.ItemLoader;
 import com.reavaritia.common.entity.EntityChronarchClock;
@@ -35,7 +36,6 @@ import com.reavaritia.utils.enums.ReAvaItemList;
 import com.reavaritia.utils.item.SubtitleDisplay;
 import com.science.gtnl.api.TickrateAPI;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.enums.ModList;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -263,7 +263,7 @@ public class ChronarchsClock extends Item implements SubtitleDisplay, IBehaviorD
 
     public static void registerEntity() {
         EntityRegistry
-            .registerModEntity(EntityChronarchClock.class, "ChronarchClock", 1, ModList.ReAvaritia.ID, 64, 20, true);
+            .registerModEntity(EntityChronarchClock.class, "ChronarchClock", 1, ReAvaritia.MODID, 64, 20, true);
 
     }
 }

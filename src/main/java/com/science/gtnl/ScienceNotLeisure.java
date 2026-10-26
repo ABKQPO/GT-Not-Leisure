@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.science.gtnl.common.packet.NetWorkHandler;
 import com.science.gtnl.loader.ContentLoaders;
-import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.item.MissingMappingsHandler;
 
 import cpw.mods.fml.common.Mod;
@@ -54,7 +53,7 @@ public class ScienceNotLeisure {
     public static ScienceNotLeisure instance;
     public static final String MODNAME = "GTNotLeisure";
     public static final String VERSION = Tags.VERSION;
-    public static final String RESOURCE_ROOT_ID = ModList.ScienceNotLeisure.ID;
+    public static final String RESOURCE_ROOT_ID = MODID;
     public static final Logger LOG = LogManager.getLogger(ScienceNotLeisure.MODID);
 
     public static SimpleNetworkWrapper network;

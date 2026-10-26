@@ -64,12 +64,11 @@ import com.science.gtnl.common.machine.tooltip.MultiblockTooltipReader;
 import com.science.gtnl.common.machine.tooltip.StructureTooltipHooks;
 import com.science.gtnl.common.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.loader.BlockLoader;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GTNLMachineID;
-import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.item.ItemUtils;
+import com.science.gtnl.utils.machine.MachineUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
@@ -165,9 +164,9 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     public ObjectArrayList<FluidStack> recipeSearchFluidInputs = new ObjectArrayList<>();
 
     public static final UITexture STEAM_GAUGE_BG = UITexture
-        .fullImage(ModList.ScienceNotLeisure.ID, "gui/background/steam_dial");
+        .fullImage(ScienceNotLeisure.MODID, "gui/background/steam_dial");
     public static final UITexture STEAM_GAUGE_STEEL_BG = UITexture
-        .fullImage(ModList.ScienceNotLeisure.ID, "gui/background/steam_dial_steel");
+        .fullImage(ScienceNotLeisure.MODID, "gui/background/steam_dial_steel");
 
     public SteamMultiMachineBase(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -1001,7 +1000,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
 
         if (mOutputBusses != null && !mOutputBusses.isEmpty()) {
             for (final IOutputBus tBus : GTUtility.validMTEList(mOutputBusses)) {
-                if (!Utils.isMEOutputBus(tBus)) {
+                if (!MachineUtils.isMEOutputBus(tBus)) {
                     MTEHatch outputBus = (MTEHatch) tBus;
                     final IInventory tBusInv = outputBus.getBaseMetaTileEntity();
                     for (int i = 0; i < tBusInv.getSizeInventory(); i++) {
@@ -1023,7 +1022,7 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
 
         if (mSteamOutputs != null && !mSteamOutputs.isEmpty()) {
             for (final IOutputBus tBus : GTUtility.validMTEList(mSteamOutputs)) {
-                if (!Utils.isMEOutputBus(tBus)) {
+                if (!MachineUtils.isMEOutputBus(tBus)) {
                     MTEHatch outputBus = (MTEHatch) tBus;
                     final IInventory tBusInv = outputBus.getBaseMetaTileEntity();
                     for (int i = 0; i < tBusInv.getSizeInventory(); i++) {

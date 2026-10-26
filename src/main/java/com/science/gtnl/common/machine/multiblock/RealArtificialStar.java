@@ -30,6 +30,8 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.gtnllib.mod.ModList;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
@@ -37,9 +39,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.enums.ModsItemlist;
 
 import goodgenerator.loader.Loaders;
@@ -344,7 +344,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
 
         BigDecimal eu = new BigDecimal(currentOutputEU).multiply(BigDecimal.valueOf(outputMultiplier))
             .multiply(BigDecimal.valueOf((rewardContinuous + 100d) / 100d))
-            .multiply(new BigDecimal(Utils.INTEGER_MAX_VALUE));
+            .multiply(new BigDecimal(MathUtils.INTEGER_MAX_VALUE));
 
         BigInteger result = eu.toBigInteger();
         if (!addEUToGlobalEnergyMap(ownerUUID, result)) {

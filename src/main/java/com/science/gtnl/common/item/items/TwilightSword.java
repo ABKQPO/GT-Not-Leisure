@@ -26,9 +26,9 @@ import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
+import com.gtnllib.utils.GameUtils;
 import com.reavaritia.utils.item.PlaySound;
 import com.science.gtnl.common.entity.EntityArrowCustom;
-import com.science.gtnl.utils.Utils;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -94,7 +94,7 @@ public class TwilightSword extends ItemSword implements PlaySound {
             if (player.getCurrentEquippedItem() == stack && player.swingProgress == 0.5F
                 && !world.isRemote
                 && cooldown <= 0) {
-                MovingObjectPosition rayTraceResult = Utils.rayTrace(player, false, true, false, 100);
+                MovingObjectPosition rayTraceResult = GameUtils.rayTrace(player, false, true, false, 100);
 
                 if (rayTraceResult != null && rayTraceResult.entityHit != null) {
                     Entity hitEntity = rayTraceResult.entityHit;

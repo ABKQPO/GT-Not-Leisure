@@ -17,13 +17,13 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.GregTechAPI;
@@ -174,7 +174,7 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
         maxParallelStored = -1;
         resetParallelTier();
         costingEU = BigInteger.ZERO;
-        costingEUText = Utils.ZERO_STRING;
+        costingEUText = MathUtils.ZERO_STRING;
         totalOverclockedDuration = 0;
         cycleNow = 0;
 
@@ -236,13 +236,13 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
         BigInteger costEU = BigInteger.valueOf(processingLogic.getCalculatedEut())
             .multiply(BigInteger.valueOf(processingLogic.getDuration()));
 
-        if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(Utils.NEGATIVE_ONE))) {
+        if (!addEUToGlobalEnergyMap(ownerUUID, costEU.multiply(MathUtils.NEGATIVE_ONE))) {
             return CheckRecipeResultRegistry.insufficientPower(costEU.longValue());
         }
 
         costingEU = costingEU.add(costEU);
-        mOutputItems = Utils.mergeArray(mOutputItems, processingLogic.getOutputItems());
-        mOutputFluids = Utils.mergeArray(mOutputFluids, processingLogic.getOutputFluids());
+        mOutputItems = MathUtils.mergeArray(mOutputItems, processingLogic.getOutputItems());
+        mOutputFluids = MathUtils.mergeArray(mOutputFluids, processingLogic.getOutputFluids());
         totalOverclockedDuration += processingLogic.getDuration();
 
         endRecipeProcessing();

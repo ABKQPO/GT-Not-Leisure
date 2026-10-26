@@ -2,7 +2,7 @@ package com.science.gtnl.common.machine.cover;
 
 import static java.lang.Long.min;
 
-import com.science.gtnl.utils.Utils;
+import com.science.gtnl.utils.machine.MachineUtils;
 
 import gregtech.api.covers.CoverContext;
 import gregtech.api.interfaces.tileentity.ICoverable;
@@ -44,7 +44,8 @@ public class WirelessMultiEnergyCover extends CoverLegacyData {
             long currentEU = bmte.getStoredEUuncapped();
             long euToTransfer = min(transferredEnergyPerOperation - currentEU, transferredEnergyPerOperation);
             if (euToTransfer <= 0) return;
-            if (!WirelessNetworkManager.addEUToGlobalEnergyMap(Utils.getOwner(tileEntity), -euToTransfer)) return;
+            if (!WirelessNetworkManager.addEUToGlobalEnergyMap(MachineUtils.getOwner(tileEntity), -euToTransfer))
+                return;
             bmte.increaseStoredEnergyUnits(euToTransfer, true);
         }
     }

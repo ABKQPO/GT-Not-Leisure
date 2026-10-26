@@ -4,7 +4,7 @@ import static com.science.gtnl.common.world.WorldEvents.CIRCUIT_NANITES_DATA_LOA
 
 import net.minecraft.client.Minecraft;
 
-import com.science.gtnl.common.packet.base.ClientboundPacket;
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.loader.RecipeLoader;
 
 import io.netty.buffer.ByteBuf;

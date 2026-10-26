@@ -6,8 +6,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import com.science.gtnl.utils.text.effect.EffectTextParser;
-import com.science.gtnl.utils.text.effect.TextEffects;
+import com.gtnllib.text.EffectTextParser;
+import com.gtnllib.text.TextEffects;
 
 /** Removes effect declarations wherever vanilla explicitly requests unformatted text. */
 @Mixin(EnumChatFormatting.class)

@@ -63,6 +63,9 @@ import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
+import com.gtnllib.mod.ModList;
+import com.gtnllib.utils.GameUtils;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.AssemblerMatrixGui;
@@ -70,11 +73,10 @@ import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.machine.AssemblerMatrixPatternState;
+import com.science.gtnl.utils.machine.MachineUtils;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
@@ -178,7 +180,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Setter
     @Getter
     public boolean showPattern = true;
-    public String costingEUText = Utils.ZERO_STRING;
+    public String costingEUText = MathUtils.ZERO_STRING;
     public long recipesDone;
     public long usedParallel = 0;
 
@@ -674,7 +676,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     public void saveInvData(NBTTagCompound aNBT, boolean external) {
         NBTTagCompound storeRoot = new NBTTagCompound();
 
-        String uuid = Utils.ensureUUID(aNBT);
+        String uuid = GameUtils.ensureUUID(aNBT);
 
         NBTTagList cachedList = new NBTTagList();
         if (patternState.getCachedOutputItems() != null) {
@@ -1047,9 +1049,9 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             if (mMaxSlots > 0 && !inventory.isEmpty()
                 && !patternState.getOutputs()
                     .isEmpty()) {
-                costingEUText = Utils.ZERO_STRING;
+                costingEUText = MathUtils.ZERO_STRING;
                 long parallel = mMaxParallelLong;
-                long maxInputEU = wirelessMode ? Utils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID))
+                long maxInputEU = wirelessMode ? MathUtils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID))
                     : getMaxInputEu();
 
                 parallel = Math.min(parallel, maxInputEU / 2);
@@ -1566,7 +1568,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         boolean ignoreEmptiness = false;
 
         for (MTEHatchOutputBus outputBus : mOutputBusses) {
-            if (Utils.isMEOutputBus(outputBus)) {
+            if (MachineUtils.isMEOutputBus(outputBus)) {
                 ignoreEmptiness = true;
                 break;
             }

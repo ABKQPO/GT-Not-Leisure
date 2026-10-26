@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.Nxer.TwistSpaceTechnology.common.machine.multiMachineClasses.processingLogics.GTCM_ParallelHelper;
+import com.gtnllib.mod.ModList;
 import com.science.gtnl.config.MainConfig;
-import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.recipes.ChanceBonusManager;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 

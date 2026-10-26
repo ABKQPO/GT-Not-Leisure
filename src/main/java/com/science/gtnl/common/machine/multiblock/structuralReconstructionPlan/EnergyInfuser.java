@@ -48,11 +48,11 @@ import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.MultiChildWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.EnergyInfuserGui;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import cofh.api.energy.IEnergyContainerItem;
@@ -332,7 +332,7 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
 
     public long getMaxStoredEU() {
         if (wirelessMode) {
-            return Utils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID));
+            return MathUtils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID));
         }
 
         long maxStoredEU = 0;

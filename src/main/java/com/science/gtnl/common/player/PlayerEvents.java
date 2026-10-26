@@ -22,6 +22,7 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.gtnewhorizon.gtnhlib.network.TitlePacketHandler;
+import com.gtnllib.mod.ModList;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.crafting.quantum.ae2.QuantumCraftingMode;
 import com.science.gtnl.common.item.BaubleItem;
@@ -36,7 +37,6 @@ import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.AchievementsLoader;
 import com.science.gtnl.mixins.early.minecraft.AccessorFoodStats;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.enums.ModList;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;

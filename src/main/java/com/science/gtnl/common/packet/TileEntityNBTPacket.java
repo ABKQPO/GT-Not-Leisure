@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 
-import com.science.gtnl.common.packet.base.ClientboundPacket;
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import cpw.mods.fml.common.network.ByteBufUtils;

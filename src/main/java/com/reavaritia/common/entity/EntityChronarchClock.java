@@ -10,10 +10,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import com.gtnllib.mod.ModList;
 import com.science.gtnl.api.ITileEntityTickAcceleration;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.mixins.early.minecraft.AccessorTileEntity;
-import com.science.gtnl.utils.enums.ModList;
 
 public class EntityChronarchClock extends Entity {
 

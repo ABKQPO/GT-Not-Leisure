@@ -3,12 +3,12 @@ package com.science.gtnl.compat.betterquesting;
 import java.util.List;
 import java.util.UUID;
 
+import com.gtnllib.mod.ModList;
 import com.hfstudio.bqapi.BQApi;
 import com.hfstudio.bqapi.api.builder.Chapters;
 import com.hfstudio.bqapi.api.definition.ChapterDefinition;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.compat.IModCompat;
-import com.science.gtnl.utils.enums.ModList;
 
 import betterquesting.api.utils.UuidConverter;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;

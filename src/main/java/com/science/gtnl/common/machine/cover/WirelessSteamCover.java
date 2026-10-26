@@ -12,8 +12,8 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.science.gtnl.common.gui.WirelessSteamCoverGui;
 import com.science.gtnl.common.gui.WirelessSteamCoverUIFactory;
 import com.science.gtnl.common.steam.SteamWirelessNetworkManager;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.SteamTypes;
+import com.science.gtnl.utils.machine.MachineUtils;
 
 import gregtech.api.covers.CoverContext;
 import gregtech.api.gui.modularui.CoverUIBuildContext;
@@ -61,7 +61,7 @@ public class WirelessSteamCover extends CoverLegacyData {
             }
             int capacity = commonMetaTile.getCapacity();
             int fluidAmount = fluid != null ? commonMetaTile.getFluidAmount() : 0;
-            BigInteger availableSteam = SteamWirelessNetworkManager.getUserSteam(Utils.getOwner(tileEntity));
+            BigInteger availableSteam = SteamWirelessNetworkManager.getUserSteam(MachineUtils.getOwner(tileEntity));
             int current = availableSteam.divide(BigInteger.valueOf(steamType.efficiencyFactor))
                 .min(BigInteger.valueOf(capacity - fluidAmount))
                 .intValue();
@@ -69,7 +69,8 @@ public class WirelessSteamCover extends CoverLegacyData {
             if (current <= 0) return;
 
             long steamCost = (long) current * steamType.efficiencyFactor;
-            if (!SteamWirelessNetworkManager.addSteamToGlobalSteamMap(Utils.getOwner(tileEntity), -steamCost)) return;
+            if (!SteamWirelessNetworkManager.addSteamToGlobalSteamMap(MachineUtils.getOwner(tileEntity), -steamCost))
+                return;
             commonMetaTile.fill(steamType.fluid.getFluidStack(current), true);
         }
     }

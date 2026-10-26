@@ -7,7 +7,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
-import com.science.gtnl.common.packet.base.ServerboundPacket;
+import com.gtnllib.network.ServerboundPacket;
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;

@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
 
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.client.gui.GuiSuperDualInterfaceFluid;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.util.item.AEFluidStack;

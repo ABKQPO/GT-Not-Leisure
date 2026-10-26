@@ -4,10 +4,10 @@ import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.gtnllib.command.CommandItemInfo;
 import com.gtnllib.command.CommandSuicide;
 import com.science.gtnl.client.command.MultiblockTooltipExportCommand;
 import com.science.gtnl.common.command.CommandEnergyNetwork;
-import com.science.gtnl.common.command.CommandItemInfo;
 import com.science.gtnl.common.command.CommandPlaySound;
 import com.science.gtnl.common.command.CommandSpoce;
 import com.science.gtnl.common.command.CommandSudo;

@@ -6,9 +6,9 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import com.gtnllib.utils.GameUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import gregtech.api.GregTechAPI;
@@ -100,14 +100,14 @@ public enum ReAvaItemList implements IItemContainer {
 
     public ReAvaItemList set(Item aItem) {
         if (aItem == null) return this;
-        return set(Utils.newItemStack(aItem));
+        return set(GameUtils.newItemStack(aItem));
     }
 
     public ReAvaItemList set(ItemStack aStack) {
         if (aStack == null) return this;
         mHasNotBeenSet = false;
         mStack = GTUtility.copyAmountUnsafe(1, aStack);
-        if (Utils.isClientSide()) {
+        if (GameUtils.isClientSide()) {
             Item item = mStack.getItem();
             if (item == null) return this;
             if (Block.getBlockFromItem(item) == GregTechAPI.sBlockMachines) {

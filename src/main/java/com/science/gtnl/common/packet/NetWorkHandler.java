@@ -2,11 +2,11 @@ package com.science.gtnl.common.packet;
 
 import static com.science.gtnl.ScienceNotLeisure.network;
 
+import com.gtnllib.network.ClientboundPacket;
+import com.gtnllib.network.PayloadHandler;
+import com.gtnllib.network.ServerboundPacket;
 import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket;
 import com.science.gtnl.common.meminiterminal.MiniTerminalUpdatePacket;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
-import com.science.gtnl.common.packet.base.PayloadHandler;
-import com.science.gtnl.common.packet.base.ServerboundPacket;
 import com.science.gtnl.common.yogsothoth.YogTerminalActionPacket;
 import com.science.gtnl.common.yogsothoth.YogTerminalStatePacket;
 import com.science.gtnl.common.yogsothoth.YogTerminalSyncPacket;

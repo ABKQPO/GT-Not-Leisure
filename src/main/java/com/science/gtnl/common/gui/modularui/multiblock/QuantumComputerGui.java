@@ -24,10 +24,10 @@ import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
+import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.common.gui.GTNLMui2Textures;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiblock.QuantumComputer;
-import com.science.gtnl.utils.Utils;
 
 import gregtech.api.modularui2.GTGuiTextures;
 
@@ -136,7 +136,7 @@ public class QuantumComputerGui extends GTNLMultiBlockBaseGui<QuantumComputer> {
                 IKey.dynamic(
                     () -> StatCollector.translateToLocalFormatted(
                         "gtnl.machine.quantum_computer.info.2",
-                        Utils.shortFormat(maximumStorageSyncer.getLongValue()),
+                        MathUtils.shortFormat(maximumStorageSyncer.getLongValue()),
                         usedStorageSyncer.getLongValue(),
                         formatPercent(usedParallelSyncer.getIntValue(), maximumStorageSyncer.getLongValue())))
                     .asWidget()

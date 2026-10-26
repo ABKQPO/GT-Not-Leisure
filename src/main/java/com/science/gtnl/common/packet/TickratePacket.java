@@ -2,9 +2,9 @@ package com.science.gtnl.common.packet;
 
 import net.minecraft.client.Minecraft;
 
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.TickrateAPI;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 import com.science.gtnl.config.MainConfig;
 
 import io.netty.buffer.ByteBuf;

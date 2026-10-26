@@ -10,8 +10,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentTranslation;
 
 import com.gtnewhorizon.gtnhlib.GTNHLib;
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 

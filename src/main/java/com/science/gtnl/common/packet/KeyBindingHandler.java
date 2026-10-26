@@ -19,11 +19,11 @@ import com.glodblock.github.inventory.item.IWirelessTerminal;
 import com.glodblock.github.util.BlockPos;
 import com.glodblock.github.util.Util;
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
+import com.gtnllib.network.ServerboundPacket;
+import com.gtnllib.utils.GameUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.gui.PreviousContainerPrimaryGui;
-import com.science.gtnl.common.packet.base.ServerboundPacket;
 import com.science.gtnl.utils.MEHandler;
-import com.science.gtnl.utils.Utils;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -203,7 +203,7 @@ public class KeyBindingHandler extends ServerboundPacket {
             IAEItemStack extracted = storageGrid.getItemInventory()
                 .extractItems(request, Actionable.MODULATE, source);
             if (extracted != null) {
-                Utils.placeItemBackInInventory(player, extracted.getItemStack());
+                GameUtils.placeItemBackInInventory(player, extracted.getItemStack());
                 return targetCount - extracted.getStackSize();
             }
             return targetCount;
@@ -217,7 +217,7 @@ public class KeyBindingHandler extends ServerboundPacket {
             if (extracted != null) {
                 ItemStack packet = ItemFluidPacket.newStack(extracted);
                 if (packet != null) {
-                    Utils.placeItemBackInInventory(player, packet);
+                    GameUtils.placeItemBackInInventory(player, packet);
                     return targetCount - extracted.getStackSize();
                 }
             }

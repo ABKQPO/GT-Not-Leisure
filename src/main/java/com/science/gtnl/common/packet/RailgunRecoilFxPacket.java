@@ -2,8 +2,8 @@ package com.science.gtnl.common.packet;
 
 import net.minecraft.client.Minecraft;
 
+import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.client.railgun.RailgunCameraShake;
-import com.science.gtnl.common.packet.base.ClientboundPacket;
 import com.science.gtnl.common.railgun.RailgunChargeTier;
 
 import cpw.mods.fml.relauncher.Side;

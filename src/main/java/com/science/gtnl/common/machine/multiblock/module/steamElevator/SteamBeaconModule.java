@@ -35,9 +35,9 @@ import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.kentington.thaumichorizons.common.lib.potion.PotionVisRegen;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.gui.modularui.multiblock.SteamBeaconModuleGui;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
-import com.science.gtnl.utils.enums.ModList;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Mods;
@@ -88,7 +88,7 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
     public static final UITexture VIS_REGEN_EFFECT = UITexture
         .partly(Mods.ThaumicHorizons.resourceDomain, "misc/potions", 256, 256, 54, 198, 72, 216);
     public static final UITexture BEACON_MATERIAL = UITexture
-        .fullImage(ModList.ScienceNotLeisure.resourceDomain, "gui/picture/steam_beacon");
+        .fullImage(ScienceNotLeisure.MODID, "gui/picture/steam_beacon");
 
     private boolean hasSpeedEffect;
     private boolean hasStrengthEffect;

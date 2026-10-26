@@ -32,7 +32,7 @@ import com.science.gtnl.common.gui.modularui.multiblock.FurnaceArrayGui;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.tickrate.TickrateEvents;
-import com.science.gtnl.utils.Utils;
+import com.science.gtnl.utils.machine.MachineUtils;
 
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
@@ -168,7 +168,7 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
 
         boolean hasMEOutputBus = false;
         for (final IOutputBus bus : GTUtility.validMTEList(mOutputBusses)) {
-            if (Utils.isMEOutputBus(bus) && !bus.isFiltered()
+            if (MachineUtils.isMEOutputBus(bus) && !bus.isFiltered()
                 && bus.createTransaction()
                     .hasAvailableSpace()) {
                 hasMEOutputBus = true;

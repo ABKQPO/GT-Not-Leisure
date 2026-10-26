@@ -21,6 +21,7 @@ import net.minecraftforge.event.world.WorldEvent;
 
 import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.reavaritia.client.render.CustomEntityRenderer;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.item.ItemBlockMultiEssentiaJar;
 import com.science.gtnl.common.item.items.NullPointerException;
 import com.science.gtnl.common.item.items.TimeStopPocketWatch;
@@ -28,7 +29,6 @@ import com.science.gtnl.common.packet.OpenVeinMiningPickaxeGuiPacket;
 import com.science.gtnl.common.render.item.ItemNullPointerExceptionRender;
 import com.science.gtnl.config.QuantumCraftingClientConfig;
 import com.science.gtnl.loader.ItemLoader;
-import com.science.gtnl.utils.enums.ModList;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -44,7 +44,7 @@ import xonin.backhand.api.core.BackhandUtils;
 @EventBusSubscriber(side = Side.CLIENT)
 public class GTNLClientEvents {
 
-    public static String HALO_NOISE_ICON_TEXTURE = ModList.ScienceNotLeisure.resourceDomain + ":halonoise";
+    public static String HALO_NOISE_ICON_TEXTURE = ScienceNotLeisure.MODID + ":halonoise";
     public static IIcon haloNoiseIcon;
 
     public static String CHEAT_WRENCH_ICON_TEXTURE = "nei:cheat_speical";
