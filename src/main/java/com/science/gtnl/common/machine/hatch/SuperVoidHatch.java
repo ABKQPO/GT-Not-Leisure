@@ -26,7 +26,7 @@ import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.science.gtnl.api.IFluidsLockable;
-import com.science.gtnl.common.gui.modularui.SuperVoidHatchGui;
+import com.science.gtnl.common.gui.modularui.hatch.SuperVoidHatchGui;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.machine.FluidsLockWidget;
 

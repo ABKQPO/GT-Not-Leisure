@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.gtnllib.utils.LongMath;
 import com.science.gtnl.common.crafting.quantum.api.crafting.IPatternDetails;
 import com.science.gtnl.common.crafting.quantum.api.networking.crafting.ICraftingService;
 import com.science.gtnl.common.crafting.quantum.api.stacks.AEKey;
@@ -31,7 +32,6 @@ import com.science.gtnl.common.crafting.quantum.crafting.execution.InputTemplate
 import com.science.gtnl.common.crafting.quantum.crafting.inv.ChildCraftingSimulationState;
 import com.science.gtnl.common.crafting.quantum.crafting.inv.CraftingSimulationState;
 import com.science.gtnl.common.crafting.quantum.crafting.inv.ICraftingInventory;
-import com.science.gtnl.common.crafting.quantum.util.LongMath;
 
 import appeng.api.config.Actionable;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;

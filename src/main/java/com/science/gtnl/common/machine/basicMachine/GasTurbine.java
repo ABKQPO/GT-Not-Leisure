@@ -10,7 +10,7 @@ import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.science.gtnl.common.gui.modularui.GTNLBasicGeneratorGui;
+import com.science.gtnl.common.gui.modularui.singleblock.GTNLBasicGeneratorGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.enums.GTValues;

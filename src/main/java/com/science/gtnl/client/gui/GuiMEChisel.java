@@ -7,8 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
+import com.science.gtnl.common.gui.container.ContainerMEChisel;
 import com.science.gtnl.common.packet.MEChiselSyncParallel;
-import com.science.gtnl.container.ContainerMEChisel;
 
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.MEGuiTextField;

@@ -32,6 +32,7 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
@@ -40,7 +41,6 @@ import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.enums.ModsItemlist;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;

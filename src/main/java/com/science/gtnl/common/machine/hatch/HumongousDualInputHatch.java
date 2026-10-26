@@ -33,7 +33,7 @@ import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.api.IRecipeProcessingAwareDualHatch;
 import com.science.gtnl.api.mixinHelper.ISkipStackSizeCheck;
-import com.science.gtnl.common.gui.modularui.HumongousDualInputHatchGui;
+import com.science.gtnl.common.gui.modularui.hatch.HumongousDualInputHatchGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.GTLoggers;

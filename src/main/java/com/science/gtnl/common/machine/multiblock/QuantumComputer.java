@@ -32,7 +32,7 @@ import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.casing.GTNLCasings;
-import com.science.gtnl.common.gui.modularui.QuantumComputerGui;
+import com.science.gtnl.common.gui.modularui.multiblock.QuantumComputerGui;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.ECraftingCPUCluster;

@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
+import com.science.gtnl.common.me.InterfaceNameLocalization;
 
 import appeng.api.interfaces.IInterfaceNameProvider;
 import appeng.api.util.IInterfaceViewable;

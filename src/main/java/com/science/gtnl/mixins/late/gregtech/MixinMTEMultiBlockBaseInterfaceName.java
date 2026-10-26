@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.science.gtnl.api.mixinHelper.IInterfaceNameController;
-import com.science.gtnl.utils.appliedEnergistics.InterfaceNameControllerContext;
+import com.science.gtnl.common.me.InterfaceNameControllerContext;
 
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;

@@ -24,8 +24,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.client.WirelessWorldHighlight;
-import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
+import com.science.gtnl.client.wireless.WirelessWorldHighlight;
+import com.science.gtnl.common.me.InterfaceNameLocalization;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.Side;

@@ -9,7 +9,7 @@ import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.science.gtnl.common.gui.modularui.GTNLBasicMachineGui;
+import com.science.gtnl.common.gui.modularui.singleblock.GTNLBasicMachineGui;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.item.ItemUtils;
 

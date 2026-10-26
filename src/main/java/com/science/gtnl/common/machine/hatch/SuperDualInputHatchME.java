@@ -80,7 +80,7 @@ import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IRecipeProcessingAwareDualHatch;
-import com.science.gtnl.common.gui.modularui.SuperDualInputHatchMEGui;
+import com.science.gtnl.common.gui.modularui.hatch.SuperDualInputHatchMEGui;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;

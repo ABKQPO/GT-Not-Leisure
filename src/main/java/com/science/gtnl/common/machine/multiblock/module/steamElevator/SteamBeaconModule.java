@@ -35,9 +35,9 @@ import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.kentington.thaumichorizons.common.lib.potion.PotionVisRegen;
-import com.science.gtnl.common.gui.modularui.SteamBeaconModuleGui;
+import com.science.gtnl.common.gui.modularui.multiblock.SteamBeaconModuleGui;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.enums.ModList;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Mods;

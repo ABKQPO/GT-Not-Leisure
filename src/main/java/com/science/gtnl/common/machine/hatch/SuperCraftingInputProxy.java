@@ -17,7 +17,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
+import com.science.gtnl.common.me.InterfaceNameLocalization;
 
 import appeng.api.util.IInterfaceViewable;
 import gregtech.api.enums.ItemList;

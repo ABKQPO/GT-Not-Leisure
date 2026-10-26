@@ -23,9 +23,9 @@ import com.gtnewhorizons.modularui.api.widget.IWidgetBuilder;
 import com.gtnewhorizons.modularui.api.widget.Widget;
 import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
-import com.science.gtnl.common.gui.modularui.FOGExtractorModuleGui;
+import com.science.gtnl.common.gui.modularui.multiblock.FOGExtractorModuleGui;
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopTextures;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;

@@ -20,7 +20,7 @@ import com.gtnewhorizons.modularui.common.internal.wrapper.BaseSlot;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.science.gtnl.common.gui.modularui.HumongousSolidifierHatchGui;
+import com.science.gtnl.common.gui.modularui.hatch.HumongousSolidifierHatchGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import ggfab.GGItemList;

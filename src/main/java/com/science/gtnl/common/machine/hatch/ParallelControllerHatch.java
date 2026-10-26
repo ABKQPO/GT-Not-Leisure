@@ -21,7 +21,7 @@ import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
-import com.science.gtnl.common.gui.modularui.ParallelControllerHatchGui;
+import com.science.gtnl.common.gui.modularui.hatch.ParallelControllerHatchGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.enums.GTValues;

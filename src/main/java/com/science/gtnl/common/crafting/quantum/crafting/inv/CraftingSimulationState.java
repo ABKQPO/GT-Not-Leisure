@@ -25,13 +25,13 @@ import java.util.function.ObjLongConsumer;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.Iterables;
+import com.gtnllib.utils.LongMath;
 import com.science.gtnl.common.crafting.quantum.api.crafting.IPatternDetails;
 import com.science.gtnl.common.crafting.quantum.api.stacks.AEKey;
 import com.science.gtnl.common.crafting.quantum.api.stacks.GenericStack;
 import com.science.gtnl.common.crafting.quantum.api.stacks.KeyCounter;
 import com.science.gtnl.common.crafting.quantum.crafting.CraftingCalculation;
 import com.science.gtnl.common.crafting.quantum.crafting.CraftingPlan;
-import com.science.gtnl.common.crafting.quantum.util.LongMath;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;

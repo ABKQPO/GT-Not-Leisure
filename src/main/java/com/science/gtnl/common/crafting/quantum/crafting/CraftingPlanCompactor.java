@@ -9,13 +9,13 @@ import net.minecraft.world.World;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.gtnllib.utils.LongMath;
 import com.science.gtnl.common.crafting.quantum.api.crafting.IPatternDetails;
 import com.science.gtnl.common.crafting.quantum.api.stacks.AEKey;
 import com.science.gtnl.common.crafting.quantum.api.stacks.GenericStack;
 import com.science.gtnl.common.crafting.quantum.api.stacks.KeyCounter;
 import com.science.gtnl.common.crafting.quantum.core.AELog;
 import com.science.gtnl.common.crafting.quantum.core.localization.PlayerMessages;
-import com.science.gtnl.common.crafting.quantum.util.LongMath;
 
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;

@@ -5,7 +5,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 
 import com.science.gtnl.client.celestweave.CelestweaveBackpackClient;
-import com.science.gtnl.container.portableWorkbench.ContainerPortableEnderChest;
+import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableEnderChest;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

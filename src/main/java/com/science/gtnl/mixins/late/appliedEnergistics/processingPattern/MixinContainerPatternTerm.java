@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.science.gtnl.api.mixinHelper.IProcessingPatternInventoryAccess;
 import com.science.gtnl.api.mixinHelper.IProcessingPatternInventoryBatchAccess;
 import com.science.gtnl.api.mixinHelper.IProcessingPatternOverflowAccess;
-import com.science.gtnl.utils.appliedEnergistics.processingPattern.ProcessingPatternCapacity;
+import com.science.gtnl.common.me.processingPattern.ProcessingPatternCapacity;
 
 import appeng.api.parts.IPatternTerminal;
 import appeng.api.storage.ITerminalHost;

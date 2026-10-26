@@ -5,8 +5,8 @@ import net.minecraft.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.science.gtnl.container.portableWorkbench.ContainerPortableCompressedChest;
-import com.science.gtnl.container.portableWorkbench.IPortableStorageHost;
+import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableCompressedChest;
+import com.science.gtnl.common.gui.container.portableWorkbench.IPortableStorageHost;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

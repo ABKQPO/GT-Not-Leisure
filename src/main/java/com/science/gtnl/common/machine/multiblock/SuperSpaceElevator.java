@@ -61,12 +61,12 @@ import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.api.casing.GTNLCasings;
-import com.science.gtnl.common.gui.modularui.SuperSpaceElevatorGui;
+import com.science.gtnl.common.gui.modularui.multiblock.SuperSpaceElevatorGui;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.item.ItemUtils;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.api.GregTechAPI;

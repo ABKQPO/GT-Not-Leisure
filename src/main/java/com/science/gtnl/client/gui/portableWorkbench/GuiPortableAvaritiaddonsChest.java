@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 import com.science.gtnl.client.celestweave.CelestweaveBackpackClient;
-import com.science.gtnl.container.portableWorkbench.ContainerPortableAvaritiaddonsChest;
+import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableAvaritiaddonsChest;
 import com.science.gtnl.utils.ColorUtils;
 
 public abstract class GuiPortableAvaritiaddonsChest extends GuiContainer {

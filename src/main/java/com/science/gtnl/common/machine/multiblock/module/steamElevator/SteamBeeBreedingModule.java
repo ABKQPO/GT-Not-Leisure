@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import com.google.common.collect.ImmutableMap;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 
 import forestry.api.apiculture.EnumBeeType;
 import forestry.api.apiculture.IBee;

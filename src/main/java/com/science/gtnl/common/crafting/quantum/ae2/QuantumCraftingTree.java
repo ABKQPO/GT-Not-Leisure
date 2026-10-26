@@ -18,7 +18,7 @@ import com.science.gtnl.common.crafting.quantum.api.crafting.IPatternDetails;
 import com.science.gtnl.common.crafting.quantum.api.stacks.AEKey;
 import com.science.gtnl.common.crafting.quantum.api.stacks.GenericStack;
 import com.science.gtnl.common.crafting.quantum.crafting.CraftingPlan;
-import com.science.gtnl.mixins.late.appliedEnergistics.quamtumComputer.AccessorPacketCraftingTreeData;
+import com.science.gtnl.mixins.late.appliedEnergistics.quantum.AccessorPacketCraftingTreeData;
 
 import appeng.api.config.CraftingMode;
 import appeng.api.implementations.ICraftingPatternItem;

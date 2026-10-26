@@ -29,11 +29,11 @@ import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.api.casing.GTNLCasings;
-import com.science.gtnl.common.gui.modularui.AdvancedInfiniteDrillerGui;
+import com.science.gtnl.common.gui.modularui.multiblock.AdvancedInfiniteDrillerGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.machine.VMTweakHelper;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import bartworks.system.material.WerkstoffLoader;
 import gregtech.GTMod;

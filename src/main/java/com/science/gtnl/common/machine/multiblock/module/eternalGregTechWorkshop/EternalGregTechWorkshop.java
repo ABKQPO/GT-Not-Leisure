@@ -58,7 +58,7 @@ import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.science.gtnl.common.block.blocks.BlockEternalGregTechWorkshopRender;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEternalGregTechWorkshop;
-import com.science.gtnl.common.gui.modularui.EternalGregTechWorkshopGui;
+import com.science.gtnl.common.gui.modularui.multiblock.EternalGregTechWorkshopGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EGTWUpgradeStorage;
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopTextures;

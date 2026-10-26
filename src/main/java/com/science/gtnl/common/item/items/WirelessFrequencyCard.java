@@ -34,7 +34,7 @@ import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizon.gtnhlib.item.ItemStackNBT;
 import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.client.WirelessCardGui;
+import com.science.gtnl.client.wireless.WirelessCardGui;
 import com.science.gtnl.common.wireless.AutomaticWirelessEntrances;
 import com.science.gtnl.common.wireless.WirelessCardBinding;
 import com.science.gtnl.common.wireless.WirelessCardContainer;

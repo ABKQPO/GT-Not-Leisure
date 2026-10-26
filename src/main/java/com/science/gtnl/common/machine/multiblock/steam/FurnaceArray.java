@@ -28,11 +28,11 @@ import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.api.casing.GTNLCasings;
-import com.science.gtnl.common.gui.modularui.FurnaceArrayGui;
+import com.science.gtnl.common.gui.modularui.multiblock.FurnaceArrayGui;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.event.SubscribeEventUtils;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;

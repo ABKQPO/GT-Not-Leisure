@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.DimensionManager;
 
-import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
+import com.science.gtnl.common.me.InterfaceNameLocalization;
 
 import galacticgreg.api.enums.DimensionDef;
 import gtneioreplugin.util.DimensionHelper;

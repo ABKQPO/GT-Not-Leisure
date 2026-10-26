@@ -12,8 +12,8 @@ import net.minecraft.world.World;
 
 import com.science.gtnl.api.stellar.StellarIrisUpgradeDefinition;
 import com.science.gtnl.api.stellar.StellarIrisUpgradeRegistry;
+import com.science.gtnl.common.stellar.StellarIrisUpgradeManager;
 import com.science.gtnl.utils.Utils;
-import com.science.gtnl.utils.world.stellar.StellarIrisUpgradeManager;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;

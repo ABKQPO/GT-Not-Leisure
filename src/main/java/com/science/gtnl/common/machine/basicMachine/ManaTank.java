@@ -26,7 +26,7 @@ import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.science.gtnl.common.gui.modularui.ManaTankGui;
+import com.science.gtnl.common.gui.modularui.singleblock.ManaTankGui;
 import com.science.gtnl.common.gui.modularui.widget.FluidLockWidget;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.utils.item.ItemUtils;

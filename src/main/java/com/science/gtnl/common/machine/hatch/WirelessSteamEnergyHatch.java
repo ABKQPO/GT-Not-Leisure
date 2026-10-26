@@ -22,10 +22,10 @@ import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.gui.modularui.WirelessSteamEnergyHatchGui;
+import com.science.gtnl.common.gui.modularui.hatch.WirelessSteamEnergyHatchGui;
+import com.science.gtnl.common.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.item.ItemUtils;
-import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.api.enums.Textures;

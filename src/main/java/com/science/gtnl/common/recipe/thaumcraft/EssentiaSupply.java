@@ -13,8 +13,8 @@ import com.gtnewhorizon.structurelib.structure.adders.ITileAdder;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEssentiaHatch;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaInputHatch;
+import com.science.gtnl.common.machine.tooltip.StructureTooltipHooks;
 import com.science.gtnl.loader.BlockLoader;
-import com.science.gtnl.utils.structure.StructureTooltipHooks;
 
 import appeng.api.config.Actionable;
 import appeng.api.storage.IMEMonitor;

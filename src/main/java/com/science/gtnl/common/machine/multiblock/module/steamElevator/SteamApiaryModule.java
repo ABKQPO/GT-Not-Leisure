@@ -60,10 +60,10 @@ import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.science.gtnl.common.gui.CircularGaugeDrawable;
-import com.science.gtnl.common.gui.modularui.SteamApiaryModuleGui;
+import com.science.gtnl.common.gui.modularui.multiblock.SteamApiaryModuleGui;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

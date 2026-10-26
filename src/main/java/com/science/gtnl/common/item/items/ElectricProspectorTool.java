@@ -23,6 +23,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.collect.MapMaker;
+import com.gtnllib.utils.MetaTooltipUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.item.ItemStaticDataClientOnly;
@@ -31,7 +32,6 @@ import com.science.gtnl.loader.ItemLoader;
 import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.item.MetaItemStackUtils;
-import com.science.gtnl.utils.item.MetaTooltipUtils;
 import com.sinthoras.visualprospecting.VisualProspecting_API;
 
 import cpw.mods.fml.common.registry.GameRegistry;

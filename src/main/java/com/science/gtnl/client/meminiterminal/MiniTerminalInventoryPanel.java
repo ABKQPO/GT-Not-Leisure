@@ -42,6 +42,7 @@ import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.science.gtnl.client.floatingwindow.FloatingWindowPanel;
 import com.science.gtnl.common.meminiterminal.MiniTerminalPinSettings;
 import com.science.gtnl.common.meminiterminal.MiniTerminalStackTypes;
+import com.science.gtnl.config.MiniTerminalClientConfig;
 
 import appeng.api.config.ActionItems;
 import appeng.api.config.OperationMode;

@@ -58,8 +58,8 @@ import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.gui.modularui.SuperCraftingInputHatchMEGui;
-import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
+import com.science.gtnl.common.gui.modularui.hatch.SuperCraftingInputHatchMEGui;
+import com.science.gtnl.common.me.InterfaceNameLocalization;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.AEApi;

@@ -45,14 +45,14 @@ import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.api.IStackVault;
 import com.science.gtnl.api.casing.GTNLCasings;
-import com.science.gtnl.common.gui.modularui.SingularityDataHubGui;
-import com.science.gtnl.common.gui.modularui.VaultTypeCountFormatter;
+import com.science.gtnl.common.gui.modularui.multiblock.SingularityDataHubGui;
+import com.science.gtnl.common.gui.modularui.multiblock.VaultTypeCountFormatter;
 import com.science.gtnl.common.machine.hatch.VaultPortHatch;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import appeng.api.storage.data.AEStackTypeRegistry;
 import appeng.api.storage.data.IAEFluidStack;

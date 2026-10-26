@@ -22,8 +22,8 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.drawable.UITexture;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gnu.trove.map.hash.TIntIntHashMap;
 import gregtech.api.enums.Materials;

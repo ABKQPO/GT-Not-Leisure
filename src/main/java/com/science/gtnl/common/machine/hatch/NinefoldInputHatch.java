@@ -21,7 +21,7 @@ import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.gtnewhorizons.modularui.common.fluid.FluidStackTank;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
-import com.science.gtnl.common.gui.modularui.NinefoldInputHatchGui;
+import com.science.gtnl.common.gui.modularui.hatch.NinefoldInputHatchGui;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.item.ItemUtils;
 

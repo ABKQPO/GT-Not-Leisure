@@ -12,8 +12,8 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
+import com.science.gtnl.common.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.utils.Utils;
-import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;

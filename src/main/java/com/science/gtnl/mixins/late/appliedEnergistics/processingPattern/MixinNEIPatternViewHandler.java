@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.science.gtnl.utils.appliedEnergistics.processingPattern.ProcessingPatternCapacity;
+import com.science.gtnl.common.me.processingPattern.ProcessingPatternCapacity;
 
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEStack;

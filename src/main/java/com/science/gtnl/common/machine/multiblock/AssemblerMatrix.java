@@ -65,8 +65,9 @@ import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.casing.GTNLCasings;
-import com.science.gtnl.common.gui.modularui.AssemblerMatrixGui;
+import com.science.gtnl.common.gui.modularui.multiblock.AssemblerMatrixGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
@@ -74,7 +75,6 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.machine.AssemblerMatrixPatternState;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;

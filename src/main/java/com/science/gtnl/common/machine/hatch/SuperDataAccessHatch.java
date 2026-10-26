@@ -15,7 +15,7 @@ import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.science.gtnl.api.mixinHelper.ICommonMetaTileEntityInventory;
 import com.science.gtnl.api.mixinHelper.IMetaTileEntityInventoryHandler;
-import com.science.gtnl.common.gui.modularui.SuperDataAccessHatchGui;
+import com.science.gtnl.common.gui.modularui.hatch.SuperDataAccessHatchGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.gui.modularui.GTUITextures;

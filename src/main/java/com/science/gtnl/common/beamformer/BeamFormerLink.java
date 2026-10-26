@@ -6,9 +6,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
+import com.gtnllib.world.IBlockStateListener;
+import com.gtnllib.world.WorldListener;
 import com.science.gtnl.api.IBeamFormer;
-import com.science.gtnl.api.IBlockStateListener;
-import com.science.gtnl.common.world.WorldListener;
 import com.science.gtnl.config.MainConfig;
 
 import appeng.api.AEApi;

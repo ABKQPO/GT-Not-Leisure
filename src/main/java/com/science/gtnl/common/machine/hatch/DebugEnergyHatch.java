@@ -21,7 +21,7 @@ import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
-import com.science.gtnl.common.gui.modularui.DebugEnergyHatchGui;
+import com.science.gtnl.common.gui.modularui.hatch.DebugEnergyHatchGui;
 import com.science.gtnl.mixins.early.gregtech.AccessorMTETieredMachineBlock;
 import com.science.gtnl.utils.item.ItemUtils;
 

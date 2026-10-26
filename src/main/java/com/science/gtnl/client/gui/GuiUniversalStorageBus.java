@@ -8,10 +8,10 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Mouse;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.gui.container.ContainerUniversalStorageBus;
 import com.science.gtnl.common.packet.SwitchToCustomGuiPacket;
 import com.science.gtnl.common.packet.UniversalStorageBusActionPacket;
 import com.science.gtnl.common.part.PartUniversalStorageBus;
-import com.science.gtnl.container.ContainerUniversalStorageBus;
 import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.api.config.AccessRestriction;

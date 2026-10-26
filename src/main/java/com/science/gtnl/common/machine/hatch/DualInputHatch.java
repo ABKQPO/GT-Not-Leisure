@@ -27,7 +27,7 @@ import com.gtnewhorizons.modularui.common.fluid.FluidStackTank;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.science.gtnl.common.gui.modularui.DualInputHatchGui;
+import com.science.gtnl.common.gui.modularui.hatch.DualInputHatchGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.enums.GTValues;

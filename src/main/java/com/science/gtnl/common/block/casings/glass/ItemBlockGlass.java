@@ -7,10 +7,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
+import com.gtnllib.utils.MetaTooltipUtils;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.item.MetaItemStackUtils;
-import com.science.gtnl.utils.item.MetaTooltipUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

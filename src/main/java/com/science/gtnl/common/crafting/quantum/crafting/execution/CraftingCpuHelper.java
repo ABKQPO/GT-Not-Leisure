@@ -21,11 +21,11 @@ import java.util.Set;
 
 import net.minecraft.world.World;
 
+import com.gtnllib.utils.LongMath;
 import com.science.gtnl.common.crafting.quantum.api.crafting.IPatternDetails;
 import com.science.gtnl.common.crafting.quantum.api.stacks.AEKey;
 import com.science.gtnl.common.crafting.quantum.api.stacks.GenericStack;
 import com.science.gtnl.common.crafting.quantum.crafting.inv.ICraftingInventory;
-import com.science.gtnl.common.crafting.quantum.util.LongMath;
 
 import appeng.api.config.Actionable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;

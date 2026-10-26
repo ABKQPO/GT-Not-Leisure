@@ -29,12 +29,12 @@ import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.gui.modularui.WirelessSteamDynamoHatchGui;
+import com.science.gtnl.common.gui.modularui.hatch.WirelessSteamDynamoHatchGui;
+import com.science.gtnl.common.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.mixins.early.gregtech.AccessorMTEHatch;
 import com.science.gtnl.utils.FluidIdUtils;
 import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.item.ItemUtils;
-import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.api.enums.OutputHatchType;

@@ -9,10 +9,10 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import com.gtnewhorizon.gtnhlib.util.CoordinatePacker;
-import com.science.gtnl.api.IBlockStateListener;
+import com.gtnllib.world.IBlockStateListener;
+import com.gtnllib.world.WorldListener;
 import com.science.gtnl.common.wireless.PhysicalClusterTracker.Cluster;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
-import com.science.gtnl.common.world.WorldListener;
 
 import appeng.api.networking.IGridNode;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;

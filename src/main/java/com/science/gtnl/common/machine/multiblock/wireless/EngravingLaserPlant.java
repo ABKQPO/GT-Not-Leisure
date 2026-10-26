@@ -28,13 +28,13 @@ import com.gtnewhorizons.modularui.api.screen.UIBuildContext;
 import com.science.gtnl.api.IControllerUpgrade;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.GTNLMui1Textures;
-import com.science.gtnl.common.gui.modularui.GTNLControllerUpgradeGui;
+import com.science.gtnl.common.gui.modularui.multiblock.GTNLControllerUpgradeGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import goodgenerator.loader.Loaders;
 import gregtech.api.casing.Casings;

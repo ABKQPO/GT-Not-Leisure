@@ -23,8 +23,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.science.gtnl.api.mixinHelper.IInterfaceNameController;
 import com.science.gtnl.api.mixinHelper.IInterfaceNameHatch;
-import com.science.gtnl.utils.appliedEnergistics.InterfaceNameControllerContext;
-import com.science.gtnl.utils.appliedEnergistics.InterfaceNameLocalization;
+import com.science.gtnl.common.me.InterfaceNameControllerContext;
+import com.science.gtnl.common.me.InterfaceNameLocalization;
 
 import appeng.api.interfaces.IInterfaceNameProvider;
 import appeng.helpers.ICustomNameObject;

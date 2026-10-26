@@ -8,9 +8,9 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
 import com.science.gtnl.client.celestweave.CelestweaveBackpackClient;
+import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableChest;
+import com.science.gtnl.common.gui.container.portableWorkbench.IPortableStorageHost;
 import com.science.gtnl.common.item.items.PortableChestType;
-import com.science.gtnl.container.portableWorkbench.ContainerPortableChest;
-import com.science.gtnl.container.portableWorkbench.IPortableStorageHost;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

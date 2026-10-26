@@ -32,6 +32,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.base.Stopwatch;
+import com.gtnllib.utils.LongMath;
 import com.science.gtnl.common.crafting.quantum.api.crafting.IPatternDetails;
 import com.science.gtnl.common.crafting.quantum.api.networking.crafting.ICraftingService;
 import com.science.gtnl.common.crafting.quantum.api.networking.storage.IStorageService;
@@ -52,7 +53,6 @@ import com.science.gtnl.common.crafting.quantum.crafting.inv.ChildCraftingSimula
 import com.science.gtnl.common.crafting.quantum.crafting.inv.CraftingSimulationState;
 import com.science.gtnl.common.crafting.quantum.crafting.inv.NetworkCraftingSimulationState;
 import com.science.gtnl.common.crafting.quantum.hooks.ticking.TickHandler;
-import com.science.gtnl.common.crafting.quantum.util.LongMath;
 
 import appeng.api.config.Actionable;
 import it.unimi.dsi.fastutil.ints.IntArrayList;

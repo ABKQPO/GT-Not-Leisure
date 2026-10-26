@@ -20,7 +20,7 @@ import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
 import com.science.gtnl.api.IConfigurationMaintenance;
-import com.science.gtnl.common.gui.modularui.CustomMaintenanceHatchGui;
+import com.science.gtnl.common.gui.modularui.hatch.CustomMaintenanceHatchGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.gui.modularui.GTUITextures;

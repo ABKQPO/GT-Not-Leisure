@@ -38,7 +38,7 @@ import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.SlotGroup;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
-import com.science.gtnl.common.gui.modularui.SuperInputHatchMEGui;
+import com.science.gtnl.common.gui.modularui.hatch.SuperInputHatchMEGui;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;
 

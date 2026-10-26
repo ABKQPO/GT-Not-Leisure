@@ -26,7 +26,7 @@ import com.cleanroommc.modularui.widget.ParentWidget;
 import com.gtnewhorizons.aspectrecipeindex.ModItems;
 import com.gtnewhorizons.aspectrecipeindex.common.items.ItemAspect;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaJar;
-import com.science.gtnl.common.gui.modularui.GTNLBasicMachineGui;
+import com.science.gtnl.common.gui.modularui.singleblock.GTNLBasicMachineGui;
 import com.science.gtnl.utils.AspectTooltipUtils;
 import com.science.gtnl.utils.ColorUtils;
 

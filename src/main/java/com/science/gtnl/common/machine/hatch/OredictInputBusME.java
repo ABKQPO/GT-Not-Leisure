@@ -42,7 +42,7 @@ import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.TextFieldWidget;
 import com.science.gtnl.api.mixinHelper.ICommonMetaTileEntityInventory;
 import com.science.gtnl.api.mixinHelper.IMetaTileEntityInventoryHandler;
-import com.science.gtnl.common.gui.modularui.OredictInputBusMEGui;
+import com.science.gtnl.common.gui.modularui.hatch.OredictInputBusMEGui;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;
 

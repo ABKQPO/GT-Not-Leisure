@@ -4,8 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableInfinityChest;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
-import com.science.gtnl.container.portableWorkbench.ContainerPortableInfinityChest;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;

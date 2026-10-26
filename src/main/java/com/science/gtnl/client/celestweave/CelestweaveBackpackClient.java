@@ -10,8 +10,8 @@ import com.science.gtnl.client.gui.portableWorkbench.GuiPortableEnderChest;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortablePortableCompressedChest;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortablePortableInfinityChest;
 import com.science.gtnl.common.celestweave.CelestweaveBackpack;
+import com.science.gtnl.common.gui.container.portableWorkbench.IPortableStorageHost;
 import com.science.gtnl.common.item.items.PortableItem;
-import com.science.gtnl.container.portableWorkbench.IPortableStorageHost;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

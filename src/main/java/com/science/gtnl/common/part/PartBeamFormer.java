@@ -16,8 +16,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
+import com.gtnllib.world.IBlockStateListener;
 import com.science.gtnl.api.IBeamFormer;
-import com.science.gtnl.api.IBlockStateListener;
 import com.science.gtnl.common.beamformer.BeamFormerLink;
 import com.science.gtnl.common.item.items.ItemPartBeamFormer;
 import com.science.gtnl.common.render.beamformer.BeamFormerRenderHelper;

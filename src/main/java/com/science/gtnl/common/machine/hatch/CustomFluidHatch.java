@@ -18,7 +18,7 @@ import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.FluidSlotWidget;
-import com.science.gtnl.common.gui.modularui.CustomFluidHatchGui;
+import com.science.gtnl.common.gui.modularui.hatch.CustomFluidHatchGui;
 import com.science.gtnl.mixins.early.gregtech.AccessorMTEHatch;
 import com.science.gtnl.utils.FluidIdUtils;
 import com.science.gtnl.utils.item.ItemUtils;

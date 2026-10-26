@@ -9,7 +9,7 @@ import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.science.gtnl.common.gui.modularui.GTNLSteamBasicMachineGui;
+import com.science.gtnl.common.gui.modularui.singleblock.GTNLSteamBasicMachineGui;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.enums.SoundResource;

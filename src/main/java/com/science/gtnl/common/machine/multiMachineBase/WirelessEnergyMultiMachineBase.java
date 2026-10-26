@@ -20,15 +20,15 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
-import com.science.gtnl.api.IMultiblockTooltipRules.TieredPart;
 import com.science.gtnl.api.IWirelessEnergy;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.common.machine.tooltip.IMultiblockTooltipRules.TieredPart;
+import com.science.gtnl.common.machine.tooltip.MultiblockTooltipReader;
 import com.science.gtnl.mixins.early.gregtech.AccessorProcessingLogic;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
-import com.science.gtnl.utils.structure.MultiblockTooltipReader;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.VoltageIndex;

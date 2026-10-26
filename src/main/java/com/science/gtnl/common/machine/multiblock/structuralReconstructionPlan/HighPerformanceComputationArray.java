@@ -36,11 +36,11 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.util.Vec3Impl;
 import com.gtnewhorizon.structurelib.util.XSTR;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.packet.SyncHPCAVariablesPacket;
 import com.science.gtnl.common.render.tile.HighPerformanceComputationArrayRenderer;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.enums.HPCAModifier;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;

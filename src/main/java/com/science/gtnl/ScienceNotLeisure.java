@@ -3,13 +3,13 @@ package com.science.gtnl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.gtnllib.command.CommandSuicide;
 import com.science.gtnl.common.command.CommandEnergyNetwork;
 import com.science.gtnl.common.command.CommandItemInfo;
 import com.science.gtnl.common.command.CommandPlaySound;
 import com.science.gtnl.common.command.CommandSteamNetwork;
 import com.science.gtnl.common.command.CommandStellarIris;
 import com.science.gtnl.common.command.CommandSudo;
-import com.science.gtnl.common.command.CommandSuicide;
 import com.science.gtnl.common.command.CommandTickrate;
 import com.science.gtnl.common.command.CommandWirelessME;
 import com.science.gtnl.common.crafting.quantum.ae2.QuantumCraftingCache;

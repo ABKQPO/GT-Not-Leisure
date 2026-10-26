@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import cpw.mods.fml.common.Optional;

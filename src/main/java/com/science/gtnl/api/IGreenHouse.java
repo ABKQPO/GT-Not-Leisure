@@ -41,10 +41,10 @@ import com.gtnewhorizons.modularui.common.widget.Column;
 import com.gtnewhorizons.modularui.common.widget.CycleButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode;
-import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseModes;
-import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseStoredCrop;
-import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseViewMode;
+import com.science.gtnl.common.greenhouse.GreenHouseMode;
+import com.science.gtnl.common.greenhouse.GreenHouseModes;
+import com.science.gtnl.common.greenhouse.GreenHouseStoredCrop;
+import com.science.gtnl.common.greenhouse.GreenHouseViewMode;
 
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IOutputBus;

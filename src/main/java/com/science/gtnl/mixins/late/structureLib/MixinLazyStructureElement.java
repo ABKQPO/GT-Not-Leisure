@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.gtnewhorizon.structurelib.structure.IStructureElement;
-import com.science.gtnl.utils.structure.StructureTooltipHooks;
+import com.science.gtnl.common.machine.tooltip.StructureTooltipHooks;
 
 @Mixin(targets = "com.gtnewhorizon.structurelib.structure.LazyStructureElement", remap = false)
 public abstract class MixinLazyStructureElement {

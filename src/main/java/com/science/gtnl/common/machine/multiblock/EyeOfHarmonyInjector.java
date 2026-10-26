@@ -70,10 +70,10 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.api.mixinHelper.IEyeOfHarmonyControllerLink;
 import com.science.gtnl.api.mixinHelper.LinkedEyeOfHarmonyUnit;
-import com.science.gtnl.common.gui.modularui.EyeOfHarmonyInjectorGui;
+import com.science.gtnl.common.gui.modularui.multiblock.EyeOfHarmonyInjectorGui;
+import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.render.tile.EyeOfHarmonyInjectorRenderer;
 import com.science.gtnl.utils.StructureUtils;
-import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import appeng.api.util.DimensionalCoord;
 import appeng.client.render.highlighter.BlockPosHighlighter;
