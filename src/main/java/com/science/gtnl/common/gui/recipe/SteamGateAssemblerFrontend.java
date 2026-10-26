@@ -31,7 +31,8 @@ public class SteamGateAssemblerFrontend extends GTNLRecipeFrontend {
         NEIRecipePropertiesBuilder neiPropertiesBuilder) {
         super(
             uiPropertiesBuilder.progressBarPos(new Pos2d(124, 175)),
-            neiPropertiesBuilder.recipeBackgroundSize(new Size(170, 196)));
+            neiPropertiesBuilder.recipeBackgroundSize(new Size(170, 196)),
+            Logo.STEAM);
     }
 
     @Override

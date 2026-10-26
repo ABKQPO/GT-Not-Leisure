@@ -13,6 +13,7 @@ import com.science.gtnl.common.gui.equipment.EquipmentTheme;
 import com.science.gtnl.common.wireless.WirelessAutoConnectContracts;
 import com.science.gtnl.common.wireless.WirelessMatterManipulatorContracts;
 import com.science.gtnl.common.yogsothoth.YogSothothContracts;
+import com.science.gtnl.config.ConfigMigrationContracts;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import gregtech.api.modularui2.GTGuiThemes;
@@ -41,6 +42,7 @@ public class CelestweaveContractTest {
         WirelessMatterManipulatorContracts.run();
         WirelessAutoConnectContracts.run();
         ArchitectureContracts.run();
+        ConfigMigrationContracts.run();
         GTNLLibContractTest.finish("Celestweave");
     }
 

@@ -1,9 +1,12 @@
 package com.science.gtnl.asm;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import net.minecraft.launchwrapper.Launch;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,9 +15,11 @@ import com.gtnewhorizon.gtnhlib.config.ConfigException;
 import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.gtnewhorizon.gtnhmixins.IEarlyMixinLoader;
 import com.gtnewhorizon.gtnhmixins.builders.IMixins;
+import com.science.gtnl.config.ConfigMigration;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.mixins.Mixins;
 
+import cpw.mods.fml.relauncher.FMLLaunchHandler;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.MCVersion("1.7.10")
@@ -37,6 +42,16 @@ public class GTNLEarlyCoreMod implements IFMLLoadingPlugin, IEarlyMixinLoader {
             }
         } catch (Throwable t) {
             LOGGER.error("Failed to patch ObfuscationRun", t);
+        }
+
+        if (FMLLaunchHandler.side()
+            .isClient()) {
+            try {
+                ConfigMigration.moveTextEffectsSetting(
+                    new File(Launch.minecraftHome != null ? Launch.minecraftHome : new File("."), "config"));
+            } catch (RuntimeException e) {
+                LOGGER.error("Failed to move the text effects setting into the GTNLLib config", e);
+            }
         }
 
         try {

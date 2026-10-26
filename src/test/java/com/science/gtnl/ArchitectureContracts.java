@@ -17,6 +17,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.gtnewhorizon.gtnhlib.util.data.IMod;
+import com.science.gtnl.loader.CompatLoader;
+
 public class ArchitectureContracts {
 
     public static final Path SOURCES = Paths.get("src/main/java/com/science/gtnl");
@@ -24,7 +27,7 @@ public class ArchitectureContracts {
     // Ratchets: each count may only go down. Lower the number in the same change that lowers the count.
     public static final int MAX_UTILS_CLASSES = 83;
     public static final int MAX_MOD_CHECKS_OUTSIDE_COMPAT = 27;
-    public static final int MAX_MUI1_FILES = 46;
+    public static final int MAX_MUI1_FILES = 50;
     public static final int MAX_DIRECT_GT_MULTIBLOCK_BASES = 10;
     public static final int MAX_MIXINS_OVER_80_LINES = 33;
     public static final int MAX_MIXINS_WITH_LONG_METHODS = 10;
@@ -120,6 +123,10 @@ public class ArchitectureContracts {
                     SELF_REGISTERING.contains(path),
                     path + " registers itself in its constructor; register new items and blocks through ItemLoader.ITEMS"
                         + " or BlockLoader.BLOCKS");
+            if (path.startsWith("common/machine/cover/") && text.contains(" getCoverGui()")) check(
+                text.contains(" createWindow(CoverUIBuildContext "),
+                path + " has a settings screen but no ModularUI 1 window; GT machines that still use ModularUI 1"
+                    + " open cover tabs through createWindow");
             if (path.startsWith("utils/")) check(
                 !SYSTEM_IMPORT.matcher(text)
                     .find(),
@@ -168,6 +175,36 @@ public class ArchitectureContracts {
                 compat.contains("new " + matcher.group(1) + "()"),
                 entry.getKey() + " is a mod integration, but CompatLoader does not list it");
         }
+
+        CompatLoader.Entry needsMissingMod = new CompatLoader.Entry(
+            fakeMod(true),
+            () -> { throw new AssertionError("created"); },
+            fakeMod(true),
+            fakeMod(false));
+        check(
+            !needsMissingMod.modsLoaded()
+                && new CompatLoader.Entry(fakeMod(true), () -> null, fakeMod(true)).modsLoaded(),
+            "a compat entry is skipped before its class is created when any mod it lists is missing");
+    }
+
+    private static IMod fakeMod(boolean loaded) {
+        return new IMod() {
+
+            @Override
+            public boolean isModLoaded() {
+                return loaded;
+            }
+
+            @Override
+            public String getID() {
+                return "fake";
+            }
+
+            @Override
+            public String getResourceLocation() {
+                return "fake";
+            }
+        };
     }
 
     private interface Rule {

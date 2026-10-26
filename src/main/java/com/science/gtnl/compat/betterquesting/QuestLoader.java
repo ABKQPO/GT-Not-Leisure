@@ -3,7 +3,6 @@ package com.science.gtnl.compat.betterquesting;
 import java.util.List;
 import java.util.UUID;
 
-import com.gtnllib.mod.ModList;
 import com.hfstudio.bqapi.BQApi;
 import com.hfstudio.bqapi.api.builder.Chapters;
 import com.hfstudio.bqapi.api.definition.ChapterDefinition;
@@ -57,11 +56,6 @@ public class QuestLoader implements IModCompat {
             BQApi.register(chapter);
         }
         registered = true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return ModList.BetterQuestingAPI.isModLoaded();
     }
 
     @Override

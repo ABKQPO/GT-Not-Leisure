@@ -8,12 +8,15 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.science.gtnl.common.gui.WirelessSteamCoverGui;
+import com.science.gtnl.common.gui.WirelessSteamCoverUIFactory;
 import com.science.gtnl.common.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.machine.MachineUtils;
 
 import gregtech.api.covers.CoverContext;
+import gregtech.api.gui.modularui.CoverUIBuildContext;
 import gregtech.api.interfaces.tileentity.ICoverable;
 import gregtech.api.interfaces.tileentity.IMachineProgress;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
@@ -108,6 +111,11 @@ public class WirelessSteamCover extends IntDataCover {
     @Override
     protected @NotNull CoverBaseGui<?> getCoverGui() {
         return new WirelessSteamCoverGui(this);
+    }
+
+    @Override
+    protected ModularWindow createWindow(CoverUIBuildContext buildContext) {
+        return new WirelessSteamCoverUIFactory(buildContext).createWindow();
     }
 
     @Override

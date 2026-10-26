@@ -15,10 +15,13 @@ import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
 import com.cleanroommc.modularui.utils.item.ItemStackHandler;
+import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.science.gtnl.api.IFluidsLockable;
 import com.science.gtnl.common.gui.VoidCoverGui;
+import com.science.gtnl.common.gui.VoidCoverUIFactory;
 
 import gregtech.api.covers.CoverContext;
+import gregtech.api.gui.modularui.CoverUIBuildContext;
 import gregtech.api.interfaces.tileentity.ICoverable;
 import gregtech.api.interfaces.tileentity.IMachineProgress;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
@@ -185,6 +188,11 @@ public class VoidCover extends IntDataCover implements IFluidsLockable {
     @Override
     protected @NotNull CoverBaseGui<?> getCoverGui() {
         return new VoidCoverGui(this);
+    }
+
+    @Override
+    protected ModularWindow createWindow(CoverUIBuildContext buildContext) {
+        return new VoidCoverUIFactory(buildContext).createWindow();
     }
 
     @Override

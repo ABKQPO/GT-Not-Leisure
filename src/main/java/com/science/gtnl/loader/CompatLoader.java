@@ -30,12 +30,18 @@ public class CompatLoader implements IContentLoader {
 
     // Lambdas, not constructor references: a constructor reference loads the compat class even when its mod is missing.
     public static final List<Entry> ENTRIES = List.of(
-        new Entry(Mods.BetterQuesting, () -> new QuestLoader()),
+        new Entry(Mods.BetterQuesting, () -> new QuestLoader(), ModList.BetterQuestingAPI),
         new Entry(Mods.Waila, () -> new WailaLoader()),
         new Entry(Mods.Thaumcraft, () -> new TCResearches()),
         new Entry(Mods.ThaumicEnergistics, () -> new ThaumicEnergisticsCompat()),
         new Entry(Mods.MobsInfo, () -> new ExtremeExtremeEntityCrusherRecipes()),
-        new Entry(Mods.GalaxySpace, () -> new GalaxySpaceCompat()),
+        new Entry(
+            Mods.GalaxySpace,
+            () -> new GalaxySpaceCompat(),
+            Mods.StevesCarts2,
+            Mods.Railcraft,
+            Mods.IronTanks,
+            Mods.GraviSuite),
         new Entry(ModList.CraftingTweaks, () -> new CraftingTweaksCompat()),
         new Entry(Mods.InventoryBogoSorter, () -> new BogoSorterCompat()),
         new Entry(Mods.Nutrition, () -> new NutrientLoader()),
@@ -52,12 +58,12 @@ public class CompatLoader implements IContentLoader {
     @Override
     public void preInit() {
         for (Entry entry : ENTRIES) {
-            if (!entry.mod()
-                .isModLoaded()) continue;
-            IModCompat compat = entry.factory()
-                .get();
-            if (!compat.isEnabled()) continue;
-            loaded.add(new Loaded(entry.mod(), compat));
+            if (!entry.modsLoaded()) continue;
+            loaded.add(
+                new Loaded(
+                    entry.mod(),
+                    entry.factory()
+                        .get()));
             ScienceNotLeisure.LOG.info(
                 "GTNL compat for {} is active",
                 entry.mod()
@@ -125,7 +131,17 @@ public class CompatLoader implements IContentLoader {
     }
 
     @Desugar
-    public record Entry(IMod mod, Supplier<IModCompat> factory) {}
+    public record Entry(IMod mod, Supplier<IModCompat> factory, List<IMod> alsoRequired) {
+
+        public Entry(IMod mod, Supplier<IModCompat> factory, IMod... alsoRequired) {
+            this(mod, factory, List.of(alsoRequired));
+        }
+
+        public boolean modsLoaded() {
+            return mod.isModLoaded() && alsoRequired.stream()
+                .allMatch(IMod::isModLoaded);
+        }
+    }
 
     @Desugar
     private record Loaded(IMod mod, IModCompat compat) {}
