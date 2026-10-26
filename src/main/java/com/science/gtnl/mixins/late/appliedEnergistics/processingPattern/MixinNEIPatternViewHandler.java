@@ -2,16 +2,15 @@ package com.science.gtnl.mixins.late.appliedEnergistics.processingPattern;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.science.gtnl.common.me.processingPattern.ProcessingPatternCapacity;
+import com.science.gtnl.common.me.processingPattern.ProcessingPatternInventoryData;
 
 import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.storage.data.IAEStack;
 import appeng.integration.modules.NEIHelpers.NEIPatternViewHandler;
 
 @Mixin(value = NEIPatternViewHandler.class, remap = false)
@@ -48,19 +47,17 @@ public abstract class MixinNEIPatternViewHandler {
             return;
         }
 
-        int inputCount = gtnl$countStacks(this.patternDetails.getAEInputs());
-        int outputCount = gtnl$countStacks(this.patternDetails.getAEOutputs());
-        int normalHeight = Math.max(gtnl$rows(inputCount, 4), gtnl$rows(outputCount, 1));
-        int reversedHeight = Math.max(gtnl$rows(inputCount, 1), gtnl$rows(outputCount, 4));
-
-        if (normalHeight < reversedHeight && this.inputsCols != 4) {
+        int inputCount = ProcessingPatternInventoryData.countStacks(this.patternDetails.getAEInputs());
+        int outputCount = ProcessingPatternInventoryData.countStacks(this.patternDetails.getAEOutputs());
+        int layout = ProcessingPatternInventoryData.shorterViewLayout(inputCount, outputCount);
+        if (layout > 0 && this.inputsCols != 4) {
             this.setupProcessingLayout();
-        } else if (reversedHeight < normalHeight && this.outputsCols != 4) {
+        } else if (layout < 0 && this.outputsCols != 4) {
             this.setupReversedLayout();
         }
 
-        this.inputsRows = gtnl$rows(inputCount, this.inputsCols);
-        this.outputsRows = gtnl$rows(outputCount, this.outputsCols);
+        this.inputsRows = ProcessingPatternInventoryData.viewRows(inputCount, this.inputsCols);
+        this.outputsRows = ProcessingPatternInventoryData.viewRows(outputCount, this.outputsCols);
         this.arrowCenterY = NEIPatternViewHandler.SLOTS_OFFSET_Y + Math.max(this.inputsRows, this.outputsRows) * 9 - 16;
     }
 
@@ -72,21 +69,5 @@ public abstract class MixinNEIPatternViewHandler {
         }
         callbackInfo
             .setReturnValue(callbackInfo.getReturnValue() + Math.max(0, this.outputsRows - this.inputsRows) * 18);
-    }
-
-    @Unique
-    private static int gtnl$countStacks(IAEStack<?>[] stacks) {
-        int count = 0;
-        for (IAEStack<?> stack : stacks) {
-            if (stack != null) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    @Unique
-    private static int gtnl$rows(int count, int columns) {
-        return Math.max(8, (count + columns - 1) / columns);
     }
 }

@@ -88,24 +88,12 @@ public abstract class MixinPartPatternTerminalEx extends PartPatternTerminal {
             return;
         }
         ((IProcessingPatternOverflowAccess) this).gtnl$clearProcessingPatternOverflow();
-        int inputsCount = 0;
-        int outputCount = 0;
-
-        for (IAEStack<?> input : in) {
-            if (input != null) {
-                inputsCount++;
-            }
-        }
-
-        for (IAEStack<?> output : out) {
-            if (output != null) {
-                outputCount++;
-            }
-        }
-
-        int smallSideCapacity = this.getAEInventoryByName(StorageName.CRAFTING_INPUT)
-            .getSizeInventory() / 4;
-        this.setInverted(inputsCount <= smallSideCapacity && outputCount >= smallSideCapacity);
+        this.setInverted(
+            ProcessingPatternInventoryData.invertFor(
+                in,
+                out,
+                this.getAEInventoryByName(StorageName.CRAFTING_INPUT)
+                    .getSizeInventory()));
         this.setActivePage(0);
         callbackInfo.cancel();
     }

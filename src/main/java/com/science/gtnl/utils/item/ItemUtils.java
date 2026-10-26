@@ -25,6 +25,7 @@ import net.minecraft.util.StringUtils;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import com.google.common.collect.Iterables;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
@@ -42,6 +43,7 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
 import gregtech.api.util.GTModHandler;
+import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 import gregtech.common.items.MetaGeneratedItem01;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
@@ -651,5 +653,34 @@ public class ItemUtils {
             }
         }
         return skull;
+    }
+
+    // A hot ingot as its cooled ingot, so pattern outputs ask for what the machines finally give.
+    public static ItemStack coolHotIngot(ItemStack instance) {
+        int[] oreIDs = OreDictionary.getOreIDs(instance);
+
+        for (int oreId : oreIDs) {
+            String oreName = OreDictionary.getOreName(oreId);
+            if (oreName == null) continue;
+            if (!oreName.startsWith("ingotHot")) continue;
+
+            String cooledOreName = "ingot" + oreName.substring("ingotHot".length());
+            List<ItemStack> cooledStacks = OreDictionary.getOres(cooledOreName);
+            if (cooledStacks == null || cooledStacks.isEmpty()) continue;
+
+            ItemStack replacement = cooledStacks.get(0);
+            if (replacement == null) continue;
+
+            ItemStack result = GTOreDictUnificator.setStack(replacement.copy());
+            result.stackSize = instance.stackSize;
+
+            if (instance.stackTagCompound != null) {
+                result.stackTagCompound = (NBTTagCompound) instance.stackTagCompound.copy();
+            }
+
+            return result;
+        }
+
+        return instance.copy();
     }
 }

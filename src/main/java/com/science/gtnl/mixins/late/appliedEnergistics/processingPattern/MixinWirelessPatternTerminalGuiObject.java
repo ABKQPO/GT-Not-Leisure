@@ -146,18 +146,18 @@ public abstract class MixinWirelessPatternTerminalGuiObject
             if (stack.hasTagCompound()) {
                 NBTTagCompound root = stack.getTagCompound();
                 NBTTagCompound inventory = root.getCompoundTag(this.nbtPrefix);
-                ProcessingPatternInventoryData.restoreSavedOverflow(root, inventory, "craftingGrid");
-                ProcessingPatternInventoryData.restoreSavedOverflow(root, inventory, "outputList");
+                this.gtnl$storedInventory = ProcessingPatternInventoryData
+                    .rememberInventory(root, inventory, this.craftingInvSize, this.outputInvSize);
                 root.setTag(this.nbtPrefix, inventory);
                 boolean inverted = inventory.getBoolean("inverted");
-                this.gtnl$storedInventory = ProcessingPatternInventoryData.snapshotInventories(
+                ProcessingPatternInventoryData.limitSlots(
                     inventory,
-                    inverted ? this.craftingInvSize / 4 : this.craftingInvSize,
-                    inverted ? this.outputInvSize : this.outputInvSize / 4);
-                ProcessingPatternInventoryData
-                    .limitSlots(inventory, "craftingGrid", inverted ? this.craftingInvSize / 4 : this.craftingInvSize);
-                ProcessingPatternInventoryData
-                    .limitSlots(inventory, "outputList", inverted ? this.outputInvSize : this.outputInvSize / 4);
+                    "craftingGrid",
+                    ProcessingPatternInventoryData.visibleInputs(inverted, this.craftingInvSize));
+                ProcessingPatternInventoryData.limitSlots(
+                    inventory,
+                    "outputList",
+                    ProcessingPatternInventoryData.visibleOutputs(inverted, this.outputInvSize));
             }
         }
     }
@@ -190,30 +190,13 @@ public abstract class MixinWirelessPatternTerminalGuiObject
             .getTagCompound();
         NBTTagCompound tag = root.getCompoundTag(this.nbtPrefix);
         tag.setInteger("activePage", ProcessingPatternInventoryData.nativePage(this.activePage));
-        ProcessingPatternInventoryData.preserveOverflow(
+        this.gtnl$storedInventory = ProcessingPatternInventoryData.preserveInventory(
+            root,
             tag,
             this.gtnl$storedInventory,
-            "craftingGrid",
-            this.inverted ? this.craftingInvSize / 4 : this.craftingInvSize);
-        ProcessingPatternInventoryData.preserveOverflow(
-            tag,
-            this.gtnl$storedInventory,
-            "outputList",
-            this.inverted ? this.outputInvSize : this.outputInvSize / 4);
-        this.gtnl$storedInventory = ProcessingPatternInventoryData.snapshotInventories(
-            tag,
-            this.inverted ? this.craftingInvSize / 4 : this.craftingInvSize,
-            this.inverted ? this.outputInvSize : this.outputInvSize / 4);
-        int nativeInputs = ProcessingPatternCapacity.DEFAULT_MULTIPLIER
-            * (this.inverted ? ProcessingPatternCapacity.SMALL_SIDE_SLOTS_PER_PAGE
-                : ProcessingPatternCapacity.SLOTS_PER_PAGE);
-        int nativeOutputs = ProcessingPatternCapacity.DEFAULT_MULTIPLIER
-            * (this.inverted ? ProcessingPatternCapacity.SLOTS_PER_PAGE
-                : ProcessingPatternCapacity.SMALL_SIDE_SLOTS_PER_PAGE);
-        ProcessingPatternInventoryData.saveOverflow(root, tag, "craftingGrid", nativeInputs);
-        ProcessingPatternInventoryData.saveOverflow(root, tag, "outputList", nativeOutputs);
-        ProcessingPatternInventoryData.limitSlots(tag, "craftingGrid", nativeInputs);
-        ProcessingPatternInventoryData.limitSlots(tag, "outputList", nativeOutputs);
+            this.inverted,
+            this.craftingInvSize,
+            this.outputInvSize);
         root.setTag(this.nbtPrefix, tag);
     }
 
@@ -226,10 +209,7 @@ public abstract class MixinWirelessPatternTerminalGuiObject
             return;
         }
         this.gtnl$clearProcessingPatternOverflow();
-        int inputCount = countNonNull(in);
-        int outputCount = countNonNull(out);
-        int smallSideCapacity = this.craftingInvSize / 4;
-        this.setInverted(inputCount <= smallSideCapacity && outputCount >= smallSideCapacity);
+        this.setInverted(ProcessingPatternInventoryData.invertFor(in, out, this.craftingInvSize));
         this.setActivePage(0);
         callbackInfo.cancel();
     }
@@ -271,16 +251,5 @@ public abstract class MixinWirelessPatternTerminalGuiObject
                 0,
                 Math.min(Math.max(0, this.craftingInvSize / ProcessingPatternCapacity.SLOTS_PER_PAGE - 1), activePage))
             : activePage;
-    }
-
-    @Unique
-    private static int countNonNull(IAEStack<?>[] stacks) {
-        int count = 0;
-        for (IAEStack<?> stack : stacks) {
-            if (stack != null) {
-                count++;
-            }
-        }
-        return count;
     }
 }
