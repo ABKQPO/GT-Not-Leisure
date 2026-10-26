@@ -29,7 +29,6 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.gui.modularui.hatch.WirelessSteamDynamoHatchGui;
 import com.science.gtnl.common.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.mixins.early.gregtech.AccessorMTEHatch;
-import com.science.gtnl.utils.FluidIdUtils;
 import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 

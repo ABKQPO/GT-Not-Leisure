@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import com.science.gtnl.utils.RCAEBaseContainer;
+import com.science.gtnl.api.mixinHelper.RCAEBaseContainer;
 
 import appeng.core.sync.GuiBridge;
 import baubles.api.BaublesApi;

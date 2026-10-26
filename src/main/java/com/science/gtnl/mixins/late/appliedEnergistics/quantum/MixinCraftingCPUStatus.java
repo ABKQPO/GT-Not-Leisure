@@ -8,9 +8,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.science.gtnl.api.mixinHelper.EQuantumComputerCPUStatus;
 import com.science.gtnl.common.machine.multiblock.QuantumComputer;
 import com.science.gtnl.utils.ECraftingCPUCluster;
-import com.science.gtnl.utils.EQuantumComputerCPUStatus;
 
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.container.implementations.CraftingCPUStatus;

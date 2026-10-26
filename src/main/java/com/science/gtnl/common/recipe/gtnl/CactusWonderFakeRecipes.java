@@ -3,7 +3,6 @@ package com.science.gtnl.common.recipe.gtnl;
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
-import com.science.gtnl.utils.recipes.metadata.SteamAmountMetadata;
 
 import gregtech.api.enums.Materials;
 import gregtech.api.recipe.RecipeMap;

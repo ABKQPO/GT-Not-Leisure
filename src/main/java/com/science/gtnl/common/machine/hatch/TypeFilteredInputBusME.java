@@ -15,7 +15,6 @@ import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.science.gtnl.common.gui.modularui.hatch.TypeFilteredInputBusMEGui;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.machine.ItemFilteredList;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.storage.data.IAEItemStack;

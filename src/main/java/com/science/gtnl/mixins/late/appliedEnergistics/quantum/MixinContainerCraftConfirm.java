@@ -12,11 +12,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.api.mixinHelper.EQuantumComputerCPUStatus;
 import com.science.gtnl.common.crafting.quantum.ae2.IQuantumCraftConfirm;
 import com.science.gtnl.common.crafting.quantum.ae2.QuantumCraftingJob;
 import com.science.gtnl.common.crafting.quantum.ae2.QuantumCraftingTree;
 import com.science.gtnl.common.packet.QuantumCraftConfirmPacket;
-import com.science.gtnl.utils.EQuantumComputerCPUStatus;
 
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.container.AEBaseContainer;

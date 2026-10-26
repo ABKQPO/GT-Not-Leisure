@@ -2,7 +2,7 @@ package com.science.gtnl.common.gui.recipe;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import com.science.gtnl.utils.recipes.format.BloodSoulFormat;
+import com.science.gtnl.common.gui.recipe.format.BloodSoulFormat;
 
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
 import gregtech.api.recipe.NEIRecipePropertiesBuilder;

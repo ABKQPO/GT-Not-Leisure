@@ -14,7 +14,7 @@ import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.science.gtnl.utils.recipes.format.RocketAssemblerFormat;
+import com.science.gtnl.common.gui.recipe.format.RocketAssemblerFormat;
 import com.science.gtnl.utils.recipes.metadata.RocketAssemblerInputSlotsMetadata;
 
 import codechicken.nei.PositionedStack;

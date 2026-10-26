@@ -5,7 +5,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.science.gtnl.common.effect.EffectBase;
 import com.science.gtnl.utils.ColorUtils;
-import com.science.gtnl.utils.ExtraSpawnerAnimals;
 
 public class BattleEffect extends EffectBase {
 

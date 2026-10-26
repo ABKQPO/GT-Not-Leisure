@@ -16,7 +16,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.utils.EQuantumComputerCPUStatus;
+import com.science.gtnl.api.mixinHelper.EQuantumComputerCPUStatus;
 
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiCraftingCPUTable;

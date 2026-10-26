@@ -10,9 +10,6 @@ import com.gtnllib.mod.ModList;
 import com.science.gtnl.common.block.blocks.tile.TileEntityCardboardBox;
 import com.science.gtnl.common.block.blocks.tile.TileEntityPlayerDoll;
 import com.science.gtnl.compat.IModCompat;
-import com.science.gtnl.utils.text.CardboardBoxWailaDataProvider;
-import com.science.gtnl.utils.text.EnergyCellWailaDataProvider;
-import com.science.gtnl.utils.text.PlayerDollWailaDataProvider;
 
 import appeng.tile.AEBaseTile;
 import codechicken.multipart.TileMultipart;

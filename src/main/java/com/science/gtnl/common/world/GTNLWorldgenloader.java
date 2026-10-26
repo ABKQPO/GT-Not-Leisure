@@ -10,7 +10,6 @@ import net.minecraftforge.event.terraingen.DecorateBiomeEvent;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.mixins.late.visualProspecting.AccessorVeinTypeCaching;
-import com.science.gtnl.utils.enums.GTNLOreMixer;
 import com.sinthoras.visualprospecting.database.veintypes.VeinType;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;

@@ -9,7 +9,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.github.bsideup.jabel.Desugar;
 import com.science.gtnl.api.IBeamFormer;
 import com.science.gtnl.api.IBeamFormerRenderer;
-import com.science.gtnl.utils.RenderUtils;
 
 import appeng.api.util.AEColor;
 import cpw.mods.fml.relauncher.Side;

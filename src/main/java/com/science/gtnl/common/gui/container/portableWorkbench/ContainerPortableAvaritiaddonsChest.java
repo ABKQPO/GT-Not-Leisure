@@ -15,7 +15,6 @@ import com.cleanroommc.bogosorter.api.ISortableContainer;
 import com.cleanroommc.bogosorter.api.ISortingContextBuilder;
 import com.science.gtnl.common.celestweave.CelestweaveBackpack;
 import com.science.gtnl.common.item.items.PortableItem;
-import com.science.gtnl.utils.SlotInfinity;
 
 import cpw.mods.fml.common.Optional;
 

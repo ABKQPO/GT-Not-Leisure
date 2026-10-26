@@ -47,7 +47,6 @@ import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.machine.AssemblerMatrixPatternState;
 import com.science.gtnl.utils.machine.MachineUtils;
 
 import appeng.api.config.Actionable;

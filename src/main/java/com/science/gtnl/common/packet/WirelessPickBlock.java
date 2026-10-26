@@ -8,7 +8,7 @@ import net.minecraft.network.play.server.S2FPacketSetSlot;
 import com.glodblock.github.util.Util;
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.gtnllib.network.ServerboundPacket;
-import com.science.gtnl.utils.MEHandler;
+import com.science.gtnl.common.me.MEHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;

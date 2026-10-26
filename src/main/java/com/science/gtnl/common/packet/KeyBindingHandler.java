@@ -23,7 +23,7 @@ import com.gtnllib.network.ServerboundPacket;
 import com.gtnllib.utils.GameUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.gui.PreviousContainerPrimaryGui;
-import com.science.gtnl.utils.MEHandler;
+import com.science.gtnl.common.me.MEHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;

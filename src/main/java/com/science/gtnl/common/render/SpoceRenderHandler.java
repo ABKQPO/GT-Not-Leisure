@@ -14,7 +14,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnl.utils.render.BuckyBallGeometry;
 import com.science.gtnl.utils.render.SpoceEffect;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;

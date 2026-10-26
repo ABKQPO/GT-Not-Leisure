@@ -30,7 +30,6 @@ import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.recipe.thaumcraft.EssentiaSupply;
 import com.science.gtnl.utils.enums.GTNLItemList;
-import com.science.gtnl.utils.machine.LargeEssentiaEnergyData;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import bartworks.system.material.WerkstoffLoader;
