@@ -87,7 +87,6 @@ public class MultiblockTooltipReader {
     private static final String MACHINE_KEY_PREFIX = "gtnl.machine.";
     private static final String NAME_KEY_SUFFIX = ".name";
     private static final String RECIPE_TYPE_SUFFIX = ".recipe_type";
-    private static final String CASING_NAME_KEY_PREFIX = "gtnl.structure.tooltip.part.casing.";
     private static final Pattern ACRONYM_END = Pattern.compile("([A-Z]+)([A-Z][a-z])");
     private static final Pattern LOWER_TO_UPPER = Pattern.compile("([a-z0-9])([A-Z])");
     private static final Map<String, IStructureChannels> KNOWN_CHANNELS = knownChannels();
@@ -889,7 +888,7 @@ public class MultiblockTooltipReader {
         return names == null ? Collections.emptyList() : names;
     }
 
-    // Why: casing tiers that are metas of one block share a name without the tier, which GT does not translate.
+    // Why: casing tiers that are metas of one block take the block's own name, which leaves out the tier.
     private static <T> String casingName(T controller, IStructureElement<T> casing) {
         if (casing == null) return null;
         Block block = null;
@@ -907,9 +906,8 @@ public class MultiblockTooltipReader {
             ScienceNotLeisure.LOG.debug("Cannot name the casing of {} for its tooltip", nameOf(controller), e);
             return null;
         }
-        if (block == null) return null;
-        String key = CASING_NAME_KEY_PREFIX + block.getUnlocalizedName();
-        return StatCollector.canTranslate(key) ? StatCollector.translateToLocal(key) : null;
+        if (block == null || !StatCollector.canTranslate(block.getUnlocalizedName() + ".name")) return null;
+        return block.getLocalizedName();
     }
 
     private static boolean hasCasingChannel(Set<String> channels) {
