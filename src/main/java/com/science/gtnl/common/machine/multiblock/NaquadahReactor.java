@@ -145,7 +145,6 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
 
     @Override
     public TooltipStats getTooltipStats() {
-        // Why: a reactor makes power, so recipe speed and power usage lines would mislead.
         return null;
     }
 

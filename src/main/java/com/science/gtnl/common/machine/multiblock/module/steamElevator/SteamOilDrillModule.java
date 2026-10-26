@@ -29,7 +29,7 @@ public class SteamOilDrillModule extends SteamElevatorModuleBase {
     private static final int BASE_FLUID_AMOUNT = 250;
     private static final int MAX_AMOUNT_ROLL = 4;
     private static final int BASE_CYCLE_TICKS = 1200;
-    private static final String[] TIER_TITLES = { "basic", "advanced", "elite" };
+    public static final String[] TIER_TITLES = { "basic", "advanced", "elite" };
 
     public SteamOilDrillModule(int aID, String aName, String aNameRegional, int aTier) {
         super(aID, aName, aNameRegional, aTier);
@@ -85,7 +85,6 @@ public class SteamOilDrillModule extends SteamElevatorModuleBase {
 
     @Override
     public TooltipStats getTooltipStats() {
-        // Why: the module pumps fluids instead of running recipes, so recipe numbers would mislead.
         return null;
     }
 

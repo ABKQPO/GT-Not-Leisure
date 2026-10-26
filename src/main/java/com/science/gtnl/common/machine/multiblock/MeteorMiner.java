@@ -286,7 +286,6 @@ public class MeteorMiner extends MultiMachineBase<MeteorMiner> implements ISurvi
 
     @Override
     public TooltipStats getTooltipStats() {
-        // Why: this machine runs its own process instead of recipes, so recipe numbers would mislead.
         return null;
     }
 

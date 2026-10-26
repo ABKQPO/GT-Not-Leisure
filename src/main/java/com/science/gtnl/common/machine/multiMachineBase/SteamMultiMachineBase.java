@@ -125,7 +125,6 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     implements IControllerInfo, IMultiblockTooltipRules {
 
     public static final int OC_WINDOW_ID = 12;
-    // Why: GT's own steam multiblocks name their steam input line with this key in MultiblockTooltipBuilder.
     private static final String STEAM_INPUT_LINE = "GTPP.MBTT.SteamHatch";
     private static final String RECIPE_VOLTAGE_KEY = "gtnl.structure.tooltip.steam_recipe_voltage";
     private static final String HIGH_PRESSURE_RECIPE_VOLTAGE_KEY = RECIPE_VOLTAGE_KEY + ".high_pressure";
@@ -431,7 +430,6 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
 
     @Override
     public List<String> getTooltipFeatureLines() {
-        // Why: a machine that shows no recipe numbers runs no recipes, so a recipe voltage would mislead too.
         if (getTooltipStats() == null) return Collections.emptyList();
         int basic = recipeTierAtMachineTier(BASIC_STEAM_TIER);
         if (basic >= VoltageIndex.MAX) return Collections.emptyList();
@@ -469,7 +467,6 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
 
     private TooltipStats tooltipStatsAtMachineTier(int machineTier) {
         int tier = tierMachine;
-        // Why: the prototype has no structure, so its machine tier is 0, which tier formulas divide or multiply by.
         tierMachine = machineTier;
         try {
             return readTooltipStats();
@@ -482,7 +479,6 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
         List<String> keys = new ArrayList<>();
         for (int id : STEAM_INPUT_HATCH_IDS) {
             IMetaTileEntity hatch = GregTechAPI.METATILEENTITIES[id];
-            // Why: HatchElementBuilder.hatchIds() describes a hatch by this key, built from its meta name.
             if (hatch != null) keys.add("gt.blockmachines." + hatch.getMetaName() + ".name");
         }
         return keys;

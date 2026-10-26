@@ -37,7 +37,6 @@ import gregtech.api.util.tooltip.TooltipHelper;
 public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
 
     private static final String NAME_SEPARATOR = MultiblockTooltipReader.NAME_SEPARATOR;
-    // Why: GT's stat methods add a finished line, so these lines are rebuilt from GT's keys to append the bonuses.
     private static final String PARALLEL_KEY = "GT5U.MBTT.Parallel.Base";
     private static final String SPEED_KEY = "GT5U.MBTT.Speed.Base";
     private static final String EU_KEY = "GT5U.MBTT.EuDiscount.Base";
@@ -53,7 +52,7 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
     private static final String LAST_JOIN_KEY = "gtnl.structure.tooltip.join.last";
     private static final String PART_TIER_KEY = "gtnl.structure.tooltip.part.tier";
     private static final String EFFECT_KEY = "gtnl.structure.tooltip.effect.";
-    // Why: GT 5.09.54.205 has no hatch or mechanic tooltip colors yet; these are the ones newer GT versions use.
+    // GT 5.09.54.205 has no hatch or mechanic tooltip colors yet; these match newer GT versions.
     public static final EnumChatFormatting HATCH_COLOR = EnumChatFormatting.GREEN;
     public static final EnumChatFormatting MECHANIC_COLOR = EnumChatFormatting.LIGHT_PURPLE;
 
@@ -65,7 +64,7 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
     private static final String TIER_FROM_KEY = "gtnl.structure.tooltip.tier_from.";
     private static final String CASING_LEVEL_FROM_KEY = TIER_FROM_KEY + "casing_level";
     private static final String HEAT_UNIT = "K";
-    // Why: Minecraft color codes reset the style, so italics are reapplied after every color change.
+    // Color codes reset the style, so italics are reapplied after every color change.
     private static final Pattern STYLE_RESET = Pattern.compile("(\u00a7[0-9a-fA-FrR])");
 
     private final List<List<String>> pendingGroups = new ArrayList<>();
@@ -396,7 +395,6 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
         for (IStructureChannels channel : summary.channels()) addSubChannelUsage(channel);
     }
 
-    // Why: a layered structure grows upward or sideways, and GT names the projector's effect after that direction.
     private static String masterChannelKey(StructureSummary summary) {
         if (!summary.layered()) return "gtnl.structure.tooltip.channel.structure_tier";
         Size first = summary.firstTier();

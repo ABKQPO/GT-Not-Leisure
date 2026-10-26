@@ -179,7 +179,6 @@ public class MegaSolarBoiler extends SteamMultiMachineBase<MegaSolarBoiler> impl
 
     @Override
     public TooltipStats getTooltipStats() {
-        // Why: a boiler makes steam, so recipe speed and steam usage lines would mislead.
         return null;
     }
 

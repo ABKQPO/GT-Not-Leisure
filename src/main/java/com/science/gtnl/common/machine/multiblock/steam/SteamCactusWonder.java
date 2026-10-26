@@ -212,7 +212,6 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
 
     @Override
     public TooltipStats getTooltipStats() {
-        // Why: a boiler makes steam, so recipe speed and steam usage lines would mislead.
         return null;
     }
 

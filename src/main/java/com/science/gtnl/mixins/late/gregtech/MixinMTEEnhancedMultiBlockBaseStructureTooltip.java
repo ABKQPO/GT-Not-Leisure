@@ -18,7 +18,6 @@ import gregtech.api.enums.HatchElement;
 import gregtech.api.metatileentity.implementations.MTEEnhancedMultiBlockBase;
 import gregtech.api.structure.error.StructureError;
 
-// Why: the automatic structure tooltip reads pieces and requirements by dry-running the prototype's own code.
 @Mixin(value = MTEEnhancedMultiBlockBase.class, remap = false)
 public abstract class MixinMTEEnhancedMultiBlockBaseStructureTooltip {
 

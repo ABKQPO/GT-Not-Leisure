@@ -349,7 +349,6 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
             this.mteClasses = Collections.unmodifiableList(Arrays.asList(mteClasses));
         }
 
-        // Why: GT names hatch elements by untranslated hatch_type_ keys, so these use the hatch item name.
         @Override
         public String getDescriptionLangKey() {
             return nameKey;

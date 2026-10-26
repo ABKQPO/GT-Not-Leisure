@@ -23,7 +23,7 @@ import gregtech.api.util.shutdown.ShutDownReason;
 @IMetaTileEntity.SkipGenerateDescription
 public class SteamMonsterRepellentModule extends SteamElevatorModuleBase {
 
-    private static final String[] TIER_TITLES = { "basic", "advanced", "elite" };
+    public static final String[] TIER_TITLES = { "basic", "advanced", "elite" };
 
     public int mRange;
 

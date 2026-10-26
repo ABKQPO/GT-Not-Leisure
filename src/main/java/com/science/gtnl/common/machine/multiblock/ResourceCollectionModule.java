@@ -133,7 +133,6 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
             .addElement(
                 'H',
-                // Why: this hatch adder has no description, so the structure page would list no hatches.
                 StructureUtility.withDescription(
                     Arrays.asList(
                         BASE_CASING_NAME_KEY,
@@ -444,7 +443,6 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
             return adder;
         }
 
-        // Why: GT names hatch elements by untranslated hatch_type_ keys, so these use the hatch item name.
         @Override
         public String getDescriptionLangKey() {
             return PARALLEL_CONTROLLER_NAME_KEY;

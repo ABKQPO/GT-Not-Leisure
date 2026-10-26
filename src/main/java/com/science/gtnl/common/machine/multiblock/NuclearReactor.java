@@ -672,7 +672,6 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
 
     @Override
     public TooltipStats getTooltipStats() {
-        // Why: this machine makes steam, so recipe speed and power usage lines would mislead.
         return null;
     }
 

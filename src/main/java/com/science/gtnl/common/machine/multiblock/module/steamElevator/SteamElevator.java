@@ -677,7 +677,6 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
 
     @Override
     public TooltipStats getTooltipStats() {
-        // Why: the stairway hands steam to its modules and runs no recipes itself, so recipe numbers would mislead.
         return null;
     }
 

@@ -54,7 +54,6 @@ public class MagneticConfinementDimensionalityShockDevice
 
     public MagneticConfinementDimensionalityShockDevice(String aName) {
         super(aName);
-        // Why: the machine always has the upgrade; setting it here also lets the tooltip read the upgraded numbers.
         wirelessUpgrade = true;
     }
 
@@ -170,7 +169,7 @@ public class MagneticConfinementDimensionalityShockDevice
 
     @Override
     public int getMaxParallelRecipes() {
-        // Why: the base method also reads the parallel controller tier that the speed and power bonuses use.
+        // Called for its side effect of reading the parallel controller tier.
         super.getMaxParallelRecipes();
         return Integer.MAX_VALUE;
     }

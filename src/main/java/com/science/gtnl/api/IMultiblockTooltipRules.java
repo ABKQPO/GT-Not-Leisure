@@ -38,9 +38,9 @@ public interface IMultiblockTooltipRules {
 
         VOLTAGE("gtnl.structure.tooltip.part.voltage", VoltageIndex.MAX),
         COIL("gtnl.structure.tooltip.part.coil", HeatingCoilLevel.getMaxTier()),
-        // Why: GT's GlassTier keeps its top tier private; it is UXV.
+        // GT's GlassTier keeps its top tier private; it is UXV.
         GLASS("gtnl.structure.tooltip.part.glass", VoltageIndex.UXV),
-        // Why: component assembly line casings have the widest casing range, LV at 0 to UXV at 12.
+        // Component assembly line casings have the widest casing range, LV at 0 to UXV at 12.
         CASING("gtnl.structure.tooltip.part.casing", 12),
         HIGH_PRESSURE("gtnl.structure.tooltip.part.high_pressure", 1),
         PARALLEL_CONTROLLER("gtnl.structure.hatch.parallel_controller", VoltageIndex.MAX);

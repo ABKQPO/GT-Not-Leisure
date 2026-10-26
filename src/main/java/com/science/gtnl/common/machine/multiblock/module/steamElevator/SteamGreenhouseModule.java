@@ -253,7 +253,6 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
 
     @Override
     public TooltipStats getTooltipStats() {
-        // Why: this machine runs its own process instead of recipes, so recipe numbers would mislead.
         return null;
     }
 

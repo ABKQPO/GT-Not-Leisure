@@ -23,9 +23,10 @@ import gregtech.api.structure.error.StructureError;
 public class StructureTooltipHooks {
 
     public static final int UNLIMITED = Integer.MAX_VALUE;
-    // Why: StructureLib's ChannelDataAccessor keeps sub-channel values under this tag and does not expose it.
+    // StructureLib's ChannelDataAccessor keeps sub-channel values under this tag without exposing it.
     private static final String CHANNEL_TAG = "channels";
     private static final ThreadLocal<Recording> RECORDING = new ThreadLocal<>();
+    private static final ThreadLocal<Object> DESCRIBING = new ThreadLocal<>();
     private static final Set<String> HATCH_BLOCK_KEYS = ConcurrentHashMap.newKeySet();
 
     public record PieceCall(String piece, int horizontalOffset, int verticalOffset, int depthOffset) {}
@@ -36,7 +37,6 @@ public class StructureTooltipHooks {
 
     private StructureTooltipHooks() {}
 
-    // Why: blocks that are not GT hatches have no hatch description, so the structure page would list them as casings.
     public static <T> IStructureElement<T> describeAsHatch(IStructureElement<T> element, String... nameKeys) {
         List<String> keys = Arrays.asList(nameKeys);
         HATCH_BLOCK_KEYS.addAll(keys);
@@ -45,6 +45,21 @@ public class StructureTooltipHooks {
 
     public static boolean isHatchBlockKey(String key) {
         return HATCH_BLOCK_KEYS.contains(key);
+    }
+
+    public static <T> List<String> describe(T controller, IStructureElement<T> element) {
+        Object previous = DESCRIBING.get();
+        DESCRIBING.set(controller);
+        try {
+            return element.getDescription(controller);
+        } finally {
+            if (previous == null) DESCRIBING.remove();
+            else DESCRIBING.set(previous);
+        }
+    }
+
+    public static boolean isDescribing(Object context) {
+        return context != null && DESCRIBING.get() == context;
     }
 
     public static boolean onBuildPiece(Object controller, String piece, int horizontalOffset, int verticalOffset,
@@ -94,7 +109,6 @@ public class StructureTooltipHooks {
     public static List<PieceCall> recordConstruct(MTEEnhancedMultiBlockBase<?> controller, int stackSize,
         Set<String> channels) {
         ItemStack trigger = channelProbe(stackSize, channels);
-        // Why: some machines only build their blocks when this channel is set; the others ignore it.
         ChannelDataAccessor.setChannelData(trigger, GTNLStructureChannels.STRUCTURE_RENDER.get(), 1);
         return record(controller, "structure pieces", () -> controller.construct(trigger, true)).pieces;
     }
@@ -103,7 +117,6 @@ public class StructureTooltipHooks {
         try {
             element.getBlocksToPlace(controller, null, 0, 0, 0, channelProbe(1, channels), null);
         } catch (RuntimeException e) {
-            // Why: an element may need a world after it looked up its channel, which is recorded by then.
             ScienceNotLeisure.LOG.debug(
                 "Cannot probe a structure element of {} for its channels",
                 controller.getClass()
@@ -156,7 +169,6 @@ public class StructureTooltipHooks {
         return recording;
     }
 
-    // Why: StructureLib looks up every sub-channel of a trigger with hasKey on this compound.
     private static class ChannelRecorder extends NBTTagCompound {
 
         private final Set<String> channels;

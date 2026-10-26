@@ -465,7 +465,6 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
 
     @Override
     public TooltipStats getTooltipStats() {
-        // Why: this machine makes power, so recipe speed and power usage lines would mislead.
         return null;
     }
 

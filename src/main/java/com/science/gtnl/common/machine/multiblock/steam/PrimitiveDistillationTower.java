@@ -211,7 +211,7 @@ public class PrimitiveDistillationTower extends SteamMultiMachineBase<PrimitiveD
 
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
-        // Why: the tooltip reruns this check on one prototype without clearHatches, which sets the first layer.
+        // The tooltip reruns this check on the prototype without clearHatches.
         mHeight = 1;
         if (!checkPiece(STRUCTURE_PIECE_BASE, 1, 0, 0, errors)) return;
         while (mHeight < 7) {

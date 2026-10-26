@@ -50,7 +50,6 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMultiMachineBase<T>>
     extends MultiMachineBase<T> implements IWirelessEnergy {
 
-    // Why: GT ProcessingLogic's default overclock ratio, which enablePerfectOverclock overwrites for good.
     private static final double NORMAL_DURATION_DECREASE = 2.0, NORMAL_POWER_INCREASE = 4.0;
     private static final String WIRELESS_MODE_LINE_KEY = "gtnl.machine.common.wireless.mode";
     protected static final String WIRELESS_MODE_NAME_KEY = "gtnl.structure.tooltip.wireless_mode";
@@ -58,7 +57,6 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     protected static final int WIRELESS_RECIPE_AMPERAGE = 4;
     private static final long WIRELESS_BASE_AMPERAGE = 8;
     private static final long WIRELESS_AMPERAGE_RESERVE = 2;
-    // Why: four tiers tell a steady step apart from other curves, as for the other tooltip probes.
     private static final int WIRELESS_POWER_PROBES = 4;
 
     public UUID ownerUUID;
@@ -226,7 +224,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         logic.setAmperageOC(true);
     }
 
-    // Why: enablePerfectOverclock stays on the logic, so leaving wireless mode has to set the normal ratio back.
+    // The logic keeps perfect overclocking once enabled, so leaving wireless mode sets the normal ratio back.
     protected void setOverclockRatio(ProcessingLogic logic) {
         if (wirelessMode || getPerfectOC()) logic.enablePerfectOverclock();
         else logic.setOverclock(NORMAL_DURATION_DECREASE, NORMAL_POWER_INCREASE);
@@ -353,7 +351,6 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         return lines;
     }
 
-    // Why: machines can replace the wireless mode power, so the line reads it back from the processing logic.
     private String wirelessPowerLine(String mode, String hatch) {
         int[] tiers = new int[WIRELESS_POWER_PROBES];
         long[] amperages = new long[WIRELESS_POWER_PROBES];
@@ -362,7 +359,6 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         int casingTier = mCasingTier;
         try {
             wirelessMode = true;
-            // Why: the casing cap is written on its own, so the parallel controller steps are read above it.
             if (appliesMachineVoltageLimit()) mCasingTier = TieredPart.CASING.maxTier;
             for (int index = 0; index < tiers.length; index++) {
                 mParallelTier = MultiblockTooltipReader.FIRST_PARALLEL_CONTROLLER_PROBE_TIER + index;
@@ -388,7 +384,6 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         return powerLine(mode, voltage, current);
     }
 
-    // Why: a cap that unlocks before it reaches the top tier needs the unlock casing too, which one line cannot say.
     private String wirelessCasingLimitPhrase(String voltage) {
         boolean wireless = wirelessMode;
         int parallelTier = mParallelTier;
@@ -432,7 +427,6 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         return StatCollector.translateToLocalFormatted(WIRELESS_MODE_LINE_KEY + ".voltage.per_tier", hatch, offset);
     }
 
-    // Why: wireless amperage grows by a power of four per parallel controller tier, less a reserve.
     private static String currentPhrase(long[] amperages) {
         int firstTier = MultiblockTooltipReader.FIRST_PARALLEL_CONTROLLER_PROBE_TIER;
         long step = (1L << (2 * (firstTier + 1))) - (1L << (2 * firstTier));

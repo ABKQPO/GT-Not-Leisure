@@ -450,7 +450,6 @@ public class SiphonTurbine extends MultiMachineBase<SiphonTurbine> {
 
     @Override
     public TooltipStats getTooltipStats() {
-        // Why: this machine makes power, so recipe speed and power usage lines would mislead.
         return null;
     }
 

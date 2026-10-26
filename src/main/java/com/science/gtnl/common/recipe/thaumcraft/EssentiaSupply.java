@@ -54,7 +54,6 @@ public class EssentiaSupply {
 
     public static <T> IStructureElement<T> providerElement(ITileAdder<T> adder, Block hintBlock, int hintMeta) {
         IStructureElement<T> element = StructureUtility.ofTileAdder(adder, hintBlock, hintMeta);
-        // Why: providers only count when Thaumic Energistics is loaded, and their names come from its lang files.
         if (!Mods.ThaumicEnergistics.isModLoaded()) return element;
         return StructureTooltipHooks
             .describeAsHatch(element, INFUSION_PROVIDER_NAME_KEY, ADVANCED_INFUSION_PROVIDER_NAME_KEY);

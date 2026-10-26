@@ -344,7 +344,6 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
         return machineTier >= PERFECT_OVERCLOCK_TIER;
     }
 
-    // Why: this machine's overclock calculator applies getPerfectOC after the wireless mode's perfect overclock.
     @Override
     protected boolean overclocksPerfectlyInWirelessMode() {
         return false;
@@ -353,7 +352,6 @@ public class PCBFactory extends WirelessEnergyMultiMachineBase<PCBFactory>
     @Override
     protected TooltipStats readTooltipStats() {
         int tier = machineTier;
-        // Why: the tooltip describes the first structure tier; higher tiers are explained by the machine's own lines.
         machineTier = 1;
         try {
             return super.readTooltipStats();

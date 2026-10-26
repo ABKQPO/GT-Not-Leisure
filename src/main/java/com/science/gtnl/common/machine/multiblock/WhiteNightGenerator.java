@@ -213,7 +213,6 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
 
     @Override
     public TooltipStats getTooltipStats() {
-        // Why: the generator makes power from entity damage, so recipe speed and power usage lines would mislead.
         return null;
     }
 

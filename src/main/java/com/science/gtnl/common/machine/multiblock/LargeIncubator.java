@@ -476,7 +476,6 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
             this.adder = adder;
         }
 
-        // Why: GT names hatch elements by untranslated hatch_type_ keys, so these use the hatch item name.
         @Override
         public String getDescriptionLangKey() {
             return nameKey;

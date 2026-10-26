@@ -321,7 +321,6 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
 
     @Override
     protected TooltipStats readTooltipStats() {
-        // Why: copies run a fixed 20 ticks at a cost set by the element, so only the parallels follow the stat methods.
         return new TooltipStats(super.readTooltipStats().parallels(), Double.NaN, Double.NaN, false, false);
     }
 

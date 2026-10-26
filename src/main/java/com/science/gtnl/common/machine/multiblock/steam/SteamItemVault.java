@@ -369,7 +369,6 @@ public class SteamItemVault extends SteamMultiMachineBase<SteamItemVault>
 
     @Override
     public TooltipStats getTooltipStats() {
-        // Why: a vault stores items and runs no recipes, so recipe numbers would mislead.
         return null;
     }
 

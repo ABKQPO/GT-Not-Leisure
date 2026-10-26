@@ -82,7 +82,6 @@ public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurn
 
     @Override
     protected TooltipStats readTooltipStats() {
-        // Why: smelting runs its own perfectly overclocked timer, so only the parallels follow the stat methods.
         return new TooltipStats(super.readTooltipStats().parallels(), Double.NaN, Double.NaN, false, true);
     }
 

@@ -53,7 +53,6 @@ public class MultiblockTooltipAudit {
     private static final long NANOS_PER_MICRO = 1000;
     private static final double MICROS_PER_MILLI = 1000;
     private static final Pattern TIER_OR_MODE = Pattern.compile("(?i).*(tier|mode).*");
-    // Why: these fields are the probes' own knobs, or the probes and line groups already show what they change.
     private static final List<String> SHOWN_FIELDS = Arrays
         .asList("mGlassTier", "mCasingTier", "tooltipVoltageTier", "tooltipParallelTier", "tierMachine", "machineMode");
     private static final List<String> PARALLEL_CONTROLLER_FIELDS = Collections.singletonList("mParallelTier");
@@ -199,7 +198,6 @@ public class MultiblockTooltipAudit {
             return;
         }
         HeatRules heat = info.heat();
-        // Why: fixed heats without the recipe's heat are how a machine grants free perfect overclocks on purpose.
         if (heat != null && !heat.usesRecipeHeat() && (heat.discount() || heat.freePerfectOverclocks() == 0)) {
             problems.add(text("problem.heat_without_recipe_heat"));
         }
@@ -319,7 +317,6 @@ public class MultiblockTooltipAudit {
         List<Supplier<TooltipStats>> contexts = probeContexts(rules);
         for (Field field : stateFields(machine.getClass())) {
             Set<StatFamily> changed = fieldEffects(field, machine, contexts);
-            // Why: the groups and probes that explain these fields say nothing about perfect overclocking.
             if (shown.contains(field.getName())) changed.retainAll(EnumSet.of(StatFamily.PERFECT_OC));
             if (!changed.isEmpty()) {
                 problems.add(text("problem.field_not_shown", field.getName(), displayNames(changed)));
@@ -327,7 +324,6 @@ public class MultiblockTooltipAudit {
         }
     }
 
-    // Why: a field can matter only once a part is built, such as casings that add parallels on top of glass.
     private static List<Supplier<TooltipStats>> probeContexts(IMultiblockTooltipRules rules) {
         List<Supplier<TooltipStats>> contexts = new ArrayList<>();
         contexts.add(rules::getTooltipStats);

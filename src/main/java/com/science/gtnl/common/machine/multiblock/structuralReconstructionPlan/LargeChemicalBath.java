@@ -234,7 +234,7 @@ public class LargeChemicalBath extends GTMMultiMachineBase<LargeChemicalBath> im
     public void replaceWater() {
         IGregTechTileEntity aBaseMetaTileEntity = this.getBaseMetaTileEntity();
         World world = aBaseMetaTileEntity.getWorld();
-        // Why: the automatic tooltip runs the structure check on a prototype that has no world.
+        // Tooltip prototypes have no world.
         if (world == null) return;
         int baseX = aBaseMetaTileEntity.getXCoord();
         int baseY = aBaseMetaTileEntity.getYCoord();

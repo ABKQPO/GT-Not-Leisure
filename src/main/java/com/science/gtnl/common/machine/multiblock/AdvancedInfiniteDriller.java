@@ -405,7 +405,6 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
 
     @Override
     public TooltipStats getTooltipStats() {
-        // Why: this machine runs its own process instead of recipes, so recipe numbers would mislead.
         return null;
     }
 
@@ -535,7 +534,6 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
             this.adder = adder;
         }
 
-        // Why: GT names hatch elements by untranslated hatch_type_ keys, so these use the hatch item name.
         @Override
         public String getDescriptionLangKey() {
             return nameKey;

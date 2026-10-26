@@ -456,7 +456,6 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
 
     @Override
     public TooltipStats getTooltipStats() {
-        // Why: this machine runs its own process instead of recipes, so recipe numbers would mislead.
         return null;
     }
 

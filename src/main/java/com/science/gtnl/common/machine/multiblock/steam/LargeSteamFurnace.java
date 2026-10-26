@@ -59,7 +59,6 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
     private static final String LSF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_steam_furnace";
     private static final String[][] shape = StructureUtils.readStructureFromFile(LSF_STRUCTURE_FILE_PATH);
     private static final int SMELTING_DURATION = 64;
-    // Why: GT's furnace recipe map gives every smelting recipe this duration, which the speed line compares against.
     private static final int FURNACE_RECIPE_DURATION = 128;
 
     public LargeSteamFurnace(int aID, String aName, String aNameRegional) {
@@ -413,7 +412,6 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
     @Override
     protected TooltipStats readTooltipStats() {
         TooltipStats stats = super.readTooltipStats();
-        // Why: smelting runs in checkProcessing with a fixed duration, so the processing logic's speed never applies.
         return new TooltipStats(
             stats.parallels(),
             stats.speed() * FURNACE_RECIPE_DURATION / SMELTING_DURATION,

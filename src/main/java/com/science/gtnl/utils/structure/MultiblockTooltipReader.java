@@ -68,18 +68,15 @@ public class MultiblockTooltipReader {
 
     private static final int MAX_STRUCTURE_TIERS = 5;
     private static final int MAX_PROJECTOR_STACK = 64;
-    // Why: two steps that add the same blocks tell a repeated layer apart from a one-off larger variant.
     private static final int MIN_LAYERED_SIZES = 3;
     private static final int MAX_INFO_LINES = 64;
     private static final Pattern FORMAT_PLACEHOLDER = Pattern.compile("%(\\d+\\$)?[sd]");
     private static final int TIER_PROBES = 2;
-    // Why: four tiers tell a steady step or factor apart from curves such as 2^tier, which three tiers cannot.
     private static final int BONUS_PROBE_TIERS = 4;
     private static final double BONUS_TOLERANCE = 1e-6;
     private static final int FIRST_VOLTAGE_PROBE_TIER = 1;
     private static final int LOWEST_PROBE_TIER = 0;
     private static final int FIRST_GLASS_PROBE_TIER = 3;
-    // Why: GTM machines start their parallel controller bonus one tier late, at MV.
     public static final int FIRST_PARALLEL_CONTROLLER_PROBE_TIER = 2;
     private static final int MAX_JOINED_TIER_NAMES = 2;
     public static final String NAME_SEPARATOR = " / ";
@@ -96,7 +93,6 @@ public class MultiblockTooltipReader {
             GTStructureChannels.HEATING_COIL.get(),
             GTNLStructureChannels.STRUCTURE_RENDER.get()));
     private static final int MAX_MACHINE_MODES = 16;
-    // Why: StructureLib only returns bare lang keys, so hatches are recognised by the key families used for hatches.
     private static final String[] HATCH_KEY_PREFIXES = { "GT5U.MBTT.", "gt.blockmachines.", "hatch_type_",
         "gtnl.structure.hatch.", "gtnl.hatch." };
     private static final HatchElement[] HATCH_ORDER = { HatchElement.Energy, HatchElement.ExoticEnergy,
@@ -108,7 +104,6 @@ public class MultiblockTooltipReader {
 
     private static Map<String, IStructureChannels> knownChannels() {
         Map<String, IStructureChannels> channels = new HashMap<>();
-        // Why: several GT channels share the "casing" id, and GTNL machines only use it as TIER_CASING.
         channels.put(GTStructureChannels.TIER_CASING.get(), GTStructureChannels.TIER_CASING);
         for (IStructureChannels channel : GTStructureChannels.values()) channels.putIfAbsent(channel.get(), channel);
         for (IStructureChannels channel : GTNLStructureChannels.values()) channels.putIfAbsent(channel.get(), channel);
@@ -124,7 +119,7 @@ public class MultiblockTooltipReader {
         }
     }
 
-    // Why: NEI warms tooltips on worker threads, so two threads can dry run the same prototype at once.
+    // NEI builds tooltips on worker threads, so two threads can dry run the same prototype at once.
     public static <T extends MTEEnhancedMultiBlockBase<T>, R> R withPrototype(T machine, Function<T, R> read) {
         T prototype = prototypeOf(machine);
         synchronized (prototype) {
@@ -132,7 +127,6 @@ public class MultiblockTooltipReader {
         }
     }
 
-    // Why: GTNL machines name their lang keys after their name key or, when it is GT's default, after the class.
     public static String keyPrefixOf(MTEEnhancedMultiBlockBase<?> machine) {
         String nameKey = machine.getLocalNameKey();
         if (nameKey.startsWith(GTNL_KEY_PREFIX) && nameKey.endsWith(NAME_KEY_SUFFIX)) {
@@ -220,7 +214,6 @@ public class MultiblockTooltipReader {
         }
     }
 
-    // Why: a machine without a recipe type key is named after the recipe maps of all its modes.
     private static <T extends MTEEnhancedMultiBlockBase<T>> String recipeMapNames(T machine, T controller) {
         Set<String> names = new LinkedHashSet<>();
         int original = controller.machineMode;
@@ -298,7 +291,6 @@ public class MultiblockTooltipReader {
                 MarkdownTooltipLoader.STANDARD
                     .loadStandardPath(new ResourceLocation(ScienceNotLeisure.RESOURCE_ROOT_ID, name), vars));
         } catch (RuntimeException e) {
-            // Why: GT throws with an IOException cause when no language has the file, as for lang-file descriptions.
             if (!(e.getCause() instanceof IOException)) {
                 ScienceNotLeisure.LOG.warn("Cannot parse the markdown tooltip {}", name, e);
             }
@@ -331,7 +323,6 @@ public class MultiblockTooltipReader {
     private static void addPlainLine(List<String> lines, String key) {
         if (!StatCollector.canTranslate(key)) return;
         String line = StatCollector.translateToLocal(key);
-        // Why: a line with a format placeholder needs values from code, so the machine adds it itself.
         if (!FORMAT_PLACEHOLDER.matcher(line)
             .find()) lines.add(line);
     }
@@ -345,12 +336,10 @@ public class MultiblockTooltipReader {
         }
     }
 
-    // Why: a machine without processing logic runs no recipes, so recipe numbers would mislead.
     public static boolean runsRecipes(MTEEnhancedMultiBlockBase<?> machine, Supplier<ProcessingLogic> logic) {
         try {
             return logic.get() != null;
         } catch (RuntimeException e) {
-            // Why: only a machine that builds a processing logic can fail to build one on the worldless prototype.
             ScienceNotLeisure.LOG.debug("Cannot build the processing logic of {} for its tooltip", nameOf(machine), e);
             return true;
         }
@@ -429,13 +418,11 @@ public class MultiblockTooltipReader {
         if (probes == null) return;
         addBonus(bonuses, part, BonusStat.PARALLEL, values(probes, TooltipStats::parallels), true);
         Double speedStep = steadyStep(values(probes, TooltipStats::speed), false);
-        // Why: only a fixed speed gain per tier reads as speed, like GT's autoclave; other formulas cut recipe time.
         if (speedStep != null) bonuses.add(new TierBonus(part, BonusStat.SPEED, false, speedStep, true));
         else addBonus(bonuses, part, BonusStat.DURATION, durations(probes), false);
         addBonus(bonuses, part, BonusStat.ENERGY, values(probes, TooltipStats::energyUsage), false);
     }
 
-    // Why: probing tiers a built machine can have keeps formulas that clamp lower tiers from hiding the bonus.
     public static int firstProbeTier(TieredPart part) {
         return switch (part) {
             case VOLTAGE -> FIRST_VOLTAGE_PROBE_TIER;
@@ -461,7 +448,6 @@ public class MultiblockTooltipReader {
         return values;
     }
 
-    // Why: recipe time steps are shown as the code writes them, such as 2% for a duration modifier lowered by 0.02.
     public static double[] durations(TooltipStats[] probes) {
         return values(probes, stats -> 1 / stats.speed());
     }
@@ -519,7 +505,7 @@ public class MultiblockTooltipReader {
     private static <T extends MTEEnhancedMultiBlockBase<T>> T prototypeOf(T machine) {
         IGregTechTileEntity base = machine.getBaseMetaTileEntity();
         if (base == null) return machine;
-        // Why: the dry runs below must never touch a machine that is built in a world.
+        // The dry runs below must never touch a machine that is built in a world.
         IMetaTileEntity prototype = GregTechAPI.METATILEENTITIES[base.getMetaTileID()];
         return machine.getClass()
             .isInstance(prototype) ? (T) prototype : machine;
@@ -538,7 +524,6 @@ public class MultiblockTooltipReader {
         int materialTiers = rules == null ? 0 : rules.getStructureTooltipMaterialTiers();
         CheckRecord checks = StructureTooltipHooks.recordChecks(controller);
 
-        // Why: StructureLib shares one air and one non-air element, which '-', '+' and custom air characters all use.
         IStructureElement<T> air = StructureUtility.isAir();
         IStructureElement<T> anyBlock = StructureUtility.notAir();
         Predicate<IStructureElement<T>> solid = element -> element != air && element != anyBlock;
@@ -603,7 +588,6 @@ public class MultiblockTooltipReader {
         Set<String> channelNames) {
         List<List<PieceCall>> sizes = new ArrayList<>();
         Set<PieceCall> previous = Collections.emptySet();
-        // Why: some machines clamp small projector sizes to a minimum, so equal sizes are skipped instead of ending.
         for (int stackSize = 1; stackSize <= MAX_PROJECTOR_STACK; stackSize++) {
             List<PieceCall> calls = StructureTooltipHooks.recordConstruct(controller, stackSize, channelNames);
             if (calls.isEmpty()) break;
@@ -628,7 +612,6 @@ public class MultiblockTooltipReader {
         return tiers;
     }
 
-    // Why: a taller tower moves its top piece up instead of adding to it, so each size is compared as a whole.
     private static <T> List<Cell<T>> layerCells(IStructureDefinition<T> definition, List<List<PieceCall>> sizes,
         Predicate<IStructureElement<T>> kept) {
         if (sizes.size() < MIN_LAYERED_SIZES || isAdditive(sizes)) return null;
@@ -719,7 +702,6 @@ public class MultiblockTooltipReader {
         return new Size(max[0] - min[0] + 1, max[1] - min[1] + 1, max[2] - min[2] + 1);
     }
 
-    // Why: GT marks a structure hollow when it needs air inside, so air walled in on both horizontal axes counts.
     private static <T> boolean isHollow(List<List<Cell<T>>> tierCells, List<Cell<T>> airCells) {
         Map<Line, int[]> spansAlongA = new HashMap<>();
         Map<Line, int[]> spansAlongC = new HashMap<>();
@@ -814,9 +796,8 @@ public class MultiblockTooltipReader {
 
     private static <T> List<String> describe(T controller, IStructureElement<T> element) {
         try {
-            List<String> keys = element.getDescription(controller);
+            List<String> keys = StructureTooltipHooks.describe(controller, element);
             if (keys != null && !keys.isEmpty()) return keys;
-            // Why: ofFrame(Materials) has no description but reports its frame stack without touching the world.
             List<String> placed = placedNames(controller, element, 1);
             return placed == null ? Collections.emptyList() : placed;
         } catch (RuntimeException e) {
@@ -830,7 +811,6 @@ public class MultiblockTooltipReader {
         List<String> tierNames) {
         List<String> names = new ArrayList<>();
         for (String key : keys) {
-            // Why: some items, such as GT frame boxes, build their names in code and have no lang entry for them.
             if (!StatCollector.canTranslate(key)) return placedNamesOr(controller, element, tierNames, keys);
             names.add(StatCollector.translateToLocal(key));
         }
@@ -866,11 +846,9 @@ public class MultiblockTooltipReader {
             ScienceNotLeisure.LOG.debug("Cannot probe the block tiers of {} for its tooltip", nameOf(controller), e);
             return null;
         }
-        // Why: a tiered element places a different block for each projector tier; a choice of blocks places them all.
         return new HashSet<>(names).size() > 1 ? names : null;
     }
 
-    // Why: casing tiers are named after the blocks of the one tiered element whose sub-channel is not glass or coils.
     private static <T> IStructureElement<T> casingElement(T controller,
         Map<IStructureElement<T>, Set<String>> elementChannels) {
         IStructureElement<T> found = null;
@@ -888,7 +866,6 @@ public class MultiblockTooltipReader {
         return names == null ? Collections.emptyList() : names;
     }
 
-    // Why: casing tiers that are metas of one block take the block's own name, which leaves out the tier.
     private static <T> String casingName(T controller, IStructureElement<T> casing) {
         if (casing == null) return null;
         Block block = null;

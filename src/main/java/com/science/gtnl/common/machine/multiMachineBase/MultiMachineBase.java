@@ -104,10 +104,9 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     public static final Optional<Byte>[] HATCH_COLOR_OPTIONS = createHatchColorOptions();
     private static final String PARALLEL_CONTROLLER_TOOLTIP_KEY = "gtnl.structure.tooltip.parallel_controller";
     protected static final String WIRELESS_UPGRADE_TOOLTIP_KEY = "gtnl.structure.tooltip.wireless_upgrade";
-    // Why: GT's addGlassEnergyLimitInfo(int) builds this sentence but is deprecated.
     private static final String GLASS_LIMIT_TOOLTIP_KEY = "GT5U.MBTT.Structure.GlassEnergyLimit";
     private static final String GLASS_LIMIT_TIER_TOOLTIP_KEY = "GT5U.MBTT.Structure.GlassEnergyLimitTier";
-    // Why: GT joins the two halves with a fixed English comma, which reads wrong in other languages.
+    // GT joins the two halves with a fixed English comma, which reads wrong in other languages.
     private static final String GLASS_LIMIT_LINE_KEY = "gtnl.structure.tooltip.glass_energy_limit";
     private static final String CASING_LIMIT_TOOLTIP_KEY = "gtnl.structure.tooltip.casing_energy_limit";
     private static final String CASING_LIMIT_UNLOCK_TOOLTIP_KEY = CASING_LIMIT_TOOLTIP_KEY + ".unlock";
@@ -141,14 +140,14 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     public int mParallelTier = 0;
     public int mEnergyHatchTier = 0;
     public double mConfigSpeedBoost = 1;
-    private String tooltipCasingName;
+    public String tooltipCasingName;
 
     @Getter
     @Setter
     public HeatingCoilLevel mCoilLevel = HeatingCoilLevel.None;
     public int mHeatingCapacity = 0;
-    private int tooltipVoltageTier = NO_TOOLTIP_TIER;
-    private int tooltipParallelTier = NO_TOOLTIP_TIER;
+    public int tooltipVoltageTier = NO_TOOLTIP_TIER;
+    public int tooltipParallelTier = NO_TOOLTIP_TIER;
 
     public MultiMachineBase(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -538,7 +537,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     public void resetParallelTier() {
-        // Why: tooltip probes give the hatchless prototype a parallel controller tier that a reset must not clear.
+        // Tooltip probes set a parallel tier on the hatchless prototype, which a reset must keep.
         mParallelTier = tooltipParallelTier == NO_TOOLTIP_TIER ? 0 : tooltipParallelTier;
     }
 
@@ -623,7 +622,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     @Override
     public void setupProcessingLogic(ProcessingLogic logic) {
         super.setupProcessingLogic(logic);
-        // Why: a machine's own processing logic would otherwise keep GT's default instead of getMaxTierSkip.
         logic.setMaxTierSkips(getMaxTierSkip());
     }
 
@@ -681,7 +679,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     @Override
     public OptionalInt getTooltipTierSkips() {
         int skips = getMaxTierSkip();
-        // Why: one tier skip is GT's own default, which GT's multiblock tooltips leave unsaid.
         return skips == ONE_TIER_SKIP ? OptionalInt.empty() : OptionalInt.of(skips);
     }
 
@@ -691,7 +688,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         GTNLOverclockCalculator calculator = logic.createOverclockCalculator(heatProbeRecipe());
         if (!calculator.heatOC && !calculator.heatDiscount) return null;
         boolean usesRecipeHeat = calculator.recipeHeat == HEAT_PROBE_RECIPE_HEAT;
-        // Why: without the recipe's heat the calculator applies the same heat overclocks to every recipe.
         int freePerfectOverclocks = calculator.heatOC && !usesRecipeHeat ? Math
             .max(0, (calculator.machineHeat - calculator.recipeHeat) / GTNLOverclockCalculator.HEAT_OVERCLOCK_THRESHOLD)
             : 0;
@@ -705,7 +701,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
             freePerfectOverclocks);
     }
 
-    // Why: the overclock calculator only shows which heat rules it applies once it is built for a recipe.
     private static GTRecipe heatProbeRecipe() {
         return new GTRecipe(
             new ItemStack[0],
@@ -742,7 +737,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     protected record CasingVoltageLimit(int tiersAbove, int unlockVoltageTier) {}
 
-    // Why: only a cap a fixed number of tiers above the casing fits one tooltip line, so other caps give null.
     protected CasingVoltageLimit casingVoltageLimit() {
         int casing = mCasingTier;
         try {
@@ -763,7 +757,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         }
     }
 
-    // Why: casings that cap the voltage are component assembly line casings, whose tier 0 is LV.
     protected static int casingVoltageTier(int casingTier) {
         return casingTier + 1;
     }
@@ -796,7 +789,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         int glass = mGlassTier;
         int casing = mCasingTier;
         int parallel = mParallelTier;
-        // Why: the prototype has no coils, glass or casings, which their formulas would read as a penalty.
         mCoilLevel = HeatingCoilLevel.getFromTier((byte) tierOf(probed, TieredPart.COIL, tier));
         mGlassTier = tierOf(probed, TieredPart.GLASS, tier);
         mCasingTier = tierOf(probed, TieredPart.CASING, tier);
@@ -877,7 +869,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         return effects;
     }
 
-    // Why: a stat that changes by no steady step or factor has no number to show, so only its direction is named.
     private static void addParallelControllerEffect(List<String> effects, List<TierBonus> bonuses, boolean changes,
         String fallbackSuffix, BonusStat... stats) {
         List<BonusStat> shown = Arrays.asList(stats);
@@ -1473,7 +1464,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
                 return totalInjected;
             }
 
-            // Why: one write per hatch; a per-amp loop runs millions of times a tick on high-amp laser dynamos
+            // One write per hatch; a per-amp loop runs millions of times a tick on high-amp laser dynamos.
             long energy = Math.min(leftToInject, dynamo.maxEUOutput() * dynamo.maxAmperesOut());
             dynamo.getBaseMetaTileEntity()
                 .increaseStoredEnergyUnits(energy, false);
@@ -1730,7 +1721,6 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     @Override
     public long getMaxInputVoltage() {
-        // Why: tooltip probes run on the prototype, which has no energy hatch to read a voltage from.
         if (tooltipVoltageTier != NO_TOOLTIP_TIER) return GTValues.V[tooltipVoltageTier];
         long rVoltage = 0;
         for (MTEHatchEnergy tHatch : GTUtility.validMTEList(mEnergyHatches)) rVoltage += tHatch.getBaseMetaTileEntity()

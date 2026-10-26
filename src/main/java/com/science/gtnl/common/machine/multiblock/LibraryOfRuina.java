@@ -120,7 +120,6 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implemen
             .addElement('H', GTNLCasings.FusionGlass.asElement())
             .addElement(
                 'I',
-                // Why: the water turns into a portal once the structure forms, so players only ever place water.
                 StructureUtility.withDescription(
                     Collections.singletonList(Blocks.water.getUnlocalizedName() + ".name"),
                     StructureUtility.ofChain(
@@ -239,7 +238,7 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implemen
     public void replaceWaterWithPortal() {
         IGregTechTileEntity aBaseMetaTileEntity = this.getBaseMetaTileEntity();
         World world = aBaseMetaTileEntity.getWorld();
-        // Why: the automatic tooltip runs the structure check on a prototype that has no world.
+        // Tooltip prototypes have no world.
         if (world == null) return;
         int baseX = aBaseMetaTileEntity.getXCoord();
         int baseY = aBaseMetaTileEntity.getYCoord();
@@ -278,7 +277,7 @@ public class LibraryOfRuina extends GTMMultiMachineBase<LibraryOfRuina> implemen
     public void replacePortalWithWater() {
         IGregTechTileEntity aBaseMetaTileEntity = this.getBaseMetaTileEntity();
         World world = aBaseMetaTileEntity.getWorld();
-        // Why: the automatic tooltip runs the structure check on a prototype that has no world.
+        // Tooltip prototypes have no world.
         if (world == null) return;
         int baseX = aBaseMetaTileEntity.getXCoord();
         int baseY = aBaseMetaTileEntity.getYCoord();

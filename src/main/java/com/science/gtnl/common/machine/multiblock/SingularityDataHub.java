@@ -406,7 +406,6 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
 
     @Override
     public TooltipStats getTooltipStats() {
-        // Why: this machine stores items and runs no recipes, so recipe numbers would mislead.
         return null;
     }
 

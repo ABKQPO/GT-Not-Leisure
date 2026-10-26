@@ -60,7 +60,7 @@ import vazkii.botania.common.brew.ModPotions;
 @IMetaTileEntity.SkipGenerateDescription
 public class SteamBeaconModule extends SteamElevatorModuleBase {
 
-    private static final String[] TIER_TITLES = { "basic", "advanced", "elite" };
+    public static final String[] TIER_TITLES = { "basic", "advanced", "elite" };
 
     public static final int CONFIG_WINDOW_ID = 14;
     public static final UITexture SPEED_EFFECT = UITexture
