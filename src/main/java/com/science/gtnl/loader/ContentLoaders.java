@@ -69,6 +69,7 @@ public class ContentLoaders {
 
     public static void loadComplete() {
         run("loadComplete", IContentLoader::loadComplete);
+        CompatSnapshot.writeIfRequested();
     }
 
     public static void serverAboutToStart() {
