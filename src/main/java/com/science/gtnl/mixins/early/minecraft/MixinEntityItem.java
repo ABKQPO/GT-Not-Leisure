@@ -6,7 +6,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -36,20 +35,13 @@ public abstract class MixinEntityItem extends Entity {
 
     @Inject(method = "onUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;onUpdate()V"))
     private void applyFireImmunity(CallbackInfo ci) {
-        if (ticksExisted == 1) {
-            if (getEntityItem() != null) {
-                int meta = getEntityItem().getItemDamage();
-                if (getEntityItem().getItem() instanceof PortableItem
-                    && (meta == PortableItem.PortableType.OBSIDIAN.getMeta()
-                        || meta == PortableItem.PortableType.NETHERITE.getMeta()
-                        || meta == PortableItem.PortableType.DARKSTEEL.getMeta())) {
-                    this.isImmuneToFire = true;
-                    this.fireResistance = Integer.MAX_VALUE;
-                } else if (isImmuneToFire) {
-                    this.isImmuneToFire = false;
-                    this.fireResistance = 1;
-                }
-            }
+        if (ticksExisted != 1 || getEntityItem() == null) return;
+        if (PortableItem.isFireproof(getEntityItem())) {
+            this.isImmuneToFire = true;
+            this.fireResistance = Integer.MAX_VALUE;
+        } else if (isImmuneToFire) {
+            this.isImmuneToFire = false;
+            this.fireResistance = 1;
         }
     }
 
@@ -103,51 +95,6 @@ public abstract class MixinEntityItem extends Entity {
 
     @Inject(method = "onUpdate", at = @At("TAIL"))
     private void onUpdateShimmerLift(CallbackInfo ci) {
-        EntityItem item = (EntityItem) (Object) this;
-        NBTTagCompound tag = item.getEntityData();
-
-        if (!tag.getBoolean("ShimmerConverted")) return;
-
-        World world = item.worldObj;
-        int x = MathHelper.floor_double(item.posX);
-        int y = MathHelper.floor_double(item.posY);
-        int z = MathHelper.floor_double(item.posZ);
-
-        boolean isInShimmer = false;
-
-        if (world.blockExists(x, y, z)) {
-            Block blockAtY = world.getBlock(x, y, z);
-            if (blockAtY instanceof BlockShimmerFluid) {
-                isInShimmer = true;
-            }
-        }
-
-        if (!isInShimmer && world.blockExists(x, y - 1, z)) {
-            Block blockBelow = world.getBlock(x, y - 1, z);
-            if (blockBelow instanceof BlockShimmerFluid) {
-                isInShimmer = true;
-                y = y - 1;
-            }
-        }
-
-        if (!isInShimmer) return;
-
-        double fluidTopY = y + 1.0;
-        double targetY = fluidTopY + 0.95;
-        double dy = targetY - item.posY;
-
-        if (dy > 0.05) {
-            item.motionY = Math.min(0.07, dy * 0.15);
-            item.motionX = 0;
-            item.motionZ = 0;
-            item.velocityChanged = true;
-            item.fallDistance = 0f;
-            item.onGround = false;
-        } else {
-            item.motionY = 0;
-            item.motionX = 0;
-            item.motionZ = 0;
-            item.velocityChanged = true;
-        }
+        BlockShimmerFluid.liftConvertedItem((EntityItem) (Object) this);
     }
 }

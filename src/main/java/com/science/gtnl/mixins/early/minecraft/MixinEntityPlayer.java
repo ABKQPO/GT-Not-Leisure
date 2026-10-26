@@ -1,10 +1,6 @@
 package com.science.gtnl.mixins.early.minecraft;
 
-import java.util.List;
-import java.util.UUID;
-
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLeashKnot;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -22,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.science.gtnl.api.mixinHelper.IAnchorRespawn;
 import com.science.gtnl.api.mixinHelper.ILeashedToEntity;
+import com.science.gtnl.common.entity.EntityPlayerLeashKnot;
 
 @Mixin(value = EntityPlayer.class, remap = true)
 public abstract class MixinEntityPlayer extends EntityLivingBase implements ILeashedToEntity, IAnchorRespawn {
@@ -161,37 +158,14 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements ILea
     @Unique
     public void gtnl$recreateLeash() {
         if (this.gtnl$isLeashed && this.gtnl$nbtTagCompound != null) {
-            if (this.gtnl$nbtTagCompound.hasKey("UUIDMost", 4) && this.gtnl$nbtTagCompound.hasKey("UUIDLeast", 4)) {
-                UUID uuid = new UUID(
-                    this.gtnl$nbtTagCompound.getLong("UUIDMost"),
-                    this.gtnl$nbtTagCompound.getLong("UUIDLeast"));
-                List<EntityLivingBase> list = this.worldObj
-                    .getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(10.0D, 10.0D, 10.0D));
-
-                for (EntityLivingBase entitylivingbase : list) {
-                    if (entitylivingbase.getUniqueID()
-                        .equals(uuid)) {
-                        this.gtnl$leashedToEntity = entitylivingbase;
-                        break;
-                    }
-                }
-            } else if (this.gtnl$nbtTagCompound.hasKey("X", 99) && this.gtnl$nbtTagCompound.hasKey("Y", 99)
-                && this.gtnl$nbtTagCompound.hasKey("Z", 99)) {
-                    int i = this.gtnl$nbtTagCompound.getInteger("X");
-                    int j = this.gtnl$nbtTagCompound.getInteger("Y");
-                    int k = this.gtnl$nbtTagCompound.getInteger("Z");
-                    EntityLeashKnot entityleashknot = EntityLeashKnot.getKnotForBlock(this.worldObj, i, j, k);
-
-                    if (entityleashknot == null) {
-                        entityleashknot = EntityLeashKnot.func_110129_a(this.worldObj, i, j, k);
-                    }
-
-                    this.gtnl$leashedToEntity = entityleashknot;
-                } else {
-                    this.gtnl$clearLeashed(false, true);
-                }
+            if (EntityPlayerLeashKnot.namesHolder(this.gtnl$nbtTagCompound)) {
+                Entity holder = EntityPlayerLeashKnot
+                    .findHolder((EntityPlayer) (Object) this, this.gtnl$nbtTagCompound);
+                if (holder != null) this.gtnl$leashedToEntity = holder;
+            } else {
+                this.gtnl$clearLeashed(false, true);
+            }
         }
-
         this.gtnl$nbtTagCompound = null;
     }
 

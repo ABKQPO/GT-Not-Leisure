@@ -1,7 +1,9 @@
 package com.science.gtnl.utils.text;
 
+import java.io.File;
 import java.util.Map;
 
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.config.Property;
 
 import com.science.gtnl.common.material.GTNLMaterials;
@@ -437,5 +439,25 @@ public class LanguageLoader {
             AccessorGTLanguageManager.callMarkFileDirty();
         }
         return translation;
+    }
+
+    // On a client with no language selected yet GT would reload nothing; it gets English instead. Returns whether GT's
+    // own reload is to be skipped.
+    public static boolean reloadGTLanguageInEnglishIfNoneSelected(Map<String, String> languageMap) {
+        if (!GregTechAPI.sFullLoadFinished || GTLanguageManager.sEnglishFile == null) return false;
+
+        Minecraft minecraft = Minecraft.getMinecraft();
+        if (minecraft == null || minecraft.getLanguageManager() == null
+            || minecraft.getLanguageManager()
+                .getCurrentLanguage() != null) {
+            return false;
+        }
+
+        File configFile = GTLanguageManager.sEnglishFile.getConfigFile();
+        if (configFile == null) return true;
+
+        GTLanguageManager.LanguageCode = "en_US";
+        GTLanguageManager.reloadLanguageWithEnglish(configFile.getParentFile(), languageMap);
+        return true;
     }
 }

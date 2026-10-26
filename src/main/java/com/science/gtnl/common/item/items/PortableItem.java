@@ -240,6 +240,14 @@ public class PortableItem extends Item {
         saveFurnaceInventory.save(stack, inv);
     }
 
+    // Obsidian, netherite and dark steel chests survive fire, lava and explosions as dropped items.
+    public static boolean isFireproof(ItemStack stack) {
+        if (stack == null || !(stack.getItem() instanceof PortableItem)) return false;
+        int meta = stack.getItemDamage();
+        return meta == PortableType.OBSIDIAN.getMeta() || meta == PortableType.NETHERITE.getMeta()
+            || meta == PortableType.DARKSTEEL.getMeta();
+    }
+
     public static PortableType getPortableType(@NotNull ItemStack stack) {
         return PortableType.byMeta(stack.getItemDamage());
     }
@@ -279,14 +287,7 @@ public class PortableItem extends Item {
         ItemStack stack = entityItem.getEntityItem();
         if (stack == null) return;
 
-        if (!(stack.getItem() instanceof PortableItem)) return;
-
-        int meta = stack.getItemDamage();
-
-        boolean isProtected = meta == PortableType.OBSIDIAN.getMeta() || meta == PortableType.NETHERITE.getMeta()
-            || meta == PortableType.DARKSTEEL.getMeta();
-
-        if (!isProtected) return;
+        if (!isFireproof(stack)) return;
 
         DamageSource source = event.source;
         if (source.isFireDamage() || source.isExplosion()) {

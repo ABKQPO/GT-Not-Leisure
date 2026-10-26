@@ -1,6 +1,11 @@
 package com.science.gtnl.common.entity;
 
+import java.util.List;
+import java.util.UUID;
+
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLeashKnot;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -94,4 +99,33 @@ public class EntityPlayerLeashKnot extends EntityLeashKnot {
         return false;
     }
 
+    // Whether a player's saved leash names what it was tied to: a living entity by UUID, or a fence by position.
+    public static boolean namesHolder(NBTTagCompound tag) {
+        return tag.hasKey("UUIDMost", 4) && tag.hasKey("UUIDLeast", 4)
+            || tag.hasKey("X", 99) && tag.hasKey("Y", 99) && tag.hasKey("Z", 99);
+    }
+
+    // The living entity within 10 blocks the saved leash names, or the knot on its fence, made again if gone.
+    public static Entity findHolder(EntityPlayer player, NBTTagCompound tag) {
+        if (tag.hasKey("UUIDMost", 4) && tag.hasKey("UUIDLeast", 4)) {
+            UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));
+            List<EntityLivingBase> list = player.worldObj
+                .getEntitiesWithinAABB(EntityLivingBase.class, player.boundingBox.expand(10.0D, 10.0D, 10.0D));
+            for (EntityLivingBase entitylivingbase : list) {
+                if (entitylivingbase.getUniqueID()
+                    .equals(uuid)) {
+                    return entitylivingbase;
+                }
+            }
+            return null;
+        }
+        int i = tag.getInteger("X");
+        int j = tag.getInteger("Y");
+        int k = tag.getInteger("Z");
+        EntityLeashKnot entityleashknot = EntityLeashKnot.getKnotForBlock(player.worldObj, i, j, k);
+        if (entityleashknot == null) {
+            entityleashknot = EntityLeashKnot.func_110129_a(player.worldObj, i, j, k);
+        }
+        return entityleashknot;
+    }
 }

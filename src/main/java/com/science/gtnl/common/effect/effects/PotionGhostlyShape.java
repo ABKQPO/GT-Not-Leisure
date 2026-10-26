@@ -149,4 +149,27 @@ public class PotionGhostlyShape extends EffectBase {
             player.addChatMessage(new ChatComponentTranslation("gtnl.effect.ghostly_shape.cancelled"));
         }
     }
+
+    // The closest player in range that is not under the effect, for mobs looking for a player.
+    public static EntityPlayer closestVisiblePlayer(List<EntityPlayer> players, EntityPlayer closest, double x,
+        double y, double z, double range) {
+        EntityPlayer replacement = null;
+        double closestDistanceSq = -1.0D;
+
+        for (EntityPlayer candidate : players) {
+            if (candidate == closest || !candidate.isEntityAlive()
+                || candidate.capabilities.disableDamage
+                || candidate.isPotionActive(EffectLoader.ghostly_shape)) {
+                continue;
+            }
+
+            double distanceSq = candidate.getDistanceSq(x, y, z);
+            if ((range < 0.0D || distanceSq < range * range)
+                && (closestDistanceSq < 0.0D || distanceSq < closestDistanceSq)) {
+                closestDistanceSq = distanceSq;
+                replacement = candidate;
+            }
+        }
+        return replacement;
+    }
 }

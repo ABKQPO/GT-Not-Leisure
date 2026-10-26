@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.science.gtnl.common.effect.effects.PotionGhostlyShape;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.EffectLoader;
 
@@ -27,28 +28,8 @@ public abstract class MixinWorldGhostlyShape {
     private void gtnl$ignoreGhostlyShapePlayers(double x, double y, double z, double range,
         CallbackInfoReturnable<EntityPlayer> cir) {
         if (!MainConfig.effect.enableGhostlyShape) return;
-
         EntityPlayer closest = cir.getReturnValue();
         if (closest == null || !closest.isPotionActive(EffectLoader.ghostly_shape)) return;
-
-        EntityPlayer replacement = null;
-        double closestDistanceSq = -1.0D;
-
-        for (EntityPlayer candidate : this.playerEntities) {
-            if (candidate == closest || !candidate.isEntityAlive()
-                || candidate.capabilities.disableDamage
-                || candidate.isPotionActive(EffectLoader.ghostly_shape)) {
-                continue;
-            }
-
-            double distanceSq = candidate.getDistanceSq(x, y, z);
-            if ((range < 0.0D || distanceSq < range * range)
-                && (closestDistanceSq < 0.0D || distanceSq < closestDistanceSq)) {
-                closestDistanceSq = distanceSq;
-                replacement = candidate;
-            }
-        }
-
-        cir.setReturnValue(replacement);
+        cir.setReturnValue(PotionGhostlyShape.closestVisiblePlayer(this.playerEntities, closest, x, y, z, range));
     }
 }

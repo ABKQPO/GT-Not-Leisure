@@ -1,18 +1,13 @@
 package com.science.gtnl.mixins.early.minecraft;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.WorldServer;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -51,43 +46,7 @@ public abstract class MixinServerConfigurationManager {
 
     @ModifyVariable(method = "respawnPlayer", at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private int modifyRespawnDimension(int originalDimension, EntityPlayerMP player) {
-        IAnchorRespawn anchor = (IAnchorRespawn) player;
-        ChunkCoordinates anchorPos = anchor.getAnchorPos();
-
-        if (anchorPos == null) {
-            return originalDimension;
-        }
-
-        int anchorDim = anchor.getAnchorDim();
-        if (anchorDim == Integer.MIN_VALUE) {
-            return originalDimension;
-        }
-
-        WorldServer world = mcServer.worldServerForDimension(anchorDim);
-        if (world == null) {
-            return originalDimension;
-        }
-
-        TileEntity tile = world.getTileEntity(anchorPos.posX, anchorPos.posY - 1, anchorPos.posZ);
-        if (!(tile instanceof TileEntityDimensionRespawnAnchor respawnAnchorTile)
-            || respawnAnchorTile.getEnergyLevel() <= 0) {
-            anchor.clearAnchorRespawn();
-            player.addChatMessage(new ChatComponentTranslation("gtnl.chat.dimension_respawn_anchor.no_spawn_point"));
-            return originalDimension;
-        }
-
-        respawnAnchorTile.consumeEnergy();
-        world.markBlockForUpdate(respawnAnchorTile.xCoord, respawnAnchorTile.yCoord, respawnAnchorTile.zCoord);
-
-        world.playSoundEffect(
-            anchorPos.posX + 0.5,
-            anchorPos.posY - 0.5,
-            anchorPos.posZ + 0.5,
-            RESOURCE_ROOT_ID + ":respawn_anchor.deplete" + (1 + world.rand.nextInt(2)),
-            1.0F,
-            1.0F);
-
-        return anchorDim;
+        return TileEntityDimensionRespawnAnchor.respawnDimension(mcServer, originalDimension, player);
     }
 
     @Redirect(

@@ -4,12 +4,18 @@ import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.config.MainConfig;
 
+import cpw.mods.fml.common.registry.GameData;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -116,4 +122,62 @@ public class AssLineRecipeHook {
 
     }
 
+    private static String stackKey(ItemStack stack) {
+        String name = GameData.getItemRegistry()
+            .getNameForObject(stack.getItem());
+        return name + "@" + stack.stackSize + "@" + Items.feather.getDamage(stack);
+    }
+
+    // A TecTech research recipe that is on the removal list: marks it removed and returns true so it is not added.
+    public static boolean removeTTRecipe(ItemStack researchItem, int totalComputationRequired,
+        int computationRequiredPerSec, int researchEUt, int researchAmperage, ItemStack output, int duration, int eut) {
+        if (researchItem == null || output == null) return false;
+        String key = stackKey(researchItem) + "@"
+            + totalComputationRequired
+            + "@"
+            + computationRequiredPerSec
+            + "@"
+            + researchEUt
+            + "@"
+            + researchAmperage;
+        List<RemovalRecipe> removals = RECIPE_TO_REMOVE.get(key);
+        if (removals == null) return false;
+        String outputItemKey = stackKey(output) + "@" + duration + "@" + eut;
+        for (RemovalRecipe removalRecipe : removals) {
+            if (Objects.equals(removalRecipe.removalKey, outputItemKey)) {
+                removalRecipe.hasNotBeenRemoved = false;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // The same for a GT assembly line recipe researched by scanning; every matching removal is marked.
+    public static boolean removeGTRecipe(ItemStack researchItem, int scanTime, ItemStack[] outputs, int duration,
+        int eut) {
+        ScienceNotLeisure.LOG.info(
+            "Hook AssemblyLine Recipe: {}",
+            GameData.getItemRegistry()
+                .getNameForObject(researchItem.getItem()));
+        List<RemovalRecipe> removals = RECIPE_TO_REMOVE.get(stackKey(researchItem) + "@" + scanTime);
+        if (removals == null) return false;
+        String outputItemKey = stackKey(outputs[0]) + "@" + duration + "@" + eut;
+        boolean removed = false;
+        for (RemovalRecipe removalRecipe : removals) {
+            if (Objects.equals(removalRecipe.removalKey, outputItemKey)) {
+                removalRecipe.hasNotBeenRemoved = false;
+                removed = true;
+            }
+        }
+        return removed;
+    }
+
+    // The shorter assembly line times of GTNL's config: the longer a recipe, the more it is cut.
+    public static int shortenedDuration(int assDuration) {
+        if (assDuration >= 200000) return assDuration / 100;
+        if (assDuration >= 40000) return assDuration / 10;
+        if (assDuration >= 10000) return assDuration / 4;
+        if (assDuration >= 4000) return assDuration / 2;
+        return assDuration;
+    }
 }
