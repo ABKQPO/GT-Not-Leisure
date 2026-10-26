@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +26,7 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.reavaritia.utils.item.ToolHelper;
+import com.science.gtnl.api.IMultiblockTooltipRules.TieredPart;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.HighwayToHellGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
@@ -61,6 +63,7 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.api.util.tooltip.TooltipHelper;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchTurbine;
 import gtPlusPlus.xmod.gregtech.common.tileentities.machines.multi.production.turbines.MTELargerTurbineBaseLegacy;
@@ -73,6 +76,7 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
     private static final int DEPTH_OFF_SET = 5;
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String HTH_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/highway_to_hell";
+    private static final String WIRELESS_GLASS_LIMIT_TOOLTIP_KEY = "gtnl.machine.highway_to_hell.wireless_glass_limit";
     private static final String[][] shape = StructureUtils.readStructureFromFile(HTH_STRUCTURE_FILE_PATH);
 
     public ArrayList<MTEHatchTurbine> mTurbineHatches = new ArrayList<>();
@@ -315,13 +319,13 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
             public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
                 if (wirelessMode) {
                     int voltageTier;
-                    if (mGlassTier < VoltageIndex.UMV) {
+                    if (mGlassTier < getGlassEnergyTierLimit()) {
                         voltageTier = GTUtility.min(mGlassTier, GTUtility.min(mParallelTier + 1, 14));
                     } else {
                         voltageTier = GTUtility.min(mParallelTier + 1, 14);
                     }
 
-                    if (recipe.mEUt > GTValues.V[voltageTier] * 4) {
+                    if (recipe.mEUt > GTValues.V[voltageTier] * WIRELESS_RECIPE_AMPERAGE) {
                         return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                     }
                 }
@@ -448,6 +452,19 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
         tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
+    }
+
+    @Override
+    public List<String> getTooltipWirelessModeLines() {
+        List<String> lines = new ArrayList<>(super.getTooltipWirelessModeLines());
+        lines.add(
+            StatCollector.translateToLocalFormatted(
+                WIRELESS_GLASS_LIMIT_TOOLTIP_KEY,
+                GTNLMultiblockTooltipBuilder.mechanicName(WIRELESS_MODE_NAME_KEY),
+                GTNLMultiblockTooltipBuilder.partTierText(TieredPart.GLASS),
+                TooltipHelper.voltageTierText(getGlassEnergyTierLimit(), false),
+                WIRELESS_RECIPE_AMPERAGE));
+        return lines;
     }
 
     @Override

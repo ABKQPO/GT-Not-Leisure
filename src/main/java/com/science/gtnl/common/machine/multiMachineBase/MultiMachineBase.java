@@ -111,6 +111,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     private static final String GLASS_LIMIT_LINE_KEY = "gtnl.structure.tooltip.glass_energy_limit";
     private static final String CASING_LIMIT_TOOLTIP_KEY = "gtnl.structure.tooltip.casing_energy_limit";
     private static final String CASING_LIMIT_UNLOCK_TOOLTIP_KEY = CASING_LIMIT_TOOLTIP_KEY + ".unlock";
+    protected static final int CASING_LIMIT_NEVER_UNLOCKS = -1;
     public static final int ONE_TIER_SKIP = 1;
     private static final int BASE_TOOLTIP_TIER = 0;
     private static final int NO_TOOLTIP_TIER = -1;
@@ -140,6 +141,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     public int mParallelTier = 0;
     public int mEnergyHatchTier = 0;
     public double mConfigSpeedBoost = 1;
+    private String tooltipCasingName;
 
     @Getter
     @Setter
@@ -721,37 +723,63 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     private List<String> casingEnergyLimitLines() {
-        int casing = mCasingTier;
         int hatch = mEnergyHatchTier;
         mEnergyHatchTier = VoltageIndex.MAX;
+        try {
+            CasingVoltageLimit limit = casingVoltageLimit();
+            if (limit == null) return Collections.emptyList();
+            String line = StatCollector
+                .translateToLocalFormatted(CASING_LIMIT_TOOLTIP_KEY, casingTierText(), limit.tiersAbove());
+            if (limit.unlockVoltageTier() == CASING_LIMIT_NEVER_UNLOCKS) return Collections.singletonList(line);
+            String unlock = TooltipHelper.voltageTierText(limit.unlockVoltageTier(), false);
+            return Arrays.asList(
+                line,
+                StatCollector.translateToLocalFormatted(CASING_LIMIT_UNLOCK_TOOLTIP_KEY, unlock, casingNameText()));
+        } finally {
+            mEnergyHatchTier = hatch;
+        }
+    }
+
+    protected record CasingVoltageLimit(int tiersAbove, int unlockVoltageTier) {}
+
+    // Why: only a cap a fixed number of tiers above the casing fits one tooltip line, so other caps give null.
+    protected CasingVoltageLimit casingVoltageLimit() {
+        int casing = mCasingTier;
         try {
             Integer tiersAbove = null;
             for (int tier = 0; tier <= TieredPart.CASING.maxTier; tier++) {
                 mCasingTier = tier;
                 int limit = GTUtility.getTier(getMachineVoltageLimit());
                 if (limit >= VoltageIndex.MAX) {
-                    if (tiersAbove == null) return Collections.emptyList();
-                    String unlock = TooltipHelper.voltageTierText(casingVoltageTier(tier), false);
-                    return Arrays.asList(
-                        StatCollector.translateToLocalFormatted(CASING_LIMIT_TOOLTIP_KEY, tiersAbove),
-                        StatCollector.translateToLocalFormatted(CASING_LIMIT_UNLOCK_TOOLTIP_KEY, unlock));
+                    return tiersAbove == null ? null : new CasingVoltageLimit(tiersAbove, casingVoltageTier(tier));
                 }
                 int above = limit - casingVoltageTier(tier);
-                if (tiersAbove != null && above != tiersAbove) return Collections.emptyList();
+                if (tiersAbove != null && above != tiersAbove) return null;
                 tiersAbove = above;
             }
-            return tiersAbove == null ? Collections.emptyList()
-                : Collections
-                    .singletonList(StatCollector.translateToLocalFormatted(CASING_LIMIT_TOOLTIP_KEY, tiersAbove));
+            return tiersAbove == null ? null : new CasingVoltageLimit(tiersAbove, CASING_LIMIT_NEVER_UNLOCKS);
         } finally {
             mCasingTier = casing;
-            mEnergyHatchTier = hatch;
         }
     }
 
     // Why: casings that cap the voltage are component assembly line casings, whose tier 0 is LV.
-    private static int casingVoltageTier(int casingTier) {
+    protected static int casingVoltageTier(int casingTier) {
         return casingTier + 1;
+    }
+
+    @Override
+    public void setTooltipCasingName(String casingName) {
+        tooltipCasingName = casingName;
+    }
+
+    protected String casingTierText() {
+        return GTNLMultiblockTooltipBuilder
+            .partTierText(Collections.singletonList(TieredPart.CASING), tooltipCasingName);
+    }
+
+    protected String casingNameText() {
+        return GTNLMultiblockTooltipBuilder.partName(TieredPart.CASING, tooltipCasingName);
     }
 
     protected TooltipStats readTooltipStats() {
@@ -906,23 +934,17 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         if (without == null || with == null) return null;
         List<String> bonuses = new ArrayList<>();
         if (rises(without.speed(), with.speed())) {
-            bonuses.add(
-                StatCollector.translateToLocalFormatted(
-                    WIRELESS_UPGRADE_TOOLTIP_KEY + ".speed",
-                    TooltipHelper.speedText(TooltipHelper.percentageFormat.format(with.speed() - without.speed()))));
+            bonuses.add(GTNLMultiblockTooltipBuilder.effectText(BonusStat.SPEED, with.speed() - without.speed()));
         }
         if (rises(with.energyUsage(), without.energyUsage())) {
             bonuses.add(
-                StatCollector.translateToLocalFormatted(
-                    WIRELESS_UPGRADE_TOOLTIP_KEY + ".energy",
-                    TooltipHelper
-                        .effText(TooltipHelper.percentageFormat.format(without.energyUsage() - with.energyUsage()))));
+                GTNLMultiblockTooltipBuilder.effectText(BonusStat.ENERGY, with.energyUsage() - without.energyUsage()));
         }
         if (bonuses.isEmpty()) return null;
         return StatCollector.translateToLocalFormatted(
             WIRELESS_UPGRADE_TOOLTIP_KEY + ".bonus",
             GTNLMultiblockTooltipBuilder.mechanicName(WIRELESS_UPGRADE_TOOLTIP_KEY),
-            GTNLMultiblockTooltipBuilder.joinPhrases(bonuses));
+            GTNLMultiblockTooltipBuilder.joinEffects(bonuses));
     }
 
     private static boolean rises(double from, double to) {

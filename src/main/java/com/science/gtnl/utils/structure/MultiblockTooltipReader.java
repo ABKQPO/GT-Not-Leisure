@@ -20,6 +20,8 @@ import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.regex.Pattern;
 
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -166,6 +168,7 @@ public class MultiblockTooltipReader {
         String keyPrefix, StructureSummary structure) {
         IMultiblockTooltipRules rules = controller instanceof IMultiblockTooltipRules machineRules ? machineRules
             : null;
+        if (rules != null) rules.setTooltipCasingName(structure == null ? null : structure.casingName());
         TooltipStats stats = null;
         List<TierBonus> bonuses = Collections.emptyList();
         List<TierThreshold> perfectFrom = Collections.emptyList();
@@ -574,6 +577,7 @@ public class MultiblockTooltipReader {
         Set<String> hatchKeys = new LinkedHashSet<>();
         for (HatchGroup hatch : hatches.values()) hatchKeys.addAll(hatch.keys);
 
+        IStructureElement<T> casing = casingElement(controller, elementChannels);
         StructureSummary summary = new StructureSummary(
             size(tierCells.subList(0, 1)),
             size(largestCells),
@@ -583,7 +587,8 @@ public class MultiblockTooltipReader {
             new ArrayList<>(hatchKeys),
             sections,
             new ArrayList<>(channels),
-            casingTierNames(controller, elementChannels),
+            casingTierNames(controller, casing),
+            casingName(controller, casing),
             layered);
         if (summary.hasMaterialTiers() && materialChannel != null
             && !summary.channels()
@@ -866,17 +871,43 @@ public class MultiblockTooltipReader {
     }
 
     // Why: casing tiers are named after the blocks of the one tiered element whose sub-channel is not glass or coils.
-    private static <T> List<String> casingTierNames(T controller,
+    private static <T> IStructureElement<T> casingElement(T controller,
         Map<IStructureElement<T>, Set<String>> elementChannels) {
-        List<String> found = Collections.emptyList();
+        IStructureElement<T> found = null;
         for (Map.Entry<IStructureElement<T>, Set<String>> entry : elementChannels.entrySet()) {
             if (!hasCasingChannel(entry.getValue())) continue;
-            List<String> names = placedTierNames(controller, entry.getKey(), TieredPart.CASING.maxTier + 1);
-            if (names == null) continue;
-            if (!found.isEmpty()) return Collections.emptyList();
-            found = names;
+            if (placedTierNames(controller, entry.getKey(), TieredPart.CASING.maxTier + 1) == null) continue;
+            if (found != null) return null;
+            found = entry.getKey();
         }
         return found;
+    }
+
+    private static <T> List<String> casingTierNames(T controller, IStructureElement<T> casing) {
+        List<String> names = casing == null ? null : placedTierNames(controller, casing, TieredPart.CASING.maxTier + 1);
+        return names == null ? Collections.emptyList() : names;
+    }
+
+    // Why: casing tiers that are metas of one block take the block's own name, which leaves out the tier.
+    private static <T> String casingName(T controller, IStructureElement<T> casing) {
+        if (casing == null) return null;
+        Block block = null;
+        try {
+            for (int tier = 1; tier <= TieredPart.CASING.maxTier + 1; tier++) {
+                Iterable<ItemStack> stacks = placedStacks(controller, casing, tier);
+                if (stacks == null) break;
+                for (ItemStack stack : stacks) {
+                    Block placed = Block.getBlockFromItem(stack.getItem());
+                    if (placed == Blocks.air || block != null && placed != block) return null;
+                    block = placed;
+                }
+            }
+        } catch (RuntimeException e) {
+            ScienceNotLeisure.LOG.debug("Cannot name the casing of {} for its tooltip", nameOf(controller), e);
+            return null;
+        }
+        if (block == null || !StatCollector.canTranslate(block.getUnlocalizedName() + ".name")) return null;
+        return block.getLocalizedName();
     }
 
     private static boolean hasCasingChannel(Set<String> channels) {
@@ -887,12 +918,17 @@ public class MultiblockTooltipReader {
     }
 
     private static <T> List<String> placedNames(T controller, IStructureElement<T> element, int tier) {
+        Iterable<ItemStack> stacks = placedStacks(controller, element, tier);
+        if (stacks == null) return null;
+        List<String> names = new ArrayList<>();
+        for (ItemStack stack : stacks) names.add(stack.getDisplayName());
+        return names;
+    }
+
+    private static <T> Iterable<ItemStack> placedStacks(T controller, IStructureElement<T> element, int tier) {
         BlocksToPlace placement = element
             .getBlocksToPlace(controller, null, 0, 0, 0, new ItemStack(Items.stick, tier), null);
-        if (placement == null || placement.getStacks() == null) return null;
-        List<String> names = new ArrayList<>();
-        for (ItemStack stack : placement.getStacks()) names.add(stack.getDisplayName());
-        return names;
+        return placement == null ? null : placement.getStacks();
     }
 
     private static void applyCasingMinimum(List<BlockGroup> groups, List<Integer> minimums) {

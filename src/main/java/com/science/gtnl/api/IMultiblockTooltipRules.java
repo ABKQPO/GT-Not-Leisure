@@ -89,6 +89,15 @@ public interface IMultiblockTooltipRules {
     }
 
     /**
+     * Receives the name of the structure's tiered casing before the tooltip lines are read, so lines about
+     * {@link TieredPart#CASING} can name the block instead of a generic casing.
+     *
+     * @param casingName localized name of the one block that every casing tier is a variant of, such as Component
+     *                   Assembly Line Casing, or null when the structure has no such block
+     */
+    default void setTooltipCasingName(String casingName) {}
+
+    /**
      * Returns localized feature lines built from the machine's own values, such as which glass tier lifts the energy
      * hatch limit, shown after the machine's own lines.
      *

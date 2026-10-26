@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
+import com.science.gtnl.api.IMultiblockTooltipRules.TieredPart;
 import com.science.gtnl.api.IWirelessEnergy;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.mixins.early.gregtech.AccessorProcessingLogic;
@@ -52,8 +53,9 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     // Why: GT ProcessingLogic's default overclock ratio, which enablePerfectOverclock overwrites for good.
     private static final double NORMAL_DURATION_DECREASE = 2.0, NORMAL_POWER_INCREASE = 4.0;
     private static final String WIRELESS_MODE_LINE_KEY = "gtnl.machine.common.wireless.mode";
-    private static final String WIRELESS_MODE_NAME_KEY = "gtnl.structure.tooltip.wireless_mode";
+    protected static final String WIRELESS_MODE_NAME_KEY = "gtnl.structure.tooltip.wireless_mode";
     private static final int WIRELESS_VOLTAGE_TIER_OFFSET = 1;
+    protected static final int WIRELESS_RECIPE_AMPERAGE = 4;
     private static final long WIRELESS_BASE_AMPERAGE = 8;
     private static final long WIRELESS_AMPERAGE_RESERVE = 2;
     // Why: four tiers tell a steady step apart from other curves, as for the other tooltip probes.
@@ -128,7 +130,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
             @NotNull
             @Override
             public CheckRecipeResult validateRecipe(@NotNull GTRecipe recipe) {
-                if (wirelessMode && recipe.mEUt > wirelessModeVoltage() * 4) {
+                if (wirelessMode && recipe.mEUt > wirelessModeVoltage() * WIRELESS_RECIPE_AMPERAGE) {
                     return CheckRecipeResultRegistry.insufficientPower(recipe.mEUt);
                 }
                 return super.validateRecipe(recipe);
@@ -338,6 +340,7 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     public List<String> getTooltipWirelessModeLines() {
         String mode = GTNLMultiblockTooltipBuilder.mechanicName(WIRELESS_MODE_NAME_KEY);
         String hatch = GTNLMultiblockTooltipBuilder.hatchName(CustomHatchElement.ParallelCon.getDescriptionLangKey());
+        String recipes = !getPerfectOC() && overclocksPerfectlyInWirelessMode() ? ".recipes.perfect_oc" : ".recipes";
         List<String> lines = new ArrayList<>(
             Arrays.asList(
                 StatCollector.translateToLocalFormatted(
@@ -345,25 +348,22 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
                     GTNLMultiblockTooltipBuilder.mechanicName(WIRELESS_UPGRADE_TOOLTIP_KEY),
                     mode),
                 wirelessPowerLine(mode, hatch),
-                StatCollector.translateToLocalFormatted(WIRELESS_MODE_LINE_KEY + ".recipes", mode)));
+                StatCollector.translateToLocalFormatted(WIRELESS_MODE_LINE_KEY + recipes, mode)));
         lines.removeIf(Objects::isNull);
-        if (!getPerfectOC() && overclocksPerfectlyInWirelessMode()) {
-            lines.add(StatCollector.translateToLocalFormatted(WIRELESS_MODE_LINE_KEY + ".perfect_oc", mode));
-        }
         return lines;
     }
 
     // Why: machines can replace the wireless mode power, so the line reads it back from the processing logic.
     private String wirelessPowerLine(String mode, String hatch) {
-        if (appliesMachineVoltageLimit()) {
-            return powerLine(mode, perTierVoltage(hatch, WIRELESS_VOLTAGE_TIER_OFFSET), perTierCurrent());
-        }
         int[] tiers = new int[WIRELESS_POWER_PROBES];
         long[] amperages = new long[WIRELESS_POWER_PROBES];
         boolean wireless = wirelessMode;
         int parallelTier = mParallelTier;
+        int casingTier = mCasingTier;
         try {
             wirelessMode = true;
+            // Why: the casing cap is written on its own, so the parallel controller steps are read above it.
+            if (appliesMachineVoltageLimit()) mCasingTier = TieredPart.CASING.maxTier;
             for (int index = 0; index < tiers.length; index++) {
                 mParallelTier = MultiblockTooltipReader.FIRST_PARALLEL_CONTROLLER_PROBE_TIER + index;
                 ProcessingLogic logic = new GTNLProcessingLogic();
@@ -375,10 +375,39 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         } finally {
             wirelessMode = wireless;
             mParallelTier = parallelTier;
+            mCasingTier = casingTier;
         }
         String voltage = voltagePhrase(hatch, tiers);
         String current = currentPhrase(amperages);
-        return voltage == null || current == null ? null : powerLine(mode, voltage, current);
+        if (voltage == null || current == null) return null;
+        if (appliesMachineVoltageLimit()) {
+            String limit = wirelessCasingLimitPhrase(voltage);
+            if (limit == null) return null;
+            voltage = limit;
+        }
+        return powerLine(mode, voltage, current);
+    }
+
+    // Why: a cap that unlocks before it reaches the top tier needs the unlock casing too, which one line cannot say.
+    private String wirelessCasingLimitPhrase(String voltage) {
+        boolean wireless = wirelessMode;
+        int parallelTier = mParallelTier;
+        try {
+            wirelessMode = true;
+            mParallelTier = VoltageIndex.MAX;
+            CasingVoltageLimit limit = casingVoltageLimit();
+            if (limit == null) return null;
+            if (limit.unlockVoltageTier() != CASING_LIMIT_NEVER_UNLOCKS
+                && limit.unlockVoltageTier() + limit.tiersAbove() < VoltageIndex.MAX) return null;
+            return StatCollector.translateToLocalFormatted(
+                WIRELESS_MODE_LINE_KEY + ".voltage.casing_limit",
+                voltage,
+                casingTierText(),
+                limit.tiersAbove());
+        } finally {
+            wirelessMode = wireless;
+            mParallelTier = parallelTier;
+        }
     }
 
     private static String powerLine(String mode, String voltage, String current) {
@@ -423,13 +452,6 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
         if (offset == 0)
             return StatCollector.translateToLocalFormatted(WIRELESS_MODE_LINE_KEY + ".current.scaled", scale);
         return StatCollector.translateToLocalFormatted(WIRELESS_MODE_LINE_KEY + ".current.per_tier", scale, -offset);
-    }
-
-    private static String perTierCurrent() {
-        return StatCollector.translateToLocalFormatted(
-            WIRELESS_MODE_LINE_KEY + ".current.per_tier",
-            WIRELESS_BASE_AMPERAGE,
-            WIRELESS_AMPERAGE_RESERVE);
     }
 
     protected boolean overclocksPerfectlyInWirelessMode() {

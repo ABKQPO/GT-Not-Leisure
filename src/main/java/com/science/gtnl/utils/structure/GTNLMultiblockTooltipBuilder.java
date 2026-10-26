@@ -250,9 +250,12 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
                 .computeIfAbsent(sameBonusAs(partsBySameBonus.keySet(), bonus), ignored -> new ArrayList<>())
                 .add(bonus.part());
         }
+        String casingName = structure == null ? null : structure.casingName();
         for (Map.Entry<TierBonus, List<TieredPart>> entry : partsBySameBonus.entrySet()) {
-            line = StatCollector
-                .translateToLocalFormatted(WITH_BONUS_KEY, line, bonusText(entry.getKey(), entry.getValue()));
+            line = StatCollector.translateToLocalFormatted(
+                WITH_BONUS_KEY,
+                line,
+                bonusText(entry.getKey(), entry.getValue(), casingName));
         }
         addInfo(line);
     }
@@ -272,30 +275,50 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
     }
 
     public static String partTierText(List<TieredPart> parts) {
+        return partTierText(parts, null);
+    }
+
+    public static String partTierText(List<TieredPart> parts, String casingName) {
         List<String> names = new ArrayList<>();
-        for (TieredPart part : parts) names.add(TooltipHelper.tierText(StatCollector.translateToLocal(part.langKey)));
+        for (TieredPart part : parts) names.add(partName(part, casingName));
         return StatCollector.translateToLocalFormatted(PART_TIER_KEY, joinPhrases(names));
     }
 
+    public static String partName(TieredPart part, String casingName) {
+        boolean namedCasing = part == TieredPart.CASING && casingName != null;
+        return TooltipHelper.tierText(namedCasing ? casingName : StatCollector.translateToLocal(part.langKey));
+    }
+
     public static String perTierText(TieredPart part, List<String> effects) {
+        return StatCollector.translateToLocalFormatted(BONUS_KEY, partTierText(part), joinEffects(effects));
+    }
+
+    public static String joinEffects(List<String> effects) {
         String joined = effects.get(0);
         for (int i = 1; i < effects.size(); i++) {
             joined = StatCollector.translateToLocalFormatted(WITH_BONUS_KEY, joined, effects.get(i));
         }
-        return StatCollector.translateToLocalFormatted(BONUS_KEY, partTierText(part), joined);
+        return joined;
     }
 
     public static String effectText(TierBonus bonus) {
-        String text = StatCollector.translateToLocalFormatted(
-            EFFECT_KEY + bonus.stat()
-                .name()
-                .toLowerCase(Locale.ROOT),
-            changeText(bonus));
+        String text = effectText(bonus.stat(), changeText(bonus));
         return bonus.multiplicative() ? StatCollector.translateToLocalFormatted(COMPOUND_KEY, text) : text;
     }
 
-    private static String bonusText(TierBonus bonus, List<TieredPart> parts) {
-        String part = partTierText(parts);
+    public static String effectText(BonusStat stat, double change) {
+        return effectText(stat, changeText(stat, change, false));
+    }
+
+    private static String effectText(BonusStat stat, String change) {
+        return StatCollector.translateToLocalFormatted(
+            EFFECT_KEY + stat.name()
+                .toLowerCase(Locale.ROOT),
+            change);
+    }
+
+    private static String bonusText(TierBonus bonus, List<TieredPart> parts, String casingName) {
+        String part = partTierText(parts, casingName);
         if (!bonus.perTier()) return StatCollector.translateToLocalFormatted(SWITCH_BONUS_KEY, part, changeText(bonus));
         String key = bonus.stat() == BonusStat.DURATION ? DURATION_BONUS_KEY : BONUS_KEY;
         String text = StatCollector.translateToLocalFormatted(key, part, changeText(bonus));
@@ -304,12 +327,15 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
 
     private static String changeText(TierBonus bonus) {
         double change = bonus.multiplicative() ? bonus.value() - 1 : bonus.value();
-        String amount = bonus.stat() == BonusStat.PARALLEL && !bonus.multiplicative()
-            ? Long.toString(Math.round(Math.abs(change)))
+        return changeText(bonus.stat(), change, bonus.multiplicative());
+    }
+
+    private static String changeText(BonusStat stat, double change, boolean multiplicative) {
+        String amount = stat == BonusStat.PARALLEL && !multiplicative ? Long.toString(Math.round(Math.abs(change)))
             : TooltipHelper.percentageFormat.format(Math.abs(change));
         return StatCollector.translateToLocalFormatted(
             change < 0 ? DECREASE_KEY : INCREASE_KEY,
-            TooltipHelper.coloredText(amount, colorOf(bonus.stat())));
+            TooltipHelper.coloredText(amount, colorOf(stat)));
     }
 
     private static EnumChatFormatting colorOf(BonusStat stat) {
