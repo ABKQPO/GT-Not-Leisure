@@ -19,7 +19,6 @@ import com.science.gtnl.config.MainConfig;
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.common.tileentities.machines.multi.purification.MTEPurificationUnitBase;
 
-// Parallel button of GT purification units: units of a wireless plant take a long parallel, others GT's int one.
 public class PurificationUnitGuiHooks {
 
     public static final String LONG_PARALLEL_SYNC_KEY = "gtnlMaximumParallelsLong";

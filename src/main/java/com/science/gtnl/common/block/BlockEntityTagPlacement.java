@@ -22,8 +22,8 @@ public class BlockEntityTagPlacement {
 
     private BlockEntityTagPlacement() {}
 
-    // Forge's onPlaceItemIntoWorld on the server, plus: a held item's BlockEntityTag is loaded into the tile
-    // entities it places. Returns null to leave the placement to Forge.
+    // A copy of Forge's onPlaceItemIntoWorld that also loads the held item's BlockEntityTag. Returns null to
+    // leave the placement to Forge.
     public static Boolean placeItemIntoWorld(ItemStack itemstack, EntityPlayer player, World world, int x, int y, int z,
         int side, float hitX, float hitY, float hitZ) {
         if (world.isRemote || itemstack == null) return null;

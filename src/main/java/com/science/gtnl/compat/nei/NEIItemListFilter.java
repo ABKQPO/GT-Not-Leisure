@@ -14,7 +14,6 @@ import codechicken.nei.NEIClientConfig;
 import codechicken.nei.RestartableTask;
 import codechicken.nei.api.ItemFilter;
 
-// NEI's item list filter run on one thread, replacing its parallel filter.
 public class NEIItemListFilter {
 
     private NEIItemListFilter() {}

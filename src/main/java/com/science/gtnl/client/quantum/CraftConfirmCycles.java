@@ -18,11 +18,10 @@ import appeng.client.gui.widgets.GuiAeButton;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 /**
- * Crafting cycles on AE2's crafting confirm screen: finds the cycles of the request once it is calculated, marks them
- * in
- * the crafting tree and the list, and tells once where the machines of those the plan cannot start because of are. The
- * button lists them all, the highlight key highlights the cycle of what is under the mouse, and shift-clicking an item
- * of a cycle in the list shows the cycle as a ring in the tree view, left by its button or Esc.
+ * Crafting cycles on AE2's crafting confirm screen: finds the cycles of the request once it is calculated, marks
+ * them in the crafting tree and the list, and tells once where the machines of those the plan cannot start because
+ * of are. The button lists them all, the highlight key highlights the cycle of what is under the mouse, and
+ * shift-clicking an item of a cycle in the list shows the cycle as a ring in the tree view, left by its button or Esc.
  */
 public class CraftConfirmCycles {
 
@@ -148,7 +147,6 @@ public class CraftConfirmCycles {
         return lines.toString();
     }
 
-    // The highlight key: the cycles under the mouse, else all cycles found, else asks the server for them.
     public static void highlight(Minecraft mc, CraftingCycleIndex index, List<CraftingCycleIndex.Match> hovered) {
         if (!hovered.isEmpty()) {
             RecursivePatternReport.highlight(mc, index.request(), hovered);

@@ -9,7 +9,6 @@ import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Mods;
 import gregtech.common.OreMixBuilder;
 
-// Callable without VisualProspecting installed: its classes are only touched inside the optional method.
 public class OreVeinTypes {
 
     private OreVeinTypes() {}

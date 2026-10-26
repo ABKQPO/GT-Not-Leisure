@@ -8,7 +8,6 @@ import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Mods;
 import micdoodle8.mods.galacticraft.api.recipe.SchematicRegistry;
 
-// Callable without GalaxySpace or Galacticraft installed: their classes are only touched inside the optional method.
 public class SteamRocketSchematic {
 
     private SteamRocketSchematic() {}

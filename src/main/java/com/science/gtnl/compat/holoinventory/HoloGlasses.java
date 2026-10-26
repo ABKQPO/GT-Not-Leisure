@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Mods;
 
-// Callable without HoloInventory installed: its classes are only touched inside the optional methods.
 public class HoloGlasses {
 
     private HoloGlasses() {}

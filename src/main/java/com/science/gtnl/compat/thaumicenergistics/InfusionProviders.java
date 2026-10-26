@@ -14,7 +14,6 @@ import thaumicenergistics.common.tiles.TileAdvancedInfusionProvider;
 import thaumicenergistics.common.tiles.TileEssentiaProvider;
 import thaumicenergistics.common.tiles.TileInfusionProvider;
 
-// Callable without Thaumic Energistics installed: its classes are only touched inside the optional methods.
 public class InfusionProviders {
 
     public static final String INFUSION_PROVIDER_NAME_KEY = "thaumicenergistics.block.infusion.provider.name";

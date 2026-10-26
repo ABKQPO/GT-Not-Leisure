@@ -18,7 +18,6 @@ import gregtech.api.enums.Mods;
 import tconstruct.client.tabs.AbstractTab;
 import tconstruct.client.tabs.TabRegistry;
 
-// Callable without Tinkers' Construct installed: its classes are only touched inside the optional methods and Tab.
 @SideOnly(Side.CLIENT)
 public class CelestweaveBackpackTabs {
 

@@ -150,7 +150,6 @@ public class PotionGhostlyShape extends EffectBase {
         }
     }
 
-    // The closest player in range that is not under the effect, for mobs looking for a player.
     public static EntityPlayer closestVisiblePlayer(List<EntityPlayer> players, EntityPlayer closest, double x,
         double y, double z, double range) {
         EntityPlayer replacement = null;

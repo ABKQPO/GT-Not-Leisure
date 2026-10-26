@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.utils.item.IItemHandlerModifiable;
 import com.cleanroommc.modularui.utils.item.ItemStackHandler;
-import com.google.common.io.ByteArrayDataInput;
 import com.science.gtnl.api.IFluidsLockable;
 import com.science.gtnl.common.gui.VoidCoverGui;
 
@@ -27,16 +26,11 @@ import gregtech.api.metatileentity.implementations.MTEBasicMachine;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchMultiInput;
 import gregtech.api.util.GTUtility;
-import gregtech.common.covers.Cover;
 import gregtech.common.gui.modularui.cover.base.CoverBaseGui;
-import io.netty.buffer.ByteBuf;
 import lombok.Getter;
 import lombok.Setter;
 
-public class VoidCover extends Cover implements IFluidsLockable {
-
-    // Same int and save format as the old GT CoverLegacyData base, so covers placed before keep their settings.
-    public int coverData;
+public class VoidCover extends IntDataCover implements IFluidsLockable {
 
     @Getter
     @Setter
@@ -46,7 +40,7 @@ public class VoidCover extends Cover implements IFluidsLockable {
     public String[] lockedFluidNames = new String[20];
 
     public VoidCover(CoverContext context) {
-        super(context, null);
+        super(context);
     }
 
     @Override
@@ -342,21 +336,6 @@ public class VoidCover extends Cover implements IFluidsLockable {
 
     @Override
     public boolean acceptsFluidsLock(String name, int index) {
-        return true;
-    }
-
-    @Override
-    protected void readDataFromPacket(ByteArrayDataInput byteData) {
-        coverData = byteData.readInt();
-    }
-
-    @Override
-    protected void writeDataToByteBuf(ByteBuf byteBuf) {
-        byteBuf.writeInt(coverData);
-    }
-
-    @Override
-    public boolean isRedstoneSensitive(long aTimer) {
         return true;
     }
 }

@@ -135,7 +135,6 @@ public class BlockShimmerFluid extends BlockFluidBase {
         return world.getBlock(x, y, z) != this;
     }
 
-    // An item shimmer has converted floats up to the top of the shimmer instead of sinking back in.
     public static void liftConvertedItem(EntityItem item) {
         NBTTagCompound tag = item.getEntityData();
 

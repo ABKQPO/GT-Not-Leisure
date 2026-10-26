@@ -26,7 +26,6 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gtneioreplugin.plugin.item.ItemDimensionDisplay;
 import gtneioreplugin.util.DimensionHelper;
 
-// Void miner screen with GTNL's tweak: shows the overriding dimension and rebuilds the ore filter when it changes.
 public class VoidMinerGuiHooks {
 
     private VoidMinerGuiHooks() {}
@@ -51,7 +50,7 @@ public class VoidMinerGuiHooks {
                 .fullWidth());
     }
 
-    // Closes and reopens the open ore filter, or drops the cached one, whenever the mined dimension changes.
+    // MUI2 builds the filter panel once, so it is disposed, and reopened if open, when the dimension changes.
     public static void watchDimensionChanges(MTEVoidMinerBase<?> miner, PanelSyncManager syncManager) {
         IPanelHandler filterPanel = syncManager.findPanelHandlerNullable("filter");
         if (!(filterPanel instanceof PanelSyncHandler panelSyncHandler)) return;

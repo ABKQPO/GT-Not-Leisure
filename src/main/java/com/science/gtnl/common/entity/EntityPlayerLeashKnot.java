@@ -99,13 +99,12 @@ public class EntityPlayerLeashKnot extends EntityLeashKnot {
         return false;
     }
 
-    // Whether a player's saved leash names what it was tied to: a living entity by UUID, or a fence by position.
     public static boolean namesHolder(NBTTagCompound tag) {
         return tag.hasKey("UUIDMost", 4) && tag.hasKey("UUIDLeast", 4)
             || tag.hasKey("X", 99) && tag.hasKey("Y", 99) && tag.hasKey("Z", 99);
     }
 
-    // The living entity within 10 blocks the saved leash names, or the knot on its fence, made again if gone.
+    // A knot that is gone is made again on its fence.
     public static Entity findHolder(EntityPlayer player, NBTTagCompound tag) {
         if (tag.hasKey("UUIDMost", 4) && tag.hasKey("UUIDLeast", 4)) {
             UUID uuid = new UUID(tag.getLong("UUIDMost"), tag.getLong("UUIDLeast"));

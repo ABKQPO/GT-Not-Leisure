@@ -93,8 +93,6 @@ public class InterfaceNameLocalization {
         }
     }
 
-    // What a GT machine adds to its name in AE's interface terminal: the recipe map of a hatch that has one, and the
-    // non-consumed items in a hatch, unless the machine has a custom name or names itself.
     public static IChatComponent machineSuffix(MetaTileEntity metaTileEntity, IChatComponent nameSuffix) {
         if (metaTileEntity instanceof ICustomNameObject customNameObject && customNameObject.hasCustomName()) {
             return nameSuffix;

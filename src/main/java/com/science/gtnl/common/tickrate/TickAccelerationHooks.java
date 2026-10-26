@@ -12,8 +12,6 @@ import gregtech.api.metatileentity.implementations.MTEBasicMachine;
 import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 import tectech.thing.metaTileEntity.multi.MTEResearchStation;
 
-// Tick acceleration of GT machines: the progress jumps ahead instead of the machine ticking many times, except for
-// machines whose work is not in their progress.
 public class TickAccelerationHooks {
 
     private TickAccelerationHooks() {}

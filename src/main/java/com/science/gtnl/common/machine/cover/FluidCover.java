@@ -10,32 +10,25 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.google.common.io.ByteArrayDataInput;
-
 import gregtech.api.covers.CoverContext;
 import gregtech.api.interfaces.tileentity.ICoverable;
 import gregtech.api.interfaces.tileentity.IMachineProgress;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.metatileentity.CommonMetaTileEntity;
-import gregtech.common.covers.Cover;
-import io.netty.buffer.ByteBuf;
 
-public class FluidCover extends Cover {
-
-    // Same int and save format as the old GT CoverLegacyData base, so covers placed before keep their settings.
-    public int coverData;
+public class FluidCover extends IntDataCover {
 
     public Fluid fluid;
     public String description;
 
     public FluidCover(CoverContext context, FluidStack fluid, String descriptionKey) {
-        super(context, null);
+        super(context);
         this.fluid = fluid.getFluid();
         this.description = descriptionKey;
     }
 
     public FluidCover(CoverContext context, Fluid fluid, String descriptionKey) {
-        super(context, null);
+        super(context);
         this.fluid = fluid;
         this.description = descriptionKey;
     }
@@ -111,20 +104,5 @@ public class FluidCover extends Cover {
             if (current == 0) return;
             commonMetaTile.fill(new FluidStack(this.fluid, current), true);
         }
-    }
-
-    @Override
-    protected void readDataFromPacket(ByteArrayDataInput byteData) {
-        coverData = byteData.readInt();
-    }
-
-    @Override
-    protected void writeDataToByteBuf(ByteBuf byteBuf) {
-        byteBuf.writeInt(coverData);
-    }
-
-    @Override
-    public boolean isRedstoneSensitive(long aTimer) {
-        return true;
     }
 }

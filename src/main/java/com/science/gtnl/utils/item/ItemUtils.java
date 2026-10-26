@@ -655,7 +655,6 @@ public class ItemUtils {
         return skull;
     }
 
-    // A hot ingot as its cooled ingot, so pattern outputs ask for what the machines finally give.
     public static ItemStack coolHotIngot(ItemStack instance) {
         int[] oreIDs = OreDictionary.getOreIDs(instance);
 

@@ -4,8 +4,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 
-// AE2FC fluid packets as Forge fluid containers: the fluid sits in the packet's FluidStack tag, up to
-// Integer.MAX_VALUE.
 public class FluidPacketContainer {
 
     private FluidPacketContainer() {}

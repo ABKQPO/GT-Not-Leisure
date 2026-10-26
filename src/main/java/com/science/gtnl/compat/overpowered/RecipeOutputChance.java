@@ -14,8 +14,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.StringUtils;
 
-// GTNL's recipe output chance yields to Overpowered, which brings its own. A multiblock running above the tier of its
-// recipe gets a bonus chance per tier, shown in Waila and by the scanner.
+// GTNL's recipe output chance yields to Overpowered, which brings its own.
 public class RecipeOutputChance {
 
     private RecipeOutputChance() {}

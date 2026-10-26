@@ -4,7 +4,6 @@ import net.minecraft.crash.CrashReportCategory;
 
 import gregtech.api.objects.XSTR;
 
-// The crash report section of the NullPointerException entity: every field is a random exception name.
 public class GlitchEntityCrashInfo {
 
     public static final String[] ERRORS = { "ArrayIndexOutOfBoundsException", "ArrayStoreException",

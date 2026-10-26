@@ -441,8 +441,8 @@ public class LanguageLoader {
         return translation;
     }
 
-    // On a client with no language selected yet GT would reload nothing; it gets English instead. Returns whether GT's
-    // own reload is to be skipped.
+    // With no client language selected GT reloads nothing; English is loaded instead. Returns whether GT's
+    // own reload is skipped.
     public static boolean reloadGTLanguageInEnglishIfNoneSelected(Map<String, String> languageMap) {
         if (!GregTechAPI.sFullLoadFinished || GTLanguageManager.sEnglishFile == null) return false;
 

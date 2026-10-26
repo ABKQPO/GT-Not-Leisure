@@ -35,8 +35,6 @@ import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.diagnostics.CraftingDiagnosticSessionId;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 
-// Lets one AE pattern push carry a whole batch of crafts: AE's executeCrafting plans, extracts, pushes and records one
-// craft at a time, and each step of it is widened here to the batch the planner allows.
 public class BatchDispatchHooks {
 
     public static final CraftingBatchPlanner BATCH_PLANNER = new CraftingBatchPlannerImpl();
@@ -184,7 +182,6 @@ public class BatchDispatchHooks {
         return context.sessionConsumption.getFirstSessionId();
     }
 
-    // Splits a scaled expected output across the session segments consumed by the committed batch.
     public static void recordExpectedOutput(Context context, IAEStack<?> output,
         BiConsumer<IAEStack<?>, CraftingDiagnosticSessionId> record) {
         long crafts = context.plan.getCrafts();

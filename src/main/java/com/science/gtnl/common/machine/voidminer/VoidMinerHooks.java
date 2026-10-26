@@ -30,8 +30,6 @@ import gtneioreplugin.plugin.block.ModBlocks;
 import gtneioreplugin.plugin.item.ItemDimensionDisplay;
 import gtneioreplugin.util.DimensionHelper;
 
-// GTNL's void miner tweak: a dimension display item in the controller overrides which dimension's ores are mined,
-// energy may come from exotic hatches, and the output scales with overclocking instead of a fixed rate.
 public class VoidMinerHooks {
 
     private VoidMinerHooks() {}

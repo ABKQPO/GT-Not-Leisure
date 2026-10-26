@@ -15,7 +15,6 @@ import com.gtnllib.mod.ModList;
 import cpw.mods.fml.common.Optional;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-// Callable without BogoSorter installed: BogoSorter classes are only touched inside the optional methods.
 public class BogoSorterSlots {
 
     private BogoSorterSlots() {}

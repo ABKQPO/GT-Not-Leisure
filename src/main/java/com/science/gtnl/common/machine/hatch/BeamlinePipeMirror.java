@@ -161,8 +161,7 @@ public class BeamlinePipeMirror extends MTEBeamlinePipe {
         return null;
     }
 
-    // Walks from an output hatch along beamline pipes, turning at mirrors, and returns the input hatch facing back at
-    // the end, or null. Pipes passed on the way are marked used.
+    // Pipes passed on the way are marked used.
     public static MTEHatchInputBeamline findInputAlongMirrors(IGregTechTileEntity outputBase) {
         ForgeDirection front = outputBase.getFrontFacing();
         ForgeDirection opposite = front.getOpposite();

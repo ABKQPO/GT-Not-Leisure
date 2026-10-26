@@ -15,8 +15,6 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.common.tileentities.machines.RecipeCheckReason;
 import tectech.thing.metaTileEntity.multi.MTEEyeOfHarmony;
 
-// Link from a TecTech Eye of Harmony to the GTNL injector that feeds it, set with a data stick and kept by position so
-// it survives reloads.
 public class EyeOfHarmonyLink {
 
     public int controllerX, controllerY, controllerZ;

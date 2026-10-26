@@ -125,14 +125,12 @@ public class CraftingUnitHandler {
             blocks.craftingStorage16384k());
     }
 
-    // Right-clicking a crafting unit with another unit's item swaps the block in place when the CPU is idle and the
-    // player may build on the network. Returns whether the click was used.
+    // Returns whether the click was used.
     public static boolean replaceUnit(BlockCraftingUnit unit, World w, int x, int y, int z, EntityPlayer p) {
         if (!Platform.isServer() || p instanceof FakePlayer) return false;
         TileCraftingTile tg = unit.getTileEntity(w, x, y, z);
         if (tg == null) return false;
         ItemStack item = p.getHeldItem();
-        // TODO: sneak-clicking with an empty hand should take a unit back out without breaking the CPU.
         if (p.isSneaking() || item == null) return false;
         BlockState blockState = new BlockState(unit, unit.getDamageValue(w, x, y, z));
         if (!CraftingUnitHandler.isReplaceable(item, blockState)) return false;

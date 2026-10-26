@@ -13,7 +13,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.Mods;
 
-// Callable without Extra Utilities installed: its classes are only touched inside the optional methods.
 public class ExtraUtilitiesContent {
 
     private ExtraUtilitiesContent() {}

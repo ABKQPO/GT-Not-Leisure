@@ -44,8 +44,6 @@ import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-// Wireless mode and long parallel for GT purification units: a unit linked to a wireless plant pays its EU from the
-// owner's wireless network and may run more than Integer.MAX_VALUE parallels.
 public class PurificationUnitHooks {
 
     private PurificationUnitHooks() {}
@@ -341,9 +339,7 @@ public class PurificationUnitHooks {
         aNBT.setLong("effectiveParallelLong", state.effectiveParallelLong);
     }
 
-    // With a T8 unit linked and no energy hatch the plant runs on wireless EU, and so do its units. Returns whether a
-    // T8
-    // unit is linked, in which case the plant skips GT's energy hatch check.
+    // Returns whether a T8 unit is linked; the plant then skips GT's energy hatch check.
     public static boolean linkWirelessMode(List<LinkedPurificationUnit> linkedUnits, IWirelessMode plantMode,
         boolean noEnergyHatch) {
         boolean t8water = false;

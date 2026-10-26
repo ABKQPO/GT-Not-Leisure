@@ -25,8 +25,6 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-// While the pocket watch stops time, the client keeps reading input and rendering but skips world updates. The two
-// methods follow vanilla Minecraft.runTick and runGameLoop.
 public class TimeStopClientHooks {
 
     private TimeStopClientHooks() {}

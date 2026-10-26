@@ -28,9 +28,7 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
  * Contracts each crafting cycle of the tree into the request it is entered by, marked with a ring, with what the cycle
  * takes from outside under it, and marks the crafts using the patterns of the cycles found for the request. Clicking a
  * cycle, or a craft of a cycle found, shows the cycle as a ring in place of the tree. In a ring a click folds as in the
- * tree, or opens the ring of what is in a cycle of its own, and a shift-click goes back to the node in the tree. One
- * per
- * crafting tree widget, driven by its mixin.
+ * tree, or opens the ring of what is in a cycle of its own, and a shift-click goes back to the node in the tree.
  */
 public class CraftingTreeCycleController {
 

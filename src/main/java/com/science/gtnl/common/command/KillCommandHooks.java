@@ -18,7 +18,6 @@ import com.science.gtnl.utils.selector.EntitySelector;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-// Vanilla /kill with entity selectors such as @e[type=...], and tab completion for them.
 public class KillCommandHooks {
 
     private KillCommandHooks() {}

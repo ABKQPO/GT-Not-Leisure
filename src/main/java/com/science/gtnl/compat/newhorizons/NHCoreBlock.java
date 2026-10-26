@@ -7,8 +7,6 @@ import com.dreammaster.block.BlockList;
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Mods;
 
-// Blocks of the NH core mod that GTNL uses when it is installed. Callable without the mod: its classes are only touched
-// inside the optional method.
 public enum NHCoreBlock {
 
     BloodyIchorium,

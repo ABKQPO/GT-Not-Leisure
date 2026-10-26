@@ -13,7 +13,6 @@ public class TeleportCommandHooks {
 
     private TeleportCommandHooks() {}
 
-    // /tp to a player in another dimension moves the player there instead of failing. Returns whether it did.
     public static boolean teleportToPlayer(ICommandSender sender, String[] args) {
         if (args.length < 1) return false;
 

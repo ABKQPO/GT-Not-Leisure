@@ -7,7 +7,6 @@ import com.arc.bloodarsenal.common.block.ModBlocks;
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Mods;
 
-// Callable without Blood Arsenal installed: its classes are only touched inside the optional methods.
 public class BloodArsenalBlocks {
 
     private BloodArsenalBlocks() {}

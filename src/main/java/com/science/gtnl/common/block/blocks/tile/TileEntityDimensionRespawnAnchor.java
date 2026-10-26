@@ -57,7 +57,7 @@ public class TileEntityDimensionRespawnAnchor extends TileEntity {
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
-    // The dimension a player with a charged anchor set respawns in, using up one charge; otherwise the original one.
+    // Uses up one charge of the anchor the player respawns at.
     public static int respawnDimension(MinecraftServer server, int originalDimension, EntityPlayerMP player) {
         IAnchorRespawn anchor = (IAnchorRespawn) player;
         ChunkCoordinates anchorPos = anchor.getAnchorPos();

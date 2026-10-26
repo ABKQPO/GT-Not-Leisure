@@ -29,7 +29,6 @@ import appeng.core.sync.packets.PacketOptimizePatterns;
 import codechicken.nei.ItemStackSet;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 
-// AE2's pattern optimizer for a quantum crafting job: the patterns come from the quantum plan instead of AE's tree.
 public class OptimizePatternsHooks {
 
     private static Constructor<?> patternConstructor;

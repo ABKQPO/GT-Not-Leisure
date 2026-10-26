@@ -17,7 +17,6 @@ import appeng.core.sync.GuiBridge;
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Mods;
 
-// Callable without AE2 Fluid Crafting installed: its classes are only touched inside the optional methods.
 public class FluidCraftItems {
 
     private FluidCraftItems() {}

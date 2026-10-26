@@ -7,7 +7,6 @@ import baubles.api.BaublesApi;
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Mods;
 
-// Callable without Baubles installed: its classes are only touched inside the optional method.
 public class BaublesInventory {
 
     private BaublesInventory() {}

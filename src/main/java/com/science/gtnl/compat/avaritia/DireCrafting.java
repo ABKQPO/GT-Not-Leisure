@@ -12,7 +12,6 @@ import fox.spiteful.avaritia.crafting.ExtremeCraftingManager;
 import fox.spiteful.avaritia.tile.TileEntityDireCrafting;
 import gregtech.api.enums.Mods;
 
-// Callable without Avaritia installed: its classes are only touched inside the optional methods.
 public class DireCrafting {
 
     private DireCrafting() {}

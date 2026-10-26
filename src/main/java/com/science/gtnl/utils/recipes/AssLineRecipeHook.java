@@ -128,7 +128,7 @@ public class AssLineRecipeHook {
         return name + "@" + stack.stackSize + "@" + Items.feather.getDamage(stack);
     }
 
-    // A TecTech research recipe that is on the removal list: marks it removed and returns true so it is not added.
+    // Marks a matching removal done; true means the recipe must not be added.
     public static boolean removeTTRecipe(ItemStack researchItem, int totalComputationRequired,
         int computationRequiredPerSec, int researchEUt, int researchAmperage, ItemStack output, int duration, int eut) {
         if (researchItem == null || output == null) return false;
@@ -152,7 +152,7 @@ public class AssLineRecipeHook {
         return false;
     }
 
-    // The same for a GT assembly line recipe researched by scanning; every matching removal is marked.
+    // The same for GT assembly line recipes, where every matching removal is marked.
     public static boolean removeGTRecipe(ItemStack researchItem, int scanTime, ItemStack[] outputs, int duration,
         int eut) {
         ScienceNotLeisure.LOG.info(
@@ -172,7 +172,6 @@ public class AssLineRecipeHook {
         return removed;
     }
 
-    // The shorter assembly line times of GTNL's config: the longer a recipe, the more it is cut.
     public static int shortenedDuration(int assDuration) {
         if (assDuration >= 200000) return assDuration / 100;
         if (assDuration >= 40000) return assDuration / 10;

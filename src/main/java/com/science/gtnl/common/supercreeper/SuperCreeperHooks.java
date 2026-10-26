@@ -305,7 +305,6 @@ public class SuperCreeperHooks {
         return false;
     }
 
-    // A spider carrying a creeper climbs when any solid block is within two blocks around it, not only beside it.
     public static boolean solidBlockAround(EntitySpider spider) {
         int blockX = MathHelper.floor_double(spider.posX);
         int blockY = MathHelper.floor_double(spider.boundingBox.minY);

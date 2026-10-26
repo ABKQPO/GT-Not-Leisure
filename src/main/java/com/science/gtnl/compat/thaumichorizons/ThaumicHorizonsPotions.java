@@ -5,7 +5,6 @@ import com.kentington.thaumichorizons.common.lib.potion.PotionVisRegen;
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Mods;
 
-// Callable without Thaumic Horizons installed: its classes are only touched inside the optional method.
 public class ThaumicHorizonsPotions {
 
     private ThaumicHorizonsPotions() {}

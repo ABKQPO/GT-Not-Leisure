@@ -240,7 +240,6 @@ public class PortableItem extends Item {
         saveFurnaceInventory.save(stack, inv);
     }
 
-    // Obsidian, netherite and dark steel chests survive fire, lava and explosions as dropped items.
     public static boolean isFireproof(ItemStack stack) {
         if (stack == null || !(stack.getItem() instanceof PortableItem)) return false;
         int meta = stack.getItemDamage();

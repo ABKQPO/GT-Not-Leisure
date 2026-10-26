@@ -37,7 +37,6 @@ public class SteamWoodcutterRecipes implements IRecipePool {
             .addTo(SWR);
     }
 
-    // A steam woodcutter recipe for every tree GT's tree farm learns.
     public static void addFromTreeFarm(ItemStack saplingIn, ItemStack log, ItemStack saplingOut, ItemStack leaves,
         ItemStack fruit) {
 

@@ -154,8 +154,7 @@ public class MachineUtils {
         return filtered;
     };
 
-    // GT's getStoredFluidsForColor / getStoredInputsForColor, except that the same stack seen through several ME
-    // hatches or buses counts once, and crafting input buffers count when the machine supports them.
+    // GT's versions, except that a stack seen through several ME hatches or buses counts once.
     public static ArrayList<FluidStack> storedFluidsForColor(MTEMultiBlockBase machine, Optional<Byte> color,
         Consumer<MTEHatchInput> setHatchRecipeMap, boolean supportsCraftingMEBuffer) {
         ArrayList<FluidStack> rList = new ArrayList<>();
@@ -243,7 +242,6 @@ public class MachineUtils {
         return rList;
     }
 
-    // Data stick copy of a GT ME output hatch or bus: where it is, so a GTNL proxy can link to it.
     public static NBTTagCompound addMasterPosition(IGregTechTileEntity tileEntity, NBTTagCompound tag) {
         if (tag == null) tag = new NBTTagCompound();
         NBTTagCompound masterNBT = new NBTTagCompound();

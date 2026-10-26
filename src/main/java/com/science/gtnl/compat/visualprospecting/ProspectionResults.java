@@ -10,7 +10,6 @@ import com.sinthoras.visualprospecting.VisualProspecting_API;
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Mods;
 
-// Callable without VisualProspecting installed: its classes are only touched inside the optional methods.
 public class ProspectionResults {
 
     private ProspectionResults() {}

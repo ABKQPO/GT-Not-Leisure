@@ -6,7 +6,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import fox.spiteful.avaritia.render.CosmicRenderShenanigans;
 import gregtech.api.enums.Mods;
 
-// Callable without Avaritia installed: its classes are only touched inside the optional methods.
 @SideOnly(Side.CLIENT)
 public class CosmicShader {
 

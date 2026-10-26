@@ -7,8 +7,7 @@ import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.Mods;
 
-// Callable without CoFH Core installed: its classes are only touched inside the optional methods. The other methods
-// may only be called for items isRfItem accepted.
+// stored, capacity and receive may only be called for items isRfItem accepted.
 public class RfItems {
 
     private RfItems() {}

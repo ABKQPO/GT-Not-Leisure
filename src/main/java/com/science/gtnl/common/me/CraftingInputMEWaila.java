@@ -22,8 +22,6 @@ import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-// Waila for GT's crafting input buffer: the name and the pattern inputs are sent as data and translated on the
-// reading client, the inputs merged by kind.
 public class CraftingInputMEWaila {
 
     private CraftingInputMEWaila() {}

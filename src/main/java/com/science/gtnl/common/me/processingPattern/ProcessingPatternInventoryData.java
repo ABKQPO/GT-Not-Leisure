@@ -145,7 +145,6 @@ public class ProcessingPatternInventoryData {
         return inverted ? outputSize : outputSize / 4;
     }
 
-    // Puts back the overflow saved beside the inventory and returns the snapshot to preserve it with on the next save.
     public static NBTTagCompound rememberInventory(NBTTagCompound root, NBTTagCompound inventory, int craftingSize,
         int outputSize) {
         restoreSavedOverflow(root, inventory, "craftingGrid");
@@ -157,7 +156,7 @@ public class ProcessingPatternInventoryData {
             visibleOutputs(inverted, outputSize));
     }
 
-    // Writes what AE2 can read itself into the inventory and the rest beside it; returns the new snapshot.
+    // AE2 reads only its own number of slots: those go in the inventory, the rest is saved beside it.
     public static NBTTagCompound preserveInventory(NBTTagCompound root, NBTTagCompound inventory, NBTTagCompound stored,
         boolean inverted, int craftingSize, int outputSize) {
         preserveOverflow(inventory, stored, "craftingGrid", visibleInputs(inverted, craftingSize));
@@ -211,7 +210,6 @@ public class ProcessingPatternInventoryData {
         return count;
     }
 
-    // A pattern whose inputs fit the small side is shown inverted, with the outputs on the large side.
     public static boolean invertFor(IAEStack<?>[] inputs, IAEStack<?>[] outputs, int craftingSize) {
         int smallSideCapacity = craftingSize / 4;
         return countStacks(inputs) <= smallSideCapacity && countStacks(outputs) >= smallSideCapacity;

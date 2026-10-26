@@ -17,12 +17,10 @@ import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTRecipeBuilder;
 import gregtech.api.util.GTUtility;
 
-// Recipes GTNL adds while GT and bartworks generate the recipes of their materials.
 public class MaterialProcessingRecipes {
 
     private MaterialProcessingRecipes() {}
 
-    // Turbine blades of bartworks materials made the GT ways: solidifier, extruder, forming press and by hand.
     public static void addTurbineBladeRecipes(Werkstoff werkstoff) {
         if (werkstoff.hasItemType(OrePrefixes.turbineBlade)) {
             if (werkstoff.hasItemType(OrePrefixes.cellMolten)) {
@@ -135,7 +133,6 @@ public class MaterialProcessingRecipes {
             .warn("GTNL: 144l fluid molder for 1 dust Recipe: {} - Success", werkstoff.getDefaultName());
     }
 
-    // 144 L of molten material back to one dust in the fluid solidifier, for GT materials.
     public static void addDustSolidifierRecipe(OrePrefixes aPrefix, Materials aMaterial) {
         if (aPrefix != OrePrefixes.dust) return;
         if (aMaterial.mStandardMoltenFluid == null) return;

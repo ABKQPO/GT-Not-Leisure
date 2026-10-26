@@ -15,7 +15,6 @@ import org.apache.logging.log4j.Level;
 
 import cpw.mods.fml.common.FMLLog;
 
-// While the pocket watch stops time, worlds only tick players. Follows vanilla World.updateEntities.
 public class TimeStopHooks {
 
     private TimeStopHooks() {}

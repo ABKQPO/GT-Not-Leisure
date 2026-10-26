@@ -54,8 +54,7 @@ public class ExplosionDynamoHatch extends MTEHatchDynamo {
         return 64;
     }
 
-    // Feeds an explosion centred at (cx, cy, cz) into the explosion dynamo hatch at (x, y, z), if there is one within
-    // 10 blocks with room for it: full energy at the centre, 5% less per block of distance. Returns whether it took it.
+    // Returns whether the hatch took the explosion.
     public static boolean absorbExplosion(World world, int x, int y, int z, double cx, double cy, double cz,
         double energyAtCentre) {
         if (!world.blockExists(x, y, z)) return false;
