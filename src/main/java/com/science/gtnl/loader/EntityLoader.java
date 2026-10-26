@@ -12,7 +12,7 @@ import Forge.NullPointerException;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import micdoodle8.mods.galacticraft.core.util.GCCoreUtil;
 
-public class EntityLoader {
+public class EntityLoader implements IContentLoader {
 
     public static void registry() {
         EntityRegistry
@@ -40,5 +40,15 @@ public class EntityLoader {
             128,
             20,
             false);
+    }
+
+    @Override
+    public String name() {
+        return "entities";
+    }
+
+    @Override
+    public void preInit() {
+        registry();
     }
 }

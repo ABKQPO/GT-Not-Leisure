@@ -7,11 +7,13 @@ import com.hfstudio.bqapi.BQApi;
 import com.hfstudio.bqapi.api.builder.Chapters;
 import com.hfstudio.bqapi.api.definition.ChapterDefinition;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.compat.IModCompat;
+import com.science.gtnl.utils.enums.ModList;
 
 import betterquesting.api.utils.UuidConverter;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-public class QuestLoader {
+public class QuestLoader implements IModCompat {
 
     public static final UUID STEAM_AGE_UUID = UuidConverter.decodeUuid("AAAAAAAAAAAAAAAAAAAAAg==");
 
@@ -55,5 +57,15 @@ public class QuestLoader {
             BQApi.register(chapter);
         }
         registered = true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return ModList.BetterQuestingAPI.isModLoaded();
+    }
+
+    @Override
+    public void preInit() {
+        registry();
     }
 }

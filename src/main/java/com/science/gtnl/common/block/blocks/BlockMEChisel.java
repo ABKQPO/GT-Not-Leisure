@@ -16,11 +16,11 @@ import com.gtnewhorizon.gtnhlib.client.model.BakedModelQuadContext;
 import com.gtnewhorizon.gtnhlib.client.model.ModelISBRH;
 import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
 import com.gtnewhorizon.gtnhlib.geometry.Orientation;
-import com.science.gtnl.CommonProxy;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.blocks.item.ItemBlockMEChisel;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.common.packet.MEChiselSyncParallel;
 import com.science.gtnl.common.render.model.MEChiselModel;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -79,7 +79,7 @@ public class BlockMEChisel extends AEBaseTileBlock implements IBlockModelProvide
                     if (te.getParallel() != 1) {
                         ScienceNotLeisure.network.sendTo(new MEChiselSyncParallel.Clientbound(te), p);
                     }
-                    CommonProxy.openGui(p, GuiType.MEChiselGUI, null, world, x, y, z);
+                    GTNLGuiHandler.openGui(p, GuiType.MEChiselGUI, null, world, x, y, z);
                 }
             }
             return true;

@@ -10,9 +10,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import com.science.gtnl.ClientProxy;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.blocks.tile.TileEntityWaterCandle;
+import com.science.gtnl.loader.RenderLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -59,7 +59,7 @@ public class BlockWaterCandle extends BlockContainer {
     @SideOnly(Side.CLIENT)
     @Override
     public int getRenderType() {
-        return ClientProxy.WATER_CANDLE_RENDER_ID;
+        return RenderLoader.WATER_CANDLE_RENDER_ID;
     }
 
     @SideOnly(Side.CLIENT)

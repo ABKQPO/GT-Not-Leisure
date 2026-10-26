@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
 
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
@@ -74,6 +75,8 @@ import com.science.gtnl.utils.text.AnimatedTooltipHandler;
 
 import appeng.api.storage.StorageChannel;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
@@ -82,7 +85,7 @@ import gregtech.api.util.GTOreDictUnificator;
 import gregtech.common.render.items.InfinityMetaItemRenderer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-public class ItemLoader {
+public class ItemLoader implements IContentLoader {
 
     public static SteamRocket steamRocket = new SteamRocket();
     public static NullPointerException nullPointerException = new NullPointerException();
@@ -657,5 +660,21 @@ public class ItemLoader {
         GTOreDictUnificator.addToBlacklist(GTNLItemList.BasicCircuit.get(1));
         GTOreDictUnificator.addToBlacklist(GTNLItemList.AdvancedCircuit.get(1));
         GTOreDictUnificator.addToBlacklist(GTNLItemList.EliteCircuit.get(1));
+    }
+
+    @Override
+    public String name() {
+        return "items";
+    }
+
+    @Override
+    public void preInit() {
+        registry();
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void clientInit() {
+        MinecraftForge.EVENT_BUS.register(stick);
     }
 }

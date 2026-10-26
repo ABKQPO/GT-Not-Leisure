@@ -845,9 +845,10 @@ public class EquipmentResourceContracts {
 
     private static void equipmentControls() throws Exception {
         String proxy = read(SOURCES.resolve("ClientProxy.java"));
-        int library = proxy.indexOf("GTNLLibClient.preInit()"), equipment = proxy.indexOf("EquipmentTheme.register()");
+        int library = proxy.indexOf("GTNLLibClient.preInit()"), cards = proxy.indexOf("ContentLoaders.clientPreInit()");
         check(
-            library >= 0 && equipment > library,
+            library >= 0 && cards > library
+                && read(SOURCES.resolve("loader/EquipmentLoader.java")).contains("EquipmentTheme.register()"),
             "GTNLLib starts before the equipment theme registers, so palette themes are rebuilt before every theme reload");
         String soundSource = read(SOURCES.resolve("common/gui/equipment/EquipmentSoundScreen.java"));
         check(

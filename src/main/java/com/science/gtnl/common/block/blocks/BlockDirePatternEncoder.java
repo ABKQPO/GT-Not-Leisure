@@ -9,10 +9,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import com.science.gtnl.CommonProxy;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.blocks.item.ItemBlockDirePatternEncoder;
 import com.science.gtnl.common.block.blocks.tile.TileEntityDirePatternEncoder;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
 
@@ -69,7 +69,7 @@ public class BlockDirePatternEncoder extends AEBaseTileBlock {
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7,
         float par8, float par9) {
         if (!world.isRemote) {
-            CommonProxy.openGui(player, GuiType.DirePatternEncoderGUI, null, world, x, y, z);
+            GTNLGuiHandler.openGui(player, GuiType.DirePatternEncoderGUI, null, world, x, y, z);
             return true;
         }
         return super.onBlockActivated(world, x, y, z, player, par6, par7, par8, par9);

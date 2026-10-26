@@ -31,8 +31,8 @@ import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.FurnaceArrayGui;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.common.tickrate.TickrateEvents;
 import com.science.gtnl.utils.Utils;
-import com.science.gtnl.utils.event.SubscribeEventUtils;
 
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
@@ -258,7 +258,7 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
     @Override
     public boolean onRunningTick(ItemStack aStack) {
         if (++tick % 20 == 0) {
-            SubscribeEventUtils.queueServerSleep(time);
+            TickrateEvents.queueServerSleep(time);
         }
         return super.onRunningTick(aStack);
     }

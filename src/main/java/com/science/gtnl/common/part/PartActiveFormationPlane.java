@@ -7,8 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 
-import com.science.gtnl.CommonProxy;
 import com.science.gtnl.api.ICustomGui;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
 
@@ -149,7 +149,7 @@ public class PartActiveFormationPlane extends PartFormationPlane implements IGri
         if (p.isSneaking()) {
             return false;
         }
-        CommonProxy.openGui(
+        GTNLGuiHandler.openGui(
             p,
             GuiType.ActiveFormationPlaneGUI,
             this.getSide(),

@@ -13,8 +13,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.google.common.collect.MapMaker;
-import com.science.gtnl.CommonProxy;
 import com.science.gtnl.common.equipment.EquipmentNet;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableChest;
 import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableCompressedChest;
 import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableEnderChest;
@@ -210,7 +210,7 @@ public class CelestweaveBackpack {
             return;
         }
         if (player.openContainer != player.inventoryContainer) player.closeScreen();
-        CommonProxy.openGui(player, GuiType.CelestweaveBackpackGUI, null, player.worldObj, 0, 0, 0);
+        GTNLGuiHandler.openGui(player, GuiType.CelestweaveBackpackGUI, null, player.worldObj, 0, 0, 0);
     }
 
     public static Object serverContainer(EntityPlayer player) {

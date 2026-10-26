@@ -147,7 +147,19 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import tectech.thing.CustomItemList;
 
-public class RecipeLoader {
+public class RecipeLoader implements IContentLoader {
+
+    @Override
+    public String name() {
+        return "recipes";
+    }
+
+    @Override
+    public void loadComplete() {
+        if (Mods.NewHorizonsCoreMod.isModLoaded()) ScriptLoader.registry();
+        if (MainConfig.item.stick.enableStickItem) loadVillageTrade();
+        LoadCompleteRecipeScheduler.schedule();
+    }
 
     public static void loadCompleteInit() {
         if (MainConfig.recipe.enableDeleteRecipe) {

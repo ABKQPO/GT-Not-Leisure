@@ -1,4 +1,4 @@
-package com.science.gtnl.utils.event;
+package com.science.gtnl.common.entity;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.common.MinecraftForge;

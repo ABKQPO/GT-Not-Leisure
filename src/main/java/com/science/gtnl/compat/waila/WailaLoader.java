@@ -8,6 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 import com.github.bsideup.jabel.Desugar;
 import com.science.gtnl.common.block.blocks.tile.TileEntityCardboardBox;
 import com.science.gtnl.common.block.blocks.tile.TileEntityPlayerDoll;
+import com.science.gtnl.compat.IModCompat;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.text.CardboardBoxWailaDataProvider;
 import com.science.gtnl.utils.text.EnergyCellWailaDataProvider;
@@ -21,7 +22,7 @@ import gregtech.api.enums.Mods;
 import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
 
-public class WailaLoader {
+public class WailaLoader implements IModCompat {
 
     public static void callbackRegister(IWailaRegistrar registrar) {
         List<ProviderEntry<?>> entries = Arrays.asList(
@@ -56,4 +57,8 @@ public class WailaLoader {
     @Desugar
     public record ProviderEntry<T extends TileEntity> (IWailaDataProvider provider, Class<T> clazz) {}
 
+    @Override
+    public void init() {
+        register();
+    }
 }

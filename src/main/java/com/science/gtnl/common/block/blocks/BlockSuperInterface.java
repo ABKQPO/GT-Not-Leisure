@@ -12,10 +12,10 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.science.gtnl.CommonProxy;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.blocks.item.ItemBlockSuperInterface;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperInterface;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.common.render.tile.SuperInterfaceRenderer;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
@@ -79,7 +79,7 @@ public class BlockSuperInterface extends BlockInterface {
         final TileEntitySuperInterface tg = this.getTileEntity(w, x, y, z);
         if (tg == null) return false;
 
-        CommonProxy.openGui(p, GuiType.SuperInterfaceGUI, null, w, x, y, z);
+        GTNLGuiHandler.openGui(p, GuiType.SuperInterfaceGUI, null, w, x, y, z);
         return true;
     }
 

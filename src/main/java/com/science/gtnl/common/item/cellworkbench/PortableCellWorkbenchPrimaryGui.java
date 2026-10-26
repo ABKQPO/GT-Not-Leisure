@@ -2,7 +2,7 @@ package com.science.gtnl.common.item.cellworkbench;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.science.gtnl.CommonProxy;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.container.PrimaryGui;
@@ -19,7 +19,7 @@ public class PortableCellWorkbenchPrimaryGui extends PrimaryGui {
     @Override
     public void open(EntityPlayer player) {
         if (host.isValid()) {
-            CommonProxy.openGui(
+            GTNLGuiHandler.openGui(
                 player,
                 GuiType.PortableCellWorkbenchGUI,
                 null,

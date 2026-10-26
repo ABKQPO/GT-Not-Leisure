@@ -16,9 +16,9 @@ import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import com.gtnewhorizon.gtnhlib.util.CoordinatePacker;
-import com.science.gtnl.CommonProxy;
 import com.science.gtnl.client.detrav.DetravMapTexture;
 import com.science.gtnl.client.gui.detrav.DetravScannerGUI;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
 import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.enums.GuiType;
@@ -245,7 +245,7 @@ public class ProspectingPacket extends ClientboundPacket {
     @SideOnly(Side.CLIENT)
     public void openProspectorGUI() {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-        CommonProxy.openGui(
+        GTNLGuiHandler.openGui(
             player,
             GuiType.DetravScannerGUI,
             null,

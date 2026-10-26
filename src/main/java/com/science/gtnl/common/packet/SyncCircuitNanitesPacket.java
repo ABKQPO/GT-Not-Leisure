@@ -1,6 +1,6 @@
 package com.science.gtnl.common.packet;
 
-import static com.science.gtnl.utils.event.SubscribeEventUtils.CIRCUIT_NANITES_DATA_LOAD;
+import static com.science.gtnl.common.world.WorldEvents.CIRCUIT_NANITES_DATA_LOAD;
 
 import net.minecraft.client.Minecraft;
 

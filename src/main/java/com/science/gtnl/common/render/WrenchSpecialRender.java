@@ -13,8 +13,8 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import com.science.gtnl.client.GTNLClientEvents;
 import com.science.gtnl.utils.ColorUtils;
-import com.science.gtnl.utils.event.SubscribeEventClientUtils;
 
 import cpw.mods.fml.common.Optional;
 import fox.spiteful.avaritia.render.CosmicRenderShenanigans;
@@ -165,7 +165,7 @@ public class WrenchSpecialRender {
                 GL11.glDisable(GL11.GL_ALPHA_TEST);
                 GL11.glDisable(GL11.GL_DEPTH_TEST);
 
-                IIcon halonoiseIcon = SubscribeEventClientUtils.haloNoiseIcon;
+                IIcon halonoiseIcon = GTNLClientEvents.haloNoiseIcon;
 
                 if (halonoiseIcon != null) {
                     Minecraft.getMinecraft()
@@ -241,7 +241,7 @@ public class WrenchSpecialRender {
         CosmicRenderShenanigans.inventoryRender = true;
         CosmicRenderShenanigans.useShader();
 
-        IIcon cheatWrenchIcon = SubscribeEventClientUtils.cheatWrenchIcon;
+        IIcon cheatWrenchIcon = GTNLClientEvents.cheatWrenchIcon;
 
         if (cheatWrenchIcon != null) {
             Minecraft.getMinecraft()

@@ -1,9 +1,10 @@
-package com.science.gtnl.common.recipe.gtnl;
+package com.science.gtnl.compat.mobsinfo;
 
 import java.util.ArrayList;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
 
 import com.brandon3055.draconicevolution.common.ModItems;
@@ -11,6 +12,7 @@ import com.kuba6000.mobsinfo.api.MobDrop;
 import com.kuba6000.mobsinfo.api.MobRecipe;
 import com.kuba6000.mobsinfo.api.event.PostMobRegistrationEvent;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.compat.IModCompat;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
@@ -26,7 +28,7 @@ import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import kubatech.loaders.MobHandlerLoader;
 
-public class ExtremeExtremeEntityCrusherRecipes {
+public class ExtremeExtremeEntityCrusherRecipes implements IModCompat {
 
     public RecipeMap<?> EEEC = GTNLRecipeMaps.ExtremeExtremeEntityCrusherRecipes;
 
@@ -97,5 +99,10 @@ public class ExtremeExtremeEntityCrusherRecipes {
             .duration(eecRecipe.mDuration)
             .eut(eecRecipe.mEUt)
             .addTo(EEEC);
+    }
+
+    @Override
+    public void postInit() {
+        MinecraftForge.EVENT_BUS.register(this);
     }
 }

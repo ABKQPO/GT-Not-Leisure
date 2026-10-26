@@ -48,12 +48,13 @@ import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.text.AnimatedText;
 import com.science.gtnl.utils.text.AnimatedTooltipHandler;
+import com.science.gtnl.utils.world.TileEntityMigrationHandler;
 
 import bartworks.common.loaders.ItemRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.util.GTRecipeBuilder;
 
-public class BlockLoader {
+public class BlockLoader implements IContentLoader {
 
     public static BlockSaplingBrickuoia saplingBrickuoia;
     public static BlockCardboardBox cardboardBox;
@@ -681,5 +682,21 @@ public class BlockLoader {
             GTNLItemList.SaplingBrickuoia.get(1),
             () -> StatCollector.translateToLocal("gtnl.block.giant_brickuoia_sapling.tooltip.2"));
         OreDictionary.registerOre("treeSapling", new ItemStack(saplingBrickuoia, 1, GTRecipeBuilder.WILDCARD));
+    }
+
+    @Override
+    public String name() {
+        return "blocks";
+    }
+
+    @Override
+    public void preInit() {
+        registry();
+        registerTreeBrickuoia();
+    }
+
+    @Override
+    public void postInit() {
+        TileEntityMigrationHandler.register();
     }
 }

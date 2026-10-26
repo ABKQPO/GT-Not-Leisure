@@ -1,12 +1,13 @@
-package com.science.gtnl.loader;
+package com.science.gtnl.compat.nutrition;
 
+import com.science.gtnl.compat.IModCompat;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
 import lombok.Getter;
 
-public class NutrientLoader {
+public class NutrientLoader implements IModCompat {
 
     public static void registry() {
         for (Nutrient nutrient : NutrientList.get()) {
@@ -52,4 +53,8 @@ public class NutrientLoader {
         }
     }
 
+    @Override
+    public void loadComplete() {
+        registry();
+    }
 }

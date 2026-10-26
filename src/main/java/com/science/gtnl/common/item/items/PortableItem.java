@@ -27,8 +27,8 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.utils.item.InvWrapper;
-import com.science.gtnl.CommonProxy;
 import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.utils.InventoryInfinityChest;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
@@ -158,7 +158,7 @@ public class PortableItem extends Item {
         if (!world.isRemote && !player.isSneaking()) {
             PortableType type = getPortableType(stack);
             if (type != null && type.getGuiID() >= 0) {
-                CommonProxy.openGui(player, type.getGuiType(), null, world, 0, 0, 0);
+                GTNLGuiHandler.openGui(player, type.getGuiType(), null, world, 0, 0, 0);
             }
         }
         return stack;

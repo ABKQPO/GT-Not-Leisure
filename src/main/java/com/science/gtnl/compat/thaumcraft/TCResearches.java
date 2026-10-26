@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import com.dreammaster.item.NHItemList;
+import com.science.gtnl.compat.IModCompat;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.item.ItemUtils;
@@ -39,7 +40,7 @@ import thaumcraft.api.research.ResearchPage;
 import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.config.ConfigItems;
 
-public class TCResearches {
+public class TCResearches implements IModCompat {
 
     public static final String ROOT_RESEARCH = "gtnl.welcome";
 
@@ -542,5 +543,15 @@ public class TCResearches {
 
     public static String existingParentOrRoot(String researchKey) {
         return ResearchCategories.getResearch(researchKey) == null ? ROOT_RESEARCH : researchKey;
+    }
+
+    @Override
+    public void postInit() {
+        registerCategory();
+    }
+
+    @Override
+    public void loadComplete() {
+        registerResearches();
     }
 }

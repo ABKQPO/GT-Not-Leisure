@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 
-import com.science.gtnl.CommonProxy;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.common.packet.base.ServerboundPacket;
 import com.science.gtnl.utils.enums.GuiType;
 
@@ -49,7 +49,7 @@ public class SwitchSuperDualInterfaceGuiPacket extends ServerboundPacket {
             return;
         }
 
-        CommonProxy.openGui(
+        GTNLGuiHandler.openGui(
             player,
             GuiType.values()[targetGuiId],
             openContext.getSide(),

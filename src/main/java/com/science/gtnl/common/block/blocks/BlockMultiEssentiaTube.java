@@ -10,10 +10,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import com.science.gtnl.ClientProxy;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.blocks.item.ItemBlockMultiEssentiaTube;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaTube;
+import com.science.gtnl.loader.RenderLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -74,7 +74,7 @@ public class BlockMultiEssentiaTube extends BlockTube {
     @SideOnly(Side.CLIENT)
     @Override
     public int getRenderType() {
-        return ClientProxy.MULTI_ESSENTIA_TUBE_RENDER_ID;
+        return RenderLoader.MULTI_ESSENTIA_TUBE_RENDER_ID;
     }
 
     @Override

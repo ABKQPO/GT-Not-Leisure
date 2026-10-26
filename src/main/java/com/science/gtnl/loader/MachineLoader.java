@@ -13,6 +13,7 @@ import com.science.gtnl.loader.machine.BasicMachineLoader;
 import com.science.gtnl.loader.machine.HatchLoader;
 import com.science.gtnl.loader.machine.MultiblockLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.enums.GTNLStructureChannels;
 import com.science.gtnl.utils.enums.ModList;
 import com.science.gtnl.utils.text.AnimatedText;
 import com.science.gtnl.utils.text.AnimatedTooltipHandler;
@@ -33,7 +34,22 @@ import gregtech.common.covers.CoverSteamValve;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 import tectech.thing.CustomItemList;
 
-public class MachineLoader {
+public class MachineLoader implements IContentLoader {
+
+    @Override
+    public String name() {
+        return "machines";
+    }
+
+    @Override
+    public void init() {
+        GTNLStructureChannels.register();
+    }
+
+    @Override
+    public void postInit() {
+        registry();
+    }
 
     public static void registerCovers() {
         CoverRegistry.registerCover(

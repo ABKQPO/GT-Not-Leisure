@@ -19,12 +19,12 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
-import com.science.gtnl.ClientProxy;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.blocks.item.ItemBlockEnderElevator;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEnderElevator;
+import com.science.gtnl.common.entity.LivingSneakEvent;
+import com.science.gtnl.loader.RenderLoader;
 import com.science.gtnl.utils.ColorUtils;
-import com.science.gtnl.utils.event.LivingSneakEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -109,7 +109,7 @@ public class BlockEnderElevator extends BlockContainer {
     @SideOnly(Side.CLIENT)
     @Override
     public int getRenderType() {
-        return ClientProxy.ENDER_ELEVATOR_RENDER_ID;
+        return RenderLoader.ENDER_ELEVATOR_RENDER_ID;
     }
 
     @Override

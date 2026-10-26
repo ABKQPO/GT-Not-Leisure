@@ -7,8 +7,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import com.science.gtnl.CommonProxy;
 import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
 
@@ -33,7 +33,7 @@ public class PortableCellWorkbenchItem extends Item {
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (!world.isRemote) {
-            CommonProxy
+            GTNLGuiHandler
                 .openGui(player, GuiType.PortableCellWorkbenchGUI, null, world, player.inventory.currentItem, 0, 0);
         }
         return stack;

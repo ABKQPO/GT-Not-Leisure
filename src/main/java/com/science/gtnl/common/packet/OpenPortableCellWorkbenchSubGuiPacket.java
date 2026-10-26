@@ -2,7 +2,7 @@ package com.science.gtnl.common.packet;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.science.gtnl.CommonProxy;
+import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchHost;
 import com.science.gtnl.common.item.cellworkbench.PortableCellWorkbenchSubGui;
 import com.science.gtnl.common.packet.base.ServerboundPacket;
@@ -55,6 +55,6 @@ public class OpenPortableCellWorkbenchSubGuiPacket extends ServerboundPacket {
 
         GuiType guiType = subGui == PortableCellWorkbenchSubGui.ORE_FILTER ? GuiType.PortableCellWorkbenchOreFilterGUI
             : GuiType.PortableCellWorkbenchRestrictionGUI;
-        CommonProxy.openGui(player, guiType, null, player.worldObj, host.getInventorySlot(), 0, 0);
+        GTNLGuiHandler.openGui(player, guiType, null, player.worldObj, host.getInventorySlot(), 0, 0);
     }
 }

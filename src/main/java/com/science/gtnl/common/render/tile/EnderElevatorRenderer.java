@@ -18,9 +18,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import com.science.gtnl.ClientProxy;
 import com.science.gtnl.common.block.blocks.BlockEnderElevator;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEnderElevator;
+import com.science.gtnl.loader.RenderLoader;
 import com.science.gtnl.mixins.early.minecraft.AccessorTessellator;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -35,7 +35,7 @@ public class EnderElevatorRenderer extends TileEntitySpecialRenderer
 
     @Override
     public int getRenderId() {
-        return ClientProxy.ENDER_ELEVATOR_RENDER_ID;
+        return RenderLoader.ENDER_ELEVATOR_RENDER_ID;
     }
 
     @Override
