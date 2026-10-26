@@ -1,7 +1,9 @@
 package com.science.gtnl.common.wireless;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -11,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import com.gtnewhorizon.gtnhlib.compat.BaublesCompat;
 import com.science.gtnl.common.item.items.WirelessFrequencyCard;
 import com.science.gtnl.common.wireless.WirelessCardSelection.Candidate;
+import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 
 import baubles.common.container.InventoryBaubles;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -18,6 +21,49 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 public class WirelessCardInventory {
 
     public record CardSlot(IInventory inventory, int index) {}
+
+    static final class TrackedCard {
+
+        private ItemStack card;
+        private final UUID identity;
+        private final WirelessCardBinding binding;
+
+        TrackedCard(ItemStack card, WirelessCardBinding binding) {
+            this.card = card;
+            this.identity = WirelessCardBinding.identity(card.getTagCompound());
+            this.binding = binding;
+        }
+
+        boolean present(EntityPlayer player) {
+            return present(WirelessCardInventory.location(player, card) != Integer.MIN_VALUE, () -> carried(player));
+        }
+
+        boolean present(List<ItemStack> carried) {
+            return present(
+                carried.stream()
+                    .anyMatch(stack -> stack == card),
+                () -> carried);
+        }
+
+        private boolean present(boolean originalPresent, Supplier<List<ItemStack>> carried) {
+            if (identity == null) return false;
+            if (card.stackSize <= 0 || !originalPresent) {
+                // Vanilla inventory moves can replace the stack object; follow only its unique persisted identity.
+                ItemStack current = null;
+                for (ItemStack candidate : carried.get()) {
+                    if (candidate.stackSize <= 0 || !candidate.isItemEqual(card)
+                        || !identity.equals(WirelessCardBinding.identity(candidate.getTagCompound()))) continue;
+                    if (current != null) return false;
+                    current = candidate;
+                }
+                if (current == null) return false;
+                card = current;
+            }
+            return identity.equals(WirelessCardBinding.identity(card.getTagCompound()))
+                && binding.equals(WirelessCardBinding.read(card.getTagCompound()))
+                && WirelessCardBinding.automatic(card.getTagCompound());
+        }
+    }
 
     // GUI address: 0 = held, positive = main slot + 1, negative = -(Baubles slot + 1).
     public static CardSlot resolve(EntityPlayer player, int location) {
@@ -48,6 +94,20 @@ public class WirelessCardInventory {
 
     public static List<ItemStack> carried(EntityPlayer player) {
         return collect(player.inventory.mainInventory, BaublesCompat.getBaubles(player));
+    }
+
+    static boolean hasBoundCard(EntityPlayer player, Address source) {
+        return hasBoundCard(player.getUniqueID(), source, carried(player));
+    }
+
+    static boolean hasBoundCard(UUID owner, Address source, Iterable<ItemStack> cards) {
+        for (ItemStack card : cards) {
+            if (card == null || card.stackSize <= 0 || !(card.getItem() instanceof WirelessFrequencyCard)) continue;
+            WirelessCardBinding binding = WirelessCardBinding.read(card.getTagCompound());
+            if (binding != null && binding.belongsTo(owner)
+                && WirelessChannelManager.sameSource(binding.source(), source)) return true;
+        }
+        return false;
     }
 
     static WirelessCardSelection.Selection<ItemStack> select(EntityPlayer player, boolean connecting) {

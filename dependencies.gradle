@@ -45,6 +45,7 @@ dependencies {
     compileOnlyApi("com.github.GTNewHorizons:Variable-Horizons:0.1.07:dev") { transitive = false }
     compileOnly("com.github.GTNewHorizons:HoloInventory:2.5.17-GTNH:dev") { transitive = false }
     compileOnly("com.github.GTNewHorizons:TinkersConstruct:1.14.118-GTNH:dev") { transitive = false }
+    compileOnly("com.github.GTNewHorizons:MatterManipulator:0.1.61-GTNH:dev") { transitive = false }
 
     devOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughEnergistics:1.7.46:dev")
 
