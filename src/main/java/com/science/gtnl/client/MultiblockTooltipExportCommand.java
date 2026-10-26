@@ -20,12 +20,12 @@ public class MultiblockTooltipExportCommand extends CommandBase {
 
     @Override
     public String getCommandName() {
-        return "gtnltooltipexport";
+        return "gtnl_tooltipexport";
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/gtnltooltipexport";
+        return "/gtnl_tooltipexport";
     }
 
     @Override

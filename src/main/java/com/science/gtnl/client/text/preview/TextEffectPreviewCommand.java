@@ -15,12 +15,12 @@ public class TextEffectPreviewCommand extends CommandBase {
 
     @Override
     public String getCommandName() {
-        return "gtnltexteffects";
+        return "gtnl_texteffects";
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/gtnltexteffects";
+        return "/gtnl_texteffects";
     }
 
     @Override
