@@ -81,8 +81,10 @@ import com.science.gtnl.common.gui.equipment.EquipmentTheme;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme.Colors;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.railgun.RailgunModule;
+import com.science.gtnl.config.ClientConfig;
 import com.science.gtnl.config.EquipmentSoundConfig;
 import com.science.gtnl.config.EquipmentSoundConfig.Channel;
+import com.science.gtnl.config.ItemConfig;
 import com.science.gtnl.config.MainConfig;
 
 import gregtech.api.modularui2.GTGuiThemes;
@@ -993,7 +995,7 @@ public class EquipmentResourceContracts {
     }
 
     private static void themeChoice() throws ReflectiveOperationException {
-        MainConfig.Client defaults = new MainConfig.Client();
+        ClientConfig defaults = new ClientConfig();
         check(
             GTNLLibConfig.theme.isEmpty() && EquipmentTheme.selected()
                 .equals(EquipmentTheme.ID) && defaults.enableEquipmentThemeGlowColor,
@@ -1106,7 +1108,7 @@ public class EquipmentResourceContracts {
         expected.add("item.gtnl.equipment.wheel.sound");
         for (CelestweaveHudElement element : CelestweaveHudElement.values()) expected.add(element.hud.lang());
         expected.add(RailgunHudRenderer.CHARGE.lang());
-        for (Field field : MainConfig.Client.class.getFields()) {
+        for (Field field : ClientConfig.class.getFields()) {
             Config.LangKey key = field.getAnnotation(Config.LangKey.class);
             String name = field.getName()
                 .toLowerCase();
@@ -1117,11 +1119,11 @@ public class EquipmentResourceContracts {
         }
         Map<String, Class<?>> itemSections = Map.of(
             "railgun",
-            MainConfig.Item.Railgun.class,
+            ItemConfig.Railgun.class,
             "celestweave",
-            MainConfig.Item.Celestweave.class,
+            ItemConfig.Celestweave.class,
             "energymodule",
-            MainConfig.Item.EnergyModule.class);
+            ItemConfig.EnergyModule.class);
         Set<String> itemConfigKeys = new TreeSet<>();
         for (Map.Entry<String, Class<?>> section : itemSections.entrySet()) {
             String category = "gtnl.gui.config.general.item." + section.getKey();
@@ -1136,7 +1138,7 @@ public class EquipmentResourceContracts {
             }
         }
         expected.addAll(itemConfigKeys);
-        for (Class<?> section : new Class<?>[] { MainConfig.Item.Railgun.class, MainConfig.Item.Celestweave.class })
+        for (Class<?> section : new Class<?>[] { ItemConfig.Railgun.class, ItemConfig.Celestweave.class })
             for (Field field : section.getFields()) if (field.getType() == boolean.class) check(
                 field.getName()
                     .startsWith("enable"),

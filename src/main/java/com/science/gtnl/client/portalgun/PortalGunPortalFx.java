@@ -21,6 +21,7 @@ import com.science.gtnl.common.entity.EntityPortalGunPortal;
 import com.science.gtnl.common.render.entity.PortalGunDoorRender;
 import com.science.gtnl.common.render.entity.PortalGunSpriteRender;
 import com.science.gtnl.common.render.entity.PortalGunVortexRender;
+import com.science.gtnl.config.ClientConfig;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.PortalGunPortalEffect;
 
@@ -114,12 +115,12 @@ public class PortalGunPortalFx {
             SWIRL_HALF_HEIGHT * PortalGunSpriteRender.heightScale(open, close));
     }
 
-    public static int closeTicks(PortalGunPortalEffect effect, MainConfig.Client settings) {
+    public static int closeTicks(PortalGunPortalEffect effect, ClientConfig settings) {
         return effect.kind == PortalGunPortalEffect.Kind.FRAMED ? PortalGunDoorRender.DOOR_OPEN_TICKS
             : settings.portalGunCloseTicks;
     }
 
-    public static Pose pose(PortalGunPortalEffect effect, double sincePass, float close, MainConfig.Client settings) {
+    public static Pose pose(PortalGunPortalEffect effect, double sincePass, float close, ClientConfig settings) {
         double sx = 1, sy = 1, push = 0, jelly = settings.portalGunPassJelly;
         if (close <= 0 && jelly > 0 && sincePass >= 0 && sincePass < JELLY_TICKS) {
             double decay = Math.exp(-sincePass / JELLY_PERIOD), phase = 2 * Math.PI * sincePass / JELLY_PERIOD;
@@ -152,7 +153,7 @@ public class PortalGunPortalFx {
         return new Shape(false, shape.halfWidth() * k, shape.halfHeight() * k);
     }
 
-    public static List<Dot> dots(PortalGunPortalEffect effect, long seed, MainConfig.Client settings) {
+    public static List<Dot> dots(PortalGunPortalEffect effect, long seed, ClientConfig settings) {
         Random r = new Random(MathUtils.hash(seed, 0x5EED, 0, 0));
         Shape full = shape(effect, Float.MAX_VALUE / 2, 0);
         int spots = Math.max(1, (int) Math.round(full.perimeter() * settings.portalGunOpenDensity));
@@ -182,7 +183,7 @@ public class PortalGunPortalFx {
         return dots;
     }
 
-    public static List<Dot> passDots(PortalGunPortalEffect effect, long seed, MainConfig.Client settings) {
+    public static List<Dot> passDots(PortalGunPortalEffect effect, long seed, ClientConfig settings) {
         Random r = new Random(MathUtils.hash(seed, 0x5A55, 0, 0));
         Shape full = shape(effect, Float.MAX_VALUE / 2, 0);
         List<Dot> dots = new ObjectArrayList<>(settings.portalGunPassDotCount);
@@ -197,8 +198,7 @@ public class PortalGunPortalFx {
         return dots;
     }
 
-    private static Dot thrown(Random r, MainConfig.Client settings, double born, Vec3d origin, double outX,
-        double outY) {
+    private static Dot thrown(Random r, ClientConfig settings, double born, Vec3d origin, double outX, double outY) {
         double tilt = r.nextDouble() * 2 * Math.PI, cone = CONE * Math.sqrt(r.nextDouble());
         Vec3d aim = new Vec3d(Math.cos(tilt) * cone, Math.sin(tilt) * cone, 1).normalize();
         Vec3d velocity = new Vec3d(outX, outY, 0).scale(settings.portalGunOpenSpray * range(r, 0.5, 1.5))
@@ -213,8 +213,7 @@ public class PortalGunPortalFx {
             r.nextFloat() * (float) Math.PI * 2);
     }
 
-    public static List<Arc> openingArcs(PortalGunPortalEffect effect, double age, long seed,
-        MainConfig.Client settings) {
+    public static List<Arc> openingArcs(PortalGunPortalEffect effect, double age, long seed, ClientConfig settings) {
         List<Arc> arcs = new ObjectArrayList<>();
         if (age < 0 || age >= settings.portalGunOpenArcTicks) return arcs;
         double hop = settings.portalGunArcHop;
@@ -263,7 +262,7 @@ public class PortalGunPortalFx {
         return arcs;
     }
 
-    public static List<Arc> idleArcs(PortalGunPortalEffect effect, double age, long seed, MainConfig.Client settings) {
+    public static List<Arc> idleArcs(PortalGunPortalEffect effect, double age, long seed, ClientConfig settings) {
         List<Arc> arcs = new ObjectArrayList<>();
         int opened = openedAt(effect);
         if (age < opened) return arcs;
@@ -401,7 +400,7 @@ public class PortalGunPortalFx {
 
     public static void throwDots(EntityPortalGunPortal portal, PortalGunPortalEffect effect, double x, double y,
         double z, float partialTicks) {
-        MainConfig.Client settings = MainConfig.client;
+        ClientConfig settings = MainConfig.client;
         double age = portal.ticksExisted + partialTicks;
         long seed = portal.getEntityId();
         Vec3d up = Vec3d.of(portal.up()), normal = Vec3d.of(portal.facing()), right = up.cross(normal);
@@ -430,7 +429,7 @@ public class PortalGunPortalFx {
 
     public static void render(EntityPortalGunPortal portal, PortalGunPortalEffect effect, double x, double y, double z,
         float partialTicks, float close, Pose pose) {
-        MainConfig.Client settings = MainConfig.client;
+        ClientConfig settings = MainConfig.client;
         double age = portal.ticksExisted + partialTicks;
         long seed = portal.getEntityId();
         Vec3d up = Vec3d.of(portal.up()), normal = Vec3d.of(portal.facing()), right = up.cross(normal);
@@ -522,7 +521,7 @@ public class PortalGunPortalFx {
         return arc.fork() ? arc.alpha() * 0.75F : arc.alpha();
     }
 
-    private static void spawnDots(List<Dot> dots, double age, MainConfig.Client settings, Vec3d center, Vec3d right,
+    private static void spawnDots(List<Dot> dots, double age, ClientConfig settings, Vec3d center, Vec3d right,
         Vec3d up, Vec3d normal, int glow, int core, float partialTicks) {
         boolean falls = settings.portalGunOpenGravity > 0;
         for (Dot dot : dots) {

@@ -45,6 +45,7 @@ import com.science.gtnl.common.railgun.RailgunData;
 import com.science.gtnl.common.railgun.RailgunFireService;
 import com.science.gtnl.common.railgun.RailgunRaycast;
 import com.science.gtnl.common.render.item.ItemElectromagneticRailgunRender;
+import com.science.gtnl.config.ItemConfig;
 import com.science.gtnl.config.MainConfig;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -305,11 +306,11 @@ public class RailgunContracts {
                 .matcher(config)
                 .find(),
             "config defaults use mod id constants, so no GT class loads while the core mod registers the config");
-        String[] listed = MainConfig.Item.Railgun.class.getField("terrainProtectedMods")
+        String[] listed = ItemConfig.Railgun.class.getField("terrainProtectedMods")
             .getAnnotation(Config.DefaultStringList.class)
             .value();
         check(
-            Arrays.equals(listed, new MainConfig.Item.Railgun().terrainProtectedMods),
+            Arrays.equals(listed, new ItemConfig.Railgun().terrainProtectedMods),
             "the protected mods default matches its config annotation");
     }
 

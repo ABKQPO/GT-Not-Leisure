@@ -26,6 +26,7 @@ import com.science.gtnl.client.portalgun.PortalGunPortalFx;
 import com.science.gtnl.client.portalgun.PortalGunPortalFx.Pose;
 import com.science.gtnl.common.entity.EntityPortalGunPortal;
 import com.science.gtnl.common.portalgun.PortalGunGeometry;
+import com.science.gtnl.config.ClientConfig;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.PortalGunPortalEffect;
 
@@ -57,7 +58,7 @@ public class PortalGunPortalRender extends Render {
     @Override
     public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
         if (!(entity instanceof EntityPortalGunPortal portal)) return;
-        MainConfig.Client settings = MainConfig.client;
+        ClientConfig settings = MainConfig.client;
         PortalGunPortalEffect effect = settings.portalGunPortalEffect;
         double lift = portal.up() == ForgeDirection.UP ? lift(effect, roomAbove(portal)) : 0;
         PortalGunPortalFx.throwDots(portal, effect, x, y + lift, z, partialTicks);

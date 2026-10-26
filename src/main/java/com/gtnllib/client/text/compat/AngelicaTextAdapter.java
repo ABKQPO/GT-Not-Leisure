@@ -11,7 +11,6 @@ import com.gtnewhorizons.angelica.glsm.GLStateManager;
 import com.gtnewhorizons.angelica.mixins.interfaces.FontRendererAccessor;
 import com.gtnewhorizons.angelica.rendering.tesr.ModelPartBatcher;
 import com.gtnewhorizons.angelica.rendering.tesr.TesrBatchRenderer;
-import com.gtnllib.client.text.compat.GlyphTextureMetrics;
 import com.gtnllib.mod.ModList;
 
 import cpw.mods.fml.common.Optional;

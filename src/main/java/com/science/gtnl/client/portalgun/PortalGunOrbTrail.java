@@ -23,6 +23,7 @@ import com.gtnllib.client.fx.world.FxMuzzleAnchor;
 import com.gtnllib.utils.MathUtils;
 import com.gtnllib.utils.Vec3d;
 import com.science.gtnl.common.entity.EntityPortalGunOrb;
+import com.science.gtnl.config.ClientConfig;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.PortalGunPortalEffect;
 
@@ -135,7 +136,7 @@ public class PortalGunOrbTrail {
         }
 
         private void dots(Vec3d center, double step, float partialTicks) {
-            MainConfig.Client settings = MainConfig.client;
+            ClientConfig settings = MainConfig.client;
             spawned = Math.max(spawned, travelled + step - MAX_CATCH_UP);
             while (spawned < travelled + step) {
                 Vec3d base = along(center, step, spawned);
@@ -177,7 +178,7 @@ public class PortalGunOrbTrail {
             ForgeDirection side = block ? ForgeDirection.getOrientation(hit.sideHit) : ForgeDirection.UNKNOWN;
             Vec3d at = block ? Vec3d.of(hit.hitVec) : end;
             Vec3d normal = block ? Vec3d.of(side) : back.scale(-1);
-            MainConfig.Client settings = MainConfig.client;
+            ClientConfig settings = MainConfig.client;
             if (settings.portalGunTrailCutRange > 0) FxMoteRenderer.fadeOutNear(
                 trailDots,
                 at,

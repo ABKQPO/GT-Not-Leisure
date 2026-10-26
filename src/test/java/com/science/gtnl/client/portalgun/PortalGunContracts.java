@@ -50,6 +50,8 @@ import com.science.gtnl.common.render.item.ItemPortalGunRender.Core;
 import com.science.gtnl.common.render.item.ItemPortalGunRender.Edition;
 import com.science.gtnl.common.render.item.PortalGunCoreArcs;
 import com.science.gtnl.common.render.item.PortalGunCoreArcs.Arc;
+import com.science.gtnl.config.ClientConfig;
+import com.science.gtnl.config.ItemConfig;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.PortalGunPortalEffect;
 
@@ -251,7 +253,7 @@ public class PortalGunContracts {
             Arrays.asList(PortalGun.class.getInterfaces())
                 .equals(List.of(IEnergyContainerItem.class)),
             "the portal gun reports its shimmer as RF only so DuraDisplay shows a fill percentage");
-        for (Field field : MainConfig.Item.PortalGun.class.getFields()) check(
+        for (Field field : ItemConfig.PortalGun.class.getFields()) check(
             !field.getName()
                 .matches("capacity|tier|euPerShot"),
             "the portal gun config has no energy setting left, found " + field.getName());
@@ -653,10 +655,7 @@ public class PortalGunContracts {
             !EntityPortalGunPortal.coolingDown(100 + EntityPortalGunPortal.ARRIVAL_COOLDOWN + 1, 100),
             "a cooldown longer than possible is stale");
         check(!EntityPortalGunPortal.coolingDown(1_000_000, 5), "a cooldown from before a server restart is ignored");
-        near(
-            20,
-            new MainConfig.Item.PortalGun().pairCooldownTicks,
-            "a pair of portals cools down for a second by default");
+        near(20, new ItemConfig.PortalGun().pairCooldownTicks, "a pair of portals cools down for a second by default");
         check(EntityPortalGunPortal.coolingDown(130, 100, 40), "a pair stays closed to an entity during its cooldown");
         check(!EntityPortalGunPortal.coolingDown(100, 100, 40), "the pair cooldown ends on its last tick");
         check(!EntityPortalGunPortal.coolingDown(141, 100, 40), "a pair cooldown longer than possible is stale");
@@ -721,7 +720,7 @@ public class PortalGunContracts {
             check(english.containsKey(effect.langKey()), "en_US.lang names the portal effect " + effect);
             check(chinese.containsKey(effect.langKey()), "zh_CN.lang names the portal effect " + effect);
         }
-        Config.LangKey effectKey = Arrays.stream(MainConfig.Client.class.getFields())
+        Config.LangKey effectKey = Arrays.stream(ClientConfig.class.getFields())
             .filter(field -> field.getType() == PortalGunPortalEffect.class)
             .map(field -> field.getAnnotation(Config.LangKey.class))
             .findFirst()

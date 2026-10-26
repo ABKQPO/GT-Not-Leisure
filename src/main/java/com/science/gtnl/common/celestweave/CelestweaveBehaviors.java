@@ -29,6 +29,7 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFireballPacket;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
+import com.science.gtnl.config.ItemConfig;
 import com.science.gtnl.config.MainConfig;
 
 import vazkii.botania.api.internal.IManaBurst;
@@ -60,7 +61,7 @@ public class CelestweaveBehaviors {
         return BEHAVIORS.getOrDefault(module, NONE);
     }
 
-    private static MainConfig.Item.Celestweave config() {
+    private static ItemConfig.Celestweave config() {
         return MainConfig.item.celestweave;
     }
 

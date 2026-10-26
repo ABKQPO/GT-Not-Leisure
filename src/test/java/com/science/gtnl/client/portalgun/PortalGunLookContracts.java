@@ -44,6 +44,8 @@ import com.science.gtnl.common.render.entity.PortalGunDoorRender;
 import com.science.gtnl.common.render.entity.PortalGunPortalRender;
 import com.science.gtnl.common.render.entity.PortalGunSpriteRender;
 import com.science.gtnl.common.render.entity.PortalGunVortexRender;
+import com.science.gtnl.config.ClientConfig;
+import com.science.gtnl.config.ItemConfig;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.PortalGunPortalEffect;
 import com.science.gtnl.utils.enums.PortalGunPortalEffect.Kind;
@@ -80,7 +82,7 @@ public class PortalGunLookContracts {
         portalDoorArcs();
         portalVortexShape();
         check(
-            new MainConfig.Client().portalGunPortalEffect == PortalGunPortalEffect.PIXEL_SWIRL,
+            new ClientConfig().portalGunPortalEffect == PortalGunPortalEffect.PIXEL_SWIRL,
             "portals use the pixel swirl effect by default");
         Set<PortalGunPortalEffect> visited = EnumSet.noneOf(PortalGunPortalEffect.class);
         PortalGunPortalEffect cycled = PortalGunPortalEffect.PIXEL_SWIRL;
@@ -102,13 +104,13 @@ public class PortalGunLookContracts {
     }
 
     private static void passAndClose() {
-        MainConfig.Client defaults = new MainConfig.Client();
+        ClientConfig defaults = new ClientConfig();
         near(0.12, defaults.portalGunPassJelly, "portals wobble 0.12 when something passes through by default");
         near(24, defaults.portalGunPassDotCount, "24 dots fly out when something passes through by default");
         near(0.2, defaults.portalGunClosePop, "closing portals pop 0.2 bigger by default");
         near(9, defaults.portalGunCloseTicks, "portals close in 9 ticks by default");
         try {
-            Config.RangeInt range = MainConfig.Client.class.getField("portalGunCloseTicks")
+            Config.RangeInt range = ClientConfig.class.getField("portalGunCloseTicks")
                 .getAnnotation(Config.RangeInt.class);
             check(
                 EntityPortalGunPortal.CLOSE_LIMIT >= range.max()
@@ -206,7 +208,7 @@ public class PortalGunLookContracts {
     }
 
     private static void lookSettings() {
-        MainConfig.Client defaults = new MainConfig.Client();
+        ClientConfig defaults = new ClientConfig();
         near(0.03, defaults.portalGunTrailWidth, "the trail starts 0.03 blocks wide by default");
         near(0.0125, defaults.portalGunTrailSpray, "trail dots drift sideways at 0.0125 by default");
         near(0.02, defaults.portalGunTrailGravity, "trail dots fall at 0.02 by default");
@@ -229,7 +231,7 @@ public class PortalGunLookContracts {
         near(15, defaults.portalGunHeldYaw, "the held gun turns 15 degrees by default");
         near(0.15, defaults.portalGunHeldForward, "the held gun is pushed 0.15 forward by default");
         Map<String, String> english = langFile("en_US"), chinese = langFile("zh_CN");
-        for (Field field : MainConfig.Client.class.getFields()) {
+        for (Field field : ClientConfig.class.getFields()) {
             if (!field.getName()
                 .toLowerCase()
                 .contains("portalgun")) continue;
@@ -285,7 +287,7 @@ public class PortalGunLookContracts {
         List<Field> settings = new ObjectArrayList<>();
         try {
             for (Control control : controls) shown.put(control.lang(), control);
-            for (Field field : MainConfig.Client.class.getFields()) if (field.getName()
+            for (Field field : ClientConfig.class.getFields()) if (field.getName()
                 .toLowerCase()
                 .contains("portalgun") && field.getType() != PortalGunPortalEffect.class) settings.add(field);
             settings.add(GTNLLibConfig.class.getField("maxWorldMotes"));
@@ -339,7 +341,7 @@ public class PortalGunLookContracts {
     }
 
     private static void restoring(List<Field> settings) throws ReflectiveOperationException {
-        MainConfig.Client defaults = new MainConfig.Client();
+        ClientConfig defaults = new ClientConfig();
         Map<Field, Object> initial = new Object2ObjectOpenHashMap<>();
         for (Field field : settings) {
             boolean library = field.getDeclaringClass() == GTNLLibConfig.class;
@@ -369,7 +371,7 @@ public class PortalGunLookContracts {
     }
 
     private static void shotArc() {
-        MainConfig.Item.PortalGun defaults = new MainConfig.Item.PortalGun();
+        ItemConfig.PortalGun defaults = new ItemConfig.PortalGun();
         check(defaults.orbGravity > 0, "the portal gun shot falls on an arc by default");
         near(5, defaults.airOpenTicks, "the shot opens a portal in the air after 5 ticks by default");
         double saved = MainConfig.item.portal_gun.orbGravity;
@@ -409,7 +411,7 @@ public class PortalGunLookContracts {
     }
 
     private static void portalOpening() {
-        MainConfig.Client defaults = new MainConfig.Client();
+        ClientConfig defaults = new ClientConfig();
         near(0.05, defaults.portalGunOpenSpread, "opening dots start 0.05 blocks off the edge by default");
         near(0.005, defaults.portalGunOpenSpray, "opening dots drift outward at 0.005 by default");
         near(0.17, defaults.portalGunOpenJet, "opening dots shoot out at 0.17 by default");
@@ -453,7 +455,7 @@ public class PortalGunLookContracts {
             "an arc always forks when the fork chance is 1");
     }
 
-    private static void openingDots(PortalGunPortalEffect effect, MainConfig.Client defaults) {
+    private static void openingDots(PortalGunPortalEffect effect, ClientConfig defaults) {
         Shape full = PortalGunPortalFx.shape(effect, 1000, 0);
         int spots = Math.max(1, (int) Math.round(full.perimeter() * defaults.portalGunOpenDensity));
         List<Dot> dots = PortalGunPortalFx.dots(effect, 42, defaults);
@@ -476,7 +478,7 @@ public class PortalGunLookContracts {
         check(
             onEdge && (effect.kind != Kind.SPRITE || faced > 0),
             effect + " throws dots only from its edge when the whole-face switch is off");
-        MainConfig.Client face = new MainConfig.Client();
+        ClientConfig face = new ClientConfig();
         face.enablePortalGunOpenWholeFace = true;
         int inside = 0;
         for (long seed = 0; seed < 20; seed++) for (Dot dot : PortalGunPortalFx.dots(effect, seed, face)) {
@@ -496,9 +498,9 @@ public class PortalGunLookContracts {
         return shape.rect() ? Math.max(x, y) : Math.hypot(x, y);
     }
 
-    private static void openingArcs(PortalGunPortalEffect effect, MainConfig.Client defaults) {
+    private static void openingArcs(PortalGunPortalEffect effect, ClientConfig defaults) {
         double hop = defaults.portalGunArcHop;
-        MainConfig.Client quick = new MainConfig.Client();
+        ClientConfig quick = new ClientConfig();
         quick.portalGunArcHop = PortalGunPortalFx.RAMP / 3;
         double late = 0, first = 0, going = 0;
         int seeds = 400;
@@ -523,7 +525,7 @@ public class PortalGunLookContracts {
                 && PortalGunPortalFx.openingArcs(effect, -0.5, 3, defaults)
                     .isEmpty(),
             effect + " crackles only while the portal opens");
-        MainConfig.Client noForks = new MainConfig.Client();
+        ClientConfig noForks = new ClientConfig();
         noForks.portalGunArcForkChance = 0;
         boolean forked = false;
         for (long seed = 0; seed < 50; seed++)
@@ -535,7 +537,7 @@ public class PortalGunLookContracts {
             early |= !PortalGunPortalFx.idleArcs(effect, opened - 0.5, seed, defaults)
                 .isEmpty();
         check(!early, effect + " keeps its ring and middle quiet until it is fully open");
-        MainConfig.Client ring = new MainConfig.Client();
+        ClientConfig ring = new ClientConfig();
         ring.portalGunRingArcRate = 10;
         ring.portalGunCenterArcRate = 0;
         ring.portalGunArcForkChance = 0;
@@ -554,7 +556,7 @@ public class PortalGunLookContracts {
         }
         check(runs > 0, effect + " runs arcs round its inner ring once open");
         check(onRing, effect + " ring arcs jump between points on its inner ring");
-        MainConfig.Client quiet = new MainConfig.Client();
+        ClientConfig quiet = new ClientConfig();
         quiet.portalGunRingArcRate = 0;
         quiet.portalGunCenterArcRate = 0;
         boolean any = false;
@@ -563,7 +565,7 @@ public class PortalGunLookContracts {
         check(!any, effect + " stays quiet once open when ring and middle arcs are off");
     }
 
-    private static void sharpArcs(MainConfig.Client defaults) {
+    private static void sharpArcs(ClientConfig defaults) {
         Vec3d a = new Vec3d(-0.3, 0, 0.03), b = new Vec3d(0.3, 0.1, 0.03);
         List<Arc> arcs = new ObjectArrayList<>();
         PortalGunPortalFx.sharpBolt(arcs, new Random(9), a, b, 0.2, 0.8, 0.6, 0, false, 1);
@@ -582,7 +584,7 @@ public class PortalGunLookContracts {
         for (Vec3d point : arcs.get(0)
             .points()) off = Math.max(off, Math.max(sideways(a, b, point), Math.abs(point.z() - 0.03)));
         check(off < 1.0E-9, "an opening arc with no bend and no rise is a straight line on the portal, off by " + off);
-        MainConfig.Client flat = new MainConfig.Client(), tame = new MainConfig.Client();
+        ClientConfig flat = new ClientConfig(), tame = new ClientConfig();
         flat.portalGunOpenArcRise = 0;
         tame.portalGunOpenArcBend = 0.3;
         double peak = sharpness(defaults, true), lying = sharpness(flat, true);
@@ -594,7 +596,7 @@ public class PortalGunLookContracts {
             "harder bend swings opening arcs further sideways, " + bent + " against " + straighter);
     }
 
-    private static double sharpness(MainConfig.Client settings, boolean height) {
+    private static double sharpness(ClientConfig settings, boolean height) {
         double sum = 0;
         int count = 0;
         for (long seed = 0; seed < 300; seed++)
@@ -644,7 +646,7 @@ public class PortalGunLookContracts {
         try {
             Field speed = EntityPortalGunOrb.class.getDeclaredField("SPEED");
             speed.setAccessible(true);
-            reach = new MainConfig.Item.PortalGun().airOpenTicks * speed.getFloat(null);
+            reach = new ItemConfig.PortalGun().airOpenTicks * speed.getFloat(null);
         } catch (ReflectiveOperationException e) {
             check(false, "the orb's speed is readable: " + e);
             return;

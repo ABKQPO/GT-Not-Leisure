@@ -17,8 +17,8 @@ import com.gtnllib.client.text.EffectTextLayout.Glyph;
 import com.gtnllib.client.text.EffectTextLayout.Layout;
 import com.gtnllib.client.text.compat.AngelicaTextAdapter;
 import com.gtnllib.client.text.compat.AngelicaTextAdapter.FontSettings;
-import com.gtnllib.text.TextEffectColors;
 import com.gtnllib.client.text.compat.GlyphTextureMetrics;
+import com.gtnllib.text.TextEffectColors;
 
 /** Render-thread-owned, bounded cache of native font coverage masks. */
 public class TextMaskCache {

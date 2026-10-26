@@ -19,7 +19,7 @@ import com.gtnllib.client.hud.HudLayout;
 import com.gtnllib.client.hud.HudRegistry;
 import com.gtnllib.client.hud.HudTiming;
 import com.science.gtnl.client.railgun.RailgunHudRenderer;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.config.ClientConfig;
 
 public class EquipmentHudContracts {
 
@@ -138,7 +138,7 @@ public class EquipmentHudContracts {
         for (String removed : new String[] { "celestweaveHudIdleSeconds", "celestweaveHudIdleAlpha", "enableHud",
             "hudScale", "equipmentTheme" })
             check(
-                Arrays.stream(MainConfig.Client.class.getFields())
+                Arrays.stream(ClientConfig.class.getFields())
                     .noneMatch(
                         field -> field.getName()
                             .equals(removed)),

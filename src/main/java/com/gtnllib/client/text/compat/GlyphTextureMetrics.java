@@ -2,8 +2,6 @@ package com.gtnllib.client.text.compat;
 
 import net.minecraft.client.gui.FontRenderer;
 
-import com.gtnllib.client.text.compat.AngelicaTextAdapter;
-
 /** The vertical atlas interval occupied by a glyph, independent of its screen position. */
 public record GlyphTextureMetrics(float vStart, float vSpan) {
 
