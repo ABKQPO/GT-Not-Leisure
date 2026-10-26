@@ -26,6 +26,7 @@ import com.gtnewhorizon.gtnhlib.util.ServerPlayerUtils;
 import com.mojang.authlib.GameProfile;
 import com.science.gtnl.ScienceNotLeisure;
 
+import gregtech.common.misc.spaceprojects.SpaceProjectManager;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public class TeamNetworkManager {
@@ -35,6 +36,11 @@ public class TeamNetworkManager {
     private static final String LEGACY_TEAMS_TAG = "spaceTeams";
     private static final String MEMBER_UUID_TAG = "MEMBER_UUID";
     private static final String LEADER_UUID_TAG = "LEADER_UUID";
+
+    // GT's wireless EU still keys accounts by SpaceProjectManager's leader; use this so GTNL charges the same account.
+    public static UUID wirelessEnergyOwner(UUID playerId) {
+        return SpaceProjectManager.getLeader(playerId);
+    }
 
     public static Team getOrCreateTeam(UUID playerId) {
         return TeamManager.getOrCreateTeam(getPlayerName(playerId), playerId);

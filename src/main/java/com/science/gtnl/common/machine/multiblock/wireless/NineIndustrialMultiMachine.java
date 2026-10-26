@@ -31,6 +31,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.text.LanguageLoader;
 
 import bartworks.common.loaders.ItemRegistry;
 import goodgenerator.loader.Loaders;
@@ -49,7 +50,6 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
-import gregtech.api.util.GTLanguageManager;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
@@ -83,7 +83,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
         for (int id = 0; id < 108; id++) {
             RecipeMap<?> recipeMap = getRecipeMap(id);
             if (recipeMap != null) {
-                String aNEI = GTLanguageManager.getTranslation(getRecipeMap(id).unlocalizedName);
+                String aNEI = LanguageLoader.gtTranslation(getRecipeMap(id).unlocalizedName);
                 aToolTipNames[id] = aNEI != null ? aNEI : "BAD NEI NAME";
             }
         }

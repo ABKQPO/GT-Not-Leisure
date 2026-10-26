@@ -2,6 +2,7 @@ package com.science.gtnl.common.material;
 
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
+import com.science.gtnl.utils.text.LanguageLoader;
 
 import bartworks.system.material.Werkstoff;
 import gregtech.api.enums.ItemList;
@@ -12,7 +13,6 @@ import gregtech.api.metatileentity.implementations.MTECable;
 import gregtech.api.metatileentity.implementations.MTEFluidPipe;
 import gregtech.api.metatileentity.implementations.MTEItemPipe;
 import gregtech.api.recipe.RecipeMaps;
-import gregtech.api.util.GTLanguageManager;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipeBuilder;
 
@@ -31,7 +31,7 @@ public class MaterialUtils {
             new MTEItemPipe(
                 ID,
                 "GT_Pipe_" + unName + "_Tiny",
-                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.tiny_material_item_pipe"
+                LanguageLoader.gtUsesPlaceholders() ? "gt.oreprefix.tiny_material_item_pipe"
                     : "Tiny " + material.mDefaultLocalName + " Item Pipe",
                 0.25F,
                 material,
@@ -44,7 +44,7 @@ public class MaterialUtils {
             new MTEItemPipe(
                 ID + 1,
                 "GT_Pipe_" + unName + "_Small",
-                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.small_material_item_pipe"
+                LanguageLoader.gtUsesPlaceholders() ? "gt.oreprefix.small_material_item_pipe"
                     : "Small " + material.mDefaultLocalName + " Item Pipe",
                 0.375F,
                 material,
@@ -57,7 +57,7 @@ public class MaterialUtils {
             new MTEItemPipe(
                 ID + 2,
                 "GT_Pipe_" + unName,
-                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.material_item_pipe"
+                LanguageLoader.gtUsesPlaceholders() ? "gt.oreprefix.material_item_pipe"
                     : material.mDefaultLocalName + " Item Pipe",
                 0.5F,
                 material,
@@ -70,7 +70,7 @@ public class MaterialUtils {
             new MTEItemPipe(
                 ID + 3,
                 "GT_Pipe_" + unName + "_Large",
-                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.large_material_item_pipe"
+                LanguageLoader.gtUsesPlaceholders() ? "gt.oreprefix.large_material_item_pipe"
                     : "Large " + material.mDefaultLocalName + " Item Pipe",
                 0.75F,
                 material,
@@ -83,7 +83,7 @@ public class MaterialUtils {
             new MTEItemPipe(
                 ID + 4,
                 "GT_Pipe_" + unName + "_Huge",
-                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.huge_material_item_pipe"
+                LanguageLoader.gtUsesPlaceholders() ? "gt.oreprefix.huge_material_item_pipe"
                     : "Huge " + material.mDefaultLocalName + " Item Pipe",
                 0.875F,
                 material,
@@ -112,7 +112,7 @@ public class MaterialUtils {
             new MTEFluidPipe(
                 startID,
                 "GT_Pipe_" + material.mDefaultLocalName + "_Tiny",
-                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.tiny_material_fluid_pipe"
+                LanguageLoader.gtUsesPlaceholders() ? "gt.oreprefix.tiny_material_fluid_pipe"
                     : "Tiny " + material.mDefaultLocalName + " Fluid Pipe",
                 0.25F,
                 material,
@@ -124,7 +124,7 @@ public class MaterialUtils {
             new MTEFluidPipe(
                 startID + 1,
                 "GT_Pipe_" + material.mDefaultLocalName + "_Small",
-                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.small_material_fluid_pipe"
+                LanguageLoader.gtUsesPlaceholders() ? "gt.oreprefix.small_material_fluid_pipe"
                     : "Small " + material.mDefaultLocalName + " Fluid Pipe",
                 0.375F,
                 material,
@@ -136,7 +136,7 @@ public class MaterialUtils {
             new MTEFluidPipe(
                 startID + 2,
                 "GT_Pipe_" + material.mDefaultLocalName,
-                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.material_fluid_pipe"
+                LanguageLoader.gtUsesPlaceholders() ? "gt.oreprefix.material_fluid_pipe"
                     : material.mDefaultLocalName + " Fluid Pipe",
                 0.5F,
                 material,
@@ -148,7 +148,7 @@ public class MaterialUtils {
             new MTEFluidPipe(
                 startID + 3,
                 "GT_Pipe_" + material.mDefaultLocalName + "_Large",
-                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.large_material_fluid_pipe"
+                LanguageLoader.gtUsesPlaceholders() ? "gt.oreprefix.large_material_fluid_pipe"
                     : "Large " + material.mDefaultLocalName + " Fluid Pipe",
                 0.75F,
                 material,
@@ -160,7 +160,7 @@ public class MaterialUtils {
             new MTEFluidPipe(
                 startID + 4,
                 "GT_Pipe_" + material.mDefaultLocalName + "_Huge",
-                GTLanguageManager.i18nPlaceholder ? "gt.oreprefix.huge_material_fluid_pipe"
+                LanguageLoader.gtUsesPlaceholders() ? "gt.oreprefix.huge_material_fluid_pipe"
                     : "Huge " + material.mDefaultLocalName + " Fluid Pipe",
                 0.875F,
                 material,

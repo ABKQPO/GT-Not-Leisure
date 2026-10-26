@@ -19,12 +19,12 @@ import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.common.gui.modularui.singleblock.ManaTankGui;
 import com.science.gtnl.common.material.GTNLMaterials;
+import com.science.gtnl.utils.text.LanguageLoader;
 
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
-import gregtech.api.util.GTLanguageManager;
 import gregtech.api.util.GTUtility;
 import gregtech.common.tileentities.storage.MTEDigitalTankBase;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -193,8 +193,8 @@ public class ManaTank extends MTEDigitalTankBase {
             final FluidStack tContents = FluidStack
                 .loadFluidStackFromNBT(stack.stackTagCompound.getCompoundTag("mFluid"));
             if (tContents != null && tContents.amount > 0) {
-                GTLanguageManager.addStringLocalization("TileEntity_TANK_INFO", "Contains Fluid: ");
-                GTLanguageManager.addStringLocalization("TileEntity_TANK_AMOUNT", "Fluid Amount: ");
+                LanguageLoader.addGTEnglishName("TileEntity_TANK_INFO", "Contains Fluid: ");
+                LanguageLoader.addGTEnglishName("TileEntity_TANK_AMOUNT", "Fluid Amount: ");
                 tooltip.add(
                     StatCollector.translateToLocal("TileEntity_TANK_INFO") + EnumChatFormatting.YELLOW
                         + tContents.getLocalizedName()

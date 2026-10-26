@@ -9,12 +9,12 @@ import net.minecraft.item.ItemStack;
 import com.gtnllib.utils.GameUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.utils.text.LanguageLoader;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
 import gregtech.api.interfaces.IItemContainer;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
-import gregtech.api.util.GTLanguageManager;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipeBuilder;
@@ -1744,7 +1744,7 @@ public enum GTNLItemList implements IItemContainer {
         // Construct a translation key from UnlocalizedName and CamelCased DisplayName
         final String tKey = rStack.getUnlocalizedName() + ".with." + tCamelCasedDisplayNameBuilder + ".name";
 
-        GTLanguageManager.addStringLocalization(tKey, aDisplayName);
+        LanguageLoader.addGTEnglishName(tKey, aDisplayName);
         rStack.setStackDisplayName(aDisplayName);
         return GTUtility.copyAmount(aAmount, rStack);
     }

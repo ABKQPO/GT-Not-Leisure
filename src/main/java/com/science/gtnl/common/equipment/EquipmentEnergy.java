@@ -8,9 +8,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 
+import com.science.gtnl.utils.world.teams.TeamNetworkManager;
+
 import gregtech.api.enums.GTValues;
 import gregtech.common.misc.WirelessNetworkManager;
-import gregtech.common.misc.spaceprojects.SpaceProjectManager;
 
 public class EquipmentEnergy {
 
@@ -77,7 +78,7 @@ public class EquipmentEnergy {
     }
 
     public static UUID wirelessOwner(EntityPlayer player) {
-        return SpaceProjectManager.getLeader(player.getUniqueID());
+        return TeamNetworkManager.wirelessEnergyOwner(player.getUniqueID());
     }
 
     public static double wirelessAvailable(EntityPlayer player) {
