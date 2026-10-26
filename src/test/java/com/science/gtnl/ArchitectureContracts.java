@@ -24,9 +24,11 @@ public class ArchitectureContracts {
     // Ratchets: each count may only go down. Lower the number in the same change that lowers the count.
     public static final int MAX_UTILS_CLASSES = 83;
     public static final int MAX_MOD_CHECKS_OUTSIDE_COMPAT = 27;
-    public static final int MAX_MUI1_FILES = 47;
+    public static final int MAX_MUI1_FILES = 46;
     public static final int MAX_DIRECT_GT_MULTIBLOCK_BASES = 10;
-    public static final int MAX_MIXINS_OVER_80_LINES = 58;
+    public static final int MAX_MIXINS_OVER_80_LINES = 33;
+    public static final int MAX_MIXINS_WITH_LONG_METHODS = 10;
+    public static final int LONG_METHOD_LINES = 15;
     public static final int MAX_CLIENT_IMPORTS_IN_COMMON = 90;
 
     public static final Set<String> SELF_REGISTERING = Set.of(
@@ -57,6 +59,7 @@ public class ArchitectureContracts {
             + "|TTMultiblockBase|MTESteamMultiBlockBase|GTPPMultiBlockBase|KubaTechGTMultiBlockBase)\\b");
     private static final Pattern SELF_REGISTRATION = Pattern
         .compile("GameRegistry\\s*\\.\\s*register(Item|Block)\\(\\s*this");
+    private static final Pattern MIXIN_INTERFACE = Pattern.compile("^public interface ", Pattern.MULTILINE);
     private static final Pattern CARD = Pattern.compile("class (\\w+)[^{]*implements[^{]*\\bIContentLoader\\b");
     private static final Pattern COMPAT = Pattern
         .compile("^public class (\\w+)[^{]*implements[^{]*\\bIModCompat\\b", Pattern.MULTILINE);
@@ -95,7 +98,12 @@ public class ArchitectureContracts {
             sources,
             "mixins over 80 lines",
             MAX_MIXINS_OVER_80_LINES,
-            (path, text) -> path.startsWith("mixins/") && text.contains("@Mixin") && lines(text) > 80);
+            (path, text) -> isMixinClass(path, text) && lines(text) > 80);
+        ratchet(
+            sources,
+            "mixins with a method longer than " + LONG_METHOD_LINES + " lines; move the logic into the system's hooks",
+            MAX_MIXINS_WITH_LONG_METHODS,
+            (path, text) -> isMixinClass(path, text) && longestMethodBody(text) > LONG_METHOD_LINES);
         ratchet(
             sources,
             "common files outside render/ and gui/ importing client classes",
@@ -181,6 +189,35 @@ public class ArchitectureContracts {
             what + " may only go down: limit " + max + ", found " + hits.size() + " " + new TreeSet<>(hits));
         if (hits.size() < max)
             System.out.println("ratchet can be lowered: " + what + " is " + hits.size() + ", limit " + max);
+    }
+
+    // Accessor and invoker interfaces only declare; the mixin checks are about classes that carry code.
+    private static boolean isMixinClass(String path, String text) {
+        return path.startsWith("mixins/") && text.contains("@Mixin")
+            && !MIXIN_INTERFACE.matcher(text)
+                .find();
+    }
+
+    // Lines inside the longest class-level method body, in the formatted layout: members start four spaces in and
+    // their bodies end on a line that is four spaces and a closing brace.
+    private static int longestMethodBody(String text) {
+        String[] lines = text.split("\\r?\\n");
+        int longest = 0;
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            if (!line.startsWith("    ") || line.startsWith("     ")) continue;
+            String member = line.trim();
+            if (member.startsWith("@") || member.startsWith("/") || member.startsWith("*") || member.equals("}"))
+                continue;
+            int open = i;
+            while (open < lines.length && !lines[open].endsWith("{") && !lines[open].endsWith(";")) open++;
+            if (open >= lines.length || lines[open].endsWith(";") || !lines[open].contains(")")) continue;
+            int close = open + 1;
+            while (close < lines.length && !lines[close].equals("    }")) close++;
+            longest = Math.max(longest, close - open - 1);
+            i = close;
+        }
+        return longest;
     }
 
     private static int lines(String text) {
