@@ -1185,6 +1185,8 @@ gtnl.machine.large_distillery.name=Large Distillation Plant
 gtnl.machine.large_distillery.recipe_type=Distillation Tower / Distillation Chamber
 gtnl.machine.large_distillery.mode.0=Distillation Tower
 gtnl.machine.large_distillery.mode.1=Distillation Chamber
+gtnl.machine.large_distillery.tooltip.casing_total=Minimum counted casings for the smallest structure: %1$s; each added layer raises the total minimum by %2$s
+gtnl.machine.large_distillery.tooltip.casing_counted=Only base and distillation-layer wall casings count; the roof and extra optional casings do not
 
 gtnl.machine.incubator.name=Incubator
 gtnl.machine.incubator.recipe_type=Bacterial Incubator
@@ -1256,6 +1258,7 @@ gtnl.machine.grand_assembly_line.recipe_type=Disordered Assembly Line
 gtnl.machine.grand_assembly_line.parallel_controller.energy=Install a %1$s or better %2$s to remove the energy hatch limit
 gtnl.machine.grand_assembly_line.parallel_controller.boost=A %1$s or better %2$s adds 1900%% speed (multiplicative), but the %2$s's EU usage reduction drops to 20%%
 gtnl.machine.grand_assembly_line.parallel_controller.wireless=Installing a %1$s or better %2$s without an energy hatch automatically enters wireless mode
+gtnl.machine.grand_assembly_line.tooltip.casing_total=At least %3$s blocks in total across %1$s and %2$s
 gtnl.recipe.grand_assembly_line_special=Assembly Line Conflict Detection
 gtnl.machine.grand_assembly_line.info.minimum_recipe_time=Set overclock allow min time
 

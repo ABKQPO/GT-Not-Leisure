@@ -21,6 +21,8 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
+import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import bartworks.util.BWUtil;
@@ -32,11 +34,13 @@ import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
+import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -142,7 +146,34 @@ public class VacuumDryingFurnace extends GTMMultiMachineBase<VacuumDryingFurnace
     }
 
     @Override
+    public ProcessingLogic createProcessingLogic() {
+        return new GTNLProcessingLogic() {
+
+            @Override
+            public @NotNull GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
+                return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
+                    .setHeatOC(getHeatOC())
+                    .setRecipeHeat(recipe.mSpecialValue)
+                    // Below the recipe's heat the recipe still runs, only without heat bonuses.
+                    .setMachineHeat(Math.max(getMachineHeat(), recipe.mSpecialValue))
+                    .setHeatDiscount(getHeatDiscount())
+                    .setAmperageOC(getAmperageOC())
+                    .setEUtDiscount(getEUtDiscount())
+                    .setDurationModifier(getDurationModifier())
+                    .setPerfectOC(getPerfectOC())
+                    .setMaxTierSkips(getMaxTierSkip())
+                    .setMaxOverclocks(getMaxOverclocks());
+            }
+        }.setMaxParallelSupplier(this::getTrueParallel);
+    }
+
+    @Override
     public boolean getHeatOC() {
+        return true;
+    }
+
+    @Override
+    public boolean getHeatDiscount() {
         return true;
     }
 

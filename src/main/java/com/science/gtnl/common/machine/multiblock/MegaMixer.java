@@ -3,7 +3,9 @@ package com.science.gtnl.common.machine.multiblock;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,6 +36,7 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.api.util.tooltip.TooltipHelper;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -46,6 +49,7 @@ public class MegaMixer extends GTMMultiMachineBase<MegaMixer> implements ISurviv
     private static final int DEPTH_OFF_SET = 0;
     private static final int SPEED_BOOST_INTERVAL = 10;
     private static final double SPEED_BOOST_STEP = 0.05, MAX_SPEED_BOOST = 2;
+    private static final double LOCKED_EU_USAGE = 0.8;
     private static final String[][] shape = StructureUtils.readStructureFromFile(MM_STRUCTURE_FILE_PATH);
 
     public double runningSpeedBoost;
@@ -159,7 +163,12 @@ public class MegaMixer extends GTMMultiMachineBase<MegaMixer> implements ISurviv
 
     @Override
     public double getEUtDiscount() {
-        return mLockedToSingleRecipe ? 1 : 0.6 - (mParallelTier / 50.0);
+        return mLockedToSingleRecipe ? LOCKED_EU_USAGE : 0.6 - (mParallelTier / 50.0);
+    }
+
+    @Override
+    public Map<String, Object> getTooltipVars() {
+        return Collections.singletonMap("locked_eu_usage", TooltipHelper.percentageFormat.format(LOCKED_EU_USAGE));
     }
 
     @Override

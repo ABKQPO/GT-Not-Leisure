@@ -73,6 +73,7 @@ import lombok.Setter;
 @IMetaTileEntity.SkipGenerateDescription
 public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IGreenHouse {
 
+    private static final int RUN_TICKS = 60 * SECONDS;
     private static final UITexture[] MODE_ICONS = { GTGuiTextures.OVERLAY_BUTTON_ALLOW_INPUT,
         GTGuiTextures.OVERLAY_BUTTON_CYCLIC, GTGuiTextures.OVERLAY_BUTTON_ALLOW_OUTPUT };
 
@@ -258,7 +259,12 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
 
     @Override
     public Map<String, Object> getTooltipVars() {
-        return ImmutableMap.of("run_seconds", CYCLE_DURATION / SECONDS);
+        return ImmutableMap.of("run_seconds", RUN_TICKS / SECONDS);
+    }
+
+    @Override
+    public int getCycleDuration() {
+        return RUN_TICKS;
     }
 
     @Override

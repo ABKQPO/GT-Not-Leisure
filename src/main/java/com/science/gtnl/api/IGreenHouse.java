@@ -94,6 +94,15 @@ public interface IGreenHouse extends IVoidable {
 
     void setMaxProgressTime(int time);
 
+    /**
+     * Length of one farm cycle. Crops grow for this long each cycle, so a longer cycle also yields more per cycle.
+     *
+     * @return the cycle length in ticks
+     */
+    default int getCycleDuration() {
+        return CYCLE_DURATION;
+    }
+
     void setLEUt(long lEUt);
 
     @Deprecated
@@ -579,7 +588,7 @@ public interface IGreenHouse extends IVoidable {
         setIndustrialFarmGuiDropTracker(cycleDrops);
         setGreenHouseOutputItems(getIndustrialFarmDropTracker().getDrops(false));
         setLEUt(-getIndustrialFarmEUt());
-        setMaxProgressTime(CYCLE_DURATION);
+        setMaxProgressTime(getCycleDuration());
         updateSlots();
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
@@ -657,7 +666,7 @@ public interface IGreenHouse extends IVoidable {
             .getGrowthDuration();
         int growthTicksPerHarvest = duration / growthSpeed + (duration % growthSpeed == 0 ? 0 : 1);
         double growthPercentPerGrowthTick = 1.0d / growthTicksPerHarvest;
-        return growthPercentPerGrowthTick * ((double) CYCLE_DURATION / TileEntityCropSticks.TICK_RATE)
+        return growthPercentPerGrowthTick * ((double) getCycleDuration() / TileEntityCropSticks.TICK_RATE)
             * getGrowthSpeedMultiplier();
     }
 

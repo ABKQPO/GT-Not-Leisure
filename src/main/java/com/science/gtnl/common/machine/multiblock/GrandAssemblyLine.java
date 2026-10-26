@@ -208,6 +208,16 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     }
 
     @Override
+    public List<String> getStructureTooltipCasingRequirements(int minimum) {
+        return List.of(
+            StatCollector.translateToLocalFormatted(
+                "gtnl.machine.grand_assembly_line.tooltip.casing_total",
+                Casings.AdvancedComputerCasing.getLocalizedName(),
+                Casings.ReinforcedGlass.getLocalizedName(),
+                minimum));
+    }
+
+    @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
         if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();

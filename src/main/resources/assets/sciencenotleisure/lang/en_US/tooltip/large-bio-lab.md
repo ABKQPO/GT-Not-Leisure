@@ -1,1 +1,1 @@
-This absolutely violates the principle of slot machines!
+{italic:This absolutely violates the principle of slot machines!}

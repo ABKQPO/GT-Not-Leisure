@@ -4,5 +4,5 @@ Used for restructuring matter under extreme temperature differentials.
 {aqua:{hr:74}}
 The eighth module of the Godforge, it uses muons to force atomic nuclei into tighter convergence.
 It accelerates matter directly toward the end of time itself.
-It requires the Godforge upgrade {lang:fog.upgrade.tt.11}.
+It requires the highest tier of the Godforge.
 This module is specialized in highly efficient matter transmutation.

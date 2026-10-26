@@ -11,6 +11,7 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -76,6 +77,7 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     private static final String[][] shape_top_hint = StructureUtils.readStructureFromFile(LDTH_STRUCTURE_FILE_PATH);
     private static final String[][] shape_top = StructureUtils.readStructureFromFile(LDT_STRUCTURE_FILE_PATH);
     private static final int MIN_LAYERS = 2;
+    private static final int MIN_CASINGS_PER_LAYER = 5;
     public static final int MACHINEMODE_TOWER = 0;
     public static final int MACHINEMODE_DISTILLERY = 1;
 
@@ -198,7 +200,17 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
         setupParameters();
         checkHatch(errors);
         checkHatchExact(errors, HatchElement.Muffler, 1);
-        checkCasingMin(errors, mCountCasing, 5 * (mHeight + 1) - 5);
+        checkCasingMin(errors, mCountCasing, MIN_CASINGS_PER_LAYER * mHeight);
+    }
+
+    @Override
+    public List<String> getStructureTooltipCasingRequirements(int minimum) {
+        return List.of(
+            StatCollector.translateToLocalFormatted(
+                "gtnl.machine.large_distillery.tooltip.casing_total",
+                minimum,
+                MIN_CASINGS_PER_LAYER),
+            StatCollector.translateToLocal("gtnl.machine.large_distillery.tooltip.casing_counted"));
     }
 
     @Override

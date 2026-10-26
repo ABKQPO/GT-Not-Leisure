@@ -1,4 +1,4 @@
-{blue:A vault woven from unfolded dimensions}
+{blue:{italic:A vault woven from unfolded dimensions}}
 Infinite storage!
 No longer compatible with output bus or output hatche, input only
 Default energy consumption: 1A UHV

@@ -176,9 +176,27 @@ public interface IMultiblockTooltipRules {
         return hatchLangKey;
     }
 
-    /** Runs a structure check with any required prototype state, restoring that state afterwards. */
+    /**
+     * Runs the tooltip's dry run of the structure check with any prototype state the check needs, such as a layer
+     * count, and restores that state afterwards.
+     *
+     * @param check the dry run of the structure check
+     */
     default void runStructureTooltipCheck(Runnable check) {
         check.run();
+    }
+
+    /**
+     * Describes a casing minimum that cannot be assigned to one material's count, such as a shared counter or a
+     * total that grows with the structure. The minimum comes from the recorded structure check. Nonempty lines
+     * replace the inferred material minimum; the individual material ranges still describe available positions.
+     *
+     * @param minimum the casing minimum the structure check passed to {@code checkCasingMin}
+     * @return localized lines shown under the structure's block list, or an empty list to put the minimum on the
+     *         one material that can hold it
+     */
+    default List<String> getStructureTooltipCasingRequirements(int minimum) {
+        return Collections.emptyList();
     }
 
     /**

@@ -1185,6 +1185,8 @@ gtnl.machine.large_distillery.name=大型分馏蒸馏厂
 gtnl.machine.large_distillery.recipe_type=蒸馏塔 / 蒸馏室
 gtnl.machine.large_distillery.mode.0=蒸馏塔
 gtnl.machine.large_distillery.mode.1=蒸馏室
+gtnl.machine.large_distillery.tooltip.casing_total=最小结构的计数外壳合计至少%1$s个；每增加一层，整塔最低需求增加%2$s个
+gtnl.machine.large_distillery.tooltip.casing_counted=仅底层与各馏分层外圈的外壳计入上述总数，塔盖及额外可选外壳不计入
 
 gtnl.machine.incubator.name=培养缸
 gtnl.machine.incubator.recipe_type=细菌培养缸
@@ -1256,6 +1258,7 @@ gtnl.machine.grand_assembly_line.recipe_type=无序装配线
 gtnl.machine.grand_assembly_line.parallel_controller.energy=安装%1$s及以上的%2$s解除能源仓限制
 gtnl.machine.grand_assembly_line.parallel_controller.boost=安装%1$s及以上的%2$s将额外提供1900%%的加速(乘算叠加)，但%2$s的功率系数减免降为原来的20%%
 gtnl.machine.grand_assembly_line.parallel_controller.wireless=安装%1$s及以上的%2$s且不安装能源仓将自动进入无线模式
+gtnl.machine.grand_assembly_line.tooltip.casing_total=%1$s与%2$s合计至少%3$s个
 gtnl.recipe.grand_assembly_line_special=装配线防冲突识别
 gtnl.machine.grand_assembly_line.info.minimum_recipe_time=设置超频允许最小时间
 

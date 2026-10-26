@@ -33,5 +33,6 @@ public record StructureSummary(Size firstTier, Size allTiers, boolean hollow, Co
 
     public record TierDetails(Size size, boolean hollow, ControllerPosition controller, List<HatchLine> hatchLines) {}
 
-    public record Section(List<BlockLine> blocks, List<MaterialTier> materialTiers, TierDetails details) {}
+    public record Section(List<BlockLine> blocks, List<MaterialTier> materialTiers, TierDetails details,
+        List<String> casingRequirements) {}
 }

@@ -539,6 +539,7 @@ public class MultiblockTooltipReader {
         List<Cell<T>> airCells = readCells(definition, largest, element -> element == air);
         Map<String, HatchGroup> hatches = new LinkedHashMap<>();
         List<List<BlockGroup>> tierGroups = new ArrayList<>();
+        List<List<String>> casingRequirements = new ArrayList<>();
         List<TierDetails> tierDetails = new ArrayList<>();
         Set<String> hatchKeys = new LinkedHashSet<>();
         for (int tier = 0; tier < tierCells.size(); tier++) {
@@ -548,7 +549,9 @@ public class MultiblockTooltipReader {
                 ? StructureTooltipHooks.recordChecks(controller, pieceResults(sizes, tiers.get(tier)))
                 : checks;
             List<BlockGroup> groups = readGroups(controller, cells, materialTiers, rules, tierHatches);
-            if (independentTiers || tier == 0) applyCasingMinimum(groups, tierCheck.casingMinimums());
+            casingRequirements.add(
+                independentTiers || tier == 0 ? casingRequirements(groups, tierCheck.casingMinimums(), rules)
+                    : Collections.emptyList());
             tierGroups.add(groups);
             for (HatchGroup hatch : tierHatches.values()) hatchKeys.addAll(hatch.keys);
             tierDetails.add(
@@ -577,7 +580,13 @@ public class MultiblockTooltipReader {
         }
         List<Section> sections = new ArrayList<>();
         for (int tier = 0; tier < tierGroups.size(); tier++) {
-            sections.add(toSection(tierGroups.get(tier), materialTiers, rules, tierDetails.get(tier)));
+            sections.add(
+                toSection(
+                    tierGroups.get(tier),
+                    materialTiers,
+                    rules,
+                    tierDetails.get(tier),
+                    casingRequirements.get(tier)));
         }
         IStructureChannels materialChannel = rules == null ? null : rules.getStructureTooltipMaterialTierChannel();
 
@@ -935,6 +944,16 @@ public class MultiblockTooltipReader {
         return placement == null ? null : placement.getStacks();
     }
 
+    private static List<String> casingRequirements(List<BlockGroup> groups, List<Integer> minimums,
+        IMultiblockTooltipRules rules) {
+        if (minimums.size() == 1 && rules != null) {
+            List<String> requirements = rules.getStructureTooltipCasingRequirements(minimums.get(0));
+            if (!requirements.isEmpty()) return requirements;
+        }
+        applyCasingMinimum(groups, minimums);
+        return Collections.emptyList();
+    }
+
     private static void applyCasingMinimum(List<BlockGroup> groups, List<Integer> minimums) {
         if (minimums.size() != 1) return;
         BlockGroup target = null;
@@ -945,7 +964,7 @@ public class MultiblockTooltipReader {
     }
 
     private static Section toSection(List<BlockGroup> groups, int materialTiers, IMultiblockTooltipRules rules,
-        TierDetails details) {
+        TierDetails details, List<String> casingRequirements) {
         List<BlockGroup> sorted = new ArrayList<>(groups);
         sorted.sort(
             Comparator.comparingInt(BlockGroup::total)
@@ -967,7 +986,7 @@ public class MultiblockTooltipReader {
                 tiers.add(new MaterialTier(materialTierHeader(tier, rules), lines));
             }
         }
-        return new Section(blocks, tiers, details);
+        return new Section(blocks, tiers, details, casingRequirements);
     }
 
     private static String materialTierHeader(int tier, IMultiblockTooltipRules rules) {
