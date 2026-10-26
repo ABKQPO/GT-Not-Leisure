@@ -2,6 +2,10 @@ package com.science.gtnl.common.wireless;
 
 import static com.science.gtnl.common.wireless.WirelessChannelManager.canBuild;
 
+import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -22,7 +26,10 @@ public class WirelessOperations {
         DENIED,
         UNAVAILABLE,
         STALE,
-        APPLIED
+        APPLIED,
+        CONFLICT,
+        CARD_REQUIRED,
+        DEFERRED
     }
 
     public static class Denied extends IllegalStateException {
@@ -30,16 +37,16 @@ public class WirelessOperations {
 
     public static Result toggle(EntityPlayer player, WirelessCardBinding binding, Address target)
         throws FailedConnection {
-        return change(player, binding, target, false);
+        return change(player, binding, target, false, () -> true);
     }
 
-    public static Result ensureConnected(EntityPlayer player, WirelessCardBinding binding, Address target)
-        throws FailedConnection {
-        return change(player, binding, target, true);
+    public static Result ensureConnected(EntityPlayer player, WirelessCardBinding binding, Address target,
+        BooleanSupplier budget) throws FailedConnection {
+        return change(player, binding, target, true, budget);
     }
 
-    private static Result change(EntityPlayer player, WirelessCardBinding binding, Address target, boolean automatic)
-        throws FailedConnection {
+    private static Result change(EntityPlayer player, WirelessCardBinding binding, Address target, boolean automatic,
+        BooleanSupplier budget) throws FailedConnection {
         IGridNode node = target == null ? null : target.node();
         if (node == null) return Result.UNAVAILABLE;
         if (binding == null || !binding.belongsTo(player.getUniqueID()) || !canBuild(node, player))
@@ -53,6 +60,7 @@ public class WirelessOperations {
             source.getGrid()
                 .getCache(IPathingGrid.class)))
             return Result.WAITING;
+        if (!budget.getAsBoolean()) return Result.DEFERRED;
         try (var ignored = WirelessLinkData.readBatch()) {
             var operation = WirelessClusterManager.prepareLink(binding.source(), target);
             // Reconciliation can merge AE grids and change their security caches without another physical scan.
@@ -70,6 +78,23 @@ public class WirelessOperations {
                 return Result.UNAVAILABLE;
             operation.connect();
             return Result.CONNECTED;
+        }
+    }
+
+    public static Result claim(EntityPlayer player, Address source, Address target,
+        Predicate<List<Address>> clusterAgrees) {
+        IGridNode node = target.node();
+        if (node == null || node.getGrid() == null) return Result.WAITING;
+        try (var ignored = WirelessLinkData.readBatch()) {
+            var operation = WirelessClusterManager.prepareLink(source, target);
+            // Disagreement must win over a missing source or permission, or dropping one copy decides the rest.
+            if (!clusterAgrees.test(operation.internalAddresses())) return Result.CONFLICT;
+            if (!WirelessCardInventory.hasBoundCard(player, source)) return Result.CARD_REQUIRED;
+            if (!canBuild(target.node(), player)) return Result.DENIED;
+            IGridNode controller = WirelessChannelManager.isSupportedController(source.tile()) ? source.node() : null;
+            if (controller == null || controller.getGrid() == null) return Result.UNAVAILABLE;
+            if (!canBuild(controller, player)) return Result.DENIED;
+            return operation.claim() ? Result.APPLIED : Result.UNCHANGED;
         }
     }
 

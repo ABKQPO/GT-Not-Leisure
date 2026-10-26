@@ -4393,6 +4393,12 @@ item.gtnl.wireless_frequency_card.auto_busy=Auto-connect queue is full. Connect 
 item.gtnl.wireless_frequency_card.auto_unavailable=Auto-connect timed out. Load the source and ensure its network is valid, then connect the target manually.
 item.gtnl.wireless_frequency_card.auto_failed=Auto-connect failed: conflicting frequency, controller or AE security restriction. Use the card manually to inspect.
 item.gtnl.wireless_frequency_card.gui_ambiguous=Multiple usable frequency cards found. Hold the card whose manager you want to open.
+item.gtnl.wireless_frequency_card.copy_linked=Pasted ME devices rejoined the wireless frequencies of their originals.
+item.gtnl.wireless_frequency_card.copy_unavailable=A pasted ME device could not rejoin its frequency: the source ME Controller or the device is not loaded.
+item.gtnl.wireless_frequency_card.copy_failed=A pasted ME device could not rejoin its frequency: it touches another frequency or a controller. Use the card to inspect it.
+item.gtnl.wireless_frequency_card.copy_conflict=Pasted ME devices on one network came from different frequencies, so none of them was linked. Link them with the card.
+item.gtnl.wireless_frequency_card.copy_busy=Too many pasted ME devices are waiting to rejoin their frequencies. Link the rest with the card.
+item.gtnl.wireless_frequency_card.copy_card_required=Wireless links were not restored: carry a frequency card you bound to the original frequency, then paste again or link manually.
 
 item.gtnl.me_mini_portable_terminal.name=ME Mini Portable Terminal
 gtnl.meminiterminal.tooltip.usage=Usage:

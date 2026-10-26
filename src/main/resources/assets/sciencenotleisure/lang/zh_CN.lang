@@ -4393,6 +4393,12 @@ item.gtnl.wireless_frequency_card.auto_busy=自动连接队列已满，请稍后
 item.gtnl.wireless_frequency_card.auto_unavailable=自动连接等待超时，请确认发射端已加载且网络有效，再手动连接目标。
 item.gtnl.wireless_frequency_card.auto_failed=未能自动连接：目标可能属于其他频率、含有控制器或被 AE 安全规则拒绝。可用卡手动检查。
 item.gtnl.wireless_frequency_card.gui_ambiguous=有多张可用频率卡，请手持要打开管理界面的卡。
+item.gtnl.wireless_frequency_card.copy_linked=粘贴出来的 ME 设备已接回原件所在的无线频率。
+item.gtnl.wireless_frequency_card.copy_unavailable=有粘贴的 ME 设备未能接回频率：源 ME 控制器或该设备所在区块未加载。
+item.gtnl.wireless_frequency_card.copy_failed=有粘贴的 ME 设备未能接回频率：它连着其他频率或控制器。可用卡检查。
+item.gtnl.wireless_frequency_card.copy_conflict=粘贴出来的同一网络里的 ME 设备原本属于不同频率，为避免选错，一个都没有自动连接，请用卡手动连接。
+item.gtnl.wireless_frequency_card.copy_busy=等待接回频率的粘贴 ME 设备过多，剩下的请用卡手动连接。
+item.gtnl.wireless_frequency_card.copy_card_required=未恢复粘贴设备的无线连接：请随身携带一张由你绑定到原频率的无线频率卡，再重新粘贴或手动连接。
 
 item.gtnl.me_mini_portable_terminal.name=ME迷你便携终端
 gtnl.meminiterminal.tooltip.usage=使用说明：

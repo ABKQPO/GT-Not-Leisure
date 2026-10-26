@@ -52,7 +52,8 @@ public enum ModList implements IMod, ITargetMod {
     NEICustomDiagrams("neicustomdiagram", "NEI Custom Diagrams", false),
     AvaritiaAddons("avaritiaddons", "Avaritia Addons", false),
     EtFuturumRequiem("etfuturum", "Et Futurum Requiem", false),
-    ForgeMultipart("McMultipart", "Forge Multipart", false);
+    ForgeMultipart("McMultipart", "Forge Multipart", false),
+    MatterManipulator("matter-manipulator", "Matter Manipulator", false);
 
     public static final ModList[] VALUES = values();
 

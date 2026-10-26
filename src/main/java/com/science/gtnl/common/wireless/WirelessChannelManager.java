@@ -298,6 +298,7 @@ public class WirelessChannelManager {
         ALLOCATIONS.clear();
         WirelessClusterManager.clear();
         WirelessAutoConnect.clear();
+        WirelessCopiedLinks.clear();
         nextId = 1;
         allocationRevision = 0;
     }
@@ -371,6 +372,7 @@ public class WirelessChannelManager {
                 entrancesVerified = false;
             }
             WirelessAutoConnect.tick();
+            WirelessCopiedLinks.tick();
         } finally {
             connectionSnapshot = null;
         }

@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.science.gtnl.common.wireless.IWirelessTileData;
+import com.science.gtnl.common.wireless.WirelessLinkPersistence;
 
 @Mixin(TileEntity.class)
 public class MixinWirelessTileData implements IWirelessTileData {
@@ -35,6 +36,11 @@ public class MixinWirelessTileData implements IWirelessTileData {
             KEY,
             data.getCompoundTag(KEY)
                 .copy());
+    }
+
+    @Inject(method = "validate", at = @At("RETURN"))
+    private void gtnl$placedWireless(CallbackInfo ci) {
+        if (gtnl$hasWirelessData()) WirelessLinkPersistence.placed((TileEntity) (Object) this);
     }
 
     @Inject(method = "writeToNBT", at = @At("RETURN"))

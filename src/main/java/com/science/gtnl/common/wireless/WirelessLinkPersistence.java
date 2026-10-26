@@ -40,6 +40,7 @@ import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 public class WirelessLinkPersistence {
 
     private static final Set<TileEntity> TILES = new ReferenceOpenHashSet<>();
+    private static final Set<TileEntity> PLACED = new ReferenceOpenHashSet<>();
     private static final Map<IGridNode, Endpoint> IMPORTED = new Reference2ObjectOpenHashMap<>();
     private static final Map<Entrance, RememberedEntrance> REMEMBERED_ENTRANCES = new Reference2ObjectOpenHashMap<>();
     private static boolean initialized;
@@ -73,6 +74,14 @@ public class WirelessLinkPersistence {
         if (!(tile instanceof IWirelessTileData data) || !data.gtnl$hasWirelessData()) return false;
         TILES.add(tile);
         return true;
+    }
+
+    public static void placed(TileEntity tile) {
+        World world = tile.getWorldObj();
+        if (world == null || world.isRemote) return;
+        // Tiles moved by tools such as Matter Manipulator arrive through setTileEntity, without a chunk load.
+        PLACED.add(tile);
+        WirelessClusterManager.invalidateTopology();
     }
 
     public static boolean discover(Chunk chunk) {
@@ -115,6 +124,15 @@ public class WirelessLinkPersistence {
         }
         List<IGridNode> seeds = new ObjectArrayList<>();
         pendingSeeds = false;
+        var placed = PLACED.iterator();
+        while (placed.hasNext()) {
+            TileEntity tile = placed.next();
+            if (!loaded(tile)) placed.remove();
+            else if (!WirelessConstructionSites.contains(address(tile))) {
+                placed.remove();
+                discover(tile);
+            }
+        }
         var tiles = TILES.iterator();
         while (tiles.hasNext()) {
             TileEntity tile = tiles.next();
@@ -392,18 +410,21 @@ public class WirelessLinkPersistence {
             .removeIf(entrance -> removed.test(entrance.source()) || removed.test(entrance.target()));
         boolean forgotten = IMPORTED.values()
             .removeIf(endpoint -> removed.test(endpoint.address()));
-        return TILES.removeIf(
-            tile -> tile.getWorldObj() != null && removed.test(
-                new Address(
-                    tile.getWorldObj().provider.dimensionId,
-                    tile.xCoord,
-                    tile.yCoord,
-                    tile.zCoord,
-                    ForgeDirection.UNKNOWN)))
-            || forgotten;
+        PLACED.removeIf(tile -> tile.getWorldObj() != null && removed.test(address(tile)));
+        return TILES.removeIf(tile -> tile.getWorldObj() != null && removed.test(address(tile))) || forgotten;
+    }
+
+    static Address address(TileEntity tile) {
+        return new Address(
+            tile.getWorldObj().provider.dimensionId,
+            tile.xCoord,
+            tile.yCoord,
+            tile.zCoord,
+            ForgeDirection.UNKNOWN);
     }
 
     static void clear() {
+        PLACED.clear();
         TILES.clear();
         IMPORTED.clear();
         REMEMBERED_ENTRANCES.clear();

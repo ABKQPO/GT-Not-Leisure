@@ -117,6 +117,15 @@ public enum Mixins implements IMixins {
         .setPhase(Phase.LATE)
         .addRequiredMod(ModList.AppliedEnergistics)),
 
+    WIRELESS_MATTER_MANIPULATOR(new MixinBuilder("ME wireless links follow Matter Manipulator moves and copies")
+        .addCommonMixins(
+            "matterManipulator.MixinPendingBlockWireless",
+            "matterManipulator.MixinPendingBuildWireless",
+            "matterManipulator.MixinPendingMoveWireless")
+        .setPhase(Phase.LATE)
+        .addRequiredMod(ModList.AppliedEnergistics)
+        .addRequiredMod(ModList.MatterManipulator)),
+
     ME_MINI_TERMINAL(new MixinBuilder("ME mini portable terminal native terminal adapter")
         .addCommonMixins("appliedEnergistics.meminiterminal.MixinMiniTerminalMonitorableDestination")
         .setPhase(Phase.LATE)
