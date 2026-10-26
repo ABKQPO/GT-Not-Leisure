@@ -26,7 +26,7 @@ public class ArchitectureContracts {
     public static final int MAX_MOD_CHECKS_OUTSIDE_COMPAT = 74;
     public static final int MAX_MUI1_FILES = 47;
     public static final int MAX_DIRECT_GT_MULTIBLOCK_BASES = 10;
-    public static final int MAX_MIXINS_OVER_80_LINES = 59;
+    public static final int MAX_MIXINS_OVER_80_LINES = 58;
     public static final int MAX_CLIENT_IMPORTS_IN_COMMON = 90;
 
     public static final Set<String> SELF_REGISTERING = Set.of(
