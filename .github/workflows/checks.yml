@@ -1,0 +1,77 @@
+name: Checks
+
+on:
+  pull_request:
+    branches: [ master, main, release/**, dev-* ]
+  push:
+    branches: [ dev-* ]
+  workflow_dispatch:
+
+concurrency:
+  group: checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Full build and contract tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 32
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: |
+            8
+            17
+            21
+            25
+          distribution: zulu
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - run: chmod +x gradlew
+
+      - name: Setup the workspace
+        run: ./gradlew --build-cache setupCIWorkspace
+
+      - name: Build with spotless check and contract tests
+        run: ./gradlew --build-cache build
+
+  server:
+    name: Dedicated server start and compat snapshot
+    runs-on: ubuntu-24.04
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 32
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: |
+            8
+            17
+            21
+            25
+          distribution: zulu
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - run: chmod +x gradlew .github/scripts/server-check.sh
+
+      - name: Setup the workspace
+        run: ./gradlew --build-cache setupCIWorkspace
+
+      - name: Start the server, check the load and the compat snapshot
+        run: .github/scripts/server-check.sh runServer25 run/server_new
+
+      - name: Keep the server log and snapshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-check
+          path: |
+            build/server-check.log
+            build/compat-snapshot.txt
