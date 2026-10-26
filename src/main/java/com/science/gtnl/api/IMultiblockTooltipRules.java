@@ -176,6 +176,11 @@ public interface IMultiblockTooltipRules {
         return hatchLangKey;
     }
 
+    /** Runs a structure check with any required prototype state, restoring that state afterwards. */
+    default void runStructureTooltipCheck(Runnable check) {
+        check.run();
+    }
+
     /**
      * Returns how many material tiers the structure blocks come in, such as bronze and steel. The blocks are then
      * listed once per tier.

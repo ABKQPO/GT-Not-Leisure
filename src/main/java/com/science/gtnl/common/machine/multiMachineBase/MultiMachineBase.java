@@ -789,6 +789,8 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         int glass = mGlassTier;
         int casing = mCasingTier;
         int parallel = mParallelTier;
+        int voltageProbe = tooltipVoltageTier;
+        int parallelProbe = tooltipParallelTier;
         mCoilLevel = HeatingCoilLevel.getFromTier((byte) tierOf(probed, TieredPart.COIL, tier));
         mGlassTier = tierOf(probed, TieredPart.GLASS, tier);
         mCasingTier = tierOf(probed, TieredPart.CASING, tier);
@@ -802,8 +804,8 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
             mGlassTier = glass;
             mCasingTier = casing;
             mParallelTier = parallel;
-            tooltipVoltageTier = NO_TOOLTIP_TIER;
-            tooltipParallelTier = NO_TOOLTIP_TIER;
+            tooltipVoltageTier = voltageProbe;
+            tooltipParallelTier = parallelProbe;
         }
     }
 
@@ -1746,6 +1748,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     @Override
     public long getMaxInputEu() {
+        if (tooltipVoltageTier != NO_TOOLTIP_TIER) return GTValues.V[tooltipVoltageTier];
         return Math.max(
             ExoticEnergyInputHelper.getTotalEuMulti(mEnergyHatches),
             ExoticEnergyInputHelper.getTotalEuMulti(mExoticEnergyHatches));

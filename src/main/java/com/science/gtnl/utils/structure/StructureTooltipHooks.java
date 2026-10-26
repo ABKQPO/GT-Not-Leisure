@@ -2,7 +2,9 @@ package com.science.gtnl.utils.structure;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,6 +16,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ChannelDataAccessor
 import com.gtnewhorizon.structurelib.structure.IStructureElement;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.api.IMultiblockTooltipRules;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
 
 import gregtech.api.interfaces.IHatchElement;
@@ -70,8 +73,12 @@ public class StructureTooltipHooks {
         return true;
     }
 
-    public static boolean onCheckPiece(Object controller) {
-        return activeFor(controller) != null;
+    public static Boolean onCheckPiece(Object controller, String piece, int horizontalOffset, int verticalOffset,
+        int depthOffset) {
+        Recording recording = activeFor(controller);
+        if (recording == null) return null;
+        return recording.pieceResults
+            .getOrDefault(new PieceCall(piece, horizontalOffset, verticalOffset, depthOffset), true);
     }
 
     public static boolean onCheckCasingMin(Object controller, int required) {
@@ -134,11 +141,17 @@ public class StructureTooltipHooks {
     }
 
     public static CheckRecord recordChecks(MTEEnhancedMultiBlockBase<?> controller) {
+        return recordChecks(controller, Collections.emptyMap());
+    }
+
+    public static CheckRecord recordChecks(MTEEnhancedMultiBlockBase<?> controller,
+        Map<PieceCall, Boolean> pieceResults) {
         List<StructureError> errors = new ArrayList<>();
-        Recording recording = record(
-            controller,
-            "structure checks",
-            () -> controller.checkMachine(controller.getBaseMetaTileEntity(), null, errors));
+        Runnable check = () -> controller.checkMachine(controller.getBaseMetaTileEntity(), null, errors);
+        Recording recording = record(controller, "structure checks", pieceResults, () -> {
+            if (controller instanceof IMultiblockTooltipRules rules) rules.runStructureTooltipCheck(check);
+            else check.run();
+        });
         return new CheckRecord(
             recording.casingMinimums,
             recording.hatchRules,
@@ -151,7 +164,13 @@ public class StructureTooltipHooks {
     }
 
     private static Recording record(MTEEnhancedMultiBlockBase<?> controller, String subject, Runnable dryRun) {
-        Recording recording = new Recording(controller);
+        return record(controller, subject, Collections.emptyMap(), dryRun);
+    }
+
+    private static Recording record(MTEEnhancedMultiBlockBase<?> controller, String subject,
+        Map<PieceCall, Boolean> pieceResults, Runnable dryRun) {
+        Recording previous = RECORDING.get();
+        Recording recording = new Recording(controller, pieceResults);
         RECORDING.set(recording);
         try {
             dryRun.run();
@@ -164,7 +183,8 @@ public class StructureTooltipHooks {
                     .getSimpleName(),
                 e);
         } finally {
-            RECORDING.remove();
+            if (previous == null) RECORDING.remove();
+            else RECORDING.set(previous);
         }
         return recording;
     }
@@ -187,13 +207,15 @@ public class StructureTooltipHooks {
     private static class Recording {
 
         private final Object controller;
+        private final Map<PieceCall, Boolean> pieceResults;
         private final List<PieceCall> pieces = new ArrayList<>();
         private final List<Integer> casingMinimums = new ArrayList<>();
         private final List<HatchRule> hatchRules = new ArrayList<>();
         private RuntimeException failure;
 
-        private Recording(Object controller) {
+        private Recording(Object controller, Map<PieceCall, Boolean> pieceResults) {
             this.controller = controller;
+            this.pieceResults = pieceResults;
         }
     }
 }

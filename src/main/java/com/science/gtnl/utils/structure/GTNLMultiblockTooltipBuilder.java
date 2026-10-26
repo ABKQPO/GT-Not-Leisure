@@ -132,19 +132,28 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
         boolean structureTiers = summary.sections()
             .size() > 1;
 
-        addSize(summary.firstTier(), summary.allTiers(), structureTiers, summary.hollow());
-        addControllerLine(summary.controller());
-        for (HatchLine line : summary.hatchLines()) addHatchLine(line);
+        if (!summary.hasIndependentTiers()) {
+            addSize(summary.firstTier(), summary.allTiers(), structureTiers, summary.hollow());
+            addControllerLine(summary.controller());
+            for (HatchLine line : summary.hatchLines()) addHatchLine(line);
+        }
         for (int tier = 0; tier < summary.sections()
             .size(); tier++) {
             if (structureTiers) {
                 addStructureInfo("");
-                addStructureInfo(summary.layered() ? layerHeader(tier) : structureTierHeader(tier + 1));
+                addStructureInfo(
+                    summary.layered() ? layerHeader(tier)
+                        : structureTierHeader(tier + 1, !summary.hasIndependentTiers()));
             }
-            addSection(
-                summary.sections()
-                    .get(tier),
-                !structureTiers);
+            Section section = summary.sections()
+                .get(tier);
+            if (section.details() != null) {
+                var details = section.details();
+                addSize(details.size(), details.size(), false, details.hollow());
+                addControllerLine(details.controller());
+                for (HatchLine line : details.hatchLines()) addHatchLine(line);
+            }
+            addSection(section, !structureTiers);
         }
         addChannelLines(summary, structureTiers);
     }
@@ -402,8 +411,8 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
         return first.height() != all.height() ? "channels.gregtech.master.height" : "channels.gregtech.master.length";
     }
 
-    private static String structureTierHeader(int tier) {
-        String key = tier == 1 ? "gtnl.structure.tooltip.tier" : "gtnl.structure.tooltip.tier.extra";
+    private static String structureTierHeader(int tier, boolean additive) {
+        String key = tier == 1 || !additive ? "gtnl.structure.tooltip.tier" : "gtnl.structure.tooltip.tier.extra";
         return StatCollector.translateToLocalFormatted(key, tier);
     }
 

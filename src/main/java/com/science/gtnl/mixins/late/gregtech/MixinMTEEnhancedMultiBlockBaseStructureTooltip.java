@@ -32,7 +32,8 @@ public abstract class MixinMTEEnhancedMultiBlockBaseStructureTooltip {
     @Inject(method = "checkPiece(Ljava/lang/String;IIILjava/util/List;)Z", at = @At("HEAD"), cancellable = true)
     private void gtnl$skipCheckPiece(String piece, int horizontalOffset, int verticalOffset, int depthOffset,
         List<StructureError> errors, CallbackInfoReturnable<Boolean> cir) {
-        if (StructureTooltipHooks.onCheckPiece(this)) cir.setReturnValue(true);
+        Boolean result = StructureTooltipHooks.onCheckPiece(this, piece, horizontalOffset, verticalOffset, depthOffset);
+        if (result != null) cir.setReturnValue(result);
     }
 
     @Inject(method = "checkCasingMin", at = @At("HEAD"), cancellable = true)

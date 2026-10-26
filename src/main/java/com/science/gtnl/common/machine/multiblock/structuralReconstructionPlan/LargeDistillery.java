@@ -202,6 +202,17 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     }
 
     @Override
+    public void runStructureTooltipCheck(Runnable check) {
+        int height = mHeight;
+        try {
+            mHeight = MIN_LAYERS;
+            check.run();
+        } finally {
+            mHeight = height;
+        }
+    }
+
+    @Override
     public void clearHatches() {
         super.clearHatches();
         mOutputHatchesByLayer.forEach(List::clear);

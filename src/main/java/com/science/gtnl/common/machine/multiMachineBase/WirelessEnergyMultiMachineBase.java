@@ -464,10 +464,22 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
 
     @Override
     public long getMaxInputVoltage() {
+        if (tooltipVoltageTier >= 0) return super.getMaxInputVoltage();
         if (wirelessMode) {
             return wirelessModeVoltage();
         }
         return super.getMaxInputVoltage();
+    }
+
+    @Override
+    protected TooltipStats readTooltipStats() {
+        boolean wireless = wirelessMode;
+        try {
+            wirelessMode = false;
+            return super.readTooltipStats();
+        } finally {
+            wirelessMode = wireless;
+        }
     }
 
     private long wirelessModeVoltage() {

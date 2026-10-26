@@ -47,6 +47,7 @@ import com.science.gtnl.utils.structure.StructureSummary.HatchLine;
 import com.science.gtnl.utils.structure.StructureSummary.MaterialTier;
 import com.science.gtnl.utils.structure.StructureSummary.Section;
 import com.science.gtnl.utils.structure.StructureSummary.Size;
+import com.science.gtnl.utils.structure.StructureSummary.TierDetails;
 import com.science.gtnl.utils.structure.StructureTooltipHooks.CheckRecord;
 import com.science.gtnl.utils.structure.StructureTooltipHooks.HatchRule;
 import com.science.gtnl.utils.structure.StructureTooltipHooks.PieceCall;
@@ -522,14 +523,14 @@ public class MultiblockTooltipReader {
         IMultiblockTooltipRules rules = controller instanceof IMultiblockTooltipRules machineRules ? machineRules
             : null;
         int materialTiers = rules == null ? 0 : rules.getStructureTooltipMaterialTiers();
-        CheckRecord checks = StructureTooltipHooks.recordChecks(controller);
-
         IStructureElement<T> air = StructureUtility.isAir();
         IStructureElement<T> anyBlock = StructureUtility.notAir();
         Predicate<IStructureElement<T>> solid = element -> element != air && element != anyBlock;
         List<Cell<T>> layer = layerCells(definition, sizes, solid);
         boolean layered = layer != null;
         List<List<PieceCall>> tiers = layered ? sizes.subList(0, 1) : structureTiers(sizes);
+        boolean independentTiers = !layered && tiers.size() > 1 && !isAdditive(sizes);
+        CheckRecord checks = independentTiers ? null : StructureTooltipHooks.recordChecks(controller);
         List<PieceCall> largest = sizes.get(layered || tiers.size() > 1 ? sizes.size() - 1 : 0);
         List<List<Cell<T>>> tierCells = new ArrayList<>();
         for (List<PieceCall> tier : tiers) tierCells.add(readCells(definition, tier, solid));
@@ -538,8 +539,28 @@ public class MultiblockTooltipReader {
         List<Cell<T>> airCells = readCells(definition, largest, element -> element == air);
         Map<String, HatchGroup> hatches = new LinkedHashMap<>();
         List<List<BlockGroup>> tierGroups = new ArrayList<>();
-        for (List<Cell<T>> cells : tierCells) {
-            tierGroups.add(readGroups(controller, cells, materialTiers, rules, hatches));
+        List<TierDetails> tierDetails = new ArrayList<>();
+        Set<String> hatchKeys = new LinkedHashSet<>();
+        for (int tier = 0; tier < tierCells.size(); tier++) {
+            List<Cell<T>> cells = tierCells.get(tier);
+            Map<String, HatchGroup> tierHatches = independentTiers ? new LinkedHashMap<>() : hatches;
+            CheckRecord tierCheck = independentTiers
+                ? StructureTooltipHooks.recordChecks(controller, pieceResults(sizes, tiers.get(tier)))
+                : checks;
+            List<BlockGroup> groups = readGroups(controller, cells, materialTiers, rules, tierHatches);
+            if (independentTiers || tier == 0) applyCasingMinimum(groups, tierCheck.casingMinimums());
+            tierGroups.add(groups);
+            for (HatchGroup hatch : tierHatches.values()) hatchKeys.addAll(hatch.keys);
+            tierDetails.add(
+                independentTiers
+                    ? new TierDetails(
+                        size(Collections.singletonList(cells)),
+                        isHollow(
+                            Collections.singletonList(cells),
+                            readCells(definition, tiers.get(tier), element -> element == air)),
+                        controllerPosition(cells),
+                        toHatchLines(tierHatches, tierCheck.hatchRules()))
+                    : null);
         }
         Map<IStructureElement<T>, Set<String>> elementChannels = new LinkedHashMap<>();
         for (List<Cell<T>> cells : tierCells) for (Cell<T> cell : cells) {
@@ -554,13 +575,11 @@ public class MultiblockTooltipReader {
             IStructureChannels channel = KNOWN_CHANNELS.get(channelName);
             if (channel != null) channels.add(channel);
         }
-        applyCasingMinimum(tierGroups.get(0), checks.casingMinimums());
-
         List<Section> sections = new ArrayList<>();
-        for (List<BlockGroup> groups : tierGroups) sections.add(toSection(groups, materialTiers, rules));
+        for (int tier = 0; tier < tierGroups.size(); tier++) {
+            sections.add(toSection(tierGroups.get(tier), materialTiers, rules, tierDetails.get(tier)));
+        }
         IStructureChannels materialChannel = rules == null ? null : rules.getStructureTooltipMaterialTierChannel();
-        Set<String> hatchKeys = new LinkedHashSet<>();
-        for (HatchGroup hatch : hatches.values()) hatchKeys.addAll(hatch.keys);
 
         IStructureElement<T> casing = casingElement(controller, elementChannels);
         StructureSummary summary = new StructureSummary(
@@ -568,7 +587,7 @@ public class MultiblockTooltipReader {
             size(largestCells),
             isHollow(largestCells, airCells),
             controllerPosition(tierCells.get(0)),
-            toHatchLines(hatches, checks.hatchRules()),
+            independentTiers ? Collections.emptyList() : toHatchLines(hatches, checks.hatchRules()),
             new ArrayList<>(hatchKeys),
             sections,
             new ArrayList<>(channels),
@@ -601,6 +620,7 @@ public class MultiblockTooltipReader {
 
     private static List<List<PieceCall>> structureTiers(List<List<PieceCall>> sizes) {
         if (sizes.size() > MAX_STRUCTURE_TIERS) return sizes.subList(0, 1);
+        if (!isAdditive(sizes)) return sizes;
         List<List<PieceCall>> tiers = new ArrayList<>();
         List<PieceCall> previous = Collections.emptyList();
         for (List<PieceCall> calls : sizes) {
@@ -610,6 +630,13 @@ public class MultiblockTooltipReader {
             previous = calls;
         }
         return tiers;
+    }
+
+    private static Map<PieceCall, Boolean> pieceResults(List<List<PieceCall>> sizes, List<PieceCall> selected) {
+        Map<PieceCall, Boolean> results = new HashMap<>();
+        for (List<PieceCall> size : sizes) for (PieceCall piece : size) results.put(piece, false);
+        for (PieceCall piece : selected) results.put(piece, true);
+        return results;
     }
 
     private static <T> List<Cell<T>> layerCells(IStructureDefinition<T> definition, List<List<PieceCall>> sizes,
@@ -917,7 +944,8 @@ public class MultiblockTooltipReader {
         if (target != null) target.minimum = Math.min(minimums.get(0), target.replaceable);
     }
 
-    private static Section toSection(List<BlockGroup> groups, int materialTiers, IMultiblockTooltipRules rules) {
+    private static Section toSection(List<BlockGroup> groups, int materialTiers, IMultiblockTooltipRules rules,
+        TierDetails details) {
         List<BlockGroup> sorted = new ArrayList<>(groups);
         sorted.sort(
             Comparator.comparingInt(BlockGroup::total)
@@ -939,7 +967,7 @@ public class MultiblockTooltipReader {
                 tiers.add(new MaterialTier(materialTierHeader(tier, rules), lines));
             }
         }
-        return new Section(blocks, tiers);
+        return new Section(blocks, tiers, details);
     }
 
     private static String materialTierHeader(int tier, IMultiblockTooltipRules rules) {

@@ -16,6 +16,11 @@ public record StructureSummary(Size firstTier, Size allTiers, boolean hollow, Co
         return false;
     }
 
+    public boolean hasIndependentTiers() {
+        return sections.stream()
+            .anyMatch(section -> section.details() != null);
+    }
+
     public record Size(int width, int height, int length) {}
 
     public record ControllerPosition(int layer, boolean frontCenter) {}
@@ -26,5 +31,7 @@ public record StructureSummary(Size firstTier, Size allTiers, boolean hollow, Co
 
     public record MaterialTier(String header, List<BlockLine> blocks) {}
 
-    public record Section(List<BlockLine> blocks, List<MaterialTier> materialTiers) {}
+    public record TierDetails(Size size, boolean hollow, ControllerPosition controller, List<HatchLine> hatchLines) {}
+
+    public record Section(List<BlockLine> blocks, List<MaterialTier> materialTiers, TierDetails details) {}
 }
