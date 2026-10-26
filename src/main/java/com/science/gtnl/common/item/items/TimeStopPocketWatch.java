@@ -11,10 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import com.reavaritia.client.render.CustomEntityRenderer;
-import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -26,12 +23,7 @@ public class TimeStopPocketWatch extends Item {
     private boolean playSound = false;
 
     public TimeStopPocketWatch() {
-        this.setUnlocalizedName("gtnl.time_stop_pocket_watch");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "time_stop_pocket_watch");
         this.setMaxStackSize(1);
-        GameRegistry.registerItem(this, "time_stop_pocket_watch");
-        GTNLItemList.TimeStopPocketWatch.set(new ItemStack(this, 1));
     }
 
     @Override

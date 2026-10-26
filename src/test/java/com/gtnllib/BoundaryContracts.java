@@ -84,6 +84,10 @@ public class BoundaryContracts {
                 "GTNLLib package " + start + " is not part of an import cycle" + (cycle == null ? "" : ": " + cycle));
         }
         check(
+            imports.getOrDefault("registry", Collections.emptySet())
+                .isEmpty(),
+            "the registry package sits at the bottom and imports no other GTNLLib package: " + imports.get("registry"));
+        check(
             configReaders.equals(Collections.singleton("GTNLLibClient.java")),
             "only the GTNLLib client entry point reads the config and hands it to themes and the HUD: "
                 + configReaders);

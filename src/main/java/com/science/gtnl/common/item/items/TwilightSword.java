@@ -27,13 +27,10 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
 import com.reavaritia.utils.item.PlaySound;
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.entity.EntityArrowCustom;
 import com.science.gtnl.utils.Utils;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -60,13 +57,8 @@ public class TwilightSword extends ItemSword implements PlaySound {
     public TwilightSword() {
         super(TWILIGHT_MATERIALS[0]);
         this.setMaxStackSize(1);
-        this.setUnlocalizedName("gtnl.twilight_sword");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "twilight_sword");
-        setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
         setMaxDamage(9999);
         MinecraftForge.EVENT_BUS.register(this);
-        GameRegistry.registerItem(this, "twilight_sword");
-        GTNLItemList.TwilightSword.set(new ItemStack(this, 1));
     }
 
     @Override

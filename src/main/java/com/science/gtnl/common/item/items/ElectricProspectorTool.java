@@ -25,7 +25,6 @@ import net.minecraftforge.fluids.FluidStack;
 import com.google.common.collect.MapMaker;
 import com.gtnllib.utils.MetaTooltipUtils;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.item.ItemStaticDataClientOnly;
 import com.science.gtnl.common.packet.ProspectingPacket;
 import com.science.gtnl.loader.ItemLoader;
@@ -34,7 +33,6 @@ import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.item.MetaItemStackUtils;
 import com.sinthoras.visualprospecting.VisualProspecting_API;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.Mods;
@@ -76,12 +74,8 @@ public class ElectricProspectorTool extends Item {
 
     public ElectricProspectorTool() {
         super();
-        this.setUnlocalizedName("gtnl.electric_prospector_tool");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        this.setTextureName(ScienceNotLeisure.RESOURCE_ROOT_ID + ":" + "electric_prospector_tool");
         this.setMaxStackSize(1);
         this.setMaxDamage(1);
-        GameRegistry.registerItem(this, "electric_prospector_tool");
     }
 
     public static ItemStack initItem(int aMeta, int aRange, long maxDamage) {

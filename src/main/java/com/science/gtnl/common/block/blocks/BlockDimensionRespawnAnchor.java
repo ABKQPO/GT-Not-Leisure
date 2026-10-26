@@ -24,12 +24,9 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.science.gtnl.api.mixinHelper.IAnchorRespawn;
-import com.science.gtnl.common.block.blocks.item.ItemBlockDimensionRespawnAnchor;
 import com.science.gtnl.common.block.blocks.tile.TileEntityDimensionRespawnAnchor;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -39,16 +36,12 @@ public class BlockDimensionRespawnAnchor extends BlockContainer {
 
     public BlockDimensionRespawnAnchor() {
         super(Material.rock);
-        this.setBlockName("gtnl.dimension_respawn_anchor");
         this.setHardness(50.0F);
         this.setResistance(2000.0F);
         this.setStepSound(soundTypeStone);
         this.setHarvestLevel("pickaxe", 3);
         this.setLightOpacity(0);
         this.setTickRandomly(true);
-        GameRegistry.registerBlock(this, ItemBlockDimensionRespawnAnchor.class, "dimension_respawn_anchor");
-        GameRegistry.registerTileEntity(TileEntityDimensionRespawnAnchor.class, "dimension_respawn_anchor_tile_entity");
-        GTNLItemList.DimensionRespawnAnchor.set(new ItemStack(this, 1));
         BlockDispenser.dispenseBehaviorRegistry
             .putObject(Item.getItemFromBlock(Blocks.glowstone), new BehaviorGlowstoneCharge());
         MinecraftForge.EVENT_BUS.register(this);

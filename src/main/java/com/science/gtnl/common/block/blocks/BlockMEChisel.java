@@ -17,17 +17,13 @@ import com.gtnewhorizon.gtnhlib.client.model.ModelISBRH;
 import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
 import com.gtnewhorizon.gtnhlib.geometry.Orientation;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.common.block.blocks.item.ItemBlockMEChisel;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
 import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.common.packet.MEChiselSyncParallel;
 import com.science.gtnl.common.render.model.MEChiselModel;
-import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.block.AEBaseTileBlock;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -60,14 +56,12 @@ public class BlockMEChisel extends AEBaseTileBlock implements IBlockModelProvide
         super(Material.iron);
         setHardness(50.0F);
         setResistance(2000.0F);
-        setBlockName("gtnl.me_chisel");
         setHarvestLevel("pickaxe", 3);
-        setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockMEChisel.class, "me_chisel");
-        BlockPropertyRegistry.registerBlockItemProperty(this, ORIENTATION_PROPERTY);
-        GameRegistry.registerTileEntity(TileEntityMEChisel.class, "me_chisel_tile_entity");
-        GTNLItemList.MEChisel.set(new ItemStack(this, 1));
         setTileEntity(TileEntityMEChisel.class);
+    }
+
+    public void registerItemProperties() {
+        BlockPropertyRegistry.registerBlockItemProperty(this, ORIENTATION_PROPERTY);
     }
 
     @Override

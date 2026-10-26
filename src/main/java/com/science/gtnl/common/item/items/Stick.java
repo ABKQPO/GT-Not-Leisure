@@ -27,7 +27,6 @@ import org.lwjgl.input.Keyboard;
 import com.rwtema.extrautils.gui.GuiTradingPost;
 import com.science.gtnl.api.IItemStackExtra;
 import com.science.gtnl.api.IKeyHandler;
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.ItemLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -36,7 +35,6 @@ import com.science.gtnl.utils.enums.ModsItemlist;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.Mods;
@@ -50,12 +48,7 @@ public class Stick extends Item implements IItemStackExtra, IKeyHandler {
 
     public Stick() {
         this.setMaxStackSize(64);
-        this.setUnlocalizedName("gtnl.stick");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "stick");
         this.setHasSubtypes(true);
-        GameRegistry.registerItem(this, "stick");
-        GTNLItemList.Stick.set(new ItemStack(this, 1));
     }
 
     @Override

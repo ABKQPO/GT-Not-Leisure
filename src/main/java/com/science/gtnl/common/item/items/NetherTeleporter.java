@@ -1,7 +1,5 @@
 package com.science.gtnl.common.item.items;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,10 +18,7 @@ import net.minecraft.world.WorldServer;
 
 import com.gtnllib.utils.TeleporterUtils;
 import com.reavaritia.utils.item.SubtitleDisplay;
-import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -33,12 +28,7 @@ public class NetherTeleporter extends Item implements SubtitleDisplay {
 
     public NetherTeleporter() {
         super();
-        this.setUnlocalizedName("gtnl.nether_teleporter");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "nether_teleporter");
         this.setMaxStackSize(1);
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "nether_teleporter");
-        GTNLItemList.NetherTeleporter.set(new ItemStack(this, 1));
     }
 
     @Override

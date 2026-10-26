@@ -26,12 +26,8 @@ import com.gtnewhorizon.gtnhlib.blockstate.properties.DirectionBlockProperty;
 import com.gtnewhorizon.gtnhlib.blockstate.properties.DirectionBlockProperty.AbstractDirectionBlockProperty;
 import com.gtnewhorizon.gtnhlib.blockstate.registry.BlockPropertyRegistry;
 import com.gtnewhorizon.gtnhlib.client.model.ModelISBRH;
-import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.common.block.blocks.item.ItemBlockSearedLadder;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySearedLadder;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mantle.blocks.iface.IMasterLogic;
@@ -93,14 +89,11 @@ public class BlockSearedLadder extends Block {
         setHardness(3F);
         setResistance(20F);
         setStepSound(soundTypeMetal);
-        this.setBlockName("gtnl.seared_ladder");
-        this.setBlockTextureName(RESOURCE_ROOT_ID + ":seared_ladder/fancy_bricks");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockSearedLadder.class, "seared_ladder");
+    }
+
+    public void registerItemProperties() {
         BlockPropertyRegistry.registerBlockItemProperty(this, FACING, ForgeDirection.NORTH);
         BlockPropertyRegistry.registerBlockItemProperty(this, BOTTOM, false);
-        GameRegistry.registerTileEntity(TileEntitySearedLadder.class, "seared_ladder_tile_entity");
-        GTNLItemList.SearedLadder.set(new ItemStack(this, 1));
     }
 
     @Override

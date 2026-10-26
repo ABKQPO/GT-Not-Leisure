@@ -1,7 +1,5 @@
 package com.science.gtnl.common.item.items.bauble;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import java.util.Random;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -11,14 +9,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.item.BaubleItem;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
 import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -28,11 +23,6 @@ public class LuckyHorseshoe extends BaubleItem {
 
     public LuckyHorseshoe() {
         this.setMaxStackSize(1);
-        this.setUnlocalizedName("gtnl.lucky_horseshoe");
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "lucky_horseshoe");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "lucky_horseshoe");
-        GTNLItemList.LuckyHorseshoe.set(new ItemStack(this, 1));
         MinecraftForge.EVENT_BUS.register(this);
     }
 

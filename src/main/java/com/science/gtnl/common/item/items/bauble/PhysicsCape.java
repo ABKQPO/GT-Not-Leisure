@@ -18,13 +18,10 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 
 import org.lwjgl.opengl.GL11;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.item.BaubleItem;
-import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import baubles.api.BaubleType;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.GTValues;
@@ -41,13 +38,8 @@ public class PhysicsCape extends BaubleItem implements IBaubleRender {
     private static ModelBiped model;
 
     public PhysicsCape() {
-        this.setUnlocalizedName("gtnl.physics_cape");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "physics_cape");
         this.setMaxDamage(2000);
         this.setMaxStackSize(1);
-        GameRegistry.registerItem(this, "physics_cape");
-        GTNLItemList.PhysicsCape.set(new ItemStack(this, 1));
     }
 
     @Override

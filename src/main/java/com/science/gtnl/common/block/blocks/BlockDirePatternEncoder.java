@@ -5,19 +5,14 @@ import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.common.block.blocks.item.ItemBlockDirePatternEncoder;
 import com.science.gtnl.common.block.blocks.tile.TileEntityDirePatternEncoder;
 import com.science.gtnl.common.gui.GTNLGuiHandler;
-import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.block.AEBaseTileBlock;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -32,13 +27,7 @@ public class BlockDirePatternEncoder extends AEBaseTileBlock {
         super(Material.iron);
         setHardness(50.0F);
         setResistance(2000.0F);
-        setBlockName("gtnl.dire_pattern_encoder");
         setHarvestLevel("pickaxe", 3);
-        setBlockTextureName(RESOURCE_ROOT_ID + ":dire_pattern_encoder");
-        setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockDirePatternEncoder.class, "dire_pattern_encoder");
-        GameRegistry.registerTileEntity(TileEntityDirePatternEncoder.class, "dire_pattern_encoder_tile_entity");
-        GTNLItemList.DirePatternEncoder.set(new ItemStack(this, 1));
         setTileEntity(TileEntityDirePatternEncoder.class);
     }
 

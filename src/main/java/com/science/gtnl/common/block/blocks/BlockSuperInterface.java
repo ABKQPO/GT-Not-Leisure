@@ -7,24 +7,19 @@ import java.util.EnumSet;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
-import com.science.gtnl.common.block.blocks.item.ItemBlockSuperInterface;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperInterface;
 import com.science.gtnl.common.gui.GTNLGuiHandler;
 import com.science.gtnl.common.render.tile.SuperInterfaceRenderer;
-import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
 
 import appeng.api.util.IOrientable;
 import appeng.block.misc.BlockInterface;
 import appeng.client.render.blocks.RenderBlockInterface;
 import appeng.core.features.AEFeature;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -39,13 +34,7 @@ public class BlockSuperInterface extends BlockInterface {
         super();
         setHardness(50.0F);
         setResistance(2000.0F);
-        setBlockName("gtnl.super_interface");
         setHarvestLevel("pickaxe", 3);
-        setBlockTextureName(RESOURCE_ROOT_ID + ":super_interface");
-        setCreativeTab(GTNLCreativeTabs.GTNotLeisureBlock);
-        GameRegistry.registerBlock(this, ItemBlockSuperInterface.class, "super_interface");
-        GameRegistry.registerTileEntity(TileEntitySuperInterface.class, "super_interface_tile_entity");
-        GTNLItemList.SuperInterface.set(new ItemStack(this, 1));
         this.setTileEntity(TileEntitySuperInterface.class);
         this.setFeature(EnumSet.of(AEFeature.Core));
     }

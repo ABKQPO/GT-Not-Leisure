@@ -38,17 +38,13 @@ import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.reavaritia.utils.item.ItemStackWrapper;
 import com.reavaritia.utils.item.SubtitleDisplay;
 import com.reavaritia.utils.item.ToolHelper;
-import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.gui.VeinMiningPickaxeGui;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.ItemLoader;
-import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -73,17 +69,12 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
 
     public VeinMiningPickaxe() {
         super(EnumHelper.addToolMaterial("VEIN", 15, 20000000, 15, 3, 10));
-        this.setUnlocalizedName("gtnl.vein_mining_pickaxe");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        this.setTextureName(ScienceNotLeisure.RESOURCE_ROOT_ID + ":" + "vein_mining_pickaxe");
         this.setMaxStackSize(1);
         this.setMaxDamage(20000000);
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance()
             .bus()
             .register(this);
-        GameRegistry.registerItem(this, "vein_mining_pickaxe");
-        GTNLItemList.VeinMiningPickaxe.set(new ItemStack(this, 1));
     }
 
     @Override

@@ -36,6 +36,7 @@ public class GTNLLibContractTest {
         ThemeContracts.run();
         BoundaryContracts.run();
         FxContracts.run();
+        RegistryContracts.run();
     }
 
     public static void finish(String suite) {

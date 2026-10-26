@@ -1,7 +1,5 @@
 package com.science.gtnl.common.item.items.bauble;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -9,26 +7,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.item.BaubleItem;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
 import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class RoyalGel extends BaubleItem {
 
     public RoyalGel() {
-        this.setUnlocalizedName("gtnl.royal_gel");
         this.setMaxStackSize(1);
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "royal_gel");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "royal_gel");
-        GTNLItemList.RoyalGel.set(new ItemStack(this, 1));
         MinecraftForge.EVENT_BUS.register(this);
     }
 

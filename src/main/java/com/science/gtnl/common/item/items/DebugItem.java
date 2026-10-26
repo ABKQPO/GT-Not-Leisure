@@ -1,7 +1,5 @@
 package com.science.gtnl.common.item.items;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -19,13 +17,11 @@ import org.jetbrains.annotations.NotNull;
 
 import com.dreammaster.item.NHItemList;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.utils.SimpleItem;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 import fox.spiteful.avaritia.tile.TileEntityDireCrafting;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Mods;
@@ -68,11 +64,6 @@ public class DebugItem extends Item {
         + "()[]{}@#$%^&*:;<>?!").toCharArray();
 
     public DebugItem() {
-        this.setTextureName(RESOURCE_ROOT_ID + ":" + "debug_item");
-        this.setUnlocalizedName("gtnl.debug_item");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "debug_item");
-        GTNLItemList.DebugItem.set(new ItemStack(this, 1));
         MinecraftForge.EVENT_BUS.register(this);
     }
 

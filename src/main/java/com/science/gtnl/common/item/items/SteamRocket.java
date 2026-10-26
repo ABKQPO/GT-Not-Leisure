@@ -14,12 +14,9 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.entity.EntitySteamRocket;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import micdoodle8.mods.galacticraft.api.entity.IRocketType.EnumRocketType;
@@ -37,11 +34,6 @@ public class SteamRocket extends Item implements IHoldableItem {
         this.setMaxDamage(0);
         this.setHasSubtypes(true);
         this.setMaxStackSize(1);
-        this.setTextureName("arrow");
-        this.setUnlocalizedName("gtnl.steam_rocket");
-        this.setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "steam_rocket");
-        GTNLItemList.SteamRocket.set(new ItemStack(this, 1));
     }
 
     @Override

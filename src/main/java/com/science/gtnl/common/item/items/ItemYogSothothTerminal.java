@@ -1,7 +1,5 @@
 package com.science.gtnl.common.item.items;
 
-import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
-
 import java.util.List;
 import java.util.Set;
 
@@ -22,12 +20,10 @@ import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.gui.YogSothothTerminalGui;
 import com.science.gtnl.common.yogsothoth.YogTerminalService;
 import com.science.gtnl.common.yogsothoth.YogTerminals;
 import com.science.gtnl.common.yogsothoth.YogToken;
-import com.science.gtnl.utils.enums.GTNLItemList;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -40,7 +36,6 @@ import baubles.api.expanded.BaubleExpandedSlots;
 import baubles.api.expanded.IBaubleExpanded;
 import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.item.ElectricItem;
@@ -58,12 +53,7 @@ public class ItemYogSothothTerminal extends Item implements IBauble, IBaubleExpa
 
     public ItemYogSothothTerminal() {
         INSTANCE = this;
-        setUnlocalizedName("gtnl.yog_sothoth_terminal");
-        setTextureName(RESOURCE_ROOT_ID + ":" + "yog_sothoth_terminal");
         setMaxStackSize(1);
-        setCreativeTab(GTNLCreativeTabs.GTNotLeisureItem);
-        GameRegistry.registerItem(this, "yog_sothoth_terminal");
-        GTNLItemList.YogSothothTerminal.set(new ItemStack(this));
     }
 
     @Override
