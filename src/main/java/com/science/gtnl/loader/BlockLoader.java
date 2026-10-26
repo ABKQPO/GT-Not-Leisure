@@ -54,7 +54,7 @@ import bartworks.common.loaders.ItemRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.util.GTRecipeBuilder;
 
-public class BlockLoader implements IContentLoader {
+public class BlockLoader {
 
     public static BlockSaplingBrickuoia saplingBrickuoia;
     public static BlockCardboardBox cardboardBox;
@@ -684,19 +684,22 @@ public class BlockLoader implements IContentLoader {
         OreDictionary.registerOre("treeSapling", new ItemStack(saplingBrickuoia, 1, GTRecipeBuilder.WILDCARD));
     }
 
-    @Override
-    public String name() {
-        return "blocks";
-    }
+    public static class Card implements IContentLoader {
 
-    @Override
-    public void preInit() {
-        registry();
-        registerTreeBrickuoia();
-    }
+        @Override
+        public String name() {
+            return "blocks";
+        }
 
-    @Override
-    public void postInit() {
-        TileEntityMigrationHandler.register();
+        @Override
+        public void preInit() {
+            registry();
+            registerTreeBrickuoia();
+        }
+
+        @Override
+        public void postInit() {
+            TileEntityMigrationHandler.register();
+        }
     }
 }

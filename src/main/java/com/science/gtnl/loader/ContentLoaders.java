@@ -13,11 +13,12 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 public class ContentLoaders {
 
     // Order is part of save compatibility: blocks and items keep their old registration order, new cards go last.
+    // Block and item tables join through nested cards, so building this list does not create any item early.
     public static final List<IContentLoader> LOADERS = List.of(
         new EffectLoader(),
         new EntityLoader(),
-        new BlockLoader(),
-        new ItemLoader(),
+        new BlockLoader.Card(),
+        new ItemLoader.Card(),
         new MaterialLoader(),
         new WorldLoader(),
         new MachineLoader(),

@@ -85,7 +85,7 @@ import gregtech.api.util.GTOreDictUnificator;
 import gregtech.common.render.items.InfinityMetaItemRenderer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-public class ItemLoader implements IContentLoader {
+public class ItemLoader {
 
     public static SteamRocket steamRocket = new SteamRocket();
     public static NullPointerException nullPointerException = new NullPointerException();
@@ -662,19 +662,22 @@ public class ItemLoader implements IContentLoader {
         GTOreDictUnificator.addToBlacklist(GTNLItemList.EliteCircuit.get(1));
     }
 
-    @Override
-    public String name() {
-        return "items";
-    }
+    public static class Card implements IContentLoader {
 
-    @Override
-    public void preInit() {
-        registry();
-    }
+        @Override
+        public String name() {
+            return "items";
+        }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void clientInit() {
-        MinecraftForge.EVENT_BUS.register(stick);
+        @Override
+        public void preInit() {
+            registry();
+        }
+
+        @Override
+        @SideOnly(Side.CLIENT)
+        public void clientInit() {
+            MinecraftForge.EVENT_BUS.register(stick);
+        }
     }
 }
