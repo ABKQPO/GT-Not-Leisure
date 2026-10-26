@@ -18,11 +18,8 @@ import gregtech.api.util.MethodsReturnNonnullByDefault;
 import gregtech.common.gui.modularui.UIHelper;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-/**
- * Base of every GTNL NEI recipe page. GT's frontend API still takes ModularUI 1 types; they stay in this class, so a
- * page only describes its logo and slot positions in plain numbers. When GT moves the API to ModularUI 2, only this
- * class changes.
- */
+// GT's frontend API still takes ModularUI 1 types. Keep them in this class so that pages describe slots in plain
+// numbers and a GT move to ModularUI 2 only changes this file.
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class GTNLRecipeFrontend extends RecipeMapFrontend {
