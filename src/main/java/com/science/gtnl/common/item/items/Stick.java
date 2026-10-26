@@ -256,7 +256,7 @@ public class Stick extends Item implements IItemStackExtra, IKeyHandler {
 
         for (ModsItemlist stargatePart : new ModsItemlist[] { ModsItemlist.SGCraftStargateRing,
             ModsItemlist.SGCraftStargateChevronBlock, ModsItemlist.SGCraftStargateBase }) {
-            ItemStack stack = stargatePart.get(1);
+            ItemStack stack = stargatePart.getIfLoaded(1);
             if (stack != null) list.add(setDisguisedStack(stack));
         }
     }

@@ -445,6 +445,9 @@ public class LanguageLoader {
     // own reload is skipped.
     public static boolean reloadGTLanguageInEnglishIfNoneSelected(Map<String, String> languageMap) {
         if (!GregTechAPI.sFullLoadFinished || GTLanguageManager.sEnglishFile == null) return false;
+        if (FMLCommonHandler.instance()
+            .getSide()
+            .isServer()) return false;
 
         Minecraft minecraft = Minecraft.getMinecraft();
         if (minecraft == null || minecraft.getLanguageManager() == null
