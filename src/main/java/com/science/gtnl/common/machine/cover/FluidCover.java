@@ -10,26 +10,32 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.google.common.io.ByteArrayDataInput;
+
 import gregtech.api.covers.CoverContext;
 import gregtech.api.interfaces.tileentity.ICoverable;
 import gregtech.api.interfaces.tileentity.IMachineProgress;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.metatileentity.CommonMetaTileEntity;
-import gregtech.common.covers.CoverLegacyData;
+import gregtech.common.covers.Cover;
+import io.netty.buffer.ByteBuf;
 
-public class FluidCover extends CoverLegacyData {
+public class FluidCover extends Cover {
+
+    // Same int and save format as the old GT CoverLegacyData base, so covers placed before keep their settings.
+    public int coverData;
 
     public Fluid fluid;
     public String description;
 
     public FluidCover(CoverContext context, FluidStack fluid, String descriptionKey) {
-        super(context);
+        super(context, null);
         this.fluid = fluid.getFluid();
         this.description = descriptionKey;
     }
 
     public FluidCover(CoverContext context, Fluid fluid, String descriptionKey) {
-        super(context);
+        super(context, null);
         this.fluid = fluid;
         this.description = descriptionKey;
     }
@@ -62,7 +68,7 @@ public class FluidCover extends CoverLegacyData {
     }
 
     @Override
-    public void readDataFromNbt(NBTBase nbt) {
+    protected void readDataFromNbt(NBTBase nbt) {
         if (nbt instanceof NBTTagCompound compound) {
             this.coverData = compound.getInteger("CoverData");
             this.description = compound.getString("Description");
@@ -80,7 +86,7 @@ public class FluidCover extends CoverLegacyData {
     }
 
     @Override
-    public @NotNull NBTBase saveDataToNbt() {
+    protected @NotNull NBTBase saveDataToNbt() {
         NBTTagCompound compound = new NBTTagCompound();
         compound.setInteger("CoverData", this.coverData);
         compound.setString("Description", this.description);
@@ -107,4 +113,18 @@ public class FluidCover extends CoverLegacyData {
         }
     }
 
+    @Override
+    protected void readDataFromPacket(ByteArrayDataInput byteData) {
+        coverData = byteData.readInt();
+    }
+
+    @Override
+    protected void writeDataToByteBuf(ByteBuf byteBuf) {
+        byteBuf.writeInt(coverData);
+    }
+
+    @Override
+    public boolean isRedstoneSensitive(long aTimer) {
+        return true;
+    }
 }

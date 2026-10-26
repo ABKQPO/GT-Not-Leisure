@@ -3,11 +3,14 @@ package com.science.gtnl.common.machine.cover;
 import java.math.BigInteger;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.google.common.io.ByteArrayDataInput;
 import com.science.gtnl.common.gui.WirelessSteamCoverGui;
 import com.science.gtnl.common.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.utils.enums.SteamTypes;
@@ -19,13 +22,17 @@ import gregtech.api.interfaces.tileentity.IMachineProgress;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.metatileentity.CommonMetaTileEntity;
 import gregtech.api.util.GTUtility;
-import gregtech.common.covers.CoverLegacyData;
+import gregtech.common.covers.Cover;
 import gregtech.common.gui.modularui.cover.base.CoverBaseGui;
+import io.netty.buffer.ByteBuf;
 
-public class WirelessSteamCover extends CoverLegacyData {
+public class WirelessSteamCover extends Cover {
+
+    // Same int and save format as the old GT CoverLegacyData base, so covers placed before keep their settings.
+    public int coverData;
 
     public WirelessSteamCover(CoverContext context) {
-        super(context);
+        super(context, null);
     }
 
     @Override
@@ -119,5 +126,30 @@ public class WirelessSteamCover extends CoverLegacyData {
     @Override
     public int getMinimumTickRate() {
         return 20;
+    }
+
+    @Override
+    protected void readDataFromPacket(ByteArrayDataInput byteData) {
+        coverData = byteData.readInt();
+    }
+
+    @Override
+    protected void writeDataToByteBuf(ByteBuf byteBuf) {
+        byteBuf.writeInt(coverData);
+    }
+
+    @Override
+    public boolean isRedstoneSensitive(long aTimer) {
+        return true;
+    }
+
+    @Override
+    protected void readDataFromNbt(NBTBase nbt) {
+        coverData = nbt instanceof NBTTagInt tagInt ? tagInt.func_150287_d() : 0;
+    }
+
+    @Override
+    protected @NotNull NBTBase saveDataToNbt() {
+        return new NBTTagInt(coverData);
     }
 }
