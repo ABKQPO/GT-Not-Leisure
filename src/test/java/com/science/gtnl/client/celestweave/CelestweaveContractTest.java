@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.gtnllib.GTNLLibContractTest;
+import com.science.gtnl.ArchitectureContracts;
 import com.science.gtnl.client.portalgun.PortalGunContracts;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme;
 import com.science.gtnl.common.wireless.WirelessAutoConnectContracts;
@@ -39,6 +40,7 @@ public class CelestweaveContractTest {
         EquipmentResourceContracts.run();
         WirelessMatterManipulatorContracts.run();
         WirelessAutoConnectContracts.run();
+        ArchitectureContracts.run();
         GTNLLibContractTest.finish("Celestweave");
     }
 
