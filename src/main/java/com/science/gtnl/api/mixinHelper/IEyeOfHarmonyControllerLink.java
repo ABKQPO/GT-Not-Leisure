@@ -1,33 +1,11 @@
 package com.science.gtnl.api.mixinHelper;
 
-import java.util.Map;
-
-import net.minecraftforge.fluids.Fluid;
-
-import com.gtnewhorizons.modularui.api.widget.Widget;
-import com.science.gtnl.common.machine.multiblock.EyeOfHarmonyInjector;
-
+/**
+ * What GTNL's mixin adds to TecTech's Eye of Harmony so a linked GTNL injector can read and fill its stored fluids.
+ */
 public interface IEyeOfHarmonyControllerLink {
 
-    void setController(EyeOfHarmonyInjector controller);
-
-    EyeOfHarmonyInjector getController();
-
-    int getControllerX();
-
-    int getControllerY();
-
-    int getControllerZ();
-
-    void setControllerSet(boolean value);
-
-    boolean isControllerSet();
-
     void gtnl$unlinkController();
-
-    Widget gtnl$makeSyncerWidgets();
-
-    Map<Fluid, Long> getValidFluidMap();
 
     long gtnl$getHydrogenStored();
 

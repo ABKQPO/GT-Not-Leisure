@@ -1,12 +1,27 @@
 package com.science.gtnl.common.me;
 
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
 
+import com.science.gtnl.api.mixinHelper.IInterfaceNameHatch;
+import com.science.gtnl.utils.item.ItemUtils;
+
+import appeng.helpers.ICustomNameObject;
+import gregtech.api.interfaces.INonConsumedItemDisplay;
+import gregtech.api.metatileentity.MetaTileEntity;
+import gregtech.api.metatileentity.implementations.MTEHatch;
+import gregtech.api.recipe.RecipeMap;
 import gregtech.crossmod.ae2.ChatComponentGhostCircuitSuffix;
+import gregtech.crossmod.ae2.ChatComponentNonConsumedItemsSuffix;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class InterfaceNameLocalization {
 
@@ -76,5 +91,43 @@ public class InterfaceNameLocalization {
         } catch (Exception ignored) {
             return serializedSuffix;
         }
+    }
+
+    // What a GT machine adds to its name in AE's interface terminal: the recipe map of a hatch that has one, and the
+    // non-consumed items in a hatch, unless the machine has a custom name or names itself.
+    public static IChatComponent machineSuffix(MetaTileEntity metaTileEntity, IChatComponent nameSuffix) {
+        if (metaTileEntity instanceof ICustomNameObject customNameObject && customNameObject.hasCustomName()) {
+            return nameSuffix;
+        }
+
+        RecipeMap<?> recipeMap = metaTileEntity instanceof IInterfaceNameHatch hatch ? hatch.getInterfaceNameRecipeMap()
+            : null;
+        if (recipeMap != null) {
+            IChatComponent recipeMapSuffix = new ChatComponentText(" - ")
+                .appendSibling(new ChatComponentTranslation(recipeMap.unlocalizedName));
+            nameSuffix = nameSuffix == null ? recipeMapSuffix : nameSuffix.appendSibling(recipeMapSuffix);
+        }
+
+        List<ItemStack> extraItems = extraItems(metaTileEntity, recipeMap);
+        if (extraItems.isEmpty()) return nameSuffix;
+
+        IChatComponent extraItemSuffix = new ChatComponentNonConsumedItemsSuffix(extraItems);
+        return nameSuffix == null ? extraItemSuffix : nameSuffix.appendSibling(extraItemSuffix);
+    }
+
+    private static List<ItemStack> extraItems(MetaTileEntity metaTileEntity, RecipeMap<?> recipeMap) {
+        if (!(metaTileEntity instanceof MTEHatch)
+            || metaTileEntity instanceof IInterfaceNameHatch hatch && hatch.handlesOwnInterfaceName()) {
+            return Collections.emptyList();
+        }
+
+        List<ItemStack> extraItems = new ObjectArrayList<>();
+        for (int slot = 0; slot < metaTileEntity.getSizeInventory(); slot++) {
+            ItemStack stack = metaTileEntity.getStackInSlot(slot);
+            if (ItemUtils.isExtraItem(stack) && !INonConsumedItemDisplay.isDisplayableItem(recipeMap, stack)) {
+                extraItems.add(stack.copy());
+            }
+        }
+        return extraItems;
     }
 }

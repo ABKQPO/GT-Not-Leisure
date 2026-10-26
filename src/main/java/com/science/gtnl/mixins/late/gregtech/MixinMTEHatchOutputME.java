@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.science.gtnl.api.mixinHelper.IOutputME;
 import com.science.gtnl.common.machine.hatch.OutputHatchMEProxy;
+import com.science.gtnl.utils.machine.MachineUtils;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.me.helpers.AENetworkProxy;
@@ -103,24 +104,8 @@ public abstract class MixinMTEHatchOutputME extends MTEHatchOutput implements IO
     @Inject(method = "getCopiedData", at = @At("RETURN"), cancellable = true)
     private void gtnl$injectCopiedData(EntityPlayer player, CallbackInfoReturnable<NBTTagCompound> cir) {
         if ((Object) this instanceof OutputHatchMEProxy) return;
-
         IGregTechTileEntity tileEntity = getBaseMetaTileEntity();
-        if (tileEntity == null) return;
-
-        NBTTagCompound tag = cir.getReturnValue();
-        if (tag == null) {
-            tag = new NBTTagCompound();
-        }
-
-        NBTTagCompound masterNBT = new NBTTagCompound();
-        masterNBT.setInteger("masterX", tileEntity.getXCoord());
-        masterNBT.setInteger("masterY", tileEntity.getYCoord());
-        masterNBT.setInteger("masterZ", tileEntity.getZCoord());
-        masterNBT.setInteger("masterDim", tileEntity.getWorld().provider.dimensionId);
-
-        tag.setTag("master", masterNBT);
-
-        cir.setReturnValue(tag);
+        if (tileEntity != null) cir.setReturnValue(MachineUtils.addMasterPosition(tileEntity, cir.getReturnValue()));
     }
 
     @Override
@@ -138,16 +123,9 @@ public abstract class MixinMTEHatchOutputME extends MTEHatchOutput implements IO
     @Override
     public boolean onRightclick(IGregTechTileEntity aBaseMetaTileEntity, EntityPlayer aPlayer, ForgeDirection side,
         float aX, float aY, float aZ) {
-        if (!(aPlayer instanceof EntityPlayerMP)) {
-            lastClickedPlayer = aPlayer;
-            openGui(aPlayer);
-            return onRightclick(aBaseMetaTileEntity, aPlayer);
-        }
-
         ItemStack dataStick = aPlayer.inventory.getCurrentItem();
-
-        if (!ItemList.Tool_DataStick.isStackEqual(dataStick, false, true)) {
-            lastClickedPlayer = aPlayer;
+        if (!(aPlayer instanceof EntityPlayerMP) || !ItemList.Tool_DataStick.isStackEqual(dataStick, false, true)) {
+            this.lastClickedPlayer = aPlayer;
             openGui(aPlayer);
             return onRightclick(aBaseMetaTileEntity, aPlayer);
         }

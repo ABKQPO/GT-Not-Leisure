@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -240,5 +241,17 @@ public class MachineUtils {
             rList.addAll(inputsFromME.values());
         }
         return rList;
+    }
+
+    // Data stick copy of a GT ME output hatch or bus: where it is, so a GTNL proxy can link to it.
+    public static NBTTagCompound addMasterPosition(IGregTechTileEntity tileEntity, NBTTagCompound tag) {
+        if (tag == null) tag = new NBTTagCompound();
+        NBTTagCompound masterNBT = new NBTTagCompound();
+        masterNBT.setInteger("masterX", tileEntity.getXCoord());
+        masterNBT.setInteger("masterY", tileEntity.getYCoord());
+        masterNBT.setInteger("masterZ", tileEntity.getZCoord());
+        masterNBT.setInteger("masterDim", tileEntity.getWorld().provider.dimensionId);
+        tag.setTag("master", masterNBT);
+        return tag;
     }
 }
