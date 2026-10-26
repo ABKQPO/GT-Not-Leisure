@@ -26,6 +26,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.gui.modularui.SiphonTurbineGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 
 import gregtech.api.casing.Casings;
@@ -448,16 +449,14 @@ public class SiphonTurbine extends MultiMachineBase<SiphonTurbine> {
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        return null;
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.siphon_turbine.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.siphon_turbine.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.siphon_turbine.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.siphon_turbine.tooltip.2"))
-            .beginStructureBlock(3, 3, 3, false)
-            .addDynamoHatch("1+", StatCollector.translateToLocal("gtnl.machine.siphon_turbine.casing"))
-            .addMaintenanceHatch("0-1", StatCollector.translateToLocal("gtnl.machine.siphon_turbine.casing"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.siphon_turbine.structure"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

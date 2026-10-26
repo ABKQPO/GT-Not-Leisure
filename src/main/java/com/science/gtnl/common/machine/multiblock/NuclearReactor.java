@@ -29,6 +29,7 @@ import com.science.gtnl.common.machine.hatch.NuclearFluidHatch;
 import com.science.gtnl.common.machine.hatch.NuclearItemBus;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.enums.BlockIcons;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
@@ -71,6 +72,8 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
     public static final double EXCITATION_THROUGH_FLUID = 1.1;
     public static final double DURABILITY_PER_SECOND_RUNNING = 4.0;
     public static final double DURABILITY_PER_SECOND_IDLE = 1.0;
+    private static final List<String> CORE_CELL_HATCH_NAMES = Arrays
+        .asList("gtnl.hatch.nuclear_item_bus.name", "gtnl.hatch.nuclear_fluid_hatch.name");
     public static final double REFLECTOR_DURABILITY_FACTOR = 0.125;
 
     public static float sNuclearEnergyMultiplier = -1;
@@ -403,6 +406,7 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
     public IStructureElement<NuclearReactor> coreCellHintElement() {
         return GTStructureUtility.buildHatchAdder(NuclearReactor.class)
             .hatchClasses(NuclearItemBus.class, NuclearFluidHatch.class)
+            .descriptions(() -> CORE_CELL_HATCH_NAMES)
             .casingIndex(Casings.HastelloyNSealantBlock.textureId)
             .hint(2)
             .hint(() -> StatCollector.translateToLocal("gtnl.structure.nuclear_reactor.core_cell"))
@@ -667,21 +671,14 @@ public class NuclearReactor extends MultiMachineBase<NuclearReactor>
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        return null;
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.tooltip.quote"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.tooltip.5"))
-            .beginStructureBlock(5, STRUCTURE_HEIGHT, 5, true)
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.structure.tiers"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.structure.output_hatch"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.casing"))
-            .addOtherStructurePart(
-                StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.tooltip.4"),
-                StatCollector.translateToLocal("gtnl.machine.nuclear_reactor.tooltip.3"),
-                2)
-            .addSubChannelUsage(GTStructureChannels.TIER_CASING)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

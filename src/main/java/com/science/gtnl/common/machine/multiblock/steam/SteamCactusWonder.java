@@ -31,6 +31,7 @@ import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -50,7 +51,6 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 
 @IMetaTileEntity.SkipGenerateDescription
@@ -211,6 +211,11 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        return null;
+    }
+
+    @Override
     public int getTierRecipes() {
         return 14;
     }
@@ -247,16 +252,8 @@ public class SteamCactusWonder extends SteamMultiMachineBase<SteamCactusWonder> 
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_cactus_wonder.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_cactus_wonder.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_cactus_wonder.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_cactus_wonder.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_cactus_wonder.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_cactus_wonder.tooltip.5"))
-            .beginStructureBlock(9, 11, 9, true)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

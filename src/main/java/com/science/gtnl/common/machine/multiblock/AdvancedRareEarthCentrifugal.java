@@ -6,7 +6,6 @@ import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
@@ -18,6 +17,7 @@ import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import goodgenerator.loader.Loaders;
 import gregtech.api.casing.Casings;
@@ -151,22 +151,8 @@ public class AdvancedRareEarthCentrifugal extends GTMMultiMachineBase<AdvancedRa
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.advanced_rare_earth_centrifugal.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
-            .addSupportAny()
-            .beginStructureBlock(23, 13, 24, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.advanced_rare_earth_centrifugal.casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.advanced_rare_earth_centrifugal.casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.advanced_rare_earth_centrifugal.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.advanced_rare_earth_centrifugal.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.advanced_rare_earth_centrifugal.casing"))
-            .addMaintenanceHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.advanced_rare_earth_centrifugal.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

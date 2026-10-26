@@ -1,0 +1,9 @@
+无视生物仓升级要求
+固定双倍产出
+机器开机时固定消耗{var:distilled_water}L蒸馏水/{var:distilled_water_seconds}s
+每并行消耗对应配方等级的{var:low_grade_water}L低级净化水/{var:high_grade_water}L高级净化水
+机器等级每高出配方等级一级，净化水消耗减半
+机器等级每提高一级，速度+{var:tier_bonus}，要求功率-{var:tier_bonus}
+机器等级达到{var:perfect_overclock_tier}或更高时开启{red:无损超频}
+需要使用纳米蜂群提高结构等级，中子->银->金
+只能从顶部输入蒸馏水和净化水

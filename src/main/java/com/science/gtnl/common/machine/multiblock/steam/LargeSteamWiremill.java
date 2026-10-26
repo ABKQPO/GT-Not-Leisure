@@ -19,6 +19,7 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
@@ -225,20 +226,9 @@ public class LargeSteamWiremill extends SteamMultiMachineBase<LargeSteamWiremill
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_wiremill.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_wiremill.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_wiremill.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_wiremill.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
-            .beginStructureBlock(6, 5, 5, false)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_wiremill.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_wiremill.casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
-
         return tt;
     }
 }

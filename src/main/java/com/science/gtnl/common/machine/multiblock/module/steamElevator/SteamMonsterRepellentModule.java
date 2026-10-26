@@ -1,9 +1,14 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
+import java.util.Map;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 
 import org.jetbrains.annotations.NotNull;
+
+import com.google.common.collect.ImmutableMap;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.GTMod;
 import gregtech.api.enums.GTValues;
@@ -17,6 +22,8 @@ import gregtech.api.util.shutdown.ShutDownReason;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class SteamMonsterRepellentModule extends SteamElevatorModuleBase {
+
+    public static final String[] TIER_TITLES = { "basic", "advanced", "elite" };
 
     public int mRange;
 
@@ -93,24 +100,18 @@ public class SteamMonsterRepellentModule extends SteamElevatorModuleBase {
     }
 
     @Override
+    public Map<String, Object> getTooltipVars() {
+        return ImmutableMap.of(
+            "tier_title",
+            TIER_TITLES[Math.min(Math.max(mTier - 1, 0), TIER_TITLES.length - 1)],
+            "range",
+            getMachineEffectRange());
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.recipe_type"));
-        switch (mTier) {
-            case 1 -> tt
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.tooltip.basic"));
-            case 2 -> tt.addInfo(
-                StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.tooltip.advanced"));
-            case 3 -> tt
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.tooltip.elite"));
-        }
-        tt.addInfo(StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.tooltip.2"))
-            .addInfo(
-                StatCollector.translateToLocal("gtnl.machine.steam_monster_repellent_module.tooltip.3")
-                    + (1 << (5 + mTier)))
-            .beginStructureBlock(1, 5, 2, false)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

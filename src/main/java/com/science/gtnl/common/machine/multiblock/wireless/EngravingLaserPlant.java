@@ -34,6 +34,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import goodgenerator.loader.Loaders;
 import gregtech.api.casing.Casings;
@@ -93,8 +94,6 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
     @Getter
     @Setter
     public boolean upgradeConsumed = false;
-
-    public int mCasingTier;
 
     public EngravingLaserPlant(String aName) {
         super(aName);
@@ -221,6 +220,11 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
     }
 
     @Override
+    protected boolean appliesMachineVoltageLimit() {
+        return true;
+    }
+
+    @Override
     public long getMachineVoltageLimit() {
         if (mCasingTier < 0) return 0;
         if (wirelessMode) {
@@ -278,31 +282,8 @@ public class EngravingLaserPlant extends WirelessEnergyMultiMachineBase<Engravin
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.info.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.info.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.info.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
-            .addSupportAny()
-            .beginStructureBlock(21, 12, 22, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.engraving_laser_plant.casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
-            .addSubChannelUsage(GTStructureChannels.COMPONENT_ASSEMBLYLINE_CASING)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

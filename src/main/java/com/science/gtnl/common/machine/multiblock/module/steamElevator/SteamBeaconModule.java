@@ -1,6 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -18,6 +19,7 @@ import net.minecraft.world.World;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.google.common.collect.ImmutableMap;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
@@ -35,6 +37,7 @@ import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.kentington.thaumichorizons.common.lib.potion.PotionVisRegen;
 import com.science.gtnl.common.gui.modularui.SteamBeaconModuleGui;
 import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.Mods;
@@ -56,6 +59,8 @@ import vazkii.botania.common.brew.ModPotions;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class SteamBeaconModule extends SteamElevatorModuleBase {
+
+    public static final String[] TIER_TITLES = { "basic", "advanced", "elite" };
 
     public static final int CONFIG_WINDOW_ID = 14;
     public static final UITexture SPEED_EFFECT = UITexture
@@ -276,20 +281,18 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
     }
 
     @Override
+    public Map<String, Object> getTooltipVars() {
+        return ImmutableMap.of(
+            "tier_title",
+            TIER_TITLES[Math.min(Math.max(mTier - 1, 0), TIER_TITLES.length - 1)],
+            "range",
+            getMachineEffectRange());
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.recipe_type"));
-        switch (mTier) {
-            case 1 -> tt.addInfo(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.tooltip.basic"));
-            case 2 -> tt.addInfo(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.tooltip.advanced"));
-            case 3 -> tt.addInfo(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.tooltip.elite"));
-        }
-        tt.addInfo(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.tooltip.2") + (1 << (5 + mTier)))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_beacon_module.tooltip.4"))
-            .beginStructureBlock(1, 5, 2, false)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

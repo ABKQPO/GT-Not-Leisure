@@ -7,6 +7,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -53,6 +54,7 @@ import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.gtnewhorizons.modularui.common.widget.textfield.NumericWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IControllerInfo;
+import com.science.gtnl.api.IMultiblockTooltipRules;
 import com.science.gtnl.common.gui.CircularGaugeDrawable;
 import com.science.gtnl.common.gui.modularui.GTNLSteamMultiBlockBaseGui;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
@@ -66,13 +68,18 @@ import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
+import com.science.gtnl.utils.structure.MultiblockTooltipReader;
+import com.science.gtnl.utils.structure.StructureTooltipHooks;
 import com.science.gtnl.utils.world.steam.SteamWirelessNetworkManager;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
+import gregtech.api.enums.MetaTileEntityIDs;
 import gregtech.api.enums.Textures;
+import gregtech.api.enums.VoltageIndex;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IIconContainer;
 import gregtech.api.interfaces.IOutputBus;
@@ -90,6 +97,7 @@ import gregtech.api.metatileentity.implementations.MTEHatchOutputBus;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
+import gregtech.api.structure.IStructureChannels;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.structure.error.StructureErrorRegistry;
 import gregtech.api.structure.error.StructureErrors;
@@ -97,7 +105,9 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.HatchElementBuilder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
+import gregtech.api.util.tooltip.TooltipHelper;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
+import gregtech.common.misc.GTStructureChannels;
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 import gregtech.common.tileentities.machines.IDualInputInventoryWithPattern;
@@ -114,9 +124,16 @@ import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
 public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> extends MTESteamMultiBlockBase<T>
-    implements IControllerInfo {
+    implements IControllerInfo, IMultiblockTooltipRules {
 
     public static final int OC_WINDOW_ID = 12;
+    private static final String STEAM_INPUT_LINE = "GTPP.MBTT.SteamHatch";
+    private static final String RECIPE_VOLTAGE_KEY = "gtnl.structure.tooltip.steam_recipe_voltage";
+    private static final String HIGH_PRESSURE_RECIPE_VOLTAGE_KEY = RECIPE_VOLTAGE_KEY + ".high_pressure";
+    private static final int BASIC_STEAM_TIER = 1;
+    private static final int MAX_STEAM_TIER = 2;
+    private static final int[] STEAM_INPUT_HATCH_IDS = { MetaTileEntityIDs.Hatch_Input_Steam.ID,
+        GTNLMachineID.BIG_STEAM_INPUT_HATCH.ID, GTNLMachineID.PIPELESS_STEAM_HATCH.ID };
     public double configSpeedBoost = 1;
     public int recipeOcCount = 0;
     public int tierAdvancedCasing = -1;
@@ -394,9 +411,99 @@ public abstract class SteamMultiMachineBase<T extends SteamMultiMachineBase<T>> 
     }
 
     public void checkHatch(List<StructureError> errors) {
+        if (StructureTooltipHooks.onCheckHatchKeys(this, 1, StructureTooltipHooks.UNLIMITED, steamInputHatchKeys())) {
+            return;
+        }
         if (mSteamInputFluids.isEmpty() && mSteamBigInputFluids.isEmpty() && mSteamWirelessInputFluids.isEmpty()) {
             errors.add(StructureErrors.of("GT5U.gui.text.structure_error.missing_steam_input"));
         }
+    }
+
+    @Override
+    public TooltipStats getTooltipStats() {
+        if (!MultiblockTooltipReader.runsRecipes(this, this::createProcessingLogic)) return null;
+        return tooltipStatsAtMachineTier(BASIC_STEAM_TIER);
+    }
+
+    @Override
+    public TooltipStats getTooltipStatsAtTier(TieredPart part, int tier) {
+        return part == TieredPart.HIGH_PRESSURE ? tooltipStatsAtMachineTier(BASIC_STEAM_TIER + tier) : null;
+    }
+
+    @Override
+    public List<String> getTooltipFeatureLines() {
+        if (getTooltipStats() == null) return Collections.emptyList();
+        int basic = recipeTierAtMachineTier(BASIC_STEAM_TIER);
+        if (basic >= VoltageIndex.MAX) return Collections.emptyList();
+        String basicText = TooltipHelper.voltageTierText(basic, false);
+        int highPressure = recipeTierAtMachineTier(MAX_STEAM_TIER);
+        if (highPressure == basic) {
+            return Collections.singletonList(StatCollector.translateToLocalFormatted(RECIPE_VOLTAGE_KEY, basicText));
+        }
+        return Collections.singletonList(
+            StatCollector.translateToLocalFormatted(
+                HIGH_PRESSURE_RECIPE_VOLTAGE_KEY,
+                basicText,
+                GTNLMultiblockTooltipBuilder.partTierText(TieredPart.HIGH_PRESSURE),
+                TooltipHelper.voltageTierText(highPressure, false)));
+    }
+
+    private int recipeTierAtMachineTier(int machineTier) {
+        int tier = tierMachine;
+        tierMachine = machineTier;
+        try {
+            return getTierRecipes();
+        } finally {
+            tierMachine = tier;
+        }
+    }
+
+    protected TooltipStats readTooltipStats() {
+        return new TooltipStats(
+            getMaxParallelRecipes(),
+            1 / getDurationModifier(),
+            getEUtDiscount(),
+            true,
+            getPerfectOC());
+    }
+
+    private TooltipStats tooltipStatsAtMachineTier(int machineTier) {
+        int tier = tierMachine;
+        tierMachine = machineTier;
+        try {
+            return readTooltipStats();
+        } finally {
+            tierMachine = tier;
+        }
+    }
+
+    private static List<String> steamInputHatchKeys() {
+        List<String> keys = new ArrayList<>();
+        for (int id : STEAM_INPUT_HATCH_IDS) {
+            IMetaTileEntity hatch = GregTechAPI.METATILEENTITIES[id];
+            if (hatch != null) keys.add("gt.blockmachines." + hatch.getMetaName() + ".name");
+        }
+        return keys;
+    }
+
+    @Override
+    public String getStructureTooltipHatchLine(String hatchLangKey) {
+        return steamInputHatchKeys().contains(hatchLangKey) ? STEAM_INPUT_LINE : hatchLangKey;
+    }
+
+    @Override
+    public int getStructureTooltipMaterialTiers() {
+        return MAX_STEAM_TIER;
+    }
+
+    @Override
+    public String getStructureTooltipMaterialTierHeader(int tier) {
+        return StatCollector.translateToLocal("gtnl.structure.tooltip.tier.steam." + tier);
+    }
+
+    @Override
+    public IStructureChannels getStructureTooltipMaterialTierChannel() {
+        return GTStructureChannels.TIER_MACHINE_CASING;
     }
 
     protected boolean checkMachineTier(List<StructureError> errors, int minCasing, boolean tier1Valid,

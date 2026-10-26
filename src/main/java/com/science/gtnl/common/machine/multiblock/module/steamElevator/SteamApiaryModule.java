@@ -1,5 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.google.common.collect.ImmutableMap;
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import com.gtnewhorizons.modularui.api.ModularUITextures;
 import com.gtnewhorizons.modularui.api.drawable.IDrawable;
@@ -60,6 +63,7 @@ import com.science.gtnl.common.gui.CircularGaugeDrawable;
 import com.science.gtnl.common.gui.modularui.SteamApiaryModuleGui;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -97,6 +101,8 @@ import kubatech.api.utils.ItemUtils;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class SteamApiaryModule extends SteamElevatorModuleBase {
+
+    private static final int RUN_TICKS = 6000;
 
     public int mMaxSlots = 8;
     public ObjectArrayList<BeeSimulator> mStorage = new ObjectArrayList<>();
@@ -284,16 +290,19 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> getTooltipVars() {
+        return ImmutableMap.of("run_seconds", RUN_TICKS / SECONDS);
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_apiary_module.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_apiary_module.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_apiary_module.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_apiary_module.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_apiary_module.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_apiary_module.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_apiary_module.tooltip.5"))
-            .beginStructureBlock(1, 5, 2, false)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }
@@ -360,7 +369,7 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
                 this.lEUt = -GTValues.V[4] * mMaxSlots;
                 this.mEfficiency = 10000;
                 this.mEfficiencyIncrease = 10000;
-                this.mMaxProgresstime = 6000;
+                this.mMaxProgresstime = RUN_TICKS;
                 this.mOutputItems = mergeOutputStacks(stacks);
                 return CheckRecipeResultRegistry.SUCCESSFUL;
             }

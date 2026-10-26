@@ -26,6 +26,7 @@ import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.ModsItemlist;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import goodgenerator.loader.Loaders;
 import gregtech.api.GregTechAPI;
@@ -211,72 +212,14 @@ public class WhiteNightGenerator extends MultiMachineBase<WhiteNightGenerator> {
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        return null;
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.white_night_generator.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.4"))
-            .addSeparator()
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.7"))
-            .addSeparator()
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.8"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.9"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.10"))
-            .addSeparator()
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.11"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.12"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.13"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.14"))
-            .addSeparator()
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.15"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.16"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.17"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.18"))
-            .addSeparator()
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.19"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.20"))
-            .addSeparator()
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.21"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.22"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.23"))
-            .addSeparator()
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.24"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.25"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.26"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.27"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.28"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.29"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.30"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.31"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.32"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.33"))
-            .addSeparator()
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.34"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.35"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.36"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.37"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.38"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.39"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.40"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.41"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.42"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.43"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.44"))
-            .addSeparator()
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.45"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.46"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.47"))
-            .addSeparator()
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.48"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.49"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.50"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.white_night_generator.tooltip.51"))
-            .beginStructureBlock(99, 84, 48, false)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .addStructureInfo(
                 StatCollector.translateToLocal("gtnl.machine.real_artificial_star.structure.output_coefficient"))
             .toolTipFinisher();

@@ -66,6 +66,7 @@ import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.item.ItemUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.world.teams.TeamNetworkManager;
 
 import gregtech.api.GregTechAPI;
@@ -222,22 +223,8 @@ public class SuperSpaceElevator extends TTMultiblockBase
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.super_space_elevator.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.super_space_elevator.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.super_space_elevator.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.super_space_elevator.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.super_space_elevator.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.super_space_elevator.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.super_space_elevator.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.super_space_elevator.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.super_space_elevator.tooltip.7"))
-            .addSupportAny()
-            .beginStructureBlock(65, 53, 65, true)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.super_space_elevator.casing"))
-            .addDynamoHatch("0+", StatCollector.translateToLocal("gtnl.machine.super_space_elevator.casing"))
-            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
-            .addSubChannelUsage(GTStructureChannels.STRUCTURE_HEIGHT)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }
@@ -754,7 +741,8 @@ public class SuperSpaceElevator extends TTMultiblockBase
 
     public enum ProjectModuleElement implements IHatchElement<SuperSpaceElevator> {
 
-        ParallelCon(SuperSpaceElevator::addParallelControllerToMachineList, ParallelControllerHatch.class) {
+        ParallelCon("gtnl.structure.hatch.parallel_controller", SuperSpaceElevator::addParallelControllerToMachineList,
+            ParallelControllerHatch.class) {
 
             @Override
             public long count(SuperSpaceElevator tileEntity) {
@@ -762,7 +750,8 @@ public class SuperSpaceElevator extends TTMultiblockBase
             }
         },
 
-        ProjectModule(SuperSpaceElevator::addProjectModuleToMachineList, TileEntityModuleBase.class) {
+        ProjectModule("gt.blockmachines.module.name", SuperSpaceElevator::addProjectModuleToMachineList,
+            TileEntityModuleBase.class) {
 
             @Override
             public long count(SuperSpaceElevator tileEntity) {
@@ -772,11 +761,24 @@ public class SuperSpaceElevator extends TTMultiblockBase
 
         private final List<Class<? extends IMetaTileEntity>> mteClasses;
         private final IGTHatchAdder<SuperSpaceElevator> adder;
+        private final String nameKey;
 
         @SafeVarargs
-        ProjectModuleElement(IGTHatchAdder<SuperSpaceElevator> adder, Class<? extends IMetaTileEntity>... mteClasses) {
+        ProjectModuleElement(String nameKey, IGTHatchAdder<SuperSpaceElevator> adder,
+            Class<? extends IMetaTileEntity>... mteClasses) {
+            this.nameKey = nameKey;
             this.mteClasses = Collections.unmodifiableList(Arrays.asList(mteClasses));
             this.adder = adder;
+        }
+
+        @Override
+        public String getDescriptionLangKey() {
+            return nameKey;
+        }
+
+        @Override
+        public String getDisplayName() {
+            return StatCollector.translateToLocal(nameKey);
         }
 
         @Override

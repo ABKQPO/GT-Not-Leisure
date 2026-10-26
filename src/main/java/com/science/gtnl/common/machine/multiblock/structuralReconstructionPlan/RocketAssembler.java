@@ -8,7 +8,6 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +25,7 @@ import com.science.gtnl.common.render.tile.RocketAssemblerRenderer;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -244,18 +244,8 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.rocket_assembler.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.rocket_assembler.info.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.rocket_assembler.info.1"))
-            .addSupportAny()
-            .beginStructureBlock(17, 24, 16, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.rocket_assembler.casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.rocket_assembler.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.rocket_assembler.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.rocket_assembler.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.rocket_assembler.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

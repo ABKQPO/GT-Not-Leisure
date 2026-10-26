@@ -19,6 +19,7 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
@@ -184,19 +185,8 @@ public class BrickedBlastFurnace extends SteamMultiMachineBase<BrickedBlastFurna
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.tooltip.4"))
-            .beginStructureBlock(15, 14, 15, true)
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.structure.0"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.structure.1"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.structure.2"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.structure.3"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.bricked_blast_furnace.structure.4"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

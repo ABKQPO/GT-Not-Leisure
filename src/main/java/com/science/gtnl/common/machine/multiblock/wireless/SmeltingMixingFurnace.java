@@ -35,6 +35,7 @@ import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import bartworks.common.loaders.ItemRegistry;
 import gregtech.api.casing.Casings;
@@ -266,11 +267,16 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
     }
 
     @Override
+    public boolean getPerfectOC() {
+        return true;
+    }
+
+    @Override
     public void setProcessingLogicPower(ProcessingLogic logic) {
         if (wirelessMode) {
             logic.setAvailableVoltage(
                 machineMode == MACHINEMODE_DTPF ? Integer.MAX_VALUE * 8L : GTValues.V[Math.min(mParallelTier + 1, 14)]);
-            logic.setAvailableAmperage(8L << (2L * mParallelTier) - 2L);
+            logic.setAvailableAmperage((8L << (2L * mParallelTier)) - 2L);
             logic.setAmperageOC(true);
             logic.enablePerfectOverclock();
             return;
@@ -351,41 +357,8 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
-            .addSupportAny()
-            .beginStructureBlock(17, 17, 33, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.tooltip.casing"), 1)
-            .addOutputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.tooltip.casing"),
-                1)
-            .addInputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.tooltip.casing"),
-                1)
-            .addOutputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.tooltip.casing"),
-                1)
-            .addEnergyHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.smelting_mixing_furnace.tooltip.casing"),
-                1)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

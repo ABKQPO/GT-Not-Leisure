@@ -52,6 +52,7 @@ import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import appeng.api.storage.data.AEStackTypeRegistry;
 import appeng.api.storage.data.IAEFluidStack;
@@ -75,7 +76,6 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
-import gregtech.api.structure.error.TranslatableText;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.GTUtility.ItemId;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -94,7 +94,7 @@ import tectech.thing.casing.BlockGTCasingsTT;
 public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     implements ISurvivalConstructable, IStackVault {
 
-    private static final TranslatableText VAULT_PORT_HATCH_NAME = TranslatableText.lang("VaultPortHatch");
+    private static final String VAULT_PORT_HATCH_NAME = "gtnl.hatch.vault_port.name";
 
     public static long MAX_DISTINCT_ITEMS = Long.MAX_VALUE - 1;
     public static long MAX_DISTINCT_FLUIDS = Long.MAX_VALUE - 1;
@@ -165,6 +165,7 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
                         .hint(1)
                         .build(),
                     buildHatchAdder(SingularityDataHub.class).hatchClass(VaultPortHatch.class)
+                        .description(() -> VAULT_PORT_HATCH_NAME)
                         .shouldReject(t -> t.portHatch != null)
                         .adder(SingularityDataHub::addPortBusToMachineList)
                         .casingIndex(getCasingTextureID())
@@ -404,20 +405,14 @@ public class SingularityDataHub extends MultiMachineBase<SingularityDataHub>
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        return null;
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.tooltip.7"))
-            .beginStructureBlock(15, 31, 15, false)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.singularity_data_hub.casing"), 1)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

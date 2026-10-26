@@ -6,7 +6,6 @@ import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -22,6 +21,7 @@ import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.recipe.gtnl.MatterFabricatorRecipes;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
@@ -251,16 +251,8 @@ public class MatterFabricator extends GTMMultiMachineBase<MatterFabricator> impl
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.matter_fabricator.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
-            .addSupportAny()
-            .beginStructureBlock(15, 5, 6, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.matter_fabricator.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.matter_fabricator.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.matter_fabricator.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.matter_fabricator.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

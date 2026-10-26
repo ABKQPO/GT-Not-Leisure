@@ -18,6 +18,7 @@ import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.BlockIcons;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -187,19 +188,8 @@ public class SteamExtractinator extends SteamMultiMachineBase<SteamExtractinator
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_extractinator.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_extractinator.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_extractinator.tooltip.2"))
-            .beginStructureBlock(15, 10, 17, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.steam_extractinator.tooltip.top_casing"))
-            .addOutputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.steam_extractinator.tooltip.bottom_casing"))
-            .addEnergyHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.steam_extractinator.tooltip.middle_casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

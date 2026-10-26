@@ -30,6 +30,7 @@ import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import goodgenerator.api.recipe.GoodGeneratorRecipeMaps;
@@ -60,6 +61,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
+import gregtech.api.util.tooltip.TooltipHelper;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.GTStructureChannels;
 import gtPlusPlus.xmod.gregtech.common.blocks.textures.TexturesGtBlock;
@@ -75,6 +77,8 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
     private static final int HORIZONTAL_OFF_SET = 4;
     private static final int VERTICAL_OFF_SET = 4;
     private static final int DEPTH_OFF_SET = 0;
+    private static final String MACHINE_CASING_LIMIT_TOOLTIP_KEY = "gtnl.structure.tooltip.machine_casing_energy_limit";
+    private static final int NO_UNLOCK_TIER = -1;
     private static final String[][] shape = StructureUtils.readStructureFromFile(LPA_STRUCTURE_FILE_PATH);
 
     @Nullable
@@ -92,7 +96,6 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
         return null;
     }
 
-    public int mCasingTier = -1;
     public int mMachineTier = -1;
 
     public PrecisionAssembler(int aID, String aName, String aNameRegional) {
@@ -297,12 +300,12 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
 
     @Override
     public int getMaxTierSkip() {
-        return 0;
+        return NO_TIER_SKIP;
     }
 
     @Override
     public int getMaxParallelRecipes() {
-        if (mGlassTier > 0) {
+        if (mGlassTier >= 0) {
             return (1 << mGlassTier) + mCasingTier * 64;
         } else {
             return 0;
@@ -331,6 +334,37 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
     }
 
     @Override
+    public List<String> getTooltipFeatureLines() {
+        List<String> lines = super.getTooltipFeatureLines();
+        int unlockTier = machineCasingUnlockTier();
+        if (unlockTier != NO_UNLOCK_TIER) {
+            lines.add(
+                StatCollector.translateToLocalFormatted(
+                    MACHINE_CASING_LIMIT_TOOLTIP_KEY,
+                    TooltipHelper.voltageTierText(unlockTier, false)));
+        }
+        return lines;
+    }
+
+    private int machineCasingUnlockTier() {
+        int machine = mMachineTier;
+        int hatch = mEnergyHatchTier;
+        mEnergyHatchTier = VoltageIndex.MAX;
+        try {
+            for (int tier = VoltageIndex.ULV; tier <= VoltageIndex.MAX; tier++) {
+                mMachineTier = tier;
+                int limit = GTUtility.getTier(getMachineVoltageLimit());
+                if (limit >= VoltageIndex.MAX) return tier;
+                if (limit != tier) return NO_UNLOCK_TIER;
+            }
+            return NO_UNLOCK_TIER;
+        } finally {
+            mMachineTier = machine;
+            mEnergyHatchTier = hatch;
+        }
+    }
+
+    @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
         int colorIndex, boolean aActive, boolean redstoneLevel) {
         if (side == aFacing) {
@@ -350,25 +384,8 @@ public class PrecisionAssembler extends MultiMachineBase<PrecisionAssembler> imp
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.precision_assembler.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.3"))
-            .addSupportAny()
-            .beginStructureBlock(9, 5, 5, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.casing"))
-            .addMaintenanceHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.precision_assembler.tooltip.casing"))
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
-            .addSubChannelUsage(GTStructureChannels.PRASS_UNIT_CASING)
-            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

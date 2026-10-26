@@ -21,6 +21,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
@@ -215,6 +216,11 @@ public class LargeSteamCutting extends SteamMultiMachineBase<LargeSteamCutting> 
     }
 
     @Override
+    public double getEUtDiscount() {
+        return super.getEUtDiscount() * 0.95 * tierMachine;
+    }
+
+    @Override
     public double getDurationModifier() {
         return super.getDurationModifier() / 1.11 / tierMachine;
     }
@@ -249,17 +255,8 @@ public class LargeSteamCutting extends SteamMultiMachineBase<LargeSteamCutting> 
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_cutting.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_cutting.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_cutting.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_cutting.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
-            .beginStructureBlock(9, 4, 5, false)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_cutting.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_cutting.casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

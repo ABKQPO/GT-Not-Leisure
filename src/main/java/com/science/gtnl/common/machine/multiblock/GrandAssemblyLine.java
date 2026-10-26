@@ -56,12 +56,14 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.recipes.GrandAssemblyLineOverclockTool;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoidingMode;
+import gregtech.api.enums.VoltageIndex;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.ITexture;
@@ -85,6 +87,7 @@ import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.ParallelHelper;
 import gregtech.api.util.VoidProtectionHelper;
+import gregtech.api.util.tooltip.TooltipHelper;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.misc.WirelessNetworkManager;
 import gregtech.common.tileentities.machines.IDualInputHatch;
@@ -111,6 +114,8 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     private static final int HORIZONTAL_OFF_SET = 46;
     private static final int VERTICAL_OFF_SET = 2;
     private static final int DEPTH_OFF_SET = 0;
+    private static final int UNLIMITED_ENERGY_HATCH_TIER = VoltageIndex.UHV, WIRELESS_TIER = VoltageIndex.UMV;
+    private static final String PARALLEL_CONTROLLER_KEY = "gtnl.machine.grand_assembly_line.parallel_controller.";
     public List<MTEHatchDataAccess> mDataAccessHatches = new ObjectArrayList<>();
     public String costingEUText = Utils.ZERO_STRING;
     public UUID ownerUUID;
@@ -204,6 +209,16 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     }
 
     @Override
+    public List<String> getStructureTooltipCasingRequirements(int minimum) {
+        return List.of(
+            StatCollector.translateToLocalFormatted(
+                "gtnl.machine.grand_assembly_line.tooltip.casing_total",
+                Casings.AdvancedComputerCasing.getLocalizedName(),
+                Casings.ReinforcedGlass.getLocalizedName(),
+                minimum));
+    }
+
+    @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
         if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFF_SET, VERTICAL_OFF_SET, DEPTH_OFF_SET, errors)) return;
         setupParameters();
@@ -213,10 +228,10 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
     @Override
     public void checkHatch(List<StructureError> errors) {
-        if (mParallelTier < 9) {
+        if (mParallelTier < UNLIMITED_ENERGY_HATCH_TIER) {
             checkEnergyHatch(errors);
         }
-        if (mParallelTier >= 12 && mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty()) {
+        if (mParallelTier >= WIRELESS_TIER && mEnergyHatches.isEmpty() && mExoticEnergyHatches.isEmpty()) {
             wirelessMode = true;
             mEnergyHatchTier = 14;
             checkHatchMax(errors, HatchElement.Maintenance, 1);
@@ -466,7 +481,7 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         }
 
         // 第二阶段：尝试超频
-        int overclockFactor = (mParallelTier >= 11) ? 4 : 2;
+        int overclockFactor = getPerfectOC() ? 4 : 2;
 
         for (RecipeTask task : tasks) {
             BigInteger taskParallelBI = BigInteger.valueOf(task.parallel);
@@ -892,6 +907,21 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     }
 
     @Override
+    public List<String> getTooltipParallelControllerLines(String hatch) {
+        String unlimited = TooltipHelper.voltageTierText(UNLIMITED_ENERGY_HATCH_TIER, false);
+        String wireless = TooltipHelper.voltageTierText(WIRELESS_TIER, false);
+        return Arrays.asList(
+            StatCollector.translateToLocalFormatted(PARALLEL_CONTROLLER_KEY + "energy", unlimited, hatch),
+            StatCollector.translateToLocalFormatted(PARALLEL_CONTROLLER_KEY + "boost", wireless, hatch),
+            StatCollector.translateToLocalFormatted(PARALLEL_CONTROLLER_KEY + "wireless", wireless, hatch));
+    }
+
+    @Override
+    public boolean getPerfectOC() {
+        return mParallelTier >= VoltageIndex.UIV;
+    }
+
+    @Override
     public double getEUtDiscount() {
         return GrandAssemblyLineOverclockTool.getEUtDiscount(mParallelTier);
     }
@@ -926,31 +956,8 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.7"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.8"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
-            .addSupportAny()
-            .beginStructureBlock(48, 5, 5, true)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.casing"), 1)
-            .addMaintenanceHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.casing"),
-                1)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.grand_assembly_line.tooltip.casing"), 1)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

@@ -6,7 +6,6 @@ import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +20,7 @@ import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
@@ -147,9 +147,14 @@ public class VacuumFreezer extends MultiMachineBase<VacuumFreezer> implements IS
                     .setRecipeHeat(0)
                     .setHeatOC(true)
                     .setHeatDiscount(false)
-                    .setDurationModifier(1.0D / 1.33D);
+                    .setDurationModifier(getDurationModifier());
             }
         }.setMaxParallelSupplier(this::getTrueParallel);
+    }
+
+    @Override
+    public double getDurationModifier() {
+        return 1.0 / 1.33;
     }
 
     @Override
@@ -195,18 +200,8 @@ public class VacuumFreezer extends MultiMachineBase<VacuumFreezer> implements IS
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.vacuum_freezer.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.vacuum_freezer.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.vacuum_freezer.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.vacuum_freezer.tooltip.2"))
-            .beginStructureBlock(11, 7, 6, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.vacuum_freezer.tooltip.casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.vacuum_freezer.tooltip.casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.vacuum_freezer.tooltip.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.vacuum_freezer.tooltip.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.vacuum_freezer.tooltip.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.vacuum_freezer.tooltip.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

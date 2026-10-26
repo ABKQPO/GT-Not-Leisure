@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.entity.RenderLeashKnot;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -20,6 +21,7 @@ import com.gtnllib.client.fx.world.FxEffects;
 import com.science.gtnl.asm.GTNLEarlyCoreMod;
 import com.science.gtnl.client.GTNLInputHandler;
 import com.science.gtnl.client.GTNLTooltipManager;
+import com.science.gtnl.client.MultiblockTooltipExportCommand;
 import com.science.gtnl.client.WirelessCardInput;
 import com.science.gtnl.client.WirelessWorldHighlight;
 import com.science.gtnl.client.celestweave.CelestweaveBackpackClient;
@@ -229,6 +231,9 @@ public class ClientProxy extends CommonProxy {
 
         ClientCommandHandler.instance.registerCommand(new TextEffectPreviewCommand());
         ClientCommandHandler.instance.registerCommand(new CommandSpoce());
+        if ((boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")) {
+            ClientCommandHandler.instance.registerCommand(new MultiblockTooltipExportCommand());
+        }
     }
 
     @Override

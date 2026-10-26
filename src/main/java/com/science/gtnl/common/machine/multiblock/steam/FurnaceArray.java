@@ -32,6 +32,7 @@ import com.science.gtnl.common.gui.modularui.FurnaceArrayGui;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.event.SubscribeEventUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
@@ -375,17 +376,8 @@ public class FurnaceArray extends SteamMultiMachineBase<FurnaceArray> implements
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.furnace_array.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.furnace_array.info.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.furnace_array.info.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.furnace_array.info.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.furnace_array.info.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.furnace_array.info.4"))
-            .beginStructureBlock(3, 3, 3, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.furnace_array.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.furnace_array.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.furnace_array.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

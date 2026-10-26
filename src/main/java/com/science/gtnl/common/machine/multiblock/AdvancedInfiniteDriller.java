@@ -33,6 +33,7 @@ import com.science.gtnl.common.gui.modularui.AdvancedInfiniteDrillerGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.machine.VMTweakHelper;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import bartworks.system.material.WerkstoffLoader;
 import gregtech.GTMod;
@@ -404,37 +405,14 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        return null;
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.7"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.8"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.9"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.10"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.11"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.12"))
-            .addSupportAny()
-            .beginStructureBlock(25, 41, 25, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.casing"))
-            .addInputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.casing"))
-            .addOutputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.casing"))
-            .addEnergyHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.casing"))
-            .addMaintenanceHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.advanced_infinite_driller.tooltip.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }
@@ -536,7 +514,8 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
 
     public enum SpecialHatchElement implements IHatchElement<AdvancedInfiniteDriller> {
 
-        HeatSensor(AdvancedInfiniteDriller::addSensorHatchToMachineList, MTEHeatSensor.class) {
+        HeatSensor("gt.blockmachines.hatch.heatsensor.name", AdvancedInfiniteDriller::addSensorHatchToMachineList,
+            MTEHeatSensor.class) {
 
             @Override
             public long count(AdvancedInfiniteDriller machine) {
@@ -546,12 +525,24 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
 
         private final List<Class<? extends IMetaTileEntity>> mteClasses;
         private final IGTHatchAdder<AdvancedInfiniteDriller> adder;
+        private final String nameKey;
 
         @SafeVarargs
-        SpecialHatchElement(IGTHatchAdder<AdvancedInfiniteDriller> adder,
+        SpecialHatchElement(String nameKey, IGTHatchAdder<AdvancedInfiniteDriller> adder,
             Class<? extends IMetaTileEntity>... mteClasses) {
+            this.nameKey = nameKey;
             this.mteClasses = Collections.unmodifiableList(Arrays.asList(mteClasses));
             this.adder = adder;
+        }
+
+        @Override
+        public String getDescriptionLangKey() {
+            return nameKey;
+        }
+
+        @Override
+        public String getDisplayName() {
+            return StatCollector.translateToLocal(nameKey);
         }
 
         @Override

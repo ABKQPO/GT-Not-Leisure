@@ -19,6 +19,7 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
@@ -214,16 +215,8 @@ public class LargeSteamBending extends SteamMultiMachineBase<LargeSteamBending> 
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_bending.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_bending.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_bending.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_bending.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
-            .beginStructureBlock(5, 4, 5, false)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_bending.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_bending.casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

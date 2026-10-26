@@ -22,6 +22,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -231,18 +232,8 @@ public class SteamRockBreaker extends SteamMultiMachineBase<SteamRockBreaker> im
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_rock_breaker.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_rock_breaker.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_rock_breaker.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_rock_breaker.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_rock_breaker.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
-            .beginStructureBlock(11, 6, 11, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.steam_rock_breaker.tooltip.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.steam_rock_breaker.tooltip.casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

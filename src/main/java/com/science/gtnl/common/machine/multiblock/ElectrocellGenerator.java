@@ -11,7 +11,6 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -29,6 +28,7 @@ import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.metadata.ElectrocellGeneratorMetadata;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.common.Optional;
 import gregtech.api.GregTechAPI;
@@ -320,18 +320,14 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        return null;
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.electrocell_generator.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.electrocell_generator.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.electrocell_generator.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.electrocell_generator.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.electrocell_generator.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.electrocell_generator.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.electrocell_generator.tooltip.5"))
-            .beginStructureBlock(11, 5, 3, true)
-            .addDynamoHatch("0+", StatCollector.translateToLocal("gtnl.machine.electrocell_generator.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.electrocell_generator.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

@@ -73,6 +73,7 @@ import com.science.gtnl.api.mixinHelper.LinkedEyeOfHarmonyUnit;
 import com.science.gtnl.common.gui.modularui.EyeOfHarmonyInjectorGui;
 import com.science.gtnl.common.render.tile.EyeOfHarmonyInjectorRenderer;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import appeng.api.util.DimensionalCoord;
 import appeng.client.render.highlighter.BlockPosHighlighter;
@@ -416,28 +417,8 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.5"))
-            .beginStructureBlock(53, 13, 62, false)
-            .addInputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.casing"),
-                1)
-            .addOutputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.casing"),
-                1)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.casing"), 1)
-            .addOutputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.eye_of_harmony_injector.tooltip.casing"),
-                1)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

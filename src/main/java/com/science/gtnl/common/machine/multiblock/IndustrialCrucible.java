@@ -9,7 +9,6 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +28,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import goodgenerator.loader.Loaders;
@@ -98,12 +98,8 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
                 StructureUtility.ofChain(
                     hatchAdder,
                     StructureUtility.onElementPass(machine -> ++machine.mCountCasing, Casings.MagicCasing.asElement()),
-                    StructureUtility.ofSpecificTileAdder(
-                        IndustrialCrucible::addEssentiaHatch,
-                        TileEntityEssentiaHatch.class,
-                        Loaders.magicCasing,
-                        0),
-                    StructureUtility.ofTileAdder(IndustrialCrucible::addInfusionProvider, Loaders.magicCasing, 0)))
+                    EssentiaSupply.hatchElement(IndustrialCrucible::addEssentiaHatch, Loaders.magicCasing, 0),
+                    EssentiaSupply.providerElement(IndustrialCrucible::addInfusionProvider, Loaders.magicCasing, 0)))
             .addElement('B', StructureUtility.ofBlock(blockCosmeticSolid, 7))
             .addElement('C', StructureUtility.ofBlock(blockCosmeticOpaque, 2))
             .build();
@@ -317,19 +313,10 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tooltip = new MultiblockTooltipBuilder();
-        tooltip.addMachineType(StatCollector.translateToLocal("gtnl.machine.industrial_crucible.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.industrial_crucible.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.industrial_crucible.tooltip.2"))
-            .addSupportMultiAmp()
-            .addPerfectOCInfo()
-            .beginStructureBlock(5, 5, 5, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.industrial_crucible.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.industrial_crucible.casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.industrial_crucible.casing"), 1)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.industrial_crucible.casing"), 1)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
-        return tooltip;
+        return tt;
     }
 
     @Override

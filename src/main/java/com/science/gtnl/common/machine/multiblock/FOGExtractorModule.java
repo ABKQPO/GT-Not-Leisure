@@ -25,6 +25,7 @@ import com.gtnewhorizons.modularui.common.widget.ButtonWidget;
 import com.gtnewhorizons.modularui.common.widget.FakeSyncWidget;
 import com.science.gtnl.common.gui.modularui.FOGExtractorModuleGui;
 import com.science.gtnl.common.machine.multiblock.module.eternalGregTechWorkshop.util.EternalGregTechWorkshopTextures;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
@@ -185,37 +186,8 @@ public class FOGExtractorModule extends MTEBaseModule {
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.fog_extractor_module.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.extractor_module.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.extractor_module.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.extractor_module.tooltip.2"))
-            .addSeparator(EnumChatFormatting.AQUA, 74)
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.extractor_module.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.extractor_module.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.extractor_module.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.godforge.extractor_module.tooltip.6"))
-            .beginStructureBlock(7, 7, 13, false)
-            .addStructureInfo(
-                EnumChatFormatting.GOLD + "20"
-                    + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.0"))
-            .addStructureInfo(
-                EnumChatFormatting.GOLD + "20"
-                    + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.1"))
-            .addStructureInfo(
-                EnumChatFormatting.GOLD + "5"
-                    + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.2"))
-            .addStructureInfo(
-                EnumChatFormatting.GOLD + "5"
-                    + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.3"))
-            .addStructureInfo(
-                EnumChatFormatting.GOLD + "1"
-                    + EnumChatFormatting.GRAY
-                    + StatCollector.translateToLocal("gtnl.machine.godforge.module.casing.4"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher(EnumChatFormatting.AQUA, 74);
         return tt;
     }

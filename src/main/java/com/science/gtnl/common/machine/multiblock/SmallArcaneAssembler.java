@@ -15,7 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +32,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
@@ -679,22 +679,10 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tooltip = new MultiblockTooltipBuilder();
-        tooltip.addMachineType(StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.tooltip.4"))
-            .addSupportMultiAmp()
-            .addPerfectOCInfo()
-            .beginStructureBlock(5, 5, 7, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.casing"), 1)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.small_arcane_assembler.casing"), 1)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
-        return tooltip;
+        return tt;
     }
 
     @Override

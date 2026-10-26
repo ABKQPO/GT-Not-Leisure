@@ -11,7 +11,6 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -38,6 +37,7 @@ import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
@@ -390,17 +390,8 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.tree_diagram.recipe_type"))
-            .addPerfectOCInfo()
-            .addSupportAny()
-            .beginStructureBlock(194, 71, 184, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.tree_diagram.tooltip.casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.tree_diagram.tooltip.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.tree_diagram.tooltip.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.tree_diagram.tooltip.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.tree_diagram.tooltip.casing"))
-            .addSubChannelUsage(GTNLStructureChannels.STRUCTURE_RENDER)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

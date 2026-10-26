@@ -6,7 +6,6 @@ import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -21,8 +20,8 @@ import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
-import bartworks.util.BWUtil;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Textures;
@@ -112,8 +111,12 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
     @Override
     public void setupParameters() {
         super.setupParameters();
-        this.mHeatingCapacity = (int) this.getMCoilLevel()
-            .getHeat() + 100 * (BWUtil.getTier(this.getMaxInputEu()) - 2);
+        mHeatingCapacity = coilAndVoltageHeat();
+    }
+
+    @Override
+    public boolean addsVoltageHeat() {
+        return true;
     }
 
     @Override
@@ -150,6 +153,7 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
             public GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(mConfigSpeedBoost)
                     .setMachineHeat(getMachineHeat())
+                    .setRecipeHeat(recipe.mSpecialValue)
                     .setHeatOC(getHeatOC())
                     .setHeatDiscount(getHeatDiscount())
                     .setPerfectOC(getPerfectOC())
@@ -172,12 +176,12 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
 
     @Override
     public double getEUtDiscount() {
-        return 0.8 - ((mParallelTier + mHeatingCapacity / 1800.0) / 50.0);
+        return 0.8 - ((mParallelTier + coilAndVoltageHeat() / 1800.0) / 50.0);
     }
 
     @Override
     public double getDurationModifier() {
-        return 1 / 1.67 - ((mParallelTier + mHeatingCapacity / 1800.0) / 200.0);
+        return 1 / 1.67 - ((mParallelTier + coilAndVoltageHeat() / 1800.0) / 200.0);
     }
 
     @Override
@@ -235,23 +239,8 @@ public class Digester extends GTMMultiMachineBase<Digester> implements ISurvival
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.digester.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.digester.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.digester.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
-            .addSupportMultiAmp()
-            .beginStructureBlock(7, 4, 7, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.digester.tooltip.casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.digester.tooltip.casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.digester.tooltip.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.digester.tooltip.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.digester.tooltip.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.digester.tooltip.casing"))
-            .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

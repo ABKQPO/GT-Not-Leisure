@@ -23,6 +23,7 @@ import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
@@ -57,6 +58,8 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String LSF_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/large_steam_furnace";
     private static final String[][] shape = StructureUtils.readStructureFromFile(LSF_STRUCTURE_FILE_PATH);
+    private static final int SMELTING_DURATION = 64;
+    private static final int FURNACE_RECIPE_DURATION = 128;
 
     public LargeSteamFurnace(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -217,7 +220,7 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
                 return super.createOverclockCalculator(recipe).setExtraDurationModifier(configSpeedBoost)
                     .setEUtDiscount(0.5D * tierMachine * (1 << (2 * Math.min(4, recipeOcCount))))
                     .setDurationModifier(1.0D / 10.0D / tierMachine / (1 << Math.min(4, recipeOcCount)))
-                    .setMaxTierSkips(0)
+                    .setMaxTierSkips(getMaxTierSkip())
                     .setMaxOverclocks(0);
             }
         }.setMaxParallelSupplier(this::getTrueParallel);
@@ -241,7 +244,7 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
 
         GTNLOverclockCalculator calculator = new GTNLOverclockCalculator().setEUt(availableEUt)
             .setRecipeEUt(4)
-            .setDuration(64)
+            .setDuration(SMELTING_DURATION)
             .setParallel(originalMaxParallel)
             .setNoOverclock(true);
 
@@ -407,17 +410,20 @@ public class LargeSteamFurnace extends SteamMultiMachineBase<LargeSteamFurnace> 
     }
 
     @Override
+    protected TooltipStats readTooltipStats() {
+        TooltipStats stats = super.readTooltipStats();
+        return new TooltipStats(
+            stats.parallels(),
+            stats.speed() * FURNACE_RECIPE_DURATION / SMELTING_DURATION,
+            stats.energyUsage(),
+            true,
+            stats.perfectOverclock());
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam.high_pressure.tooltip"))
-            .beginStructureBlock(9, 8, 10, false)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.tooltip.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_steam_furnace.tooltip.casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.TIER_MACHINE_CASING)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

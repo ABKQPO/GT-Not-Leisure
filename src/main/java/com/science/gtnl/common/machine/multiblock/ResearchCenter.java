@@ -22,7 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
@@ -37,6 +36,7 @@ import com.science.gtnl.api.mixinHelper.IResearchStationMarker;
 import com.science.gtnl.common.gui.modularui.ResearchCenterGui;
 import com.science.gtnl.mixins.late.tecTech.AccessorMTEResearchStation;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.casing.Casings;
@@ -183,29 +183,8 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.research_center.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.research_center.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.research_center.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.research_center.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.research_center.tooltip.3"))
-            .addSupportAny()
-            .beginStructureBlock(37, 8, 10, false)
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.research_center.structure.0"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.research_center.structure.1"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.research_center.structure.2"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.research_center.structure.3"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.research_center.structure.4"))
-            .addStructureInfo(StatCollector.translateToLocal("gtnl.machine.research_center.structure.5"))
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.research_center.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.research_center.casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.research_center.casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.research_center.casing"), 1)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.research_center.casing"), 1)
-            .addOtherStructurePart(
-                StatCollector.translateToLocal("tt.keyword.Structure.DataAccessHatch"),
-                StatCollector.translateToLocal("gtnl.machine.research_center.casing"),
-                1)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

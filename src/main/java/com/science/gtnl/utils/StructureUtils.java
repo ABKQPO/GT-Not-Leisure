@@ -59,6 +59,8 @@ public class StructureUtils {
     public static void setStringBlockXZ(IGregTechTileEntity aBaseMetaTileEntity, int offSetX, int offSetY, int offSetZ,
         String[][] structureString, boolean isStructureFlipped, String targetString, Block targetBlock,
         int targetMeta) {
+        // Tooltip prototypes have no world.
+        if (aBaseMetaTileEntity.getWorld() == null) return;
         int mDirectionX = aBaseMetaTileEntity.getFrontFacing().offsetX;
         int mDirectionZ = aBaseMetaTileEntity.getFrontFacing().offsetZ;
         int xDir = 0;

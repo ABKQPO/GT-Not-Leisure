@@ -7,7 +7,6 @@ import static gtPlusPlus.core.block.ModBlocks.blockSpecialMultiCasings2;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
@@ -18,6 +17,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
@@ -139,21 +139,8 @@ public class LargeBioLab extends GTMMultiMachineBase<LargeBioLab> implements ISu
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_bio_lab.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.large_bio_lab.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
-            .addSupportAny()
-            .beginStructureBlock(7, 5, 5, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_bio_lab.casing"))
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_bio_lab.casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_bio_lab.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.large_bio_lab.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_bio_lab.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.large_bio_lab.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

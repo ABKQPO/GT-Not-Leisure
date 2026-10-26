@@ -10,7 +10,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
@@ -21,6 +20,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -109,12 +109,8 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addInfo(StatCollector.translateToLocal("gtnl.machine.steamgate.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steamgate.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steamgate.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steamgate.tooltip.3"))
-            .beginStructureBlock(9, 9, 1, true)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

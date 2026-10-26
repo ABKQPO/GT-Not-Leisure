@@ -59,6 +59,7 @@ import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseModes;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseStoredCrop;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseViewMode;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
@@ -455,23 +456,14 @@ public class EdenGarden extends MultiMachineBase<EdenGarden> implements IGreenHo
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        return null;
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.eden_garden.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.6"))
-            .addSupportAny()
-            .beginStructureBlock(6, 43, 10, false)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.casing"), 1)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.casing"), 1)
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.eden_garden.tooltip.casing"), 1)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

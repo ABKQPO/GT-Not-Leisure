@@ -8,7 +8,6 @@ import java.math.BigInteger;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +24,7 @@ import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachi
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.Utils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
@@ -81,20 +81,19 @@ public class ReactionFurnace extends WirelessEnergyMultiMachineBase<ReactionFurn
     }
 
     @Override
+    protected TooltipStats readTooltipStats() {
+        return new TooltipStats(super.readTooltipStats().parallels(), Double.NaN, Double.NaN, false, true);
+    }
+
+    @Override
+    protected boolean overclocksPerfectlyInWirelessMode() {
+        return false;
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.reaction_furnace.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.reaction_furnace.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.reaction_furnace.tooltip.1"))
-            .addSupportAny()
-            .beginStructureBlock(31, 21, 29, true)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.reaction_furnace.tooltip.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.reaction_furnace.tooltip.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.reaction_furnace.tooltip.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.reaction_furnace.tooltip.casing"))
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

@@ -1,11 +1,16 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
 import static forestry.api.apiculture.BeeManager.beeRoot;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+
+import java.util.Map;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 
 import org.jetbrains.annotations.NotNull;
+
+import com.google.common.collect.ImmutableMap;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import forestry.api.apiculture.EnumBeeType;
 import forestry.api.apiculture.IBee;
@@ -19,6 +24,8 @@ import gregtech.api.util.MultiblockTooltipBuilder;
 
 @IMetaTileEntity.SkipGenerateDescription
 public class SteamBeeBreedingModule extends SteamElevatorModuleBase {
+
+    private static final int RUN_TICKS = 12000;
 
     public SteamBeeBreedingModule(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional, 8);
@@ -44,16 +51,19 @@ public class SteamBeeBreedingModule extends SteamElevatorModuleBase {
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> getTooltipVars() {
+        return ImmutableMap.of("run_seconds", RUN_TICKS / SECONDS);
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_bee_breeding_module.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_bee_breeding_module.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_bee_breeding_module.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_bee_breeding_module.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_bee_breeding_module.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_bee_breeding_module.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_bee_breeding_module.tooltip.5"))
-            .beginStructureBlock(1, 5, 2, false)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }
@@ -72,7 +82,7 @@ public class SteamBeeBreedingModule extends SteamElevatorModuleBase {
         this.lEUt = -GTValues.V[6];
         this.mEfficiency = 10000;
         this.mEfficiencyIncrease = 10000;
-        this.mMaxProgresstime = 12000;
+        this.mMaxProgresstime = RUN_TICKS;
         this.mOutputItems = new ItemStack[] { createIgnobleCopy(itemStack) };
         this.updateSlots();
         return CheckRecipeResultRegistry.SUCCESSFUL;

@@ -33,6 +33,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.common.Optional;
 import goodgenerator.api.recipe.GoodGeneratorRecipeMaps;
@@ -125,8 +126,6 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
     @Getter
     @Setter
     public boolean upgradeConsumed = false;
-
-    public int mCasingTier;
 
     public IntegratedAssemblyFacility(String aName) {
         super(aName);
@@ -288,6 +287,11 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
     }
 
     @Override
+    protected boolean appliesMachineVoltageLimit() {
+        return true;
+    }
+
+    @Override
     public long getMachineVoltageLimit() {
         if (mCasingTier < 0) return 0;
         if (wirelessMode) {
@@ -346,42 +350,8 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.integrated_assembly_facility.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.component_assembly_line.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.component_assembly_line.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.integrated_assembly_facility.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.10"))
-            .addSupportAny()
-            .beginStructureBlock(47, 13, 19, true)
-            .addInputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.integrated_assembly_facility.tooltip.casing"),
-                1)
-            .addOutputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.integrated_assembly_facility.tooltip.casing"),
-                1)
-            .addInputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.integrated_assembly_facility.tooltip.casing"),
-                1)
-            .addEnergyHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.integrated_assembly_facility.tooltip.casing"),
-                1)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
-            .addSubChannelUsage(GTStructureChannels.COMPONENT_ASSEMBLYLINE_CASING)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

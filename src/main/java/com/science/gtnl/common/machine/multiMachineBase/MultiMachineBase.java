@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -36,6 +37,8 @@ import com.gtnewhorizons.modularui.common.widget.Scrollable;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IControllerInfo;
+import com.science.gtnl.api.IMultiblockTooltipRules;
+import com.science.gtnl.api.IWirelessEnergy;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
@@ -44,11 +47,18 @@ import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
+import com.science.gtnl.utils.structure.InfoSummary.BonusStat;
+import com.science.gtnl.utils.structure.InfoSummary.TierBonus;
+import com.science.gtnl.utils.structure.MultiblockTooltipReader;
+import com.science.gtnl.utils.structure.StructureTooltipHooks;
 
+import bartworks.util.BWUtil;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.HeatingCoilLevel;
+import gregtech.api.enums.VoltageIndex;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -74,6 +84,7 @@ import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
 import gregtech.api.util.shutdown.ShutDownReasonRegistry;
+import gregtech.api.util.tooltip.TooltipHelper;
 import gregtech.common.data.GTCoilTracker;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.tileentities.machines.IDualInputHatch;
@@ -89,9 +100,24 @@ import tectech.thing.metaTileEntity.hatch.MTEHatchDynamoMulti;
 import tectech.thing.metaTileEntity.hatch.MTEHatchEnergyTunnel;
 
 public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MTEExtendedPowerMultiBlockBase<T>
-    implements IConstructable, ISurvivalConstructable, IControllerInfo {
+    implements IConstructable, ISurvivalConstructable, IControllerInfo, IMultiblockTooltipRules {
 
     public static final Optional<Byte>[] HATCH_COLOR_OPTIONS = createHatchColorOptions();
+    private static final String PARALLEL_CONTROLLER_TOOLTIP_KEY = "gtnl.structure.tooltip.parallel_controller";
+    protected static final String WIRELESS_UPGRADE_TOOLTIP_KEY = "gtnl.structure.tooltip.wireless_upgrade";
+    private static final String GLASS_LIMIT_TOOLTIP_KEY = "GT5U.MBTT.Structure.GlassEnergyLimit";
+    private static final String GLASS_LIMIT_TIER_TOOLTIP_KEY = "GT5U.MBTT.Structure.GlassEnergyLimitTier";
+    // GT joins the two halves with a fixed English comma, which reads wrong in other languages.
+    private static final String GLASS_LIMIT_LINE_KEY = "gtnl.structure.tooltip.glass_energy_limit";
+    private static final String CASING_LIMIT_TOOLTIP_KEY = "gtnl.structure.tooltip.casing_energy_limit";
+    private static final String CASING_LIMIT_UNLOCK_TOOLTIP_KEY = CASING_LIMIT_TOOLTIP_KEY + ".unlock";
+    protected static final int CASING_LIMIT_NEVER_UNLOCKS = -1;
+    public static final int ONE_TIER_SKIP = 1;
+    private static final int BASE_TOOLTIP_TIER = 0;
+    private static final int NO_TOOLTIP_TIER = -1;
+    private static final int LAST_PARALLEL_CONTROLLER_PROBE_TIER = 5;
+    private static final int HEAT_PROBE_DURATION = 20, HEAT_PROBE_EUT = 30, HEAT_PROBE_RECIPE_HEAT = 1;
+    private static final int VOLTAGE_HEAT_PER_TIER = 100, VOLTAGE_HEAT_FROM_TIER = VoltageIndex.MV;
 
     @SuppressWarnings("unchecked")
     public static Optional<Byte>[] createHatchColorOptions() {
@@ -111,14 +137,18 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     public List<SlotWidget> slotWidgets = new ObjectArrayList<>(1);
     public int mCountCasing = -1;
     public int mGlassTier = -1;
+    public int mCasingTier = -1;
     public int mParallelTier = 0;
     public int mEnergyHatchTier = 0;
     public double mConfigSpeedBoost = 1;
+    public String tooltipCasingName;
 
     @Getter
     @Setter
     public HeatingCoilLevel mCoilLevel = HeatingCoilLevel.None;
     public int mHeatingCapacity = 0;
+    public int tooltipVoltageTier = NO_TOOLTIP_TIER;
+    public int tooltipParallelTier = NO_TOOLTIP_TIER;
 
     public MultiMachineBase(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -416,6 +446,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     protected void checkParallelControllerHatchMax(List<StructureError> errors, int max) {
+        if (StructureTooltipHooks.onCheckHatches(this, 0, max, CustomHatchElement.ParallelCon)) return;
         int count = mParallelControllerHatches.size();
         if (count > max) {
             errors.add(GTNLStructureErrors.parallelControllerHatchCount(ErrorType.TOO_MANY, count, max));
@@ -423,6 +454,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     protected void checkHatchMin(List<StructureError> errors, IHatchElement<? super T> element, int min) {
+        if (StructureTooltipHooks.onCheckHatches(this, min, StructureTooltipHooks.UNLIMITED, element)) return;
         int count = (int) element.count(self());
         if (count < min) {
             errors.add(StructureErrors.hatchCount(ErrorType.TOO_FEW, getHatchElementName(element), count, min));
@@ -430,6 +462,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     protected void checkHatchExact(List<StructureError> errors, IHatchElement<? super T> element, int target) {
+        if (StructureTooltipHooks.onCheckHatches(this, target, target, element)) return;
         int count = (int) element.count(self());
         if (count != target) {
             errors.add(StructureErrors.hatchCount(ErrorType.NOT_MATCH, getHatchElementName(element), count, target));
@@ -437,10 +470,29 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     protected void checkHatchMax(List<StructureError> errors, IHatchElement<? super T> element, int max) {
+        if (StructureTooltipHooks.onCheckHatches(this, 0, max, element)) return;
         int count = (int) element.count(self());
         if (count > max) {
             errors.add(StructureErrors.hatchCount(ErrorType.TOO_MANY, getHatchElementName(element), count, max));
         }
+    }
+
+    protected void checkHatchMin(List<StructureError> errors, String hatchLangKey, int current, int min) {
+        if (StructureTooltipHooks
+            .onCheckHatchKeys(this, min, StructureTooltipHooks.UNLIMITED, Collections.singletonList(hatchLangKey)))
+            return;
+        checkHatchMin(errors, TranslatableText.lang(hatchLangKey), current, min);
+    }
+
+    protected void checkHatchExact(List<StructureError> errors, String hatchLangKey, int current, int target) {
+        if (StructureTooltipHooks.onCheckHatchKeys(this, target, target, Collections.singletonList(hatchLangKey)))
+            return;
+        checkHatchExact(errors, TranslatableText.lang(hatchLangKey), current, target);
+    }
+
+    protected void checkHatchMax(List<StructureError> errors, String hatchLangKey, int current, int max) {
+        if (StructureTooltipHooks.onCheckHatchKeys(this, 0, max, Collections.singletonList(hatchLangKey))) return;
+        checkHatchMax(errors, TranslatableText.lang(hatchLangKey), current, max);
     }
 
     protected void checkHatchMin(List<StructureError> errors, TranslatableText name, int current, int min) {
@@ -486,7 +538,8 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     public void resetParallelTier() {
-        mParallelTier = 0;
+        // Tooltip probes set a parallel tier on the hatchless prototype, which a reset must keep.
+        mParallelTier = tooltipParallelTier == NO_TOOLTIP_TIER ? 0 : tooltipParallelTier;
     }
 
     /**
@@ -548,6 +601,15 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
         return 0;
     }
 
+    public boolean addsVoltageHeat() {
+        return false;
+    }
+
+    protected int coilAndVoltageHeat() {
+        return (int) mCoilLevel.getHeat()
+            + VOLTAGE_HEAT_PER_TIER * (BWUtil.getTier(getMaxInputEu()) - VOLTAGE_HEAT_FROM_TIER);
+    }
+
     @ApiStatus.OverrideOnly
     public int getMaxOverclocks() {
         return Integer.MAX_VALUE;
@@ -555,7 +617,13 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     @ApiStatus.OverrideOnly
     public int getMaxTierSkip() {
-        return Integer.MAX_VALUE;
+        return ONE_TIER_SKIP;
+    }
+
+    @Override
+    public void setupProcessingLogic(ProcessingLogic logic) {
+        super.setupProcessingLogic(logic);
+        logic.setMaxTierSkips(getMaxTierSkip());
     }
 
     @ApiStatus.OverrideOnly
@@ -576,6 +644,309 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
      */
     public int getMaxParallelRecipes() {
         return 1;
+    }
+
+    @Override
+    public TooltipStats getTooltipStats() {
+        if (!MultiblockTooltipReader.runsRecipes(this, this::createProcessingLogic)) return null;
+        return tooltipStatsWith(null, BASE_TOOLTIP_TIER, NO_TOOLTIP_TIER);
+    }
+
+    @Override
+    public TooltipStats getTooltipStatsAtTier(TieredPart part, int tier) {
+        return switch (part) {
+            case VOLTAGE, COIL, GLASS, CASING -> tooltipStatsWith(part, tier, NO_TOOLTIP_TIER);
+            case PARALLEL_CONTROLLER -> tooltipStatsWith(null, BASE_TOOLTIP_TIER, tier);
+            case HIGH_PRESSURE -> null;
+        };
+    }
+
+    @Override
+    public List<String> getTooltipFeatureLines() {
+        List<String> lines = new ArrayList<>();
+        int glassTier = getGlassEnergyTierLimit();
+        if (glassTier >= 0) {
+            lines.add(
+                StatCollector.translateToLocalFormatted(
+                    GLASS_LIMIT_LINE_KEY,
+                    StatCollector.translateToLocal(GLASS_LIMIT_TOOLTIP_KEY),
+                    TooltipHelper.voltageTierText(glassTier, false),
+                    StatCollector.translateToLocal(GLASS_LIMIT_TIER_TOOLTIP_KEY)));
+        }
+        lines.addAll(casingEnergyLimitLines());
+        return lines;
+    }
+
+    @Override
+    public OptionalInt getTooltipTierSkips() {
+        int skips = getMaxTierSkip();
+        return skips == ONE_TIER_SKIP ? OptionalInt.empty() : OptionalInt.of(skips);
+    }
+
+    @Override
+    public HeatRules getTooltipHeatRules() {
+        if (!(createProcessingLogic() instanceof GTNLProcessingLogic logic)) return null;
+        GTNLOverclockCalculator calculator = logic.createOverclockCalculator(heatProbeRecipe());
+        if (!calculator.heatOC && !calculator.heatDiscount) return null;
+        boolean usesRecipeHeat = calculator.recipeHeat == HEAT_PROBE_RECIPE_HEAT;
+        int freePerfectOverclocks = calculator.heatOC && !usesRecipeHeat ? Math
+            .max(0, (calculator.machineHeat - calculator.recipeHeat) / GTNLOverclockCalculator.HEAT_OVERCLOCK_THRESHOLD)
+            : 0;
+        return new HeatRules(
+            calculator.heatOC,
+            calculator.heatDiscount,
+            calculator.heatDiscountExponent,
+            usesRecipeHeat,
+            addsVoltageHeat() ? VOLTAGE_HEAT_PER_TIER : 0,
+            VOLTAGE_HEAT_FROM_TIER,
+            freePerfectOverclocks);
+    }
+
+    private static GTRecipe heatProbeRecipe() {
+        return new GTRecipe(
+            new ItemStack[0],
+            new ItemStack[0],
+            null,
+            new int[0],
+            new int[0],
+            new int[0],
+            new int[0],
+            new FluidStack[0],
+            new FluidStack[0],
+            HEAT_PROBE_DURATION,
+            HEAT_PROBE_EUT,
+            HEAT_PROBE_RECIPE_HEAT);
+    }
+
+    private List<String> casingEnergyLimitLines() {
+        int hatch = mEnergyHatchTier;
+        mEnergyHatchTier = VoltageIndex.MAX;
+        try {
+            CasingVoltageLimit limit = casingVoltageLimit();
+            if (limit == null) return Collections.emptyList();
+            String line = StatCollector
+                .translateToLocalFormatted(CASING_LIMIT_TOOLTIP_KEY, casingTierText(), limit.tiersAbove());
+            if (limit.unlockVoltageTier() == CASING_LIMIT_NEVER_UNLOCKS) return Collections.singletonList(line);
+            String unlock = TooltipHelper.voltageTierText(limit.unlockVoltageTier(), false);
+            return Arrays.asList(
+                line,
+                StatCollector.translateToLocalFormatted(CASING_LIMIT_UNLOCK_TOOLTIP_KEY, unlock, casingNameText()));
+        } finally {
+            mEnergyHatchTier = hatch;
+        }
+    }
+
+    protected record CasingVoltageLimit(int tiersAbove, int unlockVoltageTier) {}
+
+    protected CasingVoltageLimit casingVoltageLimit() {
+        int casing = mCasingTier;
+        try {
+            Integer tiersAbove = null;
+            for (int tier = 0; tier <= TieredPart.CASING.maxTier; tier++) {
+                mCasingTier = tier;
+                int limit = GTUtility.getTier(getMachineVoltageLimit());
+                if (limit >= VoltageIndex.MAX) {
+                    return tiersAbove == null ? null : new CasingVoltageLimit(tiersAbove, casingVoltageTier(tier));
+                }
+                int above = limit - casingVoltageTier(tier);
+                if (tiersAbove != null && above != tiersAbove) return null;
+                tiersAbove = above;
+            }
+            return tiersAbove == null ? null : new CasingVoltageLimit(tiersAbove, CASING_LIMIT_NEVER_UNLOCKS);
+        } finally {
+            mCasingTier = casing;
+        }
+    }
+
+    protected static int casingVoltageTier(int casingTier) {
+        return casingTier + 1;
+    }
+
+    @Override
+    public void setTooltipCasingName(String casingName) {
+        tooltipCasingName = casingName;
+    }
+
+    protected String casingTierText() {
+        return GTNLMultiblockTooltipBuilder
+            .partTierText(Collections.singletonList(TieredPart.CASING), tooltipCasingName);
+    }
+
+    protected String casingNameText() {
+        return GTNLMultiblockTooltipBuilder.partName(TieredPart.CASING, tooltipCasingName);
+    }
+
+    protected TooltipStats readTooltipStats() {
+        return new TooltipStats(
+            getMaxParallelRecipes(),
+            1 / getDurationModifier(),
+            getEUtDiscount(),
+            false,
+            getPerfectOC());
+    }
+
+    private TooltipStats tooltipStatsWith(TieredPart probed, int tier, int parallelTier) {
+        HeatingCoilLevel coil = mCoilLevel;
+        int glass = mGlassTier;
+        int casing = mCasingTier;
+        int parallel = mParallelTier;
+        int voltageProbe = tooltipVoltageTier;
+        int parallelProbe = tooltipParallelTier;
+        mCoilLevel = HeatingCoilLevel.getFromTier((byte) tierOf(probed, TieredPart.COIL, tier));
+        mGlassTier = tierOf(probed, TieredPart.GLASS, tier);
+        mCasingTier = tierOf(probed, TieredPart.CASING, tier);
+        tooltipVoltageTier = probed == TieredPart.VOLTAGE ? tier : NO_TOOLTIP_TIER;
+        tooltipParallelTier = parallelTier;
+        if (parallelTier != NO_TOOLTIP_TIER) mParallelTier = parallelTier;
+        try {
+            return readTooltipStats();
+        } finally {
+            mCoilLevel = coil;
+            mGlassTier = glass;
+            mCasingTier = casing;
+            mParallelTier = parallel;
+            tooltipVoltageTier = voltageProbe;
+            tooltipParallelTier = parallelProbe;
+        }
+    }
+
+    private static int tierOf(TieredPart probed, TieredPart part, int tier) {
+        return probed == part ? tier : BASE_TOOLTIP_TIER;
+    }
+
+    @Override
+    public List<String> getTooltipHatchLines(String hatchLangKey) {
+        if (!CustomHatchElement.ParallelCon.getDescriptionLangKey()
+            .equals(hatchLangKey)) return Collections.emptyList();
+        String hatch = GTNLMultiblockTooltipBuilder.hatchName(hatchLangKey);
+        TooltipStats low = tooltipStatsWith(
+            null,
+            BASE_TOOLTIP_TIER,
+            MultiblockTooltipReader.FIRST_PARALLEL_CONTROLLER_PROBE_TIER);
+        TooltipStats high = tooltipStatsWith(null, BASE_TOOLTIP_TIER, LAST_PARALLEL_CONTROLLER_PROBE_TIER);
+        List<String> effects = parallelControllerEffects(low, high);
+        List<String> lines = new ArrayList<>();
+        lines.add(
+            effects.isEmpty()
+                ? StatCollector.translateToLocalFormatted(PARALLEL_CONTROLLER_TOOLTIP_KEY + ".accepts", hatch)
+                : GTNLMultiblockTooltipBuilder.perTierText(TieredPart.PARALLEL_CONTROLLER, effects));
+        int extra = extraParallels(low, MultiblockTooltipReader.FIRST_PARALLEL_CONTROLLER_PROBE_TIER);
+        if (extra > 1 && extra == extraParallels(high, LAST_PARALLEL_CONTROLLER_PROBE_TIER)) {
+            lines.add(
+                StatCollector.translateToLocalFormatted(
+                    PARALLEL_CONTROLLER_TOOLTIP_KEY + ".extra",
+                    hatch,
+                    TooltipHelper.parallelText(extra)));
+        }
+        int perfectFrom = parallelControllerPerfectOverclockTier();
+        if (perfectFrom != NO_TOOLTIP_TIER) {
+            lines.add(
+                StatCollector.translateToLocalFormatted(
+                    PARALLEL_CONTROLLER_TOOLTIP_KEY + ".perfect_oc",
+                    TooltipHelper.voltageTierText(perfectFrom, false),
+                    hatch));
+        }
+        lines.addAll(getTooltipParallelControllerLines(hatch));
+        return lines;
+    }
+
+    private List<String> parallelControllerEffects(TooltipStats low, TooltipStats high) {
+        List<TierBonus> bonuses = MultiblockTooltipReader.tierBonusesOf(this, TieredPart.PARALLEL_CONTROLLER);
+        List<String> effects = new ArrayList<>();
+        if (high.parallels() > low.parallels()) {
+            effects.add(StatCollector.translateToLocal(PARALLEL_CONTROLLER_TOOLTIP_KEY + ".parallel"));
+        }
+        addParallelControllerEffect(
+            effects,
+            bonuses,
+            high.speed() > low.speed(),
+            ".speed",
+            BonusStat.SPEED,
+            BonusStat.DURATION);
+        addParallelControllerEffect(
+            effects,
+            bonuses,
+            high.energyUsage() < low.energyUsage(),
+            ".energy",
+            BonusStat.ENERGY);
+        return effects;
+    }
+
+    private static void addParallelControllerEffect(List<String> effects, List<TierBonus> bonuses, boolean changes,
+        String fallbackSuffix, BonusStat... stats) {
+        List<BonusStat> shown = Arrays.asList(stats);
+        for (TierBonus bonus : bonuses) {
+            if (shown.contains(bonus.stat())) {
+                effects.add(GTNLMultiblockTooltipBuilder.effectText(bonus));
+                return;
+            }
+        }
+        if (changes) effects.add(StatCollector.translateToLocal(PARALLEL_CONTROLLER_TOOLTIP_KEY + fallbackSuffix));
+    }
+
+    private int parallelControllerPerfectOverclockTier() {
+        if (tooltipStatsWith(null, BASE_TOOLTIP_TIER, NO_TOOLTIP_TIER).perfectOverclock()) return NO_TOOLTIP_TIER;
+        int from = NO_TOOLTIP_TIER;
+        for (int tier = VoltageIndex.MAX; tier >= VoltageIndex.LV
+            && tooltipStatsWith(null, BASE_TOOLTIP_TIER, tier).perfectOverclock(); tier--) {
+            from = tier;
+        }
+        return from;
+    }
+
+    private static int extraParallels(TooltipStats stats, int hatchTier) {
+        int hatchParallels = ParallelControllerHatch.maxParallelAt(hatchTier);
+        return stats.parallels() % hatchParallels == 0 ? stats.parallels() / hatchParallels : 1;
+    }
+
+    public List<String> getTooltipParallelControllerLines(String hatch) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<String> getTooltipUpgradeLines() {
+        if (!(this instanceof IWirelessEnergy wireless)) return Collections.emptyList();
+        List<String> lines = new ArrayList<>();
+        String upgrade = wirelessUpgradeLine(wireless);
+        if (upgrade != null) lines.add(upgrade);
+        lines.addAll(getTooltipWirelessModeLines());
+        return lines;
+    }
+
+    private String wirelessUpgradeLine(IWirelessEnergy wireless) {
+        boolean installed = wireless.isWirelessUpgrade();
+        TooltipStats without;
+        TooltipStats with;
+        try {
+            wireless.setWirelessUpgrade(false);
+            without = getTooltipStats();
+            wireless.setWirelessUpgrade(true);
+            with = getTooltipStats();
+        } finally {
+            wireless.setWirelessUpgrade(installed);
+        }
+        if (without == null || with == null) return null;
+        List<String> bonuses = new ArrayList<>();
+        if (rises(without.speed(), with.speed())) {
+            bonuses.add(GTNLMultiblockTooltipBuilder.effectText(BonusStat.SPEED, with.speed() - without.speed()));
+        }
+        if (rises(with.energyUsage(), without.energyUsage())) {
+            bonuses.add(
+                GTNLMultiblockTooltipBuilder.effectText(BonusStat.ENERGY, with.energyUsage() - without.energyUsage()));
+        }
+        if (bonuses.isEmpty()) return null;
+        return StatCollector.translateToLocalFormatted(
+            WIRELESS_UPGRADE_TOOLTIP_KEY + ".bonus",
+            GTNLMultiblockTooltipBuilder.mechanicName(WIRELESS_UPGRADE_TOOLTIP_KEY),
+            GTNLMultiblockTooltipBuilder.joinEffects(bonuses));
+    }
+
+    private static boolean rises(double from, double to) {
+        return to > from && !MultiblockTooltipReader.isNearly(from, to);
+    }
+
+    public List<String> getTooltipWirelessModeLines() {
+        return Collections.emptyList();
     }
 
     public abstract int getCasingTextureID();
@@ -1096,7 +1467,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
                 return totalInjected;
             }
 
-            // Why: one write per hatch; a per-amp loop runs millions of times a tick on high-amp laser dynamos
+            // One write per hatch; a per-amp loop runs millions of times a tick on high-amp laser dynamos.
             long energy = Math.min(leftToInject, dynamo.maxEUOutput() * dynamo.maxAmperesOut());
             dynamo.getBaseMetaTileEntity()
                 .increaseStoredEnergyUnits(energy, false);
@@ -1353,6 +1724,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     @Override
     public long getMaxInputVoltage() {
+        if (tooltipVoltageTier != NO_TOOLTIP_TIER) return GTValues.V[tooltipVoltageTier];
         long rVoltage = 0;
         for (MTEHatchEnergy tHatch : GTUtility.validMTEList(mEnergyHatches)) rVoltage += tHatch.getBaseMetaTileEntity()
             .getInputVoltage();
@@ -1377,6 +1749,7 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     @Override
     public long getMaxInputEu() {
+        if (tooltipVoltageTier != NO_TOOLTIP_TIER) return GTValues.V[tooltipVoltageTier];
         return Math.max(
             ExoticEnergyInputHelper.getTotalEuMulti(mEnergyHatches),
             ExoticEnergyInputHelper.getTotalEuMulti(mExoticEnergyHatches));
@@ -1421,7 +1794,8 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
     public enum CustomHatchElement implements IHatchElement<MultiMachineBase<?>> {
 
-        ParallelCon(MultiMachineBase::addParallelControllerToMachineList, ParallelControllerHatch.class) {
+        ParallelCon("gtnl.structure.hatch.parallel_controller", MultiMachineBase::addParallelControllerToMachineList,
+            ParallelControllerHatch.class) {
 
             @Override
             public long count(MultiMachineBase<?> tileEntity) {
@@ -1429,7 +1803,8 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
             }
         },
 
-        ExoticDynamo(MultiMachineBase::addTectechDynamoToMachineList, MTEHatchDynamoMulti.class) {
+        ExoticDynamo("gtnl.structure.hatch.exotic_dynamo", MultiMachineBase::addTectechDynamoToMachineList,
+            MTEHatchDynamoMulti.class) {
 
             @Override
             public long count(MultiMachineBase<?> tileEntity) {
@@ -1439,11 +1814,19 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
 
         public final List<Class<? extends IMetaTileEntity>> mteClasses;
         public final IGTHatchAdder<MultiMachineBase<?>> adder;
+        private final String descriptionLangKey;
 
         @SafeVarargs
-        CustomHatchElement(IGTHatchAdder<MultiMachineBase<?>> adder, Class<? extends IMetaTileEntity>... mteClasses) {
+        CustomHatchElement(String descriptionLangKey, IGTHatchAdder<MultiMachineBase<?>> adder,
+            Class<? extends IMetaTileEntity>... mteClasses) {
+            this.descriptionLangKey = descriptionLangKey;
             this.mteClasses = Collections.unmodifiableList(Arrays.asList(mteClasses));
             this.adder = adder;
+        }
+
+        @Override
+        public String getDescriptionLangKey() {
+            return descriptionLangKey;
         }
 
         @Override

@@ -1,6 +1,7 @@
 package com.science.gtnl.common.machine.multiblock.module.steamElevator;
 
 import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.drawable.UITexture;
+import com.google.common.collect.ImmutableMap;
 import com.gtnewhorizon.cropsnh.api.ISeedData;
 import com.gtnewhorizon.cropsnh.utility.CropsNHUtils;
 import com.gtnewhorizon.cropsnh.utility.IFDropTable;
@@ -49,6 +51,7 @@ import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseModes;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseStoredCrop;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseViewMode;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.IOutputBus;
@@ -71,6 +74,7 @@ import lombok.Setter;
 @IMetaTileEntity.SkipGenerateDescription
 public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IGreenHouse {
 
+    private static final int RUN_TICKS = 60 * SECONDS;
     private static final UITexture[] MODE_ICONS = { GTGuiTextures.OVERLAY_BUTTON_ALLOW_INPUT,
         GTGuiTextures.OVERLAY_BUTTON_CYCLIC, GTGuiTextures.OVERLAY_BUTTON_ALLOW_OUTPUT };
 
@@ -250,16 +254,24 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
     }
 
     @Override
+    public TooltipStats getTooltipStats() {
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> getTooltipVars() {
+        return ImmutableMap.of("run_seconds", RUN_TICKS / SECONDS);
+    }
+
+    @Override
+    public int getCycleDuration() {
+        return RUN_TICKS;
+    }
+
+    @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.steam_greenhouse_module.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_greenhouse_module.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_greenhouse_module.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_greenhouse_module.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_greenhouse_module.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_greenhouse_module.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.steam_greenhouse_module.tooltip.5"))
-            .beginStructureBlock(1, 5, 2, false)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

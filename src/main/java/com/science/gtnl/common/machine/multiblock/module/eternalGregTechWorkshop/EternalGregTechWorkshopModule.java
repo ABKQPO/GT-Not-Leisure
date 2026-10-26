@@ -410,11 +410,6 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
     }
 
     @Override
-    public boolean getPerfectOC() {
-        return true;
-    }
-
-    @Override
     public double getEUtDiscount() {
         return mEUtDiscount;
     }

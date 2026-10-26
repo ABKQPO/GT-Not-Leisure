@@ -1,5 +1,8 @@
 package com.science.gtnl.utils.enums;
 
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.block.BlockBeacon;
 import net.minecraft.block.BlockSponge;
 import net.minecraft.init.Blocks;
@@ -54,6 +57,11 @@ public enum CommonElements {
             AutoPlaceEnvironment env) {
             return cached;
         }
+
+        @Override
+        public List<String> getDescription(Object o) {
+            return Collections.singletonList(Blocks.beacon.getUnlocalizedName() + ".name");
+        }
     }),
 
     BlockSponge(new IStructureElement<>() {
@@ -95,6 +103,11 @@ public enum CommonElements {
         public @Nullable BlocksToPlace getBlocksToPlace(Object o, World world, int x, int y, int z, ItemStack trigger,
             AutoPlaceEnvironment env) {
             return cached;
+        }
+
+        @Override
+        public List<String> getDescription(Object o) {
+            return Collections.singletonList(Blocks.sponge.getUnlocalizedName() + ".name");
         }
     });
 

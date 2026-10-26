@@ -3,6 +3,10 @@ package com.science.gtnl.common.machine.multiblock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.GregTechAPI.sBlockCasingsSE;
+import static gregtech.api.enums.HatchElement.InputBus;
+import static gregtech.api.enums.HatchElement.InputHatch;
+import static gregtech.api.enums.HatchElement.OutputBus;
+import static gregtech.api.enums.HatchElement.OutputHatch;
 import static net.minecraft.item.ItemStack.areItemStacksEqual;
 
 import java.util.Arrays;
@@ -19,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.gtnewhorizons.modularui.api.math.Color;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
@@ -34,6 +39,7 @@ import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.metadata.ResourceCollectionModuleMetadata;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.structure.GTNLStructureErrors;
 
 import gregtech.api.enums.GTValues;
@@ -81,6 +87,8 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
     private static final int MACHINEMODE_DRILL = 1;
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String SM_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/space_module";
+    private static final String BASE_CASING_NAME_KEY = "gt.blockcasingsSE.0.name";
+    private static final String PARALLEL_CONTROLLER_NAME_KEY = "gtnl.structure.hatch.parallel_controller";
     private static final String[][] shape = StructureUtils.readStructureFromFile(SM_STRUCTURE_FILE_PATH);
 
     public static final ItemStack MiningDroneMkVIII = ItemList.MiningDroneUV.get(16);
@@ -125,12 +133,20 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
             .addShape(STRUCTURE_PIECE_MAIN, transpose(shape))
             .addElement(
                 'H',
-                GTStructureUtility.ofHatchAdderOptional(
-                    ResourceCollectionModule::addAllHatchToMachineList,
-                    4096,
-                    1,
-                    sBlockCasingsSE,
-                    0))
+                StructureUtility.withDescription(
+                    Arrays.asList(
+                        BASE_CASING_NAME_KEY,
+                        CustomHatchElement.ParallelCon.getDescriptionLangKey(),
+                        InputBus.getDescriptionLangKey(),
+                        InputHatch.getDescriptionLangKey(),
+                        OutputBus.getDescriptionLangKey(),
+                        OutputHatch.getDescriptionLangKey()),
+                    GTStructureUtility.ofHatchAdderOptional(
+                        ResourceCollectionModule::addAllHatchToMachineList,
+                        4096,
+                        1,
+                        sBlockCasingsSE,
+                        0)))
             .build();
     }
 
@@ -309,29 +325,8 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.resource_collection_module.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.resource_collection_module.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.resource_collection_module.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
-            .beginStructureBlock(1, 5, 2, false)
-            .addInputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.resource_collection_module.tooltip.casing"),
-                1)
-            .addOutputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.resource_collection_module.tooltip.casing"),
-                1)
-            .addInputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.resource_collection_module.tooltip.casing"),
-                1)
-            .addOutputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.resource_collection_module.tooltip.casing"),
-                1)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }
@@ -446,6 +441,16 @@ public class ResourceCollectionModule extends TileEntityModuleBase {
 
         public IGTHatchAdder<? super ResourceCollectionModule> adder() {
             return adder;
+        }
+
+        @Override
+        public String getDescriptionLangKey() {
+            return PARALLEL_CONTROLLER_NAME_KEY;
+        }
+
+        @Override
+        public String getDisplayName() {
+            return StatCollector.translateToLocal(PARALLEL_CONTROLLER_NAME_KEY);
         }
     }
 }

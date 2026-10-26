@@ -40,6 +40,7 @@ import com.science.gtnl.common.packet.SyncHPCAVariablesPacket;
 import com.science.gtnl.common.render.tile.HighPerformanceComputationArrayRenderer;
 import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.enums.HPCAModifier;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -88,6 +89,7 @@ import tectech.util.CommonValues;
 @IMetaTileEntity.SkipGenerateDescription
 public class HighPerformanceComputationArray extends TTMultiblockBase implements ISurvivalConstructable, IMTERenderer {
 
+    private static final String RACK_HATCH_NAME_KEY = "gt.blockmachines.hatch.rack.tier.08.name";
     public static final INameFunction<HighPerformanceComputationArray> LENS_NAME = (base, p) -> StatCollector
         .translateToLocal("gtnl.gui.high_performance_computation_array.structure_length");
     public static final INameFunction<HighPerformanceComputationArray> MAX_TEMP_NAME = (base, p) -> StatCollector
@@ -427,36 +429,8 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.info.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.info.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.info.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.info.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.info.4"))
-            .addSupportAny()
-            .beginVariableStructureBlock(2, 2, 4, 4, 5, 16, false)
-            .addOtherStructurePart(
-                StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.casing.0"),
-                StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.casing.1"),
-                1)
-            .addOtherStructurePart(
-                StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.casing.2"),
-                StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.casing.1"),
-                1)
-            .addOtherStructurePart(
-                StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.casing.3"),
-                StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.casing.4"),
-                2)
-            .addEnergyHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.casing.1"),
-                1)
-            .addMaintenanceHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.high_performance_computation_array.casing.1"),
-                1)
-            .addSubChannelUsage(GTStructureChannels.STRUCTURE_LENGTH)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }
@@ -732,6 +706,16 @@ public class HighPerformanceComputationArray extends TTMultiblockBase implements
         @Override
         public long count(HighPerformanceComputationArray t) {
             return t.mRackHatchs.size();
+        }
+
+        @Override
+        public String getDescriptionLangKey() {
+            return RACK_HATCH_NAME_KEY;
+        }
+
+        @Override
+        public String getDisplayName() {
+            return StatCollector.translateToLocal(RACK_HATCH_NAME_KEY);
         }
     }
 

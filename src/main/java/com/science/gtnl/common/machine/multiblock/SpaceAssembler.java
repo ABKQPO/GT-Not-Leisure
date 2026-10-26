@@ -28,6 +28,7 @@ import com.science.gtnl.utils.enums.BlockIcons;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.RecipeUtil;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
@@ -48,7 +49,6 @@ import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
-import gregtech.common.misc.GTStructureChannels;
 import gtnhintergalactic.recipe.IGRecipeMaps;
 import lombok.Getter;
 import lombok.Setter;
@@ -265,24 +265,8 @@ public class SpaceAssembler extends GTMMultiMachineBase<SpaceAssembler>
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.space_assembler.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.space_assembler.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.space_assembler.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.space_assembler.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.space_assembler.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.gtm.tooltip.3"))
-            .addSupportAny()
-            .beginStructureBlock(11, 11, 11, true)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.space_assembler.casing"))
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.space_assembler.casing"))
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.space_assembler.casing"))
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.space_assembler.casing"))
-            .addMaintenanceHatch("0+", StatCollector.translateToLocal("gtnl.machine.space_assembler.casing"))
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

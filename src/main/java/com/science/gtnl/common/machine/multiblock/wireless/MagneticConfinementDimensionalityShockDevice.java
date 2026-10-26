@@ -8,7 +8,6 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +21,7 @@ import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachi
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
@@ -54,10 +54,12 @@ public class MagneticConfinementDimensionalityShockDevice
 
     public MagneticConfinementDimensionalityShockDevice(String aName) {
         super(aName);
+        wirelessUpgrade = true;
     }
 
     public MagneticConfinementDimensionalityShockDevice(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+        wirelessUpgrade = true;
     }
 
     @Override
@@ -166,12 +168,19 @@ public class MagneticConfinementDimensionalityShockDevice
     }
 
     @Override
+    public int getMaxParallelRecipes() {
+        // Called for its side effect of reading the parallel controller tier.
+        super.getMaxParallelRecipes();
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
     public void setProcessingLogicPower(ProcessingLogic logic) {
+        setOverclockRatio(logic);
         if (wirelessMode) {
             logic.setAvailableVoltage(Long.MAX_VALUE);
             logic.setAvailableAmperage(1);
             logic.setAmperageOC(true);
-            logic.enablePerfectOverclock();
         } else {
             logic.setAvailableVoltage(getMaxInputEu());
             logic.setAvailableAmperage(1);
@@ -204,46 +213,8 @@ public class MagneticConfinementDimensionalityShockDevice
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(
-            StatCollector.translateToLocal("gtnl.machine.magnetic_confinement_dimensionality_shock_device.recipe_type"))
-            .addInfo(
-                StatCollector.translateToLocal("gtnl.machine.magnetic_confinement_dimensionality_shock_device.info.0"))
-            .addInfo(
-                StatCollector.translateToLocal("gtnl.machine.magnetic_confinement_dimensionality_shock_device.info.1"))
-            .addInfo(
-                StatCollector.translateToLocal("gtnl.machine.magnetic_confinement_dimensionality_shock_device.info.2"))
-            .addInfo(
-                StatCollector.translateToLocal("gtnl.machine.magnetic_confinement_dimensionality_shock_device.info.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.7"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.8"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.common.wireless.tooltip.9"))
-            .addSupportAny()
-            .beginStructureBlock(23, 23, 32, true)
-            .addInputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.magnetic_confinement_dimensionality_shock_device.casing"),
-                1)
-            .addOutputBus(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.magnetic_confinement_dimensionality_shock_device.casing"),
-                1)
-            .addInputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.magnetic_confinement_dimensionality_shock_device.casing"),
-                1)
-            .addOutputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.magnetic_confinement_dimensionality_shock_device.casing"),
-                1)
-            .addEnergyHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.magnetic_confinement_dimensionality_shock_device.casing"),
-                1)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

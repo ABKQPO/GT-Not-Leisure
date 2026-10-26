@@ -662,16 +662,103 @@ gtnl.waila.output_me_proxy.target=链接到输出仓位置
 
 gtnl.machine.nuclear_reactor.name=核反应堆
 gtnl.machine.nuclear_reactor.tooltip.0=热反应堆
-gtnl.machine.nuclear_reactor.tooltip.quote=§9§l这是一台“现代”反应堆！§r
-gtnl.machine.nuclear_reactor.tooltip.1=§7使用燃料棒产生热量，流体仓吸收热量将水转化为蒸汽，输出的蒸汽从输出仓输出
-gtnl.machine.nuclear_reactor.tooltip.5=§7开机效率 §e60% + 50%·sin(X·π/120)§7（X 分钟），60 分钟后 §e110%§7，停机/损坏清零
 gtnl.machine.nuclear_reactor.gui.steam_rate=蒸汽输出速度
-gtnl.machine.nuclear_reactor.tooltip.3=顶部方块可替换为核仓室，样式请参考 NEI
-gtnl.machine.nuclear_reactor.tooltip.4=核燃料物品仓 / 核冷却液输入仓
 gtnl.machine.nuclear_reactor.structure.tiers=全部等级：§65x5x5§7 / §67x5x7§7 / §69x5x9
 gtnl.machine.nuclear_reactor.structure.output_hatch=输出仓至少需要 1 个
-gtnl.machine.nuclear_reactor.casing=反应堆外壳
 gtnl.structure.nuclear_reactor.core_cell=核燃料物品仓 或 核冷却液输入仓
+gtnl.structure.tooltip.controller.front_center=正面中央，第%s层
+gtnl.structure.tooltip.controller.layer=第%s层
+gtnl.structure.tooltip.hatch.replaces=任意%s
+gtnl.structure.tooltip.hatch.dedicated=指定位置
+gtnl.structure.tooltip.hatch.per_layer=每层至少%s个
+gtnl.structure.tooltip.tier=§b等级 %s
+gtnl.structure.tooltip.tier.extra=§b等级 %s 额外需要
+gtnl.structure.tooltip.tier.steam.1=§9基础 §b(T1)
+gtnl.structure.tooltip.tier.steam.2=§9高压 §b(T2)
+gtnl.structure.tooltip.channel.structure_tier=结构等级
+gtnl.structure.tooltip.part.voltage=电压
+gtnl.structure.tooltip.part.coil=加热线圈
+gtnl.structure.tooltip.part.glass=玻璃
+gtnl.structure.tooltip.part.casing=外壳
+gtnl.structure.tooltip.part.tier=%s§f等级§7
+gtnl.structure.tooltip.effect.parallel=%s并行
+gtnl.structure.tooltip.effect.speed=%s速度
+gtnl.structure.tooltip.effect.duration=%s配方时间
+gtnl.structure.tooltip.effect.energy=%s功率系数
+gtnl.structure.tooltip.casing_energy_limit=%1$s限制了能源仓等级，能源仓最高为%1$s + %2$s
+gtnl.structure.tooltip.casing_energy_limit.unlock=%1$s等级%2$s可解锁所有能源仓等级
+gtnl.structure.tooltip.machine_casing_energy_limit=§f机械方块§7等级限制了能源仓等级，%s等级机械方块可解锁所有能源仓等级
+gtnl.structure.tooltip.glass_energy_limit=%1$s，%2$s%3$s
+gtnl.structure.tooltip.voltage_heat=超过%2$s后的每一级§f电压§7，都会将温度提高§c%1$s
+gtnl.structure.tooltip.free_perfect_overclocks=支持%s次免费的§d无损超频
+gtnl.structure.tooltip.heat_discount=炉温每超出配方要求§c%1$s§7，§b功率系数§7降低§f%2$s
+gtnl.structure.tooltip.heat_overclock=每超出配方要求温度§c%s§7，将一次有损超频变为§d无损超频
+gtnl.structure.tooltip.perfect_oc_from=%s时，§b超频不会损失效率
+gtnl.structure.tooltip.tier_from.voltage=电压达到%s或更高
+gtnl.structure.tooltip.tier_from.coil=使用%s或更高级的线圈
+gtnl.structure.tooltip.tier_from.glass=使用%s级或更高级的玻璃
+gtnl.structure.tooltip.tier_from.casing=使用%s或更高级的外壳
+gtnl.structure.tooltip.tier_from.casing_level=外壳等级达到%s或更高
+gtnl.structure.tooltip.part.high_pressure=高压
+gtnl.structure.tooltip.switch_bonus=%s%s
+gtnl.structure.tooltip.steam_recipe_voltage=最高可运行%s配方
+gtnl.structure.tooltip.steam_recipe_voltage.high_pressure=最高可运行%1$s配方，%2$s为%3$s
+gtnl.structure.tooltip.stat_with_bonus=%s，%s
+gtnl.structure.tooltip.per_tier=每%1$s%2$s
+gtnl.structure.tooltip.per_tier.duration=每%1$s%2$s配方时间
+gtnl.tooltip_export.done=已导出 %1$s 台机器的说明，其中 %2$s 台可疑：%3$s
+gtnl.tooltip_export.failed=导出失败：%s
+gtnl.tooltip_export.title=GTNL 多方块说明导出
+gtnl.tooltip_export.summary=机器 %1$s 台，可疑 %2$s 台，自动生成共耗时 %3$s 毫秒
+gtnl.tooltip_export.slowest=生成最慢的机器：
+gtnl.tooltip_export.timed=%1$s：%2$s 毫秒
+gtnl.tooltip_export.section.problems=【可疑机器】
+gtnl.tooltip_export.section.notes=【提示】
+gtnl.tooltip_export.section.machines=【每台机器】
+gtnl.tooltip_export.heading=%1$s（%2$s）
+gtnl.tooltip_export.machine=### %1$s（%2$s，编号 %3$s，自动生成耗时 %4$s 毫秒）
+gtnl.tooltip_export.block.auto_info=【自动生成·普通页】
+gtnl.tooltip_export.block.auto_structure=【自动生成·Shift 页】
+gtnl.tooltip_export.block.current_info=【现在·普通页】
+gtnl.tooltip_export.block.current_structure=【现在·Shift 页】
+gtnl.tooltip_export.problem.generation_failed=自动生成失败：%s
+gtnl.tooltip_export.problem.current_failed=现在的说明生成失败：%s
+gtnl.tooltip_export.problem.unsupported=不是 GT 增强型多方块，不能自动生成
+gtnl.tooltip_export.problem.no_key_prefix=找不到语言键前缀（.name 或 .recipe_type）
+gtnl.tooltip_export.problem.no_structure=读不到结构
+gtnl.tooltip_export.problem.check_failed=结构检查读到一半出错，结构页里仓室数量的规则可能不全：%s
+gtnl.tooltip_export.problem.no_info=读不到说明信息
+gtnl.tooltip_export.problem.no_rules=没有接入数值规则（不是 GTNL 多方块基类）
+gtnl.tooltip_export.problem.part_not_shown=%1$s会改变%2$s，但说明里没写（%3$s）
+gtnl.tooltip_export.problem.part_irregular=%1$s的%2$s从 %3$s 级起不符合说明里的每级规律（可能有上下限或分段）
+gtnl.tooltip_export.problem.field_not_shown=字段 %1$s 会改变%2$s，但说明里没写
+gtnl.tooltip_export.problem.heat_without_recipe_heat=开了温度超频，但超频计算器拿不到配方要求温度，实际按线圈总温度算
+gtnl.tooltip_export.problem.mode_changes=数值随机器模式变（%s 种模式），说明只按第一种模式算
+gtnl.tooltip_export.reason.no_channel=结构里没有对应的等级通道
+gtnl.tooltip_export.reason.irregular=公式不是每级固定加或固定乘
+gtnl.tooltip_export.note.no_stats=不显示并行、速度、功率系数
+gtnl.tooltip_export.note.no_own_lines=没有找到机器自己的说明（md 或 .tooltip.N）
+gtnl.tooltip_export.stat.parallel=并行
+gtnl.tooltip_export.stat.speed=速度
+gtnl.tooltip_export.stat.energy=功率系数
+gtnl.tooltip_export.stat.perfect_oc=无损超频
+gtnl.structure.tooltip.change.increase=增加%s
+gtnl.structure.tooltip.change.decrease=减少%s
+gtnl.structure.tooltip.change.compound=%s(乘算叠加)
+gtnl.structure.tooltip.join.list=%s、%s
+gtnl.structure.tooltip.join.last=%s和%s
+gtnl.structure.tooltip.parallel_controller.accepts=可以安装%s
+gtnl.structure.tooltip.parallel_controller.parallel=提供最大并行数
+gtnl.structure.tooltip.parallel_controller.speed=加快速度
+gtnl.structure.tooltip.parallel_controller.energy=减少耗电
+gtnl.structure.tooltip.parallel_controller.extra=%s将额外提供%s倍的并行！
+gtnl.structure.tooltip.parallel_controller.perfect_oc=安装%s或更高级的%s时，§b超频不会损失效率
+gtnl.structure.tooltip.wireless_upgrade=无线升级
+gtnl.structure.tooltip.wireless_upgrade.bonus=安装%s：%s
+gtnl.structure.tooltip.wireless_mode=无线模式
+gtnl.structure.hatch.parallel_controller=并行控制仓
+gtnl.structure.hatch.exotic_dynamo=多安或激光动力仓
+gtnl.structure.hatch.water_input=输入仓（水）
 gtnl.machine.nuclear_reactor_t2.name=核反应堆 II
 gtnl.machine.nuclear_reactor_t2.tooltip.0=升级型热反应堆，拥有更大的 5×5 核芯。
 gtnl.machine.nuclear_reactor_t3.name=核反应堆 III
@@ -679,36 +766,19 @@ gtnl.machine.nuclear_reactor_t3.tooltip.0=升级型热反应堆，拥有圆角 7
 
 gtnl.machine.siphon_turbine.name=虹吸涡轮
 gtnl.machine.siphon_turbine.recipe_type=虹吸涡轮
-gtnl.machine.siphon_turbine.casing=隔热机器外壳
 gtnl.machine.siphon_turbine.structure=3×3×3 隔热机器外壳，主机在正面中心
-gtnl.machine.siphon_turbine.tooltip.0=§7开机后每 §e6.4s§7 吸无线蒸汽网余额的 §e70%§7，换算为 EU
-gtnl.machine.siphon_turbine.tooltip.1=§7档位：10M mB 内 §e4 EU/L§7，10M~200M §e2 EU/L§7，200M~2G §e1 EU/L
-gtnl.machine.siphon_turbine.tooltip.2=§7超 2G 的部分每 L 产生 0 EU，但使下一次吸收产出翻倍
 gtnl.machine.siphon_turbine.gui.eu_cache=§f机器缓存 EU：§e%s §fEU
 gtnl.machine.siphon_turbine.gui.output=§f过去 6.4s 输出：§e%s §fEU
 
 gtnl.machine.small_infusion_matrix.name=小型注魔矩阵
 gtnl.machine.small_infusion_matrix.recipe_type=工业注魔
-gtnl.machine.small_infusion_matrix.tooltip.0=处理机器所有者已解锁的注魔配方
-gtnl.machine.small_infusion_matrix.tooltip.1=消耗各注魔配方指定的源质
-gtnl.machine.small_infusion_matrix.casing=任意魔法机械方块
-gtnl.machine.small_infusion_matrix.essentia_input_hatch=源质输入仓或神秘能源注魔供应器
 
 gtnl.machine.small_arcane_assembler.name=小型奥术组装机
 gtnl.machine.small_arcane_assembler.recipe_type=奥术合成
-gtnl.machine.small_arcane_assembler.tooltip.0=处理有序与无序奥术工作台配方，每次运行一个配方
-gtnl.machine.small_arcane_assembler.tooltip.1=机器所有者必须完成配方所需研究
-gtnl.machine.small_arcane_assembler.tooltip.2=在控制器槽放入法杖、权杖或手杖，合成时将消耗其中的魔力
-gtnl.machine.small_arcane_assembler.tooltip.3=消耗 32 EU/t，每 128 ticks 随机为两种基础要素各持续恢复 1-4 点魔力
-gtnl.machine.small_arcane_assembler.tooltip.4=随机充能会消耗对应要素的 0-30 CV；达到 30 CV 时获得 200% 充能加成，溢出转移率由 25% 提升至 75%
-gtnl.machine.small_arcane_assembler.casing=任意魔法机械方块
 
 gtnl.machine.industrial_crucible.name=工业坩埚
 gtnl.recipe.industrial_crucible=工业坩埚
 gtnl.machine.industrial_crucible.recipe_type=坩埚炼金
-gtnl.machine.industrial_crucible.tooltip.1=支持源质输入仓、复合源质输入仓与注魔供应器。
-gtnl.machine.industrial_crucible.tooltip.2=需要机器所有者解锁对应的神秘研究。
-gtnl.machine.industrial_crucible.casing=任意魔法机械方块
 
 gtnl.machine.quantum_computer.name=量子计算机
 gtnl.machine.quantum_computer.recipe_type=CPU
@@ -732,13 +802,6 @@ gtnl.machine.quantum_computer.info.3=设置量子计算机自定义名称
 
 gtnl.machine.assembler_matrix.name=装配矩阵
 gtnl.machine.assembler_matrix.recipe_type=分子装配室
-gtnl.machine.assembler_matrix.tooltip.0=固定运行时间为40tick
-gtnl.machine.assembler_matrix.tooltip.1=每并行耗电2EU
-gtnl.machine.assembler_matrix.tooltip.2=无法超频
-gtnl.machine.assembler_matrix.tooltip.3=必须内部全部填满核心/墙壁才能成型！
-gtnl.machine.assembler_matrix.tooltip.4=最多只能安装5个速度核心
-gtnl.machine.assembler_matrix.tooltip.5=安装奇点合成核心且不安装能源仓时自动进入无线模式
-gtnl.machine.assembler_matrix.tooltip.6=可放置终极合成样板来合成终极合成配方
 gtnl.machine.assembler_matrix.info.0=§7当前样板数量：%s/%s
 gtnl.machine.assembler_matrix.info.1=样板倍率控制面板
 gtnl.machine.assembler_matrix.info.2=当前倍率
@@ -749,29 +812,15 @@ gtnl.machine.assembler_matrix.mode.operating=运行模式
 
 gtnl.machine.atomic_energy_excitation_plant.name=原子能激发工厂
 gtnl.machine.atomic_energy_excitation_plant.recipe_type=燃料精炼复合体
-gtnl.machine.atomic_energy_excitation_plant.tooltip.0=每超过配方温度900K，耗能均将乘以95%(不计超频)
-gtnl.machine.atomic_energy_excitation_plant.tooltip.1=每超过配方温度1800K，将进行一次无损超频
-gtnl.machine.atomic_energy_excitation_plant.tooltip.2=使用剪线钳开启/关闭动画特效
 
 gtnl.machine.eden_garden.name=“伊甸”生态奇点
 gtnl.machine.eden_garden.recipe_type=作物农场
-gtnl.machine.eden_garden.tooltip.0=§e§o神说：“陆地上要生出草木和各种蔬菜。”
-gtnl.machine.eden_garden.tooltip.1=§e§o于是大地生出了草木，出现了各种瓜果蔬菜
-gtnl.machine.eden_garden.tooltip.2=§e§o籽实累累，整个大地上一片生机盎然。
-gtnl.machine.eden_garden.tooltip.3=比极限工业温室快100倍！
-gtnl.machine.eden_garden.tooltip.4=所有CropNH作物将获得完美属性
-gtnl.machine.eden_garden.tooltip.5=不再需要肥料和除草剂！
-gtnl.machine.eden_garden.tooltip.6=每株作物消耗2000L水
-gtnl.machine.eden_garden.tooltip.casing=任意电力压缩机机械方块
-gtnl.machine.eden_garden.info.running_input_forbidden=运行时无法输入种子！
 gtnl.machine.eden_garden.message.running_input_forbidden=§c运行时无法输入种子！
 gtnl.machine.eden_garden.info.mode=运行模式：%s%s%s
 gtnl.machine.eden_garden.mode.setup_input=设置模式(输入)
 gtnl.machine.eden_garden.mode.setup_output=设置模式(输出)
 gtnl.machine.eden_garden.info.max_slots=最大槽位数：§a%s§r
 gtnl.machine.eden_garden.info.used_slots=已用槽位数：%s%s§r
-gtnl.machine.eden_garden.info.too_many_seed_types=种子类型过多，无法运行！
-gtnl.machine.eden_garden.info.too_many_seeds=种子数量过多，无法运行！
 gtnl.machine.eden_garden.info.too_many_seeds.format=%s种子数量过多，无法运行！%s
 gtnl.machine.eden_garden.view.inventory=物品栏
 gtnl.machine.eden_garden.view.status=状态
@@ -816,18 +865,10 @@ gtnl.greenhouse.not_enough_fertilizer=肥料不足
 
 gtnl.machine.large_steam_circuit_assembler.name=大型蒸汽电路组装机
 gtnl.machine.large_steam_circuit_assembler.recipe_type=电路组装机
-gtnl.machine.large_steam_circuit_assembler.tooltip.0=比同等级的单方块组装机快11%
-gtnl.machine.large_steam_circuit_assembler.tooltip.1=仅消耗正常需求125%的蒸汽
-gtnl.machine.large_steam_circuit_assembler.tooltip.2=一次可处理多达16个物品
-gtnl.machine.large_steam_circuit_assembler.tooltip.3=原始科技！
-gtnl.machine.large_steam_circuit_assembler.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.generation_earth_engine.name=初代目行星发动机
 gtnl.machine.generation_earth_engine.recipe_type=聚变反应堆
 gtnl.recipe.recombination_fusion_reactor=重聚变反应堆
-gtnl.machine.generation_earth_engine.tooltip.0=尽管多年过去了，它仍然屹立不倒
-gtnl.machine.generation_earth_engine.tooltip.1=人类技术巅峰之作！
-gtnl.machine.generation_earth_engine.tooltip.casing=任意批量生产框架
 
 gtnl.machine.blood_soul_sacrificial_array.name=血魂祭祀阵
 gtnl.recipe.blood_demon_injection=血魔注入
@@ -854,16 +895,6 @@ gtnl.machine.blood_soul_sacrificial_array.render.disabled=关闭坠星渲染
 gtnl.machine.real_artificial_star.name=真·湮灭发电机
 gtnl.recipe.real_artificial_star.generating=真·湮灭发电机
 gtnl.machine.real_artificial_star.recipe_type=真·湮灭发电机
-gtnl.machine.real_artificial_star.tooltip.0=§d§l只是替换了TST的结构，其余功能一致
-gtnl.machine.real_artificial_star.tooltip.1=§d§l你只需要让正反质子束从两端静静地穿
-gtnl.machine.real_artificial_star.tooltip.2=§d§l 过磁场进入约束球就可以了，轻松愉快！
-gtnl.machine.real_artificial_star.tooltip.3=它简单的外形归功于理论的优雅.
-gtnl.machine.real_artificial_star.tooltip.4=实际产生能量受三种等级方块影响.
-gtnl.machine.real_artificial_star.tooltip.5=同时，更高等级会提高回收原料的概率.
-gtnl.machine.real_artificial_star.tooltip.6=保持连续运行也会提高能量输出.
-gtnl.machine.real_artificial_star.tooltip.7=只允许且必须安装一个输入总线.
-gtnl.machine.real_artificial_star.tooltip.8=能量将直接输出到无线EU网络.
-gtnl.machine.real_artificial_star.tooltip.9=使用剪线钳开启/关闭动画特效.
 gtnl.machine.real_artificial_star.structure.output_coefficient=输出系数 = 时间场等级^0.25 * 空间场等级^0.25 * 1.588186^(稳定场等级 - 2)
 gtnl.machine.real_artificial_star.structure.actual_output=实际输出EU = 配方数值 * 输出系数 * 连续运行奖励系数
 gtnl.machine.real_artificial_star.structure.recovery_chance=原料回收概率 = 时间场等级 * 空间场等级 * 稳定场等级 / 1000
@@ -904,111 +935,42 @@ gtnl.machine.teleportation_array_to_alfheim.mode.nature=自然灵阵
 gtnl.machine.teleportation_array_to_alfheim.mode.mana=魔力灌注
 gtnl.machine.teleportation_array_to_alfheim.mode.rune=符文祭坛
 gtnl.machine.teleportation_array_to_alfheim.recipe_type=精灵传送门 / 自然灵阵 / 魔力灌注 / 符文祭坛
-gtnl.machine.teleportation_array_to_alfheim.tooltip.0=传说这个法阵可以稳定传输大量的物资
-gtnl.machine.teleportation_array_to_alfheim.tooltip.1=需要液态魔力输入仓
-gtnl.machine.teleportation_array_to_alfheim.tooltip.2=每秒消耗100L液态魔力进行工作
-gtnl.machine.teleportation_array_to_alfheim.tooltip.3=在控制器内放入永恒魔力池或阿斯加德蒲公英来启用无限魔力
-gtnl.machine.teleportation_array_to_alfheim.tooltip.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.lapotron_chip.name=兰波顿工厂
 gtnl.machine.lapotron_chip.recipe_type=兰波顿工厂
 gtnl.recipe.lapotron_chip=兰波顿工厂
-gtnl.machine.lapotron_chip.tooltip.0=正在制作中
-gtnl.machine.lapotron_chip.tooltip.1=可以用于迅速搭建基础基地
-gtnl.machine.lapotron_chip.tooltip.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.neutronium_wire_cutting.name=中子丝线切割机
 gtnl.machine.neutronium_wire_cutting.recipe_type=切割机
-gtnl.machine.neutronium_wire_cutting.tooltip.0=每级玻璃等级额外提供5%的加速和耗电减免(乘算叠加)
-gtnl.machine.neutronium_wire_cutting.tooltip.casing=任意超能硅岩强化无菌净水厂机械方块
 
 gtnl.machine.large_steam_crusher.name=大型蒸汽破碎机
 gtnl.machine.large_steam_crusher.recipe_type=粉碎机
-gtnl.machine.large_steam_crusher.tooltip.0=比同等级的单方块粉碎机快900%
-gtnl.machine.large_steam_crusher.tooltip.1=仅消耗正常需求80%的蒸汽
-gtnl.machine.large_steam_crusher.tooltip.2=一次可处理多达128个物品
-gtnl.machine.large_steam_crusher.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.component_assembler.name=部件组装机
 gtnl.machine.component_assembler.recipe_type=部件装配线
-gtnl.machine.component_assembler.tooltip.0=比相同电压的机器快100%
-gtnl.machine.component_assembler.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.component_assembler.tooltip.2=批量组装基础部件(马达，泵)等
-gtnl.machine.component_assembler.tooltip.3=§e部件装配线外壳§r等级最高为UV
-gtnl.machine.component_assembler.tooltip.4=支持升压和超频
-gtnl.machine.component_assembler.tooltip.5=最多安装2个能源仓！
-gtnl.machine.component_assembler.tooltip.6=玻璃等级限制了能源仓等级，UV玻璃解锁所有等级
-gtnl.machine.component_assembler.tooltip.7=§o效率碾压其他组装机/装配线！
-gtnl.machine.component_assembler.tooltip.casing=任意脱氧钢机械方块
 
 gtnl.machine.large_steam_furnace.name=大型蒸汽熔炉
 gtnl.machine.large_steam_furnace.recipe_type=熔炉
-gtnl.machine.large_steam_furnace.tooltip.0=比同等级的单方块熔炉快900%
-gtnl.machine.large_steam_furnace.tooltip.1=仅消耗正常需求50%的蒸汽
-gtnl.machine.large_steam_furnace.tooltip.2=一次可处理多达128个物品
-gtnl.machine.large_steam_furnace.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_steam_alloy_smelter.name=大型蒸汽铸形炉
 gtnl.machine.large_steam_alloy_smelter.recipe_type=合金炉
-gtnl.machine.large_steam_alloy_smelter.tooltip.0=比同等级的单方块合金炉快43%
-gtnl.machine.large_steam_alloy_smelter.tooltip.1=仅消耗正常需求80%的蒸汽
-gtnl.machine.large_steam_alloy_smelter.tooltip.2=一次可处理多达16个物品
-gtnl.machine.large_steam_alloy_smelter.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_steam_thermal_centrifuge.name=大型蒸汽热力离心机
 gtnl.machine.large_steam_thermal_centrifuge.recipe_type=热力离心
-gtnl.machine.large_steam_thermal_centrifuge.tooltip.0=比同等级的单方块热力离心机快300%
-gtnl.machine.large_steam_thermal_centrifuge.tooltip.1=仅消耗正常需求80%的蒸汽
-gtnl.machine.large_steam_thermal_centrifuge.tooltip.2=一次可处理多达32个物品
-gtnl.machine.large_steam_thermal_centrifuge.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.steam_cracking.name=蒸汽裂化机
 gtnl.recipe.steam_cracker=蒸汽裂化
 gtnl.machine.steam_cracking.recipe_type=蒸汽裂化
-gtnl.machine.steam_cracking.tooltip.0=将含硫烃热裂解成蒸汽裂化烃
-gtnl.machine.steam_cracking.tooltip.1=比化学反应釜更有效率
-gtnl.machine.steam_cracking.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_steam_chemical_bath.name=大型蒸汽化学浸洗机
 gtnl.machine.large_steam_chemical_bath.recipe_type=化学浸洗机
-gtnl.machine.large_steam_chemical_bath.tooltip.0=比同等级的单方块化学浸洗机快25%
-gtnl.machine.large_steam_chemical_bath.tooltip.1=仅消耗正常需求80%的蒸汽
-gtnl.machine.large_steam_chemical_bath.tooltip.2=一次可处理多达16个物品
-gtnl.machine.large_steam_chemical_bath.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.primitive_distillation_tower.name=原始蒸馏塔
 gtnl.machine.primitive_distillation_tower.recipe_type=蒸馏塔
-gtnl.machine.primitive_distillation_tower.tooltip.0=只能输出6种流体！
-gtnl.machine.primitive_distillation_tower.tooltip.1=仅消耗正常需求75%的蒸汽
-gtnl.machine.primitive_distillation_tower.tooltip.casing.0=任意钢制燃烧室
-gtnl.machine.primitive_distillation_tower.tooltip.casing.1=任意脱氧钢机械方块
 
 gtnl.machine.meteor_miner.name=坠星采矿场
 gtnl.machine.meteor_miner.recipe_type=坠星采矿
-gtnl.machine.meteor_miner.tooltip.0=为了正常工作，坠星中心的高度必须比多方块结构最高点至少高出1个方块
-gtnl.machine.meteor_miner.tooltip.1=激光将从坠星中心开始，在XZ轴方向上对半径50个方块范围内的区域进行开采
-gtnl.machine.meteor_miner.tooltip.2=所有涉及的区块必须被强加载
-gtnl.machine.meteor_miner.tooltip.3=激光将根据陨石自动设置其作用半径
-gtnl.machine.meteor_miner.tooltip.4=如果找不到任何陨石，它将等待陨石生成
-gtnl.machine.meteor_miner.tooltip.5=同时考虑到陨石中心正上方的方块(类似于守卫者玻璃)
-gtnl.machine.meteor_miner.tooltip.6=重置按钮可以在不改变半径的情况下重启机器
 gtnl.gui.meteor_miner.drilling_radius=重置钻探半径
-gtnl.machine.meteor_miner.tooltip.7=§c§l等级I
-gtnl.machine.meteor_miner.tooltip.8=每个周期开采一个方块
-gtnl.machine.meteor_miner.tooltip.9=默认时运等级为0，可以通过在输入总线中放入特殊的镐来增加时运等级：
-gtnl.machine.meteor_miner.tooltip.10=时运II：炽心镐
-gtnl.machine.meteor_miner.tooltip.11=时运III：约束之镐
-gtnl.machine.meteor_miner.tooltip.12=时运IV：泰拉粉碎者
-gtnl.machine.meteor_miner.tooltip.13=§c§l等级II
-gtnl.machine.meteor_miner.tooltip.14=始终为时运V
-gtnl.machine.meteor_miner.tooltip.15=每个周期开采一排方块
-gtnl.machine.meteor_miner.tooltip.16=只能安装1个ULV输入总线！
-gtnl.machine.meteor_miner.tooltip.17=§9§l终于，有像样的坠星自动化了！
-gtnl.machine.meteor_miner.tooltip.casing.0.0=坠星仪式上方第二层的中心
-gtnl.machine.meteor_miner.tooltip.casing.0.1=任意围绕控制器的太阳能塔机械方块
-gtnl.machine.meteor_miner.tooltip.casing.0.2=控制器下方
-gtnl.machine.meteor_miner.tooltip.casing.1.0=坠星仪式的最高层
-gtnl.machine.meteor_miner.tooltip.casing.1.1=任意在控制器下方的中子采矿机械方块
 gtnl.machine.meteor_miner.info.machine_tier=机器等级：
 gtnl.machine.meteor_miner.info.fortune_tier=时运等级：
 gtnl.machine.meteor_miner.render.enabled=开启激光渲染
@@ -1021,91 +983,23 @@ GT5U.gui.text.missing_schematic=§d缺失设计图
 gtnl.machine.desulfurizer.name=脱硫机
 gtnl.recipe.desulfurizer=脱硫
 gtnl.machine.desulfurizer.recipe_type=脱硫
-gtnl.machine.desulfurizer.tooltip.0=每提升一个线圈等级，并行加8
-gtnl.machine.desulfurizer.tooltip.1=每提升一个线圈等级，处理速度提升10%
-gtnl.machine.desulfurizer.tooltip.casing=任意洁净不锈钢机械方块
 
 gtnl.machine.large_circuit_assembler.name=大型电路组装设施
 gtnl.machine.large_circuit_assembler.recipe_type=电路组装机
-gtnl.machine.large_circuit_assembler.tooltip.0=玻璃等级限制了能源仓等级，UV玻璃解锁所有等级
-gtnl.machine.large_circuit_assembler.tooltip.1=只能安装一个能源仓！
-gtnl.machine.large_circuit_assembler.tooltip.casing=任意多功能机械方块
 
 gtnl.machine.petrochemical_plant.name=石化工厂
 gtnl.recipe.petrochemical_plant=石化工厂
 gtnl.machine.petrochemical_plant.recipe_type=石化工厂
-gtnl.machine.petrochemical_plant.tooltip.0=每提升一个线圈等级，并行加40
-gtnl.machine.petrochemical_plant.tooltip.1=最终产出：配方输出 * 线圈等级 * 电压等级 * 6
-gtnl.machine.petrochemical_plant.tooltip.2=§c§l随着技术的精进，提取不应只有一点点
-gtnl.machine.petrochemical_plant.tooltip.casing=任意压力抑制机械方块
-gtnl.machine.petrochemical_plant.tooltip.muffler=任意顶部压力抑制机械方块
 
 gtnl.machine.smelting_mixing_furnace.name=合金搅拌炉
 gtnl.recipe.smelting_mixing_furnace=合金搅拌
 gtnl.machine.smelting_mixing_furnace.recipe_type=合金搅拌 / 超维度等离子锻炉
 gtnl.machine.smelting_mixing_furnace.mode.smelting_mixing=合金搅拌
 gtnl.machine.smelting_mixing_furnace.mode.plasma_forge=超维度等离子锻炉
-gtnl.machine.smelting_mixing_furnace.tooltip.0=§9§l以极高效的方式操纵物质
-gtnl.machine.smelting_mixing_furnace.tooltip.1=§9§l使合金的制作摆脱冶炼的桎梏
-gtnl.machine.smelting_mixing_furnace.tooltip.2=在控制器放入超维校准矩阵来启用超维度等离子锻炉配方
-gtnl.machine.smelting_mixing_furnace.tooltip.3=超维度等离子锻炉配方固定电压为MAX
-gtnl.machine.smelting_mixing_furnace.tooltip.casing=任意超能机械方块
 gtnl.machine.smelting_mixing_furnace.info.decay_blocking_enabled=§b已启用衰减阻挡
 
 gtnl.machine.white_night_generator.name=白夜发电机
 gtnl.machine.white_night_generator.recipe_type=§d§l紫罗兰的洗礼
-gtnl.machine.white_night_generator.tooltip.0=§f§l§o起来吧，我的仆从，欢唱着迎接我的到来。
-gtnl.machine.white_night_generator.tooltip.1=§r对大面积的实体造成伤害并发电，实体被造成伤害次数过多将会§c直接击杀
-gtnl.machine.white_night_generator.tooltip.2=§r如果同一种实体类型的被造成伤害次数过多将会直接跳过这种实体！
-gtnl.machine.white_night_generator.tooltip.3=§r血量低于一定值将会被§c直接击杀
-gtnl.machine.white_night_generator.tooltip.4=§r并对机器的所有者造成一次 §c5*实体击杀数量 §r的魔法伤害并施加若干debuff
-gtnl.machine.white_night_generator.tooltip.5=§r此机器有一个§c逆卡巴拉计数器§r，上限为3，每次机器运行时减一，需要维护时会产生红石信号
-gtnl.machine.white_night_generator.tooltip.6=§r红石信号强度将解释为一个从0到15的4位二进制数
-gtnl.machine.white_night_generator.tooltip.7=§r将最低位标记为位4，最高位为位1
-gtnl.machine.white_night_generator.tooltip.8=§r位1：§e§o侦测到工作指令系统故障
-gtnl.machine.white_night_generator.tooltip.9=§r如果该位为1，则最低位标记为位1，最高位为位4
-gtnl.machine.white_night_generator.tooltip.10=§r输出的信号不是位1调整后的！
-gtnl.machine.white_night_generator.tooltip.11=§r位2：§6§o侦测到逆卡巴拉能量大崩溃
-gtnl.machine.white_night_generator.tooltip.12=§r如果该位为1，则应该输入对应的抑制流体
-gtnl.machine.white_night_generator.tooltip.13=§r要确定插入哪种流体，请将位1和位3解释为一个2位二进制数
-gtnl.machine.white_night_generator.tooltip.14=§r0：10000L熔融中子 / 1：7500L熔融无尽 / 2：5000L时空 / 3：2500L磁物质
-gtnl.machine.white_night_generator.tooltip.15=§r位3：§7§o滴答…滴答…
-gtnl.machine.white_night_generator.tooltip.16=§r如果该位为1，则应该输入5000000L净化水
-gtnl.machine.white_night_generator.tooltip.17=§r使用更高等级的净化水可以提高判断时的概率！
-gtnl.machine.white_night_generator.tooltip.18=§r输出倍增：5级：2% / 6级：3% / 7级：4% / 8级：5%
-gtnl.machine.white_night_generator.tooltip.19=§r位4：§c§o血雾弥漫，尸横遍野。
-gtnl.machine.white_night_generator.tooltip.20=§r如果该位为1，则应该输入100000L的血和1个无瑕核心
-gtnl.machine.white_night_generator.tooltip.21=§r无位：§o纯真的自我
-gtnl.machine.white_night_generator.tooltip.22=§r光之树
-gtnl.machine.white_night_generator.tooltip.23=§r机器能量过载，需要输入10000L扩大化空间流体
-gtnl.machine.white_night_generator.tooltip.24=§r维护失败后检查结果将会立即变为§c§o差！
-gtnl.machine.white_night_generator.tooltip.25=§r维护成功后会进行35次概率判断，§o每次判断间隔2秒
-gtnl.machine.white_night_generator.tooltip.26=§r如果判断次数未能在当前运行时全部完成，则剩下没有判断次数的立即为否
-gtnl.machine.white_night_generator.tooltip.27=§r基础概率为§c45%§r，在主机内放入更高等级的立场发生器来提高概率
-gtnl.machine.white_night_generator.tooltip.28=§r§o随着累计检查次数的增加，判断时间和概率均会有一定的增幅
-gtnl.machine.white_night_generator.tooltip.29=§r§c§o每有5个实体被击杀将会使逆卡巴拉计数器立即减1
-gtnl.machine.white_night_generator.tooltip.30=§r§c§o如果机器运行时没有对任何实体造成伤害将会使逆卡巴拉计数器立即减1
-gtnl.machine.white_night_generator.tooltip.31=§r检查结果为§a§o优(26~35)§r时将产出大量电并给玩家回满血和施加buff，然后将逆卡巴拉计数器加1
-gtnl.machine.white_night_generator.tooltip.32=§r为§e§o良(6~15)§r时产出较少电量并给玩家恢复5血，有50%的概率将逆卡巴拉计数器加1
-gtnl.machine.white_night_generator.tooltip.33=§r为§c§o差(0~15)§r时会赋予玩家debuff然后随机生成几个怪物并关机
-gtnl.machine.white_night_generator.tooltip.34=§r§c每10次维护将会使逆卡巴拉熔毁等级加1§r，最高等级为10，每级会让概率判断的成功率下降1%
-gtnl.machine.white_night_generator.tooltip.35=§r每当逆卡巴拉熔毁等级增加时，该机器会进入§c逆卡巴拉能量熔毁状态§r，需要立即对机器进行维护，限时1分钟
-gtnl.machine.white_night_generator.tooltip.36=§r如果在§c逆卡巴拉能量熔毁状态§r下没有进行一次维护，倒计时结束后逆卡巴拉计数器会立即降到0
-gtnl.machine.white_night_generator.tooltip.37=§r随着逆卡巴拉熔毁等级上升，会生成§o黎明，正午，黄昏，午夜§r等考验
-gtnl.machine.white_night_generator.tooltip.38=§r考验的类型包括§a绿色§r，§6琥珀色§r，§d紫罗兰§r，§c血色§r，§9靛蓝色
-gtnl.machine.white_night_generator.tooltip.39=§r如果§c逆卡巴拉熔毁等级达到10§r，则所有考验类型均会变为§o惨白§r，难度和回报均会大幅提升
-gtnl.machine.white_night_generator.tooltip.40=§r完成考验会产生当前机器每秒EU功率乘以总耗时的一部分：
-gtnl.machine.white_night_generator.tooltip.41=§r黎明：10%
-gtnl.machine.white_night_generator.tooltip.42=§r正午：15%
-gtnl.machine.white_night_generator.tooltip.43=§r黄昏：20%
-gtnl.machine.white_night_generator.tooltip.44=§r午夜：25%
-gtnl.machine.white_night_generator.tooltip.45=§r§c当逆卡巴拉计数器为0时会触发一次大型爆炸造成五千亿污染
-gtnl.machine.white_night_generator.tooltip.46=§r§c生成大量怪物、11只末影龙和1只凋灵，直到范围内检查不到凋灵和末影龙时才能重新开机
-gtnl.machine.white_night_generator.tooltip.47=§r§c在范围内的玩家会受到500魔法伤害+5000物理伤害
-gtnl.machine.white_night_generator.tooltip.48=§r运行时每秒产生§a2147483647 * 对所有实体造成的总伤害 * 实体种类 * 500§r的EU，需要在主机放入力场发生器来完成结构检查
-gtnl.machine.white_night_generator.tooltip.49=§r运行时间固定为500秒
-gtnl.machine.white_night_generator.tooltip.50=§r§0§o§m安装终末螺旋来无视上述机制
-gtnl.machine.white_night_generator.tooltip.51=§r§c§o注意，机器运行时内部会产生EU缓存，破坏会立即引发爆炸！
 gtnl.potion.awe=§r§f§l敬畏§r
 gtnl.effect.awe.cancel.0=§f§l不要害怕，我与你同在。除非我允许，否则你永远都不能离开。
 gtnl.effect.awe.cancel.1=§f§l不要否认我的存在，我就在你的眼前。
@@ -1114,35 +1008,12 @@ gtnl.effect.awe.kick=§f§l！！！ 不知所措 ！！！
 
 gtnl.machine.processing_array.name=处理阵列：重生
 gtnl.machine.processing_array.recipe_type=处理阵列
-gtnl.machine.processing_array.tooltip.0=让其中的机器如同放置在世界中一样运行
-gtnl.machine.processing_array.tooltip.1=在控制器GUI中放置至多64个GT单方块机器
-gtnl.machine.processing_array.tooltip.2=请注意，供电为其内机器耗电总和
-gtnl.machine.processing_array.tooltip.3=使用螺丝刀启用独立输入总线功能
-gtnl.machine.processing_array.tooltip.4=对特定机器无效
-gtnl.machine.processing_array.tooltip.5=只需要配方要求功率的90%
-gtnl.machine.processing_array.tooltip.6=配方时间为原先的 (100 - (线圈等级 + 1) * 3) %
-gtnl.machine.processing_array.tooltip.7=并行数：单方块GT机器数量 * 2 + 电压等级 * 4 + 线圈等级 * 4
-gtnl.machine.processing_array.tooltip.8=能源仓等级不可高过控制器GUI内的GT单方块机器等级+4！
-gtnl.machine.processing_array.tooltip.casing=任意加强钛机械方块
 
 gtnl.machine.mega_blast_furnace.name=巨型工业高炉
 gtnl.machine.mega_blast_furnace.recipe_type=工业高炉
-gtnl.machine.mega_blast_furnace.tooltip.0=每超过配方温度900K，耗能均将乘以95%(不计超频)
-gtnl.machine.mega_blast_furnace.tooltip.1=每超过配方温度1800K，将进行一次无损超频
-gtnl.machine.mega_blast_furnace.tooltip.2=超过MV后的每一级电压，都会将温度提高100K
-gtnl.machine.mega_blast_furnace.tooltip.3=并行控制仓额外提供4倍并行！
-gtnl.machine.mega_blast_furnace.tooltip.4=比工业高炉快400%
-gtnl.machine.mega_blast_furnace.tooltip.5=安装UEV及以上的并行控制仓解锁§c无损超频§7
-gtnl.machine.mega_blast_furnace.tooltip.casing.0=任意冶炼炉机械方块
-gtnl.machine.mega_blast_furnace.tooltip.casing.1=顶部中心放射硅岩合金机械方块
 
 gtnl.machine.bricked_blast_furnace.name=砖高炉
 gtnl.machine.bricked_blast_furnace.recipe_type=§c跃§6进§e一§a号§b原§9始§d高§5炉
-gtnl.machine.bricked_blast_furnace.tooltip.0=用于炼钢或一般的热冶金
-gtnl.machine.bricked_blast_furnace.tooltip.1=不同于原来的砖高炉，现在使用仓室进行物品交互
-gtnl.machine.bricked_blast_furnace.tooltip.2=获益于炉身的改进，
-gtnl.machine.bricked_blast_furnace.tooltip.3=现在原始高炉的任意配方仅需§l§c6.4§r秒！
-gtnl.machine.bricked_blast_furnace.tooltip.4=代价是造价比以前昂贵了§l§c8§r倍
 gtnl.machine.bricked_blast_furnace.structure.0=355x 耐火砖
 gtnl.machine.bricked_blast_furnace.structure.1=387x 石砖
 gtnl.machine.bricked_blast_furnace.structure.2=70x 青铜框架
@@ -1152,41 +1023,18 @@ gtnl.machine.bricked_blast_furnace.structure.4=16x 镀铜砖块
 gtnl.machine.rare_earth_centrifugal.name=稀土离心机
 gtnl.recipe.rare_earth_centrifugal=稀土离心
 gtnl.machine.rare_earth_centrifugal.recipe_type=稀土离心
-gtnl.machine.rare_earth_centrifugal.tooltip.casing=任意分子抑制机械方块
 
 gtnl.machine.cold_ice_freezer.name=寒冰冷冻机
 gtnl.machine.cold_ice_freezer.recipe_type=凛冰冷冻机
-gtnl.machine.cold_ice_freezer.tooltip.0=比真空冷冻机快150%！
-gtnl.machine.cold_ice_freezer.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.cold_ice_freezer.tooltip.2=最大并行数固定为128
-gtnl.machine.cold_ice_freezer.tooltip.3=需每秒提供10x配方电压等级^2的碎冰
-gtnl.machine.cold_ice_freezer.tooltip.casing.0=任意防冻机械方块
-gtnl.machine.cold_ice_freezer.tooltip.casing.1=顶部中心防冻机械方块
 
 gtnl.machine.blaze_blast_furnace.name=烈焰高炉
 gtnl.machine.blaze_blast_furnace.recipe_type=工业高炉
-gtnl.machine.blaze_blast_furnace.tooltip.0=比工业高炉快300%
-gtnl.machine.blaze_blast_furnace.tooltip.1=只需要使用配方要求功率的70%
-gtnl.machine.blaze_blast_furnace.tooltip.2=最大并行数固定为32
-gtnl.machine.blaze_blast_furnace.tooltip.3=在控制器内放入炽骨立方将并行提高到128
-gtnl.machine.blaze_blast_furnace.tooltip.4=需每秒提供10x配方电压等级^2的熔融烈焰
-gtnl.machine.blaze_blast_furnace.tooltip.5=放入炽骨立方后消耗乘以4倍
-gtnl.machine.blaze_blast_furnace.tooltip.6=超过MV后的每一级电压，都会将温度提高100K
-gtnl.machine.blaze_blast_furnace.tooltip.casing.0=任意冶炼炉机械方块
-gtnl.machine.blaze_blast_furnace.tooltip.casing.1=顶部中心炽焱高炉机械方块
 
 gtnl.machine.chemical_plant.name=化工厂
 gtnl.machine.chemical_plant.recipe_type=化学反应釜
-gtnl.machine.chemical_plant.tooltip.0=线圈等级每高出白铜一级能耗与速度均将乘以95%
-gtnl.machine.chemical_plant.tooltip.1=并行数不高于1024
-gtnl.machine.chemical_plant.tooltip.casing=任意化学惰性机械方块
 
 gtnl.machine.vacuum_freezer.name=真空冷冻机
 gtnl.machine.vacuum_freezer.recipe_type=真空冷冻机
-gtnl.machine.vacuum_freezer.tooltip.0=比原版的真空冷冻机快33%
-gtnl.machine.vacuum_freezer.tooltip.1=并行数 = 8 + 2 * 电压等级
-gtnl.machine.vacuum_freezer.tooltip.2=支持两次免费的§c无损超频§7！
-gtnl.machine.vacuum_freezer.tooltip.casing=任意防冻机械方块
 
 gtnl.machine.industrial_arcane_assembler.name=工业奥术装配室
 gtnl.recipe.industrial_shaped_arcane_crafting=工业奥术装配室
@@ -1194,103 +1042,56 @@ gtnl.recipe.industrial_infusion_crafting=工业注魔矩阵
 gtnl.machine.industrial_arcane_assembler.recipe_type=工业奥术装配室 / 工业注魔矩阵
 gtnl.machine.industrial_arcane_assembler.mode.0=工业奥术装配室
 gtnl.machine.industrial_arcane_assembler.mode.1=工业注魔矩阵
-gtnl.machine.industrial_arcane_assembler.tooltip.0=§d§o通过强大的科技手段，我们终于掌握了那无比神秘的魔法
-gtnl.machine.industrial_arcane_assembler.tooltip.1=固定并行为2147483647
-gtnl.machine.industrial_arcane_assembler.tooltip.2=需要在控制器放入水晶缠绕宇宙中子态素法杖来成型！
-gtnl.machine.industrial_arcane_assembler.tooltip.casing=任意压力抑制机械方块
 
 gtnl.machine.energetic_photovoltaic_power_station.name=充能光伏电站
 gtnl.machine.advanced_photovoltaic_power_station.name=高级光伏电站
 gtnl.machine.vibrant_photovoltaic_power_station.name=脉冲光伏电站
 gtnl.machine.photovoltaic_power_station.recipe_type=光伏电站
-gtnl.machine.photovoltaic_power_station.tooltip.0=根据头顶是否遮挡和天气输出EU
-gtnl.machine.photovoltaic_power_station.tooltip.1=需提供每秒功率/4L的蒸馏水保持运行
-gtnl.machine.energetic_photovoltaic_power_station.tooltip.casing=任意脱氧钢机械方块
-gtnl.machine.advanced_photovoltaic_power_station.tooltip.casing=任意加强钛机械方块
-gtnl.machine.vibrant_photovoltaic_power_station.tooltip.casing=任意强化钨钢机械方块
 
 gtnl.machine.large_maceration_tower.name=大型研磨塔
 gtnl.machine.large_maceration_tower.recipe_type=粉碎机
-gtnl.machine.large_maceration_tower.tooltip.0=比相同电压的机器快300%
-gtnl.machine.large_maceration_tower.tooltip.casing=任意坚实铱锇机械方块
 
 gtnl.machine.hand_of_john_davison_rockefeller.name=洛克菲勒之手
 gtnl.machine.hand_of_john_davison_rockefeller.recipe_type=化工厂
-gtnl.machine.hand_of_john_davison_rockefeller.tooltip.0=§8§o来自埃克森美孚中央曲线的神秘机器。
-gtnl.machine.hand_of_john_davison_rockefeller.tooltip.1=§8§o不幸的是，它在压裂中央有限曲线。
-gtnl.machine.hand_of_john_davison_rockefeller.tooltip.2=每增加一级玻璃或电压等级，EU消耗乘以95%
-gtnl.machine.hand_of_john_davison_rockefeller.tooltip.3=每增加一级玻璃或电压等级，速度加快2.5%
-gtnl.machine.hand_of_john_davison_rockefeller.tooltip.4=无视配方要求的等级！
-gtnl.machine.hand_of_john_davison_rockefeller.tooltip.casing=任意压力抑制机械方块
 
 gtnl.machine.large_sifting_funnel.name=大型筛选漏斗
 gtnl.machine.large_sifting_funnel.recipe_type=筛选机
-gtnl.machine.large_sifting_funnel.tooltip.0=比相同电压的机器快400%
-gtnl.machine.large_sifting_funnel.tooltip.1=只需要使用配方要求功率的60%
-gtnl.machine.large_sifting_funnel.tooltip.casing=任意离心机机械方块
 
 gtnl.machine.large_cutter.name=大型切割机
 gtnl.machine.large_cutter.recipe_type=切割机
-gtnl.machine.large_cutter.tooltip.0=比相同电压的机器快225%
-gtnl.machine.large_cutter.tooltip.1=只需要使用配方要求功率的50%
-gtnl.machine.large_cutter.tooltip.casing=任意切割机框架
 
 gtnl.machine.large_brewer.name=大型酿造厂
 gtnl.machine.large_brewer.recipe_type=酿造室 / 发酵槽 / 流体加热器
-gtnl.machine.large_brewer.tooltip.0=比相同电压的机器快125%
 gtnl.machine.large_brewer.mode.0=酿造室
 gtnl.machine.large_brewer.mode.1=发酵槽
 gtnl.machine.large_brewer.mode.2=流体加热器
-gtnl.machine.large_brewer.tooltip.casing=任意焦炉机械方块
 
 gtnl.machine.large_industrial_lathe.name=大型工业车床
 gtnl.machine.large_industrial_lathe.recipe_type=车床
-gtnl.machine.large_industrial_lathe.tooltip.0=比相同电压的机器快125%
-gtnl.machine.large_industrial_lathe.tooltip.casing=任意强化镍铬机械方块
 
 gtnl.machine.large_material_press.name=大型挤压机
 gtnl.machine.large_material_press.recipe_type=压缩机
-gtnl.machine.large_material_press.tooltip.0=比相同电压的机器快150%
-gtnl.machine.large_material_press.tooltip.1=安装UV及以上的并行控制仓来支持热等静压装置
-gtnl.machine.large_material_press.tooltip.casing=任意强化镍铬机械方块
 
 gtnl.machine.large_wiremill.name=大型线材工厂
 gtnl.machine.large_wiremill.recipe_type=线缆轧机
-gtnl.machine.large_wiremill.tooltip.0=比相同电压的机器快225%
-gtnl.machine.large_wiremill.tooltip.1=只需要使用配方要求功率的60%
-gtnl.machine.large_wiremill.tooltip.casing=任意强化镍铬机械方块
 
 gtnl.machine.large_bender.name=大型卷板机
 gtnl.machine.large_bender.recipe_type=卷板机
-gtnl.machine.large_bender.tooltip.0=比相同电压的机器快500%
-gtnl.machine.large_bender.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.large_bender.tooltip.casing=任意强化镍铬机械方块
 
 gtnl.machine.electric_implosion_compressor.name=电力聚爆压缩机
 gtnl.machine.electric_implosion_compressor.recipe_type=电动聚爆压缩机
-gtnl.machine.electric_implosion_compressor.tooltip.casing=任意强化钨钢机械方块
 
 gtnl.machine.large_extruder.name=大型压模机
 gtnl.machine.large_extruder.recipe_type=压模机
-gtnl.machine.large_extruder.tooltip.0=比相同电压的机器快275%
-gtnl.machine.large_extruder.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.large_extruder.tooltip.casing=任意强化镍铬机械方块
 
 gtnl.machine.large_arc_smelter.name=大型电弧炉
 gtnl.machine.large_arc_smelter.recipe_type=电弧炉
-gtnl.machine.large_arc_smelter.tooltip.0=比相同电压的机器快300%
-gtnl.machine.large_arc_smelter.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.large_arc_smelter.tooltip.casing=任意冶炼炉机械方块
 
 gtnl.machine.large_forming.name=大型冲压机
 gtnl.machine.large_forming.recipe_type=冲压机床
-gtnl.machine.large_forming.tooltip.0=比相同电压的机器快500%
-gtnl.machine.large_forming.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.large_forming.tooltip.casing=任意强化镍铬机械方块
 
 gtnl.machine.matter_fabricator.name=物质生成机
 gtnl.machine.matter_fabricator.recipe_type=物质生成机
-gtnl.machine.matter_fabricator.casing=任意计算机外壳
 gtnl.recipe.matter_fabricator=物质生成机
 gtnl.nei.matter_fabricator_recipes.0=任意材料锭
 gtnl.nei.matter_fabricator_recipes.1=任意材料宝石
@@ -1298,157 +1099,80 @@ gtnl.nei.matter_fabricator_recipes.2=任意材料方块
 
 gtnl.machine.large_electrolyzer.name=大型电解槽
 gtnl.machine.large_electrolyzer.recipe_type=电解机
-gtnl.machine.large_electrolyzer.tooltip.0=比相同电压的机器快200%
-gtnl.machine.large_electrolyzer.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.large_electrolyzer.tooltip.casing=任意电解机机械方块
 
 gtnl.machine.large_electromagnet.name=大型电磁工厂
 gtnl.machine.large_electromagnet.recipe_type=电磁离析机 / 两级磁化机
 gtnl.machine.large_electromagnet.mode.0=电磁离析机
 gtnl.machine.large_electromagnet.mode.1=两级磁化机
-gtnl.machine.large_electromagnet.tooltip.casing=任意电解机机械方块
 
 gtnl.machine.large_assembler.name=大型组装厂
 gtnl.machine.large_assembler.recipe_type=组装机
-gtnl.machine.large_assembler.tooltip.0=能源仓限制了机器工作的电压等级+1
-gtnl.machine.large_assembler.tooltip.1=玻璃等级限制了能源仓等级，UHV玻璃解锁所有等级
-gtnl.machine.large_assembler.tooltip.2=比相同电压的机器快200%
-gtnl.machine.large_assembler.tooltip.casing=任意批量生产框架
 
 gtnl.machine.large_mixer.name=大型搅拌罐
 gtnl.machine.large_mixer.recipe_type=搅拌机
-gtnl.machine.large_mixer.tooltip.0=比相同电压的机器快275%
-gtnl.machine.large_mixer.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.large_mixer.tooltip.casing=任意储罐拓展方块
 
 gtnl.machine.large_centrifuge.name=大型离心机组
 gtnl.machine.large_centrifuge.recipe_type=离心机 / 热力离心机
 gtnl.machine.large_centrifuge.mode.0=离心机
 gtnl.machine.large_centrifuge.mode.1=热力离心机
-gtnl.machine.large_centrifuge.tooltip.0=比相同电压的机器快240%
-gtnl.machine.large_centrifuge.tooltip.casing=任意离心机机械方块
 
 gtnl.machine.library_of_ruina.name=§e废墟图书馆
 gtnl.recipe.the_twilight_forest=永夜暮色
 gtnl.machine.library_of_ruina.recipe_type=永夜暮色
-gtnl.machine.library_of_ruina.tooltip.0=§8§o打破了那暮色森林的永夜
-gtnl.machine.library_of_ruina.tooltip.1=§8§o一件件事物变成了一本本书籍
-gtnl.machine.library_of_ruina.tooltip.2=§8§o图书馆将永存
-gtnl.machine.library_of_ruina.tooltip.3=§8§o光耀，孤寂，无尽
-gtnl.machine.library_of_ruina.tooltip.4=§8§o满腹稀世书籍
-gtnl.machine.library_of_ruina.tooltip.5=§8§o无用，不灭，隐秘
-gtnl.machine.library_of_ruina.tooltip.6=§8§o正于此地，愿您找到想要的书。
-gtnl.machine.library_of_ruina.tooltip.7=需要在控制器内放入暮色传送门激活水晶
-gtnl.machine.library_of_ruina.tooltip.8=7869x 抗热三元金属机械方块
-gtnl.machine.library_of_ruina.tooltip.9=3883x 太空电梯支持结构方块
-gtnl.machine.library_of_ruina.tooltip.10=2159x 超高密度空间弯曲机械方块
-gtnl.machine.library_of_ruina.tooltip.11=2515x 聚变玻璃
-gtnl.machine.library_of_ruina.tooltip.12=737x 重力稳定机械方块
-gtnl.machine.library_of_ruina.tooltip.13=936x 加速器屏蔽机械方块
-gtnl.machine.library_of_ruina.tooltip.14=578x 维度稳定机械方块
-gtnl.machine.library_of_ruina.tooltip.15=174x 压缩机机械方块
-gtnl.machine.library_of_ruina.tooltip.casing=任意加速器屏蔽机械方块
 
 gtnl.machine.large_chemical_bath.name=大型化学浸洗机
 gtnl.machine.large_chemical_bath.recipe_type=洗矿池 / 简易洗矿池 / 化学浸洗机
 gtnl.machine.large_chemical_bath.mode.0=洗矿池
 gtnl.machine.large_chemical_bath.mode.1=简易洗矿池
 gtnl.machine.large_chemical_bath.mode.2=化学浸洗机
-gtnl.machine.large_chemical_bath.tooltip.0=比相同电压的机器快500%
-gtnl.machine.large_chemical_bath.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.large_chemical_bath.tooltip.casing=任意洗矿厂机械方块
 
 gtnl.machine.large_autoclave.name=大型高压结晶釜
 gtnl.machine.large_autoclave.recipe_type=高压釜
-gtnl.machine.large_autoclave.tooltip.casing=任意洗矿厂机械方块
 
 gtnl.machine.large_solidifier.name=大型固化阵列
 gtnl.machine.large_solidifier.recipe_type=流体固化器
-gtnl.machine.large_solidifier.tooltip.0=比相同电压的机器快300%
-gtnl.machine.large_solidifier.tooltip.casing=任意洗矿厂机械方块
 
 gtnl.machine.large_extractor.name=大型提取机
 gtnl.machine.large_extractor.recipe_type=提取机 / 流体提取机
 gtnl.machine.large_extractor.mode.0=提取机
 gtnl.machine.large_extractor.mode.1=流体提取机
-gtnl.machine.large_extractor.tooltip.0=比相同电压的机器快150%
-gtnl.machine.large_extractor.tooltip.1=只需要使用配方要求功率的60%
-gtnl.machine.large_extractor.tooltip.casing=任意洗矿厂机械方块
 
 gtnl.machine.reaction_furnace.name=反应炉
 gtnl.machine.reaction_furnace.recipe_type=熔炉
-gtnl.machine.reaction_furnace.tooltip.0=总并行数：并行控制仓提供的并行 * 8192 - 1
-gtnl.machine.reaction_furnace.tooltip.1=无线模式处理时间固定为128tick
-gtnl.machine.reaction_furnace.tooltip.casing=任意强化镀铱机械方块
 
 gtnl.machine.energy_infuser.name=能量注入仪
 gtnl.machine.energy_infuser.recipe_type=能量注入仪
-gtnl.machine.energy_infuser.tooltip.0=比原版的能量注入仪更快！
-gtnl.machine.energy_infuser.tooltip.1=可用于为物品充电(无损)
-gtnl.machine.energy_infuser.tooltip.2=提供UU物质可修复物品
-gtnl.machine.energy_infuser.tooltip.3=充电时将存储在机器内部
-gtnl.machine.energy_infuser.tooltip.4=使用螺丝刀右键立即输出所有物品
-gtnl.machine.energy_infuser.tooltip.5=不安装能源仓将自动进入无线模式
-gtnl.machine.energy_infuser.tooltip.casing=任意分子机械方块
 gtnl.machine.energy_infuser.info.output_all_items=立即输出所有物品
 
 gtnl.machine.large_canning.name=大型装罐机
 gtnl.machine.large_canning.recipe_type=装罐机
-gtnl.machine.large_canning.tooltip.0=比相同电压的机器快233%
-gtnl.machine.large_canning.tooltip.1=只需要使用配方要求功率的50%
-gtnl.machine.large_canning.tooltip.casing=任意洗矿厂机械方块
 
 gtnl.machine.digester.name=煮解池
 gtnl.machine.digester.recipe_type=煮解池
-gtnl.machine.digester.tooltip.0=提升线圈等级来获得更高的速度加成和耗电减免！ 
-gtnl.machine.digester.tooltip.1=超过MV后的每一级电压，都会将温度提高100K
-gtnl.machine.digester.tooltip.casing=任意强化钨钢机械方块
 
 gtnl.machine.alloy_blast_smelter.name=合金冶炼炉
 gtnl.machine.alloy_blast_smelter.recipe_type=合金冶炼炉
-gtnl.machine.alloy_blast_smelter.tooltip.0=每超过配方温度900K，耗能均将乘以95%(不计超频)
-gtnl.machine.alloy_blast_smelter.tooltip.1=每超过配方温度1800K，将进行一次无损超频
-gtnl.machine.alloy_blast_smelter.tooltip.2=超过MV后的每一级电压，都会将温度提高100K
-gtnl.machine.alloy_blast_smelter.tooltip.3=固定并行为16
-gtnl.machine.alloy_blast_smelter.tooltip.4=安装并行控制仓来减少耗电！ 
-gtnl.machine.alloy_blast_smelter.tooltip.5=能源仓限制了机器工作的电压等级
-gtnl.machine.alloy_blast_smelter.tooltip.casing=任意冶炼炉机械方块
 
 gtnl.machine.large_steam_extractor.name=大型蒸汽提取机
 gtnl.machine.large_steam_extractor.recipe_type=提取机
-gtnl.machine.large_steam_extractor.tooltip.0=比同等级的单方块提取机快33%
-gtnl.machine.large_steam_extractor.tooltip.1=仅消耗正常需求90%的蒸汽
-gtnl.machine.large_steam_extractor.tooltip.2=一次可处理多达16个物品
-gtnl.machine.large_steam_extractor.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_steam_ore_washer.name=大型蒸汽洗矿机
 gtnl.machine.large_steam_ore_washer.recipe_type=洗矿机 / 简易洗矿池
 gtnl.machine.large_steam_ore_washer.mode.0=洗矿机
 gtnl.machine.large_steam_ore_washer.mode.1=简易洗矿池
-gtnl.machine.large_steam_ore_washer.tooltip.0=比同等级的单方块洗矿机快1900%
-gtnl.machine.large_steam_ore_washer.tooltip.1=仅消耗正常需求60%的蒸汽
-gtnl.machine.large_steam_ore_washer.tooltip.2=一次可处理多达32个物品
-gtnl.machine.large_steam_ore_washer.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_hammer.name=大型锻造锤
 gtnl.machine.large_hammer.recipe_type=锻造锤
-gtnl.machine.large_hammer.tooltip.0=比相同电压的机器快150%
-gtnl.machine.large_hammer.tooltip.casing=任意强化镍铬机械方块
 
 gtnl.machine.isa_mill.name=艾萨研磨机
 gtnl.recipe.isa_mill=湿法碾磨
 gtnl.recipe.metadata.isa_mill.0=需要铝研磨球
 gtnl.recipe.metadata.isa_mill.1=需要皂石研磨球
 gtnl.machine.isa_mill.recipe_type=湿法碾磨
-gtnl.machine.isa_mill.tooltip.0=工业级湿法碾磨
-gtnl.machine.isa_mill.tooltip.1=玻璃等级限制了能源仓等级，UHV玻璃解锁所有等级
-gtnl.machine.isa_mill.tooltip.casing=任意艾萨研磨外围机械方块
 
 gtnl.machine.flotation_cell_regulator.name=工业浮选机
 gtnl.recipe.cell_regulator=浮选
 gtnl.machine.flotation_cell_regulator.recipe_type=浮选
-gtnl.machine.flotation_cell_regulator.tooltip.0=玻璃等级限制了能源仓等级，UHV玻璃解锁所有等级
-gtnl.machine.flotation_cell_regulator.tooltip.casing=任意哈斯特洛伊合金-X结构方块
 
 gtnl.machine.vacuum_drying_furnace.name=真空干燥炉
 gtnl.machine.vacuum_drying_furnace.recipe_type=真空炉 / 脱水机 / 冷阱 / 反应堆熔盐加工厂
@@ -1456,88 +1180,49 @@ gtnl.machine.vacuum_drying_furnace.mode.0=真空炉
 gtnl.machine.vacuum_drying_furnace.mode.1=脱水机
 gtnl.machine.vacuum_drying_furnace.mode.2=冷阱
 gtnl.machine.vacuum_drying_furnace.mode.3=反应堆熔盐加工厂
-gtnl.machine.vacuum_drying_furnace.tooltip.0=比相同电压的机器快150%
-gtnl.machine.vacuum_drying_furnace.tooltip.1=只需要使用配方要求功率的60%
-gtnl.machine.vacuum_drying_furnace.tooltip.2=每超过配方温度900K，耗能均将乘以95%(不计超频)
-gtnl.machine.vacuum_drying_furnace.tooltip.3=每超过配方温度1800K，将进行一次无损超频
-gtnl.machine.vacuum_drying_furnace.tooltip.4=超过MV后的每一级电压，都会将温度提高100K
-gtnl.machine.vacuum_drying_furnace.tooltip.5=配方为冷阱或反应堆熔盐加工厂时额外提供1000%的加速(乘算叠加)
-gtnl.machine.vacuum_drying_furnace.tooltip.casing=任意真空机械方块
 
 gtnl.machine.large_distillery.name=大型分馏蒸馏厂
 gtnl.machine.large_distillery.recipe_type=蒸馏塔 / 蒸馏室
 gtnl.machine.large_distillery.mode.0=蒸馏塔
 gtnl.machine.large_distillery.mode.1=蒸馏室
-gtnl.machine.large_distillery.tooltip.0=比相同电压的机器快400%
-gtnl.machine.large_distillery.tooltip.1=只需要使用配方要求功率的50%
-gtnl.machine.large_distillery.tooltip.casing=任意储罐拓展方块
+gtnl.machine.large_distillery.tooltip.casing_total=最小结构的计数外壳合计至少%1$s个；每增加一层，整塔最低需求增加%2$s个
+gtnl.machine.large_distillery.tooltip.casing_counted=仅底层与各馏分层外圈的外壳计入上述总数，塔盖及额外可选外壳不计入
 
 gtnl.machine.incubator.name=培养缸
 gtnl.machine.incubator.recipe_type=细菌培养缸
-gtnl.machine.incubator.tooltip.0=不再需要保持输出仓半满！这台机器固定以1001倍流体倍率运行！
-gtnl.machine.incubator.tooltip.1=固定并行为4
-gtnl.machine.incubator.tooltip.2=玻璃等级限制了能源仓等级，UHV玻璃解锁所有等级
-gtnl.machine.incubator.tooltip.radio_hatch=放射仓
-gtnl.machine.incubator.tooltip.casing=任意塑料混凝土方块
 
 gtnl.machine.large_incubator.name=大型培养缸
 gtnl.machine.large_incubator.recipe_type=细菌培养缸
-gtnl.machine.large_incubator.tooltip.0=比相同电压的单方块机器快400%
-gtnl.machine.large_incubator.tooltip.1=只需要使用配方要求功率的60%
-gtnl.machine.large_incubator.tooltip.2=不再需要保持输出仓半满！这台机器固定以1001倍流体倍率运行！
-gtnl.machine.large_incubator.tooltip.3=无视玻璃等级要求和精确剂量要求
-gtnl.machine.large_incubator.tooltip.4=并行数：4 * 培养皿数量 + 2 * 电压等级 * 玻璃等级
-gtnl.machine.large_incubator.tooltip.radio_hatch=放射仓
-gtnl.machine.large_incubator.tooltip.casing=任意塑料混凝土方块
 
 gtnl.machine.large_engraving_laser.name=大型激光蚀刻机
 gtnl.machine.large_engraving_laser.recipe_type=激光蚀刻机
-gtnl.machine.large_engraving_laser.tooltip.0=比相同电压的机器快250%
-gtnl.machine.large_engraving_laser.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.large_engraving_laser.tooltip.2=玻璃等级限制了能源仓等级，UHV玻璃解锁所有等级
-gtnl.machine.large_engraving_laser.tooltip.casing=任意激光抑制机械方块
 
 gtnl.machine.fishing_ground.name=渔场
 gtnl.recipe.fishing_ground=渔场
 gtnl.machine.fishing_ground.recipe_type=渔场
-gtnl.machine.fishing_ground.tooltip.0=把珠海渔场和藻类农场结合在一起！
-gtnl.machine.fishing_ground.tooltip.casing=任意哈斯特洛伊-X结构方块
 
 gtnl.machine.element_copying.name=元素复制机
 gtnl.machine.element_copying.recipe_type=元素复制
-gtnl.machine.element_copying.tooltip.0=固定运行时间为20tick
-gtnl.machine.element_copying.tooltip.1=无法超频
-gtnl.machine.element_copying.tooltip.2=所有复制所需UU物质数量均减少10倍
-gtnl.machine.element_copying.tooltip.casing=任意分子机械方块
 gtnl.machine.element_copying.info.selected_types=已选择种类：%s，使用UU物质：%s L，耗电：%s EU
 
 gtnl.machine.wood_distillation.name=木化工厂
 gtnl.recipe.wood_distillation=集成木质生物质热解
 gtnl.machine.wood_distillation.recipe_type=集成木质生物质热解
-gtnl.machine.wood_distillation.tooltip.0=最终产出：配方输出 * 电压等级 * 2
-gtnl.machine.wood_distillation.tooltip.casing=任意隔热机械方块
 
 gtnl.machine.large_packer.name=大型打包机
 gtnl.machine.large_packer.recipe_type=打包机 / 解包器
 gtnl.machine.large_packer.mode.0=打包机
 gtnl.machine.large_packer.mode.1=解包器
-gtnl.machine.large_packer.tooltip.0=比相同电压的机器快500%
-gtnl.machine.large_packer.tooltip.1=只需要使用配方要求功率的50%
-gtnl.machine.large_packer.tooltip.casing=任意强化钨钢机械方块
 
 gtnl.machine.large_alloy_smelter.name=大型合金炉
 gtnl.machine.large_alloy_smelter.recipe_type=合金炉
-gtnl.machine.large_alloy_smelter.tooltip.0=每级线圈额外提供2%的加速和耗电减免！
-gtnl.machine.large_alloy_smelter.tooltip.casing=任意隔热机械方块
 
 gtnl.machine.molecular_transformer.name=分子重组仪
 gtnl.recipe.molecular_transformer=物质重组
 gtnl.machine.molecular_transformer.recipe_type=物质重组
-gtnl.machine.molecular_transformer.tooltip.casing=任意化学惰性机械方块
 
 gtnl.machine.large_pyrolyse_oven.name=大型热解炉
 gtnl.machine.large_pyrolyse_oven.recipe_type=焦炉
-gtnl.machine.large_pyrolyse_oven.tooltip.casing=任意洁净不锈钢机械方块
 
 gtnl.machine.large_naquadah_reactor.name=大型硅岩反应堆
 gtnl.recipe.naquadah_reactor=硅岩反应
@@ -1545,11 +1230,6 @@ gtnl.recipe.metadata.naquadah_reactor.0=需要超能硅岩反应堆
 gtnl.recipe.metadata.naquadah_reactor.1=需要进阶超能硅岩反应堆
 gtnl.machine.naquadah_reactor.recipe_type=硅岩反应
 gtnl.nei.naquadah_reactor.special_value=产能功率：
-gtnl.machine.large_naquadah_reactor.tooltip.0=固定并行为%s
-gtnl.machine.large_naquadah_reactor.tooltip.1=可以在配方开始的时候输入氧气
-gtnl.machine.large_naquadah_reactor.tooltip.2=这会让时间减少%s倍，功率翻%s倍
-gtnl.machine.large_naquadah_reactor.tooltip.3=代价是每秒会消耗%sL的氧气
-gtnl.machine.large_naquadah_reactor.tooltip.casing=任意放射硅岩合金机械方块
 gtnl.waila.naquadah_reactor.power_output=产能功率：
 gtnl.waila.naquadah_reactor.extra_gas_boost=使用额外气体加速
 gtnl.waila.naquadah_reactor.wireless_power_output=产能功率(无线模式)：
@@ -1557,64 +1237,34 @@ gtnl.waila.naquadah_reactor.force_wireless=强制进入无线模式
 
 gtnl.machine.draconic_fusion_crafting.name=神龙聚合装置
 gtnl.machine.draconic_fusion_crafting.recipe_type=聚合装置
-gtnl.machine.draconic_fusion_crafting.tooltip.0=比龙研聚合装置快100%
-gtnl.machine.draconic_fusion_crafting.tooltip.1=只需要使用配方要求功率的50%
-gtnl.machine.draconic_fusion_crafting.tooltip.2=当机械方块等级超过4时开启§c无损超频§7
-gtnl.machine.draconic_fusion_crafting.tooltip.casing=任意背景辐射吸收机械方块
 
 gtnl.machine.large_steam_extruder.name=大型蒸汽压模机
 gtnl.machine.large_steam_extruder.recipe_type=压模机
-gtnl.machine.large_steam_extruder.tooltip.0=比同等级的单方块压模机快11%
-gtnl.machine.large_steam_extruder.tooltip.1=仅消耗正常需求95%的蒸汽
-gtnl.machine.large_steam_extruder.tooltip.2=一次可处理多达8个物品
-gtnl.machine.large_steam_extruder.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.decay_hastener.name=衰变加速器
 gtnl.recipe.decay_hastener=衰变扭曲
 gtnl.machine.decay_hastener.recipe_type=衰变扭曲
-gtnl.machine.decay_hastener.tooltip.0=加速与截停衰变链的任意部分
-gtnl.machine.decay_hastener.tooltip.1=§9§o逝者如斯，我们便筑坝截流，开闸放洪
-gtnl.machine.decay_hastener.tooltip.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.precision_assembler.name=精密组装机
 gtnl.machine.precision_assembler.recipe_type=组装机 / 精密组装机
 gtnl.machine.precision_assembler.mode.0=组装机
 gtnl.machine.precision_assembler.mode.1=精密组装机
-gtnl.machine.precision_assembler.tooltip.0=比相同电压的机器快125%
-gtnl.machine.precision_assembler.tooltip.1=机械方块等级决定了能源仓最大等级，UHV机械方块解锁所有等级
-gtnl.machine.precision_assembler.tooltip.2=并行数：2 ^ 玻璃等级 + 精密电子单元机械方块等级 * 64
-gtnl.machine.precision_assembler.tooltip.3=当精密电子单元机械方块等级大于3时，开启§c无损超频§7
-gtnl.machine.precision_assembler.tooltip.casing=任意精密机械方块
 
 gtnl.machine.mega_alloy_blast_smelter.name=巨型合金冶炼炉
 gtnl.machine.mega_alloy_blast_smelter.recipe_type=合金冶炼炉
-gtnl.machine.mega_alloy_blast_smelter.tooltip.0=比合金冶炼炉快100%
-gtnl.machine.mega_alloy_blast_smelter.tooltip.1=只需要使用配方要求功率的80%
-gtnl.machine.mega_alloy_blast_smelter.tooltip.2=每超过配方温度900K，耗能均将乘以95%(不计超频)
-gtnl.machine.mega_alloy_blast_smelter.tooltip.3=每级玻璃等级将额外提供2%概率的双倍产出！
-gtnl.machine.mega_alloy_blast_smelter.tooltip.4=每级线圈等级额外提供2%的耗电减免和2%的加速！
-gtnl.machine.mega_alloy_blast_smelter.tooltip.5=超过MV后的每一级电压，都会将温度提高100K
-gtnl.machine.mega_alloy_blast_smelter.tooltip.casing=任意冶炼炉机械方块
 
 gtnl.machine.grand_assembly_line.name=大型装配线
 gtnl.machine.grand_assembly_line.recipe_type=无序装配线
+gtnl.machine.grand_assembly_line.parallel_controller.energy=安装%1$s及以上的%2$s解除能源仓限制
+gtnl.machine.grand_assembly_line.parallel_controller.boost=安装%1$s及以上的%2$s将额外提供1900%%的加速(乘算叠加)，但%2$s的功率系数减免降为原来的20%%
+gtnl.machine.grand_assembly_line.parallel_controller.wireless=安装%1$s及以上的%2$s且不安装能源仓将自动进入无线模式
+gtnl.machine.grand_assembly_line.tooltip.casing_total=%1$s与%2$s合计至少%3$s个
 gtnl.recipe.grand_assembly_line_special=装配线防冲突识别
-gtnl.machine.grand_assembly_line.tooltip.0=§r§l让亨利·福特也黯然失色。
-gtnl.machine.grand_assembly_line.tooltip.1=§r以惊人的速度组装硬件。
-gtnl.machine.grand_assembly_line.tooltip.2=不再需要按顺序输入物品
-gtnl.machine.grand_assembly_line.tooltip.3=机器可进行跨配方处理！
-gtnl.machine.grand_assembly_line.tooltip.4=默认只能安装一个普通或多安能源仓！
-gtnl.machine.grand_assembly_line.tooltip.5=安装UHV及以上的并行控制仓解除能源仓限制
-gtnl.machine.grand_assembly_line.tooltip.6=安装UIV及以上的并行控制仓解锁§c无损超频§7
-gtnl.machine.grand_assembly_line.tooltip.7=安装UMV及以上的并行控制仓将额外提供500%的耗电减免和1900%的加速(乘算叠加)
-gtnl.machine.grand_assembly_line.tooltip.8=安装UMV及以上的并行控制仓且不安装能源仓将自动进入无线模式
-gtnl.machine.grand_assembly_line.tooltip.casing=任意进阶电子计算机械方块或防爆玻璃
 gtnl.machine.grand_assembly_line.info.minimum_recipe_time=设置超频允许最小时间
 
 gtnl.machine.fuel_refining_complex.name=燃料精炼复合体
 gtnl.machine.fuel_refining_complex.recipe_type=燃料精炼复合体
 gtnl.recipe.fuel_refining_complex=燃料精炼复合体
-gtnl.machine.fuel_refining_complex.tooltip.casing=硅岩燃料精炼厂机械方块
 gtnl.recipe.metadata.fuel_refining=需要%s级力场约束线圈
 
 gtnl.machine.resource_collection_module.name=太空电梯资源采集模块
@@ -1629,9 +1279,6 @@ gtnl.recipe.metadata.resource_collection_module.5=需要采矿无人机MK-XIII x
 gtnl.machine.resource_collection_module.recipe_type=太空采矿 / 太空钻井
 gtnl.machine.resource_collection_module.mode.0=太空采矿
 gtnl.machine.resource_collection_module.mode.1=太空钻井
-gtnl.machine.resource_collection_module.tooltip.0=将太空采矿和太空钻井功能添加到太空电梯
-gtnl.machine.resource_collection_module.tooltip.1=§d§l一飞冲天
-gtnl.machine.resource_collection_module.tooltip.casing=任意太空电梯基座机械方块
 GT5U.gui.text.no_mining_drone=§7未找到采矿无人机
 
 gtnl.machine.extreme_fusion_reactor_mk_i.name=狂飙一号巨型聚变反应堆控制电脑
@@ -1646,123 +1293,48 @@ gtnl.machine.extreme_fusion_reactor.tooltip.2=只需要使用配方要求功率�
 gtnl.machine.extreme_fusion_reactor.tooltip.3=无需消耗配方启动能量，但你仍然需要相应的启动能量来开机
 gtnl.machine.extreme_fusion_reactor.tooltip.4=储能上限：
 gtnl.machine.extreme_fusion_reactor.tooltip.5=当配方需求电压超过%s§r§7时，无法进行聚变
-gtnl.machine.extreme_fusion_reactor.tooltip.6=使用剪线钳开启/关闭动画特效
 gtnl.machine.extreme_fusion_reactor.tooltip.casing=任意聚变机械方块
 
 gtnl.machine.large_steam_centrifuge.name=大型蒸汽离心机
 gtnl.machine.large_steam_centrifuge.recipe_type=离心机
-gtnl.machine.large_steam_centrifuge.tooltip.0=比同等级的单方块离心机快43%
-gtnl.machine.large_steam_centrifuge.tooltip.1=仅消耗正常需求100%的蒸汽
-gtnl.machine.large_steam_centrifuge.tooltip.2=一次可处理多达16个物品
-gtnl.machine.large_steam_centrifuge.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_steam_hammer.name=大型蒸汽锻造锤
 gtnl.machine.large_steam_hammer.recipe_type=锻造锤
-gtnl.machine.large_steam_hammer.tooltip.0=比同等级的单方块锻造锤快33%
-gtnl.machine.large_steam_hammer.tooltip.1=仅消耗正常需求75%的蒸汽
-gtnl.machine.large_steam_hammer.tooltip.2=一次可处理多达32个物品
-gtnl.machine.large_steam_hammer.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_steam_compressor.name=大型蒸汽压缩机
 gtnl.machine.large_steam_compressor.recipe_type=压缩机
-gtnl.machine.large_steam_compressor.tooltip.0=比同等级的单方块压缩机快100%
-gtnl.machine.large_steam_compressor.tooltip.1=仅消耗正常需求80%的蒸汽
-gtnl.machine.large_steam_compressor.tooltip.2=一次可处理多达16个物品
-gtnl.machine.large_steam_compressor.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_steam_sifter.name=大型蒸汽筛选机
 gtnl.machine.large_steam_sifter.recipe_type=筛选机
-gtnl.machine.large_steam_sifter.tooltip.0=比同等级的单方块筛选机快33%
-gtnl.machine.large_steam_sifter.tooltip.1=仅消耗正常需求80%的蒸汽
-gtnl.machine.large_steam_sifter.tooltip.2=一次可处理多达16个物品
-gtnl.machine.large_steam_sifter.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_boiler_bronze.name=大型青铜锅炉
-gtnl.machine.large_boiler_bronze.tooltip.0=每块煤炭将以64000升/秒的速率产生共计128000升的蒸汽
 gtnl.machine.large_boiler_steel.name=大型钢锅炉
-gtnl.machine.large_boiler_steel.tooltip.0=每块煤炭将以128000升/秒的速率产生共计128000升的蒸汽
 gtnl.machine.large_boiler_titanium.name=大型钛锅炉
-gtnl.machine.large_boiler_titanium.tooltip.0=每块煤炭将以256000升/秒的速率产生共计1024000升的蒸汽
 gtnl.machine.large_boiler_tungstensteel.name=大型钨钢锅炉
-gtnl.machine.large_boiler_tungstensteel.tooltip.0=每块煤炭将以512000升/秒的速率产生共计2048000升的蒸汽
-gtnl.machine.large_boiler.recipe_type=锅炉
-gtnl.machine.large_boiler.tooltip.no_preheating=无需预热
-gtnl.machine.large_boiler.tooltip.machine_casing=任意机械方块
-gtnl.machine.large_boiler.tooltip.firebox_casing=任意燃烧室机械方块
 
 gtnl.machine.large_steam_forming_press.name=大型蒸汽冲压机床
 gtnl.machine.large_steam_forming_press.recipe_type=冲压机床
-gtnl.machine.large_steam_forming_press.tooltip.0=比同等级的单方块冲压机床快25%
-gtnl.machine.large_steam_forming_press.tooltip.1=仅消耗正常需求90%的蒸汽
-gtnl.machine.large_steam_forming_press.tooltip.2=一次可处理多达16个物品
-gtnl.machine.large_steam_forming_press.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_steam_mixer.name=大型蒸汽搅拌机
 gtnl.machine.large_steam_mixer.recipe_type=搅拌机
-gtnl.machine.large_steam_mixer.tooltip.0=比同等级的单方块搅拌机慢33%
-gtnl.machine.large_steam_mixer.tooltip.1=一次可处理多达8个物品
-gtnl.machine.large_steam_mixer.tooltip.2=在控制器内放入不锈钢齿轮来解锁HV配方
-gtnl.machine.large_steam_mixer.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.cracker_hub.name=裂解反应枢纽
 gtnl.machine.cracker_hub.recipe_type=石油裂化机
-gtnl.machine.cracker_hub.tooltip.0=线圈等级每高出2级，产出+10%
-gtnl.machine.cracker_hub.tooltip.1=每级玻璃等级额外提供5%的加速和耗电减免(乘算叠加)
-gtnl.machine.cracker_hub.tooltip.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.advanced_infinite_driller.name=进阶无尽油气钻机
 gtnl.machine.advanced_infinite_driller.recipe_type=进阶无尽油气钻机
-gtnl.machine.advanced_infinite_driller.tooltip.0=利用维度技术和坚不可摧的钻头无情的抽取星球的每一份血液
-gtnl.machine.advanced_infinite_driller.tooltip.1=更加高级的无尽流体钻井
-gtnl.machine.advanced_infinite_driller.tooltip.2=可以更加高效的抽取流体，与此同时钻机需要一定温度来启动，可以通入烈焰之炽焱来升温
-gtnl.machine.advanced_infinite_driller.tooltip.3=钻头等级：宇宙中子态素-1 无尽-2 超时空金属-3 时空-4
-gtnl.machine.advanced_infinite_driller.tooltip.4=钻机在不同的工作温度下会产生热量，产热公式为 (钻头等级 * 温度 / 2000)
-gtnl.machine.advanced_infinite_driller.tooltip.5=随着温度提升，效率也会提升. 当温度超过临界值，钻头将会融毁
-gtnl.machine.advanced_infinite_driller.tooltip.6=可以通入不同的流体来降温，可用冷却液如下. 冷却固定消耗为200kL / 5t
-gtnl.machine.advanced_infinite_driller.tooltip.7=蒸馏水 1K
-gtnl.machine.advanced_infinite_driller.tooltip.8=液态氧 2K
-gtnl.machine.advanced_infinite_driller.tooltip.9=液态氦 4K
-gtnl.machine.advanced_infinite_driller.tooltip.10=极寒之凛冰 40K
-gtnl.machine.advanced_infinite_driller.tooltip.11=烈焰之炽焱消耗公式为 (当前温度^1.3)
-gtnl.machine.advanced_infinite_driller.tooltip.12=放入对应的维度标记方块来抽取流体，支持多种！
-gtnl.machine.advanced_infinite_driller.tooltip.casing=任意放射硅岩合金机械方块
 gtnl.machine.advanced_infinite_driller.info.excess_fuel=§r当前温度：§e%s§rK
 
 gtnl.machine.electric_blast_furnace.name=电力工业高炉
 gtnl.machine.electric_blast_furnace.recipe_type=工业高炉
-gtnl.machine.electric_blast_furnace.tooltip.0=比工业高炉快25%
-gtnl.machine.electric_blast_furnace.tooltip.1=只需要使用配方要求功率的75%
-gtnl.machine.electric_blast_furnace.tooltip.2=每超过配方温度900K，耗能均将乘以95%(不计超频)
-gtnl.machine.electric_blast_furnace.tooltip.3=每超过配方温度1800K，将进行一次无损超频
-gtnl.machine.electric_blast_furnace.tooltip.4=超过MV后的每一级电压，都会将温度提高100K
-gtnl.machine.electric_blast_furnace.tooltip.5=每提升一个电压等级或线圈等级，每次运行可以多处理两个物品
-gtnl.machine.electric_blast_furnace.tooltip.casing=任意隔热机械方块
-gtnl.machine.electric_blast_furnace.tooltip.muffler=顶部中心格栅机械方块
 
 gtnl.machine.platinum_based_treatment.name=铂族工业统合枢纽
 gtnl.recipe.platinum_based_treatment=单步铂处理
-gtnl.machine.platinum_based_treatment.tooltip.0=§o拯救千万格雷人于铂处理的水深火热之中
-gtnl.machine.platinum_based_treatment.tooltip.1=§o无数萌新盼望的单步铂处理
-gtnl.machine.platinum_based_treatment.tooltip.2=初始并行为8
-gtnl.machine.platinum_based_treatment.tooltip.3=线圈等级每提高一级，配方时间和耗电减少5%
-gtnl.machine.platinum_based_treatment.tooltip.4=玻璃等级限制了能源仓等级，UHV玻璃解锁所有等级
-gtnl.machine.platinum_based_treatment.tooltip.5=电压每提高一级，并行 +4
-gtnl.machine.platinum_based_treatment.tooltip.casing=任意多功能机械方块
-gtnl.machine.platinum_based_treatment.tooltip.muffler=消声仓位置请参考多方块结构投影
 
 gtnl.machine.shallow_chemical_coupling.name=浅层化学耦合
 gtnl.recipe.shallow_chemical_coupling=浅层化学耦合
-gtnl.machine.shallow_chemical_coupling.tooltip.0=§7§o基于分子层面操控的化学反应设备
-gtnl.machine.shallow_chemical_coupling.tooltip.1=§7§o通过直接操控分子化学键来避免繁杂的多步化学反应
-gtnl.machine.shallow_chemical_coupling.tooltip.2=线圈等级每提高一级，配方时间和耗电乘以85%
-gtnl.machine.shallow_chemical_coupling.tooltip.3=玻璃等级限制了能源仓等级，UHV玻璃解锁所有等级
-gtnl.machine.shallow_chemical_coupling.tooltip.casing=任意化学防护机械方块
 
 gtnl.machine.steamgate.name=蒸汽之门基础方块
-gtnl.machine.steamgate.tooltip.0=§b§o不可思议的机器。
-gtnl.machine.steamgate.tooltip.1=必须使用蒸汽之门拨号装置连接到另一座蒸汽之门。
-gtnl.machine.steamgate.tooltip.2=左键单击以保存蒸汽之门数据。右键单击以连接到另一座蒸汽之门。
-gtnl.machine.steamgate.tooltip.3=右键单击已连接的蒸汽之门以进行传送。
 gtnl.machine.steamgate.message.saved=已保存蒸汽之门数据
 gtnl.machine.steamgate.message.linked=成功拨号到蒸汽之门
 gtnl.machine.steamgate.message.link_failed=无法拨号到蒸汽之门
@@ -1770,117 +1342,60 @@ gtnl.machine.steamgate.message.link_failed=无法拨号到蒸汽之门
 gtnl.machine.steam_gate_assembler.name=蒸汽至臻先驱者
 gtnl.recipe.steam_gate_assembler=液压动力精密制造
 gtnl.machine.steam_gate_assembler.recipe_type=无界造物核心
-gtnl.machine.steam_gate_assembler.tooltip.0=§b§o管道与齿轮的亵渎混合体，暴躁地吞噬着浩瀚蒸汽。
-gtnl.machine.steam_gate_assembler.tooltip.1=§b§o无数压力在每个精密调校的仓室内涌动，维持着机械的至高平衡。
-gtnl.machine.steam_gate_assembler.tooltip.2=§b§o是什么样的疯狂驱使着某人打造如此机械奇迹? 这究竟承载着怎样的宏伟构想?
-gtnl.machine.steam_gate_assembler.tooltip.3=作者：§d§oSteam§f§oIs§d§oThe§f§oNumber
 
 gtnl.machine.mega_steam_compressor.name=超级蒸汽压缩机
 gtnl.machine.mega_steam_compressor.recipe_type=超级压缩
-gtnl.machine.mega_steam_compressor.tooltip.0=拥有256并行
-gtnl.machine.mega_steam_compressor.tooltip.1=§b§o喷射超乎想象的高压蒸汽流，以强力压缩材料。
-gtnl.machine.mega_steam_compressor.tooltip.2=§b§o可制造超致密金属板……
-gtnl.machine.mega_steam_compressor.tooltip.3=作者：§d§oSteam§f§oIs§d§oThe§f§oNumber
 
 gtnl.machine.mega_solar_boiler.name=巨型高压太阳能锅炉
 gtnl.machine.mega_solar_boiler.recipe_type=太阳能锅炉
-gtnl.machine.mega_solar_boiler.tooltip.0=也许鸿蒙之眼能够提供足够的银子来支撑这庞然大物
-gtnl.machine.mega_solar_boiler.tooltip.1=产生 96,000 升/秒的蒸汽
-gtnl.machine.mega_solar_boiler.tooltip.2=§b§o每秒产生的蒸汽比你的Steam游戏库里未游玩的游戏还要多
 
 gtnl.machine.steam_cactus_wonder.name=仙人掌奇迹
 gtnl.recipe.cactus_wonder_fake=献给仙人掌神的供奉
 gtnl.machine.steam_cactus_wonder.recipe_type=仙人掌祝福之庙
-gtnl.machine.steam_cactus_wonder.tooltip.0=燃烧仙人掌焦炭和仙人掌炭，以产生越来越高效的蒸汽
-gtnl.machine.steam_cactus_wonder.tooltip.1=仙人掌奇迹每秒都会消耗所有储存的供奉
-gtnl.machine.steam_cactus_wonder.tooltip.2=仙人掌之神将保存它们的价值，并以蒸汽祝福回馈她忠诚的狂热信徒
-gtnl.machine.steam_cactus_wonder.tooltip.3=一次只能接受一种类型的供奉
-gtnl.machine.steam_cactus_wonder.tooltip.4=需要在沙子上种植成熟的仙人掌才能成型
-gtnl.machine.steam_cactus_wonder.tooltip.5=§b§o仙人掌🙏
 gtnl.machine.steam_cactus_wonder.info.offer_value=提供价值：
 
 gtnl.machine.steam_carpenter.name=蒸汽木匠
 gtnl.recipe.steam_carpenter=蒸汽工艺
 gtnl.machine.steam_carpenter.recipe_type=木匠
-gtnl.machine.steam_carpenter.tooltip.0=§b§o高效地将木材切割成多种形态
-gtnl.machine.steam_carpenter.tooltip.1=作者：§d§oSteam§f§oIs§d§oThe§f§oNumber
 
 gtnl.machine.steam_lava_maker.name=超级石头加热器
 gtnl.recipe.lava_maker=蒸汽蒸融
 gtnl.machine.steam_lava_maker.recipe_type=超级加热
-gtnl.machine.steam_lava_maker.tooltip.0=可一次熔化最多 4 块石头
-gtnl.machine.steam_lava_maker.tooltip.1=§b§o提高温度
-gtnl.machine.steam_lava_maker.tooltip.2=作者：§d§oSteam§f§oIs§d§oThe§f§oNumber
-gtnl.machine.steam_lava_maker.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.steam_manufacturer.name=蒸汽制造商
 gtnl.recipe.steam_manufacturer=液压制造
 gtnl.machine.steam_manufacturer.recipe_type=液压制造/组装机
-gtnl.machine.steam_manufacturer.tooltip.0=拥有4并行
-gtnl.machine.steam_manufacturer.tooltip.1=以组装的方式组装组件
-gtnl.machine.steam_manufacturer.tooltip.2=运行速度提升100%
-gtnl.machine.steam_manufacturer.tooltip.3=可执行MV及以下的组装机配方
-gtnl.machine.steam_manufacturer.tooltip.4=在控制器内放入HV组装机以解锁HV组装机配方
-gtnl.machine.steam_manufacturer.tooltip.5=§b§o奴隶劳动? 在我的 GTNH 里绝不可能！
 
 gtnl.machine.steam_rock_breaker.name=蒸汽造石机
 gtnl.recipe.rock_breaker=碎石机
 gtnl.machine.steam_rock_breaker.recipe_type=碎石机
 gtnl.machine.steam_rock_breaker.message.auto_placing_done=§6自动放置已完成！现在请自行放置水和岩浆！
-gtnl.machine.steam_rock_breaker.tooltip.0=像碎石机一样工作，但更大
-gtnl.machine.steam_rock_breaker.tooltip.1=电路板1 = 圆石，电路板2 = 石头，电路板3 = 黑曜石
-gtnl.machine.steam_rock_breaker.tooltip.2=一次可处理多达8配方
-gtnl.machine.steam_rock_breaker.tooltip.3=§b§o石石石石石石石石石石石石石石石石石石石石头头头头头头头头头头头头头头头头头头头头
-gtnl.machine.steam_rock_breaker.tooltip.4=§b§o注意结构共用：>
-gtnl.machine.steam_rock_breaker.tooltip.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.steam_woodcutter.name=蒸汽树场
 gtnl.recipe.woodcutter=伐木场
 gtnl.machine.steam_woodcutter.recipe_type=伐木场
-gtnl.machine.steam_woodcutter.tooltip.0=§b§o从树苗缓慢生长成树木
-gtnl.machine.steam_woodcutter.tooltip.1=作者：§d§oSteam§f§oIs§d§oThe§f§oNumber
 
 gtnl.machine.steam_extractinator.name=蒸汽精萃机
 gtnl.recipe.steam_extractinator=萃取
 gtnl.machine.steam_extractinator.recipe_type=资源萃取
-gtnl.machine.steam_extractinator.tooltip.0=蒸发不同泥浆中的杂质，以生成可用材料
-gtnl.machine.steam_extractinator.tooltip.1=一次可处理多达4个物品
-gtnl.machine.steam_extractinator.tooltip.2=§b§o从蒸汽到岩石，压力的力量或许能带来无限财富！
-gtnl.machine.steam_extractinator.tooltip.top_casing=顶部青铜机械方块
-gtnl.machine.steam_extractinator.tooltip.bottom_casing=底部青铜机械方块
-gtnl.machine.steam_extractinator.tooltip.middle_casing=上下之间青铜机械方块
 
 gtnl.machine.steam_fusion_reactor.name=超高压反应堆
 gtnl.recipe.steam_fusion_reactor=高压反应堆
 gtnl.machine.steam_fusion_reactor.metadata.requires_compact_reactor=需要压缩超高压聚变反应堆
 gtnl.machine.steam_fusion_reactor.recipe_type=高压反应堆
 gtnl.machine.steam_fusion_reactor.error.requires_compact_reactor=需要压缩超高压反应堆
-gtnl.machine.steam_fusion_reactor.tooltip.0=将蒸汽与热流体结合，以达到更高的温度
-gtnl.machine.steam_fusion_reactor.tooltip.1=需要蒸汽才能运作? 不，但也算是
-gtnl.machine.steam_fusion_reactor.tooltip.2=§b§o这是什么? 聚变? 哈哈哈，别闹了，再讲个笑话吧！
-gtnl.machine.steam_fusion_reactor.tooltip.casing=1-8，玻璃相邻的方块
 
 gtnl.machine.high_pressure_steam_fusion_reactor.name=压缩超高压反应堆
 gtnl.machine.high_pressure_steam_fusion_reactor.recipe_type=高压反应堆
-gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.0=青铁与蒸汽的融合，从未被设想过
-gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.1=满足你所有的压力需求
-gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.2=一次可处理多达256配方
-gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.3=§b§o天啊，你到底做了什么
-gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.casing=1-8，玻璃相邻的方块
 
 gtnl.machine.steam_infernal_coke_oven.name=炼狱焦炉
 gtnl.recipe.infernal_coke_oven=焦炉但是超模
 gtnl.machine.steam_infernal_coke_oven.recipe_type=焦炉
-gtnl.machine.steam_infernal_coke_oven.tooltip.0=比粘土高炉更高效运作
-gtnl.machine.steam_infernal_coke_oven.tooltip.1=每连续工作5秒，速度提升5%，最高可达1000%
-gtnl.machine.steam_infernal_coke_oven.tooltip.2=§b§o太棒了！
 
 gtnl.machine.integrated_assembly_facility.name=综合组装车间
 gtnl.machine.integrated_assembly_facility.recipe_type=组装机 / 部件装配线
 gtnl.machine.integrated_assembly_facility.mode.0=组装机
 gtnl.machine.integrated_assembly_facility.mode.1=部件装配线
-gtnl.machine.integrated_assembly_facility.tooltip.0=部件装配线配方不获得16倍并行加成
-gtnl.machine.integrated_assembly_facility.tooltip.casing=任意强化镀铱机械方块
 gtnl.machine.integrated_assembly_facility.info.component_assembly_line_upgrade=部件装配线升级
 
 gtnl.machine.tree_diagram.name=树状图设计者
@@ -1893,21 +1408,14 @@ gtnl.machine.tree_diagram.metadata.output_coefficient=双倍产出几率：%s
 gtnl.machine.tree_diagram.metadata.parallel=并行：%s
 gtnl.machine.tree_diagram.metadata.nanites_tier=纳米蜂群等级：%s
 gtnl.recipe.tree_diagram=演算模拟
-gtnl.machine.tree_diagram.tooltip.casing=任意中子采矿机械方块
 
 gtnl.machine.nano_phagocytosis_plant.name=纳米吞噬厂
 gtnl.machine.nano_phagocytosis_plant.recipe_type=粉碎机 / 湿法碾磨
 gtnl.machine.nano_phagocytosis_plant.mode.0=粉碎机
 gtnl.machine.nano_phagocytosis_plant.mode.1=湿法碾磨
-gtnl.machine.nano_phagocytosis_plant.tooltip.0=使用纳米蜂群无情的撕碎一切
-gtnl.machine.nano_phagocytosis_plant.tooltip.1=每级电压等级额外提供25%的加速和耗电减免(乘算叠加)
-gtnl.machine.nano_phagocytosis_plant.tooltip.casing=任意超能硅岩强化无菌净水厂机械方块
 
 gtnl.machine.magnetic_energy_reaction_furnace.name=磁能反应炉
 gtnl.machine.magnetic_energy_reaction_furnace.recipe_type=电弧炉
-gtnl.machine.magnetic_energy_reaction_furnace.tooltip.0=电容器满负荷运作中
-gtnl.machine.magnetic_energy_reaction_furnace.tooltip.1=每级线圈等级额外提供20%的加速和耗电减免(乘算叠加)
-gtnl.machine.magnetic_energy_reaction_furnace.tooltip.casing=任意电弧炉机械方块
 
 gtnl.machine.nanites_integrated_processing_center.name=纳米集成加工中心
 gtnl.recipe.nanites_integrated_processing=纳米统合工坊
@@ -1930,30 +1438,15 @@ gtnl.machine.nanites_module.tooltip.casing=提示方块：1号
 
 gtnl.machine.super_space_elevator.name=超级太空电梯
 gtnl.machine.super_space_elevator.recipe_type=太空电梯
-gtnl.machine.super_space_elevator.tooltip.0=§d§l连接星辰
-gtnl.machine.super_space_elevator.tooltip.1=每级加速轨道提供112模块数量
-gtnl.machine.super_space_elevator.tooltip.2=加速轨道等级限制了模块等级
-gtnl.machine.super_space_elevator.tooltip.3=每个模块有各自独立的输入输出空间，除了能量
-gtnl.machine.super_space_elevator.tooltip.4=本控制器接收能量供应并将能量分发
-gtnl.machine.super_space_elevator.tooltip.5=MK-III及以上加速轨道可开启无线模式
-gtnl.machine.super_space_elevator.tooltip.6=当主结构未安装能源仓时自动进入无线模式
-gtnl.machine.super_space_elevator.tooltip.7=关闭控制器即可暂停所有模块
-gtnl.machine.super_space_elevator.casing=任意太空电梯基座机械方块
 gtnl.machine.super_space_elevator.structure_levels=已检测到附属层数：
 
 gtnl.machine.large_bio_lab.name=大型生物实验室
 gtnl.recipe.large_bio_lab=大型生物实验室
 gtnl.machine.large_bio_lab.recipe_type=大型生物实验室
-gtnl.machine.large_bio_lab.tooltip.0=§o这绝对违背了老虎机的原则！
-gtnl.machine.large_bio_lab.casing=任意超能硅岩强化无菌净水厂机械方块
 
 gtnl.machine.large_gas_collector.name=大型集气室
 gtnl.recipe.gas_collector=集气室
 gtnl.machine.large_gas_collector.recipe_type=集气室
-gtnl.machine.large_gas_collector.tooltip.0=集气室的大型版本
-gtnl.machine.large_gas_collector.tooltip.1=最大并行数为1,000,000
-gtnl.machine.large_gas_collector.tooltip.2=在主世界，末地，下界无需输入物品也可运行
-gtnl.machine.large_gas_collector.casing=任意脱氧钢机械方块
 
 gtnl.machine.eternal_greg_tech_workshop.name=永恒格雷工坊
 gtnl.recipe.eternal_greg_tech_workshop_upgrade=永恒格雷工坊模块升级
@@ -1975,11 +1468,6 @@ gtnl.machine.egtw_fusion_module.casing=提示方块：1号
 
 gtnl.machine.space_assembler.name=太空组装机
 gtnl.machine.space_assembler.recipe_type=太空组装机
-gtnl.machine.space_assembler.tooltip.0=§d§l字面意义上的在太空组装
-gtnl.machine.space_assembler.tooltip.1=必须在空间站运行！
-gtnl.machine.space_assembler.tooltip.2=每级玻璃额外提供10%的加速(乘算叠加)
-gtnl.machine.space_assembler.tooltip.3=需要升级以启用 MK III 级配方
-gtnl.machine.space_assembler.casing=任意进阶电子计算机械方块
 GT5U.gui.text.not_in_space_station=不在空间站！
 gtnl.gui.space_assembler.upgrade.title=太空组装机升级
 gtnl.gui.space_assembler.upgrade.disabled=未升级
@@ -1990,49 +1478,30 @@ gtnl.recipe.precision_laser_engraver=精密激光蚀刻
 gtnl.machine.engraving_laser_plant.recipe_type=激光蚀刻机 / 精密激光蚀刻
 gtnl.machine.engraving_laser_plant.mode.0=激光蚀刻机
 gtnl.machine.engraving_laser_plant.mode.1=精密激光蚀刻
-gtnl.machine.engraving_laser_plant.info.0=每级玻璃和部件装配线外壳等级额外提供5%的加速和耗电减免(乘算叠加)
-gtnl.machine.engraving_laser_plant.info.1=部件装配线外壳等级决定了能源仓最大等级 + 3，UIV装配线外壳解锁所有等级
-gtnl.machine.engraving_laser_plant.info.2=精密激光蚀刻配方不获得16倍并行加成
-gtnl.machine.engraving_laser_plant.casing=任意强化镀铱机械方块
 gtnl.gui.engraving_laser_plant.precision_laser_engraver_upgrade=精密激光蚀刻升级
 
 gtnl.machine.vortex_matter_centrifuge.name=旋涡物质离心器
 gtnl.machine.vortex_matter_centrifuge.recipe_type=离心机
-gtnl.machine.vortex_matter_centrifuge.casing=任意分子机械方块
 
 gtnl.machine.superconducting_electromagnetism.name=超导电磁工厂
 gtnl.machine.superconducting_electromagnetism.recipe_type=电磁离析机 / 两级磁化机
 gtnl.machine.superconducting_electromagnetism.mode.0=电磁离析机
 gtnl.machine.superconducting_electromagnetism.mode.1=两级磁化机
-gtnl.machine.superconducting_electromagnetism.info=每级玻璃等级额外提供5%的加速和耗电减免(乘算叠加)
-gtnl.machine.superconducting_electromagnetism.casing=任意分子机械方块
 
 gtnl.machine.field_forge_press.name=力场锻压机
 gtnl.machine.field_forge_press.recipe_type=锻造锤
-gtnl.machine.field_forge_press.casing=任意分子机械方块
 
 gtnl.machine.superconducting_magnetic_presser.name=超导磁驱冲击装置
 gtnl.machine.superconducting_magnetic_presser.recipe_type=冲压机床
-gtnl.machine.superconducting_magnetic_presser.info=每级玻璃等级额外提供5%的加速和耗电减免(乘算叠加)
-gtnl.machine.superconducting_magnetic_presser.casing=任意镀铱机械方块
 
 gtnl.machine.heavy_rolling.name=重型辊轧机
 gtnl.machine.heavy_rolling.recipe_type=卷板机
-gtnl.machine.heavy_rolling.info=每级线圈等级额外提供15%的加速(乘算叠加)
-gtnl.machine.heavy_rolling.casing=任意冶炼炉机械方块
 
 gtnl.machine.high_energy_laser_lathe.name=高能激光车床
 gtnl.machine.high_energy_laser_lathe.recipe_type=车床
-gtnl.machine.high_energy_laser_lathe.info=每级玻璃等级额外提供5%的加速和耗电减免(乘算叠加)
-gtnl.machine.high_energy_laser_lathe.casing=任意镀铱机械方块
 
 gtnl.machine.mega_mixer.name=巨型搅拌机
 gtnl.machine.mega_mixer.recipe_type=搅拌机
-gtnl.machine.mega_mixer.tooltip.0=比相同电压的机器快400%
-gtnl.machine.mega_mixer.tooltip.1=只需要使用配方要求功率的60%
-gtnl.machine.mega_mixer.tooltip.2=开启配方锁定后，给予两次无损超频，功率要求变为80%
-gtnl.machine.mega_mixer.tooltip.3=配方锁定后连续运行将加速至700%
-gtnl.machine.mega_mixer.casing=任意强化镀铱机械方块
 
 gtnl.machine.steam_beacon_module.1.name=蒸汽信标模块 I
 gtnl.machine.steam_beacon_module.2.name=蒸汽信标模块 II
@@ -2041,11 +1510,6 @@ gtnl.machine.steam_beacon_module.recipe_type=信标
 gtnl.machine.steam_beacon_module.tooltip.basic=§a§l村民向您分享了原始信标技术！
 gtnl.machine.steam_beacon_module.tooltip.advanced=§a§l将蒸汽嬗变成药水分子...
 gtnl.machine.steam_beacon_module.tooltip.elite=§a§l宇宙没有义务让你理解...喵！
-gtnl.machine.steam_beacon_module.tooltip.0=将信标功能添加到蒸汽楼梯
-gtnl.machine.steam_beacon_module.tooltip.1=通入蒸汽来启用大范围的药水效果
-gtnl.machine.steam_beacon_module.tooltip.2=生效范围：
-gtnl.machine.steam_beacon_module.tooltip.3=在GUI中配置要释放的药水效果
-gtnl.machine.steam_beacon_module.tooltip.4=调整超频次数来提高药水效果等级
 gtnl.machine.steam_beacon_module.configure=配置信标效果
 gtnl.machine.steam_beacon_module.confirm=确定
 gtnl.waila.steam_beacon_module.enabled_effects=当前启用效果：
@@ -2065,7 +1529,6 @@ gtnl.machine.steam_elevator_module.casing=任意脱氧钢机械方块
 
 gtnl.machine.nanites_circuit_assembly_factory.name=纳米蜂群电路组装厂
 gtnl.machine.nanites_circuit_assembly_factory.recipe_type=电路组装机
-gtnl.machine.nanites_circuit_assembly_factory.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.etgw_eye_of_harmony_module.name=永恒格雷工坊 - 鸿蒙之眼模块
 gtnl.machine.etgw_eye_of_harmony_module.recipe_type=鸿蒙之眼
@@ -2084,16 +1547,9 @@ gtnl.machine.egtw_eye_of_harmony_module.casing=提示方块：1号
 
 gtnl.machine.aetron_pressor.name=以太压铸机
 gtnl.machine.aetron_pressor.recipe_type=压模机
-gtnl.machine.aetron_pressor.casing=任意分子机械方块
 
 gtnl.machine.steam_elevator.name=蒸汽楼梯
 gtnl.machine.steam_elevator.recipe_type=蒸汽楼梯
-gtnl.machine.steam_elevator.tooltip.0=§a§l通向天空的楼梯?
-gtnl.machine.steam_elevator.tooltip.1=每个模块有各自独立的输入输出空间，除了蒸汽
-gtnl.machine.steam_elevator.tooltip.2=本控制器接收蒸汽供应并将蒸汽分发
-gtnl.machine.steam_elevator.tooltip.3=当主结构未安装蒸汽输入仓时自动进入无线模式
-gtnl.machine.steam_elevator.tooltip.4=关闭控制器即可暂停所有模块
-gtnl.machine.steam_elevator.casing=任意砖砌钢外壳
 
 gtnl.machine.steam_monster_repellent_module.1.name=蒸汽敌对生物驱逐模块 I
 gtnl.machine.steam_monster_repellent_module.2.name=蒸汽敌对生物驱逐模块 II
@@ -2102,18 +1558,9 @@ gtnl.machine.steam_monster_repellent_module.recipe_type=敌对生物驱逐器
 gtnl.machine.steam_monster_repellent_module.tooltip.basic=§a§l它通过发出巨大的噪音来赶走怪物...和你一天的好心情.
 gtnl.machine.steam_monster_repellent_module.tooltip.advanced=§a§l你听不到它，但怪物听得一清二楚.
 gtnl.machine.steam_monster_repellent_module.tooltip.elite=§a§l这机器让怪物自己报警跑路.
-gtnl.machine.steam_monster_repellent_module.tooltip.0=将敌对生物驱逐功能添加到蒸汽楼梯
-gtnl.machine.steam_monster_repellent_module.tooltip.1=创建一个力场阻止怪物的生成
-gtnl.machine.steam_monster_repellent_module.tooltip.2=只在机器运行的时候阻止
-gtnl.machine.steam_monster_repellent_module.tooltip.3=生效范围：
 
 gtnl.machine.steam_flight_module.name=蒸汽飞行模块
 gtnl.machine.steam_flight_module.recipe_type=飞行
-gtnl.machine.steam_flight_module.tooltip.0=§a§l蒸汽是人类进步的阶梯 - 高尔哈基米
-gtnl.machine.steam_flight_module.tooltip.1=将飞行功能添加到蒸汽楼梯
-gtnl.machine.steam_flight_module.tooltip.2=消耗蒸汽赋予你自由飞行的能力
-gtnl.machine.steam_flight_module.tooltip.3=调整超频次数来消耗更多蒸汽扩大范围
-gtnl.machine.steam_flight_module.tooltip.4=生效范围：64 * 超频次数
 
 gtnl.machine.steam_weather_module.name=蒸汽天气更替模块
 gtnl.recipe.steam_weather_module=天气更替
@@ -2121,28 +1568,12 @@ gtnl.nei.steam_weather.special_value.1=切换天气为晴天
 gtnl.nei.steam_weather.special_value.2=切换天气为雨天
 gtnl.nei.steam_weather.special_value.3=切换天气为雷暴
 gtnl.machine.steam_weather_module.recipe_type=天气更替
-gtnl.machine.steam_weather_module.tooltip.0=§a§l恩里克·普奇...这就是我的替身...「Weather Report！」
-gtnl.machine.steam_weather_module.tooltip.1=将天气更替功能添加到蒸汽楼梯
-gtnl.machine.steam_weather_module.tooltip.2=输入特定材料切换天气，持续1小时
 
 gtnl.machine.nano_assembler_mark_l.name=纳米组装机Mark-50
 gtnl.machine.nano_assembler_mark_l.recipe_type=精密组装机
-gtnl.machine.nano_assembler_mark_l.tooltip.0=每级部件装配线外壳等级额外提供10%的加速和耗电减免(乘算叠加)
-gtnl.machine.nano_assembler_mark_l.tooltip.1=部件装配线外壳等级决定了能源仓最大等级 + 3，UIV装配线外壳解锁所有等级
-gtnl.machine.nano_assembler_mark_l.casing=任意镀铱机械方块
 
 gtnl.machine.high_performance_computation_array.name=高性能计算阵列
 gtnl.machine.high_performance_computation_array.recipe_type=量子计算机
-gtnl.machine.high_performance_computation_array.info.0=用于生成算力(以及热量)
-gtnl.machine.high_performance_computation_array.info.1=需要持续输入超级冷却液来降低热量
-gtnl.machine.high_performance_computation_array.info.2=成型后会显示一系列的指示器
-gtnl.machine.high_performance_computation_array.info.3=不同的指示器会给予不同的性能调整
-gtnl.machine.high_performance_computation_array.info.4=使用螺丝刀切换无线模式
-gtnl.machine.high_performance_computation_array.casing.0=未定元解析器 X
-gtnl.machine.high_performance_computation_array.casing.1=任意电子计算机械方块(最前或最后一片)
-gtnl.machine.high_performance_computation_array.casing.2=数据接口
-gtnl.machine.high_performance_computation_array.casing.3=计算机箱
-gtnl.machine.high_performance_computation_array.casing.4=任意进阶电子计算机械方块，除外侧
 gtnl.gui.high_performance_computation_array.structure_length=结构长度
 gtnl.gui.high_performance_computation_array.max_heat=当前最大热量
 gtnl.gui.high_performance_computation_array.produced_computation=生成算力
@@ -2150,13 +1581,6 @@ gtnl.gui.high_performance_computation_array.coolant_consumption=当前消耗冷�
 
 gtnl.machine.eye_of_harmony_injector.name=鸿蒙之眼注入器
 gtnl.machine.eye_of_harmony_injector.recipe_type=§b鸿蒙之眼注入器
-gtnl.machine.eye_of_harmony_injector.tooltip.0=以强大的宇宙力量注入气体！
-gtnl.machine.eye_of_harmony_injector.tooltip.1=这太令人兴奋了！
-gtnl.machine.eye_of_harmony_injector.tooltip.2=直接操纵鸿蒙之眼来灌注流体
-gtnl.machine.eye_of_harmony_injector.tooltip.3=支持所有输入仓！
-gtnl.machine.eye_of_harmony_injector.tooltip.4=在GUI内配置最大输入阈值
-gtnl.machine.eye_of_harmony_injector.tooltip.5=§e爱来自Korosensei :)
-gtnl.machine.eye_of_harmony_injector.tooltip.casing=任意超能机械方块
 gtnl.machine.eye_of_harmony_injector.helium_threshold=§b氦气最大输入阈值
 gtnl.machine.eye_of_harmony_injector.hydrogen_threshold=§b氢气最大输入阈值
 gtnl.machine.eye_of_harmony_injector.raw_star_matter_threshold=§b浓缩原始恒星等离子体混合物最大输入阈值
@@ -2174,8 +1598,6 @@ gtnl.recipe.plasma_condensation=等离子冷凝
 gtnl.machine.compound_extreme_cooling_unit.recipe_type=真空冷冻机 / 等离子冷凝
 gtnl.machine.compound_extreme_cooling_unit.mode.0=真空冷冻机
 gtnl.machine.compound_extreme_cooling_unit.mode.1=等离子冷凝
-gtnl.machine.compound_extreme_cooling_unit.info=每级玻璃额外提供5%的加速和耗电减免(乘算叠加)
-gtnl.machine.compound_extreme_cooling_unit.casing=任意防冻机械方块
 
 gtnl.machine.steam_ore_processor_module.name=蒸汽矿石处理模块
 gtnl.machine.steam_ore_processor_module.recipe_type=微缩矿石处理厂
@@ -2186,40 +1608,16 @@ gtnl.machine.steam_ore_processor_module.mode.3=粉碎机 -> 洗矿机 -> 筛选�
 gtnl.machine.steam_ore_processor_module.mode.4=粉碎机 -> 化学浸洗机 -> 粉碎机 -> 离心机
 gtnl.machine.steam_ore_processor_module.mode.5=粉碎机 -> 化学浸洗机 -> 热能离心机 -> 粉碎机
 gtnl.machine.steam_ore_processor_module.mode.6=锻造锤 -> 锻造锤 -> 简易洗矿机
-gtnl.machine.steam_ore_processor_module.tooltip.0=§a§l你有想过它存在的意义吗？
-gtnl.machine.steam_ore_processor_module.tooltip.1=将矿石处理功能添加到蒸汽楼梯
-gtnl.machine.steam_ore_processor_module.tooltip.2=一步完成所有矿石处理
-gtnl.machine.steam_ore_processor_module.tooltip.3=一次至多可处理8个矿石
-gtnl.machine.steam_ore_processor_module.tooltip.4=每个矿石消耗128L蒸汽/t、1升润滑油、10升蒸馏水
-gtnl.machine.steam_ore_processor_module.tooltip.5=处理时间取决于当前模式
-gtnl.machine.steam_ore_processor_module.tooltip.6=设置电路板来翻倍并行和耗电
-gtnl.machine.steam_ore_processor_module.tooltip.7=使用螺丝刀切换模式
-gtnl.machine.steam_ore_processor_module.tooltip.8=手持螺丝刀Shift+右键以销毁石粉
 gtnl.waila.steam_ore_processor_module.actual_parallel=实际并行：
 
 gtnl.machine.large_steam_lathe.name=大型蒸汽车床
 gtnl.machine.large_steam_lathe.recipe_type=车床
-gtnl.machine.large_steam_lathe.tooltip.0=比同等级的单方块车床快11%
-gtnl.machine.large_steam_lathe.tooltip.1=仅消耗正常需求95%的蒸汽
-gtnl.machine.large_steam_lathe.tooltip.2=一次可处理多达8个物品
-gtnl.machine.large_steam_lathe.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.large_steam_cutting.name=大型蒸汽切割机
 gtnl.machine.large_steam_cutting.recipe_type=切割机
-gtnl.machine.large_steam_cutting.tooltip.0=比同等级的单方块切割机快11%
-gtnl.machine.large_steam_cutting.tooltip.1=仅消耗正常需求95%的蒸汽
-gtnl.machine.large_steam_cutting.tooltip.2=一次可处理多达8个物品
-gtnl.machine.large_steam_cutting.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.steam_item_vault.name=蒸汽物品保险库
 gtnl.machine.steam_item_vault.recipe_type=物品保险库
-gtnl.machine.steam_item_vault.info.0=原始科技保险库，最多可容纳%s种不同的物品！
-gtnl.machine.steam_item_vault.info.1=物品总容量的1/%s作为每种物品的容量
-gtnl.machine.steam_item_vault.info.2=使用螺丝刀右键控制器方块可开启过量销毁功能
-gtnl.machine.steam_item_vault.info.3=兼容输出总线过滤
-gtnl.machine.steam_item_vault.info.4=可以通过三录仪获取存储物品的信息
-gtnl.machine.steam_item_vault.info.5=物品总容量：%s
-gtnl.machine.steam_item_vault.casing=任意抗震安全外壳
 gtnl.waila.steam_item_vault.stored_items=已存储物品：
 gtnl.waila.steam_item_vault.operational_data=操作数据
 gtnl.waila.steam_item_vault.item_used=物品已用容量：%s
@@ -2235,21 +1633,9 @@ gtnl.chat.steam_item_vault.auto_voiding=自动销毁：%b
 gtnl.machine.primitive_brick_kiln.name=直焰窑
 gtnl.recipe.primitive_brick_kiln=原始土窑
 gtnl.machine.primitive_brick_kiln.recipe_type=原始土窑
-gtnl.machine.primitive_brick_kiln.tooltip.0=景德镇品质认证！
-gtnl.machine.primitive_brick_kiln.tooltip.1=一次可处理多达8个物品
-gtnl.machine.primitive_brick_kiln.casing=任意耐火砖
 
 gtnl.machine.singularity_data_hub.name=奇点数据中枢
 gtnl.machine.singularity_data_hub.recipe_type=保险库
-gtnl.machine.singularity_data_hub.tooltip.0=§9§o由展开的维度编织而成的仓库
-gtnl.machine.singularity_data_hub.tooltip.1=无限存储！
-gtnl.machine.singularity_data_hub.tooltip.2=不再兼容输出总线和输出仓，只允许输入
-gtnl.machine.singularity_data_hub.tooltip.3=必须使用保险库多方块输入/输出总成
-gtnl.machine.singularity_data_hub.tooltip.4=默认运行能耗1A UHV
-gtnl.machine.singularity_data_hub.tooltip.5=不安装能源仓将自动进入无线模式
-gtnl.machine.singularity_data_hub.tooltip.6=可以通过三录仪获取存储物品的信息
-gtnl.machine.singularity_data_hub.tooltip.7=使用螺丝刀右键控制器方块可开启过量销毁功能
-gtnl.machine.singularity_data_hub.casing=任意抗震安全外壳
 gtnl.waila.singularity_data_hub.stored_stacks=已存储%s：
 gtnl.waila.singularity_data_hub.operational_data=操作数据
 gtnl.waila.singularity_data_hub.type_used=%s已用容量：%s
@@ -2267,89 +1653,33 @@ gtnl.recipe.electrocell_generator=电化学反应
 gtnl.nei.electrocell_generator.special_value=发电系数：%s
 gtnl.recipe.metadata.electrocell_generator=基础发电量：%s EU/t
 gtnl.machine.electrocell_generator.recipe_type=电化学反应
-gtnl.machine.electrocell_generator.tooltip.0=干净环保且高效！
-gtnl.machine.electrocell_generator.tooltip.1=在左侧输入正极，右侧输入负极
-gtnl.machine.electrocell_generator.tooltip.2=每秒消耗对应数量的酸，输出副产物
-gtnl.machine.electrocell_generator.tooltip.3=如果没有酸输入，发电量将大幅下降！
-gtnl.machine.electrocell_generator.tooltip.4=同时只能输入一种酸
-gtnl.machine.electrocell_generator.tooltip.5=当酸超过一定数量可以根据发电系数多消耗多产出
-gtnl.machine.electrocell_generator.casing=任意脱氧钢机械方块
 
 gtnl.machine.fog_alloy_smelter_module.name=太阳炽热合金炉
 gtnl.machine.fog_alloy_smelter_module.recipe_type=合金炉
-gtnl.machine.godforge.alloy_smelter_module.tooltip.0=这是诸神之锻炉的一个模块
-gtnl.machine.godforge.alloy_smelter_module.tooltip.1=必须安装于诸神之锻炉上才能工作.
-gtnl.machine.godforge.alloy_smelter_module.tooltip.2=用于聚焦温度下的合金冶炼.
-gtnl.machine.godforge.alloy_smelter_module.tooltip.3=诸神之锻炉的第五种模块，能够将材料直接精炼成合金
-gtnl.machine.godforge.alloy_smelter_module.tooltip.4=即使没有高温，它也仍然可以胜任工作.
-gtnl.machine.godforge.alloy_smelter_module.tooltip.5=它不需要诸神之锻炉的升级.
-gtnl.machine.godforge.alloy_smelter_module.tooltip.6=这一模块拥有最快的处理速度.
 
 gtnl.machine.fog_alloy_blast_smelter_module.name=太阳聚焦融合核心
 gtnl.machine.fog_alloy_blast_smelter_module.recipe_type=合金冶炼炉
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.0=这是诸神之锻炉的一个模块
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.1=必须安装于诸神之锻炉上才能工作.
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.2=用于在高度聚焦温度下的合金冶炼.
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.3=诸神之锻炉的第六种模块，利用极高的温度将材料融化，
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.4=将其搅拌并直接融合为液态合金.
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.5=它拥有无损超频的能力.
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.6=这一模块专注于高效处理材料.
 
 gtnl.machine.fog_extractor_module.name=太阳热离精粹机
 gtnl.machine.fog_extractor_module.recipe_type=提取机 / 流体提取机
 gtnl.machine.fog_extractor.fluid_mode.disabled=提取机
 gtnl.machine.fog_extractor.fluid_mode.enabled=流体提取机
-gtnl.machine.godforge.extractor_module.tooltip.0=这是诸神之锻炉的一个模块
-gtnl.machine.godforge.extractor_module.tooltip.1=必须安装于诸神之锻炉上才能工作.
-gtnl.machine.godforge.extractor_module.tooltip.2=用于在不同温度下的精准提取.
-gtnl.machine.godforge.extractor_module.tooltip.3=诸神之锻炉的第七种模块，利用精准的温度控制提取成品，
-gtnl.machine.godforge.extractor_module.tooltip.4=以难以想象的速度处理材料.
-gtnl.machine.godforge.extractor_module.tooltip.5=所需的处理模式可在GUI中选择.
-gtnl.machine.godforge.extractor_module.tooltip.6=这一模块专注于无限的并行处理.
 
 gtnl.machine.steam_entity_crusher_module.name=蒸汽屠宰场模块
 gtnl.machine.steam_entity_crusher_module.recipe_type=气动刷怪笼
-gtnl.machine.steam_entity_crusher_module.tooltip.0=§a§l使用高温蒸汽熔炼怪物.
-gtnl.machine.steam_entity_crusher_module.tooltip.1=将屠宰场功能添加到蒸汽楼梯
-gtnl.machine.steam_entity_crusher_module.tooltip.2=每次运行有2%的概率双倍产出
-gtnl.machine.steam_entity_crusher_module.tooltip.3=每多一个同一种刷怪笼，概率+0.5%
-gtnl.machine.steam_entity_crusher_module.tooltip.4=最大增加34%的概率
-gtnl.machine.steam_entity_crusher_module.tooltip.5=作为代价，默认时间加倍，功率减半
-gtnl.machine.steam_entity_crusher_module.tooltip.6=无法超频
 
 gtnl.machine.steam_apiary_module.name=蒸汽蜜蜂养殖模块
 gtnl.machine.steam_apiary_module.recipe_type=气动蜂箱
-gtnl.machine.steam_apiary_module.tooltip.0=§a§l高压力让蜜蜂工作§0§m内卷§a§l更卖力.
-gtnl.machine.steam_apiary_module.tooltip.1=将蜂箱功能添加到蒸汽楼梯
-gtnl.machine.steam_apiary_module.tooltip.2=蜜蜂的理想(?)家园
-gtnl.machine.steam_apiary_module.tooltip.3=固定运行时间为300秒
-gtnl.machine.steam_apiary_module.tooltip.4=每次超频，可放入数翻倍，功率*4
-gtnl.machine.steam_apiary_module.tooltip.5=基础数量为8
 
 gtnl.machine.steam_bee_breeding_module.name=蒸汽蜜蜂繁殖模块
 gtnl.machine.steam_bee_breeding_module.recipe_type=蜜蜂繁殖
-gtnl.machine.steam_bee_breeding_module.tooltip.0=§a§l让蜜蜂感受灼♂热的爱吧.
-gtnl.machine.steam_bee_breeding_module.tooltip.1=将蜜蜂繁殖功能添加到蒸汽楼梯
-gtnl.machine.steam_bee_breeding_module.tooltip.2=在控制器内放入蜂后
-gtnl.machine.steam_bee_breeding_module.tooltip.3=它会缓慢生产卑贱种公主蜂
-gtnl.machine.steam_bee_breeding_module.tooltip.4=每次运行消耗128蜂王浆
-gtnl.machine.steam_bee_breeding_module.tooltip.5=基础运行时间：10分钟
 
 gtnl.machine.steam_greenhouse_module.name=蒸汽温室种植模块
 gtnl.machine.steam_greenhouse_module.recipe_type=作物农场
-gtnl.machine.steam_greenhouse_module.tooltip.0=§a§l农场主的致富经.
-gtnl.machine.steam_greenhouse_module.tooltip.1=将温室功能添加到蒸汽楼梯
-gtnl.machine.steam_greenhouse_module.tooltip.2=不再需要肥料和除草剂！ 
-gtnl.machine.steam_greenhouse_module.tooltip.3=每株作物消耗16000L水
-gtnl.machine.steam_greenhouse_module.tooltip.4=运行时间固定为60秒
-gtnl.machine.steam_greenhouse_module.tooltip.5=无法超频
 
 gtnl.machine.rocket_assembler.name=火箭组装厂
 gtnl.recipe.rocket_assembler=火箭组装厂
 gtnl.machine.rocket_assembler.recipe_type=火箭组装厂
-gtnl.machine.rocket_assembler.info.0=§d§l我有一个航天梦
-gtnl.machine.rocket_assembler.info.1=使用剪线钳开启/关闭动画特效
-gtnl.machine.rocket_assembler.casing=任意洁净不锈钢机械方块
 gtnl.nei.rocket_assembler.special_value=需要%s阶火箭NASA工作台图纸
 
 gtnl.machine.steam_oil_drill_module.1.name=蒸汽流体钻机模块 I
@@ -2359,28 +1689,18 @@ gtnl.machine.steam_oil_drill_module.recipe_type=泵
 gtnl.machine.steam_oil_drill_module.tooltip.basic=§a§l霉菌来袭！
 gtnl.machine.steam_oil_drill_module.tooltip.advanced=§a§l地底两万里
 gtnl.machine.steam_oil_drill_module.tooltip.elite=§a§l上知天文，下至地里
-gtnl.machine.steam_oil_drill_module.tooltip.0=将流体钻机功能添加到蒸汽楼梯
-gtnl.machine.steam_oil_drill_module.tooltip.1=开采当前维度的所有地下流体类型
-gtnl.machine.steam_oil_drill_module.tooltip.2=随机抽取最多%s种流体
-gtnl.machine.steam_oil_drill_module.tooltip.3=每次可能抽取%s~%sL
-gtnl.machine.steam_oil_drill_module.tooltip.4=基础工作周期：%st
 
 gtnl.machine.advanced_rare_earth_centrifugal.name=进阶稀土离心机
 gtnl.machine.advanced_rare_earth_centrifugal.recipe_type=稀土离心
-gtnl.machine.advanced_rare_earth_centrifugal.casing=任意镀铱机械方块
 
 gtnl.machine.mass_fabricator.name=质量发生器
 gtnl.machine.mass_fabricator.recipe_type=质量发生器
-gtnl.machine.mass_fabricator.casing=任意ZPM机械方块
 
 gtnl.machine.advanced_mass_fabricator.name=进阶质量发生器
 gtnl.machine.advanced_mass_fabricator.recipe_type=质量发生器
-gtnl.machine.advanced_mass_fabricator.casing=任意元素约束机械方块
 
 gtnl.machine.horizontal_compressor.name=卧式压缩机
 gtnl.machine.horizontal_compressor.recipe_type=压缩机
-gtnl.machine.horizontal_compressor.info=升级机器来启用黑洞压缩机！
-gtnl.machine.horizontal_compressor.casing=任意强化钨钢机械方块
 gtnl.machine.horizontal_compressor.upgrade=黑洞压缩机升级
 
 gtnl.machine.mega_vacuum_drying_furnace.name=巨型真空干燥炉
@@ -2389,169 +1709,102 @@ gtnl.machine.mega_vacuum_drying_furnace.mode.0=真空炉
 gtnl.machine.mega_vacuum_drying_furnace.mode.1=脱水机
 gtnl.machine.mega_vacuum_drying_furnace.mode.2=冷阱
 gtnl.machine.mega_vacuum_drying_furnace.mode.3=反应堆熔盐加工厂
-gtnl.machine.mega_vacuum_drying_furnace.info.0=每超过配方温度900K，耗能均将乘以95%(不计超频)
-gtnl.machine.mega_vacuum_drying_furnace.info.1=每超过配方温度1800K，将进行一次无损超频
-gtnl.machine.mega_vacuum_drying_furnace.info.2=超过MV后的每一级电压，都会将温度提高100K
-gtnl.machine.mega_vacuum_drying_furnace.casing=任意超能机械方块
 
 gtnl.machine.mega_bath_tank.name=巨型浸洗池
 gtnl.machine.mega_bath_tank.recipe_type=洗矿池 / 简易洗矿池 / 化学浸洗机
 gtnl.machine.mega_bath_tank.mode.0=洗矿池
 gtnl.machine.mega_bath_tank.mode.1=简易洗矿池
 gtnl.machine.mega_bath_tank.mode.2=化学浸洗机
-gtnl.machine.mega_bath_tank.casing=任意强化无菌净水厂机械方块
 
 gtnl.machine.mega_canner.name=特大装罐机
 gtnl.machine.mega_canner.recipe_type=装罐机
-gtnl.machine.mega_canner.casing=任意洗矿厂机械方块
 
 gtnl.machine.compound_distillation_fractionator.name=复合式蒸馏分馏塔
 gtnl.machine.compound_distillation_fractionator.recipe_type=蒸馏塔 / 蒸馏室
 gtnl.machine.compound_distillation_fractionator.mode.0=蒸馏塔
 gtnl.machine.compound_distillation_fractionator.mode.1=蒸馏室
-gtnl.machine.compound_distillation_fractionator.casing=稳定化硅岩净水厂机械方块
 
 gtnl.machine.mega_brewer.name=巨型酿造厂
 gtnl.machine.mega_brewer.recipe_type=酿造室 / 发酵槽
-gtnl.machine.mega_brewer.info=每级线圈等级额外提供15%的加速(乘算叠加)
 gtnl.machine.mega_brewer.mode.0=酿造室
 gtnl.machine.mega_brewer.mode.1=发酵槽
-gtnl.machine.mega_brewer.casing=任意热抑制机械方块
 
 gtnl.machine.microorganism_master.name=微生物之主
 gtnl.recipe.microorganism_master=微生物之主
 gtnl.machine.microorganism_master.recipe_type=细菌培养缸
-gtnl.machine.microorganism_master.info.0=每级玻璃等级额外提供5%的加速和耗电减免(乘算叠加)
-gtnl.machine.microorganism_master.info.1=不再需要保持输出仓半满！这台机器固定以1001倍流体倍率运行！
-gtnl.machine.microorganism_master.info.2=无视玻璃等级要求和剂量要求
-gtnl.machine.microorganism_master.casing=任意化学惰性机械方块
 
 gtnl.machine.molten_core.name=熔火之心
 gtnl.machine.molten_core.recipe_type=流体加热器
-gtnl.machine.molten_core.info=每级线圈等级额外提供15%的加速(乘算叠加)
-gtnl.machine.molten_core.casing=任意强化镀铱机械方块
 
 gtnl.machine.crystal_builder.name=晶体构建者
 gtnl.machine.crystal_builder.recipe_type=高压釜
-gtnl.machine.crystal_builder.info=每级线圈等级额外提供15%的加速(乘算叠加)
-gtnl.machine.crystal_builder.casing=任意分子机械方块
 
 gtnl.machine.large_rock_crusher.name=大型碎岩机
 gtnl.recipe.industrial_rock_crusher=工业碎岩机
 gtnl.machine.large_rock_crusher.recipe_type=工业碎岩机
-gtnl.machine.large_rock_crusher.info=需要在输入仓中放入水和岩浆
-gtnl.machine.large_rock_crusher.casing=任意坚实铱锇机械方块
 
 gtnl.machine.phase_change_cube.name=相变魔方
 gtnl.machine.phase_change_cube.recipe_type=提取机 / 流体提取机 / 流体固化器
 gtnl.machine.phase_change_cube.mode.0=提取机
 gtnl.machine.phase_change_cube.mode.1=流体提取机
 gtnl.machine.phase_change_cube.mode.2=流体固化器
-gtnl.machine.phase_change_cube.info=每级线圈等级额外提供20%的加速和耗电减免(乘算叠加)
-gtnl.machine.phase_change_cube.casing=任意超能机械方块
 
 gtnl.machine.mantle_crusher.name=地层撕裂者
 gtnl.machine.mantle_crusher.recipe_type=工业碎岩机
-gtnl.machine.mantle_crusher.info=需要在输入仓中放入水和岩浆
-gtnl.machine.mantle_crusher.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.smart_sifting_hub.name=智能筛选中枢
 gtnl.machine.smart_sifting_hub.recipe_type=筛选机
-gtnl.machine.smart_sifting_hub.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.giant_electrochemical_workstation.name=巨型电化学工作站
 gtnl.machine.giant_electrochemical_workstation.recipe_type=电解机
-gtnl.machine.giant_electrochemical_workstation.info=每级线圈等级额外提供15%的加速(乘算叠加)
-gtnl.machine.giant_electrochemical_workstation.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.gemini_containment_system.name=双子星封装系统
 gtnl.machine.gemini_containment_system.recipe_type=打包机 / 解包器
 gtnl.machine.gemini_containment_system.mode.0=打包机
 gtnl.machine.gemini_containment_system.mode.1=解包器
-gtnl.machine.gemini_containment_system.info=每级线圈等级额外提供15%的加速(乘算叠加)
-gtnl.machine.gemini_containment_system.casing=任意强化镀铱机械方块
 
 gtnl.machine.extreme_compressor.name=极限压缩装置
 gtnl.machine.extreme_compressor.recipe_type=电动聚爆压缩机 / 中子态素压缩机
 gtnl.machine.extreme_compressor.mode.0=电动聚爆压缩机
 gtnl.machine.extreme_compressor.mode.1=中子态素压缩机
-gtnl.machine.extreme_compressor.casing=任意强化镀铱机械方块
 
 gtnl.machine.extreme_electric_furnace.name=极限电炉
 gtnl.machine.extreme_electric_furnace.recipe_type=合金炉
-gtnl.machine.extreme_electric_furnace.info=每级线圈等级额外提供15%的加速(乘算叠加)
-gtnl.machine.extreme_electric_furnace.casing=任意超能硅岩强化无菌净水厂机械方块
 
 gtnl.machine.data_center.name=数据中心
 gtnl.machine.data_center.recipe_type=数据库
-gtnl.machine.data_center.tooltip.0=你的个人网络存储器
-gtnl.machine.data_center.tooltip.1=每个数据访问仓耗电1,024EU/t
-gtnl.machine.data_center.tooltip.2=每个发送接口耗电30,720EU/t
-gtnl.machine.data_center.tooltip.3=使用螺丝刀切换无线模式
-gtnl.machine.data_center.casing=任意电子计算机械方块
 
 gtnl.machine.kerr_newman_homogenizer.name=克尔·纽曼均质仪
 gtnl.machine.kerr_newman_homogenizer.recipe_type=搅拌机
-gtnl.machine.kerr_newman_homogenizer.casing=任意强化镀铱机械方块
 
 gtnl.machine.large_steam_bending.name=大型蒸汽卷板机
 gtnl.machine.large_steam_bending.recipe_type=卷板机
-gtnl.machine.large_steam_bending.tooltip.0=比同等级的单方块卷板机快5%
-gtnl.machine.large_steam_bending.tooltip.1=仅消耗正常需求95%的蒸汽
-gtnl.machine.large_steam_bending.tooltip.2=一次可处理多达8个物品
-gtnl.machine.large_steam_bending.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.chemical_complex.name=化工复合体
 gtnl.machine.chemical_complex.recipe_type=化学反应釜
-gtnl.machine.chemical_complex.info=每级线圈等级额外提供15%的加速(乘算叠加)
-gtnl.machine.chemical_complex.casing=任意化学惰性机械方块
 
 gtnl.machine.mega_wiremill.name=特大线材轧机
 gtnl.machine.mega_wiremill.recipe_type=线缆轧机
-gtnl.machine.mega_wiremill.info=每级线圈等级额外提供15%的加速(乘算叠加)
-gtnl.machine.mega_wiremill.casing=任意隔热机械方块
 
 gtnl.machine.giant_flotation_tank.name=巨型浮游选矿池
 gtnl.machine.giant_flotation_tank.recipe_type=浮选
-gtnl.machine.giant_flotation_tank.casing=任意哈斯特洛伊-X结构方块
 
 gtnl.machine.dissolution_core.name=溶解核心
 gtnl.machine.dissolution_core.recipe_type=溶解罐 / 煮解池
 gtnl.machine.dissolution_core.mode.0=溶解罐
 gtnl.machine.dissolution_core.mode.1=煮解池
-gtnl.machine.dissolution_core.info.0=每级线圈等级额外提供15%的加速(乘算叠加)
-gtnl.machine.dissolution_core.info.1=无视比例要求和热容要求
-gtnl.machine.dissolution_core.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.swarm_core.name=蜂群之心
 gtnl.machine.swarm_core.recipe_type=纳米锻炉
-gtnl.machine.swarm_core.info.0=§o§l§d神的上升↗↗↗爱来自1987
-gtnl.machine.swarm_core.info.1=升级机器来使用更高级的配方！
-gtnl.machine.swarm_core.info.2=固定电压为MAX
-gtnl.machine.swarm_core.casing=任意放射硅岩合金机械方块
 gtnl.machine.swarm_core.upgrade_required=纳米锻炉升级
 gtnl.machine.swarm_core.current_tier=锻炉等级：%s
 
 gtnl.machine.hyper_naquadah_reactor.name=超能硅岩反应堆
-gtnl.machine.hyper_naquadah_reactor.tooltip.0=固定并行为%s
-gtnl.machine.hyper_naquadah_reactor.tooltip.1=可以在配方开始的时候输入硅岩气
-gtnl.machine.hyper_naquadah_reactor.tooltip.2=这会让时间减少%s倍，功率翻%s倍
-gtnl.machine.hyper_naquadah_reactor.tooltip.3=代价是每秒会消耗%sL的硅岩气
-gtnl.machine.hyper_naquadah_reactor.tooltip.4=不安装动力仓将自动进入无线模式
-gtnl.machine.hyper_naquadah_reactor.casing=任意硅岩合金聚合机械方块
 
 gtnl.machine.advanced_hyper_naquadah_reactor.name=进阶超能硅岩反应堆
-gtnl.machine.advanced_hyper_naquadah_reactor.tooltip.0=固定并行为%s
-gtnl.machine.advanced_hyper_naquadah_reactor.tooltip.1=可以在配方开始的时候输入熔融时空
-gtnl.machine.advanced_hyper_naquadah_reactor.tooltip.2=这会让时间减少%s倍，功率翻%s倍
-gtnl.machine.advanced_hyper_naquadah_reactor.tooltip.3=代价是每秒会消耗%sL的熔融时空
-gtnl.machine.advanced_hyper_naquadah_reactor.tooltip.4=不安装动力仓将自动进入无线模式
-gtnl.machine.advanced_hyper_naquadah_reactor.casing=任意硅岩合金聚合机械方块
 
 gtnl.machine.transliminal_oasis.name=超限绿洲
 gtnl.machine.transliminal_oasis.recipe_type=伐木场
-gtnl.machine.transliminal_oasis.info=每级玻璃等级额外提供5%的加速和耗电减免(乘算叠加)
-gtnl.machine.transliminal_oasis.casing=任意压力抑制机械方块
 
 gtnl.machine.fast_neutron_breeder_reactor.name=快中子增殖堆
 gtnl.recipe.electric_neutron_activator=电力中子活化器
@@ -2559,52 +1812,20 @@ gtnl.machine.fast_neutron_breeder_reactor.recipe_type=衰变加速器 / 电力�
 gtnl.machine.fast_neutron_breeder_reactor.mode.0=衰变加速器
 gtnl.machine.fast_neutron_breeder_reactor.mode.1=电力中子活化器
 gtnl.machine.fast_neutron_breeder_reactor.mode.2=粒子加速器
-gtnl.machine.fast_neutron_breeder_reactor.casing=任意批量生产框架
 
 gtnl.machine.magnetic_confinement_dimensionality_shock_device.name=磁约束维度震荡装置
 gtnl.machine.magnetic_confinement_dimensionality_shock_device.recipe_type=超维度搅拌机
-gtnl.machine.magnetic_confinement_dimensionality_shock_device.info.0=§e演奏宇宙的弦理论乐章
-gtnl.machine.magnetic_confinement_dimensionality_shock_device.info.1=自带2,147,483,647并行
-gtnl.machine.magnetic_confinement_dimensionality_shock_device.info.2=默认拥有无线升级
-gtnl.machine.magnetic_confinement_dimensionality_shock_device.info.3=无线模式固定电压为MAX+1，电流为MAX
-gtnl.machine.magnetic_confinement_dimensionality_shock_device.casing=任意分子机械方块
 
 gtnl.machine.supercomputing_center.name=运算中心
 gtnl.machine.supercomputing_center.recipe_type=量子计算机
-gtnl.machine.supercomputing_center.tooltip.0=用于生成算力(以及热量)
-gtnl.machine.supercomputing_center.tooltip.1=可以持续输入极寒之凛冰来降低热量
-gtnl.machine.supercomputing_center.tooltip.2=代价是每个机箱的热量会增加机箱算力 / 256
-gtnl.machine.supercomputing_center.tooltip.3=每个机箱额外提供16倍算力
-gtnl.machine.supercomputing_center.tooltip.4=如果输入极寒之凛冰，算力额外增加16倍
-gtnl.machine.supercomputing_center.tooltip.5=使用螺丝刀切换无线模式
-gtnl.machine.supercomputing_center.tooltip.6=不安装能源仓将自动进入无线电网模式
-gtnl.machine.supercomputing_center.casing=提示方块：1号
 
 gtnl.machine.pcb_factory.name=PCB工厂
 gtnl.machine.pcb_factory.recipe_type=PCB工厂
-gtnl.machine.pcb_factory.info.0=比相同电压的机器快200%
-gtnl.machine.pcb_factory.info.1=只需要使用配方要求功率的80%
-gtnl.machine.pcb_factory.info.2=无视生物仓升级要求
-gtnl.machine.pcb_factory.info.3=固定双倍产出
-gtnl.machine.pcb_factory.info.4=机器开机时固定消耗7500L蒸馏水/5s
-gtnl.machine.pcb_factory.info.5=每并行消耗对应配方等级的100L低级净化水/50L高级净化水
-gtnl.machine.pcb_factory.info.6=机器等级每高出配方等级一级，净化水消耗减半
-gtnl.machine.pcb_factory.info.7=机器等级每提高一级，速度+10%，要求功率-10%
-gtnl.machine.pcb_factory.info.8=当机器等级超过3时开启§c无损超频§7
-gtnl.machine.pcb_factory.info.9=需要使用纳米蜂群提高结构等级，中子->银->金
-gtnl.machine.pcb_factory.info.10=只能从顶部输入蒸馏水和净化水
-gtnl.machine.pcb_factory.casing=任意镀铱机械方块
 gtnl.gui.pcb_factory.machine_tier=机器等级：
 gtnl.gui.pcb_factory.upgrade.t4_machine_tier=T4机器等级升级
 
 gtnl.machine.furnace_array.name=熔炉组
 gtnl.machine.furnace_array.recipe_type=熔炉
-gtnl.machine.furnace_array.info.0=§o§6我说2048熔炉组比工业熔炉数值，因为熔炉组每消耗8个圆石就能加1并行
-gtnl.machine.furnace_array.info.1=初始最大并行为1，每输入一个熔炉，最大并行加1
-gtnl.machine.furnace_array.info.2=每输入32煤炭，永久点燃一个熔炉，使最大可用并行加1
-gtnl.machine.furnace_array.info.3=固定运行时间为5秒
-gtnl.machine.furnace_array.info.4=每个熔炉按照期望的运行速度产生不可思议的效果
-gtnl.machine.furnace_array.casing=压缩熔炉机壳
 gtnl.machine.furnace_array.title=大家快来看 %s, %s, %s 的%s设计的%sms延迟熔炉！
 gtnl.machine.furnace_array.furnace_count=当前熔炉数量：%s
 gtnl.machine.furnace_array.coal_count=当前煤炭数量：%s
@@ -2614,59 +1835,24 @@ gtnl.recipe.solar_muon_catalyst=太阳μ子催化器
 gtnl.recipe.metadata.solar_muon_catalyst.0=需要神锻三环和全部升级
 GT5U.gui.text.not_enough_upgrade=所需要求不足
 gtnl.machine.fog_solar_muon_catalyst_module.recipe_type=物质催化器
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.0=这是诸神之锻炉的一个模块
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.1=必须安装于诸神之锻炉上才能工作.
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.2=用于在极端温差下重组物质.
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.3=诸神之锻炉的第八种模块，通过μ子使原子核更紧密的并拢.
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.4=加速物质直达时间的尽头.
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.5=它需要最高等级的诸神之锻炉.
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.6=这一模块专注于高效物质异化.
 
 gtnl.machine.large_essentia_generator.name=大型源质发电机
 gtnl.machine.large_essentia_generator.recipe_type=源质发电机
-gtnl.machine.large_essentia_generator.info.0=可能某些神秘使会对它感到不安…
-gtnl.machine.large_essentia_generator.info.1=将源质转化为能量！
-gtnl.machine.large_essentia_generator.info.2=扩散单元决定本机器可接受的最高仓室等级
-gtnl.machine.large_essentia_generator.info.3=支持普通动力仓和至多64A的多安动力仓
-gtnl.machine.large_essentia_generator.info.4=每安装一个源质升级，动力仓限制最大电流翻倍
-gtnl.machine.large_essentia_generator.info.5=自ZPM起电压等级每提高一级，动力仓限制最大电流翻倍
-gtnl.machine.large_essentia_generator.info.6=你可以在魔导手册中读到更多信息.
-gtnl.machine.large_essentia_generator.casing=提示方块：1号
-gtnl.machine.large_essentia_generator.essentia_input_hatch=源质输入仓
 gtnl.chat.large_essentia_generator.installed= 已安装！
 gtnl.chat.large_essentia_generator.upgrade_installed=%s 已安装！
 
 gtnl.machine.highway_to_hell.name=超生高速
 gtnl.recipe.extreme_extreme_entity_crusher=极·工业屠宰场
 gtnl.machine.highway_to_hell.recipe_type=工业屠宰场
-gtnl.machine.highway_to_hell.info.0=§2克隆曾只是野心家的妄想，
-gtnl.machine.highway_to_hell.info.1=§2而如今，已成为噩梦般的现实。
-gtnl.machine.highway_to_hell.info.2=玻璃等级限制了能源仓等级，UMV玻璃解锁所有等级
-gtnl.machine.highway_to_hell.info.3=每提高一级涡轮等级，产出概率+1%
+gtnl.machine.highway_to_hell.wireless_glass_limit=%1$s下%2$s低于%3$s时，配方功率最高为%2$s电压 × %4$sA
 gtnl.chat.highway_to_hell.static_turbine_texture=正在使用静态涡轮纹理
 gtnl.chat.highway_to_hell.animated_turbine_texture=正在使用动态涡轮纹理
-gtnl.machine.highway_to_hell.casing=任意放射硅岩合金机械方块
 
 gtnl.machine.large_steam_wiremill.name=大型蒸汽线材轧机
 gtnl.machine.large_steam_wiremill.recipe_type=线材轧机
-gtnl.machine.large_steam_wiremill.tooltip.0=比同等级的单方块线材轧机快11%
-gtnl.machine.large_steam_wiremill.tooltip.1=仅消耗正常需求85%的蒸汽
-gtnl.machine.large_steam_wiremill.tooltip.2=一次可处理多达4个物品
-gtnl.machine.large_steam_wiremill.casing=任意镀铜砖块或脱氧钢机械方块
 
 gtnl.machine.research_center.name=科研中心
 gtnl.machine.research_center.recipe_type=研究站 / 扫描仪
-gtnl.machine.research_center.tooltip.0=拥有4并行
-gtnl.machine.research_center.tooltip.1=研究站模式不受最小算力输入限制，每个并行均能享受完整算力
-gtnl.machine.research_center.tooltip.2=拥有4个研究目标过滤槽，每个槽位对应一并行
-gtnl.machine.research_center.tooltip.3=在扫描模式时等同于Debug扫描仪
-gtnl.machine.research_center.casing=任意放射硅岩合金机械方块
-gtnl.machine.research_center.structure.0=113x 任意等级玻璃
-gtnl.machine.research_center.structure.1=682x 强化镀铱机械方块
-gtnl.machine.research_center.structure.2=232x 放射硅岩合金机械方块
-gtnl.machine.research_center.structure.3=335x 稳定化硅岩净水厂机械方块
-gtnl.machine.research_center.structure.4=4x 钢栏杆
-gtnl.machine.research_center.structure.5=36x 霓虹石
 
 gtnl.machine.cheat_ore_processing_factory.name=作弊者的究极集成矿处
 gtnl.recipe.cheat_ore_processing=作弊者的快速处理
@@ -4619,6 +3805,16 @@ gtnl.machine.common.wireless.tooltip.7=机器可进行§c无损超频§7
 gtnl.machine.common.wireless.tooltip.8=安装无线升级将额外提供500%加速和20%耗电减免
 gtnl.machine.common.wireless.tooltip.9=不安装能源仓且安装无线升级将自动进入无线模式
 gtnl.machine.common.wireless.tooltip.10=无线模式下电压为并行控制仓等级 + 1，电流为 4 ^ (等级 + 1) - 2
+gtnl.machine.common.wireless.mode.auto=不安装能源仓且安装%s将自动进入%s
+gtnl.machine.common.wireless.mode.power=%s下%s，%s
+gtnl.machine.common.wireless.mode.voltage.per_tier=电压为%s等级 + %s
+gtnl.machine.common.wireless.mode.voltage.fixed=固定电压为%s
+gtnl.machine.common.wireless.mode.voltage.casing_limit=%s，最高为%s + %s
+gtnl.machine.common.wireless.mode.current.per_tier=电流为 %s × 4 ^ 等级 - %s
+gtnl.machine.common.wireless.mode.current.fixed=电流为%s
+gtnl.machine.common.wireless.mode.current.scaled=电流为 %s × 4 ^ 等级
+gtnl.machine.common.wireless.mode.recipes=%s下支持跨配方并行
+gtnl.machine.common.wireless.mode.recipes.perfect_oc=%s下支持跨配方并行且超频不会损失效率
 gtnl.waila.wireless.upgrade=已安装无线升级
 gtnl.waila.wireless.mode=无线模式
 gtnl.waila.wireless.mode.format=%s无线模式
@@ -4699,11 +3895,6 @@ gtnl.machine.integrated_ore_factory.casing.11=输出总线(输出产物)
 
 gtnl.recipe.plasma_centrifuge=等离子离心机
 
-gtnl.machine.godforge.module.casing.0= 奇点强化恒星屏蔽机械方块
-gtnl.machine.godforge.module.casing.1= 无界引力隔绝机械方块
-gtnl.machine.godforge.module.casing.2= 海珀珍线圈方块
-gtnl.machine.godforge.module.casing.3= 天体物质引导机械方块
-gtnl.machine.godforge.module.casing.4= 恒星能量抽取机械方块
 
 gtnl.gui.assembler_matrix.upload_pattern=上传样板至当前网络中可用的§9装配矩阵§r。
 gtnl.gui.quantum_crafting.mode=量子合成模式

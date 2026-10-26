@@ -17,6 +17,7 @@ import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
@@ -29,7 +30,6 @@ import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTStructureUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gregtech.common.misc.GTStructureChannels;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
@@ -157,22 +157,8 @@ public class HighPressureSteamFusionReactor extends SteamMultiMachineBase<HighPr
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(getMachineType())
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.3"))
-            .beginStructureBlock(47, 7, 47, true)
-            .addInputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.casing"),
-                1)
-            .addOutputHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.high_pressure_steam_fusion_reactor.tooltip.casing"),
-                1)
-            .addSubChannelUsage(GTStructureChannels.BOROGLASS)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

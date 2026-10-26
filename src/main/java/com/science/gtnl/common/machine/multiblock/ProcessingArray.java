@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -27,6 +26,7 @@ import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.machine.ProcessingArrayManager;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.GTMod;
 import gregtech.api.GregTechAPI;
@@ -210,6 +210,11 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
     }
 
     @Override
+    public int getMaxTierSkip() {
+        return NO_TIER_SKIP;
+    }
+
+    @Override
     public ProcessingLogic createProcessingLogic() {
         return new GTNLProcessingLogic() {
 
@@ -231,7 +236,7 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
             public @NotNull GTNLOverclockCalculator createOverclockCalculator(@NotNull GTRecipe recipe) {
                 return super.createOverclockCalculator(recipe).setEUtDiscount(getEUtDiscount())
                     .setDurationModifier(getDurationModifier())
-                    .setMaxTierSkips(0);
+                    .setMaxTierSkips(getMaxTierSkip());
             }
 
         }.setMaxParallelSupplier(this::getTrueParallel);
@@ -385,28 +390,8 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
 
     @Override
     public MultiblockTooltipBuilder createTooltip() {
-        MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-        tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.processing_array.recipe_type"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.0"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.1"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.2"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.3"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.4"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.5"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.6"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.7"))
-            .addInfo(StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.8"))
-            .beginStructureBlock(5, 5, 5, true)
-            .addEnergyHatch("0+", StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.casing"), 1)
-            .addMaintenanceHatch(
-                "0+",
-                StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.casing"),
-                1)
-            .addInputBus("0+", StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.casing"), 1)
-            .addInputHatch("0+", StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.casing"), 1)
-            .addOutputBus("0+", StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.casing"), 1)
-            .addOutputHatch("0+", StatCollector.translateToLocal("gtnl.machine.processing_array.tooltip.casing"), 1)
-            .addSubChannelUsage(GTStructureChannels.HEATING_COIL)
+        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }
