@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.cleanroommc.bogosorter.ShortcutHandler;
-import com.science.gtnl.client.meminiterminal.MiniTerminalBogoCompat;
+import com.science.gtnl.compat.bogosorter.MiniTerminalBogoCompat;
 
 @Mixin(value = ShortcutHandler.class, remap = false)
 public abstract class MixinMiniTerminalShortcuts {

@@ -23,7 +23,7 @@ public class ArchitectureContracts {
 
     // Ratchets: each count may only go down. Lower the number in the same change that lowers the count.
     public static final int MAX_UTILS_CLASSES = 83;
-    public static final int MAX_MOD_CHECKS_OUTSIDE_COMPAT = 74;
+    public static final int MAX_MOD_CHECKS_OUTSIDE_COMPAT = 27;
     public static final int MAX_MUI1_FILES = 47;
     public static final int MAX_DIRECT_GT_MULTIBLOCK_BASES = 10;
     public static final int MAX_MIXINS_OVER_80_LINES = 58;

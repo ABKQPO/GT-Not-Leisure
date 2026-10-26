@@ -2,7 +2,10 @@ package com.science.gtnl.common.me;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+
+import com.science.gtnl.compat.baubles.BaublesInventory;
 
 import appeng.api.AEApi;
 import appeng.api.features.ILocatable;
@@ -12,9 +15,7 @@ import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.tile.misc.TileSecurity;
 import appeng.util.Platform;
-import baubles.api.BaublesApi;
 import cpw.mods.fml.common.Optional;
-import gregtech.api.enums.Mods;
 
 public class MEHandler {
 
@@ -27,10 +28,7 @@ public class MEHandler {
             }
         }
 
-        if (Mods.Baubles.isModLoaded()) {
-            return readBaubles(player);
-        }
-        return null;
+        return readBaubles(player);
     }
 
     @Optional.Method(modid = "appliedenergistics2")
@@ -42,18 +40,14 @@ public class MEHandler {
             }
         }
 
-        if (Mods.Baubles.isModLoaded()) {
-            return readBaubles(player.player);
-        }
-        return null;
+        return readBaubles(player.player);
     }
 
-    @Optional.Method(modid = "Baubles")
     public static WirelessTerminalGuiObject readBaubles(EntityPlayer player) {
-        for (int i = 0; i < BaublesApi.getBaubles(player)
-            .getSizeInventory(); i++) {
-            ItemStack item = BaublesApi.getBaubles(player)
-                .getStackInSlot(i);
+        IInventory baubles = BaublesInventory.of(player);
+        if (baubles == null) return null;
+        for (int i = 0; i < baubles.getSizeInventory(); i++) {
+            ItemStack item = baubles.getStackInSlot(i);
             if (item.getItem() instanceof IWirelessTermHandler t && t.canHandle(item)) {
                 return getTerminalGuiObject(item, player, i, 1);
             }

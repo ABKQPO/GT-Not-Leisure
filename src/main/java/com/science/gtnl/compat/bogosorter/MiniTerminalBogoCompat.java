@@ -1,4 +1,4 @@
-package com.science.gtnl.client.meminiterminal;
+package com.science.gtnl.compat.bogosorter;
 
 import java.awt.Point;
 
@@ -20,6 +20,9 @@ import com.cleanroommc.bogosorter.compat.ae2.Ae2TerminalGuiDetector;
 import com.cleanroommc.modularui.api.event.KeyboardInputEvent;
 import com.cleanroommc.modularui.api.event.MouseInputEvent;
 import com.gtnllib.mod.ModList;
+import com.science.gtnl.client.meminiterminal.MiniTerminalClient;
+import com.science.gtnl.client.meminiterminal.MiniTerminalInventoryPanel;
+import com.science.gtnl.client.meminiterminal.MiniTerminalNEIAdapter;
 import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket.DepositMode;
 import com.science.gtnl.common.meminiterminal.MiniTerminalStackTypes;
 
@@ -35,13 +38,13 @@ import codechicken.nei.guihook.GuiContainerManager;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public final class MiniTerminalBogoCompat {
+public class MiniTerminalBogoCompat {
 
     public static void init() {
         if (ModList.InventoryBogoSorter.isModLoaded()) Native.initialize();
     }
 
-    static boolean isTerminalScreen(GuiContainer gui) {
+    public static boolean isTerminalScreen(GuiContainer gui) {
         return ModList.InventoryBogoSorter.isModLoaded() && Native.isTerminalScreen(gui);
     }
 
@@ -110,7 +113,7 @@ public final class MiniTerminalBogoCompat {
         return true;
     }
 
-    public static final class Native {
+    public static class Native {
 
         private static final Native INSTANCE = new Native();
 

@@ -33,6 +33,7 @@ import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import com.science.gtnl.common.meminiterminal.MiniTerminalPinSettings;
 import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket;
 import com.science.gtnl.common.meminiterminal.MiniTerminalUpdatePacket;
+import com.science.gtnl.compat.bogosorter.MiniTerminalBogoCompat;
 import com.science.gtnl.config.MiniTerminalClientConfig;
 
 import appeng.api.config.SortDir;

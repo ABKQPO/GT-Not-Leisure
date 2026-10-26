@@ -23,6 +23,7 @@ import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveReach;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
+import com.science.gtnl.compat.tinkersconstruct.CelestweaveBackpackTabs;
 import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -86,7 +87,7 @@ public class CelestweaveClientEvents {
         CelestweaveHudElement.register();
         CelestweaveObjModel.register();
         CelestweaveClientInput.register();
-        CelestweaveBackpackClient.registerTabs();
+        CelestweaveBackpackTabs.register();
         CelestweaveThemeAccent.register();
     }
 

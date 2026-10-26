@@ -52,14 +52,13 @@ import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.EnergyInfuserGui;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.compat.cofh.RfItems;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.item.ItemUtils;
 
-import cofh.api.energy.IEnergyContainerItem;
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -253,15 +252,13 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
                             ElectricItem.manager
                                 .charge(individualStack, charge, electricItem.getTier(individualStack), true, false)));
                     decreaseEUValue(charged);
-                } else if (Mods.COFHCore.isModLoaded() && item instanceof IEnergyContainerItem energyContainerItem) {
-                    long missingRF = Math.max(
-                        0L,
-                        (long) energyContainerItem.getMaxEnergyStored(individualStack)
-                            - energyContainerItem.getEnergyStored(individualStack));
+                } else if (RfItems.isRfItem(item)) {
+                    long missingRF = Math
+                        .max(0L, (long) RfItems.capacity(individualStack) - RfItems.stored(individualStack));
                     long rfBudget = toRfBudget(remainingEU);
                     int rfToCharge = (int) Math.min(missingRF, rfBudget);
                     if (rfToCharge > 0) {
-                        int receivedRF = energyContainerItem.receiveEnergy(individualStack, rfToCharge, false);
+                        int receivedRF = RfItems.receive(individualStack, rfToCharge);
                         long acceptedRF = Math.max(0L, Math.min((long) receivedRF, rfToCharge));
                         long consumedEU = Math.min(remainingEU, toEuCost(acceptedRF));
                         decreaseEUValue(consumedEU);
@@ -306,9 +303,9 @@ public class EnergyInfuser extends TTMultiblockBase implements IConstructable, I
                 if (ElectricItem.manager.getCharge(stack) < electricItem.getMaxCharge(stack)) {
                     return false;
                 }
-            } else if (Mods.COFHCore.isModLoaded() && item instanceof IEnergyContainerItem energyContainerItem) {
+            } else if (RfItems.isRfItem(item)) {
                 if (item instanceof DraconiumItemBlock && stack.getItemDamage() == 2) return true;
-                if (energyContainerItem.getEnergyStored(stack) < energyContainerItem.getMaxEnergyStored(stack)) {
+                if (RfItems.stored(stack) < RfItems.capacity(stack)) {
                     return false;
                 }
             }

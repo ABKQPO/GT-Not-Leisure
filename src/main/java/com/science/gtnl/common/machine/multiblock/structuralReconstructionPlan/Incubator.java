@@ -28,6 +28,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.gtnllib.utils.GameUtils;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.machine.multiblock.LargeIncubator;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
@@ -47,7 +48,6 @@ import bartworks.util.BWUtil;
 import bartworks.util.BioCulture;
 import bartworks.util.Coords;
 import bartworks.util.ResultWrongSievert;
-import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;
@@ -182,10 +182,8 @@ public class Incubator extends MultiMachineBase<Incubator> implements ISurvivalC
                         StructureUtility.ofBlock(GregTechAPI.sBlockReinforced, 2))))
             .addElement(
                 'D',
-                StructureUtility.ofBlockAnyMeta(
-                    Mods.EtFuturumRequiem.isModLoaded() ? GameRegistry.findBlock(Mods.EtFuturumRequiem.ID, "sponge")
-                        : Blocks.sponge,
-                    1))
+                StructureUtility
+                    .ofBlockAnyMeta(GameUtils.blockOr(Mods.EtFuturumRequiem.ID, "sponge", Blocks.sponge), 1))
             .addElement(
                 'E',
                 StructureUtility

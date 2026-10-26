@@ -1,5 +1,7 @@
 package com.gtnllib.mod;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import net.minecraft.util.ResourceLocation;
@@ -95,6 +97,21 @@ public enum ModList implements IMod, ITargetMod {
             this.modLoaded = Loader.isModLoaded(ID);
         }
         return this.modLoaded;
+    }
+
+    public static List<ModList> loadedListedMods() {
+        List<ModList> loaded = new ArrayList<>();
+        for (ModList mod : VALUES) {
+            if (mod.showInModList && mod.isModLoaded()) loaded.add(mod);
+        }
+        return loaded;
+    }
+
+    public static boolean allListedModsLoaded() {
+        for (ModList mod : VALUES) {
+            if (mod.showInModList && !mod.isModLoaded()) return false;
+        }
+        return true;
     }
 
     @Override

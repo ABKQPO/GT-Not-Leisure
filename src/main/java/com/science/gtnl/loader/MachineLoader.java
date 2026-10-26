@@ -9,6 +9,7 @@ import com.science.gtnl.common.machine.cover.FluidCover;
 import com.science.gtnl.common.machine.cover.VoidCover;
 import com.science.gtnl.common.machine.cover.WirelessMultiEnergyCover;
 import com.science.gtnl.common.machine.cover.WirelessSteamCover;
+import com.science.gtnl.compat.vmtweak.VoidMinerTweak;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.machine.BasicMachineLoader;
 import com.science.gtnl.loader.machine.HatchLoader;
@@ -137,7 +138,7 @@ public class MachineLoader implements IContentLoader {
 
     public static void loadItemTooltip() {
 
-        if (MainConfig.machine.enableVoidMinerTweak && !ModList.VMTweak.isModLoaded()) {
+        if (VoidMinerTweak.enabled()) {
             AnimatedTooltipHandler.addItemTooltip(ItemRegistry.voidminer[0], AnimatedText.GT_NOT_LEISURE_CHANGE);
             AnimatedTooltipHandler.addItemTooltip(ItemRegistry.voidminer[1], AnimatedText.GT_NOT_LEISURE_CHANGE);
             AnimatedTooltipHandler.addItemTooltip(ItemRegistry.voidminer[2], AnimatedText.GT_NOT_LEISURE_CHANGE);

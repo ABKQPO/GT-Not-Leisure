@@ -4,8 +4,8 @@ import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 
-import com.science.gtnl.client.celestweave.CelestweaveBackpackClient;
 import com.science.gtnl.common.gui.container.portableWorkbench.ContainerPortableEnderChest;
+import com.science.gtnl.compat.tinkersconstruct.CelestweaveBackpackTabs;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -28,6 +28,6 @@ public class GuiPortableEnderChest extends GuiChest {
     @Override
     public void initGui() {
         super.initGui();
-        if (backpack) CelestweaveBackpackClient.addTabs(guiLeft, guiTop, buttonList);
+        if (backpack) CelestweaveBackpackTabs.add(guiLeft, guiTop, buttonList);
     }
 }

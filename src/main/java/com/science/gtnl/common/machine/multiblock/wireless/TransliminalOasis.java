@@ -17,6 +17,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.gtnllib.utils.GameUtils;
 import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.casing.GTNLCasings;
@@ -102,7 +103,7 @@ public class TransliminalOasis extends WirelessEnergyMultiMachineBase<Translimin
             .addElement('L', Casings.HighPowerCasing.asElement())
             .addElement(
                 'M',
-                Mods.RandomThings.isModLoaded()
+                GameUtils.blockOr(Mods.RandomThings.ID, "fertilizedDirt", null) != null
                     ? StructureUtility.ofChain(
                         StructureUtility.ofBlockAnyMeta(GameRegistry.findBlock(Mods.RandomThings.ID, "fertilizedDirt")),
                         StructureUtility

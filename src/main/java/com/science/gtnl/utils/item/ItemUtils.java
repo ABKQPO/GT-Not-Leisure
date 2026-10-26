@@ -26,7 +26,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.dreammaster.item.NHItemList;
 import com.google.common.collect.Iterables;
 import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.mojang.authlib.GameProfile;
@@ -34,11 +33,11 @@ import com.mojang.authlib.properties.Property;
 import com.reavaritia.common.items.InfinityTotem;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.WirelessPickBlock;
+import com.science.gtnl.compat.baubles.BaublesInventory;
+import com.science.gtnl.compat.newhorizons.NHCoreItem;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
 
-import baubles.api.BaublesApi;
-import cpw.mods.fml.common.Optional;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
@@ -165,17 +164,16 @@ public class ItemUtils {
     static {
         if (WINDMILL_SHAFT == null) WINDMILL_SHAFT = GregtechItemList.Shape_Extruder_WindmillShaft.get(1);
         if (MOLD_PELLET == null) MOLD_PELLET = GregtechItemList.Pellet_Mold.get(1);
-        if (Mods.NewHorizonsCoreMod.isModLoaded()) initNHItems();
+        initNHItems();
     }
 
-    @Optional.Method(modid = "dreamcraft")
     public static void initNHItems() {
-        if (MOLD_HELMET == null) MOLD_HELMET = NHItemList.MoldHelmet.get(1);
-        if (MOLD_CHESTPLATE == null) MOLD_CHESTPLATE = NHItemList.MoldChestplate.get(1);
-        if (MOLD_LEGGINGS == null) MOLD_LEGGINGS = NHItemList.MoldLeggings.get(1);
-        if (MOLD_BOOTS == null) MOLD_BOOTS = NHItemList.MoldBoots.get(1);
-        if (MOLD_MARSHMALLOW == null) MOLD_MARSHMALLOW = NHItemList.MarshmallowFormMold.get(1);
-        if (EXTRUDER_SHAPE_BOAT == null) EXTRUDER_SHAPE_BOAT = NHItemList.ExtruderShapeBoat.get(1);
+        if (MOLD_HELMET == null) MOLD_HELMET = NHCoreItem.MoldHelmet.get(1, null);
+        if (MOLD_CHESTPLATE == null) MOLD_CHESTPLATE = NHCoreItem.MoldChestplate.get(1, null);
+        if (MOLD_LEGGINGS == null) MOLD_LEGGINGS = NHCoreItem.MoldLeggings.get(1, null);
+        if (MOLD_BOOTS == null) MOLD_BOOTS = NHCoreItem.MoldBoots.get(1, null);
+        if (MOLD_MARSHMALLOW == null) MOLD_MARSHMALLOW = NHCoreItem.MarshmallowFormMold.get(1, null);
+        if (EXTRUDER_SHAPE_BOAT == null) EXTRUDER_SHAPE_BOAT = NHCoreItem.ExtruderShapeBoat.get(1, null);
     }
 
     public static boolean isExtraItem(ItemStack stack) {
@@ -230,15 +228,13 @@ public class ItemUtils {
             }
         }
 
-        if (Mods.Baubles.isModLoaded()) {
-            IInventory baublesInventory = BaublesApi.getBaubles(player);
-            if (baublesInventory != null) {
-                for (int i = 0; i < baublesInventory.getSizeInventory(); i++) {
-                    ItemStack baubleStack = baublesInventory.getStackInSlot(i);
-                    if (baubleStack != null && baubleStack.getItem() instanceof InfinityTotem && baubleStack == stack) {
-                        baublesInventory.setInventorySlotContents(i, null);
-                        return;
-                    }
+        IInventory baublesInventory = BaublesInventory.of(player);
+        if (baublesInventory != null) {
+            for (int i = 0; i < baublesInventory.getSizeInventory(); i++) {
+                ItemStack baubleStack = baublesInventory.getStackInSlot(i);
+                if (baubleStack != null && baubleStack.getItem() instanceof InfinityTotem && baubleStack == stack) {
+                    baublesInventory.setInventorySlotContents(i, null);
+                    return;
                 }
             }
         }

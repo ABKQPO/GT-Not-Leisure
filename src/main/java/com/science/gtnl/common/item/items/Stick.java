@@ -7,7 +7,6 @@ import java.util.Objects;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMerchant;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,20 +23,18 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 
 import org.lwjgl.input.Keyboard;
 
-import com.rwtema.extrautils.gui.GuiTradingPost;
 import com.science.gtnl.api.IItemStackExtra;
 import com.science.gtnl.api.IKeyHandler;
+import com.science.gtnl.compat.extrautilities.ExtraUtilitiesContent;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.ItemLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
 
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.api.enums.Mods;
 import lombok.val;
 import tectech.thing.CustomItemList;
 
@@ -241,16 +238,11 @@ public class Stick extends Item implements IItemStackExtra, IKeyHandler {
             return false;
         }
 
-        if (Mods.ExtraUtilities.isModLoaded() && isGuiTradingPost(Minecraft.getMinecraft().currentScreen)) {
+        if (ExtraUtilitiesContent.isTradingPost(Minecraft.getMinecraft().currentScreen)) {
             return false;
         }
 
         return Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
-    }
-
-    @Optional.Method(modid = "ExtraUtilities")
-    public boolean isGuiTradingPost(GuiScreen screen) {
-        return screen instanceof GuiTradingPost;
     }
 
     @Override
@@ -262,10 +254,10 @@ public class Stick extends Item implements IItemStackExtra, IKeyHandler {
         list.add(setDisguisedStack(GTNLItemList.SatietyRing.get(1)));
         list.add(setDisguisedStack(GTNLItemList.VeinMiningPickaxe.get(1)));
 
-        if (Mods.SGCraft.isModLoaded()) {
-            list.add(setDisguisedStack(ModsItemlist.SGCraftStargateRing.get(1)));
-            list.add(setDisguisedStack(ModsItemlist.SGCraftStargateChevronBlock.get(1)));
-            list.add(setDisguisedStack(ModsItemlist.SGCraftStargateBase.get(1)));
+        for (ModsItemlist stargatePart : new ModsItemlist[] { ModsItemlist.SGCraftStargateRing,
+            ModsItemlist.SGCraftStargateChevronBlock, ModsItemlist.SGCraftStargateBase }) {
+            ItemStack stack = stargatePart.get(1);
+            if (stack != null) list.add(setDisguisedStack(stack));
         }
     }
 

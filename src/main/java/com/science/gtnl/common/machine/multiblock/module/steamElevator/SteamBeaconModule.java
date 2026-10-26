@@ -21,12 +21,11 @@ import org.jetbrains.annotations.NotNull;
 
 import com.google.common.collect.ImmutableMap;
 import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
-import com.kentington.thaumichorizons.common.lib.potion.PotionVisRegen;
 import com.science.gtnl.common.gui.modularui.multiblock.SteamBeaconModuleGui;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.compat.thaumichorizons.ThaumicHorizonsPotions;
 
 import gregtech.api.enums.GTValues;
-import gregtech.api.enums.Mods;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
@@ -745,8 +744,9 @@ public class SteamBeaconModule extends SteamElevatorModuleBase {
                         player.addPotionEffect(new PotionEffect(ModPotions.featherfeet.id, 300, setMaxEffectLevel()));
                         setEnableFeatherFeetEffect(enableFeatherFeetEffect); // Refresh enabled state.
                     }
-                    if (Mods.ThaumicHorizons.isModLoaded() && enableVisRegenEffect) {
-                        player.addPotionEffect(new PotionEffect(PotionVisRegen.instance.id, 300, setMaxEffectLevel()));
+                    if (ThaumicHorizonsPotions.hasVisRegen() && enableVisRegenEffect) {
+                        player.addPotionEffect(
+                            new PotionEffect(ThaumicHorizonsPotions.visRegenId(), 300, setMaxEffectLevel()));
                         setEnableVisRegenEffect(enableVisRegenEffect); // Refresh enabled state.
                     }
                 }

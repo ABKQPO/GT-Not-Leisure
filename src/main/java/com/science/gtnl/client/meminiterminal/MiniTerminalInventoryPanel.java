@@ -42,6 +42,7 @@ import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.science.gtnl.client.floatingwindow.FloatingWindowPanel;
 import com.science.gtnl.common.meminiterminal.MiniTerminalPinSettings;
 import com.science.gtnl.common.meminiterminal.MiniTerminalStackTypes;
+import com.science.gtnl.compat.bogosorter.MiniTerminalBogoCompat;
 import com.science.gtnl.config.MiniTerminalClientConfig;
 
 import appeng.api.config.ActionItems;
@@ -271,11 +272,11 @@ public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
         return model.isOnline();
     }
 
-    MEGuiTextField nativeSearchField() {
+    public MEGuiTextField nativeSearchField() {
         return search.nativeField();
     }
 
-    void applySearch(String text) {
+    public void applySearch(String text) {
 
         search.applySearch(text);
     }
@@ -951,7 +952,7 @@ public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
 
     }
 
-    static final class Input {
+    public static class Input {
 
         static int mouseButton(int button, int pickKey) {
             return button == pickKey + 100 ? keyBindPickBlockAction : button;
@@ -977,7 +978,7 @@ public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
             return MonitorableAction.PICKUP_OR_SET_DOWN;
         }
 
-        static boolean preferContainerInteraction(boolean interactionKeyDown, boolean holdingFluidContainer,
+        public static boolean preferContainerInteraction(boolean interactionKeyDown, boolean holdingFluidContainer,
             boolean spaceDown) {
             return interactionKeyDown && holdingFluidContainer && !spaceDown;
         }

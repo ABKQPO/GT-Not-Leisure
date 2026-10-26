@@ -1,7 +1,5 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.arc.bloodarsenal.common.block.ModBlocks.blood_lamp;
-import static com.arc.bloodarsenal.common.block.ModBlocks.lp_materializer;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 
@@ -24,7 +22,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.dreammaster.block.BlockList;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
@@ -34,6 +31,8 @@ import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.common.machine.multiMachineBase.GTMMultiMachineBase;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.compat.bloodarsenal.BloodArsenalBlocks;
+import com.science.gtnl.compat.newhorizons.NHCoreBlock;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.CommonElements;
 import com.science.gtnl.utils.enums.ModsItemlist;
@@ -45,12 +44,10 @@ import WayofTime.alchemicalWizardry.ModBlocks;
 import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import WayofTime.alchemicalWizardry.common.entity.projectile.EntityMeteor;
-import cpw.mods.fml.common.Optional;
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.gui.modularui.GTUITextures;
 import gregtech.api.interfaces.ITexture;
@@ -89,14 +86,12 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
     private static final int MACHINEMODE_FALLING_TOWER = 1;
     private static final int MACHINEMODE_ALCHEMIC = 2;
 
-    public static final Block BLOODY_ICHORIUM = Mods.NewHorizonsCoreMod.isModLoaded() ? getBloodyIchorium()
-        : Blocks.diamond_block;
-    public static final Block BLOODY_THAUMIUM = Mods.NewHorizonsCoreMod.isModLoaded() ? getBloodyThaumium()
-        : Blocks.gold_block;
-    public static final Block BLOODY_VOID = Mods.NewHorizonsCoreMod.isModLoaded() ? getBloodyVoid() : Blocks.iron_block;
+    public static final Block BLOODY_ICHORIUM = NHCoreBlock.BloodyIchorium.get(Blocks.diamond_block);
+    public static final Block BLOODY_THAUMIUM = NHCoreBlock.BloodyThaumium.get(Blocks.gold_block);
+    public static final Block BLOODY_VOID = NHCoreBlock.BloodyVoid.get(Blocks.iron_block);
 
-    public static final Block BLOOD_LAMP = Mods.BloodArsenal.isModLoaded() ? getBloodLamp() : Blocks.glowstone;
-    public static final Block LP_MATERIALIZER = Mods.BloodArsenal.isModLoaded() ? getLpMaterializer() : Blocks.hopper;
+    public static final Block BLOOD_LAMP = BloodArsenalBlocks.bloodLamp(Blocks.glowstone);
+    public static final Block LP_MATERIALIZER = BloodArsenalBlocks.lpMaterializer(Blocks.hopper);
 
     public boolean isCreativeOrb = false;
     public boolean enableRender = true;
@@ -591,30 +586,5 @@ public class BloodSoulSacrificialArray extends GTMMultiMachineBase<BloodSoulSacr
         }
         return this.getBaseMetaTileEntity()
             .getOwnerName();
-    }
-
-    @Optional.Method(modid = "dreamcraft")
-    public static Block getBloodyIchorium() {
-        return BlockList.BloodyIchorium.block;
-    }
-
-    @Optional.Method(modid = "dreamcraft")
-    public static Block getBloodyThaumium() {
-        return BlockList.BloodyThaumium.block;
-    }
-
-    @Optional.Method(modid = "dreamcraft")
-    public static Block getBloodyVoid() {
-        return BlockList.BloodyVoid.block;
-    }
-
-    @Optional.Method(modid = "BloodArsenal")
-    public static Block getBloodLamp() {
-        return blood_lamp;
-    }
-
-    @Optional.Method(modid = "BloodArsenal")
-    public static Block getLpMaterializer() {
-        return lp_materializer;
     }
 }

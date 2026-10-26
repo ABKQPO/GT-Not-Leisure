@@ -19,14 +19,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 
-import com.cleanroommc.bogosorter.api.IBogoSortAPI;
-import com.cleanroommc.bogosorter.api.ISlotGroup;
-import com.cleanroommc.bogosorter.common.sort.GuiSortingContext;
-import com.cleanroommc.bogosorter.mixins.early.minecraft.SlotAccessor;
-import com.gtnllib.mod.ModList;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket.DepositMode;
+import com.science.gtnl.compat.bogosorter.BogoSorterSlots;
 import com.science.gtnl.utils.CreativeCursor;
 
 import appeng.api.AEApi;
@@ -285,30 +281,6 @@ public final class MiniTerminalSessionService {
         ISecurityGrid security = grid.getCache(ISecurityGrid.class);
         return security != null && security.hasPermission(player, permission) ? MiniTerminalStatus.ONLINE
             : MiniTerminalStatus.NO_PERMISSION;
-    }
-
-    private static final class BogoInventory {
-
-        static List<Slot> sources(EntityPlayerMP player, Container container, Slot source) {
-            ISlotGroup group = GuiSortingContext.getOrCreate(container)
-                .getSlotGroup(source.slotNumber);
-            if (group == null) return List.of();
-            List<Slot> slots = new ObjectArrayList<>();
-            for (SlotAccessor entry : group.getSlots()) {
-                int index = entry.getSlotNumber();
-                if (index < 0 || index >= container.inventorySlots.size()) continue;
-                Slot slot = container.getSlot(index);
-
-                if (slot != source && pinned(player, container, slot)) continue;
-                slots.add(slot);
-            }
-            return slots;
-        }
-
-        static boolean pinned(EntityPlayerMP player, Container container, Slot slot) {
-            return IBogoSortAPI.getInstance()
-                .isPinned(player, container, slot);
-        }
     }
 
     private static void togglePickup(EntityPlayerMP player, MiniTerminalRequestPacket request, Session session) {
@@ -839,9 +811,7 @@ public final class MiniTerminalSessionService {
 
             List<Slot> sources = switch (request.depositMode) {
                 case STACK, ONE -> List.of(source);
-                case MATCHING, REGION -> ModList.InventoryBogoSorter.isModLoaded()
-                    ? BogoInventory.sources(player, container, source)
-                    : List.of();
+                case MATCHING, REGION -> BogoSorterSlots.slotGroup(player, container, source);
                 case NATIVE_REGION -> nativeRegionSources(source);
             };
             ItemStack selected = offered == null ? null : offered.copy();
@@ -875,8 +845,7 @@ public final class MiniTerminalSessionService {
             for (Object entry : container.inventorySlots) {
                 Slot candidate = (Slot) entry;
                 if (candidate.getClass() != source.getClass()) continue;
-                if (ModList.InventoryBogoSorter.isModLoaded() && BogoInventory.pinned(player, container, candidate))
-                    continue;
+                if (BogoSorterSlots.isPinned(player, container, candidate)) continue;
                 slots.add(candidate);
             }
             return slots;
@@ -902,8 +871,7 @@ public final class MiniTerminalSessionService {
                 Slot destination = hostSlot == null ? playerSlot : hostSlot;
                 if (!destination.isItemValid(target.getItemStack())) continue;
                 Container destinationContainer = hostSlot == null ? player.inventoryContainer : container;
-                if (ModList.InventoryBogoSorter.isModLoaded()
-                    && BogoInventory.pinned(player, destinationContainer, destination)) continue;
+                if (BogoSorterSlots.isPinned(player, destinationContainer, destination)) continue;
                 destinations.add(inventorySlot);
             }
             MiniTerminalTransferService.extractInventory(

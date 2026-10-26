@@ -3,21 +3,18 @@ package com.science.gtnl.common.item.steamRocket;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import com.dreammaster.item.NHItemList;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.recipe.gtnl.RocketAssemblerRecipes;
+import com.science.gtnl.compat.newhorizons.NHCoreItem;
 import com.science.gtnl.utils.enums.ModsItemlist;
 
-import cpw.mods.fml.common.Optional;
 import galaxyspace.core.inventory.InventorySchematic;
 import galaxyspace.core.inventory.container.rocket.ContainerSchematic;
 import galaxyspace.core.inventory.slot.SlotSchematic;
 import galaxyspace.core.inventory.slot.SlotSchematicChest;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.util.GTOreDictUnificator;
 import micdoodle8.mods.galacticraft.core.inventory.SlotRocketBenchResult;
@@ -57,7 +54,8 @@ public class ContainerSchematicSteamRocket extends ContainerSchematic {
                 y,
                 z,
                 inventory.player,
-                Mods.NewHorizonsCoreMod.isModLoaded() ? getEngineCore() : Items.arrow));
+                NHCoreItem.EngineCore.get(1, new ItemStack(Items.arrow))
+                    .getItem()));
         // Fuel Canisters
         this.addSlotToContainer(
             new SlotSchematic(
@@ -170,11 +168,5 @@ public class ContainerSchematicSteamRocket extends ContainerSchematic {
     @Override
     public ItemStack findMatchingRecipe() {
         return RocketAssemblerRecipes.findMatchingSpaceshipSteamRecipe(this.craftMatrix);
-    }
-
-    @Optional.Method(modid = "dreamcraft")
-    public Item getEngineCore() {
-        return NHItemList.EngineCore.get(1)
-            .getItem();
     }
 }

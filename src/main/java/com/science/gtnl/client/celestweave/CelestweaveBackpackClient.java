@@ -1,7 +1,5 @@
 package com.science.gtnl.client.celestweave;
 
-import java.util.List;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -15,20 +13,11 @@ import com.science.gtnl.common.item.items.PortableItem;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.api.enums.Mods;
 
 @SideOnly(Side.CLIENT)
 public class CelestweaveBackpackClient {
 
     private CelestweaveBackpackClient() {}
-
-    public static void registerTabs() {
-        if (Mods.TinkerConstruct.isModLoaded()) CelestweaveBackpackTicCompat.register();
-    }
-
-    public static void addTabs(int left, int top, List<?> buttons) {
-        if (Mods.TinkerConstruct.isModLoaded()) CelestweaveBackpackTicCompat.add(left, top, buttons);
-    }
 
     public static Object gui(EntityPlayer player) {
         ItemStack worn = CelestweaveBackpack.wornBackpack(player);

@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.gtnllib.mod.ModList;
+import com.science.gtnl.compat.overpowered.RecipeOutputChance;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.recipes.ChanceBonusManager;
 
@@ -37,7 +37,7 @@ public class MixinGregtechWailaDataProvider {
         cancellable = true)
     private void injectGetNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
         int z, CallbackInfoReturnable<NBTTagCompound> cir) {
-        if (ModList.Overpowered.isModLoaded() || !MainConfig.machine.enableRecipeOutputChance) return;
+        if (!RecipeOutputChance.enabled()) return;
         if (tile instanceof BaseMetaTileEntity baseMetaTileEntity) {
             IMetaTileEntity meta = baseMetaTileEntity.getMetaTileEntity();
             if (meta instanceof MTEMultiBlockBase mte) {
@@ -60,7 +60,7 @@ public class MixinGregtechWailaDataProvider {
     @Inject(method = "getWailaBody", at = @At("RETURN"), cancellable = true)
     private void injectGetWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
         IWailaConfigHandler config, CallbackInfoReturnable<List<String>> cir) {
-        if (ModList.Overpowered.isModLoaded() || !MainConfig.machine.enableRecipeOutputChance) return;
+        if (!RecipeOutputChance.enabled()) return;
         NBTTagCompound tag = accessor.getNBTData();
 
         if (tag.hasKey("outputChanceData")) {

@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -15,7 +16,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.glodblock.github.common.item.ItemFluidPacket;
 import com.glodblock.github.common.item.ItemWirelessUltraTerminal;
 import com.glodblock.github.inventory.InventoryHandler;
-import com.glodblock.github.inventory.item.IWirelessTerminal;
 import com.glodblock.github.util.BlockPos;
 import com.glodblock.github.util.Util;
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
@@ -24,6 +24,8 @@ import com.gtnllib.utils.GameUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.gui.PreviousContainerPrimaryGui;
 import com.science.gtnl.common.me.MEHandler;
+import com.science.gtnl.compat.ae2fc.FluidCraftItems;
+import com.science.gtnl.compat.baubles.BaublesInventory;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -53,10 +55,7 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.me.cache.CraftingGridCache;
 import appeng.tile.misc.TileSecurity;
 import appeng.util.Platform;
-import baubles.api.BaublesApi;
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.network.ByteBufUtils;
-import gregtech.api.enums.Mods;
 import io.netty.buffer.ByteBuf;
 
 public class KeyBindingHandler extends ServerboundPacket {
@@ -157,9 +156,7 @@ public class KeyBindingHandler extends ServerboundPacket {
                     }
                 }
             }
-            if (Mods.Baubles.isModLoaded()) {
-                readBaublesR(player, requestedStack, targetCount);
-            }
+            readBaublesR(player, requestedStack, targetCount);
         } else if (container instanceof AEBaseContainer c && container instanceof IContainerCraftingPacket t) {
             IGridNode gridNode = t.getNetworkNode();
             if (gridNode == null) {
@@ -284,9 +281,7 @@ public class KeyBindingHandler extends ServerboundPacket {
                     return;
                 }
             }
-            if (Mods.Baubles.isModLoaded()) {
-                readBaublesS(player, requestedStack);
-            }
+            readBaublesS(player, requestedStack);
         } else if (container instanceof ContainerMEMonitorable) {
             AEBaseContainer aec;
             IGridNode gridNode;
@@ -323,8 +318,7 @@ public class KeyBindingHandler extends ServerboundPacket {
                         return;
                     }
                     PrimaryGui primaryGui = aec.createPrimaryGui();
-                    if (Mods.AE2FluidCraft.isModLoaded()) ae2fcCraft(h, player, aec);
-                    else Platform.openGUI(
+                    if (!FluidCraftItems.openWirelessCraftAmount(h, player)) Platform.openGUI(
                         player,
                         aec.getOpenContext()
                             .getTile(),
@@ -417,32 +411,11 @@ public class KeyBindingHandler extends ServerboundPacket {
         }
     }
 
-    @Optional.Method(modid = "ae2fc")
-    private void ae2fcCraft(IActionHost host, EntityPlayerMP player, AEBaseContainer c) {
-        if (host instanceof IWirelessTerminal wt) {
-            InventoryHandler.openGui(
-                player,
-                player.worldObj,
-                new BlockPos(wt.getInventorySlot(), Util.GuiHelper.encodeType(0, Util.GuiHelper.GuiType.ITEM), 0),
-                ForgeDirection.UNKNOWN,
-                GuiBridge.GUI_CRAFTING_AMOUNT);
-        } else {
-            Platform.openGUI(
-                player,
-                c.getOpenContext()
-                    .getTile(),
-                c.getOpenContext()
-                    .getSide(),
-                GuiBridge.GUI_CRAFTING_AMOUNT);
-        }
-    }
-
-    @Optional.Method(modid = "Baubles")
     private void readBaublesS(EntityPlayerMP player, IAEStack<?> requestedStack) {
-        for (int i = 0; i < BaublesApi.getBaubles(player)
-            .getSizeInventory(); i++) {
-            ItemStack item = BaublesApi.getBaubles(player)
-                .getStackInSlot(i);
+        IInventory baubles = BaublesInventory.of(player);
+        if (baubles == null) return;
+        for (int i = 0; i < baubles.getSizeInventory(); i++) {
+            ItemStack item = baubles.getStackInSlot(i);
             WirelessTerminalGuiObject obj = MEHandler.getTerminalGuiObject(item, player, i, 1);
 
             if (obj == null) {
@@ -485,9 +458,8 @@ public class KeyBindingHandler extends ServerboundPacket {
         }
     }
 
-    @Optional.Method(modid = "Baubles")
     private void readBaublesR(EntityPlayerMP player, IAEStack<?> requestedStack, long targetCount) {
-        var inv = BaublesApi.getBaubles(player);
+        var inv = BaublesInventory.of(player);
         if (inv == null) return;
         for (int i = 0; i < inv.getSizeInventory(); i++) {
             ItemStack item = inv.getStackInSlot(i);

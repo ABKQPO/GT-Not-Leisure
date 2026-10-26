@@ -27,10 +27,17 @@ import org.jetbrains.annotations.NotNull;
 import com.mojang.authlib.GameProfile;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class GameUtils {
 
     private GameUtils() {}
+
+    // Looks the block up by registry name, so the mod that adds it does not have to be installed.
+    public static Block blockOr(String modId, String name, Block fallback) {
+        Block block = GameRegistry.findBlock(modId, name);
+        return block != null ? block : fallback;
+    }
 
     public static boolean isClientSide() {
         return FMLCommonHandler.instance()

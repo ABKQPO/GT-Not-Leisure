@@ -14,26 +14,16 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEssentiaHatch;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMultiEssentiaInputHatch;
 import com.science.gtnl.common.machine.tooltip.StructureTooltipHooks;
+import com.science.gtnl.compat.thaumicenergistics.InfusionProviders;
 import com.science.gtnl.loader.BlockLoader;
 
-import appeng.api.config.Actionable;
-import appeng.api.storage.IMEMonitor;
-import appeng.me.GridAccessException;
-import cpw.mods.fml.common.Optional;
-import gregtech.api.enums.Mods;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
-import thaumicenergistics.common.storage.AEEssentiaStack;
-import thaumicenergistics.common.storage.AEEssentiaStackType;
-import thaumicenergistics.common.tiles.TileAdvancedInfusionProvider;
-import thaumicenergistics.common.tiles.TileInfusionProvider;
 
 public class EssentiaSupply {
 
     private static final int COMMIT_COOLDOWN_TICKS = 200;
-    private static final String INFUSION_PROVIDER_NAME_KEY = "thaumicenergistics.block.infusion.provider.name";
-    private static final String ADVANCED_INFUSION_PROVIDER_NAME_KEY = "thaumicenergistics.block.advanced.infusion.provider.name";
 
     private final String machineName;
     private final List<TileEntityEssentiaHatch> hatches = new ObjectArrayList<>();
@@ -54,9 +44,11 @@ public class EssentiaSupply {
 
     public static <T> IStructureElement<T> providerElement(ITileAdder<T> adder, Block hintBlock, int hintMeta) {
         IStructureElement<T> element = StructureUtility.ofTileAdder(adder, hintBlock, hintMeta);
-        if (!Mods.ThaumicEnergistics.isModLoaded()) return element;
-        return StructureTooltipHooks
-            .describeAsHatch(element, INFUSION_PROVIDER_NAME_KEY, ADVANCED_INFUSION_PROVIDER_NAME_KEY);
+        if (!InfusionProviders.isAvailable()) return element;
+        return StructureTooltipHooks.describeAsHatch(
+            element,
+            InfusionProviders.INFUSION_PROVIDER_NAME_KEY,
+            InfusionProviders.ADVANCED_INFUSION_PROVIDER_NAME_KEY);
     }
 
     public void clear() {
@@ -75,7 +67,7 @@ public class EssentiaSupply {
 
     public boolean addProvider(TileEntity tile) {
         if (tile == null || tile.isInvalid() || providers.contains(tile)) return false;
-        return Mods.ThaumicEnergistics.isModLoaded() && isInfusionProvider(tile) && providers.add(tile);
+        return InfusionProviders.isInfusionProvider(tile) && providers.add(tile);
     }
 
     public boolean isCommitBlocked(long worldTime) {
@@ -154,7 +146,7 @@ public class EssentiaSupply {
     }
 
     public void requestShortfall(AspectList requiredAspects, int crafts) {
-        if (requiredAspects == null || crafts <= 0 || !Mods.ThaumicEnergistics.isModLoaded()) return;
+        if (requiredAspects == null || crafts <= 0 || !InfusionProviders.isAvailable()) return;
 
         Aspect[] aspects = snapshotAspects(requiredAspects);
         if (aspects == null) return;
@@ -186,7 +178,7 @@ public class EssentiaSupply {
     private void orderFromProviders(Aspect aspect, int amount) {
         for (TileEntity provider : providers) {
             if (provider == null || provider.isInvalid()) continue;
-            if (orderFromProviderCompat(provider, aspect, amount)) return;
+            if (InfusionProviders.order(provider, aspect, amount)) return;
         }
     }
 
@@ -237,8 +229,7 @@ public class EssentiaSupply {
     }
 
     private long returnToProvider(TileEntity provider, Aspect aspect, long amount) {
-        return amount > 0 && Mods.ThaumicEnergistics.isModLoaded() ? returnToProviderCompat(provider, aspect, amount)
-            : 0;
+        return InfusionProviders.giveBack(provider, aspect, amount);
     }
 
     private long getMaximumProviderAmount(Aspect aspect) {
@@ -266,59 +257,10 @@ public class EssentiaSupply {
     }
 
     private long getProviderAmount(TileEntity provider, Aspect aspect) {
-        return Mods.ThaumicEnergistics.isModLoaded() ? getProviderAmountCompat(provider, aspect) : 0;
+        return InfusionProviders.networkAmount(provider, aspect);
     }
 
     private boolean takeFromProvider(TileEntity provider, Aspect aspect, int amount) {
-        return Mods.ThaumicEnergistics.isModLoaded() && takeFromProviderCompat(provider, aspect, amount);
-    }
-
-    @Optional.Method(modid = "thaumicenergistics")
-    private static boolean isInfusionProvider(TileEntity tile) {
-        return tile instanceof TileInfusionProvider;
-    }
-
-    @Optional.Method(modid = "thaumicenergistics")
-    private static boolean isUsableProviderCompat(TileEntity provider) {
-        if (provider instanceof TileAdvancedInfusionProvider advancedProvider) {
-            return advancedProvider.matrices.isEmpty();
-        }
-        return provider instanceof TileInfusionProvider;
-    }
-
-    @Optional.Method(modid = "thaumicenergistics")
-    private static long getProviderAmountCompat(TileEntity provider, Aspect aspect) {
-        return isUsableProviderCompat(provider) ? ((TileInfusionProvider) provider).getAspectAmountInNetwork(aspect)
-            : 0;
-    }
-
-    @Optional.Method(modid = "thaumicenergistics")
-    private static boolean orderFromProviderCompat(TileEntity provider, Aspect aspect, int amount) {
-        return isUsableProviderCompat(provider) && ((TileInfusionProvider) provider).orderSomeEssentia(aspect, amount);
-    }
-
-    @Optional.Method(modid = "thaumicenergistics")
-    private static boolean takeFromProviderCompat(TileEntity provider, Aspect aspect, int amount) {
-        return provider instanceof TileInfusionProvider infusionProvider
-            && infusionProvider.takeFromContainer(aspect, amount);
-    }
-
-    @Optional.Method(modid = "thaumicenergistics")
-    @SuppressWarnings("unchecked")
-    private static long returnToProviderCompat(TileEntity provider, Aspect aspect, long amount) {
-        if (!(provider instanceof TileInfusionProvider infusionProvider)) return 0;
-        try {
-            IMEMonitor<AEEssentiaStack> monitor = (IMEMonitor<AEEssentiaStack>) infusionProvider.getProxy()
-                .getStorage()
-                .getMEMonitor(AEEssentiaStackType.ESSENTIA_STACK_TYPE);
-            if (monitor == null) return 0;
-            AEEssentiaStack rejected = monitor.injectItems(
-                new AEEssentiaStack(aspect, amount),
-                Actionable.MODULATE,
-                infusionProvider.getMachineSource());
-            return amount - (rejected == null ? 0 : rejected.getStackSize());
-        } catch (GridAccessException e) {
-            return 0;
-        }
+        return InfusionProviders.take(provider, aspect, amount);
     }
 }

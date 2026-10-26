@@ -28,7 +28,7 @@ import codechicken.nei.guihook.IContainerSlotClickHandler;
 
 public final class MiniTerminalNEIAdapter extends NEIGuiHandler implements IContainerSlotClickHandler {
 
-    static void refreshHoveredSlot(GuiContainer gui) {
+    public static void refreshHoveredSlot(GuiContainer gui) {
         if (MiniTerminalClient.overlay(gui) != null) {
 
             gui.theSlot = GuiContainerManager.getSlotMouseOver(gui);

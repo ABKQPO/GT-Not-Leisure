@@ -23,9 +23,8 @@ import com.cleanroommc.modularui.value.sync.StringSyncValue;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.ListWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
-import com.gtnllib.mod.ModList;
 import com.science.gtnl.api.mixinHelper.IVoidMinerDimensionOverride;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.compat.vmtweak.VoidMinerTweak;
 
 import bwcrossmod.galacticgreg.MTEVoidMinerBase;
 import bwcrossmod.galacticgreg.VoidMinerUtility;
@@ -40,7 +39,7 @@ import gtneioreplugin.util.DimensionHelper;
 public abstract class MixinMTEVoidMinerBaseGui extends MTEMultiBlockBaseGui<MTEVoidMinerBase> {
 
     @Unique
-    private static boolean gtnl$enableMixin = !ModList.VMTweak.isModLoaded() && MainConfig.machine.enableVoidMinerTweak;
+    private static boolean gtnl$enableMixin = VoidMinerTweak.enabled();
 
     @Unique
     private int gtnl$lastSeenDimensionVersion = -1;

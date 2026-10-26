@@ -33,6 +33,8 @@ import com.science.gtnl.common.packet.DraconicArmorProjectionHitEffectPacket;
 import com.science.gtnl.common.packet.SoundPacket;
 import com.science.gtnl.common.packet.SyncCircuitNanitesPacket;
 import com.science.gtnl.common.world.WorldEvents;
+import com.science.gtnl.compat.galaxyspace.SteamRocketSchematic;
+import com.science.gtnl.compat.overpowered.RecipeOutputChance;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.AchievementsLoader;
 import com.science.gtnl.mixins.early.minecraft.AccessorFoodStats;
@@ -43,10 +45,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import gregtech.api.enums.Mods;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import micdoodle8.mods.galacticraft.api.recipe.SchematicRegistry;
 
 @EventBusSubscriber
 public class PlayerEvents {
@@ -65,13 +65,11 @@ public class PlayerEvents {
         ScienceNotLeisure.network.sendTo(new SoundPacket(true), player);
         ScienceNotLeisure.network.sendTo(new SyncCircuitNanitesPacket(player.worldObj.getSeed()), player);
 
-        if (Mods.GalaxySpace.isModLoaded() && Mods.GalacticraftCore.isModLoaded()) {
-            addRocketUnlockedPage(player);
-        }
+        SteamRocketSchematic.unlockFor(player);
 
         TimeStopPocketWatch.setTimeStopped(false);
 
-        if (shouldGrantAllCommunityModAchievement()) {
+        if (ModList.allListedModsLoaded()) {
             AchievementsLoader.gtnlAchievementsPage.getAchievements()
                 .add(AchievementsLoader.installAllCommunityMod);
             player.triggerAchievement(AchievementsLoader.installAllCommunityMod);
@@ -80,13 +78,11 @@ public class PlayerEvents {
         if (MainConfig.message.enableShowJoinMessage || MainConfig.debug.enableDebugMode) {
 
             if (MainConfig.message.enableShowAddMods) {
-                for (ModList mod : ModList.VALUES) {
-                    if (mod.isModLoaded() && mod.showInModList) {
-                        String translatedPrefix = StatCollector.translateToLocal("gtnl.message.mod_installed");
-                        player.addChatMessage(
-                            new ChatComponentText(mod.displayName + translatedPrefix)
-                                .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.AQUA)));
-                    }
+                for (ModList mod : ModList.loadedListedMods()) {
+                    String translatedPrefix = StatCollector.translateToLocal("gtnl.message.mod_installed");
+                    player.addChatMessage(
+                        new ChatComponentText(mod.displayName + translatedPrefix)
+                            .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.AQUA)));
                 }
             }
 
@@ -109,7 +105,7 @@ public class PlayerEvents {
                         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)));
             }
 
-            if (!ModList.Overpowered.isModLoaded() && MainConfig.machine.enableRecipeOutputChance) {
+            if (RecipeOutputChance.enabled()) {
                 player.addChatMessage(
                     new ChatComponentTranslation("gtnl.message.recipe_output_chance_enabled")
                         .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GOLD)));
@@ -132,12 +128,6 @@ public class PlayerEvents {
                 new ChatComponentTranslation("gtnl.message.debug_enabled")
                     .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)));
         }
-    }
-
-    public static void addRocketUnlockedPage(EntityPlayerMP player) {
-        SchematicRegistry.addUnlockedPage(
-            player,
-            SchematicRegistry.getMatchingRecipeForID(MainConfig.item.steam_rocket.idSchematicRocketSteam));
     }
 
     @SubscribeEvent
@@ -265,14 +255,5 @@ public class PlayerEvents {
                 }
             }
         }
-    }
-
-    public static boolean shouldGrantAllCommunityModAchievement() {
-        for (ModList mod : ModList.VALUES) {
-            if (mod.showInModList && !mod.isModLoaded()) {
-                return false;
-            }
-        }
-        return true;
     }
 }

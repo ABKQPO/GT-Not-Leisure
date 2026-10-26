@@ -2,6 +2,7 @@ package com.science.gtnl.common.packet;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S2FPacketSetSlot;
 
@@ -9,6 +10,7 @@ import com.glodblock.github.util.Util;
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.gtnllib.network.ServerboundPacket;
 import com.science.gtnl.common.me.MEHandler;
+import com.science.gtnl.compat.baubles.BaublesInventory;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
@@ -21,10 +23,7 @@ import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-import baubles.api.BaublesApi;
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.network.ByteBufUtils;
-import gregtech.api.enums.Mods;
 import io.netty.buffer.ByteBuf;
 
 public class WirelessPickBlock extends ServerboundPacket {
@@ -64,7 +63,7 @@ public class WirelessPickBlock extends ServerboundPacket {
 
         ServerThreadUtil.addScheduledTask(() -> {
             readPlayer(player, needItem, this);
-            if (needItem != null && needItem.stackSize != 0 && Mods.Baubles.isModLoaded()) {
+            if (needItem != null && needItem.stackSize != 0) {
                 readBaubles(player, needItem, slot);
             }
         });
@@ -92,12 +91,11 @@ public class WirelessPickBlock extends ServerboundPacket {
         return -1;
     }
 
-    @Optional.Method(modid = "Baubles")
     public void readBaubles(EntityPlayerMP player, ItemStack exitem, int slot) {
-        for (int i = 0; i < BaublesApi.getBaubles(player)
-            .getSizeInventory(); i++) {
-            ItemStack item = BaublesApi.getBaubles(player)
-                .getStackInSlot(i);
+        IInventory baubles = BaublesInventory.of(player);
+        if (baubles == null) return;
+        for (int i = 0; i < baubles.getSizeInventory(); i++) {
+            ItemStack item = baubles.getStackInSlot(i);
             if (item == null) continue;
             if (item.getItem() instanceof IWirelessTermHandler wt && wt.canHandle(item)) {
                 if (work(item, player, exitem, slot, i, 1, Integer.MIN_VALUE)) {

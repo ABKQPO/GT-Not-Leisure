@@ -13,18 +13,16 @@ import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
-import com.dreammaster.item.NHItemList;
 import com.google.common.collect.Sets;
 import com.science.gtnl.common.gui.modularui.singleblock.GTNLBasicMachineGui;
+import com.science.gtnl.compat.newhorizons.NHCoreItem;
 import com.science.gtnl.mixins.late.enhancedLootBags.AccessorItemLootBag;
 import com.science.gtnl.utils.enums.BlockIcons;
 
-import cpw.mods.fml.common.Optional;
 import eu.usrv.enhancedlootbags.core.LootGroupsHandler;
 import eu.usrv.enhancedlootbags.core.items.ItemLootBag;
 import eu.usrv.enhancedlootbags.core.serializer.LootGroups;
 import gregtech.api.enums.GTValues;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.SoundResource;
 import gregtech.api.enums.TierEU;
 import gregtech.api.interfaces.ITexture;
@@ -41,8 +39,7 @@ public class LootBagRedemption extends MTEBasicMachine {
 
     private static final int BONUS_MUL_PER_LEVEL = 3;
     public static final Random random = new Random();
-    public static final ItemStack coin = Mods.NewHorizonsCoreMod.isModLoaded() ? getCoinTechnician()
-        : new ItemStack(Items.paper);
+    public static final ItemStack coin = NHCoreItem.CoinTechnician.get(1, new ItemStack(Items.paper));
 
     /**
      * Find the target loot drop in the bag.
@@ -98,11 +95,6 @@ public class LootBagRedemption extends MTEBasicMachine {
                 return null;
             }
         } while (true);
-    }
-
-    @Optional.Method(modid = "dreamcraft")
-    private static ItemStack getCoinTechnician() {
-        return NHItemList.CoinTechnician.get(1);
     }
 
     public LootBagRedemption(int aID, String aName, String aNameRegional, int aTier) {

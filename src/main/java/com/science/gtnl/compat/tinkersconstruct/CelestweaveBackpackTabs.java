@@ -1,4 +1,4 @@
-package com.science.gtnl.client.celestweave;
+package com.science.gtnl.compat.tinkersconstruct;
 
 import java.util.List;
 
@@ -11,28 +11,44 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.celestweave.CelestweaveBackpack;
 import com.science.gtnl.common.packet.CelestweaveKeyPacket;
 
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.enums.Mods;
 import tconstruct.client.tabs.AbstractTab;
 import tconstruct.client.tabs.TabRegistry;
 
-public class CelestweaveBackpackTicCompat {
+// Callable without Tinkers' Construct installed: its classes are only touched inside the optional methods and Tab.
+@SideOnly(Side.CLIENT)
+public class CelestweaveBackpackTabs {
 
     private static final ItemStack FALLBACK = new ItemStack(Blocks.chest);
 
-    private CelestweaveBackpackTicCompat() {}
+    private CelestweaveBackpackTabs() {}
 
-    static void register() {
+    public static void register() {
+        if (Mods.TinkerConstruct.isModLoaded()) registerTab();
+    }
+
+    public static void add(int left, int top, List<?> buttons) {
+        if (Mods.TinkerConstruct.isModLoaded()) addTabs(left, top, buttons);
+    }
+
+    @Optional.Method(modid = "TConstruct")
+    private static void registerTab() {
         TabRegistry.registerTab(new Tab());
     }
 
+    @Optional.Method(modid = "TConstruct")
     @SuppressWarnings("unchecked")
-    static void add(int left, int top, List<?> buttons) {
+    private static void addTabs(int left, int top, List<?> buttons) {
         TabRegistry.updateTabValues(left, top, Tab.class);
         TabRegistry.addTabsToList((List<GuiButton>) buttons);
     }
 
     public static class Tab extends AbstractTab {
 
-        Tab() {
+        public Tab() {
             super(0, 0, 0, FALLBACK);
         }
 

@@ -8,13 +8,10 @@ import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.event.terraingen.DecorateBiomeEvent;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.compat.visualprospecting.OreVeinTypes;
 import com.science.gtnl.loader.BlockLoader;
-import com.science.gtnl.mixins.late.visualProspecting.AccessorVeinTypeCaching;
-import com.sinthoras.visualprospecting.database.veintypes.VeinType;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import gregtech.api.enums.Mods;
-import gregtech.common.OreMixBuilder;
 
 public class GTNLWorldgenloader {
 
@@ -23,22 +20,9 @@ public class GTNLWorldgenloader {
             oreMix.addGTOreLayer();
         }
 
-        if (Mods.VisualProspecting.isModLoaded()) {
-            registerVisualProspectingVeins();
-        }
+        OreVeinTypes.register();
 
         ScienceNotLeisure.LOG.info("Started Galactic Greg ore gen code");
-    }
-
-    private static void registerVisualProspectingVeins() {
-        for (GTNLOreMixer oreMix : GTNLOreMixer.values()) {
-            AccessorVeinTypeCaching.getVeinTypes()
-                .put(oreMix.oreMixBuilder.oreMixName, new VeinType(oreMix.oreMixBuilder));
-        }
-        for (OreMixBuilder vein : GTNLVeinCatalog.additionalVeins()) {
-            AccessorVeinTypeCaching.getVeinTypes()
-                .put(vein.oreMixName, new VeinType(vein));
-        }
     }
 
     @SubscribeEvent

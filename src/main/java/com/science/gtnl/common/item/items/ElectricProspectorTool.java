@@ -1,6 +1,5 @@
 package com.science.gtnl.common.item.items;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -27,15 +26,14 @@ import com.gtnllib.utils.MetaTooltipUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.ItemStaticDataClientOnly;
 import com.science.gtnl.common.packet.ProspectingPacket;
+import com.science.gtnl.compat.visualprospecting.ProspectionResults;
 import com.science.gtnl.loader.ItemLoader;
 import com.science.gtnl.utils.ColorUtils;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.item.MetaItemStackUtils;
-import com.sinthoras.visualprospecting.VisualProspecting_API;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.api.enums.Mods;
 import gregtech.api.items.MetaGeneratedTool;
 import gregtech.api.objects.ItemData;
 import gregtech.api.task.CooperativeScheduler;
@@ -217,9 +215,7 @@ public class ElectricProspectorTool extends Item {
                         return;
                     }
                     ScienceNotLeisure.network.sendTo(packet, (EntityPlayerMP) aPlayer);
-                    if (Mods.VisualProspecting.isModLoaded()) {
-                        sendVisualProspectingResults(aWorld, (EntityPlayerMP) aPlayer, scanMode, radius);
-                    }
+                    sendVisualProspectingResults(aWorld, (EntityPlayerMP) aPlayer, scanMode, radius);
                     if (MetaGeneratedTool.getToolDamage(aStack) >= MetaGeneratedTool.getToolMaxDamage(aStack)
                         && aStack.stackSize > 0) {
                         aStack.stackSize--;
@@ -285,28 +281,10 @@ public class ElectricProspectorTool extends Item {
 
     private void sendVisualProspectingResults(World world, EntityPlayerMP player, int scanMode, int radius) {
         if (scanMode == ProspectingPacket.MODE_BIG_ORES || scanMode == ProspectingPacket.MODE_ALL_ORES) {
-            sendVisualProspectingOreResults(world, player, (int) player.posX, (int) player.posZ, radius * 16);
+            ProspectionResults.sendOres(world, player, (int) player.posX, (int) player.posZ, radius * 16);
         } else if (scanMode == MODE_FLUIDS) {
-            sendVisualProspectingFluidResults(world, player, (int) player.posX, (int) player.posZ, radius * 16);
+            ProspectionResults.sendFluids(world, player, (int) player.posX, (int) player.posZ, radius * 16);
         }
-    }
-
-    private void sendVisualProspectingOreResults(World world, EntityPlayerMP player, int blockX, int blockZ,
-        int blockRadius) {
-        VisualProspecting_API.LogicalServer.sendProspectionResultsToClient(
-            player,
-            VisualProspecting_API.LogicalServer
-                .prospectOreVeinsWithinRadius(world.provider.dimensionId, blockX, blockZ, blockRadius),
-            Collections.emptyList());
-    }
-
-    private void sendVisualProspectingFluidResults(World world, EntityPlayerMP player, int blockX, int blockZ,
-        int blockRadius) {
-        VisualProspecting_API.LogicalServer.sendProspectionResultsToClient(
-            player,
-            Collections.emptyList(),
-            VisualProspecting_API.LogicalServer
-                .prospectUndergroundFluidsWithingRadius(world, blockX, blockZ, blockRadius));
     }
 
     public void addChatMassageByValue(EntityPlayer aPlayer, int value, String name) {
@@ -377,9 +355,7 @@ public class ElectricProspectorTool extends Item {
             addChatMassageByValue(aPlayer, entry.getIntValue(), entry.getKey());
         }
 
-        if (Mods.VisualProspecting.isModLoaded()) {
-            sendVisualProspectingOreResults(aWorld, (EntityPlayerMP) aPlayer, aX, aZ, 0);
-        }
+        ProspectionResults.sendOres(aWorld, (EntityPlayerMP) aPlayer, aX, aZ, 0);
     }
 
     public void processOreProspecting(ItemStack aStack, EntityPlayer aPlayer, World world, int x, int y, int z,

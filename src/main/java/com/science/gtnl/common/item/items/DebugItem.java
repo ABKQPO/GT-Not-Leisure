@@ -15,14 +15,12 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.dreammaster.item.NHItemList;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.compat.avaritia.DireCrafting;
 import com.science.gtnl.utils.SimpleItem;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import fox.spiteful.avaritia.tile.TileEntityDireCrafting;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Mods;
 import gregtech.api.interfaces.IItemContainer;
@@ -44,7 +42,7 @@ public class DebugItem extends Item {
         list.add(CustomItemList.class);
         list.add(GregtechItemList.class);
         addOptionalItemList(list, "kubatech.api.enums.ItemList");
-        if (Mods.NewHorizonsCoreMod.isModLoaded()) addNHItemList(list);
+        addOptionalItemList(list, "com.dreammaster.item.NHItemList");
         ITEMLIST = list.toArray(new Class<?>[0]);
     }
 
@@ -52,11 +50,6 @@ public class DebugItem extends Item {
         try {
             itemLists.add(Class.forName(className));
         } catch (ClassNotFoundException ignored) {}
-    }
-
-    @Optional.Method(modid = "dreamcraft")
-    public static void addNHItemList(List<Class<?>> list) {
-        list.add(NHItemList.class);
     }
 
     public static final char[] placeholder = ("ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz"
@@ -82,8 +75,8 @@ public class DebugItem extends Item {
         if (item.getItem() == this) {
             if (event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
                 TileEntity tile = world.getTileEntity(event.x, event.y, event.z);
-                if (Mods.Avaritia.isModLoaded() && isDireCraftingTile(tile)) {
-                    var inputs = getInputs(tile);
+                var inputs = DireCrafting.inputs(tile);
+                if (inputs != null) {
                     var log = getLog(inputs);
                     ScienceNotLeisure.LOG.info(log.toString());
                     player.addChatMessage(new ChatComponentTranslation("打印成功"));
@@ -91,11 +84,6 @@ public class DebugItem extends Item {
                 }
             }
         }
-    }
-
-    @Optional.Method(modid = "Avaritia")
-    private boolean isDireCraftingTile(TileEntity tile) {
-        return tile instanceof TileEntityDireCrafting;
     }
 
     public static @NotNull StringBuilder getLog(SimpleItem[] inputs) {
@@ -200,17 +188,6 @@ public class DebugItem extends Item {
         } else {
             return "GTModHandler.getModItem(" + modArg + ", \"" + itemName + "\", 1)";
         }
-    }
-
-    @Optional.Method(modid = "Avaritia")
-    public SimpleItem[] getInputs(TileEntity te) {
-        var dc = (TileEntityDireCrafting) te;
-        var inputs = new SimpleItem[81];
-        for (int i = 1; i < dc.getSizeInventory(); i++) {
-            ItemStack item = dc.getStackInSlot(i);
-            inputs[i - 1] = SimpleItem.getInstance(item);
-        }
-        return inputs;
     }
 
 }

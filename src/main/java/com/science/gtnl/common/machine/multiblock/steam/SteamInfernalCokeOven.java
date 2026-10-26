@@ -5,7 +5,6 @@ import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,6 +16,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.gtnllib.utils.GameUtils;
 import com.science.gtnl.common.machine.multiMachineBase.SteamMultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
@@ -107,9 +107,8 @@ public class SteamInfernalCokeOven extends SteamMultiMachineBase<SteamInfernalCo
                 'C',
                 StructureUtility.ofChain(
                     StructureUtility.ofBlockAnyMeta(Blocks.nether_brick),
-                    StructureUtility.ofBlockAnyMeta(
-                        Mods.Chisel.isModLoaded() ? Block.getBlockFromName("chisel:nether_brick")
-                            : Blocks.nether_brick)))
+                    StructureUtility
+                        .ofBlockAnyMeta(GameUtils.blockOr(Mods.Chisel.ID, "nether_brick", Blocks.nether_brick))))
             .build();
     }
 

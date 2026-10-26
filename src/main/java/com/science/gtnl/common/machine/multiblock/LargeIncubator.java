@@ -22,6 +22,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
+import com.gtnllib.utils.GameUtils;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.StructureUtils;
@@ -33,7 +34,6 @@ import bartworks.API.recipe.BartWorksRecipeMaps;
 import bartworks.common.tileentities.tiered.MTERadioHatch;
 import bartworks.util.BWUtil;
 import bartworks.util.ResultWrongSievert;
-import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
@@ -119,10 +119,8 @@ public class LargeIncubator extends MultiMachineBase<LargeIncubator> implements 
                         StructureUtility.ofBlock(GregTechAPI.sBlockReinforced, 2))))
             .addElement(
                 'F',
-                StructureUtility.ofBlockAnyMeta(
-                    Mods.EtFuturumRequiem.isModLoaded() ? GameRegistry.findBlock(Mods.EtFuturumRequiem.ID, "sponge")
-                        : Blocks.sponge,
-                    1))
+                StructureUtility
+                    .ofBlockAnyMeta(GameUtils.blockOr(Mods.EtFuturumRequiem.ID, "sponge", Blocks.sponge), 1))
             .addElement(
                 'G',
                 StructureUtility.ofChain(

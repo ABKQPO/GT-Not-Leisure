@@ -27,6 +27,7 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.gui.modularui.GTNLMui2ItemHandlerAdapter;
 import com.science.gtnl.common.gui.modularui.GTNLSteamMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamBeaconModule;
+import com.science.gtnl.compat.thaumichorizons.ThaumicHorizonsPotions;
 
 import gregtech.api.enums.Mods;
 import gregtech.api.modularui2.GTGuiTextures;
@@ -310,7 +311,7 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
                     72,
                     beaconModule::hasFeatherFeetEffect,
                     beaconModule::toggleFeatherFeetEffect));
-            if (Mods.ThaumicHorizons.isModLoaded()) {
+            if (ThaumicHorizonsPotions.hasVisRegen()) {
                 panel.child(
                     createEffectButton(
                         syncManager,

@@ -17,7 +17,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import com.dreammaster.item.NHItemList;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
@@ -28,12 +27,12 @@ import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.GTNLControllerUpgradeGui;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.compat.newhorizons.NHCoreItem;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 
-import cpw.mods.fml.common.Optional;
 import goodgenerator.api.recipe.GoodGeneratorRecipeMaps;
 import goodgenerator.items.GGMaterial;
 import goodgenerator.loader.Loaders;
@@ -44,7 +43,6 @@ import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
@@ -89,11 +87,6 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
     private static final int MACHINEMODE_ASSEM = 0;
     private static final int MACHINEMODE_COMPO = 1;
 
-    @Optional.Method(modid = "dreamcraft")
-    public static ItemStack getPikoCircuit() {
-        return NHItemList.PikoCircuit.get(32);
-    }
-
     public static List<Pair<Block, Integer>> createComponentCasingVariants() {
         List<Pair<Block, Integer>> casingVariants = new ObjectArrayList<>(13);
         for (int tier = 0; tier < 13; tier++) {
@@ -108,7 +101,7 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
         ItemList.Field_Generator_UIV.get(32), ItemList.Sensor_UIV.get(32), ItemList.Emitter_UIV.get(32),
         GTNLItemList.EnhancementCore.get(16),
         GTOreDictUnificator.get(OrePrefixes.nanite, Materials.TranscendentMetal, 16),
-        Mods.NewHorizonsCoreMod.isModLoaded() ? getPikoCircuit() : null,
+        NHCoreItem.PikoCircuit.get(32, null),
         GTOreDictUnificator.get(OrePrefixes.wireGt16, Materials.SuperconductorUIV, 32),
         GTOreDictUnificator.get(OrePrefixes.plateSuperdense, Materials.Mellion, 8),
         GGMaterial.shirabon.get(OrePrefixes.plateSuperdense, 8) };
@@ -422,5 +415,4 @@ public class IntegratedAssemblyFacility extends WirelessEnergyMultiMachineBase<I
         return StatCollector
             .translateToLocal("gtnl.machine.integrated_assembly_facility.info.component_assembly_line_upgrade");
     }
-
 }

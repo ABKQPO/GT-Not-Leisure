@@ -17,7 +17,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.dreammaster.block.BlockList;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
@@ -27,15 +26,14 @@ import com.science.gtnl.api.IConfigurationMaintenance;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
+import com.science.gtnl.compat.newhorizons.NHCoreBlock;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.recipes.metadata.ElectrocellGeneratorMetadata;
 
-import cpw.mods.fml.common.Optional;
 import gregtech.api.GregTechAPI;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.HatchElement;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -67,8 +65,7 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
     private static final String[][] shape = StructureUtils.readStructureFromFile(EG_STRUCTURE_FILE_PATH);
     public static final Random random = new Random();
     public static final double[] FLUID_MULTIPLIERS = { 1.0, 1.8, 2.5, 3.5 };
-    public static final Block COMPRESSED_GRAPHITE = Mods.NewHorizonsCoreMod.isModLoaded() ? getCompressedGraphite()
-        : Blocks.coal_block;
+    public static final Block COMPRESSED_GRAPHITE = NHCoreBlock.CompressedGraphite.get(Blocks.coal_block);
 
     public double generatorValue = 1;
     public FluidStack matchedFluid;
@@ -84,11 +81,6 @@ public class ElectrocellGenerator extends MultiMachineBase<ElectrocellGenerator>
 
     public ElectrocellGenerator(String aName) {
         super(aName);
-    }
-
-    @Optional.Method(modid = "dreamcraft")
-    public static Block getCompressedGraphite() {
-        return BlockList.CompressedGraphite.block;
     }
 
     @Override

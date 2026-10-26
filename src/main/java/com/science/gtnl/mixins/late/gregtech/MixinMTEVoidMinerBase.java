@@ -27,10 +27,9 @@ import com.gtnewhorizons.modularui.api.math.Alignment;
 import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
 import com.gtnewhorizons.modularui.common.widget.SlotWidget;
 import com.gtnewhorizons.modularui.common.widget.TextWidget;
-import com.gtnllib.mod.ModList;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.mixinHelper.IVoidMinerDimensionOverride;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.compat.vmtweak.VoidMinerTweak;
 import com.science.gtnl.utils.machine.VMTweakHelper;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 
@@ -92,7 +91,7 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
     public ItemStackHandler selected;
 
     @Unique
-    private static boolean gtnl$enableMixin = !ModList.VMTweak.isModLoaded() && MainConfig.machine.enableVoidMinerTweak;
+    private static boolean gtnl$enableMixin = VoidMinerTweak.enabled();
 
     @Unique
     private String vmTweak$warning = "";

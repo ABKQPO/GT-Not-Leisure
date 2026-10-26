@@ -14,8 +14,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.gtnllib.mod.ModList;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.science.gtnl.compat.overpowered.RecipeOutputChance;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.recipes.ChanceBonusManager;
 
@@ -40,7 +40,7 @@ public class MixinBehaviourScanner {
     private void GTNotLeisure$addScanInfo(MetaBaseItem aItem, ItemStack aStack, EntityPlayer aPlayer, World aWorld,
         int aX, int aY, int aZ, ForgeDirection side, float hitX, float hitY, float hitZ,
         CallbackInfoReturnable<Boolean> cir, @Local List<String> list) {
-        if (ModList.Overpowered.isModLoaded() || !MainConfig.machine.enableRecipeOutputChance) return;
+        if (!RecipeOutputChance.enabled()) return;
         TileEntity tile = aWorld.getTileEntity(aX, aY, aZ);
         if (!(tile instanceof BaseMetaTileEntity baseMetaTileEntity)) {
             return;
