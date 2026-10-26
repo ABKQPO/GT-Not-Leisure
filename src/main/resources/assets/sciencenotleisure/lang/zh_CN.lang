@@ -680,6 +680,7 @@ gtnl.structure.tooltip.part.voltage=电压
 gtnl.structure.tooltip.part.coil=加热线圈
 gtnl.structure.tooltip.part.glass=玻璃
 gtnl.structure.tooltip.part.casing=外壳
+gtnl.structure.tooltip.part.casing.componentAssemblyLineCasing=部件装配线外壳
 gtnl.structure.tooltip.part.tier=%s§f等级§7
 gtnl.structure.tooltip.effect.parallel=%s并行
 gtnl.structure.tooltip.effect.speed=%s速度

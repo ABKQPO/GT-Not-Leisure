@@ -680,6 +680,7 @@ gtnl.structure.tooltip.part.voltage=Voltage
 gtnl.structure.tooltip.part.coil=Heating Coil
 gtnl.structure.tooltip.part.glass=Glass
 gtnl.structure.tooltip.part.casing=Casing
+gtnl.structure.tooltip.part.casing.componentAssemblyLineCasing=Component Assembly Line Casing
 gtnl.structure.tooltip.part.tier=%s §fTier§7
 gtnl.structure.tooltip.effect.parallel=parallels %s
 gtnl.structure.tooltip.effect.speed=speed %s

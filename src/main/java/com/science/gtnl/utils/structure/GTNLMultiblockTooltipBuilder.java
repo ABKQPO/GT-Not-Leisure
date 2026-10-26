@@ -392,12 +392,16 @@ public class GTNLMultiblockTooltipBuilder extends MultiblockTooltipBuilder {
         if (!structureTiers && summary.channels()
             .isEmpty()) return;
         addStructureInfo("");
-        if (structureTiers) {
-            String effect = summary.layered() ? "channels.gregtech.master.height"
-                : "gtnl.structure.tooltip.channel.structure_tier";
-            addMasterChannel(StatCollector.translateToLocal(effect));
-        }
+        if (structureTiers) addMasterChannel(StatCollector.translateToLocal(masterChannelKey(summary)));
         for (IStructureChannels channel : summary.channels()) addSubChannelUsage(channel);
+    }
+
+    // Why: a layered structure grows upward or sideways, and GT names the projector's effect after that direction.
+    private static String masterChannelKey(StructureSummary summary) {
+        if (!summary.layered()) return "gtnl.structure.tooltip.channel.structure_tier";
+        Size first = summary.firstTier();
+        Size all = summary.allTiers();
+        return first.height() != all.height() ? "channels.gregtech.master.height" : "channels.gregtech.master.length";
     }
 
     private static String structureTierHeader(int tier) {
