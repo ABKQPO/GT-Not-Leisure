@@ -1278,9 +1278,6 @@ gtnl.recipe.metadata.resource_collection_module.5=Requires MK-XIII Mining Drones
 gtnl.machine.resource_collection_module.recipe_type=Space Mining / Space Drilling
 gtnl.machine.resource_collection_module.mode.0=Space Mining
 gtnl.machine.resource_collection_module.mode.1=Space Drilling
-gtnl.machine.resource_collection_module.tooltip.0=Adds space mining and space drilling functionality to the space elevator
-gtnl.machine.resource_collection_module.tooltip.1=§d§lBlast Off!
-gtnl.machine.resource_collection_module.tooltip.casing=Any space elevator base machine block
 GT5U.gui.text.no_mining_drone=§7No mining drones found
 
 gtnl.machine.extreme_fusion_reactor_mk_i.name=Extreme Fusion Reactor Mk I
@@ -1310,17 +1307,9 @@ gtnl.machine.large_steam_sifter.name=Large Steam Sifter
 gtnl.machine.large_steam_sifter.recipe_type=Sifter
 
 gtnl.machine.large_boiler_bronze.name=Large Bronze Boiler
-gtnl.machine.large_boiler_bronze.tooltip.0=Each piece of coal produces 128,000L of steam at a rate of 64,000L/s.
 gtnl.machine.large_boiler_steel.name=Large Steel Boiler
-gtnl.machine.large_boiler_steel.tooltip.0=Each piece of coal produces 128,000L of steam at a rate of 128,000L/s.
 gtnl.machine.large_boiler_titanium.name=Large Titanium Boiler
-gtnl.machine.large_boiler_titanium.tooltip.0=Each piece of coal produces 1,024,000L of steam at a rate of 256,000L/s.
 gtnl.machine.large_boiler_tungstensteel.name=Large Tungstensteel Boiler
-gtnl.machine.large_boiler_tungstensteel.tooltip.0=Each piece of coal produces 2,048,000L of steam at a rate of 512,000L/s.
-gtnl.machine.large_boiler.recipe_type=Boiler
-gtnl.machine.large_boiler.tooltip.no_preheating=No preheating required.
-gtnl.machine.large_boiler.tooltip.machine_casing=Any Machine Block
-gtnl.machine.large_boiler.tooltip.firebox_casing=Any Firebox Machine Block
 
 gtnl.machine.large_steam_forming_press.name=Large Steam Forming Press
 gtnl.machine.large_steam_forming_press.recipe_type=Forming Press
@@ -1666,35 +1655,14 @@ gtnl.machine.electrocell_generator.recipe_type=Electrochemical Reaction
 
 gtnl.machine.fog_alloy_smelter_module.name=Solar Blazing Alloy Smelter
 gtnl.machine.fog_alloy_smelter_module.recipe_type=Alloy Smelter
-gtnl.machine.godforge.alloy_smelter_module.tooltip.0=This is a module of the Godforge
-gtnl.machine.godforge.alloy_smelter_module.tooltip.1=Must be part of a Godforge to function
-gtnl.machine.godforge.alloy_smelter_module.tooltip.2=Used for alloy smelting under focused temperatures.
-gtnl.machine.godforge.alloy_smelter_module.tooltip.3=The fifth module of the Godforge, capable of refining materials directly into alloys
-gtnl.machine.godforge.alloy_smelter_module.tooltip.4=It can still function even without high temperatures
-gtnl.machine.godforge.alloy_smelter_module.tooltip.5=Does not require Godforge upgrades
-gtnl.machine.godforge.alloy_smelter_module.tooltip.6=This module has the fastest processing speed.
 
 gtnl.machine.fog_alloy_blast_smelter_module.name=Solar Focused Fusion Core
 gtnl.machine.fog_alloy_blast_smelter_module.recipe_type=Alloy Blast Smelter
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.0=This is a module of the Godforge
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.1=Must be part of a Godforge to function
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.2=Used for alloy smelting under highly focused temperatures.
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.3=The sixth module of the Godforge, it uses extremely high heat to melt materials,
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.4=stirs them, and directly fuses them into liquid alloys.
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.5=Has Perfect Overclock capabilities.
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.6=This module is specialized in efficient material processing.
 
 gtnl.machine.fog_extractor_module.name=Solar Thermo-Extraction Unit
 gtnl.machine.fog_extractor_module.recipe_type=Extractor / Fluid Extractor
 gtnl.machine.fog_extractor.fluid_mode.disabled=Extractor
 gtnl.machine.fog_extractor.fluid_mode.enabled=Fluid Extractor
-gtnl.machine.godforge.extractor_module.tooltip.0=This is a module of the Godforge
-gtnl.machine.godforge.extractor_module.tooltip.1=Must be part of a Godforge to function
-gtnl.machine.godforge.extractor_module.tooltip.2=Used for precise extraction under different temperatures.
-gtnl.machine.godforge.extractor_module.tooltip.3=The seventh module of the Godforge, it uses precise temperature control to extract products,
-gtnl.machine.godforge.extractor_module.tooltip.4=processing materials at extremely high speeds.
-gtnl.machine.godforge.extractor_module.tooltip.5=The desired method of processing can be selected in the GUI.
-gtnl.machine.godforge.extractor_module.tooltip.6=This module is specialized in infinite parallel processing.
 
 gtnl.machine.steam_entity_crusher_module.name=Steam Entity Crusher Module
 gtnl.machine.steam_entity_crusher_module.recipe_type=Pneumatic Spawner Cage
@@ -1866,13 +1834,6 @@ gtnl.recipe.solar_muon_catalyst=Solar Muon Catalyst
 gtnl.recipe.metadata.solar_muon_catalyst.0=Requires 3 rings and all upgrade
 GT5U.gui.text.not_enough_upgrade=Insufficient requirements
 gtnl.machine.fog_solar_muon_catalyst_module.recipe_type=Matter Catalyst
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.0=This is a module of the Godforge
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.1=Must be part of a Godforge to function.
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.2=Used for restructuring matter under extreme temperature differentials.
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.3=The eighth module of the Godforge, it uses muons to force atomic nuclei into tighter convergence.
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.4=It accelerates matter directly toward the end of time itself.
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.5=It requires the highest tier of the Godforge.
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.6=This module is specialized in highly efficient matter transmutation.
 
 gtnl.machine.large_essentia_generator.name=Large Essentia Generator
 gtnl.machine.large_essentia_generator.recipe_type=Essentia Generator
@@ -3895,11 +3856,6 @@ gtnl.machine.integrated_ore_factory.casing.11=Output Bus (Output products)
 
 gtnl.recipe.plasma_centrifuge=Plasma Centrifuge
 
-gtnl.machine.godforge.module.casing.0= Singularity Reinforced Stellar Shielding Casing
-gtnl.machine.godforge.module.casing.1= Boundless Gravitationally Severed Structure Casing
-gtnl.machine.godforge.module.casing.2= Harmonic Phonon Transmission Conduit
-gtnl.machine.godforge.module.casing.3= Celestial Matter Guidance Casing
-gtnl.machine.godforge.module.casing.4= Stellar Energy Siphon Casing
 
 gtnl.gui.assembler_matrix.upload_pattern=Upload pattern to available §9Assembler Matrix§r in current network.
 gtnl.gui.quantum_crafting.mode=Quantum Crafting Mode

@@ -267,7 +267,7 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
-        tt.addAutoTooltipOf(this)
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

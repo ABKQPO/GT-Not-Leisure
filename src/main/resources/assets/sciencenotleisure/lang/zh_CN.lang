@@ -1278,9 +1278,6 @@ gtnl.recipe.metadata.resource_collection_module.5=需要采矿无人机MK-XIII x
 gtnl.machine.resource_collection_module.recipe_type=太空采矿 / 太空钻井
 gtnl.machine.resource_collection_module.mode.0=太空采矿
 gtnl.machine.resource_collection_module.mode.1=太空钻井
-gtnl.machine.resource_collection_module.tooltip.0=将太空采矿和太空钻井功能添加到太空电梯
-gtnl.machine.resource_collection_module.tooltip.1=§d§l一飞冲天
-gtnl.machine.resource_collection_module.tooltip.casing=任意太空电梯基座机械方块
 GT5U.gui.text.no_mining_drone=§7未找到采矿无人机
 
 gtnl.machine.extreme_fusion_reactor_mk_i.name=狂飙一号巨型聚变反应堆控制电脑
@@ -1310,17 +1307,9 @@ gtnl.machine.large_steam_sifter.name=大型蒸汽筛选机
 gtnl.machine.large_steam_sifter.recipe_type=筛选机
 
 gtnl.machine.large_boiler_bronze.name=大型青铜锅炉
-gtnl.machine.large_boiler_bronze.tooltip.0=每块煤炭将以64000升/秒的速率产生共计128000升的蒸汽
 gtnl.machine.large_boiler_steel.name=大型钢锅炉
-gtnl.machine.large_boiler_steel.tooltip.0=每块煤炭将以128000升/秒的速率产生共计128000升的蒸汽
 gtnl.machine.large_boiler_titanium.name=大型钛锅炉
-gtnl.machine.large_boiler_titanium.tooltip.0=每块煤炭将以256000升/秒的速率产生共计1024000升的蒸汽
 gtnl.machine.large_boiler_tungstensteel.name=大型钨钢锅炉
-gtnl.machine.large_boiler_tungstensteel.tooltip.0=每块煤炭将以512000升/秒的速率产生共计2048000升的蒸汽
-gtnl.machine.large_boiler.recipe_type=锅炉
-gtnl.machine.large_boiler.tooltip.no_preheating=无需预热
-gtnl.machine.large_boiler.tooltip.machine_casing=任意机械方块
-gtnl.machine.large_boiler.tooltip.firebox_casing=任意燃烧室机械方块
 
 gtnl.machine.large_steam_forming_press.name=大型蒸汽冲压机床
 gtnl.machine.large_steam_forming_press.recipe_type=冲压机床
@@ -1666,35 +1655,14 @@ gtnl.machine.electrocell_generator.recipe_type=电化学反应
 
 gtnl.machine.fog_alloy_smelter_module.name=太阳炽热合金炉
 gtnl.machine.fog_alloy_smelter_module.recipe_type=合金炉
-gtnl.machine.godforge.alloy_smelter_module.tooltip.0=这是诸神之锻炉的一个模块
-gtnl.machine.godforge.alloy_smelter_module.tooltip.1=必须安装于诸神之锻炉上才能工作.
-gtnl.machine.godforge.alloy_smelter_module.tooltip.2=用于聚焦温度下的合金冶炼.
-gtnl.machine.godforge.alloy_smelter_module.tooltip.3=诸神之锻炉的第五种模块，能够将材料直接精炼成合金
-gtnl.machine.godforge.alloy_smelter_module.tooltip.4=即使没有高温，它也仍然可以胜任工作.
-gtnl.machine.godforge.alloy_smelter_module.tooltip.5=它不需要诸神之锻炉的升级.
-gtnl.machine.godforge.alloy_smelter_module.tooltip.6=这一模块拥有最快的处理速度.
 
 gtnl.machine.fog_alloy_blast_smelter_module.name=太阳聚焦融合核心
 gtnl.machine.fog_alloy_blast_smelter_module.recipe_type=合金冶炼炉
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.0=这是诸神之锻炉的一个模块
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.1=必须安装于诸神之锻炉上才能工作.
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.2=用于在高度聚焦温度下的合金冶炼.
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.3=诸神之锻炉的第六种模块，利用极高的温度将材料融化，
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.4=将其搅拌并直接融合为液态合金.
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.5=它拥有无损超频的能力.
-gtnl.machine.godforge.alloy_blast_smelter_module.tooltip.6=这一模块专注于高效处理材料.
 
 gtnl.machine.fog_extractor_module.name=太阳热离精粹机
 gtnl.machine.fog_extractor_module.recipe_type=提取机 / 流体提取机
 gtnl.machine.fog_extractor.fluid_mode.disabled=提取机
 gtnl.machine.fog_extractor.fluid_mode.enabled=流体提取机
-gtnl.machine.godforge.extractor_module.tooltip.0=这是诸神之锻炉的一个模块
-gtnl.machine.godforge.extractor_module.tooltip.1=必须安装于诸神之锻炉上才能工作.
-gtnl.machine.godforge.extractor_module.tooltip.2=用于在不同温度下的精准提取.
-gtnl.machine.godforge.extractor_module.tooltip.3=诸神之锻炉的第七种模块，利用精准的温度控制提取成品，
-gtnl.machine.godforge.extractor_module.tooltip.4=以难以想象的速度处理材料.
-gtnl.machine.godforge.extractor_module.tooltip.5=所需的处理模式可在GUI中选择.
-gtnl.machine.godforge.extractor_module.tooltip.6=这一模块专注于无限的并行处理.
 
 gtnl.machine.steam_entity_crusher_module.name=蒸汽屠宰场模块
 gtnl.machine.steam_entity_crusher_module.recipe_type=气动刷怪笼
@@ -1866,13 +1834,6 @@ gtnl.recipe.solar_muon_catalyst=太阳μ子催化器
 gtnl.recipe.metadata.solar_muon_catalyst.0=需要神锻三环和全部升级
 GT5U.gui.text.not_enough_upgrade=所需要求不足
 gtnl.machine.fog_solar_muon_catalyst_module.recipe_type=物质催化器
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.0=这是诸神之锻炉的一个模块
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.1=必须安装于诸神之锻炉上才能工作.
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.2=用于在极端温差下重组物质.
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.3=诸神之锻炉的第八种模块，通过μ子使原子核更紧密的并拢.
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.4=加速物质直达时间的尽头.
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.5=它需要最高等级的诸神之锻炉.
-gtnl.machine.godforge.solar_muon_catalyst_module.tooltip.6=这一模块专注于高效物质异化.
 
 gtnl.machine.large_essentia_generator.name=大型源质发电机
 gtnl.machine.large_essentia_generator.recipe_type=源质发电机
@@ -3895,11 +3856,6 @@ gtnl.machine.integrated_ore_factory.casing.11=输出总线(输出产物)
 
 gtnl.recipe.plasma_centrifuge=等离子离心机
 
-gtnl.machine.godforge.module.casing.0= 奇点强化恒星屏蔽机械方块
-gtnl.machine.godforge.module.casing.1= 无界引力隔绝机械方块
-gtnl.machine.godforge.module.casing.2= 海珀珍线圈方块
-gtnl.machine.godforge.module.casing.3= 天体物质引导机械方块
-gtnl.machine.godforge.module.casing.4= 恒星能量抽取机械方块
 
 gtnl.gui.assembler_matrix.upload_pattern=上传样板至当前网络中可用的§9装配矩阵§r。
 gtnl.gui.quantum_crafting.mode=量子合成模式

@@ -182,7 +182,7 @@ public class ResearchCenter extends MTEResearchStation implements IResearchStati
     @Override
     public MultiblockTooltipBuilder createTooltip() {
         GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
-        tt.addAutoTooltipOf(this)
+        tt.addAutoTooltip(this)
             .toolTipFinisher();
         return tt;
     }

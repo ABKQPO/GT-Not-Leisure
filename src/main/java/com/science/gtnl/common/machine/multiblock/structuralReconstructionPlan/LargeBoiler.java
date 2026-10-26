@@ -8,7 +8,6 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -22,6 +21,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
 import com.science.gtnl.utils.item.ItemUtils;
+import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import gregtech.GTMod;
 import gregtech.api.GregTechAPI;
@@ -389,23 +389,8 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
 
         @Override
         public MultiblockTooltipBuilder createTooltip() {
-            MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_boiler.recipe_type"))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.large_boiler_bronze.tooltip.0"))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.no_preheating"))
-                .beginStructureBlock(3, 5, 3, false)
-                .addOutputHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.machine_casing"),
-                    1)
-                .addInputBus(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.firebox_casing"),
-                    1)
-                .addInputHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.firebox_casing"),
-                    1)
+            GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+            tt.addAutoTooltip(this)
                 .toolTipFinisher();
             return tt;
         }
@@ -485,23 +470,8 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
 
         @Override
         public MultiblockTooltipBuilder createTooltip() {
-            MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_boiler.recipe_type"))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.large_boiler_steel.tooltip.0"))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.no_preheating"))
-                .beginStructureBlock(3, 5, 3, false)
-                .addOutputHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.machine_casing"),
-                    1)
-                .addInputBus(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.firebox_casing"),
-                    1)
-                .addInputHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.firebox_casing"),
-                    1)
+            GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+            tt.addAutoTooltip(this)
                 .toolTipFinisher();
             return tt;
         }
@@ -581,23 +551,8 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
 
         @Override
         public MultiblockTooltipBuilder createTooltip() {
-            MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_boiler.recipe_type"))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.large_boiler_titanium.tooltip.0"))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.no_preheating"))
-                .beginStructureBlock(3, 5, 3, false)
-                .addOutputHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.machine_casing"),
-                    1)
-                .addInputBus(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.firebox_casing"),
-                    1)
-                .addInputHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.firebox_casing"),
-                    1)
+            GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+            tt.addAutoTooltip(this)
                 .toolTipFinisher();
             return tt;
         }
@@ -677,23 +632,8 @@ public abstract class LargeBoiler extends MTEEnhancedMultiBlockBase<LargeBoiler>
 
         @Override
         public MultiblockTooltipBuilder createTooltip() {
-            MultiblockTooltipBuilder tt = new MultiblockTooltipBuilder();
-            tt.addMachineType(StatCollector.translateToLocal("gtnl.machine.large_boiler.recipe_type"))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.large_boiler_tungstensteel.tooltip.0"))
-                .addInfo(StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.no_preheating"))
-                .beginStructureBlock(3, 5, 3, false)
-                .addOutputHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.machine_casing"),
-                    1)
-                .addInputBus(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.firebox_casing"),
-                    1)
-                .addInputHatch(
-                    "0+",
-                    StatCollector.translateToLocal("gtnl.machine.large_boiler.tooltip.firebox_casing"),
-                    1)
+            GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
+            tt.addAutoTooltip(this)
                 .toolTipFinisher();
             return tt;
         }
