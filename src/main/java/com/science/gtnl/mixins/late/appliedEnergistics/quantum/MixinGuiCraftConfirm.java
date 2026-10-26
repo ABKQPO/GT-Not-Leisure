@@ -3,10 +3,8 @@ package com.science.gtnl.mixins.late.appliedEnergistics.quantum;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.client.quantum.CraftConfirmCycles;
 import com.science.gtnl.client.quantum.CraftingCycleIndex;
 import com.science.gtnl.client.quantum.ICraftingCycleHost;
 import com.science.gtnl.client.quantum.ICraftingTreeCycles;
@@ -35,19 +34,9 @@ import appeng.client.gui.widgets.GuiTabButton;
 import appeng.client.gui.widgets.MEGuiTextField;
 import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.core.localization.ColorUtils;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-/**
- * Finds the crafting cycles of the request once it is calculated, marks them in the crafting tree and the list, and
- * tells once where the machines of those the plan cannot start because of are. The button lists them all, the highlight
- * key highlights the cycle of what is under the mouse, and shift-clicking an item of a cycle in the list shows the
- * cycle as a ring in the tree view, left by its button or Esc.
- */
 @Mixin(value = GuiCraftConfirm.class, remap = false)
 public abstract class MixinGuiCraftConfirm extends GuiSub implements ICraftingCycleHost {
-
-    @Unique
-    private static final String GTNL$NO_NET_OUTPUT = "gtnl.quantum_crafting.message.CraftingNoNetOutput";
 
     @Shadow
     @Final
@@ -125,16 +114,8 @@ public abstract class MixinGuiCraftConfirm extends GuiSub implements ICraftingCy
             this.guiLeft + this.xSize + 2,
             this.guiTop + 8 + 20 * 3);
         this.buttonList.add(this.gtnl$recursivePatterns);
-        var back = StatCollector.translateToLocal("gtnl.gui.crafting_ring.back");
-        this.gtnl$backToTree = new GuiAeButton(
-            0,
-            this.guiLeft + 9,
-            this.guiTop + 20,
-            Math.min(this.craftingTree.widgetW, this.fontRendererObj.getStringWidth(back) + 10),
-            18,
-            back,
-            "");
-        this.gtnl$backToTree.visible = false;
+        this.gtnl$backToTree = CraftConfirmCycles
+            .backToTreeButton(this.guiLeft, this.guiTop, this.craftingTree.widgetW, this.fontRendererObj);
         this.buttonList.add(this.gtnl$backToTree);
     }
 
@@ -158,7 +139,7 @@ public abstract class MixinGuiCraftConfirm extends GuiSub implements ICraftingCy
         }
         if (this.gtnl$recursivePatterns != null) {
             this.gtnl$recursivePatterns.setAttention(
-                GTNL$NO_NET_OUTPUT.equals(error) || this.gtnl$index != null && !this.gtnl$index.blocking()
+                CraftConfirmCycles.NO_NET_OUTPUT.equals(error) || this.gtnl$index != null && !this.gtnl$index.blocking()
                     .isEmpty());
         }
         if (gtnl$tree().gtnl$ringView() == null) this.gtnl$ringFromList = false;
@@ -173,63 +154,20 @@ public abstract class MixinGuiCraftConfirm extends GuiSub implements ICraftingCy
         if (view == null || this.displayMode != GuiCraftConfirm.DisplayMode.TREE || this.gtnl$backToTree == null) {
             return;
         }
-        var ring = view.ring();
-        var text = StatCollector.translateToLocalFormatted(
-            "gtnl.gui.crafting_ring.summary",
-            ring.crafts(),
-            ring.backEdges()
-                .size(),
-            ring.externalInputs()
-                .size());
-        if (view.omitted() > 0) {
-            text += StatCollector.translateToLocalFormatted("gtnl.gui.crafting_ring.omitted", view.omitted());
-        }
+        var text = CraftConfirmCycles.ringSummary(view);
         int x = this.gtnl$backToTree.xPosition - this.guiLeft + this.gtnl$backToTree.width + 4;
         this.fontRendererObj.drawString(text, x, 25, ColorUtils.guiTextColorGray.getColor());
     }
 
-    @Unique
-    private static boolean gtnl$has(IItemList<IAEStack<?>> list, IAEStack<?> item) {
-        var found = list.findPrecise(item);
-        return found != null && (found.getStackSize() > 0 || found.getCountRequestable() > 0);
-    }
-
-    /**
-     * The cycles the plan cannot start because of: those without net output when that is the error, those short of
-     * something of their own, and when the plan cannot start while showing nothing missing, as the lightweight and
-     * standard calculations leave a cycle they could not close, those the plan goes through.
-     */
-    @Unique
-    private List<Cycle> gtnl$blocking(List<Cycle> cycles) {
-        var error = this.ccc.getErrorMessage();
-        boolean noNetOutput = GTNL$NO_NET_OUTPUT.equals(error);
-        var blocking = new ObjectArrayList<Cycle>();
-        if (!noNetOutput && !this.ccc.isSimulation()) return blocking;
-        for (var cycle : cycles) {
-            boolean blocks = noNetOutput && !cycle.netOutput();
-            for (var item : cycle.items()) {
-                if (blocks) break;
-                blocks = gtnl$has(this.missing, item);
-            }
-            if (blocks) blocking.add(cycle);
-        }
-        if (blocking.isEmpty() && (noNetOutput || this.missing.isEmpty())) {
-            for (var cycle : cycles) {
-                for (var item : cycle.items()) {
-                    if (gtnl$has(this.storage, item) || gtnl$has(this.pending, item)) {
-                        blocking.add(cycle);
-                        break;
-                    }
-                }
-            }
-        }
-        if (blocking.isEmpty() && noNetOutput) blocking.addAll(cycles);
-        return blocking;
-    }
-
     @Override
     public void gtnl$cyclesFound(IAEStack<?> request, List<Cycle> cycles, boolean manual) {
-        var blocking = gtnl$blocking(cycles);
+        var blocking = CraftConfirmCycles.blocking(
+            cycles,
+            this.ccc.getErrorMessage(),
+            this.ccc.isSimulation(),
+            this.missing,
+            this.storage,
+            this.pending);
         this.gtnl$index = CraftingCycleIndex.of(request, cycles, blocking);
         gtnl$tree().gtnl$setCycles(this.gtnl$index);
         if (manual) {
@@ -296,23 +234,7 @@ public abstract class MixinGuiCraftConfirm extends GuiSub implements ICraftingCy
         this.gtnl$listMarked = true;
         int viewStart = this.getScrollBar()
             .getCurrentScroll() * 3;
-        int viewEnd = Math.min(viewStart + 3 * this.rows, this.filteredVisual.size());
-        GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        for (int z = viewStart; z < viewEnd; z++) {
-            var stack = this.filteredVisual.get(z);
-            if (stack == null || this.gtnl$index.cyclesWith(stack)
-                .isEmpty()) continue;
-            int x = (z - viewStart) % 3 * 68 + 57;
-            int y = (z - viewStart) / 3 * 23 + 22;
-            if (this.gtnl$index.blocks(stack)) GL11.glColor4f(1, 0.4f, 0.4f, 1);
-            else GL11.glColor4f(1, 1, 1, 1);
-            RecursivePatternButton.drawIcon(this.mc, x - 5, y - 5, 8, 300);
-        }
-        GL11.glColor4f(1, 1, 1, 1);
-        GL11.glPopAttrib();
+        CraftConfirmCycles.markList(this.mc, this.gtnl$index, this.filteredVisual, viewStart, this.rows);
     }
 
     @ModifyArg(
@@ -322,35 +244,7 @@ public abstract class MixinGuiCraftConfirm extends GuiSub implements ICraftingCy
             target = "Lappeng/client/gui/implementations/GuiCraftConfirm;drawTooltip(IILjava/lang/String;)V"),
         index = 2)
     private String gtnl$listTooltip(String text) {
-        var stack = gtnl$listStack();
-        if (stack == null || this.gtnl$index == null) return text;
-        var cycles = this.gtnl$index.cyclesWith(stack);
-        if (cycles.isEmpty()) return text;
-        var lines = new StringBuilder(text);
-        for (var cycle : cycles) {
-            lines.append('\n')
-                .append(
-                    StatCollector.translateToLocalFormatted(
-                        cycle.netOutput() ? "gtnl.gui.recursive_patterns.tooltip.net"
-                            : "gtnl.gui.recursive_patterns.tooltip.no_net",
-                        this.gtnl$index.cycles()
-                            .indexOf(cycle) + 1));
-        }
-        int machines = 0;
-        for (var match : this.gtnl$index.matchesFor(stack)) {
-            machines += match.location()
-                .machines()
-                .size();
-        }
-        lines.append('\n')
-            .append(
-                StatCollector.translateToLocalFormatted(
-                    "gtnl.gui.recursive_patterns.tooltip.machines",
-                    machines,
-                    RecursivePatternReport.highlightKeyName()))
-            .append('\n')
-            .append(StatCollector.translateToLocal("gtnl.gui.crafting_ring.open_list"));
-        return lines.toString();
+        return CraftConfirmCycles.listTooltip(text, gtnl$listStack(), this.gtnl$index);
     }
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true, remap = true)
@@ -381,13 +275,7 @@ public abstract class MixinGuiCraftConfirm extends GuiSub implements ICraftingCy
         var hovered = this.displayMode == GuiCraftConfirm.DisplayMode.TREE ? tree.gtnl$hoveredPatterns()
             : listStack != null && this.gtnl$index != null ? this.gtnl$index.matchesFor(listStack)
                 : List.<CraftingCycleIndex.Match>of();
-        if (!hovered.isEmpty()) {
-            RecursivePatternReport.highlight(this.mc, this.gtnl$index.request(), hovered);
-        } else if (this.gtnl$index != null) {
-            RecursivePatternReport.show(this.mc, this.gtnl$index.request(), this.gtnl$index.cycles());
-        } else {
-            ScienceNotLeisure.network.sendToServer(new RecursivePatternQueryPacket(true));
-        }
+        CraftConfirmCycles.highlight(this.mc, this.gtnl$index, hovered);
         ci.cancel();
     }
 }
