@@ -15,6 +15,7 @@ import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import gregtech.api.enums.Mods;
 import gregtech.api.objects.XSTR;
@@ -37,12 +38,8 @@ public class ExtremeExtremeEntityCrusherRecipes {
 
     public static XSTR FIXED_RANDOM = new XSTR(1145141919810L);
 
-    @EventBusSubscriber.Condition
-    public static boolean mobsInfoLoaded() {
-        return Mods.MobsInfo.isModLoaded();
-    }
-
     @SubscribeEvent
+    @Optional.Method(modid = Mods.ModIDs.MOBS_INFO)
     public static void onPostMobRegistration(PostMobRegistrationEvent event) {
         String mobType = event.currentMob;
         MobRecipe mobRecipe = event.recipe;

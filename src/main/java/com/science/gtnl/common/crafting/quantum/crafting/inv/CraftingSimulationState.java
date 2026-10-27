@@ -406,7 +406,7 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
     /**
      * Inventory assumptions, including absent keys and newly appearing fuzzy variants.
      */
-    public static final class InventorySnapshot {
+    public static class InventorySnapshot {
 
         private final KeyCounter amounts;
         private final List<AEKey> probes;

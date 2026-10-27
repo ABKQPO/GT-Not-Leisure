@@ -27,7 +27,7 @@ import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
 /**
  * Shows the crafting cycles of a request in the chat and highlights the machines holding their patterns.
  */
-public final class RecursivePatternReport {
+public class RecursivePatternReport {
 
     private static final int MAX_LISTED_ITEMS = 6;
     private static final int MAX_HIGHLIGHTS = 32;

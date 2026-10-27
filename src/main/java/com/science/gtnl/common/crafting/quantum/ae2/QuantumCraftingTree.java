@@ -44,7 +44,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 
-public final class QuantumCraftingTree {
+public class QuantumCraftingTree {
 
     private static final int MAX_NODES = 100_000;
     private static final int MAX_LOOP_DEPTH = 64;
@@ -657,7 +657,7 @@ public final class QuantumCraftingTree {
         MISSING
     }
 
-    private static final class Request {
+    private static class Request {
 
         private final AEKey key;
         private long amount;
@@ -685,7 +685,7 @@ public final class QuantumCraftingTree {
         }
     }
 
-    private static final class Resolver {
+    private static class Resolver {
 
         private final Kind kind;
         private final AEKey what;

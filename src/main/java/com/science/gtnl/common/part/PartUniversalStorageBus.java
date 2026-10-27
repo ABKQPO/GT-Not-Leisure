@@ -840,7 +840,7 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
         return type == PipeType.ITEM && with == this.getSide() ? ConnectOverride.CONNECT : ConnectOverride.DISCONNECT;
     }
 
-    public static final class TypeChannel {
+    public static class TypeChannel {
 
         public final IAEStackType<?> type;
         @SuppressWarnings("rawtypes")

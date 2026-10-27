@@ -18,7 +18,7 @@ import appeng.integration.modules.NEI;
 import cpw.mods.fml.common.Optional;
 import me.eigenraven.lwjgl3ify.api.InputEvents;
 
-final class MiniTerminalSearchField extends Widget<MiniTerminalSearchField>
+public class MiniTerminalSearchField extends Widget<MiniTerminalSearchField>
     implements Interactable, IFocusedWidget, ModernInteractable {
 
     private static final UITexture BACKGROUND = UITexture.builder()
@@ -148,7 +148,7 @@ final class MiniTerminalSearchField extends Widget<MiniTerminalSearchField>
         else field.setFocused(false);
     }
 
-    private static final class NativeField extends MEGuiTextField {
+    private static class NativeField extends MEGuiTextField {
 
         private final Consumer<String> onChange;
 

@@ -4,7 +4,7 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.ints.IntSets;
 
-public final class YogTerminalLocks {
+public class YogTerminalLocks {
 
     private static volatile IntSet client = IntSets.emptySet();
 

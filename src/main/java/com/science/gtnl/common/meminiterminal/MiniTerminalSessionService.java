@@ -73,7 +73,7 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 @EventBusSubscriber
 public class MiniTerminalSessionService {
 
-    enum MiniTerminalStatus {
+    public enum MiniTerminalStatus {
         ONLINE,
         UNBOUND,
         OFFLINE,
@@ -535,7 +535,7 @@ public class MiniTerminalSessionService {
         send(player, failed);
     }
 
-    private static final class RequestBudget {
+    private static class RequestBudget {
 
         private int tick;
         private int count;
@@ -575,7 +575,7 @@ public class MiniTerminalSessionService {
         }
     }
 
-    private static final class Session {
+    private static class Session {
 
         final EntityPlayerMP player;
         final long id;

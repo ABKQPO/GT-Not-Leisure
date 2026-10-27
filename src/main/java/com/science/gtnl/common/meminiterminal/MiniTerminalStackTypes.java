@@ -11,7 +11,7 @@ import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
 
-public final class MiniTerminalStackTypes {
+public class MiniTerminalStackTypes {
 
     private static final int MAX_FILTERS = 32;
 

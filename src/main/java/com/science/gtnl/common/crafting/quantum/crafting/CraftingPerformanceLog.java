@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 import com.science.gtnl.common.crafting.quantum.api.stacks.AEKey;
 import com.science.gtnl.common.crafting.quantum.core.AELog;
 
-final class CraftingPerformanceLog {
+public class CraftingPerformanceLog {
 
     private final boolean chinese = "zh".equalsIgnoreCase(
         Locale.getDefault()

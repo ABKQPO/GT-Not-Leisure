@@ -29,7 +29,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
-public final class QuantumCraftingCache {
+public class QuantumCraftingCache {
 
     private static final int MAX_KEYS = 262_144;
 
@@ -70,7 +70,7 @@ public final class QuantumCraftingCache {
         return this.current;
     }
 
-    public static final class Revision {
+    public static class Revision {
 
         private final long id;
         private final ImmutableMap<IAEStack<?>, ImmutableList<ICraftingPatternDetails>> patterns;

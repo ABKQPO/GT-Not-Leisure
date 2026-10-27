@@ -18,7 +18,7 @@ import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
  * Cached dependency order for a crafting graph. For an acyclic graph, only the node order is retained. Strongly
  * connected components and their condensation DAG are allocated only after Kahn's algorithm detects a cycle.
  */
-public final class CraftingGraphTopology {
+public class CraftingGraphTopology {
 
     private static final Comparator<CraftingGraphNode> NODE_ORDER = Comparator
         .comparingInt(CraftingGraphNode::getOrdinal);
@@ -226,7 +226,7 @@ public final class CraftingGraphTopology {
         }
     }
 
-    private static final class Tarjan {
+    private static class Tarjan {
 
         private final Reference2IntMap<CraftingGraphNode> indexes = new Reference2IntOpenHashMap<>();
         private final Reference2IntMap<CraftingGraphNode> lowLinks = new Reference2IntOpenHashMap<>();
@@ -304,7 +304,7 @@ public final class CraftingGraphTopology {
             components.add(component);
         }
 
-        private static final class Frame {
+        private static class Frame {
 
             private final CraftingGraphNode node;
             private final CraftingGraphNode parent;

@@ -95,7 +95,7 @@ public class YogTerminalClient {
         YogTerminals.setClient(YogTerminalClient::stored, YogTerminalClient::opened);
     }
 
-    static final class View {
+    public static class View {
 
         final UUID id;
         int generation;
@@ -118,7 +118,7 @@ public class YogTerminalClient {
         }
     }
 
-    private static final class Assembly {
+    private static class Assembly {
 
         long revision;
         NBTTagCompound[] parts;

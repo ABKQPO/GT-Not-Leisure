@@ -16,7 +16,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-final class YogTerminalTextures {
+public class YogTerminalTextures {
 
     private static final String SHEET = "gui/yog_sothoth_terminal";
     static final UITexture BACKGROUND = sprite(0, 0, 16, 16, 4);

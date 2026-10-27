@@ -29,7 +29,7 @@ public class MiniTerminalRequestPacket extends ServerboundPacket {
     private static final int MAX_CREATIVE_ACTION_BYTES = 64 * 1024;
     private static final int ACTION_HEADER_BYTES = 1 + 8 + 8 + 8 + 8 + 4 + 4 + 1;
 
-    enum Kind {
+    public enum Kind {
         BEGIN,
         END,
         ACTION,

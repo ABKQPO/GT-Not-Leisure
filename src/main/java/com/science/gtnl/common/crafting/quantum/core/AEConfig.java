@@ -6,7 +6,7 @@ import net.minecraft.server.MinecraftServer;
 
 import com.science.gtnl.config.MainConfig;
 
-public final class AEConfig {
+public class AEConfig {
 
     public static final Crafting CRAFTING = new Crafting();
     private static final AEConfig INSTANCE = new AEConfig();
@@ -31,7 +31,7 @@ public final class AEConfig {
         return MainConfig.machine.quantum_computer.enableCalculationPerformanceLog;
     }
 
-    public static final class Crafting {
+    public static class Crafting {
 
         public int craftingCalculationPausingInterval = 10000;
     }

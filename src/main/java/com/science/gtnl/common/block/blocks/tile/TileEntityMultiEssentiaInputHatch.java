@@ -270,7 +270,7 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch i
         return false;
     }
 
-    private static final class EssentiaDemand {
+    private static class EssentiaDemand {
 
         private final int targetAmount;
         private final long expiresAt;

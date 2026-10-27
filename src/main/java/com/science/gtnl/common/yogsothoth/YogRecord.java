@@ -14,7 +14,7 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
-public final class YogRecord {
+public class YogRecord {
 
     public final UUID id;
     UUID owner;

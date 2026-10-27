@@ -62,7 +62,7 @@ public class YogTerminalService {
 
     private YogTerminalService() {}
 
-    static final class Place {
+    public static class Place {
 
         static final int MAIN = 0, BAUBLE = 1, CURSOR = 2, SLOT = 3;
 
@@ -509,7 +509,7 @@ public class YogTerminalService {
             ScienceNotLeisure.network.sendTo(packet, player);
     }
 
-    static final class Session {
+    public static class Session {
 
         final UUID record;
         final ItemStack terminal;

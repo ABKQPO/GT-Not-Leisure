@@ -14,7 +14,7 @@ import appeng.api.storage.data.IAEStackType;
 import appeng.items.contents.PinList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-public final class MiniTerminalLayout extends FloatingWindowGeometry {
+public class MiniTerminalLayout extends FloatingWindowGeometry {
 
     public static final int COLUMNS = 5;
     public static final int MIN_COLUMNS = 2;

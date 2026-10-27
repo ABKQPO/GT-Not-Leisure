@@ -28,7 +28,7 @@ public class MixinGuiContainerManager {
         cancellable = true,
         remap = false)
     public void onBeforeWindowClick(int slotIndex, int button, int modifiers, CallbackInfo ci) {
-        if (!(this instanceof IInfinityChestGui)) return;
+        if (!(window instanceof IInfinityChestGui)) return;
         InfinityChestCompat.sendSlotClick(window, slotIndex, button, modifiers);
         ci.cancel();
     }

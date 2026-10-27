@@ -4,7 +4,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.science.gtnl.common.crafting.quantum.api.stacks.AEKey;
 
-public final class CraftingGraphEdge {
+public class CraftingGraphEdge {
 
     private final AEKey inputKey;
     private final long amountPerCraft;

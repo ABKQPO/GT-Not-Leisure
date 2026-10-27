@@ -42,7 +42,7 @@ import appeng.me.cluster.implementations.CraftingCPUCluster;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-public final class QuantumCraftingJob<StackType extends IAEStack<StackType>>
+public class QuantumCraftingJob<StackType extends IAEStack<StackType>>
     implements ICraftingJob<StackType>, Future<ICraftingJob<StackType>> {
 
     private final World world;

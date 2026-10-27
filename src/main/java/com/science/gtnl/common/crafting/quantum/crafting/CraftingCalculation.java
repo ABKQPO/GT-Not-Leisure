@@ -762,7 +762,7 @@ public class CraftingCalculation {
         return threads.isCurrentThreadCpuTimeSupported() ? threads.getCurrentThreadCpuTime() : System.nanoTime();
     }
 
-    private static final class FallbackTimeout extends RuntimeException {
+    private static class FallbackTimeout extends RuntimeException {
 
         private FallbackTimeout() {
             super("Crafting calculation fallback ran out of time", null, false, false);
@@ -1576,7 +1576,7 @@ public class CraftingCalculation {
         return result;
     }
 
-    public static final class LocalUnitContext implements AutoCloseable {
+    public static class LocalUnitContext implements AutoCloseable {
 
         private final CraftingCalculation calculation;
         private final CalculationMarker marker;
@@ -2077,13 +2077,13 @@ public class CraftingCalculation {
     }
 
     @FunctionalInterface
-    interface InterruptibleSupplier<T> {
+    public interface InterruptibleSupplier<T> {
 
         T get() throws InterruptedException;
     }
 
     @FunctionalInterface
-    interface CraftingRunnable {
+    public interface CraftingRunnable {
 
         void run() throws InterruptedException, CraftBranchFailure;
     }
@@ -2092,7 +2092,7 @@ public class CraftingCalculation {
 
     private record RecursiveSeed(AEKey what, long amount) {}
 
-    private static final class RecursiveNetKey {
+    private static class RecursiveNetKey {
 
         private AEKey what;
         private int requestIndex;
@@ -2218,7 +2218,7 @@ public class CraftingCalculation {
 
     public record RecursivePatternBatch(long rootTimes, long netOutput) {}
 
-    private static final class RecursiveUse {
+    private static class RecursiveUse {
 
         private boolean aBoolean;
 
@@ -2235,7 +2235,7 @@ public class CraftingCalculation {
         }
     }
 
-    private static final class ObjectPool<T> {
+    private static class ObjectPool<T> {
 
         private final ObjectArrayList<T> pool = new ObjectArrayList<>();
         private final Supplier<T> factory;

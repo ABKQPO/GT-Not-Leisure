@@ -22,7 +22,7 @@ public class WirelessCardInventory {
 
     public record CardSlot(IInventory inventory, int index) {}
 
-    static final class TrackedCard {
+    public static class TrackedCard {
 
         private ItemStack card;
         private final UUID identity;

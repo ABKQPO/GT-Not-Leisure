@@ -140,7 +140,7 @@ public class MiniTerminalUpdatePacket extends ClientboundPacket {
         }
     }
 
-    private static final class LeveledGZIPOutputStream extends GZIPOutputStream {
+    private static class LeveledGZIPOutputStream extends GZIPOutputStream {
 
         LeveledGZIPOutputStream(OutputStream output, int level) throws IOException {
             super(output);

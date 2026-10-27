@@ -135,6 +135,13 @@ public class ArchitectureContracts {
         .compile("(EVENT_BUS|TERRAIN_GEN_BUS|ORE_GEN_BUS|bus\\(\\))\\s*\\.\\s*register\\(");
     private static final Pattern SUBSCRIBE_METHOD = Pattern.compile(
         "@SubscribeEvent[^\\n]*\\n(?:\\s*@[^\\n]*\\n)*\\s*((?:public|private|protected)?\\s*(?:static\\s+)?)\\w+ (\\w+)\\(");
+    private static final Pattern FINAL_CLASS = Pattern.compile(
+        "^[ \\t]*(?:(?:public|protected|private|static|abstract)[ \\t]+)*final[ \\t]+(?:(?:static|abstract)[ \\t]+)*class[ \\t]",
+        Pattern.MULTILINE);
+    private static final Pattern PACKAGE_PRIVATE_TYPE = Pattern.compile(
+        "^( {4})?(?:(?:abstract|static|final|sealed|strictfp)[ \\t]+)*(?:class|interface|enum)[ \\t]+(\\w+)",
+        Pattern.MULTILINE);
+    private static final Pattern INTERFACE_FILE = Pattern.compile("^public @?interface ", Pattern.MULTILINE);
     private static final Pattern MIXIN_ENTRY_START = Pattern.compile("\\n    (?=[A-Z][A-Z_0-9]*\\()");
     private static final Pattern MIXIN_NAME = Pattern.compile("\"([A-Za-z0-9_]+(?:\\.[A-Za-z0-9_$]+)+)\"");
     private static final Pattern SYSTEM_IMPORT = Pattern.compile(
@@ -258,6 +265,18 @@ public class ArchitectureContracts {
                 !EVENT_REGISTRATION.matcher(text)
                     .find(),
                 path + " registers an event handler by hand; annotate the class with @EventBusSubscriber instead");
+            check(
+                !FINAL_CLASS.matcher(text)
+                    .find(),
+                path + " declares a final class; the lead allows final on fields and methods only (records are fine)");
+            Matcher declaration = PACKAGE_PRIVATE_TYPE.matcher(text);
+            boolean interfaceFile = INTERFACE_FILE.matcher(text)
+                .find();
+            while (declaration.find()) check(
+                declaration.group(1) != null && interfaceFile,
+                path + " declares "
+                    + declaration.group(2)
+                    + " without an access modifier; write public, protected or private");
             if (text.contains("@EventBusSubscriber")) {
                 Matcher handler = SUBSCRIBE_METHOD.matcher(text);
                 while (handler.find()) check(

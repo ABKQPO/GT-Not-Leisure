@@ -10,7 +10,7 @@ import com.science.gtnl.client.floatingwindow.FloatingWindowGeometry;
 
 @Config(modid = ScienceNotLeisure.MODID, configSubDirectory = "GTNotLeisure", filename = "YogSothothTerminalClient")
 @Config.ExcludeFromAutoGui
-public final class YogTerminalClientConfig {
+public class YogTerminalClientConfig {
 
     @Config.Comment("Use the saved Yog-Sothoth terminal rectangle instead of anchoring it beside the inventory.")
     @Config.DefaultBoolean(false)

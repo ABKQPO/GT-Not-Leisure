@@ -1678,7 +1678,7 @@ public class CraftingTableRecipes implements IRecipePool {
         NHCoreRecipes.craftingTableExtra();
     }
 
-    private static final class MiniTerminalCardRecipe extends ShapelessOreRecipe {
+    private static class MiniTerminalCardRecipe extends ShapelessOreRecipe {
 
         private final ShapelessRecipes nativeRecipe;
         private final Predicate<ItemStack> installed;

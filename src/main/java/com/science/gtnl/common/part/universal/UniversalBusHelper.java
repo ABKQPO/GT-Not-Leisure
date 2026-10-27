@@ -31,7 +31,7 @@ import appeng.util.Platform;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-public final class UniversalBusHelper {
+public class UniversalBusHelper {
 
     public static List<IAEStackType<?>> getTypes() {
         return AEStackTypeRegistry.getSortedTypes();

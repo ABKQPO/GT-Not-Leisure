@@ -75,7 +75,7 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
-public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
+public class MiniTerminalInventoryPanel extends FloatingWindowPanel {
 
     private static final UITexture MAGNET_CARD = UITexture.fullImage("ae2wct", "items/magnetCard");
 
@@ -478,7 +478,7 @@ public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
         return button;
     }
 
-    private static final class TerminalButton extends ButtonWidget<TerminalButton> {
+    private static class TerminalButton extends ButtonWidget<TerminalButton> {
 
         private final GuiImgButton button;
         private Consumer<GuiImgButton> syncState = button -> {};
@@ -519,7 +519,7 @@ public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
         }
     }
 
-    private final class TypeButton extends ButtonWidget<TypeButton> {
+    private class TypeButton extends ButtonWidget<TypeButton> {
 
         private final IAEStackType<?> type;
         private final TypeToggleButton button;
@@ -560,7 +560,7 @@ public final class MiniTerminalInventoryPanel extends FloatingWindowPanel {
         }
     }
 
-    private final class TerminalWidget extends Widget<TerminalWidget> implements Interactable, IViewport {
+    private class TerminalWidget extends Widget<TerminalWidget> implements Interactable, IViewport {
 
         private final Gui gui = new Gui();
         private final ResourceLocation texture = new ResourceLocation(

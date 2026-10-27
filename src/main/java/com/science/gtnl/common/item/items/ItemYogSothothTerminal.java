@@ -186,7 +186,7 @@ public class ItemYogSothothTerminal extends Item implements IBauble, IBaubleExpa
         return Manager.INSTANCE;
     }
 
-    private static final class Manager implements IElectricItemManager {
+    private static class Manager implements IElectricItemManager {
 
         static final Manager INSTANCE = new Manager();
 

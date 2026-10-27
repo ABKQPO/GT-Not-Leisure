@@ -10,7 +10,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
  * The creative inventory screen keeps the cursor stack on the client only; the server copy stays empty. Sending it
  * would wipe whatever the player holds there. Other screens over the player's container keep a server cursor.
  */
-public final class CreativeCursor {
+public class CreativeCursor {
 
     private static final Set<UUID> CREATIVE_SCREENS = ConcurrentHashMap.newKeySet();
 

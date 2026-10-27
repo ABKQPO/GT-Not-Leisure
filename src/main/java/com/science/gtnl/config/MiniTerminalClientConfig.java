@@ -11,7 +11,7 @@ import com.science.gtnl.client.meminiterminal.MiniTerminalLayout;
 
 @Config(modid = ScienceNotLeisure.MODID, configSubDirectory = "GTNotLeisure", filename = "MEMiniTerminalClient")
 @Config.ExcludeFromAutoGui
-public final class MiniTerminalClientConfig {
+public class MiniTerminalClientConfig {
 
     @Config.Comment("Use the saved mini terminal rectangle instead of anchoring it beside the inventory.")
     @Config.DefaultBoolean(false)

@@ -226,7 +226,7 @@ public class ContainerUniversalStorageBus extends ContainerUpgradeable implement
         return this.storageBus;
     }
 
-    private static final class PartitionState {
+    private static class PartitionState {
 
         private final PartUniversalStorageBus bus;
         private final Iterator<IAEStack<?>> iterator;

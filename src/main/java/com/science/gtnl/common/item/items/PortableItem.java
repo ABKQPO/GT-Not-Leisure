@@ -8,7 +8,6 @@ import java.util.UUID;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
@@ -19,10 +18,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +36,6 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.tile.misc.TileInterface;
 import appeng.util.item.AEItemStack;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.common.tileentities.machines.IDualInputHatchWithPattern;
@@ -285,20 +281,6 @@ public class PortableItem extends Item {
         int meta = stack.getItemDamage();
         return meta == PortableType.OBSIDIAN.getMeta() || meta == PortableType.NETHERITE.getMeta()
             || meta == PortableType.DARKSTEEL.getMeta();
-    }
-
-    @SubscribeEvent
-    public void onItemEntityDamage(LivingHurtEvent event) {
-        if (!(event.entity instanceof EntityItem entityItem)) return;
-        ItemStack stack = entityItem.getEntityItem();
-        if (stack == null) return;
-
-        if (!isFireproof(stack)) return;
-
-        DamageSource source = event.source;
-        if (source.isFireDamage() || source.isExplosion()) {
-            event.setCanceled(true);
-        }
     }
 
     @FunctionalInterface

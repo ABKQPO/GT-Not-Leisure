@@ -34,7 +34,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public final class YogTerminalScreenWidgets {
+public class YogTerminalScreenWidgets {
 
     private static final int TITLE_COLOR = 0xE6DAFF;
 
@@ -70,7 +70,7 @@ public final class YogTerminalScreenWidgets {
         return null;
     }
 
-    private static final class Labels extends Widget<Labels> {
+    private static class Labels extends Widget<Labels> {
 
         private final int location;
 
@@ -100,7 +100,7 @@ public final class YogTerminalScreenWidgets {
         }
     }
 
-    private static final class WindowToggle extends ButtonWidget<WindowToggle> {
+    private static class WindowToggle extends ButtonWidget<WindowToggle> {
 
         private final int location;
 
@@ -132,7 +132,7 @@ public final class YogTerminalScreenWidgets {
         }
     }
 
-    private static final class Grid extends Widget<Grid> implements Interactable {
+    private static class Grid extends Widget<Grid> implements Interactable {
 
         private final int location;
         private int scroll;

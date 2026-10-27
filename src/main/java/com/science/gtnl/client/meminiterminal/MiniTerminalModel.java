@@ -40,7 +40,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
 
-public final class MiniTerminalModel implements ISortSource {
+public class MiniTerminalModel implements ISortSource {
 
     private final GuiScrollbar scrollbar = new GuiScrollbar();
     private final AEStackTypeFilter typeFilters = new AEStackTypeFilter();
@@ -617,7 +617,7 @@ public final class MiniTerminalModel implements ISortSource {
         return typeFilters.getFiltersMap();
     }
 
-    static final class SessionViewState {
+    public static class SessionViewState {
 
         private boolean connected;
         private boolean snapshotsReady;

@@ -17,7 +17,7 @@ import com.science.gtnl.ScienceNotLeisure;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
 
-final class MiniTerminalOutbound {
+public class MiniTerminalOutbound {
 
     private static final int ASYNC_ENTRIES = 2048;
     private static final AtomicInteger THREAD_INDEX = new AtomicInteger();
@@ -35,7 +35,7 @@ final class MiniTerminalOutbound {
         });
     private static final Map<UUID, ObjectArrayFIFOQueue<Pending>> QUEUES = new Object2ObjectOpenHashMap<>();
 
-    interface EncodeFailure {
+    public interface EncodeFailure {
 
         void failed(EntityPlayerMP player, long session, Throwable cause);
     }

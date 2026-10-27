@@ -8,7 +8,7 @@ import com.science.gtnl.common.packet.QuantumCraftingModePacket;
 
 @Config(modid = ScienceNotLeisure.MODID, configSubDirectory = "GTNotLeisure", filename = "QuantumCraftingClient")
 @Config.ExcludeFromAutoGui
-public final class QuantumCraftingClientConfig {
+public class QuantumCraftingClientConfig {
 
     @Config.Comment("Plan player crafting requests with the quantum calculation when the network has a quantum computer.")
     @Config.DefaultBoolean(false)
