@@ -3,6 +3,7 @@ package com.science.gtnl.mixins.late.gregtech;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -531,15 +532,21 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
             return;
         }
 
+        List<ItemStack> filter = Stream.concat(
+            inputOres.stream(),
+            this.selected.getStacks()
+                .stream()
+                .filter(Objects::nonNull))
+            .toList();
+        boolean keepOutput = filter.isEmpty() || this.blacklist != filter.stream()
+            .anyMatch(is -> GTUtility.areStacksEqual(is, output));
+
         while (totalCount > 0) {
             int stackSize = (int) Math.min(Integer.MAX_VALUE, totalCount);
             ItemStack stackPart = output.copy();
             stackPart.stackSize = stackSize;
 
-            if (inputOres.isEmpty() || (this.blacklist && inputOres.stream()
-                .noneMatch(is -> GTUtility.areStacksEqual(is, output)))
-                || (!this.blacklist && inputOres.stream()
-                    .anyMatch(is -> GTUtility.areStacksEqual(is, output)))) {
+            if (keepOutput) {
                 this.addOutputPartial(stackPart);
             }
 
