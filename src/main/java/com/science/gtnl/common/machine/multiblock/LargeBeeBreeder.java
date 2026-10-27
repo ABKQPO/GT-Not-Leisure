@@ -529,6 +529,15 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         return Collections.unmodifiableList(breedingChain);
     }
 
+    public List<String> getActiveBreedingSpecies() {
+        if (activeOperation != OPERATION_BREEDING) return Collections.emptyList();
+        List<String> species = new ArrayList<>(activeBreedingBatch.size());
+        for (BreedingAttempt attempt : activeBreedingBatch) {
+            species.add(attempt.step.result);
+        }
+        return species;
+    }
+
     private void updateChainDisplayInfo() {
         chainTotalSteps = breedingChain.size();
         chainCompletedSteps = countCompletedSteps();
