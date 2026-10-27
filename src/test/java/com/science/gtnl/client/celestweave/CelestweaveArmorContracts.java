@@ -109,7 +109,7 @@ public class CelestweaveArmorContracts {
 
     private static CelestweaveFrames loadFrames() throws IOException {
         try (var reader = Files
-            .newBufferedReader(RESOURCES.resolve("models/armor/celestweave_frames.json"), StandardCharsets.UTF_8)) {
+            .newBufferedReader(RESOURCES.resolve("armor/celestweave_frames.json"), StandardCharsets.UTF_8)) {
             CelestweaveFrames frames = new Gson().fromJson(reader, CelestweaveFrames.class);
             frames.resolve();
             return frames;
