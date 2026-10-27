@@ -1,4 +1,3 @@
-// SPDX-License-Identifier: MIT
 package com.science.gtnl.common.gui.modularui;
 
 import java.util.ArrayList;

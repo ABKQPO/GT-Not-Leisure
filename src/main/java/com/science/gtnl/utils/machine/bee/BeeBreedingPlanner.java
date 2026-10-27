@@ -1,4 +1,3 @@
-// SPDX-License-Identifier: MIT
 package com.science.gtnl.utils.machine.bee;
 
 import java.util.ArrayList;

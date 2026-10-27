@@ -1,4 +1,3 @@
-// SPDX-License-Identifier: MIT
 package com.science.gtnl.common.machine.multiblock;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;

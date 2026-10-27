@@ -48,7 +48,6 @@ import com.science.gtnl.common.recipe.gregtech.FluidSolidifierRecipes;
 import com.science.gtnl.common.recipe.gregtech.FormingPressRecipes;
 import com.science.gtnl.common.recipe.gregtech.FusionReactorRecipes;
 import com.science.gtnl.common.recipe.gregtech.HammerRecipes;
-import com.science.gtnl.common.recipe.gregtech.LargeBeeBreederRecipes;
 import com.science.gtnl.common.recipe.gregtech.LaserEngraverRecipes;
 import com.science.gtnl.common.recipe.gregtech.MaceratorRecipes;
 import com.science.gtnl.common.recipe.gregtech.MixerRecipes;
@@ -167,11 +166,10 @@ public class RecipeLoader {
 
         IRecipePool[] recipePools = new IRecipePool[] { new GrandAssemblyLineSpecialRecipes(),
             new BotaniaManaInfusionRecipes(), new ChemicalRecipes(), new ElectrolyzerRecipes(), new MixerRecipes(),
-            new AssemblerRecipes(), new LargeBeeBreederRecipes(), new AutoclaveRecipes(),
-            new AlloyBlastSmelterRecipes(), new CompressorRecipes(), new ReFusionReactorRecipes(),
-            new RealArtificialStarRecipes(), new PortalToAlfheimRecipes(), new NatureSpiritArrayRecipes(),
-            new ManaInfusionRecipes(), new TranscendentPlasmaMixerRecipes(), new CraftingTableRecipes(),
-            new ChemicalBathRecipes(), new SteamCrackerRecipes(), new DesulfurizerRecipes(),
+            new AssemblerRecipes(), new AutoclaveRecipes(), new AlloyBlastSmelterRecipes(), new CompressorRecipes(),
+            new ReFusionReactorRecipes(), new RealArtificialStarRecipes(), new PortalToAlfheimRecipes(),
+            new NatureSpiritArrayRecipes(), new ManaInfusionRecipes(), new TranscendentPlasmaMixerRecipes(),
+            new CraftingTableRecipes(), new ChemicalBathRecipes(), new SteamCrackerRecipes(), new DesulfurizerRecipes(),
             new PetrochemicalPlantRecipes(), new FusionReactorRecipes(), new SmeltingMixingFurnaceRecipes(),
             new FluidExtraction(), new DigesterRecipes(), new DissolutionTankRecipes(), new CentrifugeRecipes(),
             new ChemicalDehydratorRecipes(), new ChemicalPlantRecipes(), new RareEarthCentrifugalRecipes(),

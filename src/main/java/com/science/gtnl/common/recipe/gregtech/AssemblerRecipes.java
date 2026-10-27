@@ -3875,6 +3875,22 @@ public class AssemblerRecipes implements IRecipePool {
             .duration(200)
             .eut(TierEU.RECIPE_LV)
             .addTo(As);
+
+        RecipeBuilder.builder()
+            .itemInputs(
+                ItemList.Hull_MV.get(1L),
+                GTOreDictUnificator.get(OrePrefixes.frameGt, Materials.Steel, 4),
+                GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 8),
+                GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.StainlessSteel, 1),
+                new Object[] { OrePrefixes.circuit.get(Materials.MV), 4 },
+                ItemList.Electric_Motor_MV.get(2L),
+                ItemList.Electric_Piston_MV.get(2L))
+            .circuit(24)
+            .itemOutputs(GTNLItemList.LargeBeeBreeder.get(1))
+            .fluidInputs(Materials.SolderingAlloy.getMolten(576))
+            .duration(30 * SECONDS)
+            .eut(TierEU.RECIPE_MV)
+            .addTo(As);
     }
 
     public void loadDeleteRecipe() {
