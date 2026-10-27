@@ -399,15 +399,15 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
                 int drainedThisRound = 0;
 
                 for (MTEHatch hatch : gtnl$getAllInputHatches()) {
+                    if (remaining <= 0) break;
                     int drained = gtnl$drainFluid(hatch, new FluidStack(needed.getFluid(), remaining), true);
                     drainedThisRound += drained;
+                    remaining -= drained;
                 }
 
                 if (drainedThisRound <= 0) {
                     break;
                 }
-
-                remaining -= drainedThisRound;
             }
         }
 

@@ -130,6 +130,7 @@ import com.science.gtnl.utils.machine.ProcessingArrayRecipeLoader;
 import com.science.gtnl.utils.machine.oreProcessing.CheatOreProcessingRecipes;
 import com.science.gtnl.utils.recipes.RecipeUtil;
 import com.science.gtnl.utils.recipes.RemoveRecipes;
+import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
 
 import bartworks.API.recipe.BartWorksRecipeMaps;
 import cpw.mods.fml.common.Optional;
@@ -148,6 +149,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import tectech.thing.CustomItemList;
 
 public class RecipeLoader {
+
+    private static Long circuitNanitesSeed;
 
     public static void loadCompleteInit() {
         if (MainConfig.recipe.enableDeleteRecipe) {
@@ -260,7 +263,18 @@ public class RecipeLoader {
     }
 
     public static void loadCircuitNanitesData(long worldSeed) {
+        if (Long.valueOf(worldSeed)
+            .equals(circuitNanitesSeed)) return;
+        clearCircuitNanitesData();
         new CircuitNanitesDataRecipes(worldSeed).loadRecipes();
+        circuitNanitesSeed = worldSeed;
+    }
+
+    public static void clearCircuitNanitesData() {
+        CircuitNanitesRecipeData.recipeDataMap.clear();
+        GTNLRecipeMaps.CircuitNanitesDataRecipes.getBackend()
+            .clearRecipes();
+        circuitNanitesSeed = null;
     }
 
     public static void loadBuffTargetChamberRecipe() {
