@@ -1,7 +1,5 @@
 package com.science.gtnl.common.packet;
 
-import static com.science.gtnl.utils.event.SubscribeEventUtils.CIRCUIT_NANITES_DATA_LOAD;
-
 import net.minecraft.client.Minecraft;
 
 import com.science.gtnl.common.packet.base.ClientboundPacket;
@@ -31,10 +29,7 @@ public class SyncCircuitNanitesPacket extends ClientboundPacket {
 
     @Override
     public void handleClient(Minecraft minecraft) {
-        if (!CIRCUIT_NANITES_DATA_LOAD) {
-            RecipeLoader.loadCircuitNanitesData(worldSeed);
-        }
-        CIRCUIT_NANITES_DATA_LOAD = true;
+        RecipeLoader.loadCircuitNanitesData(worldSeed);
     }
 
 }

@@ -41,7 +41,6 @@ import com.science.gtnl.common.item.items.TimeStopPocketWatch;
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionHitEffectState;
 import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionState;
 import com.science.gtnl.common.machine.hatch.ExplosionDynamoHatch;
-import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.packet.DraconicArmorProjectionHitEffectPacket;
 import com.science.gtnl.common.packet.SoundPacket;
 import com.science.gtnl.common.packet.SyncCircuitNanitesPacket;
@@ -52,7 +51,6 @@ import com.science.gtnl.loader.RecipeLoader;
 import com.science.gtnl.mixins.early.minecraft.AccessorFoodStats;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModList;
-import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -82,7 +80,6 @@ public class SubscribeEventUtils {
     public static final DamageSource CRUSHING_DAMAGE = new DamageSource("damage.gtnl.crushing")
         .setDamageBypassesArmor();
 
-    public static boolean CIRCUIT_NANITES_DATA_LOAD = false;
     public static long SLEEP_TIME = 0;
     public static long SERVER_TICK = 0;
     public static final long MAX_SERVER_SLEEP_MILLIS = 2000L;
@@ -196,7 +193,6 @@ public class SubscribeEventUtils {
         DraconicArmorProjectionHitEffectState.clear(event.player.getUniqueID());
         QuantumCraftingMode.onPlayerLoggedOut(event.player);
         FOOD_TICK_TIMERS.removeInt(event.player.getUniqueID());
-        CIRCUIT_NANITES_DATA_LOAD = false;
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -388,25 +384,22 @@ public class SubscribeEventUtils {
     public void onWorldLoad(WorldEvent.Load event) {
         World world = event.world;
         if (world.isRemote) return;
-        if (!CIRCUIT_NANITES_DATA_LOAD) {
-            RecipeLoader.loadCircuitNanitesData(world.getSeed());
-            CIRCUIT_NANITES_DATA_LOAD = true;
-        }
+        RecipeLoader.loadCircuitNanitesData(world.getSeed());
     }
 
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event) {
         PlayerDollRenderManager.offlineMode = false;
-        CIRCUIT_NANITES_DATA_LOAD = false;
         FOOD_TICK_TIMERS.clear();
         PlayerDollRenderManager.BLACKLISTED_UUIDS.clear();
         PlayerDollRenderManager.BLACKLISTED_NAMES.clear();
         PlayerDollRenderManager.BLACKLISTED_SKIN_URLS.clear();
         PlayerDollRenderManager.BLACKLISTED_CAPE_URLS.clear();
         PlayerDollRenderManager.UUID_CACHE.clear();
-        CircuitNanitesRecipeData.recipeDataMap.clear();
-        GTNLRecipeMaps.CircuitNanitesDataRecipes.getBackend()
-            .clearRecipes();
+        // Other dimensions unload during play, and in singleplayer the client shares this table with the server.
+        if (!event.world.isRemote && event.world.provider.dimensionId == 0) {
+            RecipeLoader.clearCircuitNanitesData();
+        }
     }
 
     @SubscribeEvent
