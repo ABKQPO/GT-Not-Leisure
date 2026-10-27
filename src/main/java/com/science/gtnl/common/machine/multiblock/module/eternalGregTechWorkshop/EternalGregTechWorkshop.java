@@ -191,7 +191,7 @@ public class EternalGregTechWorkshop extends MultiMachineBase<EternalGregTechWor
         .addElement('J', Casings.ParticleBeamGuidancePipeCasing.asElement())
         .addElement('K', GTStructureUtility.ofFrame(Materials.NaquadahAlloy))
         .addElement('L', Casings.OmniPurposeInfinityFusedGlass.asElement())
-        .addElement('M', StructureUtility.ofBlock(ItemRegistry.bw_realglas2, 0))
+        .addElement('M', StructureUtility.ofBlock(ItemRegistry.bw_realglas, 6))
         .addElement(
             'N',
             GTStructureUtility.buildHatchAdder(EternalGregTechWorkshop.class)

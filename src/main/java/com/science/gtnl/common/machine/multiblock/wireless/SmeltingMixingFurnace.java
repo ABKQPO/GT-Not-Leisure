@@ -109,7 +109,7 @@ public class SmeltingMixingFurnace extends WirelessEnergyMultiMachineBase<Smelti
     public IStructureDefinition<SmeltingMixingFurnace> getStructureDefinition() {
         return StructureDefinition.<SmeltingMixingFurnace>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(ItemRegistry.bw_realglas2, 0))
+            .addElement('A', StructureUtility.ofBlock(ItemRegistry.bw_realglas, 6))
             .addElement('B', GTNLCasings.NeutroniumGearbox.asElement())
             .addElement('C', GTNLCasings.Antifreeze_Heatproof_Machine_Casing.asElement())
             .addElement('D', StructureUtility.ofBlock(defcCasingBlock, 7))
