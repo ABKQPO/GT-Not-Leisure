@@ -12,6 +12,7 @@ import com.science.gtnl.common.gui.equipment.EquipmentTheme;
 import com.science.gtnl.common.wireless.WirelessAutoConnectContracts;
 import com.science.gtnl.common.wireless.WirelessMatterManipulatorContracts;
 import com.science.gtnl.common.yogsothoth.YogSothothContracts;
+import com.science.gtnl.utils.world.steam.GlobalSteamSaveContracts;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import gregtech.api.modularui2.GTGuiThemes;
@@ -39,6 +40,7 @@ public class CelestweaveContractTest {
         EquipmentResourceContracts.run();
         WirelessMatterManipulatorContracts.run();
         WirelessAutoConnectContracts.run();
+        GlobalSteamSaveContracts.run();
         GTNLLibContractTest.finish("Celestweave");
     }
 
