@@ -466,13 +466,14 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
             while (remaining > 0) {
                 int drainedThisRound = 0;
                 for (MTEHatch hatch : allInputHatches) {
+                    if (remaining <= 0) break;
                     int drained = drainFluid(hatch, new FluidStack(needed.getFluid(), remaining), true);
                     drainedThisRound += drained;
+                    remaining -= drained;
                 }
                 if (drainedThisRound <= 0) {
                     break;
                 }
-                remaining -= drainedThisRound;
             }
         }
 
