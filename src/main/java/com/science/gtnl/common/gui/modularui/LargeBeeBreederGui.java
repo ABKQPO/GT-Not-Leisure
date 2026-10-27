@@ -1,6 +1,5 @@
 package com.science.gtnl.common.gui.modularui;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -32,9 +30,8 @@ import com.cleanroommc.modularui.drawable.ItemDrawable;
 import com.cleanroommc.modularui.drawable.Rectangle;
 import com.cleanroommc.modularui.integration.recipeviewer.RecipeViewerGhostIngredientSlot;
 import com.cleanroommc.modularui.screen.ModularPanel;
-import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
-import com.cleanroommc.modularui.theme.WidgetThemeEntry;
 import com.cleanroommc.modularui.utils.Alignment;
+import com.cleanroommc.modularui.value.DoubleValue;
 import com.cleanroommc.modularui.value.StringValue;
 import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
 import com.cleanroommc.modularui.value.sync.GenericListSyncHandler;
@@ -46,12 +43,12 @@ import com.cleanroommc.modularui.value.sync.StringSyncValue;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widget.ScrollWidget;
 import com.cleanroommc.modularui.widget.Widget;
-import com.cleanroommc.modularui.widget.scroll.HorizontalScrollData;
 import com.cleanroommc.modularui.widget.scroll.VerticalScrollData;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.ListWidget;
 import com.cleanroommc.modularui.widgets.PageButton;
 import com.cleanroommc.modularui.widgets.PagedWidget;
+import com.cleanroommc.modularui.widgets.ProgressWidget;
 import com.cleanroommc.modularui.widgets.TextWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
@@ -71,11 +68,8 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
     private static final int SPECIES_COLUMNS = 10;
     private static final int SPECIES_ROWS = 3;
     private static final int SPECIES_PER_PAGE = SPECIES_COLUMNS * SPECIES_ROWS;
-    private static final int TREE_HEIGHT = PAGE_HEIGHT - 18;
-    private static final int COLOR_UNLOCKED = 0xFF6DBD75;
-    private static final int COLOR_ACTIVE = 0xFFE6B84B;
-    private static final int COLOR_READY = 0xFF62B6CB;
-    private static final int COLOR_WAITING = 0xFF92999F;
+    private static final int ROUTE_HEIGHT = PAGE_HEIGHT - 18;
+    private static final int ROUTE_ROW_HEIGHT = 42;
 
     private final PagedWidget.Controller pages = new PagedWidget.Controller();
     private String targetDraft;
@@ -104,7 +98,7 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
     private IntSyncValue progressTime;
     private IntSyncValue maxProgressTime;
     private BooleanSyncValue machineActive;
-    private BreedingTreeWidget treeWidget;
+    private BreedingRouteWidget routeWidget;
 
     public LargeBeeBreederGui(LargeBeeBreeder multiblock) {
         super(multiblock);
@@ -348,11 +342,9 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                                     parallel.getIntValue()))
                             .addLine(tr("gtnl.bee_breeder.energy", energy.getLongValue(), bonus.getIntValue()))));
         page.child(
-            new MeterWidget(
+            progressIndicator(
                 this::cycleProgress,
-                () -> tr("gtnl.bee_breeder.attempt_progress", (int) (cycleProgress() * 100)),
-                COLOR_ACTIVE).pos(0, 54)
-                    .size(112, 12)
+                () -> tr("gtnl.bee_breeder.attempt_progress", (int) (cycleProgress() * 100))).pos(0, 50)
                     .tooltipAutoUpdate(true)
                     .tooltipBuilder(
                         t -> t
@@ -363,8 +355,7 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                                     maxProgressTime.getIntValue() / 20D))
                             .addLine(tr("gtnl.bee_breeder.energy", energy.getLongValue(), bonus.getIntValue()))));
         page.child(
-            new MeterWidget(this::routeProgress, this::routeProgressText, COLOR_UNLOCKED).pos(120, 54)
-                .size(112, 12)
+            progressIndicator(this::routeProgress, this::routeProgressText).pos(120, 50)
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder(t -> t.addLine(IKey.lang("gtnl.bee_breeder.route_session"))));
         page.child(createTerminalRow(panel, sync).pos(0, 72));
@@ -393,7 +384,19 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
 
     @Override
     protected ListWidget<IWidget, ?> createTerminalTextWidget(PanelSyncManager sync, ModularPanel panel) {
-        return super.createTerminalTextWidget(sync, panel).child(terminalText(this::missingText));
+        return super.createTerminalTextWidget(sync, panel).paddingRight(64)
+            .child(terminalText(this::missingText));
+    }
+
+    @Override
+    protected Flow createTerminalRightCornerColumn(ModularPanel panel, PanelSyncManager sync) {
+        return Flow.row()
+            .coverChildren()
+            .rightRel(0, 6, 0)
+            .bottomRel(0, 6, 0)
+            .childIf(multiblock.supportsShutdownReasonHoverable(), () -> createShutdownReasonHoverableTerminal(sync))
+            .childIf(multiblock.supportsMaintenanceIssueHoverable(), () -> createMaintIssueHoverableTerminal(sync))
+            .childIf(multiblock.supportsLogo(), () -> makeLogoWidget(sync, panel));
     }
 
     private ParentWidget<?> speciesPage(SpeciesListView view, String hintKey, String emptyKey) {
@@ -476,23 +479,19 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
 
     private ParentWidget<?> routePage() {
         ParentWidget<?> page = new ParentWidget<>().size(PAGE_WIDTH, PAGE_HEIGHT);
-        HorizontalScrollData horizontal = new HorizontalScrollData();
         VerticalScrollData vertical = new VerticalScrollData();
         ScrollWidget<?> viewport = new ScrollWidget<>(vertical).showScrollShadows(false)
             .pos(0, 18)
-            .size(PAGE_WIDTH, TREE_HEIGHT)
+            .size(PAGE_WIDTH, ROUTE_HEIGHT)
             .background(new Rectangle().color(0xFF20272B));
-        viewport.getScrollArea()
-            .setScrollDataX(horizontal);
-        treeWidget = new BreedingTreeWidget(viewport, horizontal, vertical);
-        viewport.child(treeWidget);
+        routeWidget = new BreedingRouteWidget(viewport, vertical);
+        viewport.child(routeWidget);
+        page.child(progressArrow(this::routeProgress, 0, 0));
         page.child(
-            new MeterWidget(this::routeProgress, this::routeProgressText, COLOR_UNLOCKED).pos(0, 1)
-                .size(PAGE_WIDTH - 24, 14)
-                .tooltipAutoUpdate(true)
+            fittedText(this::routeProgressText, 24, 3, PAGE_WIDTH - 48, 0.8F).tooltipAutoUpdate(true)
                 .tooltipBuilder(
                     t -> t.addLine(IKey.lang("gtnl.bee_breeder.route_session"))
-                        .addLine(IKey.lang("gtnl.bee_breeder.tree_hint"))));
+                        .addLine(IKey.lang("gtnl.bee_breeder.route_hint"))));
         page.child(
             new ButtonWidget<>().pos(PAGE_WIDTH - 18, 0)
                 .size(18)
@@ -500,7 +499,7 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                 .overlay(new ItemDrawable(Items.compass).asIcon())
                 .tooltipBuilder(t -> t.addLine(IKey.lang("gtnl.bee_breeder.focus_target")))
                 .onMousePressed(button -> {
-                    if (button == 0) treeWidget.focusTarget();
+                    if (button == 0) routeWidget.focusTarget();
                     return true;
                 }));
         page.child(viewport);
@@ -591,295 +590,185 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         return StatCollector.translateToLocalFormatted(key, args);
     }
 
-    private static final class MeterWidget extends Widget<MeterWidget> {
-
-        private final DoubleSupplier progress;
-        private final Supplier<String> label;
-        private final int color;
-
-        private MeterWidget(DoubleSupplier progress, Supplier<String> label, int color) {
-            this.progress = progress;
-            this.label = label;
-            this.color = color;
-        }
-
-        @Override
-        public void draw(ModularGuiContext context, WidgetThemeEntry<?> theme) {
-            GuiDraw.drawRect(0, 0, getArea().width, getArea().height, 0xFF20272B);
-            GuiDraw.drawRect(1, 1, (getArea().width - 2) * (float) progress.getAsDouble(), getArea().height - 2, color);
-            GuiDraw.drawScaledAlignedTextInBox(
-                label.get(),
-                1,
-                1,
-                getArea().width - 2,
-                getArea().height - 2,
-                Alignment.CENTER,
-                0.8f);
-        }
+    private static ProgressWidget progressArrow(DoubleSupplier progress, int x, int y) {
+        return new ProgressWidget().value(new DoubleValue.Dynamic(progress, null))
+            .texture(GTGuiTextures.PROGRESSBAR_ARROW_STANDARD, 20)
+            .direction(ProgressWidget.Direction.RIGHT)
+            .pos(x, y)
+            .size(20, 18);
     }
 
-    private final class BreedingTreeWidget extends Widget<BreedingTreeWidget> implements Interactable {
+    private static ParentWidget<?> progressIndicator(DoubleSupplier progress, Supplier<String> label) {
+        return new ParentWidget<>().size(112, 18)
+            .child(progressArrow(progress, 0, 0))
+            .child(fittedText(label, 24, 3, 88, 0.8F));
+    }
+
+    private String routeState(NBTTagCompound step) {
+        String result = step.getString("result");
+        if (archivedSpecies.contains(result)) return "unlocked";
+        if (machineActive.getBoolValue() && activeSpecies.contains(result)) return "active";
+        if (archivedSpecies.contains(step.getString("parent1")) && archivedSpecies.contains(step.getString("parent2")))
+            return "ready";
+        return "waiting";
+    }
+
+    private double stepProgress(NBTTagCompound step) {
+        return switch (routeState(step)) {
+            case "unlocked" -> 1D;
+            case "active" -> cycleProgress();
+            default -> 0D;
+        };
+    }
+
+    private SlotLikeButtonWidget routeBee(String uid, int x, int y) {
+        return new SlotLikeButtonWidget(() -> beeIcon(uid)).pos(x, y)
+            .size(18)
+            .tooltipAutoUpdate(true)
+            .tooltipBuilder(
+                t -> t.addLine(BeeBreedingHelper.getSpeciesDisplayName(uid))
+                    .addLine(uid));
+    }
+
+    private ParentWidget<?> routeStep(NBTTagCompound step, int index) {
+        String result = step.getString("result");
+        boolean hasParents = !step.getString("parent1")
+            .isEmpty();
+        ParentWidget<?> row = new ParentWidget<>().pos(4, 4 + index * ROUTE_ROW_HEIGHT)
+            .size(PAGE_WIDTH - 16, ROUTE_ROW_HEIGHT - 4)
+            .background(GTGuiTextures.BACKGROUND_STANDARD);
+        row.child(fittedText(() -> {
+            String state = routeState(step);
+            EnumChatFormatting color = switch (state) {
+                case "unlocked" -> EnumChatFormatting.DARK_GREEN;
+                case "active" -> EnumChatFormatting.GOLD;
+                case "ready" -> EnumChatFormatting.DARK_AQUA;
+                default -> EnumChatFormatting.DARK_GRAY;
+            };
+            return color + tr("gtnl.bee_breeder.route_step", index + 1, tr("gtnl.bee_breeder." + state));
+        }, 5, 1, 110, 0.75F));
+        if (hasParents) {
+            row.child(fittedText(() -> tr("gtnl.bee_breeder.chance", step.getDouble("chance")), 116, 1, 96, 0.65F));
+            row.child(routeBee(step.getString("parent1"), 8, 16));
+            row.child(text(() -> "+", 29, 19, 10));
+            row.child(routeBee(step.getString("parent2"), 42, 16));
+            row.child(
+                progressArrow(() -> stepProgress(step), 70, 16).tooltipAutoUpdate(true)
+                    .tooltipBuilder(t -> {
+                        t.addLine(IKey.lang("gtnl.bee_breeder." + routeState(step)));
+                        t.addLine(tr("gtnl.bee_breeder.chance", step.getDouble("chance")));
+                        if (routeState(step).equals("active")) t.addLine(
+                            tr(
+                                "gtnl.bee_breeder.attempt_time",
+                                progressTime.getIntValue() / 20D,
+                                maxProgressTime.getIntValue() / 20D));
+                    }));
+        }
+        row.child(routeBee(result, hasParents ? 100 : 8, 16));
+        row.child(
+            fittedText(
+                () -> BeeBreedingHelper.getSpeciesDisplayName(result),
+                hasParents ? 124 : 32,
+                19,
+                hasParents ? 86 : 178,
+                0.75F).tooltipBuilder(t -> t.addLine(BeeBreedingHelper.getSpeciesDisplayName(result))));
+        return row;
+    }
+
+    private static List<NBTTagCompound> orderRouteSteps(List<NBTTagCompound> source) {
+        Map<String, NBTTagCompound> remaining = new LinkedHashMap<>();
+        for (NBTTagCompound step : source) remaining.put(step.getString("result"), step);
+        List<NBTTagCompound> ordered = new ArrayList<>(remaining.size());
+        while (!remaining.isEmpty()) {
+            int before = remaining.size();
+            var iterator = remaining.values()
+                .iterator();
+            while (iterator.hasNext()) {
+                NBTTagCompound step = iterator.next();
+                if (remaining.containsKey(step.getString("parent1"))
+                    || remaining.containsKey(step.getString("parent2"))) continue;
+                ordered.add(step);
+                iterator.remove();
+            }
+            if (remaining.size() == before) {
+                ordered.addAll(remaining.values());
+                break;
+            }
+        }
+        return ordered;
+    }
+
+    private final class BreedingRouteWidget extends ParentWidget<BreedingRouteWidget> implements Interactable {
 
         private final ScrollWidget<?> viewport;
-        private final HorizontalScrollData horizontal;
         private final VerticalScrollData vertical;
-        private final ItemDrawable item = new ItemDrawable();
         private List<NBTTagCompound> lastSteps;
+        private List<NBTTagCompound> displayedSteps = Collections.emptyList();
         private String lastTarget = "";
-        private TreeLayout layout = new TreeLayout(Collections.emptyList(), "");
-        private TreeNode hovered;
-        private boolean centerTarget;
-        private int dragX;
         private int dragY;
-        private int startScrollX;
-        private int startScrollY;
+        private int startScroll;
 
-        private BreedingTreeWidget(ScrollWidget<?> viewport, HorizontalScrollData horizontal,
-            VerticalScrollData vertical) {
+        private BreedingRouteWidget(ScrollWidget<?> viewport, VerticalScrollData vertical) {
             this.viewport = viewport;
-            this.horizontal = horizontal;
             this.vertical = vertical;
-            size(PAGE_WIDTH, TREE_HEIGHT);
-            tooltipAutoUpdate(true);
-            tooltipBuilder(t -> {
-                if (hovered == null) {
-                    t.addLine(IKey.lang("gtnl.bee_breeder.tree_hint"))
-                        .addLine(EnumChatFormatting.GREEN + tr("gtnl.bee_breeder.unlocked"))
-                        .addLine(EnumChatFormatting.GOLD + tr("gtnl.bee_breeder.active"))
-                        .addLine(EnumChatFormatting.AQUA + tr("gtnl.bee_breeder.ready"))
-                        .addLine(EnumChatFormatting.GRAY + tr("gtnl.bee_breeder.waiting"));
-                    return;
-                }
-                t.addLine(BeeBreedingHelper.getSpeciesDisplayName(hovered.uid))
-                    .addLine(hovered.uid)
-                    .addLine(tr("gtnl.bee_breeder." + state(hovered)));
-                if (!hovered.parents.isEmpty()) {
-                    t.addLine(tr("gtnl.bee_breeder.chance", hovered.chance));
-                    for (TreeNode parent : hovered.parents) {
-                        t.addLine(BeeBreedingHelper.getSpeciesDisplayName(parent.uid));
-                    }
-                }
-                if (isActive(hovered)) t.addLine(
-                    tr(
-                        "gtnl.bee_breeder.attempt_time",
-                        progressTime.getIntValue() / 20D,
-                        maxProgressTime.getIntValue() / 20D));
-            });
+            pos(0, 0).size(PAGE_WIDTH - 8, ROUTE_HEIGHT);
         }
 
         @Override
         public void onUpdate() {
             super.onUpdate();
             String currentTarget = target.getStringValue();
-            if (lastSteps != steps || !lastTarget.equals(currentTarget)) {
-                centerTarget |= !lastTarget.equals(currentTarget);
-                lastSteps = steps;
-                lastTarget = currentTarget;
-                layout = new TreeLayout(steps, currentTarget);
-                size(layout.width, layout.height);
-                horizontal.setScrollSize(layout.width);
-                vertical.setScrollSize(layout.height);
-                horizontal.clamp(viewport.getScrollArea());
-                vertical.clamp(viewport.getScrollArea());
-                viewport.scheduleResize();
-                scheduleResize();
+            if (lastSteps == steps && lastTarget.equals(currentTarget)) return;
+            boolean targetChanged = !lastTarget.equals(currentTarget);
+            lastSteps = steps;
+            lastTarget = currentTarget;
+            displayedSteps = orderRouteSteps(steps);
+            removeAll();
+            for (int i = 0; i < displayedSteps.size(); i++) child(routeStep(displayedSteps.get(i), i));
+            int rows = displayedSteps.size();
+            if (rows == 0 && !currentTarget.isEmpty()) {
+                NBTTagCompound targetStep = new NBTTagCompound();
+                targetStep.setString("result", currentTarget);
+                child(routeStep(targetStep, 0));
+                rows = 1;
             }
-        }
-
-        @Override
-        public void onResized() {
-            super.onResized();
-            if (centerTarget) focusTarget();
+            int height = Math.max(ROUTE_HEIGHT, 4 + rows * ROUTE_ROW_HEIGHT);
+            size(PAGE_WIDTH - 8, height);
+            vertical.setScrollSize(height);
+            if (targetChanged) vertical.scrollTo(viewport.getScrollArea(), 0);
+            else vertical.clamp(viewport.getScrollArea());
+            viewport.scheduleResize();
+            scheduleResize();
         }
 
         private void focusTarget() {
-            TreeNode node = layout.nodes.get(target.getStringValue());
-            if (node == null) return;
-            horizontal.scrollTo(viewport.getScrollArea(), node.x + TreeLayout.NODE_WIDTH / 2 - PAGE_WIDTH / 2);
-            vertical.scrollTo(viewport.getScrollArea(), node.y + TreeLayout.NODE_HEIGHT / 2 - TREE_HEIGHT / 2);
-            centerTarget = false;
-        }
-
-        @Override
-        public void draw(ModularGuiContext context, WidgetThemeEntry<?> theme) {
-            hovered = null;
-            int left = horizontal.getScroll();
-            int top = vertical.getScroll();
-            for (TreeNode node : layout.nodes.values()) {
-                for (TreeNode parent : node.parents) drawConnector(parent, node, nodeColor(node));
-            }
-            for (TreeNode node : layout.nodes.values()) {
-                if (node.x + TreeLayout.NODE_WIDTH < left || node.x > left + PAGE_WIDTH
-                    || node.y + TreeLayout.NODE_HEIGHT < top
-                    || node.y > top + TREE_HEIGHT) continue;
-                int color = nodeColor(node);
-                boolean selected = node.uid.equals(target.getStringValue());
-                GuiDraw.drawRect(
-                    node.x - 1,
-                    node.y - 1,
-                    TreeLayout.NODE_WIDTH + 2,
-                    TreeLayout.NODE_HEIGHT + 2,
-                    selected ? 0xFFE6B84B : 0xFF20272B);
-                GuiDraw.drawRect(node.x, node.y, TreeLayout.NODE_WIDTH, TreeLayout.NODE_HEIGHT, color);
-                GuiDraw.drawRect(
-                    node.x + 1,
-                    node.y + 1,
-                    TreeLayout.NODE_WIDTH - 2,
-                    TreeLayout.NODE_HEIGHT - 2,
-                    0xFF303A40);
-                item.setItem(beeIcon(node.uid))
-                    .draw(context, node.x + 20, node.y + 2, 16, 16, theme.getTheme());
-                String name = context.getFontRenderer()
-                    .trimStringToWidth(BeeBreedingHelper.getSpeciesDisplayName(node.uid), 66);
-                GuiDraw.drawText(name, node.x + 3, node.y + 20, 0.75f, 0xFFFFFFFF, false);
-                if (isActive(node)) GuiDraw.drawRect(
-                    node.x + 1,
-                    node.y + TreeLayout.NODE_HEIGHT - 3,
-                    (TreeLayout.NODE_WIDTH - 2) * (float) cycleProgress(),
-                    2,
-                    COLOR_ACTIVE);
-                if (isHovering() && context.getMouseX() >= node.x
-                    && context.getMouseX() < node.x + TreeLayout.NODE_WIDTH
-                    && context.getMouseY() >= node.y
-                    && context.getMouseY() < node.y + TreeLayout.NODE_HEIGHT) {
-                    hovered = node;
+            for (int i = 0; i < displayedSteps.size(); i++) {
+                if (displayedSteps.get(i)
+                    .getString("result")
+                    .equals(target.getStringValue())) {
+                    vertical.scrollTo(
+                        viewport.getScrollArea(),
+                        4 + i * ROUTE_ROW_HEIGHT
+                            + ROUTE_ROW_HEIGHT / 2
+                            - vertical.getFullVisibleSize(viewport.getScrollArea()) / 2);
+                    return;
                 }
             }
-        }
-
-        private void drawConnector(TreeNode parent, TreeNode child, int color) {
-            int fromX = parent.x + TreeLayout.NODE_WIDTH;
-            int fromY = parent.y + TreeLayout.NODE_HEIGHT / 2;
-            int toX = child.x;
-            int toY = child.y + TreeLayout.NODE_HEIGHT / 2;
-            int turnX = toX - 8;
-            if (child.depth - parent.depth > 1) {
-                int laneY = 3;
-                GuiDraw.drawRect(fromX, fromY, 6, 1, color);
-                GuiDraw.drawRect(fromX + 5, laneY, 1, fromY - laneY + 1, color);
-                GuiDraw.drawRect(fromX + 5, laneY, turnX - fromX - 4, 1, color);
-                GuiDraw.drawRect(turnX, laneY, 1, toY - laneY + 1, color);
-            } else {
-                GuiDraw.drawRect(fromX, fromY, turnX - fromX + 1, 1, color);
-                GuiDraw.drawRect(turnX, Math.min(fromY, toY), 1, Math.abs(toY - fromY) + 1, color);
-            }
-            GuiDraw.drawRect(turnX, toY, toX - turnX, 1, color);
-            GuiDraw.drawRect(toX - 3, toY - 2, 1, 5, color);
-            GuiDraw.drawRect(toX - 2, toY - 1, 1, 3, color);
-        }
-
-        private boolean isActive(TreeNode node) {
-            return machineActive.getBoolValue() && activeSpecies.contains(node.uid);
-        }
-
-        private String state(TreeNode node) {
-            if (archivedSpecies.contains(node.uid)) return "unlocked";
-            if (isActive(node)) return "active";
-            if (!node.parents.isEmpty() && node.parents.stream()
-                .allMatch(parent -> archivedSpecies.contains(parent.uid))) {
-                return "ready";
-            }
-            return "waiting";
-        }
-
-        private int nodeColor(TreeNode node) {
-            return switch (state(node)) {
-                case "unlocked" -> COLOR_UNLOCKED;
-                case "active" -> COLOR_ACTIVE;
-                case "ready" -> COLOR_READY;
-                default -> COLOR_WAITING;
-            };
+            vertical.scrollTo(viewport.getScrollArea(), 0);
         }
 
         @Override
         public @NotNull Result onMousePressed(int button) {
             if (button != 0) return Result.IGNORE;
-            dragX = getContext().getAbsMouseX();
             dragY = getContext().getAbsMouseY();
-            startScrollX = horizontal.getScroll();
-            startScrollY = vertical.getScroll();
+            startScroll = vertical.getScroll();
             return Result.SUCCESS;
         }
 
         @Override
         public void onMouseDrag(int button, long timeSinceClick) {
-            if (button != 0) return;
-            horizontal.scrollTo(viewport.getScrollArea(), startScrollX + dragX - getContext().getAbsMouseX());
-            vertical.scrollTo(viewport.getScrollArea(), startScrollY + dragY - getContext().getAbsMouseY());
-        }
-    }
-
-    private static final class TreeLayout {
-
-        private static final int NODE_WIDTH = 56;
-        private static final int NODE_HEIGHT = 30;
-        private final Map<String, TreeNode> nodes = new LinkedHashMap<>();
-        private final int width;
-        private final int height;
-
-        private TreeLayout(List<NBTTagCompound> steps, String target) {
-            for (NBTTagCompound step : steps) {
-                TreeNode result = node(step.getString("result"));
-                result.chance = step.getDouble("chance");
-                for (String key : new String[] { "parent1", "parent2" }) {
-                    TreeNode parent = node(step.getString(key));
-                    if (!result.parents.contains(parent)) {
-                        result.parents.add(parent);
-                        parent.children.add(result);
-                    }
-                }
-            }
-            if (!target.isEmpty()) node(target);
-            Map<TreeNode, Integer> pendingParents = new HashMap<>();
-            ArrayDeque<TreeNode> ready = new ArrayDeque<>();
-            for (TreeNode node : nodes.values()) {
-                pendingParents.put(node, node.parents.size());
-                if (node.parents.isEmpty()) ready.add(node);
-            }
-            while (!ready.isEmpty()) {
-                TreeNode node = ready.remove();
-                for (TreeNode child : node.children) {
-                    child.depth = Math.max(child.depth, node.depth + 1);
-                    if (pendingParents.merge(child, -1, Integer::sum) == 0) ready.add(child);
-                }
-            }
-            Map<Integer, List<TreeNode>> columns = new TreeMap<>();
-            int rows = 0;
-            int depth = 0;
-            for (TreeNode node : nodes.values()) {
-                List<TreeNode> column = columns.computeIfAbsent(node.depth, ignored -> new ArrayList<>());
-                column.add(node);
-                rows = Math.max(rows, column.size());
-                depth = Math.max(depth, node.depth);
-            }
-            for (List<TreeNode> column : columns.values()) {
-                for (int row = 0; row < column.size(); row++) {
-                    TreeNode node = column.get(row);
-                    node.x = 6 + node.depth * 74;
-                    node.y = 12 + (rows - column.size()) * 20 + row * 40;
-                }
-            }
-            width = Math.max(PAGE_WIDTH - 8, 12 + depth * 74 + NODE_WIDTH);
-            height = Math.max(TREE_HEIGHT - 8, 18 + rows * 40);
-        }
-
-        private TreeNode node(String uid) {
-            return nodes.computeIfAbsent(uid, TreeNode::new);
-        }
-    }
-
-    private static final class TreeNode {
-
-        private final String uid;
-        private final List<TreeNode> parents = new ArrayList<>(2);
-        private final List<TreeNode> children = new ArrayList<>();
-        private double chance;
-        private int depth;
-        private int x;
-        private int y;
-
-        private TreeNode(String uid) {
-            this.uid = uid;
+            if (button == 0)
+                vertical.scrollTo(viewport.getScrollArea(), startScroll + dragY - getContext().getAbsMouseY());
         }
     }
 

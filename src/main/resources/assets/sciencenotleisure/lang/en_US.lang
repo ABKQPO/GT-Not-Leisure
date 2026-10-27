@@ -848,9 +848,10 @@ gtnl.bee_breeder.select_species=Click to fill the target, then press Apply to co
 gtnl.bee_breeder.attempt_progress=Attempt %s%%
 gtnl.bee_breeder.attempt_time=Current attempt: %.1f / %.1f s
 gtnl.bee_breeder.route_meter=Route %s/%s
+gtnl.bee_breeder.route_step=Step %s: %s
 gtnl.bee_breeder.route_session=Completed / planned breeding steps tracked while this GUI is open. Reopening starts from the remaining route.
-gtnl.bee_breeder.tree_hint=Drag to pan; scroll vertically, Shift-scroll horizontally. Hover a bee for its name, parents, chance and status.
-gtnl.bee_breeder.focus_target=Center the tree on the target bee
+gtnl.bee_breeder.route_hint=Scroll or drag vertically through the breeding steps. Each arrow shows the actual attempt progress; hover bees for their names.
+gtnl.bee_breeder.focus_target=Scroll to the target bee
 gtnl.bee_breeder.active=Breeding
 gtnl.bee_breeder.chance=Mutation chance: %.1f%%
 
