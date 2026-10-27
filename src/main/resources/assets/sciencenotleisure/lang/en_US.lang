@@ -848,6 +848,7 @@ gtnl.bee_breeder.select_species=Click to fill the target, then press Apply to co
 gtnl.bee_breeder.attempt_progress=Attempt %s%%
 gtnl.bee_breeder.attempt_time=Current attempt: %.1f / %.1f s
 gtnl.bee_breeder.route_meter=Route %s/%s
+gtnl.bee_breeder.total_progress=Total progress: %s%%
 gtnl.bee_breeder.route_session=Completed / planned breeding steps tracked while this GUI is open. Reopening starts from the remaining route.
 gtnl.bee_breeder.route_hint=Scroll vertically or horizontally through the parent tree. Green arrows mark completed mutations; filling arrows show active attempts.
 gtnl.bee_breeder.focus_target=Scroll to the target bee

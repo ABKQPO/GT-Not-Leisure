@@ -848,6 +848,7 @@ gtnl.bee_breeder.select_species=点击填入目标，再点击应用确认。
 gtnl.bee_breeder.attempt_progress=尝试 %s%%
 gtnl.bee_breeder.attempt_time=本次尝试：%.1f / %.1f 秒
 gtnl.bee_breeder.route_meter=路线 %s/%s
+gtnl.bee_breeder.total_progress=总进度：%s%%
 gtnl.bee_breeder.route_session=本次打开 GUI 后记录的已完成 / 规划杂交步骤；重新打开时从剩余路线开始统计。
 gtnl.bee_breeder.route_hint=上下或左右滚动查看亲本谱系。绿色箭头表示繁育成功，填充中的箭头表示正在繁育。
 gtnl.bee_breeder.focus_target=滚动到目标蜂种

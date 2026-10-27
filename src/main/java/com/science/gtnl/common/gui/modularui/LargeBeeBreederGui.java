@@ -29,9 +29,11 @@ import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.drawable.ColorType;
 import com.cleanroommc.modularui.drawable.GuiDraw;
 import com.cleanroommc.modularui.drawable.ItemDrawable;
+import com.cleanroommc.modularui.drawable.Stencil;
 import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.integration.recipeviewer.RecipeViewerGhostIngredientSlot;
 import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetTheme;
 import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.value.DoubleValue;
@@ -48,6 +50,7 @@ import com.cleanroommc.modularui.widget.ScrollWidget;
 import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widget.scroll.HorizontalScrollData;
 import com.cleanroommc.modularui.widget.scroll.VerticalScrollData;
+import com.cleanroommc.modularui.widget.sizer.Area;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.ListWidget;
 import com.cleanroommc.modularui.widgets.PageButton;
@@ -69,11 +72,12 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
 
     private static final int PAGE_WIDTH = 232;
     private static final int PAGE_HEIGHT = 114;
+    private static final int PAGE_BODY_HEIGHT = PAGE_HEIGHT + 82;
     private static final int SPECIES_COLUMNS = 10;
     private static final int SPECIES_ROWS = 3;
     private static final int SPECIES_PER_PAGE = SPECIES_COLUMNS * SPECIES_ROWS;
-    private static final int ROUTE_HEIGHT = PAGE_HEIGHT - 18;
-    private static final int ROUTE_WIDTH = PAGE_WIDTH - 8;
+    private static final int ROUTE_HEIGHT = PAGE_BODY_HEIGHT - 18;
+    private static final int ROUTE_WIDTH = PAGE_WIDTH - 10;
     private static final UITexture ARROW_EMPTY = GTGuiTextures.PROGRESSBAR_ARROW_STANDARD.getSubArea(0, 0, 1, 0.5F);
     private static final UITexture ARROW_FULL = GTGuiTextures.PROGRESSBAR_ARROW_STANDARD.getSubArea(0, 0.5F, 1, 1);
     private static final UITexture ARROW_COMPLETE = ARROW_FULL.withColorOverride(0xFF55DD55);
@@ -268,21 +272,25 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         tabs.child(tab(1, "archive", new ItemDrawable(Items.book)));
         tabs.child(tab(2, "reachable", new ItemDrawable(Items.wheat)));
         tabs.child(tab(3, "route", new ItemDrawable(Items.map)));
+        Flow inventory = Flow.column()
+            .pos(0, PAGE_HEIGHT + 6)
+            .size(PAGE_WIDTH, 76)
+            .child(createInventoryRow(panel, sync));
+        PagedWidget<?> content = new PagedWidget<>().controller(pages)
+            .pos(0, 0)
+            .size(PAGE_WIDTH, PAGE_BODY_HEIGHT)
+            .addPage(operationPage(panel, sync))
+            .addPage(speciesPage(archiveView, "search", "no_matches"))
+            .addPage(speciesPage(reachableView, "reachable_hint", "no_reachable_matches"))
+            .addPage(routePage())
+            .onPageChange(index -> inventory.setEnabled(index != 3));
         return Flow.column()
             .padding(6)
             .child(tabs)
             .child(
-                new PagedWidget<>().controller(pages)
-                    .size(PAGE_WIDTH, PAGE_HEIGHT)
-                    .addPage(operationPage(panel, sync))
-                    .addPage(speciesPage(archiveView, "search", "no_matches"))
-                    .addPage(speciesPage(reachableView, "reachable_hint", "no_reachable_matches"))
-                    .addPage(routePage()))
-            .child(
-                Flow.column()
-                    .size(PAGE_WIDTH, 76)
-                    .marginTop(6)
-                    .child(createInventoryRow(panel, sync)));
+                new ParentWidget<>().size(PAGE_WIDTH, PAGE_BODY_HEIGHT)
+                    .child(content)
+                    .child(inventory));
     }
 
     private PageButton tab(int index, String key, IDrawable icon) {
@@ -302,7 +310,8 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
     }
 
     private ParentWidget<?> operationPage(ModularPanel panel, PanelSyncManager sync) {
-        ParentWidget<?> page = new ParentWidget<>().size(PAGE_WIDTH, PAGE_HEIGHT);
+        ParentWidget<?> page = new ParentWidget<>().pos(0, 0)
+            .size(PAGE_WIDTH, PAGE_HEIGHT);
         page.child(
             new BeeSpeciesDropTextField().value(draft)
                 .setMaxLength(256)
@@ -326,9 +335,19 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                             valid.getBoolValue() ? "gtnl.bee_breeder.draft_hint"
                                 : "gtnl.bee_breeder.invalid_target"))));
         page.child(
-            fittedText(this::previewChance, 50, 22, PAGE_WIDTH - 60, 0.85F).tooltipAutoUpdate(true)
+            fittedText(this::previewChance, 0, 22, 114, 0.85F).tooltipAutoUpdate(true)
                 .tooltipBuilder(
                     t -> t.addLine(tr("gtnl.bee_breeder.current_target", speciesOrEmpty(target.getStringValue())))));
+        page.child(
+            fittedText(
+                () -> tr("gtnl.bee_breeder.total_progress", Math.round(routeProgress() * 100)),
+                124,
+                22,
+                PAGE_WIDTH - 124,
+                0.85F).tooltipAutoUpdate(true)
+                    .tooltipBuilder(
+                        t -> t.addLine(routeProgressText())
+                            .addLine(IKey.lang("gtnl.bee_breeder.route_session"))));
         page.child(previewBee("parent1", 20, 38));
         page.child(text(() -> "+", 44, 41, 10));
         page.child(previewBee("parent2", 60, 38));
@@ -396,7 +415,8 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
     }
 
     private ParentWidget<?> speciesPage(SpeciesListView view, String hintKey, String emptyKey) {
-        ParentWidget<?> page = new ParentWidget<>().size(PAGE_WIDTH, PAGE_HEIGHT);
+        ParentWidget<?> page = new ParentWidget<>().pos(0, 0)
+            .size(PAGE_WIDTH, PAGE_HEIGHT);
         page.child(
             new TextFieldWidget().value(view.search)
                 .setMaxLength(128)
@@ -474,13 +494,13 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
     }
 
     private ParentWidget<?> routePage() {
-        ParentWidget<?> page = new ParentWidget<>().size(PAGE_WIDTH, PAGE_HEIGHT);
+        ParentWidget<?> page = new ParentWidget<>().pos(0, 0)
+            .size(PAGE_WIDTH, PAGE_BODY_HEIGHT);
         VerticalScrollData vertical = new VerticalScrollData();
         HorizontalScrollData horizontal = new HorizontalScrollData();
-        ScrollWidget<?> viewport = new ScrollWidget<>(vertical).showScrollShadows(false)
-            .pos(0, 18)
-            .size(PAGE_WIDTH, ROUTE_HEIGHT)
-            .background(GTGuiTextures.BACKGROUND_STANDARD);
+        ScrollWidget<?> viewport = new BreedingRouteViewport(vertical).showScrollShadows(false)
+            .pos(3, 3)
+            .size(PAGE_WIDTH - 6, ROUTE_HEIGHT - 6);
         viewport.getScrollArea()
             .setScrollDataX(horizontal);
         routeWidget = new BreedingRouteWidget(viewport, vertical, horizontal);
@@ -501,7 +521,11 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                     if (button == 0) routeWidget.focusTarget();
                     return true;
                 }));
-        page.child(viewport);
+        page.child(
+            new ParentWidget<>().pos(0, 18)
+                .size(PAGE_WIDTH, ROUTE_HEIGHT)
+                .background(GTGuiTextures.BACKGROUND_STANDARD)
+                .child(viewport));
         page.child(
             IKey.lang("gtnl.bee_breeder.no_steps")
                 .asWidget()
@@ -718,7 +742,7 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
             this.viewport = viewport;
             this.vertical = vertical;
             this.horizontal = horizontal;
-            pos(0, 0).size(ROUTE_WIDTH, ROUTE_HEIGHT);
+            pos(0, 0).size(ROUTE_WIDTH, ROUTE_HEIGHT - 10);
         }
 
         @Override
@@ -754,7 +778,9 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         private void focusTarget() {
             RouteNode node = layout.nodes.get(target.getStringValue());
             vertical.scrollTo(viewport.getScrollArea(), node == null ? 0 : node.y - 10);
-            horizontal.scrollTo(viewport.getScrollArea(), node == null ? 0 : node.x + 9 - PAGE_WIDTH / 2);
+            horizontal.scrollTo(
+                viewport.getScrollArea(),
+                node == null ? 0 : node.x + 9 - horizontal.getFullVisibleSize(viewport.getScrollArea()) / 2);
         }
 
         @Override
@@ -772,6 +798,28 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
             if (button == 0) {
                 vertical.scrollTo(viewport.getScrollArea(), startScrollY + dragY - getContext().getAbsMouseY());
                 horizontal.scrollTo(viewport.getScrollArea(), startScrollX + dragX - getContext().getAbsMouseX());
+            }
+        }
+    }
+
+    private static final class BreedingRouteViewport extends ScrollWidget<BreedingRouteViewport> {
+
+        private final Area contentClip = new Area();
+
+        private BreedingRouteViewport(VerticalScrollData vertical) {
+            super(vertical);
+        }
+
+        @Override
+        public void preDraw(ModularGuiContext context, boolean transformed) {
+            if (!transformed) {
+                var area = getScrollArea();
+                contentClip.setSize(
+                    area.getScrollX()
+                        .getFullVisibleSize(area),
+                    area.getScrollY()
+                        .getFullVisibleSize(area));
+                Stencil.applyAtZero(contentClip, context);
             }
         }
     }
@@ -838,7 +886,7 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
             for (RouteNode node : nodes.values()) {
                 for (int i = 0; i < node.parents.size(); i++) links.add(new RouteLink(node.parents.get(i), node, i));
             }
-            height = Math.max(ROUTE_HEIGHT, bottom);
+            height = Math.max(ROUTE_HEIGHT - 10, bottom);
         }
     }
 
