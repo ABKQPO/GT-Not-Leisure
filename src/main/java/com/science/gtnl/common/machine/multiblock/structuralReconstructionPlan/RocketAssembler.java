@@ -3,6 +3,7 @@ package com.science.gtnl.common.machine.multiblock.structuralReconstructionPlan;
 import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase.CustomHatchElement.ParallelCon;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import com.gtnewhorizon.structurelib.alignment.IAlignmentLimits;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
+import com.gtnewhorizon.structurelib.structure.IStructureElement;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
@@ -123,21 +125,20 @@ public class RocketAssembler extends GTMMultiMachineBase<RocketAssembler>
             .addElement('H', Casings.HermeticCasing3.asElement())
             .addElement('I', GTStructureUtility.ofFrame(Materials.Steel))
             .addElement('J', GTStructureUtility.ofFrame(Materials.StainlessSteel))
-            .addElement(
-                'K',
-                StructureUtility.ofChain(
-                    StructureUtility.ofBlockAnyMeta(GCBlocks.landingPad, 0),
-                    StructureUtility.ofBlockAnyMeta(GCBlocks.landingPadFull, 0),
-                    StructureUtility.ofBlockAnyMeta(GCBlocks.fakeBlock),
-                    StructureUtility.isAir()))
-            .addElement(
-                'L',
-                StructureUtility.ofChain(
-                    StructureUtility.ofBlockAnyMeta(GCBlocks.landingPad, 0),
-                    StructureUtility.ofBlockAnyMeta(GCBlocks.landingPadFull, 0),
-                    StructureUtility.ofBlockAnyMeta(GCBlocks.fakeBlock),
-                    StructureUtility.isAir()))
+            .addElement('K', landingPad())
+            .addElement('L', landingPad())
             .build();
+    }
+
+    // A formed pad turns into Galacticraft dummy blocks, which have no name of their own.
+    private static IStructureElement<RocketAssembler> landingPad() {
+        return StructureUtility.withDescription(
+            Collections.singletonList(GCBlocks.landingPad.getUnlocalizedName() + ".name"),
+            StructureUtility.ofChain(
+                StructureUtility.ofBlockAnyMeta(GCBlocks.landingPad, 0),
+                StructureUtility.ofBlockAnyMeta(GCBlocks.landingPadFull, 0),
+                StructureUtility.ofBlockAnyMeta(GCBlocks.fakeBlock),
+                StructureUtility.isAir()));
     }
 
     @Override

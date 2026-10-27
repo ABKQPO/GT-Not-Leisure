@@ -910,9 +910,17 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     public List<String> getTooltipParallelControllerLines(String hatch) {
         String unlimited = TooltipHelper.voltageTierText(UNLIMITED_ENERGY_HATCH_TIER, false);
         String wireless = TooltipHelper.voltageTierText(WIRELESS_TIER, false);
+        double discountPerTier = 1 / GrandAssemblyLineOverclockTool.TIER_DIVISOR;
         return Arrays.asList(
             StatCollector.translateToLocalFormatted(PARALLEL_CONTROLLER_KEY + "energy", unlimited, hatch),
-            StatCollector.translateToLocalFormatted(PARALLEL_CONTROLLER_KEY + "boost", wireless, hatch),
+            StatCollector.translateToLocalFormatted(
+                PARALLEL_CONTROLLER_KEY + "boost",
+                TooltipHelper.voltageTierText(GrandAssemblyLineOverclockTool.BOOST_TIER, false),
+                hatch,
+                TooltipHelper.percentageFormat.format(GrandAssemblyLineOverclockTool.BOOST_SPEED_MULTIPLIER - 1),
+                TooltipHelper.percentageFormat.format(discountPerTier),
+                TooltipHelper.percentageFormat
+                    .format(discountPerTier * GrandAssemblyLineOverclockTool.BOOST_EU_DISCOUNT_SCALE)),
             StatCollector.translateToLocalFormatted(PARALLEL_CONTROLLER_KEY + "wireless", wireless, hatch));
     }
 
@@ -1126,6 +1134,18 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
     public enum DataHatchElement implements IHatchElement<GrandAssemblyLine> {
 
         DataAccess;
+
+        public static final String NAME_KEY = "gt.blockmachines.hatch.dataaccess.name";
+
+        @Override
+        public String getDescriptionLangKey() {
+            return NAME_KEY;
+        }
+
+        @Override
+        public String getDisplayName() {
+            return StatCollector.translateToLocal(NAME_KEY);
+        }
 
         @Override
         public List<? extends Class<? extends IMetaTileEntity>> mteClasses() {

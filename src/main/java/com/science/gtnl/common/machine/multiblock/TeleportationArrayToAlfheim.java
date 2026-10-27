@@ -60,7 +60,6 @@ import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
-import gregtech.api.structure.error.TranslatableText;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
@@ -75,8 +74,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 @IMetaTileEntity.SkipGenerateName
 public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationArrayToAlfheim> {
 
-    private static final TranslatableText MANA_INPUT_HATCH_NAME = TranslatableText
-        .lang("gtnl.hatch.fluid_mana_input.name");
+    private static final String MANA_INPUT_HATCH_NAME = "gtnl.hatch.fluid_mana_input.name";
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String TATA_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":"
         + "multiblock/teleportation_array_to_alfheim";
@@ -170,6 +168,7 @@ public class TeleportationArrayToAlfheim extends MultiMachineBase<TeleportationA
                     buildHatchAdder(TeleportationArrayToAlfheim.class)
                         .adder(TeleportationArrayToAlfheim::addFluidManaInputHatch)
                         .hatchId(21501)
+                        .description(() -> MANA_INPUT_HATCH_NAME)
                         .shouldReject(x -> !x.mFluidManaInputHatch.isEmpty())
                         .casingIndex(Casings.RadiantNaquadahAlloyCasing.getTextureId())
                         .hint(1)

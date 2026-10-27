@@ -359,6 +359,7 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         }
     }
 
+    @IMetaTileEntity.SkipGenerateDescription
     public static class LargeNaquadahReactor extends NaquadahReactor<LargeNaquadahReactor> {
 
         private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -487,6 +488,7 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         }
     }
 
+    @IMetaTileEntity.SkipGenerateDescription
     public static class HyperNaquadahReactor extends NaquadahReactor<HyperNaquadahReactor> {
 
         private static final String STRUCTURE_PIECE_MAIN = "main";
@@ -614,6 +616,7 @@ public abstract class NaquadahReactor<T extends NaquadahReactor<T>> extends Mult
         }
     }
 
+    @IMetaTileEntity.SkipGenerateDescription
     public static class AdvancedHyperNaquadahReactor extends NaquadahReactor<AdvancedHyperNaquadahReactor>
         implements IMTERenderer {
 

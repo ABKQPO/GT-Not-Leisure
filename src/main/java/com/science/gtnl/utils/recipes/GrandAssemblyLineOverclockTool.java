@@ -5,18 +5,23 @@ import java.util.Locale;
 import java.util.Scanner;
 
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.VoltageIndex;
 
 public class GrandAssemblyLineOverclockTool {
 
     public static final int STANDARD_OVERCLOCK_FACTOR = 2;
     public static final int PERFECT_OVERCLOCK_FACTOR = 4;
+    public static final double TIER_DIVISOR = 50.0;
+    public static final int BOOST_TIER = VoltageIndex.UMV;
+    public static final double BOOST_SPEED_MULTIPLIER = 20.0, BOOST_EU_DISCOUNT_SCALE = 0.2;
 
     public static double getEUtDiscount(final int parallelTier) {
-        return 0.8 - (parallelTier / 50.0) * (parallelTier >= 12 ? 0.2 : 1.0);
+        return 0.8 - (parallelTier / TIER_DIVISOR) * (parallelTier >= BOOST_TIER ? BOOST_EU_DISCOUNT_SCALE : 1.0);
     }
 
     public static double getDurationModifier(final int parallelTier) {
-        return (1.0 / 1.67 - (Math.max(0, parallelTier - 1) / 50.0)) * (parallelTier >= 12 ? 1.0 / 20.0 : 1.0);
+        return (1.0 / 1.67 - (Math.max(0, parallelTier - 1) / TIER_DIVISOR))
+            * (parallelTier >= BOOST_TIER ? 1.0 / BOOST_SPEED_MULTIPLIER : 1.0);
     }
 
     public static long parseVoltage(final String value) {
