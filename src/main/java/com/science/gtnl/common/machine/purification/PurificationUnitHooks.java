@@ -19,9 +19,9 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.collect.Lists;
-import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.api.mixinHelper.IWirelessMode;
+import com.science.gtnl.common.machine.hatch.HatchFluidDrain;
 import com.science.gtnl.utils.recipes.GTNLParallelHelper;
 
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
@@ -56,11 +56,10 @@ public class PurificationUnitHooks {
         IPurificationUnitHost host = host(unit);
         PurificationUnitState state = host.gtnl$state();
         MTEPurificationPlant controller = host.gtnl$controller();
-        if (controller != null) state.wirelessMode = ((IWirelessMode) controller).isGtnl$wirelessMode();
-        if (!state.wirelessMode) return null;
+        if (controller != null) state.setWirelessMode(((IWirelessMode) controller).isGtnl$wirelessMode());
+        if (!state.isWirelessMode()) return null;
         host.gtnl$setStoredFluids(unit.getStoredFluids());
-        state.costingEU = BigInteger.ZERO;
-        state.costingEUText = MathUtils.ZERO_STRING;
+        state.resetCost();
 
         CheckRecipeResult result = unit.overrideRecipeCheck();
         if (result == null) result = findRecipeForInputsLong(
@@ -77,18 +76,17 @@ public class PurificationUnitHooks {
                 }
             }
 
-            state.effectiveParallelLong = Math
-                .min(state.maxParallelLong, Math.floorDiv(amountAvailable, (long) waterInput.amount));
-            if (state.effectiveParallelLong == 0) return GTNLParallelHelper.PARALLEL_ZERO;
+            if (state.limitParallel(Math.floorDiv(amountAvailable, (long) waterInput.amount)) == 0) {
+                return GTNLParallelHelper.PARALLEL_ZERO;
+            }
 
-            BigInteger costEU = BigInteger.valueOf(state.effectiveParallelLong)
+            BigInteger costEU = BigInteger.valueOf(state.getEffectiveParallel())
                 .multiply(BigInteger.valueOf(unit.getBasePowerUsage()));
 
-            if (!addEUToGlobalEnergyMap(state.ownerUUID, costEU.multiply(MathUtils.NEGATIVE_ONE))) {
+            if (!addEUToGlobalEnergyMap(state.getOwnerUUID(), costEU.multiply(MathUtils.NEGATIVE_ONE))) {
                 return CheckRecipeResultRegistry.insufficientPower(costEU.longValue());
             }
-            state.costingEU = state.costingEU.add(costEU);
-            state.costingEUText = NumberFormatUtil.formatNumber(state.costingEU);
+            state.addCost(costEU);
         }
         return result;
     }
@@ -96,7 +94,7 @@ public class PurificationUnitHooks {
     public static boolean startWirelessCycle(MTEPurificationUnitBase<?> unit, int cycleTime, int progressTime) {
         IPurificationUnitHost host = host(unit);
         PurificationUnitState state = host.gtnl$state();
-        if (!state.wirelessMode) return false;
+        if (!state.isWirelessMode()) return false;
         ThreadLocalRandom random = ThreadLocalRandom.current();
         unit.startRecipeProcessing();
         // Calculate the chance before depleting inputs, otherwise boost items may already be gone.
@@ -118,7 +116,7 @@ public class PurificationUnitHooks {
         ObjectArrayList<FluidStack> fluidOutputList = new ObjectArrayList<>();
         for (int i = 0; i < recipe.mFluidOutputs.length; ++i) {
             FluidStack output = recipe.mFluidOutputs[i].copy();
-            long scaledAmount = state.effectiveParallelLong * output.amount;
+            long scaledAmount = state.getEffectiveParallel() * output.amount;
             fluidOutputList.addAll(splitLongToFluidStacks(output, scaledAmount));
         }
 
@@ -152,7 +150,8 @@ public class PurificationUnitHooks {
         FluidStack outputWater = recipe.mFluidOutputs[0];
         long totalAmount = Math.round(
             (double) outputWater.amount * MTEPurificationUnitBase.WATER_BOOST_NEEDED_FLUID
-                * host(unit).gtnl$state().effectiveParallelLong);
+                * host(unit).gtnl$state()
+                    .getEffectiveParallel());
         return new ObjectArrayList<>(splitLongToFluidStacks(outputWater, totalAmount));
     }
 
@@ -189,7 +188,8 @@ public class PurificationUnitHooks {
 
     public static void depleteRecipeInputsLong(MTEPurificationUnitBase<?> unit) {
         GTRecipe recipe = host(unit).gtnl$currentRecipe();
-        long effectiveParallel = host(unit).gtnl$state().effectiveParallelLong;
+        long effectiveParallel = host(unit).gtnl$state()
+            .getEffectiveParallel();
         for (int i = 0; i < recipe.mFluidInputs.length; ++i) {
             FluidStack input = recipe.mFluidInputs[i];
             ArrayList<FluidStack> fluidStacks = new ArrayList<>();
@@ -229,22 +229,12 @@ public class PurificationUnitHooks {
         }
 
         if (simulate) return true;
+        List<MTEHatch> hatches = allInputHatches(unit);
         for (FluidStack needed : fluids) {
-            int remaining = needed.amount;
-
-            while (remaining > 0) {
-                int drainedThisRound = 0;
-
-                for (MTEHatch hatch : allInputHatches(unit)) {
-                    drainedThisRound += drainFluid(unit, hatch, new FluidStack(needed.getFluid(), remaining), true);
-                }
-
-                if (drainedThisRound <= 0) {
-                    break;
-                }
-
-                remaining -= drainedThisRound;
-            }
+            HatchFluidDrain.drainAcross(
+                hatches,
+                needed.amount,
+                (hatch, upTo) -> drainFluid(unit, hatch, new FluidStack(needed.getFluid(), upTo), true));
         }
 
         return true;
@@ -294,16 +284,16 @@ public class PurificationUnitHooks {
             IGregTechDeviceInformation.encode(
                 "GT5U.infodata.parallel.current",
                 "" + EnumChatFormatting.YELLOW
-                    + (state.wirelessMode ? state.effectiveParallelLong : host.gtnl$effectiveParallel())
+                    + (state.isWirelessMode() ? state.getEffectiveParallel() : host.gtnl$effectiveParallel())
                     + "(Long)"));
-        if (state.wirelessMode) {
+        if (state.isWirelessMode()) {
             ret.add(EnumChatFormatting.LIGHT_PURPLE + IGregTechDeviceInformation.encode("gtnl.waila.wireless.mode"));
             ret.add(
                 EnumChatFormatting.AQUA + IGregTechDeviceInformation.encode("gtnl.waila.wireless.current_eu_cost")
                     + EnumChatFormatting.RESET
                     + ": "
                     + EnumChatFormatting.GOLD
-                    + state.costingEUText
+                    + state.getCostingEUText()
                     + EnumChatFormatting.RESET
                     + " EU");
         }
@@ -325,18 +315,6 @@ public class PurificationUnitHooks {
     public static void writeWirelessWailaData(NBTTagCompound tag, boolean wirelessMode, String costingEUText) {
         tag.setBoolean("wirelessMode", wirelessMode);
         if (wirelessMode) tag.setString("costingEUText", costingEUText);
-    }
-
-    public static void loadNBT(PurificationUnitState state, NBTTagCompound aNBT) {
-        if (aNBT.hasKey("wirelessMode")) state.wirelessMode = aNBT.getBoolean("wirelessMode");
-        if (aNBT.hasKey("configuredParallelLong")) state.maxParallelLong = aNBT.getLong("configuredParallelLong");
-        if (aNBT.hasKey("effectiveParallelLong")) state.effectiveParallelLong = aNBT.getLong("effectiveParallelLong");
-    }
-
-    public static void saveNBT(PurificationUnitState state, NBTTagCompound aNBT) {
-        aNBT.setBoolean("wirelessMode", state.wirelessMode);
-        aNBT.setLong("configuredParallelLong", state.maxParallelLong);
-        aNBT.setLong("effectiveParallelLong", state.effectiveParallelLong);
     }
 
     // Returns whether a T8 unit is linked; the plant then skips GT's energy hatch check.

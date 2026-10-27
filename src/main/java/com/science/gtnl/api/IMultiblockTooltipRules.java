@@ -1,4 +1,4 @@
-package com.science.gtnl.common.machine.tooltip;
+package com.science.gtnl.api;
 
 import java.util.Collections;
 import java.util.List;

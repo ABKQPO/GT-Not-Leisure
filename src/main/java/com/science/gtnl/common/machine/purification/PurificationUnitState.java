@@ -3,14 +3,80 @@ package com.science.gtnl.common.machine.purification;
 import java.math.BigInteger;
 import java.util.UUID;
 
-import com.gtnllib.utils.MathUtils;
+import net.minecraft.nbt.NBTTagCompound;
+
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 
 public class PurificationUnitState {
 
-    public long maxParallelLong = 1;
-    public long effectiveParallelLong = 1;
-    public BigInteger costingEU = BigInteger.ZERO;
-    public String costingEUText = MathUtils.ZERO_STRING;
-    public boolean wirelessMode;
-    public UUID ownerUUID;
+    private long maxParallel = 1;
+    private long effectiveParallel = 1;
+    private BigInteger costingEU = BigInteger.ZERO;
+    private boolean wirelessMode;
+    private UUID ownerUUID;
+
+    public boolean isWirelessMode() {
+        return wirelessMode;
+    }
+
+    public void setWirelessMode(boolean wirelessMode) {
+        this.wirelessMode = wirelessMode;
+    }
+
+    public UUID getOwnerUUID() {
+        return ownerUUID;
+    }
+
+    public void setOwnerUUID(UUID ownerUUID) {
+        this.ownerUUID = ownerUUID;
+    }
+
+    public long getMaxParallel() {
+        return maxParallel;
+    }
+
+    public void setMaxParallel(long maxParallel) {
+        this.maxParallel = Math.max(1, maxParallel);
+    }
+
+    public long getEffectiveParallel() {
+        return effectiveParallel;
+    }
+
+    public long limitParallel(long available) {
+        this.effectiveParallel = Math.min(this.maxParallel, available);
+        return this.effectiveParallel;
+    }
+
+    public void resetParallel() {
+        this.effectiveParallel = 1;
+    }
+
+    public BigInteger getCostingEU() {
+        return costingEU;
+    }
+
+    public String getCostingEUText() {
+        return NumberFormatUtil.formatNumber(costingEU);
+    }
+
+    public void resetCost() {
+        this.costingEU = BigInteger.ZERO;
+    }
+
+    public void addCost(BigInteger cost) {
+        this.costingEU = this.costingEU.add(cost);
+    }
+
+    public void readFromNBT(NBTTagCompound aNBT) {
+        if (aNBT.hasKey("wirelessMode")) this.wirelessMode = aNBT.getBoolean("wirelessMode");
+        if (aNBT.hasKey("configuredParallelLong")) setMaxParallel(aNBT.getLong("configuredParallelLong"));
+        if (aNBT.hasKey("effectiveParallelLong")) this.effectiveParallel = aNBT.getLong("effectiveParallelLong");
+    }
+
+    public void writeToNBT(NBTTagCompound aNBT) {
+        aNBT.setBoolean("wirelessMode", this.wirelessMode);
+        aNBT.setLong("configuredParallelLong", this.maxParallel);
+        aNBT.setLong("effectiveParallelLong", this.effectiveParallel);
+    }
 }

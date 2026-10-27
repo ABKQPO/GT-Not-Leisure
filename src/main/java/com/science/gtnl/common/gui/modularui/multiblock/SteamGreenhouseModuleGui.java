@@ -41,12 +41,12 @@ import com.gtnewhorizon.cropsnh.utility.CropsNHUtils;
 import com.gtnewhorizon.cropsnh.utility.IFDropTable;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.options.CompactOptions;
-import com.science.gtnl.common.greenhouse.GreenHouseStoredCrop;
-import com.science.gtnl.common.greenhouse.GreenHouseViewMode;
 import com.science.gtnl.common.gui.modularui.GTNLSteamMultiBlockBaseGui;
 import com.science.gtnl.common.gui.modularui.GreenHouseModularContainer;
 import com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamGreenhouseModule;
 import com.science.gtnl.utils.ColorUtils;
+import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseStoredCrop;
+import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseViewMode;
 
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.modularui2.GTWidgetThemes;

@@ -3,6 +3,7 @@ package com.science.gtnl.common.machine.voidminer;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -80,7 +81,8 @@ public class VoidMinerHooks {
 
     public static void refreshDimensionOverride(MTEVoidMinerBase<?> miner) {
         String dimensionKey = resolveDimensionKey(miner);
-        if (!Objects.equals(dimensionKey, host(miner).gtnl$state().lastDimensionOverride)) {
+        if (!host(miner).gtnl$state()
+            .isOverride(dimensionKey)) {
             recalculateDropMap(miner);
         }
     }
@@ -92,9 +94,9 @@ public class VoidMinerHooks {
         miner.extraDropMap = null;
         host.gtnl$setTotalWeight(0);
         host.gtnl$setCanVoidMine(false);
-        state.warning = "";
+        state.clearWarning();
 
-        state.lastDimensionOverride = resolveDimensionKey(miner);
+        state.setLastDimensionOverride(resolveDimensionKey(miner));
         Optional<String> dimensionNameOverride = resolveDimensionNameOverride(miner);
         boolean hasOverride = dimensionNameOverride.isPresent();
 
@@ -113,18 +115,14 @@ public class VoidMinerHooks {
                 resizeSelected(miner);
                 return;
             }
-            state.warning = "vmtweak.gui.override.error";
+            state.warn("vmtweak.gui.override.error");
         }
 
         if (host.gtnl$dimensionDef() == null || !host.gtnl$dimensionDef()
             .canBeVoidMined()) {
             miner.dropMap = new VoidMinerUtility.DropMap();
             miner.extraDropMap = new VoidMinerUtility.DropMap();
-            if (!state.activeDropMapDimension.isEmpty()) {
-                miner.selected.setSize(0);
-                state.dimensionChangeVersion++;
-            }
-            state.activeDropMapDimension = "";
+            if (state.clearDropMapDimension()) miner.selected.setSize(0);
             resizeSelected(miner);
             return;
         }
@@ -136,7 +134,7 @@ public class VoidMinerHooks {
                 .getDimensionName());
 
         if (hasOverride) {
-            state.warning = host.gtnl$totalWeight() > 0 ? "vmtweak.gui.override.failed" : "vmtweak.gui.override.error";
+            state.warn(host.gtnl$totalWeight() > 0 ? "vmtweak.gui.override.failed" : "vmtweak.gui.override.error");
         }
         resizeSelected(miner);
     }
@@ -144,18 +142,13 @@ public class VoidMinerHooks {
     public static void setDropMaps(MTEVoidMinerBase<?> miner, String dimensionName) {
         IVoidMinerHost host = host(miner);
         VoidMinerState state = host.gtnl$state();
-        boolean dimensionChanged = !state.activeDropMapDimension.isEmpty()
-            && !Objects.equals(state.activeDropMapDimension, dimensionName);
-        state.activeDropMapDimension = dimensionName;
+        boolean dimensionChanged = state.switchDropMapDimension(dimensionName);
         miner.dropMap = VoidMinerUtility.dropMapsByDimName.getOrDefault(dimensionName, new VoidMinerUtility.DropMap());
         miner.extraDropMap = VoidMinerUtility.extraDropsByDimName
             .getOrDefault(dimensionName, new VoidMinerUtility.DropMap());
         miner.dropMap.isDistributionCached(miner.extraDropMap);
         host.gtnl$setTotalWeight(miner.dropMap.getTotalWeight() + miner.extraDropMap.getTotalWeight());
-        if (dimensionChanged) {
-            state.dimensionChangeVersion++;
-            resetSelected(miner);
-        }
+        if (dimensionChanged) resetSelected(miner);
     }
 
     public static void resizeSelected(MTEVoidMinerBase<?> miner) {
@@ -175,7 +168,8 @@ public class VoidMinerHooks {
     }
 
     public static String copyDimension(VoidMinerState state) {
-        return state.activeDropMapDimension.isEmpty() ? "unknown" : state.activeDropMapDimension;
+        return state.getActiveDropMapDimension()
+            .isEmpty() ? "unknown" : state.getActiveDropMapDimension();
     }
 
     public static NBTTagCompound copiedData(MTEVoidMinerBase<?> miner) {
@@ -200,22 +194,25 @@ public class VoidMinerHooks {
 
     @Deprecated
     public static Text dimensionDisplayName(VoidMinerState state) {
-        if (!state.warning.isEmpty()) {
-            return new Text(EnumChatFormatting.YELLOW + StatCollector.translateToLocal(state.warning));
+        if (!state.getWarning()
+            .isEmpty()) {
+            return new Text(EnumChatFormatting.YELLOW + StatCollector.translateToLocal(state.getWarning()));
         }
 
         String ext = null;
         try {
-            Block block = ModBlocks.getBlock(state.lastDimensionOverride);
+            Block block = ModBlocks.getBlock(state.getLastDimensionOverride());
             ext = new ItemStack(block).getDisplayName();
         } catch (Exception e) {
-            ScienceNotLeisure.LOG
-                .debug("[VMTweakMixin] Failed to get display name for dimension: {}", state.lastDimensionOverride, e);
+            ScienceNotLeisure.LOG.debug(
+                "[VMTweakMixin] Failed to get display name for dimension: {}",
+                state.getLastDimensionOverride(),
+                e);
         }
 
         return new Text(
             EnumChatFormatting.YELLOW + StatCollector.translateToLocal("gtnl.gui.void_miner.dimension_override")
-                + (ext == null ? state.lastDimensionOverride : ext));
+                + (ext == null ? state.getLastDimensionOverride() : ext));
     }
 
     public static boolean drainEnergyInput(long aEU, List<MTEHatchEnergy> energyHatches,
@@ -251,14 +248,14 @@ public class VoidMinerHooks {
     public static void setElectricityStats(MTEVoidMinerBase<?> miner, boolean batchMode) {
         IVoidMinerHost host = host(miner);
         VoidMinerState state = host.gtnl$state();
-        state.lEUt = -Math.abs(Math.toIntExact(GTValues.V[host.gtnl$minTier()]));
+        state.setEUt(-Math.abs(Math.toIntExact(GTValues.V[host.gtnl$minTier()])));
         long useEU = miner.getMaxInputEu();
 
         if (batchMode) {
             miner.mMaxProgresstime = 128;
         } else {
             GTNLOverclockCalculator calculator = new GTNLOverclockCalculator().setEUt(useEU)
-                .setRecipeEUt(-state.lEUt)
+                .setRecipeEUt(-state.getEUt())
                 .setDuration(10)
                 .setParallel(1);
             if (host.gtnl$tierMultiplier() == 3) calculator = calculator.enablePerfectOC();
@@ -271,7 +268,7 @@ public class VoidMinerHooks {
         miner.mProgresstime = 0;
         miner.mEfficiency = miner.getCurrentEfficiency(null);
         miner.mEfficiencyIncrease = 10000;
-        state.lEUt = useEU > 0 ? -useEU : useEU;
+        state.setEUt(useEU > 0 ? -useEU : useEU);
     }
 
     public static void handleOutputs(MTEVoidMinerBase<?> miner, boolean batchMode) {
@@ -298,22 +295,28 @@ public class VoidMinerHooks {
         long totalCount = (long) (host.gtnl$multiplier() * parallel);
         if (totalCount <= 0) return;
 
-        while (totalCount > 0) {
-            int stackSize = (int) Math.min(Integer.MAX_VALUE, totalCount);
-            ItemStack stackPart = output.copy();
-            stackPart.stackSize = stackSize;
-
-            if (inputOres.isEmpty() || (miner.blacklist && inputOres.stream()
-                .noneMatch(is -> GTUtility.areStacksEqual(is, output)))
-                || (!miner.blacklist && inputOres.stream()
-                    .anyMatch(is -> GTUtility.areStacksEqual(is, output)))) {
+        if (keepsOutput(inputOres, miner.selected.getStacks(), miner.blacklist, output)) {
+            while (totalCount > 0) {
+                int stackSize = (int) Math.min(Integer.MAX_VALUE, totalCount);
+                ItemStack stackPart = output.copy();
+                stackPart.stackSize = stackSize;
                 miner.addOutputPartial(stackPart);
+                totalCount -= stackSize;
             }
-
-            totalCount -= stackSize;
         }
 
         miner.updateSlots();
+    }
+
+    public static boolean keepsOutput(List<ItemStack> inputOres, List<ItemStack> selected, boolean blacklist,
+        ItemStack output) {
+        List<ItemStack> filter = Stream.concat(
+            inputOres.stream(),
+            selected.stream()
+                .filter(Objects::nonNull))
+            .toList();
+        return filter.isEmpty() || blacklist != filter.stream()
+            .anyMatch(is -> GTUtility.areStacksEqual(is, output));
     }
 
     public static void checkAmperage(List<StructureError> errors, List<MTEHatchEnergy> energyHatches,

@@ -1,4 +1,4 @@
-package com.science.gtnl.common.greenhouse;
+package com.science.gtnl.utils.machine.greenHouseManager;
 
 import java.util.List;
 
@@ -7,6 +7,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 import com.science.gtnl.api.IGreenHouse;
+import com.science.gtnl.common.greenhouse.GreenHouseBucket;
+import com.science.gtnl.common.greenhouse.IGreenHouseBucketFactory;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.GTLoggers;

@@ -2,7 +2,7 @@ package com.science.gtnl.common.greenhouse.modes;
 
 import net.minecraft.util.EnumChatFormatting;
 
-import com.science.gtnl.common.greenhouse.GreenHouseMode;
+import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode;
 
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;

@@ -38,14 +38,14 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.api.IGreenHouse;
 import com.science.gtnl.api.casing.GTNLCasings;
-import com.science.gtnl.common.greenhouse.GreenHouseMode;
 import com.science.gtnl.common.greenhouse.GreenHouseModes;
-import com.science.gtnl.common.greenhouse.GreenHouseStoredCrop;
-import com.science.gtnl.common.greenhouse.GreenHouseViewMode;
 import com.science.gtnl.common.gui.modularui.multiblock.EdenGardenGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.StructureUtils;
+import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode;
+import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseStoredCrop;
+import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseViewMode;
 
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.GTValues;

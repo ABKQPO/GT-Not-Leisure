@@ -22,13 +22,13 @@ import com.gtnewhorizon.structurelib.alignment.constructable.IConstructable;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IControllerInfo;
+import com.science.gtnl.api.IMultiblockTooltipRules;
 import com.science.gtnl.api.IWirelessEnergy;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.hatch.CustomFluidHatch;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
-import com.science.gtnl.common.machine.tooltip.IMultiblockTooltipRules;
 import com.science.gtnl.common.machine.tooltip.InfoSummary.BonusStat;
 import com.science.gtnl.common.machine.tooltip.InfoSummary.TierBonus;
 import com.science.gtnl.common.machine.tooltip.MultiblockTooltipReader;
@@ -701,21 +701,17 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     private List<String> casingEnergyLimitLines() {
-        int hatch = mEnergyHatchTier;
-        mEnergyHatchTier = VoltageIndex.MAX;
-        try {
-            CasingVoltageLimit limit = casingVoltageLimit();
-            if (limit == null) return Collections.emptyList();
-            String line = StatCollector
-                .translateToLocalFormatted(CASING_LIMIT_TOOLTIP_KEY, casingTierText(), limit.tiersAbove());
-            if (limit.unlockVoltageTier() == CASING_LIMIT_NEVER_UNLOCKS) return Collections.singletonList(line);
-            String unlock = TooltipHelper.voltageTierText(limit.unlockVoltageTier(), false);
-            return Arrays.asList(
-                line,
-                StatCollector.translateToLocalFormatted(CASING_LIMIT_UNLOCK_TOOLTIP_KEY, unlock, casingNameText()));
-        } finally {
-            mEnergyHatchTier = hatch;
-        }
+        MultiMachineBase<?> probe = tooltipProbe();
+        probe.mEnergyHatchTier = VoltageIndex.MAX;
+        CasingVoltageLimit limit = probe.casingVoltageLimit();
+        if (limit == null) return Collections.emptyList();
+        String line = StatCollector
+            .translateToLocalFormatted(CASING_LIMIT_TOOLTIP_KEY, casingTierText(), limit.tiersAbove());
+        if (limit.unlockVoltageTier() == CASING_LIMIT_NEVER_UNLOCKS) return Collections.singletonList(line);
+        String unlock = TooltipHelper.voltageTierText(limit.unlockVoltageTier(), false);
+        return Arrays.asList(
+            line,
+            StatCollector.translateToLocalFormatted(CASING_LIMIT_UNLOCK_TOOLTIP_KEY, unlock, casingNameText()));
     }
 
     protected record CasingVoltageLimit(int tiersAbove, int unlockVoltageTier) {}
@@ -768,28 +764,19 @@ public abstract class MultiMachineBase<T extends MultiMachineBase<T>> extends MT
     }
 
     private TooltipStats tooltipStatsWith(TieredPart probed, int tier, int parallelTier) {
-        HeatingCoilLevel coil = mCoilLevel;
-        int glass = mGlassTier;
-        int casing = mCasingTier;
-        int parallel = mParallelTier;
-        int voltageProbe = tooltipVoltageTier;
-        int parallelProbe = tooltipParallelTier;
-        mCoilLevel = HeatingCoilLevel.getFromTier((byte) tierOf(probed, TieredPart.COIL, tier));
-        mGlassTier = tierOf(probed, TieredPart.GLASS, tier);
-        mCasingTier = tierOf(probed, TieredPart.CASING, tier);
-        tooltipVoltageTier = probed == TieredPart.VOLTAGE ? tier : NO_TOOLTIP_TIER;
-        tooltipParallelTier = parallelTier;
-        if (parallelTier != NO_TOOLTIP_TIER) mParallelTier = parallelTier;
-        try {
-            return readTooltipStats();
-        } finally {
-            mCoilLevel = coil;
-            mGlassTier = glass;
-            mCasingTier = casing;
-            mParallelTier = parallel;
-            tooltipVoltageTier = voltageProbe;
-            tooltipParallelTier = parallelProbe;
-        }
+        MultiMachineBase<?> probe = tooltipProbe();
+        probe.mCoilLevel = HeatingCoilLevel.getFromTier((byte) tierOf(probed, TieredPart.COIL, tier));
+        probe.mGlassTier = tierOf(probed, TieredPart.GLASS, tier);
+        probe.mCasingTier = tierOf(probed, TieredPart.CASING, tier);
+        probe.tooltipVoltageTier = probed == TieredPart.VOLTAGE ? tier : NO_TOOLTIP_TIER;
+        probe.tooltipParallelTier = parallelTier;
+        if (parallelTier != NO_TOOLTIP_TIER) probe.mParallelTier = parallelTier;
+        return probe.readTooltipStats();
+    }
+
+    // Tooltip numbers come from a scratch copy, so probing tiers never changes a prototype or a running machine.
+    protected MultiMachineBase<?> tooltipProbe() {
+        return (MultiMachineBase<?>) newMetaEntity(null);
     }
 
     private static int tierOf(TieredPart probed, TieredPart part, int tier) {

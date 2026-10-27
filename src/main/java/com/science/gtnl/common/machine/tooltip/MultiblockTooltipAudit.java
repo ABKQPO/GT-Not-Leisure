@@ -25,9 +25,10 @@ import net.minecraft.util.StatCollector;
 
 import com.google.gson.GsonBuilder;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.machine.tooltip.IMultiblockTooltipRules.HeatRules;
-import com.science.gtnl.common.machine.tooltip.IMultiblockTooltipRules.TieredPart;
-import com.science.gtnl.common.machine.tooltip.IMultiblockTooltipRules.TooltipStats;
+import com.science.gtnl.api.IMultiblockTooltipRules;
+import com.science.gtnl.api.IMultiblockTooltipRules.HeatRules;
+import com.science.gtnl.api.IMultiblockTooltipRules.TieredPart;
+import com.science.gtnl.api.IMultiblockTooltipRules.TooltipStats;
 import com.science.gtnl.common.machine.tooltip.InfoSummary.BonusStat;
 import com.science.gtnl.common.machine.tooltip.InfoSummary.TierBonus;
 import com.science.gtnl.common.machine.tooltip.InfoSummary.TierThreshold;

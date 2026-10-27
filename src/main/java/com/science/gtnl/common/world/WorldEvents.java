@@ -10,11 +10,9 @@ import net.minecraftforge.event.world.WorldEvent;
 import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.machine.hatch.ExplosionDynamoHatch;
-import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.player.PlayerEvents;
 import com.science.gtnl.common.render.PlayerDollRenderManager;
 import com.science.gtnl.loader.RecipeLoader;
-import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -23,8 +21,6 @@ import tectech.thing.casing.TTCasingsContainer;
 
 @EventBusSubscriber
 public class WorldEvents {
-
-    public static boolean CIRCUIT_NANITES_DATA_LOAD = false;
 
     private WorldEvents() {}
 
@@ -51,25 +47,24 @@ public class WorldEvents {
     public static void onWorldLoad(WorldEvent.Load event) {
         World world = event.world;
         if (world.isRemote) return;
-        if (!CIRCUIT_NANITES_DATA_LOAD) {
-            RecipeLoader.loadCircuitNanitesData(world.getSeed());
-            CIRCUIT_NANITES_DATA_LOAD = true;
-        }
+        RecipeLoader.loadCircuitNanitesData(world.getSeed());
     }
 
     @SubscribeEvent
     public static void onWorldUnload(WorldEvent.Unload event) {
-        PlayerDollRenderManager.offlineMode = false;
-        CIRCUIT_NANITES_DATA_LOAD = false;
+        if (event.world.isRemote) {
+            PlayerDollRenderManager.offlineMode = false;
+            PlayerDollRenderManager.BLACKLISTED_UUIDS.clear();
+            PlayerDollRenderManager.BLACKLISTED_NAMES.clear();
+            PlayerDollRenderManager.BLACKLISTED_SKIN_URLS.clear();
+            PlayerDollRenderManager.BLACKLISTED_CAPE_URLS.clear();
+            PlayerDollRenderManager.UUID_CACHE.clear();
+            return;
+        }
+        // Other dimensions unload during play; only the overworld unloading ends the server session.
+        if (event.world.provider.dimensionId != 0) return;
         PlayerEvents.FOOD_TICK_TIMERS.clear();
-        PlayerDollRenderManager.BLACKLISTED_UUIDS.clear();
-        PlayerDollRenderManager.BLACKLISTED_NAMES.clear();
-        PlayerDollRenderManager.BLACKLISTED_SKIN_URLS.clear();
-        PlayerDollRenderManager.BLACKLISTED_CAPE_URLS.clear();
-        PlayerDollRenderManager.UUID_CACHE.clear();
-        CircuitNanitesRecipeData.recipeDataMap.clear();
-        GTNLRecipeMaps.CircuitNanitesDataRecipes.getBackend()
-            .clearRecipes();
+        RecipeLoader.clearCircuitNanitesData();
     }
 
     @SubscribeEvent

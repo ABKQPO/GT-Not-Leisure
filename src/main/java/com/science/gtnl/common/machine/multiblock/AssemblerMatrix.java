@@ -3,7 +3,6 @@ package com.science.gtnl.common.machine.multiblock;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
@@ -18,7 +17,6 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
@@ -157,6 +155,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Getter
     private final CombinationPatternsIInventory inventory = new CombinationPatternsIInventory();
     private final AssemblerMatrixPatternState patternState = new AssemblerMatrixPatternState();
+    private final AssemblerMatrixTasks tasks = new AssemblerMatrixTasks();
 
     // Resolve container items returned after an input is consumed.
     public static ItemStack resolveContainerItem(ItemStack stack) {
@@ -269,15 +268,11 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     public List<IAEItemStack> getCachedPatternOutputsForGui() {
-        IAEItemStack[] cachedOutputItems = patternState.getCachedOutputItems();
-        if (cachedOutputItems == null || cachedOutputItems.length == 0) {
-            return Collections.emptyList();
-        }
-        return ObjectArrayList.wrap(cachedOutputItems);
+        return tasks.batchView();
     }
 
     public void setCachedPatternOutputsFromGui(List<IAEItemStack> cachedOutputItems) {
-        patternState.setCachedOutputItems(cachedOutputItems.toArray(new IAEItemStack[0]));
+        tasks.mirrorBatch(cachedOutputItems);
     }
 
     public String getGuiCustomName() {
@@ -379,43 +374,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
         String uuid = GameUtils.ensureUUID(aNBT);
 
-        NBTTagList cachedList = new NBTTagList();
-        if (patternState.getCachedOutputItems() != null) {
-            for (IAEItemStack item : patternState.getCachedOutputItems()) {
-                if (item != null) {
-                    NBTTagCompound tag = new NBTTagCompound();
-                    item.writeToNBT(tag);
-                    cachedList.appendTag(tag);
-                }
-            }
-        }
-        storeRoot.setTag("CACHED_OUTPUT_ITEMS", cachedList);
-
-        NBTTagList outputList = new NBTTagList();
-        if (!patternState.getOutputs()
-            .isEmpty()) {
-            for (IAEItemStack stack : patternState.getOutputs()) {
-                if (stack != null) {
-                    NBTTagCompound tag = new NBTTagCompound();
-                    stack.writeToNBT(tag);
-                    outputList.appendTag(tag);
-                }
-            }
-        }
-        storeRoot.setTag("OUTPUT_ITEMS", outputList);
-
-        NBTTagList inputList = new NBTTagList();
-        if (!patternState.getInputs()
-            .isEmpty()) {
-            for (IAEItemStack stack : patternState.getInputs()) {
-                if (stack != null) {
-                    NBTTagCompound tag = new NBTTagCompound();
-                    stack.writeToNBT(tag);
-                    inputList.appendTag(tag);
-                }
-            }
-        }
-        storeRoot.setTag("INPUT_ITEMS", inputList);
+        tasks.writeToNBT(storeRoot);
 
         NBTTagCompound invTag = new NBTTagCompound();
         inventory.saveNBTData(invTag);
@@ -446,7 +405,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         mCountCrafterCasing = aNBT.getInteger("mCountCrafterCasing");
         mCountPatternCasing = aNBT.getInteger("mCountPatternCasing");
         setPatternMultiply(aNBT.getInteger("patternMultiply"));
-        usedParallel = aNBT.getLong("usedParallel");
         mMaxParallelLong = aNBT.getLong("mMaxParallelLong");
         wirelessMode = aNBT.getBoolean("wirelessMode");
         if (aNBT.hasKey("showPattern")) showPattern = aNBT.getBoolean("showPattern");
@@ -478,32 +436,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         }
 
         if (storeRoot != null) {
-            NBTTagList cachedList = storeRoot.getTagList("CACHED_OUTPUT_ITEMS", 10);
-            if (cachedList != null && cachedList.tagCount() > 0) {
-                IAEItemStack[] cachedOutputItems = new IAEItemStack[cachedList.tagCount()];
-                for (int i = 0; i < cachedList.tagCount(); i++) {
-                    cachedOutputItems[i] = AEItemStack.loadItemStackFromNBT(cachedList.getCompoundTagAt(i));
-                }
-                patternState.setCachedOutputItems(cachedOutputItems);
-            }
-
-            NBTTagList outputList = storeRoot.getTagList("OUTPUT_ITEMS", 10);
-            if (outputList != null && outputList.tagCount() > 0) {
-                for (int i = 0; i < outputList.tagCount(); i++) {
-                    IAEItemStack aeStack = AEItemStack.loadItemStackFromNBT(outputList.getCompoundTagAt(i));
-                    if (aeStack != null) patternState.getOutputs()
-                        .add(aeStack);
-                }
-            }
-
-            NBTTagList inputList = storeRoot.getTagList("INPUT_ITEMS", 10);
-            if (inputList != null && inputList.tagCount() > 0) {
-                for (int i = 0; i < inputList.tagCount(); i++) {
-                    IAEItemStack aeStack = AEItemStack.loadItemStackFromNBT(inputList.getCompoundTagAt(i));
-                    if (aeStack != null) patternState.getInputs()
-                        .add(aeStack);
-                }
-            }
+            tasks.readFromNBT(storeRoot, AEItemStack::loadItemStackFromNBT);
 
             if (storeRoot.hasKey("INVENTORY")) {
                 inventory.loadNBTData(storeRoot.getCompoundTag("INVENTORY"));
@@ -589,7 +522,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
         mMaxParallelLong = 0;
         mMaxSlots = 0;
         patternState.clearPatternData();
-        patternState.clearRuntimeData();
         wirelessMode = false;
     }
 
@@ -747,72 +679,26 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
             lEUt = 0;
             return CheckRecipeResultRegistry.SUCCESSFUL;
         } else if (isActive() && machineMode == MODE_OPERATING) {
-            if (mMaxSlots > 0 && !inventory.isEmpty()
-                && !patternState.getOutputs()
-                    .isEmpty()) {
+            if (mMaxSlots > 0 && !inventory.isEmpty() && tasks.hasPending()) {
                 costingEUText = MathUtils.ZERO_STRING;
                 long parallel = mMaxParallelLong;
                 long maxInputEU = wirelessMode ? MathUtils.toLongSafe(WirelessNetworkManager.getUserEU(ownerUUID))
                     : getMaxInputEu();
 
                 parallel = Math.min(parallel, maxInputEU / 2);
-                int maximum = patternState.getOutputs()
-                    .size();
-                usedParallel = 0L;
 
-                if (!patternState.getInputs()
-                    .isEmpty()) {
+                if (tasks.hasReturns()) {
                     var grid = getProxy().getNode()
                         .getGrid();
                     IEnergyGrid energyGrid = grid.getCache(IEnergyGrid.class);
                     IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
                     var storage = storageGrid.getItemInventory();
-                    final var s = patternState.getInputs()
-                        .size();
-                    for (int i = 0; i < s; i++) {
-                        var in = patternState.getInputs()
-                            .poll();
-                        if (in == null) continue;
-                        var leftover = Platform.poweredInsert(energyGrid, storage, in, source);
-                        if (leftover != null) patternState.getInputs()
-                            .add(leftover);
-                    }
+                    tasks.sendReturns(stack -> Platform.poweredInsert(energyGrid, storage, stack, source));
                 }
 
-                List<IAEItemStack> preparedOutputs = new ObjectArrayList<>(maximum);
+                usedParallel = tasks.takeBatch(parallel);
 
-                IAEItemStack stack;
-                while (parallel > 0 && (stack = patternState.getOutputs()
-                    .poll()) != null) {
-                    long stackSize = stack.getStackSize();
-                    if (stackSize <= parallel) {
-                        parallel -= stackSize;
-                        usedParallel += stackSize;
-
-                        preparedOutputs.add(stack);
-                    } else {
-                        long remain = stackSize - parallel;
-                        usedParallel += parallel;
-                        stack.decStackSize(parallel);
-                        preparedOutputs.add(
-                            stack.copy()
-                                .setStackSize(parallel));
-
-                        if (remain > 0) {
-                            var remainStack = stack.copy();
-                            remainStack.setStackSize(remain);
-                            patternState.getOutputs()
-                                .add(remainStack);
-                        }
-
-                        parallel = 0;
-                    }
-
-                    if (patternState.getOutputs()
-                        .isEmpty() || --maximum == 0) break;
-                }
-
-                if (!preparedOutputs.isEmpty()) {
+                if (usedParallel > 0) {
                     this.lEUt = -2 * Math.max(1, usedParallel);
                     if (wirelessMode) {
                         WirelessNetworkManager.addEUToGlobalEnergyMap(ownerUUID, -2 * usedParallel);
@@ -822,7 +708,6 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
                     recipesDone += usedParallel;
 
-                    patternState.setCachedOutputItems(preparedOutputs.toArray(new IAEItemStack[0]));
                     this.mEfficiency = 10000;
                     this.mEfficiencyIncrease = 10000;
                     this.mMaxProgresstime = Math.max(1, 40 >> mCountSpeedCasing);
@@ -837,49 +722,21 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     @Override
     public void outputAfterRecipe() {
         super.outputAfterRecipe();
-        if (patternState.getCachedOutputItems() == null || patternState.getCachedOutputItems().length == 0
-            || usedParallel == 0) return;
+        usedParallel = 0;
+        if (!tasks.hasBatch()) return;
 
-        try {
-            var grid = getProxy().getNode()
-                .getGrid();
-            IEnergyGrid energyGrid = grid.getCache(IEnergyGrid.class);
-            IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
-            var storage = storageGrid.getItemInventory();
-
-            long remainingParallel = usedParallel;
-
-            for (IAEItemStack stack : patternState.getCachedOutputItems()) {
-                if (remainingParallel <= 0) break;
-
-                long toInsert = Math.min(remainingParallel, stack.getStackSize());
-                if (toInsert <= 0) continue;
-
-                IAEItemStack insertStack = stack;
-                if (stack.getStackSize() != toInsert) {
-                    insertStack = stack.copy();
-                    insertStack.setStackSize(toInsert);
-                }
-
-                var leftover = Platform.poweredInsert(energyGrid, storage, insertStack, source);
-
-                remainingParallel -= toInsert;
-
-                if (leftover != null && leftover.getStackSize() != 0) {
-                    patternState.getOutputs()
-                        .add(leftover);
-                }
-            }
-        } finally {
-            patternState.setCachedOutputItems(new IAEItemStack[0]);
-            usedParallel = 0;
-        }
+        var grid = getProxy().getNode()
+            .getGrid();
+        IEnergyGrid energyGrid = grid.getCache(IEnergyGrid.class);
+        IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
+        var storage = storageGrid.getItemInventory();
+        tasks.deliverBatch(stack -> Platform.poweredInsert(energyGrid, storage, stack, source));
     }
 
     @Override
     public void stopMachine(@NotNull ShutDownReason reason) {
         super.stopMachine(reason);
-        patternState.setCachedOutputItems(new IAEItemStack[0]);
+        tasks.requeueBatch();
         usedParallel = 0;
     }
 
@@ -1057,11 +914,11 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
 
     @Override
     public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table) {
-        boolean accepted = patternState.pushPattern(patternDetails, table);
-        if (accepted) {
-            scheduleRecipeCheck(RecipeCheckReason.IMMEDIATE);
-        }
-        return accepted;
+        AssemblerMatrixPatternState.AcceptedBatch batch = patternState.prepareBatch(patternDetails, table);
+        if (batch == null) return false;
+        tasks.accept(batch.containerReturns(), batch.outputs());
+        scheduleRecipeCheck(RecipeCheckReason.IMMEDIATE);
+        return true;
     }
 
     @Override

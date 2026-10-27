@@ -130,7 +130,7 @@ public abstract class MixinCraftingCPUCluster {
     private CraftingDiagnosticSessionId gtnl$consumeBatchSessions(CraftingCPUCluster.TaskProgress taskProgress,
         Operation<CraftingDiagnosticSessionId> original, @Share("gtnl$batchDispatch") LocalRef<Context> contextRef) {
         Context context = contextRef.get();
-        if (context == null || !context.committed) return original.call(taskProgress);
+        if (context == null || !context.isCommitted()) return original.call(taskProgress);
         return BatchDispatchHooks.consumeSessions(context, (AccessorTaskProgress) taskProgress);
     }
 
@@ -147,8 +147,8 @@ public abstract class MixinCraftingCPUCluster {
         @Share("gtnl$batchDispatch") LocalRef<Context> contextRef) {
         IAEStack<?>[] outputs = original.call(details);
         Context context = contextRef.get();
-        if (context == null || !context.committed) return outputs;
-        return BatchDispatchHooks.BATCH_PLANNER.scaleOutputs(outputs, context.plan.getCrafts());
+        if (context == null || !context.isCommitted()) return outputs;
+        return BatchDispatchHooks.BATCH_PLANNER.scaleOutputs(outputs, context.crafts());
     }
 
     /**
@@ -164,7 +164,7 @@ public abstract class MixinCraftingCPUCluster {
         long outputObservedAtTick, CraftingDiagnosticSessionId diagnosticSessionId, Operation<Void> original,
         @Share("gtnl$batchDispatch") LocalRef<Context> contextRef) {
         Context context = contextRef.get();
-        if (context == null || !context.committed || context.sessionConsumption == null) {
+        if (context == null || !context.isCommitted() || !context.hasSessionConsumption()) {
             original.call(diagnostics, output, outputObservedAtTick, diagnosticSessionId);
             return;
         }

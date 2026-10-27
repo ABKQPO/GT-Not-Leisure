@@ -34,13 +34,13 @@ public enum Mixins implements IMixins {
 
     MINECRAFT_COMMON(Side.COMMON, "minecraft.AccessorStringTranslate", "minecraft.AccessorContainerRepair",
         "minecraft.AccessorEntityLivingBase", "minecraft.AccessorTessellator", "minecraft.AccessorFoodStats",
-        "minecraft.AccessorMinecraft", "minecraft.MixinCommandTeleport", "minecraft.MixinEntity",
-        "minecraft.MixinEntityItem", "minecraft.MixinEntityLivingBase", "minecraft.MixinEntityLiving",
-        "minecraft.MixinEntityPlayer", "minecraft.MixinExplosion", "minecraft.MixinInventoryCrafting",
-        "minecraft.MixinItemStack", "minecraft.MixinMinecraftServer", "minecraft.MixinNBTTagList",
-        "minecraft.MixinPotionEffect", "minecraft.MixinServerConfigurationManager", "minecraft.MixinWorld",
-        "minecraft.MixinWorldGhostlyShape", "minecraft.MixinWorldServer", "minecraft.MixinContainerYogTerminal",
-        "minecraft.MixinItemStackYogTerminalName"),
+        "minecraft.AccessorMinecraft", "minecraft.AccessorTileEntity", "minecraft.MixinCommandTeleport",
+        "minecraft.MixinEntity", "minecraft.MixinEntityItem", "minecraft.MixinEntityLivingBase",
+        "minecraft.MixinEntityLiving", "minecraft.MixinEntityPlayer", "minecraft.MixinExplosion",
+        "minecraft.MixinInventoryCrafting", "minecraft.MixinItemStack", "minecraft.MixinMinecraftServer",
+        "minecraft.MixinNBTTagList", "minecraft.MixinPotionEffect", "minecraft.MixinServerConfigurationManager",
+        "minecraft.MixinWorld", "minecraft.MixinWorldGhostlyShape", "minecraft.MixinWorldServer",
+        "minecraft.MixinContainerYogTerminal", "minecraft.MixinItemStackYogTerminalName"),
 
     APRIL_FOOL(new MixinBuilder("April Fool Late Mixins")
         .addSidedMixins(Side.CLIENT, "aprilFool.MixinBaseMetaTileEntityRenderer", "aprilFool.MixinCommonMetaTileEntity")
@@ -183,8 +183,9 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.assembler.AccessorContainerPatternTerm",
             "appliedEnergistics.assembler.AccessorInvTracker",
             "appliedEnergistics.assembler.MixinContainerInterfaceTerminal",
+            "appliedEnergistics.MixinCraftingCPUCluster",
             "appliedEnergistics.AccessorTaskProgress",
-            "appliedEnergistics.AccessorSessionCraftCount",
+            "appliedEnergistics.MixinSessionCraftCount",
             "appliedEnergistics.quantum.AccessorOptimizePattern",
             "appliedEnergistics.quantum.AccessorPacketCraftingTreeData",
             "appliedEnergistics.quantum.MixinContainerOptimizePatterns",

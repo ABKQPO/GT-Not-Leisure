@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +26,6 @@ public class ArchitectureContracts {
     public static final Path SOURCES = Paths.get("src/main/java/com/science/gtnl");
 
     // Ratchets: each count may only go down. Lower the number in the same change that lowers the count.
-    public static final int MAX_UTILS_CLASSES = 83;
     public static final int MAX_MOD_CHECKS_OUTSIDE_COMPAT = 27;
     public static final int MAX_MUI1_FILES = 50;
     public static final int MAX_DIRECT_GT_MULTIBLOCK_BASES = 10;
@@ -57,12 +57,54 @@ public class ArchitectureContracts {
     public static final Set<String> TOP_LEVEL = Set
         .of("api", "asm", "client", "common", "compat", "config", "loader", "mixins", "utils");
 
+    // Every file under utils/ is listed here, so adding shared code is a visible, reviewed change rather than a count.
+    public static final Path UTILS_LIST = Paths.get("src/test/resources/com/science/gtnl/utils-files.txt");
+
+    // Registration order fixes block, item and machine ids in saves: released cards keep their place, new ones go last.
+    public static final List<String> RELEASED_LOADER_ORDER = List.of(
+        "EffectLoader",
+        "EntityLoader",
+        "BlockLoader.Card",
+        "ItemLoader.Card",
+        "MaterialLoader",
+        "WorldLoader",
+        "MachineLoader",
+        "MELoader",
+        "CompatLoader",
+        "RecipeLoader",
+        "AchievementsLoader",
+        "CelestweaveLoader",
+        "RailgunLoader",
+        "PortalGunLoader",
+        "EquipmentLoader",
+        "WirelessLoader",
+        "MiniTerminalLoader",
+        "YogSothothLoader",
+        "QuantumLoader",
+        "BeamFormerLoader",
+        "SteamLoader",
+        "StellarLoader",
+        "GreenhouseLoader",
+        "DetravLoader",
+        "TickrateLoader",
+        "VoidMinerLoader",
+        "TextEffectLoader",
+        "CommandLoader",
+        "RenderLoader");
+
+    // Types used in api/ method signatures keep their released names; ApiSignatureContracts guards them.
+    public static final Set<String> API_PINNED = Set.of(
+        "utils/machine/greenHouseManager/GreenHouseMode.java",
+        "utils/machine/greenHouseManager/GreenHouseStoredCrop.java",
+        "utils/machine/greenHouseManager/GreenHouseViewMode.java");
+
     private static final Pattern GT_MULTIBLOCK_BASE = Pattern.compile(
         "extends (MTEExtendedPowerMultiBlockBase|MTEEnhancedMultiBlockBase|MTEMultiBlockBase|MTETooltipMultiBlockBase"
             + "|TTMultiblockBase|MTESteamMultiBlockBase|GTPPMultiBlockBase|KubaTechGTMultiBlockBase)\\b");
     private static final Pattern SELF_REGISTRATION = Pattern
         .compile("GameRegistry\\s*\\.\\s*register(Item|Block)\\(\\s*this");
     private static final Pattern MIXIN_INTERFACE = Pattern.compile("^public interface ", Pattern.MULTILINE);
+    private static final Pattern LOADER_ENTRY = Pattern.compile("new ([\\w.]+)\\(\\)");
     private static final Pattern CARD = Pattern.compile("class (\\w+)[^{]*implements[^{]*\\bIContentLoader\\b");
     private static final Pattern COMPAT = Pattern
         .compile("^public class (\\w+)[^{]*implements[^{]*\\bIModCompat\\b", Pattern.MULTILINE);
@@ -77,7 +119,34 @@ public class ArchitectureContracts {
         Map<String, String> sources = sources();
         check(sources.size() > 1000, "the architecture scan sees the GTNL sources, found " + sources.size());
 
-        ratchet(sources, "utils classes", MAX_UTILS_CLASSES, (path, text) -> path.startsWith("utils/"));
+        Set<String> utilsListed = Files.readAllLines(UTILS_LIST, StandardCharsets.UTF_8)
+            .stream()
+            .filter(line -> !line.isEmpty())
+            .collect(Collectors.toCollection(TreeSet::new));
+        Set<String> utilsPresent = sources.keySet()
+            .stream()
+            .filter(path -> path.startsWith("utils/"))
+            .collect(Collectors.toCollection(TreeSet::new));
+        Set<String> unlisted = new TreeSet<>(utilsPresent);
+        unlisted.removeAll(utilsListed);
+        Set<String> stale = new TreeSet<>(utilsListed);
+        stale.removeAll(utilsPresent);
+        check(
+            unlisted.isEmpty(),
+            "new utils/ files must be added to " + UTILS_LIST
+                + " so the reviewer sees them; shared code only, one system's code lives in that system: "
+                + unlisted);
+        check(stale.isEmpty(), "remove deleted or moved files from " + UTILS_LIST + ": " + stale);
+
+        Matcher loaderOrder = LOADER_ENTRY.matcher(
+            sources.get("loader/ContentLoaders.java")
+                .split("LOADERS = List.of\\(", 2)[1].split("\\);", 2)[0]);
+        List<String> order = new ArrayList<>();
+        while (loaderOrder.find()) order.add(loaderOrder.group(1));
+        check(
+            order.size() >= RELEASED_LOADER_ORDER.size() && order.subList(0, RELEASED_LOADER_ORDER.size())
+                .equals(RELEASED_LOADER_ORDER),
+            "ContentLoaders must keep the released card order and add new cards at the end: " + order);
         ratchet(
             sources,
             "files outside compat/ and loader/ that check whether a mod is loaded",
@@ -127,7 +196,7 @@ public class ArchitectureContracts {
                 text.contains(" createWindow(CoverUIBuildContext "),
                 path + " has a settings screen but no ModularUI 1 window; GT machines that still use ModularUI 1"
                     + " open cover tabs through createWindow");
-            if (path.startsWith("utils/")) check(
+            if (path.startsWith("utils/") && !API_PINNED.contains(path)) check(
                 !SYSTEM_IMPORT.matcher(text)
                     .find(),
                 path + " imports a system package; code that belongs to one system lives in that system");

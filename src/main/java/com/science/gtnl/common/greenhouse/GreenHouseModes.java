@@ -2,6 +2,7 @@ package com.science.gtnl.common.greenhouse;
 
 import com.science.gtnl.common.greenhouse.modes.GreenHouseIC2Mode;
 import com.science.gtnl.common.greenhouse.modes.GreenHouseNormalMode;
+import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode;
 
 import gregtech.api.util.MultiblockTooltipBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;

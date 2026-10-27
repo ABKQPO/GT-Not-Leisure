@@ -407,6 +407,10 @@ public class CraftingCalculation {
             if (plan != null && !this.plansKnownToRun.contains(plan)) {
                 plan = CraftingPlanCompactor.repair(plan, this);
             }
+            if (!TickHandler.instance()
+                .isCurrentSession(this.craftingSessionEpoch)) {
+                throw new InterruptedException("Crafting calculation session is closed");
+            }
             this.logCraftingJob(plan);
             return plan;
         } catch (InterruptedException ex) {

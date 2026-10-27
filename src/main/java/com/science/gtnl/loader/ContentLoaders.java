@@ -3,12 +3,9 @@ package com.science.gtnl.loader;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.science.gtnl.ScienceNotLeisure;
-
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class ContentLoaders {
 
@@ -45,38 +42,50 @@ public class ContentLoaders {
         new CommandLoader(),
         new RenderLoader());
 
-    private static List<IContentLoader> enabled = List.of();
+    public enum Phase {
+        NOT_STARTED,
+        PRE_INIT,
+        INIT,
+        POST_INIT,
+        LOAD_COMPLETE
+    }
+
+    private static Phase phase = Phase.NOT_STARTED;
 
     private ContentLoaders() {}
 
+    public static Phase phase() {
+        return phase;
+    }
+
     public static void preInit() {
-        List<IContentLoader> on = new ObjectArrayList<>();
-        for (IContentLoader loader : LOADERS) {
-            if (loader.isEnabled()) on.add(loader);
-            else ScienceNotLeisure.LOG.info("GTNL content loader {} is disabled", loader.name());
-        }
-        enabled = on;
+        advance(Phase.NOT_STARTED, Phase.PRE_INIT);
         run("preInit", IContentLoader::preInit);
     }
 
     public static void init() {
+        advance(Phase.PRE_INIT, Phase.INIT);
         run("init", IContentLoader::init);
     }
 
     public static void postInit() {
+        advance(Phase.INIT, Phase.POST_INIT);
         run("postInit", IContentLoader::postInit);
     }
 
     public static void loadComplete() {
+        advance(Phase.POST_INIT, Phase.LOAD_COMPLETE);
         run("loadComplete", IContentLoader::loadComplete);
         CompatSnapshot.writeIfRequested();
     }
 
     public static void serverAboutToStart() {
+        require(Phase.LOAD_COMPLETE, "serverAboutToStart");
         run("serverAboutToStart", IContentLoader::serverAboutToStart);
     }
 
     public static void serverStarting(FMLServerStartingEvent event) {
+        require(Phase.LOAD_COMPLETE, "serverStarting");
         run("serverStarting", loader -> loader.serverStarting(event));
     }
 
@@ -86,28 +95,28 @@ public class ContentLoaders {
 
     @SideOnly(Side.CLIENT)
     public static void clientPreInit() {
-        for (IContentLoader loader : enabled) {
-            try {
-                loader.clientPreInit();
-            } catch (RuntimeException e) {
-                throw failure(loader, "clientPreInit", e);
-            }
-        }
+        require(Phase.PRE_INIT, "clientPreInit");
+        run("clientPreInit", IContentLoader::clientPreInit);
     }
 
     @SideOnly(Side.CLIENT)
     public static void clientInit() {
-        for (IContentLoader loader : enabled) {
-            try {
-                loader.clientInit();
-            } catch (RuntimeException e) {
-                throw failure(loader, "clientInit", e);
-            }
-        }
+        require(Phase.INIT, "clientInit");
+        run("clientInit", IContentLoader::clientInit);
+    }
+
+    private static void advance(Phase expected, Phase next) {
+        require(expected, next.name());
+        phase = next;
+    }
+
+    private static void require(Phase expected, String step) {
+        if (phase != expected) throw new IllegalStateException(
+            "GTNL content loading ran " + step + " while in phase " + phase + "; it must run in phase " + expected);
     }
 
     private static void run(String phase, Consumer<IContentLoader> action) {
-        for (IContentLoader loader : enabled) {
+        for (IContentLoader loader : LOADERS) {
             try {
                 action.accept(loader);
             } catch (RuntimeException e) {

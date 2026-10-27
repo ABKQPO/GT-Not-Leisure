@@ -109,43 +109,43 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
 
     @Override
     public boolean isGtnl$wirelessMode() {
-        return gtnl$state.wirelessMode;
+        return gtnl$state.isWirelessMode();
     }
 
     @Override
     public void setGtnl$wirelessMode(boolean wirelessMode) {
-        gtnl$state.wirelessMode = wirelessMode;
+        gtnl$state.setWirelessMode(wirelessMode);
     }
 
     @Override
     public BigInteger getGtnl$costingEU() {
-        return gtnl$state.costingEU;
+        return gtnl$state.getCostingEU();
     }
 
     @Override
     public long gtnl$getMaxParallelLong() {
-        return gtnl$state.maxParallelLong;
+        return gtnl$state.getMaxParallel();
     }
 
     @Override
     public void gtnl$setMaxParallelLong(long maxParallel) {
-        gtnl$state.maxParallelLong = Math.max(1, maxParallel);
+        gtnl$state.setMaxParallel(maxParallel);
     }
 
     @Override
     public long gtnl$getEffectiveParallelLong() {
-        return gtnl$state.effectiveParallelLong;
+        return gtnl$state.getEffectiveParallel();
     }
 
     @Override
     public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
         super.onFirstTick(aBaseMetaTileEntity);
-        gtnl$state.ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
+        gtnl$state.setOwnerUUID(aBaseMetaTileEntity.getOwnerUuid());
     }
 
     @Override
     public boolean supportsCraftingMEBuffer() {
-        return gtnl$state.wirelessMode;
+        return gtnl$state.isWirelessMode();
     }
 
     @Inject(method = "checkProcessing", at = @At("HEAD"), cancellable = true)
@@ -157,7 +157,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
 
     @Inject(method = "doPurificationRecipeCheck", at = @At("HEAD"))
     public void doPurificationRecipeCheck(CallbackInfoReturnable<Boolean> cir) {
-        gtnl$state.effectiveParallelLong = 1;
+        gtnl$state.resetParallel();
     }
 
     @Inject(method = "startCycle", at = @At("HEAD"), cancellable = true)
@@ -168,7 +168,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
 
     @Inject(method = "endCycle", at = @At("TAIL"))
     private void onEndCycle(CallbackInfo ci) {
-        gtnl$state.effectiveParallelLong = 1;
+        gtnl$state.resetParallel();
     }
 
     @Redirect(
@@ -177,7 +177,7 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
             value = "INVOKE",
             target = "Lgregtech/common/tileentities/machines/multi/purification/MTEPurificationUnitBase;isWaterBoosted(Lgregtech/api/util/GTRecipe;)Z"))
     private boolean redirectWaterBoost(MTEPurificationUnitBase<?> instance, GTRecipe recipe) {
-        if (gtnl$state.wirelessMode) return PurificationUnitHooks.isWaterBoostedList(instance, recipe);
+        if (gtnl$state.isWirelessMode()) return PurificationUnitHooks.isWaterBoostedList(instance, recipe);
         return instance.isWaterBoosted(recipe);
     }
 
@@ -193,17 +193,17 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
 
     @Inject(method = "getActualPowerUsage", at = @At("TAIL"), cancellable = true)
     public void getActualPowerUsage(CallbackInfoReturnable<Long> cir) {
-        if (gtnl$state.wirelessMode) cir.setReturnValue(0L);
+        if (gtnl$state.isWirelessMode()) cir.setReturnValue(0L);
     }
 
     @Inject(method = "loadNBTData", at = @At("TAIL"))
     public void loadNBTData(NBTTagCompound aNBT, CallbackInfo ci) {
-        PurificationUnitHooks.loadNBT(gtnl$state, aNBT);
+        gtnl$state.readFromNBT(aNBT);
     }
 
     @Inject(method = "saveNBTData", at = @At("TAIL"))
     public void saveNBTData(NBTTagCompound aNBT, CallbackInfo ci) {
-        PurificationUnitHooks.saveNBT(gtnl$state, aNBT);
+        gtnl$state.writeToNBT(aNBT);
     }
 
     @Inject(method = "getInfoData", at = @At("TAIL"))
@@ -221,7 +221,8 @@ public abstract class MixinMTEPurificationUnitBase extends MTEExtendedPowerMulti
     public void getExtraWailaNBT(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
         int z, CallbackInfo ci) {
         if (getBaseMetaTileEntity() != null) {
-            PurificationUnitHooks.writeWirelessWailaData(tag, gtnl$state.wirelessMode, gtnl$state.costingEUText);
+            PurificationUnitHooks
+                .writeWirelessWailaData(tag, gtnl$state.isWirelessMode(), gtnl$state.getCostingEUText());
         }
     }
 }

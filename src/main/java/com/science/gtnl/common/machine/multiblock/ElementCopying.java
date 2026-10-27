@@ -34,6 +34,7 @@ import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.ElementCopyingGui;
+import com.science.gtnl.common.machine.hatch.HatchFluidDrain;
 import com.science.gtnl.common.machine.monitor.EnergyMonitorCustomWirelessEutProvider;
 import com.science.gtnl.common.machine.multiMachineBase.WirelessEnergyMultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
@@ -425,18 +426,10 @@ public class ElementCopying extends WirelessEnergyMultiMachineBase<ElementCopyin
 
         if (simulate) return true;
         for (FluidStack needed : fluids) {
-            int remaining = needed.amount;
-            while (remaining > 0) {
-                int drainedThisRound = 0;
-                for (MTEHatch hatch : allInputHatches) {
-                    int drained = drainFluid(hatch, new FluidStack(needed.getFluid(), remaining), true);
-                    drainedThisRound += drained;
-                }
-                if (drainedThisRound <= 0) {
-                    break;
-                }
-                remaining -= drainedThisRound;
-            }
+            HatchFluidDrain.drainAcross(
+                allInputHatches,
+                needed.amount,
+                (hatch, upTo) -> drainFluid(hatch, new FluidStack(needed.getFluid(), upTo), true));
         }
 
         return true;

@@ -32,7 +32,6 @@ import com.science.gtnl.common.item.items.bauble.DraconicArmorProjectionState;
 import com.science.gtnl.common.packet.DraconicArmorProjectionHitEffectPacket;
 import com.science.gtnl.common.packet.SoundPacket;
 import com.science.gtnl.common.packet.SyncCircuitNanitesPacket;
-import com.science.gtnl.common.world.WorldEvents;
 import com.science.gtnl.compat.galaxyspace.SteamRocketSchematic;
 import com.science.gtnl.compat.overpowered.RecipeOutputChance;
 import com.science.gtnl.config.MainConfig;
@@ -138,7 +137,6 @@ public class PlayerEvents {
         DraconicArmorProjectionHitEffectState.clear(event.player.getUniqueID());
         QuantumCraftingMode.onPlayerLoggedOut(event.player);
         FOOD_TICK_TIMERS.removeInt(event.player.getUniqueID());
-        WorldEvents.CIRCUIT_NANITES_DATA_LOAD = false;
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

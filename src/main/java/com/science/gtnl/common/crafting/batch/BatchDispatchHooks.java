@@ -43,13 +43,13 @@ public class BatchDispatchHooks {
 
     public static class Context {
 
-        public final ICraftingPatternDetails details;
-        public final AccessorTaskProgress taskProgress;
-        public final MediumStrategy mediumStrategy;
-        public BatchPlan plan;
-        public boolean rejected;
-        public boolean committed;
-        public SessionConsumption<CraftingDiagnosticSessionId> sessionConsumption;
+        private final ICraftingPatternDetails details;
+        private final AccessorTaskProgress taskProgress;
+        private final MediumStrategy mediumStrategy;
+        private BatchPlan plan;
+        private boolean rejected;
+        private boolean committed;
+        private SessionConsumption<CraftingDiagnosticSessionId> sessionConsumption;
 
         public Context(ICraftingPatternDetails details, AccessorTaskProgress taskProgress,
             MediumStrategy mediumStrategy) {
@@ -71,6 +71,18 @@ public class BatchDispatchHooks {
 
         public void reject() {
             this.rejected = true;
+        }
+
+        public boolean isCommitted() {
+            return this.committed;
+        }
+
+        public boolean hasSessionConsumption() {
+            return this.sessionConsumption != null;
+        }
+
+        public long crafts() {
+            return this.plan.getCrafts();
         }
     }
 

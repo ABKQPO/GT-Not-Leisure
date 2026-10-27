@@ -5,8 +5,9 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * One registration card per system. {@link ContentLoaders} calls every enabled card in a fixed order at each load
- * phase. Client phases are stripped on the dedicated server, so a card may call client classes only from them.
+ * One registration card per system. {@link ContentLoaders} calls every card in a fixed order at each load phase and
+ * rejects a phase that runs out of order. Client phases are stripped on the dedicated server, so a card may call
+ * client classes only from them.
  */
 public interface IContentLoader {
 
@@ -14,10 +15,6 @@ public interface IContentLoader {
      * Name used in log lines and in the error raised when a phase of this card fails.
      */
     String name();
-
-    default boolean isEnabled() {
-        return true;
-    }
 
     default void preInit() {}
 

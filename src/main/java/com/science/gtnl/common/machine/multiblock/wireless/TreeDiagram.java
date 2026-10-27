@@ -401,6 +401,8 @@ public class TreeDiagram extends WirelessEnergyMultiMachineBase<TreeDiagram> imp
     }
 
     public void sanitizeNaniteSlots() {
+        // An empty table means the per-seed data is not loaded yet, not that the stored nanites are invalid.
+        if (CircuitNanitesRecipeData.recipeDataMap.isEmpty()) return;
         for (int slot = 0; slot < naniteSlotHandler.getSlots(); slot++) {
             ItemStack stack = naniteSlotHandler.getStackInSlot(slot);
             if (!isValidNaniteStack(stack)) {

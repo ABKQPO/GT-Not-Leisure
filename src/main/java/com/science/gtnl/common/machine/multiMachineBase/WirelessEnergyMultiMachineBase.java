@@ -21,10 +21,10 @@ import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnllib.utils.MathUtils;
+import com.science.gtnl.api.IMultiblockTooltipRules.TieredPart;
 import com.science.gtnl.api.IWirelessEnergy;
 import com.science.gtnl.common.machine.hatch.ParallelControllerHatch;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
-import com.science.gtnl.common.machine.tooltip.IMultiblockTooltipRules.TieredPart;
 import com.science.gtnl.common.machine.tooltip.MultiblockTooltipReader;
 import com.science.gtnl.mixins.early.gregtech.AccessorProcessingLogic;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
@@ -385,24 +385,18 @@ public abstract class WirelessEnergyMultiMachineBase<T extends WirelessEnergyMul
     }
 
     private String wirelessCasingLimitPhrase(String voltage) {
-        boolean wireless = wirelessMode;
-        int parallelTier = mParallelTier;
-        try {
-            wirelessMode = true;
-            mParallelTier = VoltageIndex.MAX;
-            CasingVoltageLimit limit = casingVoltageLimit();
-            if (limit == null) return null;
-            if (limit.unlockVoltageTier() != CASING_LIMIT_NEVER_UNLOCKS
-                && limit.unlockVoltageTier() + limit.tiersAbove() < VoltageIndex.MAX) return null;
-            return StatCollector.translateToLocalFormatted(
-                WIRELESS_MODE_LINE_KEY + ".voltage.casing_limit",
-                voltage,
-                casingTierText(),
-                limit.tiersAbove());
-        } finally {
-            wirelessMode = wireless;
-            mParallelTier = parallelTier;
-        }
+        WirelessEnergyMultiMachineBase<?> probe = (WirelessEnergyMultiMachineBase<?>) tooltipProbe();
+        probe.wirelessMode = true;
+        probe.mParallelTier = VoltageIndex.MAX;
+        CasingVoltageLimit limit = probe.casingVoltageLimit();
+        if (limit == null) return null;
+        if (limit.unlockVoltageTier() != CASING_LIMIT_NEVER_UNLOCKS
+            && limit.unlockVoltageTier() + limit.tiersAbove() < VoltageIndex.MAX) return null;
+        return StatCollector.translateToLocalFormatted(
+            WIRELESS_MODE_LINE_KEY + ".voltage.casing_limit",
+            voltage,
+            casingTierText(),
+            limit.tiersAbove());
     }
 
     private static String powerLine(String mode, String voltage, String current) {

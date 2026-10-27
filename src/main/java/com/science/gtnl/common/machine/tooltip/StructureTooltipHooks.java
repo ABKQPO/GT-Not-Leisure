@@ -16,6 +16,7 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ChannelDataAccessor
 import com.gtnewhorizon.structurelib.structure.IStructureElement;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.api.IMultiblockTooltipRules;
 import com.science.gtnl.utils.enums.GTNLStructureChannels;
 
 import gregtech.api.interfaces.IHatchElement;

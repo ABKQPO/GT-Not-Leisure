@@ -1,8 +1,8 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import java.util.ArrayDeque;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 
 import net.minecraft.inventory.InventoryCrafting;
@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
+import com.github.bsideup.jabel.Desugar;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.utils.DireCraftingPatternDetails;
 import com.science.gtnl.utils.LargeInventoryCrafting;
@@ -21,21 +22,29 @@ import appeng.util.item.AEItemStack;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
 public class AssemblerMatrixPatternState {
 
     private static final String INVALID_PATTERN_TAG = "InvalidPattern";
 
     private final Map<ItemStack, DireCraftingPatternDetails> patterns = new Reference2ObjectOpenHashMap<>();
     private final Set<IAEItemStack> possibleOutputs = new ObjectOpenHashSet<>();
-    private final Queue<IAEItemStack> outputs = new ArrayDeque<>();
-    private final Queue<IAEItemStack> inputs = new ArrayDeque<>();
-    @Setter
-    private IAEItemStack[] cachedOutputItems;
     private int patternMultiply = 1;
+
+    @Desugar
+    public record AcceptedBatch(List<IAEItemStack> containerReturns, List<IAEItemStack> outputs) {}
+
+    public Map<ItemStack, DireCraftingPatternDetails> getPatterns() {
+        return Collections.unmodifiableMap(patterns);
+    }
+
+    public Set<IAEItemStack> getPossibleOutputs() {
+        return Collections.unmodifiableSet(possibleOutputs);
+    }
+
+    public int getPatternMultiply() {
+        return patternMultiply;
+    }
 
     public void setPatternMultiply(int patternMultiply) {
         this.patternMultiply = Math.max(1, patternMultiply);
@@ -89,19 +98,19 @@ public class AssemblerMatrixPatternState {
         return pattern instanceof DireCraftingPatternDetails details ? details : null;
     }
 
-    public boolean pushPattern(ICraftingPatternDetails patternDetails, InventoryCrafting table) {
+    public AcceptedBatch prepareBatch(ICraftingPatternDetails patternDetails, InventoryCrafting table) {
         if (!(patternDetails instanceof DireCraftingPatternDetails direPattern)) {
-            return false;
+            return null;
         }
 
         if (!(table instanceof LargeInventoryCrafting largeInventory)) {
             ScienceNotLeisure.LOG.error("Assembler Matrix received a crafting inventory without long batch metadata");
-            return false;
+            return null;
         }
         long assemblerSize = largeInventory.getAssemblerSize();
         if (assemblerSize < 1) {
             ScienceNotLeisure.LOG.error("Assembler Matrix received an invalid crafting batch size: {}", assemblerSize);
-            return false;
+            return null;
         }
 
         ObjectArrayList<IAEItemStack> batchInputs = new ObjectArrayList<>();
@@ -130,27 +139,19 @@ public class AssemblerMatrixPatternState {
             }
         } catch (ArithmeticException exception) {
             ScienceNotLeisure.LOG.error("Assembler Matrix stack overflowed after an accepted AE batch plan", exception);
-            return false;
+            return null;
         }
 
         for (int slot = 0; slot < table.getSizeInventory(); slot++) {
             ItemStack stack = table.getStackInSlot(slot);
             if (stack != null) stack.stackSize = 1;
         }
-        inputs.addAll(batchInputs);
-        outputs.addAll(batchOutputs);
-        return true;
+        return new AcceptedBatch(batchInputs, batchOutputs);
     }
 
     public void clearPatternData() {
         patterns.clear();
         possibleOutputs.clear();
-    }
-
-    public void clearRuntimeData() {
-        outputs.clear();
-        inputs.clear();
-        cachedOutputItems = new IAEItemStack[0];
     }
 
     private void addPossibleOutputs(DireCraftingPatternDetails details) {

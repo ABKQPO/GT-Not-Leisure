@@ -30,10 +30,10 @@ import com.gtnewhorizon.cropsnh.farming.requirements.SubSoilRequirement;
 import com.gtnewhorizon.cropsnh.tileentity.TileEntityCropSticks;
 import com.gtnewhorizon.cropsnh.utility.CropsNHUtils;
 import com.gtnewhorizon.cropsnh.utility.IFDropTable;
-import com.science.gtnl.common.greenhouse.GreenHouseMode;
 import com.science.gtnl.common.greenhouse.GreenHouseModes;
-import com.science.gtnl.common.greenhouse.GreenHouseStoredCrop;
-import com.science.gtnl.common.greenhouse.GreenHouseViewMode;
+import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode;
+import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseStoredCrop;
+import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseViewMode;
 
 import gregtech.api.interfaces.IOutputBus;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;

@@ -18,7 +18,7 @@ import com.cleanroommc.modularui.widgets.slot.PlayerSlotGroup;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 import com.gtnewhorizon.cropsnh.utility.CropsNHUtils;
 import com.science.gtnl.api.IGreenHouse;
-import com.science.gtnl.common.greenhouse.GreenHouseViewMode;
+import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseViewMode;
 
 import gregtech.api.recipe.check.CheckRecipeResult;
 

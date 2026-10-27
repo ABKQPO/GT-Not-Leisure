@@ -25,8 +25,17 @@ touch "$LOG"
   done
   sleep 30
 ) | GTNL_COMPAT_SNAPSHOT="$SNAPSHOT" timeout 2400 ./gradlew --no-daemon "$TASK" > "$LOG" 2>&1
+gradle_status=${PIPESTATUS[1]}
 
 failed=0
+if [[ "$gradle_status" -ne 0 ]]; then
+  echo "::error::The server run exited with status $gradle_status (124 means it timed out)"
+  failed=1
+fi
+if grep -q -e 'Crash report saved' -e 'BUILD FAILED' "$LOG"; then
+  echo "::error::The server crashed or Gradle failed after it started"
+  failed=1
+fi
 if ! grep -q 'Done (' "$LOG"; then
   echo "::error::The dedicated server did not finish loading"
   failed=1

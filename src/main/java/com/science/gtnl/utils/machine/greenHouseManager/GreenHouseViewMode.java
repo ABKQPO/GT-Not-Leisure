@@ -1,4 +1,4 @@
-package com.science.gtnl.common.greenhouse;
+package com.science.gtnl.utils.machine.greenHouseManager;
 
 public enum GreenHouseViewMode {
 
