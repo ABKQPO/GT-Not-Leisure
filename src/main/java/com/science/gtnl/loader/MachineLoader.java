@@ -1572,10 +1572,6 @@ public class MachineLoader {
                 "NineIndustrialMultiMachine",
                 StatCollector.translateToLocal("gtnl.machine.nine_industrial_multi_machine.name")));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.NineIndustrialMultiMachine.get(1), AnimatedText.GTNL_QYZG);
-
-        GTNLItemList.LargeBeeBreeder
-            .set(new LargeBeeBreeder(GTNLMachineID.LARGE_BEE_BREEDER.ID, "LargeBeeBreeder", ""));
-        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBeeBreeder.get(1), AnimatedText.GT_NOT_LEISURE);
     }
 
     public static void registerHatch() {
@@ -2188,6 +2184,13 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.machine.industrial_crucible.name")));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.IndustrialCrucible.get(1), AnimatedText.GT_NOT_LEISURE);
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.IndustrialCrucible.get(1), AnimatedText.AUTHOR_LINEBROKE);
+
+        GTNLItemList.LargeBeeBreeder.set(
+            new LargeBeeBreeder(
+                GTNLMachineID.LARGE_BEE_BREEDER.ID,
+                "LargeBeeBreeder",
+                StatCollector.translateToLocal("gtnl.machine.large_bee_breeder.name")));
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBeeBreeder.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.SuperInputBusME.set(
             new SuperInputBusME(

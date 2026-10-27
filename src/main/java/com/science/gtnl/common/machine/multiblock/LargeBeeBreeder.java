@@ -5,6 +5,7 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlockAn
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
+import static com.science.gtnl.ScienceNotLeisure.RESOURCE_ROOT_ID;
 import static gregtech.api.GregTechAPI.sBlockCasings1;
 import static gregtech.api.enums.HatchElement.Energy;
 import static gregtech.api.enums.HatchElement.ExoticEnergy;
@@ -40,9 +41,10 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.science.gtnl.common.gui.modularui.LargeBeeBreederGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
+import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.machine.bee.BeeBreedingHelper;
 import com.science.gtnl.utils.machine.bee.BeeBreedingPlanner;
-import com.science.gtnl.utils.machine.bee.DronePool;
+import com.science.gtnl.utils.machine.bee.BeeSpeciesArchive;
 import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import forestry.api.apiculture.IAlleleBeeSpecies;
@@ -50,10 +52,10 @@ import gregtech.api.GregTechAPI;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.Textures;
+import gregtech.api.enums.VoltageIndex;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.check.CheckRecipeResult;
 import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
@@ -73,71 +75,20 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     private static final long EUT_PER_GLASS_TIER = 400L;
 
     private static final int TICKS_PER_BREEDING = 64;
-
-    private static final int MAX_PARALLEL_STEPS = 16;
+    private static final int INPUT_SCAN_INTERVAL = 100;
+    private static final int BASE_PARALLEL_STEPS = 1;
 
     private static final byte OPERATION_NONE = 0;
     private static final byte OPERATION_BREEDING = 1;
     private static final byte OPERATION_OUTPUT = 2;
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
+    private static final String STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":multiblock/large_bee_breeder";
     private static final int HORIZONTAL_OFFSET = 7;
     private static final int VERTICAL_OFFSET = 8;
     private static final int DEPTH_OFFSET = 0;
 
-    private static final String[][] SHAPE = transpose(
-        new String[][] {
-            { "               ", "               ", "               ", "      HHH      ", "    HHAAAHH    ",
-                "    HAPLPAH    ", "   HAPAAAPAH   ", "   HALAAALAH   ", "   HAPAAAPAH   ", "    HAPLPAH    ",
-                "    HHAAAHH    ", "      HHH      ", "               ", "               ", "               " },
-            { "               ", "               ", "      GGG      ", "    GG   GG    ", "   G       G   ",
-                "   G       G   ", "  G         G  ", "  G         G  ", "  G         G  ", "   G       G   ",
-                "   G       G   ", "    GG   GG    ", "      GGG      ", "               ", "               " },
-            { "               ", "      HHH      ", "   HHH   HHH   ", "  HG       GH  ", "  H         H  ",
-                "  H         H  ", " H           H ", " H           H ", " H           H ", "  H         H  ",
-                "  H         H  ", "  HG       GH  ", "   HHH   HHH   ", "      HHH      ", "               " },
-            { "      GGG      ", "   GGG   GGG   ", "  G         G  ", " G           G ", " G           G ",
-                " G           G ", "G             G", "G             G", "G             G", " G           G ",
-                " G           G ", " G           G ", "  G         G  ", "   GGG   GGG   ", "      GGG      " },
-            { "      AAA      ", "   OLA   ALO   ", "  P         P  ", " O           O ", " L           L ",
-                " A           A ", "A             A", "A             A", "A             A", " A           A ",
-                " L           L ", " O           O ", "  P         P  ", "   OLA   ALO   ", "      AAA      " },
-            { "     AAAAA     ", "   NA     AO   ", "  P         P  ", " N           O ", " A           A ",
-                "A             A", "A     III     A", "A     III     A", "A     III     A", "A             A",
-                " A           A ", " N           N ", "  P         P  ", "   NA     AN   ", "     AAAAA     " },
-            { "     AAAAA     ", "   NA     AO   ", "  P         P  ", " N           O ", " A           A ",
-                "A             A", "A     JJJ     A", "A     JKJ     A", "A     JJJ     A", "A             A",
-                " A           A ", " N           N ", "  P         P  ", "   NA     AN   ", "     AAAAA     " },
-            { "      AAA      ", "   OLA   ALO   ", "  P         P  ", " O           O ", " L           L ",
-                " A           A ", "A             A", "A             A", "A             A", " A           A ",
-                " L           L ", " O           O ", "  P         P  ", "   OLA   ALO   ", "      AAA      " },
-            { "      G~G      ", "   GGGBBBGGG   ", "  GBB     BBG  ", " GBB       BBG ", " GB         BG ",
-                " G           G ", "GB           BG", "GB           BG", "GB           BG", " G           G ",
-                " GB         BG ", " GBB       BBG ", "  GBB     BBG  ", "   GGGBBBGGG   ", "      GGG      " },
-            { "      HHH      ", "    HHBBBHH    ", "  HHBBBBBBBHH  ", "  HBBB   BBBH  ", " HBB       BBH ",
-                " HBB BBBBB BBH ", "HBB  BBBBBB BBH", "HBB BBBBBBB BBH", "HBB BBBBBB  BBH", " HB  BBBBB BBH ",
-                " HBB   BB BBH  ", "  HBBB    BBH  ", "  HHBBBBBBBHH  ", "    HHBBBHH    ", "      HHH      " },
-            { "               ", "     GGGGG     ", "   GGBBBBBGG   ", "  GBBBBBBBBBG  ", "  GBBBBBBBBBG  ",
-                " GBBBBBBBBBBBG ", " GBBBBBBBBBBBG ", " GBBBBBBBBBBBG ", " GBBBBBBBBBBBG ", " GBBBBBBBBBBBG ",
-                "  GBBBBBBBBBG  ", "  GBBBBBBBBBG  ", "   GGBBBBBGG   ", "     GGGGG     ", "               " },
-            { "               ", "      HHH      ", "    HHBBBHH    ", "   HBBBBBBBH   ", "  HBBBBBBBBBH  ",
-                "  HBBBBBBBBBH  ", " HBBBBBBBBBBBH ", " HBBBBBBBBBBBH ", " HBBBBBBBBBBBH ", "  HBBBBBBBBBH  ",
-                "  HBBBBBBBBBH  ", "   HBBBBBBBH   ", "    HHBBBHH    ", "      HHH      ", "               " },
-            { "               ", "               ", "      GGG      ", "    GGBBBGG    ", "   GBBBBBBBG   ",
-                "   GBBBBBBBG   ", "  GBBBBBBBBBG  ", "  GBBBBBBBBBG  ", "  GBBBBBBBBBG  ", "   GBBBBBBBG   ",
-                "   GBBBBBBBG   ", "    GGBBBGG    ", "      GGG      ", "               ", "               " },
-            { "               ", "               ", "       H       ", "     HHBHH     ", "    HBBBBBH    ",
-                "   HBBBBBBBH   ", "   HBBBBBBBH   ", "  HBBBBBBBBBH  ", "   HBBBBBBBH   ", "   HBBBBBBBH   ",
-                "    HBBBBBH    ", "     HHBHH     ", "       H       ", "               ", "               " },
-            { "               ", "               ", "               ", "       G       ", "     GGBGG     ",
-                "    GBBBBBG    ", "    GBBBBBG    ", "   GBBBBBBBG   ", "    GBBBBBG    ", "    GBBBBBG    ",
-                "     GGBGG     ", "       G       ", "               ", "               ", "               " },
-            { "               ", "               ", "               ", "               ", "      HHH      ",
-                "     HHHHH     ", "    HHBBBHH    ", "    HHBBBHH    ", "    HHBBBHH    ", "     HHHHH     ",
-                "      HHH      ", "               ", "               ", "               ", "               " },
-            { "               ", "               ", "               ", "               ", "               ",
-                "               ", "      GGG      ", "      GHG      ", "      GGG      ", "               ",
-                "               ", "               ", "               ", "               ", "               " } });
+    private static final String[][] SHAPE = StructureUtils.readStructureFromFile(STRUCTURE_FILE_PATH);
 
     private boolean hasStainlessSteelGear;
     private IStructureDefinition<LargeBeeBreeder> structureDefinition;
@@ -146,7 +97,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     private String targetBeeSpecies = "";
 
     @Getter
-    private DronePool dronePool = new DronePool();
+    private BeeSpeciesArchive speciesArchive = new BeeSpeciesArchive();
 
     private BeeBreedingPlanner.Plan breedingPlan = BeeBreedingPlanner.Plan.empty("");
     private List<BeeBreedingHelper.BreedingStep> breedingChain = new ArrayList<>();
@@ -189,26 +140,11 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         return new LargeBeeBreeder(this.mName);
     }
 
-    public String getMachineType() {
-        // #tr gtnl.machine.large_bee_breeder.recipe_type
-        // # Bee Breeder
-        // # zh_CN 养蜂机
-        return "gtnl.machine.large_bee_breeder.recipe_type";
-    }
-
-    @Override
-    public void onValueUpdate(byte aValue) {}
-
-    @Override
-    public byte getUpdateData() {
-        return 0;
-    }
-
     @Override
     public IStructureDefinition<LargeBeeBreeder> getStructureDefinition() {
         if (structureDefinition == null) {
             structureDefinition = StructureDefinition.<LargeBeeBreeder>builder()
-                .addShape(STRUCTURE_PIECE_MAIN, SHAPE)
+                .addShape(STRUCTURE_PIECE_MAIN, transpose(SHAPE))
                 .addElement('A', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
                 .addElement('B', ofChain(ofBlockAnyMeta(Blocks.dirt, 0), ofBlock(Blocks.grass, 0)))
                 .addElement(
@@ -216,7 +152,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
                     ofChain(
                         buildHatchAdder(LargeBeeBreeder.class)
                             .atLeast(InputBus, OutputBus, Energy.or(ExoticEnergy), Maintenance)
-                            .casingIndex(10)
+                            .casingIndex(getCasingTextureID())
                             .hint(1)
                             .buildAndChain(),
                         onElementPass(x -> ++x.mCountCasing, ofBlock(sBlockCasings1, 10))))
@@ -271,13 +207,8 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     }
 
     @Override
-    public RecipeMap<?> getRecipeMap() {
-        return null;
-    }
-
-    @Override
     public int getMaxParallelRecipes() {
-        return 1;
+        return getMaxParallelBreedingSteps();
     }
 
     @Override
@@ -308,14 +239,13 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.onPostTick(aBaseMetaTileEntity, aTick);
-        if (aBaseMetaTileEntity.isServerSide() && aTick % 20 == 0) {
+        if (aBaseMetaTileEntity.isServerSide() && aTick % INPUT_SCAN_INTERVAL == 0) {
             boolean gearBefore = hasStainlessSteelGear;
             hasStainlessSteelGear = checkStainlessSteelGear(getControllerSlot());
             if (gearBefore != hasStainlessSteelGear) markBreedingChanged();
 
             if (mMachine) scanInputBuses();
             refreshBreedingPlan();
-
         }
     }
 
@@ -323,26 +253,28 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
         int colorIndex, boolean aActive, boolean redstoneLevel) {
         if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(10), TextureFactory.builder()
-                .addIcon(OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE)
-                .extFacing()
-                .build(),
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE)
+                    .extFacing()
+                    .build(),
                 TextureFactory.builder()
                     .addIcon(OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE_GLOW)
                     .extFacing()
                     .glow()
                     .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(10), TextureFactory.builder()
-                .addIcon(OVERLAY_FRONT_DISTILLATION_TOWER)
-                .extFacing()
-                .build(),
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(OVERLAY_FRONT_DISTILLATION_TOWER)
+                    .extFacing()
+                    .build(),
                 TextureFactory.builder()
                     .addIcon(OVERLAY_FRONT_DISTILLATION_TOWER_GLOW)
                     .extFacing()
                     .glow()
                     .build() };
         }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(10) };
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
     }
 
     @Nonnull
@@ -362,16 +294,13 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             return CheckRecipeResultRegistry.NO_RECIPE;
         }
 
-        if (dronePool.hasDrone(targetBeeSpecies)) {
+        if (speciesArchive.hasSpecies(targetBeeSpecies)) {
             ItemStack princess = BeeBreedingHelper.createPrincess(targetBeeSpecies);
             if (princess == null) {
                 allTasksBlocked = true;
                 missingDroneSpecies = targetBeeSpecies;
                 markBreedingChanged();
-                // #tr GT5U.gui.text.recipe_result.gtnl_bee_breeder_unreachable_target
-                // # Current species archive cannot reach the target species!
-                // # zh_CN 当前物种档案无法到达目标品种！
-                return SimpleCheckRecipeResult.ofFailure("gtnl_bee_breeder_unreachable_target");
+                return SimpleCheckRecipeResult.ofFailure("bee_breeder_unreachable_target");
             }
             ItemStack drone = BeeBreedingHelper.createDrone(targetBeeSpecies);
             mOutputItems = drone == null ? new ItemStack[] { princess } : new ItemStack[] { princess, drone };
@@ -381,17 +310,21 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         }
 
         List<BeeBreedingHelper.BreedingStep> readySteps = breedingPlan
-            .getReadySteps(dronePool.getAvailableSpecies(), MAX_PARALLEL_STEPS);
+            .getReadySteps(speciesArchive.getSpecies(), getMaxParallelBreedingSteps());
         if (readySteps.isEmpty()) {
             allTasksBlocked = true;
             missingDroneSpecies = breedingPlan.getFirstMissingSpecies();
             if (missingDroneSpecies.isEmpty()) missingDroneSpecies = targetBeeSpecies;
             markBreedingChanged();
-            // #tr GT5U.gui.text.recipe_result.gtnl_bee_breeder_missing_drone
-            // # Species archive is missing a required parent!
-            // # zh_CN 物种档案中缺少必要亲本！
-            return SimpleCheckRecipeResult.ofFailure("gtnl_bee_breeder_missing_drone");
+            return SimpleCheckRecipeResult.ofFailure("bee_breeder_missing_drone");
         }
+
+        int poweredParallels = (int) Math
+            .min(readySteps.size(), Math.max(0L, getMaxInputPower()) / getEuPerBreedingAttempt());
+        if (poweredParallels == 0) {
+            return CheckRecipeResultRegistry.insufficientPower(getEuPerBreedingAttempt());
+        }
+        readySteps = readySteps.subList(0, poweredParallels);
 
         double chanceBonus = (hasStainlessSteelGear ? 2.0D : 0.0D) + Math.max(0, mGlassTier);
         List<BreedingAttempt> batch = new ArrayList<>(readySteps.size());
@@ -417,7 +350,12 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     }
 
     public int getMaxParallelBreedingSteps() {
-        return MAX_PARALLEL_STEPS;
+        return getParallelForVoltageTier(mEnergyHatchTier);
+    }
+
+    private static int getParallelForVoltageTier(int voltageTier) {
+        int upgrades = Math.max(0, Math.min(voltageTier, VoltageIndex.MAX) - VoltageIndex.LV);
+        return BASE_PARALLEL_STEPS << upgrades;
     }
 
     public int getMutationChanceBonus() {
@@ -446,13 +384,13 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             if (stack == null || stack.stackSize <= 0) continue;
 
             if (BeeBreedingHelper.isDrone(stack)) {
-                dronePool.addDrone(stack);
+                speciesArchive.unlockSpecies(BeeBreedingHelper.getBeeUID(stack));
                 toRemove.add(stack);
             } else if (BeeBreedingHelper.isPrincess(stack)) {
 
                 String uid = BeeBreedingHelper.getBeeUID(stack);
                 if (uid != null) {
-                    dronePool.unlockSpecies(uid);
+                    speciesArchive.unlockSpecies(uid);
                     long newPending = (long) pendingPrincessOutputs + Math.max(1, stack.stackSize);
                     pendingPrincessOutputs = (int) Math.min(Integer.MAX_VALUE, newPending);
                 }
@@ -469,7 +407,6 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             invalidateBreedingPlan();
             markBreedingChanged();
         }
-
     }
 
     private void settleActiveOperation() {
@@ -482,9 +419,9 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             }
         } else if (activeOperation == OPERATION_BREEDING) {
             for (BreedingAttempt attempt : activeBreedingBatch) {
-                if (dronePool.hasDrone(attempt.step.result)) continue;
+                if (speciesArchive.hasSpecies(attempt.step.result)) continue;
                 if (BeeBreedingHelper.tryMutation(attempt.effectiveChance)) {
-                    archiveChanged |= dronePool.unlockSpecies(attempt.step.result);
+                    archiveChanged |= speciesArchive.unlockSpecies(attempt.step.result);
                 }
             }
         }
@@ -509,14 +446,14 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             missingDroneSpecies = "";
         } else {
             if (breedingPlanDirty) {
-                breedingPlan = BeeBreedingPlanner.plan(targetBeeSpecies, dronePool.getAvailableSpecies());
+                breedingPlan = BeeBreedingPlanner.plan(targetBeeSpecies, speciesArchive.getSpecies());
                 breedingChain = new ArrayList<>(breedingPlan.getSteps());
                 breedingPlanDirty = false;
                 markBreedingChanged();
             }
 
-            boolean targetUnlocked = dronePool.hasDrone(targetBeeSpecies);
-            boolean hasReadyStep = !breedingPlan.getReadySteps(dronePool.getAvailableSpecies(), 1)
+            boolean targetUnlocked = speciesArchive.hasSpecies(targetBeeSpecies);
+            boolean hasReadyStep = !breedingPlan.getReadySteps(speciesArchive.getSpecies(), 1)
                 .isEmpty();
             allTasksBlocked = pendingPrincessOutputs > 0 && !targetUnlocked && !hasReadyStep;
             missingDroneSpecies = allTasksBlocked ? breedingPlan.getFirstMissingSpecies() : "";
@@ -535,7 +472,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     private int countCompletedSteps() {
         int count = 0;
         for (BeeBreedingHelper.BreedingStep step : breedingChain) {
-            if (dronePool.hasDrone(step.result)) count++;
+            if (speciesArchive.hasSpecies(step.result)) count++;
         }
         return count;
     }
@@ -566,7 +503,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
 
         aNBT.setString("targetBeeSpecies", targetBeeSpecies != null ? targetBeeSpecies : "");
         aNBT.setInteger("pendingPrincessOutputs", pendingPrincessOutputs);
-        aNBT.setTag("dronePool", dronePool.toNBT());
+        aNBT.setTag("dronePool", speciesArchive.toNBT());
         aNBT.setByte("beeBreederActiveOperation", activeOperation);
         NBTTagList attempts = new NBTTagList();
         for (BreedingAttempt attempt : activeBreedingBatch) {
@@ -583,9 +520,9 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         pendingPrincessOutputs = aNBT.getInteger("pendingPrincessOutputs");
 
         if (aNBT.hasKey("dronePool")) {
-            dronePool = DronePool.fromNBT(aNBT.getCompoundTag("dronePool"));
+            speciesArchive = BeeSpeciesArchive.fromNBT(aNBT.getCompoundTag("dronePool"));
         } else {
-            dronePool = new DronePool();
+            speciesArchive = new BeeSpeciesArchive();
         }
 
         activeOperation = aNBT.getByte("beeBreederActiveOperation");
@@ -607,7 +544,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     public void setItemNBT(NBTTagCompound aNBT) {
         aNBT.setString("targetBeeSpecies", targetBeeSpecies != null ? targetBeeSpecies : "");
         aNBT.setInteger("pendingPrincessOutputs", pendingPrincessOutputs);
-        aNBT.setTag("dronePool", dronePool.toNBT());
+        aNBT.setTag("dronePool", speciesArchive.toNBT());
         super.setItemNBT(aNBT);
     }
 
@@ -654,9 +591,6 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
 
     @Override
     public String getLocalNameKey() {
-        // #tr gtnl.machine.large_bee_breeder.name
-        // # Large Bee Breeder
-        // # zh_CN 大型蜜蜂杂交机
         return "gtnl.machine.large_bee_breeder.name";
     }
 
@@ -667,11 +601,14 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
 
     @Override
     public TooltipStats getTooltipStats() {
-        return new TooltipStats(MAX_PARALLEL_STEPS, Double.NaN, Double.NaN, false, false);
+        return new TooltipStats(BASE_PARALLEL_STEPS, Double.NaN, Double.NaN, false, false);
     }
 
     @Override
     public TooltipStats getTooltipStatsAtTier(TieredPart part, int tier) {
+        if (part == TieredPart.VOLTAGE) {
+            return new TooltipStats(getParallelForVoltageTier(tier), Double.NaN, Double.NaN, false, false);
+        }
         return getTooltipStats();
     }
 
@@ -693,21 +630,12 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         info[superInfo.length] = StatCollector.translateToLocalFormatted(
             "gtnl.bee_breeder.current_target",
             targetBeeSpecies.isEmpty() ? StatCollector.translateToLocal("gtnl.bee_breeder.unset") : targetBeeSpecies);
-        // #tr gtnl.bee_breeder.archive_size
-        // # Archived species: %s
-        // # zh_CN 已解锁蜂种：%s
         info[superInfo.length + 1] = StatCollector.translateToLocalFormatted(
             "gtnl.bee_breeder.archive_size",
-            dronePool.getAvailableSpecies()
+            speciesArchive.getSpecies()
                 .size());
-        // #tr gtnl.bee_breeder.chain_progress
-        // # Route progress: %s/%s
-        // # zh_CN 路线进度：%s/%s
         info[superInfo.length + 2] = StatCollector
             .translateToLocalFormatted("gtnl.bee_breeder.chain_progress", countCompletedSteps(), breedingChain.size());
-        // #tr gtnl.bee_breeder.pending
-        // # Princesses waiting: %s
-        // # zh_CN 待转换公主蜂：%s
         info[superInfo.length + 3] = StatCollector
             .translateToLocalFormatted("gtnl.bee_breeder.pending", pendingPrincessOutputs);
         info[superInfo.length + 4] = StatCollector.translateToLocalFormatted(

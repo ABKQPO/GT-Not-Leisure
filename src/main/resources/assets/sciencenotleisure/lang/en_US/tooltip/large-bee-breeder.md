@@ -1,9 +1,12 @@
-Automatically breeds bees through a planned mutation chain
-Each attempt takes {var:attemptSeconds} seconds and uses Forestry mutation chances
-Each attempt uses {var:baseEu} EU/t, plus {var:glassEu} EU/t per glass tier
-Each glass tier adds 1 percentage point to mutation chance
+Automatically breeds bees to meet your bee needs
+Input princesses or drones to record their species in the machine's archive
+The GUI shows which bees can be bred from your current species archive
+Base success chance follows Forestry mutation chances
+Each glass tier adds 1 percentage point to success chance
+A Stainless Steel Gear in the controller adds 2 percentage points to success chance
 
-Input princesses or drones to permanently unlock their species
-Set the target in the GUI; reachable mutation steps run automatically
-Each input princess requests one target princess
-A Stainless Steel Gear in the controller adds 2 percentage points to mutation chance
+Each parallel breeding attempt takes {var:attemptSeconds} seconds
+The LV base parallel limit is {var:parallels}; each voltage tier doubles the limit
+Each parallel uses {var:baseEu} EU/t, plus {var:glassEu} EU/t per glass tier
+Actual parallelism is limited by input power and the number of ready breeding steps
+Each input princess produces one target princess and one target drone upon completion

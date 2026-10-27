@@ -1226,6 +1226,7 @@ public enum GTNLItemList implements IItemContainer {
     SmallInfusionMatrix,
     SmallArcaneAssembler,
     IndustrialCrucible,
+    LargeBeeBreeder,
     ExplosionDynamoHatch,
     AutoConfigurationMaintenanceHatch,
     SterileConfigurationMaintenanceHatch,
@@ -1332,8 +1333,7 @@ public enum GTNLItemList implements IItemContainer {
     GasCollectorUEV,
     GasCollectorUIV,
     GasCollectorUMV,
-    GasCollectorUXV,
-    LargeBeeBreeder;
+    GasCollectorUXV;
 
     public static final GTNLItemList[] ENERGY_HATCH_LV = { EnergyHatchLV, EnergyHatchLV4A, EnergyHatchLV16A,
         EnergyHatchLV64A };

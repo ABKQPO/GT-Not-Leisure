@@ -4,20 +4,14 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-public class DronePool {
+public final class BeeSpeciesArchive {
 
     private static final int DATA_VERSION = 2;
 
     private final Set<String> unlockedSpecies = new LinkedHashSet<>();
-
-    public boolean addDrone(ItemStack droneStack) {
-        if (droneStack == null || !BeeBreedingHelper.isDrone(droneStack)) return false;
-        return unlockSpecies(BeeBreedingHelper.getBeeUID(droneStack));
-    }
 
     public boolean unlockSpecies(String species) {
         if (species == null || species.isEmpty()) return false;
@@ -26,21 +20,13 @@ public class DronePool {
         return unlockedSpecies.add(canonicalUID);
     }
 
-    public boolean hasDrone(String species) {
+    public boolean hasSpecies(String species) {
         if (species == null || species.isEmpty()) return false;
         return unlockedSpecies.contains(species);
     }
 
-    public int getDroneCount(String species) {
-        return hasDrone(species) ? 1 : 0;
-    }
-
-    public Set<String> getAvailableSpecies() {
+    public Set<String> getSpecies() {
         return Collections.unmodifiableSet(unlockedSpecies);
-    }
-
-    public void clear() {
-        unlockedSpecies.clear();
     }
 
     public NBTTagCompound toNBT() {
@@ -57,26 +43,26 @@ public class DronePool {
         return tag;
     }
 
-    public static DronePool fromNBT(NBTTagCompound tag) {
-        DronePool pool = new DronePool();
-        if (tag == null) return pool;
+    public static BeeSpeciesArchive fromNBT(NBTTagCompound tag) {
+        BeeSpeciesArchive archive = new BeeSpeciesArchive();
+        if (tag == null) return archive;
 
         if (tag.hasKey("unlockedSpecies", 9)) {
             NBTTagList speciesList = tag.getTagList("unlockedSpecies", 10);
             for (int i = 0; i < speciesList.tagCount(); i++) {
-                pool.unlockSpecies(
+                archive.unlockSpecies(
                     speciesList.getCompoundTagAt(i)
                         .getString("uid"));
             }
-            return pool;
+            return archive;
         }
 
         NBTTagList oldInventory = tag.getTagList("inventory", 10);
         for (int i = 0; i < oldInventory.tagCount(); i++) {
-            pool.unlockSpecies(
+            archive.unlockSpecies(
                 oldInventory.getCompoundTagAt(i)
                     .getString("species"));
         }
-        return pool;
+        return archive;
     }
 }
