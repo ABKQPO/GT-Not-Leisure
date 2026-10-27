@@ -30,8 +30,11 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
 
     public static final String GLOBAL_STEAM_NBT_TAG = "GregTech_GlobalSteam_MapNBTTag";
     public static final String GLOBAL_STEAM_TEAM_NBT_TAG = "GregTech_GlobalSteamTeam_MapNBTTag";
+    public static final String UNREADABLE_STEAM_NBT_TAG = "GregTech_GlobalSteam_Unreadable";
     private static final String FORMAT_VERSION_TAG = "formatVersion";
     private static final int TEAM_ID_FORMAT_VERSION = 2;
+
+    private byte[] unreadableSteam;
 
     public static void loadInstance(World world) {
         GLOBAL_STEAM.clear();
@@ -57,6 +60,9 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
     @Override
     @SuppressWarnings("unchecked")
     public void readFromNBT(NBTTagCompound nbtTagCompound) {
+        if (nbtTagCompound.hasKey(UNREADABLE_STEAM_NBT_TAG)) {
+            unreadableSteam = nbtTagCompound.getByteArray(UNREADABLE_STEAM_NBT_TAG);
+        }
         Map<UUID, BigInteger> loadedSteam = readSteam(nbtTagCompound);
         if (nbtTagCompound.getInteger(FORMAT_VERSION_TAG) < TEAM_ID_FORMAT_VERSION) {
             TeamNetworkManager.mergeLegacyTeams(readLegacyTeams(nbtTagCompound));
@@ -71,15 +77,14 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
 
     private Map<UUID, BigInteger> readSteam(NBTTagCompound nbtTagCompound) {
         Map<UUID, BigInteger> loadedSteam = new Object2ObjectOpenHashMap<>();
+        byte[] ba = nbtTagCompound.getByteArray(GLOBAL_STEAM_NBT_TAG);
+        if (ba.length == 0) return loadedSteam;
         try {
-            byte[] ba = nbtTagCompound.getByteArray(GLOBAL_STEAM_NBT_TAG);
-            if (ba.length == 0) return loadedSteam;
-
             try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ba);
                 ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream)) {
 
                 if (!(objectInputStream.readObject() instanceof Map<?, ?>savedSteam)) {
-                    ScienceNotLeisure.LOG.error("[GlobalSteamWorldSavedData] {} is not a map", GLOBAL_STEAM_NBT_TAG);
+                    keepUnreadableSteam(ba, null);
                     return loadedSteam;
                 }
 
@@ -98,9 +103,18 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
                 }
             }
         } catch (IOException | ClassNotFoundException exception) {
-            ScienceNotLeisure.LOG.error("[GlobalSteamWorldSavedData] {} LOAD FAILED", GLOBAL_STEAM_NBT_TAG, exception);
+            keepUnreadableSteam(ba, exception);
         }
         return loadedSteam;
+    }
+
+    private void keepUnreadableSteam(byte[] data, Exception cause) {
+        if (unreadableSteam == null) unreadableSteam = data;
+        ScienceNotLeisure.LOG.error(
+            "[GlobalSteamWorldSavedData] {} LOAD FAILED, the raw data is kept under {}",
+            GLOBAL_STEAM_NBT_TAG,
+            UNREADABLE_STEAM_NBT_TAG,
+            cause);
     }
 
     private Map<UUID, UUID> readLegacyTeams(NBTTagCompound nbtTagCompound) {
@@ -153,6 +167,7 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
             objectOutputStream.flush();
 
             nbtTagCompound.setByteArray(GLOBAL_STEAM_NBT_TAG, byteArrayOutputStream.toByteArray());
+            if (unreadableSteam != null) nbtTagCompound.setByteArray(UNREADABLE_STEAM_NBT_TAG, unreadableSteam);
             nbtTagCompound.setInteger(FORMAT_VERSION_TAG, TEAM_ID_FORMAT_VERSION);
             nbtTagCompound.removeTag(GLOBAL_STEAM_TEAM_NBT_TAG);
 

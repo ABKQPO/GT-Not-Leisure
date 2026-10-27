@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -40,7 +41,33 @@ public class GlobalSteamSaveContracts {
         fastutilSave.setByteArray(GlobalSteamWorldSavedData.GLOBAL_STEAM_NBT_TAG, serialize(fastutilMap));
         fastutilSave.setInteger("formatVersion", 2);
         check(STEAM.equals(reload(fastutilSave)), "saves written as a fastutil map since 2026-10-24 still load");
+
+        byte[] unreadable = { 1, 2, 3, 4 };
+        NBTTagCompound unreadableSave = new NBTTagCompound();
+        unreadableSave.setByteArray(GlobalSteamWorldSavedData.GLOBAL_STEAM_NBT_TAG, unreadable);
+        unreadableSave.setInteger("formatVersion", 2);
         GLOBAL_STEAM.clear();
+        NBTTagCompound afterUnreadable = resave(unreadableSave);
+        check(
+            Arrays.equals(unreadable, afterUnreadable.getByteArray(GlobalSteamWorldSavedData.UNREADABLE_STEAM_NBT_TAG)),
+            "steam data that cannot be read is kept instead of being overwritten by the next save");
+        check(STEAM.equals(reload(afterUnreadable)), "balances gained after an unreadable load are still saved");
+        check(
+            Arrays.equals(
+                unreadable,
+                resave(afterUnreadable).getByteArray(GlobalSteamWorldSavedData.UNREADABLE_STEAM_NBT_TAG)),
+            "the kept unreadable data survives later saves");
+        GLOBAL_STEAM.clear();
+    }
+
+    private static NBTTagCompound resave(NBTTagCompound saved) {
+        GLOBAL_STEAM.clear();
+        GlobalSteamWorldSavedData data = new GlobalSteamWorldSavedData();
+        data.readFromNBT(saved);
+        GLOBAL_STEAM.put(TEAM, STEAM);
+        NBTTagCompound written = new NBTTagCompound();
+        data.writeToNBT(written);
+        return written;
     }
 
     private static BigInteger reload(NBTTagCompound saved) {
