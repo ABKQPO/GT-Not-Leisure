@@ -40,6 +40,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.cleanroommc.modularui.utils.fluid.FluidStackTank;
 import com.glodblock.github.common.item.ItemFluidPacket;
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import com.gtnewhorizon.structurelib.alignment.constructable.IConstructable;
@@ -47,13 +48,12 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructa
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
-import com.gtnewhorizons.modularui.common.fluid.FluidStackTank;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.api.mixinHelper.IEyeOfHarmonyControllerLink;
 import com.science.gtnl.api.mixinHelper.LinkedEyeOfHarmonyUnit;
 import com.science.gtnl.common.gui.modularui.multiblock.EyeOfHarmonyInjectorGui;
-import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.common.machine.multiMachineBase.TTMultiMachineBase;
 import com.science.gtnl.common.render.tile.EyeOfHarmonyInjectorRenderer;
 import com.science.gtnl.utils.StructureUtils;
 
@@ -74,7 +74,6 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTUtil;
 import gregtech.api.util.GTUtility;
-import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.render.IMTERenderer;
 import gregtech.common.tileentities.machines.IDualInputHatch;
@@ -93,10 +92,9 @@ import tectech.thing.metaTileEntity.multi.base.INameFunction;
 import tectech.thing.metaTileEntity.multi.base.IStatusFunction;
 import tectech.thing.metaTileEntity.multi.base.LedStatus;
 import tectech.thing.metaTileEntity.multi.base.Parameters;
-import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 
 @IMetaTileEntity.SkipGenerateDescription
-public class EyeOfHarmonyInjector extends TTMultiblockBase
+public class EyeOfHarmonyInjector extends TTMultiMachineBase
     implements IConstructable, ISurvivalConstructable, IMTERenderer {
 
     public static float MAX_ANGLE = 50;
@@ -391,14 +389,6 @@ public class EyeOfHarmonyInjector extends TTMultiblockBase
             ret.add(text);
         }
         return ret.toArray(new String[0]);
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
-        tt.addAutoTooltip(this)
-            .toolTipFinisher();
-        return tt;
     }
 
     public List<LinkedUnitGuiData> getLinkedUnitGuiData() {

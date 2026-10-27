@@ -28,12 +28,12 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import com.google.common.collect.Iterables;
-import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.reavaritia.common.items.InfinityTotem;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.WirelessPickBlock;
+import com.science.gtnl.compat.backhand.BackhandCompat;
 import com.science.gtnl.compat.baubles.BaublesInventory;
 import com.science.gtnl.compat.newhorizons.NHCoreItem;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -41,7 +41,6 @@ import com.science.gtnl.utils.enums.ModsItemlist;
 
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
@@ -54,14 +53,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 public class ItemUtils {
 
     public static final Random rand = new Random();
-
-    public static final UITexture PICTURE_CIRCULATION = UITexture
-        .fullImage(ScienceNotLeisure.MODID, "gui/picture/circulation_");
-
-    public static final UITexture PICTURE_GTNL_LOGO = UITexture.fullImage(ScienceNotLeisure.MODID, "gui/picture/logo");
-
-    public static final UITexture PICTURE_GTNL_STEAM_LOGO = UITexture
-        .fullImage(ScienceNotLeisure.MODID, "gui/picture/steam_logo");
 
     public static Materials[] TIER = { Materials.LV, Materials.MV, Materials.HV, Materials.EV, Materials.IV,
         Materials.LuV, Materials.ZPM, Materials.UV, Materials.UHV, Materials.UEV, Materials.UIV, Materials.UMV,
@@ -468,13 +459,11 @@ public class ItemUtils {
         return book;
     }
 
-    public static final boolean isBackHandIns = Mods.Backhand.isModLoaded();
-
     public static boolean placeItemInHotbar(EntityPlayer player, ItemStack result, boolean isCreative, boolean useAE) {
         if (result == null) return false;
         Minecraft mc = Minecraft.getMinecraft();
         InventoryPlayer inv = player.inventory;
-        int backHandSlot = isBackHandIns ? 1 : 0;
+        int backHandSlot = BackhandCompat.offhandHotbarSlots();
 
         for (int i = 0; i < 9; i++) {
             ItemStack stack = inv.getStackInSlot(i);

@@ -72,12 +72,7 @@ public abstract class MixinPartPatternTerminal extends AbstractPartTerminal
 
     @Inject(method = "writeToNBT", at = @At("TAIL"))
     private void gtnl$preserveInventory(NBTTagCompound data, CallbackInfo callbackInfo) {
-        if (!ProcessingPatternCapacity.isEnabled()) {
-            return;
-        }
-        if (!((Object) this instanceof PartPatternTerminalEx)) {
-            return;
-        }
+        if (!ProcessingPatternCapacity.isEnabled() || !((Object) this instanceof PartPatternTerminalEx)) return;
         this.gtnl$storedInventory = ProcessingPatternInventoryData.preserveInventory(
             data,
             data,
@@ -97,27 +92,21 @@ public abstract class MixinPartPatternTerminal extends AbstractPartTerminal
 
     @Override
     public void gtnl$resizeProcessingPatternInventory() {
-        if (!ProcessingPatternCapacity.isEnabled()) {
-            return;
-        }
-        int size = ProcessingPatternCapacity.largeSideCapacity();
-        if (this.crafting.getSizeInventory() == size && this.output.getSizeInventory() == size) {
-            return;
-        }
-
-        var resized = ProcessingPatternInventoryData.resize(
+        var resized = ProcessingPatternInventoryData.resizeIfNeeded(
             this.crafting,
             this.output,
             this.gtnl$storedInventory,
             ((IPatternTerminalEx) this).isInverted(),
-            size,
             (IIAEStackInventory) this);
+        if (resized != null) gtnl$apply(resized);
+    }
+
+    @Unique
+    private void gtnl$apply(ProcessingPatternInventoryData.Resized resized) {
         this.crafting = resized.crafting();
         this.output = resized.output();
         this.gtnl$storedInventory = resized.stored();
-        if (Platform.isServer()) {
-            this.getHost()
-                .markForSave();
-        }
+        if (Platform.isServer()) this.getHost()
+            .markForSave();
     }
 }

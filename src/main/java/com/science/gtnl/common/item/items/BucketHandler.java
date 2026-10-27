@@ -8,31 +8,28 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
+
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
+@EventBusSubscriber(phase = Phase.PRE)
 public class BucketHandler {
 
-    public static final BucketHandler INSTANCE = new BucketHandler();
-
-    static {
-        MinecraftForge.EVENT_BUS.register(INSTANCE);
-    }
-
-    public Map<Block, Item> bucketMap = new Object2ObjectOpenHashMap<>();
+    public static final Map<Block, Item> BUCKETS = new Object2ObjectOpenHashMap<>();
 
     private BucketHandler() {}
 
-    public void registerFluid(Block fluidBlock, Item fullBucket) {
-        bucketMap.put(fluidBlock, fullBucket);
+    public static void registerFluid(Block fluidBlock, Item fullBucket) {
+        BUCKETS.put(fluidBlock, fullBucket);
     }
 
     @SubscribeEvent
-    public void onBucketFill(FillBucketEvent event) {
+    public static void onBucketFill(FillBucketEvent event) {
         // no instanceof check, someone may subclass the vanilla bucket
         if (event.current != null && event.current.getItem() == Items.bucket && event.current.stackSize > 0) {
             ItemStack res = getFilledBucket(event.world, event.target);
@@ -43,10 +40,10 @@ public class BucketHandler {
         }
     }
 
-    private ItemStack getFilledBucket(World world, MovingObjectPosition pos) {
+    private static ItemStack getFilledBucket(World world, MovingObjectPosition pos) {
 
         Block block = world.getBlock(pos.blockX, pos.blockY, pos.blockZ);
-        Item bucket = bucketMap.get(block);
+        Item bucket = BUCKETS.get(block);
         if (bucket != null && world.getBlockMetadata(pos.blockX, pos.blockY, pos.blockZ) == 0) {
             world.setBlockToAir(pos.blockX, pos.blockY, pos.blockZ);
             return new ItemStack(bucket);

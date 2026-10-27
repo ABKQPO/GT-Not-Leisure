@@ -34,7 +34,6 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnllib.mod.ModList;
 import com.gtnllib.utils.GameUtils;
 import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.ScienceNotLeisure;
@@ -42,6 +41,7 @@ import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.gui.modularui.multiblock.AssemblerMatrixGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.compat.ae2things.AE2ThingsCompat;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
@@ -196,11 +196,7 @@ public class AssemblerMatrix extends MultiMachineBase<AssemblerMatrix>
     }
 
     private static boolean isBlockedAe2ThingsInfusionPattern(ItemStack stack) {
-        if (ItemUtil.isStackInvalid(stack)) return false;
-        if (!ModList.AE2Thing.isModLoaded()) return false;
-        if (stack.stackTagCompound == null) return false;
-        // AE2Things infusion pattern terminals mimic standard patterns with the tc_crafting flag, so block them here.
-        return stack.stackTagCompound.hasKey("tc_crafting");
+        return !ItemUtil.isStackInvalid(stack) && AE2ThingsCompat.isInfusionPattern(stack);
     }
 
     public AssemblerMatrix(int aID, String aName, String aNameRegional) {

@@ -43,14 +43,12 @@ public abstract class MixinGuiBridge {
     // A wireless terminal opened from a slot: y is 1 for a Baubles slot, and z is Integer.MIN_VALUE.
     @Unique
     private Object gtnl$guiObject(ItemStack it, EntityPlayer player, World w, int x, int y, int z) {
-        if (player.openContainer instanceof RCAEBaseContainer rca) {
-            if (rca.rc$isSpecial()) {
-                int slot = rca.rc$getInventorySlot();
-                int inBaubles = rca.rc$isBauble() ? 1 : 0;
-                ItemStack item = gtnl$terminal(player, slot, inBaubles);
-                if (item != null) return this.getGuiObject(item, player, w, slot, inBaubles, Integer.MIN_VALUE);
-            }
-        } else if (z == Integer.MIN_VALUE) {
+        boolean rcContainer = player.openContainer instanceof RCAEBaseContainer;
+        if (player.openContainer instanceof RCAEBaseContainer rca && rca.rc$isSpecial()) {
+            int slot = rca.rc$getInventorySlot(), inBaubles = rca.rc$isBauble() ? 1 : 0;
+            ItemStack item = gtnl$terminal(player, slot, inBaubles);
+            if (item != null) return this.getGuiObject(item, player, w, slot, inBaubles, Integer.MIN_VALUE);
+        } else if (!rcContainer && z == Integer.MIN_VALUE) {
             ItemStack item = gtnl$terminal(player, x, y);
             if (item != null) return this.getGuiObject(item, player, w, x, y, z);
         }

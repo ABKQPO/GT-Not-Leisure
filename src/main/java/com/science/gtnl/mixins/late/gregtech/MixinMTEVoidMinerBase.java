@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.spongepowered.asm.mixin.Final;
@@ -17,11 +16,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.gtnewhorizons.modularui.api.drawable.Text;
-import com.gtnewhorizons.modularui.api.math.Alignment;
-import com.gtnewhorizons.modularui.common.widget.DynamicPositionedColumn;
-import com.gtnewhorizons.modularui.common.widget.SlotWidget;
-import com.gtnewhorizons.modularui.common.widget.TextWidget;
 import com.science.gtnl.common.machine.voidminer.IVoidMinerHost;
 import com.science.gtnl.common.machine.voidminer.VoidMinerHooks;
 import com.science.gtnl.common.machine.voidminer.VoidMinerState;
@@ -202,11 +196,9 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
             addEnergyOutput((gtnl$state.lEUt * mEfficiency) / 10000);
             return true;
         }
-        if (gtnl$state.lEUt < 0) {
-            if (!drainEnergyInput(getActualEnergyUsage())) {
-                stopMachine(ShutDownReasonRegistry.POWER_LOSS);
-                return false;
-            }
+        if (gtnl$state.lEUt < 0 && !drainEnergyInput(getActualEnergyUsage())) {
+            stopMachine(ShutDownReasonRegistry.POWER_LOSS);
+            return false;
         }
         return true;
     }
@@ -270,26 +262,6 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
         if (!gtnl$enableMixin) return;
         VoidMinerHooks.handleOutputs(gtnl$self(), batchMode);
         ci.cancel();
-    }
-
-    @Deprecated
-    @Inject(method = "drawTexts", at = @At("TAIL"), require = 1, remap = false)
-    private void vmTweak$drawDimensionOverride(DynamicPositionedColumn screenElements, SlotWidget inventorySlot,
-        CallbackInfo ci) {
-        if (!gtnl$enableMixin) return;
-        screenElements.addChild(
-            TextWidget.dynamicText(this::vmTweak$getDimensionDisplayName)
-                .setSynced(true)
-                .setDefaultColor(EnumChatFormatting.YELLOW)
-                .setTextAlignment(Alignment.TopLeft)
-                .setEnabled(true));
-    }
-
-    @Deprecated
-    @Unique
-    private Text vmTweak$getDimensionDisplayName() {
-        if (!gtnl$enableMixin) return Text.EMPTY;
-        return VoidMinerHooks.dimensionDisplayName(gtnl$state);
     }
 
     @Override

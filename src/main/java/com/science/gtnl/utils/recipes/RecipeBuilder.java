@@ -17,8 +17,8 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
-import com.LazyFlesh.variablehorizons.variants.VariantNames;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.compat.variablehorizons.VariableHorizonsCompat;
 import com.science.gtnl.mixins.early.gregtech.AccessorGTRecipe;
 import com.science.gtnl.mixins.early.gregtech.AccessorGTRecipeBuilder;
 import com.science.gtnl.mixins.early.gregtech.AccessorGTRecipeWithAlt;
@@ -566,15 +566,7 @@ public class RecipeBuilder {
     }
 
     public RecipeBuilder modifiedByVariant(String... variantNames) {
-        if (!Mods.VariableHorizons.isModLoaded()) {
-            return this;
-        }
-        for (String variantName : variantNames) {
-            if (VariantNames.activeContains(variantName)) {
-                skip = true;
-                return this;
-            }
-        }
+        if (VariableHorizonsCompat.anyActive(variantNames)) skip = true;
         return this;
     }
 

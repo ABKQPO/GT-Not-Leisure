@@ -9,6 +9,8 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.gtnllib.client.fx.FxEasing;
 import com.gtnllib.client.fx.world.FxArcRenderer.Color;
 import com.gtnllib.client.fx.world.FxArcRenderer.Style;
@@ -28,6 +30,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class RailgunOrbRenderer {
 
     private static final int MIN_TRAVEL_TICKS = 3;
@@ -172,7 +175,7 @@ public class RailgunOrbRenderer {
     }
 
     @SubscribeEvent
-    public void render(RenderWorldLastEvent event) {
+    public static void render(RenderWorldLastEvent event) {
         var world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
         long now = world.getTotalWorldTime();

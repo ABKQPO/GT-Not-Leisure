@@ -53,11 +53,8 @@ public abstract class MixinCraftingGridCache {
             final var ec = (QuantumComputer) ecNode.getMachine();
             ec.forEachCPU(cpu -> {
                 this.craftingCPUClusters.add(cpu);
-
                 final CraftingLink craftingLink = (CraftingLink) cpu.getLastCraftingLink();
-                if (craftingLink != null) {
-                    this.addLink(craftingLink);
-                }
+                if (craftingLink != null) this.addLink(craftingLink);
             });
         }
     }

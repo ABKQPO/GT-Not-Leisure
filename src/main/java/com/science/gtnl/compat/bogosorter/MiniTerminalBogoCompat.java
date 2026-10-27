@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
 
@@ -19,6 +18,8 @@ import com.cleanroommc.bogosorter.common.config.ae2.TooltipFeatureConfig;
 import com.cleanroommc.bogosorter.compat.ae2.Ae2TerminalGuiDetector;
 import com.cleanroommc.modularui.api.event.KeyboardInputEvent;
 import com.cleanroommc.modularui.api.event.MouseInputEvent;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.gtnllib.mod.ModList;
 import com.science.gtnl.client.meminiterminal.MiniTerminalClient;
 import com.science.gtnl.client.meminiterminal.MiniTerminalInventoryPanel;
@@ -37,12 +38,9 @@ import codechicken.nei.SearchField;
 import codechicken.nei.guihook.GuiContainerManager;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
 
 public class MiniTerminalBogoCompat {
-
-    public static void init() {
-        if (ModList.InventoryBogoSorter.isModLoaded()) Native.initialize();
-    }
 
     public static boolean isTerminalScreen(GuiContainer gui) {
         return ModList.InventoryBogoSorter.isModLoaded() && Native.isTerminalScreen(gui);
@@ -113,15 +111,15 @@ public class MiniTerminalBogoCompat {
         return true;
     }
 
+    @EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
     public static class Native {
 
-        private static final Native INSTANCE = new Native();
+        private Native() {}
 
-        private Native() {
-            MinecraftForge.EVENT_BUS.register(this);
+        @EventBusSubscriber.Condition
+        public static boolean bogoSorterLoaded() {
+            return ModList.InventoryBogoSorter.isModLoaded();
         }
-
-        private static void initialize() {}
 
         private static boolean isTerminalScreen(GuiContainer gui) {
             return Ae2TerminalGuiDetector.resolveSearchTarget(gui) != null;
@@ -174,12 +172,12 @@ public class MiniTerminalBogoCompat {
         }
 
         @SubscribeEvent(priority = EventPriority.HIGHEST)
-        public void mouseInput(MouseInputEvent.Pre event) {
+        public static void mouseInput(MouseInputEvent.Pre event) {
             updateKeys(event.gui);
         }
 
         @SubscribeEvent(priority = EventPriority.HIGHEST)
-        public void keyboardInput(KeyboardInputEvent.Pre event) {
+        public static void keyboardInput(KeyboardInputEvent.Pre event) {
             updateKeys(event.gui);
         }
 
@@ -192,7 +190,7 @@ public class MiniTerminalBogoCompat {
         }
 
         @SubscribeEvent
-        public void beforeSort(BeforeSortEvent event) {
+        public static void beforeSort(BeforeSortEvent event) {
             Minecraft mc = Minecraft.getMinecraft();
             if (event.isFromKeybind() && isOverMini(mc.currentScreen)) event.setCanceled(true);
         }

@@ -30,7 +30,6 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
-import com.gtnllib.mod.ModList;
 import com.gtnllib.utils.MathUtils;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
@@ -86,15 +85,9 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     public static final ItemStack TST_PROTO = ModsItemlist.TwistSpaceStellarStructuralFrameMaterial.get(1);
     private static final ItemStack DEPLETED_ROD = GTNLItemList.DepletedExcitedNaquadahFuelRod.get(1);
     private static final ItemStack ENHANCEMENT_CORE = GTNLItemList.EnhancementCore.get(1);
-    private static final ItemStack TST_ANTIMATTER = ModList.TwistSpaceTechnology.isModLoaded()
-        ? ModsItemlist.TwistSpaceAntimatter.get(1)
-        : null;
-    private static final ItemStack TST_FUEL_ROD = ModList.TwistSpaceTechnology.isModLoaded()
-        ? ModsItemlist.TwistSpaceAntimatterFuelRod.get(1)
-        : null;
-    private static final ItemStack TST_STRANGE_ROD = ModList.TwistSpaceTechnology.isModLoaded()
-        ? ModsItemlist.TwistSpaceStrangeAnnihilationFuelRod.get(1)
-        : null;
+    private static final ItemStack TST_ANTIMATTER = ModsItemlist.TwistSpaceAntimatter.getIfLoaded(1);
+    private static final ItemStack TST_FUEL_ROD = ModsItemlist.TwistSpaceAntimatterFuelRod.getIfLoaded(1);
+    private static final ItemStack TST_STRANGE_ROD = ModsItemlist.TwistSpaceStrangeAnnihilationFuelRod.getIfLoaded(1);
 
     public String ownerName;
     public UUID ownerUUID;
@@ -304,7 +297,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
                     BigInteger.valueOf(MaxOfEnhancementCore)
                         .multiply(BigInteger.valueOf(size)));
                 matched = true;
-            } else if (ModList.TwistSpaceTechnology.isModLoaded()) {
+            } else {
                 if (GTUtility.areStacksEqual(items, TST_ANTIMATTER, true)) {
                     currentOutputEU = currentOutputEU.add(
                         BigInteger.valueOf(MaxOfAntimatter)
@@ -356,14 +349,14 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
             if (recoveryAmount > 0) {
                 // mOutputItems = getRecovers(recoveryAmount);
             }
-            if (recoveryAmountTST > 0 && ModList.TwistSpaceTechnology.isModLoaded()) {
+            if (recoveryAmountTST > 0) {
                 mOutputItems = getRecoversTST(recoveryAmountTST);
             }
         } else if (XSTR.XSTR_INSTANCE.nextInt(1000) < recoveryChance) {
             if (recoveryAmount > 0) {
                 // mOutputItems = getRecovers(recoveryAmount);
             }
-            if (recoveryAmountTST > 0 && ModList.TwistSpaceTechnology.isModLoaded()) {
+            if (recoveryAmountTST > 0) {
                 mOutputItems = getRecoversTST(recoveryAmountTST);
             }
         }
@@ -378,7 +371,7 @@ public class RealArtificialStar extends MultiMachineBase<RealArtificialStar> {
     }
 
     public ItemStack[] getRecoversTST(long amount) {
-        if (amount <= 0 || !ModList.TwistSpaceTechnology.isModLoaded()) return new ItemStack[0];
+        if (amount <= 0 || TST_PROTO == null) return new ItemStack[0];
 
         List<ItemStack> list = new ObjectArrayList<>();
 

@@ -21,12 +21,10 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraftforge.common.MinecraftForge;
 
 import com.science.gtnl.api.mixinHelper.IAnchorRespawn;
 import com.science.gtnl.common.block.blocks.tile.TileEntityDimensionRespawnAnchor;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -44,10 +42,6 @@ public class BlockDimensionRespawnAnchor extends BlockContainer {
         this.setTickRandomly(true);
         BlockDispenser.dispenseBehaviorRegistry
             .putObject(Item.getItemFromBlock(Blocks.glowstone), new BehaviorGlowstoneCharge());
-        MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(this);
     }
 
     @Override

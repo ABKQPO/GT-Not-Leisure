@@ -11,6 +11,8 @@ import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
 import com.gtnewhorizon.gtnhlib.client.model.loading.ModelRegistry;
 import com.gtnewhorizon.gtnhlib.client.model.loading.ResourceLoc.ModelLoc;
 import com.gtnewhorizon.gtnhlib.client.model.unbaked.JSONModel;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.gtnewhorizon.gtnhlib.geometry.Orientation;
 import com.science.gtnl.ScienceNotLeisure;
 
@@ -19,6 +21,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class MEChiselModel implements IBlockModelProvider {
 
     public static final MEChiselModel INSTANCE = new MEChiselModel();
@@ -37,7 +40,11 @@ public class MEChiselModel implements IBlockModelProvider {
     }
 
     @SubscribeEvent
-    public void afterStitch(TextureStitchEvent.Post event) {
+    public static void afterStitch(TextureStitchEvent.Post event) {
+        INSTANCE.handleAfterStitch(event);
+    }
+
+    public void handleAfterStitch(TextureStitchEvent.Post event) {
         if (event.map.getTextureType() != 0) return;
         orientations = null;
         try {

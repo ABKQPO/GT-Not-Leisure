@@ -1,14 +1,12 @@
 package com.science.gtnl.mixins.late.gregtech;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
 import org.spongepowered.asm.mixin.Final;
@@ -26,13 +24,11 @@ import com.science.gtnl.api.mixinHelper.ICostingEUHolder;
 import com.science.gtnl.api.mixinHelper.IWirelessMode;
 import com.science.gtnl.common.machine.purification.PurificationUnitHooks;
 
-import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.api.metatileentity.implementations.MTEExtendedPowerMultiBlockBase;
 import gregtech.api.structure.error.StructureError;
 import gregtech.common.tileentities.machines.multi.purification.LinkedPurificationUnit;
 import gregtech.common.tileentities.machines.multi.purification.MTEPurificationPlant;
 import gregtech.common.tileentities.machines.multi.purification.MTEPurificationUnitBase;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -136,20 +132,7 @@ public abstract class MixinMTEPurificationPlant extends MTEExtendedPowerMultiBlo
 
     @Override
     public String[] getInfoData() {
-        List<String> ret = new ObjectArrayList<>(Arrays.asList(super.getInfoData()));
-        if (gtnl$wirelessMode) {
-            ret.add(
-                IGregTechDeviceInformation.encode("gtnl.waila.wireless.mode.format", EnumChatFormatting.LIGHT_PURPLE));
-            ret.add(
-                IGregTechDeviceInformation.encode(
-                    "gtnl.waila.wireless.current_eu_cost.format",
-                    EnumChatFormatting.AQUA,
-                    EnumChatFormatting.RESET,
-                    EnumChatFormatting.GOLD,
-                    gtnl$costingEUText,
-                    EnumChatFormatting.RESET));
-        }
-        return ret.toArray(new String[0]);
+        return PurificationUnitHooks.plantInfoData(super.getInfoData(), gtnl$wirelessMode, gtnl$costingEUText);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.science.gtnl.utils.machine;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.science.gtnl.api.IDimensionAbbreviationRegistry;
 import com.science.gtnl.compat.extrautilities.ExtraUtilitiesContent;
 import com.science.gtnl.utils.world.ConfigDimensionAbbreviationResolver;
@@ -11,6 +12,7 @@ import com.science.gtnl.utils.world.GalacticGregDimensionAbbreviationResolver;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
+@EventBusSubscriber
 public class VMTweakHelper {
 
     public static final String UNDERDARK_DIMENSION_NAME = "Underdark";
@@ -23,7 +25,7 @@ public class VMTweakHelper {
     }
 
     @SubscribeEvent
-    public void onWorldLoad(WorldEvent.Load event) {
+    public static void onWorldLoad(WorldEvent.Load event) {
         World world = event.world;
         if (world == null) return;
 

@@ -65,6 +65,29 @@ public class EffectTextRenderer implements IResourceManagerReloadListener {
         return isCapturing() || nativeDepth > 0;
     }
 
+    // The part of string between offset and offset + length, or null when it has no effect markers to draw.
+    public static String markedText(CharSequence string, int offset, int length) {
+        if (isBypassingEffects() || string == null) return null;
+        int start = Math.max(0, Math.min(offset, string.length()));
+        int end = start + Math.max(0, Math.min(length, string.length() - start));
+        if (!EffectTextParser.containsMarkers(string, start, end)) return null;
+        return start == 0 && end == string.length() ? string.toString()
+            : string.subSequence(start, end)
+                .toString();
+    }
+
+    public float drawWithUnicodeFlag(FontRenderer font, String text, float x, float y, int color, boolean shadow,
+        boolean unicodeFlag) {
+        boolean previousUnicode = font.getUnicodeFlag();
+        font.setUnicodeFlag(unicodeFlag);
+        try {
+            draw(font, text, x, y, color, shadow);
+            return x + layout(font, text).width();
+        } finally {
+            font.setUnicodeFlag(previousUnicode);
+        }
+    }
+
     public Layout layout(FontRenderer font, String text) {
         IFontParameters parameters = (IFontParameters) font;
         LayoutKey key = new LayoutKey(

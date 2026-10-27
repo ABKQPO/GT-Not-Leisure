@@ -2,8 +2,8 @@ package com.science.gtnl.compat.nei;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.gui.GuiDirePatternEncoder;
 import com.science.gtnl.client.gui.portableWorkbench.GuiPortableAdvancedWorkbench;
@@ -21,10 +21,12 @@ import codechicken.nei.recipe.DefaultOverlayHandler;
 import codechicken.nei.recipe.HandlerInfo;
 import codechicken.nei.recipe.InformationHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 
 @SuppressWarnings("unused")
+@EventBusSubscriber(side = Side.CLIENT)
 public class NEIGTNLConfig implements IConfigureNEI {
 
     @Override
@@ -101,17 +103,10 @@ public class NEIGTNLConfig implements IConfigureNEI {
         addMachineGuidePage(GTNLItemList.SiphonTurbine, "gtnl.nei.siphon_turbine");
 
         API.registerUsageHandler(new NuclearReactorGuideHandler());
-
-        if (!HANDLER_INFO_REGISTERED) {
-            HANDLER_INFO_REGISTERED = true;
-            MinecraftForge.EVENT_BUS.register(this);
-        }
     }
 
-    private static boolean HANDLER_INFO_REGISTERED = false;
-
     @SubscribeEvent
-    public void registerHandlerInfo(NEIRegisterHandlerInfosEvent event) {
+    public static void registerHandlerInfo(NEIRegisterHandlerInfosEvent event) {
         ItemStack controller = GTNLItemList.NuclearReactor.get(1);
         if (controller == null || controller.getItem() == null) return;
         event.registerHandlerInfo(

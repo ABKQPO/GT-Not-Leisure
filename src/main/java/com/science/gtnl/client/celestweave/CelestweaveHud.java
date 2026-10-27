@@ -15,6 +15,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.gtnllib.client.fx.FxEasing;
 import com.gtnllib.client.hud.HudEditor;
 import com.gtnllib.client.hud.HudLayout;
@@ -37,6 +39,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class CelestweaveHud {
 
     private static final int HIT_LIFETIME = 900, SAVE_LIFETIME = 1400, READY_FLASH = 350, WINDOW_MS = 12000,
@@ -97,7 +100,7 @@ public class CelestweaveHud {
     }
 
     @SubscribeEvent
-    public void overlay(RenderGameOverlayEvent.Post event) {
+    public static void overlay(RenderGameOverlayEvent.Post event) {
         if (event.type != RenderGameOverlayEvent.ElementType.ALL || !HudLayout.enabled()) return;
         Minecraft minecraft = Minecraft.getMinecraft();
         EntityPlayer player = minecraft.thePlayer;

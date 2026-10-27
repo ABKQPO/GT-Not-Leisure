@@ -2,6 +2,7 @@ package com.science.gtnl.common.me.processingPattern;
 
 import java.util.Iterator;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import appeng.api.storage.StorageName;
@@ -176,6 +177,37 @@ public class ProcessingPatternInventoryData {
         limitSlots(inventory, "craftingGrid", nativeInputs);
         limitSlots(inventory, "outputList", nativeOutputs);
         return snapshot;
+    }
+
+    public static Resized resizeIfNeeded(IAEStackInventory crafting, IAEStackInventory output, NBTTagCompound stored,
+        boolean inverted, IIAEStackInventory host) {
+        if (!ProcessingPatternCapacity.isEnabled()) return null;
+        int size = ProcessingPatternCapacity.largeSideCapacity();
+        if (crafting.getSizeInventory() == size && output.getSizeInventory() == size) return null;
+        return resize(crafting, output, stored, inverted, size, host);
+    }
+
+    public static NBTTagCompound rememberTerminalInventory(ItemStack stack, String nbtPrefix, int craftingSize,
+        int outputSize) {
+        if (!stack.hasTagCompound()) return null;
+        NBTTagCompound root = stack.getTagCompound();
+        NBTTagCompound inventory = root.getCompoundTag(nbtPrefix);
+        NBTTagCompound stored = rememberInventory(root, inventory, craftingSize, outputSize);
+        root.setTag(nbtPrefix, inventory);
+        boolean inverted = inventory.getBoolean("inverted");
+        limitSlots(inventory, "craftingGrid", visibleInputs(inverted, craftingSize));
+        limitSlots(inventory, "outputList", visibleOutputs(inverted, outputSize));
+        return stored;
+    }
+
+    public static NBTTagCompound preserveTerminalInventory(ItemStack stack, String nbtPrefix, int activePage,
+        NBTTagCompound stored, boolean inverted, int craftingSize, int outputSize) {
+        NBTTagCompound root = stack.getTagCompound();
+        NBTTagCompound tag = root.getCompoundTag(nbtPrefix);
+        tag.setInteger("activePage", nativePage(activePage));
+        NBTTagCompound preserved = preserveInventory(root, tag, stored, inverted, craftingSize, outputSize);
+        root.setTag(nbtPrefix, tag);
+        return preserved;
     }
 
     public static Resized resize(IAEStackInventory crafting, IAEStackInventory output, NBTTagCompound stored,

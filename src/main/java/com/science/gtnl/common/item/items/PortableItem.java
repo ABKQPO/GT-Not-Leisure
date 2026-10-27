@@ -280,6 +280,13 @@ public class PortableItem extends Item {
         }
     }
 
+    public static boolean isExplosionProof(ItemStack stack) {
+        if (stack == null || !(stack.getItem() instanceof PortableItem)) return false;
+        int meta = stack.getItemDamage();
+        return meta == PortableType.OBSIDIAN.getMeta() || meta == PortableType.NETHERITE.getMeta()
+            || meta == PortableType.DARKSTEEL.getMeta();
+    }
+
     @SubscribeEvent
     public void onItemEntityDamage(LivingHurtEvent event) {
         if (!(event.entity instanceof EntityItem entityItem)) return;

@@ -18,8 +18,8 @@ import net.minecraftforge.fluids.IFluidTank;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.utils.fluid.FluidStackTank;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
-import com.gtnewhorizons.modularui.common.fluid.FluidStackTank;
 import com.science.gtnl.common.gui.modularui.hatch.SuperInputHatchMEGui;
 import com.science.gtnl.utils.enums.GTNLItemList;
 

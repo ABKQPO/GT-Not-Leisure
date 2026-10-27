@@ -19,13 +19,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
-import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import com.cleanroommc.modularui.api.IMuiScreen;
 import com.cleanroommc.modularui.screen.OpenScreenEvent;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.floatingwindow.FloatingWindowHost;
 import com.science.gtnl.client.floatingwindow.FloatingWindows;
@@ -48,7 +49,6 @@ import appeng.helpers.MonitorableAction;
 import appeng.util.Platform;
 import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.recipe.GuiRecipe;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -58,10 +58,10 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.longs.LongLinkedOpenHashSet;
 
 @SideOnly(Side.CLIENT)
-public final class MiniTerminalClient {
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
+public class MiniTerminalClient {
 
     private static final int MAX_CACHED_VIEWS = 8;
-    private static final MiniTerminalClient INSTANCE = new MiniTerminalClient();
     private static final Map<UUID, MiniTerminalModel> VIEWS = new LinkedHashMap<>(MAX_CACHED_VIEWS, 0.75f, true) {
 
         @Override
@@ -102,17 +102,12 @@ public final class MiniTerminalClient {
 
     public static void init() {
         MiniTerminalClientConfig.load(LAYOUT);
-        MiniTerminalBogoCompat.init();
-        MinecraftForge.EVENT_BUS.register(INSTANCE);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(INSTANCE);
         FloatingWindows.register(MiniTerminalClient::overlay);
         GuiContainerManager.addSlotClickHandler(new MiniTerminalNEIAdapter());
     }
 
     @SubscribeEvent
-    public void open(OpenScreenEvent event) {
+    public static void open(OpenScreenEvent event) {
         MiniTerminalClientConfig.saveWindow(LAYOUT);
         checkConnection();
         if (selected != null && event.getScreen() instanceof GuiContainer gui
@@ -126,12 +121,12 @@ public final class MiniTerminalClient {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void initGui(InitGuiEvent.Post event) {
+    public static void initGui(InitGuiEvent.Post event) {
         if (!(event.gui instanceof IMuiScreen)) attachPanel(event);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void initNativePanel(InitGuiEvent.Post event) {
+    public static void initNativePanel(InitGuiEvent.Post event) {
         if (event.gui instanceof IMuiScreen) attachPanel(event);
     }
 
@@ -187,7 +182,7 @@ public final class MiniTerminalClient {
     }
 
     @SubscribeEvent
-    public void tick(TickEvent.ClientTickEvent event) {
+    public static void tick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         checkConnection();
         Minecraft mc = Minecraft.getMinecraft();

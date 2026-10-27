@@ -12,14 +12,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
+import com.science.gtnl.compat.avaritia.AvaritiaRecipes;
 import com.science.gtnl.utils.AspectTooltipUtils;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.GTNLProcessingLogic;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
-import fox.spiteful.avaritia.items.LudicrousItems;
 import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
@@ -64,31 +63,18 @@ public class TCRecipeTools {
     private static Set<Item> skipItems;
 
     static {
-        if (Mods.Avaritia.isModLoaded()) addAvaritia();
+        AvaritiaRecipes.thaumcraftExclusions();
 
-        if (Mods.BloodMagic.isModLoaded()) {
-            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicWeakBloodOrb.get(1)));
-            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicApprenticeBloodOrb.get(1)));
-            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicMagicianBloodOrb.get(1)));
-            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicMasterBloodOrb.get(1)));
-            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicArchmageBloodOrb.get(1)));
-            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicTranscendentBloodOrb.get(1)));
-            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.BloodMagicCreativeFiller.get(1)));
-        }
-
-        if (Mods.ForbiddenMagic.isModLoaded()) {
-            UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.ForbiddenMagicEldritchOrb.get(1)));
+        for (ModsItemlist orb : new ModsItemlist[] { ModsItemlist.BloodMagicWeakBloodOrb,
+            ModsItemlist.BloodMagicApprenticeBloodOrb, ModsItemlist.BloodMagicMagicianBloodOrb,
+            ModsItemlist.BloodMagicMasterBloodOrb, ModsItemlist.BloodMagicArchmageBloodOrb,
+            ModsItemlist.BloodMagicTranscendentBloodOrb, ModsItemlist.BloodMagicCreativeFiller,
+            ModsItemlist.ForbiddenMagicEldritchOrb }) {
+            ItemStack stack = orb.getIfLoaded(1);
+            if (stack != null) UNCONSUMED_ITEMS.add(ItemId.create(stack));
         }
 
         UNCONSUMED_ITEMS.add(ItemId.create(ModsItemlist.ThaumcraftFocusWarding.get(1)));
-    }
-
-    @Optional.Method(modid = "Avaritia")
-    public static void addAvaritia() {
-        ItemId bigPearl = ItemId.create(new ItemStack(LudicrousItems.bigPearl));
-        UNCONSUMED_ITEMS.add(bigPearl);
-        PRIMORDIAL_PEARL_RETURN_EXCLUSIONS.add(bigPearl);
-        UNCONSUMED_ITEMS.add(ItemId.create(new ItemStack(LudicrousItems.armok_orb)));
     }
 
     // Identify Thaumcraft items that should be omitted from recipe pools.
@@ -98,21 +84,10 @@ public class TCRecipeTools {
             skipItems = new ObjectOpenHashSet<>();
             skipItems.add(itemJarNode);
 
-            if (Mods.ThaumicBases.isModLoaded()) {
-                Item revolver = GameRegistry.findItem(Mods.ThaumicBases.ID, "revolver");
-
-                if (null != revolver) {
-                    skipItems.add(revolver);
-                }
-            }
-
-            if (Mods.Gadomancy.isModLoaded()) {
-                Item itemEtherealFamiliar = GameRegistry.findItem(Mods.Gadomancy.ID, "ItemEtherealFamiliar");
-
-                if (null != itemEtherealFamiliar) {
-                    skipItems.add(itemEtherealFamiliar);
-                }
-            }
+            Item revolver = GameRegistry.findItem(Mods.ThaumicBases.ID, "revolver");
+            if (revolver != null) skipItems.add(revolver);
+            Item etherealFamiliar = GameRegistry.findItem(Mods.Gadomancy.ID, "ItemEtherealFamiliar");
+            if (etherealFamiliar != null) skipItems.add(etherealFamiliar);
         }
 
         return skipItems.contains(item);

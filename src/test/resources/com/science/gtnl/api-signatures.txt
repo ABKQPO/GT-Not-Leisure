@@ -64,7 +64,7 @@ com.science.gtnl.api.IControllerUpgrade#getUpgradeCostItemsPerRow()int
 com.science.gtnl.api.IControllerUpgrade#getUpgradeDisplayItems(int)net.minecraft.item.ItemStack[]
 com.science.gtnl.api.IControllerUpgrade#getUpgradeDisplayPageCount()int
 com.science.gtnl.api.IControllerUpgrade#getUpgradeDisplayPaidCosts(int)int[]
-com.science.gtnl.api.IControllerUpgrade#getUpgradeInputSlotHandler()com.gtnewhorizons.modularui.api.forge.ItemStackHandler
+com.science.gtnl.api.IControllerUpgrade#getUpgradeInputSlotHandler()com.cleanroommc.modularui.utils.item.ItemStackHandler
 com.science.gtnl.api.IControllerUpgrade#getUpgradeInputSlotsPerRow()int
 com.science.gtnl.api.IControllerUpgrade#getUpgradePaidCosts()int[]
 com.science.gtnl.api.IControllerUpgrade#getUpgradeProgress()int

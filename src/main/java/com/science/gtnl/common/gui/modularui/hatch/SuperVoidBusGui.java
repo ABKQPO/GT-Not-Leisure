@@ -5,6 +5,7 @@ import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widget.scroll.VerticalScrollData;
@@ -13,7 +14,6 @@ import com.cleanroommc.modularui.widgets.layout.Grid;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.PhantomItemSlot;
 import com.science.gtnl.common.gui.GTNLMui2Textures;
-import com.science.gtnl.common.gui.modularui.GTNLMui2ItemHandlerAdapter;
 import com.science.gtnl.common.machine.hatch.SuperVoidBus;
 
 import gregtech.api.modularui2.GTGuiTextures;
@@ -25,11 +25,11 @@ public class SuperVoidBusGui extends MTEHatchBaseGui<SuperVoidBus> {
     private static final int SLOT_COLUMNS = 10;
     private static final int SLOT_ROWS = 10;
 
-    private final GTNLMui2ItemHandlerAdapter lockedInventoryHandler;
+    private final ItemStackHandler lockedInventoryHandler;
 
     public SuperVoidBusGui(SuperVoidBus hatch) {
         super(hatch);
-        this.lockedInventoryHandler = new GTNLMui2ItemHandlerAdapter(hatch.lockedInventoryHandler);
+        this.lockedInventoryHandler = hatch.lockedInventoryHandler;
     }
 
     @Override

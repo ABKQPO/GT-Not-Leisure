@@ -4,19 +4,19 @@ import java.util.ArrayList;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
 
 import com.brandon3055.draconicevolution.common.ModItems;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.kuba6000.mobsinfo.api.MobDrop;
 import com.kuba6000.mobsinfo.api.MobRecipe;
 import com.kuba6000.mobsinfo.api.event.PostMobRegistrationEvent;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
-import com.science.gtnl.compat.IModCompat;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import gregtech.api.enums.Mods;
 import gregtech.api.objects.XSTR;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTUtility;
@@ -28,16 +28,22 @@ import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import kubatech.loaders.MobHandlerLoader;
 
-public class ExtremeExtremeEntityCrusherRecipes implements IModCompat {
+@EventBusSubscriber
+public class ExtremeExtremeEntityCrusherRecipes {
 
-    public RecipeMap<?> EEEC = GTNLRecipeMaps.ExtremeExtremeEntityCrusherRecipes;
+    public static final RecipeMap<?> EEEC = GTNLRecipeMaps.ExtremeExtremeEntityCrusherRecipes;
 
     public static IntSet registeredSpawnerTypes = new IntOpenHashSet();
 
     public static XSTR FIXED_RANDOM = new XSTR(1145141919810L);
 
+    @EventBusSubscriber.Condition
+    public static boolean mobsInfoLoaded() {
+        return Mods.MobsInfo.isModLoaded();
+    }
+
     @SubscribeEvent
-    public void onPostMobRegistration(PostMobRegistrationEvent event) {
+    public static void onPostMobRegistration(PostMobRegistrationEvent event) {
         String mobType = event.currentMob;
         MobRecipe mobRecipe = event.recipe;
         ArrayList<MobDrop> drops = event.drops;
@@ -99,10 +105,5 @@ public class ExtremeExtremeEntityCrusherRecipes implements IModCompat {
             .duration(eecRecipe.mDuration)
             .eut(eecRecipe.mEUt)
             .addTo(EEEC);
-    }
-
-    @Override
-    public void postInit() {
-        MinecraftForge.EVENT_BUS.register(this);
     }
 }

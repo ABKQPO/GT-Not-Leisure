@@ -42,20 +42,13 @@ public abstract class MixinNEIPatternViewHandler {
 
     @Inject(method = "initializeLayout", at = @At("TAIL"))
     private void gtnl$resizeProcessingLayout(CallbackInfo callbackInfo) {
-        if (!ProcessingPatternCapacity.isEnabled() || this.patternDetails == null
-            || this.patternDetails.isCraftable()) {
+        if (!ProcessingPatternCapacity.isEnabled() || this.patternDetails == null || this.patternDetails.isCraftable())
             return;
-        }
-
         int inputCount = ProcessingPatternInventoryData.countStacks(this.patternDetails.getAEInputs());
         int outputCount = ProcessingPatternInventoryData.countStacks(this.patternDetails.getAEOutputs());
         int layout = ProcessingPatternInventoryData.shorterViewLayout(inputCount, outputCount);
-        if (layout > 0 && this.inputsCols != 4) {
-            this.setupProcessingLayout();
-        } else if (layout < 0 && this.outputsCols != 4) {
-            this.setupReversedLayout();
-        }
-
+        if (layout > 0 && this.inputsCols != 4) this.setupProcessingLayout();
+        else if (layout < 0 && this.outputsCols != 4) this.setupReversedLayout();
         this.inputsRows = ProcessingPatternInventoryData.viewRows(inputCount, this.inputsCols);
         this.outputsRows = ProcessingPatternInventoryData.viewRows(outputCount, this.outputsCols);
         this.arrowCenterY = NEIPatternViewHandler.SLOTS_OFFSET_Y + Math.max(this.inputsRows, this.outputsRows) * 9 - 16;

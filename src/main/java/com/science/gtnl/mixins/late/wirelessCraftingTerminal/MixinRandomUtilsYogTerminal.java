@@ -20,6 +20,8 @@ import it.unimi.dsi.fastutil.ints.IntObjectPair;
 public abstract class MixinRandomUtilsYogTerminal {
 
     @Unique
+    private static final String GTNL$WIRELESS_CRAFTING_TERMINAL_ITEM = "net.p455w0rd.wirelesscraftingterminal.api.IWirelessCraftingTerminalItem";
+    @Unique
     private static Class<?> gtnl$craftingTerminal;
 
     @Inject(
@@ -47,13 +49,10 @@ public abstract class MixinRandomUtilsYogTerminal {
     private static ItemStack gtnl$openedCraftingTerminal(InventoryPlayer inventory) {
         ItemStack opened = YogTerminals.opened(inventory.player);
         if (opened == null) return null;
-        if (gtnl$craftingTerminal == null) {
-            try {
-                gtnl$craftingTerminal = Class
-                    .forName("net.p455w0rd.wirelesscraftingterminal.api.IWirelessCraftingTerminalItem");
-            } catch (ClassNotFoundException exception) {
-                return null;
-            }
+        if (gtnl$craftingTerminal == null) try {
+            gtnl$craftingTerminal = Class.forName(GTNL$WIRELESS_CRAFTING_TERMINAL_ITEM);
+        } catch (ClassNotFoundException exception) {
+            return null;
         }
         return gtnl$craftingTerminal.isInstance(opened.getItem()) ? opened : null;
     }

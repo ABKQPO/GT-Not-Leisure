@@ -137,11 +137,13 @@ public abstract class MixinGuiCraftConfirm extends GuiSub implements ICraftingCy
             this.gtnl$queried = true;
             ScienceNotLeisure.network.sendToServer(new RecursivePatternQueryPacket(false));
         }
-        if (this.gtnl$recursivePatterns != null) {
-            this.gtnl$recursivePatterns.setAttention(
-                CraftConfirmCycles.NO_NET_OUTPUT.equals(error) || this.gtnl$index != null && !this.gtnl$index.blocking()
-                    .isEmpty());
-        }
+        if (this.gtnl$recursivePatterns != null)
+            this.gtnl$recursivePatterns.setAttention(CraftConfirmCycles.needsAttention(error, this.gtnl$index));
+        gtnl$updateRingButtons();
+    }
+
+    @Unique
+    private void gtnl$updateRingButtons() {
         if (gtnl$tree().gtnl$ringView() == null) this.gtnl$ringFromList = false;
         boolean inRing = this.displayMode == GuiCraftConfirm.DisplayMode.TREE && gtnl$tree().gtnl$ringView() != null;
         if (this.gtnl$backToTree != null) this.gtnl$backToTree.visible = inRing;
@@ -170,11 +172,7 @@ public abstract class MixinGuiCraftConfirm extends GuiSub implements ICraftingCy
             this.pending);
         this.gtnl$index = CraftingCycleIndex.of(request, cycles, blocking);
         gtnl$tree().gtnl$setCycles(this.gtnl$index);
-        if (manual) {
-            RecursivePatternReport.show(this.mc, request, cycles);
-        } else {
-            RecursivePatternReport.showBlocking(this.mc, this.gtnl$index);
-        }
+        RecursivePatternReport.report(this.mc, request, cycles, this.gtnl$index, manual);
     }
 
     // One ring back, and from the last one back to where it was opened from
@@ -254,11 +252,8 @@ public abstract class MixinGuiCraftConfirm extends GuiSub implements ICraftingCy
         var cycles = stack == null ? List.<Cycle>of() : this.gtnl$index.cyclesWith(stack);
         if (cycles.isEmpty()) return;
         this.actionPerformed(this.switchDisplayMode);
-        if (gtnl$tree().gtnl$openCycle(cycles.get(0), stack)) {
-            this.gtnl$ringFromList = true;
-        } else {
-            this.actionPerformed(this.switchDisplayMode);
-        }
+        if (gtnl$tree().gtnl$openCycle(cycles.get(0), stack)) this.gtnl$ringFromList = true;
+        else this.actionPerformed(this.switchDisplayMode);
         ci.cancel();
     }
 
@@ -271,11 +266,15 @@ public abstract class MixinGuiCraftConfirm extends GuiSub implements ICraftingCy
             return;
         }
         if (!RecursivePatternReport.isHighlightKey(key) || this.searchField.isFocused()) return;
-        var listStack = gtnl$listStack();
-        var hovered = this.displayMode == GuiCraftConfirm.DisplayMode.TREE ? tree.gtnl$hoveredPatterns()
-            : listStack != null && this.gtnl$index != null ? this.gtnl$index.matchesFor(listStack)
-                : List.<CraftingCycleIndex.Match>of();
-        CraftConfirmCycles.highlight(this.mc, this.gtnl$index, hovered);
+        CraftConfirmCycles.highlight(this.mc, this.gtnl$index, gtnl$hoveredMatches(tree));
         ci.cancel();
+    }
+
+    @Unique
+    private List<CraftingCycleIndex.Match> gtnl$hoveredMatches(ICraftingTreeCycles tree) {
+        if (this.displayMode == GuiCraftConfirm.DisplayMode.TREE) return tree.gtnl$hoveredPatterns();
+        var listStack = gtnl$listStack();
+        return listStack != null && this.gtnl$index != null ? this.gtnl$index.matchesFor(listStack)
+            : List.<CraftingCycleIndex.Match>of();
     }
 }

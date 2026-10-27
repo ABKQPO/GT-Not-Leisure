@@ -25,19 +25,6 @@ public abstract class MixinEntityTinyTNTPrimed extends EntityTNTPrimed {
 
     @Inject(method = "explode", at = @At("HEAD"), cancellable = true, remap = true)
     private void injectDynamoCheck(CallbackInfo ci) {
-        int ex = (int) posX;
-        int ey = (int) posY;
-        int ez = (int) posZ;
-        for (int x = ex - 10; x <= ex + 10; x++) {
-            for (int y = ey - 10; y <= ey + 10; y++) {
-                for (int z = ez - 10; z <= ez + 10; z++) {
-                    if (ExplosionDynamoHatch
-                        .absorbExplosion(worldObj, x, y, z, posX, posY, posZ, TINY_TNT_DYNAMO_POWER * 20480)) {
-                        ci.cancel();
-                        return;
-                    }
-                }
-            }
-        }
+        if (ExplosionDynamoHatch.absorbFirst(worldObj, posX, posY, posZ, TINY_TNT_DYNAMO_POWER * 20480)) ci.cancel();
     }
 }

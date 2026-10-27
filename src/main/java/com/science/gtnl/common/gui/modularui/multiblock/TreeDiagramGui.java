@@ -12,6 +12,7 @@ import com.cleanroommc.modularui.drawable.DynamicDrawable;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.utils.Alignment.MainAxis;
+import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
 import com.cleanroommc.modularui.value.sync.IntSyncValue;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
@@ -24,7 +25,6 @@ import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
-import com.science.gtnl.common.gui.modularui.GTNLMui2ItemHandlerAdapter;
 import com.science.gtnl.common.gui.modularui.GTNLMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiblock.wireless.TreeDiagram;
 
@@ -164,7 +164,7 @@ public class TreeDiagramGui extends GTNLMultiBlockBaseGui<TreeDiagram> {
 
     private Grid createNaniteSlotGrid(PanelSyncManager syncManager) {
         syncManager.registerSlotGroup(NANITE_SLOT_GROUP, 2, NANITE_SHIFT_CLICK_PRIORITY);
-        GTNLMui2ItemHandlerAdapter handler = new GTNLMui2ItemHandlerAdapter(multiblock.getNaniteSlotHandler());
+        ItemStackHandler handler = multiblock.getNaniteSlotHandler();
         return new Grid().coverChildren()
             .gridOfWidthHeight(
                 2,

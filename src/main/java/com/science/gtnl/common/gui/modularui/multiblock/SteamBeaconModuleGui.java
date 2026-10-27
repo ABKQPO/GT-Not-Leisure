@@ -24,7 +24,6 @@ import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.common.gui.modularui.GTNLMui2ItemHandlerAdapter;
 import com.science.gtnl.common.gui.modularui.GTNLSteamMultiBlockBaseGui;
 import com.science.gtnl.common.machine.multiblock.module.steamElevator.SteamBeaconModule;
 import com.science.gtnl.compat.thaumichorizons.ThaumicHorizonsPotions;
@@ -363,10 +362,9 @@ public class SteamBeaconModuleGui extends GTNLSteamMultiBlockBaseGui {
     }
 
     private IWidget createPaymentSlot(PanelSyncManager syncManager) {
-        ModularSlot slot = new ModularSlot(
-            new GTNLMui2ItemHandlerAdapter(beaconModule.getBeaconInputSlotHandlerForGui()),
-            0).filter(beaconModule::isValidBeaconPaymentItemForGui)
-                .slotGroup(PAYMENT_SLOT_GROUP);
+        ModularSlot slot = new ModularSlot(beaconModule.getBeaconInputSlotHandlerForGui(), 0)
+            .filter(beaconModule::isValidBeaconPaymentItemForGui)
+            .slotGroup(PAYMENT_SLOT_GROUP);
         return new ItemSlot().slot(slot)
             .pos(65, 18);
     }

@@ -11,10 +11,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.google.common.collect.MapMaker;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.gtnllib.client.fx.FxEasing;
 import com.gtnllib.client.fx.world.FxMoteRenderer;
 import com.gtnllib.client.fx.world.FxMoteRenderer.Kind;
@@ -33,6 +34,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class PortalGunOrbTrail {
 
     public static final double MUZZLE_RIGHT = 0.22, MUZZLE_DOWN = 0.32, MUZZLE_BLEND = 3.5, MIN_MUZZLE_DEPTH = 0.3;
@@ -209,10 +211,6 @@ public class PortalGunOrbTrail {
         }
     }
 
-    public static void register() {
-        MinecraftForge.EVENT_BUS.register(new PortalGunOrbTrail());
-    }
-
     public static Vec3d heading(Entity entity) {
         Vec3d moved = new Vec3d(
             entity.posX - entity.prevPosX,
@@ -275,7 +273,7 @@ public class PortalGunOrbTrail {
     }
 
     @SubscribeEvent
-    public void render(RenderWorldLastEvent event) {
+    public static void render(RenderWorldLastEvent event) {
         if (TRAILS.isEmpty()) return;
         var world = Minecraft.getMinecraft().theWorld;
         for (Iterator<Map.Entry<EntityPortalGunOrb, Trail>> it = TRAILS.entrySet()

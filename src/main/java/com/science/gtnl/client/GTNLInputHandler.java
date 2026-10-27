@@ -17,6 +17,8 @@ import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.input.Mouse;
 
 import com.cleanroommc.modularui.api.widget.Interactable;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.client.gui.IBookmarkGroupDropTarget;
 import com.science.gtnl.common.item.items.Stick;
@@ -54,6 +56,7 @@ import gregtech.common.items.ItemFluidDisplay;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class GTNLInputHandler implements IContainerInputHandler {
 
     public static final GTNLInputHandler INSTANCE = new GTNLInputHandler();
@@ -70,9 +73,7 @@ public class GTNLInputHandler implements IContainerInputHandler {
 
     public List<ItemStack> draggedBookmarkGroup;
 
-    public GTNLInputHandler() {
-        GuiContainerManager.addInputHandler(this);
-    }
+    private GTNLInputHandler() {}
 
     public static Map<String, BooleanSupplier> createKeyBindings() {
         Map<String, BooleanSupplier> keyBindings = new Object2ObjectOpenHashMap<>(2);
@@ -151,7 +152,7 @@ public class GTNLInputHandler implements IContainerInputHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onClientTick(TickEvent.ClientTickEvent event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (INPUT_COOLDOWN_TICKS > 0) {
             INPUT_COOLDOWN_TICKS--;
         }
@@ -159,12 +160,12 @@ public class GTNLInputHandler implements IContainerInputHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onInputEvent(final InputEvent.KeyInputEvent event) {
+    public static void onInputEvent(final InputEvent.KeyInputEvent event) {
         tryHandlePickBlockInput();
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onInputEvent(final InputEvent.MouseInputEvent event) {
+    public static void onInputEvent(final InputEvent.MouseInputEvent event) {
         tryHandlePickBlockInput();
     }
 

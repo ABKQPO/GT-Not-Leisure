@@ -18,9 +18,9 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
+import com.cleanroommc.modularui.utils.fluid.FluidStackTank;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
-import com.gtnewhorizons.modularui.common.fluid.FluidStackTank;
 import com.science.gtnl.common.gui.modularui.hatch.DualInputHatchGui;
 
 import gregtech.api.enums.GTValues;

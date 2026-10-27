@@ -8,7 +8,6 @@ import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.science.gtnl.utils.item.ItemUtils;
 
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
 import gregtech.api.recipe.NEIRecipePropertiesBuilder;
@@ -38,7 +37,7 @@ public class ExtendQFTFrontend extends QuantumForceTransformerFrontend {
     @Override
     public void addGregTechLogo(ModularWindow.Builder builder, Pos2d windowOffset) {
         builder.widget(
-            new DrawableWidget().setDrawable(ItemUtils.PICTURE_GTNL_LOGO)
+            new DrawableWidget().setDrawable(GTNLRecipeFrontend.PICTURE_GTNL_LOGO)
                 .setSize(18, 18)
                 .setPos(new Pos2d(79, 7).add(windowOffset)));
     }

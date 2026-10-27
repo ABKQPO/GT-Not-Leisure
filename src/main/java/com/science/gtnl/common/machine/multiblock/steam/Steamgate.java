@@ -18,7 +18,7 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureUtility;
 import com.science.gtnl.api.casing.GTNLCasings;
-import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.common.machine.multiMachineBase.EnhancedMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
@@ -27,14 +27,12 @@ import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
-import gregtech.api.metatileentity.implementations.MTEEnhancedMultiBlockBase;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
-import gregtech.api.util.MultiblockTooltipBuilder;
 
 @IMetaTileEntity.SkipGenerateDescription
 @IMetaTileEntity.SkipGenerateName
-public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements ISurvivalConstructable {
+public class Steamgate extends EnhancedMultiMachineBase<Steamgate> implements ISurvivalConstructable {
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String SG_STRUCTURE_FILE_PATH = RESOURCE_ROOT_ID + ":" + "multiblock/steamgate";
@@ -105,14 +103,6 @@ public class Steamgate extends MTEEnhancedMultiBlockBase<Steamgate> implements I
 
         }
         return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(14870) };
-    }
-
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
-        tt.addAutoTooltip(this)
-            .toolTipFinisher();
-        return tt;
     }
 
     @Override

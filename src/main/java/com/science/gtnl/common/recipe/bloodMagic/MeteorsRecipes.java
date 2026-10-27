@@ -15,7 +15,6 @@ import com.science.gtnl.utils.enums.ModsItemlist;
 
 import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import gregtech.api.enums.Mods;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -94,9 +93,7 @@ public class MeteorsRecipes implements IRecipePool {
         meteorDrops.add("minecraft:tnt:1:15");
         meteorDrops.add("HardcoreEnderExpansion:enhanced_tnt:0:15");
 
-        if (Mods.BloodArsenal.isModLoaded()) {
-            meteorDrops.add("BloodArsenal:blood_tnt:0:15");
-        }
+        addIfRegistered(meteorDrops, "BloodArsenal:blood_tnt:0:15");
 
         meteorDrops.add("EnderZoo:blockConcussionCharge:0:5");
         meteorDrops.add("EnderZoo:blockConfusingCharge:0:5");
@@ -104,9 +101,7 @@ public class MeteorsRecipes implements IRecipePool {
         meteorDrops.add("TConstruct:explosive.slime:0:5");
         meteorDrops.add("TConstruct:explosive.slime:2:5");
 
-        if (Mods.ThaumicHorizons.isModLoaded()) {
-            meteorDrops.add("ThaumicHorizons:alchemite:0:15");
-        }
+        addIfRegistered(meteorDrops, "ThaumicHorizons:alchemite:0:15");
 
         meteorDrops.add("IC2:blockNuke:0:10");
         meteorDrops.add("minecraft:redstone_block:0:1");
@@ -138,6 +133,11 @@ public class MeteorsRecipes implements IRecipePool {
             metalVariants.addAll(Arrays.asList(originalFillers));
         }
         return metalVariants.toArray(new String[0]);
+    }
+
+    private static void addIfRegistered(List<String> drops, String entry) {
+        String[] parts = entry.split(":");
+        if (GameRegistry.findItemStack(parts[0], parts[1], 1) != null) drops.add(entry);
     }
 
     public static boolean isOreDictRegistered(String blockKey) {

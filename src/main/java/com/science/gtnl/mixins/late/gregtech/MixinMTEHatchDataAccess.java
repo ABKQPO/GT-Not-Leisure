@@ -9,6 +9,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.science.gtnl.common.recipe.AssemblyLineRecipeCount;
+
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.modularui.IAddUIWidgets;
 import gregtech.api.metatileentity.implementations.MTEHatch;
@@ -16,7 +18,6 @@ import gregtech.api.metatileentity.implementations.MTEHatchDataAccess;
 import gregtech.api.util.AssemblyLineUtils;
 import gregtech.api.util.GTRecipe;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import tectech.recipe.TecTechRecipeMaps;
 
 @Mixin(value = MTEHatchDataAccess.class, remap = false)
 public abstract class MixinMTEHatchDataAccess extends MTEHatch implements IAddUIWidgets {
@@ -25,9 +26,7 @@ public abstract class MixinMTEHatchDataAccess extends MTEHatch implements IAddUI
     private List<GTRecipe.RecipeAssemblyLine> cachedRecipes;
 
     @Unique
-    private int science$cachedAssemblyLineRecipeCount = -1;
-    @Unique
-    private int science$cachedTecTechRecipeCount = -1;
+    private long science$cachedRecipeCount = AssemblyLineRecipeCount.NONE;
 
     public MixinMTEHatchDataAccess(int aID, String aName, String aNameRegional, int aTier, int aInvSlotCount,
         String aDescription, ITexture... aTextures) {
@@ -36,19 +35,13 @@ public abstract class MixinMTEHatchDataAccess extends MTEHatch implements IAddUI
 
     @Inject(method = "getAssemblyLineRecipes", at = @At("TAIL"), cancellable = true)
     public void getAssemblyLineRecipes(CallbackInfoReturnable<List<GTRecipe.RecipeAssemblyLine>> cir) {
-        int assemblyLineRecipeCount = GTRecipe.RecipeAssemblyLine.sAssemblylineRecipes.size();
-        int tecTechRecipeCount = TecTechRecipeMaps.researchableALRecipeList.size();
-        if (cachedRecipes != null && science$cachedAssemblyLineRecipeCount == assemblyLineRecipeCount
-            && science$cachedTecTechRecipeCount == tecTechRecipeCount) {
-            return;
-        }
-
+        long recipeCount = AssemblyLineRecipeCount.stamp();
+        if (cachedRecipes != null && science$cachedRecipeCount == recipeCount) return;
         cachedRecipes = new ObjectArrayList<>();
         for (int i = 0; i < getSizeInventory(); i++) {
             cachedRecipes.addAll(AssemblyLineUtils.findALRecipeFromDataStick(getStackInSlot(i)));
         }
-        science$cachedAssemblyLineRecipeCount = assemblyLineRecipeCount;
-        science$cachedTecTechRecipeCount = tecTechRecipeCount;
+        science$cachedRecipeCount = recipeCount;
         cir.setReturnValue(cachedRecipes);
     }
 

@@ -52,19 +52,15 @@ public abstract class MixinGuiCraftAmount extends GuiAmount implements IQuantumC
     @Inject(method = "actionPerformed", at = @At("HEAD"), cancellable = true, remap = true)
     private void gtnl$toggleQuantumMode(GuiButton btn, CallbackInfo ci) {
         if (this.gtnl$quantumMode == null) return;
-
+        boolean lite = AEConfig.instance.getUseLiteCraftingMode();
         if (btn == this.gtnl$quantumMode) {
             final boolean enabled = !this.gtnl$quantumMode.getState();
-            if (enabled && AEConfig.instance.getUseLiteCraftingMode()) {
-                this.liteMode.setState(AEConfig.instance.toggleUseLiteCraftingMode());
-            }
+            if (enabled && lite) this.liteMode.setState(AEConfig.instance.toggleUseLiteCraftingMode());
             this.gtnl$setQuantumMode(enabled);
             ci.cancel();
-        } else if (btn == this.liteMode && this.gtnl$quantumMode.getState()
-            && !AEConfig.instance.getUseLiteCraftingMode()) {
-                // Lite mode is about to turn on
-                this.gtnl$setQuantumMode(false);
-            }
+        } else if (btn == this.liteMode && this.gtnl$quantumMode.getState() && !lite) {
+            this.gtnl$setQuantumMode(false);
+        }
     }
 
     @Inject(method = "setControlButtonPressed", at = @At("TAIL"))

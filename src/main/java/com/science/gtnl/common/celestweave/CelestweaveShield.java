@@ -19,6 +19,8 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.reavaritia.common.items.InfinitySword;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
@@ -29,6 +31,7 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
+@EventBusSubscriber(phase = Phase.PRE)
 public class CelestweaveShield {
 
     private static final String LIGHTNING = "gtnl.celestweave.lightning";
@@ -75,7 +78,7 @@ public class CelestweaveShield {
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
-    public void attack(LivingAttackEvent event) {
+    public static void attack(LivingAttackEvent event) {
         if (!(event.entityLiving instanceof EntityPlayerMP player)) return;
         DamageSource source = event.source;
         long now = player.worldObj.getTotalWorldTime();
@@ -130,7 +133,7 @@ public class CelestweaveShield {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public void hurt(LivingHurtEvent event) {
+    public static void hurt(LivingHurtEvent event) {
         if (!(event.entityLiving instanceof EntityPlayerMP player)) return;
         HANDLED.remove(player);
         Absorb absorb = PENDING.remove(player);
@@ -190,7 +193,7 @@ public class CelestweaveShield {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public void death(LivingDeathEvent event) {
+    public static void death(LivingDeathEvent event) {
         if (!(event.entityLiving instanceof EntityPlayerMP player)) return;
         DamageSource source = event.source;
         if (source == DamageSource.outOfWorld || bypass(source, Float.MAX_VALUE)) return;

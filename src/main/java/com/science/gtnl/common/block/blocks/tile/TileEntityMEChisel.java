@@ -14,10 +14,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.cricketcraft.chisel.api.carving.CarvingUtils;
-import com.cricketcraft.chisel.api.carving.ICarvingRegistry;
 import com.google.common.collect.ImmutableSet;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.compat.chisel.ChiselCompat;
 import com.science.gtnl.utils.ChiselPatternDetails;
 import com.science.gtnl.utils.GTNLNBTTagList;
 import com.science.gtnl.utils.LargeInventoryCrafting;
@@ -56,8 +55,6 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.ItemList;
-import cpw.mods.fml.common.Optional;
-import gregtech.api.enums.Mods;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 
@@ -100,16 +97,15 @@ public class TileEntityMEChisel extends AENetworkInvTile implements IInterfaceHo
     @Override
     public void onChangeInventory(IInventory inv, int slot, InvOperation invOperation, ItemStack removed,
         ItemStack added) {
-        if (!Mods.Chisel.isModLoaded()) return;
+        if (!ChiselCompat.loaded()) return;
         if ((removed == null && added == null) || invOperation != InvOperation.setInventorySlotContents) return;
         patterns.clear();
         ItemStack s;
         if ((s = inv.getStackInSlot(0)) != null) {
-            var r = getChiselRegistry();
-            if (r != null) {
+            List<ItemStack> variants = ChiselCompat.variants(s);
+            if (variants != null) {
                 var input = AEItemStack.create(s);
-                if (!ChiselPatternDetails
-                    .addChiselPatterns(input, r.getItemsForChiseling(s), patterns, this.parallel)) {
+                if (!ChiselPatternDetails.addChiselPatterns(input, variants, patterns, this.parallel)) {
                     this.inv.setInventorySlotContents(0, null);
                 }
             }
@@ -119,11 +115,6 @@ public class TileEntityMEChisel extends AENetworkInvTile implements IInterfaceHo
         if (n == null) return;
         n.getGrid()
             .postEvent(new MENetworkCraftingPatternChange(this, n));
-    }
-
-    @Optional.Method(modid = "chisel")
-    public ICarvingRegistry getChiselRegistry() {
-        return CarvingUtils.getChiselRegistry();
     }
 
     private static final int[] NO_SLOTS = new int[0];

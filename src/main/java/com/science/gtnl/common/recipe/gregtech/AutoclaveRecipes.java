@@ -1,27 +1,23 @@
 package com.science.gtnl.common.recipe.gregtech;
 
-import static gregtech.api.util.GTRecipeBuilder.SECONDS;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
 import com.science.gtnl.api.IRecipePool;
 import com.science.gtnl.common.material.GTNLMaterials;
+import com.science.gtnl.compat.forestry.ForestryRecipes;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
-import gregtech.common.items.CombType;
-import gregtech.loaders.misc.GTBees;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 
 public class AutoclaveRecipes implements IRecipePool {
@@ -113,17 +109,6 @@ public class AutoclaveRecipes implements IRecipePool {
             .eut(TierEU.RECIPE_LuV)
             .addTo(AR);
 
-        if (Mods.Forestry.isModLoaded()) {
-            RecipeBuilder.builder() // Prismarine + Comb
-                .setNEIDesc("Remove Change by GTNotLeisure")
-                .itemInputs(
-                    GregtechItemList.RedAlgaeBiomass.get(32),
-                    GTBees.combs.getStackForType(CombType.PRISMATIC, 32))
-                .fluidInputs(Materials.Grade1PurifiedWater.getFluid(8000))
-                .itemOutputs(GTOreDictUnificator.get(OrePrefixes.shard, Materials.Prismarine, 32))
-                .duration(15 * SECONDS)
-                .eut(TierEU.RECIPE_LuV)
-                .addTo(AR);
-        }
+        ForestryRecipes.autoclave();
     }
 }

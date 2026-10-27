@@ -10,7 +10,7 @@ import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
-import com.gtnewhorizons.modularui.api.NumberFormatMUI;
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.common.gui.modularui.hatch.DebugEnergyHatchGui;
 import com.science.gtnl.mixins.early.gregtech.AccessorMTETieredMachineBlock;
 
@@ -33,8 +33,6 @@ import tectech.util.CommonValues;
 @IMetaTileEntity.SkipGenerateName
 @IMetaTileEntity.SkipGenerateDescription
 public class DebugEnergyHatch extends MTEHatchEnergy {
-
-    private static final NumberFormatMUI numberFormat = new NumberFormatMUI();
 
     @Getter
     public long mEUT = 0, mAMP = 0;
@@ -71,7 +69,7 @@ public class DebugEnergyHatch extends MTEHatchEnergy {
     }
 
     public static String formatPowerSum(long eut, long amp) {
-        return numberFormat.format(amp * eut);
+        return NumberFormatUtil.formatNumber(amp * eut);
     }
 
     @Override

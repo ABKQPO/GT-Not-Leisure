@@ -12,7 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,7 +25,6 @@ import com.science.gtnl.api.mixinHelper.IInterfaceNameHatch;
 import com.science.gtnl.common.me.InterfaceNameControllerContext;
 import com.science.gtnl.common.me.InterfaceNameLocalization;
 
-import appeng.api.interfaces.IInterfaceNameProvider;
 import appeng.helpers.ICustomNameObject;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -114,14 +112,11 @@ public abstract class MixinMTEHatch extends MTEBasicTank implements ICustomNameO
 
     @Override
     public RecipeMap<?> getInterfaceNameRecipeMap() {
-        if (gtnl$interfaceNameController != null) {
-            MTEMultiBlockBase controller = gtnl$interfaceNameController.get();
-            if (controller instanceof IInterfaceNameController controllerInfo && controller.isValid()
-                && gtnl$interfaceNameStructureVersion == controllerInfo.getInterfaceNameStructureVersion()) {
-                RecipeMap<?> recipeMap = controller.getRecipeMap();
-                if (recipeMap != null) return recipeMap;
-            }
-        }
+        MTEMultiBlockBase controller = gtnl$interfaceNameController == null ? null : gtnl$interfaceNameController.get();
+        RecipeMap<?> recipeMap = controller instanceof IInterfaceNameController info && controller.isValid()
+            && gtnl$interfaceNameStructureVersion == info.getInterfaceNameStructureVersion() ? controller.getRecipeMap()
+                : null;
+        if (recipeMap != null) return recipeMap;
         Object hatch = this;
         if (hatch instanceof MTEHatchInput inputHatch) return inputHatch.mRecipeMap;
         if (hatch instanceof MTEHatchInputBus inputBus) return inputBus.mRecipeMap;
@@ -154,22 +149,12 @@ public abstract class MixinMTEHatch extends MTEBasicTank implements ICustomNameO
     public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
         int z) {
         super.getWailaNBTData(player, tile, tag, world, x, y, z);
-        if (handlesOwnInterfaceName()) {
-            return;
-        }
+        if (handlesOwnInterfaceName()) return;
         if (hasCustomName()) {
             InterfaceNameLocalization.writeName(tag, "gtnl$interface", gtnl$customName, null, null);
-            return;
+        } else {
+            InterfaceNameLocalization.writeMachineName(tag, "gtnl$interface", (MTEHatch) (Object) this);
         }
-
-        ItemStack craftingIcon = getMachineCraftingIcon();
-        if (craftingIcon == null) craftingIcon = getStackForm(1);
-        IChatComponent suffix = null;
-        if (getBaseMetaTileEntity() instanceof IInterfaceNameProvider provider) {
-            suffix = provider.getInterfaceNameSuffix();
-        }
-        if (craftingIcon != null) InterfaceNameLocalization
-            .writeName(tag, "gtnl$interface", craftingIcon.getUnlocalizedName(), suffix, craftingIcon);
     }
 
     @Override

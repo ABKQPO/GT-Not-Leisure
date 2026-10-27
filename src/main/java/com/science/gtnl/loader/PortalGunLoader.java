@@ -2,7 +2,6 @@ package com.science.gtnl.loader;
 
 import net.minecraftforge.client.MinecraftForgeClient;
 
-import com.science.gtnl.client.portalgun.PortalGunOrbTrail;
 import com.science.gtnl.common.entity.EntityPortalGunOrb;
 import com.science.gtnl.common.entity.EntityPortalGunPortal;
 import com.science.gtnl.common.portalgun.PortalGunPairs;
@@ -29,9 +28,7 @@ public class PortalGunLoader implements IContentLoader {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void clientPreInit() {
-        PortalGunOrbTrail.register();
-    }
+    public void clientPreInit() {}
 
     @Override
     @SideOnly(Side.CLIENT)

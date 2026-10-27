@@ -1,17 +1,16 @@
 package com.science.gtnl.loader;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.science.gtnl.ScienceNotLeisure;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import gregtech.GTMod;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.loaders.postload.recipes.FakeCuttingRecipes;
 
+@EventBusSubscriber
 public class LoadCompleteRecipeScheduler {
-
-    private static final LoadCompleteRecipeScheduler INSTANCE = new LoadCompleteRecipeScheduler();
 
     private static boolean scheduled;
     private static boolean loaded;
@@ -22,30 +21,24 @@ public class LoadCompleteRecipeScheduler {
         if (scheduled || loaded) return;
 
         scheduled = true;
-        FMLCommonHandler.instance()
-            .bus()
-            .register(INSTANCE);
     }
 
     @SubscribeEvent
-    public void onServerTick(TickEvent.ServerTickEvent event) {
+    public static void onServerTick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         loadRecipesAfterCompleteInit();
     }
 
     @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         loadRecipesAfterCompleteInit();
     }
 
-    private void loadRecipesAfterCompleteInit() {
-        if (loaded) return;
+    private static void loadRecipesAfterCompleteInit() {
+        if (!scheduled || loaded) return;
 
         loaded = true;
-        FMLCommonHandler.instance()
-            .bus()
-            .unregister(this);
 
         ScienceNotLeisure.LOG.info("GTNL: Loading complete-init recipes after all mod load-complete handlers.");
         RecipeLoader.loadCompleteInit();

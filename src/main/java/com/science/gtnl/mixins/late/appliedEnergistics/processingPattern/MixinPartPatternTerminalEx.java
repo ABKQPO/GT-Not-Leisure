@@ -49,15 +49,11 @@ public abstract class MixinPartPatternTerminalEx extends PartPatternTerminal {
 
     @Inject(method = "setInverted", at = @At("HEAD"), cancellable = true)
     private void gtnl$setInvertedWithOpenedCapacity(boolean inverted, CallbackInfo callbackInfo) {
-        if (!ProcessingPatternCapacity.isEnabled()) {
-            return;
-        }
+        if (!ProcessingPatternCapacity.isEnabled()) return;
         IAEStackInventory hidden = this
             .getAEInventoryByName(inverted ? StorageName.CRAFTING_INPUT : StorageName.CRAFTING_OUTPUT);
-        int slotsPerSide = hidden.getSizeInventory();
-        if (slotsPerSide / ProcessingPatternCapacity.SLOTS_PER_PAGE == ProcessingPatternCapacity.pageCount()) {
-            return;
-        }
+        if (hidden.getSizeInventory() / ProcessingPatternCapacity.SLOTS_PER_PAGE
+            == ProcessingPatternCapacity.pageCount()) return;
         this.inverted = inverted;
         ProcessingPatternInventoryData.clearHiddenSlots(hidden);
         callbackInfo.cancel();
@@ -84,9 +80,7 @@ public abstract class MixinPartPatternTerminalEx extends PartPatternTerminal {
     /** Selects the orientation that can display the encoded pattern. */
     @Inject(method = "exPatternTerminalCall", at = @At("HEAD"), cancellable = true)
     private void gtnl$exPatternTerminalCall(IAEStack<?>[] in, IAEStack<?>[] out, CallbackInfo callbackInfo) {
-        if (!ProcessingPatternCapacity.isEnabled()) {
-            return;
-        }
+        if (!ProcessingPatternCapacity.isEnabled()) return;
         ((IProcessingPatternOverflowAccess) this).gtnl$clearProcessingPatternOverflow();
         this.setInverted(
             ProcessingPatternInventoryData.invertFor(

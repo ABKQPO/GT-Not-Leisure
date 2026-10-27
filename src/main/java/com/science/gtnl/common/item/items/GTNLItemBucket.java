@@ -23,7 +23,7 @@ public class GTNLItemBucket extends ItemBucket {
         bucket.init();
 
         FluidContainerRegistry.registerFluidContainer(fluid, new ItemStack(bucket), new ItemStack(Items.bucket));
-        BucketHandler.INSTANCE.registerFluid(fluid.getBlock(), bucket);
+        BucketHandler.registerFluid(fluid.getBlock(), bucket);
 
         return bucket;
     }

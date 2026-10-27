@@ -14,6 +14,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.mixins.late.appliedEnergistics.wireless.AccessorTileController;
 
@@ -45,9 +46,9 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
+@EventBusSubscriber
 public class WirelessChannelManager {
 
-    public static final WirelessChannelManager INSTANCE = new WirelessChannelManager();
     private static final Int2ObjectLinkedOpenHashMap<Entrance> ENTRANCES = new Int2ObjectLinkedOpenHashMap<>();
     private static List<Entrance> entranceSnapshot = List.of();
     private static Object2IntOpenHashMap<Address> entranceCounts;
@@ -351,7 +352,7 @@ public class WirelessChannelManager {
     }
 
     @SubscribeEvent
-    public void tick(TickEvent.ServerTickEvent event) {
+    public static void tick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         connectionSnapshot = new Reference2ObjectOpenHashMap<>();
         try (var ignored = WirelessLinkData.readBatch()) {
@@ -383,13 +384,13 @@ public class WirelessChannelManager {
     }
 
     @SubscribeEvent
-    public void loadChunk(ChunkEvent.Load event) {
+    public static void loadChunk(ChunkEvent.Load event) {
         if (event.world.isRemote) return;
         if (WirelessLinkPersistence.discover(event.getChunk())) WirelessClusterManager.invalidateTopology();
     }
 
     @SubscribeEvent
-    public void unloadChunk(ChunkEvent.Unload event) {
+    public static void unloadChunk(ChunkEvent.Unload event) {
         if (event.world.isRemote) return;
         boolean changed = WirelessClusterManager.forgetTargets(address -> inChunk(address, event));
         for (Entrance entrance : entrances()) {
@@ -408,7 +409,7 @@ public class WirelessChannelManager {
     }
 
     @SubscribeEvent
-    public void unloadWorld(WorldEvent.Unload event) {
+    public static void unloadWorld(WorldEvent.Unload event) {
         if (event.world.isRemote) return;
         WirelessClusterManager.forgetTargets(address -> address.dimension() == event.world.provider.dimensionId);
         WirelessClusterManager.invalidateTopology();

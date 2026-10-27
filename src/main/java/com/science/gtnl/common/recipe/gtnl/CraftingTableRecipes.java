@@ -10,12 +10,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-import com.dreammaster.item.NHItemList;
 import com.glodblock.github.loader.recipe.WirelessTerminalEnergyRecipe;
 import com.glodblock.github.loader.recipe.WirelessTerminalQuantumBridgeRecipe;
 import com.glodblock.github.loader.recipe.WirelessTerminalRecipe;
@@ -26,7 +24,9 @@ import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.yogsothoth.YogMergeRecipe;
-import com.science.gtnl.config.MainConfig;
+import com.science.gtnl.compat.enhancedlootbags.EnhancedLootBagsRecipes;
+import com.science.gtnl.compat.newhorizons.NHCoreRecipes;
+import com.science.gtnl.compat.randomthings.RandomThingsRecipes;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.item.ItemUtils;
@@ -35,12 +35,10 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 import appeng.api.AEApi;
 import appeng.api.util.AEColor;
 import appeng.container.ContainerNull;
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.casing.Casings;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.ToolDictNames;
 import gregtech.api.metatileentity.implementations.MTEBasicMachineWithRecipe;
@@ -51,7 +49,6 @@ import gregtech.common.items.ItemGTToolbox;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.xmod.bop.blocks.BOPBlockRegistrator;
 import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
-import tectech.thing.CustomItemList;
 import thaumcraft.common.config.ConfigBlocks;
 
 public class CraftingTableRecipes implements IRecipePool {
@@ -1180,15 +1177,7 @@ public class CraftingTableRecipes implements IRecipePool {
                 new ItemStack(Items.diamond_hoe, 1), 'C',
                 GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Gold, 1L) });
 
-        if (Mods.EnhancedLootBags.isModLoaded()) {
-            GTModHandler.addCraftingRecipe(
-                GTNLItemList.LootBagRedemption.get(1),
-                new Object[] { "ABA", "CDC", "EFE", 'A',
-                    GTOreDictUnificator.get(OrePrefixes.screw, Materials.Steel, 1L), 'B',
-                    ItemUtils.getEnchantedBook(Enchantment.fortune, 3), 'C', OrePrefixes.circuit.get(Materials.LV), 'D',
-                    ItemList.Hull_LV.get(1), 'E', GTOreDictUnificator.get(OrePrefixes.plate, Materials.Steel, 1L), 'F',
-                    ModsItemlist.IronChestsBlockIronChest.get(1) });
-        }
+        EnhancedLootBagsRecipes.craftingTable();
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.DieselGeneratorLV.get(1),
@@ -1290,32 +1279,7 @@ public class CraftingTableRecipes implements IRecipePool {
                 new ItemStack(Items.saddle, 1), 'C', ModsItemlist.TinkerConstructSlimeCrystal.get(1), 'D',
                 ModsItemlist.TinkerConstructSlimePad.get(1) });
 
-        if (Mods.RandomThings.isModLoaded()) {
-            ItemStack ectoplasm = ModsItemlist.RandomThingsSpirit.get(1);
-
-            GTModHandler.addCraftingRecipe(
-                GTNLItemList.SoulCardboardHelmet.get(1),
-                new Object[] { "ABA", "CDC", 'A', ectoplasm, 'B', new ItemStack(Items.leather_helmet, 1), 'C',
-                    GTNLItemList.CardboardBox.get(1), 'D', ToolDictNames.craftingToolHardHammer });
-
-            GTModHandler.addCraftingRecipe(
-                GTNLItemList.SoulCardboardChestplate.get(1),
-                new Object[] { "FBF", "CDC", "AEA", 'A', GTNLItemList.CardboardBox.get(1), 'B',
-                    ToolDictNames.craftingToolHardHammer, 'C',
-                    new ItemStack(Blocks.wool, 1, OreDictionary.WILDCARD_VALUE), 'D',
-                    new ItemStack(Items.leather_chestplate, 1), 'E', ectoplasm, 'F', new ItemStack(Blocks.web, 1) });
-
-            GTModHandler.addCraftingRecipe(
-                GTNLItemList.SoulCardboardLeggings.get(1),
-                new Object[] { "ABA", "CDC", "E E", 'A', new ItemStack(Blocks.web, 1), 'B',
-                    new ItemStack(Items.leather_leggings, 1), 'C', GTNLItemList.CardboardBox.get(1), 'D',
-                    ToolDictNames.craftingToolHardHammer, 'E', ectoplasm });
-
-            GTModHandler.addCraftingRecipe(
-                GTNLItemList.SoulCardboardBoots.get(1),
-                new Object[] { "ABA", "CDC", 'A', ectoplasm, 'B', new ItemStack(Items.leather_boots, 1), 'C',
-                    GTNLItemList.CardboardBox.get(1), 'D', ToolDictNames.craftingToolHardHammer });
-        }
+        RandomThingsRecipes.craftingTable();
 
         GTModHandler.addCraftingRecipe(
             GTNLItemList.SuperstrongSponge.get(1),
@@ -1710,61 +1674,8 @@ public class CraftingTableRecipes implements IRecipePool {
                     .maybeStack(1)
                     .orNull() });
 
-        if (Mods.NewHorizonsCoreMod.isModLoaded()) {
-            loadNHRecipe();
-            if (MainConfig.recipe.enableSomethingRecipe) loadExtraRecipe();
-        }
-    }
-
-    @Optional.Method(modid = "dreamcraft")
-    public void loadNHRecipe() {
-        var aeItems = AEApi.instance()
-            .definitions()
-            .items();
-        var aeMaterials = AEApi.instance()
-            .definitions()
-            .materials();
-        var aeBlocks = AEApi.instance()
-            .definitions()
-            .blocks();
-
-        GTModHandler.addCraftingRecipe(
-            GTNLItemList.Desulfurizer.get(1),
-            new Object[] { "ABA", "CDC", "EFE", 'A', OrePrefixes.circuit.get(Materials.HV), 'B',
-                NHItemList.AdsorptionFilter.get(1), 'C', ItemList.Electric_Pump_HV.get(1), 'D', ItemList.Hull_HV.get(1),
-                'E', GTOreDictUnificator.get(OrePrefixes.wireGt08, Materials.Electrum, 1L), 'F',
-                ItemList.Electric_Motor_HV.get(1) });
-
-        GTModHandler.addCraftingRecipe(
-            GTNLItemList.QuantumComputerUnit.get(1),
-            new Object[] { "AB ", "CD ", "   ", 'A', aeBlocks.craftingUnit()
-                .maybeStack(1)
-                .orNull(), 'B',
-                aeMaterials.singularity()
-                    .maybeStack(1)
-                    .orNull(),
-                'C', NHItemList.EngravedQuantumChip.get(1), 'D',
-                NHItemList.EngineeringProcessorSpatialPulsatingCore.get(1) });
-    }
-
-    public void loadExtraRecipe() {
-        RecipeBuilder.builder()
-            .itemInputs(
-                GTOreDictUnificator.get(OrePrefixes.circuit, Materials.HV, 4L),
-                ItemList.Hatch_Maintenance.get(2),
-                ItemList.Robot_Arm_HV.get(2),
-                ItemList.Hull_HV.get(1L))
-            .itemOutputs(CustomItemList.hatch_CreativeMaintenance.get(1))
-            .duration(0)
-            .eut(0)
-            .addTo(HOR);
-
-        GTModHandler.addCraftingRecipe(
-            CustomItemList.hatch_CreativeMaintenance.get(1),
-            recipeFlags,
-            new Object[] { "ABA", "CDC", "ABA", 'A', OrePrefixes.circuit.get(Materials.HV), 'B',
-                ItemList.Hatch_Maintenance.get(1L), 'C', ItemList.Robot_Arm_HV.get(1L), 'D',
-                ItemList.Hull_HV.get(1L) });
+        NHCoreRecipes.craftingTable();
+        NHCoreRecipes.craftingTableExtra();
     }
 
     private static final class MiniTerminalCardRecipe extends ShapelessOreRecipe {

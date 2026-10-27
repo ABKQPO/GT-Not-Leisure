@@ -4,6 +4,7 @@ import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -352,5 +353,22 @@ public class PurificationUnitHooks {
             }
         }
         return false;
+    }
+
+    public static String[] plantInfoData(String[] base, boolean wirelessMode, String costingEUText) {
+        List<String> ret = new ObjectArrayList<>(Arrays.asList(base));
+        if (wirelessMode) {
+            ret.add(
+                IGregTechDeviceInformation.encode("gtnl.waila.wireless.mode.format", EnumChatFormatting.LIGHT_PURPLE));
+            ret.add(
+                IGregTechDeviceInformation.encode(
+                    "gtnl.waila.wireless.current_eu_cost.format",
+                    EnumChatFormatting.AQUA,
+                    EnumChatFormatting.RESET,
+                    EnumChatFormatting.GOLD,
+                    costingEUText,
+                    EnumChatFormatting.RESET));
+        }
+        return ret.toArray(new String[0]);
     }
 }

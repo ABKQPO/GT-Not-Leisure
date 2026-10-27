@@ -3,7 +3,6 @@ package com.science.gtnl.loader;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.MinecraftForge;
 
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperDualInterface;
 import com.science.gtnl.common.block.blocks.tile.TileEntitySuperInterface;
@@ -11,14 +10,12 @@ import com.science.gtnl.common.machine.hatch.SuperCraftingInputHatchME;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrix;
 import com.science.gtnl.common.part.PartSuperDualInterface;
 import com.science.gtnl.common.part.PartSuperInterface;
-import com.science.gtnl.common.render.model.MEChiselModel;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.recipes.CraftingUnitHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.client.render.ItemRenderer;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -76,15 +73,6 @@ public class MELoader implements IContentLoader {
             Upgrades.SUPERSPEED.registerItem(bus, 4);
             Upgrades.SUPERLUMINALSPEED.registerItem(bus, 4);
         }
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void clientPreInit() {
-        MinecraftForge.EVENT_BUS.register(MEChiselModel.INSTANCE);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(MEChiselModel.INSTANCE);
     }
 
     @Override

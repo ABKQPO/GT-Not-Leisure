@@ -7,12 +7,15 @@ import net.minecraft.world.gen.feature.WorldGenLakes;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.event.terraingen.DecorateBiomeEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.compat.visualprospecting.OreVeinTypes;
 import com.science.gtnl.loader.BlockLoader;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
+@EventBusSubscriber(phase = Phase.PRE)
 public class GTNLWorldgenloader {
 
     public static void registry() {
@@ -26,12 +29,12 @@ public class GTNLWorldgenloader {
     }
 
     @SubscribeEvent
-    public void onDecorateBiome(DecorateBiomeEvent.Decorate event) {
+    public static void onDecorateBiome(DecorateBiomeEvent.Decorate event) {
         if (event.type != DecorateBiomeEvent.Decorate.EventType.LAKE) return;
         generateFluidLake(event.world, event.rand, event.chunkX, event.chunkZ);
     }
 
-    public void generateFluidLake(World world, Random random, int xChunk, int zChunk) {
+    public static void generateFluidLake(World world, Random random, int xChunk, int zChunk) {
         if (random == null) return;
         int xPos, yPos, zPos;
 

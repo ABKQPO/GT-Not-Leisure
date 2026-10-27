@@ -24,7 +24,6 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.oredict.OreDictionary;
@@ -35,6 +34,8 @@ import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.reavaritia.utils.item.ItemStackWrapper;
 import com.reavaritia.utils.item.SubtitleDisplay;
 import com.reavaritia.utils.item.ToolHelper;
@@ -43,7 +44,6 @@ import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.ItemLoader;
 import com.science.gtnl.utils.item.ItemUtils;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -59,6 +59,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
+@EventBusSubscriber(phase = Phase.PRE)
 public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, IGuiHolder<PlayerInventoryGuiData> {
 
     public boolean isEnable;
@@ -71,10 +72,6 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
         super(EnumHelper.addToolMaterial("VEIN", 15, 20000000, 15, 3, 10));
         this.setMaxStackSize(1);
         this.setMaxDamage(20000000);
-        MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(this);
     }
 
     @Override
@@ -238,7 +235,11 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
     }
 
     @SubscribeEvent
-    public void onBlockBreak(BlockEvent.BreakEvent event) {
+    public static void onBlockBreak(BlockEvent.BreakEvent event) {
+        ItemLoader.veinMiningPickaxe.chainBreak(event);
+    }
+
+    public void chainBreak(BlockEvent.BreakEvent event) {
         EntityPlayer player = event.getPlayer();
         World world = player.worldObj;
         if (world.isRemote || !(player instanceof EntityPlayerMP playerMP)) return;
@@ -552,7 +553,7 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
     }
 
     @SubscribeEvent
-    public void onHarvestDrops(BlockEvent.HarvestDropsEvent event) {
+    public static void onHarvestDrops(BlockEvent.HarvestDropsEvent event) {
         if (event.harvester == null || event.harvester.getCurrentEquippedItem() == null) return;
         ItemStack heldItem = event.harvester.getCurrentEquippedItem();
         if (!(heldItem.getItem() instanceof VeinMiningPickaxe veinMiningPickaxe)) return;

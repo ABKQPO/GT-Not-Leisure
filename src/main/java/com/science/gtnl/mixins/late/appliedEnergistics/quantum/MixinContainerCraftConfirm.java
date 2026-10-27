@@ -22,8 +22,6 @@ import appeng.api.networking.crafting.ICraftingJob;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.container.implementations.CraftingCPUStatus;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketCraftingTreeData;
 
 @Mixin(value = ContainerCraftConfirm.class, remap = false)
 public abstract class MixinContainerCraftConfirm implements IQuantumCraftConfirm {
@@ -47,17 +45,12 @@ public abstract class MixinContainerCraftConfirm implements IQuantumCraftConfirm
     private void gtnl$syncQuantumJob(CallbackInfo ci) {
         final boolean quantumJob = this.result instanceof QuantumCraftingJob;
         if (!(((AEBaseContainer) (Object) this).getPlayerInv().player instanceof EntityPlayerMP player)) return;
-
         if (quantumJob != this.gtnl$quantumJob) {
             this.gtnl$quantumJob = quantumJob;
             ScienceNotLeisure.network.sendTo(new QuantumCraftConfirmPacket(quantumJob), player);
         }
         // AE2 only sends the crafting tree of its own V2 jobs
-        if (this.result instanceof QuantumCraftingJob<?>job) {
-            for (PacketCraftingTreeData packet : QuantumCraftingTree.createChunks(player.worldObj, job)) {
-                NetworkHandler.instance.sendTo(packet, player);
-            }
-        }
+        if (this.result instanceof QuantumCraftingJob<?>job) QuantumCraftingTree.sendTo(player, job);
     }
 
     @Inject(method = "cpuMatches", at = @At("HEAD"), cancellable = true, require = 1)

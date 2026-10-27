@@ -23,6 +23,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 
 import org.lwjgl.input.Keyboard;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.science.gtnl.api.IItemStackExtra;
 import com.science.gtnl.api.IKeyHandler;
 import com.science.gtnl.compat.extrautilities.ExtraUtilitiesContent;
@@ -38,6 +39,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import lombok.val;
 import tectech.thing.CustomItemList;
 
+@EventBusSubscriber(side = Side.CLIENT)
 public class Stick extends Item implements IItemStackExtra, IKeyHandler {
 
     public IIcon defaultIcon;
@@ -55,10 +57,10 @@ public class Stick extends Item implements IItemStackExtra, IKeyHandler {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     @SideOnly(Side.CLIENT)
-    public void onTooltip(ItemTooltipEvent event) {
+    public static void onTooltip(ItemTooltipEvent event) {
         if (!MainConfig.item.stick.enableStickItem) return;
         val item = event.itemStack;
-        if (item.getItem() == this && !isShiftDown()) {
+        if (item.getItem() instanceof Stick stick && !stick.isShiftDown()) {
             val fake = getDisguisedStack(item);
             val list = event.toolTip;
             String[] oldList = list.toArray(new String[0]);

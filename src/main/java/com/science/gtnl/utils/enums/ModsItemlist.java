@@ -1211,4 +1211,8 @@ public enum ModsItemlist {
     public ItemStack getIfLoaded(long amount) {
         return Loader.isModLoaded(modId) ? get(amount) : null;
     }
+
+    public ItemStack getOr(long amount, ItemStack fallback) {
+        return Loader.isModLoaded(modId) ? get(amount) : fallback;
+    }
 }

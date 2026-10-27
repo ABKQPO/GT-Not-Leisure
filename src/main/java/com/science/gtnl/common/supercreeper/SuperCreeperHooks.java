@@ -8,6 +8,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 
 import com.science.gtnl.ScienceNotLeisure;
@@ -77,6 +78,45 @@ public class SuperCreeperHooks {
 
         public boolean isEntityTarget() {
             return entityTarget != null;
+        }
+    }
+
+    public static class ExplosionTimers {
+
+        public int delayedExplosionTimer;
+        public boolean explosionDelayed;
+        public int burningExplosionTimer;
+
+        public void readFromNBT(NBTTagCompound tag) {
+            explosionDelayed = tag.getBoolean("creeperExplosionDelayed");
+            delayedExplosionTimer = tag.getInteger("creeperExplosionDelay");
+        }
+
+        public void writeToNBT(NBTTagCompound tag) {
+            tag.setBoolean("creeperExplosionDelayed", explosionDelayed);
+            tag.setInteger("creeperExplosionDelay", delayedExplosionTimer);
+        }
+    }
+
+    public static void tickExplosionTimers(EntityCreeper creeper, ExplosionTimers timers) {
+        if (timers.explosionDelayed && MainConfig.super_creeper.enableCreeperHurtByCreeperExplosion) {
+            timers.delayedExplosionTimer--;
+            if (timers.delayedExplosionTimer <= 0) {
+                ((AccessorEntityCreeper) creeper).callExplode();
+                creeper.setDead();
+                timers.explosionDelayed = false;
+            }
+        }
+
+        if (creeper.isBurning() && MainConfig.super_creeper.enableCreeperBurningExplosion) {
+            timers.burningExplosionTimer++;
+            if (timers.burningExplosionTimer >= MainConfig.super_creeper.burningExplosionTimer) {
+                ((AccessorEntityCreeper) creeper).callExplode();
+                creeper.extinguish();
+                timers.burningExplosionTimer = 0;
+            }
+        } else {
+            timers.burningExplosionTimer = 0;
         }
     }
 

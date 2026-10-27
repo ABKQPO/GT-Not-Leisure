@@ -26,14 +26,34 @@ public class ArchitectureContracts {
     public static final Path SOURCES = Paths.get("src/main/java/com/science/gtnl");
 
     // Ratchets: each count may only go down. Lower the number in the same change that lowers the count.
-    public static final int MAX_MOD_CHECKS_OUTSIDE_COMPAT = 27;
-    public static final int MAX_MUI1_FILES = 50;
-    public static final int MAX_DIRECT_GT_MULTIBLOCK_BASES = 10;
-    public static final int MAX_MIXINS_OVER_80_LINES = 33;
-    public static final int MAX_MIXINS_WITH_LONG_METHODS = 10;
-    public static final int LONG_METHOD_LINES = 15;
+    public static final int LONG_METHOD_LINES = 10;
     public static final int MAX_CLIENT_IMPORTS_IN_COMMON = 90;
-    public static final int MAX_MANUAL_EVENT_REGISTRATIONS = 31;
+
+    // The only machine on GT's tooltip-only base; an adapter for a single machine would only forward.
+    public static final Set<String> GT_BASE_ALLOWED = Set.of("common/machine/multiblock/QuantumComputer.java");
+
+    // Recipe maps must be built in GTNLRecipeMaps' own static init so GT and NEI see them; packet registration order
+    // fixes packet ids; RecipeBuilder.requireMods receives the mods to check as arguments.
+    public static final Set<String> MOD_CHECK_ALLOWED = Set.of(
+        "common/material/GTNLRecipeMaps.java",
+        "common/packet/NetWorkHandler.java",
+        "utils/recipes/RecipeBuilder.java");
+
+    // GT's RecipeMapFrontend still takes ModularUI 1 types; GT machines still on ModularUI 1 open cover tabs through
+    // createWindow; the modularUI mixins patch ModularUI 1 itself; the Eternal GregTech Workshop is unfinished.
+    public static final List<String> MUI1_ALLOWED = List.of(
+        "common/gui/recipe/",
+        "common/material/GTNLRecipeMaps.java",
+        "common/gui/VoidCoverUIFactory.java",
+        "common/gui/WirelessSteamCoverUIFactory.java",
+        "common/machine/cover/VoidCover.java",
+        "common/machine/cover/WirelessSteamCover.java",
+        "mixins/late/modularUI/",
+        "common/machine/multiblock/module/eternalGregTechWorkshop/",
+        "common/gui/modularui/GTNLMui2ItemHandlerAdapter.java");
+
+    // GTNLLib's WorldListener is one object per world plus a root that owns the map, so the card registers the root.
+    public static final String MANUAL_EVENT_REGISTRATION = "loader/WorldLoader.java";
 
     public static final Set<String> SELF_REGISTERING = Set.of(
         "common/block/blocks/BlockEnderElevator.java",
@@ -100,8 +120,10 @@ public class ArchitectureContracts {
         "utils/machine/greenHouseManager/GreenHouseViewMode.java");
 
     private static final Pattern GT_MULTIBLOCK_BASE = Pattern.compile(
-        "extends (MTEExtendedPowerMultiBlockBase|MTEEnhancedMultiBlockBase|MTEMultiBlockBase|MTETooltipMultiBlockBase"
-            + "|TTMultiblockBase|MTESteamMultiBlockBase|GTPPMultiBlockBase|KubaTechGTMultiBlockBase)\\b");
+        "^public (abstract )?class \\w+(<[^{]*>)? extends (MTEExtendedPowerMultiBlockBase|MTEEnhancedMultiBlockBase"
+            + "|MTEMultiBlockBase|MTETooltipMultiBlockBase|TTMultiblockBase|MTESteamMultiBlockBase|GTPPMultiBlockBase"
+            + "|KubaTechGTMultiBlockBase)\\b",
+        Pattern.MULTILINE);
     private static final Pattern SELF_REGISTRATION = Pattern
         .compile("GameRegistry\\s*\\.\\s*register(Item|Block)\\(\\s*this");
     private static final Pattern MIXIN_INTERFACE = Pattern.compile("^public interface ", Pattern.MULTILINE);
@@ -109,7 +131,10 @@ public class ArchitectureContracts {
     private static final Pattern CARD = Pattern.compile("class (\\w+)[^{]*implements[^{]*\\bIContentLoader\\b");
     private static final Pattern COMPAT = Pattern
         .compile("^public class (\\w+)[^{]*implements[^{]*\\bIModCompat\\b", Pattern.MULTILINE);
-    private static final Pattern EVENT_REGISTRATION = Pattern.compile("(EVENT_BUS|bus\\(\\))\\s*\\.\\s*register\\(");
+    private static final Pattern EVENT_REGISTRATION = Pattern
+        .compile("(EVENT_BUS|TERRAIN_GEN_BUS|ORE_GEN_BUS|bus\\(\\))\\s*\\.\\s*register\\(");
+    private static final Pattern SUBSCRIBE_METHOD = Pattern.compile(
+        "@SubscribeEvent[^\\n]*\\n(?:\\s*@[^\\n]*\\n)*\\s*((?:public|private|protected)?\\s*(?:static\\s+)?)\\w+ (\\w+)\\(");
     private static final Pattern MIXIN_ENTRY_START = Pattern.compile("\\n    (?=[A-Z][A-Z_0-9]*\\()");
     private static final Pattern MIXIN_NAME = Pattern.compile("\"([A-Za-z0-9_]+(?:\\.[A-Za-z0-9_$]+)+)\"");
     private static final Pattern SYSTEM_IMPORT = Pattern.compile(
@@ -184,35 +209,41 @@ public class ArchitectureContracts {
             order.size() >= RELEASED_LOADER_ORDER.size() && order.subList(0, RELEASED_LOADER_ORDER.size())
                 .equals(RELEASED_LOADER_ORDER),
             "ContentLoaders must keep the released card order and add new cards at the end: " + order);
-        ratchet(
-            sources,
-            "files outside compat/ and loader/ that check whether a mod is loaded",
-            MAX_MOD_CHECKS_OUTSIDE_COMPAT,
-            (path, text) -> text.contains(".isModLoaded()") && !path.startsWith("compat/")
-                && !path.startsWith("loader/"));
-        ratchet(
-            sources,
-            "files importing ModularUI 1",
-            MAX_MUI1_FILES,
-            (path, text) -> text.contains("import com.gtnewhorizons.modularui"));
-        ratchet(
-            sources,
-            "machines extending a GT multiblock base instead of a GTNL base",
-            MAX_DIRECT_GT_MULTIBLOCK_BASES,
-            (path, text) -> path.startsWith("common/machine/") && !path.startsWith("common/machine/multiMachineBase/")
+        for (Map.Entry<String, String> entry : sources.entrySet()) {
+            String path = entry.getKey();
+            if (!path.startsWith("compat/") && !path.startsWith("loader/") && !MOD_CHECK_ALLOWED.contains(path)) check(
+                !entry.getValue()
+                    .contains(".isModLoaded()"),
+                path + " checks whether a mod is loaded; code that only matters with that mod lives in compat/<mod>/,"
+                    + " and optional items use ModsItemlist.getOr or getIfLoaded");
+        }
+        for (Map.Entry<String, String> entry : sources.entrySet()) {
+            String path = entry.getKey();
+            if (MUI1_ALLOWED.stream()
+                .noneMatch(path::startsWith))
+                check(
+                    !entry.getValue()
+                        .contains("import com.gtnewhorizons.modularui"),
+                    path + " imports ModularUI 1; new screens and storage use ModularUI 2");
+        }
+        for (Map.Entry<String, String> entry : sources.entrySet()) {
+            String path = entry.getKey();
+            if (path.startsWith("common/machine/") && !path.startsWith("common/machine/multiMachineBase/")
                 && !path.startsWith("common/machine/tooltip/")
-                && GT_MULTIBLOCK_BASE.matcher(text)
-                    .find());
-        ratchet(
-            sources,
-            "mixins over 80 lines",
-            MAX_MIXINS_OVER_80_LINES,
-            (path, text) -> isMixinClass(path, text) && lines(text) > 80);
-        ratchet(
-            sources,
-            "mixins with a method longer than " + LONG_METHOD_LINES + " lines; move the logic into the system's hooks",
-            MAX_MIXINS_WITH_LONG_METHODS,
-            (path, text) -> isMixinClass(path, text) && longestMethodBody(text) > LONG_METHOD_LINES);
+                && !GT_BASE_ALLOWED.contains(path))
+                check(
+                    !GT_MULTIBLOCK_BASE.matcher(entry.getValue())
+                        .find(),
+                    path + " extends a GT multiblock base directly; extend the GTNL base for that family"
+                        + " (MultiMachineBase, SteamMultiMachineBase, TTMultiMachineBase, EnhancedMultiMachineBase)");
+        }
+        for (Map.Entry<String, String> entry : sources.entrySet()) {
+            if (isMixinClass(entry.getKey(), entry.getValue())) check(
+                longestMethodBody(entry.getValue()) <= LONG_METHOD_LINES,
+                entry.getKey() + " has a method longer than "
+                    + LONG_METHOD_LINES
+                    + " lines; mixins only hook, the logic goes into the system's hooks");
+        }
         ratchet(
             sources,
             "common files outside render/ and gui/ importing client classes",
@@ -220,15 +251,22 @@ public class ArchitectureContracts {
             (path, text) -> path.startsWith("common/") && !path.startsWith("common/render/")
                 && !path.startsWith("common/gui/")
                 && text.contains("\nimport net.minecraft.client."));
-        ratchet(
-            sources,
-            "files outside loader/ registering event handlers by hand; use @EventBusSubscriber",
-            MAX_MANUAL_EVENT_REGISTRATIONS,
-            (path, text) -> !path.startsWith("loader/") && EVENT_REGISTRATION.matcher(text)
-                .find());
 
         for (Map.Entry<String, String> entry : sources.entrySet()) {
             String path = entry.getKey(), text = entry.getValue();
+            if (!path.equals(MANUAL_EVENT_REGISTRATION)) check(
+                !EVENT_REGISTRATION.matcher(text)
+                    .find(),
+                path + " registers an event handler by hand; annotate the class with @EventBusSubscriber instead");
+            if (text.contains("@EventBusSubscriber")) {
+                Matcher handler = SUBSCRIBE_METHOD.matcher(text);
+                while (handler.find()) check(
+                    handler.group(1)
+                        .contains("static"),
+                    path + " handler "
+                        + handler.group(2)
+                        + " is not static; GTNHLib refuses to start with a non-static @SubscribeEvent method");
+            }
             if ((path.startsWith("common/item/") || path.startsWith("common/block/")) && SELF_REGISTRATION.matcher(text)
                 .find())
                 check(
@@ -394,12 +432,6 @@ public class ArchitectureContracts {
             i = close;
         }
         return longest;
-    }
-
-    private static int lines(String text) {
-        int count = 0;
-        for (int i = 0; i < text.length(); i++) if (text.charAt(i) == '\n') count++;
-        return count;
     }
 
     private static Map<String, String> sources() throws IOException {

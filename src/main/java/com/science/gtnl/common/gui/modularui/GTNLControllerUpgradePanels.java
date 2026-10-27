@@ -17,6 +17,7 @@ import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.drawable.DynamicDrawable;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.utils.Alignment;
+import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
 import com.cleanroommc.modularui.value.sync.IntSyncValue;
 import com.cleanroommc.modularui.value.sync.InteractionSyncHandler;
@@ -29,7 +30,6 @@ import com.cleanroommc.modularui.widgets.layout.Grid;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
-import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
 import com.science.gtnl.api.IControllerUpgrade;
 import com.science.gtnl.common.gui.GTNLMui2Textures;
 
@@ -239,7 +239,7 @@ public class GTNLControllerUpgradePanels {
 
     private Grid createInputGrid(PanelSyncManager syncManager, int columns, int rows) {
         ItemStackHandler inputHandler = controllerUpgrade.getUpgradeInputSlotHandler();
-        GTNLMui2ItemHandlerAdapter adapter = new GTNLMui2ItemHandlerAdapter(inputHandler, this::markMultiblockDirty);
+        ListeningItemHandler adapter = new ListeningItemHandler(inputHandler, this::markMultiblockDirty);
         syncManager.registerSlotGroup(UPGRADE_INPUT_SLOT_GROUP, rows, UPGRADE_INPUT_SHIFT_CLICK_PRIORITY);
 
         return new Grid().coverChildren()

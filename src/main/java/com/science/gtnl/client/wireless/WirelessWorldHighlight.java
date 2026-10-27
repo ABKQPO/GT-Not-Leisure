@@ -17,6 +17,8 @@ import net.minecraftforge.event.world.WorldEvent;
 
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.common.wireless.WirelessCardContainer;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -25,9 +27,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class WirelessWorldHighlight {
 
-    public static final WirelessWorldHighlight INSTANCE = new WirelessWorldHighlight();
     private static final long DURATION_MS = 5_000;
 
     private record Position(int x, int y, int z) {}
@@ -111,13 +113,13 @@ public class WirelessWorldHighlight {
     }
 
     @SubscribeEvent
-    public void unload(WorldEvent.Unload event) {
+    public static void unload(WorldEvent.Unload event) {
         Selection current = selection;
         if (current != null && current.world() == event.world) selection = null;
     }
 
     @SubscribeEvent
-    public void render(RenderWorldLastEvent event) {
+    public static void render(RenderWorldLastEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
         showArrival(mc);
         Selection current = selection;

@@ -5,6 +5,9 @@ import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSleepMP;
 import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.multiplayer.ChunkProviderClient;
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -23,6 +26,8 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
+import com.science.gtnl.common.item.items.TimeStopPocketWatch;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class TimeStopClientHooks {
@@ -30,6 +35,20 @@ public class TimeStopClientHooks {
     private TimeStopClientHooks() {}
 
     // Minecraft 1.7.10 has no isGamePaused field.
+    public static boolean tickStoppedWorld(WorldClient world, NetHandlerPlayClient sendQueue,
+        ChunkProviderClient chunkProvider) {
+        if (!TimeStopPocketWatch.isTimeStopped()) return false;
+        world.theProfiler.startSection("reEntryProcessing");
+        world.theProfiler.endStartSection("connection");
+        sendQueue.onNetworkTick();
+        world.theProfiler.endStartSection("chunkCache");
+        chunkProvider.unloadQueuedChunks();
+        world.theProfiler.endStartSection("blocks");
+        world.func_147456_g();
+        world.theProfiler.endSection();
+        return true;
+    }
+
     public static boolean isGamePaused(Minecraft mc) {
         return mc.theWorld == null || (mc.currentScreen != null && mc.currentScreen.doesGuiPauseGame());
     }

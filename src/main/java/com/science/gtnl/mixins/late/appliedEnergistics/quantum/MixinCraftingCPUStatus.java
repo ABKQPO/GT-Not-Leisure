@@ -23,15 +23,9 @@ public class MixinCraftingCPUStatus implements EQuantumComputerCPUStatus {
 
     @Inject(method = "<init>(Lappeng/api/networking/crafting/ICraftingCPU;I)V", at = @At("RETURN"), require = 1)
     private void injectInit(final ICraftingCPU cluster, final int serial, final CallbackInfo ci) {
-        if (!(cluster instanceof ECraftingCPUCluster eCluster)) {
-            return;
-        }
-
+        if (!(cluster instanceof ECraftingCPUCluster eCluster)) return;
         final QuantumComputer owner = eCluster.getVirtualCPUOwner();
-        if (owner == null) {
-            return;
-        }
-
+        if (owner == null) return;
         this.gtnl$cpuType = owner.isVirtualCPU(cluster) ? EQuantumComputerCPUStatus.VIRTUAL_CPU
             : EQuantumComputerCPUStatus.SPLIT_CPU;
     }

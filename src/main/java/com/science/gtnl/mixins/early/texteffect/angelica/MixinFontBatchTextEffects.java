@@ -22,7 +22,6 @@ import com.gtnllib.client.text.DeferredTextEffects;
 import com.gtnllib.client.text.EffectTextRenderer;
 import com.gtnllib.client.text.compat.AngelicaTextAdapter;
 import com.gtnllib.client.text.compat.FontBatchBridge;
-import com.gtnllib.text.EffectTextParser;
 
 /** Flushes the current batch before temporary render-target changes. */
 @Mixin(value = BatchingFontRenderer.class, remap = false)
@@ -58,23 +57,11 @@ public abstract class MixinFontBatchTextEffects implements FontBatchBridge {
     private void gtnl$directEffectText(float anchorX, float anchorY, int inputColor, boolean enableShadow,
         boolean unicodeFlag, CharSequence string, int stringOffset, int stringLength,
         CallbackInfoReturnable<Float> cir) {
-        if (EffectTextRenderer.isBypassingEffects() || string == null) return;
-        int start = Math.max(0, Math.min(stringOffset, string.length()));
-        int end = start + Math.max(0, Math.min(stringLength, string.length() - start));
-        if (!EffectTextParser.containsMarkers(string, start, end)) return;
-        String text = start == 0 && end == string.length() ? string.toString()
-            : string.subSequence(start, end)
-                .toString();
-        boolean previousUnicode = underlying.getUnicodeFlag();
-        underlying.setUnicodeFlag(unicodeFlag);
-        try {
-            EffectTextRenderer.INSTANCE.draw(underlying, text, anchorX, anchorY, inputColor, enableShadow);
-            cir.setReturnValue(
-                anchorX + EffectTextRenderer.INSTANCE.layout(underlying, text)
-                    .width() + (enableShadow ? ((BatchingFontRenderer) (Object) this).getShadowOffset() : 0));
-        } finally {
-            underlying.setUnicodeFlag(previousUnicode);
-        }
+        String text = EffectTextRenderer.markedText(string, stringOffset, stringLength);
+        if (text == null) return;
+        float width = EffectTextRenderer.INSTANCE
+            .drawWithUnicodeFlag(underlying, text, anchorX, anchorY, inputColor, enableShadow, unicodeFlag);
+        cir.setReturnValue(width + (enableShadow ? ((BatchingFontRenderer) (Object) this).getShadowOffset() : 0));
     }
 
     @Override
@@ -140,11 +127,11 @@ public abstract class MixinFontBatchTextEffects implements FontBatchBridge {
             : FontConfig.fontAAMode;
     }
 
+    // The shader is shared by all font instances, while Angelica caches its mode per instance.
     @Inject(method = "flushBatch", at = @At("RETURN"))
     private void gtnl$restoreFontAntialiasing(CallbackInfo ci) {
         int configuredMode = FontConfig.fontAAMode;
         if (!EffectTextRenderer.isCapturing() || fontAAModeLast == configuredMode) return;
-        // The shader is shared by all font instances, while Angelica caches its mode per instance.
         int previousProgram = GLStateManager.glGetInteger(GL20.GL_CURRENT_PROGRAM);
         GLStateManager.glUseProgram(fontShaderId);
         try {

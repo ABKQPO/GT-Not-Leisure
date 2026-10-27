@@ -19,8 +19,8 @@ import net.minecraft.world.World;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.google.common.collect.ImmutableMap;
-import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
 import com.science.gtnl.common.gui.modularui.multiblock.SteamBeaconModuleGui;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.compat.thaumichorizons.ThaumicHorizonsPotions;

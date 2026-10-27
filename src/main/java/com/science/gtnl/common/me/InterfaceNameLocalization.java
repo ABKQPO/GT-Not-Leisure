@@ -14,6 +14,7 @@ import net.minecraft.util.StatCollector;
 import com.science.gtnl.api.mixinHelper.IInterfaceNameHatch;
 import com.science.gtnl.utils.item.ItemUtils;
 
+import appeng.api.interfaces.IInterfaceNameProvider;
 import appeng.helpers.ICustomNameObject;
 import gregtech.api.interfaces.INonConsumedItemDisplay;
 import gregtech.api.metatileentity.MetaTileEntity;
@@ -24,6 +25,16 @@ import gregtech.crossmod.ae2.ChatComponentNonConsumedItemsSuffix;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class InterfaceNameLocalization {
+
+    public static void writeMachineName(NBTTagCompound tag, String prefix, MTEHatch hatch) {
+        ItemStack craftingIcon = hatch.getMachineCraftingIcon();
+        if (craftingIcon == null) craftingIcon = hatch.getStackForm(1);
+        IChatComponent suffix = null;
+        if (hatch.getBaseMetaTileEntity() instanceof IInterfaceNameProvider provider) {
+            suffix = provider.getInterfaceNameSuffix();
+        }
+        if (craftingIcon != null) writeName(tag, prefix, craftingIcon.getUnlocalizedName(), suffix, craftingIcon);
+    }
 
     public static void writeName(NBTTagCompound tag, String prefix, String rawName, IChatComponent suffix,
         ItemStack displayRepresentation) {

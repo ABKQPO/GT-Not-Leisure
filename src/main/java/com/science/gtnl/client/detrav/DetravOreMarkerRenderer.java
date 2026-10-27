@@ -22,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.utils.ColorUtils;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -41,6 +43,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class DetravOreMarkerRenderer {
 
     private static final double MAX_RENDER_DISTANCE = 256d;
@@ -88,14 +91,14 @@ public class DetravOreMarkerRenderer {
     }
 
     @SubscribeEvent
-    public void onWorldUnload(WorldEvent.Unload event) {
+    public static void onWorldUnload(WorldEvent.Unload event) {
         if (event.world.isRemote) {
             clear();
         }
     }
 
     @SubscribeEvent
-    public void onRenderWorld(RenderWorldLastEvent event) {
+    public static void onRenderWorld(RenderWorldLastEvent event) {
         if (markers.isEmpty()) {
             return;
         }

@@ -11,7 +11,6 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
@@ -19,6 +18,8 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.common.effect.EffectBase;
 import com.science.gtnl.loader.EffectLoader;
 import com.science.gtnl.mixins.early.minecraft.AccessorFoodStats;
@@ -27,20 +28,20 @@ import com.science.gtnl.utils.ColorUtils;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
+@EventBusSubscriber(phase = Phase.PRE)
 public class PotionGhostlyShape extends EffectBase {
 
     private static final Set<EntityPlayer> affectedPlayers = new ObjectOpenHashSet<>();
 
     public PotionGhostlyShape(int id) {
         super(id, "ghostly_shape", false, ColorUtils.rgb(ColorUtils.effectGhostlyShape), 4);
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent
-    public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
+    public static void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
         if (!(event.entity instanceof EntityPlayer player)) return;
 
-        PotionEffect effect = player.getActivePotionEffect(this);
+        PotionEffect effect = player.getActivePotionEffect(EffectLoader.ghostly_shape);
         if (effect == null) {
             affectedPlayers.remove(player);
             return;
@@ -90,7 +91,7 @@ public class PotionGhostlyShape extends EffectBase {
     }
 
     @SubscribeEvent
-    public void onEntityTarget(LivingSetAttackTargetEvent event) {
+    public static void onEntityTarget(LivingSetAttackTargetEvent event) {
         if (event.target instanceof EntityPlayer player && event.entityLiving instanceof EntityCreature creature) {
             if (player.isPotionActive(EffectLoader.ghostly_shape)) {
                 creature.setAttackTarget(null);
@@ -99,7 +100,7 @@ public class PotionGhostlyShape extends EffectBase {
     }
 
     @SubscribeEvent
-    public void onLivingHurt(LivingHurtEvent event) {
+    public static void onLivingHurt(LivingHurtEvent event) {
         if (event.entityLiving instanceof EntityPlayer player) {
             if (player.isPotionActive(EffectLoader.ghostly_shape)) {
                 player.worldObj.playSoundAtEntity(player, "random.hurt", 1.0F, 1.0F);
@@ -110,7 +111,7 @@ public class PotionGhostlyShape extends EffectBase {
     }
 
     @SubscribeEvent
-    public void onPlayerUseItem(PlayerInteractEvent event) {
+    public static void onPlayerUseItem(PlayerInteractEvent event) {
         EntityPlayer player = event.entityPlayer;
         if (player.worldObj.isRemote) return;
         if (!player.isPotionActive(EffectLoader.ghostly_shape)) return;
@@ -131,7 +132,7 @@ public class PotionGhostlyShape extends EffectBase {
     }
 
     @SubscribeEvent
-    public void onBlockBreak(BlockEvent.BreakEvent event) {
+    public static void onBlockBreak(BlockEvent.BreakEvent event) {
         EntityPlayer player = event.getPlayer();
         if (player.worldObj.isRemote) return;
         if (player.isPotionActive(EffectLoader.ghostly_shape)) {
@@ -141,7 +142,7 @@ public class PotionGhostlyShape extends EffectBase {
     }
 
     @SubscribeEvent
-    public void onAttackEntity(AttackEntityEvent event) {
+    public static void onAttackEntity(AttackEntityEvent event) {
         EntityPlayer player = event.entityPlayer;
         if (player.worldObj.isRemote) return;
         if (player.isPotionActive(EffectLoader.ghostly_shape)) {

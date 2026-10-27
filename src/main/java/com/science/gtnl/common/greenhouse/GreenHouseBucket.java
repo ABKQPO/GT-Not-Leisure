@@ -8,13 +8,12 @@ import net.minecraft.util.EnumChatFormatting;
 import com.science.gtnl.api.IGreenHouse;
 import com.science.gtnl.common.greenhouse.buckets.GreenHouseFlowerBucket;
 import com.science.gtnl.common.greenhouse.buckets.GreenHouseIC2Bucket;
-import com.science.gtnl.common.greenhouse.buckets.GreenHouseInfusedSeedBucket;
-import com.science.gtnl.common.greenhouse.buckets.GreenHouseRainbowCactusBucket;
 import com.science.gtnl.common.greenhouse.buckets.GreenHouseSeedBucket;
 import com.science.gtnl.common.greenhouse.buckets.GreenHouseStemBucket;
+import com.science.gtnl.compat.thaumicbases.ThaumicBasesCompat;
+import com.science.gtnl.compat.thaumictinkerer.ThaumicTinkererCompat;
 import com.science.gtnl.utils.item.ItemUtils;
 
-import gregtech.api.enums.Mods;
 import gregtech.api.util.GTUtility;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
@@ -59,14 +58,10 @@ public abstract class GreenHouseBucket {
         // IC2 buckets
         GreenHouseModes.IC2.addLowPriorityFactory(GreenHouseIC2Bucket.factory);
 
-        if (Mods.ThaumicTinkerer.isModLoaded()) {
-            GreenHouseModes.Normal.addLowPriorityFactory(GreenHouseInfusedSeedBucket.factory);
-        }
+        ThaumicTinkererCompat.addGreenhouseBuckets();
 
         // Regular Mode Buckets
-        if (Mods.ThaumicBases.isModLoaded()) {
-            GreenHouseModes.Normal.addLowPriorityFactory(GreenHouseRainbowCactusBucket.factory);
-        }
+        ThaumicBasesCompat.addGreenhouseBuckets();
         GreenHouseModes.Normal.addLowPriorityFactory(GreenHouseFlowerBucket.factory);
         GreenHouseModes.Normal.addLowPriorityFactory(GreenHouseStemBucket.factory);
         GreenHouseModes.Normal.addLowPriorityFactory(GreenHouseSeedBucket.factory);

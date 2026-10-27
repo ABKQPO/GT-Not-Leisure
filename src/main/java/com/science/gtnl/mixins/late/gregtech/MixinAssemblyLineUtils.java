@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import com.science.gtnl.common.recipe.AssemblyLineRecipeCount;
 
 import gregtech.api.util.AssemblyLineUtils;
 import gregtech.api.util.GTRecipe;
@@ -26,9 +27,7 @@ import tectech.recipe.TecTechRecipeMaps;
 public abstract class MixinAssemblyLineUtils {
 
     @Unique
-    private static int science$cachedTecTechRecipeCount = -1;
-    @Unique
-    private static int science$cachedAssemblyLineRecipeCount = -1;
+    private static long science$cachedRecipeCount = AssemblyLineRecipeCount.NONE;
     @Unique
     private static final Multimap<ItemId, GTRecipe.RecipeAssemblyLine> science$recipeLookup = MultimapBuilder.hashKeys()
         .arrayListValues()
@@ -48,20 +47,13 @@ public abstract class MixinAssemblyLineUtils {
 
     @Unique
     private static synchronized void science$refreshRecipeLookup() {
-        int currentAssemblyLineRecipeCount = GTRecipe.RecipeAssemblyLine.sAssemblylineRecipes.size();
-        int currentTecTechRecipeCount = TecTechRecipeMaps.researchableALRecipeList.size();
-        if (science$cachedAssemblyLineRecipeCount == currentAssemblyLineRecipeCount
-            && science$cachedTecTechRecipeCount == currentTecTechRecipeCount) {
-            return;
-        }
-
+        long recipeCount = AssemblyLineRecipeCount.stamp();
+        if (science$cachedRecipeCount == recipeCount) return;
         science$recipeLookup.clear();
         Set<GTRecipe.RecipeAssemblyLine> addedRecipes = new ReferenceOpenHashSet<>();
         science$addRecipesToLookup(GTRecipe.RecipeAssemblyLine.sAssemblylineRecipes, addedRecipes);
         science$addRecipesToLookup(TecTechRecipeMaps.researchableALRecipeList, addedRecipes);
-
-        science$cachedAssemblyLineRecipeCount = currentAssemblyLineRecipeCount;
-        science$cachedTecTechRecipeCount = currentTecTechRecipeCount;
+        science$cachedRecipeCount = recipeCount;
     }
 
     @Unique

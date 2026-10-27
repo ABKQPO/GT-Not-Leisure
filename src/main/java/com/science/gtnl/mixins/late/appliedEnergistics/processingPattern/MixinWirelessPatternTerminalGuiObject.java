@@ -111,16 +111,9 @@ public abstract class MixinWirelessPatternTerminalGuiObject
 
     @Override
     public void gtnl$clearProcessingPatternOverflow() {
-        if (!ProcessingPatternCapacity.isEnabled()) {
-            return;
-        }
-        if (this.mode != 2) {
-            return;
-        }
+        if (!ProcessingPatternCapacity.isEnabled() || this.mode != 2) return;
         ItemStack stack = ((WirelessPatternTerminalGuiObject) (Object) this).getItemStack();
-        if (stack.hasTagCompound()) {
-            ProcessingPatternInventoryData.clearSavedOverflow(stack.getTagCompound());
-        }
+        if (stack.hasTagCompound()) ProcessingPatternInventoryData.clearSavedOverflow(stack.getTagCompound());
         this.gtnl$storedInventory = new NBTTagCompound();
     }
 
@@ -138,66 +131,34 @@ public abstract class MixinWirelessPatternTerminalGuiObject
 
     @Inject(method = "readInventory", at = @At("HEAD"))
     private void gtnl$rememberInventory(CallbackInfo callbackInfo) {
-        if (!ProcessingPatternCapacity.isEnabled()) {
-            return;
-        }
-        if (this.mode == 2) {
-            ItemStack stack = ((WirelessPatternTerminalGuiObject) (Object) this).getItemStack();
-            if (stack.hasTagCompound()) {
-                NBTTagCompound root = stack.getTagCompound();
-                NBTTagCompound inventory = root.getCompoundTag(this.nbtPrefix);
-                this.gtnl$storedInventory = ProcessingPatternInventoryData
-                    .rememberInventory(root, inventory, this.craftingInvSize, this.outputInvSize);
-                root.setTag(this.nbtPrefix, inventory);
-                boolean inverted = inventory.getBoolean("inverted");
-                ProcessingPatternInventoryData.limitSlots(
-                    inventory,
-                    "craftingGrid",
-                    ProcessingPatternInventoryData.visibleInputs(inverted, this.craftingInvSize));
-                ProcessingPatternInventoryData.limitSlots(
-                    inventory,
-                    "outputList",
-                    ProcessingPatternInventoryData.visibleOutputs(inverted, this.outputInvSize));
-            }
-        }
+        if (!ProcessingPatternCapacity.isEnabled() || this.mode != 2) return;
+        NBTTagCompound stored = ProcessingPatternInventoryData.rememberTerminalInventory(
+            ((WirelessPatternTerminalGuiObject) (Object) this).getItemStack(),
+            this.nbtPrefix,
+            this.craftingInvSize,
+            this.outputInvSize);
+        if (stored != null) this.gtnl$storedInventory = stored;
     }
 
     @Inject(method = "readInventory", at = @At("TAIL"))
     private void gtnl$saveCompatibleInventory(CallbackInfo callbackInfo) {
-        if (!ProcessingPatternCapacity.isEnabled()) {
-            return;
-        }
-        if (this.mode == 2) {
-            this.activePage = Math.max(
-                0,
-                Math.min(
-                    Math.max(0, this.craftingInvSize / ProcessingPatternCapacity.SLOTS_PER_PAGE - 1),
-                    this.activePage));
-            this.writeInventory();
-        }
+        if (!ProcessingPatternCapacity.isEnabled() || this.mode != 2) return;
+        int lastPage = Math.max(0, this.craftingInvSize / ProcessingPatternCapacity.SLOTS_PER_PAGE - 1);
+        this.activePage = Math.max(0, Math.min(lastPage, this.activePage));
+        this.writeInventory();
     }
 
     @Inject(method = "writeInventory", at = @At("TAIL"))
     private void gtnl$preserveInventory(CallbackInfo callbackInfo) {
-        if (!ProcessingPatternCapacity.isEnabled()) {
-            return;
-        }
-        if (this.mode != 2) {
-            return;
-        }
-        WirelessPatternTerminalGuiObject terminal = (WirelessPatternTerminalGuiObject) (Object) this;
-        NBTTagCompound root = terminal.getItemStack()
-            .getTagCompound();
-        NBTTagCompound tag = root.getCompoundTag(this.nbtPrefix);
-        tag.setInteger("activePage", ProcessingPatternInventoryData.nativePage(this.activePage));
-        this.gtnl$storedInventory = ProcessingPatternInventoryData.preserveInventory(
-            root,
-            tag,
+        if (!ProcessingPatternCapacity.isEnabled() || this.mode != 2) return;
+        this.gtnl$storedInventory = ProcessingPatternInventoryData.preserveTerminalInventory(
+            ((WirelessPatternTerminalGuiObject) (Object) this).getItemStack(),
+            this.nbtPrefix,
+            this.activePage,
             this.gtnl$storedInventory,
             this.inverted,
             this.craftingInvSize,
             this.outputInvSize);
-        root.setTag(this.nbtPrefix, tag);
     }
 
     @Inject(method = "exPatternTerminalCall", at = @At("HEAD"), cancellable = true)
@@ -216,12 +177,8 @@ public abstract class MixinWirelessPatternTerminalGuiObject
 
     @Inject(method = "setInverted", at = @At("HEAD"))
     private void gtnl$clearHiddenSide(boolean inverted, CallbackInfo callbackInfo) {
-        if (!ProcessingPatternCapacity.isEnabled()) {
+        if (!ProcessingPatternCapacity.isEnabled() || this.mode != 2 || this.crafting == null || this.output == null)
             return;
-        }
-        if (this.mode != 2 || this.crafting == null || this.output == null) {
-            return;
-        }
         IAEStackInventory hidden = inverted ? this.crafting : this.output;
         this.gtnl$inventoryUpdateDepth++;
         try {

@@ -16,6 +16,8 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import org.lwjgl.opengl.GL11;
 
 import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.common.block.blocks.item.ItemBlockPigmeeFumo;
 import com.science.gtnl.common.render.model.pigmeeModel.PigmeeFumoAnimation;
 import com.science.gtnl.common.render.model.pigmeeModel.PigmeeFumoModel;
@@ -28,21 +30,22 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class PigmeeFumoHeadRenderer {
 
     public static final float HEAD_SEAT_OFFSET = 2.0F / 16.0F;
 
-    public final int[] brightness = new int[7];
+    public static final int[] brightness = new int[7];
 
     @SubscribeEvent
-    public void onSpecialsPre(RenderPlayerEvent.Specials.Pre event) {
+    public static void onSpecialsPre(RenderPlayerEvent.Specials.Pre event) {
         if (!isWearingFumo(event.entityPlayer)) return;
         if (PigmeeFumoModel.INSTANCE.get(PigmeeFumoModel.DEFAULT_ORIENTATION) == null) return;
         event.renderHelmet = false;
     }
 
     @SubscribeEvent
-    public void onSpecialsPost(RenderPlayerEvent.Specials.Post event) {
+    public static void onSpecialsPost(RenderPlayerEvent.Specials.Post event) {
         EntityPlayer player = event.entityPlayer;
         if (!isWearingFumo(player)) return;
         World world = player.worldObj;

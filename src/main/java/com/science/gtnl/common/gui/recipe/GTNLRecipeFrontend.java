@@ -5,11 +5,12 @@ import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import com.github.bsideup.jabel.Desugar;
+import com.gtnewhorizons.modularui.api.drawable.UITexture;
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
 import com.gtnewhorizons.modularui.api.screen.ModularWindow;
 import com.gtnewhorizons.modularui.common.widget.DrawableWidget;
-import com.science.gtnl.utils.item.ItemUtils;
+import com.science.gtnl.ScienceNotLeisure;
 
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
 import gregtech.api.recipe.NEIRecipePropertiesBuilder;
@@ -23,6 +24,10 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class GTNLRecipeFrontend extends RecipeMapFrontend {
+
+    public static final UITexture PICTURE_GTNL_LOGO = UITexture.fullImage(ScienceNotLeisure.MODID, "gui/picture/logo");
+    public static final UITexture PICTURE_GTNL_STEAM_LOGO = UITexture
+        .fullImage(ScienceNotLeisure.MODID, "gui/picture/steam_logo");
 
     public enum Logo {
         GTNL,
@@ -85,8 +90,7 @@ public class GTNLRecipeFrontend extends RecipeMapFrontend {
     public void addGregTechLogo(ModularWindow.Builder builder, Pos2d windowOffset) {
         Slot at = logoSlot();
         builder.widget(
-            new DrawableWidget()
-                .setDrawable(logo == Logo.STEAM ? ItemUtils.PICTURE_GTNL_STEAM_LOGO : ItemUtils.PICTURE_GTNL_LOGO)
+            new DrawableWidget().setDrawable(logo == Logo.STEAM ? PICTURE_GTNL_STEAM_LOGO : PICTURE_GTNL_LOGO)
                 .setSize(18, 18)
                 .setPos(new Pos2d(at.x(), at.y()).add(windowOffset)));
     }

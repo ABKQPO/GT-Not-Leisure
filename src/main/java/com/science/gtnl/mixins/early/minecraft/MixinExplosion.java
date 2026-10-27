@@ -27,26 +27,6 @@ public abstract class MixinExplosion {
 
     @Inject(method = "doExplosionA", at = @At("HEAD"), cancellable = true)
     private void interceptExplosionStart(CallbackInfo ci) {
-        int ex = (int) explosionX;
-        int ey = (int) explosionY;
-        int ez = (int) explosionZ;
-        for (int x = ex - 10; x <= ex + 10; x++) {
-            for (int y = ey - 10; y <= ey + 10; y++) {
-                for (int z = ez - 10; z <= ez + 10; z++) {
-                    if (ExplosionDynamoHatch.absorbExplosion(
-                        worldObj,
-                        x,
-                        y,
-                        z,
-                        explosionX,
-                        explosionY,
-                        explosionZ,
-                        explosionSize * 20480)) {
-                        ci.cancel();
-                        break;
-                    }
-                }
-            }
-        }
+        if (ExplosionDynamoHatch.absorbAround(worldObj, explosionX, explosionY, explosionZ, explosionSize)) ci.cancel();
     }
 }

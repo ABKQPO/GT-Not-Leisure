@@ -10,8 +10,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.common.MinecraftForge;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.gtnllib.client.fx.world.FxArcRenderer;
 import com.gtnllib.client.fx.world.FxShockwaveRenderer;
 import com.gtnllib.client.fx.world.FxVisibility;
@@ -26,7 +27,6 @@ import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.compat.tinkersconstruct.CelestweaveBackpackTabs;
 import com.science.gtnl.config.MainConfig;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -39,10 +39,10 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class CelestweaveClientEvents {
 
     private static final Random RNG = new Random();
-    private static final CelestweaveClientEvents INSTANCE = new CelestweaveClientEvents();
     private static final List<Scheduled> SCHEDULED = new ObjectArrayList<>();
     private static final IntSet REMOTE_FLYING = new IntOpenHashSet();
     private static final double HIT_AIM_HEIGHT = 0.72, HIT_AIM_MIN_OFFSET = 0.3, HIT_AIM_MIN_RATIO = 0.35;
@@ -77,13 +77,6 @@ public class CelestweaveClientEvents {
     private CelestweaveClientEvents() {}
 
     public static void register() {
-        FMLCommonHandler.instance()
-            .bus()
-            .register(INSTANCE);
-        MinecraftForge.EVENT_BUS.register(INSTANCE);
-        MinecraftForge.EVENT_BUS.register(new CelestweaveShieldFlash());
-        MinecraftForge.EVENT_BUS.register(new CelestweaveScreenGlow());
-        MinecraftForge.EVENT_BUS.register(new CelestweaveHud());
         CelestweaveHudElement.register();
         CelestweaveObjModel.register();
         CelestweaveClientInput.register();
@@ -115,27 +108,27 @@ public class CelestweaveClientEvents {
     }
 
     @SubscribeEvent
-    public void renderPlayerPre(RenderPlayerEvent.Pre event) {
+    public static void renderPlayerPre(RenderPlayerEvent.Pre event) {
         CelestweaveSkinLayers.hide(event.renderer.modelBipedMain, event.entityPlayer);
     }
 
     @SubscribeEvent
-    public void renderPlayerPost(RenderPlayerEvent.Post event) {
+    public static void renderPlayerPost(RenderPlayerEvent.Post event) {
         CelestweaveSkinLayers.restore();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void renderSpecials(RenderPlayerEvent.Specials.Pre event) {
+    public static void renderSpecials(RenderPlayerEvent.Specials.Pre event) {
         if (CelestweaveData.piece(event.entityPlayer, CelestweaveArmor.CHEST) != null) event.renderCape = false;
     }
 
     @SubscribeEvent
-    public void renderTick(TickEvent.RenderTickEvent event) {
+    public static void renderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.START) frame++;
     }
 
     @SubscribeEvent
-    public void clientTick(TickEvent.ClientTickEvent event) {
+    public static void clientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         Minecraft minecraft = Minecraft.getMinecraft();
         World world = minecraft.theWorld;

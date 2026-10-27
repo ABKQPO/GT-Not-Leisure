@@ -50,20 +50,6 @@ public abstract class MixinDrawableResource extends Image
 
     @Unique
     public void gtnl$draw(int xOffset, int yOffset, int special) {
-        final int textureX = this.x;
-        final int textureY = this.y;
-        gtnl$specialRender.draw(
-            xOffset,
-            yOffset,
-            special,
-            resourceLocation,
-            paddingLeft,
-            paddingTop,
-            textureX,
-            textureY,
-            width,
-            height,
-            textureWidth,
-            textureHeight);
+        gtnl$specialRender.draw(xOffset, yOffset, special, (DrawableResource) (Object) this);
     }
 }

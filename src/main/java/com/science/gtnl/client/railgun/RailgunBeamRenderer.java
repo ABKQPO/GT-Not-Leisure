@@ -13,6 +13,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.gtnllib.client.fx.world.FxCamera;
 import com.gtnllib.client.fx.world.FxMuzzleAnchor;
 import com.gtnllib.client.fx.world.FxRenderHelper;
@@ -38,6 +40,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class RailgunBeamRenderer {
 
     private static final double BEAM_RANGE_RESPONSE = 26;
@@ -153,7 +156,7 @@ public class RailgunBeamRenderer {
     }
 
     @SubscribeEvent
-    public void render(RenderWorldLastEvent event) {
+    public static void render(RenderWorldLastEvent event) {
         World world = Minecraft.getMinecraft().theWorld;
         if (world == null) return;
         FxCamera.capture();

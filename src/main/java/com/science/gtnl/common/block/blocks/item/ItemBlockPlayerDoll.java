@@ -13,7 +13,6 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.StringUtils;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 
 import com.cleanroommc.modularui.api.IGuiHolder;
 import com.cleanroommc.modularui.factory.GuiFactories;
@@ -38,7 +37,6 @@ public class ItemBlockPlayerDoll extends ItemBlock implements IGuiHolder<PlayerI
 
     public ItemBlockPlayerDoll(Block block) {
         super(block);
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override

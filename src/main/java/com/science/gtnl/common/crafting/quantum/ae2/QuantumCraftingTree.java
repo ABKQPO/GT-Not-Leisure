@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -23,6 +24,7 @@ import com.science.gtnl.mixins.late.appliedEnergistics.quantum.AccessorPacketCra
 import appeng.api.config.CraftingMode;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.storage.data.IAEStack;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketCraftingTreeData;
 import appeng.crafting.v2.CraftingCalculations;
 import appeng.crafting.v2.CraftingRequest.SubstitutionMode;
@@ -699,6 +701,12 @@ public final class QuantumCraftingTree {
             this.kind = kind;
             this.what = what;
             this.amount = amount;
+        }
+    }
+
+    public static void sendTo(EntityPlayerMP player, QuantumCraftingJob<?> job) {
+        for (PacketCraftingTreeData packet : createChunks(player.worldObj, job)) {
+            NetworkHandler.instance.sendTo(packet, player);
         }
     }
 }

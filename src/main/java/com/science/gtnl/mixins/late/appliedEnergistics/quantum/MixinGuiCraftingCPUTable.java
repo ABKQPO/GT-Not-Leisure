@@ -42,13 +42,8 @@ public abstract class MixinGuiCraftingCPUTable {
         final int textureY, final int width, final int height, final Operation<Void> original,
         @Local(name = "cpu") final CraftingCPUStatus cpu) {
         original.call(gui, x, y, textureX, textureY, width, height);
-
-        final byte cpuType = cpu instanceof EQuantumComputerCPUStatus status ? status.ec$getCPUType()
-            : EQuantumComputerCPUStatus.NORMAL_CPU;
-        if (cpuType == EQuantumComputerCPUStatus.NORMAL_CPU) {
-            return;
-        }
-
+        final byte cpuType = gtnl$cpuType(cpu);
+        if (cpuType == EQuantumComputerCPUStatus.NORMAL_CPU) return;
         final TextureManager textureManager = Minecraft.getMinecraft().renderEngine;
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         textureManager.bindTexture(GTNL$QUANTUM_COMPUTER_OVERLAY);
@@ -63,8 +58,7 @@ public abstract class MixinGuiCraftingCPUTable {
     private void gtnl$drawQuantumComputerBusyIcon(final AEBaseGui gui, final int x, final int y, final int textureX,
         final int textureY, final int width, final int height, final Operation<Void> original,
         @Local(name = "cpu") final CraftingCPUStatus cpu) {
-        final byte cpuType = cpu instanceof EQuantumComputerCPUStatus status ? status.ec$getCPUType()
-            : EQuantumComputerCPUStatus.NORMAL_CPU;
+        final byte cpuType = gtnl$cpuType(cpu);
         if (cpu.isBusy() && cpuType != EQuantumComputerCPUStatus.NORMAL_CPU) {
             gtnl$drawQuantumComputerIcon(gui, x, y, cpuType);
             return;
@@ -79,20 +73,15 @@ public abstract class MixinGuiCraftingCPUTable {
         require = 1)
     private void gtnl$drawIdleQuantumComputerIcon(final AEBaseGui gui, final int x, final int y, final ItemStack is,
         final Operation<Void> original, @Local(name = "cpu") final CraftingCPUStatus cpu) {
-        final byte cpuType = cpu instanceof EQuantumComputerCPUStatus status ? status.ec$getCPUType()
-            : EQuantumComputerCPUStatus.NORMAL_CPU;
-        if (!cpu.isBusy() && cpuType != EQuantumComputerCPUStatus.NORMAL_CPU && x == 0 && y == 0) {
-            gtnl$drawQuantumComputerIcon(gui, x, y, cpuType);
-            gui.bindTexture("guis/states.png");
+        final byte cpuType = gtnl$cpuType(cpu);
+        boolean idleQuantum = !cpu.isBusy() && cpuType != EQuantumComputerCPUStatus.NORMAL_CPU && y == 0;
+        if (idleQuantum && x == 0) gtnl$drawQuantumComputerIcon(gui, x, y, cpuType);
+        else if (idleQuantum && x == 64) gtnl$drawQuantumComputerParallelIcon(gui, x, y);
+        else {
+            original.call(gui, x, y, is);
             return;
         }
-        if (!cpu.isBusy() && cpuType != EQuantumComputerCPUStatus.NORMAL_CPU && x == 64 && y == 0) {
-            gtnl$drawQuantumComputerParallelIcon(gui, x, y);
-            gui.bindTexture("guis/states.png");
-            return;
-        }
-
-        original.call(gui, x, y, is);
+        gui.bindTexture("guis/states.png");
     }
 
     @Unique
@@ -107,6 +96,12 @@ public abstract class MixinGuiCraftingCPUTable {
             124,
             CPU_CRAFTING_ICON_SIZE,
             CPU_CRAFTING_ICON_SIZE);
+    }
+
+    @Unique
+    private static byte gtnl$cpuType(CraftingCPUStatus cpu) {
+        return cpu instanceof EQuantumComputerCPUStatus status ? status.ec$getCPUType()
+            : EQuantumComputerCPUStatus.NORMAL_CPU;
     }
 
     @Unique

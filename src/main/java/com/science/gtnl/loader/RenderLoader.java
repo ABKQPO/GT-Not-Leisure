@@ -5,7 +5,6 @@ import net.minecraft.client.renderer.entity.RenderLeashKnot;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.MinecraftForge;
 
 import com.gtnewhorizon.gtnhlib.client.model.loading.ModelRegistry;
 import com.science.gtnl.ScienceNotLeisure;
@@ -34,9 +33,7 @@ import com.science.gtnl.common.render.item.ItemNullPointerExceptionRender;
 import com.science.gtnl.common.render.item.ItemPlayerDollRenderer;
 import com.science.gtnl.common.render.item.ItemSteamRocketRenderer;
 import com.science.gtnl.common.render.item.ItemTwilightSwordRender;
-import com.science.gtnl.common.render.item.PigmeeFumoHeadRenderer;
 import com.science.gtnl.common.render.item.PigmeeFumoItemRenderer;
-import com.science.gtnl.common.render.model.pigmeeModel.PigmeeFumoModel;
 import com.science.gtnl.common.render.tile.EnderElevatorRenderer;
 import com.science.gtnl.common.render.tile.EternalGregTechWorkshopRenderer;
 import com.science.gtnl.common.render.tile.LaserBeconRenderer;
@@ -51,7 +48,6 @@ import com.science.gtnl.common.render.tile.WaterCandleRenderer;
 import Forge.NullPointerException;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.GregTechAPI;
@@ -76,11 +72,6 @@ public class RenderLoader implements IContentLoader {
     @SideOnly(Side.CLIENT)
     public void clientPreInit() {
         ModelRegistry.registerModid(ScienceNotLeisure.MODID);
-        MinecraftForge.EVENT_BUS.register(PigmeeFumoModel.INSTANCE);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(PigmeeFumoModel.INSTANCE);
-        MinecraftForge.EVENT_BUS.register(new PigmeeFumoHeadRenderer());
     }
 
     @Override

@@ -54,6 +54,36 @@ public class ExplosionDynamoHatch extends MTEHatchDynamo {
         return 64;
     }
 
+    // Scans the 21x21x21 cube; the first absorbing hatch in each column stops that column only.
+    public static boolean absorbAround(World world, double cx, double cy, double cz, float size) {
+        int ex = (int) cx, ey = (int) cy, ez = (int) cz;
+        boolean absorbed = false;
+        for (int x = ex - 10; x <= ex + 10; x++) {
+            for (int y = ey - 10; y <= ey + 10; y++) {
+                for (int z = ez - 10; z <= ez + 10; z++) {
+                    if (absorbExplosion(world, x, y, z, cx, cy, cz, size * 20480)) {
+                        absorbed = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return absorbed;
+    }
+
+    // Stops at the first hatch in the 21x21x21 cube that takes the explosion.
+    public static boolean absorbFirst(World world, double cx, double cy, double cz, double energyAtCentre) {
+        int ex = (int) cx, ey = (int) cy, ez = (int) cz;
+        for (int x = ex - 10; x <= ex + 10; x++) {
+            for (int y = ey - 10; y <= ey + 10; y++) {
+                for (int z = ez - 10; z <= ez + 10; z++) {
+                    if (absorbExplosion(world, x, y, z, cx, cy, cz, energyAtCentre)) return true;
+                }
+            }
+        }
+        return false;
+    }
+
     // Returns whether the hatch took the explosion.
     public static boolean absorbExplosion(World world, int x, int y, int z, double cx, double cy, double cz,
         double energyAtCentre) {

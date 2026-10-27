@@ -156,4 +156,9 @@ public class CraftConfirmCycles {
             ScienceNotLeisure.network.sendToServer(new RecursivePatternQueryPacket(true));
         }
     }
+
+    public static boolean needsAttention(String error, CraftingCycleIndex index) {
+        return NO_NET_OUTPUT.equals(error) || index != null && !index.blocking()
+            .isEmpty();
+    }
 }

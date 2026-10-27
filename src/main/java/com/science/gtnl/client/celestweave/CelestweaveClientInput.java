@@ -7,6 +7,8 @@ import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Keyboard;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.celestweave.CelestweaveEnergy;
@@ -18,13 +20,13 @@ import com.science.gtnl.common.packet.CelestweaveKeyPacket;
 import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class CelestweaveClientInput {
 
     static final KeyBinding DASH = new KeyBinding("key.gtnl.celestweave_dash", Keyboard.KEY_V, "key.categories.gtnl");
@@ -35,20 +37,17 @@ public class CelestweaveClientInput {
     private static final float DEFAULT_FLY_SPEED = 0.05F;
     private static final int REMOTE_MAX_FLY_LEVEL = 8;
 
-    private boolean flySpeedSet;
+    private static boolean flySpeedSet;
 
     private CelestweaveClientInput() {}
 
     public static void register() {
         ClientRegistry.registerKeyBinding(DASH);
         ClientRegistry.registerKeyBinding(BACKPACK);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(new CelestweaveClientInput());
     }
 
     @SubscribeEvent
-    public void clientTick(TickEvent.ClientTickEvent event) {
+    public static void clientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.START) return;
         Minecraft minecraft = Minecraft.getMinecraft();
         EntityPlayerSP player = minecraft.thePlayer;
@@ -70,7 +69,7 @@ public class CelestweaveClientInput {
     }
 
     @SubscribeEvent
-    public void playerTick(TickEvent.PlayerTickEvent event) {
+    public static void playerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.START || !(event.player instanceof EntityPlayerSP player)
             || player != Minecraft.getMinecraft().thePlayer) return;
         var config = MainConfig.item.celestweave;

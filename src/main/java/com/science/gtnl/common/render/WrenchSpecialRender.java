@@ -15,8 +15,10 @@ import org.lwjgl.opengl.GL11;
 
 import com.science.gtnl.client.GTNLClientEvents;
 import com.science.gtnl.compat.avaritia.CosmicShader;
+import com.science.gtnl.mixins.early.notEnoughItems.AccessorDrawableResource;
 import com.science.gtnl.utils.ColorUtils;
 
+import codechicken.nei.drawable.DrawableResource;
 import gregtech.GTMod;
 
 public class WrenchSpecialRender {
@@ -55,6 +57,23 @@ public class WrenchSpecialRender {
      * @param textureWidth     纹理宽度
      * @param textureHeight    纹理高度
      */
+    public void draw(int xOffset, int yOffset, int special, DrawableResource drawable) {
+        AccessorDrawableResource fields = (AccessorDrawableResource) drawable;
+        draw(
+            xOffset,
+            yOffset,
+            special,
+            fields.getResourceLocation(),
+            fields.getPaddingLeft(),
+            fields.getPaddingTop(),
+            drawable.x,
+            drawable.y,
+            drawable.width,
+            drawable.height,
+            fields.getTextureWidth(),
+            fields.getTextureHeight());
+    }
+
     public void draw(int xOffset, int yOffset, int special, ResourceLocation resourceLocation, int paddingLeft,
         int paddingTop, int x, int y, int width, int height, int textureWidth, int textureHeight) {
         Minecraft.getMinecraft()

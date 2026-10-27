@@ -140,19 +140,13 @@ public abstract class MixinEntityPlayer extends EntityLivingBase implements ILea
      */
     @Override
     public void gtnl$clearLeashed(boolean p_110160_1_, boolean dropItem) {
-        if (this.gtnl$isLeashed) {
-            this.gtnl$isLeashed = false;
-            this.gtnl$leashedToEntity = null;
-
-            if (!this.worldObj.isRemote && dropItem) {
-                this.dropItem(Items.lead, 1);
-            }
-
-            if (!this.worldObj.isRemote && p_110160_1_ && this.worldObj instanceof WorldServer) {
-                ((WorldServer) this.worldObj).getEntityTracker()
-                    .func_151247_a(this, new S1BPacketEntityAttach(1, this, null));
-            }
-        }
+        if (!this.gtnl$isLeashed) return;
+        this.gtnl$isLeashed = false;
+        this.gtnl$leashedToEntity = null;
+        if (this.worldObj.isRemote) return;
+        if (dropItem) this.dropItem(Items.lead, 1);
+        if (p_110160_1_ && this.worldObj instanceof WorldServer server) server.getEntityTracker()
+            .func_151247_a(this, new S1BPacketEntityAttach(1, this, null));
     }
 
     @Unique

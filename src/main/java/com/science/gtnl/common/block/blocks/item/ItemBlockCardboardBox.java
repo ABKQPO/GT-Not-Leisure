@@ -13,9 +13,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.common.block.blocks.tile.TileEntityCardboardBox;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.CardboardBoxUtils;
@@ -31,6 +32,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
  * License: MIT
  * Original Code Date: 2014-01-13
  */
+@EventBusSubscriber(phase = Phase.PRE)
 public class ItemBlockCardboardBox extends ItemBlock {
 
     private static boolean isMonitoring;
@@ -40,7 +42,6 @@ public class ItemBlockCardboardBox extends ItemBlock {
     public ItemBlockCardboardBox(Block block) {
         super(block);
         metaBlock = block;
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -154,7 +155,7 @@ public class ItemBlockCardboardBox extends ItemBlock {
     }
 
     @SubscribeEvent
-    public void onEntitySpawn(EntityJoinWorldEvent event) {
+    public static void onEntitySpawn(EntityJoinWorldEvent event) {
         if (event.entity instanceof EntityItem && isMonitoring) {
             event.setCanceled(true);
         }

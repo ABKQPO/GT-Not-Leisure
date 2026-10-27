@@ -9,6 +9,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.gtnllib.client.hud.HudEditor;
 import com.gtnllib.client.hud.HudElement;
 import com.gtnllib.client.hud.HudLayout.Placement;
@@ -26,6 +28,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class RailgunHudRenderer {
 
     private static final ResourceLocation BOLT_EMPTY = new ResourceLocation(
@@ -61,7 +64,7 @@ public class RailgunHudRenderer {
         .build();
 
     @SubscribeEvent
-    public void overlay(RenderGameOverlayEvent.Post event) {
+    public static void overlay(RenderGameOverlayEvent.Post event) {
         if (event.type != RenderGameOverlayEvent.ElementType.CROSSHAIRS) return;
         var minecraft = Minecraft.getMinecraft();
         EntityPlayer player = minecraft.thePlayer;

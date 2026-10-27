@@ -9,12 +9,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.compat.avaritia.DireCrafting;
 import com.science.gtnl.utils.SimpleItem;
@@ -31,6 +32,7 @@ import it.unimi.dsi.fastutil.objects.Object2CharMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import tectech.thing.CustomItemList;
 
+@EventBusSubscriber(phase = Phase.PRE)
 public class DebugItem extends Item {
 
     public static Class<?>[] ITEMLIST;
@@ -56,9 +58,7 @@ public class DebugItem extends Item {
         + "0123456789"
         + "()[]{}@#$%^&*:;<>?!").toCharArray();
 
-    public DebugItem() {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
+    public DebugItem() {}
 
     @Override
     public String getUnlocalizedName() {
@@ -66,13 +66,13 @@ public class DebugItem extends Item {
     }
 
     @SubscribeEvent
-    public void onItemRightBlock(PlayerInteractEvent event) {
+    public static void onItemRightBlock(PlayerInteractEvent event) {
         var world = event.world;
         if (world.isRemote) return;
         var player = event.entityPlayer;
         var item = player.getHeldItem();
         if (item == null) return;
-        if (item.getItem() == this) {
+        if (item.getItem() instanceof DebugItem) {
             if (event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
                 TileEntity tile = world.getTileEntity(event.x, event.y, event.z);
                 var inputs = DireCrafting.inputs(tile);

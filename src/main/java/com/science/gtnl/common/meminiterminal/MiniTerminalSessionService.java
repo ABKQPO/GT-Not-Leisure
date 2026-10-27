@@ -19,6 +19,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import com.science.gtnl.common.meminiterminal.MiniTerminalRequestPacket.DepositMode;
@@ -69,7 +70,8 @@ import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
-public final class MiniTerminalSessionService {
+@EventBusSubscriber
+public class MiniTerminalSessionService {
 
     enum MiniTerminalStatus {
         ONLINE,
@@ -85,7 +87,6 @@ public final class MiniTerminalSessionService {
         STALE
     }
 
-    public static final MiniTerminalSessionService INSTANCE = new MiniTerminalSessionService();
     private static final Map<UUID, Session> SESSIONS = new Object2ObjectOpenHashMap<>();
     private static final Map<UUID, UUID> SELECTED = new Object2ObjectOpenHashMap<>();
     private static final Map<UUID, RequestBudget> BUDGETS = new Object2ObjectOpenHashMap<>();
@@ -429,7 +430,7 @@ public final class MiniTerminalSessionService {
     }
 
     @SubscribeEvent
-    public void tick(TickEvent.PlayerTickEvent event) {
+    public static void tick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.END || !(event.player instanceof EntityPlayerMP player)) return;
         MiniTerminalOutbound.flush(player);
         ParkedCatalog parked = PARKED.get(player.getUniqueID());
@@ -466,7 +467,7 @@ public final class MiniTerminalSessionService {
     }
 
     @SubscribeEvent
-    public void logout(PlayerEvent.PlayerLoggedOutEvent event) {
+    public static void logout(PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.player instanceof EntityPlayerMP player) end(player, false);
         discardParked(event.player.getUniqueID());
         SELECTED.remove(event.player.getUniqueID());
@@ -476,7 +477,7 @@ public final class MiniTerminalSessionService {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onPickup(EntityItemPickupEvent event) {
+    public static void onPickup(EntityItemPickupEvent event) {
         MiniTerminalTransferService.pickup(event);
     }
 

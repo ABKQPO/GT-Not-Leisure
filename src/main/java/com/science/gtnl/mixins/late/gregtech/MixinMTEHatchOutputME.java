@@ -129,9 +129,7 @@ public abstract class MixinMTEHatchOutputME extends MTEHatchOutput implements IO
             openGui(aPlayer);
             return onRightclick(aBaseMetaTileEntity, aPlayer);
         }
-
         if (!pasteCopiedData(aPlayer, dataStick.stackTagCompound)) return false;
-
         aPlayer.addChatMessage(new ChatComponentTranslation("GT5U.machines.output_bus.loaded"));
         return true;
     }

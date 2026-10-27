@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-import com.gtnewhorizons.modularui.api.forge.ItemStackHandler;
+import com.cleanroommc.modularui.utils.item.ItemStackHandler;
 import com.reavaritia.utils.item.ToolHelper;
 
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;

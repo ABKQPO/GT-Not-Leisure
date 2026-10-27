@@ -5,14 +5,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
-import com.gtnewhorizons.modularui.api.drawable.Text;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.utils.machine.VMTweakHelper;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
@@ -27,7 +24,6 @@ import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gregtech.api.structure.error.StructureError;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gtneioreplugin.plugin.block.ModBlocks;
 import gtneioreplugin.plugin.item.ItemDimensionDisplay;
 import gtneioreplugin.util.DimensionHelper;
 
@@ -189,26 +185,6 @@ public class VoidMinerHooks {
         miner.selected.deserializeNBT(nbt.getCompoundTag("selected"));
         miner.blacklist = nbt.getBoolean("blacklist");
         return true;
-    }
-
-    @Deprecated
-    public static Text dimensionDisplayName(VoidMinerState state) {
-        if (!state.warning.isEmpty()) {
-            return new Text(EnumChatFormatting.YELLOW + StatCollector.translateToLocal(state.warning));
-        }
-
-        String ext = null;
-        try {
-            Block block = ModBlocks.getBlock(state.lastDimensionOverride);
-            ext = new ItemStack(block).getDisplayName();
-        } catch (Exception e) {
-            ScienceNotLeisure.LOG
-                .debug("[VMTweakMixin] Failed to get display name for dimension: {}", state.lastDimensionOverride, e);
-        }
-
-        return new Text(
-            EnumChatFormatting.YELLOW + StatCollector.translateToLocal("gtnl.gui.void_miner.dimension_override")
-                + (ext == null ? state.lastDimensionOverride : ext));
     }
 
     public static boolean drainEnergyInput(long aEU, List<MTEHatchEnergy> energyHatches,

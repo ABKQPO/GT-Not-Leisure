@@ -28,7 +28,7 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.science.gtnl.api.casing.GTNLCasings;
-import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
+import com.science.gtnl.common.machine.multiMachineBase.TTMultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 
 import gregtech.api.casing.Casings;
@@ -47,8 +47,6 @@ import gregtech.api.structure.error.StructureErrors;
 import gregtech.api.util.GTRecipe.RecipeAssemblyLine;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.IGTHatchAdder;
-import gregtech.api.util.MultiblockTooltipBuilder;
-import gregtech.common.WirelessComputationPacket;
 import gtnhlanth.common.register.LanthItemList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -62,7 +60,7 @@ import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
 import tectech.thing.metaTileEntity.multi.base.render.TTRenderedExtendedFacingTexture;
 
 @IMetaTileEntity.SkipGenerateDescription
-public class DataCenter extends TTMultiblockBase implements ISurvivalConstructable {
+public class DataCenter extends TTMultiMachineBase implements ISurvivalConstructable {
 
     private static final int HORIZONTAL_OFF_SET = 1;
     private static final int VERTICAL_OFF_SET = 7;
@@ -265,25 +263,11 @@ public class DataCenter extends TTMultiblockBase implements ISurvivalConstructab
     }
 
     @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        GTNLMultiblockTooltipBuilder tt = new GTNLMultiblockTooltipBuilder();
-        tt.addAutoTooltip(this)
-            .toolTipFinisher();
-        return tt;
-    }
-
-    @Override
     public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ,
         ItemStack aTool) {
         if (getBaseMetaTileEntity().isServerSide()) {
             wirelessModeEnabled = !wirelessModeEnabled;
-            if (wirelessModeEnabled) {
-                GTUtility.sendChatTrans(aPlayer, "gtnl.machine.message.wireless_mode.enabled");
-                WirelessComputationPacket.enableWirelessNetWork(getBaseMetaTileEntity());
-            } else {
-                GTUtility.sendChatTrans(aPlayer, "gtnl.machine.message.wireless_mode.disabled");
-                WirelessComputationPacket.disableWirelessNetWork(getBaseMetaTileEntity());
-            }
+            switchWirelessComputation(aPlayer, wirelessModeEnabled);
         }
     }
 

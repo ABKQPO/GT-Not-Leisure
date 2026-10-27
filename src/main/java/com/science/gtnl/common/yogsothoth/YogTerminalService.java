@@ -25,6 +25,7 @@ import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
 import com.cleanroommc.modularui.factory.GuiFactories;
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IYogTerminal;
 import com.science.gtnl.common.item.items.ItemYogSothothTerminal;
@@ -45,9 +46,9 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
-public final class YogTerminalService {
+@EventBusSubscriber
+public class YogTerminalService {
 
-    public static final YogTerminalService INSTANCE = new YogTerminalService();
     private static final int USE_TIMEOUT_TICKS = 20;
     private static final int REFRESH_INTERVAL = 10;
     private static final Map<UUID, Session> SESSIONS = new Object2ObjectOpenHashMap<>();
@@ -162,7 +163,7 @@ public final class YogTerminalService {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onWorldLoad(WorldEvent.Load event) {
+    public static void onWorldLoad(WorldEvent.Load event) {
         if (event.world.isRemote || event.world.provider.dimensionId != 0) return;
         YogTerminalStorage.load(event.world);
         SESSIONS.clear();
@@ -176,7 +177,7 @@ public final class YogTerminalService {
     }
 
     @SubscribeEvent
-    public void onWorldUnload(WorldEvent.Unload event) {
+    public static void onWorldUnload(WorldEvent.Unload event) {
         if (event.world.isRemote || event.world.provider.dimensionId != 0) return;
         YogTerminalStorage.unload();
         SESSIONS.clear();
@@ -185,19 +186,19 @@ public final class YogTerminalService {
     }
 
     @SubscribeEvent
-    public void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
+    public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
         SENT.remove(event.player.getUniqueID());
     }
 
     @SubscribeEvent
-    public void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+    public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         CreativeCursor.clear(event.player.getUniqueID());
         SESSIONS.remove(event.player.getUniqueID());
         SENT.remove(event.player.getUniqueID());
     }
 
     @SubscribeEvent
-    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.END || !(event.player instanceof EntityPlayerMP player)
             || !YogTerminalStorage.loaded()) return;
         if (clickDepth != 0) {
@@ -379,18 +380,18 @@ public final class YogTerminalService {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onToss(ItemTossEvent event) {
+    public static void onToss(ItemTossEvent event) {
         if (!event.player.worldObj.isRemote && YogTerminalStorage.loaded()) returnDropped(event.entityItem);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onJoinWorld(EntityJoinWorldEvent event) {
+    public static void onJoinWorld(EntityJoinWorldEvent event) {
         if (!event.world.isRemote && event.entity instanceof EntityItem item && YogTerminalStorage.loaded())
             returnDropped(item);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onDrops(PlayerDropsEvent event) {
+    public static void onDrops(PlayerDropsEvent event) {
         if (event.entityPlayer.worldObj.isRemote || !YogTerminalStorage.loaded()) return;
         if (SESSIONS.remove(event.entityPlayer.getUniqueID()) != null
             && event.entityPlayer instanceof EntityPlayerMP player)

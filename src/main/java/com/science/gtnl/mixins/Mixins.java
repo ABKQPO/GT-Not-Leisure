@@ -177,6 +177,7 @@ public enum Mixins implements IMixins {
             "appliedEnergistics.AccessorPartInterface",
             "appliedEnergistics.AccessorTileInterface",
             "appliedEnergistics.MixinAdaptorIInventory",
+            "appliedEnergistics.AccessorWrapperMCISidedInventory",
             "appliedEnergistics.MixinDualityInterface",
             "appliedEnergistics.MixinEntityTinyTNTPrimed",
             "appliedEnergistics.MixinTileIOPort",

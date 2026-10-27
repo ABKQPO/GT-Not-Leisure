@@ -191,4 +191,13 @@ public final class RecursivePatternReport {
         }
         return text.toString();
     }
+
+    public static void report(Minecraft minecraft, IAEStack<?> request, List<Cycle> cycles, CraftingCycleIndex index,
+        boolean manual) {
+        if (manual) {
+            show(minecraft, request, cycles);
+        } else {
+            showBlocking(minecraft, index);
+        }
+    }
 }

@@ -5,13 +5,17 @@ import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
+
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
+@EventBusSubscriber(phase = Phase.PRE)
 public class VoidWorldHandler {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onWorldLoad(WorldEvent.Load event) {
+    public static void onWorldLoad(WorldEvent.Load event) {
         World world = event.world;
 
         if (!world.isRemote && world.provider.dimensionId == 0) {
@@ -34,7 +38,7 @@ public class VoidWorldHandler {
         }
     }
 
-    private void generateVoidPlatform(World world) {
+    private static void generateVoidPlatform(World world) {
         final int centerX = 0;
         final int centerY = 64;
         final int centerZ = 0;

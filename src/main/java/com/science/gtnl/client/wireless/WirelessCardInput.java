@@ -7,11 +7,12 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.MouseEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 
 import org.lwjgl.input.Keyboard;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.WirelessFrequencyCard;
 import com.science.gtnl.common.packet.OpenWirelessCardPacket;
@@ -21,7 +22,6 @@ import com.science.gtnl.common.wireless.WirelessCardVisualisation;
 
 import appeng.core.sync.packets.PacketNetworkVisualiserData;
 import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -29,13 +29,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.Unpooled;
 
 @SideOnly(Side.CLIENT)
+@EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
 public class WirelessCardInput {
 
     private static final KeyBinding TOGGLE = new KeyBinding(
         "key.gtnl.wireless_card_auto",
         Keyboard.KEY_NONE,
         "key.categories.gtnl");
-    private long nextInput;
+    private static long nextInput;
     private static final KeyBinding OPEN = new KeyBinding(
         "key.gtnl.wireless_card_open",
         Keyboard.KEY_NONE,
@@ -55,24 +56,19 @@ public class WirelessCardInput {
         ClientRegistry.registerKeyBinding(TOGGLE);
         ClientRegistry.registerKeyBinding(OPEN);
         ClientRegistry.registerKeyBinding(VISUALISATION);
-        WirelessCardInput handler = new WirelessCardInput();
-        MinecraftForge.EVENT_BUS.register(handler);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(handler);
     }
 
     @SubscribeEvent
-    public void key(InputEvent.KeyInputEvent event) {
+    public static void key(InputEvent.KeyInputEvent event) {
         keys();
     }
 
     @SubscribeEvent
-    public void mouseKey(InputEvent.MouseInputEvent event) {
+    public static void mouseKey(InputEvent.MouseInputEvent event) {
         keys();
     }
 
-    private void keys() {
+    private static void keys() {
         if (OPEN.isPressed() && acceptInput()) ScienceNotLeisure.network.sendToServer(new OpenWirelessCardPacket());
         if (TOGGLE.isPressed() && acceptInput())
             ScienceNotLeisure.network.sendToServer(new ToggleWirelessCardPacket(false, 0, false, false));
@@ -85,7 +81,7 @@ public class WirelessCardInput {
     }
 
     @SubscribeEvent
-    public void unload(WorldEvent.Unload event) {
+    public static void unload(WorldEvent.Unload event) {
         if (event.world == visualWorld) clearVisualisation();
     }
 
@@ -153,7 +149,7 @@ public class WirelessCardInput {
         return visualTool;
     }
 
-    private boolean acceptInput() {
+    private static boolean acceptInput() {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.currentScreen != null || mc.thePlayer == null || mc.theWorld == null) return false;
         long now = System.nanoTime();
@@ -163,7 +159,7 @@ public class WirelessCardInput {
     }
 
     @SubscribeEvent
-    public void mouse(MouseEvent event) {
+    public static void mouse(MouseEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.currentScreen != null || mc.thePlayer == null || event.dwheel == 0 || !mc.thePlayer.isSneaking()) return;
         ItemStack held = mc.thePlayer.getCurrentEquippedItem();

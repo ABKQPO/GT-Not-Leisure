@@ -21,11 +21,12 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
+import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.gtnllib.utils.GameUtils;
 import com.reavaritia.utils.item.PlaySound;
 import com.science.gtnl.common.entity.EntityArrowCustom;
@@ -36,6 +37,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
+@EventBusSubscriber(phase = Phase.PRE)
 public class TwilightSword extends ItemSword implements PlaySound {
 
     public static final Item.ToolMaterial[] TWILIGHT_MATERIALS = {
@@ -58,7 +60,6 @@ public class TwilightSword extends ItemSword implements PlaySound {
         super(TWILIGHT_MATERIALS[0]);
         this.setMaxStackSize(1);
         setMaxDamage(9999);
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -184,7 +185,7 @@ public class TwilightSword extends ItemSword implements PlaySound {
     }
 
     @SubscribeEvent
-    public void onPlayerUpdate(LivingEvent.LivingUpdateEvent event) {
+    public static void onPlayerUpdate(LivingEvent.LivingUpdateEvent event) {
         if (event.entityLiving instanceof EntityPlayer player) {
             if (isHoldingSword(player)) {
                 applyBuffs(player);
@@ -194,7 +195,7 @@ public class TwilightSword extends ItemSword implements PlaySound {
     }
 
     @SubscribeEvent
-    public void onProjectileHit(LivingAttackEvent event) {
+    public static void onProjectileHit(LivingAttackEvent event) {
         if (event.entityLiving instanceof EntityPlayer player) {
             if (isHoldingSword(player) && event.source.isProjectile()) {
                 event.setCanceled(true);
@@ -203,7 +204,7 @@ public class TwilightSword extends ItemSword implements PlaySound {
         }
     }
 
-    private void reflectProjectile(Entity projectile) {
+    private static void reflectProjectile(Entity projectile) {
         if (projectile instanceof IProjectile && !projectile.isDead) {
             projectile.motionX *= -1.5;
             projectile.motionY *= -0.5;
@@ -214,7 +215,7 @@ public class TwilightSword extends ItemSword implements PlaySound {
         }
     }
 
-    private boolean isHoldingSword(EntityPlayer player) {
+    private static boolean isHoldingSword(EntityPlayer player) {
         return player.getHeldItem() != null && player.getHeldItem()
             .getItem() instanceof TwilightSword;
     }
@@ -237,7 +238,7 @@ public class TwilightSword extends ItemSword implements PlaySound {
         }
     }
 
-    private void applyBuffs(EntityPlayer player) {
+    private static void applyBuffs(EntityPlayer player) {
         int duration = 1200;
         player.addPotionEffect(new PotionEffect(Potion.resistance.id, duration, 2));
         player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, duration, 1));
@@ -249,7 +250,7 @@ public class TwilightSword extends ItemSword implements PlaySound {
         player.clearActivePotions();
     }
 
-    private void clearProjectiles(EntityPlayer player) {
+    private static void clearProjectiles(EntityPlayer player) {
         List<Entity> projectiles = player.worldObj
             .getEntitiesWithinAABB(Entity.class, player.boundingBox.expand(3, 3, 3));
         for (Entity e : projectiles) {

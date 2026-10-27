@@ -14,7 +14,6 @@ import com.science.gtnl.compat.betterquesting.QuestLoader;
 import com.science.gtnl.compat.bogosorter.BogoSorterCompat;
 import com.science.gtnl.compat.craftingtweaks.CraftingTweaksCompat;
 import com.science.gtnl.compat.galaxyspace.GalaxySpaceCompat;
-import com.science.gtnl.compat.mobsinfo.ExtremeExtremeEntityCrusherRecipes;
 import com.science.gtnl.compat.nei.NEICompat;
 import com.science.gtnl.compat.nutrition.NutrientLoader;
 import com.science.gtnl.compat.thaumcraft.TCResearches;
@@ -34,7 +33,6 @@ public class CompatLoader implements IContentLoader {
         new Entry(Mods.Waila, () -> new WailaLoader()),
         new Entry(Mods.Thaumcraft, () -> new TCResearches()),
         new Entry(Mods.ThaumicEnergistics, () -> new ThaumicEnergisticsCompat()),
-        new Entry(Mods.MobsInfo, () -> new ExtremeExtremeEntityCrusherRecipes()),
         new Entry(
             Mods.GalaxySpace,
             () -> new GalaxySpaceCompat(),

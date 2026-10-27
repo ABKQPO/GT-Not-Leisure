@@ -35,17 +35,8 @@ public abstract class MixinReactorExplosion {
 
     @Inject(method = "updateProcess", at = @At("HEAD"), cancellable = true)
     private void injectDynamoCheck(CallbackInfo ci) {
-        for (int x = xCoord - 10; x <= xCoord + 10; x++) {
-            for (int y = yCoord - 10; y <= yCoord + 10; y++) {
-                for (int z = zCoord - 10; z <= zCoord + 10; z++) {
-                    if (ExplosionDynamoHatch
-                        .absorbExplosion(world, x, y, z, xCoord, yCoord, zCoord, this.power * 10000 * 20480)) {
-                        this.isDead = true;
-                        ci.cancel();
-                        return;
-                    }
-                }
-            }
-        }
+        if (!ExplosionDynamoHatch.absorbFirst(world, xCoord, yCoord, zCoord, this.power * 10000 * 20480)) return;
+        this.isDead = true;
+        ci.cancel();
     }
 }

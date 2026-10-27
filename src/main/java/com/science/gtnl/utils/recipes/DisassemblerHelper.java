@@ -13,21 +13,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import com.dreammaster.item.NHItemList;
 import com.github.bsideup.jabel.Desugar;
 import com.glodblock.github.common.item.ItemFluidPacket;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.material.GTNLRecipeMaps;
 import com.science.gtnl.common.recipe.gtnl.ShimmerRecipes;
+import com.science.gtnl.compat.newhorizons.NHCoreCircuits;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.ModsItemlist;
 
 import appeng.api.AEApi;
 import appeng.api.util.AEColor;
-import cpw.mods.fml.common.Optional.Method;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.items.MetaGeneratedTool;
 import gregtech.api.objects.GTItemStack;
@@ -61,10 +59,10 @@ public class DisassemblerHelper {
         inputBlacklist.add(new GTItemStack(ItemList.ZPM.get(1)));
         inputBlacklist.add(new GTItemStack(CustomItemList.hatch_CreativeMaintenance.get(1)));
 
-        if (Mods.Railcraft.isModLoaded()) {
-            inputBlacklist.add(new GTItemStack(ModsItemlist.RailcraftTrack.get(1L)));
-            inputBlacklist.add(new GTItemStack(ModsItemlist.RailcraftTrackLegacyDamage736.get(1L)));
-            inputBlacklist.add(new GTItemStack(ModsItemlist.RailcraftTrackLegacyDamage816.get(1L)));
+        for (ModsItemlist track : new ModsItemlist[] { ModsItemlist.RailcraftTrack,
+            ModsItemlist.RailcraftTrackLegacyDamage736, ModsItemlist.RailcraftTrackLegacyDamage816 }) {
+            ItemStack stack = track.getIfLoaded(1L);
+            if (stack != null) inputBlacklist.add(new GTItemStack(stack));
         }
 
         inputBlacklist.add(new GTItemStack(ModsItemlist.IC2MixedMetalIngot.get(1)));
@@ -221,8 +219,7 @@ public class DisassemblerHelper {
 
             // 4. replace circuit
             if (itemDataInSlotIdx.mPrefix == OrePrefixes.circuit) {
-                ItemStack circuit = Mods.NewHorizonsCoreMod.isModLoaded() ? getCheapestCircuitOrNull(thisMaterial)
-                    : null;
+                ItemStack circuit = NHCoreCircuits.cheapestCircuit(thisMaterial);
                 if (circuit != null) {
                     circuit.stackSize = itemInSlotIdx.stackSize;
                     retOutputs[idx] = circuit;
@@ -306,26 +303,6 @@ public class DisassemblerHelper {
         if (first == Materials.NeodymiumMagnetic) return Materials.Neodymium;
         if (first == Materials.SamariumMagnetic) return Materials.Samarium;
         if (first == Materials.AnnealedCopper) return Materials.Copper;
-        return null;
-    }
-
-    @Method(modid = "dreamcraft")
-    public static ItemStack getCheapestCircuitOrNull(Materials material) {
-        if (material == Materials.ULV) return NHItemList.CircuitULV.get(1);
-        if (material == Materials.LV) return NHItemList.CircuitLV.get(1);
-        if (material == Materials.MV) return NHItemList.CircuitMV.get(1);
-        if (material == Materials.HV) return NHItemList.CircuitHV.get(1);
-        if (material == Materials.EV) return NHItemList.CircuitEV.get(1);
-        if (material == Materials.IV) return NHItemList.CircuitIV.get(1);
-        if (material == Materials.LuV) return NHItemList.CircuitLuV.get(1);
-        if (material == Materials.ZPM) return NHItemList.CircuitZPM.get(1);
-        if (material == Materials.UV) return NHItemList.CircuitUV.get(1);
-        if (material == Materials.UHV) return NHItemList.CircuitUHV.get(1);
-        if (material == Materials.UEV) return NHItemList.CircuitUEV.get(1);
-        if (material == Materials.UIV) return NHItemList.CircuitUIV.get(1);
-        if (material == Materials.UMV) return NHItemList.CircuitUMV.get(1);
-        if (material == Materials.UXV) return NHItemList.CircuitUXV.get(1);
-        if (material == Materials.MAX) return NHItemList.CircuitMAX.get(1);
         return null;
     }
 
