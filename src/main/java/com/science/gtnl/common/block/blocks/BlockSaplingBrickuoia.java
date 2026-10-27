@@ -9,7 +9,7 @@ import net.minecraft.world.gen.feature.WorldGenBigTree;
 import net.minecraft.world.gen.feature.WorldGenTrees;
 import net.minecraftforge.event.terraingen.TerrainGen;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.common.world.WorldGenBrickuoia;
 
 import gtPlusPlus.xmod.bop.blocks.base.SaplingBase;

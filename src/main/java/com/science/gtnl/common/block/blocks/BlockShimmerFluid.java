@@ -16,8 +16,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.BlockFluidBase;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.common.recipe.gtnl.ShimmerRecipes;
 import com.science.gtnl.loader.EffectLoader;
 

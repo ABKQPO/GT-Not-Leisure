@@ -8,35 +8,11 @@ public class VoidMinerState {
 
     public static final String NO_OVERRIDE = "None";
 
-    private long lEUt;
-    private String warning = "";
-    private int dimensionChangeVersion;
-    private String activeDropMapDimension = "";
-    private String lastDimensionOverride = NO_OVERRIDE;
-
-    public long getEUt() {
-        return lEUt;
-    }
-
-    public void setEUt(long lEUt) {
-        this.lEUt = lEUt;
-    }
-
-    public String getWarning() {
-        return warning;
-    }
-
-    public void warn(String translationKey) {
-        this.warning = translationKey;
-    }
-
-    public void clearWarning() {
-        this.warning = "";
-    }
-
-    public String getLastDimensionOverride() {
-        return lastDimensionOverride;
-    }
+    public long lEUt;
+    public String warning = "";
+    public int dimensionChangeVersion;
+    public String activeDropMapDimension = "";
+    public String lastDimensionOverride = NO_OVERRIDE;
 
     public boolean hasOverride() {
         return !NO_OVERRIDE.equals(lastDimensionOverride);
@@ -48,14 +24,6 @@ public class VoidMinerState {
 
     public void setLastDimensionOverride(String dimensionKey) {
         this.lastDimensionOverride = dimensionKey == null || dimensionKey.isEmpty() ? NO_OVERRIDE : dimensionKey;
-    }
-
-    public String getActiveDropMapDimension() {
-        return activeDropMapDimension;
-    }
-
-    public int getDimensionChangeVersion() {
-        return dimensionChangeVersion;
     }
 
     public boolean switchDropMapDimension(String dimensionName) {

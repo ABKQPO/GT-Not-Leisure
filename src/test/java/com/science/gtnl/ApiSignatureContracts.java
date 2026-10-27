@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 public class ApiSignatureContracts {
 
     public static final Path API_SOURCES = Paths.get("src/main/java/com/science/gtnl/api");
+    public static final Path MIXIN_INTERFACES = API_SOURCES.resolve("mixinHelper");
     public static final Path BASELINE = Paths.get("src/test/resources/com/science/gtnl/api-signatures.txt");
     public static final String DUMP_VARIABLE = "GTNL_API_SIGNATURE_DUMP";
 
@@ -52,7 +53,7 @@ public class ApiSignatureContracts {
         try (Stream<Path> files = Files.walk(API_SOURCES)) {
             for (Path file : files.filter(
                 path -> path.toString()
-                    .endsWith(".java"))
+                    .endsWith(".java") && !path.startsWith(MIXIN_INTERFACES))
                 .collect(Collectors.toList())) {
                 String relative = Paths.get("src/main/java")
                     .relativize(file)

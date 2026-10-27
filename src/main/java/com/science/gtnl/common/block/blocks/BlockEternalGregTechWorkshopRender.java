@@ -11,9 +11,9 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.blocks.item.ItemBlockEternalGregTechWorkshopRender;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEternalGregTechWorkshop;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.utils.enums.GTNLItemList;
 
 import cpw.mods.fml.common.registry.GameRegistry;

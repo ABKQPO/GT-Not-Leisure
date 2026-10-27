@@ -94,7 +94,7 @@ public class VoidMinerHooks {
         miner.extraDropMap = null;
         host.gtnl$setTotalWeight(0);
         host.gtnl$setCanVoidMine(false);
-        state.clearWarning();
+        state.warning = "";
 
         state.setLastDimensionOverride(resolveDimensionKey(miner));
         Optional<String> dimensionNameOverride = resolveDimensionNameOverride(miner);
@@ -115,7 +115,7 @@ public class VoidMinerHooks {
                 resizeSelected(miner);
                 return;
             }
-            state.warn("vmtweak.gui.override.error");
+            state.warning = "vmtweak.gui.override.error";
         }
 
         if (host.gtnl$dimensionDef() == null || !host.gtnl$dimensionDef()
@@ -134,7 +134,7 @@ public class VoidMinerHooks {
                 .getDimensionName());
 
         if (hasOverride) {
-            state.warn(host.gtnl$totalWeight() > 0 ? "vmtweak.gui.override.failed" : "vmtweak.gui.override.error");
+            state.warning = host.gtnl$totalWeight() > 0 ? "vmtweak.gui.override.failed" : "vmtweak.gui.override.error";
         }
         resizeSelected(miner);
     }
@@ -168,8 +168,7 @@ public class VoidMinerHooks {
     }
 
     public static String copyDimension(VoidMinerState state) {
-        return state.getActiveDropMapDimension()
-            .isEmpty() ? "unknown" : state.getActiveDropMapDimension();
+        return state.activeDropMapDimension.isEmpty() ? "unknown" : state.activeDropMapDimension;
     }
 
     public static NBTTagCompound copiedData(MTEVoidMinerBase<?> miner) {
@@ -194,25 +193,22 @@ public class VoidMinerHooks {
 
     @Deprecated
     public static Text dimensionDisplayName(VoidMinerState state) {
-        if (!state.getWarning()
-            .isEmpty()) {
-            return new Text(EnumChatFormatting.YELLOW + StatCollector.translateToLocal(state.getWarning()));
+        if (!state.warning.isEmpty()) {
+            return new Text(EnumChatFormatting.YELLOW + StatCollector.translateToLocal(state.warning));
         }
 
         String ext = null;
         try {
-            Block block = ModBlocks.getBlock(state.getLastDimensionOverride());
+            Block block = ModBlocks.getBlock(state.lastDimensionOverride);
             ext = new ItemStack(block).getDisplayName();
         } catch (Exception e) {
-            ScienceNotLeisure.LOG.debug(
-                "[VMTweakMixin] Failed to get display name for dimension: {}",
-                state.getLastDimensionOverride(),
-                e);
+            ScienceNotLeisure.LOG
+                .debug("[VMTweakMixin] Failed to get display name for dimension: {}", state.lastDimensionOverride, e);
         }
 
         return new Text(
             EnumChatFormatting.YELLOW + StatCollector.translateToLocal("gtnl.gui.void_miner.dimension_override")
-                + (ext == null ? state.getLastDimensionOverride() : ext));
+                + (ext == null ? state.lastDimensionOverride : ext));
     }
 
     public static boolean drainEnergyInput(long aEU, List<MTEHatchEnergy> energyHatches,
@@ -248,14 +244,14 @@ public class VoidMinerHooks {
     public static void setElectricityStats(MTEVoidMinerBase<?> miner, boolean batchMode) {
         IVoidMinerHost host = host(miner);
         VoidMinerState state = host.gtnl$state();
-        state.setEUt(-Math.abs(Math.toIntExact(GTValues.V[host.gtnl$minTier()])));
+        state.lEUt = -Math.abs(Math.toIntExact(GTValues.V[host.gtnl$minTier()]));
         long useEU = miner.getMaxInputEu();
 
         if (batchMode) {
             miner.mMaxProgresstime = 128;
         } else {
             GTNLOverclockCalculator calculator = new GTNLOverclockCalculator().setEUt(useEU)
-                .setRecipeEUt(-state.getEUt())
+                .setRecipeEUt(-state.lEUt)
                 .setDuration(10)
                 .setParallel(1);
             if (host.gtnl$tierMultiplier() == 3) calculator = calculator.enablePerfectOC();
@@ -268,7 +264,7 @@ public class VoidMinerHooks {
         miner.mProgresstime = 0;
         miner.mEfficiency = miner.getCurrentEfficiency(null);
         miner.mEfficiencyIncrease = 10000;
-        state.setEUt(useEU > 0 ? -useEU : useEU);
+        state.lEUt = useEU > 0 ? -useEU : useEU;
     }
 
     public static void handleOutputs(MTEVoidMinerBase<?> miner, boolean batchMode) {

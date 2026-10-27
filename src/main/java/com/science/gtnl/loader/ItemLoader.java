@@ -17,7 +17,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.gtnllib.registry.Registrar;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.common.item.GTNLItemRecord;
 import com.science.gtnl.common.item.ItemInfinityCell;
 import com.science.gtnl.common.item.ItemInfinityItem;

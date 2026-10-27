@@ -33,6 +33,7 @@ public class ArchitectureContracts {
     public static final int MAX_MIXINS_WITH_LONG_METHODS = 10;
     public static final int LONG_METHOD_LINES = 15;
     public static final int MAX_CLIENT_IMPORTS_IN_COMMON = 90;
+    public static final int MAX_MANUAL_EVENT_REGISTRATIONS = 31;
 
     public static final Set<String> SELF_REGISTERING = Set.of(
         "common/block/blocks/BlockEnderElevator.java",
@@ -108,6 +109,9 @@ public class ArchitectureContracts {
     private static final Pattern CARD = Pattern.compile("class (\\w+)[^{]*implements[^{]*\\bIContentLoader\\b");
     private static final Pattern COMPAT = Pattern
         .compile("^public class (\\w+)[^{]*implements[^{]*\\bIModCompat\\b", Pattern.MULTILINE);
+    private static final Pattern EVENT_REGISTRATION = Pattern.compile("(EVENT_BUS|bus\\(\\))\\s*\\.\\s*register\\(");
+    private static final Pattern MIXIN_ENTRY_START = Pattern.compile("\\n    (?=[A-Z][A-Z_0-9]*\\()");
+    private static final Pattern MIXIN_NAME = Pattern.compile("\"([A-Za-z0-9_]+(?:\\.[A-Za-z0-9_$]+)+)\"");
     private static final Pattern SYSTEM_IMPORT = Pattern.compile(
         "^import com\\.science\\.gtnl\\.common\\.(celestweave|railgun|portalgun|equipment|wireless|meminiterminal"
             + "|beamformer|yogsothoth|steam|stellar|greenhouse)\\.",
@@ -137,6 +141,39 @@ public class ArchitectureContracts {
                 + " so the reviewer sees them; shared code only, one system's code lives in that system: "
                 + unlisted);
         check(stale.isEmpty(), "remove deleted or moved files from " + UTILS_LIST + ": " + stale);
+
+        Map<String, Integer> registered = mixinRegistrations(sources.get("mixins/Mixins.java"));
+        Set<String> mixinClasses = sources.entrySet()
+            .stream()
+            .filter(
+                entry -> (entry.getKey()
+                    .startsWith("mixins/early/")
+                    || entry.getKey()
+                        .startsWith("mixins/late/"))
+                    && entry.getValue()
+                        .contains("@Mixin("))
+            .map(entry -> mixinKey(entry.getKey()))
+            .collect(Collectors.toCollection(TreeSet::new));
+        check(registered.size() > 200, "the mixin registry scan reads Mixins.java, found " + registered.size());
+        check(
+            !registered.containsKey("unknown"),
+            "every Mixins.java entry sets its phase or uses the early Side constructor");
+        Set<String> registeredTwice = registered.entrySet()
+            .stream()
+            .filter(entry -> entry.getValue() > 1)
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toCollection(TreeSet::new));
+        check(registeredTwice.isEmpty(), "mixins registered more than once in Mixins.java: " + registeredTwice);
+        Set<String> withoutClass = new TreeSet<>(registered.keySet());
+        withoutClass.removeAll(mixinClasses);
+        check(
+            withoutClass.isEmpty(),
+            "Mixins.java registers mixins that have no class in that phase's package: " + withoutClass);
+        Set<String> unregistered = new TreeSet<>(mixinClasses);
+        unregistered.removeAll(registered.keySet());
+        check(
+            unregistered.isEmpty(),
+            "mixin classes that Mixins.java never registers, so they never apply: " + unregistered);
 
         Matcher loaderOrder = LOADER_ENTRY.matcher(
             sources.get("loader/ContentLoaders.java")
@@ -183,6 +220,12 @@ public class ArchitectureContracts {
             (path, text) -> path.startsWith("common/") && !path.startsWith("common/render/")
                 && !path.startsWith("common/gui/")
                 && text.contains("\nimport net.minecraft.client."));
+        ratchet(
+            sources,
+            "files outside loader/ registering event handlers by hand; use @EventBusSubscriber",
+            MAX_MANUAL_EVENT_REGISTRATIONS,
+            (path, text) -> !path.startsWith("loader/") && EVENT_REGISTRATION.matcher(text)
+                .find());
 
         for (Map.Entry<String, String> entry : sources.entrySet()) {
             String path = entry.getKey(), text = entry.getValue();
@@ -295,6 +338,33 @@ public class ArchitectureContracts {
             what + " may only go down: limit " + max + ", found " + hits.size() + " " + new TreeSet<>(hits));
         if (hits.size() < max)
             System.out.println("ratchet can be lowered: " + what + " is " + hits.size() + ", limit " + max);
+    }
+
+    // Keys are "early:pkg.Name" or "late:pkg.Name"; the Side constructor registers early mixins.
+    private static Map<String, Integer> mixinRegistrations(String registry) {
+        String body = registry.split("implements IMixins \\{", 2)[1].split("private final MixinBuilder builder;", 2)[0];
+        Map<String, Integer> counts = new TreeMap<>();
+        for (String entry : MIXIN_ENTRY_START.split(body)) {
+            if (!entry.matches("(?s)[A-Z][A-Z_0-9]*\\(.*")) continue;
+            String phase;
+            if (entry.matches("(?s)[A-Z][A-Z_0-9]*\\(Side\\..*") || entry.contains("Phase.EARLY")) phase = "early";
+            else if (entry.contains("Phase.LATE")) phase = "late";
+            else {
+                counts.merge("unknown", 1, Integer::sum);
+                continue;
+            }
+            Matcher name = MIXIN_NAME.matcher(entry);
+            while (name.find()) counts.merge(phase + ":" + name.group(1), 1, Integer::sum);
+        }
+        return counts;
+    }
+
+    private static String mixinKey(String path) {
+        String rest = path.substring("mixins/".length(), path.length() - ".java".length());
+        int slash = rest.indexOf('/');
+        return rest.substring(0, slash) + ":"
+            + rest.substring(slash + 1)
+                .replace('/', '.');
     }
 
     // Accessor and invoker interfaces only declare; the mixin checks are about classes that carry code.

@@ -9,9 +9,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.equipment.IEquipmentVariant;
 import com.science.gtnl.common.equipment.MetaLookup;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;

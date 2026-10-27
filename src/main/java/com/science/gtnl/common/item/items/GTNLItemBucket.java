@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 

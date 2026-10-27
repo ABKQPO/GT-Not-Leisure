@@ -26,10 +26,10 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.ItemFluidContainer;
 
 import com.gtnllib.utils.MathUtils;
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.entity.EntityPortalGunOrb;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.equipment.EquipmentNet;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.common.portalgun.PortalGunData;
 import com.science.gtnl.common.portalgun.PortalGunDestination;
 import com.science.gtnl.config.MainConfig;

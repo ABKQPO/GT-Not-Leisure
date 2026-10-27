@@ -19,10 +19,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.blocks.item.ItemBlockEnderElevator;
 import com.science.gtnl.common.block.blocks.tile.TileEntityEnderElevator;
 import com.science.gtnl.common.entity.LivingSneakEvent;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.loader.RenderLoader;
 import com.science.gtnl.utils.ColorUtils;
 

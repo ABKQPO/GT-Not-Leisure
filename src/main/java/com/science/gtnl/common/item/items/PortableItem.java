@@ -27,8 +27,8 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import org.jetbrains.annotations.NotNull;
 
 import com.cleanroommc.modularui.utils.item.InvWrapper;
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.gui.GTNLGuiHandler;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GuiType;
 

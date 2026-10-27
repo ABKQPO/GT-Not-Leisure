@@ -69,7 +69,6 @@ import com.science.gtnl.common.recipe.gtnl.AlchemicChemistrySetRecipes;
 import com.science.gtnl.common.recipe.gtnl.BloodDemonInjectionRecipes;
 import com.science.gtnl.common.recipe.gtnl.CactusWonderFakeRecipes;
 import com.science.gtnl.common.recipe.gtnl.CellRegulatorRecipes;
-import com.science.gtnl.common.recipe.gtnl.CircuitNanitesDataRecipes;
 import com.science.gtnl.common.recipe.gtnl.CraftingTableRecipes;
 import com.science.gtnl.common.recipe.gtnl.CrucibleCraftingRecipes;
 import com.science.gtnl.common.recipe.gtnl.DecayHastenerRecipes;
@@ -130,7 +129,6 @@ import com.science.gtnl.utils.machine.ProcessingArrayRecipeLoader;
 import com.science.gtnl.utils.machine.oreProcessing.CheatOreProcessingRecipes;
 import com.science.gtnl.utils.recipes.RecipeUtil;
 import com.science.gtnl.utils.recipes.RemoveRecipes;
-import com.science.gtnl.utils.recipes.data.CircuitNanitesRecipeData;
 
 import bartworks.API.recipe.BartWorksRecipeMaps;
 import cpw.mods.fml.common.Optional;
@@ -149,8 +147,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import tectech.thing.CustomItemList;
 
 public class RecipeLoader implements IContentLoader {
-
-    private static Long circuitNanitesSeed;
 
     @Override
     public String name() {
@@ -272,21 +268,6 @@ public class RecipeLoader implements IContentLoader {
                 GTNLRecipeMaps.PlasmaCentrifugeRecipes.add(copiedRecipe);
             }
         }
-    }
-
-    public static void loadCircuitNanitesData(long worldSeed) {
-        if (Long.valueOf(worldSeed)
-            .equals(circuitNanitesSeed)) return;
-        clearCircuitNanitesData();
-        new CircuitNanitesDataRecipes(worldSeed).loadRecipes();
-        circuitNanitesSeed = worldSeed;
-    }
-
-    public static void clearCircuitNanitesData() {
-        CircuitNanitesRecipeData.recipeDataMap.clear();
-        GTNLRecipeMaps.CircuitNanitesDataRecipes.getBackend()
-            .clearRecipes();
-        circuitNanitesSeed = null;
     }
 
     public static void loadBuffTargetChamberRecipe() {

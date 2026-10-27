@@ -14,7 +14,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
 

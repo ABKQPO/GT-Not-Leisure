@@ -1,4 +1,4 @@
-package com.science.gtnl.client;
+package com.science.gtnl.common.item;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.science.gtnl.common.material;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.utils.recipes.RecipeBuilder;
 import com.science.gtnl.utils.text.LanguageLoader;
 

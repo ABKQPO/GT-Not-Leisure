@@ -8,8 +8,8 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.common.block.BlockFluidBase;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 

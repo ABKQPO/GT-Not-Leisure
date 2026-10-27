@@ -27,7 +27,6 @@ import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.client.celestweave.CelestweaveArmorModel;
 import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.celestweave.CelestweaveEnergy;
@@ -38,6 +37,7 @@ import com.science.gtnl.common.equipment.IEquipmentItem;
 import com.science.gtnl.common.gui.equipment.CelestweaveGui;
 import com.science.gtnl.common.gui.equipment.EquipmentContainer;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.compat.holoinventory.HoloGlasses;
 import com.science.gtnl.utils.enums.GTNLItemList;
 

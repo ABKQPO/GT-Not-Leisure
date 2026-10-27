@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 
 import com.gtnllib.utils.GameUtils;
 import com.science.gtnl.ScienceNotLeisure;
-import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.utils.text.LanguageLoader;
 
 import gregtech.api.GregTechAPI;

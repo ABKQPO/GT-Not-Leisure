@@ -27,7 +27,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
-import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.loader.ItemLoader;
 import com.science.gtnl.utils.enums.GTNLItemList;
 

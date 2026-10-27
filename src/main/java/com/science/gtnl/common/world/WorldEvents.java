@@ -11,8 +11,8 @@ import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.machine.hatch.ExplosionDynamoHatch;
 import com.science.gtnl.common.player.PlayerEvents;
+import com.science.gtnl.common.recipe.gtnl.CircuitNanitesDataRecipes;
 import com.science.gtnl.common.render.PlayerDollRenderManager;
-import com.science.gtnl.loader.RecipeLoader;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -47,7 +47,7 @@ public class WorldEvents {
     public static void onWorldLoad(WorldEvent.Load event) {
         World world = event.world;
         if (world.isRemote) return;
-        RecipeLoader.loadCircuitNanitesData(world.getSeed());
+        CircuitNanitesDataRecipes.loadForWorld(world.getSeed());
     }
 
     @SubscribeEvent
@@ -64,7 +64,7 @@ public class WorldEvents {
         // Other dimensions unload during play; only the overworld unloading ends the server session.
         if (event.world.provider.dimensionId != 0) return;
         PlayerEvents.FOOD_TICK_TIMERS.clear();
-        RecipeLoader.clearCircuitNanitesData();
+        CircuitNanitesDataRecipes.clear();
     }
 
     @SubscribeEvent

@@ -8,7 +8,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 import com.gtnllib.utils.MetaTooltipUtils;
-import com.science.gtnl.client.GTNLCreativeTabs;
+import com.science.gtnl.common.item.GTNLCreativeTabs;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.item.MetaItemStackUtils;
 

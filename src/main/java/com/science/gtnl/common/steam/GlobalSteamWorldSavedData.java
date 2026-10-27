@@ -168,7 +168,8 @@ public class GlobalSteamWorldSavedData extends WorldSavedData {
     @Override
     public void writeToNBT(NBTTagCompound nbtTagCompound) {
         nbtTagCompound.setTag(STEAM_BALANCES_NBT_TAG, SteamBalanceCodec.encode(GLOBAL_STEAM));
-        // TODO: Drop the Java-serialized copy once no supported GTNL version reads only that format.
+        // TODO: Stop writing the Java-serialized copy one release after the first release that writes the NBT list,
+        // so a one-version downgrade keeps balances; keep reading it.
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)) {
 
