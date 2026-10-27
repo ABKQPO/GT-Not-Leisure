@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -27,11 +26,13 @@ import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.api.widget.Interactable;
+import com.cleanroommc.modularui.drawable.ColorType;
 import com.cleanroommc.modularui.drawable.GuiDraw;
 import com.cleanroommc.modularui.drawable.ItemDrawable;
 import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.integration.recipeviewer.RecipeViewerGhostIngredientSlot;
 import com.cleanroommc.modularui.screen.ModularPanel;
+import com.cleanroommc.modularui.theme.WidgetTheme;
 import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.value.DoubleValue;
 import com.cleanroommc.modularui.value.StringValue;
@@ -45,6 +46,7 @@ import com.cleanroommc.modularui.value.sync.StringSyncValue;
 import com.cleanroommc.modularui.widget.ParentWidget;
 import com.cleanroommc.modularui.widget.ScrollWidget;
 import com.cleanroommc.modularui.widget.Widget;
+import com.cleanroommc.modularui.widget.scroll.HorizontalScrollData;
 import com.cleanroommc.modularui.widget.scroll.VerticalScrollData;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.ListWidget;
@@ -75,6 +77,9 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
     private static final UITexture ARROW_EMPTY = GTGuiTextures.PROGRESSBAR_ARROW_STANDARD.getSubArea(0, 0, 1, 0.5F);
     private static final UITexture ARROW_FULL = GTGuiTextures.PROGRESSBAR_ARROW_STANDARD.getSubArea(0, 0.5F, 1, 1);
     private static final UITexture ARROW_COMPLETE = ARROW_FULL.withColorOverride(0xFF55DD55);
+    private static final UITexture ROUTE_ARROW_EMPTY = new RouteArrowTexture(false, 0);
+    private static final UITexture ROUTE_ARROW_FULL = new RouteArrowTexture(true, 0);
+    private static final UITexture ROUTE_ARROW_COMPLETE = new RouteArrowTexture(true, 0xFF55DD55);
 
     private final PagedWidget.Controller pages = new PagedWidget.Controller();
     private String targetDraft;
@@ -471,11 +476,14 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
     private ParentWidget<?> routePage() {
         ParentWidget<?> page = new ParentWidget<>().size(PAGE_WIDTH, PAGE_HEIGHT);
         VerticalScrollData vertical = new VerticalScrollData();
+        HorizontalScrollData horizontal = new HorizontalScrollData();
         ScrollWidget<?> viewport = new ScrollWidget<>(vertical).showScrollShadows(false)
             .pos(0, 18)
             .size(PAGE_WIDTH, ROUTE_HEIGHT)
             .background(GTGuiTextures.BACKGROUND_STANDARD);
-        routeWidget = new BreedingRouteWidget(viewport, vertical);
+        viewport.getScrollArea()
+            .setScrollDataX(horizontal);
+        routeWidget = new BreedingRouteWidget(viewport, vertical, horizontal);
         viewport.child(routeWidget);
         page.child(progressArrow(this::routeProgress, 0, 0));
         page.child(
@@ -673,76 +681,43 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         return step;
     }
 
-    private void addRouteLink(BreedingRouteWidget canvas, RouteNode parent, RouteNode result, RouteLayout layout) {
-        int fromX = parent.x + 9, fromY = parent.y - 2;
-        int toX = result.x + 9, toY = result.y + 20;
-        List<int[]> points = new ArrayList<>();
-        points.add(new int[] { fromX, fromY });
-        boolean blocked = layout.nodes.values()
-            .stream()
-            .anyMatch(node -> node != parent && node != result && crossesNode(fromX, fromY, toX, toY, node));
-        if (blocked) {
-            int side = fromX < ROUTE_WIDTH / 2 ? 5 : ROUTE_WIDTH - 5;
-            points.add(new int[] { fromX, fromY - 8 });
-            points.add(new int[] { side, fromY - 8 });
-            points.add(new int[] { side, toY + 8 });
-            points.add(new int[] { toX, toY + 8 });
-        }
-        points.add(new int[] { toX, toY });
-        double length = 0D;
-        for (int i = 1; i < points.size(); i++)
-            length += Math.hypot(points.get(i)[0] - points.get(i - 1)[0], points.get(i)[1] - points.get(i - 1)[1]);
-        double offset = 0D;
-        for (int i = 1; i < points.size(); i++) {
-            int[] start = points.get(i - 1), end = points.get(i);
-            double segmentLength = Math.hypot(end[0] - start[0], end[1] - start[1]);
-            if (segmentLength < 1D) continue;
-            double total = length, before = offset;
-            boolean arrowHead = i == points.size() - 1;
-            UITexture empty = arrowHead ? ARROW_EMPTY : ARROW_EMPTY.getSubArea(0, 0, 0.5F, 1);
-            UITexture full = arrowHead ? ARROW_FULL : ARROW_FULL.getSubArea(0, 0, 0.5F, 1);
-            UITexture complete = full.withColorOverride(0xFF55DD55);
-            ProgressWidget arrow = progressArrow(
-                () -> Math.max(0D, Math.min(1D, (stepProgress(result.step) * total - before) / segmentLength)),
-                start[0],
-                start[1]).size((int) Math.ceil(segmentLength), 8)
-                    .texture(empty, full, 20)
-                    .transform((widget, stack) -> {
-                        stack.rotateZ((float) Math.atan2(end[1] - start[1], end[0] - start[0]));
-                        stack.translate(0, -4);
-                    })
-                    .onUpdateListener(
-                        widget -> widget.texture(empty, archivedSpecies.contains(result.uid) ? complete : full, 20))
-                    .tooltipAutoUpdate(true)
-                    .tooltipBuilder(
-                        t -> t.addLine(IKey.lang("gtnl.bee_breeder." + routeState(result.step)))
-                            .addLine(tr("gtnl.bee_breeder.chance", currentStep(result.step).getDouble("chance"))));
-            canvas.child(arrow);
-            offset += segmentLength;
-        }
-    }
-
-    private static boolean crossesNode(int x1, int y1, int x2, int y2, RouteNode node) {
-        double first = Math.max(0D, Math.min((node.y - 3D - y1) / (y2 - y1), (node.y + 21D - y1) / (y2 - y1)));
-        double last = Math.min(1D, Math.max((node.y - 3D - y1) / (y2 - y1), (node.y + 21D - y1) / (y2 - y1)));
-        if (first > last) return false;
-        double firstX = x1 + (x2 - x1) * first, lastX = x1 + (x2 - x1) * last;
-        return Math.min(firstX, lastX) < node.x + 21 && Math.max(firstX, lastX) > node.x - 3;
+    private void addRouteLink(BreedingRouteWidget canvas, RouteLink link) {
+        canvas.child(
+            progressArrow(() -> stepProgress(link.result.step), link.x, link.y).size(link.length, 18)
+                .texture(ROUTE_ARROW_EMPTY, ROUTE_ARROW_FULL, link.length)
+                .transform((widget, stack) -> {
+                    stack.rotateZ(link.angle);
+                    stack.translate(0, -9);
+                })
+                .onUpdateListener(
+                    widget -> widget.texture(
+                        ROUTE_ARROW_EMPTY,
+                        archivedSpecies.contains(link.result.uid) ? ROUTE_ARROW_COMPLETE : ROUTE_ARROW_FULL,
+                        link.length))
+                .tooltipAutoUpdate(true)
+                .tooltipBuilder(
+                    t -> t.addLine(IKey.lang("gtnl.bee_breeder." + routeState(link.result.step)))
+                        .addLine(tr("gtnl.bee_breeder.chance", currentStep(link.result.step).getDouble("chance")))));
     }
 
     private final class BreedingRouteWidget extends ParentWidget<BreedingRouteWidget> implements Interactable {
 
         private final ScrollWidget<?> viewport;
         private final VerticalScrollData vertical;
+        private final HorizontalScrollData horizontal;
         private List<NBTTagCompound> lastSteps;
         private String lastTarget = "";
         private RouteLayout layout = new RouteLayout(Collections.emptyList(), "");
+        private int dragX;
         private int dragY;
-        private int startScroll;
+        private int startScrollX;
+        private int startScrollY;
 
-        private BreedingRouteWidget(ScrollWidget<?> viewport, VerticalScrollData vertical) {
+        private BreedingRouteWidget(ScrollWidget<?> viewport, VerticalScrollData vertical,
+            HorizontalScrollData horizontal) {
             this.viewport = viewport;
             this.vertical = vertical;
+            this.horizontal = horizontal;
             pos(0, 0).size(ROUTE_WIDTH, ROUTE_HEIGHT);
         }
 
@@ -751,24 +726,27 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
             super.onUpdate();
             String currentTarget = target.getStringValue();
             if (lastSteps == steps && lastTarget.equals(currentTarget)) return;
-            boolean targetChanged = !lastTarget.equals(currentTarget);
+            boolean targetChanged = !lastTarget.equals(currentTarget) || lastSteps == null
+                || (lastSteps.isEmpty() && !steps.isEmpty());
             lastSteps = steps;
             lastTarget = currentTarget;
             layout = new RouteLayout(steps, currentTarget);
             removeAll();
-            for (RouteNode node : layout.nodes.values()) {
-                for (RouteNode parent : node.parents) addRouteLink(this, parent, node, layout);
-            }
+            for (RouteLink link : layout.links) addRouteLink(this, link);
             for (RouteNode node : layout.nodes.values()) child(routeBee(node.uid, node.x, node.y).tooltipBuilder(t -> {
                 t.addLine(BeeBreedingHelper.getSpeciesDisplayName(node.uid));
                 t.addLine(node.uid);
                 if (node.step != null) t.addLine(IKey.lang("gtnl.bee_breeder." + routeState(node.step)))
                     .addLine(tr("gtnl.bee_breeder.chance", currentStep(node.step).getDouble("chance")));
             }));
-            size(ROUTE_WIDTH, layout.height);
+            size(layout.width, layout.height);
             vertical.setScrollSize(layout.height);
-            if (targetChanged) vertical.scrollTo(viewport.getScrollArea(), 0);
-            else vertical.clamp(viewport.getScrollArea());
+            horizontal.setScrollSize(layout.width);
+            if (targetChanged) focusTarget();
+            else {
+                vertical.clamp(viewport.getScrollArea());
+                horizontal.clamp(viewport.getScrollArea());
+            }
             viewport.scheduleResize();
             scheduleResize();
         }
@@ -776,78 +754,91 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         private void focusTarget() {
             RouteNode node = layout.nodes.get(target.getStringValue());
             vertical.scrollTo(viewport.getScrollArea(), node == null ? 0 : node.y - 10);
+            horizontal.scrollTo(viewport.getScrollArea(), node == null ? 0 : node.x + 9 - PAGE_WIDTH / 2);
         }
 
         @Override
         public @NotNull Result onMousePressed(int button) {
             if (button != 0) return Result.IGNORE;
+            dragX = getContext().getAbsMouseX();
             dragY = getContext().getAbsMouseY();
-            startScroll = vertical.getScroll();
+            startScrollX = horizontal.getScroll();
+            startScrollY = vertical.getScroll();
             return Result.SUCCESS;
         }
 
         @Override
         public void onMouseDrag(int button, long timeSinceClick) {
-            if (button == 0)
-                vertical.scrollTo(viewport.getScrollArea(), startScroll + dragY - getContext().getAbsMouseY());
+            if (button == 0) {
+                vertical.scrollTo(viewport.getScrollArea(), startScrollY + dragY - getContext().getAbsMouseY());
+                horizontal.scrollTo(viewport.getScrollArea(), startScrollX + dragX - getContext().getAbsMouseX());
+            }
         }
     }
 
     private static final class RouteLayout {
 
         private final Map<String, RouteNode> nodes = new LinkedHashMap<>();
+        private final List<RouteLink> links = new ArrayList<>();
+        private final int width;
         private final int height;
 
         private RouteLayout(List<NBTTagCompound> steps, String target) {
             Map<String, NBTTagCompound> byResult = new HashMap<>();
             for (NBTTagCompound step : steps) byResult.put(step.getString("result"), step);
+            RouteNode root = new RouteNode(target);
             ArrayDeque<RouteNode> pending = new ArrayDeque<>();
-            if (!target.isEmpty()) pending.add(node(target));
-            Set<String> visited = new HashSet<>();
+            if (!target.isEmpty()) {
+                nodes.put(target, root);
+                pending.add(root);
+            }
+            Set<String> expanded = new HashSet<>();
             while (!pending.isEmpty()) {
                 RouteNode result = pending.remove();
-                if (!visited.add(result.uid)) continue;
                 result.step = byResult.get(result.uid);
-                if (result.step == null) continue;
+                if (result.step == null || !expanded.add(result.uid)) continue;
                 for (String key : new String[] { "parent1", "parent2" }) {
                     String uid = result.step.getString(key);
                     if (uid.isEmpty() || uid.equals(result.uid)) continue;
-                    RouteNode parent = node(uid);
-                    if (!result.parents.contains(parent)) {
-                        result.parents.add(parent);
-                        parent.children++;
-                        pending.add(parent);
-                    }
+                    if (result.parents.stream()
+                        .anyMatch(parent -> parent.uid.equals(uid))) continue;
+                    RouteNode parent = new RouteNode(uid);
+                    parent.depth = result.depth + 1;
+                    result.parents.add(parent);
+                    nodes.put("#parent:" + nodes.size(), parent);
+                    pending.add(parent);
                 }
             }
-            for (RouteNode node : nodes.values()) if (node.children == 0) pending.add(node);
+            int leaves = 0;
+            for (RouteNode node : nodes.values()) if (node.parents.isEmpty()) leaves++;
+            width = Math.max(ROUTE_WIDTH, leaves * 40 + 24);
+            int nextLeaf = (width - leaves * 40) / 2 + 20;
+            if (!target.isEmpty()) pending.push(root);
             while (!pending.isEmpty()) {
-                RouteNode child = pending.remove();
-                for (RouteNode parent : child.parents) {
-                    parent.depth = Math.max(parent.depth, child.depth + 1);
-                    if (--parent.children == 0) pending.add(parent);
+                RouteNode node = pending.pop();
+                if (node.parents.isEmpty()) {
+                    node.x = nextLeaf - 9;
+                    nextLeaf += 40;
+                } else {
+                    for (int i = node.parents.size() - 1; i >= 0; i--) pending.push(node.parents.get(i));
                 }
             }
-            Map<Integer, List<RouteNode>> levels = new TreeMap<>();
-            for (RouteNode node : nodes.values()) levels.computeIfAbsent(node.depth, ignored -> new ArrayList<>())
-                .add(node);
-            int top = 10;
-            for (List<RouteNode> level : levels.values()) {
-                for (int start = 0; start < level.size(); start += 4) {
-                    int count = Math.min(4, level.size() - start);
-                    for (int i = 0; i < count; i++) {
-                        RouteNode node = level.get(start + i);
-                        node.x = 14 + (ROUTE_WIDTH - 28) * (2 * i + 1) / (2 * count) - 9;
-                        node.y = top;
-                    }
-                    top += 56;
+            List<RouteNode> ordered = new ArrayList<>(nodes.values());
+            int bottom = 0;
+            for (int i = ordered.size() - 1; i >= 0; i--) {
+                RouteNode node = ordered.get(i);
+                if (!node.parents.isEmpty()) {
+                    int sum = 0;
+                    for (RouteNode parent : node.parents) sum += parent.x;
+                    node.x = sum / node.parents.size();
                 }
+                node.y = 10 + node.depth * 64;
+                bottom = Math.max(bottom, node.y + 28);
             }
-            height = Math.max(ROUTE_HEIGHT, top - 28);
-        }
-
-        private RouteNode node(String uid) {
-            return nodes.computeIfAbsent(uid, RouteNode::new);
+            for (RouteNode node : nodes.values()) {
+                for (int i = 0; i < node.parents.size(); i++) links.add(new RouteLink(node.parents.get(i), node, i));
+            }
+            height = Math.max(ROUTE_HEIGHT, bottom);
         }
     }
 
@@ -856,13 +847,89 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         private final String uid;
         private final List<RouteNode> parents = new ArrayList<>(2);
         private NBTTagCompound step;
-        private int children;
         private int depth;
         private int x;
         private int y;
 
         private RouteNode(String uid) {
             this.uid = uid;
+        }
+    }
+
+    private static final class RouteLink {
+
+        private final RouteNode result;
+        private final int x;
+        private final int y;
+        private final int length;
+        private final float angle;
+
+        private RouteLink(RouteNode parent, RouteNode result, int input) {
+            this.result = result;
+            double toX = result.x + (result.parents.size() == 1 ? 9 : input == 0 ? -2 : 20);
+            double toY = result.y + 20;
+            double dx = toX - parent.x - 9, dy = toY - parent.y - 9;
+            double inset = Math.min(11D / Math.abs(dx), 11D / Math.abs(dy));
+            x = (int) Math.round(parent.x + 9 + dx * inset);
+            y = (int) Math.round(parent.y + 9 + dy * inset);
+            length = (int) Math.round(Math.hypot(toX - x, toY - y));
+            angle = (float) Math.atan2(toY - y, toX - x);
+        }
+    }
+
+    private static final class RouteArrowTexture extends UITexture {
+
+        private RouteArrowTexture(boolean full, int color) {
+            super(
+                GTGuiTextures.PROGRESSBAR_ARROW_STANDARD.getLocation(),
+                0,
+                full ? 0.5F : 0,
+                1,
+                full ? 1 : 0.5F,
+                ColorType.DEFAULT,
+                false,
+                color);
+        }
+
+        @Override
+        public void draw(float x, float y, float width, float height) {
+            drawArrow(x, y, width, height, 0, width, 0, 1);
+        }
+
+        @Override
+        public void drawSubArea(float x, float y, float width, float height, float uStart, float vStart, float uEnd,
+            float vEnd, WidgetTheme theme) {
+            if (uEnd <= uStart) return;
+            applyColor(ColorType.DEFAULT.getColor(theme));
+            float fullWidth = width / (uEnd - uStart);
+            drawArrow(x, y, fullWidth, height, uStart * fullWidth, uEnd * fullWidth, vStart, vEnd);
+        }
+
+        private void drawArrow(float x, float y, float width, float height, float from, float to, float vStart,
+            float vEnd) {
+            // Preserve the cap and arrowhead; only the straight shaft grows with the connection.
+            drawSlice(x, y, height, from, to, 0, 1, 0, 0.05F, vStart, vEnd);
+            drawSlice(x, y, height, from, to, 1, width - 10, 0.05F, 0.5F, vStart, vEnd);
+            drawSlice(x, y, height, from, to, width - 10, width, 0.5F, 1, vStart, vEnd);
+        }
+
+        private void drawSlice(float x, float y, float height, float from, float to, float start, float end,
+            float sourceStart, float sourceEnd, float vStart, float vEnd) {
+            float left = Math.max(from, start), right = Math.min(to, end);
+            if (right <= left || end <= start) return;
+            float first = sourceStart + (sourceEnd - sourceStart) * (left - start) / (end - start);
+            float last = sourceStart + (sourceEnd - sourceStart) * (right - start) / (end - start);
+            GuiDraw.drawTexture(
+                location,
+                x + left - from,
+                y,
+                x + right - from,
+                y + height,
+                lerpU(first),
+                lerpV(vStart),
+                lerpU(last),
+                lerpV(vEnd),
+                nonOpaque);
         }
     }
 
