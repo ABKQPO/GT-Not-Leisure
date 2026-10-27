@@ -1,5 +1,6 @@
 package com.science.gtnl.common.gui.modularui;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -27,7 +29,7 @@ import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.drawable.GuiDraw;
 import com.cleanroommc.modularui.drawable.ItemDrawable;
-import com.cleanroommc.modularui.drawable.Rectangle;
+import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.integration.recipeviewer.RecipeViewerGhostIngredientSlot;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.utils.Alignment;
@@ -69,7 +71,10 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
     private static final int SPECIES_ROWS = 3;
     private static final int SPECIES_PER_PAGE = SPECIES_COLUMNS * SPECIES_ROWS;
     private static final int ROUTE_HEIGHT = PAGE_HEIGHT - 18;
-    private static final int ROUTE_ROW_HEIGHT = 42;
+    private static final int ROUTE_WIDTH = PAGE_WIDTH - 8;
+    private static final UITexture ARROW_EMPTY = GTGuiTextures.PROGRESSBAR_ARROW_STANDARD.getSubArea(0, 0, 1, 0.5F);
+    private static final UITexture ARROW_FULL = GTGuiTextures.PROGRESSBAR_ARROW_STANDARD.getSubArea(0, 0.5F, 1, 1);
+    private static final UITexture ARROW_COMPLETE = ARROW_FULL.withColorOverride(0xFF55DD55);
 
     private final PagedWidget.Controller pages = new PagedWidget.Controller();
     private String targetDraft;
@@ -84,6 +89,7 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
     private List<String> reachable = Collections.emptyList();
     private List<NBTTagCompound> steps = Collections.emptyList();
     private Set<String> activeSpecies = Collections.emptySet();
+    private List<NBTTagCompound> activeSteps = Collections.emptyList();
     private final Map<String, ItemStack> beeIcons = new HashMap<>();
     private final SpeciesListView archiveView = new SpeciesListView(() -> archive);
     private final SpeciesListView reachableView = new SpeciesListView(() -> reachable);
@@ -162,15 +168,28 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                 String::equals,
                 value -> value));
         sync.syncValue("beeRoute", routeSync);
-        sync.syncValue(
-            "beeActiveSpecies",
-            new GenericListSyncHandler<>(
-                multiblock::getActiveBreedingSpecies,
-                value -> activeSpecies = new HashSet<>(value),
-                ByteBufUtils::readUTF8String,
-                ByteBufUtils::writeUTF8String,
-                String::equals,
-                value -> value));
+        sync.syncValue("beeActiveSteps", new GenericListSyncHandler<>(this::activeSnapshot, value -> {
+            activeSteps = value;
+            activeSpecies = new HashSet<>();
+            for (NBTTagCompound step : value) activeSpecies.add(step.getString("result"));
+        },
+            ByteBufUtils::readTag,
+            ByteBufUtils::writeTag,
+            NBTTagCompound::equals,
+            value -> (NBTTagCompound) value.copy()));
+    }
+
+    private List<NBTTagCompound> activeSnapshot() {
+        List<NBTTagCompound> snapshot = new ArrayList<>();
+        for (BeeBreedingHelper.BreedingStep step : multiblock.getActiveBreedingSteps()) {
+            NBTTagCompound tag = new NBTTagCompound();
+            tag.setString("parent1", step.parent1);
+            tag.setString("parent2", step.parent2);
+            tag.setString("result", step.result);
+            tag.setDouble("chance", Math.min(100D, step.chance));
+            snapshot.add(tag);
+        }
+        return snapshot;
     }
 
     private List<String> archiveSnapshot() {
@@ -302,62 +321,34 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                             valid.getBoolValue() ? "gtnl.bee_breeder.draft_hint"
                                 : "gtnl.bee_breeder.invalid_target"))));
         page.child(
-            new SlotLikeButtonWidget(() -> beeIcon(target.getStringValue())).pos(0, 22)
-                .size(18)
-                .tooltipAutoUpdate(true)
+            fittedText(this::previewChance, 50, 22, PAGE_WIDTH - 60, 0.85F).tooltipAutoUpdate(true)
                 .tooltipBuilder(
-                    t -> t.addLine(tr("gtnl.bee_breeder.current_target", speciesOrEmpty(target.getStringValue())))
-                        .addLine(tr("gtnl.bee_breeder.energy", energy.getLongValue(), bonus.getIntValue()))
-                        .addLine(IKey.lang("gtnl.bee_breeder.route")))
-                .onMousePressed(button -> {
-                    if (button == 0) pages.setPage(3);
-                    return true;
-                }));
+                    t -> t.addLine(tr("gtnl.bee_breeder.current_target", speciesOrEmpty(target.getStringValue())))));
+        page.child(previewBee("parent1", 20, 38));
+        page.child(text(() -> "+", 44, 41, 10));
+        page.child(previewBee("parent2", 60, 38));
         page.child(
-            fittedText(
-                () -> valid.getBoolValue() ? speciesOrEmpty(target.getStringValue())
-                    : EnumChatFormatting.DARK_RED + tr("gtnl.bee_breeder.invalid_short"),
-                24,
-                22,
-                PAGE_WIDTH - 24,
-                1F).tooltipAutoUpdate(true)
-                    .tooltipBuilder(t -> {
-                        t.addLine(tr("gtnl.bee_breeder.current_target", speciesOrEmpty(target.getStringValue())));
-                        if (!valid.getBoolValue()) t.addLine(IKey.lang("gtnl.bee_breeder.invalid_target"));
-                    }));
+            breedingArrow(this::previewStep, this::previewProgress, 104, 38).tooltipAutoUpdate(true)
+                .tooltipBuilder(t -> {
+                    t.addLine(
+                        tr(
+                            "gtnl.bee_breeder.attempt_time",
+                            progressTime.getIntValue() / 20D,
+                            maxProgressTime.getIntValue() / 20D));
+                    t.addLine(tr("gtnl.bee_breeder.energy", energy.getLongValue(), bonus.getIntValue()));
+                }));
+        page.child(previewBee("result", 156, 38));
+        page.child(fittedText(() -> speciesOrEmpty(previewSpecies("result")), 180, 41, 52, 0.75F));
         page.child(
             fittedText(
                 () -> tr("gtnl.bee_breeder.overview", pending.getIntValue(), archive.size(), parallel.getIntValue()),
-                24,
-                35,
-                PAGE_WIDTH - 24,
+                0,
+                58,
+                PAGE_WIDTH,
                 0.8F).tooltipAutoUpdate(true)
                     .tooltipBuilder(
-                        t -> t
-                            .addLine(
-                                tr(
-                                    "gtnl.bee_breeder.overview",
-                                    pending.getIntValue(),
-                                    archive.size(),
-                                    parallel.getIntValue()))
+                        t -> t.addLine(routeProgressText())
                             .addLine(tr("gtnl.bee_breeder.energy", energy.getLongValue(), bonus.getIntValue()))));
-        page.child(
-            progressIndicator(
-                this::cycleProgress,
-                () -> tr("gtnl.bee_breeder.attempt_progress", (int) (cycleProgress() * 100))).pos(0, 50)
-                    .tooltipAutoUpdate(true)
-                    .tooltipBuilder(
-                        t -> t
-                            .addLine(
-                                tr(
-                                    "gtnl.bee_breeder.attempt_time",
-                                    progressTime.getIntValue() / 20D,
-                                    maxProgressTime.getIntValue() / 20D))
-                            .addLine(tr("gtnl.bee_breeder.energy", energy.getLongValue(), bonus.getIntValue()))));
-        page.child(
-            progressIndicator(this::routeProgress, this::routeProgressText).pos(120, 50)
-                .tooltipAutoUpdate(true)
-                .tooltipBuilder(t -> t.addLine(IKey.lang("gtnl.bee_breeder.route_session"))));
         page.child(createTerminalRow(panel, sync).pos(0, 72));
         return page;
     }
@@ -483,7 +474,7 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         ScrollWidget<?> viewport = new ScrollWidget<>(vertical).showScrollShadows(false)
             .pos(0, 18)
             .size(PAGE_WIDTH, ROUTE_HEIGHT)
-            .background(new Rectangle().color(0xFF20272B));
+            .background(GTGuiTextures.BACKGROUND_STANDARD);
         routeWidget = new BreedingRouteWidget(viewport, vertical);
         viewport.child(routeWidget);
         page.child(progressArrow(this::routeProgress, 0, 0));
@@ -508,7 +499,8 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                 .asWidget()
                 .pos(12, 34)
                 .size(PAGE_WIDTH - 24, 54)
-                .color(0xFFFFFFFF)
+                .color(0xFF202020)
+                .shadow(false)
                 .setEnabledIf(
                     widget -> target.getStringValue()
                         .isEmpty()));
@@ -598,10 +590,53 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
             .size(20, 18);
     }
 
-    private static ParentWidget<?> progressIndicator(DoubleSupplier progress, Supplier<String> label) {
-        return new ParentWidget<>().size(112, 18)
-            .child(progressArrow(progress, 0, 0))
-            .child(fittedText(label, 24, 3, 88, 0.8F));
+    private ProgressWidget breedingArrow(Supplier<NBTTagCompound> step, DoubleSupplier progress, int x, int y) {
+        return progressArrow(progress, x, y).texture(ARROW_EMPTY, ARROW_FULL, 20)
+            .onUpdateListener(widget -> {
+                NBTTagCompound current = step.get();
+                widget.texture(
+                    ARROW_EMPTY,
+                    current != null && archivedSpecies.contains(current.getString("result")) ? ARROW_COMPLETE
+                        : ARROW_FULL,
+                    20);
+            });
+    }
+
+    private NBTTagCompound previewStep() {
+        if (!activeSteps.isEmpty()) return activeSteps.get(0);
+        for (NBTTagCompound step : steps) if (routeState(step).equals("ready")) return step;
+        for (NBTTagCompound step : steps) if (!archivedSpecies.contains(step.getString("result"))) return step;
+        for (NBTTagCompound step : steps) if (step.getString("result")
+            .equals(target.getStringValue())) return step;
+        return null;
+    }
+
+    private double previewProgress() {
+        NBTTagCompound step = previewStep();
+        return step == null ? cycleProgress() : stepProgress(step);
+    }
+
+    private String previewSpecies(String key) {
+        NBTTagCompound step = previewStep();
+        return step != null ? step.getString(key) : key.equals("result") ? target.getStringValue() : "";
+    }
+
+    private String previewChance() {
+        if (!valid.getBoolValue()) return EnumChatFormatting.DARK_RED + tr("gtnl.bee_breeder.invalid_short");
+        NBTTagCompound step = previewStep();
+        if (step != null) return tr("gtnl.bee_breeder.chance", step.getDouble("chance"));
+        return tr("gtnl.bee_breeder." + (archivedSpecies.contains(target.getStringValue()) ? "unlocked" : "unset"));
+    }
+
+    private SlotLikeButtonWidget previewBee(String key, int x, int y) {
+        return new SlotLikeButtonWidget(() -> beeIcon(previewSpecies(key))).pos(x, y)
+            .size(18)
+            .tooltipAutoUpdate(true)
+            .tooltipBuilder(t -> {
+                String uid = previewSpecies(key);
+                if (!uid.isEmpty()) t.addLine(BeeBreedingHelper.getSpeciesDisplayName(uid))
+                    .addLine(uid);
+            });
     }
 
     private String routeState(NBTTagCompound step) {
@@ -630,72 +665,69 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                     .addLine(uid));
     }
 
-    private ParentWidget<?> routeStep(NBTTagCompound step, int index) {
-        String result = step.getString("result");
-        boolean hasParents = !step.getString("parent1")
-            .isEmpty();
-        ParentWidget<?> row = new ParentWidget<>().pos(4, 4 + index * ROUTE_ROW_HEIGHT)
-            .size(PAGE_WIDTH - 16, ROUTE_ROW_HEIGHT - 4)
-            .background(GTGuiTextures.BACKGROUND_STANDARD);
-        row.child(fittedText(() -> {
-            String state = routeState(step);
-            EnumChatFormatting color = switch (state) {
-                case "unlocked" -> EnumChatFormatting.DARK_GREEN;
-                case "active" -> EnumChatFormatting.GOLD;
-                case "ready" -> EnumChatFormatting.DARK_AQUA;
-                default -> EnumChatFormatting.DARK_GRAY;
-            };
-            return color + tr("gtnl.bee_breeder.route_step", index + 1, tr("gtnl.bee_breeder." + state));
-        }, 5, 1, 110, 0.75F));
-        if (hasParents) {
-            row.child(fittedText(() -> tr("gtnl.bee_breeder.chance", step.getDouble("chance")), 116, 1, 96, 0.65F));
-            row.child(routeBee(step.getString("parent1"), 8, 16));
-            row.child(text(() -> "+", 29, 19, 10));
-            row.child(routeBee(step.getString("parent2"), 42, 16));
-            row.child(
-                progressArrow(() -> stepProgress(step), 70, 16).tooltipAutoUpdate(true)
-                    .tooltipBuilder(t -> {
-                        t.addLine(IKey.lang("gtnl.bee_breeder." + routeState(step)));
-                        t.addLine(tr("gtnl.bee_breeder.chance", step.getDouble("chance")));
-                        if (routeState(step).equals("active")) t.addLine(
-                            tr(
-                                "gtnl.bee_breeder.attempt_time",
-                                progressTime.getIntValue() / 20D,
-                                maxProgressTime.getIntValue() / 20D));
-                    }));
+    private NBTTagCompound currentStep(NBTTagCompound step) {
+        for (NBTTagCompound active : activeSteps) {
+            if (active.getString("result")
+                .equals(step.getString("result"))) return active;
         }
-        row.child(routeBee(result, hasParents ? 100 : 8, 16));
-        row.child(
-            fittedText(
-                () -> BeeBreedingHelper.getSpeciesDisplayName(result),
-                hasParents ? 124 : 32,
-                19,
-                hasParents ? 86 : 178,
-                0.75F).tooltipBuilder(t -> t.addLine(BeeBreedingHelper.getSpeciesDisplayName(result))));
-        return row;
+        return step;
     }
 
-    private static List<NBTTagCompound> orderRouteSteps(List<NBTTagCompound> source) {
-        Map<String, NBTTagCompound> remaining = new LinkedHashMap<>();
-        for (NBTTagCompound step : source) remaining.put(step.getString("result"), step);
-        List<NBTTagCompound> ordered = new ArrayList<>(remaining.size());
-        while (!remaining.isEmpty()) {
-            int before = remaining.size();
-            var iterator = remaining.values()
-                .iterator();
-            while (iterator.hasNext()) {
-                NBTTagCompound step = iterator.next();
-                if (remaining.containsKey(step.getString("parent1"))
-                    || remaining.containsKey(step.getString("parent2"))) continue;
-                ordered.add(step);
-                iterator.remove();
-            }
-            if (remaining.size() == before) {
-                ordered.addAll(remaining.values());
-                break;
-            }
+    private void addRouteLink(BreedingRouteWidget canvas, RouteNode parent, RouteNode result, RouteLayout layout) {
+        int fromX = parent.x + 9, fromY = parent.y - 2;
+        int toX = result.x + 9, toY = result.y + 20;
+        List<int[]> points = new ArrayList<>();
+        points.add(new int[] { fromX, fromY });
+        boolean blocked = layout.nodes.values()
+            .stream()
+            .anyMatch(node -> node != parent && node != result && crossesNode(fromX, fromY, toX, toY, node));
+        if (blocked) {
+            int side = fromX < ROUTE_WIDTH / 2 ? 5 : ROUTE_WIDTH - 5;
+            points.add(new int[] { fromX, fromY - 8 });
+            points.add(new int[] { side, fromY - 8 });
+            points.add(new int[] { side, toY + 8 });
+            points.add(new int[] { toX, toY + 8 });
         }
-        return ordered;
+        points.add(new int[] { toX, toY });
+        double length = 0D;
+        for (int i = 1; i < points.size(); i++)
+            length += Math.hypot(points.get(i)[0] - points.get(i - 1)[0], points.get(i)[1] - points.get(i - 1)[1]);
+        double offset = 0D;
+        for (int i = 1; i < points.size(); i++) {
+            int[] start = points.get(i - 1), end = points.get(i);
+            double segmentLength = Math.hypot(end[0] - start[0], end[1] - start[1]);
+            if (segmentLength < 1D) continue;
+            double total = length, before = offset;
+            boolean arrowHead = i == points.size() - 1;
+            UITexture empty = arrowHead ? ARROW_EMPTY : ARROW_EMPTY.getSubArea(0, 0, 0.5F, 1);
+            UITexture full = arrowHead ? ARROW_FULL : ARROW_FULL.getSubArea(0, 0, 0.5F, 1);
+            UITexture complete = full.withColorOverride(0xFF55DD55);
+            ProgressWidget arrow = progressArrow(
+                () -> Math.max(0D, Math.min(1D, (stepProgress(result.step) * total - before) / segmentLength)),
+                start[0],
+                start[1]).size((int) Math.ceil(segmentLength), 8)
+                    .texture(empty, full, 20)
+                    .transform((widget, stack) -> {
+                        stack.rotateZ((float) Math.atan2(end[1] - start[1], end[0] - start[0]));
+                        stack.translate(0, -4);
+                    })
+                    .onUpdateListener(
+                        widget -> widget.texture(empty, archivedSpecies.contains(result.uid) ? complete : full, 20))
+                    .tooltipAutoUpdate(true)
+                    .tooltipBuilder(
+                        t -> t.addLine(IKey.lang("gtnl.bee_breeder." + routeState(result.step)))
+                            .addLine(tr("gtnl.bee_breeder.chance", currentStep(result.step).getDouble("chance"))));
+            canvas.child(arrow);
+            offset += segmentLength;
+        }
+    }
+
+    private static boolean crossesNode(int x1, int y1, int x2, int y2, RouteNode node) {
+        double first = Math.max(0D, Math.min((node.y - 3D - y1) / (y2 - y1), (node.y + 21D - y1) / (y2 - y1)));
+        double last = Math.min(1D, Math.max((node.y - 3D - y1) / (y2 - y1), (node.y + 21D - y1) / (y2 - y1)));
+        if (first > last) return false;
+        double firstX = x1 + (x2 - x1) * first, lastX = x1 + (x2 - x1) * last;
+        return Math.min(firstX, lastX) < node.x + 21 && Math.max(firstX, lastX) > node.x - 3;
     }
 
     private final class BreedingRouteWidget extends ParentWidget<BreedingRouteWidget> implements Interactable {
@@ -703,15 +735,15 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         private final ScrollWidget<?> viewport;
         private final VerticalScrollData vertical;
         private List<NBTTagCompound> lastSteps;
-        private List<NBTTagCompound> displayedSteps = Collections.emptyList();
         private String lastTarget = "";
+        private RouteLayout layout = new RouteLayout(Collections.emptyList(), "");
         private int dragY;
         private int startScroll;
 
         private BreedingRouteWidget(ScrollWidget<?> viewport, VerticalScrollData vertical) {
             this.viewport = viewport;
             this.vertical = vertical;
-            pos(0, 0).size(PAGE_WIDTH - 8, ROUTE_HEIGHT);
+            pos(0, 0).size(ROUTE_WIDTH, ROUTE_HEIGHT);
         }
 
         @Override
@@ -722,19 +754,19 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
             boolean targetChanged = !lastTarget.equals(currentTarget);
             lastSteps = steps;
             lastTarget = currentTarget;
-            displayedSteps = orderRouteSteps(steps);
+            layout = new RouteLayout(steps, currentTarget);
             removeAll();
-            for (int i = 0; i < displayedSteps.size(); i++) child(routeStep(displayedSteps.get(i), i));
-            int rows = displayedSteps.size();
-            if (rows == 0 && !currentTarget.isEmpty()) {
-                NBTTagCompound targetStep = new NBTTagCompound();
-                targetStep.setString("result", currentTarget);
-                child(routeStep(targetStep, 0));
-                rows = 1;
+            for (RouteNode node : layout.nodes.values()) {
+                for (RouteNode parent : node.parents) addRouteLink(this, parent, node, layout);
             }
-            int height = Math.max(ROUTE_HEIGHT, 4 + rows * ROUTE_ROW_HEIGHT);
-            size(PAGE_WIDTH - 8, height);
-            vertical.setScrollSize(height);
+            for (RouteNode node : layout.nodes.values()) child(routeBee(node.uid, node.x, node.y).tooltipBuilder(t -> {
+                t.addLine(BeeBreedingHelper.getSpeciesDisplayName(node.uid));
+                t.addLine(node.uid);
+                if (node.step != null) t.addLine(IKey.lang("gtnl.bee_breeder." + routeState(node.step)))
+                    .addLine(tr("gtnl.bee_breeder.chance", currentStep(node.step).getDouble("chance")));
+            }));
+            size(ROUTE_WIDTH, layout.height);
+            vertical.setScrollSize(layout.height);
             if (targetChanged) vertical.scrollTo(viewport.getScrollArea(), 0);
             else vertical.clamp(viewport.getScrollArea());
             viewport.scheduleResize();
@@ -742,19 +774,8 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         }
 
         private void focusTarget() {
-            for (int i = 0; i < displayedSteps.size(); i++) {
-                if (displayedSteps.get(i)
-                    .getString("result")
-                    .equals(target.getStringValue())) {
-                    vertical.scrollTo(
-                        viewport.getScrollArea(),
-                        4 + i * ROUTE_ROW_HEIGHT
-                            + ROUTE_ROW_HEIGHT / 2
-                            - vertical.getFullVisibleSize(viewport.getScrollArea()) / 2);
-                    return;
-                }
-            }
-            vertical.scrollTo(viewport.getScrollArea(), 0);
+            RouteNode node = layout.nodes.get(target.getStringValue());
+            vertical.scrollTo(viewport.getScrollArea(), node == null ? 0 : node.y - 10);
         }
 
         @Override
@@ -769,6 +790,79 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         public void onMouseDrag(int button, long timeSinceClick) {
             if (button == 0)
                 vertical.scrollTo(viewport.getScrollArea(), startScroll + dragY - getContext().getAbsMouseY());
+        }
+    }
+
+    private static final class RouteLayout {
+
+        private final Map<String, RouteNode> nodes = new LinkedHashMap<>();
+        private final int height;
+
+        private RouteLayout(List<NBTTagCompound> steps, String target) {
+            Map<String, NBTTagCompound> byResult = new HashMap<>();
+            for (NBTTagCompound step : steps) byResult.put(step.getString("result"), step);
+            ArrayDeque<RouteNode> pending = new ArrayDeque<>();
+            if (!target.isEmpty()) pending.add(node(target));
+            Set<String> visited = new HashSet<>();
+            while (!pending.isEmpty()) {
+                RouteNode result = pending.remove();
+                if (!visited.add(result.uid)) continue;
+                result.step = byResult.get(result.uid);
+                if (result.step == null) continue;
+                for (String key : new String[] { "parent1", "parent2" }) {
+                    String uid = result.step.getString(key);
+                    if (uid.isEmpty() || uid.equals(result.uid)) continue;
+                    RouteNode parent = node(uid);
+                    if (!result.parents.contains(parent)) {
+                        result.parents.add(parent);
+                        parent.children++;
+                        pending.add(parent);
+                    }
+                }
+            }
+            for (RouteNode node : nodes.values()) if (node.children == 0) pending.add(node);
+            while (!pending.isEmpty()) {
+                RouteNode child = pending.remove();
+                for (RouteNode parent : child.parents) {
+                    parent.depth = Math.max(parent.depth, child.depth + 1);
+                    if (--parent.children == 0) pending.add(parent);
+                }
+            }
+            Map<Integer, List<RouteNode>> levels = new TreeMap<>();
+            for (RouteNode node : nodes.values()) levels.computeIfAbsent(node.depth, ignored -> new ArrayList<>())
+                .add(node);
+            int top = 10;
+            for (List<RouteNode> level : levels.values()) {
+                for (int start = 0; start < level.size(); start += 4) {
+                    int count = Math.min(4, level.size() - start);
+                    for (int i = 0; i < count; i++) {
+                        RouteNode node = level.get(start + i);
+                        node.x = 14 + (ROUTE_WIDTH - 28) * (2 * i + 1) / (2 * count) - 9;
+                        node.y = top;
+                    }
+                    top += 56;
+                }
+            }
+            height = Math.max(ROUTE_HEIGHT, top - 28);
+        }
+
+        private RouteNode node(String uid) {
+            return nodes.computeIfAbsent(uid, RouteNode::new);
+        }
+    }
+
+    private static final class RouteNode {
+
+        private final String uid;
+        private final List<RouteNode> parents = new ArrayList<>(2);
+        private NBTTagCompound step;
+        private int children;
+        private int depth;
+        private int x;
+        private int y;
+
+        private RouteNode(String uid) {
+            this.uid = uid;
         }
     }
 
