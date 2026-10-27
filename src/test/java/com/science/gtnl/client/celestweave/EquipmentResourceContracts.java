@@ -836,6 +836,10 @@ public class EquipmentResourceContracts {
                 && wheel.contains("for(intslot:slots)if(present(slot))return;close();")
                 && !wheel.contains("LANG+\"piece."),
             "every carried equipment gets a wheel slot with its own name, and an open wheel only rechecks its own slots");
+        check(
+            wheel.contains("if(concealSent)return;concealSent=true;")
+                && wheel.contains("CelestweaveKeyPacket.CONCEAL));dismiss();"),
+            "the hide armor button toggles once per wheel, though a click and the key release both press it");
         Pattern oldPixels = Pattern.compile("\\b(79|81|54|98|108|122|136|148|152|160|161)\\b");
         for (Map.Entry<String, String> entry : sources.entrySet()) check(
             !oldPixels.matcher(entry.getValue())
@@ -1103,6 +1107,9 @@ public class EquipmentResourceContracts {
         }
         expected.add("item.gtnl.equipment.wheel.title");
         expected.add("item.gtnl.equipment.wheel.sound");
+        expected.add("item.gtnl.equipment.wheel.hide_armor");
+        expected.add("item.gtnl.equipment.wheel.hide_armor.tooltip");
+        expected.add("item.gtnl.equipment.wheel.show_armor");
         for (CelestweaveHudElement element : CelestweaveHudElement.values()) expected.add(element.hud.lang());
         expected.add(RailgunHudRenderer.CHARGE.lang());
         for (Field field : MainConfig.Client.class.getFields()) {

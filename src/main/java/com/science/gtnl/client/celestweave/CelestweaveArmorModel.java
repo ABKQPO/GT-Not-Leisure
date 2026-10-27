@@ -52,7 +52,8 @@ public class CelestweaveArmorModel extends ModelBiped {
             bone.isHidden = false;
         }
         setRotationAngles(limbSwing, limbAmount, age, yaw, pitch, scale, entity);
-        if (!(entity instanceof EntityLivingBase living) || entity.isInvisible()) return;
+        if (!(entity instanceof EntityLivingBase living) || entity.isInvisible()
+            || CelestweaveClientEvents.concealed(entity)) return;
         CelestweaveFrames frames = CelestweaveObjModel.INSTANCE.frames();
         if (frames == null) return;
         CelestweaveClientState state = CelestweaveClientState.of(entity);
@@ -75,7 +76,9 @@ public class CelestweaveArmorModel extends ModelBiped {
     }
 
     public static void renderFirstPersonArm(EntityPlayer player, ModelRenderer arm) {
-        if (!MainConfig.client.enableCelestweaveFirstPersonArm || player == null || player.isInvisible()) return;
+        if (!MainConfig.client.enableCelestweaveFirstPersonArm || player == null
+            || player.isInvisible()
+            || CelestweaveClientEvents.concealed(player)) return;
         CelestweaveFrames frames = CelestweaveObjModel.INSTANCE.frames();
         if (frames == null) return;
         CelestweaveClientState state = CelestweaveClientState.of(player);
