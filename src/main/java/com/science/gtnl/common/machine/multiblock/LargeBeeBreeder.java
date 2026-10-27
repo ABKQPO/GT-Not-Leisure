@@ -90,6 +90,11 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
 
     private static final String[][] SHAPE = StructureUtils.readStructureFromFile(STRUCTURE_FILE_PATH);
 
+    private static int getParallelForVoltageTier(int voltageTier) {
+        int upgrades = Math.max(0, Math.min(voltageTier, VoltageIndex.MAX) - VoltageIndex.LV);
+        return BASE_PARALLEL_STEPS << upgrades;
+    }
+
     private boolean hasStainlessSteelGear;
     private IStructureDefinition<LargeBeeBreeder> structureDefinition;
 
@@ -138,6 +143,19 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new LargeBeeBreeder(this.mName);
+    }
+
+    @Override
+    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
+        super.onPostTick(aBaseMetaTileEntity, aTick);
+        if (aBaseMetaTileEntity.isServerSide() && aTick % INPUT_SCAN_INTERVAL == 0) {
+            boolean gearBefore = hasStainlessSteelGear;
+            hasStainlessSteelGear = checkStainlessSteelGear(getControllerSlot());
+            if (gearBefore != hasStainlessSteelGear) markBreedingChanged();
+
+            if (mMachine) scanInputBuses();
+            refreshBreedingPlan();
+        }
     }
 
     @Override
@@ -206,77 +224,6 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         markBreedingChanged();
     }
 
-    @Override
-    public int getMaxParallelRecipes() {
-        return getMaxParallelBreedingSteps();
-    }
-
-    @Override
-    public boolean supportsVoidProtection() {
-        return false;
-    }
-
-    @Override
-    public boolean supportsInputSeparation() {
-        return false;
-    }
-
-    @Override
-    public boolean supportsBatchMode() {
-        return false;
-    }
-
-    @Override
-    public boolean supportsSingleRecipeLocking() {
-        return false;
-    }
-
-    private boolean checkStainlessSteelGear(ItemStack stack) {
-        if (stack == null) return false;
-        return stack.isItemEqual(GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.StainlessSteel, 1L));
-    }
-
-    @Override
-    public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
-        super.onPostTick(aBaseMetaTileEntity, aTick);
-        if (aBaseMetaTileEntity.isServerSide() && aTick % INPUT_SCAN_INTERVAL == 0) {
-            boolean gearBefore = hasStainlessSteelGear;
-            hasStainlessSteelGear = checkStainlessSteelGear(getControllerSlot());
-            if (gearBefore != hasStainlessSteelGear) markBreedingChanged();
-
-            if (mMachine) scanInputBuses();
-            refreshBreedingPlan();
-        }
-    }
-
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
-        if (side == aFacing) {
-            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
-                TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_DISTILLATION_TOWER)
-                    .extFacing()
-                    .build(),
-                TextureFactory.builder()
-                    .addIcon(OVERLAY_FRONT_DISTILLATION_TOWER_GLOW)
-                    .extFacing()
-                    .glow()
-                    .build() };
-        }
-        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
-    }
-
     @Nonnull
     @Override
     public CheckRecipeResult checkProcessing() {
@@ -340,28 +287,6 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 
-    private long getEnergyCostPerTick(int parallelAttempts) {
-        long eutPerAttempt = BASE_EUT_PER_BREEDING + (long) Math.max(0, mGlassTier) * EUT_PER_GLASS_TIER;
-        return Math.max(0L, eutPerAttempt * Math.max(0, parallelAttempts));
-    }
-
-    public long getEuPerBreedingAttempt() {
-        return getEnergyCostPerTick(1);
-    }
-
-    public int getMaxParallelBreedingSteps() {
-        return getParallelForVoltageTier(mEnergyHatchTier);
-    }
-
-    private static int getParallelForVoltageTier(int voltageTier) {
-        int upgrades = Math.max(0, Math.min(voltageTier, VoltageIndex.MAX) - VoltageIndex.LV);
-        return BASE_PARALLEL_STEPS << upgrades;
-    }
-
-    public int getMutationChanceBonus() {
-        return (hasStainlessSteelGear ? 2 : 0) + Math.max(0, mGlassTier);
-    }
-
     private void prepareBreedingCycle(long eut) {
         mMaxProgresstime = TICKS_PER_BREEDING;
         mEfficiency = 10000;
@@ -374,39 +299,6 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         super.outputAfterRecipe();
         settleActiveOperation();
         markBaseTileDirty();
-    }
-
-    private void scanInputBuses() {
-        ArrayList<ItemStack> inputs = getStoredInputs();
-        List<ItemStack> toRemove = new ArrayList<>();
-
-        for (ItemStack stack : inputs) {
-            if (stack == null || stack.stackSize <= 0) continue;
-
-            if (BeeBreedingHelper.isDrone(stack)) {
-                speciesArchive.unlockSpecies(BeeBreedingHelper.getBeeUID(stack));
-                toRemove.add(stack);
-            } else if (BeeBreedingHelper.isPrincess(stack)) {
-
-                String uid = BeeBreedingHelper.getBeeUID(stack);
-                if (uid != null) {
-                    speciesArchive.unlockSpecies(uid);
-                    long newPending = (long) pendingPrincessOutputs + Math.max(1, stack.stackSize);
-                    pendingPrincessOutputs = (int) Math.min(Integer.MAX_VALUE, newPending);
-                }
-                toRemove.add(stack);
-            }
-        }
-
-        for (ItemStack stack : toRemove) {
-            stack.stackSize = 0;
-        }
-        if (!toRemove.isEmpty()) {
-            updateSlots();
-            markBaseTileDirty();
-            invalidateBreedingPlan();
-            markBreedingChanged();
-        }
     }
 
     private void settleActiveOperation() {
@@ -430,6 +322,36 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         activeBreedingBatch.clear();
         if (archiveChanged) invalidateBreedingPlan();
         markBreedingChanged();
+    }
+
+    public void setTargetBeeSpecies(String species) {
+
+        String candidate = species == null ? "" : species.trim();
+        if (!candidate.isEmpty()) {
+            IAlleleBeeSpecies resolved = BeeBreedingHelper.getSpeciesByUID(candidate);
+            if (resolved == null) {
+                resolved = BeeBreedingHelper.getSpeciesByName(candidate);
+            }
+            targetInputValid = resolved != null;
+            if (resolved != null) {
+
+                String resolvedUID = resolved.getUID();
+                if (!resolvedUID.equals(targetBeeSpecies)) {
+                    this.targetBeeSpecies = resolvedUID;
+                    invalidateBreedingPlan();
+                    markBaseTileDirty();
+                }
+                return;
+            }
+            markBreedingChanged();
+            return;
+        }
+        targetInputValid = true;
+        if (!targetBeeSpecies.isEmpty()) {
+            this.targetBeeSpecies = "";
+            invalidateBreedingPlan();
+            markBaseTileDirty();
+        }
     }
 
     private void refreshBreedingPlan() {
@@ -469,6 +391,149 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         }
     }
 
+    private void invalidateBreedingPlan() {
+        breedingPlanDirty = true;
+        markBreedingChanged();
+    }
+
+    private void scanInputBuses() {
+        ArrayList<ItemStack> inputs = getStoredInputs();
+        List<ItemStack> toRemove = new ArrayList<>();
+
+        for (ItemStack stack : inputs) {
+            if (stack == null || stack.stackSize <= 0) continue;
+
+            if (BeeBreedingHelper.isDrone(stack)) {
+                speciesArchive.unlockSpecies(BeeBreedingHelper.getBeeUID(stack));
+                toRemove.add(stack);
+            } else if (BeeBreedingHelper.isPrincess(stack)) {
+
+                String uid = BeeBreedingHelper.getBeeUID(stack);
+                if (uid != null) {
+                    speciesArchive.unlockSpecies(uid);
+                    long newPending = (long) pendingPrincessOutputs + Math.max(1, stack.stackSize);
+                    pendingPrincessOutputs = (int) Math.min(Integer.MAX_VALUE, newPending);
+                }
+                toRemove.add(stack);
+            }
+        }
+
+        for (ItemStack stack : toRemove) {
+            stack.stackSize = 0;
+        }
+        if (!toRemove.isEmpty()) {
+            updateSlots();
+            markBaseTileDirty();
+            invalidateBreedingPlan();
+            markBreedingChanged();
+        }
+    }
+
+    private boolean checkStainlessSteelGear(ItemStack stack) {
+        if (stack == null) return false;
+        return stack.isItemEqual(GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.StainlessSteel, 1L));
+    }
+
+    @Override
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+        int colorIndex, boolean aActive, boolean redstoneLevel) {
+        if (side == aFacing) {
+            if (aActive) return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+            return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()),
+                TextureFactory.builder()
+                    .addIcon(OVERLAY_FRONT_DISTILLATION_TOWER)
+                    .extFacing()
+                    .build(),
+                TextureFactory.builder()
+                    .addIcon(OVERLAY_FRONT_DISTILLATION_TOWER_GLOW)
+                    .extFacing()
+                    .glow()
+                    .build() };
+        }
+        return new ITexture[] { Textures.BlockIcons.getCasingTextureForId(getCasingTextureID()) };
+    }
+
+    @Override
+    public int getCasingTextureID() {
+        return 10;
+    }
+
+    @Override
+    public MultiblockTooltipBuilder createTooltip() {
+        return new GTNLMultiblockTooltipBuilder().addAutoTooltip(this)
+            .toolTipFinisher();
+    }
+
+    @Override
+    public String getLocalNameKey() {
+        return "gtnl.machine.large_bee_breeder.name";
+    }
+
+    @Override
+    public TooltipStats getTooltipStats() {
+        return new TooltipStats(BASE_PARALLEL_STEPS, Double.NaN, Double.NaN, false, false);
+    }
+
+    @Override
+    public TooltipStats getTooltipStatsAtTier(TieredPart part, int tier) {
+        if (part == TieredPart.VOLTAGE) {
+            return new TooltipStats(getParallelForVoltageTier(tier), Double.NaN, Double.NaN, false, false);
+        }
+        return getTooltipStats();
+    }
+
+    @Override
+    public Map<String, Object> getTooltipVars() {
+        Map<String, Object> values = new LinkedHashMap<>();
+        values.put("attemptSeconds", TICKS_PER_BREEDING / 20D);
+        values.put("baseEu", BASE_EUT_PER_BREEDING);
+        values.put("glassEu", EUT_PER_GLASS_TIER);
+        return values;
+    }
+
+    @Override
+    public String[] getInfoData() {
+        String[] superInfo = super.getInfoData();
+        String[] info = new String[superInfo.length + 5];
+        System.arraycopy(superInfo, 0, info, 0, superInfo.length);
+
+        info[superInfo.length] = StatCollector.translateToLocalFormatted(
+            "gtnl.bee_breeder.current_target",
+            targetBeeSpecies.isEmpty() ? StatCollector.translateToLocal("gtnl.bee_breeder.unset") : targetBeeSpecies);
+        info[superInfo.length + 1] = StatCollector.translateToLocalFormatted(
+            "gtnl.bee_breeder.archive_size",
+            speciesArchive.getSpecies()
+                .size());
+        info[superInfo.length + 2] = StatCollector
+            .translateToLocalFormatted("gtnl.bee_breeder.chain_progress", countCompletedSteps(), breedingChain.size());
+        info[superInfo.length + 3] = StatCollector
+            .translateToLocalFormatted("gtnl.bee_breeder.pending", pendingPrincessOutputs);
+        info[superInfo.length + 4] = StatCollector.translateToLocalFormatted(
+            "gtnl.bee_breeder.energy",
+            NumberFormatUtil.formatNumber(getEnergyCostPerTick(1)),
+            getMutationChanceBonus());
+
+        return info;
+    }
+
+    public List<BeeBreedingHelper.BreedingStep> getBreedingSteps() {
+        return Collections.unmodifiableList(breedingChain);
+    }
+
+    private void updateChainDisplayInfo() {
+        chainTotalSteps = breedingChain.size();
+        chainCompletedSteps = countCompletedSteps();
+    }
+
     private int countCompletedSteps() {
         int count = 0;
         for (BeeBreedingHelper.BreedingStep step : breedingChain) {
@@ -477,24 +542,10 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         return count;
     }
 
-    private void updateChainDisplayInfo() {
-        chainTotalSteps = breedingChain.size();
-        chainCompletedSteps = countCompletedSteps();
-    }
-
-    public List<BeeBreedingHelper.BreedingStep> getBreedingSteps() {
-        return Collections.unmodifiableList(breedingChain);
-    }
-
     @Override
     @Nonnull
     protected MTEMultiBlockBaseGui<LargeBeeBreeder> getGui() {
         return new LargeBeeBreederGui(this);
-    }
-
-    @Override
-    public boolean doesBindPlayerInventory() {
-        return true;
     }
 
     @Override
@@ -548,34 +599,51 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         super.setItemNBT(aNBT);
     }
 
-    public void setTargetBeeSpecies(String species) {
+    @Override
+    public int getMaxParallelRecipes() {
+        return getMaxParallelBreedingSteps();
+    }
 
-        String candidate = species == null ? "" : species.trim();
-        if (!candidate.isEmpty()) {
-            IAlleleBeeSpecies resolved = BeeBreedingHelper.getSpeciesByUID(candidate);
-            if (resolved == null) {
-                resolved = BeeBreedingHelper.getSpeciesByName(candidate);
-            }
-            targetInputValid = resolved != null;
-            if (resolved != null) {
+    public int getMaxParallelBreedingSteps() {
+        return getParallelForVoltageTier(mEnergyHatchTier);
+    }
 
-                String resolvedUID = resolved.getUID();
-                if (!resolvedUID.equals(targetBeeSpecies)) {
-                    this.targetBeeSpecies = resolvedUID;
-                    invalidateBreedingPlan();
-                    markBaseTileDirty();
-                }
-                return;
-            }
-            markBreedingChanged();
-            return;
-        }
-        targetInputValid = true;
-        if (!targetBeeSpecies.isEmpty()) {
-            this.targetBeeSpecies = "";
-            invalidateBreedingPlan();
-            markBaseTileDirty();
-        }
+    public long getEuPerBreedingAttempt() {
+        return getEnergyCostPerTick(1);
+    }
+
+    private long getEnergyCostPerTick(int parallelAttempts) {
+        long eutPerAttempt = BASE_EUT_PER_BREEDING + (long) Math.max(0, mGlassTier) * EUT_PER_GLASS_TIER;
+        return Math.max(0L, eutPerAttempt * Math.max(0, parallelAttempts));
+    }
+
+    public int getMutationChanceBonus() {
+        return (hasStainlessSteelGear ? 2 : 0) + Math.max(0, mGlassTier);
+    }
+
+    @Override
+    public boolean doesBindPlayerInventory() {
+        return true;
+    }
+
+    @Override
+    public boolean supportsVoidProtection() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsInputSeparation() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsBatchMode() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsSingleRecipeLocking() {
+        return false;
     }
 
     private void markBaseTileDirty() {
@@ -583,76 +651,8 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         if (baseTile != null) baseTile.markDirty();
     }
 
-    @Override
-    public MultiblockTooltipBuilder createTooltip() {
-        return new GTNLMultiblockTooltipBuilder().addAutoTooltip(this)
-            .toolTipFinisher();
-    }
-
-    @Override
-    public String getLocalNameKey() {
-        return "gtnl.machine.large_bee_breeder.name";
-    }
-
-    @Override
-    public int getCasingTextureID() {
-        return 10;
-    }
-
-    @Override
-    public TooltipStats getTooltipStats() {
-        return new TooltipStats(BASE_PARALLEL_STEPS, Double.NaN, Double.NaN, false, false);
-    }
-
-    @Override
-    public TooltipStats getTooltipStatsAtTier(TieredPart part, int tier) {
-        if (part == TieredPart.VOLTAGE) {
-            return new TooltipStats(getParallelForVoltageTier(tier), Double.NaN, Double.NaN, false, false);
-        }
-        return getTooltipStats();
-    }
-
-    @Override
-    public Map<String, Object> getTooltipVars() {
-        Map<String, Object> values = new LinkedHashMap<>();
-        values.put("attemptSeconds", TICKS_PER_BREEDING / 20D);
-        values.put("baseEu", BASE_EUT_PER_BREEDING);
-        values.put("glassEu", EUT_PER_GLASS_TIER);
-        return values;
-    }
-
-    @Override
-    public String[] getInfoData() {
-        String[] superInfo = super.getInfoData();
-        String[] info = new String[superInfo.length + 5];
-        System.arraycopy(superInfo, 0, info, 0, superInfo.length);
-
-        info[superInfo.length] = StatCollector.translateToLocalFormatted(
-            "gtnl.bee_breeder.current_target",
-            targetBeeSpecies.isEmpty() ? StatCollector.translateToLocal("gtnl.bee_breeder.unset") : targetBeeSpecies);
-        info[superInfo.length + 1] = StatCollector.translateToLocalFormatted(
-            "gtnl.bee_breeder.archive_size",
-            speciesArchive.getSpecies()
-                .size());
-        info[superInfo.length + 2] = StatCollector
-            .translateToLocalFormatted("gtnl.bee_breeder.chain_progress", countCompletedSteps(), breedingChain.size());
-        info[superInfo.length + 3] = StatCollector
-            .translateToLocalFormatted("gtnl.bee_breeder.pending", pendingPrincessOutputs);
-        info[superInfo.length + 4] = StatCollector.translateToLocalFormatted(
-            "gtnl.bee_breeder.energy",
-            NumberFormatUtil.formatNumber(getEnergyCostPerTick(1)),
-            getMutationChanceBonus());
-
-        return info;
-    }
-
     private void markBreedingChanged() {
         breedingRevision++;
-    }
-
-    private void invalidateBreedingPlan() {
-        breedingPlanDirty = true;
-        markBreedingChanged();
     }
 
     private static final class BreedingAttempt {
