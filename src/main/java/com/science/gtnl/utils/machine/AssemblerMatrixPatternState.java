@@ -148,12 +148,6 @@ public class AssemblerMatrixPatternState {
         possibleOutputs.clear();
     }
 
-    public void clearRuntimeData() {
-        outputs.clear();
-        inputs.clear();
-        cachedOutputItems = new IAEItemStack[0];
-    }
-
     private void addPossibleOutputs(DireCraftingPatternDetails details) {
         for (IAEItemStack output : details.getCondensedOutputs()) {
             if (output != null) {
