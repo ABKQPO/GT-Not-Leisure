@@ -102,6 +102,7 @@ import com.science.gtnl.common.machine.multiblock.GrandAssemblyLine;
 import com.science.gtnl.common.machine.multiblock.IndustrialArcaneAssembler;
 import com.science.gtnl.common.machine.multiblock.IndustrialCrucible;
 import com.science.gtnl.common.machine.multiblock.LapotronChip;
+import com.science.gtnl.common.machine.multiblock.LargeBeeBreeder;
 import com.science.gtnl.common.machine.multiblock.LargeBioLab;
 import com.science.gtnl.common.machine.multiblock.LargeBrewer;
 import com.science.gtnl.common.machine.multiblock.LargeCircuitAssembler;
@@ -519,6 +520,10 @@ public class MachineLoader {
 
         GTNLItemList.LargeCutter.set(new LargeCutter(GTNLMachineID.LARGE_CUTTER.ID, "LargeCutter", ""));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeCutter.get(1), AnimatedText.GTNL_SRP);
+
+        GTNLItemList.LargeBeeBreeder
+            .set(new LargeBeeBreeder(GTNLMachineID.LARGE_BEE_BREEDER.ID, "LargeBeeBreeder", ""));
+        AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBeeBreeder.get(1), AnimatedText.GT_NOT_LEISURE);
 
         GTNLItemList.LargeBrewer.set(new LargeBrewer(GTNLMachineID.LARGE_BREWER.ID, "LargeBrewer", ""));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.LargeBrewer.get(1), AnimatedText.GTNL_SRP);

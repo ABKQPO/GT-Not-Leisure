@@ -599,6 +599,7 @@ public enum GTNLItemList implements IItemContainer {
     ReactionFurnace,
     LibraryOfRuina,
     MatterFabricator,
+    LargeBeeBreeder,
     LargeBrewer,
     HandOfJohnDavisonRockefeller,
     EnergeticPhotovoltaicPowerStation,
