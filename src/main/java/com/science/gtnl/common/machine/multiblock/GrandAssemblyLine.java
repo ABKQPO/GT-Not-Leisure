@@ -487,26 +487,22 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
             BigInteger taskParallelBI = BigInteger.valueOf(task.parallel);
             if (wirelessMode) {
                 // 无线模式：基于总量进行超频，尽量压到 minDuration
-                while (true) {
-                    long nextPower = task.adjustedPower * 4;
-                    int nextTime = task.adjustedTime / overclockFactor;
-                    if (nextTime < minDuration) break;
-
-                    BigInteger currentTaskTotal = BigInteger.valueOf(task.adjustedPower * task.adjustedTime)
-                        .multiply(taskParallelBI);
-                    BigInteger nextTaskTotal = BigInteger.valueOf(nextPower * nextTime)
-                        .multiply(taskParallelBI);
-
-                    // 检查增加超频后总量是否依然足够
-                    if (currentWirelessTotalEnergy.subtract(currentTaskTotal)
-                        .add(nextTaskTotal)
-                        .compareTo(wirelessUserEU) <= 0) {
-                        currentWirelessTotalEnergy = currentWirelessTotalEnergy.subtract(currentTaskTotal)
-                            .add(nextTaskTotal);
-                        task.adjustedPower = nextPower;
-                        task.adjustedTime = nextTime;
-                    } else break;
-                }
+                BigInteger currentTaskTotal = GrandAssemblyLineOverclockTool
+                    .getTotalEnergy(task.adjustedPower, task.adjustedTime, task.parallel);
+                BigInteger otherTasksEnergy = currentWirelessTotalEnergy.subtract(currentTaskTotal);
+                final GrandAssemblyLineOverclockTool.Result overclock = GrandAssemblyLineOverclockTool
+                    .applyWirelessOverclock(
+                        task.adjustedPower,
+                        task.adjustedTime,
+                        wirelessUserEU.subtract(otherTasksEnergy),
+                        task.parallel,
+                        minDuration,
+                        overclockFactor);
+                task.adjustedPower = overclock.power();
+                task.adjustedTime = overclock.duration();
+                currentWirelessTotalEnergy = otherTasksEnergy.add(
+                    GrandAssemblyLineOverclockTool
+                        .getTotalEnergy(task.adjustedPower, task.adjustedTime, task.parallel));
             } else {
                 // 有线模式：基于瞬时功率进行超频
                 long availableInstant = energyEU - (currentWiredInstantPower - (task.adjustedPower * task.parallel));
@@ -525,27 +521,32 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
 
             // 批处理逻辑：在功率限制内延长至 128t
             if (task.adjustedTime < 128 && batchMode) {
-                double tFactor = 128.0 / task.adjustedTime;
+                BigInteger extendedPower = BigInteger.valueOf(task.adjustedPower)
+                    .multiply(BigInteger.valueOf(128))
+                    .divide(BigInteger.valueOf(task.adjustedTime));
+                if (extendedPower.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0) continue;
+                long extendedPowerLong = extendedPower.longValueExact();
                 if (wirelessMode) {
                     // 无线模式只需检查余额
-                    BigInteger currentTotal = BigInteger.valueOf(task.adjustedPower * task.adjustedTime)
-                        .multiply(taskParallelBI);
-                    BigInteger extendedTotal = BigInteger.valueOf((long) (task.adjustedPower * tFactor * 128))
-                        .multiply(taskParallelBI);
+                    BigInteger currentTotal = GrandAssemblyLineOverclockTool
+                        .getTotalEnergy(task.adjustedPower, task.adjustedTime, task.parallel);
+                    BigInteger extendedTotal = GrandAssemblyLineOverclockTool
+                        .getTotalEnergy(extendedPowerLong, 128, task.parallel);
                     if (currentWirelessTotalEnergy.subtract(currentTotal)
                         .add(extendedTotal)
                         .compareTo(wirelessUserEU) <= 0) {
                         currentWirelessTotalEnergy = currentWirelessTotalEnergy.subtract(currentTotal)
                             .add(extendedTotal);
-                        task.adjustedPower = (long) (task.adjustedPower * tFactor);
+                        task.adjustedPower = extendedPowerLong;
                         task.adjustedTime = 128;
                     }
                 } else {
-                    // 有线模式需检查瞬时功率是否超标
-                    long maxEUt = energyEU / task.parallel;
-                    if (task.adjustedPower * tFactor <= maxEUt) {
-                        currentWiredInstantPower += (long) (task.adjustedPower * (tFactor - 1)) * task.parallel;
-                        task.adjustedPower = (long) (task.adjustedPower * tFactor);
+                    // Reserve the power already used by every other task before extending this one.
+                    long otherTasksPower = currentWiredInstantPower - task.adjustedPower * task.parallel;
+                    BigInteger extendedInstantPower = extendedPower.multiply(taskParallelBI);
+                    if (extendedInstantPower.compareTo(BigInteger.valueOf(energyEU - otherTasksPower)) <= 0) {
+                        currentWiredInstantPower = otherTasksPower + extendedInstantPower.longValueExact();
+                        task.adjustedPower = extendedPowerLong;
                         task.adjustedTime = 128;
                     }
                 }
@@ -556,59 +557,32 @@ public class GrandAssemblyLine extends GTMMultiMachineBase<GrandAssemblyLine> im
         // 最终结算
         ArrayList<ItemStack> totalOutputs = new ArrayList<>();
 
-        long weightedDurationSum = 0;
-        long totalWeight = 0;
-        long totalEU_Long = 0;
-
-        BigInteger totalEU_BI = BigInteger.ZERO;
+        GrandAssemblyLineOverclockTool.EnergyTotals totals = new GrandAssemblyLineOverclockTool.EnergyTotals();
 
         for (RecipeTask task : tasks) {
             ItemStack out = task.recipe.mOutput.copy();
             ParallelHelper.addItemsLong(totalOutputs, out, (long) out.stackSize * task.parallel);
 
-            long weight = task.adjustedPower * task.parallel;
-            weightedDurationSum += (long) task.adjustedTime * weight;
-            totalWeight += weight;
-
-            if (wirelessMode) {
-                totalEU_BI = totalEU_BI.add(
-                    BigInteger.valueOf(task.adjustedPower)
-                        .multiply(BigInteger.valueOf(task.adjustedTime))
-                        .multiply(BigInteger.valueOf(task.parallel)));
-            } else {
-                totalEU_Long += task.adjustedPower * (long) task.adjustedTime * task.parallel;
-            }
+            totals.add(task.adjustedPower, task.adjustedTime, task.parallel);
         }
 
-        int weightedTime = totalWeight > 0 ? (int) Math.max(1, weightedDurationSum / totalWeight) : 1;
-
         if (wirelessMode) {
-            long requiredEUt = totalEU_BI.divide(BigInteger.valueOf(weightedTime))
-                .longValue();
-
-            long finalEUt = Math.max(1, Math.min(requiredEUt, energyEU));
-
-            int finalDuration = totalEU_BI.divide(BigInteger.valueOf(finalEUt))
-                .intValue();
-
-            if (!WirelessNetworkManager.addEUToGlobalEnergyMap(ownerUUID, totalEU_BI.negate())) {
-                return CheckRecipeResultRegistry.insufficientPower(totalEU_BI.longValue());
+            if (!WirelessNetworkManager.addEUToGlobalEnergyMap(
+                ownerUUID,
+                totals.energy()
+                    .negate())) {
+                return CheckRecipeResultRegistry.insufficientPower(Utils.toLongSafe(totals.energy()));
             }
 
-            costingEUText = NumberFormatUtil.formatNumber(totalEU_BI);
+            costingEUText = NumberFormatUtil.formatNumber(totals.energy());
 
             this.lEUt = 0;
-            this.mMaxProgresstime = Math.max(1, finalDuration);
+            this.mMaxProgresstime = totals.weightedDuration();
 
         } else {
-            long requiredEUt = totalEU_Long / Math.max(1, weightedTime);
-
-            long finalEUt = Math.max(1, Math.min(requiredEUt, energyEU));
-
-            int finalDuration = (int) Math.max(1, totalEU_Long / finalEUt);
-
-            this.lEUt = -finalEUt;
-            this.mMaxProgresstime = finalDuration;
+            GrandAssemblyLineOverclockTool.Settlement settlement = totals.settleWired(energyEU);
+            this.lEUt = -settlement.power();
+            this.mMaxProgresstime = settlement.duration();
         }
 
         mOutputItems = totalOutputs.toArray(new ItemStack[0]);
