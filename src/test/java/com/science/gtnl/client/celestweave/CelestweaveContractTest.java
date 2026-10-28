@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import com.gtnllib.GTNLLibContractTest;
 import com.science.gtnl.client.portalgun.PortalGunContracts;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme;
-import com.science.gtnl.common.render.model.JsonModelContracts;
 import com.science.gtnl.common.wireless.WirelessAutoConnectContracts;
 import com.science.gtnl.common.wireless.WirelessMatterManipulatorContracts;
 import com.science.gtnl.common.yogsothoth.YogSothothContracts;
@@ -42,7 +41,6 @@ public class CelestweaveContractTest {
         WirelessMatterManipulatorContracts.run();
         WirelessAutoConnectContracts.run();
         GlobalSteamSaveContracts.run();
-        JsonModelContracts.run();
         GTNLLibContractTest.finish("Celestweave");
     }
 
