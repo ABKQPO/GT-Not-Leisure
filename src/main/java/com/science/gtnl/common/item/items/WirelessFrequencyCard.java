@@ -33,6 +33,7 @@ import com.cleanroommc.modularui.screen.ModularScreen;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizon.gtnhlib.item.ItemStackNBT;
+import com.gtnllib.utils.HotbarMessages;
 import com.science.gtnl.client.GTNLCreativeTabs;
 import com.science.gtnl.client.WirelessCardGui;
 import com.science.gtnl.common.wireless.AutomaticWirelessEntrances;
@@ -156,7 +157,7 @@ public class WirelessFrequencyCard extends Item implements IBaubleExpanded, IGui
         WirelessCardBinding binding = WirelessCardBinding.read(stack.getTagCompound());
         if (!ownerAllowed(binding, player)) return true;
         if (!player.canPlayerEdit(x, y, z, side, stack)) {
-            message(player, "denied");
+            hint(player, "denied");
             return true;
         }
         TileEntity tile = world.getTileEntity(x, y, z);
@@ -166,12 +167,12 @@ public class WirelessFrequencyCard extends Item implements IBaubleExpanded, IGui
                     binding = WirelessCardBinding.read(stack.getTagCompound());
                 bind(stack, player, binding, new Address(world.provider.dimensionId, x, y, z, ForgeDirection.UNKNOWN));
             } else {
-                message(player, "bind_hint");
+                hint(player, "bind_hint");
             }
             return true;
         }
         if (binding == null) {
-            message(player, "unbound");
+            hint(player, "unbound");
             return true;
         }
         if (tile instanceof AccessorTileController) {
@@ -181,15 +182,15 @@ public class WirelessFrequencyCard extends Item implements IBaubleExpanded, IGui
         Address target = selectTarget(world, x, y, z, side, hitX, hitY, hitZ);
         IGridNode targetNode = target == null ? null : target.node();
         if (targetNode == null) {
-            message(player, "invalid_target");
+            hint(player, "invalid_target");
             return true;
         }
         try {
             switch (WirelessOperations.toggle(player, binding, target)) {
-                case CONNECTED -> message(player, "cluster_connected");
-                case DISCONNECTED -> message(player, "cluster_disconnected");
-                case DENIED -> message(player, "denied");
-                case UNAVAILABLE -> message(player, "unavailable");
+                case CONNECTED -> hint(player, "cluster_connected");
+                case DISCONNECTED -> hint(player, "cluster_disconnected");
+                case DENIED -> hint(player, "denied");
+                case UNAVAILABLE -> hint(player, "unavailable");
                 default -> {}
             }
         } catch (IllegalArgumentException | IllegalStateException | FailedConnection failure) {
@@ -220,14 +221,14 @@ public class WirelessFrequencyCard extends Item implements IBaubleExpanded, IGui
     private static void bind(ItemStack stack, EntityPlayer player, WirelessCardBinding binding, Address source) {
         IGridNode node = source.node();
         if (node == null) {
-            message(player, "unavailable");
+            hint(player, "unavailable");
             return;
         }
         if (!canBuild(node, player)) return;
         IPathingGrid path = node.getGrid()
             .getCache(IPathingGrid.class);
         if (path.isNetworkBooting() || path.getControllerState() != ControllerState.CONTROLLER_ONLINE) {
-            message(player, "unstable");
+            hint(player, "unstable");
             return;
         }
         TileEntity controller = source.tile();
@@ -245,16 +246,18 @@ public class WirelessFrequencyCard extends Item implements IBaubleExpanded, IGui
             player.getUniqueID(),
             player.getCommandSenderName()).write(ItemStackNBT.get(stack));
         WirelessCardInventory.sync(player, stack);
-        message(player, "bound", location.dimension(), location.x(), location.y(), location.z());
+        hint(player, "bound", location.dimension(), location.x(), location.y(), location.z());
     }
 
     private static void adopt(ItemStack stack, EntityPlayer player, WirelessCardBinding binding,
         TileEntity controller) {
         switch (WirelessOperations.adopt(player, binding, controller)) {
             case DENIED -> message(player, "adopt_denied");
-            case WAITING -> message(
+            case WAITING -> HotbarMessages.send(
                 player,
-                WirelessFrequencies.split(binding.frequency()) ? "adopt_confirm_split" : "adopt_confirm");
+                new ChatComponentTranslation(
+                    LANG + (WirelessFrequencies.split(binding.frequency()) ? "adopt_confirm_split" : "adopt_confirm")),
+                WirelessOperations.ADOPT_CONFIRM_TICKS);
             case APPLIED -> {
                 Address location = WirelessFrequencies.structure(controller)
                     .representative();
@@ -265,7 +268,7 @@ public class WirelessFrequencyCard extends Item implements IBaubleExpanded, IGui
                     binding.owner(),
                     binding.ownerName()).write(ItemStackNBT.get(stack));
                 WirelessCardInventory.sync(player, stack);
-                message(player, "adopted", location.dimension(), location.x(), location.y(), location.z());
+                hint(player, "adopted", location.dimension(), location.x(), location.y(), location.z());
             }
             default -> {}
         }
@@ -282,7 +285,7 @@ public class WirelessFrequencyCard extends Item implements IBaubleExpanded, IGui
         if (player.isSneaking()) {
             WirelessCardBinding.clear(stack.getTagCompound());
             WirelessCardInventory.sync(player, stack);
-            message(player, "cleared");
+            hint(player, "cleared");
         } else {
             GuiFactories.playerInventory()
                 .openFromMainHand(player);
@@ -292,13 +295,13 @@ public class WirelessFrequencyCard extends Item implements IBaubleExpanded, IGui
 
     private static boolean ownerAllowed(WirelessCardBinding binding, EntityPlayer player) {
         if (binding == null || binding.belongsTo(player.getUniqueID())) return true;
-        message(player, "wrong_owner", binding.ownerName());
+        hint(player, "wrong_owner", binding.ownerName());
         return false;
     }
 
     private static boolean canBuild(IGridNode node, EntityPlayer player) {
         if (WirelessChannelManager.canBuild(node, player)) return true;
-        message(player, "denied");
+        hint(player, "denied");
         return false;
     }
 
@@ -356,6 +359,10 @@ public class WirelessFrequencyCard extends Item implements IBaubleExpanded, IGui
 
     private static void message(EntityPlayer player, String key, Object... args) {
         player.addChatMessage(new ChatComponentTranslation(LANG + key, args));
+    }
+
+    private static void hint(EntityPlayer player, String key, Object... args) {
+        HotbarMessages.send(player, new ChatComponentTranslation(LANG + key, args));
     }
 
     @Override

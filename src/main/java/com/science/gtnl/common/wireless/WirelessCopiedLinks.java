@@ -268,7 +268,7 @@ public class WirelessCopiedLinks {
                     .filter(other -> other.player.equals(pending.player))
                     .forEach(WirelessCopiedLinks::finish);
             }
-            case APPLIED -> WirelessAutoConnect.notice(player, "copy_linked");
+            case APPLIED -> WirelessAutoConnect.hint(player, "copy_linked");
             case DENIED -> WirelessAutoConnect.notice(player, "denied");
             case UNAVAILABLE -> WirelessAutoConnect.notice(player, "copy_unavailable");
             default -> {}

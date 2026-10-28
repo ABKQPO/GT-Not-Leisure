@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentTranslation;
 
-import com.gtnewhorizon.gtnhlib.GTNHLib;
+import com.gtnllib.utils.HotbarMessages;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.base.ClientboundPacket;
 
@@ -17,7 +17,7 @@ import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 
 public class EquipmentNet {
 
-    private static final int HOTBAR_TICKS = 40, GUI_THROTTLE_TICKS = 5;
+    private static final int GUI_THROTTLE_TICKS = 5;
     private static final Map<EntityPlayer, Long> LAST_GUI = Collections.synchronizedMap(new WeakHashMap<>());
 
     private EquipmentNet() {}
@@ -29,7 +29,7 @@ public class EquipmentNet {
     }
 
     public static void hotbar(EntityPlayerMP player, String key, Object... args) {
-        GTNHLib.proxy.sendMessageAboveHotbar(player, new ChatComponentTranslation(key, args), HOTBAR_TICKS, true, true);
+        HotbarMessages.send(player, new ChatComponentTranslation(key, args));
     }
 
     public static boolean guiThrottled(EntityPlayer player) {
