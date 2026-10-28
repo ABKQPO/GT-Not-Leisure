@@ -33,7 +33,6 @@ public final class BeeBreedingHelper {
     private static Map<String, IAlleleBeeSpecies> uidSpeciesCache = null;
 
     private static Map<String, List<MutationData>> mutationsByUidCache = null;
-    private static List<FoundationRequirement> foundationRequirements = Collections.emptyList();
 
     private BeeBreedingHelper() {}
 
@@ -287,12 +286,6 @@ public final class BeeBreedingHelper {
         return mutations;
     }
 
-    public static boolean isFoundation(ItemStack stack) {
-        ensureCaches();
-        return foundationRequirements.stream()
-            .anyMatch(requirement -> requirement.matches(stack));
-    }
-
     public static BreedingStep findRegisteredStep(String parent1, String parent2, String result, double chance) {
         for (MutationData mutation : getMutationsForUID(result)) {
             if (Double.compare(mutation.chance, chance) != 0) continue;
@@ -358,7 +351,6 @@ public final class BeeBreedingHelper {
 
         Map<String, IAlleleBeeSpecies> speciesMap = new HashMap<>();
         Map<String, List<MutationData>> mutationsMap = new HashMap<>();
-        Map<String, FoundationRequirement> foundations = new HashMap<>();
 
         Map<String, IAllele[]> templates = root.getGenomeTemplates();
         if (templates != null) {
@@ -381,15 +373,12 @@ public final class BeeBreedingHelper {
             String p1 = parent1Allele != null ? parent1Allele.getUID() : "";
             String p2 = parent2Allele != null ? parent2Allele.getUID() : "";
             List<FoundationRequirement> requirements = readFoundations(mutation);
-            for (FoundationRequirement requirement : requirements)
-                foundations.putIfAbsent(requirement.key(), requirement);
             mutationsMap.computeIfAbsent(resultSpecies.getUID(), k -> new ArrayList<>())
                 .add(new MutationData(p1, p2, resultSpecies.getUID(), mutation.getBaseChance(), requirements));
         }
 
         uidSpeciesCache = speciesMap;
         mutationsByUidCache = mutationsMap;
-        foundationRequirements = new ArrayList<>(foundations.values());
     }
 
     public static final class FoundationRequirement {
