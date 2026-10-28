@@ -48,7 +48,7 @@ public class CelestweaveObjModel implements IResourceManagerReloadListener {
     public static final ResourceLocation FX = new ResourceLocation(
         RESOURCE_ROOT_ID,
         "textures/models/armor/celestweave_fx.png");
-    private static final String ROOT = "models/armor/";
+    private static final String ROOT = "armor/";
 
     private final IntArrayList lists = new IntArrayList();
     private CelestweaveFrames frames;
