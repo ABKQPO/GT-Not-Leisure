@@ -3031,6 +3031,7 @@ item.gtnl.part_super_dense_energy_cell.name=ME Super Dense Energy Cell
 item.gtnl.part_universal_storage_bus.name=ME Universal Storage Bus
 item.gtnl.part_universal_import_bus.name=ME Universal Import Bus
 item.gtnl.part_universal_export_bus.name=ME Universal Export Bus
+gtnl.universal_bus.config_full=§e%s bookmark(s) of the group did not fit: the config slots are full. Install capacity cards to unlock more slots.
 
 item.gtnl.part_beam_former.name=ME Beam Former
 gtnl.machine.beam_former.beam.hidden=Hiding beam.
