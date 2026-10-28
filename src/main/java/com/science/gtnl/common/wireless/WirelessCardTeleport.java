@@ -14,6 +14,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.gtnllib.utils.HotbarMessages;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.packet.WirelessHighlightPacket;
 import com.science.gtnl.common.wireless.WirelessCardTeleport.Landing.Position;
@@ -85,7 +86,8 @@ public class WirelessCardTeleport {
         player.playerNetServerHandler.setPlayerLocation(x, y, z, yaw, pitch);
         ScienceNotLeisure.network
             .sendTo(new WirelessHighlightPacket(target.dimension(), target.x(), target.y(), target.z()), player);
-        player.addChatMessage(
+        HotbarMessages.send(
+            player,
             new ChatComponentTranslation(
                 "gtnl.wireless.gui.teleport_done",
                 target.dimension(),
