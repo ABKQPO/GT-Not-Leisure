@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -59,6 +60,7 @@ public class GTNLInputHandler implements IContainerInputHandler {
     public static final GTNLInputHandler INSTANCE = new GTNLInputHandler();
     public static final String AE_RETRIEVE_ITEM_KEY = "gui.ae_retrieve_item";
     public static final String AE_START_CRAFT_KEY = "gui.ae_start_craft";
+    public static final String CONFIG_FULL_KEY = "gtnl.universal_bus.config_full";
     public static final int PICK_BLOCK_COOLDOWN_TICKS = 10;
     public static final int ANIMATION_FRAME_COUNT = 14;
     public static final Map<String, BooleanSupplier> KEY_BINDINGS = createKeyBindings();
@@ -202,10 +204,17 @@ public class GTNLInputHandler implements IContainerInputHandler {
 
     @Override
     public void onMouseUp(GuiContainer gui, int mousex, int mousey, int button) {
-        if (button == 0 && this.draggedBookmarkGroup != null && gui instanceof IBookmarkGroupDropTarget target) {
-            target.handleBookmarkGroupDrop(mousex, mousey, this.draggedBookmarkGroup);
-        }
+        final List<ItemStack> group = this.draggedBookmarkGroup;
         this.draggedBookmarkGroup = null;
+        if (button != 0 || group == null || !(gui instanceof IBookmarkGroupDropTarget target)) return;
+
+        final int placed = target.handleBookmarkGroupDrop(mousex, mousey, group);
+        if (placed < 0) return;
+
+        final int skipped = group.size() - placed;
+        if (skipped > 0 && MC.thePlayer != null) {
+            MC.thePlayer.addChatMessage(new ChatComponentTranslation(CONFIG_FULL_KEY, skipped));
+        }
     }
 
     @Override
