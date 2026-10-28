@@ -25,6 +25,7 @@ import com.gtnllib.gui.settings.SettingControls.Slider;
 import com.gtnllib.gui.settings.SettingControls.Toggle;
 import com.gtnllib.gui.widget.CloseButton;
 import com.gtnllib.gui.widget.Divider;
+import com.gtnllib.gui.widget.FadingNotice;
 import com.gtnllib.gui.widget.LayoutTheme;
 import com.gtnllib.gui.widget.SlideSwitch;
 import com.gtnllib.gui.widget.StepSlider;
@@ -40,6 +41,7 @@ public class LayoutContracts {
         layoutRules();
         adaptiveRules();
         mathRules();
+        noticeRules();
         layoutSources();
         settingControls();
         blockPosFields();
@@ -125,6 +127,15 @@ public class LayoutContracts {
                 && MathUtils.clampUnit(Float.NEGATIVE_INFINITY, 0.5F) == 0.5F
                 && MathUtils.clampUnit(2F, 0F) == 1F,
             "the clamp with a fallback replaces every non-finite value and clamps the rest");
+    }
+
+    private static void noticeRules() {
+        check(
+            FadingNotice.opacity(0, 3000) == 1F && FadingNotice.opacity(2500, 3000) == 1F
+                && FadingNotice.opacity(2750, 3000) == 0.5F
+                && FadingNotice.opacity(3000, 3000) == 0F
+                && FadingNotice.opacity(-1, 3000) == 0F,
+            "a notice stays solid, fades out over its last half second and is gone afterwards");
     }
 
     private static void adaptiveRules() throws ReflectiveOperationException {
