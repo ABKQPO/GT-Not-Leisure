@@ -127,8 +127,7 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
         AspectList aspects = ThaumcraftCraftingManager.getObjectTags(stack);
         aspects = ThaumcraftCraftingManager.getBonusTags(stack, aspects);
 
-        // 过滤 null / 非正数条目：TC 解析某些物品标签可能返回 null 要素，
-        // 若混入 AspectList，outputEssentia 排序取到 null 会永久卡死输出。
+        // Thaumcraft can return null aspects for some items; one in the buffer would stall output forever.
         if (aspects != null) {
             for (Aspect aspect : aspects.getAspects()) {
                 if (aspect == null) continue;
@@ -181,8 +180,7 @@ public class SmallEssentiaSmeltery extends MTEBasicMachine {
         ForgeDirection targetSide = outputSide.getOpposite();
         boolean forceMultiJarInput = tileEntity instanceof TileEntityMultiEssentiaJar
             && targetSide != ForgeDirection.UP;
-        // 忽略目标吸力：吸力报告可能因读档/风箱/缓存恢复时序而失真（报 0 导致整机堵死），
-        // 是否接受由目标的 addEssentia/addToContainer 直接判定。
+        // Target suction can read 0 after a reload and would block output, so let addEssentia decide.
         if (!forceMultiJarInput) {
             if (!transport.isConnectable(targetSide) || !transport.canInputFrom(targetSide)) return false;
         }
