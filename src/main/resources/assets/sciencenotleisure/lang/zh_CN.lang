@@ -3031,7 +3031,7 @@ item.gtnl.part_super_dense_energy_cell.name=ME超致密能源元件
 item.gtnl.part_universal_storage_bus.name=ME通用存储总线
 item.gtnl.part_universal_import_bus.name=ME通用输入总线
 item.gtnl.part_universal_export_bus.name=ME通用输出总线
-gtnl.universal_bus.config_full=§e书签组中有 %s 个条目没能放入：配置槽已满。安装容量卡可解锁更多槽位。
+gtnl.universal_bus.config_full=§e书签组中有 %s 个条目没能放入。
 
 item.gtnl.part_beam_former.name=ME光束成型器
 gtnl.machine.beam_former.beam.hidden=已隐藏光束。
