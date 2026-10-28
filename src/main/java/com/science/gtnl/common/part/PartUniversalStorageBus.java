@@ -95,6 +95,8 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
 
     public final BaseActionSource source;
     public final IAEStack<?>[] filterCache = new IAEStack<?>[CONFIG_SIZE - BASE_SLOTS];
+    private boolean bulkUpdating = false;
+
     public final IAEStackInventory config = new IAEStackInventory(this, CONFIG_SIZE) {
 
         @Override
@@ -103,7 +105,7 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
             if (n >= BASE_SLOTS && n < BASE_SLOTS + getInstalledUpgrades(Upgrades.CAPACITY) * 9) {
                 filterCache[n - BASE_SLOTS] = aes;
             }
-            resetCache(true);
+            if (!bulkUpdating) resetCache(true);
         }
     };
 
@@ -320,6 +322,16 @@ public class PartUniversalStorageBus extends PartUpgradeable implements IStorage
         final NBTTagCompound filterCacheTag = new NBTTagCompound();
         this.writeFilterCache(filterCacheTag);
         data.setTag(NBT_FILTER_CACHE, filterCacheTag);
+    }
+
+    public void bulkUpdateConfig(final Runnable action) {
+        this.bulkUpdating = true;
+        try {
+            action.run();
+        } finally {
+            this.bulkUpdating = false;
+            this.resetCache(true);
+        }
     }
 
     public void resetCache(final boolean fullReset) {
