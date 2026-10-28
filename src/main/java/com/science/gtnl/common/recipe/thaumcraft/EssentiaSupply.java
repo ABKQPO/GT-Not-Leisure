@@ -288,8 +288,17 @@ public class EssentiaSupply {
 
     @Optional.Method(modid = "thaumicenergistics")
     private static long getProviderAmountCompat(TileEntity provider, Aspect aspect) {
-        return isUsableProviderCompat(provider) ? ((TileInfusionProvider) provider).getAspectAmountInNetwork(aspect)
-            : 0;
+        if (!isUsableProviderCompat(provider)) return 0;
+        TileInfusionProvider infusionProvider = (TileInfusionProvider) provider;
+        IMEMonitor<AEEssentiaStack> monitor = getEssentiaMonitorCompat(infusionProvider);
+        if (monitor == null) return 0;
+        // The network's listed amount can exceed what extraction returns, and a failed take after the item
+        // inputs were consumed would void them, so count only what a simulated extraction can supply.
+        AEEssentiaStack extractable = monitor.extractItems(
+            new AEEssentiaStack(aspect, Integer.MAX_VALUE),
+            Actionable.SIMULATE,
+            infusionProvider.getMachineSource());
+        return extractable == null ? 0 : extractable.getStackSize();
     }
 
     @Optional.Method(modid = "thaumicenergistics")
@@ -304,21 +313,24 @@ public class EssentiaSupply {
     }
 
     @Optional.Method(modid = "thaumicenergistics")
-    @SuppressWarnings("unchecked")
     private static long returnToProviderCompat(TileEntity provider, Aspect aspect, long amount) {
         if (!(provider instanceof TileInfusionProvider infusionProvider)) return 0;
+        IMEMonitor<AEEssentiaStack> monitor = getEssentiaMonitorCompat(infusionProvider);
+        if (monitor == null) return 0;
+        AEEssentiaStack rejected = monitor
+            .injectItems(new AEEssentiaStack(aspect, amount), Actionable.MODULATE, infusionProvider.getMachineSource());
+        return amount - (rejected == null ? 0 : rejected.getStackSize());
+    }
+
+    @Optional.Method(modid = "thaumicenergistics")
+    @SuppressWarnings("unchecked")
+    private static IMEMonitor<AEEssentiaStack> getEssentiaMonitorCompat(TileInfusionProvider provider) {
         try {
-            IMEMonitor<AEEssentiaStack> monitor = (IMEMonitor<AEEssentiaStack>) infusionProvider.getProxy()
+            return (IMEMonitor<AEEssentiaStack>) provider.getProxy()
                 .getStorage()
                 .getMEMonitor(AEEssentiaStackType.ESSENTIA_STACK_TYPE);
-            if (monitor == null) return 0;
-            AEEssentiaStack rejected = monitor.injectItems(
-                new AEEssentiaStack(aspect, amount),
-                Actionable.MODULATE,
-                infusionProvider.getMachineSource());
-            return amount - (rejected == null ? 0 : rejected.getStackSize());
         } catch (GridAccessException e) {
-            return 0;
+            return null;
         }
     }
 }
