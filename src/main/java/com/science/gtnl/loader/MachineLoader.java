@@ -2,6 +2,9 @@ package com.science.gtnl.loader;
 
 import java.util.Set;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -9,6 +12,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import com.Nxer.TwistSpaceTechnology.common.GTCMItemList;
 import com.google.common.collect.ImmutableSet;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.api.casing.GTNLCasings;
 import com.science.gtnl.common.machine.basicMachine.DebugResearchStation;
 import com.science.gtnl.common.machine.basicMachine.DieselGenerator;
 import com.science.gtnl.common.machine.basicMachine.Enchanting;
@@ -297,6 +301,7 @@ import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GTNLMachineID;
 import com.science.gtnl.utils.enums.ModList;
+import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.enums.SteamTypes;
 import com.science.gtnl.utils.item.ItemUtils;
 import com.science.gtnl.utils.text.AnimatedText;
@@ -2184,6 +2189,13 @@ public class MachineLoader {
                 StatCollector.translateToLocal("gtnl.machine.industrial_crucible.name")));
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.IndustrialCrucible.get(1), AnimatedText.GT_NOT_LEISURE);
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.IndustrialCrucible.get(1), AnimatedText.AUTHOR_LINEBROKE);
+
+        ItemStack beeCasing = ModsItemlist.ChiselYellowHempcrete.get(1);
+        Textures.BlockIcons.setCasingTextureForId(
+            GTNLCasings.YellowHempcrete.getTextureId(),
+            beeCasing != null && beeCasing.getItem() instanceof ItemBlock
+                ? TextureFactory.of(Block.getBlockFromItem(beeCasing.getItem()), beeCasing.getItemDamage())
+                : Textures.BlockIcons.getCasingTextureForId(10));
 
         GTNLItemList.LargeBeeBreeder.set(
             new LargeBeeBreeder(
