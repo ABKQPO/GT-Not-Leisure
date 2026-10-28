@@ -11,15 +11,11 @@ public record WirelessCardLayout(int width, int height, int rows) {
     }
 
     public int visualisationWidth() {
-        return Math.min(120, width - 254);
+        return Math.max(66, Math.min(120, width - 250));
     }
 
     public int visualisationX() {
-        return width - 80 - visualisationWidth();
-    }
-
-    public int footerInfoX() {
-        return Math.min(142, visualisationX() - 76);
+        return width - 34 - visualisationWidth();
     }
 
     public static boolean validRows(int rows) {

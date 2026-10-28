@@ -24,14 +24,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class WirelessCardRenameDialog extends Dialog<Void> {
 
     public final TextFieldWidget name;
-    private final WirelessCardDetailsPanel owner;
+    private final WirelessCardGui owner;
     private final WirelessCardContainer container;
     private final Minecraft mc = Minecraft.getMinecraft();
     private String target;
     private long nameRevision;
     private boolean finished;
 
-    WirelessCardRenameDialog(WirelessCardDetailsPanel owner) {
+    WirelessCardRenameDialog(WirelessCardGui owner) {
         super("wireless_card_rename");
         this.owner = owner;
         this.container = owner.container;

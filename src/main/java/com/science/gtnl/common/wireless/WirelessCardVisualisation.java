@@ -24,6 +24,7 @@ public class WirelessCardVisualisation {
     private static final String MODE = "GTNLWirelessVisualisationMode";
     public static final String DELEGATE = "GTNLWirelessVisualiserDelegate";
     public static final int MAX_PACKET_BYTES = 2_000_000;
+    public static final int MODE_COUNT = VisualisationModes.values().length + 1;
     private static final Map<EntityPlayerMP, Refresh> LAST_UPDATES = new WeakHashMap<>();
 
     record Refresh(WirelessCardBinding binding, int dimension, long tick) {
@@ -39,14 +40,11 @@ public class WirelessCardVisualisation {
     }
 
     public static boolean validMode(int value) {
-        return value >= 0 && value <= VisualisationModes.values().length;
+        return value >= 0 && value < MODE_COUNT;
     }
 
-    public static int cycle(NBTTagCompound tag, boolean backwards) {
-        int count = VisualisationModes.values().length + 1;
-        int next = (mode(tag) + (backwards ? count - 1 : 1)) % count;
-        tag.setInteger(MODE, next);
-        return next;
+    public static int step(int mode, int direction) {
+        return Math.floorMod(mode + direction, MODE_COUNT);
     }
 
     public static String modeKey(int mode) {
@@ -60,9 +58,14 @@ public class WirelessCardVisualisation {
     }
 
     public static void cycle(ItemStack card, EntityPlayer player, boolean backwards) {
+        set(card, player, step(mode(card.getTagCompound()), backwards ? -1 : 1));
+    }
+
+    public static void set(ItemStack card, EntityPlayer player, int mode) {
+        if (!validMode(mode)) return;
         NBTTagCompound tag = ItemStackNBT.get(card);
         if (mode(tag) == 0) LAST_UPDATES.remove(player);
-        cycle(tag, backwards);
+        tag.setInteger(MODE, mode);
         WirelessCardInventory.sync(player, card);
     }
 

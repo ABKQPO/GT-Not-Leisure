@@ -6,6 +6,7 @@ import static com.science.gtnl.common.wireless.WirelessCardActions.HIGHLIGHT;
 import static com.science.gtnl.common.wireless.WirelessCardActions.OPEN_DETAILS;
 import static com.science.gtnl.common.wireless.WirelessCardActions.REFRESH;
 import static com.science.gtnl.common.wireless.WirelessCardActions.RENAME;
+import static com.science.gtnl.common.wireless.WirelessCardActions.SET_VISUALISATION;
 import static com.science.gtnl.common.wireless.WirelessCardActions.TELEPORT;
 import static com.science.gtnl.common.wireless.WirelessCardActions.TOGGLE_AUTO;
 import static com.science.gtnl.common.wireless.WirelessCardActions.TOGGLE_GROUPING;
@@ -61,6 +62,9 @@ public class WirelessCardActionHandler {
         }
         if (action == CYCLE_VISUALISATION) {
             WirelessCardVisualisation.cycle(card, player);
+        } else if (action == SET_VISUALISATION) {
+            if (targetId >= 0 && targetId < WirelessCardVisualisation.MODE_COUNT)
+                WirelessCardVisualisation.set(card, player, (int) targetId);
         } else if (action == RENAME) {
             if (session.view.detailNode == null || !row.members()
                 .contains(session.view.detailNode)) return;

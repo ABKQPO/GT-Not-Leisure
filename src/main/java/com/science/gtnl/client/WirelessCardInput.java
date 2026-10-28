@@ -5,13 +5,16 @@ import java.io.IOException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 
 import org.lwjgl.input.Keyboard;
 
+import com.cleanroommc.modularui.screen.ModularScreen;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.WirelessFrequencyCard;
 import com.science.gtnl.common.packet.OpenWirelessCardPacket;
@@ -87,6 +90,14 @@ public class WirelessCardInput {
     @SubscribeEvent
     public void unload(WorldEvent.Unload event) {
         if (event.world == visualWorld) clearVisualisation();
+    }
+
+    @SubscribeEvent
+    public void chat(ClientChatReceivedEvent event) {
+        if (!(event.message instanceof ChatComponentTranslation message) || !message.getKey()
+            .startsWith(WirelessCardGui.KEY_PREFIX)) return;
+        ModularScreen screen = ModularScreen.getCurrent();
+        if (screen != null && screen.getMainPanel() instanceof WirelessCardGui gui) gui.receive(message);
     }
 
     public static void clearVisualisation() {
