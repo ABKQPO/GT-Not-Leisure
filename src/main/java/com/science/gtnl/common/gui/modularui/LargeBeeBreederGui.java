@@ -507,22 +507,10 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         viewport.child(routeWidget);
         page.child(progressArrow(this::routeProgress, 0, 0));
         page.child(
-            fittedText(this::routeProgressText, 24, 3, PAGE_WIDTH - 90, 0.8F).tooltipAutoUpdate(true)
+            fittedText(this::routeProgressText, 24, 3, PAGE_WIDTH - 48, 0.8F).tooltipAutoUpdate(true)
                 .tooltipBuilder(
                     t -> t.addLine(IKey.lang("gtnl.bee_breeder.route_session"))
                         .addLine(IKey.lang("gtnl.bee_breeder.route_hint"))));
-        page.child(
-            new ButtonWidget<>().pos(PAGE_WIDTH - 58, 0)
-                .size(36, 18)
-                .background(GTGuiTextures.BUTTON_STANDARD)
-                .overlay(
-                    IKey.dynamic(() -> Math.round(routeWidget.zoom * 100) + "%")
-                        .scale(0.75F))
-                .tooltipBuilder(t -> t.addLine(IKey.lang("gtnl.bee_breeder.zoom_hint")))
-                .onMousePressed(button -> {
-                    if (button == 0) routeWidget.setZoom(1F, PAGE_WIDTH / 2F, ROUTE_HEIGHT / 2F);
-                    return true;
-                }));
         page.child(
             new ButtonWidget<>().pos(PAGE_WIDTH - 18, 0)
                 .size(18)
@@ -790,6 +778,13 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                         - horizontal.getFullVisibleSize(viewport.getScrollArea()) / 2);
         }
 
+        private void resetView() {
+            stopZoom();
+            zoom = targetZoom = 1F;
+            updateCanvasSize();
+            focusTarget();
+        }
+
         @Override
         public void transformChildren(IViewportStack stack) {
             stack.translate(contentOffsetX(), 0);
@@ -873,6 +868,10 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
 
         @Override
         public @NotNull Result onMousePressed(int button) {
+            if (button == 2) {
+                routeWidget.resetView();
+                return Result.SUCCESS;
+            }
             if (button == 0) routeWidget.stopZoom();
             return super.onMousePressed(button);
         }
