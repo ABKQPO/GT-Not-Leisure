@@ -55,6 +55,7 @@ import com.science.gtnl.common.celestweave.CelestweaveData;
 import com.science.gtnl.common.celestweave.CelestweaveEnergy;
 import com.science.gtnl.common.celestweave.CelestweaveModule;
 import com.science.gtnl.common.celestweave.CelestweaveModuleSetting;
+import com.science.gtnl.common.celestweave.CelestweaveServerEvents;
 import com.science.gtnl.common.celestweave.CelestweaveStripStyle;
 import com.science.gtnl.common.equipment.EquipmentEnergy;
 import com.science.gtnl.common.equipment.EquipmentModules;
@@ -69,6 +70,7 @@ import com.science.gtnl.common.item.items.equipment.CelestweaveModuleItem;
 import com.science.gtnl.common.item.items.equipment.ElectromagneticRailgun;
 import com.science.gtnl.common.item.items.equipment.EnergyModuleItem;
 import com.science.gtnl.common.item.items.equipment.RailgunModuleItem;
+import com.science.gtnl.common.packet.CelestweaveConcealPacket;
 import com.science.gtnl.common.packet.CelestweaveFlightPacket;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.common.packet.CelestweaveKeyPacket;
@@ -109,7 +111,7 @@ public class CelestweaveArmorContracts {
 
     private static CelestweaveFrames loadFrames() throws IOException {
         try (var reader = Files
-            .newBufferedReader(RESOURCES.resolve("models/armor/celestweave_frames.json"), StandardCharsets.UTF_8)) {
+            .newBufferedReader(RESOURCES.resolve("armor/celestweave_frames.json"), StandardCharsets.UTF_8)) {
             CelestweaveFrames frames = new Gson().fromJson(reader, CelestweaveFrames.class);
             frames.resolve();
             return frames;
@@ -1029,6 +1031,28 @@ public class CelestweaveArmorContracts {
             new CelestweaveKeyPacket(CelestweaveKeyPacket.BACKPACK),
             CelestweaveKeyPacket.class.getConstructor());
         check((byte) field(key, "action") == CelestweaveKeyPacket.BACKPACK, "key");
+        check(
+            CelestweaveKeyPacket.DASH == 0 && CelestweaveKeyPacket.BACKPACK == 1 && CelestweaveKeyPacket.CONCEAL == 2,
+            "key actions keep their wire values");
+        CelestweaveConcealPacket conceal = roundTrip(
+            new CelestweaveConcealPacket(9, true),
+            CelestweaveConcealPacket.class.getConstructor());
+        check((int) field(conceal, "entityId") == 9 && (boolean) field(conceal, "concealed"), "conceal packet");
+        EntityPlayerMP wearer = allocate(EntityPlayerMP.class);
+        check(!CelestweaveServerEvents.concealed(wearer), "armor is shown until the wearer hides it");
+        NBTTagCompound persisted = new NBTTagCompound();
+        persisted.setBoolean(CelestweaveServerEvents.CONCEALED_TAG, true);
+        wearer.getEntityData()
+            .setTag(EntityPlayer.PERSISTED_NBT_TAG, persisted);
+        check(CelestweaveServerEvents.concealed(wearer), "hidden armor is kept in the player data that survives death");
+        boolean silent;
+        try {
+            CelestweaveServerEvents.sendFx(wearer, CelestweaveFxPacket.Type.DASH, 0, 0, 0);
+            silent = true;
+        } catch (RuntimeException e) {
+            silent = false;
+        }
+        check(silent, "a wearer with hidden armor sends no armor effects or sounds");
         OpenEquipmentGuiPacket open = roundTrip(
             new OpenEquipmentGuiPacket(39),
             OpenEquipmentGuiPacket.class.getConstructor());

@@ -3048,6 +3048,7 @@ item.gtnl.part_super_dense_energy_cell.name=ME超致密能源元件
 item.gtnl.part_universal_storage_bus.name=ME通用存储总线
 item.gtnl.part_universal_import_bus.name=ME通用输入总线
 item.gtnl.part_universal_export_bus.name=ME通用输出总线
+gtnl.universal_bus.config_full=§e书签组中有 %s 个条目没能放入。
 
 item.gtnl.part_beam_former.name=ME光束成型器
 gtnl.machine.beam_former.beam.hidden=已隐藏光束。
@@ -3307,6 +3308,9 @@ item.gtnl.equipment.gui.sound.hint=点名称开关音效；滚轮微调，按住
 item.gtnl.equipment.gui.energy=能量：%s / %s EU
 item.gtnl.equipment.wheel.title=选择要打开设置的装备
 item.gtnl.equipment.wheel.sound=音效
+item.gtnl.equipment.wheel.hide_armor=隐藏护甲
+item.gtnl.equipment.wheel.hide_armor.tooltip=隐藏苍穹织雷护甲的模型、特效、音效和 HUD
+item.gtnl.equipment.wheel.show_armor=显示护甲
 
 item.gtnl.electromagnetic_railgun.name=&{sb;colors=#DF65A0}苍穹织雷·贯雷
 item.gtnl.electromagnetic_railgun.tooltip.0=能量：%s / %s EU
@@ -3391,6 +3395,8 @@ item.gtnl.celestweave.tooltip.disabled=（已禁用）
 item.gtnl.celestweave.tooltip.configure=§7按装备轮盘键（默认 G），在轮盘中选择这件护甲打开设置
 item.gtnl.celestweave.message.no_energy=苍穹织雷：能量不足
 item.gtnl.celestweave.message.no_backpack=胸甲背包模块中没有便携箱子
+item.gtnl.celestweave.message.armor_hidden=苍穹织雷护甲已隐藏
+item.gtnl.celestweave.message.armor_shown=苍穹织雷护甲已显示
 item.gtnl.celestweave.gui.module_limits=同一模块只能装一个；能量模块限一个
 item.gtnl.celestweave.gui.held.revealing=揭示之镜：放入神秘时代护目镜类物品
 item.gtnl.celestweave.gui.held.holo=全息眼镜：放入全息眼镜
