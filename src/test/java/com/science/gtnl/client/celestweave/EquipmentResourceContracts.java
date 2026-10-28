@@ -136,7 +136,7 @@ public class EquipmentResourceContracts {
     }
 
     private static void model() throws Exception {
-        Path armor = RESOURCES.resolve("models/armor");
+        Path armor = RESOURCES.resolve("armor");
         CelestweaveFrames frames;
         try (var reader = Files.newBufferedReader(armor.resolve("celestweave_frames.json"), StandardCharsets.UTF_8)) {
             frames = new Gson().fromJson(reader, CelestweaveFrames.class);
@@ -319,11 +319,9 @@ public class EquipmentResourceContracts {
             }
         }
 
-        Path armor = RESOURCES.resolve("models/armor");
+        Path armor = RESOURCES.resolve("armor");
         BufferedImage glow = ImageIO.read(
-            armor.getParent()
-                .getParent()
-                .resolve("textures/models/armor/celestweave_glow.png")
+            RESOURCES.resolve("textures/models/armor/celestweave_glow.png")
                 .toFile());
         int width = glow.getWidth(), height = glow.getHeight();
         int[] argb = glow.getRGB(0, 0, width, height, null, 0, width);
@@ -388,7 +386,7 @@ public class EquipmentResourceContracts {
             "first person arm mixin draws the armor over the vanilla right arm");
         CelestweaveFrames frames;
         try (var reader = Files
-            .newBufferedReader(RESOURCES.resolve("models/armor/celestweave_frames.json"), StandardCharsets.UTF_8)) {
+            .newBufferedReader(RESOURCES.resolve("armor/celestweave_frames.json"), StandardCharsets.UTF_8)) {
             frames = new Gson().fromJson(reader, CelestweaveFrames.class);
         }
         frames.resolve();
