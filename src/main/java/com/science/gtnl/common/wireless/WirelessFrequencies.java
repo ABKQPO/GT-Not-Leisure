@@ -28,10 +28,13 @@ public class WirelessFrequencies {
     public static final String KEY = IWirelessTileData.FREQUENCY_KEY;
     private static final int VERSION = 1;
     private static final int MAX_STRUCTURE_BLOCKS = 4096;
+    private static final int CACHE_TICKS = 100;
     private static final Home NOWHERE = new Home(null, false), SPLIT = new Home(null, true);
     private static final Map<UUID, Set<TileEntity>> CARRIERS = new Object2ObjectOpenHashMap<>();
     private static final Map<TileEntity, Structure> STRUCTURES = new Reference2ObjectOpenHashMap<>();
     private static final Map<WirelessFrequency, Home> HOMES = new Object2ObjectOpenHashMap<>();
+    private static final Map<Structure, WirelessFrequency> PRIMARIES = new Reference2ObjectOpenHashMap<>();
+    private static int generation, cacheAge;
 
     public record Entry(UUID id, long epoch) {}
 
@@ -102,7 +105,11 @@ public class WirelessFrequencies {
     static List<Entry> current(List<Entry> entries, WirelessFrequencyWorldSavedData registry) {
         if (registry == null) return entries;
         List<Entry> result = new ObjectArrayList<>(entries.size());
-        for (Entry entry : entries) if (registry.accept(entry.id(), entry.epoch())) result.add(entry);
+        for (Entry entry : entries) {
+            var known = registry.frequency(entry.id());
+            if (registry.accept(entry.id(), entry.epoch())) result.add(entry);
+            if (registry.frequency(entry.id()) != known) invalidate();
+        }
         return result;
     }
 
@@ -111,6 +118,12 @@ public class WirelessFrequencies {
         if (world == null || world.isRemote) return;
         for (Entry entry : entries(tile)) index(tile, entry);
         invalidate();
+    }
+
+    public static void controllerChanged(TileEntity tile) {
+        if (!WirelessChannelManager.isSupportedController(tile)) return;
+        World world = tile.getWorldObj();
+        if (world != null && !world.isRemote) invalidate();
     }
 
     public static Structure structure(TileEntity start) {
@@ -168,8 +181,10 @@ public class WirelessFrequencies {
     static Home home(WirelessFrequency frequency) {
         Home cached = HOMES.get(frequency);
         if (cached != null) return cached;
+        int before = generation;
         Home home = frequency.isLegacy() ? legacyHome(frequency.legacy()) : find(frequency.id());
-        HOMES.put(frequency, home);
+        // A lookup that invalidated the caches part-way may have seen both old and new structures.
+        if (generation == before) HOMES.put(frequency, home);
         return home;
     }
 
@@ -187,7 +202,10 @@ public class WirelessFrequencies {
             long epoch = registry == null ? 0 : registry.create(id, null);
             update(structure, new Entry(id, epoch));
         }
-        if (registry != null) registry.mapLegacy(position, id);
+        if (registry != null) {
+            registry.mapLegacy(position, id);
+            invalidate();
+        }
         return home(WirelessFrequency.of(id));
     }
 
@@ -200,7 +218,10 @@ public class WirelessFrequencies {
         return result;
     }
 
-    private static UUID primary(Structure structure) {
+    private static WirelessFrequency primary(Structure structure) {
+        WirelessFrequency known = PRIMARIES.get(structure);
+        if (known != null) return known;
+        int before = generation;
         UUID result = null;
         for (UUID id : structure.entries()
             .keySet()) {
@@ -209,13 +230,17 @@ public class WirelessFrequencies {
                 .equals(structure.positions())) continue;
             if (result == null || id.compareTo(result) < 0) result = id;
         }
-        return result;
+        if (result == null) return null;
+        WirelessFrequency primary = WirelessFrequency.of(result);
+        if (generation == before) PRIMARIES.put(structure, primary);
+        return primary;
     }
 
     private static Home find(UUID id) {
         Set<TileEntity> carriers = CARRIERS.get(id);
         if (carriers == null) return NOWHERE;
-        Set<Structure> homes = new ReferenceOpenHashSet<>();
+        // Keyed by position: after a mid-lookup invalidation the same structure comes back as a new object.
+        Map<Address, Structure> homes = new Object2ObjectOpenHashMap<>();
         // Resolving a structure can index newly inherited blocks into this very set.
         for (TileEntity tile : new ObjectArrayList<>(carriers)) {
             if (!WirelessLinkPersistence.loaded(tile) || !WirelessChannelManager.isSupportedController(tile)) {
@@ -224,11 +249,12 @@ public class WirelessFrequencies {
             }
             Structure structure = structure(tile);
             if (structure.entries()
-                .containsKey(id)) homes.add(structure);
+                .containsKey(id)) homes.put(structure.representative(), structure);
             else carriers.remove(tile);
         }
         if (homes.size() == 1) return new Home(
-            homes.iterator()
+            homes.values()
+                .iterator()
                 .next(),
             false);
         return homes.isEmpty() ? NOWHERE : SPLIT;
@@ -236,7 +262,7 @@ public class WirelessFrequencies {
 
     public static WirelessFrequency canonical(WirelessFrequency frequency) {
         Structure home = home(frequency).structure();
-        return home == null ? frequency : WirelessFrequency.of(primary(home));
+        return home == null ? frequency : primary(home);
     }
 
     public static boolean same(WirelessFrequency first, WirelessFrequency second) {
@@ -274,12 +300,11 @@ public class WirelessFrequencies {
 
     public static WirelessFrequency bind(TileEntity controller, UUID creator) {
         Structure structure = structure(controller);
-        UUID id = primary(structure);
-        if (id == null) {
-            id = UUID.randomUUID();
-            WirelessFrequencyWorldSavedData registry = WirelessFrequencyWorldSavedData.get();
-            update(structure, new Entry(id, registry == null ? 0 : registry.create(id, creator)));
-        }
+        WirelessFrequency primary = primary(structure);
+        if (primary != null) return primary;
+        UUID id = UUID.randomUUID();
+        WirelessFrequencyWorldSavedData registry = WirelessFrequencyWorldSavedData.get();
+        update(structure, new Entry(id, registry == null ? 0 : registry.create(id, creator)));
         return WirelessFrequency.of(id);
     }
 
@@ -295,6 +320,7 @@ public class WirelessFrequencies {
         WirelessFrequencyWorldSavedData registry = WirelessFrequencyWorldSavedData.get();
         if (known.isLegacy() || registry == null) return false;
         registry.setCreator(known.id(), creator);
+        invalidate();
         return true;
     }
 
@@ -351,6 +377,13 @@ public class WirelessFrequencies {
     static void invalidate() {
         STRUCTURES.clear();
         HOMES.clear();
+        PRIMARIES.clear();
+        generation++;
+        cacheAge = 0;
+    }
+
+    static void tick() {
+        if (++cacheAge >= CACHE_TICKS) invalidate();
     }
 
     static void clear() {

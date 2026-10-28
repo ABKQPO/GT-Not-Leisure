@@ -304,7 +304,8 @@ public class WirelessChannelManager {
         if (event.phase != TickEvent.Phase.END) return;
         connectionSnapshot = new Reference2ObjectOpenHashMap<>();
         try (var ignored = WirelessLinkData.readBatch()) {
-            invalidateFrequencies();
+            entranceCounts = null;
+            WirelessFrequencies.tick();
             for (Entrance entrance : entrances()) {
                 if (!entrance.isLive() || entrance.source()
                     .node() != entrance.sourceNode()

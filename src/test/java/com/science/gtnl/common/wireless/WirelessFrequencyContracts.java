@@ -1,7 +1,10 @@
 package com.science.gtnl.common.wireless;
 
 import static com.gtnllib.GTNLLibContractTest.check;
+import static com.science.gtnl.common.wireless.WirelessCopiedLinksContracts.allocate;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,11 +13,16 @@ import java.util.function.UnaryOperator;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldProviderSurface;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.science.gtnl.common.wireless.PhysicalClusterTracker.Cluster;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
+import com.science.gtnl.common.wireless.WirelessCopiedLinksContracts.TestHost;
+import com.science.gtnl.common.wireless.WirelessCopiedLinksContracts.TestWorld;
 import com.science.gtnl.common.wireless.WirelessFrequencies.Entry;
+import com.science.gtnl.common.wireless.WirelessFrequencies.Structure;
 import com.science.gtnl.common.wireless.WirelessLinkData.Claim;
 import com.science.gtnl.common.wireless.WirelessLinkData.Slot;
 
@@ -26,7 +34,7 @@ public class WirelessFrequencyContracts {
     private static final WirelessFrequency LEGACY = WirelessFrequency.legacy(CONTROLLER);
     private static final Slot CENTRE = new Slot(ForgeDirection.UNKNOWN, false);
 
-    public static void run() {
+    public static void run() throws ReflectiveOperationException {
         frequencyValues();
         legacyLinks();
         currentLinks();
@@ -35,6 +43,7 @@ public class WirelessFrequencyContracts {
         tileDataCopies();
         registryRules();
         mergedFrequencies();
+        structureCache();
     }
 
     private static void frequencyValues() {
@@ -278,5 +287,44 @@ public class WirelessFrequencyContracts {
             accepted = false;
         }
         check(accepted, "the other card of the merged network is not told the cluster belongs elsewhere");
+    }
+
+    private static void structureCache() throws ReflectiveOperationException {
+        TestWorld world = allocate(TestWorld.class);
+        world.tiles = new HashMap<>();
+        world.loaded = true;
+        Field provider = World.class.getDeclaredField("provider");
+        provider.setAccessible(true);
+        provider.set(world, new WorldProviderSurface());
+        // AE's controller class needs Mekanism's API to load, so a lone cable host stands in for the structure.
+        TestHost block = allocate(TestHost.class);
+        block.data = new NBTTagCompound();
+        WirelessFrequencies.write(block.data, List.of(new Entry(ID.id(), 0)));
+        block.setWorldObj(world);
+        block.yCoord = 64;
+        world.tiles.put(new Address(0, 0, 64, 0, ForgeDirection.UNKNOWN), block);
+        WirelessFrequencies.clear();
+        Structure resolved = WirelessFrequencies.structure(block);
+        WirelessFrequencies.tick();
+        check(
+            WirelessFrequencies.structure(block) == resolved,
+            "a frequency structure is walked once and reused on later ticks while nothing changes");
+        WirelessFrequencies.register(block);
+        Structure registered = WirelessFrequencies.structure(block);
+        check(registered != resolved, "a block carrying a frequency id that validates drops the cached structures");
+        WirelessFrequencyWorldSavedData registry = new WirelessFrequencyWorldSavedData();
+        registry.create(ID.id(), CREATOR);
+        WirelessFrequencies.current(List.of(new Entry(ID.id(), 0)), registry);
+        check(
+            WirelessFrequencies.structure(block) == registered,
+            "reading a copy the registry already knows keeps the cached structures");
+        WirelessFrequencies.current(List.of(new Entry(ID.id(), 1)), registry);
+        Structure moved = WirelessFrequencies.structure(block);
+        check(moved != registered, "a newer copy that moves the registry on drops the cached structures");
+        for (int i = 0; i < 100; i++) WirelessFrequencies.tick();
+        check(
+            WirelessFrequencies.structure(block) != moved,
+            "cached frequency structures are walked again at least every 100 ticks");
+        WirelessFrequencies.clear();
     }
 }

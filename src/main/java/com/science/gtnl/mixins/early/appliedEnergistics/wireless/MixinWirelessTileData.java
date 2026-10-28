@@ -42,8 +42,15 @@ public class MixinWirelessTileData implements IWirelessTileData {
 
     @Inject(method = "validate", at = @At("RETURN"))
     private void gtnl$placedWireless(CallbackInfo ci) {
-        if (gtnl$hasFrequencyData()) WirelessFrequencies.register((TileEntity) (Object) this);
-        if (gtnl$hasWirelessData()) WirelessLinkPersistence.placed((TileEntity) (Object) this);
+        TileEntity tile = (TileEntity) (Object) this;
+        if (gtnl$hasFrequencyData()) WirelessFrequencies.register(tile);
+        else WirelessFrequencies.controllerChanged(tile);
+        if (gtnl$hasWirelessData()) WirelessLinkPersistence.placed(tile);
+    }
+
+    @Inject(method = "invalidate", at = @At("RETURN"))
+    private void gtnl$removedWireless(CallbackInfo ci) {
+        WirelessFrequencies.controllerChanged((TileEntity) (Object) this);
     }
 
     @Inject(method = "writeToNBT", at = @At("RETURN"))
