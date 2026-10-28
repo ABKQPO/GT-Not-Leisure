@@ -5,9 +5,11 @@ import java.util.UUID;
 import java.util.function.BooleanSupplier;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.common.util.FakePlayer;
@@ -15,6 +17,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.BlockEvent;
 
 import com.cleanroommc.modularui.factory.GuiFactories;
+import com.gtnewhorizon.gtnhlib.GTNHLib;
 import com.science.gtnl.common.item.items.WirelessFrequencyCard;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 import com.science.gtnl.mixins.late.appliedEnergistics.wireless.AccessorTileController;
@@ -34,6 +37,7 @@ public class WirelessAutoConnect {
 
     public static final WirelessAutoConnect INSTANCE = new WirelessAutoConnect();
     private static final String LANG = "item.gtnl.wireless_frequency_card.";
+    private static final int HOTBAR_TICKS = 40;
     private static final List<Pending> PENDING = new ObjectArrayList<>();
     private static final Object2LongOpenHashMap<UUID> NOTICES = new Object2LongOpenHashMap<>();
     private static final Object2LongOpenHashMap<UUID> TOGGLES = new Object2LongOpenHashMap<>();
@@ -86,12 +90,14 @@ public class WirelessAutoConnect {
         if (ticks < TOGGLES.getOrDefault(player.getUniqueID(), Long.MIN_VALUE)) return;
         var selection = WirelessCardInventory.select(player, false);
         if (selection.card() == null) {
-            message(player, selection.ambiguous() ? "auto_ambiguous" : "auto_no_card");
+            hotbar(
+                player,
+                new ChatComponentTranslation(LANG + (selection.ambiguous() ? "auto_ambiguous" : "auto_no_card")));
             return;
         }
         TOGGLES.put(player.getUniqueID(), ticks + 5);
         boolean enabled = toggleAutomatic(player, selection.card());
-        message(player, enabled ? "auto_on" : "auto_off");
+        hotbar(player, new ChatComponentTranslation(LANG + (enabled ? "auto_on" : "auto_off")));
     }
 
     static boolean toggleAutomatic(EntityPlayer player, ItemStack card) {
@@ -110,15 +116,15 @@ public class WirelessAutoConnect {
             if (card == null || !(card.getItem() instanceof WirelessFrequencyCard)) return null;
             WirelessCardBinding binding = WirelessCardBinding.read(card.getTagCompound());
             if (binding != null && !binding.belongsTo(player.getUniqueID())) {
-                message(player, "wrong_owner", binding.ownerName());
+                hotbar(player, new ChatComponentTranslation(LANG + "wrong_owner", binding.ownerName()));
                 return null;
             }
             return card;
         }
         var selection = WirelessCardInventory.select(player, false);
-        if (selection.card() == null) {
-            message(player, selection.ambiguous() ? "gui_ambiguous" : "auto_no_card");
-        }
+        if (selection.card() == null) hotbar(
+            player,
+            new ChatComponentTranslation(LANG + (selection.ambiguous() ? "gui_ambiguous" : "auto_no_card")));
         return selection.card();
     }
 
@@ -137,7 +143,8 @@ public class WirelessAutoConnect {
         ItemStack card = shortcutCard(player, heldOnly, expectedSlot);
         if (card == null) return;
         WirelessCardVisualisation.cycle(card, player, backwards);
-        player.addChatMessage(
+        hotbar(
+            player,
             new ChatComponentTranslation(
                 "gtnl.wireless.gui.visualisation",
                 new ChatComponentTranslation(
@@ -298,6 +305,11 @@ public class WirelessAutoConnect {
 
     private static void message(EntityPlayer player, String key, Object... args) {
         player.addChatMessage(new ChatComponentTranslation(LANG + key, args));
+    }
+
+    private static void hotbar(EntityPlayer player, IChatComponent message) {
+        if (player instanceof EntityPlayerMP serverPlayer)
+            GTNHLib.proxy.sendMessageAboveHotbar(serverPlayer, message, HOTBAR_TICKS, true, true);
     }
 
     public static void clear() {
