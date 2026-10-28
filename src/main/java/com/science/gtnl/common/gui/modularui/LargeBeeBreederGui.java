@@ -22,8 +22,12 @@ import net.minecraft.util.StatCollector;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.cleanroommc.modularui.animation.Animator;
+import com.cleanroommc.modularui.api.UpOrDown;
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
+import com.cleanroommc.modularui.api.layout.IViewport;
+import com.cleanroommc.modularui.api.layout.IViewportStack;
 import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.api.widget.Interactable;
 import com.cleanroommc.modularui.drawable.ColorType;
@@ -36,6 +40,7 @@ import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.viewport.ModularGuiContext;
 import com.cleanroommc.modularui.theme.WidgetTheme;
 import com.cleanroommc.modularui.utils.Alignment;
+import com.cleanroommc.modularui.utils.Interpolation;
 import com.cleanroommc.modularui.value.DoubleValue;
 import com.cleanroommc.modularui.value.StringValue;
 import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
@@ -77,7 +82,9 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
     private static final int SPECIES_ROWS = 3;
     private static final int SPECIES_PER_PAGE = SPECIES_COLUMNS * SPECIES_ROWS;
     private static final int ROUTE_HEIGHT = PAGE_BODY_HEIGHT - 18;
-    private static final int ROUTE_WIDTH = PAGE_WIDTH - 10;
+    private static final int ROUTE_WIDTH = PAGE_WIDTH - 4;
+    private static final float MIN_ROUTE_ZOOM = 0.25F;
+    private static final float MAX_ROUTE_ZOOM = 2F;
     private static final UITexture ARROW_EMPTY = GTGuiTextures.PROGRESSBAR_ARROW_STANDARD.getSubArea(0, 0, 1, 0.5F);
     private static final UITexture ARROW_FULL = GTGuiTextures.PROGRESSBAR_ARROW_STANDARD.getSubArea(0, 0.5F, 1, 1);
     private static final UITexture ARROW_COMPLETE = ARROW_FULL.withColorOverride(0xFF55DD55);
@@ -348,9 +355,9 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                     .tooltipBuilder(
                         t -> t.addLine(routeProgressText())
                             .addLine(IKey.lang("gtnl.bee_breeder.route_session"))));
-        page.child(previewBee("parent1", 20, 38));
+        page.child(beeSlot(() -> previewSpecies("parent1"), 20, 38));
         page.child(text(() -> "+", 44, 41, 10));
-        page.child(previewBee("parent2", 60, 38));
+        page.child(beeSlot(() -> previewSpecies("parent2"), 60, 38));
         page.child(
             breedingArrow(this::previewStep, this::previewProgress, 104, 38).tooltipAutoUpdate(true)
                 .tooltipBuilder(t -> {
@@ -361,7 +368,7 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                             maxProgressTime.getIntValue() / 20D));
                     t.addLine(tr("gtnl.bee_breeder.energy", energy.getLongValue(), bonus.getIntValue()));
                 }));
-        page.child(previewBee("result", 156, 38));
+        page.child(beeSlot(() -> previewSpecies("result"), 156, 38));
         page.child(fittedText(() -> speciesOrEmpty(previewSpecies("result")), 180, 41, 52, 0.75F));
         page.child(
             fittedText(
@@ -427,19 +434,11 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         for (int index = 0; index < SPECIES_PER_PAGE; index++) {
             final int slot = index;
             page.child(
-                new SlotLikeButtonWidget(() -> beeIcon(view.uid(slot)))
-                    .pos(7 + index % SPECIES_COLUMNS * 22, 24 + index / SPECIES_COLUMNS * 22)
-                    .size(18)
+                beeSlot(() -> view.uid(slot), 7 + index % SPECIES_COLUMNS * 22, 24 + index / SPECIES_COLUMNS * 22)
                     .setEnabledIf(
                         widget -> !view.uid(slot)
                             .isEmpty())
-                    .tooltipAutoUpdate(true)
-                    .tooltipBuilder(t -> {
-                        String uid = view.uid(slot);
-                        if (!uid.isEmpty()) t.addLine(BeeBreedingHelper.getSpeciesDisplayName(uid))
-                            .addLine(uid)
-                            .addLine(IKey.lang("gtnl.bee_breeder.select_species"));
-                    })
+                    .tooltipBuilder(t -> t.addLine(IKey.lang("gtnl.bee_breeder.select_species")))
                     .onMousePressed(button -> {
                         if (button == 0) {
                             String uid = view.uid(slot);
@@ -499,18 +498,31 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         VerticalScrollData vertical = new VerticalScrollData();
         HorizontalScrollData horizontal = new HorizontalScrollData();
         ScrollWidget<?> viewport = new BreedingRouteViewport(vertical).showScrollShadows(false)
-            .pos(3, 3)
-            .size(PAGE_WIDTH - 6, ROUTE_HEIGHT - 6);
+            .pos(0, 18)
+            .size(PAGE_WIDTH, ROUTE_HEIGHT)
+            .background(IDrawable.EMPTY);
         viewport.getScrollArea()
             .setScrollDataX(horizontal);
         routeWidget = new BreedingRouteWidget(viewport, vertical, horizontal);
         viewport.child(routeWidget);
         page.child(progressArrow(this::routeProgress, 0, 0));
         page.child(
-            fittedText(this::routeProgressText, 24, 3, PAGE_WIDTH - 48, 0.8F).tooltipAutoUpdate(true)
+            fittedText(this::routeProgressText, 24, 3, PAGE_WIDTH - 90, 0.8F).tooltipAutoUpdate(true)
                 .tooltipBuilder(
                     t -> t.addLine(IKey.lang("gtnl.bee_breeder.route_session"))
                         .addLine(IKey.lang("gtnl.bee_breeder.route_hint"))));
+        page.child(
+            new ButtonWidget<>().pos(PAGE_WIDTH - 58, 0)
+                .size(36, 18)
+                .background(GTGuiTextures.BUTTON_STANDARD)
+                .overlay(
+                    IKey.dynamic(() -> Math.round(routeWidget.zoom * 100) + "%")
+                        .scale(0.75F))
+                .tooltipBuilder(t -> t.addLine(IKey.lang("gtnl.bee_breeder.zoom_hint")))
+                .onMousePressed(button -> {
+                    if (button == 0) routeWidget.setZoom(1F, PAGE_WIDTH / 2F, ROUTE_HEIGHT / 2F);
+                    return true;
+                }));
         page.child(
             new ButtonWidget<>().pos(PAGE_WIDTH - 18, 0)
                 .size(18)
@@ -521,11 +533,7 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                     if (button == 0) routeWidget.focusTarget();
                     return true;
                 }));
-        page.child(
-            new ParentWidget<>().pos(0, 18)
-                .size(PAGE_WIDTH, ROUTE_HEIGHT)
-                .background(GTGuiTextures.BACKGROUND_STANDARD)
-                .child(viewport));
+        page.child(viewport);
         page.child(
             IKey.lang("gtnl.bee_breeder.no_steps")
                 .asWidget()
@@ -660,14 +668,13 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         return tr("gtnl.bee_breeder." + (archivedSpecies.contains(target.getStringValue()) ? "unlocked" : "unset"));
     }
 
-    private SlotLikeButtonWidget previewBee(String key, int x, int y) {
-        return new SlotLikeButtonWidget(() -> beeIcon(previewSpecies(key))).pos(x, y)
+    private SlotLikeButtonWidget beeSlot(Supplier<String> species, int x, int y) {
+        return new SlotLikeButtonWidget(() -> beeIcon(species.get())).pos(x, y)
             .size(18)
             .tooltipAutoUpdate(true)
             .tooltipBuilder(t -> {
-                String uid = previewSpecies(key);
-                if (!uid.isEmpty()) t.addLine(BeeBreedingHelper.getSpeciesDisplayName(uid))
-                    .addLine(uid);
+                ItemStack stack = beeIcon(species.get());
+                if (stack != null) t.addFromItem(stack);
             });
     }
 
@@ -686,15 +693,6 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
             case "active" -> cycleProgress();
             default -> 0D;
         };
-    }
-
-    private SlotLikeButtonWidget routeBee(String uid, int x, int y) {
-        return new SlotLikeButtonWidget(() -> beeIcon(uid)).pos(x, y)
-            .size(18)
-            .tooltipAutoUpdate(true)
-            .tooltipBuilder(
-                t -> t.addLine(BeeBreedingHelper.getSpeciesDisplayName(uid))
-                    .addLine(uid));
     }
 
     private NBTTagCompound currentStep(NBTTagCompound step) {
@@ -724,7 +722,8 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                         .addLine(tr("gtnl.bee_breeder.chance", currentStep(link.result.step).getDouble("chance")))));
     }
 
-    private final class BreedingRouteWidget extends ParentWidget<BreedingRouteWidget> implements Interactable {
+    private final class BreedingRouteWidget extends ParentWidget<BreedingRouteWidget>
+        implements IViewport, Interactable {
 
         private final ScrollWidget<?> viewport;
         private final VerticalScrollData vertical;
@@ -732,6 +731,15 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         private List<NBTTagCompound> lastSteps;
         private String lastTarget = "";
         private RouteLayout layout = new RouteLayout(Collections.emptyList(), "");
+        private final Animator zoomAnimation = new Animator().duration(160)
+            .curve(Interpolation.QUAD_OUT)
+            .onUpdate(this::applyZoom);
+        private float zoom = 1F;
+        private float targetZoom = 1F;
+        private float zoomAnchorX;
+        private float zoomAnchorY;
+        private float zoomContentX;
+        private float zoomContentY;
         private int dragX;
         private int dragY;
         private int startScrollX;
@@ -742,7 +750,7 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
             this.viewport = viewport;
             this.vertical = vertical;
             this.horizontal = horizontal;
-            pos(0, 0).size(ROUTE_WIDTH, ROUTE_HEIGHT - 10);
+            pos(0, 0).size(ROUTE_WIDTH, ROUTE_HEIGHT - 4);
         }
 
         @Override
@@ -754,38 +762,91 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                 || (lastSteps.isEmpty() && !steps.isEmpty());
             lastSteps = steps;
             lastTarget = currentTarget;
+            if (targetChanged) stopZoom();
             layout = new RouteLayout(steps, currentTarget);
             removeAll();
             for (RouteLink link : layout.links) addRouteLink(this, link);
-            for (RouteNode node : layout.nodes.values()) child(routeBee(node.uid, node.x, node.y).tooltipBuilder(t -> {
-                t.addLine(BeeBreedingHelper.getSpeciesDisplayName(node.uid));
-                t.addLine(node.uid);
-                if (node.step != null) t.addLine(IKey.lang("gtnl.bee_breeder." + routeState(node.step)))
-                    .addLine(tr("gtnl.bee_breeder.chance", currentStep(node.step).getDouble("chance")));
-            }));
-            size(layout.width, layout.height);
-            vertical.setScrollSize(layout.height);
-            horizontal.setScrollSize(layout.width);
+            for (RouteNode node : layout.nodes.values())
+                child(beeSlot(() -> node.uid, node.x, node.y).tooltipBuilder(t -> {
+                    if (node.step != null) t.addLine(IKey.lang("gtnl.bee_breeder." + routeState(node.step)))
+                        .addLine(tr("gtnl.bee_breeder.chance", currentStep(node.step).getDouble("chance")));
+                }));
+            updateCanvasSize();
             if (targetChanged) focusTarget();
             else {
                 vertical.clamp(viewport.getScrollArea());
                 horizontal.clamp(viewport.getScrollArea());
             }
+        }
+
+        private void focusTarget() {
+            stopZoom();
+            RouteNode node = layout.nodes.get(target.getStringValue());
+            vertical.scrollTo(viewport.getScrollArea(), node == null ? 0 : Math.round((node.y - 10) * zoom));
+            horizontal.scrollTo(
+                viewport.getScrollArea(),
+                node == null ? 0
+                    : Math.round(contentOffsetX() + (node.x + 9) * zoom)
+                        - horizontal.getFullVisibleSize(viewport.getScrollArea()) / 2);
+        }
+
+        @Override
+        public void transformChildren(IViewportStack stack) {
+            stack.translate(contentOffsetX(), 0);
+            stack.scale(zoom, zoom);
+        }
+
+        private float contentOffsetX() {
+            return Math.max(0F, (ROUTE_WIDTH - layout.width * zoom) / 2F);
+        }
+
+        private void setZoom(float value, float anchorX, float anchorY) {
+            float nextZoom = Math.max(MIN_ROUTE_ZOOM, Math.min(MAX_ROUTE_ZOOM, value));
+            if (nextZoom == targetZoom) return;
+            zoomAnimation.stop(true);
+            zoomAnchorX = anchorX;
+            zoomAnchorY = anchorY;
+            zoomContentX = (horizontal.getScroll() + anchorX - contentOffsetX()) / zoom;
+            zoomContentY = (vertical.getScroll() + anchorY) / zoom;
+            targetZoom = nextZoom;
+            zoomAnimation.bounds(zoom, targetZoom)
+                .animate();
+        }
+
+        private void applyZoom(double value) {
+            zoom = (float) value;
+            updateCanvasSize();
+            horizontal
+                .scrollTo(viewport.getScrollArea(), Math.round(contentOffsetX() + zoomContentX * zoom - zoomAnchorX));
+            vertical.scrollTo(viewport.getScrollArea(), Math.round(zoomContentY * zoom - zoomAnchorY));
+        }
+
+        private void updateCanvasSize() {
+            int width = Math.max(ROUTE_WIDTH, (int) Math.ceil(layout.width * zoom));
+            int height = Math.max(ROUTE_HEIGHT - 4, (int) Math.ceil(layout.height * zoom));
+            size(width, height);
+            getArea().setSize(width, height);
+            horizontal.setScrollSize(width);
+            vertical.setScrollSize(height);
             viewport.scheduleResize();
             scheduleResize();
         }
 
-        private void focusTarget() {
-            RouteNode node = layout.nodes.get(target.getStringValue());
-            vertical.scrollTo(viewport.getScrollArea(), node == null ? 0 : node.y - 10);
-            horizontal.scrollTo(
-                viewport.getScrollArea(),
-                node == null ? 0 : node.x + 9 - horizontal.getFullVisibleSize(viewport.getScrollArea()) / 2);
+        private void stopZoom() {
+            zoomAnimation.stop(true);
+            targetZoom = zoom;
+        }
+
+        @Override
+        public void dispose() {
+            stopZoom();
+            super.dispose();
         }
 
         @Override
         public @NotNull Result onMousePressed(int button) {
             if (button != 0) return Result.IGNORE;
+            stopZoom();
             dragX = getContext().getAbsMouseX();
             dragY = getContext().getAbsMouseY();
             startScrollX = horizontal.getScroll();
@@ -802,12 +863,39 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         }
     }
 
-    private static final class BreedingRouteViewport extends ScrollWidget<BreedingRouteViewport> {
+    private final class BreedingRouteViewport extends ScrollWidget<BreedingRouteViewport> {
 
         private final Area contentClip = new Area();
 
         private BreedingRouteViewport(VerticalScrollData vertical) {
             super(vertical);
+        }
+
+        @Override
+        public @NotNull Result onMousePressed(int button) {
+            if (button == 0) routeWidget.stopZoom();
+            return super.onMousePressed(button);
+        }
+
+        @Override
+        public boolean onMouseScroll(UpOrDown direction, int amount) {
+            if (Interactable.hasControlDown()) {
+                routeWidget.setZoom(
+                    routeWidget.targetZoom * (float) Math.pow(1.2D, direction.modifier),
+                    getContext().getMouseX(),
+                    getContext().getMouseY());
+                return true;
+            }
+            routeWidget.stopZoom();
+            var area = getScrollArea();
+            var scroll = area.getScrollX()
+                .isScrollBarActive(area)
+                && (Interactable.hasShiftDown() || !area.getScrollY()
+                    .isScrollBarActive(area)) ? area.getScrollX() : area.getScrollY();
+            if (!scroll.isScrollBarActive(area)) return false;
+            int previous = scroll.getScroll();
+            scroll.scrollBy(area, -direction.modifier * scroll.getScrollSpeed());
+            return previous != scroll.getScroll() || scroll.isCancelScrollEdge();
         }
 
         @Override
@@ -886,7 +974,7 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
             for (RouteNode node : nodes.values()) {
                 for (int i = 0; i < node.parents.size(); i++) links.add(new RouteLink(node.parents.get(i), node, i));
             }
-            height = Math.max(ROUTE_HEIGHT - 10, bottom);
+            height = Math.max(ROUTE_HEIGHT - 4, bottom);
         }
     }
 
