@@ -269,7 +269,7 @@ public abstract class WirelessCardPanel extends ModularPanel {
 
     static String budgetText(NBTTagCompound data) {
         return !data.getBoolean("bound") ? tr("bind_hint")
-            : !data.getBoolean("sourceLoaded") ? tr("source_waiting")
+            : !data.getBoolean("sourceLoaded") ? tr(data.getBoolean("sourceSplit") ? "source_split" : "source_waiting")
                 : !data.getBoolean("channels") ? tr("unlimited")
                     : tr(
                         "budget_compact",

@@ -8,14 +8,19 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
+import com.science.gtnl.common.item.items.WirelessFrequencyCard;
+import com.science.gtnl.common.wireless.WirelessCardBinding;
 import com.science.gtnl.common.wireless.WirelessChannelManager;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Entrance;
 import com.science.gtnl.common.wireless.WirelessClusterManager;
+import com.science.gtnl.common.wireless.WirelessFrequencies;
+import com.science.gtnl.common.wireless.WirelessFrequency;
 import com.science.gtnl.common.wireless.WirelessLinkPersistence;
 import com.science.gtnl.common.wireless.WirelessOperations;
 import com.science.gtnl.config.MainConfig;
@@ -27,7 +32,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public class CommandWirelessME extends CommandBase {
 
-    private final Map<UUID, Address> sources = new Object2ObjectOpenHashMap<>();
+    private final Map<UUID, WirelessFrequency> sources = new Object2ObjectOpenHashMap<>();
 
     @Override
     public String getCommandName() {
@@ -36,7 +41,7 @@ public class CommandWirelessME extends CommandBase {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/gtnl_wireless_me bind <dim> <x> <y> <z> | link <dim> <x> <y> <z> [side] | unlink <id> | status | clear | limit [count]";
+        return "/gtnl_wireless_me bind <dim> <x> <y> <z> | link <dim> <x> <y> <z> [side] | unlink <id> | status | clear | owner <player> | limit [count]";
     }
 
     @Override
@@ -71,13 +76,14 @@ public class CommandWirelessME extends CommandBase {
                         throw new IllegalArgumentException(
                             "Source must be a loaded ME Controller or Creative Energy Controller.");
                     }
-                    sources.put(player.getUniqueID(), source);
-                    message(sender, "Bound wireless source: " + source);
+                    WirelessFrequency frequency = WirelessFrequencies.bind(source.tile(), player.getUniqueID());
+                    sources.put(player.getUniqueID(), frequency);
+                    message(sender, "Bound wireless frequency " + frequency.id() + " at " + source);
                 }
                 case "link" -> {
                     if (args.length != 5 && args.length != 6)
                         throw new IllegalArgumentException(getCommandUsage(sender));
-                    Address source = sources.get(player.getUniqueID());
+                    WirelessFrequency source = sources.get(player.getUniqueID());
                     if (source == null) throw new IllegalArgumentException("Bind a source first.");
                     int id = WirelessOperations.debugConnect(source, address(args));
                     message(sender, "Created entrance " + id + ". Wait for AE2 pathing, then run status.");
@@ -90,6 +96,22 @@ public class CommandWirelessME extends CommandBase {
                     message(
                         sender,
                         removed ? "Frequency disconnected from the entire physical cluster." : "Unknown entrance ID.");
+                }
+                case "owner" -> {
+                    if (args.length != 2) throw new IllegalArgumentException(getCommandUsage(sender));
+                    ItemStack held = player.getCurrentEquippedItem();
+                    WirelessCardBinding binding = held == null || !(held.getItem() instanceof WirelessFrequencyCard)
+                        ? null
+                        : WirelessCardBinding.read(held.getTagCompound());
+                    if (binding == null) throw new IllegalArgumentException("Hold a bound wireless frequency card.");
+                    EntityPlayerMP owner = getPlayer(sender, args[1]);
+                    if (!WirelessFrequencies.setCreator(binding.frequency(), owner.getUniqueID()))
+                        throw new IllegalArgumentException(
+                            "This card still names an old controller position; load that controller once first.");
+                    message(
+                        sender,
+                        "Frequency " + WirelessFrequencies.upgrade(binding.frequency())
+                            .id() + " may now be moved by " + owner.getCommandSenderName() + ".");
                 }
                 case "clear" -> {
                     if (args.length != 1) throw new IllegalArgumentException(getCommandUsage(sender));
@@ -119,9 +141,9 @@ public class CommandWirelessME extends CommandBase {
                                 + " target="
                                 + entrance.target());
                     }
-                    Address source = sources.get(player.getUniqueID());
+                    WirelessFrequency source = sources.get(player.getUniqueID());
                     if (source != null) message(sender, "Cluster records: " + WirelessClusterManager.summary(source));
-                    IGridNode node = source == null ? null : source.node();
+                    IGridNode node = source == null ? null : WirelessFrequencies.controllerNode(source);
                     if (node != null) {
                         IPathingGrid path = node.getGrid()
                             .getCache(IPathingGrid.class);

@@ -68,7 +68,7 @@ public class WirelessCardActionHandler {
                 message("stale");
             } else {
                 try {
-                    if (!WirelessOperations.rename(player, binding.source(), row, text)) message("denied");
+                    if (!WirelessOperations.rename(player, binding.frequency(), row, text)) message("denied");
                 } catch (WirelessOperations.Denied denied) {
                     message("denied");
                 } catch (IllegalStateException stale) {
@@ -77,7 +77,7 @@ public class WirelessCardActionHandler {
             }
         } else if (action == TELEPORT && player instanceof EntityPlayerMP serverPlayer) {
             try {
-                switch (WirelessOperations.teleport(serverPlayer, binding.source(), row)) {
+                switch (WirelessOperations.teleport(serverPlayer, binding.frequency(), row)) {
                     case STALE -> message("stale");
                     case UNAVAILABLE -> message("teleport_unavailable");
                     case DENIED -> message("denied");
@@ -91,7 +91,7 @@ public class WirelessCardActionHandler {
             }
         } else if (action == HIGHLIGHT) {
             try {
-                if (!WirelessClusterManager.isCurrentLink(binding.source(), row)) {
+                if (!WirelessClusterManager.isCurrentLink(binding.frequency(), row)) {
                     message("stale");
                     session.update(true);
                     return;
@@ -135,7 +135,7 @@ public class WirelessCardActionHandler {
                 session.view.detailNode = row.node();
         } else if (action == TOGGLE_PAUSE) {
             try {
-                WirelessOperations.setPaused(player, binding.source(), row);
+                WirelessOperations.setPaused(player, binding.frequency(), row);
             } catch (WirelessOperations.Denied denied) {
                 message("denied");
             } catch (IllegalStateException stale) {

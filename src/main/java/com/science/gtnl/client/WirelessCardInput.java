@@ -110,7 +110,7 @@ public class WirelessCardInput {
         try {
             var packet = new PacketNetworkVisualiserData(buffer);
             packet.clientPacketData(null, packet, mc.thePlayer);
-            visualTool = WirelessCardVisualisation.tool(binding, dimension, mode);
+            visualTool = WirelessCardVisualisation.tool(binding, binding.location(), dimension, mode);
             visualMode = mode;
             visualBinding = binding;
             visualWorld = mc.theWorld;
@@ -148,7 +148,8 @@ public class WirelessCardInput {
         if (now >= visualUntil) return null;
         if (visualMode != mode) {
             visualMode = mode;
-            visualTool = WirelessCardVisualisation.tool(visualBinding, mc.thePlayer.dimension, mode);
+            visualTool = WirelessCardVisualisation
+                .tool(visualBinding, visualBinding.location(), mc.thePlayer.dimension, mode);
         }
         return visualTool;
     }

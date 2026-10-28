@@ -29,6 +29,8 @@ public class WirelessMatterManipulatorContracts {
 
     private static final Address A = new Address(0, 10, 64, 10, ForgeDirection.UNKNOWN);
     private static final Address B = new Address(0, 90, 64, 90, ForgeDirection.UNKNOWN);
+    private static final WirelessFrequency FREQUENCY_A = WirelessFrequency.of(new UUID(0, 10));
+    private static final WirelessFrequency FREQUENCY_B = WirelessFrequency.of(new UUID(0, 90));
 
     public static void run() throws ReflectiveOperationException {
         copiedFrequencies();
@@ -40,7 +42,7 @@ public class WirelessMatterManipulatorContracts {
         injectionTargets(MixinPendingMoveWireless.class, PendingMove.class);
     }
 
-    private static Claim claim(Address... frequencies) {
+    private static Claim claim(WirelessFrequency... frequencies) {
         return new Claim("kind", Set.of(frequencies), Set.of(), Set.of());
     }
 
@@ -49,16 +51,19 @@ public class WirelessMatterManipulatorContracts {
         Slot north = new Slot(ForgeDirection.NORTH, false);
         Slot external = new Slot(ForgeDirection.UP, true);
         check(
-            Map.of(ForgeDirection.DOWN, A, ForgeDirection.NORTH, B)
-                .equals(WirelessCopiedLinks.frequencies(Map.of(down, claim(A), north, claim(B), external, claim(B)))),
+            Map.of(ForgeDirection.DOWN, FREQUENCY_A, ForgeDirection.NORTH, FREQUENCY_B)
+                .equals(
+                    WirelessCopiedLinks.frequencies(
+                        Map.of(down, claim(FREQUENCY_A), north, claim(FREQUENCY_B), external, claim(FREQUENCY_B)))),
             "each part keeps its own frequency and external-facing nodes are not copied");
         check(
-            WirelessCopiedLinks.frequencies(Map.of(down, claim(A, B))) == null,
+            WirelessCopiedLinks.frequencies(Map.of(down, claim(FREQUENCY_A, FREQUENCY_B))) == null,
             "a conflicted node copies no frequency");
-        Map<ForgeDirection, Address> rotated = WirelessCopiedLinks
-            .rotate(Map.of(ForgeDirection.NORTH, A, ForgeDirection.UNKNOWN, B), side -> ForgeDirection.EAST);
+        Map<ForgeDirection, WirelessFrequency> rotated = WirelessCopiedLinks.rotate(
+            Map.of(ForgeDirection.NORTH, FREQUENCY_A, ForgeDirection.UNKNOWN, FREQUENCY_B),
+            side -> ForgeDirection.EAST);
         check(
-            Map.of(ForgeDirection.EAST, A, ForgeDirection.UNKNOWN, B)
+            Map.of(ForgeDirection.EAST, FREQUENCY_A, ForgeDirection.UNKNOWN, FREQUENCY_B)
                 .equals(rotated),
             "a rotated paste moves part frequencies with their sides and keeps the centre cable: " + rotated);
     }
@@ -93,8 +98,12 @@ public class WirelessMatterManipulatorContracts {
         WirelessCopiedLinks.clear();
         int queued = WirelessCopiedLinks.SCANS_PER_TICK + 7;
         for (int index = 0; index < queued; index++) {
-            WirelessCopiedLinks
-                .enqueue(UUID.randomUUID(), new Address(0, index, 0, 0, ForgeDirection.UNKNOWN), null, null, A);
+            WirelessCopiedLinks.enqueue(
+                UUID.randomUUID(),
+                new Address(0, index, 0, 0, ForgeDirection.UNKNOWN),
+                null,
+                null,
+                FREQUENCY_A);
         }
         WirelessCopiedLinks.tick();
         check(WirelessCopiedLinks.waiting() == 7, "one tick handles at most the scan budget");
@@ -103,15 +112,17 @@ public class WirelessMatterManipulatorContracts {
         boolean accepted = true;
         for (int index = 0; index < WirelessCopiedLinks.MAX_PENDING_PER_PLAYER; index++) {
             accepted &= WirelessCopiedLinks
-                .enqueue(player, new Address(0, index, 0, 0, ForgeDirection.UNKNOWN), null, null, A);
+                .enqueue(player, new Address(0, index, 0, 0, ForgeDirection.UNKNOWN), null, null, FREQUENCY_A);
         }
         check(accepted, "one player can fill their own quota");
-        check(!WirelessCopiedLinks.enqueue(player, A, null, null, A), "one player cannot exceed their quota");
+        check(!WirelessCopiedLinks.enqueue(player, A, null, null, FREQUENCY_A), "one player cannot exceed their quota");
         check(
-            WirelessCopiedLinks.enqueue(UUID.randomUUID(), B, null, null, B),
+            WirelessCopiedLinks.enqueue(UUID.randomUUID(), B, null, null, FREQUENCY_B),
             "another player retains queue capacity");
         WirelessCopiedLinks.tick();
-        check(WirelessCopiedLinks.enqueue(player, A, null, null, A), "finishing entries returns the player's quota");
+        check(
+            WirelessCopiedLinks.enqueue(player, A, null, null, FREQUENCY_A),
+            "finishing entries returns the player's quota");
         WirelessCopiedLinks.clear();
     }
 

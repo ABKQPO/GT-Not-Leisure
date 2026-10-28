@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import com.gtnewhorizon.gtnhlib.compat.BaublesCompat;
 import com.gtnewhorizon.gtnhlib.item.ItemStackNBT;
+import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 
 import appeng.api.AEApi;
 import appeng.api.config.Settings;
@@ -75,7 +76,7 @@ public class WirelessCardVisualisation {
         return true;
     }
 
-    public static ItemStack tool(WirelessCardBinding binding, int dimension, int mode) {
+    public static ItemStack tool(WirelessCardBinding binding, Address source, int dimension, int mode) {
         if (mode <= 0 || !validMode(mode)) return null;
         ItemStack tool = AEApi.instance()
             .definitions()
@@ -87,7 +88,6 @@ public class WirelessCardVisualisation {
         NBTTagCompound tag = new NBTTagCompound();
         binding.write(tag);
         tag.setBoolean(DELEGATE, true);
-        var source = binding.source();
         // Single-link modes are anchored to the source block. Do not select an unrelated block at the
         // same coordinates when viewing another dimension; full-network modes still show local nodes.
         new DimensionalCoord(source.x(), dimension == source.dimension() ? source.y() : -1, source.z(), dimension)
@@ -127,18 +127,12 @@ public class WirelessCardVisualisation {
         WirelessCardBinding binding = WirelessCardBinding.read(card.getTagCompound());
         if (binding == null || !binding.belongsTo(player.getUniqueID()) || !due(player, binding)) return;
         if (activeCard(player) != card) return;
-        var source = binding.source()
-            .node();
-        if (!WirelessChannelManager.canBuild(source, player)) return;
+        if (!WirelessChannelManager.canBuild(WirelessFrequencies.controllerNode(binding.frequency()), player)) return;
         // Address.node() only visits already loaded chunks. Never let the native collector load its target.
-        var tile = binding.source()
-            .tile();
+        var source = WirelessFrequencies.controller(binding.frequency());
+        var tile = source == null ? null : source.tile();
         if (!WirelessChannelManager.isSupportedController(tile) || tile.isInvalid()) return;
-        ItemStack tool = tool(
-            binding,
-            binding.source()
-                .dimension(),
-            mode);
+        ItemStack tool = tool(binding, source, source.dimension(), mode);
         if (tool != null) tool.getItem()
             .onUpdate(tool, tile.getWorldObj(), player, slot, true);
     }
