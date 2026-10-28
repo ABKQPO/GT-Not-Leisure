@@ -86,7 +86,12 @@ public final class BeeBreedingPlanner {
             Candidate candidate = Candidate.combine(
                 parent1,
                 parent2,
-                new BeeBreedingHelper.BreedingStep(mutation.parent1, mutation.parent2, species, mutation.chance));
+                new BeeBreedingHelper.BreedingStep(
+                    mutation.parent1,
+                    mutation.parent2,
+                    species,
+                    mutation.chance,
+                    mutation.foundations));
             if (best == null || compare(candidate, best) < 0) {
                 best = candidate;
             }

@@ -37,6 +37,7 @@ GT5U.gui.text.recipe_result.parallel_zero=§4并行不足，检查你的输入�
 GT5U.gui.text.recipe_result.crash=§4很抱歉，你的机器出现了一些问题……        如果要寻求帮助，请把错误报告和日志文件发给对方，而不是发送这个窗口的照片或者截图或者文本。
 GT5U.gui.text.recipe_result.bee_breeder_unreachable_target=当前物种档案无法到达目标品种！
 GT5U.gui.text.recipe_result.bee_breeder_missing_drone=物种档案中缺少必要亲本！
+GT5U.gui.text.recipe_result.bee_breeder_missing_foundation=缺少杂交基石，等待补充。
 
 gtnl.gui.config.general=GTNL 总览配置
 gtnl.gui.config.general.client=客户端设置
@@ -852,6 +853,8 @@ gtnl.bee_breeder.total_progress=总进度：%s%%
 gtnl.bee_breeder.route_session=本次打开 GUI 后记录的已完成 / 规划杂交步骤；重新打开时从剩余路线开始统计。
 gtnl.bee_breeder.route_hint=滚动或拖动查看亲本谱系，Ctrl + 滚轮缩放，中键恢复 100% 并定位目标蜂种。绿色箭头表示繁育成功，填充中的箭头表示正在繁育。
 gtnl.bee_breeder.focus_target=滚动到目标蜂种
+gtnl.bee_breeder.foundation=杂交基石：轮播显示可用替代品。投入输入总线后收进机器内部保存。
+gtnl.bee_breeder.foundation_unavailable=没有已注册的基石物品
 gtnl.bee_breeder.active=正在杂交
 gtnl.bee_breeder.chance=杂交成功率：%.1f%%
 

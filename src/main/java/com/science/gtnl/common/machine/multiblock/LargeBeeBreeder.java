@@ -43,6 +43,7 @@ import com.science.gtnl.common.gui.modularui.LargeBeeBreederGui;
 import com.science.gtnl.common.machine.multiMachineBase.MultiMachineBase;
 import com.science.gtnl.utils.StructureUtils;
 import com.science.gtnl.utils.machine.bee.BeeBreedingHelper;
+import com.science.gtnl.utils.machine.bee.BeeBreedingHelper.FoundationRequirement;
 import com.science.gtnl.utils.machine.bee.BeeBreedingPlanner;
 import com.science.gtnl.utils.machine.bee.BeeSpeciesArchive;
 import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
@@ -110,6 +111,9 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
 
     private byte activeOperation = OPERATION_NONE;
     private List<BreedingAttempt> activeBreedingBatch = new ArrayList<>();
+    private final List<ItemStack> foundationStorage = new ArrayList<>();
+    private List<FoundationRequirement> missingFoundations = Collections.emptyList();
+    private boolean activeFoundationsChecked;
 
     @Getter
     private int pendingPrincessOutputs = 0;
@@ -153,7 +157,14 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             hasStainlessSteelGear = checkStainlessSteelGear(getControllerSlot());
             if (gearBefore != hasStainlessSteelGear) markBreedingChanged();
 
-            if (mMachine) scanInputBuses();
+            if (mMachine) {
+                startRecipeProcessing();
+                try {
+                    scanInputBuses();
+                } finally {
+                    endRecipeProcessing();
+                }
+            }
             refreshBreedingPlan();
         }
     }
@@ -230,6 +241,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         scanInputBuses();
         activeOperation = OPERATION_NONE;
         activeBreedingBatch.clear();
+        activeFoundationsChecked = false;
 
         if (targetBeeSpecies == null || targetBeeSpecies.isEmpty()) {
             refreshBreedingPlan();
@@ -272,6 +284,11 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             return CheckRecipeResultRegistry.insufficientPower(getEuPerBreedingAttempt());
         }
         readySteps = readySteps.subList(0, poweredParallels);
+        updateMissingFoundations(readySteps);
+        if (!missingFoundations.isEmpty()) {
+            allTasksBlocked = true;
+            return SimpleCheckRecipeResult.ofFailure("bee_breeder_missing_foundation");
+        }
 
         double chanceBonus = (hasStainlessSteelGear ? 2.0D : 0.0D) + Math.max(0, mGlassTier);
         List<BreedingAttempt> batch = new ArrayList<>(readySteps.size());
@@ -281,6 +298,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
 
         activeOperation = OPERATION_BREEDING;
         activeBreedingBatch = batch;
+        activeFoundationsChecked = true;
         allTasksBlocked = false;
         missingDroneSpecies = "";
         prepareBreedingCycle(getEnergyCostPerTick(batch.size()));
@@ -292,6 +310,22 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         mEfficiency = 10000;
         mEfficiencyIncrease = 10000;
         lEUt = -eut;
+    }
+
+    @Override
+    public boolean onRunningTick(ItemStack stack) {
+        if (activeOperation == OPERATION_BREEDING) {
+            if (!activeFoundationsChecked) {
+                List<BeeBreedingHelper.BreedingStep> active = new ArrayList<>(activeBreedingBatch.size());
+                for (BreedingAttempt attempt : activeBreedingBatch) active.add(attempt.step);
+                updateMissingFoundations(active);
+                activeFoundationsChecked = true;
+                checkRecipeResult = missingFoundations.isEmpty() ? CheckRecipeResultRegistry.SUCCESSFUL
+                    : SimpleCheckRecipeResult.ofFailure("bee_breeder_missing_foundation");
+            }
+            if (!missingFoundations.isEmpty()) return false;
+        }
+        return super.onRunningTick(stack);
     }
 
     @Override
@@ -384,6 +418,15 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             }
         }
 
+        if (activeOperation == OPERATION_BREEDING) {
+            updateMissingFoundations(getActiveBreedingSteps());
+        } else if (pendingPrincessOutputs > 0 && !speciesArchive.hasSpecies(targetBeeSpecies)) {
+            updateMissingFoundations(
+                breedingPlan.getReadySteps(speciesArchive.getSpecies(), getMaxParallelBreedingSteps()));
+        } else {
+            updateMissingFoundations(Collections.emptyList());
+        }
+        allTasksBlocked |= !missingFoundations.isEmpty();
         updateChainDisplayInfo();
         if (previousBlocked != allTasksBlocked || !Objects.equals(previousMissing, missingDroneSpecies)
             || previousCompleted != chainCompletedSteps) {
@@ -399,6 +442,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     private void scanInputBuses() {
         ArrayList<ItemStack> inputs = getStoredInputs();
         List<ItemStack> toRemove = new ArrayList<>();
+        boolean foundationsChanged = false;
 
         for (ItemStack stack : inputs) {
             if (stack == null || stack.stackSize <= 0) continue;
@@ -415,18 +459,53 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
                     pendingPrincessOutputs = (int) Math.min(Integer.MAX_VALUE, newPending);
                 }
                 toRemove.add(stack);
+            } else if (BeeBreedingHelper.isFoundation(stack)) {
+                foundationsChanged |= storeFoundation(stack);
             }
         }
 
         for (ItemStack stack : toRemove) {
             stack.stackSize = 0;
         }
-        if (!toRemove.isEmpty()) {
+        if (foundationsChanged || !toRemove.isEmpty()) {
             updateSlots();
             markBaseTileDirty();
-            invalidateBreedingPlan();
+            if (!toRemove.isEmpty()) invalidateBreedingPlan();
+            activeFoundationsChecked = false;
             markBreedingChanged();
         }
+    }
+
+    private boolean storeFoundation(ItemStack input) {
+        for (ItemStack stored : foundationStorage) {
+            if (!stored.isItemEqual(input) || !ItemStack.areItemStackTagsEqual(stored, input)) continue;
+            int amount = Math.min(input.stackSize, Integer.MAX_VALUE - stored.stackSize);
+            stored.stackSize += amount;
+            input.stackSize -= amount;
+            return amount > 0;
+        }
+        foundationStorage.add(input.copy());
+        input.stackSize = 0;
+        return true;
+    }
+
+    private void updateMissingFoundations(List<BeeBreedingHelper.BreedingStep> steps) {
+        Map<String, FoundationRequirement> missing = new LinkedHashMap<>();
+        for (BeeBreedingHelper.BreedingStep step : steps) {
+            for (FoundationRequirement requirement : step.foundations) {
+                if (foundationStorage.stream()
+                    .noneMatch(requirement::matches)) missing.putIfAbsent(requirement.key(), requirement);
+            }
+        }
+        List<FoundationRequirement> next = new ArrayList<>(missing.values());
+        if (!missingFoundations.equals(next)) {
+            missingFoundations = next;
+            markBreedingChanged();
+        }
+    }
+
+    public List<FoundationRequirement> getMissingFoundations() {
+        return Collections.unmodifiableList(missingFoundations);
     }
 
     private boolean checkStainlessSteelGear(ItemStack stack) {
@@ -538,7 +617,8 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
                     attempt.step.parent1,
                     attempt.step.parent2,
                     attempt.step.result,
-                    attempt.effectiveChance));
+                    attempt.effectiveChance,
+                    attempt.step.foundations));
         }
         return steps;
     }
@@ -569,6 +649,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         aNBT.setString("targetBeeSpecies", targetBeeSpecies != null ? targetBeeSpecies : "");
         aNBT.setInteger("pendingPrincessOutputs", pendingPrincessOutputs);
         aNBT.setTag("dronePool", speciesArchive.toNBT());
+        writeFoundationStorage(aNBT);
         aNBT.setByte("beeBreederActiveOperation", activeOperation);
         NBTTagList attempts = new NBTTagList();
         for (BreedingAttempt attempt : activeBreedingBatch) {
@@ -583,6 +664,19 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
 
         targetBeeSpecies = aNBT.getString("targetBeeSpecies");
         pendingPrincessOutputs = aNBT.getInteger("pendingPrincessOutputs");
+        foundationStorage.clear();
+        NBTTagList foundations = aNBT.getTagList("beeBreederFoundations", 10);
+        for (int i = 0; i < foundations.tagCount(); i++) {
+            NBTTagCompound tag = foundations.getCompoundTagAt(i);
+            ItemStack stack = ItemStack.loadItemStackFromNBT(tag);
+            int count = tag.getInteger("storedCount");
+            if (stack != null && count > 0) {
+                stack.stackSize = count;
+                foundationStorage.add(stack);
+            }
+        }
+        missingFoundations = Collections.emptyList();
+        activeFoundationsChecked = false;
 
         if (aNBT.hasKey("dronePool")) {
             speciesArchive = BeeSpeciesArchive.fromNBT(aNBT.getCompoundTag("dronePool"));
@@ -610,7 +704,18 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         aNBT.setString("targetBeeSpecies", targetBeeSpecies != null ? targetBeeSpecies : "");
         aNBT.setInteger("pendingPrincessOutputs", pendingPrincessOutputs);
         aNBT.setTag("dronePool", speciesArchive.toNBT());
+        writeFoundationStorage(aNBT);
         super.setItemNBT(aNBT);
+    }
+
+    private void writeFoundationStorage(NBTTagCompound tag) {
+        NBTTagList foundations = new NBTTagList();
+        for (ItemStack stack : foundationStorage) {
+            NBTTagCompound stored = stack.writeToNBT(new NBTTagCompound());
+            stored.setInteger("storedCount", stack.stackSize);
+            foundations.appendTag(stored);
+        }
+        tag.setTag("beeBreederFoundations", foundations);
     }
 
     @Override
@@ -695,11 +800,9 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             String parent2 = tag.getString("parent2");
             String result = tag.getString("result");
             if (parent1.isEmpty() || parent2.isEmpty() || result.isEmpty()) return null;
-            BeeBreedingHelper.BreedingStep step = new BeeBreedingHelper.BreedingStep(
-                parent1,
-                parent2,
-                result,
-                tag.getDouble("baseChance"));
+            BeeBreedingHelper.BreedingStep step = BeeBreedingHelper
+                .findRegisteredStep(parent1, parent2, result, tag.getDouble("baseChance"));
+            if (step == null) return null;
             return new BreedingAttempt(step, tag.getDouble("effectiveChance"));
         }
     }

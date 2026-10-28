@@ -17,6 +17,7 @@ import java.util.function.Supplier;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 
@@ -42,6 +43,7 @@ import com.cleanroommc.modularui.theme.WidgetTheme;
 import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.utils.Interpolation;
 import com.cleanroommc.modularui.value.DoubleValue;
+import com.cleanroommc.modularui.value.ObjectValue;
 import com.cleanroommc.modularui.value.StringValue;
 import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
 import com.cleanroommc.modularui.value.sync.GenericListSyncHandler;
@@ -57,6 +59,7 @@ import com.cleanroommc.modularui.widget.scroll.HorizontalScrollData;
 import com.cleanroommc.modularui.widget.scroll.VerticalScrollData;
 import com.cleanroommc.modularui.widget.sizer.Area;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
+import com.cleanroommc.modularui.widgets.ItemDisplayWidget;
 import com.cleanroommc.modularui.widgets.ListWidget;
 import com.cleanroommc.modularui.widgets.PageButton;
 import com.cleanroommc.modularui.widgets.PagedWidget;
@@ -66,8 +69,10 @@ import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.textfield.TextFieldWidget;
 import com.science.gtnl.common.machine.multiblock.LargeBeeBreeder;
 import com.science.gtnl.utils.machine.bee.BeeBreedingHelper;
+import com.science.gtnl.utils.machine.bee.BeeBreedingHelper.FoundationRequirement;
 import com.science.gtnl.utils.machine.bee.BeeBreedingPlanner;
 
+import codechicken.nei.PositionedStack;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.modularui2.GTWidgetThemes;
@@ -107,6 +112,8 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
     private Set<String> activeSpecies = Collections.emptySet();
     private List<NBTTagCompound> activeSteps = Collections.emptyList();
     private final Map<String, ItemStack> beeIcons = new HashMap<>();
+    private final Map<String, FoundationDisplay> foundationDisplays = new HashMap<>();
+    private List<NBTTagCompound> missingFoundations = Collections.emptyList();
     private final SpeciesListView archiveView = new SpeciesListView(() -> archive);
     private final SpeciesListView reachableView = new SpeciesListView(() -> reachable);
     private StringSyncValue draft;
@@ -184,6 +191,16 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                 String::equals,
                 value -> value));
         sync.syncValue("beeRoute", routeSync);
+        sync.syncValue("beeMissingFoundations", new GenericListSyncHandler<>(() -> {
+            List<NBTTagCompound> tags = new ArrayList<>();
+            for (FoundationRequirement requirement : multiblock.getMissingFoundations()) tags.add(requirement.toNBT());
+            return tags;
+        },
+            value -> missingFoundations = value,
+            ByteBufUtils::readTag,
+            ByteBufUtils::writeTag,
+            NBTTagCompound::equals,
+            value -> (NBTTagCompound) value.copy()));
         sync.syncValue("beeActiveSteps", new GenericListSyncHandler<>(this::activeSnapshot, value -> {
             activeSteps = value;
             activeSpecies = new HashSet<>();
@@ -256,6 +273,9 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
             tag.setString("parent2", step.parent2);
             tag.setString("result", step.result);
             tag.setDouble("chance", Math.min(100.0D, step.chance + multiblock.getMutationChanceBonus()));
+            NBTTagList foundations = new NBTTagList();
+            for (FoundationRequirement requirement : step.foundations) foundations.appendTag(requirement.toNBT());
+            tag.setTag("foundations", foundations);
             serverSteps.add(tag);
         }
     }
@@ -407,7 +427,10 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
     @Override
     protected ListWidget<IWidget, ?> createTerminalTextWidget(PanelSyncManager sync, ModularPanel panel) {
         return super.createTerminalTextWidget(sync, panel).paddingRight(64)
-            .child(terminalText(this::missingText));
+            .child(terminalText(this::missingText))
+            .child(
+                new MissingFoundationsWidget().width(PAGE_WIDTH - 72)
+                    .setEnabledIf(widget -> !missingFoundations.isEmpty()));
     }
 
     @Override
@@ -710,6 +733,79 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                         .addLine(tr("gtnl.bee_breeder.chance", currentStep(link.result.step).getDouble("chance")))));
     }
 
+    private FoundationDisplay foundationDisplay(NBTTagCompound tag) {
+        FoundationRequirement requirement = FoundationRequirement.fromNBT(tag);
+        return foundationDisplays.computeIfAbsent(requirement.key(), key -> new FoundationDisplay(requirement));
+    }
+
+    private ItemDisplayWidget foundationIcon(FoundationDisplay display) {
+        return new ItemDisplayWidget().item(new ObjectValue.Dynamic<>(ItemStack.class, display, value -> {}))
+            .size(14)
+            .disableThemeBackground(true)
+            .disableHoverThemeBackground(true)
+            .tooltipAutoUpdate(true)
+            .tooltipBuilder(t -> {
+                ItemStack stack = display.get();
+                if (stack != null) t.addFromItem(stack);
+                t.addLine(IKey.lang("gtnl.bee_breeder.foundation"));
+            });
+    }
+
+    private final class MissingFoundationsWidget extends ParentWidget<MissingFoundationsWidget> {
+
+        private List<NBTTagCompound> previous;
+
+        @Override
+        public void onUpdate() {
+            super.onUpdate();
+            if (previous == missingFoundations) return;
+            previous = missingFoundations;
+            removeAll();
+            int y = 0;
+            for (NBTTagCompound tag : missingFoundations) {
+                FoundationDisplay display = foundationDisplay(tag);
+                child(foundationIcon(display).pos(0, y));
+                child(
+                    fittedText(() -> EnumChatFormatting.AQUA + display.name(), 18, y + 3, PAGE_WIDTH - 90, 0.75F)
+                        .tooltipAutoUpdate(true)
+                        .tooltipBuilder(t -> {
+                            ItemStack stack = display.get();
+                            if (stack != null) t.addFromItem(stack);
+                            t.addLine(IKey.lang("gtnl.bee_breeder.foundation"));
+                        }));
+                y += 16;
+            }
+            height(y);
+            scheduleResize();
+        }
+    }
+
+    private static final class FoundationDisplay implements Supplier<ItemStack> {
+
+        private final FoundationRequirement requirement;
+        private ItemStack[] alternatives;
+
+        private FoundationDisplay(FoundationRequirement requirement) {
+            this.requirement = requirement;
+        }
+
+        @Override
+        public ItemStack get() {
+            if (alternatives == null) {
+                List<ItemStack> candidates = requirement.getAlternatives();
+                if (candidates.isEmpty()) return null;
+                alternatives = new PositionedStack(candidates, 0, 0).items;
+            }
+            return alternatives.length == 0 ? null
+                : alternatives[(int) (System.currentTimeMillis() / 1000 % alternatives.length)];
+        }
+
+        private String name() {
+            ItemStack stack = get();
+            return stack == null ? tr("gtnl.bee_breeder.foundation_unavailable") : stack.getDisplayName();
+        }
+    }
+
     private final class BreedingRouteWidget extends ParentWidget<BreedingRouteWidget>
         implements IViewport, Interactable {
 
@@ -754,11 +850,19 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
             layout = new RouteLayout(steps, currentTarget);
             removeAll();
             for (RouteLink link : layout.links) addRouteLink(this, link);
-            for (RouteNode node : layout.nodes.values())
+            for (RouteNode node : layout.nodes.values()) {
                 child(beeSlot(() -> node.uid, node.x, node.y).tooltipBuilder(t -> {
                     if (node.step != null) t.addLine(IKey.lang("gtnl.bee_breeder." + routeState(node.step)))
                         .addLine(tr("gtnl.bee_breeder.chance", currentStep(node.step).getDouble("chance")));
                 }));
+                if (node.step == null) continue;
+                NBTTagList foundations = node.step.getTagList("foundations", 10);
+                for (int i = 0; i < foundations.tagCount(); i++) {
+                    child(
+                        foundationIcon(foundationDisplay(foundations.getCompoundTagAt(i)))
+                            .pos(node.x + 2, node.y + 20 + i * 16));
+                }
+            }
             updateCanvasSize();
             if (targetChanged) focusTarget();
             else {
@@ -959,6 +1063,14 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                 }
             }
             List<RouteNode> ordered = new ArrayList<>(nodes.values());
+            Map<Integer, Integer> rowHeights = new HashMap<>();
+            for (RouteNode node : ordered) rowHeights.merge(node.depth, node.height() + 46, Math::max);
+            Map<Integer, Integer> rowPositions = new HashMap<>();
+            int rowY = 10;
+            for (int depth = 0; depth < rowHeights.size(); depth++) {
+                rowPositions.put(depth, rowY);
+                rowY += rowHeights.get(depth);
+            }
             int bottom = 0;
             for (int i = ordered.size() - 1; i >= 0; i--) {
                 RouteNode node = ordered.get(i);
@@ -967,8 +1079,8 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
                     for (RouteNode parent : node.parents) sum += parent.x;
                     node.x = sum / node.parents.size();
                 }
-                node.y = 10 + node.depth * 64;
-                bottom = Math.max(bottom, node.y + 28);
+                node.y = rowPositions.get(node.depth);
+                bottom = Math.max(bottom, node.y + node.height() + 10);
             }
             for (RouteNode node : nodes.values()) {
                 for (int i = 0; i < node.parents.size(); i++) links.add(new RouteLink(node.parents.get(i), node, i));
@@ -989,6 +1101,12 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         private RouteNode(String uid) {
             this.uid = uid;
         }
+
+        private int height() {
+            return 18 + (step == null ? 0
+                : step.getTagList("foundations", 10)
+                    .tagCount() * 16);
+        }
     }
 
     private static final class RouteLink {
@@ -1002,7 +1120,7 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         private RouteLink(RouteNode parent, RouteNode result, int input) {
             this.result = result;
             double toX = result.x + (result.parents.size() == 1 ? 9 : input == 0 ? -2 : 20);
-            double toY = result.y + 20;
+            double toY = result.y + result.height() + 2;
             double dx = toX - parent.x - 9, dy = toY - parent.y - 9;
             double inset = Math.min(11D / Math.abs(dx), 11D / Math.abs(dy));
             x = (int) Math.round(parent.x + 9 + dx * inset);
