@@ -11,6 +11,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
+
 import com.cleanroommc.modularui.api.drawable.IKey;
 import com.cleanroommc.modularui.api.widget.IWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
@@ -29,6 +33,7 @@ import com.gtnllib.gui.widget.FadingNotice;
 import com.gtnllib.gui.widget.LayoutTheme;
 import com.gtnllib.gui.widget.SlideSwitch;
 import com.gtnllib.gui.widget.StepSlider;
+import com.gtnllib.utils.HotbarMessages;
 import com.gtnllib.utils.MathUtils;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -136,6 +141,20 @@ public class LayoutContracts {
                 && FadingNotice.opacity(3000, 3000) == 0F
                 && FadingNotice.opacity(-1, 3000) == 0F,
             "a notice stays solid, fades out over its last half second and is gone afterwards");
+        IChatComponent plain = new ChatComponentText("plain");
+        IChatComponent red = new ChatComponentText("red");
+        red.getChatStyle()
+            .setColor(EnumChatFormatting.RED);
+        check(
+            HotbarMessages.withDefaultColor(plain, EnumChatFormatting.WHITE)
+                .getChatStyle()
+                .getColor() == EnumChatFormatting.WHITE
+                && plain.getChatStyle()
+                    .getColor() == null
+                && HotbarMessages.withDefaultColor(red, EnumChatFormatting.WHITE)
+                    .getChatStyle()
+                    .getColor() == EnumChatFormatting.RED,
+            "a hotbar message without a colour turns white on a copy, and a coloured one keeps its colour");
     }
 
     private static void adaptiveRules() throws ReflectiveOperationException {
