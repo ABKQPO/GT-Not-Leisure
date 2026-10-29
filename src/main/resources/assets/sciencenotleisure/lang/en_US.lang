@@ -38,6 +38,9 @@ GT5U.gui.text.recipe_result.crash=§4Machine turned off due to crash. Refer to t
 GT5U.gui.text.recipe_result.bee_breeder_unreachable_target=Current species archive cannot reach the target species!
 GT5U.gui.text.recipe_result.bee_breeder_missing_drone=Species archive is missing a required parent!
 GT5U.gui.text.recipe_result.bee_breeder_missing_foundation=Missing mutation foundation. Waiting for input.
+GT5U.gui.text.recipe_result.bee_breeder_voltage_iv=Insufficient voltage. Requires IV. Waiting for a power upgrade.
+GT5U.gui.text.recipe_result.bee_breeder_voltage_zpm=Insufficient voltage. Requires ZPM. Waiting for a power upgrade.
+GT5U.gui.text.recipe_result.bee_breeder_voltage_uhv=Insufficient voltage. Requires UHV. Waiting for a power upgrade.
 
 gtnl.gui.config.general=GTNL General Config
 gtnl.gui.config.general.client=Client Settings
@@ -857,6 +860,8 @@ gtnl.bee_breeder.required_foundation=Required foundation: %s
 gtnl.bee_breeder.foundation_unavailable=No registered foundation item
 gtnl.bee_breeder.active=Breeding
 gtnl.bee_breeder.chance=Mutation chance: %.1f%%
+gtnl.bee_breeder.required_voltage=Required voltage: %s
+gtnl.bee_breeder.low_voltage=Insufficient voltage
 
 gtnl.machine.quantum_computer.name=Quantum Computer
 gtnl.machine.quantum_computer.recipe_type=CPU

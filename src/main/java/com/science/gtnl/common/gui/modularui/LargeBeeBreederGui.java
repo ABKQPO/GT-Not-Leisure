@@ -74,6 +74,7 @@ import com.science.gtnl.utils.machine.bee.BeeBreedingPlanner;
 
 import codechicken.nei.PositionedStack;
 import cpw.mods.fml.common.network.ByteBufUtils;
+import gregtech.api.enums.GTValues;
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.api.modularui2.GTWidgetThemes;
 import gregtech.common.modularui2.widget.SlotLikeButtonWidget;
@@ -122,6 +123,7 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
     private IntSyncValue pending;
     private IntSyncValue parallel;
     private IntSyncValue bonus;
+    private IntSyncValue voltageTier;
     private LongSyncValue energy;
     private StringSyncValue missing;
     private IntSyncValue progressTime;
@@ -148,6 +150,7 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         pending = new IntSyncValue(multiblock::getPendingPrincessOutputs);
         parallel = new IntSyncValue(multiblock::getMaxParallelBreedingSteps);
         bonus = new IntSyncValue(multiblock::getMutationChanceBonus);
+        voltageTier = new IntSyncValue(multiblock::getBreedingVoltageTier);
         energy = new LongSyncValue(multiblock::getEuPerBreedingAttempt);
         missing = new StringSyncValue(() -> multiblock.isAllTasksBlocked() ? multiblock.getMissingDroneSpecies() : "");
         sync.syncValue("beeTarget", target);
@@ -156,6 +159,7 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
         sync.syncValue("beePending", pending);
         sync.syncValue("beeParallel", parallel);
         sync.syncValue("beeBonus", bonus);
+        sync.syncValue("beeVoltageTier", voltageTier);
         sync.syncValue("beeEnergy", energy);
         sync.syncValue("beeMissing", missing);
         sync.syncValue("beeApply", new InteractionSyncHandler().setOnMousePressed(mouse -> {
@@ -273,6 +277,7 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
             tag.setString("parent2", step.parent2);
             tag.setString("result", step.result);
             tag.setDouble("chance", Math.min(100.0D, step.chance + multiblock.getMutationChanceBonus()));
+            tag.setInteger("requiredVoltageTier", LargeBeeBreeder.getRequiredVoltageTier(step.chance));
             NBTTagList foundations = new NBTTagList();
             for (FoundationRequirement requirement : step.foundations) {
                 NBTTagCompound foundation = requirement.toNBT();
@@ -697,6 +702,7 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
     private String routeState(NBTTagCompound step) {
         String result = step.getString("result");
         if (archivedSpecies.contains(result)) return "unlocked";
+        if (voltageTier.getIntValue() < step.getInteger("requiredVoltageTier")) return "low_voltage";
         if (machineActive.getBoolValue() && activeSpecies.contains(result)) return "active";
         if (archivedSpecies.contains(step.getString("parent1")) && archivedSpecies.contains(step.getString("parent2")))
             return "ready";
@@ -862,10 +868,17 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
             removeAll();
             for (RouteLink link : layout.links) addRouteLink(this, link);
             for (RouteNode node : layout.nodes.values()) {
+                int requiredTier = node.step == null ? LargeBeeBreeder.getSpeciesVoltageTier(node.uid)
+                    : node.step.getInteger("requiredVoltageTier");
                 child(beeSlot(() -> node.uid, node.x, node.y).tooltipBuilder(t -> {
+                    t.addLine(tr("gtnl.bee_breeder.required_voltage", GTValues.VN[requiredTier]));
+                    if (voltageTier.getIntValue() < requiredTier) {
+                        t.addLine(EnumChatFormatting.RED + tr("gtnl.bee_breeder.low_voltage"));
+                    }
                     if (node.step == null) return;
-                    t.addLine(IKey.lang("gtnl.bee_breeder." + routeState(node.step)))
-                        .addLine(tr("gtnl.bee_breeder.chance", currentStep(node.step).getDouble("chance")));
+                    String state = routeState(node.step);
+                    if (!state.equals("low_voltage")) t.addLine(IKey.lang("gtnl.bee_breeder." + state));
+                    t.addLine(tr("gtnl.bee_breeder.chance", currentStep(node.step).getDouble("chance")));
                     NBTTagList foundations = node.step.getTagList("foundations", 10);
                     for (int i = 0; i < foundations.tagCount(); i++) {
                         t.addLine(foundationTooltipLine(foundations.getCompoundTagAt(i)));

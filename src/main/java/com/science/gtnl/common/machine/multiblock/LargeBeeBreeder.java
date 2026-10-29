@@ -99,6 +99,20 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         return BASE_PARALLEL_STEPS << upgrades;
     }
 
+    public static int getRequiredVoltageTier(double initialChance) {
+        if (initialChance > 15D) return VoltageIndex.IV;
+        if (initialChance > 9D) return VoltageIndex.ZPM;
+        return VoltageIndex.UHV;
+    }
+
+    public static int getSpeciesVoltageTier(String species) {
+        return BeeBreedingHelper.getMutationsForUID(species)
+            .stream()
+            .mapToInt(mutation -> getRequiredVoltageTier(mutation.chance))
+            .min()
+            .orElse(BASE_VOLTAGE_TIER);
+    }
+
     private IStructureDefinition<LargeBeeBreeder> structureDefinition;
 
     @Getter
@@ -118,6 +132,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     private long lastFoundationScanTick = Long.MIN_VALUE;
     private List<FoundationRequirement> missingFoundations = Collections.emptyList();
     private boolean activeFoundationsChecked;
+    private int activeRequiredVoltageTier = BASE_VOLTAGE_TIER;
 
     @Getter
     private int pendingPrincessOutputs = 0;
@@ -268,12 +283,15 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             return CheckRecipeResultRegistry.NO_RECIPE;
         }
 
-        long eutPerAttempt = getEuPerBreedingAttempt();
-        if (mEnergyHatchTier < BASE_VOLTAGE_TIER || getMaxInputPower() < eutPerAttempt) {
-            return CheckRecipeResultRegistry.insufficientPower(eutPerAttempt);
+        if (mEnergyHatchTier < BASE_VOLTAGE_TIER) return insufficientBreedingVoltage(BASE_VOLTAGE_TIER);
+        if (speciesArchive.hasSpecies(targetBeeSpecies)) {
+            int requiredTier = getSpeciesVoltageTier(targetBeeSpecies);
+            if (mEnergyHatchTier < requiredTier) return insufficientBreedingVoltage(requiredTier);
         }
 
+        long eutPerAttempt = getEuPerBreedingAttempt();
         if (speciesArchive.hasSpecies(targetBeeSpecies)) {
+            if (getMaxInputPower() < eutPerAttempt) return CheckRecipeResultRegistry.insufficientPower(eutPerAttempt);
             ItemStack princess = BeeBreedingHelper.createPrincess(targetBeeSpecies);
             if (princess == null) {
                 allTasksBlocked = true;
@@ -289,7 +307,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         }
 
         List<BeeBreedingHelper.BreedingStep> readySteps = breedingPlan
-            .getReadySteps(speciesArchive.getSpecies(), getMaxParallelBreedingSteps());
+            .getReadySteps(speciesArchive.getSpecies(), Integer.MAX_VALUE);
         if (readySteps.isEmpty()) {
             allTasksBlocked = true;
             missingDroneSpecies = breedingPlan.getFirstMissingSpecies();
@@ -298,7 +316,17 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             return SimpleCheckRecipeResult.ofFailure("bee_breeder_missing_drone");
         }
 
-        int poweredParallels = (int) Math.min(readySteps.size(), Math.max(0L, getMaxInputPower()) / eutPerAttempt);
+        int requiredTier = readySteps.stream()
+            .mapToInt(step -> getRequiredVoltageTier(step.chance))
+            .min()
+            .orElse(BASE_VOLTAGE_TIER);
+        readySteps.removeIf(step -> mEnergyHatchTier < getRequiredVoltageTier(step.chance));
+        if (readySteps.isEmpty()) return insufficientBreedingVoltage(requiredTier);
+        if (getMaxInputPower() < eutPerAttempt) return CheckRecipeResultRegistry.insufficientPower(eutPerAttempt);
+
+        int poweredParallels = (int) Math.min(
+            Math.min(readySteps.size(), getMaxParallelBreedingSteps()),
+            Math.max(0L, getMaxInputPower()) / eutPerAttempt);
         readySteps = readySteps.subList(0, poweredParallels);
         updateMissingFoundations(readySteps);
         if (!missingFoundations.isEmpty()) {
@@ -321,26 +349,58 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         return CheckRecipeResultRegistry.SUCCESSFUL;
     }
 
+    private CheckRecipeResult insufficientBreedingVoltage(int requiredTier) {
+        allTasksBlocked = true;
+        missingDroneSpecies = "";
+        return SimpleCheckRecipeResult.ofFailure(switch (requiredTier) {
+            case VoltageIndex.ZPM -> "bee_breeder_voltage_zpm";
+            case VoltageIndex.UHV -> "bee_breeder_voltage_uhv";
+            default -> "bee_breeder_voltage_iv";
+        });
+    }
+
     private void prepareBreedingCycle(long eut) {
+        updateActiveVoltageTier();
         mMaxProgresstime = createBreedingOverclockCalculator().getDuration();
         mEfficiency = 10000;
         mEfficiencyIncrease = 10000;
         lEUt = -eut;
     }
 
+    private void updateActiveVoltageTier() {
+        activeRequiredVoltageTier = BASE_VOLTAGE_TIER;
+        if (activeOperation == OPERATION_OUTPUT) {
+            String outputSpecies = mOutputItems != null && mOutputItems.length > 0
+                ? BeeBreedingHelper.getBeeUID(mOutputItems[0])
+                : targetBeeSpecies;
+            activeRequiredVoltageTier = getSpeciesVoltageTier(outputSpecies);
+        }
+        for (BreedingAttempt attempt : activeBreedingBatch) {
+            activeRequiredVoltageTier = Math
+                .max(activeRequiredVoltageTier, getRequiredVoltageTier(attempt.step.chance));
+        }
+    }
+
     @Override
     public boolean onRunningTick(ItemStack stack) {
+        if (mEnergyHatchTier < activeRequiredVoltageTier) {
+            checkRecipeResult = insufficientBreedingVoltage(activeRequiredVoltageTier);
+            return false;
+        }
         if (activeOperation == OPERATION_BREEDING) {
             if (!activeFoundationsChecked) {
                 List<BeeBreedingHelper.BreedingStep> active = new ArrayList<>(activeBreedingBatch.size());
                 for (BreedingAttempt attempt : activeBreedingBatch) active.add(attempt.step);
                 updateMissingFoundations(active);
                 activeFoundationsChecked = true;
-                checkRecipeResult = missingFoundations.isEmpty() ? CheckRecipeResultRegistry.SUCCESSFUL
-                    : SimpleCheckRecipeResult.ofFailure("bee_breeder_missing_foundation");
             }
-            if (!missingFoundations.isEmpty()) return false;
+            if (!missingFoundations.isEmpty()) {
+                checkRecipeResult = SimpleCheckRecipeResult.ofFailure("bee_breeder_missing_foundation");
+                return false;
+            }
         }
+        checkRecipeResult = CheckRecipeResultRegistry.SUCCESSFUL;
+        allTasksBlocked = false;
         return super.onRunningTick(stack);
     }
 
@@ -711,6 +771,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             if (attempt != null) activeBreedingBatch.add(attempt);
         }
         if (activeOperation != OPERATION_BREEDING) activeBreedingBatch.clear();
+        updateActiveVoltageTier();
 
         breedingPlan = BeeBreedingPlanner.Plan.empty(targetBeeSpecies);
         breedingPlanDirty = true;
@@ -729,6 +790,10 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     @Override
     public int getMaxParallelRecipes() {
         return getMaxParallelBreedingSteps();
+    }
+
+    public int getBreedingVoltageTier() {
+        return mEnergyHatchTier;
     }
 
     public int getMaxParallelBreedingSteps() {

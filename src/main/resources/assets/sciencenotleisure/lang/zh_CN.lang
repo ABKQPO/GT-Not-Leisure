@@ -38,6 +38,9 @@ GT5U.gui.text.recipe_result.crash=§4很抱歉，你的机器出现了一些问�
 GT5U.gui.text.recipe_result.bee_breeder_unreachable_target=当前物种档案无法到达目标品种！
 GT5U.gui.text.recipe_result.bee_breeder_missing_drone=物种档案中缺少必要亲本！
 GT5U.gui.text.recipe_result.bee_breeder_missing_foundation=缺少杂交基石，等待补充。
+GT5U.gui.text.recipe_result.bee_breeder_voltage_iv=电压不足，需要 IV，等待升级供电。
+GT5U.gui.text.recipe_result.bee_breeder_voltage_zpm=电压不足，需要 ZPM，等待升级供电。
+GT5U.gui.text.recipe_result.bee_breeder_voltage_uhv=电压不足，需要 UHV，等待升级供电。
 
 gtnl.gui.config.general=GTNL 总览配置
 gtnl.gui.config.general.client=客户端设置
@@ -857,6 +860,8 @@ gtnl.bee_breeder.required_foundation=所需基石：%s
 gtnl.bee_breeder.foundation_unavailable=没有已注册的基石物品
 gtnl.bee_breeder.active=正在杂交
 gtnl.bee_breeder.chance=杂交成功率：%.1f%%
+gtnl.bee_breeder.required_voltage=需要电压：%s
+gtnl.bee_breeder.low_voltage=当前电压不足
 
 gtnl.machine.quantum_computer.name=量子计算机
 gtnl.machine.quantum_computer.recipe_type=CPU
