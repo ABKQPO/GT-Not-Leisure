@@ -334,6 +334,8 @@ public enum ModsItemlist {
     ChiselBlackHempcrete(Mods.Chisel.ID, "hempcrete", 15),
     // 橙色羊毛黏土
     ChiselOrangeWoolenClay(Mods.Chisel.ID, "woolen_clay", 1),
+    // 棕色羊毛黏土
+    ChiselBrownWoolenClay(Mods.Chisel.ID, "woolen_clay", 12),
 
     // 创造模式内存
     ComputronicsOCSpecialParts(Mods.Computronics.ID, "computronics.ocSpecialParts", 0),
@@ -469,6 +471,8 @@ public enum ModsItemlist {
     EtFuturumRequiemBlueIce(Mods.EtFuturumRequiem.ID, "blue_ice", 0),
     // 深板岩圆石
     EtFuturumRequiemCobbledDeepslate(Mods.EtFuturumRequiem.ID, "cobbled_deepslate", 0),
+    // 橙色混凝土
+    EtFuturumRequiemOrangeConcrete(Mods.EtFuturumRequiem.ID, "concrete", 1),
     // 棕色混凝土
     EtFuturumRequiemBrownConcrete(Mods.EtFuturumRequiem.ID, "concrete", 12),
     // 深板岩

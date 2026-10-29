@@ -29,7 +29,6 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -194,8 +193,8 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
                 .addElement('C', ofStructureBlock(ModsItemlist.ChiselBrownHempcrete))
                 .addElement('D', ofStructureBlock(ModsItemlist.ChiselBlackHempcrete))
                 .addElement('E', ofStructureBlock(ModsItemlist.ChiselOrangeWoolenClay))
-                .addElement('F', ofBlock(Blocks.wool, 1))
-                .addElement('G', ofBlock(Blocks.wool, 12))
+                .addElement('F', ofStructureBlock(ModsItemlist.ChiselBrownWoolenClay))
+                .addElement('G', ofStructureBlock(ModsItemlist.EtFuturumRequiemOrangeConcrete))
                 .addElement('H', ofStructureBlock(ModsItemlist.EtFuturumRequiemBrownConcrete))
                 .addElement('I', ofStructureBlock(ModsItemlist.ExtraUtilitiesLightBlueLapisCaelestis))
                 .addElement(
