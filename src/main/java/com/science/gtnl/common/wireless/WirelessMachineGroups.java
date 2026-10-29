@@ -3,12 +3,14 @@ package com.science.gtnl.common.wireless;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.mixinHelper.IInterfaceNameHatch;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 
@@ -27,16 +29,24 @@ public class WirelessMachineGroups {
 
     public static class Startup {
 
+        public static final long TIMEOUT_NANOS = TimeUnit.SECONDS.toNanos(10);
+        private static final int REPORTED_CONTROLLERS = 8;
         private final Set<World> inspected = new ReferenceOpenHashSet<>();
         private final List<MTEMultiBlockBase> pending = new ObjectArrayList<>();
         private boolean finished;
+        private long deadline;
 
         boolean waiting(List<IWirelessLinkView> links) {
+            return waiting(links, System.nanoTime());
+        }
+
+        boolean waiting(List<IWirelessLinkView> links, long now) {
             if (finished) return false;
             for (IWirelessLinkView link : links) {
                 World world = link.node()
                     .getWorld();
                 if (world == null || !inspected.add(world)) continue;
+                deadline = now + TIMEOUT_NANOS;
                 // Ownership is rebuilt by GT's first structure check, independently of AE node readiness.
                 for (Object tile : world.loadedTileEntityList) {
                     if (tile instanceof IGregTechTileEntity base
@@ -48,8 +58,34 @@ public class WirelessMachineGroups {
             pending.removeIf(
                 controller -> controller.getmStartUpCheck() <= 0 || controller.mMachine
                     || !loadedController(controller));
+            // A controller that is not ticking never finishes its first check; the view must still open.
+            if (!pending.isEmpty() && now - deadline >= 0) giveUp();
             finished = !inspected.isEmpty() && pending.isEmpty();
             return !pending.isEmpty();
+        }
+
+        private void giveUp() {
+            StringBuilder stuck = new StringBuilder();
+            for (MTEMultiBlockBase controller : pending.subList(0, Math.min(REPORTED_CONTROLLERS, pending.size()))) {
+                var base = controller.getBaseMetaTileEntity();
+                stuck.append("\n  ")
+                    .append(
+                        controller.getClass()
+                            .getName());
+                if (base != null) stuck.append(" D")
+                    .append(base.getWorld() == null ? "?" : base.getWorld().provider.dimensionId)
+                    .append(' ')
+                    .append(base.getXCoord())
+                    .append(',')
+                    .append(base.getYCoord())
+                    .append(',')
+                    .append(base.getZCoord());
+                stuck.append(" startUpCheck=")
+                    .append(controller.getmStartUpCheck());
+            }
+            ScienceNotLeisure.LOG
+                .warn("Wireless card view stopped waiting for {} multiblock controllers:{}", pending.size(), stuck);
+            pending.clear();
         }
     }
 

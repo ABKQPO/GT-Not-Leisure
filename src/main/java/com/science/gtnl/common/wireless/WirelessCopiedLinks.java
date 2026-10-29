@@ -47,9 +47,9 @@ public class WirelessCopiedLinks {
     private static int claimBudget;
     private static long ticks;
 
-    public record CopiedLink(Address source, Class<? extends IPart> partType, Item partItem, int partDamage) {
+    public record CopiedLink(WirelessFrequency source, Class<? extends IPart> partType, Item partItem, int partDamage) {
 
-        static CopiedLink capture(Address source, IPart part) {
+        static CopiedLink capture(WirelessFrequency source, IPart part) {
             if (part == null) return new CopiedLink(source, null, null, 0);
             ItemStack stack = part.getItemStack(PartItemStack.Wrench);
             return stack == null || stack.getItem() == null ? null
@@ -70,11 +70,11 @@ public class WirelessCopiedLinks {
         public final Address position;
         public final WeakReference<TileEntity> tile;
         public final WeakReference<IPart> part;
-        public final Address source;
+        public final WirelessFrequency source;
         public long expires = Long.MAX_VALUE;
         public boolean done;
 
-        Pending(UUID player, Address position, TileEntity tile, IPart part, Address source) {
+        Pending(UUID player, Address position, TileEntity tile, IPart part, WirelessFrequency source) {
             this.player = player;
             this.position = position;
             this.tile = new WeakReference<>(tile);
@@ -106,7 +106,8 @@ public class WirelessCopiedLinks {
         if (!(tile instanceof IWirelessTileData data) || !data.gtnl$hasWirelessData()
             || tile.getWorldObj() == null
             || tile.getWorldObj().isRemote) return null;
-        Map<ForgeDirection, Address> frequencies = frequencies(WirelessLinkData.read(data.gtnl$wirelessData()));
+        Map<ForgeDirection, WirelessFrequency> frequencies = frequencies(
+            WirelessLinkData.read(data.gtnl$wirelessData()));
         if (frequencies == null) return null;
         Map<ForgeDirection, CopiedLink> links = new EnumMap<>(ForgeDirection.class);
         frequencies.forEach((side, source) -> {
@@ -121,17 +122,18 @@ public class WirelessCopiedLinks {
         return links.isEmpty() ? null : Map.copyOf(links);
     }
 
-    static Map<ForgeDirection, Address> frequencies(Map<Slot, Claim> claims) {
-        Map<ForgeDirection, Address> links = new EnumMap<>(ForgeDirection.class);
+    static Map<ForgeDirection, WirelessFrequency> frequencies(Map<Slot, Claim> claims) {
+        Map<ForgeDirection, WirelessFrequency> links = new EnumMap<>(ForgeDirection.class);
         for (var entry : claims.entrySet()) {
-            Set<Address> frequencies = entry.getValue()
+            Set<WirelessFrequency> frequencies = entry.getValue()
                 .frequencies();
             if (!entry.getKey()
                 .external() && frequencies.size() == 1) links.put(
                     entry.getKey()
                         .side(),
-                    frequencies.iterator()
-                        .next());
+                    WirelessFrequencies.upgrade(
+                        frequencies.iterator()
+                            .next()));
         }
         return links.isEmpty() ? null : Map.copyOf(links);
     }
@@ -174,7 +176,7 @@ public class WirelessCopiedLinks {
         }
     }
 
-    static boolean enqueue(UUID player, Address position, TileEntity tile, IPart part, Address source) {
+    static boolean enqueue(UUID player, Address position, TileEntity tile, IPart part, WirelessFrequency source) {
         if (waiting >= MAX_PENDING || PLAYER_WAITING.getInt(player) >= MAX_PENDING_PER_PLAYER) return false;
         Pending pending = new Pending(player, position, tile, part, source);
         QUEUE.enqueue(pending);
@@ -189,7 +191,7 @@ public class WirelessCopiedLinks {
         return waiting;
     }
 
-    static boolean clusterAgrees(Address source, List<Address> nodes) {
+    static boolean clusterAgrees(WirelessFrequency source, List<Address> nodes) {
         return agree(source, waitingAt(nodes));
     }
 
@@ -206,9 +208,9 @@ public class WirelessCopiedLinks {
         return new ObjectArrayList<>(group);
     }
 
-    private static boolean agree(Address source, List<Pending> group) {
+    private static boolean agree(WirelessFrequency source, List<Pending> group) {
         for (Pending other : group) {
-            if (!WirelessChannelManager.sameSource(other.source, source)) return false;
+            if (!WirelessFrequencies.same(other.source, source)) return false;
         }
         return true;
     }
@@ -266,7 +268,7 @@ public class WirelessCopiedLinks {
                     .filter(other -> other.player.equals(pending.player))
                     .forEach(WirelessCopiedLinks::finish);
             }
-            case APPLIED -> WirelessAutoConnect.notice(player, "copy_linked");
+            case APPLIED -> WirelessAutoConnect.hint(player, "copy_linked");
             case DENIED -> WirelessAutoConnect.notice(player, "denied");
             case UNAVAILABLE -> WirelessAutoConnect.notice(player, "copy_unavailable");
             default -> {}

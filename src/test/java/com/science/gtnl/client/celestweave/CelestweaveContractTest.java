@@ -10,6 +10,8 @@ import com.gtnllib.GTNLLibContractTest;
 import com.science.gtnl.client.portalgun.PortalGunContracts;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme;
 import com.science.gtnl.common.wireless.WirelessAutoConnectContracts;
+import com.science.gtnl.common.wireless.WirelessCardViewContracts;
+import com.science.gtnl.common.wireless.WirelessFrequencyContracts;
 import com.science.gtnl.common.wireless.WirelessMatterManipulatorContracts;
 import com.science.gtnl.common.yogsothoth.YogSothothContracts;
 import com.science.gtnl.utils.world.steam.GlobalSteamSaveContracts;
@@ -40,6 +42,8 @@ public class CelestweaveContractTest {
         EquipmentResourceContracts.run();
         WirelessMatterManipulatorContracts.run();
         WirelessAutoConnectContracts.run();
+        WirelessFrequencyContracts.run();
+        WirelessCardViewContracts.run();
         GlobalSteamSaveContracts.run();
         GTNLLibContractTest.finish("Celestweave");
     }

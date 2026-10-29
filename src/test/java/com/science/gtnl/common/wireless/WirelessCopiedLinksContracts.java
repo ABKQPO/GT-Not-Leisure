@@ -34,7 +34,8 @@ import cpw.mods.fml.common.registry.RegistryDelegate;
 public class WirelessCopiedLinksContracts {
 
     private static final UUID PLAYER = UUID.randomUUID();
-    private static final Address A = position(1000), B = position(2000);
+    private static final WirelessFrequency A = WirelessFrequency.of(new UUID(0, 1000)),
+        B = WirelessFrequency.of(new UUID(0, 2000));
 
     public static void run() throws ReflectiveOperationException {
         try (Fixture fixture = new Fixture()) {
@@ -49,7 +50,7 @@ public class WirelessCopiedLinksContracts {
         field(Item.class, "delegate").set(item, new RegistryDelegate.Delegate<>(item, Item.class));
         ItemStack card = new ItemStack(item);
         card.setTagCompound(new NBTTagCompound());
-        new WirelessCardBinding(A, PLAYER, "owner").write(card.getTagCompound());
+        new WirelessCardBinding(A, position(1000), null, PLAYER, "owner").write(card.getTagCompound());
         check(
             WirelessCardInventory.hasBoundCard(PLAYER, A, List.of(card)),
             "a personally bound card authorizes restoration even with automatic mode off");
@@ -219,7 +220,7 @@ public class WirelessCopiedLinksContracts {
         @Override
         public void close() {
             WirelessCopiedLinks.clear();
-            WirelessChannelManager.invalidateControllerSources();
+            WirelessChannelManager.invalidateFrequencies();
             if (previous == null) worlds.remove(0);
             else worlds.put(0, previous);
         }
@@ -276,6 +277,11 @@ public class WirelessCopiedLinksContracts {
         @Override
         public boolean gtnl$hasWirelessData() {
             return data.hasKey(KEY, 10);
+        }
+
+        @Override
+        public boolean gtnl$hasFrequencyData() {
+            return data.hasKey(FREQUENCY_KEY, 10);
         }
 
         // Keep the vanilla identity lifecycle without requiring an initialized AE runtime.

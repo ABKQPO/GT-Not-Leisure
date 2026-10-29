@@ -2,17 +2,19 @@ package com.science.gtnl.common.wireless;
 
 import java.util.UUID;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.gtnhlib.item.ItemStackNBT;
 import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 
-public record WirelessCardBinding(Address source, UUID owner, String ownerName) {
+public record WirelessCardBinding(WirelessFrequency frequency, Address location, UUID creator, UUID owner,
+    String ownerName) {
 
     private static final String KEY = "GTNLWirelessCard";
-    private static final int VERSION = 1;
+    private static final int LEGACY_VERSION = 1;
+    private static final int VERSION = 2;
     private static final String AUTO_KEY = "GTNLWirelessAutoConnect";
     private static final String GROUP_KEY = "GTNLWirelessCollapseTypes";
     private static final String ID_KEY = "GTNLWirelessCardIdentity";
@@ -57,34 +59,32 @@ public record WirelessCardBinding(Address source, UUID owner, String ownerName) 
     public static WirelessCardBinding read(NBTTagCompound itemTag) {
         if (itemTag == null || !itemTag.hasKey(KEY, 10)) return null;
         NBTTagCompound data = itemTag.getCompoundTag(KEY);
-        if (!data.hasKey("version", 3) || data.getInteger("version") != VERSION
-            || !data.hasKey("dimension", 3)
-            || !data.hasKey("x", 3)
-            || !data.hasKey("y", 3)
-            || !data.hasKey("z", 3)
-            || !data.hasKey("owner", 8)) return null;
-        try {
-            return new WirelessCardBinding(
-                new Address(
-                    data.getInteger("dimension"),
-                    data.getInteger("x"),
-                    data.getInteger("y"),
-                    data.getInteger("z"),
-                    ForgeDirection.UNKNOWN),
-                UUID.fromString(data.getString("owner")),
-                data.getString("ownerName"));
-        } catch (IllegalArgumentException invalidOwner) {
-            return null;
-        }
+        int version = data.getInteger("version");
+        Address location = WirelessLinkData.readPosition(data);
+        UUID owner = WirelessFrequencies.uuid(data, "owner");
+        if (!data.hasKey("version", 3) || location == null || owner == null) return null;
+        WirelessFrequency frequency;
+        if (version == LEGACY_VERSION) frequency = WirelessFrequency.legacy(location);
+        else if (version == VERSION && WirelessFrequencies.uuid(data, "frequency") != null)
+            frequency = WirelessFrequency.of(WirelessFrequencies.uuid(data, "frequency"));
+        else return null;
+        return new WirelessCardBinding(
+            frequency,
+            location,
+            WirelessFrequencies.uuid(data, "creator"),
+            owner,
+            data.getString("ownerName"));
     }
 
     public void write(NBTTagCompound itemTag) {
-        NBTTagCompound data = new NBTTagCompound();
-        data.setInteger("version", VERSION);
-        data.setInteger("dimension", source.dimension());
-        data.setInteger("x", source.x());
-        data.setInteger("y", source.y());
-        data.setInteger("z", source.z());
+        NBTTagCompound data = WirelessLinkData
+            .writePosition(new NBTTagCompound(), frequency.isLegacy() ? frequency.legacy() : location);
+        data.setInteger("version", frequency.isLegacy() ? LEGACY_VERSION : VERSION);
+        if (!frequency.isLegacy()) data.setString(
+            "frequency",
+            frequency.id()
+                .toString());
+        if (creator != null) data.setString("creator", creator.toString());
         data.setString("owner", owner.toString());
         data.setString("ownerName", ownerName);
         itemTag.setTag(KEY, data);
@@ -96,5 +96,22 @@ public record WirelessCardBinding(Address source, UUID owner, String ownerName) 
 
     public boolean belongsTo(UUID player) {
         return owner.equals(player);
+    }
+
+    public static boolean upgrade(ItemStack card, EntityPlayer holder) {
+        WirelessCardBinding binding = read(card.getTagCompound());
+        if (binding == null || !binding.frequency()
+            .isLegacy()) return false;
+        WirelessFrequency frequency = WirelessFrequencies.upgrade(binding.frequency());
+        if (frequency.isLegacy()) return false;
+        Address controller = WirelessFrequencies.controller(frequency);
+        new WirelessCardBinding(
+            frequency,
+            controller == null ? binding.location() : controller,
+            WirelessFrequencies.creator(frequency),
+            binding.owner(),
+            binding.ownerName()).write(card.getTagCompound());
+        WirelessCardInventory.sync(holder, card);
+        return true;
     }
 }

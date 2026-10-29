@@ -23,7 +23,9 @@ import com.science.gtnl.common.wireless.WirelessChannelManager.Address;
 public class WirelessAutoConnectContracts {
 
     private static final WirelessCardBinding BINDING = new WirelessCardBinding(
+        WirelessFrequency.of(new UUID(0, 100)),
         new Address(0, 100, 64, 100, ForgeDirection.UNKNOWN),
+        null,
         UUID.randomUUID(),
         "review");
 
@@ -117,10 +119,16 @@ public class WirelessAutoConnectContracts {
                             .copy());
                 }
                 case 2 -> replacement.setItemDamage(1);
-                case 3 -> new WirelessCardBinding(BINDING.source(), UUID.randomUUID(), "other")
-                    .write(replacement.getTagCompound());
+                case 3 -> new WirelessCardBinding(
+                    BINDING.frequency(),
+                    BINDING.location(),
+                    null,
+                    UUID.randomUUID(),
+                    "other").write(replacement.getTagCompound());
                 case 4 -> new WirelessCardBinding(
-                    new Address(0, 200, 64, 100, ForgeDirection.UNKNOWN),
+                    WirelessFrequency.of(new UUID(0, 200)),
+                    BINDING.location(),
+                    null,
                     BINDING.owner(),
                     "review").write(replacement.getTagCompound());
                 case 5 -> WirelessCardBinding.toggleAutomatic(replacement);

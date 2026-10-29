@@ -81,7 +81,7 @@ public abstract class EternalGregTechWorkshopModule extends MultiMachineBase<Ete
     private static final IStructureDefinition<EternalGregTechWorkshopModule> STRUCTURE_DEFINITION = StructureDefinition
         .<EternalGregTechWorkshopModule>builder()
         .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-        .addElement('A', StructureUtility.ofBlock(ItemRegistry.bw_realglas2, 0))
+        .addElement('A', StructureUtility.ofBlock(ItemRegistry.bw_realglas, 6))
         .addElement('B', StructureUtility.ofBlock(Loaders.componentAssemblylineCasing, 12))
         .addElement('C', Casings.DimensionalInjectionCasing.asElement())
         .addElement('D', Casings.DimensionalBridge.asElement())

@@ -8,8 +8,6 @@ public class WirelessCardActions {
     public static final int REFRESH = 3;
     public static final int BACK = 4;
     public static final int RENAME = 5;
-    public static final int APPLY_FILTER = 6;
-    public static final int CYCLE_FILTER = 7;
     public static final int CYCLE_VISUALISATION = 9;
 
     public static final int TOGGLE_PAUSE = 10;
@@ -19,6 +17,7 @@ public class WirelessCardActions {
     public static final int TELEPORT = 50;
     public static final int CLOSE_DETAILS = 60;
     public static final int TOGGLE_GROUPING = 61;
+    public static final int SET_VISUALISATION = 62;
     private static final int ROW_STRIDE = 10;
 
     public static int type(int id) {
