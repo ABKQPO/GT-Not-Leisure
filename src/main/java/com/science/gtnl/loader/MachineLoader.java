@@ -2190,9 +2190,9 @@ public class MachineLoader {
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.IndustrialCrucible.get(1), AnimatedText.GT_NOT_LEISURE);
         AnimatedTooltipHandler.addItemTooltip(GTNLItemList.IndustrialCrucible.get(1), AnimatedText.AUTHOR_LINEBROKE);
 
-        ItemStack beeCasing = ModsItemlist.ChiselYellowHempcrete.get(1);
+        ItemStack beeCasing = ModsItemlist.VillageNamesYellowConcrete.get(1);
         Textures.BlockIcons.setCasingTextureForId(
-            GTNLCasings.YellowHempcrete.getTextureId(),
+            GTNLCasings.YellowConcrete.getTextureId(),
             beeCasing != null && beeCasing.getItem() instanceof ItemBlock
                 ? TextureFactory.of(Block.getBlockFromItem(beeCasing.getItem()), beeCasing.getItemDamage())
                 : Textures.BlockIcons.getCasingTextureForId(10));

@@ -16,6 +16,7 @@ import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE_GLOW;
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_GLOW;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
+import static gregtech.api.util.GTStructureUtility.chainAllGlasses;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +29,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -74,6 +76,7 @@ import lombok.Getter;
 public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
 
     private static final long BASE_EUT_PER_BREEDING = 400L;
+    private static final long EUT_PER_GLASS_TIER = 400L;
 
     private static final int TICKS_PER_BREEDING = 64;
     private static final int INPUT_SCAN_INTERVAL = 100;
@@ -186,19 +189,26 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         if (structureDefinition == null) {
             structureDefinition = StructureDefinition.<LargeBeeBreeder>builder()
                 .addShape(STRUCTURE_PIECE_MAIN, transpose(SHAPE))
+                .addElement('A', chainAllGlasses(-1, (te, t) -> te.mGlassTier = t, te -> te.mGlassTier))
+                .addElement('B', ofStructureBlock(ModsItemlist.ChiselYellowHempcrete))
+                .addElement('C', ofStructureBlock(ModsItemlist.ChiselBrownHempcrete))
+                .addElement('D', ofStructureBlock(ModsItemlist.ChiselBlackHempcrete))
+                .addElement('E', ofStructureBlock(ModsItemlist.ChiselOrangeWoolenClay))
+                .addElement('F', ofBlock(Blocks.wool, 1))
+                .addElement('G', ofBlock(Blocks.wool, 12))
+                .addElement('H', ofStructureBlock(ModsItemlist.EtFuturumRequiemBrownConcrete))
+                .addElement('I', ofStructureBlock(ModsItemlist.ExtraUtilitiesLightBlueLapisCaelestis))
                 .addElement(
-                    'A',
+                    'J',
                     ofChain(
                         buildHatchAdder(LargeBeeBreeder.class)
                             .atLeast(InputBus, OutputBus, Energy.or(ExoticEnergy), Maintenance)
                             .casingIndex(getCasingTextureID())
                             .hint(1)
                             .buildAndChain(),
-                        onElementPass(x -> ++x.mCountCasing, ofStructureBlock(ModsItemlist.ChiselYellowHempcrete))))
-                .addElement('B', ofStructureBlock(ModsItemlist.ChiselLightGrayHempcrete))
-                .addElement('C', ofStructureBlock(ModsItemlist.ChiselBlackHempcrete))
-                .addElement('D', ofStructureBlock(ModsItemlist.EtFuturumRequiemOrangeConcrete))
-                .addElement('E', ofStructureBlock(ModsItemlist.EtFuturumRequiemBrownConcrete))
+                        onElementPass(
+                            x -> ++x.mCountCasing,
+                            ofStructureBlock(ModsItemlist.VillageNamesYellowConcrete))))
                 .build();
         }
         return structureDefinition;
@@ -233,6 +243,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     @Override
     public void checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack, List<StructureError> errors) {
         mCountCasing = 0;
+        mGlassTier = -1;
         if (!checkPiece(STRUCTURE_PIECE_MAIN, HORIZONTAL_OFFSET, VERTICAL_OFFSET, DEPTH_OFFSET, errors)) return;
         setupParameters();
         checkHatch(errors);
@@ -571,7 +582,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
 
     @Override
     public int getCasingTextureID() {
-        return GTNLCasings.YellowHempcrete.getTextureId();
+        return GTNLCasings.YellowConcrete.getTextureId();
     }
 
     @Override
@@ -603,6 +614,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         Map<String, Object> values = new LinkedHashMap<>();
         values.put("attemptSeconds", TICKS_PER_BREEDING / 20D);
         values.put("baseEu", BASE_EUT_PER_BREEDING);
+        values.put("glassEu", EUT_PER_GLASS_TIER);
         return values;
     }
 
@@ -739,11 +751,12 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     }
 
     private long getEnergyCostPerTick(int parallelAttempts) {
-        return BASE_EUT_PER_BREEDING * Math.max(0, parallelAttempts);
+        long eutPerAttempt = BASE_EUT_PER_BREEDING + (long) Math.max(0, mGlassTier) * EUT_PER_GLASS_TIER;
+        return eutPerAttempt * Math.max(0, parallelAttempts);
     }
 
     public int getMutationChanceBonus() {
-        return hasStainlessSteelGear ? 2 : 0;
+        return (hasStainlessSteelGear ? 2 : 0) + Math.max(0, mGlassTier);
     }
 
     @Override
