@@ -53,8 +53,6 @@ import com.science.gtnl.utils.machine.bee.BeeSpeciesArchive;
 import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import forestry.api.apiculture.IAlleleBeeSpecies;
-import gregtech.api.enums.Materials;
-import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.Textures;
 import gregtech.api.enums.VoltageIndex;
 import gregtech.api.interfaces.ITexture;
@@ -65,7 +63,6 @@ import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.recipe.check.SimpleCheckRecipeResult;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.structure.error.StructureError;
-import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import lombok.Getter;
@@ -99,7 +96,6 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         return BASE_PARALLEL_STEPS << upgrades;
     }
 
-    private boolean hasStainlessSteelGear;
     private IStructureDefinition<LargeBeeBreeder> structureDefinition;
 
     @Getter
@@ -167,10 +163,6 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         }
         super.onPostTick(aBaseMetaTileEntity, aTick);
         if (aBaseMetaTileEntity.isServerSide() && aTick % INPUT_SCAN_INTERVAL == 0) {
-            boolean gearBefore = hasStainlessSteelGear;
-            hasStainlessSteelGear = checkStainlessSteelGear(getControllerSlot());
-            if (gearBefore != hasStainlessSteelGear) markBreedingChanged();
-
             if (mMachine) {
                 startRecipeProcessing();
                 try {
@@ -251,7 +243,6 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         checkHatchMin(errors, OutputBus, 1);
         checkHatchMin(errors, Energy.or(ExoticEnergy), 1);
         if (shouldCheckMaintenance()) checkHatchMin(errors, Maintenance, 1);
-        hasStainlessSteelGear = checkStainlessSteelGear(getControllerSlot());
 
         markBreedingChanged();
     }
@@ -546,11 +537,6 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         return Collections.unmodifiableList(missingFoundations);
     }
 
-    private boolean checkStainlessSteelGear(ItemStack stack) {
-        if (stack == null) return false;
-        return stack.isItemEqual(GTOreDictUnificator.get(OrePrefixes.gearGt, Materials.StainlessSteel, 1L));
-    }
-
     @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
         int colorIndex, boolean aActive, boolean redstoneLevel) {
@@ -755,7 +741,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     }
 
     public int getMutationChanceBonus() {
-        return (hasStainlessSteelGear ? 2 : 0) + Math.max(0, mGlassTier);
+        return Math.max(0, mGlassTier);
     }
 
     @Override

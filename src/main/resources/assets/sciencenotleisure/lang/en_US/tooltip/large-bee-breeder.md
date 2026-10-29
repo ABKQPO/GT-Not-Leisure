@@ -5,7 +5,6 @@ Base success chance follows Forestry mutation chances
 Requires the original mutation foundations in input buses; checks every 10 seconds without consuming them
 Missing foundations pause breeding without disabling the machine; supplying them resumes it automatically
 Each glass tier adds 1% to success chance
-A Stainless Steel Gear in the controller adds 2% to success chance
 
 Each parallel breeding attempt takes {var:attemptSeconds} seconds
 The LV base parallel limit is {var:parallels}; each voltage tier doubles the limit
