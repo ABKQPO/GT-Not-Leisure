@@ -6,7 +6,7 @@ Requires the original mutation foundations in input buses; checks every 10 secon
 Missing foundations pause breeding without disabling the machine; supplying them resumes it automatically
 
 Starts with {var:parallels} parallel, {var:attemptSeconds} seconds per attempt and {var:baseEu} EU/t per parallel
-Requires LuV; each higher voltage tier doubles the parallel limit
+Requires IV; each higher voltage tier doubles the parallel limit
 Each overclock uses 4 times the EU/t per parallel and halves breeding time
 Starting from HV glass, each higher glass tier doubles EU/t and adds {var:glassChance}% success chance
 Runs fewer parallels when power is limited; waits if there is not enough power for one

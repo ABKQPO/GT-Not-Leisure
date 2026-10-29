@@ -72,8 +72,8 @@ import lombok.Getter;
 @IMetaTileEntity.SkipGenerateName
 public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
 
-    private static final long BASE_EUT_PER_BREEDING = 32768L;
-    private static final int BASE_VOLTAGE_TIER = VoltageIndex.LuV;
+    private static final long BASE_EUT_PER_BREEDING = 8192L;
+    private static final int BASE_VOLTAGE_TIER = VoltageIndex.IV;
     private static final int BASE_GLASS_TIER = VoltageIndex.HV;
     private static final int CHANCE_PER_GLASS_TIER = 2;
 
