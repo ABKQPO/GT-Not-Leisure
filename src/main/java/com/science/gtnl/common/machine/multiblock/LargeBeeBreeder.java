@@ -50,6 +50,7 @@ import com.science.gtnl.utils.machine.bee.BeeBreedingHelper;
 import com.science.gtnl.utils.machine.bee.BeeBreedingHelper.FoundationRequirement;
 import com.science.gtnl.utils.machine.bee.BeeBreedingPlanner;
 import com.science.gtnl.utils.machine.bee.BeeSpeciesArchive;
+import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
 
 import forestry.api.apiculture.IAlleleBeeSpecies;
@@ -71,10 +72,12 @@ import lombok.Getter;
 @IMetaTileEntity.SkipGenerateName
 public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
 
-    private static final long BASE_EUT_PER_BREEDING = 400L;
-    private static final long EUT_PER_GLASS_TIER = 400L;
+    private static final long BASE_EUT_PER_BREEDING = 32768L;
+    private static final int BASE_VOLTAGE_TIER = VoltageIndex.LuV;
+    private static final int BASE_GLASS_TIER = VoltageIndex.HV;
+    private static final int CHANCE_PER_GLASS_TIER = 2;
 
-    private static final int TICKS_PER_BREEDING = 64;
+    private static final int TICKS_PER_BREEDING = 32 * 20;
     private static final int INPUT_SCAN_INTERVAL = 100;
     private static final int FOUNDATION_SCAN_INTERVAL = 200;
     private static final int BASE_PARALLEL_STEPS = 1;
@@ -92,7 +95,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     private static final String[][] SHAPE = StructureUtils.readStructureFromFile(STRUCTURE_FILE_PATH);
 
     private static int getParallelForVoltageTier(int voltageTier) {
-        int upgrades = Math.max(0, Math.min(voltageTier, VoltageIndex.MAX) - VoltageIndex.LV);
+        int upgrades = Math.max(0, Math.min(voltageTier, VoltageIndex.MAX) - BASE_VOLTAGE_TIER);
         return BASE_PARALLEL_STEPS << upgrades;
     }
 
@@ -265,6 +268,11 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             return CheckRecipeResultRegistry.NO_RECIPE;
         }
 
+        long eutPerAttempt = getEuPerBreedingAttempt();
+        if (mEnergyHatchTier < BASE_VOLTAGE_TIER || getMaxInputPower() < eutPerAttempt) {
+            return CheckRecipeResultRegistry.insufficientPower(eutPerAttempt);
+        }
+
         if (speciesArchive.hasSpecies(targetBeeSpecies)) {
             ItemStack princess = BeeBreedingHelper.createPrincess(targetBeeSpecies);
             if (princess == null) {
@@ -276,7 +284,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             ItemStack drone = BeeBreedingHelper.createDrone(targetBeeSpecies);
             mOutputItems = drone == null ? new ItemStack[] { princess } : new ItemStack[] { princess, drone };
             activeOperation = OPERATION_OUTPUT;
-            prepareBreedingCycle(0L);
+            prepareBreedingCycle(eutPerAttempt);
             return CheckRecipeResultRegistry.SUCCESSFUL;
         }
 
@@ -290,11 +298,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             return SimpleCheckRecipeResult.ofFailure("bee_breeder_missing_drone");
         }
 
-        int poweredParallels = (int) Math
-            .min(readySteps.size(), Math.max(0L, getMaxInputPower()) / getEuPerBreedingAttempt());
-        if (poweredParallels == 0) {
-            return CheckRecipeResultRegistry.insufficientPower(getEuPerBreedingAttempt());
-        }
+        int poweredParallels = (int) Math.min(readySteps.size(), Math.max(0L, getMaxInputPower()) / eutPerAttempt);
         readySteps = readySteps.subList(0, poweredParallels);
         updateMissingFoundations(readySteps);
         if (!missingFoundations.isEmpty()) {
@@ -318,7 +322,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     }
 
     private void prepareBreedingCycle(long eut) {
-        mMaxProgresstime = TICKS_PER_BREEDING;
+        mMaxProgresstime = createBreedingOverclockCalculator().getDuration();
         mEfficiency = 10000;
         mEfficiencyIncrease = 10000;
         lEUt = -eut;
@@ -599,7 +603,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         Map<String, Object> values = new LinkedHashMap<>();
         values.put("attemptSeconds", TICKS_PER_BREEDING / 20D);
         values.put("baseEu", BASE_EUT_PER_BREEDING);
-        values.put("glassEu", EUT_PER_GLASS_TIER);
+        values.put("glassChance", CHANCE_PER_GLASS_TIER);
         return values;
     }
 
@@ -736,12 +740,26 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
     }
 
     private long getEnergyCostPerTick(int parallelAttempts) {
-        long eutPerAttempt = BASE_EUT_PER_BREEDING + (long) Math.max(0, mGlassTier) * EUT_PER_GLASS_TIER;
+        long eutPerAttempt = createBreedingOverclockCalculator().getConsumption() << getGlassUpgrades();
         return eutPerAttempt * Math.max(0, parallelAttempts);
     }
 
+    private GTNLOverclockCalculator createBreedingOverclockCalculator() {
+        int voltageUpgrades = Math.max(0, Math.min(mEnergyHatchTier, VoltageIndex.MAX) - BASE_VOLTAGE_TIER);
+        return new GTNLOverclockCalculator().setRecipeEUt(BASE_EUT_PER_BREEDING)
+            .setEUt(BASE_EUT_PER_BREEDING << (2 * voltageUpgrades))
+            .setDuration(TICKS_PER_BREEDING)
+            .setEUtIncreasePerOC(4)
+            .setDurationDecreasePerOC(2)
+            .calculate();
+    }
+
+    private int getGlassUpgrades() {
+        return Math.max(0, Math.min(mGlassTier, VoltageIndex.MAX) - BASE_GLASS_TIER);
+    }
+
     public int getMutationChanceBonus() {
-        return Math.max(0, mGlassTier);
+        return getGlassUpgrades() * CHANCE_PER_GLASS_TIER;
     }
 
     @Override

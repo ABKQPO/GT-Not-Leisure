@@ -4,10 +4,10 @@ The GUI shows which bees can be bred from your current species archive
 Base success chance follows Forestry mutation chances
 Requires the original mutation foundations in input buses; checks every 10 seconds without consuming them
 Missing foundations pause breeding without disabling the machine; supplying them resumes it automatically
-Each glass tier adds 1% to success chance
 
-Each parallel breeding attempt takes {var:attemptSeconds} seconds
-The LV base parallel limit is {var:parallels}; each voltage tier doubles the limit
-Each parallel uses {var:baseEu} EU/t, plus {var:glassEu} EU/t per glass tier
-Actual parallelism is limited by input power and the number of ready breeding steps
+Starts with {var:parallels} parallel, {var:attemptSeconds} seconds per attempt and {var:baseEu} EU/t per parallel
+Requires LuV; each higher voltage tier doubles the parallel limit
+Each overclock uses 4 times the EU/t per parallel and halves breeding time
+Starting from HV glass, each higher glass tier doubles EU/t and adds {var:glassChance}% success chance
+Runs fewer parallels when power is limited; waits if there is not enough power for one
 Each input princess produces one target princess and one target drone upon completion
