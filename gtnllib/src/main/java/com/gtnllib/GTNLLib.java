@@ -41,6 +41,7 @@ public class GTNLLib {
         FMLCommonHandler.instance()
             .bus()
             .register(listener);
+        LOG.info("GTNLLib initialized");
     }
 
     @Mod.EventHandler

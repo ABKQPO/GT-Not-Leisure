@@ -182,6 +182,10 @@ Without both of the above quest mods, GTNL quests will not be injected.
 
 ## ⚠️ Installation & Update Instructions
 
+This branch builds two mods. Install the release jars for both GTNL (`sciencenotleisure-*.jar`)
+and [GTNLLib](gtnllib/README.md) (`gtnllib-*.jar`) from the same build in your mods folder.
+The `-dev`, `-sources` and `-predowngrade` jars are for development, not installation.
+
 > **IMPORTANT:** When updating `GT-Not-Leisure`, you **must** reset the configuration to prevent recipe conflicts.
 
 1.  **Backup** your save/instance.

@@ -1,5 +1,41 @@
+import org.gradle.jvm.tasks.Jar
+import org.gradle.api.services.BuildService
+import org.gradle.api.services.BuildServiceParameters
+import com.gtnewhorizons.retrofuturagradle.util.IJarOutputTask
+
 plugins {
     id("com.gtnewhorizons.gtnhconvention")
+}
+
+// RFG 2.0.6 shares mutable jar hashes between projects. Serialize only its jar chains,
+// including onlyIf predicates; other compilation, tests and packaging remain parallel.
+abstract class RfgJarChainLock : BuildService<BuildServiceParameters.None>
+val rfgJarChainLock = gradle.sharedServices.registerIfAbsent("rfgJarChainLock", RfgJarChainLock::class) {
+    maxParallelUsages.set(1)
+}
+allprojects {
+    tasks.withType<IJarOutputTask>().configureEach {
+        usesService(rfgJarChainLock)
+    }
+    // The modern run configuration inherits dependencies but not runtimeClasspath's attributes.
+    // Request complete dev jars so project dependencies include both classes and mod resources.
+    configurations.matching { it.name == "java17Dependencies" }.configureEach {
+        attributes {
+            attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
+            attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements.JAR))
+        }
+    }
+}
+
+abstract class ModuleArchiveArguments : CommandLineArgumentProvider {
+    @get:InputFile
+    abstract val host: RegularFileProperty
+
+    @get:InputFiles
+    abstract val library: ConfigurableFileCollection
+
+    override fun asArguments(): Iterable<String> =
+        listOf(host.get().asFile.absolutePath) + library.files.map { it.absolutePath }.sorted()
 }
 
 minecraft {
@@ -16,7 +52,6 @@ sourceSets.test {
 
 val contractSuites = mapOf(
     "verifyCelestweave" to "com.science.gtnl.client.celestweave.CelestweaveContractTest",
-    "verifyGTNLLib" to "com.gtnllib.GTNLLibContractTest",
     "verifyArchitecture" to "com.science.gtnl.ArchitectureContractTest",
     "verifyMachines" to "com.science.gtnl.MachineContractTest",
     "verifyWireless" to "com.science.gtnl.WirelessContractTest"
@@ -58,35 +93,68 @@ tasks.named<Test>("test") {
     failOnNoDiscoveredTests.set(false)
     dependsOn(contractSuites.keys)
     dependsOn("verifyGrandAssemblyLine")
+    dependsOn("verifyGTNLLib")
 }
 
-// Compile the embedded library without GTNL/GT classes or unrelated mod jars on its classpath.
-// Minecraft/Forge are still the convention plugin's patched output; this is not a standalone release build.
-val gtnllibBoundaryDependencies = setOf(
-    "GTNHLib", "ModularUI2", "unimixins", "NotEnoughItems", "CodeChickenCore", "Angelica",
-    // Public MUI2 signatures still inherit MUI1 handlers and expose these optional integration APIs.
-    "ModularUI", "neverenoughanimation", "lwjgl3ify",
-    "GTNHExtLib", "fastutil", "gson", "guava", "annotations", "lombok", "authlib", "netty-all",
-    "lwjgl", "lwjgl_util", "asm", "asm-tree", "asm-commons", "log4j-api", "log4j-core",
-    "launchwrapper", "jabel-stubs", "jvmdowngrader-java-api", "joml", "commons-lang3"
-)
-
-val compileGTNLLibBoundary = tasks.register<JavaCompile>("compileGTNLLibBoundary") {
+// Keep the existing verification entry points while the library owns their implementation.
+tasks.register("compileGTNLLibBoundary") {
     group = "verification"
-    description = "Compile GTNLLib against its declared library and optional integration dependencies only"
-    source(fileTree("src/main/java") { include("com/gtnllib/**/*.java") })
-    val allowedDependencies = gtnllibBoundaryDependencies.toSet()
-    classpath = sourceSets.main.get().compileClasspath.filter { dependency ->
-        dependency.extension == "jar" && allowedDependencies.any { dependency.name.startsWith("$it-") }
-    } + sourceSets["patchedMc"].output
-    destinationDirectory.set(layout.buildDirectory.dir("classes/gtnllib-boundary"))
-    javaCompiler.set(javaToolchains.compilerFor(java.toolchain))
-    // The real build validates mixins and writes its refmap. This compile must not overwrite those outputs.
-    options.compilerArgs.addAll(listOf("-processor", "lombok.launch.AnnotationProcessorHider\$AnnotationProcessor"))
+    description = "Compile GTNLLib with its own dependencies, access transformer and mixin processor"
+    dependsOn(":gtnllib:compileJava")
+}
+
+tasks.register("verifyGTNLLib") {
+    group = "verification"
+    dependsOn(":gtnllib:verifyGTNLLib")
 }
 
 tasks.named("check") {
-    dependsOn(compileGTNLLibBoundary)
+    dependsOn(":gtnllib:check")
+}
+
+val libraryDistribution = configurations.create("libraryDistribution") {
+    isCanBeConsumed = false
+    isCanBeResolved = true
+}
+
+dependencies {
+    api(project(":gtnllib"))
+    testImplementation(testFixtures(project(":gtnllib")))
+    libraryDistribution(project(path = ":gtnllib", configuration = "distribution"))
+}
+
+// Existing release workflows collect build/libs; include both mods without publishing test fixtures.
+val collectLibraryArtifacts = tasks.register("collectLibraryArtifacts") {
+    val archives = objects.fileCollection().from(libraryDistribution)
+    val destination = layout.buildDirectory.dir("libs")
+    inputs.files(archives)
+    outputs.files(archives.elements.map { files -> files.map { destination.get().file(it.asFile.name) } })
+    doLast {
+        val directory = destination.get().asFile
+        directory.mkdirs()
+        archives.files.forEach { it.copyTo(directory.resolve(it.name), overwrite = true) }
+    }
+}
+
+tasks.named("assemble") {
+    dependsOn(collectLibraryArtifacts)
+}
+
+val verifyModuleArtifacts = tasks.register<JavaExec>("verifyModuleArtifacts") {
+    group = "verification"
+    description = "Verify independent mod metadata, coremods, refmaps and multi-release class files"
+    dependsOn(tasks.testClasses, tasks.named("reobfJar"), libraryDistribution)
+    classpath = sourceSets.test.get().runtimeClasspath + sourceSets.main.get().compileClasspath
+    mainClass.set("com.science.gtnl.ModuleArtifactContracts")
+    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+    val archives = objects.newInstance<ModuleArchiveArguments>()
+    archives.host.set(tasks.named<Jar>("reobfJar").flatMap { it.archiveFile })
+    archives.library.from(libraryDistribution)
+    argumentProviders.add(archives)
+}
+
+tasks.named("check") {
+    dependsOn(verifyModuleArtifacts)
 }
 
 val runConfigs = listOf(

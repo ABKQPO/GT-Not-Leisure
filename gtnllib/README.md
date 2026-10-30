@@ -1,6 +1,6 @@
 # GTNLLib
 
-通用的 MUI2 界面、HUD、文字特效、注册器和网络包基类，模组 id `gtnllib`，包名 `com.gtnllib`。现在还放在 GTNL 的源码里预拆分，等用法稳定后拆成独立模组，由它依赖 ModularUI2。
+通用的 MUI2 界面、HUD、文字特效、注册器和网络包基类，模组 id `gtnllib`，包名 `com.gtnllib`。源码、资源和测试属于独立 Gradle 子模块 `gtnllib`；GTNL 通过项目依赖使用它。分发时需要同时安装 GTNL 与 GTNLLib 两个 jar。
 
 ## 包含什么
 
@@ -59,21 +59,29 @@ GTNLLib 是独立的 `@Mod`（`com.gtnllib.GTNLLib`），自己完成初始化�
 GTNLLib 的 mixin 在 `com.gtnllib.mixins`，登记表是 `GTNLLibMixins`，配置文件是 `mixins.gtnllib.early*.json` 和 `mixins.gtnllib.late*.json`。
 
 - late：`GTNLLibLateMixins` 带 `@LateMixin`，按注解在运行时被发现，不依赖 jar 里的 coremod；NEI 那条按可选模组登记，没装 NEI 时不加载。
-- early：`GTNLLibEarlyMixins` 实现 `IEarlyMixinLoader`。一个 jar 只能有一个 coremod，所以和 GTNL 同 jar 期间由 GTNL 的 `GTNLEarlyCoreMod` 调 `GTNLLibEarlyMixins.queueFromHost` 代为登记；拆成独立 jar 时给 GTNLLib 加一个同时实现 `IFMLLoadingPlugin` 和 `IEarlyMixinLoader`（委托给 `GTNLLibEarlyMixins`）的 coremod，并删掉 GTNL 里那一行。
-- refmap 暂时和 GTNL 共用 `mixins.sciencenotleisure.refmap.json`，拆分后改成 GTNLLib 自己生成的。
+- early：独立 jar 的 manifest 指向 `GTNLLibEarlyCoreMod`，它继承 `GTNLLibEarlyMixins` 并实现 `IFMLLoadingPlugin`，由自身登记 early mixin。
+- refmap 由模块的注解处理器生成 `mixins.gtnllib.refmap.json`，只供 GTNLLib 的配置引用。
+- `gtnllib_at.cfg` 只公开相机插值使用的 `Minecraft.timer`，模块编译和运行都使用自己的访问权限声明。
 
 ## 构建边界验证
 
-`./gradlew compileGTNLLibBoundary` 只编译 `com/gtnllib`，编译路径只包含 `build.gradle.kts`
-列出的库、可选 NEI / Angelica 对接依赖和 Minecraft / Forge。GTNL 的主类、API、构建常量及
-GregTech 等宿主依赖不在路径中。`check` / `build` 自动执行这一检查。
+`./gradlew :gtnllib:build` 独立编译、测试和打包本模块，产物在 `gtnllib/build/libs`。
+根项目的 `build/libs` 也会收集两个模组的正式包、开发包和源码包，供现有发布流程使用；测试夹具不发布。
+开发启动请指定完整任务路径：GTNL 用 `:runClient25` / `:runServer25`，仅 GTNLLib 用
+`:gtnllib:runClient25` / `:gtnllib:runServer25`，避免 Gradle 同时选择两个项目的同名启动任务。
+独立运行包含 GTNHLib、MUI2 和 MUI2 初始化所需的 Baubles Expanded；现代 Java 的启动依赖由构建插件提供。
+`gtnllib/build.gradle` 显式声明基础库和可选对接的编译依赖；GTNL、GregTech 及宿主的 Minecraft
+访问权限修改不在编译路径中。原来的 `compileGTNLLibBoundary` 入口保留为模块编译任务的别名。
 
-这一步仍使用当前工程生成的 Minecraft / Forge patched 输出，不生成独立发布 jar，也不替代
-独立 coremod、refmap 和最小模组环境的加载验证。拆包发布仍按上面的 mixin 说明另行完成。
+GTNL 的 `check` 会执行模块的检查。GTNLLib 的契约测试位于模块内，运行时也不包含 GTNL 或
+GregTech；跨模块共用的断言和主题检查放在 `src/testFixtures`，通过 Gradle 测试夹具依赖使用。
 
 契约测试入口按模块分别运行：`verifyGTNLLib`、`verifyArchitecture`、`verifyMachines`、
 `verifyWireless`、`verifyCelestweave`（装备）和 `verifyGrandAssemblyLine`。`test` 会执行全部套件，
 每个套件在独立进程中报告断言和失败，不依赖其他套件的初始化副作用。
+
+`verifyModuleArtifacts` 检查实际 jar 的模组元数据、coremod、访问权限声明、refmap、代码与资源归属、
+许可文件及多版本字节码。CI 分别启动完整 GTNL 服务器和 GTNLLib 独立服务器；前者还核对存档兼容快照。
 
 ## 第三方代码
 

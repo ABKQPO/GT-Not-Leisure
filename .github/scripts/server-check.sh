@@ -1,13 +1,24 @@
 #!/usr/bin/env bash
 # Starts the dedicated server once, stops it after it finished loading and fails on a load error or a changed
-# compat snapshot. Usage: server-check.sh <gradle run task> <run directory>
+# compat snapshot. Usage: server-check.sh <gradle run task> <run directory> [host|library]
 set -uo pipefail
 
-TASK="${1:-runServer25}"
+TASK="${1:-:runServer25}"
+# A bare task name also selects matching subproject tasks. Start exactly one server.
+[[ "$TASK" == :* ]] || TASK=":$TASK"
 RUN_DIR="${2:-run/server_new}"
+MODE="${3:-host}"
 LOG="build/server-check.log"
 SNAPSHOT="$PWD/build/compat-snapshot.txt"
 BASELINE="src/test/resources/compat/compat-snapshot.txt"
+case "$MODE" in
+  host) ;;
+  library)
+    LOG="build/library-server-check.log"
+    SNAPSHOT="$PWD/build/library-unexpected-host-snapshot.txt"
+    ;;
+  *) echo "Unknown server check mode: $MODE" >&2; exit 2 ;;
+esac
 
 mkdir -p "$RUN_DIR" build
 echo "eula=true" > "$RUN_DIR/eula.txt"
@@ -55,12 +66,21 @@ if ! grep -q 'Done (' "$LOG"; then
   echo "::error::The dedicated server did not finish loading"
   failed=1
 fi
-if grep -q -e 'Caught exception from sciencenotleisure' -e 'GTNL content loader .* failed' -e 'GTNL compat for .* failed' "$LOG"; then
+if grep -q -e 'Caught exception from sciencenotleisure' -e 'Caught exception from gtnllib' -e 'GTNL content loader .* failed' -e 'GTNL compat for .* failed' "$LOG"; then
   echo "::error::GTNL threw while loading"
   grep -n -A20 -e 'Caught exception from sciencenotleisure' -e 'GTNL content loader' "$LOG" | head -80
   failed=1
 fi
-if [[ ! -f "$SNAPSHOT" ]]; then
+if ! grep -q 'GTNLLib initialized' "$LOG"; then
+  echo "::error::GTNLLib did not initialize"
+  failed=1
+fi
+if [[ "$MODE" == library ]]; then
+  if [[ -f "$SNAPSHOT" ]]; then
+    echo "::error::The standalone library server unexpectedly loaded GTNL"
+    failed=1
+  fi
+elif [[ ! -f "$SNAPSHOT" ]]; then
   echo "::error::No compat snapshot was written"
   failed=1
 elif ! diff <(tr -d '\r' < "$BASELINE") <(tr -d '\r' < "$SNAPSHOT"); then

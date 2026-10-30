@@ -1,9 +1,9 @@
 package com.science.gtnl.client.portalgun;
 
-import static com.gtnllib.GTNLLibContractTest.compactDrawable;
 import static com.gtnltest.ContractAssertions.check;
 import static com.gtnltest.ContractAssertions.field;
 import static com.gtnltest.ContractAssertions.near;
+import static com.gtnltest.ThemeAssertions.compactDrawable;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.RESOURCES;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.SOURCES;
 

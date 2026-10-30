@@ -1,13 +1,12 @@
 package com.gtnllib;
 
+import static com.gtnltest.ContractAssertions.check;
 import static com.gtnltest.ContractAssertions.finish;
 
-import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.gtnllib.client.GTNLLibClient;
-import com.gtnllib.gui.widget.StepSlider;
 
 public class GTNLLibContractTest {
 
@@ -20,6 +19,13 @@ public class GTNLLibContractTest {
     }
 
     public static void run() throws Exception {
+        ClassLoader loader = GTNLLibContractTest.class.getClassLoader();
+        check(
+            loader.getResource("com/science/gtnl/ScienceNotLeisure.class") == null,
+            "library contracts run without GTNL classes");
+        check(
+            loader.getResource("gregtech/api/GregTechAPI.class") == null,
+            "library contracts run without GregTech classes");
         GTNLLibClient.connectConfig();
         HudContracts.run();
         WheelContracts.run();
@@ -28,14 +34,6 @@ public class GTNLLibContractTest {
         BoundaryContracts.run();
         FxContracts.run();
         RegistryContracts.run();
-    }
-
-    public static boolean compactDrawable(String text) throws ReflectiveOperationException {
-        Field chars = StepSlider.class.getDeclaredField("COMPACT_CHARS");
-        chars.setAccessible(true);
-        String charset = (String) chars.get(null);
-        return text.chars()
-            .allMatch(c -> charset.indexOf(c) >= 0);
     }
 
 }

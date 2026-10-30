@@ -1,12 +1,12 @@
 package com.science.gtnl.client.celestweave;
 
-import static com.gtnllib.GTNLLibContractTest.compactDrawable;
 import static com.gtnltest.ContractAssertions.call;
 import static com.gtnltest.ContractAssertions.check;
 import static com.gtnltest.ContractAssertions.compact;
 import static com.gtnltest.ContractAssertions.field;
 import static com.gtnltest.ContractAssertions.near;
 import static com.gtnltest.ContractAssertions.read;
+import static com.gtnltest.ThemeAssertions.compactDrawable;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.RESOURCES;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.SOURCES;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.roundTrip;

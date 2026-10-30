@@ -2,33 +2,22 @@
   {
     "modid": "${modId}",
     "name": "${modName}",
-		"description": "GT Not Leisure For GTNH, maybe nerf everything",
-		"version": "${modVersion}",
-		"mcversion": "1.7.10",
-		"url": "https://github.com/ABKQPO/GT-Not-Leisure",
-		"authorList": ["HFstudio"],
-		"credits": "HFstudio",
-    "logoFile": "assets/sciencenotleisure/textures/logo.png",
-		"screenshots": [],
-		"parent": "",
-		"requiredMods": ["Gregtech"],
-		"dependencies": [],
-		"dependants": [],
-		"useDependencyInformation": false
-  },
-  {
-    "modid": "gtnllib",
-    "name": "GTNLLib",
-    "description": "Shared GUI, HUD, text effect, registry and networking library used by GT Not Leisure",
+    "description": "GT Not Leisure For GTNH, maybe nerf everything",
     "version": "${modVersion}",
     "mcversion": "1.7.10",
     "url": "https://github.com/ABKQPO/GT-Not-Leisure",
-    "authorList": ["HFstudio"],
+    "authorList": [
+      "HFstudio"
+    ],
     "credits": "HFstudio",
+    "logoFile": "assets/sciencenotleisure/textures/logo.png",
+    "screenshots": [],
     "parent": "",
-    "requiredMods": ["gtnhlib", "modularui2"],
+    "requiredMods": [
+      "Gregtech"
+    ],
     "dependencies": [],
-    "dependants": ["sciencenotleisure"],
+    "dependants": [],
     "useDependencyInformation": false
   }
 ]

@@ -1,0 +1,13 @@
+[
+  {
+    "modid": "${modId}",
+    "name": "${modName}",
+    "description": "Shared GUI, HUD, text effect, registry and networking library",
+    "version": "${modVersion}",
+    "mcversion": "1.7.10",
+    "url": "https://github.com/ABKQPO/GT-Not-Leisure",
+    "authorList": ["HFstudio"],
+    "requiredMods": ["gtnhlib", "modularui2"],
+    "useDependencyInformation": false
+  }
+]

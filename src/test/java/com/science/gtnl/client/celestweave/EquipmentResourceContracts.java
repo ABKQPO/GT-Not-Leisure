@@ -1,14 +1,14 @@
 package com.science.gtnl.client.celestweave;
 
-import static com.gtnllib.ThemeContracts.paletteControls;
-import static com.gtnllib.ThemeContracts.reloadThemes;
-import static com.gtnllib.ThemeContracts.same;
 import static com.gtnltest.ContractAssertions.call;
 import static com.gtnltest.ContractAssertions.check;
 import static com.gtnltest.ContractAssertions.compact;
 import static com.gtnltest.ContractAssertions.field;
 import static com.gtnltest.ContractAssertions.near;
 import static com.gtnltest.ContractAssertions.read;
+import static com.gtnltest.ThemeAssertions.paletteControls;
+import static com.gtnltest.ThemeAssertions.reloadThemes;
+import static com.gtnltest.ThemeAssertions.same;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.RESOURCES;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.SOURCES;
 
@@ -551,7 +551,7 @@ public class EquipmentResourceContracts {
                 .chars()
                 .allMatch(c -> charset.indexOf(c) >= 0) && StepSlider.compactWidth("×2") == 7,
             "the compact font also draws multipliers and seconds");
-        String sliderSource = read(Paths.get("src/main/java/com/gtnllib/gui/widget/StepSlider.java"));
+        String sliderSource = read(Paths.get("gtnllib/src/main/java/com/gtnllib/gui/widget/StepSlider.java"));
         check(
             !sliderSource.contains("fontRenderer") && !sliderSource.contains("compactDigits")
                 && !sliderSource.contains("compactFits"),
@@ -814,8 +814,8 @@ public class EquipmentResourceContracts {
                 && sound.contains("publicvoidonResize(intwidth,intheight){arrangement.fit(width,height);"),
             "the sound screen stacks its cards on a narrow screen, also after the window is resized");
         check(sound.contains(".atLeast(LABEL_WIDTH)"), "the sound name column grows with the longest name");
-        String layout = compact(read(Paths.get("src/main/java/com/gtnllib/gui/layout/Layout.java"))),
-            wheelBase = compact(read(Paths.get("src/main/java/com/gtnllib/gui/wheel/WheelScreen.java")));
+        String layout = compact(read(Paths.get("gtnllib/src/main/java/com/gtnllib/gui/layout/Layout.java"))),
+            wheelBase = compact(read(Paths.get("gtnllib/src/main/java/com/gtnllib/gui/wheel/WheelScreen.java")));
         check(
             wheel.contains("Layout.buttonWidth(style,BUTTON_WIDTH,") && wheel.contains("belowPair(")
                 && wheel.contains("style.spacingMedium);")
@@ -846,7 +846,7 @@ public class EquipmentResourceContracts {
     }
 
     private static void equipmentControls() throws Exception {
-        String library = read(Paths.get("src/main/java/com/gtnllib/GTNLLib.java"));
+        String library = read(Paths.get("gtnllib/src/main/java/com/gtnllib/GTNLLib.java"));
         check(
             read(SOURCES.resolve("ScienceNotLeisure.java")).contains("required-after:gtnllib")
                 && library.contains("GTNLLibClient.preInit()")
@@ -1065,7 +1065,7 @@ public class EquipmentResourceContracts {
             compact(read(SOURCES.resolve("ScienceNotLeisure.java")))
                 .contains("guiFactory=\"com.science.gtnl.config.ConfigGuiFactory\""),
             "GTNL opens its own config screen");
-        Path library = Paths.get("src/main/java/com/gtnllib");
+        Path library = Paths.get("gtnllib/src/main/java/com/gtnllib");
         check(
             compact(read(library.resolve("GTNLLib.java")))
                 .contains("guiFactory=\"com.gtnllib.config.GTNLLibGuiFactory\"")
