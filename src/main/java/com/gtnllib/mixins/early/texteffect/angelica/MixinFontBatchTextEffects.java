@@ -1,4 +1,4 @@
-package com.science.gtnl.mixins.early.texteffect.angelica;
+package com.gtnllib.mixins.early.texteffect.angelica;
 
 import net.minecraft.client.gui.FontRenderer;
 

@@ -1,4 +1,4 @@
-package com.science.gtnl.mixins.early.texteffect;
+package com.gtnllib.mixins.early.texteffect;
 
 import net.minecraft.util.EnumChatFormatting;
 

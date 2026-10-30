@@ -15,6 +15,7 @@ import com.gtnewhorizon.gtnhlib.config.ConfigException;
 import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 import com.gtnewhorizon.gtnhmixins.IEarlyMixinLoader;
 import com.gtnewhorizon.gtnhmixins.builders.IMixins;
+import com.gtnllib.mixins.GTNLLibEarlyMixins;
 import com.science.gtnl.config.ConfigMigration;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.mixins.Mixins;
@@ -98,6 +99,7 @@ public class GTNLEarlyCoreMod implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public List<String> getMixins(Set<String> loadedCoreMods) {
+        GTNLLibEarlyMixins.queueFromHost(loadedCoreMods);
         return IMixins.getEarlyMixins(Mixins.class, loadedCoreMods);
     }
 }

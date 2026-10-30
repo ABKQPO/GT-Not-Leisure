@@ -44,6 +44,7 @@ public class BoundaryContracts {
     private static final Set<String> LEGACY_LANG_KEYS = legacyLangKeys();
     private static final Pattern EMPTY_PRIVATE_CONSTRUCTOR = Pattern
         .compile("^[ \\t]*private[ \\t]+\\w+\\(\\)[ \\t]*\\{[ \\t]*\\}", Pattern.MULTILINE);
+    private static final Pattern MIXIN_NAME = Pattern.compile("\"([a-z]\\w*(?:\\.\\w+)+)\"");
     private static final Pattern SUBSCRIBER_STATIC_METHOD = Pattern.compile(
         "((?:[ \\t]*@[^\\n]*\\n)+)[ \\t]*(?:public |private |protected )?static\\s+([\\w<>\\[\\],.? ]+?)\\s+(\\w+)\\(([^)]*)\\)");
     private static final Pattern INCLUDE = Pattern.compile("#include \"([^\"]+)\"");
@@ -58,6 +59,31 @@ public class BoundaryContracts {
         resources();
         lang(used);
         packages();
+        mixins();
+    }
+
+    private static void mixins() throws IOException {
+        Path root = SOURCES.resolve("mixins");
+        Set<String> registered = new TreeSet<>();
+        Matcher entry = MIXIN_NAME.matcher(read(root.resolve("GTNLLibMixins.java")));
+        while (entry.find()) registered.add(entry.group(1));
+        Set<String> classes = new TreeSet<>();
+        for (String phase : new String[] { "early", "late" }) for (Path file : files(root.resolve(phase))) {
+            String source = read(file);
+            if (!source.contains("@Mixin(")) continue;
+            String name = root.resolve(phase)
+                .relativize(file)
+                .toString()
+                .replace('\\', '.')
+                .replace('/', '.');
+            classes.add(name.substring(0, name.length() - ".java".length()));
+        }
+        check(!registered.isEmpty(), "the GTNLLib mixin registry scan reads GTNLLibMixins.java");
+        check(
+            registered.equals(classes),
+            "GTNLLibMixins registers exactly the GTNLLib mixin classes: registered " + registered
+                + ", classes "
+                + classes);
     }
 
     private static void packages() throws IOException {

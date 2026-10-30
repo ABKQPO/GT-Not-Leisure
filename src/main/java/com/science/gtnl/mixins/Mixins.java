@@ -58,21 +58,6 @@ public enum Mixins implements IMixins {
         // "minecraft.MixinSimpleReloadableResourceManager",
         "minecraft.MixinGuiContainer", "minecraft.MixinGuiFlatPresets"),
 
-    TEXT_EFFECTS_COMMON(Side.CLIENT, "texteffect.MixinEnumChatFormattingTextEffects"),
-
-    TEXT_EFFECTS_CLIENT(Side.CLIENT, "texteffect.MixinFontRendererTextEffects", "texteffect.MixinGuiNewChatTextEffects",
-        "texteffect.MixinGuiTextFieldTextEffects"),
-
-    TEXT_EFFECTS_ANGELICA(new MixinBuilder("Optional Angelica text effect batching")
-        .addClientMixins("texteffect.angelica.MixinFontBatchTextEffects")
-        .setPhase(Phase.EARLY)
-        .addRequiredMod(ModList.Angelica)),
-
-    TEXT_EFFECTS_NEI(
-        new MixinBuilder("Optional NEI text effect input").addClientMixins("texteffect.MixinNEIFormattedTextField")
-            .setPhase(Phase.LATE)
-            .addRequiredMod(ModList.NotEnoughItems)),
-
     NEI_CHEAT_ICON(new MixinBuilder("Mixins for NEI Special Cheat Icon")
         .addCommonMixins(
             "notEnoughItems.AccessorDrawableBuilder",

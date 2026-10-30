@@ -1,4 +1,4 @@
-package com.science.gtnl.mixins.late.texteffect;
+package com.gtnllib.mixins.late.texteffect;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
