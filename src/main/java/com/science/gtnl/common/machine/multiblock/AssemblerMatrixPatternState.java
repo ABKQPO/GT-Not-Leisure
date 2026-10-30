@@ -12,8 +12,8 @@ import net.minecraft.world.World;
 
 import com.github.bsideup.jabel.Desugar;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.api.mixinHelper.LargeInventoryCrafting;
 import com.science.gtnl.utils.DireCraftingPatternDetails;
-import com.science.gtnl.utils.LargeInventoryCrafting;
 
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;

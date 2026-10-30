@@ -1,4 +1,4 @@
-package com.science.gtnl.utils;
+package com.science.gtnl.api.mixinHelper;
 
 /**
  * Carries an exact long-sized dispatch multiplier alongside Minecraft's int-sized crafting inventory stacks.

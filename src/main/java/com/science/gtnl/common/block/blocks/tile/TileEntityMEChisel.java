@@ -16,10 +16,10 @@ import org.jetbrains.annotations.NotNull;
 
 import com.google.common.collect.ImmutableSet;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.api.mixinHelper.GTNLNBTTagList;
+import com.science.gtnl.api.mixinHelper.LargeInventoryCrafting;
 import com.science.gtnl.compat.chisel.ChiselCompat;
 import com.science.gtnl.utils.ChiselPatternDetails;
-import com.science.gtnl.utils.GTNLNBTTagList;
-import com.science.gtnl.utils.LargeInventoryCrafting;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;

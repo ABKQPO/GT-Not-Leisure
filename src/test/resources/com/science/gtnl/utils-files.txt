@@ -6,8 +6,6 @@ utils/ClientUtils.java
 utils/ColorUtils.java
 utils/DireCraftingPatternDetails.java
 utils/ECraftingCPUCluster.java
-utils/GTNLNBTTagList.java
-utils/LargeInventoryCrafting.java
 utils/SimpleItem.java
 utils/StructureUtils.java
 utils/crafting/VariantBudgets.java

@@ -1,4 +1,4 @@
-package com.science.gtnl.utils;
+package com.science.gtnl.api.mixinHelper;
 
 import net.minecraft.nbt.NBTBase;
 

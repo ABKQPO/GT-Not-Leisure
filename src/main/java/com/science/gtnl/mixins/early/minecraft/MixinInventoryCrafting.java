@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Intrinsic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import com.science.gtnl.utils.LargeInventoryCrafting;
+import com.science.gtnl.api.mixinHelper.LargeInventoryCrafting;
 
 @Mixin(value = InventoryCrafting.class, remap = true)
 public class MixinInventoryCrafting implements LargeInventoryCrafting {

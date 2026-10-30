@@ -8,6 +8,7 @@ import java.util.function.BiConsumer;
 import net.minecraft.inventory.InventoryCrafting;
 
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.api.mixinHelper.LargeInventoryCrafting;
 import com.science.gtnl.common.block.blocks.tile.TileEntityMEChisel;
 import com.science.gtnl.common.crafting.batch.CraftingBatchPlanner.BatchPlan;
 import com.science.gtnl.common.crafting.batch.CraftingBatchPlanner.CommitResult;
@@ -20,7 +21,6 @@ import com.science.gtnl.mixins.late.appliedEnergistics.AccessorTaskProgress;
 import com.science.gtnl.utils.ChiselPatternDetails;
 import com.science.gtnl.utils.DireCraftingPatternDetails;
 import com.science.gtnl.utils.ECraftingCPUCluster;
-import com.science.gtnl.utils.LargeInventoryCrafting;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
