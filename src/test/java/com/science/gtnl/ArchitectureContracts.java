@@ -25,10 +25,6 @@ public class ArchitectureContracts {
 
     public static final Path SOURCES = Paths.get("src/main/java/com/science/gtnl");
 
-    // Ratchets: each count may only go down. Lower the number in the same change that lowers the count.
-    public static final int LONG_METHOD_LINES = 10;
-    public static final int MAX_CLIENT_IMPORTS_IN_COMMON = 84;
-
     // The only machine on GT's tooltip-only base; an adapter for a single machine would only forward.
     public static final Set<String> GT_BASE_ALLOWED = Set.of("common/machine/multiblock/QuantumComputer.java");
 
@@ -122,7 +118,6 @@ public class ArchitectureContracts {
         .compile("GameRegistry\\s*\\.\\s*register(Item|Block)\\(\\s*this");
     private static final Pattern SAVED_DATA_CLASS = Pattern
         .compile("^public class (\\w+) extends WorldSavedData\\b", Pattern.MULTILINE);
-    private static final Pattern MIXIN_INTERFACE = Pattern.compile("^public interface ", Pattern.MULTILINE);
     private static final Pattern LOADER_ENTRY = Pattern.compile("new ([\\w.]+)\\(\\)");
     private static final Pattern CARD = Pattern.compile("class (\\w+)[^{]*implements[^{]*\\bIContentLoader\\b");
     private static final Pattern COMPAT = Pattern
@@ -133,18 +128,6 @@ public class ArchitectureContracts {
         "((?:[ \\t]*@[^\\n]*\\n)+)[ \\t]*(?:public |private |protected )?static\\s+([\\w<>\\[\\],.? ]+?)\\s+(\\w+)\\(([^)]*)\\)");
     private static final Pattern SUBSCRIBE_METHOD = Pattern.compile(
         "@SubscribeEvent[^\\n]*\\n(?:\\s*@[^\\n]*\\n)*\\s*((?:public|private|protected)?\\s*(?:static\\s+)?)\\w+ (\\w+)\\(");
-    private static final Pattern FINAL_CLASS = Pattern.compile(
-        "^[ \\t]*(?:(?:public|protected|private|static|abstract)[ \\t]+)*final[ \\t]+(?:(?:static|abstract)[ \\t]+)*class[ \\t]",
-        Pattern.MULTILINE);
-    // A static-only class needs no constructor of its own; packets keep their public no-arg constructor.
-    public static final Pattern EMPTY_PRIVATE_CONSTRUCTOR = Pattern
-        .compile("^[ \\t]*private[ \\t]+(\\w+)\\(\\)[ \\t]*\\{[ \\t]*\\}", Pattern.MULTILINE);
-    // fromAE builds an empty stack list through it before filling it.
-    public static final Set<String> EMPTY_PRIVATE_CONSTRUCTOR_ALLOWED = Set.of("utils/machine/ItemStackG.java");
-    private static final Pattern PACKAGE_PRIVATE_TYPE = Pattern.compile(
-        "^( {4})?(?:(?:abstract|static|final|sealed|strictfp)[ \\t]+)*(?:class|interface|enum)[ \\t]+(\\w+)",
-        Pattern.MULTILINE);
-    private static final Pattern INTERFACE_FILE = Pattern.compile("^public @?interface ", Pattern.MULTILINE);
     private static final Pattern MIXIN_ENTRY_START = Pattern.compile("\\n    (?=[A-Z][A-Z_0-9]*\\()");
     private static final Pattern MIXIN_NAME = Pattern.compile("\"([A-Za-z0-9_]+(?:\\.[A-Za-z0-9_$]+)+)\"");
     private static final Pattern SYSTEM_IMPORT = Pattern.compile(
@@ -253,20 +236,7 @@ public class ArchitectureContracts {
                     path + " extends a GT multiblock base directly; extend the GTNL base for that family"
                         + " (MultiMachineBase, SteamMultiMachineBase, TTMultiMachineBase, EnhancedMultiMachineBase)");
         }
-        for (Map.Entry<String, String> entry : sources.entrySet()) {
-            if (isMixinClass(entry.getKey(), entry.getValue())) check(
-                longestMethodBody(entry.getValue()) <= LONG_METHOD_LINES,
-                entry.getKey() + " has a method longer than "
-                    + LONG_METHOD_LINES
-                    + " lines; mixins only hook, the logic goes into the system's hooks");
-        }
-        ratchet(
-            sources,
-            "common files outside render/ and gui/ importing client classes",
-            MAX_CLIENT_IMPORTS_IN_COMMON,
-            (path, text) -> path.startsWith("common/") && !path.startsWith("common/render/")
-                && !path.startsWith("common/gui/")
-                && text.contains("\nimport net.minecraft.client."));
+        ClientDependencyContracts.run(sources);
 
         for (Map.Entry<String, String> entry : sources.entrySet()) {
             String path = entry.getKey(), text = entry.getValue();
@@ -274,22 +244,6 @@ public class ArchitectureContracts {
                 !EVENT_REGISTRATION.matcher(text)
                     .find(),
                 path + " registers an event handler by hand; annotate the class with @EventBusSubscriber instead");
-            check(
-                !FINAL_CLASS.matcher(text)
-                    .find(),
-                path + " declares a final class; the lead allows final on fields and methods only (records are fine)");
-            if (!EMPTY_PRIVATE_CONSTRUCTOR_ALLOWED.contains(path)) check(
-                !EMPTY_PRIVATE_CONSTRUCTOR.matcher(text)
-                    .find(),
-                path + " declares an empty private constructor; drop it, a class with only static members needs none");
-            Matcher declaration = PACKAGE_PRIVATE_TYPE.matcher(text);
-            boolean interfaceFile = INTERFACE_FILE.matcher(text)
-                .find();
-            while (declaration.find()) check(
-                declaration.group(1) != null && interfaceFile,
-                path + " declares "
-                    + declaration.group(2)
-                    + " without an access modifier; write public, protected or private");
             if (text.contains("@EventBusSubscriber")) {
                 Matcher handler = SUBSCRIBE_METHOD.matcher(text);
                 while (handler.find()) check(
@@ -408,27 +362,6 @@ public class ArchitectureContracts {
         };
     }
 
-    private interface Rule {
-
-        /**
-         * Whether the source file at {@code path} (relative to the GTNL package, with forward slashes) counts.
-         */
-        boolean counts(String path, String text);
-    }
-
-    private static void ratchet(Map<String, String> sources, String what, int max, Rule rule) {
-        List<String> hits = sources.entrySet()
-            .stream()
-            .filter(entry -> rule.counts(entry.getKey(), entry.getValue()))
-            .map(Map.Entry::getKey)
-            .collect(Collectors.toList());
-        check(
-            hits.size() <= max,
-            what + " may only go down: limit " + max + ", found " + hits.size() + " " + new TreeSet<>(hits));
-        if (hits.size() < max)
-            System.out.println("ratchet can be lowered: " + what + " is " + hits.size() + ", limit " + max);
-    }
-
     // Keys are "early:pkg.Name" or "late:pkg.Name"; the Side constructor registers early mixins.
     private static Map<String, Integer> mixinRegistrations(String registry) {
         String body = registry.split("implements IMixins \\{", 2)[1].split("private final MixinBuilder builder;", 2)[0];
@@ -454,35 +387,6 @@ public class ArchitectureContracts {
         return rest.substring(0, slash) + ":"
             + rest.substring(slash + 1)
                 .replace('/', '.');
-    }
-
-    // Accessor and invoker interfaces only declare; the mixin checks are about classes that carry code.
-    private static boolean isMixinClass(String path, String text) {
-        return path.startsWith("mixins/") && text.contains("@Mixin")
-            && !MIXIN_INTERFACE.matcher(text)
-                .find();
-    }
-
-    // Lines inside the longest class-level method body, in the formatted layout: members start four spaces in and
-    // their bodies end on a line that is four spaces and a closing brace.
-    private static int longestMethodBody(String text) {
-        String[] lines = text.split("\\r?\\n");
-        int longest = 0;
-        for (int i = 0; i < lines.length; i++) {
-            String line = lines[i];
-            if (!line.startsWith("    ") || line.startsWith("     ")) continue;
-            String member = line.trim();
-            if (member.startsWith("@") || member.startsWith("/") || member.startsWith("*") || member.equals("}"))
-                continue;
-            int open = i;
-            while (open < lines.length && !lines[open].endsWith("{") && !lines[open].endsWith(";")) open++;
-            if (open >= lines.length || lines[open].endsWith(";") || !lines[open].contains(")")) continue;
-            int close = open + 1;
-            while (close < lines.length && !lines[close].equals("    }")) close++;
-            longest = Math.max(longest, close - open - 1);
-            i = close;
-        }
-        return longest;
     }
 
     private static Map<String, String> sources() throws IOException {

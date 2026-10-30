@@ -55,8 +55,8 @@ public class PurificationUnitHooks {
         IPurificationUnitHost host = host(unit);
         PurificationUnitState state = host.gtnl$state();
         MTEPurificationPlant controller = host.gtnl$controller();
-        if (controller != null) state.wirelessMode = ((IWirelessMode) controller).isGtnl$wirelessMode();
-        if (!state.wirelessMode) return null;
+        if (controller != null) state.setWirelessMode(((IWirelessMode) controller).isGtnl$wirelessMode());
+        if (!state.isWirelessMode()) return null;
         host.gtnl$setStoredFluids(unit.getStoredFluids());
         state.resetCost();
 
@@ -79,10 +79,10 @@ public class PurificationUnitHooks {
                 return GTNLParallelHelper.PARALLEL_ZERO;
             }
 
-            BigInteger costEU = BigInteger.valueOf(state.effectiveParallel)
+            BigInteger costEU = BigInteger.valueOf(state.getEffectiveParallel())
                 .multiply(BigInteger.valueOf(unit.getBasePowerUsage()));
 
-            if (!addEUToGlobalEnergyMap(state.ownerUUID, costEU.multiply(MathUtils.NEGATIVE_ONE))) {
+            if (!addEUToGlobalEnergyMap(state.getOwnerUUID(), costEU.multiply(MathUtils.NEGATIVE_ONE))) {
                 return CheckRecipeResultRegistry.insufficientPower(costEU.longValue());
             }
             state.addCost(costEU);
@@ -93,7 +93,7 @@ public class PurificationUnitHooks {
     public static boolean startWirelessCycle(MTEPurificationUnitBase<?> unit, int cycleTime, int progressTime) {
         IPurificationUnitHost host = host(unit);
         PurificationUnitState state = host.gtnl$state();
-        if (!state.wirelessMode) return false;
+        if (!state.isWirelessMode()) return false;
         ThreadLocalRandom random = ThreadLocalRandom.current();
         unit.startRecipeProcessing();
         // Calculate the chance before depleting inputs, otherwise boost items may already be gone.
@@ -115,7 +115,7 @@ public class PurificationUnitHooks {
         ObjectArrayList<FluidStack> fluidOutputList = new ObjectArrayList<>();
         for (int i = 0; i < recipe.mFluidOutputs.length; ++i) {
             FluidStack output = recipe.mFluidOutputs[i].copy();
-            long scaledAmount = state.effectiveParallel * output.amount;
+            long scaledAmount = state.getEffectiveParallel() * output.amount;
             fluidOutputList.addAll(splitLongToFluidStacks(output, scaledAmount));
         }
 
@@ -149,7 +149,8 @@ public class PurificationUnitHooks {
         FluidStack outputWater = recipe.mFluidOutputs[0];
         long totalAmount = Math.round(
             (double) outputWater.amount * MTEPurificationUnitBase.WATER_BOOST_NEEDED_FLUID
-                * host(unit).gtnl$state().effectiveParallel);
+                * host(unit).gtnl$state()
+                    .getEffectiveParallel());
         return new ObjectArrayList<>(splitLongToFluidStacks(outputWater, totalAmount));
     }
 
@@ -186,7 +187,8 @@ public class PurificationUnitHooks {
 
     public static void depleteRecipeInputsLong(MTEPurificationUnitBase<?> unit) {
         GTRecipe recipe = host(unit).gtnl$currentRecipe();
-        long effectiveParallel = host(unit).gtnl$state().effectiveParallel;
+        long effectiveParallel = host(unit).gtnl$state()
+            .getEffectiveParallel();
         for (int i = 0; i < recipe.mFluidInputs.length; ++i) {
             FluidStack input = recipe.mFluidInputs[i];
             ArrayList<FluidStack> fluidStacks = new ArrayList<>();
@@ -281,9 +283,9 @@ public class PurificationUnitHooks {
             IGregTechDeviceInformation.encode(
                 "GT5U.infodata.parallel.current",
                 "" + EnumChatFormatting.YELLOW
-                    + (state.wirelessMode ? state.effectiveParallel : host.gtnl$effectiveParallel())
+                    + (state.isWirelessMode() ? state.getEffectiveParallel() : host.gtnl$effectiveParallel())
                     + "(Long)"));
-        if (state.wirelessMode) {
+        if (state.isWirelessMode()) {
             ret.add(EnumChatFormatting.LIGHT_PURPLE + IGregTechDeviceInformation.encode("gtnl.waila.wireless.mode"));
             ret.add(
                 EnumChatFormatting.AQUA + IGregTechDeviceInformation.encode("gtnl.waila.wireless.current_eu_cost")

@@ -42,6 +42,12 @@ public class CommonProxy implements IGuiHandler {
         return null;
     }
 
+    public void setTimeStopVisual(boolean stopped) {}
+
+    public boolean isCurrentClientWorld(World world) {
+        return false;
+    }
+
     public EntityPlayer getEntityPlayerFromContext(final MessageContext ctx) {
         return ctx.getServerHandler().playerEntity;
     }

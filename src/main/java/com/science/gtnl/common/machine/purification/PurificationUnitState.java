@@ -9,11 +9,39 @@ import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 
 public class PurificationUnitState {
 
-    public long maxParallel = 1;
-    public long effectiveParallel = 1;
-    public BigInteger costingEU = BigInteger.ZERO;
-    public boolean wirelessMode;
-    public UUID ownerUUID;
+    private long maxParallel = 1;
+    private long effectiveParallel = 1;
+    private BigInteger costingEU = BigInteger.ZERO;
+    private boolean wirelessMode;
+    private UUID ownerUUID;
+
+    public long getMaxParallel() {
+        return maxParallel;
+    }
+
+    public long getEffectiveParallel() {
+        return effectiveParallel;
+    }
+
+    public BigInteger getCostingEU() {
+        return costingEU;
+    }
+
+    public boolean isWirelessMode() {
+        return wirelessMode;
+    }
+
+    public void setWirelessMode(boolean enabled) {
+        wirelessMode = enabled;
+    }
+
+    public UUID getOwnerUUID() {
+        return ownerUUID;
+    }
+
+    public void bindOwner(UUID ownerUUID) {
+        this.ownerUUID = ownerUUID;
+    }
 
     public void setMaxParallel(long maxParallel) {
         this.maxParallel = Math.max(1, maxParallel);

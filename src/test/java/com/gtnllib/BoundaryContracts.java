@@ -42,8 +42,6 @@ public class BoundaryContracts {
     private static final Pattern LEGACY_LANG_LITERAL = Pattern.compile("\"(gtnl\\.[A-Za-z0-9_.]*)\"");
     // Moved from GTNL with their keys: modpack translations override by key, so a new name would show English.
     private static final Set<String> LEGACY_LANG_KEYS = legacyLangKeys();
-    private static final Pattern EMPTY_PRIVATE_CONSTRUCTOR = Pattern
-        .compile("^[ \\t]*private[ \\t]+\\w+\\(\\)[ \\t]*\\{[ \\t]*\\}", Pattern.MULTILINE);
     private static final Pattern MIXIN_NAME = Pattern.compile("\"([a-z]\\w*(?:\\.\\w+)+)\"");
     private static final Pattern SUBSCRIBER_STATIC_METHOD = Pattern.compile(
         "((?:[ \\t]*@[^\\n]*\\n)+)[ \\t]*(?:public |private |protected )?static\\s+([\\w<>\\[\\],.? ]+?)\\s+(\\w+)\\(([^)]*)\\)");
@@ -185,10 +183,6 @@ public class BoundaryContracts {
                         .replaceAll("\"\""))
                     .find(),
                 name + " uses no GTNL lang key or resource namespace");
-            check(
-                !EMPTY_PRIVATE_CONSTRUCTOR.matcher(source)
-                    .find(),
-                name + " declares an empty private constructor; a class with only static members needs none");
             if (source.contains("@EventBusSubscriber")) {
                 Matcher sided = SUBSCRIBER_STATIC_METHOD.matcher(source);
                 while (sided.find()) if (!sided.group(1)

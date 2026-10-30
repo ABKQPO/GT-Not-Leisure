@@ -2,7 +2,6 @@ package com.science.gtnl.common.block.blocks.tile;
 
 import java.util.EnumSet;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -15,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
 import com.gtnllib.world.IBlockStateListener;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.IBeamFormer;
 import com.science.gtnl.common.beamformer.BeamFormerLink;
 import com.science.gtnl.common.render.beamformer.BeamFormerRenderHelper;
@@ -185,7 +185,7 @@ public class TileEntityBeamFormer extends AENetworkTile
     @Override
     public boolean isValid() {
         if (this.worldObj == null || this.isInvalid()) return false;
-        return !this.worldObj.isRemote || this.worldObj == Minecraft.getMinecraft().theWorld;
+        return !this.worldObj.isRemote || ScienceNotLeisure.proxy.isCurrentClientWorld(this.worldObj);
     }
 
     @Override

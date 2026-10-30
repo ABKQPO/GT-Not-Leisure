@@ -26,11 +26,19 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
+import com.reavaritia.client.render.CustomEntityRenderer;
 import com.science.gtnl.common.item.items.TimeStopPocketWatch;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class TimeStopClientHooks {
+
+    public static void setTimeStopVisual(boolean stopped) {
+        if (Minecraft.getMinecraft().entityRenderer instanceof CustomEntityRenderer renderer) {
+            if (stopped) renderer.activateDesaturateShader(16);
+            else renderer.resetShader();
+        }
+    }
 
     // Minecraft 1.7.10 has no isGamePaused field.
     public static boolean tickStoppedWorld(WorldClient world, NetHandlerPlayClient sendQueue,

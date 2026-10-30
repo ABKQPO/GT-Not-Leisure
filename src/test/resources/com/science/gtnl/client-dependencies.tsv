@@ -1,0 +1,93 @@
+# Exact legacy source dependencies, not a claim that every call is safely sided.
+# path<TAB>client type<TAB>reason; remove an entry when its dependency is removed.
+common/block/BlockFluidBase.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/blocks/BlockArtificialStarRender.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/blocks/BlockCardboardBox.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/blocks/BlockDimensionRespawnAnchor.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/blocks/BlockDirePatternEncoder.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/blocks/BlockEnderElevator.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/blocks/BlockEternalGregTechWorkshopRender.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/blocks/BlockLaserBeacon.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/blocks/BlockNanoPhagocytosisPlantRender.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/blocks/BlockPigmeeFumo.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/blocks/BlockPlayerDoll.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/blocks/BlockSearedLadder.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/blocks/BlockSuperDenseEnergyCell.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/blocks/BlockSuperDualInterface.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/blocks/BlockSuperInterface.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/blocks/BlocksCompressedStargate.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/casings/base/MetaBlockBase.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/casings/casing/MetaCasingBase.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/casings/column/MetaBlockColumn.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/casings/glass/MetaBlockGlass.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/block/casings/glow/MetaBlockGlow.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/effect/EffectBase.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/item/ItemInfinityCell.java	net.minecraft.client.gui.GuiScreen	Legacy GUI and modifier-key handling; isolate feature-specific UI on the next edit.
+common/item/ItemInfinityCell.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/item/MetaItemAdder.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/item/items/CircuitIntegratedPlus.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/item/items/ElectricProspectorTool.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/item/items/FakeItemSiren.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/item/items/ItemMEMiniPortableTerminal.java	net.minecraft.client.gui.GuiScreen	Legacy GUI and modifier-key handling; isolate feature-specific UI on the next edit.
+common/item/items/ItemPartBeamFormer.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/item/items/ItemPartMECellDock.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/item/items/PortableItem.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/item/items/SteamRocket.java	net.minecraft.client.entity.EntityPlayerSP	Legacy EntityPlayerSP API dependency; retain until its sided adapter is reviewed.
+common/item/items/Stick.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/item/items/Stick.java	net.minecraft.client.gui.GuiMerchant	Legacy GuiMerchant API dependency; retain until its sided adapter is reviewed.
+common/item/items/Stick.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/item/items/TestItem.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/item/items/WirelessFrequencyCard.java	net.minecraft.client.gui.GuiScreen	Legacy GUI and modifier-key handling; isolate feature-specific UI on the next edit.
+common/item/items/armor/CelestweaveArmor.java	net.minecraft.client.model.ModelBiped	Legacy ModelBiped API dependency; retain until its sided adapter is reviewed.
+common/item/items/bauble/LuckyHorseshoe.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/item/items/bauble/PhysicsCape.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/item/items/bauble/PhysicsCape.java	net.minecraft.client.model.ModelBiped	Legacy ModelBiped API dependency; retain until its sided adapter is reviewed.
+common/item/items/bauble/RoyalGel.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/item/items/bauble/SuperReachRing.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/item/items/equipment/EquipmentVariantItem.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/machine/basicMachine/SmallEssentiaSmeltery.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/machine/hatch/DebugEnergyHatch.java	net.minecraft.client.renderer.texture.IIconRegister	Legacy icon registration override; retain the sided API adapter.
+common/machine/hatch/SuperDualInputHatchME.java	net.minecraft.client.gui.FontRenderer	Legacy FontRenderer API dependency; retain until its sided adapter is reviewed.
+common/machine/hatch/SuperDualInputHatchME.java	net.minecraft.client.renderer.texture.TextureManager	Legacy TextureManager API dependency; retain until its sided adapter is reviewed.
+common/packet/CelestweaveConcealPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/CelestweaveFireballPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/CelestweaveFlightPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/CelestweaveFxPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/DraconicArmorProjectionHitEffectPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/DraconicArmorProjectionSyncPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/MEChiselSyncParallel.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/MiniTerminalUpdatePacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/PlaceItemInHotbarPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/PortableInfinityChestSyncPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/ProspectingPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/QuantumCraftConfirmPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/QuantumCraftingAvailabilityPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/RailgunBeamChainFxPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/RailgunBeamUpdatePacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/RailgunChargeCapPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/RailgunFireFxPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/RailgunRecoilFxPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/RecursivePatternResultPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/RestorePreviousGuiPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/RestorePreviousGuiPacket.java	net.minecraft.client.gui.GuiScreen	Legacy GUI and modifier-key handling; isolate feature-specific UI on the next edit.
+common/packet/SoundPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/StatusMessage.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/SudoPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/SuperDualInterfaceFluidSyncPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/SyncCircuitNanitesPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/SyncHPCAVariablesPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/TickratePacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/TileEntityNBTPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/TileEntityNBTPacket.java	net.minecraft.client.entity.EntityClientPlayerMP	Legacy EntityClientPlayerMP API dependency; retain until its sided adapter is reviewed.
+common/packet/WirelessHighlightPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/WirelessVisualisationPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/YogTerminalStatePacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/packet/YogTerminalSyncPacket.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/part/PartBeamFormer.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.
+common/part/PartBeamFormer.java	net.minecraft.client.renderer.RenderBlocks	Legacy RenderBlocks API dependency; retain until its sided adapter is reviewed.
+common/part/PartEnergyAcceptor.java	net.minecraft.client.renderer.RenderBlocks	Legacy RenderBlocks API dependency; retain until its sided adapter is reviewed.
+common/part/PartEnergyCellBase.java	net.minecraft.client.renderer.RenderBlocks	Legacy RenderBlocks API dependency; retain until its sided adapter is reviewed.
+common/part/PartMECellDock.java	net.minecraft.client.renderer.RenderBlocks	Legacy RenderBlocks API dependency; retain until its sided adapter is reviewed.
+common/part/PartMECellDock.java	net.minecraft.client.renderer.Tessellator	Legacy Tessellator API dependency; retain until its sided adapter is reviewed.
+common/part/PartUniversalStorageBus.java	net.minecraft.client.renderer.RenderBlocks	Legacy RenderBlocks API dependency; retain until its sided adapter is reviewed.
+common/wireless/WirelessCardContainer.java	net.minecraft.client.Minecraft	Legacy client singleton access; move behind a client entry point on the next edit.

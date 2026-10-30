@@ -8,11 +8,43 @@ public class VoidMinerState {
 
     public static final String NO_OVERRIDE = "None";
 
-    public long lEUt;
-    public String warning = "";
-    public int dimensionChangeVersion;
-    public String activeDropMapDimension = "";
-    public String lastDimensionOverride = NO_OVERRIDE;
+    private long lEUt;
+    private String warning = "";
+    private int dimensionChangeVersion;
+    private String activeDropMapDimension = "";
+    private String lastDimensionOverride = NO_OVERRIDE;
+
+    public long getEUt() {
+        return lEUt;
+    }
+
+    public void setEUt(long euPerTick) {
+        this.lEUt = euPerTick;
+    }
+
+    public String getWarning() {
+        return warning;
+    }
+
+    public void clearWarning() {
+        warning = "";
+    }
+
+    public void warn(String translationKey) {
+        warning = Objects.requireNonNull(translationKey);
+    }
+
+    public int getDimensionChangeVersion() {
+        return dimensionChangeVersion;
+    }
+
+    public String getActiveDropMapDimension() {
+        return activeDropMapDimension;
+    }
+
+    public String getLastDimensionOverride() {
+        return lastDimensionOverride;
+    }
 
     public boolean hasOverride() {
         return !NO_OVERRIDE.equals(lastDimensionOverride);

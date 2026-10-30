@@ -6,6 +6,7 @@ import net.minecraft.world.World;
 
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
 import com.science.gtnl.client.gui.GTNLClientGuiHandler;
+import com.science.gtnl.client.tickrate.TimeStopClientHooks;
 import com.science.gtnl.common.render.entity.EntityParticleBeam;
 import com.science.gtnl.loader.ContentLoaders;
 
@@ -31,6 +32,16 @@ public class ClientProxy extends CommonProxy {
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         return GTNLClientGuiHandler.clientElement(ID, player, world, x, y, z);
+    }
+
+    @Override
+    public void setTimeStopVisual(boolean stopped) {
+        TimeStopClientHooks.setTimeStopVisual(stopped);
+    }
+
+    @Override
+    public boolean isCurrentClientWorld(World world) {
+        return world == Minecraft.getMinecraft().theWorld;
     }
 
     @Override

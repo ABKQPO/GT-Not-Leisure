@@ -63,7 +63,7 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
     private static boolean gtnl$enableMixin = VoidMinerTweak.enabled();
 
     @Unique
-    public VoidMinerState gtnl$state = new VoidMinerState();
+    private final VoidMinerState gtnl$state = new VoidMinerState();
 
     public MixinMTEVoidMinerBase(String aName) {
         super(aName);
@@ -192,11 +192,11 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
     @Override
     public boolean onRunningTick(ItemStack aStack) {
         if (!gtnl$enableMixin) return super.onRunningTick(aStack);
-        if (gtnl$state.lEUt > 0) {
-            addEnergyOutput((gtnl$state.lEUt * mEfficiency) / 10000);
+        if (gtnl$state.getEUt() > 0) {
+            addEnergyOutput((gtnl$state.getEUt() * mEfficiency) / 10000);
             return true;
         }
-        if (gtnl$state.lEUt < 0 && !drainEnergyInput(getActualEnergyUsage())) {
+        if (gtnl$state.getEUt() < 0 && !drainEnergyInput(getActualEnergyUsage())) {
             stopMachine(ShutDownReasonRegistry.POWER_LOSS);
             return false;
         }
@@ -206,19 +206,19 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
     @Override
     public long getActualEnergyUsage() {
         if (!gtnl$enableMixin) return super.getActualEnergyUsage();
-        return (-gtnl$state.lEUt * 10_000) / Math.max(1000, mEfficiency);
+        return (-gtnl$state.getEUt() * 10_000) / Math.max(1000, mEfficiency);
     }
 
     @Inject(method = "loadNBTData", at = @At("TAIL"))
     private void gtnl$injectLoadNBT(NBTTagCompound aNBT, CallbackInfo ci) {
         if (!gtnl$enableMixin) return;
-        gtnl$state.lEUt = aNBT.getLong("mEUt");
+        gtnl$state.setEUt(aNBT.getLong("mEUt"));
     }
 
     @Inject(method = "saveNBTData", at = @At("TAIL"))
     private void gtnl$injectSaveNBT(NBTTagCompound aNBT, CallbackInfo ci) {
         if (!gtnl$enableMixin) return;
-        aNBT.setLong("mEUt", gtnl$state.lEUt);
+        aNBT.setLong("mEUt", gtnl$state.getEUt());
     }
 
     @Override
@@ -267,21 +267,22 @@ public abstract class MixinMTEVoidMinerBase extends MTEEnhancedMultiBlockBase<Mi
     @Override
     public String getGtnl$overrideDisplayText() {
         if (!gtnl$enableMixin || !gtnl$state.hasOverride()) return "";
-        if (!gtnl$state.warning.isEmpty()) {
-            return "!" + gtnl$state.warning;
+        if (!gtnl$state.getWarning()
+            .isEmpty()) {
+            return "!" + gtnl$state.getWarning();
         }
-        return gtnl$state.lastDimensionOverride;
+        return gtnl$state.getLastDimensionOverride();
     }
 
     @Override
     public String getGtnl$warning() {
         if (!gtnl$enableMixin) return "";
-        return gtnl$state.warning;
+        return gtnl$state.getWarning();
     }
 
     @Override
     public int getGtnl$dimensionChangeVersion() {
         if (!gtnl$enableMixin) return 0;
-        return gtnl$state.dimensionChangeVersion;
+        return gtnl$state.getDimensionChangeVersion();
     }
 }
