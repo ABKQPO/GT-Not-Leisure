@@ -17,7 +17,7 @@ public final class ClientDependencyContracts {
 
     private static final Path BASELINE = Paths.get("src/test/resources/com/science/gtnl/client-dependencies.tsv");
     private static final Pattern CLIENT_TYPE = Pattern
-        .compile("\\bnet\\.minecraft\\.client\\.(?:[a-z][\\w$]*\\.)*[A-Z][\\w$]*");
+        .compile("\\bnet\\.minecraft\\.client\\.(?:[a-z][\\w$]*\\.)*(?:[A-Z][\\w$]*|\\*)");
 
     private ClientDependencyContracts() {}
 
@@ -41,6 +41,17 @@ public final class ClientDependencyContracts {
         Set<String> old = references(Map.of("common/Old.java", "import net.minecraft.client.Minecraft;"));
         Set<String> swapped = references(Map.of("common/New.java", "net.minecraft.client.Minecraft.getMinecraft();"));
         check(old.size() == swapped.size() && !old.containsAll(swapped), "equal dependency counts do not hide swaps");
+
+        Set<String> wildcard = references(
+            Map.of("common/New.java", "import net.minecraft.client.*; import net.minecraft.client.renderer.*;"));
+        check(
+            wildcard.equals(
+                Set.of("common/New.java\tnet.minecraft.client.*", "common/New.java\tnet.minecraft.client.renderer.*")),
+            "wildcard imports cannot hide new client dependencies");
+        check(
+            references(Map.of("common/New.java", "import static net.minecraft.client.Minecraft.getMinecraft;"))
+                .equals(Set.of("common/New.java\tnet.minecraft.client.Minecraft")),
+            "static imports still record their client owner");
     }
 
     private static Set<String> references(Map<String, String> sources) {
