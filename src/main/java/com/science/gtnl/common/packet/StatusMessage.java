@@ -33,6 +33,7 @@ public class StatusMessage extends ClientboundPacket {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
         sendStatusMessage(chat);
     }

@@ -44,6 +44,10 @@ public class CommonProxy implements IGuiHandler {
 
     public void setTimeStopVisual(boolean stopped) {}
 
+    public boolean handleClientRocketPlacement(EntityPlayer player) {
+        return false;
+    }
+
     public boolean isCurrentClientWorld(World world) {
         return false;
     }

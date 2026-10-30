@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
+import com.science.gtnl.client.galacticraft.SteamRocketClientHooks;
 import com.science.gtnl.client.gui.GTNLClientGuiHandler;
 import com.science.gtnl.client.tickrate.TimeStopClientHooks;
 import com.science.gtnl.common.render.entity.EntityParticleBeam;
@@ -37,6 +38,11 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void setTimeStopVisual(boolean stopped) {
         TimeStopClientHooks.setTimeStopVisual(stopped);
+    }
+
+    @Override
+    public boolean handleClientRocketPlacement(EntityPlayer player) {
+        return SteamRocketClientHooks.onPlacement(player);
     }
 
     @Override

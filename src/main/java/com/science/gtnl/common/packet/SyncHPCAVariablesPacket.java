@@ -56,6 +56,7 @@ public class SyncHPCAVariablesPacket extends ClientboundPacket {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
         apply(x, y, z, uuid, totalLens, mMachine);
     }

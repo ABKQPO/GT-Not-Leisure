@@ -91,6 +91,7 @@ public class MEChiselSyncParallel extends ServerboundPacket {
         }
 
         @Override
+        @SideOnly(Side.CLIENT)
         public void handleClient(Minecraft minecraft) {
             onClient(minecraft);
         }

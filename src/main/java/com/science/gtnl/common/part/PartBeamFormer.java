@@ -2,7 +2,6 @@ package com.science.gtnl.common.part;
 
 import java.io.IOException;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -316,7 +315,7 @@ public class PartBeamFormer extends GTNLBasePartState implements IBlockStateList
     @SideOnly(Side.CLIENT)
     public void renderDynamic(final double x, final double y, final double z, final IPartRenderHelper rh,
         final RenderBlocks renderer) {
-        BeamFormerRenderHelper.renderDynamic(this, x, y, z, Minecraft.getMinecraft().timer.renderPartialTicks);
+        BeamFormerRenderHelper.renderDynamic(this, x, y, z);
     }
 
     @Override

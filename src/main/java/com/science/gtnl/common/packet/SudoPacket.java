@@ -36,6 +36,7 @@ public class SudoPacket extends ClientboundPacket {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
         sendChatMessage(message);
     }

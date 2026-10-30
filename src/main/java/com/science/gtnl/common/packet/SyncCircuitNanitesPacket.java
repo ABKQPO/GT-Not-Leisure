@@ -5,6 +5,8 @@ import net.minecraft.client.Minecraft;
 import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.common.recipe.gtnl.CircuitNanitesDataRecipes;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 
 public class SyncCircuitNanitesPacket extends ClientboundPacket {
@@ -28,6 +30,7 @@ public class SyncCircuitNanitesPacket extends ClientboundPacket {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
         CircuitNanitesDataRecipes.loadForWorld(worldSeed);
     }

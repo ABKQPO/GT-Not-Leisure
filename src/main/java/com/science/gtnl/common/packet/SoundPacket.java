@@ -10,6 +10,8 @@ import com.gtnllib.network.ClientboundPacket;
 import com.science.gtnl.client.SoundHandler;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
@@ -118,6 +120,7 @@ public class SoundPacket extends ClientboundPacket {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
         SoundHandler.handleSoundPacket(this);
     }

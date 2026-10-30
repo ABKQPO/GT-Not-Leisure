@@ -45,6 +45,7 @@ public class TileEntityNBTPacket extends ClientboundPacket {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
         apply(blockId, metadata, nbt);
     }

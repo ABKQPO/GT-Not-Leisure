@@ -7,6 +7,8 @@ import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.api.TickrateAPI;
 import com.science.gtnl.config.MainConfig;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import lombok.Getter;
 
@@ -32,6 +34,7 @@ public class TickratePacket extends ClientboundPacket {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void handleClient(Minecraft minecraft) {
         float tickrate = this.tickrate;
         if (tickrate < MainConfig.tickrate.minTickrate) {
