@@ -39,6 +39,9 @@ public class BoundaryContracts {
     private static final Pattern LOCATION_DOMAIN = Pattern.compile("new ResourceLocation\\(\\s*\"([^\"]*)\"\\s*,");
     private static final Pattern HOST_LITERAL = Pattern.compile("\"(?:gtnl\\.|gtnl:|sciencenotleisure)");
     private static final Pattern LANG_LITERAL = Pattern.compile("\"(gtnllib\\.[A-Za-z0-9_.]*)\"");
+    private static final Pattern LEGACY_LANG_LITERAL = Pattern.compile("\"(gtnl\\.[A-Za-z0-9_.]*)\"");
+    // Moved from GTNL with their keys: modpack translations override by key, so a new name would show English.
+    private static final Set<String> LEGACY_LANG_KEYS = legacyLangKeys();
     private static final Pattern INCLUDE = Pattern.compile("#include \"([^\"]+)\"");
     private static final int MIN_SOURCES = 40;
 
@@ -143,8 +146,15 @@ public class BoundaryContracts {
                 !source.toUpperCase(Locale.ROOT)
                     .contains("3D9A"),
                 name + " has no hard-coded equipment pink");
+            Matcher legacy = LEGACY_LANG_LITERAL.matcher(source);
+            while (legacy.find()) {
+                check(LEGACY_LANG_KEYS.contains(legacy.group(1)), name + " uses the GTNL lang key " + legacy.group(1));
+                used.add(legacy.group(1));
+            }
             check(
-                !HOST_LITERAL.matcher(source)
+                !HOST_LITERAL.matcher(
+                    LEGACY_LANG_LITERAL.matcher(source)
+                        .replaceAll("\"\""))
                     .find(),
                 name + " uses no GTNL lang key or resource namespace");
             Matcher namespaced = NAMESPACED.matcher(source);
@@ -169,8 +179,9 @@ public class BoundaryContracts {
             boolean lang = name.endsWith(".lang"), shader = name.endsWith(".glsl"),
                 texture = name.startsWith("textures/") && name.endsWith(".png");
             check(lang || shader || texture, name + " is a GTNLLib lang file, shader or texture");
-            if (lang) for (String key : langKeys(file))
-                check(key.startsWith(GTNLLib.MODID + "."), name + " key " + key + " starts with the gtnllib prefix");
+            if (lang) for (String key : langKeys(file)) check(
+                key.startsWith(GTNLLib.MODID + ".") || LEGACY_LANG_KEYS.contains(key),
+                name + " key " + key + " starts with the gtnllib prefix");
             if (shader) {
                 Matcher include = INCLUDE.matcher(read(file));
                 while (include.find()) check(
@@ -207,6 +218,19 @@ public class BoundaryContracts {
         }
         for (String key : english) check(chinese.contains(key), "GTNLLib zh_CN missing " + key);
         for (String key : chinese) check(english.contains(key), "GTNLLib en_US missing " + key);
+    }
+
+    private static Set<String> legacyLangKeys() {
+        Set<String> keys = new TreeSet<>();
+        String setting = "gtnl.gui.config.general.client.enable_text_effects";
+        keys.add(setting);
+        keys.add(setting + ".tooltip");
+        for (String key : new String[] { "title", "palette", "bold", "italic" }) keys.add("gtnl.text_effect." + key);
+        for (String key : new String[] { "usage", "player_only", "no_item", "header", "display_name",
+            "item_stack_display_name", "unlocalized_inefficient_name", "unlocalized_name",
+            "item_stack_unlocalized_name", "class", "id", "stack_size", "damage", "max_damage", "nbt_data", "nbt_entry",
+            "no_nbt_data" }) keys.add("gtnl.command.item_info." + key);
+        return Collections.unmodifiableSet(keys);
     }
 
     private static Set<String> langKeys(Path file) throws IOException {

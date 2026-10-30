@@ -56,7 +56,7 @@ public class TextEffectPreview extends GuiScreen {
                 height - 25,
                 buttonWidth,
                 20,
-                StatCollector.translateToLocal("gtnllib.text_effect.palette")));
+                StatCollector.translateToLocal("gtnl.text_effect.palette")));
         buttonList.add(
             new GuiButton(
                 1,
@@ -64,7 +64,7 @@ public class TextEffectPreview extends GuiScreen {
                 height - 25,
                 buttonWidth,
                 20,
-                StatCollector.translateToLocal("gtnllib.text_effect.bold")));
+                StatCollector.translateToLocal("gtnl.text_effect.bold")));
         buttonList.add(
             new GuiButton(
                 4,
@@ -72,7 +72,7 @@ public class TextEffectPreview extends GuiScreen {
                 height - 25,
                 buttonWidth,
                 20,
-                StatCollector.translateToLocal("gtnllib.text_effect.italic")));
+                StatCollector.translateToLocal("gtnl.text_effect.italic")));
         buttonList.add(new GuiButton(2, width - 70, 50, 24, 20, "<"));
         buttonList.add(new GuiButton(3, width - 42, 50, 24, 20, ">"));
     }
@@ -82,7 +82,7 @@ public class TextEffectPreview extends GuiScreen {
         drawDefaultBackground();
         drawCenteredString(
             fontRendererObj,
-            StatCollector.translateToLocal("gtnllib.text_effect.title"),
+            StatCollector.translateToLocal("gtnl.text_effect.title"),
             width / 2,
             10,
             TextEffectColors.rgb(TextEffectColors.effectWhite));

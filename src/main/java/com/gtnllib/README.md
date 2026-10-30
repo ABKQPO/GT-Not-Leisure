@@ -38,7 +38,7 @@
 ## 规则
 
 - 不引用 GTNL 和 GregTech 的任何类，也不写任何具体功能的名字；具体功能用到的颜色来源、编辑器配色、HUD 元素都由使用方在启动时注册进来。
-- 资源只用 `gtnllib` 命名空间：着色器在 `assets/gtnllib/shaders`（文字特效的在 `shaders/text`），语言文件在 `assets/gtnllib/lang`，界面材质在 `assets/gtnllib/textures/gui/skin`，语言键以 `gtnllib.` 开头，绘制对象和控件主题键也带 `gtnllib` 前缀。
+- 资源只用 `gtnllib` 命名空间：着色器在 `assets/gtnllib/shaders`（文字特效的在 `shaders/text`），语言文件在 `assets/gtnllib/lang`，界面材质在 `assets/gtnllib/textures/gui/skin`，语言键以 `gtnllib.` 开头，绘制对象和控件主题键也带 `gtnllib` 前缀。例外：从 GTNL 搬来的 `/getiteminfo`、文字特效预览和文字特效开关保留原来的 `gtnl.*` 键名，整合包里其他语言的翻译按键名覆盖，改名会让它们变回英文。
 - 契约测试在 `src/test/java/com/gtnllib`，其中 `BoundaryContracts` 守住上面两条，并检查包之间没有互相引用、只有入口读配置。
 
 ## 初始化

@@ -59,7 +59,7 @@ public class GTNLLibConfig {
     public static int maxWorldMotes = DEFAULT_MAX_WORLD_MOTES;
 
     @Comment("Render animated text effects; when disabled, styled text is shown as ordinary text")
-    @LangKey("gtnllib.gui.config.client.enable_text_effects")
+    @LangKey("gtnl.gui.config.general.client.enable_text_effects")
     @DefaultBoolean(true)
     public static boolean enableTextEffects = true;
 
