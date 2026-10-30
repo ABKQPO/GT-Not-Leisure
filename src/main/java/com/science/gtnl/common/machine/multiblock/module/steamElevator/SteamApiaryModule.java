@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 import com.gtnewhorizon.gtnhlib.util.data.ItemId;
+import com.science.gtnl.common.greenhouse.GreenHouseRecipeInfo;
 import com.science.gtnl.common.gui.modularui.multiblock.SteamApiaryModuleGui;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.machine.MachineUtils;
@@ -367,14 +368,7 @@ public class SteamApiaryModule extends SteamElevatorModuleBase {
     }
 
     public Object2IntOpenHashMap<ItemId> getOutputItemCounts(ItemStack[] outputItems) {
-        if (outputItems == null || outputItems.length == 0) return new Object2IntOpenHashMap<>();
-        Object2IntOpenHashMap<ItemId> outputCounts = new Object2IntOpenHashMap<>(outputItems.length);
-        for (ItemStack outputItem : outputItems) {
-            if (outputItem != null && outputItem.stackSize > 0) {
-                outputCounts.addTo(ItemId.createNoCopy(outputItem), outputItem.stackSize);
-            }
-        }
-        return outputCounts;
+        return GreenHouseRecipeInfo.outputItemCounts(outputItems);
     }
 
     public <Y> void tryOutputAll(@Nullable List<Y> list, @Nullable Function<Y, List<ItemStack>> mappingFunction) {

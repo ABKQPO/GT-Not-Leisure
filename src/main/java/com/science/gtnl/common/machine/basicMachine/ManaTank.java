@@ -7,7 +7,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -18,6 +17,7 @@ import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
 import com.science.gtnl.common.gui.modularui.singleblock.ManaTankGui;
+import com.science.gtnl.common.machine.hatch.ManaScan;
 import com.science.gtnl.common.material.GTNLMaterials;
 import com.science.gtnl.utils.text.LanguageLoader;
 
@@ -27,11 +27,8 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTUtility;
 import gregtech.common.tileentities.storage.MTEDigitalTankBase;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import vazkii.botania.api.subtile.ManaHelper;
-import vazkii.botania.api.subtile.SubTileEntity;
 import vazkii.botania.api.subtile.SubTileGenerating;
-import vazkii.botania.common.block.tile.TileSpecialFlower;
 import vazkii.botania.common.block.tile.mana.TilePool;
 
 public class ManaTank extends MTEDigitalTankBase {
@@ -129,8 +126,8 @@ public class ManaTank extends MTEDigitalTankBase {
         if (aBaseMetaTileEntity.isClientSide()) return;
 
         if (aBaseMetaTileEntity.isAllowedToWork() && aTick % 128 == 0) {
-            List<TilePool> pools = findManaPoolsInRange(aBaseMetaTileEntity);
-            List<SubTileGenerating> flowers = findGeneratingFlowersInRange(aBaseMetaTileEntity);
+            List<TilePool> pools = ManaScan.pools(aBaseMetaTileEntity, MANA_POOL_RADIUS);
+            List<SubTileGenerating> flowers = ManaScan.generatingFlowers(aBaseMetaTileEntity, MANA_FLOWER_RADIUS);
 
             if (!flowers.isEmpty()) {
                 processFlowerManaTransfer(flowers);
@@ -139,7 +136,7 @@ public class ManaTank extends MTEDigitalTankBase {
             if (!pools.isEmpty()) {
                 if (isLiquidizerMode) {
                     for (TilePool pool : pools) {
-                        if (isDropMetaValid(pool)) {
+                        if (ManaScan.isDropMetaValid(pool)) {
                             fillChamberToMax();
                             return;
                         }
@@ -298,7 +295,7 @@ public class ManaTank extends MTEDigitalTankBase {
         int capacity = getCapacity();
 
         for (TilePool pool : pools) {
-            if (isDropMetaValid(pool)) continue;
+            if (ManaScan.isDropMetaValid(pool)) continue;
 
             int currentMana = pool.getCurrentMana();
             if (currentMana <= 0) continue;
@@ -318,7 +315,7 @@ public class ManaTank extends MTEDigitalTankBase {
         int fluidAmount = getFluidAmount();
 
         for (TilePool pool : pools) {
-            if (isDropMetaValid(pool)) continue;
+            if (ManaScan.isDropMetaValid(pool)) continue;
 
             int availableSpace = pool.getAvailableSpaceForMana();
 
@@ -359,56 +356,6 @@ public class ManaTank extends MTEDigitalTankBase {
                 flower.sync();
             }
         }
-    }
-
-    private List<TilePool> findManaPoolsInRange(IGregTechTileEntity aBaseMetaTileEntity) {
-        World world = aBaseMetaTileEntity.getWorld();
-        int x = aBaseMetaTileEntity.getXCoord();
-        int y = aBaseMetaTileEntity.getYCoord();
-        int z = aBaseMetaTileEntity.getZCoord();
-
-        List<TilePool> pools = new ObjectArrayList<>();
-
-        for (int dx = -MANA_POOL_RADIUS; dx <= MANA_POOL_RADIUS; dx++) {
-            for (int dy = -MANA_POOL_RADIUS; dy <= MANA_POOL_RADIUS; dy++) {
-                for (int dz = -MANA_POOL_RADIUS; dz <= MANA_POOL_RADIUS; dz++) {
-                    TileEntity te = world.getTileEntity(x + dx, y + dy, z + dz);
-                    if (te instanceof TilePool pool) {
-                        pools.add(pool);
-                    }
-                }
-            }
-        }
-        return pools;
-    }
-
-    private List<SubTileGenerating> findGeneratingFlowersInRange(IGregTechTileEntity aBaseMetaTileEntity) {
-        World world = aBaseMetaTileEntity.getWorld();
-        int x = aBaseMetaTileEntity.getXCoord();
-        int y = aBaseMetaTileEntity.getYCoord();
-        int z = aBaseMetaTileEntity.getZCoord();
-
-        List<SubTileGenerating> flowers = new ObjectArrayList<>();
-
-        for (int dx = -MANA_FLOWER_RADIUS; dx <= MANA_FLOWER_RADIUS; dx++) {
-            for (int dy = -MANA_FLOWER_RADIUS; dy <= MANA_FLOWER_RADIUS; dy++) {
-                for (int dz = -MANA_FLOWER_RADIUS; dz <= MANA_FLOWER_RADIUS; dz++) {
-                    TileEntity te = world.getTileEntity(x + dx, y + dy, z + dz);
-                    if (te instanceof TileSpecialFlower flowerTile) {
-                        SubTileEntity subTile = flowerTile.getSubTile();
-                        if (subTile instanceof SubTileGenerating) {
-                            flowers.add((SubTileGenerating) subTile);
-                        }
-                    }
-                }
-            }
-        }
-        return flowers;
-    }
-
-    private boolean isDropMetaValid(TilePool pool) {
-        int meta = pool.getBlockMetadata();
-        return meta == 1;
     }
 
     private static FluidStack createFluidStack(int amount) {

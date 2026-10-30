@@ -5,7 +5,6 @@ import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +15,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
@@ -26,9 +24,9 @@ import com.google.common.collect.ImmutableMap;
 import com.gtnewhorizon.cropsnh.api.ISeedData;
 import com.gtnewhorizon.cropsnh.utility.CropsNHUtils;
 import com.gtnewhorizon.cropsnh.utility.IFDropTable;
-import com.gtnewhorizon.gtnhlib.util.data.ItemId;
 import com.science.gtnl.api.IGreenHouse;
 import com.science.gtnl.common.greenhouse.GreenHouseModes;
+import com.science.gtnl.common.greenhouse.GreenHouseRecipeInfo;
 import com.science.gtnl.common.gui.modularui.multiblock.SteamGreenhouseModuleGui;
 import com.science.gtnl.common.machine.tooltip.GTNLMultiblockTooltipBuilder;
 import com.science.gtnl.utils.machine.greenHouseManager.GreenHouseMode;
@@ -46,7 +44,6 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
@@ -254,47 +251,8 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
 
     @Override
     public String generateCurrentRecipeInfoString() {
-        double maxProgressSeconds = getSafeMaxProgressSeconds();
-        double progressPercent = getSafeProgressPercent();
-        StringBuilder ret = new StringBuilder(
-            EnumChatFormatting.WHITE + StatCollector.translateToLocal("GT5U.gui.text.progress"))
-                .append(String.format("%,.2f", (double) this.mProgresstime / 20))
-                .append("s / ")
-                .append(String.format("%,.2f", maxProgressSeconds))
-                .append("s (")
-                .append(String.format("%,.1f", progressPercent))
-                .append("%)\n");
-        Object2IntOpenHashMap<ItemId> outputCounts = getOutputItemCounts(mOutputItems);
-        ObjectArrayList<Map.Entry<ItemStack, Double>> sortedDrops = new ObjectArrayList<>(
-            this.industrialFarmGuiDropTracker.entrySet());
-        sortedDrops.sort(
-            Comparator.comparing(
-                a -> a.getKey()
-                    .toString()
-                    .toLowerCase()));
-
-        for (Map.Entry<ItemStack, Double> drop : sortedDrops) {
-            int outputSize = outputCounts.getInt(ItemId.createNoCopy(drop.getKey()));
-            ret.append(EnumChatFormatting.AQUA)
-                .append(
-                    drop.getKey()
-                        .getDisplayName())
-                .append(EnumChatFormatting.WHITE)
-                .append(": ");
-            if (outputSize == 0) {
-                ret.append(String.format("%.2f", drop.getValue() * 100))
-                    .append("%\n");
-            } else {
-                ret.append(EnumChatFormatting.GOLD)
-                    .append(
-                        String.format(
-                            "x%d %s(+%.2f/s)\n",
-                            outputSize,
-                            EnumChatFormatting.WHITE,
-                            outputSize / maxProgressSeconds));
-            }
-        }
-        return ret.toString();
+        return GreenHouseRecipeInfo
+            .describe(mProgresstime, mMaxProgresstime, mOutputItems, industrialFarmGuiDropTracker.entrySet());
     }
 
     @Override
@@ -539,31 +497,6 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
 
     public int getTotalSeedCount() {
         return getTotalStoredCropCount();
-    }
-
-    public double getSafeMaxProgressSeconds() {
-        return Math.max(mMaxProgresstime / 20.0D, 0.05D);
-    }
-
-    public double getSafeProgressPercent() {
-        if (mMaxProgresstime <= 0) {
-            return 0;
-        }
-        return (double) mProgresstime / mMaxProgresstime * 100;
-    }
-
-    public Object2IntOpenHashMap<ItemId> getOutputItemCounts(ItemStack[] outputItems) {
-        Object2IntOpenHashMap<ItemId> outputCounts = new Object2IntOpenHashMap<>(
-            outputItems == null ? 0 : outputItems.length);
-        if (outputItems == null) {
-            return outputCounts;
-        }
-        for (ItemStack outputItem : outputItems) {
-            if (outputItem != null && outputItem.stackSize > 0) {
-                outputCounts.addTo(ItemId.createNoCopy(outputItem), outputItem.stackSize);
-            }
-        }
-        return outputCounts;
     }
 
     private void dropStoredStack(IGregTechTileEntity mte, ItemStack stack) {

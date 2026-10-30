@@ -71,7 +71,7 @@ public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
 
         if (aBaseMetaTileEntity.isAllowedToWork() && aTick % 20 == 0) {
             convertEUToMana(aBaseMetaTileEntity);
-            List<TilePool> pools = findManaPoolsInRange(aBaseMetaTileEntity);
+            List<TilePool> pools = ManaScan.pools(aBaseMetaTileEntity, MANA_POOL_RADIUS);
 
             if (!pools.isEmpty()) {
                 transferFluidToPools(pools);
@@ -179,7 +179,7 @@ public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
         int fluidAmount = getFluidAmount();
 
         for (TilePool pool : pools) {
-            if (isDropMetaValid(pool)) continue;
+            if (ManaScan.isDropMetaValid(pool)) continue;
 
             int availableSpace = pool.getAvailableSpaceForMana();
             if (availableSpace <= 0) continue;
@@ -192,32 +192,6 @@ public class ManaEnergyHatch extends MTEHatchEnergy implements IAddUIWidgets {
                 pool.recieveMana(drainedStack.amount);
             }
         }
-    }
-
-    private List<TilePool> findManaPoolsInRange(IGregTechTileEntity aBaseMetaTileEntity) {
-        World world = aBaseMetaTileEntity.getWorld();
-        int x = aBaseMetaTileEntity.getXCoord();
-        int y = aBaseMetaTileEntity.getYCoord();
-        int z = aBaseMetaTileEntity.getZCoord();
-
-        List<TilePool> pools = new ObjectArrayList<>();
-
-        for (int dx = -MANA_POOL_RADIUS; dx <= MANA_POOL_RADIUS; dx++) {
-            for (int dy = -MANA_POOL_RADIUS; dy <= MANA_POOL_RADIUS; dy++) {
-                for (int dz = -MANA_POOL_RADIUS; dz <= MANA_POOL_RADIUS; dz++) {
-                    TileEntity te = world.getTileEntity(x + dx, y + dy, z + dz);
-                    if (te instanceof TilePool pool) {
-                        pools.add(pool);
-                    }
-                }
-            }
-        }
-        return pools;
-    }
-
-    private boolean isDropMetaValid(TilePool pool) {
-        int meta = pool.getBlockMetadata();
-        return meta == 1;
     }
 
     private FluidStack createFluidStack(int amount) {
