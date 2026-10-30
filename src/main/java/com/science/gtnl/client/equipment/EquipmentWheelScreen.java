@@ -20,10 +20,13 @@ import com.gtnllib.gui.wheel.WheelScreen;
 import com.gtnllib.gui.wheel.WheelStyle;
 import com.gtnllib.gui.widget.LayoutTheme;
 import com.science.gtnl.ScienceNotLeisure;
+import com.science.gtnl.client.celestweave.CelestweaveClientEvents;
 import com.science.gtnl.common.equipment.IEquipmentItem;
 import com.science.gtnl.common.gui.equipment.EquipmentGui;
 import com.science.gtnl.common.gui.equipment.EquipmentSoundScreen;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme;
+import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
+import com.science.gtnl.common.packet.CelestweaveKeyPacket;
 import com.science.gtnl.common.packet.OpenEquipmentGuiPacket;
 
 import cpw.mods.fml.relauncher.Side;
@@ -37,9 +40,11 @@ public class EquipmentWheelScreen extends WheelScreen {
     private static final String LANG = "item.gtnl.equipment.wheel.";
     private static final int TITLE_GAP = 8, MIN_SLOTS = 4, MAX_SLOTS = 8;
     private static final int BUTTON_WIDTH = 72, BUTTON_GAP = 22;
-    private static final String HUD = HudEditor.OPEN_LANG, SOUND = LANG + "sound";
+    private static final String HUD = HudEditor.OPEN_LANG, SOUND = LANG + "sound", HIDE_ARMOR = LANG + "hide_armor",
+        SHOW_ARMOR = LANG + "show_armor";
 
     private final int[] slots;
+    private boolean concealSent;
 
     public EquipmentWheelScreen(KeyBinding key, int[] slots) {
         super(menu(slots), WheelOpenMode.HOLD, key);
@@ -57,6 +62,47 @@ public class EquipmentWheelScreen extends WheelScreen {
             BUTTON_GAP,
             width,
             style.spacingMedium);
+        if (hasCelestweave(slots)) concealButton(style, width);
+    }
+
+    private static boolean hasCelestweave(int[] slots) {
+        for (int slot : slots) {
+            ItemStack stack = stackAt(slot);
+            if (stack != null && stack.getItem() instanceof CelestweaveArmor) return true;
+        }
+        return false;
+    }
+
+    private void concealButton(LayoutTheme style, int pairWidth) {
+        int width = Layout.buttonWidth(
+            style,
+            2 * pairWidth + style.spacingMedium,
+            EquipmentGui.tr(HIDE_ARMOR),
+            EquipmentGui.tr(SHOW_ARMOR));
+        int row = BUTTON_GAP + style.buttonHeight + style.spacingMedium;
+        below(
+            Layout
+                .button(
+                    IKey.dynamic(() -> EquipmentGui.tr(concealed() ? SHOW_ARMOR : HIDE_ARMOR)),
+                    width,
+                    style,
+                    this::toggleConceal)
+                .tooltipBuilder(tooltip -> tooltip.addLine(IKey.lang(HIDE_ARMOR + ".tooltip"))),
+            row);
+        roomBelow(row + style.buttonHeight);
+    }
+
+    private void toggleConceal() {
+        // In hold mode a mouse click and the key release both press this button.
+        if (concealSent) return;
+        concealSent = true;
+        ScienceNotLeisure.network.sendToServer(new CelestweaveKeyPacket(CelestweaveKeyPacket.CONCEAL));
+        dismiss();
+    }
+
+    private static boolean concealed() {
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        return player != null && CelestweaveClientEvents.concealed(player);
     }
 
     public static int[] equipmentSlots(EntityPlayer player) {

@@ -11,7 +11,6 @@ import org.lwjgl.opengl.GL11;
 import com.gtnewhorizon.gtnhlib.client.model.baked.BakedModel;
 import com.gtnewhorizon.gtnhlib.client.model.loading.ModelRegistry;
 import com.gtnewhorizon.gtnhlib.client.model.loading.ResourceLoc.ModelLoc;
-import com.gtnewhorizon.gtnhlib.client.model.loading.TexHelper.BaseCheckedTex;
 import com.gtnewhorizon.gtnhlib.client.model.unbaked.JSONModel;
 import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.gtnewhorizon.gtnhlib.eventbus.Phase;
@@ -69,14 +68,6 @@ public class PigmeeFumoModel {
     public void handleBeforeStitch(TextureStitchEvent.Pre event) {
         if (event.map.getTextureType() != 0) return;
         orientations = null;
-        try {
-            for (String texture : ModelRegistry.getJSONModel(MODEL)
-                .getTextures()
-                .values())
-                if (event.map.registerIcon(texture) instanceof BaseCheckedTex sprite) sprite.nhlib$setHasBase(false);
-        } catch (RuntimeException exception) {
-            ScienceNotLeisure.LOG.error("Cannot register Pigmee Fumo textures", exception);
-        }
     }
 
     @SubscribeEvent

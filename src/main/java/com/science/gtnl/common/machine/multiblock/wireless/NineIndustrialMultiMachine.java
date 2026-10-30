@@ -106,7 +106,7 @@ public class NineIndustrialMultiMachine extends WirelessEnergyMultiMachineBase<N
     public IStructureDefinition<NineIndustrialMultiMachine> getStructureDefinition() {
         return StructureDefinition.<NineIndustrialMultiMachine>builder()
             .addShape(STRUCTURE_PIECE_MAIN, StructureUtility.transpose(shape))
-            .addElement('A', StructureUtility.ofBlock(ItemRegistry.bw_realglas2, 0))
+            .addElement('A', StructureUtility.ofBlock(ItemRegistry.bw_realglas, 6))
             .addElement('B', StructureUtility.ofBlock(Loaders.FRF_Coil_4, 0))
             .addElement('C', GTNLCasings.NeutroniumGearbox.asElement())
             .addElement('D', StructureUtility.ofBlock(BlockLoader.defcCasingBlock, 12))

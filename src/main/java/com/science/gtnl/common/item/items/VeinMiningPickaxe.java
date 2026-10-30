@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,10 +15,6 @@ import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.ChatStyle;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -42,6 +37,7 @@ import com.reavaritia.utils.item.ToolHelper;
 import com.science.gtnl.common.gui.VeinMiningPickaxeGui;
 import com.science.gtnl.config.MainConfig;
 import com.science.gtnl.loader.ItemLoader;
+import com.science.gtnl.utils.ClientUtils;
 import com.science.gtnl.utils.item.ItemUtils;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -573,16 +569,12 @@ public class VeinMiningPickaxe extends ItemPickaxe implements SubtitleDisplay, I
     @SideOnly(Side.CLIENT)
     @Override
     public void showSubtitle(String messageKey) {
-        IChatComponent component = new ChatComponentTranslation(messageKey);
-        component.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE));
-        Minecraft.getMinecraft().ingameGUI.func_110326_a(component.getFormattedText(), true);
+        ClientUtils.showSubtitle(messageKey);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void showSubtitle(String messageKey, int range) {
-        IChatComponent component = new ChatComponentTranslation(messageKey, range);
-        component.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE));
-        Minecraft.getMinecraft().ingameGUI.func_110326_a(component.getFormattedText(), true);
+        ClientUtils.showSubtitle(messageKey, range);
     }
 }

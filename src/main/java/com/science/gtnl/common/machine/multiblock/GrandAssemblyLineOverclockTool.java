@@ -5,18 +5,23 @@ import java.util.Locale;
 import java.util.Scanner;
 
 import gregtech.api.enums.GTValues;
+import gregtech.api.enums.VoltageIndex;
 
 public class GrandAssemblyLineOverclockTool {
 
     public static final int STANDARD_OVERCLOCK_FACTOR = 2;
     public static final int PERFECT_OVERCLOCK_FACTOR = 4;
+    public static final double TIER_DIVISOR = 50.0;
+    public static final int BOOST_TIER = VoltageIndex.UMV;
+    public static final double BOOST_SPEED_MULTIPLIER = 20.0, BOOST_EU_DISCOUNT_SCALE = 0.2;
 
     public static double getEUtDiscount(final int parallelTier) {
-        return 0.8 - (parallelTier / 50.0) * (parallelTier >= 12 ? 0.2 : 1.0);
+        return 0.8 - (parallelTier / TIER_DIVISOR) * (parallelTier >= BOOST_TIER ? BOOST_EU_DISCOUNT_SCALE : 1.0);
     }
 
     public static double getDurationModifier(final int parallelTier) {
-        return (1.0 / 1.67 - (Math.max(0, parallelTier - 1) / 50.0)) * (parallelTier >= 12 ? 1.0 / 20.0 : 1.0);
+        return (1.0 / 1.67 - (Math.max(0, parallelTier - 1) / TIER_DIVISOR))
+            * (parallelTier >= BOOST_TIER ? 1.0 / BOOST_SPEED_MULTIPLIER : 1.0);
     }
 
     public static long parseVoltage(final String value) {
@@ -99,7 +104,7 @@ public class GrandAssemblyLineOverclockTool {
         final BigInteger powerLimit = BigInteger.valueOf(availablePower);
         final BigInteger baseInstantPower = BigInteger.valueOf(currentPower)
             .multiply(BigInteger.valueOf(parallel));
-        while (power <= Integer.MAX_VALUE / 4L && duration / overclockFactor >= minDuration) {
+        while (power <= Long.MAX_VALUE / 4L && duration / overclockFactor >= minDuration) {
             final long nextPower = power * 4L;
             final BigInteger addedPower = BigInteger.valueOf(power)
                 .multiply(BigInteger.valueOf(3L))
@@ -114,7 +119,87 @@ public class GrandAssemblyLineOverclockTool {
             addedInstantPower = nextAddedInstantPower;
             overclocks++;
         }
-        return new Result(power, Math.max(1, duration), overclocks, addedInstantPower.longValue(), parallel, parallel);
+        return new Result(
+            power,
+            Math.max(1, duration),
+            overclocks,
+            addedInstantPower.longValueExact(),
+            parallel,
+            parallel);
+    }
+
+    public static Result applyWirelessOverclock(final long currentPower, final int currentDuration,
+        final BigInteger availableEnergy, final int parallel, final int minDuration, final int overclockFactor) {
+        if (currentPower <= 0 || currentDuration <= 0
+            || availableEnergy.signum() <= 0
+            || parallel <= 0
+            || minDuration <= 0
+            || overclockFactor <= 0) {
+            throw new IllegalArgumentException("Overclock inputs must be positive.");
+        }
+
+        long power = currentPower;
+        int duration = currentDuration;
+        int overclocks = 0;
+        while (power <= Long.MAX_VALUE / 4L && duration / overclockFactor >= minDuration) {
+            final long nextPower = power * 4L;
+            final int nextDuration = duration / overclockFactor;
+            if (getTotalEnergy(nextPower, nextDuration, parallel).compareTo(availableEnergy) > 0) break;
+            power = nextPower;
+            duration = nextDuration;
+            overclocks++;
+        }
+        return new Result(power, duration, overclocks, 0, parallel, parallel);
+    }
+
+    public static BigInteger getTotalEnergy(final long power, final int duration, final int parallel) {
+        return BigInteger.valueOf(power)
+            .multiply(BigInteger.valueOf(duration))
+            .multiply(BigInteger.valueOf(parallel));
+    }
+
+    /** Accumulates both modes without narrowing power or energy before the final machine fields are assigned. */
+    public static class EnergyTotals {
+
+        private BigInteger energy = BigInteger.ZERO;
+        private BigInteger power = BigInteger.ZERO;
+
+        public void add(final long taskPower, final int taskDuration, final int parallel) {
+            if (taskPower <= 0 || taskDuration <= 0 || parallel <= 0) {
+                throw new IllegalArgumentException("Task power, duration, and parallel must be positive.");
+            }
+            final BigInteger taskTotalPower = BigInteger.valueOf(taskPower)
+                .multiply(BigInteger.valueOf(parallel));
+            power = power.add(taskTotalPower);
+            energy = energy.add(taskTotalPower.multiply(BigInteger.valueOf(taskDuration)));
+        }
+
+        public BigInteger energy() {
+            return energy;
+        }
+
+        public int weightedDuration() {
+            // A weighted average of positive int durations is also representable as an int.
+            return energy.divide(power)
+                .max(BigInteger.ONE)
+                .intValueExact();
+        }
+
+        public Settlement settleWired(final long availablePower) {
+            if (availablePower <= 0) throw new IllegalArgumentException("Available power must be positive.");
+            final BigInteger finalPower = divideCeiling(energy, BigInteger.valueOf(weightedDuration()))
+                .min(BigInteger.valueOf(availablePower));
+            // Round up so integer ticks never discard unpaid energy. The global power budget ensures this
+            // duration fits an int: every task lasts at most Integer.MAX_VALUE ticks and their sum fits the supply.
+            final int finalDuration = divideCeiling(energy, finalPower).intValueExact();
+            return new Settlement(finalPower.longValueExact(), finalDuration);
+        }
+    }
+
+    private static BigInteger divideCeiling(final BigInteger numerator, final BigInteger denominator) {
+        return numerator.add(denominator)
+            .subtract(BigInteger.ONE)
+            .divide(denominator);
     }
 
     public static void main(final String[] args) {
@@ -187,4 +272,6 @@ public class GrandAssemblyLineOverclockTool {
 
     public record Result(long power, int duration, int overclocks, long addedInstantPower, int parallel,
         int parallelLimit) {}
+
+    public record Settlement(long power, int duration) {}
 }

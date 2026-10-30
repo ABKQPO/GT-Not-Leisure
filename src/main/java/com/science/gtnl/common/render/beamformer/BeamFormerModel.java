@@ -25,7 +25,6 @@ import com.gtnewhorizon.gtnhlib.client.model.loading.ModelDeserializer;
 import com.gtnewhorizon.gtnhlib.client.model.loading.ModelDeserializer.Position;
 import com.gtnewhorizon.gtnhlib.client.model.loading.ModelDeserializer.Position.ModelDisplay;
 import com.gtnewhorizon.gtnhlib.client.model.loading.ResourceLoc.ModelLoc;
-import com.gtnewhorizon.gtnhlib.client.model.loading.TexHelper.BaseCheckedTex;
 import com.gtnewhorizon.gtnhlib.client.model.unbaked.JSONModel;
 import com.gtnewhorizon.gtnhlib.client.renderer.cel.model.quad.ModelQuad;
 import com.gtnewhorizon.gtnhlib.client.renderer.cel.model.quad.ModelQuadView;
@@ -82,12 +81,6 @@ public class BeamFormerModel {
                         .getResourceManager(),
                     new Object2ObjectOpenHashMap<>(),
                     new ObjectOpenHashSet<>()));
-            for (String texture : pending.getTextures()
-                .values()) {
-                if (event.map.registerIcon(texture) instanceof BaseCheckedTex sprite) {
-                    sprite.nhlib$setHasBase(false);
-                }
-            }
         } catch (RuntimeException exception) {
             ScienceNotLeisure.LOG.error("Cannot load Beam Former model", exception);
         }

@@ -1,7 +1,6 @@
 package com.science.gtnl.common.item.items;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -9,15 +8,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.ChatStyle;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import com.gtnllib.utils.TeleporterUtils;
 import com.reavaritia.utils.item.SubtitleDisplay;
+import com.science.gtnl.utils.ClientUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -139,8 +136,6 @@ public class NetherTeleporter extends Item implements SubtitleDisplay {
 
     @SideOnly(Side.CLIENT)
     public void showSubtitle(String messageKey, long cooldown) {
-        IChatComponent component = new ChatComponentTranslation(messageKey);
-        component.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE));
-        Minecraft.getMinecraft().ingameGUI.func_110326_a(component.getFormattedText() + cooldown + "s", true);
+        ClientUtils.showSubtitleWithSuffix(messageKey, cooldown + "s");
     }
 }

@@ -545,6 +545,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
 
     public abstract int getRecipeMaxTier();
 
+    @IMetaTileEntity.SkipGenerateDescription
     public static class LuVTier extends KuangBiaoOneGiantNuclearFusionReactor {
 
         public LuVTier(int aID, String aName, String aNameRegional) {
@@ -601,6 +602,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         }
     }
 
+    @IMetaTileEntity.SkipGenerateDescription
     public static class ZPMTier extends KuangBiaoOneGiantNuclearFusionReactor {
 
         public ZPMTier(int aID, String aName, String aNameRegional) {
@@ -657,6 +659,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         }
     }
 
+    @IMetaTileEntity.SkipGenerateDescription
     public static class UVTier extends KuangBiaoOneGiantNuclearFusionReactor {
 
         public UVTier(int aID, String aName, String aNameRegional) {
@@ -713,6 +716,7 @@ public abstract class KuangBiaoOneGiantNuclearFusionReactor
         }
     }
 
+    @IMetaTileEntity.SkipGenerateDescription
     public static class UHVTier extends KuangBiaoOneGiantNuclearFusionReactor {
 
         public UHVTier(int aID, String aName, String aNameRegional) {

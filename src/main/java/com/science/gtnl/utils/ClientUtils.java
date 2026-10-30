@@ -50,6 +50,12 @@ public class ClientUtils {
         Minecraft.getMinecraft().ingameGUI.func_110326_a(component.getFormattedText(), true);
     }
 
+    public static void showSubtitleWithSuffix(String messageKey, String suffix) {
+        IChatComponent component = new ChatComponentTranslation(messageKey);
+        component.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE));
+        Minecraft.getMinecraft().ingameGUI.func_110326_a(component.getFormattedText() + suffix, true);
+    }
+
     public static boolean onBeforePickBlock(EntityPlayer playerMP, World world, boolean useAE) {
         if (tryOpenMultiEssentiaJarBlock(playerMP, world)) {
             return true;

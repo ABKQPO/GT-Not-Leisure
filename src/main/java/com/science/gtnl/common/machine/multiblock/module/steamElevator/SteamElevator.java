@@ -565,6 +565,8 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
             }
         };
 
+        public static final String NAME_KEY = "gtnl.machine.steam_elevator.module";
+
         private final List<Class<? extends IMetaTileEntity>> mteClasses;
         private final IGTHatchAdder<SteamElevator> adder;
 
@@ -577,6 +579,16 @@ public class SteamElevator extends SteamMultiMachineBase<SteamElevator> implemen
         @Override
         public List<? extends Class<? extends IMetaTileEntity>> mteClasses() {
             return mteClasses;
+        }
+
+        @Override
+        public String getDescriptionLangKey() {
+            return NAME_KEY;
+        }
+
+        @Override
+        public String getDisplayName() {
+            return StatCollector.translateToLocal(NAME_KEY);
         }
 
         @Override

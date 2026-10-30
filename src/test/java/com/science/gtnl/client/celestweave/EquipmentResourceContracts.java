@@ -138,7 +138,7 @@ public class EquipmentResourceContracts {
     }
 
     private static void model() throws Exception {
-        Path armor = RESOURCES.resolve("models/armor");
+        Path armor = RESOURCES.resolve("armor");
         CelestweaveFrames frames;
         try (var reader = Files.newBufferedReader(armor.resolve("celestweave_frames.json"), StandardCharsets.UTF_8)) {
             frames = new Gson().fromJson(reader, CelestweaveFrames.class);
@@ -321,11 +321,9 @@ public class EquipmentResourceContracts {
             }
         }
 
-        Path armor = RESOURCES.resolve("models/armor");
+        Path armor = RESOURCES.resolve("armor");
         BufferedImage glow = ImageIO.read(
-            armor.getParent()
-                .getParent()
-                .resolve("textures/models/armor/celestweave_glow.png")
+            RESOURCES.resolve("textures/models/armor/celestweave_glow.png")
                 .toFile());
         int width = glow.getWidth(), height = glow.getHeight();
         int[] argb = glow.getRGB(0, 0, width, height, null, 0, width);
@@ -390,7 +388,7 @@ public class EquipmentResourceContracts {
             "first person arm mixin draws the armor over the vanilla right arm");
         CelestweaveFrames frames;
         try (var reader = Files
-            .newBufferedReader(RESOURCES.resolve("models/armor/celestweave_frames.json"), StandardCharsets.UTF_8)) {
+            .newBufferedReader(RESOURCES.resolve("armor/celestweave_frames.json"), StandardCharsets.UTF_8)) {
             frames = new Gson().fromJson(reader, CelestweaveFrames.class);
         }
         frames.resolve();
@@ -838,6 +836,10 @@ public class EquipmentResourceContracts {
                 && wheel.contains("for(intslot:slots)if(present(slot))return;close();")
                 && !wheel.contains("LANG+\"piece."),
             "every carried equipment gets a wheel slot with its own name, and an open wheel only rechecks its own slots");
+        check(
+            wheel.contains("if(concealSent)return;concealSent=true;")
+                && wheel.contains("CelestweaveKeyPacket.CONCEAL));dismiss();"),
+            "the hide armor button toggles once per wheel, though a click and the key release both press it");
         Pattern oldPixels = Pattern.compile("\\b(79|81|54|98|108|122|136|148|152|160|161)\\b");
         for (Map.Entry<String, String> entry : sources.entrySet()) check(
             !oldPixels.matcher(entry.getValue())
@@ -1106,6 +1108,9 @@ public class EquipmentResourceContracts {
         }
         expected.add("item.gtnl.equipment.wheel.title");
         expected.add("item.gtnl.equipment.wheel.sound");
+        expected.add("item.gtnl.equipment.wheel.hide_armor");
+        expected.add("item.gtnl.equipment.wheel.hide_armor.tooltip");
+        expected.add("item.gtnl.equipment.wheel.show_armor");
         for (CelestweaveHudElement element : CelestweaveHudElement.values()) expected.add(element.hud.lang());
         expected.add(RailgunHudRenderer.CHARGE.lang());
         for (Field field : ClientConfig.class.getFields()) {

@@ -157,9 +157,11 @@ public class ContainerUniversalStorageBus extends ContainerUpgradeable implement
 
     public void clear() {
         final IAEStackInventory inv = this.getConfig();
-        for (int x = 0; x < inv.getSizeInventory(); x++) {
-            inv.putAEStackInSlot(x, null);
-        }
+        this.storageBus.bulkUpdateConfig(() -> {
+            for (int x = 0; x < inv.getSizeInventory(); x++) {
+                inv.putAEStackInSlot(x, null);
+            }
+        });
         this.detectAndSendChanges();
     }
 
@@ -171,31 +173,35 @@ public class ContainerUniversalStorageBus extends ContainerUpgradeable implement
         }
 
         final PartitionState state = PARTITION_STATES.get(player);
-        Iterator<IAEStack<?>> iterator = state != null && state.bus == this.storageBus ? state.iterator : null;
-        if (iterator == null) {
+        Iterator<IAEStack<?>> candidate = state != null && state.bus == this.storageBus ? state.iterator : null;
+        if (candidate == null) {
             final List<IAEStack<?>> contents = this.storageBus.getTargetContents();
             if (contents.isEmpty()) {
                 this.clearPartitionIterator(player);
                 return;
             }
-            iterator = contents.iterator();
-            PARTITION_STATES.put(player, new PartitionState(this.storageBus, iterator));
+            candidate = contents.iterator();
+            PARTITION_STATES.put(player, new PartitionState(this.storageBus, candidate));
             this.partitionMode = ActionItems.NEXT_PARTITION;
         }
+        // effectively final, the loop below runs inside a lambda
+        final Iterator<IAEStack<?>> iterator = candidate;
 
         final IAEStackInventory inv = this.getConfig();
-        boolean skip = false;
-        for (int x = 0; x < inv.getSizeInventory(); x++) {
-            if (!skip && this.isSlotEnabled(x / 9) && iterator.hasNext()) {
-                final IAEStack<?> stack = iterator.next()
-                    .copy();
-                stack.setStackSize(1);
-                inv.putAEStackInSlot(x, stack);
-            } else {
-                skip = true;
-                inv.putAEStackInSlot(x, null);
+        this.storageBus.bulkUpdateConfig(() -> {
+            boolean skip = false;
+            for (int x = 0; x < inv.getSizeInventory(); x++) {
+                if (!skip && this.isSlotEnabled(x / 9) && iterator.hasNext()) {
+                    final IAEStack<?> stack = iterator.next()
+                        .copy();
+                    stack.setStackSize(1);
+                    inv.putAEStackInSlot(x, stack);
+                } else {
+                    skip = true;
+                    inv.putAEStackInSlot(x, null);
+                }
             }
-        }
+        });
 
         if (!iterator.hasNext()) this.clearPartitionIterator(player);
         this.detectAndSendChanges();
@@ -209,9 +215,11 @@ public class ContainerUniversalStorageBus extends ContainerUpgradeable implement
     @Override
     public void receiveSlotStacks(StorageName invName, Int2ObjectMap<IAEStack<?>> slotStacks) {
         final IAEStackInventory config = this.getConfig();
-        for (var entry : slotStacks.int2ObjectEntrySet()) {
-            config.putAEStackInSlot(entry.getIntKey(), entry.getValue());
-        }
+        this.storageBus.bulkUpdateConfig(() -> {
+            for (var entry : slotStacks.int2ObjectEntrySet()) {
+                config.putAEStackInSlot(entry.getIntKey(), entry.getValue());
+            }
+        });
 
         if (Platform.isServer()) {
             this.updateVirtualSlots(StorageName.CONFIG, config, this.configClientSlot);

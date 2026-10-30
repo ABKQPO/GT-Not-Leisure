@@ -331,7 +331,7 @@ public class SwarmCore extends WirelessEnergyMultiMachineBase<SwarmCore> impleme
             .addElement('N', GTStructureUtility.ofFrame(Materials.Neutronium))
             .addElement('O', Casings.ElectronPermeableNeutroniumCoatedGlass.asElement())
             .addElement('P', GTStructureUtility.ofFrame(Materials.NaquadahAlloy))
-            .addElement('Q', StructureUtility.ofBlock(ItemRegistry.bw_realglas2, 0))
+            .addElement('Q', StructureUtility.ofBlock(ItemRegistry.bw_realglas, 6))
             .build();
     }
 

@@ -639,6 +639,8 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
             }
         };
 
+        public static final String ROTOR_ASSEMBLY_NAME_KEY = "gt.blockmachines.hatch.turbine.name";
+
         private final List<Class<? extends IMetaTileEntity>> mteClasses;
         private final IGTHatchAdder<HighwayToHell> adder;
 
@@ -651,6 +653,16 @@ public class HighwayToHell extends WirelessEnergyMultiMachineBase<HighwayToHell>
         @Override
         public List<? extends Class<? extends IMetaTileEntity>> mteClasses() {
             return mteClasses;
+        }
+
+        @Override
+        public String getDescriptionLangKey() {
+            return ROTOR_ASSEMBLY_NAME_KEY;
+        }
+
+        @Override
+        public String getDisplayName() {
+            return StatCollector.translateToLocal(ROTOR_ASSEMBLY_NAME_KEY);
         }
 
         public IGTHatchAdder<? super HighwayToHell> adder() {

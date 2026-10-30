@@ -5,12 +5,15 @@ import java.io.IOException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
 import org.lwjgl.input.Keyboard;
 
+import com.cleanroommc.modularui.screen.ModularScreen;
 import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.gtnewhorizon.gtnhlib.eventbus.Phase;
 import com.science.gtnl.ScienceNotLeisure;
@@ -85,6 +88,14 @@ public class WirelessCardInput {
         if (event.world == visualWorld) clearVisualisation();
     }
 
+    @SubscribeEvent
+    public static void chat(ClientChatReceivedEvent event) {
+        if (!(event.message instanceof ChatComponentTranslation message) || !message.getKey()
+            .startsWith(WirelessCardGui.KEY_PREFIX)) return;
+        ModularScreen screen = ModularScreen.getCurrent();
+        if (screen != null && screen.getMainPanel() instanceof WirelessCardGui gui) gui.receive(message);
+    }
+
     public static void clearVisualisation() {
         visualWorld = null;
         visualBinding = null;
@@ -106,7 +117,7 @@ public class WirelessCardInput {
         try {
             var packet = new PacketNetworkVisualiserData(buffer);
             packet.clientPacketData(null, packet, mc.thePlayer);
-            visualTool = WirelessCardVisualisation.tool(binding, dimension, mode);
+            visualTool = WirelessCardVisualisation.tool(binding, binding.location(), dimension, mode);
             visualMode = mode;
             visualBinding = binding;
             visualWorld = mc.theWorld;
@@ -144,7 +155,8 @@ public class WirelessCardInput {
         if (now >= visualUntil) return null;
         if (visualMode != mode) {
             visualMode = mode;
-            visualTool = WirelessCardVisualisation.tool(visualBinding, mc.thePlayer.dimension, mode);
+            visualTool = WirelessCardVisualisation
+                .tool(visualBinding, visualBinding.location(), mc.thePlayer.dimension, mode);
         }
         return visualTool;
     }

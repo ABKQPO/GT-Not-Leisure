@@ -1,6 +1,5 @@
 package com.science.gtnl.common.wireless;
 
-import static com.science.gtnl.common.wireless.WirelessCardActions.BACK;
 import static com.science.gtnl.common.wireless.WirelessCardActions.NEXT_PAGE;
 import static com.science.gtnl.common.wireless.WirelessCardActions.OPEN_DETAILS;
 import static com.science.gtnl.common.wireless.WirelessCardActions.PREVIOUS_PAGE;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -36,6 +36,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 @SideOnly(Side.CLIENT)
 public class WirelessCardClientView {
 
+    public static final int STATES = 6;
     private final WirelessCardContainer container;
     private final SearchMatcher matcher = new SearchMatcher();
     private final Map<SortView, List<RowOrder>> orders = new LinkedHashMap<>(16, 0.75f, true);
@@ -46,6 +47,7 @@ public class WirelessCardClientView {
     private Integer dimension;
     private int state, page, groupPage, detailPage, machineParentPage;
     private int pageSize = WirelessCardLayout.MIN_ROWS;
+    private List<int[]> dimensions = List.of();
     private byte[] incoming;
     private long incomingRevision = -1;
     private int received;
@@ -90,6 +92,7 @@ public class WirelessCardClientView {
             next.add(readRow(row, prefix, row.getString("position")));
         }
         roots = List.copyOf(next);
+        if (!data.getBoolean("detail")) dimensions = countDimensions(roots);
         if (data.hasKey("highlight", 9)) {
             WirelessWorldHighlight.show(Minecraft.getMinecraft(), data.getTagList("highlight", 10));
             data.removeTag("highlight");
@@ -139,27 +142,50 @@ public class WirelessCardClientView {
             + (icon == null ? "" : icon.getDisplayName());
     }
 
-    public boolean filter(String text, String dimensionText, int state) {
-        if (text.length() > 64 || dimensionText.length() > 12 || state < 0 || state > 4) return false;
-        Integer nextDimension;
-        try {
-            nextDimension = dimensionText.isBlank() ? null : Integer.valueOf(dimensionText.strip());
-        } catch (NumberFormatException incomplete) {
-            return false;
-        }
+    public void filter(String text, Integer dimension, int state) {
+        if (text.length() > 64 || state < 0 || state >= STATES) return;
         String nextQuery = text.strip()
             .toLowerCase(Locale.ROOT);
-        if (query.equals(nextQuery) && Objects.equals(dimension, nextDimension) && this.state == state) return true;
+        if (query.equals(nextQuery) && Objects.equals(this.dimension, dimension) && this.state == state) return;
         query = nextQuery;
-        dimension = nextDimension;
+        this.dimension = dimension;
         this.state = state;
         page = groupPage = machineParentPage = 0;
         rebuild();
-        return true;
+    }
+
+    public Integer dimension() {
+        return dimension;
+    }
+
+    public int state() {
+        return state;
+    }
+
+    public List<int[]> dimensions() {
+        return dimensions;
+    }
+
+    public String dimensionName(int id) {
+        return source.getCompoundTag("dimensions")
+            .getString(Integer.toString(id));
     }
 
     public NBTTagCompound groupDisplay() {
         return groupDisplay;
+    }
+
+    public int groupDepth() {
+        return (typeKey.isEmpty() ? 0 : 1) + (machineKey.isEmpty() ? 0 : 1);
+    }
+
+    public void leaveGroups(int keep) {
+        if (keep <= 0) closeGroup();
+        else if (!typeKey.isEmpty() && !machineKey.isEmpty()) {
+            machineKey = "";
+            groupPage = machineParentPage;
+        }
+        rebuild();
     }
 
     public void closeGroup() {
@@ -187,11 +213,6 @@ public class WirelessCardClientView {
             if (detail) detailPage += change;
             else if (groupWindow) groupPage += change;
             else page += change;
-        } else if (action == BACK && !detail) {
-            if (groupWindow && !machineKey.isEmpty() && !typeKey.isEmpty()) {
-                machineKey = "";
-                groupPage = machineParentPage;
-            } else if (groupWindow) closeGroup();
         } else if (type(action) == OPEN_DETAILS && !detail) {
             NBTTagList rows = (groupWindow ? groupDisplay : container.display).getTagList("rows", 10);
             int index = rowIndex(action);
@@ -257,16 +278,23 @@ public class WirelessCardClientView {
         if (detail) {
             rows.addAll(roots);
         } else {
+            int[] counts = new int[STATES];
             for (Row row : machine == null ? roots : List.of(machine)) {
                 if (!typeKey.isEmpty() && !typeKey.equals(
                     row.data()
                         .getString("typeKey")))
                     continue;
+                for (Row leaf : row.children()
+                    .isEmpty() ? List.of(row) : row.children()) {
+                    if (!matchesPlace(leaf)) continue;
+                    for (int s = 0; s < STATES; s++) if (matchesState(leaf.data(), s)) counts[s]++;
+                }
                 Row matched = filtered(row);
                 if (matched == null) continue;
                 if (machine == null) rows.add(matched);
                 else rows.addAll(matched.children());
             }
+            data.setIntArray("stateCounts", counts);
             if (!data.getBoolean("initializing")) {
                 NBTTagCompound statistics = aggregate(new NBTTagCompound(), rows);
                 for (String key : List.of("devices", "online", "missing", "stable"))
@@ -296,6 +324,19 @@ public class WirelessCardClientView {
                     .next());
             data.setBoolean("group", machine != null || !typeKey.isEmpty());
             data.setBoolean("typeGroup", !typeKey.isEmpty());
+            data.setBoolean("machineGroup", machine != null);
+            Row first = typeKey.isEmpty() ? null
+                : roots.stream()
+                    .filter(
+                        row -> typeKey.equals(
+                            row.data()
+                                .getString("typeKey")))
+                    .findFirst()
+                    .orElseThrow();
+            if (first != null) data.setTag(
+                "typeIcon",
+                first.data()
+                    .getCompoundTag("typeIcon"));
             if (machine != null) {
                 data.setTag(
                     "groupIcon",
@@ -305,14 +346,7 @@ public class WirelessCardClientView {
                     "groupPosition",
                     machine.data()
                         .getString("position"));
-            } else if (!typeKey.isEmpty()) {
-                Row first = roots.stream()
-                    .filter(
-                        row -> typeKey.equals(
-                            row.data()
-                                .getString("typeKey")))
-                    .findFirst()
-                    .orElseThrow();
+            } else if (first != null) {
                 data.setTag(
                     "groupIcon",
                     first.data()
@@ -333,6 +367,7 @@ public class WirelessCardClientView {
                                 .getBoolean("shared")));
             WirelessCardViewCodec.localizePosition(data, "groupPosition", data.getCompoundTag("dimensions"));
         }
+        data.setInteger("rowCount", rows.size());
         int pages = Math.max(1, (rows.size() + pageSize - 1) / pageSize);
         int currentPage = Math.max(0, Math.min(requestedPage, pages - 1));
         data.setInteger("page", currentPage);
@@ -365,19 +400,39 @@ public class WirelessCardClientView {
     }
 
     private boolean matches(Row row) {
-        NBTTagCompound data = row.data();
-        if (dimension != null && dimension != data.getInteger("dimension")) return false;
-        boolean stateMatches = switch (state) {
-            case 1 -> data.getBoolean("paused");
+        return matchesState(row.data(), state) && matchesPlace(row);
+    }
+
+    private boolean matchesPlace(Row row) {
+        if (dimension != null && dimension != row.data()
+            .getInteger("dimension")) return false;
+        return query.isEmpty() || (row.names() + " " + row.positions()).contains(query)
+            || matcher.contains(row.names(), query);
+    }
+
+    private static boolean matchesState(NBTTagCompound data, int state) {
+        boolean paused = data.getBoolean("paused");
+        return switch (state) {
+            case 1 -> paused;
             case 2 -> data.getBoolean("conflicted");
-            case 3 -> !data.getBoolean("paused") && data.getString("state")
+            case 3 -> !paused && data.getString("state")
                 .equals("active");
-            case 4 -> !data.getBoolean("paused") && data.getString("state")
+            case 4 -> !paused && data.getString("state")
                 .equals("waiting");
+            case 5 -> !paused && data.getBoolean("stable") && data.getInteger("missing") > 0;
             default -> true;
         };
-        return stateMatches && (query.isEmpty() || (row.names() + " " + row.positions()).contains(query)
-            || matcher.contains(row.names(), query));
+    }
+
+    private static List<int[]> countDimensions(List<Row> rows) {
+        Map<Integer, int[]> counts = new TreeMap<>();
+        for (Row row : rows) for (Row leaf : row.children()
+            .isEmpty() ? List.of(row) : row.children()) {
+                int id = leaf.data()
+                    .getInteger("dimension");
+                counts.computeIfAbsent(id, key -> new int[] { key, 0 })[1]++;
+            }
+        return List.copyOf(counts.values());
     }
 
     private static List<Row> collapse(List<Row> rows) {

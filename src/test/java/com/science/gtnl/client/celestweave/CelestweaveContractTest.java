@@ -15,6 +15,8 @@ import com.science.gtnl.common.machine.hatch.HatchFluidDrainContracts;
 import com.science.gtnl.common.machine.multiblock.AssemblerMatrixTasksContracts;
 import com.science.gtnl.common.steam.GlobalSteamSaveContracts;
 import com.science.gtnl.common.wireless.WirelessAutoConnectContracts;
+import com.science.gtnl.common.wireless.WirelessCardViewContracts;
+import com.science.gtnl.common.wireless.WirelessFrequencyContracts;
 import com.science.gtnl.common.wireless.WirelessMatterManipulatorContracts;
 import com.science.gtnl.common.yogsothoth.YogSothothContracts;
 import com.science.gtnl.config.ConfigMigrationContracts;
@@ -45,6 +47,8 @@ public class CelestweaveContractTest {
         EquipmentResourceContracts.run();
         WirelessMatterManipulatorContracts.run();
         WirelessAutoConnectContracts.run();
+        WirelessFrequencyContracts.run();
+        WirelessCardViewContracts.run();
         ArchitectureContracts.run();
         ApiSignatureContracts.run();
         ConfigMigrationContracts.run();

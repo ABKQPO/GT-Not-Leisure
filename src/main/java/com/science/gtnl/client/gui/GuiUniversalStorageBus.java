@@ -208,7 +208,7 @@ public class GuiUniversalStorageBus extends GuiUpgradeable implements IBookmarkG
     }
 
     @Override
-    public boolean handleBookmarkGroupDrop(int mouseX, int mouseY, Iterable<ItemStack> stacks) {
+    public int handleBookmarkGroupDrop(int mouseX, int mouseY, Iterable<ItemStack> stacks) {
         final int x = mouseX - this.guiLeft + 1;
         final int y = mouseY - this.guiTop + 1;
         this.updateSlotVisibility();
@@ -220,12 +220,14 @@ public class GuiUniversalStorageBus extends GuiUpgradeable implements IBookmarkG
                 break;
             }
         }
-        if (slotIndex < 0) return false;
+        if (slotIndex < 0) return -1;
 
+        int placed = 0;
         for (ItemStack stack : stacks) {
             if (slotIndex >= this.configSlots.length || this.configSlots[slotIndex].isHidden()) break;
             this.configSlots[slotIndex++].handleMouseClicked(stack, false, 0);
+            placed++;
         }
-        return true;
+        return placed;
     }
 }

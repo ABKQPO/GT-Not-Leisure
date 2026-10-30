@@ -34,9 +34,20 @@ tasks.register<JavaExec>("benchEquipment") {
     javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
 }
 
+tasks.register<JavaExec>("verifyGrandAssemblyLine") {
+    group = "verification"
+    description = "Verify Grand Assembly Line overclocking and large energy settlement without starting Minecraft"
+    dependsOn(tasks.testClasses)
+    classpath = sourceSets.test.get().runtimeClasspath + sourceSets.main.get().runtimeClasspath +
+        sourceSets.main.get().compileClasspath
+    mainClass.set("com.science.gtnl.common.machine.multiblock.GrandAssemblyLineOverclockContracts")
+    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+}
+
 tasks.named<Test>("test") {
     failOnNoDiscoveredTests.set(false)
     dependsOn("verifyCelestweave")
+    dependsOn("verifyGrandAssemblyLine")
 }
 
 val runConfigs = listOf(

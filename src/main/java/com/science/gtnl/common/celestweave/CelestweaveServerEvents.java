@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
@@ -26,8 +27,10 @@ import net.minecraftforge.event.entity.player.PlayerFlyableFallEvent;
 import com.google.common.collect.MapMaker;
 import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.gtnewhorizon.gtnhlib.eventbus.Phase;
+import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.equipment.EquipmentNet;
 import com.science.gtnl.common.item.items.armor.CelestweaveArmor;
+import com.science.gtnl.common.packet.CelestweaveConcealPacket;
 import com.science.gtnl.common.packet.CelestweaveFxPacket;
 import com.science.gtnl.config.MainConfig;
 
@@ -39,7 +42,7 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 @EventBusSubscriber(phase = Phase.PRE)
 public class CelestweaveServerEvents {
 
-    public static final String SOULBOUND_TAG = "GTNLCelestweaveSoulbound";
+    public static final String SOULBOUND_TAG = "GTNLCelestweaveSoulbound", CONCEALED_TAG = "GTNLCelestweaveConcealed";
     private static final double FX_RANGE = 64;
     private static final float LAND_FX_MIN_FALL = 3F, FALL_REDUCTION_PER_LEVEL = 3F;
     private static final double JUMP_BOOST = 0.275, JUMP_EXPONENT = 1.08;
@@ -51,7 +54,31 @@ public class CelestweaveServerEvents {
     private CelestweaveServerEvents() {}
 
     public static void sendFx(Entity entity, CelestweaveFxPacket.Type type, double x, double y, double z) {
+        if (entity instanceof EntityPlayer player && concealed(player)) return;
         EquipmentNet.sendAround(entity, new CelestweaveFxPacket(entity.getEntityId(), type, x, y, z), FX_RANGE);
+    }
+
+    public static boolean concealed(EntityPlayer player) {
+        return player.getEntityData()
+            .getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG)
+            .getBoolean(CONCEALED_TAG);
+    }
+
+    public static void toggleConceal(EntityPlayerMP player) {
+        boolean concealed = !concealed(player);
+        if (concealed) persisted(player).setBoolean(CONCEALED_TAG, true);
+        else persisted(player).removeTag(CONCEALED_TAG);
+        ((WorldServer) player.worldObj).getEntityTracker()
+            .func_151248_b(
+                player,
+                ScienceNotLeisure.network.getPacketFrom(new CelestweaveConcealPacket(player.getEntityId(), concealed)));
+        EquipmentNet.hotbar(
+            player,
+            concealed ? "item.gtnl.celestweave.message.armor_hidden" : "item.gtnl.celestweave.message.armor_shown");
+    }
+
+    private static void syncConceal(EntityPlayer target, EntityPlayerMP viewer) {
+        ScienceNotLeisure.network.sendTo(new CelestweaveConcealPacket(target.getEntityId(), concealed(target)), viewer);
     }
 
     static void landFx(EntityPlayer player, float distance) {
@@ -165,8 +192,10 @@ public class CelestweaveServerEvents {
 
     @SubscribeEvent
     public static void startTracking(StartTracking event) {
-        if (event.target instanceof EntityPlayer target && event.entityPlayer instanceof EntityPlayerMP viewer)
-            CelestweaveFlight.startTracking(target, viewer);
+        if (!(event.target instanceof EntityPlayer target) || !(event.entityPlayer instanceof EntityPlayerMP viewer))
+            return;
+        CelestweaveFlight.startTracking(target, viewer);
+        syncConceal(target, viewer);
     }
 
     @SubscribeEvent
@@ -261,7 +290,9 @@ public class CelestweaveServerEvents {
     @SubscribeEvent
     public static void login(PlayerEvent.PlayerLoggedInEvent event) {
         restoreSoulbound(event.player);
-        if (event.player instanceof EntityPlayerMP player) CelestweaveFlight.restore(player);
+        if (!(event.player instanceof EntityPlayerMP player)) return;
+        CelestweaveFlight.restore(player);
+        syncConceal(player, player);
     }
 
     @SubscribeEvent

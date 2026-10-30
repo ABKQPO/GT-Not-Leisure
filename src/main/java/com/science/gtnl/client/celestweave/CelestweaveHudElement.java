@@ -57,7 +57,7 @@ public enum CelestweaveHudElement {
 
     private static boolean worn() {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-        return player != null && CelestweaveData.wearsAny(player);
+        return player != null && CelestweaveData.wearsAny(player) && !CelestweaveClientEvents.concealed(player);
     }
 
     static void register() {
