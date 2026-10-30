@@ -10,7 +10,7 @@ import lombok.Setter;
 
 public class VoidWorldSavedData extends WorldSavedData {
 
-    private static final String DATA_NAME = "GTNL_VoidPlatformData";
+    public static final String DATA_NAME = "GTNL_VoidPlatformData";
     @Getter
     @Setter
     private boolean platformGenerated = false;

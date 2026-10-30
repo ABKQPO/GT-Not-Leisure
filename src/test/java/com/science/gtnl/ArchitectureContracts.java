@@ -126,6 +126,8 @@ public class ArchitectureContracts {
         Pattern.MULTILINE);
     private static final Pattern SELF_REGISTRATION = Pattern
         .compile("GameRegistry\\s*\\.\\s*register(Item|Block)\\(\\s*this");
+    private static final Pattern SAVED_DATA_CLASS = Pattern
+        .compile("^public class (\\w+) extends WorldSavedData\\b", Pattern.MULTILINE);
     private static final Pattern MIXIN_INTERFACE = Pattern.compile("^public interface ", Pattern.MULTILINE);
     private static final Pattern LOADER_ENTRY = Pattern.compile("new ([\\w.]+)\\(\\)");
     private static final Pattern CARD = Pattern.compile("class (\\w+)[^{]*implements[^{]*\\bIContentLoader\\b");
@@ -206,6 +208,14 @@ public class ArchitectureContracts {
         check(
             unregistered.isEmpty(),
             "mixin classes that Mixins.java never registers, so they never apply: " + unregistered);
+
+        String snapshot = sources.get("loader/CompatSnapshot.java");
+        for (Map.Entry<String, String> entry : sources.entrySet()) {
+            Matcher savedData = SAVED_DATA_CLASS.matcher(entry.getValue());
+            if (savedData.find()) check(
+                snapshot.contains(savedData.group(1) + ".class,"),
+                entry.getKey() + " is saved under a name; list it in CompatSnapshot.SAVED_DATA so a rename shows up");
+        }
 
         Matcher loaderOrder = LOADER_ENTRY.matcher(
             sources.get("loader/ContentLoaders.java")
