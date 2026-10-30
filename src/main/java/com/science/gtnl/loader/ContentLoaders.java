@@ -17,7 +17,6 @@ public class ContentLoaders {
         new BlockLoader.Card(),
         new ItemLoader.Card(),
         new MaterialLoader(),
-        new WorldLoader(),
         new MachineLoader(),
         new MELoader(),
         new CompatLoader(),

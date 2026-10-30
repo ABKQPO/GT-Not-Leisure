@@ -24,7 +24,8 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
     modid = "sciencenotleisure",
     version = Tags.VERSION,
     name = ScienceNotLeisure.MODNAME,
-    dependencies = "after:AWWayofTime;" + "after:Avaritia;"
+    dependencies = "required-after:gtnllib;" + "after:AWWayofTime;"
+        + "after:Avaritia;"
         + "after:BloodArsenal;"
         + "required-after:Botania;"
         + "required-after:bartworks;"

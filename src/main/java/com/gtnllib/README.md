@@ -23,6 +23,7 @@
 | `world` | 方块变化监听 `WorldListener`、`IBlockStateListener` |
 | `client/tooltip` | 物品提示框 `AnimatedTooltipHandler`：按物品追加普通、按住 Shift、按住 Ctrl 才显示的提示行，以及动态变色文字；使用方用 `addTooltipStackResolver` 让伪装类物品改用别的物品的提示 |
 | `command` | 通用指令 `/getiteminfo`、`/suicide`；`command/selector` 是指令里 `@a`、`@e[...]` 这类实体选择器的解析 |
+| `mixins` | GTNLLib 自己的 mixin（文字特效 6 个）、登记表 `GTNLLibMixins` 和 early / late 加载入口 |
 | `mod` | 模组列表 `ModList`（给 mixin 指定目标模组、判断模组是否加载） |
 | `utils` | 单行文字绘制、颜色计算 `ColorMath`、数值工具 `MathUtils`（0~1 限制、伪随机数、大数换算和缩写）、长整数饱和运算 `LongMath`、`GameUtils`（射线、权限、放回背包、UUID）、传送 `TeleporterUtils`、提示行拼接 `MetaTooltipUtils`、三维向量 `Vec3d`、结构文件编解码 `StructureFileCodec`（逗号分隔文本和 MBS1 二进制）、创造模式光标归属 `CreativeCursor` |
 | `config` | 客户端配置 `GTNLLibConfig`：HUD 总开关、HUD 总缩放、界面主题、世界粒子数量上限、文字特效开关 |
@@ -44,9 +45,22 @@
 
 ## 初始化
 
-使用方在客户端 preInit 里先调用 `GTNLLibClient.preInit()`（注册配置并接到主题、HUD 和粒子上限，再挂上 HUD 绘制、着色器和主题重载），再注册自己的主题和 HUD 元素；文字特效、它的资源重载和预览指令也在这一步挂上。用到世界特效（电弧、冲击波、粒子）时还要调用 `FxEffects.register()`，它挂上这些渲染器，并在退出世界时清空、资源重载时刷新贴图。服务端不需要初始化，但注册器、网络包基类和通用指令两端都用，所以 GTNLLib 拆成独立模组后服务端也要装。文字特效的 6 个 mixin 暂时留在 GTNL，拆分前要给 GTNLLib 配好自己的 mixin 配置和早期加载入口。
+GTNLLib 是独立的 `@Mod`（`com.gtnllib.GTNLLib`），自己完成初始化，使用方只需在 `@Mod` 里写 `required-after:gtnllib`：
 
-文字特效的 id 现在是 `gtnllib:<名字>`。文字里写的特效代码不带命名空间，不受影响；老的 `sciencenotleisure:<名字>` 由 GTNL 在启动时通过 `TextEffectFormat.legacyNamespace` 映射过来。
+- 客户端 preInit：`GTNLLibClient.preInit()` 注册配置并接到主题、HUD 和粒子上限，挂上 HUD 绘制、着色器和主题重载、世界特效渲染器（电弧、冲击波、粒子）、文字特效和它的资源重载、`/gtnl_texteffects` 预览指令。使用方在自己的 preInit 里注册主题和 HUD 元素即可。
+- init：创建并挂上方块变化监听的根对象 `WorldListener.INSTANCE`。
+- 服务器启动：注册 `/getiteminfo`、`/suicide`。
+- 配置界面：模组列表里 GTNLLib 自己的配置按钮（`GTNLLibGuiFactory`）。
+
+版本号从 `mcmod.info` 读，不引用使用方的构建常量。
+
+## mixin
+
+GTNLLib 的 mixin 在 `com.gtnllib.mixins`，登记表是 `GTNLLibMixins`，配置文件是 `mixins.gtnllib.early*.json` 和 `mixins.gtnllib.late*.json`。
+
+- late：`GTNLLibLateMixins` 带 `@LateMixin`，按注解在运行时被发现，不依赖 jar 里的 coremod；NEI 那条按可选模组登记，没装 NEI 时不加载。
+- early：`GTNLLibEarlyMixins` 实现 `IEarlyMixinLoader`。一个 jar 只能有一个 coremod，所以和 GTNL 同 jar 期间由 GTNL 的 `GTNLEarlyCoreMod` 调 `GTNLLibEarlyMixins.queueFromHost` 代为登记；拆成独立 jar 时给 GTNLLib 加一个同时实现 `IFMLLoadingPlugin` 和 `IEarlyMixinLoader`（委托给 `GTNLLibEarlyMixins`）的 coremod，并删掉 GTNL 里那一行。
+- refmap 暂时和 GTNL 共用 `mixins.sciencenotleisure.refmap.json`，拆分后改成 GTNLLib 自己生成的。
 
 ## 第三方代码
 

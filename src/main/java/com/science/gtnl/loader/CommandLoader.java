@@ -3,8 +3,6 @@ package com.science.gtnl.loader;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.client.ClientCommandHandler;
 
-import com.gtnllib.command.CommandItemInfo;
-import com.gtnllib.command.CommandSuicide;
 import com.science.gtnl.client.command.MultiblockTooltipExportCommand;
 import com.science.gtnl.common.command.CommandEnergyNetwork;
 import com.science.gtnl.common.command.CommandPlaySound;
@@ -26,9 +24,7 @@ public class CommandLoader implements IContentLoader {
     public void serverStarting(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandEnergyNetwork());
         event.registerServerCommand(new CommandPlaySound());
-        event.registerServerCommand(new CommandItemInfo());
         event.registerServerCommand(new CommandSudo());
-        event.registerServerCommand(new CommandSuicide());
     }
 
     @Override

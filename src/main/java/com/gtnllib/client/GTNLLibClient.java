@@ -5,6 +5,7 @@ import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.gtnllib.client.fx.world.FxEffects;
 import com.gtnllib.client.fx.world.FxMoteRenderer;
 import com.gtnllib.client.hud.HudLayout;
 import com.gtnllib.client.hud.HudOverlay;
@@ -22,6 +23,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GTNLLibClient {
 
     public static void preInit() {
+        FxEffects.register();
         GTNLLibConfig.register();
         connectConfig();
         HudOverlay.register();

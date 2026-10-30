@@ -846,10 +846,10 @@ public class EquipmentResourceContracts {
     }
 
     private static void equipmentControls() throws Exception {
-        String proxy = read(SOURCES.resolve("ClientProxy.java"));
-        int library = proxy.indexOf("GTNLLibClient.preInit()"), cards = proxy.indexOf("ContentLoaders.clientPreInit()");
+        String library = read(Paths.get("src/main/java/com/gtnllib/GTNLLib.java"));
         check(
-            library >= 0 && cards > library
+            read(SOURCES.resolve("ScienceNotLeisure.java")).contains("required-after:gtnllib")
+                && library.contains("GTNLLibClient.preInit()")
                 && read(SOURCES.resolve("loader/EquipmentLoader.java")).contains("EquipmentTheme.register()"),
             "GTNLLib starts before the equipment theme registers, so palette themes are rebuilt before every theme reload");
         String soundSource = read(SOURCES.resolve("common/gui/equipment/EquipmentSoundScreen.java"));
@@ -1065,7 +1065,13 @@ public class EquipmentResourceContracts {
             compact(read(SOURCES.resolve("ScienceNotLeisure.java")))
                 .contains("guiFactory=\"com.science.gtnl.config.ConfigGuiFactory\""),
             "GTNL opens its own config screen");
-        check(factory.contains("GTNLLibConfig.class"), "the GTNLLib client settings show in the GTNL config screen");
+        Path library = Paths.get("src/main/java/com/gtnllib");
+        check(
+            compact(read(library.resolve("GTNLLib.java")))
+                .contains("guiFactory=\"com.gtnllib.config.GTNLLibGuiFactory\"")
+                && read(library.resolve("config/GTNLLibGuiFactory.java")).contains("GTNLLibConfig.class")
+                && !factory.contains("GTNLLibConfig.class"),
+            "the GTNLLib client settings show in GTNLLib's own config screen, not in GTNL's");
         Pattern config = Pattern.compile("@Config\\(\\s*modid\\s*=\\s*ScienceNotLeisure\\.MODID");
         try (Stream<Path> files = Files.walk(SOURCES)) {
             for (Path file : (Iterable<Path>) files.filter(

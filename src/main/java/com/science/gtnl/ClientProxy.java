@@ -5,8 +5,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.brandon3055.draconicevolution.client.handler.ParticleHandler;
-import com.gtnllib.client.GTNLLibClient;
-import com.gtnllib.client.fx.world.FxEffects;
 import com.science.gtnl.client.gui.GTNLClientGuiHandler;
 import com.science.gtnl.common.render.entity.EntityParticleBeam;
 import com.science.gtnl.loader.ContentLoaders;
@@ -21,8 +19,6 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
-        FxEffects.register();
-        GTNLLibClient.preInit();
         ContentLoaders.clientPreInit();
     }
 

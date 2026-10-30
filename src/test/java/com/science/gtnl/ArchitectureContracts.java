@@ -50,9 +50,6 @@ public class ArchitectureContracts {
         "common/machine/cover/WirelessSteamCover.java",
         "mixins/late/modularUI/");
 
-    // GTNLLib's WorldListener is one object per world plus a root that owns the map, so the card registers the root.
-    public static final String MANUAL_EVENT_REGISTRATION = "loader/WorldLoader.java";
-
     public static final Set<String> SELF_REGISTERING = Set.of(
         "common/block/blocks/BlockEnderElevator.java",
         "common/block/blocks/BlockEternalGregTechWorkshopRender.java",
@@ -86,7 +83,6 @@ public class ArchitectureContracts {
         "BlockLoader.Card",
         "ItemLoader.Card",
         "MaterialLoader",
-        "WorldLoader",
         "MachineLoader",
         "MELoader",
         "CompatLoader",
@@ -274,7 +270,7 @@ public class ArchitectureContracts {
 
         for (Map.Entry<String, String> entry : sources.entrySet()) {
             String path = entry.getKey(), text = entry.getValue();
-            if (!path.equals(MANUAL_EVENT_REGISTRATION)) check(
+            check(
                 !EVENT_REGISTRATION.matcher(text)
                     .find(),
                 path + " registers an event handler by hand; annotate the class with @EventBusSubscriber instead");
