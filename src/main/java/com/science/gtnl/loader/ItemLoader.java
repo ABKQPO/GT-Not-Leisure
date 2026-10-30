@@ -14,6 +14,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidRegistry;
 
 import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil;
+import com.gtnllib.client.tooltip.AnimatedTooltipHandler;
 import com.gtnllib.registry.Registrar;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.GTNLCreativeTabs;
@@ -73,7 +74,6 @@ import com.science.gtnl.common.item.items.fuelRod.FuelRod;
 import com.science.gtnl.common.item.items.fuelRod.FuelRodDepleted;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.ModsItemlist;
-import com.science.gtnl.utils.text.AnimatedTooltipHandler;
 
 import appeng.api.storage.StorageChannel;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -770,6 +770,11 @@ public class ItemLoader {
         @Override
         public void preInit() {
             registry();
+        }
+
+        @Override
+        public void clientInit() {
+            AnimatedTooltipHandler.addTooltipStackResolver(Stick::tooltipStack);
         }
     }
 }

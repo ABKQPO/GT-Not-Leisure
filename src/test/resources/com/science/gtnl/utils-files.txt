@@ -55,7 +55,6 @@ utils/recipes/metadata/SolorMuonCatalystMetadata.java
 utils/recipes/metadata/SteamFusionMetadata.java
 utils/structure/GTNLStructureErrors.java
 utils/text/AnimatedText.java
-utils/text/AnimatedTooltipHandler.java
 utils/text/LanguageLoader.java
 utils/world/teams/TeamMigrationWorldSavedData.java
 utils/world/teams/TeamNetworkManager.java

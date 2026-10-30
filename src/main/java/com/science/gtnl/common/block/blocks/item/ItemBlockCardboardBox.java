@@ -17,10 +17,10 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
 import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.gtnewhorizon.gtnhlib.eventbus.Phase;
+import com.gtnllib.client.tooltip.AnimatedTooltipHandler;
 import com.science.gtnl.common.block.blocks.tile.TileEntityCardboardBox;
 import com.science.gtnl.loader.BlockLoader;
 import com.science.gtnl.utils.CardboardBoxUtils;
-import com.science.gtnl.utils.text.AnimatedTooltipHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;

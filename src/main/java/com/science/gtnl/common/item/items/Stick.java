@@ -263,6 +263,13 @@ public class Stick extends Item implements IItemStackExtra, IKeyHandler {
         }
     }
 
+    @SideOnly(Side.CLIENT)
+    public static ItemStack tooltipStack(ItemStack stack) {
+        if (stack.getItem() instanceof Stick stick && !stick.isShiftDown() && MainConfig.item.stick.enableStickItem)
+            return getDisguisedStack(stack);
+        return stack;
+    }
+
     public static ItemStack getDisguisedStack(ItemStack stack) {
         if (!stack.hasTagCompound()) return null;
         NBTTagCompound tag = stack.getTagCompound();

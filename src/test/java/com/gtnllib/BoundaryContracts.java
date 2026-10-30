@@ -230,6 +230,8 @@ public class BoundaryContracts {
         keys.add(setting);
         keys.add(setting + ".tooltip");
         for (String key : new String[] { "title", "palette", "bold", "italic" }) keys.add("gtnl.text_effect." + key);
+        keys.add("gtnl.tooltip.press_shift");
+        keys.add("gtnl.tooltip.press_ctrl");
         for (String key : new String[] { "usage", "player_only", "no_item", "header", "display_name",
             "item_stack_display_name", "unlocalized_inefficient_name", "unlocalized_name",
             "item_stack_unlocalized_name", "class", "id", "stack_size", "damage", "max_damage", "nbt_data", "nbt_entry",

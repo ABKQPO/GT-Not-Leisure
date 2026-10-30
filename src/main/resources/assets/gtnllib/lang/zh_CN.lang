@@ -56,3 +56,5 @@ gtnl.command.item_info.max_damage=最大损伤值：%s
 gtnl.command.item_info.nbt_data=NBT 数据：
 gtnl.command.item_info.nbt_entry=  %s：%s
 gtnl.command.item_info.no_nbt_data=没有 NBT 数据。
+gtnl.tooltip.press_shift=§r按住 §6Shift §r查看更多信息
+gtnl.tooltip.press_ctrl=§r按住 §6Ctrl §r查看更多信息

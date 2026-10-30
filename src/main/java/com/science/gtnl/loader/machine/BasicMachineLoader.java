@@ -3,6 +3,7 @@ package com.science.gtnl.loader.machine;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 
+import com.gtnllib.client.tooltip.AnimatedTooltipHandler;
 import com.science.gtnl.common.machine.basicMachine.DieselGenerator;
 import com.science.gtnl.common.machine.basicMachine.GasTurbine;
 import com.science.gtnl.common.machine.basicMachine.HydraulicSuperBuffer;
@@ -25,7 +26,6 @@ import com.science.gtnl.common.material.MaterialUtils;
 import com.science.gtnl.utils.enums.GTNLItemList;
 import com.science.gtnl.utils.enums.GTNLMachineID;
 import com.science.gtnl.utils.text.AnimatedText;
-import com.science.gtnl.utils.text.AnimatedTooltipHandler;
 
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;

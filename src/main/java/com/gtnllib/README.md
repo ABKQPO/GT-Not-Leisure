@@ -21,6 +21,7 @@
 | `registry` | 统一注册器 `Registrar`：物品和方块的名字、翻译键、贴图、分类页和注册写一条 |
 | `network` | 网络包基类 `ClientboundPacket`、`ServerboundPacket`、`PayloadHandler`；频道和注册顺序留在使用方 |
 | `world` | 方块变化监听 `WorldListener`、`IBlockStateListener` |
+| `client/tooltip` | 物品提示框 `AnimatedTooltipHandler`：按物品追加普通、按住 Shift、按住 Ctrl 才显示的提示行，以及动态变色文字；使用方用 `addTooltipStackResolver` 让伪装类物品改用别的物品的提示 |
 | `command` | 通用指令 `/getiteminfo`、`/suicide`；`command/selector` 是指令里 `@a`、`@e[...]` 这类实体选择器的解析 |
 | `mod` | 模组列表 `ModList`（给 mixin 指定目标模组、判断模组是否加载） |
 | `utils` | 单行文字绘制、颜色计算 `ColorMath`、数值工具 `MathUtils`（0~1 限制、伪随机数、大数换算和缩写）、长整数饱和运算 `LongMath`、`GameUtils`（射线、权限、放回背包、UUID）、传送 `TeleporterUtils`、提示行拼接 `MetaTooltipUtils`、三维向量 `Vec3d` |
@@ -29,7 +30,7 @@
 包之间只能单向依赖，不能互相引用：
 
 - `utils`、`registry`、`mod` 在最底层；`client/shader`、`config` 不依赖别的包。
-- `text` 只依赖 `utils`；`client/text` 再加上 `text`、`mod` 和 `client/shader`。
+- `text` 只依赖 `utils`；`client/tooltip` 只依赖 `text`；`client/text` 再加上 `text`、`mod` 和 `client/shader`。
 - `client/fx` 只依赖 `utils`；`client/fx/world` 再加上 `client/fx`，`client/fx/screen` 再加上 `client/fx` 和 `client/shader`。
 - `gui/widget` 只依赖 `utils`；`gui/theme` 依赖 `gui/widget`；`gui/layout` 依赖 `gui/theme` 和 `gui/widget`。所以 `gui/widget` 里的控件不能用 `gui/layout`，要按布局摆放的组合控件放 `gui/settings`。
 - `gui/settings`、`client/hud`、`gui/wheel` 在最上层。
@@ -38,7 +39,7 @@
 ## 规则
 
 - 不引用 GTNL 和 GregTech 的任何类，也不写任何具体功能的名字；具体功能用到的颜色来源、编辑器配色、HUD 元素都由使用方在启动时注册进来。
-- 资源只用 `gtnllib` 命名空间：着色器在 `assets/gtnllib/shaders`（文字特效的在 `shaders/text`），语言文件在 `assets/gtnllib/lang`，界面材质在 `assets/gtnllib/textures/gui/skin`，语言键以 `gtnllib.` 开头，绘制对象和控件主题键也带 `gtnllib` 前缀。例外：从 GTNL 搬来的 `/getiteminfo`、文字特效预览和文字特效开关保留原来的 `gtnl.*` 键名，整合包里其他语言的翻译按键名覆盖，改名会让它们变回英文。
+- 资源只用 `gtnllib` 命名空间：着色器在 `assets/gtnllib/shaders`（文字特效的在 `shaders/text`），语言文件在 `assets/gtnllib/lang`，界面材质在 `assets/gtnllib/textures/gui/skin`，语言键以 `gtnllib.` 开头，绘制对象和控件主题键也带 `gtnllib` 前缀。例外：从 GTNL 搬来的 `/getiteminfo`、文字特效预览、文字特效开关和物品提示的"按住 Shift / Ctrl"两行保留原来的 `gtnl.*` 键名，整合包里其他语言的翻译按键名覆盖，改名会让它们变回英文。
 - 契约测试在 `src/test/java/com/gtnllib`，其中 `BoundaryContracts` 守住上面两条，并检查包之间没有互相引用、只有入口读配置。
 
 ## 初始化

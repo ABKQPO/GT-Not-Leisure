@@ -1,10 +1,11 @@
-package com.science.gtnl.utils.text;
+package com.gtnllib.client.tooltip;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.Item;
@@ -18,8 +19,6 @@ import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.gtnewhorizon.gtnhlib.util.map.ItemStackMap;
 import com.gtnllib.text.TextEffectStyle;
 import com.gtnllib.text.TextEffects;
-import com.science.gtnl.common.item.items.Stick;
-import com.science.gtnl.config.MainConfig;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -37,6 +36,13 @@ public class AnimatedTooltipHandler {
         BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE, OBFUSCATED, BOLD, STRIKETHROUGH, UNDERLINE, ITALIC, RESET;
 
     public static final Supplier<String> NEW_LINE;
+
+    // Applied in order before the tooltip lookup; a resolver returning null hides these tooltips for that stack.
+    private static final List<UnaryOperator<ItemStack>> TOOLTIP_STACK_RESOLVERS = new ObjectArrayList<>();
+
+    public static void addTooltipStackResolver(UnaryOperator<ItemStack> resolver) {
+        TOOLTIP_STACK_RESOLVERS.add(resolver);
+    }
 
     @SafeVarargs
     public static Supplier<String> buildTextWithAnimatedEnd(Supplier<String>... texts) {
@@ -239,8 +245,8 @@ public class AnimatedTooltipHandler {
     @SuppressWarnings("unused")
     public static void renderTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.itemStack;
-        if (stack.getItem() instanceof Stick stick && !stick.isShiftDown() && MainConfig.item.stick.enableStickItem) {
-            stack = Stick.getDisguisedStack(stack);
+        for (UnaryOperator<ItemStack> resolver : TOOLTIP_STACK_RESOLVERS) {
+            stack = resolver.apply(stack);
             if (stack == null) return;
         }
 

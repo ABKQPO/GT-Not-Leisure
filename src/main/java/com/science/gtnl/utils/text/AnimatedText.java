@@ -6,6 +6,7 @@ import net.minecraft.util.EnumChatFormatting;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.gtnllib.client.tooltip.AnimatedTooltipHandler;
 import com.gtnllib.text.TextEffects;
 
 public class AnimatedText {

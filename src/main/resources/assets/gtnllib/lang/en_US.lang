@@ -56,3 +56,5 @@ gtnl.command.item_info.max_damage=Max Damage: %s
 gtnl.command.item_info.nbt_data=NBT Data:
 gtnl.command.item_info.nbt_entry=  %s : %s
 gtnl.command.item_info.no_nbt_data=No NBT data.
+gtnl.tooltip.press_shift=§rHold §6Shift §rfor more information
+gtnl.tooltip.press_ctrl=§rHold §6Ctrl §rfor more information
