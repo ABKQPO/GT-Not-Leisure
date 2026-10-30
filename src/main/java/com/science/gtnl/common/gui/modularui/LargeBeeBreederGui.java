@@ -277,7 +277,7 @@ public final class LargeBeeBreederGui extends GTNLMultiBlockBaseGui<LargeBeeBree
             tag.setString("parent2", step.parent2);
             tag.setString("result", step.result);
             tag.setDouble("chance", Math.min(100.0D, step.chance + multiblock.getMutationChanceBonus()));
-            tag.setInteger("requiredVoltageTier", LargeBeeBreeder.getRequiredVoltageTier(step.chance));
+            tag.setInteger("requiredVoltageTier", LargeBeeBreeder.getSpeciesVoltageTier(step.result));
             NBTTagList foundations = new NBTTagList();
             for (FoundationRequirement requirement : step.foundations) {
                 NBTTagCompound foundation = requirement.toNBT();

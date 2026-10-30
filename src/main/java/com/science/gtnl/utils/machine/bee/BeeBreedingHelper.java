@@ -19,6 +19,7 @@ import forestry.api.apiculture.IBee;
 import forestry.api.apiculture.IBeeGenome;
 import forestry.api.apiculture.IBeeMutation;
 import forestry.api.apiculture.IBeeRoot;
+import forestry.api.genetics.AlleleManager;
 import forestry.api.genetics.IAllele;
 import forestry.api.genetics.IMutationCondition;
 import forestry.core.genetics.mutations.Mutation;
@@ -357,7 +358,10 @@ public final class BeeBreedingHelper {
             for (IAllele[] template : templates.values()) {
                 if (template != null && template.length > 0 && template[0] instanceof IAlleleBeeSpecies) {
                     IAlleleBeeSpecies s = (IAlleleBeeSpecies) template[0];
-                    speciesMap.putIfAbsent(s.getUID(), s);
+                    if (AlleleManager.alleleRegistry == null
+                        || !AlleleManager.alleleRegistry.isBlacklisted(s.getUID())) {
+                        speciesMap.putIfAbsent(s.getUID(), s);
+                    }
                 }
             }
         }
@@ -366,12 +370,13 @@ public final class BeeBreedingHelper {
             IAllele[] resultTemplate = mutation.getTemplate();
             if (resultTemplate.length == 0 || !(resultTemplate[0] instanceof IAlleleBeeSpecies)) continue;
             IAlleleBeeSpecies resultSpecies = (IAlleleBeeSpecies) resultTemplate[0];
-            speciesMap.putIfAbsent(resultSpecies.getUID(), resultSpecies);
+            if (!speciesMap.containsKey(resultSpecies.getUID())) continue;
 
             IAllele parent1Allele = mutation.getAllele0();
             IAllele parent2Allele = mutation.getAllele1();
             String p1 = parent1Allele != null ? parent1Allele.getUID() : "";
             String p2 = parent2Allele != null ? parent2Allele.getUID() : "";
+            if (!speciesMap.containsKey(p1) || !speciesMap.containsKey(p2)) continue;
             List<FoundationRequirement> requirements = readFoundations(mutation);
             mutationsMap.computeIfAbsent(resultSpecies.getUID(), k -> new ArrayList<>())
                 .add(new MutationData(p1, p2, resultSpecies.getUID(), mutation.getBaseChance(), requirements));

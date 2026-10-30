@@ -52,6 +52,7 @@ gtnl.gui.config.general.effect.tooltip=玩家状态与特殊效果配置
 gtnl.gui.config.general.item=物品设置
 gtnl.gui.config.general.item.tooltip=各类自定义物品的功能配置
 gtnl.gui.config.general.machine=机器设置
+gtnl.gui.config.general.machine.bee_breeder.species_voltage_tiers=蜜蜂杂交机蜂种电压等级
 gtnl.gui.config.general.machine.tooltip=调整多方块机器与单机参数
 gtnl.gui.config.general.message=消息设置
 gtnl.gui.config.general.message.tooltip=登录、提示与广播消息配置

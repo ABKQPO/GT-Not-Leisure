@@ -22,11 +22,15 @@ public final class BeeSpeciesArchive {
 
     public boolean hasSpecies(String species) {
         if (species == null || species.isEmpty()) return false;
-        return unlockedSpecies.contains(species);
+        return unlockedSpecies.contains(species) && BeeBreedingHelper.getSpeciesByUID(species) != null;
     }
 
     public Set<String> getSpecies() {
-        return Collections.unmodifiableSet(unlockedSpecies);
+        Set<String> available = new LinkedHashSet<>();
+        for (String uid : unlockedSpecies) {
+            if (BeeBreedingHelper.getSpeciesByUID(uid) != null) available.add(uid);
+        }
+        return Collections.unmodifiableSet(available);
     }
 
     public NBTTagCompound toNBT() {
@@ -50,7 +54,7 @@ public final class BeeSpeciesArchive {
         if (tag.hasKey("unlockedSpecies", 9)) {
             NBTTagList speciesList = tag.getTagList("unlockedSpecies", 10);
             for (int i = 0; i < speciesList.tagCount(); i++) {
-                archive.unlockSpecies(
+                archive.restoreSpecies(
                     speciesList.getCompoundTagAt(i)
                         .getString("uid"));
             }
@@ -59,10 +63,15 @@ public final class BeeSpeciesArchive {
 
         NBTTagList oldInventory = tag.getTagList("inventory", 10);
         for (int i = 0; i < oldInventory.tagCount(); i++) {
-            archive.unlockSpecies(
+            archive.restoreSpecies(
                 oldInventory.getCompoundTagAt(i)
                     .getString("species"));
         }
         return archive;
+    }
+
+    private void restoreSpecies(String species) {
+        if (species == null || species.isEmpty()) return;
+        unlockedSpecies.add(species.contains(".") ? species : BeeBreedingHelper.getCanonicalUID(species));
     }
 }

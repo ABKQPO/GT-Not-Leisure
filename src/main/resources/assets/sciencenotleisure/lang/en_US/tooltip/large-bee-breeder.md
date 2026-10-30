@@ -4,7 +4,7 @@ The GUI shows which bees can be bred from your current species archive
 Base success chance follows Forestry mutation chances
 Requires the original mutation foundations in input buses; checks every 10 seconds without consuming them
 Missing foundations pause breeding without disabling the machine; supplying them resumes it automatically
-Voltage follows the original mutation chance, before glass bonuses: above 15% requires IV, above 9% through 15% requires ZPM, and 9% or less requires UHV
+Bee species require IV, ZPM or UHV; check the GUI for their voltage requirement. Unlisted species require UHV
 Breeding waits when voltage is too low; producing archived species also requires the matching voltage
 
 Starts with {var:parallels} parallel, {var:attemptSeconds} seconds per attempt and {var:baseEu} EU/t per parallel

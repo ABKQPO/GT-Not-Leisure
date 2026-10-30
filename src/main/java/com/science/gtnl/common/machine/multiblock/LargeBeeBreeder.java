@@ -49,6 +49,7 @@ import com.science.gtnl.utils.enums.ModsItemlist;
 import com.science.gtnl.utils.machine.bee.BeeBreedingHelper;
 import com.science.gtnl.utils.machine.bee.BeeBreedingHelper.FoundationRequirement;
 import com.science.gtnl.utils.machine.bee.BeeBreedingPlanner;
+import com.science.gtnl.utils.machine.bee.BeeBreedingTiers;
 import com.science.gtnl.utils.machine.bee.BeeSpeciesArchive;
 import com.science.gtnl.utils.recipes.GTNLOverclockCalculator;
 import com.science.gtnl.utils.structure.GTNLMultiblockTooltipBuilder;
@@ -101,18 +102,8 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         return BASE_PARALLEL_STEPS << upgrades;
     }
 
-    public static int getRequiredVoltageTier(double initialChance) {
-        if (initialChance > 15D) return VoltageIndex.IV;
-        if (initialChance > 9D) return VoltageIndex.ZPM;
-        return VoltageIndex.UHV;
-    }
-
     public static int getSpeciesVoltageTier(String species) {
-        return BeeBreedingHelper.getMutationsForUID(species)
-            .stream()
-            .mapToInt(mutation -> getRequiredVoltageTier(mutation.chance))
-            .min()
-            .orElse(BASE_VOLTAGE_TIER);
+        return BeeBreedingTiers.getVoltageTier(species);
     }
 
     private IStructureDefinition<LargeBeeBreeder> structureDefinition;
@@ -331,10 +322,10 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
         }
 
         int requiredTier = readySteps.stream()
-            .mapToInt(step -> getRequiredVoltageTier(step.chance))
+            .mapToInt(step -> getSpeciesVoltageTier(step.result))
             .min()
             .orElse(BASE_VOLTAGE_TIER);
-        readySteps.removeIf(step -> getBreedingVoltageTier() < getRequiredVoltageTier(step.chance));
+        readySteps.removeIf(step -> getBreedingVoltageTier() < getSpeciesVoltageTier(step.result));
         if (readySteps.isEmpty()) return insufficientBreedingVoltage(requiredTier);
         if (getMaxInputPower() < eutPerAttempt) return CheckRecipeResultRegistry.insufficientPower(eutPerAttempt);
 
@@ -390,8 +381,7 @@ public class LargeBeeBreeder extends MultiMachineBase<LargeBeeBreeder> {
             activeRequiredVoltageTier = getSpeciesVoltageTier(outputSpecies);
         }
         for (BreedingAttempt attempt : activeBreedingBatch) {
-            activeRequiredVoltageTier = Math
-                .max(activeRequiredVoltageTier, getRequiredVoltageTier(attempt.step.chance));
+            activeRequiredVoltageTier = Math.max(activeRequiredVoltageTier, getSpeciesVoltageTier(attempt.step.result));
         }
     }
 

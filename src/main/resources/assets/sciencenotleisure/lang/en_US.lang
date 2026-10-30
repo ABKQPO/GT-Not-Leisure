@@ -52,6 +52,7 @@ gtnl.gui.config.general.effect.tooltip=Configure player status and special effec
 gtnl.gui.config.general.item=Item Settings
 gtnl.gui.config.general.item.tooltip=Configuration for various custom items and tools.
 gtnl.gui.config.general.machine=Machine Settings
+gtnl.gui.config.general.machine.bee_breeder.species_voltage_tiers=Bee breeder species voltage tiers
 gtnl.gui.config.general.machine.tooltip=Adjust parameters for multiblocks and single machines.
 gtnl.gui.config.general.message=Message Settings
 gtnl.gui.config.general.message.tooltip=Configure login, join, and broadcast messages.
