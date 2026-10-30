@@ -30,6 +30,7 @@ import com.cleanroommc.modularui.widgets.layout.Grid;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import com.cleanroommc.modularui.widgets.slot.SlotGroup;
+import com.gtnllib.gui.widget.ListeningItemHandler;
 import com.science.gtnl.api.IControllerUpgrade;
 import com.science.gtnl.common.gui.GTNLMui2Textures;
 

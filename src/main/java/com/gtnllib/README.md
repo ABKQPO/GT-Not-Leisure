@@ -13,7 +13,7 @@
 | `client/shader` | 着色器工具 `GlslProgram`、`ShaderEffect` |
 | `gui/theme` | 配色主题：配色表、样式参数、通用构建、实时配色、按钮用途、界面材质（`ThemeSkin` 部件表、金属材质 `MetalSkin`） |
 | `gui/layout` | 布局帮助：尺寸方式、纯计算规则、行和网格、分区和卡片 |
-| `gui/widget` | 通用控件：刻度滑块、滑动开关、填充条、分隔线、关闭按钮、虚拟物品格（可从物品列表拖入），面板框、卡片和九宫格材质绘制对象，主题间距 `LayoutTheme` |
+| `gui/widget` | 通用控件：刻度滑块、滑动开关、填充条、分隔线、关闭按钮、虚拟物品格（可从物品列表拖入），面板框、卡片和九宫格材质绘制对象，主题间距 `LayoutTheme`，带变更回调的物品处理器 `ListeningItemHandler` |
 | `gui/settings` | 设置表单：按配置字段的注解生成滑块和开关 `SettingControls`，方块坐标输入框 `BlockPosFields` |
 | `gui/wheel` | 通用轮盘菜单 |
 | `client/text` | 文字特效渲染器 `EffectTextRenderer`、遮罩缓存、文本框显示，`compat` 是 Angelica 对接，`effect` 是 24 种内置特效和着色器特效基类，`preview` 是 `/gtnl_texteffects` 预览指令 |
@@ -24,7 +24,7 @@
 | `client/tooltip` | 物品提示框 `AnimatedTooltipHandler`：按物品追加普通、按住 Shift、按住 Ctrl 才显示的提示行，以及动态变色文字；使用方用 `addTooltipStackResolver` 让伪装类物品改用别的物品的提示 |
 | `command` | 通用指令 `/getiteminfo`、`/suicide`；`command/selector` 是指令里 `@a`、`@e[...]` 这类实体选择器的解析 |
 | `mod` | 模组列表 `ModList`（给 mixin 指定目标模组、判断模组是否加载） |
-| `utils` | 单行文字绘制、颜色计算 `ColorMath`、数值工具 `MathUtils`（0~1 限制、伪随机数、大数换算和缩写）、长整数饱和运算 `LongMath`、`GameUtils`（射线、权限、放回背包、UUID）、传送 `TeleporterUtils`、提示行拼接 `MetaTooltipUtils`、三维向量 `Vec3d` |
+| `utils` | 单行文字绘制、颜色计算 `ColorMath`、数值工具 `MathUtils`（0~1 限制、伪随机数、大数换算和缩写）、长整数饱和运算 `LongMath`、`GameUtils`（射线、权限、放回背包、UUID）、传送 `TeleporterUtils`、提示行拼接 `MetaTooltipUtils`、三维向量 `Vec3d`、结构文件编解码 `StructureFileCodec`（逗号分隔文本和 MBS1 二进制）、创造模式光标归属 `CreativeCursor` |
 | `config` | 客户端配置 `GTNLLibConfig`：HUD 总开关、HUD 总缩放、界面主题、世界粒子数量上限、文字特效开关 |
 
 包之间只能单向依赖，不能互相引用：

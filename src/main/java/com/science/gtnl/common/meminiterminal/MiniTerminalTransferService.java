@@ -16,8 +16,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 
+import com.gtnllib.utils.CreativeCursor;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
-import com.science.gtnl.utils.CreativeCursor;
 
 import appeng.api.config.InsertionMode;
 import appeng.api.config.SecurityPermissions;

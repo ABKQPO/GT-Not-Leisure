@@ -1,4 +1,4 @@
-package com.science.gtnl.common.gui.modularui;
+package com.gtnllib.gui.widget;
 
 import net.minecraft.item.ItemStack;
 

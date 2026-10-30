@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.gtnewhorizon.gtnhlib.util.ServerThreadUtil;
 import com.gtnllib.network.ServerboundPacket;
-import com.science.gtnl.utils.CreativeCursor;
+import com.gtnllib.utils.CreativeCursor;
 
 import io.netty.buffer.ByteBuf;
 

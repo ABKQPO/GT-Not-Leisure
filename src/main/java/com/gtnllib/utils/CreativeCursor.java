@@ -1,4 +1,4 @@
-package com.science.gtnl.utils;
+package com.gtnllib.utils;
 
 import java.util.Set;
 import java.util.UUID;

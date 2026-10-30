@@ -20,13 +20,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 
 import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
+import com.gtnllib.utils.CreativeCursor;
 import com.science.gtnl.ScienceNotLeisure;
 import com.science.gtnl.common.item.items.ItemMEMiniPortableTerminal;
 import com.science.gtnl.common.packet.MiniTerminalRequestPacket;
 import com.science.gtnl.common.packet.MiniTerminalRequestPacket.DepositMode;
 import com.science.gtnl.common.packet.MiniTerminalUpdatePacket;
 import com.science.gtnl.compat.bogosorter.BogoSorterSlots;
-import com.science.gtnl.utils.CreativeCursor;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
