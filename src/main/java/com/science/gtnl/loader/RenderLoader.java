@@ -28,7 +28,7 @@ import com.science.gtnl.common.render.entity.NullPointerExceptionRender;
 import com.science.gtnl.common.render.entity.SaddleSlimeRender;
 import com.science.gtnl.common.render.entity.SteamRocketRender;
 import com.science.gtnl.common.render.item.AprilFoolMachineRender;
-import com.science.gtnl.common.render.item.ItemBlockArtificialStarRender;
+import com.science.gtnl.common.render.item.ItemArtificialStarRender;
 import com.science.gtnl.common.render.item.ItemNullPointerExceptionRender;
 import com.science.gtnl.common.render.item.ItemPlayerDollRenderer;
 import com.science.gtnl.common.render.item.ItemSteamRocketRenderer;
@@ -112,7 +112,7 @@ public class RenderLoader implements IContentLoader {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityArtificialStar.class, new RealArtificialStarRenderer());
         MinecraftForgeClient.registerItemRenderer(
             Item.getItemFromBlock(BlockLoader.artificialStarRender),
-            new ItemBlockArtificialStarRender());
+            new ItemArtificialStarRender());
 
         MinecraftForgeClient.registerItemRenderer(ItemLoader.twilightSword, new ItemTwilightSwordRender());
 

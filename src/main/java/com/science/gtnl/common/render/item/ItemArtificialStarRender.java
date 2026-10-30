@@ -14,7 +14,7 @@ import gregtech.GTMod;
 import tectech.rendering.EOH.EOHRenderingUtils;
 
 @SideOnly(Side.CLIENT)
-public class ItemBlockArtificialStarRender implements IItemRenderer {
+public class ItemArtificialStarRender implements IItemRenderer {
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
