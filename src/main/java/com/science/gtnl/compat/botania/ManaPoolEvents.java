@@ -19,8 +19,6 @@ import vazkii.botania.api.recipe.RecipeManaInfusion;
 @EventBusSubscriber
 public class ManaPoolEvents {
 
-    private ManaPoolEvents() {}
-
     @SubscribeEvent
     public static void onPlayerRightClick(PlayerInteractEvent event) {
         if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return;

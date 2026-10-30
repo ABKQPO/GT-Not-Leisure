@@ -5,8 +5,6 @@ import java.util.List;
 
 public class LayoutMath {
 
-    private LayoutMath() {}
-
     public static int total(int[] sizes, int gap) {
         int total = 0;
         for (int size : sizes) total += size;

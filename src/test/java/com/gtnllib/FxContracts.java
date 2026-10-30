@@ -25,8 +25,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class FxContracts {
 
-    private FxContracts() {}
-
     static void run() {
         easing();
         motes();

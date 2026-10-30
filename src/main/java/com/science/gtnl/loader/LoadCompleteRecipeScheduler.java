@@ -15,8 +15,6 @@ public class LoadCompleteRecipeScheduler {
     private static boolean scheduled;
     private static boolean loaded;
 
-    private LoadCompleteRecipeScheduler() {}
-
     public static void schedule() {
         if (scheduled || loaded) return;
 

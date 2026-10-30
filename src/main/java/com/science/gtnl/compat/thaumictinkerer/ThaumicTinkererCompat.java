@@ -7,8 +7,6 @@ import gregtech.api.enums.Mods;
 
 public class ThaumicTinkererCompat {
 
-    private ThaumicTinkererCompat() {}
-
     public static void addGreenhouseBuckets() {
         if (!Mods.ThaumicTinkerer.isModLoaded()) return;
         GreenHouseModes.Normal.addLowPriorityFactory(GreenHouseInfusedSeedBucket.factory);

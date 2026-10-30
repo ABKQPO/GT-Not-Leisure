@@ -55,8 +55,6 @@ public class CelestweaveBehaviors {
         }
     }
 
-    private CelestweaveBehaviors() {}
-
     public static ICelestweaveBehavior of(CelestweaveModule module) {
         return BEHAVIORS.getOrDefault(module, NONE);
     }

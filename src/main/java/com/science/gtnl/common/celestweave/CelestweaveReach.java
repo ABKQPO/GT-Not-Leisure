@@ -17,8 +17,6 @@ public class CelestweaveReach {
     private static final Map<UUID, Float> SERVER = new ConcurrentHashMap<>();
     private static final Map<UUID, Float> CLIENT = new ConcurrentHashMap<>();
 
-    private CelestweaveReach() {}
-
     private static Map<UUID, Float> applied(EntityPlayer player) {
         return player.worldObj.isRemote ? CLIENT : SERVER;
     }

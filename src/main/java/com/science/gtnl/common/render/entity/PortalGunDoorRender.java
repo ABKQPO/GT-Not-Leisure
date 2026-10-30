@@ -41,8 +41,6 @@ public class PortalGunDoorRender {
 
     public record FrameArc(List<Vec3d> path, List<Vec3d> surge, float flash) {}
 
-    private PortalGunDoorRender() {}
-
     public static double cornerGlowRadius(float glint) {
         return CORNER_GLOW * (0.6 + 0.6 * glint);
     }

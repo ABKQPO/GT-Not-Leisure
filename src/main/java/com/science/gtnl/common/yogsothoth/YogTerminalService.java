@@ -60,8 +60,6 @@ public class YogTerminalService {
     private static int clickDepth;
     private static int openingSlot = Integer.MIN_VALUE;
 
-    private YogTerminalService() {}
-
     public static class Place {
 
         static final int MAIN = 0, BAUBLE = 1, CURSOR = 2, SLOT = 3;

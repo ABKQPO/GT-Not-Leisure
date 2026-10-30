@@ -54,8 +54,6 @@ public class MetalSkin {
             skin("close", CLOSE_SIZE, CLOSE_SIZE).border(CLOSE_BORDER, CLOSE_BORDER, CLOSE_BORDER, CLOSE_BORDER)
                 .glow(texture("close_glow")));
 
-    private MetalSkin() {}
-
     private static SkinDrawable skin(String name, int width, int height) {
         return new SkinDrawable().texture(texture(name), width, height);
     }

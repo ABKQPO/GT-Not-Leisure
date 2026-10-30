@@ -69,8 +69,6 @@ public class PortalGunContracts {
     private static final ForgeDirection[] SIDES = { ForgeDirection.DOWN, ForgeDirection.UP, ForgeDirection.NORTH,
         ForgeDirection.SOUTH, ForgeDirection.WEST, ForgeDirection.EAST };
 
-    private PortalGunContracts() {}
-
     public static void run() throws Exception {
         portalGunCost();
         portalGunBlacklist();

@@ -68,8 +68,6 @@ public class WirelessChannelManager {
         entranceCounts = null;
     }
 
-    private WirelessChannelManager() {}
-
     public record Allocation(int capacity, int used, long revision) {}
 
     public static void recordAllocation(IGrid grid, int capacity, int used) {

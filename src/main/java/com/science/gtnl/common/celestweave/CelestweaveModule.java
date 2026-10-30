@@ -39,15 +39,11 @@ public enum CelestweaveModule implements IEquipmentVariant {
     public static class Mask {
 
         public static final int HEAD = 1, CHEST = 2, LEGS = 4, BOOTS = 8, ANY = 15;
-
-        private Mask() {}
     }
 
     public static class Trait {
 
         public static final int HIDEABLE = 1, BUILT_IN = 2;
-
-        private Trait() {}
     }
 
     public static final MetaLookup<CelestweaveModule> LOOKUP = new MetaLookup<>(values());

@@ -21,8 +21,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GTNLLibClient {
 
-    private GTNLLibClient() {}
-
     public static void preInit() {
         GTNLLibConfig.register();
         connectConfig();

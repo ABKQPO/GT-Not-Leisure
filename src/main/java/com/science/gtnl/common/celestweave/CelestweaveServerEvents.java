@@ -51,8 +51,6 @@ public class CelestweaveServerEvents {
     private static final Map<EntityPlayer, Tracked> TRACKED = new MapMaker().weakKeys()
         .makeMap();
 
-    private CelestweaveServerEvents() {}
-
     public static void sendFx(Entity entity, CelestweaveFxPacket.Type type, double x, double y, double z) {
         if (entity instanceof EntityPlayer player && concealed(player)) return;
         EquipmentNet.sendAround(entity, new CelestweaveFxPacket(entity.getEntityId(), type, x, y, z), FX_RANGE);

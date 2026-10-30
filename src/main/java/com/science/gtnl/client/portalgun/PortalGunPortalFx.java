@@ -89,8 +89,6 @@ public class PortalGunPortalFx {
     public record Dot(double born, double hover, Vec3d origin, Vec3d velocity, double size, boolean twinkle,
         float phase) {}
 
-    private PortalGunPortalFx() {}
-
     public static Shape shape(PortalGunPortalEffect effect, float ticks, float close) {
         if (ticks < 0) return new Shape(false, 0, 0);
         if (effect.kind == PortalGunPortalEffect.Kind.FRAMED) {

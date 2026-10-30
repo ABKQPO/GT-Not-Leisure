@@ -31,8 +31,6 @@ public class CelestweaveContractTest {
     public static final Path RESOURCES = Paths.get("src/main/resources/assets/sciencenotleisure");
     public static final Path SOURCES = Paths.get("src/main/java/com/science/gtnl");
 
-    private CelestweaveContractTest() {}
-
     public static void main(String[] args) throws Exception {
         check(
             "gtnlEquipment".equals(EquipmentTheme.COLORS.getFullName()) && GTGuiThemes.STANDARD.getId() != null,

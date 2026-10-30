@@ -58,8 +58,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class PortalGunLookContracts {
 
-    private PortalGunLookContracts() {}
-
     public static void run() throws IOException {
         float widest = 0;
         for (int i = 0; i <= 100; i++) {

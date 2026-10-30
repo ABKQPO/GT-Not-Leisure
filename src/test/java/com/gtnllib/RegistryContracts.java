@@ -16,8 +16,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class RegistryContracts {
 
-    private RegistryContracts() {}
-
     public static class RecordingSink implements Registrar.Sink {
 
         public final List<String> names = new ObjectArrayList<>();

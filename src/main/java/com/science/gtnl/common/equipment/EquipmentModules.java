@@ -18,8 +18,6 @@ public class EquipmentModules {
     public static final int ENERGY_SLOTS = 1;
     private static final String SLOT = "Slot";
 
-    private EquipmentModules() {}
-
     public static ItemStack[] read(NBTTagList list, int slots) {
         ItemStack[] stacks = new ItemStack[slots];
         List<ItemStack> overflow = new ObjectArrayList<>();

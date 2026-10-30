@@ -12,8 +12,6 @@ import gregtech.api.enums.Mods;
 
 public class ChiselCompat {
 
-    private ChiselCompat() {}
-
     public static boolean loaded() {
         return Mods.Chisel.isModLoaded();
     }

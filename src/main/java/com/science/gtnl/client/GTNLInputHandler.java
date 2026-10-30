@@ -75,8 +75,6 @@ public class GTNLInputHandler implements IContainerInputHandler {
 
     public List<ItemStack> draggedBookmarkGroup;
 
-    private GTNLInputHandler() {}
-
     public static Map<String, BooleanSupplier> createKeyBindings() {
         Map<String, BooleanSupplier> keyBindings = new Object2ObjectOpenHashMap<>(2);
         keyBindings.put(AE_RETRIEVE_ITEM_KEY, () -> GuiScreen.isCtrlKeyDown() && Mouse.isButtonDown(2));

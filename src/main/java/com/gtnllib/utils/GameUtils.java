@@ -31,8 +31,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class GameUtils {
 
-    private GameUtils() {}
-
     // Looks the block up by registry name, so the mod that adds it does not have to be installed.
     public static Block blockOr(String modId, String name, Block fallback) {
         Block block = GameRegistry.findBlock(modId, name);

@@ -7,8 +7,6 @@ import gregtech.api.enums.Mods;
 
 public class VariableHorizonsCompat {
 
-    private VariableHorizonsCompat() {}
-
     public static boolean anyActive(String... variantNames) {
         return Mods.VariableHorizons.isModLoaded() && anyActiveVariant(variantNames);
     }

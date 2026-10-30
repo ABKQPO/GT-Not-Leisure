@@ -10,8 +10,6 @@ import micdoodle8.mods.galacticraft.api.recipe.SchematicRegistry;
 
 public class SteamRocketSchematic {
 
-    private SteamRocketSchematic() {}
-
     public static void unlockFor(EntityPlayerMP player) {
         if (Mods.GalaxySpace.isModLoaded() && Mods.GalacticraftCore.isModLoaded()) unlock(player);
     }

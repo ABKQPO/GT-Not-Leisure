@@ -7,8 +7,6 @@ import gregtech.api.enums.Mods;
 
 public class ThaumicHorizonsPotions {
 
-    private ThaumicHorizonsPotions() {}
-
     public static boolean hasVisRegen() {
         return Mods.ThaumicHorizons.isModLoaded();
     }

@@ -18,8 +18,6 @@ public class FxShaders {
     static final ShaderEffect BLUR = shader("blur");
     static final ShaderEffect FROSTED = shader("frosted");
 
-    private FxShaders() {}
-
     private static ShaderEffect shader(String name) {
         return new ShaderEffect(VERTEX, new ResourceLocation(GTNLLib.MODID, ROOT + name + ".frag.glsl"));
     }

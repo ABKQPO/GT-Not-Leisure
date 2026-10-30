@@ -86,8 +86,6 @@ public class YogTerminalClient {
     private static boolean awaitingScreen;
     private static boolean creativeScreen;
 
-    private YogTerminalClient() {}
-
     public static void init() {
         YogTerminalClientConfig.load(LAYOUT);
         FloatingWindows.register(YogTerminalClient::window);

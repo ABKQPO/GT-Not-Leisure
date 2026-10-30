@@ -17,8 +17,6 @@ public class RailgunNet {
     private static final double FX_RANGE = 256;
     private static final int POINT_BYTES = Double.BYTES * 3;
 
-    private RailgunNet() {}
-
     public static void sendAround(Entity entity, ClientboundPacket packet) {
         EquipmentNet.sendAround(entity, packet, FX_RANGE);
     }

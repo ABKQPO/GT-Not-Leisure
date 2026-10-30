@@ -9,8 +9,6 @@ import gregtech.api.enums.Mods;
 
 public class BloodArsenalBlocks {
 
-    private BloodArsenalBlocks() {}
-
     public static Block bloodLamp(Block fallback) {
         return Mods.BloodArsenal.isModLoaded() ? lamp() : fallback;
     }

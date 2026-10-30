@@ -26,8 +26,6 @@ public class EquipmentClientInput {
         Keyboard.KEY_G,
         "key.categories.gtnl");
 
-    private EquipmentClientInput() {}
-
     public static void register() {
         ClientRegistry.registerKeyBinding(EQUIPMENT_SETTINGS);
     }

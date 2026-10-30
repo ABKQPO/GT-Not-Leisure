@@ -47,8 +47,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GTNLClientGuiHandler {
 
-    private GTNLClientGuiHandler() {}
-
     public static Object clientElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         ForgeDirection side = ForgeDirection.getOrientation(ID & 7);
         int guiID = ID >> 3;

@@ -84,8 +84,6 @@ public class TextEffectColors {
     public static final ColorResource opaqueWhite = color.argb("opaqueWhite", "0xFFFFFFFF"),
         mutedText = color.rgb("mutedText", "0xB0B0B0");
 
-    private TextEffectColors() {}
-
     public static int rgb(ColorResource resource) {
         return resource.getColor() & 0xFFFFFF;
     }

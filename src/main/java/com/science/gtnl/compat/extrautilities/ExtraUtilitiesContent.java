@@ -15,8 +15,6 @@ import gregtech.api.enums.Mods;
 
 public class ExtraUtilitiesContent {
 
-    private ExtraUtilitiesContent() {}
-
     public static Block greenScreen() {
         return Mods.ExtraUtilities.isModLoaded() ? Block.getBlockFromName("ExtraUtilities:greenscreen") : null;
     }

@@ -13,8 +13,6 @@ public class HotbarMessages {
     public static final int DEFAULT_TICKS = 40;
     public static final EnumChatFormatting DEFAULT_COLOR = EnumChatFormatting.WHITE;
 
-    private HotbarMessages() {}
-
     public static void send(EntityPlayer player, IChatComponent message) {
         send(player, message, DEFAULT_TICKS);
     }

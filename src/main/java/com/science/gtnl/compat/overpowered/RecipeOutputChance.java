@@ -17,8 +17,6 @@ import gregtech.api.util.StringUtils;
 // GTNL's recipe output chance yields to Overpowered, which brings its own.
 public class RecipeOutputChance {
 
-    private RecipeOutputChance() {}
-
     public record Bonus(int tier, int baseTier, double bonus) {}
 
     public static boolean enabled() {

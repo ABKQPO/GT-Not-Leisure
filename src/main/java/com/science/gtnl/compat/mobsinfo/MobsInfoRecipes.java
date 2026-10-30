@@ -23,8 +23,6 @@ import tectech.recipe.TTRecipeAdder;
 
 public class MobsInfoRecipes {
 
-    private MobsInfoRecipes() {}
-
     public static void assemblyLine() {
         if (!Mods.MobsInfo.isModLoaded()) return;
         TTRecipeAdder.addResearchableAssemblylineRecipe(

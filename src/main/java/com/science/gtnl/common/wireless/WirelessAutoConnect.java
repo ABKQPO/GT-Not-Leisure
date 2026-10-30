@@ -81,8 +81,6 @@ public class WirelessAutoConnect {
         }
     }
 
-    private WirelessAutoConnect() {}
-
     public static void toggle(EntityPlayer player) {
         if (player.isDead || player.worldObj.isRemote) return;
         if (ticks < TOGGLES.getOrDefault(player.getUniqueID(), Long.MIN_VALUE)) return;

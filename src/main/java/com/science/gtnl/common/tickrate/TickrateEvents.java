@@ -21,8 +21,6 @@ public class TickrateEvents {
     public static long SLEEP_TIME = 0;
     public static long SERVER_TICK = 0;
 
-    private TickrateEvents() {}
-
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (!(event.player instanceof EntityPlayerMP)) return;

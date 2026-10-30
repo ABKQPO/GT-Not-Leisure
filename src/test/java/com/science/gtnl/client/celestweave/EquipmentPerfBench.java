@@ -48,8 +48,6 @@ public class EquipmentPerfBench {
     private static final ThreadMXBean THREADS = (ThreadMXBean) ManagementFactory.getThreadMXBean();
     private static double sink;
 
-    private EquipmentPerfBench() {}
-
     public static void main(String[] args) throws Exception {
         Item plain = new Item();
         CelestweaveModuleItem armorModule = item(CelestweaveModuleItem.class, "gtnl:bench_celestweave_module", 31001);

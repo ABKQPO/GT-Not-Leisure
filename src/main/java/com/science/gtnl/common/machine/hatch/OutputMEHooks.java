@@ -6,8 +6,6 @@ import gregtech.common.tileentities.machines.outputme.util.AECacheCounter;
 
 public class OutputMEHooks {
 
-    private OutputMEHooks() {}
-
     public static <T extends IAEStack<T>> boolean transferCache(AECacheCounter<T> cache,
         MTEHatchOutputMEBase<T> target) {
         boolean[] transferred = { false };

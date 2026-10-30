@@ -9,8 +9,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class TextRenderUtils {
 
-    private TextRenderUtils() {}
-
     public static void drawTextLine(String text, int x, int y, int width, int height, Alignment alignment, int color,
         boolean shadow) {
         textRenderer(x, y, width, height, alignment, color, shadow, 1F).drawSimple(text);

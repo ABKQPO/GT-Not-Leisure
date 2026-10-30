@@ -63,8 +63,6 @@ public class EquipmentTheme {
     public static final LivePalette LIVE = PaletteThemes
         .live(EquipmentTheme::selected, () -> MainConfig.client.enableEquipmentThemeGlowColor);
 
-    private EquipmentTheme() {}
-
     public static void register() {
         PaletteThemes.extend(EquipmentTheme::addColors);
         PaletteThemes.register(ID, GTGuiThemes.STANDARD.getId(), PALETTE, ThemeStyle.DEFAULT, MetalSkin.SKIN);

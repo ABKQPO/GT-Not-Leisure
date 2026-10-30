@@ -25,8 +25,6 @@ public class FloatingWindows {
     private static final List<Function<GuiScreen, ? extends FloatingWindowPanel>> PROVIDERS = new ObjectArrayList<>();
     private static boolean initialized;
 
-    private FloatingWindows() {}
-
     public static void register(Function<GuiScreen, ? extends FloatingWindowPanel> provider) {
         init();
         PROVIDERS.add(provider);

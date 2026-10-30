@@ -14,8 +14,6 @@ public class ConfigMigration {
     public static final String OLD_CLIENT_CATEGORY = "general.client";
     public static final String TEXT_EFFECTS = "enableTextEffects";
 
-    private ConfigMigration() {}
-
     // Must run before MainConfig is registered: registering removes the keys MainConfig no longer declares.
     public static void moveTextEffectsSetting(File configDir) {
         File directory = new File(configDir, GTNLLib.CONFIG_DIRECTORY);

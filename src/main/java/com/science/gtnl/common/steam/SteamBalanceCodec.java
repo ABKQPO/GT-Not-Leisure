@@ -15,8 +15,6 @@ public class SteamBalanceCodec {
     public static final String TEAM_TAG = "Team";
     public static final String STEAM_TAG = "Steam";
 
-    private SteamBalanceCodec() {}
-
     public static NBTTagList encode(Map<UUID, BigInteger> balances) {
         NBTTagList list = new NBTTagList();
         for (Map.Entry<UUID, BigInteger> entry : balances.entrySet()) {

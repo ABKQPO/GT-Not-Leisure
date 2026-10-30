@@ -41,8 +41,6 @@ public class CelestweaveLook {
     public boolean flightInstalled, flightActive;
     public int packColor = PACK_NONE;
 
-    private CelestweaveLook() {}
-
     public static boolean sameStacks(CelestweaveLook look, EntityLivingBase entity) {
         for (int piece = 0; piece < CelestweaveArmor.PIECES; piece++)
             if (look.worn[piece] != CelestweaveData.piece(entity, piece)) return false;

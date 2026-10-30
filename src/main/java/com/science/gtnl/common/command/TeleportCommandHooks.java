@@ -11,8 +11,6 @@ import com.science.gtnl.ScienceNotLeisure;
 
 public class TeleportCommandHooks {
 
-    private TeleportCommandHooks() {}
-
     public static boolean teleportToPlayer(ICommandSender sender, String[] args) {
         if (args.length < 1) return false;
 

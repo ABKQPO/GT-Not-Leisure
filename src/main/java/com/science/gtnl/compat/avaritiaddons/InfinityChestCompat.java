@@ -8,8 +8,6 @@ import wanion.avaritiaddons.network.InfinityChestClick;
 
 public class InfinityChestCompat {
 
-    private InfinityChestCompat() {}
-
     public static void sendSlotClick(GuiContainer window, int slotIndex, int button, int modifiers) {
         short nextTransactionID = window.mc.thePlayer.openContainer.getNextTransactionID(window.mc.thePlayer.inventory);
         ItemStack itemStack = window.mc.thePlayer.openContainer

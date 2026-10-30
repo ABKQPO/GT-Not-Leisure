@@ -11,8 +11,6 @@ import gregtech.common.OreMixBuilder;
 
 public class OreVeinTypes {
 
-    private OreVeinTypes() {}
-
     public static void register() {
         if (Mods.VisualProspecting.isModLoaded()) registerVeins();
     }

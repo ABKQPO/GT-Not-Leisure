@@ -13,8 +13,6 @@ public class ColorMath {
     private static final double RED_WEIGHT = 0.2126, GREEN_WEIGHT = 0.7152, BLUE_WEIGHT = 0.0722, LINEAR_KNEE = 0.04045,
         LINEAR_SLOPE = 12.92, GAMMA_OFFSET = 0.055, GAMMA = 2.4, CONTRAST_FLARE = 0.05;
 
-    private ColorMath() {}
-
     public static float red(int rgb) {
         return (rgb >> 16 & 255) / 255F;
     }

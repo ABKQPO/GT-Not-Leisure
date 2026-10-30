@@ -16,8 +16,6 @@ import codechicken.nei.api.ItemFilter;
 
 public class NEIItemListFilter {
 
-    private NEIItemListFilter() {}
-
     public static void filter(RestartableTask task) {
         if (!ItemList.loadFinished) return;
 

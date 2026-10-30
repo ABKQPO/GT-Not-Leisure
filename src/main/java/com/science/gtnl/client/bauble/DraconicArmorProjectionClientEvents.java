@@ -45,8 +45,6 @@ public class DraconicArmorProjectionClientEvents {
     private static ItemStack draconicLegsProjection;
     private static ItemStack draconicBootsProjection;
 
-    private DraconicArmorProjectionClientEvents() {}
-
     @SubscribeEvent
     public static void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
         Minecraft minecraft = Minecraft.getMinecraft();

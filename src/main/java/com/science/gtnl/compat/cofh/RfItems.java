@@ -10,8 +10,6 @@ import gregtech.api.enums.Mods;
 // stored, capacity and receive may only be called for items isRfItem accepted.
 public class RfItems {
 
-    private RfItems() {}
-
     public static boolean isRfItem(Item item) {
         return Mods.COFHCore.isModLoaded() && energyContainer(item);
     }

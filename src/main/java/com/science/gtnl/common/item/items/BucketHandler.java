@@ -22,8 +22,6 @@ public class BucketHandler {
 
     public static final Map<Block, Item> BUCKETS = new Object2ObjectOpenHashMap<>();
 
-    private BucketHandler() {}
-
     public static void registerFluid(Block fluidBlock, Item fullBucket) {
         BUCKETS.put(fluidBlock, fullBucket);
     }

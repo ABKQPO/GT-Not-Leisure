@@ -44,8 +44,6 @@ public class PaletteThemes {
     private static final List<Runnable> LISTENERS = new ObjectArrayList<>();
     private static Supplier<String> chosen = () -> "";
 
-    private PaletteThemes() {}
-
     public static void register(String id, ThemePalette palette) {
         register(id, ThemeAPI.DEFAULT_ID, palette, ThemeStyle.DEFAULT);
     }

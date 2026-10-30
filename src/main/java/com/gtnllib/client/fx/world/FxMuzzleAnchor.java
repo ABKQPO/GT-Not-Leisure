@@ -46,8 +46,6 @@ public class FxMuzzleAnchor {
     private static final FloatBuffer MATRIX = BufferUtils.createFloatBuffer(16);
     private static HandAnchor hand;
 
-    private FxMuzzleAnchor() {}
-
     /**
      * Records the muzzle of a gun drawn in a holder's hand; {@code muzzle} is in the model's own coordinates and the
      * current model view matrix must be the one the gun is drawn with.

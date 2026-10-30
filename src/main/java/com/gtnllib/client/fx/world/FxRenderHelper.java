@@ -52,8 +52,6 @@ public class FxRenderHelper {
     private static final FloatBuffer MODELVIEW = BufferUtils.createFloatBuffer(16);
     private static Vec3d localFacing;
 
-    private FxRenderHelper() {}
-
     public static void render(Runnable draw) {
         batch(null, draw, true);
     }

@@ -21,8 +21,6 @@ import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 
 public class ForestryRecipes {
 
-    private ForestryRecipes() {}
-
     public static void autoclave() {
         if (!Mods.Forestry.isModLoaded()) return;
         RecipeBuilder.builder() // Prismarine + Comb

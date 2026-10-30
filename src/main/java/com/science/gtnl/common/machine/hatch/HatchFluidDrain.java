@@ -5,8 +5,6 @@ import java.util.function.ToIntBiFunction;
 
 public class HatchFluidDrain {
 
-    private HatchFluidDrain() {}
-
     public static <H> int drainAcross(List<H> hatches, int amount, ToIntBiFunction<H, Integer> drainUpTo) {
         int remaining = amount;
         // A dual input hatch gives one slot per call, so keep visiting the hatches while any of them still gives.

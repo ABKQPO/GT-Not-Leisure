@@ -14,8 +14,6 @@ public class WheelMenuBuilder {
     private int slotsPerPage = WheelMenuModel.DEFAULT_SLOTS_PER_PAGE;
     private WheelStyle style = WheelStyle.DEFAULT;
 
-    private WheelMenuBuilder() {}
-
     public static WheelMenuBuilder create() {
         return new WheelMenuBuilder();
     }
@@ -63,8 +61,6 @@ public class WheelMenuBuilder {
     public static class SubmenuBuilder {
 
         private final List<WheelEntry> entries = new ObjectArrayList<>();
-
-        private SubmenuBuilder() {}
 
         private static List<WheelEntry> build(Consumer<SubmenuBuilder> submenu) {
             SubmenuBuilder builder = new SubmenuBuilder();

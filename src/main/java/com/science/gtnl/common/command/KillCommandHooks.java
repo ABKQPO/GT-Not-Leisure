@@ -20,8 +20,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class KillCommandHooks {
 
-    private KillCommandHooks() {}
-
     public static void kill(ICommandSender sender, String[] args) {
         List<Entity> targets;
 

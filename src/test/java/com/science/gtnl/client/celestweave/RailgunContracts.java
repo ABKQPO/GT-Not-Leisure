@@ -52,8 +52,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class RailgunContracts {
 
-    private RailgunContracts() {}
-
     static void run() throws Exception {
         railgunCost();
         railgunDamage();

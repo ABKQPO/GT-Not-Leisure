@@ -29,8 +29,6 @@ import gtneioreplugin.util.DimensionHelper;
 
 public class VoidMinerHooks {
 
-    private VoidMinerHooks() {}
-
     public static IVoidMinerHost host(MTEVoidMinerBase<?> miner) {
         return (IVoidMinerHost) miner;
     }

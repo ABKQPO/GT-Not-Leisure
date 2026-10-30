@@ -52,8 +52,6 @@ public class ContentLoaders {
 
     private static Phase phase = Phase.NOT_STARTED;
 
-    private ContentLoaders() {}
-
     public static Phase phase() {
         return phase;
     }

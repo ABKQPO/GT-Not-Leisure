@@ -9,8 +9,6 @@ import com.science.gtnl.config.MainConfig;
 
 public class RailgunEnergy {
 
-    private RailgunEnergy() {}
-
     public static double capacity(ItemStack stack) {
         return EnergyModuleItem.capacity(
             RailgunData.modules(stack)

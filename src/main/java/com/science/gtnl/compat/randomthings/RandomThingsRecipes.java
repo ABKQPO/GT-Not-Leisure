@@ -14,8 +14,6 @@ import gregtech.api.util.GTModHandler;
 
 public class RandomThingsRecipes {
 
-    private RandomThingsRecipes() {}
-
     public static void craftingTable() {
         if (!Mods.RandomThings.isModLoaded()) return;
         ItemStack ectoplasm = ModsItemlist.RandomThingsSpirit.get(1);

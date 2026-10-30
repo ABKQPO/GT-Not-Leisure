@@ -17,8 +17,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class CelestweaveBackpackClient {
 
-    private CelestweaveBackpackClient() {}
-
     public static Object gui(EntityPlayer player) {
         ItemStack worn = CelestweaveBackpack.wornBackpack(player);
         if (worn == null) return null;

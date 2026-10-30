@@ -19,8 +19,6 @@ public class CelestweaveEnergy {
     private static final double FLUSH_SHARE = 0.01;
     private static final Map<UUID, double[]> PENDING = new Object2ObjectOpenHashMap<>();
 
-    private CelestweaveEnergy() {}
-
     public static double capacity(ItemStack stack) {
         return EnergyModuleItem.capacity(CelestweaveData.energyTier(stack), MainConfig.item.celestweave.baseCapacity);
     }

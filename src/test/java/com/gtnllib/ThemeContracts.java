@@ -101,8 +101,6 @@ public class ThemeContracts {
     private static final double HUE_TOLERANCE = 6;
     private static final int MAX_GRAY_SPREAD = 12;
 
-    private ThemeContracts() {}
-
     static void run() throws Exception {
         DrawableSerialization.init();
         PaletteThemes.register(SAMPLE_THEME, SAMPLE);

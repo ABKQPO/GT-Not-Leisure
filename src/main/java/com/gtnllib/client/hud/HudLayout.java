@@ -49,8 +49,6 @@ public class HudLayout {
     private static BooleanSupplier shown = () -> true;
     private static DoubleSupplier globalScale = () -> 1;
 
-    private HudLayout() {}
-
     public record Placement(float x, float y, float scale, float opacity, float level, float awake, boolean resting,
         HudElement element, Entry entry) {
 

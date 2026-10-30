@@ -29,8 +29,6 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 
 public class OptimizePatternsHooks {
 
-    private OptimizePatternsHooks() {}
-
     // Returns false when there is no plan or grid, in which case nothing is sent.
     public static boolean collectPatterns(QuantumCraftingJob<?> job, Map<IAEStack<?>, Object> patterns, IGrid grid,
         Function<IGrid, Set<IGrid>> reachableGrids) {

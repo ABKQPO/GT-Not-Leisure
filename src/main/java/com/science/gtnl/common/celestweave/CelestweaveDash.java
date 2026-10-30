@@ -18,8 +18,6 @@ public class CelestweaveDash {
     private static final Map<UUID, Long> LAST = new ConcurrentHashMap<>();
     private static final double VERTICAL_SCALE = 0.6, BASE_LIFT = 0.1, MIN_LIFT = 0.1;
 
-    private CelestweaveDash() {}
-
     public static void dash(EntityPlayerMP player) {
         ItemStack boots = CelestweaveData.piece(player, CelestweaveArmor.BOOTS);
         if (boots == null || !CelestweaveData.active(boots, CelestweaveModule.DASH) || player.isRiding()) return;

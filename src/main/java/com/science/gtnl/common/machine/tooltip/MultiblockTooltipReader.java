@@ -101,8 +101,6 @@ public class MultiblockTooltipReader {
         HatchElement.Muffler, HatchElement.InputBus, HatchElement.InputHatch, HatchElement.OutputBus,
         HatchElement.OutputHatch };
 
-    private MultiblockTooltipReader() {}
-
     private static Map<String, IStructureChannels> knownChannels() {
         Map<String, IStructureChannels> channels = new HashMap<>();
         channels.put(GTStructureChannels.TIER_CASING.get(), GTStructureChannels.TIER_CASING);

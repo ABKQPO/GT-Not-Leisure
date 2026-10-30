@@ -50,8 +50,6 @@ public class GTNLClientEvents {
     public static String CHEAT_WRENCH_ICON_TEXTURE = "nei:cheat_speical";
     public static IIcon cheatWrenchIcon;
 
-    private GTNLClientEvents() {}
-
     public static void registerAllIcons(IIconRegister ir) {
         haloNoiseIcon = ir.registerIcon(HALO_NOISE_ICON_TEXTURE);
         cheatWrenchIcon = ir.registerIcon(CHEAT_WRENCH_ICON_TEXTURE);

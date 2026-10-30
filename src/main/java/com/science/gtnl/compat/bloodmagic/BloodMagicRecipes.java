@@ -16,8 +16,6 @@ import gregtech.api.util.recipe.Scanning;
 
 public class BloodMagicRecipes {
 
-    private BloodMagicRecipes() {}
-
     public static void assemblyLine() {
         if (!Mods.BloodMagic.isModLoaded()) return;
         RecipeBuilder.builder()

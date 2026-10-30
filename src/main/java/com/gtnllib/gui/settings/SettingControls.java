@@ -121,8 +121,6 @@ public class SettingControls {
         }
     }
 
-    private SettingControls() {}
-
     public static Slider slider(Object owner, Class<?> type, String name, double step, DoubleFunction<String> format) {
         Field field = field(type, name);
         double min, max, initial;

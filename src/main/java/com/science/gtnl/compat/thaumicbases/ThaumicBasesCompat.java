@@ -7,8 +7,6 @@ import gregtech.api.enums.Mods;
 
 public class ThaumicBasesCompat {
 
-    private ThaumicBasesCompat() {}
-
     public static void addGreenhouseBuckets() {
         if (!Mods.ThaumicBases.isModLoaded()) return;
         GreenHouseModes.Normal.addLowPriorityFactory(GreenHouseRainbowCactusBucket.factory);

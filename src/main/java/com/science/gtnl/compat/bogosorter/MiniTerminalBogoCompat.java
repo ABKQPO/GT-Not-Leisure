@@ -114,8 +114,6 @@ public class MiniTerminalBogoCompat {
     @EventBusSubscriber(side = Side.CLIENT, phase = Phase.PRE)
     public static class Native {
 
-        private Native() {}
-
         @EventBusSubscriber.Condition
         public static boolean bogoSorterLoaded() {
             return ModList.InventoryBogoSorter.isModLoaded();

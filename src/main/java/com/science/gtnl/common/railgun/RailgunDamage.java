@@ -38,8 +38,6 @@ public class RailgunDamage {
 
     static boolean striking;
 
-    private RailgunDamage() {}
-
     private static boolean storm(World world, EntityPlayer player) {
         return world.isThundering() && world.canBlockSeeTheSky(
             MathHelper.floor_double(player.posX),

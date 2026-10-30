@@ -20,8 +20,6 @@ public class EquipmentNet {
     private static final int GUI_THROTTLE_TICKS = 5;
     private static final Map<EntityPlayer, Long> LAST_GUI = Collections.synchronizedMap(new WeakHashMap<>());
 
-    private EquipmentNet() {}
-
     public static void sendAround(Entity entity, ClientboundPacket packet, double range) {
         ScienceNotLeisure.network.sendToAllAround(
             packet,

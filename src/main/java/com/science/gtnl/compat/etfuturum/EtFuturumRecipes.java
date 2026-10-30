@@ -20,8 +20,6 @@ import gregtech.api.util.GTRecipeBuilder;
 
 public class EtFuturumRecipes {
 
-    private EtFuturumRecipes() {}
-
     public static void rockBreaker() {
         if (!Mods.EtFuturumRequiem.isModLoaded()) return;
         RecipeBuilder.builder()

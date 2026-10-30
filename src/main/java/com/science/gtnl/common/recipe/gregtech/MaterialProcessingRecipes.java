@@ -19,8 +19,6 @@ import gregtech.api.util.GTUtility;
 
 public class MaterialProcessingRecipes {
 
-    private MaterialProcessingRecipes() {}
-
     public static void addTurbineBladeRecipes(Werkstoff werkstoff) {
         if (werkstoff.hasItemType(OrePrefixes.turbineBlade)) {
             if (werkstoff.hasItemType(OrePrefixes.cellMolten)) {

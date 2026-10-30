@@ -2102,8 +2102,6 @@ public class CraftingCalculation {
         private int processCount;
         private int hashCode;
 
-        private RecursiveNetKey() {}
-
         private static RecursiveNetKey mutableProbe() {
             return new RecursiveNetKey();
         }

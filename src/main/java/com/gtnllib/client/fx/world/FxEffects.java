@@ -11,8 +11,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class FxEffects {
 
-    private FxEffects() {}
-
     public static void register() {
         MinecraftForge.EVENT_BUS.register(new FxEffects());
         MinecraftForge.EVENT_BUS.register(new FxArcRenderer());

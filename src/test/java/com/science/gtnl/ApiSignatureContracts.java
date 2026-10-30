@@ -26,8 +26,6 @@ public class ApiSignatureContracts {
     public static final Path BASELINE = Paths.get("src/test/resources/com/science/gtnl/api-signatures.txt");
     public static final String DUMP_VARIABLE = "GTNL_API_SIGNATURE_DUMP";
 
-    private ApiSignatureContracts() {}
-
     public static void run() throws IOException {
         Set<String> current = currentSignatures();
         if (System.getenv(DUMP_VARIABLE) != null) {

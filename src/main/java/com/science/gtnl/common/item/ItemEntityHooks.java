@@ -6,8 +6,6 @@ import net.minecraft.util.MathHelper;
 
 public class ItemEntityHooks {
 
-    private ItemEntityHooks() {}
-
     public static void moveFloatingOnLava(EntityItem item, double mx, double my, double mz) {
         double buoyancy = 0;
         if (item.isImmuneToFire() && item.worldObj

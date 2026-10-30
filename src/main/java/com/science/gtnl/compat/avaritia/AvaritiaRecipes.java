@@ -11,8 +11,6 @@ import gregtech.api.enums.Mods;
 
 public class AvaritiaRecipes {
 
-    private AvaritiaRecipes() {}
-
     public static void thaumcraftExclusions() {
         if (!Mods.Avaritia.isModLoaded()) return;
         thaumcraftExclusionsRecipes();

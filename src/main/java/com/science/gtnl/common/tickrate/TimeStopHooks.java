@@ -17,8 +17,6 @@ import cpw.mods.fml.common.FMLLog;
 
 public class TimeStopHooks {
 
-    private TimeStopHooks() {}
-
     public static void updatePlayersOnly(World world, List<Entity> unloadedEntityList, IChunkProvider chunkProvider) {
         world.theProfiler.startSection("entities");
         world.theProfiler.startSection("global");

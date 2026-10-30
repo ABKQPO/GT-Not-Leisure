@@ -28,8 +28,6 @@ import gtneioreplugin.util.DimensionHelper;
 
 public class VoidMinerGuiHooks {
 
-    private VoidMinerGuiHooks() {}
-
     public static void addOverrideLine(ListWidget<IWidget, ?> list, MTEVoidMinerBase<?> miner,
         IGregTechTileEntity baseMetaTileEntity, PanelSyncManager syncManager) {
         IVoidMinerDimensionOverride override = (IVoidMinerDimensionOverride) miner;

@@ -6,8 +6,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class FluidPacketContainer {
 
-    private FluidPacketContainer() {}
-
     public static int fill(ItemStack container, FluidStack existing, FluidStack resource, boolean doFill) {
         if (resource == null || resource.amount <= 0) return 0;
 

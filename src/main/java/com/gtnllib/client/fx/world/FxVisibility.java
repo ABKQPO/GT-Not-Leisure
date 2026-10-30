@@ -7,8 +7,6 @@ import com.gtnllib.utils.Vec3d;
 
 public class FxVisibility {
 
-    private FxVisibility() {}
-
     public static boolean allowed(boolean self, double distance, boolean showOthers, double maxDistance) {
         return self || showOthers && distance <= maxDistance;
     }

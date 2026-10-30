@@ -63,8 +63,6 @@ public class RailgunBeamService {
     private static final Object2LongOpenHashMap<UUID> USE_CONFLICT = new Object2LongOpenHashMap<>();
     private static final Set<UUID> DRAINED = new ObjectOpenHashSet<>();
 
-    private RailgunBeamService() {}
-
     public static void setFiring(EntityPlayerMP player, boolean firing) {
         UUID id = player.getUniqueID();
         if (!firing) {

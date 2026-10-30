@@ -96,8 +96,6 @@ public class RailgunFireService {
 
     private static final Map<UUID, ChargeSession> CHARGING = new Object2ObjectOpenHashMap<>();
 
-    private RailgunFireService() {}
-
     public static void beginCharge(EntityPlayerMP player, ItemStack stack) {
         long now = now(player);
         ChargeSession session = CHARGING.get(player.getUniqueID());

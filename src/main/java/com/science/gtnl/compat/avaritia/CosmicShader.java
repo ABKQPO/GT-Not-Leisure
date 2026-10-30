@@ -9,8 +9,6 @@ import gregtech.api.enums.Mods;
 @SideOnly(Side.CLIENT)
 public class CosmicShader {
 
-    private CosmicShader() {}
-
     public static boolean isAvailable() {
         return Mods.Avaritia.isModLoaded();
     }

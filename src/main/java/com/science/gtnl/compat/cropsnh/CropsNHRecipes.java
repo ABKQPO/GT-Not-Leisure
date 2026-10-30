@@ -16,8 +16,6 @@ import gregtech.api.recipe.RecipeMaps;
 
 public class CropsNHRecipes {
 
-    private CropsNHRecipes() {}
-
     public static void assembler() {
         if (!Mods.CropsNH.isModLoaded()) return;
         assemblerRecipes();

@@ -66,9 +66,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import vazkii.botania.common.entity.EntityManaBurst;
 
-final class EquipmentRegressionContracts {
-
-    private EquipmentRegressionContracts() {}
+public class EquipmentRegressionContracts {
 
     static void run() throws Exception {
         reflectedProjectiles();

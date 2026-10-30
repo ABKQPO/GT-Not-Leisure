@@ -17,8 +17,6 @@ import gregtech.api.util.GTOreDictUnificator;
 
 public class PamsHarvestCraftRecipes {
 
-    private PamsHarvestCraftRecipes() {}
-
     public static void fishingGround() {
         if (!Mods.PamsHarvestCraft.isModLoaded()) return;
 

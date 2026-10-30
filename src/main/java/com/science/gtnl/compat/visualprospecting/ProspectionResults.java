@@ -12,8 +12,6 @@ import gregtech.api.enums.Mods;
 
 public class ProspectionResults {
 
-    private ProspectionResults() {}
-
     public static void sendOres(World world, EntityPlayerMP player, int blockX, int blockZ, int blockRadius) {
         if (Mods.VisualProspecting.isModLoaded()) ores(world, player, blockX, blockZ, blockRadius);
     }

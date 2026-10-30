@@ -17,8 +17,6 @@ import com.science.gtnl.mixins.early.superCreeper.AccessorEntityCreeper;
 
 public class SuperCreeperHooks {
 
-    private SuperCreeperHooks() {}
-
     public static boolean isTargetBlock(Block block, int meta) {
         if (MainConfig.super_creeper.defaultTargetBlocks == null
             || MainConfig.super_creeper.defaultTargetBlocks.length == 0) return false;

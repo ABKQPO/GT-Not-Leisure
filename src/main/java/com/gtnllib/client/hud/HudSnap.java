@@ -9,8 +9,6 @@ public class HudSnap {
     public static final float RANGE = 4F;
     public static final int NUDGE = 1, NUDGE_FAST = 10;
 
-    private HudSnap() {}
-
     public record Box(float minX, float minY, float maxX, float maxY, float x, float y) {
 
         public static Box of(HudElement element, float x, float y, float scale) {

@@ -9,8 +9,6 @@ import gregtech.api.enums.Mods;
 
 public class BaublesInventory {
 
-    private BaublesInventory() {}
-
     public static IInventory of(EntityPlayer player) {
         return Mods.Baubles.isModLoaded() ? baubles(player) : null;
     }

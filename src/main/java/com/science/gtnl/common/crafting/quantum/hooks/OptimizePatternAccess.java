@@ -12,8 +12,6 @@ public class OptimizePatternAccess {
 
     private static Constructor<?> patternConstructor;
 
-    private OptimizePatternAccess() {}
-
     public static Object newPattern() {
         try {
             if (patternConstructor == null) {

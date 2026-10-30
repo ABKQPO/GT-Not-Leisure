@@ -138,6 +138,11 @@ public class ArchitectureContracts {
     private static final Pattern FINAL_CLASS = Pattern.compile(
         "^[ \\t]*(?:(?:public|protected|private|static|abstract)[ \\t]+)*final[ \\t]+(?:(?:static|abstract)[ \\t]+)*class[ \\t]",
         Pattern.MULTILINE);
+    // A static-only class needs no constructor of its own; packets keep their public no-arg constructor.
+    public static final Pattern EMPTY_PRIVATE_CONSTRUCTOR = Pattern
+        .compile("^[ \\t]*private[ \\t]+(\\w+)\\(\\)[ \\t]*\\{[ \\t]*\\}", Pattern.MULTILINE);
+    // fromAE builds an empty stack list through it before filling it.
+    public static final Set<String> EMPTY_PRIVATE_CONSTRUCTOR_ALLOWED = Set.of("utils/machine/ItemStackG.java");
     private static final Pattern PACKAGE_PRIVATE_TYPE = Pattern.compile(
         "^( {4})?(?:(?:abstract|static|final|sealed|strictfp)[ \\t]+)*(?:class|interface|enum)[ \\t]+(\\w+)",
         Pattern.MULTILINE);
@@ -148,8 +153,6 @@ public class ArchitectureContracts {
         "^import com\\.science\\.gtnl\\.common\\.(celestweave|railgun|portalgun|equipment|wireless|meminiterminal"
             + "|beamformer|yogsothoth|steam|stellar|greenhouse)\\.",
         Pattern.MULTILINE);
-
-    private ArchitectureContracts() {}
 
     public static void run() throws IOException {
         Map<String, String> sources = sources();
@@ -277,6 +280,10 @@ public class ArchitectureContracts {
                 !FINAL_CLASS.matcher(text)
                     .find(),
                 path + " declares a final class; the lead allows final on fields and methods only (records are fine)");
+            if (!EMPTY_PRIVATE_CONSTRUCTOR_ALLOWED.contains(path)) check(
+                !EMPTY_PRIVATE_CONSTRUCTOR.matcher(text)
+                    .find(),
+                path + " declares an empty private constructor; drop it, a class with only static members needs none");
             Matcher declaration = PACKAGE_PRIVATE_TYPE.matcher(text);
             boolean interfaceFile = INTERFACE_FILE.matcher(text)
                 .find();

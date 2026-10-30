@@ -4,8 +4,6 @@ import com.gtnllib.utils.MathUtils;
 
 public class FxEasing {
 
-    private FxEasing() {}
-
     public static float easeOutQuad(float t) {
         return -t * t + 2 * t;
     }

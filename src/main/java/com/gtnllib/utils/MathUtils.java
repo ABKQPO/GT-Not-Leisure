@@ -12,8 +12,6 @@ import net.minecraft.util.MathHelper;
 
 public class MathUtils {
 
-    private MathUtils() {}
-
     public static float clampUnit(float value) {
         return MathHelper.clamp_float(value, 0F, 1F);
     }

@@ -19,8 +19,6 @@ public class EssentiaJarWandEvents {
 
     private static long suppressWandAirUseTick = -1;
 
-    private EssentiaJarWandEvents() {}
-
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onMultiEssentiaJarWandClear(PlayerInteractEvent event) {
         EntityPlayer player = event.entityPlayer;

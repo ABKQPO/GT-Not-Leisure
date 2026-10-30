@@ -8,8 +8,6 @@ import gregtech.api.enums.Mods;
 
 public class HoloGlasses {
 
-    private HoloGlasses() {}
-
     public static boolean isGlasses(ItemStack stack) {
         return Mods.HoloInventory.isModLoaded() && glasses(stack);
     }

@@ -27,8 +27,6 @@ public class CraftConfirmCycles {
 
     public static final String NO_NET_OUTPUT = "gtnl.quantum_crafting.message.CraftingNoNetOutput";
 
-    private CraftConfirmCycles() {}
-
     public static GuiAeButton backToTreeButton(int guiLeft, int guiTop, int treeWidth, FontRenderer font) {
         var back = StatCollector.translateToLocal("gtnl.gui.crafting_ring.back");
         var button = new GuiAeButton(

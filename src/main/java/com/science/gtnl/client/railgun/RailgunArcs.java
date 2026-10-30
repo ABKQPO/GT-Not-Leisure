@@ -11,8 +11,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RailgunArcs {
 
-    private RailgunArcs() {}
-
     public static void chain(Vec3d from, Vec3d to, int lifetime, boolean ehv) {
         if (from == null || to == null || !from.finite() || !to.finite()) return;
         double length = to.subtract(from)

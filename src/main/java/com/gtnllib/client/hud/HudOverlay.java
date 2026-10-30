@@ -15,8 +15,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class HudOverlay {
 
-    private HudOverlay() {}
-
     public static void register() {
         HudOverlay overlay = new HudOverlay();
         MinecraftForge.EVENT_BUS.register(overlay);

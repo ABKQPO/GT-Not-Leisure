@@ -25,8 +25,6 @@ public class EquipmentHudContracts {
 
     private static final int W = 480, H = 270;
 
-    private EquipmentHudContracts() {}
-
     static void run() throws Exception {
         hud();
         hudLayout();

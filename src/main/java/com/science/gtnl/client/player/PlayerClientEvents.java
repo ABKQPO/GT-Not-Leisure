@@ -34,8 +34,6 @@ public class PlayerClientEvents {
     public static boolean HAS_HANDLED_DEATH_MESSAGE = false;
     public static float LAST_HEALTH = 20.0f;
 
-    private PlayerClientEvents() {}
-
     @SubscribeEvent
     public static void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
         Minecraft minecraft = Minecraft.getMinecraft();

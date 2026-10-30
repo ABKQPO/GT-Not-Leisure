@@ -98,8 +98,6 @@ public class MiniTerminalClient {
     private static String name = "ME";
     private static String network = "";
 
-    private MiniTerminalClient() {}
-
     public static void init() {
         MiniTerminalClientConfig.load(LAYOUT);
         FloatingWindows.register(MiniTerminalClient::overlay);

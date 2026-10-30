@@ -32,8 +32,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class TimeStopClientHooks {
 
-    private TimeStopClientHooks() {}
-
     // Minecraft 1.7.10 has no isGamePaused field.
     public static boolean tickStoppedWorld(WorldClient world, NetHandlerPlayClient sendQueue,
         ChunkProviderClient chunkProvider) {

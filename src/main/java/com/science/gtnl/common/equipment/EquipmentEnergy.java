@@ -19,8 +19,6 @@ public class EquipmentEnergy {
     private static final int[] VOLTAGE_TIERS = { 3, 5, 6, 7 };
     private static final double REFILL_SHARE = 0.01;
 
-    private EquipmentEnergy() {}
-
     public static int voltageTier(int energyTier) {
         return VOLTAGE_TIERS[Math.max(0, Math.min(VOLTAGE_TIERS.length - 1, energyTier))];
     }

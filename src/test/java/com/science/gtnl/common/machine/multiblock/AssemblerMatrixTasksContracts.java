@@ -15,8 +15,6 @@ public class AssemblerMatrixTasksContracts {
     private static final String ID_TAG = "id";
     private static final String COUNT_TAG = "Cnt";
 
-    private AssemblerMatrixTasksContracts() {}
-
     public static void run() {
         AssemblerMatrixTasks tasks = new AssemblerMatrixTasks();
         tasks.accept(List.of(stack("bucket", 3)), List.of(stack("stick", 10), stack("plank", 5)));

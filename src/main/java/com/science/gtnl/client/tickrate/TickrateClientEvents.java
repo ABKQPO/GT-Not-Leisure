@@ -16,8 +16,6 @@ import cpw.mods.fml.relauncher.Side;
 @EventBusSubscriber(side = Side.CLIENT)
 public class TickrateClientEvents {
 
-    private TickrateClientEvents() {}
-
     @SubscribeEvent
     public static void onChat(ClientChatReceivedEvent event) {
         if (event.message instanceof ChatComponentTranslation chat) {

@@ -42,8 +42,6 @@ public class RailgunTerrainService {
     private static final ObjectArrayList<Job> PENDING = new ObjectArrayList<>();
     private static final Map<Block, String> MOD_IDS = new Reference2ObjectOpenHashMap<>();
 
-    private RailgunTerrainService() {}
-
     public static void queueSphere(WorldServer world, Vec3d center, double radius, double hardness,
         EntityPlayerMP player) {
         if (!MainConfig.item.railgun.enableTerrain || !center.finite()

@@ -6,8 +6,6 @@ import gregtech.api.enums.Mods;
 
 public class BloodMagicPotions {
 
-    private BloodMagicPotions() {}
-
     public static int flightId(int fallback) {
         return Mods.BloodMagic.isModLoaded() ? flight() : fallback;
     }

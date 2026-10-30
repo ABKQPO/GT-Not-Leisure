@@ -27,8 +27,6 @@ public class CelestweaveArcs {
 
     static int total;
 
-    private CelestweaveArcs() {}
-
     private static CelestweaveFrames.Arcs arcs() {
         CelestweaveFrames frames = CelestweaveObjModel.INSTANCE.frames();
         return frames == null ? null : frames.arcs;

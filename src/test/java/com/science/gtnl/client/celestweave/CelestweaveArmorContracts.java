@@ -90,8 +90,6 @@ public class CelestweaveArmorContracts {
 
     private static final int DEFAULT_STACK = 64;
 
-    private CelestweaveArmorContracts() {}
-
     static void run() throws Exception {
         modules();
         equipment();

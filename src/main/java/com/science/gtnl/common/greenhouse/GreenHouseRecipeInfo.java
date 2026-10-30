@@ -15,8 +15,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class GreenHouseRecipeInfo {
 
-    private GreenHouseRecipeInfo() {}
-
     public static String describe(int progressTime, int maxProgressTime, ItemStack[] outputItems,
         Set<Map.Entry<ItemStack, Double>> drops) {
         double maxProgressSeconds = safeMaxProgressSeconds(maxProgressTime);

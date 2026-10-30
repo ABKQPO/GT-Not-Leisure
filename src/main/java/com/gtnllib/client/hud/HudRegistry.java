@@ -11,8 +11,6 @@ public class HudRegistry {
     private static final List<HudElement> ELEMENTS = new ObjectArrayList<>();
     private static final List<BooleanSupplier> CROSSHAIR_USERS = new ObjectArrayList<>();
 
-    private HudRegistry() {}
-
     public static HudElement register(HudElement element) {
         if (byId(element.id) != null) throw new IllegalStateException("Duplicate HUD element " + element.id);
         ELEMENTS.add(element);

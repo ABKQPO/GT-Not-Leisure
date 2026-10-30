@@ -15,8 +15,6 @@ import gregtech.api.util.GTOreDictUnificator;
 
 public class EnhancedLootBagsRecipes {
 
-    private EnhancedLootBagsRecipes() {}
-
     public static void craftingTable() {
         if (!Mods.EnhancedLootBags.isModLoaded()) return;
         GTModHandler.addCraftingRecipe(

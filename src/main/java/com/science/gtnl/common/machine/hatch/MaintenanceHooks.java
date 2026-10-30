@@ -8,8 +8,6 @@ import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 
 public class MaintenanceHooks {
 
-    private MaintenanceHooks() {}
-
     // The first configuration maintenance hatch of the machine scales the recipe duration.
     public static int configuredDuration(MTEMultiBlockBase machine, int duration) {
         try {

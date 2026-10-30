@@ -39,8 +39,6 @@ public class CelestweaveClientInput {
 
     private static boolean flySpeedSet;
 
-    private CelestweaveClientInput() {}
-
     public static void register() {
         ClientRegistry.registerKeyBinding(DASH);
         ClientRegistry.registerKeyBinding(BACKPACK);

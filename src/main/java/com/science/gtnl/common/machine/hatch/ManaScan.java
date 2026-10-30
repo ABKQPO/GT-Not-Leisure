@@ -14,8 +14,6 @@ import vazkii.botania.common.block.tile.mana.TilePool;
 
 public class ManaScan {
 
-    private ManaScan() {}
-
     public static List<TilePool> pools(IGregTechTileEntity base, int radius) {
         World world = base.getWorld();
         int x = base.getXCoord(), y = base.getYCoord(), z = base.getZCoord();

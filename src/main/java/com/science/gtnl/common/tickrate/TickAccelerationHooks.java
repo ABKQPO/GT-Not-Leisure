@@ -14,8 +14,6 @@ import tectech.thing.metaTileEntity.multi.MTEResearchStation;
 
 public class TickAccelerationHooks {
 
-    private TickAccelerationHooks() {}
-
     public static boolean accelerate(BaseMetaTileEntity tile, int tickAcceleratedRate) {
         if (tile.isActive()) {
             int currentProgress = tile.getProgress();

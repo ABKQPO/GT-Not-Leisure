@@ -20,8 +20,6 @@ import com.science.gtnl.ScienceNotLeisure;
 
 public class BlockEntityTagPlacement {
 
-    private BlockEntityTagPlacement() {}
-
     // A copy of Forge's onPlaceItemIntoWorld that also loads the held item's BlockEntityTag. Returns null to
     // leave the placement to Forge.
     public static Boolean placeItemIntoWorld(ItemStack itemstack, EntityPlayer player, World world, int x, int y, int z,

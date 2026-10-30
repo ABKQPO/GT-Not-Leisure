@@ -58,8 +58,6 @@ import appeng.parts.automation.PartUpgradeable;
 
 public class GTNLGuiHandler {
 
-    private GTNLGuiHandler() {}
-
     public static Object serverElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         ForgeDirection side = ForgeDirection.getOrientation(ID & 7);
         int guiID = ID >> 3;

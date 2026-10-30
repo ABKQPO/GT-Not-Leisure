@@ -17,8 +17,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class BogoSorterSlots {
 
-    private BogoSorterSlots() {}
-
     public static List<Slot> slotGroup(EntityPlayerMP player, Container container, Slot source) {
         return ModList.InventoryBogoSorter.isModLoaded() ? groupOf(player, container, source) : List.of();
     }

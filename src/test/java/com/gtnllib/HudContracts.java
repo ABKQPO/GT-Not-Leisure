@@ -56,8 +56,6 @@ public class HudContracts {
         .build();
     private static final HudElement ARC = box("contract_arc").build();
 
-    private HudContracts() {}
-
     static void run() throws Exception {
         hud();
         hudLayout();

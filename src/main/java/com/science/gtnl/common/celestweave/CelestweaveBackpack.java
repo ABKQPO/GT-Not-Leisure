@@ -50,8 +50,6 @@ public class CelestweaveBackpack {
         new MapMaker().weakKeys()
             .<EntityItem, Boolean>makeMap());
 
-    private CelestweaveBackpack() {}
-
     public static boolean accepts(ItemStack stack) {
         return stack != null && stack.getItem() instanceof PortableItem
             && STORAGE.contains(PortableItem.getPortableType(stack));

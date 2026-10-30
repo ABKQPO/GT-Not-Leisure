@@ -22,8 +22,6 @@ import tectech.thing.casing.TTCasingsContainer;
 @EventBusSubscriber
 public class WorldEvents {
 
-    private WorldEvents() {}
-
     @SubscribeEvent
     public static void onBlockPlaced(BlockEvent.PlaceEvent event) {
         if (event.world.isRemote) return;

@@ -95,8 +95,6 @@ public class MultiblockTooltipAudit {
         }
     }
 
-    private MultiblockTooltipAudit() {}
-
     public static ExportResult export(File directory) throws IOException {
         List<MachineReport> reports = auditAll();
         Files.createDirectories(directory.toPath());

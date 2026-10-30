@@ -74,8 +74,6 @@ public class CelestweaveClientEvents {
         }
     }
 
-    private CelestweaveClientEvents() {}
-
     public static void register() {
         CelestweaveHudElement.register();
         CelestweaveObjModel.register();

@@ -423,8 +423,6 @@ public enum EternalGregTechWorkshopUpgrade {
         private int treeX;
         private int treeY;
 
-        private Builder() {}
-
         public Builder prereqs(EternalGregTechWorkshopUpgrade... prereqs) {
             if (this.prerequisites != null) {
                 throw new IllegalArgumentException(

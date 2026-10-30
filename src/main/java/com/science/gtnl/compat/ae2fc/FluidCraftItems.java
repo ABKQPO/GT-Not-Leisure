@@ -19,8 +19,6 @@ import gregtech.api.enums.Mods;
 
 public class FluidCraftItems {
 
-    private FluidCraftItems() {}
-
     public static boolean isFluidItem(ItemStack stack) {
         return stack != null && Mods.AE2FluidCraft.isModLoaded() && fluidItem(stack);
     }

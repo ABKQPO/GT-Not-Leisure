@@ -21,8 +21,6 @@ public class RailgunTargetRules {
     private static final double SEARCH_PADDING = 16;
     private static final double LOCAL_REFERENCE_RANGE = 64;
 
-    private RailgunTargetRules() {}
-
     public static boolean canAffect(EntityPlayer shooter, Entity target, boolean allowPlayers) {
         if (target == null || target == shooter || target.isDead) return false;
         if (target instanceof EntityPlayer player) return allowPlayers && !(player instanceof FakePlayer)

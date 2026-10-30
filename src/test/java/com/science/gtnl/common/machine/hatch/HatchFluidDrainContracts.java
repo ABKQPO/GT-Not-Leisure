@@ -7,8 +7,6 @@ import java.util.List;
 
 public class HatchFluidDrainContracts {
 
-    private HatchFluidDrainContracts() {}
-
     public static void run() {
         int[] full = { 4000, 4000, 4000 };
         int drained = HatchFluidDrain.drainAcross(indices(full), 1000, (hatch, upTo) -> take(full, hatch, upTo));

@@ -57,8 +57,6 @@ import tectech.thing.CustomItemList;
 
 public class NHCoreRecipes {
 
-    private NHCoreRecipes() {}
-
     public static void assembler() {
         if (!Mods.NewHorizonsCoreMod.isModLoaded()) return;
         assemblerRecipes();

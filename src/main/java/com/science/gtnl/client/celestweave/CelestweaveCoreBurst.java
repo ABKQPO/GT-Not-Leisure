@@ -19,8 +19,6 @@ public class CelestweaveCoreBurst {
     private static final int CRACKS = 5, STEPS = 5, EMBERS = 8, SEGMENTS = 24;
     private static final float LIFETIME = 620F, Z = -0.06F;
 
-    private CelestweaveCoreBurst() {}
-
     static void render(CelestweaveArmorModel model, CelestweaveFrames frames, CelestweaveClientState state,
         CelestweaveLook look, CelestweavePose pose, float scale) {
         CelestweaveFrames.Frame frame = frames.frame("core.shock");

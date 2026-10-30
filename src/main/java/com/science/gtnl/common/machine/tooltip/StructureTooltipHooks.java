@@ -38,8 +38,6 @@ public class StructureTooltipHooks {
 
     public record CheckRecord(List<Integer> casingMinimums, List<HatchRule> hatchRules, String failure) {}
 
-    private StructureTooltipHooks() {}
-
     public static <T> IStructureElement<T> describeAsHatch(IStructureElement<T> element, String... nameKeys) {
         List<String> keys = Arrays.asList(nameKeys);
         HATCH_BLOCK_KEYS.addAll(keys);

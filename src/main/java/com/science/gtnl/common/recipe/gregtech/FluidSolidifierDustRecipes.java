@@ -11,8 +11,6 @@ import gtPlusPlus.core.material.Material;
 
 public class FluidSolidifierDustRecipes {
 
-    private FluidSolidifierDustRecipes() {}
-
     public static void add(Material material) {
         if (material.getDust(1) == null) return;
         RecipeBuilder.builder()

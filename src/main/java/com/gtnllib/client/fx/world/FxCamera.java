@@ -21,8 +21,6 @@ public class FxCamera {
     private static Vec3d position = Vec3d.ZERO;
     private static float focalX = 1F, focalY = 1F;
 
-    private FxCamera() {}
-
     public static Vec3d position() {
         return position;
     }

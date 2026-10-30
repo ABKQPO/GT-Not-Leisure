@@ -7,9 +7,7 @@ import com.science.gtnl.common.machine.multiblock.GrandAssemblyLineOverclockTool
 import com.science.gtnl.common.machine.multiblock.GrandAssemblyLineOverclockTool.Result;
 import com.science.gtnl.common.machine.multiblock.GrandAssemblyLineOverclockTool.Settlement;
 
-public final class GrandAssemblyLineOverclockContracts {
-
-    private GrandAssemblyLineOverclockContracts() {}
+public class GrandAssemblyLineOverclockContracts {
 
     public static void main(String[] args) {
         continuesPastThirtySevenAmps();

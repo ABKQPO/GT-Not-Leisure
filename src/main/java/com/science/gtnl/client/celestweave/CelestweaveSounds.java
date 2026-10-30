@@ -17,8 +17,6 @@ public class CelestweaveSounds {
 
     private static final Random RNG = new Random();
 
-    private CelestweaveSounds() {}
-
     private static void play(EquipmentSound sound, double x, double y, double z, String name, float volume,
         float pitch) {
         World world = Minecraft.getMinecraft().theWorld;

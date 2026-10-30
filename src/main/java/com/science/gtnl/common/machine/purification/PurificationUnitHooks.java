@@ -47,8 +47,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class PurificationUnitHooks {
 
-    private PurificationUnitHooks() {}
-
     public static IPurificationUnitHost host(MTEPurificationUnitBase<?> unit) {
         return (IPurificationUnitHost) unit;
     }

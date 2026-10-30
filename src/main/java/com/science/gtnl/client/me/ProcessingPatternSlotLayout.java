@@ -7,8 +7,6 @@ import appeng.container.implementations.ContainerPatternTermEx;
 
 public class ProcessingPatternSlotLayout {
 
-    private ProcessingPatternSlotLayout() {}
-
     // Returns false when the opened capacity is off and AE2 lays the slots out itself.
     public static boolean update(ContainerPatternTermEx container, VirtualMEPhantomSlot[] craftingSlots,
         VirtualMEPhantomSlot[] outputSlots, int top, int inputX, int inputY, int outputX, int outputY) {

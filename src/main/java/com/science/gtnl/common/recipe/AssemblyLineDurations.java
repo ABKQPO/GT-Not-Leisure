@@ -4,8 +4,6 @@ import com.science.gtnl.config.MainConfig;
 
 public class AssemblyLineDurations {
 
-    private AssemblyLineDurations() {}
-
     public static int scale(int duration) {
         if (!MainConfig.recipe.enableAssemblingLineRecipesTimeChange) return duration;
         if (duration >= 200000) return duration / 100;

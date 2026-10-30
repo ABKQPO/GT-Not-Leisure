@@ -10,8 +10,6 @@ import gregtech.api.enums.Mods;
 
 public class NHCoreCircuits {
 
-    private NHCoreCircuits() {}
-
     public static ItemStack cheapestCircuit(Materials material) {
         return Mods.NewHorizonsCoreMod.isModLoaded() ? cheapestNHCircuit(material) : null;
     }

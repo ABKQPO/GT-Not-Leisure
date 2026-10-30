@@ -40,8 +40,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class LayoutContracts {
 
-    private LayoutContracts() {}
-
     static void run() throws IOException, ReflectiveOperationException {
         layoutRules();
         adaptiveRules();

@@ -55,8 +55,6 @@ public class PlayerEvents {
     public static final DamageSource CRUSHING_DAMAGE = new DamageSource("damage.gtnl.crushing")
         .setDamageBypassesArmor();
 
-    private PlayerEvents() {}
-
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (!(event.player instanceof EntityPlayerMP player)) return;

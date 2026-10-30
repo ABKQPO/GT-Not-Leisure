@@ -4,8 +4,6 @@ public class FxAngle {
 
     public static final float TAU = (float) (Math.PI * 2);
 
-    private FxAngle() {}
-
     /**
      * Whether a sector this many radians to either side of its middle already covers the whole turn.
      */

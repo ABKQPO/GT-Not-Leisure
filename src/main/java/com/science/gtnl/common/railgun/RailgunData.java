@@ -35,8 +35,6 @@ public class RailgunData {
     private static final Map<NBTTagList, Modules> CACHE = new MapMaker().weakKeys()
         .makeMap();
 
-    private RailgunData() {}
-
     public static boolean holding(EntityPlayer player) {
         return player != null && ElectromagneticRailgun.is(player.getHeldItem());
     }

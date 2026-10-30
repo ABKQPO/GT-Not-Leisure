@@ -82,8 +82,6 @@ public class WheelStyle {
         private int highlightColor = 0xFFFABC02;
         private float deadZone = 15F;
 
-        private Builder() {}
-
         public Builder radii(float innerRadiusScale, float outerRadiusScale, float minInnerRadius) {
             if (innerRadiusScale <= 0 || outerRadiusScale <= innerRadiusScale)
                 throw new IllegalArgumentException("outer radius must be larger than inner radius");

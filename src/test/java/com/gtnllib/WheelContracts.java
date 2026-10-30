@@ -34,8 +34,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class WheelContracts {
 
-    private WheelContracts() {}
-
     static void run() throws Exception {
         wheel();
         closeKey();

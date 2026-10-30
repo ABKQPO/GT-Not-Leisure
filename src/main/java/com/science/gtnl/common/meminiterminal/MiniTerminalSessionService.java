@@ -94,8 +94,6 @@ public class MiniTerminalSessionService {
     private static final int PARK_TICKS = 1200;
     private static long nextSession;
 
-    private MiniTerminalSessionService() {}
-
     public static void end(EntityPlayerMP player) {
         end(player, true);
     }

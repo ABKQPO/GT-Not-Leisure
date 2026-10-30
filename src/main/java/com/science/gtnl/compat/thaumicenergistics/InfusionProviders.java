@@ -19,8 +19,6 @@ public class InfusionProviders {
     public static final String INFUSION_PROVIDER_NAME_KEY = "thaumicenergistics.block.infusion.provider.name";
     public static final String ADVANCED_INFUSION_PROVIDER_NAME_KEY = "thaumicenergistics.block.advanced.infusion.provider.name";
 
-    private InfusionProviders() {}
-
     public static boolean isAvailable() {
         return Mods.ThaumicEnergistics.isModLoaded();
     }

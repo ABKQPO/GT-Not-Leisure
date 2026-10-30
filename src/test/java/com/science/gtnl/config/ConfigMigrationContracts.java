@@ -17,8 +17,6 @@ import cpw.mods.fml.relauncher.FMLInjectionData;
 
 public class ConfigMigrationContracts {
 
-    private ConfigMigrationContracts() {}
-
     public static void run() throws IOException, ReflectiveOperationException {
         Path home = Files.createTempDirectory("gtnl-config");
         Field minecraftHome = FMLInjectionData.class.getDeclaredField("minecraftHome");

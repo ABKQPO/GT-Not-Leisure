@@ -31,8 +31,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public class MachineUtils {
 
-    private MachineUtils() {}
-
     public static boolean equlsItemStackAndAEItemStack(IAEItemStack AEstack, ItemStack stack) {
         if (AEstack == null) {
             return stack == null;

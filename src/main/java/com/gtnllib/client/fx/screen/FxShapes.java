@@ -18,8 +18,6 @@ public class FxShapes {
     private static final float QUAD_MARGIN = 2F;
     private static final int FALLBACK_SEGMENTS = 64;
 
-    private FxShapes() {}
-
     public static void prepareState() {
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_BLEND);

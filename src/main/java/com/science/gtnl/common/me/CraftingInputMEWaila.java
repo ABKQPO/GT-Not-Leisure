@@ -24,8 +24,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public class CraftingInputMEWaila {
 
-    private CraftingInputMEWaila() {}
-
     public static void writeData(MTEHatchCraftingInputME hatch, NBTTagCompound tag) {
         tag.removeTag("nameLines");
 

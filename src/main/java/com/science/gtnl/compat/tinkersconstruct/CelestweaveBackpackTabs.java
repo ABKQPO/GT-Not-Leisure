@@ -23,8 +23,6 @@ public class CelestweaveBackpackTabs {
 
     private static final ItemStack FALLBACK = new ItemStack(Blocks.chest);
 
-    private CelestweaveBackpackTabs() {}
-
     public static void register() {
         if (Mods.TinkerConstruct.isModLoaded()) registerTab();
     }

@@ -9,8 +9,6 @@ import com.science.gtnl.utils.recipes.RecipeBuilder;
 
 public class TwistSpaceTechnologyRecipes {
 
-    private TwistSpaceTechnologyRecipes() {}
-
     public static void realArtificialStar() {
         if (!ModList.TwistSpaceTechnology.isModLoaded()) return;
 

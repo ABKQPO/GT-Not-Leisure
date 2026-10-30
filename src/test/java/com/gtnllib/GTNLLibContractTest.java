@@ -21,8 +21,6 @@ public class GTNLLibContractTest {
     private static final List<String> FAILURES = new ObjectArrayList<>();
     private static int assertions;
 
-    private GTNLLibContractTest() {}
-
     public static void main(String[] args) throws Exception {
         run();
         finish("GTNLLib");

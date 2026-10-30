@@ -58,8 +58,6 @@ public class CompatSnapshot {
         TeamMigrationWorldSavedData.class,
         TeamMigrationWorldSavedData.DATA_NAME);
 
-    private CompatSnapshot() {}
-
     public static void writeIfRequested() {
         String target = System.getenv("GTNL_COMPAT_SNAPSHOT");
         if (target == null || target.isEmpty()) return;

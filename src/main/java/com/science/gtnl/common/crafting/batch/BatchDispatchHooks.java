@@ -39,8 +39,6 @@ public class BatchDispatchHooks {
 
     public static final CraftingBatchPlanner BATCH_PLANNER = new CraftingBatchPlannerImpl();
 
-    private BatchDispatchHooks() {}
-
     public static class Context {
 
         public final ICraftingPatternDetails details;

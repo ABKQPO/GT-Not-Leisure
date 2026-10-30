@@ -14,8 +14,6 @@ import gregtech.api.enums.Mods;
 
 public class DireCrafting {
 
-    private DireCrafting() {}
-
     public static ItemStack output(InventoryCrafting grid, World world) {
         return Mods.Avaritia.isModLoaded() ? findOutput(grid, world) : null;
     }

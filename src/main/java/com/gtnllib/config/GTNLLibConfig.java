@@ -63,8 +63,6 @@ public class GTNLLibConfig {
     @DefaultBoolean(true)
     public static boolean enableTextEffects = true;
 
-    private GTNLLibConfig() {}
-
     public static void register() {
         try {
             ConfigurationManager.registerConfig(GTNLLibConfig.class);

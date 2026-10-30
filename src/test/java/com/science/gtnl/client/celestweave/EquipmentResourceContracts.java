@@ -99,8 +99,6 @@ public class EquipmentResourceContracts {
     private static final int CYAN = 0x3DE8FF;
     private static final Pattern PLACEHOLDER = Pattern.compile("%(?:\\d+\\$)?[sd]");
 
-    private EquipmentResourceContracts() {}
-
     static void run() throws Exception {
         hexTexture();
         model();

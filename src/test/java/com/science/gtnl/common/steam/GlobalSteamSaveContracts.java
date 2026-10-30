@@ -27,8 +27,6 @@ public class GlobalSteamSaveContracts {
     private static final BigInteger STEAM = BigInteger.ONE.shiftLeft(130)
         .add(BigInteger.valueOf(12346));
 
-    private GlobalSteamSaveContracts() {}
-
     public static void run() throws IOException, ClassNotFoundException {
         GLOBAL_STEAM.clear();
         GLOBAL_STEAM.put(TEAM, STEAM);

@@ -17,8 +17,6 @@ import gregtech.api.util.GTOreDictUnificator;
 
 public class StorageDrawersRecipes {
 
-    private StorageDrawersRecipes() {}
-
     public static void steamManufacturer() {
         if (!Mods.StorageDrawers.isModLoaded()) return;
         // Drawer template

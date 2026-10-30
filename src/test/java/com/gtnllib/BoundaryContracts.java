@@ -42,10 +42,10 @@ public class BoundaryContracts {
     private static final Pattern LEGACY_LANG_LITERAL = Pattern.compile("\"(gtnl\\.[A-Za-z0-9_.]*)\"");
     // Moved from GTNL with their keys: modpack translations override by key, so a new name would show English.
     private static final Set<String> LEGACY_LANG_KEYS = legacyLangKeys();
+    private static final Pattern EMPTY_PRIVATE_CONSTRUCTOR = Pattern
+        .compile("^[ \\t]*private[ \\t]+\\w+\\(\\)[ \\t]*\\{[ \\t]*\\}", Pattern.MULTILINE);
     private static final Pattern INCLUDE = Pattern.compile("#include \"([^\"]+)\"");
     private static final int MIN_SOURCES = 40;
-
-    private BoundaryContracts() {}
 
     private static final Pattern LIB_IMPORT = Pattern
         .compile("^import (?:static )?com\\.gtnllib\\.((?:[a-z]\\w*\\.)*[a-z]\\w*)\\.[A-Z]", Pattern.MULTILINE);
@@ -157,6 +157,10 @@ public class BoundaryContracts {
                         .replaceAll("\"\""))
                     .find(),
                 name + " uses no GTNL lang key or resource namespace");
+            check(
+                !EMPTY_PRIVATE_CONSTRUCTOR.matcher(source)
+                    .find(),
+                name + " declares an empty private constructor; a class with only static members needs none");
             Matcher namespaced = NAMESPACED.matcher(source);
             while (namespaced.find()) check(
                 GTNLLib.MODID.equals(namespaced.group(1)),

@@ -14,8 +14,6 @@ public class GlitchEntityCrashInfo {
         "SecurityException", "StringIndexOutOfBoundsException", "ThreadDeath", "TypeNotPresentException",
         "UnknownError", "VirtualMachineError", "VerifyError", "AbstractMethodError" };
 
-    private GlitchEntityCrashInfo() {}
-
     private static String randomError() {
         return "java.lang." + ERRORS[new XSTR().nextInt(ERRORS.length)];
     }

@@ -30,8 +30,6 @@ public class PurificationUnitGuiHooks {
     public static final int PARALLEL_PANEL_HEIGHT = 50;
     public static final int PARALLEL_PANEL_PADDING = 4;
 
-    private PurificationUnitGuiHooks() {}
-
     public static IWidget parallelButton(MTEPurificationUnitBase<?> multiblock, PanelSyncManager syncManager,
         ModularPanel parent) {
         if (!MainConfig.machine.enablePurificationPlantBuff) return null;
