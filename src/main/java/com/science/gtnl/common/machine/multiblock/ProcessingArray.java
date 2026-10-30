@@ -170,11 +170,6 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
     }
 
     @Override
-    public boolean getPerfectOC() {
-        return false;
-    }
-
-    @Override
     public int getMaxParallelRecipes() {
         if (getControllerSlot() == null
             || getControllerSlot().getItem() != Item.getItemFromBlock(GregTechAPI.sBlockMachines)) {
@@ -269,12 +264,6 @@ public class ProcessingArray extends MultiMachineBase<ProcessingArray> implement
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.onPostTick(aBaseMetaTileEntity, aTick);
         syncInputRecipeMapsIfNeeded();
-    }
-
-    @Override
-    public boolean addToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        return super.addToMachineList(aTileEntity, aBaseCasingIndex)
-            || addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
     }
 
     @Override

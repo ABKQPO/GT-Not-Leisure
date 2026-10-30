@@ -102,11 +102,6 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch i
     }
 
     @Override
-    public boolean reduceStoredEssentia(Aspect aspect, int amount) {
-        return takeFromContainer(aspect, amount);
-    }
-
-    @Override
     public boolean isConnectable(ForgeDirection face) {
         return isValidFace(face);
     }
@@ -114,11 +109,6 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch i
     @Override
     public boolean canInputFrom(ForgeDirection face) {
         return isValidFace(face);
-    }
-
-    @Override
-    public boolean canOutputTo(ForgeDirection face) {
-        return false;
     }
 
     @Override
@@ -139,11 +129,6 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch i
     }
 
     @Override
-    public int takeEssentia(Aspect aspect, int amount, ForgeDirection face) {
-        return 0;
-    }
-
-    @Override
     public int addEssentia(Aspect aspect, int amount, ForgeDirection face) {
         return canInputFrom(face) ? amount - addToContainer(aspect, amount) : 0;
     }
@@ -158,16 +143,6 @@ public class TileEntityMultiEssentiaInputHatch extends TileEntityEssentiaHatch i
     public int getEssentiaAmount(ForgeDirection face) {
         Aspect aspect = getEssentiaType(face);
         return aspect == null ? 0 : storage.getAmount(aspect);
-    }
-
-    @Override
-    public int getMinimumSuction() {
-        return 0;
-    }
-
-    @Override
-    public boolean renderExtendedTube() {
-        return false;
     }
 
     @Override

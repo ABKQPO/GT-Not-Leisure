@@ -154,8 +154,4 @@ public class RareEarthCentrifugal extends MultiMachineBase<RareEarthCentrifugal>
         return 4 + 4 * tier;
     }
 
-    @Override
-    public boolean getPerfectOC() {
-        return false;
-    }
 }

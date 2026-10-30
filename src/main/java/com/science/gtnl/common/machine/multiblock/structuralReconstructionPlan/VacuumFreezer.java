@@ -121,11 +121,6 @@ public class VacuumFreezer extends MultiMachineBase<VacuumFreezer> implements IS
     }
 
     @Override
-    public boolean getPerfectOC() {
-        return false;
-    }
-
-    @Override
     public RecipeMap<?> getRecipeMap() {
         return RecipeMaps.vacuumFreezerRecipes;
     }

@@ -137,11 +137,6 @@ public class BrickedBlastFurnace extends SteamMultiMachineBase<BrickedBlastFurna
     }
 
     @Override
-    public boolean getPerfectOC() {
-        return false;
-    }
-
-    @Override
     public int getTierRecipes() {
         return 14;
     }

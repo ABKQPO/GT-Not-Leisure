@@ -461,11 +461,6 @@ public class AdvancedInfiniteDriller extends MultiMachineBase<AdvancedInfiniteDr
     }
 
     @Override
-    public boolean getPerfectOC() {
-        return false;
-    }
-
-    @Override
     public boolean supportsVoidProtection() {
         return false;
     }

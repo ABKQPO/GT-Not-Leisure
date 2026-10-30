@@ -177,11 +177,6 @@ public class MegaSteamCompressor extends SteamMultiMachineBase<MegaSteamCompress
     }
 
     @Override
-    public double getDurationModifier() {
-        return 1.0 / (1 << Math.min(4, recipeOcCount));
-    }
-
-    @Override
     public int getMaxParallelRecipes() {
         return 256;
     }

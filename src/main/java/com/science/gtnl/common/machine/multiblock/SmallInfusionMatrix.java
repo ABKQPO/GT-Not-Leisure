@@ -270,11 +270,6 @@ public class SmallInfusionMatrix extends MultiMachineBase<SmallInfusionMatrix> i
     }
 
     @Override
-    public int getMaxParallelRecipes() {
-        return 1;
-    }
-
-    @Override
     public boolean getPerfectOC() {
         return true;
     }

@@ -68,12 +68,6 @@ public class HumongousDualInputHatch extends DualInputHatch
     }
 
     @Override
-    public String getLocalName() {
-        if (!hasOwnLocalName()) return super.getLocalName();
-        return StatCollector.translateToLocal(getLocalNameKey());
-    }
-
-    @Override
     public MetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
         return new HumongousDualInputHatch(mName, mTier, mDescriptionArray, mTextures);
     }

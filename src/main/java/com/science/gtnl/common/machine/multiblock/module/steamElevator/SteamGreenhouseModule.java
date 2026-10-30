@@ -469,36 +469,6 @@ public class SteamGreenhouseModule extends SteamElevatorModuleBase implements IG
             new ChatComponentTranslation(phaseKey));
     }
 
-    @Deprecated
-    public void tryChangeMode(EntityPlayer aPlayer) {
-        // TODO: Remove this legacy MUI1 greenhouse mode toggle after Steam Greenhouse only exposes MUI2 machine modes.
-        if (this.mMaxProgresstime > 0) {
-            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.mode_running");
-            return;
-        }
-        if (!this.storedCrops.isEmpty()) {
-            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.mode_has_seeds");
-            return;
-        }
-        this.mode = GreenHouseModes.getNextMode(this.mode);
-        GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.mode_changed", this.mode.getName());
-    }
-
-    @Deprecated
-    public void tryChangeHumidityMode(EntityPlayer aPlayer) {
-        // TODO: Remove this legacy humidity toggle after CropsNH biome checks are the only growth environment control.
-        this.useNoHumidity = !this.useNoHumidity;
-        if (this.useNoHumidity) {
-            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.no_humidity_enabled");
-        } else {
-            GTUtility.sendChatTrans(aPlayer, "gtnl.machine.eden_garden.message.no_humidity_disabled");
-        }
-    }
-
-    public int getTotalSeedCount() {
-        return getTotalStoredCropCount();
-    }
-
     private void dropStoredStack(IGregTechTileEntity mte, ItemStack stack) {
         if (CropsNHUtils.isStackInvalid(stack)) return;
         EntityItem entityitem = new EntityItem(

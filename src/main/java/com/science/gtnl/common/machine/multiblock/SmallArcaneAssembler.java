@@ -631,11 +631,6 @@ public class SmallArcaneAssembler extends MultiMachineBase<SmallArcaneAssembler>
     }
 
     @Override
-    public int getMaxParallelRecipes() {
-        return 1;
-    }
-
-    @Override
     public int getCasingTextureID() {
         return CASING_TEXTURE_ID;
     }

@@ -270,11 +270,6 @@ public class IndustrialCrucible extends MultiMachineBase<IndustrialCrucible> {
     }
 
     @Override
-    public boolean supportsBatchMode() {
-        return true;
-    }
-
-    @Override
     public int getCasingTextureID() {
         return CASING_TEXTURE_ID;
     }

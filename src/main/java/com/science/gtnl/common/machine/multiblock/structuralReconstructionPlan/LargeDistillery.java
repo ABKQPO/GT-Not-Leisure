@@ -368,11 +368,6 @@ public class LargeDistillery extends GTMMultiMachineBase<LargeDistillery> implem
     }
 
     @Override
-    public boolean supportsVoidProtection() {
-        return true;
-    }
-
-    @Override
     public List<IOutputHatch> getOutputHatches(FluidStack[] toOutput) {
         return getOutputHatchesByLayers(toOutput, mOutputHatchesByLayer);
     }
