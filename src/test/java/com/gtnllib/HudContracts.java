@@ -1,11 +1,11 @@
 package com.gtnllib;
 
 import static com.gtnllib.GTNLLibContractTest.SOURCES;
-import static com.gtnllib.GTNLLibContractTest.check;
-import static com.gtnllib.GTNLLibContractTest.compact;
-import static com.gtnllib.GTNLLibContractTest.near;
-import static com.gtnllib.GTNLLibContractTest.read;
-import static com.gtnllib.GTNLLibContractTest.rejects;
+import static com.gtnltest.ContractAssertions.check;
+import static com.gtnltest.ContractAssertions.compact;
+import static com.gtnltest.ContractAssertions.near;
+import static com.gtnltest.ContractAssertions.read;
+import static com.gtnltest.ContractAssertions.rejects;
 
 import java.io.File;
 import java.io.IOException;

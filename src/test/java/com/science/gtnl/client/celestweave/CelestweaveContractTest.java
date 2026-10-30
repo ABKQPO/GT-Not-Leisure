@@ -1,27 +1,17 @@
 package com.science.gtnl.client.celestweave;
 
-import static com.gtnllib.GTNLLibContractTest.check;
+import static com.gtnltest.ContractAssertions.check;
+import static com.gtnltest.ContractAssertions.finish;
 
 import java.lang.reflect.Constructor;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import com.gtnllib.GTNLLibContractTest;
-import com.science.gtnl.ApiSignatureContracts;
-import com.science.gtnl.ArchitectureContracts;
+import com.cleanroommc.modularui.drawable.DrawableSerialization;
+import com.gtnllib.client.GTNLLibClient;
 import com.science.gtnl.client.portalgun.PortalGunContracts;
 import com.science.gtnl.common.gui.equipment.EquipmentTheme;
-import com.science.gtnl.common.item.items.PortableFurnaceContracts;
-import com.science.gtnl.common.machine.MachineStateContracts;
-import com.science.gtnl.common.machine.hatch.HatchFluidDrainContracts;
-import com.science.gtnl.common.machine.multiblock.AssemblerMatrixTasksContracts;
-import com.science.gtnl.common.steam.GlobalSteamSaveContracts;
-import com.science.gtnl.common.wireless.WirelessAutoConnectContracts;
-import com.science.gtnl.common.wireless.WirelessCardViewContracts;
-import com.science.gtnl.common.wireless.WirelessFrequencyContracts;
-import com.science.gtnl.common.wireless.WirelessMatterManipulatorContracts;
 import com.science.gtnl.common.yogsothoth.YogSothothContracts;
-import com.science.gtnl.config.ConfigMigrationContracts;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import gregtech.api.modularui2.GTGuiThemes;
@@ -37,7 +27,9 @@ public class CelestweaveContractTest {
         check(
             "gtnlEquipment".equals(EquipmentTheme.COLORS.getFullName()) && GTGuiThemes.STANDARD.getId() != null,
             "the equipment and GT widget theme keys register before any theme loads, as in preInit");
-        GTNLLibContractTest.run();
+        GTNLLibClient.connectConfig();
+        // Production registers these during MUI initialization; do not rely on ThemeContracts running first.
+        DrawableSerialization.init();
         CelestweaveArmorContracts.run();
         RailgunContracts.run();
         PortalGunContracts.run();
@@ -45,19 +37,7 @@ public class CelestweaveContractTest {
         EquipmentRegressionContracts.run();
         EquipmentHudContracts.run();
         EquipmentResourceContracts.run();
-        WirelessMatterManipulatorContracts.run();
-        WirelessAutoConnectContracts.run();
-        WirelessFrequencyContracts.run();
-        WirelessCardViewContracts.run();
-        ArchitectureContracts.run();
-        ApiSignatureContracts.run();
-        ConfigMigrationContracts.run();
-        GlobalSteamSaveContracts.run();
-        AssemblerMatrixTasksContracts.run();
-        HatchFluidDrainContracts.run();
-        PortableFurnaceContracts.run();
-        MachineStateContracts.run();
-        GTNLLibContractTest.finish("Celestweave");
+        finish("Equipment");
     }
 
     public static <T> T roundTrip(T packet, Constructor<T> empty) throws ReflectiveOperationException {

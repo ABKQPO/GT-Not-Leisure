@@ -1,6 +1,6 @@
 package com.science.gtnl;
 
-import static com.gtnllib.GTNLLibContractTest.check;
+import static com.gtnltest.ContractAssertions.check;
 
 import java.io.IOException;
 import java.nio.file.Files;

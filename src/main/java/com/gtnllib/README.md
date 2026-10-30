@@ -62,6 +62,19 @@ GTNLLib 的 mixin 在 `com.gtnllib.mixins`，登记表是 `GTNLLibMixins`，配�
 - early：`GTNLLibEarlyMixins` 实现 `IEarlyMixinLoader`。一个 jar 只能有一个 coremod，所以和 GTNL 同 jar 期间由 GTNL 的 `GTNLEarlyCoreMod` 调 `GTNLLibEarlyMixins.queueFromHost` 代为登记；拆成独立 jar 时给 GTNLLib 加一个同时实现 `IFMLLoadingPlugin` 和 `IEarlyMixinLoader`（委托给 `GTNLLibEarlyMixins`）的 coremod，并删掉 GTNL 里那一行。
 - refmap 暂时和 GTNL 共用 `mixins.sciencenotleisure.refmap.json`，拆分后改成 GTNLLib 自己生成的。
 
+## 构建边界验证
+
+`./gradlew compileGTNLLibBoundary` 只编译 `com/gtnllib`，编译路径只包含 `build.gradle.kts`
+列出的库、可选 NEI / Angelica 对接依赖和 Minecraft / Forge。GTNL 的主类、API、构建常量及
+GregTech 等宿主依赖不在路径中。`check` / `build` 自动执行这一检查。
+
+这一步仍使用当前工程生成的 Minecraft / Forge patched 输出，不生成独立发布 jar，也不替代
+独立 coremod、refmap 和最小模组环境的加载验证。拆包发布仍按上面的 mixin 说明另行完成。
+
+契约测试入口按模块分别运行：`verifyGTNLLib`、`verifyArchitecture`、`verifyMachines`、
+`verifyWireless`、`verifyCelestweave`（装备）和 `verifyGrandAssemblyLine`。`test` 会执行全部套件，
+每个套件在独立进程中报告断言和失败，不依赖其他套件的初始化副作用。
+
 ## 第三方代码
 
 `gui/wheel` 的轮盘移植自 AnvilLib（MIT 许可），许可声明见 `src/main/resources/licenses/ANVILLIB-MIT.txt`。

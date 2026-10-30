@@ -1,6 +1,6 @@
 package com.science.gtnl.common.wireless;
 
-import static com.gtnllib.GTNLLibContractTest.check;
+import static com.gtnltest.ContractAssertions.check;
 import static com.science.gtnl.common.wireless.WirelessCopiedLinksContracts.allocate;
 
 import java.util.List;

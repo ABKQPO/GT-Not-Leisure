@@ -1,6 +1,6 @@
 package com.science.gtnl.common.steam;
 
-import static com.gtnllib.GTNLLibContractTest.check;
+import static com.gtnltest.ContractAssertions.check;
 import static com.science.gtnl.common.steam.SteamWirelessNetworkManager.GLOBAL_STEAM;
 
 import java.io.ByteArrayInputStream;

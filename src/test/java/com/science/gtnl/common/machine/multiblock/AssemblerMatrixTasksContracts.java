@@ -1,6 +1,6 @@
 package com.science.gtnl.common.machine.multiblock;
 
-import static com.gtnllib.GTNLLibContractTest.check;
+import static com.gtnltest.ContractAssertions.check;
 
 import java.lang.reflect.Proxy;
 import java.util.List;

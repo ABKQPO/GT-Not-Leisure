@@ -1,9 +1,9 @@
 package com.science.gtnl.client.celestweave;
 
-import static com.gtnllib.GTNLLibContractTest.check;
-import static com.gtnllib.GTNLLibContractTest.compact;
-import static com.gtnllib.GTNLLibContractTest.near;
-import static com.gtnllib.GTNLLibContractTest.read;
+import static com.gtnltest.ContractAssertions.check;
+import static com.gtnltest.ContractAssertions.compact;
+import static com.gtnltest.ContractAssertions.near;
+import static com.gtnltest.ContractAssertions.read;
 import static com.science.gtnl.client.celestweave.CelestweaveContractTest.SOURCES;
 
 import java.io.IOException;

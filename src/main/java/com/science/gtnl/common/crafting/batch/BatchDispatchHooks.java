@@ -3,6 +3,7 @@ package com.science.gtnl.common.crafting.batch;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import net.minecraft.inventory.InventoryCrafting;
@@ -39,13 +40,19 @@ public class BatchDispatchHooks {
 
     public static class Context {
 
-        public final ICraftingPatternDetails details;
-        public final AccessorTaskProgress taskProgress;
-        public final MediumStrategy mediumStrategy;
-        public BatchPlan plan;
-        public boolean rejected;
-        public boolean committed;
-        public SessionConsumption<CraftingDiagnosticSessionId> sessionConsumption;
+        private enum Phase {
+            UNPLANNED,
+            PLANNED,
+            REJECTED,
+            COMMITTED
+        }
+
+        private final ICraftingPatternDetails details;
+        private final AccessorTaskProgress taskProgress;
+        private final MediumStrategy mediumStrategy;
+        private BatchPlan plan;
+        private Phase phase = Phase.UNPLANNED;
+        private SessionConsumption<CraftingDiagnosticSessionId> sessionConsumption;
 
         public Context(ICraftingPatternDetails details, AccessorTaskProgress taskProgress,
             MediumStrategy mediumStrategy) {
@@ -55,9 +62,8 @@ public class BatchDispatchHooks {
         }
 
         public void resetForPlan(BatchPlan plan) {
-            this.plan = plan;
-            this.rejected = false;
-            this.committed = false;
+            this.plan = Objects.requireNonNull(plan);
+            this.phase = Phase.PLANNED;
             this.sessionConsumption = null;
         }
 
@@ -65,8 +71,43 @@ public class BatchDispatchHooks {
             return this.plan != null && this.plan.isBatched();
         }
 
+        public boolean isRejected() {
+            return phase == Phase.REJECTED;
+        }
+
+        public boolean isCommitted() {
+            return phase == Phase.COMMITTED;
+        }
+
+        public long getPlannedCrafts() {
+            return Objects.requireNonNull(plan, "dispatch has no plan")
+                .getCrafts();
+        }
+
+        public boolean hasSessionConsumption() {
+            return sessionConsumption != null;
+        }
+
         public void reject() {
-            this.rejected = true;
+            this.phase = Phase.REJECTED;
+        }
+
+        private int commit(CommitResult commit) {
+            if (phase == Phase.REJECTED || !isPlannedBatch() || taskProgress == null || !commit.isCommitted())
+                throw new IllegalStateException("only an accepted planned batch can be committed");
+            taskProgress.setValue(commit.getTaskValueBeforeNativeDecrement());
+            // AE can reuse the expanded plan for another accepted push during the same task visit.
+            sessionConsumption = null;
+            phase = Phase.COMMITTED;
+            return commit.getRemainingOperationsBeforeNativeDecrement();
+        }
+
+        private CraftingDiagnosticSessionId consumeSessions(AccessorTaskProgress progress) {
+            if (!isCommitted() || sessionConsumption != null)
+                throw new IllegalStateException("diagnostics must consume an accepted batch exactly once");
+            sessionConsumption = BATCH_PLANNER
+                .consumeSessions(sessionSegments(progress.getDiagnosticSessionCrafts()), plan.getCrafts());
+            return sessionConsumption.getFirstSessionId();
         }
     }
 
@@ -136,7 +177,7 @@ public class BatchDispatchHooks {
     // Returns null when the batch must not be pushed; otherwise the inventory is sized for the batch.
     public static CommitResult prepareCommit(Context context, ICraftingPatternDetails details,
         InventoryCrafting craftingInventory, int remainingOperations) {
-        if (context.rejected) return null;
+        if (context.isRejected()) return null;
         if (!(craftingInventory instanceof LargeInventoryCrafting largeInventory)) {
             ScienceNotLeisure.LOG
                 .error("AE supplied a crafting inventory without long batch support for pattern {}", details);
@@ -159,14 +200,11 @@ public class BatchDispatchHooks {
 
     // Returns the remaining operations to store after the push was accepted.
     public static int finishCommit(Context context, CommitResult commit) {
-        context.taskProgress.setValue(commit.getTaskValueBeforeNativeDecrement());
-        context.committed = true;
-        return commit.getRemainingOperationsBeforeNativeDecrement();
+        return context.commit(commit);
     }
 
     public static CraftingDiagnosticSessionId consumeSessions(Context context, AccessorTaskProgress taskProgress) {
-        context.sessionConsumption = BATCH_PLANNER
-            .consumeSessions(sessionSegments(taskProgress.getDiagnosticSessionCrafts()), context.plan.getCrafts());
+        CraftingDiagnosticSessionId first = context.consumeSessions(taskProgress);
         long consumedCrafts = context.sessionConsumption.getConsumedCrafts();
         if (consumedCrafts > 0 && consumedCrafts < context.plan.getCrafts()) {
             ScienceNotLeisure.LOG.error(
@@ -175,7 +213,7 @@ public class BatchDispatchHooks {
                 context.plan.getCrafts(),
                 consumedCrafts);
         }
-        return context.sessionConsumption.getFirstSessionId();
+        return first;
     }
 
     public static void recordExpectedOutput(Context context, IAEStack<?> output,

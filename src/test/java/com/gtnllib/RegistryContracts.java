@@ -1,6 +1,6 @@
 package com.gtnllib;
 
-import static com.gtnllib.GTNLLibContractTest.check;
+import static com.gtnltest.ContractAssertions.check;
 
 import java.util.List;
 

@@ -14,14 +14,24 @@ sourceSets.test {
     compileClasspath += sourceSets.main.get().compileClasspath
 }
 
-tasks.register<JavaExec>("verifyCelestweave") {
-    group = "verification"
-    description = "Verify Celestweave data rules, packets, model, sound and lang resources without starting Minecraft"
-    dependsOn(tasks.testClasses)
-    classpath = sourceSets.test.get().runtimeClasspath + sourceSets.main.get().runtimeClasspath +
-        sourceSets.main.get().compileClasspath
-    mainClass.set("com.science.gtnl.client.celestweave.CelestweaveContractTest")
-    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+val contractSuites = mapOf(
+    "verifyCelestweave" to "com.science.gtnl.client.celestweave.CelestweaveContractTest",
+    "verifyGTNLLib" to "com.gtnllib.GTNLLibContractTest",
+    "verifyArchitecture" to "com.science.gtnl.ArchitectureContractTest",
+    "verifyMachines" to "com.science.gtnl.MachineContractTest",
+    "verifyWireless" to "com.science.gtnl.WirelessContractTest"
+)
+
+contractSuites.forEach { (taskName, entryPoint) ->
+    tasks.register<JavaExec>(taskName) {
+        group = "verification"
+        description = "Run the $taskName contract suite without starting Minecraft"
+        dependsOn(tasks.testClasses)
+        classpath = sourceSets.test.get().runtimeClasspath + sourceSets.main.get().runtimeClasspath +
+            sourceSets.main.get().compileClasspath
+        mainClass.set(entryPoint)
+        javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+    }
 }
 
 tasks.register<JavaExec>("benchEquipment") {
@@ -46,8 +56,37 @@ tasks.register<JavaExec>("verifyGrandAssemblyLine") {
 
 tasks.named<Test>("test") {
     failOnNoDiscoveredTests.set(false)
-    dependsOn("verifyCelestweave")
+    dependsOn(contractSuites.keys)
     dependsOn("verifyGrandAssemblyLine")
+}
+
+// Compile the embedded library without GTNL/GT classes or unrelated mod jars on its classpath.
+// Minecraft/Forge are still the convention plugin's patched output; this is not a standalone release build.
+val gtnllibBoundaryDependencies = setOf(
+    "GTNHLib", "ModularUI2", "unimixins", "NotEnoughItems", "CodeChickenCore", "Angelica",
+    // Public MUI2 signatures still inherit MUI1 handlers and expose these optional integration APIs.
+    "ModularUI", "neverenoughanimation", "lwjgl3ify",
+    "GTNHExtLib", "fastutil", "gson", "guava", "annotations", "lombok", "authlib", "netty-all",
+    "lwjgl", "lwjgl_util", "asm", "asm-tree", "asm-commons", "log4j-api", "log4j-core",
+    "launchwrapper", "jabel-stubs", "jvmdowngrader-java-api", "joml", "commons-lang3"
+)
+
+val compileGTNLLibBoundary = tasks.register<JavaCompile>("compileGTNLLibBoundary") {
+    group = "verification"
+    description = "Compile GTNLLib against its declared library and optional integration dependencies only"
+    source(fileTree("src/main/java") { include("com/gtnllib/**/*.java") })
+    val allowedDependencies = gtnllibBoundaryDependencies.toSet()
+    classpath = sourceSets.main.get().compileClasspath.filter { dependency ->
+        dependency.extension == "jar" && allowedDependencies.any { dependency.name.startsWith("$it-") }
+    } + sourceSets["patchedMc"].output
+    destinationDirectory.set(layout.buildDirectory.dir("classes/gtnllib-boundary"))
+    javaCompiler.set(javaToolchains.compilerFor(java.toolchain))
+    // The real build validates mixins and writes its refmap. This compile must not overwrite those outputs.
+    options.compilerArgs.addAll(listOf("-processor", "lombok.launch.AnnotationProcessorHider\$AnnotationProcessor"))
+}
+
+tasks.named("check") {
+    dependsOn(compileGTNLLibBoundary)
 }
 
 val runConfigs = listOf(

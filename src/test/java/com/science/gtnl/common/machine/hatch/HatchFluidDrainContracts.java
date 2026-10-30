@@ -1,6 +1,6 @@
 package com.science.gtnl.common.machine.hatch;
 
-import static com.gtnllib.GTNLLibContractTest.check;
+import static com.gtnltest.ContractAssertions.check;
 
 import java.util.Arrays;
 import java.util.List;

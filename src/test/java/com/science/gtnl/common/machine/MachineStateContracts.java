@@ -1,6 +1,6 @@
 package com.science.gtnl.common.machine;
 
-import static com.gtnllib.GTNLLibContractTest.check;
+import static com.gtnltest.ContractAssertions.check;
 
 import java.math.BigInteger;
 import java.util.UUID;

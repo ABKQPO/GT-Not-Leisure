@@ -2,8 +2,8 @@ package com.gtnllib;
 
 import static com.gtnllib.GTNLLibContractTest.RESOURCES;
 import static com.gtnllib.GTNLLibContractTest.SOURCES;
-import static com.gtnllib.GTNLLibContractTest.check;
-import static com.gtnllib.GTNLLibContractTest.near;
+import static com.gtnltest.ContractAssertions.check;
+import static com.gtnltest.ContractAssertions.near;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

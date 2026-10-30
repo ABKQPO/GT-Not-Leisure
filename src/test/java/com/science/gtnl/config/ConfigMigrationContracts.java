@@ -1,6 +1,6 @@
 package com.science.gtnl.config;
 
-import static com.gtnllib.GTNLLibContractTest.check;
+import static com.gtnltest.ContractAssertions.check;
 
 import java.io.IOException;
 import java.lang.reflect.Field;

@@ -2,8 +2,8 @@ package com.gtnllib;
 
 import static com.gtnllib.GTNLLibContractTest.RESOURCES;
 import static com.gtnllib.GTNLLibContractTest.SOURCES;
-import static com.gtnllib.GTNLLibContractTest.check;
-import static com.gtnllib.GTNLLibContractTest.read;
+import static com.gtnltest.ContractAssertions.check;
+import static com.gtnltest.ContractAssertions.read;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -154,7 +154,12 @@ public class BoundaryContracts {
     }
 
     private static void sources(Set<String> used) throws IOException {
-        List<Path> files = files(SOURCES);
+        // Dependency and feature-name rules apply to Java code, not documentation describing host integrations.
+        List<Path> files = files(SOURCES).stream()
+            .filter(
+                path -> path.toString()
+                    .endsWith(".java"))
+            .toList();
         check(files.size() >= MIN_SOURCES, "the boundary scan sees every GTNLLib source, found " + files.size());
         for (Path file : files) {
             String source = read(file), name = SOURCES.relativize(file)

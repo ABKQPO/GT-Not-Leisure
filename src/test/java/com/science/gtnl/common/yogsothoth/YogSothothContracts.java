@@ -1,6 +1,6 @@
 package com.science.gtnl.common.yogsothoth;
 
-import static com.gtnllib.GTNLLibContractTest.check;
+import static com.gtnltest.ContractAssertions.check;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

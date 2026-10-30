@@ -2,10 +2,10 @@ package com.gtnllib;
 
 import static com.gtnllib.GTNLLibContractTest.RESOURCES;
 import static com.gtnllib.GTNLLibContractTest.SOURCES;
-import static com.gtnllib.GTNLLibContractTest.call;
-import static com.gtnllib.GTNLLibContractTest.check;
-import static com.gtnllib.GTNLLibContractTest.field;
-import static com.gtnllib.GTNLLibContractTest.read;
+import static com.gtnltest.ContractAssertions.call;
+import static com.gtnltest.ContractAssertions.check;
+import static com.gtnltest.ContractAssertions.field;
+import static com.gtnltest.ContractAssertions.read;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;

@@ -1,6 +1,6 @@
 package com.science.gtnl.common.item.items;
 
-import static com.gtnllib.GTNLLibContractTest.check;
+import static com.gtnltest.ContractAssertions.check;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

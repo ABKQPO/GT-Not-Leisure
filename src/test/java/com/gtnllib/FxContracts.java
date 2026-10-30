@@ -1,7 +1,7 @@
 package com.gtnllib;
 
-import static com.gtnllib.GTNLLibContractTest.check;
-import static com.gtnllib.GTNLLibContractTest.near;
+import static com.gtnltest.ContractAssertions.check;
+import static com.gtnltest.ContractAssertions.near;
 
 import java.util.Arrays;
 import java.util.List;
