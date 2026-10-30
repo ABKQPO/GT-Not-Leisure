@@ -1,17 +1,16 @@
-Automatically breeds bees to meet your bee needs
-Input princesses or drones to record their species in the machine's archive
-The GUI shows which bees can be bred from your current species archive
-Base success chance follows Forestry mutation chances
-Requires the original mutation foundations in input buses; checks every 10 seconds without consuming them
-Missing foundations pause breeding without disabling the machine; supplying them resumes it automatically
-Bee species require HV, EV, IV, LuV, ZPM, UV or UHV; check the GUI for their voltage requirement. Unlisted species require UHV
-Breeding waits when voltage is too low; producing archived species also requires the matching voltage
+{gold:Automatically breeds bees to meet your bee needs}
+Put in princesses or drones to record their species
+Choose a target in the GUI and the machine breeds it automatically; the GUI also shows which bees you can breed
+Success chance follows Forestry's original mutation chance
+Put the required foundation blocks in an {white:input bus}; they are {green:not consumed}
+Foundations are checked every 10 seconds; breeding pauses if any are missing and resumes when supplied
+Species are grouped into HV, EV, IV, LuV, ZPM, UV and UHV; the GUI shows the voltage each needs
+You need the required voltage even for recorded species; species without a configured tier require UHV
 
-Starts with {var:parallels} parallel, {var:attemptSeconds} seconds per attempt and {var:baseEu} EU/t per parallel
-Requires HV; each higher voltage tier doubles the parallel limit
-Each overclock uses 4 times the EU/t per parallel and halves breeding time
-Each active parallel can consume 2 royal jelly from the input buses for one extra lossy overclock per attempt
-This uses 4 times the EU/t and halves breeding time again; insufficient jelly or power leaves the normal cycle unchanged
-Starting from HV glass, each higher glass tier doubles EU/t and adds {var:glassChance}% success chance
-Runs fewer parallels when power is limited; waits if there is not enough power for one
-Each input princess produces one target princess and one target drone upon completion
+Starts at {yellow:HV}: {white:{var:parallels}} parallel, {white:{var:attemptSeconds} seconds} per attempt, {white:{var:baseEu} EU/t} per parallel
+Each higher voltage tier {gold:doubles the parallel limit}, uses {red:4 times} the EU/t per parallel and {green:halves} the time
+Put {light_purple:royal jelly} in an input bus: each parallel uses {white:2} per attempt for {light_purple:one extra lossy overclock}
+This uses {red:4 times} the EU/t again and {green:halves} the time again; not enough jelly or power means normal speed
+Starting from {yellow:HV} glass, each higher glass tier {red:doubles} EU/t and adds {gold:{var:glassChance}%} success chance
+If power is short, fewer parallels run; if it cannot power one, the machine waits
+Each princess you put in gives one target princess and one target drone when finished
