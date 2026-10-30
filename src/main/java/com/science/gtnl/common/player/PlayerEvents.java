@@ -4,10 +4,8 @@ import java.util.UUID;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChatStyle;
@@ -18,7 +16,6 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 import com.gtnewhorizon.gtnhlib.eventbus.EventBusSubscriber;
 import com.gtnewhorizon.gtnhlib.network.TitlePacketHandler;
@@ -237,19 +234,6 @@ public class PlayerEvents {
             FOOD_TICK_TIMERS.put(uuid, timer);
         } else {
             FOOD_TICK_TIMERS.removeInt(player.getUniqueID());
-        }
-    }
-
-    @SubscribeEvent
-    public static void onLivingHurt(LivingHurtEvent event) {
-        if (event.entity instanceof EntityCreeper creeper) {
-            if (event.source.isExplosion() && event.source.getSourceOfDamage() instanceof EntityCreeper) {
-                NBTTagCompound nbt = creeper.getEntityData();
-                if (!nbt.hasKey("creeperExplosionDelayed")) {
-                    nbt.setInteger("creeperExplosionDelay", 30);
-                    nbt.setBoolean("creeperExplosionDelayed", true);
-                }
-            }
         }
     }
 }

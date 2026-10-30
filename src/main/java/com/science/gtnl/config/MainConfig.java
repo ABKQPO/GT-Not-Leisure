@@ -29,8 +29,6 @@ public class MainConfig {
 
     public static final RecipeConfig recipe = new RecipeConfig();
 
-    public static final SuperCreeperConfig super_creeper = new SuperCreeperConfig();
-
     public static final TickrateConfig tickrate = new TickrateConfig();
 
     public static final MinecraftConfig minecraft = new MinecraftConfig();

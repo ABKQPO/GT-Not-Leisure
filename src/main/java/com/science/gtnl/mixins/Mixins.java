@@ -73,15 +73,6 @@ public enum Mixins implements IMixins {
             .setPhase(Phase.LATE)
             .addRequiredMod(ModList.NotEnoughItems)),
 
-    SUPER_CREEPER(new MixinBuilder("Mixins for Super Creeper logic")
-        .addCommonMixins(
-            "superCreeper.AccessorEntityCreeper",
-            "superCreeper.MixinEntityAICreeperSwell",
-            "superCreeper.MixinEntityCreeper",
-            "superCreeper.MixinEntitySpider")
-        .setPhase(Phase.EARLY)
-        .setApplyIf(() -> MainConfig.super_creeper.enableSuperCreeper)),
-
     NEI_CHEAT_ICON(new MixinBuilder("Mixins for NEI Special Cheat Icon")
         .addCommonMixins(
             "notEnoughItems.AccessorDrawableBuilder",
